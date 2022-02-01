@@ -33,6 +33,7 @@ import com.daimler.sechub.developertools.admin.ui.action.developerbatchops.Devel
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.FetchMockMailsAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.CreateScenario2TestDataAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.CreateScenario3TestDataAction;
+import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerMassiveNewJobsScenario3User1Action;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewCodeScanJobScenario3User1Action;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewInfraScanJobScenario3User1Action;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewWebScanJobScenario3User1Action;
@@ -54,6 +55,8 @@ import com.daimler.sechub.developertools.admin.ui.action.pds.CheckPDSJobStatusAc
 import com.daimler.sechub.developertools.admin.ui.action.pds.CreateNewPDSExecutionConfigurationAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.CreatePDSJobAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.FetchPDSConfigurationAction;
+import com.daimler.sechub.developertools.admin.ui.action.pds.FetchPDSJobErrorStreamAction;
+import com.daimler.sechub.developertools.admin.ui.action.pds.FetchPDSJobOutputStreamAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.FetchPDSJobParameterExampleAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.FetchPDSMonitoringStatusAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.MarkPDSJobReadyAction;
@@ -64,6 +67,7 @@ import com.daimler.sechub.developertools.admin.ui.action.project.AssignProfileTo
 import com.daimler.sechub.developertools.admin.ui.action.project.AssignProfileToProjectsAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.AssignUserToProjectAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.AssignUserToProjectMassCSVImportAction;
+import com.daimler.sechub.developertools.admin.ui.action.project.ChangeProjectAccessLevelAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.CreateOverviewCSVExportAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.CreateProjectAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.CreateProjectMassCSVImportAction;
@@ -234,8 +238,8 @@ public class CommandUI {
 
         JMenu mappingsMenu = new JMenu("Global mappings");
         menu.add(mappingsMenu);
-        add(mappingsMenu,new FetchGlobalMappingAction(context));
-        add(mappingsMenu,new UpdateGlobalMappingAction(context));
+        add(mappingsMenu, new FetchGlobalMappingAction(context));
+        add(mappingsMenu, new UpdateGlobalMappingAction(context));
     }
 
     private ShowProductExecutorTemplatesDialogAction register(ShowProductExecutorTemplatesDialogAction action) {
@@ -272,6 +276,8 @@ public class CommandUI {
         menu.addSeparator();
         add(menu, new CheckPDSJobStatusAction(context));
         add(menu, new CheckPDSJobResultOrErrorAction(context));
+        add(menu, new FetchPDSJobOutputStreamAction(context));
+        add(menu, new FetchPDSJobErrorStreamAction(context));
     }
 
     private void createUserMenu() {
@@ -315,7 +321,7 @@ public class CommandUI {
 
         menu.addSeparator();
         add(menu, new AssignOwnerToProjectAction(context));
-        
+
         menu.addSeparator();
         add(menu, new AssignUserToProjectAction(context));
         add(menu, new UnassignUserFromProjectAction(context));
@@ -326,7 +332,7 @@ public class CommandUI {
         menu.addSeparator();
         add(menu, new UpdateProjectWhitelistAction(context));
         add(menu, new UpdateProjectMetaDataAction(context));
-        
+
         menu.addSeparator();
         add(menu, new UpdateProjectDescriptionAction(context));
 
@@ -353,6 +359,8 @@ public class CommandUI {
         add(projectMockData, new SetProjectMockDataConfigurationAction(context));
         add(projectMockData, new GetProjectMockConfigurationAction(context));
 
+        menu.addSeparator();
+        add(menu, new ChangeProjectAccessLevelAction(context));
     }
 
     private void createStatusMenu() {
@@ -423,11 +431,16 @@ public class CommandUI {
         testDataMenu.addSeparator();
         add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__FAST));
         add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING));
+
+        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING));
+
         add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_ONE_FINDING__FAST));
         add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_MANY_RESULTS__FAST));
         testDataMenu.addSeparator();
         add(testDataMenu, new TriggerNewCodeScanJobScenario3User1Action(context, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__YELLOW__FAST));
         add(testDataMenu, new TriggerNewCodeScanJobScenario3User1Action(context, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__FAST));
+        testDataMenu.addSeparator();
+        add(testDataMenu, new TriggerMassiveNewJobsScenario3User1Action(context));
 
     }
 

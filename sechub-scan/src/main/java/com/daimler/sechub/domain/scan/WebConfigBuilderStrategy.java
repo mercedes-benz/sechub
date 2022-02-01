@@ -11,18 +11,18 @@ import com.daimler.sechub.adapter.AbstractWebScanAdapterConfigBuilder;
 import com.daimler.sechub.adapter.AbstractWebScanAdapterConfigBuilder.LoginBuilder.FormScriptLoginBuilder.FormScriptLoginPageBuilder;
 import com.daimler.sechub.adapter.AdapterConfig;
 import com.daimler.sechub.adapter.AdapterConfigurationStrategy;
-import com.daimler.sechub.adapter.SecHubTimeUnit;
 import com.daimler.sechub.adapter.SecHubTimeUnitData;
+import com.daimler.sechub.commons.model.SecHubTimeUnit;
+import com.daimler.sechub.commons.model.SecHubWebScanConfiguration;
+import com.daimler.sechub.commons.model.WebScanDurationConfiguration;
+import com.daimler.sechub.commons.model.login.Action;
+import com.daimler.sechub.commons.model.login.AutoDetectUserLoginConfiguration;
+import com.daimler.sechub.commons.model.login.BasicLoginConfiguration;
+import com.daimler.sechub.commons.model.login.FormLoginConfiguration;
+import com.daimler.sechub.commons.model.login.Page;
+import com.daimler.sechub.commons.model.login.Script;
+import com.daimler.sechub.commons.model.login.WebLoginConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
-import com.daimler.sechub.sharedkernel.configuration.SecHubWebScanConfiguration;
-import com.daimler.sechub.sharedkernel.configuration.WebScanDurationConfiguration;
-import com.daimler.sechub.sharedkernel.configuration.login.AutoDetectUserLoginConfiguration;
-import com.daimler.sechub.sharedkernel.configuration.login.BasicLoginConfiguration;
-import com.daimler.sechub.sharedkernel.configuration.login.FormLoginConfiguration;
-import com.daimler.sechub.sharedkernel.configuration.login.Page;
-import com.daimler.sechub.sharedkernel.configuration.login.Script;
-import com.daimler.sechub.sharedkernel.configuration.login.Action;
-import com.daimler.sechub.sharedkernel.configuration.login.WebLoginConfiguration;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 
 /**

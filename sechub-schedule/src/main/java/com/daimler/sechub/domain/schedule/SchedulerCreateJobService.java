@@ -23,37 +23,38 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @Service
 public class SchedulerCreateJobService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SchedulerCreateJobService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SchedulerCreateJobService.class);
 
-	@Autowired
-	private SecHubJobRepository jobRepository;
+    @Autowired
+    private SecHubJobRepository jobRepository;
 
-	@Autowired
-	private SecHubJobFactory secHubJobFactory;
+    @Autowired
+    private SecHubJobFactory secHubJobFactory;
 
-	@Autowired
-	ScheduleAssertService assertService;
+    @Autowired
+    ScheduleAssertService assertService;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Autowired
+    UserInputAssertion assertion;
 
-	@Validated
-	@UseCaseUserCreatesNewJob(@Step(number = 2, name = "Persistence and result", description = "Persist a new job entry and return Job UUID"))
-	public SchedulerResult createJob(String projectId, @Valid SecHubConfiguration configuration) {
-		assertion.isValidProjectId(projectId);
+    @Validated
+    @UseCaseUserCreatesNewJob(@Step(number = 2, name = "Persistence and result", description = "Persist a new job entry and return Job UUID"))
+    public SchedulerResult createJob(String projectId, @Valid SecHubConfiguration configuration) {
+        assertion.isValidProjectId(projectId);
 
-		/* we set the project id into configuration done by used url! */
-		configuration.setProjectId(projectId);
+        /* we set the project id into configuration done by used url! */
+        configuration.setProjectId(projectId);
 
-		assertService.assertUserHasAccessToProject(projectId);
-		assertService.assertExecutionAllowed(configuration);
+        assertService.assertUserHasAccessToProject(projectId);
+        assertService.assertProjectAllowsWriteAccess(projectId);
+        assertService.assertExecutionAllowed(configuration);
 
-		ScheduleSecHubJob secHubJob = secHubJobFactory.createJob(configuration);
-		jobRepository.save(secHubJob);
+        ScheduleSecHubJob secHubJob = secHubJobFactory.createJob(configuration);
+        jobRepository.save(secHubJob);
 
-		SecHubJobTraceLogID traceLogId = traceLogID(secHubJob);
-		LOG.info("New job added:{}", traceLogId);
-		return new SchedulerResult(secHubJob.getUUID());
-	}
+        SecHubJobTraceLogID traceLogId = traceLogID(secHubJob);
+        LOG.info("New job added:{}", traceLogId);
+        return new SchedulerResult(secHubJob.getUUID());
+    }
 
 }

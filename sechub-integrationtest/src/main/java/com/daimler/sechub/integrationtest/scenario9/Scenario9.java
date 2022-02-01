@@ -6,16 +6,20 @@ import com.daimler.sechub.integrationtest.api.TestUser;
 import com.daimler.sechub.integrationtest.internal.AbstractSecHubServerTestScenario;
 import com.daimler.sechub.integrationtest.internal.CleanScenario;
 import com.daimler.sechub.integrationtest.internal.PDSTestScenario;
+import static com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultProfiles.PROFILE_3_PDS_CODESCAN_SARIF;
 
 /**
- * <b><u>Scenario9 - the PDS integrationtest SARIF scenario (REUSE SECHUB DATA enabled!)</u></b><br>
+ * <b><u>Scenario9 - the PDS integration test SARIF scenario (REUSE SECHUB DATA
+ * enabled!)</u></b><br>
  * 
  * In this scenario following is automatically initialized at start (old data
- * removed as well): <br> <br>
- * a) <b> PDS integrationtest configuration is done automatically!</b> 
- * All configurations from
- * 'sechub-integrationtest/src/main/resources/pds-config-integrationtest.json' will be
- * configured automatically!<br><br>
+ * removed as well): <br>
+ * <br>
+ * a) <b> PDS integration test configuration is done automatically!</b> All
+ * configurations from
+ * 'sechub-integrationtest/src/main/resources/pds-config-integrationtest.json'
+ * will be configured automatically!<br>
+ * <br>
  * b) User and project data:
  *
  * <pre>
@@ -43,11 +47,11 @@ public class Scenario9 extends AbstractSecHubServerTestScenario implements PDSTe
     protected void initializeTestData() {
         /* @formatter:off */
         initializer().
-            ensureDefaultExecutionProfile_3_PDS_codescan_sarif().
+            ensureDefaultExecutionProfile(PROFILE_3_PDS_CODESCAN_SARIF).
             createUser(USER_1).
             createProject(PROJECT_1, USER_1).
-            addProjectIdsToDefaultExecutionProfile_3_PDS_SARIF(PROJECT_1).
-            assignUserToProject(PROJECT_1,USER_1)
+            addProjectIdsToDefaultExecutionProfile(PROFILE_3_PDS_CODESCAN_SARIF, PROJECT_1).
+            assignUserToProject(PROJECT_1, USER_1)
             ;
         /* @formatter:on */
     }

@@ -4,6 +4,7 @@ package com.daimler.sechub.integrationtest.scenario3;
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.api.TestUser;
 import com.daimler.sechub.integrationtest.internal.AbstractGrowingSecHubServerTestScenario;
+import static com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultProfiles.*;
 
 /**
  * In this scenario following is automatically initialized at start (old data
@@ -38,14 +39,14 @@ public class Scenario3 extends AbstractGrowingSecHubServerTestScenario {
     protected void initializeTestData() {
         /* @formatter:off */
 		initializer().
-		    ensureDefaultExecutionProfile_1().
+		    ensureDefaultExecutionProfile(PROFILE_1).
 			createUser(USER_1).
 			createUser(USER_2).
 			createUser(USER_3).
 			createProject(PROJECT_1, USER_1).
 			createProject(PROJECT_2, USER_1).
 			assignUserToProject(PROJECT_1, USER_1).
-			addProjectIdsToDefaultExecutionProfile_1(PROJECT_1)
+			addProjectIdsToDefaultExecutionProfile(PROFILE_1, PROJECT_1)
 			;
 		
 		/* @formatter:on */

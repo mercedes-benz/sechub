@@ -1,0 +1,113 @@
+// SPDX-License-Identifier: MIT
+ /*============================================================================
+ * Build file for subproject sechub-api-java
+ *
+ * Root build file: "${rootProject.projectDir}/build.gradle"
+ * ============================================================================
+ */
+
+dependencies {
+    // The production code uses the SLF4J logging API at compile time
+    implementation library.slf4j
+    implementation library.jackson_core
+    implementation library.jackson_databind
+    
+    implementation project(':sechub-commons-model')
+    
+    implementation library.apache_httpcomponents_client
+
+    testImplementation library.junit5_impl
+    testRuntimeOnly library.junit5_runtime
+    
+    testImplementation library.mockito
+    testImplementation library.mockito_inline
+    testImplementation library.hamcrest
+}
+
+// see https://github.com/OpenAPITools/openapi-generator/blob/master/modules/openapi-generator-gradle-plugin/README.adoc
+apply plugin: 'org.openapi.generator'
+
+def specFilePath = "$rootDir/sechub-doc/build/api-spec/openapi3.json"
+
+openApiValidate {
+    inputSpec = "$specFilePath"
+}
+
+// For details about GeneratorTask options look at
+// https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-gradle-plugin
+task callOpenAPIJavaGenerator(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+    generatorName = "java"
+    
+    inputSpec = "$specFilePath"
+    outputDir = "$rootDir/sechub-api-java/gen"
+    apiPackage = "com.daimler.sechub.api.java"
+    invokerPackage = "com.daimler.sechub.api.java"
+    modelPackage = "com.daimler.sechub.api.java.model"
+    
+    globalProperties = [
+            validateSpec   : "true",
+            modelDocs      : "false",
+            models         : "",  // generate all
+            apis           : "", // generate all
+            supportingFiles: ""  // generate all
+    ]
+    // java generator: https://github.com/OpenAPITools/openapi-generator/blob/master/docs/generators/java.md
+    configOptions = [
+    		groupId 					: "com.daimler.sechub",
+    		version                     : "${project.version}",
+            performBeanValidation		: "false",
+            useBeanValidation    		: "false",
+            java8                		: "true",
+            dateLibrary          		: "java8",
+            serializableModel    		: "true",
+            serializationLibrary 		: "jackson",
+            artifactId           		: "sechub-api-java",
+            artifactDescription			: "The SecHub API library for Java",
+            artifactUrl					: "https://github.com/Daimler/sechub",
+            legacyDiscriminatorBehavior : "false",
+            library 					: "jersey2",
+            licenseName 				: "MIT",
+            licenseUrl					: "https://github.com/Daimler/sechub/blob/develop/LICENSE",
+            developerEmail				: "",
+            developerName				: "",
+            developerOrganization 		: "Daimler TSS",
+            developerOrganizationUrl	: "https://www.daimler-tss.com/",
+            scmConnection				: "",
+            scmDeveloperConnection		: "",
+            scmUrl						: "https://github.com/daimler/sechub"
+    ]
+}
+
+tasks.withType(org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+    outputs.upToDateWhen { false }
+    outputs.cacheIf { false }
+}
+
+ext.apiPublishNecessary = "${project.version}" != "0.0.0";
+
+task buildAPIJava(type:Exec, dependsOn: 'generateAPIJava') {
+  group 'sechub'
+  description 'This builds only the generated SecHub Java Client'
+  dependsOn 'generateAPIJava'
+  
+  workingDir = "${project.projectDir}"
+
+  commandLine './generateAPI.sh', "${project.projectDir}/gen", "${apiPublishNecessary}"
+  
+}
+
+task generateAPIJava(dependsOn: callOpenAPIJavaGenerator){
+    doLast {
+        
+        def generatedGradleFile = new File("${rootProject.projectDir}/sechub-api-java/gen/build.gradle")
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("/** add custom publishing parts:*/\n");
+        sb.append("ext.apiPublishNecessary=${apiPublishNecessary}\n");
+        sb.append("ext.buildDoneByGitHubActions=${buildDoneByGitHubActions}\n");
+        sb.append("apply from: \"${rootProject.projectDir}/sechub-api-java/build-publish-github-packages.gradle\"");
+        
+        generatedGradleFile.append("\n"+sb.toString());
+    }
+}
+

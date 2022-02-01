@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
@@ -24,7 +25,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
 
-import com.daimler.sechub.integrationtest.internal.DoNotChangeTestExecutionProfile;
+import com.daimler.sechub.integrationtest.internal.DefaultTestExecutionProfile;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestContext;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultProfiles;
 import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
@@ -92,19 +93,20 @@ public class TestAPI {
         return new AsPDSUser(user);
     }
 
-    @Deprecated // use assertReport instead (newer implementation , has more details and uses common SecHubReport object inside)
+    @Deprecated // use assertReport instead (newer implementation , has more details and uses
+                // common SecHubReport object inside)
     public static AssertSecHubReport assertSecHubReport(String json) {
-        return  AssertSecHubReport.assertSecHubReport(json);
+        return AssertSecHubReport.assertSecHubReport(json);
     }
-    
+
     public static AssertReport assertReport(String json) {
         return AssertReport.assertReport(json);
     }
-    
+
     public static AssertFullScanData assertFullScanDataZipFile(File file) {
         return AssertFullScanData.assertFullScanDataZipFile(file);
     }
-    
+
     public static AssertPDSStatus assertPDSJobStatus(String json) {
         return new AssertPDSStatus(json);
     }
@@ -132,7 +134,7 @@ public class TestAPI {
     public static AssertJSON assertJSON(String json) {
         return AssertJSON.assertJson(json);
     }
-    
+
     public static AssertSecurityLog assertSecurityLog() {
         return AssertSecurityLog.assertSecurityLog();
     }
@@ -155,7 +157,7 @@ public class TestAPI {
         String url = getPDSURLBuilder().buildIntegrationTestLogInfoUrl();
         getContext().getPDSRestHelper(ANONYMOUS).postPlainText(url, text);
     }
-    
+
     public static String getPDSStoragePathForJobUUID(UUID jobUUID) {
         String url = getPDSURLBuilder().pds().buildIntegrationTestCheckStoragePath(jobUUID);
         return getContext().getPDSRestHelper(ANONYMOUS).getStringFromURL(url);
@@ -169,8 +171,9 @@ public class TestAPI {
      * @param jobUUID
      */
     public static void waitForJobDone(TestProject project, UUID jobUUID) {
-        waitForJobDone(project, jobUUID,5);
+        waitForJobDone(project, jobUUID, 5);
     }
+
     /**
      * Waits for sechub job being done (means status execution result is OK)- after
      * 5 seconds time out is reached
@@ -193,16 +196,29 @@ public class TestAPI {
     }
 
     /**
-     * Waits for sechub job being running - after 5 seconds time out is reached
+     * Wait until SecHub job is running - after 5 seconds time out is reached
      * 
      * @param project
      * @param jobUUID
      */
-    @SuppressWarnings("unchecked")
     public static void waitForJobRunning(TestProject project, UUID jobUUID) {
-        LOG.debug("wait for job running project:{}, job:{}", project.getProjectId(), jobUUID);
+        waitForJobRunning(project, 5, 300, jobUUID);
+    }
 
-        TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, 5, HttpClientErrorException.class) {
+    /**
+     * Wait until SecHub job is running
+     * 
+     * @param project
+     * @param timeOutInSeconds
+     * @param timeToWaitInMillis
+     * @param jobUUID
+     */
+    @SuppressWarnings("unchecked")
+    public static void waitForJobRunning(TestProject project, int timeOutInSeconds, int timeToWaitInMillis, UUID jobUUID) {
+        LOG.debug("wait for job running project:{}, job:{}, timeToWaitInMillis{}, timeOutInSeconds:{}", project.getProjectId(), jobUUID, timeToWaitInMillis,
+                timeOutInSeconds);
+
+        TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, timeOutInSeconds, timeToWaitInMillis, HttpClientErrorException.class) {
             @Override
             public boolean runImpl() throws Exception {
                 String status = as(getUser()).getJobStatus(project.getProjectId(), jobUUID);
@@ -291,6 +307,35 @@ public class TestAPI {
         } while (notExceeded(maxMilliseconds, start));
         fail("Timeout of waiting for successful execution - waited " + e.getTimeoutInSeconds() + " seconds");
         return;
+    }
+
+    public static void executeRunnableAndAcceptAssertionsMaximumTimes(int tries, Runnable runnable, int millisBeforeNextRetry) {
+        executeCallableAndAcceptAssertionsMaximumTimes(tries, () -> {
+            runnable.run();
+            return null;
+        }, millisBeforeNextRetry);
+    }
+
+    public static <T> T executeCallableAndAcceptAssertionsMaximumTimes(int tries, Callable<T> assertionCallable, int millisBeforeNextRetry) {
+        T result = null;
+        AssertionFailedError failure = null;
+        for (int i = 0; i < tries && failure == null; i++) {
+            try {
+                if (i > 0) {
+                    /* we wait before next check */
+                    TestAPI.waitMilliSeconds(millisBeforeNextRetry);
+                }
+                result = assertionCallable.call();
+            } catch (AssertionFailedError e) {
+                failure = e;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if (failure != null) {
+            throw failure;
+        }
+        return result;
     }
 
     /**
@@ -519,7 +564,7 @@ public class TestAPI {
         TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildIntegrationTestFetchMappingDirectlyURL(mappingId);
 
-        String result = IntegrationTestContext.get().getRestHelper(ANONYMOUS).getJSon(url);
+        String result = IntegrationTestContext.get().getRestHelper(ANONYMOUS).getJSON(url);
         if (result == null) {
             return null;
         }
@@ -531,24 +576,24 @@ public class TestAPI {
     public static void clearSecurityLogs() {
         TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildIntegrationTestClearSecurityLogs();
-        
+
         IntegrationTestContext.get().getRestHelper(ANONYMOUS).delete(url);
     }
-    
+
     public static List<SecurityLogData> getSecurityLogs() {
         TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildIntegrationTestGetSecurityLogs();
-        
-        String json = IntegrationTestContext.get().getRestHelper(ANONYMOUS).getJSon(url);
+
+        String json = IntegrationTestContext.get().getRestHelper(ANONYMOUS).getJSON(url);
         ObjectMapper mapper = TestJSONHelper.get().getMapper();
         ObjectReader readerForListOf = mapper.readerForListOf(SecurityLogData.class);
         try {
             return readerForListOf.readValue(json);
         } catch (Exception e) {
-           throw new IllegalStateException("was not able to fetch security logs",e);
+            throw new IllegalStateException("was not able to fetch security logs", e);
         }
     }
-    
+
     public static String getIdForNameByNamePatternProvider(String namePatternProviderId, String name) {
 
         TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
@@ -590,7 +635,7 @@ public class TestAPI {
         TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildFetchMetaDataInspectionsURL();
 
-        String json = IntegrationTestContext.get().getSuperAdminRestHelper().getJSon(url);
+        String json = IntegrationTestContext.get().getSuperAdminRestHelper().getJSON(url);
         TestJSONHelper jsonHelper = TestJSONHelper.get();
 
         List<Map<String, Object>> data;
@@ -640,7 +685,7 @@ public class TestAPI {
                 if (timeElapsed > timeOutInMilliseconds) {
                     throw new IllegalStateException("Time out - even after " + timeElapsed + " ms we have still running jobs.");
                 }
-                String json = getSuperAdminRestHelper().getJSon(url);
+                String json = getSuperAdminRestHelper().getJSON(url);
                 JsonNode obj = TestJSONHelper.get().getMapper().readTree(json);
                 if (obj instanceof ArrayNode) {
                     ArrayNode an = (ArrayNode) obj;
@@ -727,13 +772,13 @@ public class TestAPI {
 
     public static IntegrationTestEventHistory fetchEventInspectionHistory() {
         String url = getURLBuilder().buildIntegrationTestFetchEventInspectionHistory();
-        String json = getSuperAdminRestHelper().getJSon(url);
+        String json = getSuperAdminRestHelper().getJSON(url);
         return IntegrationTestEventHistory.fromJSONString(json);
     }
 
     public static Map<String, String> listStatusEntries() {
         String url = getURLBuilder().buildAdminListsStatusEntries();
-        String json = getSuperAdminRestHelper().getJSon(url);
+        String json = getSuperAdminRestHelper().getJSON(url);
         JsonNode node;
         try {
             node = TestJSONHelper.get().getMapper().readTree(json);
@@ -770,7 +815,7 @@ public class TestAPI {
 
     public static SortedMap<String, String> listSignups() {
         String url = getURLBuilder().buildAdminListsUserSignupsUrl();
-        String json = getSuperAdminRestHelper().getJSon(url);
+        String json = getSuperAdminRestHelper().getJSON(url);
         JsonNode node;
         try {
             node = TestJSONHelper.get().getMapper().readTree(json);
@@ -847,7 +892,7 @@ public class TestAPI {
     }
 
     public static void assertNoDefaultProfileId(String profileId) {
-        for (DoNotChangeTestExecutionProfile doNotChangeProfile : IntegrationTestDefaultProfiles.getAllDefaultProfiles()) {
+        for (DefaultTestExecutionProfile doNotChangeProfile : IntegrationTestDefaultProfiles.getAllDefaultProfiles()){
             if (doNotChangeProfile.id.equals(profileId)) {
                 throw new IllegalArgumentException("Profile " + profileId
                         + " is a default profile and may not be changed! This would destroy test scenarios! Please define own profiles in your tests and change them!");
@@ -855,7 +900,7 @@ public class TestAPI {
         }
     }
 
-    public static boolean canReloadExecutionProfileData(DoNotChangeTestExecutionProfile profile) {
+    public static boolean canReloadExecutionProfileData(DefaultTestExecutionProfile profile) {
         if (!TestAPI.isExecutionProfileExisting(profile.id)) {
             return false;
         }
@@ -873,9 +918,43 @@ public class TestAPI {
         }
         as(SUPER_ADMIN).ensureExecutorConfigUUIDs();
     }
-    
+
     public static void switchSchedulerStrategy(String strategyId) {
         String url = getURLBuilder().buildSetSchedulerStrategyIdUrl(strategyId);
         getSuperAdminRestHelper().put(url);
     }
+
+    /**
+     * Waits for at least one heart beat by PDS server. Every 200 milliseconds there
+     * is a check if at least one heart beat time stamp is found. After 10 tries the
+     * method will fail.
+     */
+    public static void waitForAtLeastOnePDSHeartbeat() {
+        int maxTries = 10;
+
+        boolean heartBeatFound = false;
+        int tried = 0;
+        while (!heartBeatFound && tried < maxTries) {
+            tried++;
+            String json = asPDSUser(PDS_ADMIN).getMonitoringStatus();
+            heartBeatFound = json.contains("heartBeatTimestamp");
+            if (!heartBeatFound) {
+                LOG.info("No heart beat time stamp found (tried {} times) - so will wait and retry", tried);
+                waitMilliSeconds(200);
+            }
+        }
+        assertTrue("Even after " + tried + " tries to fetch a heartbeat there was no heartbeat found!", heartBeatFound);
+
+    }
+
+    /**
+     * Wait that project does not exist. Will try 9 times with 330 milliseconds
+     * delay before next retry. After this time this method will fail.
+     * 
+     * @param project
+     */
+    public static void waitProjectDoesNotExist(TestProject project) {
+        assertProject(project).doesNotExist(9);
+    }
+
 }

@@ -5,9 +5,9 @@ class VersionData{
     private static final String ID_CLIENT = "client"
     private static final String ID_SERVER = "server"
     private static final String ID_WEBSITE = "website"
+    private static final String ID_LIBRARIES = "libraries"
     
     private static Map<String,VersionInfo> map = new HashMap<>();
-    
     
     public static class VersionInfo{
         
@@ -28,6 +28,7 @@ class VersionData{
         initialize(ID_CLIENT, "Client ")
         initialize(ID_PDS,    "PDS    ")
         initialize(ID_WEBSITE,"Website")
+        initialize(ID_LIBRARIES,"Libraries")
     }
     
     
@@ -59,6 +60,13 @@ class VersionData{
     /**
      * Convenience method, returns short name 
      */
+    public static String getLibrariesVersion(){
+        return map.get(ID_LIBRARIES).getShortVersion()
+    }
+    
+    /**
+     * Convenience method, returns short name 
+     */
     public static String getServerVersion(){
         return map.get(ID_SERVER).getShortVersion()
     }
@@ -84,10 +92,8 @@ class VersionData{
         return map.get(ID_WEBSITE).getShortVersion()
     }
     
-    
-    
     /**
-     * Inpsect versoin - if not starting with 0.0.0 this means it's a release ando
+     * Inspect version - if not starting with 0.0.0 this means it's a release, so
      *                   a "dirty" may not be contained inside long version name
      */
     private static void inspectReleaseVersion(String longVersionName){
@@ -98,7 +104,6 @@ class VersionData{
         containingAtLeastOneDirtyReleaseVersion=containingAtLeastOneDirtyReleaseVersion || longVersionName.contains("dirty")
         containingAtLeastOneRealReleaseVersion=true
     }
-    
     
     /**
      * Simplifies given version string . e.g. 0.4.1-b74 will be reduced to 0.4.1

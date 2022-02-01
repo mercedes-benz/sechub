@@ -2,12 +2,22 @@
 spring.profiles.include:
 - pds_localserver
 
-# next lines is a default when running inside IDE. Links to sechub-integration aprts
+server:
+  address: 127.0.0.1
+
+# next lines are defaults when running inside IDE. Links to sechub-integration parts
 sechub.pds.config.file: "./../sechub-integrationtest/src/main/resources/pds-config-integrationtest.json"
 sechub.pds.workspace.rootfolder: "./../sechub-integrationtest/build/test-results/pds-runtime"
 
 sechub:
  pds:
+   config:
+       job:
+         stream:
+            cachetime: 500        # shorter cache time
+            check:
+               retries: 20        
+               timetowait: 300    # faster feedback
    techuser:
        userid: pds-inttest-techuser
        apitoken: "{noop}pds-inttest-apitoken"

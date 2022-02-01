@@ -1,13 +1,19 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.restdoc;
-import static com.daimler.sechub.test.TestURLBuilder.*;
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
-import static org.hamcrest.CoreMatchers.*;
+import static com.daimler.sechub.test.TestURLBuilder.https;
+import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.JOB_UUID;
+import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.PROJECT_ID;
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,16 +35,17 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.daimler.sechub.commons.model.TrafficLight;
-import com.daimler.sechub.docgen.util.RestDocPathFactory;
+import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.domain.scan.HTMLScanResultReportModelBuilder;
 import com.daimler.sechub.domain.scan.report.DownloadScanReportService;
 import com.daimler.sechub.domain.scan.report.ScanReport;
 import com.daimler.sechub.domain.scan.report.ScanReportRestController;
-import com.daimler.sechub.domain.scan.report.ScanReportResult;
+import com.daimler.sechub.domain.scan.report.ScanSecHubReport;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserDownloadsJobReport;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(ScanReportRestController.class)
@@ -59,31 +66,46 @@ public class ScanReportRestControllerRestDocTest {
 	@MockBean
 	HTMLScanResultReportModelBuilder modelBuilder;
 
-	private UUID randomUUID;
+	private UUID jobUUID;
 
 	@UseCaseRestDoc(useCase=UseCaseUserDownloadsJobReport.class,variant="JSON")
 	@Test
 	@WithMockUser
 	public void get_report_from_existing_job_returns_information_as_json_when_type_is_APPLICATION_JSON_UTF8() throws Exception {
 		/* prepare */
-		ScanReport report = new ScanReport(randomUUID,PROJECT1_ID);
+        String apiEndpoint = https(PORT_USED).buildGetJobReportUrl(PROJECT_ID.pathElement(), JOB_UUID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserDownloadsJobReport.class;
+        
+		ScanReport report = new ScanReport(jobUUID,PROJECT1_ID);
 		report.setResult("{'count':'1'}");
 		report.setTrafficLight(TrafficLight.YELLOW);
 
-		ScanReportResult result1 = new ScanReportResult(report);
-		when(downloadReportService.getScanReportResult(PROJECT1_ID, randomUUID)).thenReturn(result1);
+		ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
+		when(downloadReportService.getScanSecHubReport(PROJECT1_ID, jobUUID)).thenReturn(scanSecHubReport);
 
 		/* execute + test @formatter:off */
 	    this.mockMvc.perform(
-	    		get(https(PORT_USED).buildGetJobReportUrl(PROJECT1_ID,randomUUID)).accept(MediaType.APPLICATION_JSON_VALUE).
+	    		get(apiEndpoint,PROJECT1_ID,jobUUID).
+	    		    accept(MediaType.APPLICATION_JSON_VALUE).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE)
 	    		).
 	    			andExpect(status().isOk()).
-	    			andExpect(content().json("{\"jobUUID\":\""+randomUUID.toString()+"\",\"result\":{\"count\":1,\"findings\":[]},\"trafficLight\":\"YELLOW\"}")).
+	    			andExpect(content().json("{\"jobUUID\":\""+jobUUID.toString()+"\",\"result\":{\"count\":0,\"findings\":[]},\"trafficLight\":\"YELLOW\"}")).
 
-	    			andDo(document(RestDocPathFactory.createPath(UseCaseUserDownloadsJobReport.class, "JSON"))
-
-	    					);
+	    			andDo(document(RestDocFactory.createPath(useCase, "JSON"),
+                            resource(
+                                    ResourceSnippetParameters.builder().
+                                        summary(RestDocFactory.createSummary(useCase)).
+                                        description(RestDocFactory.createDescription(useCase)).
+                                        tag(RestDocFactory.extractTag(apiEndpoint)).
+                                        responseSchema(OpenApiSchema.SECHUB_REPORT.getSchema()).
+                                        pathParameters(
+                                                parameterWithName(PROJECT_ID.paramName()).description("The project Id"),
+                                                parameterWithName(JOB_UUID.paramName()).description("The job UUID")
+                                        ).
+                                        build()
+                                    )
+	    			     ));
 
 	    /* @formatter:on */
 	}
@@ -93,27 +115,42 @@ public class ScanReportRestControllerRestDocTest {
 	@WithMockUser
 	public void get_report_from_existing_job_returns_information_as_html_when_type_is_APPLICATION_XHTML_XML() throws Exception {
 		/* prepare */
-		ScanReport report = new ScanReport(randomUUID,PROJECT1_ID);
+        String apiEndpoint = https(PORT_USED).buildGetJobReportUrl(PROJECT_ID.pathElement(), JOB_UUID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserDownloadsJobReport.class;
+        
+		ScanReport report = new ScanReport(jobUUID,PROJECT1_ID);
 		report.setResult("{'count':'1'}");
 		report.setTrafficLight(TrafficLight.YELLOW);
 
-		ScanReportResult result1 = new ScanReportResult(report);
-		when(downloadReportService.getScanReportResult(PROJECT1_ID, randomUUID)).thenReturn(result1);
+		ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
+		when(downloadReportService.getScanSecHubReport(PROJECT1_ID, jobUUID)).thenReturn(scanSecHubReport);
 
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
-        		get(https(PORT_USED).buildGetJobReportUrl(PROJECT1_ID,randomUUID)).accept(MediaType.APPLICATION_XHTML_XML).
+        		get(apiEndpoint,PROJECT1_ID,jobUUID).
+        		    accept(MediaType.APPLICATION_XHTML_XML).
         			contentType(MediaType.APPLICATION_JSON_VALUE)
         		).  
         			andExpect(status().isOk()).
         			andExpect(content().contentType("text/html;charset=UTF-8")).
         			andExpect(content().encoding("UTF-8")).
-        			andExpect(content().string(containsString(randomUUID.toString()))).
+        			andExpect(content().string(containsString(jobUUID.toString()))).
         			andExpect(content().string(containsString("theRedStyle"))).
 
-        			andDo(document(RestDocPathFactory.createPath(UseCaseUserDownloadsJobReport.class, "HTML"))
-
-        		);
+        			andDo(document(RestDocFactory.createPath(useCase, "HTML"),
+                            resource(
+                                    ResourceSnippetParameters.builder().
+                                        summary(RestDocFactory.createSummary(useCase)).
+                                        description(RestDocFactory.createDescription(useCase)).
+                                        tag(RestDocFactory.extractTag(apiEndpoint)).
+                                        responseSchema(OpenApiSchema.SECHUB_REPORT.getSchema()).
+                                        pathParameters(
+                                                parameterWithName(PROJECT_ID.paramName()).description("The project Id"),
+                                                parameterWithName(JOB_UUID.paramName()).description("The job UUID")
+                                        ).
+                                        build()
+                                    )
+        			      ));
 
         /* @formatter:on */
 	}
@@ -126,9 +163,9 @@ public class ScanReportRestControllerRestDocTest {
 
 	@Before
 	public void before() throws Exception {
-		randomUUID=UUID.randomUUID();
+		jobUUID=UUID.randomUUID();
 		Map<String,Object> map = new HashMap<>();
-		map.put("jobuuid", randomUUID);
+		map.put("jobuuid", jobUUID);
 		map.put("styleRed", "theRedStyle");
 		map.put("styleGreen", "display:none");
 		map.put("styleYellow", "display:none");

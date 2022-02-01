@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.pds.batch;
 
-import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Optional;
@@ -13,91 +13,83 @@ import org.junit.Test;
 import com.daimler.sechub.pds.execution.PDSExecutionService;
 import com.daimler.sechub.pds.job.PDSJob;
 import com.daimler.sechub.pds.job.PDSJobRepository;
-import com.daimler.sechub.pds.job.PDSJobStatusState;
+import com.daimler.sechub.pds.job.PDSJobTransactionService;
 
 public class PDSBatchTriggerServiceTest {
 
     private PDSBatchTriggerService serviceToTest;
     private PDSExecutionService executionService;
     private PDSJobRepository repository;
+    private PDSJobTransactionService jobTransactionService;
+    private UUID nextJobUUID;
+    private PDSJob job;
 
     @Before
     public void before() throws Exception {
+        nextJobUUID = UUID.randomUUID();
+        job = mock(PDSJob.class);
+        when(job.getUUID()).thenReturn(nextJobUUID);
+
         executionService = mock(PDSExecutionService.class);
         repository = mock(PDSJobRepository.class);
+        jobTransactionService = mock(PDSJobTransactionService.class);
+        when(jobTransactionService.findNextJobToExecuteAndMarkAsQueued()).thenReturn(nextJobUUID);
 
         serviceToTest = new PDSBatchTriggerService();
 
         serviceToTest.executionService = executionService;
         serviceToTest.repository = repository;
+        serviceToTest.jobTransactionService = jobTransactionService;
     }
 
-    @Test
-    public void a_job_found_for_next_execution_is_changed_to_state_QUEUED() {
-        /* prepare */
-        PDSJob job = new PDSJob();
-        job.setState(PDSJobStatusState.READY_TO_START);
-
-        when(repository.findNextJobToExecute()).thenReturn(Optional.of(job));
-
-        /* check precondition */
-        assertEquals(PDSJobStatusState.READY_TO_START, job.getState());
-
-        /* execute */
-        serviceToTest.triggerExecutionOfNextJob();
-
-        /* test */
-        assertEquals(PDSJobStatusState.QUEUED, job.getState());
-    }
-    
-    @Test
-    public void a_job_found_for_next_execution_but_scheduling_disabled_job_is_not_changed() {
-        /* prepare */
-        serviceToTest.schedulingEnabled=false;
-        PDSJob job = new PDSJob();
-        job.setState(PDSJobStatusState.READY_TO_START);
-
-        when(repository.findNextJobToExecute()).thenReturn(Optional.of(job));
-
-        /* check precondition */
-        assertEquals(PDSJobStatusState.READY_TO_START, job.getState());
-
-        /* execute */
-        serviceToTest.triggerExecutionOfNextJob();
-
-        /* test */
-        assertEquals(PDSJobStatusState.READY_TO_START, job.getState());
-    }
-    
-    @Test
-    public void a_job_found_for_next_execution_but_scheduling_disabled_executor_service_not_called() {
-        /* prepare */
-        serviceToTest.schedulingEnabled=false;
-        UUID uuid = UUID.randomUUID();
-        PDSJob job = mock(PDSJob.class);
-        when(job.getUUID()).thenReturn(uuid);
-        when(repository.findNextJobToExecute()).thenReturn(Optional.of(job));
-        
-        /* execute */
-        serviceToTest.triggerExecutionOfNextJob();
-        
-        /* test */
-        verify(executionService,never()).addToExecutionQueueAsynchron(uuid);
-    }
-    
     @Test
     public void a_job_found_for_next_execution_executor_service_called() {
         /* prepare */
-        UUID uuid = UUID.randomUUID();
-        PDSJob job = mock(PDSJob.class);
-        when(job.getUUID()).thenReturn(uuid);
         when(repository.findNextJobToExecute()).thenReturn(Optional.of(job));
-        
+
         /* execute */
         serviceToTest.triggerExecutionOfNextJob();
-        
+
         /* test */
-        verify(executionService).addToExecutionQueueAsynchron(uuid);
+        verify(executionService).addToExecutionQueueAsynchron(nextJobUUID);
+    }
+
+    @Test
+    public void a_job_found_for_next_execution_jobtransaction_service_is_called() {
+        /* prepare */
+        when(repository.findNextJobToExecute()).thenReturn(Optional.of(job));
+
+        /* execute */
+        serviceToTest.triggerExecutionOfNextJob();
+
+        /* test */
+        verify(jobTransactionService).findNextJobToExecuteAndMarkAsQueued();
+    }
+
+    @Test
+    public void a_job_found_for_next_execution_but_scheduling_disabled_executor_service_is_NOT_called() {
+        /* prepare */
+        serviceToTest.schedulingEnabled = false;
+        when(repository.findNextJobToExecute()).thenReturn(Optional.of(job));
+
+        /* execute */
+        serviceToTest.triggerExecutionOfNextJob();
+
+        /* test */
+        verify(executionService, never()).addToExecutionQueueAsynchron(any());
+    }
+
+    @Test
+    public void a_job_found_for_next_execution_but_scheduling_disabled_jobtransaction_service_is_NOT_called() {
+        /* prepare */
+        serviceToTest.schedulingEnabled = false;
+        when(repository.findNextJobToExecute()).thenReturn(Optional.of(job));
+
+        /* execute */
+        serviceToTest.triggerExecutionOfNextJob();
+
+        /* test */
+        verify(jobTransactionService, never()).findNextJobToExecuteAndMarkAsQueued();
     }
 
 }

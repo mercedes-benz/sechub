@@ -20,6 +20,7 @@ import com.daimler.sechub.adapter.pds.data.PDSJobData;
 import com.daimler.sechub.adapter.pds.data.PDSJobParameterEntry;
 import com.daimler.sechub.adapter.pds.data.PDSJobStatus;
 import com.daimler.sechub.adapter.pds.data.PDSJobStatus.PDSAdapterJobStatusState;
+import com.daimler.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 
 /**
  * This component is able to handle PDS API V1
@@ -61,8 +62,9 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
 
     private void waitForJobDone(PDSContext context) throws AdapterException {
         PDSAdapterConfig config = context.getConfig();
-        UUID jobUUID = config.getSecHubJobUUID();
-        UUID uuid = context.getPdsJobUUID();
+
+        UUID secHubJobUUID = config.getSecHubJobUUID();
+        UUID pdsJobUUID = context.getPdsJobUUID();
 
         int count = 0;
         boolean jobEnded = false;
@@ -71,37 +73,49 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         long started = getCurrentTimeMilliseconds();
 
         int timeToWaitForNextCheckOperationInMilliseconds = config.getTimeToWaitForNextCheckOperationInMilliseconds();
+
+        LOG.info("Start waiting for PDS-job:{} to be done. Related SecHub-Job is:{} . Will check every {} ms. Adapter will wait maximum {} ms before timeout.",
+                pdsJobUUID, secHubJobUUID, timeToWaitForNextCheckOperationInMilliseconds, config.getTimeOutInMilliseconds());
+
         while (!jobEnded && isNotTimeout(config, started)) {
+
+            count++;
+
+            LOG.debug("Fetch job status for PDS-job:{}. Elapsed time for {} retries:{} ms", pdsJobUUID, count, calculateElapsedTime(started));
+
             /* see PDSJobStatusState.java */
             jobstatus = getJobStatus(context);
 
             PDSAdapterJobStatusState state = jobstatus.state;
             switch (state) {
             case DONE:
-            case FAILED:
-            case CANCELED:
                 jobEnded = true;
-                break; // break case...
+                break;
+            case FAILED:
+                throw asAdapterException("PDS job execution failed", config);
+            case CANCELED:
+                throw asAdapterCanceledByUserException(config);
             default:
                 // just do nothing else
             }
             if (jobEnded) {
                 break; // break while...
             }
+
             assertNotInterrupted();
+
             try {
                 Thread.sleep(timeToWaitForNextCheckOperationInMilliseconds);
             } catch (InterruptedException e) {
                 throw new AdapterException(getAdapterLogId(null), "Execution thread was interrupted");
             }
-            count++;
 
         }
         if (!jobEnded) {
             long elapsedTimeInMilliseconds = calculateElapsedTime(started);
             throw new IllegalStateException("Even after " + count + " retries, every waiting " + timeToWaitForNextCheckOperationInMilliseconds
                     + " ms, no job report state acceppted as END was found.!\nElapsed time were" + elapsedTimeInMilliseconds
-                    + " ms.\nLAST fetched jobstatus for " + jobUUID + ", PDS job uuid: " + uuid + " was:\n" + jobstatus);
+                    + " ms.\nLAST fetched jobstatus for " + secHubJobUUID + ", PDS job uuid: " + pdsJobUUID + " was:\n" + jobstatus);
         }
 
     }
@@ -161,7 +175,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
             return;
         }
 
-        String useSecHubStorage = config.getJobParameters().get(PDSAdapterConstants.PARAM_KEY_USE_SECHUB_STORAGE);
+        String useSecHubStorage = config.getJobParameters().get(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE);
         if (Boolean.parseBoolean(useSecHubStorage)) {
             LOG.info("Not uploading job data because configuration wants to use SecHub storage");
             return;
@@ -169,13 +183,13 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
 
         PDSSourceZipConfig sourceZipConfig = (PDSSourceZipConfig) config;
         AdapterMetaData metaData = context.getRuntimeContext().getMetaData();
-        if (!metaData.hasValue(PDSAdapterConstants.METADATA_KEY_FILEUPLOAD_DONE, true)) {
+        if (!metaData.hasValue(PDSMetaDataConstants.METADATA_KEY_FILEUPLOAD_DONE, true)) {
             /* upload source code */
             PDSUploadSupport uploadSupport = new PDSUploadSupport();
             uploadSupport.uploadZippedSourceCode(context, sourceZipConfig);
 
             /* after this - mark file upload done, so on a restart we don't need this */
-            metaData.setValue(PDSAdapterConstants.METADATA_KEY_FILEUPLOAD_DONE, true);
+            metaData.setValue(PDSMetaDataConstants.METADATA_KEY_FILEUPLOAD_DONE, true);
             context.getRuntimeContext().getCallback().persist(metaData);
         } else {
             LOG.info("Reuse existing upload for:{}", context.getTraceID());

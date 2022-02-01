@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.domain.schedule.access.ScheduleAccess.ProjectAccessCompositeKey;
 import com.daimler.sechub.sharedkernel.Step;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorUnassignsUserFromProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUnassignsUserFromProject;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -23,7 +23,7 @@ public class ScheduleRevokeUserAccessFromProjectService {
 	@Autowired
 	UserInputAssertion assertion;
 
-	@UseCaseAdministratorUnassignsUserFromProject(@Step(number=2,name="Update authorization parts"))
+	@UseCaseAdminUnassignsUserFromProject(@Step(number=2,name="Update authorization parts"))
 	public void revokeUserAccessFromProject(String userId, String projectId) {
 		assertion.isValidUserId(userId);
 		assertion.isValidProjectId(projectId);

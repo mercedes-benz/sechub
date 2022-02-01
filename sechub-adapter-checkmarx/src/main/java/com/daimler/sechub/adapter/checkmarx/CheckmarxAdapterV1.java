@@ -40,8 +40,9 @@ public class CheckmarxAdapterV1 extends AbstractAdapter<CheckmarxAdapterContext,
 
             CheckmarxContext context = new CheckmarxContext(config, this, runtimeContext);
             context.setFullScan(context.isNewProject() || config.isAlwaysFullScanEnabled());
-            CheckmarxOAuthSupport support = new CheckmarxOAuthSupport();
-            support.loginAndGetOAuthToken(context);
+
+            CheckmarxOAuthSupport oauthSupport = new CheckmarxOAuthSupport();
+            oauthSupport.loginAndGetOAuthToken(context);
 
             assertNotInterrupted();
             /* ensure project and get project context */
@@ -49,11 +50,11 @@ public class CheckmarxAdapterV1 extends AbstractAdapter<CheckmarxAdapterContext,
             projectSupport.ensureProjectExists(context);
 
             assertNotInterrupted();
-            handleUploadSourceCodeAndStartScan(context);
+            handleUploadSourceCodeAndStartScan(oauthSupport, context);
 
             assertNotInterrupted();
             CheckmarxScanReportSupport scanReportSupport = new CheckmarxScanReportSupport();
-            scanReportSupport.startFetchReport(context);
+            scanReportSupport.startFetchReport(oauthSupport, context);
 
             return context.getResult();
         } catch (Exception e) {
@@ -67,21 +68,23 @@ public class CheckmarxAdapterV1 extends AbstractAdapter<CheckmarxAdapterContext,
         return 1;
     }
 
-    private void handleUploadSourceCodeAndStartScan(CheckmarxContext context) throws AdapterException {
+    private void handleUploadSourceCodeAndStartScan(CheckmarxOAuthSupport oauthSupport, CheckmarxContext context) throws AdapterException {
         try {
-            uploadSourceCodeAndStartScan(context);
+            uploadSourceCodeAndStartScan(oauthSupport, context);
         } catch (CheckmarxFullScanNecessaryException e) {
             LOG.info("Full scan necessary bcause of checkmarx message: {}", e.getCheckmarxMessage());
             context.setFullScan(true);
-            uploadSourceCodeAndStartScan(context);
+            uploadSourceCodeAndStartScan(oauthSupport, context);
 
         }
     }
 
-    private void uploadSourceCodeAndStartScan(CheckmarxContext context) throws AdapterException {
+    private void uploadSourceCodeAndStartScan(CheckmarxOAuthSupport oauthSupport, CheckmarxContext context) throws AdapterException {
         AdapterMetaData metaData = context.getRuntimeContext().getMetaData();
         if (!metaData.hasValue(CheckmarxMetaDataID.KEY_FILEUPLOAD_DONE, true)) {
             /* upload source code */
+            oauthSupport.refreshBearerTokenWhenNecessary(context);
+            
             CheckmarxUploadSupport uploadSupport = new CheckmarxUploadSupport();
             uploadSupport.uploadZippedSourceCode(context);
 
@@ -93,7 +96,7 @@ public class CheckmarxAdapterV1 extends AbstractAdapter<CheckmarxAdapterContext,
         }
         /* start scan */
         CheckmarxScanSupport scanSupport = new CheckmarxScanSupport();
-        scanSupport.startNewScan(context);
+        scanSupport.startNewScan(oauthSupport, context);
     }
 
     @Override

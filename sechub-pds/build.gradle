@@ -21,7 +21,7 @@ dependencies {
     compile library.database_postgres
     compile library.apache_commons_io
 
-    compile project(':sechub-pds-core')    
+    compile project(':sechub-pds-core')
 
     testCompile project(':sechub-testframework') // testframework has no dependencies or page effects, so we can use the lib for testing
     testCompile library.springboot_starter_test
@@ -62,12 +62,18 @@ task ensureLocalhostCertificate(type: Exec) {
 /* make eclipse task depend on ensured local certificate*/
 tasks.eclipse.dependsOn 'ensureLocalhostCertificate'
 
+version =   VersionData.getPdsVersion()
+
+if (buildDoneByGitHubActions ){
+    println("publish $project.name will be ignored at github actions at the moment!")
+   return;
+}
+
 /**
  * We currently  publish only the server java spring boot jar, so having complete server on maven repository - documentation can be found inside sechub-doc
  */
 apply plugin: 'maven-publish'
 
-version =   VersionData.getPdsVersion()
 
 publishing {
     publications {

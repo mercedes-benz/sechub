@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: MIT
 
 # For integration tests, local develoment etc. we need a generated, private key
 # which is different for each developer, not accidently committed to git, also

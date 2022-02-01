@@ -7,7 +7,7 @@ public class TestURLBuilder {
 
     /**
      * This enum represents common used identifiers inside rest documentation. Use
-     * this enumeration for building urls inside your RestDoc tests and use
+     * this enumeration for building URLs inside your RestDoc tests and use
      * parameters for data, so documentation is using these parameters - see
      * references for examples.
      * 
@@ -31,7 +31,11 @@ public class TestURLBuilder {
 
         PROFILE_ID("profileId"),
 
-        UUID_PARAMETER("uuid"),;
+        UUID_PARAMETER("uuid"),
+        
+        PROJECT_ACCESS_LEVEL("projectAccessLevel"),
+        
+        ;
 
         private String restDocName;
         private String urlPart;
@@ -159,6 +163,14 @@ public class TestURLBuilder {
         public String buildIntegrationTestCheckStoragePath(UUID jobUUID) {
             return buildUrl(API_PDS_INTEGRATIONTEST, "storage",jobUUID,"path");
         }
+        
+        public String buildAdminFetchesJobOutputStreamUrl(UUID jobUUID) {
+            return buildUrl(API_ADMIN_JOB, jobUUID, "stream","output");
+        }
+        
+        public String buildAdminFetchesJobErrorStreamUrl(UUID jobUUID) {
+            return buildUrl(API_ADMIN_JOB, jobUUID, "stream","error");
+        }
     }
 
     public ProductDelegationServerUrlsBuilder pds() {
@@ -196,6 +208,10 @@ public class TestURLBuilder {
     }
 
     public String buildGetJobReportUrl(String projectId, UUID jobUUID) {
+        return buildGetJobReportUrl(projectId, jobUUID.toString());
+    }
+    
+    public String buildGetJobReportUrl(String projectId, String jobUUID) {
         return buildUrl(API_PROJECT, projectId, "report", jobUUID);
     }
 
@@ -303,45 +319,6 @@ public class TestURLBuilder {
         return buildUrl(API_ADMIN, "projects");
     }
 
-    public String buildAdminShowsProjectDetailsUrl(String projectId) {
-        return buildUrl(API_ADMIN_PROJECT, projectId);
-    }
-    
-    public String buildAdminChangesProjectDescriptionUrl(String projectId) {
-        return buildUrl(API_ADMIN_PROJECT, projectId);
-    }
-
-    public String buildAdminAssignsOwnerToProjectUrl(String projectId, String userId) {
-        return buildUrl(API_ADMIN_PROJECT, projectId, "owner", userId);
-    }
-    
-    public String buildAdminAssignsUserToProjectUrl(String projectId, String userId) {
-        return buildUrl(API_ADMIN_PROJECT, projectId, "membership", userId);
-    }
-
-    public String buildAdminUnassignsUserFromProjectUrl(String projectId, String userId) {
-        return buildUrl(API_ADMIN_PROJECT, projectId, "membership", userId);
-    }
-
-    public String buildAdminFetchProjectInfoUrl(String projectId) {
-        return buildUrl(API_ADMIN_PROJECT, projectId);
-    }
-
-    public String buildUpdateProjectWhiteListUrl(String projectId) {
-        return buildUrl(API_ADMIN_PROJECT, projectId, "whitelist");
-    }
-    
-    public String buildUpdateProjectMetaData(String projectId) {
-        return buildUrl(API_ADMIN_PROJECT, projectId, "metadata");
-    }
-
-    public String buildAdminDeletesProject(String projectId) {
-        return buildUrl(API_ADMIN_PROJECT, projectId);
-    }
-
-    public String buildAdminFetchesScanLogsForProject(String projectId) {
-        return buildUrl(API_ADMIN_PROJECT, projectId, "scan", "logs");
-    }
 
     /* +-----------------------------------------------------------------------+ */
     /* +............................ project ..................................+ */
@@ -356,6 +333,53 @@ public class TestURLBuilder {
     }
 
     /* +-----------------------------------------------------------------------+ */
+    /* +............................ admin/projects ...........................+ */
+    /* +-----------------------------------------------------------------------+ */
+    public String buildAdminShowsProjectDetailsUrl(String projectId) {
+        return buildUrl(API_ADMIN_PROJECT, projectId);
+    }
+    
+    public String buildAdminChangesProjectDescriptionUrl(String projectId) {
+        return buildUrl(API_ADMIN_PROJECT, projectId);
+    }
+    
+    public String buildAdminChangesProjectOwnerUrl(String projectId, String userId) {
+        return buildUrl(API_ADMIN_PROJECT, projectId, "owner", userId);
+    }
+    
+    public String buildAdminAssignsUserToProjectUrl(String projectId, String userId) {
+        return buildUrl(API_ADMIN_PROJECT, projectId, "membership", userId);
+    }
+    
+    public String buildAdminUnassignsUserFromProjectUrl(String projectId, String userId) {
+        return buildUrl(API_ADMIN_PROJECT, projectId, "membership", userId);
+    }
+    
+    public String buildAdminFetchProjectInfoUrl(String projectId) {
+        return buildUrl(API_ADMIN_PROJECT, projectId);
+    }
+    
+    public String buildUpdateProjectWhiteListUrl(String projectId) {
+        return buildUrl(API_ADMIN_PROJECT, projectId, "whitelist");
+    }
+    
+    public String buildUpdateProjectMetaData(String projectId) {
+        return buildUrl(API_ADMIN_PROJECT, projectId, "metadata");
+    }
+    
+    public String buildAdminDeletesProject(String projectId) {
+        return buildUrl(API_ADMIN_PROJECT, projectId);
+    }
+    
+    public String buildAdminFetchesScanLogsForProject(String projectId) {
+        return buildUrl(API_ADMIN_PROJECT, projectId, "scan", "logs");
+    }
+    
+    public String buildAdminChangesProjectAccessLevelUrl(String projectId, String projectAccessLevel) {
+        return buildUrl(API_ADMIN_PROJECT, projectId, "accesslevel", projectAccessLevel);
+    }
+    
+    /* +-----------------------------------------------------------------------+ */
     /* +............................ admin/jobs ...............................+ */
     /* +-----------------------------------------------------------------------+ */
     public String buildAdminFetchAllRunningJobsUrl() {
@@ -363,18 +387,34 @@ public class TestURLBuilder {
     }
 
     public String buildAdminDownloadsZipFileContainingFullScanDataFor(UUID sechubJobUUID) {
+        return buildAdminDownloadsZipFileContainingFullScanDataFor(sechubJobUUID.toString());
+    }
+    
+    public String buildAdminDownloadsZipFileContainingFullScanDataFor(String sechubJobUUID) {
         return buildUrl(API_ADMIN_SCAN, "download", sechubJobUUID);
     }
 
     public String buildAdminCancelsJob(UUID jobUUID) {
+        return buildAdminCancelsJob(jobUUID.toString());
+    }
+    
+    public String buildAdminCancelsJob(String jobUUID) {
         return buildUrl(API_ADMIN_JOBS, "cancel", jobUUID);
     }
 
     public String buildAdminRestartsJob(UUID jobUUID) {
+        return buildAdminRestartsJob(jobUUID.toString());
+    }
+    
+    public String buildAdminRestartsJob(String jobUUID) {
         return buildUrl(API_ADMIN_JOBS, "restart", jobUUID);
     }
 
     public String buildAdminRestartsJobHard(UUID jobUUID) {
+        return buildAdminRestartsJobHard(jobUUID.toString());
+    }
+    
+    public String buildAdminRestartsJobHard(String jobUUID) {
         return buildUrl(API_ADMIN_JOBS, "restart-hard", jobUUID);
     }
 
@@ -656,5 +696,7 @@ public class TestURLBuilder {
     public String buildBaseURL() {
         return buildUrl("");
     }
+
+   
 
 }

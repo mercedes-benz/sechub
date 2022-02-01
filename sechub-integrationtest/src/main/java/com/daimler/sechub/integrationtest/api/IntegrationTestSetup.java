@@ -45,13 +45,15 @@ public class IntegrationTestSetup implements TestRule {
     private static String isPDSAliveURL;
 
     private static final int MAX_SECONDS_TO_WAIT_FOR_INTEGRATION_SERVER = 15;
+    private static final int MAX_SECONDS_TO_WAIT_FOR_SUPER_ADMIN_AVAILABLE = 10;
 
     private static final Logger LOG = LoggerFactory.getLogger(IntegrationTestSetup.class);
 
-    private static Boolean testServerStatusCache = null;
+    private static Boolean testServerStatusCache;
     private static Boolean testPDSStatusCache;
-    
-    private static final Map<Class<? extends TestScenario>,TestScenario> scenarioClassToInstanceMap = new LinkedHashMap<>();
+    private static Boolean testInternalAdminAvailableCache;
+
+    private static final Map<Class<? extends TestScenario>, TestScenario> scenarioClassToInstanceMap = new LinkedHashMap<>();
 
     /**
      * The next lines are absolute necessary stuff - why? Unfortunately apache http
@@ -92,6 +94,7 @@ public class IntegrationTestSetup implements TestRule {
     public TestScenario getScenario() {
         return scenario;
     }
+
     /**
      * Marks this test setup as a long running variant. Means you have to define
      * additional SECHUB_INTEGRATIONTEST_LONG_RUNNING system property as true, to
@@ -114,7 +117,7 @@ public class IntegrationTestSetup implements TestRule {
             }
         });
         return new IntegrationTestSetup(scenario);
-        
+
     }
 
     @Override
@@ -150,15 +153,17 @@ public class IntegrationTestSetup implements TestRule {
                     Assume.assumeTrue(message, false);
                 }
             } else {
-                integrationTestEnabled = LocalDeveloperFileSetupSupport.INSTANCE.isAlwaysSecHubIntegrationTestRunning() || Boolean.getBoolean(SECHUB_INTEGRATIONTEST_RUNNING);
+                integrationTestEnabled = LocalDeveloperFileSetupSupport.INSTANCE.isAlwaysSecHubIntegrationTestRunning()
+                        || Boolean.getBoolean(SECHUB_INTEGRATIONTEST_RUNNING);
                 if (!integrationTestEnabled) {
                     String message = "Skipped test scenario '" + scenario.getName() + "'\nReason: not in integration test mode.\nDefine -D"
                             + SECHUB_INTEGRATIONTEST_RUNNING + "=true to enable integration tests!";
                     Assume.assumeTrue(message, false);
                 }
-            } 
+            }
             assertNecessaryTestServersRunning();
-           
+            assertTestAPIInternalSuperAdminAvailable();
+
             /* prepare */
             String testClass = description.getClassName();
             String testMethod = description.getMethodName();
@@ -170,25 +175,25 @@ public class IntegrationTestSetup implements TestRule {
                 String scenarioName = scenario.getName();
                 LOG.info("############################################################################################################");
                 LOG.info("###");
-                LOG.info("### [START] Preparing scenario: '" + scenarioName+"'");
+                LOG.info("### [START] Preparing scenario: '" + scenarioName + "'");
                 LOG.info("###");
                 LOG.info("############################################################################################################");
-                LOG.info("###   Class ="+testClass);
-                LOG.info("###   Method="+testMethod);
+                LOG.info("###   Class =" + testClass);
+                LOG.info("###   Method=" + testMethod);
                 LOG.info("############################################################################################################");
-                
+
                 scenario.prepare(testClass, testMethod);
-                
+
                 LOG.info("############################################################################################################");
                 LOG.info("###");
-                LOG.info("### [DONE ]  Preparing scenario: '" + scenarioName+"'");
+                LOG.info("### [DONE ]  Preparing scenario: '" + scenarioName + "'");
                 LOG.info("### [START]  Test itself");
                 LOG.info("###");
                 LOG.info("############################################################################################################");
-                LOG.info("###   Class ="+testClass);
-                LOG.info("###   Method="+testMethod);
+                LOG.info("###   Class =" + testClass);
+                LOG.info("###   Method=" + testMethod);
                 LOG.info("############################################################################################################");
-                
+
                 String info = "\n\n\n" + "  Start of integration test\n\n" + "  - Test class:" + testClass + "\n" + "  - Method:" + testMethod + "\n\n" + "\n";
                 logInfo(info);
 
@@ -264,6 +269,15 @@ public class IntegrationTestSetup implements TestRule {
 
     }
 
+    private static void assertTestAPIInternalSuperAdminAvailable() { // NOSONAR - being static this is outside IntegrationTestStatement
+        if (testInternalAdminAvailableCache == null) {
+            testInternalAdminAvailableCache = testAPIableToListSignupsByInternalUsedSuperAdmin();
+        }
+        if (!Boolean.TRUE.equals(testInternalAdminAvailableCache)) {
+            throw new IntegrationTestAdminNotAvailableException(createTimeInfo("The integration test admin is not available. Cannot execute test."));
+        }
+    }
+
     private static void assertTestServerRunning() { // NOSONAR - being static this is outside IntegrationTestStatement
         String url = isServerAliveURL;
         if (testServerStatusCache == null) {
@@ -285,7 +299,7 @@ public class IntegrationTestSetup implements TestRule {
         if (pdsServerScenario) {
             assertTestPDSRunning();
         }
-        
+
     }
 
     private static void assertTestPDSRunning() { // NOSONAR - being static this is outside IntegrationTestStatement
@@ -304,6 +318,16 @@ public class IntegrationTestSetup implements TestRule {
         private static final long serialVersionUID = 1030904546816108076L;
 
         public IntegrationTestServerNotFoundException(String message) {
+            super(message);
+        }
+
+    }
+
+    public static class IntegrationTestAdminNotAvailableException extends IllegalStateException {
+
+        private static final long serialVersionUID = 1030904546816108076L;
+
+        public IntegrationTestAdminNotAvailableException(String message) {
             super(message);
         }
 
@@ -341,6 +365,29 @@ public class IntegrationTestSetup implements TestRule {
             }
         }
         LOG.warn("Was not able to get access to integrationtest server");
+        return Boolean.FALSE;
+    }
+
+    /*
+     * Waits for internal super admin can access signups - means internal user
+     * exists has super admin rights and access.
+     */
+    private static Boolean testAPIableToListSignupsByInternalUsedSuperAdmin() {
+        for (int i = 0; i < MAX_SECONDS_TO_WAIT_FOR_SUPER_ADMIN_AVAILABLE; i++) {
+            try {
+                TestAPI.listSignups();
+                LOG.debug("TestAPI is able to list signups - super admin is available");
+                return Boolean.TRUE;
+            } catch (Exception e) {
+                try {
+                    /* NOSONAR */Thread.sleep(1000);
+                } catch (InterruptedException e1) {
+                    Thread.currentThread().interrupt();
+                    return Boolean.FALSE;
+                }
+            }
+        }
+        LOG.warn("TestAPI is NOT able to list signups - so super admin is NOT available or has not correct permissions!");
         return Boolean.FALSE;
     }
 

@@ -23,12 +23,25 @@ buildscript{
 	}
 }
 plugins {
-    id 'org.asciidoctor.jvm.convert' version '3.1.0'
-    id 'org.asciidoctor.jvm.pdf' version '3.1.0'
-    id 'org.openapi.generator' version '4.2.3'
-    id 'org.springframework.boot' version '2.5.2' apply false
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
+    id 'org.asciidoctor.jvm.pdf' version '3.3.2'
+    id 'org.openapi.generator' version '5.2.0'
+    id 'org.springframework.boot' version '2.6.2' apply false
+}
+/* check buildsystem */
+def githubActor = System.getenv('GITHUB_ACTOR')
+
+def atGitHubActions = false
+
+if (githubActor == null || githubActor.isEmpty()){
+    /* not inside github actions */
+    atGitHubActions = false
+}else{
+    atGitHubActions = true
 }
 
+/* define global `buildDoneByGitHubActions` - so sub projects can reuse this information*/
+ext.buildDoneByGitHubActions=atGitHubActions
 ext.springBootMavenBomCoordinates = org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
 
 ext {

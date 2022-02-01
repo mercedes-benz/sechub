@@ -124,14 +124,6 @@ public class TestFileSupport {
             }
             
         }
-//        try {
-//            if (! file.createNewFile()) {
-//                throw new IllegalStateException("Was not able to create file:"+file);
-//            }
-//        } catch (IOException e1) {
-//            // TODO Auto-generated catch block
-//            e1.printStackTrace();
-//        }
         try (FileWriter fileWriter = new FileWriter(file)) {
             fileWriter.write(text);
         } catch (IOException e) {

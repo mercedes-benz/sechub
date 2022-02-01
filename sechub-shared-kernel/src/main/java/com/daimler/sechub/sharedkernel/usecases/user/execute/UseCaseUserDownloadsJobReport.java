@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseGroup;
 @UseCaseDefinition(
 		id=UC_USER_GET_JOB_REPORT,
 		group=UseCaseGroup.SECHUB_EXECUTION,
+		apiName="userDownloadsJobReport",
 		title="User downloads sechub job report", 
 		description="user/download_sechub_job_report_description.adoc")
 public @interface UseCaseUserDownloadsJobReport {

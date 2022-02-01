@@ -1,0 +1,17 @@
+// SPDX-License-Identifier: MIT
+ /*============================================================================
+ * Build file for subproject 
+ *
+ * Root build file: "${rootProject.projectDir}/build.gradle"
+ * ============================================================================
+ */
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+   implementation project(':sechub-commons-model')
+   
+   testImplementation library.junit5_impl
+   testRuntimeOnly library.junit5_runtime
+}

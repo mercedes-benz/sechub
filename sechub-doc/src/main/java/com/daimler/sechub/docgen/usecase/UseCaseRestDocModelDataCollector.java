@@ -20,7 +20,7 @@ import org.springframework.util.FileSystemUtils;
 
 import com.daimler.sechub.docgen.reflections.Reflections;
 import com.daimler.sechub.docgen.usecase.UseCaseModel.UseCaseEntry;
-import com.daimler.sechub.docgen.util.RestDocPathFactory;
+import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 
 /**
@@ -110,12 +110,12 @@ public class UseCaseRestDocModelDataCollector {
 			/* create and prepare rest doc entry */
 			UseCaseRestDocEntry restDocEntry = new UseCaseRestDocEntry();
 			restDocEntry.variantOriginValue = restDoc.variant();
-			restDocEntry.variantId = RestDocPathFactory.createVariantId(restDocEntry.variantOriginValue);
+			restDocEntry.variantId = RestDocFactory.createVariantId(restDocEntry.variantOriginValue);
 			
 			restDocEntry.usecaseEntry = useCaseEntry;
-			String path = RestDocPathFactory.createPath(useCaseClass, restDocEntry.variantId);
+			String path = RestDocFactory.createPath(useCaseClass, restDocEntry.variantId);
 			
-			restDocEntry.identifier=RestDocPathFactory.createIdentifier(useCaseClass);
+			restDocEntry.identifier=RestDocFactory.createIdentifier(useCaseClass);
 			restDocEntry.path = path;
 			
 			File projectRestDocGenFolder = scanForSpringRestDocGenFolder(restDocEntry);
@@ -131,19 +131,18 @@ public class UseCaseRestDocModelDataCollector {
 		return model;
 	}
 	
-	private File copyToDocumentationProject(File projectRestDocGenFolder, String id) {
-		File targetFolder = new File(sechHubDoc, "src/docs/asciidoc/"+DOCUMENTS_GEN + id);
-		try {
-			if (targetFolder.exists() && !FileSystemUtils.deleteRecursively(targetFolder)) {
-					throw new IOException("target folder exists but not deletable!");
-			}
-			FileSystemUtils.copyRecursively(projectRestDocGenFolder, targetFolder);
-			return targetFolder;
-		} catch (IOException e) {
-			throw new IllegalStateException(
-					"copy restdoc parts not possible from:\n" + projectRestDocGenFolder + "\nto\n" + targetFolder, e);
-		}
-	}
+    private File copyToDocumentationProject(File projectRestDocGenFolder, String id) {
+        File targetFolder = new File(sechHubDoc, "src/docs/asciidoc/" + DOCUMENTS_GEN + id);
+        try {
+            if (targetFolder.exists() && !FileSystemUtils.deleteRecursively(targetFolder)) {
+                throw new IOException("target folder exists but not deletable!");
+            }
+            FileSystemUtils.copyRecursively(projectRestDocGenFolder, targetFolder);
+            return targetFolder;
+        } catch (IOException e) {
+            throw new IllegalStateException("copy restdoc parts not possible from:\n" + projectRestDocGenFolder + "\nto\n" + targetFolder, e);
+        }
+    }
 
 	private File scanForSpringRestDocGenFolder(UseCaseRestDocEntry entry) {
 		File lastTry=null;

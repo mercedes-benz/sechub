@@ -137,6 +137,8 @@ public enum UseCaseIdentifier {
     UC_ADMIN_CHANGES_PROJECT_OWNER(60),
     
     UC_ADMIN_CHANGES_PROJECT_DESCRIPTION(61),
+    
+    UC_ADMIN_CHANGES_PROJECT_ACCESS_LEVEL(62),
     ;
 
     /* +-----------------------------------------------------------------------+ */

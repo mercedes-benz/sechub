@@ -5,6 +5,8 @@ spring.profiles.include:
 - mocked_notifications
 - admin_access
 
+server:
+  address: 127.0.0.1
 
 sechub:
   config:
@@ -35,6 +37,9 @@ sechub:
       sanitycheck:
         enabled: true
     checkmarx:
+      scanresultcheck:
+        period:
+           minutes: 1 # will be ignored inside tests (because mocked adapter does not use it) but we have at least no warning log entries
       engineconfiguration:
         name: int-test-checkmarx-engine-name
         

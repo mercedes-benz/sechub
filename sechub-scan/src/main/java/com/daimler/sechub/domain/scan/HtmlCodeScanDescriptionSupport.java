@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan;
 
+import static java.util.Objects.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import com.daimler.sechub.commons.model.SecHubCodeCallStack;
 import com.daimler.sechub.commons.model.SecHubFinding;
@@ -32,23 +33,25 @@ public class HtmlCodeScanDescriptionSupport {
             return Collections.emptyList();
         }
 
+        int callNumber = 1;
         List<HTMLScanResultCodeScanEntry> descriptionList = new ArrayList<>();
-        descriptionList.add(createEntry(code));
+        descriptionList.add(createEntry(callNumber++, code));
 
         SecHubCodeCallStack lastCode = code;
         while (lastCode.getCalls() != null) {
             lastCode = lastCode.getCalls();
-            descriptionList.add(createEntry(lastCode));
+            descriptionList.add(createEntry(callNumber++, lastCode));
         }
 
         return descriptionList;
     }
 
-    private HTMLScanResultCodeScanEntry createEntry(SecHubCodeCallStack code) {
-        Objects.nonNull(code);
+    private HTMLScanResultCodeScanEntry createEntry(int callNumber, SecHubCodeCallStack code) {
+        requireNonNull(code, "Code call stack may not be null!");
 
         HTMLScanResultCodeScanEntry entry = new HTMLScanResultCodeScanEntry();
 
+        entry.callNumber = callNumber;
         entry.column = code.getColumn();
         entry.line = code.getLine();
         entry.location = code.getLocation();

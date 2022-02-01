@@ -22,6 +22,10 @@ public enum PDSUseCaseIdentifier {
     UC_ADMIN_FETCHES_JOB_RESULT_OR_FAILURE_TEXT,
     
     UC_ADMIN_FETCHES_SERVER_CONFIGURATION,
+    
+    UC_ADMIN_FETCHES_OUTPUT_STREAM,
+    
+    UC_ADMIN_FETCHES_ERROR_STREAM,
     ;
     
     /* +---------------------------------------------------------------------+ */

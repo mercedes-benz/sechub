@@ -5,7 +5,7 @@ import org.springframework.http.client.ClientHttpRequestInterceptor;
 
 import com.daimler.sechub.adapter.AbstractSpringRestAdapterContext;
 import com.daimler.sechub.adapter.AdapterRuntimeContext;
-import com.daimler.sechub.adapter.checkmarx.support.CheckmarxOAuthSupport.CheckmarxOAuthData;
+import com.daimler.sechub.adapter.checkmarx.support.CheckmarxOAuthData;
 import com.daimler.sechub.adapter.checkmarx.support.QueueDetails;
 import com.daimler.sechub.adapter.checkmarx.support.ReportDetails;
 import com.daimler.sechub.adapter.checkmarx.support.ScanDetails;
@@ -17,7 +17,7 @@ import com.daimler.sechub.adapter.checkmarx.support.ScanDetails;
  *
  */
 public class CheckmarxContext extends AbstractSpringRestAdapterContext<CheckmarxAdapterConfig, CheckmarxAdapter> implements CheckmarxAdapterContext {
-
+    
     private CheckmarxOAuthData oAuthData;
     private CheckmarxSessionData sessionData;
     private QueueDetails queueDetails;
@@ -33,6 +33,10 @@ public class CheckmarxContext extends AbstractSpringRestAdapterContext<Checkmarx
         reportDetails = new ReportDetails();
     }
 
+    public CheckmarxOAuthData getoAuthData() {
+        return oAuthData;
+    }
+    
     public CheckmarxAdapter getCheckmarxAdapter() {
         return super.getAdapter();
     }
@@ -102,7 +106,7 @@ public class CheckmarxContext extends AbstractSpringRestAdapterContext<Checkmarx
         }
         return oAuthData.getTokenType() + " " + oAuthData.getAccessToken();
     }
-
+    
     public ScanDetails getScanDetails() {
         return scanDetails;
     }

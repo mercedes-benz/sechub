@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorListsAllAdmins;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorListsAllUsers;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminListsAllAdmins;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminListsAllUsers;
 
 @Service
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
@@ -23,14 +23,14 @@ public class UserListService {
 	UserRepository userRepository;
 
 	/* @formatter:off */
-	@UseCaseAdministratorListsAllUsers(@Step(number=2,name="Service call",description="All userids of sechub users are returned as json"))
+	@UseCaseAdminListsAllUsers(@Step(number=2,name="Service call",description="All userids of sechub users are returned as json"))
 	public List<String> listUsers() {
 		/* @formatter:on */
 		return userRepository.findAll().stream().map(User::getName).collect(Collectors.toList());
 	}
 
 	/* @formatter:off */
-	@UseCaseAdministratorListsAllAdmins(@Step(number=2,name="Service call",description="All userids of sechub administrators are returned as json"))
+	@UseCaseAdminListsAllAdmins(@Step(number=2,name="Service call",description="All userids of sechub administrators are returned as json"))
 	public List<String> listAdministrators() {
 		/* @formatter:on */
 		User userExample = new User();

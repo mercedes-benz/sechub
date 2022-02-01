@@ -17,7 +17,7 @@ import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MappingMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUpdatesMappingConfiguration;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdmiUpdatesMappingConfiguration;
 import com.daimler.sechub.sharedkernel.validation.MappingDataValidation;
 import com.daimler.sechub.sharedkernel.validation.MappingIdValidation;
 
@@ -39,7 +39,7 @@ public class UpdateMappingService {
     @Autowired
     DomainMessageService eventBus;
 
-    @UseCaseAdministratorUpdatesMappingConfiguration(@Step(number = 2, name = "Service call", description = "Services updates data in database and sends event"))
+    @UseCaseAdmiUpdatesMappingConfiguration(@Step(number = 2, name = "Service call", description = "Services updates data in database and sends event"))
     public void updateMapping(String mappingId, MappingData mappingData) {
         assertValid(mappingIdValidation.validate(mappingId), "Mapping ID invalid");
         assertValid(mappingDataValidation.validate(mappingData), "Mapping Data invalid");

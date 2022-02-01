@@ -15,52 +15,58 @@ import com.daimler.sechub.adapter.AbstractWebScanAdapterConfigBuilder;
 import com.daimler.sechub.adapter.LoginConfig;
 import com.daimler.sechub.adapter.LoginScriptAction;
 import com.daimler.sechub.adapter.LoginScriptPage;
-import com.daimler.sechub.adapter.SecHubTimeUnit;
 import com.daimler.sechub.adapter.SecHubTimeUnitData;
+import com.daimler.sechub.commons.model.SecHubTimeUnit;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 
 public class WebConfigBuilderStrategyTest {
 
-	private static final SecHubConfiguration SECHUB_CONFIG = new SecHubConfiguration();
+    private static final SecHubConfiguration SECHUB_CONFIG = new SecHubConfiguration();
 
-	@Test
-	public void basic_login_data_transfered() throws Exception{
-		/* prepare */
-		WebConfigBuilderStrategy strategyToTest = createStrategy("sechub_config/webscan_login_basic.json");
-		TestAbstractWebScanAdapterConfigBuilder configBuilder = new TestAbstractWebScanAdapterConfigBuilder();
+    @Test
+    public void basic_login_data_transfered() throws Exception {
+        /* prepare */
+        WebConfigBuilderStrategy strategyToTest = createStrategy("sechub_config/webscan_login_basic.json");
+        TestAbstractWebScanAdapterConfigBuilder configBuilder = new TestAbstractWebScanAdapterConfigBuilder();
 
-		/* execute */
-		strategyToTest.configure(configBuilder);
+        /* execute */
+        strategyToTest.configure(configBuilder);
 
-		/* test */
-		TestWebScanAdapterConfig result = configBuilder.build();
-		LoginConfig loginConfig = result.getLoginConfig();
-		assertTrue(loginConfig.isBasic());
-		assertEquals("user0", loginConfig.asBasic().getUser());
-		assertEquals("pwd0", loginConfig.asBasic().getPassword());
-		assertEquals("realm0", loginConfig.asBasic().getRealm());
-		assertEquals(new URL("https://productfailure.demo.example.org/login"), loginConfig.asBasic().getLoginURL());
+        /* test */
+        TestWebScanAdapterConfig result = configBuilder.build();
+        LoginConfig loginConfig = result.getLoginConfig();
+        assertTrue(loginConfig.isBasic());
+        assertEquals("user0", loginConfig.asBasic().getUser());
+        assertEquals("pwd0", loginConfig.asBasic().getPassword());
+        assertEquals("realm0", loginConfig.asBasic().getRealm());
 
-	}
+        // we test external forms - reason: Depending on the JDK implementation URL
+        // equals compares also content so extreme slow. So we use external form
+        // to compare with each other - it is much faster.
+        String fetchedUrlExternalFrom = loginConfig.asBasic().getLoginURL().toExternalForm();
+        String expectedUrlExternalForm = new URL("https://productfailure.demo.example.org/login").toExternalForm();
+        assertEquals(expectedUrlExternalForm, fetchedUrlExternalFrom);
 
-	@Test
-	public void form_autodetect_login_data_transfered() {
-		/* prepare */
-		WebConfigBuilderStrategy strategyToTest = createStrategy("sechub_config/webscan_login_form_autodetect.json");
-		TestAbstractWebScanAdapterConfigBuilder configBuilder = new TestAbstractWebScanAdapterConfigBuilder();
+    }
 
-		/* execute */
-		strategyToTest.configure(configBuilder);
+    @Test
+    public void form_autodetect_login_data_transfered() {
+        /* prepare */
+        WebConfigBuilderStrategy strategyToTest = createStrategy("sechub_config/webscan_login_form_autodetect.json");
+        TestAbstractWebScanAdapterConfigBuilder configBuilder = new TestAbstractWebScanAdapterConfigBuilder();
 
-		/* test */
-		TestWebScanAdapterConfig result = configBuilder.build();
-		LoginConfig loginConfig = result.getLoginConfig();
-		assertTrue(loginConfig.isFormAutoDetect());
-		assertEquals("user1", loginConfig.asFormAutoDetect().getUser());
-		assertEquals("pwd1", loginConfig.asFormAutoDetect().getPassword());
-	}
-	
+        /* execute */
+        strategyToTest.configure(configBuilder);
+
+        /* test */
+        TestWebScanAdapterConfig result = configBuilder.build();
+        LoginConfig loginConfig = result.getLoginConfig();
+        assertTrue(loginConfig.isFormAutoDetect());
+        assertEquals("user1", loginConfig.asFormAutoDetect().getUser());
+        assertEquals("pwd1", loginConfig.asFormAutoDetect().getPassword());
+    }
+
     @Test
     public void form_autodetect_with_max_scan_duration() {
         /* prepare */
@@ -79,7 +85,7 @@ public class WebConfigBuilderStrategyTest {
         assertEquals("user1", loginConfig.asFormAutoDetect().getUser());
         assertEquals("pwd1", loginConfig.asFormAutoDetect().getPassword());
     }
-	
+
     @Test
     public void webscan_max_scan_duration() {
         /* prepare */
@@ -97,34 +103,34 @@ public class WebConfigBuilderStrategyTest {
         assertEquals(expectedMaxScanDuration, maxScanDuration);
     }
 
-	@Test
-	public void form_script_login_data_transfered() {
-		/* prepare */
-		WebConfigBuilderStrategy strategyToTest = createStrategy("sechub_config/webscan_login_form_script.json");
-		TestAbstractWebScanAdapterConfigBuilder configBuilder = new TestAbstractWebScanAdapterConfigBuilder();
+    @Test
+    public void form_script_login_data_transfered() {
+        /* prepare */
+        WebConfigBuilderStrategy strategyToTest = createStrategy("sechub_config/webscan_login_form_script.json");
+        TestAbstractWebScanAdapterConfigBuilder configBuilder = new TestAbstractWebScanAdapterConfigBuilder();
 
-		/* execute */
-		strategyToTest.configure(configBuilder);
+        /* execute */
+        strategyToTest.configure(configBuilder);
 
-		/* test */
-		TestWebScanAdapterConfig result = configBuilder.build();
-		LoginConfig loginConfig = result.getLoginConfig();
-		assertTrue(loginConfig.isFormScript());
-		
-		List<LoginScriptPage> pages = loginConfig.asFormScript().getPages();
-		assertEquals(2, pages.size());
-		
-		/* page 1 */
-		List<LoginScriptAction> actions = loginConfig.asFormScript().getPages().get(0).getActions();
-		assertEquals(2, actions.size());
-		Iterator<LoginScriptAction> iterator = actions.iterator();
+        /* test */
+        TestWebScanAdapterConfig result = configBuilder.build();
+        LoginConfig loginConfig = result.getLoginConfig();
+        assertTrue(loginConfig.isFormScript());
 
-		LoginScriptAction action = iterator.next();
-		assertEquals("username", action.getActionType().toString());
-		assertEquals("#example_login_userid", action.getSelector());
-		assertEquals("user2", action.getValue());
+        List<LoginScriptPage> pages = loginConfig.asFormScript().getPages();
+        assertEquals(2, pages.size());
 
-		action = iterator.next();
+        /* page 1 */
+        List<LoginScriptAction> actions = loginConfig.asFormScript().getPages().get(0).getActions();
+        assertEquals(2, actions.size());
+        Iterator<LoginScriptAction> iterator = actions.iterator();
+
+        LoginScriptAction action = iterator.next();
+        assertEquals("username", action.getActionType().toString());
+        assertEquals("#example_login_userid", action.getSelector());
+        assertEquals("user2", action.getValue());
+
+        action = iterator.next();
         assertEquals("click", action.getActionType().toString());
         assertEquals("#next_button", action.getSelector());
         assertEquals(null, action.getValue());
@@ -133,7 +139,7 @@ public class WebConfigBuilderStrategyTest {
         List<LoginScriptAction> actions2 = loginConfig.asFormScript().getPages().get(1).getActions();
         assertEquals(3, actions2.size());
         Iterator<LoginScriptAction> iterator2 = actions2.iterator();
-        
+
         action = iterator2.next();
         assertEquals("wait", action.getActionType().toString());
         assertEquals("2456", action.getValue());
@@ -148,41 +154,41 @@ public class WebConfigBuilderStrategyTest {
         assertEquals("click", action.getActionType().toString());
         assertEquals("#example_login_login_button", action.getSelector());
         assertEquals(null, action.getValue());
-	}
+    }
 
-	private WebConfigBuilderStrategy createStrategy(String path) {
-		return new WebConfigBuilderStrategy(createContext(path));
-	}
+    private WebConfigBuilderStrategy createStrategy(String path) {
+        return new WebConfigBuilderStrategy(createContext(path));
+    }
 
-	private SecHubExecutionContext createContext(String pathToTestConfig) {
-		String json = ScanDomainTestFileSupport.getTestfileSupport().loadTestFile(pathToTestConfig);
-		SecHubConfiguration configuration = SECHUB_CONFIG.fromJSON(json);
+    private SecHubExecutionContext createContext(String pathToTestConfig) {
+        String json = ScanDomainTestFileSupport.getTestfileSupport().loadTestFile(pathToTestConfig);
+        SecHubConfiguration configuration = SECHUB_CONFIG.fromJSON(json);
 
-		return new SecHubExecutionContext(UUID.randomUUID(), configuration, "test");
+        return new SecHubExecutionContext(UUID.randomUUID(), configuration, "test");
 
-	}
+    }
 
-	private class TestAbstractWebScanAdapterConfigBuilder
-			extends AbstractWebScanAdapterConfigBuilder<TestAbstractWebScanAdapterConfigBuilder, TestWebScanAdapterConfig> {
+    private class TestAbstractWebScanAdapterConfigBuilder
+            extends AbstractWebScanAdapterConfigBuilder<TestAbstractWebScanAdapterConfigBuilder, TestWebScanAdapterConfig> {
 
-		@Override
-		protected void customBuild(TestWebScanAdapterConfig config) {
+        @Override
+        protected void customBuild(TestWebScanAdapterConfig config) {
 
-		}
+        }
 
-		@Override
-		protected TestWebScanAdapterConfig buildInitialConfig() {
-			return new TestWebScanAdapterConfig();
-		}
+        @Override
+        protected TestWebScanAdapterConfig buildInitialConfig() {
+            return new TestWebScanAdapterConfig();
+        }
 
-		@Override
-		protected void customValidate() {
+        @Override
+        protected void customValidate() {
 
-		}
+        }
 
-	}
+    }
 
-	private class TestWebScanAdapterConfig extends AbstractWebScanAdapterConfig {
+    private class TestWebScanAdapterConfig extends AbstractWebScanAdapterConfig {
 
-	}
+    }
 }

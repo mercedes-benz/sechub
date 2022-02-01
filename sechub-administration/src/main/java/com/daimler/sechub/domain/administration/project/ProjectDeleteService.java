@@ -22,83 +22,86 @@ import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
-import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorDeleteProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminDeleteProject;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
+
 @Service
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 public class ProjectDeleteService {
 
-	@Autowired
-	DomainMessageService eventBusService;
+    @Autowired
+    DomainMessageService eventBusService;
 
-	@Autowired
-	ProjectRepository projectRepository;
+    @Autowired
+    ProjectRepository projectRepository;
 
-	@Autowired
-	UserContextService userContext;
+    @Autowired
+    UserContextService userContext;
 
-	@Autowired
-	LogSanitizer logSanitizer;
+    @Autowired
+    LogSanitizer logSanitizer;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Autowired
+    UserInputAssertion assertion;
 
-	@Autowired
-	SecHubEnvironment sechubEnvironment;
+    @Autowired
+    SecHubEnvironment sechubEnvironment;
 
-	@Autowired
-	AuditLogService auditLogService;
+    @Autowired
+    AuditLogService auditLogService;
 
-	@Autowired
-	ProjectTransactionService transactionService;
+    @Autowired
+    ProjectTransactionService transactionService;
 
-	private static final Logger LOG = LoggerFactory.getLogger(ProjectDeleteService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectDeleteService.class);
 
-	@UseCaseAdministratorDeleteProject(@Step(number = 2, name = "Service deletes projects.", next = { 3, 4,
-			5, 6, 7}, description = "The service will delete the project with dependencies and triggers asynchronous events"))
-	public void deleteProject(String projectId) {
-		auditLogService.log("triggers delete of project {}", logSanitizer.sanitize(projectId, 30));
+    @UseCaseAdminDeleteProject(@Step(number = 2, name = "Service deletes projects.", next = { 3, 4, 5, 6,
+            7 }, description = "The service will delete the project with dependencies and triggers asynchronous events"))
+    public void deleteProject(String projectId) {
+        auditLogService.log("triggers delete of project {}", logSanitizer.sanitize(projectId, 30));
 
-		assertion.isValidProjectId(projectId);
+        assertion.isValidProjectId(projectId);
 
-		Project project = projectRepository.findOrFailProject(projectId);
+        Project project = projectRepository.findOrFailProject(projectId);
 
-		/* create message containing data before project is deleted */
-		ProjectMessage message = new ProjectMessage();
-		message.setProjectId(project.getId());
-		message.setProjectActionTriggeredBy(userContext.getUserId());
+        /* create message containing data before project is deleted */
+        ProjectMessage message = new ProjectMessage();
+        message.setProjectId(project.getId());
+        message.setProjectActionTriggeredBy(userContext.getUserId());
 
-		User owner = project.getOwner();
-		if (owner == null) {
-			LOG.warn("No owner found for project {} while deleting", project.getId());
-		} else {
-			message.setProjectOwnerEmailAddress(owner.getEmailAdress());
-		}
+        User owner = project.getOwner();
+        if (owner == null) {
+            LOG.warn("No owner found for project {} while deleting", project.getId());
+        } else {
+            message.setProjectOwnerEmailAddress(owner.getEmailAdress());
+            owner.getOwnedProjects().remove(project); // handle ORM mapping. Avoid cache conflicts
+        }
 
-		for (User user : project.getUsers()) {
-			message.addUserEmailAddress(user.getEmailAdress());
-		}
+        for (User user : project.getUsers()) {
+            message.addUserEmailAddress(user.getEmailAdress());
+            user.getProjects().remove(project); // handle ORM mapping. Avoid cache conflicts
+        }
 
-		transactionService.deleteWithAssociationsInOwnTransaction(projectId);
+        transactionService.deleteWithAssociationsInOwnTransaction(projectId);
 
-		informProjectDeleted(message);
-		if (owner != null) {
-			sendRefreshUserAuth(owner);
-		}
+        informProjectDeleted(message);
+        if (owner != null) {
+            sendRefreshUserAuth(owner);
+        }
 
-	}
+    }
 
-	@IsSendingAsyncMessage(MessageID.PROJECT_DELETED)
-	private void informProjectDeleted(ProjectMessage message) {
-		DomainMessage infoRequest = new DomainMessage(MessageID.PROJECT_DELETED);
-		infoRequest.set(MessageDataKeys.PROJECT_DELETE_DATA, message);
-		infoRequest.set(MessageDataKeys.ENVIRONMENT_BASE_URL, sechubEnvironment.getServerBaseUrl());
+    @IsSendingAsyncMessage(MessageID.PROJECT_DELETED)
+    private void informProjectDeleted(ProjectMessage message) {
+        DomainMessage infoRequest = new DomainMessage(MessageID.PROJECT_DELETED);
+        infoRequest.set(MessageDataKeys.PROJECT_DELETE_DATA, message);
+        infoRequest.set(MessageDataKeys.ENVIRONMENT_BASE_URL, sechubEnvironment.getServerBaseUrl());
 
-		eventBusService.sendAsynchron(infoRequest);
-	}
+        eventBusService.sendAsynchron(infoRequest);
+    }
 
-	@IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)
-	private void sendRefreshUserAuth(User ownerUser) {
-		eventBusService.sendAsynchron(DomainMessageFactory.createRequestRoleCalculation(ownerUser.getName()));
-	}
+    @IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)
+    private void sendRefreshUserAuth(User ownerUser) {
+        eventBusService.sendAsynchron(DomainMessageFactory.createRequestRoleCalculation(ownerUser.getName()));
+    }
 }

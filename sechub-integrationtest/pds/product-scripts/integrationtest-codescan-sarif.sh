@@ -1,4 +1,5 @@
 #!/bin/bash 
+# SPDX-License-Identifier: MIT
 
 # "${pwd}/output/result.txt" is the default target for every PDS job!
 #

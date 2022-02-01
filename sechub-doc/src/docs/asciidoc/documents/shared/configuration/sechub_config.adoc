@@ -126,7 +126,7 @@ Providing login will enable web scanner to execute ALL possible
 actions!
 
 An example: Your test application has a Web UI for sending SMS which can
-be triggered by an user than the web scan will trigger those operations as well!
+be triggered by an user. Then a web scan can trigger those operations as well!
 
 If you do this inside an environment where a real SMS provider is connected,
 this could result into mass SMS and also in a bigger invoice from your

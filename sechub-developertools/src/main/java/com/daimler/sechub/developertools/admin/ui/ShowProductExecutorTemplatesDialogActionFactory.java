@@ -1,11 +1,15 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.developertools.admin.ui;
 
+import com.daimler.sechub.commons.pds.PDSConfigDataKeyProvider;
+import com.daimler.sechub.commons.pds.PDSKey;
+import com.daimler.sechub.commons.pds.PDSKeyProvider;
 import com.daimler.sechub.developertools.admin.ui.action.adapter.ShowProductExecutorTemplatesDialogAction;
 import com.daimler.sechub.developertools.admin.ui.action.adapter.TemplatesDialogData;
 import com.daimler.sechub.developertools.admin.ui.action.adapter.TemplatesDialogData.Necessarity;
 import com.daimler.sechub.developertools.admin.ui.action.adapter.TemplatesDialogData.Type;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
+import com.daimler.sechub.domain.scan.product.pds.SecHubProductExecutionPDSKeyProvider;
 import com.daimler.sechub.sharedkernel.mapping.MappingIdentifier;
 
 public class ShowProductExecutorTemplatesDialogActionFactory {
@@ -41,29 +45,34 @@ public class ShowProductExecutorTemplatesDialogActionFactory {
     }
 
     private static ShowProductExecutorTemplatesDialogAction createPDSV1Action(UIContext context, ProductIdentifier identifier, int version) {
-        TemplatesDialogData data = new TemplatesDialogData();
+        TemplatesDialogData templateDialogData = new TemplatesDialogData();
 
-        data.add("pds.config.productidentifier", Type.KEY_VALUE, Necessarity.MANDATORY,
-                "Contains the product identifier, so PDS knows which part is to call on it's side.", "product-id");
-        data.add("pds.config.use.sechub.storage", Type.KEY_VALUE, Necessarity.RECOMMENDED,
-                " When <code>true</code> the SecHub storage will be reused by PDS server. <br>"
-                        + "In this case SecHub will not upload job data to PDS but reuse data<br>"
-                        + "<b>But be aware:</b> It's crucial to have same root storage setup on PDS server side "
-                        + "(e.g. same s3 bucket for S3 storage, or same NFS base for shared volumes).<br><br>"
-                        + "When not <code>true</code> or not defined, PDS will use its own storage locations",null,"true");
+        /** Add necessary parts from providers */
+        fetchKeysAndAddContent(templateDialogData, PDSConfigDataKeyProvider.values());
+        fetchKeysAndAddContent(templateDialogData, SecHubProductExecutionPDSKeyProvider.values());
 
-        data.add("pds.productexecutor.forbidden.targettype.intranet", Type.KEY_VALUE, Necessarity.OPTIONAL,
-                "When this key is set to true, than this pds instance does not scan intranet", "true");
-        data.add("pds.productexecutor.forbidden.targettype.internet", Type.KEY_VALUE, Necessarity.OPTIONAL,
-                "When this key is set to true, than this pds instance does not scan internet", "true");
-        data.add("pds.productexecutor.timetowait.nextcheck.minute", Type.KEY_VALUE, Necessarity.OPTIONAL,
-                "The value will be used to wait for next check on PDS server.<br>When not defined, the default from PDS install setup is used instead.");
-        data.add("pds.productexecutor.timeout.minutes", Type.KEY_VALUE, Necessarity.OPTIONAL,
-                "The value will be used to define timeout for PDS communication.<br>When not defined, the default from PDS install setup is used instead.");
-        data.add("pds.productexecutor.trustall.certificates", Type.KEY_VALUE, Necessarity.OPTIONAL,
-                "When 'true' then all certificates are accepted. Do not use this in production!");
-
-        ShowProductExecutorTemplatesDialogAction action = new ShowProductExecutorTemplatesDialogAction(context, identifier, version, data);
+        ShowProductExecutorTemplatesDialogAction action = new ShowProductExecutorTemplatesDialogAction(context, identifier, version, templateDialogData);
         return action;
+    }
+    
+    private static void fetchKeysAndAddContent(TemplatesDialogData data, PDSKeyProvider<?>[] providers) {
+        for (PDSKeyProvider<?> provider: providers) {
+            PDSKey key = provider.getKey();
+            if (key.isGenerated()) {
+                /* generated keys are automatically sent and not necessary to be edited by users*/ 
+                continue;
+            }
+            data.add(key.getId(), Type.KEY_VALUE, calculateNecessarity(key),key.getDescription(),null,key.getDefaultValue());
+        }
+    }
+
+    private static Necessarity calculateNecessarity(PDSKey key) {
+        if (key.isMandatory()) {
+            return Necessarity.MANDATORY;
+        }
+        if (key.isDefaultRecommended()) {
+            return Necessarity.RECOMMENDED;
+        }
+        return Necessarity.OPTIONAL;
     }
 }

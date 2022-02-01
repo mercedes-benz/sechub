@@ -13,8 +13,10 @@ import com.daimler.sechub.domain.schedule.access.ScheduleGrantUserAccessToProjec
 import com.daimler.sechub.domain.schedule.access.ScheduleRevokeUserAccessAtAllService;
 import com.daimler.sechub.domain.schedule.access.ScheduleRevokeUserAccessFromProjectService;
 import com.daimler.sechub.domain.schedule.config.SchedulerConfigService;
+import com.daimler.sechub.domain.schedule.config.SchedulerProjectConfigService;
 import com.daimler.sechub.domain.schedule.status.SchedulerStatusService;
 import com.daimler.sechub.domain.schedule.whitelist.ProjectWhiteListUpdateService;
+import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.messaging.AsynchronMessageHandler;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.IsReceivingAsyncMessage;
@@ -23,6 +25,8 @@ import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
 import com.daimler.sechub.sharedkernel.messaging.UserMessage;
+import com.daimler.sechub.sharedkernel.project.ProjectAccessLevel;
+import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorChangesProjectAccessLevel;
 
 @Component
 public class ScheduleMessageHandler implements AsynchronMessageHandler {
@@ -55,6 +59,9 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler {
     
     @Autowired
     SchedulerRestartJobService restartJobService;
+    
+    @Autowired
+    SchedulerProjectConfigService projectConfigService;
 
     @Override
     public void receiveAsyncMessage(DomainMessage request) {
@@ -98,9 +105,23 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler {
         case REQUEST_JOB_RESTART_HARD:
             handleJobRestartHardRequested(request);
             break;
+        case PROJECT_ACCESS_LEVEL_CHANGED:
+            handleProcessAccessLevelChanged(request);
+            break;
         default:
             throw new IllegalStateException("unhandled message id:" + messageId);
         }
+    }
+    @IsReceivingAsyncMessage(MessageID.PROJECT_ACCESS_LEVEL_CHANGED)
+    @UseCaseAdministratorChangesProjectAccessLevel(@Step(number = 4, name = "Event handler", description = "Receives change project access level event"))
+    private void handleProcessAccessLevelChanged(DomainMessage request) {
+        ProjectMessage data = request.get(MessageDataKeys.PROJECT_ACCESS_LEVEL_CHANGE_DATA);
+        
+        String projectId = data.getProjectId();
+        ProjectAccessLevel formerAccessLevel = data.getFormerAccessLevel();
+        ProjectAccessLevel newAccessLevel = data.getNewAccessLevel();
+        
+        projectConfigService.changeProjectAccessLevel(projectId,newAccessLevel,formerAccessLevel);
     }
 
     @IsReceivingAsyncMessage(MessageID.REQUEST_JOB_RESTART)
@@ -175,7 +196,11 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler {
     @IsReceivingAsyncMessage(MessageID.PROJECT_DELETED)
     private void handleProjectDeleted(DomainMessage request) {
         ProjectMessage data = request.get(MessageDataKeys.PROJECT_DELETE_DATA);
-        deleteAllProjectAccessService.deleteAnyAccessDataForProject(data.getProjectId());
+        
+        String projectId = data.getProjectId();
+        
+        deleteAllProjectAccessService.deleteAnyAccessDataForProject(projectId);
+        projectConfigService.deleteProjectConfiguration(projectId);
     }
 
     private void updateWhiteList(ProjectMessage data) {

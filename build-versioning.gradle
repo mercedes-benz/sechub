@@ -28,7 +28,6 @@ allprojects{
 def buildVersionFiles(){
     println("BUILD versioning")
     def start = new Date()
-    // See more details about versioning definition in issue SECHUB-172
     // This file contains some logic for calculation of the version number
 
     def gitTags = git.tag.list()
@@ -40,6 +39,7 @@ def buildVersionFiles(){
     def serverVersionCommitTag = versionCommitTags.find{ it.name.contains("-server") }
     def clientVersionCommitTag = versionCommitTags.find{ it.name.contains("-client") }
     def pdsVersionCommitTag = versionCommitTags.find{ it.name.contains("-pds") }
+    def librariesVersionCommitTag = versionCommitTags.find{ it.name.contains("-libraries") }
 
     def unstagedChanges = git.status().unstaged
     def stagedChanges = git.status().staged
@@ -54,12 +54,12 @@ def buildVersionFiles(){
     // ------------------------
 
     // write version code for go client
-    String clientGoVersionTemplate = new File('./sechub-cli/src/daimler.com/sechub/cli/version.go.template').getText('UTF-8')
+    String clientGoVersionTemplate = new File('./sechub-cli/src/mercedes-benz.com/sechub/cli/version.go.template').getText('UTF-8')
     
     def clientVersionInfo = VersionData.defineVersion("Client",buildVersionString(clientVersionCommitTag, hasChanged,buildNumber))
     
     String clientGoVersionCode = clientGoVersionTemplate.replaceAll("__version__",clientVersionInfo.getFullVersion())
-    def clientVersionFile = new File('./sechub-cli/src/daimler.com/sechub/cli/version.go')
+    def clientVersionFile = new File('./sechub-cli/src/mercedes-benz.com/sechub/cli/version.go')
     clientVersionFile.write(clientGoVersionCode)
 
     /* write version info also as asciidoc file*/
@@ -79,18 +79,25 @@ def buildVersionFiles(){
     // - PDS
     // ------------------------
     def pdsVersionInfo = VersionData.defineVersion("PDS",buildVersionString(pdsVersionCommitTag, hasChanged,buildNumber))
-    
      /* write version info also as asciidoc file*/
     def pdsVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/pds-version.adoc')
     pdsVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: PDS "+pdsVersionInfo.getShortVersion()+"\n:longrevnumber: PDS "+pdsVersionInfo.getFullVersion()+"\n")
 
+    // ------------------------
+    // - Libraries
+    // ------------------------
+    def librariesVersionInfo =  VersionData.defineVersion("Libraries",buildVersionString(librariesVersionCommitTag, hasChanged,buildNumber))
+    
+
     def stop = new Date()
 
-    TimeDuration td = TimeCategory.minus( stop, start )
     println(serverVersionInfo.describe());
     println(clientVersionInfo.describe());
     println(pdsVersionInfo.describe())
-    println("- Time elapsed for versioning:"+td)
+    println(librariesVersionInfo.describe())
+    
+    TimeDuration td = TimeCategory.minus( stop, start )
+    println("- Time elapsed to build versions:"+td)
 }
 
 /**
@@ -184,9 +191,18 @@ task assertReleaseable {
         }
     }
 
-
-
 }
 
-
+subprojects{
+    /**
+     * Get the current version for the sub project.
+     * Usage: ./gradlew :eclipse-commons-model:getCurrentVersion
+     */
+    task getCurrentVersion {
+        doLast {
+            println "$project.name"
+            println "$project.version"
+        }
+    }
+}
 

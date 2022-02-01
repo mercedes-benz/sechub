@@ -12,8 +12,8 @@ import com.daimler.sechub.domain.notification.email.EmailService;
 import com.daimler.sechub.domain.notification.email.MailMessageFactory;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.messaging.JobMessage;
-import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorRestartsJob;
-import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorRestartsJobHard;
+import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdminRestartsJob;
+import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdminRestartsJobHard;
 
 @Service
 public class InformAdminsThatJobRestartHasBeenTriggeredService {
@@ -27,8 +27,8 @@ public class InformAdminsThatJobRestartHasBeenTriggeredService {
 	@Autowired
 	EmailService emailService;
 	
-	@UseCaseAdministratorRestartsJobHard(@Step(number = 4, name = "Inform sechub admins when job has been restarted"))
-	@UseCaseAdministratorRestartsJob(@Step(number = 4, name = "Inform sechub admins when job has been restarted"))
+	@UseCaseAdminRestartsJobHard(@Step(number = 4, name = "Inform sechub admins when job has been restarted"))
+	@UseCaseAdminRestartsJob(@Step(number = 4, name = "Inform sechub admins when job has been restarted"))
 	public void notify(JobMessage jobMessage, String baseUrl) {
 		requireNonNull(jobMessage);
 

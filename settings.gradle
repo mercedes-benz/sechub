@@ -9,6 +9,7 @@ include 'sechub-cli',
 /* commons */
 'sechub-commons-core',
 'sechub-commons-model',
+'sechub-commons-pds',
 
 /* server POD area */
 'sechub-server',       // executable spring boot jar
@@ -17,6 +18,8 @@ include 'sechub-cli',
 /* PDS */
 'sechub-pds', // pds=product delegation server, executable spring boot jar
 'sechub-pds-core', // core project for test compile dependencies and more
+'sechub-pds-solutions', // our pds ready-to-use solutions / blue prints
+
 
 /* integration test*/
 'sechub-integrationtest',
@@ -55,7 +58,7 @@ include 'sechub-cli',
 'sechub-testframework',
 
 'sechub-scan-testframework',
-'sechub-shared-kernel-testframework',
+'sechub-commons-model-testframework',
 
 'sechub-storage-core',
 'sechub-storage-sharedvolume-spring',
@@ -67,8 +70,8 @@ include 'sechub-cli',
 // Analyzer CLI
 'sechub-analyzer-cli',
 
-// java client library
- 'sechub-client-java'
+// java API library
+ 'sechub-api-java'
 
 
 buildCache {

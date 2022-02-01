@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan.product.config;
 
+import static com.daimler.sechub.sharedkernel.validation.AssertValidation.*;
+
 import java.util.Optional;
 
 import javax.annotation.security.RolesAllowed;
@@ -14,10 +16,8 @@ import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutionProfile;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesExecutionProfile;
 import com.daimler.sechub.sharedkernel.validation.ProductExecutionProfileIdValidation;
-
-import static com.daimler.sechub.sharedkernel.validation.AssertValidation.*;
 
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 @Profile(Profiles.ADMIN_ACCESS)
@@ -34,7 +34,7 @@ public class FetchProductExecutionProfileService {
     AuditLogService auditLogService;
 
     /* @formatter:off */
-    @UseCaseAdministratorFetchesExecutionProfile(
+    @UseCaseAdminFetchesExecutionProfile(
             @Step(number = 2, 
             name = "Service call", 
             description = "Service reads setup information for an existing product executor configuration"))

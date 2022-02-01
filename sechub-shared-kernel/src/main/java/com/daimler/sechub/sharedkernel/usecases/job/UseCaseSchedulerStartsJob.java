@@ -16,6 +16,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_SCHEDULER_STARTS_JOB,
 		group=UseCaseGroup.TECHNICAL,
+		apiName="schedulerStartsJob",
 		title="Sechub scheduler starts job",
 		description="job/scheduler_starts_job.adoc")
 public @interface UseCaseSchedulerStartsJob {

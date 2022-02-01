@@ -14,8 +14,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +36,7 @@ import com.daimler.sechub.integrationtest.internal.SimpleTestStringList;
 import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
 import com.daimler.sechub.integrationtest.internal.TestRestHelper;
 import com.daimler.sechub.sharedkernel.mapping.MappingData;
+import com.daimler.sechub.sharedkernel.project.ProjectAccessLevel;
 import com.daimler.sechub.test.TestURLBuilder;
 import com.daimler.sechub.test.TestUtil;
 import com.daimler.sechub.test.executionprofile.TestExecutionProfile;
@@ -76,7 +77,7 @@ public class AsUser {
     }
 
     public List<String> listAllUserIds() {
-        String json = getRestHelper().getJSon(getUrlBuilder().buildAdminListsUsersUrl());
+        String json = getRestHelper().getJSON(getUrlBuilder().buildAdminListsUsersUrl());
         SimpleTestStringList list = JSONConverter.get().fromJSON(SimpleTestStringList.class, json);
         return list;
     }
@@ -201,7 +202,7 @@ public class AsUser {
 
     public TestExecutionProfile fetchProductExecutionProfile(String profileId) {
         String url = getUrlBuilder().buildAdminFetchesProductExecutionProfile(profileId);
-        String json = getRestHelper().getJSon(url);
+        String json = getRestHelper().getJSON(url);
         return JSONConverter.get().fromJSON(TestExecutionProfile.class, json);
     }
 
@@ -212,7 +213,7 @@ public class AsUser {
 
     public String fetchProductExecutionProfilesAsJSON() {
         String url = getUrlBuilder().buildAdminFetchesListOfProductExecutionProfiles();
-        String json = getRestHelper().getJSon(url);
+        String json = getRestHelper().getJSON(url);
         return json;
     }
 
@@ -237,7 +238,7 @@ public class AsUser {
 
     public AsUser addConfigurationToProfile(String profileId, UUID... uuids) {
         String url = getUrlBuilder().buildAdminFetchesProductExecutionProfile(profileId);
-        String json = getRestHelper().getJSon(url);
+        String json = getRestHelper().getJSON(url);
         TestExecutionProfile profile = JSONConverter.get().fromJSON(TestExecutionProfile.class, json);
 
         for (UUID uuid : uuids) {
@@ -252,7 +253,7 @@ public class AsUser {
 
     public AsUser removeConfigurationFromProfile(String profileId, UUID... uuids) {
         String url = getUrlBuilder().buildAdminFetchesProductExecutionProfile(profileId);
-        String json = getRestHelper().getJSon(url);
+        String json = getRestHelper().getJSON(url);
         TestExecutionProfile profile = JSONConverter.get().fromJSON(TestExecutionProfile.class, json);
 
         for (UUID uuid : uuids) {
@@ -279,13 +280,13 @@ public class AsUser {
 
     public String fetchProductExecutorConfigListAsJSON() {
         String url = getUrlBuilder().buildAdminFetchesListOfProductExecutionConfigurations();
-        String json = getRestHelper().getJSon(url);
+        String json = getRestHelper().getJSON(url);
         return json;
     }
 
     public String fetchProductExecutorConfigAsJSON(UUID uuid) {
         String url = getUrlBuilder().buildAdminFetchesProductExecutorConfig(uuid);
-        return getRestHelper().getJSon(url);
+        return getRestHelper().getJSON(url);
     }
 
     public TestExecutorConfig fetchProductExecutorConfig(UUID uuid) {
@@ -338,7 +339,7 @@ public class AsUser {
      */
     public AsUser assignOwnerToProject(TestUser targetUser, TestProject project) {
         LOG.debug("assigning owner:{} to project:{}", user.getUserId(), project.getProjectId());
-        getRestHelper().postJson(getUrlBuilder().buildAdminAssignsOwnerToProjectUrl(project.getProjectId(), targetUser.getUserId()), "");
+        getRestHelper().postJson(getUrlBuilder().buildAdminChangesProjectOwnerUrl(project.getProjectId(), targetUser.getUserId()), "");
         return this;
     }
 
@@ -388,17 +389,24 @@ public class AsUser {
     }
 
     private String createWebScanJob(TestProject project, IntegrationTestMockMode runMode) {
+        List<String> whites = project.getWhiteListUrls();
+        String acceptedURI1 = createTargetURIForSechubConfiguration(runMode, whites);
+
+        return createWebScanJobForTargetURL(project, acceptedURI1);
+    }
+
+    private String createWebScanJobForTargetURL(TestProject project, String targetURL) {
         String json = IntegrationTestFileSupport.getTestfileSupport().loadTestFile("sechub-integrationtest-webscanconfig1.json");
         String projectId = project.getProjectId();
 
         json = json.replaceAll("__projectId__", projectId);
-        List<String> whites = project.getWhiteListUrls();
-        String acceptedURI1 = createTargetURIForSechubConfiguration(runMode, whites);
 
-        json = json.replaceAll("__acceptedUri1__", acceptedURI1);
+        json = json.replaceAll("__acceptedUri1__", targetURL);
         String url = getUrlBuilder().buildAddJobUrl(projectId);
         return getRestHelper().postJson(url, json);
     }
+    
+
 
     /**
      * Create taget uri - will either use
@@ -478,7 +486,7 @@ public class AsUser {
     }
 
     public String getJobStatus(String projectId, UUID jobUUID) {
-        return getRestHelper().getJSon(getUrlBuilder().buildGetJobStatusUrl(projectId, jobUUID.toString()));
+        return getRestHelper().getJSON(getUrlBuilder().buildGetJobStatusUrl(projectId, jobUUID.toString()));
     }
 
     public String getJobReport(TestProject project, UUID jobUUID) {
@@ -505,7 +513,7 @@ public class AsUser {
                     + jobstatus);
         }
         /* okay report is available - so do download */
-        return getRestHelper().getJSon(getUrlBuilder().buildGetJobReportUrl(projectId, jobUUID));
+        return getRestHelper().getJSON(getUrlBuilder().buildGetJobReportUrl(projectId, jobUUID));
     }
 
     /**
@@ -585,24 +593,42 @@ public class AsUser {
         if (runMode == null) {
             runMode = IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__FAST;
         }
-        String response = createWebScanJob(project, runMode);
+        String jsonResponse = createWebScanJob(project, runMode);
+        
+        return fetchJobUUID(jsonResponse);
+
+    }
+
+    /**
+     * Creates a webscan for given target URL and returns job UUID. But be aware: The target URL
+     * must be whitelisted before!
+     * @param project
+     * @param targetURL
+     * @return uuid
+     */
+    public UUID createWebScan(TestProject project, String targetURL) {
+        String jsonResponse = createWebScanJobForTargetURL(project, targetURL);
+        return fetchJobUUID(jsonResponse);
+    }
+    
+    private UUID fetchJobUUID(String jsonResponse) {
         try {
-            JsonNode jsonNode = JSONTestSupport.DEFAULT.fromJson(response);
+            JsonNode jsonNode = JSONTestSupport.DEFAULT.fromJson(jsonResponse);
             JsonNode jobId = jsonNode.get("jobId");
             if (jobId == null) {
-                fail("No jobID entry found in json:\n" + response);
+                fail("No jobID entry found in json:\n" + jsonResponse);
                 return null;
             }
             return UUID.fromString(jobId.textValue());
         } catch (IllegalArgumentException e) {
-            fail("Job did not return with a valid UUID!:" + response);
+            fail("Job did not return with a valid UUID!:" + jsonResponse);
             throw new IllegalStateException("fail not working");
         } catch (IOException e) {
             throw new IllegalStateException("io failure, should not occure", e);
         }
-
     }
 
+    
     /**
      * Creates a code scan job and returns corresponding job UUID. But job is NOT
      * approved and so not started!
@@ -617,20 +643,7 @@ public class AsUser {
             runMode = IntegrationTestMockMode.CODE_SCAN__CHECKMARX__YELLOW__FAST;
         }
         String response = createCodeScanJob(project, runMode);
-        try {
-            JsonNode jsonNode = JSONTestSupport.DEFAULT.fromJson(response);
-            JsonNode jobId = jsonNode.get("jobId");
-            if (jobId == null) {
-                fail("No jobID entry found in json:\n" + response);
-                return null;
-            }
-            return UUID.fromString(jobId.textValue());
-        } catch (IllegalArgumentException e) {
-            fail("Job did not return with a valid UUID!:" + response);
-            throw new IllegalStateException("fail not working");
-        } catch (IOException e) {
-            throw new IllegalStateException("io failure, should not occure", e);
-        }
+        return fetchJobUUID(response);
 
     }
 
@@ -659,7 +672,7 @@ public class AsUser {
     }
 
     public String getServerVersion() {
-        return getRestHelper().getJSon(getUrlBuilder().buildGetServerVersionUrl());
+        return getRestHelper().getJSON(getUrlBuilder().buildGetServerVersionUrl());
     }
 
     public boolean getIsAlive() {
@@ -687,7 +700,7 @@ public class AsUser {
 
     public String getScanLogsForProject(TestProject project1) {
         String url = getUrlBuilder().buildAdminFetchesScanLogsForProject(project1.getProjectId());
-        return getRestHelper().getJSon(url);
+        return getRestHelper().getJSON(url);
     }
 
     /**
@@ -733,7 +746,7 @@ public class AsUser {
 
     public String getProjectMockConfiguration(TestProject project1) {
         String url = getUrlBuilder().buildGetProjectMockConfiguration(project1.getProjectId());
-        return getRestHelper().getJSon(url);
+        return getRestHelper().getJSON(url);
 
     }
 
@@ -745,13 +758,13 @@ public class AsUser {
 
     public MappingData getMappingData(String mappingId) {
         String url = getUrlBuilder().buildGetMapping(mappingId);
-        return MappingData.fromString(getRestHelper().getJSon(url));
+        return MappingData.fromString(getRestHelper().getJSON(url));
     }
 
     public ProjectFalsePositivesDefinition getFalsePositiveConfigurationOfProject(TestProject project) {
 
         String url = getUrlBuilder().buildGetFalsePositiveConfigurationOfProject(project.getProjectId());
-        String json = getRestHelper().getJSon(url);
+        String json = getRestHelper().getJSON(url);
 
         return create(project, json);
 
@@ -777,7 +790,7 @@ public class AsUser {
 
     public UUID triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(TestProject project) {
         return triggerAsyncCodeScanApproveWithoutSourceUploadAndGetJobUUID(project, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__SUPERFAST,
-                "zipfile_contains_only_test1.txt.zip");
+                TestDataConstants.RESOURCE_PATH_ZIPFILE_ONLY_TEST1_TXT);
     }
 
     public UUID triggerAsyncWebScanGreenLongRunningAndGetJobUUID(TestProject project) {
@@ -787,7 +800,7 @@ public class AsUser {
     }
 
     public UUID triggerAsyncCodeScanWithPseudoZipUpload(TestProject project, IntegrationTestMockMode mode) {
-        return triggerAsyncCodeScanApproveWithoutSourceUploadAndGetJobUUID(project, mode, "zipfile_contains_only_test1.txt.zip");
+        return triggerAsyncCodeScanApproveWithoutSourceUploadAndGetJobUUID(project, mode, TestDataConstants.RESOURCE_PATH_ZIPFILE_ONLY_TEST1_TXT);
     }
 
     public UUID triggerAsyncCodeScanApproveWithoutSourceUploadAndGetJobUUID(TestProject project, IntegrationTestMockMode mode, String pathInsideResources) {
@@ -1030,5 +1043,12 @@ public class AsUser {
             return this;
         }
     }
+
+    public void changeProjectAccessLevel(TestProject project, ProjectAccessLevel accessLevel) {
+        String url = getUrlBuilder().buildAdminChangesProjectAccessLevelUrl(project.getProjectId(), accessLevel.getId());
+        
+        getRestHelper().post(url);
+    }
+
 
 }

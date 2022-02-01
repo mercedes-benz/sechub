@@ -70,7 +70,7 @@ public class NetsparkerProductExecutor extends AbstractWebScanProductExecutor<Ne
 				    configure(new WebConfigBuilderStrategy(context)).
 				    configure(new OneInstallSetupConfigBuilderStrategy(setup)).
 					setTimeToWaitForNextCheckOperationInMinutes(setup.getScanResultCheckPeriodInMinutes()).
-					setScanResultTimeOutInMinutes(setup.getScanResultCheckTimeOutInMinutes()).
+					setTimeOutInMinutes(setup.getScanResultCheckTimeOutInMinutes()).
 					setTraceID(context.getTraceLogIdAsString()).
 					setAgentName(setup.getAgentName()).
 					setAgentGroupName(setup.getIdentifier(targetType)).

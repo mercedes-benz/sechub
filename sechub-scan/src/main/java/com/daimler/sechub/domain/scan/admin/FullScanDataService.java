@@ -17,7 +17,7 @@ import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.domain.scan.product.ProductResultService;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
-import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorDownloadsFullScanDataForJob;
+import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminDownloadsFullScanDataForJob;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -35,7 +35,7 @@ public class FullScanDataService {
 	@Autowired
 	UserInputAssertion assertion;
 
-	@UseCaseAdministratorDownloadsFullScanDataForJob(@Step(number=2, name="Collect all scan data"))
+	@UseCaseAdminDownloadsFullScanDataForJob(@Step(number=2, name="Collect all scan data"))
 	public FullScanData getFullScanData(UUID sechubJobUUID) {
 		assertion.isValidJobUUID(sechubJobUUID);
 

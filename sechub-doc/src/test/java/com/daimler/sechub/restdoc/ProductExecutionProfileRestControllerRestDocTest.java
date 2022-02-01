@@ -1,16 +1,26 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.restdoc;
 
-import static com.daimler.sechub.domain.scan.product.config.ProductExecutionProfile.*;
-import static com.daimler.sechub.test.TestURLBuilder.*;
-import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.*;
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
-import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static com.daimler.sechub.domain.scan.product.config.ProductExecutionProfile.PROPERTY_CONFIGURATIONS;
+import static com.daimler.sechub.domain.scan.product.config.ProductExecutionProfile.PROPERTY_DESCRIPTION;
+import static com.daimler.sechub.domain.scan.product.config.ProductExecutionProfile.PROPERTY_ENABLED;
+import static com.daimler.sechub.domain.scan.product.config.ProductExecutionProfile.PROPERTY_ID;
+import static com.daimler.sechub.domain.scan.product.config.ProductExecutionProfile.PROPERTY_PROJECT_IDS;
+import static com.daimler.sechub.test.TestURLBuilder.https;
+import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.PROFILE_ID;
+import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.PROJECT_ID;
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.lang.annotation.Annotation;
 import java.util.UUID;
 
 import org.junit.Test;
@@ -30,7 +40,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.daimler.sechub.commons.model.JSONConverter;
-import com.daimler.sechub.docgen.util.RestDocPathFactory;
+import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.config.CreateProductExecutionProfileService;
 import com.daimler.sechub.domain.scan.product.config.DeleteProductExecutionProfileService;
@@ -51,13 +61,13 @@ import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorAssignsExecutionProfileToProject;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorCreatesExecutionProfile;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorDeletesExecutionProfile;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutionProfile;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutionProfileList;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUnassignsExecutionProfileFromProject;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUpdatesExecutionProfile;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminAssignsExecutionProfileToProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminDeletesExecutionProfile;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesExecutionProfile;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesExecutionProfileList;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminUnassignsExecutionProfileFromProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminUpdatesExecutionProfile;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminCreatesExecutionProfile;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
 import com.daimler.sechub.test.executionprofile.TestExecutionProfile;
@@ -65,6 +75,7 @@ import com.daimler.sechub.test.executionprofile.TestExecutionProfileList;
 import com.daimler.sechub.test.executionprofile.TestExecutionProfileListEntry;
 import com.daimler.sechub.test.executorconfig.TestExecutorConfig;
 import com.daimler.sechub.test.executorconfig.TestExecutorSetupJobParam;
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 @RunWith(SpringRunner.class)
 @WebMvcTest(ProductExecutionProfileRestController.class)
 @ContextConfiguration(classes = { ProductExecutionProfileRestController.class,
@@ -104,9 +115,12 @@ public class ProductExecutionProfileRestControllerRestDocTest {
 	AuditLogService auditLogService;
 
 	@Test
-	@UseCaseRestDoc(useCase = UseCaseAdministratorCreatesExecutionProfile.class)
+	@UseCaseRestDoc(useCase = UseCaseAdminCreatesExecutionProfile.class)
 	public void restdoc_admin_creates_profile() throws Exception {
-		/* prepare */
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminCreatesProductExecutionProfile(PROFILE_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminCreatesExecutionProfile.class;
+
 	    String profileId="new-profile-1";
 	    
 	    TestExecutionProfile profile = new TestExecutionProfile();
@@ -115,32 +129,41 @@ public class ProductExecutionProfileRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
 	    this.mockMvc.perform(
-	    		post(https(PORT_USED).buildAdminCreatesProductExecutionProfile(PROFILE_ID.pathElement()),profileId).
+	    		post(apiEndpoint, profileId).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(JSONConverter.get().toJSON(profile))
 	    		).
 	    			andExpect(status().isCreated()).
-	    			andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorCreatesExecutionProfile.class),
-	    						requestFields(
-										fieldWithPath(PROPERTY_DESCRIPTION).description("A short description for the profile"),
-										fieldWithPath(PROPERTY_ENABLED).description("Enabled state of profile, default is false").optional(),
-										fieldWithPath(PROPERTY_CONFIGURATIONS+"[]").description("Configurations can be linked at creation time as well - see update description").optional(),
-										fieldWithPath(PROPERTY_PROJECT_IDS+"[]").description("Projects can be linked by their ids at creation time as well - see update description").optional()
-										),
-	    						 pathParameters(
-	    	                            parameterWithName(PROFILE_ID.paramName()).description("The profile id")
-	    	                            )
-
-	    						)
-	    		);
+	    			andDo(document(RestDocFactory.createPath(useCase),
+                            resource(
+                                    ResourceSnippetParameters.builder().
+                                        summary(RestDocFactory.createSummary(useCase)).
+                                        description(RestDocFactory.createDescription(useCase)).
+                                        tag(RestDocFactory.extractTag(apiEndpoint)).
+                                        requestSchema(OpenApiSchema.EXECUTION_PROFILE_CREATE.getSchema()).
+                                        requestFields(
+                                                fieldWithPath(PROPERTY_DESCRIPTION).description("A short description for the profile"),
+                                                fieldWithPath(PROPERTY_ENABLED).description("Enabled state of profile, default is false").optional(),
+                                                fieldWithPath(PROPERTY_CONFIGURATIONS+"[]").description("Configurations can be linked at creation time as well - see update description").optional(),
+                                                fieldWithPath(PROPERTY_PROJECT_IDS+"[]").description("Projects can be linked by their ids at creation time as well - see update description").optional()
+                                        ).
+                                        pathParameters(
+                                                parameterWithName(PROFILE_ID.paramName()).description("The profile id")
+                                        ).
+                                        build()
+                                     )
+	    			        ));
 
 	    /* @formatter:on */
 	}
 	
 	@Test
-    @UseCaseRestDoc(useCase = UseCaseAdministratorUpdatesExecutionProfile.class)
+    @UseCaseRestDoc(useCase = UseCaseAdminUpdatesExecutionProfile.class)
     public void restdoc_admin_updates_profile() throws Exception {
         /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminUpdatesProductExecutionProfile(PROFILE_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminUpdatesExecutionProfile.class;
+        
 	    String profileId="existing-profile-1";
         
         TestExecutionProfile profile = new TestExecutionProfile();
@@ -156,86 +179,111 @@ public class ProductExecutionProfileRestControllerRestDocTest {
                 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-                put(https(PORT_USED).buildAdminUpdatesProductExecutionProfile(PROFILE_ID.pathElement()),profileId).
+                put(apiEndpoint, profileId).
                     contentType(MediaType.APPLICATION_JSON_VALUE).
                     content(JSONConverter.get().toJSON(profile))
                 ).
                     andExpect(status().isOk()).
-                    andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorUpdatesExecutionProfile.class),
-                                requestFields(
-                                        fieldWithPath(PROPERTY_DESCRIPTION).description("A short description for the profile"),
-                                        fieldWithPath(PROPERTY_ENABLED).description("Enabled state of profile, default is false").optional(),
-                                        fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_UUID).description("Add uuid for configuration to use here"),
-                                        /* ignore next parts - only inside test json, also ignored at update, because there only uuid is used */
-                                        fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_ENABLED).ignored(),
-                                        fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_EXECUTORVERSION).ignored(),
-                                        fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_CREDENTIALS).ignored(),
-                                        fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS).ignored()
-                                        ),
-                                pathParameters(
-                                         parameterWithName(PROFILE_ID.paramName()).description("The profile id")
-                                        )
-                                )
-                );
+                    andDo(document(RestDocFactory.createPath(useCase),
+                            resource(
+                                    ResourceSnippetParameters.builder().
+                                        summary(RestDocFactory.createSummary(useCase)).
+                                        description(RestDocFactory.createDescription(useCase)).
+                                        tag(RestDocFactory.extractTag(apiEndpoint)).
+                                        requestSchema(OpenApiSchema.EXECUTION_PROFILE_UPDATE.getSchema()).
+                                        requestFields(
+                                                fieldWithPath(PROPERTY_DESCRIPTION).description("A short description for the profile"),
+                                                fieldWithPath(PROPERTY_ENABLED).description("Enabled state of profile, default is false").optional(),
+                                                fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_UUID).description("Add uuid for configuration to use here"),
+                                                /* ignore next parts - only inside test json, also ignored at update, because there only uuid is used */
+                                                fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_ENABLED).ignored(),
+                                                fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_EXECUTORVERSION).ignored(),
+                                                fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_CREDENTIALS).ignored(),
+                                                fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS).ignored()
+                                        ).
+                                        pathParameters(
+                                                parameterWithName(PROFILE_ID.paramName()).description("The profile id")
+                                        ).
+                                        build()
+                                     )
+                            ));
 
         /* @formatter:on */
     }
 	
 	@Test
-    @UseCaseRestDoc(useCase = UseCaseAdministratorAssignsExecutionProfileToProject.class)
+    @UseCaseRestDoc(useCase = UseCaseAdminAssignsExecutionProfileToProject.class)
     public void restdoc_admin_assigns_executionprofile_to_project() throws Exception {
         /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminAddsProjectToExecutionProfile(PROFILE_ID.pathElement(),PROJECT_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminAssignsExecutionProfileToProject.class;
+        
         String profileId="profile-1";
         String projectId="project-1";
 
-        
-                
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-                post(https(PORT_USED).buildAdminAddsProjectToExecutionProfile(PROFILE_ID.pathElement(),PROJECT_ID.pathElement()),profileId,projectId).
+                post(apiEndpoint, profileId,projectId).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
                 ).
                     andExpect(status().isCreated()).
-                    andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorAssignsExecutionProfileToProject.class),
-                            pathParameters(
-                               parameterWithName(PROJECT_ID.paramName()).description("The project id "),
-                               parameterWithName(PROFILE_ID.paramName()).description("The profile id")
-                            )
-                    )
-                );
+                    andDo(document(RestDocFactory.createPath(useCase),
+                            resource(
+                                    ResourceSnippetParameters.builder().
+                                        summary(RestDocFactory.createSummary(useCase)).
+                                        description(RestDocFactory.createDescription(useCase)).
+                                        tag(RestDocFactory.extractTag(apiEndpoint)).
+                                        pathParameters(
+                                                parameterWithName(PROJECT_ID.paramName()).description("The project id "),
+                                                parameterWithName(PROFILE_ID.paramName()).description("The profile id")
+                                        ).
+                                        build()
+                                     )
+                    ));
 
         /* @formatter:on */
     }
 	
 	@Test
-    @UseCaseRestDoc(useCase = UseCaseAdministratorUnassignsExecutionProfileFromProject.class)
+    @UseCaseRestDoc(useCase = UseCaseAdminUnassignsExecutionProfileFromProject.class)
     public void restdoc_admin_unassigns_executionprofile_from_project() throws Exception {
         /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminRemovesProjectFromExecutionProfile(PROFILE_ID.pathElement(),PROJECT_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminUnassignsExecutionProfileFromProject.class;
+        
         String profileId="profile-1";
         String projectId="project-1";
                 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-                post(https(PORT_USED).buildAdminAddsProjectToExecutionProfile(PROFILE_ID.pathElement(),PROJECT_ID.pathElement()),profileId,projectId).
+                delete(apiEndpoint, profileId,projectId).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
-                ).
-                    andExpect(status().isCreated()).
-                    andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorUnassignsExecutionProfileFromProject.class),
-                            pathParameters(
-                                    parameterWithName(PROJECT_ID.paramName()).description("The project id "),
-                                    parameterWithName(PROFILE_ID.paramName()).description("The profile id")
-                            )
-                    )
-                );
+                )./*andDo(print()).*/
+                    andExpect(status().isOk()).
+                    andDo(document(RestDocFactory.createPath(useCase),
+                            resource(
+                                    ResourceSnippetParameters.builder().
+                                        summary(RestDocFactory.createSummary(useCase)).
+                                        description(RestDocFactory.createDescription(useCase)).
+                                        tag(RestDocFactory.extractTag(apiEndpoint)).
+                                        pathParameters(
+                                                parameterWithName(PROJECT_ID.paramName()).description("The project id "),
+                                                parameterWithName(PROFILE_ID.paramName()).description("The profile id")
+                                        ).
+                                        build()
+                                     )
+                    ));
 
         /* @formatter:on */
     }
 	
 	@Test
-    @UseCaseRestDoc(useCase = UseCaseAdministratorFetchesExecutionProfile.class)
+    @UseCaseRestDoc(useCase = UseCaseAdminFetchesExecutionProfile.class)
     public void restdoc_admin_fetches_profile() throws Exception {
         /* prepare */
-	    /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminFetchesProductExecutionProfile(PROFILE_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminFetchesExecutionProfile.class;
+        
         String profileId="existing-profile-1";
         
         TestExecutionProfile testprofile = new TestExecutionProfile();
@@ -266,64 +314,81 @@ public class ProductExecutionProfileRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-                get(https(PORT_USED).buildAdminFetchesProductExecutionProfile(PROFILE_ID.pathElement()),profileId).
+                get(apiEndpoint, profileId).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
                 ).
                     andExpect(status().isOk()).
-                    andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorFetchesExecutionProfile.class),
-                                responseFields(
-                                        fieldWithPath(PROPERTY_ID).optional().ignored(),
-                                        fieldWithPath(PROPERTY_DESCRIPTION).description("A short description for the profile"),
-                                        fieldWithPath(PROPERTY_ENABLED).description("Enabled state of profile, default is false").optional(),
-                                        fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_UUID).description("uuid of configuration"),
-                                        fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_NAME).description("name of configuration"),
-                                        fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_ENABLED).description("enabled state of this config"),
-                                        fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_PRODUCTIDENTIFIER).description("executed product"),
-                                        fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_EXECUTORVERSION).description("executor version"),
-                                        fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_BASEURL).ignored(),
-                                        fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_CREDENTIALS+"."+ProductExecutorConfigSetupCredentials.PROPERTY_USER).ignored(),
-                                        fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_CREDENTIALS+"."+ProductExecutorConfigSetupCredentials.PROPERTY_PASSWORD).ignored(),
-                                        fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS+"[]."+ProductExecutorConfigSetupJobParameter.PROPERTY_KEY).ignored(),
-                                        fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS+"[]."+ProductExecutorConfigSetupJobParameter.PROPERTY_VALUE).ignored(),
-                                        fieldWithPath(PROPERTY_PROJECT_IDS+"[]").description("Projects can be linked by their ids here")
-                                        ),
-                                pathParameters(
-                                        parameterWithName(PROFILE_ID.paramName()).description("The profile id")
-                                        )
-
-                                )
-                );
+                    andDo(document(RestDocFactory.createPath(useCase),
+                            resource(
+                                    ResourceSnippetParameters.builder().
+                                        summary(RestDocFactory.createSummary(useCase)).
+                                        description(RestDocFactory.createDescription(useCase)).
+                                        tag(RestDocFactory.extractTag(apiEndpoint)).
+                                        responseSchema(OpenApiSchema.EXECUTION_PROFILE_FETCH.getSchema()).
+                                        responseFields(
+                                                fieldWithPath(PROPERTY_ID).optional().ignored(),
+                                                fieldWithPath(PROPERTY_DESCRIPTION).description("A short description for the profile"),
+                                                fieldWithPath(PROPERTY_ENABLED).description("Enabled state of profile, default is false").optional(),
+                                                fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_UUID).description("uuid of configuration"),
+                                                fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_NAME).description("name of configuration"),
+                                                fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_ENABLED).description("enabled state of this config"),
+                                                fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_PRODUCTIDENTIFIER).description("executed product"),
+                                                fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_EXECUTORVERSION).description("executor version"),
+                                                fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_BASEURL).ignored(),
+                                                fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_CREDENTIALS+"."+ProductExecutorConfigSetupCredentials.PROPERTY_USER).ignored(),
+                                                fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_CREDENTIALS+"."+ProductExecutorConfigSetupCredentials.PROPERTY_PASSWORD).ignored(),
+                                                fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS+"[]."+ProductExecutorConfigSetupJobParameter.PROPERTY_KEY).ignored(),
+                                                fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS+"[]."+ProductExecutorConfigSetupJobParameter.PROPERTY_VALUE).ignored(),
+                                                fieldWithPath(PROPERTY_PROJECT_IDS+"[]").description("Projects can be linked by their ids here")
+                                        ).
+                                        pathParameters(
+                                                parameterWithName(PROFILE_ID.paramName()).description("The profile id")
+                                        ).
+                                        build()
+                                     )
+                            ));
 
         /* @formatter:on */
     }
     
 	
 	@Test
-    @UseCaseRestDoc(useCase = UseCaseAdministratorDeletesExecutionProfile.class)
+    @UseCaseRestDoc(useCase = UseCaseAdminDeletesExecutionProfile.class)
     public void restDoc_admin_deletes_profile() throws Exception {
-	    
+	    /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminDeletesProductExecutionProfile(PROFILE_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminDeletesExecutionProfile.class;
+        
 	    /* execute + test @formatter:off */
 	    String profileId= "profile-to-delete-1";
 	    this.mockMvc.perform(
-                delete(https(PORT_USED).buildAdminDeletesProductExecutionProfile(PROFILE_ID.pathElement()),profileId).
+                delete(apiEndpoint, profileId).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
                 ).
                     andExpect(status().isOk()).
-                    andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorDeletesExecutionProfile.class),
-                            pathParameters(
-                                    parameterWithName(PROFILE_ID.paramName()).description("The profile id")
-                                    )
-)
-                );
+                    andDo(document(RestDocFactory.createPath(useCase),
+                            resource(
+                                    ResourceSnippetParameters.builder().
+                                        summary(RestDocFactory.createSummary(useCase)).
+                                        description(RestDocFactory.createDescription(useCase)).
+                                        tag(RestDocFactory.extractTag(apiEndpoint)).
+                                        pathParameters(
+                                                parameterWithName(PROFILE_ID.paramName()).description("The profile id")
+                                        ).
+                                        build()
+                                     )
+                            ));
 
         /* @formatter:on */
 	}
 	
 	@Test
-    @UseCaseRestDoc(useCase = UseCaseAdministratorFetchesExecutionProfileList.class)
+    @UseCaseRestDoc(useCase = UseCaseAdminFetchesExecutionProfileList.class)
     public void restDoc_admin_fetches_profiles_list() throws Exception {
-        
 	    /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminFetchesListOfProductExecutionProfiles();
+        Class<? extends Annotation> useCase = UseCaseAdminFetchesExecutionProfileList.class;
+        
         TestExecutionProfileList profileList = new TestExecutionProfileList();
         TestExecutionProfileListEntry entry1 = new TestExecutionProfileListEntry();
         entry1.description="A short decription for profile1";
@@ -343,19 +408,26 @@ public class ProductExecutionProfileRestControllerRestDocTest {
 	    
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-                get(https(PORT_USED).buildAdminFetchesListOfProductExecutionProfiles()).
+                get(apiEndpoint).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
                 ).
                     andExpect(status().isOk()).
-                    andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorFetchesExecutionProfileList.class),
-                            responseFields(
-                                    fieldWithPath("type").description("Always `executorProfileList` as an identifier for the list"),
-                                    fieldWithPath("executionProfiles[]."+PROPERTY_ID).description("The profile id"),
-                                    fieldWithPath("executionProfiles[]."+PROPERTY_DESCRIPTION).description("A profile description"),
-                                    fieldWithPath("executionProfiles[]."+PROPERTY_ENABLED).description("Enabled state of profile")
-                                    )
-                            )
-                );
+                    andDo(document(RestDocFactory.createPath(useCase),
+                            resource(
+                                    ResourceSnippetParameters.builder().
+                                        summary(RestDocFactory.createSummary(useCase)).
+                                        description(RestDocFactory.createDescription(useCase)).
+                                        tag(RestDocFactory.extractTag(apiEndpoint)).
+                                        responseSchema(OpenApiSchema.EXECUTION_PROFILE_LIST.getSchema()).
+                                        responseFields(
+                                                fieldWithPath("type").description("Always `executorProfileList` as an identifier for the list"),
+                                                fieldWithPath("executionProfiles[]."+PROPERTY_ID).description("The profile id"),
+                                                fieldWithPath("executionProfiles[]."+PROPERTY_DESCRIPTION).description("A profile description"),
+                                                fieldWithPath("executionProfiles[]."+PROPERTY_ENABLED).description("Enabled state of profile")
+                                        ).
+                                        build()
+                                     )
+                            ));
 
         /* @formatter:on */
     }

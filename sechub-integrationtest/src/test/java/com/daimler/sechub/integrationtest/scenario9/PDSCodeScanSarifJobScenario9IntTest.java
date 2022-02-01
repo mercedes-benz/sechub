@@ -14,13 +14,14 @@ import org.junit.Test;
 import org.junit.rules.Timeout;
 
 import com.daimler.sechub.commons.model.ScanType;
+import com.daimler.sechub.commons.model.SecHubStatus;
 import com.daimler.sechub.commons.model.Severity;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.api.TestProject;
 
 /**
- * Integration test doing code scans by integration test servers (sechub server,
- * pds server)
+ * Integration test doing code scans by integration test servers (SecHub server,
+ * PDS server).
  * 
  * @author Albert Tregnaghi
  *
@@ -69,6 +70,7 @@ public class PDSCodeScanSarifJobScenario9IntTest {
         
         String report = as(USER_1).getJobReport(project, jobUUID);
         assertReport(report).
+            hasStatus(SecHubStatus.SUCCESS).
             hasTrafficLight(RED).
                finding(0).
                    hasSeverity(Severity.HIGH).

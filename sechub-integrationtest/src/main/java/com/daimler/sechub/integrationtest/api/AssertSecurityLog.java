@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest.api;
 
+import static java.util.Objects.*;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import com.daimler.sechub.sharedkernel.logging.SecurityLogData;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -63,15 +63,15 @@ public class AssertSecurityLog {
         private SecurityLogData data;
 
         public AssertSecurityLogDataEntry(SecurityLogData securityLogData) {
-            Objects.requireNonNull(securityLogData);
+            requireNonNull(securityLogData);
             data = securityLogData;
         }
-        
-        public AssertSecurityLogDataEntry hasOneOfGivenClientIps(String ...expectedClientIps) {
+
+        public AssertSecurityLogDataEntry hasOneOfGivenClientIps(String... expectedClientIps) {
             List<String> clientIPs = Arrays.asList(expectedClientIps);
             String clientIp = data.getClientIp();
-            if (! clientIPs.contains(clientIp)){
-                fail("Data did contain clientIp:"+clientIp+". It is not one of expected client IPs:"+clientIPs);
+            if (!clientIPs.contains(clientIp)) {
+                fail("Data did contain clientIp:" + clientIp + ". It is not one of expected client IPs:" + clientIPs);
             }
             return this;
         }
@@ -108,7 +108,8 @@ public class AssertSecurityLog {
         }
 
         public AssertSecurityLogDataEntry hasMessageParameterContainingStrings(int pos, String... expectedParts) {
-            Objects.nonNull(expectedParts);
+            requireNonNull(expectedParts, "expected parts may not be null!");
+            
             if (pos < 0) {
                 throw new IllegalArgumentException("pos must be >=0!");
             }

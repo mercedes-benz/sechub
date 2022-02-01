@@ -1,0 +1,28 @@
+{
+    "jobUUID": "f1d02a9d-5e1b-4f52-99e5-401854ccf936",
+    "result": {
+        "count": 0,
+        "findings": [
+            {
+                "id": 1,
+                "description": "",
+                "hostnames": [
+                ],
+                "name": "Unvalidated SSL Certificate Hostname",
+                "references": [
+                ],
+                "severity": "MEDIUM",
+                "cweId": 4711,
+                "code": {
+                    "location": "com/daimler/sechub/adapter/support/TrustAllSupport.java",
+                    "line": 90,
+                    "column": 45,
+                    "source": "\t\t\tclientBuilder.setSSLHostnameVerifier(new HostnameVerifier() {",
+                    "relevantPart": "anonymous_class_91_20"
+                }
+            }
+        ]
+    },
+    "trafficLight": "YELLOW"
+}
+

@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 import com.daimler.sechub.domain.authorization.AuthUser;
 import com.daimler.sechub.domain.authorization.AuthUserRepository;
 import com.daimler.sechub.sharedkernel.Step;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorAssignsUserToProject;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorUnassignsUserFromProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminAssignsUserToProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUnassignsUserFromProject;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -32,8 +32,8 @@ public class AuthUserUpdateRolesService {
 	UserInputAssertion assertion;
 
 	/* @formatter:off */
-	@UseCaseAdministratorAssignsUserToProject(@Step(number=4,next={Step.NO_NEXT_STEP} ,name="Roles changed in auth", description="Authorization layer adds ROLE_USER"))
-	@UseCaseAdministratorUnassignsUserFromProject(@Step(number=4,next={Step.NO_NEXT_STEP} ,name="Roles changed in auth", description="Authorization layer removes ROLE_USER"))/* @formatter:on */
+	@UseCaseAdminAssignsUserToProject(@Step(number=4,next={Step.NO_NEXT_STEP} ,name="Roles changed in auth", description="Authorization layer adds ROLE_USER"))
+	@UseCaseAdminUnassignsUserFromProject(@Step(number=4,next={Step.NO_NEXT_STEP} ,name="Roles changed in auth", description="Authorization layer removes ROLE_USER"))/* @formatter:on */
 	public void updateRoles(String userId, Set<String> roles) {
 		assertion.isValidUserId(userId);
 
