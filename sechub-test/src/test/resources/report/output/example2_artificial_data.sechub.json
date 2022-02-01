@@ -39,7 +39,7 @@
         },
         "attack" : {
           "vector" : "testdata.properties.attack",
-          "evicence" : {
+          "evidence" : {
             "snippet" : "testdata.snippet.text",
             "bodyLocation" : {
               "startLine" : 42

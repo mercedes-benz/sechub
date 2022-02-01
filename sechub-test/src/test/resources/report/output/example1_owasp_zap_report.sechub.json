@@ -53,7 +53,7 @@
         },
         "attack" : {
           "vector" : "</p><script>alert(1);</script><p>",
-          "evicence" : {
+          "evidence" : {
             "snippet" : "</p><script>alert(1);</script><p>",
             "bodyLocation" : {
               "startLine" : 10
@@ -108,7 +108,7 @@
           }
         },
         "attack" : {
-          "evicence" : {
+          "evidence" : {
             "snippet" : "script-src 'self'",
             "bodyLocation" : {
               "startLine" : 1
@@ -165,7 +165,7 @@
           }
         },
         "attack" : {
-          "evicence" : {
+          "evidence" : {
             "snippet" : "script-src 'self'",
             "bodyLocation" : {
               "startLine" : 1
@@ -222,7 +222,7 @@
           }
         },
         "attack" : {
-          "evicence" : {
+          "evidence" : {
             "snippet" : "script-src 'self'",
             "bodyLocation" : {
               "startLine" : 1
@@ -279,7 +279,7 @@
           }
         },
         "attack" : {
-          "evicence" : {
+          "evidence" : {
             "snippet" : "script-src 'self'",
             "bodyLocation" : {
               "startLine" : 1
@@ -334,7 +334,7 @@
           }
         },
         "attack" : {
-          "evicence" : {
+          "evidence" : {
             "snippet" : "Set-Cookie: locale",
             "bodyLocation" : {
               "startLine" : 1
@@ -391,7 +391,7 @@
           }
         },
         "attack" : {
-          "evicence" : {
+          "evidence" : {
             "snippet" : "Set-Cookie: locale",
             "bodyLocation" : {
               "startLine" : 1
@@ -448,7 +448,7 @@
           }
         },
         "attack" : {
-          "evicence" : {
+          "evidence" : {
             "snippet" : "Set-Cookie: locale",
             "bodyLocation" : {
               "startLine" : 1
@@ -505,7 +505,7 @@
           }
         },
         "attack" : {
-          "evicence" : {
+          "evidence" : {
             "snippet" : "Set-Cookie: locale",
             "bodyLocation" : {
               "startLine" : 1
@@ -559,7 +559,7 @@
           }
         },
         "attack" : {
-          "evicence" : {
+          "evidence" : {
             "snippet" : "Set-Cookie: locale",
             "bodyLocation" : {
               "startLine" : 1
@@ -614,7 +614,7 @@
           }
         },
         "attack" : {
-          "evicence" : {
+          "evidence" : {
             "snippet" : "Set-Cookie: locale",
             "bodyLocation" : {
               "startLine" : 1
@@ -675,7 +675,7 @@
           }
         },
         "attack" : {
-          "evicence" : {
+          "evidence" : {
             "snippet" : "Set-Cookie: locale",
             "bodyLocation" : {
               "startLine" : 1
@@ -732,7 +732,7 @@
           }
         },
         "attack" : {
-          "evicence" : {
+          "evidence" : {
             "snippet" : "Set-Cookie: JSESSIONID",
             "bodyLocation" : {
               "startLine" : 1
@@ -789,7 +789,7 @@
           }
         },
         "attack" : {
-          "evicence" : {
+          "evidence" : {
             "snippet" : "Set-Cookie: JSESSIONID",
             "bodyLocation" : {
               "startLine" : 1
