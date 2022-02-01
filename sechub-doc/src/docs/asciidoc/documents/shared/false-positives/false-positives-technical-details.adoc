@@ -52,5 +52,5 @@ When a user adds or removes false positive definitions, the `FalsePositiveProjec
 Here `Sereco` is in charge, which does only inspect the meta data.
 
 ====== Overview
-plantuml::diagrams/diagram_falsepositives_runtime_overview.puml[format=svg, title="Overview"]
+plantuml::diagrams/diagram_falsepositives_runtime_overview.puml[format=svg, title="Overview runtime phase"]
 

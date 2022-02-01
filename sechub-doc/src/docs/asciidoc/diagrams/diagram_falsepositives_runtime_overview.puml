@@ -1,5 +1,4 @@
 @startuml
-title "Inspected class:com.daimler.sechub.domain.scan.product.sereco.SerecoFalsePositiveMarker"
 skinparam linetype ortho
 hide empty methods
 hide empty fields

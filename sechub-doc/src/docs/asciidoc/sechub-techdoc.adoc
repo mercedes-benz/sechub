@@ -51,7 +51,7 @@ include::documents/techdoc/05_build.adoc[]
 
 <<<<
 // 9. Concepts
-include::documents/techdoc/06_concepts.adoc[]
+include::documents/techdoc/06_concepts_and_ddd.adoc[]
 
 <<<<
 // 10. API
