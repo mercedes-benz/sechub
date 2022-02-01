@@ -274,12 +274,12 @@ func interactiveUnmarkFalsePositives(context *Context) {
 	FalsePositivesList := newUnmarkFalsePositivesListFromConsole(context)
 	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("False-positives unmark list for upload:\n%+v", FalsePositivesList))
 
-	// ToDo: Are you sure?
-
 	if len(FalsePositivesList.JobData) == 0 {
 		sechubUtil.Log("No false positives to unmark.", context.config.quiet)
 		return
 	}
+
+	// ToDo: Are you sure?
 
 	// upload to SecHub server
 	unmarkFalsePositives(context, &FalsePositivesList)
