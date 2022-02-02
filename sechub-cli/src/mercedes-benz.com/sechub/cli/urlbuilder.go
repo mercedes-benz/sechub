@@ -15,7 +15,7 @@ func buildCreateNewSecHubJobAPICall(context *Context) string {
 
 // https://localhost:8443/api/project/testproject/job/e21b13fc-591e-4abd-b119-755d473c5625/approve
 func buildApproveSecHubJobAPICall(context *Context) string {
-
+	context.contentToSend = nil // Do not send content
 	apiPart := fmt.Sprintf("project/%s/job/%s/approve", context.config.projectID, context.config.secHubJobUUID)
 	return buildAPIUrl(&context.config.server, &apiPart)
 }
@@ -28,12 +28,14 @@ func buildUploadSourceCodeAPICall(context *Context) string {
 
 // https://localhost:8443/api/project/testproject/job/e21b13fc-591e-4abd-b119-755d473c5625
 func buildGetSecHubJobStatusAPICall(context *Context) string {
+	context.contentToSend = nil // Do not send content
 	apiPart := fmt.Sprintf("project/%s/job/%s", context.config.projectID, context.config.secHubJobUUID)
 	return buildAPIUrl(&context.config.server, &apiPart)
 }
 
 // https://localhost:8443/api/project/testproject/report/e21b13fc-591e-4abd-b119-755d473c5625
 func buildGetSecHubJobReportAPICall(context *Context) string {
+	context.contentToSend = nil // Do not send content
 	apiPart := fmt.Sprintf("project/%s/report/%s", context.config.projectID, context.config.secHubJobUUID)
 	return buildAPIUrl(&context.config.server, &apiPart)
 }
