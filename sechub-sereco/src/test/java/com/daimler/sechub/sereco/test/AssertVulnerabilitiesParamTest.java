@@ -16,71 +16,88 @@ import org.junit.runners.Parameterized.Parameters;
 
 import com.daimler.sechub.sereco.metadata.SerecoClassification;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
+import com.daimler.sechub.sereco.metadata.SerecoWeb;
 import com.daimler.sechub.sereco.test.AssertVulnerabilities.VulnerabilityFinder;
 
 @RunWith(Parameterized.class)
 public class AssertVulnerabilitiesParamTest {
 
-	public static VulnerabilityMutableTestData testData() {
-		return new VulnerabilityMutableTestData();
-	}
-	
-	
-	@Parameters(name="parmeter test {index}:{0}")
-    public static Collection<Object[]> data() {
-    	List<Object[]> list = new ArrayList<>();
-    	list.add(new Object[]{testData()});
-    	for (VulnerabilityTestDataKey key: values()) {
-    		list.add(new Object[]{testData().touch(key)});
-    	}
-    	return list;
-    }
-    
     @Parameter
-    public VulnerabilityMutableTestData data;
+    public VulnerabilityMutableTestData currentTestData;
     
 	@Test
 	public void healthCheck_full_setup_is_found() {
 		/* prepare - vulnerability data */
-		SerecoVulnerability v = new SerecoVulnerability();
-		v.setDescription(data.get(DESCRIPTION));
-		v.setSeverity(data.getSeverity());
-		v.setType(data.get(TYPE));
-		SerecoClassification classification = v.getClassification();
-		classification.setOwasp(data.get(OWASP));
-		classification.setCapec(data.get(CAPEC));
-		classification.setCwe(data.get(CWE));
-		classification.setOwaspProactiveControls(data.get(OWASPPROACTIVE));
-		classification.setHipaa(data.get(HIPAA));
-		classification.setPci31(data.get(PCI31));
-		classification.setPci32(data.get(PCI32));
+		SerecoVulnerability testVulnerability = createVulnerabilityWithCurrentTestData();
 		
 		/* test - former build data is found (or not) by assert framework */
+		// hint: when currentTestData.touch(field) was called in junit preparation phase
+		// this field will change and assert mechanism must find it...
 		/* @formatter:off */
-		VulnerabilityFinder finderSays = AssertVulnerabilities.assertVulnerabilities(Collections.singletonList(v)).
+		VulnerabilityFinder finderSays = AssertVulnerabilities.assertVulnerabilities(Collections.singletonList(testVulnerability)).
 			vulnerability().
-				withSeverity(data.getSeverity()).
-				withType(data.get(TYPE)).
+				withSeverity(currentTestData.getSeverity()).
+				withType(currentTestData.get(TYPE)).
 				isExactDefinedWebVulnerability().
-				    withTarget(data.get(URL)).
+				    withTarget(currentTestData.get(URL)).
 				and().
-				withDescriptionContaining(data.getShrinked(DESCRIPTION)).
+				withDescriptionContaining(currentTestData.get(DESCRIPTION)).
 				classifiedBy().
-					owasp(data.get(OWASP)).
-					cwe(data.get(CWE)).
-					capec(data.get(CAPEC)).
-					owaspProactiveControls(data.get(OWASPPROACTIVE)).
-					hipaa(data.get(HIPAA)).
-					pci31(data.get(PCI31)).
-					pci32(data.get(PCI32)).
+					owasp(currentTestData.get(OWASP)).
+					cwe(currentTestData.getInt(CWE)).
+					capec(currentTestData.get(CAPEC)).
+					owaspProactiveControls(currentTestData.get(OWASPPROACTIVE)).
+					hipaa(currentTestData.get(HIPAA)).
+					pci31(currentTestData.get(PCI31)).
+					pci32(currentTestData.get(PCI32)).
 				and();
 				
-		if (data.hasTouchedFields()) {
+		if (currentTestData.hasTouchedFields()) {
 			finderSays.isNotContained(); /* when changed this must not be found!*/
 		}else {
+		    // no fields touched, so vulnerability must be found!
 			finderSays.isContained();
 		}
 		/* @formatter:on */
 	}
 
+    private SerecoVulnerability createVulnerabilityWithCurrentTestData() {
+        SerecoVulnerability testVulnerability = new SerecoVulnerability();
+		testVulnerability.setDescription(currentTestData.get(DESCRIPTION));
+		testVulnerability.setSeverity(currentTestData.getSeverity());
+		testVulnerability.setType(currentTestData.get(TYPE));
+		
+		SerecoWeb web = new SerecoWeb();
+		web.getRequest().setTarget(currentTestData.get(URL));
+        testVulnerability.setWeb(web);
+		
+		SerecoClassification classification = testVulnerability.getClassification();
+		classification.setOwasp(currentTestData.get(OWASP));
+		classification.setCapec(currentTestData.get(CAPEC));
+		classification.setCwe(""+currentTestData.getInt(CWE));
+		classification.setOwaspProactiveControls(currentTestData.get(OWASPPROACTIVE));
+		classification.setHipaa(currentTestData.get(HIPAA));
+		classification.setPci31(currentTestData.get(PCI31));
+		classification.setPci32(currentTestData.get(PCI32));
+        return testVulnerability;
+    }
+
+	public static VulnerabilityMutableTestData createTestDataElement() {
+        return new VulnerabilityMutableTestData();
+    }
+    
+    
+    @Parameters(name="parameter test {index}:{0}")
+    public static Collection<Object[]> createDataForParameterizedTests() {
+        List<Object[]> result = new ArrayList<>();
+        
+        // first entry has no touched elements
+        result.add(new Object[]{createTestDataElement()});
+        
+        // for each key add the test data again, but touch it for the key... 
+        for (VulnerabilityTestDataKey key: values()) {
+            result.add(new Object[]{createTestDataElement().touch(key)});
+        }
+        return result;
+    }
 }

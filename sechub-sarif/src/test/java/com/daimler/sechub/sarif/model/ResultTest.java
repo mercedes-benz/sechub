@@ -64,22 +64,6 @@ class ResultTest {
     }
 
     @Test
-    void add_null_as_addtionalProperties() {
-        /* prepare */
-        Result result = new Result();
-        result.setProperties(new PropertyBag());
-
-        /* execute */
-        PropertyBag properties = result.getProperties();
-        properties.put(null, null);
-        properties.put("key", null);
-        properties.put(null, "value");
-
-        /* test */
-        assertTrue(properties.isEmpty());
-    }
-
-    @Test
     void property_bag_from_new_result_is_null() {
         /* prepare */
         Result result = new Result();
