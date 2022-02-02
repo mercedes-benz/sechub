@@ -29,12 +29,15 @@ func Execute() {
 	switch context.config.action {
 	case scanAction:
 		prepareCreateApproveJob(context)
-		waitForSecHubJobDoneAndFailOnTrafficLight(context)
+		status := waitForSecHubJobDone(context)
+		downloadSechubReport(context)
+		printSecHubJobSummaryAndFailOnTrafficLight(context, status)
 	case scanAsynchronAction:
 		prepareCreateApproveJob(context)
 		fmt.Println(context.config.secHubJobUUID)
 	case getStatusAction:
-		fmt.Println(getSecHubJobState(context, true, false, false))
+		_, jsonData := getSecHubJobStatus(context)
+		fmt.Println(jsonData)
 	case getReportAction:
 		downloadSechubReport(context)
 	case getFalsePositivesAction:
