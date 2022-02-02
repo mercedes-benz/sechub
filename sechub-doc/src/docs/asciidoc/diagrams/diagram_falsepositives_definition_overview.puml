@@ -71,19 +71,42 @@ package com.daimler.sechub.domain.scan.project{
     -String : name
     -Severity : severity
     -FalsePositiveCodeMetaData : code
+    -FalsePositiveWebMetaData : web
     -Integer : cweId
     -String : cveId
     -String : owasp
-    -String : targetUrl
   }
   FalsePositiveMetaData -[#blue]- com.daimler.sechub.commons.model.ScanType
   FalsePositiveMetaData -[#blue]- com.daimler.sechub.commons.model.Severity
   FalsePositiveMetaData -[#blue]- FalsePositiveCodeMetaData
+  FalsePositiveMetaData -[#blue]- FalsePositiveWebMetaData
+
 'com.daimler.sechub.domain.scan.project.FalsePositiveCodeMetaData
    class FalsePositiveCodeMetaData{
     -FalsePositiveCodePartMetaData : start
     -FalsePositiveCodePartMetaData : end
   }
-  FalsePositiveCodeMetaData -[#blue]- FalsePositiveCodePartMetaData
-
+  FalsePositiveCodeMetaData *-- FalsePositiveCodePartMetaData
+'com.daimler.sechub.domain.scan.project.FalsePositiveWebMetaData
+   class FalsePositiveWebMetaData{
+    -FalsePositiveWebRequestMetaData : request
+    -FalsePositiveWebResponseMetaData: response
+  }
+  FalsePositiveWebMetaData *-- FalsePositiveWebRequestMetaData
+  FalsePositiveWebMetaData *-- FalsePositiveWebResponseMetaData
+'com.daimler.sechub.domain.scan.project.FalsePositiveWebRequestMetaData
+   class FalsePositiveWebRequestMetaData{
+    -String: method
+    -String: target
+    -String: protocol
+    -String: version
+    -String: attackVector
+    
+  }
+  
+  'com.daimler.sechub.domain.scan.project.FalsePositiveWebResponseMetaData
+   class FalsePositiveWebResponseMetaData{
+    -String: evidence
+    -int: statuscode
+  }
 @enduml

@@ -68,6 +68,37 @@ public class FalsePositiveMetaDataTest {
         assertFalse(metaData1.equals(metaData2));
         assertFalse(metaData2.equals(metaData1));
     }
+    @Test
+    public void same_web_meta_data_is_equals() {
+        /* prepare */
+        FalsePositiveWebMetaData web1 = new FalsePositiveWebMetaData();
+        web1.getRequest().setTarget("https://example.com/same");
+        FalsePositiveWebMetaData web2 = new FalsePositiveWebMetaData();
+        web2.getRequest().setTarget("https://example.com/same");
+        
+        metaData1.setWeb(web1);
+        metaData2.setWeb(web2);
+        
+        /* execute + test */
+        assertTrue(metaData1.equals(metaData2));
+        assertTrue(metaData2.equals(metaData1));
+    }
+    
+    @Test
+    public void not_same_web_meta_data_is_not_equals() {
+        /* prepare */
+        FalsePositiveWebMetaData web1 = new FalsePositiveWebMetaData();
+        web1.getRequest().setTarget("https://example.com/one");
+        FalsePositiveWebMetaData web2 = new FalsePositiveWebMetaData();
+        web2.getRequest().setTarget("https://example.com/two");
+        
+        metaData1.setWeb(web1);
+        metaData2.setWeb(web2);
+        
+        /* execute + test */
+        assertFalse(metaData1.equals(metaData2));
+        assertFalse(metaData2.equals(metaData1));
+    }
     
     
 

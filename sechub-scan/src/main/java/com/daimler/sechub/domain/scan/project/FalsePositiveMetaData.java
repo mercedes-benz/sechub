@@ -21,19 +21,11 @@ public class FalsePositiveMetaData {
     private Severity severity;
 
     private FalsePositiveCodeMetaData code;
+    private FalsePositiveWebMetaData web;
 
     private Integer cweId;
     private String cveId;
     private String owasp;
-    private String targetUrl;
-
-    public void setTargetUrl(String targetUrl) {
-        this.targetUrl = targetUrl;
-    }
-
-    public String getTargetUrl() {
-        return targetUrl;
-    }
 
     public void setOwasp(String owasp) {
         this.owasp = owasp;
@@ -73,6 +65,14 @@ public class FalsePositiveMetaData {
         this.code = code;
     }
 
+    public FalsePositiveWebMetaData getWeb() {
+        return web;
+    }
+
+    public void setWeb(FalsePositiveWebMetaData web) {
+        this.web = web;
+    }
+
     public String getName() {
         return name;
     }
@@ -99,12 +99,12 @@ public class FalsePositiveMetaData {
 
     @Override
     public String toString() {
-        return "FalsePositiveMetaData [scanType=" + scanType + ", name=" + name + ", severity=" + severity + ", code=" + code + "]";
+        return "FalsePositiveMetaData [scanType=" + scanType + ", name=" + name + ", severity=" + severity + ", code=" + code + ", web=" + web + "]";
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(code, name, scanType, severity);
+        return Objects.hash(code, web, name, scanType, severity);
     }
 
     @Override
@@ -116,7 +116,7 @@ public class FalsePositiveMetaData {
         if (getClass() != obj.getClass())
             return false;
         FalsePositiveMetaData other = (FalsePositiveMetaData) obj;
-        return Objects.equals(code, other.code) && Objects.equals(name, other.name) && scanType == other.scanType && severity == other.severity;
+        return Objects.equals(code, other.code) && Objects.equals(web, other.web) && Objects.equals(name, other.name) && scanType == other.scanType && severity == other.severity;
     }
 
 }
