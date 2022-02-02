@@ -17,6 +17,7 @@ package com.daimler.sechub.domain.scan.product.sereco{
     ~SerecoFalsePositiveCodeScanStrategy : codeSCanStrategy
   }
   SerecoFalsePositiveFinder *-- SerecoFalsePositiveCodeScanStrategy
+  SerecoFalsePositiveFinder *-- SerecoFalsePositiveWebScanStrategy
   SerecoFalsePositiveFinder -[#blue]- com.daimler.sechub.domain.scan.project.FalsePositiveMetaData
   SerecoFalsePositiveFinder -[#blue]- com.daimler.sechub.sereco.metadata.SerecoVulnerability
 'com.daimler.sechub.domain.scan.product.sereco.SerecoFalsePositiveCodeScanStrategy
@@ -30,6 +31,9 @@ package com.daimler.sechub.domain.scan.product.sereco{
   SerecoFalsePositiveCodeScanStrategy .[#green]. com.daimler.sechub.sereco.metadata.SerecoVulnerability
 'com.daimler.sechub.domain.scan.product.sereco.SerecoSourceRelevantPartResolver
    class SerecoSourceRelevantPartResolver{
+  }
+   class SerecoFalsePositiveWebScanStrategy{
+    
   }
 }
 

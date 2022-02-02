@@ -46,7 +46,6 @@ public class AssertVulnerabilitiesParamTest {
 		v.setDescription(data.get(DESCRIPTION));
 		v.setSeverity(data.getSeverity());
 		v.setType(data.get(TYPE));
-		v.setUrl(data.get(URL));
 		SerecoClassification classification = v.getClassification();
 		classification.setOwasp(data.get(OWASP));
 		classification.setCapec(data.get(CAPEC));
@@ -62,7 +61,9 @@ public class AssertVulnerabilitiesParamTest {
 			vulnerability().
 				withSeverity(data.getSeverity()).
 				withType(data.get(TYPE)).
-				withURL(data.get(URL)).
+				isExactDefinedWebVulnerability().
+				    withTarget(data.get(URL)).
+				and().
 				withDescriptionContaining(data.getShrinked(DESCRIPTION)).
 				classifiedBy().
 					owasp(data.get(OWASP)).

@@ -133,7 +133,6 @@ public class SerecoProductResultTransformerTest {
         v1.setDescription("desc1");
         v1.setSeverity(SerecoSeverity.MEDIUM);
         v1.setType("type1");
-        v1.setUrl("url1");
         v1.setScanType(ScanType.WEB_SCAN);
         v1.setSolution("solution1");
 
@@ -153,7 +152,6 @@ public class SerecoProductResultTransformerTest {
         SerecoVulnerability v1 = new SerecoVulnerability();
         v1.setSeverity(SerecoSeverity.MEDIUM);
         v1.setType("type1");
-        v1.setUrl("url1");
         v1.setScanType(ScanType.CODE_SCAN);
 
         SerecoCodeCallStackElement serecoCode1 = new SerecoCodeCallStackElement();

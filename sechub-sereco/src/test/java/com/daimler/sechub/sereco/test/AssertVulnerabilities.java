@@ -125,14 +125,13 @@ public class AssertVulnerabilities {
              * we use null values for search to search only for wanted parts...,+ some
              * defaults (empty list) and empty description
              */
-            String url = null;
             String type = null;
             SerecoSeverity severity = null;
             List<SerecoDetection> list = new ArrayList<>();
             String description = "";
             SerecoClassification classification = null;
 
-            search = MetaDataAccess.createVulnerability(url, type, severity, list, description, classification);
+            search = MetaDataAccess.createVulnerability(type, severity, list, description, classification);
         }
 
         private List<SerecoVulnerability> find(StringBuilder metaInfo) {
@@ -164,7 +163,6 @@ public class AssertVulnerabilities {
             for (SerecoVulnerability vulnerability : AssertVulnerabilities.this.vulnerabilities) {
                 boolean contained = isEitherNullInSearchOrEqual(search.getSeverity(), vulnerability.getSeverity()) && trace.done(vulnerability, "severity");
                 /* @formatter:off */
-                contained = contained && isEitherNullInSearchOrEqual(search.getUrl(), vulnerability.getUrl()) && trace.done(vulnerability, "url");
                 contained = contained && isEitherNullInSearchOrEqual(search.getType(), vulnerability.getType()) && trace.done(vulnerability, "type");
                 contained = contained && isEitherNullInSearchOrContains(vulnerability.getDescription(), search.getDescription()) && trace.done(vulnerability, "description");
                 contained = contained && isEitherNullInSearchOrEqual(search.getClassification(), vulnerability.getClassification()) && trace.done(vulnerability, "classification");
@@ -250,11 +248,6 @@ public class AssertVulnerabilities {
          */
         public VulnerabilityFinder enableTrace() {
             traceEnabled = true;
-            return this;
-        }
-
-        public VulnerabilityFinder withURL(String url) {
-            search.setUrl(url);
             return this;
         }
 
@@ -432,6 +425,11 @@ public class AssertVulnerabilities {
         }
 
         public class WebVulnerabilityFinder {
+            
+            public WebVulnerabilityFinder withTarget(String target) {
+                search.getWeb().getRequest().setTarget(target);
+                return this;
+            }
 
             public WebVulnerabilityFinder withWebRequest(SerecoWebRequest webRequest) {
                 MetaDataAccess.setWebRequest(search, webRequest);

@@ -22,7 +22,7 @@ public class SerecoFalsePositiveFinderTest {
         finderToTest = new SerecoFalsePositiveFinder();
         
         codeSCanStrategy=mock(SerecoFalsePositiveCodeScanStrategy.class);
-        finderToTest.codeSCanStrategy=codeSCanStrategy;
+        finderToTest.codeScanStrategy=codeSCanStrategy;
       
     }
 
