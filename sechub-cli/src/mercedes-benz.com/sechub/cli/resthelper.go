@@ -50,7 +50,7 @@ func handleHTTPRequestAndResponse(context *Context, request *http.Request) *http
 	sechubUtil.HandleHTTPError(err, ExitCodeHTTPError) // Handle networking errors etc. (exit)
 
 	// Resilience handling
-	if response.StatusCode >= 400 { // StatusCode is in 4xx or 5xx
+	if response.StatusCode > 403 { // StatusCode is in 4xx(400-403 are unrecoverable) or 5xx
 		sechubUtil.LogWarning(
 			fmt.Sprintf("Received unexpected Status Code %d (%s) from server. Retrying in %d seconds...",
 				response.StatusCode, response.Status, context.config.waitSeconds))
