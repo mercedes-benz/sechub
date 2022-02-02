@@ -82,7 +82,7 @@ func prepareOptionsFromCommandline(config *Config) {
 	flag.BoolVar(&config.quiet,
 		quietOption, false, "Quiet mode - Suppress all informative output. Can also be defined in environment variable "+SechubQuietEnvVar+"=true")
 	flag.StringVar(&config.reportFormat,
-		reportformatOption, config.reportFormat, "Output format for reports, supported currently: [html,json].")
+		reportformatOption, config.reportFormat, "Output format for reports, supported currently: "+fmt.Sprint(SupportedReportFormats)+".")
 	flag.StringVar(&config.server,
 		serverOption, config.server, "Server url of sechub server to use - e.g. 'https://sechub.example.com:8443'. Mandatory, but can also be defined in environment variable "+SechubServerEnvVar+" or in config file")
 	flag.BoolVar(&config.stopOnYellow,
@@ -215,6 +215,8 @@ func assertValidConfig(configPtr *Config) {
 		}
 	}
 
+	validateRequestedReportFormat(configPtr)
+
 	if errorsFound {
 		showHelpHint()
 		os.Exit(ExitCodeMissingParameter)
@@ -235,4 +237,15 @@ func isConfigFieldFilled(configPTR *Config, field string) bool {
 		return false
 	}
 	return true
+}
+
+// validateRequestedReportFormat issue warning in case of an unknown report format + lowercase if needed
+func validateRequestedReportFormat(config *Config) {
+	config.reportFormat = lowercaseOrWarning(config.reportFormat, "report format")
+
+	// if !sechubUtil.ArrayContains(SupportedReportFormats, config.reportFormat) {
+	if !sechubUtil.StringArrayContains(SupportedReportFormats, config.reportFormat) {
+		sechubUtil.LogWarning("Unsupported report format '" + config.reportFormat + "'. Changing to 'json'.")
+		config.reportFormat = "json"
+	}
 }
