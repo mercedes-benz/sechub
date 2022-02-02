@@ -70,7 +70,10 @@ public class PojoTester {
 
         } catch (Exception e) {
             e.printStackTrace();
-            fail("Bean introspection failed - internal error in framework. See output for details - message was:" + e.getMessage());
+            fail("Bean introspection failed\n"
+                    + "- this is an internal error in framework\n"
+                    + "- see output for details\n"
+                    + "- message was:\n" + e.getMessage());
         }
     }
 
@@ -93,7 +96,8 @@ public class PojoTester {
             writeMethod.invoke(objectToTest, mockedArgument);
         } catch (Exception e) {
             throw new IllegalStateException(
-                    "Was not able to set mockedArgument:" + mockedArgument + "\ninto:" + objectToTest + "\nby writeMethod:" + writeMethod);
+                    "Was not able to set mockedArgument:" + describe(mockedArgument) + 
+                    "\ninto:" + describe(objectToTest) + "\nby writeMethod:" + writeMethod+"\nreason was:\n"+e.getMessage());
         }
         /* read again */
         Object result = readmethod.invoke(objectToTest);
@@ -106,6 +110,13 @@ public class PojoTester {
 
     }
 
+    private static String describe(Object object) {
+        if (object==null) {
+            return "null:null";
+        }
+        return object.getClass().getName()+":\""+object.toString()+"\"";
+    }
+    
     private static Object createMockArgumentForProperty(PropertyDescriptor descriptor, Method readmethod) throws ClassNotFoundException {
         /* property has getter and setter, so inspect type... */
         Class<?> propertyType = descriptor.getPropertyType();

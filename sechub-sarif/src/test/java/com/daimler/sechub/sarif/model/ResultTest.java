@@ -40,15 +40,6 @@ class ResultTest {
     }
 
     @Test
-    void setters() {
-        /* prepare */
-        Result result = new Result();
-
-        /* execute */
-        testSetterAndGetter(result);
-    }
-
-    @Test
     void setter() {
         testSetterAndGetter(createExample());
     }

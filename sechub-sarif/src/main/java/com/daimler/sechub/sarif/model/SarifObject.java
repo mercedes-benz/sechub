@@ -16,11 +16,11 @@ class SarifObject {
     /**
      * @return property bag or <code>null</code>
      */
-    public final PropertyBag getProperties() {
+    public PropertyBag getProperties() {
         return properties;
     }
 
-    public final void setProperties(PropertyBag properties) {
+    public void setProperties(PropertyBag properties) {
         this.properties = properties;
     }
 
