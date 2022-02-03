@@ -132,7 +132,7 @@ func prepareCodeScan(context *Context) {
 	context.sourceZipFileChecksum = sechubUtil.CreateChecksum(context.sourceZipFileName)
 }
 
-func downloadSechubReport(context *Context) string {
+func downloadSechubReport(context *Context) {
 	fileEnding := ".json"
 	if context.config.reportFormat == "html" {
 		fileEnding = ".html"
@@ -141,8 +141,6 @@ func downloadSechubReport(context *Context) string {
 
 	report := ReportDownload{serverResult: getSecHubJobReport(context), outputFolder: context.config.outputFolder, outputFileName: fileName}
 	report.save(context)
-
-	return "" // Dummy (Error handling is done in report.save method)
 }
 
 func downloadFalsePositivesList(context *Context) {
