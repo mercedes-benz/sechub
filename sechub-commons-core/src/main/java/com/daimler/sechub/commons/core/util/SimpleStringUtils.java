@@ -1,11 +1,31 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.commons.core.util;
 
+import java.util.Objects;
+
 public class SimpleStringUtils {
 
     private SimpleStringUtils() {
     }
 
+    public static boolean isTrimmedEqual(String string1, String string2) {
+        if (Objects.equals(string1, string2)) {
+            return true;
+        }
+
+        if (string1==null) {
+            string1 = "";
+        }
+        if (string2==null) {
+            string2 = "";
+        }
+        
+        string1 = string1.trim();
+        string2 = string2.trim();
+        
+        return string1.equals(string2);
+    }
+    
     public static boolean isNotEmpty(Object object) {
         return !isEmpty(object);
     }

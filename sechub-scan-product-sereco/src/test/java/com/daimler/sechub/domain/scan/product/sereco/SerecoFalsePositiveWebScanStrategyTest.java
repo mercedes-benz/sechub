@@ -6,37 +6,148 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.NullSource;
 
 import com.daimler.sechub.commons.model.ScanType;
 import com.daimler.sechub.domain.scan.project.FalsePositiveMetaData;
 import com.daimler.sechub.domain.scan.project.FalsePositiveWebMetaData;
+import com.daimler.sechub.domain.scan.project.FalsePositiveWebRequestMetaData;
+import com.daimler.sechub.domain.scan.project.FalsePositiveWebResponseMetaData;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 import com.daimler.sechub.sereco.metadata.SerecoWeb;
+import com.daimler.sechub.sereco.metadata.SerecoWebEvidence;
 import com.daimler.sechub.sereco.metadata.SerecoWebRequest;
 
 class SerecoFalsePositiveWebScanStrategyTest {
 
+    private static final String EVIDENCE1 = "evidence1";
+    private static final String TARGET1 = "target1";
+    private static final String ATTACK_VECTOR1 = "vector1";
     private static final int CWE_ID_4711 = 4711;
     private SerecoFalsePositiveWebScanStrategy strategyToTest;
-
+    private FalsePositivedTestDataContainer testData;
     @BeforeEach
     void beforeEach() {
         strategyToTest = new SerecoFalsePositiveWebScanStrategy();
+        
+        // initial every test data contains meta and vulnerability data which wold lead to a false positive detection 
+        testData = createTestDataWhicWouldLeadToAFalsePositive();
     }
-
-    @DisplayName("Not false positive. Nearly valid false positive, but other cweId in meta data")
-    @Test
-    void no_false_positive_because_missing_data1() {
+    
+    /* --------------------------------------------------------------------------------*/
+    /* -----------Attack vector tests---------------------------------------------------*/
+    /* --------------------------------------------------------------------------------*/
+    @DisplayName("Not false positive. Attack vector changed to other value in metadata")
+    @NullSource
+    @EmptySource
+    @CsvSource({"other-atack", ATTACK_VECTOR1+"."})
+    @ParameterizedTest
+    void no_false_positive_because_metadata_has_not_attack_like_vulneraility(String vector) {
         /* prepare */
-        FalsePositiveMetaData metaData = createValidTestFalsePositiveMetaData();
-        metaData.setCweId(CWE_ID_4711 + 1);
-
-        SerecoVulnerability vulnerability = createValidTestVulnerability();
+        testData.metaData.getWeb().getRequest().setAttackVector(vector);
 
         /* execute */
-        boolean isFalsePositive = strategyToTest.isFalsePositive(vulnerability, metaData);
+        boolean isFalsePositive = strategyToTest.isFalsePositive(testData.vulnerability, testData.metaData);
+
+        /* test */
+        assertFalse(isFalsePositive);
+    }
+    
+    @DisplayName("Is false positive. Attack vector changed to similar value in metadata")
+    @CsvSource({ATTACK_VECTOR1+"\t", ATTACK_VECTOR1+" ","  \t"+ATTACK_VECTOR1 })
+    @ParameterizedTest
+    void is_false_positive_because_metadata_has_similar_attack_like_vulneraility(String vector) {
+        /* prepare */
+        testData.metaData.getWeb().getRequest().setAttackVector(vector);
+
+        /* execute */
+        boolean isFalsePositive = strategyToTest.isFalsePositive(testData.vulnerability, testData.metaData);
+
+        /* test */
+        assertTrue(isFalsePositive);
+    }
+    
+    /* --------------------------------------------------------------------------------*/
+    /* -----------Target tests---------------------------------------------------------*/
+    /* --------------------------------------------------------------------------------*/
+    @DisplayName("Not false positive. Target changed to other value in metadata")
+    @NullSource
+    @EmptySource
+    @CsvSource({"other-target", ATTACK_VECTOR1+"."})
+    @ParameterizedTest
+    void no_false_positive_because_metadata_has_not_target_like_vulneraility(String target) {
+        /* prepare */
+        testData.metaData.getWeb().getRequest().setTarget(target);
+
+        /* execute */
+        boolean isFalsePositive = strategyToTest.isFalsePositive(testData.vulnerability, testData.metaData);
+
+        /* test */
+        assertFalse(isFalsePositive);
+    }
+    
+    @DisplayName("Is false positive. Target changed to similar value in metadata")
+    @CsvSource({TARGET1+"\t", TARGET1+" "})
+    @ParameterizedTest
+    void is_false_positive_because_metadata_has_same_target_like_vulneraility(String target) {
+        /* prepare */
+        testData.metaData.getWeb().getRequest().setTarget(target);
+
+        /* execute */
+        boolean isFalsePositive = strategyToTest.isFalsePositive(testData.vulnerability, testData.metaData);
+
+        /* test */
+        assertTrue(isFalsePositive);
+    }
+    
+    /* --------------------------------------------------------------------------------*/
+    /* -----------Evidence tests-------------------------------------------------------*/
+    /* --------------------------------------------------------------------------------*/
+    @DisplayName("Not false positive. Evidence changed to other value in metadata")
+    @NullSource
+    @EmptySource
+    @CsvSource({"other-atack", EVIDENCE1+"."})
+    @ParameterizedTest
+    void no_false_positive_because_metadata_has_not_evidence_like_vulneraility(String evidence) {
+        /* prepare */
+        testData.metaData.getWeb().getResponse().setEvidence(evidence);
+
+        /* execute */
+        boolean isFalsePositive = strategyToTest.isFalsePositive(testData.vulnerability, testData.metaData);
+
+        /* test */
+        assertFalse(isFalsePositive);
+    }
+    
+    @DisplayName("Is false positive. Evidence changed to similar value in metadata")
+    @CsvSource({EVIDENCE1+"\t", EVIDENCE1+" ","  \t"+EVIDENCE1 })
+    @ParameterizedTest
+    void is_false_positive_because_metadata_has_similar_evidence_like_vulneraility(String evidence) {
+        /* prepare */
+        testData.metaData.getWeb().getResponse().setEvidence(evidence);
+
+        /* execute */
+        boolean isFalsePositive = strategyToTest.isFalsePositive(testData.vulnerability, testData.metaData);
+
+        /* test */
+        assertTrue(isFalsePositive);
+    }
+    
+    
+    /* --------------------------------------------------------------------------------*/
+    /* -----------CWE tests------------------------------------------------------------*/
+    /* --------------------------------------------------------------------------------*/
+    @DisplayName("Not false positive. Nearly valid false positive, but other cweId in meta data")
+    @Test
+    void no_false_positive_because_wrong_metadata_cweid() {
+        /* prepare */
+        testData.metaData.setCweId(CWE_ID_4711 + 1);
+
+        /* execute */
+        boolean isFalsePositive = strategyToTest.isFalsePositive(testData.vulnerability, testData.metaData);
 
         /* test */
         assertFalse(isFalsePositive);
@@ -44,52 +155,32 @@ class SerecoFalsePositiveWebScanStrategyTest {
 
     @DisplayName("Not false positive. Nearly valid false positive, but cweId in vulnerability is defined as 'other'")
     @Test
-    void no_false_positive_because_missing_data2() {
+    void no_false_positive_because_wrong_cwe_other() {
         /* prepare */
-        FalsePositiveMetaData metaData = createValidTestFalsePositiveMetaData();
-
-        SerecoVulnerability vulnerability = createValidTestVulnerability();
-        vulnerability.getClassification().setCwe("other");
+        testData.vulnerability.getClassification().setCwe("other");
 
         /* execute */
-        boolean isFalsePositive = strategyToTest.isFalsePositive(vulnerability, metaData);
+        boolean isFalsePositive = strategyToTest.isFalsePositive(testData.vulnerability, testData.metaData);
 
         /* test */
         assertFalse(isFalsePositive);
     }
 
-    @DisplayName("Not false positive. Same CWE id in vulnerability and metadata defined. Scan type set, but no web metata available. Must result in NO fp")
-    @Test
-    void no_false_positive_because_missing_data3() {
-        /* prepare */
-        FalsePositiveMetaData metaData = new FalsePositiveMetaData();
-        metaData.setCweId(4711);
-        metaData.setWeb(new FalsePositiveWebMetaData());
-
-        SerecoVulnerability vulnerability = new SerecoVulnerability();
-        vulnerability.getClassification().setCwe("4711");
-        vulnerability.setScanType(ScanType.WEB_SCAN);
-
-        /* execute */
-        boolean isFalsePositive = strategyToTest.isFalsePositive(vulnerability, metaData);
-
-        /* test */
-        assertFalse(isFalsePositive);
-    }
-
+    
+    /* --------------------------------------------------------------------------------*/
+    /* -----------ScanType tests-------------------------------------------------------*/
+    /* --------------------------------------------------------------------------------*/
+ 
     @ParameterizedTest
     @EnumSource(value = ScanType.class, names = "WEB_SCAN", mode = EnumSource.Mode.EXCLUDE)
     @DisplayName("Not false positive. Nearly valid false positive, but not marked because wrong scan type in meta data defined")
     @NullSource
     void no_false_positive_because_wrong_scan_type(ScanType type) {
         /* prepare */
-        FalsePositiveMetaData metaData = createValidTestFalsePositiveMetaData();
-        SerecoVulnerability vulnerability = createValidTestVulnerability();
-
-        vulnerability.setScanType(type);// but we change scan type...
+        testData.vulnerability.setScanType(type);// but we change scan type...
 
         /* execute */
-        boolean isFalsePositive = strategyToTest.isFalsePositive(vulnerability, metaData);
+        boolean isFalsePositive = strategyToTest.isFalsePositive(testData.vulnerability, testData.metaData);
 
         /* test */
         assertFalse(isFalsePositive);// no longer found
@@ -100,27 +191,47 @@ class SerecoFalsePositiveWebScanStrategyTest {
     @DisplayName("IS false positive. Valid false positive defined, scan type is correct")
     void is_false_positive_because_correct_scan_type(ScanType type) {
         /* prepare */
-        FalsePositiveMetaData metaData = createValidTestFalsePositiveMetaData();
-        SerecoVulnerability vulnerability = createValidTestVulnerability();
-
-        vulnerability.setScanType(type);// we change scan type...(if not already set)
+        testData.vulnerability.setScanType(type);// we change scan type...(if not already set)
 
         /* execute */
-        boolean isFalsePositive = strategyToTest.isFalsePositive(vulnerability, metaData);
+        boolean isFalsePositive = strategyToTest.isFalsePositive(testData.vulnerability, testData.metaData);
 
         /* test */
         assertTrue(isFalsePositive);// no longer found
     }
 
+    
+    
+    
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
     /* + ..................Helpers....................... + */
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    
+    private FalsePositivedTestDataContainer createTestDataWhicWouldLeadToAFalsePositive() {
+        return new FalsePositivedTestDataContainer();
+    }
+    
+    private class FalsePositivedTestDataContainer{
+        FalsePositiveMetaData metaData = createValidTestFalsePositiveMetaData();
+        SerecoVulnerability vulnerability = createValidTestVulnerability();
+    }
+    
     private FalsePositiveMetaData createValidTestFalsePositiveMetaData() {
         FalsePositiveMetaData metaData = new FalsePositiveMetaData();
         metaData.setCweId(4711);
         metaData.setScanType(ScanType.WEB_SCAN);
         FalsePositiveWebMetaData web = new FalsePositiveWebMetaData();
         metaData.setWeb(web);
+        
+        FalsePositiveWebRequestMetaData metaDataWebRequest = web.getRequest();
+        metaDataWebRequest.setAttackVector(ATTACK_VECTOR1);
+        metaDataWebRequest.setMethod("method1");
+        metaDataWebRequest.setProtocol("protocol1");
+        metaDataWebRequest.setTarget(TARGET1);
+        metaDataWebRequest.setVersion("version1");
+        FalsePositiveWebResponseMetaData metaDataWebResponse = web.getResponse();
+        metaDataWebResponse.setEvidence(EVIDENCE1);
+        
         return metaData;
     }
 
@@ -133,13 +244,17 @@ class SerecoFalsePositiveWebScanStrategyTest {
         
 
         SerecoWebRequest request = web.getRequest();
-        request.setMethod("method");
-        request.setTarget("target");
-        request.setProtocol("protocol");
-        request.setVersion("version");
+        request.setMethod("method1");
+        request.setTarget(TARGET1);
+        request.setProtocol("protocol1");
+        request.setVersion("version1");
 
         web.getResponse().setStatusCode(3333);
-
+        web.getAttack().setVector(ATTACK_VECTOR1);
+        
+        SerecoWebEvidence evidence = new SerecoWebEvidence();
+        web.getAttack().setEvicence(evidence);
+        evidence.setSnippet(EVIDENCE1);
         return vulnerability;
     }
 

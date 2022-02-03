@@ -15,6 +15,10 @@ public class SerecoWebAttack {
         this.vector = vector;
     }
 
+    /**
+     * 
+     * @return evidence or <code>null</code> when not defined
+     */
     public SerecoWebEvidence getEvicence() {
         return evicence;
     }

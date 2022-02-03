@@ -42,7 +42,11 @@ public class SerecoFalsePositiveCodeScanStrategy {
         notNull(vulnerability, " vulnerability may not be null");
         notNull(metaData, " metaData may not be null");
 
+        /* check supported scan type */
         if (metaData.getScanType() != ScanType.CODE_SCAN) {
+            return false;
+        }
+        if (vulnerability.getScanType()!= ScanType.WEB_SCAN) {
             return false;
         }
 
