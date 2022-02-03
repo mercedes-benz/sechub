@@ -4,6 +4,7 @@ package com.daimler.sechub.domain.scan.product.sereco;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.daimler.sechub.commons.model.ScanType;
 import com.daimler.sechub.domain.scan.project.FalsePositiveMetaData;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 
@@ -19,31 +20,34 @@ public class SerecoFalsePositiveFinder {
 
     @Autowired
     SerecoFalsePositiveCodeScanStrategy codeScanStrategy;
-    
+
     @Autowired
     SerecoFalsePositiveWebScanStrategy webScanStrategy;
-    
+
     public boolean isFound(SerecoVulnerability vulnerability, FalsePositiveMetaData metaData) {
-        if (! isVulnerabilityValid(vulnerability)) {
+        if (!isVulnerabilityValid(vulnerability)) {
             return false;
         }
-        if (! isMetaDataValid(metaData)) {
+        if (!isMetaDataValid(metaData)) {
             return false;
         }
-        switch (vulnerability.getScanType()) {
+        ScanType scanType = vulnerability.getScanType();
+        switch (scanType) {
         case CODE_SCAN:
             return codeScanStrategy.isFalsePositive(vulnerability, metaData);
+        case WEB_SCAN:
+            return webScanStrategy.isFalsePositive(vulnerability, metaData);
         default:
             return false;
         }
     }
-    
+
     private boolean isMetaDataValid(FalsePositiveMetaData metaData) {
         if (metaData == null) {
             return false;
         }
         String name = metaData.getName();
-        if (name==null) {
+        if (name == null) {
             return false;
         }
         return true;
@@ -56,7 +60,7 @@ public class SerecoFalsePositiveFinder {
         if (vulnerability.getScanType() == null) {
             return false;
         }
-        if (vulnerability.getType()==null) {
+        if (vulnerability.getType() == null) {
             return false;
         }
         return true;
