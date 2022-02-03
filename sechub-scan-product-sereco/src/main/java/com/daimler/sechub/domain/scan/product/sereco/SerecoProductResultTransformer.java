@@ -99,6 +99,13 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
             ScanType scanType = vulnerability.getScanType();
             finding.setType(scanType);
 
+            if (scanType == null) {
+                // this should normally only happen for artificial vulnerability which
+                // were added for SecHub failures (a legacy feature which will be removed in
+                // future).
+                scanType = ScanType.UNKNOWN;
+                LOG.debug("Finding:{} '{}' has no scan type set. Use {} as fallback.", findingId, vulnerability.getType(), scanType);
+            }
             switch (scanType) {
             case CODE_SCAN:
                 finding.setCode(convert(vulnerability.getCode()));
@@ -110,9 +117,9 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
                 break;
             default:
                 break;
-                
+
             }
-            
+
             findings.add(finding);
         }
 
@@ -130,11 +137,11 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
         SecHubReportWeb sechubWeb = new SecHubReportWeb();
         SecHubReportWebRequest sechubRequest = sechubWeb.getRequest();
         SerecoWeb serecoWeb = vulnerability.getWeb();
-        if (serecoWeb==null) {
-            LOG.error("Web scan, but vulnerability has no web object inside - must skip finding {} for report with uuid=",finding.getId(), sechubJobUUID);
+        if (serecoWeb == null) {
+            LOG.error("Web scan, but vulnerability has no web object inside - must skip finding {} for report with uuid=", finding.getId(), sechubJobUUID);
             return;
         }
-        /* request*/
+        /* request */
         SerecoWebRequest serecoRequest = serecoWeb.getRequest();
         sechubRequest.setProtocol(serecoRequest.getProtocol());
         sechubRequest.setVersion(serecoRequest.getVersion());
@@ -142,10 +149,10 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
         sechubRequest.setMethod(serecoRequest.getMethod());
 
         sechubRequest.getHeaders().putAll(serecoRequest.getHeaders());
-        
+
         sechubRequest.getBody().setText(serecoRequest.getBody().getText());
         sechubRequest.getBody().setBinary(serecoRequest.getBody().getBinary());
-        
+
         /* response */
         SerecoWebResponse serecoResponse = serecoWeb.getResponse();
         SecHubReportWebResponse sechubResponse = sechubWeb.getResponse();
@@ -154,30 +161,29 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
         sechubResponse.setProtocol(serecoResponse.getProtocol());
         sechubResponse.setVersion(serecoResponse.getVersion());
         sechubResponse.getHeaders().putAll(serecoResponse.getHeaders());
-        
+
         sechubResponse.getBody().setText(serecoResponse.getBody().getText());
         sechubResponse.getBody().setBinary(serecoResponse.getBody().getBinary());
-        
-        
+
         /* attack */
         SerecoWebAttack serecoAttack = serecoWeb.getAttack();
         SecHubReportWebAttack sechubAttack = sechubWeb.getAttack();
         sechubAttack.setVector(serecoAttack.getVector());
-        
+
         SerecoWebEvidence serecoEvidence = serecoAttack.getEvicence();
-        if (serecoEvidence!=null) {
+        if (serecoEvidence != null) {
             SecHubReportWebEvidence sechubEvidence = new SecHubReportWebEvidence();
             sechubEvidence.setSnippet(serecoEvidence.getSnippet());
-            
+
             SerecoWebBodyLocation serecoBodyLocation = serecoEvidence.getBodyLocation();
-            if (serecoBodyLocation!=null) {
+            if (serecoBodyLocation != null) {
                 SecHubReportWebBodyLocation sechubBodyLocation = new SecHubReportWebBodyLocation();
                 sechubBodyLocation.setStartLine((serecoBodyLocation.getStartLine()));
                 sechubEvidence.setBodyLocation(sechubBodyLocation);
             }
             sechubAttack.setEvidence(sechubEvidence);
         }
-        
+
         finding.setWeb(sechubWeb);
     }
 

@@ -25,6 +25,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
 
+import com.daimler.sechub.commons.model.JSONConverter;
 import com.daimler.sechub.integrationtest.internal.DefaultTestExecutionProfile;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestContext;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultProfiles;
@@ -188,11 +189,23 @@ public class TestAPI {
         TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, timeOutInSeconds, HttpClientErrorException.class) {
             @Override
             public boolean runImpl() throws Exception {
-                String status = as(getUser()).getJobStatus(project.getProjectId(), jobUUID);
-                LOG.debug(">>>>>>>>>JOB:STATUS:" + status);
-                return status.contains("OK");
+                TestSecHubJobStatus jobStatus = getSecHubJobStatus(project, jobUUID,getUser());
+                if (jobStatus.hasResultFailed()) {
+                    String prettyJSON = JSONConverter.get().toJSON(jobStatus, true);
+                    fail("The job execution has failed - skip further attempts to check that job will be done.\n-Status data:\n"+prettyJSON+"\n\n- Please refer to server and/or PDS logs for reason.");
+                }
+                return jobStatus.hasResultOK();
             }
+
+           
         });
+    }
+    
+    public static TestSecHubJobStatus getSecHubJobStatus(TestProject project, UUID jobUUID, TestUser asUser) {
+        String status = as(asUser).getJobStatus(project.getProjectId(), jobUUID);
+        LOG.debug(">>>>>>>>>JOB:STATUS:" + status);
+        TestSecHubJobStatus jobStatus = TestSecHubJobStatus.fromJSON(status);
+        return jobStatus;
     }
 
     /**
@@ -250,14 +263,14 @@ public class TestAPI {
     }
 
     /**
-     * Waits for sechub job being cancele requested - after 5 seconds time out is
+     * Waits for sechub job being failed - after 5 seconds time out is
      * reached
      * 
      * @param project
      * @param jobUUID
      */
     @SuppressWarnings("unchecked")
-    public static void waitForJobResultFailed(TestProject project, UUID jobUUID) {
+    public static void waitForJobStatusFailed(TestProject project, UUID jobUUID) {
         LOG.debug("wait for job failed project:{}, job:{}", project.getProjectId(), jobUUID);
 
         TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, 5, HttpClientErrorException.class) {
@@ -274,38 +287,38 @@ public class TestAPI {
         return System.currentTimeMillis() - start < maxMilliseconds;
     }
 
-    public static void executeUntilSuccessOrTimeout(TestExecutable e) {
+    public static void executeUntilSuccessOrTimeout(TestExecutable testExecutable) {
         long start = System.currentTimeMillis();
-        int maxMilliseconds = e.getTimeoutInSeconds() * 1000;
+        int maxMilliseconds = testExecutable.getTimeoutInSeconds() * 1000;
         do {
             boolean stop = false;
             try {
-                stop = e.run();
-            } catch (Exception ex) {
+                stop = testExecutable.run();
+            } catch (Exception exception) {
                 /* ignore */
                 boolean handled = false;
-                for (Class<? extends Exception> hec : e.getHandledExceptions()) {
-                    if (ex.getClass().isAssignableFrom(hec)) {
+                for (Class<? extends Exception> handledException : testExecutable.getHandledExceptions()) {
+                    if (exception.getClass().isAssignableFrom(handledException)) {
                         handled = true;
                         break;
                     }
                 }
                 if (!handled) {
-                    throw new IllegalStateException("An unexpected / unhandled exception occurred at execution time!", ex);
+                    throw new IllegalStateException("An unexpected / unhandled exception occurred at execution time!", exception);
                 }
             }
             if (stop) {
                 return;
             }
-            if (e.getTimeToWaitInMillis() > 0) {
+            if (testExecutable.getTimeToWaitInMillis() > 0) {
                 try {
-                    Thread.sleep(e.getTimeToWaitInMillis());
+                    Thread.sleep(testExecutable.getTimeToWaitInMillis());
                 } catch (InterruptedException e1) {
                     Thread.currentThread().interrupt();
                 }
             }
         } while (notExceeded(maxMilliseconds, start));
-        fail("Timeout of waiting for successful execution - waited " + e.getTimeoutInSeconds() + " seconds");
+        fail("Timeout of waiting for successful execution - waited " + testExecutable.getTimeoutInSeconds() + " seconds");
         return;
     }
 
