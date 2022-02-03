@@ -117,7 +117,7 @@ func Example_validateRequestedReportFormatMakesLowercase1() {
 	// TEST
 	fmt.Println(config.reportFormat)
 	// Output:
-	// WARNING: Given report format did contain uppercase characters which are not accepted by SecHub server - so changed to lowercase before sending
+	// NOTICE: Converted requested report format 'HTML' to lowercase. Because it contained uppercase characters, which are not accepted by SecHub server.
 	// html
 }
 
@@ -130,6 +130,6 @@ func Example_validateRequestedReportFormatMakesLowercase2() {
 	// TEST
 	fmt.Println(config.reportFormat)
 	// Output:
-	// WARNING: Given report format did contain uppercase characters which are not accepted by SecHub server - so changed to lowercase before sending
+	// NOTICE: Converted requested report format 'Json' to lowercase. Because it contained uppercase characters, which are not accepted by SecHub server.
 	// json
 }

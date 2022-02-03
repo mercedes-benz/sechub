@@ -223,8 +223,8 @@ func assertValidConfig(configPtr *Config) {
 	}
 
 	// For convenience: lowercase user id and project id if needed
-	configPtr.user = lowercaseOrWarning(configPtr.user, "user id")
-	configPtr.projectID = lowercaseOrWarning(configPtr.projectID, "project id")
+	configPtr.user = lowercaseOrNotice(configPtr.user, "user id")
+	configPtr.projectID = lowercaseOrNotice(configPtr.projectID, "project id")
 	// Remove trailing slash from url if present
 	configPtr.server = strings.TrimSuffix(configPtr.server, "/")
 }
@@ -241,7 +241,7 @@ func isConfigFieldFilled(configPTR *Config, field string) bool {
 
 // validateRequestedReportFormat issue warning in case of an unknown report format + lowercase if needed
 func validateRequestedReportFormat(config *Config) {
-	config.reportFormat = lowercaseOrWarning(config.reportFormat, "report format")
+	config.reportFormat = lowercaseOrNotice(config.reportFormat, "requested report format")
 
 	if !sechubUtil.StringArrayContains(SupportedReportFormats, config.reportFormat) {
 		sechubUtil.LogWarning("Unsupported report format '" + config.reportFormat + "'. Changing to 'json'.")
