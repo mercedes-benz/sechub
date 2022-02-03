@@ -243,7 +243,6 @@ func isConfigFieldFilled(configPTR *Config, field string) bool {
 func validateRequestedReportFormat(config *Config) {
 	config.reportFormat = lowercaseOrWarning(config.reportFormat, "report format")
 
-	// if !sechubUtil.ArrayContains(SupportedReportFormats, config.reportFormat) {
 	if !sechubUtil.StringArrayContains(SupportedReportFormats, config.reportFormat) {
 		sechubUtil.LogWarning("Unsupported report format '" + config.reportFormat + "'. Changing to 'json'.")
 		config.reportFormat = "json"
