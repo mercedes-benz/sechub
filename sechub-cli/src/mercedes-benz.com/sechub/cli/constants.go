@@ -27,6 +27,9 @@ const DefaultTimeoutInSeconds = 120
 // - ignore "node_modules" directories which may contain millions of lines of library code
 var DefaultZipExcludeDirPatterns = []string{"**/test/**", "**/.git/**", "**/node_modules/**"}
 
+// SupportedReportFormats - Supported output formats for SecHub reports
+var SupportedReportFormats = []string{"json", "html"}
+
 /* ---------------------------------- */
 /* -------- Exit codes -------------- */
 /* ---------------------------------- */

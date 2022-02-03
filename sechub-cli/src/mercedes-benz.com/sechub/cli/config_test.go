@@ -95,3 +95,41 @@ func Example_willTrailingSlashBeRemovedFromUrl() {
 	fmt.Println(config.server)
 	// Output: https://test.example.org
 }
+
+func TestValidateRequestedReportFormat(t *testing.T) {
+	// PREPARE
+	config := NewConfigByFlags()
+	config.reportFormat = "written-on-paper"
+	// EXECUTE
+	validateRequestedReportFormat(config)
+	// TEST
+	if config.reportFormat != "json" {
+		t.Errorf("Reportformat was not changed to 'json'. Got '%s'.", config.reportFormat)
+	}
+}
+
+func Example_validateRequestedReportFormatMakesLowercase1() {
+	// PREPARE
+	config := NewConfigByFlags()
+	config.reportFormat = "HTML"
+	// EXECUTE
+	validateRequestedReportFormat(config)
+	// TEST
+	fmt.Println(config.reportFormat)
+	// Output:
+	// NOTICE: Converted requested report format 'HTML' to lowercase. Because it contained uppercase characters, which are not accepted by SecHub server.
+	// html
+}
+
+func Example_validateRequestedReportFormatMakesLowercase2() {
+	// PREPARE
+	config := NewConfigByFlags()
+	config.reportFormat = "Json"
+	// EXECUTE
+	validateRequestedReportFormat(config)
+	// TEST
+	fmt.Println(config.reportFormat)
+	// Output:
+	// NOTICE: Converted requested report format 'Json' to lowercase. Because it contained uppercase characters, which are not accepted by SecHub server.
+	// json
+}
