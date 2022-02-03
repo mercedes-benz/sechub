@@ -3,11 +3,18 @@ package com.daimler.sechub.adapter;
 
 import java.net.URI;
 import java.net.URL;
+import java.util.Set;
 
 import com.daimler.sechub.commons.model.SecHubTimeUnit;
 import com.daimler.sechub.commons.model.login.ActionType;
 
 
+/**
+ * Web scan adapter configuration builder
+ *
+ * @param <B> Builder
+ * @param <C> Configuration
+ */
 public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebScanAdapterConfigBuilder<B, C>, C extends WebScanAdapterConfig>
     extends AbstractAdapterConfigBuilder<B, C>
 {
@@ -16,9 +23,23 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
     private SecHubTimeUnitData maxScanDuration;
     private URI targetURI;
     private URI rootTargetURI;
+    private Set<String> includes;
+    private Set<String> excludes;
    
     protected AbstractWebScanAdapterConfigBuilder() {
         super();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public B setIncludes(Set<String> includes) {
+        this.includes = includes;
+        return (B) this;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public B setExcludes(Set<String> excludes) {
+        this.excludes = excludes;
+        return (B) this;
     }
     
     @SuppressWarnings("unchecked")
@@ -209,6 +230,8 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
         abstractWebScanConfig.maxScanDuration = maxScanDuration;
         abstractWebScanConfig.targetURI = targetURI;
         abstractWebScanConfig.rootTargetURI = rootTargetURI;
+        abstractWebScanConfig.includes = includes;
+        abstractWebScanConfig.excludes = excludes;
 
         if (currentLoginBuilder == null) {
             return;

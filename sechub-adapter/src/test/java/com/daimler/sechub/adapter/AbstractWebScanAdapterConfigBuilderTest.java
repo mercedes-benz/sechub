@@ -8,8 +8,10 @@ import static org.mockito.Mockito.*;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -180,6 +182,40 @@ public class AbstractWebScanAdapterConfigBuilderTest {
         /* test */
         assertEquals(uri, configToTest.getTargetURI());
         assertEquals(uriString, configToTest.getTargetAsString());
+    }
+    
+    @Test
+    public void test_includes() {
+        /* prepare */
+        Set<String> includes = new HashSet<>();
+        includes.add("/abc");
+        includes.add("/hidden");
+        includes.add("/bca/gda#ab");
+        includes.add("/cba/abc/cdb?abc=3");
+        
+        /* execute */
+        TestWebScanAdapterConfig testAdapterConfig = new TestAbstractWebScanAdapterConfigBuilder().setIncludes(includes).build();
+
+        /* test */
+        assertNotNull(testAdapterConfig);
+        assertEquals(includes, testAdapterConfig.getIncludes());
+    }
+
+    @Test
+    public void test_excludes() {
+        /* prepare */
+        Set<String> excludes = new HashSet<>();
+        excludes.add("/abc");
+        excludes.add("/hidden");
+        excludes.add("/bca/gda#ab");
+        excludes.add("/cba/abc/cdb?abc=3");
+        
+        /* execute */
+        TestWebScanAdapterConfig testAdapterConfig = new TestAbstractWebScanAdapterConfigBuilder().setExcludes(excludes).build();
+
+        /* test */
+        assertNotNull(testAdapterConfig);
+        assertEquals(excludes, testAdapterConfig.getExcludes());
     }
 
     @Test

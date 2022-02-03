@@ -1,15 +1,15 @@
 {
   "apiVersion" : "1.0",
   "webScan" : {
-    "uri" : "https://productfailure.demo.example.org",
+    "uri" : "https://demo.example.org/myapp",
     "includes": [ "/portal/admin", "/abc.html", "/hidden" ],
     "excludes": [ "/public/media", "/contact.html", "/static" ],
     "maxScanDuration" : {
-      "duration" : 2,
-      "unit" : "hours"
+      "duration" : 35,
+      "unit" : "minutes"
     },
     "login" : {
-      "url" : "https://productfailure.demo.example.org/login",
+      "url" : "https://demo.example.org/myapp/login",
       "basic" : {
         "realm" : "realm0",
         "user" : "user0",

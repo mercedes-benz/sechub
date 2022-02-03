@@ -2,6 +2,7 @@
 package com.daimler.sechub.adapter;
 
 import java.net.URI;
+import java.util.Set;
 
 public abstract class AbstractWebScanAdapterConfig extends AbstractAdapterConfig implements WebScanAdapterConfig {
 
@@ -10,7 +11,17 @@ public abstract class AbstractWebScanAdapterConfig extends AbstractAdapterConfig
     URI targetURI;
     URI rootTargetURI;
     String targetType;
+    Set<String> includes;
+    Set<String> excludes;
 
+    public Set<String> getIncludes() {
+        return includes;
+    }
+
+    public Set<String> getExcludes() {
+        return excludes;
+    }
+    
     public SecHubTimeUnitData getMaxScanDuration() {
         return maxScanDuration;
     }

@@ -2,8 +2,10 @@
 package com.daimler.sechub.domain.scan;
 
 import java.net.URL;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import com.daimler.sechub.adapter.AbstractAdapterConfigBuilder;
 import com.daimler.sechub.adapter.AbstractWebScanAdapterConfig;
@@ -16,7 +18,6 @@ import com.daimler.sechub.commons.model.SecHubTimeUnit;
 import com.daimler.sechub.commons.model.SecHubWebScanConfiguration;
 import com.daimler.sechub.commons.model.WebScanDurationConfiguration;
 import com.daimler.sechub.commons.model.login.Action;
-import com.daimler.sechub.commons.model.login.AutoDetectUserLoginConfiguration;
 import com.daimler.sechub.commons.model.login.BasicLoginConfiguration;
 import com.daimler.sechub.commons.model.login.FormLoginConfiguration;
 import com.daimler.sechub.commons.model.login.Page;
@@ -38,7 +39,9 @@ import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
  * @param <C> configuration
  */
 public class WebConfigBuilderStrategy implements AdapterConfigurationStrategy/* <B, C> */ {
-
+    public static final int MAX_LIST_SIZE_INCLUDES_EXCLUDES = 500;
+    public static final int MAX_LENGTH_INCLUDES_EXCLUDES = 2048;
+    
     private SecHubExecutionContext context;
 
     public WebConfigBuilderStrategy(SecHubExecutionContext context) {
@@ -71,6 +74,8 @@ public class WebConfigBuilderStrategy implements AdapterConfigurationStrategy/* 
         configBuilder.setTargetURI(webscanConfig.getUri());
         
         handleMaxScanDuration(configBuilder, webscanConfig);
+        handleIncludes(configBuilder, webscanConfig);
+        handleExcludes(configBuilder, webscanConfig);
 
         /* ----------------------- LOGIN ----------------------- */
 
@@ -97,16 +102,64 @@ public class WebConfigBuilderStrategy implements AdapterConfigurationStrategy/* 
         }
         FormLoginConfiguration formLoginConfig = formLogin.get();
 
-        /* ------ FORM:AUTODETECT --------- */
-        if (formLoginConfig.getAutodetect().isPresent()) {
-            configureAutodetectAuth(configBuilder, loginUrl, formLoginConfig.getAutodetect().get());
-            return;
-        }
         /* ------ FORM:SCRIPT--------- */
         if (formLoginConfig.getScript().isPresent()) {
             configureScriptAuth(configBuilder, loginUrl, formLoginConfig.getScript().get());
         }
 
+    }
+    
+    private <B extends AbstractWebScanAdapterConfigBuilder<B, ?>> void handleIncludes(B configBuilder, SecHubWebScanConfiguration webscanConfig) {
+        Optional<List<String>> optIncludes = webscanConfig.getIncludes();
+        if (!optIncludes.isPresent()) {
+            return;
+        }
+        
+        List<String> includesList = optIncludes.get();
+        
+        checkExcludesOrIncludes(includesList, true);
+        
+        Set<String> includes = new HashSet<>(includesList);
+
+        configBuilder.setIncludes(includes);
+    }
+    
+    private <B extends AbstractWebScanAdapterConfigBuilder<B, ?>> void handleExcludes(B configBuilder, SecHubWebScanConfiguration webscanConfig) {
+        Optional<List<String>> optExcludes = webscanConfig.getExcludes();
+
+        if (!optExcludes.isPresent()) {
+            return;
+        }
+        
+        List<String> excludeList = optExcludes.get();
+
+        checkExcludesOrIncludes(excludeList, false);
+        
+        Set<String> excludes = new HashSet<>(excludeList);
+
+        configBuilder.setExcludes(excludes);
+    }
+    
+    private void checkExcludesOrIncludes(List<String> urlList, boolean include) {
+        String term = "excludes";
+        
+        if (urlList.size() > MAX_LIST_SIZE_INCLUDES_EXCLUDES) {
+            if (include) {
+                term = "includes";
+            }
+            throw new IllegalArgumentException("A maximum of " + MAX_LIST_SIZE_INCLUDES_EXCLUDES + " " + term + " are allowed.");
+        }
+        
+        for (String url : urlList) {
+            if (url.length() > MAX_LENGTH_INCLUDES_EXCLUDES) {
+                String excludeSubStr = url.substring(0, MAX_LENGTH_INCLUDES_EXCLUDES);
+                throw new IllegalArgumentException("Maximum URL length is " + MAX_LENGTH_INCLUDES_EXCLUDES + " characters. The first " + MAX_LENGTH_INCLUDES_EXCLUDES + " characters of the URL in question: " + excludeSubStr);
+            }
+            if (!url.startsWith("/")) {
+                throw new IllegalArgumentException("The URL does not start with a slash '/'. URL: " + url);
+            }
+
+        }
     }
 
     private <B extends AbstractWebScanAdapterConfigBuilder<B, ?>> void handleMaxScanDuration(B configBuilder, SecHubWebScanConfiguration webscanConfig) {
@@ -136,23 +189,6 @@ public class WebConfigBuilderStrategy implements AdapterConfigurationStrategy/* 
 					realm(config.getRealm().orElse(null)).
 		endLogin();
 		/* @formatter:on */
-    }
-
-    /* ------------------------ */
-    /* +---- FORM:AUTODETECT -+ */
-    /* ------------------------ */
-    private <B extends AbstractWebScanAdapterConfigBuilder<B, ?>> void configureAutodetectAuth(B configBuilder, URL loginUrl,
-            AutoDetectUserLoginConfiguration autoDetect) {
-        /* @formatter:off */
-		configBuilder.
-			login().
-				url(loginUrl).
-				form().
-					autoDetect().
-						username(new String(autoDetect.getUser())).
-						password(new String(autoDetect.getPassword())).
-			endLogin();
-		/* @formatter:on*/
     }
 
     /* ------------------------ */
