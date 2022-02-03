@@ -39,7 +39,8 @@ public class PDSCodeScanSarifJobScenario9IntTest {
     TestProject project = PROJECT_1;
 
     /**
-     * Important: This test is only working when we have same storage for SECHUB and for PDS defined!
+     * Important: This test is only working when we have same storage for SECHUB and
+     * for PDS defined!
      */
     @Test
     public void pds_reuses_sechub_data__a_user_can_start_a_pds_sarif_scan_and_get_result() {
@@ -55,7 +56,7 @@ public class PDSCodeScanSarifJobScenario9IntTest {
             upload(project, jobUUID, PATH).
             approveJob(project, jobUUID);
         
-        waitForJobDone(project, jobUUID,30);
+        waitForJobDone(project, jobUUID,30,true);
         
         /* test */
         // test storage is a SecHub storage and no PDS storage

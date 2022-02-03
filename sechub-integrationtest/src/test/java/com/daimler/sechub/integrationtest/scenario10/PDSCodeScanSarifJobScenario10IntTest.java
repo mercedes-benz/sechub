@@ -52,7 +52,7 @@ public class PDSCodeScanSarifJobScenario10IntTest {
             upload(project, jobUUID, PATH).
             approveJob(project, jobUUID);
         
-        waitForJobDone(project, jobUUID,10);
+        waitForJobDone(project, jobUUID,10, true);
         
         /* test */
         // test storage is a sechub storage and no PDS storage

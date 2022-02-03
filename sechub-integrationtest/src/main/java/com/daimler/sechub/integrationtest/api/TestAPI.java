@@ -166,41 +166,63 @@ public class TestAPI {
 
     /**
      * Waits for sechub job being done (means status execution result is OK) - after
-     * 5 seconds time out is reached
+     * 5 seconds time out is reached. When job is in state "failing" it will be
+     * ignored and retried until time out or "success" state reached. This method should 
+     * normally only be used in test cases where a former job has been canceled
      * 
      * @param project
      * @param jobUUID
      */
-    public static void waitForJobDone(TestProject project, UUID jobUUID) {
-        waitForJobDone(project, jobUUID, 5);
+    public static void waitForJobDoneAndEvenWaitWhileJobIsFailing(TestProject project, UUID jobUUID) {
+        waitForJobDone(project, jobUUID, 5, false);
+    }
+    
+    /**
+     * Waits for sechub job being done (means status execution result is OK) - after
+     * 5 seconds time out is reached. When job is in state "failing" it will be
+     * ignored and retried until time out or "success" state reached.
+     * 
+     * @param project
+     * @param jobUUID
+     */
+    public static void waitForJobDoneAndFailWhenJobIsFailing(TestProject project, UUID jobUUID) {
+        waitForJobDone(project, jobUUID, 5, true);
     }
 
     /**
-     * Waits for sechub job being done (means status execution result is OK)- after
-     * 5 seconds time out is reached
+     * Waits for SecHub job being done (means status execution result is OK)- after
+     * 5 seconds time out is reached.
      * 
-     * @param project
-     * @param jobUUID
+     * @param project project being inspected
+     * @param jobUUID job uuid to inspect status
+     * @param timeOutInSeconds time out in seconds when no retry is possible any more
+     * @param jobMayNeverFail  when <code>true</code> the first job result in state
+     *                         "failing" will automatically stop inspection and let
+     *                         the test fail. This can be useful have faster
+     *                         feedback and more details about the returned job
+     *                         status (which is printed out in test log).
      */
     @SuppressWarnings("unchecked")
-    public static void waitForJobDone(TestProject project, UUID jobUUID, int timeOutInSeconds) {
+    public static void waitForJobDone(TestProject project, UUID jobUUID, int timeOutInSeconds, boolean jobMayNeverFail) {
         LOG.debug("wait for job done project:{}, job:{}", project.getProjectId(), jobUUID);
 
-        TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, timeOutInSeconds, HttpClientErrorException.class) {
+        executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, timeOutInSeconds, HttpClientErrorException.class) {
+
             @Override
-            public boolean runImpl() throws Exception {
-                TestSecHubJobStatus jobStatus = getSecHubJobStatus(project, jobUUID,getUser());
-                if (jobStatus.hasResultFailed()) {
+            public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
+                TestSecHubJobStatus jobStatus = getSecHubJobStatus(project, jobUUID, getUser());
+
+                if (jobMayNeverFail && jobStatus.hasResultFailed()) {
                     String prettyJSON = JSONConverter.get().toJSON(jobStatus, true);
-                    fail("The job execution has failed - skip further attempts to check that job will be done.\n-Status data:\n"+prettyJSON+"\n\n- Please refer to server and/or PDS logs for reason.");
+                    fail("The job execution has failed - skip further attempts to check that job will be done.\n-Status data:\n" + prettyJSON
+                            + "\n\n- Please refer to server and/or PDS logs for reason.");
                 }
                 return jobStatus.hasResultOK();
             }
 
-           
         });
     }
-    
+
     public static TestSecHubJobStatus getSecHubJobStatus(TestProject project, UUID jobUUID, TestUser asUser) {
         String status = as(asUser).getJobStatus(project.getProjectId(), jobUUID);
         LOG.debug(">>>>>>>>>JOB:STATUS:" + status);
@@ -231,9 +253,9 @@ public class TestAPI {
         LOG.debug("wait for job running project:{}, job:{}, timeToWaitInMillis{}, timeOutInSeconds:{}", project.getProjectId(), jobUUID, timeToWaitInMillis,
                 timeOutInSeconds);
 
-        TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, timeOutInSeconds, timeToWaitInMillis, HttpClientErrorException.class) {
+        executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, timeOutInSeconds, timeToWaitInMillis, HttpClientErrorException.class) {
             @Override
-            public boolean runImpl() throws Exception {
+            public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
                 String status = as(getUser()).getJobStatus(project.getProjectId(), jobUUID);
                 LOG.debug(">>>>>>>>>JOB:STATUS:" + status);
                 return status.contains("STARTED");
@@ -252,9 +274,9 @@ public class TestAPI {
     public static void waitForJobStatusCancelRequested(TestProject project, UUID jobUUID) {
         LOG.debug("wait for job cancel requested project:{}, job:{}", project.getProjectId(), jobUUID);
 
-        TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, 5, HttpClientErrorException.class) {
+        executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, 5, HttpClientErrorException.class) {
             @Override
-            public boolean runImpl() throws Exception {
+            public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
                 String status = as(getUser()).getJobStatus(project.getProjectId(), jobUUID);
                 LOG.debug(">>>>>>>>>JOB:STATUS:" + status);
                 return status.contains("CANCEL_REQUESTED");
@@ -263,8 +285,7 @@ public class TestAPI {
     }
 
     /**
-     * Waits for sechub job being failed - after 5 seconds time out is
-     * reached
+     * Waits for sechub job being failed - after 5 seconds time out is reached
      * 
      * @param project
      * @param jobUUID
@@ -273,9 +294,9 @@ public class TestAPI {
     public static void waitForJobStatusFailed(TestProject project, UUID jobUUID) {
         LOG.debug("wait for job failed project:{}, job:{}", project.getProjectId(), jobUUID);
 
-        TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, 5, HttpClientErrorException.class) {
+        executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, 5, HttpClientErrorException.class) {
             @Override
-            public boolean runImpl() throws Exception {
+            public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
                 String status = as(getUser()).getJobStatus(project.getProjectId(), jobUUID);
                 LOG.debug(">>>>>>>>>JOB:STATUS:" + status);
                 return status.contains("FAILED");
@@ -291,9 +312,9 @@ public class TestAPI {
         long start = System.currentTimeMillis();
         int maxMilliseconds = testExecutable.getTimeoutInSeconds() * 1000;
         do {
-            boolean stop = false;
+            boolean runWasSuccessful = false;
             try {
-                stop = testExecutable.run();
+                runWasSuccessful = testExecutable.runAndReturnTrueWhenSuccesful();
             } catch (Exception exception) {
                 /* ignore */
                 boolean handled = false;
@@ -307,9 +328,11 @@ public class TestAPI {
                     throw new IllegalStateException("An unexpected / unhandled exception occurred at execution time!", exception);
                 }
             }
-            if (stop) {
+            if (runWasSuccessful) {
                 return;
             }
+
+            /* not successful, so please wait */
             if (testExecutable.getTimeToWaitInMillis() > 0) {
                 try {
                     Thread.sleep(testExecutable.getTimeToWaitInMillis());
@@ -318,6 +341,8 @@ public class TestAPI {
                 }
             }
         } while (notExceeded(maxMilliseconds, start));
+
+        /* was not possible to execute succesful in given time range */
         fail("Timeout of waiting for successful execution - waited " + testExecutable.getTimeoutInSeconds() + " seconds");
         return;
     }
@@ -905,7 +930,7 @@ public class TestAPI {
     }
 
     public static void assertNoDefaultProfileId(String profileId) {
-        for (DefaultTestExecutionProfile doNotChangeProfile : IntegrationTestDefaultProfiles.getAllDefaultProfiles()){
+        for (DefaultTestExecutionProfile doNotChangeProfile : IntegrationTestDefaultProfiles.getAllDefaultProfiles()) {
             if (doNotChangeProfile.id.equals(profileId)) {
                 throw new IllegalArgumentException("Profile " + profileId
                         + " is a default profile and may not be changed! This would destroy test scenarios! Please define own profiles in your tests and change them!");
