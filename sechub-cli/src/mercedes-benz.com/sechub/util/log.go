@@ -17,7 +17,7 @@ func LogWarning(text string) {
 	fmt.Println("WARNING:", text)
 }
 
-// LogWarning - print unified warn message
+// LogNotice - print unified notice
 func LogNotice(text string) {
 	fmt.Println("NOTICE:", text)
 }
