@@ -2,7 +2,7 @@ package com.daimler.sechub.commons.model.web;
 
 public class SecHubReportWebBodyLocation {
 
-    int startLine;
+    private int startLine;
     
     public int getStartLine() {
         return startLine;

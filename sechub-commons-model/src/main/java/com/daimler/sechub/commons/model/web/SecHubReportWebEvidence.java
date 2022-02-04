@@ -3,9 +3,9 @@ package com.daimler.sechub.commons.model.web;
 import java.util.Objects;
 
 public class SecHubReportWebEvidence {
-    
-    String snippet;
-    SecHubReportWebBodyLocation bodyLocation;
+
+    private String snippet;
+    private SecHubReportWebBodyLocation bodyLocation;
 
     public String getSnippet() {
         return snippet;
@@ -47,7 +47,5 @@ public class SecHubReportWebEvidence {
     public String toString() {
         return "SecHubReportWebEvidence [" + (snippet != null ? "snippet=" + snippet + ", " : "") + "bodyLocation=" + bodyLocation + "]";
     }
-    
-    
-    
+
 }

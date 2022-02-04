@@ -5,7 +5,6 @@ import static com.daimler.sechub.sharedkernel.util.Assert.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.daimler.sechub.commons.core.util.SimpleStringUtils;
@@ -28,17 +27,15 @@ import com.daimler.sechub.sereco.metadata.SerecoWebEvidence;
 @Component
 public class SerecoFalsePositiveWebScanStrategy {
 
-    @Autowired
-    SerecoSourceRelevantPartResolver relevantPartResolver;
-
     private static final Logger LOG = LoggerFactory.getLogger(SerecoFalsePositiveWebScanStrategy.class);
 
     /**
-     * Given data is supposed to be valid
+     * Checks if given vulnerability is identified as false positive by given meta
+     * data
      * 
      * @param vulnerability
      * @param metaData
-     * @return true when identified as false positive
+     * @return <code>true </code>when identified as false positive
      */
     public boolean isFalsePositive(SerecoVulnerability vulnerability, FalsePositiveMetaData metaData) {
         notNull(vulnerability, " vulnerability may not be null");
@@ -104,12 +101,12 @@ public class SerecoFalsePositiveWebScanStrategy {
         sameData = sameData && SimpleStringUtils.isTrimmedEqual(metaTarget, vulnerabilityTarget);
 
         /* ---------------------------------------------------- */
-        /* -------------------Target--------------------------- */
+        /* -------------------HTTP Method---------------------- */
         /* ---------------------------------------------------- */
         String metaMethod = metaDataWeb.getRequest().getMethod();
         String vulnerabilityMethod = vulnerabilityWeb.getRequest().getMethod();
         sameData = sameData && SimpleStringUtils.isTrimmedEqual(metaMethod, vulnerabilityMethod);
-        
+
         /* ---------------------------------------------------- */
         /* -------------------Attack vector-------------------- */
         /* ---------------------------------------------------- */

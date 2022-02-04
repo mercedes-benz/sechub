@@ -6,14 +6,14 @@ import java.util.TreeMap;
 
 public class SecHubReportWebResponse {
 
-    int statusCode;
-    String reasonPhrase;
-    String protocol;
-    String version;
+    private int statusCode;
+    private String reasonPhrase;
+    private String protocol;
+    private String version;
 
-    Map<String, String> headers = new TreeMap<>();
+    private Map<String, String> headers = new TreeMap<>();
 
-    SecHubReportWebBody body = new SecHubReportWebBody();
+    private SecHubReportWebBody body = new SecHubReportWebBody();
 
     public int getStatusCode() {
         return statusCode;

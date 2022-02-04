@@ -3,9 +3,9 @@ package com.daimler.sechub.commons.model.web;
 import java.util.Objects;
 
 public class SecHubReportWebAttack {
-    
-    String vector;
-    SecHubReportWebEvidence evidence;
+
+    private String vector;
+    private SecHubReportWebEvidence evidence;
 
     public String getVector() {
         return vector;
@@ -22,8 +22,6 @@ public class SecHubReportWebAttack {
     public void setEvidence(SecHubReportWebEvidence evicence) {
         this.evidence = evicence;
     }
-    
-    
 
     @Override
     public int hashCode() {

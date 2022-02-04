@@ -8,24 +8,33 @@ public class SimpleStringUtils {
     private SimpleStringUtils() {
     }
 
+    /**
+     * Checks if trimmed strings are equal (but case sensitive).
+     * 
+     * @param string1 when <code>null</code> the parameter will be treated like an
+     *                empty string
+     * @param string2 when <code>null</code> the parameter will be treated like an
+     *                empty string
+     * @return <code>true</code> when trimmed variants are equal
+     */
     public static boolean isTrimmedEqual(String string1, String string2) {
         if (Objects.equals(string1, string2)) {
             return true;
         }
 
-        if (string1==null) {
+        if (string1 == null) {
             string1 = "";
         }
-        if (string2==null) {
+        if (string2 == null) {
             string2 = "";
         }
-        
+
         string1 = string1.trim();
         string2 = string2.trim();
-        
+
         return string1.equals(string2);
     }
-    
+
     public static boolean isNotEmpty(Object object) {
         return !isEmpty(object);
     }

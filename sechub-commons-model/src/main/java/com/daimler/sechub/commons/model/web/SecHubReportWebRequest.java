@@ -6,14 +6,14 @@ import java.util.TreeMap;
 
 public class SecHubReportWebRequest {
 
-    String protocol;
-    String version;
-    String target;
-    String method;
+    private String protocol;
+    private String version;
+    private String target;
+    private String method;
 
-    Map<String, String> headers = new TreeMap<>();
+    private Map<String, String> headers = new TreeMap<>();
 
-    SecHubReportWebBody body = new SecHubReportWebBody();
+    private SecHubReportWebBody body = new SecHubReportWebBody();
 
     public String getProtocol() {
         return protocol;

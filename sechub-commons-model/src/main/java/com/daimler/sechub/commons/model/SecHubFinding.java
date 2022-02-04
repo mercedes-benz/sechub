@@ -12,258 +12,263 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonInclude(Include.NON_EMPTY)
 public class SecHubFinding {
 
-	int id;
+    int id;
 
-	String description;
+    String description;
 
-	List<String> hostnames = new ArrayList<>();
+    List<String> hostnames = new ArrayList<>();
 
-	Date created;
+    Date created;
 
-	String createdBy;
+    String createdBy;
 
-	String name;
+    String name;
 
-	String parameters;
+    String parameters;
 
-	String path;
+    String path;
 
-	String parameterName;
+    String parameterName;
 
-	String query;
+    String query;
 
-	List<String> references = new ArrayList<>();
+    List<String> references = new ArrayList<>();
 
-	String request;
+    String request;
 
-	String solution;
-	String response;
-	String service;
-	Severity severity;
-	String target;
+    String solution;
+    String response;
+    String service;
+    Severity severity;
+    String target;
 
-	String website;
+    String website;
 
-	SecHubCodeCallStack code;
+    SecHubCodeCallStack code;
 
-	String productResultLink;
-	
-	ScanType type;
+    String productResultLink;
+
+    ScanType type;
 
     Integer cweId;
-    
+
     String cveId;
-    
+
     String owasp;
-	
+
     SecHubReportWeb web;
-    
-	public void setType(ScanType scanType) {
+
+    public void setType(ScanType scanType) {
         this.type = scanType;
     }
-	
-	public ScanType getType() {
+
+    public ScanType getType() {
         return type;
     }
-	
-	public SecHubReportWeb getWeb() {
+
+    public SecHubReportWeb getWeb() {
         return web;
     }
-	
-	public void setWeb(SecHubReportWeb web) {
+
+    public void setWeb(SecHubReportWeb web) {
         this.web = web;
     }
-	
-	/**
-	 * CVE result - interesting for infra scans
-	 * @return CVE id - e.g. "CVE-2014-9999999" see https://cve.mitre.org/ or <code>null</code>
-	 */
-	public String getCveId() {
+
+    /**
+     * CVE result - interesting for infra scans
+     * 
+     * @return CVE id - e.g. "CVE-2014-9999999" see https://cve.mitre.org/ or
+     *         <code>null</code>
+     */
+    public String getCveId() {
         return cveId;
     }
-	
-	/***
-	 * Set CVE id - e.g. "CVE-2014-9999999" see https://cve.mitre.org/
-	 * @param cveId
-	 */
-	public void setCveId(String cveId) {
+
+    /***
+     * Set CVE id - e.g. "CVE-2014-9999999" see https://cve.mitre.org/
+     * 
+     * @param cveId
+     */
+    public void setCveId(String cveId) {
         this.cveId = cveId;
     }
-	
-	public void setCweId(Integer cweId) {
+
+    public void setCweId(Integer cweId) {
         this.cweId = cweId;
     }
-	
-	/**
-	 * CWE result - interesting for code scans, web scans
-	 * @return common vulnerability enumeration id - see https://cwe.mitre.org/ or <code>null</code> when not defined
-	 */
-	public Integer getCweId() {
+
+    /**
+     * CWE result - interesting for code scans, web scans
+     * 
+     * @return common vulnerability enumeration id - see https://cwe.mitre.org/ or
+     *         <code>null</code> when not defined
+     */
+    public Integer getCweId() {
         return cweId;
     }
-	
-	public void setProductResultLink(String productResultLink) {
-		this.productResultLink = productResultLink;
-	}
 
-	public String getProductResultLink() {
-		return productResultLink;
-	}
+    public void setProductResultLink(String productResultLink) {
+        this.productResultLink = productResultLink;
+    }
 
-	public void setCode(SecHubCodeCallStack code) {
-		this.code = code;
-	}
+    public String getProductResultLink() {
+        return productResultLink;
+    }
 
-	public SecHubCodeCallStack getCode() {
-		return code;
-	}
+    public void setCode(SecHubCodeCallStack code) {
+        this.code = code;
+    }
 
-	public int getId() {
-		return id;
-	}
+    public SecHubCodeCallStack getCode() {
+        return code;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public List<String> getHostnames() {
-		return hostnames;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public void setHostnames(List<String> hostnames) {
-		this.hostnames = hostnames;
-	}
+    public List<String> getHostnames() {
+        return hostnames;
+    }
 
-	public Date getCreated() {
-		return created;
-	}
+    public void setHostnames(List<String> hostnames) {
+        this.hostnames = hostnames;
+    }
 
-	public void setCreated(Date created) {
-		this.created = created;
-	}
+    public Date getCreated() {
+        return created;
+    }
 
-	public String getCreatedBy() {
-		return createdBy;
-	}
+    public void setCreated(Date created) {
+        this.created = created;
+    }
 
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
+    public String getCreatedBy() {
+        return createdBy;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getParameters() {
-		return parameters;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setParameters(String parameters) {
-		this.parameters = parameters;
-	}
+    public String getParameters() {
+        return parameters;
+    }
 
-	public String getPath() {
-		return path;
-	}
+    public void setParameters(String parameters) {
+        this.parameters = parameters;
+    }
 
-	public void setPath(String path) {
-		this.path = path;
-	}
+    public String getPath() {
+        return path;
+    }
 
-	public String getParameterName() {
-		return parameterName;
-	}
+    public void setPath(String path) {
+        this.path = path;
+    }
 
-	public void setParameterName(String parameterName) {
-		this.parameterName = parameterName;
-	}
+    public String getParameterName() {
+        return parameterName;
+    }
 
-	public String getQuery() {
-		return query;
-	}
+    public void setParameterName(String parameterName) {
+        this.parameterName = parameterName;
+    }
 
-	public void setQuery(String query) {
-		this.query = query;
-	}
+    public String getQuery() {
+        return query;
+    }
 
-	public List<String> getReferences() {
-		return references;
-	}
+    public void setQuery(String query) {
+        this.query = query;
+    }
 
-	public void setReferences(List<String> references) {
-		this.references = references;
-	}
+    public List<String> getReferences() {
+        return references;
+    }
 
-	public String getRequest() {
-		return request;
-	}
+    public void setReferences(List<String> references) {
+        this.references = references;
+    }
 
-	public void setRequest(String request) {
-		this.request = request;
-	}
+    public String getRequest() {
+        return request;
+    }
 
-	public String getSolution() {
-		return solution;
-	}
+    public void setRequest(String request) {
+        this.request = request;
+    }
 
-	public void setSolution(String solution) {
-		this.solution = solution;
-	}
+    public String getSolution() {
+        return solution;
+    }
 
-	public String getResponse() {
-		return response;
-	}
+    public void setSolution(String solution) {
+        this.solution = solution;
+    }
 
-	public void setResponse(String response) {
-		this.response = response;
-	}
+    public String getResponse() {
+        return response;
+    }
 
-	public String getService() {
-		return service;
-	}
+    public void setResponse(String response) {
+        this.response = response;
+    }
 
-	public void setService(String service) {
-		this.service = service;
-	}
+    public String getService() {
+        return service;
+    }
 
-	public Severity getSeverity() {
-		return severity;
-	}
+    public void setService(String service) {
+        this.service = service;
+    }
 
-	public void setSeverity(Severity severity) {
-		this.severity = severity;
-	}
+    public Severity getSeverity() {
+        return severity;
+    }
 
-	public String getTarget() {
-		return target;
-	}
+    public void setSeverity(Severity severity) {
+        this.severity = severity;
+    }
 
-	public void setTarget(String target) {
-		this.target = target;
-	}
-	
-	public boolean hasScanType(String type) {
-	    if (type==null) {
-	        return false;
-	    }
-	    if (this.type==null) {
-	        return false;
-	    }
-	    
-	    return this.type.getId().equalsIgnoreCase(type);
-	}
-	
+    public String getTarget() {
+        return target;
+    }
+
+    public void setTarget(String target) {
+        this.target = target;
+    }
+
+    public boolean hasScanType(String type) {
+        if (type == null) {
+            return false;
+        }
+        if (this.type == null) {
+            return false;
+        }
+
+        String typeId = this.type.getId();
+        return type.equalsIgnoreCase(typeId);
+    }
 
 }

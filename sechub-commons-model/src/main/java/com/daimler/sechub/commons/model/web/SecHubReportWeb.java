@@ -4,9 +4,9 @@ import java.util.Objects;
 
 public class SecHubReportWeb {
 
-    SecHubReportWebRequest request = new SecHubReportWebRequest();
-    SecHubReportWebResponse response = new SecHubReportWebResponse();
-    SecHubReportWebAttack attack = new SecHubReportWebAttack();
+    private SecHubReportWebRequest request = new SecHubReportWebRequest();
+    private SecHubReportWebResponse response = new SecHubReportWebResponse();
+    private SecHubReportWebAttack attack = new SecHubReportWebAttack();
 
     /**
      * @return web request, never <code>null</code>
@@ -31,7 +31,7 @@ public class SecHubReportWeb {
 
     @Override
     public int hashCode() {
-        return Objects.hash(request, response);
+        return Objects.hash(request, response, attack);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class SecHubReportWeb {
             return false;
         }
         SecHubReportWeb other = (SecHubReportWeb) obj;
-        return Objects.equals(request, other.request) && Objects.equals(response, other.response);
+        return Objects.equals(request, other.request) && Objects.equals(response, other.response) && Objects.equals(attack, other.attack);
     }
 
     @Override

@@ -4,8 +4,8 @@ import java.util.Objects;
 
 public class SecHubReportWebBody {
 
-    String text;
-    String binary;
+    private String text;
+    private String binary;
 
     public String getText() {
         return text;
