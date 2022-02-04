@@ -46,7 +46,7 @@ public class SerecoFalsePositiveCodeScanStrategy {
         if (metaData.getScanType() != ScanType.CODE_SCAN) {
             return false;
         }
-        if (vulnerability.getScanType()!= ScanType.WEB_SCAN) {
+        if (vulnerability.getScanType()!= ScanType.CODE_SCAN) {
             return false;
         }
 
