@@ -23,7 +23,7 @@ public class SerecoWeb {
     }
     
     /**
-     * @return web attck, never <code>null</code>
+     * @return web attack, never <code>null</code>
      */
     public SerecoWebAttack getAttack() {
         return attack;

@@ -97,19 +97,26 @@ public class SerecoFalsePositiveWebScanStrategy {
         }
         boolean sameData = true;
         /* ---------------------------------------------------- */
+        /* -------------------Target--------------------------- */
+        /* ---------------------------------------------------- */
+        String metaTarget = metaDataWeb.getRequest().getTarget();
+        String vulnerabilityTarget = vulnerabilityWeb.getRequest().getTarget();
+        sameData = sameData && SimpleStringUtils.isTrimmedEqual(metaTarget, vulnerabilityTarget);
+
+        /* ---------------------------------------------------- */
+        /* -------------------Target--------------------------- */
+        /* ---------------------------------------------------- */
+        String metaMethod = metaDataWeb.getRequest().getMethod();
+        String vulnerabilityMethod = vulnerabilityWeb.getRequest().getMethod();
+        sameData = sameData && SimpleStringUtils.isTrimmedEqual(metaMethod, vulnerabilityMethod);
+        
+        /* ---------------------------------------------------- */
         /* -------------------Attack vector-------------------- */
         /* ---------------------------------------------------- */
         String metaAttackVector = metaDataWeb.getRequest().getAttackVector();
         SerecoWebAttack attack = vulnerabilityWeb.getAttack();
         String vulnerabilityAttackVector = attack.getVector();
         sameData = sameData && SimpleStringUtils.isTrimmedEqual(metaAttackVector, vulnerabilityAttackVector);
-
-        /* ---------------------------------------------------- */
-        /* -------------------Target--------------------------- */
-        /* ---------------------------------------------------- */
-        String metaTarget = metaDataWeb.getRequest().getTarget();
-        String vulnerabilityTarget = vulnerabilityWeb.getRequest().getTarget();
-        sameData = sameData && SimpleStringUtils.isTrimmedEqual(metaTarget, vulnerabilityTarget);
 
         /* ---------------------------------------------------- */
         /* -------------------Evidence------------------------- */
