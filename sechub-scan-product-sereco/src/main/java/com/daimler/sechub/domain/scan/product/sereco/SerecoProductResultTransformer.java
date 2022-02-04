@@ -170,7 +170,7 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
         SecHubReportWebAttack sechubAttack = sechubWeb.getAttack();
         sechubAttack.setVector(serecoAttack.getVector());
 
-        SerecoWebEvidence serecoEvidence = serecoAttack.getEvicence();
+        SerecoWebEvidence serecoEvidence = serecoAttack.getEvidence();
         if (serecoEvidence != null) {
             SecHubReportWebEvidence sechubEvidence = new SecHubReportWebEvidence();
             sechubEvidence.setSnippet(serecoEvidence.getSnippet());

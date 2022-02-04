@@ -5,7 +5,7 @@ import java.util.Objects;
 public class SerecoWebAttack {
     
     String vector;
-    SerecoWebEvidence evicence;
+    SerecoWebEvidence evidence;
 
     public String getVector() {
         return vector;
@@ -19,17 +19,17 @@ public class SerecoWebAttack {
      * 
      * @return evidence or <code>null</code> when not defined
      */
-    public SerecoWebEvidence getEvicence() {
-        return evicence;
+    public SerecoWebEvidence getEvidence() {
+        return evidence;
     }
 
-    public void setEvicence(SerecoWebEvidence evicence) {
-        this.evicence = evicence;
+    public void setEvidence(SerecoWebEvidence evicence) {
+        this.evidence = evicence;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(evicence, vector);
+        return Objects.hash(evidence, vector);
     }
 
     @Override
@@ -44,12 +44,12 @@ public class SerecoWebAttack {
             return false;
         }
         SerecoWebAttack other = (SerecoWebAttack) obj;
-        return Objects.equals(evicence, other.evicence) && Objects.equals(vector, other.vector);
+        return Objects.equals(evidence, other.evidence) && Objects.equals(vector, other.vector);
     }
 
     @Override
     public String toString() {
-        return "SerecoWebAttack [" + (vector != null ? "vector=" + vector + ", " : "") + (evicence != null ? "evicence=" + evicence : "") + "]";
+        return "SerecoWebAttack [" + (vector != null ? "vector=" + vector + ", " : "") + (evidence != null ? "evicence=" + evidence : "") + "]";
     }
 
 }

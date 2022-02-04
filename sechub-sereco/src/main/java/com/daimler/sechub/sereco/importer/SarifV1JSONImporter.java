@@ -185,7 +185,7 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
             }
         }
 
-        serecoAttack.setEvicence(serecoWebEvidence);
+        serecoAttack.setEvidence(serecoWebEvidence);
 
     }
 

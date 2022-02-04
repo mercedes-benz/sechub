@@ -119,7 +119,7 @@ public class SerecoFalsePositiveWebScanStrategy {
         /* -------------------Evidence------------------------- */
         /* ---------------------------------------------------- */
         String metaEvidence = metaDataWeb.getResponse().getEvidence();
-        SerecoWebEvidence evicence = attack.getEvicence();
+        SerecoWebEvidence evicence = attack.getEvidence();
         String vulnerabilityEvidence = null;
         if (evicence != null) {
             vulnerabilityEvidence = evicence.getSnippet();

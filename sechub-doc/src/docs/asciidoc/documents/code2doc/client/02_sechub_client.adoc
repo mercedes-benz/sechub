@@ -177,7 +177,7 @@ action `unmarkFalsePositives`
 
 [source, json]
 ----
-include::sechub_client_falsepositve_list_example_unmark.json[]
+include::sechub_client_falsepositive_list_example_unmark.json[]
 ----
 
 ===== interactiveMarkFalsePositives

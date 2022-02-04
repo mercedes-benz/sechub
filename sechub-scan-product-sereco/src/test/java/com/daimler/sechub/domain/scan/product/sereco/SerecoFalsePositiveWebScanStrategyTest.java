@@ -288,7 +288,7 @@ class SerecoFalsePositiveWebScanStrategyTest {
         web.getAttack().setVector(ATTACK_VECTOR1);
 
         SerecoWebEvidence evidence = new SerecoWebEvidence();
-        web.getAttack().setEvicence(evidence);
+        web.getAttack().setEvidence(evidence);
         evidence.setSnippet(EVIDENCE1);
         return vulnerability;
     }
