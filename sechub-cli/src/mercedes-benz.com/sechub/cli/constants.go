@@ -159,6 +159,9 @@ const SechubWaittimeDefaultEnvVar = "SECHUB_WAITTIME_DEFAULT"
 // ExecutionStateEnded sechub job has succesfully finished
 const ExecutionStateEnded = "ENDED"
 
+// JobStatusOkay - sechub job has a report ready to download
+const JobStatusOkay = "OK"
+
 /* ---------------------------------- */
 /* -------- Validation -------------- */
 /* ---------------------------------- */

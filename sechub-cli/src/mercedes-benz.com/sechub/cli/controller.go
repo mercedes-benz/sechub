@@ -29,16 +29,17 @@ func Execute() {
 	switch context.config.action {
 	case scanAction:
 		prepareCreateApproveJob(context)
-		status := waitForSecHubJobDone(context)
+		waitForSecHubJobDone(context)
 		downloadSechubReport(context)
-		printSecHubJobSummaryAndFailOnTrafficLight(context, status)
+		printSecHubJobSummaryAndFailOnTrafficLight(context)
 	case scanAsynchronAction:
 		prepareCreateApproveJob(context)
 		fmt.Println(context.config.secHubJobUUID)
 	case getStatusAction:
-		_, jsonData := getSecHubJobStatus(context)
+		jsonData := getSecHubJobStatus(context)
 		fmt.Println(jsonData)
 	case getReportAction:
+		getSecHubJobStatus(context)
 		downloadSechubReport(context)
 	case getFalsePositivesAction:
 		downloadFalsePositivesList(context)
@@ -133,10 +134,12 @@ func prepareCodeScan(context *Context) {
 }
 
 func downloadSechubReport(context *Context) {
-	fileEnding := ".json"
-	if context.config.reportFormat == "html" {
-		fileEnding = ".html"
+	if context.jobStatus.Result != JobStatusOkay {
+		sechubUtil.LogError("Job " + context.config.secHubJobUUID + " failed on server. Cannot download report.")
+		os.Exit(ExitCodeFailed)
 	}
+
+	fileEnding := "." + context.config.reportFormat // e.g. .json, .html
 	fileName := "sechub_report_" + context.config.projectID + "_" + context.config.secHubJobUUID + fileEnding
 
 	report := ReportDownload{serverResult: getSecHubJobReport(context), outputFolder: context.config.outputFolder, outputFileName: fileName}

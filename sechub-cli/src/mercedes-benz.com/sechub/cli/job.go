@@ -47,9 +47,9 @@ func waitForSecHubJobDone(context *Context) (status jobStatusResult) {
 	sechubUtil.Log(fmt.Sprintf("Waiting for job %s to be done", context.config.secHubJobUUID), context.config.quiet)
 
 	for {
-		status, _ = getSecHubJobStatus(context)
+		getSecHubJobStatus(context)
 
-		if status.State == ExecutionStateEnded {
+		if context.jobStatus.State == ExecutionStateEnded {
 			break
 		}
 
@@ -71,7 +71,7 @@ func waitForSecHubJobDone(context *Context) (status jobStatusResult) {
 	return status
 }
 
-func getSecHubJobStatus(context *Context) (status jobStatusResult, jsonData string) {
+func getSecHubJobStatus(context *Context) (jsonData string) {
 	// request SecHub job state from server
 	response := sendWithDefaultHeader("GET", buildGetSecHubJobStatusAPICall(context), context)
 
@@ -82,15 +82,15 @@ func getSecHubJobStatus(context *Context) (status jobStatusResult, jsonData stri
 	}
 
 	/* transform text to json */
-	err = json.Unmarshal(data, &status)
+	err = json.Unmarshal(data, context.jobStatus)
 	sechubUtil.HandleHTTPError(err, ExitCodeHTTPError)
 
-	return status, string(data)
+	return string(data)
 }
 
-func printSecHubJobSummaryAndFailOnTrafficLight(context *Context, status jobStatusResult) {
+func printSecHubJobSummaryAndFailOnTrafficLight(context *Context) {
 	/* Evaluate traffic light */
-	switch status.TrafficLight {
+	switch context.jobStatus.TrafficLight {
 	case "RED":
 		fmt.Fprintln(os.Stderr, "  RED alert - security vulnerabilities identified (critical or high)")
 		os.Exit(ExitCodeFailed)
@@ -108,7 +108,7 @@ func printSecHubJobSummaryAndFailOnTrafficLight(context *Context, status jobStat
 		sechubUtil.LogError("No traffic light available! Please check server logs.")
 		os.Exit(ExitCodeFailed)
 	default:
-		sechubUtil.LogError(fmt.Sprintln("UNKNOWN traffic light:", status.TrafficLight, "- Expected one of: RED, YELLOW, GREEN."))
+		sechubUtil.LogError(fmt.Sprintln("UNKNOWN traffic light:", context.jobStatus.TrafficLight, "- Expected one of: RED, YELLOW, GREEN."))
 		os.Exit(ExitCodeFailed)
 	}
 }
