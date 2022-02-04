@@ -30,11 +30,12 @@ public class ScenarioInitializer {
 	}
 
 	public ScenarioInitializer addProjectIdsToDefaultExecutionProfile(DefaultTestExecutionProfile profile, TestProject ...projects) {
+	    ensureDefaultExecutionProfile(profile);
         TestAPI.as(TestAPI.SUPER_ADMIN).addProjectsToProfile(profile.id,projects);
         return this;
     }
 	
-	public ScenarioInitializer ensureDefaultExecutionProfile(DefaultTestExecutionProfile profile) {
+	private ScenarioInitializer ensureDefaultExecutionProfile(DefaultTestExecutionProfile profile) {
 	    if (TestAPI.canReloadExecutionProfileData(profile)){
 	        return this;
 	    }

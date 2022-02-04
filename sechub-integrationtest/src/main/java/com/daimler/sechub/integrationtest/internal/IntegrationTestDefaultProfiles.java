@@ -62,6 +62,13 @@ public class IntegrationTestDefaultProfiles {
     public static final DefaultTestExecutionProfile PROFILE_7_PDS_WEBSCAN = defineProfile7();
 
     /**
+     * PDS scan profile, returns web scan results in OWASP ZAP SARIF format -
+     * storage is reused. It uses executor configuration
+     * {@link IntegrationTestDefaultExecutorConfigurations#PDS_V1_WEB_SCAN_B_OWASP_SARIF_RESULTS}
+     */
+    public static final DefaultTestExecutionProfile PROFILE_8_PDS_WEBSCAN_SARIF = defineProfile8();
+
+    /**
      * @return all default profiles
      */
     public static List<DefaultTestExecutionProfile> getAllDefaultProfiles() {
@@ -137,6 +144,16 @@ public class IntegrationTestDefaultProfiles {
         profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_WEB_SCAN_A);
         profile.id = "inttest-p7-pds-webscan";
         profile.description = "Profile 7: PDS webscan, reused storage, dynamic text results";
+        profile.enabled = true;
+        return profile;
+    }
+
+    private static DefaultTestExecutionProfile defineProfile8() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_WEB_SCAN_B_OWASP_SARIF_RESULTS);
+        profile.id = "inttest-p8-pds-webscan";
+        profile.description = "Profile 8: PDS webscan, reused storage, OWASP ZAP sarif file returned";
         profile.enabled = true;
         return profile;
     }

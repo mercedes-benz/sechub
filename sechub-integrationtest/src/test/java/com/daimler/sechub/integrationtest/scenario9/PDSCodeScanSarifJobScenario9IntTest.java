@@ -43,7 +43,87 @@ public class PDSCodeScanSarifJobScenario9IntTest {
      * for PDS defined!
      */
     @Test
-    public void pds_reuses_sechub_data__a_user_can_start_a_pds_sarif_scan_and_get_result() {
+    public void pds_reuses_sechub_data__user_starts_webscan_marks_report_finding_1_as_fp_and_scans_again_without_this_finding() {
+        /* @formatter:off */
+
+        /* ---------------------------------------------*/
+        /* Phase 1: WebScan without false positive data */
+        /* ---------------------------------------------*/
+        
+        /* prepare 1*/
+        TestProject project = PROJECT_1;
+
+        UUID jobUUID = as(USER_1).createWebScan(project,NOT_MOCKED);// scenario9 uses really integration test pds server!
+        
+        /* execute 1*/
+        as(USER_1).
+            approveJob(project, jobUUID);
+        
+        waitForJobDone(project, jobUUID,30,true);
+        
+        /* test 1*/
+        String report = as(USER_1).getJobReport(project, jobUUID);
+        assertReport(report).
+            hasStatus(SecHubStatus.SUCCESS).
+            hasTrafficLight(RED).
+            hasFindings(14).
+               finding(0).
+                   hasCweId(79).
+                   hasId(1).
+                   hasSeverity(Severity.HIGH).
+                   hasScanType(ScanType.WEB_SCAN).
+                   hasName("Cross Site Scripting (Reflected)").
+                   hasDescriptionContaining("There are three types").
+                   hasDescriptionContaining("DOM-based").
+               finding(1).
+                   hasCweId(693).
+                   hasId(2).
+                   hasName("CSP: Wildcard Directive").
+                   hasScanType(ScanType.WEB_SCAN).
+                   hasSeverity(Severity.MEDIUM).
+                   hasDescriptionContaining("either allow wildcard sources");
+        
+        
+        /* --------------------------------------------------------*/
+        /* Phase 2: WebScan with false positive data definition set*/
+        /*          Next web scan for same project does not contain*/
+        /*          the formerly marked false positive             */
+        /* --------------------------------------------------------*/
+        
+        /* prepare 2 */
+        as(USER_1).startFalsePositiveDefinition(PROJECT_1).add(1, jobUUID).markAsFalsePositive();
+        
+
+        UUID jobUUID2 = as(USER_1).createWebScan(project,NOT_MOCKED);// scenario9 uses really integration test pds server!
+        
+        /* execute 2 */
+        as(USER_1).
+            approveJob(project, jobUUID2);
+        
+        waitForJobDone(project, jobUUID2,30,true);
+        
+        /* test 2 */
+        String report2 = as(USER_1).getJobReport(project, jobUUID2);
+        assertReport(report2).
+            hasStatus(SecHubStatus.SUCCESS).
+            hasTrafficLight(YELLOW).// high finding no longer in report but only medium ones...
+            hasFindings(13).// report has one finding less
+               finding(0).
+                   hasCweId(693).
+                   hasId(2). // finding 1 is still there, but a false positive... so first finding inside this report is still having id 2
+                   hasName("CSP: Wildcard Directive").
+                   hasScanType(ScanType.WEB_SCAN).
+                   hasSeverity(Severity.MEDIUM).
+                   hasDescriptionContaining("either allow wildcard sources");
+        /* @formatter:on */
+    }
+
+    /**
+     * Important: This test is only working when we have same storage for SECHUB and
+     * for PDS defined!
+     */
+    @Test
+    public void pds_reuses_sechub_data__a_user_can_start_a_pds_codescan_with_sarif_output_and_get_result() {
         /* @formatter:off */
 
         /* prepare */

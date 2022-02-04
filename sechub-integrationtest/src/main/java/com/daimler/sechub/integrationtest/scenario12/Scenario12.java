@@ -47,7 +47,6 @@ public class Scenario12 extends AbstractSecHubServerTestScenario implements PDST
     protected void initializeTestData() {
         /* @formatter:off */
         initializer().
-            ensureDefaultExecutionProfile(PROFILE_7_PDS_WEBSCAN).
             createUser(USER_1).
             createProject(PROJECT_1, USER_1).
             addProjectIdsToDefaultExecutionProfile(PROFILE_7_PDS_WEBSCAN, PROJECT_1).

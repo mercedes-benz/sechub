@@ -52,13 +52,11 @@ public class Scenario5 extends AbstractSecHubServerTestScenario implements PDSTe
     protected void initializeTestData() {
         /* @formatter:off */
         initializer().
-            ensureDefaultExecutionProfile(PROFILE_2_PDS_CODESCAN).
             createUser(USER_1).
             createProject(PROJECT_1, USER_1).
             addProjectIdsToDefaultExecutionProfile(PROFILE_2_PDS_CODESCAN,PROJECT_1).
             assignUserToProject(PROJECT_1,USER_1).
             
-            ensureDefaultExecutionProfile(PROFILE_6_NO_STORAGE_REUSED__PDS_CODESCAN_PROCESS_EXEC_FAILS_EXITCODE_1).
             createProject(PROJECT_2, USER_1).
             addProjectIdsToDefaultExecutionProfile(PROFILE_6_NO_STORAGE_REUSED__PDS_CODESCAN_PROCESS_EXEC_FAILS_EXITCODE_1, PROJECT_2).
             assignUserToProject(PROJECT_2, USER_1)
