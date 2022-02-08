@@ -78,8 +78,13 @@ allprojects {
         }
     }
 
-
+    /* every project has got this additional task */
+    task prepareGitPush(dependsOn: spotlessApply){
+    
+    }
 }
+
+
 
 spotless {
 	groovyGradle {
