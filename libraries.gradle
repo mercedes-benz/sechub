@@ -13,7 +13,8 @@ ext {
 
    libraryVersion= [
       // openapi3-generator, releases see https://github.com/ePages-de/restdocs-api-spec/releases
-      restDocsApiSpec: "0.11.4"
+      restDocsApiSpec: "0.11.4",
+      junit5Version :"5.6.0"
    ]
 
    library = [
@@ -22,8 +23,9 @@ ext {
         /* autark JUnit parts, with same versions like current used spring boot version */
         // https://mvnrepository.com/artifact/junit/junit
         junit: "junit:junit:4.13.1",
-        junit5_impl: 'org.junit.jupiter:junit-jupiter-api:5.6.0',
-        junit5_runtime: 'org.junit.jupiter:junit-jupiter-engine:5.6.0',
+        junit5_impl: 'org.junit.jupiter:junit-jupiter-api:${libraryVersion.junit5Version}',
+        junit5_runtime: 'org.junit.jupiter:junit-jupiter-engine:${libraryVersion.junit5Version}',
+        junit5_params: 'org.junit.jupiter:junit-jupiter-params:${libraryVersion.junit5Version}',
         
 //      Adopting existing Junit4 to Junit5 tests: 
 //      currently we keep our exting Junit4 tests and do NOT transform them. 

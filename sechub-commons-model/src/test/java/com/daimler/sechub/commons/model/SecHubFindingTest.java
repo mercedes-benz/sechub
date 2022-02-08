@@ -3,75 +3,69 @@ package com.daimler.sechub.commons.model;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.NullSource;
 
 class SecHubFindingTest {
 
     @Test
-    void nothing_defined_has_no_scantype() {
-        /* prepare*/
+    void initial_finding_has_scan_type_null() {
+        /* prepare */
         SecHubFinding finding = new SecHubFinding();
-        
-        /* test*/
-        assertFalse(finding.hasScanType(null));
-        assertFalse(finding.hasScanType("codescan"));
-        assertFalse(finding.hasScanType("infrascan"));
-        assertFalse(finding.hasScanType("webscan"));
-    }
-    
-    @Test
-    void codescan_defined_has_scantype_codescan_and_no_others() {
-        /* prepare*/
-        SecHubFinding finding = new SecHubFinding();
-        finding.setType(ScanType.CODE_SCAN);
-        
-        /* test*/
-        assertFalse(finding.hasScanType(null));
-        assertTrue(finding.hasScanType("codescan"));
-        
-        assertFalse(finding.hasScanType("infrascan"));
-        assertFalse(finding.hasScanType("webscan"));
-    }
-    
-    @Test
-    void codescan_defined_has_scantype_codescan_case_independant() {
-        /* prepare*/
-        SecHubFinding finding = new SecHubFinding();
-        finding.setType(ScanType.CODE_SCAN);
-        
-        /* test*/
-        assertTrue(finding.hasScanType("codescan"));
-        assertTrue(finding.hasScanType("Codescan"));
-        assertTrue(finding.hasScanType("CODESCAN"));
-        assertTrue(finding.hasScanType("codeScan"));
-    }
-    
-    @Test
-    void webscan_defined_has_scantype_webscan_and_no_others() {
-        /* prepare*/
-        SecHubFinding finding = new SecHubFinding();
-        finding.setType(ScanType.WEB_SCAN);
-        
-        /* test*/
-        assertTrue(finding.hasScanType("webscan"));
 
+        /* test */
+        assertNull(finding.getType());
         assertFalse(finding.hasScanType(null));
-        assertFalse(finding.hasScanType("codeScan"));
-        assertFalse(finding.hasScanType("infrascan"));
+
+        for (ScanType otherScanType : ScanType.values()) {
+            assertHasScanTypeReturnsFalseForAnyVariantOf(finding, otherScanType.getId());
+        }
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ScanType.class)
+    void finding_has_scantype_returns_true_for_set_scan_type(ScanType scanTypeToTest) {
+        /* prepare */
+        SecHubFinding finding = new SecHubFinding();
+        finding.setType(scanTypeToTest);
+
+        /* test */
+        String scanTypeId = scanTypeToTest.getId();
+        assertTrue(finding.hasScanType(scanTypeId));
+        assertTrue(finding.hasScanType(scanTypeId.toUpperCase()));
+        assertTrue(finding.hasScanType(scanTypeId.toLowerCase()));
+        assertTrue(finding.hasScanType(createStringFirstCharUpperCasedOtherLowerCased(scanTypeId)));
+
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ScanType.class)
+    @NullSource
+    void finding_has_scantype_returns_false_for_other_than_set_scan_type(ScanType scanTypeToTest) {
+        /* prepare */
+        SecHubFinding finding = new SecHubFinding();
+        finding.setType(scanTypeToTest);
+
+        /* test */
+        for (ScanType otherScanType : ScanType.values()) {
+            if (scanTypeToTest == otherScanType) {
+                // we ignore same type - we test against others!
+                continue;
+            }
+            assertHasScanTypeReturnsFalseForAnyVariantOf(finding, otherScanType.getId());
+        }
+    }
+
+    private void assertHasScanTypeReturnsFalseForAnyVariantOf(SecHubFinding finding, String otherScanTypeId) {
+        assertFalse(finding.hasScanType(otherScanTypeId));
+        assertFalse(finding.hasScanType(otherScanTypeId.toUpperCase()));
+        assertFalse(finding.hasScanType(otherScanTypeId.toLowerCase()));
+        assertFalse(finding.hasScanType(createStringFirstCharUpperCasedOtherLowerCased(otherScanTypeId)));
     }
     
-
-    @Test
-    void infrascan_defined_has_scantype_infrascan_and_no_others() {
-        /* prepare*/
-        SecHubFinding finding = new SecHubFinding();
-        finding.setType(ScanType.INFRA_SCAN);
-        
-        /* test*/
-        assertTrue(finding.hasScanType("infrascan"));
-
-        assertFalse(finding.hasScanType(null));
-        assertFalse(finding.hasScanType("codeScan"));
-        assertFalse(finding.hasScanType("webscan"));
+    private String createStringFirstCharUpperCasedOtherLowerCased(String scanTypeId) {
+        return ("" + scanTypeId.charAt(0)).toUpperCase() + scanTypeId.substring(1).toLowerCase();
     }
 
 }

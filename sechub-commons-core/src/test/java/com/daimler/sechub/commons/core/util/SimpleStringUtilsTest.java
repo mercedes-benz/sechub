@@ -20,7 +20,7 @@ public class SimpleStringUtilsTest {
 
     @Test
     public void isTrimmedEquals_null_empty_is_true() {
-        assertThat(SimpleStringUtils.isTrimmedEqual("", null), is(true));
+        assertThat(SimpleStringUtils.isTrimmedEqual(null, ""), is(true));
     }
 
     @Test

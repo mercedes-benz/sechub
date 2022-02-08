@@ -14,11 +14,11 @@
 ===== How can false positives be handled across multiple security products?
 ====== Problem 
 Most commercial security products are able to mark false positives, but maybe not every tool
-has got a dedicated API for this issue. Another point is, that many FOSS security tools do not
+has a dedicated API for this feature. In addition, many FOSS security tools do not
 support false positive handling.  
 
 Even when there would be an API available in every security product: replacing the used security
-product by switching to another {sechub} profile or enabling/disabling a product executor configuration would ...
+product by switching to another {sechub} profile or enabling/disabling a product executor configuration would:
 
 - lead to massive API calls to update false positive-handling at security product site
 - would result in an extreme process of necessary actions/events at {sechub} site for every product
