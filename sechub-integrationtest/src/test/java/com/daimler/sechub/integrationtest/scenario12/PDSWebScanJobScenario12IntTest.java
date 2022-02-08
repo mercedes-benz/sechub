@@ -42,7 +42,7 @@ public class PDSWebScanJobScenario12IntTest {
         /* prepare */
         String configurationAsJson = IntegrationTestFileSupport.getTestfileSupport().loadTestFile("sechub-integrationtest-webscanconfig-all-options.json");
         SecHubScanConfiguration configuration = SecHubScanConfiguration.createFromJSON(configurationAsJson);
-        //configuration.setProjectId("myTestProject");
+        configuration.setProjectId("myTestProject");
         
         TestProject project = PROJECT_1;
         String targetURL = configuration.getWebScan().get().getUri().toString();

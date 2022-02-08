@@ -20,7 +20,7 @@ public abstract class AbstractCodeScanAdapterConfigBuilder<B extends AbstractCod
     void packageInternalCustomBuild(C config) {
         if (sourceFolders != null) {
             if (! (config instanceof AbstractCodeScanAdapterConfig)) {
-                throw new IllegalArgumentException("Wrong config type. Your config is of type " + config.getClass().getName() + " but should be " + AbstractCodeScanAdapterConfig.class.getSimpleName());
+                throw new IllegalArgumentException("Wrong config type class hierarchy. Your config is of type " + config.getClass().getName() + " is not a descendant of " + AbstractCodeScanAdapterConfig.class.getSimpleName());
             }
             
             AbstractCodeScanAdapterConfig abstractCodeScanConfig = (AbstractCodeScanAdapterConfig) config;

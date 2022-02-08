@@ -103,8 +103,10 @@ public class TargetRegistry {
 			return uris;
 		}
 
-	     /**
-         * Returns a target URI for this kind of {@link TargetType}
+	    /**
+         * Returns target URI for this kind of {@link TargetType}, which will be the first element from URI list.
+		 * 
+		 * This is a convenience method for scan types where we can have only ONE target URI (e.g. web scans).
          *
          * @return uri or <code>null</code>
          */

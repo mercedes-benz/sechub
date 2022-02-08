@@ -7,9 +7,6 @@ public abstract class AbstractCodeScanAdapterConfig extends AbstractAdapterConfi
 	
 	@Override
 	public String getTargetAsString() {
-		if (sourceScanTargetString == null) {
-			return null;
-		}
 		return sourceScanTargetString;
 	}
 }

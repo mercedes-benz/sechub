@@ -6,10 +6,10 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public abstract class AbstractInfraScanAdapterConfig extends AbstractAdapterConfig implements InfraScanAdapterConfig {
-    LinkedHashSet<URI> targetURIs = new LinkedHashSet<>();
+    Set<URI> targetURIs = new LinkedHashSet<>();
 
-    LinkedHashSet<URI> rootTargetUris = new LinkedHashSet<>();
-    LinkedHashSet<InetAddress> targetIPs = new LinkedHashSet<>();
+    Set<URI> rootTargetUris = new LinkedHashSet<>();
+    Set<InetAddress> targetIPs = new LinkedHashSet<>();
 
     private String targetType;
     

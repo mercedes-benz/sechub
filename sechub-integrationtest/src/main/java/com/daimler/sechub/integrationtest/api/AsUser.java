@@ -417,13 +417,6 @@ public class AsUser {
         return fetchJobUUID(resultAsString);
     }
 
-    /**
-     * Create taget uri - will either use
-     *11111
-     * @param runMode
-     * @param whites
-     * @return
-     */
     private String createTargetURIForSechubConfiguration(IntegrationTestMockMode runMode, List<String> whites) {
         String acceptedURI1 = null;
         if (runMode != null) {

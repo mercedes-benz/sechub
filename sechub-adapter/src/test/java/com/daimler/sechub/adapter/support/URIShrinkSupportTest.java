@@ -7,64 +7,80 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class URIShrinkSupportTest {
     private URIShrinkSupport uriShrinkSupport;
     
-    @Before
+    @BeforeEach
     public void before() throws Exception {
         uriShrinkSupport = new URIShrinkSupport();
     }
     
     @Test
     public void shrink_to_root_uri__null() {
+    	/* prepare */
         URI uriToShrink = null;
 
+        /* execute + test */
         assertNull(uriShrinkSupport.shrinkToRootURI(uriToShrink));
     }
     
     @Test
     public void shrink_to_root_uri__already_root_uri() {
+    	/* prepare */
         URI uriToShrink = URI.create("https://example.org");
         URI expectedRootURI = URI.create("https://example.org");
 
+        /* execute */
         URI actualRootURI = uriShrinkSupport.shrinkToRootURI(uriToShrink);
         
+        /* test */
         assertEquals(expectedRootURI, actualRootURI);
     }
     
     @Test
     public void shrink_to_root_uri__query_parameter() {
+    	/* prepare */
         URI uriToShrink = URI.create("https://example.org/test?test=1");
         URI expectedRootURI = URI.create("https://example.org");
 
+        /* execute */
         URI actualRootURI = uriShrinkSupport.shrinkToRootURI(uriToShrink);
         
+        /* test */
         assertEquals(expectedRootURI, actualRootURI);
     }
     
     @Test
     public void shrink_to_root_uri__fragment() {
-        URI uriToShrink = URI.create("https://example.org/test#abc");
+        /* prepare */
+    	URI uriToShrink = URI.create("https://example.org/test#abc");
         URI expectedRootURI = URI.create("https://example.org");
 
+        /* execute */
         URI actualRootURI = uriShrinkSupport.shrinkToRootURI(uriToShrink);
         
+        /* test */
         assertEquals(expectedRootURI, actualRootURI);
     }
     
     @Test
     public void shrink_to_root_uris__empty() {
-        Collection<URI> uris = new LinkedList<>();
+        /* prepare */
+    	Collection<URI> uris = new LinkedList<>();
         
+    	/* execute */
         Collection<URI> rootURIs =  uriShrinkSupport.shrinkToRootURIs(uris);
+        
+        /* test */
         assertTrue(rootURIs.isEmpty());
     }
         
     @Test
     public void shrink_to_root_uris__mixed_uris() {
+    	/* prepare */
         URI exampleOrg = URI.create("https://example.org");
         URI exampleCom = URI.create("https://example.com");
         
@@ -78,8 +94,10 @@ public class URIShrinkSupportTest {
         uris.add(null);
         uris.add(URI.create("https://example.com"));
         
+        /* execute */
         Collection<URI> actualRootURIs =  uriShrinkSupport.shrinkToRootURIs(uris);
         
+        /* test */
         assertEquals(expectedRootURIs.size(), actualRootURIs.size());
         assertEquals(expectedRootURIs, actualRootURIs);
     }

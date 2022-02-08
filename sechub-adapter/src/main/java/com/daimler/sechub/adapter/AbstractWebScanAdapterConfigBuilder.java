@@ -222,7 +222,7 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
     @Override
     void packageInternalCustomBuild(C config) {
         if (! (config instanceof AbstractWebScanAdapterConfig)) {
-            throw new IllegalArgumentException("Wrong config type. Your config is of type " + config.getClass().getName() + " but should be " + AbstractCodeScanAdapterConfig.class.getSimpleName());
+            throw new IllegalArgumentException("Wrong config type class hierarchy. Your config is of type " + config.getClass().getName() + " is not a descendant of " + AbstractCodeScanAdapterConfig.class.getSimpleName());
         }
         
         AbstractWebScanAdapterConfig abstractWebScanConfig = (AbstractWebScanAdapterConfig) config;

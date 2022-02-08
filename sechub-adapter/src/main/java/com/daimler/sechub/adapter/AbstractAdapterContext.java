@@ -6,7 +6,7 @@ import java.util.Map;
 import com.daimler.sechub.adapter.support.JSONAdapterSupport;
 
 /**
- * Base context for Adapter execution. Contains adapter config, adapter , runtime context and json adapter support.
+ * Base context for adapter execution. Contains adapter config, adapter , runtime context and json adapter support.
  * simple String as result).
  * 
  * @author Albert Tregnaghi

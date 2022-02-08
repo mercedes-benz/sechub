@@ -28,7 +28,6 @@ public class AbstractSpringRestAdapterContextTest {
 		runtimeContext = mock(AdapterRuntimeContext.class);
 
 		when(config.getProductBaseURL()).thenReturn("http://localhost");
-		//when(config.getTargetURI()).thenReturn(new URI("https://my.scan.target"));
 
         contextToTest = new TestAbstractSpringRestAdapterContext(config, adapter, runtimeContext);
 	}

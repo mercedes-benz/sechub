@@ -88,10 +88,6 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
 
         Map<String, String> jobParameters = configSupport.createJobParametersToSendToPDS(context.getConfiguration());
 
-        /*
-         * special behavior, because having multiple results here, we must find former
-         * result corresponding to target URI.
-         */
         /* @formatter:off */
         executorContext.useFirstFormerResultHavingMetaData(PDSMetaDataID.KEY_TARGET_URI, targetURI);
             

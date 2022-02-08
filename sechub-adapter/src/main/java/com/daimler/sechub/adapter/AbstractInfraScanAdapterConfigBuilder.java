@@ -9,10 +9,10 @@ import java.util.Set;
 public abstract class AbstractInfraScanAdapterConfigBuilder<B extends AbstractInfraScanAdapterConfigBuilder<B, C>, C extends InfraScanAdapterConfig>
 extends AbstractAdapterConfigBuilder<B, C> 
 {
-    private LinkedHashSet<URI> targetURIs = new LinkedHashSet<>();
-    private LinkedHashSet<URI> rootTargetURIs = new LinkedHashSet<>();
+    private Set<URI> targetURIs = new LinkedHashSet<>();
+    private Set<URI> rootTargetURIs = new LinkedHashSet<>();
 
-    private LinkedHashSet<InetAddress> targetIPs = new LinkedHashSet<>();
+    private Set<InetAddress> targetIPs = new LinkedHashSet<>();
     
     protected AbstractInfraScanAdapterConfigBuilder() {
         super();
@@ -42,12 +42,12 @@ extends AbstractAdapterConfigBuilder<B, C>
     
     @SuppressWarnings("unchecked")
     public B setTargetIPs(Set<InetAddress> targetIPs) {
-        if (targetIPs == null) {
-            this.targetIPs = new LinkedHashSet<>();
-        } else {
-            this.targetIPs = new LinkedHashSet<>();
+    	this.targetIPs = new LinkedHashSet<>();
+    	
+        if (targetIPs != null) {
             this.targetIPs.addAll(targetIPs);
         }
+        
         return (B) this;
     }
 

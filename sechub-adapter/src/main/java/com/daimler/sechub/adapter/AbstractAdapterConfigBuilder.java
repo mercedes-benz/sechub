@@ -69,7 +69,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
     protected URIShrinkSupport uriShrinkSupport;
 
     protected AbstractAdapterConfigBuilder() {
-        uriShrinkSupport = createURIShrinker();
+        uriShrinkSupport = createURIShrinkSupport();
     }
 
     /**
@@ -77,7 +77,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
      * 
      * @return new shrinker, never <code>null</code>
      */
-    protected URIShrinkSupport createURIShrinker() {
+    protected URIShrinkSupport createURIShrinkSupport() {
         return new URIShrinkSupport();
     }
 

@@ -82,7 +82,7 @@ public class PDSCodeScanConfigImpl extends AbstractCodeScanAdapterConfig impleme
         protected void customBuild(PDSCodeScanConfigImpl config) {
             config.sourceCodeZipFileInputStream = sourceCodeZipFileInputStream;
             config.sourceZipFileChecksum = sourceZipFileChecksum;
-
+            
             if (configurationModel != null) {
                 String reducedConfigJSON = SecHubConfigurationModelReducedCloningSupport.DEFAULT.createReducedScanConfigurationCloneJSON(configurationModel,
                         ScanType.CODE_SCAN);

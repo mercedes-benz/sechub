@@ -3,8 +3,8 @@ package com.daimler.sechub.domain.scan.product;
 
 import java.net.InetAddress;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,12 +25,12 @@ public abstract class AbstractWebScanProductExecutor<S extends InstallSetup> ext
 		/* Fetch URL */
 		SecHubWebScanConfiguration secHubWebScanConfiguration = webscan.get();
 		
-		List<URI> uris = new LinkedList<>();
-		uris.add(secHubWebScanConfiguration.getUri());
-		if (uris.isEmpty()) {
+		URI uri = secHubWebScanConfiguration.getUri();
+		if (uri == null) {
 			throw new IllegalStateException("At this state the URI must be set - validation failed!");
 		}
-		return uris;
+
+		return Arrays.asList(uri);
 	}
 	
     protected URI resolveURIForTarget(SecHubConfiguration config) {
