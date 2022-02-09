@@ -13,32 +13,24 @@
 
 ===== How can false positives be handled across multiple security products?
 ====== Problem 
-Most commercial security products are able to mark false positives, but maybe not every tool
-has a dedicated API for this feature. In addition, many FOSS security tools do not
-support false positive handling.  
-
-Even when there would be an API available in every security product: replacing the used security
-product by switching to another {sechub} profile or enabling/disabling a product executor configuration would:
-
-- lead to massive API calls to update false positive-handling at security product site
-- would result in an extreme process of necessary actions/events at {sechub} site for every product
-  executor update
-- update problems when security product API changes
-- ... more ... 
+1. Missing API +
+ 
+Most commercial security products are able to mark false positives, but maybe not every tool has a dedicated API for this feature. In addition, many FOSS security tools do not
+support false positive handling.   
 
 ====== Solution
-So instead to configure false positives for each product (e.g. by calling a REST API)
+Instead of configuring false positives for each product (e.g. by calling a REST API)
 we do the filtering of false positives always at {sechub} side only!
 
-The involved product just return all their findings without any false positive marking at their side.
-{sechub} will store the product results in database without any filtering!
+The involved product just returns all it's findings without any false positive marking on the product side.
+{sechub} will store the product results in the database without any filtering.
 
 Only when it comes to report generation at the end, {sechub} will filter the false positives from
-the result. This makes it also easy to debug - the origin information from the product is still
+the result. This makes it easy to debug - the original information from the product is still 
 available and problems on false positive marking can be reproduced and fixed. 
 
 ===== Different kinds of false-positive filtering
-Some people prefer code/API-centric way to define false positives, some prefer WebUI.
+Some people prefer code/API-centric way to define false positives, some prefer a WebUI.
 
 
 [[section-concept-false-positive-general-api-centric]]
@@ -50,7 +42,7 @@ include::../false-positives/false-positives-howto-define-by-api.adoc[]
 [[section-concept-false-positive-general-web-ui]]
 ====== Web UI
 
-Just uses the API centric approach (by using given REST API,) over UI... 
+Just uses the API centric approach (by using given REST API,) over UI. 
 
 [[section-concept-false-positive-general-code-centric]]
 ====== Code centric
@@ -90,8 +82,8 @@ pseudo one by given source snippet - in a whitespace reduced form!
 We will compress the source content, so 
 adding new lines, spaces, tabs etc. would not matter.
 
-So if a product does not support "relevant part" detection we must create this inside
-`Sereco` by our self! 
+So if a product does not support "relevant part" detection we must create the "relevant
+part" inside `Sereco` as fallback! 
 ====
  
 ===== Web UI
@@ -124,10 +116,9 @@ and
 [NOTE]
 ====
 In future we could provide additional identifiers for `NOSECHUB` to define which kind of
-false positive is ignored/will not be fixed.
+false positive is ignored/will not be fixed. The kind/type must be product independant defined and clear to understand. Maybe a CWE ID would be the best choice.
 
-E.g. something like `NOSECHUB:PATH_TRAVERSAL,PWD_UNSECURE` etc. But if we implement this,
-SecHub Sereco must map product names of vulnerability to common identifiers!
+E.g. `NOSECHUB:CWE-79`
 
 ====
 
@@ -163,7 +154,18 @@ Not possible
 ===== API centric
 see <<section-concept-false-positive-general-api-centric,general concept>> 
 
-NOTE: The identification of similarity will be done here by CVE 
+[NOTE]
+====
+
+The identification of similarity is done here by 
+
+- Code scans: CWE id
+- Web scans: CWE id
+
+For infrastructure scans a false positive detection is currently not implemented.
+
+====
+ 
 
 ===== Web UI
 see <<section-concept-false-positive-general-web-ui,general concept>> 

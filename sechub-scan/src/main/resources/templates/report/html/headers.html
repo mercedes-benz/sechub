@@ -1,16 +1,13 @@
 <th:block th:fragment="headers (headerMap)">
-<details>
-    <summary data-open="Open headers" data-close="Close headers"></summary>
-    &nbsp;
-    <div class="rHeaders">
-        <div class="rTableRow"
-            th:each="headerEntry,iterator : ${headerMap.entrySet}">
-            <div class="rTableCell" th:text="${headerEntry.key}"
-                >key1</div>
-            <div class="rTableCell">:</div>
-            <div class="rTableCell" th:text="${headerEntry.value}"
-                >value1</div>
-        </div>
-    </div>
-</details>
+	<details>
+		<summary data-open="Open headers" data-close="Close headers"></summary>
+		&nbsp;
+		<div class="rHeaders">
+			<div class="rTableRow" th:each="headerEntry,iterator : ${headerMap.entrySet}">
+				<div class="rTableCell" th:text="${headerEntry.key}">key1</div>
+				<div class="rTableCell">:</div>
+				<div class="rTableCell" th:text="${headerEntry.value}">value1</div>
+			</div>
+		</div>
+	</details>
 </th:block>

@@ -9,9 +9,10 @@ corresponding finding entry (by id) and post it to REST API.
 include::false-positives-REST-API-content-example1.json[]
 ----
 <1> API version
-<2> just a type identifier for false positives, so it's clear what this file represents
+<2> a type identifier for false positives, so it's clear what this file represents
 <3> job UUID for which the given identifiers are representative
-<4> comment _(optional)_ are only to define why this is a false positive.
+<4> the finding id (number) in the report
+<5> comment _(optional)_ are only to define why this is a false positive.
 
 [NOTE]
 ====
@@ -19,9 +20,8 @@ This is a very easy, generic approach - and also future-proof: The only dependen
 `UUID`, for which the report must still exist while the definition is done. Every false-positive in 
 any kind of scan can be handled like that.  
 
-The `REST` controller logic does read the job result data and create an internally false positive handling, 
-so removing former job should not destroy false-positive setup - means dependency is only given at
-definition time but not later.
+The `REST` controller logic does read the job result data and creates internally false positive 
+meta data. If we delete later the {sechub} job it cannot destroy our false positive setup in {sechub}. 
 
 ====
 

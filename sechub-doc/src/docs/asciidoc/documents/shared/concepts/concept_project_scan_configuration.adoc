@@ -2,7 +2,7 @@
 ==== Project scan configuration
 
 A project scan configuration is represented by simple key value pairs inside 
-database. Every {sechub} project has got it's own configuration entries.
+the database. Every {sechub} project has its own configuration entries.
 These entries are independant of used execution profile.
 
 

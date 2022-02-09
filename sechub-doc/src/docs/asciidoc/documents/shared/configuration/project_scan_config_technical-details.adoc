@@ -2,7 +2,7 @@ A `ScanProjectConfigService` provides access to `ScanProjectConfig` entities for
 `ScanProjectConfigID` key for a dedicated project. 
 It is similar to `ScanConfigService` which provides a global <<scan-config-about,scan configuration>>.
 
-Currently we store following kind of data via this mechanism:
+We currently store the following types of data through this mechanism:
 
 - Mock configuration
 - <<section-concept-false-positive-technical-details,False positive configuration>> false positive configuration
