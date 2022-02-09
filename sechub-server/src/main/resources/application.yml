@@ -44,8 +44,6 @@ spring:
   main:
     # see https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.1-Release-Notes#bean-overriding
     allow-bean-definition-overriding: true
-    # see https://stackoverflow.com/questions/70036903/spring-boot-application-fails-to-start-after-upgrading-to-2-6-0-due-to-circular
-    allow-circular-references: true
   servlet: 
     # MultiPart file-size limits,
     # https://spring.io/guides/gs/uploading-files/

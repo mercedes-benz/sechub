@@ -7,6 +7,7 @@ import java.util.UUID;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.domain.schedule.access.ScheduleUserAccessToProjectValidationService;
@@ -32,6 +33,7 @@ public class ScheduleAssertService {
     @Autowired
     ProjectWhiteListSecHubConfigurationValidationService executionIsInWhiteListValidation;
 
+    @Lazy
     @Autowired
     SchedulerProjectConfigService projectConfigService;
 
