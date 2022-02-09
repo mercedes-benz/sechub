@@ -48,6 +48,14 @@ function add_files(){
 #######################
 cd `dirname $0`/..
 
+# Check if we are on 'master' branch
+BRANCH=`git rev-parse --abbrev-ref HEAD`
+if [ "$BRANCH" != "master" ] ; then
+  echo "$0: This release script is intended to run only on 'master' branch. You are on branch '$BRANCH'."
+  echo "Exiting..."
+  exit 1
+fi
+
 # Always update images directory
 add_changed_images
 
