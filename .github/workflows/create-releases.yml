@@ -71,7 +71,7 @@ jobs:
       # ----------------------
       # SecHub Client
       # ----------------------
-      - name: Build CLI
+      - name: Build Client
         run: ./gradlew :sechub-cli:buildGo :sechub-cli:testGo
 
       # ----------------------
@@ -197,8 +197,8 @@ jobs:
       # when server version is set
       # ******************************************
       - name: Create server release
-        if: github.event.inputs.server-version != ''
         id: create_server_release
+        if: github.event.inputs.server-version != ''
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
@@ -306,8 +306,8 @@ jobs:
       # when client version is set
       # ******************************************
       - name: Create client release
-        if: github.event.inputs.client-version != ''
         id: create_client_release
+        if: github.event.inputs.client-version != ''
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
@@ -370,8 +370,8 @@ jobs:
       # when pds version is set
       # ******************************************
       - name: Create PDS release
-        if: github.event.inputs.pds-version != ''
         id: create_pds_release
+        if: github.event.inputs.pds-version != ''
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
