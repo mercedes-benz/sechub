@@ -94,6 +94,7 @@ jobs:
       - name: Integration test
         run: ./gradlew integrationtest
 
+      # We use 'if: always()' to run a step even if the previous step failed
       - name: Create combined test report
         if: always()
         run: ./gradlew createCombinedTestReport
@@ -186,6 +187,22 @@ jobs:
           name: sechub-api-spec
           path: sechub-doc/build/api-spec/
           retention-days: 14
+
+      # -----------------------------------------
+      # Update release documentation https://mercedes-benz.github.io/sechub/
+      # -----------------------------------------
+      - name: Update release documentation
+        id: update_release_documentation
+        if: always()
+        uses: actions/checkout@v2
+        run: |
+          git reset --hard
+          git config user.name "SecHub release job (github-actions)"
+          git config user.email github-actions-sechub@github.com
+          docs/helperscripts/git-add-releasedocs.sh
+          git commit -m "docs update by SecHub release job @github-actions"
+          git push
+
       # -----------------------------------------
       # Assert releaseable, so no dirty flags on releases
       # even when all artifact creation parts are done!
