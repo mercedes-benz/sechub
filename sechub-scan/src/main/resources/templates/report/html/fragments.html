@@ -170,10 +170,11 @@
 }
 
 .findingsTable td {
-    padding: 8px;
-    font-family: monospace;
-    vertical-align: top;
-    text-align: left;
+   padding:8px;
+
+   font-family: monospace;
+   vertical-align: top;
+   text-align: left;
 }
 
 .findingsTable td:nth-child(1) {
@@ -182,7 +183,7 @@
 }
 
 .findingsTable td:nth-child(2) {
-    width: 100px;
+    width: 60px;
     padding-left: 10px;
     border-left: 1px solid #cccccc;
 }
@@ -194,8 +195,9 @@
 
 .findingsTable td:nth-child(4) {
     border-left: 1px solid #cccccc;
-    width: 1024px;
+    width: 99%;
     display: block;
+    padding-right: 1%;
 }
 
 .redFindingsTable {
@@ -228,6 +230,7 @@
 .rTable {
     display: table;
     padding-top: 0;
+    width:100%;
 }
 
 .rTableRow {
@@ -275,13 +278,18 @@ details[open] summary::after {
 details:not([open]) summary::after {
     content: attr(data-open);
 }
+summary{
+   padding-top: 15px;
+}
 
 .rText {
 	white-space: pre-line; 
 }
 
 .rAttackVectorText,
-.rBodyText {
+.rEvidenceText,
+.rBodyText,
+.rBodyBinary {
    white-space: pre-line;
    border: thin;
    border-style: dotted;
@@ -302,23 +310,24 @@ details:not([open]) summary::after {
     height: 10px;
 }
 
-.rTargetLine {
+.rRequestMethod {
    display:flex
 }
 
-.rTargetLine > div {
+.rRequestMethod > div {
    vertical-align: text-bottom;
    padding: 2px 0 0 0;
    font-weight: bolder;
 }
-.rTargetLine > textarea {
+.rRequestMethod > textarea {
    vertical-align: middle;
    width: 950px;
    height:16px;
    border:none; /* the border is only visible when selected */
 }
 
-.rDetailHeadline1 {
+.rRequestDetailHeadline,
+.rResponseDetailHeadline {
     text-decoration: underline;
 }
 
@@ -332,6 +341,29 @@ details:not([open]) summary::after {
    font-style: italic;
 }
 
+.rLocationHead {
+   width: 400px;
+}
+
+.rAttackVectorHead{
+   width: 300px;
+}
+.rTableSourceHead{
+     padding-right: 0px;
+}
+rTableSourceHead,
+.rEvidenceHead{
+    width: -webkit-calc(100% - 500px);
+    width:    -moz-calc(100% - 500px);
+    width:         calc(100% - 500px);
+}
+
+.rDetailsContent,
+.rRequestProtocol,
+.rResponseProtocol,
+.rEvidenceStartLine{
+   display:flex;
+}
 
 </style>
 
@@ -366,9 +398,9 @@ details:not([open]) summary::after {
 	<div class="rTable" th:if="${finding.hasScanType('webScan')}">
         <div class="rTable">
             <div class="rTableRowHead">
-                <div class="rTableHead" style="width:400px">Location</div>
-                <div class="rTableHead" style="width:300px">Attack vector</div>
-                <div class="rTableHead" style="width:300px">Evidence</div>
+                <div class="rTableHead rLocationHead">Location</div>
+                <div class="rTableHead rAttackVectorHead">Attack vector</div>
+                <div class="rTableHead rEvidenceHead">Evidence</div>
             </div>
             <div class="rTableRow" >
                 <div class="rTableCell" th:text="${reportHelper.createShortTargetLocation(finding.web)}">1</div>
@@ -377,9 +409,6 @@ details:not([open]) summary::after {
             </div>
         </div>
     </div>
-	
-	<br />
-	
 	<details th:if="${finding.hasScanType('codeScan')}">
 		<summary data-open="Open details" data-close="Close details"></summary>
 		<div class="rTable">
@@ -389,7 +418,7 @@ details:not([open]) summary::after {
 				<div class="rTableHead" style="width:5%">Line</div>
 				<div class="rTableHead" style="width:5%">Column</div>
 				<div class="rTableHead" style="width:10%">Relevant part</div>
-				<div class="rTableHead" style="width:25%">Source</div>
+				<div class="rTableHead rTableSourceHead" style="width:25%">Source</div>
 			</div>
 			<div class="rTableRow" th:each="codeScanEntry,iterator : ${codeScanEntries.get(finding.id)}">
 				<div class="rTableCell" th:text="${codeScanEntry.callNumber}" style="width:5%">1</div>
@@ -397,20 +426,20 @@ details:not([open]) summary::after {
 				<div class="rTableCell" th:text="${codeScanEntry.line}" style="width:5%">101</div>
 				<div class="rTableCell" th:text="${codeScanEntry.column}" style="width:5%">54</div>
 				<div class="rTableCell" th:text="${codeScanEntry.relevantPart}" style="width:10%">execute</div>
-				<div class="rTableCell" th:text="${codeScanEntry.source}" style="width:25%">result= evalCode.execute()</div>
+				<div class="rTableCell rTableSourceHead" th:text="${codeScanEntry.source}" style="width:25%">result= evalCode.execute()</div>
 			</div>
 		</div>
-         <div th:replace="report/html/details_footer :: details_footer(finding=${finding})"></div>
+        <div th:replace="report/html/details_footer :: details_footer(finding=${finding})"></div>
 	</details>
 	<details th:if="${finding.hasScanType('webScan')}" th:with="webRequest=${finding.web.request},webResponse=${finding.web.response}">
         <summary data-open="Open details" data-close="Close details"></summary>
         
         <!-- REQUEST -->
-        <h3 class="rDetailHeadline1">Request</h3>
-        <div class="rTargetLine">
+        <h3 class="rRequestDetailHeadline">Request</h3>
+        <div class="rRequestMethod">
             <div th:text="${webRequest.method}"></div><textarea readonly="true" th:text="${webRequest.target}"></textarea>
         </div>
-         <div style="display:flex">
+         <div class="rRequestProtocol">
             <div th:text="${webRequest.protocol}"></div><div>/</div><div th:text="${webRequest.version}"></div>
         </div>
         <h4>Attack vector</h4>
@@ -421,17 +450,17 @@ details:not([open]) summary::after {
         <h4>Body</h4>
         <div th:if="${reportHelper.hasNoBodyContent(webRequest.body)}">No body content</div>
         <textarea readonly="true" class="rBodyText" th:if="${webRequest.body.text}" th:text="${webRequest.body.text}">Text</textarea>
-        <textarea readonly="true"class="rBodyText" th:if="${webRequest.body.binary}" th:text="${webRequest.body.binary}">Binary</textarea>
+        <textarea readonly="true"class="rBodyBinary" th:if="${webRequest.body.binary}" th:text="${webRequest.body.binary}">Binary</textarea>
         
         <!-- RESPONSE -->
-        <h3 class="rDetailHeadline1">Response</h3>
-        <div style="display:flex">
+        <h3 class="rResponseDetailHeadline">Response</h3>
+        <div class="rResponseProtocol">
             <div th:text="${webResponse.protocol}"></div><div>/</div><div th:text="${webResponse.version}"></div>
             <div>&nbsp;</div><div th:text="${reportHelper.createStatusAndResponseDescription(webResponse)}"></div>
         </div>
         <h4>Evidence</h4>
-        <textarea readonly="true" class="rAttackVectorText" th:text="${reportHelper.getEvidence(finding.web.attack)}">Attack vector data</textarea>
-        <div style="display:flex" th:if="${reportHelper.hasEvidenceStartLine(finding.web.attack)}">
+        <textarea readonly="true" class="rEvidenceText" th:text="${reportHelper.getEvidence(finding.web.attack)}">Attack vector data</textarea>
+        <div class="rEvidenceStartLine" th:if="${reportHelper.hasEvidenceStartLine(finding.web.attack)}">
             <div>Found in response body. Start line: </div><div th:text="${reportHelper.getEvidenceStartLine(finding.web.attack)}"></div>
         </div>
        
@@ -439,7 +468,7 @@ details:not([open]) summary::after {
         <h4>Body</h4>
         <div th:if="${reportHelper.hasNoBodyContent(webResponse.body)}">No body content</div>
         <textarea readonly="true" class="rBodyText" th:if="${webResponse.body.text}" th:text="${webResponse.body.text}">Text</textarea>
-        <textarea readonly="true" class="rBodyText" th:if="${webResponse.body.binary}" th:text="${webResponse.body.binary}">Binary</textarea>
+        <textarea readonly="true" class="rBodyBinary" th:if="${webResponse.body.binary}" th:text="${webResponse.body.binary}">Binary</textarea>
     
         <div th:replace="report/html/details_footer :: details_footer(finding=${finding})"></div>
        
