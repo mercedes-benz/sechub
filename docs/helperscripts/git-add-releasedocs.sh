@@ -3,7 +3,7 @@
 
 FILE_LIST=""
 SOURCE_DIR="latest"
-DEST_DIR="released/sechub"
+DEST_DIR="released/gen"
 IMAGE_DIR="images"
 GIT_RELEASE_BRANCH="master"
 
@@ -29,13 +29,13 @@ function add_files(){
 
   case "$product" in
     client)
-      files_to_add="sechub-client.html"
+      files_to_add="sechub-client.html latest-client.html"
       ;;
     pds)
-      files_to_add="sechub-product-delegation-server.html"
+      files_to_add="sechub-product-delegation-server.html latest-pds.html"
       ;;
     server)
-      files_to_add="sechub-architecture.html sechub-operations.html sechub-quickstart-guide.html sechub-restapi.html sechub-techdoc.html"
+      files_to_add="sechub-architecture.html sechub-operations.html sechub-quickstart-guide.html sechub-restapi.html sechub-techdoc.html latest-server.html"
       ;;
     *)
       echo "Ignoring unknown product name '$product' in git tag."

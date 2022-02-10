@@ -14,7 +14,8 @@ NOTE: Currently the client only supports basic authentication, but of course alw
 Download the binary for your operating system where you want to trigger `{sechub}` scanning.
 You will have no dependencies, just place the single binary file to a location inside your path variable.
 
-The latest releases can be found at {projectSite}/wiki/releases . For documentation please look at {webPage}[{secHub} web page] .
+Direct download link to the latest client release: {webPage}/gen/latest-client.html
+For documentation, please look at {webPage}[{secHub} web page] .
 
 === Supported Platforms
 
@@ -32,12 +33,12 @@ The SecHub Client is available for a number of platforms. A platform is a combin
 |linux-386
 |Linux
 |AMD and Intel 32-bit
-|For old hardware running Linux as operating system.
+|Universal client for Linux as operating system. Statically linked - no dependencies. Also for older hardware.
 
 |linux-amd64
 |Linux
 |AMD and Intel 64-bit
-|The **Linux client**, unless you are using older hardware or an ARM system.
+|The **Linux client**, unless you are using older hardware or an ARM system. Dynamically linked.
 
 |linux-arm
 |Linux
