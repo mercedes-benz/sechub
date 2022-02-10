@@ -194,7 +194,6 @@ jobs:
       - name: Update release documentation
         id: update_release_documentation
         if: always()
-        uses: actions/checkout@v2
         run: |
           git reset --hard
           git config user.name "SecHub release job (github-actions)"
