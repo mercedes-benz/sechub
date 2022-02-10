@@ -19,14 +19,6 @@ public interface InfraScanAdapterConfig extends AdapterConfig {
     Set<URI> getTargetURIs();
 
     /**
-     * Returns only the first target URI
-     * <br><br>
-     * This is interesting when the product is only able to scan one URI at a time. So it would be a little bit cumbersome to use {@link #getTargetURIs()}
-     * @return target URI or <code>null</code> if none defined
-     */
-    URI getTargetURI();
-
-    /**
      * Returns a target string. When configured target is a for URIs, only the first target URI is returned as a simple string. But Target can
      * also be one ore more folder paths - e.g. for source scanning
      * <br><br>
@@ -54,18 +46,6 @@ public interface InfraScanAdapterConfig extends AdapterConfig {
      * @return a set, never <code>null</code>
      */
     Set<URI> getRootTargetURIs();
-
-    /**
-     * Returns root target URI (will return always the first one or <code>null</code>)
-     * @return root uri or <code>null</code>
-     */
-    URI getRootTargetURI();
-
-    /**
-     * Returns root target URI as string (will return always the first one or <code>null</code>)
-     * @return root uri as string or <code>null</code>
-     */
-    String getRootTargetURIasString();
 
     /**
      * Returns IP adresses.

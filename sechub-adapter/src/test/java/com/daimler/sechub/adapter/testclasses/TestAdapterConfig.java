@@ -5,7 +5,7 @@ import com.daimler.sechub.adapter.AbstractAdapterConfig;
 
 public class TestAdapterConfig extends AbstractAdapterConfig implements TestAdapterConfigInterface {
 
-    @Override
+	@Override
     public String getTargetAsString() {
         return null;
     }

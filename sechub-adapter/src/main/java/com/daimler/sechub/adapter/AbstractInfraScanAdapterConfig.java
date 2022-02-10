@@ -26,19 +26,11 @@ public abstract class AbstractInfraScanAdapterConfig extends AbstractAdapterConf
         return targetURIs;
     }
 
-    public URI getTargetURI() {
+    public String getTargetAsString() {
         if (targetURIs == null || targetURIs.isEmpty()) {
             return null;
         }
-        return targetURIs.iterator().next();
-    }
-
-    public String getTargetAsString() {
-        URI uri = getTargetURI();
-        if (uri == null) {
-            return null;
-        }
-        return uri.toString();
+        return targetURIs.iterator().next().toString();
     }
 
     @Override
@@ -49,20 +41,5 @@ public abstract class AbstractInfraScanAdapterConfig extends AbstractAdapterConf
     @Override
     public Set<URI> getRootTargetURIs() {
         return rootTargetUris;
-    }
-
-    public URI getRootTargetURI() {
-        if (rootTargetUris == null || rootTargetUris.isEmpty()) {
-            return null;
-        }
-        return rootTargetUris.iterator().next();
-    }
-
-    public String getRootTargetURIasString() {
-        URI uri = getRootTargetURI();
-        if (uri == null) {
-            return null;
-        }
-        return uri.toString();
     }
 }

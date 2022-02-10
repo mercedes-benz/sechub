@@ -30,12 +30,73 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
         super();
     }
     
+    /**
+     * A set of includes.
+     * 
+     * Includes are necessary if a crawler of the web scan cannot find an page.
+     * 
+     * Each include is a sub-path or path to a page. It needs to start with a slash "/".
+     * The includes are combined with the target (base URI) to create a full URI.
+     * 
+     * <h4>For example<h4>
+     * 
+     * Target: https://my.example.org:8943<br/>
+     * Includes:
+     * 
+     * <ul>
+     *  <li>/admin</li>
+     *  <li>/api/hidden</li>
+     *  <li>/hidden-login.html</li>
+     * </ul>
+     * 
+     * Combined:
+     * 
+     * <ul>
+     *  <li>https://my.example.org:8943/admin</li>
+     *  <li>https://my.example.org:8943/api/hidden</li>
+     *  <li>https://my.example.org:8943/hidden-login.html</li>
+     * </ul>
+     * 
+     * @param includes
+     * @return
+     */
     @SuppressWarnings("unchecked")
     public B setIncludes(Set<String> includes) {
         this.includes = includes;
         return (B) this;
     }
     
+    /**
+     * A set of excludes.
+     * 
+     * All excludes will not be scanned.
+     * Excludes are necessary if one wants to exclude a page or a part of a web application.
+     * 
+     * Each exclude is a part of a URI. It needs to start with a slash "/".
+     * The excludes are combined with the target (base URI) to create a full URI.
+     * 
+     * <h4>For example<h4>
+     * 
+     * Target: https://my.example.org:8943<br/>
+     * Excludes:
+     * 
+     * <ul>
+     *  <li>/admin</li>
+     *  <li>/api/sensitive</li>
+     *  <li>/contaxt.html</li>
+     * </ul>
+     * 
+     * Combined:
+     * 
+     * <ul>
+     *  <li>https://my.example.org:8943/admin</li>
+     *  <li>https://my.example.org:8943/api/hidden</li>
+     *  <li>https://my.example.org:8943/hidden-login.html</li>
+     * </ul>
+     * 
+     * @param excludes
+     * @return
+     */
     @SuppressWarnings("unchecked")
     public B setExcludes(Set<String> excludes) {
         this.excludes = excludes;

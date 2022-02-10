@@ -27,7 +27,7 @@ public class AbstractInfraScanAdapterConfigBuilderTest {
         /* prepare */
         URIShrinkSupport shrinker = mock(URIShrinkSupport.class);
         TestInfraScanAdapterConfigBuilder builderToTest = new TestInfraScanAdapterConfigBuilder() {
-            protected URIShrinkSupport createURIShrinker() {
+            protected URIShrinkSupport createURIShrinkSupport() {
                 return shrinker;
             }
         };
@@ -58,7 +58,6 @@ public class AbstractInfraScanAdapterConfigBuilderTest {
         TestInfraScanAdapterConfigInterface configToTest = validConfigAnd().build();
 
         /* test */
-        assertNull(configToTest.getTargetURI());
         assertNull(configToTest.getTargetAsString());
 
         assertNotNull(configToTest.getTargetURIs());
@@ -102,7 +101,6 @@ public class AbstractInfraScanAdapterConfigBuilderTest {
         TestInfraScanAdapterConfigInterface configToTest = validConfigAnd().setTargetURIs(Collections.singleton(uri)).build();
 
         /* test */
-        assertEquals(uri, configToTest.getTargetURI());
         assertEquals(uriString, configToTest.getTargetAsString());
 
         assertNotNull(configToTest.getTargetURIs());
@@ -120,7 +118,6 @@ public class AbstractInfraScanAdapterConfigBuilderTest {
         TestInfraScanAdapterConfigInterface configToTest = validConfigAnd().setTargetURI(uri).build();
 
         /* test */
-        assertEquals(uri, configToTest.getTargetURI());
         assertEquals(uriString, configToTest.getTargetAsString());
 
         assertNotNull(configToTest.getTargetURIs());
@@ -143,7 +140,6 @@ public class AbstractInfraScanAdapterConfigBuilderTest {
         TestInfraScanAdapterConfigInterface configToTest = validConfigAnd().setTargetURIs(Collections.singleton(uri)).build();
 
         /* test */
-        assertEquals(uri, configToTest.getTargetURI());
         assertEquals(uriString, configToTest.getTargetAsString());
 
         assertNotNull(configToTest.getTargetURIs());

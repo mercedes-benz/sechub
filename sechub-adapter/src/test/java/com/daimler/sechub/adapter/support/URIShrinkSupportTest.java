@@ -14,12 +14,12 @@ public class URIShrinkSupportTest {
     private URIShrinkSupport uriShrinkSupport;
     
     @BeforeEach
-    public void before() throws Exception {
+    void before() throws Exception {
         uriShrinkSupport = new URIShrinkSupport();
     }
     
     @Test
-    public void shrink_to_root_uri__null() {
+    void shrink_to_root_uri__null() {
     	/* prepare */
         URI uriToShrink = null;
 
@@ -28,7 +28,7 @@ public class URIShrinkSupportTest {
     }
     
     @Test
-    public void shrink_to_root_uri__already_root_uri() {
+    void shrink_to_root_uri__already_root_uri() {
     	/* prepare */
         URI uriToShrink = URI.create("https://example.org");
         URI expectedRootURI = URI.create("https://example.org");
@@ -41,7 +41,7 @@ public class URIShrinkSupportTest {
     }
     
     @Test
-    public void shrink_to_root_uri__query_parameter() {
+    void shrink_to_root_uri__query_parameter() {
     	/* prepare */
         URI uriToShrink = URI.create("https://example.org/test?test=1");
         URI expectedRootURI = URI.create("https://example.org");
@@ -54,7 +54,7 @@ public class URIShrinkSupportTest {
     }
     
     @Test
-    public void shrink_to_root_uri__fragment() {
+    void shrink_to_root_uri__fragment() {
         /* prepare */
     	URI uriToShrink = URI.create("https://example.org/test#abc");
         URI expectedRootURI = URI.create("https://example.org");
@@ -67,7 +67,7 @@ public class URIShrinkSupportTest {
     }
     
     @Test
-    public void shrink_to_root_uris__empty() {
+    void shrink_to_root_uris__empty() {
         /* prepare */
     	Collection<URI> uris = new LinkedList<>();
         
@@ -79,7 +79,7 @@ public class URIShrinkSupportTest {
     }
         
     @Test
-    public void shrink_to_root_uris__mixed_uris() {
+    void shrink_to_root_uris__mixed_uris() {
     	/* prepare */
         URI exampleOrg = URI.create("https://example.org");
         URI exampleCom = URI.create("https://example.com");

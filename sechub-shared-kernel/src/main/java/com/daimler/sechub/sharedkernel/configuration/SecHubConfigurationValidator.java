@@ -18,6 +18,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
+import com.daimler.sechub.commons.core.util.SimpleNetworkUtils;
 import com.daimler.sechub.commons.model.SecHubInfrastructureScanConfiguration;
 import com.daimler.sechub.commons.model.SecHubWebScanConfiguration;
 import com.daimler.sechub.sharedkernel.UserContextService;
@@ -89,27 +90,16 @@ public class SecHubConfigurationValidator implements Validator {
 		SecHubWebScanConfiguration webscan = webscanOption.get();
 		URI uri = webscan.getUri();
 		
-		if (uri == null || uri.toString().isEmpty()) {
+		if (SimpleNetworkUtils.isURINullOrEmpty(uri)) {
 			errors.reject("api.error.webscan.target.missing", new Object[] { },
 					"Webscan configuration contains no target at all - but at one URI is necessary for a webscan!");
 
 		} else {
-				String schema = uri.getScheme();
-				if (!isHttpProtocol(schema)) {
-	                errors.reject("api.error.webscan.uri.illegalschema", new Object[] { uri },
-	                        "Webscan configuration contains uri '{0}' which is not of supported protocolls (http,https)");
-				}
+			if (!SimpleNetworkUtils.isHttpProtocol(uri)) {
+				errors.reject("api.error.webscan.uri.illegalschema", new Object[] { uri },
+						"Webscan configuration contains uri '{0}' which is not of supported protocolls (http,https)");
+			}
 		}
-	}
-	
-	private boolean isHttpProtocol(String schema) {
-	    boolean isHttpProtocol = false;
-	    
-        if ("http".equals(schema) || "https".equals(schema)) {
-            isHttpProtocol = true;
-        }
-        
-        return isHttpProtocol;
 	}
 
 	private void validateInfraScan(SecHubConfiguration configuration, Errors errors) {

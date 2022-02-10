@@ -224,7 +224,7 @@ public class AbstractWebScanAdapterConfigBuilderTest {
         /* prepare */
         URIShrinkSupport shrinker = mock(URIShrinkSupport.class);
         TestWebScanAdapterConfigBuilder builderToTest = new TestWebScanAdapterConfigBuilder() {
-            protected URIShrinkSupport createURIShrinker() {
+            protected URIShrinkSupport createURIShrinkSupport() {
                 return shrinker;
             }
         };

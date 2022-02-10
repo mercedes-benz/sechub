@@ -66,7 +66,7 @@ public class TargetIdentifyingMultiInstallSetupConfigBuilderStrategyTest {
 
 	private class TestAdapterConfig extends AbstractAdapterConfig {
 
-        @Override
+		@Override
         public String getTargetAsString() {
             return null;
         }

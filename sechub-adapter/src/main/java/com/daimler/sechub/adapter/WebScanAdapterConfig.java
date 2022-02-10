@@ -25,13 +25,22 @@ public interface WebScanAdapterConfig extends AdapterConfig {
     String getTargetType();
     
     /**
-     * Returns root target URI as string (will return always the first one or <code>null</code>)
+     * Returns root target URI as string.
+     * 
+     * See {@link #getRootTargetURI()} for more details about the root target URI.
+     * 
      * @return root uri as string or <code>null</code>
      */
     String getRootTargetURIasString();
     
     /**
-     * Returns root target URI (will return always the first one or <code>null</code>)
+     * Returns root target URI
+     * 
+     * The root target URI is the protocol scheme, hostname and port of an URI.
+     * 
+     * For example, the target URI is: https://example.org/test?test=1.
+     * In this case the root target URI is: https://example.org
+     *  
      * @return root uri or <code>null</code>
      */
     URI getRootTargetURI();
