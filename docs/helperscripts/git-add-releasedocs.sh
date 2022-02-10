@@ -5,6 +5,7 @@ FILE_LIST=""
 SOURCE_DIR="latest"
 DEST_DIR="released/sechub"
 IMAGE_DIR="images"
+GIT_RELEASE_BRANCH="master"
 
 function add_changed_images(){
   pushd "$SOURCE_DIR/" >/dev/null 2>&1
@@ -48,10 +49,9 @@ function add_files(){
 #######################
 cd `dirname $0`/..
 
-# Check if we are on 'master' branch
 BRANCH=`git rev-parse --abbrev-ref HEAD`
-if [ "$BRANCH" != "master" ] ; then
-  echo "$0: This release script is intended to run only on 'master' branch. You are on branch '$BRANCH'."
+if [ "$BRANCH" != "$GIT_RELEASE_BRANCH" ] ; then
+  echo "$0: This release script is intended to run only on '$GIT_RELEASE_BRANCH' branch. You are on branch '$BRANCH'."
   echo "Exiting..."
   exit 1
 fi
