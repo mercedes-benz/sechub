@@ -198,7 +198,7 @@ jobs:
           git reset --hard
           git config user.name "SecHub release job (github-actions)"
           git config user.email github-actions-sechub@github.com
-          docs/helperscripts/git-add-releasedocs.sh
+          sechub-doc/helperscripts/publish+git-add-releasedocs.sh
           git commit -m "docs update by SecHub release job @github-actions"
           git push
 
