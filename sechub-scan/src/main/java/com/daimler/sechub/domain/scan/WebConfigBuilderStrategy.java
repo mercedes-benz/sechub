@@ -39,8 +39,9 @@ import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
  * @param <C> configuration
  */
 public class WebConfigBuilderStrategy implements AdapterConfigurationStrategy/* <B, C> */ {
-    public static final int MAX_LIST_SIZE_INCLUDES_EXCLUDES = 500;
-    public static final int MAX_LENGTH_INCLUDES_EXCLUDES = 2048;
+    public static final int MAX_LIST_SIZE_INCLUDES = 500;
+    public static final int MAX_LIST_SIZE_EXCLUDES = 500;
+    public static final int MAX_LENGTH_PATH_SIZE = 2048;
     
     private SecHubExecutionContext context;
 
@@ -117,7 +118,7 @@ public class WebConfigBuilderStrategy implements AdapterConfigurationStrategy/* 
         
         List<String> includesList = optIncludes.get();
         
-        checkExcludesOrIncludes(includesList, true);
+        checkExcludesOrIncludes(includesList, MAX_LIST_SIZE_INCLUDES, true);
         
         Set<String> includes = new HashSet<>(includesList);
 
@@ -133,27 +134,27 @@ public class WebConfigBuilderStrategy implements AdapterConfigurationStrategy/* 
         
         List<String> excludeList = optExcludes.get();
 
-        checkExcludesOrIncludes(excludeList, false);
+        checkExcludesOrIncludes(excludeList, MAX_LIST_SIZE_EXCLUDES, false);
         
         Set<String> excludes = new HashSet<>(excludeList);
 
         configBuilder.setExcludes(excludes);
     }
     
-    private void checkExcludesOrIncludes(List<String> urlList, boolean include) {
+    private void checkExcludesOrIncludes(List<String> urlList, int maxListSize, boolean include) {
         String term = "excludes";
         
-        if (urlList.size() > MAX_LIST_SIZE_INCLUDES_EXCLUDES) {
+        if (urlList.size() > maxListSize) {
             if (include) {
                 term = "includes";
             }
-            throw new IllegalArgumentException("A maximum of " + MAX_LIST_SIZE_INCLUDES_EXCLUDES + " " + term + " are allowed.");
+            throw new IllegalArgumentException("A maximum of " + maxListSize + " " + term + " are allowed.");
         }
         
         for (String url : urlList) {
-            if (url.length() > MAX_LENGTH_INCLUDES_EXCLUDES) {
-                String excludeSubStr = url.substring(0, MAX_LENGTH_INCLUDES_EXCLUDES);
-                throw new IllegalArgumentException("Maximum URL length is " + MAX_LENGTH_INCLUDES_EXCLUDES + " characters. The first " + MAX_LENGTH_INCLUDES_EXCLUDES + " characters of the URL in question: " + excludeSubStr);
+            if (url.length() > MAX_LENGTH_PATH_SIZE) {
+                String excludeSubStr = url.substring(0, MAX_LENGTH_PATH_SIZE);
+                throw new IllegalArgumentException("Maximum URL length is " + MAX_LENGTH_PATH_SIZE + " characters. The first " + MAX_LENGTH_PATH_SIZE + " characters of the URL in question: " + excludeSubStr);
             }
             if (!url.startsWith("/")) {
                 throw new IllegalArgumentException("The URL does not start with a slash '/'. URL: " + url);
