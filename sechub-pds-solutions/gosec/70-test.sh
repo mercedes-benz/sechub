@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# SPDX-License-Identifier: MIT
 
 file_to_upload="$1"
 json_config="$2"
@@ -30,11 +31,23 @@ export PDS_PRODUCT_IDENTFIER=PDS_GOSEC
 USAGE
 }
 
+function did_job_fail() {
+    local status="$1"
+    job_failed="no"
+
+    if [[ $status == "FAILED" ]]
+    then
+        job_failed="yes"
+    fi
+
+    echo $job_failed
+}
+
 function is_job_finished () {
     local status="$1"
     job_finished="no"
 
-    if [[ $status == "DONE" || $status == "FINISHED" ]]
+    if [[ $status == "DONE" || $status == "FINISHED" || $status == "FAILED" ]]
     then
         job_finished="yes"
     fi
@@ -76,8 +89,10 @@ if [[ ! -z "$RETRIES" ]]
 then
     retries=$RETRIES
 else
-    retries=20
+    retries=1200
 fi
+
+echo "Aborting after a maximum of $retries retries"
 
 if [[ -z "$file_to_upload" ]]
 then
@@ -135,9 +150,25 @@ while [[ $retries -ge 0 && $(is_job_finished $status) == "no" ]]
 do
     status=`$pds_api job_status "$jobUUID" | jq '.state' | tr -d \"`
     echo "Job status: $status"
+
+    if (( $retries % 10 == 0 ))
+    then
+        printf "\n# Job output stream\n"
+        "$pds_api" job_stream_output "$jobUUID"
+    fi
+
     ((retries--))
-    sleep 0.5
+    sleep 0.5s
 done
 
-# echo return the actual result
-"$pds_api" job_result "$jobUUID"
+if [[ $(did_job_fail $status) == "yes" ]]
+then
+    printf "\n# Job output stream\n"
+    "$pds_api" job_stream_output "$jobUUID"
+
+    printf "\n# Job error stream\n"
+    "$pds_api" job_stream_error "$jobUUID"
+else
+    echo "Return the result"
+    "$pds_api" job_result "$jobUUID"
+fi

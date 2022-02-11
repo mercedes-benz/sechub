@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 :toc:
+:numbered:
 
 = GoSec + PDS
 
@@ -11,7 +12,7 @@ Furthermore, the combination of GoSec and PDS makes it possible to run both insi
 This folder contains the necessary scripts to run PDS + GoSec inside a container locally. Additionally, it contains scripts to build and push the PDS + GoSec container to your container registry and a Helm chart to install and run PDS + GoSec in a Kubernetes cluster.
 
 [NOTE]
-We offer Alpine Linux and Ubuntu based images. What you choose is up to you. However, for people with little Linux experience we recommend to use the Ubuntu image. The Alpine Linux image is intended for experienced Linux users.
+We offer Ubuntu based images. What you choose is up to you.
 
 == Run Locally
 
@@ -23,7 +24,7 @@ Docker and Docker-Compose need to be installed:
 
 . https://docs.docker.com/engine/install/[Install Docker]
 
-. Linux: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user[Run docker as non Root user]
+. Linux: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user[Use Docker as non Root user]
 
 . https://docs.docker.com/compose/install/[Install Docker-Compose]
 
@@ -37,12 +38,6 @@ The folder contains a start script which does the <<_manually, manual>> steps fo
 
 ----
 ./01-start-docker-compose.sh
-----
-
-or to start the Alpine Linux container:
-
-----
-./01-start-docker-compose.sh alpine
 ----
 
 ==== Manually
@@ -59,12 +54,6 @@ It is recommended to change the default passwords in the `.env` file to improve 
 ----
 docker-compose --file docker-compose_pds_gosec_ubuntu.yaml up --build
 ----
-+
-or to start the Alpine Linux container:
-+
-----
-docker-compose --file docker-compose_pds_gosec_alpine.yaml up --build
-----
 
 ==== Together with SecHub
 
@@ -76,12 +65,6 @@ WARNING: Make sure the SecHub container is running.
 +
 ----
 ./05-start-single-sechub-network-docker-compose.sh
-----
-+
-or Alpine
-+
-----
-05-start-single-sechub-network-docker-compose.sh alpine
 ----
 
 === Scan
@@ -178,7 +161,7 @@ GoSec provides vulnerable code samples: https://securego.io/docs/rules/g201-g202
 . Download the job result
 +
 ----
-$ ./pds-api.sh job_result "8d4236cf-b512-40bc-bb70-c247fa4c9c37"
+./pds-api.sh job_result "8d4236cf-b512-40bc-bb70-c247fa4c9c37"
 ----
 +
 Output
@@ -434,7 +417,7 @@ The cluster uses a shared volume defined in `docker-compose`. Docker allows to c
 
 The cluster consists of a PostgreSQL database, a Nginx loadbalancer and one or more PDS server.
 
-image::cluster_shared_volume.svg[Components of cluster with shared volume]
+image::../shared/media/cluster_shared_volume.svg[Components of cluster with shared volume]
 
 ===== Automatic
 
@@ -464,13 +447,11 @@ NOTE: It is recommended to change the passwords in `.env-cluster`. Other values 
 
 ==== Object Storage
 
-WARNING: Please beware, that the object storage Docker image contains content licensed under AGPL. For example MinIO, which are **not** covered under the MIT license of this repository.
+The cluster uses an object storage to store files. The cluster uses https://github.com/chrislusf/seaweedfs[SeaweedFS] (S3 compatible) to store files. The PDS instance(s) use the object storage to upload files to. Reading, extracting and analysing the files is done in the PDS+GoSec container.
 
-The cluster uses an object storage to store files. The cluster uses https://min.io/[MinIO] (S3 compatible) to store files. The PDS instance(s) use the object storage to upload files to. Reading, extracting and analysing the files is done in the PDS+GoSec container.
+The cluster consists of a PostgreSQL database, a Nginx loadbalancer, a SeaweedFS object storage and one or more PDS server.
 
-The cluster consists of a PostgreSQL database, a Nginx loadbalancer, a MinIO object storage and one or more PDS server.
-
-image::cluster_object_storage.svg[Components of cluster with object storage]
+image::../shared/media/cluster_object_storage.svg[Components of cluster with object storage]
 
 ===== Automatic
 
@@ -518,12 +499,6 @@ This section contains information about how to troubleshoot PDS+GoSec if somethi
 docker exec -it pds-gosec-ubuntu bash
 ----
 
-==== Access the Alpine Linux container
-
-----
-docker exec -it pds-gosec-alpine sh
-----
-
 ==== Java Application Remote Debugging of PDS
 
 . Set `JAVA_ENABLE_DEBUG=true` in the `.env` file
@@ -562,21 +537,7 @@ Build the container image.
 . Using your own base image:
 +
 ----
-./10-create-ubuntu-image.sh my.registry.example.org/sechub/pds_gosec v0.1 "my.registry.example.org/ubuntu:focal"
-----
-
-==== Alpine
-
-. Using the default image: 
-+
-----
-./11-create-alpine-image.sh my.registry.example.org/sechub/pds_gosec v0.1
-----
-
-. Using your own base image:
-+
-----
-./11-create-alpine-image.sh my.registry.example.org/sechub/pds_gosec v0.1 "my.registry.example.org/alpine:3.14"
+./10-create-ubuntu-image.sh my.registry.example.org/sechub/pds_gosec v0.1 "my.registry.example.org/ubuntu:20.04"
 ----
 
 === Push Image to Registry
@@ -606,7 +567,7 @@ https://helm.sh/[Helm] is a package manager for Kubernetes.
 ==== Requierments
 
 * https://helm.sh/docs/intro/install/[Helm] installed
-* `pds_gosec_ubuntu` or `pds_gosec_alpine` image pushed to registry
+* `pds_gosec_ubuntu` image pushed to registry
 
 ==== Installation
 
@@ -649,7 +610,7 @@ networkPolicy:
                 name: sechub-adminserver
 ----
 +
-An example configuration file with 3 replicas, postgresql and s3 (MinIO) storage:
+An example configuration file with 3 replicas, postgresql and object storage:
 +
 [source,yaml]
 ----

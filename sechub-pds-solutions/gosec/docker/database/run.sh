@@ -11,7 +11,7 @@ debug () {
 
 server () {
     # start PostgreSQL server
-    pg_ctl start
+    pg_ctlcluster 12 main start
 
     # Create a new user pds
     psql --command="CREATE USER pds;"
@@ -34,7 +34,7 @@ server () {
 
     # check PostgreSQL server status,
     # for the container to stay alive
-    while pg_ctl status
+    while pg_ctlcluster 12 main status
     do
         sleep 300
     done

@@ -1,0 +1,767 @@
+{
+    "runs": [
+        {
+            "tool": {
+                "driver": {
+                    "name": "nodejsscan",
+                    "rules": [
+                        {
+                            "id": "express_open_redirect",
+                            "name": "ExpressOpenRedirect",
+                            "helpUri": "https://ajinabraham.github.io/nodejsscan/#express_open_redirect"
+                        },
+                        {
+                            "id": "node_ssrf",
+                            "name": "NodeSsrf",
+                            "helpUri": "https://ajinabraham.github.io/nodejsscan/#node_ssrf"
+                        },
+                        {
+                            "id": "eval_nodejs",
+                            "name": "EvalNodejs",
+                            "helpUri": "https://ajinabraham.github.io/nodejsscan/#eval_nodejs"
+                        },
+                        {
+                            "id": "node_password",
+                            "name": "NodePassword",
+                            "helpUri": "https://ajinabraham.github.io/nodejsscan/#node_password"
+                        },
+                        {
+                            "id": "node_username",
+                            "name": "NodeUsername",
+                            "helpUri": "https://ajinabraham.github.io/nodejsscan/#node_username"
+                        },
+                        {
+                            "id": "node_insecure_random_generator",
+                            "name": "NodeInsecureRandomGenerator",
+                            "helpUri": "https://ajinabraham.github.io/nodejsscan/#node_insecure_random_generator"
+                        },
+                        {
+                            "id": "node_timing_attack",
+                            "name": "NodeTimingAttack",
+                            "helpUri": "https://ajinabraham.github.io/nodejsscan/#node_timing_attack"
+                        },
+                        {
+                            "id": "regex_dos",
+                            "name": "RegexDos",
+                            "helpUri": "https://ajinabraham.github.io/nodejsscan/#regex_dos"
+                        },
+                        {
+                            "id": "cookie_session_default",
+                            "name": "CookieSessionDefault",
+                            "helpUri": "https://ajinabraham.github.io/nodejsscan/#cookie_session_default"
+                        },
+                        {
+                            "id": "cookie_session_no_secure",
+                            "name": "CookieSessionNoSecure",
+                            "helpUri": "https://ajinabraham.github.io/nodejsscan/#cookie_session_no_secure"
+                        },
+                        {
+                            "id": "cookie_session_no_samesite",
+                            "name": "CookieSessionNoSamesite",
+                            "helpUri": "https://ajinabraham.github.io/nodejsscan/#cookie_session_no_samesite"
+                        },
+                        {
+                            "id": "cookie_session_no_domain",
+                            "name": "CookieSessionNoDomain",
+                            "helpUri": "https://ajinabraham.github.io/nodejsscan/#cookie_session_no_domain"
+                        },
+                        {
+                            "id": "cookie_session_no_path",
+                            "name": "CookieSessionNoPath",
+                            "helpUri": "https://ajinabraham.github.io/nodejsscan/#cookie_session_no_path"
+                        },
+                        {
+                            "id": "cookie_session_no_maxage",
+                            "name": "CookieSessionNoMaxage",
+                            "helpUri": "https://ajinabraham.github.io/nodejsscan/#cookie_session_no_maxage"
+                        }
+                    ],
+                    "version": "0.2.9",
+                    "informationUri": "https://github.com/ajinabraham/njsscan",
+                    "semanticVersion": "0.2.9"
+                }
+            },
+            "invocations": [
+                {
+                    "executionSuccessful": true,
+                    "endTimeUtc": "2022-01-12T18:51:11Z"
+                }
+            ],
+            "results": [
+                {
+                    "message": {
+                        "text": "Untrusted user input in redirect() can result in Open Redirect vulnerability."
+                    },
+                    "level": "error",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "region": {
+                                    "snippet": {
+                                        "text": "        return res.redirect(req.query.url);"
+                                    },
+                                    "endColumn": 43,
+                                    "endLine": 74,
+                                    "startColumn": 16,
+                                    "startLine": 74
+                                },
+                                "artifactLocation": {
+                                    "uri": "file:///workspace/workspace/926c3f8c-83eb-406b-a6a2-4d29a011fc9c/upload/unzipped/sourcecode/NodeGoat/app/routes/index.js"
+                                }
+                            }
+                        }
+                    ],
+                    "properties": {
+                        "owasp": "A1: Injection",
+                        "cwe": "CWE-601: URL Redirection to Untrusted Site ('Open Redirect')"
+                    },
+                    "ruleId": "express_open_redirect",
+                    "ruleIndex": 0
+                },
+                {
+                    "message": {
+                        "text": "User controlled URL in http client libraries can result in Server Side Request Forgery (SSRF)."
+                    },
+                    "level": "error",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "region": {
+                                    "snippet": {
+                                        "text": "            const url = req.query.url + req.query.symbol;\n            return needle.get(url, (error, newResponse, body) => {\n                if (!error && newResponse.statusCode === 200) {\n                    res.writeHead(200, {\n                        \"Content-Type\": \"text/html\"\n                    });\n                }\n                res.write(\"<h1>The following is the stock information you requested.</h1>\\n\\n\");\n                res.write(\"\\n\\n\");\n                if (body) {\n                    res.write(body);\n                }\n                return res.end();\n            });"
+                                    },
+                                    "endColumn": 16,
+                                    "endLine": 28,
+                                    "startColumn": 13,
+                                    "startLine": 15
+                                },
+                                "artifactLocation": {
+                                    "uri": "file:///workspace/workspace/926c3f8c-83eb-406b-a6a2-4d29a011fc9c/upload/unzipped/sourcecode/NodeGoat/app/routes/research.js"
+                                }
+                            }
+                        }
+                    ],
+                    "properties": {
+                        "owasp": "A1: Injection",
+                        "cwe": "CWE-918: Server-Side Request Forgery (SSRF)"
+                    },
+                    "ruleId": "node_ssrf",
+                    "ruleIndex": 1
+                },
+                {
+                    "message": {
+                        "text": "User controlled data in eval() or similar functions may result in Server Side Injection or Remote Code Injection"
+                    },
+                    "level": "error",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "region": {
+                                    "snippet": {
+                                        "text": "        const preTax = eval(req.body.preTax);"
+                                    },
+                                    "endColumn": 45,
+                                    "endLine": 32,
+                                    "startColumn": 24,
+                                    "startLine": 32
+                                },
+                                "artifactLocation": {
+                                    "uri": "file:///workspace/workspace/926c3f8c-83eb-406b-a6a2-4d29a011fc9c/upload/unzipped/sourcecode/NodeGoat/app/routes/contributions.js"
+                                }
+                            }
+                        },
+                        {
+                            "physicalLocation": {
+                                "region": {
+                                    "snippet": {
+                                        "text": "        const afterTax = eval(req.body.afterTax);"
+                                    },
+                                    "endColumn": 49,
+                                    "endLine": 33,
+                                    "startColumn": 26,
+                                    "startLine": 33
+                                },
+                                "artifactLocation": {
+                                    "uri": "file:///workspace/workspace/926c3f8c-83eb-406b-a6a2-4d29a011fc9c/upload/unzipped/sourcecode/NodeGoat/app/routes/contributions.js"
+                                }
+                            }
+                        },
+                        {
+                            "physicalLocation": {
+                                "region": {
+                                    "snippet": {
+                                        "text": "        const roth = eval(req.body.roth);"
+                                    },
+                                    "endColumn": 41,
+                                    "endLine": 34,
+                                    "startColumn": 22,
+                                    "startLine": 34
+                                },
+                                "artifactLocation": {
+                                    "uri": "file:///workspace/workspace/926c3f8c-83eb-406b-a6a2-4d29a011fc9c/upload/unzipped/sourcecode/NodeGoat/app/routes/contributions.js"
+                                }
+                            }
+                        }
+                    ],
+                    "properties": {
+                        "owasp": "A1: Injection",
+                        "cwe": "CWE-95: Improper Neutralization of Directives in Dynamically Evaluated Code ('Eval Injection')"
+                    },
+                    "ruleId": "eval_nodejs",
+                    "ruleIndex": 2
+                },
+                {
+                    "message": {
+                        "text": "A hardcoded password in plain text is identified. Store it properly in an environment variable."
+                    },
+                    "level": "error",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "region": {
+                                    "snippet": {
+                                        "text": "            const invalidPasswordErrorMessage = \"Invalid password\";"
+                                    },
+                                    "endColumn": 67,
+                                    "endLine": 59,
+                                    "startColumn": 19,
+                                    "startLine": 59
+                                },
+                                "artifactLocation": {
+                                    "uri": "file:///workspace/workspace/926c3f8c-83eb-406b-a6a2-4d29a011fc9c/upload/unzipped/sourcecode/NodeGoat/app/routes/session.js"
+                                }
+                            }
+                        },
+                        {
+                            "physicalLocation": {
+                                "region": {
+                                    "snippet": {
+                                        "text": "            errors.passwordError = \"Password must be 8 to 18 characters\" +\n                \" including numbers, lowercase and uppercase letters.\";"
+                                    },
+                                    "endColumn": 71,
+                                    "endLine": 167,
+                                    "startColumn": 13,
+                                    "startLine": 166
+                                },
+                                "artifactLocation": {
+                                    "uri": "file:///workspace/workspace/926c3f8c-83eb-406b-a6a2-4d29a011fc9c/upload/unzipped/sourcecode/NodeGoat/app/routes/session.js"
+                                }
+                            }
+                        },
+                        {
+                            "physicalLocation": {
+                                "region": {
+                                    "snippet": {
+                                        "text": "var sutUserPassword = \"User1_123\";"
+                                    },
+                                    "endColumn": 34,
+                                    "endLine": 37,
+                                    "startColumn": 5,
+                                    "startLine": 37
+                                },
+                                "artifactLocation": {
+                                    "uri": "file:///workspace/workspace/926c3f8c-83eb-406b-a6a2-4d29a011fc9c/upload/unzipped/sourcecode/NodeGoat/test/security/profile-test.js"
+                                }
+                            }
+                        }
+                    ],
+                    "properties": {
+                        "owasp": "A3: Sensitive Data Exposure",
+                        "cwe": "CWE-798: Use of Hard-coded Credentials"
+                    },
+                    "ruleId": "node_password",
+                    "ruleIndex": 3
+                },
+                {
+                    "message": {
+                        "text": "A hardcoded username in plain text is identified. Store it properly in an environment variable."
+                    },
+                    "level": "error",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "region": {
+                                    "snippet": {
+                                        "text": "            const invalidUserNameErrorMessage = \"Invalid username\";"
+                                    },
+                                    "endColumn": 67,
+                                    "endLine": 58,
+                                    "startColumn": 19,
+                                    "startLine": 58
+                                },
+                                "artifactLocation": {
+                                    "uri": "file:///workspace/workspace/926c3f8c-83eb-406b-a6a2-4d29a011fc9c/upload/unzipped/sourcecode/NodeGoat/app/routes/session.js"
+                                }
+                            }
+                        },
+                        {
+                            "physicalLocation": {
+                                "region": {
+                                    "snippet": {
+                                        "text": "            errors.userNameError = \"Invalid user name.\";"
+                                    },
+                                    "endColumn": 56,
+                                    "endLine": 154,
+                                    "startColumn": 13,
+                                    "startLine": 154
+                                },
+                                "artifactLocation": {
+                                    "uri": "file:///workspace/workspace/926c3f8c-83eb-406b-a6a2-4d29a011fc9c/upload/unzipped/sourcecode/NodeGoat/app/routes/session.js"
+                                }
+                            }
+                        },
+                        {
+                            "physicalLocation": {
+                                "region": {
+                                    "snippet": {
+                                        "text": "                    errors.userNameError = \"User name already in use. Please choose another\";"
+                                    },
+                                    "endColumn": 93,
+                                    "endLine": 207,
+                                    "startColumn": 21,
+                                    "startLine": 207
+                                },
+                                "artifactLocation": {
+                                    "uri": "file:///workspace/workspace/926c3f8c-83eb-406b-a6a2-4d29a011fc9c/upload/unzipped/sourcecode/NodeGoat/app/routes/session.js"
+                                }
+                            }
+                        },
+                        {
+                            "physicalLocation": {
+                                "region": {
+                                    "snippet": {
+                                        "text": "var sutUserName = \"user1\";"
+                                    },
+                                    "endColumn": 26,
+                                    "endLine": 36,
+                                    "startColumn": 5,
+                                    "startLine": 36
+                                },
+                                "artifactLocation": {
+                                    "uri": "file:///workspace/workspace/926c3f8c-83eb-406b-a6a2-4d29a011fc9c/upload/unzipped/sourcecode/NodeGoat/test/security/profile-test.js"
+                                }
+                            }
+                        },
+                        {
+                            "physicalLocation": {
+                                "region": {
+                                    "snippet": {
+                                        "text": "var sutUserPassword = \"User1_123\";"
+                                    },
+                                    "endColumn": 34,
+                                    "endLine": 37,
+                                    "startColumn": 5,
+                                    "startLine": 37
+                                },
+                                "artifactLocation": {
+                                    "uri": "file:///workspace/workspace/926c3f8c-83eb-406b-a6a2-4d29a011fc9c/upload/unzipped/sourcecode/NodeGoat/test/security/profile-test.js"
+                                }
+                            }
+                        }
+                    ],
+                    "properties": {
+                        "owasp": "A3: Sensitive Data Exposure",
+                        "cwe": "CWE-798: Use of Hard-coded Credentials"
+                    },
+                    "ruleId": "node_username",
+                    "ruleIndex": 4
+                },
+                {
+                    "message": {
+                        "text": "crypto.pseudoRandomBytes()/Math.random() is a cryptographically weak random number generator."
+                    },
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "region": {
+                                    "snippet": {
+                                        "text": "        const day = (Math.floor(Math.random() * 10) + today.getDay()) % 29;"
+                                    },
+                                    "endColumn": 46,
+                                    "endLine": 51,
+                                    "startColumn": 33,
+                                    "startLine": 51
+                                },
+                                "artifactLocation": {
+                                    "uri": "file:///workspace/workspace/926c3f8c-83eb-406b-a6a2-4d29a011fc9c/upload/unzipped/sourcecode/NodeGoat/app/data/user-dao.js"
+                                }
+                            }
+                        },
+                        {
+                            "physicalLocation": {
+                                "region": {
+                                    "snippet": {
+                                        "text": "        const month = (Math.floor(Math.random() * 10) + today.getMonth()) % 12;"
+                                    },
+                                    "endColumn": 48,
+                                    "endLine": 52,
+                                    "startColumn": 35,
+                                    "startLine": 52
+                                },
+                                "artifactLocation": {
+                                    "uri": "file:///workspace/workspace/926c3f8c-83eb-406b-a6a2-4d29a011fc9c/upload/unzipped/sourcecode/NodeGoat/app/data/user-dao.js"
+                                }
+                            }
+                        },
+                        {
+                            "physicalLocation": {
+                                "region": {
+                                    "snippet": {
+                                        "text": "        const year = Math.ceil(Math.random() * 30) + today.getFullYear();"
+                                    },
+                                    "endColumn": 45,
+                                    "endLine": 53,
+                                    "startColumn": 32,
+                                    "startLine": 53
+                                },
+                                "artifactLocation": {
+                                    "uri": "file:///workspace/workspace/926c3f8c-83eb-406b-a6a2-4d29a011fc9c/upload/unzipped/sourcecode/NodeGoat/app/data/user-dao.js"
+                                }
+                            }
+                        },
+                        {
+                            "physicalLocation": {
+                                "region": {
+                                    "snippet": {
+                                        "text": "        const stocks = Math.floor((Math.random() * 40) + 1);"
+                                    },
+                                    "endColumn": 49,
+                                    "endLine": 16,
+                                    "startColumn": 36,
+                                    "startLine": 16
+                                },
+                                "artifactLocation": {
+                                    "uri": "file:///workspace/workspace/926c3f8c-83eb-406b-a6a2-4d29a011fc9c/upload/unzipped/sourcecode/NodeGoat/app/routes/session.js"
+                                }
+                            }
+                        },
+                        {
+                            "physicalLocation": {
+                                "region": {
+                                    "snippet": {
+                                        "text": "        const funds = Math.floor((Math.random() * 40) + 1);"
+                                    },
+                                    "endColumn": 48,
+                                    "endLine": 17,
+                                    "startColumn": 35,
+                                    "startLine": 17
+                                },
+                                "artifactLocation": {
+                                    "uri": "file:///workspace/workspace/926c3f8c-83eb-406b-a6a2-4d29a011fc9c/upload/unzipped/sourcecode/NodeGoat/app/routes/session.js"
+                                }
+                            }
+                        },
+                        {
+                            "physicalLocation": {
+                                "region": {
+                                    "snippet": {
+                                        "text": "                const stocks = Math.floor((Math.random() * 40) + 1);"
+                                    },
+                                    "endColumn": 57,
+                                    "endLine": 113,
+                                    "startColumn": 44,
+                                    "startLine": 113
+                                },
+                                "artifactLocation": {
+                                    "uri": "file:///workspace/workspace/926c3f8c-83eb-406b-a6a2-4d29a011fc9c/upload/unzipped/sourcecode/NodeGoat/artifacts/db-reset.js"
+                                }
+                            }
+                        },
+                        {
+                            "physicalLocation": {
+                                "region": {
+                                    "snippet": {
+                                        "text": "                const funds = Math.floor((Math.random() * 40) + 1);"
+                                    },
+                                    "endColumn": 56,
+                                    "endLine": 114,
+                                    "startColumn": 43,
+                                    "startLine": 114
+                                },
+                                "artifactLocation": {
+                                    "uri": "file:///workspace/workspace/926c3f8c-83eb-406b-a6a2-4d29a011fc9c/upload/unzipped/sourcecode/NodeGoat/artifacts/db-reset.js"
+                                }
+                            }
+                        }
+                    ],
+                    "properties": {
+                        "owasp": "A9: Using Components with Known Vulnerabilities",
+                        "cwe": "CWE-327: Use of a Broken or Risky Cryptographic Algorithm"
+                    },
+                    "ruleId": "node_insecure_random_generator",
+                    "ruleIndex": 5
+                },
+                {
+                    "message": {
+                        "text": "String comparisons using '===', '!==', '!=' and '==' is vulnerable to timing attacks. More info: https://snyk.io/blog/node-js-timing-attack-ccc-ctf/"
+                    },
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "region": {
+                                    "snippet": {
+                                        "text": "        if (password !== verify) {\n            errors.verifyError = \"Password must match\";\n            return false;\n        }"
+                                    },
+                                    "endColumn": 10,
+                                    "endLine": 173,
+                                    "startColumn": 9,
+                                    "startLine": 170
+                                },
+                                "artifactLocation": {
+                                    "uri": "file:///workspace/workspace/926c3f8c-83eb-406b-a6a2-4d29a011fc9c/upload/unzipped/sourcecode/NodeGoat/app/routes/session.js"
+                                }
+                            }
+                        }
+                    ],
+                    "properties": {
+                        "owasp": "A9: Using Components with Known Vulnerabilities",
+                        "cwe": "CWE-208: Observable Timing Discrepancy"
+                    },
+                    "ruleId": "node_timing_attack",
+                    "ruleIndex": 6
+                },
+                {
+                    "message": {
+                        "text": "Ensure that the regex used to compare with user supplied input is safe from regular expression denial of service."
+                    },
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "region": {
+                                    "snippet": {
+                                        "text": "(function(l,f){function m(){var a=e.elements;return\"string\"==typeof a?a.split(\" \"):a}function i(a){var b=n[a[o]];b||(b={},h++,a[o]=h,n[h]=b);return b}function p(a,b,c){b||(b=f);if(g)return b.createElement(a);c||(c=i(b));b=c.cache[a]?c.cache[a].cloneNode():r.test(a)?(c.cache[a]=c.createElem(a)).cloneNode():c.createElem(a);return b.canHaveChildren&&!s.test(a)?c.frag.appendChild(b):b}function t(a,b){if(!b.cache)b.cache={},b.createElem=a.createElement,b.createFrag=a.createDocumentFragment,b.frag=b.createFrag();"
+                                    },
+                                    "endColumn": 266,
+                                    "endLine": 4,
+                                    "startColumn": 257,
+                                    "startLine": 4
+                                },
+                                "artifactLocation": {
+                                    "uri": "file:///workspace/workspace/926c3f8c-83eb-406b-a6a2-4d29a011fc9c/upload/unzipped/sourcecode/NodeGoat/app/assets/vendor/html5shiv.js"
+                                }
+                            }
+                        },
+                        {
+                            "physicalLocation": {
+                                "region": {
+                                    "snippet": {
+                                        "text": "(function(l,f){function m(){var a=e.elements;return\"string\"==typeof a?a.split(\" \"):a}function i(a){var b=n[a[o]];b||(b={},h++,a[o]=h,n[h]=b);return b}function p(a,b,c){b||(b=f);if(g)return b.createElement(a);c||(c=i(b));b=c.cache[a]?c.cache[a].cloneNode():r.test(a)?(c.cache[a]=c.createElem(a)).cloneNode():c.createElem(a);return b.canHaveChildren&&!s.test(a)?c.frag.appendChild(b):b}function t(a,b){if(!b.cache)b.cache={},b.createElem=a.createElement,b.createFrag=a.createDocumentFragment,b.frag=b.createFrag();"
+                                    },
+                                    "endColumn": 360,
+                                    "endLine": 4,
+                                    "startColumn": 351,
+                                    "startLine": 4
+                                },
+                                "artifactLocation": {
+                                    "uri": "file:///workspace/workspace/926c3f8c-83eb-406b-a6a2-4d29a011fc9c/upload/unzipped/sourcecode/NodeGoat/app/assets/vendor/html5shiv.js"
+                                }
+                            }
+                        },
+                        {
+                            "physicalLocation": {
+                                "region": {
+                                    "snippet": {
+                                        "text": "        if (!USER_RE.test(userName)) {"
+                                    },
+                                    "endColumn": 36,
+                                    "endLine": 153,
+                                    "startColumn": 14,
+                                    "startLine": 153
+                                },
+                                "artifactLocation": {
+                                    "uri": "file:///workspace/workspace/926c3f8c-83eb-406b-a6a2-4d29a011fc9c/upload/unzipped/sourcecode/NodeGoat/app/routes/session.js"
+                                }
+                            }
+                        }
+                    ],
+                    "properties": {
+                        "owasp": "A6: Security Misconfiguration",
+                        "cwe": "CWE-185: Incorrect Regular Expression"
+                    },
+                    "ruleId": "regex_dos",
+                    "ruleIndex": 7
+                },
+                {
+                    "message": {
+                        "text": "Consider changing the default session cookie name. An attacker can use it to fingerprint the server and target attacks accordingly."
+                    },
+                    "level": "note",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "region": {
+                                    "snippet": {
+                                        "text": "    app.use(session({\n        // genid: (req) => {\n        //    return genuuid() // use UUIDs for session IDs\n        //},\n        secret: cookieSecret,\n        // Both mandatory in Express v4\n        saveUninitialized: true,\n        resave: true\n        /*\n        // Fix for A5 - Security MisConfig\n        // Use generic cookie name\n        key: \"sessionId\",\n        */\n\n        /*\n        // Fix for A3 - XSS\n        // TODO: Add \"maxAge\"\n        cookie: {\n            httpOnly: true\n            // Remember to start an HTTPS server to get this working\n            // secure: true\n        }\n        */\n\n    }));"
+                                    },
+                                    "endColumn": 7,
+                                    "endLine": 102,
+                                    "startColumn": 13,
+                                    "startLine": 78
+                                },
+                                "artifactLocation": {
+                                    "uri": "file:///workspace/workspace/926c3f8c-83eb-406b-a6a2-4d29a011fc9c/upload/unzipped/sourcecode/NodeGoat/server.js"
+                                }
+                            }
+                        }
+                    ],
+                    "properties": {
+                        "owasp": "A2: Broken Authentication",
+                        "cwe": "CWE-522: Insufficiently Protected Credentials"
+                    },
+                    "ruleId": "cookie_session_default",
+                    "ruleIndex": 8
+                },
+                {
+                    "message": {
+                        "text": "Default session middleware settings: `secure` not set. It ensures the browser only sends the cookie over HTTPS."
+                    },
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "region": {
+                                    "snippet": {
+                                        "text": "    app.use(session({\n        // genid: (req) => {\n        //    return genuuid() // use UUIDs for session IDs\n        //},\n        secret: cookieSecret,\n        // Both mandatory in Express v4\n        saveUninitialized: true,\n        resave: true\n        /*\n        // Fix for A5 - Security MisConfig\n        // Use generic cookie name\n        key: \"sessionId\",\n        */\n\n        /*\n        // Fix for A3 - XSS\n        // TODO: Add \"maxAge\"\n        cookie: {\n            httpOnly: true\n            // Remember to start an HTTPS server to get this working\n            // secure: true\n        }\n        */\n\n    }));"
+                                    },
+                                    "endColumn": 7,
+                                    "endLine": 102,
+                                    "startColumn": 13,
+                                    "startLine": 78
+                                },
+                                "artifactLocation": {
+                                    "uri": "file:///workspace/workspace/926c3f8c-83eb-406b-a6a2-4d29a011fc9c/upload/unzipped/sourcecode/NodeGoat/server.js"
+                                }
+                            }
+                        }
+                    ],
+                    "properties": {
+                        "owasp": "A2: Broken Authentication",
+                        "cwe": "CWE-614: Sensitive Cookie in HTTPS Session Without 'Secure' Attribute"
+                    },
+                    "ruleId": "cookie_session_no_secure",
+                    "ruleIndex": 9
+                },
+                {
+                    "message": {
+                        "text": "Default session middleware settings: `sameSite` attribute is not configured to strict or lax. These configurations provides protection against Cross Site Request Forgery attacks."
+                    },
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "region": {
+                                    "snippet": {
+                                        "text": "    app.use(session({\n        // genid: (req) => {\n        //    return genuuid() // use UUIDs for session IDs\n        //},\n        secret: cookieSecret,\n        // Both mandatory in Express v4\n        saveUninitialized: true,\n        resave: true\n        /*\n        // Fix for A5 - Security MisConfig\n        // Use generic cookie name\n        key: \"sessionId\",\n        */\n\n        /*\n        // Fix for A3 - XSS\n        // TODO: Add \"maxAge\"\n        cookie: {\n            httpOnly: true\n            // Remember to start an HTTPS server to get this working\n            // secure: true\n        }\n        */\n\n    }));"
+                                    },
+                                    "endColumn": 7,
+                                    "endLine": 102,
+                                    "startColumn": 13,
+                                    "startLine": 78
+                                },
+                                "artifactLocation": {
+                                    "uri": "file:///workspace/workspace/926c3f8c-83eb-406b-a6a2-4d29a011fc9c/upload/unzipped/sourcecode/NodeGoat/server.js"
+                                }
+                            }
+                        }
+                    ],
+                    "properties": {
+                        "owasp": "A2: Broken Authentication",
+                        "cwe": "CWE-1275: Sensitive Cookie with Improper SameSite Attribute"
+                    },
+                    "ruleId": "cookie_session_no_samesite",
+                    "ruleIndex": 10
+                },
+                {
+                    "message": {
+                        "text": "Default session middleware settings: `domain` not set. It indicates the domain of the cookie; use it to compare against the domain of the server in which the URL is being requested. If they match, then check the path attribute next."
+                    },
+                    "level": "note",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "region": {
+                                    "snippet": {
+                                        "text": "    app.use(session({\n        // genid: (req) => {\n        //    return genuuid() // use UUIDs for session IDs\n        //},\n        secret: cookieSecret,\n        // Both mandatory in Express v4\n        saveUninitialized: true,\n        resave: true\n        /*\n        // Fix for A5 - Security MisConfig\n        // Use generic cookie name\n        key: \"sessionId\",\n        */\n\n        /*\n        // Fix for A3 - XSS\n        // TODO: Add \"maxAge\"\n        cookie: {\n            httpOnly: true\n            // Remember to start an HTTPS server to get this working\n            // secure: true\n        }\n        */\n\n    }));"
+                                    },
+                                    "endColumn": 7,
+                                    "endLine": 102,
+                                    "startColumn": 13,
+                                    "startLine": 78
+                                },
+                                "artifactLocation": {
+                                    "uri": "file:///workspace/workspace/926c3f8c-83eb-406b-a6a2-4d29a011fc9c/upload/unzipped/sourcecode/NodeGoat/server.js"
+                                }
+                            }
+                        }
+                    ],
+                    "properties": {
+                        "owasp": "A2: Broken Authentication",
+                        "cwe": "CWE-522: Insufficiently Protected Credentials"
+                    },
+                    "ruleId": "cookie_session_no_domain",
+                    "ruleIndex": 11
+                },
+                {
+                    "message": {
+                        "text": "Default session middleware settings: `path` not set. It indicates the path of the cookie; use it to compare against the request path. If this and domain match, then send the cookie in the request."
+                    },
+                    "level": "note",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "region": {
+                                    "snippet": {
+                                        "text": "    app.use(session({\n        // genid: (req) => {\n        //    return genuuid() // use UUIDs for session IDs\n        //},\n        secret: cookieSecret,\n        // Both mandatory in Express v4\n        saveUninitialized: true,\n        resave: true\n        /*\n        // Fix for A5 - Security MisConfig\n        // Use generic cookie name\n        key: \"sessionId\",\n        */\n\n        /*\n        // Fix for A3 - XSS\n        // TODO: Add \"maxAge\"\n        cookie: {\n            httpOnly: true\n            // Remember to start an HTTPS server to get this working\n            // secure: true\n        }\n        */\n\n    }));"
+                                    },
+                                    "endColumn": 7,
+                                    "endLine": 102,
+                                    "startColumn": 13,
+                                    "startLine": 78
+                                },
+                                "artifactLocation": {
+                                    "uri": "file:///workspace/workspace/926c3f8c-83eb-406b-a6a2-4d29a011fc9c/upload/unzipped/sourcecode/NodeGoat/server.js"
+                                }
+                            }
+                        }
+                    ],
+                    "properties": {
+                        "owasp": "A2: Broken Authentication",
+                        "cwe": "CWE-522: Insufficiently Protected Credentials"
+                    },
+                    "ruleId": "cookie_session_no_path",
+                    "ruleIndex": 12
+                },
+                {
+                    "message": {
+                        "text": "Session middleware settings: `maxAge` not set. Use it to set expiration date for cookies."
+                    },
+                    "level": "note",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "region": {
+                                    "snippet": {
+                                        "text": "    app.use(session({\n        // genid: (req) => {\n        //    return genuuid() // use UUIDs for session IDs\n        //},\n        secret: cookieSecret,\n        // Both mandatory in Express v4\n        saveUninitialized: true,\n        resave: true\n        /*\n        // Fix for A5 - Security MisConfig\n        // Use generic cookie name\n        key: \"sessionId\",\n        */\n\n        /*\n        // Fix for A3 - XSS\n        // TODO: Add \"maxAge\"\n        cookie: {\n            httpOnly: true\n            // Remember to start an HTTPS server to get this working\n            // secure: true\n        }\n        */\n\n    }));"
+                                    },
+                                    "endColumn": 7,
+                                    "endLine": 102,
+                                    "startColumn": 13,
+                                    "startLine": 78
+                                },
+                                "artifactLocation": {
+                                    "uri": "file:///workspace/workspace/926c3f8c-83eb-406b-a6a2-4d29a011fc9c/upload/unzipped/sourcecode/NodeGoat/server.js"
+                                }
+                            }
+                        }
+                    ],
+                    "properties": {
+                        "owasp": "A2: Broken Authentication",
+                        "cwe": "CWE-613: Insufficient Session Expiration"
+                    },
+                    "ruleId": "cookie_session_no_maxage",
+                    "ruleIndex": 13
+                }
+            ]
+        }
+    ],
+    "version": "2.1.0",
+    "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json"
+}

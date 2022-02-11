@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: MIT
 -- update pds job to have ouptut and error text columns
 ALTER TABLE pds_job ADD COLUMN output_stream_text text
           DEFAULT ''; -- avoid null values for old ob data

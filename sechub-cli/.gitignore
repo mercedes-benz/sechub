@@ -5,7 +5,7 @@ pkg
 .project
 
 # generated files:
-src/daimler.com/sechub/cli/version.go
+src/mercedes-benz.com/sechub/cli/version.go
 
 # vscode files:
 .vscode
@@ -16,3 +16,4 @@ sechub*.json
 
 # ignore all generated go parts
 *_gen.go
+go.mod

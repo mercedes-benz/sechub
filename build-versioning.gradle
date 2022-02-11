@@ -54,12 +54,12 @@ def buildVersionFiles(){
     // ------------------------
 
     // write version code for go client
-    String clientGoVersionTemplate = new File('./sechub-cli/src/daimler.com/sechub/cli/version.go.template').getText('UTF-8')
+    String clientGoVersionTemplate = new File('./sechub-cli/src/mercedes-benz.com/sechub/cli/version.go.template').getText('UTF-8')
     
     def clientVersionInfo = VersionData.defineVersion("Client",buildVersionString(clientVersionCommitTag, hasChanged,buildNumber))
     
     String clientGoVersionCode = clientGoVersionTemplate.replaceAll("__version__",clientVersionInfo.getFullVersion())
-    def clientVersionFile = new File('./sechub-cli/src/daimler.com/sechub/cli/version.go')
+    def clientVersionFile = new File('./sechub-cli/src/mercedes-benz.com/sechub/cli/version.go')
     clientVersionFile.write(clientGoVersionCode)
 
     /* write version info also as asciidoc file*/

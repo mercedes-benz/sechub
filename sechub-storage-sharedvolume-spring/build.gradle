@@ -7,7 +7,7 @@
  * ============================================================================
  */
 dependencies {
-    compile library.slf4j
-    compile project(':sechub-storage-core')
-
+    implementation library.slf4j
+    implementation project(':sechub-storage-core')
+	testImplementation library.mockito_inline
 }

@@ -20,5 +20,6 @@ dependencies{
     testImplementation library.junit5_params
     
     testImplementation library.mockito
+    testImplementation library.mockito_inline
     testImplementation library.hamcrest
 }
