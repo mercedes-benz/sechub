@@ -206,32 +206,13 @@ task convertSecHubPages(type: Copy){
      includeEmptyDirs = false
 }
 
-task docToPages(type: Copy){
-     group 'sechub'
-     description 'This will copy current documentation into sechub pages under /docs '
-
-     dependsOn 'convertSecHubPages'
-
-     into docsLatestFolder
-     from ("${convertedHTMLFolder}"){
-        include '*.html'
-     }
-
-     into ("images") {
-         from ("${imagesBuildDir}") {
-            exclude '**/*.md', '**/*.xml'
-         }
-     }
-
-}
-
 task createDownloadLinks(type: Exec) {
   group 'sechub'
   description 'This creates the HTML code for direct download'
-  dependsOn 'docToPages'
+  dependsOn 'documentation'
 
   workingDir = "."
-  commandLine 'sh', '-c', "cd ../docs ; helperscripts/create-download-html.sh client ${clientVersion} > latest/latest-client.html ; helperscripts/create-download-html.sh pds ${pdsVersion} > latest/latest-pds.html ; helperscripts/create-download-html.sh server ${serverVersion} > latest/latest-server.html"
+  commandLine 'sh', '-c', "helperscripts/create-download-html.sh client ${clientVersion} > ${asciidocBuildDir}/client-download.html ; helperscripts/create-download-html.sh pds ${pdsVersion} > ${asciidocBuildDir}/pds-download.html ; helperscripts/create-download-html.sh server ${serverVersion} > ${asciidocBuildDir}/server-download.html"
 }
 
 task "documentation-with-pages" {
@@ -239,12 +220,10 @@ task "documentation-with-pages" {
      description 'This will create documentation and setup sechub pages under /docs '
 
      dependsOn 'documentation'
-     dependsOn 'docToPages'
      dependsOn 'createDownloadLinks'
 
      // see https://stackoverflow.com/questions/32907275/gradle-custom-task-which-runs-multiple-tasks
-     tasks.findByName('docToPages').mustRunAfter 'documentation'
-     tasks.findByName('createDownloadLinks').mustRunAfter 'docToPages'
+     tasks.findByName('createDownloadLinks').mustRunAfter 'documentation'
 }
 
 openapi3 {

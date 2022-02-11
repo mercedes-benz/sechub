@@ -14,7 +14,7 @@ NOTE: Currently the client only supports basic authentication, but of course alw
 Download the binary for your operating system where you want to trigger `{sechub}` scanning.
 You will have no dependencies, just place the single binary file to a location inside your path variable.
 
-Direct download link to the latest client release: {webPage}/gen/latest-client.html
+Direct download link to the latest client release: {webPage}/latest/client-download.html
 For documentation, please look at {webPage}[{secHub} web page] .
 
 === Supported Platforms
