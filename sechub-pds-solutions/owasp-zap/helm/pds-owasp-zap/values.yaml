@@ -20,6 +20,9 @@ pds:
 
 zap:
     apiKey: "<random-api-key>"
+    proxy:
+        host: "127.0.0.1"
+        port: "9999"
 
 users:
     technical:

@@ -27,6 +27,10 @@
           {
             "key": "zap.ajaxcrawler.enabled",
             "description": "The AJAX crawler can crawl single-page and JavaScript pages. In case, this option is enabled the scanning will take more time."
+          },
+          {
+            "key": "zap.use.proxy",
+            "description": "Enable/disable proxy for scanning."
           }
         ]
       }
@@ -48,6 +52,10 @@
           {
             "key": "pds.scan.configuration",
             "description": "The configuration of the web scan"
+          },
+          {
+            "key": "zap.use.proxy",
+            "description": "Enable/disable proxy for scanning."
           }
         ]
       }

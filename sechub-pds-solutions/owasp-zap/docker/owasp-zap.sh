@@ -26,6 +26,14 @@ else
     echo "Ajax spider: disabled"
 fi
 
+if [ "$ZAP_USE_PROXY" = "true" ]
+then
+    echo "Use proxy: enabled"
+    options="$options --proxyHost $ZAP_PROXY_HOST --proxyPort $ZAP_PROXY_PORT"
+else
+    echo "Use proxy: disabled"
+fi
+
 echo ""
 echo "Start scanning"
 echo ""

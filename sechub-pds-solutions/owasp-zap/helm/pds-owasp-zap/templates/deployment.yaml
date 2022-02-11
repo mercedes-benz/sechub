@@ -38,6 +38,10 @@ spec:
                       value: "{{ .Values.pds.config.execute.queueMax }}"
                     - name: PDS_CONFIG_EXECUTE_WORKER_THREAD_COUNT
                       value: "{{ .Values.pds.config.execute.workerThreatCount }}"
+                    - name: ZAP_PROXY_HOST
+                      value: "{{ .Values.zap.proxy.host }}"
+                    - name: ZAP_PROXY_PORT
+                      value: "{{ .Values.zap.proxy.port }}"
                     {{- if .Values.pds.javaDebug.enabled }}
                     - name: JAVA_ENABLE_DEBUG
                       value: "true"
