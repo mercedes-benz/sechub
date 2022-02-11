@@ -53,7 +53,7 @@ public class PDSCodeScanSarifJobScenario9IntTest {
         /* prepare 1*/
         TestProject project = PROJECT_1;
 
-        UUID jobUUID = as(USER_1).createWebScan(project,NOT_MOCKED);// scenario9 uses really integration test pds server!
+        UUID jobUUID = as(USER_1).createWebScan(project,NOT_MOCKED);// scenario9 uses real integration test pds server!
         
         /* execute 1*/
         as(USER_1).
@@ -94,7 +94,7 @@ public class PDSCodeScanSarifJobScenario9IntTest {
         as(USER_1).startFalsePositiveDefinition(PROJECT_1).add(1, jobUUID).markAsFalsePositive();
         
 
-        UUID jobUUID2 = as(USER_1).createWebScan(project,NOT_MOCKED);// scenario9 uses really integration test pds server!
+        UUID jobUUID2 = as(USER_1).createWebScan(project,NOT_MOCKED);// scenario9 uses real integration test pds server!
         
         /* execute 2 */
         as(USER_1).
@@ -128,7 +128,7 @@ public class PDSCodeScanSarifJobScenario9IntTest {
 
         /* prepare */
         TestProject project = PROJECT_1;
-        UUID jobUUID = as(USER_1).createCodeScan(project,NOT_MOCKED);// scenario9 uses really integration test pds server!
+        UUID jobUUID = as(USER_1).createCodeScan(project,NOT_MOCKED);// scenario9 uses real integration test pds server!
         
         
         /* execute */

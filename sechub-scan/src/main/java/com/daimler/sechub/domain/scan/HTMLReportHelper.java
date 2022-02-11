@@ -16,7 +16,7 @@ public class HTMLReportHelper {
     private static final int LINE_NOT_FOUND = -1;
     private static final String EMPTY_STRING = "";
     private static final int SHORT_VECTOR_SIZE = 80;
-    private static final int SHORT_EVICENCE_SIZE = 80;
+    private static final int SHORT_EVIDENCE_SIZE = 80;
 
     public static HTMLReportHelper DEFAULT = new HTMLReportHelper();
 
@@ -120,7 +120,7 @@ public class HTMLReportHelper {
 
     public String createShortEvidence(SecHubReportWebAttack attack) {
         String snippet = getEvidence(attack);
-        return SimpleStringUtils.truncateWhenTooLong(snippet, SHORT_EVICENCE_SIZE);
+        return SimpleStringUtils.truncateWhenTooLong(snippet, SHORT_EVIDENCE_SIZE);
     }
 
     public String getEvidence(SecHubReportWebAttack attack) {

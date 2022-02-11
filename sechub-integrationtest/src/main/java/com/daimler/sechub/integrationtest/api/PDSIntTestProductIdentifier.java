@@ -7,22 +7,24 @@ package com.daimler.sechub.integrationtest.api;
  * <br>
  * For all PDS integrations tests, we only use ONE running PDS server which
  * provides multiple products via these identifiers. The PDS server
- * configurations file location is:<br><br>
+ * configurations file location is:<br>
+ * <br>
  * <b>
  * 
  * <code>
  * sechub-integration/src/main/resources/pds-config-integrationtest.json
  * </code>
  * 
- * </b> <br><br>
+ * </b> <br>
+ * <br>
  * Inside this configuration file you can see details about parameters etc.
  * 
  * @author Albert Tregnaghi
  *
  */
 /*
- * For product identifiers ids only 30 chars are allowed - so when adding new
- * ones, please keep in mind
+ * For the id of a product identifier only 30 characters are allowed - please keep this
+ * in mind, when adding new identifiers.
  */
 public enum PDSIntTestProductIdentifier {
     /**
@@ -62,8 +64,8 @@ public enum PDSIntTestProductIdentifier {
 
     /**
      * PDS product identifier for integration test PDS script/server which will
-     * return OWASP ZAP based SARIF json for web scans. The used script will just return
-     * content from existing test output files. <br>
+     * return OWASP ZAP based SARIF json for web scans. The used script will just
+     * return content from existing test output files. <br>
      * <br>
      * For details please look at {@link PDSIntTestProductIdentifier}.
      */

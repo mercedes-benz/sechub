@@ -37,7 +37,7 @@ public class SerecoFalsePositiveCodeScanStrategy {
      * 
      * @param vulnerability
      * @param metaData
-     * @return <code>true </code>when identified as false positive
+     * @return <code>true</code> when identified as false positive
      */
     public boolean isFalsePositive(SerecoVulnerability vulnerability, FalsePositiveMetaData metaData) {
         notNull(vulnerability, " vulnerability may not be null");

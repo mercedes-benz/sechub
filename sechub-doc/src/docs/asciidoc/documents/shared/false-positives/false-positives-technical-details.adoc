@@ -8,7 +8,7 @@ There are two different kind of phases: +
 
 ===== Definition phase
 
-When a user has a {sechub} report with some findings - he/she can define false positives by 
+When a user has a {sechub} report with some findings - the user can define false positives by 
 the report UUID and the finding id which represents the false positive.
 
 The configuration is described at  <<section-false-positives-define-by-API,how to define false positives by API>>.
@@ -31,7 +31,7 @@ At this phase duplicate checks are only done for tuples of report UUID and findi
 Here a simple example for better understanding:
 
 - A user has 10 reports but containing always the same finding
-- The user now marks for all of these reports the finding again as false positive
+- The user marks for all of these reports the finding again as false positive
 - This will result in 10 false positive entries (and it's meta data) inside the database 
   because SecHub does NOT inspect at this time that we have duplicates here!
 
@@ -60,7 +60,7 @@ Every `FalsePositveEntry` object contains
    a user has marked a report finding as a false positive. So the meta information is independent (so when a reoprt has
    been deleted, we still have the false positive meta information).
 
-   - It contains many meta information -e.g. a cweId - but also `FalsePositiveCodeMetaData` for code scans details.
+   - It contains many meta information - e.g. a `cweId` - but also `FalsePositiveCodeMetaData` for code scans details.
 
 ====== Definition by user
 A user does define a `FalsePositiveJobDataList` object which contains only `FalsePositiveJobData` inside. Such a list will

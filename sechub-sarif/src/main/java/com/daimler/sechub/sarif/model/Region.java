@@ -81,7 +81,7 @@ public class Region extends SarifObject{
     
     
     /**
-     * Set snippet property which is artifactContent object - see https://docs.oasis-open.org/sarif/sarif/v2.1.0/csprd01/sarif-v2.1.0-csprd01.html#_Toc10541136
+     * Set snippet property which is an artifactContent object - see https://docs.oasis-open.org/sarif/sarif/v2.1.0/csprd01/sarif-v2.1.0-csprd01.html#_Toc10541136
      * @param snippet
      */
     public void setSnippet(ArtifactContent snippet) {

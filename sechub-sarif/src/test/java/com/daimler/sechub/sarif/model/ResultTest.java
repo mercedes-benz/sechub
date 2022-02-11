@@ -72,7 +72,7 @@ class ResultTest {
         PropertyBag properties = result.getProperties();
 
         /* test */
-        assertNull(properties);// property bag is optional an CAN be null!
+        assertNull(properties);// property bag is optional and CAN be null!
     }
 
     @Test

@@ -35,9 +35,10 @@ class SerecoFalsePositiveWebScanStrategyTest {
     void beforeEach() {
         strategyToTest = new SerecoFalsePositiveWebScanStrategy();
 
-        // initial every test data contains meta and vulnerability data which wold lead
-        // to a false positive detection
-        testData = createTestDataWhicWouldLeadToAFalsePositive();
+        // Initial this created test data contains meta and vulnerability data which do
+        // match. When not changed, this must lead to a false positive detection. Tests
+        // do change this data to simulate different situations.
+        testData = createInitialTestDataWithMatchingVulnerabilityAndFalsePositiveDefinition();
     }
 
     /* @formatter:off */
@@ -50,7 +51,7 @@ class SerecoFalsePositiveWebScanStrategyTest {
     @EmptySource
     @CsvSource({"other-target", ATTACK_VECTOR1+"."})
     @ParameterizedTest
-    void no_false_positive_because_metadata_has_not_target_like_vulneraility(String target) {
+    void no_false_positive_because_metadata_has_not_target_like_vulnerability(String target) {
         /* prepare */
         testData.metaData.getWeb().getRequest().setTarget(target);
 
@@ -64,7 +65,7 @@ class SerecoFalsePositiveWebScanStrategyTest {
     @DisplayName("Is false positive. Target changed to similar value in metadata")
     @CsvSource({TARGET1+"\t", TARGET1+" "})
     @ParameterizedTest
-    void is_false_positive_because_metadata_has_same_target_like_vulneraility(String target) {
+    void is_false_positive_because_metadata_has_same_target_like_vulnerability(String target) {
         /* prepare */
         testData.metaData.getWeb().getRequest().setTarget(target);
 
@@ -83,7 +84,7 @@ class SerecoFalsePositiveWebScanStrategyTest {
     @EmptySource
     @CsvSource({"other-method", METHOD1+"X"})
     @ParameterizedTest
-    void no_false_positive_because_metadata_has_not_method_like_vulneraility(String method) {
+    void no_false_positive_because_metadata_has_not_method_like_vulnerability(String method) {
         /* prepare */
         testData.metaData.getWeb().getRequest().setMethod(method);
 
@@ -97,7 +98,7 @@ class SerecoFalsePositiveWebScanStrategyTest {
     @DisplayName("Is false positive. Method changed to similar value in metadata")
     @CsvSource({METHOD1+"  ", " "+METHOD1+" "})
     @ParameterizedTest
-    void is_false_positive_because_metadata_has_similar_method_like_vulneraility(String method) {
+    void is_false_positive_because_metadata_has_similar_method_like_vulnerability(String method) {
         /* prepare */
         testData.metaData.getWeb().getRequest().setMethod(method);
 
@@ -116,7 +117,7 @@ class SerecoFalsePositiveWebScanStrategyTest {
     @EmptySource
     @CsvSource({"other-atack", ATTACK_VECTOR1+"."})
     @ParameterizedTest
-    void no_false_positive_because_metadata_has_not_attack_like_vulneraility(String vector) {
+    void no_false_positive_because_metadata_has_not_attack_like_vulnerability(String vector) {
         /* prepare */
         testData.metaData.getWeb().getRequest().setAttackVector(vector);
 
@@ -130,7 +131,7 @@ class SerecoFalsePositiveWebScanStrategyTest {
     @DisplayName("Is false positive. Attack vector changed to similar value in metadata")
     @CsvSource({ATTACK_VECTOR1+"\t", ATTACK_VECTOR1+" ","  \t"+ATTACK_VECTOR1 })
     @ParameterizedTest
-    void is_false_positive_because_metadata_has_similar_attack_like_vulneraility(String vector) {
+    void is_false_positive_because_metadata_has_similar_attack_like_vulnerability(String vector) {
         /* prepare */
         testData.metaData.getWeb().getRequest().setAttackVector(vector);
 
@@ -150,7 +151,7 @@ class SerecoFalsePositiveWebScanStrategyTest {
     @EmptySource
     @CsvSource({"other-atack", EVIDENCE1+"."})
     @ParameterizedTest
-    void no_false_positive_because_metadata_has_not_evidence_like_vulneraility(String evidence) {
+    void no_false_positive_because_metadata_has_not_evidence_like_vulnerability(String evidence) {
         /* prepare */
         testData.metaData.getWeb().getResponse().setEvidence(evidence);
 
@@ -164,7 +165,7 @@ class SerecoFalsePositiveWebScanStrategyTest {
     @DisplayName("Is false positive. Evidence changed to similar value in metadata")
     @CsvSource({EVIDENCE1+"\t", EVIDENCE1+" ","  \t"+EVIDENCE1 })
     @ParameterizedTest
-    void is_false_positive_because_metadata_has_similar_evidence_like_vulneraility(String evidence) {
+    void is_false_positive_because_metadata_has_similar_evidence_like_vulnerability(String evidence) {
         /* prepare */
         testData.metaData.getWeb().getResponse().setEvidence(evidence);
 
@@ -243,7 +244,7 @@ class SerecoFalsePositiveWebScanStrategyTest {
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
     /* @formatter:on */
 
-    private FalsePositivedTestDataContainer createTestDataWhicWouldLeadToAFalsePositive() {
+    private FalsePositivedTestDataContainer createInitialTestDataWithMatchingVulnerabilityAndFalsePositiveDefinition() {
         return new FalsePositivedTestDataContainer();
     }
 
