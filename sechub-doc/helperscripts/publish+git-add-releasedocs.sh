@@ -56,7 +56,7 @@ if [ "$BRANCH" != "$GIT_RELEASE_BRANCH" ] ; then
   exit 1
 fi
 
-# Always update images directory
+# Always update images directory (changed files only)
 add_changed_images
 
 # Iterate over tags of git HEAD. (e.g. v1.0.0-client, v1.0.0-server, v1.0.0-pds)

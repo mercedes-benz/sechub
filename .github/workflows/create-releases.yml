@@ -169,7 +169,9 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: sechub-docs-html
-          path: docs/latest
+          path: |
+            sechub-doc/build/docs/asciidoc/*.html
+            sechub-doc/build/docs/asciidoc/images/
           retention-days: 14
 
       - name: Archive documentation PDF
