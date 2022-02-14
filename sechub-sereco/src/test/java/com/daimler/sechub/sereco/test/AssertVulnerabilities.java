@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -13,12 +15,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.daimler.sechub.commons.core.util.SimpleStringUtils;
+import com.daimler.sechub.commons.model.ScanType;
 import com.daimler.sechub.sereco.metadata.MetaDataAccess;
 import com.daimler.sechub.sereco.metadata.SerecoClassification;
 import com.daimler.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.daimler.sechub.sereco.metadata.SerecoDetection;
 import com.daimler.sechub.sereco.metadata.SerecoSeverity;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
+import com.daimler.sechub.sereco.metadata.SerecoWeb;
+import com.daimler.sechub.sereco.metadata.SerecoWebBody;
+import com.daimler.sechub.sereco.metadata.SerecoWebRequest;
+import com.daimler.sechub.sereco.metadata.SerecoWebResponse;
 
 public class AssertVulnerabilities {
 
@@ -48,6 +55,66 @@ public class AssertVulnerabilities {
         return new VulnerabilityFinder();
     }
 
+    public static void assertWebRequest(SerecoVulnerability toInspect, SerecoWebRequest expectedRequest) {
+        SerecoWeb vulnerabilityWeb = toInspect.getWeb();
+        if (vulnerabilityWeb == null) {
+            fail("vulnerability web is null!");
+        }
+
+        SerecoWebRequest foundRequest = vulnerabilityWeb.getRequest();
+        if (!expectedRequest.equals(foundRequest)) {
+            SerecoWebBody body1 = expectedRequest.getBody();
+            SerecoWebBody body2 = foundRequest.getBody();
+            internalAssertEquals(expectedRequest.getHeaders(), foundRequest.getHeaders(), "headers not as expected");
+            internalAssertEquals(body1, body2, "body not as expected");
+
+            fail("not equal but not detectable");
+        }
+    }
+
+    public static void assertWebResponse(SerecoVulnerability toInspect, SerecoWebResponse expectedResponse) {
+        SerecoWeb vulnerabilityWeb = toInspect.getWeb();
+        if (vulnerabilityWeb == null) {
+            fail("vulnerability web is null!");
+        }
+        SerecoWebResponse foundResponse = vulnerabilityWeb.getResponse();
+        if (!expectedResponse.equals(foundResponse)) {
+            SerecoWebBody body1 = expectedResponse.getBody();
+            SerecoWebBody body2 = foundResponse.getBody();
+            internalAssertEquals(expectedResponse.getHeaders(), foundResponse.getHeaders(), "headers not as expected");
+            internalAssertEquals(body1, body2, "body not as expected");
+            
+            assertEquals("protocol",expectedResponse.getProtocol(),foundResponse.getProtocol());
+            assertEquals("version", expectedResponse.getVersion(),foundResponse.getVersion());
+            assertEquals("reasonPhrase", expectedResponse.getReasonPhrase(),foundResponse.getReasonPhrase());
+            assertEquals("statusCode", expectedResponse.getStatusCode(),foundResponse.getStatusCode());
+            
+            fail("not equal but not detectable");
+        }
+
+    }
+
+    private static void internalAssertEquals(Object obj1, Object obj2, String message) {
+        if (Objects.equals(obj1, obj2)) {
+            return;
+        }
+        if (obj1 instanceof Map) {
+            obj1 = asSortedMap((Map<?, ?>) obj1);
+        }
+        if (obj2 instanceof Map) {
+            obj2 = asSortedMap((Map<?, ?>) obj2);
+        }
+        assertEquals(message, Objects.toString(obj1), Objects.toString(obj2));
+    }
+
+    private static SortedMap<?, ?> asSortedMap(Map<?, ?> map) {
+        if (map instanceof SortedMap) {
+            return (SortedMap<?, ?>) map;
+        }
+        return new TreeMap<>(map);
+
+    }
+
     public class VulnerabilityFinder {
 
         private SerecoVulnerability search;
@@ -58,15 +125,13 @@ public class AssertVulnerabilities {
              * we use null values for search to search only for wanted parts...,+ some
              * defaults (empty list) and empty description
              */
-            String url = null;
             String type = null;
             SerecoSeverity severity = null;
             List<SerecoDetection> list = new ArrayList<>();
             String description = "";
             SerecoClassification classification = null;
 
-            search = MetaDataAccess.createVulnerability(url, type, severity, list, description, classification);
-            ;
+            search = MetaDataAccess.createVulnerability(type, severity, list, description, classification);
         }
 
         private List<SerecoVulnerability> find(StringBuilder metaInfo) {
@@ -98,18 +163,21 @@ public class AssertVulnerabilities {
             for (SerecoVulnerability vulnerability : AssertVulnerabilities.this.vulnerabilities) {
                 boolean contained = isEitherNullInSearchOrEqual(search.getSeverity(), vulnerability.getSeverity()) && trace.done(vulnerability, "severity");
                 /* @formatter:off */
-                contained = contained && isEitherNullInSearchOrEqual(search.getUrl(), vulnerability.getUrl()) && trace.done(vulnerability, "url");
                 contained = contained && isEitherNullInSearchOrEqual(search.getType(), vulnerability.getType()) && trace.done(vulnerability, "type");
                 contained = contained && isEitherNullInSearchOrContains(vulnerability.getDescription(), search.getDescription()) && trace.done(vulnerability, "description");
                 contained = contained && isEitherNullInSearchOrEqual(search.getClassification(), vulnerability.getClassification()) && trace.done(vulnerability, "classification");
                 contained = contained && isEitherNullInSearchOrEqual(search.getCode(), vulnerability.getCode()) && trace.done(vulnerability, "code");
+                contained = contained && isEitherNullInSearchOrEqual(search.getScanType(), vulnerability.getScanType()) && trace.done(vulnerability, "scanType");
+                contained = contained && isEitherNullInSearchOrEqual(search.getWeb(), vulnerability.getWeb()) && trace.done(vulnerability, "web");
                 /* @formatter:on */
                 if (contained) {
                     matching.add(vulnerability);
                 }
             }
             if (findClosest) {
-                message.append("Closest vulnerability was:\n" + trace.getClosest() + "\nThere was last ok:" + trace.getClosestLastCheck());
+                SerecoVulnerability closest = trace.getClosest();
+                message.append(">> Closest vulnerability was:\n" + closest + "\n\n>>>There was last ok:" + trace.getClosestLastCheck());
+
             }
             return matching;
         }
@@ -183,13 +251,13 @@ public class AssertVulnerabilities {
             return this;
         }
 
-        public VulnerabilityFinder withURL(String url) {
-            search.setUrl(url);
+        public VulnerabilityFinder withType(String type) {
+            search.setType(type);
             return this;
         }
 
-        public VulnerabilityFinder withType(String type) {
-            search.setType(type);
+        public VulnerabilityFinder withScanType(ScanType scanType) {
+            search.setScanType(scanType);
             return this;
         }
 
@@ -279,7 +347,7 @@ public class AssertVulnerabilities {
                 sb.append(v.toString());
                 sb.append("\n");
             }
-            assertEquals("Not found expected amount of vulnerabilities for given search.\nSearched for:\n" + search + " \n" + message.toString()
+            assertEquals("Not found expected amount of vulnerabilities for given search.\n>>Searched for:\n" + search + " \n" + message.toString()
                     + "\n (vulnerabilitis found at all:" + matches.size() + ", false positives:" + falsePositives + ")", expectedAmount, check);
             throw new IllegalStateException("Test must fail before by assertEquals!");
         }
@@ -343,6 +411,58 @@ public class AssertVulnerabilities {
 
         }
 
+        /**
+         * When this method is used the web vulnerability data must be defined 100%
+         * correctly by dedicated with... methods. Otherwise this method will always
+         * fail!
+         * 
+         * @return
+         */
+        public WebVulnerabilityFinder isExactDefinedWebVulnerability() {
+            SerecoWeb web = new SerecoWeb();
+            search.setWeb(web);
+            return new WebVulnerabilityFinder();
+        }
+
+        public class WebVulnerabilityFinder {
+            
+            public WebVulnerabilityFinder withTarget(String target) {
+                search.getWeb().getRequest().setTarget(target);
+                return this;
+            }
+
+            public WebVulnerabilityFinder withWebRequest(SerecoWebRequest webRequest) {
+                MetaDataAccess.setWebRequest(search, webRequest);
+                return this;
+            }
+
+            public WebVulnerabilityFinder withWebResponse(SerecoWebResponse webResponse) {
+                MetaDataAccess.setWebResponse(search, webResponse);
+                return this;
+            }
+
+            public VulnerabilityFinder and() {
+                return VulnerabilityFinder.this;
+            }
+
+            public AssertVulnerabilities isContained() {
+                return VulnerabilityFinder.this.isContained();
+            }
+
+            public SerecoVulnerability assertContainedAndReturn() {
+                return VulnerabilityFinder.this.assertContainedAndReturn();
+            }
+
+        }
+
+        public SerecoVulnerability assertContainedAndReturn() {
+            StringBuilder message = new StringBuilder();
+            List<SerecoVulnerability> matches = find(message);
+            if (matches.size() != 1) {
+                assertEquals(message.toString(), 1, matches.size());
+            }
+            return matches.get(0);
+        }
     }
 
     private static void dump(List<SerecoVulnerability> vulnerabilities) {
@@ -389,6 +509,11 @@ public class AssertVulnerabilities {
         LOG.info("-----------------------------------------------------------");
         LOG.info(sb.toString());
         LOG.info("-----------------------------------------------------------");
+    }
+
+    public AssertVulnerabilities dump() {
+        dump(vulnerabilities);
+        return this;
     }
 
     public AssertVulnerabilities hasVulnerabilities(int expectedAmount) {

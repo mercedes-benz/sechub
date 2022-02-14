@@ -9,9 +9,15 @@ import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @SechubTestComponent
 public class TestUtil {
 
+    private static final Logger LOG = LoggerFactory.getLogger(TestUtil.class);
+
+    private static final String SECHUB_KEEP_TEMPFILES = "SECHUB_KEEP_TEMPFILES";
     private static final OperationSystem operationSystem = new OperationSystem();
 
     public static String createRAndomString(int wantedLength) {
@@ -19,10 +25,10 @@ public class TestUtil {
             throw new IllegalArgumentException("Length must be greater or equal 0!");
         }
         StringBuilder sb = new StringBuilder();
-        while (sb.length()<wantedLength) {
+        while (sb.length() < wantedLength) {
             sb.append(UUID.randomUUID().toString());
         }
-        return sb.substring(0,wantedLength);
+        return sb.substring(0, wantedLength);
     }
 
     /**
@@ -82,15 +88,65 @@ public class TestUtil {
 
     }
 
+    /**
+     * Checks if temporary files are deleted
+     * @return false when environment variable {@value TestUtil#SECHUB_KEEP_TEMPFILES} is set to `true` otherwise true
+     */
     public static boolean isDeletingTempFiles() {
         return !isKeepingTempfiles();
     }
 
+    /**
+     * Checks if temporary files are kept
+     * @return true when environment variable {@value TestUtil#SECHUB_KEEP_TEMPFILES} is set to `true` otherwise false
+     */
     public static boolean isKeepingTempfiles() {
-        if (Boolean.getBoolean(System.getenv("SECHUB_KEEP_TEMPFILES"))) {
-            return true;
+        return Boolean.parseBoolean(System.getenv(SECHUB_KEEP_TEMPFILES));
+    }
+
+    /**
+     * Creates a temporary file inside gradle build folder at
+     * `./build/sechub/tmp/**`. When environment entry
+     * `{@value TestUtil#SECHUB_KEEP_TEMPFILES}` is set to `true` those files will
+     * be kept when JVM exits. Otherwise, those files will be deleted by JVM on
+     * shutdown phase normally.
+     * 
+     * @param prefix filename prefix
+     * @param suffix filename suffix
+     * @return file
+     */
+    public static File createTempFileInBuildFolder(String prefix, String suffix) {
+        return createTempFileInBuildFolder(prefix + "_tmp_" + System.nanoTime() + "." + suffix);
+    }
+
+    /**
+     * Creates a temporary file inside gradle build folder at
+     * `./build/sechub/tmp/**`. When environment entry
+     * `{@value TestUtil#SECHUB_KEEP_TEMPFILES}` is set to `true` those files will
+     * be kept when JVM exits. Otherwise, those files will be deleted by JVM on
+     * shutdown phase normally.
+     * 
+     * If a file already exists with the given name, the file be deleted!
+     * 
+     * @param explicitFileName the EXACT file name to use.
+     * 
+     * @return file
+     */
+    public static File createTempFileInBuildFolder(String explicitFileName) {
+        File parent = new File("./build/sechub/tmp");
+        File file = new File(parent, explicitFileName);
+        if (file.exists()) {
+            LOG.warn("Temporary file already exists and will be deleted:{}",file.getAbsolutePath());
+            try {
+                Files.delete(file.toPath());
+            } catch (IOException e) {
+                throw new RuntimeException("Cannot delete former temp file",e);
+            }
         }
-        return false;
+        if (isDeletingTempFiles()) {
+            file.deleteOnExit();
+        }
+        return file;
     }
 
     public static boolean isWindows() {

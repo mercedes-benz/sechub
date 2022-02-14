@@ -45,7 +45,7 @@ public class CancelJobScenario4IntTest {
         
         /* test */
         waitForJobStatusCancelRequested(project, sechubJobUUD);
-        waitForJobResultFailed(project, sechubJobUUD);
+        waitForJobStatusFailed(project, sechubJobUUD);
         
         
         /* @formatter:on */
@@ -66,7 +66,7 @@ public class CancelJobScenario4IntTest {
         
         /* test */
         waitForJobStatusCancelRequested(project, sechubJobUUD);
-        waitForJobResultFailed(project, sechubJobUUD);
+        waitForJobStatusFailed(project, sechubJobUUD);
         
         
         /* @formatter:on */

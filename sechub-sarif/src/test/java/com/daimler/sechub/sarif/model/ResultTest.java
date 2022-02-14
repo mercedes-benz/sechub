@@ -40,15 +40,6 @@ class ResultTest {
     }
 
     @Test
-    void setters() {
-        /* prepare */
-        Result result = new Result();
-
-        /* execute */
-        testSetterAndGetter(result);
-    }
-
-    @Test
     void setter() {
         testSetterAndGetter(createExample());
     }
@@ -73,22 +64,7 @@ class ResultTest {
     }
 
     @Test
-    void add_null_as_addtionalProperties() {
-        /* prepare */
-        Result result = new Result();
-
-        /* execute */
-        PropertyBag properties = result.getProperties();
-        properties.put(null, null);
-        properties.put("key", null);
-        properties.put(null, "value");
-
-        /* test */
-        assertTrue(properties.isEmpty());
-    }
-
-    @Test
-    void property_bag_from_new_result_not_null() {
+    void property_bag_from_new_result_is_null() {
         /* prepare */
         Result result = new Result();
 
@@ -96,7 +72,7 @@ class ResultTest {
         PropertyBag properties = result.getProperties();
 
         /* test */
-        assertNotNull(properties);
+        assertNull(properties);// property bag is optional and CAN be null!
     }
 
     @Test

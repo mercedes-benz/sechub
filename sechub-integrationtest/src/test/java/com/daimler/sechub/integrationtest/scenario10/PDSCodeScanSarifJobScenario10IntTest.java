@@ -52,7 +52,7 @@ public class PDSCodeScanSarifJobScenario10IntTest {
             upload(project, jobUUID, PATH).
             approveJob(project, jobUUID);
         
-        waitForJobDone(project, jobUUID,10);
+        waitForJobDone(project, jobUUID,10, true);
         
         /* test */
         // test storage is a sechub storage and no PDS storage
@@ -72,7 +72,7 @@ public class PDSCodeScanSarifJobScenario10IntTest {
                    hasSeverity(Severity.HIGH).
                    hasScanType(ScanType.CODE_SCAN).
                    hasName("BRAKE0102").
-                   hasDescription("Checks for XSS in calls to content_tag.").
+                   hasDescription("Rails 5.0.0 `content_tag` does not escape double quotes in attribute values (CVE-2016-6316). Upgrade to Rails 5.0.0.1.").
                    codeCall(0).
                       hasLocation("Gemfile.lock").
                       hasLine(115).
@@ -80,7 +80,7 @@ public class PDSCodeScanSarifJobScenario10IntTest {
                    hasName("BRAKE0116").
                    hasScanType(ScanType.CODE_SCAN).
                    hasSeverity(Severity.MEDIUM).
-                   hasDescription("Checks for versions with CSRF token forgery vulnerability (CVE-2020-8166).");
+                   hasDescription("Rails 5.0.0 has a vulnerability that may allow CSRF token forgery. Upgrade to Rails 5.2.4.3 or patch.");
         
         
         /* @formatter:on */

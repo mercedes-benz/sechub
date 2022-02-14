@@ -16,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  *
  */
 @JsonPropertyOrder({ "ruleId", "level", "message", "locations", "properties" })
-public class Result {
+public class Result extends SarifObject{
     private String ruleId;
     private Message message;
     private Level level;
@@ -25,9 +25,10 @@ public class Result {
 
     private List<Location> locations;
     private List<CodeFlow> codeflows;
-
-    private PropertyBag properties = new PropertyBag();
-
+    
+    private WebResponse webResponse;
+    private WebRequest webRequest;
+    
     public Result() {
         this(null, null);
     }
@@ -96,38 +97,50 @@ public class Result {
         this.locations = locations;
     }
 
-    public PropertyBag getProperties() {
-        return properties;
+    public WebResponse getWebResponse() {
+        return webResponse;
     }
-
-    public void setProperties(PropertyBag properties) {
-        this.properties = properties;
+    
+    public void setWebResponse(WebResponse webResponse) {
+        this.webResponse = webResponse;
     }
-
+    
+    public WebRequest getWebRequest() {
+        return webRequest;
+    }
+    
+    public void setWebRequest(WebRequest webRequest) {
+        this.webRequest = webRequest;
+    }
+    
     @Override
     public String toString() {
         return "Result [" + (ruleId != null ? "ruleId=" + ruleId + ", " : "") + (level != null ? "level=" + level + ", " : "")
                 + (message != null ? "message=" + message + ", " : "") + (locations != null ? "locations=" + locations + ", " : "")
-                + (properties != null ? "properties=" + properties : "") + "]";
+                + (getProperties() != null ? "properties=" + getProperties() : "") + "]";
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(codeflows, level, locations, message, properties, ruleId, ruleIndex);
+        return Objects.hash(codeflows, level, locations, message, getProperties(), ruleId, ruleIndex, webRequest, webResponse);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         Result other = (Result) obj;
         return Objects.equals(codeflows, other.codeflows) && level == other.level && Objects.equals(locations, other.locations)
-                && Objects.equals(message, other.message) && Objects.equals(properties, other.properties) && Objects.equals(ruleId, other.ruleId)
-                && ruleIndex == other.ruleIndex;
+                && Objects.equals(message, other.message) && Objects.equals(getProperties(), other.getProperties()) && Objects.equals(ruleId, other.ruleId)
+                && ruleIndex == other.ruleIndex && Objects.equals(webRequest, other.webRequest) && Objects.equals(webResponse, other.webResponse);
     }
+
 
 }

@@ -15,6 +15,8 @@ dependencies{
     testImplementation library.junit5_impl
     testRuntimeOnly library.junit5_runtime
     
+    testImplementation library.junit5_params
+    
     testImplementation library.mockito
     testImplementation library.mockito_inline
     testImplementation library.hamcrest

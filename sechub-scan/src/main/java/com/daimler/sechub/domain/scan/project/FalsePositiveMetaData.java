@@ -7,19 +7,21 @@ import com.daimler.sechub.commons.model.ScanType;
 import com.daimler.sechub.commons.model.Severity;
 
 public class FalsePositiveMetaData {
-    public static final String PROPERTY_SCANTYPE="scanType";
-    public static final String PROPERTY_NAME="name";
-    public static final String PROPERTY_CWE_ID="cweId";
-    public static final String PROPERTY_CVE_ID="cveId";
-    public static final String PROPERTY_OWASP="owasp";
-    public static final String PROPERTY_SEVERITY="severity";
-    public static final String PROPERTY_CODE="code";
-    
+    public static final String PROPERTY_SCANTYPE = "scanType";
+    public static final String PROPERTY_NAME = "name";
+    public static final String PROPERTY_CWE_ID = "cweId";
+    public static final String PROPERTY_CVE_ID = "cveId";
+    public static final String PROPERTY_OWASP = "owasp";
+    public static final String PROPERTY_SEVERITY = "severity";
+    public static final String PROPERTY_CODE = "code";
+    public static final String PROPERTY_TARGET_URL = "targetUrl";
+
     private ScanType scanType;
     private String name;
     private Severity severity;
-    
+
     private FalsePositiveCodeMetaData code;
+    private FalsePositiveWebMetaData web;
 
     private Integer cweId;
     private String cveId;
@@ -28,19 +30,19 @@ public class FalsePositiveMetaData {
     public void setOwasp(String owasp) {
         this.owasp = owasp;
     }
-    
+
     public String getOwasp() {
         return owasp;
     }
-    
+
     public String getCveId() {
         return cveId;
     }
-    
+
     public void setCveId(String cveId) {
         this.cveId = cveId;
     }
-    
+
     /*
      * Returns common weakness enumeration ID, see https://cwe.mitre.org/
      */
@@ -54,14 +56,21 @@ public class FalsePositiveMetaData {
     public void setCweId(Integer cweId) {
         this.cweId = cweId;
     }
-    
-    
+
     public FalsePositiveCodeMetaData getCode() {
         return code;
     }
-    
+
     public void setCode(FalsePositiveCodeMetaData code) {
         this.code = code;
+    }
+
+    public FalsePositiveWebMetaData getWeb() {
+        return web;
+    }
+
+    public void setWeb(FalsePositiveWebMetaData web) {
+        this.web = web;
     }
 
     public String getName() {
@@ -90,12 +99,12 @@ public class FalsePositiveMetaData {
 
     @Override
     public String toString() {
-        return "FalsePositiveMetaData [scanType=" + scanType + ", name=" + name + ", severity=" + severity + ", code=" + code + "]";
+        return "FalsePositiveMetaData [scanType=" + scanType + ", name=" + name + ", severity=" + severity + ", code=" + code + ", web=" + web + "]";
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(code, name, scanType, severity);
+        return Objects.hash(code, web, name, scanType, severity);
     }
 
     @Override
@@ -107,7 +116,7 @@ public class FalsePositiveMetaData {
         if (getClass() != obj.getClass())
             return false;
         FalsePositiveMetaData other = (FalsePositiveMetaData) obj;
-        return Objects.equals(code, other.code) && Objects.equals(name, other.name) && scanType == other.scanType && severity == other.severity;
+        return Objects.equals(code, other.code) && Objects.equals(web, other.web) && Objects.equals(name, other.name) && scanType == other.scanType && severity == other.severity;
     }
 
 }

@@ -16,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  *
  */
 @JsonPropertyOrder({ "id", "name", "shortDescription", "fullDescription", "help", "properties" })
-public abstract class ReportingDescriptor {
+public abstract class ReportingDescriptor extends SarifObject{
 
     private String id;
 
@@ -28,7 +28,6 @@ public abstract class ReportingDescriptor {
     private Message shortDescription;
     private Message fullDescription;
     private Message help;
-    private PropertyBag properties;
 
     private List<ReportingDescriptorRelationship> relationships;
 
@@ -88,23 +87,15 @@ public abstract class ReportingDescriptor {
         this.help = help;
     }
 
-    public PropertyBag getProperties() {
-        return properties;
-    }
-
-    public void setProperties(PropertyBag properties) {
-        this.properties = properties;
-    }
-
     @Override
     public String toString() {
         return "Rule [id=" + id + ", name=" + name + ", shortDescription=" + shortDescription + ", fullDescription=" + fullDescription + ", help=" + help
-                + ", properties=" + properties + "]";
+                + ", properties=" + getProperties() + "]";
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(fullDescription, help, id, name, properties, relationships, shortDescription);
+        return Objects.hash(fullDescription, help, id, name, getProperties(), relationships, shortDescription);
     }
 
     @Override
@@ -117,7 +108,7 @@ public abstract class ReportingDescriptor {
             return false;
         ReportingDescriptor other = (ReportingDescriptor) obj;
         return Objects.equals(fullDescription, other.fullDescription) && Objects.equals(help, other.help) && Objects.equals(id, other.id)
-                && Objects.equals(name, other.name) && Objects.equals(properties, other.properties) && Objects.equals(relationships, other.relationships)
+                && Objects.equals(name, other.name) && Objects.equals(getProperties(), other.getProperties()) && Objects.equals(relationships, other.relationships)
                 && Objects.equals(shortDescription, other.shortDescription);
     }
 

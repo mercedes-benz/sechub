@@ -131,7 +131,7 @@ public class CheckmarxV1XMLImporterTest {
 	}
 
 	@Test
-	public void xmlReportFromCheckmarxV8_with_false_positve_canBeImported_and_contains_not_false_positive() throws IOException {
+	public void xmlReportFromCheckmarxV8_with_false_positive_canBeImported_and_contains_not_false_positive() throws IOException {
 		/* prepare */
 		String xml = SerecoTestFileSupport.INSTANCE.loadTestFile("checkmarx/sechub-continous-integration-with-false-positive.xml");
 

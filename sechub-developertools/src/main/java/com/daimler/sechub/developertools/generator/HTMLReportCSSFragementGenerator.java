@@ -12,6 +12,10 @@ import com.daimler.sechub.integrationtest.TextFileReader;
  * 1. As a web designer I want to change my CSS files and style the report
  * without always restarting the server + fetching new reports etc.
  * 
+ * Remark: To avoid starting a server at all, it is also possible to start only the
+ * `ThymeLeafHTMLReportingTest` and inspect the results! This generator is only necessary
+ * when we have to change the CSS styling. 
+ * 
  * 2. Change the CSS styles - how to ? Enable the web developer mode - see
  * HTMLScanResultReportModelBuilder.java and start the server. Generate some
  * testdata and download a HTML report.

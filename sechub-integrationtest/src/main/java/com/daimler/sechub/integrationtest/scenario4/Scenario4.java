@@ -43,7 +43,6 @@ public class Scenario4 extends AbstractSecHubServerTestScenario implements Stati
     protected void initializeTestData() {
         /* @formatter:off */
 		initializer().
-		    ensureDefaultExecutionProfile(PROFILE_1).
 			createUser(USER_1).
 			createProject(PROJECT_1, USER_1).
 			assignUserToProject(PROJECT_1,USER_1).

@@ -44,8 +44,8 @@ public abstract class AbstractTestExecutable implements TestExecutable{
 	}
 
 	@Override
-	public boolean run() throws Exception {
-		boolean result = runImpl();
+	public boolean runAndReturnTrueWhenSuccesful() throws Exception {
+		boolean result = runAndReturnTrueWhenSuccesfulImpl();
 		if (result) {
 			success=true;
 		}
@@ -54,7 +54,7 @@ public abstract class AbstractTestExecutable implements TestExecutable{
 
 
 
-	public abstract boolean runImpl() throws Exception;
+	public abstract boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception;
 
 	@Override
 	public boolean wasSuccessful() {

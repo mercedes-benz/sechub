@@ -21,7 +21,7 @@ import com.daimler.sechub.domain.scan.project.ScanProjectConfigService;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 
 /**
- * Marks given vulnerabilities as false positives, if identifieable by false positive configuration
+ * Marks given vulnerabilities as false positives, if identifiable by false positive configuration
  * data for the project. will only mark and add hints about reason
  * @author Albert Tregnaghi
  *
@@ -32,7 +32,7 @@ public class SerecoFalsePositiveMarker {
     private static final Logger LOG = LoggerFactory.getLogger(SerecoFalsePositiveMarker.class);
     
     @Autowired
-    SerecoFalsePositiveFinder falsePositiveCodeFinder;
+    SerecoFalsePositiveFinder falsePositiveFinder;
     
     @Autowired
     ScanProjectConfigService scanProjectConfigService;
@@ -85,7 +85,8 @@ public class SerecoFalsePositiveMarker {
         }
         switch(scanType) {
         case CODE_SCAN: 
-            return falsePositiveCodeFinder.isFound(vulnerability,metaData);
+        case WEB_SCAN: 
+            return falsePositiveFinder.isFound(vulnerability,metaData);
         default: 
             LOG.error("Cannot handle scan type {} - not implemented!", scanType);
             return false;

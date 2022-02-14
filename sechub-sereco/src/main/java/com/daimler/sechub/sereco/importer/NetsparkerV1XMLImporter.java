@@ -14,11 +14,12 @@ import com.daimler.sechub.commons.model.ScanType;
 import com.daimler.sechub.sereco.metadata.SerecoClassification;
 import com.daimler.sechub.sereco.metadata.SerecoMetaData;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
+import com.daimler.sechub.sereco.metadata.SerecoWeb;
 
 @Component
 public class NetsparkerV1XMLImporter extends AbstractProductResultImporter {
 
-	public SerecoMetaData importResult(String xml) throws IOException{
+    public SerecoMetaData importResult(String xml) throws IOException{
 		SerecoMetaData metaData = new SerecoMetaData();
 		if (xml==null) {
 			xml="";
@@ -43,7 +44,12 @@ public class NetsparkerV1XMLImporter extends AbstractProductResultImporter {
 			metaData.getVulnerabilities().add(vulnerability);
 
 			vulnerability.setSeverity(NetsparkerServerityConverter.convert(vulnerabilityElement.elementText("severity")));
-			vulnerability.setUrl(vulnerabilityElement.elementText("url"));
+			String targetUrl = vulnerabilityElement.elementText("url");
+
+            SerecoWeb web = new SerecoWeb();
+			web.getRequest().setTarget(targetUrl); // at least we set the target URL. Other parts like evidence etc. are currently missing
+			
+            vulnerability.setWeb(web);
 			vulnerability.setType(vulnerabilityElement.elementText("type"));
 			vulnerability.setDescription(NetsparkerHtmlToAsciiDocConverter.convert(vulnerabilityElement.elementText("description")));
 			vulnerability.setScanType(ScanType.WEB_SCAN);
