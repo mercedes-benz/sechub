@@ -15,8 +15,6 @@ dependencies{
     testImplementation library.junit5_impl
     testRuntimeOnly library.junit5_runtime
     
-    // We must add the junit5 parameters here manually because this library 
-    // has not the spring boot test dependency injection. 
     testImplementation library.junit5_params
     
     testImplementation library.mockito
