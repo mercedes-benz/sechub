@@ -90,7 +90,10 @@ public class TestUtil {
 
     /**
      * Checks if temporary files are deleted
-     * @return false when environment variable {@value TestUtil#SECHUB_KEEP_TEMPFILES} is set to `true` otherwise true
+     * 
+     * @return false when environment variable
+     *         {@value TestUtil#SECHUB_KEEP_TEMPFILES} is set to `true` otherwise
+     *         true
      */
     public static boolean isDeletingTempFiles() {
         return !isKeepingTempfiles();
@@ -98,7 +101,10 @@ public class TestUtil {
 
     /**
      * Checks if temporary files are kept
-     * @return true when environment variable {@value TestUtil#SECHUB_KEEP_TEMPFILES} is set to `true` otherwise false
+     * 
+     * @return true when environment variable
+     *         {@value TestUtil#SECHUB_KEEP_TEMPFILES} is set to `true` otherwise
+     *         false
      */
     public static boolean isKeepingTempfiles() {
         return Boolean.parseBoolean(System.getenv(SECHUB_KEEP_TEMPFILES));
@@ -106,7 +112,7 @@ public class TestUtil {
 
     /**
      * Creates a temporary file inside gradle build folder at
-     * `./build/sechub/tmp/**`. When environment entry
+     * `./build/sechub/tmp/${prefix}_tmp_${nanoTime}.${suffix}`. When environment entry
      * `{@value TestUtil#SECHUB_KEEP_TEMPFILES}` is set to `true` those files will
      * be kept when JVM exits. Otherwise, those files will be deleted by JVM on
      * shutdown phase normally.
@@ -114,9 +120,35 @@ public class TestUtil {
      * @param prefix filename prefix
      * @param suffix filename suffix
      * @return file
+     * @throws IOException
      */
-    public static File createTempFileInBuildFolder(String prefix, String suffix) {
+    public static File createTempFileInBuildFolder(String prefix, String suffix) throws IOException {
         return createTempFileInBuildFolder(prefix + "_tmp_" + System.nanoTime() + "." + suffix);
+    }
+
+    /**
+     * Creates a temporary directory inside gradle build folder at
+     * `./build/sechub/tmp/${dirName}_tmp_${nanoTime}`. When environment entry
+     * `{@value TestUtil#SECHUB_KEEP_TEMPFILES}` is set to `true` those files will
+     * be kept when JVM exits. Otherwise, those files will be deleted by JVM on
+     * shutdown phase normally.
+     * 
+     * @param dirName
+     * @return
+     * @throws IOException
+     */
+    public static Path createTempDirectoryInBuildFolder(String dirName) throws IOException {
+        Path tmpPath = getBuildTmpDirAsFile().toPath();
+
+        Path dirAsPath = tmpPath.toRealPath().resolve(dirName+"tmp_"+System.nanoTime());
+        if (Files.notExists(dirAsPath)) {
+            Files.createDirectory(dirAsPath);
+
+            if (isDeletingTempFiles()) {
+                dirAsPath.toFile().deleteOnExit();
+            }
+        }
+        return dirAsPath;
     }
 
     /**
@@ -131,20 +163,31 @@ public class TestUtil {
      * @param explicitFileName the EXACT file name to use.
      * 
      * @return file
+     * @throws IOException
      */
-    public static File createTempFileInBuildFolder(String explicitFileName) {
-        File parent = new File("./build/sechub/tmp");
+    public static File createTempFileInBuildFolder(String explicitFileName) throws IOException {
+        File parent = getBuildTmpDirAsFile();
         File file = new File(parent, explicitFileName);
         if (file.exists()) {
-            LOG.warn("Temporary file already exists and will be deleted:{}",file.getAbsolutePath());
+            LOG.warn("Temporary file already exists and will be deleted:{}", file.getAbsolutePath());
             try {
                 Files.delete(file.toPath());
             } catch (IOException e) {
-                throw new RuntimeException("Cannot delete former temp file",e);
+                throw new RuntimeException("Cannot delete former temp file", e);
             }
         }
         if (isDeletingTempFiles()) {
             file.deleteOnExit();
+        }
+        return file;
+    }
+
+    private static File getBuildTmpDirAsFile() throws IOException {
+        File file = new File("./build/sechub/tmp");
+        if (!file.exists()) {
+            if (!file.mkdirs()) {
+                throw new IOException("Was not able to create tmp folder at:" + file.getAbsolutePath());
+            }
         }
         return file;
     }

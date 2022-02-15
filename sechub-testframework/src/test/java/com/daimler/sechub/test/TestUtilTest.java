@@ -3,6 +3,9 @@ package com.daimler.sechub.test;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
+import java.nio.file.Path;
+
 import org.junit.Test;
 
 public class TestUtilTest {
@@ -18,6 +21,13 @@ public class TestUtilTest {
     @Test(expected = IllegalArgumentException.class)
     public void create_random_string_throws_illegal_argument_exception_when_negative_1_length() {
         TestUtil.createRAndomString(-1);
+    }
+    
+    @Test
+    public void createTempDirectory() throws IOException {
+        Path created = TestUtil.createTempDirectoryInBuildFolder("test-create-tempdir");
+        
+        assertTrue("Not existing path:"+created,created.toFile().exists());
     }
 
 }

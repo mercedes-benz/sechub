@@ -4,7 +4,6 @@ package com.daimler.sechub.pds.util;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.daimler.sechub.pds.util.PDSFileUnzipSupport.UnzipResult;
+import com.daimler.sechub.test.TestUtil;
 
 class PDSFileUnzipSupportTest {
 
@@ -26,7 +26,7 @@ class PDSFileUnzipSupportTest {
     void bugfix_773_zipfile_without_explicit_directory_entries_can_be_extracted_as_well() throws Exception {
         /* prepare */
         File singleZipfile = resolveTestFile("zipfiles/bugfix-773.zip");
-        File targetFolder = Files.createTempDirectory("pds_773-bugfix_test").toFile();
+        File targetFolder = TestUtil.createTempDirectoryInBuildFolder("pds_773-bugfix_test").toFile();
         targetFolder.mkdirs();
 
         /* execute */
@@ -46,7 +46,7 @@ class PDSFileUnzipSupportTest {
     void single_file_zip_can_be_extracted() throws Exception {
         /* prepare */
         File singleZipfile = resolveTestFile("zipfiles/single_file.zip");
-        File targetFolder = Files.createTempDirectory("pds_sinlgezip_test").toFile();
+        File targetFolder = TestUtil.createTempDirectoryInBuildFolder("pds_sinlgezip_test").toFile();
         targetFolder.mkdirs();
 
         /* execute */
@@ -62,7 +62,7 @@ class PDSFileUnzipSupportTest {
     void two_files_zip_can_be_extracted() throws Exception {
         /* prepare */
         File twoFilesZipfile = resolveTestFile("zipfiles/two_files.zip");
-        File targetFolder = Files.createTempDirectory("pds_twofileszip_test").toFile();
+        File targetFolder = TestUtil.createTempDirectoryInBuildFolder("pds_twofileszip_test").toFile();
         targetFolder.mkdirs();
 
         /* execute */
@@ -79,7 +79,7 @@ class PDSFileUnzipSupportTest {
         /* prepare */
         File abcZipfile = resolveTestFile("zipfiles/hierarchical_files.zip");
 
-        File targetFolder = Files.createTempDirectory("pds_abczip_test").toFile();
+        File targetFolder = TestUtil.createTempDirectoryInBuildFolder("pds_abczip_test").toFile();
         targetFolder.mkdirs();
 
         /* execute */

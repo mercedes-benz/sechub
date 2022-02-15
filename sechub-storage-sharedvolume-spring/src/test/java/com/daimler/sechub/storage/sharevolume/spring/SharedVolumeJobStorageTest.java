@@ -16,13 +16,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import com.daimler.sechub.test.TestUtil;
+
 class SharedVolumeJobStorageTest {
 
     private Path rootLocation;
 
     @BeforeEach
     void beforeEach() throws Exception {
-        rootLocation = Files.createTempDirectory("sechub-sharedvolume-test");
+        rootLocation = TestUtil.createTempDirectoryInBuildFolder("sechub-sharedvolume-test");
     }
 
     @Test

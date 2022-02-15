@@ -7,7 +7,6 @@ import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.UUID;
@@ -23,6 +22,7 @@ import com.daimler.sechub.pds.test.ExtendedMockMultipartFile;
 import com.daimler.sechub.pds.util.PDSFileChecksumSHA256Service;
 import com.daimler.sechub.pds.util.PDSZipSupport;
 import com.daimler.sechub.storage.core.JobStorage;
+import com.daimler.sechub.test.TestUtil;
 
 public class PDSFileUploadJobServiceTest {
 
@@ -46,7 +46,7 @@ public class PDSFileUploadJobServiceTest {
 
     @BeforeEach
     void beforeEach() throws Exception {
-        tmpUploadPath = Files.createTempDirectory("pds-upload");
+        tmpUploadPath = TestUtil.createTempDirectoryInBuildFolder("pds-upload");
         jobUUID = UUID.randomUUID();
         checksumService = mock(PDSFileChecksumSHA256Service.class);
         workspaceService = mock(PDSWorkspaceService.class);
