@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 == SecHub Server
 
+include::server/server_download.adoc[]
+
+=== Configuration
 include::../shared/sechub_options.adoc[]
 
 include::server/server_deployment.adoc[]
