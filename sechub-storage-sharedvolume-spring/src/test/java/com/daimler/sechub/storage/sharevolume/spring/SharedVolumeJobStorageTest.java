@@ -7,7 +7,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Set;
 import java.util.UUID;
@@ -48,7 +47,7 @@ class SharedVolumeJobStorageTest {
     private SharedVolumeJobStorage storeTestData(UUID jobUUID, String fileName) throws IOException, FileNotFoundException {
         SharedVolumeJobStorage storage = new SharedVolumeJobStorage(rootLocation, "test1", jobUUID);
 
-        Path tmpFile = Files.createTempFile("storage_test", ".txt");
+        Path tmpFile = TestUtil.createTempFileInBuildFolder("storage_test", "txt");
 
         /* execute */
         InputStream inputStream = new FileInputStream(tmpFile.toFile());

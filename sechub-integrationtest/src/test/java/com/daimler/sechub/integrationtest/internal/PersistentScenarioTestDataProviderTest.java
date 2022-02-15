@@ -3,10 +3,10 @@ package com.daimler.sechub.integrationtest.internal;
 
 import static org.junit.Assert.*;
 
-import java.nio.file.Files;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import com.daimler.sechub.test.TestUtil;
 
 public class PersistentScenarioTestDataProviderTest {
 
@@ -14,7 +14,7 @@ public class PersistentScenarioTestDataProviderTest {
 
     @Before
     public void before() throws Exception {
-        providerToTest = new PersistentScenarioTestDataProvider(Files.createTempFile("sechub-scenario_testdata", ".properties").toFile());
+        providerToTest = new PersistentScenarioTestDataProvider(TestUtil.createTempFileInBuildFolder("sechub-scenario_testdata", "properties").toFile());
     }
 
     @Test

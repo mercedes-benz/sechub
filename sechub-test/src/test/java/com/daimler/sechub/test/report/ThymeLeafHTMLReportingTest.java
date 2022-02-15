@@ -3,8 +3,8 @@ package com.daimler.sechub.test.report;
 import static com.daimler.sechub.test.report.ReportTestHelper.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Map;
 
@@ -158,11 +158,11 @@ public class ThymeLeafHTMLReportingTest {
         if (!TestUtil.isKeepingTempfiles()) {
             return;
         }
-        File testFile = TestUtil.createTempFileInBuildFolder("thymeleaf-html-reporttest-" + context.exampleName + "." + fileEnding);
+        Path testFile = TestUtil.createTempFileInBuildFolder("thymeleaf-html-reporttest-" + context.exampleName + "." + fileEnding);
         TextFileWriter writer = new TextFileWriter();
-        writer.save(testFile, content);
+        writer.save(testFile.toFile(), content);
 
-        System.out.println("Wrote test file to:" + testFile.getAbsolutePath());
+        System.out.println("Wrote test file to:" + testFile);
     }
 
     private enum ReportInputFormat {

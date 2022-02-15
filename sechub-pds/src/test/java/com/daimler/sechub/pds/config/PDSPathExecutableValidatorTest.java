@@ -3,7 +3,6 @@ package com.daimler.sechub.pds.config;
 
 import static org.junit.Assert.*;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
@@ -11,6 +10,8 @@ import java.util.Collections;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.daimler.sechub.test.TestUtil;
 
 public class PDSPathExecutableValidatorTest {
 
@@ -34,7 +35,7 @@ public class PDSPathExecutableValidatorTest {
     @Test
     public void path_existing_but_not_executable_not_valid() throws Exception {
         /* prepare */
-        Path tempFile = Files.createTempFile("pds_executable", ".sh");
+        Path tempFile = TestUtil.createTempFileInBuildFolder("pds_executable", "sh");
         
         /* execute */
         String message = validatorToTest.createValidationErrorMessage(tempFile.toRealPath().toString());
@@ -47,7 +48,7 @@ public class PDSPathExecutableValidatorTest {
     @Test
     public void path_existing_and_executable_is_valid() throws Exception {
         /* prepare */
-        Path tempFile = Files.createTempFile("pds_executable", ".sh",PosixFilePermissions.asFileAttribute(Collections.singleton(PosixFilePermission.OWNER_EXECUTE)));
+        Path tempFile = TestUtil.createTempFileInBuildFolder("pds_executable", "sh",PosixFilePermissions.asFileAttribute(Collections.singleton(PosixFilePermission.OWNER_EXECUTE)));
         
         /* execute */
         String message = validatorToTest.createValidationErrorMessage(tempFile.toRealPath().toString());

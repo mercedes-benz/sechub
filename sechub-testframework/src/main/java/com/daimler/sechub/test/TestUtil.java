@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileAttribute;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -112,9 +113,9 @@ public class TestUtil {
 
     /**
      * Creates a temporary file inside gradle build folder at
-     * `./build/sechub/tmp/${prefix}_tmp_${nanoTime}.${suffix}`. When environment entry
-     * `{@value TestUtil#SECHUB_KEEP_TEMPFILES}` is set to `true` those files will
-     * be kept when JVM exits. Otherwise, those files will be deleted by JVM on
+     * `./build/sechub/tmp/${prefix}_tmp_${nanoTime}.${suffix}`. When environment
+     * entry `{@value TestUtil#SECHUB_KEEP_TEMPFILES}` is set to `true` those files
+     * will be kept when JVM exits. Otherwise, those files will be deleted by JVM on
      * shutdown phase normally.
      * 
      * @param prefix filename prefix
@@ -122,8 +123,8 @@ public class TestUtil {
      * @return file
      * @throws IOException
      */
-    public static File createTempFileInBuildFolder(String prefix, String suffix) throws IOException {
-        return createTempFileInBuildFolder(prefix + "_tmp_" + System.nanoTime() + "." + suffix);
+    public static Path createTempFileInBuildFolder(String prefix, String suffix, FileAttribute<?>... attributes) throws IOException {
+        return createTempFileInBuildFolder(prefix + "_tmp_" + System.nanoTime() + "." + suffix, attributes);
     }
 
     /**
@@ -137,12 +138,12 @@ public class TestUtil {
      * @return
      * @throws IOException
      */
-    public static Path createTempDirectoryInBuildFolder(String dirName) throws IOException {
-        Path tmpPath = getBuildTmpDirAsFile().toPath();
+    public static Path createTempDirectoryInBuildFolder(String dirName, FileAttribute<?>... attributes) throws IOException {
+        Path tmpPath = ensureBuildTmpDirAsFile();
 
-        Path dirAsPath = tmpPath.toRealPath().resolve(dirName+"tmp_"+System.nanoTime());
+        Path dirAsPath = tmpPath.toRealPath().resolve(dirName + "tmp_" + System.nanoTime());
         if (Files.notExists(dirAsPath)) {
-            Files.createDirectory(dirAsPath);
+            Files.createDirectory(dirAsPath, attributes);
 
             if (isDeletingTempFiles()) {
                 dirAsPath.toFile().deleteOnExit();
@@ -165,31 +166,33 @@ public class TestUtil {
      * @return file
      * @throws IOException
      */
-    public static File createTempFileInBuildFolder(String explicitFileName) throws IOException {
-        File parent = getBuildTmpDirAsFile();
-        File file = new File(parent, explicitFileName);
-        if (file.exists()) {
-            LOG.warn("Temporary file already exists and will be deleted:{}", file.getAbsolutePath());
+    public static Path createTempFileInBuildFolder(String explicitFileName, FileAttribute<?>... attributes) throws IOException {
+        Path parent = ensureBuildTmpDirAsFile();
+        Path filePath = parent.resolve(explicitFileName);
+
+        if (Files.exists(filePath)) {
+            LOG.warn("Temporary file already exists and will be deleted:{}", filePath);
             try {
-                Files.delete(file.toPath());
+                Files.delete(filePath);
             } catch (IOException e) {
                 throw new RuntimeException("Cannot delete former temp file", e);
             }
         }
+        Files.createFile(filePath, attributes);
         if (isDeletingTempFiles()) {
-            file.deleteOnExit();
+            filePath.toFile().deleteOnExit();
         }
-        return file;
+        return filePath;
     }
 
-    private static File getBuildTmpDirAsFile() throws IOException {
+    private static Path ensureBuildTmpDirAsFile() throws IOException {
         File file = new File("./build/sechub/tmp");
         if (!file.exists()) {
             if (!file.mkdirs()) {
                 throw new IOException("Was not able to create tmp folder at:" + file.getAbsolutePath());
             }
         }
-        return file;
+        return file.toPath().toRealPath();
     }
 
     public static boolean isWindows() {
