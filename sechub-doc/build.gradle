@@ -32,6 +32,10 @@ def imagesBuildDir="$buildDir/docs/asciidoc/images";
 def convertedHTMLFolder = "${rootProject.projectDir}/build/sechubpages"
 def docsLatestFolder = "${rootProject.projectDir}/docs/latest"
 
+def clientVersion = VersionData.getClientVersion()
+def pdsVersion = VersionData.getPdsVersion()
+def serverVersion = VersionData.getServerVersion()
+
 task dropOldGeneratedAsciidoc(dependsOn: 'test'){
     doFirst {
         //cleanup former old data
@@ -202,23 +206,13 @@ task convertSecHubPages(type: Copy){
      includeEmptyDirs = false
 }
 
-task docToPages(type: Copy){
-     group 'sechub'
-     description 'This will copy current documentation into sechub pages under /docs '
+task createDownloadLinks(type: Exec) {
+  group 'sechub'
+  description 'This creates the HTML code for direct download'
+  dependsOn 'documentation'
 
-     dependsOn 'convertSecHubPages'
-
-     into docsLatestFolder
-     from ("${convertedHTMLFolder}"){
-        include '*.html'
-     }
-
-     into ("images") {
-         from ("${imagesBuildDir}") {
-            exclude '**/*.md', '**/*.xml'
-         }
-     }
-
+  workingDir = "."
+  commandLine 'sh', '-c', "helperscripts/create-download-html.sh client ${clientVersion} > ${asciidocBuildDir}/client-download.html ; helperscripts/create-download-html.sh pds ${pdsVersion} > ${asciidocBuildDir}/pds-download.html ; helperscripts/create-download-html.sh server ${serverVersion} > ${asciidocBuildDir}/server-download.html"
 }
 
 task "documentation-with-pages" {
@@ -226,10 +220,10 @@ task "documentation-with-pages" {
      description 'This will create documentation and setup sechub pages under /docs '
 
      dependsOn 'documentation'
-     dependsOn 'docToPages'
+     dependsOn 'createDownloadLinks'
 
      // see https://stackoverflow.com/questions/32907275/gradle-custom-task-which-runs-multiple-tasks
-     tasks.findByName('docToPages').mustRunAfter 'documentation'
+     tasks.findByName('createDownloadLinks').mustRunAfter 'documentation'
 }
 
 openapi3 {
