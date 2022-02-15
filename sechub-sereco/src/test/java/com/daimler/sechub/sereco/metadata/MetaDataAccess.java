@@ -9,9 +9,17 @@ public class MetaDataAccess {
 		search.classification=classification;
 	}
 
-	public static SerecoVulnerability createVulnerability(String url, String type, SerecoSeverity severity, List<SerecoDetection> list, String description,
+	public static void setWebRequest(SerecoVulnerability search, SerecoWebRequest webRequest) {
+        search.web.request=webRequest;
+    }
+	
+	public static void setWebResponse(SerecoVulnerability search, SerecoWebResponse webResponse) {
+        search.web.response=webResponse;
+    }
+	
+	public static SerecoVulnerability createVulnerability(String type, SerecoSeverity severity, List<SerecoDetection> list, String description,
 			SerecoClassification classification) {
-		return new SerecoVulnerability(url, type, severity, list, description, classification);
+		return new SerecoVulnerability(type, severity, list, description, classification);
 	}
 
 }

@@ -15,7 +15,7 @@ public class FalsePositiveJobDataListTest {
     @Test
     public void json_content_as_described_in_example_of_documentation() {
         /* prepare */
-        String json = ScanDomainTestFileSupport.getTestfileSupport().loadTestFileFromRoot("/sechub-doc/src/docs/asciidoc/documents/shared/concepts/false-positive-handling/false-positive-REST-API-content-example1.json");
+        String json = ScanDomainTestFileSupport.getTestfileSupport().loadTestFileFromRoot("/sechub-doc/src/docs/asciidoc/documents/shared/false-positives/false-positives-REST-API-content-example1.json");
         
         /* execute */
         FalsePositiveJobDataList dataList = FalsePositiveJobDataList.fromString(json);

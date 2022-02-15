@@ -11,7 +11,7 @@ import java.util.Objects;
  * @author Albert Tregnaghi
  *
  */
-public class ThreadFlowLocation {
+public class ThreadFlowLocation extends SarifObject{
 
     private Location location;
 

@@ -48,6 +48,10 @@ public class HTMLScanResultReportModelBuilder {
         String styleYellow = HIDE_LIGHT;
         String styleGreen = HIDE_LIGHT;
 
+        if (trafficLight == null) {
+            throw new IllegalStateException("No traffic light defined");
+        }
+
         switch (trafficLight) {
         case RED:
             styleRed = SHOW_LIGHT;
@@ -82,6 +86,7 @@ public class HTMLScanResultReportModelBuilder {
         model.put("isWebDesignMode", webDesignMode);
         model.put("codeScanEntries", codeScanEntries);
         model.put("codeScanSupport", codeScanSupport);
+        model.put("reportHelper", HTMLReportHelper.DEFAULT);
 
         if (webDesignMode) {
             File file;

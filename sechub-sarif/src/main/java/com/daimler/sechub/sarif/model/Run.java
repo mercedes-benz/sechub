@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  *
  */
 @JsonPropertyOrder({ "tool", "results" })
-public class Run {
+public class Run extends SarifObject {
     private Tool tool;
 
     private List<Result> results;

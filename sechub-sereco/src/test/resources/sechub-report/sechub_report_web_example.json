@@ -1,0 +1,67 @@
+{
+  "jobUUID" : "5fc0a0c5-1061-44d2-93bd-6076586c7932",
+  "result" : {
+    "count" : 0,
+    "findings" : [ {
+      "id" : 1,
+      "description" : "Cross-site Scripting (XSS) is an attack technique that involves echoing attacker-supplied code into a user's browser instance. A browser instance can be a standard web browser client, or a browser object embedded in a software product such as the browser within WinAmp, an RSS reader, or an email client. The code itself is usually written in HTML/JavaScript, but may also extend to VBScript, ActiveX, Java, Flash, or any other browser-supported technology.",
+      "name" : "Cross Site Scripting (Reflected)",
+      "severity" : "HIGH",
+      "type" : "webScan",
+      "cweId" : 79,
+      "web" : {
+        "request" : {
+          "protocol" : "HTTP",
+          "version" : "1.1",
+          "target" : "https://127.0.0.1:8080/greeting?name=%3C%2Fp%3E%3Cscript%3Ealert%281%29%3B%3C%2Fscript%3E%3Cp%3E",
+          "method" : "GET",
+          "headers" : {
+            "Cache-Control" : "no-cache",
+            "Content-Length" : "0",
+            "Cookie" : "JSESSIONID=38AA1F7A61982DF1073D7F43A3707798; locale=de",
+            "Host" : "127.0.0.1:8080",
+            "Pragma" : "no-cache",
+            "Referer" : "https://127.0.0.1:8080/hello",
+            "User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0"
+          },
+          "body" : { }
+        },
+        "response" : {
+          "statusCode" : 200,
+          "reasonPhrase" : "",
+          "protocol" : "HTTP",
+          "version" : "1.1",
+          "headers" : {
+            "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+            "Content-Language" : "en-US",
+            "Content-Security-Policy" : "script-src 'self'",
+            "Content-Type" : "text/html;charset=UTF-8",
+            "Date" : "Thu, 11 Nov 2021 09:56:20 GMT",
+            "Expires" : "0",
+            "Pragma" : "no-cache",
+            "Referrer-Policy" : "no-referrer",
+            "Set-Cookie" : "locale=de; HttpOnly; SameSite=strict",
+            "Strict-Transport-Security" : "max-age=31536000 ; includeSubDomains",
+            "X-Content-Type-Options" : "nosniff",
+            "X-Frame-Options" : "DENY",
+            "X-XSS-Protection" : "1; mode=block"
+          },
+          "body" : {
+            "text" : "<!DOCTYPE HTML>\n<html>\n<head>\n    <title>Getting Started: Serving Web Content</title>\n    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n</head>\n<body>\n    <!-- unsecure text used (th:utext instead th:text)- to create vulnerability (XSS) -->\n    <!-- simple usage: http://localhost:8080/greeting?name=Test2</p><script>;alert(\"hallo\")</script> -->\n    <p >XSS attackable parameter output: </p><script>alert(1);</script><p>!</p>\n</body>\n</html>",
+            "binary" : null
+          }
+        },
+        "attack" : {
+          "vector" : "</p><script>alert(1);</script><p>",
+          "evidence" : {
+            "snippet" : "</p><script>alert(1);</script><p>",
+            "bodyLocation" : {
+              "startLine" : 10
+            }
+          }
+        }
+      }
+    } ]
+  },
+  "trafficLight" : "RED"
+}

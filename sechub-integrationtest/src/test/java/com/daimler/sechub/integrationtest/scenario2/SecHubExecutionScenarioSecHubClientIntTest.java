@@ -126,7 +126,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 			assertJobTriggered().
 			getJobUUID();
 
-		waitForJobDone(project, jobUUID);
+		waitForJobDoneAndFailWhenJobIsFailing(project, jobUUID);
 
 		as(user).
 			withSecHubClient().
@@ -162,7 +162,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
             assertJobTriggered().
             getJobUUID();
 
-        waitForJobDone(project, jobUUID);
+        waitForJobDoneAndFailWhenJobIsFailing(project, jobUUID);
 
         as(user).
             withSecHubClient().
@@ -203,7 +203,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
             assertJobTriggered().
             getJobUUID();
 
-        waitForJobDone(project, jobUUID);
+        waitForJobDoneAndFailWhenJobIsFailing(project, jobUUID);
 
         as(user).
             withSecHubClient().
@@ -267,7 +267,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
             assertJobTriggered().
             getJobUUID();
 
-        waitForJobDone(project, jobUUID);
+        waitForJobDoneAndFailWhenJobIsFailing(project, jobUUID);
 
         as(user).
             withSecHubClient().
@@ -304,7 +304,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 			assertJobTriggered().
 			getJobUUID();
 
-		waitForJobDone(project, jobUUID);
+		waitForJobDoneAndFailWhenJobIsFailing(project, jobUUID);
 
 		as(user).
 			withSecHubClient().
@@ -346,7 +346,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 			assertJobTriggered().
 			getJobUUID();
 
-		waitForJobDone(project, jobUUID);
+		waitForJobDoneAndFailWhenJobIsFailing(project, jobUUID);
 
 		/* why test green result ? Because we set test folders in a way we
 		 * will expect green traffic light - which is only the case when
@@ -390,7 +390,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 			assertJobTriggered().
 			getJobUUID();
 
-		waitForJobDone(project, jobUUID);
+		waitForJobDoneAndFailWhenJobIsFailing(project, jobUUID);
 
 		as(user).
 			withSecHubClient().

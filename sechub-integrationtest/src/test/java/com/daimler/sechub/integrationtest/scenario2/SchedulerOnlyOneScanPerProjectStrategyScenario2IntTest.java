@@ -1,15 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest.scenario2;
 
-import static com.daimler.sechub.integrationtest.api.AssertJob.assertJobHasNotRun;
-import static com.daimler.sechub.integrationtest.api.AssertJob.assertJobIsRunning;
-import static com.daimler.sechub.integrationtest.api.TestAPI.SUPER_ADMIN;
-import static com.daimler.sechub.integrationtest.api.TestAPI.as;
-import static com.daimler.sechub.integrationtest.api.TestAPI.waitForJobDone;
-import static com.daimler.sechub.integrationtest.api.TestAPI.waitForJobRunning;
-import static com.daimler.sechub.integrationtest.scenario2.Scenario2.PROJECT_1;
-import static com.daimler.sechub.integrationtest.scenario2.Scenario2.PROJECT_2;
-import static com.daimler.sechub.integrationtest.scenario2.Scenario2.USER_1;
+import static com.daimler.sechub.integrationtest.api.AssertJob.*;
+import static com.daimler.sechub.integrationtest.api.TestAPI.*;
+import static com.daimler.sechub.integrationtest.scenario2.Scenario2.*;
 
 import java.util.UUID;
 
@@ -67,8 +61,8 @@ public class SchedulerOnlyOneScanPerProjectStrategyScenario2IntTest {
         assertJobHasNotRun(PROJECT_1, project1job2); // not this job
         
         // check job 3 is executed when job1 has finished
-        waitForJobDone(PROJECT_1, project1job1);
-        waitForJobDone(PROJECT_1, project1job2); // wait job3 has been done as well
+        waitForJobDoneAndFailWhenJobIsFailing(PROJECT_1, project1job1);
+        waitForJobDoneAndFailWhenJobIsFailing(PROJECT_1, project1job2); // wait job3 has been done as well
         
         TestAPI.switchSchedulerStrategy("first-come-first-serve");
         

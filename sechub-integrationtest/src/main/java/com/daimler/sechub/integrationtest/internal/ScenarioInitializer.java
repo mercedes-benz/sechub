@@ -30,11 +30,12 @@ public class ScenarioInitializer {
 	}
 
 	public ScenarioInitializer addProjectIdsToDefaultExecutionProfile(DefaultTestExecutionProfile profile, TestProject ...projects) {
+	    ensureDefaultExecutionProfile(profile);
         TestAPI.as(TestAPI.SUPER_ADMIN).addProjectsToProfile(profile.id,projects);
         return this;
     }
 	
-	public ScenarioInitializer ensureDefaultExecutionProfile(DefaultTestExecutionProfile profile) {
+	private ScenarioInitializer ensureDefaultExecutionProfile(DefaultTestExecutionProfile profile) {
 	    if (TestAPI.canReloadExecutionProfileData(profile)){
 	        return this;
 	    }
@@ -88,7 +89,7 @@ public class ScenarioInitializer {
 	public ScenarioInitializer waitUntilUserCanLogin(TestUser user, int seconds) {
 		TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(user,seconds,HttpClientErrorException.class) {
 			@Override
-			public boolean runImpl() throws Exception {
+			public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
 				assertUser(user).canLogin();
 				return true;
 			}
@@ -104,7 +105,7 @@ public class ScenarioInitializer {
 	public ScenarioInitializer waitUntilUserExists(TestUser user, int seconds) {
 		TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN,seconds,HttpClientErrorException.class) {
 			@Override
-			public boolean runImpl() throws Exception {
+			public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
 				assertUser(user).doesExist();
 				return true;
 			}
@@ -120,7 +121,7 @@ public class ScenarioInitializer {
 	public ScenarioInitializer waitUntilProjectExists(TestProject project, int seconds) {
 		TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN,seconds,HttpClientErrorException.class) {
 			@Override
-			public boolean runImpl() throws Exception {
+			public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
 				assertProject(project).doesExist();
 				return true;
 			}

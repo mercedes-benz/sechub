@@ -1,0 +1,55 @@
+{
+  "jobUUID" : "f5fdccc6-45d1-4b42-972c-08ff9ee0dddb",
+  "result" : {
+    "count" : 0,
+    "findings" : [ {
+      "id" : 1,
+      "description" : "testdata.message.text",
+      "name" : "testdata.rule1.shortdescription.text",
+      "solution" : "testdata.rule1.properties.solution.text",
+      "severity" : "MEDIUM",
+      "type" : "webScan",
+      "cweId" : 614,
+      "web" : {
+        "request" : {
+          "protocol" : "testdata.webrequest.protocol",
+          "version" : "testdata.webrequest.version",
+          "target" : "testdata.webrequest.target",
+          "method" : "testdata.webrequest.method",
+          "headers" : {
+            "header1" : "testdata.headers.header1"
+          },
+          "body" : {
+            "text" : "testdata.webrequest.body.text",
+            "binary" : "testdata.webrequest.body.binary"
+          }
+        },
+        "response" : {
+          "statusCode" : 12345,
+          "reasonPhrase" : "testdata.webresponse.reasonphrase",
+          "protocol" : "testdata.webresponse.protocol",
+          "version" : "testdata.webrespons.version",
+          "headers" : {
+            "header1" : "testdata.webresponse.header1"
+          },
+          "body" : {
+            "text" : "testdata.webresponse.body.text",
+            "binary" : "testdata.webresponse.body.binary"
+          }
+        },
+        "attack" : {
+          "vector" : "testdata.properties.attack",
+          "evidence" : {
+            "snippet" : "testdata.snippet.text",
+            "bodyLocation" : {
+              "startLine" : 42
+            }
+          }
+        }
+      }
+    } ]
+  },
+  "status" : "SUCCESS",
+  "reportVersion" : "1.0",
+  "messages" : [ ]
+}

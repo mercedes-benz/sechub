@@ -532,13 +532,13 @@ public class AsUser {
 
     public String restartCodeScanAndFetchJobStatus(TestProject project, UUID sechubJobUUID) {
         restartJob(sechubJobUUID);
-        waitForJobDone(project, sechubJobUUID);
+        waitForJobDoneAndEvenWaitWhileJobIsFailing(project, sechubJobUUID);
         return getJobStatus(project.getProjectId(), sechubJobUUID);
     }
 
     public String restartCodeScanHardAndFetchJobStatus(TestProject project, UUID sechubJobUUID) {
         restartJobHard(sechubJobUUID);
-        waitForJobDone(project, sechubJobUUID);
+        waitForJobDoneAndEvenWaitWhileJobIsFailing(project, sechubJobUUID);
         return getJobStatus(project.getProjectId(), sechubJobUUID);
     }
 

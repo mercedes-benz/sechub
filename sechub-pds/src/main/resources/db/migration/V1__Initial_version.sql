@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: MIT
 -- pds job represents job being scheduled by PDSBatchTriggerService
 CREATE TABLE pds_job
 (

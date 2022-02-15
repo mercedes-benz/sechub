@@ -13,7 +13,8 @@ ext {
 
    libraryVersion= [
       // openapi3-generator, releases see https://github.com/ePages-de/restdocs-api-spec/releases
-      restDocsApiSpec: "0.11.4"
+      restDocsApiSpec: "0.15.2",
+      junit5Version :"5.8.2"
    ]
 
    library = [
@@ -21,9 +22,10 @@ ext {
        
         /* autark JUnit parts, with same versions like current used spring boot version */
         // https://mvnrepository.com/artifact/junit/junit
-        junit: "junit:junit:4.13.2",
-        junit5_impl: 'org.junit.jupiter:junit-jupiter-api:5.7.2',
-        junit5_runtime: 'org.junit.jupiter:junit-jupiter-engine:5.7.2',
+        junit: "junit:junit:4.13.1",
+        junit5_impl: 'org.junit.jupiter:junit-jupiter-api:${libraryVersion.junit5Version}',
+        junit5_runtime: 'org.junit.jupiter:junit-jupiter-engine:${libraryVersion.junit5Version}',
+        junit5_params: 'org.junit.jupiter:junit-jupiter-params:${libraryVersion.junit5Version}',
         
 //      Adopting existing Junit4 to Junit5 tests: 
 //      currently we keep our exting Junit4 tests and do NOT transform them. 
@@ -31,10 +33,10 @@ ext {
 //      https://github.com/junit-team/junit5-samples/tree/master/junit5-migration-gradle        
         
         // https://mvnrepository.com/artifact/org.mockito/mockito-core
-        mockito: "org.mockito:mockito-core:3.9.0", //IMPORTANT: keep this at same level as used in Spring BOOT version
+        mockito: "org.mockito:mockito-core:4.0.0", //IMPORTANT: keep this at same level as used in Spring BOOT version
         
         // https://mvnrepository.com/artifact/org.mockito/mockito-inline
-        mockito_inline: "org.mockito:mockito-inline:3.9.0",
+        mockito_inline: "org.mockito:mockito-inline:4.0.0",
         
 
         // https://mvnrepository.com/artifact/org.hamcrest/hamcrest-library
@@ -69,11 +71,11 @@ ext {
          database_postgres:                     "org.postgresql:postgresql:42.3.1",
 
          /* jackson libraries - please keep in sync with used ones by spring boot!*/
-         jackson_JDK8:                          "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.12.3",
+         jackson_JDK8:                          "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.13.1",
          // https://mvnrepository.com/artifact/com.fasterxml.jackson.jr/jackson-jr-all
-         jackson_jr_all:                        "com.fasterxml.jackson.jr:jackson-jr-all:2.12.6",
-         jackson_core:                          "com.fasterxml.jackson.core:jackson-core:2.12.6",
-         jackson_databind:                      "com.fasterxml.jackson.core:jackson-databind:2.12.6",
+         jackson_jr_all:                        "com.fasterxml.jackson.jr:jackson-jr-all:2.13.1",
+         jackson_core:                          "com.fasterxml.jackson.core:jackson-core:2.13.1",
+         jackson_databind:                      "com.fasterxml.jackson.core:jackson-databind:2.13.1",
 
          /* apache commons */
          apache_httpcomponents_core:            "org.apache.httpcomponents:httpcore:4.4.15",
@@ -86,12 +88,12 @@ ext {
 
          openjson:                              "com.github.openjson:openjson:1.0.12",
 
-         flyway:                                "org.flywaydb:flyway-core:8.2.3",
+         flyway:                                "org.flywaydb:flyway-core:8.0.5",
 
          /* logback */
          // https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
          logback_classic:                       "ch.qos.logback:logback-classic:1.2.9",
-         logstashLogbackEncoder        :        "net.logstash.logback:logstash-logback-encoder:6.6",
+         logstashLogbackEncoder        :        "net.logstash.logback:logstash-logback-encoder:7.0.1",
 
          // JDK 10 build problems handling
          // https://stackoverflow.com/questions/43574426/how-to-resolve-java-langnoclassdeffounderror-javax-xml-bind-jaxbexception-in-j
@@ -114,7 +116,9 @@ ext {
          
          /* jsoup: Java HTML Parser - see: https://github.com/jhy/jsoup */
          jsoup:									"org.jsoup:jsoup:1.14.3",
-
+         
+         /* dom4j: https://mvnrepository.com/artifact/org.dom4j/dom4j/2.1.3 */
+		 dom4j:									"org.dom4j:dom4j:2.1.3",
    ]
 
 }

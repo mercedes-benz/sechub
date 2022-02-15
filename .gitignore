@@ -36,6 +36,7 @@ build/
 *.bak
 *.zip
 sechub_report*.json
+sechub_report*.html
 sechub-false-positives*.json
 #!sechub.json
 

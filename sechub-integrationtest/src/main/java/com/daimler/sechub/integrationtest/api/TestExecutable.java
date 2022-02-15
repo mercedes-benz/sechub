@@ -3,9 +3,9 @@ package com.daimler.sechub.integrationtest.api;
 
 public interface TestExecutable {
 	/**
-	 * @return false when stop execution, true when still need to execute
+	 * @return <code>true</code> when successful (and no retry necessary), otherwise <code>false</code>
 	 */
-	public boolean run() throws Exception;
+	public boolean runAndReturnTrueWhenSuccesful() throws Exception;
 
 	public boolean wasSuccessful();
 

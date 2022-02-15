@@ -53,7 +53,7 @@ public class PDSWebScanJobScenario12IntTest {
         as(USER_1).
             approveJob(project, jobUUID);
         
-        waitForJobDone(project, jobUUID, 30);
+        waitForJobDone(project, jobUUID, 30, true);
         
         /* test */
         String sechubReport = as(USER_1).getJobReport(project, jobUUID);

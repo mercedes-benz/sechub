@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest.scenario9;
 
+import static com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultProfiles.*;
+
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.api.TestUser;
 import com.daimler.sechub.integrationtest.internal.AbstractSecHubServerTestScenario;
 import com.daimler.sechub.integrationtest.internal.CleanScenario;
+import com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultProfiles;
 import com.daimler.sechub.integrationtest.internal.PDSTestScenario;
-import static com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultProfiles.PROFILE_3_PDS_CODESCAN_SARIF;
 
 /**
  * <b><u>Scenario9 - the PDS integration test SARIF scenario (REUSE SECHUB DATA
@@ -27,6 +29,12 @@ import static com.daimler.sechub.integrationtest.internal.IntegrationTestDefault
  * USER_1, is automatically registered, created and assigned to project1
  * </pre>
  * 
+ * c) Execution profiles
+ * Following profiles are used inside this scenario
+ *  <pre>
+ * {@link IntegrationTestDefaultProfiles#PROFILE_8_PDS_WEBSCAN_SARIF}
+ * {@link IntegrationTestDefaultProfiles#PROFILE_3_PDS_CODESCAN_SARIF}
+ * </pre>
  * 
  * @author Albert Tregnaghi
  *
@@ -47,10 +55,10 @@ public class Scenario9 extends AbstractSecHubServerTestScenario implements PDSTe
     protected void initializeTestData() {
         /* @formatter:off */
         initializer().
-            ensureDefaultExecutionProfile(PROFILE_3_PDS_CODESCAN_SARIF).
             createUser(USER_1).
             createProject(PROJECT_1, USER_1).
             addProjectIdsToDefaultExecutionProfile(PROFILE_3_PDS_CODESCAN_SARIF, PROJECT_1).
+            addProjectIdsToDefaultExecutionProfile(PROFILE_8_PDS_WEBSCAN_SARIF, PROJECT_1).
             assignUserToProject(PROJECT_1, USER_1)
             ;
         /* @formatter:on */

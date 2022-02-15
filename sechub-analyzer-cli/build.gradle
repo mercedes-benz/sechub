@@ -6,16 +6,16 @@
  * ============================================================================
  */
 dependencies {
-	compile library.slf4j
-	compile library.logback_classic
-	compile library.apache_commons_cli
-	compile library.jackson_jr_all
-	compile library.google_re2j
+	implementation library.slf4j
+	implementation library.logback_classic
+	implementation library.apache_commons_cli
+	implementation library.jackson_jr_all
+	implementation library.google_re2j
 	
-	testCompile library.junit
-	testCompile library.mockito
-	testCompile library.mockito_inline
-    testCompile library.hamcrest
+	testImplementation library.junit
+	testImplementation library.mockito
+	testImplementation library.mockito_inline
+    testImplementation library.hamcrest
 }
 
 task buildAnalyzerCLI(type: Jar) {

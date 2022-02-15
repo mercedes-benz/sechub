@@ -54,6 +54,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
     public static final String PDS_CODESCAN_VARIANT_G = "g";
 
     public static final String PDS_WEBSCAN_VARIANT_A = "a";
+    public static final String PDS_WEBSCAN_VARIANT_B = "b";
 
     /* @formatter:off */
     public static final TestExecutorConfig PDS_V1_CODE_SCAN_A = definePDSCodeScan(
@@ -95,6 +96,14 @@ public class IntegrationTestDefaultExecutorConfigurations {
                                                 PDS_WEBSCAN_VARIANT_A,false,
                                                 PDSIntTestProductIdentifier.PDS_INTTEST_WEBSCAN,
                                                 StorageType.REUSE_SECHUB_DATA);
+    
+    /**
+     * The executor configuration does result in usage of {@link PDSIntTestProductIdentifier#PDS_INTTEST_PRODUCT_WS_SARIF}.
+     */
+    public static final TestExecutorConfig PDS_V1_WEB_SCAN_B_OWASP_SARIF_RESULTS = definePDSWebScan(
+            PDS_WEBSCAN_VARIANT_B,false,
+            PDSIntTestProductIdentifier.PDS_INTTEST_PRODUCT_WS_SARIF,
+            StorageType.REUSE_SECHUB_DATA);
     
     /* @formatter:on */
 

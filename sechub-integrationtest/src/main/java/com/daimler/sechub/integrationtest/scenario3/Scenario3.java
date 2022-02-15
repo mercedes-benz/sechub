@@ -39,7 +39,6 @@ public class Scenario3 extends AbstractGrowingSecHubServerTestScenario {
     protected void initializeTestData() {
         /* @formatter:off */
 		initializer().
-		    ensureDefaultExecutionProfile(PROFILE_1).
 			createUser(USER_1).
 			createUser(USER_2).
 			createUser(USER_3).

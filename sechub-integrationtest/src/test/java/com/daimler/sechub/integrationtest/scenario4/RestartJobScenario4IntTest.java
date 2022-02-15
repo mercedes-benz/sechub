@@ -47,7 +47,7 @@ public class RestartJobScenario4IntTest {
         /* @formatter:off */
         /* prepare */
         UUID sechubJobUUID = as(USER_1).triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(project);
-        waitForJobDone(project, sechubJobUUID);
+        waitForJobDoneAndFailWhenJobIsFailing(project, sechubJobUUID);
         
         /* execute */
         as(SUPER_ADMIN).restartCodeScanHardAndFetchJobStatus(project,sechubJobUUID);
@@ -73,7 +73,7 @@ public class RestartJobScenario4IntTest {
         clearMetaDataInspection();
         
         UUID sechubJobUUID = as(USER_1).triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(project);
-        waitForJobDone(project, sechubJobUUID);
+        waitForJobDoneAndFailWhenJobIsFailing(project, sechubJobUUID);
         
         simulateJobIsStillRunningAndUploadAvailable(sechubJobUUID);
         
@@ -110,7 +110,7 @@ public class RestartJobScenario4IntTest {
         /* @formatter:off */
         /* prepare */
         UUID sechubJobUUID = as(USER_1).triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(project);
-        waitForJobDone(project, sechubJobUUID);
+        waitForJobDoneAndFailWhenJobIsFailing(project, sechubJobUUID);
         
         simulateJobIsStillRunningAndUploadAvailable(sechubJobUUID);
         
@@ -141,7 +141,7 @@ public class RestartJobScenario4IntTest {
         /* prepare */
         UUID sechubJobUUID = as(USER_1).triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(project);
         
-        waitForJobDone(project, sechubJobUUID);
+        waitForJobDoneAndFailWhenJobIsFailing(project, sechubJobUUID);
         
         
         /* execute */
@@ -218,7 +218,7 @@ public class RestartJobScenario4IntTest {
         /* @formatter:off */
         /* prepare */
         UUID sechubJobUUID = as(USER_1).triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(project);
-        waitForJobDone(project, sechubJobUUID);
+        waitForJobDoneAndFailWhenJobIsFailing(project, sechubJobUUID);
         simulateJobIsStillRunningAndUploadAvailable(sechubJobUUID);
         destroyProductResults(sechubJobUUID); // destroy former product result to simulate execution crashed..
 

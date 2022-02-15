@@ -12,7 +12,7 @@ import java.util.Objects;
  * @author Albert Tregnaghi
  *
  */
-public class ToolComponentReference {
+public class ToolComponentReference extends SarifObject{
 
     private String name;
     private String guid;

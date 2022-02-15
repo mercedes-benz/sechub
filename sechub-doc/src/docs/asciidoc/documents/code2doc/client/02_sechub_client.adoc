@@ -154,7 +154,7 @@ Select this file by the `-file` argument and start action `markFalsePositives`.
 
 [source, json]
 ----
-include::../../shared/concepts/false-positive-handling/false-positive-REST-API-content-example1.json[]
+include::../../shared/false-positives/false-positives-REST-API-content-example1.json[]
 ----
 <1> api version
 <2> type - must be `falsePositiveJobDataList`
@@ -177,7 +177,7 @@ action `unmarkFalsePositives`
 
 [source, json]
 ----
-include::sechub_client_falsepositve_list_example_unmark.json[]
+include::sechub_client_falsepositive_list_example_unmark.json[]
 ----
 
 ===== interactiveMarkFalsePositives
@@ -293,7 +293,7 @@ Here is an overview of mandatory parameter for each `action`:
   Shows version info and terminates
 - `-wait <integer>` + 
        wait time in seconds (default 60). 
-       Will be used for periodic status checks when action=`scan`.
+       Will be used for periodic status checks when action=`scan` and for retries of HTTP calls.
 
 ==== Environment variables
 Additionally to above cmdline options, you can set some values also via environment variables which can be helpful when you have different SecHub environments (like: dev, int, prod)

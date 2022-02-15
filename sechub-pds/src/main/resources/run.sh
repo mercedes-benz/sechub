@@ -1,4 +1,5 @@
 #!/bin/bash 
+# SPDX-License-Identifier: MIT
 
 echo "Starting run script:run.sh $1 $2"
 # Set debug options if required

@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: MIT
 CREATE TABLE adm_status
 (
    status_id varchar(60) not null, -- we accept 60 (3x20),

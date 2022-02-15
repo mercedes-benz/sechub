@@ -42,7 +42,7 @@ public class JobUsecasesEventTraceScenario4IntTest {
         /* prepare */
         UUID sechubJobUUD = as(USER_1).triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(project);
         
-        waitForJobDone(project, sechubJobUUD);
+        waitForJobDoneAndFailWhenJobIsFailing(project, sechubJobUUD);
 
         startEventInspection();
         
@@ -76,7 +76,7 @@ public class JobUsecasesEventTraceScenario4IntTest {
         /* @formatter:off */
         /* prepare */
         UUID sechubJobUUD = as(USER_1).triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(project);
-        waitForJobDone(project, sechubJobUUD);
+        waitForJobDoneAndFailWhenJobIsFailing(project, sechubJobUUD);
         simulateJobIsStillRunningAndUploadAvailable(sechubJobUUD);
         
         startEventInspection();
@@ -136,7 +136,7 @@ public class JobUsecasesEventTraceScenario4IntTest {
         /* prepare */
         UUID sechubJobUUD = as(USER_1).triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(project);
         
-        waitForJobDone(project, sechubJobUUD);
+        waitForJobDoneAndFailWhenJobIsFailing(project, sechubJobUUD);
         simulateJobIsStillRunningAndUploadAvailable(sechubJobUUD);
         
         destroyProductResults(sechubJobUUD); // destroy former product result to simulate execution crashed..
@@ -197,7 +197,7 @@ public class JobUsecasesEventTraceScenario4IntTest {
         /* prepare */
         UUID sechubJobUUD = as(USER_1).triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(project);
         
-        waitForJobDone(project, sechubJobUUD);
+        waitForJobDoneAndFailWhenJobIsFailing(project, sechubJobUUD);
         startEventInspection();
         
         /* execute */
@@ -233,7 +233,7 @@ public class JobUsecasesEventTraceScenario4IntTest {
         /* prepare */
         UUID sechubJobUUD = as(USER_1).triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(project);
         
-        waitForJobDone(project, sechubJobUUD);
+        waitForJobDoneAndFailWhenJobIsFailing(project, sechubJobUUD);
         
         simulateJobIsStillRunningAndUploadAvailable(sechubJobUUD);
         
@@ -286,7 +286,7 @@ public class JobUsecasesEventTraceScenario4IntTest {
         /* prepare */
         UUID sechubJobUUD = as(USER_1).triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(project);
         
-        waitForJobDone(project, sechubJobUUD);
+        waitForJobDoneAndFailWhenJobIsFailing(project, sechubJobUUD);
         simulateJobIsStillRunningAndUploadAvailable(sechubJobUUD);
         
         destroyProductResults(sechubJobUUD); // destroy former product result to simulate execution crashed..
