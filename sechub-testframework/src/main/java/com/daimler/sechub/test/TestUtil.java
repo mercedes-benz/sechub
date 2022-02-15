@@ -113,18 +113,18 @@ public class TestUtil {
 
     /**
      * Creates a temporary file inside gradle build folder at
-     * `./build/sechub/tmp/${prefix}_tmp_${nanoTime}.${suffix}`. When environment
+     * `./build/sechub/tmp/${prefix}_tmp_${nanoTime}.${fileEnding}`. When environment
      * entry `{@value TestUtil#SECHUB_KEEP_TEMPFILES}` is set to `true` those files
      * will be kept when JVM exits. Otherwise, those files will be deleted by JVM on
      * shutdown phase normally.
      * 
      * @param prefix filename prefix
-     * @param suffix filename suffix
+     * @param fileEnding filename ending
      * @return file
      * @throws IOException
      */
-    public static Path createTempFileInBuildFolder(String prefix, String suffix, FileAttribute<?>... attributes) throws IOException {
-        return createTempFileInBuildFolder(prefix + "_tmp_" + System.nanoTime() + "." + suffix, attributes);
+    public static Path createTempFileInBuildFolder(String prefix, String fileEnding, FileAttribute<?>... attributes) throws IOException {
+        return createTempFileInBuildFolder(prefix + "_tmp_" + System.nanoTime() + "." + fileEnding, attributes);
     }
 
     /**

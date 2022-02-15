@@ -7,6 +7,7 @@ import java.io.FileWriter;
 
 import com.daimler.sechub.adapter.AdapterMetaData;
 import com.daimler.sechub.adapter.AdapterMetaDataCallback;
+import com.daimler.sechub.test.TestUtil;
 
 /**
  * This is a simple test application for checkmarx.
@@ -73,7 +74,7 @@ public class CheckmarxAdapterTestApplication {
                 return null;
             }
         });
-		File file = File.createTempFile("checkmarx-adaptertest-result", ".xml");
+		File file = TestUtil.createTempFileInBuildFolder("checkmarx-adaptertest-result", "xml").toFile();
 		FileWriter fileWriter= new FileWriter(file);
 		fileWriter.write(data);
 		fileWriter.close();
