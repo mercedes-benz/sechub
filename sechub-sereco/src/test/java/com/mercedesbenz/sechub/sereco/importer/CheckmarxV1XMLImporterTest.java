@@ -93,7 +93,7 @@ public class CheckmarxV1XMLImporterTest {
          * v1 is not first entry, because first entry was a false positive which was
          * already filtered
          */
-        assertEquals("com/daimler/sechub/server/IntegrationTestServerRestController.java", codeInfo.getLocation());
+        assertEquals("com/mercedesbenz/sechub/server/IntegrationTestServerRestController.java", codeInfo.getLocation());
         assertEquals(Integer.valueOf(86), codeInfo.getLine());
         assertEquals(Integer.valueOf(37), codeInfo.getColumn());
         assertEquals("			@PathVariable(\"fileName\") String fileName) throws IOException {", codeInfo.getSource());
@@ -104,7 +104,7 @@ public class CheckmarxV1XMLImporterTest {
         SerecoCodeCallStackElement calls2 = calls1.getCalls();
         assertNotNull(calls2);
 
-        assertEquals("com/daimler/sechub/sharedkernel/storage/JobStorage.java", calls2.getLocation());
+        assertEquals("com/mercedesbenz/sechub/sharedkernel/storage/JobStorage.java", calls2.getLocation());
         assertEquals(Integer.valueOf(139), calls2.getLine());
         assertEquals(Integer.valueOf(39), calls2.getColumn());
         assertEquals("	public String getAbsolutePath(String fileName) {", calls2.getSource());

@@ -12,7 +12,7 @@ subprojects {
 
 	apply plugin: 'maven'
 
-	group = "com.daimler.sechub"
+	group = "com.mercedesbenz.sechub"
     
 
     if (!projectType.publishedLibraries.contains(project)){

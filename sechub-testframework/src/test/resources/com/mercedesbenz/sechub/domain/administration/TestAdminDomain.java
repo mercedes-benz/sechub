@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.domain.administration;
+package com.mercedesbenz.sechub.domain.administration;
 
 public class TestAdminDomain {
 

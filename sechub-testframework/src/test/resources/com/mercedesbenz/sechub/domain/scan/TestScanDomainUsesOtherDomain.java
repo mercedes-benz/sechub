@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.domain.scan;
+package com.mercedesbenz.sechub.domain.scan;
 
-import com.daimler.sechub.domain.administration.TestAdminDomain;
+import com.mercedesbenz.sechub.domain.administration.TestAdminDomain;
 
 public class TestScanDomainUsesOtherDomain {
 	/* Test case scenario - will be recognized by PackageStructureTest */ 

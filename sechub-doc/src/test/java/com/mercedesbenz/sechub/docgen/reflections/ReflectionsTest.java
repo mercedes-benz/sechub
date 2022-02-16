@@ -28,7 +28,7 @@ public class ReflectionsTest {
         /* prepare */
         File file = new File(".");
         File sourceFolder = new File(file, "subproject1/src/main/java");
-        File classFile = new File(sourceFolder, "com/daimler/sechub/reflections/TestMe.java");
+        File classFile = new File(sourceFolder, "com/mercedesbenz/sechub/reflections/TestMe.java");
 
         /* execute */
         String result = reflectionsToTest.extractJavaFileName(sourceFolder, classFile);
