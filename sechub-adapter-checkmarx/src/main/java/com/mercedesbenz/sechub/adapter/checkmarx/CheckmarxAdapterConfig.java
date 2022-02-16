@@ -1,0 +1,33 @@
+// SPDX-License-Identifier: MIT
+package com.mercedesbenz.sechub.adapter.checkmarx;
+
+import java.io.InputStream;
+
+import com.mercedesbenz.sechub.adapter.CodeScanAdapterConfig;
+
+public interface CheckmarxAdapterConfig extends CodeScanAdapterConfig {
+
+    /**
+     *
+     * @return team id, never <code>null</code>
+     */
+    String getTeamIdForNewProjects();
+
+    /**
+     *
+     * @return preset id or <code>null</code>
+     */
+    Long getPresetIdForNewProjectsOrNull();
+
+    InputStream getSourceCodeZipFileInputStream();
+
+    String getClientSecret();
+
+    String getEngineConfigurationName();
+
+    /**
+     * @return <code>true</code> when checkmarx shall always do a fullscan - not
+     *         only for new projects
+     */
+    public boolean isAlwaysFullScanEnabled();
+}

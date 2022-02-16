@@ -76,13 +76,13 @@ publishing {
                 description = 'SecHub Server as a Spring Boot JAR. Ready to use.'
 
                 scm {
-                    url = 'https://github.com/daimler/sechub'
+                    url = 'https://github.com/mercedes-benz/sechub'
                 }
 
                  licenses {
                     license {
                         name = 'MIT License'
-                        url = 'https://github.com/daimler/sechub/blob/master/LICENSE'
+                        url = 'https://github.com/mercedes-benz/sechub/blob/master/LICENSE'
                     }
                 }
             }
@@ -96,13 +96,13 @@ publishing {
                 description = 'SecHub Server documentation as single zip file.'
 
                 scm {
-                    url = 'https://github.com/daimler/sechub'
+                    url = 'https://github.com/mercedes-benz/sechub'
                 }
 
                  licenses {
                     license {
                         name = 'MIT License'
-                        url = 'https://github.com/daimler/sechub/blob/master/LICENSE'
+                        url = 'https://github.com/mercedes-benz/sechub/blob/master/LICENSE'
                     }
                 }
             }

@@ -16,7 +16,7 @@ by just using one simple API/client
 
 ## Installation
 
-Please visit <https://github.com/daimler/sechub/wiki/> for detailed information.
+Please visit <https://github.com/mercedes-benz/sechub/wiki/> for detailed information.
 
 ## Contributing
 

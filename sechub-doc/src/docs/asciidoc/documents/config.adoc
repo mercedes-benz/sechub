@@ -17,8 +17,8 @@
 :sechub: SecHub
 :pds: PDS
 
-:launchServerPackageName: com.daimler.sechub
+:launchServerPackageName: com.mercedesbenz.sechub
 :launchServerClassName: SecHubServerApplication
 
-:launchDevAdminUIPackageName: com.daimler.sechub.developertools.admin.ui
+:launchDevAdminUIPackageName: com.mercedesbenz.sechub.developertools.admin.ui
 :launchDevAdminUIClasName: DeveloperAdministrationUI

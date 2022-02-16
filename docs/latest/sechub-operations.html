@@ -754,10 +754,10 @@ build pipeline / contionus integration (CI) and helps to provide
 </td>
 <td class="content">
 <div class="paragraph">
-<p>You can get more information about from <a href="https://daimler.github.io/sechub">SecHub web page</a>  .</p>
+<p>You can get more information about from <a href="https://mercedes-benz.github.io/sechub">SecHub web page</a>  .</p>
 </div>
 <div class="paragraph">
-<p>The project is hosted at <a href="https://github.com/daimler/sechub" class="bare">https://github.com/daimler/sechub</a></p>
+<p>The project is hosted at <a href="https://github.com/mercedes-benz/sechub" class="bare">https://github.com/mercedes-benz/sechub</a></p>
 </div>
 </td>
 </tr>
@@ -2092,8 +2092,8 @@ a flyway update script would lead to:</p>
 <span class="keyword">group</span> <span class="keyword">by</span> sc.short_context
 
 <span class="comment">--- execute update when former query has old entries...</span>
-<span class="class">update</span> batch_step_execution_context sc <span class="class">set</span> short_context=<span class="string"><span class="delimiter">'</span><span class="content">{&quot;@class&quot;:&quot;java.util.HashMap&quot;,&quot;batch.taskletType&quot;:&quot;com.daimler.sechub.domain.schedule.batch.ScanExecutionTasklet&quot;,&quot;batch.stepType&quot;:&quot;org.springframework.batch.core.step.tasklet.TaskletStep&quot;}</span><span class="delimiter">'</span></span>
-<span class="keyword">where</span> sc.short_context = <span class="string"><span class="delimiter">'</span><span class="content">{&quot;batch.taskletType&quot;:&quot;com.daimler.sechub.domain.schedule.batch.ScanExecutionTasklet&quot;,&quot;batch.stepType&quot;:&quot;org.springframework.batch.core.step.tasklet.TaskletStep&quot;}</span><span class="delimiter">'</span></span> <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="class">update</span> batch_step_execution_context sc <span class="class">set</span> short_context=<span class="string"><span class="delimiter">'</span><span class="content">{&quot;@class&quot;:&quot;java.util.HashMap&quot;,&quot;batch.taskletType&quot;:&quot;com.mercedesbenz.sechub.domain.schedule.batch.ScanExecutionTasklet&quot;,&quot;batch.stepType&quot;:&quot;org.springframework.batch.core.step.tasklet.TaskletStep&quot;}</span><span class="delimiter">'</span></span>
+<span class="keyword">where</span> sc.short_context = <span class="string"><span class="delimiter">'</span><span class="content">{&quot;batch.taskletType&quot;:&quot;com.mercedesbenz.sechub.domain.schedule.batch.ScanExecutionTasklet&quot;,&quot;batch.stepType&quot;:&quot;org.springframework.batch.core.step.tasklet.TaskletStep&quot;}</span><span class="delimiter">'</span></span> <i class="conum" data-value="1"></i><b>(1)</b>
 
 <span class="comment">-- check again for entries in old format</span>
 <span class="class">select</span> sc.short_context, <span class="predefined">count</span>(*) <span class="keyword">from</span> batch_job_execution_params p

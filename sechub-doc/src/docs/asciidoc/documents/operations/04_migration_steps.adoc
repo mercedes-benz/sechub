@@ -59,8 +59,8 @@ inner join batch_step_execution_context sc on sc.step_execution_id = se.step_exe
 group by sc.short_context
 
 --- execute update when former query has old entries...
-update batch_step_execution_context sc set short_context='{"@class":"java.util.HashMap","batch.taskletType":"com.daimler.sechub.domain.schedule.batch.ScanExecutionTasklet","batch.stepType":"org.springframework.batch.core.step.tasklet.TaskletStep"}'
-where sc.short_context = '{"batch.taskletType":"com.daimler.sechub.domain.schedule.batch.ScanExecutionTasklet","batch.stepType":"org.springframework.batch.core.step.tasklet.TaskletStep"}' <1>
+update batch_step_execution_context sc set short_context='{"@class":"java.util.HashMap","batch.taskletType":"com.mercedesbenz.sechub.domain.schedule.batch.ScanExecutionTasklet","batch.stepType":"org.springframework.batch.core.step.tasklet.TaskletStep"}'
+where sc.short_context = '{"batch.taskletType":"com.mercedesbenz.sechub.domain.schedule.batch.ScanExecutionTasklet","batch.stepType":"org.springframework.batch.core.step.tasklet.TaskletStep"}' <1>
 
 -- check again for entries in old format
 select sc.short_context, count(*) from batch_job_execution_params p
