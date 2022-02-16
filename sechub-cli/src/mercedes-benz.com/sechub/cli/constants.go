@@ -13,7 +13,9 @@ const DefaultSecHubConfigFile = "sechub.json"
 const DefaultReportFormat = "json"
 
 // DefaultWaitTime - Wait time in seconds.
-// Will be used for automatic status checks etc. when action=scan
+// Will be used
+// - for automatic status checks etc. when action=scan
+// - for pause between retries for failed HTTP calls
 const DefaultWaitTime = 60
 
 // DefaultTimeoutInSeconds - Timeout for network communication in seconds
@@ -24,6 +26,9 @@ const DefaultTimeoutInSeconds = 120
 // - also ignore ".git" directory
 // - ignore "node_modules" directories which may contain millions of lines of library code
 var DefaultZipExcludeDirPatterns = []string{"**/test/**", "**/.git/**", "**/node_modules/**"}
+
+// SupportedReportFormats - Supported output formats for SecHub reports
+var SupportedReportFormats = []string{"json", "html"}
 
 /* ---------------------------------- */
 /* -------- Exit codes -------------- */
@@ -154,9 +159,19 @@ const SechubWaittimeDefaultEnvVar = "SECHUB_WAITTIME_DEFAULT"
 // ExecutionStateEnded sechub job has succesfully finished
 const ExecutionStateEnded = "ENDED"
 
+// JobStatusOkay - sechub job has a report ready to download
+const JobStatusOkay = "OK"
+
 /* ---------------------------------- */
 /* -------- Validation -------------- */
 /* ---------------------------------- */
 
 // MaximumBytesOfSecHubConfig maximum byte length allowed for a sechub config file
 const MaximumBytesOfSecHubConfig = 20000
+
+/* ---------------------------------- */
+/* -------- Resilience -------------- */
+/* ---------------------------------- */
+
+// HTTPRetries - maximum number of retries for HTTP calls
+const HTTPMaxRetries = 60

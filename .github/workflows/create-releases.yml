@@ -71,7 +71,7 @@ jobs:
       # ----------------------
       # SecHub Client
       # ----------------------
-      - name: Build CLI
+      - name: Build Client
         run: ./gradlew :sechub-cli:buildGo :sechub-cli:testGo
 
       # ----------------------
@@ -94,6 +94,7 @@ jobs:
       - name: Integration test
         run: ./gradlew integrationtest
 
+      # We use 'if: always()' to run a step even if the previous step failed
       - name: Create combined test report
         if: always()
         run: ./gradlew createCombinedTestReport
@@ -168,7 +169,9 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: sechub-docs-html
-          path: docs/latest
+          path: |
+            sechub-doc/build/docs/asciidoc/*.html
+            sechub-doc/build/docs/asciidoc/images/
           retention-days: 14
 
       - name: Archive documentation PDF
@@ -186,6 +189,21 @@ jobs:
           name: sechub-api-spec
           path: sechub-doc/build/api-spec/
           retention-days: 14
+
+      # -----------------------------------------
+      # Update release documentation https://mercedes-benz.github.io/sechub/
+      # -----------------------------------------
+      - name: Update release documentation
+        id: update_release_documentation
+        if: always()
+        run: |
+          git reset --hard
+          git config user.name "SecHub release job (github-actions)"
+          git config user.email github-actions-sechub@github.com
+          sechub-doc/helperscripts/publish+git-add-releasedocs.sh
+          git commit -m "docs update by SecHub release job @github-actions"
+          git push
+
       # -----------------------------------------
       # Assert releaseable, so no dirty flags on releases
       # even when all artifact creation parts are done!
@@ -197,8 +215,8 @@ jobs:
       # when server version is set
       # ******************************************
       - name: Create server release
-        if: github.event.inputs.server-version != ''
         id: create_server_release
+        if: github.event.inputs.server-version != ''
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
@@ -306,8 +324,8 @@ jobs:
       # when client version is set
       # ******************************************
       - name: Create client release
-        if: github.event.inputs.client-version != ''
         id: create_client_release
+        if: github.event.inputs.client-version != ''
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
@@ -370,8 +388,8 @@ jobs:
       # when pds version is set
       # ******************************************
       - name: Create PDS release
-        if: github.event.inputs.pds-version != ''
         id: create_pds_release
+        if: github.event.inputs.pds-version != ''
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token

@@ -123,7 +123,7 @@ Find markers in files.
  -h,--help           Display this help.
  -p,--pretty-print   Format output as pretty print.
 
-Please report issues at https://github.com/daimler/sechub
+Please report issues at https://github.com/mercedes-benz/sechub
 ~~~
 
 ### Example

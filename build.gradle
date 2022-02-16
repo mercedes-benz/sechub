@@ -26,7 +26,8 @@ plugins {
     id 'org.asciidoctor.jvm.convert' version '3.3.2'
     id 'org.asciidoctor.jvm.pdf' version '3.3.2'
     id 'org.openapi.generator' version '5.2.0'
-    id 'org.springframework.boot' version '2.5.8' apply false
+    id 'org.springframework.boot' version '2.6.2' apply false
+    id 'com.diffplug.spotless' version '6.2.1'
 }
 /* check buildsystem */
 def githubActor = System.getenv('GITHUB_ACTOR')
@@ -64,6 +65,7 @@ task internalCleanRootBuildFolder(type: Delete){
 tasks.clean.dependsOn.internalCleanRootBuildFolder
 
 allprojects {
+    apply from: rootProject.file('gradle/spotless.gradle')
 
     def customMavenRepoURL = System.getenv('CUST_MVN_URL')
     if (customMavenRepoURL!=null){
@@ -76,7 +78,26 @@ allprojects {
         }
     }
 
+    /* every project has got this additional task */
+    task prepareGitPush(dependsOn: spotlessApply){
+    
+    }
 }
+
+
+
+spotless {
+	groovyGradle {
+		target '*.gradle', 'gradle/*.gradle'
+	}
+	format 'dotfiles', {
+		target '.gitignore', '.gitattributes', '.editorconfig'
+		indentWithSpaces(2)
+		trimTrailingWhitespace()
+		endWithNewline()
+	}
+}
+
 apply from: "${rootProject.projectDir}/build-versioning.gradle"
 apply from: "${rootProject.projectDir}/build-java.gradle"
 apply from: "${rootProject.projectDir}/build-spring.gradle"

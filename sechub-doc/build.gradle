@@ -10,20 +10,20 @@ apply plugin: 'org.asciidoctor.jvm.convert'
 apply plugin: 'org.asciidoctor.jvm.pdf'
 
 dependencies {
-    compile project(':sechub-server') // we want to expect server and all dependencies for documentation
-    compile project(':sechub-pds') // we want to expect pds and all dependencies for documentation
-    compile library.apache_commons_io
-    testCompile library.epages_restdoc_api_spec_mockmvc
-    testCompile project(':sechub-commons-model-testframework')
+    implementation project(':sechub-server') // we want to expect server and all dependencies for documentation
+    implementation project(':sechub-pds') // we want to expect pds and all dependencies for documentation
+    implementation library.apache_commons_io
+    testImplementation library.epages_restdoc_api_spec_mockmvc
+    testImplementation  project(':sechub-commons-model-testframework')
 
     /* next parts are necessary for rest doc generation in conjunction
        with reflection annoation scanning done wiht @UsecaseRestDoc
        the tests with restdoc are settled inside sechub-doc to have
        abbility to get inside gradle access to tests (each gradle project
        has normally only access to its own test classes... )*/
-    testCompile project(':sechub-testframework')
-    testCompile(library.springframework_restdocs)
-    testCompile(library.springframework_security_test)
+    testImplementation  project(':sechub-testframework')
+    testImplementation (library.springframework_restdocs)
+    testImplementation (library.springframework_security_test)
 }
 
 def targetAsciiDocGenFolder="${project.projectDir}/src/docs/asciidoc/documents/gen"
@@ -31,6 +31,10 @@ def asciidocBuildDir="$buildDir/docs/asciidoc";
 def imagesBuildDir="$buildDir/docs/asciidoc/images";
 def convertedHTMLFolder = "${rootProject.projectDir}/build/sechubpages"
 def docsLatestFolder = "${rootProject.projectDir}/docs/latest"
+
+def clientVersion = VersionData.getClientVersion()
+def pdsVersion = VersionData.getPdsVersion()
+def serverVersion = VersionData.getServerVersion()
 
 task dropOldGeneratedAsciidoc(dependsOn: 'test'){
     doFirst {
@@ -45,7 +49,7 @@ task dropOldGeneratedAsciidoc(dependsOn: 'test'){
 task generateAsciidoc(type: JavaExec, dependsOn: 'dropOldGeneratedAsciidoc') {
 
 
-    main = 'com.daimler.sechub.docgen.AsciidocGenerator'
+    main = 'com.mercedesbenz.sechub.docgen.AsciidocGenerator'
     args = ["${targetAsciiDocGenFolder}"]
     group = 'sechub'
     description = 'Starts asciidoc generator. Will generate planuml files and more'
@@ -202,23 +206,13 @@ task convertSecHubPages(type: Copy){
      includeEmptyDirs = false
 }
 
-task docToPages(type: Copy){
-     group 'sechub'
-     description 'This will copy current documentation into sechub pages under /docs '
+task createDownloadLinks(type: Exec) {
+  group 'sechub'
+  description 'This creates the HTML code for direct download'
+  dependsOn 'documentation'
 
-     dependsOn 'convertSecHubPages'
-
-     into docsLatestFolder
-     from ("${convertedHTMLFolder}"){
-        include '*.html'
-     }
-
-     into ("images") {
-         from ("${imagesBuildDir}") {
-            exclude '**/*.md', '**/*.xml'
-         }
-     }
-
+  workingDir = "."
+  commandLine 'sh', '-c', "helperscripts/create-download-html.sh client ${clientVersion} > ${asciidocBuildDir}/client-download.html ; helperscripts/create-download-html.sh pds ${pdsVersion} > ${asciidocBuildDir}/pds-download.html ; helperscripts/create-download-html.sh server ${serverVersion} > ${asciidocBuildDir}/server-download.html"
 }
 
 task "documentation-with-pages" {
@@ -226,10 +220,10 @@ task "documentation-with-pages" {
      description 'This will create documentation and setup sechub pages under /docs '
 
      dependsOn 'documentation'
-     dependsOn 'docToPages'
+     dependsOn 'createDownloadLinks'
 
      // see https://stackoverflow.com/questions/32907275/gradle-custom-task-which-runs-multiple-tasks
-     tasks.findByName('docToPages').mustRunAfter 'documentation'
+     tasks.findByName('createDownloadLinks').mustRunAfter 'documentation'
 }
 
 openapi3 {
@@ -285,7 +279,8 @@ task generateOpenapi() {
     	scanJobSchema.properties.infraScan.properties.uris.items = stringType
     	scanJobSchema.properties.infraScan.properties.ips.items = stringType
     	scanJobSchema.properties.codeScan.properties.fileSystem.properties.folders.items = stringType
-		scanJobSchema.properties.webScan.properties.uris.items = stringType
+    	scanJobSchema.properties.webScan.properties.includes.items = stringType
+    	scanJobSchema.properties.webScan.properties.excludes.items = stringType
 		
 		def userDetailsSchema = jsonObject.components.schemas.UserDetails
 		userDetailsSchema.properties.projects.items = stringType

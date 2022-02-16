@@ -7,7 +7,7 @@
 # This can be handy for batch operations (e.g. creation or modification of multiple objects)
 # or for using shell tools like grep to search the results
 #
-# SecHub Rest API documentation: https://daimler.github.io/sechub/latest/sechub-restapi.html
+# SecHub Rest API documentation: https://mercedes-benz.github.io/sechub/latest/sechub-restapi.html
 
 # Tip: Set SECHUB_SERVER, SECHUB_USERID and SECHUB_APITOKEN as environment variables
 
@@ -15,7 +15,7 @@ function usage {
   cat - <<EOF
 Usage: `basename $0` [-p] [-y] [-s <sechub server url> [-u <sechub user>] [-a <sechub api token>] action [<action's parameters>]
 
-Shell front end to selected SecHub API calls (https://daimler.github.io/sechub/latest/sechub-restapi.html).
+Shell front end to selected SecHub API calls (https://mercedes-benz.github.io/sechub/latest/sechub-restapi.html).
 Output will be beautified/colorized by piping json output through jq command (https://github.com/stedolan/jq)
 unless you specify -p or -plain option. Option -y or -yes skips confirmation dialog when deleting items.
 

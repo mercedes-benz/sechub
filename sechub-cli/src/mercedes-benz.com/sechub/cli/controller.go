@@ -28,14 +28,18 @@ func Execute() {
 
 	switch context.config.action {
 	case scanAction:
-		commonWayToApprove(context)
-		waitForSecHubJobDoneAndFailOnTrafficLight(context)
+		prepareCreateApproveJob(context)
+		waitForSecHubJobDone(context)
+		downloadSechubReport(context)
+		printSecHubJobSummaryAndFailOnTrafficLight(context)
 	case scanAsynchronAction:
-		commonWayToApprove(context)
+		prepareCreateApproveJob(context)
 		fmt.Println(context.config.secHubJobUUID)
 	case getStatusAction:
-		fmt.Println(getSecHubJobState(context, true, false, false))
+		jsonData := getSecHubJobStatus(context)
+		fmt.Println(jsonData)
 	case getReportAction:
+		getSecHubJobStatus(context)
 		downloadSechubReport(context)
 	case getFalsePositivesAction:
 		downloadFalsePositivesList(context)
@@ -67,9 +71,10 @@ func Execute() {
  * 		Common way until approve: create job, handle
  *      code scan parts, do approve
  * --------------------------------------------------*/
-func commonWayToApprove(context *Context) {
+func prepareCreateApproveJob(context *Context) {
+	prepareCodeScan(context)
 	createNewSecHubJob(context)
-	handleCodeScanParts(context)
+	handleCodeScanUpload(context)
 	approveSecHubJob(context)
 }
 
@@ -77,8 +82,7 @@ func commonWayToApprove(context *Context) {
  * 		Handle code scan parts
  * --------------------------------------------------
  */
-func handleCodeScanParts(context *Context) {
-	handleCodeScan(context)
+func handleCodeScanUpload(context *Context) {
 	if !context.isUploadingSourceZip() {
 		return
 	}
@@ -86,7 +90,7 @@ func handleCodeScanParts(context *Context) {
 	uploadSourceZipFile(context)
 }
 
-func handleCodeScan(context *Context) {
+func prepareCodeScan(context *Context) {
 	/* currently we only provide filesystem - means zipping etc. */
 	json := context.sechubConfig
 
@@ -101,10 +105,10 @@ func handleCodeScan(context *Context) {
 	amountOfFolders := len(json.CodeScan.FileSystem.Folders)
 	var debug = context.config.debug
 	if debug {
-		sechubUtil.LogDebug(debug, fmt.Sprintf("handleCodeScan - folders=%s", json.CodeScan.FileSystem.Folders))
-		sechubUtil.LogDebug(debug, fmt.Sprintf("handleCodeScan - excludes=%s", json.CodeScan.Excludes))
-		sechubUtil.LogDebug(debug, fmt.Sprintf("handleCodeScan - SourceCodePatterns=%s", json.CodeScan.SourceCodePatterns))
-		sechubUtil.LogDebug(debug, fmt.Sprintf("handleCodeScan - amount of folders found: %d", amountOfFolders))
+		sechubUtil.LogDebug(debug, fmt.Sprintf("prepareCodeScan - folders=%s", json.CodeScan.FileSystem.Folders))
+		sechubUtil.LogDebug(debug, fmt.Sprintf("prepareCodeScan - excludes=%s", json.CodeScan.Excludes))
+		sechubUtil.LogDebug(debug, fmt.Sprintf("prepareCodeScan - SourceCodePatterns=%s", json.CodeScan.SourceCodePatterns))
+		sechubUtil.LogDebug(debug, fmt.Sprintf("prepareCodeScan - amount of folders found: %d", amountOfFolders))
 	}
 	if amountOfFolders == 0 {
 		/* nothing set, so no upload */
@@ -129,17 +133,17 @@ func handleCodeScan(context *Context) {
 	context.sourceZipFileChecksum = sechubUtil.CreateChecksum(context.sourceZipFileName)
 }
 
-func downloadSechubReport(context *Context) string {
-	fileEnding := ".json"
-	if context.config.reportFormat == "html" {
-		fileEnding = ".html"
+func downloadSechubReport(context *Context) {
+	if context.jobStatus.Result != JobStatusOkay {
+		sechubUtil.LogError("Job " + context.config.secHubJobUUID + " failed on server. Cannot download report.")
+		os.Exit(ExitCodeFailed)
 	}
-	fileName := "sechub_report_" + context.config.projectID + "_" + context.config.secHubJobUUID + fileEnding
+
+	// Example:  sechub_report_myproject_cdde8927-2df4-461c-b775-2dec9497e8b1.json
+	fileName := "sechub_report_" + context.config.projectID + "_" + context.config.secHubJobUUID + "." + context.config.reportFormat
 
 	report := ReportDownload{serverResult: getSecHubJobReport(context), outputFolder: context.config.outputFolder, outputFileName: fileName}
 	report.save(context)
-
-	return "" // Dummy (Error handling is done in report.save method)
 }
 
 func downloadFalsePositivesList(context *Context) {

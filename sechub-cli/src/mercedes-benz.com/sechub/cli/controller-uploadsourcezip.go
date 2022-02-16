@@ -27,7 +27,5 @@ func uploadSourceZipFile(context *Context) {
 	}
 	request.SetBasicAuth(context.config.user, context.config.apiToken)
 
-	response, err := context.HTTPClient.Do(request)
-
-	HandleHTTPErrorAndResponse(response, err, context)
+	handleHTTPRequestAndResponse(context, request) // HTTP call for upload
 }

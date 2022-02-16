@@ -78,8 +78,8 @@ go development IDE:
 For example:
 [source,bash]
 ----
-mkdir ~/go/src/daimler.com/
-ln -s $pathToSecHubRepo/sechub-cli/src/daimler.com/sechub ~/go/src/daimler.com/sechub
+mkdir ~/go/src/mercedes-benz.com/
+ln -s $pathToSecHubRepo/sechub-cli/src/mercedes-benz.com/sechub ~/go/src/mercedes-benz.com/sechub
 ----
 
 ==== Special developer files

@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <title>SecHub scan result</title>
-<link th:if="${isWebDesignMode}" th:href="${includedCSSRef}" rel="stylesheet" type="text/css" href="scanresult.css">
-<style type="text/css" th:if="!${isWebDesignMode}" th:replace="report/html/fragments :: styles">
-
+<link th:if="${isWebDesignMode}" th:href="${includedCSSRef}"
+	rel="stylesheet" type="text/css" href="scanresult.css">
+<style type="text/css" th:if="!${isWebDesignMode}"
+	th:replace="report/html/fragments :: styles">
 </style>
 </head>
 <body>
@@ -26,7 +27,7 @@
 				<tr>
 					<td>
 						<div class="logo">
-						     <!--
+							<!--
 							     Link: <https://www.iconfinder.com/icons/1034363/advantage_protect_protection_security_shield_icon#size=128>
 							     License: "Free for commercial use
 						      -->
@@ -62,23 +63,23 @@
 			</table>
 		</div>
 		<div class="content">
-		    <div th:if="!${redList.isEmpty()}">
-			    <h2 class='redFindingHeadline'>Red findings</h2>
+			<div th:if="!${redList.isEmpty()}">
+				<h2 class='redFindingHeadline'>Red findings</h2>
 				<table class='findingsTable redFindingsTable'>
 					<thead>
 						<tr>
 							<th>Id</th>
 							<th>Severity</th>
-						    <th>Type</th>
-						    <th>Description</th>
+							<th>Type</th>
+							<th>Description</th>
 						</tr>
 					</thead>
 					<tbody>
-					    
+
 						<tr th:each="finding : ${redList}">
-						    
-						    <div th:replace="report/html/fragments :: findingCells"></div>
-						    
+
+							<div th:replace="report/html/fragments :: findingCells"></div>
+
 						</tr>
 						<tr th:remove="all">
 							<td>1</td>
@@ -87,40 +88,40 @@
 							<td>Description 2</td>
 						</tr>
 						<tr th:remove="all">
-						    <td>2</td> 
-	                        <td>HIGH</td>
-	                        <td>Name 3</td>
-	                        <td>Description 3</td>
-	                    </tr>
-	                    <tr th:remove="all">
-	                        <td>3</td>
-	                        <td>CRITICAL</td>
-	                        <td>Name 4</td>
-	                        <td>Description 5</td>
-	                    </tr>
+							<td>2</td>
+							<td>HIGH</td>
+							<td>Name 3</td>
+							<td>Description 3</td>
+						</tr>
+						<tr th:remove="all">
+							<td>3</td>
+							<td>CRITICAL</td>
+							<td>Name 4</td>
+							<td>Description 5</td>
+						</tr>
 					</tbody>
 				</table>
-		    </div>
-		    <div th:if="!${yellowList.isEmpty()}">
-	            <h2 class='yellowFindingHeadline'>Yellow findings</h2>
+			</div>
+			<div th:if="!${yellowList.isEmpty()}">
+				<h2 class='yellowFindingHeadline'>Yellow findings</h2>
 				<table class='findingsTable yellowFindingsTable'>
 					<thead>
 						<tr>
-						    <th>Id</th>
+							<th>Id</th>
 							<th>Severity</th>
-	                    	<th>Type</th>
-	                    	<th>Description</th>
+							<th>Type</th>
+							<th>Description</th>
 						</tr>
 					</thead>
 					<tbody>
-					    
+
 						<tr th:each="finding : ${yellowList}">
-						
-						    <div th:replace="report/html/fragments :: findingCells"></div>
-						    
+
+							<div th:replace="report/html/fragments :: findingCells"></div>
+
 						</tr>
 						<tr th:remove="all">
-						    <td>4</td>
+							<td>4</td>
 							<td>MEDIUM</td>
 							<td>Name 2</td>
 							<td>Description 2</td>
@@ -129,31 +130,31 @@
 				</table>
 			</div>
 			<div th:if="!${greenList.isEmpty()}">
-	            <h2 class='greenFindingHeadline'>Green findings</h2>
+				<h2 class='greenFindingHeadline'>Green findings</h2>
 				<table class='findingsTable greenFindingsTable'>
 					<thead>
 						<tr>
 							<th>Id</th>
 							<th>Severity</th>
-	                    	<th>Type</th>
-	                    	<th>Description</th>
+							<th>Type</th>
+							<th>Description</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr th:each="finding : ${greenList}">
-						    
-						    <div th:replace="report/html/fragments :: findingCells"></div>
-						    
+
+							<div th:replace="report/html/fragments :: findingCells"></div>
+
 						</tr>
 						<tr th:remove="all">
-						    <td>5</td>
+							<td>5</td>
 							<td>INFO</td>
 							<td>Name 2</td>
 							<td>Description 2</td>
 						</tr>
 					</tbody>
 				</table>
-            </div>
+			</div>
 		</div>
 	</div>
 

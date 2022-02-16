@@ -173,7 +173,7 @@ func unmarkFalsePositivesFromFile(context *Context) {
 }
 
 func unmarkFalsePositives(context *Context, list *FalsePositivesConfig) {
-	sechubUtil.Log(fmt.Sprintln("Applying false-positives to be removed for project '", context.config.projectID, "'"), context.config.quiet)
+	sechubUtil.Log("Applying false-positives to be removed for project '"+context.config.projectID+"'", context.config.quiet)
 	// Loop over list and push to SecHub server
 	// Url scheme: curl 'https://sechub.example.com/api/project/project1/false-positive/f1d02a9d-5e1b-4f52-99e5-401854ccf936/42' -i -X DELETE
 	urlPrefix := buildFalsePositiveAPICall(context)
@@ -204,6 +204,10 @@ func newFalsePositivesListFromBytes(bytes []byte) FalsePositivesConfig {
 func interactiveMarkFalsePositives(context *Context) {
 	FalsePositivesList := newFalsePositivesListFromConsole(context)
 	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("False-positives list for upload:\n%+v", FalsePositivesList))
+
+	if len(FalsePositivesList.JobData) == 0 {
+		return
+	}
 
 	// ToDo: Are you sure?
 
@@ -269,6 +273,11 @@ func printFinding(finding *SecHubReportFindings) {
 func interactiveUnmarkFalsePositives(context *Context) {
 	FalsePositivesList := newUnmarkFalsePositivesListFromConsole(context)
 	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("False-positives unmark list for upload:\n%+v", FalsePositivesList))
+
+	if len(FalsePositivesList.JobData) == 0 {
+		sechubUtil.Log("No false positives to unmark.", context.config.quiet)
+		return
+	}
 
 	// ToDo: Are you sure?
 

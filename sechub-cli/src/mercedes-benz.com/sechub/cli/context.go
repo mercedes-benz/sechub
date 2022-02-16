@@ -17,6 +17,7 @@ type Context struct {
 	sechubConfig              *SecHubConfig
 	sourceZipFileChecksum     string
 	sourceZipFileName         string
+	jobStatus                 *jobStatusResult
 }
 
 func (context *Context) isUploadingSourceZip() bool {
@@ -27,6 +28,7 @@ func (context *Context) isUploadingSourceZip() bool {
 func NewContext(config *Config) *Context {
 	context := new(Context)
 	context.config = config
+	context.jobStatus = new(jobStatusResult)
 
 	/* setup HTTP client */
 	tr := &http.Transport{

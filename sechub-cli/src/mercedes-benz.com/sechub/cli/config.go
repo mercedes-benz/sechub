@@ -82,7 +82,7 @@ func prepareOptionsFromCommandline(config *Config) {
 	flag.BoolVar(&config.quiet,
 		quietOption, false, "Quiet mode - Suppress all informative output. Can also be defined in environment variable "+SechubQuietEnvVar+"=true")
 	flag.StringVar(&config.reportFormat,
-		reportformatOption, config.reportFormat, "Output format for reports, supported currently: [html,json].")
+		reportformatOption, config.reportFormat, "Output format for reports, supported currently: "+fmt.Sprint(SupportedReportFormats)+".")
 	flag.StringVar(&config.server,
 		serverOption, config.server, "Server url of sechub server to use - e.g. 'https://sechub.example.com:8443'. Mandatory, but can also be defined in environment variable "+SechubServerEnvVar+" or in config file")
 	flag.BoolVar(&config.stopOnYellow,
@@ -94,7 +94,7 @@ func prepareOptionsFromCommandline(config *Config) {
 	flag.BoolVar(&flagVersion,
 		versionOption, false, "Shows version info and terminates")
 	flag.IntVar(&config.waitSeconds,
-		waitOption, config.waitSeconds, "Wait time in seconds - Will be used for periodic status checks when action='"+scanAction+"'. Can also be defined in environment variable "+SechubWaittimeDefaultEnvVar)
+		waitOption, config.waitSeconds, "Wait time in seconds - For status checks of action='"+scanAction+"' and for retries of HTTP calls. Can also be defined in environment variable "+SechubWaittimeDefaultEnvVar)
 }
 
 func parseConfigFromEnvironment(config *Config) {
@@ -215,14 +215,16 @@ func assertValidConfig(configPtr *Config) {
 		}
 	}
 
+	validateRequestedReportFormat(configPtr)
+
 	if errorsFound {
 		showHelpHint()
 		os.Exit(ExitCodeMissingParameter)
 	}
 
 	// For convenience: lowercase user id and project id if needed
-	configPtr.user = lowercaseOrWarning(configPtr.user, "user id")
-	configPtr.projectID = lowercaseOrWarning(configPtr.projectID, "project id")
+	configPtr.user = lowercaseOrNotice(configPtr.user, "user id")
+	configPtr.projectID = lowercaseOrNotice(configPtr.projectID, "project id")
 	// Remove trailing slash from url if present
 	configPtr.server = strings.TrimSuffix(configPtr.server, "/")
 }
@@ -235,4 +237,14 @@ func isConfigFieldFilled(configPTR *Config, field string) bool {
 		return false
 	}
 	return true
+}
+
+// validateRequestedReportFormat issue warning in case of an unknown report format + lowercase if needed
+func validateRequestedReportFormat(config *Config) {
+	config.reportFormat = lowercaseOrNotice(config.reportFormat, "requested report format")
+
+	if !sechubUtil.StringArrayContains(SupportedReportFormats, config.reportFormat) {
+		sechubUtil.LogWarning("Unsupported report format '" + config.reportFormat + "'. Changing to 'json'.")
+		config.reportFormat = "json"
+	}
 }

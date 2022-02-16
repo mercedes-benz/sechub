@@ -40,9 +40,9 @@ task callOpenAPIJavaGenerator(type: org.openapitools.generator.gradle.plugin.tas
     
     inputSpec = "$specFilePath"
     outputDir = "$rootDir/sechub-api-java/gen"
-    apiPackage = "com.daimler.sechub.api.java"
-    invokerPackage = "com.daimler.sechub.api.java"
-    modelPackage = "com.daimler.sechub.api.java.model"
+    apiPackage = "com.mercedesbenz.sechub.api.java"
+    invokerPackage = "com.mercedesbenz.sechub.api.java"
+    modelPackage = "com.mercedesbenz.sechub.api.java.model"
     
     globalProperties = [
             validateSpec   : "true",
@@ -53,7 +53,7 @@ task callOpenAPIJavaGenerator(type: org.openapitools.generator.gradle.plugin.tas
     ]
     // java generator: https://github.com/OpenAPITools/openapi-generator/blob/master/docs/generators/java.md
     configOptions = [
-    		groupId 					: "com.daimler.sechub",
+    		groupId 					: "com.mercedesbenz.sechub",
     		version                     : "${project.version}",
             performBeanValidation		: "false",
             useBeanValidation    		: "false",
@@ -74,7 +74,7 @@ task callOpenAPIJavaGenerator(type: org.openapitools.generator.gradle.plugin.tas
             developerOrganizationUrl	: "https://www.daimler-tss.com/",
             scmConnection				: "",
             scmDeveloperConnection		: "",
-            scmUrl						: "https://github.com/daimler/sechub"
+            scmUrl						: "https://github.com/mercedes-benz/sechub"
     ]
 }
 
