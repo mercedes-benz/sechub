@@ -74,7 +74,7 @@ public class SecHubAnalyzerApplication {
 
         if (files.isEmpty() || commandLine.hasOption("h")) {
             String header = "\nFind markers in files.\n\n";
-            String footer = "\nPlease report issues at https://github.com/daimler/sechub";
+            String footer = "\nPlease report issues at https://github.com/mercedes-benz/sechub";
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp(APP_NAME, header, options, footer, true);
             return null;

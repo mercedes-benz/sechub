@@ -74,7 +74,7 @@ task callOpenAPIJavaGenerator(type: org.openapitools.generator.gradle.plugin.tas
             developerOrganizationUrl	: "https://www.daimler-tss.com/",
             scmConnection				: "",
             scmDeveloperConnection		: "",
-            scmUrl						: "https://github.com/daimler/sechub"
+            scmUrl						: "https://github.com/mercedes-benz/sechub"
     ]
 }
 
