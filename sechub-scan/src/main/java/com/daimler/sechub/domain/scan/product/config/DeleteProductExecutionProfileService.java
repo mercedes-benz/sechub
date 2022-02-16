@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
+import com.daimler.sechub.sharedkernel.error.NotFoundException;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminDeletesExecutionProfile;
 import com.daimler.sechub.sharedkernel.validation.ProductExecutionProfileIdValidation;
@@ -25,18 +26,17 @@ import com.daimler.sechub.sharedkernel.validation.ProductExecutionProfileIdValid
 @Service
 public class DeleteProductExecutionProfileService {
 
-
-private static final Logger LOG = LoggerFactory.getLogger(DeleteProductExecutionProfileService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DeleteProductExecutionProfileService.class);
 
     @Autowired
     ProductExecutionProfileRepository repository;
-    
+
     @Autowired
     ProductExecutionProfileIdValidation profileIdValidation;
 
     @Autowired
     AuditLogService auditLogService;
-    
+
     /* @formatter:off */
     @UseCaseAdminDeletesExecutionProfile(
             @Step(
@@ -50,8 +50,8 @@ private static final Logger LOG = LoggerFactory.getLogger(DeleteProductExecution
 
         Optional<ProductExecutionProfile> opt = repository.findById(profileId);
         if (!opt.isPresent()) {
-            LOG.info("Delete canceled, because execution profile with id {} did not exist",profileId);;
-            return;
+            LOG.info("Delete canceled, because execution profile with id {} did not exist.",profileId);;
+            throw new NotFoundException("Profile "+profileId+" does not exist, so cannot be deleted");
         }
         ProductExecutionProfile found = opt.get();
         String description = found.getDescription(); 
@@ -67,6 +67,6 @@ private static final Logger LOG = LoggerFactory.getLogger(DeleteProductExecution
         LOG.info("Removed product execution profile id:{}, description:{}",profileId, description);
     }
 
-    /* @formatter:on */    
+    /* @formatter:on */
 
 }
