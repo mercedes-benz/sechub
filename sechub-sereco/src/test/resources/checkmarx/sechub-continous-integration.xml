@@ -32257,10 +32257,10 @@
     </Result>
   </Query>
   <Query id="2612" categories="FISMA 2014;Configuration Management,NIST SP 800-53;SC-8 Transmission Confidentiality and Integrity (P1)" cweId="693" name="Client_Insufficient_ClickJacking_Protection" group="JavaScript_Low_Visibility" Severity="Low" Language="JavaScript" LanguageHash="3602822811217894" LanguageChangeDate="2018-09-05T00:00:00.0000000" SeverityIndex="1" QueryPath="JavaScript\Cx\JavaScript Low Visibility\Client Insufficient ClickJacking Protection Version:4" QueryVersionCode="79598040">
-    <Result NodeId="10003990100" FileName="sechub-adapter/build/reports/tests/test/classes/com.daimler.sechub.adapter.abstractadapterconfigbuildertest.html" Status="Recurrent" Line="1" Column="1" FalsePositive="False" Severity="Low" AssignToUser="" state="0" Remark="" DeepLink="https://defvm1676.intranet.example.org/CxWebClient/ViewerMain.aspx?scanid=1000399&amp;projectid=113&amp;pathid=100" SeverityIndex="1">
+    <Result NodeId="10003990100" FileName="sechub-adapter/build/reports/tests/test/classes/com.mercedesbenz.sechub.adapter.abstractadapterconfigbuildertest.html" Status="Recurrent" Line="1" Column="1" FalsePositive="False" Severity="Low" AssignToUser="" state="0" Remark="" DeepLink="https://defvm1676.intranet.example.org/CxWebClient/ViewerMain.aspx?scanid=1000399&amp;projectid=113&amp;pathid=100" SeverityIndex="1">
       <Path ResultId="1000399" PathId="100" SimilarityId="1583558495">
         <PathNode>
-          <FileName>sechub-adapter/build/reports/tests/test/classes/com.daimler.sechub.adapter.abstractadapterconfigbuildertest.html</FileName>
+          <FileName>sechub-adapter/build/reports/tests/test/classes/com.mercedesbenz.sechub.adapter.abstractadapterconfigbuildertest.html</FileName>
           <Line>1</Line>
           <Column>1</Column>
           <NodeId>1</NodeId>
