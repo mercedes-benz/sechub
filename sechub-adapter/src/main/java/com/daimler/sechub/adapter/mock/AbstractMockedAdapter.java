@@ -91,8 +91,8 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
             return "";
         }
         
-        String target = config.getTargetAsString();
-
+        String target = config.getTargetAsString();      
+        
         /* first meta data persistence call - write some test meta data... */
         writeInitialAndReusedMetaData(config, runtimeContext);
 

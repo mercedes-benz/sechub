@@ -10,20 +10,20 @@ apply plugin: 'org.asciidoctor.jvm.convert'
 apply plugin: 'org.asciidoctor.jvm.pdf'
 
 dependencies {
-    compile project(':sechub-server') // we want to expect server and all dependencies for documentation
-    compile project(':sechub-pds') // we want to expect pds and all dependencies for documentation
-    compile library.apache_commons_io
-    testCompile library.epages_restdoc_api_spec_mockmvc
-    testCompile project(':sechub-commons-model-testframework')
+    implementation project(':sechub-server') // we want to expect server and all dependencies for documentation
+    implementation project(':sechub-pds') // we want to expect pds and all dependencies for documentation
+    implementation library.apache_commons_io
+    testImplementation library.epages_restdoc_api_spec_mockmvc
+    testImplementation  project(':sechub-commons-model-testframework')
 
     /* next parts are necessary for rest doc generation in conjunction
        with reflection annoation scanning done wiht @UsecaseRestDoc
        the tests with restdoc are settled inside sechub-doc to have
        abbility to get inside gradle access to tests (each gradle project
        has normally only access to its own test classes... )*/
-    testCompile project(':sechub-testframework')
-    testCompile(library.springframework_restdocs)
-    testCompile(library.springframework_security_test)
+    testImplementation  project(':sechub-testframework')
+    testImplementation (library.springframework_restdocs)
+    testImplementation (library.springframework_security_test)
 }
 
 def targetAsciiDocGenFolder="${project.projectDir}/src/docs/asciidoc/documents/gen"
@@ -279,7 +279,8 @@ task generateOpenapi() {
     	scanJobSchema.properties.infraScan.properties.uris.items = stringType
     	scanJobSchema.properties.infraScan.properties.ips.items = stringType
     	scanJobSchema.properties.codeScan.properties.fileSystem.properties.folders.items = stringType
-		scanJobSchema.properties.webScan.properties.uris.items = stringType
+    	scanJobSchema.properties.webScan.properties.includes.items = stringType
+    	scanJobSchema.properties.webScan.properties.excludes.items = stringType
 		
 		def userDetailsSchema = jsonObject.components.schemas.UserDetails
 		userDetailsSchema.properties.projects.items = stringType

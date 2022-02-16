@@ -45,3 +45,6 @@ java-gen/
 
 # Docker container
 .env*
+
+# OWASP ZAP
+*.zap

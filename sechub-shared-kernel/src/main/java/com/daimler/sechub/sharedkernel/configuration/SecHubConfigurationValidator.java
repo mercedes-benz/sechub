@@ -18,6 +18,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
+import com.daimler.sechub.commons.core.util.SimpleNetworkUtils;
 import com.daimler.sechub.commons.model.SecHubInfrastructureScanConfiguration;
 import com.daimler.sechub.commons.model.SecHubWebScanConfiguration;
 import com.daimler.sechub.sharedkernel.UserContextService;
@@ -87,18 +88,14 @@ public class SecHubConfigurationValidator implements Validator {
 		}
 
 		SecHubWebScanConfiguration webscan = webscanOption.get();
-		List<URI> uris = webscan.getUris();
-		if (uris.isEmpty()) {
+		URI uri = webscan.getUri();
+		
+		if (SimpleNetworkUtils.isURINullOrEmpty(uri)) {
 			errors.reject("api.error.webscan.target.missing", new Object[] { },
-					"Webscan configuration contains no target at all - but at least one URI is necessary for a webscan!");
+					"Webscan configuration contains no target at all - but at one URI is necessary for a webscan!");
 
-		}else {
-
-			for (URI uri : uris) {
-				String schema = uri.getScheme();
-				if ("http".equals(schema) || "https".equals(schema)) {
-					continue;
-				}
+		} else {
+			if (!SimpleNetworkUtils.isHttpProtocol(uri)) {
 				errors.reject("api.error.webscan.uri.illegalschema", new Object[] { uri },
 						"Webscan configuration contains uri '{0}' which is not of supported protocolls (http,https)");
 			}

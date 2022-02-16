@@ -58,7 +58,7 @@ public class WebScanProductExecutionServiceImplTest {
         when(webscanner2.getIdentifier()).thenReturn(PRODUCT_IDENTIFIER_2);
         when(webscanner2.getVersion()).thenReturn(2);
 
-        when(webconfiguration.getUris()).thenReturn(Collections.singletonList(uri));
+        when(webconfiguration.getUri()).thenReturn(uri);
         when(context.getConfiguration()).thenReturn(configuration);
 
         List<WebScanProductExecutor> executors = new ArrayList<>();

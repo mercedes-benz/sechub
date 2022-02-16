@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.commons.core.util;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SecHubStorageUtilTest {
 
     @Test
-    public void jobstorage_path_for_porject_with_id_project1234_is_correct_calculated() {
+    void jobstorage_path_for_porject_with_id_project1234_is_correct_calculated() {
         assertEquals("jobstorage/project1234", SecHubStorageUtil.createStoragePath("project1234"));
     }
 

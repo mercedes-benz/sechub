@@ -27,6 +27,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.daimler.sechub.commons.model.JSONConverter;
+import com.daimler.sechub.commons.model.SecHubScanConfiguration;
 import com.daimler.sechub.integrationtest.JSONTestSupport;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestContext;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultExecutorConfigurations;
@@ -406,15 +407,16 @@ public class AsUser {
         return getRestHelper().postJson(url, json);
     }
     
+    public  UUID createJobAndReturnJobUUID(TestProject project, SecHubScanConfiguration config) {
+        String projectId = project.getProjectId();
+        config.setProjectId(projectId);
+        
+        String json = config.toJSON();
+        String url = getUrlBuilder().buildAddJobUrl(projectId);
+        String resultAsString = getRestHelper().postJson(url, json);
+        return fetchJobUUID(resultAsString);
+    }
 
-
-    /**
-     * Create taget uri - will either use
-     *
-     * @param runMode
-     * @param whites
-     * @return
-     */
     private String createTargetURIForSechubConfiguration(IntegrationTestMockMode runMode, List<String> whites) {
         String acceptedURI1 = null;
         if (runMode != null) {

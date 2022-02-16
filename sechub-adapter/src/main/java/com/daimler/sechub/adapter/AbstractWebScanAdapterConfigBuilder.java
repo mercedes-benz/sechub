@@ -1,20 +1,121 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.adapter;
 
+import java.net.URI;
 import java.net.URL;
+import java.util.Set;
 
 import com.daimler.sechub.commons.model.SecHubTimeUnit;
 import com.daimler.sechub.commons.model.login.ActionType;
 
-public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebScanAdapterConfigBuilder<B, C>, C extends AbstractWebScanAdapterConfig>
-        extends AbstractAdapterConfigBuilder<B, C> {
+
+/**
+ * Web scan adapter configuration builder
+ *
+ * @param <B> Builder
+ * @param <C> Configuration
+ */
+public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebScanAdapterConfigBuilder<B, C>, C extends WebScanAdapterConfig>
+    extends AbstractAdapterConfigBuilder<B, C>
+{
 
     private LoginBuilder currentLoginBuilder;
     private SecHubTimeUnitData maxScanDuration;
-
+    private URI targetURI;
+    private URI rootTargetURI;
+    private Set<String> includes;
+    private Set<String> excludes;
+   
+    protected AbstractWebScanAdapterConfigBuilder() {
+        super();
+    }
+    
+    /**
+     * A set of includes.
+     * 
+     * Includes are necessary if a crawler of the web scan cannot find an page.
+     * 
+     * Each include is a sub-path or path to a page. It needs to start with a slash "/".
+     * The includes are combined with the target (base URI) to create a full URI.
+     * 
+     * <h4>For example<h4>
+     * 
+     * Target: https://my.example.org:8943<br/>
+     * Includes:
+     * 
+     * <ul>
+     *  <li>/admin</li>
+     *  <li>/api/hidden</li>
+     *  <li>/hidden-login.html</li>
+     * </ul>
+     * 
+     * Combined:
+     * 
+     * <ul>
+     *  <li>https://my.example.org:8943/admin</li>
+     *  <li>https://my.example.org:8943/api/hidden</li>
+     *  <li>https://my.example.org:8943/hidden-login.html</li>
+     * </ul>
+     * 
+     * @param includes
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public B setIncludes(Set<String> includes) {
+        this.includes = includes;
+        return (B) this;
+    }
+    
+    /**
+     * A set of excludes.
+     * 
+     * All excludes will not be scanned.
+     * Excludes are necessary if one wants to exclude a page or a part of a web application.
+     * 
+     * Each exclude is a part of a URI. It needs to start with a slash "/".
+     * The excludes are combined with the target (base URI) to create a full URI.
+     * 
+     * <h4>For example<h4>
+     * 
+     * Target: https://my.example.org:8943<br/>
+     * Excludes:
+     * 
+     * <ul>
+     *  <li>/admin</li>
+     *  <li>/api/sensitive</li>
+     *  <li>/contaxt.html</li>
+     * </ul>
+     * 
+     * Combined:
+     * 
+     * <ul>
+     *  <li>https://my.example.org:8943/admin</li>
+     *  <li>https://my.example.org:8943/api/hidden</li>
+     *  <li>https://my.example.org:8943/hidden-login.html</li>
+     * </ul>
+     * 
+     * @param excludes
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public B setExcludes(Set<String> excludes) {
+        this.excludes = excludes;
+        return (B) this;
+    }
+    
     @SuppressWarnings("unchecked")
     public B setMaxScanDuration(SecHubTimeUnitData maxScanDuration) {
         this.maxScanDuration = maxScanDuration;
+        return (B) this;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public B setTargetURI(URI targetURI) {
+        if (targetURI == null) {
+            return (B) this;
+        }
+        this.targetURI = targetURI;
+        this.rootTargetURI = uriShrinkSupport.shrinkToRootURI(targetURI);
         return (B) this;
     }
 
@@ -181,7 +282,17 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
 
     @Override
     void packageInternalCustomBuild(C config) {
-        config.maxScanDuration = maxScanDuration;
+        if (! (config instanceof AbstractWebScanAdapterConfig)) {
+            throw new IllegalArgumentException("Wrong config type class hierarchy. Your config is of type " + config.getClass().getName() + " is not a descendant of " + AbstractCodeScanAdapterConfig.class.getSimpleName());
+        }
+        
+        AbstractWebScanAdapterConfig abstractWebScanConfig = (AbstractWebScanAdapterConfig) config;
+        
+        abstractWebScanConfig.maxScanDuration = maxScanDuration;
+        abstractWebScanConfig.targetURI = targetURI;
+        abstractWebScanConfig.rootTargetURI = rootTargetURI;
+        abstractWebScanConfig.includes = includes;
+        abstractWebScanConfig.excludes = excludes;
 
         if (currentLoginBuilder == null) {
             return;
@@ -191,8 +302,8 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
             return;
         }
         
-        config.loginConfig = currentLoginBuilder.createdLoginConfig;
-        config.loginConfig.loginUrl = currentLoginBuilder.loginUrl;
+        abstractWebScanConfig.loginConfig = currentLoginBuilder.createdLoginConfig;
+        abstractWebScanConfig.loginConfig.loginUrl = currentLoginBuilder.loginUrl;
     }
 
 }
