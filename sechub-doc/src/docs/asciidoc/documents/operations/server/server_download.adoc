@@ -1,0 +1,8 @@
+// SPDX-License-Identifier: MIT
+
+=== Download
+
+You can download the ready to use .jar binary of {secHub} Server.
+
+Download link to the latest {secHub} Server release: {webPage}/latest/server-download.html
+For documentation, please look at {webPage}[{secHub} web page] .

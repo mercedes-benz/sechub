@@ -15,7 +15,7 @@ import java.util.Set;
 
 /**
  * Target registry is a data container object used by product executors. <br>
- * It is created on execution time and filled up with conifguration data.
+ * It is created on execution time and filled up with configuration data.
  * <br>
  * After fill up the target will be registered and target registry info can
  * be fetched, which contains runtime information.
@@ -102,6 +102,27 @@ public class TargetRegistry {
 			}
 			return uris;
 		}
+
+	    /**
+         * Returns target URI for this kind of {@link TargetType}, which will be the first element from URI list.
+		 * 
+		 * This is a convenience method for scan types where we can have only ONE target URI (e.g. web scans).
+         *
+         * @return uri or <code>null</code>
+         */
+        public URI getURI() {
+            URI uri = null;
+            
+            Set<URI> uris = getURIs();
+            
+            if (!uris.isEmpty()) {
+                // get the first element
+                uri = uris.iterator().next();
+            }
+            
+            return uri;
+        }
+
 
 		/**
 		 * @return a set, never <code>null</code> containing all system folder pathes used for code upload, or an empty list

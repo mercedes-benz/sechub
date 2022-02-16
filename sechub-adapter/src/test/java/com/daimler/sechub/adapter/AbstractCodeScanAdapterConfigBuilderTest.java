@@ -12,18 +12,18 @@ public class AbstractCodeScanAdapterConfigBuilderTest {
 
 	@Test
 	public void settingSourceFoldersNullResultsInNullTargetString() {
-		TestCodeScanAdapterConfig x = new TestAbstractCodeScanAdapterConfigBuilder()
+		TestCodeScanAdapterConfig codeScanAdapterConfig = new TestAbstractCodeScanAdapterConfigBuilder()
 				.build();
 		/* test */
-		assertEquals(null, x.getTargetAsString());
+		assertEquals(null, codeScanAdapterConfig.getTargetAsString());
 	}
 	
 	@Test
 	public void settingSourceFoldersResultsInTargetString() {
-		TestCodeScanAdapterConfig x = new TestAbstractCodeScanAdapterConfigBuilder()
+		TestCodeScanAdapterConfig codeScanAdapterConfig = new TestAbstractCodeScanAdapterConfigBuilder()
 				.setFileSystemSourceFolders(new LinkedHashSet<>(Arrays.asList("src/java/", "src/groovy"))).build();
 		/* test */
-		assertEquals("src/java/;src/groovy", x.getTargetAsString());
+		assertEquals("src/java/;src/groovy", codeScanAdapterConfig.getTargetAsString());
 	}
 
 	

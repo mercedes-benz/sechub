@@ -53,7 +53,7 @@ public class PDSCodeScanJobScenario5IntTest {
             upload(project, jobUUID, PATH_LOW).
             approveJob(project, jobUUID);
         
-        waitForJobDone(project, jobUUID,10);
+        waitForJobDone(project, jobUUID,10,true);
         
         String report = as(USER_1).getJobReport(project, jobUUID);
         assertReport(report).
@@ -78,7 +78,7 @@ public class PDSCodeScanJobScenario5IntTest {
             upload(project, jobUUID, PATH_CRITICAL).
             approveJob(project, jobUUID);
         
-        waitForJobDone(project, jobUUID,30);
+        waitForJobDone(project, jobUUID,30,true);
         
         /* test */
         String report = as(USER_1).getJobReport(project, jobUUID);

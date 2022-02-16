@@ -2,6 +2,8 @@
 package com.daimler.sechub.domain.scan.project;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 import java.util.Iterator;
 import java.util.List;
@@ -10,7 +12,6 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.daimler.sechub.commons.model.ScanType;
 import com.daimler.sechub.commons.model.SecHubFinding;
 import com.daimler.sechub.commons.model.Severity;
 import com.daimler.sechub.domain.scan.ScanDomainTestFileSupport;
@@ -22,11 +23,14 @@ public class FalsePositiveJobDataConfigMergerTest {
     private FalsePositiveJobDataConfigMerger toTest;
 
     private FalsePositiveProjectConfiguration config;
+    private FalsePositiveMetaDataFactory metaDataFactory;
 
     @Before
     public void before() throws Exception {
         toTest = new FalsePositiveJobDataConfigMerger();
-
+        metaDataFactory = mock(FalsePositiveMetaDataFactory.class);
+        
+        toTest.metaDataFactory=metaDataFactory;
         config = new FalsePositiveProjectConfiguration();
 
     }
@@ -53,6 +57,9 @@ public class FalsePositiveJobDataConfigMergerTest {
         falsePositiveJobData.setFindingId(2);
         falsePositiveJobData.setJobUUID(jobUUID);
         
+        FalsePositiveMetaData metaDataCreatedByFactory = new FalsePositiveMetaData();
+        when(metaDataFactory.createMetaData(any())).thenReturn(metaDataCreatedByFactory);
+        
         /* execute */
         toTest.addJobDataWithMetaDataToConfig(scanSecHubReport, config, falsePositiveJobData, TEST_AUTHOR);
         
@@ -70,16 +77,9 @@ public class FalsePositiveJobDataConfigMergerTest {
         assertEquals(jobUUID, jobData.getJobUUID());
         assertEquals(TEST_AUTHOR,  fp1.getAuthor());
 
-        // check meta data fetched and added 
+        // check meta data created by factory fetched and added 
         FalsePositiveMetaData metaData = fp1.getMetaData();
-        assertNotNull(metaData);
-        assertEquals("SSRF", metaData.getName());
-        assertEquals(Integer.valueOf(1), metaData.getCweId());
-        assertEquals(Severity.MEDIUM, metaData.getSeverity());
-
-        assertEquals(ScanType.CODE_SCAN, metaData.getScanType()); // no scan type defined, but fallback to code scan must work
-        FalsePositiveCodeMetaData code = metaData.getCode();
-        assertNotNull(code);
+        assertSame(metaDataCreatedByFactory, metaData);
         
     }
     

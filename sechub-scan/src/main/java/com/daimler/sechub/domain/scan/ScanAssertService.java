@@ -2,6 +2,7 @@
 package com.daimler.sechub.domain.scan;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.domain.scan.access.ScanUserAccessToProjectValidationService;
@@ -21,6 +22,7 @@ public class ScanAssertService {
     @Autowired
     ScanUserAccessToProjectValidationService userAccessValidation;
 
+    @Lazy
     @Autowired
     ScanProjectConfigAccessLevelService accessLevelService;
     

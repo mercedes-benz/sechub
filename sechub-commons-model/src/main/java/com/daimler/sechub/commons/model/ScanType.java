@@ -9,7 +9,12 @@ public enum ScanType {
 
 	WEB_SCAN("webScan"),
 
-	INFRA_SCAN("infraScan"),
+	INFRA_SCAN("infraScan"), 
+	
+	/*
+	 * This is just a fallback for unknown scan type.
+	 */
+	UNKNOWN("unknown"), 
 
 	;
 

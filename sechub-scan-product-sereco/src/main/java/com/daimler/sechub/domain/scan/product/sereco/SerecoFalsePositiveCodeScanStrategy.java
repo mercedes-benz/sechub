@@ -32,17 +32,22 @@ public class SerecoFalsePositiveCodeScanStrategy {
     private static final Logger LOG = LoggerFactory.getLogger(SerecoFalsePositiveCodeScanStrategy.class);
 
     /**
-     * Given data is supposed to be valid
+     * Checks if given vulnerability is identified as false positive by given meta
+     * data
      * 
      * @param vulnerability
      * @param metaData
-     * @return true when identified as false positive
+     * @return <code>true</code> when identified as false positive
      */
     public boolean isFalsePositive(SerecoVulnerability vulnerability, FalsePositiveMetaData metaData) {
         notNull(vulnerability, " vulnerability may not be null");
         notNull(metaData, " metaData may not be null");
 
+        /* check supported scan type */
         if (metaData.getScanType() != ScanType.CODE_SCAN) {
+            return false;
+        }
+        if (vulnerability.getScanType() != ScanType.CODE_SCAN) {
             return false;
         }
 
@@ -72,7 +77,7 @@ public class SerecoFalsePositiveCodeScanStrategy {
         }
         try {
             int serecoCWEint = Integer.parseInt(serecoCWE);
-            if (cweId.intValue()!=serecoCWEint) {
+            if (cweId.intValue() != serecoCWEint) {
                 /* not same type of common vulnerability enumeration - so skip */
                 return false;
             }
@@ -106,7 +111,7 @@ public class SerecoFalsePositiveCodeScanStrategy {
             return false;
         }
         /* ------------------------------------------------------- */
-        /* -------------------RELEVANT parts---------------------- */
+        /* -------------------Relevant parts---------------------- */
         /* ------------------------------------------------------- */
         String relevant1 = start.getRelevantPart();
         String relevant2 = serecoFirstElement.getRelevantPart();

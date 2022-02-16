@@ -70,7 +70,9 @@ public class NetsparkerV1XMLImporterTest {
 		assertVulnerabilities(vulnerabilities).
 			vulnerability().
 				withSeverity(SerecoSeverity.LOW).
-				withURL("https://fscan.intranet.example.org/").
+				isExactDefinedWebVulnerability().
+				    withTarget("https://fscan.intranet.example.org/").
+				and().
 				withType("ApacheVersionDisclosure").
 				classifiedBy().
 					wasc("45").
@@ -82,7 +84,9 @@ public class NetsparkerV1XMLImporterTest {
 				isContained().
 			vulnerability().
 				withSeverity(SerecoSeverity.MEDIUM).
-				withURL("https://fscan.intranet.example.org/").
+				isExactDefinedWebVulnerability().
+                    withTarget("https://fscan.intranet.example.org/").
+                and().
 				withType("ApacheOutOfDate").
 				classifiedBy().
 					owasp("A9").
@@ -142,7 +146,9 @@ public class NetsparkerV1XMLImporterTest {
         assertVulnerabilities(vulnerabilities).
             vulnerability().
                 withSeverity(SerecoSeverity.MEDIUM).
-                withURL("https://app.example.org:8082/").
+                isExactDefinedWebVulnerability().
+                    withTarget("https://app.example.org:8082/").
+                and().
                 withType("InvalidSslCertificate").
                 classifiedBy().
                     owasp("A6").
@@ -158,7 +164,9 @@ public class NetsparkerV1XMLImporterTest {
            vulnerability().
                 enableTrace().
                 withSeverity(SerecoSeverity.MEDIUM).
-                withURL("http://app.example.org:8082/").
+                isExactDefinedWebVulnerability().
+                    withTarget("http://app.example.org:8082/").
+                and().
                 withType("InsecureHttpUsage").
                 classifiedBy().
                     owasp("A5").
@@ -190,7 +198,9 @@ public class NetsparkerV1XMLImporterTest {
         assertVulnerabilities(vulnerabilities).
             vulnerability().
                 withSeverity(SerecoSeverity.MEDIUM).
-                withURL("https://app.example.org:8082/").
+                isExactDefinedWebVulnerability().
+                    withTarget("https://app.example.org:8082/").
+                and().
                 withType("HstsErrors").
                 classifiedBy().
                     owasp("A5").

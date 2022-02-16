@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  *
  */
 @JsonPropertyOrder({ "driver" })
-public class Tool {
+public class Tool extends SarifObject {
     private Driver driver;
 
     public Tool() {

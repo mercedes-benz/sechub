@@ -34,18 +34,6 @@ public class TestWebLoginConfigurationBuilder {
 		return mainBuilder.login(loginConfig);
 	}
 
-	public TestWebConfigurationBuilder formAuto(String user, String login) {
-		FormLoginConfiguration formLogin = new FormLoginConfiguration();
-		loginConfig.form = Optional.of(formLogin);
-		AutoDetectUserLoginConfiguration autoDetect = new AutoDetectUserLoginConfiguration();
-		autoDetect.setUser(user.toCharArray());
-		autoDetect.setPassword(login.toCharArray());
-		Optional<AutoDetectUserLoginConfiguration> autoDetectOptoin = Optional.of(autoDetect);
-
-		formLogin.autodetect = autoDetectOptoin;
-		return mainBuilder.login(loginConfig);
-	}
-
     public ScriptPageEntryBuilder formScripted(String user, String login) {
         FormLoginConfiguration formLogin = new FormLoginConfiguration();
         loginConfig.form = Optional.of(formLogin);

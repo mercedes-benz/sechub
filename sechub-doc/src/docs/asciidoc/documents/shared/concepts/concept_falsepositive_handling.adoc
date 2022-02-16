@@ -1,0 +1,174 @@
+// SPDX-License-Identifier: MIT
+
+// It is included from /sechub-doc/src/docs/asciidoc/documents/architecture/08_concepts.adoc
+// so we use h3 here
+
+
+[[concept-false-positive-handling]]
+=== False-positive handling
+
+{sechub} must be able to handle false positives of used products.
+
+==== General
+
+===== How can false positives be handled across multiple security products?
+====== Problem 
+1. Missing API +
+ 
+Most commercial security products are able to mark false positives, but maybe not every tool has a dedicated API for this feature. In addition, many FOSS security tools do not
+support false positive handling.   
+
+====== Solution
+Instead of configuring false positives for each product (e.g. by calling a REST API)
+we do the filtering of false positives always at {sechub} side only!
+
+The involved product just returns all it's findings without any false positive marking on the product side.
+{sechub} will store the product results in the database without any filtering.
+
+Only when it comes to report generation at the end, {sechub} will filter the false positives from
+the result. This makes it easy to debug - the original information from the product is still 
+available and problems on false positive marking can be reproduced and fixed. 
+
+===== Different kinds of false-positive filtering
+Some people prefer code/API-centric way to define false positives, some prefer a WebUI.
+
+
+[[section-concept-false-positive-general-api-centric]]
+====== API centric
+ 
+include::../false-positives/false-positives-howto-define-by-api.adoc[]
+
+
+[[section-concept-false-positive-general-web-ui]]
+====== Web UI
+
+Just uses the API centric approach (by using given REST API,) over UI. 
+
+[[section-concept-false-positive-general-code-centric]]
+====== Code centric
+Inside source code / deployment scripts etc. users can define comments to define false positive handling
+- *this is only possible* for situations *where* we have *access to source code* - means SAST 
+(static application security testing)
+
+[IMPORTANT]
+====
+Currently this is not supported!
+
+The detection algorithm is already implemented inside `sechub-anlyzer-cli` 
+but we still have no `analyzer phase` and a `PDS solution` to collect these code information automatically. +
+So this will still need some time.
+====
+
+ifdef::techdoc[]
+include::../false-positives/false-positives-technical-details.adoc[]
+endif::techdoc[]
+
+
+==== Code scan
+
+===== API centric
+see <<section-concept-false-positive-general-api-centric,general concept>> 
+
+====== How to identify same vulnerability on code changes?
+- We inspect source and sink and use
+  * Location
+  * relevant part - this is absolutely necessary.
+- Line numbers must always be irrelevant!
+
+[IMPORTANT]
+====
+Very important for Sereco: If no relevant part is available we must at least create a
+pseudo one by given source snippet - in a whitespace reduced form! 
+We will compress the source content, so 
+adding new lines, spaces, tabs etc. would not matter.
+
+So if a product does not support "relevant part" detection we must create the "relevant
+part" inside `Sereco` as fallback! 
+====
+ 
+===== Web UI
+see <<section-concept-false-positive-general-web-ui,general concept>> 
+
+===== Code centric
+
+[IMPORTANT]
+====
+This approach is currently not enabled/full supported!
+
+Details:
+`CLI analyzer` is already implemented which contains logic for search etc, but currently
+{sechub} does not use it because there is a need for PDS execution. We also need a 
+special type of executions introduced: `AnalyzerProductExecutor`, which is not at this moment.
+====
+
+Inside source code the developers will be able to mark their code, marked as vulnerable, as 
+being a false positive by using comments. After the push to repository it's inside history who
+was defining the vulnerability as a false positive.
+
+We use following tags:
+
+`NOSECHUB`
+
+and
+
+`NOSECHUB-END`
+ 
+[NOTE]
+====
+In future we could provide additional identifiers for `NOSECHUB` to define which kind of
+false positive is ignored/will not be fixed. The kind/type must be product independant defined and clear to understand. Maybe a CWE ID would be the best choice.
+
+E.g. `NOSECHUB:CWE-79`
+
+====
+
+====== Java
+
+We will provide single comments (`//`) 
+[source,java]
+----
+include::../false-positives/FalsePositiveJavaApplication.java[]
+----
+<1> marks start
+<2> marks end
+
+All between those tags will be ignored by {sechub}.
+
+
+==== Web scan
+
+===== Code centric
+Not possible
+
+===== API centric
+see <<section-concept-false-positive-general-api-centric,general concept>> 
+
+===== Web UI
+see <<section-concept-false-positive-general-web-ui,general concept>> 
+
+==== Infra scan
+
+===== Code centric
+Not possible
+
+===== API centric
+see <<section-concept-false-positive-general-api-centric,general concept>> 
+
+[NOTE]
+====
+
+The identification of similarity is done here by 
+
+- Code scans: CWE id
+- Web scans: CWE id
+
+For infrastructure scans a false positive detection is currently not implemented.
+
+====
+ 
+
+===== Web UI
+see <<section-concept-false-positive-general-web-ui,general concept>> 
+
+
+

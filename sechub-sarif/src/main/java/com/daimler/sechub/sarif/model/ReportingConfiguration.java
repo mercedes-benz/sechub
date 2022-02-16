@@ -11,7 +11,7 @@ import java.util.Objects;
  * @author Albert Tregnaghi
  *
  */
-public class ReportingConfiguration {
+public class ReportingConfiguration extends SarifObject {
 
     private Level level;
 

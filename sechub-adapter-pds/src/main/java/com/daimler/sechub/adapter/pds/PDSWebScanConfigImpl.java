@@ -93,11 +93,6 @@ public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implement
             config.pdsProductIdentifier = pdsProductIdentifier;
             config.jobParameters = Collections.unmodifiableMap(jobParameters);
 
-            int size = config.getRootTargetURIs().size();
-            if (size != 1) {
-                /* We provide ONE root URI for webscans */
-                throw new IllegalStateException("netsparker must have ONE unique root target uri and not many!");
-            }
             String websiteURLAsString = config.getRootTargetURIasString();
             if (websiteURLAsString == null) {
                 throw new IllegalStateException("website url (root target url ) may not be null at this point!");

@@ -54,7 +54,6 @@ public class Scenario11 extends AbstractSecHubServerTestScenario implements PDST
     protected void initializeTestData() {
         /* @formatter:off */
         initializer().
-            ensureDefaultExecutionProfile(PROFILE_5_PDS_CODESCAN_LAZY_STREAMS).
             createUser(USER_1).
             createProject(PROJECT_1, USER_1).
             addProjectIdsToDefaultExecutionProfile(PROFILE_5_PDS_CODESCAN_LAZY_STREAMS,PROJECT_1).

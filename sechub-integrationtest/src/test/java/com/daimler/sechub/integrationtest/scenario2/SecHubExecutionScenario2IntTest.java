@@ -168,7 +168,7 @@ public class SecHubExecutionScenario2IntTest {
 			canCreateAndApproveWebScan(PROJECT_1);
 
 		;
-		TestAPI.waitForJobDone(PROJECT_1,jobUUID);
+		waitForJobDoneAndFailWhenJobIsFailing(PROJECT_1,jobUUID);
 
 		/* test */
 		assertUser(USER_1).

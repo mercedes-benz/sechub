@@ -7,6 +7,8 @@ import static org.mockito.Mockito.*;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +23,6 @@ import com.daimler.sechub.commons.model.SecHubWebScanConfiguration;
 import com.daimler.sechub.commons.model.WebScanDurationConfiguration;
 import com.daimler.sechub.commons.model.login.Action;
 import com.daimler.sechub.commons.model.login.ActionType;
-import com.daimler.sechub.commons.model.login.AutoDetectUserLoginConfiguration;
 import com.daimler.sechub.commons.model.login.BasicLoginConfiguration;
 import com.daimler.sechub.commons.model.login.FormLoginConfiguration;
 import com.daimler.sechub.commons.model.login.Page;
@@ -71,83 +72,6 @@ public class SecHubConfigurationTest {
     }
 
     @Test
-    public void webscan_login_form_autodetec_json_has_webconfig_as_expected() throws Exception {
-        /* prepare */
-        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("webscan/webscan_login_form_autodetect.json");
-
-        /* execute */
-        SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
-
-        /* test */
-        Optional<SecHubWebScanConfiguration> webScanOption = result.getWebScan();
-        assertTrue("webscan config must be present", webScanOption.isPresent());
-
-        SecHubWebScanConfiguration secHubWebScanConfiguration = webScanOption.get();
-        Optional<WebLoginConfiguration> loginOption = secHubWebScanConfiguration.getLogin();
-        assertTrue("login config must be present", loginOption.isPresent());
-        WebLoginConfiguration loginConfiguration = loginOption.get();
-        assertEquals(new URL("https://productfailure.demo.example.org/login"), loginConfiguration.getUrl());
-
-        Optional<BasicLoginConfiguration> basic = loginConfiguration.getBasic();
-        assertFalse("basic login config must NOT be present", basic.isPresent());
-
-        /*-- form --*/
-        Optional<FormLoginConfiguration> form = loginConfiguration.getForm();
-        assertTrue("form login config must be present", form.isPresent());
-
-        /*-- form : auto detect --*/
-        Optional<AutoDetectUserLoginConfiguration> autodetect = form.get().getAutodetect();
-        assertTrue("auto detect config must be present", autodetect.isPresent());
-        assertEquals("user1", new String(autodetect.get().getUser()));
-        assertEquals("pwd1", new String(autodetect.get().getPassword()));
-
-        Optional<Script> script = form.get().getScript();
-        assertFalse("script config must NOT be present", script.isPresent());
-    }
-    
-    @Test
-    public void webscan_login_form_autodetec_json_with_max_scan_duration() throws Exception {
-        /* prepare */
-        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("webscan/webscan_login_form_autodetect_with_max_scan_duration.json");
-        
-        /* execute */
-        SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
-
-        /* test */
-        Optional<SecHubWebScanConfiguration> webScanOption = result.getWebScan();
-        assertTrue("webscan config must be present", webScanOption.isPresent());
-
-        SecHubWebScanConfiguration secHubWebScanConfiguration = webScanOption.get();
-        
-        Optional<WebScanDurationConfiguration> maxScanDuration = secHubWebScanConfiguration.getMaxScanDuration();
-        assertTrue("max san duration config must be present", maxScanDuration.isPresent());
-        assertEquals(1, maxScanDuration.get().getDuration());
-        assertEquals(SecHubTimeUnit.HOUR, maxScanDuration.get().getUnit());
-        
-        Optional<WebLoginConfiguration> loginOption = secHubWebScanConfiguration.getLogin();
-        assertTrue("login config must be present", loginOption.isPresent());
-        
-        WebLoginConfiguration loginConfiguration = loginOption.get();
-        assertEquals(new URL("https://productfailure.demo.example.org/login"), loginConfiguration.getUrl());
-
-        Optional<BasicLoginConfiguration> basic = loginConfiguration.getBasic();
-        assertFalse("basic login config must NOT be present", basic.isPresent());
-
-        /*-- form --*/
-        Optional<FormLoginConfiguration> form = loginConfiguration.getForm();
-        assertTrue("form login config must be present", form.isPresent());
-
-        /*-- form : auto detect --*/
-        Optional<AutoDetectUserLoginConfiguration> autodetect = form.get().getAutodetect();
-        assertTrue("auto detect config must be present", autodetect.isPresent());
-        assertEquals("user1", new String(autodetect.get().getUser()));
-        assertEquals("pwd1", new String(autodetect.get().getPassword()));
-
-        Optional<Script> script = form.get().getScript();
-        assertFalse("script config must NOT be present", script.isPresent());
-    }
-
-    @Test
     public void webscan_login_form_script_json_has_webconfig_as_expected() throws Exception {
         /* prepare */
         String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("webscan/webscan_login_form_script.json");
@@ -171,10 +95,6 @@ public class SecHubConfigurationTest {
         /*-- form --*/
         Optional<FormLoginConfiguration> form = loginConfiguration.getForm();
         assertTrue("form login config must be present", form.isPresent());
-
-        /*-- form : auto detect --*/
-        Optional<AutoDetectUserLoginConfiguration> autodetect = form.get().getAutodetect();
-        assertFalse("auto detect config must NOT be present", autodetect.isPresent());
 
         /*-- form: script --*/
         Optional<Script> script = form.get().getScript();
@@ -229,10 +149,6 @@ public class SecHubConfigurationTest {
         /*-- form --*/
         Optional<FormLoginConfiguration> form = loginConfiguration.getForm();
         assertTrue("form login config must be present", form.isPresent());
-
-        /*-- form : auto detect --*/
-        Optional<AutoDetectUserLoginConfiguration> autodetect = form.get().getAutodetect();
-        assertFalse("auto detect config must NOT be present", autodetect.isPresent());
 
         /*-- form: script --*/
         Optional<Script> script = form.get().getScript();
@@ -295,10 +211,6 @@ public class SecHubConfigurationTest {
         Optional<FormLoginConfiguration> form = loginConfiguration.getForm();
         assertTrue("form login config must be present", form.isPresent());
 
-        /*-- form : auto detect --*/
-        Optional<AutoDetectUserLoginConfiguration> autodetect = form.get().getAutodetect();
-        assertFalse("auto detect config must NOT be present", autodetect.isPresent());
-
         /*-- form : script --*/
         Optional<Script> script = form.get().getScript();
         assertTrue("script config must be present", script.isPresent());
@@ -346,6 +258,17 @@ public class SecHubConfigurationTest {
         assertTrue("webscan config must be present", webScanOption.isPresent());
 
         SecHubWebScanConfiguration secHubWebScanConfiguration = webScanOption.get();
+        assertEquals(URI.create("https://productfailure.demo.example.org"), secHubWebScanConfiguration.getUri());
+        
+        Optional<List<String>> includes = secHubWebScanConfiguration.getIncludes();
+        assertTrue("includes must be present", includes.isPresent());
+        List<String> expectedIncludes = Arrays.asList("/portal/admin", "/abc.html", "/hidden");
+        assertEquals(expectedIncludes, includes.get());
+        
+        Optional<List<String>> excludes = secHubWebScanConfiguration.getExcludes();
+        assertTrue("excludes must be present", excludes.isPresent());
+        List<String> expectedExcludes = Arrays.asList("/public/media", "/contact.html", "/static");
+        assertEquals(expectedExcludes, excludes.get());
 
         Optional<WebScanDurationConfiguration> maxScanDuration = secHubWebScanConfiguration.getMaxScanDuration();
         assertTrue("max san duration config must be present", maxScanDuration.isPresent());
@@ -367,12 +290,6 @@ public class SecHubConfigurationTest {
         /*-- form --*/
         Optional<FormLoginConfiguration> form = loginConfiguration.getForm();
         assertTrue("form login config must be present", form.isPresent());
-
-        /*-- form : auto detect --*/
-        Optional<AutoDetectUserLoginConfiguration> autodetect = form.get().getAutodetect();
-        assertTrue("auto detect config must be present", autodetect.isPresent());
-        assertEquals("user1", new String(autodetect.get().getUser()));
-        assertEquals("pwd1", new String(autodetect.get().getPassword()));
 
         /*-- form : script --*/
         Optional<Script> script = form.get().getScript();
@@ -451,7 +368,7 @@ public class SecHubConfigurationTest {
 
         /* test */
         assertTrue("webscan config must be present", result.getWebScan().isPresent());
-        assertTrue(result.getWebScan().get().getUris().contains(new URI("https://fscan.intranet.example.org/")));
+        assertEquals(result.getWebScan().get().getUri(), new URI("https://fscan.intranet.example.org/"));
     }
 
     @Test
@@ -577,5 +494,32 @@ public class SecHubConfigurationTest {
             SECHUB_CONFIG.fromJSON(json);
         });
     }
+    
+    @Test
+    public void webscan_empty_includes_excludes() {
+        /* prepare */
+        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("webscan/webscan_empty_includes_excludes.json");
 
+        /* execute */
+        SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
+         
+        /* test */
+        Optional<SecHubWebScanConfiguration> webScanOption = result.getWebScan();
+        assertTrue("webscan config must be present", webScanOption.isPresent());
+
+        SecHubWebScanConfiguration secHubWebScanConfiguration = webScanOption.get();
+        assertEquals(URI.create("https://productfailure.demo.example.org"), secHubWebScanConfiguration.getUri());
+        
+        Optional<List<String>> includes = secHubWebScanConfiguration.getIncludes();
+        assertTrue("includes must be present", includes.isPresent());
+        List<String> expectedIncludes = new LinkedList<>();
+        assertTrue("includes are empty", includes.get().isEmpty());
+        assertEquals(expectedIncludes, includes.get());
+        
+        Optional<List<String>> excludes = secHubWebScanConfiguration.getExcludes();
+        assertTrue("excludes must be present", excludes.isPresent());
+        List<String> expectedExcludes = new LinkedList<>();
+        assertTrue("excludes are empty", excludes.get().isEmpty());
+        assertEquals(expectedExcludes, excludes.get());
+    }
 }

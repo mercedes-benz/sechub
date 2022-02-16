@@ -16,6 +16,21 @@ class PropertyBagTest {
     void setter() {
         testSetterAndGetter(createExample());
     }
+    
+    @Test
+    void handle_null_values_and_keys() {
+        /* prepare */
+        PropertyBag propertyBag = new PropertyBag();
+
+        /* execute */
+        propertyBag.put(null, null);
+        propertyBag.put("key", null);
+        propertyBag.put(null, "value");
+
+        /* test */
+        assertTrue(propertyBag.isEmpty());
+    }
+
 
     @Test
     void equals_and_hashcode() {

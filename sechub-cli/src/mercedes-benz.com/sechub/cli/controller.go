@@ -139,8 +139,8 @@ func downloadSechubReport(context *Context) {
 		os.Exit(ExitCodeFailed)
 	}
 
-	fileEnding := "." + context.config.reportFormat // e.g. .json, .html
-	fileName := "sechub_report_" + context.config.projectID + "_" + context.config.secHubJobUUID + fileEnding
+	// Example:  sechub_report_myproject_cdde8927-2df4-461c-b775-2dec9497e8b1.json
+	fileName := "sechub_report_" + context.config.projectID + "_" + context.config.secHubJobUUID + "." + context.config.reportFormat
 
 	report := ReportDownload{serverResult: getSecHubJobReport(context), outputFolder: context.config.outputFolder, outputFileName: fileName}
 	report.save(context)

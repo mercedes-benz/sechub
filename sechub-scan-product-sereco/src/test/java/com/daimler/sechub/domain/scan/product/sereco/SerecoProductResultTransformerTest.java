@@ -108,6 +108,22 @@ public class SerecoProductResultTransformerTest {
 				hasName("type1");
 		/* @formatter:on */
     }
+    
+    @Test
+    public void transformation_of_solution_is_done() throws Exception {
+        /* prepare */
+        String converted = createMetaDataWithOneVulnerabilityFound();
+
+        /* execute */
+        ReportTransformationResult result = transformerToTest.transform(createProductResult(converted));
+
+        /* test */
+        /* @formatter:off */
+        AssertSecHubResult.assertSecHubResult(result.getResult()).
+            hasFindingWithId(1).
+                hasSolution("solution1");
+        /* @formatter:on */
+    }
 
     private String createMetaDataWithOneVulnerabilityFound() {
         SerecoMetaData data = new SerecoMetaData();
@@ -117,8 +133,8 @@ public class SerecoProductResultTransformerTest {
         v1.setDescription("desc1");
         v1.setSeverity(SerecoSeverity.MEDIUM);
         v1.setType("type1");
-        v1.setUrl("url1");
         v1.setScanType(ScanType.WEB_SCAN);
+        v1.setSolution("solution1");
 
         SerecoClassification cl = v1.getClassification();
         cl.setCapec("capec1");
@@ -136,7 +152,6 @@ public class SerecoProductResultTransformerTest {
         SerecoVulnerability v1 = new SerecoVulnerability();
         v1.setSeverity(SerecoSeverity.MEDIUM);
         v1.setType("type1");
-        v1.setUrl("url1");
         v1.setScanType(ScanType.CODE_SCAN);
 
         SerecoCodeCallStackElement serecoCode1 = new SerecoCodeCallStackElement();

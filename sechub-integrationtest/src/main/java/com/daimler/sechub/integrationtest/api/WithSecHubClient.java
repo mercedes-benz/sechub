@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +44,7 @@ public class WithSecHubClient {
     WithSecHubClient(AsUser asUser) {
         this.asUser = asUser;
         try {
-            this.outputFolder = Files.createTempDirectory("with-sechub-client-");
+            this.outputFolder = TestUtil.createTempDirectoryInBuildFolder("with-sechub-client-");
             this.outputFolder.toFile().deleteOnExit();
         } catch (IOException e) {
             throw new IllegalStateException("Can NOT create temp directory for tests!", e);
@@ -193,7 +192,7 @@ public class WithSecHubClient {
             this.downloadedFile = file;
 
             try {
-                unzipTo = Files.createTempDirectory("sechub-assertzip");
+                unzipTo = TestUtil.createTempDirectoryInBuildFolder("sechub-assertzip");
                 if (TestUtil.isDeletingTempFiles()) {
                     unzipTo.toFile().deleteOnExit();
                 }

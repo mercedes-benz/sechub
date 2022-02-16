@@ -161,6 +161,15 @@ public class AssertReport {
             }
             return this;
         }
+        
+        public AssertFinding hasCweId(int cweId) {
+            if (finding.getCweId()==null) {
+                dump();
+                fail("No cwe id found inside finding at all!");
+            }
+            assertEquals("CWE id not as expected", cweId, finding.getCweId().intValue());
+            return this;
+        }
 
         public AssertCodeCall codeCall(int level) {
             int currentLevel = 0;

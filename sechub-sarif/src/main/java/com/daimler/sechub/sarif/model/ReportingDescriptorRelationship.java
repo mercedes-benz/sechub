@@ -12,7 +12,7 @@ import java.util.Objects;
  * @author Albert Tregnaghi
  *
  */
-public class ReportingDescriptorRelationship {
+public class ReportingDescriptorRelationship extends SarifObject{
 
     private ReportingDescriptorReference target;
 

@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.restdoc;
 
-import static com.daimler.sechub.commons.model.TestSecHubConfigurationBuilder.*;
 import static com.daimler.sechub.commons.model.SecHubConfigurationModel.*;
+import static com.daimler.sechub.commons.model.TestSecHubConfigurationBuilder.*;
 import static com.daimler.sechub.test.TestURLBuilder.*;
 import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
@@ -18,6 +18,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -46,6 +48,7 @@ import com.daimler.sechub.commons.model.SecHubInfrastructureScanConfiguration;
 import com.daimler.sechub.commons.model.SecHubTimeUnit;
 import com.daimler.sechub.commons.model.SecHubWebScanConfiguration;
 import com.daimler.sechub.commons.model.TrafficLight;
+import com.daimler.sechub.commons.model.WebScanDurationConfiguration;
 import com.daimler.sechub.commons.model.login.ActionType;
 import com.daimler.sechub.commons.model.login.FormLoginConfiguration;
 import com.daimler.sechub.commons.model.login.WebLoginConfiguration;
@@ -229,7 +232,7 @@ public class SchedulerRestControllerRestDocTest {
 	}
 
 	@Test
-	@UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Web Scan anonymous")
+	@UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Web scan anonymous")
 	public void restDoc_userCreatesNewJob_webscan_anonymous() throws Exception {
 		/* prepare */
         String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
@@ -238,6 +241,13 @@ public class SchedulerRestControllerRestDocTest {
 		UUID randomUUID = UUID.randomUUID();
 		SchedulerResult mockResult = new SchedulerResult(randomUUID);
 
+		WebScanDurationConfiguration maxScanDuration = new WebScanDurationConfiguration();
+		maxScanDuration.setDuration(1);
+		maxScanDuration.setUnit(SecHubTimeUnit.HOUR);
+		
+		List<String> includes = Arrays.asList("/admin", "/hidden", "/admin.html");
+		List<String> excludes = Arrays.asList("/public/media", "/static", "/contaxt.html");
+		
 		when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
 
 		/* execute + test @formatter:off */
@@ -248,6 +258,9 @@ public class SchedulerRestControllerRestDocTest {
 	    					api("1.0").
 	    					webConfig().
 	    						addURI("https://localhost/mywebapp/login").
+	    						maxScanDuration(maxScanDuration).
+	    						addIncludes(includes).
+	    						addExcludes(excludes).
 	    					build().
 	    					toJSON())
 	    		).
@@ -267,7 +280,11 @@ public class SchedulerRestControllerRestDocTest {
                                         requestFields(
                                                 fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
                                                 fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URIS).description("Webscan URIs to scan for").optional()
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URI).description("Webscan URI to scan for").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_MAX_SCAN_DURATION+"."+WebScanDurationConfiguration.PROPERTY_DURATION).description("Duration of the scan as integer").optional(),                                                
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_MAX_SCAN_DURATION+"."+WebScanDurationConfiguration.PROPERTY_UNIT).description("Unit of the duration. Possible values are: millisecond(s), second(s), minute(s), hour(s), day(s)").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_INCLUDES+"[]").description("Include URL sub-paths to scan. Example: /hidden").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_EXCLUDES+"[]").description("Exclude URL sub-paths to scan. Example: /admin").optional()
             
                                         ).
                                         responseFields(
@@ -321,7 +338,7 @@ public class SchedulerRestControllerRestDocTest {
                                         requestFields(
                                                 fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
                                                 fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URIS).description("Webscan URIs to scan for").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URI).description("Webscan URI to scan for").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN).description("Webscan login definition").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+".url").description("Login URL").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_BASIC).description("basic login definition").optional(),
@@ -336,65 +353,6 @@ public class SchedulerRestControllerRestDocTest {
                                         build()
                                     )
 	    			    ));
-
-	    /* @formatter:on */
-	}
-	
-	@Test
-	@UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Web Scan login form auto dection")
-	public void restDoc_userCreatesNewJob_webScan_login_form_autodetect() throws Exception {
-		/* prepare */
-        String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
-        Class<? extends Annotation> useCase = UseCaseUserCreatesNewJob.class;
-
-		UUID randomUUID = UUID.randomUUID();
-		SchedulerResult mockResult = new SchedulerResult(randomUUID);
-
-		when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
-
-		/* execute + test @formatter:off */
-	    this.mockMvc.perform(
-	    		post(apiEndpoint,PROJECT1_ID).
-	    			contentType(MediaType.APPLICATION_JSON_VALUE).
-	    			content(configureSecHub().
-	    					api("1.0").
-	    					webConfig().
-	    						addURI("https://localhost/mywebapp").
-	    						login("https://localhost/mywebapp/login").formAuto("username1","password1").
-	    					build().
-	    					toJSON())
-	    		).
-	    			andExpect(status().isOk()).
-	    			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
-	    			andDo(document(RestDocFactory.createPath(useCase,"Web Scan login form auto dection"),
-                            resource(
-                                    ResourceSnippetParameters.builder().
-                                        summary(RestDocFactory.createSummary(useCase)).
-                                        description(RestDocFactory.createDescription(useCase)).
-                                        tag(RestDocFactory.extractTag(apiEndpoint)).
-                                        requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
-                                        responseSchema(OpenApiSchema.JOB_ID.getSchema()).
-                                        pathParameters(
-                                                parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
-                                        ).
-                                        requestFields(
-                                                fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
-                                                fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URIS).description("Webscan URIs to scan for").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN).description("Webscan login definition").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+".url").description("Login URL").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM).description("form login definition").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM+".autodetect").description("login field auto detection").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM+".autodetect.user").description("username").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM+".autodetect.password").description("password").optional()
-                                        ).
-                                        responseFields(
-                                                fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
-            
-                                        ).
-                                        build()
-                                    )
-	    		    ));
 
 	    /* @formatter:on */
 	}
@@ -471,7 +429,7 @@ public class SchedulerRestControllerRestDocTest {
                                         requestFields(
                                             fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
     										fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
-    										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URIS).description("Webscan URIs to scan for").optional(),
+    										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URI).description("Webscan URI to scan for").optional(),
     										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN).description("Webscan login definition").optional(),
     										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+".url").description("Login URL").optional(),
     										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM).description("form login definition").optional(),

@@ -7,9 +7,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.io.ByteArrayInputStream;
-import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,7 +33,6 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 public class CheckmarxAdapterV1WireMockTest {
     
     private static final String CONTENT_FROM_CHECKMARX = "content-from-checkmarx";
-    private static final String TARGET_TYPE = "theType";
     private static final String SECHUB_TRACE_ID = "sechub-trace-id";
     private static final String APPLICATION_JSON = "application/json";
     private static final String APPLICATION_FORM_URL_ENCODED_UTF_8 = "application/x-www-form-urlencoded;charset=UTF-8";
@@ -44,7 +41,6 @@ public class CheckmarxAdapterV1WireMockTest {
 
     private static final int HTTP_PORT = TestPortProvider.DEFAULT_INSTANCE.getWireMockTestHTTPPort();
     private static final String PASSWORD = "12345BASE64_PWD";
-    private static final String TARGET_URL = "http://example.org";
 
     private static final String CHECKMARX_BASE_URL = "http://localhost:" + HTTP_PORT;
 
@@ -93,12 +89,10 @@ public class CheckmarxAdapterV1WireMockTest {
         when(config.getClientSecret()).thenReturn(CheckmarxConfig.DEFAULT_CLIENT_SECRET);
         when(config.getEngineConfigurationName()).thenReturn(CheckmarxConstants.DEFAULT_CHECKMARX_ENGINECONFIGURATION_MULTILANGANGE_SCAN_NAME);
         when(config.getUser()).thenReturn(USERNAME);
-        when(config.getTargetType()).thenReturn(TARGET_TYPE);
         when(config.getPasswordOrAPIToken()).thenReturn(PASSWORD);
         when(config.getTimeOutInMilliseconds()).thenReturn(1000*5);
         when(config.getProjectId()).thenReturn(PROJECT_NAME);
 
-        when(config.getTargetURIs()).thenReturn(Collections.singleton(URI.create(TARGET_URL)));
         when(config.getProductBaseURL()).thenReturn(CHECKMARX_BASE_URL);
         when(config.getPolicyId()).thenReturn(POLICY_ID);
         when(config.getSourceCodeZipFileInputStream()).thenReturn(new ByteArrayInputStream("pseudo-zip-content".getBytes()));

@@ -14,7 +14,7 @@ import java.util.Objects;
  * @author Albert Tregnaghi
  *
  */
-public class ThreadFlow {
+public class ThreadFlow extends SarifObject{
 
     private List<ThreadFlowLocation> locations;
 

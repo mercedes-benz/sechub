@@ -247,8 +247,7 @@ public class SecHubClientExecutor {
 
     private File createTempFileForOutput() throws IOException {
         /* create temporary file for output */
-        File tmpGoOutputFile = File.createTempFile("sechub-client-test-", ".txt");
-        tmpGoOutputFile.deleteOnExit();
+        File tmpGoOutputFile = TestUtil.createTempFileInBuildFolder("sechub-client-test-", "txt").toFile();
         LOG.info("Temporary go output at:{}", tmpGoOutputFile);
         return tmpGoOutputFile;
     }

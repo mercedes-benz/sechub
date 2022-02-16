@@ -3,14 +3,8 @@ package com.daimler.sechub.adapter;
 
 import static com.daimler.sechub.adapter.TimeConstants.*;
 
-import java.net.InetAddress;
-import java.net.URI;
-import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
-
 import javax.crypto.SealedObject;
 
 import org.slf4j.Logger;
@@ -19,6 +13,12 @@ import org.slf4j.LoggerFactory;
 import com.daimler.sechub.adapter.support.URIShrinkSupport;
 import com.daimler.sechub.commons.core.security.CryptoAccess;
 
+/**
+ * Abstract Adapter Config Builder 
+ *
+ * @param <B>  Builder
+ * @param <C>  Adapter configuration
+ */
 public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConfigBuilder<B, C>, C extends AdapterConfig> {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractAdapterConfigBuilder.class);
@@ -58,22 +58,18 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 
     private String policyID;
 
-    private LinkedHashSet<URI> targetURIs = new LinkedHashSet<>();
-
-    private LinkedHashSet<InetAddress> targetIPs = new LinkedHashSet<>();
-
     private boolean trustAllCertificatesEnabled;
-
-    private URIShrinkSupport uriShrinker;
 
     private String projectId;
 
     private Map<AdapterOptionKey, String> options = new LinkedHashMap<>();
 
     private static int minimumTimeToWaitForNextCheckOperationInMilliseconds = 500;
+    
+    protected URIShrinkSupport uriShrinkSupport;
 
     protected AbstractAdapterConfigBuilder() {
-        uriShrinker = createURIShrinker();
+        uriShrinkSupport = createURIShrinkSupport();
     }
 
     /**
@@ -81,7 +77,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
      * 
      * @return new shrinker, never <code>null</code>
      */
-    protected URIShrinkSupport createURIShrinker() {
+    protected URIShrinkSupport createURIShrinkSupport() {
         return new URIShrinkSupport();
     }
 
@@ -205,47 +201,9 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
     }
 
     @SuppressWarnings("unchecked")
-    public B setTargetURIs(Set<URI> targetURIs) {
-        if (targetURIs == null) {
-            this.targetURIs = new LinkedHashSet<>();
-        } else {
-            this.targetURIs = new LinkedHashSet<>();
-            this.targetURIs.addAll(targetURIs);
-        }
-        return (B) this;
-    }
-
-    @SuppressWarnings("unchecked")
-    public B setTargetURI(URI targetURI) {
-        if (targetURI == null) {
-            return (B) this;
-        }
-        return setTargetURIs(Collections.singleton(targetURI));
-    }
-
-    @SuppressWarnings("unchecked")
-    public B setTargetIPs(Set<InetAddress> targetIPs) {
-        if (targetIPs == null) {
-            this.targetIPs = new LinkedHashSet<>();
-        } else {
-            this.targetIPs = new LinkedHashSet<>();
-            this.targetIPs.addAll(targetIPs);
-        }
-        return (B) this;
-    }
-
-    @SuppressWarnings("unchecked")
     public B setProjectId(String projectId) {
         this.projectId = projectId;
         return (B) this;
-    }
-
-    @SuppressWarnings("unchecked")
-    public B setTargetIP(InetAddress ipAdress) {
-        if (ipAdress == null) {
-            return (B) this;
-        }
-        return setTargetIPs(Collections.singleton(ipAdress));
     }
 
     /**
@@ -291,7 +249,6 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
         if (!(config instanceof AbstractAdapterConfig)) {
             throw new IllegalStateException(getClass().getName() + " does not return a child of AbstractAdapterConfig!");
         }
-        Set<URI> shrinkedRootURIs = uriShrinker.shrinkToRootURIs(targetURIs);
 
         AbstractAdapterConfig abstractAdapterConfig = (AbstractAdapterConfig) config;
 
@@ -307,9 +264,6 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
         abstractAdapterConfig.trustAllCertificatesEnabled = trustAllCertificatesEnabled;
         abstractAdapterConfig.passwordOrAPIToken = passwordOrApiToken;
         abstractAdapterConfig.policyId = policyID;
-        abstractAdapterConfig.targetURIs = targetURIs;
-        abstractAdapterConfig.rootTargetUris.addAll(shrinkedRootURIs);
-        abstractAdapterConfig.targetIPs = targetIPs;
 
         abstractAdapterConfig.traceID = traceID;
         abstractAdapterConfig.projectId = projectId;
