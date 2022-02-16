@@ -496,7 +496,7 @@ Do you want to remove this false positive? ('y' Yes, 'n' No, 's' Skip the rest, 
 ------------------------------------------------------------------
 Side Channel Data Leakage, codeScan severity: HIGH
   Origin: Finding ID 2 in job 0c86134c-2305-41e0-a2d5-e7c31df45d15
-  File: src/main/java/com/daimler/otr/invoice/application/ApplicationService.java
+  File: src/main/java/com/mercedesbenz/otr/invoice/application/ApplicationService.java
   Code:         Invoice invoice = getInvoice(invoiceId).orElseThrow(InvoiceNotFoundException::new);
 (Added by testuser at 2020-08-20 12:43:03; comment: "Another explanation example")
 ------------------------------------------------------------------

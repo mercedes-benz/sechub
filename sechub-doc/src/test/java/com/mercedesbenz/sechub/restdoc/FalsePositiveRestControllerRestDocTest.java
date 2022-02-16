@@ -220,13 +220,13 @@ public class FalsePositiveRestControllerRestDocTest {
         metaData.setCweId(Integer.valueOf(36));
         FalsePositiveCodeMetaData code = new FalsePositiveCodeMetaData();
         FalsePositiveCodePartMetaData start = new FalsePositiveCodePartMetaData();
-        start.setLocation("java/com/daimler/sechub/docgen/AsciidocGenerator.java");
+        start.setLocation("java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java");
         start.setRelevantPart("args");
         start.setSourceCode("\tpublic static void main(String[] args) throws Exception {");
 
         code.setStart(start);
         FalsePositiveCodePartMetaData end = new FalsePositiveCodePartMetaData();
-        end.setLocation("java/com/daimler/sechub/docgen/AsciidocGenerator.java");
+        end.setLocation("java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java");
         end.setRelevantPart("File");
         end.setSourceCode("\t\tFile documentsGenFolder = new File(path);");
         code.setEnd(end);

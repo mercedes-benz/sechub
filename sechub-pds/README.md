@@ -25,7 +25,7 @@ With every release documentation will be updated at [https://daimler.github.io/s
 Usecases are defined by annotations inside code and generated into documentation (so similar to 
 SecHub server documentation).
 
-Please refer `sechub-pds-core/src/main/java/com/daimler/sechub/pds/usecase` and search for references
+Please refer `sechub-pds-core/src/main/java/com/mercedesbenz/sechub/pds/usecase` and search for references
 
 #### REST documentation
 Documentation is done manual here, so differs to sechub server where most parts are generated

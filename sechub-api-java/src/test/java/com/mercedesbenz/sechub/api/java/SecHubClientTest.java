@@ -90,12 +90,12 @@ public class SecHubClientTest {
         /* test */
         assertReport(report).hasJobUUID("6cf02ccf-da13-4dee-b529-0225ed9661bd").hasFindings(2).hasTrafficLight(TrafficLight.YELLOW).finding(0).hasId(1)
                 .hasSeverity(Severity.MEDIUM).hasNoHostnames().hasNoReferences().hasName("Absolute Path Traversal").hasDescription("").codeCall(0).hasLine(28)
-                .hasLocation("java/com/daimler/sechub/docgen/AsciidocGenerator.java").codeCall(1).hasLine(33).hasRelevantPart("args")
-                .hasLocation("java/com/daimler/sechub/docgen/AsciidocGenerator.java").codeCall(2).hasLine(33).hasRelevantPart("path")
-                .hasLocation("java/com/daimler/sechub/docgen/AsciidocGenerator.java").codeCall(3)
-                .hasLocation("java/com/daimler/sechub/docgen/AsciidocGenerator.java").finding(1).hasId(2).hasSeverity(Severity.LOW)
+                .hasLocation("java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java").codeCall(1).hasLine(33).hasRelevantPart("args")
+                .hasLocation("java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java").codeCall(2).hasLine(33).hasRelevantPart("path")
+                .hasLocation("java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java").codeCall(3)
+                .hasLocation("java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java").finding(1).hasId(2).hasSeverity(Severity.LOW)
                 .hasName("Improper Exception Handling").hasDescription("").hasNoReferences().hasNoHostnames().codeCall(0)
-                .hasLocation("java/com/daimler/sechub/docgen/usecase/UseCaseRestDocModelAsciiDocGenerator.java").hasLine(112).hasColumn(53)
+                .hasLocation("java/com/mercedesbenz/sechub/docgen/usecase/UseCaseRestDocModelAsciiDocGenerator.java").hasLine(112).hasColumn(53)
                 .hasSource("\t\tFile[] files = entry.copiedRestDocFolder.listFiles();").hasRelevantPart("listFiles");
 
     }
