@@ -41,11 +41,11 @@ public class ProjectDetailChangeService {
 				description = "The service will change project description."))
 	/* @formatter:on */
     public ProjectDetailInformation changeProjectDescription(String projectId, ProjectJsonInput projectJson) {
-	    String description = projectJson.getDescription();
-	    
-	    if (description == null) {
-	        throw new NotAcceptableException("description field has to be set");
-	    }
+        String description = projectJson.getDescription();
+
+        if (description == null) {
+            throw new NotAcceptableException("description field has to be set");
+        }
 
         assertion.isValidProjectId(projectId);
 

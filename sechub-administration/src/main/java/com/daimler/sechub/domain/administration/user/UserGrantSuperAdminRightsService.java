@@ -25,27 +25,27 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 public class UserGrantSuperAdminRightsService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(UserGrantSuperAdminRightsService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UserGrantSuperAdminRightsService.class);
 
-	@Autowired
-	DomainMessageService eventBusService;
+    @Autowired
+    DomainMessageService eventBusService;
 
-	@Autowired
-	UserRepository userRepository;
+    @Autowired
+    UserRepository userRepository;
 
-	@Autowired
-	AuditLogService auditLogService;
+    @Autowired
+    AuditLogService auditLogService;
 
-	@Autowired
-	SecHubEnvironment sechubEnvironment;
+    @Autowired
+    SecHubEnvironment sechubEnvironment;
 
-	@Autowired
-	LogSanitizer logSanitizer;
+    @Autowired
+    LogSanitizer logSanitizer;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Autowired
+    UserInputAssertion assertion;
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@Validated
 	@UseCaseAdminGrantsAdminRightsToUser(
 			@Step(
@@ -54,33 +54,34 @@ public class UserGrantSuperAdminRightsService {
 					next = { 3,	4 },
 					description = "The service will grant user admin righs and triggers asynchronous events"))
 	/* @formatter:on */
-	public void grantSuperAdminRightsFor(String userId) {
-		auditLogService.log("Triggered granting admin rights for user {}",logSanitizer.sanitize(userId,30));
+    public void grantSuperAdminRightsFor(String userId) {
+        auditLogService.log("Triggered granting admin rights for user {}", logSanitizer.sanitize(userId, 30));
 
-		assertion.isValidUserId(userId);
+        assertion.isValidUserId(userId);
 
-		User user = userRepository.findOrFailUser(userId);
+        User user = userRepository.findOrFailUser(userId);
 
-		if (user.isSuperAdmin()) {
-			LOG.info("User:{} was already a super administrator, so just ignored",user.getName());
-			return;
-		}
-		user.superAdmin=true;
-		userRepository.save(user);
+        if (user.isSuperAdmin()) {
+            LOG.info("User:{} was already a super administrator, so just ignored", user.getName());
+            return;
+        }
+        user.superAdmin = true;
+        userRepository.save(user);
 
-		requestUserRoleRecalculaton(user);
-		informUserBecomesSuperadmin(user);
+        requestUserRoleRecalculaton(user);
+        informUserBecomesSuperadmin(user);
 
-	}
+    }
 
-	@IsSendingAsyncMessage(MessageID.USER_BECOMES_SUPERADMIN)
-	private void informUserBecomesSuperadmin(User user) {
-		eventBusService.sendAsynchron(DomainMessageFactory.createUserBecomesSuperAdmin(user.getName(), user.getEmailAdress(),sechubEnvironment.getServerBaseUrl()));
-	}
+    @IsSendingAsyncMessage(MessageID.USER_BECOMES_SUPERADMIN)
+    private void informUserBecomesSuperadmin(User user) {
+        eventBusService
+                .sendAsynchron(DomainMessageFactory.createUserBecomesSuperAdmin(user.getName(), user.getEmailAdress(), sechubEnvironment.getServerBaseUrl()));
+    }
 
-	@IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)
-	private void requestUserRoleRecalculaton(User user) {
-		eventBusService.sendAsynchron(DomainMessageFactory.createRequestRoleCalculation(user.getName()));
-	}
+    @IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)
+    private void requestUserRoleRecalculaton(User user) {
+        eventBusService.sendAsynchron(DomainMessageFactory.createRequestRoleCalculation(user.getName()));
+    }
 
 }

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
 import com.daimler.sechub.commons.model.JSONable;
 import com.daimler.sechub.sharedkernel.MustBeKeptStable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -23,109 +24,107 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @MustBeKeptStable("This class is used for creating projects etc. It is the value object for rest calls")
 public class ProjectJsonInput implements JSONable<ProjectJsonInput> {
 
-	public static final String PROPERTY_API_VERSION = "apiVersion";
-	public static final String PROPERTY_NAME = "name";
-	public static final String PROPERTY_DESCRIPTION = "description";
-	public static final String PROPERTY_WHITELIST = "whiteList";
-	public static final String PROPERTY_OWNER = "owner";
-	public static final String PROPERTY_METADATA = "metaData";
-	
+    public static final String PROPERTY_API_VERSION = "apiVersion";
+    public static final String PROPERTY_NAME = "name";
+    public static final String PROPERTY_DESCRIPTION = "description";
+    public static final String PROPERTY_WHITELIST = "whiteList";
+    public static final String PROPERTY_OWNER = "owner";
+    public static final String PROPERTY_METADATA = "metaData";
 
-	private String apiVersion;
-	private String name;
-	private String description;
-	private String owner;
+    private String apiVersion;
+    private String name;
+    private String description;
+    private String owner;
 
-	private Optional<ProjectWhiteList> whiteList = Optional.empty();
-	
-	private Optional<ProjectMetaData> metaData = Optional.empty();
+    private Optional<ProjectWhiteList> whiteList = Optional.empty();
 
-	@Override
-	public Class<ProjectJsonInput> getJSONTargetClass() {
-		return ProjectJsonInput.class;
-	}
+    private Optional<ProjectMetaData> metaData = Optional.empty();
 
-	public void setOwner(String owner) {
-		this.owner = owner;
-	}
+    @Override
+    public Class<ProjectJsonInput> getJSONTargetClass() {
+        return ProjectJsonInput.class;
+    }
 
-	public String getOwner() {
-		return owner;
-	}
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
 
-	public Optional<ProjectWhiteList> getWhiteList() {
-		return whiteList;
-	}
+    public String getOwner() {
+        return owner;
+    }
 
-	public void setWhiteList(Optional<ProjectWhiteList> whiteList) {
-		this.whiteList = whiteList;
-	}
+    public Optional<ProjectWhiteList> getWhiteList() {
+        return whiteList;
+    }
 
-	public String getApiVersion() {
-		return apiVersion;
-	}
+    public void setWhiteList(Optional<ProjectWhiteList> whiteList) {
+        this.whiteList = whiteList;
+    }
 
-	public void setApiVersion(String apiVersion) {
-		this.apiVersion = apiVersion;
-	}
+    public String getApiVersion() {
+        return apiVersion;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public void setApiVersion(String apiVersion) {
+        this.apiVersion = apiVersion;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	public void setMetaData(Optional<Map<String, String>> metaData) {
-		
-		
-		if (!metaData.isPresent()) {
-			return;
-		}
-		
-		ProjectMetaData tmpMetaData = new ProjectMetaData();
-		
-		metaData.get().entrySet().stream().forEach(entry -> tmpMetaData.getMetaDataMap().put(entry.getKey(), entry.getValue()));
-		
-		this.metaData = Optional.ofNullable(tmpMetaData);
-	}
-	
-	public Optional<ProjectMetaData> getMetaData() {
-		return metaData;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public static class ProjectWhiteList {
+    public void setName(String name) {
+        this.name = name;
+    }
 
-		public static final String PROPERTY_URIS = "uris";
-		private List<URI> uris = new ArrayList<>();
+    public void setMetaData(Optional<Map<String, String>> metaData) {
 
-		public List<URI> getUris() {
-			return uris;
-		}
+        if (!metaData.isPresent()) {
+            return;
+        }
 
-	}
-	
-	public static class ProjectMetaData {
-		
-		private Map<String, String> metaDataMap = new HashMap<>();
+        ProjectMetaData tmpMetaData = new ProjectMetaData();
 
-		public Map<String, String> getMetaDataMap() {
-			return metaDataMap;
-		}
+        metaData.get().entrySet().stream().forEach(entry -> tmpMetaData.getMetaDataMap().put(entry.getKey(), entry.getValue()));
 
-		@Override
-		public String toString() {
-			return "ProjectMetaData [metaDataMap=" + metaDataMap + "]";
-		}
+        this.metaData = Optional.ofNullable(tmpMetaData);
+    }
+
+    public Optional<ProjectMetaData> getMetaData() {
+        return metaData;
+    }
+
+    public static class ProjectWhiteList {
+
+        public static final String PROPERTY_URIS = "uris";
+        private List<URI> uris = new ArrayList<>();
+
+        public List<URI> getUris() {
+            return uris;
+        }
+
+    }
+
+    public static class ProjectMetaData {
+
+        private Map<String, String> metaDataMap = new HashMap<>();
+
+        public Map<String, String> getMetaDataMap() {
+            return metaDataMap;
+        }
+
+        @Override
+        public String toString() {
+            return "ProjectMetaData [metaDataMap=" + metaDataMap + "]";
+        }
 
         @Override
         public int hashCode() {
@@ -151,7 +150,6 @@ public class ProjectJsonInput implements JSONable<ProjectJsonInput> {
                 return false;
             return true;
         }
-		
-		
-	}
+
+    }
 }

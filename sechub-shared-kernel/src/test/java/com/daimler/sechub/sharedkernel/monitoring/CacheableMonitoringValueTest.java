@@ -13,7 +13,6 @@ public class CacheableMonitoringValueTest {
 
     private CacheableMonitoringValue valueToTest;
     public ExpectedException expected = ExpectedExceptionFactory.none();
-   
 
     @Before
     public void before() throws Exception {
@@ -27,9 +26,9 @@ public class CacheableMonitoringValueTest {
         valueToTest.setValue(1.3); // will override 1.0 even when cache time is not over
 
         /* test */
-        assertEquals(1.3,valueToTest.getValue(),0.0);
+        assertEquals(1.3, valueToTest.getValue(), 0.0);
     }
-    
+
     @Test
     public void last_set_addtiional_data_returned() {
         /* execute */
@@ -37,60 +36,58 @@ public class CacheableMonitoringValueTest {
         valueToTest.setAdditionalData("key1", "value2");
 
         /* test */
-        assertEquals("value2",valueToTest.getAdditionalData("key1"));
+        assertEquals("value2", valueToTest.getAdditionalData("key1"));
     }
 
-    
     @Test
     public void newValue_has_not_valid_cache_after_initialized() throws InterruptedException {
         /* test */
         assertFalse(valueToTest.isCacheValid());
-        
+
     }
-    
+
     @Test
     public void isCacheValid_changed_by_time() throws InterruptedException {
         valueToTest.setValue(0.1); // do this to set cache value + mark timestamp
         /* check precondition */
         assertTrue(valueToTest.isCacheValid());
-        
+
         /* execute - just pass time */
         Thread.sleep(105);
 
         /* test */
         assertFalse(valueToTest.isCacheValid());
-        
+
     }
-    
+
     @Test
     public void isCacheValid_changed_by_set_value() throws InterruptedException {
         /* prepare */
         Thread.sleep(105);
-        
+
         /* check precondition */
         assertFalse(valueToTest.isCacheValid());
-        
+
         /* execute + test */
         valueToTest.setValue(0.9); // change value must set cached value - and so cache is valid again
         assertTrue(valueToTest.isCacheValid());
-        
+
     }
-    
-    
+
     @Test
     public void isCacheValid_changed_by_set_additional_data_and_time() throws InterruptedException {
 
         /* prepare */
         Thread.sleep(105);
-        
+
         /* check precondition */
         assertFalse(valueToTest.isCacheValid());
-        
+
         /* execute */
         valueToTest.setAdditionalData("mykey", "myvalue");
-        
+
         /* test */
         assertTrue(valueToTest.isCacheValid());
-        
+
     }
 }

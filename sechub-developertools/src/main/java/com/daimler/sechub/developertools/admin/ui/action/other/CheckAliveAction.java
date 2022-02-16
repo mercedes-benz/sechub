@@ -7,16 +7,16 @@ import com.daimler.sechub.developertools.admin.ui.UIContext;
 import com.daimler.sechub.developertools.admin.ui.action.AbstractUIAction;
 
 public class CheckAliveAction extends AbstractUIAction {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public CheckAliveAction(UIContext context) {
-		super("Check alive",context);
-	}
+    public CheckAliveAction(UIContext context) {
+        super("Check alive", context);
+    }
 
-	@Override
-	public void execute(ActionEvent e) {
-		String infoMessage = getContext().getAdministration().checkAlive();
-		outputAsTextOnSuccess(infoMessage);
-	}
+    @Override
+    public void execute(ActionEvent e) {
+        String infoMessage = getContext().getAdministration().checkAlive();
+        outputAsTextOnSuccess(infoMessage);
+    }
 
 }

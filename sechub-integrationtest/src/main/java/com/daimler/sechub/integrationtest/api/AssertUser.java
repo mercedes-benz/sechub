@@ -10,6 +10,8 @@ import java.util.Iterator;
 import java.util.SortedMap;
 import java.util.UUID;
 
+import junit.framework.AssertionFailedError;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -18,8 +20,6 @@ import com.daimler.sechub.integrationtest.api.AssertJobScheduler.TestExecutionSt
 import com.daimler.sechub.sharedkernel.mapping.MappingData;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-
-import junit.framework.AssertionFailedError;
 
 public class AssertUser extends AbstractAssert {
 
@@ -37,7 +37,7 @@ public class AssertUser extends AbstractAssert {
 
     /**
      * Check user does exists
-     * 
+     *
      * @param tries - amount of retries . Every retry will wait 1 second
      * @return
      */
@@ -62,7 +62,7 @@ public class AssertUser extends AbstractAssert {
 
     /**
      * Asserts user does exist
-     * 
+     *
      * @return
      */
     public AssertUser doesExist() {
@@ -236,7 +236,7 @@ public class AssertUser extends AbstractAssert {
         assertUser(targetUser).
             doesExist().
             isNotOwnerOf(project);
-            
+
         as(this.user).
             assignOwnerToProject(targetUser, project);
 
@@ -322,7 +322,7 @@ public class AssertUser extends AbstractAssert {
 
     /**
      * Creates a webscan job for project (but job is not started)
-     * 
+     *
      * @param project
      * @return uuid for created job
      */
@@ -332,7 +332,7 @@ public class AssertUser extends AbstractAssert {
 
     /**
      * Creates a webscan job for project (but job is not started)
-     * 
+     *
      * @param project
      * @return uuid for created job
      */
@@ -345,7 +345,7 @@ public class AssertUser extends AbstractAssert {
 
     /**
      * Creates a webscan job for project (but job is not started)
-     * 
+     *
      * @param project
      * @param runModem mode to use
      * @return uuid for created job
@@ -478,7 +478,7 @@ public class AssertUser extends AbstractAssert {
     }
 
     public AssertUser isNotOwnerOf(TestProject project) {
-        assertProject(project).hasNotOwner(user);  // test project.owner
+        assertProject(project).hasNotOwner(user); // test project.owner
         assertFalse(checkIsOwnerOfProject(project, fetchUserDetails())); // test user.ownedProjects
         return this;
     }
@@ -565,7 +565,7 @@ public class AssertUser extends AbstractAssert {
     /**
      * Waits maximum 5 seconds for job being done {@link TestExecutionState#ENDED}.
      * A precondition is that the job must exist before calling this method.
-     * 
+     *
      * @param project
      * @param jobUUID
      * @return assert object

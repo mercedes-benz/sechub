@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
  * tests will be skipped). To simplify this, this class was created. Just create
  * file `~/.sechub/sechub-developer.properties` and set there your settings. At
  * Gradle builds this will be ignored. well then!
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -63,7 +63,8 @@ public class LocalDeveloperFileSetupSupport {
 
     private void logInfo(String message) {
         if (LOG == null) {
-            // as some unclear reasons this can happen in IDEs when executing junit tests - so fallback necessary
+            // as some unclear reasons this can happen in IDEs when executing junit tests -
+            // so fallback necessary
             System.out.println("NO_LOG (info):" + message);
             return;
         }
@@ -72,7 +73,8 @@ public class LocalDeveloperFileSetupSupport {
 
     private void logError(String message, Throwable t) {
         if (LOG == null) {
-            // as some unclear reasons this can happen in IDEs when executing junit tests - so fallback necessarys
+            // as some unclear reasons this can happen in IDEs when executing junit tests -
+            // so fallback necessarys
             System.err.println("NO_LOG (error):" + message);
             t.printStackTrace();
             return;

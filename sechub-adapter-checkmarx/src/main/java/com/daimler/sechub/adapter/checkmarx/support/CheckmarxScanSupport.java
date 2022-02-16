@@ -32,8 +32,9 @@ public class CheckmarxScanSupport {
      * Starts new scan - means : Will create an entry inside QUEUE! And wait until
      * processed. If checkmarx queuing fails because of full scan is necessary a
      * automatic retry will be done. If another failure occurs the scan will fail.
-     * @param oauthSupport 
-     * 
+     *
+     * @param oauthSupport
+     *
      * @param context        - if scan is started, the corresponding queue id will
      *                       be set to context
      * @param sessionContext
@@ -41,7 +42,7 @@ public class CheckmarxScanSupport {
      */
     public void startNewScan(CheckmarxOAuthSupport oauthSupport, CheckmarxContext context) throws AdapterException {
         LOG.info("Start new checkmarx scan for: {}", context.getSessionData().getProjectName());
-       
+
         triggerNewEntryInQueue(oauthSupport, context);
         waitForQueingDone(oauthSupport, context);
         checkScanAvailable(oauthSupport, context);
@@ -78,7 +79,7 @@ public class CheckmarxScanSupport {
     // https://checkmarx.atlassian.net/wiki/spaces/KC/pages/814121878/Swagger+Examples+v8.8.0+-+v1
     private void triggerNewEntryInQueue(CheckmarxOAuthSupport oauthSupport, CheckmarxContext context) throws AdapterException {
         oauthSupport.refreshBearerTokenWhenNecessary(context);
-        
+
         AdapterMetaData metaData = context.getRuntimeContext().getMetaData();
         Long scanIdLong = metaData.getValueLong(CheckmarxMetaDataID.KEY_SCAN_ID);
         long scanId = -1;
@@ -115,7 +116,7 @@ public class CheckmarxScanSupport {
         } else {
             /* just reuse existing data */
             scanId = scanIdLong.longValue();
-            LOG.info("Reuse existing scanId:{}, for :{}",scanId,context.getTraceID());
+            LOG.info("Reuse existing scanId:{}, for :{}", scanId, context.getTraceID());
         }
 
         context.getSessionData().setScanId(scanId);

@@ -19,7 +19,7 @@ import com.daimler.sechub.sharedkernel.logging.SecurityLogType;
 /**
  * A special request reject handler which logs client IP adresses into security
  * log
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -33,7 +33,7 @@ public class SecHubHttpStatusRequestRejectedHandler extends HttpStatusRequestRej
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, RequestRejectedException requestRejectedException) throws IOException {
         String clientIPAddress = request.getRemoteAddr();
-        
+
         if (request instanceof RequestFacade) {
             /*
              * we only log the request face call, because there are additional ones like

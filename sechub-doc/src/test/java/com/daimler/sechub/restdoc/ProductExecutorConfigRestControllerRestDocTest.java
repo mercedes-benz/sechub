@@ -7,8 +7,8 @@ import static com.daimler.sechub.domain.scan.product.config.ProductExecutorConfi
 import static com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig.PROPERTY_PRODUCTIDENTIFIER;
 import static com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig.PROPERTY_SETUP;
 import static com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig.PROPERTY_UUID;
-import static com.daimler.sechub.test.TestURLBuilder.https;
 import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.UUID_PARAMETER;
+import static com.daimler.sechub.test.TestURLBuilder.https;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
@@ -123,9 +123,9 @@ public class ProductExecutorConfigRestControllerRestDocTest {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminCreatesProductExecutorConfig();
         Class<? extends Annotation> useCase = UseCaseAdminCreatesExecutorConfiguration.class;
-        
+
         UUID randomUUID = UUID.randomUUID();
-        
+
         when(createService.createProductExecutorConfig(any())).thenReturn(randomUUID.toString());
 
         TestExecutorConfig configFromUser = new TestExecutorConfig();
@@ -182,7 +182,7 @@ public class ProductExecutorConfigRestControllerRestDocTest {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminUpdatesProductExecutorConfig(UUID_PARAMETER.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminUpdatesExecutorConfig.class;
-        
+
         UUID randomUUID = UUID.randomUUID();
 
         TestExecutorConfig configFromUser = new TestExecutorConfig();
@@ -300,7 +300,7 @@ public class ProductExecutorConfigRestControllerRestDocTest {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminDeletesProductExecutorConfig(UUID_PARAMETER.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminDeletesExecutorConfiguration.class;
-        
+
         /* execute + test @formatter:off */
 	    UUID configUUID = UUID.randomUUID();
         this.mockMvc.perform(
@@ -330,7 +330,7 @@ public class ProductExecutorConfigRestControllerRestDocTest {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminFetchesListOfProductExecutionConfigurations();
         Class<? extends Annotation> useCase = UseCaseAdminFetchesExecutorConfigurationList.class;
-        
+
         UUID uuid = UUID.randomUUID();
 
         ProductExecutorConfigList list = new ProductExecutorConfigList();

@@ -16,7 +16,7 @@ import com.daimler.sechub.commons.model.SecHubStatus;
 /**
  * A component to merge different SecHub report transformation results into one.
  * At the moment very dumb, by just adding all content.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -58,7 +58,10 @@ public class ReportTransformationResultMerger {
     }
 
     private void mergeVersion(ReportTransformationResult result, ReportTransformationResult mergedTransformerResult) {
-        /* currently very simple approach: last one wins, changes by different versions produces at least a WARNING log entry*/
+        /*
+         * currently very simple approach: last one wins, changes by different versions
+         * produces at least a WARNING log entry
+         */
         String version = result.getReportVersion();
         String formerMergedVersion = mergedTransformerResult.getReportVersion();
 

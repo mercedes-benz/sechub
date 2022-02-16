@@ -49,7 +49,7 @@ public class PDSCancelJobServiceTest {
         }
 
     }
-    
+
     @Test
     public void canceling_a_running_job_calls_execution_service_cancel_operation() {
         /* prepare */
@@ -75,15 +75,15 @@ public class PDSCancelJobServiceTest {
         assertEquals(PDSJobStatusState.CANCEL_REQUESTED, job.getState());
 
     }
-    
+
     private void assertFailsWithNotAcceptableFor(PDSJobStatusState state) {
         /* prepare */
         job.setState(state);
         try {
             /* execute */
             serviceToTest.cancelJob(jobUUID);
-            
-        }catch(PDSNotAcceptableException e) {
+
+        } catch (PDSNotAcceptableException e) {
             assertTrue(e.getMessage().contains("accepted is only:[RUNNING]"));
         }
 

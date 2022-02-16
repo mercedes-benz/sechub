@@ -47,7 +47,7 @@ class DriverTest {
     void test_equals_and_hashcode() {
         /* @formatter:off */
         testBothAreEqualAndHaveSameHashCode( createExample(), createExample());
-        
+
         testBothAreNOTEqual( createExample(), change(createExample(), (driver) -> driver.setInformationUri("other") ));
         testBothAreNOTEqual( createExample(), change(createExample(), (driver) -> driver.setName("other") ));
         testBothAreNOTEqual( createExample(), change(createExample(), (driver) -> driver.setRules(Collections.singletonList(new Rule())) ));

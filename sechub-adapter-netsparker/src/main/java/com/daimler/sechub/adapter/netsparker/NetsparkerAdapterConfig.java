@@ -4,19 +4,19 @@ package com.daimler.sechub.adapter.netsparker;
 import com.daimler.sechub.adapter.SecHubTimeUnitData;
 import com.daimler.sechub.adapter.WebScanAdapterConfig;
 
-public interface NetsparkerAdapterConfig extends WebScanAdapterConfig{
+public interface NetsparkerAdapterConfig extends WebScanAdapterConfig {
 
-	String getLicenseID();
+    String getLicenseID();
 
-	String getWebsiteName();
+    String getWebsiteName();
 
-	String getAgentName();
+    String getAgentName();
 
-	String getAgentGroupName();
-	
-	SecHubTimeUnitData getMaxScanDuration();
+    String getAgentGroupName();
 
-	boolean hasAgentGroup();
+    SecHubTimeUnitData getMaxScanDuration();
 
-	boolean hasMaxScanDuration();
+    boolean hasAgentGroup();
+
+    boolean hasMaxScanDuration();
 }

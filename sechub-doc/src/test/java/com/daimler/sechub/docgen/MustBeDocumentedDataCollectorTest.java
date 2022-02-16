@@ -11,25 +11,25 @@ import com.daimler.sechub.sharedkernel.MustBeDocumented;
 
 public class MustBeDocumentedDataCollectorTest {
 
-	private MustBeDocumentedDataCollector collectorToTest;
-	private Reflections reflections;
+    private MustBeDocumentedDataCollector collectorToTest;
+    private Reflections reflections;
 
-	@Before
-	public void before() throws Exception {
-		reflections = mock(Reflections.class);
-		collectorToTest = new MustBeDocumentedDataCollector(reflections);
-	}
+    @Before
+    public void before() throws Exception {
+        reflections = mock(Reflections.class);
+        collectorToTest = new MustBeDocumentedDataCollector(reflections);
+    }
 
-	@Test
-	public void collect_does_fetch_mustbedocumented__on_method_field_and_type_by_reflections() throws Exception {
+    @Test
+    public void collect_does_fetch_mustbedocumented__on_method_field_and_type_by_reflections() throws Exception {
 
-		/* execute */
-		collectorToTest.collect();
-		
-		/* test */
-		verify(reflections).getMethodsAnnotatedWith(MustBeDocumented.class);
-		verify(reflections).getFieldsAnnotatedWith(MustBeDocumented.class);
-		verify(reflections).getTypesAnnotatedWith(MustBeDocumented.class);
-	}
+        /* execute */
+        collectorToTest.collect();
+
+        /* test */
+        verify(reflections).getMethodsAnnotatedWith(MustBeDocumented.class);
+        verify(reflections).getFieldsAnnotatedWith(MustBeDocumented.class);
+        verify(reflections).getTypesAnnotatedWith(MustBeDocumented.class);
+    }
 
 }

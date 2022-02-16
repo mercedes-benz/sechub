@@ -3,7 +3,7 @@ package com.daimler.sechub.sereco.metadata;
 import java.util.Objects;
 
 public class SerecoWebEvidence {
-    
+
     String snippet;
     SerecoWebBodyLocation bodyLocation;
 
@@ -47,7 +47,5 @@ public class SerecoWebEvidence {
     public String toString() {
         return "SerecoWebEvidence [" + (snippet != null ? "snippet=" + snippet + ", " : "") + "bodyLocation=" + bodyLocation + "]";
     }
-    
-    
-    
+
 }

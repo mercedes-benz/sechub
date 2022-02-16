@@ -11,6 +11,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface IsSendingSyncMessageAnswers {
 
-	IsSendingSyncMessageAnswer[] value();
+    IsSendingSyncMessageAnswer[] value();
 
 }

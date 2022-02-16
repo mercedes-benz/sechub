@@ -34,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Entity
 @Table(name = ProductExecutorConfig.TABLE_NAME)
-public class ProductExecutorConfig implements ProductExecutorConfigInfo{
+public class ProductExecutorConfig implements ProductExecutorConfigInfo {
 
     /* +-----------------------------------------------------------------------+ */
     /* +............................ SQL ......................................+ */
@@ -47,22 +47,20 @@ public class ProductExecutorConfig implements ProductExecutorConfigInfo{
     public static final String COLUMN_PRODUCT_IDENTIFIER = "CONFIG_PRODUCT_ID";
     public static final String COLUMN_SETUP = "CONFIG_SETUP";
     public static final String COLUMN_ENABLED = "CONFIG_ENABLED";
-    public static final String COLUMN_PROFILES= "PROFILES_PROFILE_ID";
-    
+    public static final String COLUMN_PROFILES = "PROFILES_PROFILE_ID";
 
     /* +-----------------------------------------------------------------------+ */
     /* +............................ JPQL .....................................+ */
     /* +-----------------------------------------------------------------------+ */
     public static final String CLASS_NAME = "ProductExecutorConfig";
-    
-    public static final String PROPERTY_UUID="uuid";
-    public static final String PROPERTY_NAME="name";
-    public static final String PROPERTY_PRODUCTIDENTIFIER="productIdentifier";
-    public static final String PROPERTY_SETUP="setup";
-    public static final String PROPERTY_EXECUTORVERSION="executorVersion";
-    public static final String PROPERTY_ENABLED="enabled";
-    public static final String PROPERTY_PROFILES="profiles";
-    
+
+    public static final String PROPERTY_UUID = "uuid";
+    public static final String PROPERTY_NAME = "name";
+    public static final String PROPERTY_PRODUCTIDENTIFIER = "productIdentifier";
+    public static final String PROPERTY_SETUP = "setup";
+    public static final String PROPERTY_EXECUTORVERSION = "executorVersion";
+    public static final String PROPERTY_ENABLED = "enabled";
+    public static final String PROPERTY_PROFILES = "profiles";
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -80,7 +78,7 @@ public class ProductExecutorConfig implements ProductExecutorConfigInfo{
     @Column(name = COLUMN_PRODUCT_IDENTIFIER, nullable = false)
     ProductIdentifier productIdentifier;
 
-    @Column(name = COLUMN_SETUP,columnDefinition = "text")
+    @Column(name = COLUMN_SETUP, columnDefinition = "text")
     @Convert(converter = ProductExecutorConfigSetupJpaConverter.class)
     @Basic(fetch = FetchType.EAGER)
     ProductExecutorConfigSetup setup;
@@ -95,11 +93,10 @@ public class ProductExecutorConfig implements ProductExecutorConfigInfo{
 
     @Column(name = COLUMN_ENABLED)
     Boolean enabled;
-    
-    @Column(name = COLUMN_PROFILES, nullable = false)
-    @ManyToMany(cascade=CascadeType.REFRESH, mappedBy=ProductExecutionProfile.PROPERTY_CONFIGURATIONS, fetch=FetchType.EAGER)
-    Set<ProductExecutionProfile> profiles = new HashSet<>();
 
+    @Column(name = COLUMN_PROFILES, nullable = false)
+    @ManyToMany(cascade = CascadeType.REFRESH, mappedBy = ProductExecutionProfile.PROPERTY_CONFIGURATIONS, fetch = FetchType.EAGER)
+    Set<ProductExecutionProfile> profiles = new HashSet<>();
 
     ProductExecutorConfig() {
         // jpa only
@@ -110,7 +107,7 @@ public class ProductExecutorConfig implements ProductExecutorConfigInfo{
             throw new IllegalArgumentException("Product identifier not be null!");
         }
         this.productIdentifier = productIdentifier;
-        this.executorVersion=executorVersion;
+        this.executorVersion = executorVersion;
         this.setup = setup;
 
     }

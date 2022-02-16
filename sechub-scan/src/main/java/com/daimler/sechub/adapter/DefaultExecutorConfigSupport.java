@@ -23,7 +23,7 @@ import com.daimler.sechub.sharedkernel.validation.Validation;
 /**
  * A standard executor configuration support. Supports environment entry
  * evaluation, simple key value checks etc.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -96,7 +96,7 @@ public class DefaultExecutorConfigSupport {
 
     /**
      * Get parameter boolean value for given key
-     * 
+     *
      * @param key
      * @return <code>true</code> when value for given key is "true" or "TRUE",
      *         otherwise false
@@ -108,7 +108,7 @@ public class DefaultExecutorConfigSupport {
 
     /**
      * Get parameter string value for given key
-     * 
+     *
      * @param key
      * @return string or <code>null</code>
      */
@@ -121,7 +121,7 @@ public class DefaultExecutorConfigSupport {
 
     /**
      * Get parameter integer value for given key
-     * 
+     *
      * @param key
      * @return integer value or -1 if not defined
      */
@@ -139,7 +139,7 @@ public class DefaultExecutorConfigSupport {
 
     /**
      * Resolves a name pattern provider for given id
-     * 
+     *
      * @param id
      * @return provider never <code>null</code>
      * @throws SecHubRuntimeException when name pattern provider cannot be resolved
@@ -150,7 +150,7 @@ public class DefaultExecutorConfigSupport {
 
     /**
      * Resolves a name pattern provider for given id
-     * 
+     *
      * @param id
      * @param failWhenNotConfigured when <code>false</code> missing name provider
      *                              will be replaced by fallback implementation
@@ -168,7 +168,7 @@ public class DefaultExecutorConfigSupport {
         if (parameterValue == null) {
             if (failWhenNotConfigured) {
                 throw new SecHubRuntimeException("No parameter found for necessary mapping key:" + id);
-            }else {
+            } else {
                 return FALLBACK_NOT_FOUND_PROVIDER;
             }
         }

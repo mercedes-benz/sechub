@@ -12,23 +12,22 @@ import org.springframework.http.client.ClientHttpResponse;
 
 public class NessusClientHttpRequestInterceptor implements ClientHttpRequestInterceptor {
 
-	private NessusContext context;
+    private NessusContext context;
 
-	public NessusClientHttpRequestInterceptor(NessusContext context) {
-		this.context=context;
-	}
+    public NessusClientHttpRequestInterceptor(NessusContext context) {
+        this.context = context;
+    }
 
-	@Override
-	public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
-			throws IOException {
+    @Override
+    public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
 
-		HttpHeaders headers = request.getHeaders();
-		headers.remove("content-type"); // strange, but sometimes there was a content-type (plain-text already added)
-		headers.remove("Authorization");
+        HttpHeaders headers = request.getHeaders();
+        headers.remove("content-type"); // strange, but sometimes there was a content-type (plain-text already added)
+        headers.remove("Authorization");
 
-		headers.add("content-type", MediaType.APPLICATION_JSON_VALUE);
-		headers.add("X-Cookie", "token=" + context.nessusSessionToken);
-		return execution.execute(request, body);
-	}
+        headers.add("content-type", MediaType.APPLICATION_JSON_VALUE);
+        headers.add("X-Cookie", "token=" + context.nessusSessionToken);
+        return execution.execute(request, body);
+    }
 
 }

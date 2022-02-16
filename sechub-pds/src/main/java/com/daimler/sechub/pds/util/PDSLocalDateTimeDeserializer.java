@@ -17,10 +17,8 @@ public class PDSLocalDateTimeDeserializer extends StdDeserializer<LocalDateTime>
         super(LocalDateTime.class);
     }
 
-
     @Override
-    public LocalDateTime deserialize(JsonParser jp, DeserializationContext ctxt)
-            throws IOException, JsonProcessingException {
+    public LocalDateTime deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
         return LocalDateTime.parse(jp.readValueAs(String.class));
     }
 

@@ -32,7 +32,7 @@ public class PDSAdminConfigRestController {
 
     @Validated
     @RequestMapping(path = "config/server", method = RequestMethod.GET)
-    @UseCaseAdminFetchesServerConfiguration(@PDSStep(name="rest call",description = "an admin fetches server configuration of PDS server(s).",number=1))
+    @UseCaseAdminFetchesServerConfiguration(@PDSStep(name = "rest call", description = "an admin fetches server configuration of PDS server(s).", number = 1))
     public PDSServerConfiguration getServerConfiguration() {
         return configurationService.getServerConfiguration();
     }

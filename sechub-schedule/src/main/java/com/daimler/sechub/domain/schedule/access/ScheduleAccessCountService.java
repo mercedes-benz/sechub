@@ -11,22 +11,21 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @Service
 public class ScheduleAccessCountService {
 
-	@Autowired
-	ScheduleAccessRepository repository;
+    @Autowired
+    ScheduleAccessRepository repository;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Autowired
+    UserInputAssertion assertion;
 
-	public long countProjectAccess(String projectId) {
-		assertion.isValidProjectId(projectId);
+    public long countProjectAccess(String projectId) {
+        assertion.isValidProjectId(projectId);
 
-		ScheduleAccess probe = new ScheduleAccess();
-		probe.key = new ProjectAccessCompositeKey(null, projectId);
-		Example<ScheduleAccess> example = Example.of(probe);
+        ScheduleAccess probe = new ScheduleAccess();
+        probe.key = new ProjectAccessCompositeKey(null, projectId);
+        Example<ScheduleAccess> example = Example.of(probe);
 
-		return repository.count(example);
+        return repository.count(example);
 
-	}
-
+    }
 
 }

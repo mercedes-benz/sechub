@@ -7,7 +7,7 @@ import java.util.List;
 public class TestPDSServerConfgiuration {
 
     public String apiVersion;
-    public String serverId; 
-    public List<TestPDSServerProductConfig> products=new ArrayList<>();
-    
+    public String serverId;
+    public List<TestPDSServerProductConfig> products = new ArrayList<>();
+
 }

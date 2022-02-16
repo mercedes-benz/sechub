@@ -11,8 +11,8 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface ProductResultRepository extends JpaRepository<ProductResult, UUID>, ProductResultRepositoryCustom {
 
-	@Modifying
-	@Query(value = "DELETE FROM " + TABLE_NAME + " where " + COLUMN_PROJECT_ID + " = ?1", nativeQuery=true)
-	void deleteAllResultsForProject(String projectId);
+    @Modifying
+    @Query(value = "DELETE FROM " + TABLE_NAME + " where " + COLUMN_PROJECT_ID + " = ?1", nativeQuery = true)
+    void deleteAllResultsForProject(String projectId);
 
 }

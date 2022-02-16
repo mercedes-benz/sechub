@@ -21,20 +21,21 @@ public class LocalTestPostgreSQLStarter {
 
     /**
      * Starts a local postgres test container. <b>`test`</b>
-     * 
+     *
      * @param args optional parts in following order:
-     * 
+     *
      *             <pre>
      *  ${port} ${username} ${password} ${dbName} ${imageName}
      *             </pre>
-     * 
+     *
      *             When port is -1, the test container will start with a random port
      *             number. When no parameter is defined port will be
      *             {@value #DEFAULT_FIXED_PORT}. When no user is set the user will
      *             be auto generated. A defined user name must have at least 8
      *             characters. A password must be at last 12 characters long. If not
      *             defined a strong password will be generated. The psql version is
-     *             the default postgres image from alpine linux base image defined inside
+     *             the default postgres image from alpine linux base image defined
+     *             inside
      *             sechub-developertools/scripts/container/postgres/Dockerfile
      *             {@value #DEFAULt_POSTGRES_IMAGE}e
      * @throws Exception
@@ -150,13 +151,12 @@ public class LocalTestPostgreSQLStarter {
                     e.printStackTrace();
                 }
             } while (Files.exists(filePath));
-            
+
             try {
                 container.stop();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            
 
         }
 

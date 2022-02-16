@@ -20,24 +20,22 @@ import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminShowsS
 
 @RestController
 @EnableAutoConfiguration
-@RequestMapping(APIConstants.API_ADMINISTRATION+"project/{projectId}") // API like https://developer.github.com/v3/issues/labels/#create-a-label
-@RolesAllowed({RoleConstants.ROLE_SUPERADMIN})
+@RequestMapping(APIConstants.API_ADMINISTRATION + "project/{projectId}") // API like https://developer.github.com/v3/issues/labels/#create-a-label
+@RolesAllowed({ RoleConstants.ROLE_SUPERADMIN })
 public class ScanLogRestController {
 
-	@Autowired
-	private ProjectScanLogService projectScanLogService;
+    @Autowired
+    private ProjectScanLogService projectScanLogService;
 
-
-	/* @formatter:off */
+    /* @formatter:off */
 	@UseCaseAdminShowsScanLogsForProject(@Step(number=1,next=2,name="REST API call to get JSON list",needsRestDoc=true))
 	@RequestMapping(path = "/scan/logs", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public List<ProjectScanLogSummary> getScanLogsForProject(
 			@PathVariable("projectId") String projectId
 			) {
 		/* @formatter:on */
-		return projectScanLogService.fetchSummaryLogsFor(projectId);
+        return projectScanLogService.fetchSummaryLogsFor(projectId);
 
-	}
-
+    }
 
 }

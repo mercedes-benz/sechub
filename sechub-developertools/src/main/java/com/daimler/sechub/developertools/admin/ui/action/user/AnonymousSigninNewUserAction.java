@@ -26,14 +26,14 @@ public class AnonymousSigninNewUserAction extends AbstractUIAction {
         if (!email.isPresent()) {
             return;
         }
-        
+
         if (!confirm("Do you really want to sign up user? \n\nname: " + name.get() + "\nemail: " + email.get())) {
             return;
         }
-        
+
         String userNameLowerCasedAndTimmed = name.get().toLowerCase().trim();
         String emailLowerCasedAndTrimmed = email.get().toLowerCase().trim();
-        
+
         String infoMessage = getContext().getAdministration().createNewUserSignup(userNameLowerCasedAndTimmed, emailLowerCasedAndTrimmed);
 
         outputAsTextOnSuccess(infoMessage);

@@ -27,7 +27,7 @@ public class MarkProjectFalsePositiveAction extends AbstractUIAction {
             return;
         }
 
-        String data = getContext().getAdministration().markFalsePositivesForProjectByJobData(asSecHubId(projectId.get()),jsonOpt.get());
+        String data = getContext().getAdministration().markFalsePositivesForProjectByJobData(asSecHubId(projectId.get()), jsonOpt.get());
         outputAsBeautifiedJSONOnSuccess(data);
 
     }

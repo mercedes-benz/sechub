@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Default security log service.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -35,7 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class DefaultSecurityLogService implements SecurityLogService {
 
     private static final int MINIMUM_LENGTH_TO_SHOW_PWD_INT = 52;
-    
+
     @Autowired
     UserContextService userContextService;
 
@@ -86,7 +86,7 @@ public class DefaultSecurityLogService implements SecurityLogService {
      * <br>
      * Because this a very special use case (only for filtering) it is not inside
      * the {@link SecurityLogService} interface.
-     * 
+     *
      * @param request
      * @param httpSessionId
      * @param type
@@ -157,10 +157,10 @@ public class DefaultSecurityLogService implements SecurityLogService {
         }
         HttpSession session = request.getSession();
         if (session != null) {
-            logContext.sessionId = logSanititzer.sanitize(session.getId(),1024);
+            logContext.sessionId = logSanititzer.sanitize(session.getId(), 1024);
         }
-        logContext.clientIp = logSanititzer.sanitize(request.getRemoteAddr(),1024);
-        logContext.requestURI = logSanititzer.sanitize(request.getRequestURI(),1024);
+        logContext.clientIp = logSanititzer.sanitize(request.getRemoteAddr(), 1024);
+        logContext.requestURI = logSanititzer.sanitize(request.getRequestURI(), 1024);
 
         appendSanitizedHttpHeaders(request, logContext);
 

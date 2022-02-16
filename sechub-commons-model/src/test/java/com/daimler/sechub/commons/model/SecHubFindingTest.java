@@ -63,7 +63,7 @@ class SecHubFindingTest {
         assertFalse(finding.hasScanType(otherScanTypeId.toLowerCase()));
         assertFalse(finding.hasScanType(createStringFirstCharUpperCasedOtherLowerCased(otherScanTypeId)));
     }
-    
+
     private String createStringFirstCharUpperCasedOtherLowerCased(String scanTypeId) {
         return ("" + scanTypeId.charAt(0)).toUpperCase() + scanTypeId.substring(1).toLowerCase();
     }

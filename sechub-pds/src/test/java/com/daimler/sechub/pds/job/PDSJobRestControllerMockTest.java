@@ -34,13 +34,13 @@ import com.daimler.sechub.test.TestPortProvider;
 @RunWith(SpringRunner.class)
 @WebMvcTest(PDSJobRestController.class)
 /* @formatter:off */
-@ContextConfiguration(classes = { 
+@ContextConfiguration(classes = {
         PDSJobRestController.class,
         PDSJobTransactionService.class,
         PDSFileUploadJobService.class,
-        PDSCreateJobService.class, 
-        PDSGetJobResultService.class, 
-        PDSCancelJobService.class, 
+        PDSCreateJobService.class,
+        PDSGetJobResultService.class,
+        PDSCancelJobService.class,
         PDSGetJobStatusService.class,
 		PDSJobRestControllerMockTest.SimpleTestConfiguration.class })
 /* @formatter:on */
@@ -48,37 +48,36 @@ import com.daimler.sechub.test.TestPortProvider;
 @ActiveProfiles(PDSProfiles.TEST)
 public class PDSJobRestControllerMockTest {
 
-	private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getWebMVCTestHTTPSPort();
-	
-	@Autowired
-	private MockMvc mockMvc;
+    private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getWebMVCTestHTTPSPort();
 
-	@MockBean
-	private PDSCreateJobService mockedCreateService;
-	
-	@MockBean
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private PDSCreateJobService mockedCreateService;
+
+    @MockBean
     private PDSGetJobStatusService mockedJobStatusService;
-	
-	@MockBean
+
+    @MockBean
     private PDSGetJobResultService mockedJobResultService;
-	
-	@MockBean
+
+    @MockBean
     private PDSFileUploadJobService mockedFileUploadJobService;
-	
-	@MockBean
-	private PDSJobTransactionService mockedMarkReadyToStartJobService;
-	
-	@MockBean
-	private PDSCancelJobService mockedCancelJobService;
 
+    @MockBean
+    private PDSJobTransactionService mockedMarkReadyToStartJobService;
 
-	@Test
-	public void a_job_create_call_calls_creation_service_and_returns_result() throws Exception {
-		/* prepare */
-		UUID sechubJobUUID = UUID.randomUUID();
-		
+    @MockBean
+    private PDSCancelJobService mockedCancelJobService;
+
+    @Test
+    public void a_job_create_call_calls_creation_service_and_returns_result() throws Exception {
+        /* prepare */
+        UUID sechubJobUUID = UUID.randomUUID();
+
         /* execute */
-		/* @formatter:off */
+        /* @formatter:off */
         this.mockMvc.perform(
         		post(https(PORT_USED).pds().buildCreateJob()).
         			contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -91,27 +90,27 @@ public class PDSJobRestControllerMockTest {
 
         /* test */
         ArgumentCaptor<PDSJobConfiguration> configurationCaptor = ArgumentCaptor.forClass(PDSJobConfiguration.class);
-		verify(mockedCreateService).createJob(configurationCaptor.capture());
-		
-		PDSJobConfiguration configuration = configurationCaptor.getValue();
+        verify(mockedCreateService).createJob(configurationCaptor.capture());
+
+        PDSJobConfiguration configuration = configurationCaptor.getValue();
         assertEquals("1.0", configuration.getApiVersion());
-		assertEquals(sechubJobUUID, configuration.getSechubJobUUID());
-	}
-	
-	@Test
+        assertEquals(sechubJobUUID, configuration.getSechubJobUUID());
+    }
+
+    @Test
     public void a_get_job_status_call_calls_status_service_and_returns_status_as_JSON() throws Exception {
         /* prepare */
         UUID jobUUID = UUID.randomUUID();
-        
+
         PDSJobStatus status = new PDSJobStatus();
-        status.created="created1";
-        status.ended="ended1";
-        status.jobUUID=jobUUID;
-        status.owner="owner1";
-        status.state="state1";
-        
+        status.created = "created1";
+        status.ended = "ended1";
+        status.jobUUID = jobUUID;
+        status.owner = "owner1";
+        status.state = "state1";
+
         when(mockedJobStatusService.getJobStatus(jobUUID)).thenReturn(status);
-        
+
         /* execute + test */
         /* @formatter:off */
         this.mockMvc.perform(
@@ -124,15 +123,15 @@ public class PDSJobRestControllerMockTest {
         /* @formatter:on */
 
     }
-	
-	@Test
+
+    @Test
     public void a_get_job_result_call_calls_result_service_and_returns_result_string() throws Exception {
         /* prepare */
         UUID jobUUID = UUID.randomUUID();
-        
+
         String result = "result string";
         when(mockedJobResultService.getJobResult(jobUUID)).thenReturn(result);
-        
+
         /* execute + test */
         /* @formatter:off */
         this.mockMvc.perform(
@@ -145,12 +144,12 @@ public class PDSJobRestControllerMockTest {
         /* @formatter:on */
 
     }
-	
-	@Test
+
+    @Test
     public void a_mark_job_ready_call_calls_mark_ready_service_and_returns_ok() throws Exception {
         /* prepare */
         UUID jobUUID = UUID.randomUUID();
-        
+
         /* execute + test */
         /* @formatter:off */
         this.mockMvc.perform(
@@ -160,16 +159,16 @@ public class PDSJobRestControllerMockTest {
                 );
 
         /* @formatter:on */
-        
+
         verify(mockedMarkReadyToStartJobService).markReadyToStartInOwnTransaction(jobUUID);
 
     }
-	
-	@Test
+
+    @Test
     public void a_cancel_job_call_calls_canceljob_service_returns_ok() throws Exception {
         /* prepare */
         UUID jobUUID = UUID.randomUUID();
-        
+
         /* execute + test */
         /* @formatter:off */
         this.mockMvc.perform(
@@ -179,26 +178,26 @@ public class PDSJobRestControllerMockTest {
                 );
 
         /* @formatter:on */
-        
+
         verify(mockedCancelJobService).cancelJob(jobUUID);
 
     }
-	
-	@Test
+
+    @Test
     public void an_upload__call_calls_upload_file_service_and_returns_ok() throws Exception {
         /* prepare */
         UUID jobUUID = UUID.randomUUID();
         String result = "result string";
         MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
         String fileName = "sourcecode.zip";
-        
+
         /* execute + test */
-        
+
         /* @formatter:off */
         this.mockMvc.perform(
                 multipart(https(PORT_USED).pds().buildUpload(jobUUID,fileName)).
                 file(multiPart).
-                
+
                 param("checkSum", "mychecksum")
                 ).
                     andExpect(status().isOk()
@@ -209,12 +208,11 @@ public class PDSJobRestControllerMockTest {
 
     }
 
+    @TestConfiguration
+    @Profile(PDSProfiles.TEST)
+    @EnableAutoConfiguration
+    public static class SimpleTestConfiguration extends AbstractAllowPDSAPISecurityConfiguration {
 
-	@TestConfiguration
-	@Profile(PDSProfiles.TEST)
-	@EnableAutoConfiguration
-	public static class SimpleTestConfiguration extends AbstractAllowPDSAPISecurityConfiguration {
-
-	}
+    }
 
 }

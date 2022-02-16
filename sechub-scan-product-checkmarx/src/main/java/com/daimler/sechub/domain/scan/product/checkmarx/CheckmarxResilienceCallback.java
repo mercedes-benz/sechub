@@ -8,7 +8,8 @@ import com.daimler.sechub.sharedkernel.resilience.ResilienceCallback;
 import com.daimler.sechub.sharedkernel.resilience.ResilienceContext;
 
 /**
- * A resilience callback which handles checkmarx 
+ * A resilience callback which handles checkmarx
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -29,18 +30,18 @@ class CheckmarxResilienceCallback implements ResilienceCallback {
 
     private void handleCheckmarxFullScanFallback(ResilienceContext context) {
         Boolean fallbackToFullScan = context.getValueOrNull(CheckmarxResilienceConsultant.CONTEXT_ID_FALLBACK_CHECKMARX_FULLSCAN);
-        if (! Boolean.TRUE.equals(fallbackToFullScan)) {
+        if (!Boolean.TRUE.equals(fallbackToFullScan)) {
             return;
         }
-        CheckmarxProductExecutor.LOG.debug("fallback to checkmarx fullscan recognized, alwaysFullScanEnabled before:{}",alwaysFullScanEnabled);
-        
+        CheckmarxProductExecutor.LOG.debug("fallback to checkmarx fullscan recognized, alwaysFullScanEnabled before:{}", alwaysFullScanEnabled);
+
         alwaysFullScanEnabled = true;
-        
-        CheckmarxProductExecutor.LOG.debug("fallback to checkmarx fullscan recognized, alwaysFullScanEnabled now:{}",alwaysFullScanEnabled);
+
+        CheckmarxProductExecutor.LOG.debug("fallback to checkmarx fullscan recognized, alwaysFullScanEnabled now:{}", alwaysFullScanEnabled);
         /*
          * we must remove the the old scan id inside metadata so the restart will do a
-         * new scan and not reuse the old one! When we do not rest the file upload as well,
-         * the next scan does complains about missing source locations
+         * new scan and not reuse the old one! When we do not rest the file upload as
+         * well, the next scan does complains about missing source locations
          */
         AdapterMetaData metaData = executorContext.getCurrentMetaDataOrNull();
         if (metaData != null) {
@@ -49,7 +50,7 @@ class CheckmarxResilienceCallback implements ResilienceCallback {
             CheckmarxProductExecutor.LOG.debug("start reset checkmarx adapter meta data for {} and {}", keyScanId, uploadKey);
             metaData.setValue(keyScanId, null);
             metaData.setValue(uploadKey, null);
-            
+
             executorContext.getCallback().persist(metaData);
             CheckmarxProductExecutor.LOG.debug("persisted checkmarx adapter meta data");
         }
@@ -58,9 +59,9 @@ class CheckmarxResilienceCallback implements ResilienceCallback {
          * again, when the problem really come up again.
          */
         context.setValue(CheckmarxResilienceConsultant.CONTEXT_ID_FALLBACK_CHECKMARX_FULLSCAN, null);
-        
+
     }
-    
+
     public boolean isAlwaysFullScanEnabled() {
         return alwaysFullScanEnabled;
     }

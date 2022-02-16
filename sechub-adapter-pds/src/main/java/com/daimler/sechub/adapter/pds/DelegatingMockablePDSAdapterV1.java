@@ -15,15 +15,16 @@ import com.daimler.sechub.adapter.mock.MockedAdapter;
 import com.daimler.sechub.adapter.mock.MockedAdapterSetupService;
 
 /**
- * Special adapter which is per default mocked, but can be defined to use real product
- * (PDS). So we can use started PDS integration test server in our tests
- * 
+ * Special adapter which is per default mocked, but can be defined to use real
+ * product (PDS). So we can use started PDS integration test server in our tests
+ *
  * @author Albert Tregnaghi
  *
  */
 @Profile(AdapterProfiles.MOCKED_PRODUCTS)
 @Component
-public class DelegatingMockablePDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterConfig> implements MockedAdapter<PDSAdapterConfig>, PDSAdapter {
+public class DelegatingMockablePDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterConfig>
+        implements MockedAdapter<PDSAdapterConfig>, PDSAdapter {
 
     public static final String JOB_PARAMETER_KEY__PDS_MOCKING_DISABLED = "pds.mocking.disabled";
 
@@ -35,7 +36,10 @@ public class DelegatingMockablePDSAdapterV1 extends AbstractAdapter<PDSAdapterCo
 
     @Autowired
     public DelegatingMockablePDSAdapterV1(MockedAdapterSetupService setupService) {
-        /* to have both worlds (mocked_products + real_products), we instantiate this here directly */
+        /*
+         * to have both worlds (mocked_products + real_products), we instantiate this
+         * here directly
+         */
         mockedPdsAdapterV1 = new MockedPDSAdapterV1(setupService);
         realPdsAdapterV1 = new PDSAdapterV1();
     }
@@ -48,8 +52,8 @@ public class DelegatingMockablePDSAdapterV1 extends AbstractAdapter<PDSAdapterCo
     @Override
     protected String execute(PDSAdapterConfig config, AdapterRuntimeContext runtimeContext) throws AdapterException {
         String mockingDisabled = config.getJobParameters().get(JOB_PARAMETER_KEY__PDS_MOCKING_DISABLED);
-        boolean useMock= !Boolean.parseBoolean(mockingDisabled);
-        
+        boolean useMock = !Boolean.parseBoolean(mockingDisabled);
+
         LOG.info("execution starting, using mocked adapter={}", useMock);
 
         if (useMock) {

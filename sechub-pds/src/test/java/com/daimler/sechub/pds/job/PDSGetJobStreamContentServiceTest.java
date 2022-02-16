@@ -206,8 +206,7 @@ class PDSGetJobStreamContentServiceTest {
         assertTrue(result.getMessage().contains("Timeout!"));
 
     }
-    
-    
+
     @Test
     void checker_update_necessary__fetch_output_waits_fails_not_when_job_in_state_where_no_update_necessary() {
         /* prepare */

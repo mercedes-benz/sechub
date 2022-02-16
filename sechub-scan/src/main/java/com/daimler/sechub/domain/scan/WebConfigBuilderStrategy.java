@@ -42,7 +42,7 @@ public class WebConfigBuilderStrategy implements AdapterConfigurationStrategy/* 
     public static final int MAX_LIST_SIZE_INCLUDES = 500;
     public static final int MAX_LIST_SIZE_EXCLUDES = 500;
     public static final int MAX_LENGTH_PATH_SIZE = 2048;
-    
+
     private SecHubExecutionContext context;
 
     public WebConfigBuilderStrategy(SecHubExecutionContext context) {
@@ -55,7 +55,7 @@ public class WebConfigBuilderStrategy implements AdapterConfigurationStrategy/* 
         if (!(configBuilder instanceof AbstractWebScanAdapterConfigBuilder)) {
             throw new IllegalArgumentException("Wrong usage in code: Only accetable for web scan adapters!");
         }
-        
+
         AbstractWebScanAdapterConfigBuilder webConfigBuilder = (AbstractWebScanAdapterConfigBuilder) configBuilder;
         configureImpl(webConfigBuilder);
     }
@@ -73,7 +73,7 @@ public class WebConfigBuilderStrategy implements AdapterConfigurationStrategy/* 
         SecHubWebScanConfiguration webscanConfig = webScan.get();
 
         configBuilder.setTargetURI(webscanConfig.getUri());
-        
+
         handleMaxScanDuration(configBuilder, webscanConfig);
         handleIncludes(configBuilder, webscanConfig);
         handleExcludes(configBuilder, webscanConfig);
@@ -109,52 +109,53 @@ public class WebConfigBuilderStrategy implements AdapterConfigurationStrategy/* 
         }
 
     }
-    
+
     private <B extends AbstractWebScanAdapterConfigBuilder<B, ?>> void handleIncludes(B configBuilder, SecHubWebScanConfiguration webscanConfig) {
         Optional<List<String>> optIncludes = webscanConfig.getIncludes();
         if (!optIncludes.isPresent()) {
             return;
         }
-        
+
         List<String> includesList = optIncludes.get();
-        
+
         checkExcludesOrIncludes(includesList, MAX_LIST_SIZE_INCLUDES, true);
-        
+
         Set<String> includes = new HashSet<>(includesList);
 
         configBuilder.setIncludes(includes);
     }
-    
+
     private <B extends AbstractWebScanAdapterConfigBuilder<B, ?>> void handleExcludes(B configBuilder, SecHubWebScanConfiguration webscanConfig) {
         Optional<List<String>> optExcludes = webscanConfig.getExcludes();
 
         if (!optExcludes.isPresent()) {
             return;
         }
-        
+
         List<String> excludeList = optExcludes.get();
 
         checkExcludesOrIncludes(excludeList, MAX_LIST_SIZE_EXCLUDES, false);
-        
+
         Set<String> excludes = new HashSet<>(excludeList);
 
         configBuilder.setExcludes(excludes);
     }
-    
+
     private void checkExcludesOrIncludes(List<String> urlList, int maxListSize, boolean include) {
         String term = "excludes";
-        
+
         if (urlList.size() > maxListSize) {
             if (include) {
                 term = "includes";
             }
             throw new IllegalArgumentException("A maximum of " + maxListSize + " " + term + " are allowed.");
         }
-        
+
         for (String url : urlList) {
             if (url.length() > MAX_LENGTH_PATH_SIZE) {
                 String excludeSubStr = url.substring(0, MAX_LENGTH_PATH_SIZE);
-                throw new IllegalArgumentException("Maximum URL length is " + MAX_LENGTH_PATH_SIZE + " characters. The first " + MAX_LENGTH_PATH_SIZE + " characters of the URL in question: " + excludeSubStr);
+                throw new IllegalArgumentException("Maximum URL length is " + MAX_LENGTH_PATH_SIZE + " characters. The first " + MAX_LENGTH_PATH_SIZE
+                        + " characters of the URL in question: " + excludeSubStr);
             }
             if (!url.startsWith("/")) {
                 throw new IllegalArgumentException("The URL does not start with a slash '/'. URL: " + url);
@@ -168,7 +169,7 @@ public class WebConfigBuilderStrategy implements AdapterConfigurationStrategy/* 
         if (!optMaxScanDuration.isPresent()) {
             return;
         }
-        
+
         int duration = optMaxScanDuration.get().getDuration();
         SecHubTimeUnit unit = optMaxScanDuration.get().getUnit();
         SecHubTimeUnitData maxScanDuration = SecHubTimeUnitData.of(duration, unit);
@@ -201,21 +202,21 @@ public class WebConfigBuilderStrategy implements AdapterConfigurationStrategy/* 
         AbstractWebScanAdapterConfigBuilder<B, C>.LoginBuilder.FormScriptLoginBuilder scriptBuilder = configBuilder.login().url(loginUrl).form().script();
 
         Optional<List<Page>> optPages = script.getPages();
-        
+
         if (!optPages.isPresent()) {
             return;
         }
-        
+
         List<Page> pages = optPages.get();
-        
+
         for (Page page : pages) {
             FormScriptLoginPageBuilder pageBuilder = scriptBuilder.addPage();
-            
+
             Optional<List<Action>> optActions = page.getActions();
-            
+
             if (optActions.isPresent()) {
                 List<Action> actions = optActions.get();
-                
+
                 for (Action action : actions) {
                     /* @formatter:off */
                     pageBuilder.
@@ -228,10 +229,10 @@ public class WebConfigBuilderStrategy implements AdapterConfigurationStrategy/* 
                     /* @formatter:on */
 
                 }
-                
+
                 pageBuilder.doEndPage();
             }
-            
+
         }
 
         scriptBuilder.endLogin();

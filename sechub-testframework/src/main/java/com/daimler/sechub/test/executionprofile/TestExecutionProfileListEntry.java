@@ -4,11 +4,11 @@ package com.daimler.sechub.test.executionprofile;
 import java.util.Objects;
 
 public class TestExecutionProfileListEntry {
-    
+
     public String id;
-    
+
     public String description;
-    
+
     public boolean enabled;
 
     @Override
@@ -27,6 +27,5 @@ public class TestExecutionProfileListEntry {
         TestExecutionProfileListEntry other = (TestExecutionProfileListEntry) obj;
         return Objects.equals(id, other.id);
     }
-    
 
 }

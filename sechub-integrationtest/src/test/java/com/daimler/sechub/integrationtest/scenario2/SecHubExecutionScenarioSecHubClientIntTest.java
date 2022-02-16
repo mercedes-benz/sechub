@@ -183,14 +183,14 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
         TestUser user = USER_1;
 
         assertProject(project).hasNoMetaData();
-        
+
         Map<String, String> metaData = new HashMap<>();
         metaData.put("key1", "value1");
-        
+
         as(SUPER_ADMIN).
             assignUserToProject(user, project).
             updateMetaDataForProject(project, metaData);
-        
+
         assertProject(project).hasMetaData(metaData);
 
         /* execute */
@@ -224,37 +224,37 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
         TestUser user = USER_1;
 
         assertProject(project).hasNoMetaData();
-        
+
         Map<String, String> metaData = new HashMap<>();
         metaData.put("key1", "value1");
-        
+
         // add first metaDataEntry
         as(SUPER_ADMIN).
             assignUserToProject(user, project).
             updateMetaDataForProject(project, metaData);
-        
+
         assertProject(project).hasMetaData(metaData);
-        
+
         // add additional entry
         metaData.put("key2", "value2");
         as(SUPER_ADMIN).
             updateMetaDataForProject(project, metaData);
-    
+
         assertProject(project).hasMetaData(metaData);
-        
+
         // update one entry
         metaData.put("key1", "updatedValue");
-        
+
         as(SUPER_ADMIN).
             updateMetaDataForProject(project, metaData);
-    
+
         assertProject(project).hasMetaData(metaData);
-        
+
         // remove all entries
         metaData.clear();
         as(SUPER_ADMIN).
             updateMetaDataForProject(project, metaData);
-    
+
         assertProject(project).hasNoMetaData();
 
         /* execute */

@@ -28,7 +28,7 @@ import com.daimler.sechub.sharedkernel.project.ProjectAccessLevel;
 /**
  * The test does not only test the message handler but also the domain message
  * service recognition of asynchronous event resolving by annotations.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

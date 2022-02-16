@@ -6,14 +6,14 @@ import com.daimler.sechub.test.TestFileSupport;
 
 @SechubTestComponent
 public class NessusAdapterTestFileSupport extends TestFileSupport {
-	private static final NessusAdapterTestFileSupport TESTFILE_SUPPORT = new NessusAdapterTestFileSupport();
+    private static final NessusAdapterTestFileSupport TESTFILE_SUPPORT = new NessusAdapterTestFileSupport();
 
-	public static NessusAdapterTestFileSupport getTestfileSupport() {
-		return TESTFILE_SUPPORT;
-	}
+    public static NessusAdapterTestFileSupport getTestfileSupport() {
+        return TESTFILE_SUPPORT;
+    }
 
-	NessusAdapterTestFileSupport() {
-		super("sechub-adapter-nessus/src/test/resources");
-	}
+    NessusAdapterTestFileSupport() {
+        super("sechub-adapter-nessus/src/test/resources");
+    }
 
 }

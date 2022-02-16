@@ -3,7 +3,7 @@ package com.daimler.sechub.domain.scan.product;
 
 /**
  * Implementations will execute web scan products
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

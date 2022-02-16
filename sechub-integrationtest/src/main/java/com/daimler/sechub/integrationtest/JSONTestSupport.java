@@ -9,27 +9,28 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JSONTestSupport {
 
-	public static final JSONTestSupport DEFAULT = new JSONTestSupport();
-	
-	private ObjectMapper objectMapper;
+    public static final JSONTestSupport DEFAULT = new JSONTestSupport();
 
-	public JSONTestSupport(){
-		objectMapper=createObjectMapper();
-	}
-	
-	/**
-	 * Creates jackson object mapper, can be overriden
-	 * @return object mapper
-	 */
-	protected ObjectMapper createObjectMapper() {
-		return new ObjectMapper();
-	}
+    private ObjectMapper objectMapper;
 
-	public String toJson(Map<String, ?> json) throws IOException {
-		return objectMapper.writeValueAsString(json);
-	}
-	
-	public JsonNode fromJson(String json) throws IOException {
-		return objectMapper.readTree(json);
-	}
+    public JSONTestSupport() {
+        objectMapper = createObjectMapper();
+    }
+
+    /**
+     * Creates jackson object mapper, can be overriden
+     *
+     * @return object mapper
+     */
+    protected ObjectMapper createObjectMapper() {
+        return new ObjectMapper();
+    }
+
+    public String toJson(Map<String, ?> json) throws IOException {
+        return objectMapper.writeValueAsString(json);
+    }
+
+    public JsonNode fromJson(String json) throws IOException {
+        return objectMapper.readTree(json);
+    }
 }

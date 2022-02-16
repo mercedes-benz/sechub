@@ -97,7 +97,7 @@ public class ProductExecutorTemplatesDialogUI {
         if (config.inputContent != null) {
             /* we use the importer all time to initialize content */
             SwingUtilities.invokeLater(() -> importFromClipboardAction.importText(config.inputContent));
-        }else {
+        } else {
             /* when new at all */
             System.out.println("No input content found!");
         }

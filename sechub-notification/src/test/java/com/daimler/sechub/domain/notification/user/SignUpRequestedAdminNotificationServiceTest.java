@@ -17,55 +17,53 @@ import com.daimler.sechub.sharedkernel.messaging.UserMessage;
 
 public class SignUpRequestedAdminNotificationServiceTest {
 
-	private SignUpRequestedAdminNotificationService serviceToTest;
-	private NotificationConfiguration mockedNotificationConfiguration;
-	private EmailService mockedEmailService;
-	private MailMessageFactory mockedMailMessageFactory;
+    private SignUpRequestedAdminNotificationService serviceToTest;
+    private NotificationConfiguration mockedNotificationConfiguration;
+    private EmailService mockedEmailService;
+    private MailMessageFactory mockedMailMessageFactory;
 
+    @Before
+    public void before() throws Exception {
+        mockedNotificationConfiguration = mock(NotificationConfiguration.class);
+        mockedEmailService = mock(EmailService.class);
+        mockedMailMessageFactory = mock(MailMessageFactory.class);
 
-	@Before
-	public void before() throws Exception {
-		mockedNotificationConfiguration = mock(NotificationConfiguration.class);
-		mockedEmailService = mock(EmailService.class);
-		mockedMailMessageFactory = mock(MailMessageFactory.class);
+        serviceToTest = new SignUpRequestedAdminNotificationService();
+        serviceToTest.emailService = mockedEmailService;
+        serviceToTest.factory = mockedMailMessageFactory;
+        serviceToTest.notificationConfiguration = mockedNotificationConfiguration;
+    }
 
-		serviceToTest = new SignUpRequestedAdminNotificationService();
-		serviceToTest.emailService=mockedEmailService;
-		serviceToTest.factory=mockedMailMessageFactory;
-		serviceToTest.notificationConfiguration=mockedNotificationConfiguration;
-	}
+    @Test
+    public void sends_email_to_admins_containing_userid_and_email_from_event() throws Exception {
 
+        /* prepare */
+        when(mockedNotificationConfiguration.getEmailAdministrators()).thenReturn("adminMail");
 
-	@Test
-	public void sends_email_to_admins_containing_userid_and_email_from_event() throws Exception {
+        SimpleMailMessage mockedMailMessage = mock(SimpleMailMessage.class);
+        when(mockedMailMessageFactory.createMessage(any())).thenReturn(mockedMailMessage);
 
-		/* prepare */
-		when(mockedNotificationConfiguration.getEmailAdministrators()).thenReturn("adminMail");
+        // message to receive from event bus
+        UserMessage message = mock(UserMessage.class);
+        when(message.getUserId()).thenReturn("schlaubi");
+        when(message.getEmailAdress()).thenReturn("schlau.schlumpf@schlumpfhausen.de");
 
-		SimpleMailMessage mockedMailMessage = mock(SimpleMailMessage.class);
-		when(mockedMailMessageFactory.createMessage(any())).thenReturn(mockedMailMessage);
+        /* execute */
+        serviceToTest.notify(message);
 
-		// message to receive from event bus
-		UserMessage message = mock(UserMessage.class);
-		when(message.getUserId()).thenReturn("schlaubi");
-		when(message.getEmailAdress()).thenReturn("schlau.schlumpf@schlumpfhausen.de");
+        /* test */
+        // check mocked mail message was sent
+        ArgumentCaptor<SimpleMailMessage> mailMessageCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
+        verify(mockedEmailService).send(mailMessageCaptor.capture());
+        assertSame(mockedMailMessage, mailMessageCaptor.getValue());
+        verify(mockedMailMessage).setTo("adminMail");
 
-		/* execute */
-		serviceToTest.notify(message);
-
-		/* test */
-		// check mocked mail message was sent
-		ArgumentCaptor<SimpleMailMessage> mailMessageCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
-		verify(mockedEmailService).send(mailMessageCaptor.capture());
-		assertSame(mockedMailMessage, mailMessageCaptor.getValue());
-		verify(mockedMailMessage).setTo("adminMail");
-
-		// check content
-		ArgumentCaptor<String> stringMessageCaptor = ArgumentCaptor.forClass(String.class);
-		verify(mockedMailMessage).setText(stringMessageCaptor.capture());
-		String textInMessageBody = stringMessageCaptor.getValue();
-		assertTrue(textInMessageBody.contains("schlaubi"));
-		assertTrue(textInMessageBody.contains("schlau.schlumpf@schlumpfhausen.de"));
-	}
+        // check content
+        ArgumentCaptor<String> stringMessageCaptor = ArgumentCaptor.forClass(String.class);
+        verify(mockedMailMessage).setText(stringMessageCaptor.capture());
+        String textInMessageBody = stringMessageCaptor.getValue();
+        assertTrue(textInMessageBody.contains("schlaubi"));
+        assertTrue(textInMessageBody.contains("schlau.schlumpf@schlumpfhausen.de"));
+    }
 
 }

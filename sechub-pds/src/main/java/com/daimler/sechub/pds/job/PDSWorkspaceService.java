@@ -54,7 +54,7 @@ public class PDSWorkspaceService {
 
     @Autowired
     PDSFileUnzipSupport fileUnzipSupport;
-    
+
     @Autowired
     PDSStorageInfoCollector storageInfoCollector;
 
@@ -67,7 +67,7 @@ public class PDSWorkspaceService {
      * <ol>
      * <li><Fetch data from storage and copy to local workspace</li>
      * </ol>
-     * 
+     *
      * @param config
      */
     public void prepareWorkspace(UUID jobUUID, PDSJobConfiguration config) throws IOException {
@@ -113,15 +113,15 @@ public class PDSWorkspaceService {
 
         LOG.debug("PDS job {}: feching storage for storagePath = {} and jobUUID:{}, useSecHubStorage={}", pdsJobUUID, storagePath, jobUUID, useSecHubStorage);
         JobStorage storage = storageService.getJobStorage(storagePath, jobUUID);
-        
+
         storageInfoCollector.informFetchedStorage(storagePath, config.getSechubJobUUID(), pdsJobUUID, storage);
-        
+
         return storage;
     }
 
     /**
      * Resolves upload folder - if not existing it will be created
-     * 
+     *
      * @param jobUUID
      * @return upload folder
      */
@@ -133,7 +133,7 @@ public class PDSWorkspaceService {
 
     /**
      * Resolves upload folder - if not existing it will be created
-     * 
+     *
      * @param jobUUID
      * @return upload folder
      * @throws IllegalStateException in case the workspace folder does not exist and
@@ -225,7 +225,7 @@ public class PDSWorkspaceService {
     /**
      * When <code>true</code> workspace will not be automatically cleaned up, means
      * upload files results etc. are not deleted after scans!
-     * 
+     *
      * @return <code>true</code> when auto clean shall NOT be done
      */
     public boolean isWorkspaceAutoCleanDisabled() {
@@ -246,7 +246,7 @@ public class PDSWorkspaceService {
 
     /**
      * Resolves upload folder - if not existing it will be created
-     * 
+     *
      * @param jobUUID
      * @return upload folder
      */

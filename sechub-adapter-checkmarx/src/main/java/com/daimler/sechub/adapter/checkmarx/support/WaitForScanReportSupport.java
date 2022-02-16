@@ -13,52 +13,52 @@ import com.daimler.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
 import com.daimler.sechub.adapter.checkmarx.CheckmarxAdapterContext;
 import com.daimler.sechub.adapter.support.JSONAdapterSupport.Access;
 
-class WaitForScanReportSupport extends WaitForStateSupport<CheckmarxAdapterContext, CheckmarxAdapterConfig>{
+class WaitForScanReportSupport extends WaitForStateSupport<CheckmarxAdapterContext, CheckmarxAdapterConfig> {
 
-	private CheckmarxOAuthSupport oauthSupport;
+    private CheckmarxOAuthSupport oauthSupport;
 
     public WaitForScanReportSupport(CheckmarxOAuthSupport oauthSupport, Adapter<?> adapter) {
-		super(adapter);
-		this.oauthSupport=oauthSupport;
-	}
+        super(adapter);
+        this.oauthSupport = oauthSupport;
+    }
 
-	@Override
-	protected boolean isWaitingForOKWhenInState(String state, CheckmarxAdapterContext context) throws Exception {
-		return context.getReportDetails().isRunning();
-	}
+    @Override
+    protected boolean isWaitingForOKWhenInState(String state, CheckmarxAdapterContext context) throws Exception {
+        return context.getReportDetails().isRunning();
+    }
 
-	@Override
-	protected String getCurrentState(CheckmarxAdapterContext context) throws Exception {
-		fetchScanDetails(context);
-		return null;
-	}
-	
+    @Override
+    protected String getCurrentState(CheckmarxAdapterContext context) throws Exception {
+        fetchScanDetails(context);
+        return null;
+    }
+
 //	https://checkmarx.atlassian.net/wiki/spaces/KC/pages/563806382/Get+Report+Status+by+Id+-+GET+reports+sastScan+id+status+v8.8.0+and+up
 //	https://checkmarx.atlassian.net/wiki/spaces/KC/pages/814121878/Swagger+Examples+v8.8.0+-+v1
-	private void fetchScanDetails(CheckmarxAdapterContext context) throws AdapterException {
+    private void fetchScanDetails(CheckmarxAdapterContext context) throws AdapterException {
 
-	    oauthSupport.refreshBearerTokenWhenNecessary(context);
-	    
-		ReportDetails details = context.getReportDetails();
-		try {
-			RestOperations restTemplate = context.getRestOperations();
-			ResponseEntity<String> queueData = restTemplate.getForEntity(
-					context.getAPIURL("reports/sastScan/" + context.getReportId()+"/status"), String.class);
-			String body = queueData.getBody();
+        oauthSupport.refreshBearerTokenWhenNecessary(context);
 
-			Access status = context.json().fetch("status", body);
-			String value= status.fetch("value").asText();
-			details.status =value;
+        ReportDetails details = context.getReportDetails();
+        try {
+            RestOperations restTemplate = context.getRestOperations();
+            ResponseEntity<String> queueData = restTemplate.getForEntity(context.getAPIURL("reports/sastScan/" + context.getReportId() + "/status"),
+                    String.class);
+            String body = queueData.getBody();
 
-		}catch(HttpStatusCodeException e) {
-			if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
-				/* ok just no longer in queue / or never existed */
-				details.notFound=true;
-				return;
-			}
-			throw e; // rethrow
-		}
+            Access status = context.json().fetch("status", body);
+            String value = status.fetch("value").asText();
+            details.status = value;
 
-	}
-	
+        } catch (HttpStatusCodeException e) {
+            if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
+                /* ok just no longer in queue / or never existed */
+                details.notFound = true;
+                return;
+            }
+            throw e; // rethrow
+        }
+
+    }
+
 }

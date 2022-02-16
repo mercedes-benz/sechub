@@ -56,24 +56,23 @@ public class SchedulerRestartJobService {
     @Autowired
     AuditLogService auditLogService;
 
-    @Autowired 
+    @Autowired
     SecHubEnvironment sechubEnvironment;
-    
+
     @Autowired
     ScheduleAssertService scheduleAssertService;
-    
+
     @Autowired
     SchedulerCancelBatchJobService schedulerCancelJobService;
-    
+
     /**
      * This service will restart given JOB. There is NO check if current user has
      * access - this must be done before.
-     * 
+     *
      * @param jobUUID
      * @param ownerEmailAddress
      */
-    @UseCaseAdminRestartsJobHard(@Step(number = 3, name = "Try to rstart job (hard)", 
-            description = "When job is found, a restart will be triggered. Existing batch jobs will be terminated"))
+    @UseCaseAdminRestartsJobHard(@Step(number = 3, name = "Try to rstart job (hard)", description = "When job is found, a restart will be triggered. Existing batch jobs will be terminated"))
     public void restartJobHard(UUID jobUUID, String ownerEmailAddress) {
         restartJob(jobUUID, ownerEmailAddress, true);
     }
@@ -81,12 +80,11 @@ public class SchedulerRestartJobService {
     /**
      * This service will restart given JOB. There is NO check if current user has
      * access - this must be done before.
-     * 
+     *
      * @param jobUUID
      * @param ownerEmailAddress
      */
-    @UseCaseAdminRestartsJobHard(@Step(number = 3, name = "Try to restart job", 
-            description = "When job is found and job is not already finsihed, a restart will be triggered. Existing batch jobs will be terminated"))
+    @UseCaseAdminRestartsJobHard(@Step(number = 3, name = "Try to restart job", description = "When job is found and job is not already finsihed, a restart will be triggered. Existing batch jobs will be terminated"))
     public void restartJob(UUID jobUUID, String ownerEmailAddress) {
         restartJob(jobUUID, ownerEmailAddress, false);
     }
@@ -116,8 +114,11 @@ public class SchedulerRestartJobService {
             sendJobRestartCanceled(job, ownerEmailAddress, "Restart canceled, because job already finished");
             throw new AlreadyExistsException("Job has already finished - restart not necessary");
         }
-        
-        /* when we have still running batch jobs we must terminate them as well + abandon */
+
+        /*
+         * when we have still running batch jobs we must terminate them as well +
+         * abandon
+         */
         schedulerCancelJobService.stopAndAbandonAllRunningBatchJobsForSechubJobUUID(jobUUID);
 
         if (hard) {
@@ -130,7 +131,7 @@ public class SchedulerRestartJobService {
         sendJobRestartTriggered(secHubJob, ownerEmailAddress);
         launcherService.executeJob(secHubJob);
         String type = (hard ? "hard" : "normal");
-        LOG.info("job {} has been {} restarted", jobUUID,type);
+        LOG.info("job {} has been {} restarted", jobUUID, type);
 
     }
 
@@ -154,22 +155,22 @@ public class SchedulerRestartJobService {
         message.setOwnerEmailAddress(ownerEmailAddress);
 
         request.set(MessageDataKeys.JOB_RESTART_DATA, message);
-        request.set(MessageDataKeys.ENVIRONMENT_BASE_URL,sechubEnvironment.getServerBaseUrl());
+        request.set(MessageDataKeys.ENVIRONMENT_BASE_URL, sechubEnvironment.getServerBaseUrl());
         eventBus.sendAsynchron(request);
 
     }
-    
+
     @IsSendingSyncMessage(MessageID.REQUEST_PURGE_JOB_RESULTS)
     private void sendPurgeJobResultsSynchronousRequest(ScheduleSecHubJob secHubJob) {
         DomainMessage request = DomainMessageFactory.createEmptyRequest(MessageID.REQUEST_PURGE_JOB_RESULTS);
-        
+
         request.set(MessageDataKeys.SECHUB_UUID, secHubJob.getUUID());
         request.set(MessageDataKeys.ENVIRONMENT_BASE_URL, sechubEnvironment.getServerBaseUrl());
         DomainMessageSynchronousResult result = eventBus.sendSynchron(request);
         if (result.hasFailed()) {
             throw new SecHubRuntimeException("Purge failed!");
         }
-        
+
     }
 
     private void sendJobRestartCanceled(ScheduleSecHubJob secHubJob, String ownerEmailAddress, String cancelReason) {
@@ -194,7 +195,7 @@ public class SchedulerRestartJobService {
         message.setInfo(context.info);
 
         request.set(MessageDataKeys.JOB_RESTART_DATA, message);
-        request.set(MessageDataKeys.ENVIRONMENT_BASE_URL,sechubEnvironment.getServerBaseUrl());
+        request.set(MessageDataKeys.ENVIRONMENT_BASE_URL, sechubEnvironment.getServerBaseUrl());
         eventBus.sendAsynchron(request);
     }
 

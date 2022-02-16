@@ -16,11 +16,12 @@ public class EventInspectionAPI {
         Map<String, String> map = JSONConverter.get().fromJSON(Map.class, json);
         return map;
     }
-    
+
     public static boolean fetchIsStarted() {
         String value = fetchMap().get("started");
         return Boolean.valueOf(value);
     }
+
     public static int fetchLastInspectionId() {
         String value = fetchMap().get("lastInspectionId");
         return Integer.valueOf(value);

@@ -5,19 +5,18 @@ import com.daimler.sechub.domain.scan.TargetIdentifiyingOneInstallSetup;
 
 public interface NetsparkerInstallSetup extends TargetIdentifiyingOneInstallSetup {
 
-	public int getScanResultCheckPeriodInMinutes();
+    public int getScanResultCheckPeriodInMinutes();
 
-	public int getScanResultCheckTimeOutInMinutes();
+    public int getScanResultCheckTimeOutInMinutes();
 
-	public String getAgentName();
+    public String getAgentName();
 
-	public String getDefaultPolicyId();
+    public String getDefaultPolicyId();
 
-	public String getInternetAgentGroupName();
+    public String getInternetAgentGroupName();
 
-	public String getIntranetAgentGroupName();
+    public String getIntranetAgentGroupName();
 
-	public String getNetsparkerLicenseId();
-	
+    public String getNetsparkerLicenseId();
 
 }

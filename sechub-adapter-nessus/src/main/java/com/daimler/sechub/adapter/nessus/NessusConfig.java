@@ -12,7 +12,7 @@ public class NessusConfig extends AbstractInfraScanAdapterConfig implements Ness
     public static NessusConfigBuilder builder() {
         return new NessusConfigBuilder();
     }
-    
+
     public static class NessusConfigBuilder extends AbstractInfraScanAdapterConfigBuilder<NessusConfigBuilder, NessusAdapterConfig> {
 
         @Override

@@ -16,70 +16,70 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 public class ProjectDataDeleteServiceTest {
 
-	private ProjectDataDeleteService serviceToTest;
-	private ProjectScanLogRepository projectScanLogRepository;
-	private ProductResultRepository productResultRepository;
-	private ScanReportRepository scanReportRepository;
-	private ScanProjectConfigRepository scanProjectConfigRepository;
+    private ProjectDataDeleteService serviceToTest;
+    private ProjectScanLogRepository projectScanLogRepository;
+    private ProductResultRepository productResultRepository;
+    private ScanReportRepository scanReportRepository;
+    private ScanProjectConfigRepository scanProjectConfigRepository;
     private ProductExecutionProfileRepository profileRepository;
 
-	@Before
-	public void before() {
-		projectScanLogRepository= mock(ProjectScanLogRepository.class);
-		productResultRepository = mock(ProductResultRepository.class);
-		scanReportRepository = mock(ScanReportRepository.class);
-		scanProjectConfigRepository = mock(ScanProjectConfigRepository.class);
-		profileRepository=mock(ProductExecutionProfileRepository.class);
-		
-		serviceToTest = new ProjectDataDeleteService();
-		serviceToTest.logSanitizer=mock(LogSanitizer.class);
-		serviceToTest.assertion=mock(UserInputAssertion.class);
+    @Before
+    public void before() {
+        projectScanLogRepository = mock(ProjectScanLogRepository.class);
+        productResultRepository = mock(ProductResultRepository.class);
+        scanReportRepository = mock(ScanReportRepository.class);
+        scanProjectConfigRepository = mock(ScanProjectConfigRepository.class);
+        profileRepository = mock(ProductExecutionProfileRepository.class);
 
-		serviceToTest.scanLogRepository=projectScanLogRepository;
-		serviceToTest.productResultRepository=productResultRepository;
-		serviceToTest.scanReportRepository=scanReportRepository;
-		serviceToTest.scanProjectConfigRepository=scanProjectConfigRepository;
-        serviceToTest.profileRepository=profileRepository;
-	}
+        serviceToTest = new ProjectDataDeleteService();
+        serviceToTest.logSanitizer = mock(LogSanitizer.class);
+        serviceToTest.assertion = mock(UserInputAssertion.class);
 
-	@Test
-	public void deleteAllDataForProject_triggers_deleteAllResultsForProject() {
-		/* execute */
-		serviceToTest.deleteAllDataForProject("project-1");
+        serviceToTest.scanLogRepository = projectScanLogRepository;
+        serviceToTest.productResultRepository = productResultRepository;
+        serviceToTest.scanReportRepository = scanReportRepository;
+        serviceToTest.scanProjectConfigRepository = scanProjectConfigRepository;
+        serviceToTest.profileRepository = profileRepository;
+    }
 
-		/* test */
-		verify(productResultRepository).deleteAllResultsForProject("project-1");
+    @Test
+    public void deleteAllDataForProject_triggers_deleteAllResultsForProject() {
+        /* execute */
+        serviceToTest.deleteAllDataForProject("project-1");
 
-	}
+        /* test */
+        verify(productResultRepository).deleteAllResultsForProject("project-1");
 
-	@Test
-	public void deleteAllDataForProject_triggers_deleteAllReportsForProject() {
-		/* execute */
-		serviceToTest.deleteAllDataForProject("project-1");
+    }
 
-		/* test */
-		verify(scanReportRepository).deleteAllReportsForProject("project-1");
+    @Test
+    public void deleteAllDataForProject_triggers_deleteAllReportsForProject() {
+        /* execute */
+        serviceToTest.deleteAllDataForProject("project-1");
 
-	}
+        /* test */
+        verify(scanReportRepository).deleteAllReportsForProject("project-1");
 
-	@Test
-	public void deleteAllDataForProject_triggers_deleteAllLogDataForProject() {
-		/* execute */
-		serviceToTest.deleteAllDataForProject("project-1");
+    }
 
-		/* test */
-		verify(projectScanLogRepository).deleteAllLogDataForProject("project-1");
+    @Test
+    public void deleteAllDataForProject_triggers_deleteAllLogDataForProject() {
+        /* execute */
+        serviceToTest.deleteAllDataForProject("project-1");
 
-	}
-	
-	@Test
-	public void deleteAllDataForProject_triggers_deleteAllConfigurationsForProject() {
-		/* execute */
-		serviceToTest.deleteAllDataForProject("project-1");
+        /* test */
+        verify(projectScanLogRepository).deleteAllLogDataForProject("project-1");
 
-		/* test */
-		verify(scanProjectConfigRepository).deleteAllConfigurationsForProject("project-1");
+    }
 
-	}
+    @Test
+    public void deleteAllDataForProject_triggers_deleteAllConfigurationsForProject() {
+        /* execute */
+        serviceToTest.deleteAllDataForProject("project-1");
+
+        /* test */
+        verify(scanProjectConfigRepository).deleteAllConfigurationsForProject("project-1");
+
+    }
 
 }

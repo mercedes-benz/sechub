@@ -7,7 +7,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marker annotation for all other domain messaging annotations. This is used for automated documentation!
+ * Marker annotation for all other domain messaging annotations. This is used
+ * for automated documentation!
+ *
  * @author Albert Tregnaghi
  *
  */

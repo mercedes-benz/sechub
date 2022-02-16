@@ -25,13 +25,13 @@ public class UserUsecasesEventTraceScenario2IntTest {
     public void UC_ADMIN_ASSIGNS_USER_TO_PROJECT() {
         /* @formatter:off */
         /* prepare */
-	    
+
         TestAPI.startEventInspection();
 
         /* execute */
         as(SUPER_ADMIN).
-            assignUserToProject(Scenario2.USER_1,Scenario2.PROJECT_1); 
-        
+            assignUserToProject(Scenario2.USER_1,Scenario2.PROJECT_1);
+
         /* test */
         AssertEventInspection.assertEventInspection().
         expect().

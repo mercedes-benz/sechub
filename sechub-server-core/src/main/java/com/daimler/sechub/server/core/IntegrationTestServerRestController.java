@@ -74,7 +74,7 @@ public class IntegrationTestServerRestController {
 
     @Autowired
     IntegrationTestSecurityLogService securityLogService;
-    
+
     @Autowired
     IntegrationTestEventInspectorService eventInspectorService;
 
@@ -86,13 +86,13 @@ public class IntegrationTestServerRestController {
     public void clearSecurityLogs() {
         securityLogService.getLogData().clear();
     }
-    
+
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/logs/security", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })
     public List<SecurityLogData> getSecurityLogData() {
         return securityLogService.getLogData();
     }
-    
+
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/event/inspection/reset-and-stop", method = RequestMethod.POST, produces = {
             MediaType.APPLICATION_JSON_VALUE })
     public void resetAndStopEventInspection() {
@@ -104,16 +104,16 @@ public class IntegrationTestServerRestController {
     public void startEventInspection() {
         eventInspectorService.start();
     }
-    
+
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/event/inspection/status", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })
-    public Map<String,String> statusEventInspection() {
-        Map<String,String> map = new TreeMap<>();
+    public Map<String, String> statusEventInspection() {
+        Map<String, String> map = new TreeMap<>();
         map.put("started", Boolean.toString(eventInspectorService.isStarted()));
         map.put("lastInspectionId", Integer.toString(eventInspectorService.getInspectionIdCounter()));
         return map;
     }
-    
+
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/event/inspection/history", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })
     public String fetchEventInspectionHistory() {
@@ -159,7 +159,7 @@ public class IntegrationTestServerRestController {
         IntegrationTestMetaDataInspector itmd = (IntegrationTestMetaDataInspector) metaDataInspector;
         itmd.clear();
     }
-    
+
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/log/info", method = RequestMethod.POST, produces = {
             MediaType.APPLICATION_JSON_VALUE })
     public void logInfo(@RequestBody String text) {

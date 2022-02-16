@@ -1,17 +1,18 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest.scenario12;
 
+import static com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultProfiles.PROFILE_7_PDS_WEBSCAN;
+
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.api.TestUser;
 import com.daimler.sechub.integrationtest.internal.AbstractSecHubServerTestScenario;
 import com.daimler.sechub.integrationtest.internal.CleanScenario;
 import com.daimler.sechub.integrationtest.internal.PDSTestScenario;
-import static com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultProfiles.PROFILE_7_PDS_WEBSCAN;;
 
 /**
  * <b><u>Scenario12 - the PDS integration test SARIF scenario (REUSE SECHUB DATA
  * enabled!)</u></b><br>
- * 
+ *
  * In this scenario following is automatically initialized at start (old data
  * removed as well): <br>
  * <br>
@@ -26,8 +27,8 @@ import static com.daimler.sechub.integrationtest.internal.IntegrationTestDefault
  * PROJECT_1_ is automatically created
  * USER_1, is automatically registered, created and assigned to project1
  * </pre>
- * 
- * 
+ *
+ *
  * @author Albert Tregnaghi
  *
  */

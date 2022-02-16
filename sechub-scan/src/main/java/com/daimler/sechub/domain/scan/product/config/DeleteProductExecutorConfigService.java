@@ -24,15 +24,14 @@ import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminDeletes
 @Service
 public class DeleteProductExecutorConfigService {
 
-
-private static final Logger LOG = LoggerFactory.getLogger(DeleteProductExecutorConfigService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DeleteProductExecutorConfigService.class);
 
     @Autowired
     ProductExecutorConfigRepository repository;
-    
+
     @Autowired
     AuditLogService auditLogService;
-    
+
     /* @formatter:off */
     @UseCaseAdminDeletesExecutorConfiguration(
             @Step(
@@ -51,12 +50,12 @@ private static final Logger LOG = LoggerFactory.getLogger(DeleteProductExecutorC
         String name = found.getName();
         ProductIdentifier productIdentifier = found.getProductIdentifier();
         Integer executorVersion = found.getExecutorVersion();
-        
+
         repository.deleteById(uuid);
-        
+
         LOG.info("Removed product execution config uuid:{}, name:{} which was for product:{} V{}",uuid, name, productIdentifier,executorVersion);
     }
 
-    /* @formatter:on */    
+    /* @formatter:on */
 
 }

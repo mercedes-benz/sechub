@@ -15,24 +15,22 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @Service
 public class ScanRevokeUserAccessAtAllService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ScanRevokeUserAccessAtAllService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ScanRevokeUserAccessAtAllService.class);
 
+    @Autowired
+    ScanAccessRepository repository;
 
-	@Autowired
-	ScanAccessRepository repository;
+    @Autowired
+    UserInputAssertion assertion;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Transactional
+    @UseCaseAdminDeletesUser(@Step(number = 3, name = "revoke user from schedule access"))
+    public void revokeUserAccess(String userId) {
+        assertion.isValidUserId(userId);
 
-	@Transactional
-	@UseCaseAdminDeletesUser(@Step(number=3,name="revoke user from schedule access"))
-	public void revokeUserAccess(String userId) {
-		assertion.isValidUserId(userId);
+        repository.deleteAcessForUserAtAll(userId);
 
-		repository.deleteAcessForUserAtAll(userId);
-
-		LOG.info("Revoked access at all for user:{}",userId);
-	}
-
+        LOG.info("Revoked access at all for user:{}", userId);
+    }
 
 }

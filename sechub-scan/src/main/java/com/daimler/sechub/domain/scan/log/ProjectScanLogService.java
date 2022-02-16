@@ -21,66 +21,62 @@ import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
 @Service
 public class ProjectScanLogService {
 
-	@Autowired
-	ProjectScanLogRepository repository;
+    @Autowired
+    ProjectScanLogRepository repository;
 
-	@Autowired
-	LogSanitizer logSanitizer;
+    @Autowired
+    LogSanitizer logSanitizer;
 
-	private static final Logger LOG = LoggerFactory.getLogger(ProjectScanLogService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectScanLogService.class);
 
-	public UUID logScanStarted(SecHubExecutionContext context) {
-		String projectId = context.getConfiguration().getProjectId();
-		UUID secHubJobUUID = context.getSechubJobUUID();
-		String config = context.getConfiguration().toJSON();
-		String executedBy = context.getExecutedBy();
+    public UUID logScanStarted(SecHubExecutionContext context) {
+        String projectId = context.getConfiguration().getProjectId();
+        UUID secHubJobUUID = context.getSechubJobUUID();
+        String config = context.getConfiguration().toJSON();
+        String executedBy = context.getExecutedBy();
 
-		ProjectScanLog log = new ProjectScanLog(projectId, secHubJobUUID, executedBy, config);
-		log.setStatus(ProjectScanLog.STATUS_STARTED);
-		ProjectScanLog persistedLog = repository.save(log);
-		return persistedLog.getUUID();
+        ProjectScanLog log = new ProjectScanLog(projectId, secHubJobUUID, executedBy, config);
+        log.setStatus(ProjectScanLog.STATUS_STARTED);
+        ProjectScanLog persistedLog = repository.save(log);
+        return persistedLog.getUUID();
 
-	}
+    }
 
-	public void logScanEnded(UUID logScanUUID) {
-		logEndedWithStatus(logScanUUID, ProjectScanLog.STATUS_OK);
-	}
+    public void logScanEnded(UUID logScanUUID) {
+        logEndedWithStatus(logScanUUID, ProjectScanLog.STATUS_OK);
+    }
 
-	public void logScanFailed(UUID logUUID) {
-		logEndedWithStatus(logUUID, ProjectScanLog.STATUS_FAILED);
-	}
+    public void logScanFailed(UUID logUUID) {
+        logEndedWithStatus(logUUID, ProjectScanLog.STATUS_FAILED);
+    }
 
-	public void logScanAbandoned(UUID logUUID) {
-	    logEndedWithStatus(logUUID, ProjectScanLog.STATUS_ABANDONED);
-	}
+    public void logScanAbandoned(UUID logUUID) {
+        logEndedWithStatus(logUUID, ProjectScanLog.STATUS_ABANDONED);
+    }
 
-	private void logEndedWithStatus(UUID logScanUUID, String status) {
-		Optional<ProjectScanLog> optLog = repository.findById(logScanUUID);
-		if (!optLog.isPresent()) {
-			LOG.error("Cannot update log entry {} because not existing!", logScanUUID);
-			return;
-		}
-		ProjectScanLog log = optLog.get();
-		log.setEnded(LocalDateTime.now());
-		log.setStatus(status);
-		repository.save(log);
-	}
+    private void logEndedWithStatus(UUID logScanUUID, String status) {
+        Optional<ProjectScanLog> optLog = repository.findById(logScanUUID);
+        if (!optLog.isPresent()) {
+            LOG.error("Cannot update log entry {} because not existing!", logScanUUID);
+            return;
+        }
+        ProjectScanLog log = optLog.get();
+        log.setEnded(LocalDateTime.now());
+        log.setStatus(status);
+        repository.save(log);
+    }
 
+    @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
+    public List<ProjectScanLogSummary> fetchSummaryLogsFor(String projectId) {
+        return repository.findSummaryLogsFor(projectId);
+    }
 
-	@RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
-	public List<ProjectScanLogSummary> fetchSummaryLogsFor(String projectId) {
-		return repository.findSummaryLogsFor(projectId);
-	}
+    @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
+    public List<ProjectScanLog> fetchLogsForJob(UUID sechubJobUUID) {
+        ProjectScanLog log = new ProjectScanLog();
+        log.sechubJobUUID = sechubJobUUID;
 
-	@RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
-	public List<ProjectScanLog> fetchLogsForJob(UUID sechubJobUUID) {
-		ProjectScanLog log = new ProjectScanLog();
-		log.sechubJobUUID=sechubJobUUID;
-
-		return repository.findAll(Example.of(log));
-	}
-
-
-
+        return repository.findAll(Example.of(log));
+    }
 
 }

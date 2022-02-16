@@ -59,7 +59,7 @@ public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMess
 
     @Autowired
     ProductResultService productResultService;
-    
+
     @Autowired
     ScanProjectConfigAccessLevelService projectAccessLevelService;
 
@@ -100,7 +100,7 @@ public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMess
 
         case REQUEST_PURGE_JOB_RESULTS:
             return handleJobRestartHardRequested(request);
-            
+
         default:
             throw new IllegalStateException("unhandled message id:" + messageId);
         }
@@ -113,22 +113,22 @@ public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMess
             /* delete all former results */
             productResultService.deleteAllResultsForJob(jobUUID);
             return purgeDone(jobUUID);
-        }catch(Exception e) {
-            LOG.error("Was not able to purge results for job {}",e);
-            return purgeFailed(jobUUID,e);
+        } catch (Exception e) {
+            LOG.error("Was not able to purge results for job {}", e);
+            return purgeFailed(jobUUID, e);
         }
     }
-    
-    @IsSendingSyncMessageAnswer(value=MessageID.JOB_RESULT_PURGE_FAILED, answeringTo = MessageID.REQUEST_PURGE_JOB_RESULTS, branchName = "failed")
+
+    @IsSendingSyncMessageAnswer(value = MessageID.JOB_RESULT_PURGE_FAILED, answeringTo = MessageID.REQUEST_PURGE_JOB_RESULTS, branchName = "failed")
     private DomainMessageSynchronousResult purgeFailed(UUID jobUUID, Exception e) {
-        DomainMessageSynchronousResult result = new DomainMessageSynchronousResult(MessageID.JOB_RESULT_PURGE_FAILED,e);
+        DomainMessageSynchronousResult result = new DomainMessageSynchronousResult(MessageID.JOB_RESULT_PURGE_FAILED, e);
         result.set(MessageDataKeys.SECHUB_UUID, jobUUID);
         return result;
     }
-    
-    @IsSendingSyncMessageAnswer(value=MessageID.JOB_RESULT_PURGE_DONE, answeringTo = MessageID.REQUEST_PURGE_JOB_RESULTS, branchName = "success")
+
+    @IsSendingSyncMessageAnswer(value = MessageID.JOB_RESULT_PURGE_DONE, answeringTo = MessageID.REQUEST_PURGE_JOB_RESULTS, branchName = "success")
     private DomainMessageSynchronousResult purgeDone(UUID jobUUID) {
-        DomainMessageSynchronousResult result =  new DomainMessageSynchronousResult(MessageID.JOB_RESULT_PURGE_DONE);
+        DomainMessageSynchronousResult result = new DomainMessageSynchronousResult(MessageID.JOB_RESULT_PURGE_DONE);
         result.set(MessageDataKeys.SECHUB_UUID, jobUUID);
         return result;
     }
@@ -152,16 +152,17 @@ public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMess
 
         updateScanMappingService.updateScanMapping(mappingId, data.getMappingData());
     }
+
     @IsReceivingAsyncMessage(MessageID.PROJECT_ACCESS_LEVEL_CHANGED)
     @UseCaseAdministratorChangesProjectAccessLevel(@Step(number = 3, name = "Event handler", description = "Receives change project access level event"))
     private void handleProcessAccessLevelChanged(DomainMessage request) {
         ProjectMessage data = request.get(MessageDataKeys.PROJECT_ACCESS_LEVEL_CHANGE_DATA);
-        
+
         String projectId = data.getProjectId();
         ProjectAccessLevel formerAccessLevel = data.getFormerAccessLevel();
         ProjectAccessLevel newAccessLevel = data.getNewAccessLevel();
-        
-        projectAccessLevelService.changeProjectAccessLevel(projectId,newAccessLevel,formerAccessLevel);
+
+        projectAccessLevelService.changeProjectAccessLevel(projectId, newAccessLevel, formerAccessLevel);
     }
 
     @IsReceivingAsyncMessage(MessageID.USER_ADDED_TO_PROJECT)

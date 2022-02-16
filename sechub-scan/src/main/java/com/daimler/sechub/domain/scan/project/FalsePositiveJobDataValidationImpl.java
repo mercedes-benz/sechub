@@ -14,7 +14,6 @@ public class FalsePositiveJobDataValidationImpl extends AbstractValidation<False
     @Autowired
     JobUUIDValidation jobUUIDValidation;
 
-
     @Override
     protected void setup(AbstractValidation<FalsePositiveJobData>.ValidationConfig config) {
         config.maxLength = 500; // we allow maximum 500 chars for comments
@@ -23,13 +22,13 @@ public class FalsePositiveJobDataValidationImpl extends AbstractValidation<False
     @Override
     protected void validate(ValidationContext<FalsePositiveJobData> context) {
         validateNotNull(context);
-        
+
         FalsePositiveJobData target = getObjectToValidate(context);
         context.addErrors(jobUUIDValidation.validate(target.getJobUUID()));
         validateMaxLength(context, target.getComment(), getConfig().maxLength, "jobData.comment");
 
     }
-    
+
     @Override
     protected String getValidatorName() {
         return "false positive job data validation";

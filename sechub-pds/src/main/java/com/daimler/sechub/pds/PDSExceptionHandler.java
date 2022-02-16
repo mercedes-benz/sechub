@@ -23,9 +23,9 @@ public class PDSExceptionHandler {
     @ResponseBody
     public Exception handleFileUploadSizeExceeded(MaxUploadSizeExceededException ex, HttpServletResponse response) {
         return commonHandleFileUploadSizeExceed(ex, response);
-    
+
     }
-    
+
     private Exception commonHandleFileUploadSizeExceed(Exception ex, HttpServletResponse response) {
         if (response == null) {
             throw new IllegalStateException("response missing");
@@ -33,9 +33,9 @@ public class PDSExceptionHandler {
         if (ex == null) {
             throw new IllegalStateException("exception missing");
         }
-        
+
         response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-        
+
         return ex;
     }
 }

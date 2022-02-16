@@ -5,11 +5,12 @@ import java.util.Objects;
 
 /**
  * Sereco annotation - represents additional data fetched by importers
+ *
  * @author Albert Tregnaghi
  *
  */
 public class SerecoAnnotation {
-    
+
     private SerecoAnnotationType type;
 
     private String value;

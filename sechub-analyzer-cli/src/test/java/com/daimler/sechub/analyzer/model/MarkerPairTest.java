@@ -16,14 +16,14 @@ public class MarkerPairTest {
         /* prepare */
         Marker start = new Marker(MarkerType.START, 3, 3);
         Marker end = new Marker(MarkerType.START, 300, 900);
-        
+
         MarkerPair markerPair = new MarkerPair();
         markerPair.setStart(start);
         markerPair.setEnd(end);
-        
+
         /* execute */
         MarkerPair markerPairCopy = markerPair.deepClone();
-        
+
         /* test */
         assertThat(markerPair, is(markerPairCopy));
         assertThat("Memory address is identical.", markerPair != markerPairCopy);

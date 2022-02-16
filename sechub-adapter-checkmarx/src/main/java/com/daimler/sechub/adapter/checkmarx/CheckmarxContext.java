@@ -12,12 +12,12 @@ import com.daimler.sechub.adapter.checkmarx.support.ScanDetails;
 
 /**
  * Context for checkmarx execution.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
 public class CheckmarxContext extends AbstractSpringRestAdapterContext<CheckmarxAdapterConfig, CheckmarxAdapter> implements CheckmarxAdapterContext {
-    
+
     private CheckmarxOAuthData oAuthData;
     private CheckmarxSessionData sessionData;
     private QueueDetails queueDetails;
@@ -36,7 +36,7 @@ public class CheckmarxContext extends AbstractSpringRestAdapterContext<Checkmarx
     public CheckmarxOAuthData getoAuthData() {
         return oAuthData;
     }
-    
+
     public CheckmarxAdapter getCheckmarxAdapter() {
         return super.getAdapter();
     }
@@ -106,7 +106,7 @@ public class CheckmarxContext extends AbstractSpringRestAdapterContext<Checkmarx
         }
         return oAuthData.getTokenType() + " " + oAuthData.getAccessToken();
     }
-    
+
     public ScanDetails getScanDetails() {
         return scanDetails;
     }

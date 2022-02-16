@@ -44,7 +44,6 @@ public class DownloadScanReportService {
         /* audit */
         auditLogService.log("starts download of report for job: {}", jobUUID);
 
-        
         ScanReport report = reportRepository.findBySecHubJobUUID(jobUUID);
 
         if (report == null) {

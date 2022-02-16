@@ -32,11 +32,9 @@ public class CreateProductExecutionProfileService {
 
     @Autowired
     ProductExecutionProfileRepository repository;
-    
 
     @Autowired
-    ProductExecutorConfigRepository  configRepository;
-
+    ProductExecutorConfigRepository configRepository;
 
     @Autowired
     ProductExecutionProfileValidation validation;
@@ -46,26 +44,24 @@ public class CreateProductExecutionProfileService {
 
     /* @formatter:off */
     @UseCaseAdminCreatesExecutionProfile(
-            @Step(number = 2, 
-            name = "Service call", 
+            @Step(number = 2,
+            name = "Service call",
             description = "Service creates a new product executor configuration"))
     /* @formatter:on */
     public void createProductExecutionProfile(String profileId, ProductExecutionProfile profileFromUser) {
-        profileFromUser.id=profileId;
+        profileFromUser.id = profileId;
         assertValid(profileFromUser, validation);
 
-        auditLogService.log("Wants to create product execution profile'{}'",profileId);
+        auditLogService.log("Wants to create product execution profile'{}'", profileId);
 
-        
         if (repository.existsById(profileId)) {
             throw new AlreadyExistsException("Profile already exists!");
         }
         resetFieldsNeverFromUser(profileFromUser);
-        profileFromUser.id=profileId;
-        
-        
+        profileFromUser.id = profileId;
+
         List<ProductExecutorConfig> existingConfigurations = fetchExistingConfigurations(profileId, profileFromUser);
-        
+
         profileFromUser.configurations.clear();
         profileFromUser.configurations.addAll(existingConfigurations);
 
@@ -73,20 +69,19 @@ public class CreateProductExecutionProfileService {
 
         LOG.info("Created product execution profile'{}' ", stored.getId());
 
-
     }
 
     private List<ProductExecutorConfig> fetchExistingConfigurations(String profileId, ProductExecutionProfile profileFromUser) {
         List<ProductExecutorConfig> list = new ArrayList<>();
         for (ProductExecutorConfig configFromUser : profileFromUser.configurations) {
             UUID uuid = configFromUser.getUUID();
-            if (uuid==null) {
-                LOG.warn("config uuid null not accepted - so ignoring for profile {}",profileId);
+            if (uuid == null) {
+                LOG.warn("config uuid null not accepted - so ignoring for profile {}", profileId);
                 continue;
             }
             Optional<ProductExecutorConfig> opt = configRepository.findById(uuid);
-            if (! opt.isPresent()) {
-                LOG.warn("config with uuid {} not found -  so ignoring for profile {}",uuid, profileId);
+            if (!opt.isPresent()) {
+                LOG.warn("config with uuid {} not found -  so ignoring for profile {}", uuid, profileId);
                 continue;
             }
             list.add(opt.get());

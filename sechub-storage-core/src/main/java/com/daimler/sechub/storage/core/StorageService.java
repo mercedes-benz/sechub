@@ -8,7 +8,7 @@ public interface StorageService {
     /**
      * Resolves job storage for given job - same as {@link #getJobStorage(null,
      * UUID)}
-     * 
+     *
      * @param jobUUID job UUID
      * @return job storage
      */
@@ -18,12 +18,13 @@ public interface StorageService {
 
     /**
      * Resolves a job storage
-     * 
+     *
      * @param storagePath - defines the storage path. Must be a convertible into a
      *                    valid path structure from storage root location. Usage
-     *                    examples: Either just a simple identifier (e.g. a project id), or something more
-     *                    complex like "pds/gosec-cluster" . When <code>null</code>
-     *                    the implementation decides default storage path.
+     *                    examples: Either just a simple identifier (e.g. a project
+     *                    id), or something more complex like "pds/gosec-cluster" .
+     *                    When <code>null</code> the implementation decides default
+     *                    storage path.
      * @param jobUUID     job UUID
      * @return
      */

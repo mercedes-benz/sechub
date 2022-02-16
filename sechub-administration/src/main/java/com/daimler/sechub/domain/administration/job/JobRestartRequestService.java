@@ -46,7 +46,7 @@ public class JobRestartRequestService {
 
     @Autowired
     UserRepository userRepository;
-    
+
     @Autowired
     SecHubEnvironment sechubEnvironment;
 
@@ -110,17 +110,17 @@ public class JobRestartRequestService {
 
         DomainMessage infoRequest = DomainMessageFactory.createEmptyRequest(MessageID.REQUEST_JOB_RESTART);
         infoRequest.set(MessageDataKeys.JOB_RESTART_DATA, message);
-        infoRequest.set(MessageDataKeys.ENVIRONMENT_BASE_URL,sechubEnvironment.getServerBaseUrl());
+        infoRequest.set(MessageDataKeys.ENVIRONMENT_BASE_URL, sechubEnvironment.getServerBaseUrl());
 
         eventBusService.sendAsynchron(infoRequest);
     }
-    
+
     @IsSendingAsyncMessage(MessageID.REQUEST_JOB_RESTART_HARD)
     private void triggerJobHardRestartRequest(JobMessage message) {
 
         DomainMessage infoRequest = DomainMessageFactory.createEmptyRequest(MessageID.REQUEST_JOB_RESTART_HARD);
         infoRequest.set(MessageDataKeys.JOB_RESTART_DATA, message);
-        infoRequest.set(MessageDataKeys.ENVIRONMENT_BASE_URL,sechubEnvironment.getServerBaseUrl());
+        infoRequest.set(MessageDataKeys.ENVIRONMENT_BASE_URL, sechubEnvironment.getServerBaseUrl());
 
         eventBusService.sendAsynchron(infoRequest);
     }

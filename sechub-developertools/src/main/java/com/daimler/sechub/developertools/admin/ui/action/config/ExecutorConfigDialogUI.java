@@ -86,7 +86,7 @@ public class ExecutorConfigDialogUI {
     public static TestExecutorConfig createExampleConfig() {
         TestExecutorConfig config = new TestExecutorConfig();
         config.setup.baseURL = "https://newproduct.example.com";
-        
+
         config.setup.jobParameters.add(new TestExecutorSetupJobParam("example.key1", "value1"));
         config.setup.jobParameters.add(new TestExecutorSetupJobParam("example.key2", "value2"));
         config.setup.credentials.user = "env:EXAMPLE_USER_VARIABLE";
@@ -107,15 +107,14 @@ public class ExecutorConfigDialogUI {
 
         dialog.add(mainPanel, BorderLayout.CENTER);
         dialog.add(buttonPanel, BorderLayout.SOUTH);
-        
-        
+
         dialog.setTitle(title);
         dialog.setModal(true);
         dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
         dialog.pack();
         dialog.setLocationRelativeTo(context.getFrame());
 
-        SwingUtilities.invokeLater(()->scrollToLeftTopOfJobParameters());
+        SwingUtilities.invokeLater(() -> scrollToLeftTopOfJobParameters());
         dialog.setVisible(true);
     }
 
@@ -211,7 +210,7 @@ public class ExecutorConfigDialogUI {
         jobParameterScrollPane.setMinimumSize(new Dimension(400, 300));
 
         mainPanel.add(jobParameterScrollPane, jobParameterScrollPaneGridDataConstraints);
-        
+
         button.addActionListener(e -> {
             ProductIdentifier procutIdentifier = (ProductIdentifier) comboBoxModel.getSelectedItem();
             int version = (int) versionSpinnerModel.getNumber();

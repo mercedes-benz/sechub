@@ -5,5 +5,5 @@ import java.net.InetAddress;
 
 public interface InetAddressPattern {
 
-	public boolean isMatching(InetAddress address);
+    public boolean isMatching(InetAddress address);
 }

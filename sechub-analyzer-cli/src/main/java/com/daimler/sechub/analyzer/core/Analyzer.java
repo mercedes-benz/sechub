@@ -18,21 +18,22 @@ import com.daimler.analyzer.model.AnalyzerResult;
 import com.daimler.analyzer.model.MarkerPair;
 
 /**
-* Main analyzer class which represents the entry point for callers. 
-* Starts processing and returns analzer result. Has no CLI parts inside
-* so can be used also directly - e.g. from a UI.
-* 
-* @author Jeremias Eppler, Albert Tregnaghi
-*
-*/
+ * Main analyzer class which represents the entry point for callers. Starts
+ * processing and returns analzer result. Has no CLI parts inside so can be used
+ * also directly - e.g. from a UI.
+ *
+ * @author Jeremias Eppler, Albert Tregnaghi
+ *
+ */
 public class Analyzer {
-    
+
     private final static Logger LOG = LoggerFactory.getLogger(Analyzer.class.getName());
 
     private FileProcessor fileProcessor = new FileProcessor();
+
     /**
      * Processes the given files
-     * 
+     *
      * @param file process a file or folder
      * @return
      * @throws FileNotFoundException
@@ -55,7 +56,7 @@ public class Analyzer {
         }
 
         Map<String, List<MarkerPair>> result = analyzeFiles(files);
-        
+
         AnalyzerResult analyzerResult = new AnalyzerResult(result);
 
         return analyzerResult;
@@ -63,10 +64,10 @@ public class Analyzer {
 
     /**
      * Analyze files
-     * 
+     *
      * Creates a list of all files which have be be analyzed. Starts the file
      * analysis of all files in the previously created list.
-     * 
+     *
      * @param rootFiles
      * @return all files with markers
      */
@@ -105,9 +106,9 @@ public class Analyzer {
 
     /**
      * Traverses the file system from a given file (root)
-     * 
+     *
      * The file system is traversed recursively.
-     * 
+     *
      * @param file  the root folder or file
      * @param files a set of files
      * @return a list of files

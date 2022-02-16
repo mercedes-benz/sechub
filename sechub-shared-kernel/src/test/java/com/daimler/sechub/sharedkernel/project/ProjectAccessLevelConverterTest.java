@@ -30,7 +30,7 @@ class ProjectAccessLevelConverterTest {
         assertEquals(expectedLevel, result);
 
     }
-    
+
     @Test
     void null_id_results_in_null_access_level() {
         /* prepare */
@@ -43,7 +43,7 @@ class ProjectAccessLevelConverterTest {
         assertEquals(expectedLevel, result);
 
     }
-    
+
     @Test
     void unknown_id_results_in_null_access_level() {
         /* prepare */

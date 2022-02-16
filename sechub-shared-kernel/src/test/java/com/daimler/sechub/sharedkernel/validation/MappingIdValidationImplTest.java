@@ -29,7 +29,7 @@ public class MappingIdValidationImplTest {
         assertTrue(validationToTest.validate(CONST_80_CHARS).isValid());
         assertFalse(validationToTest.validate(CONST_80_CHARS + "1").isValid());
     }
-    
+
     @Test
     public void check_whitespaces_not_accepted_inside_id() {
         assertFalse(validationToTest.validate("12345 6").isValid());
@@ -39,11 +39,10 @@ public class MappingIdValidationImplTest {
         assertFalse(validationToTest.validate("123456\n").isValid());
         assertFalse(validationToTest.validate("123456\r").isValid());
     }
-    
+
     @Test
     public void check_percentage_not_accepted_inside_id() {
         assertFalse(validationToTest.validate("12345%6").isValid());
     }
-    
 
 }

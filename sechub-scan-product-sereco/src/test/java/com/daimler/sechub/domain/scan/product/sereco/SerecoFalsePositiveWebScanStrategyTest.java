@@ -42,7 +42,7 @@ class SerecoFalsePositiveWebScanStrategyTest {
     }
 
     /* @formatter:off */
-    
+
     /* --------------------------------------------------------------------------------*/
     /* -----------Target tests---------------------------------------------------------*/
     /* --------------------------------------------------------------------------------*/
@@ -61,7 +61,7 @@ class SerecoFalsePositiveWebScanStrategyTest {
         /* test */
         assertFalse(isFalsePositive);
     }
-    
+
     @DisplayName("Is false positive. Target changed to similar value in metadata")
     @CsvSource({TARGET1+"\t", TARGET1+" "})
     @ParameterizedTest
@@ -75,7 +75,7 @@ class SerecoFalsePositiveWebScanStrategyTest {
         /* test */
         assertTrue(isFalsePositive);
     }
-    
+
     /* --------------------------------------------------------------------------------*/
     /* -----------Method tests---------------------------------------------------------*/
     /* --------------------------------------------------------------------------------*/
@@ -94,7 +94,7 @@ class SerecoFalsePositiveWebScanStrategyTest {
         /* test */
         assertFalse(isFalsePositive);
     }
-    
+
     @DisplayName("Is false positive. Method changed to similar value in metadata")
     @CsvSource({METHOD1+"  ", " "+METHOD1+" "})
     @ParameterizedTest
@@ -108,7 +108,7 @@ class SerecoFalsePositiveWebScanStrategyTest {
         /* test */
         assertTrue(isFalsePositive);
     }
-    
+
     /* --------------------------------------------------------------------------------*/
     /* -----------Attack vector tests---------------------------------------------------*/
     /* --------------------------------------------------------------------------------*/
@@ -127,7 +127,7 @@ class SerecoFalsePositiveWebScanStrategyTest {
         /* test */
         assertFalse(isFalsePositive);
     }
-    
+
     @DisplayName("Is false positive. Attack vector changed to similar value in metadata")
     @CsvSource({ATTACK_VECTOR1+"\t", ATTACK_VECTOR1+" ","  \t"+ATTACK_VECTOR1 })
     @ParameterizedTest
@@ -141,8 +141,8 @@ class SerecoFalsePositiveWebScanStrategyTest {
         /* test */
         assertTrue(isFalsePositive);
     }
-    
-    
+
+
     /* --------------------------------------------------------------------------------*/
     /* -----------Evidence tests-------------------------------------------------------*/
     /* --------------------------------------------------------------------------------*/
@@ -161,7 +161,7 @@ class SerecoFalsePositiveWebScanStrategyTest {
         /* test */
         assertFalse(isFalsePositive);
     }
-    
+
     @DisplayName("Is false positive. Evidence changed to similar value in metadata")
     @CsvSource({EVIDENCE1+"\t", EVIDENCE1+" ","  \t"+EVIDENCE1 })
     @ParameterizedTest
@@ -175,8 +175,8 @@ class SerecoFalsePositiveWebScanStrategyTest {
         /* test */
         assertTrue(isFalsePositive);
     }
-    
-    
+
+
     /* --------------------------------------------------------------------------------*/
     /* -----------CWE tests------------------------------------------------------------*/
     /* --------------------------------------------------------------------------------*/
@@ -206,7 +206,7 @@ class SerecoFalsePositiveWebScanStrategyTest {
         assertFalse(isFalsePositive);
     }
 
-    
+
     /* --------------------------------------------------------------------------------*/
     /* -----------ScanType tests-------------------------------------------------------*/
     /* --------------------------------------------------------------------------------*/

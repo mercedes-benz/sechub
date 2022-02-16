@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 
 public class SimpleBooleanUtilTest {
 
-
     /* FALSE parts */
     @Test
     void isFalseOrNull_null_yes() {

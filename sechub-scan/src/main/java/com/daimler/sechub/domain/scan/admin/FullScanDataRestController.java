@@ -29,44 +29,41 @@ import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminDownlo
 @RestController
 @EnableAutoConfiguration
 @RequestMapping(APIConstants.API_ADMINISTRATION)
-@RolesAllowed({RoleConstants.ROLE_SUPERADMIN})
+@RolesAllowed({ RoleConstants.ROLE_SUPERADMIN })
 public class FullScanDataRestController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(FullScanDataRestController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FullScanDataRestController.class);
 
-	@Autowired
-	FullScanDataService fullScanDataService;
+    @Autowired
+    FullScanDataService fullScanDataService;
 
-	@Autowired
-	AuditLogService auditLogService;
+    @Autowired
+    AuditLogService auditLogService;
 
-	@Autowired
-	LogSanitizer logSanitizer;
+    @Autowired
+    LogSanitizer logSanitizer;
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@UseCaseAdminDownloadsFullScanDataForJob(@Step(number=1,next=2,name="REST API call to zip file containing full scan data",needsRestDoc=true))
 	@RequestMapping(path = "/scan/download/{sechubJobUUID}", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public void getFullScanZipFileForJob(
 			@PathVariable("sechubJobUUID") UUID sechubJobUUID, HttpServletResponse response
 			) {
 		/* @formatter:on */
-		auditLogService.log("Starts downloading full scan logs for sechub job {}", logSanitizer.sanitize(sechubJobUUID,-1));
+        auditLogService.log("Starts downloading full scan logs for sechub job {}", logSanitizer.sanitize(sechubJobUUID, -1));
 
-	    response.setContentType("application/zip");
-	    response.setHeader("Content-Disposition", "attachment; filename=full_scandata_"+sechubJobUUID.toString()+".zip");
+        response.setContentType("application/zip");
+        response.setHeader("Content-Disposition", "attachment; filename=full_scandata_" + sechubJobUUID.toString() + ".zip");
 
-	    FullScanData fullScanData = fullScanDataService.getFullScanData(sechubJobUUID);
+        FullScanData fullScanData = fullScanDataService.getFullScanData(sechubJobUUID);
 
-	    try (OutputStream outputStream= response.getOutputStream()) {
-			FullScanDataToZipOutputSupport support = new FullScanDataToZipOutputSupport();
-			support.writeScanData(fullScanData, outputStream);
-		} catch (IOException e) {
-			LOG.error("Was not able to provide zip file for full scan data of {}",logSanitizer.sanitize(sechubJobUUID,-1), e);
-			throw new NotFoundException("Was not able to support zip file, see logs for details");
-		}
-	}
-
-
-
+        try (OutputStream outputStream = response.getOutputStream()) {
+            FullScanDataToZipOutputSupport support = new FullScanDataToZipOutputSupport();
+            support.writeScanData(fullScanData, outputStream);
+        } catch (IOException e) {
+            LOG.error("Was not able to provide zip file for full scan data of {}", logSanitizer.sanitize(sechubJobUUID, -1), e);
+            throw new NotFoundException("Was not able to support zip file, see logs for details");
+        }
+    }
 
 }

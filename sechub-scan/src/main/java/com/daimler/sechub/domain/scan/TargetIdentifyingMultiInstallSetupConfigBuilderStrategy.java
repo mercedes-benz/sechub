@@ -17,35 +17,34 @@ import com.daimler.sechub.adapter.AdapterConfigurationStrategy;
  * @param <B> builder
  * @param <C> configuration
  */
-public class TargetIdentifyingMultiInstallSetupConfigBuilderStrategy
-		implements AdapterConfigurationStrategy{
+public class TargetIdentifyingMultiInstallSetupConfigBuilderStrategy implements AdapterConfigurationStrategy {
 
-	private TargetIdentifyingMultiInstallSetup setup;
-	private TargetType targetType;
+    private TargetIdentifyingMultiInstallSetup setup;
+    private TargetType targetType;
 
-	/**
-	 * Creates strategy which will automatically setup
-	 * <ol>
-	 * <li>trustAllCertificates</li>
-	 * <li>user</li>
-	 * <li>apiToken</li>
-	 * <li>password</li>
-	 * <li>productBaseUrl</li>
-	 * </ol>
-	 *
-	 * by inspecting target type
-	 *
-	 * @param setup
-	 * @param targetType type to use to get data
-	 */
-	public TargetIdentifyingMultiInstallSetupConfigBuilderStrategy(TargetIdentifyingMultiInstallSetup setup, TargetType targetType) {
-		this.setup=setup;
-		this.targetType=targetType;
-	}
+    /**
+     * Creates strategy which will automatically setup
+     * <ol>
+     * <li>trustAllCertificates</li>
+     * <li>user</li>
+     * <li>apiToken</li>
+     * <li>password</li>
+     * <li>productBaseUrl</li>
+     * </ol>
+     *
+     * by inspecting target type
+     *
+     * @param setup
+     * @param targetType type to use to get data
+     */
+    public TargetIdentifyingMultiInstallSetupConfigBuilderStrategy(TargetIdentifyingMultiInstallSetup setup, TargetType targetType) {
+        this.setup = setup;
+        this.targetType = targetType;
+    }
 
-	@Override
-	public <B extends AbstractAdapterConfigBuilder<B, C>, C extends AdapterConfig> void configure(B configBuilder) {
-		/* @formatter:off */
+    @Override
+    public <B extends AbstractAdapterConfigBuilder<B, C>, C extends AdapterConfig> void configure(B configBuilder) {
+        /* @formatter:off */
 		configBuilder.
 			setTrustAllCertificates(setup.isHavingUntrustedCertificate(targetType)).
 			setUser(setup.getUserId(targetType)).
@@ -53,10 +52,6 @@ public class TargetIdentifyingMultiInstallSetupConfigBuilderStrategy
 			setProductBaseUrl(setup.getBaseURL(targetType));
 		/* @formatter:on */
 
-	}
-
-
-
-
+    }
 
 }

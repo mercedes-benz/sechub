@@ -23,7 +23,7 @@ public class SerecoSourceRelevantPartResolverTest {
         assertEquals("iwillbeshrinked", resolverToTest.toRelevantPart("i will\t\tbeshrinked"));
         assertEquals("iwillbeshrinked", resolverToTest.toRelevantPart("i will\t\nbeshrinked\n  "));
     }
-    
+
     @Test
     public void lowercased() {
         assertEquals("lowered", resolverToTest.toRelevantPart("loWEREd"));

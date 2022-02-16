@@ -47,7 +47,6 @@ public class InformThatProjectHasNewOwnerNotificationService {
         Set<String> ccMailsSet = projectMessage.getUserEmailAdresses();
         ccMailsSet.add(previousOwnerEmailAddress);
 
-        
         String[] ccAddresses = ccMailsSet.stream().toArray(String[]::new);
 
         SimpleMailMessage message = factory.createMessage("Owner of project " + projectMessage.getProjectId() + " changed");

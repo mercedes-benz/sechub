@@ -21,11 +21,11 @@ public class DeleteProfileAction extends AbstractUIAction {
 
     @Override
     public void execute(ActionEvent e) {
-        while(true) {
+        while (true) {
             ListExecutionProfilesDialogUI listProfilesDialog = new ListExecutionProfilesDialogUI(getContext(), "Select the profile you want to delete");
             listProfilesDialog.setOkButtonText("Delete profile");
             listProfilesDialog.showDialog();
-            
+
             if (!listProfilesDialog.isOkPressed()) {
                 return;
             }

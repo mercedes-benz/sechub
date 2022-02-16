@@ -26,8 +26,8 @@ public class SimpleCSVExporter {
         for (Iterator<CSVRow> it = rows.iterator(); it.hasNext();) {
             CSVRow row = it.next();
             int size = row.columns.size();
-            if (size!=expectedColumnCount) {
-                throw new IllegalArgumentException("Column count differs. Expected was: "+expectedColumnCount+" but was:"+size);
+            if (size != expectedColumnCount) {
+                throw new IllegalArgumentException("Column count differs. Expected was: " + expectedColumnCount + " but was:" + size);
             }
             sb.append(row.exportRow());
             if (it.hasNext()) {

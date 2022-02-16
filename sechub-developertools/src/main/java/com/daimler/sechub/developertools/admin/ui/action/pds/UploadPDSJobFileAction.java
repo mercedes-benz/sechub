@@ -13,7 +13,7 @@ import com.daimler.sechub.developertools.admin.ui.cache.InputCacheIdentifier;
 
 public class UploadPDSJobFileAction extends AbstractPDSAction {
     private static final long serialVersionUID = 1L;
-    private static JFileChooser  fileChooser = new JFileChooser();
+    private static JFileChooser fileChooser = new JFileChooser();
 
     public UploadPDSJobFileAction(UIContext context) {
         super("Upload a file to PDS job", context);
@@ -31,15 +31,15 @@ public class UploadPDSJobFileAction extends AbstractPDSAction {
             output("cancel pds job uuid");
             return;
         }
-        
+
         int dialogResult = fileChooser.showOpenDialog(getContext().getFrame());
         if (dialogResult != JFileChooser.APPROVE_OPTION) {
             output("cancel file selection for upload");
             return;
         }
         File file = fileChooser.getSelectedFile();
-        String result = pds.upload(UUID.fromString(pdsJobUUID.get()),file,fileNameOpt.get());
-        
+        String result = pds.upload(UUID.fromString(pdsJobUUID.get()), file, fileNameOpt.get());
+
         outputAsTextOnSuccess(result);
 
     }

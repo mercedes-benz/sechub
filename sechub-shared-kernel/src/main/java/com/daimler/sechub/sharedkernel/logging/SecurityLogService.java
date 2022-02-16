@@ -5,7 +5,7 @@ public interface SecurityLogService {
 
     /**
      * Log a security event.
-     * 
+     *
      * @param type
      * @param message
      * @param objects

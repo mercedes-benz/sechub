@@ -2,7 +2,7 @@
 package com.daimler.sechub.developertools.admin;
 
 public interface ErrorHandler {
-   
+
     public void resetErrors();
 
     public void handleError(String message);

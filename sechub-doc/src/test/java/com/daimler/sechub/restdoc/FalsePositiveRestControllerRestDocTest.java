@@ -8,10 +8,10 @@ import static com.daimler.sechub.domain.scan.project.FalsePositiveJobDataList.PR
 import static com.daimler.sechub.domain.scan.project.FalsePositiveJobDataList.PROPERTY_JOBDATA;
 import static com.daimler.sechub.domain.scan.project.FalsePositiveJobDataList.PROPERTY_TYPE;
 import static com.daimler.sechub.domain.scan.project.FalsePositiveProjectConfiguration.PROPERTY_FALSE_POSITIVES;
-import static com.daimler.sechub.test.TestURLBuilder.https;
 import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.FINDING_ID;
 import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.JOB_UUID;
 import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.PROJECT_ID;
+import static com.daimler.sechub.test.TestURLBuilder.https;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.Mockito.when;
@@ -122,7 +122,7 @@ public class FalsePositiveRestControllerRestDocTest {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildUserAddsFalsePositiveJobDataListForProject(PROJECT_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseUserMarksFalsePositivesForJob.class;
-        
+
         FalsePositiveJobDataList jobDataList = new FalsePositiveJobDataList();
         jobDataList.setApiVersion("1.0");
         List<FalsePositiveJobData> list = jobDataList.getJobData();
@@ -132,8 +132,7 @@ public class FalsePositiveRestControllerRestDocTest {
         data.setJobUUID(UUID.fromString("f1d02a9d-5e1b-4f52-99e5-401854ccf936"));
         list.add(data);
         String content = jobDataList.toJSON();
-        
-        
+
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				put(apiEndpoint, PROJECT1_ID).
@@ -151,7 +150,7 @@ public class FalsePositiveRestControllerRestDocTest {
                             requestFields(
                                     fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
                                     fieldWithPath(PROPERTY_TYPE).description("The type of the json content. Currently only accepted value is '"+FalsePositiveJobDataList.ACCEPTED_TYPE+"'."),
-                                    
+
                                     fieldWithPath(PROPERTY_JOBDATA).description("Job data list containing false positive setup based on former jobs"),
                                     fieldWithPath(PROPERTY_JOBDATA+"[]."+ PROPERTY_JOBUUID).description("SecHub job uuid where finding was"),
                                     fieldWithPath(PROPERTY_JOBDATA+"[]."+ PROPERTY_FINDINGID).description("SecHub finding identifier - identifies problem inside the job which shall be markeda as a false positive. *ATTENTION*: at the moment only code scan false positive handling is supported. Infra and web scan findings will lead to a non accepted error!"),
@@ -171,9 +170,10 @@ public class FalsePositiveRestControllerRestDocTest {
     @UseCaseRestDoc(useCase = UseCaseUserUnmarksFalsePositives.class)
     public void restdoc_unmark_false_positives() throws Exception {
         /* prepare */
-        String apiEndpoint = https(PORT_USED).buildUserRemovesFalsePositiveEntryFromProject(PROJECT_ID.pathElement(),JOB_UUID.pathElement(),FINDING_ID.pathElement());
+        String apiEndpoint = https(PORT_USED).buildUserRemovesFalsePositiveEntryFromProject(PROJECT_ID.pathElement(), JOB_UUID.pathElement(),
+                FINDING_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseUserUnmarksFalsePositives.class;
-        
+
         int findingId = 42;
         UUID jobUUID = UUID.fromString("f1d02a9d-5e1b-4f52-99e5-401854ccf936");
 
@@ -199,15 +199,14 @@ public class FalsePositiveRestControllerRestDocTest {
                 ));
         /* @formatter:on */
     }
-    
-    
+
     @Test
     @UseCaseRestDoc(useCase = UseCaseUserFetchesFalsePositiveConfigurationOfProject.class)
     public void user_fetches_false_positive_configuration() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildUserFetchesFalsePositiveConfigurationOfProject(PROJECT_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseUserFetchesFalsePositiveConfigurationOfProject.class;
-        
+
         int findingId = 42;
         UUID jobUUID = UUID.fromString("f1d02a9d-5e1b-4f52-99e5-401854ccf936");
         FalsePositiveProjectConfiguration config = new FalsePositiveProjectConfiguration();
@@ -215,14 +214,14 @@ public class FalsePositiveRestControllerRestDocTest {
         FalsePositiveEntry entry = new FalsePositiveEntry();
         entry.setAuthor("developer1");
         entry.setCreated(new Date(1591962795187L));
-        
+
         FalsePositiveJobData jobData1 = new FalsePositiveJobData();
         jobData1.setComment("Only used in documentation build not in deployment");
         jobData1.setJobUUID(jobUUID);
         jobData1.setFindingId(findingId);
-        
+
         entry.setJobData(jobData1);
-        
+
         FalsePositiveMetaData metaData = new FalsePositiveMetaData();
         metaData.setCweId(Integer.valueOf(36));
         FalsePositiveCodeMetaData code = new FalsePositiveCodeMetaData();
@@ -230,7 +229,7 @@ public class FalsePositiveRestControllerRestDocTest {
         start.setLocation("java/com/daimler/sechub/docgen/AsciidocGenerator.java");
         start.setRelevantPart("args");
         start.setSourceCode("\tpublic static void main(String[] args) throws Exception {");
-        
+
         code.setStart(start);
         FalsePositiveCodePartMetaData end = new FalsePositiveCodePartMetaData();
         end.setLocation("java/com/daimler/sechub/docgen/AsciidocGenerator.java");
@@ -242,17 +241,16 @@ public class FalsePositiveRestControllerRestDocTest {
         metaData.setScanType(ScanType.CODE_SCAN);
         metaData.setSeverity(Severity.MEDIUM);
         metaData.setName("Absolute Path Traversal");
-        
+
         entry.setMetaData(metaData);
-        
+
         fpList.add(entry);
         when(falsePositiveJobDataService.fetchFalsePositivesProjectConfiguration(PROJECT1_ID)).thenReturn(config);
-        
-        
+
         /* execute + test @formatter:off */
         String metaDataPath = PROPERTY_FALSE_POSITIVES+"[]."+FalsePositiveEntry.PROPERTY_METADATA;
         String codeMetaDataPath = metaDataPath+"."+FalsePositiveMetaData.PROPERTY_CODE;
-        
+
         this.mockMvc.perform(
                 get(apiEndpoint,PROJECT1_ID)
         ).
@@ -269,7 +267,7 @@ public class FalsePositiveRestControllerRestDocTest {
                                     fieldWithPath(PROPERTY_FALSE_POSITIVES).description("Job data list containing false positive setup based on former jobs"),
                                     fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+FalsePositiveEntry.PROPERTY_AUTHOR).description("User id of author who created false positive"),
                                     fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+FalsePositiveEntry.PROPERTY_CREATED).description("Creation timestamp"),
-                                   
+
                                     fieldWithPath(metaDataPath).description("Meta data for this false positive"),
                                     fieldWithPath(metaDataPath+"."+FalsePositiveMetaData.PROPERTY_SCANTYPE).description("Scan type - e.g. codeScan"),
                                     fieldWithPath(metaDataPath+"."+FalsePositiveMetaData.PROPERTY_NAME).description("Name of origin finding marked as false positive"),
@@ -283,12 +281,12 @@ public class FalsePositiveRestControllerRestDocTest {
                                     fieldWithPath(codeMetaDataPath+"."+FalsePositiveCodeMetaData.PROPERTY_START+"."+FalsePositiveCodePartMetaData.PROPERTY_LOCATION).description("location of code"),
                                     fieldWithPath(codeMetaDataPath+"."+FalsePositiveCodeMetaData.PROPERTY_START+"."+FalsePositiveCodePartMetaData.PROPERTY_RELEVANT_PART).description("relevant part of source vulnerability"),
                                     fieldWithPath(codeMetaDataPath+"."+FalsePositiveCodeMetaData.PROPERTY_START+"."+FalsePositiveCodePartMetaData.PROPERTY_SOURCE_CODE).description("source code"),
-                                    
+
                                     fieldWithPath(codeMetaDataPath+"."+FalsePositiveCodeMetaData.PROPERTY_END).optional().description("end point (sink)"),
                                     fieldWithPath(codeMetaDataPath+"."+FalsePositiveCodeMetaData.PROPERTY_END+"."+FalsePositiveCodePartMetaData.PROPERTY_LOCATION).description("location of code"),
                                     fieldWithPath(codeMetaDataPath+"."+FalsePositiveCodeMetaData.PROPERTY_END+"."+FalsePositiveCodePartMetaData.PROPERTY_RELEVANT_PART).description("relevant part of source vulnerability"),
                                     fieldWithPath(codeMetaDataPath+"."+FalsePositiveCodeMetaData.PROPERTY_END+"."+FalsePositiveCodePartMetaData.PROPERTY_SOURCE_CODE).description("source code"),
-                                  
+
                                     fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+FalsePositiveEntry.PROPERTY_JOBDATA).description("Job data parts, can be used as key to identify false positives"),
                                     fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+FalsePositiveEntry.PROPERTY_JOBDATA+"."+PROPERTY_JOBUUID).description("SecHub job uuid where finding was"),
                                     fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+FalsePositiveEntry.PROPERTY_JOBDATA+"."+PROPERTY_FINDINGID).description("SecHub finding identifier - identifies problem inside the job which shall be markeda as a false positive. *ATTENTION*: at the moment only code scan false positive handling is supported. Infra and web scan findings will lead to a non accepted error!"),

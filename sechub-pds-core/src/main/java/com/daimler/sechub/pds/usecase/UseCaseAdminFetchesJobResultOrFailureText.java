@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @PDSUseCaseDefinition(
 		id=PDSUseCaseIdentifier.UC_ADMIN_FETCHES_JOB_RESULT_OR_FAILURE_TEXT,
 		group=PDSUseCaseGroup.JOB_EXECUTION,
-		title="Admin fetches job result", 
+		title="Admin fetches job result",
 		description="Same as when a user is fetching a job result. "+
 		"But will return results in any kind of state.\n"+
 		"If failure happens an admin is able to load the error output which is contained\n"+

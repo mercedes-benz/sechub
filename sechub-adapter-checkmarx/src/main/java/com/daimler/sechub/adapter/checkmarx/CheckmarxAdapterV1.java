@@ -23,7 +23,7 @@ import com.daimler.sechub.adapter.checkmarx.support.CheckmarxUploadSupport;
  * <ol>
  * <li>Checkmarx V8.8.0 HF1</li>
  * </ol>
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -84,7 +84,7 @@ public class CheckmarxAdapterV1 extends AbstractAdapter<CheckmarxAdapterContext,
         if (!metaData.hasValue(CheckmarxMetaDataID.KEY_FILEUPLOAD_DONE, true)) {
             /* upload source code */
             oauthSupport.refreshBearerTokenWhenNecessary(context);
-            
+
             CheckmarxUploadSupport uploadSupport = new CheckmarxUploadSupport();
             uploadSupport.uploadZippedSourceCode(context);
 

@@ -23,16 +23,16 @@ import com.daimler.sechub.sharedkernel.usecases.user.UseCaseUserClicksLinkToGetN
 @EnableAutoConfiguration
 public class AnonymousUserGetApiTokenByOneTimeTokenRestController {
 
-	@Autowired
-	AnonymousUserGetAPITokenByOneTimeTokenService createUserAPITokenByOneTimeTokenService;
+    @Autowired
+    AnonymousUserGetAPITokenByOneTimeTokenService createUserAPITokenByOneTimeTokenService;
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@UseCaseUserClicksLinkToGetNewAPIToken(@Step(number=1,name="Rest call",description="User opens url by browser",needsRestDoc=true))
 	@GetMapping(path = AdministrationAPIConstants.API_FETCH_NEW_API_TOKEN_BY_ONE_WAY_TOKEN+"/{oneTimeToken}",
 				produces= {MediaType.TEXT_PLAIN_VALUE})
 	@ResponseBody
 	public String getNewAPITokenByOneTimeToken(@PathVariable String oneTimeToken) {
 		/* @formatter:on */
-		return createUserAPITokenByOneTimeTokenService.createNewAPITokenForUserByOneTimeToken(oneTimeToken);
-	}
+        return createUserAPITokenByOneTimeTokenService.createNewAPITokenForUserByOneTimeToken(oneTimeToken);
+    }
 }

@@ -5,17 +5,17 @@ import java.util.Objects;
 
 public class ProductExecutorConfigSetupJobParameter {
 
-    public static final String PROPERTY_KEY= "key";
-    public static final String PROPERTY_VALUE= "value";
-    
+    public static final String PROPERTY_KEY = "key";
+    public static final String PROPERTY_VALUE = "value";
+
     public ProductExecutorConfigSetupJobParameter() {
     }
-    
+
     public ProductExecutorConfigSetupJobParameter(String key, String value) {
-        this.key=key;
-        this.value=value;
+        this.key = key;
+        this.value = value;
     }
-    
+
     private String key;
 
     private String value;
@@ -57,6 +57,5 @@ public class ProductExecutorConfigSetupJobParameter {
     public String toString() {
         return "ProductExecutorConfigSetupJobParameter [" + (key != null ? "key=" + key + ", " : "") + (value != null ? "value=" + value : "") + "]";
     }
-    
-    
+
 }

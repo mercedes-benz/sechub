@@ -76,7 +76,7 @@ public class SecHubFinding {
 
     /**
      * CVE result - interesting for infra scans
-     * 
+     *
      * @return CVE id - e.g. "CVE-2014-9999999" see https://cve.mitre.org/ or
      *         <code>null</code>
      */
@@ -86,7 +86,7 @@ public class SecHubFinding {
 
     /***
      * Set CVE id - e.g. "CVE-2014-9999999" see https://cve.mitre.org/
-     * 
+     *
      * @param cveId
      */
     public void setCveId(String cveId) {
@@ -99,7 +99,7 @@ public class SecHubFinding {
 
     /**
      * CWE result - interesting for code scans, web scans
-     * 
+     *
      * @return common vulnerability enumeration id - see https://cwe.mitre.org/ or
      *         <code>null</code> when not defined
      */

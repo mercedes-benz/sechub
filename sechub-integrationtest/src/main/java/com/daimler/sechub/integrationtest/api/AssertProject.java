@@ -31,7 +31,7 @@ public class AssertProject extends AbstractAssert {
     /**
      * Assert the project does not exist in administration domain. Will wait 3x330
      * milliseconds
-     * 
+     *
      * @return
      */
     public AssertProject doesNotExist() {
@@ -40,7 +40,7 @@ public class AssertProject extends AbstractAssert {
 
     /**
      * Check user does exists
-     * 
+     *
      * @param tries - amount of retries. Every retry will wait 330 milliseconds
      * @return
      */
@@ -67,7 +67,7 @@ public class AssertProject extends AbstractAssert {
 
     /**
      * Asserts the project has expected scan domain access entries
-     * 
+     *
      * @param expected
      * @return count
      */
@@ -83,7 +83,7 @@ public class AssertProject extends AbstractAssert {
 
     /**
      * Asserts the project has expected schedule domain access entries
-     * 
+     *
      * @param expected
      * @return count
      */

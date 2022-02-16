@@ -41,9 +41,11 @@ public class GlassPaneUI {
             setVisible(false);
             /* disable key and mouse event handling when visible */
             addKeyListener(this);
-            addMouseListener( new MouseAdapter() {} );
-            addMouseMotionListener( new MouseMotionAdapter() {} );
-            
+            addMouseListener(new MouseAdapter() {
+            });
+            addMouseMotionListener(new MouseMotionAdapter() {
+            });
+
             /* set busy cursor */
             setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         }

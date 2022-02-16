@@ -10,16 +10,16 @@ import com.daimler.sechub.domain.scan.OneInstallSetup;
 
 public class NetsparkerInstallSetupImplTest {
 
-	private NetsparkerInstallSetupImpl setupToTest;
+    private NetsparkerInstallSetupImpl setupToTest;
 
-	@Before
-	public void before() {
-		setupToTest = new NetsparkerInstallSetupImpl();
-	}
-	
-	@Test
-	public void is_extending_double_install() {
-		assertTrue(setupToTest instanceof OneInstallSetup);
-	}
+    @Before
+    public void before() {
+        setupToTest = new NetsparkerInstallSetupImpl();
+    }
+
+    @Test
+    public void is_extending_double_install() {
+        assertTrue(setupToTest instanceof OneInstallSetup);
+    }
 
 }

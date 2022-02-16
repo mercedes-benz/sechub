@@ -9,29 +9,29 @@ import com.daimler.sechub.developertools.admin.ui.action.AbstractUIAction;
 import com.daimler.sechub.developertools.admin.ui.cache.InputCacheIdentifier;
 
 public class UnassignUserFromProjectAction extends AbstractUIAction {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public UnassignUserFromProjectAction(UIContext context) {
-		super("Unassign user from project", context);
-	}
+    public UnassignUserFromProjectAction(UIContext context) {
+        super("Unassign user from project", context);
+    }
 
-	@Override
-	public void execute(ActionEvent e) {
-		Optional<String> userId = getUserInput("Please enter userId",InputCacheIdentifier.USERNAME);
-		if (! userId.isPresent()) {
-			return;
-		}
-		Optional<String> projectId = getUserInput("Please enter project ID/name",InputCacheIdentifier.PROJECT_ID);
-		if (! projectId.isPresent()) {
-			return;
-		}
-		
+    @Override
+    public void execute(ActionEvent e) {
+        Optional<String> userId = getUserInput("Please enter userId", InputCacheIdentifier.USERNAME);
+        if (!userId.isPresent()) {
+            return;
+        }
+        Optional<String> projectId = getUserInput("Please enter project ID/name", InputCacheIdentifier.PROJECT_ID);
+        if (!projectId.isPresent()) {
+            return;
+        }
+
         if (!confirm("Do you really want to unassign the userId " + userId.get() + " from the project ID/name " + projectId.get() + "?")) {
             return;
         }
 
-		String infoMessage = getContext().getAdministration().unassignUserFromProject(asSecHubId(userId.get()), asSecHubId(projectId.get()));
-		outputAsTextOnSuccess(infoMessage);
-	}
+        String infoMessage = getContext().getAdministration().unassignUserFromProject(asSecHubId(userId.get()), asSecHubId(projectId.get()));
+        outputAsTextOnSuccess(infoMessage);
+    }
 
 }

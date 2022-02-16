@@ -7,7 +7,7 @@ import com.daimler.sechub.sharedkernel.validation.AbstractValidation;
 import com.daimler.sechub.sharedkernel.validation.ValidationContext;
 
 @Component
-public class ProductExecutorConfigSetupValidationImpl extends AbstractValidation<ProductExecutorConfigSetup> implements ProductExecutorConfigSetupValidation{
+public class ProductExecutorConfigSetupValidationImpl extends AbstractValidation<ProductExecutorConfigSetup> implements ProductExecutorConfigSetupValidation {
 
     protected String getValidatorName() {
         return "product executor config setup validation";
@@ -15,7 +15,7 @@ public class ProductExecutorConfigSetupValidationImpl extends AbstractValidation
 
     @Override
     protected void setup(AbstractValidation<ProductExecutorConfigSetup>.ValidationConfig config) {
-        
+
     }
 
     @Override
@@ -25,15 +25,15 @@ public class ProductExecutorConfigSetupValidationImpl extends AbstractValidation
         validateNotNull(context, config.getBaseURL(), "base url");
         validateNotNull(context, config.getJobParameters(), "job parameters");
         validateMaxSize(context, config.getJobParameters(), 100, "maximum");
-        
+
         ProductExecutorConfigSetupCredentials credentials = config.getCredentials();
         validateNotNull(context, credentials, "credentials");
-        if (credentials!=null) {
+        if (credentials != null) {
             String user = credentials.getUser();
             String password = credentials.getPassword();
-            
-            validateMaxLength(context, user, 40,"credentials.user");
-            validateMaxLength(context, password, 40,"credentials.pwd");
+
+            validateMaxLength(context, user, 40, "credentials.user");
+            validateMaxLength(context, password, 40, "credentials.pwd");
         }
     }
 

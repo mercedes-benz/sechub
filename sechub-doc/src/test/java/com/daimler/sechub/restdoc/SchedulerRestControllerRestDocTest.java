@@ -83,60 +83,59 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(SchedulerRestController.class)
-@ContextConfiguration(classes = { SchedulerRestController.class,
-		SchedulerRestControllerRestDocTest.SimpleTestConfiguration.class })
+@ContextConfiguration(classes = { SchedulerRestController.class, SchedulerRestControllerRestDocTest.SimpleTestConfiguration.class })
 @WithMockUser
 @ActiveProfiles(Profiles.TEST)
-@AutoConfigureRestDocs(uriScheme="https",uriHost=ExampleConstants.URI_SECHUB_SERVER,uriPort=443)
+@AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 public class SchedulerRestControllerRestDocTest {
 
-	private static final String PROJECT1_ID = "project1";
+    private static final String PROJECT1_ID = "project1";
 
-	private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
-	
+    private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
+
     private static final String FORM = WebLoginConfiguration.PROPERTY_FORM;
     private static final String SCRIPT = FormLoginConfiguration.PROPERTY_SCRIPT;
 
-	@Autowired
-	private MockMvc mockMvc;
-	@MockBean
-	private SchedulerApproveJobService mockedScheduleService;
+    @Autowired
+    private MockMvc mockMvc;
+    @MockBean
+    private SchedulerApproveJobService mockedScheduleService;
 
-	@MockBean
-	private SchedulerCreateJobService mockedScheduleCreateJobService;
+    @MockBean
+    private SchedulerCreateJobService mockedScheduleCreateJobService;
 
-	@MockBean
-	private SchedulerGetJobStatusService mockedScheduleJobStatusService;
+    @MockBean
+    private SchedulerGetJobStatusService mockedScheduleJobStatusService;
 
-	@MockBean
-	private SecHubConfigurationValidator sechubConfigurationValidator;
+    @MockBean
+    private SecHubConfigurationValidator sechubConfigurationValidator;
 
-	@MockBean
-	private SchedulerUploadService mockeduploadService;
+    @MockBean
+    private SchedulerUploadService mockeduploadService;
 
-	@MockBean
-	private SecHubJobRepository mockedJobRepository;
+    @MockBean
+    private SecHubJobRepository mockedJobRepository;
 
-	@MockBean
-	private ScheduleAccessRepository mockedProjectRepository;
+    @MockBean
+    private ScheduleAccessRepository mockedProjectRepository;
 
-	private ScheduleAccess project1;
+    private ScheduleAccess project1;
 
-	private UUID randomUUID;
+    private UUID randomUUID;
 
-	@Test
-	@UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Code Scan")
-	public void restDoc_userCreatesNewJob_codescan() throws Exception {
-		/* prepare */
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Code Scan")
+    public void restDoc_userCreatesNewJob_codescan() throws Exception {
+        /* prepare */
         String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseUserCreatesNewJob.class;
-        
-		UUID randomUUID = UUID.randomUUID();
-		SchedulerResult mockResult = new SchedulerResult(randomUUID);
 
-		when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
+        UUID randomUUID = UUID.randomUUID();
+        SchedulerResult mockResult = new SchedulerResult(randomUUID);
 
-		/* execute + test @formatter:off */
+        when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
+
+        /* execute + test @formatter:off */
 	    this.mockMvc.perform(
 	    		post(apiEndpoint,PROJECT1_ID).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -164,7 +163,7 @@ public class SchedulerRestControllerRestDocTest {
 	    			                                    fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
 	    			                                    fieldWithPath(PROPERTY_CODE_SCAN).description("Code scan configuration block").optional(),
 	    			                                    fieldWithPath(PROPERTY_CODE_SCAN+"."+SecHubCodeScanConfiguration.PROPERTY_FILESYSTEM+"."+SecHubFileSystemConfiguration.PROPERTY_FOLDERS).description("Code scan sources from given file system folders").optional()
-	    
+
 	    			                            ).
 	    			                            responseFields(
 	    			                                    fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
@@ -174,21 +173,21 @@ public class SchedulerRestControllerRestDocTest {
 	    			                ));
 
 	    /* @formatter:on */
-	}
-	
-	@Test
-	@UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Infrastructure scan")
-	public void restDoc_userCreatesNewJob_infrascan() throws Exception {
-		/* prepare */
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Infrastructure scan")
+    public void restDoc_userCreatesNewJob_infrascan() throws Exception {
+        /* prepare */
         String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseUserCreatesNewJob.class;
-        
-		UUID randomUUID = UUID.randomUUID();
-		SchedulerResult mockResult = new SchedulerResult(randomUUID);
-	
-		when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
-	
-		/* execute + test @formatter:off */
+
+        UUID randomUUID = UUID.randomUUID();
+        SchedulerResult mockResult = new SchedulerResult(randomUUID);
+
+        when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
+
+        /* execute + test @formatter:off */
 	    this.mockMvc.perform(
 	    		post(apiEndpoint,PROJECT1_ID).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -218,39 +217,39 @@ public class SchedulerRestControllerRestDocTest {
                                                 fieldWithPath(PROPERTY_INFRA_SCAN).description("Infrastructure configuration block").optional(),
                                                 fieldWithPath(PROPERTY_INFRA_SCAN+"."+SecHubInfrastructureScanConfiguration.PROPERTY_URIS).description("Infrastructure URIs to scan for").optional(),
                                                 fieldWithPath(PROPERTY_INFRA_SCAN+"."+SecHubInfrastructureScanConfiguration.PROPERTY_IPS).description("Infrastructure IPs to scan for").optional()
-            
+
                                         ).
                                         responseFields(
                                                 fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
-            
+
                                         ).
                                         build()
                                     )
                             ));
-	
-	    /* @formatter:on */
-	}
 
-	@Test
-	@UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Web scan anonymous")
-	public void restDoc_userCreatesNewJob_webscan_anonymous() throws Exception {
-		/* prepare */
+	    /* @formatter:on */
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Web scan anonymous")
+    public void restDoc_userCreatesNewJob_webscan_anonymous() throws Exception {
+        /* prepare */
         String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseUserCreatesNewJob.class;
-        
-		UUID randomUUID = UUID.randomUUID();
-		SchedulerResult mockResult = new SchedulerResult(randomUUID);
 
-		WebScanDurationConfiguration maxScanDuration = new WebScanDurationConfiguration();
-		maxScanDuration.setDuration(1);
-		maxScanDuration.setUnit(SecHubTimeUnit.HOUR);
-		
-		List<String> includes = Arrays.asList("/admin", "/hidden", "/admin.html");
-		List<String> excludes = Arrays.asList("/public/media", "/static", "/contaxt.html");
-		
-		when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
+        UUID randomUUID = UUID.randomUUID();
+        SchedulerResult mockResult = new SchedulerResult(randomUUID);
 
-		/* execute + test @formatter:off */
+        WebScanDurationConfiguration maxScanDuration = new WebScanDurationConfiguration();
+        maxScanDuration.setDuration(1);
+        maxScanDuration.setUnit(SecHubTimeUnit.HOUR);
+
+        List<String> includes = Arrays.asList("/admin", "/hidden", "/admin.html");
+        List<String> excludes = Arrays.asList("/public/media", "/static", "/contaxt.html");
+
+        when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
+
+        /* execute + test @formatter:off */
 	    this.mockMvc.perform(
 	    		post(apiEndpoint,PROJECT1_ID).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -281,36 +280,36 @@ public class SchedulerRestControllerRestDocTest {
                                                 fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
                                                 fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URI).description("Webscan URI to scan for").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_MAX_SCAN_DURATION+"."+WebScanDurationConfiguration.PROPERTY_DURATION).description("Duration of the scan as integer").optional(),                                                
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_MAX_SCAN_DURATION+"."+WebScanDurationConfiguration.PROPERTY_DURATION).description("Duration of the scan as integer").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_MAX_SCAN_DURATION+"."+WebScanDurationConfiguration.PROPERTY_UNIT).description("Unit of the duration. Possible values are: millisecond(s), second(s), minute(s), hour(s), day(s)").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_INCLUDES+"[]").description("Include URL sub-paths to scan. Example: /hidden").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_EXCLUDES+"[]").description("Exclude URL sub-paths to scan. Example: /admin").optional()
-            
+
                                         ).
                                         responseFields(
                                                 fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
-            
+
                                         ).
                                         build()
                                     )
 	    			      ));
 
 	    /* @formatter:on */
-	}
-	
-	@Test
-	@UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Web Scan login basic")
-	public void restDoc_userCreatesNewJob_webscan_login_basic() throws Exception {
-		/* prepare */
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Web Scan login basic")
+    public void restDoc_userCreatesNewJob_webscan_login_basic() throws Exception {
+        /* prepare */
         String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseUserCreatesNewJob.class;
-        
-		UUID randomUUID = UUID.randomUUID();
-		SchedulerResult mockResult = new SchedulerResult(randomUUID);
 
-		when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
+        UUID randomUUID = UUID.randomUUID();
+        SchedulerResult mockResult = new SchedulerResult(randomUUID);
 
-		/* execute + test @formatter:off */
+        when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
+
+        /* execute + test @formatter:off */
 	    this.mockMvc.perform(
 	    		post(apiEndpoint, PROJECT1_ID).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -348,17 +347,17 @@ public class SchedulerRestControllerRestDocTest {
                                         ).
                                         responseFields(
                                                 fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
-            
+
                                         ).
                                         build()
                                     )
 	    			    ));
 
 	    /* @formatter:on */
-	}
-	
-	@Test
-	@UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Web Scan login form scripted")
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Web Scan login form scripted")
     public void restDoc_userCreatesNewJob_webScan_login_form_script() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
@@ -442,41 +441,40 @@ public class SchedulerRestControllerRestDocTest {
                                         ).
                                         responseFields(
                                                 fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
-            
+
                                         ).
                                         build()
                                     )
 	    		    ));
 	    /* @formatter:on */
     }
-	
-	@Test
-	@UseCaseRestDoc(useCase = UseCaseUserUploadsSourceCode.class)
-	public void restDoc_userUploadsSourceCode() throws Exception {
-		/* prepare */
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseUserUploadsSourceCode.class)
+    public void restDoc_userUploadsSourceCode() throws Exception {
+        /* prepare */
         String apiEndpoint = https(PORT_USED).buildUploadSourceCodeUrl(PROJECT_ID.pathElement(), JOB_UUID.pathElement());
         Class<? extends Annotation> useCase = UseCaseUserUploadsSourceCode.class;
-        
-		ScheduleSecHubJob job = new ScheduleSecHubJob() {
-			public UUID getUUID() {
-				return randomUUID;
-			};
-		};
-		job.setExecutionResult(ExecutionResult.OK);
-		job.setStarted(LocalDateTime.now().minusMinutes(15));
-		job.setEnded(LocalDateTime.now());
-		job.setExecutionState(ExecutionState.INITIALIZING);
-		job.setOwner("CREATOR1");
-		job.setTrafficLight(TrafficLight.GREEN);
 
-		ScheduleJobStatus status = new ScheduleJobStatus(job);
+        ScheduleSecHubJob job = new ScheduleSecHubJob() {
+            public UUID getUUID() {
+                return randomUUID;
+            };
+        };
+        job.setExecutionResult(ExecutionResult.OK);
+        job.setStarted(LocalDateTime.now().minusMinutes(15));
+        job.setEnded(LocalDateTime.now());
+        job.setExecutionState(ExecutionState.INITIALIZING);
+        job.setOwner("CREATOR1");
+        job.setTrafficLight(TrafficLight.GREEN);
 
-		when(mockedScheduleJobStatusService.getJobStatus(PROJECT1_ID, randomUUID)).thenReturn(status);
+        ScheduleJobStatus status = new ScheduleJobStatus(job);
 
-		InputStream inputStreamTo = RestDocTestFileSupport.getTestfileSupport()
-				.getInputStreamTo("upload/zipfile_contains_only_test1.txt.zip");
-		MockMultipartFile file1 = new MockMultipartFile("file", inputStreamTo);
-		/* execute + test @formatter:off */
+        when(mockedScheduleJobStatusService.getJobStatus(PROJECT1_ID, randomUUID)).thenReturn(status);
+
+        InputStream inputStreamTo = RestDocTestFileSupport.getTestfileSupport().getInputStreamTo("upload/zipfile_contains_only_test1.txt.zip");
+        MockMultipartFile file1 = new MockMultipartFile("file", inputStreamTo);
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		fileUpload(apiEndpoint, PROJECT1_ID,randomUUID).
         			file(file1).param("checkSum", "mychecksum")
@@ -498,38 +496,38 @@ public class SchedulerRestControllerRestDocTest {
                                                 ).
                                                 build()
                                             ),
-                                    // TODO jeeppler, 2020-12-07: It is not possible to document this part properly in OpenAPI. 
+                                    // TODO jeeppler, 2020-12-07: It is not possible to document this part properly in OpenAPI.
                                     // See: https://github.com/ePages-de/restdocs-api-spec/issues/105
-        							requestParts(partWithName("file").description("The sourcecode as zipfile to upload"))        									
+        							requestParts(partWithName("file").description("The sourcecode as zipfile to upload"))
         			));
 
         /* @formatter:on */
-	}
+    }
 
-	@Test
-	@UseCaseRestDoc(useCase = UseCaseUserApprovesJob.class)
-	public void restDoc_userApprovesJob() throws Exception {
-		/* prepare */
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseUserApprovesJob.class)
+    public void restDoc_userApprovesJob() throws Exception {
+        /* prepare */
         String apiEndpoint = https(PORT_USED).buildApproveJobUrl(PROJECT_ID.pathElement(), JOB_UUID.pathElement());
         Class<? extends Annotation> useCase = UseCaseUserApprovesJob.class;
 
-		ScheduleSecHubJob job = new ScheduleSecHubJob() {
-			public UUID getUUID() {
-				return randomUUID;
-			};
-		};
-		job.setExecutionResult(ExecutionResult.OK);
-		job.setStarted(LocalDateTime.now().minusMinutes(15));
-		job.setEnded(LocalDateTime.now());
-		job.setExecutionState(ExecutionState.ENDED);
-		job.setOwner("CREATOR1");
-		job.setTrafficLight(TrafficLight.GREEN);
+        ScheduleSecHubJob job = new ScheduleSecHubJob() {
+            public UUID getUUID() {
+                return randomUUID;
+            };
+        };
+        job.setExecutionResult(ExecutionResult.OK);
+        job.setStarted(LocalDateTime.now().minusMinutes(15));
+        job.setEnded(LocalDateTime.now());
+        job.setExecutionState(ExecutionState.ENDED);
+        job.setOwner("CREATOR1");
+        job.setTrafficLight(TrafficLight.GREEN);
 
-		ScheduleJobStatus status = new ScheduleJobStatus(job);
+        ScheduleJobStatus status = new ScheduleJobStatus(job);
 
-		when(mockedScheduleJobStatusService.getJobStatus(PROJECT1_ID, randomUUID)).thenReturn(status);
+        when(mockedScheduleJobStatusService.getJobStatus(PROJECT1_ID, randomUUID)).thenReturn(status);
 
-		/* execute + test @formatter:off */
+        /* execute + test @formatter:off */
 	    this.mockMvc.perform(
 	    		put(apiEndpoint, PROJECT1_ID,randomUUID).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -550,32 +548,32 @@ public class SchedulerRestControllerRestDocTest {
 	    				));
 
 	    /* @formatter:on */
-	}
+    }
 
-	@Test
-	@UseCaseRestDoc(useCase = UseCaseUserChecksJobStatus.class)
-	public void restDoc_userChecksJobState() throws Exception {
-		/* prepare */
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseUserChecksJobStatus.class)
+    public void restDoc_userChecksJobState() throws Exception {
+        /* prepare */
         String apiEndpoint = https(PORT_USED).buildGetJobStatusUrl(PROJECT_ID.pathElement(), JOB_UUID.pathElement());
         Class<? extends Annotation> useCase = UseCaseUserChecksJobStatus.class;
 
-		ScheduleSecHubJob job = new ScheduleSecHubJob() {
-			public UUID getUUID() {
-				return randomUUID;
-			};
-		};
-		job.setExecutionResult(ExecutionResult.OK);
-		job.setStarted(LocalDateTime.now().minusMinutes(15));
-		job.setEnded(LocalDateTime.now());
-		job.setExecutionState(ExecutionState.ENDED);
-		job.setOwner("CREATOR1");
-		job.setTrafficLight(TrafficLight.GREEN);
+        ScheduleSecHubJob job = new ScheduleSecHubJob() {
+            public UUID getUUID() {
+                return randomUUID;
+            };
+        };
+        job.setExecutionResult(ExecutionResult.OK);
+        job.setStarted(LocalDateTime.now().minusMinutes(15));
+        job.setEnded(LocalDateTime.now());
+        job.setExecutionState(ExecutionState.ENDED);
+        job.setOwner("CREATOR1");
+        job.setTrafficLight(TrafficLight.GREEN);
 
-		ScheduleJobStatus status = new ScheduleJobStatus(job);
+        ScheduleJobStatus status = new ScheduleJobStatus(job);
 
-		when(mockedScheduleJobStatusService.getJobStatus(PROJECT1_ID, randomUUID)).thenReturn(status);
+        when(mockedScheduleJobStatusService.getJobStatus(PROJECT1_ID, randomUUID)).thenReturn(status);
 
-		/* execute + test @formatter:off */
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(apiEndpoint, PROJECT1_ID,randomUUID).
         			contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -609,25 +607,25 @@ public class SchedulerRestControllerRestDocTest {
         		);
 
         /* @formatter:on */
-	}
+    }
 
-	@Before
-	public void before() {
-		randomUUID = UUID.randomUUID();
-		project1 = mock(ScheduleAccess.class);
+    @Before
+    public void before() {
+        randomUUID = UUID.randomUUID();
+        project1 = mock(ScheduleAccess.class);
 
-		ProjectAccessCompositeKey key = new ProjectAccessCompositeKey("user", PROJECT1_ID);
-		when(project1.getKey()).thenReturn(key);
+        ProjectAccessCompositeKey key = new ProjectAccessCompositeKey("user", PROJECT1_ID);
+        when(project1.getKey()).thenReturn(key);
 
-		when(mockedProjectRepository.findById(key)).thenReturn(Optional.of(project1));
+        when(mockedProjectRepository.findById(key)).thenReturn(Optional.of(project1));
 
-		when(sechubConfigurationValidator.supports(SecHubConfiguration.class)).thenReturn(true);
-	}
+        when(sechubConfigurationValidator.supports(SecHubConfiguration.class)).thenReturn(true);
+    }
 
-	@TestConfiguration
-	@Profile(Profiles.TEST)
-	@EnableAutoConfiguration
-	public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    @TestConfiguration
+    @Profile(Profiles.TEST)
+    @EnableAutoConfiguration
+    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
 
-	}
+    }
 }

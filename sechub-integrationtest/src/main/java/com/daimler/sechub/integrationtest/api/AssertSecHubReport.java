@@ -238,7 +238,7 @@ public class AssertSecHubReport {
     /**
      * Dumps curren json content to log output - just for debugging, do not keep it
      * inside tests
-     * 
+     *
      * @return assert object
      */
     public AssertSecHubReport dump() {

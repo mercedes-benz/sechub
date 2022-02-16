@@ -10,22 +10,21 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @Service
 public class ScanReportCountService {
 
-	@Autowired
-	ScanReportRepository repository;
+    @Autowired
+    ScanReportRepository repository;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Autowired
+    UserInputAssertion assertion;
 
-	public long countProjectProductResults(String projectId) {
-		assertion.isValidProjectId(projectId);
+    public long countProjectProductResults(String projectId) {
+        assertion.isValidProjectId(projectId);
 
-		ScanReport probe = new ScanReport();
-		probe.projectId = projectId;
-		Example<ScanReport> example = Example.of(probe);
+        ScanReport probe = new ScanReport();
+        probe.projectId = projectId;
+        Example<ScanReport> example = Example.of(probe);
 
-		return repository.count(example);
+        return repository.count(example);
 
-	}
-
+    }
 
 }

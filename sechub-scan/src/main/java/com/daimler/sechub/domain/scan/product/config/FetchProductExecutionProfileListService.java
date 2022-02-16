@@ -28,26 +28,26 @@ public class FetchProductExecutionProfileListService {
 
     /* @formatter:off */
     @UseCaseAdminFetchesExecutionProfileList(
-            @Step(number = 2, 
-            name = "Service call", 
+            @Step(number = 2,
+            name = "Service call",
             description = "Service fetches data and creates a list containing all executor profiles"))
     /* @formatter:on */
     public ProductExecutionProfilesList fetchProductExecutionProfileList() {
         auditLogService.log("Wants to fetch list of product execution profiles");
-        
+
         ProductExecutionProfilesList configList = new ProductExecutionProfilesList();
-        
-        List<ProductExecutionProfile> data =  repository.findAll();
+
+        List<ProductExecutionProfile> data = repository.findAll();
         for (ProductExecutionProfile profile : data) {
-            
+
             ProductExecutionProfileListEntry entry = new ProductExecutionProfileListEntry();
             entry.id = profile.getId();
-            entry.description=profile.getDescription();
-            entry.enabled=profile.enabled;
-            
+            entry.description = profile.getDescription();
+            entry.enabled = profile.enabled;
+
             configList.getExecutionProfiles().add(entry);
         }
-        
+
         return configList;
     }
 

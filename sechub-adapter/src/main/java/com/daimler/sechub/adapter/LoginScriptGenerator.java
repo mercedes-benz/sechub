@@ -5,5 +5,5 @@ import java.util.List;
 
 public interface LoginScriptGenerator {
 
-	public String generate(List<LoginScriptAction> actions);
+    public String generate(List<LoginScriptAction> actions);
 }

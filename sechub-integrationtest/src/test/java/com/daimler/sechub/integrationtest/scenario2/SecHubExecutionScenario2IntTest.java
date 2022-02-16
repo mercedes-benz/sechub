@@ -21,57 +21,57 @@ import com.daimler.sechub.integrationtest.api.TestUser;
 
 public class SecHubExecutionScenario2IntTest {
 
-	@Rule
-	public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario2.class);
+    @Rule
+    public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario2.class);
 
-	@Rule
-	public Timeout timeOut = Timeout.seconds(30);
+    @Rule
+    public Timeout timeOut = Timeout.seconds(30);
 
-	/* +-----------------------------------------------------------------------+ */
-	/* +............................ Start scan job ...........................+ */
-	/* +-----------------------------------------------------------------------+ */
-	@Test
-	public void when_user_is_not_assigned_to_project_job_cannot_be_started() {
-		/* @formatter:off */
+    /* +-----------------------------------------------------------------------+ */
+    /* +............................ Start scan job ...........................+ */
+    /* +-----------------------------------------------------------------------+ */
+    @Test
+    public void when_user_is_not_assigned_to_project_job_cannot_be_started() {
+        /* @formatter:off */
 		assertUser(USER_1).
 			doesExist().
 			isNotAssignedToProject(PROJECT_1).
 			canNotCreateWebScan(PROJECT_1, HttpStatus.NOT_FOUND);// we use not found because for user1 it is not existent...
 		/* @formatter:on */
-	}
-	
-	@Test
-	public void admin_is_able_to_start_scan_when_project_exists() {
-		/* prepare*/
-		/* @formatter:off */
+    }
+
+    @Test
+    public void admin_is_able_to_start_scan_when_project_exists() {
+        /* prepare */
+        /* @formatter:off */
 
 		as(SUPER_ADMIN).
 			assignUserToProject(USER_1, PROJECT_1);
-		
+
 		assertUser(USER_1).
 			isAssignedToProject(PROJECT_1);
-		
+
 		/* test */
 		assertUser(SUPER_ADMIN)
 			.canCreateWebScan(PROJECT_1);
-		
+
 		/* @formatter:on */
-	}
-	
-	@Test
-	public void admin_is_not_able_to_start_scan_when_project_not_exists() {
-		/* prepare*/
-		/* @formatter:off */
+    }
+
+    @Test
+    public void admin_is_not_able_to_start_scan_when_project_not_exists() {
+        /* prepare */
+        /* @formatter:off */
 
 		expectHttpFailure(() -> TestAPI.as(SUPER_ADMIN).createWebScan(new TestProject("notexistingproject"), false), HttpStatus.NOT_FOUND);
 		/* @formatter:on */
 
-	}
+    }
 
-	@Test
-	public void when_user_is_assigned_to_project_job_can_be_created_and_user_and_superadmin_can_get_status_but_not_other_users() {
-		/* prepare*/
-		/* @formatter:off */
+    @Test
+    public void when_user_is_assigned_to_project_job_can_be_created_and_user_and_superadmin_can_get_status_but_not_other_users() {
+        /* prepare */
+        /* @formatter:off */
 		as(SUPER_ADMIN).
 			assignUserToProject(USER_1, PROJECT_1).
 			assignUserToProject(USER_2, PROJECT_2);
@@ -97,16 +97,14 @@ public class SecHubExecutionScenario2IntTest {
 
 		/* @formatter:on */
 
-	}
+    }
 
-	@Test
-	public void when_user_is_assigned_to_project_job_can_be_approved() {
-		/* prepare*/
-		as(SUPER_ADMIN).
-			assignUserToProject(USER_1, PROJECT_1).
-			assignUserToProject(USER_2, PROJECT_2);
+    @Test
+    public void when_user_is_assigned_to_project_job_can_be_approved() {
+        /* prepare */
+        as(SUPER_ADMIN).assignUserToProject(USER_1, PROJECT_1).assignUserToProject(USER_2, PROJECT_2);
 
-		/* @formatter:off */
+        /* @formatter:off */
 		assertUser(USER_2).
 			isAssignedToProject(PROJECT_2).
 			isNotAssignedToProject(PROJECT_1);
@@ -123,16 +121,14 @@ public class SecHubExecutionScenario2IntTest {
 
 		/* @formatter:on */
 
-	}
+    }
 
-	@Test
-	public void an_admin_which_is_not_assigned_to_a_project_can_approve_a_job_triggered_by_another_user() {
-		/* prepare*/
-		as(SUPER_ADMIN).
-			assignUserToProject(USER_1, PROJECT_1).
-			assignUserToProject(USER_2, PROJECT_2);
+    @Test
+    public void an_admin_which_is_not_assigned_to_a_project_can_approve_a_job_triggered_by_another_user() {
+        /* prepare */
+        as(SUPER_ADMIN).assignUserToProject(USER_1, PROJECT_1).assignUserToProject(USER_2, PROJECT_2);
 
-		/* @formatter:off */
+        /* @formatter:off */
 		assertUser(USER_2).
 			isAssignedToProject(PROJECT_2).
 			isNotAssignedToProject(PROJECT_1);
@@ -148,16 +144,14 @@ public class SecHubExecutionScenario2IntTest {
 
 		/* @formatter:on */
 
-	}
+    }
 
-	@Test
-	public void when_user_is_triggered_a_job_the_report_can_be_downloaded_by_user_superadmins_but_not_other_users() {
-		/* prepare*/
-		as(SUPER_ADMIN).
-			assignUserToProject(USER_1, PROJECT_1).
-			assignUserToProject(USER_2, PROJECT_2);
+    @Test
+    public void when_user_is_triggered_a_job_the_report_can_be_downloaded_by_user_superadmins_but_not_other_users() {
+        /* prepare */
+        as(SUPER_ADMIN).assignUserToProject(USER_1, PROJECT_1).assignUserToProject(USER_2, PROJECT_2);
 
-		/* @formatter:off */
+        /* @formatter:off */
 		assertUser(USER_2).
 			isAssignedToProject(PROJECT_2).
 			isNotAssignedToProject(PROJECT_1);
@@ -181,12 +175,11 @@ public class SecHubExecutionScenario2IntTest {
 
 		/* @formatter:on */
 
-	}
+    }
 
-
-	@Test
-	public void when_user_exists_user_cannot_be_signed_in_again() {
-		/* @formatter:off */
+    @Test
+    public void when_user_exists_user_cannot_be_signed_in_again() {
+        /* @formatter:off */
 		assertUser(USER_1).doesExist(); /* already created */
 		assertSignup(USER_1).doesNotExist(); // signup is not existing
 		TestUser newUser = new AnonymousTestUser(USER_1.getUserId(),"somewhere."+System.currentTimeMillis()+"@example.org");
@@ -196,11 +189,11 @@ public class SecHubExecutionScenario2IntTest {
 
 		/* @formatter:on */
 
-	}
+    }
 
-	@Test
-	public void when_another_user_has_got_the_email_used_for_signup_but_different_name_user_cannot_be_signed_in_again() {
-		/* @formatter:off */
+    @Test
+    public void when_another_user_has_got_the_email_used_for_signup_but_different_name_user_cannot_be_signed_in_again() {
+        /* @formatter:off */
 		assertUser(USER_1).doesExist(); /* already created */
 		String name = "u_"+System.currentTimeMillis();
 		if (name.length()>15 || name.length()<5) {
@@ -212,13 +205,13 @@ public class SecHubExecutionScenario2IntTest {
 
 		/* @formatter:on */
 
-	}
+    }
 
-	@Test
-	public void when_user_is_assigned_to_project_user_can_be_unassigned() {
-		as(SUPER_ADMIN).assignUserToProject(USER_1, PROJECT_1);
+    @Test
+    public void when_user_is_assigned_to_project_user_can_be_unassigned() {
+        as(SUPER_ADMIN).assignUserToProject(USER_1, PROJECT_1);
 
-		/* @formatter:off */
+        /* @formatter:off */
 		assertUser(USER_1).
 			isAssignedToProject(PROJECT_1);
 
@@ -231,11 +224,11 @@ public class SecHubExecutionScenario2IntTest {
 
 		/* @formatter:on */
 
-	}
+    }
 
-	@Test
-	public void when_admin_updates_whitelist_of_project_to_empty_list_user_is_assigned_to_project_but_job_cannot_be_started__HTTP_STATUS_406_NOT_ACCEPTABLE() {
-		/* @formatter:off */
+    @Test
+    public void when_admin_updates_whitelist_of_project_to_empty_list_user_is_assigned_to_project_but_job_cannot_be_started__HTTP_STATUS_406_NOT_ACCEPTABLE() {
+        /* @formatter:off */
 
 		/* prepare */
 		assertProject(PROJECT_1).doesExist();
@@ -253,12 +246,11 @@ public class SecHubExecutionScenario2IntTest {
 
 		/* @formatter:on */
 
-	}
+    }
 
-
-	@Test
-	public void when_user_is_assigned_to_project_job_can_be_created_and_approved_user_1_can_get_report_but_not_user2() {
-	    /* @formatter:off */
+    @Test
+    public void when_user_is_assigned_to_project_job_can_be_created_and_approved_user_1_can_get_report_but_not_user2() {
+        /* @formatter:off */
 		as(SUPER_ADMIN).
 		    assignUserToProject(USER_1, PROJECT_1).
 		    assignUserToProject(USER_2, PROJECT_2);
@@ -281,14 +273,13 @@ public class SecHubExecutionScenario2IntTest {
 			canNotGetReportForJob(PROJECT_2, jobUUID, HttpStatus.NOT_FOUND);
 		/* @formatter:on */
 
-	}
+    }
 
+    @Test
+    public void a_zipped_source_file_can_be_uploaded_and_approved() {
+        as(SUPER_ADMIN).assignUserToProject(USER_1, PROJECT_1);
 
-	@Test
-	public void a_zipped_source_file_can_be_uploaded_and_approved() {
-		as(SUPER_ADMIN).assignUserToProject(USER_1, PROJECT_1);
-
-		/* @formatter:off */
+        /* @formatter:off */
 		UUID jobUUID = assertUser(USER_1).
 			doesExist().
 			isAssignedToProject(PROJECT_1).
@@ -300,6 +291,6 @@ public class SecHubExecutionScenario2IntTest {
 			canGetReportForJob(PROJECT_1, jobUUID);
 		/* @formatter:on */
 
-	}
+    }
 
 }

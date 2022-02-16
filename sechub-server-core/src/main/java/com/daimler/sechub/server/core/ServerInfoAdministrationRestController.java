@@ -20,14 +20,14 @@ import com.daimler.sechub.sharedkernel.usecases.admin.status.UseCaseAdminChecksS
 
 @RestController
 @EnableAutoConfiguration
-@Profile({Profiles.ADMIN_ACCESS})
+@Profile({ Profiles.ADMIN_ACCESS })
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 public class ServerInfoAdministrationRestController {
 
-	@Autowired
-	private InfoService serverInfoService;
+    @Autowired
+    private InfoService serverInfoService;
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@UseCaseAdminChecksServerVersion(
 			@Step(
 					number=1,
@@ -38,6 +38,6 @@ public class ServerInfoAdministrationRestController {
 	@ResponseBody
 	public String getServerVersion() {
 		/* @formatter:on */
-		return serverInfoService.getVersionAsString();
-	}
+        return serverInfoService.getVersionAsString();
+    }
 }

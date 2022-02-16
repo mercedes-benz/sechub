@@ -18,10 +18,10 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 		id=UseCaseIdentifier.UC_USER_FETCHES_FALSE_POSITIVE_CONFIGURATION_OF_PROJECT,
 		group=UseCaseGroup.SECHUB_EXECUTION,
 		apiName="userFetchesFalsePositiveConfigurationOfProject",
-		title="User fetches false positive configuration of project", 
+		title="User fetches false positive configuration of project",
 		description="user/fetch_false_positive_configuration_of_project.adoc")
 public @interface UseCaseUserFetchesFalsePositiveConfigurationOfProject {
-	
+
 	Step value();
 }
 /* @formatter:on */

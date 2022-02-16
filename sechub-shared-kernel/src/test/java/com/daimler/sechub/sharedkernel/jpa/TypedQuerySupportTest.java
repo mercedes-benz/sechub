@@ -13,23 +13,23 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class TypedQuerySupportTest {
-	private TypedQuerySupport<String> supportToTest;
+    private TypedQuerySupport<String> supportToTest;
 
-	@Before
-	public void before() {
-		supportToTest = new TypedQuerySupport<>(String.class);
-	}
+    @Before
+    public void before() {
+        supportToTest = new TypedQuerySupport<>(String.class);
+    }
 
-	@Test
-	public void support_returns_an_optional_when_no_result_exception_is_thrown() {
-		/* prepare */
-		Query query = mock(Query.class);
-		when(query.getSingleResult()).thenThrow(new NoResultException("does not exist"));
+    @Test
+    public void support_returns_an_optional_when_no_result_exception_is_thrown() {
+        /* prepare */
+        Query query = mock(Query.class);
+        when(query.getSingleResult()).thenThrow(new NoResultException("does not exist"));
 
-		/* execute */
-		Optional<String> optional = supportToTest.getSingleResultAsOptional(query);
-		/* test */
-		assertNotNull(optional);
-	}
+        /* execute */
+        Optional<String> optional = supportToTest.getSingleResultAsOptional(query);
+        /* test */
+        assertNotNull(optional);
+    }
 
 }

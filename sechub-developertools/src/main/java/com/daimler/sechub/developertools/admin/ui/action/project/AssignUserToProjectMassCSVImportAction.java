@@ -14,37 +14,36 @@ import com.daimler.sechub.developertools.admin.ui.action.AbstractUIAction;
 
 public class AssignUserToProjectMassCSVImportAction extends AbstractUIAction {
 
+    private static final Logger LOG = LoggerFactory.getLogger(AssignUserToProjectMassCSVImportAction.class);
 
-	private static final Logger LOG = LoggerFactory.getLogger(AssignUserToProjectMassCSVImportAction.class);
+    private static final long serialVersionUID = 1L;
+    private AssignUserToProjectMassCSVImporter csvImport;
 
-	private static final long serialVersionUID = 1L;
-	private AssignUserToProjectMassCSVImporter csvImport;
+    public AssignUserToProjectMassCSVImportAction(UIContext context) {
+        super("Assign user to projects by CSV import", context);
 
-	public AssignUserToProjectMassCSVImportAction(UIContext context) {
-		super("Assign user to projects by CSV import",context);
-		
-		csvImport = new AssignUserToProjectMassCSVImporter(context.getAdministration());
-	}
+        csvImport = new AssignUserToProjectMassCSVImporter(context.getAdministration());
+    }
 
-	@Override
-	public void execute(ActionEvent e) {
-		File file = getContext().getDialogUI().selectFile(ConfigurationSetup.SECHUB_MASS_OPERATION_PARENTDIRECTORY.getStringValue("unknown"));
-		if (file==null) {
-			outputAsTextOnSuccess("No file selected - canceled");
-			return;
-		}
-		String env = ConfigurationSetup.SECHUB_ADMIN_ENVIRONMENT.getStringValue("UNKNOWN");
-		if (! confirm("Do you really want to start mass user2project assignment into environment: "+env)) {
-			outputAsTextOnSuccess("Canceled mass user2project import");
-			return;
-		}
-		try {
-			csvImport.importUsersToProjectAssignmentsByCSV(file);
-			outputAsTextOnSuccess("Mass user2project assignment by file"+file+" successfully done");
-		} catch (Exception ex) {
-			outputAsTextOnSuccess("Was not able to do mass user2project assignment by CSV import:"+ex.getMessage());
-			LOG.error("Was not able to import",ex);
-		}
-	}
+    @Override
+    public void execute(ActionEvent e) {
+        File file = getContext().getDialogUI().selectFile(ConfigurationSetup.SECHUB_MASS_OPERATION_PARENTDIRECTORY.getStringValue("unknown"));
+        if (file == null) {
+            outputAsTextOnSuccess("No file selected - canceled");
+            return;
+        }
+        String env = ConfigurationSetup.SECHUB_ADMIN_ENVIRONMENT.getStringValue("UNKNOWN");
+        if (!confirm("Do you really want to start mass user2project assignment into environment: " + env)) {
+            outputAsTextOnSuccess("Canceled mass user2project import");
+            return;
+        }
+        try {
+            csvImport.importUsersToProjectAssignmentsByCSV(file);
+            outputAsTextOnSuccess("Mass user2project assignment by file" + file + " successfully done");
+        } catch (Exception ex) {
+            outputAsTextOnSuccess("Was not able to do mass user2project assignment by CSV import:" + ex.getMessage());
+            LOG.error("Was not able to import", ex);
+        }
+    }
 
 }

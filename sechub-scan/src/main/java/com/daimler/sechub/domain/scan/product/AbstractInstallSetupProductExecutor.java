@@ -40,191 +40,187 @@ import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
  */
 public abstract class AbstractInstallSetupProductExecutor<S extends InstallSetup> implements ProductExecutor {
 
-	private static final Logger LOG = LoggerFactory.getLogger(AbstractInstallSetupProductExecutor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractInstallSetupProductExecutor.class);
 
-	@Autowired
-	protected TargetResolver targetResolver;
-	
-	/**
-	 * @return scan type of this executor - never <code>null</code>
-	 */
-	protected abstract ScanType getScanType();
+    @Autowired
+    protected TargetResolver targetResolver;
 
-	protected SecHubAdapterOptionsBuilderStrategy createAdapterOptionsStrategy(SecHubExecutionContext context) {
-		return new SecHubAdapterOptionsBuilderStrategy(context, getScanType());
-	}
-	
-	@Override
-	public final List<ProductResult> execute(SecHubExecutionContext context, ProductExecutorContext executorContext ) throws SecHubExecutionException {
-		UUIDTraceLogID traceLogId = context.getTraceLogId();
+    /**
+     * @return scan type of this executor - never <code>null</code>
+     */
+    protected abstract ScanType getScanType();
 
-		LOG.debug("Executing {}", traceLogId);
+    protected SecHubAdapterOptionsBuilderStrategy createAdapterOptionsStrategy(SecHubExecutionContext context) {
+        return new SecHubAdapterOptionsBuilderStrategy(context, getScanType());
+    }
 
-		SecHubConfiguration config = context.getConfiguration();
-		S setup = getInstallSetup();
+    @Override
+    public final List<ProductResult> execute(SecHubExecutionContext context, ProductExecutorContext executorContext) throws SecHubExecutionException {
+        UUIDTraceLogID traceLogId = context.getTraceLogId();
 
-		TargetRegistry registry = createTargetRegistry();
+        LOG.debug("Executing {}", traceLogId);
 
-		List<URI> uris = resolveURIsForTarget(config);
-		registerURIs(traceLogId, setup, registry, uris);
+        SecHubConfiguration config = context.getConfiguration();
+        S setup = getInstallSetup();
 
-		List<InetAddress> inetAdresses = resolveInetAdressForTarget(config);
-		registerInetAdresses(traceLogId, setup, registry, inetAdresses);
+        TargetRegistry registry = createTargetRegistry();
 
-		customRegistration(traceLogId, setup, registry, config);
+        List<URI> uris = resolveURIsForTarget(config);
+        registerURIs(traceLogId, setup, registry, uris);
 
-		try {
-			return execute(context, executorContext, registry, setup);
-		} catch (SecHubExecutionException e) {
-			throw e;
-		} catch (Exception e) {
-			/*
-			 * every other exception is wrapped to a SecHub execution exception which is
-			 * handled
-			 */
-			throw new SecHubExecutionException(getIdentifier() + " execution failed." + traceLogId, e);
-		}
+        List<InetAddress> inetAdresses = resolveInetAdressForTarget(config);
+        registerInetAdresses(traceLogId, setup, registry, inetAdresses);
 
-	}
-	
-	protected void customRegistration(UUIDTraceLogID traceLogId, S setup, TargetRegistry registry, SecHubConfiguration config) {
-		/* do nothing per default*/
-	}
+        customRegistration(traceLogId, setup, registry, config);
 
-	TargetRegistry createTargetRegistry() {
-		return new TargetRegistry();
-	}
+        try {
+            return execute(context, executorContext, registry, setup);
+        } catch (SecHubExecutionException e) {
+            throw e;
+        } catch (Exception e) {
+            /*
+             * every other exception is wrapped to a SecHub execution exception which is
+             * handled
+             */
+            throw new SecHubExecutionException(getIdentifier() + " execution failed." + traceLogId, e);
+        }
 
-	private void registerURIs(UUIDTraceLogID traceLogId, S setup, TargetRegistry registry, List<URI> uris) {
-		if (uris == null || uris.isEmpty()) {
-			return;
-		}
-		for (URI uri : uris) {
-			Target target = targetResolver.resolveTarget(uri);
-			if (!setup.isAbleToScan(target.getType())) {
-				LOG.error("{}: setup not able to scan target {}", getIdentifier(), target);
-				continue;
-			}
-			LOG.debug("{} register scan target:{}", traceLogId, target);
-			registry.register(target);
-		}
-	}
+    }
 
-	private void registerInetAdresses(UUIDTraceLogID traceLogId, S setup, TargetRegistry registry,
-			List<InetAddress> inetAdresses) {
-		if (inetAdresses == null || inetAdresses.isEmpty()) {
-			return;
-		}
-		for (InetAddress inetAdress : inetAdresses) {
-			Target target = targetResolver.resolveTarget(inetAdress);
-			if (!setup.isAbleToScan(target.getType())) {
-				LOG.error("{}: setup not able to scan target {}", getIdentifier(), target);
-				continue;
-			}
-			LOG.debug("{} register scan target:{}", traceLogId, target);
-			registry.register(target);
-		}
-	}
+    protected void customRegistration(UUIDTraceLogID traceLogId, S setup, TargetRegistry registry, SecHubConfiguration config) {
+        /* do nothing per default */
+    }
 
-	/**
-	 * Implementation will return the target URIs to use for targets
-	 *
-	 * @param config
-	 * @return uris or <code>null</code>
-	 */
-	protected abstract List<URI> resolveURIsForTarget(SecHubConfiguration config);
+    TargetRegistry createTargetRegistry() {
+        return new TargetRegistry();
+    }
 
-	/**
-	 * Implementation will return the IP addresses to use for targets
-	 *
-	 * @param config
-	 * @return ip adresses or <code>null</code>
-	 */
-	protected abstract List<InetAddress> resolveInetAdressForTarget(SecHubConfiguration config);
+    private void registerURIs(UUIDTraceLogID traceLogId, S setup, TargetRegistry registry, List<URI> uris) {
+        if (uris == null || uris.isEmpty()) {
+            return;
+        }
+        for (URI uri : uris) {
+            Target target = targetResolver.resolveTarget(uri);
+            if (!setup.isAbleToScan(target.getType())) {
+                LOG.error("{}: setup not able to scan target {}", getIdentifier(), target);
+                continue;
+            }
+            LOG.debug("{} register scan target:{}", traceLogId, target);
+            registry.register(target);
+        }
+    }
 
-	/**
-	 * Execute the scan by product
-	 *
-	 * @param context
-	 * @param registry
-	 * @param setup
-	 * @return result or <code>null</code> (null means the setup is not able to
-	 *         scan)
-	 * @throws SecHubExecutionException
-	 */
-	protected List<ProductResult> execute(SecHubExecutionContext context, ProductExecutorContext executorContext,TargetRegistry registry, S setup)
-			throws Exception {
-		List<ProductResult> result = new ArrayList<>();
+    private void registerInetAdresses(UUIDTraceLogID traceLogId, S setup, TargetRegistry registry, List<InetAddress> inetAdresses) {
+        if (inetAdresses == null || inetAdresses.isEmpty()) {
+            return;
+        }
+        for (InetAddress inetAdress : inetAdresses) {
+            Target target = targetResolver.resolveTarget(inetAdress);
+            if (!setup.isAbleToScan(target.getType())) {
+                LOG.error("{}: setup not able to scan target {}", getIdentifier(), target);
+                continue;
+            }
+            LOG.debug("{} register scan target:{}", traceLogId, target);
+            registry.register(target);
+        }
+    }
 
-		/* we handle here automatically all known targets and call the adapters */
-		for (TargetType type: TargetType.values()) {
-			if (!type.isValid()) {
-				/* not executable*/
-				continue;
-			}
-			executeAdapterWhenTargetTypeSupported(context, executorContext, registry, setup, result, type);
-		}
+    /**
+     * Implementation will return the target URIs to use for targets
+     *
+     * @param config
+     * @return uris or <code>null</code>
+     */
+    protected abstract List<URI> resolveURIsForTarget(SecHubConfiguration config);
 
-		return result;
+    /**
+     * Implementation will return the IP addresses to use for targets
+     *
+     * @param config
+     * @return ip adresses or <code>null</code>
+     */
+    protected abstract List<InetAddress> resolveInetAdressForTarget(SecHubConfiguration config);
 
-	}
+    /**
+     * Execute the scan by product
+     *
+     * @param context
+     * @param registry
+     * @param setup
+     * @return result or <code>null</code> (null means the setup is not able to
+     *         scan)
+     * @throws SecHubExecutionException
+     */
+    protected List<ProductResult> execute(SecHubExecutionContext context, ProductExecutorContext executorContext, TargetRegistry registry, S setup)
+            throws Exception {
+        List<ProductResult> result = new ArrayList<>();
 
-	private void executeAdapterWhenTargetTypeSupported(SecHubExecutionContext context, ProductExecutorContext executorContext ,TargetRegistry registry, S setup,
-			List<ProductResult> result, TargetType targetType) throws Exception {
-		if (!setup.isAbleToScan(targetType)) {
-			LOG.debug("{} Setup says its not able to scan target type {} with {}", context.getTraceLogId(), targetType,
-					getIdentifier());
-			return;
-		}else {
-			LOG.debug("{} Setup says it IS able to scan target type {} with {}", context.getTraceLogId(), targetType,
-					getIdentifier());
-		}
-		TargetRegistryInfo registryInfo = registry.createRegistryInfo(targetType);
+        /* we handle here automatically all known targets and call the adapters */
+        for (TargetType type : TargetType.values()) {
+            if (!type.isValid()) {
+                /* not executable */
+                continue;
+            }
+            executeAdapterWhenTargetTypeSupported(context, executorContext, registry, setup, result, type);
+        }
 
-		if (!registryInfo.containsAtLeastOneTarget()) {
-			LOG.debug("{} Did not found any IP, URI, or identifier defined for target type '{}' for {}", context.getTraceLogId(),
-					targetType, getIdentifier());
-			return;
-		}
+        return result;
 
-		LocalDateTime started = LocalDateTime.now();
-		List<ProductResult> productResults = executeWithAdapter(context, executorContext, setup, registryInfo);
-		LocalDateTime ended = LocalDateTime.now();
+    }
 
-		if (productResults != null) {
-			for (ProductResult pr: productResults) {
-				pr.setStarted(started);
-				pr.setEnded(ended);
-			}
-			result.addAll(productResults);
-		}
-	}
+    private void executeAdapterWhenTargetTypeSupported(SecHubExecutionContext context, ProductExecutorContext executorContext, TargetRegistry registry, S setup,
+            List<ProductResult> result, TargetType targetType) throws Exception {
+        if (!setup.isAbleToScan(targetType)) {
+            LOG.debug("{} Setup says its not able to scan target type {} with {}", context.getTraceLogId(), targetType, getIdentifier());
+            return;
+        } else {
+            LOG.debug("{} Setup says it IS able to scan target type {} with {}", context.getTraceLogId(), targetType, getIdentifier());
+        }
+        TargetRegistryInfo registryInfo = registry.createRegistryInfo(targetType);
 
-	/**
-	 * At this point the implementation can call the adapter. It is ensured that the
-	 * adapter is able to scan the wanted targets.<br>
-	 * <br>
-	 * The implementation handles the final execution by adapter and must decide if
-	 * it uses the adapter in a single call for the given target, or make a loop
-	 * call (e.g. when the product is not able to scan multiple URIs or IPs at same
-	 * time and produces multiple product results - exotic, but could happen - so we use
-	 * a list as result!)
-	 *
-	 * @param context
-	 * @param setup
-	 * @param targetData
-	 * @return
-	 * @throws Exception
-	 */
-	protected abstract List<ProductResult> executeWithAdapter(SecHubExecutionContext context,ProductExecutorContext executorContext, S setup,
-			TargetRegistryInfo targetData) throws Exception/* NOSONAR */;
+        if (!registryInfo.containsAtLeastOneTarget()) {
+            LOG.debug("{} Did not found any IP, URI, or identifier defined for target type '{}' for {}", context.getTraceLogId(), targetType, getIdentifier());
+            return;
+        }
 
-	/**
-	 * Get the install setup which defines the product hosting location and the
-	 * supported target types - this should be injected by spring!
-	 *
-	 * @return install setup, never <code>null</code>
-	 */
-	protected abstract S getInstallSetup();
+        LocalDateTime started = LocalDateTime.now();
+        List<ProductResult> productResults = executeWithAdapter(context, executorContext, setup, registryInfo);
+        LocalDateTime ended = LocalDateTime.now();
+
+        if (productResults != null) {
+            for (ProductResult pr : productResults) {
+                pr.setStarted(started);
+                pr.setEnded(ended);
+            }
+            result.addAll(productResults);
+        }
+    }
+
+    /**
+     * At this point the implementation can call the adapter. It is ensured that the
+     * adapter is able to scan the wanted targets.<br>
+     * <br>
+     * The implementation handles the final execution by adapter and must decide if
+     * it uses the adapter in a single call for the given target, or make a loop
+     * call (e.g. when the product is not able to scan multiple URIs or IPs at same
+     * time and produces multiple product results - exotic, but could happen - so we
+     * use a list as result!)
+     *
+     * @param context
+     * @param setup
+     * @param targetData
+     * @return
+     * @throws Exception
+     */
+    protected abstract List<ProductResult> executeWithAdapter(SecHubExecutionContext context, ProductExecutorContext executorContext, S setup,
+            TargetRegistryInfo targetData) throws Exception/* NOSONAR */;
+
+    /**
+     * Get the install setup which defines the product hosting location and the
+     * supported target types - this should be injected by spring!
+     *
+     * @return install setup, never <code>null</code>
+     */
+    protected abstract S getInstallSetup();
 
 }

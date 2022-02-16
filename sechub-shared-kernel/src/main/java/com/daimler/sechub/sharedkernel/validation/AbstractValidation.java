@@ -15,20 +15,20 @@ public abstract class AbstractValidation<T> implements Validation<T> {
 
     protected AbstractValidation() {
         this.config = new ValidationConfig();
-        this.config.errorPrefix=getValidatorName()+":";
-                
+        this.config.errorPrefix = getValidatorName() + ":";
+
         setup(config);
     }
-    
+
     protected abstract String getValidatorName();
 
     protected ValidationConfig getConfig() {
         return config;
     }
-    
+
     /**
      * Setup configuration for validation - if necessary.
-     * 
+     *
      * @param config
      */
     protected abstract void setup(ValidationConfig config);
@@ -41,21 +41,21 @@ public abstract class AbstractValidation<T> implements Validation<T> {
 
     /**
      * Validates object inside context is not <code>null</code>
-     * 
+     *
      * @param context
      */
     protected void validateNotNull(ValidationContext<?> context) {
         if (context.objectToValidate != null) {
             return;
         }
-        addErrorMessage(context,"May not be null");
+        addErrorMessage(context, "May not be null");
     }
 
     protected void validateNotNull(ValidationContext<?> context, Object whichShallNotbeNull, String name) {
         if (whichShallNotbeNull != null) {
             return;
         }
-        addErrorMessage(context,name + " may not be null");
+        addErrorMessage(context, name + " may not be null");
     }
 
     protected void validateMinSize(ValidationContext<?> context, Collection<?> toInspect, int minimum, String name) {
@@ -65,7 +65,7 @@ public abstract class AbstractValidation<T> implements Validation<T> {
         if (toInspect.size() >= minimum) {
             return;
         }
-        addErrorMessage(context,name + " may not be smaller than " + minimum);
+        addErrorMessage(context, name + " may not be smaller than " + minimum);
     }
 
     protected void validateMaxSize(ValidationContext<?> context, Collection<?> toInspect, int maximum, String name) {
@@ -75,8 +75,9 @@ public abstract class AbstractValidation<T> implements Validation<T> {
         if (toInspect.size() <= maximum) {
             return;
         }
-        addErrorMessage(context,name + " may not be larger than " + maximum);
+        addErrorMessage(context, name + " may not be larger than " + maximum);
     }
+
     protected void validateMaxLength(ValidationContext<?> context, String toInspect, int maximum, String name) {
         if (toInspect == null) {
             return;
@@ -84,9 +85,9 @@ public abstract class AbstractValidation<T> implements Validation<T> {
         if (toInspect.length() <= maximum) {
             return;
         }
-        addErrorMessage(context,name + " may not be larger than " + maximum);
+        addErrorMessage(context, name + " may not be larger than " + maximum);
     }
-    
+
     protected void validateMinLength(ValidationContext<?> context, String toInspect, int minimum, String name) {
         if (toInspect == null) {
             return;
@@ -94,7 +95,7 @@ public abstract class AbstractValidation<T> implements Validation<T> {
         if (toInspect.length() >= minimum) {
             return;
         }
-        addErrorMessage(context,name + " may not be smaller than " + minimum);
+        addErrorMessage(context, name + " may not be smaller than " + minimum);
     }
 
     @SuppressWarnings("unchecked")
@@ -102,29 +103,31 @@ public abstract class AbstractValidation<T> implements Validation<T> {
         if (toInspect == null) {
             return;
         }
-        for (X current: allowed) {
+        for (X current : allowed) {
             if (toInspect.equals(current)) {
                 return;
             }
         }
-        addErrorMessage(context,failureMessage);
+        addErrorMessage(context, failureMessage);
     }
 
     /**
-     * Adds error message to context. Will use configured error prefix
-     * - when error prefix is "hello:" and message is "world" the error message will be "hello:world"
+     * Adds error message to context. Will use configured error prefix - when error
+     * prefix is "hello:" and message is "world" the error message will be
+     * "hello:world"
+     *
      * @param context
-     * @param message  
+     * @param message
      */
     protected final void addErrorMessage(ValidationContext<?> context, String message) {
         context.addError(config.errorPrefix, message);
     }
-    
+
     /**
      * Validation implementation called by abstract implementation.<br>
      * Either use methods from abstract class to validate here the context, or write
      * your own custom validation and just use information found inside context
-     * 
+     *
      * @param context object containing information about target, validation and
      *                more
      */

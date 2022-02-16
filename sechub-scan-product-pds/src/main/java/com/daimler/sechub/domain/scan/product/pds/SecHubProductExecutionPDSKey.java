@@ -5,9 +5,10 @@ import com.daimler.sechub.commons.pds.PDSKey;
 
 /**
  * Marker interface for PDS keys used at product executor site
+ *
  * @author Albert Tregnaghi
  *
  */
-public interface SecHubProductExecutionPDSKey extends PDSKey{
+public interface SecHubProductExecutionPDSKey extends PDSKey {
 
 }

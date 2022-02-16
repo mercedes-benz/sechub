@@ -11,7 +11,9 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
- * Test simly starts up spring container and checks a schedule rest controller can be initiated. So just a smoke test
+ * Test simly starts up spring container and checks a schedule rest controller
+ * can be initiated. So just a smoke test
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -20,14 +22,15 @@ import org.springframework.test.context.junit4.SpringRunner;
 @TestPropertySource(locations = "classpath:application-test.properties")
 public class SchedulerSmokeSpringBootTest {
 
-	@Autowired
-	private SchedulerRestController controller;
+    @Autowired
+    private SchedulerRestController controller;
 
-	@Test
-	public void contextLoads() throws Exception {
-		// see https://spring.io/guides/gs/testing-web/ for details about testing with
-		// spring MVC test
-		assertThat(controller).isNotNull(); // we just test that we got he controller. Means - the spring container context has been loaded successfully!
-	}
+    @Test
+    public void contextLoads() throws Exception {
+        // see https://spring.io/guides/gs/testing-web/ for details about testing with
+        // spring MVC test
+        assertThat(controller).isNotNull(); // we just test that we got he controller. Means - the spring container context
+                                            // has been loaded successfully!
+    }
 
 }

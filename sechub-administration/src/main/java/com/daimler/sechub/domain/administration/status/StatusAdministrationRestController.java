@@ -33,18 +33,16 @@ import com.daimler.sechub.sharedkernel.usecases.admin.status.UseCaseAdminListsSt
 @Profile(Profiles.ADMIN_ACCESS)
 public class StatusAdministrationRestController {
 
-	@Autowired
-	ListStatusService listStatusService;
+    @Autowired
+    ListStatusService listStatusService;
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@UseCaseAdminListsStatusInformation(@Step(number=1,name="Rest call",description="Administrator wants to list status information about sechub",needsRestDoc=true))
 	@RequestMapping(path = AdministrationAPIConstants.API_SCHEDULER_GET_STATUS, method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
 	public List<StatusEntry> listStatusInformation() {
 		/* @formatter:on */
-		return listStatusService.fetchAllStatusEntries();
-	}
-
-
+        return listStatusService.fetchAllStatusEntries();
+    }
 
 }

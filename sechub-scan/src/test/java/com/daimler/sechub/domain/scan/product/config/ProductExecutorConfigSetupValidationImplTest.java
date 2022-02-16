@@ -31,14 +31,14 @@ public class ProductExecutorConfigSetupValidationImplTest {
         mockConfigWithValidValues();
         when(credentials.getUser()).thenReturn("fakeuser");
         when(credentials.getPassword()).thenReturn("fakepwd");
-        
+
         /* execute */
         ValidationResult result = validationToTest.validate(setup);
 
         /* test */
         assertTrue(result.isValid());
     }
-    
+
     @Test
     public void when_all_parts_correct_set_but_credential_pwd_and_user_are_null_no_validation_problems() {
         /* prepare */
@@ -52,7 +52,7 @@ public class ProductExecutorConfigSetupValidationImplTest {
         /* test */
         assertTrue(result.isValid());
     }
-    
+
     @Test
     public void when_all_parts_correct_set_except_missing_baseurl_one_validation_problems() {
         /* prepare */
@@ -64,7 +64,7 @@ public class ProductExecutorConfigSetupValidationImplTest {
 
         /* test */
         assertFalse(result.isValid());
-        assertEquals(1,result.getErrors().size());
+        assertEquals(1, result.getErrors().size());
     }
 
     private void mockConfigWithValidValues() {

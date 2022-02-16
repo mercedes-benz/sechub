@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.restdoc;
 
-import static com.daimler.sechub.test.TestURLBuilder.https;
 import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.JOB_UUID;
+import static com.daimler.sechub.test.TestURLBuilder.https;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.Mockito.when;
@@ -45,60 +45,59 @@ import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdminCancelsJob;
+import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdminListsAllRunningJobs;
 import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdminRestartsJob;
 import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdminRestartsJobHard;
-import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdminListsAllRunningJobs;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(JobAdministrationRestController.class)
-@ContextConfiguration(classes = { JobAdministrationRestController.class,
-		JobAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class })
+@ContextConfiguration(classes = { JobAdministrationRestController.class, JobAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class })
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
-@ActiveProfiles({Profiles.TEST, Profiles.ADMIN_ACCESS})
-@AutoConfigureRestDocs(uriScheme="https",uriHost=ExampleConstants.URI_SECHUB_SERVER,uriPort=443)
+@ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
+@AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 public class JobAdministrationRestControllerRestDocTest {
 
-	private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
+    private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
-	@Autowired
-	private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-	@MockBean
-	JobInformationListService jobListService;
+    @MockBean
+    JobInformationListService jobListService;
 
-	@MockBean
-	JobCancelService jobCancelService;
-	
-	@MockBean
-	JobRestartRequestService jobRestartRequestService;
+    @MockBean
+    JobCancelService jobCancelService;
 
-	@Before
-	public void before() {
-		List<JobInformation> list = new ArrayList<>();
-		JobInformation info = new JobInformation();
-		info.setJobUUID(UUID.randomUUID());
-		info.setStatus(JobStatus.RUNNING);
-		info.setProjectId("project-name");
-		info.setConfiguration("{ config data }");
-		info.setOwner("owner-userid");
-		info.setSince(LocalDateTime.now());
+    @MockBean
+    JobRestartRequestService jobRestartRequestService;
 
-		list.add(info);
+    @Before
+    public void before() {
+        List<JobInformation> list = new ArrayList<>();
+        JobInformation info = new JobInformation();
+        info.setJobUUID(UUID.randomUUID());
+        info.setStatus(JobStatus.RUNNING);
+        info.setProjectId("project-name");
+        info.setConfiguration("{ config data }");
+        info.setOwner("owner-userid");
+        info.setSince(LocalDateTime.now());
 
-		when(jobListService.fetchRunningJobs()).thenReturn(list);
-	}
+        list.add(info);
 
-	@Test
-	@UseCaseRestDoc(useCase=UseCaseAdminListsAllRunningJobs.class)
-	public void restdoc_list_all_running_jobs() throws Exception {
+        when(jobListService.fetchRunningJobs()).thenReturn(list);
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdminListsAllRunningJobs.class)
+    public void restdoc_list_all_running_jobs() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminFetchAllRunningJobsUrl();
         Class<? extends Annotation> useCase = UseCaseAdminListsAllRunningJobs.class;
-        
-		/* execute + test @formatter:off */
+
+        /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				get(apiEndpoint).
 				contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -126,16 +125,16 @@ public class JobAdministrationRestControllerRestDocTest {
 				));
 
 		/* @formatter:on */
-	}
+    }
 
-	@Test
-	@UseCaseRestDoc(useCase=UseCaseAdminCancelsJob.class)
-	public void restdoc_cancel_job() throws Exception {
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdminCancelsJob.class)
+    public void restdoc_cancel_job() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminCancelsJob(JOB_UUID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminCancelsJob.class;
-        
-		/* execute + test @formatter:off */
+
+        /* execute + test @formatter:off */
 		UUID jobUUID = UUID.randomUUID();
 
 		this.mockMvc.perform(
@@ -159,15 +158,15 @@ public class JobAdministrationRestControllerRestDocTest {
 		        ));
 
 		/* @formatter:on */
-	}
-	
-	@Test
-    @UseCaseRestDoc(useCase=UseCaseAdminRestartsJob.class)
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdminRestartsJob.class)
     public void restdoc_restart_job() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminRestartsJob(JOB_UUID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminRestartsJob.class;
-        
+
         /* execute + test @formatter:off */
         UUID jobUUID = UUID.randomUUID();
 
@@ -193,14 +192,14 @@ public class JobAdministrationRestControllerRestDocTest {
 
         /* @formatter:on */
     }
-	
-	@Test
-    @UseCaseRestDoc(useCase=UseCaseAdminRestartsJobHard.class)
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdminRestartsJobHard.class)
     public void restdoc_restart_job_hard() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminRestartsJobHard(JOB_UUID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminRestartsJobHard.class;
-        
+
         /* execute + test @formatter:off */
         UUID jobUUID = UUID.randomUUID();
 
@@ -226,16 +225,16 @@ public class JobAdministrationRestControllerRestDocTest {
 
         /* @formatter:on */
     }
-	
-	
 
-	// see https://docs.spring.io/spring-restdocs/docs/current/reference/html5/#documenting-your-api-request-response-payloads-fields-json
-	private static String inArray(String field) {
-		return "[]."+field;
-	}
-	@EnableAutoConfiguration
-	public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    // see
+    // https://docs.spring.io/spring-restdocs/docs/current/reference/html5/#documenting-your-api-request-response-payloads-fields-json
+    private static String inArray(String field) {
+        return "[]." + field;
+    }
 
-	}
+    @EnableAutoConfiguration
+    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+
+    }
 
 }

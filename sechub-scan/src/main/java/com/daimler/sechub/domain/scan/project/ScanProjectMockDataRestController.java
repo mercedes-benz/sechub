@@ -21,44 +21,43 @@ import com.daimler.sechub.sharedkernel.usecases.user.UseCaseUserDefinesProjectMo
 import com.daimler.sechub.sharedkernel.usecases.user.UseCaseUserRetrievesProjectMockdata;
 
 /**
- * The rest API for project mockdata 
+ * The rest API for project mockdata
  *
  * @author Albert Tregnaghi
  *
  */
 @RestController
 @EnableAutoConfiguration
-@RequestMapping(APIConstants.API_PROJECT+"{projectId}") 
-@RolesAllowed({RoleConstants.ROLE_USER, RoleConstants.ROLE_SUPERADMIN})
+@RequestMapping(APIConstants.API_PROJECT + "{projectId}")
+@RolesAllowed({ RoleConstants.ROLE_USER, RoleConstants.ROLE_SUPERADMIN })
 @Profile(Profiles.MOCKED_PRODUCTS)
 public class ScanProjectMockDataRestController {
 
-	@Autowired
-	private ScanProjectMockDataConfigurationService projectMockConfigurationService;
+    @Autowired
+    private ScanProjectMockDataConfigurationService projectMockConfigurationService;
 
-
-	/* @formatter:off */
+    /* @formatter:off */
 	@UseCaseUserRetrievesProjectMockdata(@Step(number=1,name="REST API call to get JSON data",needsRestDoc=true))
 	@RequestMapping(path = "/mockdata", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public ScanProjectMockDataConfiguration retrieveProjectMockDataConfiguration(
 			@PathVariable("projectId") String projectId
 			) {
 		/* @formatter:on */
-		return projectMockConfigurationService.retrieveProjectMockDataConfiguration(projectId);
+        return projectMockConfigurationService.retrieveProjectMockDataConfiguration(projectId);
 
-	}
-	
-	/* @formatter:off */
+    }
+
+    /* @formatter:off */
 	@UseCaseUserDefinesProjectMockdata(@Step(number=1,name="REST API call to define mock configuration byJSON data",needsRestDoc=true))
 	@RequestMapping(path = "/mockdata", method = RequestMethod.PUT, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public void defineProjectMockDataConfiguration(
 			@PathVariable("projectId") String projectId,
 			@RequestBody ScanProjectMockDataConfiguration configuration
 			) {
-		
+
 		projectMockConfigurationService.defineProjectMockDataConfiguration(projectId,configuration);
 		/* @formatter:on */
 
-	}
+    }
 
 }

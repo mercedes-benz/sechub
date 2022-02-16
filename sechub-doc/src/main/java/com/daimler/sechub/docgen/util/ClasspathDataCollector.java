@@ -19,24 +19,25 @@ import com.daimler.sechub.docgen.usecase.UseCaseRestDocModelDataCollector;
 
 /**
  * Collector for information àbout used annoations ins projects.<br>
- * Inspired by https://github.com/de-jcup/code2doc/blob/master/code2doc-core/src/main/java/de/jcup/code2doc/core/internal/collect/ClasspathDataCollector.java
- * 
+ * Inspired by
+ * https://github.com/de-jcup/code2doc/blob/master/code2doc-core/src/main/java/de/jcup/code2doc/core/internal/collect/ClasspathDataCollector.java
+ *
  * @author Albert Tregnaghi
  *
  */
 public class ClasspathDataCollector {
 
-	private Reflections reflections;
-	private MustBeDocumentedDataCollector mustbeDocumentedDataCollector;
-	private MockedAdaptersSpringValueDataCollector mockedAdaptersSprintValueDataCollector;
-	private DomainMessagingModelDataCollector domainMessagingModelDataCollector;
-	private UseCaseModelDataCollector useCaseModelDataCollector;
-	private PDSUseCaseModelDataCollector pdsUseCaseModelDataCollector;
-	private UseCaseRestDocModelDataCollector useCaseRestDocModelDataCollector;
+    private Reflections reflections;
+    private MustBeDocumentedDataCollector mustbeDocumentedDataCollector;
+    private MockedAdaptersSpringValueDataCollector mockedAdaptersSprintValueDataCollector;
+    private DomainMessagingModelDataCollector domainMessagingModelDataCollector;
+    private UseCaseModelDataCollector useCaseModelDataCollector;
+    private PDSUseCaseModelDataCollector pdsUseCaseModelDataCollector;
+    private UseCaseRestDocModelDataCollector useCaseRestDocModelDataCollector;
     private PDSMustBeDocumentedDataCollector pdsMustbeDocumentedDataCollector;
-	
-	public ClasspathDataCollector(){
-		/* @formatter:off*/
+
+    public ClasspathDataCollector() {
+        /* @formatter:off*/
 		reflections = ReflectionsFactory.create();
 		pdsMustbeDocumentedDataCollector = new PDSMustBeDocumentedDataCollector(reflections);
 		mustbeDocumentedDataCollector = new MustBeDocumentedDataCollector(reflections);
@@ -46,15 +47,15 @@ public class ClasspathDataCollector {
 		useCaseRestDocModelDataCollector = new UseCaseRestDocModelDataCollector(reflections);
 		pdsUseCaseModelDataCollector = new PDSUseCaseModelDataCollector(reflections);
 	}
-	
+
 	public List<DocAnnotationData> fetchMustBeDocumentParts(){
 		return mustbeDocumentedDataCollector.collect();
 	}
-	
+
 	public List<DocAnnotationData> fetchPDSMustBeDocumentParts(){
         return pdsMustbeDocumentedDataCollector.collect();
     }
-	
+
 	public List<DocAnnotationData> fetchMockAdapterSpringValueDocumentationParts(){
 		return mockedAdaptersSprintValueDataCollector.collect();
 	}
@@ -66,7 +67,7 @@ public class ClasspathDataCollector {
 	public UseCaseModel fetchUseCaseModel() {
 		return useCaseModelDataCollector.collect();
 	}
-	
+
 	public UseCaseModel fetchPDSUseCaseModel() {
         return pdsUseCaseModelDataCollector.collect();
     }
@@ -74,5 +75,5 @@ public class ClasspathDataCollector {
 	public UseCaseRestDocModel fetchUseCaseRestDocModel(UseCaseModel model) {
 		return useCaseRestDocModelDataCollector.collect(model);
 	}
-	
+
 }

@@ -67,15 +67,15 @@ public class PDSInfraScanProductExecutor extends AbstractInfrastructureScanProdu
 
         Map<String, String> jobParameters = configSupport.createJobParametersToSendToPDS(context.getConfiguration());
         String projectId = context.getConfiguration().getProjectId();
-        
+
         for (URI targetURI : targetURIs) {
             /* @formatter:off */
-            
-            /* special behavior, because having multiple results here, we must find former result corresponding to 
+
+            /* special behavior, because having multiple results here, we must find former result corresponding to
              * target URI.
              */
             executorContext.useFirstFormerResultHavingMetaData(PDSMetaDataID.KEY_TARGET_URI, targetURI);
-            
+
             PDSInfraScanConfig pdsInfraScanConfig = PDSInfraScanConfigImpl.builder().
                     setPDSProductIdentifier(configSupport.getPDSProductIdentifier()).
                     setTrustAllCertificates(configSupport.isTrustAllCertificatesEnabled()).
@@ -83,19 +83,19 @@ public class PDSInfraScanProductExecutor extends AbstractInfrastructureScanProdu
                     setSecHubJobUUID(context.getSechubJobUUID()).
 
                     setSecHubConfigModel(context.getConfiguration()).
-                    
+
                     configure(createAdapterOptionsStrategy(context)).
 
                     setTimeToWaitForNextCheckOperationInMilliseconds(configSupport.getTimeToWaitForNextCheckOperationInMilliseconds(setup)).
                     setTimeOutInMinutes(configSupport.getTimeoutInMinutes(setup)).
-                    
+
                     setUser(configSupport.getUser()).
                     setPasswordOrAPIToken(configSupport.getPasswordOrAPIToken()).
                     setProjectId(projectId).
-                    
+
                     setTraceID(context.getTraceLogIdAsString()).
                     setJobParameters(jobParameters).
-                    
+
                     setTargetIPs(info.getIPs()).
                     setTargetURIs(info.getURIs()).
 

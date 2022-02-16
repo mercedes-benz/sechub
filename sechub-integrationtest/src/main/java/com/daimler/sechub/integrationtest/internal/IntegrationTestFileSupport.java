@@ -8,22 +8,21 @@ import com.daimler.sechub.test.TestFileSupport;
 
 @SechubTestComponent
 public class IntegrationTestFileSupport extends TestFileSupport {
-	private static final IntegrationTestFileSupport TESTFILE_SUPPORT = new IntegrationTestFileSupport();
+    private static final IntegrationTestFileSupport TESTFILE_SUPPORT = new IntegrationTestFileSupport();
 
-	public static IntegrationTestFileSupport getTestfileSupport() {
-		return TESTFILE_SUPPORT;
-	}
+    public static IntegrationTestFileSupport getTestfileSupport() {
+        return TESTFILE_SUPPORT;
+    }
 
     private File integrationTestDataFolder;
 
-	IntegrationTestFileSupport() {
-		super("sechub-integrationtest/src/test/resources");
-		integrationTestDataFolder = new File(getRootFolder(), "sechub-integrationtest/build/sechub/integrationtest/");
-	}
-	
-	public File getIntegrationTestDataFolder() {
+    IntegrationTestFileSupport() {
+        super("sechub-integrationtest/src/test/resources");
+        integrationTestDataFolder = new File(getRootFolder(), "sechub-integrationtest/build/sechub/integrationtest/");
+    }
+
+    public File getIntegrationTestDataFolder() {
         return integrationTestDataFolder;
     }
 
-	
 }

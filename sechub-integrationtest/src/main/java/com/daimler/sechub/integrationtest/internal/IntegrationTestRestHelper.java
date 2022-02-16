@@ -5,10 +5,8 @@ import com.daimler.sechub.integrationtest.api.TestUser;
 
 public class IntegrationTestRestHelper extends TestRestHelper {
 
-	public IntegrationTestRestHelper(TestUser user, RestHelperTarget target) {
-		super(user, target);
-	}
-
-	
+    public IntegrationTestRestHelper(TestUser user, RestHelperTarget target) {
+        super(user, target);
+    }
 
 }

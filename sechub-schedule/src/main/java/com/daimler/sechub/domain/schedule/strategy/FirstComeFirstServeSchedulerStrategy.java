@@ -11,10 +11,10 @@ import com.daimler.sechub.domain.schedule.job.SecHubJobRepository;
 
 @Component
 public class FirstComeFirstServeSchedulerStrategy implements SchedulerStrategy {
-    
+
     @Autowired
     public SecHubJobRepository jobRepository;
-    
+
     @Override
     public SchedulerStrategyId getSchedulerId() {
         return SchedulerStrategyId.FirstComeFirstServe;
@@ -22,13 +22,13 @@ public class FirstComeFirstServeSchedulerStrategy implements SchedulerStrategy {
 
     @Override
     public UUID nextJobId() {
-        
+
         Optional<UUID> nextJob = jobRepository.nextJobIdToExecuteFirstInFirstOut();
         if (!nextJob.isPresent()) {
             return null;
         }
-        
+
         return nextJob.get();
     }
-    
+
 }

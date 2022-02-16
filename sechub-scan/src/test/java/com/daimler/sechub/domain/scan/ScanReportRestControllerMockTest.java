@@ -37,8 +37,8 @@ import com.daimler.sechub.domain.scan.report.DownloadScanReportService;
 import com.daimler.sechub.domain.scan.report.ScanReport;
 import com.daimler.sechub.domain.scan.report.ScanReportRepository;
 import com.daimler.sechub.domain.scan.report.ScanReportRestController;
-import com.daimler.sechub.domain.scan.report.ScanSecHubReport;
 import com.daimler.sechub.domain.scan.report.ScanReportTrafficLightCalculator;
+import com.daimler.sechub.domain.scan.report.ScanSecHubReport;
 import com.daimler.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
@@ -160,7 +160,7 @@ public class ScanReportRestControllerMockTest {
     @WithMockUser
     public void get_html_report_without_cwe_id() throws Exception {
         /* prepare */
-        
+
         Map<String, Object> map = new HashMap<>();
         map.put("jobuuid", randomUUID);
         map.put("styleRed", "theRedStyle");

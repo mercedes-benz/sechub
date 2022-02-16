@@ -31,18 +31,20 @@ public abstract class AbstractAdapter<A extends AdapterContext<C>, C extends Ada
     public AdapterException asAdapterException(String message, Throwable t, TraceIdProvider provider) {
         return AdapterException.asAdapterException(getAdapterLogId(provider), message, t);
     }
-    
+
     /**
-     * Assert current thread is not interrupted - this can be done by a cancel or restart operation.
-     * If current thread is interrupted, a new adapter exception will be thrown
+     * Assert current thread is not interrupted - this can be done by a cancel or
+     * restart operation. If current thread is interrupted, a new adapter exception
+     * will be thrown
+     *
      * @throws AdapterException
      */
-    protected void assertNotInterrupted() throws AdapterException{
+    protected void assertNotInterrupted() throws AdapterException {
         if (Thread.currentThread().isInterrupted()) {
-            throw new AdapterException(getAdapterLogId(null),"Execution thread was interrupted");
+            throw new AdapterException(getAdapterLogId(null), "Execution thread was interrupted");
         }
     }
-    
+
     @Override
     public final AdapterLogId getAdapterLogId(TraceIdProvider traceIdProvider) {
         if (adapterId == null) {
@@ -59,14 +61,14 @@ public abstract class AbstractAdapter<A extends AdapterContext<C>, C extends Ada
     @Override
     public final String start(C config, AdapterMetaDataCallback callback) throws AdapterException {
         AdapterRuntimeContext r = new AdapterRuntimeContext();
-        r.callback=callback;
-        r.metaData=callback.getMetaDataOrNull();
-        if (r.metaData==null) {
+        r.callback = callback;
+        r.metaData = callback.getMetaDataOrNull();
+        if (r.metaData == null) {
             r.metaData = new AdapterMetaData();
-            r.metaData.adapterVersion= getAdapterVersion();
-            r.type=ExecutionType.INITIAL;
-        }else {
-            r.type=ExecutionType.RESTART;
+            r.metaData.adapterVersion = getAdapterVersion();
+            r.type = ExecutionType.INITIAL;
+        } else {
+            r.type = ExecutionType.RESTART;
         }
         return execute(config, r);
     }
@@ -74,23 +76,22 @@ public abstract class AbstractAdapter<A extends AdapterContext<C>, C extends Ada
     @Override
     public final boolean stop(C config, AdapterMetaDataCallback callback) throws AdapterException {
         AdapterMetaData metaData = callback.getMetaDataOrNull();
-        
+
         if (metaData == null) {
             return false;
         }
-        
+
         AdapterRuntimeContext r = new AdapterRuntimeContext();
-        r.callback=null;
-        r.metaData=metaData;
-        r.type=ExecutionType.STOP;
-        
+        r.callback = null;
+        r.metaData = metaData;
+        r.type = ExecutionType.STOP;
+
         execute(config, r);
-        
+
         return r.stopped;
     }
 
     protected abstract String execute(C config, AdapterRuntimeContext runtimeContext) throws AdapterException;
-    
 
     /**
      * @param api
@@ -111,7 +112,7 @@ public abstract class AbstractAdapter<A extends AdapterContext<C>, C extends Ada
     }
 
     /**
-     * 
+     *
      * @param api
      * @param config
      * @param otherBaseURL
@@ -122,7 +123,7 @@ public abstract class AbstractAdapter<A extends AdapterContext<C>, C extends Ada
     }
 
     /**
-     * 
+     *
      * @param api
      * @param config
      * @param otherBaseURL
@@ -134,7 +135,7 @@ public abstract class AbstractAdapter<A extends AdapterContext<C>, C extends Ada
     }
 
     /**
-     * 
+     *
      * @param api
      * @param config
      * @param otherBaseURL
@@ -151,7 +152,7 @@ public abstract class AbstractAdapter<A extends AdapterContext<C>, C extends Ada
      * Is used to create API urls.<br>
      * An example: host:"localhost:8080", apiCall:"users", prefix:"api/v1.0" would
      * lead to "http://localhost:8080/api/v1.0/users"
-     * 
+     *
      * @return
      */
     protected abstract String getAPIPrefix();

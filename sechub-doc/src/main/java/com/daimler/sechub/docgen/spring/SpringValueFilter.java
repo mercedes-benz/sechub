@@ -3,16 +3,18 @@ package com.daimler.sechub.docgen.spring;
 
 import com.daimler.sechub.docgen.spring.SpringValueExtractor.SpringValue;
 
-public interface SpringValueFilter{
-	boolean isFiltered(SpringValue data);
+public interface SpringValueFilter {
+    boolean isFiltered(SpringValue data);
 
-	public static class AcceptAllSpringValueFilter implements SpringValueFilter{
-		
-		public static final SpringValueFilter.AcceptAllSpringValueFilter INSTANCE = new AcceptAllSpringValueFilter();
-		private AcceptAllSpringValueFilter() {};
-		
-		public boolean isFiltered(SpringValue data) {
-			return false;
-		}
-	}
+    public static class AcceptAllSpringValueFilter implements SpringValueFilter {
+
+        public static final SpringValueFilter.AcceptAllSpringValueFilter INSTANCE = new AcceptAllSpringValueFilter();
+
+        private AcceptAllSpringValueFilter() {
+        };
+
+        public boolean isFiltered(SpringValue data) {
+            return false;
+        }
+    }
 }

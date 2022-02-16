@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @PDSUseCaseDefinition(
 		id=PDSUseCaseIdentifier.UC_USER_CANCELS_JOB,
 		group=PDSUseCaseGroup.JOB_EXECUTION,
-		title="User cancels job", 
+		title="User cancels job",
 		description="A user cancel an existing PDS job")
 public @interface UseCaseUserCancelsJob {
     PDSStep value();

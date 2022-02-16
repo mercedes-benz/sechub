@@ -6,7 +6,7 @@ import com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultProfile
 /**
  * This class contains only some constants which are normally only available
  * from internal packages. So those constants can be accessed via API / tests.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -21,7 +21,7 @@ public class ExecutionConstants {
      * simulate old behaviour were no execution profiles nor executor configurations
      * were available - all of those scenarios (1-6) will have automatically this
      * profile assigned to projects!
-     * 
+     *
      */
     public static final String DEFAULT_EXECUTION_PROFILE_ID = IntegrationTestDefaultProfiles.PROFILE_1.id;
 

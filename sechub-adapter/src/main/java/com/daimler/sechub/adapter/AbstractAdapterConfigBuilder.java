@@ -5,6 +5,7 @@ import static com.daimler.sechub.adapter.TimeConstants.*;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+
 import javax.crypto.SealedObject;
 
 import org.slf4j.Logger;
@@ -14,10 +15,10 @@ import com.daimler.sechub.adapter.support.URIShrinkSupport;
 import com.daimler.sechub.commons.core.security.CryptoAccess;
 
 /**
- * Abstract Adapter Config Builder 
+ * Abstract Adapter Config Builder
  *
- * @param <B>  Builder
- * @param <C>  Adapter configuration
+ * @param <B> Builder
+ * @param <C> Adapter configuration
  */
 public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConfigBuilder<B, C>, C extends AdapterConfig> {
 
@@ -65,7 +66,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
     private Map<AdapterOptionKey, String> options = new LinkedHashMap<>();
 
     private static int minimumTimeToWaitForNextCheckOperationInMilliseconds = 500;
-    
+
     protected URIShrinkSupport uriShrinkSupport;
 
     protected AbstractAdapterConfigBuilder() {
@@ -74,7 +75,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 
     /**
      * Hook for tests
-     * 
+     *
      * @return new shrinker, never <code>null</code>
      */
     protected URIShrinkSupport createURIShrinkSupport() {
@@ -83,7 +84,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 
     /**
      * Configure this builder by given strategy
-     * 
+     *
      * @param strategy
      * @return builder (configured by strategy)
      */
@@ -150,7 +151,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 
     /**
      * Set password or API token
-     * 
+     *
      * @param password a password or an API token
      * @return builder
      */
@@ -172,7 +173,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 
     /**
      * Set the base url for the product - e.g. "https://x.y.z:8123"
-     * 
+     *
      * @param baseURL
      * @return
      */
@@ -208,10 +209,10 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 
     /**
      * Set or remove option
-     * 
+     *
      * @param option key
      * @param value  string representation of option value
-     * 
+     *
      */
     @SuppressWarnings("unchecked")
     public B setOption(AdapterOptionKey option, String value) {
@@ -230,7 +231,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
      * Be aware when using this - this highly insecure and should only be used for
      * development. Enabling this, the used adapter will accept all kind of
      * certificates!
-     * 
+     *
      * @param trustAllCertificates
      * @return
      */
@@ -289,7 +290,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
     /**
      * Customization method - is package private, so can only be changed inside main
      * adapter package
-     * 
+     *
      * @param config
      */
     void packageInternalCustomBuild(C config) {

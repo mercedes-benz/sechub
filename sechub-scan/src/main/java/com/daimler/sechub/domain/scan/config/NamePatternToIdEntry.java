@@ -12,65 +12,64 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true) // we do ignore to avoid problems from wrong configured values!
-public class NamePatternToIdEntry implements JSONable<NamePatternToIdEntry>{
+public class NamePatternToIdEntry implements JSONable<NamePatternToIdEntry> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(NamePatternToIdEntry.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NamePatternToIdEntry.class);
 
-	private String namePattern;
-	private String id;
+    private String namePattern;
+    private String id;
 
-	private Pattern regexp;
+    private Pattern regexp;
 
-	private static final NamePatternToIdEntry JSON_INITIALIZER = new NamePatternToIdEntry();
+    private static final NamePatternToIdEntry JSON_INITIALIZER = new NamePatternToIdEntry();
 
-	public static NamePatternToIdEntry createFromJSON(String json) {
-		return JSON_INITIALIZER.fromJSON(json);
-	}
+    public static NamePatternToIdEntry createFromJSON(String json) {
+        return JSON_INITIALIZER.fromJSON(json);
+    }
 
-	private NamePatternToIdEntry() {
-		/* only internal used */
-	}
+    private NamePatternToIdEntry() {
+        /* only internal used */
+    }
 
-	@JsonCreator
-	public NamePatternToIdEntry(@JsonProperty("namePattern")String namePattern,@JsonProperty("id") String id) {
-		this.namePattern = namePattern;
-		this.id = id;
+    @JsonCreator
+    public NamePatternToIdEntry(@JsonProperty("namePattern") String namePattern, @JsonProperty("id") String id) {
+        this.namePattern = namePattern;
+        this.id = id;
 
-		try {
-			regexp=Pattern.compile(namePattern);
-		}catch(RuntimeException e) {
-			LOG.error("Was not able to compile regexp: {}",namePattern, e);
-		}
-	}
+        try {
+            regexp = Pattern.compile(namePattern);
+        } catch (RuntimeException e) {
+            LOG.error("Was not able to compile regexp: {}", namePattern, e);
+        }
+    }
 
-	Pattern getRegexp() {
-		return regexp;
-	}
+    Pattern getRegexp() {
+        return regexp;
+    }
 
-	public String getNamePattern() {
-		return namePattern;
-	}
+    public String getNamePattern() {
+        return namePattern;
+    }
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public boolean isMatching(String string) {
-		if (string == null || regexp==null) {
-			return false;
-		}
-		return regexp.matcher(string).matches();
-	}
+    public boolean isMatching(String string) {
+        if (string == null || regexp == null) {
+            return false;
+        }
+        return regexp.matcher(string).matches();
+    }
 
-	@Override
-	public Class<NamePatternToIdEntry> getJSONTargetClass() {
-		return NamePatternToIdEntry.class;
-	}
+    @Override
+    public Class<NamePatternToIdEntry> getJSONTargetClass() {
+        return NamePatternToIdEntry.class;
+    }
 
-	@Override
-	public String toString() {
-		return "NamePatternToIdEntry [namePattern=" + namePattern + ", id=" + id + ", regexp=" + regexp + "]";
-	}
-
+    @Override
+    public String toString() {
+        return "NamePatternToIdEntry [namePattern=" + namePattern + ", id=" + id + ", regexp=" + regexp + "]";
+    }
 
 }

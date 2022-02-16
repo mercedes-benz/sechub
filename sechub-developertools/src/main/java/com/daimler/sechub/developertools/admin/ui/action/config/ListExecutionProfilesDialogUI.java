@@ -20,7 +20,7 @@ public class ListExecutionProfilesDialogUI extends AbstractListDialogUI<String> 
     @Override
     protected List<String> createTableHeaders() {
         List<String> model = new ArrayList<>();
-        model.add("Profile id");//0
+        model.add("Profile id");// 0
         model.add("enabled");
         model.add("descrition");
         return model;
@@ -46,5 +46,4 @@ public class ListExecutionProfilesDialogUI extends AbstractListDialogUI<String> 
         return list;
     }
 
-    
 }

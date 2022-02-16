@@ -24,7 +24,7 @@ import com.daimler.sechub.sharedkernel.logging.SecurityLogType;
 
 /**
  * Special HTTP filter component - will log client errors to security log
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -104,9 +104,9 @@ public class SecurityLogFilter implements Filter {
 
     private void addInfo(HttpStatus status, SecurityLogType type) {
         SecurityLogInfo info = new SecurityLogInfo();
-        info.status=status;
-        info.type=type;
-        
+        info.status = status;
+        info.type = type;
+
         logInfoMap.put(status.value(), info);
     }
 

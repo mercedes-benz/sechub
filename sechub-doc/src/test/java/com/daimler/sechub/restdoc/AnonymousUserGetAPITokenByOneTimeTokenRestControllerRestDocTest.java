@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.restdoc;
 
-import static com.daimler.sechub.test.TestURLBuilder.https;
 import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.ONE_TIME_TOKEN;
+import static com.daimler.sechub.test.TestURLBuilder.https;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -41,33 +41,32 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 @RunWith(SpringRunner.class)
 @WebMvcTest(AnonymousUserGetApiTokenByOneTimeTokenRestController.class)
 @ContextConfiguration(classes = { AnonymousUserGetApiTokenByOneTimeTokenRestController.class,
-		AnonymousUserGetAPITokenByOneTimeTokenRestControllerRestDocTest.SimpleTestConfiguration.class })
+        AnonymousUserGetAPITokenByOneTimeTokenRestControllerRestDocTest.SimpleTestConfiguration.class })
 @ActiveProfiles(Profiles.TEST)
-@AutoConfigureRestDocs(uriScheme="https",uriHost=ExampleConstants.URI_SECHUB_SERVER,uriPort=443)
+@AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 public class AnonymousUserGetAPITokenByOneTimeTokenRestControllerRestDocTest {
 
-	private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
+    private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
-	@Autowired
-	private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
+    @MockBean
+    AnonymousUserGetAPITokenByOneTimeTokenService userApiTokenService;
 
-	@MockBean
-	AnonymousUserGetAPITokenByOneTimeTokenService userApiTokenService;
+    @Before
+    public void before() {
+    }
 
-	@Before
-	public void before() {
-	}
-
-	@Test
-	@WithAnonymousUser
-	@UseCaseRestDoc(useCase=UseCaseUserClicksLinkToGetNewAPIToken.class)
-	public void restdoc_user_clicks_link_to_get_NewApiToken() throws Exception {
+    @Test
+    @WithAnonymousUser
+    @UseCaseRestDoc(useCase = UseCaseUserClicksLinkToGetNewAPIToken.class)
+    public void restdoc_user_clicks_link_to_get_NewApiToken() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAnonymousGetNewApiTokenByLinkWithOneTimeTokenUrl(ONE_TIME_TOKEN.pathElement());
         Class<? extends Annotation> useCase = UseCaseUserClicksLinkToGetNewAPIToken.class;
-        
-		/* execute + test @formatter:off */
+
+        /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				get(apiEndpoint,"oneTimeToken1").
 				contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -87,12 +86,12 @@ public class AnonymousUserGetAPITokenByOneTimeTokenRestControllerRestDocTest {
 				));
 
 		/* @formatter:on */
-	}
+    }
 
-	@Profile(Profiles.TEST)
-	@EnableAutoConfiguration
-	public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    @Profile(Profiles.TEST)
+    @EnableAutoConfiguration
+    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
 
-	}
+    }
 
 }

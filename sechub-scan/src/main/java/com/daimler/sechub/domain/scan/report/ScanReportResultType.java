@@ -11,7 +11,7 @@ import com.daimler.sechub.commons.model.SecHubResult;
  * inside the field. But afterwards we store the complete report model as
  * result, to have access to messages and more. To be backward compatible we
  * provide this column to distinguish between the different types.
- * 
+ *
  * @return type as simple integer
  */
 public enum ScanReportResultType {

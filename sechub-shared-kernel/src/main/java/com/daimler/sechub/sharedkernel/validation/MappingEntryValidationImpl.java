@@ -19,7 +19,7 @@ public class MappingEntryValidationImpl extends AbstractValidation<MappingEntry>
     protected void setup(AbstractValidation<MappingEntry>.ValidationConfig config) {
 
     }
-    
+
     @Override
     protected String getValidatorName() {
         return "mapping entery validation";
@@ -79,7 +79,7 @@ public class MappingEntryValidationImpl extends AbstractValidation<MappingEntry>
             validateNotNull(context);
             validateMaxLength(context);
         }
-        
+
         @Override
         protected String getValidatorName() {
             return "mapping replacement validation";

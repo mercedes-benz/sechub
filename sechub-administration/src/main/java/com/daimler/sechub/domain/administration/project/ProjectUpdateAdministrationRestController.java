@@ -42,50 +42,50 @@ import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseUpdateProje
 @Profile(Profiles.ADMIN_ACCESS)
 public class ProjectUpdateAdministrationRestController {
 
-	@Autowired
-	ProjectRepository repository;
+    @Autowired
+    ProjectRepository repository;
 
-	@Autowired
-	private UpdateProjectInputValidator validator;
+    @Autowired
+    private UpdateProjectInputValidator validator;
 
-	@Autowired
-	private ProjectUpdateWhitelistService updateProjectWhitelistService;
-	
-	@Autowired
-	private ProjectUpdateMetaDataEntityService updateProjectMetaDataService;
+    @Autowired
+    private ProjectUpdateWhitelistService updateProjectWhitelistService;
 
-	/* @formatter:off */
+    @Autowired
+    private ProjectUpdateMetaDataEntityService updateProjectMetaDataService;
+
+    /* @formatter:off */
 	@UseCaseUpdateProjectWhitelist(@Step(number=1,name="Rest call",description="White list will be updated",needsRestDoc=true))
 	@RequestMapping(path = AdministrationAPIConstants.API_UPDATE_PROJECT_WHITELIST, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public void updateProjectWhitelist(@Validated @RequestBody ProjectJsonInput input, @PathVariable(name="projectId") String projectId) {
 		/* @formatter:on */
-		Optional<ProjectWhiteList> projectWhiteList = input.getWhiteList();
-		List<URI> whiteList;
-		if (projectWhiteList.isPresent()) {
-			ProjectWhiteList r = projectWhiteList.get();
-			whiteList = r.getUris();
-		}else {
-			whiteList = Collections.emptyList();
-		}
-		updateProjectWhitelistService.updateProjectWhitelist(projectId,whiteList);
-	}
+        Optional<ProjectWhiteList> projectWhiteList = input.getWhiteList();
+        List<URI> whiteList;
+        if (projectWhiteList.isPresent()) {
+            ProjectWhiteList r = projectWhiteList.get();
+            whiteList = r.getUris();
+        } else {
+            whiteList = Collections.emptyList();
+        }
+        updateProjectWhitelistService.updateProjectWhitelist(projectId, whiteList);
+    }
 
-	@UseCaseUpdateProjectMetaData(@Step(number=1,name="Rest call",description="MetaData will be updated",needsRestDoc=true))
-	@RequestMapping(path = AdministrationAPIConstants.API_UPDATE_PROJECT_METADATA, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
-	public void updateProjectMetaData(@Validated @RequestBody ProjectJsonInput input, @PathVariable(name="projectId") String projectId) {
-		/* @formatter:on */
-		Optional<ProjectMetaData> projectMetaData = input.getMetaData();
-		if (!projectMetaData.isPresent()) {
-			return;
-		}
-		
-		ProjectMetaData metaData = projectMetaData.get();
-		
-		updateProjectMetaDataService.updateProjectMetaData(projectId, metaData);
-	}	
+    @UseCaseUpdateProjectMetaData(@Step(number = 1, name = "Rest call", description = "MetaData will be updated", needsRestDoc = true))
+    @RequestMapping(path = AdministrationAPIConstants.API_UPDATE_PROJECT_METADATA, method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
+    public void updateProjectMetaData(@Validated @RequestBody ProjectJsonInput input, @PathVariable(name = "projectId") String projectId) {
+        /* @formatter:on */
+        Optional<ProjectMetaData> projectMetaData = input.getMetaData();
+        if (!projectMetaData.isPresent()) {
+            return;
+        }
 
-	@InitBinder
-	protected void initBinder(WebDataBinder binder) {
-		binder.setValidator(validator);
-	}
+        ProjectMetaData metaData = projectMetaData.get();
+
+        updateProjectMetaDataService.updateProjectMetaData(projectId, metaData);
+    }
+
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.setValidator(validator);
+    }
 }

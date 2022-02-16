@@ -23,7 +23,7 @@ public class CreateProjectMassCSVImporter {
 
         int rowNumber = 2;
         for (CSVRow row : rows) {
-            administration.getUiContext().getOutputUI().output("starting import of CSV row:"+rowNumber);
+            administration.getUiContext().getOutputUI().output("starting import of CSV row:" + rowNumber);
             importRow(row, rowNumber++);
         }
 
@@ -36,7 +36,7 @@ public class CreateProjectMassCSVImporter {
             throw new IllegalStateException("At least project id and owner must be given! But did happen in row:" + rowNumber);
         }
         CSVColumn projectColumn = it.next();
-        String projectId =projectColumn.cell.trim();
+        String projectId = projectColumn.cell.trim();
         if (projectId.isEmpty()) {
             throw new IllegalStateException("A project id must be not empty! But did happen in row:" + rowNumber);
         }

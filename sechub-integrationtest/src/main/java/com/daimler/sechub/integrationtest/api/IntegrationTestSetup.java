@@ -18,13 +18,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.ResourceAccessException;
 
+import ch.qos.logback.classic.Level;
+
 import com.daimler.sechub.integrationtest.internal.IntegrationTestContext;
 import com.daimler.sechub.integrationtest.internal.PDSTestScenario;
 import com.daimler.sechub.integrationtest.internal.SecHubServerTestScenario;
 import com.daimler.sechub.integrationtest.internal.TestRestHelper;
 import com.daimler.sechub.integrationtest.internal.TestScenario;
-
-import ch.qos.logback.classic.Level;
 
 public class IntegrationTestSetup implements TestRule {
 
@@ -100,7 +100,7 @@ public class IntegrationTestSetup implements TestRule {
      * additional SECHUB_INTEGRATIONTEST_LONG_RUNNING system property as true, to
      * have this test not ignored. Use this methods to mark extreme slow tests which
      * normally are not run because seldom used or maybe only by build servers
-     * 
+     *
      * @return this
      */
     public IntegrationTestSetup markLongRunning() {

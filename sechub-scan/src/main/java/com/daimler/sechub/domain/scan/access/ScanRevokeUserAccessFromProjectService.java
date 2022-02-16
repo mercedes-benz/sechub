@@ -14,24 +14,23 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @Service
 public class ScanRevokeUserAccessFromProjectService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ScanRevokeUserAccessFromProjectService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ScanRevokeUserAccessFromProjectService.class);
 
-	@Autowired
-	ScanAccessRepository repository;
+    @Autowired
+    ScanAccessRepository repository;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Autowired
+    UserInputAssertion assertion;
 
-	@UseCaseAdminUnassignsUserFromProject(@Step(number=2,name="Update authorization parts"))
-	public void revokeUserAccessFromProject(String userId, String projectId) {
-		assertion.isValidUserId(userId);
-		assertion.isValidProjectId(projectId);
+    @UseCaseAdminUnassignsUserFromProject(@Step(number = 2, name = "Update authorization parts"))
+    public void revokeUserAccessFromProject(String userId, String projectId) {
+        assertion.isValidUserId(userId);
+        assertion.isValidProjectId(projectId);
 
-		ProjectAccessCompositeKey id = new ProjectAccessCompositeKey(userId, projectId);
-		repository.deleteById(id);
+        ProjectAccessCompositeKey id = new ProjectAccessCompositeKey(userId, projectId);
+        repository.deleteById(id);
 
-		LOG.info("Revoked access to project:{} for user:{}",projectId,userId);
-	}
-
+        LOG.info("Revoked access to project:{} for user:{}", projectId, userId);
+    }
 
 }

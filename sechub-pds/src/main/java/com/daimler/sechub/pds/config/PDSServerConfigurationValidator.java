@@ -14,7 +14,7 @@ public class PDSServerConfigurationValidator {
 
     @Autowired
     PDSServerIdentifierValidator serverIdValidator;
-    
+
     @Autowired
     PDSPathExecutableValidator pathExecutableValidator;
 
@@ -25,7 +25,7 @@ public class PDSServerConfigurationValidator {
         String serverId = configuration.getServerId();
         String serverIdProblem = serverIdValidator.createValidationErrorMessage(serverId);
         if (serverIdProblem != null) {
-            return "server id problem:"+serverIdProblem;
+            return "server id problem:" + serverIdProblem;
         }
 
         List<PDSProductSetup> products = configuration.getProducts();

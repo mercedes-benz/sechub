@@ -16,7 +16,7 @@ import com.daimler.sechub.sharedkernel.RoleConstants;
 public class ListProjectsService {
     @Autowired
     ProjectRepository projectRepository;
-    
+
     public List<String> listProjects() {
         return projectRepository.findAll().stream().map(Project::getId).collect(Collectors.toList());
     }

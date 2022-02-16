@@ -125,7 +125,7 @@ public class MappingUI implements TemplateDataUIPart {
     public String getText() {
         return getJSON();
     }
-    
+
     public String getMappingId() {
         return data.key;
     }
@@ -157,7 +157,5 @@ public class MappingUI implements TemplateDataUIPart {
             return MappingUI.this.getData();
         }
     }
-
-  
 
 }

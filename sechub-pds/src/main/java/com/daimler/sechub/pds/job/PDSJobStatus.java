@@ -22,14 +22,14 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_NULL)
-public class PDSJobStatus{
+public class PDSJobStatus {
 
     public static final String PROPERTY_JOBUUID = "jobUUID";
-    public static final String PROPERTY_OWNER= "owner";
-    public static final String PROPERTY_CREATED= "created";
+    public static final String PROPERTY_OWNER = "owner";
+    public static final String PROPERTY_CREATED = "created";
     public static final String PROPERTY_STARTED = "started";
-    public static final String PROPERTY_ENDED= "ended";
-    public static final String PROPERTY_STATE= "state";
+    public static final String PROPERTY_ENDED = "ended";
+    public static final String PROPERTY_STATE = "state";
 
     UUID jobUUID;
 

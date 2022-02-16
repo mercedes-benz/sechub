@@ -11,11 +11,10 @@ import com.daimler.sechub.developertools.admin.importer.SimpleCSVExporter;
 import com.daimler.sechub.developertools.admin.ui.ConfigurationSetup;
 import com.daimler.sechub.sharedkernel.mapping.MappingData;
 
-public class ExportJSONToCSVAdapterDialogAction extends AbstractAdapterDialogMappingAction{
+public class ExportJSONToCSVAdapterDialogAction extends AbstractAdapterDialogMappingAction {
 
     private static final long serialVersionUID = 1L;
     private static MappingDataCSVSupport csvSupport = new MappingDataCSVSupport();
-    
 
     public ExportJSONToCSVAdapterDialogAction(MappingUI ui) {
         super("Export CSV", ui);
@@ -26,10 +25,10 @@ public class ExportJSONToCSVAdapterDialogAction extends AbstractAdapterDialogMap
         /* convert to rows */
         String json = getMappingUI().getJSON();
         List<CSVRow> rows = csvSupport.toCSVRows(MappingData.fromString(json));
-        
+
         /* select */
         String defaultPath = ConfigurationSetup.SECHUB_MASS_OPERATION_PARENTDIRECTORY.getStringValue(System.getProperty("user.home"));
-        File defaultFile = new File(defaultPath,getMappingUI().getMappingId()+".csv");
+        File defaultFile = new File(defaultPath, getMappingUI().getMappingId() + ".csv");
         File file = getDialogUI().getContext().getDialogUI().selectFile(defaultFile.getAbsolutePath());
         if (file == null) {
             return;
@@ -37,11 +36,10 @@ public class ExportJSONToCSVAdapterDialogAction extends AbstractAdapterDialogMap
         /* export */
         SimpleCSVExporter exporter = new SimpleCSVExporter();
         exporter.exportCSVFile(file, rows, 3);
-        
+
         /* inform */
-        getDialogUI().getContext().getOutputUI().output("Exported to CSV file:"+file.getAbsolutePath());
-        
-        
+        getDialogUI().getContext().getOutputUI().output("Exported to CSV file:" + file.getAbsolutePath());
+
     }
 
 }

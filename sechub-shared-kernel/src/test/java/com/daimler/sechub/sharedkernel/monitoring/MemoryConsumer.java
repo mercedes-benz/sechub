@@ -8,12 +8,11 @@ import org.slf4j.LoggerFactory;
 
 public class MemoryConsumer {
 
-
-private static final Logger LOG = LoggerFactory.getLogger(MemoryConsumer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MemoryConsumer.class);
     private Random random;
 
     public void consumeMemory(SystemMonitorService monitor, int maxThreads, int threadNr) {
-        this.random=new Random(System.currentTimeMillis());
+        this.random = new Random(System.currentTimeMillis());
         while (true) {
 
             if (!monitor.isMemoryUsageMaxReached()) {

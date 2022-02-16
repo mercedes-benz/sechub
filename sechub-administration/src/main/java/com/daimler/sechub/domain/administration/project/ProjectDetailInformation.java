@@ -41,8 +41,8 @@ public class ProjectDetailInformation {
         this.owner = project.getOwner().getName();
 
         this.description = project.getDescription();
-        
-        this.accessLevel= project.getAccessLevel().getId();
+
+        this.accessLevel = project.getAccessLevel().getId();
     }
 
     public String getOwner() {
@@ -68,7 +68,7 @@ public class ProjectDetailInformation {
     public String getDescription() {
         return description;
     }
-    
+
     public String getAccessLevel() {
         return accessLevel;
     }

@@ -7,73 +7,70 @@ import java.net.URL;
 import com.daimler.sechub.adapter.AbstractWebScanAdapterConfig;
 import com.daimler.sechub.adapter.AbstractWebScanAdapterConfigBuilder;
 
-public class NetsparkerConfig extends AbstractWebScanAdapterConfig implements NetsparkerAdapterConfig{
+public class NetsparkerConfig extends AbstractWebScanAdapterConfig implements NetsparkerAdapterConfig {
 
-	private String licenseID;
+    private String licenseID;
 
-	private String agentName;
-	private String agentGroupName;
+    private String agentName;
+    private String agentGroupName;
 
-	private String websiteName;
+    private String websiteName;
 
     @Override
-	public String getLicenseID() {
-		return licenseID;
-	}
+    public String getLicenseID() {
+        return licenseID;
+    }
 
-	@Override
-	public String getWebsiteName() {
-		return websiteName;
-	}
+    @Override
+    public String getWebsiteName() {
+        return websiteName;
+    }
 
-	@Override
-	public String getAgentName() {
-		return agentName;
-	}
+    @Override
+    public String getAgentName() {
+        return agentName;
+    }
 
-	@Override
-	public String getAgentGroupName() {
-		return agentGroupName;
-	}
+    @Override
+    public String getAgentGroupName() {
+        return agentGroupName;
+    }
 
-	@Override
-	public boolean hasAgentGroup() {
-		return agentGroupName != null && !agentGroupName.isEmpty();
-	}
+    @Override
+    public boolean hasAgentGroup() {
+        return agentGroupName != null && !agentGroupName.isEmpty();
+    }
 
-	private NetsparkerConfig() {
-	}
+    private NetsparkerConfig() {
+    }
 
-	public static NetsparkerConfigBuilder builder() {
-		return new NetsparkerConfigBuilder();
-	}
+    public static NetsparkerConfigBuilder builder() {
+        return new NetsparkerConfigBuilder();
+    }
 
+    public static class NetsparkerConfigBuilder extends AbstractWebScanAdapterConfigBuilder<NetsparkerConfigBuilder, NetsparkerConfig> {
 
-	public static class NetsparkerConfigBuilder
-			extends AbstractWebScanAdapterConfigBuilder<NetsparkerConfigBuilder, NetsparkerConfig> {
-
-		private String licenseID;
-		private String agentName;
-		private String agentGroupName;
+        private String licenseID;
+        private String agentName;
+        private String agentGroupName;
 
         private NetsparkerConfigBuilder() {
-		}
+        }
 
-		public NetsparkerConfigBuilder setAgentName(String agentName) {
-			this.agentName = agentName;
-			return this;
-		}
+        public NetsparkerConfigBuilder setAgentName(String agentName) {
+            this.agentName = agentName;
+            return this;
+        }
 
-		public NetsparkerConfigBuilder setAgentGroupName(String agentGroupName) {
-			this.agentGroupName = agentGroupName;
-			return this;
-		}
+        public NetsparkerConfigBuilder setAgentGroupName(String agentGroupName) {
+            this.agentGroupName = agentGroupName;
+            return this;
+        }
 
-		public NetsparkerConfigBuilder setLicenseID(String licenseID) {
-			this.licenseID = licenseID;
-			return this;
-		}
-		
+        public NetsparkerConfigBuilder setLicenseID(String licenseID) {
+            this.licenseID = licenseID;
+            return this;
+        }
 
         @Override
         protected void customBuild(NetsparkerConfig adapterConfig) {
@@ -107,24 +104,24 @@ public class NetsparkerConfig extends AbstractWebScanAdapterConfig implements Ne
             config.agentGroupName = agentGroupName;
         }
 
-		@Override
-		protected void customValidate() {
-			assertUserSet();
-			assertPasswordSet();
-			assertLicenseIDSet();
-			assertProductBaseURLSet();
-		}
+        @Override
+        protected void customValidate() {
+            assertUserSet();
+            assertPasswordSet();
+            assertLicenseIDSet();
+            assertProductBaseURLSet();
+        }
 
-		private void assertLicenseIDSet() {
-			if (licenseID == null) {
-				throw new IllegalStateException("no licenseID given");
-			}
-		}
+        private void assertLicenseIDSet() {
+            if (licenseID == null) {
+                throw new IllegalStateException("no licenseID given");
+            }
+        }
 
-		@Override
-		protected NetsparkerConfig buildInitialConfig() {
-			return new NetsparkerConfig();
-		}
+        @Override
+        protected NetsparkerConfig buildInitialConfig() {
+            return new NetsparkerConfig();
+        }
 
-	}
+    }
 }

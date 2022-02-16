@@ -11,17 +11,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-
-public interface PDSHeartBeatRepository extends JpaRepository<PDSHeartBeat, UUID>{
+public interface PDSHeartBeatRepository extends JpaRepository<PDSHeartBeat, UUID> {
 
     @Modifying
     @Transactional
     @Query("DELETE FROM PDSHeartBeat h WHERE h.updated < :date")
     int removeOlderThan(@Param("date") LocalDateTime date);
-    
-    
+
     /**
      * Finds all PDS heartbeats for given server id
+     *
      * @param serverId
      * @return list of heartbeats
      */

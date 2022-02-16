@@ -6,16 +6,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class ClusterEnvironmentService {
 
-	private ClusterEnvironment environment;
-	
-	/**
-	 * @return an environment instance
-	 */
-	public ClusterEnvironment getEnvironment() {
-		if (environment==null) {
-			environment=new ClusterEnvironment();
-		}
-		return environment;
-	}
-	
+    private ClusterEnvironment environment;
+
+    /**
+     * @return an environment instance
+     */
+    public ClusterEnvironment getEnvironment() {
+        if (environment == null) {
+            environment = new ClusterEnvironment();
+        }
+        return environment;
+    }
+
 }

@@ -22,7 +22,7 @@ import com.daimler.sechub.integrationtest.api.TestProject;
 /**
  * Integration test doing code scans by integration test servers (SecHub server,
  * PDS server).
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -49,18 +49,18 @@ public class PDSCodeScanSarifJobScenario9IntTest {
         /* ---------------------------------------------*/
         /* Phase 1: WebScan without false positive data */
         /* ---------------------------------------------*/
-        
+
         /* prepare 1*/
         TestProject project = PROJECT_1;
 
         UUID jobUUID = as(USER_1).createWebScan(project,NOT_MOCKED);// scenario9 uses real integration test pds server!
-        
+
         /* execute 1*/
         as(USER_1).
             approveJob(project, jobUUID);
-        
+
         waitForJobDone(project, jobUUID,30,true);
-        
+
         /* test 1*/
         String report = as(USER_1).getJobReport(project, jobUUID);
         assertReport(report).
@@ -82,26 +82,26 @@ public class PDSCodeScanSarifJobScenario9IntTest {
                    hasScanType(ScanType.WEB_SCAN).
                    hasSeverity(Severity.MEDIUM).
                    hasDescriptionContaining("either allow wildcard sources");
-        
-        
+
+
         /* --------------------------------------------------------*/
         /* Phase 2: WebScan with false positive data definition set*/
         /*          Next web scan for same project does not contain*/
         /*          the formerly marked false positive             */
         /* --------------------------------------------------------*/
-        
+
         /* prepare 2 */
         as(USER_1).startFalsePositiveDefinition(PROJECT_1).add(1, jobUUID).markAsFalsePositive();
-        
+
 
         UUID jobUUID2 = as(USER_1).createWebScan(project,NOT_MOCKED);// scenario9 uses real integration test pds server!
-        
+
         /* execute 2 */
         as(USER_1).
             approveJob(project, jobUUID2);
-        
+
         waitForJobDone(project, jobUUID2,30,true);
-        
+
         /* test 2 */
         String report2 = as(USER_1).getJobReport(project, jobUUID2);
         assertReport(report2).
@@ -129,26 +129,26 @@ public class PDSCodeScanSarifJobScenario9IntTest {
         /* prepare */
         TestProject project = PROJECT_1;
         UUID jobUUID = as(USER_1).createCodeScan(project,NOT_MOCKED);// scenario9 uses real integration test pds server!
-        
-        
+
+
         /* execute */
         as(USER_1).
             upload(project, jobUUID, PATH).
             approveJob(project, jobUUID);
-        
+
         waitForJobDone(project, jobUUID,30,true);
-        
+
         /* test */
         // test storage is a SecHub storage and no PDS storage
         String storagePath = getPDSStoragePathForJobUUID(jobUUID); // this is a SecHub job UUID!
-        assertNotNull("Storage path not found for SecHub job UUID:"+jobUUID+" - wrong storage used!",storagePath); // storage path must be found for sechub job uuid, 
+        assertNotNull("Storage path not found for SecHub job UUID:"+jobUUID+" - wrong storage used!",storagePath); // storage path must be found for sechub job uuid,
         if (!storagePath.contains("jobstorage/"+project.getProjectId())){
             fail("unexpected jobstorage path found:"+storagePath);
         }
-        
+
         // test content as expected
-        
-        
+
+
         String report = as(USER_1).getJobReport(project, jobUUID);
         assertReport(report).
             hasStatus(SecHubStatus.SUCCESS).
@@ -166,7 +166,7 @@ public class PDSCodeScanSarifJobScenario9IntTest {
                    hasScanType(ScanType.CODE_SCAN).
                    hasSeverity(Severity.MEDIUM).
                    hasDescription("Rails 5.0.0 has a vulnerability that may allow CSRF token forgery. Upgrade to Rails 5.2.4.3 or patch.");
-        
+
         /* @formatter:on */
     }
 

@@ -11,17 +11,17 @@ import org.springframework.http.HttpStatus;
 
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 
-public class UserRegistrationScenario1IntTest{
+public class UserRegistrationScenario1IntTest {
 
-	@Rule
-	public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario1.class);
+    @Rule
+    public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario1.class);
 
-	/* +-----------------------------------------------------------------------+ */
-	/* +............................ Registration . ...........................+ */
-	/* +-----------------------------------------------------------------------+ */
-	@Test
-	public void an_existing_signup_is_not_added_twice() {
-		/* @formatter:off */
+    /* +-----------------------------------------------------------------------+ */
+    /* +............................ Registration . ...........................+ */
+    /* +-----------------------------------------------------------------------+ */
+    @Test
+    public void an_existing_signup_is_not_added_twice() {
+        /* @formatter:off */
 		as(ANONYMOUS).signUpAs(USER_1);
 		assertSignup(USER_1).doesExist();
 
@@ -30,32 +30,33 @@ public class UserRegistrationScenario1IntTest{
 
 		/* @formatter:on */
 
-	}
-	@Test
-	public void an_unregistered_user_can_be_accepted_by_admin_gets_a_link_and_is_then_registered() {
-		/* check precondition*/
-		assertUser(USER_1).doesNotExist();
+    }
 
-		/* prepare */
-		as(ANONYMOUS).signUpAs(USER_1);
-		assertSignup(USER_1).doesExist();
-		assertUser(USER_1).doesNotExist(); // still not existing
+    @Test
+    public void an_unregistered_user_can_be_accepted_by_admin_gets_a_link_and_is_then_registered() {
+        /* check precondition */
+        assertUser(USER_1).doesNotExist();
 
-		/* execute */
-		as(SUPER_ADMIN).acceptSignup(USER_1);
+        /* prepare */
+        as(ANONYMOUS).signUpAs(USER_1);
+        assertSignup(USER_1).doesExist();
+        assertUser(USER_1).doesNotExist(); // still not existing
 
-		/* test */
-		assertUser(USER_1).doesExist();
+        /* execute */
+        as(SUPER_ADMIN).acceptSignup(USER_1);
 
-		/* execute receive of new api token*/
-		String link = getLinkToFetchNewAPITokenAfterSignupAccepted(USER_1);
-		String apiToken = udpdateAPITokenByOneTimeTokenLink(USER_1, link);
+        /* test */
+        assertUser(USER_1).doesExist();
 
-		/* test */
-		assertNotNull(apiToken);
-		assertFalse(apiToken.isEmpty());
-		assertEquals(USER_1.getApiToken(),apiToken);
+        /* execute receive of new api token */
+        String link = getLinkToFetchNewAPITokenAfterSignupAccepted(USER_1);
+        String apiToken = udpdateAPITokenByOneTimeTokenLink(USER_1, link);
 
-	}
+        /* test */
+        assertNotNull(apiToken);
+        assertFalse(apiToken.isEmpty());
+        assertEquals(USER_1.getApiToken(), apiToken);
+
+    }
 
 }

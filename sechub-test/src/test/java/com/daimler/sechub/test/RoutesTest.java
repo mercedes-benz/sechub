@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.test;
 
+import static org.junit.Assert.*;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,6 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import javax.annotation.security.RolesAllowed;
 
 import org.junit.Before;
@@ -25,8 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.daimler.sechub.adapter.mock.AbstractMockedAdapter;
 import com.daimler.sechub.sharedkernel.RoleConstants;
-
-import static org.junit.Assert.*;
 
 @SuppressWarnings("rawtypes")
 public class RoutesTest {
@@ -106,9 +107,9 @@ public class RoutesTest {
                 basePath = path;
 
                 String[] classRoles = getRoles(clazz);
-                
+
                 Map<String, ArrayList<String>> foundClazz = classRoutesRolesMap.get(clazz);
-                
+
                 if (foundClazz == null) {
                     classRoutesRolesMap.put(clazz, new HashMap<String, ArrayList<String>>());
                 }
@@ -142,7 +143,7 @@ public class RoutesTest {
                     String[] methodRoles = getRoles(method);
 
                     Map<String, ArrayList<String>> foundClazz = classRoutesRolesMap.get(clazz);
-                    
+
                     if (foundClazz == null) {
                         classRoutesRolesMap.put(clazz, new HashMap<String, ArrayList<String>>());
                     }

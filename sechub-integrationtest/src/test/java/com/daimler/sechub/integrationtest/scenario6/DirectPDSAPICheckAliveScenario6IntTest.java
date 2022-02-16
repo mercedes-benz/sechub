@@ -12,7 +12,7 @@ import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 
 public class DirectPDSAPICheckAliveScenario6IntTest {
 
-        @Rule
+    @Rule
     public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario6.class);
 
     @Rule
@@ -23,38 +23,35 @@ public class DirectPDSAPICheckAliveScenario6IntTest {
         /* @formatter:off */
         /* execute */
         boolean alive = asPDSUser(ANONYMOUS).getIsAlive();
-        
+
         /* test */
         assertTrue("PDS server is NOT alive !!! ILLEGAL STATE for tests: So all PDS related integration test will fail", alive);
-        
+
         /* @formatter:on */
     }
-    
+
     @Test
     public void pds_techuser_can_check_alive_state() {
         /* @formatter:off */
         /* execute */
         boolean alive = asPDSUser(PDS_TECH_USER).getIsAlive();
-        
+
         /* test */
         assertTrue("PDS server is NOT alive !!! ILLEGAL STATE for tests: So all PDS related integration test will fail", alive);
-        
+
         /* @formatter:on */
     }
-    
+
     @Test
     public void pds_admin_can_check_alive_state() {
         /* @formatter:off */
         /* execute */
         boolean alive = asPDSUser(PDS_ADMIN).getIsAlive();
-        
+
         /* test */
         assertTrue("PDS server is NOT alive !!! ILLEGAL STATE for tests: So all PDS related integration test will fail", alive);
-        
+
         /* @formatter:on */
     }
-    
-
-
 
 }

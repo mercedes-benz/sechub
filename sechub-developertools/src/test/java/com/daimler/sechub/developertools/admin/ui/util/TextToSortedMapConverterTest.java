@@ -62,7 +62,6 @@ public class TextToSortedMapConverterTest {
         assertEquals("value2", result.get("key2"));
     }
 
-    
     @Test
     public void property_file_content_with_two_keys_and_multiple_newlines_between_is_converted() {
 
@@ -76,7 +75,7 @@ public class TextToSortedMapConverterTest {
         assertEquals("value1", result.get("key1"));
         assertEquals("value2", result.get("key2"));
     }
-    
+
     @Test
     public void key1_no_value__value2_no_key_key3_value3__only_key3_value3_recognized() {
 
@@ -89,7 +88,7 @@ public class TextToSortedMapConverterTest {
         assertEquals(1, result.size());
         assertEquals("value3", result.get("key3"));
     }
-    
+
     @Test
     public void text_line_a_line_with_equals_only_and_key3_value3__only_key3_value3_recognized() {
 
@@ -102,7 +101,7 @@ public class TextToSortedMapConverterTest {
         assertEquals(1, result.size());
         assertEquals("value3", result.get("key3"));
     }
-    
+
     @Test
     public void key_and_value_are_trimmed() {
 
@@ -115,6 +114,5 @@ public class TextToSortedMapConverterTest {
         assertEquals(1, result.size());
         assertEquals("value1", result.get("key1"));
     }
-
 
 }

@@ -41,8 +41,11 @@ public class KeyValueUI implements TemplateDataUIPart {
         descriptionPanel.add(new JScrollPane(descriptionTextArea), BorderLayout.CENTER);
 
         textArea = new JTextArea();
-        
-        /* when recommended, we provide the recommended value initially - will be overridden when defined */
+
+        /*
+         * when recommended, we provide the recommended value initially - will be
+         * overridden when defined
+         */
         if (data.necessarity == Necessarity.RECOMMENDED) {
             if (data.recommendedValue != null && !data.recommendedValue.isEmpty()) {
                 textArea.setText(data.recommendedValue);
@@ -68,7 +71,7 @@ public class KeyValueUI implements TemplateDataUIPart {
         html += ">";
         html += data.necessarity;
         if (data.necessarity.equals(Necessarity.RECOMMENDED)) {
-            html +="=>"+data.recommendedValue;
+            html += "=>" + data.recommendedValue;
         }
         html += "</span></b>";
         return html;

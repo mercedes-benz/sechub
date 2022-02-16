@@ -55,7 +55,7 @@ public class PDSClusterMember {
     public int getPort() {
         return port;
     }
-    
+
     public String getIp() {
         return ip;
     }
@@ -74,7 +74,7 @@ public class PDSClusterMember {
 
     /**
      * Serializes member to JSON
-     * 
+     *
      * @return json - in failure case an empty json string will be returned ("{}")
      */
     public String toJSON() {
@@ -88,7 +88,7 @@ public class PDSClusterMember {
 
     /**
      * Deserializes from json to cluster member
-     * 
+     *
      * @param json
      * @return <code>null</code> when json not valid/cannot be deserialized to
      *         cluster member

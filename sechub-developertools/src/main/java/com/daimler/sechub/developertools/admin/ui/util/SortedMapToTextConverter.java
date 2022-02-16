@@ -8,15 +8,16 @@ import java.util.SortedMap;
  * want to have value content being JSON - and this makes problems in
  * properties. Also there are some special characters in
  * {@link java.util.Properties} which is not wanted.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
 public class SortedMapToTextConverter {
 
     /**
-     * Converts given map to lines with "key=value". Keys and values are 
+     * Converts given map to lines with "key=value". Keys and values are
      * automatically trimmed if necessary!
+     *
      * @param map
      * @return
      */

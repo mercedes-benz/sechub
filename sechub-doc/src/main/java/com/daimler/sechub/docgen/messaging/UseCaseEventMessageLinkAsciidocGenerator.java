@@ -18,7 +18,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 
 /**
  * Generates links between usecases and messages
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -41,7 +41,7 @@ public class UseCaseEventMessageLinkAsciidocGenerator {
         for (UseCaseIdentifier identifier : UseCaseIdentifier.values()) {
             generateLinkUsecaseToMessagesFile(identifier);
         }
-        for (MessageID messageId: MessageID.values()) {
+        for (MessageID messageId : MessageID.values()) {
             generateLinkMessageToUsecasesFile(messageId);
         }
 
@@ -67,12 +67,12 @@ public class UseCaseEventMessageLinkAsciidocGenerator {
         ab.add("Involved messages\n");
 
         for (String messageId : messageIds) {
-            ab.add("- <<"+DomainMessagingFilesGenerator.createMessagingLinkId(messageId)+","+messageId+">>");
+            ab.add("- <<" + DomainMessagingFilesGenerator.createMessagingLinkId(messageId) + "," + messageId + ">>");
         }
         ab.add("====");
         return ab;
     }
-    
+
     private void generateLinkMessageToUsecasesFile(MessageID identifier) throws IOException {
         AsciidocBuilder ab = generateLinkMessageToUsecasesContent(identifier);
         String id = DomainMessagingFilesGenerator.createMessagingLinkId(identifier);
@@ -83,7 +83,7 @@ public class UseCaseEventMessageLinkAsciidocGenerator {
 
     private AsciidocBuilder generateLinkMessageToUsecasesContent(MessageID identifier) {
         AsciidocBuilder ab = new AsciidocBuilder();
-        
+
         Set<UseCaseIdentifier> uiSet = filterRelatedUseCases(identifier);
         if (uiSet == null || uiSet.isEmpty()) {
             ab.add("// no usecases for message id:" + identifier);
@@ -92,8 +92,8 @@ public class UseCaseEventMessageLinkAsciidocGenerator {
         ab.add("[NOTE]");
         ab.add("====");
         ab.add("Use cases related to this message\n");
-        for (UseCaseIdentifier ui:uiSet) {
-            ab.add("- "+UseCaseAsciiDocFactory.createLinkToUseCase(ui,ui.uniqueId()));
+        for (UseCaseIdentifier ui : uiSet) {
+            ab.add("- " + UseCaseAsciiDocFactory.createLinkToUseCase(ui, ui.uniqueId()));
         }
         ab.add("====");
         return ab;
@@ -109,6 +109,7 @@ public class UseCaseEventMessageLinkAsciidocGenerator {
         }
         return uiSet;
     }
+
     private class AsciidocBuilder {
         StringBuilder sb = new StringBuilder();
 

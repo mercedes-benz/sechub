@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 /**
  * A simple wrapper for lists containing just a strings returned as JSON
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

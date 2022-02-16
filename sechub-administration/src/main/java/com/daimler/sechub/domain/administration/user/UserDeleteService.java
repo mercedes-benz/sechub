@@ -27,25 +27,25 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 public class UserDeleteService {
 
-	@Autowired
-	DomainMessageService eventBusService;
+    @Autowired
+    DomainMessageService eventBusService;
 
-	@Autowired
-	UserRepository userRepository;
+    @Autowired
+    UserRepository userRepository;
 
-	@Autowired
-	UserContextService userContext;
+    @Autowired
+    UserContextService userContext;
 
-	@Autowired
-	AuditLogService auditLogService;
+    @Autowired
+    AuditLogService auditLogService;
 
-	@Autowired
-	LogSanitizer logSanitizer;
+    @Autowired
+    LogSanitizer logSanitizer;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Autowired
+    UserInputAssertion assertion;
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@Validated
 	@UseCaseAdminDeletesUser(
 			@Step(
@@ -54,35 +54,35 @@ public class UserDeleteService {
 					next = { 3,	4 },
 					description = "The service will delete the user with dependencies and triggers asynchronous events"))
 	/* @formatter:on */
-	@Transactional
-	public void deleteUser(String userId) {
-		auditLogService.log("Triggers delete of user {}",logSanitizer.sanitize(userId,30));
+    @Transactional
+    public void deleteUser(String userId) {
+        auditLogService.log("Triggers delete of user {}", logSanitizer.sanitize(userId, 30));
 
-		assertion.isValidUserId(userId);
-		if (userId.contentEquals(userContext.getUserId())) {
-			throw new NotAcceptableException("You are not allowed to delete yourself!");
-		}
+        assertion.isValidUserId(userId);
+        if (userId.contentEquals(userContext.getUserId())) {
+            throw new NotAcceptableException("You are not allowed to delete yourself!");
+        }
 
-		User user = userRepository.findOrFailUser(userId);
+        User user = userRepository.findOrFailUser(userId);
 
-		/* create message containing data before user is deleted */
-		UserMessage message = new UserMessage();
-		message.setUserId(user.getName());
-		message.setEmailAdress(user.getEmailAdress());
+        /* create message containing data before user is deleted */
+        UserMessage message = new UserMessage();
+        message.setUserId(user.getName());
+        message.setEmailAdress(user.getEmailAdress());
 
-		userRepository.deleteUserWithAssociations(user.getName());
+        userRepository.deleteUserWithAssociations(user.getName());
 
-		informUserDeleted(message);
+        informUserDeleted(message);
 
-	}
+    }
 
-	@IsSendingAsyncMessage(MessageID.USER_DELETED)
-	private void informUserDeleted(UserMessage message) {
+    @IsSendingAsyncMessage(MessageID.USER_DELETED)
+    private void informUserDeleted(UserMessage message) {
 
-		DomainMessage infoRequest = new DomainMessage(MessageID.USER_DELETED);
-		infoRequest.set(MessageDataKeys.USER_DELETE_DATA, message);
+        DomainMessage infoRequest = new DomainMessage(MessageID.USER_DELETED);
+        infoRequest.set(MessageDataKeys.USER_DELETE_DATA, message);
 
-		eventBusService.sendAsynchron(infoRequest);
-	}
+        eventBusService.sendAsynchron(infoRequest);
+    }
 
 }

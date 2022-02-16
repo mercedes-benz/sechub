@@ -87,8 +87,8 @@ public abstract class AbstractProductExecutionService implements ProductExection
             UUIDTraceLogID traceLogID) throws SecHubExecutionException {
 
         ProductExecutorConfig executorConfig = executorContext.getExecutorConfig();
-        UUID executorConfigUUID = executorConfig == null ? null :executorConfig.getUUID();
-        LOG.info("Start executor:{} config:{} and wait for result. {}", executor.getIdentifier(),executorConfigUUID ,traceLogID);
+        UUID executorConfigUUID = executorConfig == null ? null : executorConfig.getUUID();
+        LOG.info("Start executor:{} config:{} and wait for result. {}", executor.getIdentifier(), executorConfigUUID, traceLogID);
 
         List<ProductResult> productResults = executor.execute(context, executorContext);
         if (context.isCanceledOrAbandonded()) {
@@ -197,10 +197,13 @@ public abstract class AbstractProductExecutionService implements ProductExection
 
             productResults = new ArrayList<ProductResult>();
             ProductResult currentResult = executorContext.getCurrentProductResult();
-            if (currentResult==null) {
-                currentResult= new ProductResult(context.getSechubJobUUID(), projectId, executorConfiguration, "");
-            }else {
-                /* product result does already exists, e.g. when adapter has written meta data - so reuse it */
+            if (currentResult == null) {
+                currentResult = new ProductResult(context.getSechubJobUUID(), projectId, executorConfiguration, "");
+            } else {
+                /*
+                 * product result does already exists, e.g. when adapter has written meta data -
+                 * so reuse it
+                 */
                 currentResult.setResult("");
             }
             productResults.add(currentResult);

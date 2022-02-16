@@ -26,25 +26,25 @@ import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class FileUploadSizeScenario2IntTest {
 
-	@Rule
-	public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario2.class).markLongRunning();
+    @Rule
+    public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario2.class).markLongRunning();
 
-	@Rule
-	public Timeout timeOut = Timeout.seconds(240);
+    @Rule
+    public Timeout timeOut = Timeout.seconds(240);
 
-	@Rule
-	public ExpectedException expected = ExpectedExceptionFactory.none();
+    @Rule
+    public ExpectedException expected = ExpectedExceptionFactory.none();
 
-	private FileChecksumSHA256Service checksumSHA256Service;
+    private FileChecksumSHA256Service checksumSHA256Service;
 
-	/**
-	 * Generate big zip file and violate file size limit
-	 *
-	 * @throws IOException
-	 */
-	@Test
-	public void when_file_exceeds_5MB_a_NOT_ACCEPTABLE_is_returned() throws IOException {
-		/* @formatter:off */
+    /**
+     * Generate big zip file and violate file size limit
+     *
+     * @throws IOException
+     */
+    @Test
+    public void when_file_exceeds_5MB_a_NOT_ACCEPTABLE_is_returned() throws IOException {
+        /* @formatter:off */
 		handleBigUpload(true);
 	}
 
@@ -84,47 +84,48 @@ public class FileUploadSizeScenario2IntTest {
 		as(USER_1).
 			upload(PROJECT_1, jobUUID, largeFile, checksumSHA256Service.createChecksum(largeFile.getAbsolutePath()));
 		/* @formatter:on */
-	}
+    }
 
-	/**
-	 * A little bit tricky: ZipFile content differs from file size. Also multipart
-	 * upload contains not only the file but meta information as well (e.g.
-	 * filename, sha256checksum,..)
-	 */
-	private File createZipFileContainingMegabytes(boolean uploadShallBeTooLarge) throws FileNotFoundException, IOException {
-		String tmpPath = "build/resources/bigFile";
-		if (uploadShallBeTooLarge) {
-		    tmpPath += "-too-large";
-		} else {
-		    tmpPath += "-accepted";
-		}
-		File file = new File(IntegrationTestFileSupport.getTestfileSupport().getRootFolder(),"sechub-integrationtest/"+tmpPath+".zip");
-		file.getParentFile().mkdirs(); // ensure parent folder structure exists, avoid FileNotFoundException because of parent missing
-		
-		int maximumUploadSizeInMB = 5;
-		int maximumUploadSizeInBytes = 1024 * 1024 * maximumUploadSizeInMB;
-		int bytesToOrder = maximumUploadSizeInBytes;
-		if (!uploadShallBeTooLarge) {
-			bytesToOrder = bytesToOrder - (3 * 1024); // we reduce 3kb (includes zipfile overhead, filename on multipart and sha256
-														// checksum on upload)
-		}
-		byte[] content = new byte[bytesToOrder];
-		try (FileOutputStream fileOutputStream = new FileOutputStream(file);
-				ZipOutputStream zipOutputStream = new ZipOutputStream(new BufferedOutputStream(fileOutputStream));) {
+    /**
+     * A little bit tricky: ZipFile content differs from file size. Also multipart
+     * upload contains not only the file but meta information as well (e.g.
+     * filename, sha256checksum,..)
+     */
+    private File createZipFileContainingMegabytes(boolean uploadShallBeTooLarge) throws FileNotFoundException, IOException {
+        String tmpPath = "build/resources/bigFile";
+        if (uploadShallBeTooLarge) {
+            tmpPath += "-too-large";
+        } else {
+            tmpPath += "-accepted";
+        }
+        File file = new File(IntegrationTestFileSupport.getTestfileSupport().getRootFolder(), "sechub-integrationtest/" + tmpPath + ".zip");
+        file.getParentFile().mkdirs(); // ensure parent folder structure exists, avoid FileNotFoundException because of
+                                       // parent missing
 
-			ZipEntry zipEntry = new ZipEntry("test.bin");
-			// Set compression level to minimum to generate big zip file
-			zipOutputStream.setLevel(0);
-			zipOutputStream.putNextEntry(zipEntry);
-			zipOutputStream.write(content);
-			zipOutputStream.flush();
-		}
-		if (uploadShallBeTooLarge && file.length() < maximumUploadSizeInBytes) {
-			throw new IllegalStateException("Wanted at least file size: " + maximumUploadSizeInBytes + " but was:" + file.length());
-		}
-		if (!uploadShallBeTooLarge && file.length() >= maximumUploadSizeInBytes) {
-			throw new IllegalStateException("Wanted a maximum file size: " + (maximumUploadSizeInBytes - (3 * 1024)) + " but was:" + file.length());
-		}
-		return file;
-	}
+        int maximumUploadSizeInMB = 5;
+        int maximumUploadSizeInBytes = 1024 * 1024 * maximumUploadSizeInMB;
+        int bytesToOrder = maximumUploadSizeInBytes;
+        if (!uploadShallBeTooLarge) {
+            bytesToOrder = bytesToOrder - (3 * 1024); // we reduce 3kb (includes zipfile overhead, filename on multipart and sha256
+                                                      // checksum on upload)
+        }
+        byte[] content = new byte[bytesToOrder];
+        try (FileOutputStream fileOutputStream = new FileOutputStream(file);
+                ZipOutputStream zipOutputStream = new ZipOutputStream(new BufferedOutputStream(fileOutputStream));) {
+
+            ZipEntry zipEntry = new ZipEntry("test.bin");
+            // Set compression level to minimum to generate big zip file
+            zipOutputStream.setLevel(0);
+            zipOutputStream.putNextEntry(zipEntry);
+            zipOutputStream.write(content);
+            zipOutputStream.flush();
+        }
+        if (uploadShallBeTooLarge && file.length() < maximumUploadSizeInBytes) {
+            throw new IllegalStateException("Wanted at least file size: " + maximumUploadSizeInBytes + " but was:" + file.length());
+        }
+        if (!uploadShallBeTooLarge && file.length() >= maximumUploadSizeInBytes) {
+            throw new IllegalStateException("Wanted a maximum file size: " + (maximumUploadSizeInBytes - (3 * 1024)) + " but was:" + file.length());
+        }
+        return file;
+    }
 }

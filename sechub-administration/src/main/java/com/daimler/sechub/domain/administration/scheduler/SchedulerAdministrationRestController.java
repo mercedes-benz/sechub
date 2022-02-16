@@ -33,37 +33,37 @@ import com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdminTrigg
 @Profile(Profiles.ADMIN_ACCESS)
 public class SchedulerAdministrationRestController {
 
-	@Autowired
-	SwitchSchedulerJobProcessingService switchJobProcessingService;
+    @Autowired
+    SwitchSchedulerJobProcessingService switchJobProcessingService;
 
-	@Autowired
-	TriggerSchedulerStatusRefreshService triggerRefreshService;
+    @Autowired
+    TriggerSchedulerStatusRefreshService triggerRefreshService;
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@UseCaseAdminEnablesSchedulerJobProcessing(@Step(number=1,name="Rest call",description="Administrator wants to start (unpause) scheduler job processing",needsRestDoc=true))
 	@RequestMapping(path = AdministrationAPIConstants.API_SCHEDULER_ENABLE_JOB_PROCESSING, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	public void enableJobProcessing() {
 		/* @formatter:on */
-		switchJobProcessingService.enableJobProcessing();
-	}
+        switchJobProcessingService.enableJobProcessing();
+    }
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@UseCaseAdminDisablesSchedulerJobProcessing(@Step(number=1,name="Rest call",description="Administrator wants to stop (pause) scheduler job processing",needsRestDoc=true))
 	@RequestMapping(path = AdministrationAPIConstants.API_SCHEDULER_DISABLE_JOB_PROCESSING, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	public void disableJobProcessing() {
 		/* @formatter:on */
-		switchJobProcessingService.disableJobProcessing();
-	}
+        switchJobProcessingService.disableJobProcessing();
+    }
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@UseCaseAdminTriggersRefreshOfSchedulerStatus(@Step(number=1,name="Rest call",description="Administrator wants to trigger a refresh of scheduler status. Will update information about running, waiting and all jobs in scheduler etc. etc.",needsRestDoc=true))
 	@RequestMapping(path = AdministrationAPIConstants.API_SCHEDULER_STATUS_REFRESH, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	public void triggerRefreshOfSchedulerStatus() {
 		/* @formatter:on */
-		triggerRefreshService.triggerSchedulerStatusRefresh();
-	}
+        triggerRefreshService.triggerSchedulerStatusRefresh();
+    }
 
 }

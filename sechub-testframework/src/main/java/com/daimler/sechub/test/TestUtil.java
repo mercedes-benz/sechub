@@ -34,7 +34,7 @@ public class TestUtil {
 
     /**
      * Tries to get system property value
-     * 
+     *
      * @param key
      * @return value, never <code>null</code>
      * @throws IllegalStateException when no system property can be resolved
@@ -45,7 +45,7 @@ public class TestUtil {
 
     /**
      * Tries to get system property value
-     * 
+     *
      * @param key
      * @param defaultValue value to use when system property is not found
      * @return value, never <code>null</code>
@@ -67,7 +67,7 @@ public class TestUtil {
     /**
      * Tries to get system property value as boolean value. If not defined
      * <code>false</code> will be returned!
-     * 
+     *
      * @param key
      * @return defined boolean value or <code>false</code> if not defined
      */
@@ -91,7 +91,7 @@ public class TestUtil {
 
     /**
      * Checks if temporary files are deleted
-     * 
+     *
      * @return false when environment variable
      *         {@value TestUtil#SECHUB_KEEP_TEMPFILES} is set to `true` otherwise
      *         true
@@ -102,7 +102,7 @@ public class TestUtil {
 
     /**
      * Checks if temporary files are kept
-     * 
+     *
      * @return true when environment variable
      *         {@value TestUtil#SECHUB_KEEP_TEMPFILES} is set to `true` otherwise
      *         false
@@ -113,12 +113,12 @@ public class TestUtil {
 
     /**
      * Creates a temporary file inside gradle build folder at
-     * `./build/sechub/tmp/${prefix}_tmp_${nanoTime}.${fileEnding}`. When environment
-     * entry `{@value TestUtil#SECHUB_KEEP_TEMPFILES}` is set to `true` those files
-     * will be kept when JVM exits. Otherwise, those files will be deleted by JVM on
-     * shutdown phase normally.
-     * 
-     * @param prefix filename prefix
+     * `./build/sechub/tmp/${prefix}_tmp_${nanoTime}.${fileEnding}`. When
+     * environment entry `{@value TestUtil#SECHUB_KEEP_TEMPFILES}` is set to `true`
+     * those files will be kept when JVM exits. Otherwise, those files will be
+     * deleted by JVM on shutdown phase normally.
+     *
+     * @param prefix     filename prefix
      * @param fileEnding filename ending
      * @return file
      * @throws IOException
@@ -133,7 +133,7 @@ public class TestUtil {
      * `{@value TestUtil#SECHUB_KEEP_TEMPFILES}` is set to `true` those files will
      * be kept when JVM exits. Otherwise, those files will be deleted by JVM on
      * shutdown phase normally.
-     * 
+     *
      * @param dirName
      * @return
      * @throws IOException
@@ -158,11 +158,11 @@ public class TestUtil {
      * `{@value TestUtil#SECHUB_KEEP_TEMPFILES}` is set to `true` those files will
      * be kept when JVM exits. Otherwise, those files will be deleted by JVM on
      * shutdown phase normally.
-     * 
+     *
      * If a file already exists with the given name, the file be deleted!
-     * 
+     *
      * @param explicitFileName the EXACT file name to use.
-     * 
+     *
      * @return file
      * @throws IOException
      */

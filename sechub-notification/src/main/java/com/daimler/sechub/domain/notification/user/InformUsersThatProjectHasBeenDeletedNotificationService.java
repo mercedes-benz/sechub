@@ -20,38 +20,38 @@ import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminDelete
 @Service
 public class InformUsersThatProjectHasBeenDeletedNotificationService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(InformUsersThatProjectHasBeenDeletedNotificationService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(InformUsersThatProjectHasBeenDeletedNotificationService.class);
 
-	@Autowired
-	MailMessageFactory factory;
+    @Autowired
+    MailMessageFactory factory;
 
-	@Autowired
-	EmailService emailService;
+    @Autowired
+    EmailService emailService;
 
-	@UseCaseAdminDeleteProject(@Step(number = 5, name = "Inform users that the project has been deleted"))
-	public void notify(ProjectMessage projectMessage, String baseUrl) {
-		requireNonNull(projectMessage);
+    @UseCaseAdminDeleteProject(@Step(number = 5, name = "Inform users that the project has been deleted"))
+    public void notify(ProjectMessage projectMessage, String baseUrl) {
+        requireNonNull(projectMessage);
 
-		Set<String> mailAdresses = projectMessage.getUserEmailAdresses();
-		if (mailAdresses == null || mailAdresses.isEmpty()) {
-			LOG.info("No users found for project {} so ignore sending info mail about delete", projectMessage.getProjectId());
-			return;
-		}
-		SimpleMailMessage message = factory.createMessage("A SecHub project where you have been a user was deleted: " + projectMessage.getProjectId());
+        Set<String> mailAdresses = projectMessage.getUserEmailAdresses();
+        if (mailAdresses == null || mailAdresses.isEmpty()) {
+            LOG.info("No users found for project {} so ignore sending info mail about delete", projectMessage.getProjectId());
+            return;
+        }
+        SimpleMailMessage message = factory.createMessage("A SecHub project where you have been a user was deleted: " + projectMessage.getProjectId());
 
-		StringBuilder emailContent = new StringBuilder();
-		emailContent.append("Project '" + projectMessage.getProjectId() + "' in environment " + baseUrl + "\n");
-		emailContent.append("has been deleted.\n\n");
-		emailContent.append("This means that all report data has been deleted, and thus sechub scans for this project are no longer accessible.\n");
+        StringBuilder emailContent = new StringBuilder();
+        emailContent.append("Project '" + projectMessage.getProjectId() + "' in environment " + baseUrl + "\n");
+        emailContent.append("has been deleted.\n\n");
+        emailContent.append("This means that all report data has been deleted, and thus sechub scans for this project are no longer accessible.\n");
 
-		String[] userAdresses = projectMessage.getUserEmailAdresses().toArray(new String[mailAdresses.size()]);
+        String[] userAdresses = projectMessage.getUserEmailAdresses().toArray(new String[mailAdresses.size()]);
 
-		message.setBcc(userAdresses); // we do send per BCC so users do not get other email addresses. Maybe necessary
-										// because of data protection
-		message.setText(emailContent.toString());
+        message.setBcc(userAdresses); // we do send per BCC so users do not get other email addresses. Maybe necessary
+                                      // because of data protection
+        message.setText(emailContent.toString());
 
-		emailService.send(message);
+        emailService.send(message);
 
-	}
+    }
 
 }

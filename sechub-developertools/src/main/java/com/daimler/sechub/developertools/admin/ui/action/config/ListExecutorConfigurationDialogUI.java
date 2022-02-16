@@ -21,7 +21,7 @@ public class ListExecutorConfigurationDialogUI extends AbstractListDialogUI<UUID
     @Override
     protected List<String> createTableHeaders() {
         List<String> model = new ArrayList<>();
-        model.add("Configuration name");//0
+        model.add("Configuration name");// 0
         model.add("enabled");
         model.add("uuid");
         return model;
@@ -42,7 +42,7 @@ public class ListExecutorConfigurationDialogUI extends AbstractListDialogUI<UUID
     protected List<Object[]> createTableContent() {
         List<Object[]> list = new ArrayList<Object[]>();
         for (TestExecutorConfigListEntry entry : profileList.executorConfigurations) {
-            list.add(new Object[] { entry.name, entry.enabled, entry.uuid});
+            list.add(new Object[] { entry.name, entry.enabled, entry.uuid });
         }
         return list;
     }

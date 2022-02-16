@@ -109,7 +109,7 @@ public class UserMessage implements JSONable<UserMessage> {
     /**
      * Set subject for the message. Will be used for example on emails as email
      * subject.
-     * 
+     *
      * @param reason
      */
     public void setSubject(String reason) {

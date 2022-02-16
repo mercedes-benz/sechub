@@ -8,19 +8,19 @@ public class MappingIdValidationImpl extends AbstractSimpleStringValidation impl
 
     @Override
     protected void setup(AbstractValidation<String>.ValidationConfig config) {
-        config.maxLength=80;
-        config.minLength=5;
+        config.maxLength = 80;
+        config.minLength = 5;
     }
 
     @Override
     protected void validate(ValidationContext<String> context) {
         validateNotNull(context);
         validateWithoutWhitespaces(context);
-        validateOnlyAlphabeticDigitOrAllowedParts(context, '.','-','_');
+        validateOnlyAlphabeticDigitOrAllowedParts(context, '.', '-', '_');
         validateLength(context);
-        
+
     }
-    
+
     @Override
     protected String getValidatorName() {
         return "mapping id validation";

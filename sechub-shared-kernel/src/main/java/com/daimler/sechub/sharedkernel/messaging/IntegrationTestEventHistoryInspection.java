@@ -12,11 +12,11 @@ public class IntegrationTestEventHistoryInspection {
     private boolean synchron;
     private String eventId;
     private IntegrationTestEventHistoryDebugData debug = new IntegrationTestEventHistoryDebugData();
-    
+
     public IntegrationTestEventHistoryDebugData getDebug() {
         return debug;
     }
-    
+
     public boolean isSynchron() {
         return synchron;
     }
@@ -42,7 +42,7 @@ public class IntegrationTestEventHistoryInspection {
         this.synchron = false;
         initializeSenderAndEvent(className, messageId);
     }
-    
+
     @Override
     public int hashCode() {
         return Objects.hash(eventId, receiverClassNames, senderClassName, synchron);
@@ -57,10 +57,8 @@ public class IntegrationTestEventHistoryInspection {
         if (getClass() != obj.getClass())
             return false;
         IntegrationTestEventHistoryInspection other = (IntegrationTestEventHistoryInspection) obj;
-        return Objects.equals(eventId, other.eventId) && 
-                receiverClassNames.size()==other.receiverClassNames.size() &&
-                receiverClassNames.containsAll(other.receiverClassNames)
-                && other.receiverClassNames.containsAll(receiverClassNames)
+        return Objects.equals(eventId, other.eventId) && receiverClassNames.size() == other.receiverClassNames.size()
+                && receiverClassNames.containsAll(other.receiverClassNames) && other.receiverClassNames.containsAll(receiverClassNames)
                 && Objects.equals(senderClassName, other.senderClassName) && synchron == other.synchron;
     }
 

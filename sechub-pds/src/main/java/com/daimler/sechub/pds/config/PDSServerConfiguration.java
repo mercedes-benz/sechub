@@ -10,7 +10,7 @@ import com.daimler.sechub.pds.PDSJSONConverterException;
 /**
  * Configuration of PDS (product delegation server) - will be read at startup
  * for server
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -20,9 +20,10 @@ public class PDSServerConfiguration {
     /**
      * Server ID is necessary when sharing same database inside a cluster. For
      * example when a sechub server and all PDS sharing same database. Or when
-     * sechub server has it's own DB but all PDS share another one.<br><br>
+     * sechub server has it's own DB but all PDS share another one.<br>
+     * <br>
      * The serverID is used inside Database
-     * 
+     *
      */
     private String serverId;
 

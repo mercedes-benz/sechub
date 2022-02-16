@@ -23,7 +23,7 @@ public class DeveloperAdministrationUI implements ConfigProvider, ErrorHandler, 
     private static final Logger LOG = LoggerFactory.getLogger(DeveloperAdministrationUI.class);
 
     public static void main(String[] args) {
-        
+
         new DeveloperAdministrationUI().start(args);
     }
 
@@ -73,7 +73,7 @@ public class DeveloperAdministrationUI implements ConfigProvider, ErrorHandler, 
     }
 
     private void start(String[] args) {
-        administration = new DeveloperAdministration(this, this,this);
+        administration = new DeveloperAdministration(this, this, this);
 
         useNimbusLookAndFeel();
         String env = ConfigurationSetup.SECHUB_ADMIN_ENVIRONMENT.getStringValueOrFail();

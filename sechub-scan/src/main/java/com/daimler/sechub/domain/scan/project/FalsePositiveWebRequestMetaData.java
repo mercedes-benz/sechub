@@ -4,19 +4,19 @@ package com.daimler.sechub.domain.scan.project;
 import java.util.Objects;
 
 public class FalsePositiveWebRequestMetaData {
-    
-    public static final String PROPERTY_METHOD= "method";
-    public static final String PROPERTY_TARGET_URL= "targetUrl";
-    public static final String PROPERTY_PROTOCOL= "protocol";
-    public static final String PROPERTY_VERSION= "version";
-    public static final String PROPERTY_ATTACK_VECTOR= "attackVector";
-    
+
+    public static final String PROPERTY_METHOD = "method";
+    public static final String PROPERTY_TARGET_URL = "targetUrl";
+    public static final String PROPERTY_PROTOCOL = "protocol";
+    public static final String PROPERTY_VERSION = "version";
+    public static final String PROPERTY_ATTACK_VECTOR = "attackVector";
+
     private String method;
     private String target;
-    
+
     private String protocol;
     private String version;
-    
+
     private String attackVector;
 
     public void setTarget(String target) {
@@ -61,9 +61,9 @@ public class FalsePositiveWebRequestMetaData {
 
     @Override
     public String toString() {
-        return "FalsePositiveWebRequestMetaData [" + (method != null ? "method=" + method + ", " : "")
-                + (target != null ? "targetUrl=" + target + ", " : "") + (protocol != null ? "protocol=" + protocol + ", " : "")
-                + (version != null ? "version=" + version + ", " : "") + (attackVector != null ? "attackVector=" + attackVector : "") + "]";
+        return "FalsePositiveWebRequestMetaData [" + (method != null ? "method=" + method + ", " : "") + (target != null ? "targetUrl=" + target + ", " : "")
+                + (protocol != null ? "protocol=" + protocol + ", " : "") + (version != null ? "version=" + version + ", " : "")
+                + (attackVector != null ? "attackVector=" + attackVector : "") + "]";
     }
 
     @Override

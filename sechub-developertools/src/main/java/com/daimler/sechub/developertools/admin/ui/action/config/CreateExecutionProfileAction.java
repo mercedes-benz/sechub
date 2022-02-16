@@ -15,20 +15,20 @@ public class CreateExecutionProfileAction extends AbstractUIAction {
     }
 
     @Override
-	public void execute(ActionEvent e) {
-	    ExecutionProfileDialogUI dialogUI = new ExecutionProfileDialogUI(getContext(),"Create new execution profile");
-	    
-	    dialogUI.showDialog();
-	    
-	    if (!dialogUI.isOkPressed()) {
-	        return; 
-	    }
-	    TestExecutionProfile profile = dialogUI.getUpdatedProfile();
-	    
-	    getContext().getAdministration().createExecutionProfile(profile);
-        
-		String data = getContext().getAdministration().fetchExecutionProfiles();
-		outputAsBeautifiedJSONOnSuccess(data);
-	}
+    public void execute(ActionEvent e) {
+        ExecutionProfileDialogUI dialogUI = new ExecutionProfileDialogUI(getContext(), "Create new execution profile");
+
+        dialogUI.showDialog();
+
+        if (!dialogUI.isOkPressed()) {
+            return;
+        }
+        TestExecutionProfile profile = dialogUI.getUpdatedProfile();
+
+        getContext().getAdministration().createExecutionProfile(profile);
+
+        String data = getContext().getAdministration().fetchExecutionProfiles();
+        outputAsBeautifiedJSONOnSuccess(data);
+    }
 
 }

@@ -18,6 +18,8 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 
+import junit.framework.AssertionFailedError;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -44,8 +46,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-
-import junit.framework.AssertionFailedError;
 
 public class TestAPI {
 
@@ -142,7 +142,7 @@ public class TestAPI {
 
     /**
      * Creates an assert object to inspect meta data
-     * 
+     *
      * @return
      */
     public static AssertInspections assertInspections() {
@@ -167,21 +167,22 @@ public class TestAPI {
     /**
      * Waits for sechub job being done (means status execution result is OK) - after
      * 5 seconds time out is reached. When job is in state "failing" it will be
-     * ignored and retried until time out or "success" state reached. This method should 
-     * normally only be used in test cases where a former job has been canceled
-     * 
+     * ignored and retried until time out or "success" state reached. This method
+     * should normally only be used in test cases where a former job has been
+     * canceled
+     *
      * @param project
      * @param jobUUID
      */
     public static void waitForJobDoneAndEvenWaitWhileJobIsFailing(TestProject project, UUID jobUUID) {
         waitForJobDone(project, jobUUID, 5, false);
     }
-    
+
     /**
      * Waits for sechub job being done (means status execution result is OK) - after
      * 5 seconds time out is reached. When job is in state "failing" it will be
      * ignored and retried until time out or "success" state reached.
-     * 
+     *
      * @param project
      * @param jobUUID
      */
@@ -192,10 +193,11 @@ public class TestAPI {
     /**
      * Waits for SecHub job being done (means status execution result is OK)- after
      * 5 seconds time out is reached.
-     * 
-     * @param project project being inspected
-     * @param jobUUID job uuid to inspect status
-     * @param timeOutInSeconds time out in seconds when no retry is possible any more
+     *
+     * @param project          project being inspected
+     * @param jobUUID          job uuid to inspect status
+     * @param timeOutInSeconds time out in seconds when no retry is possible any
+     *                         more
      * @param jobMayNeverFail  when <code>true</code> the first job result in state
      *                         "failing" will automatically stop inspection and let
      *                         the test fail. This can be useful have faster
@@ -232,7 +234,7 @@ public class TestAPI {
 
     /**
      * Wait until SecHub job is running - after 5 seconds time out is reached
-     * 
+     *
      * @param project
      * @param jobUUID
      */
@@ -242,7 +244,7 @@ public class TestAPI {
 
     /**
      * Wait until SecHub job is running
-     * 
+     *
      * @param project
      * @param timeOutInSeconds
      * @param timeToWaitInMillis
@@ -266,7 +268,7 @@ public class TestAPI {
     /**
      * Waits for sechub job being cancele requested - after 5 seconds time out is
      * reached
-     * 
+     *
      * @param project
      * @param jobUUID
      */
@@ -286,7 +288,7 @@ public class TestAPI {
 
     /**
      * Waits for sechub job being failed - after 5 seconds time out is reached
-     * 
+     *
      * @param project
      * @param jobUUID
      */
@@ -582,7 +584,7 @@ public class TestAPI {
     /**
      * Changes scan mapping DIRECTLY ! Means without administration domain, but
      * directly in scan domain - interesting for testing only,
-     * 
+     *
      * @param json
      */
     public static void changeScanMappingDirectly(String mappingId, MappingEntry... entries) {
@@ -690,7 +692,7 @@ public class TestAPI {
     /**
      * Will remove all waiting jobs in database + wait for all running jobs to be
      * done
-     * 
+     *
      */
     public static void ensureNoLongerJobExecution() {
         cancelAllScanJobs();
@@ -743,7 +745,7 @@ public class TestAPI {
     /**
      * Starts event inspection<br>
      * <br>
-     * 
+     *
      * To provide an empty event bus, without noise from other tests or still
      * running jobs, this method does following
      * <ul>
@@ -773,7 +775,7 @@ public class TestAPI {
 
     /**
      * Cancels all running scan jobs - not only at scheduler!
-     * 
+     *
      * @return amount scan jobs
      */
     public static long cancelAllScanJobs() {
@@ -988,7 +990,7 @@ public class TestAPI {
     /**
      * Wait that project does not exist. Will try 9 times with 330 milliseconds
      * delay before next retry. After this time this method will fail.
-     * 
+     *
      * @param project
      */
     public static void waitProjectDoesNotExist(TestProject project) {

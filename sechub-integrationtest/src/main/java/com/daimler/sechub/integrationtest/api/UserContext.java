@@ -3,14 +3,14 @@ package com.daimler.sechub.integrationtest.api;
 
 public interface UserContext {
 
-	String getUserId();
+    String getUserId();
 
-	String getApiToken();
+    String getApiToken();
 
-	boolean isAnonymous();
+    boolean isAnonymous();
 
-	void updateToken(String newToken);
+    void updateToken(String newToken);
 
-	String getEmail();
+    String getEmail();
 
 }

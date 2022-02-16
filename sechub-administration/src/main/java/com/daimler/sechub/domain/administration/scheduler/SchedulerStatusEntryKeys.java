@@ -3,24 +3,24 @@ package com.daimler.sechub.domain.administration.scheduler;
 
 import com.daimler.sechub.domain.administration.status.StatusEntryKey;
 
-public enum SchedulerStatusEntryKeys implements StatusEntryKey{
-	SCHEDULER_ENABLED("status.scheduler.enabled"),
+public enum SchedulerStatusEntryKeys implements StatusEntryKey {
+    SCHEDULER_ENABLED("status.scheduler.enabled"),
 
-	SCHEDULER_JOBS_ALL("status.scheduler.jobs.all"),
+    SCHEDULER_JOBS_ALL("status.scheduler.jobs.all"),
 
-	SCHEDULER_JOBS_RUNNING("status.scheduler.jobs.running"),
+    SCHEDULER_JOBS_RUNNING("status.scheduler.jobs.running"),
 
-	SCHEDULER_JOBS_WAITING("status.scheduler.jobs.waiting");
+    SCHEDULER_JOBS_WAITING("status.scheduler.jobs.waiting");
 
-	private String statusEntryKey;
+    private String statusEntryKey;
 
-	private SchedulerStatusEntryKeys(String key) {
-		this.statusEntryKey=key;
-	}
+    private SchedulerStatusEntryKeys(String key) {
+        this.statusEntryKey = key;
+    }
 
-	@Override
-	public String getStatusEntryKey() {
-		return statusEntryKey;
-	}
+    @Override
+    public String getStatusEntryKey() {
+        return statusEntryKey;
+    }
 
 }

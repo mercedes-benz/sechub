@@ -13,8 +13,6 @@ import com.daimler.sechub.domain.administration.AdministrationAPIConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.usecases.user.UseCaseUserRequestsNewApiToken;
 
-
-
 /**
  * Request new api token by a given onetimetoken. Can be done anonymous
  *
@@ -25,17 +23,16 @@ import com.daimler.sechub.sharedkernel.usecases.user.UseCaseUserRequestsNewApiTo
 @EnableAutoConfiguration
 public class AnonymousUserRequestNewApiTokenRestController {
 
-	@Autowired
-	private AnonymousUserRequestsNewApiTokenService newApiTokenService;
+    @Autowired
+    private AnonymousUserRequestsNewApiTokenService newApiTokenService;
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@CrossOrigin /* to allow call from getsechub.detss and maybe other sites using javascript */
 	@UseCaseUserRequestsNewApiToken(@Step(number=1, name="Rest API call",description="Rest api called to request new user api token. Normally done by user itself",needsRestDoc=true))
 	@RequestMapping(path = AdministrationAPIConstants.API_REQUEST_NEW_APITOKEN, method = RequestMethod.POST)
 	public void anonymousRequestToGetNewApiTokenForUserMailAdress(@PathVariable(name="emailAddress") String emailAdress) {
 		/* @formatter:on */
-		newApiTokenService.anonymousRequestToGetNewApiTokenForUserMailAdress(emailAdress);
-	}
-
+        newApiTokenService.anonymousRequestToGetNewApiTokenForUserMailAdress(emailAdress);
+    }
 
 }

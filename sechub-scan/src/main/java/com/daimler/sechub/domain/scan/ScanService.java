@@ -127,7 +127,7 @@ public class ScanService implements SynchronMessageHandler {
         } finally {
             if (context == null) {
                 LOG.warn("No sechub execution context available, so cannot check state or cleanup storage");
-            }else {
+            } else {
                 if (!context.isAbandonded()) {
                     cleanupStorage(context);
                 }

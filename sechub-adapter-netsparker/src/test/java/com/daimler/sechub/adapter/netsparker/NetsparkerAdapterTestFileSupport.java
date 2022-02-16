@@ -6,14 +6,14 @@ import com.daimler.sechub.test.TestFileSupport;
 
 @SechubTestComponent
 public class NetsparkerAdapterTestFileSupport extends TestFileSupport {
-	private static final NetsparkerAdapterTestFileSupport TESTFILE_SUPPORT = new NetsparkerAdapterTestFileSupport();
+    private static final NetsparkerAdapterTestFileSupport TESTFILE_SUPPORT = new NetsparkerAdapterTestFileSupport();
 
-	public static NetsparkerAdapterTestFileSupport getTestfileSupport() {
-		return TESTFILE_SUPPORT;
-	}
+    public static NetsparkerAdapterTestFileSupport getTestfileSupport() {
+        return TESTFILE_SUPPORT;
+    }
 
-	NetsparkerAdapterTestFileSupport() {
-		super("sechub-adapter-netsparker/src/test/resources");
-	}
+    NetsparkerAdapterTestFileSupport() {
+        super("sechub-adapter-netsparker/src/test/resources");
+    }
 
 }

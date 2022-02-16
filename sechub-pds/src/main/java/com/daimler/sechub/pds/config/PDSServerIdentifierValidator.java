@@ -8,7 +8,7 @@ public class PDSServerIdentifierValidator {
 
     /**
      * Creates error message when validation failed
-     * 
+     *
      * @param serverId
      * @return failure message or <code>null</code> when valid
      */

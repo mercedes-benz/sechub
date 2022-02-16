@@ -19,11 +19,11 @@ public class IntegrationTestPDSJobCreateResult {
             JsonNode jsonNode = jsonTestSupport.fromJson(json);
             JsonNode jobUUIDNode = jsonNode.get("jobUUID");
             jobUUID = UUID.fromString(jobUUIDNode.asText("no jobuuid in json"));
-            
+
         } catch (Exception e) {
-            throw new IllegalStateException("pds status json conversion failed, json was:\n"+json,e);
+            throw new IllegalStateException("pds status json conversion failed, json was:\n" + json, e);
         }
-        
+
         return this;
     }
 

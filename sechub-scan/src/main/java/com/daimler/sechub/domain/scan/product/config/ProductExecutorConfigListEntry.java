@@ -6,7 +6,7 @@ import java.util.UUID;
 /**
  * A reduced view to executor configurations - contains reduced configuration
  * data for list
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

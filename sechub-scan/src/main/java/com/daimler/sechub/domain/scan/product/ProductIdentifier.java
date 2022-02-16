@@ -53,7 +53,7 @@ public enum ProductIdentifier {
     private ProductIdentifier(ProductType type) {
         this.type = type;
     }
-    
+
     public ProductType getType() {
         return type;
     }

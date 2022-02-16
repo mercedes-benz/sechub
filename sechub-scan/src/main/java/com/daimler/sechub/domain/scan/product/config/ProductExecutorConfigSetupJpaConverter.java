@@ -3,7 +3,7 @@ package com.daimler.sechub.domain.scan.product.config;
 
 import javax.persistence.AttributeConverter;
 
-public class ProductExecutorConfigSetupJpaConverter implements AttributeConverter<ProductExecutorConfigSetup,String>{
+public class ProductExecutorConfigSetupJpaConverter implements AttributeConverter<ProductExecutorConfigSetup, String> {
 
     @Override
     public String convertToDatabaseColumn(ProductExecutorConfigSetup attribute) {

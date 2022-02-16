@@ -10,21 +10,21 @@ package com.daimler.sechub.integrationtest.api;
  * configurations file location is:<br>
  * <br>
  * <b>
- * 
+ *
  * <code>
  * sechub-integration/src/main/resources/pds-config-integrationtest.json
  * </code>
- * 
+ *
  * </b> <br>
  * <br>
  * Inside this configuration file you can see details about parameters etc.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
 /*
- * For the id of a product identifier only 30 characters are allowed - please keep this
- * in mind, when adding new identifiers.
+ * For the id of a product identifier only 30 characters are allowed - please
+ * keep this in mind, when adding new identifiers.
  */
 public enum PDSIntTestProductIdentifier {
     /**

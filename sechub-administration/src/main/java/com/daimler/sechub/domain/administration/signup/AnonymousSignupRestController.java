@@ -19,8 +19,6 @@ import com.daimler.sechub.domain.administration.AdministrationAPIConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.usecases.user.UseCaseUserSignup;
 
-
-
 /**
  * Self registration rest controller - anonymous access possible
  *
@@ -31,26 +29,25 @@ import com.daimler.sechub.sharedkernel.usecases.user.UseCaseUserSignup;
 @EnableAutoConfiguration
 public class AnonymousSignupRestController {
 
-	@Autowired
-	private AnonymousSignupCreateService signupService;
+    @Autowired
+    private AnonymousSignupCreateService signupService;
 
+    @Autowired
+    private SignupJsonInputValidator validator;
 
-	@Autowired
-	private SignupJsonInputValidator validator;
-
-	/* @formatter:off */
+    /* @formatter:off */
 	@CrossOrigin /* to allow call from getsechub.detss and maybe other sites using javascript*/
 	@UseCaseUserSignup(@Step(number=1, name="Rest API call",description="Rest api called to register user. Normally done by user itself",needsRestDoc=true))
 	@Validated
 	@RequestMapping(path = AdministrationAPIConstants.API_SIGNUP, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public void registerUser(@RequestBody @Valid SignupJsonInput signupInput) {
 		/* @formatter:on */
-		signupService.register(signupInput);
-	}
+        signupService.register(signupInput);
+    }
 
-	@InitBinder
-	protected void initBinder(WebDataBinder binder) {
-		binder.setValidator(validator);
-	}
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.setValidator(validator);
+    }
 
 }

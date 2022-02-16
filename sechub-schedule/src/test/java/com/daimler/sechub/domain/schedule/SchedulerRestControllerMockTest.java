@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.schedule;
 
-import static com.daimler.sechub.test.TestURLBuilder.https;
 import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.JOB_UUID;
 import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.PROJECT_ID;
+import static com.daimler.sechub.test.TestURLBuilder.https;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -54,56 +54,56 @@ import com.daimler.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(SchedulerRestController.class)
-@ContextConfiguration(classes= {SchedulerRestController.class, SchedulerRestControllerMockTest.SimpleTestConfiguration.class})
+@ContextConfiguration(classes = { SchedulerRestController.class, SchedulerRestControllerMockTest.SimpleTestConfiguration.class })
 @WithMockUser
 @ActiveProfiles(Profiles.TEST)
 public class SchedulerRestControllerMockTest {
 
-	private static final String PROJECT1_ID = "project1";
+    private static final String PROJECT1_ID = "project1";
 
-	private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getWebMVCTestHTTPSPort();
+    private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getWebMVCTestHTTPSPort();
 
-	@Autowired
-	private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-	@MockBean
-	private SchedulerApproveJobService mockedScheduleService;
+    @MockBean
+    private SchedulerApproveJobService mockedScheduleService;
 
-	@MockBean
-	private SchedulerCreateJobService mockedScheduleCreateJobService;
+    @MockBean
+    private SchedulerCreateJobService mockedScheduleCreateJobService;
 
-	@MockBean
-	private SchedulerGetJobStatusService mockedScheduleJobStatusService;
+    @MockBean
+    private SchedulerGetJobStatusService mockedScheduleJobStatusService;
 
-	@MockBean
-	private SchedulerUploadService mockedUploadService;
+    @MockBean
+    private SchedulerUploadService mockedUploadService;
 
-	@MockBean
-	private SecHubConfigurationValidator sechubConfigurationValidator;
+    @MockBean
+    private SecHubConfigurationValidator sechubConfigurationValidator;
 
-	@MockBean
-	private SecHubJobRepository mockedJobRepository; // even when not used here, its necessary to define the mock-its
-														// indirectly used by scheduler service auto wiraing ?!?
-	@MockBean
-	private ScheduleAccessRepository mockedProjectRepository;
+    @MockBean
+    private SecHubJobRepository mockedJobRepository; // even when not used here, its necessary to define the mock-its
+                                                     // indirectly used by scheduler service auto wiraing ?!?
+    @MockBean
+    private ScheduleAccessRepository mockedProjectRepository;
 
-	private ScheduleAccess project1;
+    private ScheduleAccess project1;
 
-	private UUID randomUUID;
+    private UUID randomUUID;
 
-	@Test
-	public void get_job_status_from_existing_job_returns_information() throws Exception {
-		/* prepare */
+    @Test
+    public void get_job_status_from_existing_job_returns_information() throws Exception {
+        /* prepare */
 
-		ScheduleJobStatus status = new ScheduleJobStatus();
-		status.jobUUID = randomUUID;
-		status.result = ExecutionResult.NONE.name();
-		status.state = ExecutionState.STARTED.name();
-		status.trafficLight = null;
+        ScheduleJobStatus status = new ScheduleJobStatus();
+        status.jobUUID = randomUUID;
+        status.result = ExecutionResult.NONE.name();
+        status.state = ExecutionState.STARTED.name();
+        status.trafficLight = null;
 
-		when(mockedScheduleJobStatusService.getJobStatus(PROJECT1_ID, randomUUID)).thenReturn(status);
+        when(mockedScheduleJobStatusService.getJobStatus(PROJECT1_ID, randomUUID)).thenReturn(status);
 
-		/* execute + test @formatter:off */
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(https(PORT_USED).buildGetJobStatusUrl(PROJECT1_ID,randomUUID.toString())).
         			contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -113,17 +113,17 @@ public class SchedulerRestControllerMockTest {
         		);
 
         /* @formatter:on */
-	}
+    }
 
-	@Test
-	public void scheduling__returns_job_id_from_service() throws Exception {
-		/* prepare */
-		UUID randomUUID = UUID.randomUUID();
-		SchedulerResult mockResult = new SchedulerResult(randomUUID);
+    @Test
+    public void scheduling__returns_job_id_from_service() throws Exception {
+        /* prepare */
+        UUID randomUUID = UUID.randomUUID();
+        SchedulerResult mockResult = new SchedulerResult(randomUUID);
 
-		when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
+        when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
 
-		/* execute + test @formatter:off */
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(https(PORT_USED).buildAddJobUrl(PROJECT1_ID)).
         			contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -134,18 +134,17 @@ public class SchedulerRestControllerMockTest {
         		);
 
         /* @formatter:on */
-	}
+    }
 
-	@Test
-	public void scheduling_calls_always_validator()
-			throws Exception {
-		/* prepare */
-		UUID randomUUID = UUID.randomUUID();
-		SchedulerResult mockResult = new SchedulerResult(randomUUID);
+    @Test
+    public void scheduling_calls_always_validator() throws Exception {
+        /* prepare */
+        UUID randomUUID = UUID.randomUUID();
+        SchedulerResult mockResult = new SchedulerResult(randomUUID);
 
-		when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
+        when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
 
-		/* execute + test @formatter:off */
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(https(PORT_USED).buildAddJobUrl(PROJECT1_ID)).
         			contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -158,32 +157,31 @@ public class SchedulerRestControllerMockTest {
         verify(this.sechubConfigurationValidator).validate(any(),any());
 
         /* @formatter:on */
-	}
+    }
 
-	@Test
-	public void uploadSourceCode_calls_uploadservice_with_given_checksum() throws Exception {
-		/* prepare */
+    @Test
+    public void uploadSourceCode_calls_uploadservice_with_given_checksum() throws Exception {
+        /* prepare */
 
-		ScheduleSecHubJob job = new ScheduleSecHubJob() {
-			public UUID getUUID() {
-				return randomUUID;
-			};
-		};
-		job.setExecutionResult(ExecutionResult.OK);
-		job.setStarted(LocalDateTime.now().minusMinutes(15));
-		job.setEnded(LocalDateTime.now());
-		job.setExecutionState(ExecutionState.INITIALIZING);
-		job.setOwner("CREATOR1");
-		job.setTrafficLight(TrafficLight.GREEN);
+        ScheduleSecHubJob job = new ScheduleSecHubJob() {
+            public UUID getUUID() {
+                return randomUUID;
+            };
+        };
+        job.setExecutionResult(ExecutionResult.OK);
+        job.setStarted(LocalDateTime.now().minusMinutes(15));
+        job.setEnded(LocalDateTime.now());
+        job.setExecutionState(ExecutionState.INITIALIZING);
+        job.setOwner("CREATOR1");
+        job.setTrafficLight(TrafficLight.GREEN);
 
-		ScheduleJobStatus status = new ScheduleJobStatus(job);
+        ScheduleJobStatus status = new ScheduleJobStatus(job);
 
-		when(mockedScheduleJobStatusService.getJobStatus(PROJECT1_ID, randomUUID)).thenReturn(status);
+        when(mockedScheduleJobStatusService.getJobStatus(PROJECT1_ID, randomUUID)).thenReturn(status);
 
-		InputStream inputStreamTo = ScheduleTestFileSupport.getTestfileSupport()
-				.getInputStreamTo("upload/zipfile_contains_only_test1.txt.zip");
-		MockMultipartFile file1 = new MockMultipartFile("file", inputStreamTo);
-		/* execute + test @formatter:off */
+        InputStream inputStreamTo = ScheduleTestFileSupport.getTestfileSupport().getInputStreamTo("upload/zipfile_contains_only_test1.txt.zip");
+        MockMultipartFile file1 = new MockMultipartFile("file", inputStreamTo);
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		multipart(https(PORT_USED).
         		    buildUploadSourceCodeUrl(PROJECT_ID.pathElement(), JOB_UUID.pathElement()) ,PROJECT1_ID,randomUUID).
@@ -193,15 +191,14 @@ public class SchedulerRestControllerMockTest {
 
         verify(mockedUploadService).uploadSourceCode(PROJECT1_ID, randomUUID, file1, "mychecksum");
         /* @formatter:on */
-	}
+    }
 
+    @Test
+    public void when_scheduler_throws_an_validation_exception_a_HTTP_400_bad_request_is_thrown() throws Exception {
+        /* prepare */
+        when(mockedScheduleCreateJobService.createJob(any(), any())).thenThrow(new ValidationException("something-goes-wrong"));
 
-	@Test
-	public void when_scheduler_throws_an_validation_exception_a_HTTP_400_bad_request_is_thrown() throws Exception {
-		/* prepare */
-		when(mockedScheduleCreateJobService.createJob(any(), any())).thenThrow(new ValidationException("something-goes-wrong"));
-
-		/* execute + test @formatter:off */
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(https(PORT_USED).buildAddJobUrl(PROJECT1_ID)).
         			contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -209,17 +206,16 @@ public class SchedulerRestControllerMockTest {
         			andExpect(status().isBadRequest());
 
         /* @formatter:on */
-	}
+    }
 
-	@Test
-	public void scheduling_a_sechub_configuration_having_no_api_version_set__fails_HTTP_400_bad_request()
-			throws Exception {
-		/* prepare */
-		SchedulerResult mockResult = Mockito.mock(SchedulerResult.class);
+    @Test
+    public void scheduling_a_sechub_configuration_having_no_api_version_set__fails_HTTP_400_bad_request() throws Exception {
+        /* prepare */
+        SchedulerResult mockResult = Mockito.mock(SchedulerResult.class);
 
-		when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
+        when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
 
-		/* execute + test @formatter:off */
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(https(PORT_USED).buildAddJobUrl(PROJECT1_ID)).
         			contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -227,25 +223,25 @@ public class SchedulerRestControllerMockTest {
         			andExpect(status().isBadRequest());
 
         /* @formatter:on */
-	}
+    }
 
-	@Before
-	public void before() {
-		randomUUID = UUID.randomUUID();
-		project1 = mock(ScheduleAccess.class);
+    @Before
+    public void before() {
+        randomUUID = UUID.randomUUID();
+        project1 = mock(ScheduleAccess.class);
 
-		ProjectAccessCompositeKey key = new ProjectAccessCompositeKey("user", PROJECT1_ID);
-		when(project1.getKey()).thenReturn(key);
+        ProjectAccessCompositeKey key = new ProjectAccessCompositeKey("user", PROJECT1_ID);
+        when(project1.getKey()).thenReturn(key);
 
-		when(mockedProjectRepository.findById(key)).thenReturn(Optional.of(project1));
+        when(mockedProjectRepository.findById(key)).thenReturn(Optional.of(project1));
 
-		when(sechubConfigurationValidator.supports(SecHubConfiguration.class)).thenReturn(true);
-	}
+        when(sechubConfigurationValidator.supports(SecHubConfiguration.class)).thenReturn(true);
+    }
 
-	@TestConfiguration
-	@Profile(Profiles.TEST)
-	@EnableAutoConfiguration
-	public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration{
+    @TestConfiguration
+    @Profile(Profiles.TEST)
+    @EnableAutoConfiguration
+    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
 
-	}
+    }
 }

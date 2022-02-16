@@ -46,52 +46,54 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(StatusAdministrationRestController.class)
-@ContextConfiguration(classes = { StatusAdministrationRestController.class,
-		MappingAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class })
+@ContextConfiguration(classes = { StatusAdministrationRestController.class, MappingAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class })
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
-@ActiveProfiles({Profiles.TEST, Profiles.ADMIN_ACCESS})
-@AutoConfigureRestDocs(uriScheme="https",uriHost=ExampleConstants.URI_SECHUB_SERVER,uriPort=443)
+@ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
+@AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 public class MappingAdministrationRestControllerRestDocTest {
 
-	private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
+    private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
-	@Autowired
-	private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-	@MockBean
-	ListStatusService listStatusService;
+    @MockBean
+    ListStatusService listStatusService;
 
-	@Before
-	public void before() {
-		List<StatusEntry> list = new ArrayList<StatusEntry>();
-		StatusEntry enabled = new StatusEntry(SchedulerStatusEntryKeys.SCHEDULER_ENABLED);
-		enabled.setValue("true");
-		list.add(enabled);
+    @Before
+    public void before() {
+        List<StatusEntry> list = new ArrayList<StatusEntry>();
+        StatusEntry enabled = new StatusEntry(SchedulerStatusEntryKeys.SCHEDULER_ENABLED);
+        enabled.setValue("true");
+        list.add(enabled);
 
-		StatusEntry allJobs = new StatusEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_ALL);
-		allJobs.setValue("200");
-		list.add(allJobs);
+        StatusEntry allJobs = new StatusEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_ALL);
+        allJobs.setValue("200");
+        list.add(allJobs);
 
-		StatusEntry runningJobs = new StatusEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_RUNNING);
-		runningJobs.setValue("3");
-		list.add(runningJobs);
+        StatusEntry runningJobs = new StatusEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_RUNNING);
+        runningJobs.setValue("3");
+        list.add(runningJobs);
 
-		StatusEntry waitingJobs = new StatusEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_WAITING);
-		waitingJobs.setValue("42");
-		list.add(waitingJobs);
+        StatusEntry waitingJobs = new StatusEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_WAITING);
+        waitingJobs.setValue("42");
+        list.add(waitingJobs);
 
-		/* there could be more status examples in future - currently only scheduler status info available */
-		when(listStatusService.fetchAllStatusEntries()).thenReturn(list);
-	}
+        /*
+         * there could be more status examples in future - currently only scheduler
+         * status info available
+         */
+        when(listStatusService.fetchAllStatusEntries()).thenReturn(list);
+    }
 
-	@Test
-	@UseCaseRestDoc(useCase=UseCaseAdminListsStatusInformation.class)
-	public void restdoc_admin_lists_status_information() throws Exception {
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdminListsStatusInformation.class)
+    public void restdoc_admin_lists_status_information() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminListsStatusEntries();
         Class<? extends Annotation> useCase = UseCaseAdminListsStatusInformation.class;
 
-		/* execute + test @formatter:off */
+        /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				get(apiEndpoint).
 				contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -115,12 +117,12 @@ public class MappingAdministrationRestControllerRestDocTest {
 					));
 
 		/* @formatter:on */
-	}
+    }
 
-	@Profile(Profiles.TEST)
-	@EnableAutoConfiguration
-	public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    @Profile(Profiles.TEST)
+    @EnableAutoConfiguration
+    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
 
-	}
+    }
 
 }

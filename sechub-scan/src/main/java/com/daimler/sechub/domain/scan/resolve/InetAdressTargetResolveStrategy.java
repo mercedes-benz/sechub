@@ -5,5 +5,4 @@ import java.net.InetAddress;
 
 public interface InetAdressTargetResolveStrategy extends TargetResolveStrategy<InetAddress> {
 
-
 }

@@ -36,7 +36,7 @@ public class PDSJobTransactionService {
 
     /**
      * Mark job as ready to start - state before allowed: only CREATED
-     * 
+     *
      * @param jobUUID
      */
     @RolesAllowed({ PDSRoleConstants.ROLE_USER, PDSRoleConstants.ROLE_SUPERADMIN })
@@ -47,7 +47,7 @@ public class PDSJobTransactionService {
 
     /**
      * Mark job as running - no matter which state before
-     * 
+     *
      * @param jobUUID
      */
     public void markJobAsRunningInOwnTransaction(UUID jobUUID) {
@@ -56,7 +56,7 @@ public class PDSJobTransactionService {
 
     /**
      * Mark job as being requested to refresh stream data
-     * 
+     *
      * @param jobUUID
      * @return local date time for the new refresh time stamp
      */
@@ -99,7 +99,7 @@ public class PDSJobTransactionService {
 
     /**
      * Read job configuration in own transaction
-     * 
+     *
      * @param jobUUID
      * @return job configuration, will fail when job is not found
      */
@@ -109,7 +109,7 @@ public class PDSJobTransactionService {
 
     /**
      * Resolves next job to execute. If found the job will be marked as queued
-     * 
+     *
      * @return uuid or <code>null</code> if no job found to put in queue.
      */
     public UUID findNextJobToExecuteAndMarkAsQueued() {

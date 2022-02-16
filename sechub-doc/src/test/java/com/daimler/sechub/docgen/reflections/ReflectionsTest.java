@@ -50,21 +50,23 @@ public class ReflectionsTest {
         /* test */
         assertEquals("TestMe", result);
     }
+
     @Test
     public void sanity_check() {
         assertTrue(reflectionsToTest.isInspecting(ReflectionsExampleInterface.class));
         assertTrue(reflectionsToTest.isInspecting(ReflectionsExampleUsageAnnotation.class));
         assertTrue(reflectionsToTest.isInspecting(ReflectionsExampleClass1.class));
         assertTrue(reflectionsToTest.isInspecting(ReflectionsExampleClass2.class));
-        
-        /* next lines should never fail, because SecHub has currently 667 classes inside inspected
-         * source folder and is growing. So this just checks that not only the sechub-doc folder
-         * is scanned...
-         * */
+
+        /*
+         * next lines should never fail, because SecHub has currently 667 classes inside
+         * inspected source folder and is growing. So this just checks that not only the
+         * sechub-doc folder is scanned...
+         */
         int amountOfInspectedClasses = reflectionsToTest.getAmountOfInspectedClasses();
-        assertTrue("SecHub must have more than 400 classes", amountOfInspectedClasses>400);
+        assertTrue("SecHub must have more than 400 classes", amountOfInspectedClasses > 400);
     }
-    
+
     @Test
     public void getFieldsAnnotatedWith() {
 
@@ -80,13 +82,13 @@ public class ReflectionsTest {
             sortedSet.add(field.toString());
         }
 
-        assertFound("private java.lang.String com.daimler.sechub.docgen.reflections.ReflectionsExampleClass1.field1",sortedSet);
-        assertFound("private java.lang.String com.daimler.sechub.docgen.reflections.ReflectionsExampleClass1.field2",sortedSet);
-        assertFound("private java.lang.String com.daimler.sechub.docgen.reflections.ReflectionsExampleClass2.field1",sortedSet);
-        assertFound("private java.lang.String com.daimler.sechub.docgen.reflections.ReflectionsExampleClass2.field2",sortedSet);
+        assertFound("private java.lang.String com.daimler.sechub.docgen.reflections.ReflectionsExampleClass1.field1", sortedSet);
+        assertFound("private java.lang.String com.daimler.sechub.docgen.reflections.ReflectionsExampleClass1.field2", sortedSet);
+        assertFound("private java.lang.String com.daimler.sechub.docgen.reflections.ReflectionsExampleClass2.field1", sortedSet);
+        assertFound("private java.lang.String com.daimler.sechub.docgen.reflections.ReflectionsExampleClass2.field2", sortedSet);
 
     }
-    
+
     @Test
     public void getMethodsAnnotatedWith() {
 
@@ -102,13 +104,13 @@ public class ReflectionsTest {
             sortedSet.add(method.toString());
         }
 
-        assertFound("public void com.daimler.sechub.docgen.reflections.ReflectionsExampleClass1.method1()",sortedSet);
-        assertFound("public void com.daimler.sechub.docgen.reflections.ReflectionsExampleClass1.method2()",sortedSet);
-        assertFound("public void com.daimler.sechub.docgen.reflections.ReflectionsExampleClass2.method1()",sortedSet);
-        assertFound("public void com.daimler.sechub.docgen.reflections.ReflectionsExampleClass2.method2()",sortedSet);
+        assertFound("public void com.daimler.sechub.docgen.reflections.ReflectionsExampleClass1.method1()", sortedSet);
+        assertFound("public void com.daimler.sechub.docgen.reflections.ReflectionsExampleClass1.method2()", sortedSet);
+        assertFound("public void com.daimler.sechub.docgen.reflections.ReflectionsExampleClass2.method1()", sortedSet);
+        assertFound("public void com.daimler.sechub.docgen.reflections.ReflectionsExampleClass2.method2()", sortedSet);
 
     }
-    
+
     @Test
     public void getTypesAnnotatedWith() {
 
@@ -124,11 +126,11 @@ public class ReflectionsTest {
             sortedSet.add(clazz.toString());
         }
 
-        assertFound("class com.daimler.sechub.docgen.reflections.ReflectionsExampleClass1",sortedSet);
-        assertFound("class com.daimler.sechub.docgen.reflections.ReflectionsExampleClass2",sortedSet);
+        assertFound("class com.daimler.sechub.docgen.reflections.ReflectionsExampleClass1", sortedSet);
+        assertFound("class com.daimler.sechub.docgen.reflections.ReflectionsExampleClass2", sortedSet);
 
     }
-    
+
     @Test
     public void getSubTypesOf_interface() {
 
@@ -142,12 +144,12 @@ public class ReflectionsTest {
         assertTrue(found.contains(ReflectionsExampleClass1.class));
         assertTrue(found.contains(ReflectionsExampleClass2.class));
     }
-    
+
     private void assertFound(String data, Set<String> set) {
         if (!set.contains(data)) {
             StringBuilder sb = new StringBuilder();
             sb.append("Did not find: ").append(data).append(" but:\n");
-            for (String str: set) {
+            for (String str : set) {
                 sb.append(" - ").append(str).append("\n");
             }
             System.out.println(sb.toString());

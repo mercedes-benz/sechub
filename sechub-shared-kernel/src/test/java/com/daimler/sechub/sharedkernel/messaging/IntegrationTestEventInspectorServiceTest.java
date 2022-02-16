@@ -44,7 +44,7 @@ public class IntegrationTestEventInspectorServiceTest {
     @After
     public void after() {
         if (IntegrationTestEventInspectorService.LOG instanceof ch.qos.logback.classic.Logger) {
-            ((ch.qos.logback.classic.Logger)IntegrationTestEventInspectorService.LOG).setLevel(Level.DEBUG); 
+            ((ch.qos.logback.classic.Logger) IntegrationTestEventInspectorService.LOG).setLevel(Level.DEBUG);
         }
     }
 
@@ -139,7 +139,7 @@ public class IntegrationTestEventInspectorServiceTest {
     /**
      * Simulation to check if stacktrace caller identification works - only
      * necessary for sender
-     * 
+     *
      * @author Albert Tregnaghi
      *
      */

@@ -14,7 +14,7 @@ public class PDSLocalDateTimeSerializer extends StdSerializer<LocalDateTime> {
 
     private static final long serialVersionUID = 1L;
 
-    public PDSLocalDateTimeSerializer(){
+    public PDSLocalDateTimeSerializer() {
         super(LocalDateTime.class);
     }
 

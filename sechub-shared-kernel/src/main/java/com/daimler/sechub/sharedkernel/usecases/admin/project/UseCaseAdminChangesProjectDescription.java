@@ -10,6 +10,7 @@ import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseDefinition;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseGroup;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
+
 /* @formatter:off */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
@@ -17,10 +18,10 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 		id = UseCaseIdentifier.UC_ADMIN_CHANGES_PROJECT_DESCRIPTION,
 		apiName = "adminChangesProjectDescription",
 		group = UseCaseGroup.PROJECT_ADMINISTRATION,
-		title = "Admin changes project description", 
+		title = "Admin changes project description",
 		description = "An administrator changes the project description")
 public @interface UseCaseAdminChangesProjectDescription {
-	
+
 	Step value();
 }
 /* @formatter:on */

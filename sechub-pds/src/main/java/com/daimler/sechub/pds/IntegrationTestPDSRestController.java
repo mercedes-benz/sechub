@@ -31,34 +31,34 @@ public class IntegrationTestPDSRestController {
 
     @Autowired
     IntegrationTestPDSStorageInfoCollector storageInfoCollector;
-    
+
     @Autowired
     private ConfigurableApplicationContext context;
-    
+
     @RequestMapping(path = PDSAPIConstants.API_ANONYMOUS + "integrationtest/alive", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     public void isAlive() {
         LOG.info("Integration test pds check for alive called...");
     }
 
-    @RequestMapping(path = PDSAPIConstants.API_ANONYMOUS + "integrationtest/shutdown", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @RequestMapping(path = PDSAPIConstants.API_ANONYMOUS + "integrationtest/shutdown", method = RequestMethod.GET, produces = {
+            MediaType.APPLICATION_JSON_VALUE })
     public void shutdownServer() {
         LOG.info("Integration test server shutdown initiated by closing context...");
         context.close();
     }
 
-    
     @RequestMapping(path = PDSAPIConstants.API_ANONYMOUS + "integrationtest/log/info", method = RequestMethod.POST, produces = {
             MediaType.APPLICATION_JSON_VALUE })
     public void logInfo(@RequestBody String text) {
         LOG.info("FROM INTEGRATION-TEST:{}", text);
     }
 
-
-    @RequestMapping(path = PDSAPIConstants.API_ANONYMOUS + "integrationtest/storage/{jobUUID}/path", method = RequestMethod.GET, produces = { MediaType.TEXT_PLAIN_VALUE})
+    @RequestMapping(path = PDSAPIConstants.API_ANONYMOUS + "integrationtest/storage/{jobUUID}/path", method = RequestMethod.GET, produces = {
+            MediaType.TEXT_PLAIN_VALUE })
     public String fetchStoragePathForJobUUID(@PathVariable("jobUUID") UUID jobUUID) {
-        String storagePathFound = storageInfoCollector.getFetchedJobUUIDStoragePathHistory().get(jobUUID);        
-        
-        LOG.info("Integration test checks storage path for job uuid:{} - result:{}",jobUUID,storagePathFound);
+        String storagePathFound = storageInfoCollector.getFetchedJobUUIDStoragePathHistory().get(jobUUID);
+
+        LOG.info("Integration test checks storage path for job uuid:{} - result:{}", jobUUID, storagePathFound);
         return storagePathFound;
     }
 

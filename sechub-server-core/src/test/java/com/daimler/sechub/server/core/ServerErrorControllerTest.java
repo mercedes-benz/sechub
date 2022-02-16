@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 class ServerErrorControllerTest {
 
     private static final String TEST_ERROR_MESSAGE = "my SecHub error message";
-    
+
     private HttpServletResponse response;
     private HttpServletRequest request;
     private ServerErrorController controllerToTest;

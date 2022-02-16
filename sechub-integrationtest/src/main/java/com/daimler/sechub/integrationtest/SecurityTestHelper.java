@@ -307,10 +307,10 @@ public class SecurityTestHelper {
         }
         return sb.toString();
     }
-    
+
     public void sendCurlRequest(String url, String customRequestmethod) throws Exception {
         List<String> commands = new ArrayList<>();
-        commands.add("./"+SEND_CURL_REQUEST_SHELLSCRIPT);
+        commands.add("./" + SEND_CURL_REQUEST_SHELLSCRIPT);
         commands.add(url);
         commands.add(customRequestmethod);
 
@@ -318,11 +318,11 @@ public class SecurityTestHelper {
         Process process = pb.start();
         boolean exited = process.waitFor(10, TimeUnit.SECONDS);
         if (!exited) {
-            throw new IllegalStateException("Was not able to wait for "+SEND_CURL_REQUEST_SHELLSCRIPT+" result");
+            throw new IllegalStateException("Was not able to wait for " + SEND_CURL_REQUEST_SHELLSCRIPT + " result");
         }
         int exitCode = process.exitValue();
         if (exitCode != 0) {
-            throw new IllegalStateException("Was not able to execute `"+SEND_CURL_REQUEST_SHELLSCRIPT+"`, exit code was:"+exitCode);
+            throw new IllegalStateException("Was not able to execute `" + SEND_CURL_REQUEST_SHELLSCRIPT + "`, exit code was:" + exitCode);
         }
 
     }
@@ -333,7 +333,7 @@ public class SecurityTestHelper {
             return;
         }
         List<String> commands = new ArrayList<>();
-        commands.add("./"+CIPHERTEST_SHELLSCRIPT);
+        commands.add("./" + CIPHERTEST_SHELLSCRIPT);
         commands.add("localhost:" + testURL.getPort());
         commands.add(targetType.id);
 
@@ -347,19 +347,19 @@ public class SecurityTestHelper {
         Process process = pb.start();
         boolean exited = process.waitFor(10, TimeUnit.SECONDS);
         if (!exited) {
-            throw new IllegalStateException("Was not able to wait for "+CIPHERTEST_SHELLSCRIPT+" result");
+            throw new IllegalStateException("Was not able to wait for " + CIPHERTEST_SHELLSCRIPT + " result");
         }
         int exitCode = process.exitValue();
         if (exitCode == 3) {
             throw new IllegalStateException("No openssl installed at your machine - cannot test ciphers!");
         } else if (exitCode != 0) {
-            String message = "`"+CIPHERTEST_SHELLSCRIPT+"` script call failed with unexpected exit code:" + exitCode;
+            String message = "`" + CIPHERTEST_SHELLSCRIPT + "` script call failed with unexpected exit code:" + exitCode;
             if (TestUtil.isWindows()) {
                 /* @formatter:off */
                 message += "\n"
                         + "HINT: You are using windows and this test needs bash + open ssl\n"
                         + "- bash executeable must be inside your PATH variable so it can be called!\n"
-                        + "- you also need a openssl installation\n" 
+                        + "- you also need a openssl installation\n"
                         + "> Proposal: Install gitbash for windows";
                 /* @formatter:on */
             }

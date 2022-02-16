@@ -58,7 +58,7 @@ public abstract class AbstractUIAction extends AbstractAction {
 
     /**
      * SecHub uses always lower cased identifier - this method is a helper.
-     * 
+     *
      * @param id
      * @return lower cased trimmed id - or empty string when given id is null
      */
@@ -116,7 +116,7 @@ public abstract class AbstractUIAction extends AbstractAction {
 
     /**
      * Output given text - but only when no errors occurred on action call
-     * 
+     *
      * @param text
      */
     protected void outputAsTextOnSuccess(String text) {
@@ -128,7 +128,7 @@ public abstract class AbstractUIAction extends AbstractAction {
 
     /**
      * Output given text - no matter of an error has happened or not
-     * 
+     *
      * @param text
      */
     protected void output(String text) {
@@ -139,7 +139,7 @@ public abstract class AbstractUIAction extends AbstractAction {
 
     /**
      * Output given text - no matter of an error has happened or not
-     * 
+     *
      * @param text
      */
     protected void error(String text) {
@@ -159,7 +159,7 @@ public abstract class AbstractUIAction extends AbstractAction {
     /**
      * Shows an input dialog for user (one liner). Default values for given
      * identifier will be shown - and always be reused. NO caching!
-     * 
+     *
      * @param message
      * @param identifier
      * @return
@@ -171,7 +171,7 @@ public abstract class AbstractUIAction extends AbstractAction {
 
     /**
      * Shows an input dialog for user (one liner).
-     * 
+     *
      * @param message
      * @return
      */
@@ -182,7 +182,7 @@ public abstract class AbstractUIAction extends AbstractAction {
     /**
      * Shows an input dialog for user (one liner). Last entered values for given
      * identifier will be shown
-     * 
+     *
      * @param message
      * @param identifier
      * @return
@@ -199,7 +199,7 @@ public abstract class AbstractUIAction extends AbstractAction {
     /**
      * Shows an password dialog for user (one liner). Last entered values for given
      * identifier will be used when nothing entered
-     * 
+     *
      * @param message
      * @param identifier
      * @return
@@ -215,7 +215,7 @@ public abstract class AbstractUIAction extends AbstractAction {
 
     /**
      * Shows an input dialog for user (multi line) and sets given text as content
-     * 
+     *
      * @param title
      * @param text
      * @return
@@ -228,7 +228,7 @@ public abstract class AbstractUIAction extends AbstractAction {
     /**
      * Shows an input dialog for user (multi line). Last entered values for given
      * identifier will be shown
-     * 
+     *
      * @param title
      * @param identifier
      * @return
@@ -249,7 +249,7 @@ public abstract class AbstractUIAction extends AbstractAction {
     /**
      * Maybe we have some actions where override shall not be possible - if so
      * override the method and return false
-     * 
+     *
      * @return <code>true</code> (default) when this action confirmations can be
      *         disabled by system property
      */
@@ -270,7 +270,7 @@ public abstract class AbstractUIAction extends AbstractAction {
 
     /**
      * Executes a SecHub action and results are shown in developer admin UI
-     * 
+     *
      * @param e
      * @throws Exception
      */

@@ -11,17 +11,16 @@ import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 
 public class GetServerInfoScenario3IntTest {
 
-	@Rule
-	public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario3.class);
+    @Rule
+    public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario3.class);
 
-	/* +-----------------------------------------------------------------------+ */
-	/* +............................ Get server version .......................+ */
-	/* +-----------------------------------------------------------------------+ */
-	@Test
-	public void get_server_version_normal_user_not_possible() {
-		/* execute */
-		expectHttpFailure(()->as(Scenario3.USER_1).getServerVersion(), HttpStatus.FORBIDDEN);
-	}
-
+    /* +-----------------------------------------------------------------------+ */
+    /* +............................ Get server version .......................+ */
+    /* +-----------------------------------------------------------------------+ */
+    @Test
+    public void get_server_version_normal_user_not_possible() {
+        /* execute */
+        expectHttpFailure(() -> as(Scenario3.USER_1).getServerVersion(), HttpStatus.FORBIDDEN);
+    }
 
 }

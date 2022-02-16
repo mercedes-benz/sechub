@@ -7,7 +7,7 @@ import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 
 /**
  * A default product executor configuration info
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

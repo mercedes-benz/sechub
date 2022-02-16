@@ -14,7 +14,7 @@ public abstract class AbstractProductResultImporter implements ProductResultImpo
     /**
      * Creates an import support which helps to make some fast standard check if
      * import is possible
-     * 
+     *
      * @return import support
      */
     protected abstract ImportSupport createImportSupport();
@@ -24,11 +24,10 @@ public abstract class AbstractProductResultImporter implements ProductResultImpo
     }
 
     /**
-     * The default implementation does only use the import support to
-     * check if import is possible or not. If this is not enough for a 100% check
-     * please override this method.<br>
-     * <h3>Originally the interface describes:</h3>
-     * {@inheritDoc}
+     * The default implementation does only use the import support to check if
+     * import is possible or not. If this is not enough for a 100% check please
+     * override this method.<br>
+     * <h3>Originally the interface describes:</h3> {@inheritDoc}
      */
     public ProductImportAbility isAbleToImportForProduct(ImportParameter param) {
         return importSupport.isAbleToImport(param);

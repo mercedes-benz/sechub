@@ -32,19 +32,19 @@ import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
  */
 public class SecHubAdapterOptionsBuilderStrategy implements AdapterConfigurationStrategy {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SecHubAdapterOptionsBuilderStrategy.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SecHubAdapterOptionsBuilderStrategy.class);
 
-	private SecHubExecutionContext context;
-	private ScanType scanType;
+    private SecHubExecutionContext context;
+    private ScanType scanType;
 
-	public SecHubAdapterOptionsBuilderStrategy(SecHubExecutionContext context, ScanType scanType) {
-		this.context = context;
-		this.scanType = scanType;
-	}
+    public SecHubAdapterOptionsBuilderStrategy(SecHubExecutionContext context, ScanType scanType) {
+        this.context = context;
+        this.scanType = scanType;
+    }
 
-	@Override
-	public <B extends AbstractAdapterConfigBuilder<B, C>, C extends AdapterConfig> void configure(B configBuilder) {
-		/* @formatter:off */
+    @Override
+    public <B extends AbstractAdapterConfigBuilder<B, C>, C extends AdapterConfig> void configure(B configBuilder) {
+        /* @formatter:off */
 		String mockDataResultLowerCased = fetchMockConfigurationResultLowerCased();
 		if (mockDataResultLowerCased!=null) {
 		configBuilder.
@@ -53,32 +53,32 @@ public class SecHubAdapterOptionsBuilderStrategy implements AdapterConfiguration
 		}
 		/* @formatter:on */
 
-	}
+    }
 
-	private String fetchMockConfigurationResultLowerCased() {
-		String mockConfigurationResult = null;
-		ScanProjectMockDataConfiguration mockConfiguration = context.getData(ScanKey.PROJECT_MOCKDATA_CONFIGURATION);
-		Optional<ScanMockData> mockData = Optional.empty();
-		if (mockConfiguration != null) {
-			switch (scanType) {
-			case CODE_SCAN:
-				mockData = mockConfiguration.getCodeScan();
-				break;
-			case WEB_SCAN:
-				mockData = mockConfiguration.getWebScan();
-				break;
-			case INFRA_SCAN:
-				mockData = mockConfiguration.getInfraScan();
-				break;
-			default:
-				LOG.error("Cannot fetch mock configuration result for scan type:'{}'", scanType);
-			}
-			if (mockData.isPresent()) {
-				ScanMockData scanMockData = mockData.get();
-				mockConfigurationResult = scanMockData.getResult().name().toLowerCase();
-			}
-		}
-		return mockConfigurationResult;
-	}
+    private String fetchMockConfigurationResultLowerCased() {
+        String mockConfigurationResult = null;
+        ScanProjectMockDataConfiguration mockConfiguration = context.getData(ScanKey.PROJECT_MOCKDATA_CONFIGURATION);
+        Optional<ScanMockData> mockData = Optional.empty();
+        if (mockConfiguration != null) {
+            switch (scanType) {
+            case CODE_SCAN:
+                mockData = mockConfiguration.getCodeScan();
+                break;
+            case WEB_SCAN:
+                mockData = mockConfiguration.getWebScan();
+                break;
+            case INFRA_SCAN:
+                mockData = mockConfiguration.getInfraScan();
+                break;
+            default:
+                LOG.error("Cannot fetch mock configuration result for scan type:'{}'", scanType);
+            }
+            if (mockData.isPresent()) {
+                ScanMockData scanMockData = mockData.get();
+                mockConfigurationResult = scanMockData.getResult().name().toLowerCase();
+            }
+        }
+        return mockConfigurationResult;
+    }
 
 }

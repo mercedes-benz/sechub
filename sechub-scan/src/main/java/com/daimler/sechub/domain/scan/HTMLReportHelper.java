@@ -23,25 +23,25 @@ public class HTMLReportHelper {
     public boolean hasDescription(SecHubFinding finding) {
         return SimpleStringUtils.isNotEmpty(getDescription(finding));
     }
-    
+
     public boolean hasSolution(SecHubFinding finding) {
         return SimpleStringUtils.isNotEmpty(getSolution(finding));
     }
-    
+
     public String getDescription(SecHubFinding finding) {
-        if (finding==null ) {
+        if (finding == null) {
             return EMPTY_STRING;
         }
         return finding.getDescription();
     }
-    
+
     public String getSolution(SecHubFinding finding) {
-        if (finding==null ) {
+        if (finding == null) {
             return EMPTY_STRING;
         }
         return finding.getSolution();
     }
-    
+
     public boolean hasEvidenceStartLine(SecHubReportWebAttack attack) {
         return getEvidenceStartLine(attack) >= 0;
     }

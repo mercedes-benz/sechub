@@ -33,14 +33,14 @@ public class UpdateProductExecutorConfigService {
 
     @Autowired
     ProductExecutorConfigValidation validation;
-    
+
     @Autowired
     AuditLogService auditLogService;
 
     /* @formatter:off */
     @UseCaseAdminUpdatesExecutorConfig(
-            @Step(number = 2, 
-            name = "Service call", 
+            @Step(number = 2,
+            name = "Service call",
             description = "Service updates existing executor configuration"))
     /* @formatter:on */
     public UUID updateProductExecutorSetup(UUID uuid, ProductExecutorConfig configFromUser) {
@@ -48,21 +48,22 @@ public class UpdateProductExecutorConfigService {
 
         auditLogService.log("Wants to update product execution configuration setup for executor:{}", uuid);
         Optional<ProductExecutorConfig> opt = repository.findById(uuid);
-        if (! opt.isPresent()) {
-            throw new NotFoundException("No config found with uuid:"+uuid);
+        if (!opt.isPresent()) {
+            throw new NotFoundException("No config found with uuid:" + uuid);
         }
 
         ProductExecutorConfig stored = opt.get();
 
-        stored.name=configFromUser.getName();
-        stored.executorVersion=configFromUser.getExecutorVersion();
-        stored.productIdentifier=configFromUser.getProductIdentifier();
-        stored.enabled=configFromUser.getEnabled();
-        stored.setup=configFromUser.getSetup(); // full replacement of setup - is stored in DB as JSON string
+        stored.name = configFromUser.getName();
+        stored.executorVersion = configFromUser.getExecutorVersion();
+        stored.productIdentifier = configFromUser.getProductIdentifier();
+        stored.enabled = configFromUser.getEnabled();
+        stored.setup = configFromUser.getSetup(); // full replacement of setup - is stored in DB as JSON string
 
         repository.save(stored);
-        
-        LOG.info("Updated product execution configuration setup {},name='{}', enabled={} for executor:{} V{}", uuid, stored.getName(), stored.getEnabled(), stored.getProductIdentifier(), stored.getExecutorVersion());
+
+        LOG.info("Updated product execution configuration setup {},name='{}', enabled={} for executor:{} V{}", uuid, stored.getName(), stored.getEnabled(),
+                stored.getProductIdentifier(), stored.getExecutorVersion());
 
         return uuid;
 

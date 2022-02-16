@@ -33,13 +33,13 @@ public class PDSMonitoringTestDataUtil {
         map.put(PDSJobStatusState.READY_TO_START, JOB_STATUS_READYTOSTART);
         map.put(PDSJobStatusState.RUNNING, JOB_STATUS_RUNNING);
         map.put(PDSJobStatusState.DONE, JOB_STATUS_DONE);
-        
+
         monitoringToTest.setJobs(map);
         PDSClusterMember member1 = new PDSClusterMember();
         member1.setHostname(MEMBER1_HOSTNAME);
         member1.setIp(MEMBER1_IP);
         member1.setExecutionState(new PDSExecutionStatus());
-        
+
         PDSClusterMember member2 = new PDSClusterMember();
         member2.setHostname(MEMBER2_HOSTNAME);
         member2.setIp(MEMBER2_IP);
@@ -50,12 +50,12 @@ public class PDSMonitoringTestDataUtil {
         job2a.setOwner(MEMBER2_JOBA_OWNER);
         job2a.setServerId(SERVER_ID);
         job2a.setState(PDSJobStatusState.RUNNING);
-        entry2a.state=job2a.getState();
-        entry2a.created=job2a.getCreated();
-        entry2a.started=job2a.getStarted();
-        
+        entry2a.state = job2a.getState();
+        entry2a.created = job2a.getCreated();
+        entry2a.started = job2a.getStarted();
+
         member2.getExecutionState().entries.add(entry2a);
-        
+
         monitoringToTest.getMembers().add(member1);
         monitoringToTest.getMembers().add(member2);
         return monitoringToTest;

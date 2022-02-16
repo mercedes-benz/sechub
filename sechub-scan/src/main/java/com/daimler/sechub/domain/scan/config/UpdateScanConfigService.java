@@ -22,33 +22,36 @@ import com.daimler.sechub.sharedkernel.validation.MappingIdValidation;
 public class UpdateScanConfigService {
 
     private static final Logger LOG = LoggerFactory.getLogger(UpdateScanConfigService.class);
-    
+
     @Autowired
     ScanMappingRepository repository;
 
     @Autowired
     ScanConfigService scanConfigService;
-    
+
     @Autowired
     MappingIdValidation mappingIdValidation;
 
     @Autowired
     MappingDataValidation mappingDataValidation;
-    
+
     @Autowired
     @Lazy
     DomainMessageService eventBus;
 
-    @UseCaseAdmiUpdatesMappingConfiguration(@Step(number=4,name="Service call",description="Updates scan mapping in DB"))
+    @UseCaseAdmiUpdatesMappingConfiguration(@Step(number = 4, name = "Service call", description = "Updates scan mapping in DB"))
     public void updateScanMapping(String mappingId, MappingData mappingData) {
         assertValid(mappingIdValidation.validate(mappingId), "Mapping ID invalid");
         assertValid(mappingDataValidation.validate(mappingData), "Mapping Data invalid");
 
         updateInDatabase(mappingId, mappingData);
-        
-        /* that's all - refresh is done by ScanConfigRefreshTriggerService - but only when something has changed ...*/
+
+        /*
+         * that's all - refresh is done by ScanConfigRefreshTriggerService - but only
+         * when something has changed ...
+         */
     }
-    
+
     private void updateInDatabase(String mappingId, MappingData mappingData) {
         Optional<ScanMapping> mapping = repository.findById(mappingId);
         ScanMapping mappingObj = null;
@@ -59,10 +62,10 @@ public class UpdateScanConfigService {
         }
         String json = mappingData.toJSON();
         mappingObj.setData(json);
-        
+
         repository.save(mappingObj);
         LOG.info("Updated scan mapping in database. Id:{} ws updated to:{}", mappingId, json);
-        
+
     }
 
 }

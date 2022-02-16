@@ -11,22 +11,21 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @Service
 public class ScanAccessCountService {
 
-	@Autowired
-	ScanAccessRepository repository;
+    @Autowired
+    ScanAccessRepository repository;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Autowired
+    UserInputAssertion assertion;
 
-	public long countProjectAccess(String projectId) {
-		assertion.isValidProjectId(projectId);
+    public long countProjectAccess(String projectId) {
+        assertion.isValidProjectId(projectId);
 
-		ScanAccess probe = new ScanAccess();
-		probe.key = new ProjectAccessCompositeKey(null, projectId);
-		Example<ScanAccess> example = Example.of(probe);
+        ScanAccess probe = new ScanAccess();
+        probe.key = new ProjectAccessCompositeKey(null, projectId);
+        Example<ScanAccess> example = Example.of(probe);
 
-		return repository.count(example);
+        return repository.count(example);
 
-	}
-
+    }
 
 }

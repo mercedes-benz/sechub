@@ -56,7 +56,8 @@ class ScanJobExecutor {
             /* wait for job runnable - except when canceled */
             while (canceableJobThread.isAlive()) {
                 try {
-                    LOG.debug("will wait max {} milliseconds before cancel checks - job thread is:{}", millisecondsToWaitBeforeCancelCheck, canceableJobThread.getName());
+                    LOG.debug("will wait max {} milliseconds before cancel checks - job thread is:{}", millisecondsToWaitBeforeCancelCheck,
+                            canceableJobThread.getName());
                     /* we simply join scan thread until we do next cancel check */
                     canceableJobThread.join(millisecondsToWaitBeforeCancelCheck);
 
@@ -69,9 +70,9 @@ class ScanJobExecutor {
             }
             SecHubExecutionException exception = canceableJobRunner.exception;
             handleErrors(exception);
-            
-        }catch(Exception e) {
-            /* should never happen, because all handled by runnable, but...*/
+
+        } catch (Exception e) {
+            /* should never happen, because all handled by runnable, but... */
             handleErrors(new SecHubExecutionException("Scan failed - but not handled by runnable.", e));
         } finally {
             this.scanService.scanJobListener.ended(sechubJobUUID);
@@ -98,7 +99,7 @@ class ScanJobExecutor {
             Abandonable abandonable = (Abandonable) progress;
             if (abandonable.isAbandoned()) {
                 LOG.debug("Done abandoble check- IS abandonded");
-                throw new SecHubExecutionAbandonedException(context,"A failure happend, but already abandoned job", exception);
+                throw new SecHubExecutionAbandonedException(context, "A failure happend, but already abandoned job", exception);
             }
             LOG.debug("Done abandoble check- not abandonded");
 
@@ -117,12 +118,13 @@ class ScanJobExecutor {
         LOG.info("Check if job {} shall be abandoned", sechubJobUUID);
         if (abandoble.isAbandoned()) {
             LOG.info("Must abandon {}", sechubJobUUID);
-            throw new SecHubExecutionAbandonedException(context,"Abandonded job " + sechubJobUUID + " because canceled", null);
+            throw new SecHubExecutionAbandonedException(context, "Abandonded job " + sechubJobUUID + " because canceled", null);
         }
     }
 
     /**
      * This class is the primary part for triggering product exection
+     *
      * @author Albert Tregnaghi
      *
      */
@@ -131,13 +133,14 @@ class ScanJobExecutor {
         private SecHubExecutionException exception;
         public Thread executorThread;
         private String sechubJobUUID;
-        
+
         private CanceableScanJobRunnable(String sechubJobUUID) {
-            this.sechubJobUUID=sechubJobUUID;
+            this.sechubJobUUID = sechubJobUUID;
         }
+
         @Override
         public void run() {
-            /* runs in own thread so we set job uuid to MDC here !*/
+            /* runs in own thread so we set job uuid to MDC here ! */
             try {
                 MDC.clear();
                 MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, sechubJobUUID);
@@ -148,7 +151,7 @@ class ScanJobExecutor {
 
             } catch (SecHubExecutionException e) {
                 this.exception = e;
-            }finally {
+            } finally {
                 MDC.clear();
             }
         }

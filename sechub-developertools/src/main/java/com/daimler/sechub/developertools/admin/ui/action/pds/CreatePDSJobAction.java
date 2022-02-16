@@ -28,31 +28,31 @@ public class CreatePDSJobAction extends AbstractPDSAction {
         if (!optParam.isPresent()) {
             output("canceled params");
             return;
-            
+
         }
         Map<String, String> params = new LinkedHashMap<>();
         String paramsAsString = optParam.get();
-        if (paramsAsString!=null) {
+        if (paramsAsString != null) {
             String[] keyValues = paramsAsString.split(";");
-            for (String keyValue: keyValues) {
-                String[] splitted =  keyValue.split("=");
-                
+            for (String keyValue : keyValues) {
+                String[] splitted = keyValue.split("=");
+
                 String key = splitted[0];
                 String value = splitted[1];
-                
+
                 params.put(key, value);
             }
         }
-        output("Params parsed into:\n"+params);
-        
+        output("Params parsed into:\n" + params);
+
         Optional<String> sechubJobUUID = getUserInput("SecHub job uuid", InputCacheIdentifier.PDS_SECHUB_JOBUUID);
         if (!sechubJobUUID.isPresent()) {
             output("canceled sechu jobuuid");
             return;
         }
-        
+
         String result = pds.createPDSJob(UUID.fromString(sechubJobUUID.get()), productId.get(), params);
-        
+
         outputAsBeautifiedJSONOnSuccess(result);
 
     }

@@ -6,9 +6,9 @@ import static com.daimler.sechub.domain.scan.product.config.ProductExecutionProf
 import static com.daimler.sechub.domain.scan.product.config.ProductExecutionProfile.PROPERTY_ENABLED;
 import static com.daimler.sechub.domain.scan.product.config.ProductExecutionProfile.PROPERTY_ID;
 import static com.daimler.sechub.domain.scan.product.config.ProductExecutionProfile.PROPERTY_PROJECT_IDS;
-import static com.daimler.sechub.test.TestURLBuilder.https;
 import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.PROFILE_ID;
 import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.PROJECT_ID;
+import static com.daimler.sechub.test.TestURLBuilder.https;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.Mockito.when;
@@ -62,12 +62,12 @@ import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecur
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminAssignsExecutionProfileToProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminCreatesExecutionProfile;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminDeletesExecutionProfile;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesExecutionProfile;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesExecutionProfileList;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminUnassignsExecutionProfileFromProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminUpdatesExecutionProfile;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminCreatesExecutionProfile;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
 import com.daimler.sechub.test.executionprofile.TestExecutionProfile;
@@ -76,56 +76,56 @@ import com.daimler.sechub.test.executionprofile.TestExecutionProfileListEntry;
 import com.daimler.sechub.test.executorconfig.TestExecutorConfig;
 import com.daimler.sechub.test.executorconfig.TestExecutorSetupJobParam;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
+
 @RunWith(SpringRunner.class)
 @WebMvcTest(ProductExecutionProfileRestController.class)
-@ContextConfiguration(classes = { ProductExecutionProfileRestController.class,
-		ProductExecutionProfileRestControllerRestDocTest.SimpleTestConfiguration.class })
+@ContextConfiguration(classes = { ProductExecutionProfileRestController.class, ProductExecutionProfileRestControllerRestDocTest.SimpleTestConfiguration.class })
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
-@ActiveProfiles({Profiles.TEST, Profiles.ADMIN_ACCESS})
-@AutoConfigureRestDocs(uriScheme="https",uriHost=ExampleConstants.URI_SECHUB_SERVER,uriPort=443)
+@ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
+@AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 public class ProductExecutionProfileRestControllerRestDocTest {
-    
-	private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
-	
-	@Autowired
-	private MockMvc mockMvc;
-	
-	@MockBean
-	private ProductExecutorConfigRepository repo;
 
-	@MockBean
-	ProductExecutorConfigValidation validation;
-	   
-	@MockBean
-	CreateProductExecutionProfileService createService;
-	
-	@MockBean
-	DeleteProductExecutionProfileService deleteService;
-	
-	@MockBean
+    private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private ProductExecutorConfigRepository repo;
+
+    @MockBean
+    ProductExecutorConfigValidation validation;
+
+    @MockBean
+    CreateProductExecutionProfileService createService;
+
+    @MockBean
+    DeleteProductExecutionProfileService deleteService;
+
+    @MockBean
     FetchProductExecutionProfileListService fetchListService;
 
-	@MockBean
+    @MockBean
     UpdateProductExecutionProfileService updateService;
 
-	@MockBean
+    @MockBean
     FetchProductExecutionProfileService fetchService;
-	
-	@MockBean
-	AuditLogService auditLogService;
 
-	@Test
-	@UseCaseRestDoc(useCase = UseCaseAdminCreatesExecutionProfile.class)
-	public void restdoc_admin_creates_profile() throws Exception {
+    @MockBean
+    AuditLogService auditLogService;
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdminCreatesExecutionProfile.class)
+    public void restdoc_admin_creates_profile() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminCreatesProductExecutionProfile(PROFILE_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminCreatesExecutionProfile.class;
 
-	    String profileId="new-profile-1";
-	    
-	    TestExecutionProfile profile = new TestExecutionProfile();
-	    profile.description="a short description for profile";
-	    profile.enabled=false;
+        String profileId = "new-profile-1";
+
+        TestExecutionProfile profile = new TestExecutionProfile();
+        profile.description = "a short description for profile";
+        profile.enabled = false;
 
         /* execute + test @formatter:off */
 	    this.mockMvc.perform(
@@ -155,28 +155,28 @@ public class ProductExecutionProfileRestControllerRestDocTest {
 	    			        ));
 
 	    /* @formatter:on */
-	}
-	
-	@Test
+    }
+
+    @Test
     @UseCaseRestDoc(useCase = UseCaseAdminUpdatesExecutionProfile.class)
     public void restdoc_admin_updates_profile() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminUpdatesProductExecutionProfile(PROFILE_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminUpdatesExecutionProfile.class;
-        
-	    String profileId="existing-profile-1";
-        
+
+        String profileId = "existing-profile-1";
+
         TestExecutionProfile profile = new TestExecutionProfile();
-        profile.description="changed description";
-        profile.enabled=true;
+        profile.description = "changed description";
+        profile.enabled = true;
         UUID randomUUID = UUID.randomUUID();
 
         TestExecutorConfig configFromUser = new TestExecutorConfig();
-        configFromUser.uuid=randomUUID;
-        
+        configFromUser.uuid = randomUUID;
+
         profile.configurations.add(configFromUser);
-        profile.projectIds=null;
-                
+        profile.projectIds = null;
+
         /* execute + test @formatter:off */
         this.mockMvc.perform(
                 put(apiEndpoint, profileId).
@@ -210,16 +210,16 @@ public class ProductExecutionProfileRestControllerRestDocTest {
 
         /* @formatter:on */
     }
-	
-	@Test
+
+    @Test
     @UseCaseRestDoc(useCase = UseCaseAdminAssignsExecutionProfileToProject.class)
     public void restdoc_admin_assigns_executionprofile_to_project() throws Exception {
         /* prepare */
-        String apiEndpoint = https(PORT_USED).buildAdminAddsProjectToExecutionProfile(PROFILE_ID.pathElement(),PROJECT_ID.pathElement());
+        String apiEndpoint = https(PORT_USED).buildAdminAddsProjectToExecutionProfile(PROFILE_ID.pathElement(), PROJECT_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminAssignsExecutionProfileToProject.class;
-        
-        String profileId="profile-1";
-        String projectId="project-1";
+
+        String profileId = "profile-1";
+        String projectId = "project-1";
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
@@ -243,17 +243,17 @@ public class ProductExecutionProfileRestControllerRestDocTest {
 
         /* @formatter:on */
     }
-	
-	@Test
+
+    @Test
     @UseCaseRestDoc(useCase = UseCaseAdminUnassignsExecutionProfileFromProject.class)
     public void restdoc_admin_unassigns_executionprofile_from_project() throws Exception {
         /* prepare */
-        String apiEndpoint = https(PORT_USED).buildAdminRemovesProjectFromExecutionProfile(PROFILE_ID.pathElement(),PROJECT_ID.pathElement());
+        String apiEndpoint = https(PORT_USED).buildAdminRemovesProjectFromExecutionProfile(PROFILE_ID.pathElement(), PROJECT_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminUnassignsExecutionProfileFromProject.class;
-        
-        String profileId="profile-1";
-        String projectId="project-1";
-                
+
+        String profileId = "profile-1";
+        String projectId = "project-1";
+
         /* execute + test @formatter:off */
         this.mockMvc.perform(
                 delete(apiEndpoint, profileId,projectId).
@@ -276,40 +276,41 @@ public class ProductExecutionProfileRestControllerRestDocTest {
 
         /* @formatter:on */
     }
-	
-	@Test
+
+    @Test
     @UseCaseRestDoc(useCase = UseCaseAdminFetchesExecutionProfile.class)
     public void restdoc_admin_fetches_profile() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminFetchesProductExecutionProfile(PROFILE_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminFetchesExecutionProfile.class;
-        
-        String profileId="existing-profile-1";
-        
+
+        String profileId = "existing-profile-1";
+
         TestExecutionProfile testprofile = new TestExecutionProfile();
-        testprofile.description="a description";
-        testprofile.enabled=true;
+        testprofile.description = "a description";
+        testprofile.enabled = true;
         UUID randomUUID = UUID.randomUUID();
 
         TestExecutorConfig configFromUser = new TestExecutorConfig();
-        configFromUser.enabled=false;
-        configFromUser.name="New name";
-        configFromUser.productIdentifier=ProductIdentifier.PDS_CODESCAN.name();
-        configFromUser.executorVersion=1;
-        configFromUser.setup.baseURL="https://product.example.com";
-        configFromUser.setup.credentials.user="env:EXAMPLE_USENAME";
-        configFromUser.setup.credentials.password="env:EXAMPLE_PASSWORD";
-        configFromUser.uuid=randomUUID;
-        
-        TestExecutorSetupJobParam param1 = new TestExecutorSetupJobParam("example.key1", "A value but changed. Remark: the other parameter (example.key2) has been removed by this call");
+        configFromUser.enabled = false;
+        configFromUser.name = "New name";
+        configFromUser.productIdentifier = ProductIdentifier.PDS_CODESCAN.name();
+        configFromUser.executorVersion = 1;
+        configFromUser.setup.baseURL = "https://product.example.com";
+        configFromUser.setup.credentials.user = "env:EXAMPLE_USENAME";
+        configFromUser.setup.credentials.password = "env:EXAMPLE_PASSWORD";
+        configFromUser.uuid = randomUUID;
+
+        TestExecutorSetupJobParam param1 = new TestExecutorSetupJobParam("example.key1",
+                "A value but changed. Remark: the other parameter (example.key2) has been removed by this call");
         configFromUser.setup.jobParameters.add(param1);
-        
+
         testprofile.configurations.add(configFromUser);
         testprofile.projectIds.add("project-1");
         testprofile.projectIds.add("project-2");
-        
+
         ProductExecutionProfile profile = JSONConverter.get().fromJSON(ProductExecutionProfile.class, JSONConverter.get().toJSON(testprofile));
-                
+
         when(fetchService.fetchProductExecutorConfig(profileId)).thenReturn(profile);
 
         /* execute + test @formatter:off */
@@ -350,16 +351,15 @@ public class ProductExecutionProfileRestControllerRestDocTest {
 
         /* @formatter:on */
     }
-    
-	
-	@Test
+
+    @Test
     @UseCaseRestDoc(useCase = UseCaseAdminDeletesExecutionProfile.class)
     public void restDoc_admin_deletes_profile() throws Exception {
-	    /* prepare */
+        /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminDeletesProductExecutionProfile(PROFILE_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminDeletesExecutionProfile.class;
-        
-	    /* execute + test @formatter:off */
+
+        /* execute + test @formatter:off */
 	    String profileId= "profile-to-delete-1";
 	    this.mockMvc.perform(
                 delete(apiEndpoint, profileId).
@@ -380,32 +380,31 @@ public class ProductExecutionProfileRestControllerRestDocTest {
                             ));
 
         /* @formatter:on */
-	}
-	
-	@Test
+    }
+
+    @Test
     @UseCaseRestDoc(useCase = UseCaseAdminFetchesExecutionProfileList.class)
     public void restDoc_admin_fetches_profiles_list() throws Exception {
-	    /* prepare */
+        /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminFetchesListOfProductExecutionProfiles();
         Class<? extends Annotation> useCase = UseCaseAdminFetchesExecutionProfileList.class;
-        
+
         TestExecutionProfileList profileList = new TestExecutionProfileList();
         TestExecutionProfileListEntry entry1 = new TestExecutionProfileListEntry();
-        entry1.description="A short decription for profile1";
-        entry1.id="profile1";
-        
+        entry1.description = "A short decription for profile1";
+        entry1.id = "profile1";
+
         TestExecutionProfileListEntry entry2 = new TestExecutionProfileListEntry();
-        entry2.description="A short decription for profile2";
-        entry2.id="profile2";
-        
+        entry2.description = "A short decription for profile2";
+        entry2.id = "profile2";
+
         profileList.executionProfiles.add(entry1);
         profileList.executionProfiles.add(entry2);
 
-        
-        ProductExecutionProfilesList list = JSONConverter.get().fromJSON(ProductExecutionProfilesList.class,JSONConverter.get().toJSON(profileList));
-        
+        ProductExecutionProfilesList list = JSONConverter.get().fromJSON(ProductExecutionProfilesList.class, JSONConverter.get().toJSON(profileList));
+
         when(fetchListService.fetchProductExecutionProfileList()).thenReturn(list);
-	    
+
         /* execute + test @formatter:off */
         this.mockMvc.perform(
                 get(apiEndpoint).
@@ -432,10 +431,10 @@ public class ProductExecutionProfileRestControllerRestDocTest {
         /* @formatter:on */
     }
 
-	@TestConfiguration
-	@Profile(Profiles.TEST)
-	@EnableAutoConfiguration
-	public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    @TestConfiguration
+    @Profile(Profiles.TEST)
+    @EnableAutoConfiguration
+    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
 
-	}
+    }
 }

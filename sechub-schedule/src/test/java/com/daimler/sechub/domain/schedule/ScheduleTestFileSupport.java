@@ -6,14 +6,14 @@ import com.daimler.sechub.test.TestFileSupport;
 
 @SechubTestComponent
 public class ScheduleTestFileSupport extends TestFileSupport {
-	private static final ScheduleTestFileSupport TESTFILE_SUPPORT = new ScheduleTestFileSupport();
+    private static final ScheduleTestFileSupport TESTFILE_SUPPORT = new ScheduleTestFileSupport();
 
-	public static ScheduleTestFileSupport getTestfileSupport() {
-		return TESTFILE_SUPPORT;
-	}
+    public static ScheduleTestFileSupport getTestfileSupport() {
+        return TESTFILE_SUPPORT;
+    }
 
-	ScheduleTestFileSupport() {
-		super("sechub-schedule/src/test/resources");
-	}
+    ScheduleTestFileSupport() {
+        super("sechub-schedule/src/test/resources");
+    }
 
 }

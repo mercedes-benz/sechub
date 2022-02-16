@@ -14,5 +14,4 @@ public interface PDSAdapterConfig extends AdapterConfig {
 
     String getPdsProductIdentifier();
 
-
 }

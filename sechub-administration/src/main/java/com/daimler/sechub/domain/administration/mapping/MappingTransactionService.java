@@ -12,11 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class MappingTransactionService {
     @Autowired
     MappingRepository repository;
-    
+
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Mapping saveMappingInOwnTransaction(Mapping mapping) {
         requireNonNull(mapping, "Mapping may not be null!");
         return repository.save(mapping);
     }
-    
+
 }

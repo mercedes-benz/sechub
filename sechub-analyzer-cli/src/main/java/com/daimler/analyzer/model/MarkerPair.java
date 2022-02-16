@@ -6,11 +6,11 @@ package com.daimler.analyzer.model;
  * <ul>
  * <li>start marker</li>
  * <li>end marker</li>
- * </ul> 
+ * </ul>
  *
  */
 public class MarkerPair implements DeepClonable<MarkerPair> {
-    
+
     private Marker start;
     private Marker end;
 

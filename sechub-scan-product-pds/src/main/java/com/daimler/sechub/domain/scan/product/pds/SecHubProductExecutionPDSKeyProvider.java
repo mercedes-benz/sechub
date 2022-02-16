@@ -9,7 +9,7 @@ import com.daimler.sechub.domain.scan.TargetType;
 /**
  * These providers/keys are used by sechub PDS product executors at runtime
  * while communicating with PDS servers.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

@@ -14,7 +14,7 @@ public class OnlyOneScanPerProjectAtSameTimeStrategy implements SchedulerStrateg
 
     @Autowired
     SecHubJobRepository jobRepository;
-    
+
     @Override
     public SchedulerStrategyId getSchedulerId() {
         return SchedulerStrategyId.OnlyOneScanPerProjectAtATime;
@@ -26,7 +26,7 @@ public class OnlyOneScanPerProjectAtSameTimeStrategy implements SchedulerStrateg
         if (!nextJob.isPresent()) {
             return null;
         }
-        
+
         return nextJob.get();
     }
 

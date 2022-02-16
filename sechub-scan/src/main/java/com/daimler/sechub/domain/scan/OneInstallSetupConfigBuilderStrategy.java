@@ -17,29 +17,29 @@ import com.daimler.sechub.adapter.AdapterConfigurationStrategy;
  * @param <B> builder
  * @param <C> configuration
  */
-public class OneInstallSetupConfigBuilderStrategy
-		implements AdapterConfigurationStrategy{
+public class OneInstallSetupConfigBuilderStrategy implements AdapterConfigurationStrategy {
 
-	private OneInstallSetup setup;
+    private OneInstallSetup setup;
 
-	/**
-	 * Creates strategy which will automatically setup
-	 * <ol>
-	 * <li>trustAllCertificates</li>
-	 * <li>user</li>
-	 * <li>apiToken</li>
-	 * <li>password</li>
-	 * <li>productBaseUrl</li>
-	 * </ol>
-	 * @param setup
-	 */
-	public OneInstallSetupConfigBuilderStrategy(OneInstallSetup setup) {
-		this.setup=setup;
-	}
+    /**
+     * Creates strategy which will automatically setup
+     * <ol>
+     * <li>trustAllCertificates</li>
+     * <li>user</li>
+     * <li>apiToken</li>
+     * <li>password</li>
+     * <li>productBaseUrl</li>
+     * </ol>
+     *
+     * @param setup
+     */
+    public OneInstallSetupConfigBuilderStrategy(OneInstallSetup setup) {
+        this.setup = setup;
+    }
 
-	@Override
-	public <B extends AbstractAdapterConfigBuilder<B, C>, C extends AdapterConfig> void configure(B configBuilder) {
-		/* @formatter:off */
+    @Override
+    public <B extends AbstractAdapterConfigBuilder<B, C>, C extends AdapterConfig> void configure(B configBuilder) {
+        /* @formatter:off */
 		configBuilder.
 			setTrustAllCertificates(setup.isHavingUntrustedCertificate()).
 			setUser(setup.getUserId()).
@@ -47,10 +47,6 @@ public class OneInstallSetupConfigBuilderStrategy
 			setProductBaseUrl(setup.getBaseURL());
 		/* @formatter:on */
 
-	}
-
-
-
-
+    }
 
 }

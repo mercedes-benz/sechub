@@ -24,40 +24,40 @@ import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 // https://docs.spring.io/spring-batch/trunk/reference/html/configureJob.html
 public class BatchConfiguration {
 
-	public static final String JOB_NAME_EXECUTE_SCAN = "executeScan";
+    public static final String JOB_NAME_EXECUTE_SCAN = "executeScan";
 
     @Autowired
-	public JobBuilderFactory jobBuilderFactory;
+    public JobBuilderFactory jobBuilderFactory;
 
-	@Autowired
-	public StepBuilderFactory stepBuilderFactory;
+    @Autowired
+    public StepBuilderFactory stepBuilderFactory;
 
-	@Autowired
-	public JobRepository jobRepository;
+    @Autowired
+    public JobRepository jobRepository;
 
-	@Autowired
-	@Lazy
-	private DomainMessageService eventBusService;
+    @Autowired
+    @Lazy
+    private DomainMessageService eventBusService;
 
-	@Autowired
-	private SecHubJobRepository secHubJobRepository;
+    @Autowired
+    private SecHubJobRepository secHubJobRepository;
 
-	@Autowired
-	private SecHubJobSafeUpdater secHubJobUpdater;
+    @Autowired
+    private SecHubJobSafeUpdater secHubJobUpdater;
 
-	@Bean
-	public AsyncJobLauncher createJobLauncher() {
-		AsyncJobLauncher launcher = new AsyncJobLauncher();
-		launcher.setJobRepository(jobRepository);
-		return launcher;
-	}
+    @Bean
+    public AsyncJobLauncher createJobLauncher() {
+        AsyncJobLauncher launcher = new AsyncJobLauncher();
+        launcher.setJobRepository(jobRepository);
+        return launcher;
+    }
 
-	@Bean
-	public Job executeScan() {
+    @Bean
+    public Job executeScan() {
 
-		BatchJobExecutionScope scope = new BatchJobExecutionScope();
+        BatchJobExecutionScope scope = new BatchJobExecutionScope();
 
-		/* @formatter:off */
+        /* @formatter:off */
 
     	return jobBuilderFactory.get(JOB_NAME_EXECUTE_SCAN).
     			incrementer(new RunIdIncrementer()).
@@ -66,51 +66,51 @@ public class BatchConfiguration {
                 flow(step1Execute(scope)).
                 end().
           build();
-                
-        /* @formatter:on */
-	}
 
-	/* +-----------------------------------------------------------------------+ */
-	/* +............................ STEPS ....................................+ */
-	/* +-----------------------------------------------------------------------+ */
-	@Bean
-	public Step step1Execute(BatchJobExecutionScope scope) {
-		/* @formatter:off */
+        /* @formatter:on */
+    }
+
+    /* +-----------------------------------------------------------------------+ */
+    /* +............................ STEPS ....................................+ */
+    /* +-----------------------------------------------------------------------+ */
+    @Bean
+    public Step step1Execute(BatchJobExecutionScope scope) {
+        /* @formatter:off */
         return stepBuilderFactory.get("step1Execute").
         		allowStartIfComplete(true).
         		tasklet(new ScanExecutionTasklet(scope)).
                 build();
         /* @formatter:on */
-	}
+    }
 
-	class BatchJobExecutionScope implements JobExecutionListener {
+    class BatchJobExecutionScope implements JobExecutionListener {
 
-		private JobExecution jobExecution;
+        private JobExecution jobExecution;
 
-		public JobExecution getJobExecution() {
-			return jobExecution;
-		}
+        public JobExecution getJobExecution() {
+            return jobExecution;
+        }
 
-		@Override
-		public void beforeJob(JobExecution jobExecution) {
-			this.jobExecution = jobExecution;
-		}
+        @Override
+        public void beforeJob(JobExecution jobExecution) {
+            this.jobExecution = jobExecution;
+        }
 
-		@Override
-		public void afterJob(JobExecution jobExecution) {
-		}
+        @Override
+        public void afterJob(JobExecution jobExecution) {
+        }
 
-		public DomainMessageService getEventBusService() {
-			return eventBusService;
-		}
+        public DomainMessageService getEventBusService() {
+            return eventBusService;
+        }
 
-		public SecHubJobRepository getSecHubJobRepository() {
-			return secHubJobRepository;
-		}
+        public SecHubJobRepository getSecHubJobRepository() {
+            return secHubJobRepository;
+        }
 
-		public SecHubJobSafeUpdater getSecHubJobUpdater() {
-			return secHubJobUpdater;
-		}
+        public SecHubJobSafeUpdater getSecHubJobUpdater() {
+            return secHubJobUpdater;
+        }
 
-	}
+    }
 }

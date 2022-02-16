@@ -18,7 +18,7 @@ import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 /**
  * This service executes all registered
  * {@link InfrastructureScanProductExecutor} instances and stores those data
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

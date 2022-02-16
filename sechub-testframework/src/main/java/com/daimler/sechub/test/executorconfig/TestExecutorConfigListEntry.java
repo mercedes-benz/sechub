@@ -5,14 +5,16 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class TestExecutorConfigListEntry {
-    
+
     public UUID uuid;
     public String name;
     public Boolean enabled;
+
     @Override
     public int hashCode() {
         return Objects.hash(uuid);
     }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)

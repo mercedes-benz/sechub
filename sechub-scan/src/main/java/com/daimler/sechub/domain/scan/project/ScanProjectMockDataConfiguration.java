@@ -14,78 +14,76 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonInclude(value = Include.NON_ABSENT)
 @MustBeKeptStable
 public class ScanProjectMockDataConfiguration implements JSONable<ScanProjectMockDataConfiguration> {
-	
-	private static final ScanProjectMockDataConfiguration CONVERTER = new ScanProjectMockDataConfiguration();
-	
-	public static final String PROPERTY_API_VERSION = "apiVersion";
-	public static final String PROPERTY_WEB_SCAN = "webScan";
-	public static final String PROPERTY_INFRA_SCAN = "infraScan";
-	public static final String PROPERTY_CODE_SCAN = "codeScan";
 
-	private String apiVersion;
-	private Optional<ScanMockData> codeScan = Optional.empty();
-	private Optional<ScanMockData> webScan = Optional.empty();
-	private Optional<ScanMockData> infraScan = Optional.empty();
+    private static final ScanProjectMockDataConfiguration CONVERTER = new ScanProjectMockDataConfiguration();
 
-	@Override
-	public Class<ScanProjectMockDataConfiguration> getJSONTargetClass() {
-		return ScanProjectMockDataConfiguration.class;
-	}
+    public static final String PROPERTY_API_VERSION = "apiVersion";
+    public static final String PROPERTY_WEB_SCAN = "webScan";
+    public static final String PROPERTY_INFRA_SCAN = "infraScan";
+    public static final String PROPERTY_CODE_SCAN = "codeScan";
 
-	public void setApiVersion(String apiVersion) {
-		this.apiVersion = apiVersion;
-	}
+    private String apiVersion;
+    private Optional<ScanMockData> codeScan = Optional.empty();
+    private Optional<ScanMockData> webScan = Optional.empty();
+    private Optional<ScanMockData> infraScan = Optional.empty();
 
-	public String getApiVersion() {
-		return apiVersion;
-	}
-	
-	public void setCodeScan(ScanMockData config) {
-		this.codeScan=Optional.ofNullable(config);
-	}
-	
-	public void setWebScan(ScanMockData config) {
-		this.webScan=Optional.ofNullable(config);
-	}
-	
-	public void setInfraScan(ScanMockData config) {
-		this.infraScan=Optional.ofNullable(config);
-	}
+    @Override
+    public Class<ScanProjectMockDataConfiguration> getJSONTargetClass() {
+        return ScanProjectMockDataConfiguration.class;
+    }
 
-	public Optional<ScanMockData> getCodeScan() {
-		return codeScan;
-	}
+    public void setApiVersion(String apiVersion) {
+        this.apiVersion = apiVersion;
+    }
 
-	public Optional<ScanMockData> getWebScan() {
-		return webScan;
-	}
+    public String getApiVersion() {
+        return apiVersion;
+    }
 
-	public Optional<ScanMockData> getInfraScan() {
-		return infraScan;
-	}
+    public void setCodeScan(ScanMockData config) {
+        this.codeScan = Optional.ofNullable(config);
+    }
 
-	public static ScanProjectMockDataConfiguration fromString(String json) {
-		return CONVERTER.fromJSON(json);
-	}
+    public void setWebScan(ScanMockData config) {
+        this.webScan = Optional.ofNullable(config);
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(apiVersion, codeScan, infraScan, webScan);
-	}
+    public void setInfraScan(ScanMockData config) {
+        this.infraScan = Optional.ofNullable(config);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		ScanProjectMockDataConfiguration other = (ScanProjectMockDataConfiguration) obj;
-		return Objects.equals(apiVersion, other.apiVersion) && Objects.equals(codeScan, other.codeScan) && Objects.equals(infraScan, other.infraScan)
-				&& Objects.equals(webScan, other.webScan);
-	}
-	
-	
+    public Optional<ScanMockData> getCodeScan() {
+        return codeScan;
+    }
+
+    public Optional<ScanMockData> getWebScan() {
+        return webScan;
+    }
+
+    public Optional<ScanMockData> getInfraScan() {
+        return infraScan;
+    }
+
+    public static ScanProjectMockDataConfiguration fromString(String json) {
+        return CONVERTER.fromJSON(json);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(apiVersion, codeScan, infraScan, webScan);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        ScanProjectMockDataConfiguration other = (ScanProjectMockDataConfiguration) obj;
+        return Objects.equals(apiVersion, other.apiVersion) && Objects.equals(codeScan, other.codeScan) && Objects.equals(infraScan, other.infraScan)
+                && Objects.equals(webScan, other.webScan);
+    }
 
 }

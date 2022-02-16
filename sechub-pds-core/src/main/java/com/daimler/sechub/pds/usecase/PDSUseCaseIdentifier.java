@@ -4,30 +4,29 @@ package com.daimler.sechub.pds.usecase;
 public enum PDSUseCaseIdentifier {
 
     UC_USER_CREATES_JOB,
-    
+
     UC_USER_UPLOADS_JOB_DATA,
-    
+
     UC_USER_MARKS_JOB_READY_TO_START,
-    
+
     UC_USER_CANCELS_JOB,
-    
+
     UC_USER_FETCHES_STATUS_OF_JOB,
-    
+
     UC_USER_FETCHES_JOB_RESULT,
-    
+
     UC_ADMIN_FETCHES_MONITORING_STATUS,
-    
+
     UC_ANONYMOUS_CHECK_ALIVE,
-    
+
     UC_ADMIN_FETCHES_JOB_RESULT_OR_FAILURE_TEXT,
-    
+
     UC_ADMIN_FETCHES_SERVER_CONFIGURATION,
-    
+
     UC_ADMIN_FETCHES_OUTPUT_STREAM,
-    
-    UC_ADMIN_FETCHES_ERROR_STREAM,
-    ;
-    
+
+    UC_ADMIN_FETCHES_ERROR_STREAM,;
+
     /* +---------------------------------------------------------------------+ */
     /* +............................ Helpers ................................+ */
     /* +---------------------------------------------------------------------+ */
@@ -57,5 +56,5 @@ public enum PDSUseCaseIdentifier {
         sb.insert(0, "PDS_UC_");
         return sb.toString();
     }
-    
+
 }

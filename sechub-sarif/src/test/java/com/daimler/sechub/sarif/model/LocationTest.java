@@ -41,7 +41,7 @@ class LocationTest {
     void test_equals_and_hashcode() {
         /* @formatter:off */
         testBothAreEqualAndHaveSameHashCode( createExample(), createExample());
-        
+
         testBothAreNOTEqual( createExample(), change(createExample(), (location) -> location.setPhysicalLocation(change(createPhysicalLocation(),(physicalLocation) -> physicalLocation.setRegion(new Region(42,42))))));
         /* @formatter:on */
 

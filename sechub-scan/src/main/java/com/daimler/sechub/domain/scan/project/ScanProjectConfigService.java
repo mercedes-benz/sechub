@@ -24,7 +24,7 @@ public class ScanProjectConfigService {
 
     /**
      * Get configuration for project - and checks access
-     * 
+     *
      * @param projectId
      * @param configId
      * @return project scan configuration or <code>null</code>
@@ -37,7 +37,7 @@ public class ScanProjectConfigService {
      * Get configuration for project - and checks access if wanted. If there is no
      * configuration (null), a dedicated configuration will be created containing
      * default data
-     * 
+     *
      * @param projectId
      * @param configId
      * @param checkAccess when <code>true</code> access is checked, otherwise not
@@ -57,7 +57,7 @@ public class ScanProjectConfigService {
 
     /**
      * Get configuration for project - and checks access
-     * 
+     *
      * @param projectId
      * @param configId
      * @param checkAccess when <code>true</code> access is checked, otherwise not
@@ -75,7 +75,7 @@ public class ScanProjectConfigService {
 
     /**
      * Set configuration for project (means will persist given change to config)
-     * 
+     *
      * @param projectId
      * @param configId
      * @param data      when <code>null</code> existing entry will be deleted on

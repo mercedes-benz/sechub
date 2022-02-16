@@ -13,7 +13,7 @@ import com.daimler.sechub.pds.usecase.UseCaseAnonymousCheckAlive;
 @RestController
 public class PDSAnonymousCheckAliveRestController {
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@UseCaseAnonymousCheckAlive(@PDSStep(name="rest call",description = "anybody - even anonymous - checks server alive.",number=1))
 	@RequestMapping(path = PDSAPIConstants.API_ANONYMOUS + "check/alive", method = {RequestMethod.GET, RequestMethod.HEAD}, produces = {MediaType.APPLICATION_JSON_VALUE})
 	public String checkAlive() {

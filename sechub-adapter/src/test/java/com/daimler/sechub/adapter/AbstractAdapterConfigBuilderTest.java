@@ -2,7 +2,9 @@
 package com.daimler.sechub.adapter;
 
 import static org.junit.Assert.*;
+
 import java.util.Base64;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;

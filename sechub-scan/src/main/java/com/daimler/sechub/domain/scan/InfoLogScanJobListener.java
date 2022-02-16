@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import com.daimler.sechub.sharedkernel.Profiles;
 
 @Component
-@Profile("!"+Profiles.INTEGRATIONTEST)
+@Profile("!" + Profiles.INTEGRATIONTEST)
 public class InfoLogScanJobListener implements ScanJobListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(InfoLogScanJobListener.class);

@@ -22,7 +22,7 @@ public class PDSUploadSupport {
 
     public void uploadZippedSourceCode(PDSContext context, PDSSourceZipConfig zipConfig) throws AdapterException {
         String checksum = zipConfig.getSourceCodeZipFileChecksum();
-        
+
         upload(context, zipConfig, checksum);
     }
 
@@ -33,7 +33,7 @@ public class PDSUploadSupport {
         // see https://www.baeldung.com/spring-rest-template-multipart-upload
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-        
+
         Resource resource = fetchResource(context, zipConfig);
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
@@ -42,7 +42,7 @@ public class PDSUploadSupport {
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
         ResponseEntity<String> response = restTemplate.postForEntity(uploadSourceCodeUrl, requestEntity, String.class);
-        
+
         if (!response.getStatusCode().equals(HttpStatus.OK)) {
             throw context.asAdapterException("Response HTTP status not 'OK' as expected but: " + response.getStatusCode());
         }
@@ -55,6 +55,5 @@ public class PDSUploadSupport {
         }
         return new MultipartInputStreamFileResource(zipInputstream, SOURCECODE_ZIP);
     }
-    
-    
+
 }

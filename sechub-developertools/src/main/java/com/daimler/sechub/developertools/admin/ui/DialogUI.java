@@ -56,7 +56,7 @@ public class DialogUI {
 
     /**
      * Selects file by file chooser
-     * 
+     *
      * @return file or <code>null</code>
      */
     public File selectFile(String initialPath) {
@@ -84,7 +84,10 @@ public class DialogUI {
                 /* we are already inside EDT */
                 state.result = fileChooser.showOpenDialog(frame);
             } else {
-                /* outside EDT, so ensure action is executed inside EDT and blocks until result available*/
+                /*
+                 * outside EDT, so ensure action is executed inside EDT and blocks until result
+                 * available
+                 */
                 SwingUtilities.invokeAndWait(() -> {
                     state.result = fileChooser.showOpenDialog(frame);
                 });
@@ -220,7 +223,7 @@ public class DialogUI {
             this.textArea.setPreferredSize(new Dimension(500, 200));
             JPopupMenu popup = new JPopupMenu();
             textArea.setComponentPopupMenu(popup);
-            
+
             ActionSupport support = ActionSupport.getInstance();
             support.apply(popup, support.createDefaultCutCopyAndPastActions());
 

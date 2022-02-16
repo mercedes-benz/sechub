@@ -16,38 +16,38 @@ import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdminCancelsJob;
 @Service
 public class InformUserThatJobHasBeenCanceledService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(InformUserThatJobHasBeenCanceledService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(InformUserThatJobHasBeenCanceledService.class);
 
-	@Autowired
-	private MailMessageFactory factory;
+    @Autowired
+    private MailMessageFactory factory;
 
-	@Autowired
-	private EmailService emailService;
+    @Autowired
+    private EmailService emailService;
 
-	@UseCaseAdminCancelsJob(@Step(number = 4, name = "Inform user that her/his job has been canceled"))
-	public void notify(JobMessage jobMessage) {
-		String ownerEmailAddress = jobMessage.getOwnerEmailAddress();
-		if (ownerEmailAddress==null || ownerEmailAddress.isEmpty()) {
-			LOG.warn("Event did not contain user email address of canceled job {}, so cannot inform!", jobMessage.getJobUUID());
-			return;
-		}
-		SimpleMailMessage message = factory.createMessage("Your SecHub Job has been canceled");
+    @UseCaseAdminCancelsJob(@Step(number = 4, name = "Inform user that her/his job has been canceled"))
+    public void notify(JobMessage jobMessage) {
+        String ownerEmailAddress = jobMessage.getOwnerEmailAddress();
+        if (ownerEmailAddress == null || ownerEmailAddress.isEmpty()) {
+            LOG.warn("Event did not contain user email address of canceled job {}, so cannot inform!", jobMessage.getJobUUID());
+            return;
+        }
+        SimpleMailMessage message = factory.createMessage("Your SecHub Job has been canceled");
 
-		message.setTo(ownerEmailAddress);
-		message.setText(createEmailContent(jobMessage));
+        message.setTo(ownerEmailAddress);
+        message.setText(createEmailContent(jobMessage));
 
-		emailService.send(message);
+        emailService.send(message);
 
-	}
+    }
 
-	private String createEmailContent(JobMessage jobMessage) {
-		StringBuilder emailContent = new StringBuilder();
-		emailContent.append("Dear " + jobMessage.getOwner() + ",\n\n");
-		emailContent.append("Job " + jobMessage.getJobUUID() + " in project " + jobMessage.getProjectId());
-		emailContent.append(" has been canceled.\n");
+    private String createEmailContent(JobMessage jobMessage) {
+        StringBuilder emailContent = new StringBuilder();
+        emailContent.append("Dear " + jobMessage.getOwner() + ",\n\n");
+        emailContent.append("Job " + jobMessage.getJobUUID() + " in project " + jobMessage.getProjectId());
+        emailContent.append(" has been canceled.\n");
 
-		String text = emailContent.toString();
-		return text;
-	}
+        String text = emailContent.toString();
+        return text;
+    }
 
 }

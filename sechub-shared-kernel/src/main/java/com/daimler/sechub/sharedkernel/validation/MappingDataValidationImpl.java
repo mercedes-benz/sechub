@@ -12,7 +12,7 @@ public class MappingDataValidationImpl extends AbstractValidation<MappingData> i
 
     @Autowired
     MappingEntryValidation mappingEntryValidation;
-    
+
     @Override
     protected void setup(AbstractValidation<MappingData>.ValidationConfig config) {
     }
@@ -20,22 +20,22 @@ public class MappingDataValidationImpl extends AbstractValidation<MappingData> i
     @Override
     protected void validate(ValidationContext<MappingData> context) {
         validateNotNull(context);
-        
+
         MappingData data = context.objectToValidate;
-        
-        for (MappingEntry entry: data.getEntries()) {
+
+        for (MappingEntry entry : data.getEntries()) {
             ValidationResult result = mappingEntryValidation.validate(entry);
             if (result.isValid()) {
                 continue;
             }
-            addErrorMessage(context,result.getErrorDescription());
+            addErrorMessage(context, result.getErrorDescription());
         }
-        
+
     }
-    
+
     @Override
     protected String getValidatorName() {
         return "mapping data validation";
     }
-   
+
 }

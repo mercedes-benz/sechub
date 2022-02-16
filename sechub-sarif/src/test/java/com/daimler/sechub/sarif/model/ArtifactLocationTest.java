@@ -47,7 +47,7 @@ class ArtifactLocationTest {
     void test_equals_and_hashcode() {
         /* @formatter:off */
         testBothAreEqualAndHaveSameHashCode( createExample(), createExample());
-        
+
         testBothAreNOTEqual( createExample(), change(createExample(), (location) -> location.setUriBaseId("other") ));
         testBothAreNOTEqual( createExample(), change(createExample(), (location) -> location.setUri("other") ));
         /* @formatter:on */

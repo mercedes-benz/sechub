@@ -13,7 +13,7 @@ import com.daimler.sechub.integrationtest.internal.PDSTestScenario;
 /**
  * <b><u>Scenario9 - the PDS integration test SARIF scenario (REUSE SECHUB DATA
  * enabled!)</u></b><br>
- * 
+ *
  * In this scenario following is automatically initialized at start (old data
  * removed as well): <br>
  * <br>
@@ -28,14 +28,14 @@ import com.daimler.sechub.integrationtest.internal.PDSTestScenario;
  * PROJECT_1_ is automatically created
  * USER_1, is automatically registered, created and assigned to project1
  * </pre>
- * 
- * c) Execution profiles
- * Following profiles are used inside this scenario
- *  <pre>
+ *
+ * c) Execution profiles Following profiles are used inside this scenario
+ *
+ * <pre>
  * {@link IntegrationTestDefaultProfiles#PROFILE_8_PDS_WEBSCAN_SARIF}
  * {@link IntegrationTestDefaultProfiles#PROFILE_3_PDS_CODESCAN_SARIF}
  * </pre>
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

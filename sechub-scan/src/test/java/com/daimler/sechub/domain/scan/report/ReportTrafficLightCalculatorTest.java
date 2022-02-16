@@ -20,7 +20,7 @@ import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 /**
  * 2018-02-20 we defined following logic which is tested here:
- * 
+ *
  * <table border="1">
  * <tr>
  * <td>Critical</td>
@@ -47,7 +47,7 @@ import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
  * <td>"No findings at all"</td>
  * </tr>
  * </table>
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -82,7 +82,8 @@ public class ReportTrafficLightCalculatorTest {
         MultiFindingsTestSetup setup = new MultiFindingsTestSetup();
 
         /* test */
-        assertCalculator(calculatorToTest).withResult(setup.reportTransformationResult).isFilteringFindingsTo(TrafficLight.RED, setup.findingCritical, setup.findingHigh);
+        assertCalculator(calculatorToTest).withResult(setup.reportTransformationResult).isFilteringFindingsTo(TrafficLight.RED, setup.findingCritical,
+                setup.findingHigh);
     }
 
     @Test
@@ -100,8 +101,8 @@ public class ReportTrafficLightCalculatorTest {
         MultiFindingsTestSetup setup = new MultiFindingsTestSetup();
 
         /* test */
-        assertCalculator(calculatorToTest).withResult(setup.reportTransformationResult).isFilteringFindingsTo(TrafficLight.GREEN, setup.findingLow, setup.findingInfo,
-                setup.findingUnclassified);
+        assertCalculator(calculatorToTest).withResult(setup.reportTransformationResult).isFilteringFindingsTo(TrafficLight.GREEN, setup.findingLow,
+                setup.findingInfo, setup.findingUnclassified);
     }
 
     /* +-----------------------------------------------------------------------+ */

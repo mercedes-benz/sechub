@@ -12,7 +12,7 @@ public abstract class AbstractInfraScanAdapterConfig extends AbstractAdapterConf
     Set<InetAddress> targetIPs = new LinkedHashSet<>();
 
     private String targetType;
-    
+
     @Override
     public String getTargetType() {
         if (targetType == null) {

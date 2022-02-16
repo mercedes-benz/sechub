@@ -26,7 +26,7 @@ public class UpdateMappingService {
 
     @Autowired
     MappingRepository repository;
-    
+
     @Autowired
     MappingTransactionService mappingTransactionService;
 
@@ -35,7 +35,7 @@ public class UpdateMappingService {
 
     @Autowired
     MappingDataValidation mappingDataValidation;
-    
+
     @Autowired
     DomainMessageService eventBus;
 
@@ -52,7 +52,7 @@ public class UpdateMappingService {
             mappingObj = mapping.get();
         }
         mappingObj.setData(mappingData.toJSON());
-        
+
         mappingTransactionService.saveMappingInOwnTransaction(mappingObj);
 
         sendEvent(mappingObj);
@@ -60,16 +60,16 @@ public class UpdateMappingService {
 
     @IsSendingAsyncMessage(MessageID.MAPPING_CONFIGURATION_CHANGED)
     private void sendEvent(Mapping mapping) {
-       
+
         MappingMessage mappingMessage = new MappingMessage();
         mappingMessage.setMappingId(mapping.getId());
         mappingMessage.setMappingData(MappingData.fromString(mapping.getData()));
-        
+
         DomainMessage request = DomainMessageFactory.createEmptyRequest(MessageID.MAPPING_CONFIGURATION_CHANGED);
         request.set(MessageDataKeys.CONFIG_MAPPING_DATA, mappingMessage);
-        
+
         eventBus.sendAsynchron(request);
-        
+
     }
 
 }

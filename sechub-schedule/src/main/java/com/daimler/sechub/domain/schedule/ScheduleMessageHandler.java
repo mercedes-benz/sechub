@@ -56,10 +56,10 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler {
 
     @Autowired
     SchedulerCancelJobService cancelJobService;
-    
+
     @Autowired
     SchedulerRestartJobService restartJobService;
-    
+
     @Autowired
     SchedulerProjectConfigService projectConfigService;
 
@@ -112,31 +112,32 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler {
             throw new IllegalStateException("unhandled message id:" + messageId);
         }
     }
+
     @IsReceivingAsyncMessage(MessageID.PROJECT_ACCESS_LEVEL_CHANGED)
     @UseCaseAdministratorChangesProjectAccessLevel(@Step(number = 4, name = "Event handler", description = "Receives change project access level event"))
     private void handleProcessAccessLevelChanged(DomainMessage request) {
         ProjectMessage data = request.get(MessageDataKeys.PROJECT_ACCESS_LEVEL_CHANGE_DATA);
-        
+
         String projectId = data.getProjectId();
         ProjectAccessLevel formerAccessLevel = data.getFormerAccessLevel();
         ProjectAccessLevel newAccessLevel = data.getNewAccessLevel();
-        
-        projectConfigService.changeProjectAccessLevel(projectId,newAccessLevel,formerAccessLevel);
+
+        projectConfigService.changeProjectAccessLevel(projectId, newAccessLevel, formerAccessLevel);
     }
 
     @IsReceivingAsyncMessage(MessageID.REQUEST_JOB_RESTART)
     private void handleJobRestartRequested(DomainMessage request) {
         JobMessage message = request.get(MessageDataKeys.JOB_RESTART_DATA);
         UUID jobUUID = message.getJobUUID();
-        
+
         restartJobService.restartJob(jobUUID, message.getOwnerEmailAddress());
     }
-    
+
     @IsReceivingAsyncMessage(MessageID.REQUEST_JOB_RESTART_HARD)
     private void handleJobRestartHardRequested(DomainMessage request) {
         JobMessage message = request.get(MessageDataKeys.JOB_RESTART_DATA);
         UUID jobUUID = message.getJobUUID();
-        
+
         restartJobService.restartJobHard(jobUUID, message.getOwnerEmailAddress());
     }
 
@@ -196,9 +197,9 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler {
     @IsReceivingAsyncMessage(MessageID.PROJECT_DELETED)
     private void handleProjectDeleted(DomainMessage request) {
         ProjectMessage data = request.get(MessageDataKeys.PROJECT_DELETE_DATA);
-        
+
         String projectId = data.getProjectId();
-        
+
         deleteAllProjectAccessService.deleteAnyAccessDataForProject(projectId);
         projectConfigService.deleteProjectConfiguration(projectId);
     }

@@ -2,6 +2,7 @@
 package com.daimler.sechub.domain.scan.report;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.util.List;
@@ -18,8 +19,6 @@ import com.daimler.sechub.commons.model.SecHubStatus;
 import com.daimler.sechub.commons.model.Severity;
 import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.domain.scan.ScanDomainTestFileSupport;
-
-import static org.mockito.Mockito.*;
 
 class ScanSecHubReportTest {
 
@@ -110,7 +109,8 @@ class ScanSecHubReportTest {
 
         /* execute */
         ScanSecHubReport createdReport = new ScanSecHubReport(report);
-        // now we also check if the JSON deserialization /serialization works as expected
+        // now we also check if the JSON deserialization /serialization works as
+        // expected
         String json = createdReport.toJSON();
         ScanSecHubReport reportToTest = ScanSecHubReport.fromJSONString(json);
 
@@ -123,47 +123,47 @@ class ScanSecHubReportTest {
 
         /* prepare */
         UUID uuid = UUID.randomUUID();
-        
+
         ScanReport report = mock(ScanReport.class);
         when(report.getResultType()).thenReturn(ScanReportResultType.MODEL);
         when(report.getSecHubJobUUID()).thenReturn(uuid);
-        
+
         SecHubReportModel model = new SecHubReportModel();
-        
+
         String jsonResult = model.toJSON();
         when(report.getResult()).thenReturn(jsonResult);
-        
+
         /* execute */
         ScanSecHubReport createdReport = new ScanSecHubReport(report);
 
         /* test */
         assertEquals(uuid, createdReport.getJobUUID());
     }
-    
+
     @Test
     void report_by_model_has_jobUUID_from_model_when_there_not_null() {
 
         /* prepare */
         UUID uuid1 = UUID.randomUUID();
         UUID uuid2 = UUID.randomUUID();
-        
+
         ScanReport report = mock(ScanReport.class);
         when(report.getResultType()).thenReturn(ScanReportResultType.MODEL);
         when(report.getSecHubJobUUID()).thenReturn(uuid1);
-        
+
         SecHubReportModel model = new SecHubReportModel();
         model.setJobUUID(uuid2);
-        
+
         String jsonResult = model.toJSON();
         when(report.getResult()).thenReturn(jsonResult);
-        
+
         /* execute */
         ScanSecHubReport createdReport = new ScanSecHubReport(report);
 
         /* test */
         assertEquals(uuid2, createdReport.getJobUUID());
     }
-    
+
     @Test
     void report_by_model_sets_version_to_version_from_model() {
 
@@ -216,7 +216,8 @@ class ScanSecHubReportTest {
 
         /* execute */
         ScanSecHubReport createdReport = new ScanSecHubReport(report);
-        // now we also check if the JSON deserialization /serialization works as expected
+        // now we also check if the JSON deserialization /serialization works as
+        // expected
         String json = createdReport.toJSON();
         ScanSecHubReport reportToTest = ScanSecHubReport.fromJSONString(json);
 
@@ -240,7 +241,8 @@ class ScanSecHubReportTest {
 
         /* execute */
         ScanSecHubReport createdReport = new ScanSecHubReport(report);
-        // now we also check if the JSON deserialization /serialization works as expected
+        // now we also check if the JSON deserialization /serialization works as
+        // expected
         String json = createdReport.toJSON();
         ScanSecHubReport reportToTest = ScanSecHubReport.fromJSONString(json);
 
@@ -269,7 +271,8 @@ class ScanSecHubReportTest {
 
         /* execute */
         ScanSecHubReport createdReport = new ScanSecHubReport(report);
-        // now we also check if the JSON deserialization /serialization works as expected
+        // now we also check if the JSON deserialization /serialization works as
+        // expected
         String json = createdReport.toJSON();
         ScanSecHubReport reportToTest = ScanSecHubReport.fromJSONString(json);
 

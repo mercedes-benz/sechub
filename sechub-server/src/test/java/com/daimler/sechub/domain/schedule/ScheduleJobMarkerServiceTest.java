@@ -34,7 +34,7 @@ public class ScheduleJobMarkerServiceTest {
         factory = mock(SchedulerStrategyFactory.class);
         strategy = mock(FirstComeFirstServeSchedulerStrategy.class);
         jobRepository = mock(SecHubJobRepository.class);
-        
+
         uuid = UUID.randomUUID();
 
         serviceToTest.jobRepository = jobRepository;
@@ -66,7 +66,7 @@ public class ScheduleJobMarkerServiceTest {
         ScheduleSecHubJob result = serviceToTest.markNextJobToExecuteByThisInstance();
 
         /* test */
-        
+
         verify(secHubJob).setStarted(any());
         verify(secHubJob).setExecutionState(eq(ExecutionState.STARTED));
 

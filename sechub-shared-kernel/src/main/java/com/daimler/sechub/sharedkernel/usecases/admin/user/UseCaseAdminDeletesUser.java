@@ -10,6 +10,7 @@ import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseDefinition;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseGroup;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
+
 @Target(ElementType.METHOD)
 /* @formatter:off */
 @Retention(RetentionPolicy.RUNTIME)

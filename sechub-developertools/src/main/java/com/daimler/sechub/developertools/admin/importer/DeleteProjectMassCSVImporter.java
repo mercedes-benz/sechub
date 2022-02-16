@@ -10,28 +10,27 @@ import com.daimler.sechub.developertools.admin.DeveloperAdministration;
 
 public class DeleteProjectMassCSVImporter {
 
-	private SimpleCSVImporter csvImporter = new SimpleCSVImporter();
-	private DeveloperAdministration administration;
+    private SimpleCSVImporter csvImporter = new SimpleCSVImporter();
+    private DeveloperAdministration administration;
 
+    public DeleteProjectMassCSVImporter(DeveloperAdministration administration) {
+        this.administration = administration;
+    }
 
-	public DeleteProjectMassCSVImporter(DeveloperAdministration administration) {
-		this.administration=administration;
-	}
+    public void importProjectDeletesByCSV(File file) throws IOException {
+        List<CSVRow> rows = csvImporter.importCSVFile(file, 1, 1);
 
-	public void importProjectDeletesByCSV(File file) throws IOException {
-		List<CSVRow> rows = csvImporter.importCSVFile(file, 1, 1);
+        for (CSVRow row : rows) {
+            importRow(row);
+        }
 
-		for (CSVRow row: rows) {
-			importRow(row);
-		}
+    }
 
-	}
+    private void importRow(CSVRow row) {
+        Iterator<CSVColumn> it = row.columns.iterator();
+        String projectId = it.next().cell.trim();
 
-	private void importRow(CSVRow row) {
-		Iterator<CSVColumn> it = row.columns.iterator();
-		String projectId = it.next().cell.trim();
-
-		administration.deleteProject(projectId);
-	}
+        administration.deleteProject(projectId);
+    }
 
 }

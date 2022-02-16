@@ -15,32 +15,32 @@ import com.daimler.sechub.sharedkernel.usecases.user.UseCaseUserSignup;
 @Service
 public class SignUpRequestedAdminNotificationService {
 
-	@Autowired
-	NotificationConfiguration notificationConfiguration;
+    @Autowired
+    NotificationConfiguration notificationConfiguration;
 
-	@Autowired
-	MailMessageFactory factory;
+    @Autowired
+    MailMessageFactory factory;
 
-	@Autowired
-	EmailService emailService;
+    @Autowired
+    EmailService emailService;
 
-	@UseCaseUserSignup(@Step(number = 3, next = {
-			Step.NO_NEXT_STEP }, name = "Email to admin", description = "A notification is send per email to admins that a new user signup has been created and waits for acceptance."))
-	public void notify(UserMessage userMessage) {
-		/* build content */
-		StringBuilder emailContent = new StringBuilder();
+    @UseCaseUserSignup(@Step(number = 3, next = {
+            Step.NO_NEXT_STEP }, name = "Email to admin", description = "A notification is send per email to admins that a new user signup has been created and waits for acceptance."))
+    public void notify(UserMessage userMessage) {
+        /* build content */
+        StringBuilder emailContent = new StringBuilder();
 
-		emailContent.append("A user requested access to SecHub:\n");
-		emailContent.append("- Requested user id: " + userMessage.getUserId() + "\n");
-		emailContent.append("- Email address: " + userMessage.getEmailAdress() + "\n");
+        emailContent.append("A user requested access to SecHub:\n");
+        emailContent.append("- Requested user id: " + userMessage.getUserId() + "\n");
+        emailContent.append("- Email address: " + userMessage.getEmailAdress() + "\n");
 
-		/* send mail */
-		SimpleMailMessage message1 =factory.createMessage("SecHub signup requested: " + userMessage.getUserId());
-		message1.setTo(notificationConfiguration.getEmailAdministrators());
-		message1.setText(emailContent.toString());
+        /* send mail */
+        SimpleMailMessage message1 = factory.createMessage("SecHub signup requested: " + userMessage.getUserId());
+        message1.setTo(notificationConfiguration.getEmailAdministrators());
+        message1.setText(emailContent.toString());
 
-		emailService.send(message1);
+        emailService.send(message1);
 
-	}
+    }
 
 }

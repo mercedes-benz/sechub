@@ -17,78 +17,78 @@ import com.daimler.sechub.test.SechubTestComponent;
 @SechubTestComponent
 public class JobCreator {
 
-	private TestEntityManager entityManager;
-	private ScheduleSecHubJob job;
-	private SecHubJobFactory jobFactory;
-	private String projectId;
-	private UserContextService userContextService;
+    private TestEntityManager entityManager;
+    private ScheduleSecHubJob job;
+    private SecHubJobFactory jobFactory;
+    private String projectId;
+    private UserContextService userContextService;
 
-	private JobCreator(String projectId, TestEntityManager entityManager) {
-		this.entityManager = entityManager;
-		this.projectId = projectId;
-		this.jobFactory = new SecHubJobFactory();
-		userContextService=mock(UserContextService.class);
-		this.jobFactory.userContextService=userContextService;
-		when(userContextService.getUserId()).thenReturn("loggedInUser");
-		
-		newJob();
-	}
+    private JobCreator(String projectId, TestEntityManager entityManager) {
+        this.entityManager = entityManager;
+        this.projectId = projectId;
+        this.jobFactory = new SecHubJobFactory();
+        userContextService = mock(UserContextService.class);
+        this.jobFactory.userContextService = userContextService;
+        when(userContextService.getUserId()).thenReturn("loggedInUser");
 
-	public static JobCreator jobCreator(String projectId, TestEntityManager entityManager) {
-		return new JobCreator(projectId, entityManager);
-	}
+        newJob();
+    }
 
-	public JobCreator being(ExecutionState state) {
-		job.executionState = state;
-		return this;
-	}
+    public static JobCreator jobCreator(String projectId, TestEntityManager entityManager) {
+        return new JobCreator(projectId, entityManager);
+    }
 
-	public JobCreator result(ExecutionResult result) {
-		job.executionResult = result;
-		return this;
-	}
-	
-	public JobCreator started(LocalDateTime dateTime) {
-	    job.started=dateTime;
-	    return this;
-	}
+    public JobCreator being(ExecutionState state) {
+        job.executionState = state;
+        return this;
+    }
 
-	/**
-	 * Creates the job and returns builder agani
-	 * 
-	 * @return
-	 */
-	public JobCreator createAnd() {
-		create();
-		return this;
-	}
+    public JobCreator result(ExecutionResult result) {
+        job.executionResult = result;
+        return this;
+    }
 
-	/**
-	 * Creates the job, does an automatic assert that ID is created. The creator
-	 * will reinit after job was created and can be reused.
-	 * 
-	 * @return created job
-	 */
-	public ScheduleSecHubJob create() {
-		entityManager.persist(job);
-		entityManager.flush();
+    public JobCreator started(LocalDateTime dateTime) {
+        job.started = dateTime;
+        return this;
+    }
 
-		assertNotNull(job.getUUID());
+    /**
+     * Creates the job and returns builder agani
+     *
+     * @return
+     */
+    public JobCreator createAnd() {
+        create();
+        return this;
+    }
 
-		ScheduleSecHubJob result = job;
-		newJob();
+    /**
+     * Creates the job, does an automatic assert that ID is created. The creator
+     * will reinit after job was created and can be reused.
+     *
+     * @return created job
+     */
+    public ScheduleSecHubJob create() {
+        entityManager.persist(job);
+        entityManager.flush();
 
-		return result;
-	}
+        assertNotNull(job.getUUID());
 
-	public JobCreator newJob() {
-		return newJob(new SecHubConfiguration());
-	}
+        ScheduleSecHubJob result = job;
+        newJob();
 
-	public JobCreator newJob(SecHubConfiguration configuration) {
-		configuration.setProjectId(projectId);
-		job = jobFactory.createJob(configuration);
-		return this;
-	}
+        return result;
+    }
+
+    public JobCreator newJob() {
+        return newJob(new SecHubConfiguration());
+    }
+
+    public JobCreator newJob(SecHubConfiguration configuration) {
+        configuration.setProjectId(projectId);
+        job = jobFactory.createJob(configuration);
+        return this;
+    }
 
 }

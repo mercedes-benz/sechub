@@ -15,68 +15,66 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-@ContextConfiguration(classes= {ScanAccessRepository.class, ScanAccessRepositoryDBTest.SimpleTestConfiguration.class})
+@ContextConfiguration(classes = { ScanAccessRepository.class, ScanAccessRepositoryDBTest.SimpleTestConfiguration.class })
 public class ScanAccessRepositoryDBTest {
 
-	@Autowired
-	private ScanAccessRepository repository;
+    @Autowired
+    private ScanAccessRepository repository;
 
-	@Before
-	public void before() {
+    @Before
+    public void before() {
 
-	}
+    }
 
-	@Test
-	public void given_3_stored_access_objects_2_for_project1_1_for_project2_a_delete_all_for_project1_does_only_delete_project1_parts() throws Exception {
-		/* prepare */
-		ScanAccess access1 = new ScanAccess("user1","project1");
-		ScanAccess access2 = new ScanAccess("user2","project1");
-		ScanAccess access3 = new ScanAccess("user1","project2");
+    @Test
+    public void given_3_stored_access_objects_2_for_project1_1_for_project2_a_delete_all_for_project1_does_only_delete_project1_parts() throws Exception {
+        /* prepare */
+        ScanAccess access1 = new ScanAccess("user1", "project1");
+        ScanAccess access2 = new ScanAccess("user2", "project1");
+        ScanAccess access3 = new ScanAccess("user1", "project2");
 
-		repository.save(access1);
-		repository.save(access2);
-		repository.save(access3);
+        repository.save(access1);
+        repository.save(access2);
+        repository.save(access3);
 
-		/* check preconditions*/
-		assertEquals(3, repository.count());
-		assertNotNull(repository.findById(access3.getKey()));
+        /* check preconditions */
+        assertEquals(3, repository.count());
+        assertNotNull(repository.findById(access3.getKey()));
 
-		/* execute */
-		repository.deleteAnyAccessForProject("project1");
+        /* execute */
+        repository.deleteAnyAccessForProject("project1");
 
-		/* test */
-		assertEquals(1, repository.count());
-		assertNotNull(repository.findById(access3.getKey()));
-	}
+        /* test */
+        assertEquals(1, repository.count());
+        assertNotNull(repository.findById(access3.getKey()));
+    }
 
-	@Test
-	public void given_3_stored_access_objects_2_for_user1_1_for_user_2_a_delete_all_for_user1_does_only_delete_user1_parts() throws Exception {
-		/* prepare */
-		ScanAccess access1 = new ScanAccess("user1","project1");
-		ScanAccess access2 = new ScanAccess("user2","project1");
-		ScanAccess access3 = new ScanAccess("user1","project2");
+    @Test
+    public void given_3_stored_access_objects_2_for_user1_1_for_user_2_a_delete_all_for_user1_does_only_delete_user1_parts() throws Exception {
+        /* prepare */
+        ScanAccess access1 = new ScanAccess("user1", "project1");
+        ScanAccess access2 = new ScanAccess("user2", "project1");
+        ScanAccess access3 = new ScanAccess("user1", "project2");
 
-		repository.save(access1);
-		repository.save(access2);
-		repository.save(access3);
+        repository.save(access1);
+        repository.save(access2);
+        repository.save(access3);
 
-		/* check preconditions*/
-		assertEquals(3, repository.count());
-		assertNotNull(repository.findById(access2.getKey()));
+        /* check preconditions */
+        assertEquals(3, repository.count());
+        assertNotNull(repository.findById(access2.getKey()));
 
-		/* execute */
-		repository.deleteAcessForUserAtAll("user1");
+        /* execute */
+        repository.deleteAcessForUserAtAll("user1");
 
-		/* test */
-		assertEquals(1, repository.count());
-		assertNotNull(repository.findById(access2.getKey()));
-	}
+        /* test */
+        assertEquals(1, repository.count());
+        assertNotNull(repository.findById(access2.getKey()));
+    }
 
+    @TestConfiguration
+    @EnableAutoConfiguration
+    public static class SimpleTestConfiguration {
 
-
-	@TestConfiguration
-	@EnableAutoConfiguration
-	public static class SimpleTestConfiguration{
-
-	}
+    }
 }

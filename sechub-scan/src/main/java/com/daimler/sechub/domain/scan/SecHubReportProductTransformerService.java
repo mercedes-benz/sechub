@@ -22,7 +22,7 @@ import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
 /**
  * This service will load the product result data from report collectors and
  * transform those data a sechub result
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -42,7 +42,7 @@ public class SecHubReportProductTransformerService {
     /**
      * Will fetch output from report products for wanted sechub job and returns a
      * new created result.
-     * 
+     *
      * @param context
      * @return result never <code>null</code>
      */

@@ -19,50 +19,50 @@ import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminDelete
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 /**
- * This service will delete all project data from domain scan in ONE transaction.
+ * This service will delete all project data from domain scan in ONE
+ * transaction.
+ *
  * @author Albert Tregnaghi
  *
  */
 @Service
 public class ProjectDataDeleteService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ProjectDataDeleteService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectDataDeleteService.class);
 
+    @Autowired
+    ProjectScanLogRepository scanLogRepository;
 
-	@Autowired
-	ProjectScanLogRepository scanLogRepository;
+    @Autowired
+    ProductResultRepository productResultRepository;
 
-	@Autowired
-	ProductResultRepository productResultRepository;
+    @Autowired
+    ScanReportRepository scanReportRepository;
 
-	@Autowired
-	ScanReportRepository scanReportRepository;
-	
-	@Autowired
-	ScanProjectConfigRepository scanProjectConfigRepository;
-	
-	@Autowired
+    @Autowired
+    ScanProjectConfigRepository scanProjectConfigRepository;
+
+    @Autowired
     ProductExecutionProfileRepository profileRepository;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Autowired
+    UserInputAssertion assertion;
 
-	@Autowired
-	LogSanitizer logSanitizer;
+    @Autowired
+    LogSanitizer logSanitizer;
 
-	@Transactional
-	@UseCaseAdminDeleteProject(@Step(number=8,name="delete all project scan data"))
-	public void deleteAllDataForProject(String projectId) {
-		assertion.isValidProjectId(projectId);
+    @Transactional
+    @UseCaseAdminDeleteProject(@Step(number = 8, name = "delete all project scan data"))
+    public void deleteAllDataForProject(String projectId) {
+        assertion.isValidProjectId(projectId);
 
-		productResultRepository.deleteAllResultsForProject(projectId);
-		scanReportRepository.deleteAllReportsForProject(projectId);
-		scanLogRepository.deleteAllLogDataForProject(projectId);
-		scanProjectConfigRepository.deleteAllConfigurationsForProject(projectId);
-		profileRepository.deleteAllProfileRelationsToProject(projectId);
-		
-		LOG.info("Deleted all data (results,reports, scanlogs,profile-relations) for project:{}",logSanitizer.sanitize(projectId, 30));
-	}
+        productResultRepository.deleteAllResultsForProject(projectId);
+        scanReportRepository.deleteAllReportsForProject(projectId);
+        scanLogRepository.deleteAllLogDataForProject(projectId);
+        scanProjectConfigRepository.deleteAllConfigurationsForProject(projectId);
+        profileRepository.deleteAllProfileRelationsToProject(projectId);
 
+        LOG.info("Deleted all data (results,reports, scanlogs,profile-relations) for project:{}", logSanitizer.sanitize(projectId, 30));
+    }
 
 }

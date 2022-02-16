@@ -10,17 +10,18 @@ import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseDefinition;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseGroup;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
+
 /* @formatter:off */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @UseCaseDefinition(
-		id=UseCaseIdentifier.UC_UPDATE_PROJECT_WHITELIST, 
+		id=UseCaseIdentifier.UC_UPDATE_PROJECT_WHITELIST,
 		group=UseCaseGroup.PROJECT_ADMINISTRATION,
 		apiName="updateProjectWhitelist",
-		title="Update project whitelist", 
+		title="Update project whitelist",
 		description="project/admin_creates_project.adoc")
 public @interface UseCaseUpdateProjectWhitelist {
-	
+
 	Step value();
 }
 /* @formatter:on */

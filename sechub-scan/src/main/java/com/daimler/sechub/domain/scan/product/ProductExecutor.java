@@ -8,7 +8,7 @@ import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutor;
 
 /**
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -23,7 +23,7 @@ public interface ProductExecutor extends ProductIdentifiable, SecHubExecutor<Lis
      * installation targets - e.g. when a scan configuration scans intranet and also
      * an internet location we got two results. Normally this does not happen, but
      * to handle even such strange situations the results are returned as a list)
-     * 
+     *
      * @param context
      * @return a list of results, never <code>null</code>
      * @throws SecHubExecutionException when any problems occuring
@@ -36,7 +36,9 @@ public interface ProductExecutor extends ProductIdentifiable, SecHubExecutor<Lis
     public int getVersion();
 
     /**
-     * Determines if it is okay to deefine multiple configurations of same executor. Default is false
+     * Determines if it is okay to deefine multiple configurations of same executor.
+     * Default is false
+     *
      * @return <code>true</code> when it is allowed to install multiple executors
      *         for same {@link ProductExecutor#getIdentifier()}, <code>false</code>
      *         when only executor configuration is allowed for the product

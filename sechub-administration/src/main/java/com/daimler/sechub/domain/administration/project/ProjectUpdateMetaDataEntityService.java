@@ -24,44 +24,45 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 public class ProjectUpdateMetaDataEntityService {
 
-	@Autowired
-	AuditLogService auditLog;
+    @Autowired
+    AuditLogService auditLog;
 
-	@Autowired
-	ProjectRepository repository;
-	
-	@Autowired
-	ProjectMetaDataEntityRepository metaDataRepository;
+    @Autowired
+    ProjectRepository repository;
 
-	@Autowired
-	LogSanitizer logSanitizer;
+    @Autowired
+    ProjectMetaDataEntityRepository metaDataRepository;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Autowired
+    LogSanitizer logSanitizer;
 
-	/* @formatter:off */
+    @Autowired
+    UserInputAssertion assertion;
+
+    /* @formatter:off */
 	@UseCaseUpdateProjectMetaData(
 			@Step(number = 2,
 			name = "Update project",
 			description = "The service will update the <<section-shared-project, Project metadata>>."))
 	/* @formatter:on */
-	public void updateProjectMetaData(String projectId, @NotNull ProjectMetaData metaData) {
-		auditLog.log("triggers update of metadata for project {}. Updated metadata shall be {}", logSanitizer.sanitize(projectId, 30), metaData);
+    public void updateProjectMetaData(String projectId, @NotNull ProjectMetaData metaData) {
+        auditLog.log("triggers update of metadata for project {}. Updated metadata shall be {}", logSanitizer.sanitize(projectId, 30), metaData);
 
-		assertion.isValidProjectId(projectId);
+        assertion.isValidProjectId(projectId);
 
-		Optional<Project> found = repository.findById(projectId);
-		if (!found.isPresent()) {
-			throw new NotFoundException("Project '" + projectId + "' does not exist.");
-		}
-		
-		Project project = found.get();
-		
-		// update is currently a replace action
-		metaDataRepository.deleteAll(project.getMetaData());
-		
-		List<ProjectMetaDataEntity> metaDataEntities = metaData.getMetaDataMap().entrySet().stream().map(entry -> new ProjectMetaDataEntity(projectId, entry.getKey(), entry.getValue())).collect(Collectors.toList());
-		
-		metaDataRepository.saveAll(metaDataEntities);
-	}	
+        Optional<Project> found = repository.findById(projectId);
+        if (!found.isPresent()) {
+            throw new NotFoundException("Project '" + projectId + "' does not exist.");
+        }
+
+        Project project = found.get();
+
+        // update is currently a replace action
+        metaDataRepository.deleteAll(project.getMetaData());
+
+        List<ProjectMetaDataEntity> metaDataEntities = metaData.getMetaDataMap().entrySet().stream()
+                .map(entry -> new ProjectMetaDataEntity(projectId, entry.getKey(), entry.getValue())).collect(Collectors.toList());
+
+        metaDataRepository.saveAll(metaDataEntities);
+    }
 }

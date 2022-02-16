@@ -19,7 +19,7 @@ import org.hibernate.annotations.Type;
  * Represents a PDS Job which contains information about ownership, related
  * sechub job and also state,configuration and last but not least the result of
  * the job.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -78,11 +78,11 @@ public class PDSHeartBeat {
     public void setUpdated(LocalDateTime updated) {
         this.updated = updated;
     }
-    
+
     public LocalDateTime getUpdated() {
         return updated;
     }
-    
+
     public void setServerId(String serverId) {
         this.serverId = serverId;
     }

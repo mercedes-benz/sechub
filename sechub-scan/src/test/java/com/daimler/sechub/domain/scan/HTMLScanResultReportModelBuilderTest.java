@@ -20,8 +20,8 @@ import com.daimler.sechub.commons.model.SecHubCodeCallStack;
 import com.daimler.sechub.commons.model.SecHubFinding;
 import com.daimler.sechub.commons.model.SecHubResult;
 import com.daimler.sechub.commons.model.TrafficLight;
-import com.daimler.sechub.domain.scan.report.ScanSecHubReport;
 import com.daimler.sechub.domain.scan.report.ScanReportTrafficLightCalculator;
+import com.daimler.sechub.domain.scan.report.ScanSecHubReport;
 
 public class HTMLScanResultReportModelBuilderTest {
 
@@ -202,7 +202,7 @@ public class HTMLScanResultReportModelBuilderTest {
         Map<String, Object> map = builderToTest.build(scanSecHubReport);
 
         /* test */
-        
+
         assertNotNull(map.get("codeScanSupport"));
         assertTrue(map.get("codeScanSupport") instanceof HtmlCodeScanDescriptionSupport);
 

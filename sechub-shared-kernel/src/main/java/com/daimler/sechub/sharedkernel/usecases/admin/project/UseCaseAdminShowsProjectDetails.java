@@ -10,6 +10,7 @@ import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseDefinition;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseGroup;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
+
 /* @formatter:off */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
@@ -17,10 +18,10 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 		id=UseCaseIdentifier.UC_ADMIN_SHOWS_PROJECT_DETAILS,
 		group=UseCaseGroup.USER_ADMINISTRATION,
 		apiName="adminShowsProjectDetails",
-		title="Admin shows project details", 
+		title="Admin shows project details",
 		description="An administrator downloads a json file containing json with project details")
 public @interface UseCaseAdminShowsProjectDetails {
-	
+
 	Step value();
 }
 /* @formatter:on */

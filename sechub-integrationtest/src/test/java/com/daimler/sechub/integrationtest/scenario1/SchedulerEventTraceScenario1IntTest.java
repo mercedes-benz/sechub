@@ -29,20 +29,20 @@ public class SchedulerEventTraceScenario1IntTest {
          * ensure scheduler job processing is enabled again after every of these tests
          */
         as(SUPER_ADMIN).enableSchedulerJobProcessing();
-       
+
     }
 
     @Test // use scenario1 because USER_1 not self registered at this moment
     public void UC_SIGNUP() {
         /* @formatter:off */
-	    
+
 	    /* prepare */
 	    TestAPI.startEventInspection();
-	    
+
 	    /* execute */
 	    as(ANONYMOUS).
 	        signUpAs(Scenario1.USER_1);
-	    
+
 	    /* test */
 	    AssertEventInspection.assertEventInspection().
 	    expect().
@@ -54,23 +54,23 @@ public class SchedulerEventTraceScenario1IntTest {
 	    assertAsExpectedAndCreateHistoryFile(UseCaseIdentifier.UC_SIGNUP.name());
 	    /* @formatter:on */
     }
-    
+
     @Test // use scenario1 because USER_1 not self registered at this moment
     public void UC_ADMIN_ACCEPTS_SIGNUP() {
         /* @formatter:off */
         as(ANONYMOUS).
             signUpAs(Scenario1.USER_1);
-        
+
         assertUser(Scenario1.USER_1).
             isWaitingForSignup();
-        
+
         /* prepare */
         TestAPI.startEventInspection();
-        
+
         /* execute */
         as(SUPER_ADMIN).
             acceptSignup(Scenario1.USER_1);
-        
+
         /* test */
         AssertEventInspection.assertEventInspection().
         expect().
@@ -102,14 +102,14 @@ public class SchedulerEventTraceScenario1IntTest {
 	    as(SUPER_ADMIN).
 	        enableSchedulerJobProcessing();
         assertJobSchedulerEnabled();
-        
+
 	    /* prepare */
         TestAPI.startEventInspection();
-	    
+
 		/* execute */
 		as(SUPER_ADMIN).
 			disableSchedulerJobProcessing();
-		
+
 		/* test */
 		AssertEventInspection.assertEventInspection().
 		  expect().
@@ -132,14 +132,14 @@ public class SchedulerEventTraceScenario1IntTest {
         /* @formatter:off */
 	    /* prepare */
         TestAPI.ensureNoLongerJobExecution(); // necessary, because next method call disables scheduling...
-        
+
 	    as(SUPER_ADMIN).
             disableSchedulerJobProcessing(); // necessary to gain all requests on enabling...
 	    /* check precondition*/
-	    assertJobSchedulerDisabled(); 
-	    
+	    assertJobSchedulerDisabled();
+
         TestAPI.startEventInspection();
-        
+
         /* execute */
         as(SUPER_ADMIN).
             enableSchedulerJobProcessing();

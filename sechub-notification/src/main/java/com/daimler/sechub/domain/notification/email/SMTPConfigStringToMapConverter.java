@@ -6,29 +6,29 @@ import java.util.TreeMap;
 
 public class SMTPConfigStringToMapConverter {
 
-	public Map<String,String> convertToMap(String smtpConfigString) {
-		Map<String,String> map = new TreeMap<>();
-		if (smtpConfigString==null) {
-			return map;
-		}
+    public Map<String, String> convertToMap(String smtpConfigString) {
+        Map<String, String> map = new TreeMap<>();
+        if (smtpConfigString == null) {
+            return map;
+        }
 
-		String[] splitted = smtpConfigString.split(",");
-		for (String splitter: splitted) {
-			String[] keyValuePair = splitter.split("=");
-			if (keyValuePair==null || keyValuePair.length!=2) {
-				continue;
-			}
-			String key= keyValuePair[0];
-			String value= keyValuePair[1];
+        String[] splitted = smtpConfigString.split(",");
+        for (String splitter : splitted) {
+            String[] keyValuePair = splitter.split("=");
+            if (keyValuePair == null || keyValuePair.length != 2) {
+                continue;
+            }
+            String key = keyValuePair[0];
+            String value = keyValuePair[1];
 
-			if (key==null || value==null) {
-				continue;
-			}
+            if (key == null || value == null) {
+                continue;
+            }
 
-			map.put(key.trim(), value.trim());
+            map.put(key.trim(), value.trim());
 
-		}
-		return map;
-	}
+        }
+        return map;
+    }
 
 }

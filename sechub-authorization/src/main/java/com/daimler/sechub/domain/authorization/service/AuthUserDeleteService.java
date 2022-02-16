@@ -14,21 +14,22 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @Service
 public class AuthUserDeleteService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(AuthUserDeleteService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AuthUserDeleteService.class);
 
-	@Autowired
-	AuthUserRepository authUserRepository;
+    @Autowired
+    AuthUserRepository authUserRepository;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Autowired
+    UserInputAssertion assertion;
 
-	@UseCaseAdminDeletesUser(@Step(number=4,next={Step.NO_NEXT_STEP} ,name="Delete user access", description="Authorization layer is informed about user deltete and removes access to sechub. But without any project information"))
-	public void deleteUser(String userId) {
+    @UseCaseAdminDeletesUser(@Step(number = 4, next = {
+            Step.NO_NEXT_STEP }, name = "Delete user access", description = "Authorization layer is informed about user deltete and removes access to sechub. But without any project information"))
+    public void deleteUser(String userId) {
 
-		assertion.isValidUserId(userId);
+        assertion.isValidUserId(userId);
 
-		authUserRepository.deleteById(userId);
-		LOG.info("Deleted auth user:{}",userId);
-	}
+        authUserRepository.deleteById(userId);
+        LOG.info("Deleted auth user:{}", userId);
+    }
 
 }

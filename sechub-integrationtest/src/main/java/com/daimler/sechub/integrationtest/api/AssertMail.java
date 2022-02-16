@@ -8,7 +8,7 @@ public class AssertMail {
 
     /**
      * Assert mail to given test user exists
-     * 
+     *
      * @param to      test user
      * @param subject subject of mail
      */
@@ -19,7 +19,7 @@ public class AssertMail {
     /**
      * Assert that a mail send to administrator email address exist. An admin email
      * is normally a NPM or a mail distribution address
-     * 
+     *
      * @param subject subject of mail
      */
     public static void assertMailToAdminsExists(String subject) {
@@ -28,7 +28,7 @@ public class AssertMail {
 
     /**
      * Assert mail to address exists
-     * 
+     *
      * @param to      mail address
      * @param subject subject of mail
      */
@@ -38,7 +38,7 @@ public class AssertMail {
 
     /**
      * Assert mail to given test user exists
-     * 
+     *
      * @param to                  test user
      * @param subject             subject of mail
      * @param asRegularExpression if <code>true</code> then the subject string is
@@ -51,7 +51,7 @@ public class AssertMail {
     /**
      * Assert that a mail send to administrator email address exist. An admin email
      * is normally a NPM or a mail distribution address
-     * 
+     *
      * @param subject             subject of mail
      * @param asRegularExpression if <code>true</code> then the subject string is
      *                            used as a regular expression.
@@ -62,7 +62,7 @@ public class AssertMail {
 
     /**
      * Assert mail to address exists
-     * 
+     *
      * @param to                  mail address
      * @param subject             subject of mail
      * @param asRegularExpression if <code>true</code> then the subject string is

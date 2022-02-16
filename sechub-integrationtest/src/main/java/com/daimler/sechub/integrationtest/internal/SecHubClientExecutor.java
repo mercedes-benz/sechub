@@ -18,14 +18,14 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import wiremock.com.google.common.io.Files;
+
 import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.api.TestUser;
 import com.daimler.sechub.integrationtest.api.WithSecHubClient.ApiTokenStrategy;
 import com.daimler.sechub.test.TestFileSupport;
 import com.daimler.sechub.test.TestUtil;
-
-import wiremock.com.google.common.io.Files;
 
 public class SecHubClientExecutor {
 
@@ -128,21 +128,23 @@ public class SecHubClientExecutor {
                 fail("No job uuid found - last output line was:" + lastOutputLine);
             }
             String jobUUIDString = jobUUID.toString();
-            /* at this point, we have no information about the project - but job uuid is unique. so we just check the output 
-             * directory for sechub report files with this job uuid. 
+            /*
+             * at this point, we have no information about the project - but job uuid is
+             * unique. so we just check the output directory for sechub report files with
+             * this job uuid.
              */
             FilenameFilter filter = new SecHubReportFileNameFilter(jobUUID);
             File[] files = getOutputFolder().listFiles(filter);
-            if (files.length>1) {
+            if (files.length > 1) {
                 throw new IllegalStateException("There exist multiple report files with same job uuid?!?! This should never happen!");
             }
-            if (files.length==1) {
+            if (files.length == 1) {
                 return files[0]; // found it
             }
-            /* we return this file when not found at all*/
+            /* we return this file when not found at all */
             return new File(getOutputFolder(), "fallback_not_existing__sechub_report_ANY_PROJECTID_" + jobUUIDString + ".json");
         }
-        
+
         public TrafficLight getTrafficLight() {
 
             String last = getLastOutputLine().trim().toUpperCase();
@@ -328,8 +330,8 @@ public class SecHubClientExecutor {
 
     private File resolveExistingExecutableAndAppendAdditionalCommands() {
         File executableFile = null;
-        LOG.debug("sechub client binary path:{}",sechubClientBinaryPath);
-        
+        LOG.debug("sechub client binary path:{}", sechubClientBinaryPath);
+
         if (sechubClientBinaryPath == null) {
             String parentFolder = "sechub-cli/build/go/platform/"; // when not set we use build location
             String sechubExeName = null;

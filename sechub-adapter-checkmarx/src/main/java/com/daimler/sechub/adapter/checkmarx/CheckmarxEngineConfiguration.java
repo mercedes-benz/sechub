@@ -27,7 +27,7 @@ public class CheckmarxEngineConfiguration {
     public String toString() {
         return "CheckmarxEngineConfiguration [id=" + id + ", name=" + name + "]";
     }
-    
+
     @Override
     public int hashCode() {
         return Objects.hash(id, name);

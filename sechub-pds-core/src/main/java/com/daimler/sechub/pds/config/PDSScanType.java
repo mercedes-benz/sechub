@@ -10,7 +10,7 @@ public enum PDSScanType {
     WEB_SCAN("webScan"),
 
     INFRA_SCAN("infraScan"),
-    
+
     UNKNOWN("unknown"),
 
     ;

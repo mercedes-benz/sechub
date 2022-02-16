@@ -74,8 +74,7 @@ public class ScanMappingToScanConfigTransformerTest {
     @Test
     public void one_mapping_containing_two_entries_transformed_to_config() {
         /* prepare */
-        MappingData data = createMappingData(new MappingEntry("x", "y", "z"),
-                new MappingEntry("a", "b", "c"));
+        MappingData data = createMappingData(new MappingEntry("x", "y", "z"), new MappingEntry("a", "b", "c"));
         ScanMapping mapping1 = createMapping("id1", data);
         when(converter.convert(any()))
                 .thenReturn(Arrays.asList(new NamePatternToIdEntry("pattern1", "replacement1"), new NamePatternToIdEntry("pattern2", "replacement2")));
@@ -101,8 +100,7 @@ public class ScanMappingToScanConfigTransformerTest {
     @Test
     public void two_mappings_containing_four_entries_transformed_to_config() {
         /* prepare */
-        MappingData data1 = createMappingData(new MappingEntry("x", "y", "z"),
-                new MappingEntry("a", "b", "c"));
+        MappingData data1 = createMappingData(new MappingEntry("x", "y", "z"), new MappingEntry("a", "b", "c"));
         ScanMapping mapping1 = createMapping("id1", data1);
         MappingData data2 = createMappingData(new MappingEntry("d", "e", null), new MappingEntry("f", "g", null));
         ScanMapping mapping2 = createMapping("id2", data2);

@@ -11,28 +11,28 @@ import com.daimler.sechub.test.TestUtil;
 
 /**
  * This is a simple test application for checkmarx.
- * 
- * This test is a system test, which tests the entire Checkmarx adapter.
- * The test will reach out to the real Checkmarx product to create a new project
- * and will initiate a real scan against a working instance of Checkmarx.
- * 
+ *
+ * This test is a system test, which tests the entire Checkmarx adapter. The
+ * test will reach out to the real Checkmarx product to create a new project and
+ * will initiate a real scan against a working instance of Checkmarx.
+ *
  * @author Albert Tregnaghi, Jeremias Eppler
  *
  */
 public class CheckmarxAdapterTestApplication {
 
-	public static void main(String[] args) throws Exception {
-		System.setProperty("log4j.logger.org.apache.http","ERROR");
-		System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http","OFF");
+    public static void main(String[] args) throws Exception {
+        System.setProperty("log4j.logger.org.apache.http", "ERROR");
+        System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http", "OFF");
 
-		dump("https.proxyHost");
-		dump("https.proxyPort");
-		dump("https.nonProxyHosts");
-		dump("http.proxyHost");
-		dump("http.proxyPort");
-		dump("http.nonProxyHosts");
-		dump("javax.net.ssl.keyStore");
-		dump("javax.net.ssl.trustStore");
+        dump("https.proxyHost");
+        dump("https.proxyPort");
+        dump("https.nonProxyHosts");
+        dump("http.proxyHost");
+        dump("http.proxyPort");
+        dump("http.nonProxyHosts");
+        dump("javax.net.ssl.keyStore");
+        dump("javax.net.ssl.trustStore");
 
         String user = ensureProperty("test.sechub.adapter.checkmarx.user");
         String password = ensureProperty("test.sechub.adapter.checkmarx.password");
@@ -41,12 +41,12 @@ public class CheckmarxAdapterTestApplication {
         String teamId = ensureProperty("test.sechub.adapter.checkmarx.teamid");
         Long presetId = Long.valueOf(ensureProperty("test.sechub.adapter.checkmarx.presetid"));
 
-		String pathInOtherProject = ensurePropertyOrDefault("test.sechub.adapter..checkmarx.zipfilename","zipfile_contains_only_one_simple_java_file.zip");
-	    // "zipfile_contains_only_test1.txt.zip"; // leads to FAILED in queue
-		// "zipfile_contains_sechub_doc_java.zip"; // should work
+        String pathInOtherProject = ensurePropertyOrDefault("test.sechub.adapter..checkmarx.zipfilename", "zipfile_contains_only_one_simple_java_file.zip");
+        // "zipfile_contains_only_test1.txt.zip"; // leads to FAILED in queue
+        // "zipfile_contains_sechub_doc_java.zip"; // should work
 
-		File zipFile = CheckmarxTestFileSupport.getTestfileSupport().createFileFromRoot("sechub-other/testsourcecode/"+pathInOtherProject);
-		/* @formatter:off */
+        File zipFile = CheckmarxTestFileSupport.getTestfileSupport().createFileFromRoot("sechub-other/testsourcecode/" + pathInOtherProject);
+        /* @formatter:off */
 		CheckmarxAdapterConfig config =
 				CheckmarxConfig.builder().
 					setUser(user).
@@ -60,13 +60,13 @@ public class CheckmarxAdapterTestApplication {
 				build();
 		/* @formatter:on */
 
-		CheckmarxAdapterV1 adapter = new CheckmarxAdapterV1();
-		String data = adapter.start(config,new AdapterMetaDataCallback() {
-            
+        CheckmarxAdapterV1 adapter = new CheckmarxAdapterV1();
+        String data = adapter.start(config, new AdapterMetaDataCallback() {
+
             @Override
             public void persist(AdapterMetaData metaData) {
-               System.out.println("update metadata:"+metaData);
-                
+                System.out.println("update metadata:" + metaData);
+
             }
 
             @Override
@@ -74,36 +74,39 @@ public class CheckmarxAdapterTestApplication {
                 return null;
             }
         });
-		File file = TestUtil.createTempFileInBuildFolder("checkmarx-adaptertest-result", "xml").toFile();
-		FileWriter fileWriter= new FileWriter(file);
-		fileWriter.write(data);
-		fileWriter.close();
+        File file = TestUtil.createTempFileInBuildFolder("checkmarx-adaptertest-result", "xml").toFile();
+        FileWriter fileWriter = new FileWriter(file);
+        fileWriter.write(data);
+        fileWriter.close();
 
-		System.out.println("-----------------------------------------------------------------------------------------------------------------");
-		System.out.println("- RESULT:");
-		System.out.println("-----------------------------------------------------------------------------------------------------------------");
-		System.out.println(file.getAbsolutePath());
+        System.out.println("-----------------------------------------------------------------------------------------------------------------");
+        System.out.println("- RESULT:");
+        System.out.println("-----------------------------------------------------------------------------------------------------------------");
+        System.out.println(file.getAbsolutePath());
 
-	}
-	private static String ensureProperty(String key) {
-		return ensurePropertyOrDefault(key, null,true);
-	}
-	private static String ensurePropertyOrDefault(String key, String defaultValue) {
-		return ensurePropertyOrDefault(key, defaultValue,false);
-	}
-	private static String ensurePropertyOrDefault(String key, String defaultValue,boolean ignoreDefault) {
-		String value = System.getProperty(key);
-		if (value==null || value.isEmpty()) {
-			if (ignoreDefault) {
-				throw new IllegalArgumentException(key+" not set in system properties!");
-			}
-			return defaultValue;
-		}
-		return value;
-	}
+    }
 
-	private static void dump(String systemPropertyName) {
-		System.out.println(systemPropertyName + "=" + System.getProperty(systemPropertyName));
+    private static String ensureProperty(String key) {
+        return ensurePropertyOrDefault(key, null, true);
+    }
 
-	}
+    private static String ensurePropertyOrDefault(String key, String defaultValue) {
+        return ensurePropertyOrDefault(key, defaultValue, false);
+    }
+
+    private static String ensurePropertyOrDefault(String key, String defaultValue, boolean ignoreDefault) {
+        String value = System.getProperty(key);
+        if (value == null || value.isEmpty()) {
+            if (ignoreDefault) {
+                throw new IllegalArgumentException(key + " not set in system properties!");
+            }
+            return defaultValue;
+        }
+        return value;
+    }
+
+    private static void dump(String systemPropertyName) {
+        System.out.println(systemPropertyName + "=" + System.getProperty(systemPropertyName));
+
+    }
 }

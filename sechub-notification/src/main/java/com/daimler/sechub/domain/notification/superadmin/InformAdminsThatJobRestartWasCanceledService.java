@@ -18,40 +18,40 @@ import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdminRestartsJobHard;
 @Service
 public class InformAdminsThatJobRestartWasCanceledService {
 
-	@Autowired
-	MailMessageFactory factory;
+    @Autowired
+    MailMessageFactory factory;
 
-	@Autowired
-	NotificationConfiguration notificationConfiguration;
+    @Autowired
+    NotificationConfiguration notificationConfiguration;
 
-	@Autowired
-	EmailService emailService;
-	
-	@UseCaseAdminRestartsJobHard(@Step(number = 3, name = "Inform sechub admins when job restart was canceled"))
-	@UseCaseAdminRestartsJob(@Step(number = 3, name = "Inform sechub admins when job restart was canceled"))
-	public void notify(JobMessage jobMessage, String baseUrl) {
-		requireNonNull(jobMessage);
+    @Autowired
+    EmailService emailService;
 
-		SimpleMailMessage message = factory.createMessage("Restart of SecHub Job " + jobMessage.getJobUUID() + " was canceled");
+    @UseCaseAdminRestartsJobHard(@Step(number = 3, name = "Inform sechub admins when job restart was canceled"))
+    @UseCaseAdminRestartsJob(@Step(number = 3, name = "Inform sechub admins when job restart was canceled"))
+    public void notify(JobMessage jobMessage, String baseUrl) {
+        requireNonNull(jobMessage);
 
-		message.setTo(notificationConfiguration.getEmailAdministrators());
-		message.setText(createEmailContent(jobMessage, baseUrl));
+        SimpleMailMessage message = factory.createMessage("Restart of SecHub Job " + jobMessage.getJobUUID() + " was canceled");
 
-		emailService.send(message);
+        message.setTo(notificationConfiguration.getEmailAdministrators());
+        message.setText(createEmailContent(jobMessage, baseUrl));
 
-	}
+        emailService.send(message);
 
-	private String createEmailContent(JobMessage projectMessage, String baseUrl) {
-		StringBuilder emailContent = new StringBuilder();
-		emailContent.append("Restart of SecHub Job ");
-		emailContent.append(projectMessage.getJobUUID());
-		emailContent.append(" at ").append(baseUrl);
-		emailContent.append(" was canceled.\n\n");
+    }
 
-		emailContent.append(projectMessage.getInfo());
-		
-		String text = emailContent.toString();
-		return text;
-	}
+    private String createEmailContent(JobMessage projectMessage, String baseUrl) {
+        StringBuilder emailContent = new StringBuilder();
+        emailContent.append("Restart of SecHub Job ");
+        emailContent.append(projectMessage.getJobUUID());
+        emailContent.append(" at ").append(baseUrl);
+        emailContent.append(" was canceled.\n\n");
+
+        emailContent.append(projectMessage.getInfo());
+
+        String text = emailContent.toString();
+        return text;
+    }
 
 }

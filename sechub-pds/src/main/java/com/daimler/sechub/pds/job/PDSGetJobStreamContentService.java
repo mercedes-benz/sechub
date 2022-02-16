@@ -93,7 +93,7 @@ public class PDSGetJobStreamContentService {
     /**
      * Fetches job stream data as text. When jobs are still running, the job stream
      * data in DB will be updated (if outdated) on executing machine.
-     * 
+     *
      * @param jobUUID
      * @param streamType
      * @return

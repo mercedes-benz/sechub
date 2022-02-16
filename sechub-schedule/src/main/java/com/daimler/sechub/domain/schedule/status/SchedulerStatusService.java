@@ -18,35 +18,35 @@ import com.daimler.sechub.sharedkernel.messaging.SchedulerMessage;
 @Service
 public class SchedulerStatusService {
 
-	@Autowired
-	@Lazy
-	DomainMessageService eventBus;
+    @Autowired
+    @Lazy
+    DomainMessageService eventBus;
 
-	@Autowired
-	SecHubJobRepository jobRepository;
+    @Autowired
+    SecHubJobRepository jobRepository;
 
-	@Autowired
-	SchedulerConfigService configService;
+    @Autowired
+    SchedulerConfigService configService;
 
-	@IsSendingAsyncMessage(MessageID.SCHEDULER_STATUS_UPDATE)
-	public void buildStatus() {
-		DomainMessage message = DomainMessageFactory.createEmptyRequest(MessageID.SCHEDULER_STATUS_UPDATE);
-		SchedulerMessage sm = new SchedulerMessage();
+    @IsSendingAsyncMessage(MessageID.SCHEDULER_STATUS_UPDATE)
+    public void buildStatus() {
+        DomainMessage message = DomainMessageFactory.createEmptyRequest(MessageID.SCHEDULER_STATUS_UPDATE);
+        SchedulerMessage sm = new SchedulerMessage();
 
-		long amountOfJobsAll=jobRepository.count();
-		long amountOfRunningJobs=jobRepository.countRunningJobs();
-		long amountOfWaitingJobs=jobRepository.countWaitingJobs();
+        long amountOfJobsAll = jobRepository.count();
+        long amountOfRunningJobs = jobRepository.countRunningJobs();
+        long amountOfWaitingJobs = jobRepository.countWaitingJobs();
 
-		boolean processingEnabled = configService.isJobProcessingEnabled();
+        boolean processingEnabled = configService.isJobProcessingEnabled();
 
-		sm.setAmountOfJobsAll(amountOfJobsAll);
-		sm.setAmountOfRunningJobs(amountOfRunningJobs);
-		sm.setAmountOfWaitingJobs(amountOfWaitingJobs);
-		sm.setJobProcessingEnabled(processingEnabled);
+        sm.setAmountOfJobsAll(amountOfJobsAll);
+        sm.setAmountOfRunningJobs(amountOfRunningJobs);
+        sm.setAmountOfWaitingJobs(amountOfWaitingJobs);
+        sm.setJobProcessingEnabled(processingEnabled);
 
-		message.set(MessageDataKeys.SCHEDULER_STATUS_DATA, sm);
+        message.set(MessageDataKeys.SCHEDULER_STATUS_DATA, sm);
 
-		eventBus.sendAsynchron(message);
-	}
+        eventBus.sendAsynchron(message);
+    }
 
 }

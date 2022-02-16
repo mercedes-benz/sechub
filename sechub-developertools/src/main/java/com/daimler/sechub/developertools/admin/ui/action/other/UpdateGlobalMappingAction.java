@@ -23,19 +23,19 @@ public class UpdateGlobalMappingAction extends AbstractUIAction {
         if (!mappingId.isPresent()) {
             return;
         }
-        
+
         String mappingIdentifier = mappingId.get();
         String data = getContext().getAdministration().fetchGlobalMappings(mappingIdentifier);
         data = JSONDeveloperHelper.INSTANCE.beatuifyJSON(data);
-        output("Fetched mapping data for mapping:"+mappingIdentifier+":\n"+data);
-        
-        Optional<String> dataNew = getUserInputFromTextArea("Global Mapping:"+mappingIdentifier, data);
+        output("Fetched mapping data for mapping:" + mappingIdentifier + ":\n" + data);
+
+        Optional<String> dataNew = getUserInputFromTextArea("Global Mapping:" + mappingIdentifier, data);
         if (!dataNew.isPresent()) {
             return;
         }
-        getContext().getAdministration().updateGlobalMappings(mappingIdentifier,dataNew.get());
-        
-        outputAsTextOnSuccess("Updated mapping "+mappingIdentifier);
+        getContext().getAdministration().updateGlobalMappings(mappingIdentifier, dataNew.get());
+
+        outputAsTextOnSuccess("Updated mapping " + mappingIdentifier);
     }
 
 }

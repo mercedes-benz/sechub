@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class LoopbackAddressFinder {
-	/* @formatter:off
+    /* @formatter:off
 	 * From: https://www.ietf.org/rfc/rfc2732.txt :
 	 *
 	 * To use a literal IPv6 address in a
@@ -33,38 +33,38 @@ public class LoopbackAddressFinder {
 	 *
 	 * @formatter:on
 	 */
-	public boolean isLoopback(String ipAddressAsString) {
-		if (ipAddressAsString==null) {
-			return false;
-		}
-		String ipAddress=ipAddressAsString.trim();
-		if (ipAddressAsString.isEmpty()) {
-			return false;
-		}
-		if (ipAddress.contentEquals("localhost")) {
-			return true;
-		}
-		if (ipAddress.startsWith("127.")) {
-			return true;
-		}
-		if (! ipAddress.startsWith("[")) {
-			/* no IPv6 parts, so all valid at this point*/
-			return false;
-		}
-		/* IPv6 parts:*/
-		if (ipAddress.equals("[::1]")) {
-			return true;
-		}
-		if (ipAddress.equals("[0:0:0:0:0:0:0:1]")) {
-			return true;
-		}
-		return false;
-	}
+    public boolean isLoopback(String ipAddressAsString) {
+        if (ipAddressAsString == null) {
+            return false;
+        }
+        String ipAddress = ipAddressAsString.trim();
+        if (ipAddressAsString.isEmpty()) {
+            return false;
+        }
+        if (ipAddress.contentEquals("localhost")) {
+            return true;
+        }
+        if (ipAddress.startsWith("127.")) {
+            return true;
+        }
+        if (!ipAddress.startsWith("[")) {
+            /* no IPv6 parts, so all valid at this point */
+            return false;
+        }
+        /* IPv6 parts: */
+        if (ipAddress.equals("[::1]")) {
+            return true;
+        }
+        if (ipAddress.equals("[0:0:0:0:0:0:0:1]")) {
+            return true;
+        }
+        return false;
+    }
 
-	public boolean isLoopback(InetAddress ip) {
-		if (ip==null) {
-			return false;
-		}
-		return ip.isLoopbackAddress();
-	}
+    public boolean isLoopback(InetAddress ip) {
+        if (ip == null) {
+            return false;
+        }
+        return ip.isLoopbackAddress();
+    }
 }

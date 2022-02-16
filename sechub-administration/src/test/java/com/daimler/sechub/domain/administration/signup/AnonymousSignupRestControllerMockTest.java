@@ -33,35 +33,35 @@ import com.daimler.sechub.test.TestPortProvider;
 @RunWith(SpringRunner.class)
 @WebMvcTest(AnonymousSignupRestController.class)
 /* @formatter:off */
-@ContextConfiguration(classes = { 
-        AnonymousSignupRestController.class, 
-        SignupJsonInputValidator.class, 
-        UserIdValidationImpl.class, 
+@ContextConfiguration(classes = {
+        AnonymousSignupRestController.class,
+        SignupJsonInputValidator.class,
+        UserIdValidationImpl.class,
         EmailValidationImpl.class,
-		ApiVersionValidationFactory.class, 
+		ApiVersionValidationFactory.class,
 		AnonymousSignupRestControllerMockTest.SimpleTestConfiguration.class })
 /* @formatter:on */
 @WithMockUser
 @ActiveProfiles(Profiles.TEST)
 public class AnonymousSignupRestControllerMockTest {
 
-	private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getWebMVCTestHTTPSPort();
+    private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getWebMVCTestHTTPSPort();
 
-	@Autowired
-	private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-	@MockBean
-	private AnonymousSignupCreateService mockedSignupCreateService;
+    @MockBean
+    private AnonymousSignupCreateService mockedSignupCreateService;
 
-	@MockBean
-	private UserInputAssertion assertion;
+    @MockBean
+    private UserInputAssertion assertion;
 
-	@Test
-	public void calling_with_api_1_0_and_valid_userid_and_email_calls_signup_create_service_and_returns_HTTP_200() throws Exception {
-		/* prepare */
+    @Test
+    public void calling_with_api_1_0_and_valid_userid_and_email_calls_signup_create_service_and_returns_HTTP_200() throws Exception {
+        /* prepare */
 
-		/* execute */
-		/* @formatter:off */
+        /* execute */
+        /* @formatter:off */
         this.mockMvc.perform(
         		post(https(PORT_USED).buildUserSignUpUrl()).
         			contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -71,14 +71,14 @@ public class AnonymousSignupRestControllerMockTest {
         		);
 
         /* @formatter:on */
-		verify(mockedSignupCreateService).register(any());
-	}
+        verify(mockedSignupCreateService).register(any());
+    }
 
-	@Test
-	public void calling_with_api_X_0_and_valid_userid_and_email_returns_HTTP_400_BAD_REQUEST() throws Exception {
-		/* prepare */
+    @Test
+    public void calling_with_api_X_0_and_valid_userid_and_email_returns_HTTP_400_BAD_REQUEST() throws Exception {
+        /* prepare */
 
-		/* execute + test @formatter:off */
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(https(PORT_USED).buildUserSignUpUrl()).
         			contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -88,13 +88,13 @@ public class AnonymousSignupRestControllerMockTest {
         		);
 
         /* @formatter:on */
-	}
+    }
 
-	@Test
-	public void calling_empty_returns_HTTP_400_BAD_REQUEST() throws Exception {
-		/* prepare */
+    @Test
+    public void calling_empty_returns_HTTP_400_BAD_REQUEST() throws Exception {
+        /* prepare */
 
-		/* execute + test @formatter:off */
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(https(PORT_USED).buildUserSignUpUrl()).
         			contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -103,13 +103,13 @@ public class AnonymousSignupRestControllerMockTest {
         			andExpect(status().isBadRequest()
         		);
         /* @formatter:on */
-	}
+    }
 
-	@Test
-	public void calling_invalid_json_returns_HTTP_400_BAD_REQUEST() throws Exception {
-		/* prepare */
+    @Test
+    public void calling_invalid_json_returns_HTTP_400_BAD_REQUEST() throws Exception {
+        /* prepare */
 
-		/* execute + test @formatter:off */
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(https(PORT_USED).buildUserSignUpUrl()).
         			contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -118,13 +118,13 @@ public class AnonymousSignupRestControllerMockTest {
         			andExpect(status().isBadRequest()
         		);
         /* @formatter:on */
-	}
+    }
 
-	@Test
-	public void calling_with_api_1_0_and_userid_not_set_but_valid_email_returns_HTTP_400_BAD_REQUEST() throws Exception {
-		/* prepare */
+    @Test
+    public void calling_with_api_1_0_and_userid_not_set_but_valid_email_returns_HTTP_400_BAD_REQUEST() throws Exception {
+        /* prepare */
 
-		/* execute + test @formatter:off */
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(https(PORT_USED).buildUserSignUpUrl()).
         			contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -134,17 +134,17 @@ public class AnonymousSignupRestControllerMockTest {
         		);
 
         /* @formatter:on */
-	}
+    }
 
-	/*
-	 * FIXME Albert Tregnaghi, 2018-07-04: write a test case to ensure the content
-	 * (emailadress etc) is really injected !
-	 */
-	@Test
-	public void calling_with_api_1_0_and_userid_set_but_NO_valid_email_returns_HTTP_400_BAD_REQUEST() throws Exception {
-		/* prepare */
+    /*
+     * FIXME Albert Tregnaghi, 2018-07-04: write a test case to ensure the content
+     * (emailadress etc) is really injected !
+     */
+    @Test
+    public void calling_with_api_1_0_and_userid_set_but_NO_valid_email_returns_HTTP_400_BAD_REQUEST() throws Exception {
+        /* prepare */
 
-		/* execute + test @formatter:off */
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(https(PORT_USED).buildUserSignUpUrl()).
         			contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -154,21 +154,21 @@ public class AnonymousSignupRestControllerMockTest {
         		);
 
         /* @formatter:on */
-	}
+    }
 
-	@TestConfiguration
-	@Profile(Profiles.TEST)
-	@EnableAutoConfiguration
-	public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    @TestConfiguration
+    @Profile(Profiles.TEST)
+    @EnableAutoConfiguration
+    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
 
-	}
+    }
 
-	private SignupJsonInput createUserSelfRegistration(String api, String email, String name) {
+    private SignupJsonInput createUserSelfRegistration(String api, String email, String name) {
 
-		SignupJsonInput created = new SignupJsonInput();
-		created.setApiVersion(api);
-		created.setEmailAdress(email);
-		created.setUserId(name);
-		return created;
-	}
+        SignupJsonInput created = new SignupJsonInput();
+        created.setApiVersion(api);
+        created.setEmailAdress(email);
+        created.setUserId(name);
+        return created;
+    }
 }

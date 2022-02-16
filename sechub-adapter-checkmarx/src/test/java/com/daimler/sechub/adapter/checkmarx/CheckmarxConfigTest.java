@@ -34,7 +34,7 @@ public class CheckmarxConfigTest {
         /* test */
         assertEquals(newSecret, config.getClientSecret());
     }
-    
+
     @Test
     public void builder_creates_config_with_engine_configuration_name_set() {
         /* prepare */
@@ -48,7 +48,7 @@ public class CheckmarxConfigTest {
         /* test */
         assertEquals(engineConfigurationName, config.getEngineConfigurationName());
     }
-    
+
     @Test
     public void builder_creates_config_with_default_engine_configuration_name() {
         /* prepare */

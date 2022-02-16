@@ -16,47 +16,47 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @MustBeKeptStable("This configuration is used by communication between (api) schedule domain and administration - and maybe others")
 public class SchedulerMessage implements JSONable<SchedulerMessage> {
 
-	private boolean jobProcessingEnabled;
+    private boolean jobProcessingEnabled;
 
-	private long amountOfAllJobs;
-	private long amountOfWaitingJobs;
-	private long amountOfRunningJobs;
+    private long amountOfAllJobs;
+    private long amountOfWaitingJobs;
+    private long amountOfRunningJobs;
 
-	public void setAmountOfJobsAll(long amountOfJobsAll) {
-		this.amountOfAllJobs = amountOfJobsAll;
-	}
+    public void setAmountOfJobsAll(long amountOfJobsAll) {
+        this.amountOfAllJobs = amountOfJobsAll;
+    }
 
-	public boolean isJobProcessingEnabled() {
-		return jobProcessingEnabled;
-	}
+    public boolean isJobProcessingEnabled() {
+        return jobProcessingEnabled;
+    }
 
-	public void setJobProcessingEnabled(boolean enabled) {
-		this.jobProcessingEnabled = enabled;
-	}
+    public void setJobProcessingEnabled(boolean enabled) {
+        this.jobProcessingEnabled = enabled;
+    }
 
-	public long getAmountOfAllJobs() {
-		return amountOfAllJobs;
-	}
+    public long getAmountOfAllJobs() {
+        return amountOfAllJobs;
+    }
 
-	public long getAmountOfWaitingJobs() {
-		return amountOfWaitingJobs;
-	}
+    public long getAmountOfWaitingJobs() {
+        return amountOfWaitingJobs;
+    }
 
-	public long getAmountOfRunningJobs() {
-		return amountOfRunningJobs;
-	}
+    public long getAmountOfRunningJobs() {
+        return amountOfRunningJobs;
+    }
 
-	public void setAmountOfRunningJobs(long amountOfRunningJobs) {
-		this.amountOfRunningJobs = amountOfRunningJobs;
-	}
+    public void setAmountOfRunningJobs(long amountOfRunningJobs) {
+        this.amountOfRunningJobs = amountOfRunningJobs;
+    }
 
-	public void setAmountOfWaitingJobs(long amountOfWaitingJobs) {
-		this.amountOfWaitingJobs = amountOfWaitingJobs;
-	}
+    public void setAmountOfWaitingJobs(long amountOfWaitingJobs) {
+        this.amountOfWaitingJobs = amountOfWaitingJobs;
+    }
 
-	@Override
-	public Class<SchedulerMessage> getJSONTargetClass() {
-		return SchedulerMessage.class;
-	}
+    @Override
+    public Class<SchedulerMessage> getJSONTargetClass() {
+        return SchedulerMessage.class;
+    }
 
 }

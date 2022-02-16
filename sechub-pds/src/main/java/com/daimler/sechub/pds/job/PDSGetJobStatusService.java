@@ -16,20 +16,19 @@ import com.daimler.sechub.pds.usecase.PDSStep;
 import com.daimler.sechub.pds.usecase.UseCaseUserFetchesJobStatus;
 
 @Service
-@RolesAllowed({PDSRoleConstants.ROLE_SUPERADMIN, PDSRoleConstants.ROLE_USER})
+@RolesAllowed({ PDSRoleConstants.ROLE_SUPERADMIN, PDSRoleConstants.ROLE_USER })
 public class PDSGetJobStatusService {
 
     @Autowired
     PDSJobRepository repository;
 
-    @UseCaseUserFetchesJobStatus(@PDSStep(name="service call",description = "returns job status",number=2))
+    @UseCaseUserFetchesJobStatus(@PDSStep(name = "service call", description = "returns job status", number = 2))
     public PDSJobStatus getJobStatus(UUID jobUUID) {
         notNull(jobUUID, "job uuid may not be null!");
-        
-        PDSJob job = assertJobFound(jobUUID,repository);
-        
+
+        PDSJob job = assertJobFound(jobUUID, repository);
+
         return new PDSJobStatus(job);
     }
-    
 
 }

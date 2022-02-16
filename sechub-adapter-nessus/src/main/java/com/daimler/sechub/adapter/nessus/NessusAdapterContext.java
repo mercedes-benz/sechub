@@ -5,22 +5,22 @@ import com.daimler.sechub.adapter.AdapterContext;
 
 public interface NessusAdapterContext extends AdapterContext<NessusAdapterConfig> {
 
-	String getNessusPolicyUID();
+    String getNessusPolicyUID();
 
-	void setNessusPolicyId(String nessusPolicyUID);
+    void setNessusPolicyId(String nessusPolicyUID);
 
-	void setNessusSessionToken(String token);
-	
-	String getNessusSessionToken();
+    void setNessusSessionToken(String token);
 
-	void setNessusScanId(Long scanId);
-	
-	Long getNessusScanId();
-	
-	String getHistoryId();
-	
-	void setHistoryId(String id);
+    String getNessusSessionToken();
 
-	String getExportFileId();
+    void setNessusScanId(Long scanId);
+
+    Long getNessusScanId();
+
+    String getHistoryId();
+
+    void setHistoryId(String id);
+
+    String getExportFileId();
 
 }

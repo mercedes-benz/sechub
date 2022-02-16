@@ -15,7 +15,7 @@ public class FilenameVariantConverter {
 
     /**
      * Creates a convert with given identifier.
-     * 
+     *
      * @param varIdentifier when null default identifier {@link #DEFAULT_IDENTIFIER}
      *                      is used.
      */
@@ -30,7 +30,7 @@ public class FilenameVariantConverter {
      * Resolves variant definition from given file name (e.g.
      * test1234-variant_test.html will be resolved to "test" variant when default
      * identifier {@link #DEFAULT_IDENTIFIER} is used)
-     * 
+     *
      * @param fileName
      * @return
      */
@@ -51,14 +51,16 @@ public class FilenameVariantConverter {
     }
 
     /**
-     * Builds a variant file name - e.g. given filename 'test1234.html' and variant 'test' will be 
-     * transformed to "test1234-variant_test.html" when default identifier {@link #DEFAULT_IDENTIFIER} is used.
+     * Builds a variant file name - e.g. given filename 'test1234.html' and variant
+     * 'test' will be transformed to "test1234-variant_test.html" when default
+     * identifier {@link #DEFAULT_IDENTIFIER} is used.
+     *
      * @param fileName
      * @param variant
      * @return
      */
     public String toVariantFileName(String fileName, String variant) {
-        if (variant==null || variant.isEmpty()) {
+        if (variant == null || variant.isEmpty()) {
             return fileName;
         }
         if (fileName == null) {
@@ -82,14 +84,14 @@ public class FilenameVariantConverter {
         if (index == -1) {
             return fileName;
         }
-        String before = fileName.substring(0,index);
+        String before = fileName.substring(0, index);
         String subString = fileName.substring(index + variantIdentifier.length());
         index = subString.indexOf('.');
         if (index == -1) {
-          throw new IllegalArgumentException("no '.' found, but this is not allowed!");
+            throw new IllegalArgumentException("no '.' found, but this is not allowed!");
         }
         String ending = subString.substring(index);
-        return before+ending;
+        return before + ending;
     }
 
 }

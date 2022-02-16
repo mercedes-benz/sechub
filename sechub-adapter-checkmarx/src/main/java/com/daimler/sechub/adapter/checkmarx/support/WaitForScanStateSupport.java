@@ -13,50 +13,49 @@ import com.daimler.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
 import com.daimler.sechub.adapter.checkmarx.CheckmarxContext;
 import com.daimler.sechub.adapter.support.JSONAdapterSupport.Access;
 
-class WaitForScanStateSupport extends WaitForStateSupport<CheckmarxContext, CheckmarxAdapterConfig>{
+class WaitForScanStateSupport extends WaitForStateSupport<CheckmarxContext, CheckmarxAdapterConfig> {
 
-	private CheckmarxOAuthSupport oauthSupport;
+    private CheckmarxOAuthSupport oauthSupport;
 
     public WaitForScanStateSupport(CheckmarxOAuthSupport oauthSupport, Adapter<?> adapter) {
-		super(adapter);
-		this.oauthSupport=oauthSupport;
-	}
+        super(adapter);
+        this.oauthSupport = oauthSupport;
+    }
 
-	@Override
-	protected boolean isWaitingForOKWhenInState(String state, CheckmarxContext context) throws Exception {
-		return context.getScanDetails().isRunning();
-	}
+    @Override
+    protected boolean isWaitingForOKWhenInState(String state, CheckmarxContext context) throws Exception {
+        return context.getScanDetails().isRunning();
+    }
 
-	@Override
-	protected String getCurrentState(CheckmarxContext context) throws Exception {
-		fetchScanDetails(context);
-		return null;
-	}
-	
-	// https://checkmarx.atlassian.net/wiki/spaces/KC/pages/569442454/Get+SAST+Scan+Details+by+Scan+Id+-+GET+sast+scans+id+v8.8.0+and+up
-	private void fetchScanDetails(CheckmarxContext context) throws AdapterException {
-	    oauthSupport.refreshBearerTokenWhenNecessary(context);
-	    
-		ScanDetails details = context.getScanDetails();
-		try {
-			RestOperations restTemplate = context.getRestOperations();
-			ResponseEntity<String> queueData = restTemplate.getForEntity(
-					context.getAPIURL("sast/scans/" + context.getSessionData().getScanId()), String.class);
-			String body = queueData.getBody();
+    @Override
+    protected String getCurrentState(CheckmarxContext context) throws Exception {
+        fetchScanDetails(context);
+        return null;
+    }
 
-			Access status = context.json().fetch("status", body);
-			String statusName = status.fetch("name").asText();
-			details.statusName =statusName;
+    // https://checkmarx.atlassian.net/wiki/spaces/KC/pages/569442454/Get+SAST+Scan+Details+by+Scan+Id+-+GET+sast+scans+id+v8.8.0+and+up
+    private void fetchScanDetails(CheckmarxContext context) throws AdapterException {
+        oauthSupport.refreshBearerTokenWhenNecessary(context);
 
-		}catch(HttpStatusCodeException e) {
-			if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
-				/* ok just no longer in queue / or never existed */
-				details.notFound=true;
-				return;
-			}
-			throw e; // rethrow
-		}
+        ScanDetails details = context.getScanDetails();
+        try {
+            RestOperations restTemplate = context.getRestOperations();
+            ResponseEntity<String> queueData = restTemplate.getForEntity(context.getAPIURL("sast/scans/" + context.getSessionData().getScanId()), String.class);
+            String body = queueData.getBody();
 
-	}
-	
+            Access status = context.json().fetch("status", body);
+            String statusName = status.fetch("name").asText();
+            details.statusName = statusName;
+
+        } catch (HttpStatusCodeException e) {
+            if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
+                /* ok just no longer in queue / or never existed */
+                details.notFound = true;
+                return;
+            }
+            throw e; // rethrow
+        }
+
+    }
+
 }

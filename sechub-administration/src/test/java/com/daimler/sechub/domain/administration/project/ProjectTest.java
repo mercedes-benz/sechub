@@ -11,7 +11,7 @@ class ProjectTest {
 
     @Test
     void a_new_project_has_access_level_full() {
-        assertEquals(ProjectAccessLevel.FULL,new Project().getAccessLevel());
+        assertEquals(ProjectAccessLevel.FULL, new Project().getAccessLevel());
     }
 
 }

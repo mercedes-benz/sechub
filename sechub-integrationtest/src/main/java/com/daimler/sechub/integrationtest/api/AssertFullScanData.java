@@ -50,7 +50,7 @@ public class AssertFullScanData {
      * debug mode. Reason: The temporary files are automatically deleted when the
      * test is done! So only while test is running you have the chance to inspect
      * the zip file content.
-     * 
+     *
      * @return
      */
     public AssertFullScanData dumpDownloadFilePath() {
@@ -72,12 +72,11 @@ public class AssertFullScanData {
         resolveFileStartingWith(name);
         return this;
     }
-    
+
     public FullScanDataElement resolveFile(String name) {
         return assertFile(name, fullDataScanElements, ScanMode.EQUAL);
     }
 
-    
     public FullScanDataElement resolveFileStartingWith(String name) {
         return assertFile(name, fullDataScanElements, ScanMode.STARTSWITH);
     }
@@ -132,12 +131,12 @@ public class AssertFullScanData {
         public String toString() {
             return "FullScanDataElement [fileName=" + fileName + "]";
         }
-        
+
         public AdapterMetaData asAdapterMetaData() {
             try {
-                return TestJSONHelper.get().getMapper().readValue(content.getBytes(),AdapterMetaData.class);
+                return TestJSONHelper.get().getMapper().readValue(content.getBytes(), AdapterMetaData.class);
             } catch (IOException e) {
-              throw new IllegalStateException("Was not able to convert to adapter meta data", e);
+                throw new IllegalStateException("Was not able to convert to adapter meta data", e);
             }
         }
     }

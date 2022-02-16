@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.daimler.sechub.commons.pds.PDSConfigDataKeyProvider;
 import com.daimler.sechub.commons.pds.ExecutionPDSKey;
+import com.daimler.sechub.commons.pds.PDSConfigDataKeyProvider;
 import com.daimler.sechub.pds.config.PDSProductSetup;
 import com.daimler.sechub.pds.config.PDSProdutParameterDefinition;
 import com.daimler.sechub.pds.config.PDSProdutParameterSetup;

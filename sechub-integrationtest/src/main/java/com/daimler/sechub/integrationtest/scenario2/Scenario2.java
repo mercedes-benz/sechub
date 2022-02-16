@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest.scenario2;
 
+import static com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultProfiles.PROFILE_1;
+
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.api.TestUser;
 import com.daimler.sechub.integrationtest.internal.AbstractGrowingSecHubServerTestScenario;
-import static com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultProfiles.PROFILE_1;
 
 /**
  * In this scenario following is automatically initialized:

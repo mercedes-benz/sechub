@@ -116,7 +116,8 @@ public class FalsePositiveMetaData {
         if (getClass() != obj.getClass())
             return false;
         FalsePositiveMetaData other = (FalsePositiveMetaData) obj;
-        return Objects.equals(code, other.code) && Objects.equals(web, other.web) && Objects.equals(name, other.name) && scanType == other.scanType && severity == other.severity;
+        return Objects.equals(code, other.code) && Objects.equals(web, other.web) && Objects.equals(name, other.name) && scanType == other.scanType
+                && severity == other.severity;
     }
 
 }

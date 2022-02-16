@@ -12,16 +12,15 @@ import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 
 @Component
 public class ScanProgressMonitorFactory {
-    
+
     @Autowired
     @Lazy
     DomainMessageService eventBus;
-    
+
     public ProgressMonitor createProgressMonitor(Long batchJobId) {
         notNull(batchJobId, "batchjob id must be not null!");
-        
+
         return new ScanProgressMonitor(eventBus, batchJobId);
     }
-    
-    
+
 }

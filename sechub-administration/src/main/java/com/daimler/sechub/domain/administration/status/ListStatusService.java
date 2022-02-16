@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class ListStatusService {
 
-	@Autowired
-	StatusEntryRepository repository;
+    @Autowired
+    StatusEntryRepository repository;
 
-	public List<StatusEntry> fetchAllStatusEntries(){
-		return repository.findAll();
-	}
+    public List<StatusEntry> fetchAllStatusEntries() {
+        return repository.findAll();
+    }
 
 }

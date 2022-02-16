@@ -6,11 +6,10 @@ import java.io.InputStream;
 
 import org.springframework.core.io.InputStreamResource;
 
-
 /**
- * See https://github.com/spring-projects/spring-framework/issues/18147
- * Works with {@link ResourceHttpMessageConverterHandlingInputStreams} to forward input stream from
- * file-uploads without reading everything into memory.
+ * See https://github.com/spring-projects/spring-framework/issues/18147 Works
+ * with {@link ResourceHttpMessageConverterHandlingInputStreams} to forward
+ * input stream from file-uploads without reading everything into memory.
  *
  */
 public class MultipartInputStreamFileResource extends InputStreamResource {
@@ -21,6 +20,7 @@ public class MultipartInputStreamFileResource extends InputStreamResource {
         super(inputStream);
         this.filename = filename;
     }
+
     @Override
     public String getFilename() {
         return this.filename;
@@ -31,4 +31,3 @@ public class MultipartInputStreamFileResource extends InputStreamResource {
         return -1; // we do not want to generally read the whole stream into memory ...
     }
 }
-

@@ -9,16 +9,16 @@ import org.junit.Test;
 import com.daimler.sechub.domain.scan.TargetIdentifyingMultiInstallSetup;
 
 public class NessusInstallSetupImplTest {
-	private NessusInstallSetupImpl setupToTest;
+    private NessusInstallSetupImpl setupToTest;
 
-	@Before
-	public void before() {
-		setupToTest = new NessusInstallSetupImpl();
-	}
-	
-	@Test
-	public void is_extending_double_install() {
-		assertTrue(setupToTest instanceof TargetIdentifyingMultiInstallSetup);
-	}
+    @Before
+    public void before() {
+        setupToTest = new NessusInstallSetupImpl();
+    }
+
+    @Test
+    public void is_extending_double_install() {
+        assertTrue(setupToTest instanceof TargetIdentifyingMultiInstallSetup);
+    }
 
 }

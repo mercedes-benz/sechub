@@ -39,10 +39,10 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
     @Override
     public int countAmountOfOwnedProjects(String userId) {
-        
+
         Query countUserIsOwnerOfProject = em.createNativeQuery(QUERY_COUNT_USER_IS_OWNER_OF_PROJECT);
         countUserIsOwnerOfProject.setParameter(1, userId);
-        
+
         Object result = countUserIsOwnerOfProject.getSingleResult();
         Number number = (Number) result;
         return number.intValue();

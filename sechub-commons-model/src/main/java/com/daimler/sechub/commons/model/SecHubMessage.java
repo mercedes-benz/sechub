@@ -87,6 +87,5 @@ public class SecHubMessage implements Comparable<SecHubMessage> {
     public String toString() {
         return "SecHubMessage [" + (type != null ? "type=" + type + ", " : "") + (text != null ? "text=" + text : "") + "]";
     }
-    
-    
+
 }

@@ -46,26 +46,25 @@ class ScanExecutionTasklet implements Tasklet {
         String secHubJobUUIDAsString = jobParameters.getString(SchedulingConstants.BATCHPARAM_SECHUB_UUID);
 
         UUID secHubJobUUID = UUID.fromString(secHubJobUUIDAsString);
-        ScheduleSecHubJob sechubJob=null;
-        
+        ScheduleSecHubJob sechubJob = null;
+
         try {
             sechubJob = scope.getSecHubJobRepository().getById(secHubJobUUID);
-            
+
             /* execute sechub job synchron */
-            SynchronSecHubJobExecutor trigger = new SynchronSecHubJobExecutor(scope.getEventBusService(),scope.getSecHubJobUpdater());
+            SynchronSecHubJobExecutor trigger = new SynchronSecHubJobExecutor(scope.getEventBusService(), scope.getSecHubJobUpdater());
             trigger.execute(sechubJob, batchJobId);
-            
+
         } catch (Exception e) {
             LOG.error("Error happend at spring batch task execution:" + e.getMessage(), e);
 
             markSechHubJobFailed(secHubJobUUID);
             sendJobFailed(secHubJobUUID);
-            
+
         }
         return RepeatStatus.FINISHED;
     }
-    
-    
+
     private void markSechHubJobFailed(UUID secHubJobUUID) {
         updateSecHubJob(secHubJobUUID, ExecutionResult.FAILED, null);
 

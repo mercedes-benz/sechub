@@ -9,12 +9,12 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * Physical location property. See <a href=
  * "https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317673">SARIF
  * 2.1.0 specification entry</a>
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
 @JsonPropertyOrder({ "artifactLocation" })
-public class PhysicalLocation extends SarifObject{
+public class PhysicalLocation extends SarifObject {
     private ArtifactLocation artifactLocation;
     private Region region;
 

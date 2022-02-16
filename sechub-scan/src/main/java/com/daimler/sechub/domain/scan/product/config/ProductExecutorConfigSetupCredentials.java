@@ -9,7 +9,6 @@ public class ProductExecutorConfigSetupCredentials {
     private String user;
 
     private String password;
-    
 
     public void setUser(String user) {
         this.user = user;

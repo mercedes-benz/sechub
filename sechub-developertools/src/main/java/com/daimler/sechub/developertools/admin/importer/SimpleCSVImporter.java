@@ -34,9 +34,9 @@ public class SimpleCSVImporter {
      * @param insistColumnsAllSame when <code>true</code> data rows must contain all
      *                             content, if <code>false</code> then only headline
      *                             will be checked to contain expected max amount of
-     *                             columns and content can have less (so optional) columns- but
-     *                             when column count is greater than expected max
-     *                             column this will also throw an error
+     *                             columns and content can have less (so optional)
+     *                             columns- but when column count is greater than
+     *                             expected max column this will also throw an error
      * @return
      * @throws IOException
      */
@@ -49,7 +49,7 @@ public class SimpleCSVImporter {
             while ((line = br.readLine()) != null) {
                 lineNr++;
                 CSVRow row = CSVRow.importRow(line);
-                
+
                 int columnCount = row.columns.size();
                 if (columnCount > maxColumns) {
                     throw new IllegalStateException("Column count expected:" + maxColumns + " but got " + columnCount + " in line:" + lineNr);

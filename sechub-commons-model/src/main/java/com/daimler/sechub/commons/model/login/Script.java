@@ -9,5 +9,5 @@ public class Script {
 
     public Optional<List<Page>> getPages() {
         return pages;
-    }    
+    }
 }

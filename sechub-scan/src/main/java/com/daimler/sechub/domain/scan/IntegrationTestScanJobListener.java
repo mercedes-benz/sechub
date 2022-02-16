@@ -38,9 +38,11 @@ public class IntegrationTestScanJobListener implements ScanJobListener {
     }
 
     public void cancel(UUID jobUUID) {
-        /* could be unnecessary - because now the normal cancel operation does also cancel job state
-         * but this is faster and no batch job check at scheduler domain is necessary (so reduce events).
-         * So we still keep this method / class for integration tests.
+        /*
+         * could be unnecessary - because now the normal cancel operation does also
+         * cancel job state but this is faster and no batch job check at scheduler
+         * domain is necessary (so reduce events). So we still keep this method / class
+         * for integration tests.
          */
         LOG.debug("try to cancel job:{}", jobUUID);
         synchronized (MONITOR) {
@@ -55,7 +57,7 @@ public class IntegrationTestScanJobListener implements ScanJobListener {
 
     /**
      * Count all registered jobs (so means running jobs)
-     * 
+     *
      * @return
      */
     public long countAll() {

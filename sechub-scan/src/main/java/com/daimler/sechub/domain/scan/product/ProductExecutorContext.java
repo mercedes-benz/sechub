@@ -15,7 +15,6 @@ import com.daimler.sechub.adapter.AdapterMetaDataCallback;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig;
 
 public class ProductExecutorContext {
-    
 
     private static final Logger LOG = LoggerFactory.getLogger(ProductExecutorContext.class);
 
@@ -25,18 +24,19 @@ public class ProductExecutorContext {
 
     private ProductExecutorConfig executorConfig;
 
-    
     ProductExecutorContext(ProductExecutorConfig executorConfig, List<ProductResult> formerResults) {
         notNull(executorConfig, "executorConfig may not be null");
         notNull(formerResults, "formerResults may not be null");
 
-        this.executorConfig=executorConfig;
-        this.formerResults=formerResults;
+        this.executorConfig = executorConfig;
+        this.formerResults = formerResults;
     }
-        
+
     /**
-     * Creates executor context. Does also setup first former result as current result
-     * @param config 
+     * Creates executor context. Does also setup first former result as current
+     * result
+     *
+     * @param config
      * @param formerResults
      * @param callback
      */
@@ -44,28 +44,28 @@ public class ProductExecutorContext {
         notNull(executorConfig, "executorConfig may not be null");
         notNull(formerResults, "formerResults may not be null");
 
-        this.executorConfig=executorConfig;
-        this.formerResults=formerResults;
-        this.callback=callback;
-        
+        this.executorConfig = executorConfig;
+        this.formerResults = formerResults;
+        this.callback = callback;
+
         afterCallbackSet();
     }
-    
+
     void setCallback(ProductExecutorCallback callback) {
         this.callback = callback;
     }
 
     /**
-     * The returned configuration contains configuration setup which will be used by executors - 
-     * REMARK: some old executors will not use the configuration but insist on environment variables
-     * (e.g. CHECKMARX V1, NESSUS V1, NETSPARKER V1)
-     * 
+     * The returned configuration contains configuration setup which will be used by
+     * executors - REMARK: some old executors will not use the configuration but
+     * insist on environment variables (e.g. CHECKMARX V1, NESSUS V1, NETSPARKER V1)
+     *
      * @return executor configuration, never <code>null</code>
      */
     public ProductExecutorConfig getExecutorConfig() {
         return executorConfig;
     }
-    
+
     public AdapterMetaDataCallback getCallback() {
         return callback;
     }
@@ -76,40 +76,40 @@ public class ProductExecutorContext {
         }
         return null;
     }
-    
+
     void afterCallbackSet() {
         useFirstFormerResult();
     }
-    
+
     private void useFirstFormerResult() {
         callback.setCurrentProductResult(getFormerProductResultOrNull());
     }
-    
+
     public void useFirstFormerResultHavingMetaData(String key, URI uri) {
-        useFirstFormerResultHavingMetaData(key, ""+uri);
+        useFirstFormerResultHavingMetaData(key, "" + uri);
     }
-    
+
     public void useFirstFormerResultHavingMetaData(String key, String value) {
-        LOG.debug("use first former result with key:{},value:{}",key,value);
-        
+        LOG.debug("use first former result with key:{},value:{}", key, value);
+
         AdapterMetaDataConverter metaDataConverter = callback.getMetaDataConverter();
 
-        for (ProductResult result: formerResults) {
-            if (result==null) {
+        for (ProductResult result : formerResults) {
+            if (result == null) {
                 continue;
             }
             String metaDataString = result.getMetaData();
             AdapterMetaData metaDataOrNull = metaDataConverter.convertToMetaDataOrNull(metaDataString);
-        
+
             if (metaDataOrNull != null && metaDataOrNull.hasValue(key, value)) {
                 callback.setCurrentProductResult(result);
                 return;
             }
         }
-        /* not found - ensure null*/
+        /* not found - ensure null */
         callback.setCurrentProductResult(null);
     }
-    
+
     public ProductResult getCurrentProductResult() {
         return callback.getProductResult();
     }
@@ -121,6 +121,5 @@ public class ProductExecutorContext {
     public void persist(ProductResult productResult) {
         callback.save(productResult);
     }
-    
-    
+
 }

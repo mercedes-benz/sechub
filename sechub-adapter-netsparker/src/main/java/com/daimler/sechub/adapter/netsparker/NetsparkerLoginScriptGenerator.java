@@ -4,9 +4,9 @@ package com.daimler.sechub.adapter.netsparker;
 import java.util.Iterator;
 import java.util.List;
 
+import com.daimler.sechub.adapter.LoginScriptAction;
 import com.daimler.sechub.adapter.LoginScriptGenerator;
 import com.daimler.sechub.commons.model.SecHubTimeUnit;
-import com.daimler.sechub.adapter.LoginScriptAction;
 
 public class NetsparkerLoginScriptGenerator implements LoginScriptGenerator {
 

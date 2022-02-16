@@ -3,9 +3,9 @@ package com.daimler.sechub.adapter;
 
 public interface ProxyConfig {
 
-	String getProxyHostname();
+    String getProxyHostname();
 
-	int getProxyPort();
+    int getProxyPort();
 
-	boolean isProxyDefined();
+    boolean isProxyDefined();
 }

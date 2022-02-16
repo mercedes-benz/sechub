@@ -13,8 +13,8 @@ import com.daimler.sechub.sharedkernel.validation.ValidationContext;
 
 /**
  * This validation validates only the standard/minimum configuration parts which
- * are always necessary for any kind of Checkmarx communication. 
- * 
+ * are always necessary for any kind of Checkmarx communication.
+ *
  * @author Albert Tregnaghi
  *
  */

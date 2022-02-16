@@ -22,7 +22,7 @@ public class AdapterMetaDataTest {
 
     @Test
     public void adapter_version_set_get_22() {
-        metaDataToTest.adapterVersion=22;
+        metaDataToTest.adapterVersion = 22;
         assertEquals(22, metaDataToTest.getAdapterVersion());
     }
 
@@ -41,7 +41,7 @@ public class AdapterMetaDataTest {
         assertTrue(metaDataToTest.getKeys().contains("xyz"));
 
     }
-    
+
     @Test
     public void adapter_setvalue_with_null() {
         metaDataToTest.setValue("xyz", "123");
@@ -49,19 +49,21 @@ public class AdapterMetaDataTest {
         assertEquals(null, metaDataToTest.getValue("xyz"));
 
     }
+
     @Test
     public void adapter_hasvalue_with_xyz_123() {
         metaDataToTest.setValue("xyz", "123");
-        assertTrue(metaDataToTest.hasValue("xyz","123"));
-        assertFalse(metaDataToTest.hasValue("xyz","1234"));
-        
+        assertTrue(metaDataToTest.hasValue("xyz", "123"));
+        assertFalse(metaDataToTest.hasValue("xyz", "1234"));
+
     }
+
     @Test
     public void adapter_hasvalue_with_null() {
         metaDataToTest.setValue("xyz", null);
-        assertTrue(metaDataToTest.hasValue("xyz",null));
-        assertFalse(metaDataToTest.hasValue("xyz","1234"));
-        
+        assertTrue(metaDataToTest.hasValue("xyz", null));
+        assertFalse(metaDataToTest.hasValue("xyz", "1234"));
+
     }
 
     @Test

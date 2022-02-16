@@ -15,53 +15,51 @@ import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 
 public class ProductFailureMetaDataBuilderTest {
 
-	private ProductFailureMetaDataBuilder builderToTest;
+    private ProductFailureMetaDataBuilder builderToTest;
 
+    @Before
+    public void before() throws Exception {
+        builderToTest = new ProductFailureMetaDataBuilder();
+    }
 
-	@Before
-	public void before() throws Exception {
-		builderToTest = new ProductFailureMetaDataBuilder();
-	}
+    @Test
+    public void creates_a_meta_model_with_product_information() {
+        /* prepare */
+        ImportParameter param = ImportParameter.builder().importId("id1").productId("productId").build();
 
+        /* execute */
+        SerecoMetaData result = builderToTest.forParam(param).build();
 
-	@Test
-	public void creates_a_meta_model_with_product_information() {
-		/* prepare */
-		ImportParameter param = ImportParameter.builder().importId("id1").productId("productId").build();
+        /* test */
+        assertNotNull(result);
+        List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
+        assertNotNull(vulnerabilities);
+        assertEquals(1, vulnerabilities.size());
+        SerecoVulnerability v = vulnerabilities.iterator().next();
 
-		/* execute*/
-		SerecoMetaData result = builderToTest.forParam(param).build();
+        assertEquals(SerecoSeverity.CRITICAL, v.getSeverity());
+        assertEquals("SecHub failure", v.getType());
+        assertEquals("Security product 'productId' failed, so cannot give a correct answer.", v.getDescription());
+    }
 
-		/* test*/
-		assertNotNull(result);
-		List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
-		assertNotNull(vulnerabilities);
-		assertEquals(1,vulnerabilities.size());
-		SerecoVulnerability v = vulnerabilities.iterator().next();
+    @Test
+    public void creates_a_meta_model_with_product_information_nothing_set_will_at_least_work() {
+        /* prepare */
+        ImportParameter param = ImportParameter.builder().build();
 
-		assertEquals(SerecoSeverity.CRITICAL, v.getSeverity());
-		assertEquals("SecHub failure", v.getType());
-		assertEquals("Security product 'productId' failed, so cannot give a correct answer.", v.getDescription());
-	}
+        /* execute */
+        SerecoMetaData result = builderToTest.forParam(param).build();
 
-	@Test
-	public void creates_a_meta_model_with_product_information_nothing_set_will_at_least_work() {
-		/* prepare */
-		ImportParameter param = ImportParameter.builder().build();
+        /* test */
+        assertNotNull(result);
+        List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
+        assertNotNull(vulnerabilities);
+        assertEquals(1, vulnerabilities.size());
+        SerecoVulnerability v = vulnerabilities.iterator().next();
 
-		/* execute*/
-		SerecoMetaData result = builderToTest.forParam(param).build();
-
-		/* test*/
-		assertNotNull(result);
-		List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
-		assertNotNull(vulnerabilities);
-		assertEquals(1,vulnerabilities.size());
-		SerecoVulnerability v = vulnerabilities.iterator().next();
-
-		assertEquals(SerecoSeverity.CRITICAL, v.getSeverity());
-		assertEquals("SecHub failure", v.getType());
-		assertEquals("Security product 'null' failed, so cannot give a correct answer.", v.getDescription());
-	}
+        assertEquals(SerecoSeverity.CRITICAL, v.getSeverity());
+        assertEquals("SecHub failure", v.getType());
+        assertEquals("Security product 'null' failed, so cannot give a correct answer.", v.getDescription());
+    }
 
 }

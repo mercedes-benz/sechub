@@ -80,7 +80,6 @@ public class ScanReport {
     @Column(name = "VERSION")
     Integer version;
 
-
     ScanReport() {
         // JPA only
     }
@@ -105,7 +104,7 @@ public class ScanReport {
     public void setResultType(ScanReportResultType resultType) {
         this.resultType = resultType;
     }
-    
+
     public String getProjectId() {
         return projectId;
     }

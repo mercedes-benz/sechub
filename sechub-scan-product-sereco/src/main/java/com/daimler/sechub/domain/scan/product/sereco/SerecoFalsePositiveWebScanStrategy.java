@@ -20,7 +20,7 @@ import com.daimler.sechub.sereco.metadata.SerecoWebEvidence;
 /**
  * Strategy to check if a web scan vulnerability identified by a product is
  * handled by a false positive meta data configuration
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -32,7 +32,7 @@ public class SerecoFalsePositiveWebScanStrategy {
     /**
      * Checks if given vulnerability is identified as false positive by given meta
      * data
-     * 
+     *
      * @param vulnerability
      * @param metaData
      * @return <code>true</code> when identified as false positive

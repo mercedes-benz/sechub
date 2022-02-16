@@ -90,31 +90,31 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
 
         /* @formatter:off */
         executorContext.useFirstFormerResultHavingMetaData(PDSMetaDataID.KEY_TARGET_URI, targetURI);
-            
+
         ProductResult result = resilientActionExecutor.executeResilient(() -> {
             PDSWebScanConfig pdsWebScanConfig = PDSWebScanConfigImpl.builder().
                         setPDSProductIdentifier(configSupport.getPDSProductIdentifier()).
                         setTrustAllCertificates(configSupport.isTrustAllCertificatesEnabled()).
                         setProductBaseUrl(configSupport.getProductBaseURL()).
                         setSecHubJobUUID(context.getSechubJobUUID()).
-                        
+
                         setSecHubConfigModel(context.getConfiguration()).
 
                         configure(createAdapterOptionsStrategy(context)).
                         configure(new WebConfigBuilderStrategy(context)).
-                        
+
                         setTimeToWaitForNextCheckOperationInMilliseconds(configSupport.getTimeToWaitForNextCheckOperationInMilliseconds(setup)).
                         setTimeOutInMinutes(configSupport.getTimeoutInMinutes(setup)).
-                        
+
                         setUser(configSupport.getUser()).
                         setPasswordOrAPIToken(configSupport.getPasswordOrAPIToken()).
                         setProjectId(projectId).
-                        
+
                         setTraceID(context.getTraceLogIdAsString()).
                         setJobParameters(jobParameters).
-                        
+
                         setTargetURI(targetURI).
-                        
+
                         build();
             /* @formatter:on */
 

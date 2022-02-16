@@ -3,7 +3,7 @@ package com.daimler.sechub.sharedkernel.messaging;
 
 /**
  * Implementations inspect event receiving and sending
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -11,14 +11,14 @@ public interface EventInspector {
 
     /**
      * Creates a new inspection id
-     * 
+     *
      * @return new inspection id
      */
     int createInspectionId();
 
     /**
      * Inspects that new send synchron event is triggered
-     * 
+     *
      * @param request
      * @paran inspectId
      */
@@ -26,7 +26,7 @@ public interface EventInspector {
 
     /**
      * Inspects that new send synchron event is triggered
-     * 
+     *
      * @param request
      * @param inspectId
      */
@@ -34,7 +34,7 @@ public interface EventInspector {
 
     /**
      * Inspect that given request is received by given handler
-     * 
+     *
      * @param request
      * @param inspectId
      * @param handler
@@ -43,7 +43,7 @@ public interface EventInspector {
 
     /**
      * Inspect that given request is received by given handler
-     * 
+     *
      * @param request
      * @param inspectId
      * @param handler

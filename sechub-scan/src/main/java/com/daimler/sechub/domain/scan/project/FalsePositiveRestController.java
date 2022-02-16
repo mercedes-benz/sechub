@@ -22,21 +22,21 @@ import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserMarksFal
 import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserUnmarksFalsePositives;
 
 /**
- * The rest API for project false positive handling - API centric 
+ * The rest API for project false positive handling - API centric
  *
  * @author Albert Tregnaghi
  *
  */
 @RestController
 @EnableAutoConfiguration
-@RequestMapping(APIConstants.API_PROJECT+"{projectId}") 
-@RolesAllowed({RoleConstants.ROLE_USER, RoleConstants.ROLE_SUPERADMIN})
+@RequestMapping(APIConstants.API_PROJECT + "{projectId}")
+@RolesAllowed({ RoleConstants.ROLE_USER, RoleConstants.ROLE_SUPERADMIN })
 public class FalsePositiveRestController {
 
-	@Autowired
-	private FalsePositiveJobDataService falsePositiveJobDataService;
+    @Autowired
+    private FalsePositiveJobDataService falsePositiveJobDataService;
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@UseCaseUserMarksFalsePositivesForJob(@Step(number=1,name="REST API call to define false positives by JSON data containing identifiers for existing job",needsRestDoc=true))
 	@RequestMapping(path = "/false-positives", method = RequestMethod.PUT, produces= {MediaType.APPLICATION_JSON_VALUE})
     public void addFalsePositivesByJobData(
@@ -44,7 +44,7 @@ public class FalsePositiveRestController {
             @RequestBody FalsePositiveJobDataList data
             ) {
         /* @formatter:on */
-	    falsePositiveJobDataService.addFalsePositives(projectId, data);
+        falsePositiveJobDataService.addFalsePositives(projectId, data);
 
     }
 
@@ -57,10 +57,10 @@ public class FalsePositiveRestController {
             @PathVariable("findingId") int findingId
             ) {
         /* @formatter:on */
-        falsePositiveJobDataService.removeFalsePositive(projectId, jobUUID,findingId);
+        falsePositiveJobDataService.removeFalsePositive(projectId, jobUUID, findingId);
 
     }
-    
+
     /* @formatter:off */
     @UseCaseUserFetchesFalsePositiveConfigurationOfProject(@Step(number=1,name="REST API call to fetch existing false positive configuration of project",needsRestDoc=true))
     @RequestMapping(path = "/false-positives", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})

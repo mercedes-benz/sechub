@@ -99,11 +99,11 @@ public class SecHubConfigurationTest {
         /*-- form: script --*/
         Optional<Script> script = form.get().getScript();
         assertTrue("script config must be present", script.isPresent());
-        
+
         Optional<List<Page>> pages = script.get().getPages();
         assertTrue("pages must be present", pages.isPresent());
         assertEquals("must have 1 pages", 1, pages.get().size());
-        
+
         /*-- page 1 --*/
         Optional<List<Action>> page1 = pages.get().get(0).getActions();
         assertTrue("actions must be present", page1.isPresent());
@@ -153,11 +153,11 @@ public class SecHubConfigurationTest {
         /*-- form: script --*/
         Optional<Script> script = form.get().getScript();
         assertTrue("script config must be present", script.isPresent());
-        
+
         Optional<List<Page>> pages = script.get().getPages();
         assertTrue("pages must be present", pages.isPresent());
         assertEquals("must have 1 pages", 1, pages.get().size());
-        
+
         /*-- page 1 --*/
         Optional<List<Action>> page1 = pages.get().get(0).getActions();
         assertTrue("actions must be present", page1.isPresent());
@@ -185,7 +185,7 @@ public class SecHubConfigurationTest {
         assertEquals(ActionType.CLICK, action4.getType());
         assertEquals("#example_login_login_button", action4.getSelector().get());
     }
-    
+
     @Test
     public void webscan_login_form_script_with_wait_json_has_webconfig_as_expected() throws Exception {
         /* prepare */
@@ -214,29 +214,29 @@ public class SecHubConfigurationTest {
         /*-- form : script --*/
         Optional<Script> script = form.get().getScript();
         assertTrue("script config must be present", script.isPresent());
-        
+
         Optional<List<Page>> pages = script.get().getPages();
         assertTrue("pages must be present", pages.isPresent());
         assertEquals("must have 1 pages", 1, pages.get().size());
-        
+
         /*-- page 1 --*/
         Optional<List<Action>> page1 = pages.get().get(0).getActions();
         assertTrue("actions must be present", page1.isPresent());
         assertEquals("must have 4 action entries", 4, page1.get().size());
-        
+
         Action action1 = page1.get().get(0);
         Action action2 = page1.get().get(1);
         Action action3 = page1.get().get(2);
         Action action4 = page1.get().get(3);
-        
+
         assertEquals(ActionType.INPUT, action1.getType());
         assertEquals("#example_login_userid", action1.getSelector().get());
         assertEquals("user2", action1.getValue().get());
-        
+
         assertEquals(ActionType.WAIT, action2.getType());
         assertEquals("1458", action2.getValue().get());
         assertEquals(SecHubTimeUnit.MILLISECOND, action2.getUnit().get());
-        
+
         assertEquals(ActionType.INPUT, action3.getType());
         assertEquals("#example_login_pwd", action3.getSelector().get());
         assertEquals("pwd2", action3.getValue().get());
@@ -259,12 +259,12 @@ public class SecHubConfigurationTest {
 
         SecHubWebScanConfiguration secHubWebScanConfiguration = webScanOption.get();
         assertEquals(URI.create("https://productfailure.demo.example.org"), secHubWebScanConfiguration.getUri());
-        
+
         Optional<List<String>> includes = secHubWebScanConfiguration.getIncludes();
         assertTrue("includes must be present", includes.isPresent());
         List<String> expectedIncludes = Arrays.asList("/portal/admin", "/abc.html", "/hidden");
         assertEquals(expectedIncludes, includes.get());
-        
+
         Optional<List<String>> excludes = secHubWebScanConfiguration.getExcludes();
         assertTrue("excludes must be present", excludes.isPresent());
         List<String> expectedExcludes = Arrays.asList("/public/media", "/contact.html", "/static");
@@ -294,11 +294,11 @@ public class SecHubConfigurationTest {
         /*-- form : script --*/
         Optional<Script> script = form.get().getScript();
         assertTrue("script config must be present", script.isPresent());
-        
+
         Optional<List<Page>> pages = script.get().getPages();
         assertTrue("pages must be present", pages.isPresent());
         assertEquals("must have 2 pages", 2, pages.get().size());
-        
+
         /*-- page 1 --*/
         Optional<List<Action>> page1 = pages.get().get(0).getActions();
         assertTrue("actions must be present", page1.isPresent());
@@ -483,7 +483,7 @@ public class SecHubConfigurationTest {
         /* test */
         assertTrue(configurationToTest.getInfraScan().isPresent());
     }
-    
+
     @Test
     public void webscan_max_scan_duration_wrong_unit() {
         /* prepare */
@@ -494,7 +494,7 @@ public class SecHubConfigurationTest {
             SECHUB_CONFIG.fromJSON(json);
         });
     }
-    
+
     @Test
     public void webscan_empty_includes_excludes() {
         /* prepare */
@@ -502,20 +502,20 @@ public class SecHubConfigurationTest {
 
         /* execute */
         SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
-         
+
         /* test */
         Optional<SecHubWebScanConfiguration> webScanOption = result.getWebScan();
         assertTrue("webscan config must be present", webScanOption.isPresent());
 
         SecHubWebScanConfiguration secHubWebScanConfiguration = webScanOption.get();
         assertEquals(URI.create("https://productfailure.demo.example.org"), secHubWebScanConfiguration.getUri());
-        
+
         Optional<List<String>> includes = secHubWebScanConfiguration.getIncludes();
         assertTrue("includes must be present", includes.isPresent());
         List<String> expectedIncludes = new LinkedList<>();
         assertTrue("includes are empty", includes.get().isEmpty());
         assertEquals(expectedIncludes, includes.get());
-        
+
         Optional<List<String>> excludes = secHubWebScanConfiguration.getExcludes();
         assertTrue("excludes must be present", excludes.isPresent());
         List<String> expectedExcludes = new LinkedList<>();

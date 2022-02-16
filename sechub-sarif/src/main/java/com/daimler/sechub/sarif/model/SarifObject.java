@@ -5,7 +5,7 @@ package com.daimler.sechub.sarif.model;
  * Provides some base parts available in every object. E.g. "properties" as
  * described at
  * https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317448
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

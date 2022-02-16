@@ -14,7 +14,7 @@ public class UseCaseAsciiDocGeneratorTest {
     public void before() throws Exception {
         generatorToTest = new UseCaseAsciiDocGenerator();
     }
-    
+
     @Test
     public void create_description_null_and_empty_return_empty_string() {
         assertEquals("", generatorToTest.createDescriptionForVariant(null));
@@ -26,6 +26,7 @@ public class UseCaseAsciiDocGeneratorTest {
         assertEquals(" - variant: xxx", generatorToTest.createDescriptionForVariant("xxx"));
         assertEquals(" - variant: simple-name", generatorToTest.createDescriptionForVariant("simple-name"));
     }
+
     @Test
     public void create_description_replaces_underscores_with_spaces() {
         assertEquals(" - variant: x y z", generatorToTest.createDescriptionForVariant("x_y_z"));

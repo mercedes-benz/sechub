@@ -14,9 +14,9 @@ public abstract class AbstractGrowingSecHubServerTestScenario extends AbstractSe
     @Override
     public void grow() {
         scenarioTestDataProvider.increaseGrowId();
-        
-        /* recalculate test data...*/
-        
+
+        /* recalculate test data... */
+
     }
 
     @Override

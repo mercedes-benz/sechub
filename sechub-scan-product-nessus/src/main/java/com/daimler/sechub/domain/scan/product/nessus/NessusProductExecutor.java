@@ -77,7 +77,7 @@ public class NessusProductExecutor extends AbstractInfrastructureScanProductExec
 
         /* execute NESSUS by adapter and return product result */
         String xml = nessusAdapter.start(nessusConfig, executorContext.getCallback());
-        
+
         ProductResult productResult = executorContext.getCurrentProductResult(); // product result is set by callback
         productResult.setResult(xml);
         return Collections.singletonList(productResult);
@@ -92,11 +92,10 @@ public class NessusProductExecutor extends AbstractInfrastructureScanProductExec
     protected NessusInstallSetup getInstallSetup() {
         return installSetup;
     }
-    
+
     protected List<InetAddress> resolveInetAdressForTarget(SecHubConfiguration config) {
         return super.resolveInetAdressForTarget(config);
     }
-
 
     @Override
     public int getVersion() {

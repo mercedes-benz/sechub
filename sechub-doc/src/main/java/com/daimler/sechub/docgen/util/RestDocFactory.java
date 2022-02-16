@@ -11,44 +11,44 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseDefinition;
 
 /**
  * Factory to create parts belonging to rest doc.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
 public class RestDocFactory {
-	public static final String UC_RESTDOC = "uc_restdoc";
+    public static final String UC_RESTDOC = "uc_restdoc";
 
-	private static Set<String> alreadyCreatedPathes = new HashSet<>();
-	private static Pattern P_VARIANT_NAME_TO_ID= Pattern.compile(" ");
-	private static Pattern TAG_PATTERN = Pattern.compile("api/[\\w-_]*/");
-	
-	public static String createVariantId(String variantName) {
-		return P_VARIANT_NAME_TO_ID.matcher(variantName).replaceAll("-").toLowerCase();
-	}
-	private RestDocFactory() {
+    private static Set<String> alreadyCreatedPathes = new HashSet<>();
+    private static Pattern P_VARIANT_NAME_TO_ID = Pattern.compile(" ");
+    private static Pattern TAG_PATTERN = Pattern.compile("api/[\\w-_]*/");
 
-	}
+    public static String createVariantId(String variantName) {
+        return P_VARIANT_NAME_TO_ID.matcher(variantName).replaceAll("-").toLowerCase();
+    }
 
-	/**
-	 * Creates the name for the link to the rest documentation of the usecase
-	 * 
-	 * @param useCase
-	 * @return name
-	 */
-	public static String createPath(Class<? extends Annotation> useCase) {
-		return createPath(useCase, null);
-	}
+    private RestDocFactory() {
 
-	/**
-	 * Creates the name for the link to the rest documentation of the usecase
-	 * 
-	 * @param useCase
-	 * @param variant
-	 *            a variant or <code>null</code>. A variant is used when same
-	 *            usecases got different variants -e.g. on reporting to differ
-	 *            between "HTML" and "JSON" output variants...
-	 * @return name
-	 */
+    }
+
+    /**
+     * Creates the name for the link to the rest documentation of the usecase
+     *
+     * @param useCase
+     * @return name
+     */
+    public static String createPath(Class<? extends Annotation> useCase) {
+        return createPath(useCase, null);
+    }
+
+    /**
+     * Creates the name for the link to the rest documentation of the usecase
+     *
+     * @param useCase
+     * @param variant a variant or <code>null</code>. A variant is used when same
+     *                usecases got different variants -e.g. on reporting to differ
+     *                between "HTML" and "JSON" output variants...
+     * @return name
+     */
     public static String createPath(Class<? extends Annotation> useCase, String variant) {
         StringBuilder sb = new StringBuilder();
 
@@ -65,7 +65,7 @@ public class RestDocFactory {
         alreadyCreatedPathes.add(path);
         return path;
     }
-   
+
     public static String createIdentifier(Class<? extends Annotation> useCase) {
         UseCaseDefinition usecaseAnnotation = useCase.getAnnotation(UseCaseDefinition.class);
         if (usecaseAnnotation == null) {
@@ -77,10 +77,10 @@ public class RestDocFactory {
         }
         return usecaseIdentifier;
     }
-    
+
     public static String createSummary(Class<? extends Annotation> useCase) {
         UseCaseDefinition usecaseAnnotation = useCase.getAnnotation(UseCaseDefinition.class);
-        
+
         StringBuilder sb = new StringBuilder();
         if (usecaseAnnotation == null) {
             throw new IllegalArgumentException("given use case must have annotation of use case definition inside but has not: " + useCase);
@@ -93,7 +93,7 @@ public class RestDocFactory {
 
     public static String createDescription(Class<? extends Annotation> useCase) {
         UseCaseDefinition usecaseAnnotation = useCase.getAnnotation(UseCaseDefinition.class);
-        
+
         StringBuilder sb = new StringBuilder();
         if (usecaseAnnotation == null) {
             throw new IllegalArgumentException("given use case must have annotation of use case defintiion inside but hasnot :" + useCase);
@@ -105,19 +105,19 @@ public class RestDocFactory {
                 sb.append(description);
             }
         }
-        
+
         return sb.toString();
     }
-    
+
     public static String extractTag(String apiEndpoint) {
         String tag = null;
         Matcher matcher = TAG_PATTERN.matcher(apiEndpoint);
-        
+
         if (matcher.find()) {
             tag = matcher.group();
             tag = tag.substring("api/".length(), tag.length() - "/".length());
         }
-                
+
         return tag;
     }
 }

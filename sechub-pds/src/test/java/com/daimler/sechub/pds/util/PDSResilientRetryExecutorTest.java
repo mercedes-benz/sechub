@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.pds.util;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -43,10 +44,10 @@ class PDSResilientRetryExecutorTest {
         PDSResilientRetryExecutor<TestTargetException> executorToTest = new PDSResilientRetryExecutor<>(1, thrower, RuntimeException.class);
 
         /* execute +test */
-        executorToTest.execute(()-> System.currentTimeMillis(), "id1");
+        executorToTest.execute(() -> System.currentTimeMillis(), "id1");
 
     }
-    
+
     @Test
     void fails_with_illegal_argument_when_no_target_exception_class_in_constructor() {
         /* test */
@@ -72,7 +73,7 @@ class PDSResilientRetryExecutorTest {
         });
 
     }
-    
+
     @Test
     void when_runtime_exception_is_defined_as_handled_a_runtime_exception_will_be_handled() throws Exception {
         /* prepare */
@@ -87,7 +88,7 @@ class PDSResilientRetryExecutorTest {
         });
 
     }
-    
+
     @Test
     void when_runtime_exception_is_defined_as_handled_a_IOException_will_be_handled_as_well() throws Exception {
         /* prepare */
@@ -103,13 +104,13 @@ class PDSResilientRetryExecutorTest {
         });
 
     }
-    
+
     @Test
     void when_runtime_exception_is_defined_as_handled_a_illegal_state_exception__happening_two_times_but_one_retry_execution_is_done() throws Exception {
         /* prepare */
         PDSResilientRetryExecutor<TestTargetException> executorToTest = new PDSResilientRetryExecutor<>(1, thrower, RuntimeException.class);
         AtomicInteger executionCount = new AtomicInteger();
-        
+
         /* test */
         assertThrows(TestTargetException.class, () -> {
             /* execute */
@@ -118,10 +119,10 @@ class PDSResilientRetryExecutorTest {
                     throw new IllegalStateException("failing...");
                 }
                 return "output";
-                
+
             }, "id1");
         });
-        
+
     }
 
     @Test
@@ -142,7 +143,7 @@ class PDSResilientRetryExecutorTest {
         assertEquals(2, executionCount.get());
 
     }
-    
+
     @Test
     void when_runtime_exception_is_defined_as_handled_a_illegal_state_exception__happening_10_times_but_11_retry_execution_is_done() throws Exception {
         /* prepare */
@@ -161,7 +162,7 @@ class PDSResilientRetryExecutorTest {
         assertEquals(10, executionCount.get());
 
     }
-    
+
     @Test
     void when_runtime_exception_is_defined_as_handled_a_illegal_state_exception__happening_1_times_but_5_retry_execution_is_done() throws Exception {
         /* prepare */
@@ -169,7 +170,7 @@ class PDSResilientRetryExecutorTest {
         AtomicInteger executionCount = new AtomicInteger();
 
         /* execute */
-        String result= executorToTest.execute(() -> {
+        String result = executorToTest.execute(() -> {
             if (executionCount.incrementAndGet() < 2) { // fail on first only
                 throw new IllegalStateException("failing...");
             }
@@ -181,6 +182,5 @@ class PDSResilientRetryExecutorTest {
         assertEquals("my-result", result);
 
     }
-    
 
 }

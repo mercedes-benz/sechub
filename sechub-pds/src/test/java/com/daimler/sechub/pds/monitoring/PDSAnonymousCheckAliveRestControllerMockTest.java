@@ -26,7 +26,7 @@ import com.daimler.sechub.test.TestPortProvider;
 @RunWith(SpringRunner.class)
 @WebMvcTest(PDSAnonymousCheckAliveRestController.class)
 /* @formatter:off */
-@ContextConfiguration(classes = { 
+@ContextConfiguration(classes = {
         PDSAnonymousCheckAliveRestController.class,
 		PDSAnonymousCheckAliveRestControllerMockTest.SimpleTestConfiguration.class })
 /* @formatter:on */
@@ -34,15 +34,15 @@ import com.daimler.sechub.test.TestPortProvider;
 @ActiveProfiles(PDSProfiles.TEST)
 public class PDSAnonymousCheckAliveRestControllerMockTest {
 
-	private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getWebMVCTestHTTPSPort();
-	
-	@Autowired
-	private MockMvc mockMvc;
+    private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getWebMVCTestHTTPSPort();
 
-	@Test
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Test
     public void calling_check_alive_head_returns_HTTP_200() throws Exception {
         /* prepare */
-        
+
         /* execute + test */
         /* @formatter:off */
         this.mockMvc.perform(
@@ -54,11 +54,11 @@ public class PDSAnonymousCheckAliveRestControllerMockTest {
         /* @formatter:on */
 
     }
-	
+
     @Test
     public void calling_check_alive_get_returns_HTTP_200() throws Exception {
         /* prepare */
-        
+
         /* execute + test */
         /* @formatter:off */
         this.mockMvc.perform(
@@ -71,12 +71,11 @@ public class PDSAnonymousCheckAliveRestControllerMockTest {
 
     }
 
+    @TestConfiguration
+    @Profile(PDSProfiles.TEST)
+    @EnableAutoConfiguration
+    public static class SimpleTestConfiguration extends AbstractAllowPDSAPISecurityConfiguration {
 
-	@TestConfiguration
-	@Profile(PDSProfiles.TEST)
-	@EnableAutoConfiguration
-	public static class SimpleTestConfiguration extends AbstractAllowPDSAPISecurityConfiguration {
-
-	}
+    }
 
 }

@@ -78,7 +78,7 @@ public class SarifReportSupport {
     /**
      * Loads SARIF data from given JSON - must be UTF-8 see
      * https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317419
-     * 
+     *
      * @param json
      * @return
      * @throws IOException
@@ -105,7 +105,7 @@ public class SarifReportSupport {
         String ruleId = result.getRuleId();
 
         /* @formatter:off */
-        Rule ruleFound = 
+        Rule ruleFound =
                         rules.
                         stream().
                         filter(rule ->rule.getId().equals(ruleId)).
@@ -118,7 +118,7 @@ public class SarifReportSupport {
      * Tries first the result level. If not set, the level will be obtained by
      * default configuration if available. If not found {@link Level#NONE} is
      * returned
-     * 
+     *
      * @param result
      * @param run
      * @return level, never null
@@ -130,11 +130,11 @@ public class SarifReportSupport {
         }
         Rule rule = fetchRuleForResult(result, run);
         if (rule != null) {
-            /* @formatter:off 
-               
+            /* @formatter:off
+
                first fetch default from rule
                see https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317850
-               
+
                @formatter:on */
             ReportingConfiguration defaultConfiguration = rule.getDefaultConfiguration();
             if (defaultConfiguration != null) {

@@ -62,10 +62,9 @@ public class AwsS3JobStorageTest {
         for (Bucket bucket : buckets) {
             String bucketName = bucket.getName();
             if (bucketName.equalsIgnoreCase(NEVER_CREATED_BUCKET_ID)) {
-                fail("found bucket:"+bucketName);
+                fail("found bucket:" + bucketName);
             }
         }
-         
 
     }
 
@@ -187,7 +186,7 @@ public class AwsS3JobStorageTest {
         UUID jobUUID = UUID.randomUUID();
 
         AwsS3JobStorage storage = storeTestData(jobUUID, "bucket2", "test/data/a1", "alpha.txt");
-        storeCreatedTestDataFile("beta.txt",storage);
+        storeCreatedTestDataFile("beta.txt", storage);
 
         String objectName1 = "test/data/a1/" + jobUUID + "/alpha.txt";
         String objectName2 = "test/data/a1/" + jobUUID + "/beta.txt";
@@ -204,7 +203,7 @@ public class AwsS3JobStorageTest {
         assertTrue(result.contains("beta.txt"));
 
     }
-    
+
     @Test
     public void storage1_storeds_alpha_storage2_stores_beta__listNames__for_storage1_returns_only_alpha_not_beta_and_versa() throws Exception {
         /* prepare */
@@ -221,18 +220,18 @@ public class AwsS3JobStorageTest {
         assertEquals(1, result.size());
         assertTrue(result.contains("alpha.txt"));
         assertFalse(result.contains("beta.txt"));
-        
+
         assertEquals(1, result2.size());
         assertFalse(result2.contains("alpha.txt"));
         assertTrue(result2.contains("beta.txt"));
 
     }
-    
+
     @Test
     public void storage1_storeds_job1_storage2_for_job2__listNames__for_storage1_returns_only_onefile__and_versa() throws Exception {
         /* prepare */
-        AwsS3JobStorage storage1= new AwsS3JobStorage(amazonTestClient, "bucket2", "jobstorage/projectName", UUID.randomUUID());
-        AwsS3JobStorage storage2= new AwsS3JobStorage(amazonTestClient, "bucket2", "jobstorage/projectName", UUID.randomUUID());
+        AwsS3JobStorage storage1 = new AwsS3JobStorage(amazonTestClient, "bucket2", "jobstorage/projectName", UUID.randomUUID());
+        AwsS3JobStorage storage2 = new AwsS3JobStorage(amazonTestClient, "bucket2", "jobstorage/projectName", UUID.randomUUID());
         storeCreatedTestDataFile("file1", storage1);
         storeCreatedTestDataFile("file2", storage2);
 
@@ -244,13 +243,13 @@ public class AwsS3JobStorageTest {
         assertEquals(1, result.size());
         assertTrue(result.contains("file1"));
         assertFalse(result.contains("file2"));
-        
+
         assertEquals(1, result2.size());
         assertFalse(result2.contains("file2"));
         assertTrue(result2.contains("file1"));
 
     }
-    
+
     @Test
     public void storage_but_nothing_uploaded_returns_empty_list() throws Exception {
         /* prepare */
@@ -265,7 +264,6 @@ public class AwsS3JobStorageTest {
         assertEquals(0, result.size());
 
     }
-
 
     @Test
     public void job_storage_storing_alpha__alpha_is_listed_and_can_be_fetched() throws Exception {

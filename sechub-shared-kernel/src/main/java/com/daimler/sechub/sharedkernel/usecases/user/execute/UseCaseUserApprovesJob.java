@@ -18,10 +18,10 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 		id=UseCaseIdentifier.UC_USER_APPROVES_JOB,
 		group=UseCaseGroup.SECHUB_EXECUTION,
 		apiName="userApprovesJob",
-		title="User approves sechub job", 
+		title="User approves sechub job",
 		description="user/approve_sechub_job_description.adoc")
 public @interface UseCaseUserApprovesJob {
-	
+
 	Step value();
 }
 /* @formatter:on */

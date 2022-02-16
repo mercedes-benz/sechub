@@ -21,10 +21,10 @@ public class PDSShutdownService implements ApplicationContextAware {
             LOG.info("will now trigger shutdown of application context");
             ((ConfigurableApplicationContext) context).close();
         } else {
-            if (context==null) {
+            if (context == null) {
                 LOG.error("cannot shutdown application context because context null!");
-            }else {
-                LOG.error("cannot shutdown application context because wrong context:"+context.getClass());
+            } else {
+                LOG.error("cannot shutdown application context because wrong context:" + context.getClass());
             }
         }
     }

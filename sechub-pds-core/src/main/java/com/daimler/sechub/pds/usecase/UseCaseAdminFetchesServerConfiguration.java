@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @PDSUseCaseDefinition(
 		id=PDSUseCaseIdentifier.UC_ADMIN_FETCHES_SERVER_CONFIGURATION,
 		group=PDSUseCaseGroup.MONITORING,
-		title="Admin fetches server configuration", 
+		title="Admin fetches server configuration",
 		description="An administrator fetches server configuration.")
 public @interface UseCaseAdminFetchesServerConfiguration {
     PDSStep value();

@@ -21,8 +21,10 @@ import com.daimler.sechub.domain.scan.project.ScanProjectConfigService;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 
 /**
- * Marks given vulnerabilities as false positives, if identifiable by false positive configuration
- * data for the project. will only mark and add hints about reason
+ * Marks given vulnerabilities as false positives, if identifiable by false
+ * positive configuration data for the project. will only mark and add hints
+ * about reason
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -30,43 +32,43 @@ import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 public class SerecoFalsePositiveMarker {
 
     private static final Logger LOG = LoggerFactory.getLogger(SerecoFalsePositiveMarker.class);
-    
+
     @Autowired
     SerecoFalsePositiveFinder falsePositiveFinder;
-    
+
     @Autowired
     ScanProjectConfigService scanProjectConfigService;
-    
-    public void markFalsePositives(String projectId, List<SerecoVulnerability> all){
+
+    public void markFalsePositives(String projectId, List<SerecoVulnerability> all) {
         notEmpty(projectId, "project id may not be null or empty!");
-        
-        if (all==null || all.isEmpty()) {
-            /* no vulnerabilities found*/
+
+        if (all == null || all.isEmpty()) {
+            /* no vulnerabilities found */
             return;
         }
-        ScanProjectConfig config = scanProjectConfigService.get(projectId, ScanProjectConfigID.FALSE_POSITIVE_CONFIGURATION,false);
-        if (config==null) {
+        ScanProjectConfig config = scanProjectConfigService.get(projectId, ScanProjectConfigID.FALSE_POSITIVE_CONFIGURATION, false);
+        if (config == null) {
             /* nothing configured */
             return;
         }
-        
+
         String data = config.getData();
         FalsePositiveProjectConfiguration falsePositiveConfig = FalsePositiveProjectConfiguration.fromJSONString(data);
         List<FalsePositiveEntry> falsePositives = falsePositiveConfig.getFalsePositives();
-        
-        for (SerecoVulnerability vulnerability: all) {
-            
+
+        for (SerecoVulnerability vulnerability : all) {
+
             handleVulnereability(falsePositives, vulnerability);
         }
-        
+
     }
 
     private void handleVulnereability(List<FalsePositiveEntry> falsePositives, SerecoVulnerability vulnerability) {
-        for (FalsePositiveEntry entry: falsePositives) {
+        for (FalsePositiveEntry entry : falsePositives) {
             if (isFalsePositive(vulnerability, entry)) {
                 vulnerability.setFalsePositive(true);
                 FalsePositiveJobData jobData = entry.getJobData();
-                vulnerability.setFalsePositiveReason("finding:"+jobData.getFindingId()+" in job:"+jobData.getJobUUID()+" marked as false positive");
+                vulnerability.setFalsePositiveReason("finding:" + jobData.getFindingId() + " in job:" + jobData.getJobUUID() + " marked as false positive");
                 return;
             }
         }
@@ -75,23 +77,22 @@ public class SerecoFalsePositiveMarker {
     private boolean isFalsePositive(SerecoVulnerability vulnerability, FalsePositiveEntry entry) {
         FalsePositiveMetaData metaData = entry.getMetaData();
         ScanType scanType = metaData.getScanType();
-        if (scanType!=vulnerability.getScanType()) {
+        if (scanType != vulnerability.getScanType()) {
             /* not same type - fast exit */
             return false;
         }
-        if (scanType==null) {
+        if (scanType == null) {
             /* just in case ... */
             return false;
         }
-        switch(scanType) {
-        case CODE_SCAN: 
-        case WEB_SCAN: 
-            return falsePositiveFinder.isFound(vulnerability,metaData);
-        default: 
+        switch (scanType) {
+        case CODE_SCAN:
+        case WEB_SCAN:
+            return falsePositiveFinder.isFound(vulnerability, metaData);
+        default:
             LOG.error("Cannot handle scan type {} - not implemented!", scanType);
             return false;
         }
     }
 
-    
 }

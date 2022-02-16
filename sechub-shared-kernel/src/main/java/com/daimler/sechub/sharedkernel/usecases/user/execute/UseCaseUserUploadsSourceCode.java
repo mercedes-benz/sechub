@@ -18,10 +18,10 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 		id=UseCaseIdentifier.UC_USER_UPLOADS_SOURCECODE,
 		group=UseCaseGroup.SECHUB_EXECUTION,
 		apiName="userUploadsSourceCode",
-		title="User uploads source code", 
+		title="User uploads source code",
 		description="user/upload_sourcecode_description.adoc")
 public @interface UseCaseUserUploadsSourceCode {
-	
+
 	Step value();
 }
 /* @formatter:on */

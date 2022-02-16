@@ -17,7 +17,7 @@ public class SecHubConfigurationModelReducedCloningSupport {
      * {@link ScanType#WEB_SCAN} is set as parameter and the web configuration
      * contains also codeScan data, these data will NOT be inside the returned
      * cloned config but only the global and the {@link ScanType#WEB_SCAN} parts!
-     * 
+     *
      * @param model
      * @param scanTypeForClone
      * @return JSON representing a reduced {@link SecHubScanConfiguration}

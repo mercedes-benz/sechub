@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.restdoc;
-import static com.daimler.sechub.test.TestURLBuilder.https;
+
 import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.JOB_UUID;
 import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.PROJECT_ID;
+import static com.daimler.sechub.test.TestURLBuilder.https;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -49,41 +50,41 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(ScanReportRestController.class)
-@ContextConfiguration(classes= {ScanReportRestController.class, ScanReportRestControllerRestDocTest.SimpleTestConfiguration.class})
-@AutoConfigureRestDocs(uriScheme="https",uriHost=ExampleConstants.URI_SECHUB_SERVER,uriPort=443)
+@ContextConfiguration(classes = { ScanReportRestController.class, ScanReportRestControllerRestDocTest.SimpleTestConfiguration.class })
+@AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 public class ScanReportRestControllerRestDocTest {
 
-	private static final String PROJECT1_ID = "project1";
+    private static final String PROJECT1_ID = "project1";
 
-	private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
+    private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
-	@Autowired
-	private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-	@MockBean
-	private DownloadScanReportService downloadReportService;
+    @MockBean
+    private DownloadScanReportService downloadReportService;
 
-	@MockBean
-	HTMLScanResultReportModelBuilder modelBuilder;
+    @MockBean
+    HTMLScanResultReportModelBuilder modelBuilder;
 
-	private UUID jobUUID;
+    private UUID jobUUID;
 
-	@UseCaseRestDoc(useCase=UseCaseUserDownloadsJobReport.class,variant="JSON")
-	@Test
-	@WithMockUser
-	public void get_report_from_existing_job_returns_information_as_json_when_type_is_APPLICATION_JSON_UTF8() throws Exception {
-		/* prepare */
+    @UseCaseRestDoc(useCase = UseCaseUserDownloadsJobReport.class, variant = "JSON")
+    @Test
+    @WithMockUser
+    public void get_report_from_existing_job_returns_information_as_json_when_type_is_APPLICATION_JSON_UTF8() throws Exception {
+        /* prepare */
         String apiEndpoint = https(PORT_USED).buildGetJobReportUrl(PROJECT_ID.pathElement(), JOB_UUID.pathElement());
         Class<? extends Annotation> useCase = UseCaseUserDownloadsJobReport.class;
-        
-		ScanReport report = new ScanReport(jobUUID,PROJECT1_ID);
-		report.setResult("{'count':'1'}");
-		report.setTrafficLight(TrafficLight.YELLOW);
 
-		ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
-		when(downloadReportService.getScanSecHubReport(PROJECT1_ID, jobUUID)).thenReturn(scanSecHubReport);
+        ScanReport report = new ScanReport(jobUUID, PROJECT1_ID);
+        report.setResult("{'count':'1'}");
+        report.setTrafficLight(TrafficLight.YELLOW);
 
-		/* execute + test @formatter:off */
+        ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
+        when(downloadReportService.getScanSecHubReport(PROJECT1_ID, jobUUID)).thenReturn(scanSecHubReport);
+
+        /* execute + test @formatter:off */
 	    this.mockMvc.perform(
 	    		get(apiEndpoint,PROJECT1_ID,jobUUID).
 	    		    accept(MediaType.APPLICATION_JSON_VALUE).
@@ -108,29 +109,29 @@ public class ScanReportRestControllerRestDocTest {
 	    			     ));
 
 	    /* @formatter:on */
-	}
+    }
 
-	@UseCaseRestDoc(useCase=UseCaseUserDownloadsJobReport.class,variant="HTML")
-	@Test
-	@WithMockUser
-	public void get_report_from_existing_job_returns_information_as_html_when_type_is_APPLICATION_XHTML_XML() throws Exception {
-		/* prepare */
+    @UseCaseRestDoc(useCase = UseCaseUserDownloadsJobReport.class, variant = "HTML")
+    @Test
+    @WithMockUser
+    public void get_report_from_existing_job_returns_information_as_html_when_type_is_APPLICATION_XHTML_XML() throws Exception {
+        /* prepare */
         String apiEndpoint = https(PORT_USED).buildGetJobReportUrl(PROJECT_ID.pathElement(), JOB_UUID.pathElement());
         Class<? extends Annotation> useCase = UseCaseUserDownloadsJobReport.class;
-        
-		ScanReport report = new ScanReport(jobUUID,PROJECT1_ID);
-		report.setResult("{'count':'1'}");
-		report.setTrafficLight(TrafficLight.YELLOW);
 
-		ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
-		when(downloadReportService.getScanSecHubReport(PROJECT1_ID, jobUUID)).thenReturn(scanSecHubReport);
+        ScanReport report = new ScanReport(jobUUID, PROJECT1_ID);
+        report.setResult("{'count':'1'}");
+        report.setTrafficLight(TrafficLight.YELLOW);
 
-		/* execute + test @formatter:off */
+        ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
+        when(downloadReportService.getScanSecHubReport(PROJECT1_ID, jobUUID)).thenReturn(scanSecHubReport);
+
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(apiEndpoint,PROJECT1_ID,jobUUID).
         		    accept(MediaType.APPLICATION_XHTML_XML).
         			contentType(MediaType.APPLICATION_JSON_VALUE)
-        		).  
+        		).
         			andExpect(status().isOk()).
         			andExpect(content().contentType("text/html;charset=UTF-8")).
         			andExpect(content().encoding("UTF-8")).
@@ -153,27 +154,27 @@ public class ScanReportRestControllerRestDocTest {
         			      ));
 
         /* @formatter:on */
-	}
+    }
 
-	@TestConfiguration
-	@EnableAutoConfiguration
-	public static class SimpleTestConfiguration{
+    @TestConfiguration
+    @EnableAutoConfiguration
+    public static class SimpleTestConfiguration {
 
-	}
+    }
 
-	@Before
-	public void before() throws Exception {
-		jobUUID=UUID.randomUUID();
-		Map<String,Object> map = new HashMap<>();
-		map.put("jobuuid", jobUUID);
-		map.put("styleRed", "theRedStyle");
-		map.put("styleGreen", "display:none");
-		map.put("styleYellow", "display:none");
-		map.put("redList", new ArrayList<>());
-		map.put("yellowList", new ArrayList<>());
-		map.put("greenList", new ArrayList<>());
-		map.put("isWebDesignMode", false);
-		when(modelBuilder.build(any())).thenReturn(map);
-	}
+    @Before
+    public void before() throws Exception {
+        jobUUID = UUID.randomUUID();
+        Map<String, Object> map = new HashMap<>();
+        map.put("jobuuid", jobUUID);
+        map.put("styleRed", "theRedStyle");
+        map.put("styleGreen", "display:none");
+        map.put("styleYellow", "display:none");
+        map.put("redList", new ArrayList<>());
+        map.put("yellowList", new ArrayList<>());
+        map.put("greenList", new ArrayList<>());
+        map.put("isWebDesignMode", false);
+        when(modelBuilder.build(any())).thenReturn(map);
+    }
 
 }

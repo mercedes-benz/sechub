@@ -10,17 +10,18 @@ import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseDefinition;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseGroup;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
+
 /* @formatter:off */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @UseCaseDefinition(
-		id=UseCaseIdentifier.UC_ADMIN_LISTS_ALL_PROJECTS, 
+		id=UseCaseIdentifier.UC_ADMIN_LISTS_ALL_PROJECTS,
 		group=UseCaseGroup.PROJECT_ADMINISTRATION,
 		apiName="adminListsAllProjects",
-		title="Admin lists all projects", 
+		title="Admin lists all projects",
 		description="An administrator downloads a json file containing all project ids")
 public @interface UseCaseAdminListsAllProjects {
-	
+
 	Step value();
 }
 /* @formatter:on */

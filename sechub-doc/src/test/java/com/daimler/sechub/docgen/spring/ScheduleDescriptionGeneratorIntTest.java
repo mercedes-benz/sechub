@@ -10,30 +10,33 @@ import com.daimler.sechub.docgen.util.ClasspathDataCollector;
 
 /**
  * Necessary because we got an empty generated file
+ *
  * @author Albert Tregnaghi
  *
  */
 public class ScheduleDescriptionGeneratorIntTest {
-	private ScheduleDescriptionGenerator generatorToTest;
+    private ScheduleDescriptionGenerator generatorToTest;
 
-	@Before
-	public void before() throws Exception {
-		generatorToTest = new ScheduleDescriptionGenerator();
-	}
+    @Before
+    public void before() throws Exception {
+        generatorToTest = new ScheduleDescriptionGenerator();
+    }
 
-	@Test
-	public void ensure_schedule_description_is_not_an_empty_text() throws Exception {
+    @Test
+    public void ensure_schedule_description_is_not_an_empty_text() throws Exception {
 
-		/* prepare */
+        /* prepare */
 
-		/* execute */
-		String text = generatorToTest.generate(new ClasspathDataCollector());
+        /* execute */
+        String text = generatorToTest.generate(new ClasspathDataCollector());
 
-		/* test */
-		/* FIXME Albert Tregnaghi, 2018-01-11: with JDK 8 it works with JKD10 this does not work !*/
-		assertFalse(text.isEmpty());
+        /* test */
+        /*
+         * FIXME Albert Tregnaghi, 2018-01-11: with JDK 8 it works with JKD10 this does
+         * not work !
+         */
+        assertFalse(text.isEmpty());
 
-	}
-
+    }
 
 }

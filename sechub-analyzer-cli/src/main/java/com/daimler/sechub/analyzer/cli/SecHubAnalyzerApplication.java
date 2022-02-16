@@ -12,10 +12,10 @@ import org.apache.commons.cli.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.Level;
+
 import com.daimler.analyzer.model.AnalyzerResult;
 import com.daimler.sechub.analyzer.core.Analyzer;
-
-import ch.qos.logback.classic.Level;
 
 public class SecHubAnalyzerApplication {
 
@@ -46,9 +46,9 @@ public class SecHubAnalyzerApplication {
 
     /**
      * Checks the command line parameters and starts the analysis process
-     * 
+     *
      * @param analyzer
-     * 
+     *
      * @param commandLineArguments
      * @return result as JSON or <code>null</code>
      */

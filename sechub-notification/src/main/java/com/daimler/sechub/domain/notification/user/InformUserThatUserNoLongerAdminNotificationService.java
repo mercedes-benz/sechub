@@ -14,32 +14,31 @@ import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminRevokesAd
 @Service
 public class InformUserThatUserNoLongerAdminNotificationService {
 
-	@Autowired
-	private MailMessageFactory factory;
+    @Autowired
+    private MailMessageFactory factory;
 
-	@Autowired
-	private EmailService emailService;
+    @Autowired
+    private EmailService emailService;
 
-	@UseCaseAdminRevokesAdminRightsFromAdmin(@Step(number = 3, next = {
-			4 }, name = "Inform user about loosing administrator rights"))
-	public void notify(UserMessage userMessage, String baseUrl) {
+    @UseCaseAdminRevokesAdminRightsFromAdmin(@Step(number = 3, next = { 4 }, name = "Inform user about loosing administrator rights"))
+    public void notify(UserMessage userMessage, String baseUrl) {
 
-		SimpleMailMessage message = factory.createMessage("SecHub administrator privileges revoked");
+        SimpleMailMessage message = factory.createMessage("SecHub administrator privileges revoked");
 
-		message.setTo(userMessage.getEmailAdress());
-		message.setText(createEmailContent(userMessage, baseUrl));
+        message.setTo(userMessage.getEmailAdress());
+        message.setText(createEmailContent(userMessage, baseUrl));
 
-		emailService.send(message);
+        emailService.send(message);
 
-	}
+    }
 
-	private String createEmailContent(UserMessage userMessage, String baseUrl) {
-		StringBuilder emailContent = new StringBuilder();
-		emailContent.append("Dear " + userMessage.getUserId() + "\n\n");
-		emailContent.append("Your administrator rights for SecHub where revoked\n");
-		emailContent.append("for environment: " + baseUrl + "\n");
-		String text = emailContent.toString();
-		return text;
-	}
+    private String createEmailContent(UserMessage userMessage, String baseUrl) {
+        StringBuilder emailContent = new StringBuilder();
+        emailContent.append("Dear " + userMessage.getUserId() + "\n\n");
+        emailContent.append("Your administrator rights for SecHub where revoked\n");
+        emailContent.append("for environment: " + baseUrl + "\n");
+        String text = emailContent.toString();
+        return text;
+    }
 
 }

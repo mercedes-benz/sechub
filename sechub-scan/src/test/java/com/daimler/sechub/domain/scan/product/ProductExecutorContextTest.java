@@ -19,6 +19,7 @@ public class ProductExecutorContextTest {
     ProductExecutorCallback callback;
     AdapterMetaDataConverter converter = new AdapterMetaDataConverter();
     private ProductExecutorConfig config;
+
     @Before
     public void before() {
         formerResults = new ArrayList<ProductResult>();
@@ -30,8 +31,8 @@ public class ProductExecutorContextTest {
     @Test
     public void inital_ProductExecutorContext_does_call_setCurrentProductResult_with_null_when_no_former_results_available() {
         /* execute */
-        contextToTest = new ProductExecutorContext(config,formerResults, callback);
-        
+        contextToTest = new ProductExecutorContext(config, formerResults, callback);
+
         /* test */
         verify(callback).setCurrentProductResult(null);
     }
@@ -44,28 +45,28 @@ public class ProductExecutorContextTest {
         formerResults.add(result1);
         formerResults.add(result2);
         /* execute */
-        contextToTest = new ProductExecutorContext(config,formerResults, callback);
+        contextToTest = new ProductExecutorContext(config, formerResults, callback);
 
         /* test */
         verify(callback).setCurrentProductResult(result1);
     }
-    
+
     @Test
     public void formerResults_1_result_with_metadata__results_in_metadata_from_callback_getMetaDataOrNull() {
         /* prepare */
         AdapterMetaData metaData = new AdapterMetaData();
-        
-        contextToTest = new ProductExecutorContext(config,formerResults, callback);
+
+        contextToTest = new ProductExecutorContext(config, formerResults, callback);
         when(callback.getMetaDataOrNull()).thenReturn(metaData);
-        
+
         /* execute */
         AdapterMetaData result = contextToTest.getCurrentMetaDataOrNull();
 
         /* test */
         verify(callback).getMetaDataOrNull();
-        assertEquals(result,metaData);
+        assertEquals(result, metaData);
     }
-    
+
     @Test
     public void useFirstFormerResultHavingMetaData_finds_product_by_metadata() {
         /* prepare */
@@ -76,7 +77,7 @@ public class ProductExecutorContextTest {
         formerResults.add(result2);
         formerResults.add(null);
         formerResults.add(result3);
-        
+
         AdapterMetaData metaData1 = new AdapterMetaData();
         metaData1.setValue("test.key", "xyz");
         AdapterMetaData metaData2 = new AdapterMetaData();
@@ -84,16 +85,15 @@ public class ProductExecutorContextTest {
         result1.setMetaData(converter.convertToJSONOrNull(metaData1));
         result2.setMetaData(null);
         result3.setMetaData(converter.convertToJSONOrNull(metaData2));
-        
-        contextToTest = new ProductExecutorContext(config,formerResults, callback);
-        verify(callback,times(1)).setCurrentProductResult(result3); // by constructor...
-        
+
+        contextToTest = new ProductExecutorContext(config, formerResults, callback);
+        verify(callback, times(1)).setCurrentProductResult(result3); // by constructor...
+
         /* execute */
         contextToTest.useFirstFormerResultHavingMetaData("test.key", "abc");
 
         /* test */
-        verify(callback,times(2)).setCurrentProductResult(result3); // by last call
+        verify(callback, times(2)).setCurrentProductResult(result3); // by last call
     }
-    
 
 }

@@ -54,7 +54,7 @@ public class SecHubReportWebResponse {
     public SecHubReportWebBody getBody() {
         return body;
     }
-    
+
     @Override
     public int hashCode() {
         return Objects.hash(body, headers, protocol, reasonPhrase, statusCode, version);

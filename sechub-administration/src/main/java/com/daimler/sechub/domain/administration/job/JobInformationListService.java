@@ -12,15 +12,13 @@ import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdminListsAllRunningJ
 @Service
 public class JobInformationListService {
 
+    @Autowired
+    JobInformationRepository repository;
 
-	@Autowired
-	JobInformationRepository repository;
+    @UseCaseAdminListsAllRunningJobs(@Step(number = 2, name = "Fetchjob information from database", description = "Fetches stored job information from administration database."))
+    public List<JobInformation> fetchRunningJobs() {
 
-	@UseCaseAdminListsAllRunningJobs(@Step(number = 2, name = "Fetchjob information from database", description = "Fetches stored job information from administration database."))
-	public List<JobInformation> fetchRunningJobs() {
-
-		return repository.findAllRunningJobs();
-	}
-
+        return repository.findAllRunningJobs();
+    }
 
 }

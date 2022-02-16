@@ -10,22 +10,21 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @Service
 public class ProductResultCountService {
 
-	@Autowired
-	ProductResultRepository repository;
+    @Autowired
+    ProductResultRepository repository;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Autowired
+    UserInputAssertion assertion;
 
-	public long countProjectScanResults(String projectId) {
-		assertion.isValidProjectId(projectId);
+    public long countProjectScanResults(String projectId) {
+        assertion.isValidProjectId(projectId);
 
-		ProductResult probe = new ProductResult();
-		probe.projectId = projectId;
-		Example<ProductResult> example = Example.of(probe);
+        ProductResult probe = new ProductResult();
+        probe.projectId = projectId;
+        Example<ProductResult> example = Example.of(probe);
 
-		return repository.count(example);
+        return repository.count(example);
 
-	}
-
+    }
 
 }

@@ -3,7 +3,7 @@ package com.daimler.sechub.sereco.metadata;
 import java.util.Objects;
 
 public class SerecoWebAttack {
-    
+
     String vector;
     SerecoWebEvidence evidence;
 
@@ -16,7 +16,7 @@ public class SerecoWebAttack {
     }
 
     /**
-     * 
+     *
      * @return evidence or <code>null</code> when not defined
      */
     public SerecoWebEvidence getEvidence() {

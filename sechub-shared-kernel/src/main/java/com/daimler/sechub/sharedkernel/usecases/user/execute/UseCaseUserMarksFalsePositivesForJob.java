@@ -18,10 +18,10 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 		id=UseCaseIdentifier.UC_USER_MARKS_FALSE_POSITIVES_FOR_FINISHED_JOB,
 		group=UseCaseGroup.SECHUB_EXECUTION,
 		apiName="userMarksFalsePositivesForJob",
-		title="User marks false positives for finished sechub job", 
+		title="User marks false positives for finished sechub job",
 		description="user/mark_false_positives_for_job.adoc")
 public @interface UseCaseUserMarksFalsePositivesForJob {
-	
+
 	Step value();
 }
 /* @formatter:on */

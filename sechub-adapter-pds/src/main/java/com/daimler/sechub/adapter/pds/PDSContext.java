@@ -12,7 +12,7 @@ import com.daimler.sechub.adapter.support.RestOperationsSupport;
 
 /**
  * Context for PDS execution.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -54,7 +54,7 @@ public class PDSContext extends AbstractSpringRestAdapterContext<PDSAdapterConfi
     public UUID getPdsJobUUID() {
         return pdsJobUUID;
     }
-    
+
     @Override
     protected boolean enableResourceHttpMessageConverterHandlingInputStream() {
         return true;

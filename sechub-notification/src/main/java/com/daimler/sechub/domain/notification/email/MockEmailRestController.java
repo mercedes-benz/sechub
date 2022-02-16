@@ -22,8 +22,9 @@ import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 
 /**
- * This is only availabe in mocked_notification profile. Interesting for integration tests to get the emails send...
- * 
+ * This is only availabe in mocked_notification profile. Interesting for
+ * integration tests to get the emails send...
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -33,28 +34,28 @@ import com.daimler.sechub.sharedkernel.RoleConstants;
 @Profile(Profiles.MOCKED_NOTIFICATIONS)
 public class MockEmailRestController {
 
-	@Autowired
-	MockEmailService mockMailService;
-	
-	/* @formatter:off */
+    @Autowired
+    MockEmailService mockMailService;
+
+    /* @formatter:off */
 	@RequestMapping(
-			path = APIConstants.API_ANONYMOUS+"integrationtest/mock/emails/to/{emailAdress}", 
-			method = RequestMethod.GET, 
+			path = APIConstants.API_ANONYMOUS+"integrationtest/mock/emails/to/{emailAdress}",
+			method = RequestMethod.GET,
 			produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
 	public List<SimpleMailMessage> getMailsFor(@PathVariable(name="emailAdress") String emailAdress) {
 		/* @formatter:on */
-		return mockMailService.getMailsFor(emailAdress);
-	}
-	
-	/* @formatter:off */
+        return mockMailService.getMailsFor(emailAdress);
+    }
+
+    /* @formatter:off */
 	@RequestMapping(
-			path = APIConstants.API_ANONYMOUS+"integrationtest/mock/emails", 
-			method = RequestMethod.DELETE, 
+			path = APIConstants.API_ANONYMOUS+"integrationtest/mock/emails",
+			method = RequestMethod.DELETE,
 			produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
 	public void resetMockMails() {
 		/* @formatter:on */
-		mockMailService.resetMockMails();
-	}
+        mockMailService.resetMockMails();
+    }
 }

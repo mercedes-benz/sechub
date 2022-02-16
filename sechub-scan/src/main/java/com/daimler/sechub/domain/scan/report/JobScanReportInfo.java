@@ -13,27 +13,27 @@ import java.util.UUID;
  */
 public class JobScanReportInfo {
 
-	private String projectId;
+    private String projectId;
 
-	private UUID sechubJobUUID;
-	private List<UUID> sechubJobList = new ArrayList<>();
+    private UUID sechubJobUUID;
+    private List<UUID> sechubJobList = new ArrayList<>();
 
-	public JobScanReportInfo(String projectId, UUID sechubJobUUID, List<UUID> sechubJobList) {
-		this.projectId = projectId;
-		if (sechubJobList != null) {
-			this.sechubJobList.addAll(sechubJobList);
-		}
-	}
+    public JobScanReportInfo(String projectId, UUID sechubJobUUID, List<UUID> sechubJobList) {
+        this.projectId = projectId;
+        if (sechubJobList != null) {
+            this.sechubJobList.addAll(sechubJobList);
+        }
+    }
 
-	public UUID getSechubJobUUID() {
-		return sechubJobUUID;
-	}
+    public UUID getSechubJobUUID() {
+        return sechubJobUUID;
+    }
 
-	public List<UUID> getSechubJobList() {
-		return sechubJobList;
-	}
+    public List<UUID> getSechubJobList() {
+        return sechubJobList;
+    }
 
-	public String getProjectId() {
-		return projectId;
-	}
+    public String getProjectId() {
+        return projectId;
+    }
 }

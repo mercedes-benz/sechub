@@ -11,33 +11,31 @@ package com.daimler.sechub.sharedkernel.logging;
  */
 public enum SecurityLogType {
 
-	UNKNOWN("UNKNOWN"),
+    UNKNOWN("UNKNOWN"),
 
-	/**
-	 * Maybe this is an intrusion attack to SecHub
-	 */
-	POTENTIAL_INTRUSION("POTENTIAL INTRUSION"), 
-	
-	/**
-	 * Maybe some user data - e.g. an older change password request - has been leaked and used
-	 * by an attacker 
-	 */
-	POTENTIAL_USERDATA_LEAK("USER DATA LEAK"), 
-	
-	
-	/**
-	 * Could be either really wrong usage of REST API or an attack
-	 */
-	WRONG_USAGE("WRONG USAGE"),
-	;
+    /**
+     * Maybe this is an intrusion attack to SecHub
+     */
+    POTENTIAL_INTRUSION("POTENTIAL INTRUSION"),
 
-	private String typeId;
+    /**
+     * Maybe some user data - e.g. an older change password request - has been
+     * leaked and used by an attacker
+     */
+    POTENTIAL_USERDATA_LEAK("USER DATA LEAK"),
 
-	private SecurityLogType(String typeId) {
-		this.typeId = typeId;
-	}
+    /**
+     * Could be either really wrong usage of REST API or an attack
+     */
+    WRONG_USAGE("WRONG USAGE"),;
 
-	public String getTypeId() {
-		return typeId;
-	}
+    private String typeId;
+
+    private SecurityLogType(String typeId) {
+        this.typeId = typeId;
+    }
+
+    public String getTypeId() {
+        return typeId;
+    }
 }

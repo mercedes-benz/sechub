@@ -3,6 +3,6 @@ package com.daimler.sechub.adapter.netsparker;
 
 import com.daimler.sechub.adapter.AdapterContext;
 
-public interface NetsparkerAdapterContext extends AdapterContext<NetsparkerAdapterConfig>{
+public interface NetsparkerAdapterContext extends AdapterContext<NetsparkerAdapterConfig> {
 
 }

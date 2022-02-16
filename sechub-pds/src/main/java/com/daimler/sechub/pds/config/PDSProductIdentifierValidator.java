@@ -8,7 +8,7 @@ public class PDSProductIdentifierValidator {
 
     /**
      * Creates error message when validation failed
-     * 
+     *
      * @param productId
      * @return failure message or <code>null</code> when valid
      */

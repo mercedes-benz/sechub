@@ -29,11 +29,11 @@ public class IntegrationTestPDSCodeScanImporterTest {
 
         /* @formatter:off */
         String data = "#PDS_INTTEST_PRODUCT_CODESCAN\n"+
-                      "\n" + 
-                      "\n" + 
-                      "CRITICAL:i am a critical error\n" + 
-                      "MEDIUM:i am a medium error\n" + 
-                      "LOW:i am just a low error\n" + 
+                      "\n" +
+                      "\n" +
+                      "CRITICAL:i am a critical error\n" +
+                      "MEDIUM:i am a medium error\n" +
+                      "LOW:i am just a low error\n" +
                       "INFO:i am just an information";
        /* @formatter:on */
 
@@ -43,21 +43,21 @@ public class IntegrationTestPDSCodeScanImporterTest {
         /* test */
         List<SerecoVulnerability> v = result.getVulnerabilities();
         assertEquals(4, v.size());
-        
+
         Iterator<SerecoVulnerability> it = v.iterator();
-        
-        check(SerecoSeverity.CRITICAL, 4, "i am a critical error",it.next());
-        check(SerecoSeverity.MEDIUM, 5, "i am a medium error",it.next());
-        check(SerecoSeverity.LOW, 6, "i am just a low error",it.next());
-        check(SerecoSeverity.INFO, 7, "i am just an information",it.next());
+
+        check(SerecoSeverity.CRITICAL, 4, "i am a critical error", it.next());
+        check(SerecoSeverity.MEDIUM, 5, "i am a medium error", it.next());
+        check(SerecoSeverity.LOW, 6, "i am just a low error", it.next());
+        check(SerecoSeverity.INFO, 7, "i am just an information", it.next());
 
     }
-    
-    private void check(SerecoSeverity expectedSeverity, int expectedLine, String description ,SerecoVulnerability critical) {
+
+    private void check(SerecoSeverity expectedSeverity, int expectedLine, String description, SerecoVulnerability critical) {
         assertEquals(expectedSeverity, critical.getSeverity());
-        assertEquals(description,critical.getDescription());
-        assertEquals(Integer.valueOf(expectedLine),critical.getCode().getLine());
-        assertEquals(Integer.valueOf(123),critical.getCode().getColumn());
+        assertEquals(description, critical.getDescription());
+        assertEquals(Integer.valueOf(expectedLine), critical.getCode().getLine());
+        assertEquals(Integer.valueOf(123), critical.getCode().getColumn());
     }
 
 }

@@ -22,128 +22,125 @@ import com.github.tomakehurst.wiremock.matching.StringValuePattern;
 
 public class JSONAdapterSupportTest {
 
-	private JSONAdapterSupport supportToTest;
-	private TraceIdProvider provider;
-	private Adapter<?> adapter;
+    private JSONAdapterSupport supportToTest;
+    private TraceIdProvider provider;
+    private Adapter<?> adapter;
 
-	@Rule
-	public ExpectedException expected = ExpectedExceptionFactory.none();
+    @Rule
+    public ExpectedException expected = ExpectedExceptionFactory.none();
 
-	@Before
-	public void before() throws Exception {
-		provider = mock(TraceIdProvider.class);
-		adapter = mock(Adapter.class);
+    @Before
+    public void before() throws Exception {
+        provider = mock(TraceIdProvider.class);
+        adapter = mock(Adapter.class);
 
-		AdapterLogId logId = new AdapterLogId("id", "traceid");
-		supportToTest = new JSONAdapterSupport(adapter, provider);
-		when(adapter.asAdapterException(any(String.class), eq(provider))).thenReturn(new AdapterException(logId, "message"));
-		when(adapter.asAdapterException(any(String.class), any(Throwable.class), eq(provider))).thenReturn(new AdapterException(logId, "message-with-throwable"));
-		when(adapter.getAdapterLogId(eq(provider))).thenReturn(logId);
-	}
+        AdapterLogId logId = new AdapterLogId("id", "traceid");
+        supportToTest = new JSONAdapterSupport(adapter, provider);
+        when(adapter.asAdapterException(any(String.class), eq(provider))).thenReturn(new AdapterException(logId, "message"));
+        when(adapter.asAdapterException(any(String.class), any(Throwable.class), eq(provider)))
+                .thenReturn(new AdapterException(logId, "message-with-throwable"));
+        when(adapter.getAdapterLogId(eq(provider))).thenReturn(logId);
+    }
 
+    @Test
+    public void buildFromMap_json_with_one_entry_returns_not_null() throws Exception {
 
+        /* prepare */
+        Map<String, Object> json = new TreeMap<>();
+        json.put("key1", "value1");
 
-	@Test
-	public void buildFromMap_json_with_one_entry_returns_not_null() throws Exception {
+        /* execute */
+        String jsonAsString = supportToTest.toJSON(json);
 
-		/* prepare */
-		Map<String, Object> json = new TreeMap<>();
-		json.put("key1", "value1");
+        /* test */
+        assertNotNull(jsonAsString);
+    }
 
-		/* execute */
-		String jsonAsString = supportToTest.toJSON(json);
+    @Test
+    public void buildFromMap_json_with_empty_map_returns_not_null_but_curly_braces_with_empty_content() throws Exception {
 
-		/* test */
-		assertNotNull(jsonAsString);
-	}
+        /* prepare */
+        Map<String, Object> json = new TreeMap<>();
 
-	@Test
-	public void buildFromMap_json_with_empty_map_returns_not_null_but_curly_braces_with_empty_content() throws Exception {
+        /* execute */
+        String jsonAsString = supportToTest.toJSON(json);
 
-		/* prepare */
-		Map<String, Object> json = new TreeMap<>();
+        /* test */
+        assertNotNull(jsonAsString);
+        assertEquals("{}", jsonAsString);
+    }
 
-		/* execute */
-		String jsonAsString = supportToTest.toJSON(json);
+    @Test
+    public void buildFromMap_json_with_one_entry_returns_map_with_this_entry() throws Exception {
 
-		/* test */
-		assertNotNull(jsonAsString);
-		assertEquals("{}", jsonAsString);
-	}
+        /* prepare */
+        Map<String, Object> json = new TreeMap<>();
+        json.put("key1", "value1");
 
-	@Test
-	public void buildFromMap_json_with_one_entry_returns_map_with_this_entry() throws Exception {
+        /* execute */
+        String jsonAsString = supportToTest.toJSON(json);
 
-		/* prepare */
-		Map<String, Object> json = new TreeMap<>();
-		json.put("key1", "value1");
+        /* test */
+        assertNotNull(jsonAsString);
+        StringValuePattern p = WireMock.equalToJson("{\"key1\":\"value1\"}");
+        assertTrue(p.match(jsonAsString).isExactMatch());
+    }
 
-		/* execute */
-		String jsonAsString = supportToTest.toJSON(json);
+    @Test
+    public void fetching_not_existing_element_throws_adapter_exception() throws Exception {
+        /* prepare, test */
+        expected.expect(AdapterException.class);
 
-		/* test */
-		assertNotNull(jsonAsString);
-		StringValuePattern p = WireMock.equalToJson("{\"key1\":\"value1\"}");
-		assertTrue(p.match(jsonAsString).isExactMatch());
-	}
+        /* execute */
+        supportToTest.fetch("test", "{}");
+    }
 
+    @Test
+    public void fetching_existing_element_throws_no_adapter_exception_and_returns_value() throws Exception {
+        /* prepare, test */
+        expected.expect(AdapterException.class);
 
-	@Test
-	public void fetching_not_existing_element_throws_adapter_exception() throws Exception {
-		/* prepare, test */
-		expected.expect(AdapterException.class);
+        /* execute */
+        assertEquals("1234", supportToTest.fetch("test", "{'test' = '1234'}").asText());
+    }
 
-		/* execute */
-		supportToTest.fetch("test", "{}");
-	}
+    @Test
+    public void fetching_existing_array_throws_no_adapter_exception_and_returns_array() throws Exception {
+        /* prepare, test */
+        expected.expect(AdapterException.class);
 
+        String arrayText = "{'test' = [{'val' = 'value1'},{'val' = 'value2'}]}";
 
-	@Test
-	public void fetching_existing_element_throws_no_adapter_exception_and_returns_value() throws Exception {
-		/* prepare, test */
-		expected.expect(AdapterException.class);
+        /* execute */
+        ArrayNode array = supportToTest.fetch("test", arrayText).asArray();
+        assertNotNull(array);
 
-		/* execute */
-		assertEquals("1234", supportToTest.fetch("test", "{'test' = '1234'}").asText());
-	}
+    }
 
-	@Test
-	public void fetching_existing_array_throws_no_adapter_exception_and_returns_array() throws Exception {
-		/* prepare, test */
-		expected.expect(AdapterException.class);
+    @Test
+    public void fetch_element_by_map_scan_for_element_with_key_alpha_returns_val_of_this_element() throws Exception {
+        /* prepare, test */
+        expected.expect(AdapterException.class);
 
-		String arrayText = "{'test' = [{'val' = 'value1'},{'val' = 'value2'}]}";
+        String arrayText = "{'test' = [{'key'='alpha', 'val' = 'value1'},{'key'='beta', 'val' = 'value2'}]}";
 
-		/* execute */
-		ArrayNode array = supportToTest.fetch("test",arrayText).asArray();
-		assertNotNull(array);
+        /* execute */
+        String textFound = supportToTest.fetch("test", arrayText).fetchArrayElementHaving("val", Collections.singletonMap("key", "alpha")).asText();
+        assertEquals("value1", textFound);
 
-	}
+    }
 
-	@Test
-	public void fetch_element_by_map_scan_for_element_with_key_alpha_returns_val_of_this_element() throws Exception {
-		/* prepare, test */
-		expected.expect(AdapterException.class);
+    @Test
+    public void fetch_element_by_map_scan_for_element_with_key_beta_returns_val_of_this_element() throws Exception {
+        /* prepare, test */
+        expected.expect(AdapterException.class);
 
-		String arrayText = "{'test' = [{'key'='alpha', 'val' = 'value1'},{'key'='beta', 'val' = 'value2'}]}";
+        String arrayText = "{'test' = [{'key'='alpha', 'val' = 'value1'},{'key'='beta', 'val' = 'value2'}]}";
 
-		/* execute */
-		String textFound = supportToTest.fetch("test",arrayText).fetchArrayElementHaving("val", Collections.singletonMap("key","alpha")).asText();
-		assertEquals("value1",textFound);
+        /* execute */
+        String textFound = supportToTest.fetch("test", arrayText).fetchArrayElementHaving("val", Collections.singletonMap("key", "beta")).asText();
+        assertEquals("value2", textFound);
 
-	}
-
-	@Test
-	public void fetch_element_by_map_scan_for_element_with_key_beta_returns_val_of_this_element() throws Exception {
-		/* prepare, test */
-		expected.expect(AdapterException.class);
-
-		String arrayText = "{'test' = [{'key'='alpha', 'val' = 'value1'},{'key'='beta', 'val' = 'value2'}]}";
-
-		/* execute */
-		String textFound = supportToTest.fetch("test",arrayText).fetchArrayElementHaving("val", Collections.singletonMap("key","beta")).asText();
-		assertEquals("value2",textFound);
-
-	}
+    }
 
 }

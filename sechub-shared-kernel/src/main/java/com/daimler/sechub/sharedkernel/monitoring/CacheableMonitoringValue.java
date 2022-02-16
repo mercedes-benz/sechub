@@ -23,11 +23,11 @@ class CacheableMonitoringValue {
     public double getValue() {
         return value;
     }
-    
+
     public Object getAdditionalData(String key) {
         return additionalData.get(key);
     }
-    
+
     public void setAdditionalData(String key, Object value) {
         additionalData.put(key, value);
         updateCacheTimeStamp();
@@ -40,7 +40,7 @@ class CacheableMonitoringValue {
         }
         return false;
     }
-    
+
     private void updateCacheTimeStamp() {
         this.timestamp = System.currentTimeMillis();
     }

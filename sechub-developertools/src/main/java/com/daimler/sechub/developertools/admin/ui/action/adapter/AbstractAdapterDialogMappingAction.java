@@ -8,7 +8,7 @@ public abstract class AbstractAdapterDialogMappingAction extends AbstractAdapter
 
     public AbstractAdapterDialogMappingAction(String text, MappingUI ui) {
         super(text, ui.getDialogUI());
-        this.mappingUI=ui;
+        this.mappingUI = ui;
     }
 
     public MappingUI getMappingUI() {

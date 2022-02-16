@@ -35,37 +35,35 @@ import com.daimler.sechub.pds.usecase.UseCaseUserUploadsJobData;
 @RestController
 @EnableAutoConfiguration
 @RequestMapping(PDSAPIConstants.API_JOB)
-@RolesAllowed({PDSRoleConstants.ROLE_USER, PDSRoleConstants.ROLE_SUPERADMIN})
+@RolesAllowed({ PDSRoleConstants.ROLE_USER, PDSRoleConstants.ROLE_SUPERADMIN })
 public class PDSJobRestController {
 
-	@Autowired
-	private PDSJobTransactionService updateJobTransactionService;
+    @Autowired
+    private PDSJobTransactionService updateJobTransactionService;
 
-	@Autowired
-	private PDSCreateJobService createJobService;
+    @Autowired
+    private PDSCreateJobService createJobService;
 
-	@Autowired
-	private PDSFileUploadJobService fileUploadJobService;
+    @Autowired
+    private PDSFileUploadJobService fileUploadJobService;
 
-	@Autowired
-	private PDSGetJobStatusService jobStatusService;
-	
-	@Autowired
+    @Autowired
+    private PDSGetJobStatusService jobStatusService;
+
+    @Autowired
     private PDSGetJobResultService jobResultService;
-	
-	@Autowired
+
+    @Autowired
     private PDSCancelJobService cancelJobService;
 
-	@Validated
-	@RequestMapping(path = "create", method = RequestMethod.POST)
-	@UseCaseUserCreatesJob(@PDSStep(name="rest call",description = "user creates job. If configuration is not valid an error will be thrown",number=1))
-	public PDSJobCreateResult createJob(
-			@RequestBody PDSJobConfiguration configuration) {
-		return createJobService.createJob(configuration);
-	}
+    @Validated
+    @RequestMapping(path = "create", method = RequestMethod.POST)
+    @UseCaseUserCreatesJob(@PDSStep(name = "rest call", description = "user creates job. If configuration is not valid an error will be thrown", number = 1))
+    public PDSJobCreateResult createJob(@RequestBody PDSJobConfiguration configuration) {
+        return createJobService.createJob(configuration);
+    }
 
-
-	/* @formatter:off */
+    /* @formatter:off */
 	@Validated
 	@RequestMapping(path = "{jobUUID}/upload/{fileName}", method = RequestMethod.POST)
 	@UseCaseUserUploadsJobData(@PDSStep(name="rest call",description = "user uploads a file to workspace of given job",number=1))
@@ -79,8 +77,7 @@ public class PDSJobRestController {
 	}
 	/* @formatter:on */
 
-
-	/* @formatter:off */
+    /* @formatter:off */
 	@Validated
 	@RequestMapping(path = "{jobUUID}/mark-ready-to-start", method = RequestMethod.PUT)
 	@UseCaseUserMarksJobReadyToStart(@PDSStep(name="rest call",description = "a user marks job as ready to start.",number=1))
@@ -89,8 +86,8 @@ public class PDSJobRestController {
 		updateJobTransactionService.markReadyToStartInOwnTransaction(jobUUID);
 	}
 	/* @formatter:on */
-	
-	/* @formatter:off */
+
+    /* @formatter:off */
     @Validated
     @RequestMapping(path = "{jobUUID}/cancel", method = RequestMethod.PUT)
     @UseCaseUserCancelsJob(@PDSStep(name="rest call",description = "a user cancels job",number=1))
@@ -100,8 +97,7 @@ public class PDSJobRestController {
     }
     /* @formatter:on */
 
-
-	/* @formatter:off */
+    /* @formatter:off */
 	@Validated
 	@RequestMapping(path = "{jobUUID}/status", method = RequestMethod.GET)
 	@UseCaseUserFetchesJobStatus(@PDSStep(name="rest call",description = "a user fetches status of job.",number=1))
@@ -109,11 +105,11 @@ public class PDSJobRestController {
 			@PathVariable("jobUUID") UUID jobUUID
 			) {
 		/* @formatter:on */
-		return jobStatusService.getJobStatus(jobUUID);
+        return jobStatusService.getJobStatus(jobUUID);
 
-	}
-	
-	/* @formatter:off */
+    }
+
+    /* @formatter:off */
     @Validated
     @RequestMapping(path = "{jobUUID}/result", method = RequestMethod.GET)
     @UseCaseUserFetchesJobResult(@PDSStep(name="rest call",description = "a user wants to get result of job",number=1))
@@ -123,6 +119,5 @@ public class PDSJobRestController {
         /* @formatter:on */
         return jobResultService.getJobResult(jobUUID);
     }
-	
 
 }

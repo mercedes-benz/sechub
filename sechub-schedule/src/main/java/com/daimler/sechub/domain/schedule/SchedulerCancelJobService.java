@@ -54,11 +54,11 @@ public class SchedulerCancelJobService {
 
     @Autowired
     SchedulerCancelBatchJobService cancelBatchJobService;
-    
+
     /**
      * This service will cancel given JOB. There is NO check if current user has
      * access - this must be done before.
-     * 
+     *
      * @param jobUUID
      * @param ownerEmailAddress
      */
@@ -104,7 +104,7 @@ public class SchedulerCancelJobService {
 
         JobMessage message = new JobMessage();
         message.setJobUUID(secHubJob.getUUID());
-        
+
         message.setProjectId(secHubJob.getProjectId());
         message.setOwner(secHubJob.getOwner());
         message.setOwnerEmailAddress(ownerEmailAddress);

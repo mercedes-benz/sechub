@@ -15,15 +15,15 @@ import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
  * <br>
  * When doing separation we need to change the behaviour / implementation of
  * {@link DomainMessageService}
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
 @SpringBootApplication(exclude = RepositoryRestMvcAutoConfiguration.class) // we do not want to have automatic resources in HAL & co
 public class SecHubServerApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SecHubServerApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(SecHubServerApplication.class, args);
+    }
 
 }

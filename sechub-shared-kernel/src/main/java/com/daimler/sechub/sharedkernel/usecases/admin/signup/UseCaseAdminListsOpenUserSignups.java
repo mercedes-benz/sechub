@@ -10,6 +10,7 @@ import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseDefinition;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseGroup;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
+
 /* @formatter:off */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
@@ -17,10 +18,10 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 		id=UseCaseIdentifier.UC_ADMIN_LISTS_OPEN_USER_SIGNUPS,
 		group=UseCaseGroup.SIGN_UP,
 		apiName="adminListsOpenUserSignups",
-		title="Admin lists open user signups", 
+		title="Admin lists open user signups",
 		description="In this usecase the administrator will list the currently unapplied user self registrations/signups.")
 public @interface UseCaseAdminListsOpenUserSignups {
-	
+
 	Step value();
 }
 /* @formatter:on */

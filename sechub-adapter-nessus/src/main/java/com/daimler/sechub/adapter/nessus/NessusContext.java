@@ -8,74 +8,73 @@ import com.daimler.sechub.adapter.AdapterRuntimeContext;
 
 /**
  * Context for NESSUS execution.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
-public class NessusContext extends AbstractSpringRestAdapterContext<NessusAdapterConfig, NessusAdapter>
-		implements NessusAdapterContext {
+public class NessusContext extends AbstractSpringRestAdapterContext<NessusAdapterConfig, NessusAdapter> implements NessusAdapterContext {
 
-	String nessusSessionToken = "";
-	String nessusPolicyUID;
-	Long nessusScanId;
-	private String historyId;
-	private String exportFileId;
+    String nessusSessionToken = "";
+    String nessusPolicyUID;
+    Long nessusScanId;
+    private String historyId;
+    private String exportFileId;
 
-	public NessusContext(NessusAdapterConfig config, NessusAdapter adapter, AdapterRuntimeContext runtimeContext) {
-		super(config, adapter,runtimeContext);
-	}
+    public NessusContext(NessusAdapterConfig config, NessusAdapter adapter, AdapterRuntimeContext runtimeContext) {
+        super(config, adapter, runtimeContext);
+    }
 
-	@Override
-	protected ClientHttpRequestInterceptor createInterceptorOrNull(NessusAdapterConfig config) {
-		return new NessusClientHttpRequestInterceptor(this);
-	}
+    @Override
+    protected ClientHttpRequestInterceptor createInterceptorOrNull(NessusAdapterConfig config) {
+        return new NessusClientHttpRequestInterceptor(this);
+    }
 
-	@Override
-	public String getNessusPolicyUID() {
-		return nessusPolicyUID;
-	}
+    @Override
+    public String getNessusPolicyUID() {
+        return nessusPolicyUID;
+    }
 
-	@Override
-	public void setNessusPolicyId(String nessusPolicyUID) {
-		this.nessusPolicyUID = nessusPolicyUID;
-	}
+    @Override
+    public void setNessusPolicyId(String nessusPolicyUID) {
+        this.nessusPolicyUID = nessusPolicyUID;
+    }
 
-	@Override
-	public void setNessusSessionToken(String token) {
-		this.nessusSessionToken = token;
-	}
+    @Override
+    public void setNessusSessionToken(String token) {
+        this.nessusSessionToken = token;
+    }
 
-	public String getNessusSessionToken() {
-		return nessusSessionToken;
-	}
+    public String getNessusSessionToken() {
+        return nessusSessionToken;
+    }
 
-	@Override
-	public void setNessusScanId(Long scanId) {
-		this.nessusScanId = scanId;
-	}
+    @Override
+    public void setNessusScanId(Long scanId) {
+        this.nessusScanId = scanId;
+    }
 
-	@Override
-	public Long getNessusScanId() {
-		return nessusScanId;
-	}
+    @Override
+    public Long getNessusScanId() {
+        return nessusScanId;
+    }
 
-	@Override
-	public String getHistoryId() {
-		return historyId;
-	}
+    @Override
+    public String getHistoryId() {
+        return historyId;
+    }
 
-	@Override
-	public void setHistoryId(String id) {
-		this.historyId = id;
+    @Override
+    public void setHistoryId(String id) {
+        this.historyId = id;
 
-	}
+    }
 
-	public void setExportFileId(String fileId) {
-		this.exportFileId = fileId;
-	}
+    public void setExportFileId(String fileId) {
+        this.exportFileId = fileId;
+    }
 
-	public String getExportFileId() {
-		return exportFileId;
-	}
+    public String getExportFileId() {
+        return exportFileId;
+    }
 
 }

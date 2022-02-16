@@ -11,23 +11,23 @@ import com.daimler.sechub.sharedkernel.Profiles;
 
 @Component
 @Profile(Profiles.INTEGRATIONTEST)
-public class IntegrationTestMetaDataInspector implements MetaDataInspector{
+public class IntegrationTestMetaDataInspector implements MetaDataInspector {
 
-	private List<MapStorageMetaDataInspection> inspections = new ArrayList<MapStorageMetaDataInspection>();
+    private List<MapStorageMetaDataInspection> inspections = new ArrayList<MapStorageMetaDataInspection>();
 
-	public void clear() {
-		inspections.clear();
-	}
+    public void clear() {
+        inspections.clear();
+    }
 
-	@Override
-	public MetaDataInspection inspect(String id) {
-		MapStorageMetaDataInspection collection = new MapStorageMetaDataInspection(id);
-		inspections.add(collection);
-		return collection;
-	}
+    @Override
+    public MetaDataInspection inspect(String id) {
+        MapStorageMetaDataInspection collection = new MapStorageMetaDataInspection(id);
+        inspections.add(collection);
+        return collection;
+    }
 
-	public List<MapStorageMetaDataInspection> getInspections(){
-		return inspections;
-	}
+    public List<MapStorageMetaDataInspection> getInspections() {
+        return inspections;
+    }
 
 }

@@ -12,44 +12,44 @@ package com.daimler.sechub.sharedkernel;
  */
 public abstract class TraceLogID<T> {
 
-	private String asString;
-	private String plainId;
+    private String asString;
+    private String plainId;
 
-	public TraceLogID(T source) {
-		this(source, null);
-	}
+    public TraceLogID(T source) {
+        this(source, null);
+    }
 
-	public TraceLogID(T source, String postId) {
-		String postfix;
-		if (postId == null) {
-			postfix = "UID";
-		} else {
-			postfix = postId;
-		}
-		try {
-			plainId = createContent(source);
-		} catch (Exception e) {
-			plainId = null;
-		}
-		asString = "__[SECHUB-" + postfix + ":" + plainId + "]__";
-	}
+    public TraceLogID(T source, String postId) {
+        String postfix;
+        if (postId == null) {
+            postfix = "UID";
+        } else {
+            postfix = postId;
+        }
+        try {
+            plainId = createContent(source);
+        } catch (Exception e) {
+            plainId = null;
+        }
+        asString = "__[SECHUB-" + postfix + ":" + plainId + "]__";
+    }
 
-	/**
-	 * Creates content for ID
-	 *
-	 * @param source
-	 * @return
-	 * @throws Exception
-	 */
-	protected abstract String createContent(T source) throws Exception;
+    /**
+     * Creates content for ID
+     *
+     * @param source
+     * @return
+     * @throws Exception
+     */
+    protected abstract String createContent(T source) throws Exception;
 
-	@Override
-	public final String toString() {
-		return asString;
-	}
+    @Override
+    public final String toString() {
+        return asString;
+    }
 
-	public String getPlainId() {
-		return plainId;
-	}
+    public String getPlainId() {
+        return plainId;
+    }
 
 }

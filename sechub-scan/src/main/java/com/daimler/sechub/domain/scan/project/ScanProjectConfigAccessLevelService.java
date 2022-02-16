@@ -54,7 +54,7 @@ public class ScanProjectConfigAccessLevelService {
     /**
      * Fetches project access level for given project - if no project access level
      * is defined, default will be used, which is {@value #DEFAULT_ACCESS_LEVEL}
-     * 
+     *
      * @param projectId
      * @return
      */
@@ -64,7 +64,7 @@ public class ScanProjectConfigAccessLevelService {
 
     /**
      * Checks if project can be read by normal user operations
-     * 
+     *
      * @param projectId
      * @return <code>true</code> when read is possible, otherwise <code>false</code>
      */
@@ -75,7 +75,7 @@ public class ScanProjectConfigAccessLevelService {
 
     /**
      * Checks if project can be written by normal user operations
-     * 
+     *
      * @param projectId
      * @return <code>true</code> when write is possible, otherwise
      *         <code>false</code>

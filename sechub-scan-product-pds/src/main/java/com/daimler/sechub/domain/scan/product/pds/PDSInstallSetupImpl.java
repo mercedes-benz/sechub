@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan.product.pds;
 
+import static com.daimler.sechub.adapter.TimeConstants.*;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.daimler.sechub.adapter.AbstractAdapterConfigBuilder;
 import com.daimler.sechub.domain.scan.TargetType;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
-import static com.daimler.sechub.adapter.TimeConstants.*;
 
 @Component
 public class PDSInstallSetupImpl implements PDSInstallSetup {

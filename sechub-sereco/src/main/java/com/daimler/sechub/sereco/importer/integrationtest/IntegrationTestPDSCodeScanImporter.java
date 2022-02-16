@@ -23,7 +23,7 @@ import com.daimler.sechub.sharedkernel.Profiles;
  * Please read
  * /sechub-integrationtest/src/test/resources/pds/codescan/upload/README.md for
  * syntax description integration test output - ProductImportAbility.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

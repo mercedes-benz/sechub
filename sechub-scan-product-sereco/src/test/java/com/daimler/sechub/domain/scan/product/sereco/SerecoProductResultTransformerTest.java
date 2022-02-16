@@ -49,7 +49,7 @@ public class SerecoProductResultTransformerTest {
     }
 
     private ProductResult createProductResult(String converted) {
-        ProductResult r = new ProductResult(UUID.randomUUID(), "project1",  new WithoutProductExecutorConfigInfo(ProductIdentifier.PDS_WEBSCAN), converted);
+        ProductResult r = new ProductResult(UUID.randomUUID(), "project1", new WithoutProductExecutorConfigInfo(ProductIdentifier.PDS_WEBSCAN), converted);
         return r;
     }
 
@@ -108,7 +108,7 @@ public class SerecoProductResultTransformerTest {
 				hasName("type1");
 		/* @formatter:on */
     }
-    
+
     @Test
     public void transformation_of_solution_is_done() throws Exception {
         /* prepare */

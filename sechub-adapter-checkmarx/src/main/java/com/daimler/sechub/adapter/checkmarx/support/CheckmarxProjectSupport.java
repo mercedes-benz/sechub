@@ -90,7 +90,8 @@ public class CheckmarxProjectSupport {
     }
 
     /**
-     * Update preset id of checkmarx project when in adapter config set 
+     * Update preset id of checkmarx project when in adapter config set
+     *
      * @param config
      * @param checkmarxScanSettings
      * @param updateContext
@@ -111,28 +112,28 @@ public class CheckmarxProjectSupport {
             LOG.debug("Wanted preset id {} for project {}", presetId, projectId);
             updatePresetId = true;
         }
-        
+
         updateContext.setUpdatePresetId(updatePresetId);
         updateContext.setPresetId(presetId);
     }
-    
-    protected void updateEngineCondfigurationIdWhenSecHubAndCheckmarxDiffer(CheckmarxAdapterConfig config, List<CheckmarxEngineConfiguration> engineConfigurations, 
-            CheckmarxSastScanSettings checkmarxScanSettings, InternalUpdateContext updateContext) {
-        
+
+    protected void updateEngineCondfigurationIdWhenSecHubAndCheckmarxDiffer(CheckmarxAdapterConfig config,
+            List<CheckmarxEngineConfiguration> engineConfigurations, CheckmarxSastScanSettings checkmarxScanSettings, InternalUpdateContext updateContext) {
+
         boolean updateEngineConfiguration = false;
         String sechubEngineConfigurationName = config.getEngineConfigurationName();
         String projectId = config.getProjectId();
         long engineConfigurationId = checkmarxScanSettings.getEngineConfigurationId();
- 
+
         LOG.debug("SecHub engine configuration name {}", sechubEngineConfigurationName);
-        
+
         CheckmarxEngineConfiguration sechubEngineConfiguration = findEngineConfigurationByName(sechubEngineConfigurationName, engineConfigurations);
-        
+
         if (sechubEngineConfiguration == null) {
             LOG.warn("[ALERT] ILLEGAL_STATE CHECKMARX_ADAPTER no engine configuration available!");
-        } else  {
+        } else {
             LOG.debug("Found SecHub engine configuration {}", sechubEngineConfiguration.toString());
-            
+
             if (sechubEngineConfiguration.getId() != engineConfigurationId) {
                 LOG.debug("SecHub engine configuration id {} and Checkmarx engine configuration id {} are different.", sechubEngineConfiguration.getId(),
                         engineConfigurationId);
@@ -143,11 +144,11 @@ public class CheckmarxProjectSupport {
                 LOG.debug("Engine configuration id is already set to {} for project", sechubEngineConfigurationName, projectId);
             }
         }
-        
+
         updateContext.setUpdateEngineConfiguration(updateEngineConfiguration);
         updateContext.setEngineConfigurationId(engineConfigurationId);
     }
-    
+
     class InternalUpdateContext {
         private boolean updatePresetId;
         private boolean updateEngineConfiguration;
@@ -185,12 +186,11 @@ public class CheckmarxProjectSupport {
         public void setUpdateEngineConfiguration(boolean updateEngineConfiguration) {
             this.updateEngineConfiguration = updateEngineConfiguration;
         }
-        
+
         public boolean isUpdateNecessary() {
             return (isUpdateOfEngineConfigurationNecessary() || isUpdateOfPresetIdNecessary());
         }
     }
-    
 
     protected boolean updatePresetIdAndEngineConfigurationIfNecessary(CheckmarxContext context, CheckmarxSessionData sessionData) throws AdapterException {
         boolean updated = false;
@@ -224,7 +224,7 @@ public class CheckmarxProjectSupport {
 
         return updated;
     }
-    
+
     protected void updateSastScanSettings(CheckmarxContext context, Long presetId, Long engineConfigurationId, CheckmarxSastScanSettings currentSettings)
             throws AdapterException {
         MultiValueMap<String, String> headers3 = new LinkedMultiValueMap<>();

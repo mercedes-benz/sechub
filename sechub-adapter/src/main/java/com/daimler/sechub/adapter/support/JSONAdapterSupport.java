@@ -205,9 +205,9 @@ public class JSONAdapterSupport {
 
     private AdapterException asAdapterException(String message, Exception e, TraceIdProvider provider) {
         AdapterLogId id = null;
-        if (adapter!=null) {
+        if (adapter != null) {
             id = adapter.getAdapterLogId(provider);
-        }else {
+        } else {
             id = new AdapterLogId("undefined", "unknown");
         }
         return AdapterException.asAdapterException(id, message, e);
