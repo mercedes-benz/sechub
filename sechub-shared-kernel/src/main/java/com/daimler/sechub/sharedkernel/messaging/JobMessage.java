@@ -23,82 +23,82 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 @MustBeKeptStable("This configuration is used by communication between (api) schedule domain and administration - and maybe others")
 public class JobMessage implements JSONable<JobMessage> {
 
-	private UUID jobUUID;
+    private UUID jobUUID;
 
-	private String projectId;
+    private String projectId;
 
-	private String owner;
+    private String owner;
 
-	private String info;
+    private String info;
 
-	private String configuration;
+    private String configuration;
 
-	@JsonFormat(pattern = ("yyyy/MM/dd HH:mm:ss"))
-	@JsonSerialize(using = LocalDateTimeSerializer.class)
-	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
-	private LocalDateTime since;
+    @JsonFormat(pattern = ("yyyy/MM/dd HH:mm:ss"))
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime since;
 
-	private String ownerEmailAddress;
+    private String ownerEmailAddress;
 
-	public String getOwner() {
-		return owner;
-	}
+    public String getOwner() {
+        return owner;
+    }
 
-	public void setOwner(String owner) {
-		this.owner = owner;
-	}
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
 
-	public String getInfo() {
-		return info;
-	}
+    public String getInfo() {
+        return info;
+    }
 
-	public void setInfo(String info) {
-		this.info = info;
-	}
+    public void setInfo(String info) {
+        this.info = info;
+    }
 
-	public String getConfiguration() {
-		return configuration;
-	}
+    public String getConfiguration() {
+        return configuration;
+    }
 
-	public void setConfiguration(String configuration) {
-		this.configuration = configuration;
-	}
+    public void setConfiguration(String configuration) {
+        this.configuration = configuration;
+    }
 
-	public void setSince(LocalDateTime date) {
-		this.since = date;
-	}
+    public void setSince(LocalDateTime date) {
+        this.since = date;
+    }
 
-	public LocalDateTime getSince() {
-		return since;
-	}
+    public LocalDateTime getSince() {
+        return since;
+    }
 
-	@Override
-	public Class<JobMessage> getJSONTargetClass() {
-		return JobMessage.class;
-	}
+    @Override
+    public Class<JobMessage> getJSONTargetClass() {
+        return JobMessage.class;
+    }
 
-	public void setProjectId(String projectId) {
-		this.projectId = projectId;
-	}
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
+    }
 
-	public String getProjectId() {
-		return projectId;
-	}
+    public String getProjectId() {
+        return projectId;
+    }
 
-	public void setJobUUID(UUID jobUUID) {
-		this.jobUUID = jobUUID;
-	}
+    public void setJobUUID(UUID jobUUID) {
+        this.jobUUID = jobUUID;
+    }
 
-	public UUID getJobUUID() {
-		return jobUUID;
-	}
+    public UUID getJobUUID() {
+        return jobUUID;
+    }
 
-	public void setOwnerEmailAddress(String emailAdress) {
-		this.ownerEmailAddress = emailAdress;
-	}
+    public void setOwnerEmailAddress(String emailAdress) {
+        this.ownerEmailAddress = emailAdress;
+    }
 
-	public String getOwnerEmailAddress() {
-		return ownerEmailAddress;
-	}
+    public String getOwnerEmailAddress() {
+        return ownerEmailAddress;
+    }
 
 }

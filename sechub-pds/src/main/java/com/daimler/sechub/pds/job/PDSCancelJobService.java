@@ -19,7 +19,7 @@ import com.daimler.sechub.pds.usecase.PDSStep;
 import com.daimler.sechub.pds.usecase.UseCaseUserCancelsJob;
 
 @Service
-@RolesAllowed({PDSRoleConstants.ROLE_USER, PDSRoleConstants.ROLE_SUPERADMIN})
+@RolesAllowed({ PDSRoleConstants.ROLE_USER, PDSRoleConstants.ROLE_SUPERADMIN })
 public class PDSCancelJobService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSCancelJobService.class);
@@ -29,8 +29,8 @@ public class PDSCancelJobService {
 
     @Autowired
     PDSExecutionService executionService;
-    
-    @UseCaseUserCancelsJob(@PDSStep(name="service call",description = "trigger change to execution service and marks job status as cancel requested",number=2))
+
+    @UseCaseUserCancelsJob(@PDSStep(name = "service call", description = "trigger change to execution service and marks job status as cancel requested", number = 2))
     public void cancelJob(UUID jobUUID) {
         notNull(jobUUID, "job uuid may not be null!");
 

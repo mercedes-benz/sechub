@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.restdoc;
 
-import static com.daimler.sechub.test.TestURLBuilder.https;
 import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.PROJECT_ID;
+import static com.daimler.sechub.test.TestURLBuilder.https;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.Mockito.when;
@@ -50,42 +50,42 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 @RunWith(SpringRunner.class)
 @WebMvcTest(ProjectUpdateAdministrationRestController.class)
 @ContextConfiguration(classes = { ProjectUpdateAdministrationRestController.class,
-		ProjectUpdateAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class })
+        ProjectUpdateAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class })
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
-@ActiveProfiles({Profiles.TEST, Profiles.ADMIN_ACCESS})
-@AutoConfigureRestDocs(uriScheme="https",uriHost=ExampleConstants.URI_SECHUB_SERVER,uriPort=443)
+@ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
+@AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 public class ProjectUpdateAdministrationRestControllerRestDocTest {
 
-	private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
+    private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
-	@Autowired
-	private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-	@MockBean
-	ProjectUpdateWhitelistService mockedProjectUpdateWhiteListService;
-	
-	@MockBean
-	ProjectUpdateMetaDataEntityService mockedProjectUpdateMetaDataService;
+    @MockBean
+    ProjectUpdateWhitelistService mockedProjectUpdateWhiteListService;
 
-	@MockBean
-	UpdateProjectInputValidator mockedValidator;
+    @MockBean
+    ProjectUpdateMetaDataEntityService mockedProjectUpdateMetaDataService;
 
-	@MockBean
-	ProjectRepository mockedProjectRepository;
+    @MockBean
+    UpdateProjectInputValidator mockedValidator;
 
-	@Before
-	public void before() {
-		when(mockedValidator.supports(ProjectJsonInput.class)).thenReturn(true);
-	}
+    @MockBean
+    ProjectRepository mockedProjectRepository;
 
-	@Test
-	@UseCaseRestDoc(useCase=UseCaseUpdateProjectWhitelist.class)
-	public void restdoc_update_white_list_for_project() throws Exception {
-	    /* prepare */
+    @Before
+    public void before() {
+        when(mockedValidator.supports(ProjectJsonInput.class)).thenReturn(true);
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseUpdateProjectWhitelist.class)
+    public void restdoc_update_white_list_for_project() throws Exception {
+        /* prepare */
         String apiEndpoint = https(PORT_USED).buildUpdateProjectWhiteListUrl(PROJECT_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseUpdateProjectWhitelist.class;
 
-		/* execute + test @formatter:off */
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		    post(apiEndpoint, "projectId1").
         		    contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -111,16 +111,16 @@ public class ProjectUpdateAdministrationRestControllerRestDocTest {
         			 ));
 
 		/* @formatter:on */
-	}
+    }
 
-	@Test
-	@UseCaseRestDoc(useCase=UseCaseUpdateProjectMetaData.class)
-	public void restdoc_update_metadata_for_project() throws Exception {
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseUpdateProjectMetaData.class)
+    public void restdoc_update_metadata_for_project() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildUpdateProjectMetaData(PROJECT_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseUpdateProjectMetaData.class;
-        
-		/* execute + test @formatter:off */
+
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(apiEndpoint, "projectId1").
         				contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -148,12 +148,12 @@ public class ProjectUpdateAdministrationRestControllerRestDocTest {
         			);
 
 		/* @formatter:on */
-	}
+    }
 
-	@Profile(Profiles.TEST)
-	@EnableAutoConfiguration
-	public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    @Profile(Profiles.TEST)
+    @EnableAutoConfiguration
+    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
 
-	}
+    }
 
 }

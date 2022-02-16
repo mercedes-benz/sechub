@@ -23,7 +23,7 @@ public class MemoryUsageMonitor {
 
     /**
      * Resolves percentage of memory usage (results can be from 0 to 100)
-     * 
+     *
      * @return percentage of memory usage
      */
     public double getMemoryUsageInPercent() {

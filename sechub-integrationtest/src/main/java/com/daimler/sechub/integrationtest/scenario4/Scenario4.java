@@ -18,7 +18,7 @@ import com.daimler.sechub.integrationtest.internal.StaticTestScenario;
  * PROJECT_1_ is automatically created
  * USER_1, is automatically registered, created and assigned to project1
  * </pre>
- * 
+ *
  * <br>
  * Data will NOT be destroyed but reused in all tests!
  *
@@ -66,7 +66,7 @@ public class Scenario4 extends AbstractSecHubServerTestScenario implements Stati
 			waitUntilUserCanLogin(USER_1)
 
 			;
-		
+
 		initialized=true;
 		/* @formatter:on */
     }

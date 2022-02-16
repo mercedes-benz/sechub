@@ -37,8 +37,8 @@ public class CreateProductExecutorConfigService {
 
     /* @formatter:off */
     @UseCaseAdminCreatesExecutorConfiguration(
-            @Step(number = 2, 
-            name = "Service call", 
+            @Step(number = 2,
+            name = "Service call",
             description = "Service creates a new product executor configuration"))
     /* @formatter:on */
     public String createProductExecutorConfig(ProductExecutorConfig configFromUser) {
@@ -48,7 +48,6 @@ public class CreateProductExecutorConfigService {
                 configFromUser.getEnabled(), configFromUser.getProductIdentifier(), configFromUser.getExecutorVersion());
 
         resetFieldsNeverFromUser(configFromUser);
-
 
         ProductExecutorConfig stored = repository.save(configFromUser);
         UUID uuid = stored.getUUID();

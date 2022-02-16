@@ -28,7 +28,7 @@ import com.daimler.sechub.sharedkernel.MustBeDocumented;
  * new batch actions. Before doing such an operation it is useful to check if
  * memory and CPU are available enough to execute next batch job - if not the
  * scheduler will just not trigger any new batch jobs and will retry later
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -94,7 +94,7 @@ public class SystemMonitorService {
     /**
      * Check if maximum of allowed CPU usage has been reached. Callers should stop
      * CPU intensive actions when this returns <code>true</code>
-     * 
+     *
      * @return <code>true</code> when maximum has been reached
      */
     public boolean isCPULoadAverageMaxReached() {
@@ -103,7 +103,7 @@ public class SystemMonitorService {
 
     /**
      * Returns calculate CPU load average
-     * 
+     *
      * @return CPU load average will return positive value when available
      *         ((0.0->1.0->...) but negative (e.g.-1) if not available
      */
@@ -114,7 +114,7 @@ public class SystemMonitorService {
     /**
      * Check if maximum of allowed memory usage has been reached. Callers should
      * stop memory intensive actions when this returns <code>true</code>
-     * 
+     *
      * @return <code>true</code> when maximum has been reached
      */
     public boolean isMemoryUsageMaxReached() {
@@ -123,7 +123,7 @@ public class SystemMonitorService {
 
     /**
      * Resolves percentage of memory usage (results can be from 0 to 100)
-     * 
+     *
      * @return percentage of memory usage
      */
     public double getMemoryUsageInPercent() {
@@ -158,7 +158,7 @@ public class SystemMonitorService {
         if (maximumAcceptedCPULoadAverage > 10) {
             LOG.warn("Maybe too high configured maximum accepted CPU load average:{} ", maximumAcceptedCPULoadAverage);
         }
-        LOG.info("Defined maximum CPU load average:{}",maximumAcceptedCPULoadAverage);
+        LOG.info("Defined maximum CPU load average:{}", maximumAcceptedCPULoadAverage);
     }
 
     private void healtchCheckMemorySetup() {
@@ -174,7 +174,7 @@ public class SystemMonitorService {
         if (maximumAcceptedMemoryUsage > 95) {
             LOG.warn("Maybe too high configured maximum accepted memory usage:{}%", maximumAcceptedMemoryUsage);
         }
-        LOG.info("Defined maximum MEMORY load average:{}",maximumAcceptedMemoryUsage);
+        LOG.info("Defined maximum MEMORY load average:{}", maximumAcceptedMemoryUsage);
     }
 
 }

@@ -12,29 +12,29 @@ import com.daimler.sechub.developertools.admin.ui.action.AbstractUIAction;
 import com.daimler.sechub.developertools.admin.ui.cache.InputCacheIdentifier;
 
 public class DeleteProjectAction extends AbstractUIAction {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private static final Logger LOG = LoggerFactory.getLogger(DeleteProjectAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DeleteProjectAction.class);
 
-	public DeleteProjectAction(UIContext context) {
-		super("Delete project", context);
-	}
+    public DeleteProjectAction(UIContext context) {
+        super("Delete project", context);
+    }
 
-	@Override
-	public void execute(ActionEvent e) {
-		Optional<String> optProjectId = getUserInput("Please enter project ID/name to DELETE", InputCacheIdentifier.PROJECT_ID);
-		if (! optProjectId.isPresent()) {
-			return;
-		}
-		String projectId= optProjectId.get().toLowerCase().trim();
-		if (!confirm("Do you really want to\nDELETE\nproject "+projectId+"?")) {
-			outputAsTextOnSuccess("CANCELED - delete");
-			LOG.info("canceled delete of project {}",projectId);
-			return;
-		}
-		LOG.info("start delete of project {}",projectId);
-		String infoMessage = getContext().getAdministration().deleteProject(projectId);
-		outputAsTextOnSuccess(infoMessage);
-	}
+    @Override
+    public void execute(ActionEvent e) {
+        Optional<String> optProjectId = getUserInput("Please enter project ID/name to DELETE", InputCacheIdentifier.PROJECT_ID);
+        if (!optProjectId.isPresent()) {
+            return;
+        }
+        String projectId = optProjectId.get().toLowerCase().trim();
+        if (!confirm("Do you really want to\nDELETE\nproject " + projectId + "?")) {
+            outputAsTextOnSuccess("CANCELED - delete");
+            LOG.info("canceled delete of project {}", projectId);
+            return;
+        }
+        LOG.info("start delete of project {}", projectId);
+        String infoMessage = getContext().getAdministration().deleteProject(projectId);
+        outputAsTextOnSuccess(infoMessage);
+    }
 
 }

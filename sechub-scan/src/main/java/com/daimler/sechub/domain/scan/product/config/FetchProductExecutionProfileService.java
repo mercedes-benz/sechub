@@ -35,20 +35,20 @@ public class FetchProductExecutionProfileService {
 
     /* @formatter:off */
     @UseCaseAdminFetchesExecutionProfile(
-            @Step(number = 2, 
-            name = "Service call", 
+            @Step(number = 2,
+            name = "Service call",
             description = "Service reads setup information for an existing product executor configuration"))
     /* @formatter:on */
     public ProductExecutionProfile fetchProductExecutorConfig(String profileId) {
-        assertValid(profileId,profileIdValidation);
-        
+        assertValid(profileId, profileIdValidation);
+
         auditLogService.log("Reads setup for executor configuration:{}", profileId);
-        
+
         Optional<ProductExecutionProfile> config = repository.findById(profileId);
-        if (! config.isPresent()) {
-            throw new NotFoundException("Product execution profile not found for profileId:"+profileId);
+        if (!config.isPresent()) {
+            throw new NotFoundException("Product execution profile not found for profileId:" + profileId);
         }
-        
+
         return config.get();
     }
 

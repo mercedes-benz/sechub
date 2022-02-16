@@ -21,7 +21,7 @@ public class SerecoWeb {
     public SerecoWebResponse getResponse() {
         return response;
     }
-    
+
     /**
      * @return web attack, never <code>null</code>
      */
@@ -52,13 +52,13 @@ public class SerecoWeb {
     @Override
     public String toString() {
         /* @formatter:off */
-        return "SerecoWeb [" 
+        return "SerecoWeb ["
                 + (attack != null ? "\n"
-                + ">attack=" + attack + ", " : "") 
-        
+                + ">attack=" + attack + ", " : "")
+
                 + (request != null ? "\n"
-                + ">request=" + request + ", " : "") 
-                
+                + ">request=" + request + ", " : "")
+
                 + (response != null ? "\n"
                 + ">response=" + response : "") + "]";
         /* @formatter:on */

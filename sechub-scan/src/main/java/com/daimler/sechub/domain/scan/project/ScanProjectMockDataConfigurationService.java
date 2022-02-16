@@ -10,26 +10,26 @@ import com.daimler.sechub.sharedkernel.usecases.user.UseCaseUserRetrievesProject
 
 @Service
 public class ScanProjectMockDataConfigurationService {
-	
-	@Autowired
-	ScanProjectConfigService configService;
 
-	@UseCaseUserRetrievesProjectMockdata(@Step(number=2,name="Service call to get JSON data"))
-	public ScanProjectMockDataConfiguration retrieveProjectMockDataConfiguration(String projectId) {
-		ScanProjectConfig config = configService.get(projectId,ScanProjectConfigID.MOCK_CONFIGURATION);
-		if (config==null) {
-			return null;
-		}
-		String json = config.getData();
-		if (json==null) {
-			return null;
-		}
-		return ScanProjectMockDataConfiguration.fromString(json);
-	}
+    @Autowired
+    ScanProjectConfigService configService;
 
-	@UseCaseUserDefinesProjectMockdata(@Step(number=2,name="Service call to store mock configuration"))
-	public void defineProjectMockDataConfiguration(String projectId, ScanProjectMockDataConfiguration configuration) {
-		configService.set(projectId,ScanProjectConfigID.MOCK_CONFIGURATION, configuration.toJSON());
-	}
+    @UseCaseUserRetrievesProjectMockdata(@Step(number = 2, name = "Service call to get JSON data"))
+    public ScanProjectMockDataConfiguration retrieveProjectMockDataConfiguration(String projectId) {
+        ScanProjectConfig config = configService.get(projectId, ScanProjectConfigID.MOCK_CONFIGURATION);
+        if (config == null) {
+            return null;
+        }
+        String json = config.getData();
+        if (json == null) {
+            return null;
+        }
+        return ScanProjectMockDataConfiguration.fromString(json);
+    }
+
+    @UseCaseUserDefinesProjectMockdata(@Step(number = 2, name = "Service call to store mock configuration"))
+    public void defineProjectMockDataConfiguration(String projectId, ScanProjectMockDataConfiguration configuration) {
+        configService.set(projectId, ScanProjectConfigID.MOCK_CONFIGURATION, configuration.toJSON());
+    }
 
 }

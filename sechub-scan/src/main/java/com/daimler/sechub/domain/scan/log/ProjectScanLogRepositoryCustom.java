@@ -5,5 +5,5 @@ import java.util.List;
 
 public interface ProjectScanLogRepositoryCustom {
 
-	List<ProjectScanLogSummary> findSummaryLogsFor(String projectId);
+    List<ProjectScanLogSummary> findSummaryLogsFor(String projectId);
 }

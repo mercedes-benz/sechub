@@ -6,14 +6,14 @@ import com.daimler.sechub.test.TestFileSupport;
 
 @SechubTestComponent
 public class SharedKernelTestFileSupport extends TestFileSupport {
-	private static final SharedKernelTestFileSupport TESTFILE_SUPPORT = new SharedKernelTestFileSupport();
+    private static final SharedKernelTestFileSupport TESTFILE_SUPPORT = new SharedKernelTestFileSupport();
 
-	public static SharedKernelTestFileSupport getTestfileSupport() {
-		return TESTFILE_SUPPORT;
-	}
+    public static SharedKernelTestFileSupport getTestfileSupport() {
+        return TESTFILE_SUPPORT;
+    }
 
-	SharedKernelTestFileSupport() {
-		super("sechub-shared-kernel/src/test/resources");
-	}
+    SharedKernelTestFileSupport() {
+        super("sechub-shared-kernel/src/test/resources");
+    }
 
 }

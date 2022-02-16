@@ -19,6 +19,7 @@ import com.daimler.sechub.integrationtest.api.IntegrationTestJSONLocation;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
+
 public class FalsePositivesScenario3IntTest {
 
     @Rule
@@ -29,10 +30,9 @@ public class FalsePositivesScenario3IntTest {
 
     TestProject project = PROJECT_1;
 
-    
-    
     @Test
-    public void with_sechubclient_mark_falsepositives_of_only_existing_medium_will_result_in_report_without_defined__And_trafficlight_changes_from_yellow_to_green() throws Exception {
+    public void with_sechubclient_mark_falsepositives_of_only_existing_medium_will_result_in_report_without_defined__And_trafficlight_changes_from_yellow_to_green()
+            throws Exception {
         /* @formatter:off */
         /***********/
         /* prepare */
@@ -60,9 +60,10 @@ public class FalsePositivesScenario3IntTest {
 
         /* @formatter:on */
     }
-    
+
     @Test
-    public void REST_API_direct_mark_falsepositives_of_only_existing_medium_will_result_in_report_without_defined__And_trafficlight_changes_from_yellow_to_green() throws Exception {
+    public void REST_API_direct_mark_falsepositives_of_only_existing_medium_will_result_in_report_without_defined__And_trafficlight_changes_from_yellow_to_green()
+            throws Exception {
         /* @formatter:off */
         /***********/
         /* prepare */
@@ -90,11 +91,11 @@ public class FalsePositivesScenario3IntTest {
 
         /* @formatter:on */
     }
-    
+
     @Test
     public void REST_API_direct_mark_20_false_positives_with_comments_is_accepted() throws Exception {
         /* @formatter:off */
-        
+
         /***********/
         /* prepare */
         /***********/
@@ -107,25 +108,26 @@ public class FalsePositivesScenario3IntTest {
         /***********/
         ProjectFalsePositivesDefinition def = as(USER_1).
             startFalsePositiveDefinition(project);
-        
+
         int loops = 20;
-        
+
         for (int i=1;i<loops;i++) {
             def.add(i, jobUUID, "comment for loop:"+i);
         }
         def.markAsFalsePositive();
-        
+
         /********/
         /* test */
         /********/
         ProjectFalsePositivesDefinition configuration = as(USER_1).getFalsePositiveConfigurationOfProject(project);
         configuration.isContaining(loops-1, jobUUID);
-        
+
         /* @formatter:on */
     }
-    
+
     @Test
-    public void REST_API_direct_unmark_falsepositives_of_only_existing_medium_will_result_in_report_without_defined__And_trafficlight_changes_from_gren_to_yellow() throws Exception {
+    public void REST_API_direct_unmark_falsepositives_of_only_existing_medium_will_result_in_report_without_defined__And_trafficlight_changes_from_gren_to_yellow()
+            throws Exception {
         /* @formatter:off */
         /***********/
         /* prepare */
@@ -141,7 +143,7 @@ public class FalsePositivesScenario3IntTest {
         assertSecHubReport(result2).
             finding().id(1).name("Absolute Path Traversal").isNotContained().
             hasTrafficLight(TrafficLight.GREEN);
-        
+
         /***********/
         /* execute */
         /***********/
@@ -154,14 +156,15 @@ public class FalsePositivesScenario3IntTest {
         // create scan + fetch report again
         ExecutionResult result3 = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
         assertSecHubReport(result3).
-            finding().id(1).name("Absolute Path Traversal").isContained().  
+            finding().id(1).name("Absolute Path Traversal").isContained().
             hasTrafficLight(TrafficLight.YELLOW);
 
         /* @formatter:on */
     }
-    
+
     @Test
-    public void with_sechubclient_unmark_falsepositives_of_only_existing_medium_will_result_in_report_without_defined__And_trafficlight_changes_from_gren_to_yellow() throws Exception {
+    public void with_sechubclient_unmark_falsepositives_of_only_existing_medium_will_result_in_report_without_defined__And_trafficlight_changes_from_gren_to_yellow()
+            throws Exception {
         /* @formatter:off */
         /***********/
         /* prepare */
@@ -177,7 +180,7 @@ public class FalsePositivesScenario3IntTest {
         assertSecHubReport(result2).
             finding().id(1).name("Absolute Path Traversal").isNotContained().
             hasTrafficLight(TrafficLight.GREEN);
-        
+
         /***********/
         /* execute */
         /***********/
@@ -221,10 +224,10 @@ public class FalsePositivesScenario3IntTest {
         /* test */
         /********/
         assertTrue(configuration.isContaining(1, jobUUID));
-        
+
         /* @formatter:on */
     }
-    
+
     @Test
     public void with_sechubclient_fetch_fp_config_when_one_entry_added() throws Exception {
         /* @formatter:off */
@@ -246,19 +249,19 @@ public class FalsePositivesScenario3IntTest {
         /***********/
 
         ProjectFalsePositivesDefinition configuration = as(USER_1).withSecHubClient().getFalsePositiveConfigurationOfProject(project,location);
-        
+
         /********/
         /* test */
         /********/
         assertTrue(configuration.isContaining(1, jobUUID));
-        
+
         /* @formatter:on */
     }
-    
-    
+
     /**
-     * This test does check if the NotFoundException message is available inside JSON output. 
-     * The false positive marking is just an example. 
+     * This test does check if the NotFoundException message is available inside
+     * JSON output. The false positive marking is just an example.
+     *
      * @throws Exception
      */
     @Test
@@ -267,7 +270,7 @@ public class FalsePositivesScenario3IntTest {
         /* prepare */
         UUID jobUUID = UUID.randomUUID(); // a random job - not existing
         String json = null;
-        
+
         /* execute */
         try {
             as(USER_1).startFalsePositiveDefinition(project).add(1, jobUUID).markAsFalsePositive();
@@ -275,13 +278,12 @@ public class FalsePositivesScenario3IntTest {
         }catch(HttpStatusCodeException e) {
             json = e.getResponseBodyAsString();
         }
-        
+
         /* test */
         assertTrue(json.contains(":404"));
         assertTrue(json.contains("No report found for job "+jobUUID));
-        
+
         /* @formatter:on */
     }
-    
 
 }

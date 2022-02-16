@@ -19,9 +19,9 @@ public class ClusterMemberMessage implements JSONable<ClusterMemberMessage> {
     private String hostName;
 
     private String serviceStatus;
-    
+
     private String serviceName;
-    
+
     private String information;
 
     @Override
@@ -32,11 +32,11 @@ public class ClusterMemberMessage implements JSONable<ClusterMemberMessage> {
     public String getServiceName() {
         return serviceName;
     }
-    
+
     public void setServiceName(String name) {
         this.serviceName = name;
     }
-    
+
     public String getHostName() {
         return hostName;
     }
@@ -52,12 +52,13 @@ public class ClusterMemberMessage implements JSONable<ClusterMemberMessage> {
     public void setServiceStatus(String status) {
         this.serviceStatus = status;
     }
+
     public String getInformation() {
         return information;
     }
-    
+
     public void setInformation(String information) {
         this.information = information;
     }
-    
+
 }

@@ -25,77 +25,75 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 public class NessusAdapterV1WireMockTest {
 
-	private static final String TARGET_TYPE = "theType";
-	private static final String SECHUB_TRACE_ID = "sechub-trace-id";
-	private static final String EXPECTED_NAME_IN_DATA = "sechub-trace-id_"+TARGET_TYPE;
-	private static final String APPLICATION_JSON = "application/json";
-	private static final String APPLICATION_XML = "application/xml";
+    private static final String TARGET_TYPE = "theType";
+    private static final String SECHUB_TRACE_ID = "sechub-trace-id";
+    private static final String EXPECTED_NAME_IN_DATA = "sechub-trace-id_" + TARGET_TYPE;
+    private static final String APPLICATION_JSON = "application/json";
+    private static final String APPLICATION_XML = "application/xml";
 
-	private static final int HTTPS_PORT = TestPortProvider.DEFAULT_INSTANCE.getWireMockTestHTTPSPort();
+    private static final int HTTPS_PORT = TestPortProvider.DEFAULT_INSTANCE.getWireMockTestHTTPSPort();
 
-	private static final int HTTP_PORT = TestPortProvider.DEFAULT_INSTANCE.getWireMockTestHTTPPort();
+    private static final int HTTP_PORT = TestPortProvider.DEFAULT_INSTANCE.getWireMockTestHTTPPort();
 
-	private static final String PASSWORD = "12345BASE64_PWD";
+    private static final String PASSWORD = "12345BASE64_PWD";
 
-	private static final String TARGET_URL = "http://example.org";
+    private static final String TARGET_URL = "http://example.org";
 
-	private static final String NETSPARKER_BASE_URL = "http://localhost:" + HTTP_PORT;
+    private static final String NETSPARKER_BASE_URL = "http://localhost:" + HTTP_PORT;
 
-	private static final String POLICY_ID = "12345POLICY_ID";
+    private static final String POLICY_ID = "12345POLICY_ID";
 
-	private static final String POLICY_UUID = "12345UUID";
+    private static final String POLICY_UUID = "12345UUID";
 
-	private static final String USERNAME = "sechub-user";
+    private static final String USERNAME = "sechub-user";
 
-	@Rule
-	public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().port(HTTP_PORT).httpsPort(HTTPS_PORT));
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().port(HTTP_PORT).httpsPort(HTTPS_PORT));
 
-	private NessusAdapter adapterToTest;
+    private NessusAdapter adapterToTest;
 
-	private NessusAdapterConfig config;
-	private IcrementalAdditionalPrefixAPIURLSupport apiURLSupport;
-	private WiremockUrlHistory history;
+    private NessusAdapterConfig config;
+    private IcrementalAdditionalPrefixAPIURLSupport apiURLSupport;
+    private WiremockUrlHistory history;
 
+    @Before
+    public void before() {
+        // System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "debug");
 
+        apiURLSupport = new IcrementalAdditionalPrefixAPIURLSupport("nessustest");
+        history = new WiremockUrlHistory();
 
-	@Before
-	public void before() {
-		// System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "debug");
+        adapterToTest = new NessusAdapterV1() {
+            @Override
+            protected APIURLSupport createAPIURLSupport() {
+                return apiURLSupport;
+            }
+        };
+        config = mock(NessusAdapterConfig.class);
 
-		apiURLSupport = new IcrementalAdditionalPrefixAPIURLSupport("nessustest");
-		history = new WiremockUrlHistory();
-		 
-		adapterToTest = new NessusAdapterV1() {
-			@Override
-			protected APIURLSupport createAPIURLSupport() {
-				return apiURLSupport;
-			}
-		};
-		config = mock(NessusAdapterConfig.class);
+        when(config.getTraceID()).thenReturn(SECHUB_TRACE_ID);
+        when(config.getUser()).thenReturn(USERNAME);
+        when(config.getTargetType()).thenReturn(TARGET_TYPE);
+        when(config.getPasswordOrAPIToken()).thenReturn(PASSWORD);
+        when(config.getTimeOutInMilliseconds()).thenReturn(1000 * 5);
 
-		when(config.getTraceID()).thenReturn(SECHUB_TRACE_ID);
-		when(config.getUser()).thenReturn(USERNAME);
-		when(config.getTargetType()).thenReturn(TARGET_TYPE);
-		when(config.getPasswordOrAPIToken()).thenReturn(PASSWORD);
-		when(config.getTimeOutInMilliseconds()).thenReturn(1000*5);
+        when(config.getTargetURIs()).thenReturn(Collections.singleton(URI.create(TARGET_URL)));
+        when(config.getProductBaseURL()).thenReturn(NETSPARKER_BASE_URL);
+        when(config.getPolicyId()).thenReturn(POLICY_ID);
 
-		when(config.getTargetURIs()).thenReturn(Collections.singleton(URI.create(TARGET_URL)));
-		when(config.getProductBaseURL()).thenReturn(NETSPARKER_BASE_URL);
-		when(config.getPolicyId()).thenReturn(POLICY_ID);
+    }
 
-	}
+    @Test
+    public void start_scan_returns_returns_result_when_using_agent() throws Exception {
+        /* prepare */
+        String sessionToken = "token-returned-by-nessus";
 
-	@Test
-	public void start_scan_returns_returns_result_when_using_agent() throws Exception {
-		/* prepare */
-		String sessionToken = "token-returned-by-nessus";
+        JSONObject loginJson = new JSONObject();
+        loginJson.put("username", USERNAME);
+        loginJson.put("password", PASSWORD);
 
-		JSONObject loginJson = new JSONObject();
-		loginJson.put("username", USERNAME);
-		loginJson.put("password", PASSWORD);
-
-		String loginJSONBody = loginJson.toString();
-		/* @formatter:off */
+        String loginJSONBody = loginJson.toString();
+        /* @formatter:off */
     	/* +-----------------------------------------------------------------------+ */
     	/* +............................ login ....................................+ */
     	/* +-----------------------------------------------------------------------+ */
@@ -270,22 +268,18 @@ public class NessusAdapterV1WireMockTest {
 
         AdapterMetaDataCallback callback = mock(AdapterMetaDataCallback.class);
         /* @formatter:on */
-        
-        
-        
-        
-		/* execute */
-		String result = adapterToTest.start(config,callback);
 
-		/* test */
-		history.assertAllRememberedUrlsWereRequested();
+        /* execute */
+        String result = adapterToTest.start(config, callback);
 
-		assertEquals(xml, result);
-	}
+        /* test */
+        history.assertAllRememberedUrlsWereRequested();
 
+        assertEquals(xml, result);
+    }
 
-	private void simulateCheckScanState(String sessionToken, int scanId, int historyId,String state, int expectedCheckNr) {
-		/* @formatter:off */
+    private void simulateCheckScanState(String sessionToken, int scanId, int historyId, String state, int expectedCheckNr) {
+        /* @formatter:off */
 //		String jsonBody = "{\"history_id\":\""+historyId+"\"}";
 		stubFor(get(urlEqualTo(history.rememberGET(apiURLSupport.assertCheck(expectedCheckNr).nextURL("/scans/"+scanId))))
 				//.inScenario(chain.getScenario()).whenScenarioStateIs(chain.getStateBefore())
@@ -303,22 +297,19 @@ public class NessusAdapterV1WireMockTest {
 //				.willSetStateTo(chain.getStateAfter())
 				);
 		/* @formatter:on */
-	}
+    }
 
-	private void simulateServerRepsonseForFileExportStatus(String sessionToken, int scanId, int fileId,String status, int expectedCheckIndex) {
-		String resultExport = "{\"status\":\""+status+"\"}";;
-		stubFor(get(urlEqualTo(history.rememberGET(apiURLSupport.assertCheck(expectedCheckIndex).nextURL("/scans/"+scanId+"/export/"+fileId+"/status"))))
-				//.inScenario(chain.getScenario()).whenScenarioStateIs(chain.getStateBefore())
-        		.withHeader("X-Cookie", equalTo("token="+sessionToken))
-          		.withHeader("Content-Type", equalTo(APPLICATION_JSON))
-                .willReturn(aResponse()
-                    .withStatus(HttpStatus.OK.value())
-                    .withHeader("Content-Type", APPLICATION_JSON)
-                    .withBody(resultExport))
+    private void simulateServerRepsonseForFileExportStatus(String sessionToken, int scanId, int fileId, String status, int expectedCheckIndex) {
+        String resultExport = "{\"status\":\"" + status + "\"}";
+        ;
+        stubFor(get(
+                urlEqualTo(history.rememberGET(apiURLSupport.assertCheck(expectedCheckIndex).nextURL("/scans/" + scanId + "/export/" + fileId + "/status"))))
+                        // .inScenario(chain.getScenario()).whenScenarioStateIs(chain.getStateBefore())
+                        .withHeader("X-Cookie", equalTo("token=" + sessionToken)).withHeader("Content-Type", equalTo(APPLICATION_JSON))
+                        .willReturn(aResponse().withStatus(HttpStatus.OK.value()).withHeader("Content-Type", APPLICATION_JSON).withBody(resultExport))
 //                    ).
 //                willSetStateTo(chain.getStateAfter())
-                 )
-                    ;
-	}
+        );
+    }
 
 }

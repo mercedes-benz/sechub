@@ -31,7 +31,7 @@ public class TriggerSecHubClientSynchronousScanAction extends AbstractUIAction {
         Optional<String> optionalProject = getUserInput(
                 "Please enter project id (or cancel to leave empty)", InputCacheIdentifier.PROJECT_ID
         );
-        
+
 		Optional<String> optionalPath = getUserInput(
 		        "Please enter target folder for sechub scan:\n\n"+
 		                (optionalProject.isPresent() ? "": "WARN: You didn't define a project. So this folder must contain a sechub.json having projectId defined inside to work!)")+"\nServer, user and apitoken are used by DAUI setup!\n"+

@@ -10,40 +10,40 @@ import org.junit.Test;
 
 public class BasicLoginConfigurationTest {
 
-	private BasicLoginConfiguration config;
+    private BasicLoginConfiguration config;
 
-	@Before
-	public void before() {
-		/* prepare */
-		config = new BasicLoginConfiguration();
-	}
+    @Before
+    public void before() {
+        /* prepare */
+        config = new BasicLoginConfiguration();
+    }
 
-	@Test
-	public void when_passwort_set_ensure_password_field_is_a_sealed_object() {
+    @Test
+    public void when_passwort_set_ensure_password_field_is_a_sealed_object() {
 
-		/* execute */
-		config.setPassword("a".toCharArray());
+        /* execute */
+        config.setPassword("a".toCharArray());
 
-		/* test */
-		assertTrue(config.password instanceof SealedObject);
-	}
+        /* test */
+        assertTrue(config.password instanceof SealedObject);
+    }
 
-	@Test
-	public void no_password_set_returns_null_as_password() {
+    @Test
+    public void no_password_set_returns_null_as_password() {
 
-		/* execute + test */
-		assertNull(config.getPassword());
-	}
+        /* execute + test */
+        assertNull(config.getPassword());
+    }
 
-	@Test
-	public void encrypted_password_set_get_works() {
+    @Test
+    public void encrypted_password_set_get_works() {
 
-		/* execute */
-		config.setPassword("abcdefgh$_ü".toCharArray());
+        /* execute */
+        config.setPassword("abcdefgh$_ü".toCharArray());
 
-		/* test */
-		assertEquals("abcdefgh$_ü", new String(config.getPassword()));
+        /* test */
+        assertEquals("abcdefgh$_ü", new String(config.getPassword()));
 
-	}
+    }
 
 }

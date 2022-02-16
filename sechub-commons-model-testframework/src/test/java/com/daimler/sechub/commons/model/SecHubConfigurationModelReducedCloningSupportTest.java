@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
  * TestSecHubConfigurationBuilder and we could use this inside
  * sechub-commons-model because there would be a cyclic dependency. So we settle
  * this test inside this project
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -38,7 +38,7 @@ class SecHubConfigurationModelReducedCloningSupportTest {
                     codeScanConfig().setFileSystemFolders("folder1","folder2").
                                 and().
                     infraConfig().addURI("https://testinfra.example.com").
-                    
+
                 build();
         /* @formatter:on */
 
@@ -49,14 +49,14 @@ class SecHubConfigurationModelReducedCloningSupportTest {
 
         /* execute */
         String json = toTest.createReducedScanConfigurationCloneJSON(config, ScanType.CODE_SCAN);
-        
+
         /* test */
         SecHubScanConfiguration resultClone = SecHubScanConfiguration.createFromJSON(json);
         assertTrue(resultClone.getCodeScan().isPresent());
         assertFalse(resultClone.getWebScan().isPresent());
         assertFalse(resultClone.getInfraScan().isPresent());
     }
-    
+
     @Test
     public void configuration_having_infra_code_and_webs_config_parts__target_is_webscan() throws Exception {
 
@@ -71,7 +71,7 @@ class SecHubConfigurationModelReducedCloningSupportTest {
                     codeScanConfig().setFileSystemFolders("folder1","folder2").
                                 and().
                     infraConfig().addURI("https://testinfra.example.com").
-                    
+
                 build();
         /* @formatter:on */
 
@@ -89,7 +89,7 @@ class SecHubConfigurationModelReducedCloningSupportTest {
         assertFalse(resultClone.getCodeScan().isPresent());
         assertFalse(resultClone.getInfraScan().isPresent());
     }
-    
+
     @Test
     public void configuration_having_infra_code_and_webs_config_parts__target_is_infrascan() throws Exception {
 
@@ -104,7 +104,7 @@ class SecHubConfigurationModelReducedCloningSupportTest {
                     codeScanConfig().setFileSystemFolders("folder1","folder2").
                                 and().
                     infraConfig().addURI("https://testinfra.example.com").
-                    
+
                 build();
         /* @formatter:on */
 

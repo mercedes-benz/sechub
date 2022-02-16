@@ -24,43 +24,43 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 public class FullScanDataService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(FullScanDataService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FullScanDataService.class);
 
-	@Autowired
-	ProjectScanLogService projectScanLogService;
+    @Autowired
+    ProjectScanLogService projectScanLogService;
 
-	@Autowired
-	ProductResultService productResultService;
+    @Autowired
+    ProductResultService productResultService;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Autowired
+    UserInputAssertion assertion;
 
-	@UseCaseAdminDownloadsFullScanDataForJob(@Step(number=2, name="Collect all scan data"))
-	public FullScanData getFullScanData(UUID sechubJobUUID) {
-		assertion.isValidJobUUID(sechubJobUUID);
+    @UseCaseAdminDownloadsFullScanDataForJob(@Step(number = 2, name = "Collect all scan data"))
+    public FullScanData getFullScanData(UUID sechubJobUUID) {
+        assertion.isValidJobUUID(sechubJobUUID);
 
-		LOG.debug("Start getting full scan data for {}",sechubJobUUID);
+        LOG.debug("Start getting full scan data for {}", sechubJobUUID);
 
-		FullScanData data = new FullScanData();
-		data.sechubJobUUID=sechubJobUUID;
+        FullScanData data = new FullScanData();
+        data.sechubJobUUID = sechubJobUUID;
 
-		List<ProjectScanLog> logs = projectScanLogService.fetchLogsForJob(sechubJobUUID);
-		data.allScanLogs.addAll(logs);
+        List<ProjectScanLog> logs = projectScanLogService.fetchLogsForJob(sechubJobUUID);
+        data.allScanLogs.addAll(logs);
 
-		List<ProductResult> results = productResultService.fetchAllResultsForJob(sechubJobUUID);
-		for (ProductResult result:results) {
-			ScanData scanData = new ScanData();
-			scanData.productId=result.getProductIdentifier().toString();
-			scanData.executorConfigUUID=result.getProductExecutorConfigUUID();
-			
-			scanData.result=result.getResult();
-			
-			scanData.metaData=result.getMetaData();
-			
-			data.allScanData.add(scanData);
-			
-		}
-		return data;
-	}
+        List<ProductResult> results = productResultService.fetchAllResultsForJob(sechubJobUUID);
+        for (ProductResult result : results) {
+            ScanData scanData = new ScanData();
+            scanData.productId = result.getProductIdentifier().toString();
+            scanData.executorConfigUUID = result.getProductExecutorConfigUUID();
+
+            scanData.result = result.getResult();
+
+            scanData.metaData = result.getMetaData();
+
+            data.allScanData.add(scanData);
+
+        }
+        return data;
+    }
 
 }

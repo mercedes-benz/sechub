@@ -3,7 +3,7 @@ package com.daimler.sechub.commons.pds;
 
 /**
  * These keys are used at PDS to execute PDS jobs
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

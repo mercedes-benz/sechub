@@ -21,18 +21,17 @@ public class PDSProductIdentifierValidatorTest {
         assertNotNull(validatorToTest.createValidationErrorMessage(""));
     }
 
-    
     @Test
     public void product_identifiers_too_long_returns_errormessage() {
         assertNotNull(validatorToTest.createValidationErrorMessage("123456789012345678901234567890x"));
     }
-    
+
     @Test
     public void product_identifiers_not_too_long_returns_NO_errormessage() {
         assertNull(validatorToTest.createValidationErrorMessage("123456789012345678901234567890"));
         assertNull(validatorToTest.createValidationErrorMessage("ABCDE_1234_11"));
     }
-    
+
     @Test
     public void product_identifiers_containing_non_alphaebtic_digit_and_no_underscore_are_not_accepted() {
         assertNotNull(validatorToTest.createValidationErrorMessage("$"));

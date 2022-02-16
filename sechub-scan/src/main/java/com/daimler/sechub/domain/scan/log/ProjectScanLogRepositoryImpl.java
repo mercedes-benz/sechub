@@ -9,10 +9,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-public class ProjectScanLogRepositoryImpl implements ProjectScanLogRepositoryCustom{
+public class ProjectScanLogRepositoryImpl implements ProjectScanLogRepositoryCustom {
 
-
-	/* @formatter:off */
+    /* @formatter:off */
 	public static final String JPQL_STRING_SELECT_BY_PROJECT_ID=
 			"select new "+ProjectScanLogSummary.class.getName()+
 			"("+
@@ -26,18 +25,18 @@ public class ProjectScanLogRepositoryImpl implements ProjectScanLogRepositoryCus
 			" order by l."+PROPERTY_STARTED+" DESC";
 	/* @formatter:on */
 
-	@PersistenceContext
-	private EntityManager em;
+    @PersistenceContext
+    private EntityManager em;
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<ProjectScanLogSummary> findSummaryLogsFor(String projectId) {
-		if (projectId == null) {
-			throw new IllegalArgumentException();
-		}
-		Query query = em.createQuery(JPQL_STRING_SELECT_BY_PROJECT_ID);
-		query.setParameter(PROPERTY_PROJECT_ID, projectId);
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<ProjectScanLogSummary> findSummaryLogsFor(String projectId) {
+        if (projectId == null) {
+            throw new IllegalArgumentException();
+        }
+        Query query = em.createQuery(JPQL_STRING_SELECT_BY_PROJECT_ID);
+        query.setParameter(PROPERTY_PROJECT_ID, projectId);
 
-		return query.getResultList();
-}
+        return query.getResultList();
+    }
 }

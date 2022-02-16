@@ -11,7 +11,7 @@ import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 /**
  * Responsible class for identifying if a vulnerability identified by a product
  * is handled by a false positive meta data configuration
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

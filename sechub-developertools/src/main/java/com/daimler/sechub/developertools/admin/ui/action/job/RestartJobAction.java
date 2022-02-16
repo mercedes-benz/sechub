@@ -13,13 +13,13 @@ import com.daimler.sechub.developertools.admin.ui.action.AbstractUIAction;
 import com.daimler.sechub.developertools.admin.ui.cache.InputCacheIdentifier;
 
 public class RestartJobAction extends AbstractUIAction {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private static final Logger LOG = LoggerFactory.getLogger(RestartJobAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RestartJobAction.class);
 
-	public RestartJobAction(UIContext context) {
-		super("Restart job", context);
-	}
+    public RestartJobAction(UIContext context) {
+        super("Restart job", context);
+    }
 
     @Override
     public void execute(ActionEvent e) {
@@ -33,7 +33,7 @@ public class RestartJobAction extends AbstractUIAction {
             LOG.info("stopped restart of job {}", jobUUID);
             return;
         }
-        outputAsTextOnSuccess("triggered restart of job:"+jobUUID);
+        outputAsTextOnSuccess("triggered restart of job:" + jobUUID);
         LOG.info("trigger restart of job {}", jobUUID);
         String infoMessage = getContext().getAdministration().restartJob(UUID.fromString(jobUUID));
         outputAsTextOnSuccess(infoMessage);

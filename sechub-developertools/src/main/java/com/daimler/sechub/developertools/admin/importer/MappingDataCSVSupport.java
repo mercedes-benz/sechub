@@ -16,7 +16,7 @@ public class MappingDataCSVSupport {
         headline.add("Pattern");
         headline.add("Replacement");
         headline.add("Comment");
-        for (MappingEntry entry: data.getEntries()) {
+        for (MappingEntry entry : data.getEntries()) {
             CSVRow row = new CSVRow();
             rows.add(row);
             row.add(entry.getPattern());
@@ -25,28 +25,28 @@ public class MappingDataCSVSupport {
         }
         return rows;
     }
-    
+
     public MappingData fromCSVRows(List<CSVRow> rows, int headlines) {
         MappingData data = new MappingData();
-        if (rows.size()<=headlines) {
-            throw new IllegalStateException("Row count must be > headline count:"+headlines);
+        if (rows.size() <= headlines) {
+            throw new IllegalStateException("Row count must be > headline count:" + headlines);
         }
-        int count=0;
-        for (CSVRow row: rows) {
+        int count = 0;
+        for (CSVRow row : rows) {
             count++;
-            if (count<=headlines) {
+            if (count <= headlines) {
                 /* ignore headline */
                 continue;
             }
-            if (row.columns.size()!=3) {
-                throw new IllegalStateException("column count must be 3, but is:"+row.columns.size());
+            if (row.columns.size() != 3) {
+                throw new IllegalStateException("column count must be 3, but is:" + row.columns.size());
             }
-            int col=0;
-            String pattern= row.columns.get(col++).cell;
-            String replacement= row.columns.get(col++).cell;
-            String comment= row.columns.get(col++).cell;
-            
-            data.getEntries().add(new MappingEntry(pattern,replacement,comment));
+            int col = 0;
+            String pattern = row.columns.get(col++).cell;
+            String replacement = row.columns.get(col++).cell;
+            String comment = row.columns.get(col++).cell;
+
+            data.getEntries().add(new MappingEntry(pattern, replacement, comment));
         }
         return data;
     }

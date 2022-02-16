@@ -45,7 +45,7 @@ public class DeleteProductExecutionProfileService {
                 description="Service deletes an existing product execution profile by its profile id"))
     public void deleteProductExecutionProfile(String profileId) {
         assertValid(profileId, profileIdValidation);
-        
+
         auditLogService.log("Wants to removed product execution profile {}",profileId);
 
         Optional<ProductExecutionProfile> opt = repository.findById(profileId);
@@ -54,16 +54,16 @@ public class DeleteProductExecutionProfileService {
             throw new NotFoundException("Profile "+profileId+" does not exist, so cannot be deleted");
         }
         ProductExecutionProfile found = opt.get();
-        String description = found.getDescription(); 
-        
+        String description = found.getDescription();
+
         LOG.debug("Start removing configurations and project ids from profile:{}",profileId);
         found.getConfigurations().clear();
         found.getProjectIds().clear();
         repository.saveAndFlush(found);
-        
+
         LOG.debug("Start delete of profile:{}",profileId);
         repository.deleteById(profileId);
-        
+
         LOG.info("Removed product execution profile id:{}, description:{}",profileId, description);
     }
 

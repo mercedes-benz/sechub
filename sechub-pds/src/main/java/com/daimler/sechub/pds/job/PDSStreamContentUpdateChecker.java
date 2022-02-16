@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.pds.job;
 
+import static com.daimler.sechub.pds.util.PDSAssert.*;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 
@@ -8,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import static com.daimler.sechub.pds.util.PDSAssert.*;
+
 import com.daimler.sechub.pds.PDSMustBeDocumented;
 
 @Component
@@ -24,7 +26,7 @@ public class PDSStreamContentUpdateChecker {
 
     public boolean isUpdateNecessaryWhenRefreshRequestedNow(PDSJob job) {
         notNull(job, "Job may not be null!");
-        
+
         if (!isJobInStateWhereUpdateNecessary(job)) {
             return false;
         }
@@ -37,7 +39,7 @@ public class PDSStreamContentUpdateChecker {
 
     public boolean isUpdateRequestedAndNecessary(PDSJob job) {
         notNull(job, "Job may not be null!");
-        
+
         if (!isJobInStateWhereUpdateNecessary(job)) {
             return false;
         }
@@ -47,10 +49,10 @@ public class PDSStreamContentUpdateChecker {
 
         return isLastUpdateTooOld(lastUpdate, lastRequest);
     }
-    
+
     public boolean isJobInStateWhereUpdateNecessary(PDSJob job) {
         notNull(job, "Job may not be null!");
-        
+
         PDSJobStatusState state = job.getState();
         if (!PDSJobStatusState.RUNNING.equals(state)) {
             LOG.trace("State of job:{} currently:{}, so no update necessary.", job.getUUID(), state);

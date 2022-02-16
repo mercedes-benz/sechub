@@ -7,7 +7,7 @@ import com.daimler.sechub.integrationtest.internal.TestScenario;
  * A special test project variant - the project id will not be changed by
  * scenarios. Only necessary for some special purposes - e.g. inside DAUI where
  * test framework methods are used having TestProject arguments.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

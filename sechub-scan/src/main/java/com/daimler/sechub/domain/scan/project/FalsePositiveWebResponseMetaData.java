@@ -5,8 +5,8 @@ import java.util.Objects;
 
 public class FalsePositiveWebResponseMetaData {
 
-    public static final String PROPERTY_STATUSCODE= "statusCode";
-    public static final String PROPERTY_EVIDENCE= "evidence";
+    public static final String PROPERTY_STATUSCODE = "statusCode";
+    public static final String PROPERTY_EVIDENCE = "evidence";
 
     private String evidence;
     private int statusCode;
@@ -51,5 +51,5 @@ public class FalsePositiveWebResponseMetaData {
         FalsePositiveWebResponseMetaData other = (FalsePositiveWebResponseMetaData) obj;
         return Objects.equals(evidence, other.evidence) && statusCode == other.statusCode;
     }
-    
+
 }

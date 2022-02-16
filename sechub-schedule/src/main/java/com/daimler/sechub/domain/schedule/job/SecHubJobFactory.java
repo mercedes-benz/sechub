@@ -27,7 +27,7 @@ public class SecHubJobFactory {
 
     /**
      * Creates a new job - but does NO persistence!
-     * 
+     *
      * @param configuration
      * @return job
      */

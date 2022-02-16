@@ -34,7 +34,7 @@ public class AwsS3JobStorage implements JobStorage {
 
     /**
      * Creates a new AWS S3 storage object
-     * 
+     *
      * @param client
      * @param bucketName
      * @param storagePath
@@ -58,8 +58,8 @@ public class AwsS3JobStorage implements JobStorage {
             }
             ObjectMetadata meta = new ObjectMetadata();
             String objectName = getObjectName(name);
-            LOG.debug("store objectName={}",objectName+" on bucket {}",objectName,bucketName);
-            
+            LOG.debug("store objectName={}", objectName + " on bucket {}", objectName, bucketName);
+
             client.putObject(bucketName, objectName, stream, meta);
 
         } catch (Exception e) {
@@ -108,7 +108,7 @@ public class AwsS3JobStorage implements JobStorage {
         try {
             String objectName = getObjectName(name);
             LOG.debug("Fetching objectName={} from bucket={}", objectName, bucketName);
-            
+
             return client.getObject(bucketName, objectName).getObjectContent();
         } catch (Exception e) {
             throw new IOException("Was not able to fetch object from s3 bucket:" + name);

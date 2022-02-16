@@ -88,7 +88,7 @@ public class PDSBatchTriggerService {
                  * This can happen when PDS instances are started at same time, so the check for
                  * next jobs can lead to race condiitons - and optmistic locks will occurre
                  * here.
-                 * 
+                 *
                  * To avoid this to happen again, we wait a random time here. So next call on
                  * this machine should normally not collide again.
                  */

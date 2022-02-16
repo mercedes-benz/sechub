@@ -80,17 +80,16 @@ public class TestSecHubConfigurationBuilder {
             TestSecHubConfigurationBuilder.this.data.webConfig.maxScanDuration = Optional.ofNullable(maxScanDuration);
             return this;
         }
-        
+
         public TestWebConfigurationBuilder addIncludes(List<String> includes) {
             TestSecHubConfigurationBuilder.this.data.webConfig.includes = Optional.ofNullable(includes);
             return this;
         }
-        
+
         public TestWebConfigurationBuilder addExcludes(List<String> excludes) {
             TestSecHubConfigurationBuilder.this.data.webConfig.excludes = Optional.ofNullable(excludes);
             return this;
         }
-
 
         public TestWebLoginConfigurationBuilder login(String loginURL) {
             return new TestWebLoginConfigurationBuilder(loginURL, this);

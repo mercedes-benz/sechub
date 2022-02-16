@@ -2,20 +2,19 @@
 package com.daimler.sechub.domain.schedule.strategy;
 
 public enum SchedulerStrategyId {
-    FirstComeFirstServe("first-come-first-serve"),
-    OnlyOneScanPerProjectAtATime("only-one-scan-per-project-at-a-time");
+    FirstComeFirstServe("first-come-first-serve"), OnlyOneScanPerProjectAtATime("only-one-scan-per-project-at-a-time");
 
     private String strategy;
 
     SchedulerStrategyId(String strategyString) {
 
-        if (strategyString == null ) {
+        if (strategyString == null) {
             throw new IllegalArgumentException("strategyString may not be null!");
         }
         if (strategyString.isEmpty()) {
             throw new IllegalArgumentException("strategyString may not be empty!");
         }
-        
+
         this.strategy = strategyString;
     }
 

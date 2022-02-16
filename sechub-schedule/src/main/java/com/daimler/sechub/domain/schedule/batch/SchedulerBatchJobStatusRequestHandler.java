@@ -71,7 +71,7 @@ public class SchedulerBatchJobStatusRequestHandler implements SynchronMessageHan
             return true;
         default:
             return false;
-        } 
+        }
     }
 
     private boolean checkRepresentsCancel(BatchStatus batchStatus) {
@@ -84,7 +84,7 @@ public class SchedulerBatchJobStatusRequestHandler implements SynchronMessageHan
             return true;
         default:
             return false;
-        } 
+        }
     }
 
 }

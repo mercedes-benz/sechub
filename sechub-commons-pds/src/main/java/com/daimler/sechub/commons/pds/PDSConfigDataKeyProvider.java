@@ -3,11 +3,11 @@ package com.daimler.sechub.commons.pds;
 
 /**
  * Provides keys which are interpreted <strong>at PDS side</strong>.
- * 
+ *
  * <h3>Important</h3> The enum values MUST have same name as the env variables
  * provided to PDS script! <i>(makes it easier to understand, to maintain
  * etc.)</i>
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -25,7 +25,8 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
      * This is automatically given to PDS by SecHub on every call by adapter
      */
     PDS_SCAN_TARGET_TYPE(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_TARGET_TYPE,
-            "Contains the target type (depending on scan type) and will be just an additional information for PDS from SecHub.").markGenerated().markAsAvailableInsideScript()),
+            "Contains the target type (depending on scan type) and will be just an additional information for PDS from SecHub.").markGenerated()
+                    .markAsAvailableInsideScript()),
 
     /**
      * Special key inside executor configuration which will be used to define if PDS
@@ -62,7 +63,7 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
      * This is automatically given to PDS by SecHub - depending on scan type. E.g.
      * for a webscan the configuration will only contain the configuration for web
      * and the common parts.
-     * 
+     *
      */
     PDS_SCAN_CONFIGURATION(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_CONFIGURATION,
             "This contains the SecHub configuration as JSON object (but reduced to current scan type, so e.g. a web scan will have no code scan configuration data available")

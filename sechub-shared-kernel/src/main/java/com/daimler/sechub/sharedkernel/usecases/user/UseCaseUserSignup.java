@@ -11,6 +11,7 @@ import java.lang.annotation.Target;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseDefinition;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseGroup;
+
 /* @formatter:off */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
@@ -18,10 +19,10 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseGroup;
 		id=UC_SIGNUP,
 		group=UseCaseGroup.SIGN_UP,
 		apiName="userSignup",
-		title="User self registration", 
+		title="User self registration",
 		description="user/selfregistration_description.adoc")
 public @interface UseCaseUserSignup {
-	
+
 	Step value();
 }
 /* @formatter:on */

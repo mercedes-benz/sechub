@@ -23,7 +23,7 @@ import com.daimler.sechub.integrationtest.internal.IntegrationTestFileSupport;
 /**
  * Integration test doing code scans by integration test servers (sechub server,
  * pds server)
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -43,23 +43,23 @@ public class PDSWebScanJobScenario12IntTest {
         String configurationAsJson = IntegrationTestFileSupport.getTestfileSupport().loadTestFile("sechub-integrationtest-webscanconfig-all-options.json");
         SecHubScanConfiguration configuration = SecHubScanConfiguration.createFromJSON(configurationAsJson);
         configuration.setProjectId("myTestProject");
-        
+
         TestProject project = PROJECT_1;
         String targetURL = configuration.getWebScan().get().getUri().toString();
         as(SUPER_ADMIN).updateWhiteListForProject(project, Arrays.asList(targetURL));
         UUID jobUUID = as(USER_1).createJobAndReturnJobUUID(project, configuration);
-        
+
         /* execute */
         as(USER_1).
             approveJob(project, jobUUID);
-        
+
         waitForJobDone(project, jobUUID, 30, true);
-        
+
         /* test */
         String sechubReport = as(USER_1).getJobReport(project, jobUUID);
 
         // IMPORTANT: The 'integrationtest-webscan.sh' returns the configuration file as part of the resulting report.
-        //            It is necessary to start a PDS and SecHub in integration mode. The web scan will be created on the 
+        //            It is necessary to start a PDS and SecHub in integration mode. The web scan will be created on the
         //            SecHub server and SecHub calls the PDS. The PDS in return calls the 'integrationtest-webscan.sh',
         //            which produces the report.
         //
@@ -67,7 +67,7 @@ public class PDSWebScanJobScenario12IntTest {
         //   This test -- sends webscan config to -> SecHub -- calls -> PDS -- calls -> 'integrationtest-webscan.sh' -- returns -> Report
         //
         // look at 'integrationtest-webscan.sh' for implementation details
-        // finding 1: contains target url and more 
+        // finding 1: contains target url and more
         // finding 2: contains sechub configuration (only web parts)
         String descriptionFinding2WithDataInside = assertReport(sechubReport).
             finding(0).
@@ -77,8 +77,8 @@ public class PDSWebScanJobScenario12IntTest {
             finding(1).
                 hasDescriptionContaining("PDS_SCAN_CONFIGURATION={").
                 getDescription();
-        
-        String returndPdsScanConfigurationJSON = 
+
+        String returndPdsScanConfigurationJSON =
                  descriptionFinding2WithDataInside.substring("PDS_SCAN_CONFIGURATION=".length());
         /* @formatter:on */
 

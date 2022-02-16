@@ -5,11 +5,11 @@ import java.util.UUID;
 
 public class ScanData {
 
-	public String productId;
+    public String productId;
 
-	public String result;
+    public String result;
 
     public String metaData;
-    
+
     public UUID executorConfigUUID;
 }

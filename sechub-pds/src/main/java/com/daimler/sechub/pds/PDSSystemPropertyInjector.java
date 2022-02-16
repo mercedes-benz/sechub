@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
  * This component injects some special PDS Spring Boot values into corresponding
  * JVM system properties. So we can configure those parts in our
  * `application.yaml` file.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

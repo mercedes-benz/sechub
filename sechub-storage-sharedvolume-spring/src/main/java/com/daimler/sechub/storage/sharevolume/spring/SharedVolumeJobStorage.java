@@ -66,13 +66,13 @@ public class SharedVolumeJobStorage implements JobStorage {
         LOG.info("job:{}: storing {} in path {}", jobUUID, name, storagePath);
 
         Path pathToFile = getPathToFile(name);
-        
+
         try (InputStream inputStream = stream) {
             Files.copy(inputStream, pathToFile, StandardCopyOption.REPLACE_EXISTING);
-            
+
             LOG.debug("Stored:{} at {}", name, pathToFile);
         } catch (ResourceAccessException e) {
-            throw new IOException("Was not able to store input stream into file "+ pathToFile, e);
+            throw new IOException("Was not able to store input stream into file " + pathToFile, e);
         }
     }
 

@@ -16,30 +16,30 @@ import com.daimler.sechub.storage.core.JobStorage;
 import com.daimler.sechub.storage.core.JobStorageFactory;
 import com.daimler.sechub.storage.core.S3Setup;
 
-public class AwsS3JobStorageFactory implements JobStorageFactory{
+public class AwsS3JobStorageFactory implements JobStorageFactory {
 
-	private AmazonS3 s3Client;
-	private String bucketName;
+    private AmazonS3 s3Client;
+    private String bucketName;
 
-	public AwsS3JobStorageFactory(S3Setup s3Setup) {
-		requireNonNull(s3Setup, "s3setup may not be null!");
-		if (! s3Setup.isAvailable()) {
-			throw new IllegalStateException("S3 setup not available!");
-		}
+    public AwsS3JobStorageFactory(S3Setup s3Setup) {
+        requireNonNull(s3Setup, "s3setup may not be null!");
+        if (!s3Setup.isAvailable()) {
+            throw new IllegalStateException("S3 setup not available!");
+        }
 
-		BasicAWSCredentials awsCreds = new BasicAWSCredentials(s3Setup.getAccessKey(), s3Setup.getSecretkey());
-		ClientConfiguration clientConfiguration = new ClientConfiguration();
-		clientConfiguration.setSignerOverride("AWSS3V4SignerType");
+        BasicAWSCredentials awsCreds = new BasicAWSCredentials(s3Setup.getAccessKey(), s3Setup.getSecretkey());
+        ClientConfiguration clientConfiguration = new ClientConfiguration();
+        clientConfiguration.setSignerOverride("AWSS3V4SignerType");
 
-		s3Client = AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(awsCreds))
-				.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(s3Setup.getEndPoint(), Regions.DEFAULT_REGION.name()))
-				.withClientConfiguration(clientConfiguration).build();
-		
-		bucketName=s3Setup.getBucketName();
-	}
+        s3Client = AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(awsCreds))
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(s3Setup.getEndPoint(), Regions.DEFAULT_REGION.name()))
+                .withClientConfiguration(clientConfiguration).build();
 
-	@Override
-	public JobStorage createJobStorage(String storagePath, UUID jobUUID) {
-		return new AwsS3JobStorage(s3Client, bucketName, storagePath, jobUUID);
-	}
+        bucketName = s3Setup.getBucketName();
+    }
+
+    @Override
+    public JobStorage createJobStorage(String storagePath, UUID jobUUID) {
+        return new AwsS3JobStorage(s3Client, bucketName, storagePath, jobUUID);
+    }
 }

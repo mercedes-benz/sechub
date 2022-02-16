@@ -14,44 +14,45 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * by spring boot rest magic you do not need to implement the interface. If you
  * want to jsonify/dejsonify objects outside this "magic" you just need to
  * implement the interface to get this out of the box<br>
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
 public interface JSONable<T> {
 
-	@JsonIgnore
-	Class<T> getJSONTargetClass();
+    @JsonIgnore
+    Class<T> getJSONTargetClass();
 
-	/**
-	 * Converts object to JSON - not pretty printed
-	 * 
-	 * @return
-	 * @throws JSONConverterException
-	 */
-	default String toJSON() throws JSONConverterException {
-		return getConverter().toJSON(this);
-	}
+    /**
+     * Converts object to JSON - not pretty printed
+     *
+     * @return
+     * @throws JSONConverterException
+     */
+    default String toJSON() throws JSONConverterException {
+        return getConverter().toJSON(this);
+    }
 
-	/**
-	 * @return the json converter
-	 */
-	@JsonIgnore
-	default JSONConverter getConverter() {
-		return JSONConverter.get();
-	}
+    /**
+     * @return the json converter
+     */
+    @JsonIgnore
+    default JSONConverter getConverter() {
+        return JSONConverter.get();
+    }
 
-	/**
-	 * Creates a full new JSON object from given string. <br>
-	 * It's a good practice to provide a static default instance (e.g. "INSTANCE" ) of the 
-	 * implementing class as a public constant. So you can use this method as a factory... 
-	 * 
-	 * @param json
-	 * @return
-	 * @throws JSONConverterException
-	 */
-	default T fromJSON(String json) throws JSONConverterException {
-		return getConverter().fromJSON(getJSONTargetClass(), json);
-	}
+    /**
+     * Creates a full new JSON object from given string. <br>
+     * It's a good practice to provide a static default instance (e.g. "INSTANCE" )
+     * of the implementing class as a public constant. So you can use this method as
+     * a factory...
+     *
+     * @param json
+     * @return
+     * @throws JSONConverterException
+     */
+    default T fromJSON(String json) throws JSONConverterException {
+        return getConverter().fromJSON(getJSONTargetClass(), json);
+    }
 
 }

@@ -7,20 +7,20 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * 
+ *
  * From <a href=
  * "https://github.com/microsoft/sarif-tutorials/blob/main/docs/2-Basics.md#property-bags">Sarif
  * documentation</a>: <quote> Before we go any further, let's address an issue
  * that almost every tool vendor cares about: What do I do if my tool produces
  * information that the SARIF specification doesn't mention?
- * 
+ *
  * The answer is that every object in the SARIF object model — from logs to runs
  * to results to locations to messages, without exception — defines a property
  * named properties. The spec calls a property named properties a property bag.
  * </quote> See also <a href=
  * "https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317448">SARIF
  * 2.1.0 specification entry</a>
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -31,7 +31,7 @@ public class PropertyBag extends HashMap<String, Object> {
 
     /**
      * Adds given tag to tag set
-     * 
+     *
      * @param tag
      * @return <code>true</code> if this set did not already contain the specified
      *         tag
@@ -44,7 +44,7 @@ public class PropertyBag extends HashMap<String, Object> {
      * This adds a property. For key "tags" there is a special handling, this is
      * always handled as a collection and internally all current elements are added
      * into a set. So tags are never duplicated.
-     * 
+     *
      * @param key   when <code>null</code> nothing happens, because property bags
      *              may not have key null
      * @param value when <code>null</code> than a former will just be removed
@@ -81,7 +81,7 @@ public class PropertyBag extends HashMap<String, Object> {
 
     /**
      * Fetch tags
-     * 
+     *
      * @return tags or empty set, when not defined
      */
     public Set<String> fetchTags() {

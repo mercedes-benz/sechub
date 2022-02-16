@@ -19,27 +19,27 @@ import com.daimler.sechub.adapter.WebScanAdapterConfig;
 
 public class NetsparkerAdapterWebLoginSupportV1 {
 
-	public void addAuthorizationInfo(WebScanAdapterConfig config, Map<String,Object> rootMap) {
-		requireNonNull(config,"Web scan adapter config may not be null!");
+    public void addAuthorizationInfo(WebScanAdapterConfig config, Map<String, Object> rootMap) {
+        requireNonNull(config, "Web scan adapter config may not be null!");
 
-		LoginConfig loginConfig = config.getLoginConfig();
-		if (loginConfig==null) {
-			return;
-		}
-		if (loginConfig.isBasic()) {
-			addBasicAuthorization(loginConfig,rootMap);
-			return;
-		}
+        LoginConfig loginConfig = config.getLoginConfig();
+        if (loginConfig == null) {
+            return;
+        }
+        if (loginConfig.isBasic()) {
+            addBasicAuthorization(loginConfig, rootMap);
+            return;
+        }
 
-		if (loginConfig.isFormScript()) {
-			addFormScriptAuthorization(loginConfig,rootMap);
-			return;
-		}
-		throw new IllegalArgumentException("Is currently not supported:"+config.getClass().getSimpleName());
-	}
+        if (loginConfig.isFormScript()) {
+            addFormScriptAuthorization(loginConfig, rootMap);
+            return;
+        }
+        throw new IllegalArgumentException("Is currently not supported:" + config.getClass().getSimpleName());
+    }
 
-	// see https://your-netsparker-server/docs/index#!/Scans/Scans_New
-	private void addFormScriptAuthorization(LoginConfig config, Map<String, Object> rootMap) {
+    // see https://your-netsparker-server/docs/index#!/Scans/Scans_New
+    private void addFormScriptAuthorization(LoginConfig config, Map<String, Object> rootMap) {
 //		"FormAuthenticationSettingModel": {
 //	    "CustomScripts": [
 //		    "Value" : "....your script for page 1 ....",
@@ -72,43 +72,43 @@ public class NetsparkerAdapterWebLoginSupportV1 {
 //	    "PersonasValidation": true
 //	  },
 
-		FormScriptLoginConfig asFormScript = config.asFormScript();
+        FormScriptLoginConfig asFormScript = config.asFormScript();
 
-		Map<String, Object> formAuthenticationSettingModel = new TreeMap<>();
-		rootMap.put("FormAuthenticationSettingModel", formAuthenticationSettingModel);
+        Map<String, Object> formAuthenticationSettingModel = new TreeMap<>();
+        rootMap.put("FormAuthenticationSettingModel", formAuthenticationSettingModel);
 
-		formAuthenticationSettingModel.put("LoginFormUrl", asFormScript.getLoginURL());
-		List<Pair<String, String>> customScripts = generateCustomScripts(asFormScript.getPages());
+        formAuthenticationSettingModel.put("LoginFormUrl", asFormScript.getLoginURL());
+        List<Pair<String, String>> customScripts = generateCustomScripts(asFormScript.getPages());
 
-		formAuthenticationSettingModel.put("DefaultPersonaValidation", true);
-		formAuthenticationSettingModel.put("CustomScripts", customScripts);
-		formAuthenticationSettingModel.put("IsEnabled", true);
-		formAuthenticationSettingModel.put("PersonasValidation", true);
+        formAuthenticationSettingModel.put("DefaultPersonaValidation", true);
+        formAuthenticationSettingModel.put("CustomScripts", customScripts);
+        formAuthenticationSettingModel.put("IsEnabled", true);
+        formAuthenticationSettingModel.put("PersonasValidation", true);
 
-		List<Map<String,Object>> personas = new ArrayList<Map<String,Object>>();
-		Map<String, Object> entry = new TreeMap<>();
-		entry.put("UserName", asFormScript.getUserName());
-		entry.put("Password", asFormScript.getPassword());
-		entry.put("IsActive", true);
-		personas.add(entry);
-		formAuthenticationSettingModel.put("Personas", personas);
-	}
-	
-private List<Pair<String, String>> generateCustomScripts(List<LoginScriptPage> pages) {
-  NetsparkerLoginScriptGenerator scriptGenerator = new NetsparkerLoginScriptGenerator();
-  
-  List<Pair<String, String>> customScripts = new LinkedList<Pair<String,String>>();
-  
-  for (LoginScriptPage page : pages) {
-      String script = scriptGenerator.generate(page.getActions());
-      customScripts.add(new ImmutablePair<String, String>("Value", script));
-  }
-  
-  return customScripts;
-}
+        List<Map<String, Object>> personas = new ArrayList<Map<String, Object>>();
+        Map<String, Object> entry = new TreeMap<>();
+        entry.put("UserName", asFormScript.getUserName());
+        entry.put("Password", asFormScript.getPassword());
+        entry.put("IsActive", true);
+        personas.add(entry);
+        formAuthenticationSettingModel.put("Personas", personas);
+    }
 
-	// see https://your-netsparker-server/docs/index#!/Scans/Scans_New
-	private void addBasicAuthorization(LoginConfig config, Map<String,Object> rootMap) {
+    private List<Pair<String, String>> generateCustomScripts(List<LoginScriptPage> pages) {
+        NetsparkerLoginScriptGenerator scriptGenerator = new NetsparkerLoginScriptGenerator();
+
+        List<Pair<String, String>> customScripts = new LinkedList<Pair<String, String>>();
+
+        for (LoginScriptPage page : pages) {
+            String script = scriptGenerator.generate(page.getActions());
+            customScripts.add(new ImmutablePair<String, String>("Value", script));
+        }
+
+        return customScripts;
+    }
+
+    // see https://your-netsparker-server/docs/index#!/Scans/Scans_New
+    private void addBasicAuthorization(LoginConfig config, Map<String, Object> rootMap) {
 //
 //		 "BasicAuthenticationApiModel": {
 //	    "Credentials": [
@@ -124,26 +124,26 @@ private List<Pair<String, String>> generateCustomScripts(List<LoginScriptPage> p
 //	    "NoChallenge": false
 //	  },
 
-		Map<String, Object> basicAuthenticationApiModel = new TreeMap<>();
-		rootMap.put("BasicAuthenticationApiModel", basicAuthenticationApiModel);
+        Map<String, Object> basicAuthenticationApiModel = new TreeMap<>();
+        rootMap.put("BasicAuthenticationApiModel", basicAuthenticationApiModel);
 
-		List<Map<String, Object>>credentialList = new ArrayList<>();
-		basicAuthenticationApiModel.put("Credentials", credentialList);
+        List<Map<String, Object>> credentialList = new ArrayList<>();
+        basicAuthenticationApiModel.put("Credentials", credentialList);
 
-		Map<String, Object> credentialEntry1 = new TreeMap<>();
-		credentialEntry1.put("AuthenticationType", "Basic");
-		String realm = config.asBasic().getRealm();
-		if (realm!=null) {
-			credentialEntry1.put("Domain", realm);
-		}
-		credentialEntry1.put("UserName", config.asBasic().getUser());
-		credentialEntry1.put("Password", config.asBasic().getPassword());
-		credentialEntry1.put("UriPrefix", config.asBasic().getLoginURL());
+        Map<String, Object> credentialEntry1 = new TreeMap<>();
+        credentialEntry1.put("AuthenticationType", "Basic");
+        String realm = config.asBasic().getRealm();
+        if (realm != null) {
+            credentialEntry1.put("Domain", realm);
+        }
+        credentialEntry1.put("UserName", config.asBasic().getUser());
+        credentialEntry1.put("Password", config.asBasic().getPassword());
+        credentialEntry1.put("UriPrefix", config.asBasic().getLoginURL());
 
-		credentialList.add(credentialEntry1);
+        credentialList.add(credentialEntry1);
 
-		basicAuthenticationApiModel.put("IsEnabled", true);
-		basicAuthenticationApiModel.put("NoChallenge", false);
+        basicAuthenticationApiModel.put("IsEnabled", true);
+        basicAuthenticationApiModel.put("NoChallenge", false);
 
-	}
+    }
 }

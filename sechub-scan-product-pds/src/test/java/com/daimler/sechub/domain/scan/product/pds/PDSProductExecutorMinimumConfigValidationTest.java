@@ -92,17 +92,17 @@ public class PDSProductExecutorMinimumConfigValidationTest {
     private ProductExecutorConfig createConfigWithAllMandatoryParametersSetWith(String value) {
         ProductExecutorConfig config = createConfigWithNoParametersSet();
         List<ProductExecutorConfigSetupJobParameter> params = config.getSetup().getJobParameters();
-        
+
         for (SecHubProductExecutionPDSKeyProvider provider : SecHubProductExecutionPDSKeyProvider.values()) {
             SecHubProductExecutionPDSKey key = provider.getKey();
             if (key.isMandatory()) {
-                params.add(new ProductExecutorConfigSetupJobParameter(key.getId(),value));
+                params.add(new ProductExecutorConfigSetupJobParameter(key.getId(), value));
             }
         }
         for (PDSConfigDataKeyProvider provider : PDSConfigDataKeyProvider.values()) {
             ExecutionPDSKey key = provider.getKey();
             if (key.isMandatory()) {
-                params.add(new ProductExecutorConfigSetupJobParameter(key.getId(),value));
+                params.add(new ProductExecutorConfigSetupJobParameter(key.getId(), value));
             }
         }
         return config;

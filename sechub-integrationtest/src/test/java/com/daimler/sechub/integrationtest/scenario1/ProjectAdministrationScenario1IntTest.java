@@ -11,21 +11,21 @@ import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 
 public class ProjectAdministrationScenario1IntTest {
 
-	@Rule
-	public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario1.class);
+    @Rule
+    public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario1.class);
 
-	/* +-----------------------------------------------------------------------+ */
-	/* +............................ Project create ...........................+ */
-	/* +-----------------------------------------------------------------------+ */
+    /* +-----------------------------------------------------------------------+ */
+    /* +............................ Project create ...........................+ */
+    /* +-----------------------------------------------------------------------+ */
 
-	@Test
-	public void a_superadmin_is_able_to_create_a_project() {
-		assertUser(SUPER_ADMIN).canCreateProject(Scenario1.PROJECT_1, Scenario1.OWNER_1.getUserId());
-	}
+    @Test
+    public void a_superadmin_is_able_to_create_a_project() {
+        assertUser(SUPER_ADMIN).canCreateProject(Scenario1.PROJECT_1, Scenario1.OWNER_1.getUserId());
+    }
 
-	@Test
-	public void a_superadmin_is_able_to_create_a_project_and_owner_can_be_added_as_user_and_is_user_and_owner_role() {
-		/* @formatter:off */
+    @Test
+    public void a_superadmin_is_able_to_create_a_project_and_owner_can_be_added_as_user_and_is_user_and_owner_role() {
+        /* @formatter:off */
 		/* check preconditions */
 		assertUser(Scenario1.OWNER_1).
 			hasUserRole().// every created user has role user - except when deactivated
@@ -41,16 +41,16 @@ public class ProjectAdministrationScenario1IntTest {
 			hasOwnerRole().
 			isOwnerOf(Scenario1.PROJECT_1);
 		/* @formatter:on */
-	}
+    }
 
-	@Test
-	public void a_user_is_not_able_to_create_a_project() {
-		assertUser(ONLY_USER).cannotCreateProject(Scenario1.PROJECT_1, Scenario1.OWNER_1.getUserId(), HttpStatus.FORBIDDEN);
-	}
+    @Test
+    public void a_user_is_not_able_to_create_a_project() {
+        assertUser(ONLY_USER).cannotCreateProject(Scenario1.PROJECT_1, Scenario1.OWNER_1.getUserId(), HttpStatus.FORBIDDEN);
+    }
 
-	@Test
-	public void anynomous_is_not_able_to_create_a_project() {
-		assertUser(ANONYMOUS).cannotCreateProject(Scenario1.PROJECT_1, Scenario1.OWNER_1.getUserId(), HttpStatus.UNAUTHORIZED);
-	}
+    @Test
+    public void anynomous_is_not_able_to_create_a_project() {
+        assertUser(ANONYMOUS).cannotCreateProject(Scenario1.PROJECT_1, Scenario1.OWNER_1.getUserId(), HttpStatus.UNAUTHORIZED);
+    }
 
 }

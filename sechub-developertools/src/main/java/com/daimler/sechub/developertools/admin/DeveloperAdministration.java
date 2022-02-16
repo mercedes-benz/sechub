@@ -58,7 +58,7 @@ public class DeveloperAdministration {
     private TestURLBuilder urlBuilder;
     private ErrorHandler errorHandler;
     private UIContext uiContext;
-    
+
     private static final DeveloperProjectDetailInformation PROJECT_DETAIL_IMPORTER = new DeveloperProjectDetailInformation();
 
     public DeveloperAdministration(ConfigProvider provider, ErrorHandler errorHandler, UIContext uiContext) {
@@ -81,7 +81,7 @@ public class DeveloperAdministration {
      * Will update test API server connection data - makes it possible to use
      * directly test API methods without writing duplicates for developer admin ui
      * (faster development)
-     * 
+     *
      * @param server
      * @param portNumber
      */
@@ -223,16 +223,15 @@ public class DeveloperAdministration {
         public TestPDSServerConfgiuration fetchServerConfiguration() {
             return JSONConverter.get().fromJSON(TestPDSServerConfgiuration.class, fetchServerConfigurationAsString());
         }
-        
+
         public String getJobOutputStream(UUID jobUUID) {
-           return restHelper.getStringFromURL(pdsUrlBuilder.pds().buildAdminFetchesJobOutputStreamUrl(jobUUID));
+            return restHelper.getStringFromURL(pdsUrlBuilder.pds().buildAdminFetchesJobOutputStreamUrl(jobUUID));
         }
 
         public String getJobErrorStream(UUID jobUUID) {
             return restHelper.getStringFromURL(pdsUrlBuilder.pds().buildAdminFetchesJobErrorStreamUrl(jobUUID));
-         }
+        }
 
-        
         public ProductIdentifier findProductIdentifier(TestPDSServerConfgiuration config, String productId) {
             for (TestPDSServerProductConfig c : config.products) {
                 if (c.id.equals(productId)) {
@@ -388,10 +387,10 @@ public class DeveloperAdministration {
 			json.append("]\n");
 			json.append("                 }\n");
 		}
-		
+
 		if (!metaData.isEmpty()) {
 			json.append(",\n \"metaData\" : {\n");
-			
+
 			for(Iterator<Map.Entry<String, String>> it = metaData.entrySet().iterator(); it.hasNext(); ) {
 				Map.Entry<String, String> pair = it.next();
 				String key = pair.getKey();
@@ -401,7 +400,7 @@ public class DeveloperAdministration {
 					json.append(",\n");
 				}
 			}
-			
+
 			json.append("\n}\n");
 		}
 
@@ -432,10 +431,10 @@ public class DeveloperAdministration {
         JsonNode jsonNode = jsonHelper.readTree(json);
         return jsonNode.get("description").textValue();
     }
-    
+
     public DeveloperProjectDetailInformation fetchProjectDetailInformation(String projectId) {
         String json = fetchProjectInfo(projectId);
-        
+
         return PROJECT_DETAIL_IMPORTER.fromJSON(json);
     }
 
@@ -603,7 +602,7 @@ public class DeveloperAdministration {
      * Creates temporary test user object and provides direct access to integration
      * test object: AsUser. So all things available in integration tests can be done
      * directly without additional methods
-     * 
+     *
      * @return asUser object
      */
     AsUser createAsUserTestObject() {

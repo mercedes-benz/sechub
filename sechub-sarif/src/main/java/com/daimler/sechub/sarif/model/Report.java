@@ -12,9 +12,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * <ul>
  * <li>https://sarifweb.azurewebsites.net/</li>
  * <li>https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html</li>
- * 
+ *
  * </ul>
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

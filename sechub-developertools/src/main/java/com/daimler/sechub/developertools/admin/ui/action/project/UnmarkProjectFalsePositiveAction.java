@@ -22,18 +22,19 @@ public class UnmarkProjectFalsePositiveAction extends AbstractUIAction {
         if (!projectId.isPresent()) {
             return;
         }
-        
+
         Optional<String> jobUUID = getUserInput("Please enter job UUID", InputCacheIdentifier.JOB_UUID);
         if (!jobUUID.isPresent()) {
             return;
         }
-        
+
         Optional<String> findingId = getUserInput("Please enter findingId");
         if (!findingId.isPresent()) {
             return;
         }
 
-        getContext().getAdministration().deleteFalsePositivesForProject(asSecHubId(projectId.get()),UUID.fromString(jobUUID.get()),Integer.valueOf(findingId.get()));
+        getContext().getAdministration().deleteFalsePositivesForProject(asSecHubId(projectId.get()), UUID.fromString(jobUUID.get()),
+                Integer.valueOf(findingId.get()));
 
     }
 

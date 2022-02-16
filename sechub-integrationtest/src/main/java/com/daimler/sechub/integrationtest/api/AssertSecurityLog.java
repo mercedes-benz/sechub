@@ -43,7 +43,7 @@ public class AssertSecurityLog {
 
     /**
      * Assert given entry exists
-     * 
+     *
      * @param pos must be greater or equal zero
      * @return
      */
@@ -109,7 +109,7 @@ public class AssertSecurityLog {
 
         public AssertSecurityLogDataEntry hasMessageParameterContainingStrings(int pos, String... expectedParts) {
             requireNonNull(expectedParts, "expected parts may not be null!");
-            
+
             if (pos < 0) {
                 throw new IllegalArgumentException("pos must be >=0!");
             }

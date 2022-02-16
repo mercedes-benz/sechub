@@ -12,9 +12,9 @@ import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 
 /**
  * Integration test directly using REST API of integration test PDS (means
- * without sechub server instance). When these tests fail, sechub tests will also fail, because
- * PDS API corrupt or PDS server not alive
- * 
+ * without sechub server instance). When these tests fail, sechub tests will
+ * also fail, because PDS API corrupt or PDS server not alive
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -25,15 +25,15 @@ public class DirectPDSAPIConfigurationScenario6IntTest {
 
     @Rule
     public Timeout timeOut = Timeout.seconds(600);
-   
+
     @Test
     public void pds_admin_can_fetch_server_configuration() {
         /* @formatter:off */
         /* prepare */
-        
+
         /* execute */
         String json = asPDSUser(PDS_ADMIN).getServerConfiguration();
-        
+
         /* test */
         /* @formatter:off */
         assertJSON(json).
@@ -45,12 +45,10 @@ public class DirectPDSAPIConfigurationScenario6IntTest {
             containsTextValue("product1.add.tipoftheday", "products","parameters","optional","key").
             containsTextValue("add tip of the day as info", "products","parameters","optional","description");
         /* @formatter:on */
-        
-        
-        
+
         /* @formatter:on */
     }
-    
+
     @Test
     public void anonymous_cannot_fetch_server_configuration() {
         /* @formatter:off */
@@ -58,7 +56,7 @@ public class DirectPDSAPIConfigurationScenario6IntTest {
         expectHttpFailure(()-> asPDSUser(ANONYMOUS).getServerConfiguration(), HttpStatus.UNAUTHORIZED);
         /* @formatter:on */
     }
-    
+
     @Test
     public void pds_techuser_cannot_fetch_server_configuration() {
         /* @formatter:off */

@@ -14,9 +14,9 @@ public class ScanReportTransactionService {
 
     @Autowired
     ScanReportRepository reportRepository;
-    
+
     public void deleteAllReportsForSecHubJobUUIDinOwnTransaction(UUID sechubJobUUID) {
         reportRepository.deleteAllReportsForSecHubJobUUID(sechubJobUUID);
     }
-    
+
 }

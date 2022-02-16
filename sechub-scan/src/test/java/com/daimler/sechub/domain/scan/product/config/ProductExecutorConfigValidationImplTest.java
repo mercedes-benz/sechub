@@ -55,15 +55,15 @@ public class ProductExecutorConfigValidationImplTest {
         assertFalse(result.isValid());
         assertEquals(1, result.getErrors().size());
     }
-    
+
     @Test
     public void when_all_parts_correct_set_but_name_length_is_21_one_validation_problems() {
         /* prepare */
         mockConfigWithValidValues();
         String name = "name567890123456789012345678901";
-        assertEquals(31,name.length());
+        assertEquals(31, name.length());
         when(config.getName()).thenReturn(name);
-        
+
         /* execute */
         ValidationResult result = validationToTest.validate(config);
 
@@ -71,15 +71,15 @@ public class ProductExecutorConfigValidationImplTest {
         assertFalse(result.isValid());
         assertEquals(1, result.getErrors().size());
     }
-    
+
     @Test
     public void when_all_parts_correct_set_but_name_length_is_2_one_validation_problems() {
         /* prepare */
         mockConfigWithValidValues();
         String name = "12";
-        assertEquals(2,name.length());
+        assertEquals(2, name.length());
         when(config.getName()).thenReturn(name);
-        
+
         /* execute */
         ValidationResult result = validationToTest.validate(config);
 
@@ -87,13 +87,13 @@ public class ProductExecutorConfigValidationImplTest {
         assertFalse(result.isValid());
         assertEquals(1, result.getErrors().size());
     }
-    
+
     @Test
     public void when_all_parts_correct_set_setup_is_null_one_validation_problems() {
         /* prepare */
         mockConfigWithValidValues();
         when(config.getSetup()).thenReturn(null);
-        
+
         /* execute */
         ValidationResult result = validationToTest.validate(config);
 
@@ -101,13 +101,13 @@ public class ProductExecutorConfigValidationImplTest {
         assertFalse(result.isValid());
         assertEquals(1, result.getErrors().size());
     }
-    
+
     @Test
     public void when_all_parts_correct_set_but_productIdentifier_is_null_one_validation_problems() {
         /* prepare */
         mockConfigWithValidValues();
         when(config.getProductIdentifier()).thenReturn(null);
-        
+
         /* execute */
         ValidationResult result = validationToTest.validate(config);
 
@@ -115,13 +115,13 @@ public class ProductExecutorConfigValidationImplTest {
         assertFalse(result.isValid());
         assertEquals(1, result.getErrors().size());
     }
-    
+
     @Test
     public void when_all_parts_correct_set_but_executorVersion_is_null_one_validation_problems() {
         /* prepare */
         mockConfigWithValidValues();
         when(config.getExecutorVersion()).thenReturn(null);
-        
+
         /* execute */
         ValidationResult result = validationToTest.validate(config);
 
@@ -129,27 +129,25 @@ public class ProductExecutorConfigValidationImplTest {
         assertFalse(result.isValid());
         assertEquals(1, result.getErrors().size());
     }
-    
+
     @Test
     public void when_all_parts_correct_set_but_name_length_is_3_no_validation_problems() {
         /* prepare */
         mockConfigWithValidValues();
         String name = "123";
         when(config.getName()).thenReturn(name);
-        
+
         /* execute */
         ValidationResult result = validationToTest.validate(config);
 
         /* test */
         assertTrue(result.isValid());
     }
-    
-    
 
     private void mockConfigWithValidValues() {
         when(config.getExecutorVersion()).thenReturn(Integer.valueOf(1));
         String name = "name5678901234567-901234567_90";
-        assertEquals(30,name.length());
+        assertEquals(30, name.length());
         when(config.getName()).thenReturn(name);
         when(config.getProductIdentifier()).thenReturn(ProductIdentifier.PDS_CODESCAN);
         when(config.getUUID()).thenReturn(UUID.randomUUID());

@@ -22,7 +22,7 @@ public class DeleteConfigurationAction extends AbstractUIAction {
 
     @Override
     public void execute(ActionEvent e) {
-        while(true) {
+        while (true) {
             ListExecutorConfigurationDialogUI dialogUI = new ListExecutorConfigurationDialogUI(getContext(), "Select configuration you want to delete");
             dialogUI.setOkButtonText("Delete configuration");
             dialogUI.showDialog();
@@ -30,7 +30,7 @@ public class DeleteConfigurationAction extends AbstractUIAction {
                 return;
             }
             UUID uuid = dialogUI.getSelectedValue();
-            if (uuid==null) {
+            if (uuid == null) {
                 return;
             }
             if (!confirm("Do you really want to\nDELETE\nconfig " + uuid + "?")) {

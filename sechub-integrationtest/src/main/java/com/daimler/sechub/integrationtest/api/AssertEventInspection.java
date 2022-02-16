@@ -31,22 +31,25 @@ public class AssertEventInspection {
      *
      * Assert given events are as expected. If you have failures because of
      * implementation changes then you can generate new test case parts - see
-     * {@link #assertEventInspectionFailsButGeneratesTestCaseProposal()}.
-     * <br><br>
-     * Will automatically wait {@link #DEFAULT_TIMEOUT_IN_SECONDS} for events being available
-     * 
+     * {@link #assertEventInspectionFailsButGeneratesTestCaseProposal()}. <br>
+     * <br>
+     * Will automatically wait {@link #DEFAULT_TIMEOUT_IN_SECONDS} for events being
+     * available
+     *
      */
     public static AssertEventInspection assertEventInspection() {
         return assertEventInspection(DEFAULT_TIMEOUT_IN_SECONDS);
     }
 
     /**
-    *
-    * Assert given events are as expected. If you have failures because of
-    * implementation changes then you can generate new test case parts - see
-    * {@link #assertEventInspectionFailsButGeneratesTestCaseProposal()}
-    * @param timeOutInSeconds will automatically wait given time for events being available
-    */
+     *
+     * Assert given events are as expected. If you have failures because of
+     * implementation changes then you can generate new test case parts - see
+     * {@link #assertEventInspectionFailsButGeneratesTestCaseProposal()}
+     *
+     * @param timeOutInSeconds will automatically wait given time for events being
+     *                         available
+     */
     public static AssertEventInspection assertEventInspection(int timeOutInSeconds) {
         if (!EventInspectionAPI.fetchIsStarted()) {
             fail("Event inspection is not started. Maybe you forget to invoke TestAPI.startEventInspection() before ?");
@@ -56,10 +59,10 @@ public class AssertEventInspection {
 
     /** @formatter:off
     *
-    * Will always fail but generates a test case proposal for current event situation. 
+    * Will always fail but generates a test case proposal for current event situation.
     * Start the test, copy proposal snippet (at the end of first stacktrace element) and
-    * it will work. This is very convenient to create new event trace tests... 
-    *  
+    * it will work. This is very convenient to create new event trace tests...
+    *
     * (of course you should still validate that the generated test is correct)
     * @formatter:on */
     public static void assertEventInspectionFailsButGeneratesTestCaseProposal() {
@@ -69,10 +72,10 @@ public class AssertEventInspection {
 
     /** @formatter:off
      *
-     * Will always fail but generates a test case proposal for current event situation. 
+     * Will always fail but generates a test case proposal for current event situation.
      * Start the test, copy proposal snippet (at the end of first stacktrace element) and
-     * it will work. This is very convenient to create new event trace tests... 
-     *  
+     * it will work. This is very convenient to create new event trace tests...
+     *
      * (of course you should still validate that the generated test is correct)
      * @param waitSeconds amount of seconds to wait before fetching history and generating test case
      * @formatter:on */
@@ -80,11 +83,11 @@ public class AssertEventInspection {
         /* we weait for events handled */
         waitSeconds(waitSeconds);
         IntegrationTestEventHistory history2 = TestAPI.fetchEventInspectionHistory();
-        
+
         String historyJSON = prettyPrintHistory(history2);
         String codeSnippet = createAssertTestExampleCodeSnippet(history2);
-        
-        System.out.println("History:\n"+historyJSON+"\n\nGenerated test code:\n\n"+codeSnippet);
+
+        System.out.println("History:\n" + historyJSON + "\n\nGenerated test code:\n\n" + codeSnippet);
         fail("Unimplemented testcase. Please use next generated test snippet inside your test:\n\n" + codeSnippet);
     }
 
@@ -158,7 +161,7 @@ public class AssertEventInspection {
             }
 
             public void assertAsExpectedAndCreateHistoryFile(String id, String variant) {
-                back().assertAndGenerateHistoryFile(id,variant);
+                back().assertAndGenerateHistoryFile(id, variant);
             }
 
         }
@@ -180,7 +183,7 @@ public class AssertEventInspection {
         /**
          * Writes history to
          * "sechub-integrationtest/build/test-results/event-trace/${id.toLowerCase()}.json"
-         * 
+         *
          * @param id
          */
         private void writeHistoryToFile(String id, String variant) {
@@ -310,7 +313,7 @@ public class AssertEventInspection {
     }
 
     private static String prettyPrintHistory(IntegrationTestEventHistory historyToPrint) {
-        if (historyToPrint==null) {
+        if (historyToPrint == null) {
             return "null";
         }
         String historyJSONprettyPrinted = null;
@@ -332,17 +335,17 @@ public class AssertEventInspection {
 
     private static String createAssertTestExampleCodeSnippet(IntegrationTestEventHistory history) {
         /* @formatter:off Example: */
-        
+
 //     AssertEventInspection.
 //        assertEventInspection().
 //        expect().
 //            asyncEvent(MessageID.USER_ADDED_TO_PROJECT).
 //                from("com.daimler.sechub.domain.administration.project.ProjectAssignUserService").
-//                to("com.daimler.sechub.domain.schedule.ScheduleMessageHandler", 
+//                to("com.daimler.sechub.domain.schedule.ScheduleMessageHandler",
 //                   "com.daimler.sechub.domain.scan.ScanMessageHandler").
 //            syncEvent(MessageID.USER_ADDED_TO_PROJECT2).
 //                from("com.daimler.sechub.domain.administration.project.ProjectAssignUserService2").
-//                to("com.daimler.sechub.domain.schedule.ScheduleMessageHandler2", 
+//                to("com.daimler.sechub.domain.schedule.ScheduleMessageHandler2",
 //                   "com.daimler.sechub.domain.scan.ScanMessageHandler2").
 //        assertAsExpectedAndCreateHistoryFile(UseCaseIdentifier.UC_ADMIN_ASSIGNS_USER_TO_PROJECT.name());
         /* @formatter:on */

@@ -122,7 +122,7 @@ public class NetsparkerProductExecutorTest {
     /**
      * Own class to testing purpose - we can mock here the target resolver to
      * protected field
-     * 
+     *
      * @author Albert Tregnaghi
      *
      */

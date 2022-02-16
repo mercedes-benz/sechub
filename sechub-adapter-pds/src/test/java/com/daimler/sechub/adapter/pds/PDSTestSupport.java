@@ -43,9 +43,9 @@ public class PDSTestSupport {
 
         @Override
         public String toString() {
-            return getClass().getSimpleName()+":"+toJSON();
+            return getClass().getSimpleName() + ":" + toJSON();
         }
-        
+
         @Override
         public String toJSON() {
             return "{ \"key\" : \"" + key + "\", \"value\" : \"" + value + "\"}";

@@ -10,17 +10,18 @@ import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseDefinition;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseGroup;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
+
 /* @formatter:off */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @UseCaseDefinition(
-		id=UseCaseIdentifier.UC_ADMIN_CREATES_PROJECT, 
+		id=UseCaseIdentifier.UC_ADMIN_CREATES_PROJECT,
 		group=UseCaseGroup.PROJECT_ADMINISTRATION,
 		apiName="adminCreatesProject",
-		title="Admin creates a project", 
+		title="Admin creates a project",
 		description="project/admin_creates_project.adoc")
 public @interface UseCaseAdminCreatesProject {
-	
+
 	Step value();
 }
 /* @formatter:on */

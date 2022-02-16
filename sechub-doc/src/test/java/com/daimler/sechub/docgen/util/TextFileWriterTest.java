@@ -13,37 +13,35 @@ import org.junit.jupiter.api.Test;
 import com.daimler.sechub.test.TestUtil;
 
 public class TextFileWriterTest {
-	
-	private TextFileWriter writerToTest;
 
+    private TextFileWriter writerToTest;
 
-	@BeforeEach
-	void before() throws Exception {
-		writerToTest = new TextFileWriter();
-	}
+    @BeforeEach
+    void before() throws Exception {
+        writerToTest = new TextFileWriter();
+    }
 
+    @Test
+    void is_able_to_save_a_file_having_path_not_createad_before() throws Exception {
+        /* prepare */
+        File file = TestUtil.createTempDirectoryInBuildFolder("textfilewriter-test").toFile();
+        File subFolder = new File(file, "subFolder");
+        File targetFile = new File(subFolder, "targetFile");
+        targetFile.deleteOnExit();
 
-	@Test
-	void is_able_to_save_a_file_having_path_not_createad_before() throws Exception {
-		/* prepare */
-		File file = TestUtil.createTempDirectoryInBuildFolder("textfilewriter-test").toFile();
-		File subFolder = new File(file, "subFolder"); 
-		File targetFile = new File(subFolder, "targetFile");
-		targetFile.deleteOnExit();
+        assertFalse(subFolder.exists());
+        assertFalse(targetFile.exists());
 
-		assertFalse(subFolder.exists());
-		assertFalse(targetFile.exists());
+        /* execute */
+        writerToTest.save(targetFile, "text");
 
-		/* execute */
-		writerToTest.save(targetFile, "text");
+        /* test */
+        assertTrue(subFolder.exists());
+        assertTrue(targetFile.exists());
 
-		/* test */
-		assertTrue(subFolder.exists());
-		assertTrue(targetFile.exists()); 
-
-		try (BufferedReader br = new BufferedReader(new FileReader(targetFile))) {
-			String line = br.readLine();
-			assertEquals("text", line);
-		}
-	}
+        try (BufferedReader br = new BufferedReader(new FileReader(targetFile))) {
+            String line = br.readLine();
+            assertEquals("text", line);
+        }
+    }
 }

@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.administration.user;
 
-
 import static com.daimler.sechub.test.TestURLBuilder.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.mockito.Mockito.*;
@@ -40,43 +39,43 @@ import com.daimler.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(UserAdministrationRestController.class)
-@ContextConfiguration(classes= {UserAdministrationRestController.class, UserAdministrationRestControllerMockTest.SimpleTestConfiguration.class})
-@WithMockUser(authorities=RoleConstants.ROLE_SUPERADMIN)
-@ActiveProfiles({Profiles.TEST, Profiles.ADMIN_ACCESS})
+@ContextConfiguration(classes = { UserAdministrationRestController.class, UserAdministrationRestControllerMockTest.SimpleTestConfiguration.class })
+@WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
+@ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 public class UserAdministrationRestControllerMockTest {
 
-	private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getWebMVCTestHTTPSPort();
+    private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getWebMVCTestHTTPSPort();
 
-	@Autowired
-	private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-	@MockBean
-	private AnonymousSignupCreateService mockedSignupCreateService;
+    @MockBean
+    private AnonymousSignupCreateService mockedSignupCreateService;
 
-	@MockBean
-	private SignupRepository mockedSelfRegistrationRepo;
+    @MockBean
+    private SignupRepository mockedSelfRegistrationRepo;
 
-	@MockBean
-	UserCreationService mockedUserCreationService;
+    @MockBean
+    UserCreationService mockedUserCreationService;
 
-	@MockBean
-	UserDeleteService mockedUserDeleteService;
+    @MockBean
+    UserDeleteService mockedUserDeleteService;
 
-	@MockBean
-	UserDetailInformationService mockedUserDetailInformationService;
+    @MockBean
+    UserDetailInformationService mockedUserDetailInformationService;
 
-	@MockBean
-	private UserGrantSuperAdminRightsService userGrantSuperAdminRightsService;
+    @MockBean
+    private UserGrantSuperAdminRightsService userGrantSuperAdminRightsService;
 
-	@MockBean
-	private UserRevokeSuperAdminRightsService userRevokeSuperAdminRightsService;
+    @MockBean
+    private UserRevokeSuperAdminRightsService userRevokeSuperAdminRightsService;
 
-	@MockBean
-	UserListService mockedUserListService;
+    @MockBean
+    UserListService mockedUserListService;
 
-	@Test
-	public void delete_user_calls_delte_service() throws Exception{
-		/* execute + test @formatter:off */
+    @Test
+    public void delete_user_calls_delte_service() throws Exception {
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		delete(https(PORT_USED).buildAdminDeletesUserUrl("user1"))
         		).
@@ -85,24 +84,24 @@ public class UserAdministrationRestControllerMockTest {
 
         /* @formatter:on */
         verify(mockedUserDeleteService).deleteUser("user1");
-	}
+    }
 
-	@Test
-	public void show_user_details_returns_result_of_detail_service() throws Exception{
-		User user = mock(User.class);
-		when(user.getName()).thenReturn("user1");
-		when(user.getEmailAdress()).thenReturn("user1@example.org");
-		Set<Project> projects = new LinkedHashSet<>();
+    @Test
+    public void show_user_details_returns_result_of_detail_service() throws Exception {
+        User user = mock(User.class);
+        when(user.getName()).thenReturn("user1");
+        when(user.getEmailAdress()).thenReturn("user1@example.org");
+        Set<Project> projects = new LinkedHashSet<>();
 
-		Project project1 = mock(Project.class);
-		when(project1.getId()).thenReturn("project1");
-		projects.add(project1);
-		when(user.getProjects()).thenReturn(projects);
-		UserDetailInformation info = new UserDetailInformation(user);
+        Project project1 = mock(Project.class);
+        when(project1.getId()).thenReturn("project1");
+        projects.add(project1);
+        when(user.getProjects()).thenReturn(projects);
+        UserDetailInformation info = new UserDetailInformation(user);
 
-		when(mockedUserDetailInformationService.fetchDetails("user1")).thenReturn(info);
+        when(mockedUserDetailInformationService.fetchDetails("user1")).thenReturn(info);
 
-		/* execute + test @formatter:off */
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(https(PORT_USED).buildAdminShowsUserDetailsUrl("user1"))
         		).
@@ -113,18 +112,18 @@ public class UserAdministrationRestControllerMockTest {
         		);
 
         /* @formatter:on */
-	}
+    }
 
-	@Test
-	public void listUsers_results_in_a_filled_string_list_when_2_users_exist() throws Exception{
-		/* prepare */
-		List<String> list = new ArrayList<>();
+    @Test
+    public void listUsers_results_in_a_filled_string_list_when_2_users_exist() throws Exception {
+        /* prepare */
+        List<String> list = new ArrayList<>();
 
-		list.add("name1");
-		list.add("name2");
+        list.add("name1");
+        list.add("name2");
 
-		when(mockedUserListService.listUsers()).thenReturn(list);
-		/* execute + test @formatter:off */
+        when(mockedUserListService.listUsers()).thenReturn(list);
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(https(PORT_USED).buildAdminListsUsersUrl())
         		).
@@ -134,18 +133,17 @@ public class UserAdministrationRestControllerMockTest {
         		);
 
         /* @formatter:on */
-	}
+    }
 
-	@Test
-	public void calling_with_api_1_0_and_valid_userid_and_email_returns_HTTP_200()
-			throws Exception {
-		Signup selfReg = new Signup();
-		selfReg.setUserId("user1");
-		Optional<Signup> selfRegistration = Optional.ofNullable(selfReg);
-		/* prepare */
-		when(mockedSelfRegistrationRepo.findById("user1")).thenReturn(selfRegistration);
+    @Test
+    public void calling_with_api_1_0_and_valid_userid_and_email_returns_HTTP_200() throws Exception {
+        Signup selfReg = new Signup();
+        selfReg.setUserId("user1");
+        Optional<Signup> selfRegistration = Optional.ofNullable(selfReg);
+        /* prepare */
+        when(mockedSelfRegistrationRepo.findById("user1")).thenReturn(selfRegistration);
 
-		/* execute + test @formatter:off */
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(https(PORT_USED).buildAdminAcceptsUserSignUpUrl("user1"))
         		).
@@ -153,13 +151,13 @@ public class UserAdministrationRestControllerMockTest {
         		);
 
         /* @formatter:on */
-	}
+    }
 
-	@TestConfiguration
-	@Profile(Profiles.TEST)
-	@EnableAutoConfiguration
-	public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration{
+    @TestConfiguration
+    @Profile(Profiles.TEST)
+    @EnableAutoConfiguration
+    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
 
-	}
+    }
 
 }

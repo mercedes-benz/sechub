@@ -22,12 +22,12 @@ public class TestUtilTest {
     public void create_random_string_throws_illegal_argument_exception_when_negative_1_length() {
         TestUtil.createRAndomString(-1);
     }
-    
+
     @Test
     public void createTempDirectory() throws IOException {
         Path created = TestUtil.createTempDirectoryInBuildFolder("test-create-tempdir");
-        
-        assertTrue("Not existing path:"+created,created.toFile().exists());
+
+        assertTrue("Not existing path:" + created, created.toFile().exists());
     }
 
 }

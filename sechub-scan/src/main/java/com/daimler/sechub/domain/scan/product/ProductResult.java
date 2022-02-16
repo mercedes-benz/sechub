@@ -45,9 +45,9 @@ public class ProductResult {
     public static final String COLUMN_STARTED = "STARTED";
     public static final String COLUMN_ENDED = "ENDED";
     public static final String COLUMN_META_DATA = "META_DATA";
-    
-    public static final String COLUMN_PRODUCT_CONFIG_UUID="PRODUCT_CONFIG_UUID";
-    
+
+    public static final String COLUMN_PRODUCT_CONFIG_UUID = "PRODUCT_CONFIG_UUID";
+
     /* +-----------------------------------------------------------------------+ */
     /* +............................ JPQL .....................................+ */
     /* +-----------------------------------------------------------------------+ */
@@ -98,7 +98,7 @@ public class ProductResult {
     @Type(type = "text")
     @Column(name = COLUMN_META_DATA, nullable = true)
     String metaData;
-    
+
     @Column(name = COLUMN_PRODUCT_CONFIG_UUID, nullable = true) // when null it means we got (old) entries or SERECO fallback
     UUID productExecutorConfigUUID;
 
@@ -108,7 +108,7 @@ public class ProductResult {
 
     /**
      * Create the product result
-     * 
+     *
      * @param secHubJobUUID
      * @param projectId
      * @param productIdentifier
@@ -122,12 +122,12 @@ public class ProductResult {
             throw new IllegalArgumentException("Product executor config info may not be null!");
         }
         this.productIdentifier = productExecutorInfo.getProductIdentifier();
-        
+
         if (productIdentifier == null) {
             throw new IllegalArgumentException("Product identifier not be null!");
         }
-        this.productExecutorConfigUUID=productExecutorInfo.getUUID();
-        
+        this.productExecutorConfigUUID = productExecutorInfo.getUUID();
+
         this.secHubJobUUID = secHubJobUUID;
         this.projectId = projectId;
         this.result = result;
@@ -171,17 +171,17 @@ public class ProductResult {
     }
 
     public void setMetaData(String metatData) {
-        this.metaData=metatData;
+        this.metaData = metatData;
     }
 
     public String getMetaData() {
         return metaData;
     }
-    
+
     public void setProductExecutorConfigUUID(UUID productExecutorConfigUUID) {
         this.productExecutorConfigUUID = productExecutorConfigUUID;
     }
-    
+
     public UUID getProductExecutorConfigUUID() {
         return productExecutorConfigUUID;
     }

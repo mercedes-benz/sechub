@@ -6,14 +6,14 @@ import com.daimler.sechub.test.TestFileSupport;
 
 @SechubTestComponent
 public class ScanDomainTestFileSupport extends TestFileSupport {
-	private static final ScanDomainTestFileSupport TESTFILE_SUPPORT = new ScanDomainTestFileSupport();
+    private static final ScanDomainTestFileSupport TESTFILE_SUPPORT = new ScanDomainTestFileSupport();
 
-	public static TestFileSupport getTestfileSupport() {
-		return TESTFILE_SUPPORT;
-	}
+    public static TestFileSupport getTestfileSupport() {
+        return TESTFILE_SUPPORT;
+    }
 
-	ScanDomainTestFileSupport() {
-		super("sechub-scan/src/test/resources");
-	}
+    ScanDomainTestFileSupport() {
+        super("sechub-scan/src/test/resources");
+    }
 
 }

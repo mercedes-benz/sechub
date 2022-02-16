@@ -9,9 +9,9 @@ import com.daimler.sechub.domain.scan.log.ProjectScanLog;
 
 public class FullScanData {
 
-	public UUID sechubJobUUID;
+    public UUID sechubJobUUID;
 
-	public List<ProjectScanLog> allScanLogs = new ArrayList<>();
+    public List<ProjectScanLog> allScanLogs = new ArrayList<>();
 
-	public List<ScanData> allScanData = new ArrayList<>();
+    public List<ScanData> allScanData = new ArrayList<>();
 }

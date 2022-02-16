@@ -5,9 +5,9 @@ import java.net.URL;
 
 public abstract class AbstractLoginConfig implements LoginConfig {
 
-	URL loginUrl;
+    URL loginUrl;
 
-	public URL getLoginURL() {
-		return loginUrl;
-	}
+    public URL getLoginURL() {
+        return loginUrl;
+    }
 }

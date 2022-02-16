@@ -26,138 +26,138 @@ import org.hibernate.annotations.Type;
 @Table(name = ProjectScanLog.TABLE_NAME)
 public class ProjectScanLog {
 
-	/* +-----------------------------------------------------------------------+ */
-	/* +............................ SQL ......................................+ */
-	/* +-----------------------------------------------------------------------+ */
-	public static final String TABLE_NAME = "SCAN_PROJECT_LOG";
+    /* +-----------------------------------------------------------------------+ */
+    /* +............................ SQL ......................................+ */
+    /* +-----------------------------------------------------------------------+ */
+    public static final String TABLE_NAME = "SCAN_PROJECT_LOG";
 
-	public static final String COLUMN_UUID = "UUID";
-	public static final String COLUMN_PROJECT_ID = "PROJECT_ID";
-	public static final String COLUMN_EXECUTED_BY = "EXECUTED_BY";
-	public static final String COLUMN_SECHUB_JOB_UUID = "SECHUB_JOB_UUID";
-	public static final String COLUMN_CONFIG = "CONFIG";
-	public static final String COLUMN_STATUS = "STATUS";
+    public static final String COLUMN_UUID = "UUID";
+    public static final String COLUMN_PROJECT_ID = "PROJECT_ID";
+    public static final String COLUMN_EXECUTED_BY = "EXECUTED_BY";
+    public static final String COLUMN_SECHUB_JOB_UUID = "SECHUB_JOB_UUID";
+    public static final String COLUMN_CONFIG = "CONFIG";
+    public static final String COLUMN_STATUS = "STATUS";
 
-	public static final String COLUMN_STARTED = "STARTED";
-	public static final String COLUMN_ENDED = "ENDED";
-	/* +-----------------------------------------------------------------------+ */
-	/* +............................ JPQL .....................................+ */
-	/* +-----------------------------------------------------------------------+ */
-	public static final String CLASS_NAME = ProjectScanLog.class.getSimpleName();
+    public static final String COLUMN_STARTED = "STARTED";
+    public static final String COLUMN_ENDED = "ENDED";
+    /* +-----------------------------------------------------------------------+ */
+    /* +............................ JPQL .....................................+ */
+    /* +-----------------------------------------------------------------------+ */
+    public static final String CLASS_NAME = ProjectScanLog.class.getSimpleName();
 
-	public static final String PROPERTY_UUID = "uuid";
-	public static final String PROPERTY_SECHUB_JOB_UUID = "sechubJobUUID";
-	public static final String PROPERTY_EXECUTED_BY = "executedBy";
-	public static final String PROPERTY_PROJECT_ID = "projectId";
-	public static final String PROPERTY_STARTED = "started";
-	public static final String PROPERTY_ENDED = "ended";
-	public static final String PROPERTY_STATUS = "status";
+    public static final String PROPERTY_UUID = "uuid";
+    public static final String PROPERTY_SECHUB_JOB_UUID = "sechubJobUUID";
+    public static final String PROPERTY_EXECUTED_BY = "executedBy";
+    public static final String PROPERTY_PROJECT_ID = "projectId";
+    public static final String PROPERTY_STARTED = "started";
+    public static final String PROPERTY_ENDED = "ended";
+    public static final String PROPERTY_STATUS = "status";
 
-	public static final String STATUS_STARTED = "STARTED";
-	public static final String STATUS_OK = "OK";
-	public static final String STATUS_FAILED = "FAILED";
+    public static final String STATUS_STARTED = "STARTED";
+    public static final String STATUS_OK = "OK";
+    public static final String STATUS_FAILED = "FAILED";
     public static final String STATUS_ABANDONED = "ABANDONDED";
 
-	@Id
-	@GeneratedValue(generator = "UUID")
-	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-	@Column(name = COLUMN_UUID, updatable = false, nullable = false)
-	UUID uUID;
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = COLUMN_UUID, updatable = false, nullable = false)
+    UUID uUID;
 
-	@Column(name = COLUMN_EXECUTED_BY)
-	String executedBy;
+    @Column(name = COLUMN_EXECUTED_BY)
+    String executedBy;
 
-	@Column(name = COLUMN_PROJECT_ID, nullable = false)
-	String projectId;
+    @Column(name = COLUMN_PROJECT_ID, nullable = false)
+    String projectId;
 
-	@Column(name = COLUMN_SECHUB_JOB_UUID, nullable = false)
-	UUID sechubJobUUID;
+    @Column(name = COLUMN_SECHUB_JOB_UUID, nullable = false)
+    UUID sechubJobUUID;
 
-	@Type(type = "text")
-	@Column(name = COLUMN_CONFIG)
-	String config;
+    @Type(type = "text")
+    @Column(name = COLUMN_CONFIG)
+    String config;
 
-	@Column(name = COLUMN_STATUS)
-	String status;
+    @Column(name = COLUMN_STATUS)
+    String status;
 
-	@Version
-	@Column(name = "VERSION")
-	Integer version;
+    @Version
+    @Column(name = "VERSION")
+    Integer version;
 
-	@Column(name = COLUMN_STARTED) // remark: we setup hibernate to use UTC settings - see application.properties
-	LocalDateTime started;
+    @Column(name = COLUMN_STARTED) // remark: we setup hibernate to use UTC settings - see application.properties
+    LocalDateTime started;
 
-	@Column(name = COLUMN_ENDED) // remark: we setup hibernate to use UTC settings - see application.properties
-	LocalDateTime ended;
+    @Column(name = COLUMN_ENDED) // remark: we setup hibernate to use UTC settings - see application.properties
+    LocalDateTime ended;
 
-	ProjectScanLog() {
-		// jpa only
-	}
+    ProjectScanLog() {
+        // jpa only
+    }
 
-	public ProjectScanLog(String projectId, UUID sechubJobUUID, String executedBy, String config) {
-		this.projectId = projectId;
-		this.sechubJobUUID = sechubJobUUID;
-		this.executedBy = executedBy;
-		this.config = config;
+    public ProjectScanLog(String projectId, UUID sechubJobUUID, String executedBy, String config) {
+        this.projectId = projectId;
+        this.sechubJobUUID = sechubJobUUID;
+        this.executedBy = executedBy;
+        this.config = config;
 
-		this.started = LocalDateTime.now();
-	}
+        this.started = LocalDateTime.now();
+    }
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-	public String getConfig() {
-		return config;
-	}
+    public String getConfig() {
+        return config;
+    }
 
-	public LocalDateTime getStarted() {
-		return started;
-	}
+    public LocalDateTime getStarted() {
+        return started;
+    }
 
-	public void setEnded(LocalDateTime ended) {
-		this.ended = ended;
-	}
+    public void setEnded(LocalDateTime ended) {
+        this.ended = ended;
+    }
 
-	public LocalDateTime getEnded() {
-		return ended;
-	}
+    public LocalDateTime getEnded() {
+        return ended;
+    }
 
-	public UUID getUUID() {
-		return uUID;
-	}
+    public UUID getUUID() {
+        return uUID;
+    }
 
-	public UUID getSechubJobUUID() {
-		return sechubJobUUID;
-	}
+    public UUID getSechubJobUUID() {
+        return sechubJobUUID;
+    }
 
-	public String getExecutedBy() {
-		return executedBy;
-	}
+    public String getExecutedBy() {
+        return executedBy;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(config, ended, executedBy, projectId, sechubJobUUID, started, uUID, version);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(config, ended, executedBy, projectId, sechubJobUUID, started, uUID, version);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		ProjectScanLog other = (ProjectScanLog) obj;
-		return Objects.equals(config, other.config) && Objects.equals(ended, other.ended) && Objects.equals(executedBy, other.executedBy)
-				&& Objects.equals(projectId, other.projectId) && Objects.equals(sechubJobUUID, other.sechubJobUUID) && Objects.equals(started, other.started)
-				&& Objects.equals(uUID, other.uUID) && Objects.equals(version, other.version);
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        ProjectScanLog other = (ProjectScanLog) obj;
+        return Objects.equals(config, other.config) && Objects.equals(ended, other.ended) && Objects.equals(executedBy, other.executedBy)
+                && Objects.equals(projectId, other.projectId) && Objects.equals(sechubJobUUID, other.sechubJobUUID) && Objects.equals(started, other.started)
+                && Objects.equals(uUID, other.uUID) && Objects.equals(version, other.version);
+    }
 
-	@Override
-	public String toString() {
-		return "ProjectScanLog [\nuUID=" + uUID + ", \nexecutedBy=" + executedBy + ", \nprojectId=" + projectId + ", \nsechubJobUUID=" + sechubJobUUID
-				+ ", \nstatus=" + status + ", \nstarted=" + started + ", \nended=" + ended + ", \nconfig=" + config + "\n]";
-	}
+    @Override
+    public String toString() {
+        return "ProjectScanLog [\nuUID=" + uUID + ", \nexecutedBy=" + executedBy + ", \nprojectId=" + projectId + ", \nsechubJobUUID=" + sechubJobUUID
+                + ", \nstatus=" + status + ", \nstarted=" + started + ", \nended=" + ended + ", \nconfig=" + config + "\n]";
+    }
 
 }

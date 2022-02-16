@@ -22,7 +22,7 @@ public class ClientDocFilesGenerator implements Generator {
             List<String> lines = Files.readAllLines(path);
             return createTAble(lines);
         } catch (IOException e) {
-            throw new IllegalStateException("Was not ale to read source extensions data, so generation must fail",e);
+            throw new IllegalStateException("Was not ale to read source extensions data, so generation must fail", e);
         }
     }
 
@@ -30,20 +30,20 @@ public class ClientDocFilesGenerator implements Generator {
         List<SupportedFileExtensionsEntry> entries = createTableModel(lines);
 
         StringBuilder sb = new StringBuilder();
-        add(sb,"[options=\"header\",cols=\"1,1\"]");
-        add(sb,"|===");
-        add(sb,"|Language(s) |File extensions");
+        add(sb, "[options=\"header\",cols=\"1,1\"]");
+        add(sb, "|===");
+        add(sb, "|Language(s) |File extensions");
         for (SupportedFileExtensionsEntry entry : entries) {
-            add(sb,"|"+entry.description+"   |"+createFileEndingsText(entry.fileEndings));
+            add(sb, "|" + entry.description + "   |" + createFileEndingsText(entry.fileEndings));
         }
-        add(sb,"|===");
+        add(sb, "|===");
 
         return sb.toString();
     }
-    
+
     private String createFileEndingsText(List<String> fileEndings) {
         StringBuilder sb = new StringBuilder();
-        
+
         for (Iterator<String> it = fileEndings.iterator(); it.hasNext();) {
             String fileEnding = it.next();
             sb.append(fileEnding);
@@ -72,7 +72,8 @@ public class ClientDocFilesGenerator implements Generator {
                 if (fileEnding.isEmpty()) {
                     continue;
                 }
-                // when rendering "c++ +" or "h++ +" the asciidoc output inside a table is strange
+                // when rendering "c++ +" or "h++ +" the asciidoc output inside a table is
+                // strange
                 // so we avoid this by using the reserved attribute "plus" instead
                 String asciidocPlusProblemSolved = fileEnding.replaceAll("\\+", "{plus}");
                 entry.fileEndings.add(asciidocPlusProblemSolved);
@@ -90,6 +91,6 @@ public class ClientDocFilesGenerator implements Generator {
 
     public static void main(String[] args) {
         String output = new ClientDocFilesGenerator().generateDefaultZipAllowedFilePatternsTable();
-        LOG.info("output:\n{}",output);
+        LOG.info("output:\n{}", output);
     }
 }

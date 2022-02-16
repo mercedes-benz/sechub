@@ -122,7 +122,7 @@ public class User {
 
     /**
      * Returns <code>true</code> when one time token is outdated or not existing
-     * 
+     *
      * @param timeOutMillis
      * @return <code>true</code> when one time token is outdated
      */

@@ -8,7 +8,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Endpoint which receives a synchronous message. The endpoint wil handle the message and give dedicated {@link IsSendingSyncMessageAnswer}s
+ * Endpoint which receives a synchronous message. The endpoint wil handle the
+ * message and give dedicated {@link IsSendingSyncMessageAnswer}s
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -18,6 +20,6 @@ import java.lang.annotation.Target;
 @Repeatable(IsRecevingSyncMessages.class)
 public @interface IsRecevingSyncMessage {
 
-	MessageID value();
-	
+    MessageID value();
+
 }

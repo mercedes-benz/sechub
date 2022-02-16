@@ -26,7 +26,7 @@ public class PDSS3PropertiesSetup implements S3Setup {
     @PDSMustBeDocumented(value = "Defines the s3 endpoint - e.g. https://play.min.io", scope = "storage")
     @Value("${sechub.pds.storage.s3.endpoint:" + UNDEFINED + "}") // we use undefined here. Will be used in isValid
     private String endpoint;
-    
+
     @Override
     public String getAccessKey() {
         return accessKey;

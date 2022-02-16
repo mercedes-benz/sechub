@@ -9,48 +9,48 @@ import com.daimler.sechub.commons.model.login.ActionType;
 
 public class LoginScriptAction {
 
-	ActionType actionType;
-	String selector;
-	String description;
-	SealedObject value;
-	SecHubTimeUnit unit;
+    ActionType actionType;
+    String selector;
+    String description;
+    SealedObject value;
+    SecHubTimeUnit unit;
 
-	public SecHubTimeUnit getUnit() {
+    public SecHubTimeUnit getUnit() {
         return unit;
     }
 
     public String getSelector() {
-		return selector;
-	}
+        return selector;
+    }
 
-	public String getValue() {
-		return CryptoAccess.CRYPTO_STRING.unseal(value);
-	}
+    public String getValue() {
+        return CryptoAccess.CRYPTO_STRING.unseal(value);
+    }
 
-	public ActionType getActionType() {
-		return actionType;
-	}
-	
-	public boolean isWait() {
-	    return getActionType() == ActionType.WAIT;
-	}
+    public ActionType getActionType() {
+        return actionType;
+    }
 
-	public boolean isInput() {
-	    return getActionType() == ActionType.INPUT;
-	}
+    public boolean isWait() {
+        return getActionType() == ActionType.WAIT;
+    }
 
-	public boolean isUserName() {
-	    return getActionType() == ActionType.USERNAME;
-	}
+    public boolean isInput() {
+        return getActionType() == ActionType.INPUT;
+    }
 
-	public boolean isPassword() {
-	    return getActionType() == ActionType.PASSWORD;
-	}
+    public boolean isUserName() {
+        return getActionType() == ActionType.USERNAME;
+    }
 
-	public boolean isClick() {
-	    return getActionType() == ActionType.CLICK;
-	}
-	
+    public boolean isPassword() {
+        return getActionType() == ActionType.PASSWORD;
+    }
+
+    public boolean isClick() {
+        return getActionType() == ActionType.CLICK;
+    }
+
     public String getDescription() {
         return description;
     }

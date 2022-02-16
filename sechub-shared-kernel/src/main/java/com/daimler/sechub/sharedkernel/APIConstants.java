@@ -17,38 +17,38 @@ import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecur
  */
 public class APIConstants {
 
-	private APIConstants() {
+    private APIConstants() {
 
-	}
+    }
 
-	/**
-	 * API starting with this all is accessible - even anonymous!
-	 */
-	public static final String API_ANONYMOUS = "/api/anonymous/";
+    /**
+     * API starting with this all is accessible - even anonymous!
+     */
+    public static final String API_ANONYMOUS = "/api/anonymous/";
 
-	/**
-	 * API starting with this only admins can access!
-	 */
-	public static final String API_ADMINISTRATION = "/api/admin/";
+    /**
+     * API starting with this only admins can access!
+     */
+    public static final String API_ADMINISTRATION = "/api/admin/";
 
-	/**
-	 * API starting with this is accessible by users for their profile
-	 */
-	public static final String API_USER = "/api/user/";
+    /**
+     * API starting with this is accessible by users for their profile
+     */
+    public static final String API_USER = "/api/user/";
 
-	/**
-	 * API starting with this is accessible by owners for their profile
-	 */
-	public static final String API_OWNER = "/api/owner/";
+    /**
+     * API starting with this is accessible by owners for their profile
+     */
+    public static final String API_OWNER = "/api/owner/";
 
-	/**
-	 * API starting with this is accessible by users for their projects
-	 */
-	public static final String API_PROJECT = "/api/project/";
-	
-	/**
-	 * Actuator endpoints are available anonymous
-	 */
-	public static final String ACTUATOR = "/actuator/";
+    /**
+     * API starting with this is accessible by users for their projects
+     */
+    public static final String API_PROJECT = "/api/project/";
+
+    /**
+     * Actuator endpoints are available anonymous
+     */
+    public static final String ACTUATOR = "/actuator/";
 
 }

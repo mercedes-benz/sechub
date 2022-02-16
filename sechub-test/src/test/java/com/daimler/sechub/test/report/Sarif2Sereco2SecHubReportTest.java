@@ -13,14 +13,15 @@ import com.daimler.sechub.domain.scan.product.ProductIdentifier;
  * transformed to SERECO and after this SERECO data will be transformed to final
  * SecHub report). <br>
  * <br>
- * This is exactly the same call mechanism as SecHub does internally, but without false
- * positive marking and using dedicated SARIF importer version V1 (but we have
- * currently only this, so SecHub will use also this version only). <br>
+ * This is exactly the same call mechanism as SecHub does internally, but
+ * without false positive marking and using dedicated SARIF importer version V1
+ * (but we have currently only this, so SecHub will use also this version only).
+ * <br>
  * <br>
  * Our normal integrations tests do slow down our builds. Having SARIF already
- * tested by integration tests for SARIF code scans, we test here SARIF
- * details e.g. for web scanning - but much faster.
- * 
+ * tested by integration tests for SARIF code scans, we test here SARIF details
+ * e.g. for web scanning - but much faster.
+ *
  * @author Albert Tregnaghi
  *
  */

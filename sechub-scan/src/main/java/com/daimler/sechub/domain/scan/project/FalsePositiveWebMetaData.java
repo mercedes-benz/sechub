@@ -40,6 +40,5 @@ public class FalsePositiveWebMetaData {
         FalsePositiveWebMetaData other = (FalsePositiveWebMetaData) obj;
         return Objects.equals(request, other.request) && Objects.equals(response, other.response);
     }
-    
-    
+
 }

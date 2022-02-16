@@ -46,7 +46,7 @@ public class ProjectMessage implements JSONable<ProjectMessage> {
 
     /**
      * Add user email address suitable
-     * 
+     *
      * @param emailAddress
      */
     public void addUserEmailAddress(String emailAddress) {

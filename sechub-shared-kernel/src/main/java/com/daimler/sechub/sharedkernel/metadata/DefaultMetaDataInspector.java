@@ -7,13 +7,13 @@ import org.springframework.stereotype.Component;
 import com.daimler.sechub.sharedkernel.Profiles;
 
 @Component
-@Profile("!"+Profiles.INTEGRATIONTEST)
-public class DefaultMetaDataInspector implements MetaDataInspector{
+@Profile("!" + Profiles.INTEGRATIONTEST)
+public class DefaultMetaDataInspector implements MetaDataInspector {
 
-	@Override
-	public MetaDataInspection inspect(String id) {
-		MetaDataInspection collection = new LoggingMetaDataInspection(id);
-		return collection;
-	}
+    @Override
+    public MetaDataInspection inspect(String id) {
+        MetaDataInspection collection = new LoggingMetaDataInspection(id);
+        return collection;
+    }
 
 }

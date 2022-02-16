@@ -3,6 +3,6 @@ package com.daimler.sechub.storage.core;
 
 public interface SharedVolumeSetup extends StorageSetup {
 
-	String getUploadDir();
+    String getUploadDir();
 
 }

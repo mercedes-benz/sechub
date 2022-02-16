@@ -3,6 +3,7 @@ package com.daimler.sechub.domain.administration.project;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

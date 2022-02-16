@@ -39,19 +39,19 @@ public class SecHubExecutionContext {
         this.executedBy = executedBy;
         this.traceLogId = UUIDTraceLogID.traceLogID(sechubJobUUID);
     }
-    
+
     public void markAbandonded() {
-        abandonded=true;
+        abandonded = true;
     }
-    
+
     public void markCanceled() {
-        canceled=true;
+        canceled = true;
     }
-    
+
     public boolean isCanceled() {
         return canceled;
     }
-    
+
     public boolean isCanceledOrAbandonded() {
         return canceled || abandonded;
     }
@@ -78,7 +78,7 @@ public class SecHubExecutionContext {
 
     /**
      * Add additional data by typed key
-     * 
+     *
      * @param <V>
      * @param id
      * @param value
@@ -92,7 +92,7 @@ public class SecHubExecutionContext {
 
     /**
      * Get additional data by typed key
-     * 
+     *
      * @param <V>
      * @param id
      * @return

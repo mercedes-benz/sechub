@@ -25,7 +25,7 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport {
     /**
      * Creates the configuration support and VALIDATE. This will fail when
      * configuration data is not valid (e.g. mandatory keys missing)
-     * 
+     *
      * @param config
      * @param systemEnvironment
      * @return support

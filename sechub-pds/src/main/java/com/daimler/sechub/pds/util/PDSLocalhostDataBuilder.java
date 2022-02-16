@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PDSLocalhostDataBuilder {
 
-    @Value("${server.port}")// same as used by spring boot for HTTP server - so always available
+    @Value("${server.port}") // same as used by spring boot for HTTP server - so always available
     private int serverPort;
 
     public String buildHostname() {
@@ -20,7 +20,7 @@ public class PDSLocalhostDataBuilder {
             return "localhost";
         }
     }
-    
+
     public String buildIP() {
         try {
             return InetAddress.getLocalHost().getHostAddress();
@@ -33,4 +33,3 @@ public class PDSLocalhostDataBuilder {
         return serverPort;
     }
 }
-    

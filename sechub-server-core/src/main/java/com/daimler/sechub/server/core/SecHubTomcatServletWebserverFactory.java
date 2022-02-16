@@ -21,12 +21,12 @@ public class SecHubTomcatServletWebserverFactory implements WebServerFactoryCust
 
     @Override
     public void customize(TomcatServletWebServerFactory factory) {
-        /* @formatter:off 
-          
+        /* @formatter:off
+
            we let Tomcat always swallow one more megabyte than spring servlet filter does
            so we will get not SocketConnectionExceptions sometimes instead dedicated exceptions
-           as defined in SecHubExceptionHandler 
-           
+           as defined in SecHubExceptionHandler
+
            @formatter:on*/
         String size = maxFileSizeAsString.trim().toLowerCase();
         if (!size.endsWith("mb")) {

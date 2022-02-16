@@ -25,11 +25,11 @@ public class CheckmarxOAuthData {
 
     public long calculateMillisecondsBeforeTokenExpires() {
         long currentTimeMillisEpoch = System.currentTimeMillis();
-        long maximumAmountOfMillisecondsBeforeExpired = expiresInSeconds*1000;
-        
-        long tokenExpiresInMillisEpoch = creationTimeMillis+maximumAmountOfMillisecondsBeforeExpired;
-        
-        long tokenExpiresInMilliseconds = tokenExpiresInMillisEpoch-currentTimeMillisEpoch;
+        long maximumAmountOfMillisecondsBeforeExpired = expiresInSeconds * 1000;
+
+        long tokenExpiresInMillisEpoch = creationTimeMillis + maximumAmountOfMillisecondsBeforeExpired;
+
+        long tokenExpiresInMilliseconds = tokenExpiresInMillisEpoch - currentTimeMillisEpoch;
         return tokenExpiresInMilliseconds;
     }
 }

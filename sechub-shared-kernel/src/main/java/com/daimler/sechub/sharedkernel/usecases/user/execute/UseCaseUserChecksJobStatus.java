@@ -11,6 +11,7 @@ import java.lang.annotation.Target;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseDefinition;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseGroup;
+
 /* @formatter:off */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
@@ -18,10 +19,10 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseGroup;
 		id=UC_USER_GET_JOB_STATUS,
 		group=UseCaseGroup.SECHUB_EXECUTION,
 		apiName="userChecksJobStatus",
-		title="User checks sechub job state", 
+		title="User checks sechub job state",
 		description="user/check_sechub_job_state_description.adoc")
 public @interface UseCaseUserChecksJobStatus {
-	
+
 	Step value();
 }
 /* @formatter:on */

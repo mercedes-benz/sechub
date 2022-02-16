@@ -3,24 +3,24 @@ package com.daimler.sechub.domain.schedule;
 
 public enum ExecutionState {
 
-	INITIALIZING("Initializing. E.g. Workspace has pending uploads etc."),
+    INITIALIZING("Initializing. E.g. Workspace has pending uploads etc."),
 
-	READY_TO_START("No state information available"),
+    READY_TO_START("No state information available"),
 
-	STARTED("Is started"),
+    STARTED("Is started"),
 
-	CANCEL_REQUESTED("A cancel was requested - but not ended now"),
+    CANCEL_REQUESTED("A cancel was requested - but not ended now"),
 
-	ENDED("Has ended - with failure or success");
+    ENDED("Has ended - with failure or success");
 
-	private String description;
+    private String description;
 
-	private ExecutionState(String description) {
-		this.description = description;
-	}
+    private ExecutionState(String description) {
+        this.description = description;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
 }

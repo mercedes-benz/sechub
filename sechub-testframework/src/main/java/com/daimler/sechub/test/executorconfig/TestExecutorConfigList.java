@@ -4,7 +4,6 @@ package com.daimler.sechub.test.executorconfig;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class TestExecutorConfigList {
 
     public String type;

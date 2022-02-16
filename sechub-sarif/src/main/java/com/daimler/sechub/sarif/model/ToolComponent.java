@@ -7,8 +7,8 @@ import java.util.Objects;
  * Tool component object, see <a href=
  * "https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317533">SARIF
  * 2.1.0 specification entry</a>
- * 
- * 
+ *
+ *
  * @author Albert Tregnaghi
  *
  */

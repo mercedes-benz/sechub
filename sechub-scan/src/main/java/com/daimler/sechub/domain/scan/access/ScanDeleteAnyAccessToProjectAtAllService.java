@@ -16,27 +16,25 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @Service
 public class ScanDeleteAnyAccessToProjectAtAllService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ScanDeleteAnyAccessToProjectAtAllService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ScanDeleteAnyAccessToProjectAtAllService.class);
 
+    @Autowired
+    ScanAccessRepository scanAccessRepository;
 
-	@Autowired
-	ScanAccessRepository scanAccessRepository;
+    @Autowired
+    UserInputAssertion assertion;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Autowired
+    LogSanitizer logSanitizer;
 
-	@Autowired
-	LogSanitizer logSanitizer;
+    @Transactional
+    @UseCaseAdminDeleteProject(@Step(number = 7, name = "revoke any scan access from project"))
+    public void deleteAnyAccessDataForProject(String projectId) {
+        assertion.isValidProjectId(projectId);
 
-	@Transactional
-	@UseCaseAdminDeleteProject(@Step(number=7,name="revoke any scan access from project"))
-	public void deleteAnyAccessDataForProject(String projectId) {
-		assertion.isValidProjectId(projectId);
+        scanAccessRepository.deleteAnyAccessForProject(projectId);
 
-		scanAccessRepository.deleteAnyAccessForProject(projectId);
-
-		LOG.info("Deleted any access at all for project:{}",logSanitizer.sanitize(projectId, 30));
-	}
-
+        LOG.info("Deleted any access at all for project:{}", logSanitizer.sanitize(projectId, 30));
+    }
 
 }

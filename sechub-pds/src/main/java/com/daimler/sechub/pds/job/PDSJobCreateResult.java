@@ -11,8 +11,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PDSJobCreateResult {
 
-    public static final String PROPERTY_JOBID="jobUUID";
-    
+    public static final String PROPERTY_JOBID = "jobUUID";
+
     UUID jobUUID;
 
     public PDSJobCreateResult(UUID jobUUID) {
@@ -22,6 +22,5 @@ public class PDSJobCreateResult {
     public UUID getJobUUID() {
         return jobUUID;
     }
-
 
 }

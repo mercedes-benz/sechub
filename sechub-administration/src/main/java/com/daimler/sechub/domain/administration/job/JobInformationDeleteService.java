@@ -16,21 +16,21 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @Service
 public class JobInformationDeleteService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(JobInformationDeleteService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JobInformationDeleteService.class);
 
-	@Autowired
-	JobInformationRepository repository;
+    @Autowired
+    JobInformationRepository repository;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Autowired
+    UserInputAssertion assertion;
 
-	@Validated
-	@UseCaseSchedulerStartsJob(@Step(number = 5, name = "Update admin job info", description = "Deletes store info in admin domain when job is done."))
-	public void delete(UUID jobUUID) {
-		assertion.isValidJobUUID(jobUUID);
+    @Validated
+    @UseCaseSchedulerStartsJob(@Step(number = 5, name = "Update admin job info", description = "Deletes store info in admin domain when job is done."))
+    public void delete(UUID jobUUID) {
+        assertion.isValidJobUUID(jobUUID);
 
-		LOG.debug("deleting job information for job with uuid:{}",jobUUID);
-		repository.deleteJobInformationWithJobUUID(jobUUID);
-	}
+        LOG.debug("deleting job information for job with uuid:{}", jobUUID);
+        repository.deleteJobInformationWithJobUUID(jobUUID);
+    }
 
 }

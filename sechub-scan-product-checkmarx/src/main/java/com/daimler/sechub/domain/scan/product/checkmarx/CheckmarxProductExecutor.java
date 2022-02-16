@@ -105,7 +105,7 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
 
                 CheckmarxAdapterConfig checkMarxConfig = CheckmarxConfig.builder().
     					configure(createAdapterOptionsStrategy(context)).
-    					
+
     					setTrustAllCertificates(setup.isHavingUntrustedCertificate()).
     					setUser(configSupport.getUser()).
     					setPasswordOrAPIToken(configSupport.getPasswordOrAPIToken()).

@@ -22,7 +22,7 @@ import com.daimler.sechub.integrationtest.api.TestProject;
 /**
  * Integration test doing code scans by integration test servers (sechub server,
  * pds server)
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -45,22 +45,22 @@ public class PDSCodeScanSarifJobScenario10IntTest {
         /* prepare */
         TestProject project = PROJECT_1;
         UUID jobUUID = as(USER_1).createCodeScan(project,NOT_MOCKED);// scenario10 uses really integration test pds server! but WITHOUT reusage of sechub storage
-        
-        
+
+
         /* execute */
         as(USER_1).
             upload(project, jobUUID, PATH).
             approveJob(project, jobUUID);
-        
+
         waitForJobDone(project, jobUUID,10, true);
-        
+
         /* test */
         // test storage is a sechub storage and no PDS storage
         String storagePath = getPDSStoragePathForJobUUID(jobUUID); // this is a SecHub job UUID!
         assertNull("Storage path may not be found for SecHub jobUUID, "
                 + "because storage must be done by PDS itself. But found for "+jobUUID+" path="+storagePath+
-                " - wrong storage used!", storagePath); // storage path must NOT be found for SecHub job UUID because PDS storage with PDS jobUUID must be used! 
-        
+                " - wrong storage used!", storagePath); // storage path must NOT be found for SecHub job UUID because PDS storage with PDS jobUUID must be used!
+
         // test content as expected
         String report = as(USER_1).getJobReport(project, jobUUID);
         assertReport(report).
@@ -81,8 +81,8 @@ public class PDSCodeScanSarifJobScenario10IntTest {
                    hasScanType(ScanType.CODE_SCAN).
                    hasSeverity(Severity.MEDIUM).
                    hasDescription("Rails 5.0.0 has a vulnerability that may allow CSRF token forgery. Upgrade to Rails 5.2.4.3 or patch.");
-        
-        
+
+
         /* @formatter:on */
     }
 

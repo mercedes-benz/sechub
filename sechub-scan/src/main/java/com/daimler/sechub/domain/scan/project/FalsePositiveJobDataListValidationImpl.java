@@ -20,7 +20,7 @@ public class FalsePositiveJobDataListValidationImpl extends AbstractValidation<F
     ApiVersionValidationFactory apiVersionValidationFactory;
 
     private ApiVersionValidation apiVersionValidation;
-    
+
     @Autowired
     FalsePositiveJobDataValidationImpl falsePositiveJobDataValidation;
 
@@ -39,7 +39,7 @@ public class FalsePositiveJobDataListValidationImpl extends AbstractValidation<F
     protected String getValidatorName() {
         return "false positive list validation";
     }
-    
+
     @Override
     protected void validate(ValidationContext<FalsePositiveJobDataList> context) {
         validateNotNull(context);
@@ -49,34 +49,34 @@ public class FalsePositiveJobDataListValidationImpl extends AbstractValidation<F
         if (context.isInValid()) {
             return;
         }
-        
+
         validateType(context, target);
         if (context.isInValid()) {
             return;
         }
-        
+
         validateJobData(context, target);
 
     }
 
     private void validateJobData(ValidationContext<FalsePositiveJobDataList> context, FalsePositiveJobDataList target) {
         List<FalsePositiveJobData> jobDataList = target.getJobData();
-        validateNotNull(context, jobDataList,"jobDataList");
-        
+        validateNotNull(context, jobDataList, "jobDataList");
+
         validateMinSize(context, jobDataList, 1, "jobDataList");
         validateMaxSize(context, jobDataList, getConfig().maxLength, "jobDataList");
-        
+
         if (context.isInValid()) {
             return;
         }
-        
-        for (FalsePositiveJobData jobData: jobDataList) {
+
+        for (FalsePositiveJobData jobData : jobDataList) {
             falsePositiveJobDataValidation.validate(jobData);
         }
     }
 
     private void validateType(ValidationContext<FalsePositiveJobDataList> context, FalsePositiveJobDataList target) {
-        validateContainsExpectedOnly(context, "given type not known", target.getType(),FalsePositiveJobDataList.ACCEPTED_TYPE);
+        validateContainsExpectedOnly(context, "given type not known", target.getType(), FalsePositiveJobDataList.ACCEPTED_TYPE);
     }
 
     private void validateVersion(ValidationContext<FalsePositiveJobDataList> context, FalsePositiveJobDataList target) {

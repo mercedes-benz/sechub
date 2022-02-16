@@ -17,7 +17,7 @@ import com.daimler.sechub.pds.PDSMustBeDocumented;
 /**
  * Collector - inspired by
  * https://github.com/de-jcup/code2doc/blob/master/code2doc-core/src/main/java/de/jcup/code2doc/core/internal/collect/TechInfoLinkAnnotationDataCollector.java
- * 
+ *
  * @author Albert Tregnaghi
  */
 public class PDSMustBeDocumentedDataCollector {

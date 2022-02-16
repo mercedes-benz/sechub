@@ -21,38 +21,38 @@ import com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdminEnabl
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 public class SwitchSchedulerJobProcessingService {
 
-	@Autowired
-	DomainMessageService eventBusService;
+    @Autowired
+    DomainMessageService eventBusService;
 
-	@Autowired
-	AuditLogService auditLogService;
+    @Autowired
+    AuditLogService auditLogService;
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@UseCaseAdminDisablesSchedulerJobProcessing(@Step(number=2,name="Service call",description="Sends request to scheduler domain to disable scheduler job processing"))
 	public void disableJobProcessing() {
 		/* @formatter:on */
-		auditLogService.log("Disabled job processing");
-		sendDisableSchedulerJobProcessingMessage();
-	}
+        auditLogService.log("Disabled job processing");
+        sendDisableSchedulerJobProcessingMessage();
+    }
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@UseCaseAdminEnablesSchedulerJobProcessing(@Step(number=2,name="Service call",description="Sends request to scheduler domain to enable scheduler job processing"))
 	public void enableJobProcessing() {
 		/* @formatter:on */
-		auditLogService.log("Enabled job processing");
-		sendEnableSchedulerJobProcessingMessage();
-	}
+        auditLogService.log("Enabled job processing");
+        sendEnableSchedulerJobProcessingMessage();
+    }
 
-	@IsSendingAsyncMessage(MessageID.REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING)
-	private void sendEnableSchedulerJobProcessingMessage() {
-		DomainMessage request = DomainMessageFactory.createEmptyRequest(MessageID.REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING);
-		eventBusService.sendAsynchron(request);
-	}
+    @IsSendingAsyncMessage(MessageID.REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING)
+    private void sendEnableSchedulerJobProcessingMessage() {
+        DomainMessage request = DomainMessageFactory.createEmptyRequest(MessageID.REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING);
+        eventBusService.sendAsynchron(request);
+    }
 
-	@IsSendingAsyncMessage(MessageID.REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING)
-	private void sendDisableSchedulerJobProcessingMessage() {
-		DomainMessage request = DomainMessageFactory.createEmptyRequest(MessageID.REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING);
-		eventBusService.sendAsynchron(request);
-	}
+    @IsSendingAsyncMessage(MessageID.REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING)
+    private void sendDisableSchedulerJobProcessingMessage() {
+        DomainMessage request = DomainMessageFactory.createEmptyRequest(MessageID.REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING);
+        eventBusService.sendAsynchron(request);
+    }
 
 }

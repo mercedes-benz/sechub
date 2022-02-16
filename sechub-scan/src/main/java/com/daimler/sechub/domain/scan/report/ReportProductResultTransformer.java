@@ -9,7 +9,7 @@ import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
 /**
  * Implementations of this interface transforms a report product result (e.g.
  * SERECO) to a common report transformation result
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -18,7 +18,7 @@ public interface ReportProductResultTransformer {
     /**
      * Transforms given report product result into common report transformation
      * result
-     * 
+     *
      * @param result
      * @return
      * @throws SecHubExecutionException

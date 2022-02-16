@@ -25,139 +25,140 @@ import com.daimler.sechub.test.TestUtil;
 
 public class FullScanDataToZipOutputSupportTest {
 
-	private FullScanDataToZipOutputSupport supportToTest;
-	private UUID sechubJobUUID;
+    private FullScanDataToZipOutputSupport supportToTest;
+    private UUID sechubJobUUID;
 
-	@Before
-	public void before() {
-		supportToTest = new FullScanDataToZipOutputSupport();
-		sechubJobUUID = UUID.randomUUID();
-	}
+    @Before
+    public void before() {
+        supportToTest = new FullScanDataToZipOutputSupport();
+        sechubJobUUID = UUID.randomUUID();
+    }
 
-	@Test
-	public void writeScanDataContainsDataAsExpected() throws Exception {
-		/* prepare */
-		FullScanData fullScanData = createFullScanDataTwoProductsOneLogEntry();
+    @Test
+    public void writeScanDataContainsDataAsExpected() throws Exception {
+        /* prepare */
+        FullScanData fullScanData = createFullScanDataTwoProductsOneLogEntry();
 
-		File file = TestUtil.createTempFileInBuildFolder("log_fullscan", "zip").toFile();
+        File file = TestUtil.createTempFileInBuildFolder("log_fullscan", "zip").toFile();
 
-		/* execute */
-		try(FileOutputStream fos = new FileOutputStream(file)){
-			supportToTest.writeScanData(fullScanData, fos );
-		}
+        /* execute */
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            supportToTest.writeScanData(fullScanData, fos);
+        }
 
-		/* test */
+        /* test */
 
-		List<Data> list = readZipfile(file);
-	    assertEquals(5,list.size());
-	    Data data1 = assertFile("product1.json",list);
-        Data data2 = assertFile("product2.xml",list);
-	    Data data3 = assertFile("log_null.txt",list); // null because log is not persisted and has no UUID
-	    
-	    Data data4 = assertFile("metadata_product1.json",list);
-        Data data5 = assertFile("metadata_product2.json",list);
+        List<Data> list = readZipfile(file);
+        assertEquals(5, list.size());
+        Data data1 = assertFile("product1.json", list);
+        Data data2 = assertFile("product2.xml", list);
+        Data data3 = assertFile("log_null.txt", list); // null because log is not persisted and has no UUID
 
-	    assertTrue(data1.content.contains("OK"));
-	    assertTrue(data2.content.contains("NOT-OK"));
-	    assertTrue(data3.content.contains("'heavy'"));
-	    
-	    assertTrue(data4.content.contains("metadata"));
-	    assertTrue(data4.content.contains("product1"));
+        Data data4 = assertFile("metadata_product1.json", list);
+        Data data5 = assertFile("metadata_product2.json", list);
 
-	    assertTrue(data5.content.contains("metadata"));
-	    assertTrue(data5.content.contains("product2"));
+        assertTrue(data1.content.contains("OK"));
+        assertTrue(data2.content.contains("NOT-OK"));
+        assertTrue(data3.content.contains("'heavy'"));
 
-	}
+        assertTrue(data4.content.contains("metadata"));
+        assertTrue(data4.content.contains("product1"));
 
-	@Test
-	public void writeScanDataWhichContainsSameProductWillIncrementFilenames() throws Exception {
-		/* prepare */
-		FullScanData fullScanData = createFullScanDataTwoProductsOneLogEntry();
-		FullScanData fullScanData2 = createFullScanDataTwoProductsOneLogEntry();
-		fullScanData.allScanData.addAll(fullScanData2.allScanData);
+        assertTrue(data5.content.contains("metadata"));
+        assertTrue(data5.content.contains("product2"));
 
-		File file = TestUtil.createTempFileInBuildFolder("log_fullscan", "zip").toFile();
+    }
 
-		/* execute */
-		try(FileOutputStream fos = new FileOutputStream(file)){
-			supportToTest.writeScanData(fullScanData, fos );
-		}
+    @Test
+    public void writeScanDataWhichContainsSameProductWillIncrementFilenames() throws Exception {
+        /* prepare */
+        FullScanData fullScanData = createFullScanDataTwoProductsOneLogEntry();
+        FullScanData fullScanData2 = createFullScanDataTwoProductsOneLogEntry();
+        fullScanData.allScanData.addAll(fullScanData2.allScanData);
 
-		/* test */
+        File file = TestUtil.createTempFileInBuildFolder("log_fullscan", "zip").toFile();
 
-		List<Data> list = readZipfile(file);
-	    assertEquals(9,list.size());
-	    assertFile("product1.json",list);
-	    assertFile("product1[1].json",list);
-	    assertFile("product2.xml",list);
-	    assertFile("product2[1].xml",list);
-	    assertFile("log_null.txt",list); // null because log is not persisted and has no UUID
-	    
-	    assertFile("metadata_product1.json",list);
-        assertFile("metadata_product1[1].json",list);
-        assertFile("metadata_product2.json",list);
-        assertFile("metadata_product2[1].json",list);
+        /* execute */
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            supportToTest.writeScanData(fullScanData, fos);
+        }
 
-	}
+        /* test */
 
-	private Data assertFile(String name, List<Data> list ) {
-		for (Data data: list) {
-			if (name.contentEquals(data.name)) {
-				return data;
-			}
-		}
-		fail("Did not founda file :"+name);
-		return null;
-	}
+        List<Data> list = readZipfile(file);
+        assertEquals(9, list.size());
+        assertFile("product1.json", list);
+        assertFile("product1[1].json", list);
+        assertFile("product2.xml", list);
+        assertFile("product2[1].xml", list);
+        assertFile("log_null.txt", list); // null because log is not persisted and has no UUID
 
-	private FullScanData createFullScanDataTwoProductsOneLogEntry() {
-		FullScanData fullScanData = new FullScanData();
+        assertFile("metadata_product1.json", list);
+        assertFile("metadata_product1[1].json", list);
+        assertFile("metadata_product2.json", list);
+        assertFile("metadata_product2[1].json", list);
 
-		ScanData data1 = new ScanData();
-		data1.productId="product1";
-		data1.result="{ 'result' : 'OK'}";
-		data1.metaData="{ \"metadata\" : \"product1\" }";
+    }
 
-		ScanData data2 = new ScanData();
-		data2.productId="product2";
-		data2.result="<?xml version='1.0'>\n<result>NOT-OK</result>}";
-		data2.metaData="{ \"metadata\" : \"product2\" }";
+    private Data assertFile(String name, List<Data> list) {
+        for (Data data : list) {
+            if (name.contentEquals(data.name)) {
+                return data;
+            }
+        }
+        fail("Did not founda file :" + name);
+        return null;
+    }
 
-		fullScanData.allScanData.add(data1);
-		fullScanData.allScanData.add(data2);
+    private FullScanData createFullScanDataTwoProductsOneLogEntry() {
+        FullScanData fullScanData = new FullScanData();
 
-		ProjectScanLog log1 = new ProjectScanLog("project1",sechubJobUUID,"executor1","{'config':'heavy'}");
-		fullScanData.allScanLogs.add(log1);
-		return fullScanData;
-	}
+        ScanData data1 = new ScanData();
+        data1.productId = "product1";
+        data1.result = "{ 'result' : 'OK'}";
+        data1.metaData = "{ \"metadata\" : \"product1\" }";
 
-	private List<Data> readZipfile(File file) throws ZipException, IOException {
-		List<Data> list = new ArrayList<>();
-		try(ZipFile zipFile = new ZipFile(file)){
-			Enumeration<? extends ZipEntry> entries = zipFile.entries();
-			while(entries.hasMoreElements()){
-				ZipEntry entry = entries.nextElement();
-				InputStream stream = zipFile.getInputStream(entry);
-				try(BufferedReader br = new BufferedReader(new InputStreamReader(stream))){
-					String line = null;
-					StringBuilder sb = new StringBuilder();
-					while ( (line=br.readLine())!=null) {
-						sb.append(line);
-						sb.append("\n");
-					}
-					Data d = new Data();
-					d.name = entry.getName();
-					d.content=sb.toString();
-					list.add(d);
-				}
-			}
-		};
-		return list;
-	}
+        ScanData data2 = new ScanData();
+        data2.productId = "product2";
+        data2.result = "<?xml version='1.0'>\n<result>NOT-OK</result>}";
+        data2.metaData = "{ \"metadata\" : \"product2\" }";
 
-	private class Data{
-		String name;
-		String content;
-	}
+        fullScanData.allScanData.add(data1);
+        fullScanData.allScanData.add(data2);
+
+        ProjectScanLog log1 = new ProjectScanLog("project1", sechubJobUUID, "executor1", "{'config':'heavy'}");
+        fullScanData.allScanLogs.add(log1);
+        return fullScanData;
+    }
+
+    private List<Data> readZipfile(File file) throws ZipException, IOException {
+        List<Data> list = new ArrayList<>();
+        try (ZipFile zipFile = new ZipFile(file)) {
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+            while (entries.hasMoreElements()) {
+                ZipEntry entry = entries.nextElement();
+                InputStream stream = zipFile.getInputStream(entry);
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(stream))) {
+                    String line = null;
+                    StringBuilder sb = new StringBuilder();
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line);
+                        sb.append("\n");
+                    }
+                    Data d = new Data();
+                    d.name = entry.getName();
+                    d.content = sb.toString();
+                    list.add(d);
+                }
+            }
+        }
+        ;
+        return list;
+    }
+
+    private class Data {
+        String name;
+        String content;
+    }
 
 }

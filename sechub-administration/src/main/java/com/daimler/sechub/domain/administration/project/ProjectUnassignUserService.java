@@ -25,68 +25,67 @@ import com.daimler.sechub.sharedkernel.messaging.UserMessage;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUnassignsUserFromProject;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
-
 @Service
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 public class ProjectUnassignUserService {
 
-	@Autowired
-	DomainMessageService eventBus;
+    @Autowired
+    DomainMessageService eventBus;
 
-	@Autowired
-	ProjectRepository projectRepository;
+    @Autowired
+    ProjectRepository projectRepository;
 
-	@Autowired
-	UserRepository userRepository;
+    @Autowired
+    UserRepository userRepository;
 
-	@Autowired
-	LogSanitizer logSanitizer;
+    @Autowired
+    LogSanitizer logSanitizer;
 
-	@Autowired
-	AuditLogService auditLogService;
+    @Autowired
+    AuditLogService auditLogService;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Autowired
+    UserInputAssertion assertion;
 
-	@Autowired
-	ProjectTransactionService transactionService;
+    @Autowired
+    ProjectTransactionService transactionService;
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@UseCaseAdminUnassignsUserFromProject(@Step(number = 2, name = "Unassign user", description = "The service will remove the user to the project. If users has no longer access to projects ROLE_USER will be removed"))
 	/* @formatter:on */
-	public void unassignUserFromProject(String userId, String projectId) {
-		auditLogService.log("triggers unassignment of user:{} to project:{}", logSanitizer.sanitize(userId,30), logSanitizer.sanitize(projectId,30));
+    public void unassignUserFromProject(String userId, String projectId) {
+        auditLogService.log("triggers unassignment of user:{} to project:{}", logSanitizer.sanitize(userId, 30), logSanitizer.sanitize(projectId, 30));
 
-		assertion.isValidUserId(userId);
-		assertion.isValidProjectId(projectId);
+        assertion.isValidUserId(userId);
+        assertion.isValidProjectId(projectId);
 
-		Project project = projectRepository.findOrFailProject(projectId);
-		User user = userRepository.findOrFailUser(userId);
-		if (!project.getUsers().remove(user)) {
-			throw new AlreadyExistsException("User already not assigned to this project!");
-		}
-		user.getProjects().remove(project);
+        Project project = projectRepository.findOrFailProject(projectId);
+        User user = userRepository.findOrFailUser(userId);
+        if (!project.getUsers().remove(user)) {
+            throw new AlreadyExistsException("User already not assigned to this project!");
+        }
+        user.getProjects().remove(project);
 
-		transactionService.saveInOwnTransaction(project,user);
+        transactionService.saveInOwnTransaction(project, user);
 
-		sendUserRemovedFromProjectEvent(projectId, user);
-		sendRequestUserRoleRecalculation(user);
-	}
+        sendUserRemovedFromProjectEvent(projectId, user);
+        sendRequestUserRoleRecalculation(user);
+    }
 
-	@IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)
-	private void sendRequestUserRoleRecalculation(User user) {
-		eventBus.sendAsynchron(DomainMessageFactory.createRequestRoleCalculation(user.getName()));
-	}
+    @IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)
+    private void sendRequestUserRoleRecalculation(User user) {
+        eventBus.sendAsynchron(DomainMessageFactory.createRequestRoleCalculation(user.getName()));
+    }
 
-	@IsSendingAsyncMessage(MessageID.USER_REMOVED_FROM_PROJECT)
-	private void sendUserRemovedFromProjectEvent(String projectId, User user) {
-		DomainMessage request = new DomainMessage(MessageID.USER_REMOVED_FROM_PROJECT);
-		UserMessage projectToUserData = new UserMessage();
-		projectToUserData.setUserId(user.getName());
-		projectToUserData.setProjectIds(Arrays.asList(projectId));
+    @IsSendingAsyncMessage(MessageID.USER_REMOVED_FROM_PROJECT)
+    private void sendUserRemovedFromProjectEvent(String projectId, User user) {
+        DomainMessage request = new DomainMessage(MessageID.USER_REMOVED_FROM_PROJECT);
+        UserMessage projectToUserData = new UserMessage();
+        projectToUserData.setUserId(user.getName());
+        projectToUserData.setProjectIds(Arrays.asList(projectId));
 
-		request.set(MessageDataKeys.PROJECT_TO_USER_DATA, projectToUserData);
-		eventBus.sendAsynchron(request);
-	}
+        request.set(MessageDataKeys.PROJECT_TO_USER_DATA, projectToUserData);
+        eventBus.sendAsynchron(request);
+    }
 
 }

@@ -17,22 +17,22 @@ public class PDSKeyToEnvConverterTest {
 
     @Test
     public void abc_DOT_def_DOT_ghi_is_converted_to_ABC_DEF_GHI() {
-        assertEquals("ABC_DEF_GHI",  converterToTest.convertKeyToEnv("abc.def.ghi"));
+        assertEquals("ABC_DEF_GHI", converterToTest.convertKeyToEnv("abc.def.ghi"));
     }
-    
+
     @Test
     public void empty_keeps_empty() {
-        assertEquals("",  converterToTest.convertKeyToEnv(""));
+        assertEquals("", converterToTest.convertKeyToEnv(""));
     }
-    
+
     @Test
     public void null_keeps_null() {
-        assertEquals(null,  converterToTest.convertKeyToEnv(null));
+        assertEquals(null, converterToTest.convertKeyToEnv(null));
     }
-    
+
     @Test
     public void abc_becomes_ABC() {
-        assertEquals("ABC",  converterToTest.convertKeyToEnv("abc"));
+        assertEquals("ABC", converterToTest.convertKeyToEnv("abc"));
     }
 
 }

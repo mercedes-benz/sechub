@@ -15,6 +15,7 @@ public class AssertJSON {
 
     private static final Logger LOG = LoggerFactory.getLogger(AssertJSON.class);
     private String plainJson;
+
     public static AssertJSON assertJson(String json) {
         return new AssertJSON(json);
     }
@@ -23,7 +24,7 @@ public class AssertJSON {
 
     private AssertJSON(String json) {
         try {
-            plainJson=json;
+            plainJson = json;
             rootNode = JSONTestSupport.DEFAULT.fromJson(json);
         } catch (IOException e) {
             LOG.error("JSON parse problem", e);
@@ -32,7 +33,6 @@ public class AssertJSON {
         }
     }
 
-    
     public AssertJSONFieldPath fieldPathes() {
         return new AssertJSONFieldPath();
     }
@@ -46,7 +46,7 @@ public class AssertJSON {
         /**
          * Check field path is found - and contains text . Only the FIRST field path is
          * used!
-         * 
+         *
          * @param expectedText
          * @param fields
          * @return

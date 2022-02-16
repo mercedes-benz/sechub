@@ -18,7 +18,7 @@ public class BashScriptContainerLauncher {
 
     public final void start(BashScriptContainerLaunchConfig config) throws IOException {
         Objects.requireNonNull(config);
-        
+
         Path pathToScript = config.getPathToScript();
         Objects.requireNonNull(pathToScript);
         if (!Files.exists(pathToScript)) {
@@ -41,8 +41,8 @@ public class BashScriptContainerLauncher {
         try {
             Process process = sb.start();
             boolean subProcessExited = process.waitFor(2, TimeUnit.MINUTES);
-            LOG.info("processed exited:{}",subProcessExited);
-            
+            LOG.info("processed exited:{}", subProcessExited);
+
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (Exception e) {

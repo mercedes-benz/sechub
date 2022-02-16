@@ -32,66 +32,66 @@ import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 @TestPropertySource(locations = "classpath:application-test.properties")
 public class SchedulerGetJobStatusServiceTest {
 
-	private static final String PROJECT_ID = "project1";
+    private static final String PROJECT_ID = "project1";
 
-	@Autowired
-	private SchedulerGetJobStatusService serviceToTest;
+    @Autowired
+    private SchedulerGetJobStatusService serviceToTest;
 
-	@MockBean
-	private SecHubJobFactory jobFactory;
+    @MockBean
+    private SecHubJobFactory jobFactory;
 
-	@MockBean
-	private SecHubJobRepository jobRepository;
+    @MockBean
+    private SecHubJobRepository jobRepository;
 
-	@MockBean
-	private ScheduleAccessRepository projectUserAccessRepository;
+    @MockBean
+    private ScheduleAccessRepository projectUserAccessRepository;
 
-	@MockBean
-	private UserInputAssertion assertion;
+    @MockBean
+    private UserInputAssertion assertion;
 
-	private SecHubConfiguration configuration;
-	private ScheduleSecHubJob job;
+    private SecHubConfiguration configuration;
+    private ScheduleSecHubJob job;
 
-	private UUID jobUUID;
+    private UUID jobUUID;
 
-	private String project;
+    private String project;
 
-	private String projectUUID="projectId1";
+    private String projectUUID = "projectId1";
 
-	@Rule
-	public ExpectedException expectedException = ExpectedExceptionFactory.none();
+    @Rule
+    public ExpectedException expectedException = ExpectedExceptionFactory.none();
 
-	@Before
-	public void before() {
-		jobUUID = UUID.randomUUID();
-		job = mock(ScheduleSecHubJob.class);
-		configuration = mock(SecHubConfiguration.class);
-		project = "projectId";
+    @Before
+    public void before() {
+        jobUUID = UUID.randomUUID();
+        job = mock(ScheduleSecHubJob.class);
+        configuration = mock(SecHubConfiguration.class);
+        project = "projectId";
 
-		when(job.getProjectId()).thenReturn(project);
+        when(job.getProjectId()).thenReturn(project);
 
-		when(job.getUUID()).thenReturn(jobUUID);
-		when(job.getProjectId()).thenReturn(projectUUID);
-		when(jobFactory.createJob(eq(configuration))).thenReturn(job);
-	}
+        when(job.getUUID()).thenReturn(jobUUID);
+        when(job.getProjectId()).thenReturn(projectUUID);
+        when(jobFactory.createJob(eq(configuration))).thenReturn(job);
+    }
 
-	@Test(expected = NotFoundException.class) // spring boot tests with Rule "ExpectedException" not working.
-	public void get_a_job_status_from_an_unexisting_project_throws_NOT_FOUND_exception() {
-		/* execute */
-		UUID jobUUID = UUID.randomUUID();
-		when(jobRepository.findById(jobUUID)).thenReturn(Optional.of(mock(ScheduleSecHubJob.class)));// should not be necessary, but to
-																				// prevent dependency to call
-																				// hierachy... we simulate job can be
-																				// found
-		serviceToTest.getJobStatus("a-project-not-existing", jobUUID);
-	}
+    @Test(expected = NotFoundException.class) // spring boot tests with Rule "ExpectedException" not working.
+    public void get_a_job_status_from_an_unexisting_project_throws_NOT_FOUND_exception() {
+        /* execute */
+        UUID jobUUID = UUID.randomUUID();
+        when(jobRepository.findById(jobUUID)).thenReturn(Optional.of(mock(ScheduleSecHubJob.class)));// should not be necessary, but to
+        // prevent dependency to call
+        // hierachy... we simulate job can be
+        // found
+        serviceToTest.getJobStatus("a-project-not-existing", jobUUID);
+    }
 
-	@Test(expected = NotFoundException.class) // spring boot tests with Rule "ExpectedException" not working.
-	public void get_a_job_status_from_an_exsting_project_but_no_job_throws_NOT_FOUND_exception() {
-		/* execute */
-		UUID jobUUID = UUID.randomUUID();
-		when(jobRepository.findById(jobUUID)).thenReturn(Optional.empty()); // not found...
-		serviceToTest.getJobStatus(PROJECT_ID, jobUUID);
-	}
+    @Test(expected = NotFoundException.class) // spring boot tests with Rule "ExpectedException" not working.
+    public void get_a_job_status_from_an_exsting_project_but_no_job_throws_NOT_FOUND_exception() {
+        /* execute */
+        UUID jobUUID = UUID.randomUUID();
+        when(jobRepository.findById(jobUUID)).thenReturn(Optional.empty()); // not found...
+        serviceToTest.getJobStatus(PROJECT_ID, jobUUID);
+    }
 
 }

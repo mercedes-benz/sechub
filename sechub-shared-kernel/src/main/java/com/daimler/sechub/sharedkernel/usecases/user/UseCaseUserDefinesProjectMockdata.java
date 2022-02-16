@@ -10,18 +10,13 @@ import java.lang.annotation.Target;
 
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseDefinition;
-/* @formatter:off */
 import com.daimler.sechub.sharedkernel.usecases.UseCaseGroup;
+
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@UseCaseDefinition(
-		id=UC_USER_DEFINES_PROJECT_MOCKDATA_CONFIGURATION,
-		group=UseCaseGroup.TESTING,
-		apiName="userDefinesProjectMockdata",
-		title="User defines mock data configuration for project", 
-		description="user/defines_mockdata_for_project.adoc")
+@UseCaseDefinition(id = UC_USER_DEFINES_PROJECT_MOCKDATA_CONFIGURATION, group = UseCaseGroup.TESTING, apiName = "userDefinesProjectMockdata", title = "User defines mock data configuration for project", description = "user/defines_mockdata_for_project.adoc")
 public @interface UseCaseUserDefinesProjectMockdata {
-	
-	Step value();
+
+    Step value();
 }
 /* @formatter:on */

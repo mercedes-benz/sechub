@@ -14,7 +14,7 @@ import org.springframework.web.servlet.AsyncHandlerInterceptor;
 import com.daimler.sechub.sharedkernel.APIConstants;
 import com.daimler.sechub.sharedkernel.LogConstants;
 
-public class SecHubServerMDCAsyncHandlerInterceptor implements AsyncHandlerInterceptor{
+public class SecHubServerMDCAsyncHandlerInterceptor implements AsyncHandlerInterceptor {
 
     private static final Logger LOG = LoggerFactory.getLogger(SecHubServerMDCAsyncHandlerInterceptor.class);
 

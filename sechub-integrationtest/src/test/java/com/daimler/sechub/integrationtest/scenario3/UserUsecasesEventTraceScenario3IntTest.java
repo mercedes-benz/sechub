@@ -30,7 +30,7 @@ public class UserUsecasesEventTraceScenario3IntTest {
         /* execute */
         as(SUPER_ADMIN).
             unassignUserFromProject(Scenario3.USER_1,Scenario3.PROJECT_1);
-        
+
         /* test */
         AssertEventInspection.assertEventInspection().
         expect().

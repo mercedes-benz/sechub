@@ -7,16 +7,16 @@ import com.daimler.sechub.developertools.admin.ui.UIContext;
 import com.daimler.sechub.developertools.admin.ui.action.AbstractUIAction;
 
 public class ListSignupsAction extends AbstractUIAction {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public ListSignupsAction(UIContext context) {
-		super("List waiting user signups",context);
-	}
+    public ListSignupsAction(UIContext context) {
+        super("List waiting user signups", context);
+    }
 
-	@Override
-	public void execute(ActionEvent e) {
-		String data = getContext().getAdministration().fetchSignups();
-		outputAsBeautifiedJSONOnSuccess(data);
-	}
+    @Override
+    public void execute(ActionEvent e) {
+        String data = getContext().getAdministration().fetchSignups();
+        outputAsBeautifiedJSONOnSuccess(data);
+    }
 
 }

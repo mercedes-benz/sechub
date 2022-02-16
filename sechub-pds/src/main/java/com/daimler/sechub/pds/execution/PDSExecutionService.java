@@ -43,13 +43,13 @@ import com.daimler.sechub.pds.usecase.UseCaseUserCancelsJob;
  * what currently is happening, which job is started, executed etc. But will
  * make no changes to database.<br>
  * <br>
- * 
+ *
  * <u>Details:</u><br>
  * A defined thread pool is used for execution queuing, an overload of the queue
  * must be checked by callers via {@link #isQueueFull()}. Execution itself is
  * done inside {@link PDSExecutionCallable} - execution state checks and changes
  * to database are done inside {@link PDSExecutionWatcher}
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -224,9 +224,10 @@ public class PDSExecutionService {
         }
 
         /**
-         * Handles work being done - all done parts are marked automatically in database.
-         * The execution will be tried resilient. See {@link #getMaximumRetriesToStoreResilient()}
-         * 
+         * Handles work being done - all done parts are marked automatically in
+         * database. The execution will be tried resilient. See
+         * {@link #getMaximumRetriesToStoreResilient()}
+         *
          * @param entry
          * @param future
          * @return <code>true</code> when work can be removed from jobsInQueue

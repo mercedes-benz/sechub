@@ -14,13 +14,13 @@ public class MappingDataToNamePatternToIdEntryConverter {
         if (data == null) {
             return list;
         }
-        
+
         for (MappingEntry mappingEntry : data.getEntries()) {
-            
+
             NamePatternToIdEntry namePattternToIdEntry = new NamePatternToIdEntry(mappingEntry.getPattern(), mappingEntry.getReplacement());
             list.add(namePattternToIdEntry);
         }
-        
+
         return list;
     }
 }

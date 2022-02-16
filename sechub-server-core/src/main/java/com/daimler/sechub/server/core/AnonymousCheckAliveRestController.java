@@ -13,7 +13,7 @@ import com.daimler.sechub.sharedkernel.usecases.anonymous.UseCaseAnonymousCheckA
 @RestController
 public class AnonymousCheckAliveRestController {
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@UseCaseAnonymousCheckAlive(
 			@Step(
 				number=1,

@@ -23,18 +23,19 @@ public class IntegrationTestPDSStorageInfoCollector implements PDSStorageInfoCol
 
     @Override
     public void informFetchedStorage(String storagePath, UUID sechubJobUUID, UUID pdsJobUUID, JobStorage storage) {
-        LOG.debug("fetched storagepath:{} for sechubJobUUID:{}, pdsJobUUID:{}, storage:{}", storagePath, sechubJobUUID, pdsJobUUID, storage == null ? null : storage.getClass());
+        LOG.debug("fetched storagepath:{} for sechubJobUUID:{}, pdsJobUUID:{}, storage:{}", storagePath, sechubJobUUID, pdsJobUUID,
+                storage == null ? null : storage.getClass());
 
         String oldStoragePath = fetchedJobUUIDStoragePathHistory.get(sechubJobUUID);
         if (oldStoragePath != null) {
             if (!storagePath.equals(storagePath)) {
                 throw new IllegalStateException("Inside integration test we have situation, that storage fetched for job: " + sechubJobUUID
-                        + " was fetched for different pathes:\n1." + oldStoragePath + "\n, 2." + storagePath+"\nTHIS MAY NOT HAPPEN!");
+                        + " was fetched for different pathes:\n1." + oldStoragePath + "\n, 2." + storagePath + "\nTHIS MAY NOT HAPPEN!");
             }
         }
         fetchedJobUUIDStoragePathHistory.put(sechubJobUUID, storagePath);
     }
-    
+
     public Map<UUID, String> getFetchedJobUUIDStoragePathHistory() {
         return fetchedJobUUIDStoragePathHistory;
     }

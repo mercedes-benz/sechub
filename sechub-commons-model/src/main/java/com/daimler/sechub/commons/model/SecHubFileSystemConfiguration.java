@@ -6,12 +6,12 @@ import java.util.List;
 
 public class SecHubFileSystemConfiguration {
 
-	public static final String PROPERTY_FOLDERS = "folders";
+    public static final String PROPERTY_FOLDERS = "folders";
 
-	private List<String> folders = new ArrayList<>();
+    private List<String> folders = new ArrayList<>();
 
-	public List<String> getFolders() {
-		return folders;
-	}
+    public List<String> getFolders() {
+        return folders;
+    }
 
 }

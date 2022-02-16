@@ -16,7 +16,7 @@ class CheckmarxOAuthDataTest {
         long expiresInMilliseconds = data.calculateMillisecondsBeforeTokenExpires();
 
         /* test */
-        assertTrue(expiresInMilliseconds <= 0); // negative is also possible 
+        assertTrue(expiresInMilliseconds <= 0); // negative is also possible
     }
 
     @Test

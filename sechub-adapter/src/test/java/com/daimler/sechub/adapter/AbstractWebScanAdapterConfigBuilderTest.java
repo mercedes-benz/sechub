@@ -183,7 +183,7 @@ public class AbstractWebScanAdapterConfigBuilderTest {
         assertEquals(uri, configToTest.getTargetURI());
         assertEquals(uriString, configToTest.getTargetAsString());
     }
-    
+
     @Test
     public void test_includes() {
         /* prepare */
@@ -192,7 +192,7 @@ public class AbstractWebScanAdapterConfigBuilderTest {
         includes.add("/hidden");
         includes.add("/bca/gda#ab");
         includes.add("/cba/abc/cdb?abc=3");
-        
+
         /* execute */
         TestWebScanAdapterConfig testAdapterConfig = new TestAbstractWebScanAdapterConfigBuilder().setIncludes(includes).build();
 
@@ -209,7 +209,7 @@ public class AbstractWebScanAdapterConfigBuilderTest {
         excludes.add("/hidden");
         excludes.add("/bca/gda#ab");
         excludes.add("/cba/abc/cdb?abc=3");
-        
+
         /* execute */
         TestWebScanAdapterConfig testAdapterConfig = new TestAbstractWebScanAdapterConfigBuilder().setExcludes(excludes).build();
 

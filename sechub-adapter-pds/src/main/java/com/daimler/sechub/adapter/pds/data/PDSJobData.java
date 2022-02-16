@@ -6,11 +6,11 @@ import java.util.List;
 
 public class PDSJobData {
 
-    public String apiVersion="1.0";
-    
+    public String apiVersion = "1.0";
+
     public String sechubJobUUID;
-    
+
     public String productId;
-    
+
     public List<PDSJobParameterEntry> parameters = new ArrayList<>();
 }

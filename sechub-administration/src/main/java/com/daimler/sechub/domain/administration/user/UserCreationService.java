@@ -33,134 +33,129 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 public class UserCreationService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(UserCreationService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UserCreationService.class);
 
-	@Autowired
-	SecHubEnvironment environment;
+    @Autowired
+    SecHubEnvironment environment;
 
-	@Autowired
-	SignupRepository selfRegistrationRepository;
+    @Autowired
+    SignupRepository selfRegistrationRepository;
 
-	@Autowired
-	DomainMessageService eventBusService;
+    @Autowired
+    DomainMessageService eventBusService;
 
-	@Autowired
-	UserRepository userRepository;
+    @Autowired
+    UserRepository userRepository;
 
-	@Autowired
-	OneTimeTokenGenerator oneTimeTokenGenerator;
+    @Autowired
+    OneTimeTokenGenerator oneTimeTokenGenerator;
 
-	@Autowired
-	LogSanitizer logSanitizer;
+    @Autowired
+    LogSanitizer logSanitizer;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Autowired
+    UserInputAssertion assertion;
 
-	@Autowired
-	AuditLogService auditLog;
+    @Autowired
+    AuditLogService auditLog;
 
-	@UseCaseAdminAcceptsSignup(@Step(number = 2, name = "Create user and send events", next = { 3,
-			4 }, description = "The service will create the user a one time token for api token generation and triggers asynchronous events.\n"
-					+ "It will also remove the existing user signup because no longer necessary."))
-	public void createUserFromSelfRegistration(String userId) {
+    @UseCaseAdminAcceptsSignup(@Step(number = 2, name = "Create user and send events", next = { 3,
+            4 }, description = "The service will create the user a one time token for api token generation and triggers asynchronous events.\n"
+                    + "It will also remove the existing user signup because no longer necessary."))
+    public void createUserFromSelfRegistration(String userId) {
 
-		String sanitizedLogUserId = logSanitizer.sanitize(userId,30);
-		auditLog.log("accepts signup of user {}",sanitizedLogUserId);
+        String sanitizedLogUserId = logSanitizer.sanitize(userId, 30);
+        auditLog.log("accepts signup of user {}", sanitizedLogUserId);
 
-		assertion.isValidUserId(userId);
+        assertion.isValidUserId(userId);
 
+        Optional<Signup> selfRegistration = selfRegistrationRepository.findById(userId);
+        if (!selfRegistration.isPresent()) {
+            LOG.warn("Did not found a self registration for user with name:{}, so skipped creation", sanitizedLogUserId);
+            return;
+        }
+        Optional<User> found = userRepository.findById(userId);
+        if (found.isPresent()) {
+            LOG.warn("Self registration coming in for user:{} but user already exists. So just removing self registration entry", sanitizedLogUserId);
+            selfRegistrationRepository.deleteById(userId);
+            return;
+        }
 
-		Optional<Signup> selfRegistration = selfRegistrationRepository.findById(userId);
-		if (!selfRegistration.isPresent()) {
-			LOG.warn("Did not found a self registration for user with name:{}, so skipped creation", sanitizedLogUserId);
-			return;
-		}
-		Optional<User> found = userRepository.findById(userId);
-		if (found.isPresent()) {
-			LOG.warn(
-					"Self registration coming in for user:{} but user already exists. So just removing self registration entry",
-					sanitizedLogUserId);
-			selfRegistrationRepository.deleteById(userId);
-			return;
-		}
+        String emailAdress = selfRegistration.get().getEmailAdress();
+        assertion.isValidEmailAddress(emailAdress);
 
-		String emailAdress = selfRegistration.get().getEmailAdress();
-		assertion.isValidEmailAddress(emailAdress);
+        found = userRepository.findByEmailAdress(emailAdress);
 
-		found = userRepository.findByEmailAdress(emailAdress);
+        if (found.isPresent()) {
+            LOG.warn("Self registration coming in for user:{} but mailadress {} already exists. So just removing self registration entry", sanitizedLogUserId,
+                    emailAdress);
+            selfRegistrationRepository.deleteById(userId);
+            return;
+        }
 
-		if (found.isPresent()) {
-			LOG.warn(
-					"Self registration coming in for user:{} but mailadress {} already exists. So just removing self registration entry",
-					sanitizedLogUserId, emailAdress);
-			selfRegistrationRepository.deleteById(userId);
-			return;
-		}
+        String oneTimeToken = oneTimeTokenGenerator.generateNewOneTimeToken();
 
+        User user = new User();
+        user.name = userId;
+        user.hashedApiToken = "";// leave it empty, so API auth is disabled - will be filled later after user has
+        // clicked to link
+        user.emailAdress = emailAdress;
+        user.oneTimeToken = oneTimeToken;
+        user.oneTimeTokenDate = new Date();
 
-		String oneTimeToken = oneTimeTokenGenerator.generateNewOneTimeToken();
+        userRepository.save(user);
 
-		User user = new User();
-		user.name = userId;
-		user.hashedApiToken = "";// leave it empty, so API auth is disabled - will be filled later after user has
-							// clicked to link
-		user.emailAdress = emailAdress;
-		user.oneTimeToken = oneTimeToken;
-		user.oneTimeTokenDate = new Date();
+        LOG.debug("Persisted new user:{}", sanitizedLogUserId);
 
-		userRepository.save(user);
+        selfRegistrationRepository.deleteById(userId);
 
-		LOG.debug("Persisted new user:{}", sanitizedLogUserId);
+        LOG.debug("Removed self registration data of user:{}", sanitizedLogUserId);
 
-		selfRegistrationRepository.deleteById(userId);
+        informUserAboutSignupAccepted(user);
+        informUserCreated(user);
 
-		LOG.debug("Removed self registration data of user:{}", sanitizedLogUserId);
+    }
 
-		informUserAboutSignupAccepted(user);
-		informUserCreated(user);
+    @IsSendingAsyncMessage(MessageID.USER_CREATED)
+    private void informUserCreated(User user) {
+        DomainMessage infoRequest = new DomainMessage(MessageID.USER_CREATED);
 
-	}
+        UserMessage message = createInitialUserAuthData(user);
 
-	@IsSendingAsyncMessage(MessageID.USER_CREATED)
-	private void informUserCreated(User user) {
-		DomainMessage infoRequest = new DomainMessage(MessageID.USER_CREATED);
+        infoRequest.set(MessageDataKeys.USER_CREATION_DATA, message);
 
-		UserMessage message = createInitialUserAuthData(user);
+        eventBusService.sendAsynchron(infoRequest);
+    }
 
-		infoRequest.set(MessageDataKeys.USER_CREATION_DATA, message);
+    @IsSendingAsyncMessage(MessageID.USER_NEW_API_TOKEN_REQUESTED)
+    private void informUserAboutSignupAccepted(User user) {
+        /* we just send info about new api token */
+        DomainMessage infoRequest = new DomainMessage(MessageID.USER_NEW_API_TOKEN_REQUESTED);
+        UserMessage userMessage = new UserMessage();
+        userMessage.setEmailAdress(user.getEmailAdress());
 
-		eventBusService.sendAsynchron(infoRequest);
-	}
+        /*
+         * Security: we do NOT use userid inside this link - if some body got
+         * information about the link he/she is not able to use fetched api token
+         * because not knowing which userid...
+         */
+        String linkWithOneTimeToken = environment.getServerBaseUrl() + AdministrationAPIConstants.API_FETCH_NEW_API_TOKEN_BY_ONE_WAY_TOKEN + "/"
+                + user.getOneTimeToken();
 
-	@IsSendingAsyncMessage(MessageID.USER_NEW_API_TOKEN_REQUESTED)
-	private void informUserAboutSignupAccepted(User user) {
-		/* we just send info about new api token */
-		DomainMessage infoRequest = new DomainMessage(MessageID.USER_NEW_API_TOKEN_REQUESTED);
-		UserMessage userMessage = new UserMessage();
-		userMessage.setEmailAdress(user.getEmailAdress());
+        userMessage.setLinkWithOneTimeToken(linkWithOneTimeToken);
+        userMessage.setSubject("SecHub user account created");
+        infoRequest.set(MessageDataKeys.USER_ONE_TIME_TOKEN_INFO, userMessage);
 
-		/*
-		 * Security: we do NOT use userid inside this link - if some body got information about
-		 * the link he/she is not able to use fetched api token because not knowing
-		 * which userid...
-		 */
-		String linkWithOneTimeToken = environment.getServerBaseUrl()
-				+ AdministrationAPIConstants.API_FETCH_NEW_API_TOKEN_BY_ONE_WAY_TOKEN + "/" + user.getOneTimeToken();
+        eventBusService.sendAsynchron(infoRequest);
+    }
 
-		userMessage.setLinkWithOneTimeToken(linkWithOneTimeToken);
-		userMessage.setSubject("SecHub user account created");
-		infoRequest.set(MessageDataKeys.USER_ONE_TIME_TOKEN_INFO, userMessage);
+    private UserMessage createInitialUserAuthData(User user) {
+        UserMessage authDataHashed = new UserMessage();
 
-		eventBusService.sendAsynchron(infoRequest);
-	}
+        authDataHashed.setUserId(user.getName());
+        authDataHashed.setEmailAdress(user.getEmailAdress());
 
-	private UserMessage createInitialUserAuthData(User user) {
-		UserMessage authDataHashed = new UserMessage();
-
-		authDataHashed.setUserId(user.getName());
-		authDataHashed.setEmailAdress(user.getEmailAdress());
-
-		return authDataHashed;
-	}
+        return authDataHashed;
+    }
 
 }

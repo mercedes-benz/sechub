@@ -20,7 +20,7 @@ public class FalsePositiveMetaDataFactory {
 
     /**
      * Creates meta data for given finding
-     * 
+     *
      * @param finding
      * @return meta data, never <code>null</code>
      */
@@ -46,14 +46,15 @@ public class FalsePositiveMetaDataFactory {
             throw new NotAcceptableException("A false positive handling for type " + type + " is currently not implemented!");
         }
     }
+
     private FalsePositiveMetaData createWebScan(SecHubFinding finding) {
         FalsePositiveMetaData metaData = createCommonMetaDataWithCweIdEnsured(finding);
         metaData.setCveId(finding.getCveId());
         metaData.setScanType(ScanType.WEB_SCAN);
-        
+
         FalsePositiveWebMetaData web = new FalsePositiveWebMetaData();
         SecHubReportWeb findingWeb = finding.getWeb();
-        if (findingWeb==null) {
+        if (findingWeb == null) {
             throw new IllegalStateException("False positive handling for web scan not possible - finding does not contain web data?!?");
         }
         SecHubReportWebAttack findingAttack = findingWeb.getAttack();
@@ -66,7 +67,7 @@ public class FalsePositiveMetaDataFactory {
         falsePositiveRequestMetaData.setTarget(findingRequest.getTarget());
         falsePositiveRequestMetaData.setProtocol(findingRequest.getProtocol());
         falsePositiveRequestMetaData.setVersion(findingRequest.getVersion());
-        
+
         FalsePositiveWebResponseMetaData falsePositiveResponseMetaData = web.getResponse();
         falsePositiveResponseMetaData.setEvidence(findingAttack.getEvidence().getSnippet());
         falsePositiveResponseMetaData.setStatusCode(findingResponse.getStatusCode());
@@ -78,7 +79,7 @@ public class FalsePositiveMetaDataFactory {
 
     private FalsePositiveMetaData createCodeScan(SecHubFinding finding) {
         FalsePositiveMetaData metaData = createCommonMetaDataWithCweIdEnsured(finding);
-        
+
         metaData.setScanType(ScanType.CODE_SCAN);
 
         FalsePositiveCodeMetaData code = new FalsePositiveCodeMetaData();

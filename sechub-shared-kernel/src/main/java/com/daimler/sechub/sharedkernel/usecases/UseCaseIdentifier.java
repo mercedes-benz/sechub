@@ -4,11 +4,13 @@ package com.daimler.sechub.sharedkernel.usecases;
 /**
  * Identifier enumeration for use cases. <br>
  * <br>
- * The ordering of the enums does not matter because the usecase number is given 
- * at construction time and used for unique id generation.<br><br>But DO NOT change the numbers
- * because they are used inside asciidoc documentation files for references and would not be 
- * valid any longer when there are changes made.
- * 
+ * The ordering of the enums does not matter because the usecase number is given
+ * at construction time and used for unique id generation.<br>
+ * <br>
+ * But DO NOT change the numbers because they are used inside asciidoc
+ * documentation files for references and would not be valid any longer when
+ * there are changes made.
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -133,13 +135,11 @@ public enum UseCaseIdentifier {
     UC_ADMIN_UNASSIGNS_EXECUTION_PROFILE_FROM_PROJECT(58),
 
     /* project administration */
-    UC_ADMIN_UPDATES_PROJECT_METADATA(59),
-    UC_ADMIN_CHANGES_PROJECT_OWNER(60),
-    
+    UC_ADMIN_UPDATES_PROJECT_METADATA(59), UC_ADMIN_CHANGES_PROJECT_OWNER(60),
+
     UC_ADMIN_CHANGES_PROJECT_DESCRIPTION(61),
-    
-    UC_ADMIN_CHANGES_PROJECT_ACCESS_LEVEL(62),
-    ;
+
+    UC_ADMIN_CHANGES_PROJECT_ACCESS_LEVEL(62),;
 
     /* +-----------------------------------------------------------------------+ */
     /* +............................ Helpers ................................+ */
@@ -152,7 +152,7 @@ public enum UseCaseIdentifier {
     }
 
     private static final int WANTED_ID_LENGTH = 3;
-    
+
     private UseCaseIdentifier(int number) {
         this.uniqueId = createUseCaseID(number);
     }

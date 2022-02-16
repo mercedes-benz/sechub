@@ -66,7 +66,7 @@ public abstract class AbstractSpringRestAdapterContext<C extends AdapterConfig, 
     }
 
     private void handleLongInputStreams() {
-        if (! enableResourceHttpMessageConverterHandlingInputStream()) {
+        if (!enableResourceHttpMessageConverterHandlingInputStream()) {
             return;
         }
 
@@ -83,7 +83,7 @@ public abstract class AbstractSpringRestAdapterContext<C extends AdapterConfig, 
      * When enabled a special version of message converter for resources http
      * messages will be used: This variant will provide support see
      * https://github.com/spring-projects/spring-framework/issues/18147
-     * 
+     *
      * @return <code>false</code> per default, can be overriden when needed
      */
     protected boolean enableResourceHttpMessageConverterHandlingInputStream() {

@@ -11,24 +11,23 @@ import com.daimler.sechub.developertools.admin.ui.action.AbstractUIAction;
 import com.daimler.sechub.developertools.admin.ui.cache.InputCacheIdentifier;
 
 public class GetProjectMockConfigurationAction extends AbstractUIAction {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public GetProjectMockConfigurationAction(UIContext context) {
-		super("Get project mock config", context);
-	}
+    public GetProjectMockConfigurationAction(UIContext context) {
+        super("Get project mock config", context);
+    }
 
+    @Override
+    protected void execute(ActionEvent e) {
+        Optional<String> projectId = getUserInput("Please enter projectId to fetch mock configuration", InputCacheIdentifier.PROJECT_ID);
+        if (!projectId.isPresent()) {
+            return;
+        }
+        DeveloperAdministration administration = getContext().getAdministration();
+        String url = administration.getUrlBuilder().buildGetProjectMockConfiguration(asSecHubId(projectId.get()));
+        String json = administration.getRestHelper().getJSON(url);
+        getContext().getOutputUI().output(JSONDeveloperHelper.INSTANCE.beatuifyJSON(json));
 
-	@Override
-	protected void execute(ActionEvent e) {
-		Optional<String> projectId = getUserInput("Please enter projectId to fetch mock configuration",InputCacheIdentifier.PROJECT_ID);
-		if (!projectId.isPresent()) {
-			return;
-		}
-		DeveloperAdministration administration = getContext().getAdministration();
-		String url = administration.getUrlBuilder().buildGetProjectMockConfiguration(asSecHubId(projectId.get()));
-		String json = administration.getRestHelper().getJSON(url);
-		getContext().getOutputUI().output(JSONDeveloperHelper.INSTANCE.beatuifyJSON(json));
-
-	}
+    }
 
 }

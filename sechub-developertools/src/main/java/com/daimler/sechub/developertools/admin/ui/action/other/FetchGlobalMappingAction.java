@@ -25,7 +25,7 @@ public class FetchGlobalMappingAction extends AbstractUIAction {
         }
         String mappingData = getContext().getAdministration().fetchGlobalMappings(mappingId.get());
         mappingData = JSONDeveloperHelper.INSTANCE.beatuifyJSON(mappingData);
-        outputAsTextOnSuccess("mapping for id:"+mappingId.get()+" is :\n"+mappingData);
+        outputAsTextOnSuccess("mapping for id:" + mappingId.get() + " is :\n" + mappingData);
     }
 
 }

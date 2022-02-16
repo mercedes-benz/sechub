@@ -35,7 +35,7 @@ public class AssertJobScheduler<R> extends AbstractAssert {
 
     private static void assertJobSchedulerEnabled(boolean enabled) {
         TestAPI.refreshStatusEntries();
-        
+
         int maxTries = 20;
         boolean foundEnabled = !enabled;
         int tries = 0;
@@ -137,7 +137,7 @@ public class AssertJobScheduler<R> extends AbstractAssert {
 
         /**
          * Means one the given states is current state of job
-         * 
+         *
          * @param executionStates
          * @return
          */
@@ -157,12 +157,12 @@ public class AssertJobScheduler<R> extends AbstractAssert {
         }
 
         public AssertSchedulerJob havingExecutionState(TestExecutionState state) {
-            if (! hasExecutionState(state)) {
+            if (!hasExecutionState(state)) {
                 fail("Job data contains not " + state.name() + " but:\n" + json);
             }
             return this;
         }
-        
+
         boolean hasExecutionState(TestExecutionState state) {
             return json.contains(state.name());
         }

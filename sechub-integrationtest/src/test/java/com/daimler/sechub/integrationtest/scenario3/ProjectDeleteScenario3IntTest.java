@@ -17,19 +17,19 @@ import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.api.TestAPI;
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
 import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
+
 public class ProjectDeleteScenario3IntTest {
 
-	@Rule
-	public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario3.class);
+    @Rule
+    public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario3.class);
 
-	@Rule
-	public Timeout timeOut = Timeout.seconds(60);
+    @Rule
+    public Timeout timeOut = Timeout.seconds(60);
 
-	@Rule
-	public ExpectedException expected = ExpectedExceptionFactory.none();
+    @Rule
+    public ExpectedException expected = ExpectedExceptionFactory.none();
 
-
-	/* @formatter:off */
+    /* @formatter:off */
 	@Test
 	public void super_admin_deletes_project__deletes_also_access_entries_other_domains_and_user_rolecalculation_is_done() throws Exception {
 	    /* check preconditions*/
@@ -54,7 +54,7 @@ public class ProjectDeleteScenario3IntTest {
             doesNotExist().
             hasAccessEntriesInDomainSchedule(0).
             hasAccessEntriesInDomainScan(0); // no longer access
-        
+
         assertProject(PROJECT_2).
             doesNotExist().
             hasAccessEntriesInDomainSchedule(0).
@@ -68,7 +68,7 @@ public class ProjectDeleteScenario3IntTest {
 	}
 	/* @formatter:on */
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@Test
 	public void super_admin_deletes_project__deletes_also_all_scan_and_product_results() throws Exception {
 		/* check preconditions*/
@@ -105,16 +105,13 @@ public class ProjectDeleteScenario3IntTest {
 	}
 	/* @formatter:on */
 
-	private void waitAsyncDeleteEventsDone() {
-		// We wait here to let the new (async) access change happen
-		// Unfortunately this depends on the environment where tests are
-		// executed! On a dedicated build server
-		// values between 500-1000 millis are more than enough to have no flaky
-		// tests, but on slower machines (like GitHub Actions) we must wait longer
-		TestAPI.waitMilliSeconds(2000);
-	}
-
-
-
+    private void waitAsyncDeleteEventsDone() {
+        // We wait here to let the new (async) access change happen
+        // Unfortunately this depends on the environment where tests are
+        // executed! On a dedicated build server
+        // values between 500-1000 millis are more than enough to have no flaky
+        // tests, but on slower machines (like GitHub Actions) we must wait longer
+        TestAPI.waitMilliSeconds(2000);
+    }
 
 }

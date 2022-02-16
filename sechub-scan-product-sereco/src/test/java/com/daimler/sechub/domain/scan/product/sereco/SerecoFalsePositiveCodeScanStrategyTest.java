@@ -21,10 +21,10 @@ public class SerecoFalsePositiveCodeScanStrategyTest {
     @Before
     public void before() throws Exception {
         strategyToTest = new SerecoFalsePositiveCodeScanStrategy();
-        
-        relevantPartResolver=mock(SerecoSourceRelevantPartResolver.class);
-        strategyToTest.relevantPartResolver=relevantPartResolver;
-        
+
+        relevantPartResolver = mock(SerecoSourceRelevantPartResolver.class);
+        strategyToTest.relevantPartResolver = relevantPartResolver;
+
     }
 
     @Test
@@ -45,15 +45,15 @@ public class SerecoFalsePositiveCodeScanStrategyTest {
                             source("source2").
                             relevantPart("relevant2").
                end().build();
-        
+
         /* @formatter:on */
-        
+
         FalsePositiveMetaData metaData = fetchFirstEntryMetaDataOfExample3();
-        when(relevantPartResolver.toRelevantPart(any())).thenReturn("");        
+        when(relevantPartResolver.toRelevantPart(any())).thenReturn("");
         /* execute + test */
         assertTrue(strategyToTest.isFalsePositive(vulnerability, metaData));
     }
-    
+
     @Test
     public void vulnerability_is_NOT_found_when_locations_and_relevant_parts_are_same_but_cwe_differs() {
         /* prepare */
@@ -72,16 +72,15 @@ public class SerecoFalsePositiveCodeScanStrategyTest {
                             source("source2").
                             relevantPart("relevant2").
                end().build();
-        
+
         /* @formatter:on */
-        
+
         FalsePositiveMetaData metaData = fetchFirstEntryMetaDataOfExample3();
-        when(relevantPartResolver.toRelevantPart(any())).thenReturn("");        
+        when(relevantPartResolver.toRelevantPart(any())).thenReturn("");
         /* execute + test */
         assertFalse(strategyToTest.isFalsePositive(vulnerability, metaData));
     }
 
-    
     @Test
     public void vulnerability_is_NOT_found_when_start_location_differs_and_relevant_parts_are_same() {
         /* prepare */
@@ -100,16 +99,16 @@ public class SerecoFalsePositiveCodeScanStrategyTest {
                             source("source2").
                             relevantPart("relevant2").
                end().build();
-        
+
         /* @formatter:on */
-        
+
         FalsePositiveMetaData metaData = fetchFirstEntryMetaDataOfExample3();
         when(relevantPartResolver.toRelevantPart(any())).thenReturn("");
-        
+
         /* execute + test */
         assertFalse(strategyToTest.isFalsePositive(vulnerability, metaData));
     }
-    
+
     @Test
     public void vulnerability_having_no_relevant_part_will_use_relevant_part_resolver_on_start_and_end() {
         /* prepare */
@@ -126,28 +125,27 @@ public class SerecoFalsePositiveCodeScanStrategyTest {
                             location("location2").
                             source("source2").
                end().build();
-        
+
         /* @formatter:on */
-        
+
         FalsePositiveMetaData metaData = fetchFirstEntryMetaDataOfExample3();
         when(relevantPartResolver.toRelevantPart("source1")).thenReturn("relevant1");
         when(relevantPartResolver.toRelevantPart("source2")).thenReturn("relevant2");
-        
-        /* execute*/
+
+        /* execute */
         boolean isFalsePositive = strategyToTest.isFalsePositive(vulnerability, metaData);
-        
+
         /* test */
         verify(relevantPartResolver).toRelevantPart("source1");
         verify(relevantPartResolver).toRelevantPart("source2");
         assertTrue(isFalsePositive);
     }
-    
 
     private FalsePositiveMetaData fetchFirstEntryMetaDataOfExample3() {
         String json = ScanProductSerecoTestFileSupport.getTestfileSupport().loadTestFile("false_positives/scan_false_positive_config_example3.json");
         FalsePositiveProjectConfiguration config = FalsePositiveProjectConfiguration.fromJSONString(json);
         FalsePositiveEntry entry = config.getFalsePositives().get(0);
-        assertEquals("entry-1",entry.getJobData().getComment());//sanity check, means correct entry...
+        assertEquals("entry-1", entry.getJobData().getComment());// sanity check, means correct entry...
         FalsePositiveMetaData metaData = entry.getMetaData();
         return metaData;
     }

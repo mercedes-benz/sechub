@@ -32,104 +32,104 @@ import com.daimler.sechub.storage.core.StorageService;
 @Service
 public class SchedulerUploadService {
 
-	static final String SOURCECODE_ZIP = "sourcecode.zip";
-	static final String SOURCECODE_ZIP_CHECKSUM = SOURCECODE_ZIP+".checksum";
+    static final String SOURCECODE_ZIP = "sourcecode.zip";
+    static final String SOURCECODE_ZIP_CHECKSUM = SOURCECODE_ZIP + ".checksum";
 
-	private static final Logger LOG = LoggerFactory.getLogger(SchedulerUploadService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SchedulerUploadService.class);
 
-	@Autowired
-	StorageService storageService;
+    @Autowired
+    StorageService storageService;
 
-	@Autowired
-	FileChecksumSHA256Service checksumSHA256Service;
+    @Autowired
+    FileChecksumSHA256Service checksumSHA256Service;
 
-	@Autowired
-	ScheduleAssertService assertService;
+    @Autowired
+    ScheduleAssertService assertService;
 
-	@Autowired
-	ZipSupport zipSupport;
+    @Autowired
+    ZipSupport zipSupport;
 
-	@Autowired
-	LogSanitizer logSanitizer;
+    @Autowired
+    LogSanitizer logSanitizer;
 
-	@Autowired
-	AuditLogService auditLogService;
+    @Autowired
+    AuditLogService auditLogService;
 
-	@Autowired
-	UserInputAssertion assertion;
-	
-	@UseCaseUserUploadsSourceCode(@Step(number = 2, name = "Try to find project and upload sourcecode as zipfile", description = "When project is found and user has access and job is initializing the sourcecode file will be uploaded"))
-	public void uploadSourceCode(String projectId, UUID jobUUID, MultipartFile file, String checkSum) {
-		assertion.isValidProjectId(projectId);
-		assertion.isValidJobUUID(jobUUID);
-		notNull(file, "file may not be null!");
+    @Autowired
+    UserInputAssertion assertion;
 
-		String traceLogID = logSanitizer.sanitize(UUIDTraceLogID.traceLogID(jobUUID),-1);
+    @UseCaseUserUploadsSourceCode(@Step(number = 2, name = "Try to find project and upload sourcecode as zipfile", description = "When project is found and user has access and job is initializing the sourcecode file will be uploaded"))
+    public void uploadSourceCode(String projectId, UUID jobUUID, MultipartFile file, String checkSum) {
+        assertion.isValidProjectId(projectId);
+        assertion.isValidJobUUID(jobUUID);
+        notNull(file, "file may not be null!");
 
-		auditLogService.log("Wants to upload source code to project {}, {}", logSanitizer.sanitize(projectId, 30) ,traceLogID);
+        String traceLogID = logSanitizer.sanitize(UUIDTraceLogID.traceLogID(jobUUID), -1);
 
-		assertService.assertUserHasAccessToProject(projectId);
-		assertService.assertProjectAllowsWriteAccess(projectId);
+        auditLogService.log("Wants to upload source code to project {}, {}", logSanitizer.sanitize(projectId, 30), traceLogID);
 
-		assertJobFoundAndStillInitializing(projectId, jobUUID);
+        assertService.assertUserHasAccessToProject(projectId);
+        assertService.assertProjectAllowsWriteAccess(projectId);
 
-		JobStorage jobStorage = storageService.getJobStorage(projectId, jobUUID);
-		Path tmpFile = null;
-		try {
-			/* prepare a tmp file for validation */
-			try {
-				tmpFile = Files.createTempFile("sechub_schedule_upload_tmp", null);
-				file.transferTo(tmpFile);
-			} catch (IOException e) {
-				LOG.error("Was not able to create temp file of zipped sources!", e);
-				throw new SecHubRuntimeException("Was not able to create temp file");
-			}
-			/* validate */
-			assertValidZipFile(tmpFile);
-			assertCheckSumCorrect(checkSum, tmpFile);
+        assertJobFoundAndStillInitializing(projectId, jobUUID);
 
-			/* now store */
-			try {
-				jobStorage.store(SOURCECODE_ZIP, file.getInputStream());
-				// we also store new checksum - so not necessary to calculate at adapters again!
-				jobStorage.store(SOURCECODE_ZIP_CHECKSUM, new StringInputStream(checkSum));
-			} catch (IOException e) {
-				LOG.error("Was not able to store zipped sources! {}", traceLogID, e);
-				throw new SecHubRuntimeException("Was not able to upload sources");
-			}
-			LOG.info("uploaded sourcecode for {}", traceLogID);
-		} finally {
-			if (tmpFile != null && Files.exists(tmpFile)) {
-				try {
-					Files.delete(tmpFile);
-				} catch (IOException e) {
-					LOG.error("Was not able delete former temp file for zipped sources! {}",traceLogID, e);
-				}
-			}
-		}
+        JobStorage jobStorage = storageService.getJobStorage(projectId, jobUUID);
+        Path tmpFile = null;
+        try {
+            /* prepare a tmp file for validation */
+            try {
+                tmpFile = Files.createTempFile("sechub_schedule_upload_tmp", null);
+                file.transferTo(tmpFile);
+            } catch (IOException e) {
+                LOG.error("Was not able to create temp file of zipped sources!", e);
+                throw new SecHubRuntimeException("Was not able to create temp file");
+            }
+            /* validate */
+            assertValidZipFile(tmpFile);
+            assertCheckSumCorrect(checkSum, tmpFile);
 
-	}
+            /* now store */
+            try {
+                jobStorage.store(SOURCECODE_ZIP, file.getInputStream());
+                // we also store new checksum - so not necessary to calculate at adapters again!
+                jobStorage.store(SOURCECODE_ZIP_CHECKSUM, new StringInputStream(checkSum));
+            } catch (IOException e) {
+                LOG.error("Was not able to store zipped sources! {}", traceLogID, e);
+                throw new SecHubRuntimeException("Was not able to upload sources");
+            }
+            LOG.info("uploaded sourcecode for {}", traceLogID);
+        } finally {
+            if (tmpFile != null && Files.exists(tmpFile)) {
+                try {
+                    Files.delete(tmpFile);
+                } catch (IOException e) {
+                    LOG.error("Was not able delete former temp file for zipped sources! {}", traceLogID, e);
+                }
+            }
+        }
 
-	private void assertCheckSumCorrect(String checkSum, Path path) {
-		if (!checksumSHA256Service.hasCorrectChecksum(checkSum, path.toAbsolutePath().toString())) {
-			LOG.error("uploaded file has not correct checksum! Something must have happened during the upload!");
-			throw new NotAcceptableException("Sourcecode checksum check failed");
-		}
-	}
+    }
 
-	private void assertValidZipFile(Path path) {
-		if (!zipSupport.isZipFile(path)) {
-			LOG.error("uploaded file is NOT a valid ZIP file!");
-			throw new NotAcceptableException("Sourcecode is not wrapped inside a valid zip file");
-		}
-	}
+    private void assertCheckSumCorrect(String checkSum, Path path) {
+        if (!checksumSHA256Service.hasCorrectChecksum(checkSum, path.toAbsolutePath().toString())) {
+            LOG.error("uploaded file has not correct checksum! Something must have happened during the upload!");
+            throw new NotAcceptableException("Sourcecode checksum check failed");
+        }
+    }
 
-	private void assertJobFoundAndStillInitializing(String projectId, UUID jobUUID) {
-		ScheduleSecHubJob secHubJob = assertService.assertJob(projectId, jobUUID);
-		ExecutionState state = secHubJob.getExecutionState();
-		if (!ExecutionState.INITIALIZING.equals(state)) {
-			throw new NotAcceptableException("Not in correct state");// upload only possible when in initializing state
-		}
-	}
+    private void assertValidZipFile(Path path) {
+        if (!zipSupport.isZipFile(path)) {
+            LOG.error("uploaded file is NOT a valid ZIP file!");
+            throw new NotAcceptableException("Sourcecode is not wrapped inside a valid zip file");
+        }
+    }
+
+    private void assertJobFoundAndStillInitializing(String projectId, UUID jobUUID) {
+        ScheduleSecHubJob secHubJob = assertService.assertJob(projectId, jobUUID);
+        ExecutionState state = secHubJob.getExecutionState();
+        if (!ExecutionState.INITIALIZING.equals(state)) {
+            throw new NotAcceptableException("Not in correct state");// upload only possible when in initializing state
+        }
+    }
 
 }

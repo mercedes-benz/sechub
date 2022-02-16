@@ -41,9 +41,8 @@ public class ProjectTransactionService {
     }
 
     /**
-     * Persists a project, users and project meta data in same (new)
-     * transaction
-     * 
+     * Persists a project, users and project meta data in same (new) transaction
+     *
      * @param project
      * @param users
      * @return persisted project

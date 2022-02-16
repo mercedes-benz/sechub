@@ -24,9 +24,9 @@ class ProjectAccessLevelTest {
     @Test
     void isEqualOrHigherThan_none() {
         for (ProjectAccessLevel level : ProjectAccessLevel.values()) {
-            if (level==ProjectAccessLevel.NONE) {
+            if (level == ProjectAccessLevel.NONE) {
                 assertTrue(ProjectAccessLevel.NONE.isEqualOrHigherThan(level));
-            }else {
+            } else {
                 assertFalse(ProjectAccessLevel.NONE.isEqualOrHigherThan(level));
             }
         }

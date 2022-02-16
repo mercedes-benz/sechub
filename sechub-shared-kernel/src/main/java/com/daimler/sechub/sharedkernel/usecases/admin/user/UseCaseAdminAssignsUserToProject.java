@@ -18,10 +18,10 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 		id=UseCaseIdentifier.UC_ADMIN_ASSIGNS_USER_TO_PROJECT,
 		group=UseCaseGroup.USER_ADMINISTRATION,
 		apiName="adminAssignsUserToProject",
-		title="Admin assigns user to project", 
+		title="Admin assigns user to project",
 		description="An administrator assigns an user to an existing sechub project.")
 public @interface UseCaseAdminAssignsUserToProject {
-	
+
 	Step value();
 }
 /* @formatter:on */

@@ -34,7 +34,7 @@ public class TestFileSupport {
     /**
      * Protected constructor. Create a child class and provide a public default
      * constructor, which calls this one with correct path
-     * 
+     *
      * @param projectTestResourcePath
      */
     protected TestFileSupport(String projectTestResourcePath) {
@@ -112,21 +112,21 @@ public class TestFileSupport {
 
     public void writeTextFile(File file, String text) {
         if (file.exists()) {
-            if (! file.delete()) {
-                throw new IllegalStateException("Was not able to delete former file:"+file);
+            if (!file.delete()) {
+                throw new IllegalStateException("Was not able to delete former file:" + file);
             }
         }
         File parentFolder = file.getParentFile();
-        if (! parentFolder.exists()) {
+        if (!parentFolder.exists()) {
             if (!parentFolder.mkdirs()) {
-                throw new IllegalStateException("Was not able to create parent folder:"+parentFolder);
+                throw new IllegalStateException("Was not able to create parent folder:" + parentFolder);
             }
-            
+
         }
         try (FileWriter fileWriter = new FileWriter(file)) {
             fileWriter.write(text);
         } catch (IOException e) {
-           throw new IllegalStateException("Was not able to write text to file:"+file,e);
+            throw new IllegalStateException("Was not able to write text to file:" + file, e);
         }
 
     }
@@ -227,13 +227,13 @@ public class TestFileSupport {
         }
         return file;
     }
-    
+
     public File createTempFile(String prefix, String ending) {
         try {
             Path path = TestUtil.createTempFileInBuildFolder(prefix, ending);
             return path.toFile();
         } catch (IOException e) {
-           throw new IllegalStateException("cannot create temp file!",e);
+            throw new IllegalStateException("cannot create temp file!", e);
         }
     }
 }

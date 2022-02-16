@@ -21,7 +21,7 @@ public abstract class AbstractWebScanAdapterConfig extends AbstractAdapterConfig
     public Set<String> getExcludes() {
         return excludes;
     }
-    
+
     public SecHubTimeUnitData getMaxScanDuration() {
         return maxScanDuration;
     }
@@ -40,11 +40,11 @@ public abstract class AbstractWebScanAdapterConfig extends AbstractAdapterConfig
         }
         return targetType;
     }
-    
+
     public URI getTargetURI() {
         return targetURI;
     }
-    
+
     public String getRootTargetURIasString() {
         URI uri = getRootTargetURI();
         if (uri == null) {
@@ -56,7 +56,7 @@ public abstract class AbstractWebScanAdapterConfig extends AbstractAdapterConfig
     public URI getRootTargetURI() {
         return rootTargetURI;
     }
-    
+
     public String getTargetAsString() {
         URI uri = getTargetURI();
         if (uri == null) {

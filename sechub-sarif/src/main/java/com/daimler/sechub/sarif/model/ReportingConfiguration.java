@@ -7,7 +7,7 @@ import java.util.Objects;
  * Reporting configuration object, see <a href=
  * "https://docs.oasis-open.org/sarif/sarif/v2.0/csprd02/sarif-v2.0-csprd02.html#_Toc10128043">SARIF
  * 2.1.0 specification entry</a>
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

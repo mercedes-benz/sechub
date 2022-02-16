@@ -152,19 +152,19 @@ public class ProjectMockConfigurationScenario2IntTest {
 
 		/* execute + test */
 		assertResult(as(USER_1).withSecHubClient().createInfraScanAndFetchScanData(PROJECT_1)).isYellow();
-	
+
 		/* Step2: prepare */
 		as(USER_1).setProjectMockConfiguration(PROJECT_1, createMockScanConfig("infraScan", TrafficLight.RED));
 
 		/* execute + test */
 		assertResult(as(USER_1).withSecHubClient().createInfraScanAndFetchScanData(PROJECT_1)).isRed();
-		
+
 		/* Step2: prepare */
 		as(USER_1).setProjectMockConfiguration(PROJECT_1, createMockScanConfig("infraScan", TrafficLight.GREEN));
 
 		/* execute + test */
 		assertResult(as(USER_1).withSecHubClient().createInfraScanAndFetchScanData(PROJECT_1)).isGreen();
-	
+
 	}
 	/* @formatter:on */
 

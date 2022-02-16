@@ -36,23 +36,24 @@ public class PDSPathExecutableValidatorTest {
     public void path_existing_but_not_executable_not_valid() throws Exception {
         /* prepare */
         Path tempFile = TestUtil.createTempFileInBuildFolder("pds_executable", "sh");
-        
+
         /* execute */
         String message = validatorToTest.createValidationErrorMessage(tempFile.toRealPath().toString());
-        
+
         /* test */
         assertNotValid(message);
         assertTrue(message.contains("but not executable"));
     }
-    
+
     @Test
     public void path_existing_and_executable_is_valid() throws Exception {
         /* prepare */
-        Path tempFile = TestUtil.createTempFileInBuildFolder("pds_executable", "sh",PosixFilePermissions.asFileAttribute(Collections.singleton(PosixFilePermission.OWNER_EXECUTE)));
-        
+        Path tempFile = TestUtil.createTempFileInBuildFolder("pds_executable", "sh",
+                PosixFilePermissions.asFileAttribute(Collections.singleton(PosixFilePermission.OWNER_EXECUTE)));
+
         /* execute */
         String message = validatorToTest.createValidationErrorMessage(tempFile.toRealPath().toString());
-        
+
         /* test */
         assertValid(message);
     }

@@ -19,7 +19,7 @@ import com.daimler.sechub.sharedkernel.Profiles;
  * When we start an integration test server new, we automatically clear former
  * persisted test data (file storage). See `PersistentScenarioTestDataProvider`
  * inside integration test project for more details.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

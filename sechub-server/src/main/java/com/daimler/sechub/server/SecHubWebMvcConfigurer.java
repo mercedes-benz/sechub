@@ -9,13 +9,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.daimler.sechub.sharedkernel.project.ProjectAccessLevelConverter;
 
 @Configuration
-public class SecHubWebMvcConfigurer implements WebMvcConfigurer{  
+public class SecHubWebMvcConfigurer implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-       registry.addInterceptor(new SecHubServerMDCAsyncHandlerInterceptor());
+        registry.addInterceptor(new SecHubServerMDCAsyncHandlerInterceptor());
     }
-    
+
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(new ProjectAccessLevelConverter());

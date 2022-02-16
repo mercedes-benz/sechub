@@ -4,15 +4,15 @@ package com.daimler.sechub.sarif.model;
 import java.util.Objects;
 
 /**
- * 
+ *
  * Reporting descriptor relationship, see <a href=
  * "https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317870">SARIF
  * 2.1.0 specification entry</a>
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
-public class ReportingDescriptorRelationship extends SarifObject{
+public class ReportingDescriptorRelationship extends SarifObject {
 
     private ReportingDescriptorReference target;
 

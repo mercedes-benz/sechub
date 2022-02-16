@@ -22,35 +22,36 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @Service
 public class AuthUserCreationService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(AuthUserCreationService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AuthUserCreationService.class);
 
-	@Autowired
-	AuthUserRepository userRepo;
+    @Autowired
+    AuthUserRepository userRepo;
 
-	@Lazy
-	@Autowired
-	DomainMessageService eventBus;
+    @Lazy
+    @Autowired
+    DomainMessageService eventBus;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Autowired
+    UserInputAssertion assertion;
 
-	@UseCaseAdminAcceptsSignup(@Step(number=4,next={Step.NO_NEXT_STEP} ,name="Give user access", description="Authorization layer is informed about new user and gives access to sechub. But without any project information"))
-	@IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)
-	public void createUser(String userId, String hashedApiToken) {
-		assertion.isValidUserId(userId);
+    @UseCaseAdminAcceptsSignup(@Step(number = 4, next = {
+            Step.NO_NEXT_STEP }, name = "Give user access", description = "Authorization layer is informed about new user and gives access to sechub. But without any project information"))
+    @IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)
+    public void createUser(String userId, String hashedApiToken) {
+        assertion.isValidUserId(userId);
 
-		Optional<AuthUser> found = userRepo.findByUserId(userId);
-		if (found.isPresent()) {
-			LOG.warn("Will skip user create action because user already found with name:{}",userId);
-			return;
-		}
-		AuthUser user = new AuthUser();
-		user.setUserId(userId);
-		userRepo.save(user);
+        Optional<AuthUser> found = userRepo.findByUserId(userId);
+        if (found.isPresent()) {
+            LOG.warn("Will skip user create action because user already found with name:{}", userId);
+            return;
+        }
+        AuthUser user = new AuthUser();
+        user.setUserId(userId);
+        userRepo.save(user);
 
-		LOG.info("Created auth user:{}",userId);
+        LOG.info("Created auth user:{}", userId);
 
-		eventBus.sendAsynchron(DomainMessageFactory.createRequestRoleCalculation(userId));
-	}
+        eventBus.sendAsynchron(DomainMessageFactory.createRequestRoleCalculation(userId));
+    }
 
 }

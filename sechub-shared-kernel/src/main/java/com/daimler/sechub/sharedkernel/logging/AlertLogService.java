@@ -11,17 +11,17 @@ import org.springframework.stereotype.Service;
 
 /**
  * This service will be used for alert logging. The output format will always be
- * 
+ *
  * <pre>
- *  
+ *
  * [ALERT] [${type}] [${reason}] ${message}
  * </pre>
- * 
+ *
  * so it can easily be used for log monitoring etc.<br>
  * <br>
  * An example output:
  * <code>"[ALERT] [SCHEDULER PROBLEM] [MEMORY OVERLOAD] Job processing is skipped."</code>
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -33,8 +33,9 @@ public class AlertLogService {
     private static String ALERT = "[ALERT] [{}] [{}] ";
 
     /**
-     * Log special alert - format is [ALERT] [${type}] [${reason}] ${message}, objects are integrated into message in slf4j format
-     * 
+     * Log special alert - format is [ALERT] [${type}] [${reason}] ${message},
+     * objects are integrated into message in slf4j format
+     *
      * @param type
      * @param reason
      * @param message

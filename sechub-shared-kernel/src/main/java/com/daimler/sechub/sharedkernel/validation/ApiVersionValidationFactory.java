@@ -7,11 +7,12 @@ import org.springframework.stereotype.Component;
 public class ApiVersionValidationFactory {
 
     /**
-     * Creates a new version validation instance accepting only given versions. 
+     * Creates a new version validation instance accepting only given versions.
+     *
      * @param versions
      * @return
      */
-    public ApiVersionValidation createValidationAccepting(String ...acceptedVersions) {
+    public ApiVersionValidation createValidationAccepting(String... acceptedVersions) {
         return new ApiVersionValidationImpl(acceptedVersions);
     }
 }

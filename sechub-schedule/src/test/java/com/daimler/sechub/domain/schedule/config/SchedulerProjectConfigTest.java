@@ -13,10 +13,9 @@ class SchedulerProjectConfigTest {
     void initial_config_has_full_project_access() {
         /* execute */
         SchedulerProjectConfig config = new SchedulerProjectConfig();
-        
+
         /* test */
-        assertEquals(ProjectAccessLevel.FULL,config.getProjectAccessLevel());
+        assertEquals(ProjectAccessLevel.FULL, config.getProjectAccessLevel());
     }
-    
 
 }

@@ -9,14 +9,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class IllegalInetAddressTargetDetector {
 
-	@Autowired
-	LoopbackAddressFinder loopbackfinder;
+    @Autowired
+    LoopbackAddressFinder loopbackfinder;
 
-	public boolean isIllegal(InetAddress ip) {
-		if (ip == null) {
-			return true;
-		}
-		/* loop back variants are all not a legal target */
-		return loopbackfinder.isLoopback(ip);
-	}
+    public boolean isIllegal(InetAddress ip) {
+        if (ip == null) {
+            return true;
+        }
+        /* loop back variants are all not a legal target */
+        return loopbackfinder.isLoopback(ip);
+    }
 }

@@ -17,74 +17,74 @@ import com.daimler.sechub.docgen.util.TextFileWriter;
 
 public class AsciidocGeneratorTest {
 
-	private AsciidocGenerator generatorToTest;
+    private AsciidocGenerator generatorToTest;
 
-	@Before
-	public void before() throws Exception {
-		generatorToTest = new AsciidocGenerator();
-		generatorToTest.collector = mock(ClasspathDataCollector.class);
-		generatorToTest.propertiesGenerator = mock(SystemPropertiesDescriptionGenerator.class);
-		generatorToTest.scheduleDescriptionGenerator=mock(ScheduleDescriptionGenerator.class);
-		generatorToTest.writer = mock(TextFileWriter.class);
+    @Before
+    public void before() throws Exception {
+        generatorToTest = new AsciidocGenerator();
+        generatorToTest.collector = mock(ClasspathDataCollector.class);
+        generatorToTest.propertiesGenerator = mock(SystemPropertiesDescriptionGenerator.class);
+        generatorToTest.scheduleDescriptionGenerator = mock(ScheduleDescriptionGenerator.class);
+        generatorToTest.writer = mock(TextFileWriter.class);
 
-		when(generatorToTest.propertiesGenerator.generate(any())).thenReturn("properties-test");
-		when(generatorToTest.scheduleDescriptionGenerator.generate(generatorToTest.collector)).thenReturn("schedule-test");
-	}
+        when(generatorToTest.propertiesGenerator.generate(any())).thenReturn("properties-test");
+        when(generatorToTest.scheduleDescriptionGenerator.generate(generatorToTest.collector)).thenReturn("schedule-test");
+    }
 
-	@Test
-	public void system_property_target_file_location_and_name_as_expected() throws Exception {
+    @Test
+    public void system_property_target_file_location_and_name_as_expected() throws Exception {
 
-		/* prepare */
-		File parent = new File(System.getProperty("java.io.tmpdir"));
-		/* execute */
-		File target = AsciidocGenerator.createSystemProperyTargetFile(parent);
+        /* prepare */
+        File parent = new File(System.getProperty("java.io.tmpdir"));
+        /* execute */
+        File target = AsciidocGenerator.createSystemProperyTargetFile(parent);
 
-		/* test */
-		assertTrue(target.getName().endsWith("gen_systemproperties.adoc"));
-		assertEquals(parent, target.getParentFile());
-	}
-	
-	@Test
-	public void scheduling_target_file_location_and_name_as_expected() throws Exception {
+        /* test */
+        assertTrue(target.getName().endsWith("gen_systemproperties.adoc"));
+        assertEquals(parent, target.getParentFile());
+    }
 
-		/* prepare */
-		File parent = new File(System.getProperty("java.io.tmpdir"));
-		/* execute */
-		File target = AsciidocGenerator.createScheduleDescriptionTargetFile(parent);
+    @Test
+    public void scheduling_target_file_location_and_name_as_expected() throws Exception {
 
-		/* test */
-		assertTrue(target.getName().endsWith("gen_scheduling.adoc"));
-		assertEquals(parent, target.getParentFile());
-	}
+        /* prepare */
+        File parent = new File(System.getProperty("java.io.tmpdir"));
+        /* execute */
+        File target = AsciidocGenerator.createScheduleDescriptionTargetFile(parent);
 
-	@Test
-	public void calls_properties_generator_and_saves() throws Exception {
+        /* test */
+        assertTrue(target.getName().endsWith("gen_scheduling.adoc"));
+        assertEquals(parent, target.getParentFile());
+    }
 
-		/* prepare */
-		File targetFile = new File("outputfile");
+    @Test
+    public void calls_properties_generator_and_saves() throws Exception {
 
-		/* execute */
-		generatorToTest.generateSystemPropertiesDescription(targetFile);
+        /* prepare */
+        File targetFile = new File("outputfile");
 
-		/* test */
-		verify(generatorToTest.propertiesGenerator).generate(any());
-		verify(generatorToTest.writer).save(targetFile, "properties-test");
+        /* execute */
+        generatorToTest.generateSystemPropertiesDescription(targetFile);
 
-	}
-	
-	@Test
-	public void calls_schedule_generator_and_saves() throws Exception {
+        /* test */
+        verify(generatorToTest.propertiesGenerator).generate(any());
+        verify(generatorToTest.writer).save(targetFile, "properties-test");
 
-		/* prepare */
-		File targetFile = new File("outputfile");
+    }
 
-		/* execute */
-		generatorToTest.generateScheduleDescription(targetFile);
+    @Test
+    public void calls_schedule_generator_and_saves() throws Exception {
 
-		/* test */
-		verify(generatorToTest.scheduleDescriptionGenerator).generate(generatorToTest.collector);
-		verify(generatorToTest.writer).save(targetFile, "schedule-test");
+        /* prepare */
+        File targetFile = new File("outputfile");
 
-	}
+        /* execute */
+        generatorToTest.generateScheduleDescription(targetFile);
+
+        /* test */
+        verify(generatorToTest.scheduleDescriptionGenerator).generate(generatorToTest.collector);
+        verify(generatorToTest.writer).save(targetFile, "schedule-test");
+
+    }
 
 }

@@ -11,5 +11,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface IsSendingSyncMessage {
 
-	MessageID value();
+    MessageID value();
 }

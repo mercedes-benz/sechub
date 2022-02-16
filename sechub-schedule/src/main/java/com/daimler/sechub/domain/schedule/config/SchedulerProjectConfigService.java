@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.schedule.config;
 
+import static com.daimler.sechub.sharedkernel.util.Assert.*;
+
 import java.util.Objects;
 import java.util.Optional;
 
@@ -11,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.domain.schedule.ScheduleAssertService;
 import com.daimler.sechub.sharedkernel.project.ProjectAccessLevel;
-import static com.daimler.sechub.sharedkernel.util.Assert.*;
 
 @Service
 public class SchedulerProjectConfigService {
@@ -28,7 +29,7 @@ public class SchedulerProjectConfigService {
 
     /**
      * Change the project access level for given project
-     * 
+     *
      * @param projectId
      * @param newAccessLevel
      * @param expectedFormerAccessLevel
@@ -56,7 +57,7 @@ public class SchedulerProjectConfigService {
      * Resolve the access level for the given project. If no project configuration
      * exists, it will be automatically created. Created project configurations
      * always have the full access level activated.
-     * 
+     *
      * @param projectId
      * @return project access level
      */
@@ -88,7 +89,7 @@ public class SchedulerProjectConfigService {
 
     /**
      * Checks if project can be read by normal user operations
-     * 
+     *
      * @param projectId
      * @return <code>true</code> when read is possible, otherwise <code>false</code>
      */
@@ -101,7 +102,7 @@ public class SchedulerProjectConfigService {
 
     /**
      * Checks if project can be written by normal user operations
-     * 
+     *
      * @param projectId
      * @return <code>true</code> when write is possible, otherwise
      *         <code>false</code>

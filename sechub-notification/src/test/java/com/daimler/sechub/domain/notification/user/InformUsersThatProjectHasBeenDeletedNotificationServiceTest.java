@@ -19,76 +19,74 @@ import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
 
 public class InformUsersThatProjectHasBeenDeletedNotificationServiceTest {
 
-	private InformUsersThatProjectHasBeenDeletedNotificationService serviceToTest;
-	private EmailService mockedEmailService;
-	private MailMessageFactory mockedMailMessageFactory;
+    private InformUsersThatProjectHasBeenDeletedNotificationService serviceToTest;
+    private EmailService mockedEmailService;
+    private MailMessageFactory mockedMailMessageFactory;
 
+    @Before
+    public void before() throws Exception {
+        mockedEmailService = mock(EmailService.class);
+        mockedMailMessageFactory = mock(MailMessageFactory.class);
 
-	@Before
-	public void before() throws Exception {
-		mockedEmailService = mock(EmailService.class);
-		mockedMailMessageFactory = mock(MailMessageFactory.class);
+        serviceToTest = new InformUsersThatProjectHasBeenDeletedNotificationService();
+        serviceToTest.emailService = mockedEmailService;
+        serviceToTest.factory = mockedMailMessageFactory;
+    }
 
-		serviceToTest = new InformUsersThatProjectHasBeenDeletedNotificationService();
-		serviceToTest.emailService=mockedEmailService;
-		serviceToTest.factory=mockedMailMessageFactory;
-	}
+    @Test
+    public void sends_NO_email_when_no_users_where_defined_at_a_project() throws Exception {
 
-	@Test
-	public void sends_NO_email_when_no_users_where_defined_at_a_project() throws Exception {
+        /* prepare */
+        SimpleMailMessage mockedMailMessage = mock(SimpleMailMessage.class);
+        when(mockedMailMessageFactory.createMessage(any())).thenReturn(mockedMailMessage);
 
-		/* prepare */
-		SimpleMailMessage mockedMailMessage = mock(SimpleMailMessage.class);
-		when(mockedMailMessageFactory.createMessage(any())).thenReturn(mockedMailMessage);
+        // message to receive from event bus
+        ProjectMessage message = mock(ProjectMessage.class);
+        when(message.getProjectId()).thenReturn("projectId1");
+        Set<String> emptyUserList = new LinkedHashSet<>();
 
-		// message to receive from event bus
-		ProjectMessage message = mock(ProjectMessage.class);
-		when(message.getProjectId()).thenReturn("projectId1");
-		Set<String> emptyUserList= new LinkedHashSet<>();
+        when(message.getUserEmailAdresses()).thenReturn(emptyUserList);
 
-		when(message.getUserEmailAdresses()).thenReturn(emptyUserList);
+        /* execute */
+        serviceToTest.notify(message, "base1");
 
-		/* execute */
-		serviceToTest.notify(message,"base1");
+        /* test */
+        // check mocked mail message was sent
+        verify(mockedEmailService, never()).send(any());
+    }
 
-		/* test */
-		// check mocked mail message was sent
-		verify(mockedEmailService,never()).send(any());
-	}
+    @Test
+    public void sends_email_to_all_former_project_users_as_bcc_containing_projectid() throws Exception {
 
+        /* prepare */
+        SimpleMailMessage mockedMailMessage = mock(SimpleMailMessage.class);
+        when(mockedMailMessageFactory.createMessage(any())).thenReturn(mockedMailMessage);
 
-	@Test
-	public void sends_email_to_all_former_project_users_as_bcc_containing_projectid() throws Exception {
+        // message to receive from event bus
+        ProjectMessage message = mock(ProjectMessage.class);
+        when(message.getProjectId()).thenReturn("projectId1");
+        Set<String> userList = new LinkedHashSet<>();
+        userList.add("test1@example.org");
+        userList.add("test2@example.org");
 
-		/* prepare */
-		SimpleMailMessage mockedMailMessage = mock(SimpleMailMessage.class);
-		when(mockedMailMessageFactory.createMessage(any())).thenReturn(mockedMailMessage);
+        when(message.getUserEmailAdresses()).thenReturn(userList);
 
-		// message to receive from event bus
-		ProjectMessage message = mock(ProjectMessage.class);
-		when(message.getProjectId()).thenReturn("projectId1");
-		Set<String> userList= new LinkedHashSet<>();
-		userList.add("test1@example.org");
-		userList.add("test2@example.org");
+        /* execute */
+        serviceToTest.notify(message, "base1");
 
-		when(message.getUserEmailAdresses()).thenReturn(userList);
+        /* test */
+        // check mocked mail message was sent
+        ArgumentCaptor<SimpleMailMessage> mailMessageCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
+        verify(mockedEmailService).send(mailMessageCaptor.capture());
+        assertSame(mockedMailMessage, mailMessageCaptor.getValue());
+        verify(mockedMailMessage).setBcc("test1@example.org", "test2@example.org");
 
-		/* execute */
-		serviceToTest.notify(message,"base1");
-
-		/* test */
-		// check mocked mail message was sent
-		ArgumentCaptor<SimpleMailMessage> mailMessageCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
-		verify(mockedEmailService).send(mailMessageCaptor.capture());
-		assertSame(mockedMailMessage, mailMessageCaptor.getValue());
-		verify(mockedMailMessage).setBcc("test1@example.org","test2@example.org");
-
-		// check content
-		ArgumentCaptor<String> stringMessageCaptor = ArgumentCaptor.forClass(String.class);
-		verify(mockedMailMessage).setText(stringMessageCaptor.capture());
-		String textInMessageBody = stringMessageCaptor.getValue();
-		assertTrue(textInMessageBody.contains("projectId1"));
-		assertTrue(textInMessageBody.contains("deleted"));
-	}
+        // check content
+        ArgumentCaptor<String> stringMessageCaptor = ArgumentCaptor.forClass(String.class);
+        verify(mockedMailMessage).setText(stringMessageCaptor.capture());
+        String textInMessageBody = stringMessageCaptor.getValue();
+        assertTrue(textInMessageBody.contains("projectId1"));
+        assertTrue(textInMessageBody.contains("deleted"));
+    }
 
 }

@@ -8,30 +8,30 @@ import com.daimler.sechub.developertools.admin.ErrorHandler;
 
 public interface UIContext {
 
-	OutputUI getOutputUI();
+    OutputUI getOutputUI();
 
-	CommandUI getCommandUI();
+    CommandUI getCommandUI();
 
-	CredentialUI getCredentialUI();
+    CredentialUI getCredentialUI();
 
     PDSConfigurationUI getPDSConfigurationUI();
-	
-	GlassPaneUI getGlassPaneUI();
 
-	DialogUI getDialogUI();
+    GlassPaneUI getGlassPaneUI();
 
-	String getApiToken();
+    DialogUI getDialogUI();
 
-	String getUser();
+    String getApiToken();
 
-	String getServer();
+    String getUser();
 
-	int getPort();
+    String getServer();
 
-	DeveloperAdministration getAdministration();
+    int getPort();
+
+    DeveloperAdministration getAdministration();
 
     JFrame getFrame();
-    
+
     ErrorHandler getErrorHandler();
 
 }

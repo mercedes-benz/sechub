@@ -13,10 +13,10 @@ import com.daimler.sechub.domain.schedule.whitelist.ProjectWhitelistEntry.Projec
 
 public interface ProjectWhitelistEntryRepository extends JpaRepository<ProjectWhitelistEntry, ProjectWhiteListEntryCompositeKey> {
 
-	@Query(value="SELECT * FROM "+TABLE_NAME+" where "+COLUMN_PROJECT_ID+" = ?1",nativeQuery=true)
-	public List<ProjectWhitelistEntry> fetchWhiteListEntriesForProject(String projectId);
-	
-	@Modifying
-	@Query(value="DELETE FROM "+TABLE_NAME+" where "+COLUMN_PROJECT_ID+" = ?1",nativeQuery=true)
-	public void deleteAllEntriesForProject(String projectId);
+    @Query(value = "SELECT * FROM " + TABLE_NAME + " where " + COLUMN_PROJECT_ID + " = ?1", nativeQuery = true)
+    public List<ProjectWhitelistEntry> fetchWhiteListEntriesForProject(String projectId);
+
+    @Modifying
+    @Query(value = "DELETE FROM " + TABLE_NAME + " where " + COLUMN_PROJECT_ID + " = ?1", nativeQuery = true)
+    public void deleteAllEntriesForProject(String projectId);
 }

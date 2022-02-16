@@ -54,7 +54,7 @@ public class CommentCheckerCommentInLineTest {
 
     @Parameter(1)
     public Boolean expected;
-    
+
     @Parameter(2)
     public String remark;
 
@@ -69,17 +69,17 @@ public class CommentCheckerCommentInLineTest {
         Boolean isCommentInLine = commentChecker.isCommentInLine(line);
 
         /* test */
-        String reason = "The line: `" + line + "` is not: " + expected+" "+remark;
+        String reason = "The line: `" + line + "` is not: " + expected + " " + remark;
         assertThat(reason, isCommentInLine, is(expected));
     }
 
     /* @formatter:off */
-    
-    /* 
+
+    /*
      * Star comments: Java, C, JavaScript, CSS etc.
      */
     private static List<Object[]> createStarCommentsTestData(String marker) {
-        List<Object[]> comments = Arrays.asList(new Object[][] {           
+        List<Object[]> comments = Arrays.asList(new Object[][] {
             add("/* " + marker + "  */", true),
             add("/* " + marker + " \n */", true, "with new line-1a"),
             add("/* " + marker + " \r */", true, "with backslash r-1b"),
@@ -97,11 +97,11 @@ public class CommentCheckerCommentInLineTest {
             add(" /** " + marker + "abc def", false),
             add(" * " + marker, true),
         });
-        
+
         return comments;
     }
-    
-    /* 
+
+    /*
      * Slash comments: Java, PostgreSQL, C etc.
      */
     private static List<Object[]> createSlashCommentsTestData(String marker) {
@@ -123,10 +123,10 @@ public class CommentCheckerCommentInLineTest {
             add("//#-*" + marker + "  ", true),
             add("//###" + marker + "  ", true),
         });
-        
+
         return comments;
     }
-    
+
     /*
      * Pound comments: Ruby, Python etc.
      */
@@ -143,12 +143,12 @@ public class CommentCheckerCommentInLineTest {
             add("### " + marker, true),
             add(" #" + marker, true),
         });
-        
+
         return comments;
     }
-    
-    /* 
-     * Languages: XML, HTML etc. 
+
+    /*
+     * Languages: XML, HTML etc.
      */
     private static List<Object[]> createArrowCommentsTestData(String marker) {
         List<Object[]> comments = Arrays.asList(new Object[][] {
@@ -166,14 +166,14 @@ public class CommentCheckerCommentInLineTest {
             add("<!--" + marker + "abc", false),
             add("<!-- " + marker + " -->", true),
         });
-        
+
         return comments;
     }
-    
-    /* 
-     * Languages: SQL 
+
+    /*
+     * Languages: SQL
      */
-    private static List<Object[]> createDoubleDashCommentsTestData(String marker) {               
+    private static List<Object[]> createDoubleDashCommentsTestData(String marker) {
         List<Object[]> comments = Arrays.asList(new Object[][] {
             add(" -- " + marker, true),
             add("-- " + marker, true),
@@ -186,14 +186,14 @@ public class CommentCheckerCommentInLineTest {
             add(" -- " + marker + " abc", true),
             add(" -- " + marker + "\t\tabc", true),
         });
-        
+
         return comments;
     }
-    
-    /* 
-     * Languages: OCaml 
+
+    /*
+     * Languages: OCaml
      */
-    private static List<Object[]> createBracketStarTestData(String marker) {               
+    private static List<Object[]> createBracketStarTestData(String marker) {
         List<Object[]> comments = Arrays.asList(new Object[][] {
             add(" (* " + marker, true),
             add("(* " + marker, true),
@@ -206,16 +206,16 @@ public class CommentCheckerCommentInLineTest {
             add(" (* " + marker + " abc", true),
             add(" (* " + marker + "\t\tabc", true),
         });
-        
 
-        
+
+
         return comments;
     }
-    
-    /* 
-     * Languages: PowerShell 
+
+    /*
+     * Languages: PowerShell
      */
-    private static List<Object[]> createLessThanPoundTestData(String marker) {               
+    private static List<Object[]> createLessThanPoundTestData(String marker) {
         List<Object[]> comments = Arrays.asList(new Object[][] {
             add(" <# " + marker, true),
             add("<# " + marker, true),
@@ -228,14 +228,14 @@ public class CommentCheckerCommentInLineTest {
             add(" <# " + marker + " abc", true),
             add(" <# " + marker + "\t\tabc", true),
         });
-        
+
         return comments;
     }
-    
-    /* 
+
+    /*
      * Languages: Scheme, Assembly
      */
-    private static List<Object[]> createSemiColonTestData(String marker) {               
+    private static List<Object[]> createSemiColonTestData(String marker) {
         List<Object[]> comments = Arrays.asList(new Object[][] {
             add(" ; " + marker, true),
             add("; " + marker, true),
@@ -248,14 +248,14 @@ public class CommentCheckerCommentInLineTest {
             add(" ; " + marker + " abc", true),
             add(" ; " + marker + "\t\tabc", true),
         });
-        
+
         return comments;
     }
-    
-    /* 
+
+    /*
      * Languages: Matlab, Prolog
      */
-    private static List<Object[]> createPercentageTestData(String marker) {               
+    private static List<Object[]> createPercentageTestData(String marker) {
         List<Object[]> comments = Arrays.asList(new Object[][] {
             add(" % " + marker, true),
             add("% " + marker, true),
@@ -268,14 +268,14 @@ public class CommentCheckerCommentInLineTest {
             add(" % " + marker + " abc", true),
             add(" % " + marker + "\t\tabc", true),
         });
-        
+
         return comments;
     }
-    
-    /* 
+
+    /*
      * Languages: Fortran
      */
-    private static List<Object[]> createExclamationMarkTestData(String marker) {               
+    private static List<Object[]> createExclamationMarkTestData(String marker) {
         List<Object[]> comments = Arrays.asList(new Object[][] {
             add(" ! " + marker, true),
             add("! " + marker, true),
@@ -288,14 +288,14 @@ public class CommentCheckerCommentInLineTest {
             add(" ! " + marker + " abc", true),
             add(" ! " + marker + "\t\tabc", true),
         });
-        
+
         return comments;
     }
-    
-    /* 
+
+    /*
      * Languages: Visual Basic, Windows Batch
      */
-    private static List<Object[]> createREMTestData(String marker) {               
+    private static List<Object[]> createREMTestData(String marker) {
         List<Object[]> comments = Arrays.asList(new Object[][] {
             add(" REM " + marker, true),
             add("REM " + marker, true),
@@ -311,11 +311,11 @@ public class CommentCheckerCommentInLineTest {
 
         return comments;
     }
-    
-    /* 
+
+    /*
      * Languages: Cobol, ABAB
      */
-    private static List<Object[]> createStarTestData(String marker) {               
+    private static List<Object[]> createStarTestData(String marker) {
         List<Object[]> comments = Arrays.asList(new Object[][] {
             add(" * " + marker, true),
             add("* " + marker, true),
@@ -328,14 +328,14 @@ public class CommentCheckerCommentInLineTest {
             add(" * " + marker + " abc", true),
             add(" * " + marker + "\t\tabc", true),
         });
-        
+
         return comments;
     }
-    
-    /* 
+
+    /*
      * Languages: VisualBasic
      */
-    private static List<Object[]> createSingleQuoteTestData(String marker) {               
+    private static List<Object[]> createSingleQuoteTestData(String marker) {
         List<Object[]> comments = Arrays.asList(new Object[][] {
             add(" ' " + marker, true),
             add("' " + marker, true),
@@ -348,14 +348,14 @@ public class CommentCheckerCommentInLineTest {
             add(" ' " + marker + " abc", true),
             add(" ' " + marker + "\t\tabc", true),
         });
-        
+
         return comments;
     }
-    
-    /* 
+
+    /*
      * Languages: Windows Batch
      */
-    private static List<Object[]> createDoubleColonTestData(String marker) {               
+    private static List<Object[]> createDoubleColonTestData(String marker) {
         List<Object[]> comments = Arrays.asList(new Object[][] {
             add(" :: " + marker, true),
             add(":: " + marker, true),
@@ -368,14 +368,14 @@ public class CommentCheckerCommentInLineTest {
             add(" :: " + marker + " abc", true),
             add(" :: " + marker + "\t\tabc", true),
         });
-        
+
         return comments;
     }
-    
-    /* 
+
+    /*
      * Languages: Pascal
      */
-    private static List<Object[]> createCurlyBracketTestData(String marker) {               
+    private static List<Object[]> createCurlyBracketTestData(String marker) {
         List<Object[]> comments = Arrays.asList(new Object[][] {
             add(" { " + marker, true),
             add("{ " + marker, true),
@@ -388,20 +388,20 @@ public class CommentCheckerCommentInLineTest {
             add(" { " + marker + " abc", true),
             add(" { " + marker + "\t\tabc", true),
         });
-        
+
         return comments;
     }
     /* @formatter:on */
-    
+
     private static List<String> createMarkerVariantsToTest() {
         return Arrays.asList(NOSECHUB, NOSECHUB_END);
     }
-    
+
     private static Object[] add(String comment, boolean expected) {
-        return add(comment,expected,null);
+        return add(comment, expected, null);
     }
 
     private static Object[] add(String comment, boolean expected, String remark) {
-        return new Object[] { comment, expected,remark ==null ? "" : " ("+remark+")"};
+        return new Object[] { comment, expected, remark == null ? "" : " (" + remark + ")" };
     }
 }

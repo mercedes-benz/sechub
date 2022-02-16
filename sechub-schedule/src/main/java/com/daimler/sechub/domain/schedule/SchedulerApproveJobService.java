@@ -18,35 +18,34 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @Service
 public class SchedulerApproveJobService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SchedulerApproveJobService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SchedulerApproveJobService.class);
 
-	@Autowired
-	private SecHubJobRepository jobRepository;
+    @Autowired
+    private SecHubJobRepository jobRepository;
 
-	@Autowired
-	ScheduleAssertService assertService;
+    @Autowired
+    ScheduleAssertService assertService;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Autowired
+    UserInputAssertion assertion;
 
-	@UseCaseUserApprovesJob(@Step(number = 2, name = "Try to find job annd update execution state", description = "When job is found and user has access job will be marked as ready for execution"))
-	public void approveJob(String projectId, UUID jobUUID) {
-		assertion.isValidProjectId(projectId);
-		assertion.isValidJobUUID(jobUUID);
+    @UseCaseUserApprovesJob(@Step(number = 2, name = "Try to find job annd update execution state", description = "When job is found and user has access job will be marked as ready for execution"))
+    public void approveJob(String projectId, UUID jobUUID) {
+        assertion.isValidProjectId(projectId);
+        assertion.isValidJobUUID(jobUUID);
 
-		assertService.assertUserHasAccessToProject(projectId);
-		assertService.assertProjectAllowsWriteAccess(projectId);
+        assertService.assertUserHasAccessToProject(projectId);
+        assertService.assertProjectAllowsWriteAccess(projectId);
 
-		ScheduleSecHubJob secHubJob = assertService.assertJob(projectId, jobUUID);
-		ExecutionState state = secHubJob.getExecutionState();
-		if (! ExecutionState.INITIALIZING.equals(state)) {
-			throw new NotAcceptableException("Not in correct state");
-		}
-		secHubJob.setExecutionState(ExecutionState.READY_TO_START);
-		jobRepository.save(secHubJob);
+        ScheduleSecHubJob secHubJob = assertService.assertJob(projectId, jobUUID);
+        ExecutionState state = secHubJob.getExecutionState();
+        if (!ExecutionState.INITIALIZING.equals(state)) {
+            throw new NotAcceptableException("Not in correct state");
+        }
+        secHubJob.setExecutionState(ExecutionState.READY_TO_START);
+        jobRepository.save(secHubJob);
 
-		LOG.info("job {} now approved", jobUUID);
-	}
-
+        LOG.info("job {} now approved", jobUUID);
+    }
 
 }

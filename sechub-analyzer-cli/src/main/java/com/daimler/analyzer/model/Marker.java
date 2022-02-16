@@ -2,17 +2,17 @@
 package com.daimler.analyzer.model;
 
 public class Marker implements DeepClonable<Marker> {
-    
+
     private long line;
     private long column;
     private MarkerType type;
-    
+
     public Marker(MarkerType type, long line, long column) {
         this.type = type;
         this.line = line;
         this.column = column;
     }
-    
+
     public long getLine() {
         return line;
     }
@@ -24,12 +24,12 @@ public class Marker implements DeepClonable<Marker> {
     public MarkerType getType() {
         return type;
     }
-    
+
     @Override
     public String toString() {
         return "Marker [line=" + line + ", column=" + column + ", type=" + type + "]";
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -61,7 +61,7 @@ public class Marker implements DeepClonable<Marker> {
     @Override
     public Marker deepClone() {
         Marker marker = new Marker(type, line, column);
-        
+
         return marker;
     }
 }

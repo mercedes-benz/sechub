@@ -19,34 +19,34 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 public class UserDetailInformationService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(UserDetailInformationService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UserDetailInformationService.class);
 
-	@Autowired
-	UserContextService userContext;
+    @Autowired
+    UserContextService userContext;
 
-	@Autowired
-	UserRepository userRepository;
+    @Autowired
+    UserRepository userRepository;
 
-	@Autowired
-	LogSanitizer logSanitizer;
+    @Autowired
+    LogSanitizer logSanitizer;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Autowired
+    UserInputAssertion assertion;
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@UseCaseAdminShowsUserDetails(
 			@Step(
 				number = 2,
 				name = "Service fetches user details.",
 				description = "The service will fetch user details"))
 	/* @formatter:on */
-	public UserDetailInformation fetchDetails(String userId) {
-		LOG.debug("User {} is fetching user details for user:{}",userContext.getUserId(), logSanitizer.sanitize(userId,30));
+    public UserDetailInformation fetchDetails(String userId) {
+        LOG.debug("User {} is fetching user details for user:{}", userContext.getUserId(), logSanitizer.sanitize(userId, 30));
 
-		assertion.isValidUserId(userId);
+        assertion.isValidUserId(userId);
 
-		User user = userRepository.findOrFailUser(userId);
+        User user = userRepository.findOrFailUser(userId);
 
-		return new UserDetailInformation(user);
-	}
+        return new UserDetailInformation(user);
+    }
 }

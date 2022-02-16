@@ -21,7 +21,7 @@ public class CheckmarxExecutorConfigSuppport extends DefaultExecutorConfigSuppor
     /**
      * Creates the configuration support and VALIDATE. This will fail when
      * configuration data is not valid (e.g. mandatory keys missing)
-     * 
+     *
      * @param config
      * @param systemEnvironment
      * @return support
@@ -65,22 +65,22 @@ public class CheckmarxExecutorConfigSuppport extends DefaultExecutorConfigSuppor
 
     public String getEngineConfigurationName() {
         String configuredEngineConfigurationName = getParameter(CheckmarxExecutorConfigParameterKeys.CHECKMARX_ENGINE_CONFIGURATIONNAME);
-        
+
         if (SimpleStringUtils.isEmpty(configuredEngineConfigurationName)) {
-            
+
             return CheckmarxConstants.DEFAULT_CHECKMARX_ENGINECONFIGURATION_MULTILANGANGE_SCAN_NAME;
         }
         return configuredEngineConfigurationName;
     }
-    
+
     public String getClientSecret() {
         String configuredClientSecret = getParameter(CheckmarxExecutorConfigParameterKeys.CHECKMARX_CLIENT_SECRET);
-        
+
         if (SimpleStringUtils.isEmpty(configuredClientSecret)) {
-            
+
             return CheckmarxConstants.DEFAULT_CLIENT_SECRET;
         }
         return configuredClientSecret;
     }
-    
+
 }

@@ -24,16 +24,16 @@ public class AssertVulnerabilitiesParamTest {
 
     @Parameter
     public VulnerabilityMutableTestData currentTestData;
-    
-	@Test
-	public void healthCheck_full_setup_is_found() {
-		/* prepare - vulnerability data */
-		SerecoVulnerability testVulnerability = createVulnerabilityWithCurrentTestData();
-		
-		/* test - former build data is found (or not) by assert framework */
-		// hint: when currentTestData.touch(field) was called in junit preparation phase
-		// this field will change and assert mechanism must find it...
-		/* @formatter:off */
+
+    @Test
+    public void healthCheck_full_setup_is_found() {
+        /* prepare - vulnerability data */
+        SerecoVulnerability testVulnerability = createVulnerabilityWithCurrentTestData();
+
+        /* test - former build data is found (or not) by assert framework */
+        // hint: when currentTestData.touch(field) was called in junit preparation phase
+        // this field will change and assert mechanism must find it...
+        /* @formatter:off */
 		VulnerabilityFinder finderSays = AssertVulnerabilities.assertVulnerabilities(Collections.singletonList(testVulnerability)).
 			vulnerability().
 				withSeverity(currentTestData.getSeverity()).
@@ -51,7 +51,7 @@ public class AssertVulnerabilitiesParamTest {
 					pci31(currentTestData.get(PCI31)).
 					pci32(currentTestData.get(PCI32)).
 				and();
-				
+
 		if (currentTestData.hasTouchedFields()) {
 			finderSays.isNotContained(); /* when changed this must not be found!*/
 		}else {
@@ -59,44 +59,43 @@ public class AssertVulnerabilitiesParamTest {
 			finderSays.isContained();
 		}
 		/* @formatter:on */
-	}
+    }
 
     private SerecoVulnerability createVulnerabilityWithCurrentTestData() {
         SerecoVulnerability testVulnerability = new SerecoVulnerability();
-		testVulnerability.setDescription(currentTestData.get(DESCRIPTION));
-		testVulnerability.setSeverity(currentTestData.getSeverity());
-		testVulnerability.setType(currentTestData.get(TYPE));
-		
-		SerecoWeb web = new SerecoWeb();
-		web.getRequest().setTarget(currentTestData.get(URL));
+        testVulnerability.setDescription(currentTestData.get(DESCRIPTION));
+        testVulnerability.setSeverity(currentTestData.getSeverity());
+        testVulnerability.setType(currentTestData.get(TYPE));
+
+        SerecoWeb web = new SerecoWeb();
+        web.getRequest().setTarget(currentTestData.get(URL));
         testVulnerability.setWeb(web);
-		
-		SerecoClassification classification = testVulnerability.getClassification();
-		classification.setOwasp(currentTestData.get(OWASP));
-		classification.setCapec(currentTestData.get(CAPEC));
-		classification.setCwe(""+currentTestData.getInt(CWE));
-		classification.setOwaspProactiveControls(currentTestData.get(OWASPPROACTIVE));
-		classification.setHipaa(currentTestData.get(HIPAA));
-		classification.setPci31(currentTestData.get(PCI31));
-		classification.setPci32(currentTestData.get(PCI32));
+
+        SerecoClassification classification = testVulnerability.getClassification();
+        classification.setOwasp(currentTestData.get(OWASP));
+        classification.setCapec(currentTestData.get(CAPEC));
+        classification.setCwe("" + currentTestData.getInt(CWE));
+        classification.setOwaspProactiveControls(currentTestData.get(OWASPPROACTIVE));
+        classification.setHipaa(currentTestData.get(HIPAA));
+        classification.setPci31(currentTestData.get(PCI31));
+        classification.setPci32(currentTestData.get(PCI32));
         return testVulnerability;
     }
 
-	public static VulnerabilityMutableTestData createTestDataElement() {
+    public static VulnerabilityMutableTestData createTestDataElement() {
         return new VulnerabilityMutableTestData();
     }
-    
-    
-    @Parameters(name="parameter test {index}:{0}")
+
+    @Parameters(name = "parameter test {index}:{0}")
     public static Collection<Object[]> createDataForParameterizedTests() {
         List<Object[]> result = new ArrayList<>();
-        
+
         // first entry has no touched elements
-        result.add(new Object[]{createTestDataElement()});
-        
-        // for each key add the test data again, but touch it for the key... 
-        for (VulnerabilityTestDataKey key: values()) {
-            result.add(new Object[]{createTestDataElement().touch(key)});
+        result.add(new Object[] { createTestDataElement() });
+
+        // for each key add the test data again, but touch it for the key...
+        for (VulnerabilityTestDataKey key : values()) {
+            result.add(new Object[] { createTestDataElement().touch(key) });
         }
         return result;
     }

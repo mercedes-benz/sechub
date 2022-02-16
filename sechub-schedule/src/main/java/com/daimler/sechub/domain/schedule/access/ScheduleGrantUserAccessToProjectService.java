@@ -15,29 +15,27 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @Service
 public class ScheduleGrantUserAccessToProjectService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ScheduleGrantUserAccessToProjectService.class);
 
-private static final Logger LOG = LoggerFactory.getLogger(ScheduleGrantUserAccessToProjectService.class);
+    @Autowired
+    ScheduleAccessRepository repository;
 
-	@Autowired
-	ScheduleAccessRepository repository;
+    @Autowired
+    UserInputAssertion assertion;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @UseCaseAdminAssignsUserToProject(@Step(number = 2, name = "Update schedule authorization parts"))
+    public void grantUserAccessToProject(String userId, String projectId) {
+        assertion.isValidUserId(userId);
+        assertion.isValidProjectId(projectId);
 
-	@UseCaseAdminAssignsUserToProject(@Step(number=2,name="Update schedule authorization parts"))
-	public void grantUserAccessToProject(String userId, String projectId) {
-		assertion.isValidUserId(userId);
-		assertion.isValidProjectId(projectId);
-
-		ScheduleAccess scheduleAccess = new ScheduleAccess(userId,projectId);
-		Optional<ScheduleAccess> potentialAlreadyFound = repository.findById(scheduleAccess.getKey());
-		if (potentialAlreadyFound.isPresent()) {
-			LOG.debug("User {} has already acces to {} so skipped",userId,projectId);
-			return;
-		}
-		LOG.debug("User {} has now gained acces to {}",userId,projectId);
-		repository.save(scheduleAccess);
-	}
-
+        ScheduleAccess scheduleAccess = new ScheduleAccess(userId, projectId);
+        Optional<ScheduleAccess> potentialAlreadyFound = repository.findById(scheduleAccess.getKey());
+        if (potentialAlreadyFound.isPresent()) {
+            LOG.debug("User {} has already acces to {} so skipped", userId, projectId);
+            return;
+        }
+        LOG.debug("User {} has now gained acces to {}", userId, projectId);
+        repository.save(scheduleAccess);
+    }
 
 }

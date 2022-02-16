@@ -19,24 +19,23 @@ import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminListsAllU
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 public class UserListService {
 
-	@Autowired
-	UserRepository userRepository;
+    @Autowired
+    UserRepository userRepository;
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@UseCaseAdminListsAllUsers(@Step(number=2,name="Service call",description="All userids of sechub users are returned as json"))
 	public List<String> listUsers() {
 		/* @formatter:on */
-		return userRepository.findAll().stream().map(User::getName).collect(Collectors.toList());
-	}
+        return userRepository.findAll().stream().map(User::getName).collect(Collectors.toList());
+    }
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@UseCaseAdminListsAllAdmins(@Step(number=2,name="Service call",description="All userids of sechub administrators are returned as json"))
 	public List<String> listAdministrators() {
 		/* @formatter:on */
-		User userExample = new User();
-		userExample.superAdmin=true;
-		return userRepository.findAll(Example.of(userExample)).stream().map(User::getName).collect(Collectors.toList());
-	}
-
+        User userExample = new User();
+        userExample.superAdmin = true;
+        return userRepository.findAll(Example.of(userExample)).stream().map(User::getName).collect(Collectors.toList());
+    }
 
 }

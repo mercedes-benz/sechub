@@ -22,13 +22,12 @@ public class PDSJobConfigurationTest {
     }
 
     @Test
-    public void fromJSON_concept_example_file_can_be_loaded_and_contains_expected_data() throws Exception{
+    public void fromJSON_concept_example_file_can_be_loaded_and_contains_expected_data() throws Exception {
         /* prepare */
         File file = new File("./../sechub-doc/src/docs/asciidoc/documents/pds/product_delegation_job_config_example1.json");
-        String json = FileUtils.readFileToString(file,"UTF-8");
+        String json = FileUtils.readFileToString(file, "UTF-8");
         /* execute */
         PDSJobConfiguration result = PDSJobConfiguration.fromJSON(json);
-        
 
         /* test */
         assertNotNull(result);
@@ -38,30 +37,28 @@ public class PDSJobConfigurationTest {
         List<PDSExecutionParameterEntry> config = result.getParameters();
         assertEquals(2, config.size());
         Iterator<PDSExecutionParameterEntry> ci = config.iterator();
-        
+
         PDSExecutionParameterEntry entry1 = ci.next();
-        assertEquals("sechub.test.key.1",entry1.getKey());
-        assertEquals("value1",entry1.getValue());
+        assertEquals("sechub.test.key.1", entry1.getKey());
+        assertEquals("value1", entry1.getValue());
 
         PDSExecutionParameterEntry entry2 = ci.next();
-        assertEquals("sechub.test.key.2",entry2.getKey());
-        assertEquals("value2",entry2.getValue());
-    
+        assertEquals("sechub.test.key.2", entry2.getKey());
+        assertEquals("value2", entry2.getValue());
+
     }
-    
-    
+
     @Test
-    public void fromJSON_even_an_empty_json_can_be_transformed() throws Exception{
+    public void fromJSON_even_an_empty_json_can_be_transformed() throws Exception {
         /* prepare */
-        String json="{}";
+        String json = "{}";
 
         /* execute */
         PDSJobConfiguration result = PDSJobConfiguration.fromJSON(json);
-        
+
         /* test */
         assertNotNull(result);
-        
-        
+
     }
 
 }

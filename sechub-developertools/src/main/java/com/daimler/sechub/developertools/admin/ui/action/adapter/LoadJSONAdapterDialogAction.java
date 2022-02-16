@@ -5,7 +5,7 @@ import java.awt.event.ActionEvent;
 
 import com.daimler.sechub.developertools.admin.DeveloperAdministration;
 
-public class LoadJSONAdapterDialogAction extends AbstractAdapterDialogMappingAction{
+public class LoadJSONAdapterDialogAction extends AbstractAdapterDialogMappingAction {
 
     private static final long serialVersionUID = 1L;
 
@@ -17,9 +17,9 @@ public class LoadJSONAdapterDialogAction extends AbstractAdapterDialogMappingAct
     protected void execute(ActionEvent e) throws Exception {
         DeveloperAdministration adm = getDialogUI().getContext().getAdministration();
         String url = adm.getUrlBuilder().buildGetMapping(getMappingUI().getMappingId());
-        String json= adm.getRestHelper().getJSON(url);
+        String json = adm.getRestHelper().getJSON(url);
         getMappingUI().setJSON(json);
-        
+
     }
 
 }

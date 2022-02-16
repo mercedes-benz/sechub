@@ -15,7 +15,7 @@ public abstract class AbstractPDSKey<T extends PDSKey> implements PDSKey {
 
     /**
      * Creates a new config data key
-     * 
+     *
      * @param id          identifier may never be <code>null</code>
      * @param description
      */
@@ -75,28 +75,28 @@ public abstract class AbstractPDSKey<T extends PDSKey> implements PDSKey {
         this.sentToPDS = true;
         return (T) this;
     }
-    
+
     @SuppressWarnings("unchecked")
     public T withDefault(String defaultValue) {
-        this.defaultValue=defaultValue;
+        this.defaultValue = defaultValue;
         return (T) this;
     }
-    
+
     public T withDefault(boolean booleanDefault) {
-        return withDefault(""+booleanDefault);
+        return withDefault("" + booleanDefault);
     }
-    
+
     @SuppressWarnings("unchecked")
     public T markDefaultRecommended() {
         this.defaultRecommended = true;
         return (T) this;
     }
-    
+
     @Override
     public boolean isDefaultRecommended() {
         return defaultRecommended;
     }
-    
+
     @Override
     public String getDefaultValue() {
         return defaultValue;

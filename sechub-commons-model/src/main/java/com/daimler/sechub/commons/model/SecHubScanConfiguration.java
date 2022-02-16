@@ -6,10 +6,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 /**
  * Represents the configuration a users defines to start scans.
  * <h3>Example for usage:</h3> <code>
- * String yourJSON = readJSONFile(); 
+ * String yourJSON = readJSONFile();
  * SecHubScanConfiguration scanConfiguraiton = SecHubScanConfiguration.createFromJSON(yourJSON);
  * </code>
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

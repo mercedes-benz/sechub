@@ -7,11 +7,11 @@ import java.util.TreeMap;
 import com.daimler.sechub.commons.model.JSONable;
 
 public class IntegrationTestEventHistory implements JSONable<IntegrationTestEventHistory> {
-    
-    private static final IntegrationTestEventHistory IMPORT= new IntegrationTestEventHistory();
-    
+
+    private static final IntegrationTestEventHistory IMPORT = new IntegrationTestEventHistory();
+
     private SortedMap<Integer, IntegrationTestEventHistoryInspection> idToInspectionMap = new TreeMap<>();
-    
+
     public SortedMap<Integer, IntegrationTestEventHistoryInspection> getIdToInspectionMap() {
         return idToInspectionMap;
     }

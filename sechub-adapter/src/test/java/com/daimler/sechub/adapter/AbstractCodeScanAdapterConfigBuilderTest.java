@@ -10,44 +10,42 @@ import org.junit.Test;
 
 public class AbstractCodeScanAdapterConfigBuilderTest {
 
-	@Test
-	public void settingSourceFoldersNullResultsInNullTargetString() {
-		TestCodeScanAdapterConfig codeScanAdapterConfig = new TestAbstractCodeScanAdapterConfigBuilder()
-				.build();
-		/* test */
-		assertEquals(null, codeScanAdapterConfig.getTargetAsString());
-	}
-	
-	@Test
-	public void settingSourceFoldersResultsInTargetString() {
-		TestCodeScanAdapterConfig codeScanAdapterConfig = new TestAbstractCodeScanAdapterConfigBuilder()
-				.setFileSystemSourceFolders(new LinkedHashSet<>(Arrays.asList("src/java/", "src/groovy"))).build();
-		/* test */
-		assertEquals("src/java/;src/groovy", codeScanAdapterConfig.getTargetAsString());
-	}
+    @Test
+    public void settingSourceFoldersNullResultsInNullTargetString() {
+        TestCodeScanAdapterConfig codeScanAdapterConfig = new TestAbstractCodeScanAdapterConfigBuilder().build();
+        /* test */
+        assertEquals(null, codeScanAdapterConfig.getTargetAsString());
+    }
 
-	
-	private class TestAbstractCodeScanAdapterConfigBuilder extends
-			AbstractCodeScanAdapterConfigBuilder<TestAbstractCodeScanAdapterConfigBuilder, TestCodeScanAdapterConfig> {
+    @Test
+    public void settingSourceFoldersResultsInTargetString() {
+        TestCodeScanAdapterConfig codeScanAdapterConfig = new TestAbstractCodeScanAdapterConfigBuilder()
+                .setFileSystemSourceFolders(new LinkedHashSet<>(Arrays.asList("src/java/", "src/groovy"))).build();
+        /* test */
+        assertEquals("src/java/;src/groovy", codeScanAdapterConfig.getTargetAsString());
+    }
 
-		@Override
-		protected void customBuild(TestCodeScanAdapterConfig config) {
+    private class TestAbstractCodeScanAdapterConfigBuilder
+            extends AbstractCodeScanAdapterConfigBuilder<TestAbstractCodeScanAdapterConfigBuilder, TestCodeScanAdapterConfig> {
 
-		}
+        @Override
+        protected void customBuild(TestCodeScanAdapterConfig config) {
 
-		@Override
-		protected TestCodeScanAdapterConfig buildInitialConfig() {
-			return new TestCodeScanAdapterConfig();
-		}
+        }
 
-		@Override
-		protected void customValidate() {
+        @Override
+        protected TestCodeScanAdapterConfig buildInitialConfig() {
+            return new TestCodeScanAdapterConfig();
+        }
 
-		}
+        @Override
+        protected void customValidate() {
 
-	}
+        }
 
-	private class TestCodeScanAdapterConfig extends AbstractCodeScanAdapterConfig {
+    }
 
-	}
+    private class TestCodeScanAdapterConfig extends AbstractCodeScanAdapterConfig {
+
+    }
 }

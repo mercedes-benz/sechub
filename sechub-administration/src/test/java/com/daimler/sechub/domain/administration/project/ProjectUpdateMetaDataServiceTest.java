@@ -3,8 +3,8 @@ package com.daimler.sechub.domain.administration.project;
 
 import static org.mockito.Mockito.*;
 
-import java.util.Collections;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -24,82 +24,83 @@ import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class ProjectUpdateMetaDataServiceTest {
 
-	private ProjectUpdateMetaDataEntityService serviceToTest;
-	private ProjectRepository repository;
-	private ProjectMetaDataEntityRepository metaDataRepository;
+    private ProjectUpdateMetaDataEntityService serviceToTest;
+    private ProjectRepository repository;
+    private ProjectMetaDataEntityRepository metaDataRepository;
 
-	@Rule
-	public ExpectedException expectedException = ExpectedExceptionFactory.none();
+    @Rule
+    public ExpectedException expectedException = ExpectedExceptionFactory.none();
 
-	private Set<ProjectMetaDataEntity> metaData = new HashSet<>();
-	private Project project;
-	
-	private final String projectId = "projectid1";
+    private Set<ProjectMetaDataEntity> metaData = new HashSet<>();
+    private Project project;
 
-	@Before
-	public void before() throws Exception {
-		serviceToTest = new ProjectUpdateMetaDataEntityService();
+    private final String projectId = "projectid1";
 
-		repository = mock(ProjectRepository.class);
-		metaDataRepository = mock(ProjectMetaDataEntityRepository.class);
+    @Before
+    public void before() throws Exception {
+        serviceToTest = new ProjectUpdateMetaDataEntityService();
 
-		serviceToTest.repository = repository;
-		serviceToTest.metaDataRepository = metaDataRepository;
-		serviceToTest.auditLog = mock(AuditLogService.class);
-		serviceToTest.assertion = mock(UserInputAssertion.class);
-		serviceToTest.logSanitizer = mock(LogSanitizer.class);
+        repository = mock(ProjectRepository.class);
+        metaDataRepository = mock(ProjectMetaDataEntityRepository.class);
 
-		project = mock(Project.class);
-				
-		metaData.add(new ProjectMetaDataEntity(projectId, "key1", "value1"));
-		metaData.add(new ProjectMetaDataEntity(projectId, "key2", "value2"));
-		
-		when(project.getMetaData()).thenReturn(metaData);
-	}
+        serviceToTest.repository = repository;
+        serviceToTest.metaDataRepository = metaDataRepository;
+        serviceToTest.auditLog = mock(AuditLogService.class);
+        serviceToTest.assertion = mock(UserInputAssertion.class);
+        serviceToTest.logSanitizer = mock(LogSanitizer.class);
 
-	@Test
-	public void project_not_found_throws_not_found_exception() {
-		/* test */
-		expectedException.expect(NotFoundException.class);
+        project = mock(Project.class);
 
-		/* prepare*/
-		when(repository.findById(projectId)).thenReturn(Optional.empty());
+        metaData.add(new ProjectMetaDataEntity(projectId, "key1", "value1"));
+        metaData.add(new ProjectMetaDataEntity(projectId, "key2", "value2"));
 
-		/* execute */
-		serviceToTest.updateProjectMetaData(projectId, null);
-	}
+        when(project.getMetaData()).thenReturn(metaData);
+    }
 
-	@Test
-	public void project_found__but_metadata_empty_updates_with_empty_list() {
-		/* prepare*/
-		when(repository.findById(projectId)).thenReturn(Optional.of(project));
+    @Test
+    public void project_not_found_throws_not_found_exception() {
+        /* test */
+        expectedException.expect(NotFoundException.class);
 
-		ProjectMetaData emptyMetaData = new ProjectMetaData();
-		List<ProjectMetaDataEntity> emptyMetaDataEntryList = Collections.emptyList();
-		
-		/* execute */
-		serviceToTest.updateProjectMetaData(projectId, emptyMetaData);
+        /* prepare */
+        when(repository.findById(projectId)).thenReturn(Optional.empty());
 
-		/* test */
-		verify(metaDataRepository).deleteAll(metaData);
-		verify(metaDataRepository).saveAll(emptyMetaDataEntryList);
-	}
+        /* execute */
+        serviceToTest.updateProjectMetaData(projectId, null);
+    }
 
-	@Test
-	public void project_found__and_2_metadata_entries_updated() throws Exception{
-		/* prepare*/
-		when(repository.findById(projectId)).thenReturn(Optional.of(project));
+    @Test
+    public void project_found__but_metadata_empty_updates_with_empty_list() {
+        /* prepare */
+        when(repository.findById(projectId)).thenReturn(Optional.of(project));
 
-		ProjectMetaData newMetaData = new ProjectMetaData();
-		newMetaData.getMetaDataMap().put("key3", "value3");
-		newMetaData.getMetaDataMap().put("key4", "value4");
-		
-		List<ProjectMetaDataEntity> newMetaDataEntryList = Arrays.asList( new ProjectMetaDataEntity(projectId, "key3", "value3"), new ProjectMetaDataEntity(projectId, "key4", "value4"));
-		
-		/* execute */
-		serviceToTest.updateProjectMetaData(projectId, newMetaData);
-		/* test */
-		verify(metaDataRepository).deleteAll(metaData);
-		verify(metaDataRepository).saveAll(newMetaDataEntryList);
-	}
+        ProjectMetaData emptyMetaData = new ProjectMetaData();
+        List<ProjectMetaDataEntity> emptyMetaDataEntryList = Collections.emptyList();
+
+        /* execute */
+        serviceToTest.updateProjectMetaData(projectId, emptyMetaData);
+
+        /* test */
+        verify(metaDataRepository).deleteAll(metaData);
+        verify(metaDataRepository).saveAll(emptyMetaDataEntryList);
+    }
+
+    @Test
+    public void project_found__and_2_metadata_entries_updated() throws Exception {
+        /* prepare */
+        when(repository.findById(projectId)).thenReturn(Optional.of(project));
+
+        ProjectMetaData newMetaData = new ProjectMetaData();
+        newMetaData.getMetaDataMap().put("key3", "value3");
+        newMetaData.getMetaDataMap().put("key4", "value4");
+
+        List<ProjectMetaDataEntity> newMetaDataEntryList = Arrays.asList(new ProjectMetaDataEntity(projectId, "key3", "value3"),
+                new ProjectMetaDataEntity(projectId, "key4", "value4"));
+
+        /* execute */
+        serviceToTest.updateProjectMetaData(projectId, newMetaData);
+        /* test */
+        verify(metaDataRepository).deleteAll(metaData);
+        verify(metaDataRepository).saveAll(newMetaDataEntryList);
+    }
 }

@@ -10,7 +10,7 @@ public class SimpleStringUtils {
 
     /**
      * Checks if trimmed strings are equal (but case sensitive).
-     * 
+     *
      * @param string1 when <code>null</code> the parameter will be treated like an
      *                empty string
      * @param string2 when <code>null</code> the parameter will be treated like an
@@ -68,7 +68,7 @@ public class SimpleStringUtils {
 
     /**
      * Converts empty strings to null
-     * 
+     *
      * @param value
      * @return value when value is not <code>null</code> or empty, otherwise
      *         <code>null</code>
@@ -83,7 +83,7 @@ public class SimpleStringUtils {
     /**
      * Will check if given string contains not more than allowed max length. If more
      * than max length string will be truncated and got a trailing with "..."
-     * 
+     *
      * @param string
      * @param maxLength , may not be smaller than 4
      * @return truncated length

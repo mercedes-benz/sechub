@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @PDSUseCaseDefinition(
 		id=PDSUseCaseIdentifier.UC_USER_FETCHES_JOB_RESULT,
 		group=PDSUseCaseGroup.JOB_EXECUTION,
-		title="User fetches job result", 
+		title="User fetches job result",
 		description="A user fetches job result")
 public @interface UseCaseUserFetchesJobResult {
     PDSStep value();

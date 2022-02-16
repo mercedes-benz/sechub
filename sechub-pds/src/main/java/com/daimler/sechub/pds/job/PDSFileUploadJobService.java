@@ -82,7 +82,7 @@ public class PDSFileUploadJobService {
                 assertValidZipFile(tmpFile);
             }
             assertCheckSumCorrect(checkSum, tmpFile);
-            
+
             /* now store */
             try {
                 LOG.info("Upload file {} for job {} to storage", fileName, jobUUID);
@@ -101,11 +101,10 @@ public class PDSFileUploadJobService {
                 try {
                     Files.delete(tmpFile);
                 } catch (IOException e) {
-                    LOG.error("Was not able delete former temp file for zipped sources! {}",jobUUID, e);
+                    LOG.error("Was not able delete former temp file for zipped sources! {}", jobUUID, e);
                 }
             }
         }
-        
 
     }
 

@@ -10,7 +10,7 @@ public class SerecoMetaData {
 
     private List<SerecoVulnerability> vulnerabilities = new ArrayList<>();
     private Set<SerecoAnnotation> annotations = new LinkedHashSet<>();
-    
+
     public Set<SerecoAnnotation> getAnnotations() {
         return annotations;
     }
@@ -19,5 +19,4 @@ public class SerecoMetaData {
         return vulnerabilities;
     }
 
-    
 }

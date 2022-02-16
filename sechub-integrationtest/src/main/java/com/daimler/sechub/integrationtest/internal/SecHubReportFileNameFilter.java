@@ -18,10 +18,10 @@ public class SecHubReportFileNameFilter implements FilenameFilter {
         if (uuid == null) {
             throw new IllegalArgumentException("uuid must be set, but is null!");
         }
-        this.searchEnd = "_"+uuid.toString()+".json";
+        this.searchEnd = "_" + uuid.toString() + ".json";
 
         this.searchBegin = "sechub_report_";
-        
+
         if (projectId != null) {
             this.searchBegin += projectId;
         }
@@ -30,7 +30,7 @@ public class SecHubReportFileNameFilter implements FilenameFilter {
     @Override
     public boolean accept(File dir, String name) {
         if (!name.startsWith(searchBegin)) {
-           return false; 
+            return false;
         }
         boolean endsWith = name.endsWith(searchEnd);
         return endsWith;

@@ -20,28 +20,34 @@ import com.daimler.sechub.pds.PDSMustBeDocumented;
 @Order(1)
 public class PDSSecurityConfiguration extends AbstractAllowPDSAPISecurityConfiguration {
 
-    /* TODO Albert Tregnaghi, 2020-06-18: extreme simple approach: we just allow ONE user at the moment
-     * which is a technical user only. Enough for communication at the beginning, but should be improved later */
-    
-    @PDSMustBeDocumented(value="Techuser user id",scope="credentials")
+    /*
+     * TODO Albert Tregnaghi, 2020-06-18: extreme simple approach: we just allow ONE
+     * user at the moment which is a technical user only. Enough for communication
+     * at the beginning, but should be improved later
+     */
+
+    @PDSMustBeDocumented(value = "Techuser user id", scope = "credentials")
     @Value("${sechub.pds.techuser.userid}")
     String techUserId;
-    
-    @PDSMustBeDocumented(value="Techuser user api token",scope="credentials")
+
+    @PDSMustBeDocumented(value = "Techuser user api token", scope = "credentials")
     @Value("${sechub.pds.techuser.apitoken}")
     String techUserApiToken;
-    
-    /* TODO Albert Tregnaghi, 2020-07-05: extreme simple approach: we just allow ONE admin at the moment
-     * Enough for communication at the beginning, but should be improved later */
-    
-    @PDSMustBeDocumented(value="Administrator user id",scope="credentials")
+
+    /*
+     * TODO Albert Tregnaghi, 2020-07-05: extreme simple approach: we just allow ONE
+     * admin at the moment Enough for communication at the beginning, but should be
+     * improved later
+     */
+
+    @PDSMustBeDocumented(value = "Administrator user id", scope = "credentials")
     @Value("${sechub.pds.admin.userid}")
     String adminUserId;
-    
-    @PDSMustBeDocumented(value="Administrator api token",scope="credentials")
+
+    @PDSMustBeDocumented(value = "Administrator api token", scope = "credentials")
     @Value("${sechub.pds.admin.apitoken}")
     String adminApiToken;
-    
+
     @Bean
     @Override
     public UserDetailsService userDetailsService() {
@@ -54,7 +60,7 @@ public class PDSSecurityConfiguration extends AbstractAllowPDSAPISecurityConfigu
                 .build();
         /* remove field after start */
         techUserApiToken=null;
-        
+
         UserDetails admin =
                 User.builder()
                    .username(adminUserId)
@@ -64,7 +70,7 @@ public class PDSSecurityConfiguration extends AbstractAllowPDSAPISecurityConfigu
            /* remove field after start */
         adminApiToken=null;
         /* @formatter:on */
-        return new InMemoryUserDetailsManager(user,admin);
+        return new InMemoryUserDetailsManager(user, admin);
     }
 
 }

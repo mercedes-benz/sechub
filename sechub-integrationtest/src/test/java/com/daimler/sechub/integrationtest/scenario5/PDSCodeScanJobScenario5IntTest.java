@@ -23,7 +23,7 @@ import com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultExecuto
 /**
  * Integration test doing code scans by integration test servers (sechub server,
  * pds server)
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -47,14 +47,14 @@ public class PDSCodeScanJobScenario5IntTest {
         /* prepare */
         TestProject project = PROJECT_2;
         UUID jobUUID = as(USER_1).createCodeScan(project,NOT_MOCKED);// scenario10 uses really integration test pds server! but WITHOUT reusage of sechub storage
-        
+
         /* execute */
         as(USER_1).
             upload(project, jobUUID, PATH_LOW).
             approveJob(project, jobUUID);
-        
+
         waitForJobDone(project, jobUUID,10,true);
-        
+
         String report = as(USER_1).getJobReport(project, jobUUID);
         assertReport(report).
             hasReportVersion(SecHubReportVersion.VERSION_1_0).
@@ -71,22 +71,22 @@ public class PDSCodeScanJobScenario5IntTest {
         /* prepare */
         TestProject project = PROJECT_1;
         UUID jobUUID = as(USER_1).createCodeScan(project,NOT_MOCKED);// scenario5 uses really integration test pds server!
-        
-        
+
+
         /* execute */
         as(USER_1).
             upload(project, jobUUID, PATH_CRITICAL).
             approveJob(project, jobUUID);
-        
+
         waitForJobDone(project, jobUUID,30,true);
-        
+
         /* test */
         String report = as(USER_1).getJobReport(project, jobUUID);
-        
+
         assertReport(report).
             hasStatus(SecHubStatus.SUCCESS).
             hasMessages(0);
-        
+
         assertSecHubReport(report).
             hasTrafficLight(RED).
                 // findings from uploaded zip (1:1 mapped by textfile:
@@ -99,7 +99,7 @@ public class PDSCodeScanJobScenario5IntTest {
                   scanType(ScanType.CODE_SCAN).
                   severity(Severity.MEDIUM).
                   description("i am a medium error").
-                 isContained().  
+                 isContained().
                 finding().
                   scanType(ScanType.CODE_SCAN).
                   severity(Severity.INFO).

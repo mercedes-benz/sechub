@@ -14,16 +14,17 @@ public class ProductExecutorContextFactory {
 
     @Autowired
     ProductResultTransactionService transactionService;
-    
-    public ProductExecutorContext create(List<ProductResult> formerResults, SecHubExecutionContext executionContext, ProductExecutor productExecutor, ProductExecutorConfig config) {
-        
-        ProductExecutorContext productExecutorContext = new ProductExecutorContext(config,formerResults);
-        
+
+    public ProductExecutorContext create(List<ProductResult> formerResults, SecHubExecutionContext executionContext, ProductExecutor productExecutor,
+            ProductExecutorConfig config) {
+
+        ProductExecutorContext productExecutorContext = new ProductExecutorContext(config, formerResults);
+
         ProductExecutorCallbackImpl callback = new ProductExecutorCallbackImpl(executionContext, productExecutorContext, transactionService);
-        productExecutorContext.callback=callback;
+        productExecutorContext.callback = callback;
         productExecutorContext.afterCallbackSet();
-        
+
         return productExecutorContext;
     }
-    
+
 }

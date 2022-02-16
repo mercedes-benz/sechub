@@ -9,20 +9,20 @@ import org.junit.Test;
 
 public class ReportTest {
 
-	@Test
-	public void test_equals_and_hashcode_correct_implemented() {
-		/* prepare */
-		ScanReport objectA = new ScanReport();
-		objectA.uUID = UUID.randomUUID();
+    @Test
+    public void test_equals_and_hashcode_correct_implemented() {
+        /* prepare */
+        ScanReport objectA = new ScanReport();
+        objectA.uUID = UUID.randomUUID();
 
-		ScanReport objectBequalToA = new ScanReport();
-		objectBequalToA.uUID = objectA.uUID;
+        ScanReport objectBequalToA = new ScanReport();
+        objectBequalToA.uUID = objectA.uUID;
 
-		ScanReport objectCnotEqualToAOrB = new ScanReport();
-		objectCnotEqualToAOrB.uUID = UUID.randomUUID();
+        ScanReport objectCnotEqualToAOrB = new ScanReport();
+        objectCnotEqualToAOrB.uUID = UUID.randomUUID();
 
-		/* test */
-		testEqualsAndHashCodeCorrectImplemented(objectA, objectBequalToA, objectCnotEqualToAOrB);
-	}
+        /* test */
+        testEqualsAndHashCodeCorrectImplemented(objectA, objectBequalToA, objectCnotEqualToAOrB);
+    }
 
 }

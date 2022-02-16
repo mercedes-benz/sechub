@@ -29,11 +29,10 @@ public class PDSAdminMonitoringRestController {
 
     @Autowired
     private PDSMonitoringStatusService monitoringStatusService;
-    
 
     @Validated
     @RequestMapping(path = "monitoring/status", method = RequestMethod.GET)
-    @UseCaseAdminFetchesMonitoringStatus(@PDSStep(name="rest call",description = "admin fetches monitoring status by REST API",number=3))
+    @UseCaseAdminFetchesMonitoringStatus(@PDSStep(name = "rest call", description = "admin fetches monitoring status by REST API", number = 3))
     public PDSMonitoring getMonitoringStatus() {
         return monitoringStatusService.getMonitoringStatus();
     }

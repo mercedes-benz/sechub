@@ -53,9 +53,9 @@ class ServerSecurityLogHandlingTest {
                 hasMessageParameterContainingStrings(0, "UPDATE").
                 hasHTTPHeader("host","localhost:"+serverPort).
                 hasHTTPHeader("content-type", "application/json");
-        
+
         /* @formatter:on */
-        
+
     }
 
     @Test
@@ -78,7 +78,7 @@ class ServerSecurityLogHandlingTest {
                 hasMessageParameterContainingStrings(0, "bad_request").
                 hasHTTPHeader("host","localhost:"+serverPort).
                 hasHTTPHeader("content-type", "application/json");
-        
+
         /* @formatter:on */
     }
 
@@ -102,11 +102,10 @@ class ServerSecurityLogHandlingTest {
                 hasMessageParameterContainingStrings(0, "bad_request").
                 hasHTTPHeader("host","localhost:"+serverPort).
                 hasHTTPHeader("content-type", "application/json");
-        
+
         /* @formatter:on */
     }
-    
-    
+
     @Test
     void sending_http_method_GET_to_non_existing_url_will_be_logged_by_security_log_service() throws Exception {
         /* prepare */
@@ -126,9 +125,8 @@ class ServerSecurityLogHandlingTest {
                 hasMessageContaining("401").
                 hasHTTPHeader("host","localhost:"+serverPort).
                 hasHTTPHeader("content-type", "application/json");
-        
+
         /* @formatter:on */
     }
-    
 
 }

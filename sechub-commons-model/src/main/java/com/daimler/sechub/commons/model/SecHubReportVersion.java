@@ -6,7 +6,7 @@ package com.daimler.sechub.commons.model;
  * Minor number changes do represents non breaking changes (so only additions to
  * former report versions). But when a major number increases this means the
  * report structure has breaking changes.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

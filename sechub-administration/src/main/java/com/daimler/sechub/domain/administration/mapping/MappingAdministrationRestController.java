@@ -20,8 +20,8 @@ import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.mapping.MappingData;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesMappingConfiguration;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdmiUpdatesMappingConfiguration;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesMappingConfiguration;
 
 /**
  * The rest API for mapping administration done by a super admin.
@@ -35,22 +35,22 @@ import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdmiUpdatesM
 @Profile(Profiles.ADMIN_ACCESS)
 public class MappingAdministrationRestController {
 
-	@Autowired
-	FetchMappingService fetchMappingService;
-	
-	@Autowired
+    @Autowired
+    FetchMappingService fetchMappingService;
+
+    @Autowired
     UpdateMappingService updateMappingService;
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@UseCaseAdminFetchesMappingConfiguration(@Step(number=1,name="Rest call",description="Administrator wants to fetch a mapping configuration",needsRestDoc=true))
 	@RequestMapping(path = AdministrationAPIConstants.API_CONFIG_MAPPING, method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
 	public MappingData fetchMappingData(@PathVariable(name="mappingId") String mappingId) {
 		/* @formatter:on */
-		return fetchMappingService.fetchMappingData(mappingId);
-	}
-	
-	/* @formatter:off */
+        return fetchMappingService.fetchMappingData(mappingId);
+    }
+
+    /* @formatter:off */
     @UseCaseAdmiUpdatesMappingConfiguration(@Step(number=1,name="Rest call",description="Administrator wants to update a mapping configuration",needsRestDoc=true))
     @RequestMapping(path = AdministrationAPIConstants.API_CONFIG_MAPPING, method = RequestMethod.PUT, produces= {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.OK)
@@ -58,7 +58,5 @@ public class MappingAdministrationRestController {
         /* @formatter:on */
         updateMappingService.updateMapping(mappingId, mappingData);
     }
-
-
 
 }

@@ -30,18 +30,18 @@ public class FetchProductExecutorConfigService {
 
     /* @formatter:off */
     @UseCaseAdminFetchesExecutorConfiguration(
-            @Step(number = 2, 
-            name = "Service call", 
+            @Step(number = 2,
+            name = "Service call",
             description = "Service reads setup information for an existing product executor configuration"))
     /* @formatter:on */
     public ProductExecutorConfig fetchProductExecutorConfig(UUID uuid) {
         auditLogService.log("Reads setup for executor configuration:{}", uuid);
-        
+
         Optional<ProductExecutorConfig> config = repository.findById(uuid);
-        if (! config.isPresent()) {
-            throw new NotFoundException("Product executor config not found for uuid:"+uuid);
+        if (!config.isPresent()) {
+            throw new NotFoundException("Product executor config not found for uuid:" + uuid);
         }
-        
+
         return config.get();
     }
 

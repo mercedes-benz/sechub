@@ -30,7 +30,7 @@ import com.daimler.sechub.test.TestPortProvider;
 @RunWith(SpringRunner.class)
 @WebMvcTest(PDSAdminMonitoringRestController.class)
 /* @formatter:off */
-@ContextConfiguration(classes = { 
+@ContextConfiguration(classes = {
         PDSAdminMonitoringRestController.class,
         PDSAdminMonitoringRestControllerMockTest.SimpleTestConfiguration.class })
 /* @formatter:on */
@@ -51,7 +51,7 @@ public class PDSAdminMonitoringRestControllerMockTest {
     @Before
     public void before() throws Exception {
         /* prepare */
-        result  = PDSMonitoringTestDataUtil.createTestMonitoringWith2ClusterMembers();
+        result = PDSMonitoringTestDataUtil.createTestMonitoringWith2ClusterMembers();
     }
 
     @Test

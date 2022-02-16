@@ -36,7 +36,7 @@ public class DeleteProductExecutionProfileServiceTest {
     void existing_profile_can_be_deleted() {
         /* prepare */
         String profileId = "profileid1";
-        
+
         when(repository.findById(profileId)).thenReturn(Optional.of(mock(ProductExecutionProfile.class)));
 
         /* execute */
@@ -45,22 +45,22 @@ public class DeleteProductExecutionProfileServiceTest {
         /* test */
         verify(repository).deleteById(profileId); // check delete method was called
     }
-    
+
     @Test
     void non_existing_profile_cannot_be_deleted_and_throws_not_found_exception() {
         /* prepare */
         String profileId = "not-existing";
-        
-        when(repository.findById(any())).thenReturn(Optional.empty()); 
 
-        /* execute + test exception*/
-        assertThrows(NotFoundException.class, ()->{
+        when(repository.findById(any())).thenReturn(Optional.empty());
+
+        /* execute + test exception */
+        assertThrows(NotFoundException.class, () -> {
             serviceToTest.deleteProductExecutionProfile(profileId);
         });
 
-        /* test*/
+        /* test */
         verify(repository).findById(profileId); // check findById was used
-        verify(repository,never()).deleteById(any()); // check delete method was never called
+        verify(repository, never()).deleteById(any()); // check delete method was never called
     }
 
 }

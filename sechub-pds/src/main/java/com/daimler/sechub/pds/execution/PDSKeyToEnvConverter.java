@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
 public class PDSKeyToEnvConverter {
 
     private static final Pattern P = Pattern.compile("\\.");
-    
+
     public String convertKeyToEnv(String key) {
-        if (key==null) {
+        if (key == null) {
             return null;
         }
         return P.matcher(key).replaceAll("_").toUpperCase();

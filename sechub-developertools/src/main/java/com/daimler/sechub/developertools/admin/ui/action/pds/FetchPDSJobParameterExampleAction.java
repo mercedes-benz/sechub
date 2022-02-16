@@ -6,7 +6,7 @@ import com.daimler.sechub.developertools.admin.ui.UIContext;
 
 public class FetchPDSJobParameterExampleAction extends AbstractCreatePDSExamplePropertiesAction {
     private static final long serialVersionUID = 1L;
-    
+
     public FetchPDSJobParameterExampleAction(UIContext context) {
         super("Fetch PDS job parameter example configuration", context);
     }
@@ -15,6 +15,5 @@ public class FetchPDSJobParameterExampleAction extends AbstractCreatePDSExampleP
     protected void handleExamples(CreatePDSData data, PDSAdministration pds) {
         getContext().getOutputUI().output(data.jobParametersAsString);
     }
-
 
 }

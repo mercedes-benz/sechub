@@ -33,7 +33,7 @@ import com.daimler.sechub.pds.util.PDSResilientRetryExecutor.ExceptionThrower;
 
 /**
  * Represents the callable executed inside {@link PDSExecutionFutureTask}
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -298,7 +298,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
     /**
      * Is called before cancel operation on caller / task side
-     * 
+     *
      * @param mayInterruptIfRunning
      */
     @UseCaseUserCancelsJob(@PDSStep(name = "process cancelation", description = "process created by job will be destroyed", number = 4))

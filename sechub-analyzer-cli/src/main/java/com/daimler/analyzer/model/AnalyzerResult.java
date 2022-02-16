@@ -26,6 +26,7 @@ public class AnalyzerResult implements DeepClonable<AnalyzerResult> {
 
     /**
      * Converts this result to JSON representation
+     *
      * @param prettyPrint
      * @return JSON representation of this result
      * @throws JSONObjectException
@@ -41,7 +42,7 @@ public class AnalyzerResult implements DeepClonable<AnalyzerResult> {
 
     /**
      * Get all "no sechub" markers
-     * 
+     *
      * @return
      */
     public Map<String, List<MarkerPair>> getNoSecHubMarkers() {

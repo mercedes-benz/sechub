@@ -7,19 +7,18 @@ import com.daimler.sechub.adapter.checkmarx.support.ReportDetails;
 
 public interface CheckmarxAdapterContext extends AdapterContext<CheckmarxAdapterConfig> {
 
-	long getScanId();
+    long getScanId();
 
-	ReportDetails getReportDetails();
+    ReportDetails getReportDetails();
 
-	long getReportId();
+    long getReportId();
 
-	CheckmarxAdapter getCheckmarxAdapter();
+    CheckmarxAdapter getCheckmarxAdapter();
 
-	void setReportId(long reportId);
+    void setReportId(long reportId);
 
     CheckmarxOAuthData getoAuthData();
 
     void markAuthenticated(CheckmarxOAuthData data);
-
 
 }

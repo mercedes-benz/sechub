@@ -19,61 +19,62 @@ import com.daimler.sechub.sereco.metadata.SerecoWeb;
 @Component
 public class NetsparkerV1XMLImporter extends AbstractProductResultImporter {
 
-    public SerecoMetaData importResult(String xml) throws IOException{
-		SerecoMetaData metaData = new SerecoMetaData();
-		if (xml==null) {
-			xml="";
-		}
-		Document document;
-		try {
-			document = DocumentHelper.parseText(xml);
-		} catch (DocumentException e) {
-			throw new IOException("Import cannot parse xml",e);
-		}
+    public SerecoMetaData importResult(String xml) throws IOException {
+        SerecoMetaData metaData = new SerecoMetaData();
+        if (xml == null) {
+            xml = "";
+        }
+        Document document;
+        try {
+            document = DocumentHelper.parseText(xml);
+        } catch (DocumentException e) {
+            throw new IOException("Import cannot parse xml", e);
+        }
 
-		Element netsparkerCloudElement = document.getRootElement();
-		Element vulnerabilitiesElement = netsparkerCloudElement.element("vulnerabilities");
-		if (vulnerabilitiesElement==null) {
-			throw new IllegalStateException("no vulnerabilities element found!");
-		}
+        Element netsparkerCloudElement = document.getRootElement();
+        Element vulnerabilitiesElement = netsparkerCloudElement.element("vulnerabilities");
+        if (vulnerabilitiesElement == null) {
+            throw new IllegalStateException("no vulnerabilities element found!");
+        }
 
-		Iterator<Element> it = vulnerabilitiesElement.elementIterator();
-		while (it.hasNext()) {
-			Element vulnerabilityElement = it.next();
-			SerecoVulnerability vulnerability = new SerecoVulnerability();
-			metaData.getVulnerabilities().add(vulnerability);
+        Iterator<Element> it = vulnerabilitiesElement.elementIterator();
+        while (it.hasNext()) {
+            Element vulnerabilityElement = it.next();
+            SerecoVulnerability vulnerability = new SerecoVulnerability();
+            metaData.getVulnerabilities().add(vulnerability);
 
-			vulnerability.setSeverity(NetsparkerServerityConverter.convert(vulnerabilityElement.elementText("severity")));
-			String targetUrl = vulnerabilityElement.elementText("url");
+            vulnerability.setSeverity(NetsparkerServerityConverter.convert(vulnerabilityElement.elementText("severity")));
+            String targetUrl = vulnerabilityElement.elementText("url");
 
             SerecoWeb web = new SerecoWeb();
-			web.getRequest().setTarget(targetUrl); // at least we set the target URL. Other parts like evidence etc. are currently missing
-			
+            web.getRequest().setTarget(targetUrl); // at least we set the target URL. Other parts like evidence etc. are currently
+                                                   // missing
+
             vulnerability.setWeb(web);
-			vulnerability.setType(vulnerabilityElement.elementText("type"));
-			vulnerability.setDescription(NetsparkerHtmlToAsciiDocConverter.convert(vulnerabilityElement.elementText("description")));
-			vulnerability.setScanType(ScanType.WEB_SCAN);
+            vulnerability.setType(vulnerabilityElement.elementText("type"));
+            vulnerability.setDescription(NetsparkerHtmlToAsciiDocConverter.convert(vulnerabilityElement.elementText("description")));
+            vulnerability.setScanType(ScanType.WEB_SCAN);
 
-			Element classificationElement = vulnerabilityElement.element("classification");
-			if (classificationElement==null) {
-				throw new IllegalStateException("no classificaton element found!");
-			}
-			SerecoClassification classification = vulnerability.getClassification();
-			classification.setOwasp(classificationElement.elementText("owasp"));
-			classification.setWasc(classificationElement.elementText("wasc"));
-			classification.setCwe(classificationElement.elementText("cwe"));
-			classification.setCapec(classificationElement.elementText("capec"));
-			classification.setPci31(classificationElement.elementText("pci31"));
-			classification.setPci32(classificationElement.elementText("pci32"));
-			classification.setHipaa(classificationElement.elementText("hipaa"));
-			classification.setOwaspProactiveControls(classificationElement.elementText("owasppc"));
-		}
-		return metaData;
-	}
+            Element classificationElement = vulnerabilityElement.element("classification");
+            if (classificationElement == null) {
+                throw new IllegalStateException("no classificaton element found!");
+            }
+            SerecoClassification classification = vulnerability.getClassification();
+            classification.setOwasp(classificationElement.elementText("owasp"));
+            classification.setWasc(classificationElement.elementText("wasc"));
+            classification.setCwe(classificationElement.elementText("cwe"));
+            classification.setCapec(classificationElement.elementText("capec"));
+            classification.setPci31(classificationElement.elementText("pci31"));
+            classification.setPci32(classificationElement.elementText("pci32"));
+            classification.setHipaa(classificationElement.elementText("hipaa"));
+            classification.setOwaspProactiveControls(classificationElement.elementText("owasppc"));
+        }
+        return metaData;
+    }
 
-	@Override
-	protected ImportSupport createImportSupport() {
-		/* @formatter:off */
+    @Override
+    protected ImportSupport createImportSupport() {
+        /* @formatter:off */
 			return ImportSupport.
 								builder().
 									productId("Netsparker").
@@ -81,9 +82,6 @@ public class NetsparkerV1XMLImporter extends AbstractProductResultImporter {
 									contentIdentifiedBy("<netsparker-").
 									build();
 			/* @formatter:on */
-	}
-
-
-
+    }
 
 }

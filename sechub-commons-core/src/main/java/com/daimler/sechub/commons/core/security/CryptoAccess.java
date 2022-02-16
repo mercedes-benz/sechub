@@ -14,7 +14,7 @@ import javax.crypto.SecretKey;
  * can unseal and seal objects for example. Be aware: Every crypto access object
  * has its own secret key inside! So you need to use the same crypto access
  * object for you operations...
- * 
+ *
  * @author Albert Tregnaghi
  *
  * @param <T>
@@ -28,7 +28,7 @@ public class CryptoAccess<T extends Serializable> {
      * Shared crypto access which can encrypt/decrypt strings
      */
     public static final CryptoAccess<String> CRYPTO_STRING = new CryptoAccess<>();
-    
+
     /**
      * Shared crypto access which can encrypt/decrypt char arrays
      */

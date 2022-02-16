@@ -11,21 +11,20 @@ import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 
 public class CheckIsAliveScenario1IntTest {
 
-	@Rule
-	public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario1.class);
+    @Rule
+    public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario1.class);
 
-	/* +-----------------------------------------------------------------------+ */
-	/* +............................ Get server version .......................+ */
-	/* +-----------------------------------------------------------------------+ */
+    /* +-----------------------------------------------------------------------+ */
+    /* +............................ Get server version .......................+ */
+    /* +-----------------------------------------------------------------------+ */
 
-	@Test
-	public void get_is_alive() {
-		/* execute */
-		boolean alive= as(ANONYMOUS).getIsAlive();
+    @Test
+    public void get_is_alive() {
+        /* execute */
+        boolean alive = as(ANONYMOUS).getIsAlive();
 
-		/* test*/
-		assertTrue(alive);
-	}
-
+        /* test */
+        assertTrue(alive);
+    }
 
 }

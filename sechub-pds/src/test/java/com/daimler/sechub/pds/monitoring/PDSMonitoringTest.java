@@ -14,25 +14,23 @@ public class PDSMonitoringTest {
     public void monitoring_toJSON() throws Exception {
         /* prepare */
         PDSMonitoring monitoringToTest = PDSMonitoringTestDataUtil.createTestMonitoringWith2ClusterMembers();
-        
-        /* execute*/
+
+        /* execute */
         String json = monitoringToTest.toJSON();
-        
+
         /* test */
         assertNotNull(json);
     }
 
-    
-    
     @Test
     public void monitoring_example1_from_doc_can_be_loaded_and_contains_values() throws Exception {
         /* prepare */
         File file = new File("./../sechub-doc/src/docs/asciidoc/documents/pds/pds-monitoring-result-example1.json");
         String json = FileUtils.readFileToString(file, "UTF-8");
-        
+
         /* execute */
         PDSMonitoring monitoring = PDSMonitoring.fromJSON(json);
-        
+
         /* test */
         assertNotNull(monitoring);
         assertEquals(5, monitoring.getJobs().size());

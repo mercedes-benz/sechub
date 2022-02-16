@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.restdoc;
 
-import static com.daimler.sechub.test.TestURLBuilder.https;
 import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.EMAIL_ADDRESS;
+import static com.daimler.sechub.test.TestURLBuilder.https;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
@@ -41,29 +41,29 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 @RunWith(SpringRunner.class)
 @WebMvcTest(AnonymousUserRequestNewApiTokenRestController.class)
 @ContextConfiguration(classes = { AnonymousUserRequestNewApiTokenRestController.class,
-		AnonymousUserRequestsNewApiTokenRestDocTest.SimpleTestConfiguration.class })
+        AnonymousUserRequestsNewApiTokenRestDocTest.SimpleTestConfiguration.class })
 @WithMockUser
 @ActiveProfiles(Profiles.TEST)
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 public class AnonymousUserRequestsNewApiTokenRestDocTest {
 
-	private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
+    private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
-	@Autowired
-	private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-	@MockBean
-	private AnonymousUserRequestsNewApiTokenService newApiTokenService;
+    @MockBean
+    private AnonymousUserRequestsNewApiTokenService newApiTokenService;
 
-	@Test
-	@UseCaseRestDoc(useCase = UseCaseUserRequestsNewApiToken.class)
-	public void calling_with_api_1_0_and_valid_userid_and_email_returns_HTTP_200() throws Exception {
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseUserRequestsNewApiToken.class)
+    public void calling_with_api_1_0_and_valid_userid_and_email_returns_HTTP_200() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAnonymousRequestNewApiToken(EMAIL_ADDRESS.pathElement());
         Class<? extends Annotation> useCase = UseCaseUserRequestsNewApiToken.class;
 
-		/* execute */
-		/* @formatter:off */
+        /* execute */
+        /* @formatter:off */
         this.mockMvc.perform(
         		post(apiEndpoint,"emailAdress@test.com").
         		contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -83,13 +83,13 @@ public class AnonymousUserRequestsNewApiTokenRestDocTest {
         			        ));
 
         /* @formatter:on */
-	}
+    }
 
-	@TestConfiguration
-	@Profile(Profiles.TEST)
-	@EnableAutoConfiguration
-	public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    @TestConfiguration
+    @Profile(Profiles.TEST)
+    @EnableAutoConfiguration
+    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
 
-	}
+    }
 
 }

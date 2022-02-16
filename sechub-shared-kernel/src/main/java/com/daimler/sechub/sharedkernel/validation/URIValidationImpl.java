@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class URIValidationImpl extends AbstractValidation<URI> implements URIValidation {
 
     public static final int URI_LENGTH_MAX = 255;
-    
+
     @Override
     protected void setup(AbstractValidation<URI>.ValidationConfig config) {
 
@@ -23,7 +23,7 @@ public class URIValidationImpl extends AbstractValidation<URI> implements URIVal
             /* already handled before */
             return;
         }
-        
+
         if (uri.toString().length() > URI_LENGTH_MAX) {
             addErrorMessage(context, "URI exceeds maximum of " + URI_LENGTH_MAX + " characters");
         }

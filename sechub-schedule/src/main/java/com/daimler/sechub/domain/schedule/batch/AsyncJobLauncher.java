@@ -17,22 +17,22 @@ import org.springframework.core.task.SimpleAsyncTaskExecutor;
  * A special job launcher which uses a simple async task executor so job is
  * executed asynchronous (in spite of default implementation in
  * {@link SimpleJobLauncher} which is synchronous)
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
 public class AsyncJobLauncher extends SimpleJobLauncher {
 
-	private static final Logger LOG = LoggerFactory.getLogger(AsyncJobLauncher.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AsyncJobLauncher.class);
 
-	public AsyncJobLauncher() {
-		this.setTaskExecutor(new SimpleAsyncTaskExecutor("async-job-launcher"));
-	}
+    public AsyncJobLauncher() {
+        this.setTaskExecutor(new SimpleAsyncTaskExecutor("async-job-launcher"));
+    }
 
-	@Override
-	public JobExecution run(Job job, JobParameters jobParameters) throws JobExecutionAlreadyRunningException,
-			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
-		LOG.info("async run of job :{}", job.getName());
-		return super.run(job, jobParameters);
-	}
+    @Override
+    public JobExecution run(Job job, JobParameters jobParameters)
+            throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
+        LOG.info("async run of job :{}", job.getName());
+        return super.run(job, jobParameters);
+    }
 }

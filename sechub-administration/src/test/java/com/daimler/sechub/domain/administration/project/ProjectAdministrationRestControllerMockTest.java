@@ -53,7 +53,7 @@ public class ProjectAdministrationRestControllerMockTest {
 
     @Autowired
     private MockMvc mockMvc;
-    
+
     @MockBean
     ProjectCreationService creationService;
 
@@ -77,16 +77,16 @@ public class ProjectAdministrationRestControllerMockTest {
 
     @MockBean
     ListProjectsService listProjectsService;
-    
+
     @MockBean
     ProjectRepository mockedProjectRepository;
-    
+
     @MockBean
     ProjectTransactionService transactionService;
 
     @MockBean
     CreateProjectInputValidator createProjectInputvalidator;
-    
+
     @MockBean
     ProjectChangeAccessLevelService projectChangeAccessLevelService;
 
@@ -101,7 +101,7 @@ public class ProjectAdministrationRestControllerMockTest {
         List<String> projects = new ArrayList<>();
         projects.add("project1");
         projects.add("project2");
-        
+
         when(listProjectsService.listProjects()).thenReturn(projects);
 
         /* execute + test @formatter:off */
@@ -175,14 +175,14 @@ public class ProjectAdministrationRestControllerMockTest {
 
     @Test
     public void get_project_details_returns_project_details() throws Exception {
-                
+
         Project project = new Project();
         project.id = "project1";
         project.description = "description";
         project.owner = new User();
-        
+
         ProjectDetailInformation details = new ProjectDetailInformation(project);
-        
+
         when(detailService.fetchDetails(matches("project1"))).thenReturn(details);
 
         /* execute + test @formatter:off */
@@ -196,11 +196,11 @@ public class ProjectAdministrationRestControllerMockTest {
         andExpect(jsonPath("$.description", CoreMatchers.equalTo("description"))).
         andExpect(jsonPath("$.owner", CoreMatchers.nullValue())).
         andExpect(jsonPath("$.users", CoreMatchers.notNullValue()));
-        
+
         verify(detailService).fetchDetails(matches("project1"));
         /* @formatter:on */
     }
-    
+
     @Test
     public void change_project_calls_change_details() throws Exception {
 
@@ -214,26 +214,26 @@ public class ProjectAdministrationRestControllerMockTest {
         andDo(print()).
         andExpect(status().isOk()).
         andReturn();
-        
+
         verify(detailChangeService).changeProjectDescription(matches("project1"), any());
         /* @formatter:on */
     }
-    
+
     @Test
     public void when_admin_tries_to_change_project_description_but_request_body_is_missing() throws Exception {
 
         /* execute + test @formatter:off */
-        
+
         this.mockMvc.perform(
                 post(https(PORT_USED).buildAdminChangesProjectDescriptionUrl(PROJECT_ID.pathElement()), "project1").
                 contentType(MediaType.APPLICATION_JSON).
                 content("")
                 ).
         andExpect(status().isBadRequest());
-        
+
         /* @formatter:on */
-    }    
-    
+    }
+
     @TestConfiguration
     @Profile(Profiles.TEST)
     @EnableAutoConfiguration

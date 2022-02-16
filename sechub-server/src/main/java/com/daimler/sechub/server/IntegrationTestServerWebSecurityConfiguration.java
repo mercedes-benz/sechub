@@ -18,9 +18,9 @@ import com.daimler.sechub.sharedkernel.Profiles;
 @Profile(Profiles.INTEGRATIONTEST)
 public class IntegrationTestServerWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-	@Override
-	public void configure(WebSecurity web) {
-		/* api for integration test is always allowed */
-		web.ignoring().antMatchers("api/integrationtest/*");
-	}
+    @Override
+    public void configure(WebSecurity web) {
+        /* api for integration test is always allowed */
+        web.ignoring().antMatchers("api/integrationtest/*");
+    }
 }

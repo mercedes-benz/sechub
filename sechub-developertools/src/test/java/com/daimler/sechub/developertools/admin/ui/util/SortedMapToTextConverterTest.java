@@ -57,7 +57,6 @@ public class SortedMapToTextConverterTest {
         assertEquals("key1=value1\nkey2=value2", result);
     }
 
-    
     @Test
     public void key_values_are_trimmed() {
         /* prepare */

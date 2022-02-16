@@ -20,7 +20,7 @@ public class NetsparkerHtmlToAsciiDocConverter {
 
     /**
      * Convert unsanitized HTML into the AsciiDoc plain text format.
-     * 
+     *
      * @param unsanitizedHtml
      * @return The content in the AsciiDoc plain text format.
      */
@@ -40,14 +40,14 @@ public class NetsparkerHtmlToAsciiDocConverter {
         convertLists(document);
 
         convertTables(document);
-        
+
         String text = document.wholeText().trim();
-        
+
         text = removeSpacesBeforeNewline(text);
 
         return text;
     }
-    
+
     private static String removeSpacesBeforeNewline(String text) {
         text = SPACES_BEFORE_NEWLINE.matcher(text).replaceAll("\n\n");
         return text;

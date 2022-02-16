@@ -9,31 +9,30 @@ import org.springframework.mock.web.MockMultipartFile;
 /**
  * Based on {@link MockMultipartFile} - with some extensions:
  * <ol>
- * <li>
- *  remember last input stream fetched by {@link #getInputStream()}. This stream
- *  object can be fetched by {@link #getRememberedInputStream()}. So mockito tests
- *  can verify input stream parameters
- * </li>
+ * <li>remember last input stream fetched by {@link #getInputStream()}. This
+ * stream object can be fetched by {@link #getRememberedInputStream()}. So
+ * mockito tests can verify input stream parameters</li>
  * </ol>
+ *
  * @author Albert Tregnaghi
  *
  */
-public class ExtendedMockMultipartFile extends MockMultipartFile{
+public class ExtendedMockMultipartFile extends MockMultipartFile {
 
-    private InputStream rememberedInputStream; 
-    
+    private InputStream rememberedInputStream;
+
     public ExtendedMockMultipartFile(String name, byte[] content) {
         super(name, content);
     }
-    
+
     @Override
     public InputStream getInputStream() throws IOException {
-        rememberedInputStream= super.getInputStream();
+        rememberedInputStream = super.getInputStream();
         return rememberedInputStream;
     }
-    
+
     public InputStream getRememberedInputStream() {
         return rememberedInputStream;
     }
-    
+
 }

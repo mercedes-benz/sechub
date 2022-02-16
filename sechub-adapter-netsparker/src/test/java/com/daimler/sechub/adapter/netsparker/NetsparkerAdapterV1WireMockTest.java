@@ -24,82 +24,82 @@ import com.github.tomakehurst.wiremock.stubbing.Scenario;
 
 public class NetsparkerAdapterV1WireMockTest {
 
-	private static final String APPLICATION_JSON = "application/json";
-	private static final String APPLICATION_XML = "application/xml";
+    private static final String APPLICATION_JSON = "application/json";
+    private static final String APPLICATION_XML = "application/xml";
 
-	private static final String WEBSITE_ID = "93cc5894f38546f45f7aa8860366c07e";
+    private static final String WEBSITE_ID = "93cc5894f38546f45f7aa8860366c07e";
 
-	private static final int HTTPS_PORT = TestPortProvider.DEFAULT_INSTANCE.getWireMockTestHTTPSPort();
+    private static final int HTTPS_PORT = TestPortProvider.DEFAULT_INSTANCE.getWireMockTestHTTPSPort();
 
-	private static final int HTTP_PORT = TestPortProvider.DEFAULT_INSTANCE.getWireMockTestHTTPPort();
+    private static final int HTTP_PORT = TestPortProvider.DEFAULT_INSTANCE.getWireMockTestHTTPPort();
 
-	private static final String LICENSE_ID = "12345licenseID";
+    private static final String LICENSE_ID = "12345licenseID";
 
-	private static final String BASE_64_TOKEN = "12345BASE64_TOKEN";
+    private static final String BASE_64_TOKEN = "12345BASE64_TOKEN";
 
-	private static final String ROOT_URL = "http://example.org";
+    private static final String ROOT_URL = "http://example.org";
 
-	private static final String TARGET_URL = "http://example.org";
+    private static final String TARGET_URL = "http://example.org";
 
-	private static final String NETSPARKER_BASE_URL = "http://localhost:" + HTTP_PORT;
+    private static final String NETSPARKER_BASE_URL = "http://localhost:" + HTTP_PORT;
 
-	private static final String POLICY_ID = "12345POLICY_ID";
+    private static final String POLICY_ID = "12345POLICY_ID";
 
-	@Rule
-	public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().port(HTTP_PORT).httpsPort(HTTPS_PORT));
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().port(HTTP_PORT).httpsPort(HTTPS_PORT));
 
-	private NetsparkerAdapter adapterToTest;
+    private NetsparkerAdapter adapterToTest;
 
-	private NetsparkerAdapterConfig config;
-	private IcrementalAdditionalPrefixAPIURLSupport apiURLSupport;
+    private NetsparkerAdapterConfig config;
+    private IcrementalAdditionalPrefixAPIURLSupport apiURLSupport;
 
-	@Before
-	public void before() {
-		apiURLSupport = new IcrementalAdditionalPrefixAPIURLSupport("netsparkertest");
-		// System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "debug");
-		adapterToTest = new NetsparkerAdapterV1() {
-			@Override
-			protected APIURLSupport createAPIURLSupport() {
-				return apiURLSupport;
-			}
-		};
+    @Before
+    public void before() {
+        apiURLSupport = new IcrementalAdditionalPrefixAPIURLSupport("netsparkertest");
+        // System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "debug");
+        adapterToTest = new NetsparkerAdapterV1() {
+            @Override
+            protected APIURLSupport createAPIURLSupport() {
+                return apiURLSupport;
+            }
+        };
 
-		config = mock(NetsparkerAdapterConfig.class);
+        config = mock(NetsparkerAdapterConfig.class);
 
-		when(config.getTargetAsString()).thenReturn(TARGET_URL);
-		when(config.getProductBaseURL()).thenReturn(NETSPARKER_BASE_URL);
-		when(config.getCredentialsBase64Encoded()).thenReturn(BASE_64_TOKEN);
-		when(config.getLicenseID()).thenReturn(LICENSE_ID);
-		when(config.getPolicyId()).thenReturn(POLICY_ID);
-		when(config.getAgentName()).thenReturn("agentName");
-		when(config.getAgentGroupName()).thenReturn("agentGroupName");
-		when(config.getTimeOutInMilliseconds()).thenReturn(1000*10);
-		when(config.getWebsiteName()).thenReturn(WEBSITE_ID);
-	}
+        when(config.getTargetAsString()).thenReturn(TARGET_URL);
+        when(config.getProductBaseURL()).thenReturn(NETSPARKER_BASE_URL);
+        when(config.getCredentialsBase64Encoded()).thenReturn(BASE_64_TOKEN);
+        when(config.getLicenseID()).thenReturn(LICENSE_ID);
+        when(config.getPolicyId()).thenReturn(POLICY_ID);
+        when(config.getAgentName()).thenReturn("agentName");
+        when(config.getAgentGroupName()).thenReturn("agentGroupName");
+        when(config.getTimeOutInMilliseconds()).thenReturn(1000 * 10);
+        when(config.getWebsiteName()).thenReturn(WEBSITE_ID);
+    }
 
-	@Test
-	public void start_scan_returns_returns_result_when_using_agentgroup() throws Exception {
-		common_start_scan_returns_result(true);
-	}
+    @Test
+    public void start_scan_returns_returns_result_when_using_agentgroup() throws Exception {
+        common_start_scan_returns_result(true);
+    }
 
-	@Test
-	public void start_scan_returns_returns_result_when_using_agent() throws Exception {
-		common_start_scan_returns_result(false);
-	}
+    @Test
+    public void start_scan_returns_returns_result_when_using_agent() throws Exception {
+        common_start_scan_returns_result(false);
+    }
 
-	private void common_start_scan_returns_result(boolean configHasAgentGroup) throws Exception {
-		/* prepare */
+    private void common_start_scan_returns_result(boolean configHasAgentGroup) throws Exception {
+        /* prepare */
 
-		when(config.hasAgentGroup()).thenReturn(configHasAgentGroup);
+        when(config.hasAgentGroup()).thenReturn(configHasAgentGroup);
 
-		JSONObject newWebsiteBodyJSON = new JSONObject();
-		newWebsiteBodyJSON.put("RootUrl", ROOT_URL);
-		newWebsiteBodyJSON.put("Name", WEBSITE_ID);
-		newWebsiteBodyJSON.put("LicenseType", "Subscription");
-		newWebsiteBodyJSON.put("SubscriptionBasedProductLicenseId", LICENSE_ID);
+        JSONObject newWebsiteBodyJSON = new JSONObject();
+        newWebsiteBodyJSON.put("RootUrl", ROOT_URL);
+        newWebsiteBodyJSON.put("Name", WEBSITE_ID);
+        newWebsiteBodyJSON.put("LicenseType", "Subscription");
+        newWebsiteBodyJSON.put("SubscriptionBasedProductLicenseId", LICENSE_ID);
 
-		String createNewWebsiteBody = newWebsiteBodyJSON.toString();
-		/* @formatter:off */
+        String createNewWebsiteBody = newWebsiteBodyJSON.toString();
+        /* @formatter:off */
 		/* +-----------------------------------------------------------------------+ */
     	/* +............................ check website ............................+ */
     	/* +-----------------------------------------------------------------------+ */
@@ -180,21 +180,21 @@ public class NetsparkerAdapterV1WireMockTest {
 
         AdapterMetaDataCallback callback = mock(AdapterMetaDataCallback.class);
         /* execute */
-        String result = adapterToTest.start(config,callback);
+        String result = adapterToTest.start(config, callback);
 
-		/* test */
-		verify(getRequestedFor(urlEqualTo("/netsparkertest_1/api/1.0/websites/get?query=" + WEBSITE_ID)));
-		verify(postRequestedFor(urlEqualTo("/netsparkertest_2/api/1.0/websites/new")));
-		verify(postRequestedFor(urlEqualTo("/netsparkertest_3/api/1.0/scans/new")));
-		verify(getRequestedFor(urlEqualTo("/netsparkertest_4/api/1.0/scans/status/1234567890"))); // scanning
-		verify(getRequestedFor(urlEqualTo("/netsparkertest_5/api/1.0/scans/status/1234567890"))); // complete...
+        /* test */
+        verify(getRequestedFor(urlEqualTo("/netsparkertest_1/api/1.0/websites/get?query=" + WEBSITE_ID)));
+        verify(postRequestedFor(urlEqualTo("/netsparkertest_2/api/1.0/websites/new")));
+        verify(postRequestedFor(urlEqualTo("/netsparkertest_3/api/1.0/scans/new")));
+        verify(getRequestedFor(urlEqualTo("/netsparkertest_4/api/1.0/scans/status/1234567890"))); // scanning
+        verify(getRequestedFor(urlEqualTo("/netsparkertest_5/api/1.0/scans/status/1234567890"))); // complete...
 
-		assertEquals(xml, result);
-	}
+        assertEquals(xml, result);
+    }
 
-	@TestConfiguration
-	@EnableAutoConfiguration
-	public static class SimpleTestConfiguration{
+    @TestConfiguration
+    @EnableAutoConfiguration
+    public static class SimpleTestConfiguration {
 
-	}
+    }
 }

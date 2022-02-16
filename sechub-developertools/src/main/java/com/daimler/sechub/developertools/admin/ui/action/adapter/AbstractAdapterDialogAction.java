@@ -18,19 +18,18 @@ public abstract class AbstractAdapterDialogAction extends AbstractAction {
     protected ProductExecutorTemplatesDialogUI getDialogUI() {
         return dialogUI;
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
             execute(e);
-        }catch(Exception ex) {
+        } catch (Exception ex) {
             getDialogUI().getContext().getOutputUI().error("Was not able to perform action", ex);
             ex.printStackTrace();
         }
-        
-    }
-    
-    protected abstract void execute(ActionEvent e) throws Exception ;
 
+    }
+
+    protected abstract void execute(ActionEvent e) throws Exception;
 
 }

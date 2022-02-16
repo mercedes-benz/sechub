@@ -62,7 +62,6 @@ public class ProductExecutionProfileRepositoryDBTest {
 
         String projectIdA = "2projectA";
         String projectIdB = "2projectB";
-        
 
         createProfileWithProjectRelation(profileId1, projectIdA, projectIdB);
         createProfileWithProjectRelation(profileId2, projectIdA, projectIdB);
@@ -123,10 +122,9 @@ public class ProductExecutionProfileRepositoryDBTest {
 
         String projectIdB = "5projectB";
         String projectIdC = "5projectC";
-        
 
-        createProfileWithProjectRelation(profileId2, projectIdB,projectIdC);
-        createProfileWithProjectRelation(profileId3, projectIdB,projectIdC);
+        createProfileWithProjectRelation(profileId2, projectIdB, projectIdC);
+        createProfileWithProjectRelation(profileId3, projectIdB, projectIdC);
 
         /* execute */
         int count = repositoryToTest.countRelationShipEntries(profileId2, projectIdB);

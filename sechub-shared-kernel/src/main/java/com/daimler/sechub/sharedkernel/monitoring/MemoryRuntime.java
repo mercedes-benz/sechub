@@ -3,7 +3,7 @@ package com.daimler.sechub.sharedkernel.monitoring;
 
 /**
  * Memory runtime data
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

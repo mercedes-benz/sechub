@@ -98,7 +98,7 @@ public class AssertReport {
             assertEquals(type, finding.getType());
             return this;
         }
-        
+
         public String getDescription() {
             return finding.getDescription();
         }
@@ -161,9 +161,9 @@ public class AssertReport {
             }
             return this;
         }
-        
+
         public AssertFinding hasCweId(int cweId) {
-            if (finding.getCweId()==null) {
+            if (finding.getCweId() == null) {
                 dump();
                 fail("No cwe id found inside finding at all!");
             }
@@ -244,12 +244,12 @@ public class AssertReport {
         assertNotNull(findings);
         return findings;
     }
-    
+
     public AssertReport hasJobUUID(UUID uuid) {
         assertEquals(uuid, report.getJobUUID());
         return this;
     }
-    
+
     public AssertReport hasJobUUID(String uuidAsString) {
         return hasJobUUID(UUID.fromString(uuidAsString));
     }

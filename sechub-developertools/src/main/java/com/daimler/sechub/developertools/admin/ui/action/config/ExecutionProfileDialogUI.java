@@ -55,7 +55,7 @@ public class ExecutionProfileDialogUI {
     private EditConfigurationAction editConfigurationAction;
     private JLabel projectIdsLabel;
     private String buttonOkText;
-    
+
     public ExecutionProfileDialogUI(UIContext context, String title) {
         this(context, title, true, createExampleProfile());
     }
@@ -66,7 +66,7 @@ public class ExecutionProfileDialogUI {
         this.title = title;
         this.idEditAllowed = idEditAllowed;
         this.editConfigurationAction = new EditConfigurationAction(context);
-        this.buttonOkText="Ok";
+        this.buttonOkText = "Ok";
     }
 
     UIContext getContext() {
@@ -99,11 +99,11 @@ public class ExecutionProfileDialogUI {
         dialog.setLocationRelativeTo(context.getFrame());
         dialog.setVisible(true);
         dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
-        
+
     }
-    
+
     public void setTextForOKButton(String text) {
-        buttonOkText=text;
+        buttonOkText = text;
     }
 
     private void createButtonPanel(JDialog dialog) {
@@ -112,7 +112,7 @@ public class ExecutionProfileDialogUI {
         buttonOk = new JButton(buttonOkText);
         buttonOk.addActionListener((event) -> {
             String profileId = fetchProfileIdFromUI();
-            if (profileId==null || profileId.isEmpty()) {
+            if (profileId == null || profileId.isEmpty()) {
                 idTextField.setBorder(BorderFactory.createLineBorder(Color.RED));
                 return;
             }
@@ -163,39 +163,39 @@ public class ExecutionProfileDialogUI {
         configurationTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getButton()==MouseEvent.BUTTON1 && e.getClickCount()>1) {
+                if (e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() > 1) {
                     int row = configurationTable.getSelectedRow();
                     Object selectedValue = model.getValueAt(row, 2);
                     if (selectedValue instanceof UUID) {
                         UUID uuid = (UUID) selectedValue;
-                        
+
                         boolean changed = editConfigurationAction.executeDirectly(uuid);
                         if (!changed) {
                             return;
                         }
                         reloadChangedDataIntoLocalProfile(uuid);
-                    }else {
-                        throw new IllegalStateException("not a uuid:"+selectedValue);
+                    } else {
+                        throw new IllegalStateException("not a uuid:" + selectedValue);
                     }
                 }
             }
 
             private void reloadChangedDataIntoLocalProfile(UUID uuid) {
                 TestExecutorConfig found = null;
-                for (TestExecutorConfig config: profile.configurations) {
-                    if (uuid.equals(config.uuid)){
-                        found=config;
+                for (TestExecutorConfig config : profile.configurations) {
+                    if (uuid.equals(config.uuid)) {
+                        found = config;
                         break;
                     }
                 }
-                if (found==null) {
-                    getContext().getOutputUI().error("Did not found config again with uuid:"+uuid);
+                if (found == null) {
+                    getContext().getOutputUI().error("Did not found config again with uuid:" + uuid);
                     return;
                 }
                 profile.configurations.remove(found);
                 TestExecutorConfig newConfig = getContext().getAdministration().fetchExecutorConfiguration(uuid);
                 profile.configurations.add(newConfig);
-                
+
                 rebuildTableModelRows();
             }
         });
@@ -208,9 +208,9 @@ public class ExecutionProfileDialogUI {
         GridBagConstraints tableConstraint = createComponentConstraint(row++);
         tableConstraint.gridx = 0;
         tableConstraint.gridwidth++;
-        tableConstraint.weighty=0.5;
+        tableConstraint.weighty = 0.5;
         JScrollPane tableScrollPane = new JScrollPane(configurationTable);
-        tableScrollPane.setPreferredSize(new Dimension(600,200));
+        tableScrollPane.setPreferredSize(new Dimension(600, 200));
         mainPanel.add(tableScrollPane, tableConstraint);
 
         JPanel buttonPanel = new JPanel();
@@ -223,11 +223,11 @@ public class ExecutionProfileDialogUI {
         /* project ids - label */
         projectIdsLabel = new JLabel();
         GridBagConstraints projectIdLabelConstraint = createComponentConstraint(row++);
-        projectIdLabelConstraint.ipady=0;
+        projectIdLabelConstraint.ipady = 0;
         projectIdLabelConstraint.gridx = 0;
         projectIdLabelConstraint.gridwidth++;
-        mainPanel.add(projectIdsLabel,projectIdLabelConstraint);
-        
+        mainPanel.add(projectIdsLabel, projectIdLabelConstraint);
+
         /* text area for project ids */
         projectIdsTextArea = new JTextArea();
         projectIdsTextArea.setLineWrap(true);
@@ -236,23 +236,23 @@ public class ExecutionProfileDialogUI {
         GridBagConstraints textAreaConstraint = createComponentConstraint(row++);
         textAreaConstraint.gridx = 0;
         textAreaConstraint.gridwidth++;
-        textAreaConstraint.weighty=0.5;
+        textAreaConstraint.weighty = 0.5;
         JScrollPane textAreaScrollPane = new JScrollPane(projectIdsTextArea);
-        textAreaScrollPane.setPreferredSize(new Dimension(600,200));
+        textAreaScrollPane.setPreferredSize(new Dimension(600, 200));
         mainPanel.add(textAreaScrollPane, textAreaConstraint);
-        
+
         updateProjectIdsAtUI();
-        
+
     }
 
     private void updateProjectIdsAtUI() {
         String json = JSONConverter.get().toJSON(profile.projectIds);
         projectIdsTextArea.setText(json);
-        projectIdsLabel.setText("Assigned projects:"+profile.projectIds.size());
+        projectIdsLabel.setText("Assigned projects:" + profile.projectIds.size());
     }
 
     private void rebuildTableModelRows() {
-        /* clear old model - by set row count 0 - removes old data...*/
+        /* clear old model - by set row count 0 - removes old data... */
         model.setRowCount(0);
         /* name, enabled, uuid */
         for (TestExecutorConfig config : profile.configurations) {
@@ -328,7 +328,8 @@ public class ExecutionProfileDialogUI {
             profile.id = fetchProfileIdFromUI();
         }
         profile.description = descriptionTextArea.getText();
-        profile.projectIds=null; // set explicit to null, we cannot update this, and we do not want it inside output json... 
+        profile.projectIds = null; // set explicit to null, we cannot update this, and we do not want it inside
+                                   // output json...
         return profile;
     }
 

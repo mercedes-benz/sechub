@@ -15,7 +15,9 @@ import com.daimler.sechub.sharedkernel.mapping.MappingIdentifier;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdmiUpdatesMappingConfiguration;
 
 /**
- * The scan config service represents a global scan configuration which can contain for example mappings
+ * The scan config service represents a global scan configuration which can
+ * contain for example mappings
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -54,8 +56,8 @@ public class ScanConfigService {
     }
 
     /**
-     * Get provider to resolve IDs by a given name. Deprecation: This method should NOT be used
-     * outside this package to avoid usage without mapping identifiers!
+     * Get provider to resolve IDs by a given name. Deprecation: This method should
+     * NOT be used outside this package to avoid usage without mapping identifiers!
      *
      * @param namePatternMappingId
      * @return provider, never <code>null</code>

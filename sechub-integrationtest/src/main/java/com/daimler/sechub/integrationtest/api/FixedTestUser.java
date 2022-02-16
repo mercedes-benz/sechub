@@ -8,7 +8,7 @@ import com.daimler.sechub.integrationtest.internal.TestScenario;
  * changed by scenarios. It is even possible to setup a fixed email address.
  * Only necessary for some special purposes - e.g. inside DAUI where test
  * framework methods are used having TestUser arguments.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

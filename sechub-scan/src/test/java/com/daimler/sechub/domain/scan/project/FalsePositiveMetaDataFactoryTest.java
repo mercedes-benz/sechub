@@ -31,9 +31,9 @@ class FalsePositiveMetaDataFactoryTest {
         FalsePositiveMetaData metaData = factoryToTest.createMetaData(codeScanfinding);
 
         /* test */
-        assertEquals(4211,metaData.getCweId());
+        assertEquals(4211, metaData.getCweId());
         assertNull(metaData.getCveId()); // we do not expect a CVE id here, even when set in report
-        
+
         assertEquals(ScanType.CODE_SCAN, metaData.getScanType());
         assertNull(metaData.getWeb());
 
@@ -60,9 +60,9 @@ class FalsePositiveMetaDataFactoryTest {
 
         /* test */
         assertEquals(ScanType.WEB_SCAN, metaData.getScanType());
-        assertEquals(4211,metaData.getCweId());
-        assertEquals("CVE-4211",metaData.getCveId()); // most times a CVE makes more sense in infrastructure scans, but maybe possible
-     
+        assertEquals(4211, metaData.getCweId());
+        assertEquals("CVE-4211", metaData.getCveId()); // most times a CVE makes more sense in infrastructure scans, but maybe possible
+
         assertNull(metaData.getCode());
 
         FalsePositiveWebMetaData web = metaData.getWeb();

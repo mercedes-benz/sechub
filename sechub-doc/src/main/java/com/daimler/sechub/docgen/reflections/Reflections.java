@@ -23,7 +23,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 /**
  * A very simple replacement for `org.reflections` library. But fullfils
  * requirements for sechub documentation generation... and works with JDK11
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -74,7 +74,8 @@ public class Reflections {
     }
 
     private void visitEveryClass(Visitor visitor) {
-        for (@SuppressWarnings("rawtypes") Class clazz : classesToInspect) {
+        for (@SuppressWarnings("rawtypes")
+        Class clazz : classesToInspect) {
             visitor.visit(clazz);
         }
     }
@@ -101,9 +102,9 @@ public class Reflections {
                 public void visit(Class<?> clazz) {
                     for (Method method : clazz.getDeclaredMethods()) {
                         if (method.getDeclaredAnnotation(annotation) != null) {
-                            if (annotation.equals(UseCaseRestDoc.class)){
+                            if (annotation.equals(UseCaseRestDoc.class)) {
                                 if (GeneratorConstants.DEBUG) {
-                                    LOG.info("UsecaseRestDoc found:{}",clazz);
+                                    LOG.info("UsecaseRestDoc found:{}", clazz);
                                 }
                             }
                             newResult.add(method);
@@ -158,7 +159,7 @@ public class Reflections {
                 @SuppressWarnings("unchecked")
                 @Override
                 public void visit(Class<?> clazzToInspect) {
-                    if (clazzToInspect==clazz) {
+                    if (clazzToInspect == clazz) {
                         return;
                     }
                     if (clazz.isAssignableFrom(clazzToInspect)) {
@@ -271,7 +272,7 @@ public class Reflections {
             LOG.info("Add source directory:{}", deepSubDir);
             this.sourceDirectories.add(deepSubDir);
         }
-        this.sourceDirectories.add(new File(sechHubDoc,"src/test/java")); // we need this to be able to execute restdoc gen tests + ReflectionsTest.java
+        this.sourceDirectories.add(new File(sechHubDoc, "src/test/java")); // we need this to be able to execute restdoc gen tests + ReflectionsTest.java
     }
 
     private class JavaContentFilter implements FileFilter {
@@ -288,7 +289,7 @@ public class Reflections {
         ensureScan();
         return classesToInspect.contains(clazz);
     }
-    
+
     public int getAmountOfInspectedClasses() {
         return classesToInspect.size();
     }

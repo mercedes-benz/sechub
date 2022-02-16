@@ -8,19 +8,19 @@ import com.daimler.sechub.adapter.AdapterRuntimeContext;
 
 /**
  * Context for NETSPARKER execution.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
-public class NetsparkerContext extends AbstractSpringRestAdapterContext<NetsparkerAdapterConfig,NetsparkerAdapter> implements NetsparkerAdapterContext{
+public class NetsparkerContext extends AbstractSpringRestAdapterContext<NetsparkerAdapterConfig, NetsparkerAdapter> implements NetsparkerAdapterContext {
 
-	public NetsparkerContext(NetsparkerAdapterConfig config, NetsparkerAdapter adapter, AdapterRuntimeContext runtimeContext)  {
-		super(config,adapter,runtimeContext);
-	}
+    public NetsparkerContext(NetsparkerAdapterConfig config, NetsparkerAdapter adapter, AdapterRuntimeContext runtimeContext) {
+        super(config, adapter, runtimeContext);
+    }
 
-	@Override
-	protected ClientHttpRequestInterceptor createInterceptorOrNull(NetsparkerAdapterConfig config) {
-		return new NetsparkerClientHttpRequestInterceptor(config);
-	}
+    @Override
+    protected ClientHttpRequestInterceptor createInterceptorOrNull(NetsparkerAdapterConfig config) {
+        return new NetsparkerClientHttpRequestInterceptor(config);
+    }
 
 }

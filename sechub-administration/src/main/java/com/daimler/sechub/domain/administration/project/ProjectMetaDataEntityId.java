@@ -5,17 +5,17 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class ProjectMetaDataEntityId implements Serializable {
-	
-	private static final long serialVersionUID = 4251170992198601592L;
-	
-	String projectId;
-	String key;
-	
+
+    private static final long serialVersionUID = 4251170992198601592L;
+
+    String projectId;
+    String key;
+
     @Override
     public int hashCode() {
         return Objects.hash(key, projectId);
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)

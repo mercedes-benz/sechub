@@ -7,46 +7,47 @@ import java.util.List;
 
 public class Row {
 
-	private List<String> columns = new ArrayList<>();
+    private List<String> columns = new ArrayList<>();
 
-	public List<String> getUnmodifiableColumns(){
-		return Collections.unmodifiableList(columns);
-	}
+    public List<String> getUnmodifiableColumns() {
+        return Collections.unmodifiableList(columns);
+    }
 
-	public static RowBuilder builder() {
-		return new RowBuilder();
-	}
+    public static RowBuilder builder() {
+        return new RowBuilder();
+    }
 
-	public static class RowBuilder{
+    public static class RowBuilder {
 
-		private Row row;
+        private Row row;
 
-		private RowBuilder() {
-			row = new Row();
-		}
+        private RowBuilder() {
+            row = new Row();
+        }
 
-		public RowBuilder add(String columnValue) {
-			row.columns.add("\""+columnValue+"\"");
-			return this;
-		}
-		public RowBuilder add(int columnValue) {
-			row.columns.add(""+columnValue);
-			return this;
-		}
+        public RowBuilder add(String columnValue) {
+            row.columns.add("\"" + columnValue + "\"");
+            return this;
+        }
 
-		public Row build() {
-			Row result = row;
-			row = new Row();
-			return result;
-		}
-	}
+        public RowBuilder add(int columnValue) {
+            row.columns.add("" + columnValue);
+            return this;
+        }
 
-	private Row() {
+        public Row build() {
+            Row result = row;
+            row = new Row();
+            return result;
+        }
+    }
 
-	}
+    private Row() {
 
-	public int columnCount() {
-		return columns.size();
-	}
+    }
+
+    public int columnCount() {
+        return columns.size();
+    }
 
 }

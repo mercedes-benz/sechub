@@ -9,5 +9,5 @@ public class TestPDSServerProductConfig {
     public String path;
     public String minutesToWaitForProductResult;
     public String description;
-    public TestPDSServerProductParameters parameters = new TestPDSServerProductParameters(); 
+    public TestPDSServerProductParameters parameters = new TestPDSServerProductParameters();
 }

@@ -22,7 +22,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 /**
  * Junit 4 test because of missing official WireMock Junit5 extension - so we
  * use WireMock Rule and Junit4.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -56,7 +56,7 @@ public class PDSAdapterV1WireMockTest {
     public void when_pds_config_use_sechub_store_not_set__upload_is_called() throws Exception {
         /* @formatter:off */
         expectedJobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_TARGET_TYPE,"");
-        
+
         /* prepare */
         PDSWiremockTestSupport testSupport = PDSWiremockTestSupport.builder(wireMockRule).
                 simulateJobCanBeCreated(sechubJobUUID,productIdentifier,expectedJobParameters).
@@ -65,9 +65,9 @@ public class PDSAdapterV1WireMockTest {
                 simulateFetchJobStatus(PDSAdapterJobStatusState.DONE).
                 simulateFetchJobResultOk("testresult").
                 build();
-        
+
         testSupport.startPDSServerSimulation();
-        
+
         /* @formatter:on */
 
         PDSAdapterConfig config = createCodeScanConfiguration(testSupport);
@@ -85,11 +85,11 @@ public class PDSAdapterV1WireMockTest {
     @Test
     public void when_pds_config_use_sechub_store_set_to_false__upload_is_called() throws Exception {
         /* @formatter:off */
-        
+
         /* prepare */
         expectedJobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_TARGET_TYPE,"");
         expectedJobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE,"false");
-        
+
         PDSWiremockTestSupport testSupport = PDSWiremockTestSupport.builder(wireMockRule).
                 simulateJobCanBeCreated(sechubJobUUID,productIdentifier,expectedJobParameters).
                 simulateUploadData("sourcecode.zip").
@@ -99,7 +99,7 @@ public class PDSAdapterV1WireMockTest {
                 build();
 
         testSupport.startPDSServerSimulation();
-        
+
         PDSAdapterConfig config = createCodeScanConfiguration(testSupport);
         /* @formatter:on */
 
@@ -115,12 +115,12 @@ public class PDSAdapterV1WireMockTest {
     @Test
     public void when_pds_config_use_sechub_store_set_to_true__upload_is_NOT_called() throws Exception {
         /* @formatter:off */
-        
+
         /* prepare */
         expectedJobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_TARGET_TYPE,"");
         expectedJobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE,"true");
-        
-        
+
+
         PDSWiremockTestSupport testSupport = PDSWiremockTestSupport.builder(wireMockRule).
                 simulateJobCanBeCreated(sechubJobUUID,productIdentifier,expectedJobParameters).
                 //no simulate upload here!
@@ -128,9 +128,9 @@ public class PDSAdapterV1WireMockTest {
                 simulateFetchJobStatus(PDSAdapterJobStatusState.DONE).
                 simulateFetchJobResultOk("testresult").
                 build();
-        
+
         testSupport.startPDSServerSimulation();
-        
+
         PDSAdapterConfig config = createCodeScanConfiguration(testSupport);
         /* @formatter:on */
 

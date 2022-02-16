@@ -7,13 +7,13 @@ import java.util.List;
 import com.daimler.sechub.commons.model.JSONable;
 
 public class ProductExecutorConfigSetup implements JSONable<ProductExecutorConfigSetup> {
-    
+
     private static final ProductExecutorConfigSetup IMPORTER = new ProductExecutorConfigSetup();
-    
+
     public static final String PROPERTY_BASEURL = "baseURL";
     public static final String PROPERTY_JOBPARAMETERS = "jobParameters";
-    public static final String PROPERTY_CREDENTIALS= "credentials";
-    
+    public static final String PROPERTY_CREDENTIALS = "credentials";
+
     private String baseURL;
 
     private ProductExecutorConfigSetupCredentials credentials = new ProductExecutorConfigSetupCredentials();
@@ -36,11 +36,10 @@ public class ProductExecutorConfigSetup implements JSONable<ProductExecutorConfi
         this.credentials = credentials;
     }
 
-    
     public List<ProductExecutorConfigSetupJobParameter> getJobParameters() {
         return jobParameters;
     }
-    
+
     public void setJobParameters(List<ProductExecutorConfigSetupJobParameter> jobParameters) {
         this.jobParameters = jobParameters;
     }
@@ -49,7 +48,7 @@ public class ProductExecutorConfigSetup implements JSONable<ProductExecutorConfi
     public Class<ProductExecutorConfigSetup> getJSONTargetClass() {
         return ProductExecutorConfigSetup.class;
     }
-    
+
     public static ProductExecutorConfigSetup fromJSONString(String json) {
         return IMPORTER.fromJSON(json);
     }

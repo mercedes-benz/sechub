@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.lang.annotation.Annotation;
 import java.util.Collections;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,38 +46,37 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(SignupAdministrationRestController.class)
-@ContextConfiguration(classes = { SignupAdministrationRestController.class,
-		SignupAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class })
+@ContextConfiguration(classes = { SignupAdministrationRestController.class, SignupAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class })
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
-@ActiveProfiles({Profiles.TEST, Profiles.ADMIN_ACCESS})
-@AutoConfigureRestDocs(uriScheme="https",uriHost=ExampleConstants.URI_SECHUB_SERVER,uriPort=443)
+@ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
+@AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 public class SignupAdministrationRestControllerRestDocTest {
 
-	private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
+    private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
-	@Autowired
-	private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-	@MockBean
-	private SignupDeleteService deleteService;
+    @MockBean
+    private SignupDeleteService deleteService;
 
-	@MockBean
-	private SignupRepository signupRepository;
+    @MockBean
+    private SignupRepository signupRepository;
 
-	@Before
-	public void before() {
-	}
+    @Before
+    public void before() {
+    }
 
-	@Test
-	@UseCaseRestDoc(useCase = UseCaseAdminListsOpenUserSignups.class)
-	public void restdoc_list_user_signups() throws Exception {
-		/* prepare */
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdminListsOpenUserSignups.class)
+    public void restdoc_list_user_signups() throws Exception {
+        /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminListsUserSignupsUrl();
         Class<? extends Annotation> useCase = UseCaseAdminListsOpenUserSignups.class;
-        
-		when(signupRepository.findAll()).thenReturn(Collections.emptyList());
 
-		/* execute + test @formatter:off */
+        when(signupRepository.findAll()).thenReturn(Collections.emptyList());
+
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(apiEndpoint)
         		).
@@ -98,16 +98,16 @@ public class SignupAdministrationRestControllerRestDocTest {
         		));
 
 		/* @formatter:on */
-	}
+    }
 
-	@Test
-	@UseCaseRestDoc(useCase=UseCaseAdminDeletesSignup.class)
-	public void restdoc_delete_signup() throws Exception {
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdminDeletesSignup.class)
+    public void restdoc_delete_signup() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminDeletesUserSignUpUrl(USER_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminDeletesSignup.class;
-        
-		/* execute + test @formatter:off */
+
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		delete(apiEndpoint,"userId1")
         		).
@@ -126,12 +126,12 @@ public class SignupAdministrationRestControllerRestDocTest {
         			        ));
 
 		/* @formatter:on */
-	}
+    }
 
-	@Profile(Profiles.TEST)
-	@EnableAutoConfiguration
-	public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    @Profile(Profiles.TEST)
+    @EnableAutoConfiguration
+    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
 
-	}
+    }
 
 }

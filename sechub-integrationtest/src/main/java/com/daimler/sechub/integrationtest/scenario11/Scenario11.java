@@ -14,7 +14,7 @@ import com.daimler.sechub.integrationtest.scenario5.Scenario5;
 /**
  * <b><u>Scenario5 - the PDS integration test standard scenario. Scenario9
  * (REUSE SECHUB DATA enabled!)</u></b><br>
- * 
+ *
  * In this scenario following is automatically initialized at start (old data
  * removed as well): <br>
  * <br>
@@ -29,12 +29,12 @@ import com.daimler.sechub.integrationtest.scenario5.Scenario5;
  * PROJECT_1_ is automatically created
  * USER_1, is automatically registered, created and assigned to project1
  * </pre>
- * 
+ *
  * c) The error and input streams will contain additional data. Those
  * information will be laziliy available. See
  * {@link IntegrationTestDefaultProfiles#PROFILE_5_PDS_CODESCAN_LAZY_STREAMS}
  * for details.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

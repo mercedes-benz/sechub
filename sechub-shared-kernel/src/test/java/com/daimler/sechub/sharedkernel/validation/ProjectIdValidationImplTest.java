@@ -10,66 +10,73 @@ public class ProjectIdValidationImplTest {
     private ProjectIdValidationImpl validationToTest = new ProjectIdValidationImpl();
 
     @Test
-    public void lengthTest(){
+    public void lengthTest() {
         ValidationResult projectIdValidationResult = validationToTest.validate("ab");
         assertTrue("Project id not valid", projectIdValidationResult.isValid());
     }
 
     @Test
-    public void lengthTooShortTest(){
+    public void lengthTooShortTest() {
         ValidationResult projectIdValidationResult = validationToTest.validate("a");
         assertFalse("Project id is not too short.", projectIdValidationResult.isValid());
     }
+
     @Test
-    public void ABCDIsNOTValidBecauseUppercaseCharactersNotAllowed(){
+    public void ABCDIsNOTValidBecauseUppercaseCharactersNotAllowed() {
         ValidationResult projectIdValidationResult = validationToTest.validate("ABCD");
         assertFalse("Project id is not okay, but should?!?", projectIdValidationResult.isValid());
     }
 
     @Test
-    public void abcdIsValid(){
+    public void abcdIsValid() {
         ValidationResult projectIdValidationResult = validationToTest.validate("abcd");
         assertTrue("Project id is not okay, but should?!?", projectIdValidationResult.isValid());
     }
 
     @Test
-    public void containsDotIsNotValid(){
+    public void containsDotIsNotValid() {
         ValidationResult projectIdValidationResult = validationToTest.validate("ab.d");
         assertFalse("Project id dot forbidden, but accepted?!?", projectIdValidationResult.isValid());
     }
 
     @Test
-    public void containsSlashIsNotValid(){
+    public void containsSlashIsNotValid() {
         ValidationResult projectIdValidationResult = validationToTest.validate("ab/d");
         assertFalse("Project id slash forbidden, but accepted?!?", projectIdValidationResult.isValid());
     }
+
     @Test
-    public void containsBackSlashIsNotValid(){
+    public void containsBackSlashIsNotValid() {
         ValidationResult projectIdValidationResult = validationToTest.validate("ab\\d");
         assertFalse("Project id backslash forbidden, but accepted?!?", projectIdValidationResult.isValid());
     }
+
     @Test
-    public void containsDollorIsNotValid(){
+    public void containsDollorIsNotValid() {
         ValidationResult projectIdValidationResult = validationToTest.validate("ab$d");
         assertFalse("Project id backslash forbidden, but accepted?!?", projectIdValidationResult.isValid());
     }
+
     @Test
-    public void containsPercentageIsNotValid(){
+    public void containsPercentageIsNotValid() {
         ValidationResult projectIdValidationResult = validationToTest.validate("ab$d");
         assertFalse("Project id backslash forbidden, but accepted?!?", projectIdValidationResult.isValid());
     }
+
     @Test
-    public void containsQuestionMarkIsNotValid(){
+    public void containsQuestionMarkIsNotValid() {
         ValidationResult projectIdValidationResult = validationToTest.validate("ab?d");
         assertFalse("Project id backslash forbidden, but accepted?!?", projectIdValidationResult.isValid());
     }
+
     @Test
-    public void containsExlamationMarkIsNotValid(){
+    public void containsExlamationMarkIsNotValid() {
         ValidationResult projectIdValidationResult = validationToTest.validate("ab!d");
         assertFalse("Project id backslash forbidden, but accepted?!?", projectIdValidationResult.isValid());
     }
+
     @Test
-    public void containsColonIsNotValid(){
+    public void containsColonIsNotValid() {
         ValidationResult projectIdValidationResult = validationToTest.validate("AB:D".toLowerCase());
         assertFalse("Project id backslash forbidden, but accepted?!?", projectIdValidationResult.isValid());
     }

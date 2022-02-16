@@ -27,27 +27,27 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 public class UserRevokeSuperAdminRightsService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(UserRevokeSuperAdminRightsService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UserRevokeSuperAdminRightsService.class);
 
-	@Autowired
-	DomainMessageService eventBusService;
+    @Autowired
+    DomainMessageService eventBusService;
 
-	@Autowired
-	UserRepository userRepository;
+    @Autowired
+    UserRepository userRepository;
 
-	@Autowired
-	AuditLogService auditLogService;
+    @Autowired
+    AuditLogService auditLogService;
 
-	@Autowired
-	SecHubEnvironment secHubEnvironment;
+    @Autowired
+    SecHubEnvironment secHubEnvironment;
 
-	@Autowired
-	LogSanitizer logSanitizer;
+    @Autowired
+    LogSanitizer logSanitizer;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Autowired
+    UserInputAssertion assertion;
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@Validated
 	@UseCaseAdminRevokesAdminRightsFromAdmin(
 			@Step(
@@ -56,45 +56,46 @@ public class UserRevokeSuperAdminRightsService {
 					next = { 3,	4 },
 					description = "The service will revoke user admin righs and triggers asynchronous events"))
 	/* @formatter:on */
-	public void revokeSuperAdminRightsFrom(String userId) {
-		String sanitizedLogUserId = logSanitizer.sanitize(userId,30);
-		auditLogService.log("Triggered revoking admin rights from user {}",sanitizedLogUserId);
+    public void revokeSuperAdminRightsFrom(String userId) {
+        String sanitizedLogUserId = logSanitizer.sanitize(userId, 30);
+        auditLogService.log("Triggered revoking admin rights from user {}", sanitizedLogUserId);
 
-		assertion.isValidUserId(userId);
+        assertion.isValidUserId(userId);
 
-		User user = userRepository.findOrFailUser(userId);
+        User user = userRepository.findOrFailUser(userId);
 
-		if (!user.isSuperAdmin()) {
-			LOG.info("User:{} was already no super administrator, so just ignored",sanitizedLogUserId);
-			return;
-		}
-		assertNotLastSuperAdmin();
+        if (!user.isSuperAdmin()) {
+            LOG.info("User:{} was already no super administrator, so just ignored", sanitizedLogUserId);
+            return;
+        }
+        assertNotLastSuperAdmin();
 
-		user.superAdmin=false;
-		userRepository.save(user);
+        user.superAdmin = false;
+        userRepository.save(user);
 
-		requestUserRoleRecalculaton(user);
-		informUserNoLongerSuperadmin(user);
+        requestUserRoleRecalculaton(user);
+        informUserNoLongerSuperadmin(user);
 
-	}
+    }
 
-	private void assertNotLastSuperAdmin() {
-		User exampleUser = new User();
-		exampleUser.superAdmin = true;
-		long count = userRepository.count(Example.of(exampleUser));
-		if (count<2) {
-			throw new NotAcceptableException("Would be last super admin. So cannot revoke admin rights!");
-		}
-	}
+    private void assertNotLastSuperAdmin() {
+        User exampleUser = new User();
+        exampleUser.superAdmin = true;
+        long count = userRepository.count(Example.of(exampleUser));
+        if (count < 2) {
+            throw new NotAcceptableException("Would be last super admin. So cannot revoke admin rights!");
+        }
+    }
 
-	@IsSendingAsyncMessage(MessageID.USER_NO_LONGER_SUPERADMIN)
-	private void informUserNoLongerSuperadmin(User user) {
-		eventBusService.sendAsynchron(DomainMessageFactory.createUserNoLongerSuperAdmin(user.getName(), user.getEmailAdress(), secHubEnvironment.getServerBaseUrl()));
-	}
+    @IsSendingAsyncMessage(MessageID.USER_NO_LONGER_SUPERADMIN)
+    private void informUserNoLongerSuperadmin(User user) {
+        eventBusService
+                .sendAsynchron(DomainMessageFactory.createUserNoLongerSuperAdmin(user.getName(), user.getEmailAdress(), secHubEnvironment.getServerBaseUrl()));
+    }
 
-	@IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)
-	private void requestUserRoleRecalculaton(User user) {
-		eventBusService.sendAsynchron(DomainMessageFactory.createRequestRoleCalculation(user.getName()));
-	}
+    @IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)
+    private void requestUserRoleRecalculaton(User user) {
+        eventBusService.sendAsynchron(DomainMessageFactory.createRequestRoleCalculation(user.getName()));
+    }
 
 }

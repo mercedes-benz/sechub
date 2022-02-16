@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import com.daimler.sechub.commons.model.Severity;
 import com.daimler.sechub.commons.model.TrafficLight;
+
 public class SecHubClientTest {
 
     @Test
@@ -52,10 +53,9 @@ public class SecHubClientTest {
                 hasName("SecHub failure").
                 hasDescription("Security product 'XYZ' failed, so cannot give a correct answer.");
         /* @formatter:on */
-     
+
     }
 
-   
     @Test
     public void client_reads_test_report_1() throws Exception {
         /* prepare */
@@ -63,7 +63,6 @@ public class SecHubClientTest {
 
         /* execute */
         SecHubReport report = SecHubClient.importSecHubJsonReport(file);
-
 
         /* test */
         /* @formatter:off */
@@ -89,44 +88,16 @@ public class SecHubClientTest {
         SecHubReport report = SecHubClient.importSecHubJsonReport(file);
 
         /* test */
-        assertReport(report).
-            hasJobUUID("6cf02ccf-da13-4dee-b529-0225ed9661bd").
-            hasFindings(2).
-            hasTrafficLight(TrafficLight.YELLOW).
-            finding(0).
-                hasId(1).
-                hasSeverity(Severity.MEDIUM).
-                hasNoHostnames().
-                hasNoReferences().
-                hasName("Absolute Path Traversal").
-                hasDescription("").
-                codeCall(0).
-                    hasLine(28).
-                    hasLocation("java/com/daimler/sechub/docgen/AsciidocGenerator.java").
-                codeCall(1).
-                    hasLine(33).
-                    hasRelevantPart("args").
-                    hasLocation("java/com/daimler/sechub/docgen/AsciidocGenerator.java").
-                codeCall(2).
-                    hasLine(33).
-                    hasRelevantPart("path").
-                    hasLocation("java/com/daimler/sechub/docgen/AsciidocGenerator.java").
-                codeCall(3).
-                hasLocation("java/com/daimler/sechub/docgen/AsciidocGenerator.java").
-            finding(1).
-                hasId(2).
-                hasSeverity(Severity.LOW).
-                hasName("Improper Exception Handling").
-                hasDescription("").
-                hasNoReferences().
-                hasNoHostnames().
-                codeCall(0).
-                    hasLocation("java/com/daimler/sechub/docgen/usecase/UseCaseRestDocModelAsciiDocGenerator.java").
-                    hasLine(112).
-                    hasColumn(53).
-                    hasSource("\t\tFile[] files = entry.copiedRestDocFolder.listFiles();").
-                    hasRelevantPart("listFiles");
-                
+        assertReport(report).hasJobUUID("6cf02ccf-da13-4dee-b529-0225ed9661bd").hasFindings(2).hasTrafficLight(TrafficLight.YELLOW).finding(0).hasId(1)
+                .hasSeverity(Severity.MEDIUM).hasNoHostnames().hasNoReferences().hasName("Absolute Path Traversal").hasDescription("").codeCall(0).hasLine(28)
+                .hasLocation("java/com/daimler/sechub/docgen/AsciidocGenerator.java").codeCall(1).hasLine(33).hasRelevantPart("args")
+                .hasLocation("java/com/daimler/sechub/docgen/AsciidocGenerator.java").codeCall(2).hasLine(33).hasRelevantPart("path")
+                .hasLocation("java/com/daimler/sechub/docgen/AsciidocGenerator.java").codeCall(3)
+                .hasLocation("java/com/daimler/sechub/docgen/AsciidocGenerator.java").finding(1).hasId(2).hasSeverity(Severity.LOW)
+                .hasName("Improper Exception Handling").hasDescription("").hasNoReferences().hasNoHostnames().codeCall(0)
+                .hasLocation("java/com/daimler/sechub/docgen/usecase/UseCaseRestDocModelAsciiDocGenerator.java").hasLine(112).hasColumn(53)
+                .hasSource("\t\tFile[] files = entry.copiedRestDocFolder.listFiles();").hasRelevantPart("listFiles");
+
     }
 
     @Test
@@ -136,7 +107,7 @@ public class SecHubClientTest {
 
         /* execute + test */
         /* @formatter:off */
-        assertThrows( 
+        assertThrows(
                 "The report is not a SecHub report and cannot be read. It should throw an exception.",
                 SecHubReportException.class,
                 () -> SecHubClient.importSecHubJsonReport(file));

@@ -7,11 +7,11 @@ import java.util.Objects;
  * Reporting descriptor reference, see <a href=
  * "https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317862">SARIF
  * 2.1.0 specification entry</a>
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
-public class ReportingDescriptorReference extends SarifObject{
+public class ReportingDescriptorReference extends SarifObject {
 
     private String id;
     private String guid;
@@ -35,7 +35,7 @@ public class ReportingDescriptorReference extends SarifObject{
 
     /**
      * https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317869
-     * 
+     *
      * @return toolcomponent reference
      */
     public ToolComponentReference getToolComponent() {

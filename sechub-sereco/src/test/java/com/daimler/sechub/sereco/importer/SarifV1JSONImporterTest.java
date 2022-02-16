@@ -33,7 +33,7 @@ class SarifV1JSONImporterTest {
     private static String sarif_2_1_0_owasp_zap;
 
     private SarifV1JSONImporter importerToTest;
-    
+
     @BeforeAll
     public static void before() {
         sarif_2_1_0_brakeman = loadSarifTestFile("sarif_2.1.0_brakeman.json");
@@ -43,7 +43,7 @@ class SarifV1JSONImporterTest {
         sarif_2_1_0_coverity_20_21_03_taxonomyExample = loadSarifTestFile("sarif_2.1.0_coverity_20.21.03_example_with_taxonomy.json");
         sarif_2_1_0_owasp_zap = loadSarifTestFile("sarif_2.1.0_owasp_zap.json");
     }
-    
+
     @BeforeEach
     void beforeEach() {
         importerToTest = new SarifV1JSONImporter();
@@ -68,9 +68,9 @@ class SarifV1JSONImporterTest {
                 withSeverity(SerecoSeverity.HIGH).
                 withType("Cross Site Scripting (Reflected)").
                 withScanType(ScanType.WEB_SCAN).
-                
+
             isContained();
-        
+
         /* @formatter:on */
     }
 
@@ -79,17 +79,17 @@ class SarifV1JSONImporterTest {
         /* @formatter:off */
         /* prepare */
         SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_owasp_zap);
-        
+
         /* execute */
         List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
-        
+
         /* test */
         SerecoWebRequest expectedRequest = new SerecoWebRequest();
         expectedRequest.setMethod("GET");
         expectedRequest.setProtocol("HTTP");
         expectedRequest.setVersion("1.1");
         expectedRequest.setTarget("https://127.0.0.1:8080/greeting?name=%3C%2Fp%3E%3Cscript%3Ealert%281%29%3B%3C%2Fscript%3E%3Cp%3E");
-        
+
         Map<String, String> requestHeaders = expectedRequest.getHeaders();
         requestHeaders.put("Cache-Control","no-cache");
         requestHeaders.put("Content-Length","0");
@@ -98,7 +98,7 @@ class SarifV1JSONImporterTest {
         requestHeaders.put("Pragma","no-cache");
         requestHeaders.put("Referer","https://127.0.0.1:8080/hello");
         requestHeaders.put("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0");
-        
+
         SerecoWebResponse expectedResponse = new SerecoWebResponse();
         expectedResponse.setStatusCode(200);
         expectedResponse.getBody().setText("<!DOCTYPE HTML>\n"
@@ -113,7 +113,7 @@ class SarifV1JSONImporterTest {
                 + "    <p >XSS attackable parameter output: </p><script>alert(1);</script><p>!</p>\n"
                 + "</body>\n"
                 + "</html>");
-         
+
         Map<String, String> responseHeaders = expectedResponse.getHeaders();
         responseHeaders.put("Cache-Control","no-cache, no-store, max-age=0, must-revalidate");
         responseHeaders.put("Content-Language","en-US");
@@ -128,12 +128,12 @@ class SarifV1JSONImporterTest {
         responseHeaders.put("X-Content-Type-Options","nosniff");
         responseHeaders.put("X-Frame-Options","DENY");
         responseHeaders.put("X-XSS-Protection","1; mode=block");
-        
+
         expectedResponse.setProtocol("HTTP");
         expectedResponse.setVersion("1.1");
         expectedResponse.setStatusCode(200);
         expectedResponse.setReasonPhrase("");
-        
+
         SerecoVulnerability firstCSSvulnerability = assertVulnerabilities(vulnerabilities).
             hasVulnerabilities(14).
             verifyVulnerability().
@@ -144,10 +144,10 @@ class SarifV1JSONImporterTest {
                 withType("Cross Site Scripting (Reflected)").
                 withScanType(ScanType.WEB_SCAN).
             assertContainedAndReturn();
-        
+
         assertWebRequest(firstCSSvulnerability, expectedRequest);
         assertWebResponse(firstCSSvulnerability, expectedResponse);
-        
+
         assertVulnerabilities(vulnerabilities).
             verifyVulnerability().
                 classifiedBy().
@@ -155,12 +155,12 @@ class SarifV1JSONImporterTest {
                     and().
                 withSeverity(SerecoSeverity.HIGH).
                 withType("Cross Site Scripting (Reflected)").
-                withScanType(ScanType.WEB_SCAN).     
+                withScanType(ScanType.WEB_SCAN).
                 isExactDefinedWebVulnerability().
                     withWebRequest(expectedRequest).
                     withWebResponse(expectedResponse).
             isContained();
-        
+
         /* @formatter:on */
     }
 
@@ -193,7 +193,7 @@ class SarifV1JSONImporterTest {
                         + "\n"
                         + "For example: \"Escape.html(str)\"").
             isContained();
-        
+
         /* @formatter:on */
     }
 
@@ -230,7 +230,7 @@ class SarifV1JSONImporterTest {
                 withSeverity(SerecoSeverity.HIGH).
                 withDescriptionContaining("SQL string formatting").
             isContained();
-        
+
         /* @formatter:on */
     }
 
@@ -328,7 +328,8 @@ class SarifV1JSONImporterTest {
         SerecoVulnerability vulnerability = vulnerabilities.get(0);
 
         /* test */
-        assertEquals("Rails 5.0.0 `content_tag` does not escape double quotes in attribute values (CVE-2016-6316). Upgrade to Rails 5.0.0.1.", vulnerability.getDescription());
+        assertEquals("Rails 5.0.0 `content_tag` does not escape double quotes in attribute values (CVE-2016-6316). Upgrade to Rails 5.0.0.1.",
+                vulnerability.getDescription());
     }
 
     @Test
@@ -358,7 +359,8 @@ class SarifV1JSONImporterTest {
         assertNotNull(codeInfo);
         assertEquals("BRAKE0102", vulnerability.getType()); // brakeman does not provide a short description, so fallback to id (which must
                                                             // be available)
-        assertEquals("Rails 5.0.0 `content_tag` does not escape double quotes in attribute values (CVE-2016-6316). Upgrade to Rails 5.0.0.1.", vulnerability.getDescription());
+        assertEquals("Rails 5.0.0 `content_tag` does not escape double quotes in attribute values (CVE-2016-6316). Upgrade to Rails 5.0.0.1.",
+                vulnerability.getDescription());
         assertEquals("Gemfile.lock", codeInfo.getLocation());
         assertEquals(115, codeInfo.getLine().intValue());
         assertEquals(32, vulnerabilities.size());

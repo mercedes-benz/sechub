@@ -94,7 +94,7 @@ public class PDSWiremockTestSupport {
         /* @formatter:off */
         String url = pdsURLBuilder.buildGetJobResult(pdsJobUUID);
         String jobResultFailedString = Boolean.valueOf(pdsFetchJobResult.failed).toString().toLowerCase();
-        
+
         stubFor(get(urlEqualTo(history.rememberGET(url))).
                 willReturn(aResponse()
                     .withStatus(HttpStatus.OK.value())

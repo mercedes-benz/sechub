@@ -7,26 +7,24 @@ public class AdapterRuntimeContext {
     AdapterMetaData metaData;
     ExecutionType type = ExecutionType.INITIAL;
     boolean stopped;
-    
+
     public void markStopped() {
-        this.stopped=true;
+        this.stopped = true;
     }
-    
+
     public ExecutionType getType() {
         return type;
     }
-    
+
     public AdapterMetaData getMetaData() {
         return metaData;
     }
-    
+
     public AdapterMetaDataCallback getCallback() {
         return callback;
     }
-    
-    public enum ExecutionType{
-        INITIAL,
-        RESTART,
-        STOP
+
+    public enum ExecutionType {
+        INITIAL, RESTART, STOP
     }
 }

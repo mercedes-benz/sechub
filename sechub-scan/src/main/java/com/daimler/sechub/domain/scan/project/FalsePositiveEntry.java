@@ -7,11 +7,11 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class FalsePositiveEntry {
-    
-    public static final String PROPERTY_JOBDATA="jobData";
-    public static final String PROPERTY_AUTHOR="author";
-    public static final String PROPERTY_CREATED="created";
-    public static final String PROPERTY_METADATA="metaData";
+
+    public static final String PROPERTY_JOBDATA = "jobData";
+    public static final String PROPERTY_AUTHOR = "author";
+    public static final String PROPERTY_CREATED = "created";
+    public static final String PROPERTY_METADATA = "metaData";
 
     private FalsePositiveJobData jobData;
 
@@ -21,15 +21,15 @@ public class FalsePositiveEntry {
 
     private Date created = new Date(); // we use initial now
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     public void setCreated(Date created) {
         this.created = created;
     }
-    
+
     public Date getCreated() {
         return created;
     }
-    
+
     public void setJobData(FalsePositiveJobData jobData) {
         this.jobData = jobData;
     }

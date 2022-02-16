@@ -4,8 +4,10 @@ package com.daimler.sechub.domain.notification.owner;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+
 import java.util.HashSet;
 import java.util.Set;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -65,7 +67,7 @@ public class InformThatProjectHasNewOwnerNotificationServiceTest {
         /* test */
         // check mocked mail message was sent
 
-        String[] ccAddresses = {"prevowner@example.org", "user1@example.org"};
+        String[] ccAddresses = { "prevowner@example.org", "user1@example.org" };
 
         ArgumentCaptor<SimpleMailMessage> mailMessageCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
         verify(mockedEmailService).send(mailMessageCaptor.capture());

@@ -2,7 +2,7 @@
 package com.daimler.sechub.adapter.checkmarx;
 
 public class CheckmarxConstants {
-    
+
     /**
      * This is the "client secret" is listed at <a href=
      * "https://checkmarx.atlassian.net/wiki/spaces/KC/pages/1187774721/Using+the+CxSAST+REST+API+v8.6.0+and+up"

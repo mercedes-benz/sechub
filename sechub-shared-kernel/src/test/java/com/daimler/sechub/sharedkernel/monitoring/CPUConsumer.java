@@ -7,16 +7,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CPUConsumer {
-    
 
     private static final Logger LOG = LoggerFactory.getLogger(CPUConsumer.class);
 
     private Random random;
 
-    CPUConsumer(){
+    CPUConsumer() {
         this.random = new Random(System.currentTimeMillis());
     }
-    
+
     public void consumeCPUTime(SystemMonitorService monitor, int maxThreads, int timeToSleepMin, int timeToSleepMax) {
         int[] timeToWait = new int[maxThreads];
         for (int i = 0; i < maxThreads; i++) {

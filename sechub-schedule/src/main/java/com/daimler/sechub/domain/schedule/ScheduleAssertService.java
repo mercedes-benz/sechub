@@ -39,10 +39,10 @@ public class ScheduleAssertService {
 
     @Autowired
     ProjectIdValidation projectIdValidation;
-    
+
     /**
      * Assert current logged in user has access to project
-     * 
+     *
      * @param projectId
      */
     public void assertUserHasAccessToProject(String projectId) {
@@ -51,7 +51,7 @@ public class ScheduleAssertService {
 
     /**
      * Asserts execution is allowed for given configuration
-     * 
+     *
      * @param configuration
      */
     public void assertExecutionAllowed(@Valid SecHubConfiguration configuration) {
@@ -60,7 +60,7 @@ public class ScheduleAssertService {
 
     /**
      * Asserts a job is existing and returns the job
-     * 
+     *
      * @param projectId
      * @param jobUUID
      * @return job, never <code>null</code>
@@ -76,9 +76,9 @@ public class ScheduleAssertService {
     }
 
     public void assertProjectIdValid(String projectId) {
-        AssertValidation.assertValid(projectId,projectIdValidation);
+        AssertValidation.assertValid(projectId, projectIdValidation);
     }
-    
+
     public void assertProjectAllowsReadAccess(String projectId) {
         if (!projectConfigService.isReadAllowed(projectId)) {
             throw new ForbiddenException("Project " + projectId + " does currently not allow read access.");

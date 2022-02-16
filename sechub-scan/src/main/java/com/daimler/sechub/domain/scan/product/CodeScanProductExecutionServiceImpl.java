@@ -18,7 +18,7 @@ import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 /**
  * This service executes all registered {@link WebScanProductExecutor} instances
  * and stores those data
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -32,9 +32,9 @@ public class CodeScanProductExecutionServiceImpl extends AbstractProductExecutio
     @Autowired
     public CodeScanProductExecutionServiceImpl(List<CodeScanProductExecutor> codescanExecutors) {
         this.codescanExecutors.addAll(codescanExecutors);
-        
-        LOG.info("Registered code scan executors:{}",codescanExecutors);
-        
+
+        LOG.info("Registered code scan executors:{}", codescanExecutors);
+
     }
 
     @Override

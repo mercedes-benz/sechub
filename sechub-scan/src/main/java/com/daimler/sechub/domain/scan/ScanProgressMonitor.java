@@ -12,13 +12,13 @@ import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 
 public class ScanProgressMonitor implements ProgressMonitor, Abandonable {
-    
+
     private DomainMessageService eventBus;
     private long batchJobId;
 
     ScanProgressMonitor(DomainMessageService eventBus, long batchJobId) {
         this.eventBus = eventBus;
-        this.batchJobId=batchJobId;
+        this.batchJobId = batchJobId;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class ScanProgressMonitor implements ProgressMonitor, Abandonable {
         BatchJobMessage jobStatusRepsonse = sendRequestBatchJobStatusRequestSynchron();
         return jobStatusRepsonse.isCanceled();
     }
-    
+
     @Override
     public boolean isAbandoned() {
         BatchJobMessage jobStatusRepsonse = sendRequestBatchJobStatusRequestSynchron();
@@ -39,17 +39,16 @@ public class ScanProgressMonitor implements ProgressMonitor, Abandonable {
         BatchJobMessage statusRequestMessage = new BatchJobMessage();
         statusRequestMessage.setBatchJobId(batchJobId);
         request.set(MessageDataKeys.BATCH_JOB_STATUS, statusRequestMessage);
-        
+
         /* ask for status */
         DomainMessageSynchronousResult response = eventBus.sendSynchron(request);
         BatchJobMessage jobStatusRepsonse = response.get(MessageDataKeys.BATCH_JOB_STATUS);
         return jobStatusRepsonse;
     }
-    
+
     @Override
     public String getId() {
-        return ""+batchJobId;
+        return "" + batchJobId;
     }
-
 
 }

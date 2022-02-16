@@ -9,45 +9,45 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SchedulerStrategyFactory {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(SchedulerStrategyFactory.class);
-    
+
     @Autowired
     FirstComeFirstServeSchedulerStrategy fifoStrategy;
-    
+
     @Autowired
     OnlyOneScanPerProjectAtSameTimeStrategy oosppStrategy;
 
     @Value("${sechub.scheduler.strategy.id:}")
     private String strategyId;
-    
+
     private SchedulerStrategyId currentStrategyId;
 
     public SchedulerStrategy build() {
-               
+
         SchedulerStrategyId strategy = SchedulerStrategyId.getId(strategyId);
-        
+
         if (strategy == null) {
             strategy = SchedulerStrategyId.FirstComeFirstServe;
         }
-        
+
         if (currentStrategyId != null && strategy != null && currentStrategyId == strategy) {
             return getStrategy(currentStrategyId);
         }
-        
+
         if (currentStrategyId != strategy) {
             LOG.info("SCHEDULER STRATEGY : " + strategy.toString());
         }
-        
+
         currentStrategyId = strategy;
-        
+
         return getStrategy(strategy);
     }
-    
+
     public void setStrategyId(String strategyId) {
         this.strategyId = strategyId;
     }
-    
+
     private SchedulerStrategy getStrategy(SchedulerStrategyId id) {
         switch (id) {
         case FirstComeFirstServe:

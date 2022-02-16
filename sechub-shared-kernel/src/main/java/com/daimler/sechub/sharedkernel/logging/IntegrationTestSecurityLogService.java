@@ -12,7 +12,7 @@ import com.daimler.sechub.sharedkernel.Profiles;
 /**
  * Nearly same as default service implementation, but does remember all security
  * log data objects and has a getter method to obtain the values.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

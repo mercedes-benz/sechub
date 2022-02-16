@@ -7,16 +7,16 @@ import com.daimler.sechub.developertools.admin.ui.UIContext;
 import com.daimler.sechub.developertools.admin.ui.action.AbstractUIAction;
 
 public class ShowAdminListAction extends AbstractUIAction {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public ShowAdminListAction(UIContext context) {
-		super("Show admin list",context);
-	}
+    public ShowAdminListAction(UIContext context) {
+        super("Show admin list", context);
+    }
 
-	@Override
-	public void execute(ActionEvent e) {
-		String data = getContext().getAdministration().fetchAdminList();
-		outputAsBeautifiedJSONOnSuccess(data);
-	}
+    @Override
+    public void execute(ActionEvent e) {
+        String data = getContext().getAdministration().fetchAdminList();
+        outputAsBeautifiedJSONOnSuccess(data);
+    }
 
 }

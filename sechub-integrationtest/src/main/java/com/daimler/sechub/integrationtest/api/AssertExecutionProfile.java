@@ -2,6 +2,7 @@
 package com.daimler.sechub.integrationtest.api;
 
 import static com.daimler.sechub.integrationtest.api.TestAPI.*;
+import static com.daimler.sechub.integrationtest.internal.RetryAssertionErrorRunner.*;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
@@ -12,7 +13,6 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import com.daimler.sechub.test.executionprofile.TestExecutionProfile;
 import com.daimler.sechub.test.executorconfig.TestExecutorConfig;
-import static com.daimler.sechub.integrationtest.internal.RetryAssertionErrorRunner.*;
 
 public class AssertExecutionProfile {
 
@@ -61,7 +61,7 @@ public class AssertExecutionProfile {
 
     /**
      * Asserts this profile has EXACTLY given project id relations (count + ids)
-     * 
+     *
      * @param projectIds
      * @return
      */

@@ -45,7 +45,7 @@ public class PDSJobConfigurationValidator {
         if (configuration.getSechubJobUUID() == null) {
             return "sechub job UUID not set!";
         }
-        /* check product id valid at all*/
+        /* check product id valid at all */
         String productId = configuration.getProductId();
         String productIdErrorMessage = productIdentifierValidator.createValidationErrorMessage(productId);
         if (productIdErrorMessage != null) {
@@ -59,18 +59,18 @@ public class PDSJobConfigurationValidator {
         List<PDSProdutParameterDefinition> mandatories = productSetup.getParameters().getMandatory();
         for (PDSProdutParameterDefinition mandatory : mandatories) {
             String mandatoryKey = mandatory.getKey();
-            if (mandatoryKey==null || mandatoryKey.isEmpty()) {
+            if (mandatoryKey == null || mandatoryKey.isEmpty()) {
                 continue;
             }
             boolean found = false;
-            for (PDSExecutionParameterEntry param: configuration.getParameters()) {
-                if (mandatoryKey.equals(param.getKey())){
-                    found=true;
+            for (PDSExecutionParameterEntry param : configuration.getParameters()) {
+                if (mandatoryKey.equals(param.getKey())) {
+                    found = true;
                     break;
                 }
             }
             if (!found) {
-                return "mandatory parameter not found:'"+mandatoryKey+"'";
+                return "mandatory parameter not found:'" + mandatoryKey + "'";
             }
         }
         return null;

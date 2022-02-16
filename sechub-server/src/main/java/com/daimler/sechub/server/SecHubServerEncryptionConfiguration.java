@@ -9,9 +9,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class SecHubServerEncryptionConfiguration {
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-	}
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
 
 }

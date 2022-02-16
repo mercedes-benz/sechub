@@ -17,27 +17,27 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 public class SignupDeleteService {
 
-	@Autowired
-	SignupRepository userSelfRegistrationRepository;
+    @Autowired
+    SignupRepository userSelfRegistrationRepository;
 
-	@Autowired
-	AuditLogService auditLog;
+    @Autowired
+    AuditLogService auditLog;
 
-	@Autowired
-	LogSanitizer logSanitizer;
+    @Autowired
+    LogSanitizer logSanitizer;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Autowired
+    UserInputAssertion assertion;
 
-	@UseCaseAdminDeletesSignup(@Step(number=2, name="Persistence", description="Existing signup will be deleted"))
-	public void delete(String userId) {
-		auditLog.log("triggered delete of user signup: {}", logSanitizer.sanitize(userId,30));
+    @UseCaseAdminDeletesSignup(@Step(number = 2, name = "Persistence", description = "Existing signup will be deleted"))
+    public void delete(String userId) {
+        auditLog.log("triggered delete of user signup: {}", logSanitizer.sanitize(userId, 30));
 
-		assertion.isValidUserId(userId);
+        assertion.isValidUserId(userId);
 
-		Signup foundByName = userSelfRegistrationRepository.findOrFailSignup(userId);
-		userSelfRegistrationRepository.delete(foundByName);
+        Signup foundByName = userSelfRegistrationRepository.findOrFailSignup(userId);
+        userSelfRegistrationRepository.delete(foundByName);
 
-	}
+    }
 
 }

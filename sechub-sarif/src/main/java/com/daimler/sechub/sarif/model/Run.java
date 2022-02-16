@@ -10,11 +10,11 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 /**
  * "A run object describes a single run of an analysis tool and contains the
  * output of that run." see
- * 
+ *
  * <a href=
  * "https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317485">SARIF
  * 2.1.0 specification entry</a>
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

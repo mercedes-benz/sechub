@@ -98,7 +98,7 @@ public abstract class AbstractSimpleStringValidation extends AbstractValidation<
 
     /**
      * Validates minimum and maximum length
-     * 
+     *
      * @param context
      */
     protected void validateLength(ValidationContext<String> context) {
@@ -112,12 +112,12 @@ public abstract class AbstractSimpleStringValidation extends AbstractValidation<
             return;
         }
         if (string == null) {
-             addErrorMessage(context,"String is null, so max length " + getMaxLength() + " not valid");
+            addErrorMessage(context, "String is null, so max length " + getMaxLength() + " not valid");
             return;
         }
         boolean validMaxLength = string.length() <= getMaxLength();
         if (!validMaxLength) {
-             addErrorMessage(context,"Maximum size is " + getMaxLength() + " but was " + string.length());
+            addErrorMessage(context, "Maximum size is " + getMaxLength() + " but was " + string.length());
         }
     }
 
@@ -127,12 +127,12 @@ public abstract class AbstractSimpleStringValidation extends AbstractValidation<
         }
         String string = context.objectToValidate;
         if (string == null) {
-             addErrorMessage(context,"String is null, so min length " + getMinLength() + " not valid");
+            addErrorMessage(context, "String is null, so min length " + getMinLength() + " not valid");
             return;
         }
         boolean validMinLength = string.length() >= getMinLength();
         if (!validMinLength) {
-             addErrorMessage(context,"Minimum size is " + getMinLength() + " but was " + string.length());
+            addErrorMessage(context, "Minimum size is " + getMinLength() + " but was " + string.length());
         }
     }
 }

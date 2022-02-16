@@ -17,43 +17,42 @@ public class MappingEntryValidationImplTest {
     public void before() {
         validationToTest = new MappingEntryValidationImpl();
     }
-    
+
     @Test
     public void all_set_with_valid_content_nothing_wrong() {
         assertTrue(validationToTest.validate(new MappingEntry("something.as.id", "replacement", "comment")).isValid());
         assertTrue(validationToTest.validate(new MappingEntry("", "", "")).isValid());
     }
-    
+
     @Test
     public void one_null_means_wrong() {
         assertFalse(validationToTest.validate(new MappingEntry(null, "", "")).isValid());
         assertFalse(validationToTest.validate(new MappingEntry("", null, "")).isValid());
         assertFalse(validationToTest.validate(new MappingEntry("", "", null)).isValid());
     }
-    
+
     @Test
     public void all_null_means_wrong() {
         assertFalse(validationToTest.validate(new MappingEntry(null, null, null)).isValid());
         assertFalse(validationToTest.validate(new MappingEntry()).isValid());
     }
-    
+
     @Test
     public void check_80_chars_limit_for_id() {
         assertTrue(validationToTest.validate(new MappingEntry(CONST_80_CHARS, "", "")).isValid());
-        assertFalse(validationToTest.validate(new MappingEntry(CONST_80_CHARS+"1", "", "")).isValid());
+        assertFalse(validationToTest.validate(new MappingEntry(CONST_80_CHARS + "1", "", "")).isValid());
     }
-    
+
     @Test
     public void check_80_chars_limit_for_replacement() {
-        assertTrue(validationToTest.validate(new MappingEntry("", CONST_80_CHARS,"")).isValid());
-        assertFalse(validationToTest.validate(new MappingEntry("", CONST_80_CHARS+"1","")).isValid());
+        assertTrue(validationToTest.validate(new MappingEntry("", CONST_80_CHARS, "")).isValid());
+        assertFalse(validationToTest.validate(new MappingEntry("", CONST_80_CHARS + "1", "")).isValid());
     }
-    
+
     @Test
     public void check_80_chars_limit_for_comment() {
         assertTrue(validationToTest.validate(new MappingEntry("", "", CONST_80_CHARS)).isValid());
-        assertFalse(validationToTest.validate(new MappingEntry("", "", CONST_80_CHARS+"1")).isValid());
+        assertFalse(validationToTest.validate(new MappingEntry("", "", CONST_80_CHARS + "1")).isValid());
     }
-    
-    
+
 }

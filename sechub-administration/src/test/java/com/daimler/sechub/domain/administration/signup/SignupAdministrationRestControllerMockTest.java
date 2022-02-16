@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.administration.signup;
 
-
 import static com.daimler.sechub.test.TestURLBuilder.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.mockito.Mockito.*;
@@ -32,29 +31,29 @@ import com.daimler.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(SignupAdministrationRestController.class)
-@ContextConfiguration(classes= {SignupAdministrationRestController.class, SignupAdministrationRestControllerMockTest.SimpleTestConfiguration.class})
+@ContextConfiguration(classes = { SignupAdministrationRestController.class, SignupAdministrationRestControllerMockTest.SimpleTestConfiguration.class })
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
-@ActiveProfiles({Profiles.TEST, Profiles.ADMIN_ACCESS})
+@ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 public class SignupAdministrationRestControllerMockTest {
 
-	private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getWebMVCTestHTTPSPort();
+    private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getWebMVCTestHTTPSPort();
 
-	@Autowired
-	private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-	@MockBean
-	private SignupDeleteService mockedSignupDeleteService;
+    @MockBean
+    private SignupDeleteService mockedSignupDeleteService;
 
-	@MockBean
-	private SignupRepository mockedSelfRegistrationRepo;
+    @MockBean
+    private SignupRepository mockedSelfRegistrationRepo;
 
-	@Test
-	public void listUserSignups_results_in_empty_text_when_no_signups_exist() throws Exception{
-		/* prepare */
-		List<Signup> list = new ArrayList<>();
+    @Test
+    public void listUserSignups_results_in_empty_text_when_no_signups_exist() throws Exception {
+        /* prepare */
+        List<Signup> list = new ArrayList<>();
 
-		when(mockedSelfRegistrationRepo.findAll()).thenReturn(list);
-		/* execute + test @formatter:off */
+        when(mockedSelfRegistrationRepo.findAll()).thenReturn(list);
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(https(PORT_USED).buildAdminListsUserSignupsUrl())
         		).
@@ -63,25 +62,25 @@ public class SignupAdministrationRestControllerMockTest {
         		);
 
         /* @formatter:on */
-	}
+    }
 
-	@Test
-	public void listUserSignups_results_in_a_filled_list_when_2_signups_exist() throws Exception{
-		/* prepare */
-		List<Signup> list = new ArrayList<>();
-		Signup signup1 = new Signup();
-		signup1.setEmailAdress("sechub.test1@example.org");
-		signup1.setUserId("sechub.test1");
+    @Test
+    public void listUserSignups_results_in_a_filled_list_when_2_signups_exist() throws Exception {
+        /* prepare */
+        List<Signup> list = new ArrayList<>();
+        Signup signup1 = new Signup();
+        signup1.setEmailAdress("sechub.test1@example.org");
+        signup1.setUserId("sechub.test1");
 
-		Signup signup2 = new Signup();
-		signup2.setEmailAdress("sechub.test2@example.org");
-		signup2.setUserId("sechub.test2");
+        Signup signup2 = new Signup();
+        signup2.setEmailAdress("sechub.test2@example.org");
+        signup2.setUserId("sechub.test2");
 
-		list.add(signup1);
-		list.add(signup2);
+        list.add(signup1);
+        list.add(signup2);
 
-		when(mockedSelfRegistrationRepo.findAll()).thenReturn(list);
-		/* execute + test @formatter:off */
+        when(mockedSelfRegistrationRepo.findAll()).thenReturn(list);
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(https(PORT_USED).buildAdminListsUserSignupsUrl())
         		).
@@ -95,13 +94,13 @@ public class SignupAdministrationRestControllerMockTest {
         		);
 
         /* @formatter:on */
-	}
+    }
 
-	@TestConfiguration
-	@Profile(Profiles.TEST)
-	@EnableAutoConfiguration
-	public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration{
+    @TestConfiguration
+    @Profile(Profiles.TEST)
+    @EnableAutoConfiguration
+    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
 
-	}
+    }
 
 }

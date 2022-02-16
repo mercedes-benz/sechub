@@ -105,11 +105,13 @@ public class AsPDSUser {
         getRestHelper().post(url);
         return this;
     }
+
     public String createJobFor(UUID sechubJobUUID, PDSIntTestProductIdentifier identifier) {
-        return createJobFor(sechubJobUUID, identifier,null);
+        return createJobFor(sechubJobUUID, identifier, null);
     }
-    public String createJobFor(UUID sechubJobUUID, PDSIntTestProductIdentifier identifier,Map<String, String> customParameters) {
-        
+
+    public String createJobFor(UUID sechubJobUUID, PDSIntTestProductIdentifier identifier, Map<String, String> customParameters) {
+
         Map<String, String> internalParameters = new LinkedHashMap<>();
 
         /* create default params */
@@ -123,10 +125,10 @@ public class AsPDSUser {
         default:
             internalParameters.put("nothing.special", "true");
         }
-        if (customParameters!=null) {
+        if (customParameters != null) {
             internalParameters.putAll(customParameters);
         }
-        
+
         return createJobFor(sechubJobUUID, identifier.getId(), internalParameters);
     }
 
@@ -167,13 +169,13 @@ public class AsPDSUser {
         upload(getUrlBuilder(), getRestHelper(), pdsJobUUID, uploadName, file);
         return this;
     }
-    
+
     public String getJobOutputStreamText(UUID jobUUID) {
         String url = getUrlBuilder().pds().buildAdminFetchesJobOutputStreamUrl(jobUUID);
-        String result =  getRestHelper().getStringFromURL(url);
+        String result = getRestHelper().getStringFromURL(url);
         return result;
     }
-    
+
     public String getJobErrorStreamText(UUID jobUUID) {
         String url = getUrlBuilder().pds().buildAdminFetchesJobErrorStreamUrl(jobUUID);
         String result = getRestHelper().getStringFromURL(url);

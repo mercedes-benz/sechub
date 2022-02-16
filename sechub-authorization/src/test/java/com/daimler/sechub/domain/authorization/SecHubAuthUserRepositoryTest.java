@@ -21,61 +21,60 @@ import org.springframework.test.context.junit4.SpringRunner;
 @ContextConfiguration(classes = { AuthUserRepository.class, SecHubAuthUserRepositoryTest.SimpleTestConfiguration.class })
 public class SecHubAuthUserRepositoryTest {
 
-	@Autowired
-	private AuthUserRepository sechubUserRepository;
+    @Autowired
+    private AuthUserRepository sechubUserRepository;
 
-	@Before
-	public void before() throws Exception {
+    @Before
+    public void before() throws Exception {
 
-	}
+    }
 
-	@Test
-	public void is_able_to_store_user_with_role_superadmin_and_fetch_back() {
+    @Test
+    public void is_able_to_store_user_with_role_superadmin_and_fetch_back() {
 
-		/* prepare */
-		AuthUser user = new AuthUser();
-		user.userId="userid1";
-		user.hashedApiToken="1234";
-		user.roleSuperAdmin=true;
+        /* prepare */
+        AuthUser user = new AuthUser();
+        user.userId = "userid1";
+        user.hashedApiToken = "1234";
+        user.roleSuperAdmin = true;
 
-		/* execute */
-		sechubUserRepository.save(user);
+        /* execute */
+        sechubUserRepository.save(user);
 
-		/* test */
-		List<AuthUser> users = sechubUserRepository.findAll();
-		assertNotNull(users);
-		assertFalse(users.isEmpty());
-		assertEquals(1,users.size());
-		AuthUser found = users.iterator().next();
-		assertFalse(found.roleUser);
-		assertTrue(found.roleSuperAdmin);
-		assertEquals("userid1",found.getUserId());
-		assertEquals("1234",found.getHashedApiToken());
-	}
+        /* test */
+        List<AuthUser> users = sechubUserRepository.findAll();
+        assertNotNull(users);
+        assertFalse(users.isEmpty());
+        assertEquals(1, users.size());
+        AuthUser found = users.iterator().next();
+        assertFalse(found.roleUser);
+        assertTrue(found.roleSuperAdmin);
+        assertEquals("userid1", found.getUserId());
+        assertEquals("1234", found.getHashedApiToken());
+    }
 
-	@Test
-	public void is_able_to_store_user()
-			throws Exception {
+    @Test
+    public void is_able_to_store_user() throws Exception {
 
-		/* prepare */
-		AuthUser user = new AuthUser();
-		user.userId="userToSearchByName";
-		user.hashedApiToken="1234";
-		sechubUserRepository.save(user);
+        /* prepare */
+        AuthUser user = new AuthUser();
+        user.userId = "userToSearchByName";
+        user.hashedApiToken = "1234";
+        sechubUserRepository.save(user);
 
-		/* execute */
-		Optional<AuthUser> foundUser = sechubUserRepository.findByUserId("userToSearchByName");
+        /* execute */
+        Optional<AuthUser> foundUser = sechubUserRepository.findByUserId("userToSearchByName");
 
-		/* test */
-		assertNotNull(foundUser);
-		assertTrue(foundUser.isPresent());
+        /* test */
+        assertNotNull(foundUser);
+        assertTrue(foundUser.isPresent());
 
-	}
+    }
 
-	@TestConfiguration
-	@EnableAutoConfiguration
-	public static class SimpleTestConfiguration {
+    @TestConfiguration
+    @EnableAutoConfiguration
+    public static class SimpleTestConfiguration {
 
-	}
+    }
 
 }

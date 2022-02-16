@@ -32,17 +32,17 @@ import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserStartsSy
  */
 @RestController
 @EnableAutoConfiguration
-@RequestMapping(APIConstants.API_PROJECT+"{projectId}") // API like https://developer.github.com/v3/issues/labels/#create-a-label
-@RolesAllowed({RoleConstants.ROLE_USER, RoleConstants.ROLE_SUPERADMIN})
+@RequestMapping(APIConstants.API_PROJECT + "{projectId}") // API like https://developer.github.com/v3/issues/labels/#create-a-label
+@RolesAllowed({ RoleConstants.ROLE_USER, RoleConstants.ROLE_SUPERADMIN })
 public class ScanReportRestController {
 
-	@Autowired
-	private HTMLScanResultReportModelBuilder htmlModelBuilder;
+    @Autowired
+    private HTMLScanResultReportModelBuilder htmlModelBuilder;
 
-	@Autowired
-	private DownloadScanReportService downloadReportService;
+    @Autowired
+    private DownloadScanReportService downloadReportService;
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@UseCaseUserDownloadsJobReport(@Step(number=1,next= {3},name="REST API call to get JSON report",needsRestDoc=true))
 	@UseCaseUserStartsSynchronousScanByClient(@Step(number=4, name="download job report and traffic light"))
 	@RequestMapping(path = "/report/{jobUUID}", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
@@ -51,11 +51,11 @@ public class ScanReportRestController {
 			@PathVariable("jobUUID") UUID jobUUID
 			) {
 		/* @formatter:on */
-		return fetchScanSecHubReport(projectId, jobUUID);
+        return fetchScanSecHubReport(projectId, jobUUID);
 
-	}
+    }
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@UseCaseUserDownloadsJobReport(@Step(number=2,next= {3},name="REST API call to get HTML report",needsRestDoc=true))
 	@RequestMapping(path = "/report/{jobUUID}", method = RequestMethod.GET, produces= {"application/xhtml+xml", "text/html","text/html;charset=UTF-8"})
 	@ResponseBody
@@ -64,15 +64,14 @@ public class ScanReportRestController {
 			@PathVariable("jobUUID") UUID jobUUID
 			) {
 		/* @formatter:on */
-		ScanSecHubReport scanSecHubReport = fetchScanSecHubReport(projectId, jobUUID);
+        ScanSecHubReport scanSecHubReport = fetchScanSecHubReport(projectId, jobUUID);
 
-		Map<String, Object> model = htmlModelBuilder.build(scanSecHubReport);
-		return new ModelAndView("report/html/scanresult", model);
-	}
+        Map<String, Object> model = htmlModelBuilder.build(scanSecHubReport);
+        return new ModelAndView("report/html/scanresult", model);
+    }
 
-	private ScanSecHubReport fetchScanSecHubReport(String projectId, UUID jobUUID) {
-		return downloadReportService.getScanSecHubReport(projectId, jobUUID);
-	}
-
+    private ScanSecHubReport fetchScanSecHubReport(String projectId, UUID jobUUID) {
+        return downloadReportService.getScanSecHubReport(projectId, jobUUID);
+    }
 
 }

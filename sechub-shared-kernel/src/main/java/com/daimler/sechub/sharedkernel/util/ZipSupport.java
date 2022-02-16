@@ -10,12 +10,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class ZipSupport {
 
-	public boolean isZipFile(Path pathToFile) {
-		try (ZipFile zipFile = new ZipFile(pathToFile.toFile())){
-			return true;
-		} catch (IOException e) {
-			return false;
-		}
-	}
+    public boolean isZipFile(Path pathToFile) {
+        try (ZipFile zipFile = new ZipFile(pathToFile.toFile())) {
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
 
 }

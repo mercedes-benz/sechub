@@ -36,25 +36,25 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(AnonymousCheckAliveRestController.class)
-@ContextConfiguration(classes= {AnonymousCheckAliveRestController.class, AnonymousCheckAliveRestDocTest.SimpleTestConfiguration.class})
+@ContextConfiguration(classes = { AnonymousCheckAliveRestController.class, AnonymousCheckAliveRestDocTest.SimpleTestConfiguration.class })
 @WithMockUser
 @ActiveProfiles(Profiles.TEST)
-@AutoConfigureRestDocs(uriScheme="https",uriHost=ExampleConstants.URI_SECHUB_SERVER,uriPort=443)
+@AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 public class AnonymousCheckAliveRestDocTest {
-	private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
+    private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
-	@Autowired
-	private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-	@Test
-	@UseCaseRestDoc(useCase=UseCaseAnonymousCheckAlive.class, variant = "HEAD")
-	public void calling_check_alive_head_returns_HTTP_200() throws Exception {
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAnonymousCheckAlive.class, variant = "HEAD")
+    public void calling_check_alive_head_returns_HTTP_200() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildCheckIsAliveUrl();
         Class<? extends Annotation> useCase = UseCaseAnonymousCheckAlive.class;
-        
-		/* execute */
-		/* @formatter:off */
+
+        /* execute */
+        /* @formatter:off */
         this.mockMvc.perform(
         			head(apiEndpoint)
         		).
@@ -70,17 +70,17 @@ public class AnonymousCheckAliveRestDocTest {
                 ));
 
         /* @formatter:on */
-	}
-	
-	@Test
-	@UseCaseRestDoc(useCase=UseCaseAnonymousCheckAlive.class, variant = "GET")
-	public void calling_check_alive_get_returns_HTTP_200() throws Exception {
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAnonymousCheckAlive.class, variant = "GET")
+    public void calling_check_alive_get_returns_HTTP_200() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildCheckIsAliveUrl();
         Class<? extends Annotation> useCase = UseCaseAnonymousCheckAlive.class;
-        
-		/* execute */
-		/* @formatter:off */
+
+        /* execute */
+        /* @formatter:off */
         this.mockMvc.perform(
         			get(apiEndpoint)
         		).
@@ -96,12 +96,12 @@ public class AnonymousCheckAliveRestDocTest {
                 ));
 
         /* @formatter:on */
-	}
+    }
 
-	@TestConfiguration
-	@Profile(Profiles.TEST)
-	@EnableAutoConfiguration
-	public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration{
+    @TestConfiguration
+    @Profile(Profiles.TEST)
+    @EnableAutoConfiguration
+    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
 
-	}
+    }
 }

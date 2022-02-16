@@ -19,43 +19,43 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface UseCaseRestDoc {
 
-	public static final String DEFAULT_VARIANT = "";
-	
-	/**
-	 * Must be an annotation class which itself is annoted with
-	 * {@link UseCaseDefinition}. There is raw type {@link Annotation} used because
-	 * of java 8 lack of expression.
-	 * 
-	 * @return usecase annotation class this rest call is associated
-	 */
-	Class<? extends Annotation> useCase();
+    public static final String DEFAULT_VARIANT = "";
 
-	/**
-	 * A variant defines a special case of rest doc (e.g. when a report is generated
-	 * and it has a JSON adn HTML variant you can use the variant flag to identify
-	 * it and force splitting inside documentation) When not Defined
-	 * {@link RestDocPathFactory#DEFAULTVARIANT} is used.
-	 * 
-	 * @return
-	 */
-	String variant() default DEFAULT_VARIANT;
+    /**
+     * Must be an annotation class which itself is annoted with
+     * {@link UseCaseDefinition}. There is raw type {@link Annotation} used because
+     * of java 8 lack of expression.
+     *
+     * @return usecase annotation class this rest call is associated
+     */
+    Class<? extends Annotation> useCase();
 
-	/**
-	 * Defines the output files from spring rest doc wanted for generation. The
-	 * ordering is also the ordering in output files!
-	 * 
-	 * @return
-	 */
-	SpringRestDocOutput[] wanted() default {
-		/* @formatter:off */
+    /**
+     * A variant defines a special case of rest doc (e.g. when a report is generated
+     * and it has a JSON adn HTML variant you can use the variant flag to identify
+     * it and force splitting inside documentation) When not Defined
+     * {@link RestDocPathFactory#DEFAULTVARIANT} is used.
+     *
+     * @return
+     */
+    String variant() default DEFAULT_VARIANT;
+
+    /**
+     * Defines the output files from spring rest doc wanted for generation. The
+     * ordering is also the ordering in output files!
+     *
+     * @return
+     */
+    SpringRestDocOutput[] wanted() default {
+        /* @formatter:off */
 		SpringRestDocOutput.PATH_PARAMETERS,
-		
-		SpringRestDocOutput.REQUEST_FIELDS, 
 
-		SpringRestDocOutput.RESPONSE_FIELDS, 
-		
+		SpringRestDocOutput.REQUEST_FIELDS,
+
+		SpringRestDocOutput.RESPONSE_FIELDS,
+
 		SpringRestDocOutput.CURL_REQUEST
-		}; 
+		};
 
 	public enum SpringRestDocOutput{
 		CURL_REQUEST("curl-request.adoc"),
@@ -70,15 +70,15 @@ public @interface UseCaseRestDoc {
 		;
 		/* @formatter:on */
 
-		private String wantedFileName;
+        private String wantedFileName;
 
-		SpringRestDocOutput(String fileName) {
-			this.wantedFileName = fileName;
-		}
+        SpringRestDocOutput(String fileName) {
+            this.wantedFileName = fileName;
+        }
 
-		public boolean isWanted(File file) {
-			return file.getName().equals(wantedFileName);
-		}
-	}
+        public boolean isWanted(File file) {
+            return file.getName().equals(wantedFileName);
+        }
+    }
 
 }

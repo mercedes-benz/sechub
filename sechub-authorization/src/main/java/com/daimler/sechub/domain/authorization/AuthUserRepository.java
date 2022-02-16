@@ -8,18 +8,18 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
 
-public interface AuthUserRepository extends JpaRepository<AuthUser, String>{
-	
-	Optional<AuthUser> findByUserId(String userid);
+public interface AuthUserRepository extends JpaRepository<AuthUser, String> {
 
-	@Query(AuthUser.QUERY_COUNT_SUPERADMINS)
-	int countAmountOfSuperAdmins();
-	
-	public default AuthUser findOrFail(String userId) {
-		Optional<AuthUser> found = findByUserId(userId);
-		if (! found.isPresent()) {
-			throw new NotFoundException("no user found :"+userId);
-		}
-		return found.get();
-	}
+    Optional<AuthUser> findByUserId(String userid);
+
+    @Query(AuthUser.QUERY_COUNT_SUPERADMINS)
+    int countAmountOfSuperAdmins();
+
+    public default AuthUser findOrFail(String userId) {
+        Optional<AuthUser> found = findByUserId(userId);
+        if (!found.isPresent()) {
+            throw new NotFoundException("no user found :" + userId);
+        }
+        return found.get();
+    }
 }

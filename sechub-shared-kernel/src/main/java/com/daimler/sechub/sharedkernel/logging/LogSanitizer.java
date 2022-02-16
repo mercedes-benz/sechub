@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  * This log sanitizer component handles -
  * https://cwe.mitre.org/data/definitions/93.html -
  * https://cwe.mitre.org/data/definitions/117.html
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

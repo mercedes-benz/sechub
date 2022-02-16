@@ -12,23 +12,22 @@ import org.springframework.http.client.ClientHttpResponse;
 
 public class NetsparkerClientHttpRequestInterceptor implements ClientHttpRequestInterceptor {
 
-	private NetsparkerAdapterConfig config;
+    private NetsparkerAdapterConfig config;
 
-	public NetsparkerClientHttpRequestInterceptor(NetsparkerAdapterConfig config) {
-		this.config = config;
-	}
+    public NetsparkerClientHttpRequestInterceptor(NetsparkerAdapterConfig config) {
+        this.config = config;
+    }
 
-	@Override
-	public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
-			throws IOException {
+    @Override
+    public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
 
-		HttpHeaders headers = request.getHeaders();
-		headers.remove("Content-Type"); // strange, but sometimes there was a content-type (plain-text already added)
-		headers.remove("Authorization");
+        HttpHeaders headers = request.getHeaders();
+        headers.remove("Content-Type"); // strange, but sometimes there was a content-type (plain-text already added)
+        headers.remove("Authorization");
 
-		headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
-		headers.add("Authorization", "Basic " + config.getCredentialsBase64Encoded());
-		return execution.execute(request, body);
-	}
+        headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+        headers.add("Authorization", "Basic " + config.getCredentialsBase64Encoded());
+        return execution.execute(request, body);
+    }
 
 }

@@ -9,7 +9,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 
 import com.daimler.sechub.pds.PDSAPIConstants;
 
-
 /**
  * A base class for web security having access to "/api/**" when being a user or
  * super admin <br>
@@ -24,12 +23,12 @@ import com.daimler.sechub.pds.PDSAPIConstants;
  *
  */
 public abstract class AbstractAllowPDSAPISecurityConfiguration extends WebSecurityConfigurerAdapter {
-	// https://spring.io/blog/2017/09/15/security-changes-in-spring-boot-2-0-m4
-	// https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#core-services-password-encoding
+    // https://spring.io/blog/2017/09/15/security-changes-in-spring-boot-2-0-m4
+    // https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#core-services-password-encoding
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		/* @formatter:off */
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        /* @formatter:off */
  		http.
 		 sessionManagement().
 		 	sessionCreationPolicy(SessionCreationPolicy.STATELESS).
@@ -54,6 +53,6 @@ public abstract class AbstractAllowPDSAPISecurityConfiguration extends WebSecuri
 			httpBasic();/* no login screen, just basic auth */
 
  		/* @formatter:on */
-	}
+    }
 
 }

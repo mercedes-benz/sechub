@@ -18,19 +18,18 @@ import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 
 public class JobScenario2IntTest {
 
-	@Rule
-	public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario2.class);
+    @Rule
+    public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario2.class);
 
-	@Rule
-	public Timeout timeOut = Timeout.seconds(30);
+    @Rule
+    public Timeout timeOut = Timeout.seconds(30);
 
-	@Test
-	public void a_triggered_job_being_running_is_NOT_found_anymore_when_canceled_by_admin() {
-		/* prepare*/
-		as(SUPER_ADMIN).
-			assignUserToProject(USER_1, PROJECT_1);
+    @Test
+    public void a_triggered_job_being_running_is_NOT_found_anymore_when_canceled_by_admin() {
+        /* prepare */
+        as(SUPER_ADMIN).assignUserToProject(USER_1, PROJECT_1);
 
-		/* @formatter:off */
+        /* @formatter:off */
 
 		UUID jobUUID = assertUser(USER_1).
 			canCreateWebScan(PROJECT_1,IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING);
@@ -74,14 +73,13 @@ public class JobScenario2IntTest {
 		assertMailExists(USER_1.getEmail(), "Your SecHub Job has been canceled"); // notification layer done as well
 		/* @formatter:on */
 
-	}
+    }
 
-	@Test
-	public void a_triggered_job_is_found_in_running_jobs_list_by_admin__when_not_already_done() {
-		as(SUPER_ADMIN).
-			assignUserToProject(USER_1, PROJECT_1);
+    @Test
+    public void a_triggered_job_is_found_in_running_jobs_list_by_admin__when_not_already_done() {
+        as(SUPER_ADMIN).assignUserToProject(USER_1, PROJECT_1);
 
-		/* @formatter:off */
+        /* @formatter:off */
 
 		UUID jobUUID = assertUser(USER_1).
 			canCreateWebScan(PROJECT_1,IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING);
@@ -94,18 +92,17 @@ public class JobScenario2IntTest {
 				canFindRunningJob(jobUUID); // means events are triggered and handled */
 		/* @formatter:on */
 
-	}
+    }
 
-	@Test
-	public void a_triggered_job_is_NOT_found_in_running_jobs_list_by_admin__when_already_done() {
-		as(SUPER_ADMIN).
-			assignUserToProject(USER_1, PROJECT_1);
+    @Test
+    public void a_triggered_job_is_NOT_found_in_running_jobs_list_by_admin__when_already_done() {
+        as(SUPER_ADMIN).assignUserToProject(USER_1, PROJECT_1);
 
-		/* @formatter:off */
+        /* @formatter:off */
 
 		UUID jobUUID = assertUser(USER_1).
 			canCreateWebScan(PROJECT_1,IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__FAST);
-		
+
         assertUser(USER_1).
 			onJobScheduling(PROJECT_1).
 			    canFindJob(jobUUID).
@@ -115,9 +112,9 @@ public class JobScenario2IntTest {
 
 		assertUser(SUPER_ADMIN).
 		    waitForJobDone(PROJECT_1, jobUUID).
-		    
+
 		    afterThis().
-		    
+
 			onJobScheduling(PROJECT_1).
 			    canFindJob(jobUUID).
 			    havingOneOfExecutionStates(TestExecutionState.ENDED).
@@ -126,9 +123,6 @@ public class JobScenario2IntTest {
 			    canNotFindRunningJob(jobUUID); // means events are triggered and handled */
 		/* @formatter:on */
 
-	}
-
-
-
+    }
 
 }

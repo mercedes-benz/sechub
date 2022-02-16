@@ -16,7 +16,7 @@ class PropertyBagTest {
     void setter() {
         testSetterAndGetter(createExample());
     }
-    
+
     @Test
     void handle_null_values_and_keys() {
         /* prepare */
@@ -30,7 +30,6 @@ class PropertyBagTest {
         /* test */
         assertTrue(propertyBag.isEmpty());
     }
-
 
     @Test
     void equals_and_hashcode() {

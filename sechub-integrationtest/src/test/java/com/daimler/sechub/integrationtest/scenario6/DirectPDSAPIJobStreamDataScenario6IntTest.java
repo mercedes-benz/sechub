@@ -25,7 +25,7 @@ import com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultExecuto
  * Integration test directly using REST API of integration test PDS (means
  * without sechub). The test will inspect stream data of current output and
  * error streams.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -43,13 +43,13 @@ public class DirectPDSAPIJobStreamDataScenario6IntTest {
     public void pds_admin_fetch_job_data_streams_for_given_pds_job_uuids() {
         /* @formatter:off */
         /* prepare */
-        
+
         UUID sechubJobUUID = UUID.randomUUID();
-        
+
         Map<String, String> customParameters = new HashMap<>();
-        // we use variant f, which does lazy stream handling, see IntegrationTestDefaultProfiles#PROFILE_5_PDS_CODESCAN_LAZY_STREAMS javadoc 
+        // we use variant f, which does lazy stream handling, see IntegrationTestDefaultProfiles#PROFILE_5_PDS_CODESCAN_LAZY_STREAMS javadoc
         customParameters.put(IntegrationTestDefaultExecutorConfigurations.JOBPARAM_PDS_KEY_FOR_VARIANTNAME,IntegrationTestDefaultExecutorConfigurations.PDS_CODESCAN_VARIANT_F);
-        
+
         String createResult = asPDSUser(PDS_ADMIN).createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN, customParameters);
         UUID pdsJobUUID = assertPDSJobCreateResult(createResult).hasJobUUID().getJobUUID();
         asPDSUser(PDS_TECH_USER).

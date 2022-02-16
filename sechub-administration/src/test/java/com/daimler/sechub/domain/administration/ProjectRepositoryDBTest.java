@@ -26,110 +26,108 @@ import com.daimler.sechub.domain.administration.user.UserRepository;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-@ContextConfiguration(classes= {ProjectRepository.class, ProjectRepositoryDBTest.SimpleTestConfiguration.class})
+@ContextConfiguration(classes = { ProjectRepository.class, ProjectRepositoryDBTest.SimpleTestConfiguration.class })
 public class ProjectRepositoryDBTest {
 
-	@Autowired
-	private TestEntityManager entityManager;
+    @Autowired
+    private TestEntityManager entityManager;
 
-	@Autowired
-	private ProjectRepository projectRepository;
+    @Autowired
+    private ProjectRepository projectRepository;
 
-	@Autowired
-	private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-	private User user1;
+    private User user1;
 
-	@Before
-	public void before() {
-		user1 = TestUserCreationFactory.createUser("db_test_testuser1");
-		user1= entityManager.persistAndFlush(user1);
-	}
+    @Before
+    public void before() {
+        user1 = TestUserCreationFactory.createUser("db_test_testuser1");
+        user1 = entityManager.persistAndFlush(user1);
+    }
 
-	@Test
-	public void project_with_owner_can_be_deleted() {
-		/* prepare */
-		Project project = TestProjectCreationFactory.createProject("project_repo_test1",user1);
+    @Test
+    public void project_with_owner_can_be_deleted() {
+        /* prepare */
+        Project project = TestProjectCreationFactory.createProject("project_repo_test1", user1);
 
-		entityManager.persist(project);
+        entityManager.persist(project);
 
-		/* execute */
-		projectRepository.deleteProjectWithAssociations(project.getId());
+        /* execute */
+        projectRepository.deleteProjectWithAssociations(project.getId());
 
-		/* test */
-		prepareForDBTest();
-		assertProjectNotFound(project);
+        /* test */
+        prepareForDBTest();
+        assertProjectNotFound(project);
 
-		assertUserFound(user1);
+        assertUserFound(user1);
 
-	}
+    }
 
-	@Test
-	public void project_with_owner_and_users_can_be_deleted() {
-		/* prepare */
-		Project project = TestProjectCreationFactory.createProject("project_repo_test2",user1);
+    @Test
+    public void project_with_owner_and_users_can_be_deleted() {
+        /* prepare */
+        Project project = TestProjectCreationFactory.createProject("project_repo_test2", user1);
 
-		project.getUsers().add(user1);
-		entityManager.persist(project);
+        project.getUsers().add(user1);
+        entityManager.persist(project);
 
-		prepareForDBTest();
+        prepareForDBTest();
 
-		/* execute */
-		projectRepository.deleteProjectWithAssociations(project.getId());
+        /* execute */
+        projectRepository.deleteProjectWithAssociations(project.getId());
 
-		prepareForDBTest();
-		assertProjectNotFound(project);
+        prepareForDBTest();
+        assertProjectNotFound(project);
 
-		assertUserFound(user1);
+        assertUserFound(user1);
 
-	}
+    }
 
-	@Test
-	public void project_with_owner_whitelists_and_users_can_be_deleted__user_still_exists() throws Exception{
-		/* prepare */
-		Project project = TestProjectCreationFactory.createProject("project_repo_test2",user1);
+    @Test
+    public void project_with_owner_whitelists_and_users_can_be_deleted__user_still_exists() throws Exception {
+        /* prepare */
+        Project project = TestProjectCreationFactory.createProject("project_repo_test2", user1);
 
-		project.getUsers().add(user1);
-		project.getWhiteList().add(new URI("http://www.example.org"));
-		entityManager.persist(project);
-		entityManager.persist(user1);
+        project.getUsers().add(user1);
+        project.getWhiteList().add(new URI("http://www.example.org"));
+        entityManager.persist(project);
+        entityManager.persist(user1);
 
-		prepareForDBTest();
+        prepareForDBTest();
 
-		/* execute */
-		projectRepository.deleteProjectWithAssociations(project.getId());
+        /* execute */
+        projectRepository.deleteProjectWithAssociations(project.getId());
 
-		prepareForDBTest();
-		assertProjectNotFound(project);
+        prepareForDBTest();
+        assertProjectNotFound(project);
 
-		assertUserFound(user1);
+        assertUserFound(user1);
 
-	}
+    }
 
-	/**
-	 * This will flush data to DB and also clear entity manager, so cached objects
-	 * will be removed and we got fresh data from DB
-	 */
-	private void prepareForDBTest() {
-		entityManager.flush();
-		entityManager.clear();
-	}
+    /**
+     * This will flush data to DB and also clear entity manager, so cached objects
+     * will be removed and we got fresh data from DB
+     */
+    private void prepareForDBTest() {
+        entityManager.flush();
+        entityManager.clear();
+    }
 
+    private void assertUserFound(User user) {
+        Optional<User> userFound = userRepository.findById(user.getName());
+        assertTrue(userFound.isPresent());
+    }
 
-	private void assertUserFound(User user) {
-		Optional<User> userFound = userRepository.findById(user.getName());
-		assertTrue(userFound.isPresent());
-	}
+    private void assertProjectNotFound(Project project) {
+        Optional<Project> found = projectRepository.findById(project.getId());
+        assertFalse(found.isPresent());
+    }
 
+    @TestConfiguration
+    @EnableAutoConfiguration
+    public static class SimpleTestConfiguration {
 
-	private void assertProjectNotFound(Project project) {
-		Optional<Project> found = projectRepository.findById(project.getId());
-		assertFalse(found.isPresent());
-	}
-
-	@TestConfiguration
-	@EnableAutoConfiguration
-	public static class SimpleTestConfiguration{
-
-	}
+    }
 }

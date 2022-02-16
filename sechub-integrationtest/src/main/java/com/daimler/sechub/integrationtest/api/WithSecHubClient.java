@@ -70,19 +70,20 @@ public class WithSecHubClient {
         return this;
     }
 
-    @Deprecated // use startDownloadReport instead (newer implementation uses AssertReport which has more details and uses common SecHubReport object inside)
+    @Deprecated // use startDownloadReport instead (newer implementation uses AssertReport which
+                // has more details and uses common SecHubReport object inside)
     public AssertSecHubReport startDownloadJobReport(TestProject project, UUID jobUUID, IntegrationTestJSONLocation location) {
         ClientJobReportLoader reportLoader = new ClientJobReportLoader(project, jobUUID, location.getPath());
         String report = reportLoader.loadReport();
         return TestAPI.assertSecHubReport(report);
     }
-    
+
     public AssertReport startDownloadReport(TestProject project, UUID jobUUID, IntegrationTestJSONLocation location) {
         ClientJobReportLoader reportLoader = new ClientJobReportLoader(project, jobUUID, location.getPath());
         String report = reportLoader.loadReport();
         return TestAPI.assertReport(report);
     }
-    
+
     private class ClientJobReportLoader {
         UUID jobUUID;
         TestProject project;
@@ -93,7 +94,7 @@ public class WithSecHubClient {
             this.project = project;
             this.jsonConfigfile = jsonConfigfile;
         }
-        
+
         public String loadReport() {
             String path = executeReportDownloadAndGetPathOfFile();
             File file = new File(path);
@@ -125,8 +126,6 @@ public class WithSecHubClient {
             String path = lastOutputLine.substring(index + identifier.length());
             return path;
         }
-
-       
 
     }
 
@@ -227,7 +226,7 @@ public class WithSecHubClient {
     /**
      * Starts asynchronous scan for test project - WILL NOT HIDE API token - so use
      * only in tests!
-     * 
+     *
      * @param project
      * @param location
      * @return assert object
@@ -239,7 +238,7 @@ public class WithSecHubClient {
     /**
      * Starts asynchronous scan for test project - WILL NOT HIDE API token - so use
      * only in tests!
-     * 
+     *
      * @param project
      * @param location
      * @param environmentVariables
@@ -293,7 +292,7 @@ public class WithSecHubClient {
     /**
      * Starts a synchronous scan for given project (WILL NOT HIDE API TOKEN! So use
      * only inside tests!)
-     * 
+     *
      * @param project
      * @param environmentVariables
      * @param file
@@ -379,7 +378,7 @@ public class WithSecHubClient {
 
     /**
      * Starts a code scan - result will be green and not long running
-     * 
+     *
      * @param project
      * @return
      */
@@ -398,7 +397,7 @@ public class WithSecHubClient {
      * <br>
      * Ensure that "https://fscan.intranet.example.org/" is in whitelist of project
      * to scan!
-     * 
+     *
      * @param project
      * @return execution result
      */

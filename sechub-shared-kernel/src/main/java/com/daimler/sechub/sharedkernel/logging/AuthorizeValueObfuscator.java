@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 /**
  * A component for authorization value obfuscation - e.g. to avoid logging user
  * credentials.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -24,21 +24,21 @@ public class AuthorizeValueObfuscator {
      * text, but it is not used for password length determination, but only the real
      * password! Then three asterisks follow with a hint about length.
      * <h3>Example</h3>
-     * 
+     *
      * <pre>
-     *  obfuscate("Basic aW350LXalc3RexampleXWzZXI6aW50LXRlc3Rfb23seXVzZXtHdk",52); 
+     *  obfuscate("Basic aW350LXalc3RexampleXWzZXI6aW50LXRlc3Rfb23seXVzZXtHdk",52);
      *  will return
      *  "Basic aW***length:58",
-     * 
+     *
      *  obfuscate("aW350LXalc3RexampleXWzZXI6aW50LXRlc3Rfb23seXVzZXtHdk",52);
      *  will return
      *  "aW***length:52"
-     *  
+     *
      *  obfuscate("aW350LXalc3RxampleXWzZXI6aW50LXRlc3Rfb23seXVzZXtHdk",52);
      *  will return
      *  "***length:51"
      * </pre>
-     * 
+     *
      * @param value                  the value to obfuscate. <code>null</code> wil
      *                               always be obfuscated to "null" string
      * @param valueMinSizeToShowHint this value defines at which password/api token

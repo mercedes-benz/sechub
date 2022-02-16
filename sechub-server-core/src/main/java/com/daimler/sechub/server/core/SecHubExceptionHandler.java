@@ -20,16 +20,16 @@ public class SecHubExceptionHandler {
     public String handleFileUploadSizeExceeded(SizeLimitExceededException ex, HttpServletResponse response) {
         return commonHandleFileUploadSizeExceed(ex, response);
     }
-    
+
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     @ResponseBody
     public String handleFileUploadSizeExceeded(MaxUploadSizeExceededException ex, HttpServletResponse response) {
         return commonHandleFileUploadSizeExceed(ex, response);
     }
-    
+
     @Bean
     RequestRejectedHandler requestRejectedHandler() {
-       return new SecHubHttpStatusRequestRejectedHandler();
+        return new SecHubHttpStatusRequestRejectedHandler();
     }
 
     private String commonHandleFileUploadSizeExceed(Exception ex, HttpServletResponse response) {

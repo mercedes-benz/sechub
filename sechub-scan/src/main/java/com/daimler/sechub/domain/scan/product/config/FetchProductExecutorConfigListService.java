@@ -25,33 +25,33 @@ public class FetchProductExecutorConfigListService {
 
     @Autowired
     ProductExecutorConfigValidation validation;
-    
+
     @Autowired
     AuditLogService auditLogService;
 
     /* @formatter:off */
     @UseCaseAdminFetchesExecutorConfigurationList(
-            @Step(number = 2, 
-            name = "Service call", 
+            @Step(number = 2,
+            name = "Service call",
             description = "Service fetches data and creates a list containing all executor configurations"))
     /* @formatter:on */
     public ProductExecutorConfigList fetchProductExecutorConfigList() {
         auditLogService.log("Wants to fetch list of product execution configurations");
-        
+
         ProductExecutorConfigList configList = new ProductExecutorConfigList();
-        
-        List<ProductExecutorConfig> data =  repository.findAll();
+
+        List<ProductExecutorConfig> data = repository.findAll();
         for (ProductExecutorConfig config : data) {
-            
+
             ProductExecutorConfigListEntry entry = new ProductExecutorConfigListEntry();
-            
-            entry.enabled=config.getEnabled();
-            entry.name=config.getName();
-            entry.uuid=config.getUUID();
-            
+
+            entry.enabled = config.getEnabled();
+            entry.name = config.getName();
+            entry.uuid = config.getUUID();
+
             configList.getExecutorConfigurations().add(entry);
         }
-        
+
         return configList;
     }
 

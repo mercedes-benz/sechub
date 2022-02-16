@@ -11,25 +11,25 @@ import com.daimler.sechub.sereco.test.SerecoTestFileSupport;
 
 public class NessusV1XMLImporterTest {
 
-	private NessusV1XMLImporter importerToTest;
+    private NessusV1XMLImporter importerToTest;
 
-	@Before
-	public void before() {
-		importerToTest = new NessusV1XMLImporter();
-	}
+    @Before
+    public void before() {
+        importerToTest = new NessusV1XMLImporter();
+    }
 
-	@Test
-	public void xmlReportFromNessus7canBeImported() {
-		/* prepare */
-		String xml = SerecoTestFileSupport.INSTANCE.loadTestFile("nessus/nessus_7.0.2.result.xml");
+    @Test
+    public void xmlReportFromNessus7canBeImported() {
+        /* prepare */
+        String xml = SerecoTestFileSupport.INSTANCE.loadTestFile("nessus/nessus_7.0.2.result.xml");
 
-		ImportParameter param = ImportParameter.builder().importData(xml).importId("id1").productId("Nessus").build();
+        ImportParameter param = ImportParameter.builder().importData(xml).importId("id1").productId("Nessus").build();
 
-		/* execute */
-		ProductImportAbility ableToImport = importerToTest.isAbleToImportForProduct(param);
+        /* execute */
+        ProductImportAbility ableToImport = importerToTest.isAbleToImportForProduct(param);
 
-		/* test */
-		assertEquals("Was not able to import xml!", ProductImportAbility.ABLE_TO_IMPORT, ableToImport);
-	}
+        /* test */
+        assertEquals("Was not able to import xml!", ProductImportAbility.ABLE_TO_IMPORT, ableToImport);
+    }
 
 }

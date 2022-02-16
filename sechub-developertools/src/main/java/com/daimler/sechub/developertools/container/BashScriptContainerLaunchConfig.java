@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class BashScriptContainerLaunchConfig {
-    
+
     private Path pathToScript;
     private Map<String, String> environment = new HashMap<>();
     private List<String> parameters = new ArrayList<>();

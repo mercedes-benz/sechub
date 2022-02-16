@@ -17,16 +17,16 @@ public class FetchPDSJobErrorStreamAction extends AbstractPDSAction {
 
     @Override
     protected void executePDS(PDSAdministration pds) {
-        
+
         Optional<String> pdsJobUUID = getUserInput("PDS job uuid", InputCacheIdentifier.PDS_JOBUUID);
         if (!pdsJobUUID.isPresent()) {
             output("canceled - pds job uuid not set");
             return;
         }
         String result = pds.getJobErrorStream(UUID.fromString(pdsJobUUID.get()));
-        
+
         outputAsTextOnSuccess(result);
-        
+
     }
 
 }

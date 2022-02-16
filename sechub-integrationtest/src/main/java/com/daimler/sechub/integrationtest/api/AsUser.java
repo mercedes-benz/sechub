@@ -330,7 +330,7 @@ public class AsUser {
     public String getStringFromURL(String link) {
         return getRestHelper().getStringFromURL(link);
     }
-    
+
     /**
      * Assigns owner to a project
      *
@@ -406,11 +406,11 @@ public class AsUser {
         String url = getUrlBuilder().buildAddJobUrl(projectId);
         return getRestHelper().postJson(url, json);
     }
-    
-    public  UUID createJobAndReturnJobUUID(TestProject project, SecHubScanConfiguration config) {
+
+    public UUID createJobAndReturnJobUUID(TestProject project, SecHubScanConfiguration config) {
         String projectId = project.getProjectId();
         config.setProjectId(projectId);
-        
+
         String json = config.toJSON();
         String url = getUrlBuilder().buildAddJobUrl(projectId);
         String resultAsString = getRestHelper().postJson(url, json);
@@ -521,7 +521,7 @@ public class AsUser {
     /**
      * When not changed by project specific mock data setup this will result in a
      * RED traffic light result
-     * 
+     *
      * @param project
      * @return execution result
      */
@@ -556,7 +556,7 @@ public class AsUser {
     /**
      * Creates a webscan job for project (but job is not approved, so will not be
      * started)
-     * 
+     *
      * @param project
      * @param useLongRunningButGreen
      * @return uuid for created job
@@ -568,7 +568,7 @@ public class AsUser {
     /**
      * Creates a webscan job for project (but job is not approved, so will not be
      * started)
-     * 
+     *
      * @param project
      * @param checkExists
      * @return uuid for created job
@@ -580,7 +580,7 @@ public class AsUser {
     /**
      * Creates a webscan job for project (but job is not approved, so will not be
      * started)
-     * 
+     *
      * @param project
      * @param useLongRunningButGreen
      * @param checkExists
@@ -596,14 +596,15 @@ public class AsUser {
             runMode = IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__FAST;
         }
         String jsonResponse = createWebScanJob(project, runMode);
-        
+
         return fetchJobUUID(jsonResponse);
 
     }
 
     /**
-     * Creates a webscan for given target URL and returns job UUID. But be aware: The target URL
-     * must be whitelisted before!
+     * Creates a webscan for given target URL and returns job UUID. But be aware:
+     * The target URL must be whitelisted before!
+     *
      * @param project
      * @param targetURL
      * @return uuid
@@ -612,7 +613,7 @@ public class AsUser {
         String jsonResponse = createWebScanJobForTargetURL(project, targetURL);
         return fetchJobUUID(jsonResponse);
     }
-    
+
     private UUID fetchJobUUID(String jsonResponse) {
         try {
             JsonNode jsonNode = JSONTestSupport.DEFAULT.fromJson(jsonResponse);
@@ -630,11 +631,10 @@ public class AsUser {
         }
     }
 
-    
     /**
      * Creates a code scan job and returns corresponding job UUID. But job is NOT
      * approved and so not started!
-     * 
+     *
      * @param project
      * @param runMode
      * @return job UUID
@@ -822,7 +822,7 @@ public class AsUser {
     /**
      * Change product executor job parameter by REST API - will fail when user has
      * not the permission to do this.
-     * 
+     *
      * @param executorConfigUUID
      * @param key
      * @param newValue
@@ -851,9 +851,9 @@ public class AsUser {
         return this;
 
     }
-    
+
     void ensureExecutorConfigUUIDs() {
-        for (TestExecutorConfig config: IntegrationTestDefaultExecutorConfigurations.getAllConfigurations()) {
+        for (TestExecutorConfig config : IntegrationTestDefaultExecutorConfigurations.getAllConfigurations()) {
             ensureExecutorConfigUUIDs(config);
         }
     }
@@ -1048,9 +1048,8 @@ public class AsUser {
 
     public void changeProjectAccessLevel(TestProject project, ProjectAccessLevel accessLevel) {
         String url = getUrlBuilder().buildAdminChangesProjectAccessLevelUrl(project.getProjectId(), accessLevel.getId());
-        
+
         getRestHelper().post(url);
     }
-
 
 }

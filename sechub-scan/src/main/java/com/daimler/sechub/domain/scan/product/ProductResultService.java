@@ -40,26 +40,32 @@ public class ProductResultService {
 
         return repository.findAll(Example.of(probe));
     }
-    
-    /* FIXME Albert Tregnaghi, 2020-04-23: we must fix the security-context problem, see https://github.com/Daimler/sechub/issues/216 */
+
+    /*
+     * FIXME Albert Tregnaghi, 2020-04-23: we must fix the security-context problem,
+     * see https://github.com/Daimler/sechub/issues/216
+     */
     // @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
     public void deleteAllResultsForJob(UUID sechubJobUUID) {
         ProductResult probe = new ProductResult();
         probe.secHubJobUUID = sechubJobUUID;
 
         List<ProductResult> existingResults = repository.findAll(Example.of(probe));
-        boolean purged=false;
+        boolean purged = false;
         for (ProductResult result : existingResults) {
             repository.delete(result);
-            purged=true;
+            purged = true;
         }
 
         if (purged) {
-            /* we only send purged event - when something existed before and was really removed */
+            /*
+             * we only send purged event - when something existed before and was really
+             * removed
+             */
             sendJobResultsPurged(sechubJobUUID);
         }
     }
-    
+
     @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
     public List<ProductResult> fetchAllResultsInProject(String projectiD) {
         ProductResult probe = new ProductResult();

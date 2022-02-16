@@ -24,7 +24,7 @@ import com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultExecuto
 
 /**
  * Integration tests, recording events and check happens as expected
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -48,17 +48,17 @@ public class RestartJobScenario4IntTest {
         /* prepare */
         UUID sechubJobUUID = as(USER_1).triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(project);
         waitForJobDoneAndFailWhenJobIsFailing(project, sechubJobUUID);
-        
+
         /* execute */
         as(SUPER_ADMIN).restartCodeScanHardAndFetchJobStatus(project,sechubJobUUID);
-        
+
         /* test */
         String report = as(USER_1).getJobReport(project.getProjectId(),sechubJobUUID);
         assertNotNull(report);
         if (!report.contains("GREEN")) {
             assertEquals("GREEN was not found, but expected...","GREEN",report);
         }
-        
+
         /* @formatter:on */
     }
 
@@ -71,19 +71,19 @@ public class RestartJobScenario4IntTest {
         /* @formatter:off */
         /* prepare */
         clearMetaDataInspection();
-        
+
         UUID sechubJobUUID = as(USER_1).triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(project);
         waitForJobDoneAndFailWhenJobIsFailing(project, sechubJobUUID);
-        
+
         simulateJobIsStillRunningAndUploadAvailable(sechubJobUUID);
-        
+
         assertInspections().
             hasAmountOfInspections(1).
                 inspectionNr(0).hasId("CHECKMARX");
 
         /* execute */
         as(SUPER_ADMIN).restartCodeScanHardAndFetchJobStatus(project,sechubJobUUID);
-        
+
         /* test */
         String report = as(USER_1).getJobReport(project.getProjectId(),sechubJobUUID);
         assertNotNull(report);
@@ -111,14 +111,14 @@ public class RestartJobScenario4IntTest {
         /* prepare */
         UUID sechubJobUUID = as(USER_1).triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(project);
         waitForJobDoneAndFailWhenJobIsFailing(project, sechubJobUUID);
-        
+
         simulateJobIsStillRunningAndUploadAvailable(sechubJobUUID);
-        
+
         destroyProductResults(sechubJobUUID); // destroy former product result to simulate execution crashed..
 
         /* execute */
         as(SUPER_ADMIN).restartCodeScanHardAndFetchJobStatus(project,sechubJobUUID);
-        
+
         /* test */
         String report = as(USER_1).getJobReport(project.getProjectId(),sechubJobUUID);
         assertNotNull(report);
@@ -140,21 +140,21 @@ public class RestartJobScenario4IntTest {
         /* @formatter:off */
         /* prepare */
         UUID sechubJobUUID = as(USER_1).triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(project);
-        
+
         waitForJobDoneAndFailWhenJobIsFailing(project, sechubJobUUID);
-        
-        
+
+
         /* execute */
         as(SUPER_ADMIN).restartCodeScanAndFetchJobStatus(project,sechubJobUUID);
-        
-        
+
+
         /* test */
         String report = as(USER_1).getJobReport(project.getProjectId(),sechubJobUUID);
         assertNotNull(report);
         if (!report.contains("GREEN")) {
             assertEquals("GREEN was not found, but expected...","GREEN",report);
         }
-        
+
         /* @formatter:on */
     }
 
@@ -167,21 +167,21 @@ public class RestartJobScenario4IntTest {
         /* @formatter:off */
         /* prepare */
         clearMetaDataInspection();
-        
+
         UUID sechubJobUUID = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(project,IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING);
         waitForJobRunning(project, sechubJobUUID);
         waitMilliSeconds(1000); // let the old job run (so not accidently running at same time)
 
         /* execute */
         as(SUPER_ADMIN).restartCodeScanAndFetchJobStatus(project,sechubJobUUID);
-        
+
         /* test */
         String report = as(USER_1).getJobReport(project.getProjectId(),sechubJobUUID);
         assertNotNull(report);
         if (!report.contains("GREEN")) {
             assertEquals("GREEN was not found, but expected...","GREEN",report);
         }
-        
+
         /* @formatter:on */
 
         assertInspections().hasAmountOfInspections(2);
@@ -193,13 +193,8 @@ public class RestartJobScenario4IntTest {
         String metaDataFileName = "metadata_CHECKMARX_" + uuid + ".json";
 
         AssertFullScanData assertFullScanDataZipFile = assertFullScanDataZipFile(file);
-        assertFullScanDataZipFile.
-            dumpDownloadFilePath().
-            containsFile("CHECKMARX_" + uuid + ".xml").
-            containsFile(metaDataFileName).
-            containsFile("SERECO.json").
-            containsFile("metadata_SERECO.json").
-            containsFiles(6); // 4 + 2 log files, no duplicates of product results!!
+        assertFullScanDataZipFile.dumpDownloadFilePath().containsFile("CHECKMARX_" + uuid + ".xml").containsFile(metaDataFileName).containsFile("SERECO.json")
+                .containsFile("metadata_SERECO.json").containsFiles(6); // 4 + 2 log files, no duplicates of product results!!
 
         /*
          * check adapter persistence of reused meta data update has been called 4 times
@@ -224,7 +219,7 @@ public class RestartJobScenario4IntTest {
 
         /* execute */
         as(SUPER_ADMIN).restartCodeScanAndFetchJobStatus(project,sechubJobUUID);
-        
+
         /* test */
         String report = as(USER_1).getJobReport(project.getProjectId(),sechubJobUUID);
         assertNotNull(report);

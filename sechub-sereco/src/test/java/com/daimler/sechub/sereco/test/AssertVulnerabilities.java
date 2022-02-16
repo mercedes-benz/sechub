@@ -44,7 +44,7 @@ public class AssertVulnerabilities {
     /**
      * Same as {@link #vulnerability()} but easier to understand in tests and more
      * like a "good taled story" part.
-     * 
+     *
      * @return
      */
     public VulnerabilityFinder verifyVulnerability() {
@@ -83,12 +83,12 @@ public class AssertVulnerabilities {
             SerecoWebBody body2 = foundResponse.getBody();
             internalAssertEquals(expectedResponse.getHeaders(), foundResponse.getHeaders(), "headers not as expected");
             internalAssertEquals(body1, body2, "body not as expected");
-            
-            assertEquals("protocol",expectedResponse.getProtocol(),foundResponse.getProtocol());
-            assertEquals("version", expectedResponse.getVersion(),foundResponse.getVersion());
-            assertEquals("reasonPhrase", expectedResponse.getReasonPhrase(),foundResponse.getReasonPhrase());
-            assertEquals("statusCode", expectedResponse.getStatusCode(),foundResponse.getStatusCode());
-            
+
+            assertEquals("protocol", expectedResponse.getProtocol(), foundResponse.getProtocol());
+            assertEquals("version", expectedResponse.getVersion(), foundResponse.getVersion());
+            assertEquals("reasonPhrase", expectedResponse.getReasonPhrase(), foundResponse.getReasonPhrase());
+            assertEquals("statusCode", expectedResponse.getStatusCode(), foundResponse.getStatusCode());
+
             fail("not equal but not detectable");
         }
 
@@ -243,7 +243,7 @@ public class AssertVulnerabilities {
         /**
          * Enable trace logging - shows inspection information in case of error handling
          * / understanding of verification
-         * 
+         *
          * @return assert object itself
          */
         public VulnerabilityFinder enableTrace() {
@@ -318,7 +318,7 @@ public class AssertVulnerabilities {
 
         /**
          * Assert vulnerability is contained - false
-         * 
+         *
          * @return
          */
         public AssertVulnerabilities isContained() {
@@ -415,7 +415,7 @@ public class AssertVulnerabilities {
          * When this method is used the web vulnerability data must be defined 100%
          * correctly by dedicated with... methods. Otherwise this method will always
          * fail!
-         * 
+         *
          * @return
          */
         public WebVulnerabilityFinder isExactDefinedWebVulnerability() {
@@ -425,7 +425,7 @@ public class AssertVulnerabilities {
         }
 
         public class WebVulnerabilityFinder {
-            
+
             public WebVulnerabilityFinder withTarget(String target) {
                 search.getWeb().getRequest().setTarget(target);
                 return this;

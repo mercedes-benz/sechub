@@ -22,17 +22,17 @@ public class TableRendersupport {
     private class SimpleBooleanRedGreenTableCellRenderer extends DefaultTableCellRenderer {
 
         private JComponent componentTrue;
-        private JComponent componentFalse= new JTextField("off");
+        private JComponent componentFalse = new JTextField("off");
         private static final long serialVersionUID = 1L;
-        
+
         public SimpleBooleanRedGreenTableCellRenderer() {
             componentTrue = createBooleanComponent(true);
-            componentFalse= createBooleanComponent(false);
+            componentFalse = createBooleanComponent(false);
         }
-        
+
         private JComponent createBooleanComponent(boolean enabled) {
-            JTextField component = new JTextField(enabled ? "on": "off");
-            component.setForeground(enabled ?new Color(12,155,12):Color.RED);
+            JTextField component = new JTextField(enabled ? "on" : "off");
+            component.setForeground(enabled ? new Color(12, 155, 12) : Color.RED);
             component.setHorizontalAlignment(JTextField.CENTER);
             component.setEditable(false);
             component.setBorder(null);
@@ -41,14 +41,14 @@ public class TableRendersupport {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            Component c = super.getTableCellRendererComponent(table , value, isSelected, hasFocus, row, column);
+            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             if (value instanceof Boolean) {
                 Component c2 = null;
                 boolean enabled = (Boolean) value;
                 if (enabled) {
-                    c2= componentTrue;
+                    c2 = componentTrue;
                 } else {
-                    c2=componentFalse;
+                    c2 = componentFalse;
                 }
                 c2.setBackground(c.getBackground());
                 return c2;

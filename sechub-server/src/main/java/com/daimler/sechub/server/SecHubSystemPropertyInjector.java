@@ -12,7 +12,7 @@ import com.daimler.sechub.sharedkernel.MustBeDocumented;
  * This component injects some special SecHub Spring Boot values into
  * corresponding JVM system properties. So we can configure those parts in our
  * `application.yaml` file.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

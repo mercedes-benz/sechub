@@ -24,15 +24,14 @@ public class AssertExecutorConfig {
         try {
             fetchConfig(uuid);
             fail("should not be able to fetch exector conifg!");
-        }catch(HttpClientErrorException e) {
-            assertEquals("Got error but status not as expected", HttpStatus.NOT_FOUND,e.getStatusCode());
+        } catch (HttpClientErrorException e) {
+            assertEquals("Got error but status not as expected", HttpStatus.NOT_FOUND, e.getStatusCode());
         }
     }
-    
+
     private static TestExecutorConfig fetchConfig(UUID uuid) {
         return as(SUPER_ADMIN).fetchProductExecutorConfig(uuid);
     }
-    
 
     private TestExecutorConfig config;
 
@@ -63,11 +62,11 @@ public class AssertExecutorConfig {
     public AssertExecutorConfig isEnabled() {
         return isEnabled(true);
     }
-    
+
     public AssertExecutorConfig isNotEnabled() {
         return isEnabled(false);
     }
-    
+
     private AssertExecutorConfig isEnabled(boolean enabled) {
         assertEquals(enabled, config.enabled);
         return this;
@@ -93,7 +92,7 @@ public class AssertExecutorConfig {
     }
 
     public AssertExecutorConfig hasJobParameters(int expected) {
-        assertEquals("Not expecte amount of job parameters!", expected,config.setup.jobParameters.size());
+        assertEquals("Not expecte amount of job parameters!", expected, config.setup.jobParameters.size());
         return this;
     }
 

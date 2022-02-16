@@ -11,12 +11,12 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * /** Reporting descriptor reference, see <a href=
  * "https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317638">SARIF
  * 2.1.0 specification entry</a>
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
 @JsonPropertyOrder({ "ruleId", "level", "message", "locations", "properties" })
-public class Result extends SarifObject{
+public class Result extends SarifObject {
     private String ruleId;
     private Message message;
     private Level level;
@@ -25,10 +25,10 @@ public class Result extends SarifObject{
 
     private List<Location> locations;
     private List<CodeFlow> codeflows;
-    
+
     private WebResponse webResponse;
     private WebRequest webRequest;
-    
+
     public Result() {
         this(null, null);
     }
@@ -47,7 +47,7 @@ public class Result extends SarifObject{
 
     /**
      * https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317644
-     * 
+     *
      * @return rule index
      */
     public int getRuleIndex() {
@@ -100,19 +100,19 @@ public class Result extends SarifObject{
     public WebResponse getWebResponse() {
         return webResponse;
     }
-    
+
     public void setWebResponse(WebResponse webResponse) {
         this.webResponse = webResponse;
     }
-    
+
     public WebRequest getWebRequest() {
         return webRequest;
     }
-    
+
     public void setWebRequest(WebRequest webRequest) {
         this.webRequest = webRequest;
     }
-    
+
     @Override
     public String toString() {
         return "Result [" + (ruleId != null ? "ruleId=" + ruleId + ", " : "") + (level != null ? "level=" + level + ", " : "")
@@ -141,6 +141,5 @@ public class Result extends SarifObject{
                 && Objects.equals(message, other.message) && Objects.equals(getProperties(), other.getProperties()) && Objects.equals(ruleId, other.ruleId)
                 && ruleIndex == other.ruleIndex && Objects.equals(webRequest, other.webRequest) && Objects.equals(webResponse, other.webResponse);
     }
-
 
 }

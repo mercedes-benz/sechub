@@ -15,24 +15,24 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @Service
 public class AuthUpdateUserApiTokenService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(AuthUpdateUserApiTokenService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AuthUpdateUserApiTokenService.class);
 
-	@Autowired
-	AuthUserRepository userRepo;
+    @Autowired
+    AuthUserRepository userRepo;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Autowired
+    UserInputAssertion assertion;
 
-	@UseCaseUserClicksLinkToGetNewAPIToken(@Step(number=3,next={Step.NO_NEXT_STEP} ,name="Update auth data"))
-	public void updateAPIToken(String userId, String hashedApiToken) {
-		assertion.isValidUserId(userId);
+    @UseCaseUserClicksLinkToGetNewAPIToken(@Step(number = 3, next = { Step.NO_NEXT_STEP }, name = "Update auth data"))
+    public void updateAPIToken(String userId, String hashedApiToken) {
+        assertion.isValidUserId(userId);
 
-		AuthUser user = userRepo.findOrFail(userId);
-		user.setHashedApiToken(hashedApiToken);
-		userRepo.save(user);
+        AuthUser user = userRepo.findOrFail(userId);
+        user.setHashedApiToken(hashedApiToken);
+        userRepo.save(user);
 
-		LOG.debug("API token for user:{} updated",userId);
+        LOG.debug("API token for user:{} updated", userId);
 
-	}
+    }
 
 }

@@ -17,8 +17,9 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Entry point for client actions. In future network access will be accessible be here as well, when
- * generated openapi parts are integrated.
+ * Entry point for client actions. In future network access will be accessible
+ * be here as well, when generated openapi parts are integrated.
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -31,7 +32,7 @@ public class SecHubClient {
     private boolean trustAll;
 
     private CryptoAccess<String> apiTokenAccess = new CryptoAccess<>();
-    
+
     public static SecHubClient create(String username, String apiToken, String hostUri, int hostPort) {
         return create(username, apiToken, hostUri, hostPort, false);
     }
@@ -77,6 +78,7 @@ public class SecHubClient {
 
     /**
      * Imports a a given sechub rpeort file
+     *
      * @param file
      * @return
      * @throws SecHubReportException

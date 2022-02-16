@@ -15,7 +15,7 @@ import com.daimler.sechub.sharedkernel.Profiles;
  * cases and can be fetched by special EventTraceIntTest variants to get
  * information about event history for use cases - leads to automated
  * documentation.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -167,7 +167,7 @@ public class IntegrationTestEventInspectorService implements EventInspector {
 
     /**
      * Grabs trace element - will ignore spring proxy stuff automatically
-     * 
+     *
      * @param pos position in stack trace, starts with 0, where 0 is get trace
      *            element, and 1 is this method!
      * @return trace element for given position or <code>null</code>

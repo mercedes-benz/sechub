@@ -84,43 +84,28 @@ public class ProductExecutionProfileRestController {
 	    deleteService.deleteProductExecutionProfile(profileId);
 	    /* @formatter:on */
     }
-	
-	@UseCaseAdminUpdatesExecutionProfile(
-	        @Step(
-	                number=1,
-	                name="Rest call",
-	                needsRestDoc=true,
-	                description="Administrator updates existing profile by calling REST API"))
-	@RequestMapping(path = "execution/profile/{id}", method = RequestMethod.PUT, produces= {MediaType.APPLICATION_JSON_VALUE})
-	@ResponseStatus(HttpStatus.OK)
-	public void udpateProfile(@PathVariable("id")String profileId, @RequestBody ProductExecutionProfile profile) {
-	    updateService.updateExecutionProfile(profileId,profile);
-	    /* @formatter:on */
-    }
-	
-	@UseCaseAdminAssignsExecutionProfileToProject(
-            @Step(
-                    number=1,
-                    name="Rest call",
-                    needsRestDoc=true,
-                    description="Administrator adds profile relation to project by calling REST API"))
-    @RequestMapping(path = "execution/profile/{profileId}/project/{projectId}", method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
-    @ResponseStatus(HttpStatus.CREATED)
-    public void addProjectToProfile(@PathVariable("profileId")String profileId, @PathVariable("projectId")String projectId) {
-        updateService.addProjectToProfileRelation(profileId,projectId);
+
+    @UseCaseAdminUpdatesExecutionProfile(@Step(number = 1, name = "Rest call", needsRestDoc = true, description = "Administrator updates existing profile by calling REST API"))
+    @RequestMapping(path = "execution/profile/{id}", method = RequestMethod.PUT, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    public void udpateProfile(@PathVariable("id") String profileId, @RequestBody ProductExecutionProfile profile) {
+        updateService.updateExecutionProfile(profileId, profile);
         /* @formatter:on */
     }
-	
-	@UseCaseAdminUnassignsExecutionProfileFromProject(
-            @Step(
-                    number=1,
-                    name="Rest call",
-                    needsRestDoc=true,
-                    description="Administrator removes profile relation to project by calling REST API"))
-    @RequestMapping(path = "execution/profile/{profileId}/project/{projectId}", method = RequestMethod.DELETE, produces= {MediaType.APPLICATION_JSON_VALUE})
+
+    @UseCaseAdminAssignsExecutionProfileToProject(@Step(number = 1, name = "Rest call", needsRestDoc = true, description = "Administrator adds profile relation to project by calling REST API"))
+    @RequestMapping(path = "execution/profile/{profileId}/project/{projectId}", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addProjectToProfile(@PathVariable("profileId") String profileId, @PathVariable("projectId") String projectId) {
+        updateService.addProjectToProfileRelation(profileId, projectId);
+        /* @formatter:on */
+    }
+
+    @UseCaseAdminUnassignsExecutionProfileFromProject(@Step(number = 1, name = "Rest call", needsRestDoc = true, description = "Administrator removes profile relation to project by calling REST API"))
+    @RequestMapping(path = "execution/profile/{profileId}/project/{projectId}", method = RequestMethod.DELETE, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
-    public void removeProjectFromProfile(@PathVariable("profileId")String profileId, @PathVariable("projectId")String projectId) {
-        updateService.removeProjectToProfileRelation(profileId,projectId);
+    public void removeProjectFromProfile(@PathVariable("profileId") String profileId, @PathVariable("projectId") String projectId) {
+        updateService.removeProjectToProfileRelation(profileId, projectId);
         /* @formatter:on */
     }
 

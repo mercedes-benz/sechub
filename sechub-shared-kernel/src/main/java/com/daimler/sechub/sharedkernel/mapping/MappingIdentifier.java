@@ -12,7 +12,7 @@ import com.daimler.sechub.sharedkernel.validation.ValidationResult;
 
 /**
  * Represents all mapping identifiers.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -63,7 +63,7 @@ public enum MappingIdentifier {
 
     /**
      * Get identifier by given id
-     * 
+     *
      * @param id
      * @return identifier or <code>null</code> when not found
      */
@@ -76,13 +76,14 @@ public enum MappingIdentifier {
 
     /**
      * We got different types for mappings. This is to identify a mapping stands for
+     *
      * @author Albert Tregnaghi
      *
      */
     public static enum MappingType {
         /* global common configuration mapping */
         COMMON_CONFIGURATION,
-        
+
         /* a configuration mappping for adapters */
         ADAPTER_CONFIGURATION,
 
@@ -93,7 +94,7 @@ public enum MappingIdentifier {
     /**
      * Check if this mapping identifier has a type which is contained in one of the
      * given ones
-     * 
+     *
      * @param acceptedTypes
      * @return <code>true</code> when this identifier has one of given types
      */

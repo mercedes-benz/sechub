@@ -10,7 +10,7 @@ public class TestFileReader {
 
     /**
      * Load text file
-     * 
+     *
      * @param file
      * @param lineBreak
      * @return

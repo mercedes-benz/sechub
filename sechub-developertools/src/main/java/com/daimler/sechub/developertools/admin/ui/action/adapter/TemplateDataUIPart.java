@@ -6,9 +6,9 @@ import com.daimler.sechub.developertools.admin.ui.action.adapter.TemplatesDialog
 public interface TemplateDataUIPart {
 
     public void setText(String text);
-    
+
     public String getText();
-    
+
     public TemplateData getData();
-    
+
 }

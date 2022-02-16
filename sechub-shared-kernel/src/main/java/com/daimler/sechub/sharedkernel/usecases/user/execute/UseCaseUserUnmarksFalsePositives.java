@@ -18,10 +18,10 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 		id=UseCaseIdentifier.UC_USER_UNMARKS_FALSE_POSITIVES,
 		group=UseCaseGroup.SECHUB_EXECUTION,
 		apiName="userUnmarksFalsePositives",
-		title="User unmarks existing false positive definitons", 
+		title="User unmarks existing false positive definitons",
 		description="user/unmark_false_positives.adoc")
 public @interface UseCaseUserUnmarksFalsePositives {
-	
+
 	Step value();
 }
 /* @formatter:on */

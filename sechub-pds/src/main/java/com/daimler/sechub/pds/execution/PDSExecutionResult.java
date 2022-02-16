@@ -5,6 +5,6 @@ public class PDSExecutionResult {
 
     int exitCode;
     boolean failed;
-    
+
     String result;
 }

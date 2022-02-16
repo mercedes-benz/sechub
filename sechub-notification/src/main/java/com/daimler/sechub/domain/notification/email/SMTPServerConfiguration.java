@@ -28,70 +28,70 @@ import com.daimler.sechub.sharedkernel.Profiles;
 @Profile("!" + Profiles.MOCKED_NOTIFICATIONS)
 public class SMTPServerConfiguration {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SMTPServerConfiguration.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SMTPServerConfiguration.class);
 
-	static final int DEFAULT_SMTP_SERVER_PORT = 25;
+    static final int DEFAULT_SMTP_SERVER_PORT = 25;
 
-	static final String DEFAULT_SMTP_CONFIG = "mail.smtp.auth=false,mail.transport.protocol=smtp";
+    static final String DEFAULT_SMTP_CONFIG = "mail.smtp.auth=false,mail.transport.protocol=smtp";
 
-	private SMTPConfigStringToMapConverter configConverter = new SMTPConfigStringToMapConverter();
+    private SMTPConfigStringToMapConverter configConverter = new SMTPConfigStringToMapConverter();
 
-	@MustBeDocumented("Hostname of SMPTP server")
-	@Value("${sechub.notification.smtp.hostname}")
-	String hostname;
+    @MustBeDocumented("Hostname of SMPTP server")
+    @Value("${sechub.notification.smtp.hostname}")
+    String hostname;
 
-	@MustBeDocumented("Username on SMPTP server, empty value means no username")
-	@Value("${sechub.notification.smtp.credential.username:}")
-	String username;
+    @MustBeDocumented("Username on SMPTP server, empty value means no username")
+    @Value("${sechub.notification.smtp.credential.username:}")
+    String username;
 
-	@MustBeDocumented("Password on SMPTP server, empty value means no password")
-	@Value("${sechub.notification.smtp.credential.password:}")
-	String password;
+    @MustBeDocumented("Password on SMPTP server, empty value means no password")
+    @Value("${sechub.notification.smtp.credential.password:}")
+    String password;
 
-	@MustBeDocumented("Port of SMPTP server, per default:" + DEFAULT_SMTP_SERVER_PORT)
-	@Value("${sechub.notification.smtp.port:" + DEFAULT_SMTP_SERVER_PORT + "}")
-	int hostPort = DEFAULT_SMTP_SERVER_PORT;
+    @MustBeDocumented("Port of SMPTP server, per default:" + DEFAULT_SMTP_SERVER_PORT)
+    @Value("${sechub.notification.smtp.port:" + DEFAULT_SMTP_SERVER_PORT + "}")
+    int hostPort = DEFAULT_SMTP_SERVER_PORT;
 
-	@MustBeDocumented("SMTP configuration map. You can setup all java mail smtp settings here in comma separate form with key=value. For Example: `mail.smtp.auth=false,mail.smtp.timeout=4000`. See https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html for configuration mapping")
-	@Value("${sechub.notification.smtp.config:" + DEFAULT_SMTP_CONFIG + "}")
-	String smtpConfigString = DEFAULT_SMTP_CONFIG;
+    @MustBeDocumented("SMTP configuration map. You can setup all java mail smtp settings here in comma separate form with key=value. For Example: `mail.smtp.auth=false,mail.smtp.timeout=4000`. See https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html for configuration mapping")
+    @Value("${sechub.notification.smtp.config:" + DEFAULT_SMTP_CONFIG + "}")
+    String smtpConfigString = DEFAULT_SMTP_CONFIG;
 
-	@Bean
-	public JavaMailSender getJavaMailSender() {
-		JavaMailSenderImpl mailSender = createMailSender();
-		mailSender.setHost(hostname);
-		mailSender.setPort(hostPort);
+    @Bean
+    public JavaMailSender getJavaMailSender() {
+        JavaMailSenderImpl mailSender = createMailSender();
+        mailSender.setHost(hostname);
+        mailSender.setPort(hostPort);
 
-		if (isNotEmpty(username)) {
-			mailSender.setUsername(username);
-		}
-		if (isNotEmpty(password)) {
-			mailSender.setPassword(password);
-		}
+        if (isNotEmpty(username)) {
+            mailSender.setUsername(username);
+        }
+        if (isNotEmpty(password)) {
+            mailSender.setPassword(password);
+        }
 
-		Properties props = mailSender.getJavaMailProperties();
+        Properties props = mailSender.getJavaMailProperties();
 
-		try {
-			Map<String, String> map = configConverter.convertToMap(smtpConfigString);
-			for (String key : map.keySet()) {
-				props.put(key, map.get(key));
-			}
-		} catch (Exception e) {
-			LOG.error("Was not able to apply given smtp configuration");
-		}
+        try {
+            Map<String, String> map = configConverter.convertToMap(smtpConfigString);
+            for (String key : map.keySet()) {
+                props.put(key, map.get(key));
+            }
+        } catch (Exception e) {
+            LOG.error("Was not able to apply given smtp configuration");
+        }
 
-		return mailSender;
-	}
+        return mailSender;
+    }
 
-	protected JavaMailSenderImpl createMailSender() {
-		return new JavaMailSenderImpl();
-	}
+    protected JavaMailSenderImpl createMailSender() {
+        return new JavaMailSenderImpl();
+    }
 
-	private boolean isNotEmpty(String value) {
-		if (value == null || value.isEmpty()) {
-			return false;
-		}
-		return true;
-	}
+    private boolean isNotEmpty(String value) {
+        if (value == null || value.isEmpty()) {
+            return false;
+        }
+        return true;
+    }
 
 }

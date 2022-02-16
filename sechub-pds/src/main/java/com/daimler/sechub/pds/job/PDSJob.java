@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  * Represents a PDS Job which contains information about ownership, related
  * sechub job and also state,configuration and last but not least the result of
  * the job.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

@@ -57,7 +57,7 @@ public class FullScanDataScenario3SecHubClientIntTest {
 
         /* test @formatter:off*/
         AssertFullScanData assertFullScanData = assertFullScanDataZipFile(scanDataZipFile);
-      
+
         String netsparkerFileName = "NETSPARKER_"+IntegrationTestDefaultExecutorConfigurations.NETSPARKER_V1.uuid+".txt"; //.txt because just empty text for failed parts
         assertFullScanData.
 		    dumpDownloadFilePath().

@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.restdoc;
-import static com.daimler.sechub.test.TestURLBuilder.https;
+
 import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.USER_ID;
+import static com.daimler.sechub.test.TestURLBuilder.https;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.Mockito.mock;
@@ -51,8 +52,8 @@ import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.daimler.sechub.sharedkernel.usecases.admin.signup.UseCaseAdminAcceptsSignup;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminGrantsAdminRightsToUser;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminDeletesUser;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminGrantsAdminRightsToUser;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminListsAllAdmins;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminListsAllUsers;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminRevokesAdminRightsFromAdmin;
@@ -64,51 +65,50 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(UserAdministrationRestController.class)
-@ContextConfiguration(classes = { UserAdministrationRestController.class,
-		UserAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class })
+@ContextConfiguration(classes = { UserAdministrationRestController.class, UserAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class })
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
-@ActiveProfiles({Profiles.TEST, Profiles.ADMIN_ACCESS})
-@AutoConfigureRestDocs(uriScheme="https",uriHost=ExampleConstants.URI_SECHUB_SERVER,uriPort=443)
+@ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
+@AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 public class UserAdministrationRestControllerRestDocTest {
 
-	private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
+    private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
-	@Autowired
-	private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-	@MockBean
-	private UserCreationService userCreationService;
+    @MockBean
+    private UserCreationService userCreationService;
 
-	@MockBean
-	private UserListService userListService;
+    @MockBean
+    private UserListService userListService;
 
-	@MockBean
-	private UserDeleteService userDeleteService;
+    @MockBean
+    private UserDeleteService userDeleteService;
 
-	@MockBean
-	private UserDetailInformationService userDetailService;
+    @MockBean
+    private UserDetailInformationService userDetailService;
 
-	@MockBean
-	private UserGrantSuperAdminRightsService userGrantSuperAdminRightsService;
+    @MockBean
+    private UserGrantSuperAdminRightsService userGrantSuperAdminRightsService;
 
-	@MockBean
-	private UserRevokeSuperAdminRightsService userRevokeSuperAdminRightsService;
+    @MockBean
+    private UserRevokeSuperAdminRightsService userRevokeSuperAdminRightsService;
 
-	@MockBean
-	private SignupRepository signUpRepository;
+    @MockBean
+    private SignupRepository signUpRepository;
 
-	@Before
-	public void before() {
-	}
+    @Before
+    public void before() {
+    }
 
-	@Test
-	@UseCaseRestDoc(useCase = UseCaseAdminGrantsAdminRightsToUser.class)
-	public void restdoc_grant_admin_rights_to_user() throws Exception {
-	    /* prepare */
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdminGrantsAdminRightsToUser.class)
+    public void restdoc_grant_admin_rights_to_user() throws Exception {
+        /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminGrantsSuperAdminRightsTo(USER_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminGrantsAdminRightsToUser.class;
-        
-		/* execute + test @formatter:off */
+
+        /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				post(apiEndpoint, TestURLBuilder.RestDocPathParameter.USER_ID)
 				)./*andDo(print()).*/
@@ -127,16 +127,16 @@ public class UserAdministrationRestControllerRestDocTest {
 				));
 
 		/* @formatter:on */
-	}
+    }
 
-	@Test
-	@UseCaseRestDoc(useCase = UseCaseAdminRevokesAdminRightsFromAdmin.class)
-	public void restdoc_revoke_admin_rights_from_user() throws Exception {
-	    /* prepare */
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdminRevokesAdminRightsFromAdmin.class)
+    public void restdoc_revoke_admin_rights_from_user() throws Exception {
+        /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminRevokesSuperAdminRightsFrom(USER_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminRevokesAdminRightsFromAdmin.class;
-        
-		/* execute + test @formatter:off */
+
+        /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				post(apiEndpoint,TestURLBuilder.RestDocPathParameter.USER_ID)
 				).
@@ -155,16 +155,16 @@ public class UserAdministrationRestControllerRestDocTest {
 				));
 
 		/* @formatter:on */
-	}
+    }
 
-	@Test
-	@UseCaseRestDoc(useCase = UseCaseAdminDeletesUser.class)
-	public void restdoc_delete_user() throws Exception {
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdminDeletesUser.class)
+    public void restdoc_delete_user() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminDeletesUserUrl(USER_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminDeletesUser.class;
-        
-		/* execute + test @formatter:off */
+
+        /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				delete(apiEndpoint, TestURLBuilder.RestDocPathParameter.USER_ID)
 				).
@@ -183,15 +183,16 @@ public class UserAdministrationRestControllerRestDocTest {
 				));
 
 		/* @formatter:on */
-	}
-	@Test
-	@UseCaseRestDoc(useCase = UseCaseAdminAcceptsSignup.class)
-	public void restdoc_accept_user_signup() throws Exception {
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdminAcceptsSignup.class)
+    public void restdoc_accept_user_signup() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminAcceptsUserSignUpUrl(USER_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminAcceptsSignup.class;
-        
-		/* execute + test @formatter:off */
+
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(apiEndpoint, "user1")
         		).
@@ -210,23 +211,23 @@ public class UserAdministrationRestControllerRestDocTest {
         		));
 
 		/* @formatter:on */
-	}
+    }
 
-	@Test
-	@UseCaseRestDoc(useCase = UseCaseAdminListsAllUsers.class)
-	public void restdoc_list_all_users() throws Exception {
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdminListsAllUsers.class)
+    public void restdoc_list_all_users() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminListsUsersUrl();
         Class<? extends Annotation> useCase = UseCaseAdminListsAllUsers.class;
-        
+
         List<String> users = new LinkedList<>();
         users.add("user1");
         users.add("user2");
         users.add("admin1");
-        
+
         when(userListService.listUsers()).thenReturn(users);
-        
-		/* execute + test @formatter:off */
+
+        /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				get(apiEndpoint)
 				).
@@ -246,11 +247,11 @@ public class UserAdministrationRestControllerRestDocTest {
 		        ));
 
 		/* @formatter:on */
-	}
+    }
 
-	@Test
-	@UseCaseRestDoc(useCase = UseCaseAdminListsAllAdmins.class)
-	public void restdoc_list_all_admins() throws Exception {
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdminListsAllAdmins.class)
+    public void restdoc_list_all_admins() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminListsAdminsUrl();
         Class<? extends Annotation> useCase = UseCaseAdminListsAllAdmins.class;
@@ -258,10 +259,10 @@ public class UserAdministrationRestControllerRestDocTest {
         List<String> admins = new LinkedList<>();
         admins.add("admin1");
         admins.add("admin2");
-        
+
         when(userListService.listAdministrators()).thenReturn(admins);
-        
-		/* execute + test @formatter:off */
+
+        /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				get(apiEndpoint)
 				)./*andDo(print()).*/
@@ -281,29 +282,29 @@ public class UserAdministrationRestControllerRestDocTest {
 				));
 
 		/* @formatter:on */
-	}
+    }
 
-	@Test
-	@UseCaseRestDoc(useCase = UseCaseAdminShowsUserDetails.class)
-	public void restdoc_show_user_details() throws Exception{
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdminShowsUserDetails.class)
+    public void restdoc_show_user_details() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminShowsUserDetailsUrl(USER_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminShowsUserDetails.class;
-        
-		User user = mock(User.class);
-		when(user.getName()).thenReturn("user1");
-		when(user.getEmailAdress()).thenReturn("user1@example.org");
-		Set<Project> projects = new LinkedHashSet<>();
 
-		Project project1 = mock(Project.class);
-		when(project1.getId()).thenReturn("project1");
-		projects.add(project1);
-		when(user.getProjects()).thenReturn(projects);
-		UserDetailInformation info = new UserDetailInformation(user);
+        User user = mock(User.class);
+        when(user.getName()).thenReturn("user1");
+        when(user.getEmailAdress()).thenReturn("user1@example.org");
+        Set<Project> projects = new LinkedHashSet<>();
 
-		when(userDetailService.fetchDetails("user1")).thenReturn(info);
+        Project project1 = mock(Project.class);
+        when(project1.getId()).thenReturn("project1");
+        projects.add(project1);
+        when(user.getProjects()).thenReturn(projects);
+        UserDetailInformation info = new UserDetailInformation(user);
 
-		/* execute + test @formatter:off */
+        when(userDetailService.fetchDetails("user1")).thenReturn(info);
+
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(apiEndpoint, "user1")
         		).
@@ -332,12 +333,12 @@ public class UserAdministrationRestControllerRestDocTest {
         		);
 
         /* @formatter:on */
-	}
+    }
 
-	@Profile(Profiles.TEST)
-	@EnableAutoConfiguration
-	public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    @Profile(Profiles.TEST)
+    @EnableAutoConfiguration
+    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
 
-	}
+    }
 
 }

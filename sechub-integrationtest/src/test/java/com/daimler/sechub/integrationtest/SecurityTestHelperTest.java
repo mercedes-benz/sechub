@@ -16,18 +16,12 @@ class SecurityTestHelperTest {
     private SecurityTestHelper helperToTest;
 
     @BeforeEach
-    void beforeEach() throws Exception{
+    void beforeEach() throws Exception {
         helperToTest = new SecurityTestHelper(TestTargetType.SECHUB_SERVER, new URL("https://localhost"));
     }
 
     @ParameterizedTest
-    @CsvSource({
-        "DHE-DSS-AES256-SHA, SHA",
-        "SEED-SHA, SHA",
-        "DHE-DSS-AES256-SHA256, SHA256",
-        ", ",
-        "DES-CBC-MD5, MD5"
-    })
+    @CsvSource({ "DHE-DSS-AES256-SHA, SHA", "SEED-SHA, SHA", "DHE-DSS-AES256-SHA256, SHA256", ", ", "DES-CBC-MD5, MD5" })
     void getMac_finds_expected_ciphers(String cipher, String expectedMAC) {
         /* prepare */
         CipherCheck check = new CipherCheck();
@@ -35,9 +29,9 @@ class SecurityTestHelperTest {
 
         /* execute */
         String result = helperToTest.getMac(check);
-        
+
         /* test */
-        assertEquals(expectedMAC,result,"MAC not as expected for cipher:"+cipher);
+        assertEquals(expectedMAC, result, "MAC not as expected for cipher:" + cipher);
     }
 
 }

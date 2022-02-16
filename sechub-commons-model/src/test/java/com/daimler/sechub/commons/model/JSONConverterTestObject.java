@@ -2,21 +2,21 @@
 package com.daimler.sechub.commons.model;
 
 public class JSONConverterTestObject {
-	String info;
+    String info;
 
-	JSONConverterTestObject() {
+    JSONConverterTestObject() {
 
-	}
+    }
 
-	JSONConverterTestObject(String info) {
-		this.info = info;
-	}
+    JSONConverterTestObject(String info) {
+        this.info = info;
+    }
 
-	public void setInfo(String info) {
-		this.info = info;
-	}
+    public void setInfo(String info) {
+        this.info = info;
+    }
 
-	public String getInfo() {
-		return info;
-	}
+    public String getInfo() {
+        return info;
+    }
 }

@@ -8,7 +8,7 @@ import com.daimler.sechub.sharedkernel.Profiles;
 
 /**
  * This inspector does nothing
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -16,7 +16,7 @@ import com.daimler.sechub.sharedkernel.Profiles;
 @Profile("!" + Profiles.INTEGRATIONTEST)
 public class DummyEventInspector implements EventInspector {
 
-    private int UNUSED_ID=-1;
+    private int UNUSED_ID = -1;
 
     @Override
     public int createInspectionId() {

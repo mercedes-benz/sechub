@@ -3,21 +3,20 @@ package com.daimler.sechub.commons.model;
 
 public enum Severity {
 
-	// farrady:
-	// critical, high, medium, low, info, unclassified
-	INFO, // faraday: info
+    // farrady:
+    // critical, high, medium, low, info, unclassified
+    INFO, // faraday: info
 
-	UNCLASSIFIED, // faraday: unclassfiied
+    UNCLASSIFIED, // faraday: unclassfiied
 
-	LOW, // faraday: low
+    LOW, // faraday: low
 
-	MEDIUM, // faraday: low
+    MEDIUM, // faraday: low
 
-	HIGH, // faraday: high
+    HIGH, // faraday: high
 
-	CRITICAL,// faraday: critical
+    CRITICAL,// faraday: critical
 
-	;
+    ;
 
-	
 }

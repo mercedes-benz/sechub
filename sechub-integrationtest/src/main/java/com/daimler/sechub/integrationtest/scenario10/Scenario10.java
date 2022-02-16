@@ -12,7 +12,7 @@ import com.daimler.sechub.integrationtest.internal.PDSTestScenario;
 /**
  * <b><u>Scenario10 - the PDS integrationtest SARIF scenario (NO reuse of sechub
  * storage)</u></b><br>
- * 
+ *
  * In this scenario following is automatically initialized at start (old data
  * removed as well): <br>
  * <br>
@@ -28,8 +28,8 @@ import com.daimler.sechub.integrationtest.internal.PDSTestScenario;
  * PROJECT_1_ is automatically created
  * USER_1, is automatically registered, created and assigned to project1
  * </pre>
- * 
- * 
+ *
+ *
  * @author Albert Tregnaghi
  *
  */

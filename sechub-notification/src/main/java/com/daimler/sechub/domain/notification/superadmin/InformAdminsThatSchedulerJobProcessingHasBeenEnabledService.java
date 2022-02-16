@@ -14,34 +14,34 @@ import com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdminEnabl
 @Service
 public class InformAdminsThatSchedulerJobProcessingHasBeenEnabledService {
 
-	@Autowired
-	private MailMessageFactory factory;
+    @Autowired
+    private MailMessageFactory factory;
 
-	@Autowired
-	private NotificationConfiguration notificationConfiguration;
+    @Autowired
+    private NotificationConfiguration notificationConfiguration;
 
-	@Autowired
-	private EmailService emailService;
+    @Autowired
+    private EmailService emailService;
 
-	@UseCaseAdminEnablesSchedulerJobProcessing(@Step(number = 4, next = {
-			Step.NO_NEXT_STEP }, name = "Inform SecHub admins that scheduler job processing has been enabled"))
-	public void notify(String baseUrl) {
+    @UseCaseAdminEnablesSchedulerJobProcessing(@Step(number = 4, next = {
+            Step.NO_NEXT_STEP }, name = "Inform SecHub admins that scheduler job processing has been enabled"))
+    public void notify(String baseUrl) {
 
-		SimpleMailMessage message = factory.createMessage("SecHub: Scheduler job processing enabled");
+        SimpleMailMessage message = factory.createMessage("SecHub: Scheduler job processing enabled");
 
-		message.setTo(notificationConfiguration.getEmailAdministrators());
-		message.setText(createEmailContent(baseUrl));
+        message.setTo(notificationConfiguration.getEmailAdministrators());
+        message.setText(createEmailContent(baseUrl));
 
-		emailService.send(message);
+        emailService.send(message);
 
-	}
+    }
 
-	private String createEmailContent(String baseUrl) {
-		StringBuilder emailContent = new StringBuilder();
-		emailContent.append("Scheduler job processing has been enabled at SecHub for environment (base url): " + baseUrl + "\n");
+    private String createEmailContent(String baseUrl) {
+        StringBuilder emailContent = new StringBuilder();
+        emailContent.append("Scheduler job processing has been enabled at SecHub for environment (base url): " + baseUrl + "\n");
 
-		String text = emailContent.toString();
-		return text;
-	}
+        String text = emailContent.toString();
+        return text;
+    }
 
 }

@@ -17,35 +17,35 @@ import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminDelete
 @Service
 public class InformAdminsThatProjectHasBeenDeletedNotificationService {
 
-	@Autowired
-	MailMessageFactory factory;
+    @Autowired
+    MailMessageFactory factory;
 
-	@Autowired
-	NotificationConfiguration notificationConfiguration;
+    @Autowired
+    NotificationConfiguration notificationConfiguration;
 
-	@Autowired
-	EmailService emailService;
+    @Autowired
+    EmailService emailService;
 
-	@UseCaseAdminDeleteProject(@Step(number = 3, name = "Inform sechub admins that project has been deleted"))
-	public void notify(ProjectMessage projectMessage, String baseUrl) {
-		requireNonNull(projectMessage);
+    @UseCaseAdminDeleteProject(@Step(number = 3, name = "Inform sechub admins that project has been deleted"))
+    public void notify(ProjectMessage projectMessage, String baseUrl) {
+        requireNonNull(projectMessage);
 
-		SimpleMailMessage message = factory.createMessage("SecHub Project " + projectMessage.getProjectId() + " has been deleted");
+        SimpleMailMessage message = factory.createMessage("SecHub Project " + projectMessage.getProjectId() + " has been deleted");
 
-		message.setTo(notificationConfiguration.getEmailAdministrators());
-		message.setText(createEmailContent(projectMessage, baseUrl));
+        message.setTo(notificationConfiguration.getEmailAdministrators());
+        message.setText(createEmailContent(projectMessage, baseUrl));
 
-		emailService.send(message);
+        emailService.send(message);
 
-	}
+    }
 
-	private String createEmailContent(ProjectMessage projectMessage, String baseUrl) {
-		StringBuilder emailContent = new StringBuilder();
-		emailContent.append("SecHub Project " + projectMessage.getProjectId());
-		emailContent.append(" at " + baseUrl + " has been deleted.\n\n");
-		emailContent.append("This was triggered by: " + projectMessage.getProjectActionTriggeredBy() + "\n");
-		String text = emailContent.toString();
-		return text;
-	}
+    private String createEmailContent(ProjectMessage projectMessage, String baseUrl) {
+        StringBuilder emailContent = new StringBuilder();
+        emailContent.append("SecHub Project " + projectMessage.getProjectId());
+        emailContent.append(" at " + baseUrl + " has been deleted.\n\n");
+        emailContent.append("This was triggered by: " + projectMessage.getProjectActionTriggeredBy() + "\n");
+        String text = emailContent.toString();
+        return text;
+    }
 
 }

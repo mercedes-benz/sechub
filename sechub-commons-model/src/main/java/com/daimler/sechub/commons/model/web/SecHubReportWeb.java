@@ -52,13 +52,13 @@ public class SecHubReportWeb {
     @Override
     public String toString() {
         /* @formatter:off */
-        return "SecHubReportWeb [" 
+        return "SecHubReportWeb ["
                 + (attack != null ? "\n"
-                + ">attack=" + attack + ", " : "") 
-        
+                + ">attack=" + attack + ", " : "")
+
                 + (request != null ? "\n"
-                + ">request=" + request + ", " : "") 
-                
+                + ">request=" + request + ", " : "")
+
                 + (response != null ? "\n"
                 + ">response=" + response : "") + "]";
         /* @formatter:on */

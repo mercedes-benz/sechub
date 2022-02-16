@@ -30,16 +30,16 @@ class PDSWorkspaceServiceTest {
 
     @BeforeEach
     void beforeEach() {
-        
-        storageService=mock(PDSMultiStorageService.class);
-        storage=mock(JobStorage.class);
-        storageInfoCollector=mock(PDSStorageInfoCollector.class);
-        
-        when(storageService.getJobStorage(any(),any())).thenReturn(storage);
-        
+
+        storageService = mock(PDSMultiStorageService.class);
+        storage = mock(JobStorage.class);
+        storageInfoCollector = mock(PDSStorageInfoCollector.class);
+
+        when(storageService.getJobStorage(any(), any())).thenReturn(storage);
+
         serviceToTest = new PDSWorkspaceService();
-        serviceToTest.storageService=storageService;
-        serviceToTest.storageInfoCollector=storageInfoCollector;
+        serviceToTest.storageService = storageService;
+        serviceToTest.storageInfoCollector = storageInfoCollector;
     }
 
     @Test
@@ -66,26 +66,26 @@ class PDSWorkspaceServiceTest {
     }
 
     @Test
-    void when_configuration_tells_to_use_sechubstorage_sechub_storage_path_and_sechub_job_uuid_are_used() throws Exception{
+    void when_configuration_tells_to_use_sechubstorage_sechub_storage_path_and_sechub_job_uuid_are_used() throws Exception {
         /* prepare */
         UUID jobUUID = UUID.randomUUID();
         UUID secHubJobUUID = UUID.randomUUID();
 
         PDSJobConfiguration config = new PDSJobConfiguration();
-        config.getParameters().add(createEntry(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE,"true"));
-        config.getParameters().add(createEntry(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SECHUB_STORAGE_PATH,"xyz/abc/project1"));
+        config.getParameters().add(createEntry(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE, "true"));
+        config.getParameters().add(createEntry(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SECHUB_STORAGE_PATH, "xyz/abc/project1"));
         config.setSechubJobUUID(secHubJobUUID);
 
         when(storage.listNames()).thenReturn(Collections.singleton("something.zip"));
         when(storage.fetch("something.zip")).thenReturn(new ByteArrayInputStream("testme".getBytes()));
-        
+
         /* execute */
         serviceToTest.prepareWorkspace(jobUUID, config);
 
         /* test */
-        verify(storageService).getJobStorage("xyz/abc/project1",secHubJobUUID);
+        verify(storageService).getJobStorage("xyz/abc/project1", secHubJobUUID);
     }
-    
+
     private PDSExecutionParameterEntry createEntry(String key, String value) {
         PDSExecutionParameterEntry entry = new PDSExecutionParameterEntry();
         entry.setKey(key);

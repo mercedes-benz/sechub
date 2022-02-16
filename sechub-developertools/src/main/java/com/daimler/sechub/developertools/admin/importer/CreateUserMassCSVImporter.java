@@ -14,7 +14,7 @@ import com.daimler.sechub.developertools.admin.DeveloperAdministration;
 /**
  * Format example available as
  * `example5-developer-admin-ui_mass-import_users.csv`:
- * 
+ *
  * <pre>
  * UserId;Email;auto-accept
  * import-user1;import-user1@example.com;true
@@ -23,17 +23,19 @@ import com.daimler.sechub.developertools.admin.DeveloperAdministration;
  * accept-signup-user4;;true
  * accept-signup-user5;;false
  * </pre>
- * 
+ *
  * <ol>
  * <li>user1, user2 a signup is done + automatically accepted</li>
  * <li>user3 a signup is done, but accept is not done, because explicit disabled
- * <li>user4 has no mail (means already signup done) and will just be accepted</li>
- * <li>user5 has no mail (means already signup done) but will not be accepted, so means nothing done</li>
+ * <li>user4 has no mail (means already signup done) and will just be
+ * accepted</li>
+ * <li>user5 has no mail (means already signup done) but will not be accepted,
+ * so means nothing done</li>
  * </ol>
- * 
  *
- * 
- * 
+ *
+ *
+ *
  * @author Albert Tregnaghi
  *
  */

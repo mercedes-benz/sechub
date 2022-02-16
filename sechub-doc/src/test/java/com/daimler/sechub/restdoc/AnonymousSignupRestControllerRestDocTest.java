@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.restdoc;
 
-
 import static com.daimler.sechub.test.TestURLBuilder.https;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
@@ -41,37 +40,33 @@ import com.daimler.sechub.sharedkernel.validation.UserIdValidationImpl;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
+
 @RunWith(SpringRunner.class)
 @WebMvcTest(AnonymousSignupRestController.class)
-@ContextConfiguration(classes= {AnonymousSignupRestController.class,
-		SignupJsonInputValidator.class,
-		UserIdValidationImpl.class,
-		ApiVersionValidationFactory.class,
-		EmailValidationImpl.class,
-		AnonymousSignupRestControllerRestDocTest.SimpleTestConfiguration.class})
+@ContextConfiguration(classes = { AnonymousSignupRestController.class, SignupJsonInputValidator.class, UserIdValidationImpl.class,
+        ApiVersionValidationFactory.class, EmailValidationImpl.class, AnonymousSignupRestControllerRestDocTest.SimpleTestConfiguration.class })
 @WithMockUser
 @ActiveProfiles(Profiles.TEST)
-@AutoConfigureRestDocs(uriScheme="https",uriHost=ExampleConstants.URI_SECHUB_SERVER,uriPort=443)
+@AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 public class AnonymousSignupRestControllerRestDocTest {
 
-	private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
+    private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
-	@Autowired
-	private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-	@MockBean
-	private AnonymousSignupCreateService mockedScheduleService;
+    @MockBean
+    private AnonymousSignupCreateService mockedScheduleService;
 
-	@Test
-	@UseCaseRestDoc(useCase=UseCaseUserSignup.class)
-	public void calling_with_api_1_0_and_valid_userid_and_email_returns_HTTP_200()
-			throws Exception {
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseUserSignup.class)
+    public void calling_with_api_1_0_and_valid_userid_and_email_returns_HTTP_200() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildUserSignUpUrl();
         Class<? extends Annotation> useCase = UseCaseUserSignup.class;
 
-		/* execute */
-		/* @formatter:off */
+        /* execute */
+        /* @formatter:off */
         this.mockMvc.perform(
         		post(apiEndpoint).
         			contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -96,13 +91,13 @@ public class AnonymousSignupRestControllerRestDocTest {
         							));
 
         /* @formatter:on */
-	}
+    }
 
-	@TestConfiguration
-	@Profile(Profiles.TEST)
-	@EnableAutoConfiguration
-	public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration{
+    @TestConfiguration
+    @Profile(Profiles.TEST)
+    @EnableAutoConfiguration
+    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
 
-	}
+    }
 
 }

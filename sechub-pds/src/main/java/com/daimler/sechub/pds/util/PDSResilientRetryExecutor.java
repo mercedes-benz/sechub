@@ -33,7 +33,7 @@ public class PDSResilientRetryExecutor<E extends Exception> {
      * Executes callable - with configured amount of retries for dedicated
      * exceptions. Unhandled exceptions will be wrapped inside the target
      * exceptions.
-     * 
+     *
      * @param <V>
      * @param callable
      * @param identifier will be used inside target exception message to identify

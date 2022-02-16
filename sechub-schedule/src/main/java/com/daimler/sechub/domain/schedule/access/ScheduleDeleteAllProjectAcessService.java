@@ -15,24 +15,22 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @Service
 public class ScheduleDeleteAllProjectAcessService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ScheduleDeleteAllProjectAcessService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ScheduleDeleteAllProjectAcessService.class);
 
+    @Autowired
+    ScheduleAccessRepository repository;
 
-	@Autowired
-	ScheduleAccessRepository repository;
+    @Autowired
+    UserInputAssertion assertion;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Transactional
+    @UseCaseAdminDeleteProject(@Step(number = 6, name = "Update authorization parts - remove entries for deleted project"))
+    public void deleteAnyAccessDataForProject(String projectId) {
+        assertion.isValidProjectId(projectId);
 
-	@Transactional
-	@UseCaseAdminDeleteProject(@Step(number=6,name="Update authorization parts - remove entries for deleted project"))
-	public void deleteAnyAccessDataForProject(String projectId) {
-		assertion.isValidProjectId(projectId);
+        repository.deleteAnyAccessForProject(projectId);
 
-		repository.deleteAnyAccessForProject(projectId);
-
-		LOG.info("Removed any access entry for project:{}",projectId);
-	}
-
+        LOG.info("Removed any access entry for project:{}", projectId);
+    }
 
 }

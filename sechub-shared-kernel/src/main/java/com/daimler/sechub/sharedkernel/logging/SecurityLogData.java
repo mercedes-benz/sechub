@@ -13,9 +13,9 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonInclude(Include.NON_EMPTY)
 public class SecurityLogData {
-    
+
     private static final SecurityLogType FALLBACK_TYPE = SecurityLogType.UNKNOWN;
-    
+
     SecurityLogType type = FALLBACK_TYPE;
 
     String clientIp;
@@ -24,18 +24,18 @@ public class SecurityLogData {
     Object[] messageParameters;
     List<String> traceInformation = new ArrayList<>();
     String requestURI;
-    Map<String,String> httpHeaders = new TreeMap<>(); // we want it sorted, so a tree map
+    Map<String, String> httpHeaders = new TreeMap<>(); // we want it sorted, so a tree map
 
     String sessionId;
 
     public String getSessionId() {
         return sessionId;
     }
-    
+
     public String getClientIp() {
         return clientIp;
     }
-    
+
     public String getRequestURI() {
         return requestURI;
     }
@@ -50,7 +50,7 @@ public class SecurityLogData {
         }
         return type;
     }
-    
+
     public Map<String, String> getHttpHeaders() {
         return httpHeaders;
     }
@@ -58,14 +58,14 @@ public class SecurityLogData {
     public String getMessage() {
         return message;
     }
-    
+
     public List<Object> getMessageParameters() {
         if (messageParameters == null) {
             return Collections.emptyList();
         }
         return Collections.unmodifiableList(Arrays.asList(messageParameters));
     }
-    
+
     public List<String> getTraceInformation() {
         return traceInformation;
     }

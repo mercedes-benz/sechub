@@ -6,10 +6,10 @@ import static com.daimler.sechub.commons.core.util.SimpleStringUtils.*;
 import java.util.Objects;
 
 /**
- * Classification content. Empty strings will be automatically converted to <code>null</code>
- * values, so we have no unnecessary data inside JSON output and its easier to
- * check something is missing or not
- * 
+ * Classification content. Empty strings will be automatically converted to
+ * <code>null</code> values, so we have no unnecessary data inside JSON output
+ * and its easier to check something is missing or not
+ *
  * @author Albert Tregnaghi
  *
  */

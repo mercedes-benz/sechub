@@ -38,9 +38,8 @@ public class PDSCreateJobServiceTest {
         createdJob1UUID = UUID.randomUUID();
         repository = mock(PDSJobRepository.class);
         configurationValidator = mock(PDSJobConfigurationValidator.class);
-        serverConfigurationService=mock(PDSServerConfigurationService.class);
-        
-        
+        serverConfigurationService = mock(PDSServerConfigurationService.class);
+
         userContextService = mock(PDSUserContextService.class);
         when(userContextService.getUserId()).thenReturn("callerName");
 
@@ -48,7 +47,7 @@ public class PDSCreateJobServiceTest {
         serviceToTest.repository = repository;
         serviceToTest.userContextService = userContextService;
         serviceToTest.configurationValidator = configurationValidator;
-        serviceToTest.serverConfigurationService=serverConfigurationService;
+        serviceToTest.serverConfigurationService = serverConfigurationService;
 
         resultJob1 = new PDSJob();
         resultJob1.uUID = createdJob1UUID;
@@ -87,7 +86,7 @@ public class PDSCreateJobServiceTest {
     }
 
     @Test
-    public void creating_a_job_sets_configuration_as_json() throws Exception{
+    public void creating_a_job_sets_configuration_as_json() throws Exception {
         /* prepare */
         PDSJobConfiguration configuration = new PDSJobConfiguration();
 
@@ -97,7 +96,7 @@ public class PDSCreateJobServiceTest {
         /* test */
         ArgumentCaptor<PDSJob> jobCaptor = ArgumentCaptor.forClass(PDSJob.class);
         verify(repository).save(jobCaptor.capture());
-        
+
         String json = configuration.toJSON();
         // Next line normally not valid, but validator does not throw an exception here,
         // so we can have an empty config here... Just to test it

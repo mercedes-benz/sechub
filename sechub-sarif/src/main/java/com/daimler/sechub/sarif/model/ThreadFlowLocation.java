@@ -7,11 +7,11 @@ import java.util.Objects;
  * Thread flow location object, see <a href=
  * "https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317751">SARIF
  * 2.1.0 specification entry</a>
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
-public class ThreadFlowLocation extends SarifObject{
+public class ThreadFlowLocation extends SarifObject {
 
     private Location location;
 

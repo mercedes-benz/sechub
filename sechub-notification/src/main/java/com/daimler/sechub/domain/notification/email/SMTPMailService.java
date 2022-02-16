@@ -12,24 +12,22 @@ import org.springframework.stereotype.Service;
 import com.daimler.sechub.sharedkernel.Profiles;
 
 @Service
-@Profile("!"+Profiles.MOCKED_NOTIFICATIONS)
-public class SMTPMailService implements EmailService{
+@Profile("!" + Profiles.MOCKED_NOTIFICATIONS)
+public class SMTPMailService implements EmailService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SMTPMailService.class);
-	
-	@Autowired
-	public JavaMailSender mailSender;
-	
-	@Autowired
-	private SimpleMailMessageSupport mailMessageSupport;
+    private static final Logger LOG = LoggerFactory.getLogger(SMTPMailService.class);
 
-	@Override
-	public void send(SimpleMailMessage message) {
-		LOG.info("sending email: {}", mailMessageSupport.describeTopic(message));		
-		mailSender.send(message);
-		
-	}
+    @Autowired
+    public JavaMailSender mailSender;
 
-	
-	
+    @Autowired
+    private SimpleMailMessageSupport mailMessageSupport;
+
+    @Override
+    public void send(SimpleMailMessage message) {
+        LOG.info("sending email: {}", mailMessageSupport.describeTopic(message));
+        mailSender.send(message);
+
+    }
+
 }

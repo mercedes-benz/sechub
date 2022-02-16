@@ -106,7 +106,7 @@ public class CheckmarxProductExecutorMockTest {
         ProductExecutorContext executorContext = mock(ProductExecutorContext.class);
         when(executorContext.getCallback()).thenReturn(callback);
         when(executorContext.getExecutorConfig()).thenReturn(executorConfig);
-        
+
         ProductResult currentResult = new ProductResult(JOB_UUID, PROJECT_EXAMPLE, executorConfig, "pseudo-result");
         when(executorContext.getCurrentProductResult()).thenReturn(currentResult);
 
@@ -130,16 +130,15 @@ public class CheckmarxProductExecutorMockTest {
         SecHubExecutionContext context = createExecutionContextForPseudoCodeScan();
 
         ProductExecutorCallback callback = mock(ProductExecutorCallback.class);
-       
 
         ProductExecutorConfigSetup setup = createCheckmarxSetupWithAllMandotoryPartsSet();
-        
+
         ProductExecutorConfig executorConfig = new ProductExecutorConfig(ProductIdentifier.CHECKMARX, 1, setup);
 
         ProductExecutorContext executorContext = mock(ProductExecutorContext.class);
         when(executorContext.getCallback()).thenReturn(callback);
         when(executorContext.getExecutorConfig()).thenReturn(executorConfig);
-        
+
         ProductResult currentResult = new ProductResult(JOB_UUID, PROJECT_EXAMPLE, executorConfig, "pseudo-result");
         when(executorContext.getCurrentProductResult()).thenReturn(currentResult);
 
@@ -177,8 +176,8 @@ public class CheckmarxProductExecutorMockTest {
         when(credentials.getPassword()).thenReturn("pwd");
         List<ProductExecutorConfigSetupJobParameter> jobParameters = new ArrayList<>();
         MappingData data = new MappingData();
-        data.getEntries().add(new MappingEntry(".*","teamId1",""));
-        
+        data.getEntries().add(new MappingEntry(".*", "teamId1", ""));
+
         jobParameters.add(new ProductExecutorConfigSetupJobParameter(MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId(), data.toJSON()));
         when(setup.getJobParameters()).thenReturn(jobParameters);
         return setup;

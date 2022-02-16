@@ -2,34 +2,34 @@
 package com.daimler.sechub.adapter.pds;
 
 public enum PDSState {
-	COMPLETE("Complete"),
+    COMPLETE("Complete"),
 
-	FAILED("Failed"),
+    FAILED("Failed"),
 
-	CANCELED("Cancelled");
+    CANCELED("Cancelled");
 
-	private String id;
+    private String id;
 
-	private PDSState(String id) {
-		if (id == null) {
-			throw new IllegalArgumentException("id may not be null!");
-		}
-		this.id = id;
-	}
+    private PDSState(String id) {
+        if (id == null) {
+            throw new IllegalArgumentException("id may not be null!");
+        }
+        this.id = id;
+    }
 
-	public boolean isRepresentedBy(String state) {
-		if (state == null) {
-			return false;
-		}
-		return id.equals(state);
-	}
+    public boolean isRepresentedBy(String state) {
+        if (state == null) {
+            return false;
+        }
+        return id.equals(state);
+    }
 
-	public static boolean isWellknown(String state) {
-		for (PDSState value : values()) {
-			if (value.isRepresentedBy(state)) {
-				return true;
-			}
-		}
-		return false;
-	}
+    public static boolean isWellknown(String state) {
+        for (PDSState value : values()) {
+            if (value.isRepresentedBy(state)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

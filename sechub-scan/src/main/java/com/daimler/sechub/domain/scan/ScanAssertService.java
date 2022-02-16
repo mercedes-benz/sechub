@@ -25,7 +25,7 @@ public class ScanAssertService {
     @Lazy
     @Autowired
     ScanProjectConfigAccessLevelService accessLevelService;
-    
+
     @Autowired
     ProjectIdValidation projectIdValidation;
 
@@ -36,7 +36,6 @@ public class ScanAssertService {
         assertUserHasAccessToProject(report.getProjectId());
 
     }
-    
 
     public void assertUserHasAccessToProject(String projectId) {
         if (projectId == null) {
@@ -49,14 +48,14 @@ public class ScanAssertService {
         userAccessValidation.assertUserHasAccessToProject(projectId);
 
     }
-    
+
     public void assertProjectIdValid(String projectId) {
-        AssertValidation.assertValid(projectId,projectIdValidation);
+        AssertValidation.assertValid(projectId, projectIdValidation);
     }
 
     public void assertProjectAllowsReadAccess(String projectId) {
         assertProjectIdValid(projectId);
-        
+
         if (!accessLevelService.isReadAllowed(projectId)) {
             throw new ForbiddenException("Project " + projectId + " does currently not allow read access.");
         }
@@ -64,7 +63,7 @@ public class ScanAssertService {
 
     public void assertProjectAllowsWriteAccess(String projectId) {
         assertProjectIdValid(projectId);
-        
+
         if (!accessLevelService.isWriteAllowed(projectId)) {
             throw new ForbiddenException("Project " + projectId + " does currently not allow write access.");
         }

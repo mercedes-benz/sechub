@@ -16,7 +16,7 @@ import com.daimler.sechub.integrationtest.api.TestProject;
 
 /**
  * Integration tests to check cancel operations works
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -39,18 +39,18 @@ public class CancelJobScenario4IntTest {
         /* prepare */
         UUID sechubJobUUD = as(USER_1).triggerAsyncWebScanGreenLongRunningAndGetJobUUID(project);
         waitForJobRunning(project, sechubJobUUD);
-        
+
         /* execute */
         as(SUPER_ADMIN).cancelJob(sechubJobUUD);
-        
+
         /* test */
         waitForJobStatusCancelRequested(project, sechubJobUUD);
         waitForJobStatusFailed(project, sechubJobUUD);
-        
-        
+
+
         /* @formatter:on */
     }
-    
+
     @Test
     /**
      * We start a long running job and start a cancel operation here
@@ -60,16 +60,16 @@ public class CancelJobScenario4IntTest {
         /* prepare */
         UUID sechubJobUUD = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(project,IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING);
         waitForJobRunning(project, sechubJobUUD);
-        
+
         /* execute */
         as(SUPER_ADMIN).cancelJob(sechubJobUUD);
-        
+
         /* test */
         waitForJobStatusCancelRequested(project, sechubJobUUD);
         waitForJobStatusFailed(project, sechubJobUUD);
-        
-        
+
+
         /* @formatter:on */
     }
-    
+
 }

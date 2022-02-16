@@ -23,7 +23,7 @@ import com.daimler.sechub.sharedkernel.util.StacktraceUtil;
  * if server1 is not available you do not want to have a fallthrough of server2
  * automatically. So in this case you should use two different executors for
  * these different targets !
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

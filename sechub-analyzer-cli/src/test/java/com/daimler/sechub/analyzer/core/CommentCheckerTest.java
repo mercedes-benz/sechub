@@ -9,16 +9,14 @@ import org.junit.Test;
 public class CommentCheckerTest {
     private static final String NOSECHUB = "NOSECHUB";
     private static final String NOSECHUB_END = "END-NOSECHUB";
-    
-    @Test 
+
+    @Test
     public void test_of() {
         /* execute */
         CommentChecker commentCheckerInstance = CommentChecker.buildFrom(NOSECHUB, NOSECHUB_END);
-        
+
         /* test */
         assertThat(commentCheckerInstance, is(not(nullValue())));
         assertThat(commentCheckerInstance.getNoSecHubLabel(), is(NOSECHUB));
     }
 }
-
-

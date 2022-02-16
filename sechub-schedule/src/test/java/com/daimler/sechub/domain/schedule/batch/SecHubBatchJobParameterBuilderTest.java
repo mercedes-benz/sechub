@@ -30,31 +30,31 @@ public class SecHubBatchJobParameterBuilderTest {
     public void null_throws_illegal_argument() {
         /* prepare */
         expected.expect(IllegalArgumentException.class);
-        
+
         /* execute */
         builderToTest.buildParams(null);
     }
-    
+
     @Test
     public void uuid_contained_in_build_params() {
         /* prepare */
         UUID uuid = UUID.randomUUID();
-        
+
         /* execute */
         JobParameters params = builderToTest.buildParams(uuid);
-        
+
         /* test */
         assertEquals(uuid.toString(), params.getString(SchedulingConstants.BATCHPARAM_SECHUB_UUID));
     }
-    
+
     @Test
     public void random_value_contained_in_build_params() {
         /* prepare */
         UUID uuid = UUID.randomUUID();
-        
+
         /* execute */
         JobParameters params = builderToTest.buildParams(uuid);
-        
+
         /* test */
         assertNotNull(params.getString("random"));
     }

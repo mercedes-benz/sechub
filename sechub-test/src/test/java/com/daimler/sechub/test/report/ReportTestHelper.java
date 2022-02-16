@@ -32,7 +32,7 @@ public class ReportTestHelper {
     public static String load3rdPartyReportAsString(String fullName) {
         return reader.loadTextFile(new File(REPORT_PATH + "input/" + fullName));
     }
-    
+
     public static String loadSarifReport(String name) {
         return reader.loadTextFile(new File(REPORT_PATH + "input/" + name + ".sarif.json"));
     }
@@ -41,13 +41,12 @@ public class ReportTestHelper {
         return reader.loadTextFile(new File(REPORT_PATH + "output/" + name + ".sechub.json"));
     }
 
-    public static String transformCheckmarxToSecHubReportJSON(String checkmarxXML, String sechubJobUUID)
-            throws IOException, SecHubExecutionException {
+    public static String transformCheckmarxToSecHubReportJSON(String checkmarxXML, String sechubJobUUID) throws IOException, SecHubExecutionException {
         ReportTransformationResult result = transformSarifToSecHubReportResult(checkmarxXML, ProductIdentifier.CHECKMARX, sechubJobUUID);
 
         return JSONConverter.get().toJSON(result, true);
     }
-    
+
     public static ReportTransformationResult transformCheckmarxToSecHubReportResult(String xml, String sechubJobUUID)
             throws IOException, SecHubExecutionException {
         return transform(xml, ProductIdentifier.CHECKMARX, sechubJobUUID, checkmarxImporter);
@@ -57,7 +56,7 @@ public class ReportTestHelper {
             throws IOException, SecHubExecutionException {
         return transform(sarifJson, productIdentifier, sechubJobUUID, sarifImporter);
     }
-    
+
     private static ReportTransformationResult transform(String xml, ProductIdentifier productIdentifier, String sechubJobUUID, ProductResultImporter importer)
             throws IOException, SecHubExecutionException {
         ProductExecutorConfigInfo info = mock(ProductExecutorConfigInfo.class);
@@ -72,13 +71,12 @@ public class ReportTestHelper {
         ReportTransformationResult result = transfomer.transform(productResult);
         return result;
     }
-    
+
     public static String transformSarifToSecHubReportJSON(String sarifJson, ProductIdentifier productIdentifier, String sechubJobUUID)
             throws IOException, SecHubExecutionException {
         ReportTransformationResult result = transformSarifToSecHubReportResult(sarifJson, productIdentifier, sechubJobUUID);
 
         return JSONConverter.get().toJSON(result, true);
     }
-
 
 }

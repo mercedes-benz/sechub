@@ -14,5 +14,4 @@ import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecur
 @Order(1)
 public class SecHubServerSecurityConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
 
-
 }

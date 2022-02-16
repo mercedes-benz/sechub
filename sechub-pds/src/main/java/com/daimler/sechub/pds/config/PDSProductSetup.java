@@ -35,7 +35,7 @@ public class PDSProductSetup {
 
     /**
      * Represents the product identifier suitable for sechub
-     * 
+     *
      * @return
      */
     public String getId() {

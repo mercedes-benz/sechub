@@ -62,8 +62,8 @@ public class ProjectCreationService {
     @Autowired
     UserInputAssertion assertion;
 
-	@Validated
-	/* @formatter:off */
+    @Validated
+    /* @formatter:off */
 	@UseCaseAdminCreatesProject(
 			@Step(number = 2,
 			name = "Create project",

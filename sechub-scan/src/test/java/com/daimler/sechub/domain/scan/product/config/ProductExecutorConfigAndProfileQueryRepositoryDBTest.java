@@ -100,8 +100,7 @@ public class ProductExecutorConfigAndProfileQueryRepositoryDBTest {
         test__project_1_parts();
 
         test__project_1_to_5_parts();
-        
-        
+
         test__delete_all_project_1_relations();
 
     }
@@ -114,41 +113,41 @@ public class ProductExecutorConfigAndProfileQueryRepositoryDBTest {
 
         searchCode.assertFound(config1);
         searchInfra.assertFound(config2);
-        searchWeb1.assertFound(config3,config4);
+        searchWeb1.assertFound(config3, config4);
         searchWeb2.assertFound(config5);
 
         /* enable / disable on config 0 */
         config1 = changeEnabledStateForConfig(config1, false);
         searchCode.assertNothingFound();
         searchInfra.assertFound(config2);
-        searchWeb1.assertFound(config3,config4);
+        searchWeb1.assertFound(config3, config4);
         searchWeb2.assertFound(config5);
-        
+
         config1 = changeEnabledStateForConfig(config1, true);
         searchCode.assertFound(config1);
         searchInfra.assertFound(config2);
-        searchWeb1.assertFound(config3,config4);
+        searchWeb1.assertFound(config3, config4);
         searchWeb2.assertFound(config5);
 
         /* disable profile1_2 */
         profile1_2 = changeEnabledStateForProfile(profile1_2, false);
         searchCode.assertNothingFound();
         searchInfra.assertNothingFound();
-        searchWeb1.assertFound(config3,config4);
+        searchWeb1.assertFound(config3, config4);
         searchWeb2.assertFound(config5);
 
         profile1_2 = changeEnabledStateForProfile(profile1_2, false);
-        profile3_4_5= changeEnabledStateForProfile(profile3_4_5, false);
+        profile3_4_5 = changeEnabledStateForProfile(profile3_4_5, false);
         searchCode.assertNothingFound();
         searchInfra.assertNothingFound();
         searchWeb1.assertNothingFound();
         searchWeb2.assertNothingFound();
-        
+
         profile1_2 = changeEnabledStateForProfile(profile1_2, true);
-        profile3_4_5= changeEnabledStateForProfile(profile3_4_5, true);
+        profile3_4_5 = changeEnabledStateForProfile(profile3_4_5, true);
         searchCode.assertFound(config1);
         searchInfra.assertFound(config2);
-        searchWeb1.assertFound(config3,config4);
+        searchWeb1.assertFound(config3, config4);
         searchWeb2.assertFound(config5);
 
     }
@@ -179,22 +178,22 @@ public class ProductExecutorConfigAndProfileQueryRepositoryDBTest {
     }
 
     private void test__delete_all_project_1_relations() {
-        
+
         AssertSearch searchCode = searchingFor().project("project1").executor(ProductIdentifier.PDS_CODESCAN, 1);
         AssertSearch searchInfra = searchingFor().project("project1").executor(ProductIdentifier.PDS_INFRASCAN, 1);
         AssertSearch searchCode2 = searchingFor().project("project_1_to_5").executor(ProductIdentifier.PDS_CODESCAN, 1);
-        
+
         searchCode.assertFound(config1);
         searchCode2.assertFound(config1);
         searchInfra.assertFound(config2);
-        
+
         profileRepository.deleteAllProfileRelationsToProject("project1");
-        
+
         searchCode.assertNothingFound();
         searchInfra.assertNothingFound();
         searchCode2.assertFound(config1);
     }
-    
+
     protected void test__project_0_parts() {
         AssertSearch search = searchingFor().project("project0").executor(ProductIdentifier.PDS_CODESCAN, 1);
         /* enable / disable on config 0 */
@@ -246,7 +245,7 @@ public class ProductExecutorConfigAndProfileQueryRepositoryDBTest {
             }
             for (ProductExecutorConfig config : expectedConfigurations) {
                 if (!found.contains(config)) {
-                    fail("Did not contain:"+config);
+                    fail("Did not contain:" + config);
                 }
             }
         }

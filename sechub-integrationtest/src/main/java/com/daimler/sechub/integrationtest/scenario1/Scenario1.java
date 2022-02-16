@@ -15,7 +15,7 @@ import com.daimler.sechub.integrationtest.internal.AbstractGrowingSecHubServerTe
  * USER_1, not in system. must self register him/herself.
  * PROJECT_1_ not created
  * </pre>
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

@@ -37,7 +37,7 @@ import com.daimler.sechub.test.TestUtil;
  * <code>true</code> (this is interesting when designing or debugging
  * reporting). For information about CSS changed please read more in
  * `HTMLReportCSSFragementGenerator`
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -127,7 +127,7 @@ public class ThymeLeafHTMLReportingTest {
 
         storeAsHTMLFileForReportDesignWhenTempFilesAreKept(htmlResult, context);
     }
-    
+
     @BeforeAll
     private static void beforAll() {
         thymeleafTemplateEngine = new TemplateEngine();

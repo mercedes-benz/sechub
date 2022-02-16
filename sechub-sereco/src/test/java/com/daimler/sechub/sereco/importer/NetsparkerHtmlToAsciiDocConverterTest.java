@@ -75,28 +75,28 @@ public class NetsparkerHtmlToAsciiDocConverterTest {
     @Test
     public void table() {
         /* prepare */
-        
+
         /* @formatter:off */
-        String html = "<table class=\"kb-table\" width=\"30%\">\n" + 
-                        "<tr>\n" + 
-                            "<td><b>Error</b></td>\n" + 
+        String html = "<table class=\"kb-table\" width=\"30%\">\n" +
+                        "<tr>\n" +
+                            "<td><b>Error</b></td>\n" +
                             "<td><b>Resolution</b></td>\n" +
                         "</tr>\n" +
-                        "<tr>\n" + 
+                        "<tr>\n" +
                             "<td nowrap>preload directive not present</td>\n" +
-                            "<td nowrap>Submit domain for inclusion in browsers&#39; HTTP Strict Transport Security (HSTS) preload list.</td>\n" + 
-                        "</tr>\n" + 
+                            "<td nowrap>Submit domain for inclusion in browsers&#39; HTTP Strict Transport Security (HSTS) preload list.</td>\n" +
+                        "</tr>\n" +
                       "</table>";
 
-        String expected = ".Table\n" + 
-                          "|=========================\n" + 
+        String expected = ".Table\n" +
+                          "|=========================\n" +
                           "| Error | Resolution\n" +
-                          "\n" + 
+                          "\n" +
                           "| preload directive not present\n" +
-                          "| Submit domain for inclusion in browsers' HTTP Strict Transport Security (HSTS) preload list.\n" + 
+                          "| Submit domain for inclusion in browsers' HTTP Strict Transport Security (HSTS) preload list.\n" +
                           "|=========================";
         /* @formatter:on */
-        
+
         /* execute */
         String actual = NetsparkerHtmlToAsciiDocConverter.convert(html);
 
@@ -107,11 +107,11 @@ public class NetsparkerHtmlToAsciiDocConverterTest {
     @Test
     public void table_and_paragraph() {
         /* prepare */
-        
+
         /* @formatter:off */
         String html = "<p>Netsparker Enterprise detected errors during parsing of Strict-Transport-Security header.</p>" +
                 "<table class=\"kb-table\" width=\"30%\">\n" +
-                    "<tr>\n" + 
+                    "<tr>\n" +
                         "<td><b>Error</b></td>\n" +
                         "<td><b>Resolution</b></td>\n" +
                     "</tr>\n" +
@@ -121,7 +121,7 @@ public class NetsparkerHtmlToAsciiDocConverterTest {
                     "</tr>\n" +
                 "</table>";
 
-        String expected = "Netsparker Enterprise detected errors during parsing of Strict-Transport-Security header.\n" + 
+        String expected = "Netsparker Enterprise detected errors during parsing of Strict-Transport-Security header.\n" +
                 "\n.Table\n" +
                 "|=========================\n" +
                 "| Error | Resolution\n" +

@@ -6,12 +6,13 @@ import com.daimler.sechub.integrationtest.internal.PDSTestScenario;
 import com.daimler.sechub.integrationtest.internal.StaticTestScenario;
 
 /**
- * <b><u>Scenario6 - the PDS ONLY integration test scenario (no special sechub storage setings necessary)</u></b><br>
- * 
+ * <b><u>Scenario6 - the PDS ONLY integration test scenario (no special sechub
+ * storage setings necessary)</u></b><br>
+ *
  * In this scenario no sechub server instance is necessary. No special
  * preparations are done.
- * 
- * 
+ *
+ *
  * @author Albert Tregnaghi
  *
  */

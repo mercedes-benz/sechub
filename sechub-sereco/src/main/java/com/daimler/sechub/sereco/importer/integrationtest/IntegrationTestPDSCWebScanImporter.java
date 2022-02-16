@@ -19,10 +19,9 @@ import com.daimler.sechub.sharedkernel.Profiles;
 @Component
 @Profile(Profiles.INTEGRATIONTEST) // we provide this importer only at integration tests
 /**
- * Please read
- * /sechub-integrationtest/src/test/resources/pds/webcan/README.md for
- * syntax description integration test output - ProductImportAbility.
- * 
+ * Please read /sechub-integrationtest/src/test/resources/pds/webcan/README.md
+ * for syntax description integration test output - ProductImportAbility.
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -47,7 +46,8 @@ public class IntegrationTestPDSCWebScanImporter implements ProductResultImporter
             }
             int pos = 0;
             String severity = splitted[pos++];
-            String message = line.substring(severity.length()+1);// we use the full other content here, so we can have https://xyz.example.com as message content!
+            String message = line.substring(severity.length() + 1);// we use the full other content here, so we can have https://xyz.example.com as
+                                                                   // message content!
 
             SerecoVulnerability vulnerability = new SerecoVulnerability();
             vulnerability.setDescription(message);

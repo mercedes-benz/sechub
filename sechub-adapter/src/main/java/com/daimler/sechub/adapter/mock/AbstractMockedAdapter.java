@@ -20,7 +20,7 @@ import com.daimler.sechub.adapter.support.MockSupport;
  * target urls... So the adapter is configurable by a config file! For demo mode
  * and integration testing this is very nice, we just have to setup the path to
  * config file!
- * 
+ *
  * @author Albert Tregnaghi
  *
  * @param <A>
@@ -37,20 +37,20 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
      * "+1" two times on every adapter call. So when a adapter call has failed and
      * will be called again (resilience) we are able to check if adapter meta data
      * is handled as expected.
-     * 
+     *
      * Here an example:
-     * 
+     *
      * <pre>
      *  null -> "+1" -> "+1+1"
      * </pre>
-     * 
+     *
      * When adapter is started . Another start will transform:
-     * 
+     *
      * <pre>
-     *  
+     *
      * "+1+1" -> "+1+1+1" ->"+1+1+1+1"
      * </pre>
-     * 
+     *
      * and so on.
      */
     public static final String KEY_METADATA_REUSED = "reused";
@@ -90,9 +90,9 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
             LOG.info("did not found adapter setup so returning empty string");
             return "";
         }
-        
-        String target = config.getTargetAsString();      
-        
+
+        String target = config.getTargetAsString();
+
         /* first meta data persistence call - write some test meta data... */
         writeInitialAndReusedMetaData(config, runtimeContext);
 
@@ -107,10 +107,10 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
 
         /* second meta data persistence call - write/update some test meta data... */
         writeBeforeWaitAndReusedMetaData(config, runtimeContext);
-        
+
         /* wait configured time (simulates product elapsing time) */
         waitIfConfigured(timeStarted, setup, target);
-        
+
         assertMetaDataHandledAsExpected(config, runtimeContext);
 
         LOG.trace("Returning content:{}", result);
@@ -126,7 +126,6 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
         updateReusedEntryAndPersistMetaData(metaData, runtimeContext);
     }
 
-
     protected void writeBeforeWaitAndReusedMetaData(C config, AdapterRuntimeContext runtimeContext) {
         AdapterMetaData metaData = assertMetaData(runtimeContext);
         metaData.setValue(KEY_METADATA_BEFORE_WAIT, DEFAULT_METADATA_MOCK_BEFORE_WAIT);
@@ -137,7 +136,6 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
         updateReusedEntryAndPersistMetaData(metaData, runtimeContext);
     }
 
-    
     protected void assertMetaDataHandledAsExpected(C config, AdapterRuntimeContext runtimeContext) {
         AdapterMetaData metaData = assertMetaData(runtimeContext);
         metaData.setValue(KEY_METADATA_BEFORE_WAIT, DEFAULT_METADATA_MOCK_BEFORE_WAIT);
@@ -164,9 +162,9 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
         }
         metaData.setValue(KEY_METADATA_REUSED, value + "+1");
         runtimeContext.getCallback().persist(metaData);
-        
+
     }
-    
+
     private AdapterMetaData assertMetaData(AdapterRuntimeContext runtimeContext) {
         AdapterMetaData metaData = runtimeContext.getMetaData();
         if (metaData == null) {
@@ -231,7 +229,7 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
      * <br>
      * An
      * example:<code>"/adapter/mockdata/v1/MockedNetspakerAdapter/green.xml</code>
-     * 
+     *
      * @param wantedTrafficLight
      * @return
      */

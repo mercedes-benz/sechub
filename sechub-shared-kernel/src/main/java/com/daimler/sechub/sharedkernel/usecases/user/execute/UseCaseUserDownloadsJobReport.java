@@ -10,18 +10,13 @@ import java.lang.annotation.Target;
 
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseDefinition;
-/* @formatter:off */
 import com.daimler.sechub.sharedkernel.usecases.UseCaseGroup;
+
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@UseCaseDefinition(
-		id=UC_USER_GET_JOB_REPORT,
-		group=UseCaseGroup.SECHUB_EXECUTION,
-		apiName="userDownloadsJobReport",
-		title="User downloads sechub job report", 
-		description="user/download_sechub_job_report_description.adoc")
+@UseCaseDefinition(id = UC_USER_GET_JOB_REPORT, group = UseCaseGroup.SECHUB_EXECUTION, apiName = "userDownloadsJobReport", title = "User downloads sechub job report", description = "user/download_sechub_job_report_description.adoc")
 public @interface UseCaseUserDownloadsJobReport {
-	
-	Step value();
+
+    Step value();
 }
 /* @formatter:on */

@@ -35,7 +35,7 @@ class PDSStreamContentUpdateCheckerTest {
         /* test */
         assertTrue(necessary);
     }
-    
+
     @ParameterizedTest(name = "{index} For PDS job status state {0} a refresh check IS NOT necessary. Even when all other is null")
     @EnumSource(value = PDSJobStatusState.class, names = { RUNNING }, mode = EnumSource.Mode.EXCLUDE)
     void isJobInStateWhereUpdateNecessary_by_job_never(PDSJobStatusState state) {
@@ -50,7 +50,7 @@ class PDSStreamContentUpdateCheckerTest {
         /* test */
         assertFalse(necessary);
     }
-    
+
     @ParameterizedTest(name = "{index} For PDS job status state {0} and never updated a refresh check IS necessary")
     @EnumSource(value = PDSJobStatusState.class, names = { RUNNING }, mode = EnumSource.Mode.INCLUDE)
     void isUpdateNecessaryWhenRefreshRequestedNow_on_job_state_when_never_last_update_done(PDSJobStatusState state) {

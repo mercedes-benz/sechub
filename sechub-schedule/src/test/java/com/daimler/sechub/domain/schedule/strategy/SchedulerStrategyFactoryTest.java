@@ -64,7 +64,7 @@ class SchedulerStrategyFactoryTest {
         /* test */
         assertEquals(strategy, fifoStrategy);
     }
-    
+
     @Test
     void test_strategy_id_set_to_null() {
         /* prepare */

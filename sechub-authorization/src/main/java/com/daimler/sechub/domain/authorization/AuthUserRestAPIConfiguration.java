@@ -21,54 +21,52 @@ import com.daimler.sechub.sharedkernel.RoleConstants;
 @Configuration
 public class AuthUserRestAPIConfiguration {
 
-	private static final Logger LOG = LoggerFactory.getLogger(AuthUserRestAPIConfiguration.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AuthUserRestAPIConfiguration.class);
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
-	@Autowired
-	PasswordEncoder passwordEncoder;
-
-	@Bean
-	public UserDetailsService userDetailsService(final AuthUserRepository repository) {
-		/* @formatter:off */
+    @Bean
+    public UserDetailsService userDetailsService(final AuthUserRepository repository) {
+        /* @formatter:off */
 		return userid -> repository.
 				findByUserId(userid).
 				map(AuthUserRestAPIConfiguration::adoptUser).
 				orElseThrow(()->new UsernameNotFoundException(userid));
 		/* @formatter:on */
-	}
+    }
 
-	static UserDetails adoptUser(AuthUser entity) {
-		UserBuilder builder = User.builder();
-		builder.username(entity.getUserId());
-		String hashedApiToken = entity.getHashedApiToken();
-		builder.password(hashedApiToken);
+    static UserDetails adoptUser(AuthUser entity) {
+        UserBuilder builder = User.builder();
+        builder.username(entity.getUserId());
+        String hashedApiToken = entity.getHashedApiToken();
+        builder.password(hashedApiToken);
 
-		List<String> authorities = accumulateAuthorities(entity);
+        List<String> authorities = accumulateAuthorities(entity);
 
-		builder.authorities(authorities.toArray(new String[authorities.size()]));
+        builder.authorities(authorities.toArray(new String[authorities.size()]));
 
-		/* when api token is empty or null then access is disabled */
-		boolean disabled = hashedApiToken==null || hashedApiToken.isEmpty();
-		builder.disabled(disabled);
-		UserDetails details = builder.build();
-		LOG.trace("User:{} has authorities: {}, entity:{}",entity.getUserId(), details.getAuthorities(),entity);
-		return details;
-	}
+        /* when api token is empty or null then access is disabled */
+        boolean disabled = hashedApiToken == null || hashedApiToken.isEmpty();
+        builder.disabled(disabled);
+        UserDetails details = builder.build();
+        LOG.trace("User:{} has authorities: {}, entity:{}", entity.getUserId(), details.getAuthorities(), entity);
+        return details;
+    }
 
-	private static List<String> accumulateAuthorities(AuthUser entity) {
-		List<String> authorities = new ArrayList<String>();
+    private static List<String> accumulateAuthorities(AuthUser entity) {
+        List<String> authorities = new ArrayList<String>();
 
-		if (entity.isRoleUser()) {
-			authorities.add(RoleConstants.ROLE_USER);
-		}
-		if (entity.isRoleSuperAdmin()) {
-			authorities.add(RoleConstants.ROLE_SUPERADMIN);
-		}
-		if (entity.isRoleOwner()) {
-			authorities.add(RoleConstants.ROLE_OWNER);
-		}
-		return authorities;
-	}
-
+        if (entity.isRoleUser()) {
+            authorities.add(RoleConstants.ROLE_USER);
+        }
+        if (entity.isRoleSuperAdmin()) {
+            authorities.add(RoleConstants.ROLE_SUPERADMIN);
+        }
+        if (entity.isRoleOwner()) {
+            authorities.add(RoleConstants.ROLE_OWNER);
+        }
+        return authorities;
+    }
 
 }

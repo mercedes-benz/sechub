@@ -41,39 +41,39 @@ import com.daimler.sechub.test.TestPortProvider;
 @RunWith(SpringRunner.class)
 @WebMvcTest(ProjectUpdateAdministrationRestController.class)
 @ContextConfiguration(classes = { ProjectUpdateAdministrationRestController.class,
-		ProjectUpdateAdministrationRestControllerMockTest.SimpleTestConfiguration.class })
+        ProjectUpdateAdministrationRestControllerMockTest.SimpleTestConfiguration.class })
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
-@ActiveProfiles({Profiles.TEST, Profiles.ADMIN_ACCESS})
+@ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 public class ProjectUpdateAdministrationRestControllerMockTest {
 
-	private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getWebMVCTestHTTPSPort();
+    private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getWebMVCTestHTTPSPort();
 
-	private static final String projectId = "projectid1";
-	
-	@Autowired
-	private MockMvc mockMvc;
+    private static final String projectId = "projectid1";
 
-	@MockBean
-	ProjectUpdateWhitelistService mockedProjectUpdateWhiteListService;
-	
-	@MockBean
-	ProjectUpdateMetaDataEntityService mockedProjectUpdateMetaDataService;
+    @Autowired
+    private MockMvc mockMvc;
 
-	@MockBean
-	UpdateProjectInputValidator mockedValidator;
+    @MockBean
+    ProjectUpdateWhitelistService mockedProjectUpdateWhiteListService;
 
-	@MockBean
-	ProjectRepository mockedProjectRepository;
+    @MockBean
+    ProjectUpdateMetaDataEntityService mockedProjectUpdateMetaDataService;
 
-	@Before
-	public void before() {
-		when(mockedValidator.supports(ProjectJsonInput.class)).thenReturn(true);
-	}
+    @MockBean
+    UpdateProjectInputValidator mockedValidator;
 
-	@Test
-	public void when_validator_marks_no_errors___calling_update_project_url_calls_update_service_and_returns_http_200() throws Exception {
+    @MockBean
+    ProjectRepository mockedProjectRepository;
 
-		/* execute + test @formatter:off */
+    @Before
+    public void before() {
+        when(mockedValidator.supports(ProjectJsonInput.class)).thenReturn(true);
+    }
+
+    @Test
+    public void when_validator_marks_no_errors___calling_update_project_url_calls_update_service_and_returns_http_200() throws Exception {
+
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(https(PORT_USED).
         				buildUpdateProjectWhiteListUrl(projectId)).
@@ -87,12 +87,12 @@ public class ProjectUpdateAdministrationRestControllerMockTest {
 			updateProjectWhitelist(projectId,
 				Arrays.asList(new URI("192.168.1.1"), new URI("192.168.1.2")));
 		/* @formatter:on */
-	}
+    }
 
-	@Test
-	public void when_validator_marks_errors___calling_update_project_url_never_calls_update_service_but_returns_http_400() throws Exception {
-		/* prepare */
-		doAnswer(new Answer<Void>() {
+    @Test
+    public void when_validator_marks_errors___calling_update_project_url_never_calls_update_service_but_returns_http_400() throws Exception {
+        /* prepare */
+        doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Errors errors = invocation.getArgument(1);
                 errors.reject("testerror");
@@ -100,9 +100,8 @@ public class ProjectUpdateAdministrationRestControllerMockTest {
             }
         }).when(mockedValidator).validate(any(ProjectJsonInput.class), any(Errors.class));
 
+        /* execute + test @formatter:off */
 
-		/* execute + test @formatter:off */
-		  
 		this.mockMvc.perform(
 				post(https(PORT_USED).
 						buildUpdateProjectWhiteListUrl(projectId)).
@@ -110,15 +109,15 @@ public class ProjectUpdateAdministrationRestControllerMockTest {
 	        			content("{\"whiteList\":{\"uris\":[\"192.168.1.1\",\"192.168.1.2\"]}}")
 	        	).
 					andExpect(status().isBadRequest());
-  
+
 		verifyNoInteractions(mockedProjectUpdateWhiteListService);
 		/* @formatter:on */
-	}
-	
-	@Test
-	public void when_validator_marks_no_errors___calling_update_project_metadata_calls_update_service_and_returns_http_200() throws Exception {
+    }
 
-		/* execute + test @formatter:off */
+    @Test
+    public void when_validator_marks_no_errors___calling_update_project_metadata_calls_update_service_and_returns_http_200() throws Exception {
+
+        /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				post(https(PORT_USED).
 						buildUpdateProjectMetaData(projectId)).
@@ -130,15 +129,15 @@ public class ProjectUpdateAdministrationRestControllerMockTest {
 		ProjectMetaData metaData = new ProjectMetaData();
 		metaData.getMetaDataMap().put("key1", "value1");
 		metaData.getMetaDataMap().put("key2", "value2");
-		
+
 		verify(mockedProjectUpdateMetaDataService).updateProjectMetaData(projectId, metaData);
 		/* @formatter:on */
-	}
+    }
 
-	@Test
-	public void when_validator_marks_errors___calling_update_project_metadata_never_calls_update_service_but_returns_http_400() throws Exception {
-		/* prepare */
-		doAnswer(new Answer<Void>() {
+    @Test
+    public void when_validator_marks_errors___calling_update_project_metadata_never_calls_update_service_but_returns_http_400() throws Exception {
+        /* prepare */
+        doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Errors errors = invocation.getArgument(1);
                 errors.reject("testerror");
@@ -146,7 +145,7 @@ public class ProjectUpdateAdministrationRestControllerMockTest {
             }
         }).when(mockedValidator).validate(any(ProjectJsonInput.class), any(Errors.class));
 
-		/* execute + test @formatter:off */
+        /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				post(https(PORT_USED).
 						buildUpdateProjectMetaData("projectId1")).
@@ -157,12 +156,12 @@ public class ProjectUpdateAdministrationRestControllerMockTest {
 
 		verifyNoInteractions(mockedProjectUpdateMetaDataService);
 		/* @formatter:on */
-	}
+    }
 
-	@TestConfiguration
-	@Profile(Profiles.TEST)
-	@EnableAutoConfiguration
-	public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    @TestConfiguration
+    @Profile(Profiles.TEST)
+    @EnableAutoConfiguration
+    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
 
-	}
+    }
 }

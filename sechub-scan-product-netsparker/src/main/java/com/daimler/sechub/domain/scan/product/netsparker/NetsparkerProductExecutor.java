@@ -63,7 +63,7 @@ public class NetsparkerProductExecutor extends AbstractWebScanProductExecutor<Ne
          */
         /* @formatter:off */
 		executorContext.useFirstFormerResultHavingMetaData(NetsparkerMetaDataID.KEY_TARGET_URI, targetURI);
-		    
+
 		NetsparkerAdapterConfig netsparkerConfig = NetsparkerConfig.builder().
 				configure(createAdapterOptionsStrategy(context)).
 				configure(new WebConfigBuilderStrategy(context)).

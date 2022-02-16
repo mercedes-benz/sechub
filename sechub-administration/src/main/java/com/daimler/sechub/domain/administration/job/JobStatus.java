@@ -2,9 +2,9 @@
 package com.daimler.sechub.domain.administration.job;
 
 public enum JobStatus {
-	CREATED,
+    CREATED,
 
-	RUNNING,
+    RUNNING,
 
-	DONE
+    DONE
 }

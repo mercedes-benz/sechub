@@ -4,7 +4,7 @@ package com.daimler.sechub.domain.scan.project;
 import java.util.Objects;
 
 public class FalsePositiveCodeMetaData {
-    
+
     public static final String PROPERTY_START = "start";
     public static final String PROPERTY_END = "end";
 

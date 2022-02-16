@@ -24,6 +24,7 @@ import com.daimler.sechub.sharedkernel.cluster.ClusterEnvironmentService;
 import com.daimler.sechub.sharedkernel.logging.AlertLogService;
 import com.daimler.sechub.sharedkernel.monitoring.SystemMonitorService;
 import com.daimler.sechub.sharedkernel.usecases.job.UseCaseSchedulerStartsJob;
+
 @Service
 public class SchedulerJobBatchTriggerService {
 
@@ -59,10 +60,10 @@ public class SchedulerJobBatchTriggerService {
     @MustBeDocumented("Define delay for next job execution trigger after last executed.")
     @Value("${sechub.config.trigger.nextjob.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
     private String infoFixedDelay; // here only for logging - used in scheduler annotation as well!
-    
+
     @MustBeDocumented("When enabled each trigger will do an healtching by monitoring service. If system has too much CPU load or uses too much memory, the trigger will not execute until memory and CPU load is at normal level!")
     @Value("${sechub.config.trigger.healthcheck.enabled:" + DEFAULT_HEALTHCHECK_ENABLED + "}")
-    private boolean healthCheckEnabled = DEFAULT_HEALTHCHECK_ENABLED; 
+    private boolean healthCheckEnabled = DEFAULT_HEALTHCHECK_ENABLED;
 
     @Autowired
     ScheduleJobMarkerService markerService;
@@ -75,10 +76,10 @@ public class SchedulerJobBatchTriggerService {
 
     @Autowired
     SchedulerConfigService configService;
-    
+
     @Autowired
     SystemMonitorService monitorService;
-    
+
     @Autowired
     AlertLogService alertLogService;
 
@@ -103,14 +104,16 @@ public class SchedulerJobBatchTriggerService {
             LOG.warn("Job processing is disabled, so cancel scheduling. Environment: {}", environmentService.getEnvironment());
             return;
         }
-        
+
         if (healthCheckEnabled) {
             if (monitorService.isCPULoadAverageMaxReached()) {
-                alertLogService.log(SCHEDULER_PROBLEM, CPU_OVERLOAD, "Job processing is skipped. {}, {}", monitorService.createCPUDescription(), environmentService.getEnvironment());
+                alertLogService.log(SCHEDULER_PROBLEM, CPU_OVERLOAD, "Job processing is skipped. {}, {}", monitorService.createCPUDescription(),
+                        environmentService.getEnvironment());
                 return;
             }
             if (monitorService.isMemoryUsageMaxReached()) {
-                alertLogService.log(SCHEDULER_PROBLEM, MEMORY_OVERLOAD, "Job processing is skipped. {}, {}", monitorService.createMemoryDescription(),environmentService.getEnvironment());
+                alertLogService.log(SCHEDULER_PROBLEM, MEMORY_OVERLOAD, "Job processing is skipped. {}, {}", monitorService.createMemoryDescription(),
+                        environmentService.getEnvironment());
                 return;
             }
         }

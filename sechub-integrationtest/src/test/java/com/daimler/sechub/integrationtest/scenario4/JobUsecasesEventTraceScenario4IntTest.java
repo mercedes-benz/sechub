@@ -41,17 +41,17 @@ public class JobUsecasesEventTraceScenario4IntTest {
         /* @formatter:off */
         /* prepare */
         UUID sechubJobUUD = as(USER_1).triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(project);
-        
+
         waitForJobDoneAndFailWhenJobIsFailing(project, sechubJobUUD);
 
         startEventInspection();
-        
+
         /* execute */
         as(SUPER_ADMIN).restartCodeScanHardAndFetchJobStatus(project,sechubJobUUD);
-        
+
         /* test */
         assertJobHasEnded(project,sechubJobUUD);
-        
+
         AssertEventInspection.assertEventInspection().
         expect().
            /* 0 */
@@ -78,15 +78,15 @@ public class JobUsecasesEventTraceScenario4IntTest {
         UUID sechubJobUUD = as(USER_1).triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(project);
         waitForJobDoneAndFailWhenJobIsFailing(project, sechubJobUUD);
         simulateJobIsStillRunningAndUploadAvailable(sechubJobUUD);
-        
+
         startEventInspection();
 
         /* execute */
         as(SUPER_ADMIN).restartCodeScanHardAndFetchJobStatus(project,sechubJobUUD);
-        
+
         /* test */
         assertJobHasEnded(project,sechubJobUUD);
-        
+
         AssertEventInspection.assertEventInspection().
         expect().
            /* 0 */
@@ -135,17 +135,17 @@ public class JobUsecasesEventTraceScenario4IntTest {
         /* @formatter:off */
         /* prepare */
         UUID sechubJobUUD = as(USER_1).triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(project);
-        
+
         waitForJobDoneAndFailWhenJobIsFailing(project, sechubJobUUD);
         simulateJobIsStillRunningAndUploadAvailable(sechubJobUUD);
-        
+
         destroyProductResults(sechubJobUUD); // destroy former product result to simulate execution crashed..
-        
+
         startEventInspection();
 
         /* execute */
         as(SUPER_ADMIN).restartCodeScanHardAndFetchJobStatus(project,sechubJobUUD);
-        
+
         /* test */
         assertJobHasEnded(project,sechubJobUUD);
         AssertEventInspection.assertEventInspection().
@@ -196,17 +196,17 @@ public class JobUsecasesEventTraceScenario4IntTest {
         /* @formatter:off */
         /* prepare */
         UUID sechubJobUUD = as(USER_1).triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(project);
-        
+
         waitForJobDoneAndFailWhenJobIsFailing(project, sechubJobUUD);
         startEventInspection();
-        
+
         /* execute */
         as(SUPER_ADMIN).restartCodeScanAndFetchJobStatus(project,sechubJobUUD);
-        
-        
+
+
         /* test */
         assertJobHasEnded(project,sechubJobUUD);
-        
+
         AssertEventInspection.assertEventInspection().
         expect().
            /* 0 */
@@ -219,7 +219,7 @@ public class JobUsecasesEventTraceScenario4IntTest {
                  to("com.daimler.sechub.domain.notification.NotificationMessageHandler").
         /* assert + write */
         assertAsExpectedAndCreateHistoryFile(UseCaseIdentifier.UC_ADMIN_RESTARTS_JOB.name(),"accidently_restart_because_job_has_already_finished");
-        
+
         /* @formatter:on */
     }
 
@@ -232,16 +232,16 @@ public class JobUsecasesEventTraceScenario4IntTest {
         /* @formatter:off */
         /* prepare */
         UUID sechubJobUUD = as(USER_1).triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(project);
-        
+
         waitForJobDoneAndFailWhenJobIsFailing(project, sechubJobUUD);
-        
+
         simulateJobIsStillRunningAndUploadAvailable(sechubJobUUD);
-        
+
         startEventInspection();
 
         /* execute */
         as(SUPER_ADMIN).restartCodeScanAndFetchJobStatus(project,sechubJobUUD);
-        
+
         /* test */
         assertJobHasEnded(project,sechubJobUUD);
         AssertEventInspection.assertEventInspection().
@@ -285,17 +285,17 @@ public class JobUsecasesEventTraceScenario4IntTest {
         /* @formatter:off */
         /* prepare */
         UUID sechubJobUUD = as(USER_1).triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(project);
-        
+
         waitForJobDoneAndFailWhenJobIsFailing(project, sechubJobUUD);
         simulateJobIsStillRunningAndUploadAvailable(sechubJobUUD);
-        
+
         destroyProductResults(sechubJobUUD); // destroy former product result to simulate execution crashed..
-        
+
         startEventInspection();
 
         /* execute */
         as(SUPER_ADMIN).restartCodeScanAndFetchJobStatus(project,sechubJobUUD);
-        
+
         /* test */
         assertJobHasEnded(project,sechubJobUUD);
         AssertEventInspection.assertEventInspection().

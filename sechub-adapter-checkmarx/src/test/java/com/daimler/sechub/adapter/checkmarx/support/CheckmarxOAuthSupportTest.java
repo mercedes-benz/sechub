@@ -60,15 +60,15 @@ public class CheckmarxOAuthSupportTest {
 
         /* test */
         ArgumentCaptor<CheckmarxOAuthData> captor = ArgumentCaptor.forClass(CheckmarxOAuthData.class);
-        verify(context,times(1)).markAuthenticated(captor.capture()); // only one time for 2 calls!
+        verify(context, times(1)).markAuthenticated(captor.capture()); // only one time for 2 calls!
 
         CheckmarxOAuthData newOauthData = captor.getValue();
         assertNotSame(newOauthData, alreadyExistingOauthData);
         assertEquals("mytoken1", newOauthData.getAccessToken());
         assertEquals(3600, newOauthData.getExpiresInSeconds());
-        
+
     }
-    
+
     @Test
     void refreshBearerTokenWhenNecessary_leads_NOT_to_newer_oauth_data_object_when_no_refresh_necessary() throws Exception {
         /* prepare */
@@ -84,8 +84,8 @@ public class CheckmarxOAuthSupportTest {
         supportToTest.refreshBearerTokenWhenNecessary(context);// this will NOT refresh, because 20 seconds
 
         /* test */
-        verify(context,times(0)).markAuthenticated(any()); // never called
-        
+        verify(context, times(0)).markAuthenticated(any()); // never called
+
     }
 
     private CheckmarxAdapterContext createContextWithRestSimulation(CheckmarxOAuthData alreadyExistingOauthData) {

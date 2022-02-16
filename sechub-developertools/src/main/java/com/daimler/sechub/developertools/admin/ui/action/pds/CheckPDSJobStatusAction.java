@@ -16,7 +16,7 @@ public class CheckPDSJobStatusAction extends AbstractPDSAction {
 
     @Override
     protected void executePDS(PDSAdministration pds) {
-        Optional<String> jobUUID = getUserInput("PDS job UUID",InputCacheIdentifier.PDS_JOBUUID);
+        Optional<String> jobUUID = getUserInput("PDS job UUID", InputCacheIdentifier.PDS_JOBUUID);
         if (!jobUUID.isPresent()) {
             output("Canceled jobUUID");
             return;

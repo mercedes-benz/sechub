@@ -19,21 +19,20 @@ import com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdminDisab
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 public class TriggerSchedulerStatusRefreshService {
 
-	@Autowired
-	DomainMessageService eventBusService;
+    @Autowired
+    DomainMessageService eventBusService;
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@UseCaseAdminDisablesSchedulerJobProcessing(@Step(number=2,name="Service call",description="Sends request to scheduler to send updates about current status."))
 	public void triggerSchedulerStatusRefresh() {
 		/* @formatter:on */
-		sendUpdateSchedulerStatusEvent();
-	}
+        sendUpdateSchedulerStatusEvent();
+    }
 
-	@IsSendingAsyncMessage(MessageID.REQUEST_SCHEDULER_STATUS_UPDATE)
-	private void sendUpdateSchedulerStatusEvent() {
-		DomainMessage request = DomainMessageFactory.createEmptyRequest(MessageID.REQUEST_SCHEDULER_STATUS_UPDATE);
-		eventBusService.sendAsynchron(request);
-	}
-
+    @IsSendingAsyncMessage(MessageID.REQUEST_SCHEDULER_STATUS_UPDATE)
+    private void sendUpdateSchedulerStatusEvent() {
+        DomainMessage request = DomainMessageFactory.createEmptyRequest(MessageID.REQUEST_SCHEDULER_STATUS_UPDATE);
+        eventBusService.sendAsynchron(request);
+    }
 
 }

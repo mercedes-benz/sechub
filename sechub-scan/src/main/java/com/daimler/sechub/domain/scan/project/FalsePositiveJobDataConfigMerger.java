@@ -15,7 +15,7 @@ import com.daimler.sechub.sharedkernel.error.NotFoundException;
  * Merges job based false positive data, meta data from origin report into
  * project false positive configuration. Does also validate that meta data is
  * available - e.g. CWE identifier must be available for code scans.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -23,12 +23,12 @@ import com.daimler.sechub.sharedkernel.error.NotFoundException;
 public class FalsePositiveJobDataConfigMerger {
 
     private static final Logger LOG = LoggerFactory.getLogger(FalsePositiveJobDataConfigMerger.class);
-    
+
     @Autowired
     FalsePositiveMetaDataFactory metaDataFactory;
 
-    public void addJobDataWithMetaDataToConfig(ScanSecHubReport report, FalsePositiveProjectConfiguration config,
-            FalsePositiveJobData falsePositiveJobData, String author) {
+    public void addJobDataWithMetaDataToConfig(ScanSecHubReport report, FalsePositiveProjectConfiguration config, FalsePositiveJobData falsePositiveJobData,
+            String author) {
 
         SecHubFinding finding = fetchFindingInReportOrFail(report, falsePositiveJobData);
 
@@ -58,8 +58,6 @@ public class FalsePositiveJobDataConfigMerger {
         config.getFalsePositives().remove(entry);
     }
 
-    
-
     private FalsePositiveEntry findExistingFalsePositiveEntryInConfig(FalsePositiveProjectConfiguration config, FalsePositiveJobData falsePositiveJobData) {
         for (FalsePositiveEntry existingFPEntry : config.getFalsePositives()) {
             FalsePositiveJobData jobData = existingFPEntry.getJobData();
@@ -82,8 +80,7 @@ public class FalsePositiveJobDataConfigMerger {
                 return finding;
             }
         }
-        throw new NotFoundException(
-                "No finding with id:" + falsePositiveJobData.getFindingId() + " found inside report for job:" + report.getJobUUID());
+        throw new NotFoundException("No finding with id:" + falsePositiveJobData.getFindingId() + " found inside report for job:" + report.getJobUUID());
     }
 
 }

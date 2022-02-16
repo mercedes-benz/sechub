@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @PDSUseCaseDefinition(
 		id=PDSUseCaseIdentifier.UC_USER_CREATES_JOB,
 		group=PDSUseCaseGroup.JOB_EXECUTION,
-		title="User creates job", 
+		title="User creates job",
 		description="A user creates a new PDS job")
 public @interface UseCaseUserCreatesJob {
     PDSStep value();

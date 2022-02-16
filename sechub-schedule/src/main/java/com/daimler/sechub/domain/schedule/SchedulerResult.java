@@ -12,21 +12,21 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SchedulerResult implements JSONable<SchedulerResult> {
 
-	public static final String PROPERTY_JOBID="jobId";
-	
-	UUID jobId;
+    public static final String PROPERTY_JOBID = "jobId";
 
-	public SchedulerResult(UUID jobId) {
-		this.jobId = jobId;
-	}
+    UUID jobId;
 
-	public UUID getJobId() {
-		return jobId;
-	}
+    public SchedulerResult(UUID jobId) {
+        this.jobId = jobId;
+    }
 
-	@Override
-	public Class<SchedulerResult> getJSONTargetClass() {
-		return SchedulerResult.class;
-	}
+    public UUID getJobId() {
+        return jobId;
+    }
+
+    @Override
+    public Class<SchedulerResult> getJSONTargetClass() {
+        return SchedulerResult.class;
+    }
 
 }

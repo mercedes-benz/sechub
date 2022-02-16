@@ -12,7 +12,7 @@ public class PDSPathExecutableValidator {
 
     /**
      * Creates error message when validation failed
-     * 
+     *
      * @param productId
      * @return failure message or <code>null</code> when valid
      */
@@ -22,12 +22,12 @@ public class PDSPathExecutableValidator {
         }
         Path p = Paths.get(path);
         if (Files.notExists(p)) {
-            return "file does not exist:"+path;
+            return "file does not exist:" + path;
         }
-        if (! Files.isExecutable(p)) {
-            return "file exists, but not executable:"+path;
+        if (!Files.isExecutable(p)) {
+            return "file exists, but not executable:" + path;
         }
-        
+
         return null;
     }
 }

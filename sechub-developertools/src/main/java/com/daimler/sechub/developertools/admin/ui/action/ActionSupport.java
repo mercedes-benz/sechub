@@ -95,21 +95,20 @@ public class ActionSupport {
 
     public List<JMenuItem> createFontResizeActions(JTextComponent component) {
         List<JMenuItem> menuItems = new ArrayList<>();
-    
+
         menuItems.add(new JMenuItem(new IncreaseFontSizeAction(component)));
         menuItems.add(new JMenuItem(new ResetFontSizeAction(component)));
         menuItems.add(new JMenuItem(new DecreaseFontSizeAction(component)));
         menuItems.add(new JMenuItem(new PresentationFontSizeAction(component)));
         return menuItems;
     }
-    
+
     public List<JMenuItem> createUndoRedoActions(JTextComponent textComponent) {
         List<JMenuItem> menuItems = new ArrayList<>();
-        provideUndoRedo(textComponent,menuItems);
+        provideUndoRedo(textComponent, menuItems);
         return menuItems;
     }
-        
-    
+
     public void installAllTextActionsAsPopupTo(JTextComponent textComponent) {
         JPopupMenu popup = new JPopupMenu();
         textComponent.setComponentPopupMenu(popup);
@@ -121,7 +120,7 @@ public class ActionSupport {
         apply(popup, createFontResizeActions(textComponent));
         popup.addSeparator();
         apply(popup, createUndoRedoActions(textComponent));
-        
+
     }
 
     public List<JMenuItem> createCleanOutputActions(JTextComponent component) {

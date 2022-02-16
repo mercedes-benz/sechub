@@ -17,16 +17,16 @@ public class PDSServerConfigurationValidatorTest {
 
     @Before
     public void before() throws Exception {
-        productIdValidator=mock(PDSProductIdentifierValidator.class);
-        serverIdValidator=mock(PDSServerIdentifierValidator.class);
-        pathExecutableValidator=mock(PDSPathExecutableValidator.class);
-        
+        productIdValidator = mock(PDSProductIdentifierValidator.class);
+        serverIdValidator = mock(PDSServerIdentifierValidator.class);
+        pathExecutableValidator = mock(PDSPathExecutableValidator.class);
+
         configuration = new PDSServerConfiguration();
 
         validatorToTest = new PDSServerConfigurationValidator();
-        validatorToTest.productIdValidator=productIdValidator;
-        validatorToTest.serverIdValidator=serverIdValidator;
-        validatorToTest.pathExecutableValidator=pathExecutableValidator;
+        validatorToTest.productIdValidator = productIdValidator;
+        validatorToTest.serverIdValidator = serverIdValidator;
+        validatorToTest.pathExecutableValidator = pathExecutableValidator;
     }
 
     @Test
@@ -57,38 +57,37 @@ public class PDSServerConfigurationValidatorTest {
         /* execute + test */
         assertNotValid(validatorToTest.createValidationErrorMessage(configuration));
     }
-    
+
     @Test
     public void whenProduct1_has_invalid_path_itsNotValid() {
         /* prepare */
         prepareValidConfiguration();
         when(pathExecutableValidator.createValidationErrorMessage("path1")).thenReturn("invalid-reason");
-        
+
         /* execute + test */
         assertNotValid(validatorToTest.createValidationErrorMessage(configuration));
     }
-    
+
     @Test
     public void whenProduct2_has_invalid_path_itsNotValid() {
         /* prepare */
         prepareValidConfiguration();
         when(pathExecutableValidator.createValidationErrorMessage("path2")).thenReturn("invalid-reason");
-        
+
         /* execute + test */
         assertNotValid(validatorToTest.createValidationErrorMessage(configuration));
     }
-    
+
     @Test
     public void when_serverId_is_not_valid__its_not_valid() {
         /* prepare */
         prepareValidConfiguration();
         // server id is also validated by product id validator
         when(serverIdValidator.createValidationErrorMessage("server-id")).thenReturn("invalid-reason");
-        
+
         /* execute + test */
         assertNotValid(validatorToTest.createValidationErrorMessage(configuration));
     }
-    
 
     private void prepareValidConfiguration() {
         PDSProductSetup setup1 = new PDSProductSetup();
@@ -104,7 +103,7 @@ public class PDSServerConfigurationValidatorTest {
         configuration.setApiVersion("1.0");
         configuration.getProducts().add(setup1);
         configuration.getProducts().add(setup2);
-        
+
         configuration.setServerId("server-id");
 
     }

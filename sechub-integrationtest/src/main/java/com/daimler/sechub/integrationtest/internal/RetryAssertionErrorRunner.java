@@ -11,7 +11,7 @@ import com.daimler.sechub.integrationtest.api.TestAPI;
  * of coding always TestAPI.waitMilliSeconds(millis); with magic time areas
  * inside testcases (which will sometimes not work, sometimes only slow down
  * tess...), we will use this class with retry mechanism.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -21,7 +21,7 @@ public class RetryAssertionErrorRunner {
 
     /**
      * Does retry all 500 milliseconds
-     * 
+     *
      * @param testRunnable
      * @param retries
      * @param refreshRunnable is a special runnable which is called only after a
@@ -36,7 +36,7 @@ public class RetryAssertionErrorRunner {
 
     /**
      * Does retry call with given time to wait and refresh runner
-     * 
+     *
      * @param retries
      * @param timeToWaitBeforeFinalFail
      * @param testRunnable

@@ -11,12 +11,12 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * Reporting description object, see see <a href=
  * "https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317836">SARIF
  * 2.1.0 specification entry</a>
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
 @JsonPropertyOrder({ "id", "name", "shortDescription", "fullDescription", "help", "properties" })
-public abstract class ReportingDescriptor extends SarifObject{
+public abstract class ReportingDescriptor extends SarifObject {
 
     private String id;
 
@@ -108,8 +108,8 @@ public abstract class ReportingDescriptor extends SarifObject{
             return false;
         ReportingDescriptor other = (ReportingDescriptor) obj;
         return Objects.equals(fullDescription, other.fullDescription) && Objects.equals(help, other.help) && Objects.equals(id, other.id)
-                && Objects.equals(name, other.name) && Objects.equals(getProperties(), other.getProperties()) && Objects.equals(relationships, other.relationships)
-                && Objects.equals(shortDescription, other.shortDescription);
+                && Objects.equals(name, other.name) && Objects.equals(getProperties(), other.getProperties())
+                && Objects.equals(relationships, other.relationships) && Objects.equals(shortDescription, other.shortDescription);
     }
 
 }

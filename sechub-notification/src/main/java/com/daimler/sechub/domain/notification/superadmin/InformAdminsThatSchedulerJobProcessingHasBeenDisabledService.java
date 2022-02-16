@@ -14,37 +14,37 @@ import com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdminDisab
 @Service
 public class InformAdminsThatSchedulerJobProcessingHasBeenDisabledService {
 
-	@Autowired
-	private MailMessageFactory factory;
+    @Autowired
+    private MailMessageFactory factory;
 
-	@Autowired
-	private NotificationConfiguration notificationConfiguration;
+    @Autowired
+    private NotificationConfiguration notificationConfiguration;
 
-	@Autowired
-	private EmailService emailService;
+    @Autowired
+    private EmailService emailService;
 
-	@UseCaseAdminDisablesSchedulerJobProcessing(@Step(number = 4, next = {
-			Step.NO_NEXT_STEP }, name = "Inform SecHub admins that scheduler job processing has been disabled"))
-	public void notify(String baseUrl) {
+    @UseCaseAdminDisablesSchedulerJobProcessing(@Step(number = 4, next = {
+            Step.NO_NEXT_STEP }, name = "Inform SecHub admins that scheduler job processing has been disabled"))
+    public void notify(String baseUrl) {
 
-		SimpleMailMessage message = factory.createMessage("SecHub: Scheduler job processing disabled");
+        SimpleMailMessage message = factory.createMessage("SecHub: Scheduler job processing disabled");
 
-		message.setTo(notificationConfiguration.getEmailAdministrators());
-		message.setText(createEmailContent(baseUrl));
+        message.setTo(notificationConfiguration.getEmailAdministrators());
+        message.setText(createEmailContent(baseUrl));
 
-		emailService.send(message);
+        emailService.send(message);
 
-	}
+    }
 
-	private String createEmailContent(String baseUrl) {
-		StringBuilder emailContent = new StringBuilder();
-		emailContent.append("Scheduler job processing has been disabled at SecHub for environment (base url): ");
-		emailContent.append(baseUrl);
-		emailContent.append("\n\n");
-		emailContent.append("WARNING: Users can still add new Jobs, but will wait for execution until scheduler job processing will be enabled again!\n");
+    private String createEmailContent(String baseUrl) {
+        StringBuilder emailContent = new StringBuilder();
+        emailContent.append("Scheduler job processing has been disabled at SecHub for environment (base url): ");
+        emailContent.append(baseUrl);
+        emailContent.append("\n\n");
+        emailContent.append("WARNING: Users can still add new Jobs, but will wait for execution until scheduler job processing will be enabled again!\n");
 
-		String text = emailContent.toString();
-		return text;
-	}
+        String text = emailContent.toString();
+        return text;
+    }
 
 }

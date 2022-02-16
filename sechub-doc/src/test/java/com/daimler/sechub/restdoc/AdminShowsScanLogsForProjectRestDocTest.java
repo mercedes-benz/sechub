@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.restdoc;
 
-import static com.daimler.sechub.test.TestURLBuilder.https;
 import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.PROJECT_ID;
+import static com.daimler.sechub.test.TestURLBuilder.https;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.eq;
@@ -48,48 +48,48 @@ import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminShowsS
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
+
 @RunWith(SpringRunner.class)
 @WebMvcTest(ProjectAdministrationRestController.class)
-@ContextConfiguration(classes = { ScanLogRestController.class,
-		AdminShowsScanLogsForProjectRestDocTest.SimpleTestConfiguration.class })
+@ContextConfiguration(classes = { ScanLogRestController.class, AdminShowsScanLogsForProjectRestDocTest.SimpleTestConfiguration.class })
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles(Profiles.TEST)
-@AutoConfigureRestDocs(uriScheme="https",uriHost=ExampleConstants.URI_SECHUB_SERVER,uriPort=443)
+@AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 public class AdminShowsScanLogsForProjectRestDocTest {
 
-	private static final String PROJECT1 = "project1";
+    private static final String PROJECT1 = "project1";
 
-	private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
+    private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
-	@Autowired
-	private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-	@MockBean
-	ProjectScanLogService projectScanLogService;
+    @MockBean
+    ProjectScanLogService projectScanLogService;
 
-	@Before
-	public void before() {
-		List<ProjectScanLogSummary> summaries = new ArrayList<>();
-		String status=ProjectScanLog.STATUS_OK;
+    @Before
+    public void before() {
+        List<ProjectScanLogSummary> summaries = new ArrayList<>();
+        String status = ProjectScanLog.STATUS_OK;
 
-		LocalDateTime started = LocalDateTime.now().minusDays(1);
-		LocalDateTime ended = LocalDateTime.now();
-		String executedBy = "spartakus";
-		UUID sechubJobUUID= UUID.randomUUID();
-		ProjectScanLogSummary summary = new ProjectScanLogSummary(sechubJobUUID, executedBy, started, ended, status);
-		summaries.add(summary);
+        LocalDateTime started = LocalDateTime.now().minusDays(1);
+        LocalDateTime ended = LocalDateTime.now();
+        String executedBy = "spartakus";
+        UUID sechubJobUUID = UUID.randomUUID();
+        ProjectScanLogSummary summary = new ProjectScanLogSummary(sechubJobUUID, executedBy, started, ended, status);
+        summaries.add(summary);
 
-		when(projectScanLogService.fetchSummaryLogsFor(eq(PROJECT1))).thenReturn(summaries);
-	}
+        when(projectScanLogService.fetchSummaryLogsFor(eq(PROJECT1))).thenReturn(summaries);
+    }
 
-	@Test
-	@UseCaseRestDoc(useCase=UseCaseAdminShowsScanLogsForProject.class)
-	public void restdoc_admin_downloads_scan_logs_for_project() throws Exception {
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdminShowsScanLogsForProject.class)
+    public void restdoc_admin_downloads_scan_logs_for_project() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminFetchesScanLogsForProject(PROJECT_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminShowsScanLogsForProject.class;
-        
-		/* execute + test @formatter:off */
+
+        /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				get(apiEndpoint,PROJECT1).
 				contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -119,12 +119,12 @@ public class AdminShowsScanLogsForProjectRestDocTest {
 				    ));
 
 		/* @formatter:on */
-	}
+    }
 
-	@Profile(Profiles.TEST)
-	@EnableAutoConfiguration
-	public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    @Profile(Profiles.TEST)
+    @EnableAutoConfiguration
+    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
 
-	}
+    }
 
 }

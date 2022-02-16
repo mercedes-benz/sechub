@@ -127,7 +127,7 @@ public class DomainMessageService {
      *                                       request
      */
     public DomainMessageSynchronousResult sendSynchron(DomainMessage request) {
-       
+
         assertRequestNotNull(request);
 
         int inspectionId = eventInspector.createInspectionId();

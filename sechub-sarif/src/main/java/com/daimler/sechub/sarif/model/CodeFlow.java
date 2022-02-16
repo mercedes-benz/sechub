@@ -9,11 +9,11 @@ import java.util.Objects;
  * Code flow object. See <a href=
  * "https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317740">SARIF
  * 2.1.0 specification entry</a>
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
-public class CodeFlow extends SarifObject{
+public class CodeFlow extends SarifObject {
 
     private Message message;
 

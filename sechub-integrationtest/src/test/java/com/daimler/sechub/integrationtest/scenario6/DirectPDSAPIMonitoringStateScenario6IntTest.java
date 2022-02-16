@@ -15,7 +15,7 @@ import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
  * without sechub). When these tests fail, those sechub tests which are relying
  * on a running PDS will also fail, because PDS API corrupt or PDS server not
  * alive
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -31,10 +31,10 @@ public class DirectPDSAPIMonitoringStateScenario6IntTest {
     public void pds_admin_can_fetch_execution_state() {
         /* check preconditions */
         waitForAtLeastOnePDSHeartbeat(); // wait for first heart beat, otherwise test can be flaky
-        
+
         /* execute */
         String json = asPDSUser(PDS_ADMIN).getMonitoringStatus();
-        
+
         /* test */
         /* @formatter:off */
         assertJSON(json).

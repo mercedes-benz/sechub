@@ -15,45 +15,44 @@ import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class JobFactoryTest {
 
-	private SecHubJobFactory factoryToTest;
-	private SecHubConfiguration configuration;
+    private SecHubJobFactory factoryToTest;
+    private SecHubConfiguration configuration;
 
-	@Rule
-	public ExpectedException expected = ExpectedExceptionFactory.none();
-	
-	@Before
-	public void before() {
-		factoryToTest = new SecHubJobFactory();
-		configuration = mock(SecHubConfiguration.class);
-		factoryToTest.userContextService=mock(UserContextService.class);
-	}
+    @Rule
+    public ExpectedException expected = ExpectedExceptionFactory.none();
 
-	@Test
-	public void new_jobs_have_creation_time_stamp() throws Exception {
-		/* prepare */
-		when(factoryToTest.userContextService.getUserId()).thenReturn("hugo");
+    @Before
+    public void before() {
+        factoryToTest = new SecHubJobFactory();
+        configuration = mock(SecHubConfiguration.class);
+        factoryToTest.userContextService = mock(UserContextService.class);
+    }
 
-		/* execute */
-		ScheduleSecHubJob job = factoryToTest.createJob(configuration);
+    @Test
+    public void new_jobs_have_creation_time_stamp() throws Exception {
+        /* prepare */
+        when(factoryToTest.userContextService.getUserId()).thenReturn("hugo");
 
-		/* test */
-		assertNotNull(job);
-		assertNotNull(job.getCreated());
+        /* execute */
+        ScheduleSecHubJob job = factoryToTest.createJob(configuration);
 
-	}
-	
-	@Test
-	public void factory_throws_illegal_state_exception_when_no_user() throws Exception {
-		/* prepare */
-		when(factoryToTest.userContextService.getUserId()).thenReturn(null);
+        /* test */
+        assertNotNull(job);
+        assertNotNull(job.getCreated());
 
-		/* test */
-		expected.expect(IllegalStateException.class);
-		
-		/* execute */
-		factoryToTest.createJob(configuration);
+    }
 
+    @Test
+    public void factory_throws_illegal_state_exception_when_no_user() throws Exception {
+        /* prepare */
+        when(factoryToTest.userContextService.getUserId()).thenReturn(null);
 
-	}
+        /* test */
+        expected.expect(IllegalStateException.class);
+
+        /* execute */
+        factoryToTest.createJob(configuration);
+
+    }
 
 }

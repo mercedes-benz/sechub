@@ -54,15 +54,17 @@ public class ShowProductExecutorTemplatesDialogActionFactory {
         ShowProductExecutorTemplatesDialogAction action = new ShowProductExecutorTemplatesDialogAction(context, identifier, version, templateDialogData);
         return action;
     }
-    
+
     private static void fetchKeysAndAddContent(TemplatesDialogData data, PDSKeyProvider<?>[] providers) {
-        for (PDSKeyProvider<?> provider: providers) {
+        for (PDSKeyProvider<?> provider : providers) {
             PDSKey key = provider.getKey();
             if (key.isGenerated()) {
-                /* generated keys are automatically sent and not necessary to be edited by users*/ 
+                /*
+                 * generated keys are automatically sent and not necessary to be edited by users
+                 */
                 continue;
             }
-            data.add(key.getId(), Type.KEY_VALUE, calculateNecessarity(key),key.getDescription(),null,key.getDefaultValue());
+            data.add(key.getId(), Type.KEY_VALUE, calculateNecessarity(key), key.getDescription(), null, key.getDefaultValue());
         }
     }
 

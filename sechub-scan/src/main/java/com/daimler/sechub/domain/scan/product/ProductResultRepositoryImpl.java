@@ -15,7 +15,7 @@ import javax.persistence.Query;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigInfo;
 
 public class ProductResultRepositoryImpl implements ProductResultRepositoryCustom {
-	/* @formatter:off */
+    /* @formatter:off */
 	public static final String JPQL_STRING_SELECT_BY_SECHUB_JOB_UUID_AND_PRODUCT_IDS =
 			"select r from "+CLASS_NAME+" r"+
 					" where r."+PROPERTY_SECHUB_JOB_UUID+" = :"+PROPERTY_SECHUB_JOB_UUID +
@@ -27,31 +27,31 @@ public class ProductResultRepositoryImpl implements ProductResultRepositoryCusto
 	                " and r."+PROPERTY_PRODUCT_CONFIG_UUID+" = :"+PROPERTY_PRODUCT_CONFIG_UUID;
 	/* @formatter:on */
 
-	@PersistenceContext
-	private EntityManager em;
+    @PersistenceContext
+    private EntityManager em;
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<ProductResult> findProductResults(UUID secHubJobUUID, ProductExecutorConfigInfo info){
-		if (secHubJobUUID == null) {
-			throw new IllegalArgumentException("secHubJobUUID may not be null!");
-		}
-		if (info == null) {
-		    throw new IllegalArgumentException("productExecutorConfiguration may not be null!");
-		}
-		UUID configUUID = info.getUUID();
-		if (configUUID == null) {
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<ProductResult> findProductResults(UUID secHubJobUUID, ProductExecutorConfigInfo info) {
+        if (secHubJobUUID == null) {
+            throw new IllegalArgumentException("secHubJobUUID may not be null!");
+        }
+        if (info == null) {
+            throw new IllegalArgumentException("productExecutorConfiguration may not be null!");
+        }
+        UUID configUUID = info.getUUID();
+        if (configUUID == null) {
             throw new IllegalArgumentException("configUUID may not be null!");
         }
-		
-		Query query = em.createQuery(JPQL_STRING_SELECT_BY_SECHUB_JOB_UUID_AND_PRODUCT_CONFIG_UUID);
-		query.setParameter(PROPERTY_SECHUB_JOB_UUID, secHubJobUUID);
+
+        Query query = em.createQuery(JPQL_STRING_SELECT_BY_SECHUB_JOB_UUID_AND_PRODUCT_CONFIG_UUID);
+        query.setParameter(PROPERTY_SECHUB_JOB_UUID, secHubJobUUID);
         query.setParameter(PROPERTY_PRODUCT_CONFIG_UUID, configUUID);
 
-		return query.getResultList();
-	}
-	
-	@SuppressWarnings("unchecked")
+        return query.getResultList();
+    }
+
+    @SuppressWarnings("unchecked")
     @Override
     public List<ProductResult> findAllProductResults(UUID secHubJobUUID, ProductIdentifier... allowedIdentifiers) {
         if (secHubJobUUID == null) {

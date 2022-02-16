@@ -3,7 +3,8 @@ package com.daimler.sechub.adapter.testclasses;
 
 import com.daimler.sechub.adapter.AbstractInfraScanAdapterConfigBuilder;
 
-public class TestInfraScanAdapterConfigBuilder extends AbstractInfraScanAdapterConfigBuilder<TestInfraScanAdapterConfigBuilder, TestInfraScanAdapterConfigInterface> {
+public class TestInfraScanAdapterConfigBuilder
+        extends AbstractInfraScanAdapterConfigBuilder<TestInfraScanAdapterConfigBuilder, TestInfraScanAdapterConfigInterface> {
 
     @Override
     protected TestInfraScanAdapterConfigInterface buildInitialConfig() {

@@ -17,39 +17,39 @@ import org.springframework.http.client.ClientHttpResponse;
 import com.daimler.sechub.integrationtest.api.UserContext;
 
 public class TestSecHubRestAPIClientHttpRequestInterceptor implements ClientHttpRequestInterceptor {
-	
 
-	private static final Logger LOG = LoggerFactory.getLogger(TestSecHubRestAPIClientHttpRequestInterceptor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TestSecHubRestAPIClientHttpRequestInterceptor.class);
 
-	private UserContext user;
+    private UserContext user;
 
-	public TestSecHubRestAPIClientHttpRequestInterceptor(UserContext user) {
-		this.user=user;
-	}
+    public TestSecHubRestAPIClientHttpRequestInterceptor(UserContext user) {
+        this.user = user;
+    }
 
-	@Override
-	public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
-			throws IOException {
-		/* we always create a new base64 token, because api token in test user data does change at runtime */
-		
-		HttpHeaders headers = request.getHeaders();
-		List<String> x = headers.get("Content-Type");
-		if (x==null || x.isEmpty()) {
+    @Override
+    public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
+        /*
+         * we always create a new base64 token, because api token in test user data does
+         * change at runtime
+         */
+
+        HttpHeaders headers = request.getHeaders();
+        List<String> x = headers.get("Content-Type");
+        if (x == null || x.isEmpty()) {
 //			headers.remove("Content-Type"); // strange, but sometimes there was a content-type (plain-text already added)
-			headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
-		}
-		headers.remove("Authorization");
+            headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+        }
+        headers.remove("Authorization");
 
-		
-		if (! user.isAnonymous()) {
-			String text = user.getUserId()+":"+user.getApiToken();
-			String base64Token=Base64.getEncoder().encodeToString(text.getBytes());
-			headers.add("Authorization", "Basic " + base64Token);
-			
-		}
-		LOG.info("...............REST call for user:"+user.getUserId()+"............................");
-		
-		return execution.execute(request, body);
-	}
+        if (!user.isAnonymous()) {
+            String text = user.getUserId() + ":" + user.getApiToken();
+            String base64Token = Base64.getEncoder().encodeToString(text.getBytes());
+            headers.add("Authorization", "Basic " + base64Token);
+
+        }
+        LOG.info("...............REST call for user:" + user.getUserId() + "............................");
+
+        return execution.execute(request, body);
+    }
 
 }

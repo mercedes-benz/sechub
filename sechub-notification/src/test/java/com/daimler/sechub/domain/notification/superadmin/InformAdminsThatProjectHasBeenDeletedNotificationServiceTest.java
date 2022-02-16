@@ -17,58 +17,56 @@ import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
 
 public class InformAdminsThatProjectHasBeenDeletedNotificationServiceTest {
 
-	private InformAdminsThatProjectHasBeenDeletedNotificationService serviceToTest;
-	private EmailService mockedEmailService;
-	private MailMessageFactory mockedMailMessageFactory;
-	private NotificationConfiguration mockedNotificationConfiguration;
+    private InformAdminsThatProjectHasBeenDeletedNotificationService serviceToTest;
+    private EmailService mockedEmailService;
+    private MailMessageFactory mockedMailMessageFactory;
+    private NotificationConfiguration mockedNotificationConfiguration;
 
+    @Before
+    public void before() throws Exception {
+        mockedEmailService = mock(EmailService.class);
+        mockedNotificationConfiguration = mock(NotificationConfiguration.class);
+        mockedMailMessageFactory = mock(MailMessageFactory.class);
 
-	@Before
-	public void before() throws Exception {
-		mockedEmailService = mock(EmailService.class);
-		mockedNotificationConfiguration = mock(NotificationConfiguration.class);
-		mockedMailMessageFactory = mock(MailMessageFactory.class);
+        serviceToTest = new InformAdminsThatProjectHasBeenDeletedNotificationService();
+        serviceToTest.emailService = mockedEmailService;
+        serviceToTest.factory = mockedMailMessageFactory;
+        serviceToTest.notificationConfiguration = mockedNotificationConfiguration;
+    }
 
-		serviceToTest = new InformAdminsThatProjectHasBeenDeletedNotificationService();
-		serviceToTest.emailService=mockedEmailService;
-		serviceToTest.factory=mockedMailMessageFactory;
-		serviceToTest.notificationConfiguration=mockedNotificationConfiguration;
-	}
+    @Test
+    public void sends_email_to_admins_containing_projectid_base_and_reason() throws Exception {
+        /* prepare */
+        when(mockedNotificationConfiguration.getEmailAdministrators()).thenReturn("adminMail");
 
+        SimpleMailMessage mockedMailMessage = mock(SimpleMailMessage.class);
+        when(mockedMailMessageFactory.createMessage(any())).thenReturn(mockedMailMessage);
 
-	@Test
-	public void sends_email_to_admins_containing_projectid_base_and_reason() throws Exception {
-		/* prepare */
-		when(mockedNotificationConfiguration.getEmailAdministrators()).thenReturn("adminMail");
+        // message to receive from event bus
+        ProjectMessage message = mock(ProjectMessage.class);
+        when(message.getProjectId()).thenReturn("projectId1");
 
-		SimpleMailMessage mockedMailMessage = mock(SimpleMailMessage.class);
-		when(mockedMailMessageFactory.createMessage(any())).thenReturn(mockedMailMessage);
+        when(message.getProjectOwnerEmailAddress()).thenReturn("owner1@example.org");
+        when(message.getProjectActionTriggeredBy()).thenReturn("reason1");
 
-		// message to receive from event bus
-		ProjectMessage message = mock(ProjectMessage.class);
-		when(message.getProjectId()).thenReturn("projectId1");
+        /* execute */
+        serviceToTest.notify(message, "base1");
 
-		when(message.getProjectOwnerEmailAddress()).thenReturn("owner1@example.org");
-		when(message.getProjectActionTriggeredBy()).thenReturn("reason1");
+        /* test */
+        // check mocked mail message was sent
+        ArgumentCaptor<SimpleMailMessage> mailMessageCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
+        verify(mockedEmailService).send(mailMessageCaptor.capture());
+        assertSame(mockedMailMessage, mailMessageCaptor.getValue());
+        verify(mockedMailMessage).setTo("adminMail");
 
-		/* execute */
-		serviceToTest.notify(message,"base1");
-
-		/* test */
-		// check mocked mail message was sent
-		ArgumentCaptor<SimpleMailMessage> mailMessageCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
-		verify(mockedEmailService).send(mailMessageCaptor.capture());
-		assertSame(mockedMailMessage, mailMessageCaptor.getValue());
-		verify(mockedMailMessage).setTo("adminMail");
-
-		// check content
-		ArgumentCaptor<String> stringMessageCaptor = ArgumentCaptor.forClass(String.class);
-		verify(mockedMailMessage).setText(stringMessageCaptor.capture());
-		String textInMessageBody = stringMessageCaptor.getValue();
-		assertTrue(textInMessageBody.contains("projectId1"));
-		assertTrue(textInMessageBody.contains("base1"));
-		assertTrue(textInMessageBody.contains("reason1"));
-		assertTrue(textInMessageBody.contains("deleted"));
-	}
+        // check content
+        ArgumentCaptor<String> stringMessageCaptor = ArgumentCaptor.forClass(String.class);
+        verify(mockedMailMessage).setText(stringMessageCaptor.capture());
+        String textInMessageBody = stringMessageCaptor.getValue();
+        assertTrue(textInMessageBody.contains("projectId1"));
+        assertTrue(textInMessageBody.contains("base1"));
+        assertTrue(textInMessageBody.contains("reason1"));
+        assertTrue(textInMessageBody.contains("deleted"));
+    }
 
 }

@@ -9,6 +9,7 @@ import java.lang.annotation.Target;
 
 /**
  * Endpoint which sends a synchronous answer
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -18,22 +19,25 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface IsSendingSyncMessageAnswer {
 
-	/**
-	 * Define the message for which is answered here
-	 * @return
-	 */
-	MessageID answeringTo();
-	
-	/**
-	 * Answer type
-	 * @return
-	 */
-	MessageID value();
+    /**
+     * Define the message for which is answered here
+     *
+     * @return
+     */
+    MessageID answeringTo();
 
-	/**
-	 * Name of branch - e.g. "success" or "failure". Used  in documentation
-	 * @return
-	 */
-	String branchName();
+    /**
+     * Answer type
+     *
+     * @return
+     */
+    MessageID value();
+
+    /**
+     * Name of branch - e.g. "success" or "failure". Used in documentation
+     *
+     * @return
+     */
+    String branchName();
 
 }

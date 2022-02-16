@@ -13,69 +13,69 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserContextService {
 
-	/**
-	 * @return user id of current logged in user or <code>null</code>
-	 */
-	public String getUserId() {
-		Authentication authentication = getAuthentication();
-		if (authentication==null) {
-			return null;
-		}
-		if (!(authentication instanceof AnonymousAuthenticationToken)) {
-			return authentication.getName();
-		}
-		return null;
-	}
+    /**
+     * @return user id of current logged in user or <code>null</code>
+     */
+    public String getUserId() {
+        Authentication authentication = getAuthentication();
+        if (authentication == null) {
+            return null;
+        }
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            return authentication.getName();
+        }
+        return null;
+    }
 
-	public boolean isSuperAdmin() {
-		return hasRole(RoleConstants.ROLE_SUPERADMIN);
-	}
+    public boolean isSuperAdmin() {
+        return hasRole(RoleConstants.ROLE_SUPERADMIN);
+    }
 
-	public String getAuthories(){
+    public String getAuthories() {
 
-		StringBuilder sb = new StringBuilder();
-		Authentication authentication = getAuthentication();
-		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-		for (GrantedAuthority auth : authorities) {
-			if (auth==null) {
-				continue;
-			}
-			sb.append(auth.getAuthority());
-			sb.append(" ");
-		}
-		return sb.toString().trim();
-	}
+        StringBuilder sb = new StringBuilder();
+        Authentication authentication = getAuthentication();
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        for (GrantedAuthority auth : authorities) {
+            if (auth == null) {
+                continue;
+            }
+            sb.append(auth.getAuthority());
+            sb.append(" ");
+        }
+        return sb.toString().trim();
+    }
 
-	private boolean hasRole(String role) {
-		if (role==null) {
-			return false;
-		}
-		Authentication authentication = getAuthentication();
-		if (authentication==null) {
-			return false;
-		}
-		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-		for (GrantedAuthority auth : authorities) {
-			if (auth==null) {
-				continue;
-			}
-			if (role.equals(auth.getAuthority())) {
-				return true;
-			}
-		}
-		return false;
-	}
+    private boolean hasRole(String role) {
+        if (role == null) {
+            return false;
+        }
+        Authentication authentication = getAuthentication();
+        if (authentication == null) {
+            return false;
+        }
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        for (GrantedAuthority auth : authorities) {
+            if (auth == null) {
+                continue;
+            }
+            if (role.equals(auth.getAuthority())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	private Authentication getAuthentication() {
-		SecurityContext context = getContext();
-		if (context==null) {
-			return null;
-		}
-		return getContext().getAuthentication();
-	}
+    private Authentication getAuthentication() {
+        SecurityContext context = getContext();
+        if (context == null) {
+            return null;
+        }
+        return getContext().getAuthentication();
+    }
 
-	private SecurityContext getContext() {
-		return SecurityContextHolder.getContext();
-	}
+    private SecurityContext getContext() {
+        return SecurityContextHolder.getContext();
+    }
 
 }

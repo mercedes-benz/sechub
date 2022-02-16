@@ -16,27 +16,25 @@ import com.daimler.sechub.sharedkernel.usecases.user.UseCaseUserClicksLinkToGetN
 @Service
 public class NewAPITokenAppliedUserNotificationService {
 
-	@Autowired
-	private MailMessageFactory factory;
+    @Autowired
+    private MailMessageFactory factory;
 
-	@Autowired
-	private EmailService emailService;
+    @Autowired
+    private EmailService emailService;
 
-	@UseCaseUserClicksLinkToGetNewAPIToken(@Step(number = 4, next = {
-			Step.NO_NEXT_STEP }, name = "Inform user about api token change done"))
-	public void notify(UserMessage userMessage) {
-		StringBuilder emailContent = new StringBuilder();
-		emailContent.append("You have requested a new api token.\n");
-		emailContent.append(MessageFormat.format("The new api token has been applied to your user: {0}\n\n",
-				userMessage.getUserId()));
-		emailContent.append("If you have not triggered an api token change please inform administrators.\n");
+    @UseCaseUserClicksLinkToGetNewAPIToken(@Step(number = 4, next = { Step.NO_NEXT_STEP }, name = "Inform user about api token change done"))
+    public void notify(UserMessage userMessage) {
+        StringBuilder emailContent = new StringBuilder();
+        emailContent.append("You have requested a new api token.\n");
+        emailContent.append(MessageFormat.format("The new api token has been applied to your user: {0}\n\n", userMessage.getUserId()));
+        emailContent.append("If you have not triggered an api token change please inform administrators.\n");
 
-		SimpleMailMessage message1 = factory.createMessage("SecHub API token changed");
-		message1.setTo(userMessage.getEmailAdress());
-		message1.setText(emailContent.toString());
+        SimpleMailMessage message1 = factory.createMessage("SecHub API token changed");
+        message1.setTo(userMessage.getEmailAdress());
+        message1.setText(emailContent.toString());
 
-		emailService.send(message1);
+        emailService.send(message1);
 
-	}
+    }
 
 }

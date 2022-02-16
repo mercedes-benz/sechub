@@ -14,31 +14,29 @@ import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminDeletesUs
 @Service
 public class UserDeletedNotificationService {
 
+    @Autowired
+    private MailMessageFactory factory;
 
-	@Autowired
-	private MailMessageFactory factory;
+    @Autowired
+    private EmailService emailService;
 
+    @UseCaseAdminDeletesUser(@Step(number = 5, next = { Step.NO_NEXT_STEP }, name = "Inform user that the account has been deleted by administrator"))
 
-	@Autowired
-	private EmailService emailService;
+    public void notify(UserMessage userMessage) {
+        StringBuilder emailContent = new StringBuilder();
+        emailContent.append("Your account '");
+        emailContent.append(userMessage.getUserId());
+        emailContent.append("'");
+        // emailContent.append(" for environment " + baseUrl); // not trivial; maybe add
+        // this later
+        emailContent.append("\nhas been removed by an administrator.\n");
 
-	@UseCaseAdminDeletesUser(@Step(number = 5, next = {
-			Step.NO_NEXT_STEP }, name = "Inform user that the account has been deleted by administrator"))
-	
-	public void notify(UserMessage userMessage) {
-		StringBuilder emailContent = new StringBuilder();
-		emailContent.append("Your account '");
-		emailContent.append(userMessage.getUserId());
-		emailContent.append("'");
-		//emailContent.append(" for environment " + baseUrl);	// not trivial; maybe add this later
-		emailContent.append("\nhas been removed by an administrator.\n");
+        SimpleMailMessage message = factory.createMessage("SecHub account removed");
+        message.setTo(userMessage.getEmailAdress());
+        message.setText(emailContent.toString());
 
-		SimpleMailMessage message = factory.createMessage("SecHub account removed");
-		message.setTo(userMessage.getEmailAdress());
-		message.setText(emailContent.toString());
+        emailService.send(message);
 
-		emailService.send(message);
-
-	}
+    }
 
 }

@@ -11,20 +11,20 @@ import com.daimler.sechub.integrationtest.api.TestAPI;
 import com.daimler.sechub.integrationtest.scenario3.Scenario3;
 
 public class TriggerNewWebScanJobScenario3User1Action extends IntegrationTestAction {
-	private static final long serialVersionUID = 1L;
-	private IntegrationTestMockMode mode;
+    private static final long serialVersionUID = 1L;
+    private IntegrationTestMockMode mode;
 
-	public TriggerNewWebScanJobScenario3User1Action(UIContext context, IntegrationTestMockMode mode) {
-		super("Trigger new web scan job (Scenario3) -"+mode, context);
-		this.mode=mode;
-	}
+    public TriggerNewWebScanJobScenario3User1Action(UIContext context, IntegrationTestMockMode mode) {
+        super("Trigger new web scan job (Scenario3) -" + mode, context);
+        this.mode = mode;
+    }
 
-	@Override
-	protected void executeImplAfterRestHelperSwitched(ActionEvent e) {
-		UUID uuid = TestAPI.as(Scenario3.USER_1).createWebScan(Scenario3.PROJECT_1,mode);
-		outputAsTextOnSuccess("Job created:"+uuid);
-		TestAPI.as(Scenario3.USER_1).approveJob(Scenario3.PROJECT_1, uuid);
-		outputAsTextOnSuccess("Job approved:"+uuid);
-	}
+    @Override
+    protected void executeImplAfterRestHelperSwitched(ActionEvent e) {
+        UUID uuid = TestAPI.as(Scenario3.USER_1).createWebScan(Scenario3.PROJECT_1, mode);
+        outputAsTextOnSuccess("Job created:" + uuid);
+        TestAPI.as(Scenario3.USER_1).approveJob(Scenario3.PROJECT_1, uuid);
+        outputAsTextOnSuccess("Job approved:" + uuid);
+    }
 
 }

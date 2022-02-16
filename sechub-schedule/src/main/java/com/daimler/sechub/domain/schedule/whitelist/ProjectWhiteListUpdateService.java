@@ -16,29 +16,27 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @Service
 public class ProjectWhiteListUpdateService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ProjectWhiteListUpdateService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectWhiteListUpdateService.class);
 
+    @Autowired
+    ProjectWhitelistEntryRepository repository;
 
-	@Autowired
-	ProjectWhitelistEntryRepository repository;
+    @Autowired
+    UserInputAssertion assertion;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Transactional
+    public void update(String projectId, Set<URI> whitelist) {
+        assertion.isValidProjectId(projectId);
 
-	@Transactional
-	public void update(String projectId, Set<URI> whitelist) {
-		assertion.isValidProjectId(projectId);
+        LOG.info("remove old whitelist entries for project {}", projectId);
+        /* we just remove all entries and recreate */
+        repository.deleteAllEntriesForProject(projectId);
 
-		LOG.info("remove old whitelist entries for project {}",projectId);
-		/* we just remove all entries and recreate */
-		repository.deleteAllEntriesForProject(projectId);
+        for (URI uri : whitelist) {
+            repository.save(new ProjectWhitelistEntry(projectId, uri));
+        }
+        LOG.info("updated project '{}' whitelist entries to: {}", projectId, whitelist);
 
-		for (URI uri: whitelist) {
-			repository.save(new ProjectWhitelistEntry(projectId, uri));
-		}
-		LOG.info("updated project '{}' whitelist entries to: {}",projectId,whitelist);
-
-	}
-
+    }
 
 }

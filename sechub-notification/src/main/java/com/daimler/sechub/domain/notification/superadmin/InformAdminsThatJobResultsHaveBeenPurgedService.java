@@ -19,38 +19,38 @@ import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdminRestartsJobHard;
 @Service
 public class InformAdminsThatJobResultsHaveBeenPurgedService {
 
-	@Autowired
-	MailMessageFactory factory;
+    @Autowired
+    MailMessageFactory factory;
 
-	@Autowired
-	NotificationConfiguration notificationConfiguration;
+    @Autowired
+    NotificationConfiguration notificationConfiguration;
 
-	@Autowired
-	EmailService emailService;
-	
-	@UseCaseAdminRestartsJobHard(@Step(number = 5, name = "Inform sechub admins when job results have been purged"))
-	@UseCaseAdminRestartsJob(@Step(number = 5, name = "Inform sechub admins when job results have been purged"))
-	public void notify(UUID sechubJobUUID, String baseUrl) {
-		requireNonNull(sechubJobUUID);
+    @Autowired
+    EmailService emailService;
 
-		SimpleMailMessage message = factory.createMessage("Results of SecHub Job " + sechubJobUUID + " have been purged");
+    @UseCaseAdminRestartsJobHard(@Step(number = 5, name = "Inform sechub admins when job results have been purged"))
+    @UseCaseAdminRestartsJob(@Step(number = 5, name = "Inform sechub admins when job results have been purged"))
+    public void notify(UUID sechubJobUUID, String baseUrl) {
+        requireNonNull(sechubJobUUID);
 
-		message.setTo(notificationConfiguration.getEmailAdministrators());
-		message.setText(createEmailContent(sechubJobUUID, baseUrl));
+        SimpleMailMessage message = factory.createMessage("Results of SecHub Job " + sechubJobUUID + " have been purged");
 
-		emailService.send(message);
+        message.setTo(notificationConfiguration.getEmailAdministrators());
+        message.setText(createEmailContent(sechubJobUUID, baseUrl));
 
-	}
+        emailService.send(message);
 
-	private String createEmailContent(UUID sechubJobUUID, String baseUrl) {
-		StringBuilder emailContent = new StringBuilder();
-		emailContent.append("Results of SecHub Job ");
-		emailContent.append(sechubJobUUID);
-		emailContent.append(" at ").append(baseUrl);
-		emailContent.append(" have been purged.\n\n");
-		
-		String text = emailContent.toString();
-		return text;
-	}
+    }
+
+    private String createEmailContent(UUID sechubJobUUID, String baseUrl) {
+        StringBuilder emailContent = new StringBuilder();
+        emailContent.append("Results of SecHub Job ");
+        emailContent.append(sechubJobUUID);
+        emailContent.append(" at ").append(baseUrl);
+        emailContent.append(" have been purged.\n\n");
+
+        String text = emailContent.toString();
+        return text;
+    }
 
 }

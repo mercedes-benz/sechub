@@ -54,7 +54,7 @@ public class ProjectAssignUserService {
     @Autowired
     ProjectTransactionService transactionService;
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@UseCaseAdminAssignsUserToProject(
 			@Step(
 					number = 2,

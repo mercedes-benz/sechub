@@ -6,6 +6,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 
@@ -30,12 +31,12 @@ import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.project.ProjectAccessLevel;
-import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorChangesProjectAccessLevel;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminChangesProjectDescription;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminCreatesProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminDeleteProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminListsAllProjects;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminShowsProjectDetails;
+import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorChangesProjectAccessLevel;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminAssignsUserToProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminChangesProjectOwner;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUnassignsUserFromProject;
@@ -81,11 +82,11 @@ public class ProjectAdministrationRestController {
 
     @Autowired
     CreateProjectInputValidator validator;
-    
+
     @Autowired
     ListProjectsService listProjectsService;
-    
-	/* @formatter:off */
+
+    /* @formatter:off */
 	@UseCaseAdminCreatesProject(
 			@Step(
 				number = 1,
@@ -102,7 +103,7 @@ public class ProjectAdministrationRestController {
 			ProjectWhiteList whiteList = whitelistOption.get();
 			whiteListedURIs.addAll(whiteList.getUris());
 		}
-		
+
 		ProjectMetaData metaData = new ProjectMetaData();
 		if (input.getMetaData().isPresent()) {
 			metaData = input.getMetaData().get();
@@ -133,9 +134,9 @@ public class ProjectAdministrationRestController {
 	@RequestMapping(path = AdministrationAPIConstants.API_LIST_ALL_PROJECTS, method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public List<String> listProjects() {
 		/* @formatter:on */
-		return listProjectsService.listProjects();
-	}
-	
+        return listProjectsService.listProjects();
+    }
+
     /* @formatter:off */
 	@UseCaseAdminChangesProjectOwner(@Step(number = 1, name = "Rest call", description = "Administrator does call rest API to set new project owner", needsRestDoc=true))
     @RequestMapping(path = AdministrationAPIConstants.API_ASSIGN_OWNER_TO_PROJECT, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})

@@ -13,13 +13,13 @@ import com.daimler.sechub.developertools.admin.ui.action.AbstractUIAction;
 import com.daimler.sechub.developertools.admin.ui.cache.InputCacheIdentifier;
 
 public class CancelJobAction extends AbstractUIAction {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private static final Logger LOG = LoggerFactory.getLogger(CancelJobAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CancelJobAction.class);
 
-	public CancelJobAction(UIContext context) {
-		super("Cancel job", context);
-	}
+    public CancelJobAction(UIContext context) {
+        super("Cancel job", context);
+    }
 
     @Override
     public void execute(ActionEvent e) {

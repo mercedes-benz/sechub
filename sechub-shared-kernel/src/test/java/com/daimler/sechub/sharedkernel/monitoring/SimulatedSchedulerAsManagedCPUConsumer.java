@@ -24,7 +24,7 @@ public class SimulatedSchedulerAsManagedCPUConsumer {
             if (!monitor.isCPULoadAverageMaxReached()) {
                 simulateSchedulerBatchJobRunning(nr++, maxPrimeNumberChecks);
             } else {
-                LOG.info("!!!! cpu overload "+ monitor.createCPUDescription());
+                LOG.info("!!!! cpu overload " + monitor.createCPUDescription());
             }
             simulateTimeBeforeNextSchedulerTrigger(millisBeforeNextScheduler);
         }
@@ -32,7 +32,7 @@ public class SimulatedSchedulerAsManagedCPUConsumer {
 
     private void simulateTimeBeforeNextSchedulerTrigger(int millisBeforeNextScheduler) {
         try {
-            LOG.info("Wait for next scheuduling, will wait:{} millis",millisBeforeNextScheduler);
+            LOG.info("Wait for next scheuduling, will wait:{} millis", millisBeforeNextScheduler);
             Thread.sleep(millisBeforeNextScheduler);
             LOG.info("Wait done for next scheuduling");
         } catch (InterruptedException e) {
@@ -46,7 +46,7 @@ public class SimulatedSchedulerAsManagedCPUConsumer {
             simulateCPUload(maxPrimeNumberChecks);
         }, "cpu-harvesting-by-prime-numbers-" + (nr));
         t.start();
-        LOG.info("> thread {} started",t.getName());
+        LOG.info("> thread {} started", t.getName());
     }
 
     /*

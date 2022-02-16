@@ -8,27 +8,27 @@ import com.daimler.sechub.domain.scan.project.ScanProjectMockDataConfiguration;
 
 public class ExampleJSONGenerator implements Generator {
 
-	public String generateScanProjectMockDataConfiguration1() {
-		ScanProjectMockDataConfiguration config = new ScanProjectMockDataConfiguration();
-		
-		config.setCodeScan(new ScanMockData(TrafficLight.RED));
-		config.setWebScan(new ScanMockData(TrafficLight.YELLOW));
-		config.setInfraScan(new ScanMockData(TrafficLight.GREEN));
-		
-		return prettyPrint(config);
+    public String generateScanProjectMockDataConfiguration1() {
+        ScanProjectMockDataConfiguration config = new ScanProjectMockDataConfiguration();
 
-	}
-	
-	private String prettyPrint(Object obj) {
-		return JSONConverter.get().toJSON(obj,true);
-	}
+        config.setCodeScan(new ScanMockData(TrafficLight.RED));
+        config.setWebScan(new ScanMockData(TrafficLight.YELLOW));
+        config.setInfraScan(new ScanMockData(TrafficLight.GREEN));
 
-	public String generateScanProjectMockDataConfiguration2() {
-		ScanProjectMockDataConfiguration config = new ScanProjectMockDataConfiguration();
-		
-		config.setCodeScan(new ScanMockData(TrafficLight.YELLOW));
-		
-		return prettyPrint(config);
+        return prettyPrint(config);
 
-	}
+    }
+
+    private String prettyPrint(Object obj) {
+        return JSONConverter.get().toJSON(obj, true);
+    }
+
+    public String generateScanProjectMockDataConfiguration2() {
+        ScanProjectMockDataConfiguration config = new ScanProjectMockDataConfiguration();
+
+        config.setCodeScan(new ScanMockData(TrafficLight.YELLOW));
+
+        return prettyPrint(config);
+
+    }
 }

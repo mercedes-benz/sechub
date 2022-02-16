@@ -26,7 +26,7 @@ class CPUMonitor {
      * {@link SystemMonitorService#getCPULoadAverage()} but we measure average per
      * CPU/processor and also in a cached way, to reduce additional CPU usage by
      * measuring time.
-     * 
+     *
      * @return CPU load average will return positive value when available
      *         ((0.0->1.0-...) but negative (e.g.-1) if not available
      */

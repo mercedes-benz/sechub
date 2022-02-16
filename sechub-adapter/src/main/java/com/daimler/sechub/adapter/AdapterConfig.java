@@ -3,49 +3,51 @@ package com.daimler.sechub.adapter;
 
 import java.util.Map;
 
-public interface AdapterConfig extends TrustAllConfig, TraceIdProvider{
-    
-    
-	int getTimeOutInMilliseconds();
+public interface AdapterConfig extends TrustAllConfig, TraceIdProvider {
 
-	/**
-	 *
-	 * @return time to wait , usable for {@link WaitForStateSupport}. Normally this describes time to wait for next operation
-	 */
-	int getTimeToWaitForNextCheckOperationInMilliseconds();
+    int getTimeOutInMilliseconds();
 
-	/**
-	 *
-	 * @return base url as string, never <code>null</code>
-	 */
-	String getProductBaseURL();
+    /**
+     *
+     * @return time to wait , usable for {@link WaitForStateSupport}. Normally this
+     *         describes time to wait for next operation
+     */
+    int getTimeToWaitForNextCheckOperationInMilliseconds();
 
-	/**
-	 *
-	 * @return a base 64 encoded token containing "USERID:APITOKEN" inside
-	 */
-	String getCredentialsBase64Encoded();
+    /**
+     *
+     * @return base url as string, never <code>null</code>
+     */
+    String getProductBaseURL();
 
-	String getUser();
+    /**
+     *
+     * @return a base 64 encoded token containing "USERID:APITOKEN" inside
+     */
+    String getCredentialsBase64Encoded();
 
-	String getPolicyId();
+    String getUser();
 
-	String getPasswordOrAPIToken();
+    String getPolicyId();
 
-	/**
-	 * Returns a map for options. Can be used to provide special behaviours which are not default. E.g. wire mock extensions etc.
-	 * @return map with options
-	 */
-	public Map<AdapterOptionKey, String> getOptions();
+    String getPasswordOrAPIToken();
 
-	/**
-	 * @return the project id or <code>null</code> if none set
-	 */
-	String getProjectId();
-	
+    /**
+     * Returns a map for options. Can be used to provide special behaviours which
+     * are not default. E.g. wire mock extensions etc.
+     *
+     * @return map with options
+     */
+    public Map<AdapterOptionKey, String> getOptions();
+
+    /**
+     * @return the project id or <code>null</code> if none set
+     */
+    String getProjectId();
+
     /**
      * Returns a target string.
-     * 
+     *
      * @return target string or <code>null</code> if none defined
      */
     String getTargetAsString();

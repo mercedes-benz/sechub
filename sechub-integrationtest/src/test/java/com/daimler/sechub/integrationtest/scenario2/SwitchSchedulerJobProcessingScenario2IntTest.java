@@ -17,25 +17,27 @@ import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 
 public class SwitchSchedulerJobProcessingScenario2IntTest {
 
-	@Rule
-	public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario2.class);
+    @Rule
+    public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario2.class);
 
-	@Rule
-	public Timeout timeOut = Timeout.seconds(30);
+    @Rule
+    public Timeout timeOut = Timeout.seconds(30);
 
-	/* +-----------------------------------------------------------------------+ */
-	/* +............................ Start scan job ...........................+ */
-	/* +-----------------------------------------------------------------------+ */
+    /* +-----------------------------------------------------------------------+ */
+    /* +............................ Start scan job ...........................+ */
+    /* +-----------------------------------------------------------------------+ */
 
-	@After
-	public void enableSchedulingAfterTest() {
-		/* ensure scheduler job processing is enabled again after every of these tests*/
-		as(SUPER_ADMIN).enableSchedulerJobProcessing();
-	}
+    @After
+    public void enableSchedulingAfterTest() {
+        /*
+         * ensure scheduler job processing is enabled again after every of these tests
+         */
+        as(SUPER_ADMIN).enableSchedulerJobProcessing();
+    }
 
-	@Test
-	public void when_scheduler_job_processing_is_disabled_a_job_can_be_posted_but_is_only_executed_after_enabled_again() {
-		/* @formatter:off */
+    @Test
+    public void when_scheduler_job_processing_is_disabled_a_job_can_be_posted_but_is_only_executed_after_enabled_again() {
+        /* @formatter:off */
 
 		/* prepare */
 		as(SUPER_ADMIN).
@@ -69,6 +71,6 @@ public class SwitchSchedulerJobProcessingScenario2IntTest {
 
 		/* @formatter:on */
 
-	}
+    }
 
 }

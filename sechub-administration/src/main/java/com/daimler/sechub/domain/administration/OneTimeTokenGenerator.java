@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class OneTimeTokenGenerator {
 
-	public String generateNewOneTimeToken() {
-		/* UUID uses SecureRandom...*/
-		String uuidAsString = UUID.randomUUID().toString();
-		return Base64.getEncoder().encodeToString(uuidAsString.getBytes());
-	}
+    public String generateNewOneTimeToken() {
+        /* UUID uses SecureRandom... */
+        String uuidAsString = UUID.randomUUID().toString();
+        return Base64.getEncoder().encodeToString(uuidAsString.getBytes());
+    }
 
 }

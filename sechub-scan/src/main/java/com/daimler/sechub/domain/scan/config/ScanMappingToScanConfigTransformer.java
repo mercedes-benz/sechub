@@ -11,25 +11,24 @@ import com.daimler.sechub.sharedkernel.mapping.MappingData;
 public class ScanMappingToScanConfigTransformer {
 
     MappingDataToNamePatternToIdEntryConverter converter;
-    
-    public ScanMappingToScanConfigTransformer(){
+
+    public ScanMappingToScanConfigTransformer() {
         converter = new MappingDataToNamePatternToIdEntryConverter();
     }
-    
+
     public ScanConfig transform(List<ScanMapping> mappings) {
         ScanConfig config = new ScanConfig();
-        
-        if (mappings==null || mappings.size()==0) {
+
+        if (mappings == null || mappings.size() == 0) {
             return config;
         }
-        
-        for (ScanMapping mapping: mappings) {
+
+        for (ScanMapping mapping : mappings) {
             MappingData data = MappingData.fromString(mapping.getData());
             config.getNamePatternMappings().put(mapping.getId(), converter.convert(data));
         }
-        
+
         return config;
     }
 
-   
 }

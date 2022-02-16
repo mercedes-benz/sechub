@@ -6,19 +6,19 @@ import java.util.List;
 import java.util.Map;
 
 public class JSONTestUtil {
-    
+
     /**
      * Creates a JSON containing also null values (JSONStringer does not support
      * this).
-     * 
+     *
      * @param map
      * @return JSON string
      */
     public static String toJSONContainingNullValues(List<Map<String, Object>> list) {
         StringBuilder sb = new StringBuilder();
-        
+
         sb.append("[");
-        for (Iterator<Map<String, Object>> it = list.iterator();it.hasNext();) {
+        for (Iterator<Map<String, Object>> it = list.iterator(); it.hasNext();) {
             sb.append("\n");
             Map<String, Object> map = it.next();
             sb.append(toJSONContainingNullValues(map));
@@ -29,22 +29,22 @@ public class JSONTestUtil {
         sb.append("]\n");
         return sb.toString();
     }
-    
+
     /**
      * Creates a JSON containing also null values (JSONStringer does not support
      * this).
-     * 
+     *
      * @param map
      * @return JSON string
      */
     public static String toJSONContainingAnything(List<Object> list) {
         StringBuilder sb = new StringBuilder();
-        
+
         sb.append("[");
-        for (Iterator<Object> it = list.iterator();it.hasNext();) {
+        for (Iterator<Object> it = list.iterator(); it.hasNext();) {
             sb.append("\n");
-            Object value= it.next();
-            
+            Object value = it.next();
+
             appendObject(sb, value);
             if (it.hasNext()) {
                 sb.append(",\n");
@@ -53,10 +53,11 @@ public class JSONTestUtil {
         sb.append("]\n");
         return sb.toString();
     }
+
     /**
      * Creates a JSON containing also null values (JSONStringer does not support
      * this).
-     * 
+     *
      * @param map
      * @return JSON string
      */
@@ -105,16 +106,16 @@ public class JSONTestUtil {
         if (value instanceof DirectJSonable) {
             DirectJSonable directJsonAble = (DirectJSonable) value;
             sb.append(directJsonAble.toJSON());
-        }else {
+        } else {
             sb.append("\"");
             sb.append(value);
             sb.append("\"");
         }
     }
-    
-    public interface DirectJSonable{
-        
+
+    public interface DirectJSonable {
+
         public String toJSON();
-        
+
     }
 }

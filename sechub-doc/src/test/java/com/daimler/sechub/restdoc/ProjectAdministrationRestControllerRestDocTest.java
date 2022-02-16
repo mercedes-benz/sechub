@@ -44,9 +44,9 @@ import com.daimler.sechub.domain.administration.project.CreateProjectInputValida
 import com.daimler.sechub.domain.administration.project.ListProjectsService;
 import com.daimler.sechub.domain.administration.project.Project;
 import com.daimler.sechub.domain.administration.project.ProjectAdministrationRestController;
-import com.daimler.sechub.domain.administration.project.ProjectChangeOwnerService;
 import com.daimler.sechub.domain.administration.project.ProjectAssignUserService;
 import com.daimler.sechub.domain.administration.project.ProjectChangeAccessLevelService;
+import com.daimler.sechub.domain.administration.project.ProjectChangeOwnerService;
 import com.daimler.sechub.domain.administration.project.ProjectCreationService;
 import com.daimler.sechub.domain.administration.project.ProjectDeleteService;
 import com.daimler.sechub.domain.administration.project.ProjectDetailChangeService;
@@ -80,7 +80,8 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(ProjectAdministrationRestController.class)
-@ContextConfiguration(classes = { ProjectAdministrationRestController.class, ProjectAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class , SecHubWebMvcConfigurer.class})
+@ContextConfiguration(classes = { ProjectAdministrationRestController.class, ProjectAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class,
+        SecHubWebMvcConfigurer.class })
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
@@ -120,10 +121,10 @@ public class ProjectAdministrationRestControllerRestDocTest {
 
     @MockBean
     CreateProjectInputValidator createProjectInputvalidator;
-    
+
     @MockBean
     ListProjectsService listProjectsService;
-    
+
     @MockBean
     ProjectChangeAccessLevelService projectChangeAccessLevelService;
 
@@ -186,7 +187,6 @@ public class ProjectAdministrationRestControllerRestDocTest {
         ids.add("project2");
 
         when(listProjectsService.listProjects()).thenReturn(ids);
-
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
@@ -445,7 +445,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminChangesProjectDescriptionUrl(PROJECT_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminChangesProjectDescription.class;
-        
+
         Project project = mock(Project.class);
         when(project.getId()).thenReturn("projectId1");
         when(project.getAccessLevel()).thenReturn(ProjectAccessLevel.FULL);

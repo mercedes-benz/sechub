@@ -10,17 +10,18 @@ import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseDefinition;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseGroup;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
+
 /* @formatter:off */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_CHANGES_PROJECT_ACCESS_LEVEL,
 		group=UseCaseGroup.PROJECT_ADMINISTRATION,
-		title="Admin changes project access level", 
+		title="Admin changes project access level",
 		apiName = "adminChangesProjectAccessLevel",
 		description="admin/changeProjectAccessLevel.adoc")
 public @interface UseCaseAdministratorChangesProjectAccessLevel {
-	
+
 	Step value();
 }
 /* @formatter:on */

@@ -12,7 +12,7 @@ import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 
 /**
  * Not a service but simple POJO - because stateful
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

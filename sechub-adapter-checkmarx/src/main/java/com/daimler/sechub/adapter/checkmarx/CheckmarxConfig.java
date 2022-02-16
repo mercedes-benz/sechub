@@ -68,7 +68,7 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
 
         /**
          * When we create a new project this is the team ID to use
-         * 
+         *
          * @param teamId
          * @return
          */
@@ -89,7 +89,7 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
 
         /**
          * When we create a new project this is the team ID to use
-         * 
+         *
          * @param teamId
          * @return
          */

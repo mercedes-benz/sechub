@@ -19,7 +19,7 @@ import org.mockito.Mockito;
 /**
  * A test utility class to test POJOs (plain old java objects) in a convenient
  * way - e.g. automated setter and getter testing
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -55,7 +55,7 @@ public class PojoTester {
     /**
      * Every field having a getter and a setter will be automatically tested, that
      * the written value (setter) will be returned on read (getter)
-     * 
+     *
      * @param objectToTest
      */
     public static void testSetterAndGetter(Object objectToTest) {
@@ -70,10 +70,8 @@ public class PojoTester {
 
         } catch (Exception e) {
             e.printStackTrace();
-            fail("Bean introspection failed\n"
-                    + "- this is an internal error in framework\n"
-                    + "- see output for details\n"
-                    + "- message was:\n" + e.getMessage());
+            fail("Bean introspection failed\n" + "- this is an internal error in framework\n" + "- see output for details\n" + "- message was:\n"
+                    + e.getMessage());
         }
     }
 
@@ -95,9 +93,8 @@ public class PojoTester {
         try {
             writeMethod.invoke(objectToTest, mockedArgument);
         } catch (Exception e) {
-            throw new IllegalStateException(
-                    "Was not able to set mockedArgument:" + describe(mockedArgument) + 
-                    "\ninto:" + describe(objectToTest) + "\nby writeMethod:" + writeMethod+"\nreason was:\n"+e.getMessage());
+            throw new IllegalStateException("Was not able to set mockedArgument:" + describe(mockedArgument) + "\ninto:" + describe(objectToTest)
+                    + "\nby writeMethod:" + writeMethod + "\nreason was:\n" + e.getMessage());
         }
         /* read again */
         Object result = readmethod.invoke(objectToTest);
@@ -111,12 +108,12 @@ public class PojoTester {
     }
 
     private static String describe(Object object) {
-        if (object==null) {
+        if (object == null) {
             return "null:null";
         }
-        return object.getClass().getName()+":\""+object.toString()+"\"";
+        return object.getClass().getName() + ":\"" + object.toString() + "\"";
     }
-    
+
     private static Object createMockArgumentForProperty(PropertyDescriptor descriptor, Method readmethod) throws ClassNotFoundException {
         /* property has getter and setter, so inspect type... */
         Class<?> propertyType = descriptor.getPropertyType();
@@ -163,7 +160,7 @@ public class PojoTester {
 
     /**
      * A pojo changer is able to change a given POJO (plain java object)
-     * 
+     *
      * @author Albert Tregnaghi
      *
      * @param <T>
@@ -177,11 +174,11 @@ public class PojoTester {
      * writing tests and you need a fluent API but the POJO does not provide this.
      * Look at the next example or look into call hierarchy for more details.<br>
      * Example:
-     * 
+     *
      * <pre>
-     *    testBothAreNOTEqual(createExample(), change(createExample(), (codeFlow) -> codeFlow.setMessage(new Message("other"))));
+     * testBothAreNOTEqual(createExample(), change(createExample(), (codeFlow) -> codeFlow.setMessage(new Message("other"))));
      * </pre>
-     * 
+     *
      * @param <T>
      * @param pojo
      * @param changer

@@ -31,12 +31,12 @@ public abstract class AbstractCreatePDSExamplePropertiesAction extends AbstractP
 
     protected abstract void handleExamples(CreatePDSData data, PDSAdministration pds);
 
-    public class CreatePDSData{
+    public class CreatePDSData {
         public String productId;
         public String jobParametersAsString;
         public TestPDSServerConfgiuration serverConfig;
     }
-    
+
     protected CreatePDSData selectProductIdentifierAndCreateExampleProperties(PDSAdministration pds) {
         TestPDSServerConfgiuration config = pds.fetchServerConfiguration();
 
@@ -64,8 +64,8 @@ public abstract class AbstractCreatePDSExamplePropertiesAction extends AbstractP
             return null;
         }
         CreatePDSData data = new CreatePDSData();
-        data.jobParametersAsString =pds.createExampleProperitesAsString(config, selectedId);
-        data.productId=selectedId;
+        data.jobParametersAsString = pds.createExampleProperitesAsString(config, selectedId);
+        data.productId = selectedId;
         data.serverConfig = config;
         return data;
     }

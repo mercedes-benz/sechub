@@ -23,7 +23,7 @@ public class MarkPDSJobReadyAction extends AbstractPDSAction {
             return;
         }
         String result = pds.markJobAsReadyToStart(UUID.fromString(pdsJobUUID.get()));
-        
+
         outputAsTextOnSuccess(result);
 
     }

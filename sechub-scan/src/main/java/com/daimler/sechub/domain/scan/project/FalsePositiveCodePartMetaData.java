@@ -57,6 +57,5 @@ public class FalsePositiveCodePartMetaData {
         FalsePositiveCodePartMetaData other = (FalsePositiveCodePartMetaData) obj;
         return Objects.equals(location, other.location) && Objects.equals(relevantPart, other.relevantPart) && Objects.equals(sourceCode, other.sourceCode);
     }
-    
-    
+
 }

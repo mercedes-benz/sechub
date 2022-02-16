@@ -28,73 +28,72 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @Service
 public class JobCancelService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(JobCancelService.class);
 
-private static final Logger LOG = LoggerFactory.getLogger(JobCancelService.class);
+    @Autowired
+    AuditLogService auditLogService;
 
-	@Autowired
-	AuditLogService auditLogService;
+    @Autowired
+    UserInputAssertion assertion;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Autowired
+    DomainMessageService eventBusService;
 
-	@Autowired
-	DomainMessageService eventBusService;
+    @Autowired
+    JobInformationRepository repository;
 
-	@Autowired
-	JobInformationRepository repository;
+    @Autowired
+    UserRepository userRepository;
 
-	@Autowired
-	UserRepository userRepository;
+    @Validated
+    @UseCaseAdminCancelsJob(@Step(number = 2, name = "Cancel job", description = "Will trigger event that job cancel requested"))
+    public void cancelJob(UUID jobUUID) {
+        assertion.isValidJobUUID(jobUUID);
 
-	@Validated
-	@UseCaseAdminCancelsJob(@Step(number = 2, name = "Cancel job", description = "Will trigger event that job cancel requested"))
-	public void cancelJob(UUID jobUUID) {
-		assertion.isValidJobUUID(jobUUID);
+        auditLogService.log("Requested cancelation of job {}", jobUUID);
 
-		auditLogService.log("Requested cancelation of job {}", jobUUID);
+        JobMessage message = buildMessage(jobUUID);
 
-		JobMessage message = buildMessage(jobUUID);
+        /* trigger event */
+        informCancelJobRequested(message);
+    }
 
-		/* trigger event */
-		informCancelJobRequested(message);
-	}
+    private JobMessage buildMessage(UUID jobUUID) {
+        JobMessage message = new JobMessage();
 
-	private JobMessage buildMessage(UUID jobUUID) {
-		JobMessage message = new JobMessage();
+        message.setJobUUID(jobUUID);
 
-		message.setJobUUID(jobUUID);
+        JobInformation probe = new JobInformation();
+        probe.setJobUUID(jobUUID);
+        Example<JobInformation> example = Example.of(probe);
+        Optional<JobInformation> optJobInfo = repository.findOne(example);
+        if (!optJobInfo.isPresent()) {
+            LOG.warn("Did not found job information, so not able to resolve owner email address");
+            return message;
+        }
 
-		JobInformation probe = new JobInformation();
-		probe.setJobUUID(jobUUID);
-		Example<JobInformation> example = Example.of(probe);
-		Optional<JobInformation> optJobInfo = repository.findOne(example);
-		if (!optJobInfo.isPresent()) {
-			LOG.warn("Did not found job information, so not able to resolve owner email address");
-			return message;
-		}
+        JobInformation jobInfo = optJobInfo.get();
+        if (jobInfo.owner == null) {
+            LOG.warn("Did not found owner inside job information, so not able to resolve owner email address");
+            return message;
+        }
+        Optional<User> optUser = userRepository.findById(jobInfo.owner);
+        if (!optUser.isPresent()) {
+            LOG.warn("Did not found owner {} inside user repo, so not able to resolve owner email address", jobInfo.owner);
+            return message;
+        }
+        message.setOwner(jobInfo.owner);
+        message.setOwnerEmailAddress(optUser.get().getEmailAdress());
+        return message;
+    }
 
-		JobInformation jobInfo = optJobInfo.get();
-		if (jobInfo.owner == null) {
-			LOG.warn("Did not found owner inside job information, so not able to resolve owner email address");
-			return message;
-		}
-		Optional<User> optUser = userRepository.findById(jobInfo.owner);
-		if (!optUser.isPresent()) {
-			LOG.warn("Did not found owner {} inside user repo, so not able to resolve owner email address",jobInfo.owner);
-			return message;
-		}
-		message.setOwner(jobInfo.owner);
-		message.setOwnerEmailAddress(optUser.get().getEmailAdress());
-		return message;
-	}
+    @IsSendingAsyncMessage(MessageID.REQUEST_JOB_CANCELATION)
+    private void informCancelJobRequested(JobMessage message) {
 
-	@IsSendingAsyncMessage(MessageID.REQUEST_JOB_CANCELATION)
-	private void informCancelJobRequested(JobMessage message) {
+        DomainMessage infoRequest = DomainMessageFactory.createEmptyRequest(MessageID.REQUEST_JOB_CANCELATION);
+        infoRequest.set(MessageDataKeys.JOB_CANCEL_DATA, message);
 
-		DomainMessage infoRequest = DomainMessageFactory.createEmptyRequest(MessageID.REQUEST_JOB_CANCELATION);
-		infoRequest.set(MessageDataKeys.JOB_CANCEL_DATA, message);
-
-		eventBusService.sendAsynchron(infoRequest);
-	}
+        eventBusService.sendAsynchron(infoRequest);
+    }
 
 }

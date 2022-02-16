@@ -32,11 +32,11 @@ public class IntegrationTestPDSJobStatus {
             started = jsonNode.get("started").asText();
             ended = jsonNode.get("ended").asText();
             state = jsonNode.get("state").asText();
-            
+
         } catch (Exception e) {
-            throw new IllegalStateException("pds status json conversion failed, json was:\n"+json,e);
+            throw new IllegalStateException("pds status json conversion failed, json was:\n" + json, e);
         }
-        
+
         return this;
     }
 

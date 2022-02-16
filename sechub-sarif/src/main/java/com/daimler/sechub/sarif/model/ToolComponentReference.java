@@ -7,12 +7,12 @@ import java.util.Objects;
  * Tool component reference object, see <a href=
  * "https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317875">SARIF
  * 2.1.0 specification entry</a>
- * 
- * 
+ *
+ *
  * @author Albert Tregnaghi
  *
  */
-public class ToolComponentReference extends SarifObject{
+public class ToolComponentReference extends SarifObject {
 
     private String name;
     private String guid;

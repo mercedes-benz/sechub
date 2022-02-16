@@ -7,10 +7,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This class is for testing only - because sechub-doc.jar is never part of delivery it doesn't matter.
- * Why inside /src/main/java and not inside /src/test/java ? Because our Reflections class will
- * only lookup for java source code inside main/java and we do not want to have a configuration here
- * which changes for testing.  
+ * This class is for testing only - because sechub-doc.jar is never part of
+ * delivery it doesn't matter. Why inside /src/main/java and not inside
+ * /src/test/java ? Because our Reflections class will only lookup for java
+ * source code inside main/java and we do not want to have a configuration here
+ * which changes for testing.
+ *
  * @author Albert Tregnaghi
  *
  */

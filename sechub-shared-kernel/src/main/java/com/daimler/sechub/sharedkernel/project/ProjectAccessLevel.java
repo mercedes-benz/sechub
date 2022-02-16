@@ -42,7 +42,7 @@ public enum ProjectAccessLevel {
     /**
      * Compares this access level to another one and checks if satisfied by given
      * other level
-     * 
+     *
      * @param found the level to compare with.
      * @return <code>true</code> when other level is lower or equal
      */
@@ -56,7 +56,7 @@ public enum ProjectAccessLevel {
 
     /**
      * Returns project access level for given identifier
-     * 
+     *
      * @param id
      * @return project access level or <code>null</code>
      */

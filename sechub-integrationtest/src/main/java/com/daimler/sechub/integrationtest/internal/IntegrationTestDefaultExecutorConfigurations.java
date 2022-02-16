@@ -59,44 +59,44 @@ public class IntegrationTestDefaultExecutorConfigurations {
     /* @formatter:off */
     public static final TestExecutorConfig PDS_V1_CODE_SCAN_A = definePDSCodeScan(
                                                 PDS_CODESCAN_VARIANT_A,false,
-                                                PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN, 
+                                                PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN,
                                                 StorageType.REUSE_SECHUB_DATA);
-    
+
     public static final TestExecutorConfig PDS_V1_CODE_SCAN_B = definePDSCodeScan(
                                                 PDS_CODESCAN_VARIANT_B,true,
-                                                PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN, 
+                                                PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN,
                                                 StorageType.REUSE_SECHUB_DATA);
-    
+
     public static final TestExecutorConfig PDS_V1_CODE_SCAN_C = definePDSScan(
                                                 PDS_CODESCAN_VARIANT_C,true,
                                                 (String)null,
                                                 StorageType.REUSE_SECHUB_DATA,TestExecutorProductIdentifier.PDS_CODESCAN);// no PDS identifier set, will not work...
-    
+
     public static final TestExecutorConfig PDS_V1_CODE_SCAN_D = definePDSCodeScan(
                                                 PDS_CODESCAN_VARIANT_D,false,PDSIntTestProductIdentifier.
                                                 PDS_INTTEST_PRODUCT_CS_SARIF,
                                                 StorageType.REUSE_SECHUB_DATA);
-    
+
     public static final TestExecutorConfig PDS_V1_CODE_SCAN_E_DO_NOT_REUSE_SECHUBDATA = definePDSCodeScan(
                                                 PDS_CODESCAN_VARIANT_E,false,
                                                 PDSIntTestProductIdentifier.PDS_INTTEST_PRODUCT_CS_SARIF,
                                                 StorageType.DO_NOT_REUSE_SECHUB_DATA);
-    
+
     public static final TestExecutorConfig PDS_V1_CODE_SCAN_F = definePDSCodeScan(
                                                 PDS_CODESCAN_VARIANT_F,false,
                                                 PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN,
                                                 StorageType.REUSE_SECHUB_DATA);
-    
+
     public static final TestExecutorConfig PDS_V1_CODE_SCAN_G_FAIL_EXIT_CODE_1 = definePDSCodeScan(
                                                 PDS_CODESCAN_VARIANT_G,false,
                                                 PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN,
                                                 StorageType.REUSE_SECHUB_DATA);
-    
+
     public static final TestExecutorConfig PDS_V1_WEB_SCAN_A = definePDSWebScan(
                                                 PDS_WEBSCAN_VARIANT_A,false,
                                                 PDSIntTestProductIdentifier.PDS_INTTEST_WEBSCAN,
                                                 StorageType.REUSE_SECHUB_DATA);
-    
+
     /**
      * The executor configuration does result in usage of {@link PDSIntTestProductIdentifier#PDS_INTTEST_PRODUCT_WS_SARIF}.
      */
@@ -104,7 +104,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
             PDS_WEBSCAN_VARIANT_B,false,
             PDSIntTestProductIdentifier.PDS_INTTEST_PRODUCT_WS_SARIF,
             StorageType.REUSE_SECHUB_DATA);
-    
+
     /* @formatter:on */
 
     public static final String PDS_ENV_VARIABLENAME_TECHUSER_ID = "TEST_PDS_TECHUSER_ID";
@@ -232,7 +232,8 @@ public class IntegrationTestDefaultExecutorConfigurations {
     private static TestExecutorConfig createTestExecutorConfig() {
         TestExecutorConfig testExecutorConfig = new TestExecutorConfig();
         registeredConfigurations.add(testExecutorConfig);
-        testExecutorConfig.setup.jobParameters.add(new TestExecutorSetupJobParam(DelegatingMockablePDSAdapterV1.JOB_PARAMETER_KEY__PDS_MOCKING_DISABLED, "true"));
+        testExecutorConfig.setup.jobParameters
+                .add(new TestExecutorSetupJobParam(DelegatingMockablePDSAdapterV1.JOB_PARAMETER_KEY__PDS_MOCKING_DISABLED, "true"));
         return testExecutorConfig;
     }
 

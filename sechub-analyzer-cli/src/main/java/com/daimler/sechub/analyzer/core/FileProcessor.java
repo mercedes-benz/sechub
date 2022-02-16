@@ -28,9 +28,9 @@ public class FileProcessor {
 
     /**
      * Search through a given file for SecHub markers
-     * 
+     *
      * Markers: - Start: NOSECHUB - END: END-NOSECHUB
-     * 
+     *
      * @param file
      * @return List<MarerPair> a list of marker pairs
      * @throws FileNotFoundException
@@ -61,7 +61,7 @@ public class FileProcessor {
                 if (!isComment) {
                     continue;
                 }
-                
+
                 /* search for NOSECHB_END marker */
                 int endNoSecHubIndex = line.indexOf(NOSECHUB_END);
 

@@ -33,21 +33,21 @@ public class ProductExecutionProfileScenario7IntTest {
         /* prepare */
         String profileId = "test-profile-to-delete10";
         dropExecutionProfileIfExisting(profileId);
-        
+
         TestProject tempProject = setup.getScenario().newTestProject();
         String tempProjectProjectId = tempProject.getProjectId();
-        
+
         TestProject tempProject2 = setup.getScenario().newTestProject();
         String tempProjectProject2Id = tempProject2.getProjectId();
-        
+
         as(SUPER_ADMIN).
             createProductExecutionProfile(profileId,  new TestExecutionProfile()).
             createProject(tempProject,Scenario7.OWNER_1.getUserId()).
             addProjectsToProfile(profileId, tempProject,tempProject2);
-        
+
         /* check precondition */
         assertProfile(profileId).hasProjectIds(tempProjectProjectId,tempProjectProject2Id);
-        
+
         /* execute */
         as(SUPER_ADMIN).removeProjectIdsFromProfile(profileId, tempProjectProjectId);
 
@@ -55,7 +55,6 @@ public class ProductExecutionProfileScenario7IntTest {
         assertProfile(profileId).hasProjectIds(tempProjectProject2Id);
     }
     /* @formatter:on */
-    
 
     /* @formatter:off */
     @Test
@@ -63,18 +62,18 @@ public class ProductExecutionProfileScenario7IntTest {
         /* prepare */
         String profileId = "test-profile-to-delete1";
         dropExecutionProfileIfExisting(profileId);
-        
+
         TestProject tempProject = setup.getScenario().newTestProject();
         String tempProjectProjectId = tempProject.getProjectId();
-        
+
         as(SUPER_ADMIN).
             createProductExecutionProfile(profileId,  new TestExecutionProfile()).
             createProject(tempProject,Scenario7.OWNER_1.getUserId()).
             addProjectsToProfile(profileId, tempProject);
-        
+
         /* check precondition */
         assertProfile(profileId).hasProjectIds(tempProjectProjectId);
-        
+
         /* execute */
         as(SUPER_ADMIN).deleteProject(tempProject);
 
@@ -89,40 +88,40 @@ public class ProductExecutionProfileScenario7IntTest {
         /* prepare */
         String profileId = "test-profile-to-delete2";
         dropExecutionProfileIfExisting(profileId);
-        
+
         TestProject tempProject = setup.getScenario().newTestProject();
         String tempProjectProjectId = tempProject.getProjectId();
-        
+
         TestExecutorConfig tempConfig = new TestExecutorConfig();
         tempConfig.name="config1";
         tempConfig.setup.baseURL="something";
         tempConfig.productIdentifier="PDS_CODESCAN";
         tempConfig.executorVersion=42;
-        
+
         UUID uuid1 = as(SUPER_ADMIN).
             createProductExecutorConfig(tempConfig);
-        
+
         tempConfig.name="config2";
         UUID uuid2 = as(SUPER_ADMIN).
             createProductExecutorConfig(tempConfig);
-        
+
         as(SUPER_ADMIN).
             createProductExecutionProfile(profileId,  new TestExecutionProfile()).
             createProject(tempProject,Scenario7.OWNER_1.getUserId()).
             addConfigurationToProfile(profileId,uuid1,uuid2).
             addProjectsToProfile(profileId, tempProject);
-        
+
         /* check precondition */
         assertProfile(profileId).
             hasProjectIds(tempProjectProjectId).
             hasConfigurations(uuid1,uuid2);
-        
+
         /* execute */
         as(SUPER_ADMIN).deleteProductExecutionProfile(profileId);
 
         /* test */
         assertProfileDoesNotExist(profileId);
-        
+
         /* prepare 2 - recrate same profile*/
         as(SUPER_ADMIN).
             createProductExecutionProfile(profileId,  new TestExecutionProfile());
@@ -131,18 +130,18 @@ public class ProductExecutionProfileScenario7IntTest {
         assertProfile(profileId).
             hasNoProjectIds().
             hasNoConfigurations();
-        
+
         /* prepare 3 - add relation again */
         as(SUPER_ADMIN).
             addProjectsToProfile(profileId, tempProject);
-        
+
         /* check relation is working again */
         assertProfile(profileId).
             hasNoConfigurations().
             hasProjectIds(tempProjectProjectId);
     }
     /* @formatter:on */
-    
+
     @Test
     public void an_admin_can_create_a_new_empty_profile_() {
         /* prepare */
@@ -152,7 +151,6 @@ public class ProductExecutionProfileScenario7IntTest {
         profileData = new TestExecutionProfile();
         profileData.description = "test1";
 
-
         /* execute */
         as(SUPER_ADMIN).createProductExecutionProfile(profileId, profileData);
 
@@ -160,7 +158,7 @@ public class ProductExecutionProfileScenario7IntTest {
         assertProfile(profileId).hasDescritpion("test1");
 
     }
-    
+
     /* @formatter:off */
     @Test
     public void sanity_check_remove_projects_implemented_correct_for_daui() {
@@ -170,18 +168,18 @@ public class ProductExecutionProfileScenario7IntTest {
 
         profileData = new TestExecutionProfile();
         profileData.description = "test9";
-        
+
         TestExecutorConfig config = new TestExecutorConfig();
         config.name="config1";
         config.executorVersion=33;
         config.productIdentifier="PDS_WEBSCAN";
         config.setup.baseURL="";
-        
+
         UUID uuid1 = as(SUPER_ADMIN).createProductExecutorConfig(config);
-        
+
         config.name="config2";
         UUID uuid2 = as(SUPER_ADMIN).createProductExecutorConfig(config);
-        
+
         config.name="config3";
         UUID uuid3 = as(SUPER_ADMIN).createProductExecutorConfig(config);
 
@@ -195,7 +193,7 @@ public class ProductExecutionProfileScenario7IntTest {
         /* execute */
         as(SUPER_ADMIN).removeConfigurationFromProfile(profileId, uuid1,uuid3);
         as(SUPER_ADMIN).removeProjectIdsFromProfile(profileId, "p1","p3");
-        
+
         /* test */
         assertProfile(profileId).hasConfigurations(uuid2).hasProjectIds("p2");
     }
@@ -206,7 +204,7 @@ public class ProductExecutionProfileScenario7IntTest {
         /* prepare */
         String profileId = "test-profile-to-delete4";
         dropExecutionProfileIfExisting(profileId);
-        
+
         profileData = new TestExecutionProfile();
         profileData.description = "test1";
         profileData.projectIds.add("project1");
@@ -224,7 +222,7 @@ public class ProductExecutionProfileScenario7IntTest {
         /* prepare */
         String profileId = "test-profile-to-delete5";
         dropExecutionProfileIfExisting(profileId);
-        
+
         profileData = new TestExecutionProfile();
         profileData.description = "test1";
         profileData.projectIds.add("project1");
@@ -253,7 +251,6 @@ public class ProductExecutionProfileScenario7IntTest {
         profileData.description = "test1234";
         profileData.projectIds.add("project1");
 
-
         UUID uuid = createTestExecutorConfig();
 
         TestExecutorConfig config = new TestExecutorConfig(uuid); // use created uuid for parameter
@@ -275,11 +272,10 @@ public class ProductExecutionProfileScenario7IntTest {
         /* prepare */
         String profileId = "test-profile-to-delete7";
         dropExecutionProfileIfExisting(profileId);
-        
+
         TestExecutionProfile profileData = new TestExecutionProfile();
         profileData.description = "test1";
         profileData.projectIds.add("project1");
-
 
         UUID uuid = createTestExecutorConfig();
         TestExecutorConfig config = new TestExecutorConfig(uuid); // use created uuid for parameter
@@ -300,7 +296,7 @@ public class ProductExecutionProfileScenario7IntTest {
         /* prepare */
         String profileId = "test-profile-to-delete8";
         dropExecutionProfileIfExisting(profileId);
-        
+
         TestExecutionProfile profileData = new TestExecutionProfile();
         profileData.description = "test1";
         profileData.projectIds.add("project1");
@@ -317,17 +313,17 @@ public class ProductExecutionProfileScenario7IntTest {
             isNotEnabled().
             hasConfigurations(uuid).
             hasProjectIds("project1");
-        
+
         /* now change local data - so changed when update done */
         profileData.projectIds.clear(); // removes project1
         profileData.projectIds.add("project2");
         profileData.projectIds.add("project3");
         profileData.description="changed description";
         profileData.enabled=true;
-        
+
         /* execute */
         as(SUPER_ADMIN).updateProductExecutionProfile(profileId,profileData);
-        
+
         /* test */
         assertProfile(profileId).
             isEnabled().
@@ -337,7 +333,6 @@ public class ProductExecutionProfileScenario7IntTest {
         /* @formatter:on */
 
     }
-   
 
     private UUID createTestExecutorConfig() {
         TestExecutorConfig config = new TestExecutorConfig();

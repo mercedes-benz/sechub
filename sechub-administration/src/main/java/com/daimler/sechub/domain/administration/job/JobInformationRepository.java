@@ -12,11 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface JobInformationRepository extends JpaRepository<JobInformation, UUID> {
 
-	@Query(JobInformation.QUERY_FIND_ALL_RUNNING_JOBS)
-	public List<JobInformation> findAllRunningJobs();
+    @Query(JobInformation.QUERY_FIND_ALL_RUNNING_JOBS)
+    public List<JobInformation> findAllRunningJobs();
 
-	@Transactional
-	@Modifying
-	@Query(JobInformation.QUERY_DELETE_JOBINFORMATION_FOR_JOBUUID)
-	public void deleteJobInformationWithJobUUID(@Param("jobUUID") UUID jobUUID);
+    @Transactional
+    @Modifying
+    @Query(JobInformation.QUERY_DELETE_JOBINFORMATION_FOR_JOBUUID)
+    public void deleteJobInformationWithJobUUID(@Param("jobUUID") UUID jobUUID);
 }
