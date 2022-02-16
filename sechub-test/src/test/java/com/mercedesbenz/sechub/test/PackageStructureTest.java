@@ -20,7 +20,7 @@ import com.mercedesbenz.sechub.test.DomainAccessSourceVisitor.DomainProblem;
 public class PackageStructureTest {
 
     @Test
-    public void test_no_java_file_exists_where_package_with_com_daimler_secub_domain__imports_from_another_domain() {
+    public void test_no_java_file_exists_where_package_with_com_mercedesbenz_secub_domain__imports_from_another_domain() {
         SimpleFileBasedPackageScanner scanner = new SimpleFileBasedPackageScanner();
 
         TestFileSupport support = new TestFileSupport(null);

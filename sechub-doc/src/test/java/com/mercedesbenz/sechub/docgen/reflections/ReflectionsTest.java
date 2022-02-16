@@ -24,7 +24,7 @@ public class ReflectionsTest {
     }
 
     @Test
-    public void extractJavaFileName_class_TestMe_in_subpackage_com_daimler_sechub_reflections() {
+    public void extractJavaFileName_class_TestMe_in_subpackage_com_mercedesbenz_sechub_reflections() {
         /* prepare */
         File file = new File(".");
         File sourceFolder = new File(file, "subproject1/src/main/java");
