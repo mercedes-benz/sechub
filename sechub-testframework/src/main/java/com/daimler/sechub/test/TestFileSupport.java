@@ -11,7 +11,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
@@ -231,7 +230,7 @@ public class TestFileSupport {
     
     public File createTempFile(String prefix, String ending) {
         try {
-            Path path = Files.createTempFile(prefix, ending);
+            Path path = TestUtil.createTempFileInBuildFolder(prefix, ending);
             return path.toFile();
         } catch (IOException e) {
            throw new IllegalStateException("cannot create temp file!",e);

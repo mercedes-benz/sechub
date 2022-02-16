@@ -29,10 +29,11 @@ def integrationTestPDSPortValue = 8444;
 def pdsVersion = VersionData.getPdsVersion()
 def serverVersion = VersionData.getServerVersion()
 
-// define dummy path (not existing, will be changed later in integrationTest task! 
-def tempDirPath = new File(System.getProperty("user.home"),"sechub-inttest").toPath();
+// initialize shared volume path (but not force directory creation, will be done later)
+long nanoTime = System.nanoTime()
 
-def intTestFolderPath = tempDirPath.toString();
+File tempFolder = new File("${project.projectDir}/build/tmp/sharedvolume-${nanoTime}")
+def tempDirPath = tempFolder.toPath()
 
 task copyIntegrationTestResults(type: Copy) {
         with{
@@ -60,9 +61,9 @@ tasks.clean.dependsOn(tasks.cleanLogFiles)
 // configures integration test shared volume
 task configureIntTestSharedVolume {
     doFirst {
-            // at this point we create a new temp directory for integration tests
-            tempDirPath = Files.createTempDirectory("sechub-inttest")
+            // at this point we create the temp directory structure for our integration tests
             println (">> CREATE temp dir: $tempDirPath")
+            Files.createDirectories(tempDirPath)
    }
 }
 

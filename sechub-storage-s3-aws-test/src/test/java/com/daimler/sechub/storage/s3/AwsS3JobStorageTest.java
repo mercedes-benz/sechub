@@ -30,6 +30,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.Bucket;
 import com.daimler.sechub.storage.s3.aws.AwsS3JobStorage;
 import com.daimler.sechub.test.TestPortProvider;
+import com.daimler.sechub.test.TestUtil;
 
 public class AwsS3JobStorageTest {
 
@@ -74,7 +75,7 @@ public class AwsS3JobStorageTest {
         /* prepare */
         AwsS3JobStorage storage = new AwsS3JobStorage(amazonTestClient, "bucket2", "jobstorage/projectName", UUID.randomUUID());
 
-        Path tmpFile = Files.createTempFile("storage_test", ".txt");
+        Path tmpFile = TestUtil.createTempFileInBuildFolder("storage_test", "txt");
 
         /* execute */
         InputStream inputStream = new FileInputStream(tmpFile.toFile());
@@ -94,7 +95,7 @@ public class AwsS3JobStorageTest {
         String testContent = "line1\nline2";
         AwsS3JobStorage storage = new AwsS3JobStorage(amazonTestClient, "bucket2", "jobstorage/projectName", jobjUUID);
 
-        Path tmpFile = Files.createTempFile("storage_test", ".txt");
+        Path tmpFile = TestUtil.createTempFileInBuildFolder("storage_test", "txt");
         BufferedWriter bw = Files.newBufferedWriter(tmpFile);
 
         bw.write(testContent);
@@ -300,7 +301,7 @@ public class AwsS3JobStorageTest {
     }
 
     private AwsS3JobStorage storeCreatedTestDataFile(String name, AwsS3JobStorage storage) throws IOException, FileNotFoundException {
-        Path tmpFile = Files.createTempFile("storage_test", ".txt");
+        Path tmpFile = TestUtil.createTempFileInBuildFolder("storage_test", "txt");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(tmpFile.toFile()))) {
             bw.write(TEST_DATA);
         }

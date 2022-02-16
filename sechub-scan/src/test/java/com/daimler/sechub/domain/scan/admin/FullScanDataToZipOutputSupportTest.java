@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.daimler.sechub.domain.scan.log.ProjectScanLog;
+import com.daimler.sechub.test.TestUtil;
 
 public class FullScanDataToZipOutputSupportTest {
 
@@ -38,7 +39,7 @@ public class FullScanDataToZipOutputSupportTest {
 		/* prepare */
 		FullScanData fullScanData = createFullScanDataTwoProductsOneLogEntry();
 
-		File file = File.createTempFile("log_fullscan", ".zip");
+		File file = TestUtil.createTempFileInBuildFolder("log_fullscan", "zip").toFile();
 
 		/* execute */
 		try(FileOutputStream fos = new FileOutputStream(file)){
@@ -75,7 +76,7 @@ public class FullScanDataToZipOutputSupportTest {
 		FullScanData fullScanData2 = createFullScanDataTwoProductsOneLogEntry();
 		fullScanData.allScanData.addAll(fullScanData2.allScanData);
 
-		File file = File.createTempFile("log_fullscan", ".zip");
+		File file = TestUtil.createTempFileInBuildFolder("log_fullscan", "zip").toFile();
 
 		/* execute */
 		try(FileOutputStream fos = new FileOutputStream(file)){

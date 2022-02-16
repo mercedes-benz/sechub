@@ -661,7 +661,7 @@ public class AsUser {
         RequestCallback requestCallback = request -> request.getHeaders().setAccept(Arrays.asList(MediaType.APPLICATION_OCTET_STREAM, MediaType.ALL));
 
         ResponseExtractor<File> responseExtractor = response -> {
-            Path path = Files.createTempFile(fileName, fileEnding);
+            Path path = TestUtil.createTempFileInBuildFolder(fileName, fileEnding);
             Files.copy(response.getBody(), path, StandardCopyOption.REPLACE_EXISTING);
             if (TestUtil.isDeletingTempFiles()) {
                 path.toFile().deleteOnExit();
