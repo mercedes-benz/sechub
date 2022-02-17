@@ -48,7 +48,7 @@ WARNING: Standard properties (like base URL, user id etc.) are currently NOT use
 . Projects are initially created and reused automatically
 . Old scans are *NOT* automatically deleted
 . Multi tenancy is currently problematic: Same Team ID is always used
-  _(will be changed with https://github.com/Daimler/sechub/issues/58[Issue 58])_
+  _(will be changed with https://github.com/mercedes-benz/sechub/issues/58[Issue 58])_
 
 // TODO 2019-10-02, Albert Tregnaghi: change here and text block before when team id handling is improved
 IMPORTANT: Fix team ID will change in future to provide grouping of results in
@@ -68,7 +68,7 @@ include::../shared/adapter/netsparker_adapter_flow.adoc[]
 - Users must be manual created at {netsparker} UI
 - Users must be added to the {netsparker} team used by {sechub}
 - If you want to have multi tenancy you have to define website groups
-  (see https://github.com/Daimler/sechub/issues/59 for details)
+  (see https://github.com/mercedes-benz/sechub/issues/59 for details)
 
 ==== Summary
 . Websites are initially created and reused automatically

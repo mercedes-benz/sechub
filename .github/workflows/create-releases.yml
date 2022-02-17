@@ -250,7 +250,7 @@ jobs:
             Changes in this Release
             - Some minor changes on SecHub server implementation
 
-            For more details please look at [Milestone ${{github.event.inputs.milestone-number}}]( https://github.com/Daimler/sechub/milestone/${{github.event.inputs.milestone-number}}?closed=1)
+            For more details please look at [Milestone ${{github.event.inputs.milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{github.event.inputs.milestone-number}}?closed=1)
           draft: true
           prerelease: false
       - name: Upload Server release asset
@@ -359,7 +359,7 @@ jobs:
             Changes in this Release
             - Some minor changes on client implementation
 
-            For more details please look at [Milestone ${{github.event.inputs.milestone-number}}]( https://github.com/Daimler/sechub/milestone/${{github.event.inputs.milestone-number}}?closed=1)
+            For more details please look at [Milestone ${{github.event.inputs.milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{github.event.inputs.milestone-number}}?closed=1)
           draft: true
           prerelease: false
       - name: Upload Client release asset create ZIP
@@ -423,7 +423,7 @@ jobs:
             Changes in this Release
             - Some minor changes on PDS server implementation
 
-            For more details please look at [Milestone ${{github.event.inputs.milestone-number}}]( https://github.com/Daimler/sechub/milestone/${{github.event.inputs.milestone-number}}?closed=1)
+            For more details please look at [Milestone ${{github.event.inputs.milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{github.event.inputs.milestone-number}}?closed=1)
           draft: true
           prerelease: false
       - name: Upload PDS release asset

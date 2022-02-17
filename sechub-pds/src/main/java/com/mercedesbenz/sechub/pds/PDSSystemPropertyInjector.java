@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PDSSystemPropertyInjector {
 
-    @PDSMustBeDocumented(value = "Define diffie hellman key length, see https://github.com/Daimler/sechub/issues/689 for details", scope = "security")
+    @PDSMustBeDocumented(value = "Define diffie hellman key length, see https://github.com/mercedes-benz/sechub/issues/689 for details", scope = "security")
     @Value("${pds.security.diffiehellman.length}")
     private String diffieHellmanLength;
 

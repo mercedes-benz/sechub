@@ -335,7 +335,7 @@ Vary: Accept-Encoding
 							<content><![CDATA[[NETSPARKER] SSL Connection]]></content>
 						</http-response>
 									<extra-information>
-							<info name="Weakly&amp;#32;Signed&amp;#32;Certificates" value="sha1RSA&amp;#32;-&amp;#32;E=example-integration@example.org,&amp;#32;CN=fscan.intranet.example.org,&amp;#32;OU=ITM-TSS,&amp;#32;O=Daimler&amp;#32;AG,&amp;#32;L=Ulm,&amp;#32;S=Baden-Wuerttemberg,&amp;#32;C=DE" />
+							<info name="Weakly&amp;#32;Signed&amp;#32;Certificates" value="sha1RSA&amp;#32;-&amp;#32;E=example-integration@example.org,&amp;#32;CN=fscan.intranet.example.org,&amp;#32;OU=ITM-TSS,&amp;#32;O=Mercedes-Benz Group&amp;#32;AG,&amp;#32;L=Ulm,&amp;#32;S=Baden-Wuerttemberg,&amp;#32;C=DE" />
 					</extra-information>
 
 				<description><![CDATA[<p>Netsparker Cloud detected that a certificate is signed using a weak signature algorithm.</p><p>The weak signature algorithm is known to be cryptographically weak and vulnerable to collision attacks.</p>]]></description>
