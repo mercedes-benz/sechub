@@ -44,6 +44,9 @@ public class UserInputAssertion {
     @Autowired
     EmailValidation emailValidation;
 
+    @Autowired
+    Sha256ChecksumValidation sha256CheckSumValidation;
+
     /**
      * Asserts this is a valid project id. If not a {@link NotAcceptableException}
      * will be thrown
@@ -96,6 +99,16 @@ public class UserInputAssertion {
      */
     public void isValidEmailAddress(String emailAdress) {
         assertValid(emailAdress, emailValidation, "Email address is not valid");
+    }
+
+    /**
+     * * Asserts this is a valid email address. If not a
+     * {@link NotAcceptableException} will be thrown
+     *
+     * @param sha256
+     */
+    public void isValidSha256Checksum(String sha256) {
+        assertValid(sha256, sha256CheckSumValidation, "Sha256 checksum is not valid");
     }
 
 }

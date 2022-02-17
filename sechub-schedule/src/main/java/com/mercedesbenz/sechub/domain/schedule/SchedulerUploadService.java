@@ -72,6 +72,8 @@ public class SchedulerUploadService {
     public void uploadSourceCode(String projectId, UUID jobUUID, MultipartFile file, String checkSum) {
         assertion.isValidProjectId(projectId);
         assertion.isValidJobUUID(jobUUID);
+        assertion.isValidSha256Checksum(checkSum);
+
         notNull(file, "file may not be null!");
 
         String traceLogID = logSanitizer.sanitize(UUIDTraceLogID.traceLogID(jobUUID), -1);
