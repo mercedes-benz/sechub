@@ -20,4 +20,4 @@ convenient for integration tests from foreign systems. But there can
 *not* be any product specific configuration.
 
 For more details see <<sechub-doclink-uc-user-defines-project-mockdata,use case description>>
-or look at GitHub issue https://github.com/Daimler/sechub/issues/141[#141]  
+or look at GitHub issue https://github.com/mercedes-benz/sechub/issues/141[#141]  

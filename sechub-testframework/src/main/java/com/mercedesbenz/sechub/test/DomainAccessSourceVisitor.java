@@ -9,7 +9,7 @@ import com.mercedesbenz.sechub.test.SimpleFileBasedPackageScanner.PackageSourceV
 
 public class DomainAccessSourceVisitor implements PackageSourceVisitor {
 
-    private static final String COM_DAIMLER_SECHUB_DOMAIN = "com.mercedesbenz.sechub.domain.";
+    private static final String COM_MERCEDESBENZ_SECHUB_DOMAIN = "com.mercedesbenz.sechub.domain.";
 
     public class DomainProblem {
         private File file;
@@ -55,11 +55,11 @@ public class DomainAccessSourceVisitor implements PackageSourceVisitor {
     }
 
     private String fetchDomainName(String packageOfFile) {
-        int index = packageOfFile.indexOf(COM_DAIMLER_SECHUB_DOMAIN);
+        int index = packageOfFile.indexOf(COM_MERCEDESBENZ_SECHUB_DOMAIN);
         if (index == -1) {
             return null;
         }
-        String result = packageOfFile.substring(index + COM_DAIMLER_SECHUB_DOMAIN.length());
+        String result = packageOfFile.substring(index + COM_MERCEDESBENZ_SECHUB_DOMAIN.length());
         int indexPoint = result.indexOf('.');
         if (indexPoint != -1) {
             result = result.substring(0, indexPoint);

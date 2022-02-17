@@ -4,7 +4,7 @@ package com.mercedesbenz.sechub.docgen.messaging;
 import java.lang.reflect.Method;
 
 public class DomainUtil {
-    private static final String COM_DAIMLER_SECHUB_DOMAIN = "com.mercedesbenz.sechub.domain";
+    private static final String COM_MERCEDESBENZ_SECHUB_DOMAIN = "com.mercedesbenz.sechub.domain";
 
     static String createDomainPartName(Method method) {
         Class<?> clazz = method.getDeclaringClass();
@@ -27,8 +27,8 @@ public class DomainUtil {
     static String createDomainName(Class<?> clazz) {
         String fullName = clazz.getPackage().getName();
         String name = fullName;
-        int index = name.indexOf(COM_DAIMLER_SECHUB_DOMAIN);
-        int amountOfcharsToSkip = COM_DAIMLER_SECHUB_DOMAIN.length() + 1;
+        int index = name.indexOf(COM_MERCEDESBENZ_SECHUB_DOMAIN);
+        int amountOfcharsToSkip = COM_MERCEDESBENZ_SECHUB_DOMAIN.length() + 1;
         if (index != -1 && name.length() > amountOfcharsToSkip) {
             name = name.substring(amountOfcharsToSkip);
         }
