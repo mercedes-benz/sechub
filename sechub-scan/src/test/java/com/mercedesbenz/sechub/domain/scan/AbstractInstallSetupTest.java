@@ -16,15 +16,16 @@ public class AbstractInstallSetupTest {
     }
 
     @Test
-    public void isabletoscan_returns_false_when_a_target_has_type_intranet_and_not_able_to_scanDaimmler_intranet() {
+    public void isabletoscan_returns_false_when_a_target_has_type_intranet_and_not_able_to_scan_intranet() {
         /* prepare */
+        setupToTest.canScanIntranet = false;
 
         /* execute + test */
         assertFalse(setupToTest.isAbleToScan(TargetType.INTRANET));
     }
 
     @Test
-    public void isabletoscan_returns_true_when_a_target_has_type_intranet_and_is_able_to_scanDaimmler_intranet() {
+    public void isabletoscan_returns_true_when_a_target_has_type_intranet_and_is_able_to_scan_intranet() {
         /* prepare */
         setupToTest.canScanIntranet = true;
 
@@ -33,13 +34,16 @@ public class AbstractInstallSetupTest {
     }
 
     @Test
-    public void isabletoscan_returns_false_when_a_target_has_type_internet_and_not_able_to_scanInternet() {
+    public void isabletoscan_returns_false_when_a_target_has_type_internet_and_not_able_to_sca_internet() {
+        /* prepare */
+        setupToTest.canScanInternet = false;
+
         /* execute + test */
         assertFalse(setupToTest.isAbleToScan(TargetType.INTERNET));
     }
 
     @Test
-    public void isabletoscan_returns_truee_when_a_target_has_type_internet_and_is_able_to_scanInternet() {
+    public void isabletoscan_returns_truee_when_a_target_has_type_internet_and_is_able_to_scan_internet() {
         /* prepare */
         setupToTest.canScanInternet = true;
 
