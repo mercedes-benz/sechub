@@ -28,12 +28,12 @@ task buildGo(type: Exec, dependsOn: 'genGo') {
     // https://golang.org/cmd/go/
     //environment GOPATH: "${projectDir}"
 
-    workingDir "${projectDir}/src/daimler.com/sechub/"
+    workingDir "${projectDir}/src/mercedes-benz.com/sechub/"
 
     if (OSUtil.isWindows()){
-        commandLine 'cmd', '/c', 'bash', "${projectDir}/build_go.sh","${projectDir}", new MinGWConverter().convert("${projectDir}"),'daimler.com/sechub'
+        commandLine 'cmd', '/c', 'bash', "${projectDir}/build_go.sh","${projectDir}", new MinGWConverter().convert("${projectDir}"),'mercedes-benz.com/sechub'
     }else{
-        commandLine "${projectDir}/build_go.sh","${projectDir}", "${projectDir}",'daimler.com/sechub'
+        commandLine "${projectDir}/build_go.sh","${projectDir}", "${projectDir}",'mercedes-benz.com/sechub'
     }
 
 }
@@ -49,13 +49,13 @@ task testGo(type:Exec) {
   //https://stackoverflow.com/questions/48882691/force-retesting-or-disable-test-caching
   // but normally not necessary:  environment GOCACHE: "off"
 
-  workingDir "${projectDir}/src/daimler.com/sechub/cli"
+  workingDir "${projectDir}/src/mercedes-benz.com/sechub/cli"
 
   //on windows:
     if (OSUtil.isWindows()){
-        commandLine 'cmd', '/c', 'go', 'test', 'daimler.com/sechub/cli', 'daimler.com/sechub/util', '-v'
+        commandLine 'cmd', '/c', 'go', 'test', 'mercedes-benz.com/sechub/cli', 'mercedes-benz.com/sechub/util', '-v'
     }else{
-        commandLine 'go', 'test', 'daimler.com/sechub/cli', 'daimler.com/sechub/util', '-v'
+        commandLine 'go', 'test', 'mercedes-benz.com/sechub/cli', 'mercedes-benz.com/sechub/util', '-v'
     }
 
 }
@@ -67,9 +67,9 @@ task linterGo(type:Exec) {
 
   //on windows:
     if (OSUtil.isWindows()){
-        commandLine 'cmd', '/c', 'golint', 'daimler.com/sechub/cli', 'daimler.com/sechub/util', 'daimler.com/sechub/testutil'
+        commandLine 'cmd', '/c', 'golint', 'mercedes-benz.com/sechub/cli', 'mercedes-benz.com/sechub/util', 'mercedes-benz.com/sechub/testutil'
     }else{
-        commandLine 'golint', 'daimler.com/sechub/cli', 'daimler.com/sechub/util', 'daimler.com/sechub/testutil'
+        commandLine 'golint', 'mercedes-benz.com/sechub/cli', 'mercedes-benz.com/sechub/util', 'mercedes-benz.com/sechub/testutil'
     }
 
 }
@@ -106,13 +106,13 @@ publishing {
                 description = 'SecHub Clients for all supported plattforms as one single zip file'
 
                 scm {
-                    url = 'https://github.com/daimler/sechub'
+                    url = 'https://github.com/mercedes-benz/sechub'
                 }
 
                 licenses {
                     license {
                         name = 'MIT License'
-                        url = 'https://github.com/daimler/sechub/blob/master/LICENSE'
+                        url = 'https://github.com/mercedes-benz/sechub/blob/master/LICENSE'
                     }
                 }
             }

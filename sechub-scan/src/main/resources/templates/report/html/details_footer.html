@@ -1,0 +1,19 @@
+<th:block th:fragment="details_footer (finding)">
+ <h3 class="rDetailHeadline1">Description</h3>
+ <div th:if="${reportHelper.hasDescription(finding)}" class="rText" th:text="${reportHelper.getDescription(finding)}">Description1</div>
+ <div th:if="${reportHelper.hasDescription(finding) == false AND finding.cweId != null}" class="rCalculatedText">
+    <div>A full description of&nbsp;"</div>
+    <div th:text="${finding.name}" class="rCalculatedMarkerInsideText">Finding name</div>
+    <div>"&nbsp;can be found at&nbsp;</div>
+    <div th:replace="report/html/links :: cweLink(finding=${finding})"></div>
+    <div>.</div>
+ </div>
+ 
+ <h3  class="rDetailHeadline1">Solution</h3>
+ <div th:if="${reportHelper.hasSolution(finding)}" class="rText" th:text="${reportHelper.getSolution(finding)}" style="font-family:monospace">Solution</div>
+ <div th:if="${reportHelper.hasSolution(finding) == false AND finding.cweId != null}" class="rCalculatedText">
+    <div>Currently there is no dedicated solution provided. So please read the proposals for the MITRE examples at&nbsp;</div>
+    <div th:replace="report/html/links :: cweLink(finding=${finding})"></div>
+    <div>and adopt to your situation.</div>
+ </div>
+</th:block>

@@ -84,7 +84,7 @@ Let's start with:
 +
 ----
 cd ~
-git clone https://github.com/Daimler/sechub.git
+git clone https://github.com/mercedes-benz/sechub.git
 cd sechub
 ----
 +
@@ -152,7 +152,7 @@ export PATH="`pwd`/sechub-cli/build/go/platform/linux-amd64:`pwd`/sechub-develop
 . Test: List all users as administrator
 +
 [NOTE]
-`sechub-api.sh` is a helper Bash script based on `curl` that eases the use of the https://daimler.github.io/sechub/latest/sechub-restapi.html[SecHub server REST API]. We use it here to get a list of the users.
+`sechub-api.sh` is a helper Bash script based on `curl` that eases the use of the https://mercedes-benz.github.io/sechub/latest/sechub-restapi.html[SecHub server REST API]. We use it here to get a list of the users.
 +
 [source,bash]
 ----
@@ -218,7 +218,7 @@ You can open the SecHub report file in your browser.
 [NOTE]
 In order to scan, you need a `sechub.json` config file. In our case, it is already in the repository so we can use it right away. +
  +
-For real results, you have to define an 'execution profile' with a scanner (via a product adapter) attached. Assign it to your project and you get real results. Have a look at the https://daimler.github.io/sechub/latest/sechub-operations.html#section-initial-profile-and-executors[SecHub operations documentation] for details.
+For real results, you have to define an 'execution profile' with a scanner (via a product adapter) attached. Assign it to your project and you get real results. Have a look at the https://mercedes-benz.github.io/sechub/latest/sechub-operations.html#section-initial-profile-and-executors[SecHub operations documentation] for details.
 
 . Stop SecHub integration test server
 +

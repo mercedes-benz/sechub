@@ -25,7 +25,7 @@ task startIntegrationTestAdminUI(type: JavaExec){
 
     classpath = sourceSets.main.runtimeClasspath
 
-    main = 'com.daimler.sechub.developertools.admin.ui.DeveloperAdministrationUI'
+    main = 'com.mercedesbenz.sechub.developertools.admin.ui.DeveloperAdministrationUI'
 
     jvmArgs = ['-Dsechub.developertools.admin.integrationtestserver=true',
                '-Dsechub.developertools.admin.server=localhost',
@@ -41,7 +41,7 @@ task buildDeveloperAdminUI(type: Jar, dependsOn: build) {
     baseName = 'sechub-developer-admin-ui'
     
     manifest {
-        attributes 'Main-Class': 'com.daimler.sechub.developertools.admin.ui.DeveloperAdministrationUI'
+        attributes 'Main-Class': 'com.mercedesbenz.sechub.developertools.admin.ui.DeveloperAdministrationUI'
     }
     
     

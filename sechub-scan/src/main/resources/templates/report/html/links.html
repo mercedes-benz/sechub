@@ -1,0 +1,3 @@
+<th:block th:fragment="cweLink(finding)">
+    <a  th:if="${finding.cweId != null}" th:href="@{'https://cwe.mitre.org/data/definitions/' + ${finding.cweId} + '.html'}" th:text="'CWE-' + ${finding.cweId}" target="_blank">CWE-77</a>
+</th:block>

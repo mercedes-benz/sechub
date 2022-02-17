@@ -1,4 +1,5 @@
 #!/bin/bash 
+# SPDX-License-Identifier: MIT
 CONST_DOES_NOT_EXIST="does-not-exist"
 
 script_name=$0

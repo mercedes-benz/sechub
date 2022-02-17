@@ -15,7 +15,7 @@ NOTE: Go installation is only necessary for client development. All Tools must b
 
 ===== Clone
 ----
-git clone https://github.com/Daimler/sechub.git
+git clone https://github.com/mercedes-benz/sechub.git
 ----
 
 [[sechub-git-configuration]]
@@ -78,8 +78,8 @@ go development IDE:
 For example:
 [source,bash]
 ----
-mkdir ~/go/src/daimler.com/
-ln -s $pathToSecHubRepo/sechub-cli/src/daimler.com/sechub ~/go/src/daimler.com/sechub
+mkdir ~/go/src/mercedes-benz.com/
+ln -s $pathToSecHubRepo/sechub-cli/src/mercedes-benz.com/sechub ~/go/src/mercedes-benz.com/sechub
 ----
 
 ==== Special developer files

@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: MIT
 -- drop constraints
 ALTER TABLE adm_user DROP CONSTRAINT c01_adm_user_emailadress;
 ALTER TABLE adm_project_to_user DROP CONSTRAINT c02_adm_project2user_user_id;
