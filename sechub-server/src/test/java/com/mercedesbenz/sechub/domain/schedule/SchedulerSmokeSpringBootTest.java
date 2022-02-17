@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.domain.schedule;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,9 +11,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-/**
- * Test simly starts up spring container and checks a schedule rest controller
- * can be initiated. So just a smoke test
+/*
+ * Smoke tests which checks that sechub-server spring boot container can be started and
+ * some defaults are as expected
  *
  * @author Albert Tregnaghi
  *
@@ -25,12 +26,19 @@ public class SchedulerSmokeSpringBootTest {
     @Autowired
     private SchedulerRestController controller;
 
+    @Autowired
+    SchedulerUploadService uploadService;
+
     @Test
-    public void contextLoads() throws Exception {
+    public void context_loads_and_some_defaults_are_as_expected() throws Exception {
         // see https://spring.io/guides/gs/testing-web/ for details about testing with
         // spring MVC test
-        assertThat(controller).isNotNull(); // we just test that we got he controller. Means - the spring container context
+        assertThat(controller).isNotNull(); // we test that we got he controller. Means - the spring container context
                                             // has been loaded successfully!
+
+        /* check defaults injected by container are as expected */
+        assertTrue(uploadService.validateZip);
+        assertTrue(uploadService.validateChecksum);
     }
 
 }

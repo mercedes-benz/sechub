@@ -1,15 +1,14 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
@@ -21,7 +20,6 @@ import com.mercedesbenz.sechub.sharedkernel.util.ZipSupport;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
-import com.mercedesbenz.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class SchedulerUploadServiceTest {
 
@@ -33,13 +31,11 @@ public class SchedulerUploadServiceTest {
     private ScheduleAssertService mockedAssertService;
     private MultipartFile file;
 
-    @Rule
-    public ExpectedException expectedException = ExpectedExceptionFactory.none();
     private JobStorage storage;
     private ZipSupport mockedZipSupport;
 
-    @Before
-    public void before() {
+    @BeforeEach
+    void beforeEach() {
         randomUuid = UUID.randomUUID();
 
         mockedChecksumService = mock(FileChecksumSHA256Service.class);
@@ -67,7 +63,17 @@ public class SchedulerUploadServiceTest {
     }
 
     @Test
-    public void when_checksum_correct_and_is_zip__correct_no_failure() {
+    void without_spring_container_zip_validation_is_enabled() {
+        assertTrue(serviceToTest.validateZip);
+    }
+
+    @Test
+    void without_spring_container_checksum_validation_is_enabled() {
+        assertTrue(serviceToTest.validateChecksum);
+    }
+
+    @Test
+    void when_checksum_correct_and_is_zip__correct_no_failure() {
         /* prepare */
         when(mockedChecksumService.hasCorrectChecksum(eq("mychecksum"), any())).thenReturn(true);
         when(mockedZipSupport.isZipFile(any())).thenReturn(true);
@@ -77,25 +83,47 @@ public class SchedulerUploadServiceTest {
     }
 
     @Test
-    public void when_checksum_is_NOT_correct_but_valid_zipfile_throws_404() {
+    void when_checksum_is_NOT_correct_but_valid_zipfile_throws_404() {
         /* prepare */
         when(mockedChecksumService.hasCorrectChecksum(eq("mychecksum"), any())).thenReturn(false);
         when(mockedZipSupport.isZipFile(any())).thenReturn(true);
-        expectedException.expect(NotAcceptableException.class);
 
-        /* execute */
+        /* execute + test */
+        assertThrows(NotAcceptableException.class, () -> serviceToTest.uploadSourceCode(PROJECT1, randomUuid, file, "mychecksum"));
+    }
+
+    @Test
+    void when_checksum_is_NOT_correct_but_valid_zipfile_but_checksum_validation_is_disabled_no_failure() {
+        /* prepare */
+        when(mockedChecksumService.hasCorrectChecksum(eq("mychecksum"), any())).thenReturn(false);
+        when(mockedZipSupport.isZipFile(any())).thenReturn(true);
+
+        serviceToTest.validateChecksum = false;
+
+        /* execute + test (no exception) */
         serviceToTest.uploadSourceCode(PROJECT1, randomUuid, file, "mychecksum");
     }
 
     @Test
-    public void when_checksum_is_correct_but_not_valid_zipfile_throws_404() {
+    void when_checksum_is_correct_but_NOT_valid_zipfile_but_zip_validation_is_disabled_no_failure() {
         /* prepare */
         when(mockedChecksumService.hasCorrectChecksum(eq("mychecksum"), any())).thenReturn(true);
         when(mockedZipSupport.isZipFile(any())).thenReturn(false);
-        expectedException.expect(NotAcceptableException.class);
 
-        /* execute */
+        serviceToTest.validateZip = false;
+
+        /* execute + test (no exception) */
         serviceToTest.uploadSourceCode(PROJECT1, randomUuid, file, "mychecksum");
+    }
+
+    @Test
+    void when_checksum_is_correct_but_not_valid_zipfile_throws_404() {
+        /* prepare */
+        when(mockedChecksumService.hasCorrectChecksum(eq("mychecksum"), any())).thenReturn(true);
+        when(mockedZipSupport.isZipFile(any())).thenReturn(false);
+
+        /* execute + test */
+        assertThrows(NotAcceptableException.class, () -> serviceToTest.uploadSourceCode(PROJECT1, randomUuid, file, "mychecksum"));
     }
 
 }

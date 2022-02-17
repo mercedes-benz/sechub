@@ -11,12 +11,14 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.util.StringInputStream;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
+import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
 import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
@@ -36,6 +38,14 @@ public class SchedulerUploadService {
     static final String SOURCECODE_ZIP_CHECKSUM = SOURCECODE_ZIP + ".checksum";
 
     private static final Logger LOG = LoggerFactory.getLogger(SchedulerUploadService.class);
+
+    @Value("${sechub.server.upload.validate.zip:true}")
+    @MustBeDocumented(value = "With `false` ZIP validation on sechub server side is disabled. So ZIP validation must be done at delegated security products! You should disable the validation only for testing security product behaviours!")
+    boolean validateZip = true;
+
+    @MustBeDocumented(value = "With `false` checksum validation (sha256) on sechub server side is disabled. So sha256 validation must be done at delegated security products! You should disable the validation only for testing security product behaviours!")
+    @Value("${sechub.server.upload.validate.checksum:true}")
+    boolean validateChecksum = true;
 
     @Autowired
     StorageService storageService;
@@ -111,6 +121,9 @@ public class SchedulerUploadService {
     }
 
     private void assertCheckSumCorrect(String checkSum, Path path) {
+        if (!validateChecksum) {
+            return;
+        }
         if (!checksumSHA256Service.hasCorrectChecksum(checkSum, path.toAbsolutePath().toString())) {
             LOG.error("uploaded file has not correct checksum! Something must have happened during the upload!");
             throw new NotAcceptableException("Sourcecode checksum check failed");
@@ -118,6 +131,9 @@ public class SchedulerUploadService {
     }
 
     private void assertValidZipFile(Path path) {
+        if (!validateZip) {
+            return;
+        }
         if (!zipSupport.isZipFile(path)) {
             LOG.error("uploaded file is NOT a valid ZIP file!");
             throw new NotAcceptableException("Sourcecode is not wrapped inside a valid zip file");
