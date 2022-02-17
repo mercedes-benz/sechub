@@ -6,6 +6,7 @@ echo "# Starting OWASP ZAP scan #"
 echo "###########################"
 echo ""
 echo "Target URL: $PDS_SCAN_TARGET_URL"
+echo "Target Type: $PDS_SCAN_TARGET_TYPE"
 echo ""
 
 options=""
@@ -24,6 +25,12 @@ then
     options="$options --ajaxSpider"
 else
     echo "Ajax spider: disabled"
+fi
+
+if [ "$ZAP_USE_PROXY" != "true" ] && [ "$ZAP_USE_PROXY_FOR_PDS_TARGET_TYPE" = "$PDS_SCAN_TARGET_TYPE" ]
+then
+    ZAP_USE_PROXY="true"
+    echo "Using proxy for target type: $PDS_SCAN_TARGET_TYPE"
 fi
 
 if [ "$ZAP_USE_PROXY" = "true" ]

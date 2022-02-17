@@ -49,7 +49,7 @@ RUN apt-get update && \
 # Install OWASP ZAP
 RUN cd "$TOOL_FOLDER" && \
 	# download latest release of owasp zap
-	wget https://github.com/zaproxy/zaproxy/releases/download/v$OWASP_ZAP_VERSION/zaproxy_$OWASP_ZAP_VERSION-1_all.deb && \
+	wget --no-verbose https://github.com/zaproxy/zaproxy/releases/download/v$OWASP_ZAP_VERSION/zaproxy_$OWASP_ZAP_VERSION-1_all.deb && \
 	# verify that the checksum and the checksum of the file are same
     echo "$OWASP_ZAP_CHECKSUM zaproxy_$OWASP_ZAP_VERSION-1_all.deb" | sha256sum --check && \
 	dpkg -i zaproxy_$OWASP_ZAP_VERSION-1_all.deb && \
@@ -95,8 +95,8 @@ WORKDIR "$WORKSPACE"
 # Change owner of tool, workspace and pds folder as well as /run.sh
 RUN chown --recursive "$USER:$USER" $TOOL_FOLDER $SCRIPT_FOLDER $WORKSPACE $PDS_FOLDER $SHARED_VOLUMES /run.sh
 
+# Create OWASP ZAP plugin folder
 RUN mkdir --parents "/home/$USER/.ZAP/plugin"
-COPY reports-release-0.10.0.zap /home/$USER/.ZAP/plugin/reports-release-0.10.0.zap
 RUN chown --recursive "$USER:$USER" /home/$USER/.ZAP
 
 # Switch from root to non-root user
@@ -106,6 +106,6 @@ USER "$USER"
 # see: https://www.zaproxy.org/addons/
 # via addon manager: owasp-zap -cmd -addoninstall webdriverlinux
 RUN cd "/home/$USER/.ZAP/plugin" && \
-    wget --input-file="$TOOL_FOLDER/zap-addons.txt"
+    wget --no-verbose --input-file="$TOOL_FOLDER/zap-addons.txt"
 
 CMD ["/run.sh"]

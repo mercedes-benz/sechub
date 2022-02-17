@@ -13,9 +13,13 @@
           {
             "key": "pds.scan.target.url",
             "description": "The target url for the scan."
+          },
+          {
+            "key": "pds.scan.target.type",
+            "description": "The target type of the scan. Possible values are: INTERNET, INTRANET, UNKNOWN"
           }
         ],
-        "optional" : [
+        "optional": [
           {
             "key": "pds.scan.configuration",
             "description": "The configuration of the web scan."
@@ -46,16 +50,28 @@
           {
             "key": "pds.scan.target.url",
             "description": "The target url for the scan"
+          },
+          {
+            "key": "pds.scan.target.type",
+            "description": "The target type of the scan. Possible values are: INTERNET, INTRANET, UNKNOWN"
           }
         ],
-        "optional" : [
+        "optional": [
           {
             "key": "pds.scan.configuration",
             "description": "The configuration of the web scan"
           },
           {
+            "key": "zap.activescan.enabled",
+            "description": "Active scanning uses known attacks against targets. If this option is enabled OWASP ZAP will actively attack the target."
+          },
+          {
+            "key": "zap.ajaxcrawler.enabled",
+            "description": "The AJAX crawler can crawl single-page and JavaScript pages. In case, this option is enabled the scanning will take more time."
+          },
+          {
             "key": "zap.use.proxy",
-            "description": "Enable/disable proxy for scanning."
+            "description": "Enable/disable proxy for scanning. This overwrites the target type configuration."
           }
         ]
       }

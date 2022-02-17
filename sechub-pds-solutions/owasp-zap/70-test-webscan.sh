@@ -78,6 +78,10 @@ json=$(cat <<JSON
         {
             "key" : "pds.scan.target.url", 
             "value" : "$target_url" 
+        },
+        {
+            "key" : "pds.scan.target.type", 
+            "value" : "INTRANET" 
         }
      ]
 }

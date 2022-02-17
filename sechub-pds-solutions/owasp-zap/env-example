@@ -65,3 +65,10 @@ S3_ENDPOINT=http://10.42.43.7:9000
 S3_BUCKETNAME=pds
 S3_ACCESSKEY=user
 S3_SECRETKEY=Why$5forThat?
+
+# Proxy settings
+ZAP_PROXY_HOST=127.0.0.1
+ZAP_PROXY_PORT=9999
+
+# Use the proxy configuration for the specific target type only
+ZAP_USE_PROXY_FOR_PDS_TARGET_TYPE=INTERNET
