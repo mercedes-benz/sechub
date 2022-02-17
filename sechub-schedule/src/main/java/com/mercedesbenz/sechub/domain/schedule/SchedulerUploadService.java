@@ -96,9 +96,10 @@ public class SchedulerUploadService {
 
     private void storeUploadFileAndSha256Checksum(String projectId, UUID jobUUID, MultipartFile file, String checkSum, String traceLogID) {
         JobStorage jobStorage = storageService.getJobStorage(projectId, jobUUID);
+
         try (InputStream inputStream = file.getInputStream()) {
             jobStorage.store(SOURCECODE_ZIP, inputStream);
-            // we also store new checksum - so not necessary to calculate at adapters again!
+            // we also store given checksum - so can be reused by security product
             jobStorage.store(SOURCECODE_ZIP_CHECKSUM, new StringInputStream(checkSum));
         } catch (IOException e) {
             LOG.error("Was not able to store zipped sources! {}", traceLogID, e);
@@ -126,7 +127,7 @@ public class SchedulerUploadService {
         }
         try (InputStream inputStream = file.getInputStream()) {
             /* validate */
-            assertValidZipFile(file.getInputStream());
+            assertValidZipFile(inputStream);
 
         } catch (IOException e) {
             LOG.error("Was not able to validate uploaded zip file", traceLogID, e);
@@ -135,18 +136,15 @@ public class SchedulerUploadService {
     }
 
     private void assertCheckSumCorrect(String checkSum, InputStream inputStream) {
-        if (!validateChecksum) {
-            return;
-        }
         if (!checksumSHA256Service.hasCorrectChecksum(checkSum, inputStream)) {
-            LOG.error("uploaded file has not correct checksum! Something must have happened during the upload!");
+            LOG.error("Uploaded file has not correct sha256 checksum! Something must have happened during the upload!");
             throw new NotAcceptableException("Sourcecode checksum check failed");
         }
     }
 
     private void assertValidZipFile(InputStream inputStream) {
         if (!zipSupport.isZipFile(inputStream)) {
-            LOG.error("uploaded file is NOT a valid ZIP file!");
+            LOG.error("Uploaded file is NOT a valid ZIP file!");
             throw new NotAcceptableException("Sourcecode is not wrapped inside a valid zip file");
         }
     }

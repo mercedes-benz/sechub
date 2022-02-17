@@ -32,7 +32,6 @@ public class FileChecksumSHA256ServiceTest {
 
         /* test */
         assertEquals("59060b6b4e8d137596dc01ec15d5da1ab4c4ad0d756c780ed88225f082ae87b7", checksum);
-        assertEquals("59060b6b4e8d137596dc01ec15d5da1ab4c4ad0d756c780ed88225f082ae87b7", checksum);
 
         inputStream.close();
     }

@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -82,8 +83,10 @@ public class FileUploadSizeScenario2IntTest {
 		}
 
 		/* execute */
-		as(USER_1).
-			upload(PROJECT_1, jobUUID, largeFile, checksumSHA256Service.createChecksum(new FileInputStream(largeFile)));
+		try(InputStream inputStream = new FileInputStream(largeFile)){
+    		as(USER_1).
+    			upload(PROJECT_1, jobUUID, largeFile, checksumSHA256Service.createChecksum(inputStream));
+		}
 		/* @formatter:on */
     }
 

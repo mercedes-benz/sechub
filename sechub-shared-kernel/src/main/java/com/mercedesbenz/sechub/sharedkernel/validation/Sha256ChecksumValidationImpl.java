@@ -4,8 +4,8 @@ package com.mercedesbenz.sechub.sharedkernel.validation;
 import org.springframework.stereotype.Component;
 
 /**
- * Email validation implementation. Will check mail not null and in acceptable
- * format
+ * Sha256 checksum validation implementation.
+ *
  *
  * @author Albert Tregnaghi
  *

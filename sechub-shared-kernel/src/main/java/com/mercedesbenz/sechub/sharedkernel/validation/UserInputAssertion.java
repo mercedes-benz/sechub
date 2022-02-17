@@ -48,7 +48,7 @@ public class UserInputAssertion {
     Sha256ChecksumValidation sha256CheckSumValidation;
 
     /**
-     * Asserts this is a valid project id. If not a {@link NotAcceptableException}
+     * Asserts this is a valid project id. If not, a {@link NotAcceptableException}
      * will be thrown
      *
      * @param projectId
@@ -62,7 +62,7 @@ public class UserInputAssertion {
     }
 
     /**
-     * Asserts this is a valid job uuid. If not a {@link NotAcceptableException}
+     * Asserts this is a valid job uuid. If not, a {@link NotAcceptableException}
      * will be thrown
      *
      * @param jobUUID
@@ -72,7 +72,7 @@ public class UserInputAssertion {
     }
 
     /**
-     * Asserts this is a valid one time token. If not a
+     * Asserts this is a valid one time token. If not, a
      * {@link NotAcceptableException} will be thrown
      *
      * @param oneTimeToken
@@ -82,8 +82,8 @@ public class UserInputAssertion {
     }
 
     /**
-     * Asserts this is a valid user id. If not a {@link NotAcceptableException} will
-     * be thrown
+     * Asserts this is a valid user id. If not, a {@link NotAcceptableException}
+     * will be thrown
      *
      * @param userId
      */
@@ -92,7 +92,7 @@ public class UserInputAssertion {
     }
 
     /**
-     * Asserts this is a valid email address. If not a
+     * Asserts this is a valid email address. If not, a
      * {@link NotAcceptableException} will be thrown
      *
      * @param userId
@@ -102,7 +102,7 @@ public class UserInputAssertion {
     }
 
     /**
-     * * Asserts this is a valid email address. If not a
+     * Asserts this is a valid sha256 checksum. If not, a
      * {@link NotAcceptableException} will be thrown
      *
      * @param sha256
