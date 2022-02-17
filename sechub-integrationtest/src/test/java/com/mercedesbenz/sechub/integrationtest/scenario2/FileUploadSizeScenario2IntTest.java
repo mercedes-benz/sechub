@@ -6,6 +6,7 @@ import static com.mercedesbenz.sechub.integrationtest.scenario2.Scenario2.*;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -82,7 +83,7 @@ public class FileUploadSizeScenario2IntTest {
 
 		/* execute */
 		as(USER_1).
-			upload(PROJECT_1, jobUUID, largeFile, checksumSHA256Service.createChecksum(largeFile.getAbsolutePath()));
+			upload(PROJECT_1, jobUUID, largeFile, checksumSHA256Service.createChecksum(new FileInputStream(largeFile)));
 		/* @formatter:on */
     }
 

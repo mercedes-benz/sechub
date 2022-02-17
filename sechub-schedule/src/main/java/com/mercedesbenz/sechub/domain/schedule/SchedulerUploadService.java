@@ -4,8 +4,7 @@ package com.mercedesbenz.sechub.domain.schedule;
 import static com.mercedesbenz.sechub.sharedkernel.util.Assert.*;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.InputStream;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -70,6 +69,7 @@ public class SchedulerUploadService {
 
     @UseCaseUserUploadsSourceCode(@Step(number = 2, name = "Try to find project and upload sourcecode as zipfile", description = "When project is found and user has access and job is initializing the sourcecode file will be uploaded"))
     public void uploadSourceCode(String projectId, UUID jobUUID, MultipartFile file, String checkSum) {
+        /* assert */
         assertion.isValidProjectId(projectId);
         assertion.isValidJobUUID(jobUUID);
         assertion.isValidSha256Checksum(checkSum);
@@ -85,58 +85,67 @@ public class SchedulerUploadService {
 
         assertJobFoundAndStillInitializing(projectId, jobUUID);
 
-        JobStorage jobStorage = storageService.getJobStorage(projectId, jobUUID);
-        Path tmpFile = null;
-        try {
-            /* prepare a tmp file for validation */
-            try {
-                tmpFile = Files.createTempFile("sechub_schedule_upload_tmp", null);
-                file.transferTo(tmpFile);
-            } catch (IOException e) {
-                LOG.error("Was not able to create temp file of zipped sources!", e);
-                throw new SecHubRuntimeException("Was not able to create temp file");
-            }
-            /* validate */
-            assertValidZipFile(tmpFile);
-            assertCheckSumCorrect(checkSum, tmpFile);
+        handleZipValidation(file, traceLogID);
+        handleChecksumValidation(file, checkSum, traceLogID);
 
-            /* now store */
-            try {
-                jobStorage.store(SOURCECODE_ZIP, file.getInputStream());
-                // we also store new checksum - so not necessary to calculate at adapters again!
-                jobStorage.store(SOURCECODE_ZIP_CHECKSUM, new StringInputStream(checkSum));
-            } catch (IOException e) {
-                LOG.error("Was not able to store zipped sources! {}", traceLogID, e);
-                throw new SecHubRuntimeException("Was not able to upload sources");
-            }
-            LOG.info("uploaded sourcecode for {}", traceLogID);
-        } finally {
-            if (tmpFile != null && Files.exists(tmpFile)) {
-                try {
-                    Files.delete(tmpFile);
-                } catch (IOException e) {
-                    LOG.error("Was not able delete former temp file for zipped sources! {}", traceLogID, e);
-                }
-            }
-        }
+        /* now store */
+        storeUploadFileAndSha256Checksum(projectId, jobUUID, file, checkSum, traceLogID);
+        LOG.info("uploaded sourcecode for {}", traceLogID);
 
     }
 
-    private void assertCheckSumCorrect(String checkSum, Path path) {
+    private void storeUploadFileAndSha256Checksum(String projectId, UUID jobUUID, MultipartFile file, String checkSum, String traceLogID) {
+        JobStorage jobStorage = storageService.getJobStorage(projectId, jobUUID);
+        try (InputStream inputStream = file.getInputStream()) {
+            jobStorage.store(SOURCECODE_ZIP, inputStream);
+            // we also store new checksum - so not necessary to calculate at adapters again!
+            jobStorage.store(SOURCECODE_ZIP_CHECKSUM, new StringInputStream(checkSum));
+        } catch (IOException e) {
+            LOG.error("Was not able to store zipped sources! {}", traceLogID, e);
+            throw new SecHubRuntimeException("Was not able to upload sources");
+        }
+    }
+
+    private void handleChecksumValidation(MultipartFile file, String checkSum, String traceLogID) {
         if (!validateChecksum) {
             return;
         }
-        if (!checksumSHA256Service.hasCorrectChecksum(checkSum, path.toAbsolutePath().toString())) {
+        try (InputStream inputStream = file.getInputStream()) {
+            /* validate */
+            assertCheckSumCorrect(checkSum, inputStream);
+
+        } catch (IOException e) {
+            LOG.error("Was not able to validate uploaded file checksum", traceLogID, e);
+            throw new SecHubRuntimeException("Was not able to validate uploaded sources checksum");
+        }
+    }
+
+    private void handleZipValidation(MultipartFile file, String traceLogID) {
+        if (!validateZip) {
+            return;
+        }
+        try (InputStream inputStream = file.getInputStream()) {
+            /* validate */
+            assertValidZipFile(file.getInputStream());
+
+        } catch (IOException e) {
+            LOG.error("Was not able to validate uploaded zip file", traceLogID, e);
+            throw new SecHubRuntimeException("Was not able to validate uploaded ZIP sources");
+        }
+    }
+
+    private void assertCheckSumCorrect(String checkSum, InputStream inputStream) {
+        if (!validateChecksum) {
+            return;
+        }
+        if (!checksumSHA256Service.hasCorrectChecksum(checkSum, inputStream)) {
             LOG.error("uploaded file has not correct checksum! Something must have happened during the upload!");
             throw new NotAcceptableException("Sourcecode checksum check failed");
         }
     }
 
-    private void assertValidZipFile(Path path) {
-        if (!validateZip) {
-            return;
-        }
-        if (!zipSupport.isZipFile(path)) {
+    private void assertValidZipFile(InputStream inputStream) {
+        if (!zipSupport.isZipFile(inputStream)) {
             LOG.error("uploaded file is NOT a valid ZIP file!");
             throw new NotAcceptableException("Sourcecode is not wrapped inside a valid zip file");
         }
