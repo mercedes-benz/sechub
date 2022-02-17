@@ -84,7 +84,7 @@ Let's start with:
 +
 ----
 cd ~
-git clone https://github.com/Daimler/sechub.git
+git clone https://github.com/mercedes-benz/sechub.git
 cd sechub
 ----
 +

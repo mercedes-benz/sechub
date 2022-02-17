@@ -9,7 +9,7 @@ Your Jenkins server should be at minimum: `Jenkins ver. 2.176.1`.
 [NOTE]
 ====
 The described Jenkins auto deployment is now *relying on the GitHub actions build* - see 
-https://github.com/Daimler/sechub/tree/develop/.github/workflows[GitHub workflows folder].
+https://github.com/mercedes-benz/sechub/tree/develop/.github/workflows[GitHub workflows folder].
 Deployment artifacts are available at after gradle workflow has been done. 
 
 In future the artifacts will be automatically available in
@@ -34,7 +34,7 @@ builds - means to get fast feedback.
 
 - Jenkins > create new Item -> `Multibranch pipeline`, name: `sechub-open-source-ci` +
 - Branch sources: `Git`+
-  * Project repository: `https://github.com/Daimler/sechub.git` +
+  * Project repository: `https://github.com/mercedes-benz/sechub.git` +
   * Behaviours:
     . Discover branches
     . Filter by name (with wildcards):
@@ -74,7 +74,7 @@ A server could be released by a tag like
 
 - Pipeline: `Pipeline script from SCM` +
   * SCM: Git
-    * Repository URL: `https://github.com/Daimler/sechub.git`
+    * Repository URL: `https://github.com/mercedes-benz/sechub.git`
     * Branches to build: `*/master`
   * Script Path: `release-pipeline.jenkins`
 

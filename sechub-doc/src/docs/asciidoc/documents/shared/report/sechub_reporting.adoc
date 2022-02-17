@@ -22,7 +22,7 @@ formats:
   the base for planned development of IDE plugins (`Eclipse`, `IntelliJ`, `VSCode`)
 
 ifdef::techdoc[]
-NOTE: If you are interested in technical details/ development situation you can take a look at https://github.com/Daimler/sechub/issues/68. Newer changes
+NOTE: If you are interested in technical details/ development situation you can take a look at https://github.com/mercedes-benz/sechub/issues/68. Newer changes
       /additions in report should normally reference this base issue always, so it is a good starting point.
 endif::techdoc[]
 

@@ -26,7 +26,7 @@ public class AbstractInstallSetupTest {
     @Test
     public void isabletoscan_returns_true_when_a_target_has_type_intranet_and_is_able_to_scanDaimmler_intranet() {
         /* prepare */
-        setupToTest.canScanDaimlerIntranet = true;
+        setupToTest.canScanIntranet = true;
 
         /* execute + test */
         assertTrue(setupToTest.isAbleToScan(TargetType.INTRANET));
