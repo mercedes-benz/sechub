@@ -1052,4 +1052,15 @@ public class AsUser {
         getRestHelper().post(url);
     }
 
+    public TestUserDetailInformation fetchUserDetails(TestUser user) {
+        String url = getUrlBuilder().buildAdminShowsUserDetailsUrl(user.getUserId());
+        String json = getRestHelper().getJSON(url);
+        return TestJSONHelper.get().createFromJSON(json, TestUserDetailInformation.class);
+    }
+
+    public void changeEmailAddress(TestUser user, String newEmailAddress) {
+        String url = getUrlBuilder().buildAdminChangesUserEmailAddress(user.getUserId(),newEmailAddress);
+        getRestHelper().put(url);
+    }
+
 }

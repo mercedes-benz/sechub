@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TestUser;
+import com.mercedesbenz.sechub.integrationtest.api.TestUserDetailInformation;
+import com.mercedesbenz.sechub.integrationtest.api.TextSearchMode;
 
 public class UserAdministrationScenario2IntTest {
 
@@ -36,7 +38,7 @@ public class UserAdministrationScenario2IntTest {
 			isInSuperAdminList();
 		/* test notifications */
 		assertUser(userBecomingAdmin).hasReceivedEmail("SecHub administrator privileges granted");
-		assertMailExists("int-test_superadmins_npm@example.org", "SecHub: Granted administrator rights.*" + userBecomingAdmin.getUserId(), true);
+		assertMailExists("int-test_superadmins_npm@example.org", "SecHub: Granted administrator rights.*" + userBecomingAdmin.getUserId(), TextSearchMode.REGLAR_EXPRESSON);
 	}
 	/* @formatter:on */
 
@@ -48,6 +50,28 @@ public class UserAdministrationScenario2IntTest {
         /* test */
         assertTrue(list.contains(USER_1.getUserId()));
         assertTrue(list.contains(USER_2.getUserId()));
+    }
+
+    @Test
+    public void superadmin_can_change_user_email_adress_of_user2() {
+        /* prepare */
+        TestUserDetailInformation details = as(SUPER_ADMIN).fetchUserDetails(USER_2);
+        String formerEmailAddress = details.getEmail();
+
+        String newEmailAddress = "c_" + System.nanoTime() + "_user2s2@example.com";
+
+        /* execute */
+        as(SUPER_ADMIN).changeEmailAddress(USER_2, newEmailAddress);
+
+        /* test */
+        TestUserDetailInformation updatedDetails = as(SUPER_ADMIN).fetchUserDetails(USER_2);
+        assertEquals(newEmailAddress, updatedDetails.getEmail());
+
+        // check mails have been sent
+        assertMailExists(formerEmailAddress, "A SecHub administrator has changed your email adress and it will not be used any longer for SecHub.",
+                TextSearchMode.CONTAINS);
+        assertMailExists(newEmailAddress, "A SecHub administrator has changed your email address from " + formerEmailAddress + " to " + newEmailAddress,
+                TextSearchMode.CONTAINS);
     }
 
     @Test
@@ -100,7 +124,7 @@ public class UserAdministrationScenario2IntTest {
 		/* test notifications */
 		assertUser(userNoMoreAdmin).hasReceivedEmail("SecHub administrator privileges revoked");
 		assertMailExists("int-test_superadmins_npm@example.org",
-				"SecHub: Revoked administrator rights.*" + userNoMoreAdmin.getUserId(), true);
+				"SecHub: Revoked administrator rights.*" + userNoMoreAdmin.getUserId(), TextSearchMode.REGLAR_EXPRESSON);
 	}
 	/* @formatter:on */
 

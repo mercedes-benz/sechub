@@ -8,6 +8,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
+import com.mercedesbenz.sechub.integrationtest.api.TextSearchMode;
 
 public class ProjectAdministrationScenario3IntTest {
 
@@ -82,8 +83,8 @@ public class ProjectAdministrationScenario3IntTest {
         assertUser(USER_3).isAssignedToProject(PROJECT_1);
         assertUser(USER_1).isNotOwnerOf(PROJECT_1);
 
-        assertUser(USER_3).hasReceivedEmail(subject, true);
-        assertUser(USER_2).hasReceivedEmail(subject, true);
-        assertUser(USER_1).hasReceivedEmail(subject, true);
+        assertUser(USER_3).hasReceivedEmail(subject, TextSearchMode.REGLAR_EXPRESSON);
+        assertUser(USER_2).hasReceivedEmail(subject, TextSearchMode.REGLAR_EXPRESSON);
+        assertUser(USER_1).hasReceivedEmail(subject, TextSearchMode.REGLAR_EXPRESSON);
     }
 }
