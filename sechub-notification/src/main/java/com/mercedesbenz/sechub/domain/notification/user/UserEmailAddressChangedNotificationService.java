@@ -42,7 +42,7 @@ public class UserEmailAddressChangedNotificationService {
 
         emailService.send(message);
     }
-    
+
     private void sendEmailToNewUserEmailAddress(UserMessage userMessage) {
 
         StringBuilder emailContent = new StringBuilder();
@@ -62,7 +62,7 @@ public class UserEmailAddressChangedNotificationService {
 
     private String createEmailStart(UserMessage userMessage) {
         // We userMessage.getSubject() to create the beginning of the subject.
-        // So we can use this notification service by different use cases. 
+        // So we can use this notification service by different use cases.
         return userMessage.getSubject();
     }
 

@@ -30,7 +30,8 @@ public class NotificationMessageHandlerTest {
     private InformAdminsThatProjectHasBeenDeletedNotificationService mockedInformAdminsThatProjectHasBeenDeletedNotificationService;
     private InformOwnerThatProjectHasBeenDeletedNotificationService mockedInformOwnerThatProjectHasBeenDeletedNotificationService;
     private InformUsersThatProjectHasBeenDeletedNotificationService mockedInformUsersThatProjectHasBeenDeletedNotificationService;
-    private UserEmailAddressChangedNotificationService  mockedUserEmailAddressChangedNotificationService;
+    private UserEmailAddressChangedNotificationService mockedUserEmailAddressChangedNotificationService;
+
     @Before
     public void before() throws Exception {
         mockedSignUpRequestedAdminNotificationService = mock(SignUpRequestedAdminNotificationService.class);
@@ -41,14 +42,14 @@ public class NotificationMessageHandlerTest {
         mockedInformOwnerThatProjectHasBeenDeletedNotificationService = mock(InformOwnerThatProjectHasBeenDeletedNotificationService.class);
         mockedInformUsersThatProjectHasBeenDeletedNotificationService = mock(InformUsersThatProjectHasBeenDeletedNotificationService.class);
         mockedUserEmailAddressChangedNotificationService = mock(UserEmailAddressChangedNotificationService.class);
-        
+
         handlerToTest = new NotificationMessageHandler();
         handlerToTest.signupRequestedAdminNotificationService = mockedSignUpRequestedAdminNotificationService;
         handlerToTest.newAPITokenAppliedUserNotificationService = mockedNewAPITokenAppliedUserNotificationService;
         handlerToTest.newApiTokenRequestedUserNotificationService = mockedNewApiTokenRequestedUserNotificationService;
         handlerToTest.userDeletedNotificationService = mockedUserDeletedNotificationService;
-        handlerToTest.userEmailAddressChangedNotificationService=mockedUserEmailAddressChangedNotificationService;
-        
+        handlerToTest.userEmailAddressChangedNotificationService = mockedUserEmailAddressChangedNotificationService;
+
         /* project deleted */
         handlerToTest.informAdminsThatProjectHasBeenDeletedService = mockedInformAdminsThatProjectHasBeenDeletedNotificationService;
         handlerToTest.informOwnerThatProjectHasBeenDeletedService = mockedInformOwnerThatProjectHasBeenDeletedNotificationService;
@@ -133,7 +134,7 @@ public class NotificationMessageHandlerTest {
         /* test */
         verify(mockedNewApiTokenRequestedUserNotificationService).notify(userMessage);
     }
-    
+
     @Test
     public void an_event_about_email_updatedeleted_user_triggers_UserEmailAddressChangedNotificationService() {
         /* prepare */

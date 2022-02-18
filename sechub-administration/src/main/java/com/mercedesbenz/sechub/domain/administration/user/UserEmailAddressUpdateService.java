@@ -55,17 +55,16 @@ public class UserEmailAddressUpdateService {
         assertion.isValidUserId(userId);
         assertion.isValidEmailAddress(newEmailAddress);
 
-
         User user = userRepository.findOrFailUser(userId);
-        String formerEmailAddress=user.getEmailAdress();
-        
+        String formerEmailAddress = user.getEmailAdress();
+
         if (newEmailAddress.equalsIgnoreCase(formerEmailAddress)) {
             throw new NotAcceptableException("User has already this email address");
         }
-        /* parameters valid, we audit log the change*/
+        /* parameters valid, we audit log the change */
         auditLogService.log("Changed email adress of user {}", logSanitizer.sanitize(userId, 30));
 
-        user.emailAdress=newEmailAddress;
+        user.emailAdress = newEmailAddress;
 
         /* create message containing data before user email has changed */
         UserMessage message = new UserMessage();

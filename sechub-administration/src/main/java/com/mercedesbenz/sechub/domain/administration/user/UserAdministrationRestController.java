@@ -58,7 +58,7 @@ public class UserAdministrationRestController {
 
     @Autowired
     UserRevokeSuperAdminRightsService userRevokeSuperAdminRightsService;
-    
+
     @Autowired
     UserEmailAddressUpdateService userEmailAddressUpdateService;
 
@@ -118,8 +118,8 @@ public class UserAdministrationRestController {
 		/* @formatter:on */
         userRevokeSuperAdminRightsService.revokeSuperAdminRightsFrom(userId);
     }
-	
-	 /* @formatter:off */
+
+    /* @formatter:off */
     @UseCaseAdminUpdatesUserEmailAddress(@Step(number=1,name="Rest call",description="User emaill address will be changed",needsRestDoc=true))
     @RequestMapping(path = AdministrationAPIConstants.API_UPDATE_USER_EMAIL_ADDRESS, method = RequestMethod.PUT, produces= {MediaType.APPLICATION_JSON_VALUE})
     public void updateUserEmailAdderss(@PathVariable(name="userId") String userId,@PathVariable(name="newEmailAddress") String newEmailAddress) {

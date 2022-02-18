@@ -93,13 +93,12 @@ public class TestJSONHelper {
             return json;
         }
     }
-    
-    
+
     public <T> T createFromJSON(String json, Class<T> clazz) {
         try {
             return TestJSONHelper.get().getMapper().readValue(json.getBytes(), clazz);
         } catch (IOException e) {
-            throw new IllegalStateException("Cannot convert given JSON to clazz:"+clazz, e);
+            throw new IllegalStateException("Cannot convert given JSON to clazz:" + clazz, e);
         }
     }
 

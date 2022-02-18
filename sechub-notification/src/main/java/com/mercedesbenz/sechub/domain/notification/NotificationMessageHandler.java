@@ -45,7 +45,7 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
 
     @Autowired
     UserDeletedNotificationService userDeletedNotificationService;
-    
+
     @Autowired
     UserEmailAddressChangedNotificationService userEmailAddressChangedNotificationService;
 
@@ -112,7 +112,6 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
     @Autowired
     InformAdminsThatNewSchedulerInstanceHasBeenStarted informAdminsThatNewSchedulerInstanceHasBeenStarted;
 
-  
     @Override
     public void receiveAsyncMessage(DomainMessage request) {
         MessageID messageId = request.getMessageId();
@@ -168,7 +167,7 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
         case USER_EMAIL_ADDRESS_CHANGED:
             handleUserEmailChanged(request.get(MessageDataKeys.USER_EMAIL_ADDRESS_CHANGE_DATA));
             break;
-            
+
         default:
             throw new IllegalStateException("unhandled message id:" + messageId);
         }

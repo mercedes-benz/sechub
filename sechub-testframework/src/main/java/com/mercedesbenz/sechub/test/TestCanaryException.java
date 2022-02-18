@@ -1,9 +1,10 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.test;
 
 /**
  * A special runtime exception which is only used inside tests to simulate and
  * test exception handling.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */

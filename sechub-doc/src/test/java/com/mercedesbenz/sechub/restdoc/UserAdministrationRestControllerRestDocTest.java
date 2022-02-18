@@ -95,7 +95,7 @@ public class UserAdministrationRestControllerRestDocTest {
 
     @MockBean
     private UserEmailAddressUpdateService userEmailAddressUpdateService;
-    
+
     @MockBean
     private SignupRepository signUpRepository;
 
@@ -107,7 +107,7 @@ public class UserAdministrationRestControllerRestDocTest {
     @UseCaseRestDoc(useCase = UseCaseAdminUpdatesUserEmailAddress.class)
     public void restdoc_admin_updates_user_email_address() throws Exception {
         /* prepare */
-        String apiEndpoint = https(PORT_USED).buildAdminChangesUserEmailAddress(USER_ID.pathElement(),EMAIL_ADDRESS.pathElement());
+        String apiEndpoint = https(PORT_USED).buildAdminChangesUserEmailAddress(USER_ID.pathElement(), EMAIL_ADDRESS.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminUpdatesUserEmailAddress.class;
 
         /* execute + test @formatter:off */
@@ -124,7 +124,7 @@ public class UserAdministrationRestControllerRestDocTest {
                             pathParameters(
                                     parameterWithName(USER_ID.paramName()).description("The userId of the user whose email adress will be changed"),
                                     parameterWithName(EMAIL_ADDRESS.paramName()).description("The new email address")
-                                    
+
                             ).
                             build()
                         )
@@ -132,7 +132,7 @@ public class UserAdministrationRestControllerRestDocTest {
 
         /* @formatter:on */
     }
-    
+
     @Test
     @UseCaseRestDoc(useCase = UseCaseAdminGrantsAdminRightsToUser.class)
     public void restdoc_grant_admin_rights_to_user() throws Exception {

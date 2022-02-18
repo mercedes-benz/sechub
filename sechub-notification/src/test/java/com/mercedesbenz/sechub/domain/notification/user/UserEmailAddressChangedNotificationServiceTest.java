@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.notification.user;
 
 import static com.mercedesbenz.sechub.domain.notification.user.UserEmailAddressChangedNotificationService.*;
@@ -66,13 +67,13 @@ class UserEmailAddressChangedNotificationServiceTest {
         /* @formatter:off */
         String receivedFormerText = mails.receivedFormer.getText();
         String receivedNewText = mails.receivedNew.getText();
-        
+
         assertEquals("Your mail adress has changed by a test and it will not be used any longer for SecHub.\n"
                 + "\n"
-                + "In case you do not receive a follow up notification to the new email address, please inform your SecHub administrator!", 
+                + "In case you do not receive a follow up notification to the new email address, please inform your SecHub administrator!",
                 receivedFormerText);
         assertEquals("Your mail adress has changed by a test from former_email.adress@example.org to email.adress@example.org. \n"
-                + "Your old email address is not used in SecHub any longer.", 
+                + "Your old email address is not used in SecHub any longer.",
                 receivedNewText);
         /* @formatter:on */
 

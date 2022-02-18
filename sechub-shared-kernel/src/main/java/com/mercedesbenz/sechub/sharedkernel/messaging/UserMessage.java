@@ -126,7 +126,7 @@ public class UserMessage implements JSONable<UserMessage> {
      * Returns the former email address of an user. This information is only
      * available on events about email changes. All other events will have not this
      * information.
-     * 
+     *
      * @return former email address or <code>null</code>
      */
     public String getFormerEmailAddress() {
@@ -137,7 +137,7 @@ public class UserMessage implements JSONable<UserMessage> {
      * Set the former email address of an user. Should only be called for user
      * events when an email address has changed. The {@link #getEmailAdress()} shall
      * contain the new mail adress in this case.
-     * 
+     *
      * @param formerEmailAddress
      */
     public void setFormerEmailAddress(String formerEmailAddress) {

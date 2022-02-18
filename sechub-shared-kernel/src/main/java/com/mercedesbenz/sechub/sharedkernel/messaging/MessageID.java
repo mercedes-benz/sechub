@@ -149,12 +149,11 @@ public enum MessageID {
      * Inform that the access level for a project has been changed
      */
     PROJECT_ACCESS_LEVEL_CHANGED(MessageDataKeys.PROJECT_ACCESS_LEVEL_CHANGE_DATA),
-    
+
     /**
      * Inform that the email address of an user has been changed
      */
-    USER_EMAIL_ADDRESS_CHANGED(MessageDataKeys.USER_EMAIL_ADDRESS_CHANGE_DATA),
-    ;
+    USER_EMAIL_ADDRESS_CHANGED(MessageDataKeys.USER_EMAIL_ADDRESS_CHANGE_DATA),;
 
     private Set<MessageDataKey<?>> unmodifiableKeys;
 

@@ -125,7 +125,7 @@ public class MessageDataKeys {
      * Does contain former access level and new one
      */
     public static final MessageDataKey<ProjectMessage> PROJECT_ACCESS_LEVEL_CHANGE_DATA = createProjectMessageKey("project.accesslevel.change.data");
-    
+
     /**
      * Does contain userid, former email address, new email address
      */

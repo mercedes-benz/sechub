@@ -11,8 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import com.mercedesbenz.sechub.integrationtest.api.MockEmailEntry;
-import com.mercedesbenz.sechub.integrationtest.api.TextSearchMode;
 import com.mercedesbenz.sechub.integrationtest.api.TestUser;
+import com.mercedesbenz.sechub.integrationtest.api.TextSearchMode;
 import com.mercedesbenz.sechub.test.TestURLBuilder;
 
 public class MockEmailAccess {
