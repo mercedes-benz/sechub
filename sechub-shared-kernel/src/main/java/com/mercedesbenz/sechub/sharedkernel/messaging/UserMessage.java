@@ -36,6 +36,8 @@ public class UserMessage implements JSONable<UserMessage> {
 
     private String subject;
 
+    private String formerEmailAddress;
+
     @Override
     public Class<UserMessage> getJSONTargetClass() {
         return UserMessage.class;
@@ -118,6 +120,28 @@ public class UserMessage implements JSONable<UserMessage> {
 
     public String getSubject() {
         return subject;
+    }
+
+    /**
+     * Returns the former email address of an user. This information is only
+     * available on events about email changes. All other events will have not this
+     * information.
+     * 
+     * @return former email address or <code>null</code>
+     */
+    public String getFormerEmailAddress() {
+        return formerEmailAddress;
+    }
+
+    /**
+     * Set the former email address of an user. Should only be called for user
+     * events when an email address has changed. The {@link #getEmailAdress()} shall
+     * contain the new mail adress in this case.
+     * 
+     * @param oldEmailAdress
+     */
+    public void setFormerEmailAddress(String oldEmailAdress) {
+        this.formerEmailAddress = oldEmailAdress;
     }
 
 }

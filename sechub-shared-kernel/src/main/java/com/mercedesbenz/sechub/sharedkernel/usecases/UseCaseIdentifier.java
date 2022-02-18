@@ -139,7 +139,10 @@ public enum UseCaseIdentifier {
 
     UC_ADMIN_CHANGES_PROJECT_DESCRIPTION(61),
 
-    UC_ADMIN_CHANGES_PROJECT_ACCESS_LEVEL(62),;
+    UC_ADMIN_CHANGES_PROJECT_ACCESS_LEVEL(62),
+    
+    UC_ADMIN_UPDATES_USER_EMAIL_ADDRESS(63),
+    ;
 
     /* +-----------------------------------------------------------------------+ */
     /* +............................ Helpers ................................+ */

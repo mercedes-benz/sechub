@@ -27,6 +27,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminList
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminListsAllUsers;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminRevokesAdminRightsFromAdmin;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminShowsUserDetails;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUpdatesUserEmailAddress;
 
 /**
  * The rest api for user administration done by a super admin.
@@ -57,6 +58,9 @@ public class UserAdministrationRestController {
 
     @Autowired
     UserRevokeSuperAdminRightsService userRevokeSuperAdminRightsService;
+    
+    @Autowired
+    UserEmailAddressUpdateService userEmailAddressUpdateService;
 
     /* @formatter:off */
 	@UseCaseAdminAcceptsSignup(@Step(number=1,name="Rest call", description="Administrator accepts a persisted self registration entry by calling rest api",needsRestDoc=true))
@@ -113,6 +117,14 @@ public class UserAdministrationRestController {
 	public void revokeSuperAdminrights(@PathVariable(name="userId") String userId) {
 		/* @formatter:on */
         userRevokeSuperAdminRightsService.revokeSuperAdminRightsFrom(userId);
+    }
+	
+	 /* @formatter:off */
+    @UseCaseAdminUpdatesUserEmailAddress(@Step(number=1,name="Rest call",description="User emaill address will be changed",needsRestDoc=true))
+    @RequestMapping(path = AdministrationAPIConstants.API_UPDATE_USER_EMAIL_ADDRESS, method = RequestMethod.PUT, produces= {MediaType.APPLICATION_JSON_VALUE})
+    public void updateUserEmailAdderss(@PathVariable(name="userId") String userId,@PathVariable(name="newEmailAddress") String newEmailAddress) {
+        /* @formatter:on */
+        userEmailAddressUpdateService.updateUserEmailAddress(userId, newEmailAddress);
     }
 
 }

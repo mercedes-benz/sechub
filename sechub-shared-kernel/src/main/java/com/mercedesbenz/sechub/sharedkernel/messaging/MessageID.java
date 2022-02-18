@@ -146,9 +146,15 @@ public enum MessageID {
     PROJECT_OWNER_CHANGED(MessageDataKeys.PROJECT_OWNER_CHANGE_DATA, MessageDataKeys.ENVIRONMENT_BASE_URL),
 
     /**
-     * Inform the the access level for a project has been changed
+     * Inform that the access level for a project has been changed
      */
-    PROJECT_ACCESS_LEVEL_CHANGED(MessageDataKeys.PROJECT_ACCESS_LEVEL_CHANGE_DATA),;
+    PROJECT_ACCESS_LEVEL_CHANGED(MessageDataKeys.PROJECT_ACCESS_LEVEL_CHANGE_DATA),
+    
+    /**
+     * Inform that the email address of an user has been changed
+     */
+    USER_EMAIL_ADDRESS_CHANGED(MessageDataKeys.USER_EMAIL_ADDRESS_CHANGE_DATA),
+    ;
 
     private Set<MessageDataKey<?>> unmodifiableKeys;
 

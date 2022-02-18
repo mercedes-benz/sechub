@@ -87,6 +87,8 @@ public class AdministrationAPIConstants {
 
     public static final String API_SHOW_USER_DETAILS = API_ADMINISTRATION + "user/{userId}";
     public static final String API_DELETE_USER = API_ADMINISTRATION + "user/{userId}";
+    public static final String API_UPDATE_USER_EMAIL_ADDRESS = API_ADMINISTRATION + "user/{userId}/email/{newEmailAddress}";
+    
     public static final String API_SHOW_PROJECT_DETAILS = API_ADMINISTRATION + "project/{projectId}";
     public static final String API_CHANGE_PROJECT_DETAILS = API_ADMINISTRATION + "project/{projectId}";
     public static final String API_DELETE_PROJECT = API_ADMINISTRATION + "project/{projectId}";
@@ -104,5 +106,6 @@ public class AdministrationAPIConstants {
     /* +-----------------------------------------------------------------------+ */
     public static final String API_FETCH_NEW_API_TOKEN_BY_ONE_WAY_TOKEN = API_ANONYMOUS + "apitoken";
     public static final String API_REQUEST_NEW_APITOKEN = API_ANONYMOUS + "refresh/apitoken/{emailAddress}";
+
 
 }
