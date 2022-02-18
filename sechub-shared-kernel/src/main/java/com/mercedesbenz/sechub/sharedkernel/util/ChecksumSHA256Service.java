@@ -3,8 +3,8 @@ package com.mercedesbenz.sechub.sharedkernel.util;
 
 import static com.mercedesbenz.sechub.sharedkernel.util.Assert.*;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -12,16 +12,19 @@ import java.security.NoSuchAlgorithmException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class FileChecksumSHA256Service {
+public class ChecksumSHA256Service {
 
-    public boolean hasCorrectChecksum(String checkSum, String filepath) {
+    public boolean hasCorrectChecksum(String checkSum, InputStream inputStream) {
         if (checkSum == null) {
             return false;// null is never correct...
         }
-        if (filepath == null) {
+        if (inputStream == null) {
             return false;
         }
-        String calculated = createChecksum(filepath);
+        String calculated = createChecksum(inputStream);
+        if (calculated == null) {
+            return false;
+        }
         return calculated.equals(checkSum);
     }
 
@@ -32,8 +35,8 @@ public class FileChecksumSHA256Service {
      * @return checksum or <code>null</code> when file is not existing
      * @throws IOException
      */
-    public String createChecksum(String filepath) {
-        notNull(filepath, "filepath may not be null");
+    public String createChecksum(InputStream inputStream) {
+        notNull(inputStream, "inputStream may not be null");
         MessageDigest md;
         String algorithm = "SHA-256";
         try {
@@ -42,7 +45,7 @@ public class FileChecksumSHA256Service {
             throw new IllegalStateException("Algorithm not supported:" + algorithm);
         }
         // file hashing with DigestInputStream
-        try (DigestInputStream dis = new DigestInputStream(new FileInputStream(filepath), md)) {
+        try (DigestInputStream dis = new DigestInputStream(inputStream, md)) {
             while (dis.read() != -1)
                 ; // empty loop to clear the data
             md = dis.getMessageDigest();
