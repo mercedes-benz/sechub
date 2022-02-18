@@ -12,7 +12,7 @@ import java.security.NoSuchAlgorithmException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class FileChecksumSHA256Service {
+public class ChecksumSHA256Service {
 
     public boolean hasCorrectChecksum(String checkSum, InputStream inputStream) {
         if (checkSum == null) {

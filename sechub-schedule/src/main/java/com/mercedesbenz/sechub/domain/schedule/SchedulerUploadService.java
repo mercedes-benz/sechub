@@ -24,7 +24,7 @@ import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUploadsSourceCode;
-import com.mercedesbenz.sechub.sharedkernel.util.FileChecksumSHA256Service;
+import com.mercedesbenz.sechub.sharedkernel.util.ChecksumSHA256Service;
 import com.mercedesbenz.sechub.sharedkernel.util.ZipSupport;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
@@ -39,10 +39,10 @@ public class SchedulerUploadService {
     private static final Logger LOG = LoggerFactory.getLogger(SchedulerUploadService.class);
 
     @Value("${sechub.server.upload.validate.zip:true}")
-    @MustBeDocumented(value = "With `false` ZIP validation on sechub server side is disabled. So ZIP validation must be done at delegated security products! You should disable the validation only for testing security product behaviours!")
+    @MustBeDocumented(value = "With `false` ZIP validation on sechub server side is disabled. ZIP validation must be done by the delegated security products! You should disable the validation only for testing security product behaviours!")
     boolean validateZip = true;
 
-    @MustBeDocumented(value = "With `false` checksum validation (sha256) on sechub server side is disabled. So sha256 validation must be done at delegated security products! You should disable the validation only for testing security product behaviours!")
+    @MustBeDocumented(value = "With `false` checksum validation (sha256) on sechub server side is disabled. Sha256 validation must be done by the delegated security products! You should disable the validation only for testing security product behaviours!")
     @Value("${sechub.server.upload.validate.checksum:true}")
     boolean validateChecksum = true;
 
@@ -50,7 +50,7 @@ public class SchedulerUploadService {
     StorageService storageService;
 
     @Autowired
-    FileChecksumSHA256Service checksumSHA256Service;
+    ChecksumSHA256Service checksumSHA256Service;
 
     @Autowired
     ScheduleAssertService assertService;
@@ -137,7 +137,7 @@ public class SchedulerUploadService {
 
     private void assertCheckSumCorrect(String checkSum, InputStream inputStream) {
         if (!checksumSHA256Service.hasCorrectChecksum(checkSum, inputStream)) {
-            LOG.error("Uploaded file has not correct sha256 checksum! Something must have happened during the upload!");
+            LOG.error("Uploaded file has not correct sha256 checksum! Something must have happened during the upload.");
             throw new NotAcceptableException("Sourcecode checksum check failed");
         }
     }

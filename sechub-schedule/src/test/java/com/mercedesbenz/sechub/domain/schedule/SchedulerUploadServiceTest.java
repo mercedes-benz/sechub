@@ -15,7 +15,7 @@ import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
-import com.mercedesbenz.sechub.sharedkernel.util.FileChecksumSHA256Service;
+import com.mercedesbenz.sechub.sharedkernel.util.ChecksumSHA256Service;
 import com.mercedesbenz.sechub.sharedkernel.util.ZipSupport;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
@@ -25,7 +25,7 @@ public class SchedulerUploadServiceTest {
 
     private static final String PROJECT1 = "project1";
     private SchedulerUploadService serviceToTest;
-    private FileChecksumSHA256Service mockedChecksumService;
+    private ChecksumSHA256Service mockedChecksumService;
     private StorageService mockedStorageService;
     private UUID randomUuid;
     private ScheduleAssertService mockedAssertService;
@@ -38,7 +38,7 @@ public class SchedulerUploadServiceTest {
     void beforeEach() {
         randomUuid = UUID.randomUUID();
 
-        mockedChecksumService = mock(FileChecksumSHA256Service.class);
+        mockedChecksumService = mock(ChecksumSHA256Service.class);
         mockedStorageService = mock(StorageService.class);
         mockedAssertService = mock(ScheduleAssertService.class);
 

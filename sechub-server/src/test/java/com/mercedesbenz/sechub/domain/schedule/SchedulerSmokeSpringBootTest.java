@@ -33,7 +33,7 @@ public class SchedulerSmokeSpringBootTest {
     public void context_loads_and_some_defaults_are_as_expected() throws Exception {
         // see https://spring.io/guides/gs/testing-web/ for details about testing with
         // spring MVC test
-        assertThat(controller).isNotNull(); // we test that we got he controller. Means - the spring container context
+        assertThat(controller).isNotNull(); // we test that we got the controller. Means - the spring container context
                                             // has been loaded successfully!
 
         /* check defaults injected by container are as expected */

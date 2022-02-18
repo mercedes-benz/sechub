@@ -23,7 +23,7 @@ import org.springframework.web.client.HttpClientErrorException.NotAcceptable;
 
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSupport;
-import com.mercedesbenz.sechub.sharedkernel.util.FileChecksumSHA256Service;
+import com.mercedesbenz.sechub.sharedkernel.util.ChecksumSHA256Service;
 import com.mercedesbenz.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class FileUploadSizeScenario2IntTest {
@@ -37,7 +37,7 @@ public class FileUploadSizeScenario2IntTest {
     @Rule
     public ExpectedException expected = ExpectedExceptionFactory.none();
 
-    private FileChecksumSHA256Service checksumSHA256Service;
+    private ChecksumSHA256Service checksumSHA256Service;
 
     /**
      * Generate big zip file and violate file size limit
@@ -63,7 +63,7 @@ public class FileUploadSizeScenario2IntTest {
 
 	private void handleBigUpload(boolean tooBig) throws FileNotFoundException, IOException {
 		/* prepare */
-		checksumSHA256Service = new FileChecksumSHA256Service();
+		checksumSHA256Service = new ChecksumSHA256Service();
 		as(SUPER_ADMIN).
 			assignUserToProject(USER_1, PROJECT_1);
 

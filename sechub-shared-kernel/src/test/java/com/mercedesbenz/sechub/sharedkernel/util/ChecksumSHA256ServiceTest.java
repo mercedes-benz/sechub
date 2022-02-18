@@ -13,13 +13,13 @@ import org.junit.Test;
 
 import com.mercedesbenz.sechub.sharedkernel.SharedKernelTestFileSupport;
 
-public class FileChecksumSHA256ServiceTest {
+public class ChecksumSHA256ServiceTest {
 
-    private FileChecksumSHA256Service serviceToTest;
+    private ChecksumSHA256Service serviceToTest;
 
     @Before
     public void before() {
-        serviceToTest = new FileChecksumSHA256Service();
+        serviceToTest = new ChecksumSHA256Service();
     }
 
     @Test

@@ -10,6 +10,8 @@ import java.security.NoSuchAlgorithmException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.NullSource;
 
 class Sha256ChecksumValidationImplTest {
 
@@ -37,7 +39,7 @@ class Sha256ChecksumValidationImplTest {
 
         /* test */
         if (!result.isValid()) {
-            fail("Invalid sha256 must be recognized correctly- but wasn't!\nMessage was:" + result.getErrorDescription());
+            fail("Invalid sha256 must be recognized correctly - but wasn't!\nMessage was:" + result.getErrorDescription());
         }
     }
 
@@ -55,11 +57,13 @@ class Sha256ChecksumValidationImplTest {
 
         /* test */
         if (result.isValid()) {
-            fail("Invalid sha256 must be recognized correctly- but wasn't!\nMessage was:" + result.getErrorDescription());
+            fail("Invalid sha256 must be recognized correctly - but wasn't!\nMessage was:" + result.getErrorDescription());
         }
     }
 
     @ParameterizedTest
+    @NullSource
+    @EmptySource
     @CsvSource({
     /* @formatter:off */
         "590b3c924c35c2f241746522284e4709df490d73a38aaa7d6de4ed1eac2f54",
@@ -73,7 +77,7 @@ class Sha256ChecksumValidationImplTest {
 
         /* test */
         if (result.isValid()) {
-            fail("Invalid sha256 must be recognized correctly- but wasn't!\nMessage was:" + result.getErrorDescription());
+            fail("Invalid sha256 must be recognized correctly - but wasn't!\nMessage was:" + result.getErrorDescription());
         }
     }
 
@@ -92,7 +96,7 @@ class Sha256ChecksumValidationImplTest {
 
         /* test */
         if (result.isValid()) {
-            fail("Valid sha256 must be recognized correctly- but wasn't!\nMessage was:" + result.getErrorDescription());
+            fail("Valid sha256 must be recognized correctly - but wasn't!\nMessage was:" + result.getErrorDescription());
         }
     }
 
