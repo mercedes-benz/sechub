@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 FILE_LIST=""
-SOURCE_DIR="build/docs/asciidoc"
+SOURCE_DIR="build/docs/final-html"
 DEST_DIR="../docs/latest"
 IMAGE_DIR="images"
 GIT_RELEASE_BRANCH="master"
