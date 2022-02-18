@@ -80,7 +80,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "./Damn_Vulnerable_Device_Driver/DVDD.c",
+                  "uri": "Damn_Vulnerable_Device_Driver/DVDD.c",
                   "uriBaseId": "SRCROOT"
                 },
                 "region": {
@@ -109,7 +109,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "./Damn_Vulnerable_Device_Driver/DVDD.c",
+                  "uri": "Damn_Vulnerable_Device_Driver/DVDD.c",
                   "uriBaseId": "SRCROOT"
                 },
                 "region": {
