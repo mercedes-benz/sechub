@@ -1059,7 +1059,11 @@ public class AsUser {
     }
 
     public void changeEmailAddress(TestUser user, String newEmailAddress) {
-        String url = getUrlBuilder().buildAdminChangesUserEmailAddress(user.getUserId(), newEmailAddress);
+        changeEmailAddress(user.getUserId(), newEmailAddress);
+    }
+
+    public void changeEmailAddress(String userId, String newEmailAddress) {
+        String url = getUrlBuilder().buildAdminChangesUserEmailAddress(userId, newEmailAddress);
         getRestHelper().put(url);
     }
 

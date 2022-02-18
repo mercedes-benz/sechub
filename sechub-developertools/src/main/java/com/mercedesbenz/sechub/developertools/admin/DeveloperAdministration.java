@@ -555,6 +555,11 @@ public class DeveloperAdministration {
         return "sent";
     }
 
+    public String changeUserEmailAddress(String userId, String newEmailAddress) {
+        asTestUser().changeEmailAddress(userId, newEmailAddress);
+        return "sent";
+    }
+
     public String cancelJob(UUID jobUUID) {
         getRestHelper().post(getUrlBuilder().buildAdminCancelsJob(jobUUID));
         return "cancel triggered";
