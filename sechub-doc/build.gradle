@@ -29,8 +29,7 @@ dependencies {
 def targetAsciiDocGenFolder="${project.projectDir}/src/docs/asciidoc/documents/gen"
 def asciidocBuildDir="$buildDir/docs/asciidoc";
 def imagesBuildDir="$buildDir/docs/asciidoc/images";
-def convertedHTMLFolder = "${rootProject.projectDir}/build/sechubpages"
-def docsLatestFolder = "${rootProject.projectDir}/docs/latest"
+def finalHTMLDir = "$buildDir/docs/final-html"
 
 def clientVersion = VersionData.getClientVersion()
 def pdsVersion = VersionData.getPdsVersion()
@@ -151,32 +150,7 @@ asciidoctorj {
     }
 }
 
-/* collector task for all documentation parts - but does NOT build anything, so suitable for build chain - for a documentation build from scratch
-   there exists another task: buildDoc which does all in one call*/
-task documentation(){
-     group 'sechub'
-     description 'This will generate asciidoctor documentation - but preconditions must be fulfilled (e.g. build, integrationtest, certificates)'
-
-     dependsOn 'generateAsciidoc'
-     dependsOn 'asciidoctor'
-
-     // see https://stackoverflow.com/questions/32907275/gradle-custom-task-which-runs-multiple-tasks
-     tasks.findByName('asciidoctor').mustRunAfter 'generateAsciidoc'
-}
-
-task buildDoc(type: Exec){
-         group 'sechub'
-         description 'This will build full documentation from scratch - will build, test ensure all dependencies are fulfilled before'
-
-         workingDir = "${rootProject.projectDir}"
-
-         commandLine = "./buildDoc"
-         
-}
-
-
-
-task convertSecHubPages(type: Copy){
+task convertSecHubHTMLPages(type: Copy){
 
      /* Albert: Why those replace pattern stuff ?
       * Because of PDF problems with rendered images, we were forced to use absolute image pathes so
@@ -201,29 +175,60 @@ task convertSecHubPages(type: Copy){
          // remove absolute path...
          filter { line -> line.replaceAll("${replacePattern}", '') }
      }
-     into "${convertedHTMLFolder}"
+     into "${finalHTMLDir}"
 
      includeEmptyDirs = false
 }
 
-task createDownloadLinks(type: Exec) {
-  group 'sechub'
-  description 'This creates the HTML code for direct download'
-  dependsOn 'documentation'
+task copyImagesToFinalDir(type: Copy) {
+    from "${imagesBuildDir}"
+    into "${finalHTMLDir}/images"
+}
 
-  workingDir = "."
-  commandLine 'sh', '-c', "helperscripts/create-download-html.sh client ${clientVersion} > ${asciidocBuildDir}/client-download.html ; helperscripts/create-download-html.sh pds ${pdsVersion} > ${asciidocBuildDir}/pds-download.html ; helperscripts/create-download-html.sh server ${serverVersion} > ${asciidocBuildDir}/server-download.html"
+task prepareFinalHTML {
+    dependsOn 'convertSecHubHTMLPages'
+    dependsOn 'copyImagesToFinalDir'
+}
+
+/* collector task for all documentation parts - but does NOT build anything, so suitable for build chain - for a documentation build from scratch
+   there exists another task: buildDoc which does all in one call*/
+task documentation(){
+     group 'sechub'
+     description 'This will generate asciidoctor documentation - but preconditions must be fulfilled (e.g. build, integrationtest, certificates)'
+
+     dependsOn 'generateAsciidoc'
+     dependsOn 'asciidoctor'
+     dependsOn 'prepareFinalHTML'
+
+     // see https://stackoverflow.com/questions/32907275/gradle-custom-task-which-runs-multiple-tasks
+     tasks.findByName('asciidoctor').mustRunAfter 'generateAsciidoc'
+     tasks.findByName('prepareFinalHTML').mustRunAfter 'asciidoctor'
+}
+
+task buildDoc(type: Exec){
+    group 'sechub'
+    description 'This will build full documentation from scratch - will build, test ensure all dependencies are fulfilled before'
+
+    workingDir = "${rootProject.projectDir}"
+
+    commandLine = "./buildDoc"         
+}
+
+task createDownloadLinks(type: Exec) {
+    group 'sechub'
+    description 'This creates the HTML code for direct download'
+    dependsOn 'documentation'
+
+    workingDir = "."
+    commandLine 'sh', '-c', "helperscripts/create-download-html.sh client ${clientVersion} > ${finalHTMLDir}/client-download.html ; helperscripts/create-download-html.sh pds ${pdsVersion} > ${finalHTMLDir}/pds-download.html ; helperscripts/create-download-html.sh server ${serverVersion} > ${finalHTMLDir}/server-download.html"
 }
 
 task "documentation-with-pages" {
-     group 'sechub'
-     description 'This will create documentation and setup sechub pages under /docs '
+    group 'sechub'
+    description 'This will create documentation and setup sechub pages under /docs '
 
-     dependsOn 'documentation'
-     dependsOn 'createDownloadLinks'
-
-     // see https://stackoverflow.com/questions/32907275/gradle-custom-task-which-runs-multiple-tasks
-     tasks.findByName('createDownloadLinks').mustRunAfter 'documentation'
+    dependsOn 'documentation'
+    dependsOn 'createDownloadLinks'
 }
 
 openapi3 {

@@ -19,7 +19,7 @@ import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 @Component
 public class SecHubSystemPropertyInjector {
 
-    @MustBeDocumented(value = "Define diffie hellman key length, see https://github.com/Daimler/sechub/issues/689 for details", scope = "security")
+    @MustBeDocumented(value = "Define diffie hellman key length, see https://github.com/mercedes-benz/sechub/issues/689 for details", scope = "security")
     @Value("${sechub.security.diffiehellman.length}")
     private String diffieHellmanLength;
 

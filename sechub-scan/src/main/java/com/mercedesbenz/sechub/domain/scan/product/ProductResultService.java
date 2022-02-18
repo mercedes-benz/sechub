@@ -43,7 +43,7 @@ public class ProductResultService {
 
     /*
      * FIXME Albert Tregnaghi, 2020-04-23: we must fix the security-context problem,
-     * see https://github.com/Daimler/sechub/issues/216
+     * see https://github.com/mercedes-benz/sechub/issues/216
      */
     // @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
     public void deleteAllResultsForJob(UUID sechubJobUUID) {

@@ -6,7 +6,7 @@ For a "quick test" we start the release simply in integrationtest mode.
 
 ==== Get the release
 
-You got different options: You can either download an existing release from https://github.com/Daimler/sechub/releases ,
+You got different options: You can either download an existing release from https://github.com/mercedes-benz/sechub/releases ,
 or you build it from scratch. 
 
 [NOTE]
