@@ -27,6 +27,7 @@ import com.mercedesbenz.sechub.domain.notification.user.NewAPITokenAppliedUserNo
 import com.mercedesbenz.sechub.domain.notification.user.NewApiTokenRequestedUserNotificationService;
 import com.mercedesbenz.sechub.domain.notification.user.SignUpRequestedAdminNotificationService;
 import com.mercedesbenz.sechub.domain.notification.user.UserDeletedNotificationService;
+import com.mercedesbenz.sechub.domain.notification.user.UserEmailAddressChangedNotificationService;
 import com.mercedesbenz.sechub.sharedkernel.messaging.AsynchronMessageHandler;
 import com.mercedesbenz.sechub.sharedkernel.messaging.ClusterMemberMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
@@ -44,6 +45,9 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
 
     @Autowired
     UserDeletedNotificationService userDeletedNotificationService;
+    
+    @Autowired
+    UserEmailAddressChangedNotificationService userEmailAddressChangedNotificationService;
 
     @Autowired
     NewAPITokenAppliedUserNotificationService newAPITokenAppliedUserNotificationService;
@@ -108,6 +112,7 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
     @Autowired
     InformAdminsThatNewSchedulerInstanceHasBeenStarted informAdminsThatNewSchedulerInstanceHasBeenStarted;
 
+  
     @Override
     public void receiveAsyncMessage(DomainMessage request) {
         MessageID messageId = request.getMessageId();
@@ -160,9 +165,18 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
         case PROJECT_OWNER_CHANGED:
             handleOwnerChanged(request.get(MessageDataKeys.PROJECT_OWNER_CHANGE_DATA), request.get(MessageDataKeys.ENVIRONMENT_BASE_URL));
             break;
+        case USER_EMAIL_ADDRESS_CHANGED:
+            handleUserEmailChanged(request.get(MessageDataKeys.USER_EMAIL_ADDRESS_CHANGE_DATA));
+            break;
+            
         default:
             throw new IllegalStateException("unhandled message id:" + messageId);
         }
+    }
+
+    @IsReceivingAsyncMessage(MessageID.USER_EMAIL_ADDRESS_CHANGED)
+    private void handleUserEmailChanged(UserMessage userMessage) {
+        userEmailAddressChangedNotificationService.notify(userMessage);
     }
 
     @IsReceivingAsyncMessage(MessageID.SCHEDULER_STARTED)

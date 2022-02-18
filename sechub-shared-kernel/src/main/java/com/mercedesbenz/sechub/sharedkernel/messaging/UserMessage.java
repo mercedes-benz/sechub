@@ -138,10 +138,10 @@ public class UserMessage implements JSONable<UserMessage> {
      * events when an email address has changed. The {@link #getEmailAdress()} shall
      * contain the new mail adress in this case.
      * 
-     * @param oldEmailAdress
+     * @param formerEmailAddress
      */
-    public void setFormerEmailAddress(String oldEmailAdress) {
-        this.formerEmailAddress = oldEmailAdress;
+    public void setFormerEmailAddress(String formerEmailAddress) {
+        this.formerEmailAddress = formerEmailAddress;
     }
 
 }

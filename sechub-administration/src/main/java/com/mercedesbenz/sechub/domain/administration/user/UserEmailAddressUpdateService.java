@@ -47,7 +47,7 @@ public class UserEmailAddressUpdateService {
 			@Step(
 					number = 2,
 					name = "Service updates user email address.",
-					next = { 3,	4 },
+					next = { 3 },
 					description = "The service will update the user email address and also trigger events."))
 	/* @formatter:on */
     @Transactional
@@ -72,7 +72,7 @@ public class UserEmailAddressUpdateService {
         message.setUserId(user.getName());
         message.setEmailAdress(user.getEmailAdress());
         message.setFormerEmailAddress(formerEmailAddress);
-        message.setSubject("An administrator has changed your SecHub email-adress");
+        message.setSubject("A SecHub administrator has changed your email address");
 
         userRepository.save(user);
 
@@ -83,7 +83,7 @@ public class UserEmailAddressUpdateService {
     @IsSendingAsyncMessage(MessageID.USER_EMAIL_ADDRESS_CHANGED)
     private void informUserEmailAddressUpdated(UserMessage message) {
 
-        DomainMessage infoRequest = new DomainMessage(MessageID.USER_DELETED);
+        DomainMessage infoRequest = new DomainMessage(MessageID.USER_EMAIL_ADDRESS_CHANGED);
         infoRequest.set(MessageDataKeys.USER_EMAIL_ADDRESS_CHANGE_DATA, message);
 
         eventBusService.sendAsynchron(infoRequest);

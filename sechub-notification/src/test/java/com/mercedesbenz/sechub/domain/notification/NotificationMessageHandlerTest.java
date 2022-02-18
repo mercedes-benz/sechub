@@ -13,6 +13,7 @@ import com.mercedesbenz.sechub.domain.notification.user.NewAPITokenAppliedUserNo
 import com.mercedesbenz.sechub.domain.notification.user.NewApiTokenRequestedUserNotificationService;
 import com.mercedesbenz.sechub.domain.notification.user.SignUpRequestedAdminNotificationService;
 import com.mercedesbenz.sechub.domain.notification.user.UserDeletedNotificationService;
+import com.mercedesbenz.sechub.domain.notification.user.UserEmailAddressChangedNotificationService;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
@@ -29,7 +30,7 @@ public class NotificationMessageHandlerTest {
     private InformAdminsThatProjectHasBeenDeletedNotificationService mockedInformAdminsThatProjectHasBeenDeletedNotificationService;
     private InformOwnerThatProjectHasBeenDeletedNotificationService mockedInformOwnerThatProjectHasBeenDeletedNotificationService;
     private InformUsersThatProjectHasBeenDeletedNotificationService mockedInformUsersThatProjectHasBeenDeletedNotificationService;
-
+    private UserEmailAddressChangedNotificationService  mockedUserEmailAddressChangedNotificationService;
     @Before
     public void before() throws Exception {
         mockedSignUpRequestedAdminNotificationService = mock(SignUpRequestedAdminNotificationService.class);
@@ -39,13 +40,15 @@ public class NotificationMessageHandlerTest {
         mockedInformAdminsThatProjectHasBeenDeletedNotificationService = mock(InformAdminsThatProjectHasBeenDeletedNotificationService.class);
         mockedInformOwnerThatProjectHasBeenDeletedNotificationService = mock(InformOwnerThatProjectHasBeenDeletedNotificationService.class);
         mockedInformUsersThatProjectHasBeenDeletedNotificationService = mock(InformUsersThatProjectHasBeenDeletedNotificationService.class);
-
+        mockedUserEmailAddressChangedNotificationService = mock(UserEmailAddressChangedNotificationService.class);
+        
         handlerToTest = new NotificationMessageHandler();
         handlerToTest.signupRequestedAdminNotificationService = mockedSignUpRequestedAdminNotificationService;
         handlerToTest.newAPITokenAppliedUserNotificationService = mockedNewAPITokenAppliedUserNotificationService;
         handlerToTest.newApiTokenRequestedUserNotificationService = mockedNewApiTokenRequestedUserNotificationService;
         handlerToTest.userDeletedNotificationService = mockedUserDeletedNotificationService;
-
+        handlerToTest.userEmailAddressChangedNotificationService=mockedUserEmailAddressChangedNotificationService;
+        
         /* project deleted */
         handlerToTest.informAdminsThatProjectHasBeenDeletedService = mockedInformAdminsThatProjectHasBeenDeletedNotificationService;
         handlerToTest.informOwnerThatProjectHasBeenDeletedService = mockedInformOwnerThatProjectHasBeenDeletedNotificationService;
@@ -129,6 +132,21 @@ public class NotificationMessageHandlerTest {
 
         /* test */
         verify(mockedNewApiTokenRequestedUserNotificationService).notify(userMessage);
+    }
+    
+    @Test
+    public void an_event_about_email_updatedeleted_user_triggers_UserEmailAddressChangedNotificationService() {
+        /* prepare */
+        UserMessage userMessage = mock(UserMessage.class);
+        DomainMessage request = mock(DomainMessage.class);
+        when(request.getMessageId()).thenReturn(MessageID.USER_EMAIL_ADDRESS_CHANGED);
+        when(request.get(MessageDataKeys.USER_EMAIL_ADDRESS_CHANGE_DATA)).thenReturn(userMessage);
+
+        /* execute */
+        handlerToTest.receiveAsyncMessage(request);
+
+        /* test */
+        verify(mockedUserEmailAddressChangedNotificationService).notify(userMessage);
     }
 
 }

@@ -66,7 +66,7 @@ public class MockEmailAccess {
         return findMailOrFail(email, subject, TextSearchMode.EXACT, maxSecondsToWait);
     }
 
-    public MockEmailEntry findMailOrFail(String email, String subjectSearch, TextSearchMode subjectTestMode, int maxSecondsToWait) {
+    public MockEmailEntry findMailOrFail(String email, String subjectSearch, TextSearchMode subjectSearchMode, int maxSecondsToWait) {
         MockEmailEntry found = null;
         List<MockEmailEntry> list = null;
         for (int i = 0; i < maxSecondsToWait; i++) {
@@ -83,14 +83,14 @@ public class MockEmailAccess {
                     /* cannot be checked */
                     continue;
                 }
-                switch (subjectTestMode) {
+                switch (subjectSearchMode) {
                 case EXACT:
                     if (message.subject.equals(subjectSearch)) {
                         found = message;
                     }
                     break;
                 case CONTAINS:
-                    if (message.subject.indexOf(subjectSearch)!=-1) {
+                    if (message.subject.indexOf(subjectSearch) != -1) {
                         found = message;
                     }
                     break;
@@ -116,7 +116,21 @@ public class MockEmailAccess {
             StringBuilder sb = new StringBuilder();
             sb.append("Did not find a mail containing:\n-emailaddress (TO/CC/BCC): ");
             sb.append(email);
-            sb.append("\n-subject (regexp): '");
+            sb.append("\n-subject");
+            switch (subjectSearchMode) {
+            case CONTAINS:
+                sb.append("(contains)");
+                break;
+            case EXACT:
+                sb.append("(exact)");
+                break;
+            case REGLAR_EXPRESSON:
+                sb.append("(regexp)");
+                break;
+            default:
+                break;
+            }
+            sb.append(":'");
             sb.append(subjectSearch);
             sb.append("'\n\nFound mails for this email address:");
             for (MockEmailEntry message : list) {

@@ -68,10 +68,8 @@ public class UserAdministrationScenario2IntTest {
         assertEquals(newEmailAddress, updatedDetails.getEmail());
 
         // check mails have been sent
-        assertMailExists(formerEmailAddress, "A SecHub administrator has changed your email adress and it will not be used any longer for SecHub.",
-                TextSearchMode.CONTAINS);
-        assertMailExists(newEmailAddress, "A SecHub administrator has changed your email address from " + formerEmailAddress + " to " + newEmailAddress,
-                TextSearchMode.CONTAINS);
+        assertMailExists(newEmailAddress, "has been changed to this address", TextSearchMode.CONTAINS);
+        assertMailExists(formerEmailAddress, "SecHub account email address changed", TextSearchMode.CONTAINS);
     }
 
     @Test
