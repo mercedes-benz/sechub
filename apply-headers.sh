@@ -27,8 +27,10 @@ function applySPDXline {
     local line="$3"
 
     echo -e "  ${LIGHT_GREEN}Scanning '*.$fileEnding' files${NC}"
-    # Loop over all files matching pattern and ignore .git subdirectory
-    find . -type f -iname \*.$fileEnding | grep -v '^./.git\|gradlew.bat' | while read file ; do
+    # Loop over all files matching the pattern, but skip some patterns like generated files
+    find . -type f -iname \*.$fileEnding \
+    | grep -v '^./.git\|/build/\|/\.gradle/\|gradlew.bat' \
+    | while read file ; do
         if ! grep -q "$SPDX_TEXT" $file ; then
             sed -i "${line}i $spdxMessage" "$file"
             echo -e "${BROWN}$file${NC} - ${LIGHT_GREEN}copyright appended.${NC}"
