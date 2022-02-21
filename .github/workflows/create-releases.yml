@@ -29,9 +29,9 @@ jobs:
     steps:
       - name: "Show Inputs"
         run: |
-          echo "Server \'${{ github.event.inputs.server-version }}\' - Milestone \'${{ github.event.inputs.server-milestone-number }}\'"
-          echo "Client \'${{ github.event.inputs.client-version }}\' - Milestone \'${{ github.event.inputs.client-milestone-number }}\'"
-          echo "PDS \'${{ github.event.inputs.pds-version }}\' - Milestone \'${{ github.event.inputs.pds-milestone-number }}\'"
+          echo "Server '${{ github.event.inputs.server-version }}' - Milestone '${{ github.event.inputs.server-milestone-number }}'"
+          echo "Client '${{ github.event.inputs.client-version }}' - Milestone '${{ github.event.inputs.client-milestone-number }}'"
+          echo "PDS '${{ github.event.inputs.pds-version }}' - Milestone '${{ github.event.inputs.pds-milestone-number }}'"
       # Check inputs if a milestone number is provided for each version to be released:
       - name: "Verify Input: Server"
         if: (github.event.inputs.server-version != '') && (github.event.inputs.server-milestone-number == '')
