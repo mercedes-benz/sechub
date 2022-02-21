@@ -38,7 +38,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && \
     apt-get --assume-yes upgrade  && \
-    apt-get --assume-yes install wget openjdk-11-jre-headless pip && \
+    apt-get --assume-yes install sed wget openjdk-11-jre-headless pip && \
     apt-get --assume-yes clean
 
 # Copy scripts
