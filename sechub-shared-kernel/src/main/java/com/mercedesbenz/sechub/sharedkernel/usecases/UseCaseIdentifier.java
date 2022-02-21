@@ -141,7 +141,13 @@ public enum UseCaseIdentifier {
 
     UC_ADMIN_CHANGES_PROJECT_ACCESS_LEVEL(62),
 
-    UC_ADMIN_UPDATES_USER_EMAIL_ADDRESS(63),;
+    UC_ADMIN_UPDATES_USER_EMAIL_ADDRESS(63),
+
+    UC_ADMIN_FETCHES_AUTO_CLEANUP_CONFIGURATION(64),
+
+    UC_ADMIN_UPDATES_AUTO_CLEANUP_CONFIGURATION(65),
+
+    UC_AUTO_CLEANUP_EXECUTION(66),;
 
     /* +-----------------------------------------------------------------------+ */
     /* +............................ Helpers ................................+ */

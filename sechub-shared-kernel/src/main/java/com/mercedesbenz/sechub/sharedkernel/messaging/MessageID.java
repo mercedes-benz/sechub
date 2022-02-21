@@ -153,7 +153,9 @@ public enum MessageID {
     /**
      * Inform that the email address of an user has been changed
      */
-    USER_EMAIL_ADDRESS_CHANGED(MessageDataKeys.USER_EMAIL_ADDRESS_CHANGE_DATA),;
+    USER_EMAIL_ADDRESS_CHANGED(MessageDataKeys.USER_EMAIL_ADDRESS_CHANGE_DATA),
+
+    AUTO_CLEANUP_CONFIGURATION_CHANGED(MessageDataKeys.USER_EMAIL_ADDRESS_CHANGE_DATA);
 
     private Set<MessageDataKey<?>> unmodifiableKeys;
 

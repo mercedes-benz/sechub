@@ -55,6 +55,9 @@ public class AdministrationAPIConstants {
     public static final String API_ADMIN_RESTARTS_JOB = API_ADMINISTRATION + "jobs/restart/{jobUUID}";;
     public static final String API_ADMIN_RESTARTS_JOB_HARD = API_ADMINISTRATION + "jobs/restart-hard/{jobUUID}";;
 
+    public static final String API_ADMIN_FETCHES_AUTOCLEAN_CONFIG = API_ADMINISTRATION + "config/autoclean";
+    public static final String API_ADMIN_UPDATES_AUTOCLEAN_CONFIG = API_ADMINISTRATION + "config/autoclean";
+
     /**
      * show all users wanting to sign up
      */
