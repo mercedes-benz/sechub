@@ -234,7 +234,6 @@ public class TestURLBuilder {
     public String buildUserFetchesFalsePositiveConfigurationOfProject(String projectId) {
         return buildUrl(API_PROJECT, projectId, "false-positives");
     }
-
     /* +-----------------------------------------------------------------------+ */
     /* +............................ anonymous ................................+ */
     /* +-----------------------------------------------------------------------+ */
@@ -293,6 +292,10 @@ public class TestURLBuilder {
 
     public String buildAdminShowsUserDetailsUrl(String userId) {
         return buildUrl(API_ADMIN_USER, userId);
+    }
+
+    public String buildAdminChangesUserEmailAddress(String userId, String newEmailAddress) {
+        return buildUrl(API_ADMIN_USER, userId, "email", newEmailAddress);
     }
 
     /* +-----------------------------------------------------------------------+ */
