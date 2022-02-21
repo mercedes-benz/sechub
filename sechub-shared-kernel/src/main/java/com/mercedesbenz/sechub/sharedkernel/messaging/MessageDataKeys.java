@@ -126,6 +126,11 @@ public class MessageDataKeys {
      */
     public static final MessageDataKey<ProjectMessage> PROJECT_ACCESS_LEVEL_CHANGE_DATA = createProjectMessageKey("project.accesslevel.change.data");
 
+    /**
+     * Does contain userid, former email address, new email address
+     */
+    public static final MessageDataKey<UserMessage> USER_EMAIL_ADDRESS_CHANGE_DATA = createUserMessageKey("user.emailaddress.change.data");
+
     /* +-----------------------------------------------------------------------+ */
     /* +............................ Helpers ..................................+ */
     /* +-----------------------------------------------------------------------+ */

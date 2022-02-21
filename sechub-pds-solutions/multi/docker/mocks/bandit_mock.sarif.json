@@ -1,824 +1,824 @@
 {
-    "runs": [
-        {
-            "tool": {
-                "driver": {
-                    "name": "Bandit",
-                    "rules": [
-                        {
-                            "id": "B409",
-                            "name": "blacklist",
-                            "helpUri": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_imports.html#b409-import-xml-pulldom"
-                        },
-                        {
-                            "id": "B406",
-                            "name": "blacklist",
-                            "helpUri": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_imports.html#b406-import-xml-sax"
-                        },
-                        {
-                            "id": "B404",
-                            "name": "blacklist",
-                            "helpUri": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_imports.html#b404-import-subprocess"
-                        },
-                        {
-                            "id": "B403",
-                            "name": "blacklist",
-                            "helpUri": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_imports.html#b403-import-pickle"
-                        },
-                        {
-                            "id": "B608",
-                            "name": "hardcoded_sql_expressions",
-                            "helpUri": "https://bandit.readthedocs.io/en/latest/plugins/b608_hardcoded_sql_expressions.html"
-                        },
-                        {
-                            "id": "B301",
-                            "name": "blacklist",
-                            "helpUri": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b301-pickle"
-                        },
-                        {
-                            "id": "B317",
-                            "name": "blacklist",
-                            "helpUri": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b313-b320-xml-bad-sax"
-                        },
-                        {
-                            "id": "B319",
-                            "name": "blacklist",
-                            "helpUri": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b313-b320-xml-bad-pulldom"
-                        },
-                        {
-                            "id": "B602",
-                            "name": "subprocess_popen_with_shell_equals_true",
-                            "helpUri": "https://bandit.readthedocs.io/en/latest/plugins/b602_subprocess_popen_with_shell_equals_true.html"
-                        },
-                        {
-                            "id": "B311",
-                            "name": "blacklist",
-                            "helpUri": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b311-random"
-                        },
-                        {
-                            "id": "B506",
-                            "name": "yaml_load",
-                            "helpUri": "https://bandit.readthedocs.io/en/latest/plugins/b506_yaml_load.html"
-                        },
-                        {
-                            "id": "B105",
-                            "name": "hardcoded_password_string",
-                            "helpUri": "https://bandit.readthedocs.io/en/latest/plugins/b105_hardcoded_password_string.html"
-                        }
-                    ]
-                }
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Bandit",
+          "rules": [
+            {
+              "id": "B409",
+              "name": "blacklist",
+              "helpUri": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_imports.html#b409-import-xml-pulldom"
             },
-            "invocations": [
-                {
-                    "executionSuccessful": true,
-                    "endTimeUtc": "2022-01-12T17:43:38Z"
-                }
-            ],
-            "properties": {
-                "metrics": {
-                    "_totals": {
-                        "loc": 750,
-                        "nosec": 0,
-                        "SEVERITY.UNDEFINED": 0.0,
-                        "CONFIDENCE.UNDEFINED": 0.0,
-                        "SEVERITY.LOW": 7.0,
-                        "CONFIDENCE.LOW": 1.0,
-                        "SEVERITY.MEDIUM": 5.0,
-                        "CONFIDENCE.MEDIUM": 1.0,
-                        "SEVERITY.HIGH": 1.0,
-                        "CONFIDENCE.HIGH": 11.0
-                    },
-                    "/workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/introduction/__init__.py": {
-                        "loc": 0,
-                        "nosec": 0,
-                        "SEVERITY.UNDEFINED": 0.0,
-                        "SEVERITY.LOW": 0.0,
-                        "SEVERITY.MEDIUM": 0.0,
-                        "SEVERITY.HIGH": 0.0,
-                        "CONFIDENCE.UNDEFINED": 0.0,
-                        "CONFIDENCE.LOW": 0.0,
-                        "CONFIDENCE.MEDIUM": 0.0,
-                        "CONFIDENCE.HIGH": 0.0
-                    },
-                    "/workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/introduction/admin.py": {
-                        "loc": 7,
-                        "nosec": 0,
-                        "SEVERITY.UNDEFINED": 0.0,
-                        "SEVERITY.LOW": 0.0,
-                        "SEVERITY.MEDIUM": 0.0,
-                        "SEVERITY.HIGH": 0.0,
-                        "CONFIDENCE.UNDEFINED": 0.0,
-                        "CONFIDENCE.LOW": 0.0,
-                        "CONFIDENCE.MEDIUM": 0.0,
-                        "CONFIDENCE.HIGH": 0.0
-                    },
-                    "/workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/introduction/apps.py": {
-                        "loc": 3,
-                        "nosec": 0,
-                        "SEVERITY.UNDEFINED": 0.0,
-                        "SEVERITY.LOW": 0.0,
-                        "SEVERITY.MEDIUM": 0.0,
-                        "SEVERITY.HIGH": 0.0,
-                        "CONFIDENCE.UNDEFINED": 0.0,
-                        "CONFIDENCE.LOW": 0.0,
-                        "CONFIDENCE.MEDIUM": 0.0,
-                        "CONFIDENCE.HIGH": 0.0
-                    },
-                    "/workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/introduction/forms.py": {
-                        "loc": 0,
-                        "nosec": 0,
-                        "SEVERITY.UNDEFINED": 0.0,
-                        "SEVERITY.LOW": 0.0,
-                        "SEVERITY.MEDIUM": 0.0,
-                        "SEVERITY.HIGH": 0.0,
-                        "CONFIDENCE.UNDEFINED": 0.0,
-                        "CONFIDENCE.LOW": 0.0,
-                        "CONFIDENCE.MEDIUM": 0.0,
-                        "CONFIDENCE.HIGH": 0.0
-                    },
-                    "/workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/introduction/migrations/0001_initial.py": {
-                        "loc": 16,
-                        "nosec": 0,
-                        "SEVERITY.UNDEFINED": 0.0,
-                        "SEVERITY.LOW": 0.0,
-                        "SEVERITY.MEDIUM": 0.0,
-                        "SEVERITY.HIGH": 0.0,
-                        "CONFIDENCE.UNDEFINED": 0.0,
-                        "CONFIDENCE.LOW": 0.0,
-                        "CONFIDENCE.MEDIUM": 0.0,
-                        "CONFIDENCE.HIGH": 0.0
-                    },
-                    "/workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/introduction/migrations/0002_auto_20210414_1510.py": {
-                        "loc": 25,
-                        "nosec": 0,
-                        "SEVERITY.UNDEFINED": 0.0,
-                        "SEVERITY.LOW": 0.0,
-                        "SEVERITY.MEDIUM": 0.0,
-                        "SEVERITY.HIGH": 0.0,
-                        "CONFIDENCE.UNDEFINED": 0.0,
-                        "CONFIDENCE.LOW": 0.0,
-                        "CONFIDENCE.MEDIUM": 0.0,
-                        "CONFIDENCE.HIGH": 0.0
-                    },
-                    "/workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/introduction/migrations/0003_password_user.py": {
-                        "loc": 23,
-                        "nosec": 0,
-                        "SEVERITY.UNDEFINED": 0.0,
-                        "SEVERITY.LOW": 0.0,
-                        "SEVERITY.MEDIUM": 0.0,
-                        "SEVERITY.HIGH": 0.0,
-                        "CONFIDENCE.UNDEFINED": 0.0,
-                        "CONFIDENCE.LOW": 0.0,
-                        "CONFIDENCE.MEDIUM": 0.0,
-                        "CONFIDENCE.HIGH": 0.0
-                    },
-                    "/workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/introduction/migrations/0004_auto_20210415_1722.py": {
-                        "loc": 16,
-                        "nosec": 0,
-                        "SEVERITY.UNDEFINED": 0.0,
-                        "SEVERITY.LOW": 0.0,
-                        "SEVERITY.MEDIUM": 0.0,
-                        "SEVERITY.HIGH": 0.0,
-                        "CONFIDENCE.UNDEFINED": 0.0,
-                        "CONFIDENCE.LOW": 0.0,
-                        "CONFIDENCE.MEDIUM": 0.0,
-                        "CONFIDENCE.HIGH": 0.0
-                    },
-                    "/workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/introduction/migrations/0005_auto_20210415_1748.py": {
-                        "loc": 11,
-                        "nosec": 0,
-                        "SEVERITY.UNDEFINED": 0.0,
-                        "SEVERITY.LOW": 0.0,
-                        "SEVERITY.MEDIUM": 0.0,
-                        "SEVERITY.HIGH": 0.0,
-                        "CONFIDENCE.UNDEFINED": 0.0,
-                        "CONFIDENCE.LOW": 0.0,
-                        "CONFIDENCE.MEDIUM": 0.0,
-                        "CONFIDENCE.HIGH": 0.0
-                    },
-                    "/workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/introduction/migrations/0006_comments.py": {
-                        "loc": 15,
-                        "nosec": 0,
-                        "SEVERITY.UNDEFINED": 0.0,
-                        "SEVERITY.LOW": 0.0,
-                        "SEVERITY.MEDIUM": 0.0,
-                        "SEVERITY.HIGH": 0.0,
-                        "CONFIDENCE.UNDEFINED": 0.0,
-                        "CONFIDENCE.LOW": 0.0,
-                        "CONFIDENCE.MEDIUM": 0.0,
-                        "CONFIDENCE.HIGH": 0.0
-                    },
-                    "/workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/introduction/migrations/0007_auto_20210418_0022.py": {
-                        "loc": 12,
-                        "nosec": 0,
-                        "SEVERITY.UNDEFINED": 0.0,
-                        "SEVERITY.LOW": 0.0,
-                        "SEVERITY.MEDIUM": 0.0,
-                        "SEVERITY.HIGH": 0.0,
-                        "CONFIDENCE.UNDEFINED": 0.0,
-                        "CONFIDENCE.LOW": 0.0,
-                        "CONFIDENCE.MEDIUM": 0.0,
-                        "CONFIDENCE.HIGH": 0.0
-                    },
-                    "/workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/introduction/migrations/0008_otp.py": {
-                        "loc": 15,
-                        "nosec": 0,
-                        "SEVERITY.UNDEFINED": 0.0,
-                        "SEVERITY.LOW": 0.0,
-                        "SEVERITY.MEDIUM": 0.0,
-                        "SEVERITY.HIGH": 0.0,
-                        "CONFIDENCE.UNDEFINED": 0.0,
-                        "CONFIDENCE.LOW": 0.0,
-                        "CONFIDENCE.MEDIUM": 0.0,
-                        "CONFIDENCE.HIGH": 0.0
-                    },
-                    "/workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/introduction/migrations/0009_auto_20210517_2047.py": {
-                        "loc": 13,
-                        "nosec": 0,
-                        "SEVERITY.UNDEFINED": 0.0,
-                        "SEVERITY.LOW": 0.0,
-                        "SEVERITY.MEDIUM": 0.0,
-                        "SEVERITY.HIGH": 0.0,
-                        "CONFIDENCE.UNDEFINED": 0.0,
-                        "CONFIDENCE.LOW": 0.0,
-                        "CONFIDENCE.MEDIUM": 0.0,
-                        "CONFIDENCE.HIGH": 0.0
-                    },
-                    "/workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/introduction/migrations/__init__.py": {
-                        "loc": 0,
-                        "nosec": 0,
-                        "SEVERITY.UNDEFINED": 0.0,
-                        "SEVERITY.LOW": 0.0,
-                        "SEVERITY.MEDIUM": 0.0,
-                        "SEVERITY.HIGH": 0.0,
-                        "CONFIDENCE.UNDEFINED": 0.0,
-                        "CONFIDENCE.LOW": 0.0,
-                        "CONFIDENCE.MEDIUM": 0.0,
-                        "CONFIDENCE.HIGH": 0.0
-                    },
-                    "/workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/introduction/models.py": {
-                        "loc": 24,
-                        "nosec": 0,
-                        "SEVERITY.UNDEFINED": 0.0,
-                        "SEVERITY.LOW": 0.0,
-                        "SEVERITY.MEDIUM": 0.0,
-                        "SEVERITY.HIGH": 0.0,
-                        "CONFIDENCE.UNDEFINED": 0.0,
-                        "CONFIDENCE.LOW": 0.0,
-                        "CONFIDENCE.MEDIUM": 0.0,
-                        "CONFIDENCE.HIGH": 0.0
-                    },
-                    "/workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/introduction/tests.py": {
-                        "loc": 1,
-                        "nosec": 0,
-                        "SEVERITY.UNDEFINED": 0.0,
-                        "SEVERITY.LOW": 0.0,
-                        "SEVERITY.MEDIUM": 0.0,
-                        "SEVERITY.HIGH": 0.0,
-                        "CONFIDENCE.UNDEFINED": 0.0,
-                        "CONFIDENCE.LOW": 0.0,
-                        "CONFIDENCE.MEDIUM": 0.0,
-                        "CONFIDENCE.HIGH": 0.0
-                    },
-                    "/workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/introduction/urls.py": {
-                        "loc": 44,
-                        "nosec": 0,
-                        "SEVERITY.UNDEFINED": 0.0,
-                        "SEVERITY.LOW": 0.0,
-                        "SEVERITY.MEDIUM": 0.0,
-                        "SEVERITY.HIGH": 0.0,
-                        "CONFIDENCE.UNDEFINED": 0.0,
-                        "CONFIDENCE.LOW": 0.0,
-                        "CONFIDENCE.MEDIUM": 0.0,
-                        "CONFIDENCE.HIGH": 0.0
-                    },
-                    "/workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/introduction/views.py": {
-                        "loc": 358,
-                        "nosec": 0,
-                        "SEVERITY.UNDEFINED": 0.0,
-                        "SEVERITY.LOW": 6.0,
-                        "SEVERITY.MEDIUM": 5.0,
-                        "SEVERITY.HIGH": 1.0,
-                        "CONFIDENCE.UNDEFINED": 0.0,
-                        "CONFIDENCE.LOW": 1.0,
-                        "CONFIDENCE.MEDIUM": 0.0,
-                        "CONFIDENCE.HIGH": 11.0
-                    },
-                    "/workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/manage.py": {
-                        "loc": 16,
-                        "nosec": 0,
-                        "SEVERITY.UNDEFINED": 0.0,
-                        "SEVERITY.LOW": 0.0,
-                        "SEVERITY.MEDIUM": 0.0,
-                        "SEVERITY.HIGH": 0.0,
-                        "CONFIDENCE.UNDEFINED": 0.0,
-                        "CONFIDENCE.LOW": 0.0,
-                        "CONFIDENCE.MEDIUM": 0.0,
-                        "CONFIDENCE.HIGH": 0.0
-                    },
-                    "/workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/pygoat/__init__.py": {
-                        "loc": 0,
-                        "nosec": 0,
-                        "SEVERITY.UNDEFINED": 0.0,
-                        "SEVERITY.LOW": 0.0,
-                        "SEVERITY.MEDIUM": 0.0,
-                        "SEVERITY.HIGH": 0.0,
-                        "CONFIDENCE.UNDEFINED": 0.0,
-                        "CONFIDENCE.LOW": 0.0,
-                        "CONFIDENCE.MEDIUM": 0.0,
-                        "CONFIDENCE.HIGH": 0.0
-                    },
-                    "/workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/pygoat/asgi.py": {
-                        "loc": 10,
-                        "nosec": 0,
-                        "SEVERITY.UNDEFINED": 0.0,
-                        "SEVERITY.LOW": 0.0,
-                        "SEVERITY.MEDIUM": 0.0,
-                        "SEVERITY.HIGH": 0.0,
-                        "CONFIDENCE.UNDEFINED": 0.0,
-                        "CONFIDENCE.LOW": 0.0,
-                        "CONFIDENCE.MEDIUM": 0.0,
-                        "CONFIDENCE.HIGH": 0.0
-                    },
-                    "/workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/pygoat/settings.py": {
-                        "loc": 105,
-                        "nosec": 0,
-                        "SEVERITY.UNDEFINED": 0.0,
-                        "SEVERITY.LOW": 1.0,
-                        "SEVERITY.MEDIUM": 0.0,
-                        "SEVERITY.HIGH": 0.0,
-                        "CONFIDENCE.UNDEFINED": 0.0,
-                        "CONFIDENCE.LOW": 0.0,
-                        "CONFIDENCE.MEDIUM": 1.0,
-                        "CONFIDENCE.HIGH": 0.0
-                    },
-                    "/workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/pygoat/urls.py": {
-                        "loc": 26,
-                        "nosec": 0,
-                        "SEVERITY.UNDEFINED": 0.0,
-                        "SEVERITY.LOW": 0.0,
-                        "SEVERITY.MEDIUM": 0.0,
-                        "SEVERITY.HIGH": 0.0,
-                        "CONFIDENCE.UNDEFINED": 0.0,
-                        "CONFIDENCE.LOW": 0.0,
-                        "CONFIDENCE.MEDIUM": 0.0,
-                        "CONFIDENCE.HIGH": 0.0
-                    },
-                    "/workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/pygoat/wsgi.py": {
-                        "loc": 10,
-                        "nosec": 0,
-                        "SEVERITY.UNDEFINED": 0.0,
-                        "SEVERITY.LOW": 0.0,
-                        "SEVERITY.MEDIUM": 0.0,
-                        "SEVERITY.HIGH": 0.0,
-                        "CONFIDENCE.UNDEFINED": 0.0,
-                        "CONFIDENCE.LOW": 0.0,
-                        "CONFIDENCE.MEDIUM": 0.0,
-                        "CONFIDENCE.HIGH": 0.0
-                    }
-                }
+            {
+              "id": "B406",
+              "name": "blacklist",
+              "helpUri": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_imports.html#b406-import-xml-sax"
             },
-            "results": [
-                {
-                    "message": {
-                        "text": "Using parseString to parse untrusted XML data is known to be vulnerable to XML attacks. Replace parseString with the equivalent defusedxml package, or make sure defusedxml.defuse_stdlib() is called."
-                    },
-                    "level": "note",
-                    "locations": [
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "from xml.dom.pulldom import parseString, START_ELEMENT\n"
-                                    },
-                                    "startLine": 14
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/introduction/views.py"
-                                },
-                                "contextRegion": {
-                                    "snippet": {
-                                        "text": "from random import randint\nfrom xml.dom.pulldom import parseString, START_ELEMENT\nfrom xml.sax.handler import feature_external_ges\n"
-                                    },
-                                    "endLine": 15,
-                                    "startLine": 13
-                                }
-                            }
-                        }
-                    ],
-                    "properties": {
-                        "issue_confidence": "HIGH",
-                        "issue_severity": "LOW"
-                    },
-                    "ruleId": "B409",
-                    "ruleIndex": 0
-                },
-                {
-                    "message": {
-                        "text": "Using feature_external_ges to parse untrusted XML data is known to be vulnerable to XML attacks. Replace feature_external_ges with the equivalent defusedxml package, or make sure defusedxml.defuse_stdlib() is called."
-                    },
-                    "level": "note",
-                    "locations": [
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "from xml.sax.handler import feature_external_ges\n"
-                                    },
-                                    "startLine": 15
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/introduction/views.py"
-                                },
-                                "contextRegion": {
-                                    "snippet": {
-                                        "text": "from xml.dom.pulldom import parseString, START_ELEMENT\nfrom xml.sax.handler import feature_external_ges\nfrom xml.sax import make_parser\n"
-                                    },
-                                    "endLine": 16,
-                                    "startLine": 14
-                                }
-                            }
-                        }
-                    ],
-                    "properties": {
-                        "issue_confidence": "HIGH",
-                        "issue_severity": "LOW"
-                    },
-                    "ruleId": "B406",
-                    "ruleIndex": 1
-                },
-                {
-                    "message": {
-                        "text": "Using make_parser to parse untrusted XML data is known to be vulnerable to XML attacks. Replace make_parser with the equivalent defusedxml package, or make sure defusedxml.defuse_stdlib() is called."
-                    },
-                    "level": "note",
-                    "locations": [
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "from xml.sax import make_parser\n"
-                                    },
-                                    "startLine": 16
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/introduction/views.py"
-                                },
-                                "contextRegion": {
-                                    "snippet": {
-                                        "text": "from xml.sax.handler import feature_external_ges\nfrom xml.sax import make_parser\nfrom django.views.decorators.csrf import csrf_exempt\n"
-                                    },
-                                    "endLine": 17,
-                                    "startLine": 15
-                                }
-                            }
-                        }
-                    ],
-                    "properties": {
-                        "issue_confidence": "HIGH",
-                        "issue_severity": "LOW"
-                    },
-                    "ruleId": "B406",
-                    "ruleIndex": 1
-                },
-                {
-                    "message": {
-                        "text": "Consider possible security implications associated with the subprocess module."
-                    },
-                    "level": "note",
-                    "locations": [
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "import subprocess\n"
-                                    },
-                                    "startLine": 19
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/introduction/views.py"
-                                },
-                                "contextRegion": {
-                                    "snippet": {
-                                        "text": "from django.template.loader import render_to_string\nimport subprocess\nimport pickle\n"
-                                    },
-                                    "endLine": 20,
-                                    "startLine": 18
-                                }
-                            }
-                        }
-                    ],
-                    "properties": {
-                        "issue_confidence": "HIGH",
-                        "issue_severity": "LOW"
-                    },
-                    "ruleId": "B404",
-                    "ruleIndex": 2
-                },
-                {
-                    "message": {
-                        "text": "Consider possible security implications associated with pickle module."
-                    },
-                    "level": "note",
-                    "locations": [
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "import pickle\n"
-                                    },
-                                    "startLine": 20
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/introduction/views.py"
-                                },
-                                "contextRegion": {
-                                    "snippet": {
-                                        "text": "import subprocess\nimport pickle\nimport base64\n"
-                                    },
-                                    "endLine": 21,
-                                    "startLine": 19
-                                }
-                            }
-                        }
-                    ],
-                    "properties": {
-                        "issue_confidence": "HIGH",
-                        "issue_severity": "LOW"
-                    },
-                    "ruleId": "B403",
-                    "ruleIndex": 3
-                },
-                {
-                    "message": {
-                        "text": "Possible SQL injection vector through string-based query construction."
-                    },
-                    "locations": [
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "                val=login.objects.raw(\"SELECT * FROM introduction_login WHERE user='\"+name+\"'AND password='\"+password+\"'\")\n"
-                                    },
-                                    "startLine": 86
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/introduction/views.py"
-                                },
-                                "contextRegion": {
-                                    "snippet": {
-                                        "text": "\n                val=login.objects.raw(\"SELECT * FROM introduction_login WHERE user='\"+name+\"'AND password='\"+password+\"'\")\n\n"
-                                    },
-                                    "endLine": 87,
-                                    "startLine": 85
-                                }
-                            }
-                        }
-                    ],
-                    "properties": {
-                        "issue_confidence": "LOW",
-                        "issue_severity": "MEDIUM"
-                    },
-                    "ruleId": "B608",
-                    "ruleIndex": 4
-                },
-                {
-                    "message": {
-                        "text": "Pickle and modules that wrap it can be unsafe when used to deserialize untrusted data, possible security issue."
-                    },
-                    "locations": [
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "            admin = pickle.loads(token)\n"
-                                    },
-                                    "startLine": 122
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/introduction/views.py"
-                                },
-                                "contextRegion": {
-                                    "snippet": {
-                                        "text": "            token = base64.b64decode(token)\n            admin = pickle.loads(token)\n            if admin.admin == 1:\n"
-                                    },
-                                    "endLine": 123,
-                                    "startLine": 121
-                                }
-                            }
-                        }
-                    ],
-                    "properties": {
-                        "issue_confidence": "HIGH",
-                        "issue_severity": "MEDIUM"
-                    },
-                    "ruleId": "B301",
-                    "ruleIndex": 5
-                },
-                {
-                    "message": {
-                        "text": "Using xml.sax.make_parser to parse untrusted XML data is known to be vulnerable to XML attacks. Replace xml.sax.make_parser with its defusedxml equivalent function or make sure defusedxml.defuse_stdlib() is called"
-                    },
-                    "locations": [
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "    parser = make_parser()\n"
-                                    },
-                                    "startLine": 161
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/introduction/views.py"
-                                },
-                                "contextRegion": {
-                                    "snippet": {
-                                        "text": "\n    parser = make_parser()\n    parser.setFeature(feature_external_ges, True)\n"
-                                    },
-                                    "endLine": 162,
-                                    "startLine": 160
-                                }
-                            }
-                        }
-                    ],
-                    "properties": {
-                        "issue_confidence": "HIGH",
-                        "issue_severity": "MEDIUM"
-                    },
-                    "ruleId": "B317",
-                    "ruleIndex": 6
-                },
-                {
-                    "message": {
-                        "text": "Using xml.dom.pulldom.parseString to parse untrusted XML data is known to be vulnerable to XML attacks. Replace xml.dom.pulldom.parseString with its defusedxml equivalent function or make sure defusedxml.defuse_stdlib() is called"
-                    },
-                    "locations": [
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "    doc = parseString(request.body.decode('utf-8'), parser=parser)\n"
-                                    },
-                                    "startLine": 163
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/introduction/views.py"
-                                },
-                                "contextRegion": {
-                                    "snippet": {
-                                        "text": "    parser.setFeature(feature_external_ges, True)\n    doc = parseString(request.body.decode('utf-8'), parser=parser)\n    for event, node in doc:\n"
-                                    },
-                                    "endLine": 164,
-                                    "startLine": 162
-                                }
-                            }
-                        }
-                    ],
-                    "properties": {
-                        "issue_confidence": "HIGH",
-                        "issue_severity": "MEDIUM"
-                    },
-                    "ruleId": "B319",
-                    "ruleIndex": 7
-                },
-                {
-                    "message": {
-                        "text": "subprocess call with shell=True identified, security issue."
-                    },
-                    "level": "error",
-                    "locations": [
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "            output=subprocess.check_output(command,shell=True,encoding=\"UTF-8\");\n"
-                                    },
-                                    "startLine": 312
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/introduction/views.py"
-                                },
-                                "contextRegion": {
-                                    "snippet": {
-                                        "text": "\n            output=subprocess.check_output(command,shell=True,encoding=\"UTF-8\");\n            print(output)\n"
-                                    },
-                                    "endLine": 313,
-                                    "startLine": 311
-                                }
-                            }
-                        }
-                    ],
-                    "properties": {
-                        "issue_confidence": "HIGH",
-                        "issue_severity": "HIGH"
-                    },
-                    "ruleId": "B602",
-                    "ruleIndex": 8
-                },
-                {
-                    "message": {
-                        "text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes."
-                    },
-                    "level": "note",
-                    "locations": [
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "        otpN=randint(100,999)\n"
-                                    },
-                                    "startLine": 344
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/introduction/views.py"
-                                },
-                                "contextRegion": {
-                                    "snippet": {
-                                        "text": "        email=request.GET.get('email');\n        otpN=randint(100,999)\n        if email and otpN:\n"
-                                    },
-                                    "endLine": 345,
-                                    "startLine": 343
-                                }
-                            }
-                        }
-                    ],
-                    "properties": {
-                        "issue_confidence": "HIGH",
-                        "issue_severity": "LOW"
-                    },
-                    "ruleId": "B311",
-                    "ruleIndex": 9
-                },
-                {
-                    "message": {
-                        "text": "Use of unsafe yaml load. Allows instantiation of arbitrary objects. Consider yaml.safe_load()."
-                    },
-                    "locations": [
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "                    data = yaml.load(file)\n"
-                                    },
-                                    "startLine": 407
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/introduction/views.py"
-                                },
-                                "contextRegion": {
-                                    "snippet": {
-                                        "text": "                try :\n                    data = yaml.load(file)\n                    return render(request,\"Lab/A9/a9_lab.html\",{\"data\":data})\n"
-                                    },
-                                    "endLine": 408,
-                                    "startLine": 406
-                                }
-                            }
-                        }
-                    ],
-                    "properties": {
-                        "issue_confidence": "HIGH",
-                        "issue_severity": "MEDIUM"
-                    },
-                    "ruleId": "B506",
-                    "ruleIndex": 10
-                },
-                {
-                    "message": {
-                        "text": "Possible hardcoded password: 'lr66%-a!$km5ed@n5ug!tya5bv!0(yqwa1tn!q%0%3m2nh%oml'"
-                    },
-                    "level": "note",
-                    "locations": [
-                        {
-                            "physicalLocation": {
-                                "region": {
-                                    "snippet": {
-                                        "text": "SECRET_KEY = 'lr66%-a!$km5ed@n5ug!tya5bv!0(yqwa1tn!q%0%3m2nh%oml'\n"
-                                    },
-                                    "startLine": 25
-                                },
-                                "artifactLocation": {
-                                    "uri": "file:///workspace/workspace/5001711a-61b9-4728-82e6-d0008bad7310/upload/unzipped/sourcecode/pygoat/pygoat/pygoat/settings.py"
-                                },
-                                "contextRegion": {
-                                    "snippet": {
-                                        "text": "# SECURITY WARNING: keep the secret key used in production secret!\nSECRET_KEY = 'lr66%-a!$km5ed@n5ug!tya5bv!0(yqwa1tn!q%0%3m2nh%oml'\n\nSENSITIVE_DATA = 'FLAGTHATNEEDSTOBEFOUND'\n"
-                                    },
-                                    "endLine": 27,
-                                    "startLine": 24
-                                }
-                            }
-                        }
-                    ],
-                    "properties": {
-                        "issue_confidence": "MEDIUM",
-                        "issue_severity": "LOW"
-                    },
-                    "ruleId": "B105",
-                    "ruleIndex": 11
-                }
-            ]
+            {
+              "id": "B404",
+              "name": "blacklist",
+              "helpUri": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_imports.html#b404-import-subprocess"
+            },
+            {
+              "id": "B403",
+              "name": "blacklist",
+              "helpUri": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_imports.html#b403-import-pickle"
+            },
+            {
+              "id": "B608",
+              "name": "hardcoded_sql_expressions",
+              "helpUri": "https://bandit.readthedocs.io/en/latest/plugins/b608_hardcoded_sql_expressions.html"
+            },
+            {
+              "id": "B301",
+              "name": "blacklist",
+              "helpUri": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b301-pickle"
+            },
+            {
+              "id": "B317",
+              "name": "blacklist",
+              "helpUri": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b313-b320-xml-bad-sax"
+            },
+            {
+              "id": "B319",
+              "name": "blacklist",
+              "helpUri": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b313-b320-xml-bad-pulldom"
+            },
+            {
+              "id": "B602",
+              "name": "subprocess_popen_with_shell_equals_true",
+              "helpUri": "https://bandit.readthedocs.io/en/latest/plugins/b602_subprocess_popen_with_shell_equals_true.html"
+            },
+            {
+              "id": "B311",
+              "name": "blacklist",
+              "helpUri": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b311-random"
+            },
+            {
+              "id": "B506",
+              "name": "yaml_load",
+              "helpUri": "https://bandit.readthedocs.io/en/latest/plugins/b506_yaml_load.html"
+            },
+            {
+              "id": "B105",
+              "name": "hardcoded_password_string",
+              "helpUri": "https://bandit.readthedocs.io/en/latest/plugins/b105_hardcoded_password_string.html"
+            }
+          ]
         }
-    ],
-    "version": "2.1.0",
-    "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.4.json"
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true,
+          "endTimeUtc": "2022-02-18T18:20:02Z"
+        }
+      ],
+      "properties": {
+        "metrics": {
+          "_totals": {
+            "loc": 750,
+            "nosec": 0,
+            "SEVERITY.UNDEFINED": 0.0,
+            "CONFIDENCE.UNDEFINED": 0.0,
+            "SEVERITY.LOW": 7.0,
+            "CONFIDENCE.LOW": 1.0,
+            "SEVERITY.MEDIUM": 5.0,
+            "CONFIDENCE.MEDIUM": 1.0,
+            "SEVERITY.HIGH": 1.0,
+            "CONFIDENCE.HIGH": 11.0
+          },
+          "./pygoat/pygoat/introduction/__init__.py": {
+            "loc": 0,
+            "nosec": 0,
+            "SEVERITY.UNDEFINED": 0.0,
+            "SEVERITY.LOW": 0.0,
+            "SEVERITY.MEDIUM": 0.0,
+            "SEVERITY.HIGH": 0.0,
+            "CONFIDENCE.UNDEFINED": 0.0,
+            "CONFIDENCE.LOW": 0.0,
+            "CONFIDENCE.MEDIUM": 0.0,
+            "CONFIDENCE.HIGH": 0.0
+          },
+          "./pygoat/pygoat/introduction/admin.py": {
+            "loc": 7,
+            "nosec": 0,
+            "SEVERITY.UNDEFINED": 0.0,
+            "SEVERITY.LOW": 0.0,
+            "SEVERITY.MEDIUM": 0.0,
+            "SEVERITY.HIGH": 0.0,
+            "CONFIDENCE.UNDEFINED": 0.0,
+            "CONFIDENCE.LOW": 0.0,
+            "CONFIDENCE.MEDIUM": 0.0,
+            "CONFIDENCE.HIGH": 0.0
+          },
+          "./pygoat/pygoat/introduction/apps.py": {
+            "loc": 3,
+            "nosec": 0,
+            "SEVERITY.UNDEFINED": 0.0,
+            "SEVERITY.LOW": 0.0,
+            "SEVERITY.MEDIUM": 0.0,
+            "SEVERITY.HIGH": 0.0,
+            "CONFIDENCE.UNDEFINED": 0.0,
+            "CONFIDENCE.LOW": 0.0,
+            "CONFIDENCE.MEDIUM": 0.0,
+            "CONFIDENCE.HIGH": 0.0
+          },
+          "./pygoat/pygoat/introduction/forms.py": {
+            "loc": 0,
+            "nosec": 0,
+            "SEVERITY.UNDEFINED": 0.0,
+            "SEVERITY.LOW": 0.0,
+            "SEVERITY.MEDIUM": 0.0,
+            "SEVERITY.HIGH": 0.0,
+            "CONFIDENCE.UNDEFINED": 0.0,
+            "CONFIDENCE.LOW": 0.0,
+            "CONFIDENCE.MEDIUM": 0.0,
+            "CONFIDENCE.HIGH": 0.0
+          },
+          "./pygoat/pygoat/introduction/migrations/0001_initial.py": {
+            "loc": 16,
+            "nosec": 0,
+            "SEVERITY.UNDEFINED": 0.0,
+            "SEVERITY.LOW": 0.0,
+            "SEVERITY.MEDIUM": 0.0,
+            "SEVERITY.HIGH": 0.0,
+            "CONFIDENCE.UNDEFINED": 0.0,
+            "CONFIDENCE.LOW": 0.0,
+            "CONFIDENCE.MEDIUM": 0.0,
+            "CONFIDENCE.HIGH": 0.0
+          },
+          "./pygoat/pygoat/introduction/migrations/0002_auto_20210414_1510.py": {
+            "loc": 25,
+            "nosec": 0,
+            "SEVERITY.UNDEFINED": 0.0,
+            "SEVERITY.LOW": 0.0,
+            "SEVERITY.MEDIUM": 0.0,
+            "SEVERITY.HIGH": 0.0,
+            "CONFIDENCE.UNDEFINED": 0.0,
+            "CONFIDENCE.LOW": 0.0,
+            "CONFIDENCE.MEDIUM": 0.0,
+            "CONFIDENCE.HIGH": 0.0
+          },
+          "./pygoat/pygoat/introduction/migrations/0003_password_user.py": {
+            "loc": 23,
+            "nosec": 0,
+            "SEVERITY.UNDEFINED": 0.0,
+            "SEVERITY.LOW": 0.0,
+            "SEVERITY.MEDIUM": 0.0,
+            "SEVERITY.HIGH": 0.0,
+            "CONFIDENCE.UNDEFINED": 0.0,
+            "CONFIDENCE.LOW": 0.0,
+            "CONFIDENCE.MEDIUM": 0.0,
+            "CONFIDENCE.HIGH": 0.0
+          },
+          "./pygoat/pygoat/introduction/migrations/0004_auto_20210415_1722.py": {
+            "loc": 16,
+            "nosec": 0,
+            "SEVERITY.UNDEFINED": 0.0,
+            "SEVERITY.LOW": 0.0,
+            "SEVERITY.MEDIUM": 0.0,
+            "SEVERITY.HIGH": 0.0,
+            "CONFIDENCE.UNDEFINED": 0.0,
+            "CONFIDENCE.LOW": 0.0,
+            "CONFIDENCE.MEDIUM": 0.0,
+            "CONFIDENCE.HIGH": 0.0
+          },
+          "./pygoat/pygoat/introduction/migrations/0005_auto_20210415_1748.py": {
+            "loc": 11,
+            "nosec": 0,
+            "SEVERITY.UNDEFINED": 0.0,
+            "SEVERITY.LOW": 0.0,
+            "SEVERITY.MEDIUM": 0.0,
+            "SEVERITY.HIGH": 0.0,
+            "CONFIDENCE.UNDEFINED": 0.0,
+            "CONFIDENCE.LOW": 0.0,
+            "CONFIDENCE.MEDIUM": 0.0,
+            "CONFIDENCE.HIGH": 0.0
+          },
+          "./pygoat/pygoat/introduction/migrations/0006_comments.py": {
+            "loc": 15,
+            "nosec": 0,
+            "SEVERITY.UNDEFINED": 0.0,
+            "SEVERITY.LOW": 0.0,
+            "SEVERITY.MEDIUM": 0.0,
+            "SEVERITY.HIGH": 0.0,
+            "CONFIDENCE.UNDEFINED": 0.0,
+            "CONFIDENCE.LOW": 0.0,
+            "CONFIDENCE.MEDIUM": 0.0,
+            "CONFIDENCE.HIGH": 0.0
+          },
+          "./pygoat/pygoat/introduction/migrations/0007_auto_20210418_0022.py": {
+            "loc": 12,
+            "nosec": 0,
+            "SEVERITY.UNDEFINED": 0.0,
+            "SEVERITY.LOW": 0.0,
+            "SEVERITY.MEDIUM": 0.0,
+            "SEVERITY.HIGH": 0.0,
+            "CONFIDENCE.UNDEFINED": 0.0,
+            "CONFIDENCE.LOW": 0.0,
+            "CONFIDENCE.MEDIUM": 0.0,
+            "CONFIDENCE.HIGH": 0.0
+          },
+          "./pygoat/pygoat/introduction/migrations/0008_otp.py": {
+            "loc": 15,
+            "nosec": 0,
+            "SEVERITY.UNDEFINED": 0.0,
+            "SEVERITY.LOW": 0.0,
+            "SEVERITY.MEDIUM": 0.0,
+            "SEVERITY.HIGH": 0.0,
+            "CONFIDENCE.UNDEFINED": 0.0,
+            "CONFIDENCE.LOW": 0.0,
+            "CONFIDENCE.MEDIUM": 0.0,
+            "CONFIDENCE.HIGH": 0.0
+          },
+          "./pygoat/pygoat/introduction/migrations/0009_auto_20210517_2047.py": {
+            "loc": 13,
+            "nosec": 0,
+            "SEVERITY.UNDEFINED": 0.0,
+            "SEVERITY.LOW": 0.0,
+            "SEVERITY.MEDIUM": 0.0,
+            "SEVERITY.HIGH": 0.0,
+            "CONFIDENCE.UNDEFINED": 0.0,
+            "CONFIDENCE.LOW": 0.0,
+            "CONFIDENCE.MEDIUM": 0.0,
+            "CONFIDENCE.HIGH": 0.0
+          },
+          "./pygoat/pygoat/introduction/migrations/__init__.py": {
+            "loc": 0,
+            "nosec": 0,
+            "SEVERITY.UNDEFINED": 0.0,
+            "SEVERITY.LOW": 0.0,
+            "SEVERITY.MEDIUM": 0.0,
+            "SEVERITY.HIGH": 0.0,
+            "CONFIDENCE.UNDEFINED": 0.0,
+            "CONFIDENCE.LOW": 0.0,
+            "CONFIDENCE.MEDIUM": 0.0,
+            "CONFIDENCE.HIGH": 0.0
+          },
+          "./pygoat/pygoat/introduction/models.py": {
+            "loc": 24,
+            "nosec": 0,
+            "SEVERITY.UNDEFINED": 0.0,
+            "SEVERITY.LOW": 0.0,
+            "SEVERITY.MEDIUM": 0.0,
+            "SEVERITY.HIGH": 0.0,
+            "CONFIDENCE.UNDEFINED": 0.0,
+            "CONFIDENCE.LOW": 0.0,
+            "CONFIDENCE.MEDIUM": 0.0,
+            "CONFIDENCE.HIGH": 0.0
+          },
+          "./pygoat/pygoat/introduction/tests.py": {
+            "loc": 1,
+            "nosec": 0,
+            "SEVERITY.UNDEFINED": 0.0,
+            "SEVERITY.LOW": 0.0,
+            "SEVERITY.MEDIUM": 0.0,
+            "SEVERITY.HIGH": 0.0,
+            "CONFIDENCE.UNDEFINED": 0.0,
+            "CONFIDENCE.LOW": 0.0,
+            "CONFIDENCE.MEDIUM": 0.0,
+            "CONFIDENCE.HIGH": 0.0
+          },
+          "./pygoat/pygoat/introduction/urls.py": {
+            "loc": 44,
+            "nosec": 0,
+            "SEVERITY.UNDEFINED": 0.0,
+            "SEVERITY.LOW": 0.0,
+            "SEVERITY.MEDIUM": 0.0,
+            "SEVERITY.HIGH": 0.0,
+            "CONFIDENCE.UNDEFINED": 0.0,
+            "CONFIDENCE.LOW": 0.0,
+            "CONFIDENCE.MEDIUM": 0.0,
+            "CONFIDENCE.HIGH": 0.0
+          },
+          "./pygoat/pygoat/introduction/views.py": {
+            "loc": 358,
+            "nosec": 0,
+            "SEVERITY.UNDEFINED": 0.0,
+            "SEVERITY.LOW": 6.0,
+            "SEVERITY.MEDIUM": 5.0,
+            "SEVERITY.HIGH": 1.0,
+            "CONFIDENCE.UNDEFINED": 0.0,
+            "CONFIDENCE.LOW": 1.0,
+            "CONFIDENCE.MEDIUM": 0.0,
+            "CONFIDENCE.HIGH": 11.0
+          },
+          "./pygoat/pygoat/manage.py": {
+            "loc": 16,
+            "nosec": 0,
+            "SEVERITY.UNDEFINED": 0.0,
+            "SEVERITY.LOW": 0.0,
+            "SEVERITY.MEDIUM": 0.0,
+            "SEVERITY.HIGH": 0.0,
+            "CONFIDENCE.UNDEFINED": 0.0,
+            "CONFIDENCE.LOW": 0.0,
+            "CONFIDENCE.MEDIUM": 0.0,
+            "CONFIDENCE.HIGH": 0.0
+          },
+          "./pygoat/pygoat/pygoat/__init__.py": {
+            "loc": 0,
+            "nosec": 0,
+            "SEVERITY.UNDEFINED": 0.0,
+            "SEVERITY.LOW": 0.0,
+            "SEVERITY.MEDIUM": 0.0,
+            "SEVERITY.HIGH": 0.0,
+            "CONFIDENCE.UNDEFINED": 0.0,
+            "CONFIDENCE.LOW": 0.0,
+            "CONFIDENCE.MEDIUM": 0.0,
+            "CONFIDENCE.HIGH": 0.0
+          },
+          "./pygoat/pygoat/pygoat/asgi.py": {
+            "loc": 10,
+            "nosec": 0,
+            "SEVERITY.UNDEFINED": 0.0,
+            "SEVERITY.LOW": 0.0,
+            "SEVERITY.MEDIUM": 0.0,
+            "SEVERITY.HIGH": 0.0,
+            "CONFIDENCE.UNDEFINED": 0.0,
+            "CONFIDENCE.LOW": 0.0,
+            "CONFIDENCE.MEDIUM": 0.0,
+            "CONFIDENCE.HIGH": 0.0
+          },
+          "./pygoat/pygoat/pygoat/settings.py": {
+            "loc": 105,
+            "nosec": 0,
+            "SEVERITY.UNDEFINED": 0.0,
+            "SEVERITY.LOW": 1.0,
+            "SEVERITY.MEDIUM": 0.0,
+            "SEVERITY.HIGH": 0.0,
+            "CONFIDENCE.UNDEFINED": 0.0,
+            "CONFIDENCE.LOW": 0.0,
+            "CONFIDENCE.MEDIUM": 1.0,
+            "CONFIDENCE.HIGH": 0.0
+          },
+          "./pygoat/pygoat/pygoat/urls.py": {
+            "loc": 26,
+            "nosec": 0,
+            "SEVERITY.UNDEFINED": 0.0,
+            "SEVERITY.LOW": 0.0,
+            "SEVERITY.MEDIUM": 0.0,
+            "SEVERITY.HIGH": 0.0,
+            "CONFIDENCE.UNDEFINED": 0.0,
+            "CONFIDENCE.LOW": 0.0,
+            "CONFIDENCE.MEDIUM": 0.0,
+            "CONFIDENCE.HIGH": 0.0
+          },
+          "./pygoat/pygoat/pygoat/wsgi.py": {
+            "loc": 10,
+            "nosec": 0,
+            "SEVERITY.UNDEFINED": 0.0,
+            "SEVERITY.LOW": 0.0,
+            "SEVERITY.MEDIUM": 0.0,
+            "SEVERITY.HIGH": 0.0,
+            "CONFIDENCE.UNDEFINED": 0.0,
+            "CONFIDENCE.LOW": 0.0,
+            "CONFIDENCE.MEDIUM": 0.0,
+            "CONFIDENCE.HIGH": 0.0
+          }
+        }
+      },
+      "results": [
+        {
+          "message": {
+            "text": "Using parseString to parse untrusted XML data is known to be vulnerable to XML attacks. Replace parseString with the equivalent defusedxml package, or make sure defusedxml.defuse_stdlib() is called."
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "from xml.dom.pulldom import parseString, START_ELEMENT\n"
+                  },
+                  "startLine": 14
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "from random import randint\nfrom xml.dom.pulldom import parseString, START_ELEMENT\nfrom xml.sax.handler import feature_external_ges\n"
+                  },
+                  "endLine": 15,
+                  "startLine": 13
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "HIGH",
+            "issue_severity": "LOW"
+          },
+          "ruleId": "B409",
+          "ruleIndex": 0
+        },
+        {
+          "message": {
+            "text": "Using feature_external_ges to parse untrusted XML data is known to be vulnerable to XML attacks. Replace feature_external_ges with the equivalent defusedxml package, or make sure defusedxml.defuse_stdlib() is called."
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "from xml.sax.handler import feature_external_ges\n"
+                  },
+                  "startLine": 15
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "from xml.dom.pulldom import parseString, START_ELEMENT\nfrom xml.sax.handler import feature_external_ges\nfrom xml.sax import make_parser\n"
+                  },
+                  "endLine": 16,
+                  "startLine": 14
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "HIGH",
+            "issue_severity": "LOW"
+          },
+          "ruleId": "B406",
+          "ruleIndex": 1
+        },
+        {
+          "message": {
+            "text": "Using make_parser to parse untrusted XML data is known to be vulnerable to XML attacks. Replace make_parser with the equivalent defusedxml package, or make sure defusedxml.defuse_stdlib() is called."
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "from xml.sax import make_parser\n"
+                  },
+                  "startLine": 16
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "from xml.sax.handler import feature_external_ges\nfrom xml.sax import make_parser\nfrom django.views.decorators.csrf import csrf_exempt\n"
+                  },
+                  "endLine": 17,
+                  "startLine": 15
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "HIGH",
+            "issue_severity": "LOW"
+          },
+          "ruleId": "B406",
+          "ruleIndex": 1
+        },
+        {
+          "message": {
+            "text": "Consider possible security implications associated with the subprocess module."
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "import subprocess\n"
+                  },
+                  "startLine": 19
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "from django.template.loader import render_to_string\nimport subprocess\nimport pickle\n"
+                  },
+                  "endLine": 20,
+                  "startLine": 18
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "HIGH",
+            "issue_severity": "LOW"
+          },
+          "ruleId": "B404",
+          "ruleIndex": 2
+        },
+        {
+          "message": {
+            "text": "Consider possible security implications associated with pickle module."
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "import pickle\n"
+                  },
+                  "startLine": 20
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "import subprocess\nimport pickle\nimport base64\n"
+                  },
+                  "endLine": 21,
+                  "startLine": 19
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "HIGH",
+            "issue_severity": "LOW"
+          },
+          "ruleId": "B403",
+          "ruleIndex": 3
+        },
+        {
+          "message": {
+            "text": "Possible SQL injection vector through string-based query construction."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "                val=login.objects.raw(\"SELECT * FROM introduction_login WHERE user='\"+name+\"'AND password='\"+password+\"'\")\n"
+                  },
+                  "startLine": 86
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "\n                val=login.objects.raw(\"SELECT * FROM introduction_login WHERE user='\"+name+\"'AND password='\"+password+\"'\")\n\n"
+                  },
+                  "endLine": 87,
+                  "startLine": 85
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "LOW",
+            "issue_severity": "MEDIUM"
+          },
+          "ruleId": "B608",
+          "ruleIndex": 4
+        },
+        {
+          "message": {
+            "text": "Pickle and modules that wrap it can be unsafe when used to deserialize untrusted data, possible security issue."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "            admin = pickle.loads(token)\n"
+                  },
+                  "startLine": 122
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "            token = base64.b64decode(token)\n            admin = pickle.loads(token)\n            if admin.admin == 1:\n"
+                  },
+                  "endLine": 123,
+                  "startLine": 121
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "HIGH",
+            "issue_severity": "MEDIUM"
+          },
+          "ruleId": "B301",
+          "ruleIndex": 5
+        },
+        {
+          "message": {
+            "text": "Using xml.sax.make_parser to parse untrusted XML data is known to be vulnerable to XML attacks. Replace xml.sax.make_parser with its defusedxml equivalent function or make sure defusedxml.defuse_stdlib() is called"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "    parser = make_parser()\n"
+                  },
+                  "startLine": 161
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "\n    parser = make_parser()\n    parser.setFeature(feature_external_ges, True)\n"
+                  },
+                  "endLine": 162,
+                  "startLine": 160
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "HIGH",
+            "issue_severity": "MEDIUM"
+          },
+          "ruleId": "B317",
+          "ruleIndex": 6
+        },
+        {
+          "message": {
+            "text": "Using xml.dom.pulldom.parseString to parse untrusted XML data is known to be vulnerable to XML attacks. Replace xml.dom.pulldom.parseString with its defusedxml equivalent function or make sure defusedxml.defuse_stdlib() is called"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "    doc = parseString(request.body.decode('utf-8'), parser=parser)\n"
+                  },
+                  "startLine": 163
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "    parser.setFeature(feature_external_ges, True)\n    doc = parseString(request.body.decode('utf-8'), parser=parser)\n    for event, node in doc:\n"
+                  },
+                  "endLine": 164,
+                  "startLine": 162
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "HIGH",
+            "issue_severity": "MEDIUM"
+          },
+          "ruleId": "B319",
+          "ruleIndex": 7
+        },
+        {
+          "message": {
+            "text": "subprocess call with shell=True identified, security issue."
+          },
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "            output=subprocess.check_output(command,shell=True,encoding=\"UTF-8\");\n"
+                  },
+                  "startLine": 312
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "\n            output=subprocess.check_output(command,shell=True,encoding=\"UTF-8\");\n            print(output)\n"
+                  },
+                  "endLine": 313,
+                  "startLine": 311
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "HIGH",
+            "issue_severity": "HIGH"
+          },
+          "ruleId": "B602",
+          "ruleIndex": 8
+        },
+        {
+          "message": {
+            "text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes."
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "        otpN=randint(100,999)\n"
+                  },
+                  "startLine": 344
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "        email=request.GET.get('email');\n        otpN=randint(100,999)\n        if email and otpN:\n"
+                  },
+                  "endLine": 345,
+                  "startLine": 343
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "HIGH",
+            "issue_severity": "LOW"
+          },
+          "ruleId": "B311",
+          "ruleIndex": 9
+        },
+        {
+          "message": {
+            "text": "Use of unsafe yaml load. Allows instantiation of arbitrary objects. Consider yaml.safe_load()."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "                    data = yaml.load(file)\n"
+                  },
+                  "startLine": 407
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/pygoat/introduction/views.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "                try :\n                    data = yaml.load(file)\n                    return render(request,\"Lab/A9/a9_lab.html\",{\"data\":data})\n"
+                  },
+                  "endLine": 408,
+                  "startLine": 406
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "HIGH",
+            "issue_severity": "MEDIUM"
+          },
+          "ruleId": "B506",
+          "ruleIndex": 10
+        },
+        {
+          "message": {
+            "text": "Possible hardcoded password: 'lr66%-a!$km5ed@n5ug!tya5bv!0(yqwa1tn!q%0%3m2nh%oml'"
+          },
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "snippet": {
+                    "text": "SECRET_KEY = 'lr66%-a!$km5ed@n5ug!tya5bv!0(yqwa1tn!q%0%3m2nh%oml'\n"
+                  },
+                  "startLine": 25
+                },
+                "artifactLocation": {
+                  "uri": "pygoat/pygoat/pygoat/settings.py"
+                },
+                "contextRegion": {
+                  "snippet": {
+                    "text": "# SECURITY WARNING: keep the secret key used in production secret!\nSECRET_KEY = 'lr66%-a!$km5ed@n5ug!tya5bv!0(yqwa1tn!q%0%3m2nh%oml'\n\nSENSITIVE_DATA = 'FLAGTHATNEEDSTOBEFOUND'\n"
+                  },
+                  "endLine": 27,
+                  "startLine": 24
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_confidence": "MEDIUM",
+            "issue_severity": "LOW"
+          },
+          "ruleId": "B105",
+          "ruleIndex": 11
+        }
+      ]
+    }
+  ],
+  "version": "2.1.0",
+  "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.4.json"
 }

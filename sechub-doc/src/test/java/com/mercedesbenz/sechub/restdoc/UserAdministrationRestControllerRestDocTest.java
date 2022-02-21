@@ -1,18 +1,15 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
-import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
+import static com.epages.restdocs.apispec.ResourceDocumentation.*;
 import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
 import static com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.lang.annotation.Annotation;
 import java.util.LinkedHashSet;
@@ -45,6 +42,7 @@ import com.mercedesbenz.sechub.domain.administration.user.UserCreationService;
 import com.mercedesbenz.sechub.domain.administration.user.UserDeleteService;
 import com.mercedesbenz.sechub.domain.administration.user.UserDetailInformation;
 import com.mercedesbenz.sechub.domain.administration.user.UserDetailInformationService;
+import com.mercedesbenz.sechub.domain.administration.user.UserEmailAddressUpdateService;
 import com.mercedesbenz.sechub.domain.administration.user.UserGrantSuperAdminRightsService;
 import com.mercedesbenz.sechub.domain.administration.user.UserListService;
 import com.mercedesbenz.sechub.domain.administration.user.UserRevokeSuperAdminRightsService;
@@ -59,6 +57,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminList
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminListsAllUsers;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminRevokesAdminRightsFromAdmin;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminShowsUserDetails;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUpdatesUserEmailAddress;
 import com.mercedesbenz.sechub.test.ExampleConstants;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 import com.mercedesbenz.sechub.test.TestURLBuilder;
@@ -95,10 +94,43 @@ public class UserAdministrationRestControllerRestDocTest {
     private UserRevokeSuperAdminRightsService userRevokeSuperAdminRightsService;
 
     @MockBean
+    private UserEmailAddressUpdateService userEmailAddressUpdateService;
+
+    @MockBean
     private SignupRepository signUpRepository;
 
     @Before
     public void before() {
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdminUpdatesUserEmailAddress.class)
+    public void restdoc_admin_updates_user_email_address() throws Exception {
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminChangesUserEmailAddress(USER_ID.pathElement(), EMAIL_ADDRESS.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminUpdatesUserEmailAddress.class;
+
+        /* execute + test @formatter:off */
+        this.mockMvc.perform(
+                put(apiEndpoint, USER_ID, EMAIL_ADDRESS)
+                )./*andDo(print()).*/
+        andExpect(status().isOk()).
+        andDo(document(RestDocFactory.createPath(useCase),
+                resource(
+                        ResourceSnippetParameters.builder().
+                            summary(RestDocFactory.createSummary(useCase)).
+                            description(RestDocFactory.createDescription(useCase)).
+                            tag(RestDocFactory.extractTag(apiEndpoint)).
+                            pathParameters(
+                                    parameterWithName(USER_ID.paramName()).description("The userId of the user whose email adress will be changed"),
+                                    parameterWithName(EMAIL_ADDRESS.paramName()).description("The new email address")
+
+                            ).
+                            build()
+                        )
+                ));
+
+        /* @formatter:on */
     }
 
     @Test

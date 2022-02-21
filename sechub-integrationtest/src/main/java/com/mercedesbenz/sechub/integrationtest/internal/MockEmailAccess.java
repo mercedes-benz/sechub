@@ -12,6 +12,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.mercedesbenz.sechub.integrationtest.api.MockEmailEntry;
 import com.mercedesbenz.sechub.integrationtest.api.TestUser;
+import com.mercedesbenz.sechub.integrationtest.api.TextSearchMode;
 import com.mercedesbenz.sechub.test.TestURLBuilder;
 
 public class MockEmailAccess {
@@ -62,10 +63,10 @@ public class MockEmailAccess {
     }
 
     public MockEmailEntry findMailOrFail(String email, String subject, int maxSecondsToWait) {
-        return findMailOrFail(email, subject, false, maxSecondsToWait);
+        return findMailOrFail(email, subject, TextSearchMode.EXACT, maxSecondsToWait);
     }
 
-    public MockEmailEntry findMailOrFail(String email, String subjectRegexp, boolean regularExpression, int maxSecondsToWait) {
+    public MockEmailEntry findMailOrFail(String email, String subjectSearch, TextSearchMode subjectSearchMode, int maxSecondsToWait) {
         MockEmailEntry found = null;
         List<MockEmailEntry> list = null;
         for (int i = 0; i < maxSecondsToWait; i++) {
@@ -73,7 +74,7 @@ public class MockEmailAccess {
             list = convertToMockMailList(listAsMap);
 
             for (MockEmailEntry message : list) {
-                if (subjectRegexp == null || subjectRegexp.isEmpty()) {
+                if (subjectSearch == null || subjectSearch.isEmpty()) {
                     /* Always found when no subject given */
                     found = message;
                     break;
@@ -82,8 +83,23 @@ public class MockEmailAccess {
                     /* cannot be checked */
                     continue;
                 }
-                if (regularExpression ? message.subject.matches(subjectRegexp) : message.subject.equals(subjectRegexp)) {
-                    found = message;
+                switch (subjectSearchMode) {
+                case EXACT:
+                    if (message.subject.equals(subjectSearch)) {
+                        found = message;
+                    }
+                    break;
+                case CONTAINS:
+                    if (message.subject.indexOf(subjectSearch) != -1) {
+                        found = message;
+                    }
+                    break;
+                case REGULAR_EXPRESSON:
+                    if (message.subject.matches(subjectSearch)) {
+                        found = message;
+                    }
+                    break;
+                default:
                     break;
                 }
             }
@@ -100,8 +116,22 @@ public class MockEmailAccess {
             StringBuilder sb = new StringBuilder();
             sb.append("Did not find a mail containing:\n-emailaddress (TO/CC/BCC): ");
             sb.append(email);
-            sb.append("\n-subject (regexp): '");
-            sb.append(subjectRegexp);
+            sb.append("\n-subject");
+            switch (subjectSearchMode) {
+            case CONTAINS:
+                sb.append("(contains)");
+                break;
+            case EXACT:
+                sb.append("(exact)");
+                break;
+            case REGULAR_EXPRESSON:
+                sb.append("(regexp)");
+                break;
+            default:
+                break;
+            }
+            sb.append(":'");
+            sb.append(subjectSearch);
             sb.append("'\n\nFound mails for this email address:");
             for (MockEmailEntry message : list) {
                 sb.append("\n").append(message.toString());
