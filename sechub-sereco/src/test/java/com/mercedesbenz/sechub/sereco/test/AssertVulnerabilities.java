@@ -31,6 +31,8 @@ public class AssertVulnerabilities {
 
     private static final Logger LOG = LoggerFactory.getLogger(AssertVulnerabilities.class);
 
+    private static VulnerabilityTestDescriptionBuilder descriptionBuilder = new VulnerabilityTestDescriptionBuilder();
+
     private List<SerecoVulnerability> vulnerabilities = new ArrayList<>();
 
     AssertVulnerabilities(List<SerecoVulnerability> list) {
@@ -134,10 +136,10 @@ public class AssertVulnerabilities {
             search = MetaDataAccess.createVulnerability(type, severity, list, description, classification);
         }
 
-        private List<SerecoVulnerability> find(StringBuilder metaInfo) {
-            List<SerecoVulnerability> list = find(metaInfo, false);
+        private List<SerecoVulnerability> find(StringBuilder message) {
+            List<SerecoVulnerability> list = find(message, false);
             if (list.isEmpty()) {
-                find(metaInfo, true);
+                find(message, true);
             }
             return list;
         }
@@ -176,10 +178,14 @@ public class AssertVulnerabilities {
             }
             if (findClosest) {
                 SerecoVulnerability closest = trace.getClosest();
-                message.append(">> Closest vulnerability was:\n" + closest + "\n\n>>>There was last ok:" + trace.getClosestLastCheck());
+                message.append(">> Closest vulnerability was:\n" + describe(closest) + "\n\n>>>There was last ok:" + trace.getClosestLastCheck());
 
             }
             return matching;
+        }
+
+        public String describe(SerecoVulnerability vulnerability) {
+            return descriptionBuilder.describe(vulnerability);
         }
 
         private class SearchTracer {
@@ -297,6 +303,11 @@ public class AssertVulnerabilities {
                 return newCallStackElement;
             }
 
+            public FindCodeCallStackBuilder containingSource(String source) {
+                currentCallStackElement.setSource(source);
+                return this;
+            }
+
         }
 
         public VulnerabilityFinder withDescriptionContaining(String descriptionPart) {
@@ -347,7 +358,7 @@ public class AssertVulnerabilities {
                 sb.append(v.toString());
                 sb.append("\n");
             }
-            assertEquals("Not found expected amount of vulnerabilities for given search.\n>>Searched for:\n" + search + " \n" + message.toString()
+            assertEquals("Not found expected amount of vulnerabilities for given search.\n>>Searched for:\n" + describe(search) + " \n" + message.toString()
                     + "\n (vulnerabilitis found at all:" + matches.size() + ", false positives:" + falsePositives + ")", expectedAmount, check);
             throw new IllegalStateException("Test must fail before by assertEquals!");
         }
