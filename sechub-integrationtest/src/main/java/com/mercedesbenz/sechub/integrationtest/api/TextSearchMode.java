@@ -1,6 +1,7 @@
 package com.mercedesbenz.sechub.integrationtest.api;
 
 public enum TextSearchMode {
+
     /**
      * Results only accepted when inspected text is exactly the same as search
      * string.
@@ -17,5 +18,6 @@ public enum TextSearchMode {
      * Results are accepted when the given search regular expression matches with
      * inspected text
      */
-    REGLAR_EXPRESSON,
+    REGULAR_EXPRESSON,
+
 }

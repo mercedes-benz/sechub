@@ -94,7 +94,7 @@ public class MockEmailAccess {
                         found = message;
                     }
                     break;
-                case REGLAR_EXPRESSON:
+                case REGULAR_EXPRESSON:
                     if (message.subject.matches(subjectSearch)) {
                         found = message;
                     }
@@ -124,7 +124,7 @@ public class MockEmailAccess {
             case EXACT:
                 sb.append("(exact)");
                 break;
-            case REGLAR_EXPRESSON:
+            case REGULAR_EXPRESSON:
                 sb.append("(regexp)");
                 break;
             default:

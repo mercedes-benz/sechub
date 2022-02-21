@@ -83,8 +83,8 @@ public class ProjectAdministrationScenario3IntTest {
         assertUser(USER_3).isAssignedToProject(PROJECT_1);
         assertUser(USER_1).isNotOwnerOf(PROJECT_1);
 
-        assertUser(USER_3).hasReceivedEmail(subject, TextSearchMode.REGLAR_EXPRESSON);
-        assertUser(USER_2).hasReceivedEmail(subject, TextSearchMode.REGLAR_EXPRESSON);
-        assertUser(USER_1).hasReceivedEmail(subject, TextSearchMode.REGLAR_EXPRESSON);
+        assertUser(USER_3).hasReceivedEmail(subject, TextSearchMode.REGULAR_EXPRESSON);
+        assertUser(USER_2).hasReceivedEmail(subject, TextSearchMode.REGULAR_EXPRESSON);
+        assertUser(USER_1).hasReceivedEmail(subject, TextSearchMode.REGULAR_EXPRESSON);
     }
 }
