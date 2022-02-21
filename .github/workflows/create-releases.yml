@@ -122,7 +122,7 @@ jobs:
 
             -> Please review and merge **before** publishing the release.
 
-      - name: Print PR infos for release documentation
+      - name: Print PR infos
         if: steps.apply-headers.outputs.commits != ''
         run: |
           echo "Pull Request Number - ${{ steps.pr_spdx_headers.outputs.pull-request-number }}"
@@ -276,7 +276,7 @@ jobs:
 
             -> Please review and merge **before** publishing the release.
 
-      - name: Print PR infos for release documentation
+      - name: Print PR infos
         run: |
           echo "Pull Request Number - ${{ steps.pr_release_documentation.outputs.pull-request-number }}"
           echo "Pull Request URL - ${{ steps.pr_release_documentation.outputs.pull-request-url }}"
@@ -529,7 +529,7 @@ jobs:
 
             -> Please merge **after** the release has been published.
           pr_allow_empty: true
-      - name: Print PR infos for pull-request master to develop
+      - name: Print PR infos
         run: |
           echo "Pull Request Number - ${{ steps.pr_master_to_develop.outputs.pr_number }}"
           echo "Pull Request URL - ${{ steps.pr_master_to_develop.outputs.pr_url }}"
