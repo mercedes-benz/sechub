@@ -127,6 +127,9 @@ jobs:
           echo "Pull Request Number - ${{ steps.pr_spdx_headers.outputs.pull-request-number }}"
           echo "Pull Request URL - ${{ steps.pr_spdx_headers.outputs.pull-request-url }}"
 
+      - name: Switch back to master branch
+        run: git checkout master
+
       # ----------------------
       # SecHub Client
       # ----------------------
@@ -277,6 +280,9 @@ jobs:
         run: |
           echo "Pull Request Number - ${{ steps.pr_release_documentation.outputs.pull-request-number }}"
           echo "Pull Request URL - ${{ steps.pr_release_documentation.outputs.pull-request-url }}"
+
+      - name: Switch back to master branch
+        run: git checkout master
 
       # -----------------------------------------
       # Assert releaseable, so no dirty flags on releases
