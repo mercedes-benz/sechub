@@ -8,19 +8,19 @@ on:
         description: Server Version (e.g. 0.27.0)
         required: false
       server-milestone-number:
-        description: Milestone number for Server release (e.g. 45)
+        description: Server Milestone number (e.g. 45)
         required: false
       client-version:
         description: Client Version (e.g. 0.23.0)
         required: false
       client-milestone-number:
-        description: Milestone number for Client release (e.g. 47)
+        description: Client Milestone number (e.g. 47)
         required: false
       pds-version:
-        description: PDS Server Version (e.g. 0.20.0)
+        description: PDS Version (e.g. 0.20.0)
         required: false
       pds-milestone-number:
-        description: Milestone number for PDS release (e.g. 46)
+        description: PDS Milestone number (e.g. 46)
         required: false
 jobs:
   release-version:
