@@ -106,7 +106,7 @@ jobs:
       # Build Documentation
       # -----------------------------------------
       - name: Create documentation
-        run: ./gradlew documentation-with-pages
+        run: ./gradlew documentation
 
       # -----------------------------------------
       # Upload documentation
@@ -116,7 +116,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: sechub-docs-html
-          path: docs/latest
+          path: sechub-doc/build/docs/final-html/
           retention-days: 14
 
       - name: Archive documentation PDF
