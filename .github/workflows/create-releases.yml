@@ -511,25 +511,38 @@ jobs:
       # -----------------------------------------
       # Create a pull request for merging back `master` into `develop`
       # -----------------------------------------
-      - name: pull-request master to develop
+      # - name: pull-request master to develop
+      #   id: pr_master_to_develop
+      #   uses: repo-sync/pull-request@v2
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     source_branch: "master"
+      #     destination_branch: "develop"
+      #     pr_title: '2 - After release: Merge master back into develop [auto-generated]'
+      #     pr_body: |
+      #       After SecHub release
+      #       - Client '${{ github.event.inputs.client-version }}'
+      #       - Server '${{ github.event.inputs.server-version }}'
+      #       - PDS '${{ github.event.inputs.pds-version }}'
+
+      #       Merge master branch back into develop
+
+      #       -> Please merge **after** the release has been published.
+      #     pr_allow_empty: true
+      # - name: Print PR infos
+      #   run: |
+      #     echo "Pull Request Number - ${{ steps.pr_master_to_develop.outputs.pr_number }}"
+      #     echo "Pull Request URL - ${{ steps.pr_master_to_develop.outputs.pr_url }}"
+
+      - name: Create pull request
         id: pr_master_to_develop
-        uses: repo-sync/pull-request@v2
+        uses: thomaseizinger/create-pull-request@master
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          source_branch: "master"
-          destination_branch: "develop"
-          pr_title: '2 - After release: Merge master back into develop [auto-generated]'
-          pr_body: |
-            After SecHub release
-            - Client '${{ github.event.inputs.client-version }}'
-            - Server '${{ github.event.inputs.server-version }}'
-            - PDS '${{ github.event.inputs.pds-version }}'
-
-            Merge master branch back into develop
-
-            -> Please merge **after** the release has been published.
-          pr_allow_empty: true
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          head: master
+          base: develop
+          title: "2 - After release: Merge master back into develop [auto-generated]"
       - name: Print PR infos
         run: |
-          echo "Pull Request Number - ${{ steps.pr_master_to_develop.outputs.pr_number }}"
-          echo "Pull Request URL - ${{ steps.pr_master_to_develop.outputs.pr_url }}"
+          echo "Pull Request Number - ${{ steps.pr_master_to_develop.outputs.number }}"
+          echo "Pull Request URL - ${{ steps.pr_master_to_develop.outputs.html_url }}"
