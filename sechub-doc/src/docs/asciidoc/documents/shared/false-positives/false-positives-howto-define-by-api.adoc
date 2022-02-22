@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 [[section-false-positives-define-by-API]]
 Define false positive handling in `JSON` by referencing a former {sechub} job UUID and the
 corresponding finding entry (by id) and post it to REST API. 
