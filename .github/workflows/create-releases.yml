@@ -251,7 +251,6 @@ jobs:
       # Update and commit release documentation for https://mercedes-benz.github.io/sechub/
       # -----------------------------------------
       - name: Update release documentation
-        id: update_release_documentation
         run: |
           git reset --hard
           sechub-doc/helperscripts/publish+git-add-releasedocs.sh
@@ -511,13 +510,6 @@ jobs:
       # -----------------------------------------
       # Create a pull request for merging back `master` into `develop`
       # -----------------------------------------
-      - name: Prepare for pull request
-        run: |
-          git reset --hard
-          echo "nothing" > nothing.txt
-          git add nothing.txt
-          git commit -m "docs update by SecHub release job @github-actions"
-
       - name: pull-request master to develop
         id: pr_master_to_develop
         uses: repo-sync/pull-request@v2
@@ -525,9 +517,8 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           source_branch: "master"
           destination_branch: "develop"
-          pr_allow_empty: true
-          pr_draft: true
-          pr_title: '2a - After release: Merge master back into develop [auto-generated]'
+          pr_allow_empty: true  # should allow an empty PR, but seems not to work
+          pr_title: '2 - After release: Merge master back into develop [auto-generated]'
           pr_body: |
             After SecHub release
             - Client '${{ github.event.inputs.client-version }}'
@@ -537,23 +528,9 @@ jobs:
             Merge master branch back into develop
 
             -> Please merge **after** the release has been published.
-
+      # Remark: Fails silently if there is no difference between the branches.
+      #         In that case, you have to create a PR yourself after merging the documentation PR.
       - name: Print PR infos
         run: |
           echo "Pull Request Number - ${{ steps.pr_master_to_develop.outputs.pr_number }}"
           echo "Pull Request URL - ${{ steps.pr_master_to_develop.outputs.pr_url }}"
-
-      - name: Create pull request
-        id: pr_master_to_develop2b
-        uses: thomaseizinger/create-pull-request@master
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          head: master
-          base: develop
-          title: "2b - After release: Merge master back into develop [auto-generated]"
-          draft: true
-
-      - name: Print PR infos
-        run: |
-          echo "Pull Request Number - ${{ steps.pr_master_to_develop2b.outputs.number }}"
-          echo "Pull Request URL - ${{ steps.pr_master_to_develop2b.outputs.html_url }}"
