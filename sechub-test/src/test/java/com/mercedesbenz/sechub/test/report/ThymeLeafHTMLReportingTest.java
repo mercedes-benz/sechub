@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.test.report;
 
 import static com.mercedesbenz.sechub.test.report.ReportTestHelper.*;
