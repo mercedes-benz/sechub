@@ -537,7 +537,7 @@ jobs:
           echo "Pull Request URL - ${{ steps.pr_master_to_develop.outputs.pr_url }}"
 
       - name: Create pull request
-        id: pr_master_to_develop
+        id: pr_master_to_develop2b
         uses: thomaseizinger/create-pull-request@master
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -548,5 +548,5 @@ jobs:
 
       - name: Print PR infos
         run: |
-          echo "Pull Request Number - ${{ steps.pr_master_to_develop.outputs.number }}"
-          echo "Pull Request URL - ${{ steps.pr_master_to_develop.outputs.html_url }}"
+          echo "Pull Request Number - ${{ steps.pr_master_to_develop2b.outputs.number }}"
+          echo "Pull Request URL - ${{ steps.pr_master_to_develop2b.outputs.html_url }}"
