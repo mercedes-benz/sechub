@@ -114,7 +114,7 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           branch: release-spdx-headers
-          branch-suffix: timestamp
+          branch-suffix: short-commit-hash
           delete-branch: true
           title: '0 - Before release: Add missing SPDX license headers [auto-generated]'
           body: |
@@ -265,7 +265,7 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           branch: release-documentation
-          branch-suffix: timestamp
+          branch-suffix: short-commit-hash
           delete-branch: true
           title: '1 - Release documentation [auto-generated]'
           body: |
@@ -511,28 +511,30 @@ jobs:
       # -----------------------------------------
       # Create a pull request for merging back `master` into `develop`
       # -----------------------------------------
-      # - name: pull-request master to develop
-      #   id: pr_master_to_develop
-      #   uses: repo-sync/pull-request@v2
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     source_branch: "master"
-      #     destination_branch: "develop"
-      #     pr_title: '2 - After release: Merge master back into develop [auto-generated]'
-      #     pr_body: |
-      #       After SecHub release
-      #       - Client '${{ github.event.inputs.client-version }}'
-      #       - Server '${{ github.event.inputs.server-version }}'
-      #       - PDS '${{ github.event.inputs.pds-version }}'
+      - name: pull-request master to develop
+        id: pr_master_to_develop
+        uses: repo-sync/pull-request@v2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          source_branch: "master"
+          destination_branch: "develop"
+          pr_allow_empty: true
+          pr_draft: true
+          pr_title: '2a - After release: Merge master back into develop [auto-generated]'
+          pr_body: |
+            After SecHub release
+            - Client '${{ github.event.inputs.client-version }}'
+            - Server '${{ github.event.inputs.server-version }}'
+            - PDS '${{ github.event.inputs.pds-version }}'
 
-      #       Merge master branch back into develop
+            Merge master branch back into develop
 
-      #       -> Please merge **after** the release has been published.
-      #     pr_allow_empty: true
-      # - name: Print PR infos
-      #   run: |
-      #     echo "Pull Request Number - ${{ steps.pr_master_to_develop.outputs.pr_number }}"
-      #     echo "Pull Request URL - ${{ steps.pr_master_to_develop.outputs.pr_url }}"
+            -> Please merge **after** the release has been published.
+
+      - name: Print PR infos
+        run: |
+          echo "Pull Request Number - ${{ steps.pr_master_to_develop.outputs.pr_number }}"
+          echo "Pull Request URL - ${{ steps.pr_master_to_develop.outputs.pr_url }}"
 
       - name: Create pull request
         id: pr_master_to_develop
@@ -541,7 +543,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           head: master
           base: develop
-          title: "2 - After release: Merge master back into develop [auto-generated]"
+          title: "2b - After release: Merge master back into develop [auto-generated]"
+          draft: true
+
       - name: Print PR infos
         run: |
           echo "Pull Request Number - ${{ steps.pr_master_to_develop.outputs.number }}"
