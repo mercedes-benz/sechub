@@ -511,6 +511,13 @@ jobs:
       # -----------------------------------------
       # Create a pull request for merging back `master` into `develop`
       # -----------------------------------------
+      - name: Prepare for pull request
+        run: |
+          git reset --hard
+          echo "nothing" > nothing.txt
+          git add nothing.txt
+          git commit -m "docs update by SecHub release job @github-actions"
+
       - name: pull-request master to develop
         id: pr_master_to_develop
         uses: repo-sync/pull-request@v2
