@@ -31,7 +31,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFe
 @EnableAutoConfiguration
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 @Profile(Profiles.ADMIN_ACCESS)
-public class AdministrationConfigRestController {
+public class ConfigAdministrationRestController {
 
     @Autowired
     AdministrationConfigService configService;
