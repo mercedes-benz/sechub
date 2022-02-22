@@ -66,6 +66,10 @@ public class SchedulerConfig {
         return id;
     }
 
+    public Long getAutoCleanupInDays() {
+        return autoCleanupInDays;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;

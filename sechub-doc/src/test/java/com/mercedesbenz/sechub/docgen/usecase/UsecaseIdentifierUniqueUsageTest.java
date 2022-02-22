@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import com.mercedesbenz.sechub.docgen.reflections.Reflections;
 import com.mercedesbenz.sechub.docgen.util.ReflectionsFactory;
+import com.mercedesbenz.sechub.sharedkernel.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseDefinition;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 
@@ -54,6 +55,10 @@ public class UsecaseIdentifierUniqueUsageTest {
             UseCaseDefinition useCaseDefinition = clazz.getAnnotation(UseCaseDefinition.class);
 
             String apiName = useCaseDefinition.apiName();
+            if (APIConstants.NO_API_AVAILABLE.equals(apiName)) {
+                /* ignore */
+                continue;
+            }
             String annotationName = clazz.getSimpleName();
 
             String foundAnnotationName = map.get(apiName);

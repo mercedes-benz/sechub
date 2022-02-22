@@ -52,6 +52,11 @@ public class JobCreator {
         job.started = dateTime;
         return this;
     }
+    
+    public JobCreator created(LocalDateTime dateTime) {
+        job.created= dateTime;
+        return this;
+    }
 
     /**
      * Creates the job and returns builder agani

@@ -4,12 +4,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.mercedesbenz.sechub.domain.administration.autocleanup.AutoCleanupConfig.CleanupTime;
+import com.mercedesbenz.sechub.domain.administration.autocleanup.AdministrationAutoCleanupConfig.CleanupTime;
 
 @Component
-public class AutoCleanupDaysCalculator {
+public class AdministrationAutoCleanupDaysCalculator {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AutoCleanupDaysCalculator.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AdministrationAutoCleanupDaysCalculator.class);
 
     /**
      * Calculates cleanup time in days
@@ -17,17 +17,17 @@ public class AutoCleanupDaysCalculator {
      * @param config
      * @return cleanup time in days
      */
-    public long calculateCleanupTimeInDays(AutoCleanupConfig config) {
+    public long calculateCleanupTimeInDays(AdministrationAutoCleanupConfig config) {
         if (config == null) {
             LOG.warn("Given auto cleanup configuration was null! So use fallback configuration with defaults");
-            config = new AutoCleanupConfig();
+            config = new AdministrationAutoCleanupConfig();
         }
         CleanupTime time = config.getCleanupTime();
         long multiplicator = time.getUnit().getMultiplicatorDays();
         int amount = time.getAmount();
-        if (amount < 1) {
-            amount = 1;
-            LOG.warn("Configured amount for cleanup was smaller than 1 so fallback to 1");
+        if (amount < 0) {
+            amount = 0;
+            LOG.warn("Configured amount for cleanup was smaller than 0 so fallback to 0");
         }
         long cleanupTimeInDays = amount * multiplicator;
         return cleanupTimeInDays;

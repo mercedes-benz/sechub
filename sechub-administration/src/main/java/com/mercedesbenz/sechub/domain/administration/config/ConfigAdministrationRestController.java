@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mercedesbenz.sechub.domain.administration.AdministrationAPIConstants;
-import com.mercedesbenz.sechub.domain.administration.autocleanup.AutoCleanupConfig;
+import com.mercedesbenz.sechub.domain.administration.autocleanup.AdministrationAutoCleanupConfig;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
@@ -41,16 +41,16 @@ public class ConfigAdministrationRestController {
 	@UseCaseAdminFetchesAutoCleanupConfiguration(@Step(number=1,name="Rest call",description="Administrator fetches auto cleanup configuration",needsRestDoc=true))
 	@RequestMapping(path = AdministrationAPIConstants.API_ADMIN_FETCHES_AUTOCLEAN_CONFIG, method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
-	public AutoCleanupConfig fetchAutoCleanupConfiguration() {
+	public AdministrationAutoCleanupConfig fetchAutoCleanupConfiguration() {
 		/* @formatter:on */
         return configService.fetchAutoCleanupConfiguration();
     }
 
     /* @formatter:off */
 	@UseCaseAdminUpdatesAutoCleanupConfiguration(@Step(number=1,name="Rest call",description="Administrator changes auto cleanup configuration",needsRestDoc=true))
-	@RequestMapping(path = AdministrationAPIConstants.API_ADMIN_UPDATES_AUTOCLEAN_CONFIG, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
-	@ResponseStatus(HttpStatus.OK)
-	public void updateAutoCleanupConfiguration(@RequestBody  AutoCleanupConfig config) {
+	@RequestMapping(path = AdministrationAPIConstants.API_ADMIN_UPDATES_AUTOCLEAN_CONFIG, method = RequestMethod.PUT, produces= {MediaType.APPLICATION_JSON_VALUE})
+	@ResponseStatus(HttpStatus.ACCEPTED)
+	public void updateAutoCleanupConfiguration(@RequestBody  AdministrationAutoCleanupConfig config) {
 	    /* @formatter:on */
         configService.updateAutoCleanupConfiguration(config);
     }

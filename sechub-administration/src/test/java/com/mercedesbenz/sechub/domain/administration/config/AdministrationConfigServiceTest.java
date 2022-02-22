@@ -11,9 +11,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
-import com.mercedesbenz.sechub.domain.administration.autocleanup.AutoCleanupConfig;
-import com.mercedesbenz.sechub.domain.administration.autocleanup.AutoCleanupDaysCalculator;
-import com.mercedesbenz.sechub.domain.administration.autocleanup.CountableInDaysTimeunit;
+import com.mercedesbenz.sechub.domain.administration.autocleanup.AdministrationAutoCleanupConfig;
+import com.mercedesbenz.sechub.domain.administration.autocleanup.AdministrationAutoCleanupDaysCalculator;
+import com.mercedesbenz.sechub.sharedkernel.CountableInDaysTimeunit;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
 import com.mercedesbenz.sechub.sharedkernel.messaging.AdministrationConfigMessage;
@@ -26,7 +26,7 @@ class AdministrationConfigServiceTest {
     private AdministrationConfigService serviceToTest;
     private AdministrationConfigRepository repository;
     private AdministrationConfigTransactionService transactionService;
-    private AutoCleanupDaysCalculator calculator;
+    private AdministrationAutoCleanupDaysCalculator calculator;
     private DomainMessageService domainMessageService;
     private AuditLogService auditLogService;
     private LogSanitizer logSanitizer;
@@ -37,7 +37,7 @@ class AdministrationConfigServiceTest {
 
         repository = mock(AdministrationConfigRepository.class);
         transactionService = mock(AdministrationConfigTransactionService.class);
-        calculator = mock(AutoCleanupDaysCalculator.class);
+        calculator = mock(AdministrationAutoCleanupDaysCalculator.class);
         domainMessageService = mock(DomainMessageService.class);
         auditLogService = mock(AuditLogService.class);
         logSanitizer = mock(LogSanitizer.class);
@@ -92,7 +92,7 @@ class AdministrationConfigServiceTest {
     void auto_cleanup_configuration_change_does_result_in_auto_cleanup_change_event_with_correct_data() {
         emulateExistingInitialAdministrationConfig();
         long days = 42;
-        AutoCleanupConfig autoCleanupConfiguration = new AutoCleanupConfig();
+        AdministrationAutoCleanupConfig autoCleanupConfiguration = new AdministrationAutoCleanupConfig();
         when(calculator.calculateCleanupTimeInDays(eq(autoCleanupConfiguration))).thenReturn(days);
 
         /* execute */
@@ -112,7 +112,7 @@ class AdministrationConfigServiceTest {
     void an_existing_config_is_updated_with_given_auto_cleanup_config() {
         emulateExistingInitialAdministrationConfig();
 
-        AutoCleanupConfig autoCleanupConfiguration = new AutoCleanupConfig();
+        AdministrationAutoCleanupConfig autoCleanupConfiguration = new AdministrationAutoCleanupConfig();
 
         /* execute */
         serviceToTest.updateAutoCleanupConfiguration(autoCleanupConfiguration);
@@ -130,7 +130,7 @@ class AdministrationConfigServiceTest {
     void an_existing_config_is_updated_with_null_throws_illegal_argument() {
         emulateExistingInitialAdministrationConfig();
 
-        AutoCleanupConfig autoCleanupConfiguration = null;
+        AdministrationAutoCleanupConfig autoCleanupConfiguration = null;
 
         /* execute + test */
         assertThrows(IllegalArgumentException.class, () -> serviceToTest.updateAutoCleanupConfiguration(autoCleanupConfiguration));
@@ -139,7 +139,7 @@ class AdministrationConfigServiceTest {
     @Test
     void a_not_existing_config_is_created_blank_and_then_updated_with_given_auto_cleanup_config() {
         emulateMissingAdministrationConfigCreated();
-        AutoCleanupConfig newAutoCleanConfiguration = new AutoCleanupConfig();
+        AdministrationAutoCleanupConfig newAutoCleanConfiguration = new AdministrationAutoCleanupConfig();
         newAutoCleanConfiguration.getCleanupTime().setAmount(1);
         newAutoCleanConfiguration.getCleanupTime().setUnit(CountableInDaysTimeunit.MONTH);
 
@@ -159,7 +159,7 @@ class AdministrationConfigServiceTest {
         assertNotNull(firstStored.autoCleanupConfiguration);
         assertNotNull(secondStored.autoCleanupConfiguration);
         assertEquals(newAutoCleanConfiguration.toJSON(), secondStored.autoCleanupConfiguration);
-        assertEquals(new AutoCleanupConfig().toJSON(), firstStored.autoCleanupConfiguration);
+        assertEquals(new AdministrationAutoCleanupConfig().toJSON(), firstStored.autoCleanupConfiguration);
     }
 
     private void emulateMissingAdministrationConfigCreated() {

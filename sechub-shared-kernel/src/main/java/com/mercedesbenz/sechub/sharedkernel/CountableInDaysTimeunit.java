@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.domain.administration.autocleanup;
+package com.mercedesbenz.sechub.sharedkernel;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
  * Contains different time units which are all countable /convertible into days.
@@ -11,17 +10,17 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  *
  */
 public enum CountableInDaysTimeunit {
-    @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
     @JsonAlias({ "day", "days", "DAY", "DAYS" })
     DAY(1),
 
-    @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
     @JsonAlias({ "week", "weeks", "WEEK", "WEEKS" })
     WEEK(7),
 
-    @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
     @JsonAlias({ "month", "months", "MONTH", "MONTHS" })
     MONTH(30),
+
+    @JsonAlias({ "year", "years", "YEAR", "YEARS" })
+    YEAR(365),
 
     ;
 

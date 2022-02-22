@@ -1,10 +1,11 @@
 package com.mercedesbenz.sechub.domain.administration.autocleanup;
 
 import com.mercedesbenz.sechub.commons.model.JSONable;
+import com.mercedesbenz.sechub.sharedkernel.CountableInDaysTimeunit;
 
-public class AutoCleanupConfig implements JSONable<AutoCleanupConfig> {
+public class AdministrationAutoCleanupConfig implements JSONable<AdministrationAutoCleanupConfig> {
 
-    private static final AutoCleanupConfig CONVERTER = new AutoCleanupConfig();
+    private static final AdministrationAutoCleanupConfig CONVERTER = new AdministrationAutoCleanupConfig();
 
     CleanupTime cleanupTime = new CleanupTime();
 
@@ -13,9 +14,10 @@ public class AutoCleanupConfig implements JSONable<AutoCleanupConfig> {
     }
 
     public class CleanupTime {
+
         CountableInDaysTimeunit unit = CountableInDaysTimeunit.MONTH;
 
-        int amount = 3;
+        int amount;
 
         public void setAmount(int amount) {
             this.amount = amount;
@@ -34,13 +36,13 @@ public class AutoCleanupConfig implements JSONable<AutoCleanupConfig> {
         }
     }
 
-    public static AutoCleanupConfig fromString(String json) {
+    public static AdministrationAutoCleanupConfig fromString(String json) {
         return CONVERTER.fromJSON(json);
     }
 
     @Override
-    public Class<AutoCleanupConfig> getJSONTargetClass() {
-        return AutoCleanupConfig.class;
+    public Class<AdministrationAutoCleanupConfig> getJSONTargetClass() {
+        return AdministrationAutoCleanupConfig.class;
     }
 
 }

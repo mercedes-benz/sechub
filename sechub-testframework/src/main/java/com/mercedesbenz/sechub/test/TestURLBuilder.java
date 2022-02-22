@@ -516,6 +516,14 @@ public class TestURLBuilder {
         return buildAdminDeletesProductExecutorConfig(uuid.toString());
     }
 
+    public String buildAdminUpdatesAutoCleanupConfigurationUrl() {
+        return buildUrl(API_ADMIN_CONFIG, "autoclean");
+    }
+
+    public String buildAdminFetchesAutoCleanupConfigurationUrl() {
+        return buildUrl(API_ADMIN_CONFIG, "autoclean");
+    }
+
     /* +-----------------------------------------------------------------------+ */
     /* +............................ integration test special (anonymous) .....+ */
     /* +-----------------------------------------------------------------------+ */

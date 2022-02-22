@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import com.mercedesbenz.sechub.domain.administration.autocleanup.AutoCleanupConfig;
-import com.mercedesbenz.sechub.domain.administration.autocleanup.AutoCleanupDaysCalculator;
+import com.mercedesbenz.sechub.domain.administration.autocleanup.AdministrationAutoCleanupConfig;
+import com.mercedesbenz.sechub.domain.administration.autocleanup.AdministrationAutoCleanupDaysCalculator;
 import com.mercedesbenz.sechub.sharedkernel.SecHubEnvironment;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
@@ -42,14 +42,15 @@ public class AdministrationConfigService {
     SecHubEnvironment environmentData;
 
     @Autowired
-    AutoCleanupDaysCalculator calculator;
+    AdministrationAutoCleanupDaysCalculator calculator;
 
     @Autowired
     @Lazy
     DomainMessageService domainMessageService;
 
-    @UseCaseAdminUpdatesAutoCleanupConfiguration(@Step(number = 2, name = "Updates auto cleanup config", description = "Updates auto cleanup configuration as JSON in database and sends event"))
-    public void updateAutoCleanupConfiguration(AutoCleanupConfig configuration) {
+    @UseCaseAdminUpdatesAutoCleanupConfiguration(@Step(number = 2, next = { 3, 4,
+            5 }, name = "Updates auto cleanup config", description = "Updates auto cleanup configuration as JSON in database and sends event"))
+    public void updateAutoCleanupConfiguration(AdministrationAutoCleanupConfig configuration) {
         Assert.notNull(configuration, "configuration may not be null");
 
         String configurationAsJson = configuration.toJSON();
@@ -79,18 +80,18 @@ public class AdministrationConfigService {
     }
 
     @UseCaseAdminFetchesAutoCleanupConfiguration(@Step(number = 2, name = "Fetches auto cleanup config", description = "Fetches auto cleanup configuration from database"))
-    public AutoCleanupConfig fetchAutoCleanupConfiguration() {
+    public AdministrationAutoCleanupConfig fetchAutoCleanupConfiguration() {
         String cleanupConfigJson = getOrCreateConfig().autoCleanupConfiguration;
-        AutoCleanupConfig cleanupConfig = null;
+        AdministrationAutoCleanupConfig cleanupConfig = null;
         if (cleanupConfigJson == null) {
-            cleanupConfig = new AutoCleanupConfig();
+            cleanupConfig = new AdministrationAutoCleanupConfig();
         } else {
-            cleanupConfig = AutoCleanupConfig.fromString(cleanupConfigJson);
+            cleanupConfig = AdministrationAutoCleanupConfig.fromString(cleanupConfigJson);
         }
         return cleanupConfig;
     }
 
-    private void sendEvent(AutoCleanupConfig config) {
+    private void sendEvent(AdministrationAutoCleanupConfig config) {
         AdministrationConfigMessage adminConfigMessage = new AdministrationConfigMessage();
         adminConfigMessage.setAutoCleanupInDays(calculator.calculateCleanupTimeInDays(config));
 
@@ -106,7 +107,7 @@ public class AdministrationConfigService {
             return config.get();
         }
         AdministrationConfig newConfig = new AdministrationConfig();
-        newConfig.autoCleanupConfiguration = new AutoCleanupConfig().toJSON();
+        newConfig.autoCleanupConfiguration = new AdministrationAutoCleanupConfig().toJSON();
         return transactionService.saveConfigInOwnTransaction(newConfig);
     }
 }

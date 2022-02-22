@@ -15,6 +15,7 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
 import com.mercedesbenz.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminUpdatesAutoCleanupConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdminDisablesSchedulerJobProcessing;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdminEnablesSchedulerJobProcessing;
 
@@ -82,5 +83,19 @@ public class SchedulerConfigService {
     public boolean isJobProcessingEnabled() {
         SchedulerConfig config = getOrCreateConfig();
         return config.isJobProcessingEnabled();
+    }
+
+    @UseCaseAdminUpdatesAutoCleanupConfiguration(@Step(number = 4, name = "Updates auto cleanup in days settings", description = "Updates amount of days until cleanup in database by using received event data"))
+    public void updateAutoCleanupInDays(long autoCleanupInDays) {
+        SchedulerConfig config = getOrCreateConfig();
+        config.autoCleanupInDays = autoCleanupInDays;
+
+        repository.save(config);
+
+    }
+
+    public long getAutoCleanupInDays() {
+        SchedulerConfig config = getOrCreateConfig();
+        return config.getAutoCleanupInDays();
     }
 }

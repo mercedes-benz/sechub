@@ -14,7 +14,9 @@ import com.mercedesbenz.sechub.sharedkernel.TimeCalculationService;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdministrationAutoCleanExecution;
 
 @Service
-public class AutoCleanupService {
+public class AdministrationAutoCleanupService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AdministrationAutoCleanupService.class);
 
     @Autowired
     TimeCalculationService timeCalculationService;
@@ -25,12 +27,15 @@ public class AutoCleanupService {
     @Autowired
     JobInformationRepository jobInformationRepository;
 
-    private static final Logger LOG = LoggerFactory.getLogger(AutoCleanupService.class);
 
     @UseCaseAdministrationAutoCleanExecution(@Step(number = 2, name = "Delete old data", description = "deletes old job information"))
     public void cleanup() {
         /* calculate */
         long days = configService.getAutoCleanupInDays();
+        if (days == 0) {
+            LOG.debug("Cancel administration auto cleanup because disabled.");
+            return;
+        }
         LocalDateTime cleanTimeStamp = timeCalculationService.calculateNowMinusDays(days);
 
         /* delete */

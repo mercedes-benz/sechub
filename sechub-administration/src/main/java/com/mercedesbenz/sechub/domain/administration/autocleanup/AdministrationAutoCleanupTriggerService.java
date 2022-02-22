@@ -9,13 +9,13 @@ import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdministrationAutoCleanExecution;
 
 @Service
-public class AutoCleanupTriggerService {
+public class AdministrationAutoCleanupTriggerService {
 
     private static final int DEFAULT_INITIAL_DELAY_MILLIS = 5 * 1000; // 5 seconds delay
     private static final int DEFAULT_FIXED_DELAY_MILLIS = 24 * 60 * 60 * 1000; // one day
 
     @Autowired
-    AutoCleanupService autoCleanupService;
+    AdministrationAutoCleanupService autoCleanupService;
 
     // default 10 seconds delay and 5 seconds initial
     @MustBeDocumented("Auto cleanup is triggered by a cron job operation - default is one day to delay after last execution. " + "The initial delay is "

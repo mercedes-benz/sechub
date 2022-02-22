@@ -12,16 +12,16 @@ import com.mercedesbenz.sechub.domain.administration.config.AdministrationConfig
 import com.mercedesbenz.sechub.domain.administration.job.JobInformationRepository;
 import com.mercedesbenz.sechub.sharedkernel.TimeCalculationService;
 
-class AutoCleanupServiceTest {
+class AdministrationAutoCleanupServiceTest {
 
-    private AutoCleanupService serviceToTest;
+    private AdministrationAutoCleanupService serviceToTest;
     private AdministrationConfigService configService;
     private JobInformationRepository jobInformationRepository;
     private TimeCalculationService timeCalculationService;
 
     @BeforeEach
     void beforeEach() {
-        serviceToTest = new AutoCleanupService();
+        serviceToTest = new AdministrationAutoCleanupService();
 
         configService = mock(AdministrationConfigService.class);
         jobInformationRepository = mock(JobInformationRepository.class);
@@ -33,15 +33,36 @@ class AutoCleanupServiceTest {
     }
 
     @Test
-    void cleanup_executes_delete_job_information_old_than_with_calculated_clean_time() {
+    void cleanup_executes_NOT_delete_job_information_for_0_days() {
         /* prepare */
-        LocalDateTime cleanTime = LocalDateTime.now();
+        long days = 0;
+        when(configService.getAutoCleanupInDays()).thenReturn(days);
+        LocalDateTime cleanTime = LocalDateTime.now().minusDays(days);
         when(timeCalculationService.calculateNowMinusDays(any())).thenReturn(cleanTime);
 
         /* execute */
         serviceToTest.cleanup();
 
         /* test */
+        verify(configService).getAutoCleanupInDays();
+        verify(timeCalculationService, never()).calculateNowMinusDays(any());
+        verify(jobInformationRepository, never()).deleteJobInformationOlderThan(any());
+    }
+
+    @Test
+    void cleanup_executes_delete_job_information_for_30_days() {
+        /* prepare */
+        long days = 30;
+        when(configService.getAutoCleanupInDays()).thenReturn(days);
+        LocalDateTime cleanTime = LocalDateTime.now().minusDays(days);
+        when(timeCalculationService.calculateNowMinusDays(any())).thenReturn(cleanTime);
+
+        /* execute */
+        serviceToTest.cleanup();
+
+        /* test */
+        verify(configService).getAutoCleanupInDays();
+        verify(timeCalculationService).calculateNowMinusDays(eq(days));
         verify(jobInformationRepository).deleteJobInformationOlderThan(cleanTime);
     }
 
