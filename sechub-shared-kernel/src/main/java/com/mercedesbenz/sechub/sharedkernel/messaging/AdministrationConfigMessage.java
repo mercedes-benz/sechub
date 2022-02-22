@@ -16,19 +16,19 @@ import com.mercedesbenz.sechub.sharedkernel.MustBeKeptStable;
 @MustBeKeptStable("This configuration is used by communication between (api) scan,report, scheduler and administration")
 public class AdministrationConfigMessage implements JSONable<AdministrationConfigMessage> {
 
-    private long daysBeforeAutoCleanup;
+    private long autoCleanupInDays;
 
     @Override
     public Class<AdministrationConfigMessage> getJSONTargetClass() {
         return AdministrationConfigMessage.class;
     }
 
-    public long getDaysBeforeAutoCleanup() {
-        return daysBeforeAutoCleanup;
+    public long getAutoCleanupInDays() {
+        return autoCleanupInDays;
     }
 
-    public void setDaysBeforeAutoCleanup(long maximumAllowedDaysBefoerCleanup) {
-        this.daysBeforeAutoCleanup = maximumAllowedDaysBefoerCleanup;
+    public void setAutoCleanupInDays(long maximumAllowedDaysBefoerCleanup) {
+        this.autoCleanupInDays = maximumAllowedDaysBefoerCleanup;
     }
 
 }

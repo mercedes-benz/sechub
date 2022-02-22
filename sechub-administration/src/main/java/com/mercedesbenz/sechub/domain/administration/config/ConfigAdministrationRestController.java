@@ -20,6 +20,7 @@ import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesAutoCleanupConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminUpdatesAutoCleanupConfiguration;
 
 /**
  * The rest api for administration config operations done by a super admin.
@@ -46,12 +47,12 @@ public class ConfigAdministrationRestController {
     }
 
     /* @formatter:off */
-	@UseCaseAdminFetchesAutoCleanupConfiguration(@Step(number=1,name="Rest call",description="Administrator changes auto cleanup configuration",needsRestDoc=true))
+	@UseCaseAdminUpdatesAutoCleanupConfiguration(@Step(number=1,name="Rest call",description="Administrator changes auto cleanup configuration",needsRestDoc=true))
 	@RequestMapping(path = AdministrationAPIConstants.API_ADMIN_UPDATES_AUTOCLEAN_CONFIG, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
 	public void updateAutoCleanupConfiguration(@RequestBody  AutoCleanupConfig config) {
 	    /* @formatter:on */
-        configService.updateAutoCleanup(config);
+        configService.updateAutoCleanupConfiguration(config);
     }
 
 }

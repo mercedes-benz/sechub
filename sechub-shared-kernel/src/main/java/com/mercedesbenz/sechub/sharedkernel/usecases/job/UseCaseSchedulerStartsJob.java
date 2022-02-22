@@ -6,6 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.mercedesbenz.sechub.sharedkernel.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseDefinition;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseGroup;
@@ -17,7 +18,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_SCHEDULER_STARTS_JOB,
 		group=UseCaseGroup.TECHNICAL,
-		apiName="schedulerStartsJob",
+		apiName=APIConstants.NO_API_AVAILABLE,
 		title="Sechub scheduler starts job",
 		description="job/scheduler_starts_job.adoc")
 public @interface UseCaseSchedulerStartsJob {

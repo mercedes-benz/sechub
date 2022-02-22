@@ -11,6 +11,8 @@ import com.mercedesbenz.sechub.domain.administration.autocleanup.AutoCleanupConf
 import com.mercedesbenz.sechub.domain.administration.autocleanup.AutoCleanupDaysCalculator;
 import com.mercedesbenz.sechub.sharedkernel.SecHubEnvironment;
 import com.mercedesbenz.sechub.sharedkernel.Step;
+import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
+import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
 import com.mercedesbenz.sechub.sharedkernel.messaging.AdministrationConfigMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageFactory;
@@ -23,6 +25,12 @@ import com.mercedesbenz.sechub.sharedkernel.util.Assert;
 
 @Service
 public class AdministrationConfigService {
+
+    @Autowired
+    LogSanitizer logSanitizer;
+
+    @Autowired
+    AuditLogService auditLogService;
 
     @Autowired
     AdministrationConfigRepository repository;
@@ -40,16 +48,34 @@ public class AdministrationConfigService {
     @Lazy
     DomainMessageService domainMessageService;
 
-    @UseCaseAdminUpdatesAutoCleanupConfiguration(@Step(number = 2, name = "Updates auto cleanup config", description = "Updates auto cleanup configuration in database"))
-    public void updateAutoCleanup(AutoCleanupConfig configuration) {
+    @UseCaseAdminUpdatesAutoCleanupConfiguration(@Step(number = 2, name = "Updates auto cleanup config", description = "Updates auto cleanup configuration as JSON in database and sends event"))
+    public void updateAutoCleanupConfiguration(AutoCleanupConfig configuration) {
         Assert.notNull(configuration, "configuration may not be null");
 
+        String configurationAsJson = configuration.toJSON();
+
+        auditLogService.log("updates auto cleanup configuration to: {}", logSanitizer.sanitize(configurationAsJson, 8192));
+
         AdministrationConfig config = getOrCreateConfig();
-        config.autoCleanupConfiguration = configuration.toJSON();
+        config.autoCleanupConfiguration = configurationAsJson;
         // store in own transaction, so never race conditions with events
         transactionService.saveConfigInOwnTransaction(config);
 
         sendEvent(configuration);
+    }
+
+    public long getAutoCleanupInDays() {
+        AdministrationConfig config = getOrCreateConfig();
+        return config.getAutoCleanupInDays();
+    }
+
+    @UseCaseAdminUpdatesAutoCleanupConfiguration(@Step(number = 3, name = "Updates auto cleanup in days settings", description = "Updates amount of days until cleanup in database by using received event data"))
+    public void updateAutoCleanupInDays(long autoCleanupInDays) {
+        AdministrationConfig config = getOrCreateConfig();
+        config.autoCleanupInDays = autoCleanupInDays;
+
+        // store in own transaction, so never race conditions with events
+        transactionService.saveConfigInOwnTransaction(config);
     }
 
     @UseCaseAdminFetchesAutoCleanupConfiguration(@Step(number = 2, name = "Fetches auto cleanup config", description = "Fetches auto cleanup configuration from database"))
@@ -66,7 +92,7 @@ public class AdministrationConfigService {
 
     private void sendEvent(AutoCleanupConfig config) {
         AdministrationConfigMessage adminConfigMessage = new AdministrationConfigMessage();
-        adminConfigMessage.setDaysBeforeAutoCleanup(calculator.calculateCleanupTimeInDays(config));
+        adminConfigMessage.setAutoCleanupInDays(calculator.calculateCleanupTimeInDays(config));
 
         DomainMessage domainMessage = DomainMessageFactory.createEmptyRequest(MessageID.AUTO_CLEANUP_CONFIGURATION_CHANGED);
         domainMessage.set(MessageDataKeys.AUTO_CLEANUP_CONFIG_CHANGE_DATA, adminConfigMessage);

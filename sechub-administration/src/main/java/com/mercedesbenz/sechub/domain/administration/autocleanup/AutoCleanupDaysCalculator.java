@@ -2,9 +2,11 @@ package com.mercedesbenz.sechub.domain.administration.autocleanup;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.domain.administration.autocleanup.AutoCleanupConfig.CleanupTime;
 
+@Component
 public class AutoCleanupDaysCalculator {
 
     private static final Logger LOG = LoggerFactory.getLogger(AutoCleanupDaysCalculator.class);

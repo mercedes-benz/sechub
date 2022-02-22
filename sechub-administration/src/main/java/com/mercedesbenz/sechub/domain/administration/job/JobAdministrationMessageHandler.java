@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.mercedesbenz.sechub.domain.administration.config.AdministrationConfigService;
+import com.mercedesbenz.sechub.sharedkernel.messaging.AdministrationConfigMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.AsynchronMessageHandler;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.IsReceivingAsyncMessage;
@@ -23,6 +25,9 @@ public class JobAdministrationMessageHandler implements AsynchronMessageHandler 
 
     @Autowired
     JobInformationDeleteService deleteService;
+
+    @Autowired
+    AdministrationConfigService configService;
 
     @Override
     public void receiveAsyncMessage(DomainMessage request) {
@@ -42,9 +47,18 @@ public class JobAdministrationMessageHandler implements AsynchronMessageHandler 
         case JOB_CANCELED:
             handleJobCanceled(request);
             break;
+        case AUTO_CLEANUP_CONFIGURATION_CHANGED:
+            handleAutoCleanUpConfiguratoinChanged(request);
+            break;
         default:
             throw new IllegalStateException("unhandled message id:" + messageId);
         }
+    }
+
+    @IsReceivingAsyncMessage(MessageID.AUTO_CLEANUP_CONFIGURATION_CHANGED)
+    private void handleAutoCleanUpConfiguratoinChanged(DomainMessage request) {
+        AdministrationConfigMessage message = request.get(MessageDataKeys.AUTO_CLEANUP_CONFIG_CHANGE_DATA);
+        configService.updateAutoCleanupInDays(message.getAutoCleanupInDays());
     }
 
     @IsReceivingAsyncMessage(MessageID.JOB_CANCELED)

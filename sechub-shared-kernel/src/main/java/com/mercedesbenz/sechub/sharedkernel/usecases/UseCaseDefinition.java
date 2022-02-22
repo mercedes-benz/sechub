@@ -66,7 +66,7 @@ public @interface UseCaseDefinition {
     /**
      * A short use case title
      *
-     * @return
+     * @return title
      */
     String title();
 
@@ -74,7 +74,7 @@ public @interface UseCaseDefinition {
      * API Name
      *
      *
-     * @return
+     * @return name whe API call is possible or <code>null</code>
      */
     String apiName();
 

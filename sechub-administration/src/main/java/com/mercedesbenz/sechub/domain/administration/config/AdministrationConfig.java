@@ -33,6 +33,8 @@ public class AdministrationConfig {
 
     public static final String COLUMN_AUTO_CLEANUP_CONFIGURATION = "CONFIG_AUTO_CLEANUP";
 
+    public static final String COLUMN_AUTO_CLEANUP_IN_DAYS = "CONFIG_AUTO_CLEANUP_IN_DAYS";
+
     /* +-----------------------------------------------------------------------+ */
     /* +............................ JPQL .....................................+ */
     /* +-----------------------------------------------------------------------+ */
@@ -45,12 +47,19 @@ public class AdministrationConfig {
     @Column(name = COLUMN_AUTO_CLEANUP_CONFIGURATION, nullable = false)
     String autoCleanupConfiguration;
 
+    @Column(name = COLUMN_AUTO_CLEANUP_IN_DAYS, nullable = false)
+    Long autoCleanupInDays = Long.valueOf(0); // per default 0 (avoid NPEs when auto casting)
+
     @Version
     @Column(name = "VERSION")
     Integer version;
 
     public Integer getId() {
         return id;
+    }
+
+    public Long getAutoCleanupInDays() {
+        return autoCleanupInDays;
     }
 
     @Override
