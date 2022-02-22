@@ -342,12 +342,32 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
     }
 
     private SerecoCodeCallStackElement resolveCodeInfoFromResult(Result result) {
+        boolean firstElementfromResultLocation = false;
+
+        SerecoCodeCallStackElement firstElement = resolveCodeInfoFromCodeFlow(result);
+        if (firstElement == null) {
+            // if no CodeFlow available, try to extract callstack directly from locations
+            firstElement = resolveCodeInfoFromLocations(result.getLocations());
+            firstElementfromResultLocation = true;
+        }
+        if (!firstElementfromResultLocation && firstElement != null) {
+            /* check source is set at least at first element */
+            String source = firstElement.getSource();
+            if (source == null || source.trim().isEmpty()) {
+                /* not set - last fallback to location */
+                SerecoCodeCallStackElement fallbackElement = resolveCodeInfoFromLocations(result.getLocations());
+                source = fallbackElement.getSource();
+                firstElement.setSource(source);
+            }
+        }
+        return firstElement;
+    }
+
+    private SerecoCodeCallStackElement resolveCodeInfoFromCodeFlow(Result result) {
 
         Optional<CodeFlow> codeFlows = result.getCodeFlows().stream().findFirst();
-
         if (!codeFlows.isPresent()) {
-            // if no CodeFlow available, try to extract callstack directly from locations
-            return resolveCodeInfoFromLocations(result.getLocations());
+            return null;
         }
 
         Optional<ThreadFlow> optFlow = codeFlows.get().getThreadFlows().stream().findFirst();
@@ -408,6 +428,15 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
                 if (region != null) {
                     subCode.setLine(region.getStartLine());
                     subCode.setColumn(region.getStartColumn());
+
+                    ArtifactContent snippet = region.getSnippet();
+                    if (snippet != null) {
+                        String text = snippet.getText();
+                        if (text != null) {
+                            text = text.trim();
+                        }
+                        subCode.setSource(text);
+                    }
                 }
 
                 callstack.add(subCode);
