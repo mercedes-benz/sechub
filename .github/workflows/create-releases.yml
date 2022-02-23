@@ -396,7 +396,14 @@ jobs:
           asset_path: ./sechub-doc/build/api-spec/openapi3.json
           asset_name: sechub-openapi3-${{ github.event.inputs.server-version }}.json
           asset_content_type: text/plain
- 
+
+      - name: Create Server ${{ github.event.inputs.server-version }} release issue
+        uses: dacbd/create-issue-action@main
+        with:
+          token: ${{ github.token }}
+          title: Release Server ${{ github.event.inputs.server-version }}
+          body: Please close this issue after the release.
+          milestone: ${{ github.event.inputs.server-milestone-number }}
 
       # ******************************************
       # Now let's create a new CLIENT release
@@ -462,6 +469,14 @@ jobs:
           asset_name: sechub-client-${{ github.event.inputs.client-version }}.pdf
           asset_content_type: application/pdf
 
+      - name: Create Client ${{ github.event.inputs.client-version }} release issue
+        uses: dacbd/create-issue-action@main
+        with:
+          token: ${{ github.token }}
+          title: Release Client ${{ github.event.inputs.client-version }}
+          body: Please close this issue after the release.
+          milestone: ${{ github.event.inputs.client-milestone-number }}
+
       # ******************************************
       # Now let's create a new PDS release
       # when pds version is set
@@ -506,6 +521,14 @@ jobs:
           asset_path: ./sechub-doc/build/docs/asciidoc/sechub-product-delegation-server.pdf
           asset_name: /sechub-product-delegation-server-${{ github.event.inputs.pds-version }}.pdf
           asset_content_type: application/pdf
+
+      - name: Create PDS ${{ github.event.inputs.pds-version }} release issue
+        uses: dacbd/create-issue-action@main
+        with:
+          token: ${{ github.token }}
+          title: Release PDS ${{ github.event.inputs.pds-version }}
+          body: Please close this issue after the release.
+          milestone: ${{ github.event.inputs.pds-milestone-number }}
 
       # -----------------------------------------
       # Create a pull request for merging back `master` into `develop`
