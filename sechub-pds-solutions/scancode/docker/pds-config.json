@@ -1,0 +1,35 @@
+{
+    "apiVersion" : "1.0",
+    "serverId" : "SCANCODE_TOOL_CLUSTER", 
+
+    "products" : [
+        {
+            "id" : "PDS_SCANCODE",
+            "path" : "/scripts/scancode.sh",
+            "scanType" : "codeScan",
+            "description" : "Runs Scancode.",
+            "parameters" : {
+                "optional" : [
+                    {
+                        "key" : "scancode.output.format",
+                        "description" : "Parameter defining the ScanCode output format. Possible values are: json, json-pp, spdx-tv, spdx-json, spdx-rdf. Json-pp stands for json pretty printed. Default: spdx-json."
+                    }
+                ]
+            }
+        },
+        {
+            "id" : "PDS_SCANCODE_MOCK",
+            "path" : "/scripts/scancode_mock.sh",
+            "scanType" : "codeScan",
+            "description" : "Runs ScanCode mock.",
+            "parameters" : {
+                "optional" : [
+                    {
+                        "key" : "scancode.output.format",
+                        "description" : "Parameter defining the ScanCode output format. Possible values are: json, json-pp, spdx-tv, spdx-json, spdx-rdf. Json-pp stands for json pretty printed. Default: spdx-json."
+                    }
+                ]
+            }
+        }
+    ]
+}

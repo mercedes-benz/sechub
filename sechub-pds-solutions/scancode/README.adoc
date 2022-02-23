@@ -3,13 +3,13 @@
 :toc:
 :numbered:
 
-= GoSec + PDS
+= ScanCode + PDS
 
-https://securego.io/[GoSec] is a free and open source static application security testing tool. GoSec is a command line interface (CLI) tool. By combining GoSec with the SecHub https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)] in a container, GoSec can be used with SecHub. Another scenario is to use PDS + GoSec standalone.
+https://github.com/nexB/scancode-toolkit[ScanCode] is a free and open source license scanning tool. ScanCode is a command line interface (CLI) tool. By combining ScanCode with the SecHub https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)] in a container, ScanCode can be used with SecHub. Another scenario is to use PDS + ScanCode standalone.
 
-Furthermore, the combination of GoSec and PDS makes it possible to run both inside a Kubernetes cluser or virtual machines.
+Furthermore, the combination of ScanCode and PDS makes it possible to run both inside a Kubernetes cluser or virtual machines.
 
-This folder contains the necessary scripts to run PDS + GoSec inside a container locally. Additionally, it contains scripts to build and push the PDS + GoSec container to your container registry and a Helm chart to install and run PDS + GoSec in a Kubernetes cluster.
+This folder contains the necessary scripts to run PDS + ScanCode inside a container locally. Additionally, it contains scripts to build and push the ScanCode + ScanCode container to your container registry and a Helm chart to install and run PDS + ScanCode in a Kubernetes cluster.
 
 == Run Locally
 
@@ -44,12 +44,12 @@ The folder contains a start script which does the <<_manually, manual>> steps fo
 . Set values in `.env` file. The values are described in the `env-example` file.
 +
 [NOTE]
-It is recommended to change the default passwords in the `.env` file to improve security. It is possible to change other values in the `.env` file as well. Any change requires a restart of the PDS+GoSec container.
+It is recommended to change the default passwords in the `.env` file to improve security. It is possible to change other values in the `.env` file as well. Any change requires a restart of the PDS+ScanCode container.
 
 . Start container the Ubuntu container using https://docs.docker.com/compose/[Docker Compose]:
 +
 ----
-docker-compose --file docker-compose_pds_gosec_ubuntu.yaml up --build
+docker-compose --file docker-compose_pds_scancode_ubuntu.yaml up --build
 ----
 
 ==== Together with SecHub
@@ -131,7 +131,7 @@ Date: Tue, 08 Jun 2021 16:38:02 GMT
 ----
 +
 [TIP]
-GoSec provides vulnerable code samples: https://securego.io/docs/rules/g201-g202.html. Simply, take some of them and put them into a folder. Afterwards, ZIP the folder and upload it.
+ScanCode provides samples: https://github.com/nexB/scancode-toolkit/tree/develop/samples. Simply, download them. Afterwards, ZIP the folder and upload it.
 
 . Mark the job ready to start
 +
@@ -166,206 +166,101 @@ Output
 [source,json]
 ----
 {
-	"runs": [
-		{
-			"results": [
-				{
-					"level": "error",
-					"locations": [
-						{
-							"physicalLocation": {
-								"artifactLocation": {
-									"uri": "code/hardcoded_password.go"
-								},
-								"region": {
-									"endColumn": 9,
-									"endLine": 7,
-									"snippet": {
-										"text": "6:     username := \"admin\"\n7:     var password = \"f62e5bcda4fae4f82370da0c6f20697b8f8447ef\"\n8: \n"
-									},
-									"sourceLanguage": "go",
-									"startColumn": 9,
-									"startLine": 7
-								}
-							}
-						}
-					],
-					"message": {
-						"text": "Potential hardcoded credentials"
-					},
-					"ruleId": "G101"
-				},
-				{
-					"level": "error",
-					"locations": [
-						{
-							"physicalLocation": {
-								"artifactLocation": {
-									"uri": "code/sql_injection.go"
-								},
-								"region": {
-									"endColumn": 10,
-									"endLine": 12,
-									"snippet": {
-										"text": "11:     }\n12:     q := fmt.Sprintf(\"SELECT * FROM foo where name = '%s'\", os.Args[1])\n13:     rows, err := db.Query(q)\n"
-									},
-									"sourceLanguage": "go",
-									"startColumn": 10,
-									"startLine": 12
-								}
-							}
-						}
-					],
-					"message": {
-						"text": "SQL string formatting"
-					},
-					"ruleId": "G201",
-					"ruleIndex": 1
-				}
-			],
-			"taxonomies": [
-				{
-					"downloadUri": "https://cwe.mitre.org/data/xml/cwec_v4.4.xml.zip",
-					"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
-					"informationUri": "https://cwe.mitre.org/data/published/cwe_v4.4.pdf/",
-					"isComprehensive": true,
-					"language": "en",
-					"minimumRequiredLocalizedDataSemanticVersion": "4.4",
-					"name": "CWE",
-					"organization": "MITRE",
-					"releaseDateUtc": "2021-03-15",
-					"shortDescription": {
-						"text": "The MITRE Common Weakness Enumeration"
-					},
-					"taxa": [
-						{
-							"fullDescription": {
-								"text": "The software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data."
-							},
-							"guid": "93d834a1-2cc5-38db-837f-66dfc7d711cc",
-							"helpUri": "https://cwe.mitre.org/data/definitions/798.html",
-							"id": "798",
-							"shortDescription": {
-								"text": "Use of Hard-coded Credentials"
-							}
-						},
-						{
-							"fullDescription": {
-								"text": "The software constructs all or part of an SQL command using externally-influenced input from an upstream component, but it does not neutralize or incorrectly neutralizes special elements that could modify the intended SQL command when it is sent to a downstream component."
-							},
-							"guid": "6bd55435-166c-3594-bc06-5e0dea916067",
-							"helpUri": "https://cwe.mitre.org/data/definitions/89.html",
-							"id": "89",
-							"shortDescription": {
-								"text": "Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
-							}
-						}
-					],
-					"version": "4.4"
-				}
-			],
-			"tool": {
-				"driver": {
-					"guid": "8b518d5f-906d-39f9-894b-d327b1a421c5",
-					"informationUri": "https://github.com/securego/gosec/",
-					"name": "gosec",
-					"rules": [
-						{
-							"defaultConfiguration": {
-								"level": "error"
-							},
-							"fullDescription": {
-								"text": "Potential hardcoded credentials"
-							},
-							"help": {
-								"text": "Potential hardcoded credentials\nSeverity: HIGH\nConfidence: LOW\n"
-							},
-							"id": "G101",
-							"name": "Potential hardcoded credentials",
-							"properties": {
-								"precision": "low",
-								"tags": [
-									"security",
-									"HIGH"
-								]
-							},
-							"relationships": [
-								{
-									"kinds": [
-										"superset"
-									],
-									"target": {
-										"guid": "93d834a1-2cc5-38db-837f-66dfc7d711cc",
-										"id": "798",
-										"toolComponent": {
-											"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
-											"name": "CWE"
-										}
-									}
-								}
-							],
-							"shortDescription": {
-								"text": "Potential hardcoded credentials"
-							}
-						},
-						{
-							"defaultConfiguration": {
-								"level": "error"
-							},
-							"fullDescription": {
-								"text": "SQL string formatting"
-							},
-							"help": {
-								"text": "SQL string formatting\nSeverity: MEDIUM\nConfidence: HIGH\n"
-							},
-							"id": "G201",
-							"name": "SQL string formatting",
-							"properties": {
-								"precision": "high",
-								"tags": [
-									"security",
-									"MEDIUM"
-								]
-							},
-							"relationships": [
-								{
-									"kinds": [
-										"superset"
-									],
-									"target": {
-										"guid": "6bd55435-166c-3594-bc06-5e0dea916067",
-										"id": "89",
-										"toolComponent": {
-											"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
-											"name": "CWE"
-										}
-									}
-								}
-							],
-							"shortDescription": {
-								"text": "SQL string formatting"
-							}
-						}
-					],
-					"semanticVersion": "2.8.0",
-					"supportedTaxonomies": [
-						{
-							"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
-							"name": "CWE"
-						}
-					],
-					"version": "2.8.0"
-				}
-			}
-		}
-	],
-	"$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
-	"version": "2.1.0"
+  "SPDXID" : "SPDXRef-DOCUMENT",
+  "spdxVersion" : "SPDX-2.2",
+  "creationInfo" : {
+    "created" : "2022-02-21T16:04:58Z",
+    "creators" : [ "Tool: scancode-toolkit 30.1.0" ],
+    "licenseListVersion" : "3.14"
+  },
+  "name" : "SPDX Document created by ScanCode Toolkit",
+  "dataLicense" : "CC0-1.0",
+  "comment" : "Generated with ScanCode and provided on an \"AS IS\" BASIS, WITHOUT WARRANTIES\nOR CONDITIONS OF ANY KIND, either express or implied. No content created from\nScanCode should be considered or used as legal advice. Consult an Attorney\nfor any legal advice.\nScanCode is a free software code scanning tool from nexB Inc. and others.\nVisit https://github.com/nexB/scancode-toolkit/ for support and download.",
+  "hasExtractedLicensingInfos" : [ {
+    "licenseId" : "LicenseRef-scancode-ada-linking-exception",
+    "comment" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/ada-linking-exception.yml",
+    "extractedText" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/ada-linking-exception.yml",
+    "name" : "Ada linking exception to GPL 2.0 or later"
+  }, {
+    "licenseId" : "LicenseRef-scancode-jboss-eula",
+    "comment" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/jboss-eula.yml",
+    "extractedText" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/jboss-eula.yml",
+    "name" : "JBoss EULA"
+  }, {
+    "licenseId" : "LicenseRef-scancode-mit-old-style",
+    "comment" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/mit-old-style.yml",
+    "extractedText" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/mit-old-style.yml",
+    "name" : "MIT Old Style"
+  }, {
+    "licenseId" : "LicenseRef-scancode-public-domain",
+    "comment" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/public-domain.yml",
+    "extractedText" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/public-domain.yml",
+    "name" : "Public Domain"
+  }, {
+    "licenseId" : "LicenseRef-scancode-unknown-license-reference",
+    "comment" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/unknown-license-reference.yml",
+    "extractedText" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/unknown-license-reference.yml",
+    "name" : "Unknown License file reference"
+  } ],
+  "documentNamespace" : "http://spdx.org/spdxdocs/sourcecode-9006581e-263a-4c8f-b7bc-6bdb705f088c",
+  "documentDescribes" : [ "SPDXRef-001" ],
+  "packages" : [ {
+    "SPDXID" : "SPDXRef-001",
+    "copyrightText" : "(c) Copyright Henrik Ravn 2004\nCopyright (c) 1991, 1999 Free Software Foundation, Inc.\nCopyright (c) 1995-2005, 2010, 2011, 2012 Jean-loup Gailly\nCopyright (c) 1995-2008 Mark Adler\nCopyright (c) 1995-2010 Jean-loup Gailly, Brian Raiter and Gilles Vollant\nCopyright (c) 1995-2011 Mark Adler\nCopyright (c) 1995-2012 Jean-loup Gailly\nCopyright (c) 1995-2013 Jean-loup Gailly\nCopyright (c) 1995-2013 Jean-loup Gailly and Mark Adler\nCopyright (c) 1997 Christian Michelsen Research AS Advanced Computing\nCopyright (c) 2000 - 2006 The Legion Of The Bouncy Castle (http://www.bouncycastle.org)\nCopyright (c) 2000 The Apache Software Foundation\nCopyright (c) 2002-2004 Dmitriy Anisimkov\nCopyright (c) 2003 Mark Adler\nCopyright (c) 2004 by Henrik Ravn\nCopyright (c) 2005 Brian Goetz and Tim Peierls\nCopyright (c) Henrik Ravn 2004\nCopyright 1995-2013 Jean-loup Gailly and Mark Adler\nCopyright 2005, JBoss Inc., and individual contributors\nCopyright 2006 Red Hat, Inc.\nCopyright 2009, Red Hat Middleware LLC, and individual contributors\nCopyright 2010, Red Hat, Inc. and individual contributors\ncopyrighted by the Free Software Foundation",
+    "downloadLocation" : "NOASSERTION",
+    "filesAnalyzed" : true,
+    "hasFiles" : [ "SPDXRef-8", "SPDXRef-9", "SPDXRef-11", "SPDXRef-12", "SPDXRef-13", "SPDXRef-14", "SPDXRef-15", "SPDXRef-17", "SPDXRef-18", "SPDXRef-19", "SPDXRef-20", "SPDXRef-21", "SPDXRef-22", "SPDXRef-23", "SPDXRef-3", "SPDXRef-6", "SPDXRef-4", "SPDXRef-32", "SPDXRef-25", "SPDXRef-26", "SPDXRef-27", "SPDXRef-34", "SPDXRef-35", "SPDXRef-36", "SPDXRef-37", "SPDXRef-39", "SPDXRef-41", "SPDXRef-42", "SPDXRef-44", "SPDXRef-45", "SPDXRef-28", "SPDXRef-29", "SPDXRef-30" ],
+    "licenseConcluded" : "NOASSERTION",
+    "licenseDeclared" : "NOASSERTION",
+    "licenseInfoFromFiles" : [ "Apache-1.1", "Apache-2.0", "BSL-1.0", "CC-BY-2.5", "CPL-1.0", "GPL-2.0-or-later", "LGPL-2.1-only", "LGPL-2.1-or-later", "MIT", "Zlib", "LicenseRef-scancode-ada-linking-exception", "LicenseRef-scancode-jboss-eula", "LicenseRef-scancode-mit-old-style", "LicenseRef-scancode-public-domain", "LicenseRef-scancode-unknown-license-reference" ],
+    "name" : "sourcecode",
+    "packageVerificationCode" : {
+      "packageVerificationCodeValue" : "a16cc075835fbc3a0474c60b4c4314dc37a7dee1"
+    }
+  } ],
+  "files" : [ {
+    "SPDXID" : "SPDXRef-8",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "eb232aa0424eca9c4136904e6143b72aaa9cf4de"
+    } ],
+    "copyrightText" : "Copyright 2006 Red Hat, Inc.",
+    "fileName" : "./sourcecode/samples/JGroups/EULA",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "LicenseRef-scancode-jboss-eula" ]
+  }, {
+    "SPDXID" : "SPDXRef-9",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "e60c2e780886f95df9c9ee36992b8edabec00bcc"
+    } ],
+    "copyrightText" : "Copyright (c) 1991, 1999 Free Software Foundation, Inc.\ncopyrighted by the Free Software Foundation",
+    "fileName" : "./sourcecode/samples/JGroups/LICENSE",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "LGPL-2.1-only" ]
+  }, 
+  …
+  {
+    "SPDXID" : "SPDXRef-42",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "d0486a32b558dcaceded5f0746fad62e680a4734"
+    } ],
+    "copyrightText" : "Copyright (c) 2003 Mark Adler",
+    "fileName" : "./sourcecode/samples/zlib/infback9/infback9.h",
+    "licenseConcluded" : "NOASSERTION",
+    "licenseInfoInFiles" : [ "Zlib" ]
+  } ],
+  "relationships" : [ {
+    "spdxElementId" : "SPDXRef-DOCUMENT",
+    "relatedSpdxElement" : "SPDXRef-001",
+    "relationshipType" : "DESCRIBES"
+  } ]
 }
 ----
 +
 [NOTE]
-This is an example output. The output can be very different depending on the files you scanned. The output depends on the uploaded `ZIP` file.
+This is a shortend example output. The output can be very different depending on the files you scanned. The output depends on the uploaded `ZIP` file.
 
 ==== Scan Script 
 
@@ -377,7 +272,7 @@ It is recommended to start with a manual <<_scan>> the first time using the PDS.
 export PDS_SERVER=https://<pds-host>:<port>
 export PDS_USERID=admin
 export PDS_APITOKEN="<pds-admin-apitoken>"
-export PDS_PRODUCT_IDENTFIER=PDS_GOSEC
+export PDS_PRODUCT_IDENTFIER=PDS_SCANCODE
 ----
 +
 For example:
@@ -386,11 +281,11 @@ For example:
 export PDS_SERVER=https://localhost:8444
 export PDS_USERID=admin
 export PDS_APITOKEN="pds-apitoken"
-export PDS_PRODUCT_IDENTFIER=PDS_GOSEC
+export PDS_PRODUCT_IDENTFIER=PDS_SCANCODE
 ----
 +
 [NOTE]
-Those values are the default values from `env-initial` and `env-cluster-initial` files. In case you run PDS+GoSec in Kubernetes or other environments those values will be different.
+Those values are the default values from `env-initial` and `env-cluster-initial` files. In case you run PDS+ScanCode in Kubernetes or other environments those values will be different.
 
 . Scan by providing a `ZIP` folder with Go source code.
 +
@@ -418,13 +313,13 @@ image::../shared/media/cluster_shared_volume.svg[Components of cluster with shar
 
 ===== Automatic
 
-Starting several PDS + GoSec instances:
+Starting several PDS + ScanCode instances:
 
 ----
 ./50-start-multiple-docker-compose.sh <replicas>
 ----
 
-Example of starting 3 PDS + GoSec instances:
+Example of starting 3 PDS + ScanCode instances:
 
 ----
 ./50-start-multiple-docker-compose.sh 3
@@ -493,7 +388,7 @@ This section contains information about how to troubleshoot PDS+GoSec if somethi
 ==== Access the Ubuntu container
 
 ----
-docker exec -it pds-gosec-ubuntu bash
+docker exec -it pds-scancode-ubuntu bash
 ----
 
 ==== Java Application Remote Debugging of PDS
@@ -528,13 +423,13 @@ Build the container image.
 . Using the default image: 
 +
 ----
-./10-create-ubuntu-image.sh my.registry.example.org/sechub/pds_gosec v0.1
+./10-create-ubuntu-image.sh my.registry.example.org/sechub/pds_scancode_ubuntu v0.1
 ----
 
 . Using your own base image:
 +
 ----
-./10-create-ubuntu-image.sh my.registry.example.org/sechub/pds_gosec v0.1 "my.registry.example.org/ubuntu:20.04"
+./10-create-ubuntu-image.sh my.registry.example.org/sechub/pds_scancode_ubuntu v0.1 "my.registry.example.org/ubuntu:20.04"
 ----
 
 === Push Image to Registry
@@ -544,13 +439,13 @@ Push the container image to a registry.
 * Push the version tag only
 +
 ----
-./20-push-image.sh my.registry.example.org/sechub/pds_gosec v0.1
+./20-push-image.sh my.registry.example.org/sechub/pds_scancode_ubuntu v0.1
 ----
 
 * Push the version and `latest` tags
 +
 ----
-./20-push-image.sh my.registry.example.org/sechub/pds_gosec v0.1 yes
+./20-push-image.sh my.registry.example.org/sechub/pds_scancode_ubuntu v0.1 yes
 ----
 
 == Kubernetes
