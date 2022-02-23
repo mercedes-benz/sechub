@@ -1,5 +1,6 @@
 #!/bin/bash 
 # SPDX-License-Identifier: MIT
+set -e
 
 genFolder="$1"
 publishNecessary="$2"
