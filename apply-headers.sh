@@ -46,29 +46,6 @@ function applySPDXonSecondLine {
     applySPDXline "$1" "$2" 2
 }
 
-function startAutoApply {
-    applySPDXonFirstLine "adoc" "// $SPDX_TEXT"
-    applySPDXonFirstLine "bat" ":: $SPDX_TEXT"
-    applySPDXonFirstLine "c" "// $SPDX_TEXT"
-    applySPDXonFirstLine "dockerfile" "# $SPDX_TEXT"
-    applySPDXonFirstLine "go" "// $SPDX_TEXT"
-    applySPDXonFirstLine "groovy" "// $SPDX_TEXT"
-    applySPDXonFirstLine "gradle" "// $SPDX_TEXT"
-    applySPDXonFirstLine "jenkins" "// $SPDX_TEXT"
-    applySPDXonFirstLine "java" "// $SPDX_TEXT"
-    applySPDXonFirstLine "md" "<!-- $SPDX_TEXT --->"
-    applySPDXonFirstLine "properties" "# $SPDX_TEXT"
-    applySPDXonSecondLine "py" "# $SPDX_TEXT"
-    applySPDXonFirstLine "rb" "# $SPDX_TEXT"
-    applySPDXonSecondLine "sh" "# $SPDX_TEXT"
-    applySPDXonFirstLine "sql" "-- $SPDX_TEXT"
-    applySPDXonFirstLine "yaml" "# $SPDX_TEXT"
-    applySPDXonFirstLine "yml" "# $SPDX_TEXT"
-
-    # for plantuml we do no longer apply automatically, because a comment before
-    # a @startUml is problematic
-}
-
 #####################################################
 cd `dirname $0`
 
@@ -99,4 +76,29 @@ echo -e "  --------------------------------------------"
 echo -e "  Start applying missing copyright information"
 echo -e "  --------------------------------------------"
 
-startAutoApply
+##########################################################
+# Apply SPDX license headers:
+applySPDXonFirstLine "adoc" "// $SPDX_TEXT"
+applySPDXonFirstLine "bat" ":: $SPDX_TEXT"
+applySPDXonFirstLine "c" "// $SPDX_TEXT"
+applySPDXonFirstLine "dockerfile" "# $SPDX_TEXT"
+applySPDXonFirstLine "go" "// $SPDX_TEXT"
+applySPDXonFirstLine "groovy" "// $SPDX_TEXT"
+applySPDXonFirstLine "gradle" "// $SPDX_TEXT"
+applySPDXonFirstLine "jenkins" "// $SPDX_TEXT"
+applySPDXonFirstLine "java" "// $SPDX_TEXT"
+applySPDXonFirstLine "md" "<!-- $SPDX_TEXT --->"
+applySPDXonFirstLine "properties" "# $SPDX_TEXT"
+applySPDXonSecondLine "py" "# $SPDX_TEXT"
+applySPDXonFirstLine "rb" "# $SPDX_TEXT"
+applySPDXonSecondLine "sh" "# $SPDX_TEXT"
+applySPDXonFirstLine "sql" "-- $SPDX_TEXT"
+applySPDXonFirstLine "yaml" "# $SPDX_TEXT"
+applySPDXonFirstLine "yml" "# $SPDX_TEXT"
+
+# for plantuml we do no longer apply automatically, because a comment before
+# a @startUml is problematic
+
+##########################################################
+
+exit 0

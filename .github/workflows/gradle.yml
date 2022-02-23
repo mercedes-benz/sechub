@@ -50,9 +50,11 @@ jobs:
       - name: Generate and build API Java
         run: ./gradlew :sechub-api-java:buildAPIJava
 
+      # Integration test
       - name: Integration test
         run: ./gradlew integrationtest
 
+      # We use 'if: always()' to run a step even if a previous step failed
       - name: Create combined test report
         if: always()
         run: ./gradlew createCombinedTestReport
@@ -112,7 +114,6 @@ jobs:
       # Upload documentation
       # -----------------------------------------
       - name: Archive documentation HTML
-        if: always()
         uses: actions/upload-artifact@v2
         with:
           name: sechub-docs-html
@@ -120,7 +121,6 @@ jobs:
           retention-days: 14
 
       - name: Archive documentation PDF
-        if: always()
         uses: actions/upload-artifact@v2
         with:
           name: sechub-docs-pdf
@@ -128,7 +128,6 @@ jobs:
           retention-days: 14
 
       - name: Archive documentation openAPI3
-        if: always()
         uses: actions/upload-artifact@v2
         with:
           name: sechub-api-spec
