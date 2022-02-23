@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.domain.administration.config;
+package com.mercedesbenz.sechub.domain.scan.config;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,15 +8,15 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 /**
- * Global configuration entry for domain 'administration' inside database.
- * Contains only ONE row! see {@link #ID}
+ * Global configuration entry for domain 'scan' inside database. Contains only
+ * ONE row! see {@link #ID}
  *
  * @author Albert Tregnaghi
  *
  */
 @Entity
-@Table(name = AdministrationConfig.TABLE_NAME)
-public class AdministrationConfig {
+@Table(name = ScanConfig.TABLE_NAME)
+public class ScanConfig {
 
     /**
      * We got only ONE administration configuration entry inside table. So we use
@@ -27,25 +27,20 @@ public class AdministrationConfig {
     /* +-----------------------------------------------------------------------+ */
     /* +............................ SQL ......................................+ */
     /* +-----------------------------------------------------------------------+ */
-    public static final String TABLE_NAME = "ADMIN_CONFIG";
+    public static final String TABLE_NAME = "SCAN_CONFIG";
 
     public static final String COLUMN_ID = "CONFIG_ID";
-
-    public static final String COLUMN_AUTO_CLEANUP_CONFIGURATION = "CONFIG_AUTO_CLEANUP";
 
     public static final String COLUMN_AUTO_CLEANUP_IN_DAYS = "CONFIG_AUTO_CLEANUP_IN_DAYS";
 
     /* +-----------------------------------------------------------------------+ */
     /* +............................ JPQL .....................................+ */
     /* +-----------------------------------------------------------------------+ */
-    public static final String CLASS_NAME = AdministrationConfig.class.getSimpleName();
+    public static final String CLASS_NAME = ScanConfig.class.getSimpleName();
 
     @Id
     @Column(name = COLUMN_ID, unique = true, nullable = false)
     Integer id = ID;
-
-    @Column(name = COLUMN_AUTO_CLEANUP_CONFIGURATION, nullable = false)
-    String autoCleanupConfiguration;
 
     @Column(name = COLUMN_AUTO_CLEANUP_IN_DAYS, nullable = false)
     Long autoCleanupInDays = Long.valueOf(0); // per default 0 (avoid NPEs when auto casting)
@@ -81,7 +76,7 @@ public class AdministrationConfig {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        AdministrationConfig other = (AdministrationConfig) obj;
+        ScanConfig other = (ScanConfig) obj;
         if (id == null) {
             if (other.id != null)
                 return false;

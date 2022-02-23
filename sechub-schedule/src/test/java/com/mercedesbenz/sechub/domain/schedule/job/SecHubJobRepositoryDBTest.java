@@ -43,35 +43,6 @@ public class SecHubJobRepositoryDBTest {
         jobCreator = jobCreator("project-db-test", entityManager);
     }
 
-    private class DeleteJobTestData {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime before_89_days = now.minusDays(89);
-        LocalDateTime before_90_days = now.minusDays(90);
-        LocalDateTime before_3_days = now.minusDays(3);
-        LocalDateTime before_1_day = now.minusDays(1);
-
-        ScheduleSecHubJob job1_90_days_before_created;
-        ScheduleSecHubJob job2_2_days_before_created;
-        ScheduleSecHubJob job3_1_day_before_created;
-        ScheduleSecHubJob job4_now_created;
-
-        private void createAndCheckAvailable() {
-            job1_90_days_before_created = jobCreator.created(before_90_days).started(null).create();
-            job2_2_days_before_created = jobCreator.created(before_3_days).started(before_1_day).being(ExecutionState.STARTED).create();
-            job3_1_day_before_created = jobCreator.created(before_1_day).started(now).create();
-            job4_now_created = jobCreator.created(now).create();
-
-            // check preconditions
-            jobRepository.flush();
-            assertEquals(4, jobRepository.count());
-            List<ScheduleSecHubJob> allJobsNow = jobRepository.findAll();
-            assertTrue(allJobsNow.contains(job1_90_days_before_created));
-            assertTrue(allJobsNow.contains(job2_2_days_before_created));
-            assertTrue(allJobsNow.contains(job3_1_day_before_created));
-            assertTrue(allJobsNow.contains(job4_now_created));
-        }
-    }
-
     @Test
     public void test_data_4_jobs_delete_1_day_still_has_2() throws Exception {
         /* prepare */
@@ -215,6 +186,35 @@ public class SecHubJobRepositoryDBTest {
 		/* test @formatter:on*/
         assertNotNull(job.getUUID());
         assertEquals(expectedNextJob.getUUID(), job.getUUID());
+    }
+
+    private class DeleteJobTestData {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime before_89_days = now.minusDays(89);
+        LocalDateTime before_90_days = now.minusDays(90);
+        LocalDateTime before_3_days = now.minusDays(3);
+        LocalDateTime before_1_day = now.minusDays(1);
+
+        ScheduleSecHubJob job1_90_days_before_created;
+        ScheduleSecHubJob job2_2_days_before_created;
+        ScheduleSecHubJob job3_1_day_before_created;
+        ScheduleSecHubJob job4_now_created;
+
+        private void createAndCheckAvailable() {
+            job1_90_days_before_created = jobCreator.created(before_90_days).started(null).create();
+            job2_2_days_before_created = jobCreator.created(before_3_days).started(before_1_day).being(ExecutionState.STARTED).create();
+            job3_1_day_before_created = jobCreator.created(before_1_day).started(now).create();
+            job4_now_created = jobCreator.created(now).create();
+
+            // check preconditions
+            jobRepository.flush();
+            assertEquals(4, jobRepository.count());
+            List<ScheduleSecHubJob> allJobsNow = jobRepository.findAll();
+            assertTrue(allJobsNow.contains(job1_90_days_before_created));
+            assertTrue(allJobsNow.contains(job2_2_days_before_created));
+            assertTrue(allJobsNow.contains(job3_1_day_before_created));
+            assertTrue(allJobsNow.contains(job4_now_created));
+        }
     }
 
     @TestConfiguration

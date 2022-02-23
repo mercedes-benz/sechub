@@ -8,8 +8,8 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 /**
- * Global configuration entry for domain 'schedule' inside database. Contains only ONE row!
- * {@link #ID}
+ * Global configuration entry for domain 'schedule' inside database. Contains
+ * only ONE row! {@link #ID}
  *
  * @author Albert Tregnaghi
  *

@@ -56,6 +56,9 @@ public class ProductResult {
     public static final String PROPERTY_SECHUB_JOB_UUID = "secHubJobUUID";
     public static final String PROPERTY_PRODUCT_IDENTIFIER = "productIdentifier";
     public static final String PROPERTY_PRODUCT_CONFIG_UUID = "productExecutorConfigUUID";
+    public static final String PROPERTY_PRODUCT_STARTED = "started";
+
+    public static final String QUERY_DELETE_RESULT_OLDER_THAN = "DELETE FROM ProductResult r WHERE r." + PROPERTY_PRODUCT_STARTED + " <:cleanTimeStamp";;
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -72,7 +75,7 @@ public class ProductResult {
      */
     @Enumerated(STRING)
     @Column(name = COLUMN_PRODUCT_IDENTIFIER, nullable = false)
-    private ProductIdentifier productIdentifier;
+    ProductIdentifier productIdentifier;
 
     @Type(type = "text") // why not using @Lob, because hibernate/postgres issues. see
                          // https://stackoverflow.com/questions/25094410/hibernate-error-while-persisting-text-datatype?noredirect=1#comment39048566_25094410

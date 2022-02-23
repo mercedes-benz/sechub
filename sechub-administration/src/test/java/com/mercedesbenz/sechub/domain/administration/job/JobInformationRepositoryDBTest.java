@@ -32,46 +32,6 @@ public class JobInformationRepositoryDBTest {
     public void before() {
     }
 
-    private class DeleteJobTestData {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime before_89_days = now.minusDays(89);
-        LocalDateTime before_90_days = now.minusDays(90);
-        LocalDateTime before_3_days = now.minusDays(3);
-        LocalDateTime before_1_day = now.minusDays(1);
-
-        JobInformation job1_90_days_before_created;
-        JobInformation job2_2_days_before_created;
-        JobInformation job3_1_day_before_created;
-        JobInformation job4_now_created;
-
-        private void createAndCheckAvailable() {
-            job1_90_days_before_created = create(before_90_days, JobStatus.DONE);
-            job2_2_days_before_created = create(before_3_days, JobStatus.RUNNING);
-            job3_1_day_before_created = create(before_1_day, JobStatus.CREATED);
-            job4_now_created = create(now, JobStatus.CREATED);
-
-            // check preconditions
-            jobRepository.flush();
-            assertEquals(4, jobRepository.count());
-            List<JobInformation> allJobsNow = jobRepository.findAll();
-            assertTrue(allJobsNow.contains(job1_90_days_before_created));
-            assertTrue(allJobsNow.contains(job2_2_days_before_created));
-            assertTrue(allJobsNow.contains(job3_1_day_before_created));
-            assertTrue(allJobsNow.contains(job4_now_created));
-        }
-
-        private JobInformation create(LocalDateTime since, JobStatus status) {
-            JobInformation jobInformation = new JobInformation();
-            jobInformation.since = since;
-            jobInformation.owner = "owner1";
-            jobInformation.projectId = "project1";
-            jobInformation.status = status;
-            entityManager.persist(jobInformation);
-            entityManager.flush();
-            return jobInformation;
-        }
-    }
-
     @Test
     public void test_data_4_jobs_delete_1_day_still_has_2() throws Exception {
         /* prepare */
@@ -158,6 +118,46 @@ public class JobInformationRepositoryDBTest {
         assertTrue(allJobsNow.contains(testData.job3_1_day_before_created));
         assertTrue(allJobsNow.contains(testData.job4_now_created));
         assertEquals(3, allJobsNow.size());
+    }
+
+    private class DeleteJobTestData {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime before_89_days = now.minusDays(89);
+        LocalDateTime before_90_days = now.minusDays(90);
+        LocalDateTime before_3_days = now.minusDays(3);
+        LocalDateTime before_1_day = now.minusDays(1);
+
+        JobInformation job1_90_days_before_created;
+        JobInformation job2_2_days_before_created;
+        JobInformation job3_1_day_before_created;
+        JobInformation job4_now_created;
+
+        private void createAndCheckAvailable() {
+            job1_90_days_before_created = create(before_90_days, JobStatus.DONE);
+            job2_2_days_before_created = create(before_3_days, JobStatus.RUNNING);
+            job3_1_day_before_created = create(before_1_day, JobStatus.CREATED);
+            job4_now_created = create(now, JobStatus.CREATED);
+
+            // check preconditions
+            jobRepository.flush();
+            assertEquals(4, jobRepository.count());
+            List<JobInformation> allJobsNow = jobRepository.findAll();
+            assertTrue(allJobsNow.contains(job1_90_days_before_created));
+            assertTrue(allJobsNow.contains(job2_2_days_before_created));
+            assertTrue(allJobsNow.contains(job3_1_day_before_created));
+            assertTrue(allJobsNow.contains(job4_now_created));
+        }
+
+        private JobInformation create(LocalDateTime since, JobStatus status) {
+            JobInformation jobInformation = new JobInformation();
+            jobInformation.since = since;
+            jobInformation.owner = "owner1";
+            jobInformation.projectId = "project1";
+            jobInformation.status = status;
+            entityManager.persist(jobInformation);
+            entityManager.flush();
+            return jobInformation;
+        }
     }
 
     @TestConfiguration
