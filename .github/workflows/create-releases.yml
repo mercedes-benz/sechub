@@ -402,7 +402,10 @@ jobs:
         with:
           token: ${{ github.token }}
           title: Release Server ${{ github.event.inputs.server-version }}
-          body: Please close this issue after the release.
+          body: |
+            See [Milestone ${{github.event.inputs.server-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{github.event.inputs.server-milestone-number}}?closed=1) for details.
+
+            Please close this issue after the release.
           milestone: ${{ github.event.inputs.server-milestone-number }}
 
       # ******************************************
@@ -474,7 +477,10 @@ jobs:
         with:
           token: ${{ github.token }}
           title: Release Client ${{ github.event.inputs.client-version }}
-          body: Please close this issue after the release.
+          body: |
+            See [Milestone ${{github.event.inputs.client-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{github.event.inputs.client-milestone-number}}?closed=1) for details.
+
+            Please close this issue after the release.
           milestone: ${{ github.event.inputs.client-milestone-number }}
 
       # ******************************************
@@ -527,7 +533,10 @@ jobs:
         with:
           token: ${{ github.token }}
           title: Release PDS ${{ github.event.inputs.pds-version }}
-          body: Please close this issue after the release.
+          body: |
+            See [Milestone ${{github.event.inputs.pds-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{github.event.inputs.pds-milestone-number}}?closed=1) for details.
+
+            Please close this issue after the release.
           milestone: ${{ github.event.inputs.pds-milestone-number }}
 
       # -----------------------------------------
