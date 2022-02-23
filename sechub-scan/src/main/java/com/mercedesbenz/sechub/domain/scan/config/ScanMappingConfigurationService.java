@@ -22,25 +22,25 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdmiUpd
  *
  */
 @Service
-public class ScanConfigService {
+public class ScanMappingConfigurationService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ScanConfigService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ScanMappingConfigurationService.class);
 
     private NamePatternIdprovider fallbackProvider = new NamePatternIdprovider(null);
     private Map<String, NamePatternIdprovider> providers = new TreeMap<>();
 
     @Autowired
-    ScanMappingToScanConfigTransformer transformer;
+    ScanMappingToScanMappingConfigurationTransformer transformer;
 
     @Autowired
     ScanMappingRepository repository;
 
-    ScanConfig config;
+    ScanMappingConfiguration config;
 
     @UseCaseAdmiUpdatesMappingConfiguration(@Step(number = 6, name = "Service call", description = "Checks if current mappings in DB lead to a new scan configuration."))
     public void refreshScanConfigIfNecessary() {
         List<ScanMapping> all = repository.findAll();
-        ScanConfig scanConfig = transformer.transform(all);
+        ScanMappingConfiguration scanConfig = transformer.transform(all);
         switchConfigurationIfChanged(scanConfig);
 
     }
@@ -73,7 +73,7 @@ public class ScanConfigService {
         }
     }
 
-    void switchConfigurationIfChanged(ScanConfig config) {
+    void switchConfigurationIfChanged(ScanMappingConfiguration config) {
         if (config == null) {
             return;
         }
@@ -85,7 +85,7 @@ public class ScanConfigService {
 
     }
 
-    private void switchToNewConfiguration(ScanConfig config) {
+    private void switchToNewConfiguration(ScanMappingConfiguration config) {
         synchronized (providers) {
             this.config = config;
             LOG.info("rebuilding providers");

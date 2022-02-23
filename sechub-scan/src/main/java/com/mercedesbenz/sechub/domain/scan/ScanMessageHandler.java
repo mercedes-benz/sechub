@@ -12,7 +12,7 @@ import com.mercedesbenz.sechub.domain.scan.access.ScanDeleteAnyAccessToProjectAt
 import com.mercedesbenz.sechub.domain.scan.access.ScanGrantUserAccessToProjectService;
 import com.mercedesbenz.sechub.domain.scan.access.ScanRevokeUserAccessAtAllService;
 import com.mercedesbenz.sechub.domain.scan.access.ScanRevokeUserAccessFromProjectService;
-import com.mercedesbenz.sechub.domain.scan.config.UpdateScanConfigService;
+import com.mercedesbenz.sechub.domain.scan.config.UpdateScanMappingConfigurationService;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResultService;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigAccessLevelService;
 import com.mercedesbenz.sechub.sharedkernel.Step;
@@ -55,7 +55,7 @@ public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMess
     ProjectDataDeleteService projectDataDeleteService;
 
     @Autowired
-    UpdateScanConfigService updateScanMappingService;
+    UpdateScanMappingConfigurationService updateScanMappingService;
 
     @Autowired
     ProductResultService productResultService;

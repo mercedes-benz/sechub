@@ -9,13 +9,13 @@ import org.junit.Test;
 import com.mercedesbenz.sechub.domain.scan.ScanDomainTestFileSupport;
 
 @SuppressWarnings("deprecation") // we explicit use the deprecated method, because it is only for tests..
-public class ScanConfigServiceTest {
+public class ScanMappingConfigurationServiceTest {
 
-    private ScanConfigService serviceToTest;
+    private ScanMappingConfigurationService serviceToTest;
 
     @Before
     public void before() {
-        serviceToTest = new ScanConfigService();
+        serviceToTest = new ScanMappingConfigurationService();
     }
 
     @Test
@@ -31,7 +31,7 @@ public class ScanConfigServiceTest {
     public void initialized_example1_returns_expected_provider() {
         /* prepare */
         serviceToTest.switchConfigurationIfChanged(
-                ScanConfig.createFromJSON(ScanDomainTestFileSupport.getTestfileSupport().loadTestFile("scan_config/test_scan_config1.json")));
+                ScanMappingConfiguration.createFromJSON(ScanDomainTestFileSupport.getTestfileSupport().loadTestFile("scan_config/test_scan_config1.json")));
 
         /* execute */
         NamePatternIdprovider provider = serviceToTest.getNamePatternIdProvider("someproduct.a.b");
@@ -55,7 +55,7 @@ public class ScanConfigServiceTest {
     public void initialized_example2_contains_unknwon_fields_but_will_also_returns_expected_provider() {
         /* prepare */
         serviceToTest.switchConfigurationIfChanged(
-                ScanConfig.createFromJSON(ScanDomainTestFileSupport.getTestfileSupport().loadTestFile("scan_config/test_scan_config2.json")));
+                ScanMappingConfiguration.createFromJSON(ScanDomainTestFileSupport.getTestfileSupport().loadTestFile("scan_config/test_scan_config2.json")));
 
         /* execute */
         NamePatternIdprovider provider = serviceToTest.getNamePatternIdProvider("someproduct.a.b");

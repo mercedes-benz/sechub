@@ -11,7 +11,7 @@ import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdmiUpdatesMappingConfiguration;
 
 @Service
-public class ScanConfigRefreshTriggerService {
+public class ScanMappingConfigurationRefreshTriggerService {
 
     private static final int DEFAULT_INITIAL_DELAY_MILLIS = 0;
     private static final int DEFAULT_FIXED_DELAY_MILLIS = 5000;
@@ -25,12 +25,12 @@ public class ScanConfigRefreshTriggerService {
     private String fixedDelay; // here only for logging - used in scheduler annotation as well!
 
     @Autowired
-    ScanConfigService scanConfigService;
+    ScanMappingConfigurationService scanMappingConfigurationService;
 
     @UseCaseAdmiUpdatesMappingConfiguration(@Step(number = 5, name = "Trigger service", description = "Checks periodically for updates in scan configuration"))
     @Scheduled(initialDelayString = "${sechub.config.trigger.nextjob.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS
             + "}", fixedDelayString = "${sechub.config.scan.scanconfig.refresh.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
     public void triggerRefreshCheck() {
-        scanConfigService.refreshScanConfigIfNecessary();
+        scanMappingConfigurationService.refreshScanConfigIfNecessary();
     }
 }

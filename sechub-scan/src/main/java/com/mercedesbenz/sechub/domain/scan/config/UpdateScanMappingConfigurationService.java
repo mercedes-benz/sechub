@@ -19,15 +19,15 @@ import com.mercedesbenz.sechub.sharedkernel.validation.MappingDataValidation;
 import com.mercedesbenz.sechub.sharedkernel.validation.MappingIdValidation;
 
 @Service
-public class UpdateScanConfigService {
+public class UpdateScanMappingConfigurationService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(UpdateScanConfigService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UpdateScanMappingConfigurationService.class);
 
     @Autowired
     ScanMappingRepository repository;
 
     @Autowired
-    ScanConfigService scanConfigService;
+    ScanMappingConfigurationService scanMappingConfigurationService;
 
     @Autowired
     MappingIdValidation mappingIdValidation;
@@ -47,8 +47,8 @@ public class UpdateScanConfigService {
         updateInDatabase(mappingId, mappingData);
 
         /*
-         * that's all - refresh is done by ScanConfigRefreshTriggerService - but only
-         * when something has changed ...
+         * that's all - refresh is done by ScanMappingConfigurationRefreshTriggerService
+         * - but only when something has changed ...
          */
     }
 

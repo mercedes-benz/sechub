@@ -8,7 +8,7 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 /**
- * Configuration entry for admnistration inside database. Contains only ONE row!
+ * Global configuration entry for domain 'administration' inside database. Contains only ONE row!
  * see {@link #ID}
  *
  * @author Albert Tregnaghi

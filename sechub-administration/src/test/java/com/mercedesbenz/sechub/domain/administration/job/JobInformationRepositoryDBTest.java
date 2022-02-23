@@ -45,10 +45,10 @@ public class JobInformationRepositoryDBTest {
         JobInformation job4_now_created;
 
         private void createAndCheckAvailable() {
-            job1_90_days_before_created = create(before_90_days,JobStatus.DONE);
-            job2_2_days_before_created = create(before_3_days,JobStatus.RUNNING);
-            job3_1_day_before_created = create(before_1_day,JobStatus.CREATED);
-            job4_now_created = create(now,JobStatus.CREATED);
+            job1_90_days_before_created = create(before_90_days, JobStatus.DONE);
+            job2_2_days_before_created = create(before_3_days, JobStatus.RUNNING);
+            job3_1_day_before_created = create(before_1_day, JobStatus.CREATED);
+            job4_now_created = create(now, JobStatus.CREATED);
 
             // check preconditions
             jobRepository.flush();
@@ -60,14 +60,14 @@ public class JobInformationRepositoryDBTest {
             assertTrue(allJobsNow.contains(job4_now_created));
         }
 
-        private JobInformation create(LocalDateTime since,JobStatus status) {
+        private JobInformation create(LocalDateTime since, JobStatus status) {
             JobInformation jobInformation = new JobInformation();
-            jobInformation.since=since;
-            jobInformation.owner="owner1";
-            jobInformation.projectId="project1";
-            jobInformation.status=status;
+            jobInformation.since = since;
+            jobInformation.owner = "owner1";
+            jobInformation.projectId = "project1";
+            jobInformation.status = status;
             entityManager.persist(jobInformation);
-            entityManager.flush();            
+            entityManager.flush();
             return jobInformation;
         }
     }

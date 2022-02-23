@@ -8,16 +8,16 @@ import org.springframework.stereotype.Component;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
 
 @Component
-public class ScanMappingToScanConfigTransformer {
+public class ScanMappingToScanMappingConfigurationTransformer {
 
     MappingDataToNamePatternToIdEntryConverter converter;
 
-    public ScanMappingToScanConfigTransformer() {
+    public ScanMappingToScanMappingConfigurationTransformer() {
         converter = new MappingDataToNamePatternToIdEntryConverter();
     }
 
-    public ScanConfig transform(List<ScanMapping> mappings) {
-        ScanConfig config = new ScanConfig();
+    public ScanMappingConfiguration transform(List<ScanMapping> mappings) {
+        ScanMappingConfiguration config = new ScanMappingConfiguration();
 
         if (mappings == null || mappings.size() == 0) {
             return config;

@@ -5,19 +5,19 @@ import java.awt.event.ActionEvent;
 import java.util.Collections;
 import java.util.Optional;
 
-import com.mercedesbenz.sechub.domain.scan.config.DeveloperToolsScanConfigService;
+import com.mercedesbenz.sechub.domain.scan.config.DeveloperToolsScanMappingConfigurationService;
 import com.mercedesbenz.sechub.domain.scan.config.NamePatternIdprovider;
-import com.mercedesbenz.sechub.domain.scan.config.ScanConfig;
 import com.mercedesbenz.sechub.domain.scan.config.ScanMapping;
-import com.mercedesbenz.sechub.domain.scan.config.ScanMappingToScanConfigTransformer;
+import com.mercedesbenz.sechub.domain.scan.config.ScanMappingConfiguration;
+import com.mercedesbenz.sechub.domain.scan.config.ScanMappingToScanMappingConfigurationTransformer;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingIdentifier;
 
-public class ScanConfigTestJSONasNamePatternDialogAction extends AbstractAdapterDialogMappingAction {
+public class ScanMappingConfigurationTestJSONasNamePatternDialogAction extends AbstractAdapterDialogMappingAction {
 
     private static final long serialVersionUID = 1L;
 
-    public ScanConfigTestJSONasNamePatternDialogAction(MappingUI ui) {
+    public ScanMappingConfigurationTestJSONasNamePatternDialogAction(MappingUI ui) {
         super("Test mapping", ui);
     }
 
@@ -26,12 +26,12 @@ public class ScanConfigTestJSONasNamePatternDialogAction extends AbstractAdapter
         /* convert to rows */
         String json = getMappingUI().getJSON();
         MappingIdentifier identifier = resolveMappingIdentifier();
-        ScanConfig config = createScanConfig(json, identifier);
+        ScanMappingConfiguration config = createScanConfig(json, identifier);
 
-        DeveloperToolsScanConfigService scanConfigService = new DeveloperToolsScanConfigService();
-        scanConfigService.switchConfigurationIfChanged(config);
+        DeveloperToolsScanMappingConfigurationService scanMappingConfigurationService = new DeveloperToolsScanMappingConfigurationService();
+        scanMappingConfigurationService.switchConfigurationIfChanged(config);
 
-        NamePatternIdprovider provider = scanConfigService.getNamePatternIdProvider(identifier);
+        NamePatternIdprovider provider = scanMappingConfigurationService.getNamePatternIdProvider(identifier);
 
         boolean ongoing = true;
         while (ongoing) {
@@ -50,12 +50,12 @@ public class ScanConfigTestJSONasNamePatternDialogAction extends AbstractAdapter
 
     }
 
-    private ScanConfig createScanConfig(String json, MappingIdentifier identifier) {
+    private ScanMappingConfiguration createScanConfig(String json, MappingIdentifier identifier) {
         MappingData mappingData = MappingData.fromString(json);
         ScanMapping mapping = new ScanMapping(identifier.getId());
         mapping.setData(mappingData.toJSON());
 
-        ScanConfig config = new ScanMappingToScanConfigTransformer().transform(Collections.singletonList(mapping));
+        ScanMappingConfiguration config = new ScanMappingToScanMappingConfigurationTransformer().transform(Collections.singletonList(mapping));
         return config;
     }
 

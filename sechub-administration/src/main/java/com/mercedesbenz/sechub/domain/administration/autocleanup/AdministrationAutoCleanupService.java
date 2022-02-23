@@ -27,7 +27,6 @@ public class AdministrationAutoCleanupService {
     @Autowired
     JobInformationRepository jobInformationRepository;
 
-
     @UseCaseAdministrationAutoCleanExecution(@Step(number = 2, name = "Delete old data", description = "deletes old job information"))
     public void cleanup() {
         /* calculate */

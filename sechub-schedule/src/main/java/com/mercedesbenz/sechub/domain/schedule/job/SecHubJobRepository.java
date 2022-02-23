@@ -37,6 +37,6 @@ public interface SecHubJobRepository extends JpaRepository<ScheduleSecHubJob, UU
     @Transactional
     @Modifying
     @Query(ScheduleSecHubJob.QUERY_DELETE_JOBINFORMATION_OLDER_THAN)
-    public void deleteJobsOlderThan(@Param("cleanTimeStamp")LocalDateTime cleanTimeStamp);
+    public void deleteJobsOlderThan(@Param("cleanTimeStamp") LocalDateTime cleanTimeStamp);
 
 }

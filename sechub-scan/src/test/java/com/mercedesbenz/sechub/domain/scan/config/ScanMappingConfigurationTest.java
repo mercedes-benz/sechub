@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import com.mercedesbenz.sechub.domain.scan.ScanDomainTestFileSupport;
 
-public class ScanConfigTest {
+public class ScanMappingConfigurationTest {
 
     @Test
     public void emptyJson_is_accepted() {
@@ -17,7 +17,7 @@ public class ScanConfigTest {
         String json = "{}";
 
         /* execute */
-        ScanConfig config = ScanConfig.createFromJSON(json);
+        ScanMappingConfiguration config = ScanMappingConfiguration.createFromJSON(json);
 
         /* test */
         assertNotNull(config);
@@ -30,7 +30,7 @@ public class ScanConfigTest {
         String json = ScanDomainTestFileSupport.getTestfileSupport().loadTestFile("scan_config/test_scan_config1.json");
 
         /* execute */
-        ScanConfig config = ScanConfig.createFromJSON(json);
+        ScanMappingConfiguration config = ScanMappingConfiguration.createFromJSON(json);
 
         /* test */
         List<NamePatternToIdEntry> ab = config.getNamePatternMappings().get("someproduct.a.b");
@@ -49,7 +49,7 @@ public class ScanConfigTest {
         String json = ScanDomainTestFileSupport.getTestfileSupport().loadTestFile("scan_config/test_scan_config1.json");
 
         /* execute */
-        ScanConfig config = ScanConfig.createFromJSON(json);
+        ScanMappingConfiguration config = ScanMappingConfiguration.createFromJSON(json);
 
         /* test */
         List<NamePatternToIdEntry> ab = config.getNamePatternMappings().get("someproduct.a.b");

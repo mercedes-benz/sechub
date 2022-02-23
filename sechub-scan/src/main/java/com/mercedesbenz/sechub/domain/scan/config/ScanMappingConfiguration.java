@@ -11,15 +11,15 @@ import com.mercedesbenz.sechub.sharedkernel.MustBeKeptStable;
 
 @JsonIgnoreProperties(ignoreUnknown = true) // we do ignore to avoid problems from wrong configured values!
 @MustBeKeptStable("This configuration is used by admins to have templates for their mapping configurations etc.")
-public class ScanConfig implements JSONable<ScanConfig> {
+public class ScanMappingConfiguration implements JSONable<ScanMappingConfiguration> {
 
     private String apiVersion;
 
-    private static final ScanConfig JSON_INITIALIZER = new ScanConfig();
+    private static final ScanMappingConfiguration JSON_INITIALIZER = new ScanMappingConfiguration();
 
     private Map<String, List<NamePatternToIdEntry>> namePatternMappings = new TreeMap<>();
 
-    public static ScanConfig createFromJSON(String json) {
+    public static ScanMappingConfiguration createFromJSON(String json) {
         return JSON_INITIALIZER.fromJSON(json);
     }
 
@@ -36,16 +36,16 @@ public class ScanConfig implements JSONable<ScanConfig> {
     }
 
     @Override
-    public Class<ScanConfig> getJSONTargetClass() {
-        return ScanConfig.class;
+    public Class<ScanMappingConfiguration> getJSONTargetClass() {
+        return ScanMappingConfiguration.class;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof ScanConfig)) {
+        if (!(obj instanceof ScanMappingConfiguration)) {
             return false;
         }
-        ScanConfig other = (ScanConfig) obj;
+        ScanMappingConfiguration other = (ScanMappingConfiguration) obj;
 
         return toJSON().equals(other.toJSON());
     }

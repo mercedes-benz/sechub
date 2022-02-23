@@ -88,7 +88,7 @@ public class SecHubJobRepositoryDBTest {
         assertTrue(allJobsNow.contains(testData.job4_now_created));
         assertEquals(2, allJobsNow.size());
     }
-    
+
     @Test
     public void test_data_4_jobs_delete_1_day_before_plus1_second_still_has_1() throws Exception {
         /* prepare */

@@ -616,10 +616,6 @@ public class TestURLBuilder {
         return buildUrl(API_ANONYMOUS, "integrationtest/config/namepattern", namePatternProviderId, name);
     }
 
-    public String buildIntegrationTestRefreshScanConfigURL() {
-        return buildUrl(API_ANONYMOUS, "integrationtest/config/scan/scanconfig/refresh");
-    }
-
     public String buildClearMetaDataInspectionURL() {
         return buildUrl(API_ANONYMOUS, "integrationtest/metadata/inspections");
     }

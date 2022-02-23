@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.domain.schedule.config.SchedulerConfigService;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
@@ -12,6 +13,7 @@ import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.TimeCalculationService;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdministrationAutoCleanExecution;
 
+@Service
 public class ScheduleAutoCleanupService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ScheduleAutoCleanupService.class);
@@ -24,7 +26,6 @@ public class ScheduleAutoCleanupService {
 
     @Autowired
     SecHubJobRepository jobRepository;
-
 
     @UseCaseAdministrationAutoCleanExecution(@Step(number = 2, name = "Delete old data", description = "deletes old job information"))
     public void cleanup() {

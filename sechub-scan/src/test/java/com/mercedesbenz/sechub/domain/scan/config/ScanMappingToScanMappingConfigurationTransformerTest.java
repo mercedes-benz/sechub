@@ -16,14 +16,14 @@ import org.junit.Test;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingEntry;
 
-public class ScanMappingToScanConfigTransformerTest {
+public class ScanMappingToScanMappingConfigurationTransformerTest {
 
-    private ScanMappingToScanConfigTransformer transformerToTest;
+    private ScanMappingToScanMappingConfigurationTransformer transformerToTest;
     private MappingDataToNamePatternToIdEntryConverter converter;
 
     @Before
     public void before() {
-        transformerToTest = new ScanMappingToScanConfigTransformer();
+        transformerToTest = new ScanMappingToScanMappingConfigurationTransformer();
 
         /* mock converter */
         converter = mock(MappingDataToNamePatternToIdEntryConverter.class);
@@ -33,7 +33,7 @@ public class ScanMappingToScanConfigTransformerTest {
     @Test
     public void null_transformed_to_config() {
         /* execute */
-        ScanConfig result = transformerToTest.transform(null);
+        ScanMappingConfiguration result = transformerToTest.transform(null);
 
         /* test */
         assertNotNull(result);
@@ -43,7 +43,7 @@ public class ScanMappingToScanConfigTransformerTest {
     @Test
     public void empty_list_transformed_to_config() {
         /* execute */
-        ScanConfig result = transformerToTest.transform(new ArrayList<>());
+        ScanMappingConfiguration result = transformerToTest.transform(new ArrayList<>());
 
         /* test */
         assertNotNull(result);
@@ -58,7 +58,7 @@ public class ScanMappingToScanConfigTransformerTest {
         when(converter.convert(any())).thenReturn(Arrays.asList(new NamePatternToIdEntry("pattern1", "replacement1")));
 
         /* execute */
-        ScanConfig result = transformerToTest.transform(Collections.singletonList(mapping1));
+        ScanMappingConfiguration result = transformerToTest.transform(Collections.singletonList(mapping1));
 
         /* test */
         assertNotNull(result);
@@ -80,7 +80,7 @@ public class ScanMappingToScanConfigTransformerTest {
                 .thenReturn(Arrays.asList(new NamePatternToIdEntry("pattern1", "replacement1"), new NamePatternToIdEntry("pattern2", "replacement2")));
 
         /* execute */
-        ScanConfig result = transformerToTest.transform(Collections.singletonList(mapping1));
+        ScanMappingConfiguration result = transformerToTest.transform(Collections.singletonList(mapping1));
 
         /* test */
         assertNotNull(result);
@@ -114,7 +114,7 @@ public class ScanMappingToScanConfigTransformerTest {
         list.add(mapping2);
 
         /* execute */
-        ScanConfig result = transformerToTest.transform(list);
+        ScanMappingConfiguration result = transformerToTest.transform(list);
 
         /* test */
         assertNotNull(result);

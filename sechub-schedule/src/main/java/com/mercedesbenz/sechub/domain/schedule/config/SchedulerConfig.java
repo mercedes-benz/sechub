@@ -8,7 +8,7 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 /**
- * Configuration entry for scheduler inside database. Contains only ONE row! see
+ * Global configuration entry for domain 'schedule' inside database. Contains only ONE row!
  * {@link #ID}
  *
  * @author Albert Tregnaghi

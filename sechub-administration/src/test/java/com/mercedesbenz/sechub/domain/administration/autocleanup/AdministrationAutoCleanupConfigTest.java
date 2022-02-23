@@ -11,7 +11,7 @@ import com.mercedesbenz.sechub.sharedkernel.CountableInDaysTimeunit;
 
 class AdministrationAutoCleanupConfigTest {
 
-    @CsvSource({"WEEK,3","MONTH,1","YEAR,1","DAY,0"})
+    @CsvSource({ "WEEK,3", "MONTH,1", "YEAR,1", "DAY,0" })
     @ParameterizedTest
     void can_be_converted_to_json(String timeUnit, int amount) {
         /* prepare */
@@ -33,12 +33,11 @@ class AdministrationAutoCleanupConfigTest {
         assertNotNull(created);
     }
 
-    
     @Test
     void default_is_zero_month() {
         /* execute */
         AdministrationAutoCleanupConfig config = new AdministrationAutoCleanupConfig();
-        
+
         /* test */
         CleanupTime cleanupTime = config.getCleanupTime();
         assertEquals(CountableInDaysTimeunit.MONTH, cleanupTime.getUnit());
