@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 [[section-concept-project-scan-configuration]]
 ==== Project scan configuration
 

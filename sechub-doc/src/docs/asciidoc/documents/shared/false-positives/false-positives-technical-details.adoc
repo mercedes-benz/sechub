@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 [[section-concept-false-positive-technical-details]]
 ==== Technical details about false positive handling
 
