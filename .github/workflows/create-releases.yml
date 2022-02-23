@@ -398,6 +398,7 @@ jobs:
           asset_content_type: text/plain
 
       - name: Create Server ${{ github.event.inputs.server-version }} release issue
+        if: github.event.inputs.server-version != ''
         uses: dacbd/create-issue-action@main
         with:
           token: ${{ github.token }}
@@ -473,6 +474,7 @@ jobs:
           asset_content_type: application/pdf
 
       - name: Create Client ${{ github.event.inputs.client-version }} release issue
+        if: github.event.inputs.client-version != ''
         uses: dacbd/create-issue-action@main
         with:
           token: ${{ github.token }}
@@ -529,6 +531,7 @@ jobs:
           asset_content_type: application/pdf
 
       - name: Create PDS ${{ github.event.inputs.pds-version }} release issue
+        if: github.event.inputs.pds-version != ''
         uses: dacbd/create-issue-action@main
         with:
           token: ${{ github.token }}
