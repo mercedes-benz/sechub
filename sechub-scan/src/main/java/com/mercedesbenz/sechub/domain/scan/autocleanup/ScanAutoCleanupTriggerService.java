@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 import com.mercedesbenz.sechub.sharedkernel.Step;
-import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdministrationAutoCleanExecution;
+import com.mercedesbenz.sechub.sharedkernel.usecases.autocleanup.UseCaseScanAutoCleanExecution;
 
 @Service
 public class ScanAutoCleanupTriggerService {
@@ -23,7 +23,7 @@ public class ScanAutoCleanupTriggerService {
             + "time shifted, simply change the initial delay values in your wanted way.")
     @Scheduled(initialDelayString = "${sechub.config.trigger.autoclean.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS
             + "}", fixedDelayString = "${sechub.config.trigger.autoclean.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
-    @UseCaseAdministrationAutoCleanExecution(@Step(number = 1, name = "Scheduling", description = "Checks for parts to auto clean."))
+    @UseCaseScanAutoCleanExecution(@Step(number = 1, name = "Scheduling", description = "Checks for parts to auto clean."))
     public void triggerAutoCleanup() {
         autoCleanupService.cleanup();
     }

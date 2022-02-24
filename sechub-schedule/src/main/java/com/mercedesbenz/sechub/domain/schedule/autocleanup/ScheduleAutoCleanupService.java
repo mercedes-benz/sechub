@@ -11,7 +11,7 @@ import com.mercedesbenz.sechub.domain.schedule.config.SchedulerConfigService;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.TimeCalculationService;
-import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdministrationAutoCleanExecution;
+import com.mercedesbenz.sechub.sharedkernel.usecases.autocleanup.UseCaseScheduleAutoCleanExecution;
 
 @Service
 public class ScheduleAutoCleanupService {
@@ -27,7 +27,7 @@ public class ScheduleAutoCleanupService {
     @Autowired
     SecHubJobRepository jobRepository;
 
-    @UseCaseAdministrationAutoCleanExecution(@Step(number = 2, name = "Delete old data", description = "deletes old job information"))
+    @UseCaseScheduleAutoCleanExecution(@Step(number = 2, name = "Delete old data", description = "deletes old job information"))
     public void cleanup() {
         /* calculate */
         long days = configService.getAutoCleanupInDays();

@@ -32,7 +32,7 @@ public class ScanConfigService {
         return transactionService.saveConfigInOwnTransaction(newConfig);
     }
 
-    @UseCaseAdminUpdatesAutoCleanupConfiguration(@Step(number = 5, name = "Updates auto cleanup in days settings", description = "Updates amount of days until cleanup in database by using received event data"))
+    @UseCaseAdminUpdatesAutoCleanupConfiguration(@Step(number = 5, name = "Scan domain receives auto cleanup event", description = "Received event in scan domain about auto cleanup configuration change. Stores data, so available for next auto clean execution"))
     public void updateAutoCleanupInDays(long autoCleanupInDays) {
         ScanConfig config = getOrCreateConfig();
         config.autoCleanupInDays = autoCleanupInDays;

@@ -17,6 +17,7 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.AdministrationConfigMessag
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageFactory;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
+import com.mercedesbenz.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesAutoCleanupConfiguration;
@@ -70,7 +71,7 @@ public class AdministrationConfigService {
         return config.getAutoCleanupInDays();
     }
 
-    @UseCaseAdminUpdatesAutoCleanupConfiguration(@Step(number = 3, name = "Updates auto cleanup in days settings", description = "Updates amount of days until cleanup in database by using received event data"))
+    @UseCaseAdminUpdatesAutoCleanupConfiguration(@Step(number = 3, name = "Administration domain receives auto cleanup event", description = "Received event in administration domain about auto cleanup configuration change. Stores data, so available for next auto clean execution"))
     public void updateAutoCleanupInDays(long autoCleanupInDays) {
         AdministrationConfig config = getOrCreateConfig();
         config.autoCleanupInDays = autoCleanupInDays;
@@ -91,6 +92,7 @@ public class AdministrationConfigService {
         return cleanupConfig;
     }
 
+    @IsSendingAsyncMessage(MessageID.AUTO_CLEANUP_CONFIGURATION_CHANGED)
     private void sendEvent(AdministrationAutoCleanupConfig config) {
         AdministrationConfigMessage adminConfigMessage = new AdministrationConfigMessage();
         adminConfigMessage.setAutoCleanupInDays(calculator.calculateCleanupTimeInDays(config));

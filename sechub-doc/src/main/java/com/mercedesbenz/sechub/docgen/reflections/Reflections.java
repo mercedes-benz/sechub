@@ -21,7 +21,7 @@ import com.mercedesbenz.sechub.docgen.GeneratorConstants;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 
 /**
- * A very simple replacement for `org.reflections` library. But fullfils
+ * A very simple replacement for `org.reflections` library. But fulfills
  * requirements for sechub documentation generation... and works with JDK11
  *
  * @author Albert Tregnaghi
@@ -183,7 +183,7 @@ public class Reflections {
     }
 
     private void scan() {
-        fetchGradleSoureDirectories();
+        initBeforeScan();
         fetchJavaClassNamesToInspect();
     }
 
@@ -203,6 +203,7 @@ public class Reflections {
         } else if (file.isFile()) {
             String className = extractJavaFileName(sourceDirectory, file);
             if (isIgnoredClassName(className)) {
+                LOG.trace("Class ignored:{}", className);
                 return;
             }
 
@@ -211,7 +212,7 @@ public class Reflections {
                 clazz = Class.forName(className);
                 classesToInspect.add(clazz);
             } catch (ClassNotFoundException e) {
-                LOG.warn("Ignored class:{}", className);
+                LOG.trace("Class not found in sechub-doc classpath, only on source code:{}", className);
             }
         } else {
             LOG.error("Was not able to handle file:{}", file);
@@ -244,7 +245,7 @@ public class Reflections {
         return className;
     }
 
-    private void fetchGradleSoureDirectories() {
+    private void initBeforeScan() {
         File file = new File("sechub-doc");
         File rootFolder = null;
         if (file.exists()) {

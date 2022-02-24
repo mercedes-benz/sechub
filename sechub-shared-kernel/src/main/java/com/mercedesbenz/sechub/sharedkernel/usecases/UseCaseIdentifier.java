@@ -147,7 +147,13 @@ public enum UseCaseIdentifier {
 
     UC_ADMIN_UPDATES_AUTO_CLEANUP_CONFIGURATION(65),
 
-    UC_AUTO_CLEANUP_EXECUTION(66),;
+    UC_ADMINISTRATION_AUTO_CLEANUP_EXECUTION(66),
+
+    UC_SCAN_AUTO_CLEANUP_EXECUTION(67),
+
+    UC_SCHEDULE_AUTO_CLEANUP_EXECUTION(68),
+
+    ;
 
     /* +-----------------------------------------------------------------------+ */
     /* +............................ Helpers ................................+ */

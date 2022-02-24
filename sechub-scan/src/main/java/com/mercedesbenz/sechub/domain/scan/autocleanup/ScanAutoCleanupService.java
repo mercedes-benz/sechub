@@ -13,7 +13,7 @@ import com.mercedesbenz.sechub.domain.scan.product.ProductResultRepository;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReportRepository;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.TimeCalculationService;
-import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdministrationAutoCleanExecution;
+import com.mercedesbenz.sechub.sharedkernel.usecases.autocleanup.UseCaseScanAutoCleanExecution;
 
 @Service
 public class ScanAutoCleanupService {
@@ -37,7 +37,7 @@ public class ScanAutoCleanupService {
 
     private static boolean statistic_feature_1010_implemented = false;
 
-    @UseCaseAdministrationAutoCleanExecution(@Step(number = 2, name = "Delete old data", description = "deletes old job information"))
+    @UseCaseScanAutoCleanExecution(@Step(number = 2, name = "Delete old data", description = "deletes old job information"))
     public void cleanup() {
         /* calculate */
         long days = configService.getAutoCleanupInDays();

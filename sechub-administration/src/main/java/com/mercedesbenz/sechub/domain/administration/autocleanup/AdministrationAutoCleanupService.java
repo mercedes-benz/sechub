@@ -11,7 +11,7 @@ import com.mercedesbenz.sechub.domain.administration.config.AdministrationConfig
 import com.mercedesbenz.sechub.domain.administration.job.JobInformationRepository;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.TimeCalculationService;
-import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdministrationAutoCleanExecution;
+import com.mercedesbenz.sechub.sharedkernel.usecases.autocleanup.UseCaseAdministrationAutoCleanExecution;
 
 @Service
 public class AdministrationAutoCleanupService {

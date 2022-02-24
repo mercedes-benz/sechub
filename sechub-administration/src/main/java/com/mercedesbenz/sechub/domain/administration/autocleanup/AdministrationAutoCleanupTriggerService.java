@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 import com.mercedesbenz.sechub.sharedkernel.Step;
-import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdministrationAutoCleanExecution;
+import com.mercedesbenz.sechub.sharedkernel.usecases.autocleanup.UseCaseAdministrationAutoCleanExecution;
 
 @Service
 public class AdministrationAutoCleanupTriggerService {

@@ -2,16 +2,19 @@
 package com.mercedesbenz.sechub.test.s3;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.UUID;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import com.amazonaws.util.StringInputStream;
 import com.mercedesbenz.sechub.sharedkernel.storage.MultiStorageService;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.S3Setup;
 import com.mercedesbenz.sechub.storage.core.SharedVolumeSetup;
+import com.mercedesbenz.sechub.test.TestConstants;
 
 /**
  * This is not really a test, but a simple test program where we can check if
@@ -30,11 +33,14 @@ import com.mercedesbenz.sechub.storage.core.SharedVolumeSetup;
  * @author Albert Tregnaghi
  *
  */
-public class S3RealLiveStorageTestMain {
+class S3RealLiveStorageManualTest {
 
     private static final String S3_OBJECT_NAME = "testdata";
 
-    public static void main(String[] args) throws IOException {
+    @Test
+    @EnabledIfSystemProperty(named = TestConstants.MANUAL_TEST_BY_DEVELOPER, matches = "true", disabledReason = TestConstants.DESCRIPTION_DISABLED_BECAUSE_A_MANUAL_TEST_FOR_GENERATION)
+    void manualTestByDeveloper() throws Exception {
+
         /* setup */
         SharedVolumeSetup setup = createFakeSharedVolumeNotValid();
         S3Setup s3Setup = createS3SetupByEnvironmentVariables();

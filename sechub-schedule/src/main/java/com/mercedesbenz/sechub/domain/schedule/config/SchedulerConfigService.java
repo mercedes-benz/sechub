@@ -85,7 +85,7 @@ public class SchedulerConfigService {
         return config.isJobProcessingEnabled();
     }
 
-    @UseCaseAdminUpdatesAutoCleanupConfiguration(@Step(number = 4, name = "Updates auto cleanup in days settings", description = "Updates amount of days until cleanup in database by using received event data"))
+    @UseCaseAdminUpdatesAutoCleanupConfiguration(@Step(number = 4, name = "Schedule domain receives auto cleanup event", description = "Received event in schedule domain about auto cleanup configuration change. Stores data, so available for next auto clean execution"))
     public void updateAutoCleanupInDays(long autoCleanupInDays) {
         SchedulerConfig config = getOrCreateConfig();
         config.autoCleanupInDays = autoCleanupInDays;

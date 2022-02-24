@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.sharedkernel.usecases.admin.config;
+package com.mercedesbenz.sechub.sharedkernel.usecases.autocleanup;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -16,12 +16,12 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @UseCaseDefinition(
-		id=UseCaseIdentifier.UC_AUTO_CLEANUP_EXECUTION,
+		id=UseCaseIdentifier.UC_SCHEDULE_AUTO_CLEANUP_EXECUTION,
 		group=UseCaseGroup.TECHNICAL,
 		apiName=APIConstants.NO_API_AVAILABLE,
-		title="Sechub domains execute there auto cleanups",
-		description="Every domain executes their auto cleanup. This is done periodically.")
-public @interface UseCaseAdministrationAutoCleanExecution {
+		title="Sechub schedule domain auto cleanup",
+        description="The schedule domain does execute auto cleanup. This is done periodically.")
+public @interface UseCaseScheduleAutoCleanExecution {
 
 	Step value();
 }
