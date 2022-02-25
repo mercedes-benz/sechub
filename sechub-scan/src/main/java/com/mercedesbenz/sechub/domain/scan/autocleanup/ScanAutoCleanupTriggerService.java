@@ -1,29 +1,24 @@
 package com.mercedesbenz.sechub.domain.scan.autocleanup;
 
+import static com.mercedesbenz.sechub.sharedkernel.autocleanup.AutoCleanupConstants.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 import com.mercedesbenz.sechub.sharedkernel.Step;
-import com.mercedesbenz.sechub.sharedkernel.usecases.autocleanup.UseCaseScanAutoCleanExecution;
+import com.mercedesbenz.sechub.sharedkernel.usecases.autocleanup.UseCaseAdministrationAutoCleanExecution;
 
 @Service
 public class ScanAutoCleanupTriggerService {
 
-    private static final int DEFAULT_INITIAL_DELAY_MILLIS = 5 * 1000; // 5 seconds delay
-    private static final int DEFAULT_FIXED_DELAY_MILLIS = 24 * 60 * 60 * 1000; // one day
-
     @Autowired
     ScanAutoCleanupService autoCleanupService;
 
-    // default 10 seconds delay and 5 seconds initial
-    @MustBeDocumented("Auto cleanup is triggered by a cron job operation - default is one day to delay after last execution. " + "The initial delay is "
-            + DEFAULT_INITIAL_DELAY_MILLIS + " milliseconds is defined. It can be configured different,so when you need to startup a cluster "
-            + "time shifted, simply change the initial delay values in your wanted way.")
-    @Scheduled(initialDelayString = "${sechub.config.trigger.autoclean.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS
-            + "}", fixedDelayString = "${sechub.config.trigger.autoclean.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
-    @UseCaseScanAutoCleanExecution(@Step(number = 1, name = "Scheduling", description = "Checks for parts to auto clean."))
+    @MustBeDocumented(TRIGGER_STEP_MUST_BE_DOCMENTED)
+    @Scheduled(initialDelayString = TRIGGER_INITIAL_DELAY_STRING, fixedDelayString = TRIGGER_FIXED_DELAY_STRING)
+    @UseCaseAdministrationAutoCleanExecution(@Step(number = TRIGGER_STEP_NUMBER, name = TRIGGER_STEP_NAME, description = TRIGGER_STEP_DESCRIPTION))
     public void triggerAutoCleanup() {
         autoCleanupService.cleanup();
     }

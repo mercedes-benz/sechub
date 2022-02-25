@@ -11,12 +11,17 @@ import com.mercedesbenz.sechub.domain.administration.config.AdministrationConfig
 import com.mercedesbenz.sechub.domain.administration.job.JobInformationRepository;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.TimeCalculationService;
+import com.mercedesbenz.sechub.sharedkernel.autocleanup.AutoCleanupResult;
+import com.mercedesbenz.sechub.sharedkernel.autocleanup.AutoCleanupResultInspector;
 import com.mercedesbenz.sechub.sharedkernel.usecases.autocleanup.UseCaseAdministrationAutoCleanExecution;
 
 @Service
 public class AdministrationAutoCleanupService {
 
     private static final Logger LOG = LoggerFactory.getLogger(AdministrationAutoCleanupService.class);
+
+    @Autowired
+    AutoCleanupResultInspector inspector;
 
     @Autowired
     TimeCalculationService timeCalculationService;
@@ -32,14 +37,23 @@ public class AdministrationAutoCleanupService {
         /* calculate */
         long days = configService.getAutoCleanupInDays();
         if (days == 0) {
-            LOG.debug("Cancel administration auto cleanup because disabled.");
+            LOG.trace("Cancel administration auto cleanup because disabled.");
             return;
         }
         LocalDateTime cleanTimeStamp = timeCalculationService.calculateNowMinusDays(days);
 
         /* delete */
-        LOG.info("Do auto cleanup JobInformation. Everything older than {} days will be removed, means {}", days, cleanTimeStamp);
-        jobInformationRepository.deleteJobInformationOlderThan(cleanTimeStamp);
+        int amount = jobInformationRepository.deleteJobInformationOlderThan(cleanTimeStamp);
+
+        /* @formatter:off */
+        inspector.inspect(AutoCleanupResult.builder().
+                    autoCleanup("job-information",getClass()).
+                    forDays(days).
+                    hasDeleted(amount).
+                    byTimeStamp(cleanTimeStamp).
+                    build()
+                    );
+        /* @formatter:on */
 
     }
 

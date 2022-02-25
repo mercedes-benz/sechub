@@ -9,11 +9,14 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.mercedesbenz.sechub.commons.model.JSONConverterException;
 
 public class TestJSONHelper {
 
@@ -96,10 +99,40 @@ public class TestJSONHelper {
 
     public <T> T createFromJSON(String json, Class<T> clazz) {
         try {
-            return TestJSONHelper.get().getMapper().readValue(json.getBytes(), clazz);
+            return getMapper().readValue(json.getBytes(), clazz);
         } catch (IOException e) {
             throw new IllegalStateException("Cannot convert given JSON to clazz:" + clazz, e);
         }
+    }
+
+    public <T> MappingIterator<T> createValuesFromJSON(String json, Class<T> clazz) {
+        try {
+            return getMapper().readerFor(clazz).readValues(json.getBytes());
+        } catch (IOException e) {
+            throw new IllegalStateException("Cannot convert given JSON to clazz:" + clazz, e);
+        }
+    }
+
+    public String createJSON(Object object, boolean prettyPrinted) throws JSONConverterException {
+        if (object == null) {
+            return "null";
+        }
+        try {
+            byte[] bytes;
+            if (false || prettyPrinted) {
+                bytes = mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(object);
+            } else {
+                bytes = mapper.writeValueAsBytes(object);
+
+            }
+            return new String(bytes);
+        } catch (JsonProcessingException e) {
+            throw new JSONConverterException("Was not able to convert " + object.getClass().getName() + " to JSON", e);
+        }
+    }
+
+    public String createJSON(Object object) {
+        return createJSON(object, false);
     }
 
 }

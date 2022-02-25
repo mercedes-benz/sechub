@@ -21,6 +21,6 @@ public interface ProjectScanLogRepository extends JpaRepository<ProjectScanLog, 
     @Transactional
     @Modifying
     @Query(ProjectScanLog.QUERY_DELETE_LOGS_OLDER_THAN)
-    void deleteLogsOlderThan(@Param("cleanTimeStamp") LocalDateTime cleanTimeStamp);
+    int deleteLogsOlderThan(@Param("cleanTimeStamp") LocalDateTime cleanTimeStamp);
 
 }

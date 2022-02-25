@@ -10,7 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-class CountableInDaysTimeunitTest {
+class CountableInDaysTimeUnitTest {
 
     @ParameterizedTest
     @ValueSource(strings = { "\"DAY\"", "\"day\"", "\"days\"", "\"DAYS\"" })
@@ -19,10 +19,10 @@ class CountableInDaysTimeunitTest {
         ObjectMapper objectMapper = new ObjectMapper();
 
         /* execute */
-        CountableInDaysTimeunit unit = objectMapper.readValue(json, CountableInDaysTimeunit.class);
+        CountableInDaysTimeUnit unit = objectMapper.readValue(json, CountableInDaysTimeUnit.class);
 
         /* test */
-        assertEquals(CountableInDaysTimeunit.DAY, unit);
+        assertEquals(CountableInDaysTimeUnit.DAY, unit);
     }
 
     @ParameterizedTest
@@ -32,10 +32,10 @@ class CountableInDaysTimeunitTest {
         ObjectMapper objectMapper = new ObjectMapper();
 
         /* execute */
-        CountableInDaysTimeunit unit = objectMapper.readValue(json, CountableInDaysTimeunit.class);
+        CountableInDaysTimeUnit unit = objectMapper.readValue(json, CountableInDaysTimeUnit.class);
 
         /* test */
-        assertEquals(CountableInDaysTimeunit.WEEK, unit);
+        assertEquals(CountableInDaysTimeUnit.WEEK, unit);
     }
 
     @ParameterizedTest
@@ -45,10 +45,10 @@ class CountableInDaysTimeunitTest {
         ObjectMapper objectMapper = new ObjectMapper();
 
         /* execute */
-        CountableInDaysTimeunit unit = objectMapper.readValue(json, CountableInDaysTimeunit.class);
+        CountableInDaysTimeUnit unit = objectMapper.readValue(json, CountableInDaysTimeUnit.class);
 
         /* test */
-        assertEquals(CountableInDaysTimeunit.MONTH, unit);
+        assertEquals(CountableInDaysTimeUnit.MONTH, unit);
     }
 
     @ParameterizedTest
@@ -58,18 +58,18 @@ class CountableInDaysTimeunitTest {
         ObjectMapper objectMapper = new ObjectMapper();
 
         /* execute */
-        CountableInDaysTimeunit unit = objectMapper.readValue(json, CountableInDaysTimeunit.class);
+        CountableInDaysTimeUnit unit = objectMapper.readValue(json, CountableInDaysTimeUnit.class);
 
         /* test */
-        assertEquals(CountableInDaysTimeunit.YEAR, unit);
+        assertEquals(CountableInDaysTimeUnit.YEAR, unit);
     }
 
     @Test
     void days_as_expected() {
-        assertEquals(1, CountableInDaysTimeunit.DAY.getMultiplicatorDays());
-        assertEquals(7, CountableInDaysTimeunit.WEEK.getMultiplicatorDays());
-        assertEquals(30, CountableInDaysTimeunit.MONTH.getMultiplicatorDays());
-        assertEquals(365, CountableInDaysTimeunit.YEAR.getMultiplicatorDays());
+        assertEquals(1, CountableInDaysTimeUnit.DAY.getMultiplicatorDays());
+        assertEquals(7, CountableInDaysTimeUnit.WEEK.getMultiplicatorDays());
+        assertEquals(30, CountableInDaysTimeUnit.MONTH.getMultiplicatorDays());
+        assertEquals(365, CountableInDaysTimeUnit.YEAR.getMultiplicatorDays());
     }
 
 }

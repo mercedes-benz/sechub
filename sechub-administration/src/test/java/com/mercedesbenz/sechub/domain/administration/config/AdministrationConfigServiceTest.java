@@ -13,7 +13,7 @@ import org.mockito.ArgumentCaptor;
 
 import com.mercedesbenz.sechub.domain.administration.autocleanup.AdministrationAutoCleanupConfig;
 import com.mercedesbenz.sechub.domain.administration.autocleanup.AdministrationAutoCleanupDaysCalculator;
-import com.mercedesbenz.sechub.sharedkernel.CountableInDaysTimeunit;
+import com.mercedesbenz.sechub.sharedkernel.CountableInDaysTimeUnit;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
 import com.mercedesbenz.sechub.sharedkernel.messaging.AdministrationConfigMessage;
@@ -141,7 +141,7 @@ class AdministrationConfigServiceTest {
         emulateMissingAdministrationConfigCreated();
         AdministrationAutoCleanupConfig newAutoCleanConfiguration = new AdministrationAutoCleanupConfig();
         newAutoCleanConfiguration.getCleanupTime().setAmount(1);
-        newAutoCleanConfiguration.getCleanupTime().setUnit(CountableInDaysTimeunit.MONTH);
+        newAutoCleanConfiguration.getCleanupTime().setUnit(CountableInDaysTimeUnit.MONTH);
 
         /* execute */
         serviceToTest.updateAutoCleanupConfiguration(newAutoCleanConfiguration);

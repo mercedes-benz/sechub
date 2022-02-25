@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mercedesbenz.sechub.domain.scan.access.ScanAccessCountService;
 import com.mercedesbenz.sechub.domain.scan.config.NamePatternIdprovider;
+import com.mercedesbenz.sechub.domain.scan.config.ScanConfigService;
 import com.mercedesbenz.sechub.domain.scan.config.ScanMapping;
 import com.mercedesbenz.sechub.domain.scan.config.ScanMappingConfigurationService;
 import com.mercedesbenz.sechub.domain.scan.config.ScanMappingRepository;
@@ -79,6 +80,15 @@ public class IntegrationTestScanRestController {
 
     @Autowired
     ProductExecutionProfileRepository profileRepository;
+
+    @Autowired
+    private ScanConfigService scanConfigService;
+
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/autocleanup/inspection/scan/days", method = RequestMethod.GET, produces = {
+            MediaType.APPLICATION_JSON_VALUE })
+    public long fetchScheduleAutoCleanupConfiguredDays() {
+        return scanConfigService.getAutoCleanupInDays();
+    }
 
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/config/execution/profile/{profileId}/exists", method = RequestMethod.GET, produces = {
             MediaType.TEXT_PLAIN_VALUE })

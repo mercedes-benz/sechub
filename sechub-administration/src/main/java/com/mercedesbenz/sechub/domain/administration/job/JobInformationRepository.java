@@ -24,5 +24,5 @@ public interface JobInformationRepository extends JpaRepository<JobInformation, 
     @Transactional
     @Modifying
     @Query(JobInformation.QUERY_DELETE_JOBINFORMATION_OLDER_THAN)
-    public void deleteJobInformationOlderThan(@Param("cleanTimeStamp") LocalDateTime cleanTimeStamp);
+    public int deleteJobInformationOlderThan(@Param("cleanTimeStamp") LocalDateTime cleanTimeStamp);
 }

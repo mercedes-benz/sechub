@@ -21,6 +21,6 @@ public interface ProductResultRepository extends JpaRepository<ProductResult, UU
     @Transactional
     @Modifying
     @Query(ProductResult.QUERY_DELETE_RESULT_OLDER_THAN)
-    void deleteResultsOlderThan(@Param("cleanTimeStamp") LocalDateTime cleanTimeStamp);
+    int deleteResultsOlderThan(@Param("cleanTimeStamp") LocalDateTime cleanTimeStamp);
 
 }

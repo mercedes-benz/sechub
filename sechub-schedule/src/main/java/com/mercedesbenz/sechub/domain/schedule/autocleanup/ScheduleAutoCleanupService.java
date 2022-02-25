@@ -11,6 +11,8 @@ import com.mercedesbenz.sechub.domain.schedule.config.SchedulerConfigService;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.TimeCalculationService;
+import com.mercedesbenz.sechub.sharedkernel.autocleanup.AutoCleanupResult;
+import com.mercedesbenz.sechub.sharedkernel.autocleanup.AutoCleanupResultInspector;
 import com.mercedesbenz.sechub.sharedkernel.usecases.autocleanup.UseCaseScheduleAutoCleanExecution;
 
 @Service
@@ -27,19 +29,30 @@ public class ScheduleAutoCleanupService {
     @Autowired
     SecHubJobRepository jobRepository;
 
+    @Autowired
+    AutoCleanupResultInspector inspector;
+
     @UseCaseScheduleAutoCleanExecution(@Step(number = 2, name = "Delete old data", description = "deletes old job information"))
     public void cleanup() {
         /* calculate */
         long days = configService.getAutoCleanupInDays();
         if (days == 0) {
-            LOG.debug("Cancel schedule auto cleanup because disabled.");
+            LOG.trace("Cancel schedule auto cleanup because disabled.");
             return;
         }
         LocalDateTime cleanTimeStamp = timeCalculationService.calculateNowMinusDays(days);
 
         /* delete */
-        LOG.info("Do auto cleanup ScheduleSecHubJob. Everything older than {} days will be removed, means {}", days, cleanTimeStamp);
-        jobRepository.deleteJobsOlderThan(cleanTimeStamp);
+        int amount = jobRepository.deleteJobsOlderThan(cleanTimeStamp);
+        /* @formatter:off */
+        inspector.inspect(AutoCleanupResult.builder().
+                    autoCleanup("sechub-jobs",getClass()).
+                    forDays(days).
+                    hasDeleted(amount).
+                    byTimeStamp(cleanTimeStamp).
+                    build()
+                    );
+        /* @formatter:on */
 
     }
 

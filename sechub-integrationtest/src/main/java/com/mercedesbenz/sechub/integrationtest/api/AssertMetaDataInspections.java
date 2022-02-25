@@ -23,15 +23,15 @@ import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspector;
  * @author Albert Tregnaghi
  *
  */
-public class AssertInspections {
+public class AssertMetaDataInspections {
 
     private List<Map<String, Object>> inspections;
 
-    AssertInspections() {
+    AssertMetaDataInspections() {
         inspections = TestAPI.fetchMetaDataInspections();
     }
 
-    public AssertInspections hasAmountOfInspections(int count) {
+    public AssertMetaDataInspections hasAmountOfInspections(int count) {
         assertEquals(count, inspections.size());
         return this;
     }
@@ -63,8 +63,8 @@ public class AssertInspections {
             return this;
         }
 
-        public AssertInspections and() {
-            return AssertInspections.this;
+        public AssertMetaDataInspections and() {
+            return AssertMetaDataInspections.this;
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.mercedesbenz.sechub.domain.administration.autocleanup;
 
 import com.mercedesbenz.sechub.commons.model.JSONable;
-import com.mercedesbenz.sechub.sharedkernel.CountableInDaysTimeunit;
+import com.mercedesbenz.sechub.sharedkernel.CountableInDaysTimeUnit;
 
 public class AdministrationAutoCleanupConfig implements JSONable<AdministrationAutoCleanupConfig> {
 
@@ -15,7 +15,7 @@ public class AdministrationAutoCleanupConfig implements JSONable<AdministrationA
 
     public class CleanupTime {
 
-        CountableInDaysTimeunit unit = CountableInDaysTimeunit.MONTH;
+        CountableInDaysTimeUnit unit = CountableInDaysTimeUnit.MONTH;
 
         int amount;
 
@@ -23,11 +23,11 @@ public class AdministrationAutoCleanupConfig implements JSONable<AdministrationA
             this.amount = amount;
         }
 
-        public void setUnit(CountableInDaysTimeunit unit) {
+        public void setUnit(CountableInDaysTimeUnit unit) {
             this.unit = unit;
         }
 
-        public CountableInDaysTimeunit getUnit() {
+        public CountableInDaysTimeUnit getUnit() {
             return unit;
         }
 

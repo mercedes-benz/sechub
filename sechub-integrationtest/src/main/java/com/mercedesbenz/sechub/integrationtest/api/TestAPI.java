@@ -30,6 +30,7 @@ import org.springframework.web.client.RestClientException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -37,7 +38,10 @@ import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.integrationtest.internal.DefaultTestExecutionProfile;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultProfiles;
+import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData;
+import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData.TestCleanupTimeUnit;
 import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
+import com.mercedesbenz.sechub.integrationtest.internal.TestJsonDeleteCount;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper;
 import com.mercedesbenz.sechub.sharedkernel.logging.SecurityLogData;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
@@ -143,10 +147,19 @@ public class TestAPI {
     /**
      * Creates an assert object to inspect meta data
      *
-     * @return
+     * @return assert object
      */
-    public static AssertInspections assertInspections() {
-        return new AssertInspections();
+    public static AssertMetaDataInspections assertMetaDataInspections() {
+        return new AssertMetaDataInspections();
+    }
+
+    /**
+     * Creates an assert object to inspect auto cleanup data
+     *
+     * @return assert object
+     */
+    public static AssertAutoCleanupInspections assertAutoCleanupInspections() {
+        return AssertAutoCleanupInspections.assertAutoCleanupInspections();
     }
 
     public static void logInfoOnServer(String text) {
@@ -995,6 +1008,95 @@ public class TestAPI {
      */
     public static void waitProjectDoesNotExist(TestProject project) {
         assertProject(project).doesNotExist(9);
+    }
+
+    private static void waitUntilScheduleAutoCleanupInDays(long days) {
+        String url = getURLBuilder().buildIntegrationTestFetchScheduleAutoCleanupDaysUrl();
+        waitUntilAutoCleanupInDays(days, url);
+    }
+
+    private static void waitUntilScanAutoCleanupInDays(long days) {
+        String url = getURLBuilder().buildIntegrationTestFetchScanAutoCleanupDaysUrl();
+        waitUntilAutoCleanupInDays(days, url);
+    }
+
+    private static void waitUntilAdministrationAutoCleanupInDays(long days) {
+        String url = getURLBuilder().buildIntegrationTestFetchScanAutoCleanupDaysUrl();
+        waitUntilAutoCleanupInDays(days, url);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void waitUntilAutoCleanupInDays(long days, String url) {
+        executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, 2, 200) {
+            @Override
+            public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
+                long foundDays = getSuperAdminRestHelper().getLongFromURL(url);
+                return foundDays == days;
+            }
+        });
+    }
+
+    /**
+     * Will ensure complete auto cleanup inspector is reset and that auto cleanup is
+     * set to "wantedFormerDays days" in configuration and also in every domain auto
+     * clean day value.
+     */
+    public static void resetAutoCleanupDays(int wantedFormerDays) {
+        ensureAutoCleanupSetToDays(wantedFormerDays);
+        resetIntegrationTestAutoCleanupInspector();
+    }
+
+    private static void resetIntegrationTestAutoCleanupInspector() {
+        String url = getURLBuilder().buildIntegrationTestResetAutoCleanupInspectionUrl();
+        getSuperAdminRestHelper().post(url);
+    }
+
+    /**
+     * Will ensure auto cleanup configuration is set to given days and that every
+     * domain is synched.
+     */
+    public static void ensureAutoCleanupSetToDays(int days) {
+        TestAutoCleanupData wanted = new TestAutoCleanupData(days, TestCleanupTimeUnit.DAY);
+        TestAutoCleanupData autoCleanupConfig = as(SUPER_ADMIN).fetchAutoCleanupConfiguration();
+
+        if (!wanted.equals(autoCleanupConfig)) {
+            /* turn off by setting to 0 days */
+            TestAutoCleanupData data = new TestAutoCleanupData(days, TestCleanupTimeUnit.DAY);
+
+            as(SUPER_ADMIN).updateAutoCleanupConfiguration(data);
+
+            waitUntilAutoCleanupConfigurationChangedTo(data);
+        }
+        waitUntilEveryDomainHasAutoCleanupSynchedToDays(days);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void waitUntilAutoCleanupConfigurationChangedTo(TestAutoCleanupData data) {
+        executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, 2, 200) {
+            @Override
+            public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
+                TestAutoCleanupData autoCleanupConfig2 = as(SUPER_ADMIN).fetchAutoCleanupConfiguration();
+                return data.equals(autoCleanupConfig2);
+            }
+        });
+    }
+
+    public static void waitUntilEveryDomainHasAutoCleanupSynchedToDays(long days) {
+        waitUntilScheduleAutoCleanupInDays(days);
+        waitUntilScanAutoCleanupInDays(days);
+        waitUntilAdministrationAutoCleanupInDays(days);
+    }
+
+    public static List<TestJsonDeleteCount> fetchAutoCleanupInspectionDeleteCounts() {
+        String url = getURLBuilder().buildIntegrationTestFetchAutoCleanupInspectionDeleteCountsUrl();
+        String json = getSuperAdminRestHelper().getJSON(url);
+        MappingIterator<TestJsonDeleteCount> result = TestJSONHelper.get().createValuesFromJSON(json, TestJsonDeleteCount.class);
+        try {
+            return result.readAll();
+        } catch (IOException e) {
+            throw new IllegalStateException("Was not able to inspect test data", e);
+        }
+
     }
 
 }

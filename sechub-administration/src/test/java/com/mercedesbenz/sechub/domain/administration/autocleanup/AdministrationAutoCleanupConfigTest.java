@@ -7,7 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import com.mercedesbenz.sechub.domain.administration.autocleanup.AdministrationAutoCleanupConfig.CleanupTime;
-import com.mercedesbenz.sechub.sharedkernel.CountableInDaysTimeunit;
+import com.mercedesbenz.sechub.sharedkernel.CountableInDaysTimeUnit;
 
 class AdministrationAutoCleanupConfigTest {
 
@@ -18,7 +18,7 @@ class AdministrationAutoCleanupConfigTest {
         AdministrationAutoCleanupConfig config = new AdministrationAutoCleanupConfig();
         CleanupTime cleanupTime = config.getCleanupTime();
         cleanupTime.setAmount(amount);
-        cleanupTime.setUnit(CountableInDaysTimeunit.valueOf(timeUnit));
+        cleanupTime.setUnit(CountableInDaysTimeUnit.valueOf(timeUnit));
 
         /* execute 1 */
         String json = config.toJSON();
@@ -40,7 +40,7 @@ class AdministrationAutoCleanupConfigTest {
 
         /* test */
         CleanupTime cleanupTime = config.getCleanupTime();
-        assertEquals(CountableInDaysTimeunit.MONTH, cleanupTime.getUnit());
+        assertEquals(CountableInDaysTimeUnit.MONTH, cleanupTime.getUnit());
         assertEquals(0, cleanupTime.getAmount());
     }
 }

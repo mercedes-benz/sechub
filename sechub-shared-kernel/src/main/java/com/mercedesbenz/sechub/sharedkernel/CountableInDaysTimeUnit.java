@@ -9,24 +9,24 @@ import com.fasterxml.jackson.annotation.JsonAlias;
  * @author Albert Tregnaghi
  *
  */
-public enum CountableInDaysTimeunit {
-    @JsonAlias({ "day", "days", "DAY", "DAYS" })
+public enum CountableInDaysTimeUnit {
+    @JsonAlias({ "day", "days", "DAYS" })
     DAY(1),
 
-    @JsonAlias({ "week", "weeks", "WEEK", "WEEKS" })
+    @JsonAlias({ "week", "weeks", "WEEKS" })
     WEEK(7),
 
-    @JsonAlias({ "month", "months", "MONTH", "MONTHS" })
+    @JsonAlias({ "month", "months", "MONTHS" })
     MONTH(30),
 
-    @JsonAlias({ "year", "years", "YEAR", "YEARS" })
+    @JsonAlias({ "year", "years", "YEARS" })
     YEAR(365),
 
     ;
 
     private int multiplicatorDays;
 
-    CountableInDaysTimeunit(int multiplicatorDays) {
+    CountableInDaysTimeUnit(int multiplicatorDays) {
         this.multiplicatorDays = multiplicatorDays;
     }
 

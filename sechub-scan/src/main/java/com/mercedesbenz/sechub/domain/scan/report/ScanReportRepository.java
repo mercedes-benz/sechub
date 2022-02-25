@@ -27,5 +27,5 @@ public interface ScanReportRepository extends JpaRepository<ScanReport, UUID> {
     @Transactional
     @Modifying
     @Query(ScanReport.QUERY_DELETE_REPORTS_OLDER_THAN)
-    public void deleteReportsOlderThan(@Param("cleanTimeStamp") LocalDateTime cleanTimeStamp);
+    int deleteReportsOlderThan(@Param("cleanTimeStamp") LocalDateTime cleanTimeStamp);
 }

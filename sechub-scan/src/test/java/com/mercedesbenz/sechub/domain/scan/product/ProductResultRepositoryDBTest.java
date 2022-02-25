@@ -41,6 +41,20 @@ public class ProductResultRepositoryDBTest {
     }
 
     @Test
+    public void test_data_4_jobs_delete_1_day_still_has_deleted_2() throws Exception {
+        /* prepare */
+        DeleteProductResultTestData testData = new DeleteProductResultTestData();
+        testData.createAndCheckAvailable();
+
+        /* execute */
+        int deleted = repositoryToTest.deleteResultsOlderThan(testData.before_1_day);
+        repositoryToTest.flush();
+
+        /* test */
+        assertEquals(2, deleted);
+    }
+
+    @Test
     public void test_data_4_jobs_delete_1_day_still_has_2() throws Exception {
         /* prepare */
         DeleteProductResultTestData testData = new DeleteProductResultTestData();
@@ -71,6 +85,20 @@ public class ProductResultRepositoryDBTest {
         List<ProductResult> allJobsNow = repositoryToTest.findAll();
         assertTrue(allJobsNow.contains(testData.job4_now_created));
         assertEquals(1, allJobsNow.size());
+    }
+
+    @Test
+    public void test_data_4_jobs_delete_1_day_before_plus1_second_has_3_deleted() throws Exception {
+        /* prepare */
+        DeleteProductResultTestData testData = new DeleteProductResultTestData();
+        testData.createAndCheckAvailable();
+
+        /* execute */
+        int deleted = repositoryToTest.deleteResultsOlderThan(testData.before_1_day.plusSeconds(1));
+        repositoryToTest.flush();
+
+        /* test */
+        assertEquals(3, deleted);
     }
 
     @Test

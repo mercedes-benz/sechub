@@ -66,6 +66,20 @@ public class JobInformationRepositoryDBTest {
     }
 
     @Test
+    public void test_data_4_jobs_delete_1_day_before_plus1_second_counts_3_deleted_entries() throws Exception {
+        /* prepare */
+        DeleteJobTestData testData = new DeleteJobTestData();
+        testData.createAndCheckAvailable();
+
+        /* execute */
+        int deleted = jobRepository.deleteJobInformationOlderThan(testData.before_1_day.plusSeconds(1));
+        jobRepository.flush();
+
+        /* test */
+        assertEquals(3, deleted);
+    }
+
+    @Test
     public void test_data_4_jobs_oldest_90_days_delete_90_days_still_has_4() throws Exception {
         /* prepare */
         DeleteJobTestData testData = new DeleteJobTestData();
@@ -82,6 +96,20 @@ public class JobInformationRepositoryDBTest {
         assertTrue(allJobsNow.contains(testData.job3_1_day_before_created));
         assertTrue(allJobsNow.contains(testData.job4_now_created));
         assertEquals(4, allJobsNow.size());
+    }
+
+    @Test
+    public void test_data_4_jobs_oldest_90_days_delete_90_days_counts_0_deleted_entries() throws Exception {
+        /* prepare */
+        DeleteJobTestData testData = new DeleteJobTestData();
+        testData.createAndCheckAvailable();
+
+        /* execute */
+        int deleted = jobRepository.deleteJobInformationOlderThan(testData.before_90_days);
+        jobRepository.flush();
+
+        /* test */
+        assertEquals(0, deleted);
     }
 
     @Test

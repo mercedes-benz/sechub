@@ -704,4 +704,24 @@ public class TestURLBuilder {
         return buildUrl("");
     }
 
+    public String buildIntegrationTestFetchScheduleAutoCleanupDaysUrl() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/autocleanup/inspection/schedule/days");
+    }
+
+    public String buildIntegrationTestFetchScanAutoCleanupDaysUrl() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/autocleanup/inspection/scan/days");
+    }
+
+    public String buildIntegrationTestFetchAdministrationAutoCleanupDaysUrl() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/autocleanup/inspection/administration/days");
+    }
+
+    public String buildIntegrationTestResetAutoCleanupInspectionUrl() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/autocleanup/inspection/reset");
+    }
+
+    public String buildIntegrationTestFetchAutoCleanupInspectionDeleteCountsUrl() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/autocleanup/inspection/deleteCounts");
+    }
+
 }

@@ -36,6 +36,7 @@ import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultEx
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSupport;
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
 import com.mercedesbenz.sechub.integrationtest.internal.SimpleTestStringList;
+import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData;
 import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
@@ -1065,6 +1066,19 @@ public class AsUser {
     public void changeEmailAddress(String userId, String newEmailAddress) {
         String url = getUrlBuilder().buildAdminChangesUserEmailAddress(userId, newEmailAddress);
         getRestHelper().put(url);
+    }
+
+    public void updateAutoCleanupConfiguration(TestAutoCleanupData data) {
+        String url = getUrlBuilder().buildAdminUpdatesAutoCleanupConfigurationUrl();
+        String json = TestJSONHelper.get().createJSON(data);
+        getRestHelper().putJSON(url, json);
+    }
+
+    public TestAutoCleanupData fetchAutoCleanupConfiguration() {
+        String url = getUrlBuilder().buildAdminFetchesAutoCleanupConfigurationUrl();
+
+        String json = getRestHelper().getJSON(url);
+        return TestJSONHelper.get().createFromJSON(json, TestAutoCleanupData.class);
     }
 
 }

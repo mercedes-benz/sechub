@@ -96,6 +96,20 @@ public class SecHubJobRepositoryDBTest {
     }
 
     @Test
+    public void test_data_4_jobs_oldest_90_days_delete_90_days_deletes_0() throws Exception {
+        /* prepare */
+        DeleteJobTestData testData = new DeleteJobTestData();
+        testData.createAndCheckAvailable();
+
+        /* execute */
+        int deleted = jobRepository.deleteJobsOlderThan(testData.before_90_days);
+        jobRepository.flush();
+
+        /* test */
+        assertEquals(0, deleted);
+    }
+
+    @Test
     public void test_data_4_jobs_oldest_90_days_delete_89_days() throws Exception {
         /* prepare */
         DeleteJobTestData testData = new DeleteJobTestData();
@@ -129,6 +143,20 @@ public class SecHubJobRepositoryDBTest {
         assertTrue(allJobsNow.contains(testData.job3_1_day_before_created));
         assertTrue(allJobsNow.contains(testData.job4_now_created));
         assertEquals(3, allJobsNow.size());
+    }
+
+    @Test
+    public void test_data_4_jobs_oldest_90_days_deleted_1() throws Exception {
+        /* prepare */
+        DeleteJobTestData testData = new DeleteJobTestData();
+        testData.createAndCheckAvailable();
+
+        /* execute */
+        int deleted = jobRepository.deleteJobsOlderThan(testData.before_89_days.minusSeconds(1));
+        jobRepository.flush();
+
+        /* test */
+        assertEquals(1, deleted);
     }
 
     @Test

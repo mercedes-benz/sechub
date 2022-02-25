@@ -67,6 +67,20 @@ public class ScanReportRepositoryDBTest {
     }
 
     @Test
+    public void test_data_4_jobs_delete_1_day_before_plus1_second_deletes_3() throws Exception {
+        /* prepare */
+        DeleteScanReportTestData testData = new DeleteScanReportTestData();
+        testData.createAndCheckAvailable();
+
+        /* execute */
+        int deleted = repositoryToTest.deleteReportsOlderThan(testData.before_1_day.plusSeconds(1));
+        repositoryToTest.flush();
+
+        /* test */
+        assertEquals(3, deleted);
+    }
+
+    @Test
     public void test_data_4_jobs_oldest_90_days_delete_90_days_still_has_4() throws Exception {
         /* prepare */
         DeleteScanReportTestData testData = new DeleteScanReportTestData();
@@ -83,6 +97,20 @@ public class ScanReportRepositoryDBTest {
         assertTrue(allJobsNow.contains(testData.job3_1_day_before_created));
         assertTrue(allJobsNow.contains(testData.job4_now_created));
         assertEquals(4, allJobsNow.size());
+    }
+
+    @Test
+    public void test_data_4_jobs_oldest_90_days_delete_90_days_deletes_0() throws Exception {
+        /* prepare */
+        DeleteScanReportTestData testData = new DeleteScanReportTestData();
+        testData.createAndCheckAvailable();
+
+        /* execute */
+        int deleted = repositoryToTest.deleteReportsOlderThan(testData.before_90_days);
+        repositoryToTest.flush();
+
+        /* test */
+        assertEquals(0, deleted);
     }
 
     @Test
