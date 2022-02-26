@@ -1069,8 +1069,12 @@ public class AsUser {
     }
 
     public void updateAutoCleanupConfiguration(TestAutoCleanupData data) {
-        String url = getUrlBuilder().buildAdminUpdatesAutoCleanupConfigurationUrl();
         String json = TestJSONHelper.get().createJSON(data);
+        updateAutoCleanupConfiguration(json);
+    }
+
+    public void updateAutoCleanupConfiguration(String json) {
+        String url = getUrlBuilder().buildAdminUpdatesAutoCleanupConfigurationUrl();
         getRestHelper().putJSON(url, json);
     }
 
