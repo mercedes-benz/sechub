@@ -9,6 +9,7 @@
 dependencies {
     implementation library.slf4j
     implementation project(':sechub-storage-core')
+    
 	testImplementation library.mockito_inline
 	testImplementation project(':sechub-testframework')
 }

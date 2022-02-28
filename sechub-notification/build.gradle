@@ -7,10 +7,10 @@
  */
 dependencies {
 
-    compile project(':sechub-shared-kernel')
-    compile library.springboot_starter_mail
-    compile library.apache_commons_lang3
+    implementation project(':sechub-shared-kernel')
+    implementation library.springboot_starter_mail
+    implementation library.apache_commons_lang3
     
-    testCompile project(':sechub-testframework')
+    testImplementation project(':sechub-testframework')
 
 }

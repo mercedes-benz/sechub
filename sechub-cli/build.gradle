@@ -18,6 +18,7 @@ task genGo(type: Exec) {
         commandLine "${projectDir}/gen_go.sh"
     }
 }
+apply plugin: 'base' // necessary to have assenble parts working without maven-publish
 
 assemble.dependsOn(tasks.genGo)
 tasks.eclipse.dependsOn(tasks.genGo)
@@ -75,11 +76,11 @@ task linterGo(type:Exec) {
 }
 
 task assembleArtifact(type: Zip, group: 'client') {
-    archiveName "sechub-client-${project.version}.zip"
-    destinationDir file("$buildDir/zip/")
+    archiveFileName= "sechub-client-${project.version}.zip"
+    destinationDirectory=file("$buildDir/zip/")
     from "${projectDir}/build/go/"
     from "${rootProject.projectDir}/sechub-doc/build/asciidoc/sechub-client.pdf" // we add the documentation into zip
-    description "Assemble archive $archiveName into ${relativePath(destinationDir)}"
+    description "Assemble archive $archiveName into ${relativePath(destinationDirectory)}"
 }
 
 version =   VersionData.getClientVersion()

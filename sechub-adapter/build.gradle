@@ -6,8 +6,9 @@
  * ============================================================================
  */
 dependencies {
-    compile library.apache_httpcomponents_core
-    compile library.apache_httpcomponents_client
-    compile project(':sechub-commons-model')
+    api project(':sechub-commons-model')
+
+    implementation library.apache_httpcomponents_core
+    implementation library.apache_httpcomponents_client
 }
 

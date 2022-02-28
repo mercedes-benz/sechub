@@ -10,11 +10,45 @@ apply plugin: 'org.asciidoctor.jvm.convert'
 apply plugin: 'org.asciidoctor.jvm.pdf'
 
 dependencies {
-    implementation project(':sechub-server') // we want to expect server and all dependencies for documentation
-    implementation project(':sechub-pds') // we want to expect pds and all dependencies for documentation
+    def wanted = []
+    def unwanted = [
+        'sechub-cli', /* go only, no library dependency here*/
+        'sechub-doc',/* itself ... */
+        'sechub-developertools',/* only tests or tools */
+        'sechub-other',/* not java */
+        'sechub-pds-solutions', /* only pds scripts*/
+        
+        ]
+    /* fetch all sub projects, except unwanted and all only used for testing */
+    for (Project inspectedProject: rootProject.allprojects){
+        if (rootProject.equals(inspectedProject)){
+            // root project is always not wanted
+            continue
+        }
+        def projectName = inspectedProject.name
+        if (projectName.endsWith('test')){
+            // test projects are always not wanted 
+            continue
+        }
+        if (projectName.endsWith('testframework')){
+            // testframework projects are always not wanted 
+            continue
+        }
+        if (unwanted.contains(projectName)){
+            // special unwanted - so inore 
+            continue
+        }
+        wanted << projectName
+        //println ">>$projectName"
+    }
+    /* all projects are added as implementation, so can be inspected by Reflections */
+    for (String wantedProjectName: wanted){
+        implementation project(":${wantedProjectName}") 
+    }
     implementation library.apache_commons_io
+    
     testImplementation library.epages_restdoc_api_spec_mockmvc
-    testImplementation  project(':sechub-commons-model-testframework')
+    testImplementation project(':sechub-commons-model-testframework')
 
     /* next parts are necessary for rest doc generation in conjunction
        with reflection annoation scanning done wiht @UsecaseRestDoc
@@ -152,7 +186,8 @@ asciidoctorj {
 
 task convertSecHubHTMLPages(type: Copy){
 
-     /* Albert: Why those replace pattern stuff ?
+     /* Why those replace pattern stuff ?
+      * ----------------------------------
       * Because of PDF problems with rendered images, we were forced to use absolute image pathes so
       * PDF documented has got content inside (see build.gradle in sechub-doc for info)
       *

@@ -22,10 +22,12 @@ ext {
        
         /* autark JUnit parts, with same versions like current used spring boot version */
         // https://mvnrepository.com/artifact/junit/junit
-        junit: "junit:junit:4.13.1",
+        junit4: "junit:junit:4.13.1",
         junit5_impl: 'org.junit.jupiter:junit-jupiter-api:${libraryVersion.junit5Version}',
         junit5_runtime: 'org.junit.jupiter:junit-jupiter-engine:${libraryVersion.junit5Version}',
         junit5_params: 'org.junit.jupiter:junit-jupiter-params:${libraryVersion.junit5Version}',
+        
+        amazonaws_sdk: 'com.amazonaws:aws-java-sdk-s3:1.12.30',
         
 //      Adopting existing Junit4 to Junit5 tests: 
 //      currently we keep our exting Junit4 tests and do NOT transform them. 

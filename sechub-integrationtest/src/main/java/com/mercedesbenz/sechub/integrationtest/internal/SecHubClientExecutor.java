@@ -18,9 +18,8 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import wiremock.com.google.common.io.Files;
-
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.integrationtest.TextFileWriter;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TestUser;
 import com.mercedesbenz.sechub.integrationtest.api.WithSecHubClient.ApiTokenStrategy;
@@ -373,7 +372,8 @@ public class SecHubClientExecutor {
                 File testFile1 = new File(projectResourceFoldder, "TestMeIfYouCan.java");
                 if (!testFile1.exists()) {
                     try {
-                        Files.write("class TestMeifYouCan {}", testFile1, Charset.forName("UTF-8"));
+                        TextFileWriter writer = new TextFileWriter();
+                        writer.save("class TestMeifYouCan {}", testFile1, Charset.forName("UTF-8"));
                     } catch (IOException e) {
                         throw new IllegalStateException("Cannot create test output!", e);
                     }

@@ -12,7 +12,7 @@ dependencies {
 	implementation library.jackson_jr_all
 	implementation library.google_re2j
 	
-	testImplementation library.junit
+	testImplementation library.junit4
 	testImplementation library.mockito
 	testImplementation library.mockito_inline
     testImplementation library.hamcrest
@@ -21,14 +21,14 @@ dependencies {
 task buildAnalyzerCLI(type: Jar) {
     group 'sechub'
     description 'Builds the SecHub Analyzer CLI tool.'
-    baseName = 'analyzer'
+    archiveBaseName = 'analyzer'
     
 	manifest {
         attributes 'Main-Class': 'com.mercedesbenz.sechub.analyzer.cli.SecHubAnalyzerApplication'
     }
 
     from { 
-    	configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } 
+    	configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } 
     }
 
     with jar
