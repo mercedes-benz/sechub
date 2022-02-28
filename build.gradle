@@ -19,16 +19,19 @@ buildscript{
 		classpath gradleApi()
 		classpath "org.ajoberstar.grgit:grgit-gradle:4.0.1" // necessary for version calculation
 		classpath "com.epages:restdocs-api-spec-gradle-plugin:${libraryVersion.restDocsApiSpec}"
-
+        classpath "org.owasp:dependency-check-gradle:6.5.3"
 	}
 }
+
 plugins {
     id 'org.asciidoctor.jvm.convert' version '3.3.2'
     id 'org.asciidoctor.jvm.pdf' version '3.3.2'
     id 'org.openapi.generator' version '5.2.0'
     id 'org.springframework.boot' version '2.6.4' apply false
     id 'com.diffplug.spotless' version '6.2.1'
+    id 'org.owasp.dependencycheck' version '6.5.3'
 }
+
 /* check buildsystem */
 def githubActor = System.getenv('GITHUB_ACTOR')
 
