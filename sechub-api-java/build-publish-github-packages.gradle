@@ -4,56 +4,55 @@
  *   is possible.
  *  ------------------------------------------------------------------------
  */
-apply plugin: 'maven'
 
-    if (! apiPublishNecessary ){
-        println("Api publish not necessary");
-        return;
-    }
+if (! apiPublishNecessary ){
+    println("Api publish not necessary");
+    return;
+}
 
-    /* ensure we are at GITHUB actions when we want to publish the libraries */
-    if (! buildDoneByGitHubActions ){
-        println("$project.name publish will be ignored - only provided by github actions")
-        return;
-    }
-    
-    apply plugin: 'maven-publish'
-    
-    publishing {
+/* ensure we are at GITHUB actions when we want to publish the libraries */
+if (! buildDoneByGitHubActions ){
+    println("$project.name publish will be ignored - only provided by github actions")
+    return;
+}
 
-      repositories {
-        maven {
-          name = "GitHubPackages"
-          
-          url = "https://maven.pkg.github.com/mercedes-benz/sechub"
-          credentials {
-            username = System.getenv("GITHUB_ACTOR")
-            password = System.getenv("GITHUB_TOKEN")
-          }
-        }
-      }
+apply plugin: 'maven-publish'
+
+publishing {
+
+  repositories {
+    maven {
+      name = "GitHubPackages"
       
-      publications {
-           mavenJava(MavenPublication) {
+      url = "https://maven.pkg.github.com/mercedes-benz/sechub"
+      credentials {
+        username = System.getenv("GITHUB_ACTOR")
+        password = System.getenv("GITHUB_TOKEN")
+      }
+    }
+  }
+  
+  publications {
+       mavenJava(MavenPublication) {
 
-               from components.java
-               
-               pom {
-                   name = "${project.name}:${project.version}"
-                   description = "This artifact is the generated java API for SecHub-Server ${project.version}"
-               
-                   scm {
-                       url = 'https://github.com/mercedes-benz/sechub'
-                   }
-               
-                    licenses {
-                       license {
-                           name = 'MIT License'
-                           url = 'https://github.com/mercedes-benz/sechub/blob/master/LICENSE'
-                       }
-                    }
+           from components.java
+           
+           pom {
+               name = "${project.name}:${project.version}"
+               description = "This artifact is the generated java API for SecHub-Server ${project.version}"
+           
+               scm {
+                   url = 'https://github.com/mercedes-benz/sechub'
                }
+           
+                licenses {
+                   license {
+                       name = 'MIT License'
+                       url = 'https://github.com/mercedes-benz/sechub/blob/master/LICENSE'
+                   }
+                }
            }
-      }
-      
-    }
+       }
+  }
+  
+}
