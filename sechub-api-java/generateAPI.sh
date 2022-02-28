@@ -22,6 +22,8 @@ chmod +x "$genFolder/gradlew"
 "$genFolder/gradlew" --project-dir "$genFolder" build
 
 
-if [ "$publishNecessary" == "true" ]; then
-    "$genFolder/gradlew" --project-dir "$genFolder" publish
-fi
+echo "Disabled push to Github packages because it alawys fails."
+
+# if [ "$publishNecessary" == "true" ]; then
+#     "$genFolder/gradlew" --project-dir "$genFolder" publish
+# fi
