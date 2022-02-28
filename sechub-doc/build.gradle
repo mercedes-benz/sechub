@@ -261,7 +261,16 @@ task generateOpenapi() {
     	// - https://github.com/spring-projects/spring-restdocs/issues/505
     	// - https://github.com/ePages-de/restdocs-api-spec/issues/147
     	// 
-    	// to solve this issue, this task takes the OpenAPI file and adjust it
+    	// To solve this issue, this task takes the OpenAPI file and adjusts it.
+    	//
+    	// The steps are:
+    	//
+    	// 1. read in the OpenAPI file
+    	// 2. get the values which contain a `oneOf` element
+    	// 3. overwrite the `oneOf` with `string`
+    	// 4. write the modified JSON structure back into the generated OpenAPI 3 file
+    	//
+    	// This is not a clean solution, but it solves the problem.
     	
     	// Load JSON
     	def jsonSlurper = new JsonSlurper() 
@@ -297,6 +306,12 @@ task generateOpenapi() {
     	
     	def executionProfileFetchSchema = jsonObject.components.schemas.ExecutionProfileFetch
     	executionProfileFetchSchema.properties.projectIds.items = stringType
+    	
+    	def listOfProjectsSchema = jsonObject.components.schemas.ListOfProjects
+    	listOfProjectsSchema.items = stringType
+    	
+    	def listOfUsersSchema = jsonObject.components.schemas.ListOfUsers
+    	listOfUsersSchema.items = stringType
     	
     	// Write JSON
     	def json = JsonOutput.toJson(jsonObject)

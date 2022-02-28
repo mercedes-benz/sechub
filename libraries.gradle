@@ -13,7 +13,7 @@ ext {
 
    libraryVersion= [
       // openapi3-generator, releases see https://github.com/ePages-de/restdocs-api-spec/releases
-      restDocsApiSpec: "0.15.2",
+      restDocsApiSpec: "0.16.0",
       junit5Version :"5.8.2"
    ]
 
