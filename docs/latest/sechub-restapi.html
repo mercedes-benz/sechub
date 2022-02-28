@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Server Rest API Documentation</h1>
 <div class="details">
-<span id="revnumber"> Server 0.28.0</span>
+<span id="revnumber"> Server 0.29.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -616,67 +616,67 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#admin-revokes-admin-rights-from-an-admin">2.2.11. Admin revokes admin rights from an admin</a></li>
 <li><a href="#admin-lists-all-admins">2.2.12. Admin lists all admins</a></li>
 <li><a href="#admin-changes-owner-of-a-project">2.2.13. Admin changes owner of a project</a></li>
-<li><a href="#admin-creates-a-project">2.2.14. Admin creates a project</a></li>
-<li><a href="#admin-lists-all-projects">2.2.15. Admin lists all projects</a></li>
-<li><a href="#admin-deletes-a-project">2.2.16. Admin deletes a project</a></li>
-<li><a href="#update-project-whitelist">2.2.17. Update project whitelist</a></li>
-<li><a href="#admin-shows-scan-logs-for-project">2.2.18. Admin shows scan logs for project</a></li>
-<li><a href="#update-project-metadata">2.2.19. Update project metadata</a></li>
-<li><a href="#admin-changes-project-description">2.2.20. Admin changes project description</a></li>
-<li><a href="#admin-changes-project-access-level">2.2.21. Admin changes project access level</a></li>
-<li><a href="#user-clicks-link-to-get-new-api-token">2.2.22. User clicks link to get new api token</a></li>
-<li><a href="#user-creates-a-new-sechub-job">2.2.23. User creates a new sechub job</a>
+<li><a href="#admin-updates-user-email-address">2.2.14. Admin updates user email address</a></li>
+<li><a href="#admin-creates-a-project">2.2.15. Admin creates a project</a></li>
+<li><a href="#admin-lists-all-projects">2.2.16. Admin lists all projects</a></li>
+<li><a href="#admin-deletes-a-project">2.2.17. Admin deletes a project</a></li>
+<li><a href="#update-project-whitelist">2.2.18. Update project whitelist</a></li>
+<li><a href="#admin-shows-scan-logs-for-project">2.2.19. Admin shows scan logs for project</a></li>
+<li><a href="#update-project-metadata">2.2.20. Update project metadata</a></li>
+<li><a href="#admin-changes-project-description">2.2.21. Admin changes project description</a></li>
+<li><a href="#admin-changes-project-access-level">2.2.22. Admin changes project access level</a></li>
+<li><a href="#user-clicks-link-to-get-new-api-token">2.2.23. User clicks link to get new api token</a></li>
+<li><a href="#user-creates-a-new-sechub-job">2.2.24. User creates a new sechub job</a>
 <ul class="sectlevel4">
-<li><a href="#section-ucrestdoc-UC_005-code-scan">2.2.23.1. Code Scan</a></li>
-<li><a href="#section-ucrestdoc-UC_005-infrastructure-scan">2.2.23.2. Infrastructure scan</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-anonymous">2.2.23.3. Web Scan anonymous</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-login-basic">2.2.23.4. Web Scan login basic</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-login-form-auto-dection">2.2.23.5. Web Scan login form auto dection</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-login-form-scripted">2.2.23.6. Web Scan login form scripted</a></li>
+<li><a href="#section-ucrestdoc-UC_005-code-scan">2.2.24.1. Code Scan</a></li>
+<li><a href="#section-ucrestdoc-UC_005-infrastructure-scan">2.2.24.2. Infrastructure scan</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-anonymous">2.2.24.3. Web scan anonymous</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-login-basic">2.2.24.4. Web Scan login basic</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-login-form-scripted">2.2.24.5. Web Scan login form scripted</a></li>
 </ul>
 </li>
-<li><a href="#user-uploads-source-code">2.2.24. User uploads source code</a></li>
-<li><a href="#user-approves-sechub-job">2.2.25. User approves sechub job</a></li>
-<li><a href="#user-checks-sechub-job-state">2.2.26. User checks sechub job state</a></li>
-<li><a href="#user-downloads-sechub-job-report">2.2.27. User downloads sechub job report</a>
+<li><a href="#user-uploads-source-code">2.2.25. User uploads source code</a></li>
+<li><a href="#user-approves-sechub-job">2.2.26. User approves sechub job</a></li>
+<li><a href="#user-checks-sechub-job-state">2.2.27. User checks sechub job state</a></li>
+<li><a href="#user-downloads-sechub-job-report">2.2.28. User downloads sechub job report</a>
 <ul class="sectlevel4">
-<li><a href="#section-ucrestdoc-UC_010-json">2.2.27.1. JSON</a></li>
-<li><a href="#section-ucrestdoc-UC_010-html">2.2.27.2. HTML</a></li>
+<li><a href="#section-ucrestdoc-UC_010-json">2.2.28.1. JSON</a></li>
+<li><a href="#section-ucrestdoc-UC_010-html">2.2.28.2. HTML</a></li>
 </ul>
 </li>
-<li><a href="#user-marks-false-positives-for-finished-sechub-job">2.2.28. User marks false positives for finished sechub job</a></li>
-<li><a href="#user-unmarks-existing-false-positive-definitons">2.2.29. User unmarks existing false positive definitons</a></li>
-<li><a href="#user-fetches-false-positive-configuration-of-project">2.2.30. User fetches false positive configuration of project</a></li>
-<li><a href="#user-self-registration">2.2.31. User self registration</a></li>
-<li><a href="#admin-lists-open-user-signups">2.2.32. Admin lists open user signups</a></li>
-<li><a href="#admin-applies-self-registration">2.2.33. Admin applies self registration</a></li>
-<li><a href="#admin-deletes-user-signup">2.2.34. Admin deletes user signup</a></li>
-<li><a href="#user-requests-new-api-token">2.2.35. User requests new API token</a></li>
-<li><a href="#admin-lists-all-running-jobs">2.2.36. Admin lists all running jobs</a></li>
-<li><a href="#admin-cancels-a-job">2.2.37. Admin cancels a job</a></li>
-<li><a href="#admin-restarts-a-job">2.2.38. Admin restarts a job</a></li>
-<li><a href="#admin-restarts-a-job-hard">2.2.39. Admin restarts a job (hard)</a></li>
-<li><a href="#user-defines-mock-data-configuration-for-project">2.2.40. User defines mock data configuration for project</a></li>
-<li><a href="#user-retrieves-mock-data-configuration-for-project">2.2.41. User retrieves mock data configuration for project</a></li>
-<li><a href="#admin-updates-mapping-configuration">2.2.42. Admin updates mapping configuration</a></li>
-<li><a href="#admin-fetches-mapping-configuration">2.2.43. Admin fetches mapping configuration</a></li>
-<li><a href="#admin-creates-an-executor-configuration">2.2.44. Admin creates an executor configuration</a></li>
-<li><a href="#admin-deletes-executor-configuration">2.2.45. Admin deletes executor configuration</a></li>
-<li><a href="#admin-fetches-executor-configuration-list">2.2.46. Admin fetches executor configuration list</a></li>
-<li><a href="#admin-fetches-executor-configuration">2.2.47. Admin fetches executor configuration</a></li>
-<li><a href="#admin-updates-executor-configuration-setup">2.2.48. Admin updates executor configuration setup</a></li>
-<li><a href="#admin-creates-an-execution-profile">2.2.49. Admin creates an execution profile</a></li>
-<li><a href="#admin-deletes-execution-profile">2.2.50. Admin deletes execution profile</a></li>
-<li><a href="#admin-updates-execution-profile">2.2.51. Admin updates execution profile</a></li>
-<li><a href="#admin-fetches-execution-profile">2.2.52. Admin fetches execution profile</a></li>
-<li><a href="#admin-fetches-execution-profile-list">2.2.53. Admin fetches execution profile list</a></li>
-<li><a href="#admin-assigns-execution-profile-to-project">2.2.54. Admin assigns execution profile to project</a></li>
-<li><a href="#admin-unassigns-execution-profile-from-project">2.2.55. Admin unassigns execution profile from project</a></li>
-<li><a href="#admin-disables-job-processing-in-scheduler">2.2.56. Admin disables job processing in scheduler</a></li>
-<li><a href="#admin-enables-scheduler-job-processing">2.2.57. Admin enables scheduler job processing</a></li>
-<li><a href="#admin-get-scheduler-status">2.2.58. Admin get scheduler status</a></li>
-<li><a href="#admin-lists-status-information">2.2.59. Admin lists status information</a></li>
-<li><a href="#admin-checks-server-version">2.2.60. Admin checks server version</a></li>
+<li><a href="#user-marks-false-positives-for-finished-sechub-job">2.2.29. User marks false positives for finished sechub job</a></li>
+<li><a href="#user-unmarks-existing-false-positive-definitons">2.2.30. User unmarks existing false positive definitons</a></li>
+<li><a href="#user-fetches-false-positive-configuration-of-project">2.2.31. User fetches false positive configuration of project</a></li>
+<li><a href="#user-self-registration">2.2.32. User self registration</a></li>
+<li><a href="#admin-lists-open-user-signups">2.2.33. Admin lists open user signups</a></li>
+<li><a href="#admin-applies-self-registration">2.2.34. Admin applies self registration</a></li>
+<li><a href="#admin-deletes-user-signup">2.2.35. Admin deletes user signup</a></li>
+<li><a href="#user-requests-new-api-token">2.2.36. User requests new API token</a></li>
+<li><a href="#admin-lists-all-running-jobs">2.2.37. Admin lists all running jobs</a></li>
+<li><a href="#admin-cancels-a-job">2.2.38. Admin cancels a job</a></li>
+<li><a href="#admin-restarts-a-job">2.2.39. Admin restarts a job</a></li>
+<li><a href="#admin-restarts-a-job-hard">2.2.40. Admin restarts a job (hard)</a></li>
+<li><a href="#user-defines-mock-data-configuration-for-project">2.2.41. User defines mock data configuration for project</a></li>
+<li><a href="#user-retrieves-mock-data-configuration-for-project">2.2.42. User retrieves mock data configuration for project</a></li>
+<li><a href="#admin-updates-mapping-configuration">2.2.43. Admin updates mapping configuration</a></li>
+<li><a href="#admin-fetches-mapping-configuration">2.2.44. Admin fetches mapping configuration</a></li>
+<li><a href="#admin-creates-an-executor-configuration">2.2.45. Admin creates an executor configuration</a></li>
+<li><a href="#admin-deletes-executor-configuration">2.2.46. Admin deletes executor configuration</a></li>
+<li><a href="#admin-fetches-executor-configuration-list">2.2.47. Admin fetches executor configuration list</a></li>
+<li><a href="#admin-fetches-executor-configuration">2.2.48. Admin fetches executor configuration</a></li>
+<li><a href="#admin-updates-executor-configuration-setup">2.2.49. Admin updates executor configuration setup</a></li>
+<li><a href="#admin-creates-an-execution-profile">2.2.50. Admin creates an execution profile</a></li>
+<li><a href="#admin-deletes-execution-profile">2.2.51. Admin deletes execution profile</a></li>
+<li><a href="#admin-updates-execution-profile">2.2.52. Admin updates execution profile</a></li>
+<li><a href="#admin-fetches-execution-profile">2.2.53. Admin fetches execution profile</a></li>
+<li><a href="#admin-fetches-execution-profile-list">2.2.54. Admin fetches execution profile list</a></li>
+<li><a href="#admin-assigns-execution-profile-to-project">2.2.55. Admin assigns execution profile to project</a></li>
+<li><a href="#admin-unassigns-execution-profile-from-project">2.2.56. Admin unassigns execution profile from project</a></li>
+<li><a href="#admin-disables-job-processing-in-scheduler">2.2.57. Admin disables job processing in scheduler</a></li>
+<li><a href="#admin-enables-scheduler-job-processing">2.2.58. Admin enables scheduler job processing</a></li>
+<li><a href="#admin-get-scheduler-status">2.2.59. Admin get scheduler status</a></li>
+<li><a href="#admin-lists-status-information">2.2.60. Admin lists status information</a></li>
+<li><a href="#admin-checks-server-version">2.2.61. Admin checks server version</a></li>
 </ul>
 </li>
 </ul>
@@ -790,56 +790,61 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#none">4.1.63.2.3. None</a></li>
 </ul>
 </li>
-<li><a href="#section-gen-messaging-overview">4.1.63.3. Overview</a>
-<ul class="sectlevel5">
-<li><a href="#diagram">4.1.63.3.1. Diagram</a></li>
-<li><a href="#section-gen-messaging-overview-linklist">4.1.63.3.2. List of all messages</a></li>
 </ul>
 </li>
-<li><a href="#section-gen-messaging-batch_job_status">4.1.63.4. Message BATCH_JOB_STATUS</a></li>
-<li><a href="#section-gen-messaging-job_canceled">4.1.63.5. Message JOB_CANCELED</a></li>
-<li><a href="#section-gen-messaging-job_done">4.1.63.6. Message JOB_DONE</a></li>
-<li><a href="#section-gen-messaging-job_failed">4.1.63.7. Message JOB_FAILED</a></li>
-<li><a href="#section-gen-messaging-job_restart_canceled">4.1.63.8. Message JOB_RESTART_CANCELED</a></li>
-<li><a href="#section-gen-messaging-job_restart_triggered">4.1.63.9. Message JOB_RESTART_TRIGGERED</a></li>
-<li><a href="#section-gen-messaging-job_results_purged">4.1.63.10. Message JOB_RESULTS_PURGED</a></li>
-<li><a href="#section-gen-messaging-job_result_purge_done">4.1.63.11. Message JOB_RESULT_PURGE_DONE</a></li>
-<li><a href="#section-gen-messaging-job_result_purge_failed">4.1.63.12. Message JOB_RESULT_PURGE_FAILED</a></li>
-<li><a href="#section-gen-messaging-job_started">4.1.63.13. Message JOB_STARTED</a></li>
-<li><a href="#section-gen-messaging-mapping_configuration_changed">4.1.63.14. Message MAPPING_CONFIGURATION_CHANGED</a></li>
-<li><a href="#section-gen-messaging-project_access_level_changed">4.1.63.15. Message PROJECT_ACCESS_LEVEL_CHANGED</a></li>
-<li><a href="#section-gen-messaging-project_created">4.1.63.16. Message PROJECT_CREATED</a></li>
-<li><a href="#section-gen-messaging-project_deleted">4.1.63.17. Message PROJECT_DELETED</a></li>
-<li><a href="#section-gen-messaging-project_owner_changed">4.1.63.18. Message PROJECT_OWNER_CHANGED</a></li>
-<li><a href="#section-gen-messaging-project_whitelist_updated">4.1.63.19. Message PROJECT_WHITELIST_UPDATED</a></li>
-<li><a href="#section-gen-messaging-request_batch_job_status">4.1.63.20. Message REQUEST_BATCH_JOB_STATUS</a></li>
-<li><a href="#section-gen-messaging-request_job_cancelation">4.1.63.21. Message REQUEST_JOB_CANCELATION</a></li>
-<li><a href="#section-gen-messaging-request_job_restart">4.1.63.22. Message REQUEST_JOB_RESTART</a></li>
-<li><a href="#section-gen-messaging-request_job_restart_hard">4.1.63.23. Message REQUEST_JOB_RESTART_HARD</a></li>
-<li><a href="#section-gen-messaging-request_purge_job_results">4.1.63.24. Message REQUEST_PURGE_JOB_RESULTS</a></li>
-<li><a href="#section-gen-messaging-request_scheduler_disable_job_processing">4.1.63.25. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</a></li>
-<li><a href="#section-gen-messaging-request_scheduler_enable_job_processing">4.1.63.26. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</a></li>
-<li><a href="#section-gen-messaging-request_scheduler_status_update">4.1.63.27. Message REQUEST_SCHEDULER_STATUS_UPDATE</a></li>
-<li><a href="#section-gen-messaging-request_user_role_recalculation">4.1.63.28. Message REQUEST_USER_ROLE_RECALCULATION</a></li>
-<li><a href="#section-gen-messaging-scan_abandonded">4.1.63.29. Message SCAN_ABANDONDED</a></li>
-<li><a href="#section-gen-messaging-scan_done">4.1.63.30. Message SCAN_DONE</a></li>
-<li><a href="#section-gen-messaging-scan_failed">4.1.63.31. Message SCAN_FAILED</a></li>
-<li><a href="#section-gen-messaging-scheduler_job_processing_disabled">4.1.63.32. Message SCHEDULER_JOB_PROCESSING_DISABLED</a></li>
-<li><a href="#section-gen-messaging-scheduler_job_processing_enabled">4.1.63.33. Message SCHEDULER_JOB_PROCESSING_ENABLED</a></li>
-<li><a href="#section-gen-messaging-scheduler_started">4.1.63.34. Message SCHEDULER_STARTED</a></li>
-<li><a href="#section-gen-messaging-scheduler_status_update">4.1.63.35. Message SCHEDULER_STATUS_UPDATE</a></li>
-<li><a href="#section-gen-messaging-start_scan">4.1.63.36. Message START_SCAN</a></li>
-<li><a href="#section-gen-messaging-unsupported_operation">4.1.63.37. Message UNSUPPORTED_OPERATION</a></li>
-<li><a href="#section-gen-messaging-user_added_to_project">4.1.63.38. Message USER_ADDED_TO_PROJECT</a></li>
-<li><a href="#section-gen-messaging-user_api_token_changed">4.1.63.39. Message USER_API_TOKEN_CHANGED</a></li>
-<li><a href="#section-gen-messaging-user_becomes_superadmin">4.1.63.40. Message USER_BECOMES_SUPERADMIN</a></li>
-<li><a href="#section-gen-messaging-user_created">4.1.63.41. Message USER_CREATED</a></li>
-<li><a href="#section-gen-messaging-user_deleted">4.1.63.42. Message USER_DELETED</a></li>
-<li><a href="#section-gen-messaging-user_new_api_token_requested">4.1.63.43. Message USER_NEW_API_TOKEN_REQUESTED</a></li>
-<li><a href="#section-gen-messaging-user_no_longer_superadmin">4.1.63.44. Message USER_NO_LONGER_SUPERADMIN</a></li>
-<li><a href="#section-gen-messaging-user_removed_from_project">4.1.63.45. Message USER_REMOVED_FROM_PROJECT</a></li>
-<li><a href="#section-gen-messaging-user_roles_changed">4.1.63.46. Message USER_ROLES_CHANGED</a></li>
-<li><a href="#section-gen-messaging-user_signup_requested">4.1.63.47. Message USER_SIGNUP_REQUESTED</a></li>
+<li><a href="#section-usecase-UC_063">4.1.64. UC_063-Admin updates user email address</a>
+<ul class="sectlevel4">
+<li><a href="#section-gen-messaging-overview">4.1.64.1. Overview</a>
+<ul class="sectlevel5">
+<li><a href="#diagram">4.1.64.1.1. Diagram</a></li>
+<li><a href="#section-gen-messaging-overview-linklist">4.1.64.1.2. List of all messages</a></li>
+</ul>
+</li>
+<li><a href="#section-gen-messaging-batch_job_status">4.1.64.2. Message BATCH_JOB_STATUS</a></li>
+<li><a href="#section-gen-messaging-job_canceled">4.1.64.3. Message JOB_CANCELED</a></li>
+<li><a href="#section-gen-messaging-job_done">4.1.64.4. Message JOB_DONE</a></li>
+<li><a href="#section-gen-messaging-job_failed">4.1.64.5. Message JOB_FAILED</a></li>
+<li><a href="#section-gen-messaging-job_restart_canceled">4.1.64.6. Message JOB_RESTART_CANCELED</a></li>
+<li><a href="#section-gen-messaging-job_restart_triggered">4.1.64.7. Message JOB_RESTART_TRIGGERED</a></li>
+<li><a href="#section-gen-messaging-job_results_purged">4.1.64.8. Message JOB_RESULTS_PURGED</a></li>
+<li><a href="#section-gen-messaging-job_result_purge_done">4.1.64.9. Message JOB_RESULT_PURGE_DONE</a></li>
+<li><a href="#section-gen-messaging-job_result_purge_failed">4.1.64.10. Message JOB_RESULT_PURGE_FAILED</a></li>
+<li><a href="#section-gen-messaging-job_started">4.1.64.11. Message JOB_STARTED</a></li>
+<li><a href="#section-gen-messaging-mapping_configuration_changed">4.1.64.12. Message MAPPING_CONFIGURATION_CHANGED</a></li>
+<li><a href="#section-gen-messaging-project_access_level_changed">4.1.64.13. Message PROJECT_ACCESS_LEVEL_CHANGED</a></li>
+<li><a href="#section-gen-messaging-project_created">4.1.64.14. Message PROJECT_CREATED</a></li>
+<li><a href="#section-gen-messaging-project_deleted">4.1.64.15. Message PROJECT_DELETED</a></li>
+<li><a href="#section-gen-messaging-project_owner_changed">4.1.64.16. Message PROJECT_OWNER_CHANGED</a></li>
+<li><a href="#section-gen-messaging-project_whitelist_updated">4.1.64.17. Message PROJECT_WHITELIST_UPDATED</a></li>
+<li><a href="#section-gen-messaging-request_batch_job_status">4.1.64.18. Message REQUEST_BATCH_JOB_STATUS</a></li>
+<li><a href="#section-gen-messaging-request_job_cancelation">4.1.64.19. Message REQUEST_JOB_CANCELATION</a></li>
+<li><a href="#section-gen-messaging-request_job_restart">4.1.64.20. Message REQUEST_JOB_RESTART</a></li>
+<li><a href="#section-gen-messaging-request_job_restart_hard">4.1.64.21. Message REQUEST_JOB_RESTART_HARD</a></li>
+<li><a href="#section-gen-messaging-request_purge_job_results">4.1.64.22. Message REQUEST_PURGE_JOB_RESULTS</a></li>
+<li><a href="#section-gen-messaging-request_scheduler_disable_job_processing">4.1.64.23. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</a></li>
+<li><a href="#section-gen-messaging-request_scheduler_enable_job_processing">4.1.64.24. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</a></li>
+<li><a href="#section-gen-messaging-request_scheduler_status_update">4.1.64.25. Message REQUEST_SCHEDULER_STATUS_UPDATE</a></li>
+<li><a href="#section-gen-messaging-request_user_role_recalculation">4.1.64.26. Message REQUEST_USER_ROLE_RECALCULATION</a></li>
+<li><a href="#section-gen-messaging-scan_abandonded">4.1.64.27. Message SCAN_ABANDONDED</a></li>
+<li><a href="#section-gen-messaging-scan_done">4.1.64.28. Message SCAN_DONE</a></li>
+<li><a href="#section-gen-messaging-scan_failed">4.1.64.29. Message SCAN_FAILED</a></li>
+<li><a href="#section-gen-messaging-scheduler_job_processing_disabled">4.1.64.30. Message SCHEDULER_JOB_PROCESSING_DISABLED</a></li>
+<li><a href="#section-gen-messaging-scheduler_job_processing_enabled">4.1.64.31. Message SCHEDULER_JOB_PROCESSING_ENABLED</a></li>
+<li><a href="#section-gen-messaging-scheduler_started">4.1.64.32. Message SCHEDULER_STARTED</a></li>
+<li><a href="#section-gen-messaging-scheduler_status_update">4.1.64.33. Message SCHEDULER_STATUS_UPDATE</a></li>
+<li><a href="#section-gen-messaging-start_scan">4.1.64.34. Message START_SCAN</a></li>
+<li><a href="#section-gen-messaging-unsupported_operation">4.1.64.35. Message UNSUPPORTED_OPERATION</a></li>
+<li><a href="#section-gen-messaging-user_added_to_project">4.1.64.36. Message USER_ADDED_TO_PROJECT</a></li>
+<li><a href="#section-gen-messaging-user_api_token_changed">4.1.64.37. Message USER_API_TOKEN_CHANGED</a></li>
+<li><a href="#section-gen-messaging-user_becomes_superadmin">4.1.64.38. Message USER_BECOMES_SUPERADMIN</a></li>
+<li><a href="#section-gen-messaging-user_created">4.1.64.39. Message USER_CREATED</a></li>
+<li><a href="#section-gen-messaging-user_deleted">4.1.64.40. Message USER_DELETED</a></li>
+<li><a href="#section-gen-messaging-user_email_address_changed">4.1.64.41. Message USER_EMAIL_ADDRESS_CHANGED</a></li>
+<li><a href="#section-gen-messaging-user_new_api_token_requested">4.1.64.42. Message USER_NEW_API_TOKEN_REQUESTED</a></li>
+<li><a href="#section-gen-messaging-user_no_longer_superadmin">4.1.64.43. Message USER_NO_LONGER_SUPERADMIN</a></li>
+<li><a href="#section-gen-messaging-user_removed_from_project">4.1.64.44. Message USER_REMOVED_FROM_PROJECT</a></li>
+<li><a href="#section-gen-messaging-user_roles_changed">4.1.64.45. Message USER_ROLES_CHANGED</a></li>
+<li><a href="#section-gen-messaging-user_signup_requested">4.1.64.46. Message USER_SIGNUP_REQUESTED</a></li>
 </ul>
 </li>
 </ul>
@@ -930,7 +935,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.28.0-20220112145529</code></p>
+<p>Documentation version: <code>Server 0.29.0-20220228155657</code></p>
 </div>
 <hr>
 </div>
@@ -1676,6 +1681,9 @@ because scanners do not scan them self.</td>
 <li>
 <p><a href="#section-ucrestdoc-uc-UC_060">REST API for UC_060-Admin changes owner of a project </a></p>
 </li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_063">REST API for UC_063-Admin updates user email address </a></p>
+</li>
 </ul>
 </div>
 </div>
@@ -2029,7 +2037,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/bd08b208-600c-4ebf-a524-e0afde133678' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/9e995372-509b-4e5b-a141-10922562fcbf' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -2092,7 +2100,21 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-creates-a-project">2.2.14. Admin creates a project</h4>
+<h4 id="admin-updates-user-email-address">2.2.14. Admin updates user email address</h4>
+<div id="section-ucrestdoc-uc-UC_063" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_063">UC_063-Admin updates user email address </a></p>
+</div>
+<div id="section-ucrestdoc-UC_063-" class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/user/USER_ID/email/EMAIL_ADDRESS' -i -X PUT</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-creates-a-project">2.2.15. Admin creates a project</h4>
 <div id="section-ucrestdoc-uc-UC_013" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_013">UC_013-Admin creates a project </a></p>
 </div>
@@ -2108,7 +2130,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-all-projects">2.2.15. Admin lists all projects</h4>
+<h4 id="admin-lists-all-projects">2.2.16. Admin lists all projects</h4>
 <div id="section-ucrestdoc-uc-UC_014" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_014">UC_014-Admin lists all projects </a></p>
 </div>
@@ -2123,7 +2145,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-a-project">2.2.16. Admin deletes a project</h4>
+<h4 id="admin-deletes-a-project">2.2.17. Admin deletes a project</h4>
 <div id="section-ucrestdoc-uc-UC_020" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_020">UC_020-Admin deletes a project </a></p>
 </div>
@@ -2138,7 +2160,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="update-project-whitelist">2.2.17. Update project whitelist</h4>
+<h4 id="update-project-whitelist">2.2.18. Update project whitelist</h4>
 <div id="section-ucrestdoc-uc-UC_022" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_022">UC_022-Update project whitelist </a></p>
 </div>
@@ -2154,7 +2176,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-shows-scan-logs-for-project">2.2.18. Admin shows scan logs for project</h4>
+<h4 id="admin-shows-scan-logs-for-project">2.2.19. Admin shows scan logs for project</h4>
 <div id="section-ucrestdoc-uc-UC_025" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_025">UC_025-Admin shows scan logs for project </a></p>
 </div>
@@ -2169,7 +2191,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="update-project-metadata">2.2.19. Update project metadata</h4>
+<h4 id="update-project-metadata">2.2.20. Update project metadata</h4>
 <div id="section-ucrestdoc-uc-UC_059" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_059">UC_059-Update project metadata </a></p>
 </div>
@@ -2185,7 +2207,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-changes-project-description">2.2.20. Admin changes project description</h4>
+<h4 id="admin-changes-project-description">2.2.21. Admin changes project description</h4>
 <div id="section-ucrestdoc-uc-UC_061" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_061">UC_061-Admin changes project description </a></p>
 </div>
@@ -2203,7 +2225,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-changes-project-access-level">2.2.21. Admin changes project access level</h4>
+<h4 id="admin-changes-project-access-level">2.2.22. Admin changes project access level</h4>
 <div id="section-ucrestdoc-uc-UC_062" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_062">UC_062-Admin changes project access level </a></p>
 </div>
@@ -2244,7 +2266,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-clicks-link-to-get-new-api-token">2.2.22. User clicks link to get new api token</h4>
+<h4 id="user-clicks-link-to-get-new-api-token">2.2.23. User clicks link to get new api token</h4>
 <div id="section-ucrestdoc-uc-UC_012" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_012">UC_012-User clicks link to get new api token </a></p>
 </div>
@@ -2259,12 +2281,12 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-creates-a-new-sechub-job">2.2.23. User creates a new sechub job</h4>
+<h4 id="user-creates-a-new-sechub-job">2.2.24. User creates a new sechub job</h4>
 <div id="section-ucrestdoc-uc-UC_005" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_005">UC_005-User creates a new sechub job </a></p>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-code-scan">2.2.23.1. Code Scan</h5>
+<h5 id="section-ucrestdoc-UC_005-code-scan">2.2.24.1. Code Scan</h5>
 <div class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
@@ -2277,7 +2299,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-infrastructure-scan">2.2.23.2. Infrastructure scan</h5>
+<h5 id="section-ucrestdoc-UC_005-infrastructure-scan">2.2.24.2. Infrastructure scan</h5>
 <div class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
@@ -2290,7 +2312,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-anonymous">2.2.23.3. Web Scan anonymous</h5>
+<h5 id="section-ucrestdoc-UC_005-web-scan-anonymous">2.2.24.3. Web scan anonymous</h5>
 <div class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
@@ -2298,12 +2320,12 @@ because scanners do not scan them self.</td>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;webScan&quot;:{&quot;uris&quot;:[&quot;https://localhost/mywebapp/login&quot;]},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
+    -d '{&quot;webScan&quot;:{&quot;maxScanDuration&quot;:{&quot;duration&quot;:1,&quot;unit&quot;:&quot;HOUR&quot;},&quot;uri&quot;:&quot;https://localhost/mywebapp/login&quot;,&quot;includes&quot;:[&quot;/admin&quot;,&quot;/hidden&quot;,&quot;/admin.html&quot;],&quot;excludes&quot;:[&quot;/public/media&quot;,&quot;/static&quot;,&quot;/contaxt.html&quot;]},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-login-basic">2.2.23.4. Web Scan login basic</h5>
+<h5 id="section-ucrestdoc-UC_005-web-scan-login-basic">2.2.24.4. Web Scan login basic</h5>
 <div class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
@@ -2311,12 +2333,12 @@ because scanners do not scan them self.</td>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;webScan&quot;:{&quot;login&quot;:{&quot;url&quot;:&quot;https://localhost/mywebapp/login&quot;,&quot;basic&quot;:{&quot;user&quot;:&quot;username1&quot;,&quot;password&quot;:&quot;password1&quot;}},&quot;uris&quot;:[&quot;https://localhost/mywebapp&quot;]},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
+    -d '{&quot;webScan&quot;:{&quot;login&quot;:{&quot;url&quot;:&quot;https://localhost/mywebapp/login&quot;,&quot;basic&quot;:{&quot;user&quot;:&quot;username1&quot;,&quot;password&quot;:&quot;password1&quot;}},&quot;uri&quot;:&quot;https://localhost/mywebapp&quot;},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-login-form-auto-dection">2.2.23.5. Web Scan login form auto dection</h5>
+<h5 id="section-ucrestdoc-UC_005-web-scan-login-form-scripted">2.2.24.5. Web Scan login form scripted</h5>
 <div class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
@@ -2324,26 +2346,13 @@ because scanners do not scan them self.</td>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;webScan&quot;:{&quot;login&quot;:{&quot;url&quot;:&quot;https://localhost/mywebapp/login&quot;,&quot;form&quot;:{&quot;autodetect&quot;:{&quot;user&quot;:&quot;username1&quot;,&quot;password&quot;:&quot;password1&quot;}}},&quot;uris&quot;:[&quot;https://localhost/mywebapp&quot;]},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-login-form-scripted">2.2.23.6. Web Scan login form scripted</h5>
-<div class="paragraph">
-<p><strong>Curl request</strong></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
-    -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;webScan&quot;:{&quot;login&quot;:{&quot;url&quot;:&quot;https://localhost/mywebapp/login&quot;,&quot;form&quot;:{&quot;script&quot;:{&quot;pages&quot;:[{&quot;actions&quot;:[{&quot;type&quot;:&quot;USERNAME&quot;,&quot;selector&quot;:&quot;#example_login_userid&quot;,&quot;value&quot;:&quot;username1&quot;,&quot;description&quot;:&quot;the username field&quot;},{&quot;type&quot;:&quot;INPUT&quot;,&quot;selector&quot;:&quot;#example_login_email_id&quot;,&quot;value&quot;:&quot;user@example.com&quot;,&quot;description&quot;:&quot;The email id field.&quot;}]},{&quot;actions&quot;:[{&quot;type&quot;:&quot;WAIT&quot;,&quot;value&quot;:&quot;2345&quot;,&quot;unit&quot;:&quot;MILLISECOND&quot;},{&quot;type&quot;:&quot;PASSWORD&quot;,&quot;selector&quot;:&quot;#example_login_pwd&quot;,&quot;value&quot;:&quot;Super$ecret234!&quot;},{&quot;type&quot;:&quot;CLICK&quot;,&quot;selector&quot;:&quot;#example_login_button&quot;}]}]}}},&quot;uris&quot;:[&quot;https://localhost/mywebapp&quot;]},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
+    -d '{&quot;webScan&quot;:{&quot;login&quot;:{&quot;url&quot;:&quot;https://localhost/mywebapp/login&quot;,&quot;form&quot;:{&quot;script&quot;:{&quot;pages&quot;:[{&quot;actions&quot;:[{&quot;type&quot;:&quot;USERNAME&quot;,&quot;selector&quot;:&quot;#example_login_userid&quot;,&quot;value&quot;:&quot;username1&quot;,&quot;description&quot;:&quot;the username field&quot;},{&quot;type&quot;:&quot;INPUT&quot;,&quot;selector&quot;:&quot;#example_login_email_id&quot;,&quot;value&quot;:&quot;user@example.com&quot;,&quot;description&quot;:&quot;The email id field.&quot;}]},{&quot;actions&quot;:[{&quot;type&quot;:&quot;WAIT&quot;,&quot;value&quot;:&quot;2345&quot;,&quot;unit&quot;:&quot;MILLISECOND&quot;},{&quot;type&quot;:&quot;PASSWORD&quot;,&quot;selector&quot;:&quot;#example_login_pwd&quot;,&quot;value&quot;:&quot;Super$ecret234!&quot;},{&quot;type&quot;:&quot;CLICK&quot;,&quot;selector&quot;:&quot;#example_login_button&quot;}]}]}}},&quot;uri&quot;:&quot;https://localhost/mywebapp&quot;},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-uploads-source-code">2.2.24. User uploads source code</h4>
+<h4 id="user-uploads-source-code">2.2.25. User uploads source code</h4>
 <div id="section-ucrestdoc-uc-UC_006" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_006">UC_006-User uploads source code </a></p>
 </div>
@@ -2352,7 +2361,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/b913da31-1a53-4024-8524-45132e98a759/sourcecode' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/a01b46d5-67a7-4a72-94ce-ee39c2b16470/sourcecode' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -2363,7 +2372,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-approves-sechub-job">2.2.25. User approves sechub job</h4>
+<h4 id="user-approves-sechub-job">2.2.26. User approves sechub job</h4>
 <div id="section-ucrestdoc-uc-UC_007" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_007">UC_007-User approves sechub job </a></p>
 </div>
@@ -2372,13 +2381,13 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/99fa91ff-8805-4005-993e-0d200bdfb9f1/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/9a026b87-9ca4-42fa-bdf1-e4e064e9153d/approve' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-checks-sechub-job-state">2.2.26. User checks sechub job state</h4>
+<h4 id="user-checks-sechub-job-state">2.2.27. User checks sechub job state</h4>
 <div id="section-ucrestdoc-uc-UC_009" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_009">UC_009-User checks sechub job state </a></p>
 </div>
@@ -2387,37 +2396,37 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/2681d563-cbd8-4f45-a3c1-74d4b85a66c1' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/b60a6c43-3eee-4102-8738-9487b4cca26a' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-downloads-sechub-job-report">2.2.27. User downloads sechub job report</h4>
+<h4 id="user-downloads-sechub-job-report">2.2.28. User downloads sechub job report</h4>
 <div id="section-ucrestdoc-uc-UC_010" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_010">UC_010-User downloads sechub job report </a></p>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_010-json">2.2.27.1. JSON</h5>
+<h5 id="section-ucrestdoc-UC_010-json">2.2.28.1. JSON</h5>
 <div class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/6ef7049a-7b04-4684-bcbc-ae31f0f7a4c1' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/3acdf302-be5a-4128-be34-7bc65dc2dd3e' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_010-html">2.2.27.2. HTML</h5>
+<h5 id="section-ucrestdoc-UC_010-html">2.2.28.2. HTML</h5>
 <div class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/01f686f8-9b77-4745-894a-367b87b08121' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/093a2ba3-5887-4fac-91df-d0038199e5ac' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -2425,7 +2434,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-marks-false-positives-for-finished-sechub-job">2.2.28. User marks false positives for finished sechub job</h4>
+<h4 id="user-marks-false-positives-for-finished-sechub-job">2.2.29. User marks false positives for finished sechub job</h4>
 <div id="section-ucrestdoc-uc-UC_044" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_044">UC_044-User marks false positives for finished sechub job </a></p>
 </div>
@@ -2441,7 +2450,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-unmarks-existing-false-positive-definitons">2.2.29. User unmarks existing false positive definitons</h4>
+<h4 id="user-unmarks-existing-false-positive-definitons">2.2.30. User unmarks existing false positive definitons</h4>
 <div id="section-ucrestdoc-uc-UC_045" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_045">UC_045-User unmarks existing false positive definitons </a></p>
 </div>
@@ -2455,7 +2464,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-fetches-false-positive-configuration-of-project">2.2.30. User fetches false positive configuration of project</h4>
+<h4 id="user-fetches-false-positive-configuration-of-project">2.2.31. User fetches false positive configuration of project</h4>
 <div id="section-ucrestdoc-uc-UC_046" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_046">UC_046-User fetches false positive configuration of project </a></p>
 </div>
@@ -2469,7 +2478,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-self-registration">2.2.31. User self registration</h4>
+<h4 id="user-self-registration">2.2.32. User self registration</h4>
 <div id="section-ucrestdoc-uc-UC_001" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_001">UC_001-User self registration </a></p>
 </div>
@@ -2485,7 +2494,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-open-user-signups">2.2.32. Admin lists open user signups</h4>
+<h4 id="admin-lists-open-user-signups">2.2.33. Admin lists open user signups</h4>
 <div id="section-ucrestdoc-uc-UC_002" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_002">UC_002-Admin lists open user signups </a></p>
 </div>
@@ -2499,7 +2508,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-applies-self-registration">2.2.33. Admin applies self registration</h4>
+<h4 id="admin-applies-self-registration">2.2.34. Admin applies self registration</h4>
 <div id="section-ucrestdoc-uc-UC_003" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_003">UC_003-Admin applies self registration </a></p>
 </div>
@@ -2513,7 +2522,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-user-signup">2.2.34. Admin deletes user signup</h4>
+<h4 id="admin-deletes-user-signup">2.2.35. Admin deletes user signup</h4>
 <div id="section-ucrestdoc-uc-UC_019" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_019">UC_019-Admin deletes user signup </a></p>
 </div>
@@ -2527,7 +2536,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-requests-new-api-token">2.2.35. User requests new API token</h4>
+<h4 id="user-requests-new-api-token">2.2.36. User requests new API token</h4>
 <div id="section-ucrestdoc-uc-UC_024" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_024">UC_024-User requests new API token </a></p>
 </div>
@@ -2542,7 +2551,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-all-running-jobs">2.2.36. Admin lists all running jobs</h4>
+<h4 id="admin-lists-all-running-jobs">2.2.37. Admin lists all running jobs</h4>
 <div id="section-ucrestdoc-uc-UC_023" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_023">UC_023-Admin lists all running jobs </a></p>
 </div>
@@ -2557,7 +2566,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-cancels-a-job">2.2.37. Admin cancels a job</h4>
+<h4 id="admin-cancels-a-job">2.2.38. Admin cancels a job</h4>
 <div id="section-ucrestdoc-uc-UC_034" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_034">UC_034-Admin cancels a job </a></p>
 </div>
@@ -2566,13 +2575,13 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/3f77e415-b626-4939-b62c-303453237c9c' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/7d74d7e8-0076-4fd8-86b4-17a778e58cd3' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-restarts-a-job">2.2.38. Admin restarts a job</h4>
+<h4 id="admin-restarts-a-job">2.2.39. Admin restarts a job</h4>
 <div id="section-ucrestdoc-uc-UC_041" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_041">UC_041-Admin restarts a job </a></p>
 </div>
@@ -2581,13 +2590,13 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/1b96b46b-1098-4afe-821c-8022e3efbe06' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/e92afcaf-9114-4283-a3a8-6be559277da2' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-restarts-a-job-hard">2.2.39. Admin restarts a job (hard)</h4>
+<h4 id="admin-restarts-a-job-hard">2.2.40. Admin restarts a job (hard)</h4>
 <div id="section-ucrestdoc-uc-UC_042" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_042">UC_042-Admin restarts a job (hard) </a></p>
 </div>
@@ -2596,13 +2605,13 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/cc3a8834-898d-4bb4-9b84-48b21c481151' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/1bd0094a-247c-4341-9619-69c1a19bf5f3' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-defines-mock-data-configuration-for-project">2.2.40. User defines mock data configuration for project</h4>
+<h4 id="user-defines-mock-data-configuration-for-project">2.2.41. User defines mock data configuration for project</h4>
 <div id="section-ucrestdoc-uc-UC_035" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_035">UC_035-User defines mock data configuration for project </a></p>
 </div>
@@ -2619,7 +2628,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-retrieves-mock-data-configuration-for-project">2.2.41. User retrieves mock data configuration for project</h4>
+<h4 id="user-retrieves-mock-data-configuration-for-project">2.2.42. User retrieves mock data configuration for project</h4>
 <div id="section-ucrestdoc-uc-UC_036" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_036">UC_036-User retrieves mock data configuration for project </a></p>
 </div>
@@ -2635,7 +2644,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-updates-mapping-configuration">2.2.42. Admin updates mapping configuration</h4>
+<h4 id="admin-updates-mapping-configuration">2.2.43. Admin updates mapping configuration</h4>
 <div id="section-ucrestdoc-uc-UC_037" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_037">UC_037-Admin updates mapping configuration </a></p>
 </div>
@@ -2651,7 +2660,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-mapping-configuration">2.2.43. Admin fetches mapping configuration</h4>
+<h4 id="admin-fetches-mapping-configuration">2.2.44. Admin fetches mapping configuration</h4>
 <div id="section-ucrestdoc-uc-UC_038" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_038">UC_038-Admin fetches mapping configuration </a></p>
 </div>
@@ -2666,7 +2675,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-creates-an-executor-configuration">2.2.44. Admin creates an executor configuration</h4>
+<h4 id="admin-creates-an-executor-configuration">2.2.45. Admin creates an executor configuration</h4>
 <div id="section-ucrestdoc-uc-UC_047" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_047">UC_047-Admin creates an executor configuration </a></p>
 </div>
@@ -2682,7 +2691,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-executor-configuration">2.2.45. Admin deletes executor configuration</h4>
+<h4 id="admin-deletes-executor-configuration">2.2.46. Admin deletes executor configuration</h4>
 <div id="section-ucrestdoc-uc-UC_048" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_048">UC_048-Admin deletes executor configuration </a></p>
 </div>
@@ -2691,13 +2700,13 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/2a073de8-a997-4a18-b707-318e25bbe793' -i -X DELETE \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/43c56c85-f052-4fe1-adde-518462e1b3eb' -i -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-executor-configuration-list">2.2.46. Admin fetches executor configuration list</h4>
+<h4 id="admin-fetches-executor-configuration-list">2.2.47. Admin fetches executor configuration list</h4>
 <div id="section-ucrestdoc-uc-UC_049" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_049">UC_049-Admin fetches executor configuration list </a></p>
 </div>
@@ -2712,7 +2721,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-executor-configuration">2.2.47. Admin fetches executor configuration</h4>
+<h4 id="admin-fetches-executor-configuration">2.2.48. Admin fetches executor configuration</h4>
 <div id="section-ucrestdoc-uc-UC_050" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_050">UC_050-Admin fetches executor configuration </a></p>
 </div>
@@ -2721,13 +2730,13 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/962a2f46-5420-45b6-9993-b9dff9134b12' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/6401594d-f14e-4d58-9967-5b182e141d74' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-updates-executor-configuration-setup">2.2.48. Admin updates executor configuration setup</h4>
+<h4 id="admin-updates-executor-configuration-setup">2.2.49. Admin updates executor configuration setup</h4>
 <div id="section-ucrestdoc-uc-UC_051" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_051">UC_051-Admin updates executor configuration setup </a></p>
 </div>
@@ -2736,14 +2745,14 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/795df7ea-5512-404e-88ab-b59e9967f663' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/b8c672cf-6e2a-48c4-952b-a388ae5c4899' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://productNew.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_NEW_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_NEW_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]}}'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-creates-an-execution-profile">2.2.49. Admin creates an execution profile</h4>
+<h4 id="admin-creates-an-execution-profile">2.2.50. Admin creates an execution profile</h4>
 <div id="section-ucrestdoc-uc-UC_052" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_052">UC_052-Admin creates an execution profile </a></p>
 </div>
@@ -2759,7 +2768,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-execution-profile">2.2.50. Admin deletes execution profile</h4>
+<h4 id="admin-deletes-execution-profile">2.2.51. Admin deletes execution profile</h4>
 <div id="section-ucrestdoc-uc-UC_053" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_053">UC_053-Admin deletes execution profile </a></p>
 </div>
@@ -2774,7 +2783,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-updates-execution-profile">2.2.51. Admin updates execution profile</h4>
+<h4 id="admin-updates-execution-profile">2.2.52. Admin updates execution profile</h4>
 <div id="section-ucrestdoc-uc-UC_054" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_054">UC_054-Admin updates execution profile </a></p>
 </div>
@@ -2785,12 +2794,12 @@ because scanners do not scan them self.</td>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/existing-profile-1' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;9d477a5f-05d6-4e23-ba77-d1b8023c15e5&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
+    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;81a6fd22-353c-44c7-966f-0333e53a50ba&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-execution-profile">2.2.52. Admin fetches execution profile</h4>
+<h4 id="admin-fetches-execution-profile">2.2.53. Admin fetches execution profile</h4>
 <div id="section-ucrestdoc-uc-UC_055" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_055">UC_055-Admin fetches execution profile </a></p>
 </div>
@@ -2805,7 +2814,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-execution-profile-list">2.2.53. Admin fetches execution profile list</h4>
+<h4 id="admin-fetches-execution-profile-list">2.2.54. Admin fetches execution profile list</h4>
 <div id="section-ucrestdoc-uc-UC_056" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_056">UC_056-Admin fetches execution profile list </a></p>
 </div>
@@ -2820,7 +2829,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-assigns-execution-profile-to-project">2.2.54. Admin assigns execution profile to project</h4>
+<h4 id="admin-assigns-execution-profile-to-project">2.2.55. Admin assigns execution profile to project</h4>
 <div id="section-ucrestdoc-uc-UC_057" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_057">UC_057-Admin assigns execution profile to project </a></p>
 </div>
@@ -2835,7 +2844,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-unassigns-execution-profile-from-project">2.2.55. Admin unassigns execution profile from project</h4>
+<h4 id="admin-unassigns-execution-profile-from-project">2.2.56. Admin unassigns execution profile from project</h4>
 <div id="section-ucrestdoc-uc-UC_058" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_058">UC_058-Admin unassigns execution profile from project </a></p>
 </div>
@@ -2850,7 +2859,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-disables-job-processing-in-scheduler">2.2.56. Admin disables job processing in scheduler</h4>
+<h4 id="admin-disables-job-processing-in-scheduler">2.2.57. Admin disables job processing in scheduler</h4>
 <div id="section-ucrestdoc-uc-UC_030" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_030">UC_030-Admin disables job processing in scheduler </a></p>
 </div>
@@ -2865,7 +2874,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-enables-scheduler-job-processing">2.2.57. Admin enables scheduler job processing</h4>
+<h4 id="admin-enables-scheduler-job-processing">2.2.58. Admin enables scheduler job processing</h4>
 <div id="section-ucrestdoc-uc-UC_031" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_031">UC_031-Admin enables scheduler job processing </a></p>
 </div>
@@ -2880,7 +2889,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-get-scheduler-status">2.2.58. Admin get scheduler status</h4>
+<h4 id="admin-get-scheduler-status">2.2.59. Admin get scheduler status</h4>
 <div id="section-ucrestdoc-uc-UC_032" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_032">UC_032-Admin get scheduler status </a></p>
 </div>
@@ -2895,7 +2904,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-status-information">2.2.59. Admin lists status information</h4>
+<h4 id="admin-lists-status-information">2.2.60. Admin lists status information</h4>
 <div id="section-ucrestdoc-uc-UC_033" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_033">UC_033-Admin lists status information </a></p>
 </div>
@@ -2910,7 +2919,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-checks-server-version">2.2.60. Admin checks server version</h4>
+<h4 id="admin-checks-server-version">2.2.61. Admin checks server version</h4>
 <div id="section-ucrestdoc-uc-UC_040" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_040">UC_040-Admin checks server version </a></p>
 </div>
@@ -3075,31 +3084,31 @@ configure the client to do this also on color YELLOW. Only Green is always accep
                 ],
                 <span class="key"><span class="delimiter">&quot;</span><span class="content">severity</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">MEDIUM</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="4"></i><b>(4)</b>
                 <span class="key"><span class="delimiter">&quot;</span><span class="content">code</span><span class="delimiter">&quot;</span></span>: {
-                    <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/daimler/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="5"></i><b>(5)</b>
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="5"></i><b>(5)</b>
                     <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">28</span>,<i class="conum" data-value="6"></i><b>(6)</b>
                     <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">35</span>,
                     <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="content">public static void main(String[] args) throws Exception {</span><span class="delimiter">&quot;</span></span>,
                     <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">args</span><span class="delimiter">&quot;</span></span>,
                     <span class="key"><span class="delimiter">&quot;</span><span class="content">calls</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="7"></i><b>(7)</b>
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/daimler/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,
                         <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">33</span>,
                         <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">17</span>,
                         <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">String path = args[0];</span><span class="delimiter">&quot;</span></span>,
                         <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">args</span><span class="delimiter">&quot;</span></span>,
                         <span class="key"><span class="delimiter">&quot;</span><span class="content">calls</span><span class="delimiter">&quot;</span></span>: {
-                            <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/daimler/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,
+                            <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,
                             <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">33</span>,
                             <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">10</span>,
                             <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">String path = args[0];</span><span class="delimiter">&quot;</span></span>,
                             <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">path</span><span class="delimiter">&quot;</span></span>,
                             <span class="key"><span class="delimiter">&quot;</span><span class="content">calls</span><span class="delimiter">&quot;</span></span>: {
-                                <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/daimler/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,
+                                <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,
                                 <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">34</span>,
                                 <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">38</span>,
                                 <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">File documentsGenFolder = new File(path);</span><span class="delimiter">&quot;</span></span>,
                                 <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">path</span><span class="delimiter">&quot;</span></span>,
                                 <span class="key"><span class="delimiter">&quot;</span><span class="content">calls</span><span class="delimiter">&quot;</span></span>: {
-                                    <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/daimler/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="8"></i><b>(8)</b>
+                                    <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="8"></i><b>(8)</b>
                                     <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">34</span>,<i class="conum" data-value="9"></i><b>(9)</b>
                                     <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">29</span>,
                                     <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">File documentsGenFolder = new File(path);</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="10"></i><b>(10)</b>
@@ -3121,7 +3130,7 @@ configure the client to do this also on color YELLOW. Only Green is always accep
                 ],
                 <span class="key"><span class="delimiter">&quot;</span><span class="content">severity</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">INFO</span><span class="delimiter">&quot;</span></span>,
                 <span class="key"><span class="delimiter">&quot;</span><span class="content">code</span><span class="delimiter">&quot;</span></span>: {
-                    <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/daimler/sechub/docgen/usecase/UseCaseRestDocModelDataCollector.java</span><span class="delimiter">&quot;</span></span>,
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/mercedesbenz/sechub/docgen/usecase/UseCaseRestDocModelDataCollector.java</span><span class="delimiter">&quot;</span></span>,
                     <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">137</span>,
                     <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">5</span>,
                     <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">} catch (IOException e) {</span><span class="delimiter">&quot;</span></span>,
@@ -3265,6 +3274,9 @@ configure the client to do this also on color YELLOW. Only Green is always accep
 </li>
 <li>
 <p><a href="#section-usecase-UC_060">UC_060-Admin changes owner of a project</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_063">UC_063-Admin updates user email address</a></p>
 </li>
 </ul>
 </div>
@@ -4517,17 +4529,17 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Unassign user</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The service will remove the user to the project. If users has no longer access to projects ROLE_USER will be removed</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unassign user</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The service will remove the user to the project. If users has no longer access to projects ROLE_USER will be removed</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
@@ -7351,18 +7363,84 @@ are possible:</p>
 </table>
 </div>
 </div>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_063">4.1.64. UC_063-Admin updates user email address</h4>
+<div class="paragraph">
+<p>An administrator update the email address of an user. After the change an email will be
+sent to the old email-address to inform the user about the change. In addition, a new mail to
+the new email address will be sent as well.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>When the new email address is the same as before, the action will be rejected.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User emaill address will be changed</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service updates user email address.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The service will update the user email address and also trigger events.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inform user that the email address has been changed</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
 <div class="sect4">
-<h5 id="section-gen-messaging-overview">4.1.63.3. Overview</h5>
+<h5 id="section-gen-messaging-overview">4.1.64.1. Overview</h5>
 <div class="sect5">
-<h6 id="diagram">4.1.63.3.1. Diagram</h6>
+<h6 id="diagram">4.1.64.1.1. Diagram</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="868" height="3269">
+<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="861" height="3327">
 </div>
 </div>
 </div>
 <div class="sect5">
-<h6 id="section-gen-messaging-overview-linklist">4.1.63.3.2. List of all messages</h6>
+<h6 id="section-gen-messaging-overview-linklist">4.1.64.1.2. List of all messages</h6>
 <div class="ulist">
 <ul>
 <li>
@@ -7483,6 +7561,9 @@ are possible:</p>
 <p><a href="#section-gen-messaging-user_deleted">USER_DELETED</a></p>
 </li>
 <li>
+<p><a href="#section-gen-messaging-user_email_address_changed">USER_EMAIL_ADDRESS_CHANGED</a></p>
+</li>
+<li>
 <p><a href="#section-gen-messaging-user_new_api_token_requested">USER_NEW_API_TOKEN_REQUESTED</a></p>
 </li>
 <li>
@@ -7502,7 +7583,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-batch_job_status">4.1.63.4. Message BATCH_JOB_STATUS</h5>
+<h5 id="section-gen-messaging-batch_job_status">4.1.64.2. Message BATCH_JOB_STATUS</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_batch_job_status.svg" alt="Sequence diagram of messaging BATCH_JOB_STATUS" width="559" height="118">
@@ -7510,7 +7591,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_canceled">4.1.63.5. Message JOB_CANCELED</h5>
+<h5 id="section-gen-messaging-job_canceled">4.1.64.3. Message JOB_CANCELED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_canceled.svg" alt="Sequence diagram of messaging JOB_CANCELED" width="774" height="205">
@@ -7518,7 +7599,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_done">4.1.63.6. Message JOB_DONE</h5>
+<h5 id="section-gen-messaging-job_done">4.1.64.4. Message JOB_DONE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_done.svg" alt="Sequence diagram of messaging JOB_DONE" width="571" height="176">
@@ -7550,7 +7631,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_failed">4.1.63.7. Message JOB_FAILED</h5>
+<h5 id="section-gen-messaging-job_failed">4.1.64.5. Message JOB_FAILED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_failed.svg" alt="Sequence diagram of messaging JOB_FAILED" width="747" height="205">
@@ -7558,7 +7639,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_restart_canceled">4.1.63.8. Message JOB_RESTART_CANCELED</h5>
+<h5 id="section-gen-messaging-job_restart_canceled">4.1.64.6. Message JOB_RESTART_CANCELED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_restart_canceled.svg" alt="Sequence diagram of messaging JOB_RESTART_CANCELED" width="606" height="176">
@@ -7590,7 +7671,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_restart_triggered">4.1.63.9. Message JOB_RESTART_TRIGGERED</h5>
+<h5 id="section-gen-messaging-job_restart_triggered">4.1.64.7. Message JOB_RESTART_TRIGGERED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_restart_triggered.svg" alt="Sequence diagram of messaging JOB_RESTART_TRIGGERED" width="617" height="176">
@@ -7622,7 +7703,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_results_purged">4.1.63.10. Message JOB_RESULTS_PURGED</h5>
+<h5 id="section-gen-messaging-job_results_purged">4.1.64.8. Message JOB_RESULTS_PURGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_results_purged.svg" alt="Sequence diagram of messaging JOB_RESULTS_PURGED" width="586" height="176">
@@ -7630,7 +7711,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_result_purge_done">4.1.63.11. Message JOB_RESULT_PURGE_DONE</h5>
+<h5 id="section-gen-messaging-job_result_purge_done">4.1.64.9. Message JOB_RESULT_PURGE_DONE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_result_purge_done.svg" alt="Sequence diagram of messaging JOB_RESULT_PURGE_DONE" width="624" height="118">
@@ -7638,7 +7719,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_result_purge_failed">4.1.63.12. Message JOB_RESULT_PURGE_FAILED</h5>
+<h5 id="section-gen-messaging-job_result_purge_failed">4.1.64.10. Message JOB_RESULT_PURGE_FAILED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_result_purge_failed.svg" alt="Sequence diagram of messaging JOB_RESULT_PURGE_FAILED" width="638" height="118">
@@ -7646,7 +7727,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_started">4.1.63.13. Message JOB_STARTED</h5>
+<h5 id="section-gen-messaging-job_started">4.1.64.11. Message JOB_STARTED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_started.svg" alt="Sequence diagram of messaging JOB_STARTED" width="570" height="176">
@@ -7678,7 +7759,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-mapping_configuration_changed">4.1.63.14. Message MAPPING_CONFIGURATION_CHANGED</h5>
+<h5 id="section-gen-messaging-mapping_configuration_changed">4.1.64.12. Message MAPPING_CONFIGURATION_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_mapping_configuration_changed.svg" alt="Sequence diagram of messaging MAPPING_CONFIGURATION_CHANGED" width="739" height="176">
@@ -7686,7 +7767,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-project_access_level_changed">4.1.63.15. Message PROJECT_ACCESS_LEVEL_CHANGED</h5>
+<h5 id="section-gen-messaging-project_access_level_changed">4.1.64.13. Message PROJECT_ACCESS_LEVEL_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_project_access_level_changed.svg" alt="Sequence diagram of messaging PROJECT_ACCESS_LEVEL_CHANGED" width="852" height="205">
@@ -7694,7 +7775,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-project_created">4.1.63.16. Message PROJECT_CREATED</h5>
+<h5 id="section-gen-messaging-project_created">4.1.64.14. Message PROJECT_CREATED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_project_created.svg" alt="Sequence diagram of messaging PROJECT_CREATED" width="543" height="176">
@@ -7702,7 +7783,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-project_deleted">4.1.63.17. Message PROJECT_DELETED</h5>
+<h5 id="section-gen-messaging-project_deleted">4.1.64.15. Message PROJECT_DELETED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_project_deleted.svg" alt="Sequence diagram of messaging PROJECT_DELETED" width="861" height="234">
@@ -7710,7 +7791,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-project_owner_changed">4.1.63.18. Message PROJECT_OWNER_CHANGED</h5>
+<h5 id="section-gen-messaging-project_owner_changed">4.1.64.16. Message PROJECT_OWNER_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_project_owner_changed.svg" alt="Sequence diagram of messaging PROJECT_OWNER_CHANGED" width="636" height="176">
@@ -7718,7 +7799,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-project_whitelist_updated">4.1.63.19. Message PROJECT_WHITELIST_UPDATED</h5>
+<h5 id="section-gen-messaging-project_whitelist_updated">4.1.64.17. Message PROJECT_WHITELIST_UPDATED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_project_whitelist_updated.svg" alt="Sequence diagram of messaging PROJECT_WHITELIST_UPDATED" width="667" height="176">
@@ -7726,7 +7807,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_batch_job_status">4.1.63.20. Message REQUEST_BATCH_JOB_STATUS</h5>
+<h5 id="section-gen-messaging-request_batch_job_status">4.1.64.18. Message REQUEST_BATCH_JOB_STATUS</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_batch_job_status.svg" alt="Sequence diagram of messaging REQUEST_BATCH_JOB_STATUS" width="662" height="234">
@@ -7758,7 +7839,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_job_cancelation">4.1.63.21. Message REQUEST_JOB_CANCELATION</h5>
+<h5 id="section-gen-messaging-request_job_cancelation">4.1.64.19. Message REQUEST_JOB_CANCELATION</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_job_cancelation.svg" alt="Sequence diagram of messaging REQUEST_JOB_CANCELATION" width="645" height="176">
@@ -7766,7 +7847,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_job_restart">4.1.63.22. Message REQUEST_JOB_RESTART</h5>
+<h5 id="section-gen-messaging-request_job_restart">4.1.64.20. Message REQUEST_JOB_RESTART</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_job_restart.svg" alt="Sequence diagram of messaging REQUEST_JOB_RESTART" width="595" height="176">
@@ -7795,7 +7876,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_job_restart_hard">4.1.63.23. Message REQUEST_JOB_RESTART_HARD</h5>
+<h5 id="section-gen-messaging-request_job_restart_hard">4.1.64.21. Message REQUEST_JOB_RESTART_HARD</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_job_restart_hard.svg" alt="Sequence diagram of messaging REQUEST_JOB_RESTART_HARD" width="663" height="176">
@@ -7824,7 +7905,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_purge_job_results">4.1.63.24. Message REQUEST_PURGE_JOB_RESULTS</h5>
+<h5 id="section-gen-messaging-request_purge_job_results">4.1.64.22. Message REQUEST_PURGE_JOB_RESULTS</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_purge_job_results.svg" alt="Sequence diagram of messaging REQUEST_PURGE_JOB_RESULTS" width="674" height="309">
@@ -7853,7 +7934,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_scheduler_disable_job_processing">4.1.63.25. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</h5>
+<h5 id="section-gen-messaging-request_scheduler_disable_job_processing">4.1.64.23. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_scheduler_disable_job_processing.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING" width="860" height="176">
@@ -7882,7 +7963,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_scheduler_enable_job_processing">4.1.63.26. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</h5>
+<h5 id="section-gen-messaging-request_scheduler_enable_job_processing">4.1.64.24. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_scheduler_enable_job_processing.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING" width="852" height="176">
@@ -7911,7 +7992,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_scheduler_status_update">4.1.63.27. Message REQUEST_SCHEDULER_STATUS_UPDATE</h5>
+<h5 id="section-gen-messaging-request_scheduler_status_update">4.1.64.25. Message REQUEST_SCHEDULER_STATUS_UPDATE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_scheduler_status_update.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_STATUS_UPDATE" width="761" height="176">
@@ -7919,10 +8000,10 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_user_role_recalculation">4.1.63.28. Message REQUEST_USER_ROLE_RECALCULATION</h5>
+<h5 id="section-gen-messaging-request_user_role_recalculation">4.1.64.26. Message REQUEST_USER_ROLE_RECALCULATION</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="2229" height="380">
+<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="2282" height="380">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -7954,7 +8035,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scan_abandonded">4.1.63.29. Message SCAN_ABANDONDED</h5>
+<h5 id="section-gen-messaging-scan_abandonded">4.1.64.27. Message SCAN_ABANDONDED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scan_abandonded.svg" alt="Sequence diagram of messaging SCAN_ABANDONDED" width="564" height="115">
@@ -7962,7 +8043,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scan_done">4.1.63.30. Message SCAN_DONE</h5>
+<h5 id="section-gen-messaging-scan_done">4.1.64.28. Message SCAN_DONE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scan_done.svg" alt="Sequence diagram of messaging SCAN_DONE" width="477" height="118">
@@ -7970,7 +8051,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scan_failed">4.1.63.31. Message SCAN_FAILED</h5>
+<h5 id="section-gen-messaging-scan_failed">4.1.64.29. Message SCAN_FAILED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scan_failed.svg" alt="Sequence diagram of messaging SCAN_FAILED" width="491" height="118">
@@ -7978,7 +8059,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scheduler_job_processing_disabled">4.1.63.32. Message SCHEDULER_JOB_PROCESSING_DISABLED</h5>
+<h5 id="section-gen-messaging-scheduler_job_processing_disabled">4.1.64.30. Message SCHEDULER_JOB_PROCESSING_DISABLED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scheduler_job_processing_disabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_DISABLED" width="972" height="205">
@@ -8007,7 +8088,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scheduler_job_processing_enabled">4.1.63.33. Message SCHEDULER_JOB_PROCESSING_ENABLED</h5>
+<h5 id="section-gen-messaging-scheduler_job_processing_enabled">4.1.64.31. Message SCHEDULER_JOB_PROCESSING_ENABLED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scheduler_job_processing_enabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_ENABLED" width="968" height="205">
@@ -8036,7 +8117,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scheduler_started">4.1.63.34. Message SCHEDULER_STARTED</h5>
+<h5 id="section-gen-messaging-scheduler_started">4.1.64.32. Message SCHEDULER_STARTED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scheduler_started.svg" alt="Sequence diagram of messaging SCHEDULER_STARTED" width="579" height="176">
@@ -8044,7 +8125,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scheduler_status_update">4.1.63.35. Message SCHEDULER_STATUS_UPDATE</h5>
+<h5 id="section-gen-messaging-scheduler_status_update">4.1.64.33. Message SCHEDULER_STATUS_UPDATE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scheduler_status_update.svg" alt="Sequence diagram of messaging SCHEDULER_STATUS_UPDATE" width="681" height="176">
@@ -8052,7 +8133,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-start_scan">4.1.63.36. Message START_SCAN</h5>
+<h5 id="section-gen-messaging-start_scan">4.1.64.34. Message START_SCAN</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_start_scan.svg" alt="Sequence diagram of messaging START_SCAN" width="485" height="309">
@@ -8084,7 +8165,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-unsupported_operation">4.1.63.37. Message UNSUPPORTED_OPERATION</h5>
+<h5 id="section-gen-messaging-unsupported_operation">4.1.64.35. Message UNSUPPORTED_OPERATION</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_unsupported_operation.svg" alt="Sequence diagram of messaging UNSUPPORTED_OPERATION" width="636" height="115">
@@ -8092,7 +8173,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_added_to_project">4.1.63.38. Message USER_ADDED_TO_PROJECT</h5>
+<h5 id="section-gen-messaging-user_added_to_project">4.1.64.36. Message USER_ADDED_TO_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_added_to_project.svg" alt="Sequence diagram of messaging USER_ADDED_TO_PROJECT" width="732" height="205">
@@ -8121,15 +8202,15 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_api_token_changed">4.1.63.39. Message USER_API_TOKEN_CHANGED</h5>
+<h5 id="section-gen-messaging-user_api_token_changed">4.1.64.37. Message USER_API_TOKEN_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_api_token_changed.svg" alt="Sequence diagram of messaging USER_API_TOKEN_CHANGED" width="1141" height="234">
+<img src="images/gen_domain_messaging_user_api_token_changed.svg" alt="Sequence diagram of messaging USER_API_TOKEN_CHANGED" width="1163" height="234">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_becomes_superadmin">4.1.63.40. Message USER_BECOMES_SUPERADMIN</h5>
+<h5 id="section-gen-messaging-user_becomes_superadmin">4.1.64.38. Message USER_BECOMES_SUPERADMIN</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_becomes_superadmin.svg" alt="Sequence diagram of messaging USER_BECOMES_SUPERADMIN" width="663" height="176">
@@ -8137,10 +8218,10 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_created">4.1.63.41. Message USER_CREATED</h5>
+<h5 id="section-gen-messaging-user_created">4.1.64.39. Message USER_CREATED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_created.svg" alt="Sequence diagram of messaging USER_CREATED" width="615" height="205">
+<img src="images/gen_domain_messaging_user_created.svg" alt="Sequence diagram of messaging USER_CREATED" width="625" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -8166,7 +8247,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_deleted">4.1.63.42. Message USER_DELETED</h5>
+<h5 id="section-gen-messaging-user_deleted">4.1.64.40. Message USER_DELETED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_deleted.svg" alt="Sequence diagram of messaging USER_DELETED" width="1006" height="264">
@@ -8174,10 +8255,18 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_new_api_token_requested">4.1.63.43. Message USER_NEW_API_TOKEN_REQUESTED</h5>
+<h5 id="section-gen-messaging-user_email_address_changed">4.1.64.41. Message USER_EMAIL_ADDRESS_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_new_api_token_requested.svg" alt="Sequence diagram of messaging USER_NEW_API_TOKEN_REQUESTED" width="938" height="205">
+<img src="images/gen_domain_messaging_user_email_address_changed.svg" alt="Sequence diagram of messaging USER_EMAIL_ADDRESS_CHANGED" width="696" height="176">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-user_new_api_token_requested">4.1.64.42. Message USER_NEW_API_TOKEN_REQUESTED</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_user_new_api_token_requested.svg" alt="Sequence diagram of messaging USER_NEW_API_TOKEN_REQUESTED" width="871" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -8203,15 +8292,15 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_no_longer_superadmin">4.1.63.44. Message USER_NO_LONGER_SUPERADMIN</h5>
+<h5 id="section-gen-messaging-user_no_longer_superadmin">4.1.64.43. Message USER_NO_LONGER_SUPERADMIN</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_no_longer_superadmin.svg" alt="Sequence diagram of messaging USER_NO_LONGER_SUPERADMIN" width="692" height="176">
+<img src="images/gen_domain_messaging_user_no_longer_superadmin.svg" alt="Sequence diagram of messaging USER_NO_LONGER_SUPERADMIN" width="687" height="176">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_removed_from_project">4.1.63.45. Message USER_REMOVED_FROM_PROJECT</h5>
+<h5 id="section-gen-messaging-user_removed_from_project">4.1.64.44. Message USER_REMOVED_FROM_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_removed_from_project.svg" alt="Sequence diagram of messaging USER_REMOVED_FROM_PROJECT" width="786" height="205">
@@ -8240,7 +8329,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_roles_changed">4.1.63.46. Message USER_ROLES_CHANGED</h5>
+<h5 id="section-gen-messaging-user_roles_changed">4.1.64.45. Message USER_ROLES_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_roles_changed.svg" alt="Sequence diagram of messaging USER_ROLES_CHANGED" width="594" height="176">
@@ -8275,7 +8364,7 @@ are possible:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_signup_requested">4.1.63.47. Message USER_SIGNUP_REQUESTED</h5>
+<h5 id="section-gen-messaging-user_signup_requested">4.1.64.46. Message USER_SIGNUP_REQUESTED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_signup_requested.svg" alt="Sequence diagram of messaging USER_SIGNUP_REQUESTED" width="629" height="176">
@@ -8310,7 +8399,7 @@ are possible:</p>
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.28.0<br>
+ Server 0.29.0<br>
 </div>
 </div>
 </body>
