@@ -16,7 +16,7 @@ ENV DOWNLOAD_FOLDER="/downloads"
 ENV MOCK_FOLDER="$SCRIPT_FOLDER/mocks"
 
 # PDS
-ENV PDS_VERSION="0.25.0"
+ENV PDS_VERSION="0.26.0"
 
 # Shared volumes
 ENV SHARED_VOLUMES="/shared_volumes"

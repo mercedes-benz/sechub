@@ -86,7 +86,7 @@ export PDS_USERID=admin
 export PDS_APITOKEN="<pds-admin-apitoken>"
 ----
 +
-The default values for the PDS-GoSec `docker-compose` examples are:
+The default values for the PDS-Scancode `docker-compose` examples are:
 +
 ----
 export PDS_SERVER=https://localhost:8444
@@ -118,7 +118,7 @@ Date: Tue, 08 Jun 2021 16:38:02 GMT
 . Create a new job to get the PDS JobUUID
 +
 ----
-./pds-api.sh create_job PDS_GOSEC "288607bf-ac81-4088-842c-005d5702a9e9"
+./pds-api.sh create_job PDS_SCANCODE "288607bf-ac81-4088-842c-005d5702a9e9"
 {
   "jobUUID": "8d4236cf-b512-40bc-bb70-c247fa4c9c37"
 }
@@ -305,7 +305,7 @@ The cluster is created locally via `docker-compose`.
 
 ==== Shared Volume
 
-The cluster uses a shared volume defined in `docker-compose`. Docker allows to create volumes which can be used by multiple instances to upload files to. Reading, extracting and analysing the files is done in the PDS+GoSec container.
+The cluster uses a shared volume defined in `docker-compose`. Docker allows to create volumes which can be used by multiple instances to upload files to. Reading, extracting and analysing the files is done in the PDS + Scancode container.
 
 The cluster consists of a PostgreSQL database, a Nginx loadbalancer and one or more PDS server.
 
@@ -339,7 +339,7 @@ NOTE: It is recommended to change the passwords in `.env-cluster`. Other values 
 
 ==== Object Storage
 
-The cluster uses an object storage to store files. The cluster uses https://github.com/chrislusf/seaweedfs[SeaweedFS] (S3 compatible) to store files. The PDS instance(s) use the object storage to upload files to. Reading, extracting and analysing the files is done in the PDS+GoSec container.
+The cluster uses an object storage to store files. The cluster uses https://github.com/chrislusf/seaweedfs[SeaweedFS] (S3 compatible) to store files. The PDS instance(s) use the object storage to upload files to. Reading, extracting and analysing the files is done in the PDS + Scancode container.
 
 The cluster consists of a PostgreSQL database, a Nginx loadbalancer, a SeaweedFS object storage and one or more PDS server.
 
@@ -347,13 +347,13 @@ image::../shared/media/cluster_object_storage.svg[Components of cluster with obj
 
 ===== Automatic
 
-Starting several PDS + GoSec instances
+Starting several PDS + Scancode instances
 
 ----
 ./51-start-multiple-object-storage-docker-compose.sh <replicas>
 ----
 
-Example of starting 3 PDS + GoSec instances
+Example of starting 3 PDS + Scancode instances
 
 ----
 ./51-start-multiple-object-storage-docker-compose.sh 3
@@ -379,11 +379,11 @@ S3_ENABLED=true
 
 === Change the Configuration
 
-There are several configuration options available for the PDS+GoSec `docker-compose` files. Have a look at `env-example` for more details.
+There are several configuration options available for the PDS + Scancode `docker-compose` files. Have a look at `env-example` for more details.
 
 === Troubleshooting
 
-This section contains information about how to troubleshoot PDS+GoSec if something goes wrong.
+This section contains information about how to troubleshoot PDS + Scancode if something goes wrong.
 
 ==== Access the Ubuntu container
 
@@ -412,7 +412,7 @@ TIP: https://www.eclipse.org/community/eclipse_newsletter/2017/june/article1.php
 
 == Build Image and Push to Registry
 
-Build container images and push them to registry to run PDS+GoSec on virtual machines, Kubernetes or any other distributed system.
+Build container images and push them to registry to run PDS + Scancode on virtual machines, Kubernetes or any other distributed system.
 
 === Build Image
 
@@ -450,7 +450,7 @@ Push the container image to a registry.
 
 == Kubernetes
 
-https://kubernetes.io/[Kubernetes] is an open-source container-orchestration system. This sections explains how to deploy and run PDS+GoSec in Kubernetes.
+https://kubernetes.io/[Kubernetes] is an open-source container-orchestration system. This sections explains how to deploy and run PDS + Scancode in Kubernetes.
 
 === Helm
 
@@ -459,7 +459,7 @@ https://helm.sh/[Helm] is a package manager for Kubernetes.
 ==== Requierments
 
 * https://helm.sh/docs/intro/install/[Helm] installed
-* `pds_gosec_ubuntu` image pushed to registry
+* `pds_scancode_ubuntu` image pushed to registry
 
 ==== Installation
 
@@ -472,7 +472,7 @@ A minimal example configuration file with one instance:
 replicaCount: 1
 
 image:
-   registry: registry.app.corpintra.net/sechub/pds_gosec_ubuntu
+   registry: registry.app.corpintra.net/sechub/pds_scancode_ubuntu
    tag: latest
 
 pds:
@@ -509,7 +509,7 @@ An example configuration file with 3 replicas, postgresql and object storage:
 replicaCount: 3
 
 image:
-   registry: my.registry.example.org/pds_gosec
+   registry: my.registry.example.org/pds_scancode_ubuntu
    tag: latest
 
 pds:
@@ -560,7 +560,7 @@ To generate passwords use `tr -dc A-Za-z0-9 </dev/urandom | head -c 18 ; echo ''
 . Install helm package from file system
 +
 ----
-helm install --values myvalues.yaml pds-gosec helm/pds-gosec/
+helm install --values myvalues.yaml pds-scancode helm/pds-scancode/
 ----
 +
 [TIP]
@@ -571,16 +571,16 @@ Use `helm --namespace <my-namespace> install…` to install the helm chart into 
 ----
 kubectl get pods
 NAME                             READY   STATUS    RESTARTS   AGE
-pds-gosec-545f5bc8-7s6rh         1/1     Running   0          1m43s
-pds-gosec-545f5bc8-px9cs         1/1     Running   0          1m43s
-pds-gosec-545f5bc8-t52p6         1/1     Running   0          3m
+pds-scancode-545f5bc8-7s6rh         1/1     Running   0          1m43s
+pds-scancode-545f5bc8-px9cs         1/1     Running   0          1m43s
+pds-scancode-545f5bc8-t52p6         1/1     Running   0          3m
 
 ----
 
 . Forward port of one of the pods to own machine
 +
 ----
-kubectl port-forward pds-gosec-545f5bc8-7s6rh  8444:8444
+kubectl port-forward pds-scancode-545f5bc8-7s6rh  8444:8444
 ----
 
 . Scan as explained in <<_scan>>.
@@ -590,7 +590,7 @@ kubectl port-forward pds-gosec-545f5bc8-7s6rh  8444:8444
 In case, `my-values.yaml` was changed. Simply, use `helm upgrade` to update the deployment. `helm` will handle scaling up and down as well as changing the configuration.
 
 ----
-helm upgrade --values my-values.yaml pds-gosec helm/pds-gosec/
+helm upgrade --values my-values.yaml pds-scancode helm/pds-scancode/
 ----
 
 ==== Uninstall 
@@ -600,13 +600,13 @@ helm upgrade --values my-values.yaml pds-gosec helm/pds-gosec/
 ----
 helm list
 NAME     	NAMESPACE 	REVISION	UPDATED                                 	STATUS  	CHART                          	APP VERSION
-pds-gosec	my-namespace	1       	2021-06-24 21:54:37.668489822 +0200 CEST	deployed	pds-gosec-0.1.0                	0.21.0 
+pds-scancode	my-namespace	1       	2022-03-01 19:54:37.668489822 +0200 CEST	deployed	pds-scancode-0.1.0                	0.25.0 
 ----
 
 . Helm uninstall
 +
 ----
-helm uninstall pds-gosec
+helm uninstall pds-scancode
 ----
 
 === Troubleshooting
@@ -614,22 +614,22 @@ helm uninstall pds-gosec
 * Access deployment events.
 +
 ----
-kubectl describe pod pds-gosec-545f5bc8-7s6rh
+kubectl describe pod pds-scancode-545f5bc8-7s6rh
 …
 Events:
   Type    Reason     Age   From               Message
   ----    ------     ----  ----               -------
-  Normal  Scheduled  1m    default-scheduler  Successfully assigned sechub-dev/pds-gosec-749fcb8d7f-jjqwn to kube-node01
-  Normal  Pulling    54s   kubelet            Pulling image "my.registry.example.org/sechub/pds_gosec:v0.1"
-  Normal  Pulled     40s   kubelet            Successfully pulled image "my.registry.example.org/sechub/pds_gosec:v0.1" in 13.815348799s
-  Normal  Created    15s   kubelet            Created container pds-gosec
-  Normal  Started    10s   kubelet            Started container pds-gosec
+  Normal  Scheduled  1m    default-scheduler  Successfully assigned sechub-dev/pds-scancode-749fcb8d7f-jjqwn to kube-node01
+  Normal  Pulling    54s   kubelet            Pulling image "my.registry.example.org/sechub/pds_scancode:v0.1"
+  Normal  Pulled     40s   kubelet            Successfully pulled image "my.registry.example.org/sechub/pds_scancode:v0.1" in 13.815348799s
+  Normal  Created    15s   kubelet            Created container pds-scancode
+  Normal  Started    10s   kubelet            Started container pds-scancode
 ----
 
 * Access container logs.
 +
 ----
-kubectl logs pds-gosec-545f5bc8-7s6rh
+kubectl logs pds-scancode-545f5bc8-7s6rh
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -637,19 +637,21 @@ kubectl logs pds-gosec-545f5bc8-7s6rh
  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
   '  |____| .__|_| |_|_| |_\__, | / / / /
  =========|_|==============|___/=/_/_/_/
- :: Spring Boot ::                (v2.4.0)
+ :: Spring Boot ::                (v2.5.8)
 
-2021-06-09 14:46:07.310  INFO 7 --- [           main] d.s.p.ProductDelegationServerApplication : Starting ProductDelegationServerApplication using Java 11.0.11 on pds-gosec-749fcb8d7f-jjqwn with PID 7 (/pds/sechub-pds-0.21.0.jar started by gosec in /workspace)
-2021-06-09 14:46:07.312  INFO 7 --- [           main] d.s.p.ProductDelegationServerApplication : The following profiles are active: pds_localserver
-2021-06-09 14:46:08.945  INFO 7 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2021-06-09 14:46:08.945  INFO 7 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.39]
-2021-06-09 14:46:09.000  INFO 7 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2021-06-09 14:46:09.228  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2021-06-09 14:46:09.485  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2021-06-09 14:46:10.243  INFO 7 --- [           main] c.d.s.p.m.PDSHeartBeatTriggerService     : Heartbeat service created with 1000 millisecondss initial delay and 60000 millisecondss as fixed delay
-2021-06-09 14:46:10.439  INFO 7 --- [           main] c.d.s.pds.batch.PDSBatchTriggerService   : Scheduler service created with 100 millisecondss initial delay and 500 millisecondss as fixed delay
-2021-06-09 14:46:13.192  INFO 7 --- [           main] d.s.p.ProductDelegationServerApplication : Started ProductDelegationServerApplication in 6.783 seconds (JVM running for 7.27)
-2021-06-09 14:46:14.206  INFO 7 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : Heartbeat will be initialized
-2021-06-09 14:46:14.206  INFO 7 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : Create new server hearbeat
-2021-06-09 14:46:14.255  INFO 7 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : heartbeat update - serverid:GOSEC_CLUSTER, heartbeatuuid:a46b97b2-4cfb-449d-a171-42b255c4aab8, cluster-member-data:{"hostname":"pds-gosec-749fcb8d7f-jjqwn","ip":"192.168.129.206","port":8444,"heartBeatTimestamp":"2021-06-09T14:46:14.207113","executionState":{"queueMax":50,"jobsInQueue":0,"entries":[]}}
+2022-03-01 18:56:52.820  INFO 6 --- [           main] d.s.p.ProductDelegationServerApplication : Starting ProductDelegationServerApplication using Java 11.0.13 on pds-scancode-865495cb96-jmt69 with PID 6 (/pds/sechub-pds-0.25.0.jar started by pds in /workspace)
+2022-03-01 18:56:52.822  INFO 6 --- [           main] d.s.p.ProductDelegationServerApplication : The following profiles are active: pds_localserver,pds_postgres
+2022-03-01 18:56:54.252  WARN 6 --- [           main] o.apache.tomcat.util.net.SSLHostConfig   : The protocol [TLSv1.3] was added to the list of protocols on the SSLHostConfig named [_default_]. Check if a +/- prefix is missing.
+2022-03-01 18:56:54.292  INFO 6 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2022-03-01 18:56:54.292  INFO 6 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.56]
+2022-03-01 18:56:54.335  INFO 6 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2022-03-01 18:56:54.513  INFO 6 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2022-03-01 18:56:54.756  INFO 6 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2022-03-01 18:56:57.278  INFO 6 --- [           main] c.d.s.p.storage.PDSMultiStorageService   : Created storage factory: AwsS3JobStorageFactory
+2022-03-01 18:56:57.297  INFO 6 --- [           main] c.d.s.p.m.PDSHeartBeatTriggerService     : Heartbeat service created with 1000 millisecondss initial delay and 60000 millisecondss as fixed delay
+2022-03-01 18:56:57.491  INFO 6 --- [           main] c.d.s.pds.batch.PDSBatchTriggerService   : Scheduler service created with 100 millisecondss initial delay and 500 millisecondss as fixed delay
+2022-03-01 18:56:58.556  INFO 6 --- [           main] d.s.p.ProductDelegationServerApplication : Started ProductDelegationServerApplication in 6.737 seconds (JVM running for 7.231)
+2022-03-01 18:56:59.573  INFO 6 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : Heartbeat will be initialized
+2022-03-01 18:56:59.573  INFO 6 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : Create new server hearbeat
+2022-03-01 18:56:59.616  INFO 6 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : heartbeat update - serverid:SCANCODE_TOOL_CLUSTER, heartbeatuuid:29496a24-66dc-48e9-8356-59cd482b9e0f, cluster-member-data:{"hostname":"pds-scancode-865495cb96-jmt69","ip":"192.168.129.8","port":8444,"heartBeatTimestamp":"2022-03-01T18:56:59.575232","executionState":{"queueMax":50,"jobsInQueue":0,"entries":[]}}
 ----

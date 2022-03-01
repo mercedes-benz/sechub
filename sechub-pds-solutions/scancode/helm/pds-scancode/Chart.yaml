@@ -2,7 +2,7 @@
 
 apiVersion: v2
 name: pds-scancode
-description: Scancode+ PDS as Helm chart for Kubernetes
+description: Scancode + PDS as Helm chart for Kubernetes
 
 maintainers:
   - name: Jeremias Eppler
