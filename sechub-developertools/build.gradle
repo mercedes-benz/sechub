@@ -25,7 +25,7 @@ task startIntegrationTestAdminUI(type: JavaExec){
 
     classpath = sourceSets.main.runtimeClasspath
 
-    main = 'com.mercedesbenz.sechub.developertools.admin.ui.DeveloperAdministrationUI'
+    mainClass = 'com.mercedesbenz.sechub.developertools.admin.ui.DeveloperAdministrationUI'
 
     jvmArgs = ['-Dsechub.developertools.admin.integrationtestserver=true',
                '-Dsechub.developertools.admin.server=localhost',

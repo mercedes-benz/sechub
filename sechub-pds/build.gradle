@@ -36,7 +36,7 @@ task assembleArtifact(type: Zip, group: 'sechub') {
     from "${projectDir}/build/go/"
     from "${rootProject.projectDir}/sechub-doc/build/asciidoc"
     include '**/sechub-product-delegation-server.*'
-    description "Assemble archive $archiveName into ${relativePath(destinationDirectory)}"
+    description "Assemble archive $archiveFileName into ${relativePath(destinationDirectory)}"
 }
 
 /**

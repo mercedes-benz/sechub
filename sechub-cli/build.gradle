@@ -80,7 +80,7 @@ task assembleArtifact(type: Zip, group: 'client') {
     destinationDirectory=file("$buildDir/zip/")
     from "${projectDir}/build/go/"
     from "${rootProject.projectDir}/sechub-doc/build/asciidoc/sechub-client.pdf" // we add the documentation into zip
-    description "Assemble archive $archiveName into ${relativePath(destinationDirectory)}"
+    description "Assemble archive $archiveFileName into ${relativePath(destinationDirectory)}"
 }
 
 version =   VersionData.getClientVersion()

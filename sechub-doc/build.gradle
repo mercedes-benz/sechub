@@ -82,7 +82,7 @@ task dropOldGeneratedAsciidoc(dependsOn: 'test'){
 task generateAsciidoc(type: JavaExec, dependsOn: 'dropOldGeneratedAsciidoc') {
 
 
-    main = 'com.mercedesbenz.sechub.docgen.AsciidocGenerator'
+    mainClass = 'com.mercedesbenz.sechub.docgen.AsciidocGenerator'
     args = ["${targetAsciiDocGenFolder}"]
     group = 'sechub'
     description = 'Starts asciidoc generator. Will generate planuml files and more'

@@ -26,7 +26,7 @@ task assembleArtifact(type: Zip, group: 'sechub') {
     exclude '**/sechub-product-delegation-server.*'
     exclude '**/sechub-client.*'
     exclude '**/.asciidoctor/**'
-    description "Assemble archive $archiveName into ${relativePath(destinationDirectory)}"
+    description "Assemble archive $archiveFileName into ${relativePath(destinationDirectory)}"
 }
 
 /**
