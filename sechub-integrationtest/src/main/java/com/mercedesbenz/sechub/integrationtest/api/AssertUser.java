@@ -518,8 +518,8 @@ public class AssertUser extends AbstractAssert {
         return this;
     }
 
-    public AssertUser hasReceivedEmail(String subject, boolean asRegularExpression) {
-        AssertMail.assertMailExists(user.getEmail(), subject, asRegularExpression);
+    public AssertUser hasReceivedEmail(String subject, TextSearchMode subjectSearchMode) {
+        AssertMail.assertMailExists(user.getEmail(), subject, subjectSearchMode);
         return this;
     }
 

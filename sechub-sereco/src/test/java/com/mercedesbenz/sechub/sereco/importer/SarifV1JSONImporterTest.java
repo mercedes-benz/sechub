@@ -31,6 +31,7 @@ class SarifV1JSONImporterTest {
     private static String sarif_2_1_0_gosec2_8_0_taxonomyExample;
     private static String sarif_2_1_0_coverity_20_21_03_taxonomyExample;
     private static String sarif_2_1_0_owasp_zap;
+    private static String sarif_2_1_0_gosec2_9_5_example5_cosdescan;
 
     private SarifV1JSONImporter importerToTest;
 
@@ -40,6 +41,7 @@ class SarifV1JSONImporterTest {
         sarif_2_1_0_es_lint_empty_results = loadSarifTestFile("sarif_2.1.0_empty_results.json");
         sarif_2_1_0_pythonscanner_thread_flows = loadSarifTestFile("sarif_2.1.0_threadflows_example.json");
         sarif_2_1_0_gosec2_8_0_taxonomyExample = loadSarifTestFile("sarif_2.1.0_gosec_2.8.0_example_with_taxonomy.json");
+        sarif_2_1_0_gosec2_9_5_example5_cosdescan = loadSarifTestFile("sarif_2.1.0_gosec_2.9.5_example5_codescan.sarif.json");
         sarif_2_1_0_coverity_20_21_03_taxonomyExample = loadSarifTestFile("sarif_2.1.0_coverity_20.21.03_example_with_taxonomy.json");
         sarif_2_1_0_owasp_zap = loadSarifTestFile("sarif_2.1.0_owasp_zap.json");
     }
@@ -229,6 +231,30 @@ class SarifV1JSONImporterTest {
                     and().
                 withSeverity(SerecoSeverity.HIGH).
                 withDescriptionContaining("SQL string formatting").
+            isContained();
+
+        /* @formatter:on */
+    }
+
+    @Test
+    void go_sec_2_9_5_example5_codescan__can_be_imported_and_contains_source() throws Exception {
+        /* prepare */
+        SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_gosec2_9_5_example5_cosdescan);
+
+        /* execute */
+        List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
+
+        /* test */
+        /* @formatter:off */
+        assertVulnerabilities(vulnerabilities).
+            hasVulnerabilities(38).
+            verifyVulnerability().
+                classifiedBy().
+                    cwe(79).
+                    and().
+                withDescriptionContaining("will not auto-escape").
+                withSeverity(SerecoSeverity.HIGH).
+                withCodeLocation("go-test-bench/pkg/servestd/servestd.go", 69,14).containingSource("68: \t\t}\n69: \t\tvar data = template.HTML(v.TmplFile)\n70: \t\tisTmpl := true").done().
             isContained();
 
         /* @formatter:on */
