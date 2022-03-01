@@ -14,7 +14,7 @@
 									"endColumn": 14,
 									"endLine": 69,
 									"snippet": {
-										"text": "68: \t\t}\n69: \t\tvar data = template.HTML(v.TmplFile)\n70: \t\tisTmpl := true\n"
+										"text": "var data = template.HTML(v.TmplFile)"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 14,
@@ -40,7 +40,7 @@
 									"endColumn": 10,
 									"endLine": 151,
 									"snippet": {
-										"text": "150: \n151: \t\treturn template.HTML(userInput), false\n152: \tcase \"noop\":\n"
+										"text": "return template.HTML(userInput), false"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 10,
@@ -66,7 +66,7 @@
 									"endColumn": 10,
 									"endLine": 145,
 									"snippet": {
-										"text": "144: \n145: \t\treturn template.HTML(userInput), false\n146: \tcase \"unsafe\":\n"
+										"text": "return template.HTML(userInput), false"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 10,
@@ -92,7 +92,7 @@
 									"endColumn": 9,
 									"endLine": 118,
 									"snippet": {
-										"text": "117: \n118: \treturn template.HTML(input), false\n119: }\n"
+										"text": "return template.HTML(input), false"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 9,
@@ -118,7 +118,7 @@
 									"endColumn": 10,
 									"endLine": 101,
 									"snippet": {
-										"text": "100: \tif r.Method == http.MethodGet {\n101: \t\treturn template.HTML(\"Cannot GET \" + r.URL.Path), false\n102: \t}\n"
+										"text": "return template.HTML(\"Cannot GET \" + r.URL.Path), false"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 10,
@@ -144,7 +144,7 @@
 									"endColumn": 9,
 									"endLine": 95,
 									"snippet": {
-										"text": "94: \n95: \treturn template.HTML(input), false\n96: }\n"
+										"text": "return template.HTML(input), false"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 9,
@@ -170,7 +170,7 @@
 									"endColumn": 10,
 									"endLine": 79,
 									"snippet": {
-										"text": "78: \tif r.Method == http.MethodGet {\n79: \t\treturn template.HTML(\"Cannot GET \" + r.URL.Path), false\n80: \t}\n"
+										"text": "return template.HTML(\"Cannot GET \" + r.URL.Path), false"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 10,
@@ -196,7 +196,7 @@
 									"endColumn": 9,
 									"endLine": 74,
 									"snippet": {
-										"text": "73: \n74: \treturn template.HTML(input), false\n75: }\n"
+										"text": "return template.HTML(input), false"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 9,
@@ -222,7 +222,7 @@
 									"endColumn": 9,
 									"endLine": 52,
 									"snippet": {
-										"text": "51: \t}\n52: \treturn template.HTML(input), false\n53: }\n"
+										"text": "return template.HTML(input), false"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 9,
@@ -248,7 +248,7 @@
 									"endColumn": 9,
 									"endLine": 30,
 									"snippet": {
-										"text": "29: \t//execute input script\n30: \treturn template.HTML(input), false\n31: \n"
+										"text": "return template.HTML(input), false"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 9,
@@ -274,7 +274,7 @@
 									"endColumn": 9,
 									"endLine": 124,
 									"snippet": {
-										"text": "123: \t}\n124: \treturn template.HTML(data), false\n125: }\n"
+										"text": "return template.HTML(data), false"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 9,
@@ -300,7 +300,7 @@
 									"endColumn": 11,
 									"endLine": 100,
 									"snippet": {
-										"text": "99: \t\tif err != nil {\n100: \t\t\treturn template.HTML(\"Congrats, you are safe! Error from writeFile: \" + err.Error()), false\n101: \t\t} else if data == \"\" {\n"
+										"text": "return template.HTML(\"Congrats, you are safe! Error from writeFile: \" + err.Error()), false"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 11,
@@ -326,7 +326,7 @@
 									"endColumn": 9,
 									"endLine": 50,
 									"snippet": {
-										"text": "49: \t}\n50: \treturn template.HTML(data), false\n51: }\n"
+										"text": "return template.HTML(data), false"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 9,
@@ -352,7 +352,7 @@
 									"endColumn": 11,
 									"endLine": 35,
 									"snippet": {
-										"text": "34: \t\tif err != nil {\n35: \t\t\treturn template.HTML(\"Congrats, you are safe! Error from readFile: \" + err.Error()), false\n36: \t\t\t//fmt.Fprintf(w, \"Congrats, you are safe! Error from readFile: \")\n"
+										"text": "return template.HTML(\"Congrats, you are safe! Error from readFile: \" + err.Error()), false"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 11,
@@ -378,7 +378,7 @@
 									"endColumn": 9,
 									"endLine": 112,
 									"snippet": {
-										"text": "111: \t}\n112: \treturn template.HTML(query), false //change to out desired output\n113: }\n"
+										"text": "return template.HTML(query), false //change to out desired output"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 9,
@@ -404,7 +404,7 @@
 									"endColumn": 10,
 									"endLine": 110,
 									"snippet": {
-										"text": "109: \tif err != nil {\n110: \t\treturn template.HTML(err.Error()), false\n111: \t}\n"
+										"text": "return template.HTML(err.Error()), false"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 10,
@@ -430,7 +430,7 @@
 									"endColumn": 10,
 									"endLine": 104,
 									"snippet": {
-										"text": "103: \t\tlog.Printf(\"Could not escape body: %s\", err)\n104: \t\treturn template.HTML(err.Error()), false\n105: \t}\n"
+										"text": "return template.HTML(err.Error()), false"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 10,
@@ -456,7 +456,7 @@
 									"endColumn": 9,
 									"endLine": 85,
 									"snippet": {
-										"text": "84: \n85: \treturn template.HTML(query), false //change to out desired output\n86: }\n"
+										"text": "return template.HTML(query), false //change to out desired output"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 9,
@@ -482,7 +482,7 @@
 									"endColumn": 11,
 									"endLine": 79,
 									"snippet": {
-										"text": "78: \t\tif err != nil {\n79: \t\t\treturn template.HTML(err.Error()), false\n80: \t\t}\n"
+										"text": "return template.HTML(err.Error()), false"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 11,
@@ -508,7 +508,7 @@
 									"endColumn": 9,
 									"endLine": 43,
 									"snippet": {
-										"text": "42: \n43: \treturn template.HTML(query), false //change to out desired output\n44: }\n"
+										"text": "return template.HTML(query), false //change to out desired output"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 9,
@@ -534,7 +534,7 @@
 									"endColumn": 10,
 									"endLine": 40,
 									"snippet": {
-										"text": "39: \tif err != nil {\n40: \t\treturn template.HTML(err.Error()), false\n41: \t}\n"
+										"text": "return template.HTML(err.Error()), false"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 10,
@@ -560,7 +560,7 @@
 									"endColumn": 10,
 									"endLine": 93,
 									"snippet": {
-										"text": "92: \n93: \t\treturn template.HTML(output), false\n94: \n"
+										"text": "return template.HTML(output), false"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 10,
@@ -586,7 +586,7 @@
 									"endColumn": 10,
 									"endLine": 74,
 									"snippet": {
-										"text": "73: \n74: \t\treturn template.HTML(output), false\n75: \n"
+										"text": "return template.HTML(output), false"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 10,
@@ -612,7 +612,7 @@
 									"endColumn": 9,
 									"endLine": 87,
 									"snippet": {
-										"text": "86: \t}\n87: \treturn template.HTML(out.String()), false\n88: }\n"
+										"text": "return template.HTML(out.String()), false"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 9,
@@ -638,7 +638,7 @@
 									"endColumn": 9,
 									"endLine": 60,
 									"snippet": {
-										"text": "59: \t}\n60: \treturn template.HTML(out.String()), false\n61: }\n"
+										"text": "return template.HTML(out.String()), false"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 9,
@@ -664,7 +664,7 @@
 									"endColumn": 9,
 									"endLine": 75,
 									"snippet": {
-										"text": "74: \t\t}\n75: \t\tcmd = exec.CommandContext(ctx, args[0], args[1:]...)\n76: \tcase \"noop\":\n"
+										"text": "cmd = exec.CommandContext(ctx, args[0], args[1:]...)"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 9,
@@ -691,7 +691,7 @@
 									"endColumn": 9,
 									"endLine": 48,
 									"snippet": {
-										"text": "47: \t\t}\n48: \t\tcmd = exec.Command(args[0], args[1:]...)\n49: \tcase \"noop\":\n"
+										"text": "cmd = exec.Command(args[0], args[1:]...)"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 9,
@@ -712,13 +712,40 @@
 						{
 							"physicalLocation": {
 								"artifactLocation": {
+									"uri": "go-test-bench/pkg/servegin/sqli.go"
+								},
+								"region": {
+									"endColumn": 13,
+									"endLine": 51,
+									"snippet": {
+										"text": "query := fmt.Sprintf(\"SELECT '%s' as '%s'\", payload, \"test\")"
+									},
+									"sourceLanguage": "go",
+									"startColumn": 13,
+									"startLine": 51
+								}
+							}
+						}
+					],
+					"message": {
+						"text": "SQL string formatting"
+					},
+					"ruleId": "G201",
+					"ruleIndex": 2
+				},
+				{
+					"level": "error",
+					"locations": [
+						{
+							"physicalLocation": {
+								"artifactLocation": {
 									"uri": "go-test-bench/pkg/servegin/pathtraversal.go"
 								},
 								"region": {
 									"endColumn": 16,
 									"endLine": 46,
 									"snippet": {
-										"text": "45: \tcase \"ioutil.ReadFile\":\n46: \t\tdata, err := ioutil.ReadFile(payload)\n47: \t\tif err != nil {\n"
+										"text": "data, err := ioutil.ReadFile(payload)"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 16,
@@ -731,7 +758,34 @@
 						"text": "Potential file inclusion via variable"
 					},
 					"ruleId": "G304",
-					"ruleIndex": 2
+					"ruleIndex": 3
+				},
+				{
+					"level": "error",
+					"locations": [
+						{
+							"physicalLocation": {
+								"artifactLocation": {
+									"uri": "go-test-bench/internal/pathtraversal/path-traversal.go"
+								},
+								"region": {
+									"endColumn": 13,
+									"endLine": 132,
+									"snippet": {
+										"text": "fr, err := os.Create(filename)"
+									},
+									"sourceLanguage": "go",
+									"startColumn": 13,
+									"startLine": 132
+								}
+							}
+						}
+					],
+					"message": {
+						"text": "Potential file inclusion via variable"
+					},
+					"ruleId": "G304",
+					"ruleIndex": 3
 				},
 				{
 					"level": "error",
@@ -745,7 +799,7 @@
 									"endColumn": 18,
 									"endLine": 70,
 									"snippet": {
-										"text": "69: func readFile(filename string) (string, error) {\n70: \tcontent, err := ioutil.ReadFile(filename)\n71: \tdata := string(content)\n"
+										"text": "content, err := ioutil.ReadFile(filename)"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 18,
@@ -758,7 +812,7 @@
 						"text": "Potential file inclusion via variable"
 					},
 					"ruleId": "G304",
-					"ruleIndex": 2
+					"ruleIndex": 3
 				},
 				{
 					"level": "error",
@@ -772,7 +826,7 @@
 									"endColumn": 13,
 									"endLine": 55,
 									"snippet": {
-										"text": "54: func bufferedReadFile(filename string) (string, error) {\n55: \tfr, err := os.Open(filename)\n56: \tif err != nil {\n"
+										"text": "fr, err := os.Open(filename)"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 13,
@@ -785,7 +839,7 @@
 						"text": "Potential file inclusion via variable"
 					},
 					"ruleId": "G304",
-					"ruleIndex": 2
+					"ruleIndex": 3
 				},
 				{
 					"level": "error",
@@ -799,7 +853,7 @@
 									"endColumn": 15,
 									"endLine": 128,
 									"snippet": {
-										"text": "127: \tpath += \"/routes.json\"\n128: \tdata, err := os.ReadFile(path)\n129: \tif err != nil {\n"
+										"text": "data, err := os.ReadFile(path)"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 15,
@@ -812,7 +866,7 @@
 						"text": "Potential file inclusion via variable"
 					},
 					"ruleId": "G304",
-					"ruleIndex": 2
+					"ruleIndex": 3
 				},
 				{
 					"level": "error",
@@ -826,7 +880,7 @@
 									"endColumn": 10,
 									"endLine": 53,
 									"snippet": {
-										"text": "52: \tcase \"ioutil.WriteFile\":\n53: \t\terr := ioutil.WriteFile(payload, []byte(\"haxx'd\"), 0666)\n54: \t\tif err != nil {\n"
+										"text": "err := ioutil.WriteFile(payload, []byte(\"haxx'd\"), 0666)"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 10,
@@ -839,7 +893,7 @@
 						"text": "Expect WriteFile permissions to be 0600 or less"
 					},
 					"ruleId": "G306",
-					"ruleIndex": 3
+					"ruleIndex": 4
 				},
 				{
 					"level": "error",
@@ -853,7 +907,7 @@
 									"endColumn": 9,
 									"endLine": 150,
 									"snippet": {
-										"text": "149: func writeFile(filename, message string) error {\n150: \terr := ioutil.WriteFile(filename, []byte(message), 0644)\n151: \tif err != nil {\n"
+										"text": "err := ioutil.WriteFile(filename, []byte(message), 0644)"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 9,
@@ -866,7 +920,7 @@
 						"text": "Expect WriteFile permissions to be 0600 or less"
 					},
 					"ruleId": "G306",
-					"ruleIndex": 3
+					"ruleIndex": 4
 				},
 				{
 					"level": "error",
@@ -880,7 +934,7 @@
 									"endColumn": 2,
 									"endLine": 137,
 									"snippet": {
-										"text": "136: \t}\n137: \tdefer fr.Close()\n138: \n"
+										"text": "defer fr.Close()"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 2,
@@ -893,7 +947,7 @@
 						"text": "Deferring unsafe method \"Close\" on type \"*os.File\""
 					},
 					"ruleId": "G307",
-					"ruleIndex": 4
+					"ruleIndex": 5
 				},
 				{
 					"level": "error",
@@ -907,7 +961,7 @@
 									"endColumn": 2,
 									"endLine": 60,
 									"snippet": {
-										"text": "59: \t}\n60: \tdefer fr.Close()\n61: \n"
+										"text": "defer fr.Close()"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 2,
@@ -920,7 +974,7 @@
 						"text": "Deferring unsafe method \"Close\" on type \"*os.File\""
 					},
 					"ruleId": "G307",
-					"ruleIndex": 4
+					"ruleIndex": 5
 				},
 				{
 					"level": "warning",
@@ -934,7 +988,7 @@
 									"endColumn": 3,
 									"endLine": 149,
 									"snippet": {
-										"text": "148: \t\tvar buf bytes.Buffer\n149: \t\tresponse.Write(\u0026buf)\n150: \n"
+										"text": "response.Write(\u0026buf)"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 3,
@@ -947,7 +1001,7 @@
 						"text": "Errors unhandled."
 					},
 					"ruleId": "G104",
-					"ruleIndex": 5
+					"ruleIndex": 6
 				},
 				{
 					"level": "warning",
@@ -961,7 +1015,7 @@
 									"endColumn": 3,
 									"endLine": 143,
 									"snippet": {
-										"text": "142: \t\tvar buf bytes.Buffer\n143: \t\tresponse.Write(\u0026buf)\n144: \n"
+										"text": "response.Write(\u0026buf)"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 3,
@@ -974,7 +1028,7 @@
 						"text": "Errors unhandled."
 					},
 					"ruleId": "G104",
-					"ruleIndex": 5
+					"ruleIndex": 6
 				},
 				{
 					"level": "warning",
@@ -988,7 +1042,7 @@
 									"endColumn": 2,
 									"endLine": 63,
 									"snippet": {
-										"text": "62: \tvar buf bytes.Buffer\n63: \tbuf.ReadFrom(fr)\n64: \n"
+										"text": "buf.ReadFrom(fr)"
 									},
 									"sourceLanguage": "go",
 									"startColumn": 2,
@@ -1001,7 +1055,7 @@
 						"text": "Errors unhandled."
 					},
 					"ruleId": "G104",
-					"ruleIndex": 5
+					"ruleIndex": 6
 				}
 			],
 			"taxonomies": [
@@ -1073,6 +1127,17 @@
 							"shortDescription": {
 								"text": "Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')"
 							}
+						},
+						{
+							"fullDescription": {
+								"text": "The software constructs all or part of an SQL command using externally-influenced input from an upstream component, but it does not neutralize or incorrectly neutralizes special elements that could modify the intended SQL command when it is sent to a downstream component."
+							},
+							"guid": "6bd55435-166c-3594-bc06-5e0dea916067",
+							"helpUri": "https://cwe.mitre.org/data/definitions/89.html",
+							"id": "89",
+							"shortDescription": {
+								"text": "Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+							}
 						}
 					],
 					"version": "4.4"
@@ -1095,7 +1160,7 @@
 								"text": "Errors unhandled.\nSeverity: LOW\nConfidence: HIGH\n"
 							},
 							"id": "G104",
-							"name": "Errors unhandled.",
+							"name": "Improper Check or Handling of Exceptional Conditions",
 							"properties": {
 								"precision": "high",
 								"tags": [
@@ -1112,8 +1177,8 @@
 										"guid": "7df38d1d-038e-3ced-8601-8d9265b90a25",
 										"id": "703",
 										"toolComponent": {
-											"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
-											"name": "CWE"
+										"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
+										"name": "CWE"
 										}
 									}
 								}
@@ -1127,13 +1192,51 @@
 								"level": "error"
 							},
 							"fullDescription": {
+								"text": "SQL string formatting"
+							},
+							"help": {
+								"text": "SQL string formatting\nSeverity: MEDIUM\nConfidence: HIGH\n"
+							},
+							"id": "G201",
+							"name": "Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')",
+							"properties": {
+								"precision": "high",
+								"tags": [
+									"security",
+									"MEDIUM"
+								]
+							},
+							"relationships": [
+								{
+									"kinds": [
+										"superset"
+									],
+									"target": {
+										"guid": "6bd55435-166c-3594-bc06-5e0dea916067",
+										"id": "89",
+										"toolComponent": {
+										"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
+										"name": "CWE"
+										}
+									}
+								}
+							],
+							"shortDescription": {
+								"text": "SQL string formatting"
+							}
+						},
+						{
+							"defaultConfiguration": {
+								"level": "error"
+							},
+							"fullDescription": {
 								"text": "this method will not auto-escape HTML. Verify data is well formed."
 							},
 							"help": {
 								"text": "this method will not auto-escape HTML. Verify data is well formed.\nSeverity: MEDIUM\nConfidence: LOW\n"
 							},
 							"id": "G203",
-							"name": "this method will not auto-escape HTML. Verify data is well formed.",
+							"name": "Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')",
 							"properties": {
 								"precision": "low",
 								"tags": [
@@ -1150,8 +1253,8 @@
 										"guid": "25e839d4-f25e-382a-9390-cf419bcd5969",
 										"id": "79",
 										"toolComponent": {
-											"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
-											"name": "CWE"
+										"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
+										"name": "CWE"
 										}
 									}
 								}
@@ -1171,7 +1274,7 @@
 								"text": "Subprocess launched with a potential tainted input or cmd arguments\nSeverity: MEDIUM\nConfidence: HIGH\n"
 							},
 							"id": "G204",
-							"name": "Subprocess launched with a potential tainted input or cmd arguments",
+							"name": "Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')",
 							"properties": {
 								"precision": "high",
 								"tags": [
@@ -1188,8 +1291,8 @@
 										"guid": "1a37bf66-7c5a-3aa0-94bb-ffae58a9e01c",
 										"id": "78",
 										"toolComponent": {
-											"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
-											"name": "CWE"
+										"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
+										"name": "CWE"
 										}
 									}
 								}
@@ -1209,7 +1312,7 @@
 								"text": "Potential file inclusion via variable\nSeverity: MEDIUM\nConfidence: HIGH\n"
 							},
 							"id": "G304",
-							"name": "Potential file inclusion via variable",
+							"name": "Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')",
 							"properties": {
 								"precision": "high",
 								"tags": [
@@ -1226,8 +1329,8 @@
 										"guid": "3e718404-88bc-3f17-883e-e85e74078a76",
 										"id": "22",
 										"toolComponent": {
-											"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
-											"name": "CWE"
+										"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
+										"name": "CWE"
 										}
 									}
 								}
@@ -1247,7 +1350,7 @@
 								"text": "Expect WriteFile permissions to be 0600 or less\nSeverity: MEDIUM\nConfidence: HIGH\n"
 							},
 							"id": "G306",
-							"name": "Expect WriteFile permissions to be 0600 or less",
+							"name": "Incorrect Default Permissions",
 							"properties": {
 								"precision": "high",
 								"tags": [
@@ -1264,8 +1367,8 @@
 										"guid": "fca8970d-b44c-3162-a385-cc09266d12a4",
 										"id": "276",
 										"toolComponent": {
-											"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
-											"name": "CWE"
+										"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
+										"name": "CWE"
 										}
 									}
 								}
@@ -1285,7 +1388,7 @@
 								"text": "Deferring unsafe method \"Close\" on type \"*os.File\"\nSeverity: MEDIUM\nConfidence: HIGH\n"
 							},
 							"id": "G307",
-							"name": "Deferring unsafe method \"Close\" on type \"*os.File\"",
+							"name": "Improper Check or Handling of Exceptional Conditions",
 							"properties": {
 								"precision": "high",
 								"tags": [
@@ -1302,8 +1405,8 @@
 										"guid": "7df38d1d-038e-3ced-8601-8d9265b90a25",
 										"id": "703",
 										"toolComponent": {
-											"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
-											"name": "CWE"
+										"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
+										"name": "CWE"
 										}
 									}
 								}
@@ -1313,14 +1416,14 @@
 							}
 						}
 					],
-					"semanticVersion": "2.9.5",
+					"semanticVersion": "2.10.0",
 					"supportedTaxonomies": [
 						{
 							"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
 							"name": "CWE"
 						}
 					],
-					"version": "2.9.5"
+					"version": "2.10.0"
 				}
 			}
 		}

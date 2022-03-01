@@ -10,8 +10,8 @@ FROM ${BASE_IMAGE}
 LABEL maintainer="SecHub FOSS Team"
 
 # Build args
-ARG GO="go1.17.6.linux-amd64.tar.gz"
-ARG GOSEC_VERSION="2.9.5"
+ARG GO="go1.17.7.linux-amd64.tar.gz"
+ARG GOSEC_VERSION="2.10.0"
 ARG PDS_FOLDER="/pds"
 ARG PDS_VERSION="0.25.0"
 ARG SCRIPT_FOLDER="/scripts"
@@ -44,7 +44,7 @@ RUN mkdir --parents "$PDS_FOLDER" "$SCRIPT_FOLDER" "$TOOL_FOLDER" "$WORKSPACE" "
 COPY mock.sarif.json "$MOCK_FOLDER"/mock.sarif.json
 # Copy PDS configfile
 COPY pds-config.json "$PDS_FOLDER"/pds-config.json
-# Copy GoSec stuff
+# Copy GoSec scripts
 COPY gosec.sh "$SCRIPT_FOLDER"/gosec.sh
 COPY gosec_mock.sh "$SCRIPT_FOLDER"/gosec_mock.sh
 # Copy run script into container
