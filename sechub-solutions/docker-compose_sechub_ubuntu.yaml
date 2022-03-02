@@ -1,0 +1,20 @@
+# SPDX-License-Identifier: MIT
+
+version: "3"
+services:
+    sechub-ubuntu:
+        build:
+            args:
+                - BASE_IMAGE=ubuntu:20.04
+            context: docker/
+            dockerfile: SecHub-Ubuntu.dockerfile
+        container_name: sechub-ubuntu
+        env_file:
+            - .env
+        ports:
+            - "127.0.0.1:8444:8444"
+            - "127.0.0.1:15024:15024"
+        networks:
+            - "sechub"
+networks:
+    sechub:
