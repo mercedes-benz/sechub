@@ -8,62 +8,62 @@
             {
               "id": "B409",
               "name": "blacklist",
-              "helpUri": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_imports.html#b409-import-xml-pulldom"
+              "helpUri": "https://bandit.readthedocs.io/en/1.7.3/blacklists/blacklist_imports.html#b409-import-xml-pulldom"
             },
             {
               "id": "B406",
               "name": "blacklist",
-              "helpUri": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_imports.html#b406-import-xml-sax"
+              "helpUri": "https://bandit.readthedocs.io/en/1.7.3/blacklists/blacklist_imports.html#b406-import-xml-sax"
             },
             {
               "id": "B404",
               "name": "blacklist",
-              "helpUri": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_imports.html#b404-import-subprocess"
+              "helpUri": "https://bandit.readthedocs.io/en/1.7.3/blacklists/blacklist_imports.html#b404-import-subprocess"
             },
             {
               "id": "B403",
               "name": "blacklist",
-              "helpUri": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_imports.html#b403-import-pickle"
+              "helpUri": "https://bandit.readthedocs.io/en/1.7.3/blacklists/blacklist_imports.html#b403-import-pickle"
             },
             {
               "id": "B608",
               "name": "hardcoded_sql_expressions",
-              "helpUri": "https://bandit.readthedocs.io/en/latest/plugins/b608_hardcoded_sql_expressions.html"
+              "helpUri": "https://bandit.readthedocs.io/en/1.7.3/plugins/b608_hardcoded_sql_expressions.html"
             },
             {
               "id": "B301",
               "name": "blacklist",
-              "helpUri": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b301-pickle"
+              "helpUri": "https://bandit.readthedocs.io/en/1.7.3/blacklists/blacklist_calls.html#b301-pickle"
             },
             {
               "id": "B317",
               "name": "blacklist",
-              "helpUri": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b313-b320-xml-bad-sax"
+              "helpUri": "https://bandit.readthedocs.io/en/1.7.3/blacklists/blacklist_calls.html#b313-b320-xml-bad-sax"
             },
             {
               "id": "B319",
               "name": "blacklist",
-              "helpUri": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b313-b320-xml-bad-pulldom"
+              "helpUri": "https://bandit.readthedocs.io/en/1.7.3/blacklists/blacklist_calls.html#b313-b320-xml-bad-pulldom"
             },
             {
               "id": "B602",
               "name": "subprocess_popen_with_shell_equals_true",
-              "helpUri": "https://bandit.readthedocs.io/en/latest/plugins/b602_subprocess_popen_with_shell_equals_true.html"
+              "helpUri": "https://bandit.readthedocs.io/en/1.7.3/plugins/b602_subprocess_popen_with_shell_equals_true.html"
             },
             {
               "id": "B311",
               "name": "blacklist",
-              "helpUri": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b311-random"
+              "helpUri": "https://bandit.readthedocs.io/en/1.7.3/blacklists/blacklist_calls.html#b311-random"
             },
             {
               "id": "B506",
               "name": "yaml_load",
-              "helpUri": "https://bandit.readthedocs.io/en/latest/plugins/b506_yaml_load.html"
+              "helpUri": "https://bandit.readthedocs.io/en/1.7.3/plugins/b506_yaml_load.html"
             },
             {
               "id": "B105",
               "name": "hardcoded_password_string",
-              "helpUri": "https://bandit.readthedocs.io/en/latest/plugins/b105_hardcoded_password_string.html"
+              "helpUri": "https://bandit.readthedocs.io/en/1.7.3/plugins/b105_hardcoded_password_string.html"
             }
           ]
         }
@@ -71,7 +71,7 @@
       "invocations": [
         {
           "executionSuccessful": true,
-          "endTimeUtc": "2022-02-18T18:20:02Z"
+          "endTimeUtc": "2022-03-01T10:58:59Z"
         }
       ],
       "properties": {
@@ -79,302 +79,327 @@
           "_totals": {
             "loc": 750,
             "nosec": 0,
-            "SEVERITY.UNDEFINED": 0.0,
-            "CONFIDENCE.UNDEFINED": 0.0,
-            "SEVERITY.LOW": 7.0,
-            "CONFIDENCE.LOW": 1.0,
-            "SEVERITY.MEDIUM": 5.0,
-            "CONFIDENCE.MEDIUM": 1.0,
-            "SEVERITY.HIGH": 1.0,
-            "CONFIDENCE.HIGH": 11.0
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "SEVERITY.LOW": 7,
+            "CONFIDENCE.LOW": 1,
+            "SEVERITY.MEDIUM": 5,
+            "CONFIDENCE.MEDIUM": 1,
+            "SEVERITY.HIGH": 1,
+            "CONFIDENCE.HIGH": 11
           },
           "./pygoat/pygoat/introduction/__init__.py": {
             "loc": 0,
             "nosec": 0,
-            "SEVERITY.UNDEFINED": 0.0,
-            "SEVERITY.LOW": 0.0,
-            "SEVERITY.MEDIUM": 0.0,
-            "SEVERITY.HIGH": 0.0,
-            "CONFIDENCE.UNDEFINED": 0.0,
-            "CONFIDENCE.LOW": 0.0,
-            "CONFIDENCE.MEDIUM": 0.0,
-            "CONFIDENCE.HIGH": 0.0
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
           },
           "./pygoat/pygoat/introduction/admin.py": {
             "loc": 7,
             "nosec": 0,
-            "SEVERITY.UNDEFINED": 0.0,
-            "SEVERITY.LOW": 0.0,
-            "SEVERITY.MEDIUM": 0.0,
-            "SEVERITY.HIGH": 0.0,
-            "CONFIDENCE.UNDEFINED": 0.0,
-            "CONFIDENCE.LOW": 0.0,
-            "CONFIDENCE.MEDIUM": 0.0,
-            "CONFIDENCE.HIGH": 0.0
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
           },
           "./pygoat/pygoat/introduction/apps.py": {
             "loc": 3,
             "nosec": 0,
-            "SEVERITY.UNDEFINED": 0.0,
-            "SEVERITY.LOW": 0.0,
-            "SEVERITY.MEDIUM": 0.0,
-            "SEVERITY.HIGH": 0.0,
-            "CONFIDENCE.UNDEFINED": 0.0,
-            "CONFIDENCE.LOW": 0.0,
-            "CONFIDENCE.MEDIUM": 0.0,
-            "CONFIDENCE.HIGH": 0.0
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
           },
           "./pygoat/pygoat/introduction/forms.py": {
             "loc": 0,
             "nosec": 0,
-            "SEVERITY.UNDEFINED": 0.0,
-            "SEVERITY.LOW": 0.0,
-            "SEVERITY.MEDIUM": 0.0,
-            "SEVERITY.HIGH": 0.0,
-            "CONFIDENCE.UNDEFINED": 0.0,
-            "CONFIDENCE.LOW": 0.0,
-            "CONFIDENCE.MEDIUM": 0.0,
-            "CONFIDENCE.HIGH": 0.0
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
           },
           "./pygoat/pygoat/introduction/migrations/0001_initial.py": {
             "loc": 16,
             "nosec": 0,
-            "SEVERITY.UNDEFINED": 0.0,
-            "SEVERITY.LOW": 0.0,
-            "SEVERITY.MEDIUM": 0.0,
-            "SEVERITY.HIGH": 0.0,
-            "CONFIDENCE.UNDEFINED": 0.0,
-            "CONFIDENCE.LOW": 0.0,
-            "CONFIDENCE.MEDIUM": 0.0,
-            "CONFIDENCE.HIGH": 0.0
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
           },
           "./pygoat/pygoat/introduction/migrations/0002_auto_20210414_1510.py": {
             "loc": 25,
             "nosec": 0,
-            "SEVERITY.UNDEFINED": 0.0,
-            "SEVERITY.LOW": 0.0,
-            "SEVERITY.MEDIUM": 0.0,
-            "SEVERITY.HIGH": 0.0,
-            "CONFIDENCE.UNDEFINED": 0.0,
-            "CONFIDENCE.LOW": 0.0,
-            "CONFIDENCE.MEDIUM": 0.0,
-            "CONFIDENCE.HIGH": 0.0
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
           },
           "./pygoat/pygoat/introduction/migrations/0003_password_user.py": {
             "loc": 23,
             "nosec": 0,
-            "SEVERITY.UNDEFINED": 0.0,
-            "SEVERITY.LOW": 0.0,
-            "SEVERITY.MEDIUM": 0.0,
-            "SEVERITY.HIGH": 0.0,
-            "CONFIDENCE.UNDEFINED": 0.0,
-            "CONFIDENCE.LOW": 0.0,
-            "CONFIDENCE.MEDIUM": 0.0,
-            "CONFIDENCE.HIGH": 0.0
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
           },
           "./pygoat/pygoat/introduction/migrations/0004_auto_20210415_1722.py": {
             "loc": 16,
             "nosec": 0,
-            "SEVERITY.UNDEFINED": 0.0,
-            "SEVERITY.LOW": 0.0,
-            "SEVERITY.MEDIUM": 0.0,
-            "SEVERITY.HIGH": 0.0,
-            "CONFIDENCE.UNDEFINED": 0.0,
-            "CONFIDENCE.LOW": 0.0,
-            "CONFIDENCE.MEDIUM": 0.0,
-            "CONFIDENCE.HIGH": 0.0
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
           },
           "./pygoat/pygoat/introduction/migrations/0005_auto_20210415_1748.py": {
             "loc": 11,
             "nosec": 0,
-            "SEVERITY.UNDEFINED": 0.0,
-            "SEVERITY.LOW": 0.0,
-            "SEVERITY.MEDIUM": 0.0,
-            "SEVERITY.HIGH": 0.0,
-            "CONFIDENCE.UNDEFINED": 0.0,
-            "CONFIDENCE.LOW": 0.0,
-            "CONFIDENCE.MEDIUM": 0.0,
-            "CONFIDENCE.HIGH": 0.0
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
           },
           "./pygoat/pygoat/introduction/migrations/0006_comments.py": {
             "loc": 15,
             "nosec": 0,
-            "SEVERITY.UNDEFINED": 0.0,
-            "SEVERITY.LOW": 0.0,
-            "SEVERITY.MEDIUM": 0.0,
-            "SEVERITY.HIGH": 0.0,
-            "CONFIDENCE.UNDEFINED": 0.0,
-            "CONFIDENCE.LOW": 0.0,
-            "CONFIDENCE.MEDIUM": 0.0,
-            "CONFIDENCE.HIGH": 0.0
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
           },
           "./pygoat/pygoat/introduction/migrations/0007_auto_20210418_0022.py": {
             "loc": 12,
             "nosec": 0,
-            "SEVERITY.UNDEFINED": 0.0,
-            "SEVERITY.LOW": 0.0,
-            "SEVERITY.MEDIUM": 0.0,
-            "SEVERITY.HIGH": 0.0,
-            "CONFIDENCE.UNDEFINED": 0.0,
-            "CONFIDENCE.LOW": 0.0,
-            "CONFIDENCE.MEDIUM": 0.0,
-            "CONFIDENCE.HIGH": 0.0
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
           },
           "./pygoat/pygoat/introduction/migrations/0008_otp.py": {
             "loc": 15,
             "nosec": 0,
-            "SEVERITY.UNDEFINED": 0.0,
-            "SEVERITY.LOW": 0.0,
-            "SEVERITY.MEDIUM": 0.0,
-            "SEVERITY.HIGH": 0.0,
-            "CONFIDENCE.UNDEFINED": 0.0,
-            "CONFIDENCE.LOW": 0.0,
-            "CONFIDENCE.MEDIUM": 0.0,
-            "CONFIDENCE.HIGH": 0.0
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
           },
           "./pygoat/pygoat/introduction/migrations/0009_auto_20210517_2047.py": {
             "loc": 13,
             "nosec": 0,
-            "SEVERITY.UNDEFINED": 0.0,
-            "SEVERITY.LOW": 0.0,
-            "SEVERITY.MEDIUM": 0.0,
-            "SEVERITY.HIGH": 0.0,
-            "CONFIDENCE.UNDEFINED": 0.0,
-            "CONFIDENCE.LOW": 0.0,
-            "CONFIDENCE.MEDIUM": 0.0,
-            "CONFIDENCE.HIGH": 0.0
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
           },
           "./pygoat/pygoat/introduction/migrations/__init__.py": {
             "loc": 0,
             "nosec": 0,
-            "SEVERITY.UNDEFINED": 0.0,
-            "SEVERITY.LOW": 0.0,
-            "SEVERITY.MEDIUM": 0.0,
-            "SEVERITY.HIGH": 0.0,
-            "CONFIDENCE.UNDEFINED": 0.0,
-            "CONFIDENCE.LOW": 0.0,
-            "CONFIDENCE.MEDIUM": 0.0,
-            "CONFIDENCE.HIGH": 0.0
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
           },
           "./pygoat/pygoat/introduction/models.py": {
             "loc": 24,
             "nosec": 0,
-            "SEVERITY.UNDEFINED": 0.0,
-            "SEVERITY.LOW": 0.0,
-            "SEVERITY.MEDIUM": 0.0,
-            "SEVERITY.HIGH": 0.0,
-            "CONFIDENCE.UNDEFINED": 0.0,
-            "CONFIDENCE.LOW": 0.0,
-            "CONFIDENCE.MEDIUM": 0.0,
-            "CONFIDENCE.HIGH": 0.0
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
           },
           "./pygoat/pygoat/introduction/tests.py": {
             "loc": 1,
             "nosec": 0,
-            "SEVERITY.UNDEFINED": 0.0,
-            "SEVERITY.LOW": 0.0,
-            "SEVERITY.MEDIUM": 0.0,
-            "SEVERITY.HIGH": 0.0,
-            "CONFIDENCE.UNDEFINED": 0.0,
-            "CONFIDENCE.LOW": 0.0,
-            "CONFIDENCE.MEDIUM": 0.0,
-            "CONFIDENCE.HIGH": 0.0
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
           },
           "./pygoat/pygoat/introduction/urls.py": {
             "loc": 44,
             "nosec": 0,
-            "SEVERITY.UNDEFINED": 0.0,
-            "SEVERITY.LOW": 0.0,
-            "SEVERITY.MEDIUM": 0.0,
-            "SEVERITY.HIGH": 0.0,
-            "CONFIDENCE.UNDEFINED": 0.0,
-            "CONFIDENCE.LOW": 0.0,
-            "CONFIDENCE.MEDIUM": 0.0,
-            "CONFIDENCE.HIGH": 0.0
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
           },
           "./pygoat/pygoat/introduction/views.py": {
             "loc": 358,
             "nosec": 0,
-            "SEVERITY.UNDEFINED": 0.0,
-            "SEVERITY.LOW": 6.0,
-            "SEVERITY.MEDIUM": 5.0,
-            "SEVERITY.HIGH": 1.0,
-            "CONFIDENCE.UNDEFINED": 0.0,
-            "CONFIDENCE.LOW": 1.0,
-            "CONFIDENCE.MEDIUM": 0.0,
-            "CONFIDENCE.HIGH": 11.0
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 6,
+            "SEVERITY.MEDIUM": 5,
+            "SEVERITY.HIGH": 1,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 1,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 11
           },
           "./pygoat/pygoat/manage.py": {
             "loc": 16,
             "nosec": 0,
-            "SEVERITY.UNDEFINED": 0.0,
-            "SEVERITY.LOW": 0.0,
-            "SEVERITY.MEDIUM": 0.0,
-            "SEVERITY.HIGH": 0.0,
-            "CONFIDENCE.UNDEFINED": 0.0,
-            "CONFIDENCE.LOW": 0.0,
-            "CONFIDENCE.MEDIUM": 0.0,
-            "CONFIDENCE.HIGH": 0.0
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
           },
           "./pygoat/pygoat/pygoat/__init__.py": {
             "loc": 0,
             "nosec": 0,
-            "SEVERITY.UNDEFINED": 0.0,
-            "SEVERITY.LOW": 0.0,
-            "SEVERITY.MEDIUM": 0.0,
-            "SEVERITY.HIGH": 0.0,
-            "CONFIDENCE.UNDEFINED": 0.0,
-            "CONFIDENCE.LOW": 0.0,
-            "CONFIDENCE.MEDIUM": 0.0,
-            "CONFIDENCE.HIGH": 0.0
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
           },
           "./pygoat/pygoat/pygoat/asgi.py": {
             "loc": 10,
             "nosec": 0,
-            "SEVERITY.UNDEFINED": 0.0,
-            "SEVERITY.LOW": 0.0,
-            "SEVERITY.MEDIUM": 0.0,
-            "SEVERITY.HIGH": 0.0,
-            "CONFIDENCE.UNDEFINED": 0.0,
-            "CONFIDENCE.LOW": 0.0,
-            "CONFIDENCE.MEDIUM": 0.0,
-            "CONFIDENCE.HIGH": 0.0
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
           },
           "./pygoat/pygoat/pygoat/settings.py": {
             "loc": 105,
             "nosec": 0,
-            "SEVERITY.UNDEFINED": 0.0,
-            "SEVERITY.LOW": 1.0,
-            "SEVERITY.MEDIUM": 0.0,
-            "SEVERITY.HIGH": 0.0,
-            "CONFIDENCE.UNDEFINED": 0.0,
-            "CONFIDENCE.LOW": 0.0,
-            "CONFIDENCE.MEDIUM": 1.0,
-            "CONFIDENCE.HIGH": 0.0
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 1,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 1,
+            "CONFIDENCE.HIGH": 0
           },
           "./pygoat/pygoat/pygoat/urls.py": {
             "loc": 26,
             "nosec": 0,
-            "SEVERITY.UNDEFINED": 0.0,
-            "SEVERITY.LOW": 0.0,
-            "SEVERITY.MEDIUM": 0.0,
-            "SEVERITY.HIGH": 0.0,
-            "CONFIDENCE.UNDEFINED": 0.0,
-            "CONFIDENCE.LOW": 0.0,
-            "CONFIDENCE.MEDIUM": 0.0,
-            "CONFIDENCE.HIGH": 0.0
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
           },
           "./pygoat/pygoat/pygoat/wsgi.py": {
             "loc": 10,
             "nosec": 0,
-            "SEVERITY.UNDEFINED": 0.0,
-            "SEVERITY.LOW": 0.0,
-            "SEVERITY.MEDIUM": 0.0,
-            "SEVERITY.HIGH": 0.0,
-            "CONFIDENCE.UNDEFINED": 0.0,
-            "CONFIDENCE.LOW": 0.0,
-            "CONFIDENCE.MEDIUM": 0.0,
-            "CONFIDENCE.HIGH": 0.0
+            "skipped_tests": 0,
+            "SEVERITY.UNDEFINED": 0,
+            "SEVERITY.LOW": 0,
+            "SEVERITY.MEDIUM": 0,
+            "SEVERITY.HIGH": 0,
+            "CONFIDENCE.UNDEFINED": 0,
+            "CONFIDENCE.LOW": 0,
+            "CONFIDENCE.MEDIUM": 0,
+            "CONFIDENCE.HIGH": 0
           }
         }
       },
