@@ -5,10 +5,10 @@ FROM ubuntu:20.04
 ARG USER=www-data
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
-    apt-get update && \
-    apt-get --assume-yes upgrade && \
-    apt-get --assume-yes install nginx openssl && \
-    apt-get --assume-yes clean
+    apt-get --quiet update && \
+    apt-get --quiet --assume-yes upgrade && \
+    apt-get --quiet --assume-yes install nginx openssl && \
+    apt-get --quiet --assume-yes clean
 
 # Create self-signed certificate
 RUN cd /tmp && \

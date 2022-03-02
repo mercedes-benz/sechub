@@ -36,10 +36,10 @@ RUN  mkdir --parents "$TOOL_FOLDER" "$DOWNLOAD_FOLDER" "$PDS_FOLDER" "$SHARED_VO
 # Update image and install dependencies
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update && \
-    apt-get --assume-yes upgrade  && \
-    apt-get --assume-yes install sed wget openjdk-11-jre-headless pip && \
-    apt-get --assume-yes clean
+RUN apt-get --quiet update && \
+    apt-get --quiet --assume-yes upgrade  && \
+    apt-get --quiet --assume-yes install sed wget openjdk-11-jre-headless pip && \
+    apt-get --quiet --assume-yes clean
 
 # Copy scripts
 COPY scripts $SCRIPT_FOLDER

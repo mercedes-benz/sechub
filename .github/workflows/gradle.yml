@@ -102,7 +102,7 @@ jobs:
           retention-days: 14
 
       - name: Install graphviz (asciidoc diagrams)
-        run: sudo apt-get install graphviz
+        run: sudo apt-get --quiet --assume-yes install graphviz
 
       # -----------------------------------------
       # Build Documentation
