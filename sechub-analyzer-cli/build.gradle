@@ -15,7 +15,7 @@ dependencies {
 	testImplementation library.junit4
 	testImplementation library.mockito
 	testImplementation library.mockito_inline
-    testImplementation library.hamcrest
+    testImplementation spring_boot_dependency.hamcrest
 }
 
 task buildAnalyzerCLI(type: Jar) {

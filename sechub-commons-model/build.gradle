@@ -6,18 +6,18 @@ plugins {
 dependencies{
     
     api library.jackson_core
-    api library.jackson_databind
+    api spring_boot_dependency.jackson_databind
     api library.jackson_JDK8
     api library.slf4j
     
     api project(':sechub-commons-core')
     
-    testImplementation library.junit5_impl
-    testRuntimeOnly library.junit5_runtime
+    testImplementation spring_boot_dependency.junit_jupiter
+    
     
     testImplementation library.junit5_params
     
     testImplementation library.mockito
     testImplementation library.mockito_inline
-    testImplementation library.hamcrest
+    testImplementation spring_boot_dependency.hamcrest
 }

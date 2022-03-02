@@ -10,7 +10,7 @@ dependencies {
     implementation library.junit4
     implementation library.mockito
     implementation library.mockito_inline
-    implementation library.hamcrest
+    implementation spring_boot_dependency.hamcrest
     implementation library.slf4j
 
     implementation library.wiremock

@@ -10,18 +10,18 @@ dependencies {
     // The production code uses the SLF4J logging API at compile time
     implementation library.slf4j
     implementation library.jackson_core
-    implementation library.jackson_databind
+    implementation spring_boot_dependency.jackson_databind
     
     implementation project(':sechub-commons-model')
     
     implementation library.apache_httpcomponents_client
 
-    testImplementation library.junit5_impl
-    testRuntimeOnly library.junit5_runtime
+    testImplementation spring_boot_dependency.junit_jupiter
+    
     
     testImplementation library.mockito
     testImplementation library.mockito_inline
-    testImplementation library.hamcrest
+    testImplementation spring_boot_dependency.hamcrest
 }
 
 // see https://github.com/OpenAPITools/openapi-generator/blob/master/modules/openapi-generator-gradle-plugin/README.adoc
