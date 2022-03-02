@@ -7,31 +7,26 @@ FROM ${BASE_IMAGE}
 # The remaining arguments need to be placed after the `FROM`
 # See: https://ryandaniels.ca/blog/docker-dockerfile-arg-from-arg-trouble/
 
-# Folders
+# Build args
 ARG PDS_FOLDER="/pds"
+ARG PDS_VERSION="0.26.0"
+ARG PYTHON_VERSION="3.9"
+ARG SCANCODE_VERSION="30.1.0"
+ARG SCANCODE_CHECKSUM="a9e43fdef934335e69e4abf77896225545d3e1fdbbd477ebabc37a4fa5ee2015  scancode-toolkit-30.1.0_py39-linux.tar.xz"
 ARG SCRIPT_FOLDER="/scripts"
-ENV TOOL_FOLDER="/tools"
+ARG SPDX_TOOL_VERISON="1.0.4"
+ARG SPDX_TOOL_CHECKSUM="e8da16d744d9a39dbc0420f776e0ebae71ce6a0be722941ada2e0e0f755cc4d0  tools-java-1.0.4-jar-with-dependencies.jar"
 ARG WORKSPACE="/workspace"
+
+# Environment variables in container
 ENV DOWNLOAD_FOLDER="/downloads"
 ENV MOCK_FOLDER="$SCRIPT_FOLDER/mocks"
-
-# PDS
-ENV PDS_VERSION="0.26.0"
-
-# Shared volumes
+ENV PDS_VERSION="${PDS_VERSION}"
+ENV SCANCODE_VERSION="${SCANCODE_VERSION}"
 ENV SHARED_VOLUMES="/shared_volumes"
 ENV SHARED_VOLUME_UPLOAD_DIR="$SHARED_VOLUMES/uploads"
-
-# Python version
-ARG PYTHON_VERSION="3.9"
-
-# Scancode
-ENV SCANCODE_VERSION="30.1.0"
-ARG SCANCODE_CHECKSUM="a9e43fdef934335e69e4abf77896225545d3e1fdbbd477ebabc37a4fa5ee2015  scancode-toolkit-30.1.0_py39-linux.tar.xz"
-
-# SPDX Tool
-ENV SPDX_TOOL_VERISON="1.0.4"
-ARG SPDX_TOOL_CHECKSUM="e8da16d744d9a39dbc0420f776e0ebae71ce6a0be722941ada2e0e0f755cc4d0  tools-java-1.0.4-jar-with-dependencies.jar"
+ENV SPDX_TOOL_VERISON="${SPDX_TOOL_VERISON}"
+ENV TOOL_FOLDER="/tools"
 
 # non-root user
 # using fixed group and user ids
@@ -45,9 +40,8 @@ RUN  mkdir --parents "$TOOL_FOLDER" "$DOWNLOAD_FOLDER" "$PDS_FOLDER" "$SHARED_VO
     chown --recursive pds:pds "$WORKSPACE" "$SHARED_VOLUMES"
 
 # Update image and install dependencies
-ENV DEBIAN_FRONTEND noninteractive
-
-RUN apt-get update && \
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \
     apt-get --assume-yes upgrade  && \
     apt-get --assume-yes install wget \
                                  tar \

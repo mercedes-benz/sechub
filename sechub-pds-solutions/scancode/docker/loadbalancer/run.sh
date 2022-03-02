@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # SPDX-License-Identifier: MIT
 
+set -e
+
 debug () {
     while true
     do

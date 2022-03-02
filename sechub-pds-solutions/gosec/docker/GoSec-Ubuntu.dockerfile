@@ -13,11 +13,11 @@ LABEL maintainer="SecHub FOSS Team"
 ARG GO="go1.17.7.linux-amd64.tar.gz"
 ARG GOSEC_VERSION="2.10.0"
 ARG PDS_FOLDER="/pds"
-ARG PDS_VERSION="0.25.0"
+ARG PDS_VERSION="0.26.0"
 ARG SCRIPT_FOLDER="/scripts"
 ARG WORKSPACE="/workspace"
 
-# env vars in container:
+# Environment variables in container
 ENV DOWNLOAD_FOLDER="/downloads"
 ENV MOCK_FOLDER="$SCRIPT_FOLDER/mocks"
 ENV PDS_VERSION="${PDS_VERSION}"

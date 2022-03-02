@@ -7,16 +7,16 @@ mock_file="$MOCK_FOLDER/scancode_mock.spdx.json"
 echo "Given output format: $given_output_format"
 
 case "$given_output_format" in
-    "json")
+    json)
         mock_file="$MOCK_FOLDER/scancode_mock.json"
     ;;
-    "json-pp")
+    json-pp)
         mock_file="$MOCK_FOLDER/scancode_mock.pretty_printed.json"
     ;;
-    "spdx-tv")
+    spdx-tv)
         mock_file="$MOCK_FOLDER/scancode_mock.spdx"
     ;;
-    "spdx-rdf")
+    spdx-rdf)
         mock_file="$MOCK_FOLDER/scancode_mock.spdx.rdf"
 esac
 
