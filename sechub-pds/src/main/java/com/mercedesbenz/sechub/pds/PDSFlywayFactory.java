@@ -11,8 +11,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
+@Profile("!" + PDSProfiles.TEST) // spring profile "test" has no Flyway enabled
 public class PDSFlywayFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSFlywayFactory.class);
