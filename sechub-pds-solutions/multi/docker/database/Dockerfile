@@ -6,10 +6,10 @@ ARG POSTGRES_CONFIG_FOLDER="/etc/postgresql/12/main/"
 
 # Install PostgreSQL
 RUN export DEBIAN_FRONTEND=noninteractive && \
-    apt-get --quiet update && \
-    apt-get --quiet --assume-yes upgrade && \
-    apt-get --quiet --assume-yes install postgresql postgresql-client && \
-    apt-get --quiet --assume-yes clean
+    apt-get -qq update && \
+    apt-get -qq --assume-yes upgrade && \
+    apt-get -qq --assume-yes install postgresql postgresql-client && \
+    apt-get -qq --assume-yes clean
 
 # PostgreSQL configuration files
 COPY pg_hba.conf  "$POSTGRES_CONFIG_FOLDER/pg_hba.conf"

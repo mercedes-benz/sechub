@@ -54,10 +54,10 @@ COPY run.sh /run.sh
 RUN chmod +x /run.sh "$SCRIPT_FOLDER"/gosec.sh "$SCRIPT_FOLDER"/gosec_mock.sh
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
-    apt-get --quiet update && \
-    apt-get --quiet --assume-yes upgrade && \
-    apt-get --quiet --assume-yes install w3m wget openjdk-11-jre-headless && \
-    apt-get --quiet --assume-yes clean
+    apt-get -qq update && \
+    apt-get -qq --assume-yes upgrade && \
+    apt-get -qq --assume-yes install w3m wget openjdk-11-jre-headless && \
+    apt-get -qq --assume-yes clean
 
 # Install Go
 RUN cd "$DOWNLOAD_FOLDER" && \
