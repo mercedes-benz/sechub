@@ -1,7 +1,1 @@
-PDS_START_MODE=localserver
-ADMIN_USERID=admin
-ADMIN_APITOKEN={noop}pds-apitoken
-TECHUSER_USERID=techuser
-TECHUSER_APITOKEN={noop}pds-apitoken
-JAVA_ENABLE_DEBUG=false
-KEEP_CONTAINER_ALIVE_AFTER_PDS_CRASHED=false
+SECHUB_START_MODE="localserver"

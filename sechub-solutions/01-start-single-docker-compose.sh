@@ -15,5 +15,9 @@ else
     echo "Using existing environment file: $ENVIRONMENT_FILE."
 fi
 
+# Use Docker BuildKit
+export BUILDKIT_PROGRESS=plain
+export DOCKER_BUILDKIT=1
+
 echo "Starting single Ubuntu container."
 docker-compose --file docker-compose_sechub_ubuntu.yaml up --build --remove-orphans

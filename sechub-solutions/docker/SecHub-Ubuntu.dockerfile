@@ -25,19 +25,22 @@ ARG JAVA_VERSION
 
 ARG BUILD_FOLDER="/build"
 ARG GIT_URL="https://github.com/mercedes-benz/sechub.git"
+ARG TAG=""
 
 RUN mkdir --parent "$SECHUB_ARTIFACT_FOLDER"
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
-    apt-get install --assume-yes git golang "openjdk-$JAVA_VERSION-jdk-headless" && \
+    apt-get install --quiet --assume-yes git golang "openjdk-$JAVA_VERSION-jdk-headless" && \
     apt-get clean
 
 RUN mkdir --parent "$BUILD_FOLDER" && \
     cd "$BUILD_FOLDER" && \
     git clone "$GIT_URL" && \
     cd "sechub" && \
-    "./buildExecutables"
+    "./buildExecutables" && \
+    if [ -z "$TAG"]; then git checkout tags/"$TAG" -b "$TAG"; fi && \
+    cp "sechub-server/build/libs/sechub-server-0.0.0.jar" --target-directory "$SECHUB_ARTIFACT_FOLDER"
 
 #-------------------
 # Builder Download
@@ -86,6 +89,7 @@ ARG JAVA_VERSION
 ENV USER="sechub"
 ENV UID="7474"
 ENV GID="${UID}"
+ENV SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR="/shared_volume/uploads"
 
 ARG SECHUB_FOLDER="/sechub"
 
@@ -94,13 +98,13 @@ ARG SECHUB_FOLDER="/sechub"
 RUN groupadd --gid "$GID" "$USER" && \
     useradd --uid "$UID" --gid "$GID" --no-log-init --create-home "$USER"
 
-RUN mkdir --parent "$SECHUB_FOLDER"
+RUN mkdir --parent "$SECHUB_FOLDER" "$SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR"
 COPY --from=builder "$SECHUB_ARTIFACT_FOLDER" "$SECHUB_FOLDER"
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
-    apt-get upgrade --assume-yes && \
-    apt-get install --assume-yes "openjdk-$JAVA_VERSION-jre-headless" && \
+    apt-get upgrade --assume-yes --quiet && \
+    apt-get install --assume-yes --quiet "openjdk-$JAVA_VERSION-jre-headless" && \
     apt-get clean
 
 # Copy run script into container
@@ -108,6 +112,9 @@ COPY run.sh /run.sh
 
 # Set execute permissions for scripts
 RUN chmod +x /run.sh
+
+# Set permissions
+RUN chown --recursive "$USER:$USER" "$SECHUB_FOLDER" "$SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR"
 
 # Set workspace
 WORKDIR "$SECHUB_FOLDER"
