@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-    registry: "my.registry.example.org/pds_multi"
+    registry: "my.registry.example.org/pds_scancode"
     tag: "latest"
 
 pds:
@@ -39,7 +39,7 @@ database:
     postgres:
         enabled: false
         connection: "jdbc:postgresql://database:5432/pds"
-        username: "gosec"
+        username: "scancode"
         password: "<password-of-db-user>"
 
 networkPolicy:

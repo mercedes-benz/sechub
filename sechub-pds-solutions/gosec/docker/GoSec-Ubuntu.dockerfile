@@ -17,7 +17,7 @@ ARG PDS_VERSION="0.26.0"
 ARG SCRIPT_FOLDER="/scripts"
 ARG WORKSPACE="/workspace"
 
-# env vars in container:
+# Environment variables in container
 ENV DOWNLOAD_FOLDER="/downloads"
 ENV MOCK_FOLDER="$SCRIPT_FOLDER/mocks"
 ENV PDS_VERSION="${PDS_VERSION}"

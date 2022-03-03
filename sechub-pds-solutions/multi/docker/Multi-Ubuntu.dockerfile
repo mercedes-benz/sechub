@@ -7,20 +7,21 @@ FROM ${BASE_IMAGE}
 # The remaining arguments need to be placed after the `FROM`
 # See: https://ryandaniels.ca/blog/docker-dockerfile-arg-from-arg-trouble/
 
-# Folders
+LABEL maintainer="SecHub FOSS Team"
+
+# Build args
 ARG PDS_FOLDER="/pds"
+ARG PDS_VERSION="0.26.0"
 ARG SCRIPT_FOLDER="/scripts"
-ENV TOOL_FOLDER="/tools"
 ARG WORKSPACE="/workspace"
+
+# Environment variables in container
 ENV DOWNLOAD_FOLDER="/downloads"
 ENV MOCK_FOLDER="$SCRIPT_FOLDER/mocks"
-
-# PDS
-ENV PDS_VERSION=0.26.0
-
-# Shared volumes
+ENV PDS_VERSION="${PDS_VERSION}"
 ENV SHARED_VOLUMES="/shared_volumes"
 ENV SHARED_VOLUME_UPLOAD_DIR="$SHARED_VOLUMES/uploads"
+ENV TOOL_FOLDER="/tools"
 
 # non-root user
 # using fixed group and user ids
@@ -34,9 +35,8 @@ RUN  mkdir --parents "$TOOL_FOLDER" "$DOWNLOAD_FOLDER" "$PDS_FOLDER" "$SHARED_VO
     chown --recursive pds:pds "$WORKSPACE" "$SHARED_VOLUMES"
 
 # Update image and install dependencies
-ENV DEBIAN_FRONTEND noninteractive
-
-RUN apt-get update && \
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \
     apt-get --assume-yes upgrade  && \
     apt-get --assume-yes install sed wget openjdk-11-jre-headless pip && \
     apt-get --assume-yes clean
