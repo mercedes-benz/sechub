@@ -1,0 +1,39 @@
+// SPDX-License-Identifier: MIT
+ /*============================================================================
+ * Build file for subproject 
+ *
+ * Root build file: "${rootProject.projectDir}/build.gradle"
+ * ============================================================================
+ */
+dependencies {
+    implementation project(':sechub-commons-model')
+    implementation project(':sechub-commons-core')
+    implementation project(':sechub-testframework')
+    implementation library.slf4j
+    implementation library.logback_classic
+    implementation library.jackson_JDK8
+    implementation library.jackson_core
+    implementation library.jackson_databind
+    implementation library.owaspzap_client_api
+    implementation library.jcommander
+	
+	testImplementation library.junit5_impl
+    testImplementation library.junit5_runtime
+    testImplementation library.junit5_params
+}
+
+task buildWrapperOwaspZap(type: Jar) {
+    group 'sechub'
+    description 'Builds the SecHub Owasp Zap Wrapper CLI tool.'
+    archiveBaseName = 'wrapperowaspzap'
+    
+	manifest {
+        attributes 'Main-Class': 'com.mercedesbenz.sechub.owaspzapwrapper.cli.OwaspZapWrapperCLI'
+    }
+
+    from { 
+    	configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } 
+    }
+
+    with jar
+}

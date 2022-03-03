@@ -1,0 +1,15 @@
+package com.mercedesbenz.sechub.owaspzapwrapper.util;
+
+public class EnvironmentVariableConstants {
+
+    public static final String ZAP_HOST_ENV_VARIABLE_NAME = "ZAP_HOST";
+
+    public static final String ZAP_PORT_ENV_VARIABLE_NAME = "ZAP_PORT";
+
+    public static final String ZAP_API_KEY_ENV_VARIABLE_NAME = "ZAP_API_KEY";
+
+    public static final String PROXY_HOST_ENV_VARIABLE_NAME = "PROXY_HOST";
+
+    public static final String PROXY_PORT_ENV_VARIABLE_NAME = "PROXY_PORT";
+
+}
