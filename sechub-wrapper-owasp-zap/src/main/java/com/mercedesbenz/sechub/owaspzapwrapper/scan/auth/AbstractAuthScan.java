@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.owaspzapwrapper.scan.auth;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
@@ -28,8 +29,7 @@ public abstract class AbstractAuthScan extends AbstractScan implements AuthScan 
         try {
             scanUnsafe();
         } catch (ClientApiException e) {
-            LOG.error("For scan {}: An error occured while scanning! Reason: {}", scanConfig.getContextName(), e.getMessage());
-
+            LOG.error("For scan {}: An error occured while scanning! Reason: {}", scanConfig.getContextName(), e.getMessage(), e);
         }
     }
 
@@ -91,7 +91,11 @@ public abstract class AbstractAuthScan extends AbstractScan implements AuthScan 
     }
 
     protected String urlEncodeUTF8(String stringToEncode) {
-        return URLEncoder.encode(stringToEncode, StandardCharsets.UTF_8);
+        try {
+            return URLEncoder.encode(stringToEncode, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalStateException("This should not happen because we always use UTF-8: " + e);
+        }
     }
 
     private void scanUnsafe() throws ClientApiException {
