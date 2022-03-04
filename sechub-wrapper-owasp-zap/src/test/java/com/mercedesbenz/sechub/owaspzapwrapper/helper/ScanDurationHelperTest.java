@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.owaspzapwrapper.helper;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,8 +28,8 @@ class ScanDurationHelperTest {
         long passiveScanDuration = scanDurationHelperToTest.computePassiveScanMaxScanDuration(activeScanEnabled, ajaxSpiderEnabled, remainingMaxDuration);
 
         /* test */
-        assertTrue(spiderDuration == 5000);
-        assertTrue(passiveScanDuration == 5000);
+        assertEquals(spiderDuration, 5000);
+        assertEquals(passiveScanDuration, 5000);
     }
 
     @Test
@@ -47,9 +47,9 @@ class ScanDurationHelperTest {
         long passiveScanDuration = scanDurationHelperToTest.computePassiveScanMaxScanDuration(activeScanEnabled, ajaxSpiderEnabled, remainingMaxDuration);
 
         /* test */
-        assertTrue(ajaxSpiderDuration == 7000);
-        assertTrue(spiderDuration == 900);
-        assertTrue(passiveScanDuration == 2100);
+        assertEquals(ajaxSpiderDuration, 7000);
+        assertEquals(spiderDuration, 900);
+        assertEquals(passiveScanDuration, 2100);
     }
 
     @Test
@@ -66,9 +66,9 @@ class ScanDurationHelperTest {
         long activeScanDuration = remainingMaxDuration - passiveScanDuration;
 
         /* test */
-        assertTrue(spiderDuration == 3000);
-        assertTrue(passiveScanDuration == 2100);
-        assertTrue(activeScanDuration == 4900);
+        assertEquals(spiderDuration, 3000);
+        assertEquals(passiveScanDuration, 2100);
+        assertEquals(activeScanDuration, 4900);
     }
 
     @Test
@@ -87,10 +87,10 @@ class ScanDurationHelperTest {
         long activeScanDuration = remainingMaxDuration - passiveScanDuration;
 
         /* test */
-        assertTrue(ajaxSpiderDuration == 4000);
-        assertTrue(spiderDuration == 600);
-        assertTrue(passiveScanDuration == 540);
-        assertTrue(activeScanDuration == 4860);
+        assertEquals(ajaxSpiderDuration, 4000);
+        assertEquals(spiderDuration, 600);
+        assertEquals(passiveScanDuration, 540);
+        assertEquals(activeScanDuration, 4860);
     }
 
 }

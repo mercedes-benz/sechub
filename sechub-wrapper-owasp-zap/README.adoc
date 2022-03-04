@@ -5,7 +5,7 @@ Owasp Zap Wrapper CLI for PDS
 === Usage
 
 The wrapper connection to the zaproxy can be configured by using the command line parameters below. Additionally it is possible to use environment variables like that:
-All configurations in a way that the command line parameters always overrule the environment variables.
+All configurations in a way that the command line parameters always overwrite the environment variables.
 
 ----
 ZAP_HOST=127.0.0.1

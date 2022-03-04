@@ -20,7 +20,7 @@ public class UnauthenticatedScan extends AbstractScan {
     @Override
     protected void runSpider() throws ClientApiException {
         String contextName = scanConfig.getContextName();
-        String subtreeonly = "true";
+        String subTreeOnly = "true";
         String recurse = "true";
         String maxChildren = null;
         String targetUrlAsString = scanConfig.getTargetUrlAsString();
@@ -31,45 +31,45 @@ public class UnauthenticatedScan extends AbstractScan {
 				maxChildren ,
 				recurse,
 				contextName,
-				subtreeonly);
+				subTreeOnly);
 		/* @formatter:on */
         waitForSpiderResults(responseSpider);
     }
 
     @Override
     protected void runAjaxSpider() throws ClientApiException {
-        String inscope = "true";
-        String subtreeonly = "true";
-        String contextname = scanConfig.getContextName();
-        String url = scanConfig.getTargetUrlAsString();
+        String inScope = "true";
+        String subTreeOnly = "true";
+        String contextName = scanConfig.getContextName();
+        String targetUrlAsString = scanConfig.getTargetUrlAsString();
         LOG.info("For scan {}: Starting AjaxSpider.", scanConfig.getContextName());
         /* @formatter:off */
 		ApiResponse responseAjaxSpider = clientApi.ajaxSpider.scan(
-				url,
-				inscope,
-				contextname,
-				subtreeonly);
+				targetUrlAsString,
+				inScope,
+				contextName,
+				subTreeOnly);
 		/* @formatter:on */
         waitForAjaxSpiderResults(responseAjaxSpider);
     }
 
     @Override
     protected void runActiveScan() throws ClientApiException {
-        String url = scanConfig.getTargetUrlAsString();
-        String inscopeonly = "true";
+        String targetUrlAsString = scanConfig.getTargetUrlAsString();
+        String inScopeOnly = "true";
         String recurse = "true";
-        String scanpolicyname = null;
+        String scanPolicyName = null;
         String method = null;
-        String postdata = null;
+        String postData = null;
         LOG.info("For scan {}: Starting ActiveScan.", scanConfig.getContextName());
         /* @formatter:off */
 		ApiResponse responseActive = clientApi.ascan.scan(
-				url,
+				targetUrlAsString,
 				recurse,
-				inscopeonly,
-				scanpolicyname,
+				inScopeOnly,
+				scanPolicyName,
 				method,
-				postdata);
+				postData);
 		/* @formatter:on */
         waitForActiveScanResults(responseActive);
     }

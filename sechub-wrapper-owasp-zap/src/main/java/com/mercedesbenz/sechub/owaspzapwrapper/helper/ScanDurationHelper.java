@@ -5,7 +5,7 @@ public class ScanDurationHelper {
 
     /**
      *
-     * Computes the max duration for the owasp zap spider. The computed time depends
+     * Computes the max duration for the Owasp Zap spider. The computed time depends
      * on how many of the other modules are enabled.
      *
      * @param isActiveScanEnabled
@@ -33,7 +33,7 @@ public class ScanDurationHelper {
     }
 
     /**
-     * Computes the max duration for the owasp zap spider. The computed time depends
+     * Computes the max duration for the Owasp Zap spider. The computed time depends
      * on how many of the other modules are enabled.
      *
      * @param isActiveScanEnabled
@@ -48,7 +48,7 @@ public class ScanDurationHelper {
     }
 
     /**
-     * Computes the max duration for the owasp zap spider. The computed time depends
+     * Computes the max duration for the Owasp Zap spider. The computed time depends
      * on how many of the other modules are enabled.
      *
      * @param isActiveScanEnabled

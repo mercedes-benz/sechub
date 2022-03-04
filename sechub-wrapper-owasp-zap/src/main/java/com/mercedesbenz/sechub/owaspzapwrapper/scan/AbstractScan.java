@@ -236,7 +236,7 @@ public abstract class AbstractScan implements OwaspZapScan {
 					display);
 			/* @formatter:on */
 
-            // rename is necessary if the file extension is not .json, because owasp zap
+            // rename is necessary if the file extension is not .json, because Owasp Zap
             // adds the file extension .json since we create a json report. Might not be
             // necessary anymore if we have the sarif support
             renameReportFileIfFileExtensionIsNotJSON();

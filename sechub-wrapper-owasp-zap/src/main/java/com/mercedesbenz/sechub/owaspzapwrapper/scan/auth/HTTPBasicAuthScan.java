@@ -37,14 +37,14 @@ public class HTTPBasicAuthScan extends AbstractAuthScan {
         }
         String port = Integer.toString(scanConfig.getTargetUri().getPort());
         /* @formatter:off */
-		StringBuilder authmethodconfigparams = new StringBuilder();
-		authmethodconfigparams.append("hostname=").append(urlEncodeUTF8(scanConfig.getTargetUri().getHost()))
+		StringBuilder authMethodConfigParams = new StringBuilder();
+		authMethodConfigParams.append("hostname=").append(urlEncodeUTF8(scanConfig.getTargetUri().getHost()))
 							  .append("&realm=").append(urlEncodeUTF8(realm))
 							  .append("&port=").append(urlEncodeUTF8(port));
 		/* @formatter:on */
         LOG.info("For scan {}: Setting authentication.", scanConfig.getContextName());
-        String authmethodname = scanConfig.getAuthenticationType().getOwaspZapAuthenticationMethod();
-        clientApi.authentication.setAuthenticationMethod(contextId, authmethodname, authmethodconfigparams.toString());
+        String authMethodName = scanConfig.getAuthenticationType().getOwaspZapAuthenticationMethod();
+        clientApi.authentication.setAuthenticationMethod(contextId, authMethodName, authMethodConfigParams.toString());
 
         String methodName = SessionManagementType.HTTP_AUTH_SESSION_MANAGEMENT.getOwaspZapSessionManagementMethod();
         clientApi.sessionManagement.setSessionManagementMethod(contextId, methodName, null);

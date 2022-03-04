@@ -1,9 +1,12 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.owaspzapwrapper.util;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class TargetConnectionCheckerTest {
 
@@ -21,11 +24,11 @@ class TargetConnectionCheckerTest {
         assertTrue(TargetConnectionChecker.isReponseCodeValid(403));
     }
 
-    @Test
-    void repsonse_code_less_than_400_accepted() {
+    @ParameterizedTest
+    @ValueSource(ints = { 302, 200, })
+    void repsonse_code_less_than_400_accepted(int responseCode) {
         /* test */
-        assertTrue(TargetConnectionChecker.isReponseCodeValid(302));
-        assertTrue(TargetConnectionChecker.isReponseCodeValid(200));
+        assertTrue(TargetConnectionChecker.isReponseCodeValid(responseCode));
     }
 
     @Test
@@ -35,12 +38,11 @@ class TargetConnectionCheckerTest {
         assertFalse(TargetConnectionChecker.isReponseCodeValid(400));
     }
 
-    @Test
-    void not_allowed_response_code_return_false() {
+    @ParameterizedTest
+    @ValueSource(ints = { 404, 500, 501, })
+    void not_allowed_response_code_return_false(int responseCode) {
         /* test */
-        assertFalse(TargetConnectionChecker.isReponseCodeValid(404));
-        assertFalse(TargetConnectionChecker.isReponseCodeValid(500));
-        assertFalse(TargetConnectionChecker.isReponseCodeValid(501));
+        assertFalse(TargetConnectionChecker.isReponseCodeValid(responseCode));
     }
 
 }

@@ -2,8 +2,8 @@
 package com.mercedesbenz.sechub.owaspzapwrapper.config.auth;
 
 /**
- * Representing the different authentication types available in OWASP ZAP attack
- * proxy. Makes the OWASP ZAP API easier to use.
+ * Representing the different authentication types available to Owasp Zap. Makes
+ * the Owasp Zap API easier to use.
  *
  */
 public enum AuthenticationType {

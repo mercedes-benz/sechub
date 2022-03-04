@@ -4,6 +4,8 @@ package com.mercedesbenz.sechub.owaspzapwrapper.util;
 public class EnvironmentVariableReader {
 
     /**
+     * Reads the value of the environment variable {@link environmentVariable} and
+     * returns the value as string.
      *
      * @param environmentVariable
      * @return Value of environmentVariable as string or null if the environment
@@ -14,10 +16,15 @@ public class EnvironmentVariableReader {
     }
 
     /**
+     * Reads the value of the environment variable {@link environmentVariable} and
+     * returns the value as integer.
      *
      * @param environmentVariable
      * @return Value of environmentVariable as integer or 0 if the environment
      *         variable is not set
+     * @throws IllegalArgumentException If the value of the environment variable
+     *                                  {@link environmentVariable} is no valid
+     *                                  integer.
      */
     public int readAsInt(String environmentVariable) {
         try {
@@ -27,8 +34,7 @@ public class EnvironmentVariableReader {
             }
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("The value of " + environmentVariable
-                    + " is not a valid integer. Please configure the owasp zap server via environment variables/command line parameters.");
+            throw new IllegalArgumentException("The value of " + environmentVariable + " is not a valid integer.");
         }
     }
 

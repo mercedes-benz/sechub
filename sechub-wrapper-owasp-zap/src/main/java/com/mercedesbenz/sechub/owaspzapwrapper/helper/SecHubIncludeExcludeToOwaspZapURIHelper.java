@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.owaspzapwrapper.helper;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class SecHubIncludeExcludeToOwaspZapURIHelper {
 
     public List<String> createListOfUrls(String targetUrl, List<String> subSites) {
         if (subSites == null) {
-            return new ArrayList<String>();
+            return new LinkedList<String>();
         }
 
-        List<String> listOfUrls = new ArrayList<>();
+        List<String> listOfUrls = new LinkedList<>();
         for (String url : subSites) {
             StringBuilder buildUrl = new StringBuilder();
             buildUrl.append(targetUrl);
