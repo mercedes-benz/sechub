@@ -50,7 +50,7 @@ Example 'sechub.json' config file which will configure a code scan and also a we
     "project": "my_project",
     "codeScan": {
       "fileSystem": { "folders": ["src-server/", "src-client/"] }
-    }
+    },
     "webScan"  : {
       "uris": ["https://www.myproject"]
     }
