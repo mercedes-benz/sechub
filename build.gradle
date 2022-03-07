@@ -17,7 +17,7 @@ buildscript{
 
 	dependencies{
 		classpath gradleApi()
-		classpath "org.ajoberstar.grgit:grgit-gradle:5.0.0" // necessary for version calculation
+		classpath "org.ajoberstar.grgit:grgit-gradle:${libraryVersion.grgit}" // necessary for version calculation
 		classpath "com.epages:restdocs-api-spec-gradle-plugin:${libraryVersion.restDocsApiSpec}"
         classpath "org.owasp:dependency-check-gradle:${libraryVersion.dependency_check}"
 	}
