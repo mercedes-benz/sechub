@@ -115,7 +115,7 @@ asciidoctor {
     outputOptions {
         backends "html5", "pdf"
     
-    separateOutputDirs = false
+        separateOutputDirs = false
     }
 
     baseDir 'src/docs/asciidoc'
@@ -174,13 +174,13 @@ asciidoctor {
 
 asciidoctorj {
 
-    version = '2.5.2'
+    version = "${libraryVersion.asciidoctor_j}"
     
     // Enable jdiagram support (new way)
     // see https://asciidoctor.github.io/asciidoctor-gradle-plugin/development-3.x/user-guide/#diagram
     modules {
        diagram.use() 
-       diagram.version '2.2.1' 
+       diagram.version "${libraryVersion.asciidoctor_j_diagram}" 
     }
 }
 
