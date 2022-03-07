@@ -7,7 +7,7 @@
  * ============================================================================
  */
 dependencies {
-    implementation library.slf4j
+    implementation spring_boot_dependency.slf4j_api
     api project(':sechub-storage-core')
     // https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3
     api library.amazonaws_sdk

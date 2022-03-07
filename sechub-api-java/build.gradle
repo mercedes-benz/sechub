@@ -8,8 +8,8 @@
 
 dependencies {
     // The production code uses the SLF4J logging API at compile time
-    implementation library.slf4j
-    implementation library.jackson_core
+    implementation spring_boot_dependency.slf4j_api
+    implementation spring_boot_dependency.jackson_core
     implementation spring_boot_dependency.jackson_databind
     
     implementation project(':sechub-commons-model')
@@ -19,7 +19,7 @@ dependencies {
     testImplementation spring_boot_dependency.junit_jupiter
     
     
-    testImplementation library.mockito
+    testImplementation spring_boot_dependency.mockito_core
     testImplementation library.mockito_inline
     testImplementation spring_boot_dependency.hamcrest
 }

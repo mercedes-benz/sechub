@@ -35,7 +35,7 @@ subprojects {
 	    if (projectType.springBootAdapterProjects.contains(project)){
 
             /* REST */
-            implementation(library.jackson_JDK8)
+            implementation(spring_boot_dependency.jackson_datatype_jdk8)
             implementation(library.springboot_starter_web)
 
 
@@ -54,7 +54,7 @@ subprojects {
             testImplementation project(':sechub-testframework')
 
             /* REST */
-            implementation(library.jackson_JDK8)
+            implementation(spring_boot_dependency.jackson_datatype_jdk8)
 
             /* database */
             implementation(library.database_postgres)

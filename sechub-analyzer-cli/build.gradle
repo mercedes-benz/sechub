@@ -6,14 +6,14 @@
  * ============================================================================
  */
 dependencies {
-	implementation library.slf4j
-	implementation library.logback_classic
+	implementation spring_boot_dependency.slf4j_api
+	implementation spring_boot_dependency.logback_classic
 	implementation library.apache_commons_cli
 	implementation library.jackson_jr_all
 	implementation library.google_re2j
 	
 	testImplementation library.junit4
-	testImplementation library.mockito
+	testImplementation spring_boot_dependency.mockito_core
 	testImplementation library.mockito_inline
     testImplementation spring_boot_dependency.hamcrest
 }

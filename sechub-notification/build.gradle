@@ -9,7 +9,6 @@ dependencies {
 
     implementation project(':sechub-shared-kernel')
     implementation library.springboot_starter_mail
-    implementation library.apache_commons_lang3
     
     testImplementation project(':sechub-testframework')
 

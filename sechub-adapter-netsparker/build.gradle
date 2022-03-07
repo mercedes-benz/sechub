@@ -7,5 +7,4 @@
  */
 dependencies {
     api project(':sechub-adapter')
-	implementation library.apache_commons_lang3
 }

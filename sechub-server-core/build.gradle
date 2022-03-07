@@ -20,6 +20,5 @@ dependencies {
     api project(':sechub-scan-product-pds')
     api project(':sechub-sereco')
 
-    testImplementation (library.hsqldb)
     testImplementation project(':sechub-testframework')
 }

@@ -9,7 +9,7 @@
 dependencies {
 
     testImplementation library.junit4
-    testImplementation library.mockito
+    testImplementation spring_boot_dependency.mockito_core
     testImplementation library.mockito_inline
     testImplementation project(':sechub-testframework')
 
