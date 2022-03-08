@@ -4,7 +4,7 @@ package com.mercedesbenz.sechub.domain.scan;
 import java.util.List;
 
 import com.mercedesbenz.sechub.domain.scan.config.MappingDataToNamePatternToIdEntryConverter;
-import com.mercedesbenz.sechub.domain.scan.config.NamePatternIdprovider;
+import com.mercedesbenz.sechub.domain.scan.config.NamePatternIdProvider;
 import com.mercedesbenz.sechub.domain.scan.config.NamePatternToIdEntry;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
 
@@ -16,12 +16,12 @@ public class NamePatternIdProviderFactory {
         converter = new MappingDataToNamePatternToIdEntryConverter();
     }
 
-    public NamePatternIdprovider createProvider(String id, String parameterValue) {
-        NamePatternIdprovider provider;
+    public NamePatternIdProvider createProvider(String id, String parameterValue) {
+        NamePatternIdProvider provider;
         MappingData mappingData = MappingData.fromString(parameterValue);
         List<NamePatternToIdEntry> entries = converter.convert(mappingData);
 
-        provider = new NamePatternIdprovider(id);
+        provider = new NamePatternIdProvider(id);
 
         for (NamePatternToIdEntry entry : entries) {
             provider.add(entry);

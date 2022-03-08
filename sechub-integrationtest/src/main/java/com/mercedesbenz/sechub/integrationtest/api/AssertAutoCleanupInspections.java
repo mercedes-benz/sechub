@@ -25,7 +25,7 @@ public class AssertAutoCleanupInspections {
 
     /**
      * Adds an expectation about a delete count. Will not directly check but only
-     * add the expectation. When all expectations has been added
+     * add the expectation. When all expectations have been added
      * {@link #assertAsExpected()} must be called to execute assertion /
      * verification.
      *
@@ -46,7 +46,7 @@ public class AssertAutoCleanupInspections {
 
     /**
      * Add an expectation about the amount of different kind of inspections
-     * (inspections are unique identified by variant + class name)
+     * (inspections are uniquely identified by variant + class name)
      *
      * @param expectedAmount
      * @return
@@ -128,10 +128,10 @@ public class AssertAutoCleanupInspections {
         private String className;
         private int expectedDeletes;
 
-        public AssertAutoCleanupDeleteCountFoundAction(String variant, String className, int expecctedDeletes) {
+        public AssertAutoCleanupDeleteCountFoundAction(String variant, String className, int expectedDeletes) {
             this.variant = variant;
             this.className = className;
-            this.expectedDeletes = expecctedDeletes;
+            this.expectedDeletes = expectedDeletes;
         }
 
         public ActionState validate(List<TestJsonDeleteCount> counts, StringBuilder problemMessageBuilder) {

@@ -90,9 +90,10 @@ public class SchedulerJobBatchTriggerService {
     }
 
     // default 10 seconds delay and 5 seconds initial
-    @MustBeDocumented("Job scheduling is triggered by a cron job operation - default is 10 seconds to delay after last execution. " + "The initial delay is "
-            + DEFAULT_INITIAL_DELAY_MILLIS + " milliseconds is defined. It can be configured different,so when you need to startup a cluster "
-            + "time shifted, simply change the initial delay values in your wanted way.")
+    @MustBeDocumented(value = "Job scheduling is triggered by a cron job operation - default is 10 seconds to delay after last execution. "
+            + "The initial delay is " + DEFAULT_INITIAL_DELAY_MILLIS
+            + " milliseconds is defined. It can be configured different,so when you need to startup a cluster "
+            + "time shifted, simply change the initial delay values in your wanted way.", scope = "schedule")
     @Scheduled(initialDelayString = "${sechub.config.trigger.nextjob.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS
             + "}", fixedDelayString = "${sechub.config.trigger.nextjob.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
     @UseCaseSchedulerStartsJob(@Step(number = 1, name = "Scheduling", description = "Fetches next schedule job from queue and trigger execution."))

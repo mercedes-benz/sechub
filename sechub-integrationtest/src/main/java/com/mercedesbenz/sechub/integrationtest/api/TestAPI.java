@@ -466,7 +466,7 @@ public class TestAPI {
      * @param expectedStatusCode
      * @param timeOutInMilliseconds as long this time out is not reached HTTP 200
      *                              messages will be ignored and after a short break
-     *                              the runnnable wille be called again to provoke
+     *                              the runnnable will be called again to provoke
      *                              expected failure.
      * @param runnable
      */

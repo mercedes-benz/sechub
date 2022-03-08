@@ -26,8 +26,8 @@ public class ScanMappingConfigurationService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ScanMappingConfigurationService.class);
 
-    private NamePatternIdprovider fallbackProvider = new NamePatternIdprovider(null);
-    private Map<String, NamePatternIdprovider> providers = new TreeMap<>();
+    private NamePatternIdProvider fallbackProvider = new NamePatternIdProvider(null);
+    private Map<String, NamePatternIdProvider> providers = new TreeMap<>();
 
     @Autowired
     ScanMappingToScanMappingConfigurationTransformer transformer;
@@ -51,7 +51,7 @@ public class ScanMappingConfigurationService {
      * @param namePatternMappingId
      * @return provider, never <code>null</code>
      */
-    public NamePatternIdprovider getNamePatternIdProvider(MappingIdentifier identifier) {
+    public NamePatternIdProvider getNamePatternIdProvider(MappingIdentifier identifier) {
         return getNamePatternIdProvider(identifier.getId());
     }
 
@@ -63,9 +63,9 @@ public class ScanMappingConfigurationService {
      * @return provider, never <code>null</code>
      */
     @Deprecated
-    public NamePatternIdprovider getNamePatternIdProvider(String namePatternMappingId) {
+    public NamePatternIdProvider getNamePatternIdProvider(String namePatternMappingId) {
         synchronized (providers) {
-            NamePatternIdprovider provider = providers.get(namePatternMappingId);
+            NamePatternIdProvider provider = providers.get(namePatternMappingId);
             if (provider != null) {
                 return provider;
             }
@@ -108,8 +108,8 @@ public class ScanMappingConfigurationService {
                     LOG.warn("scan config contains empty key - is ignored");
                     continue;
                 }
-                NamePatternIdprovider provider = new NamePatternIdprovider(providerId);
-                LOG.debug("Created NamePatternIdprovider:{}", provider.getProviderId());
+                NamePatternIdProvider provider = new NamePatternIdProvider(providerId);
+                LOG.debug("Created NamePatternIdProvider:{}", provider.getProviderId());
 
                 List<NamePatternToIdEntry> data = configMappings.get(key);
                 for (NamePatternToIdEntry entry : data) {

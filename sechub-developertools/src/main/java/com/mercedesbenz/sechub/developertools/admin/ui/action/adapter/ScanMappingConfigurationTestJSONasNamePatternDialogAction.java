@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 import com.mercedesbenz.sechub.domain.scan.config.DeveloperToolsScanMappingConfigurationService;
-import com.mercedesbenz.sechub.domain.scan.config.NamePatternIdprovider;
+import com.mercedesbenz.sechub.domain.scan.config.NamePatternIdProvider;
 import com.mercedesbenz.sechub.domain.scan.config.ScanMapping;
 import com.mercedesbenz.sechub.domain.scan.config.ScanMappingConfiguration;
 import com.mercedesbenz.sechub.domain.scan.config.ScanMappingToScanMappingConfigurationTransformer;
@@ -31,7 +31,7 @@ public class ScanMappingConfigurationTestJSONasNamePatternDialogAction extends A
         DeveloperToolsScanMappingConfigurationService scanMappingConfigurationService = new DeveloperToolsScanMappingConfigurationService();
         scanMappingConfigurationService.switchConfigurationIfChanged(config);
 
-        NamePatternIdprovider provider = scanMappingConfigurationService.getNamePatternIdProvider(identifier);
+        NamePatternIdProvider provider = scanMappingConfigurationService.getNamePatternIdProvider(identifier);
 
         boolean ongoing = true;
         while (ongoing) {

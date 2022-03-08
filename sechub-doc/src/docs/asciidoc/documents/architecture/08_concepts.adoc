@@ -26,6 +26,8 @@ include::../shared/concepts/execution-profiles/concept_execution_profiles_and_co
 
 include::../shared/concepts/concept_product_results.adoc[]
 
+include::../shared/concepts/concept_auto_clean.adoc[]
+
 
 
 

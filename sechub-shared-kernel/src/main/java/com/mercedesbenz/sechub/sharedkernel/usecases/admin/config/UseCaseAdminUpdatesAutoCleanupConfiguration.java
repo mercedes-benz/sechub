@@ -19,7 +19,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 		group=UseCaseGroup.CONFIGURATION,
 		apiName="adminUpdatesAutoCleanupConfiguration",
 		title="Admin updates auto cleanup configuration",
-		description="An administrator changes auto cleanup configuration.")
+		description="An administrator changes <<concept-auto-cleanup,auto cleanup>> configuration.")
 public @interface UseCaseAdminUpdatesAutoCleanupConfiguration{
 
 	Step value();

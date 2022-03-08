@@ -11,6 +11,7 @@ import com.mercedesbenz.sechub.domain.administration.autocleanup.AdministrationA
 import com.mercedesbenz.sechub.domain.administration.autocleanup.AdministrationAutoCleanupDaysCalculator;
 import com.mercedesbenz.sechub.sharedkernel.SecHubEnvironment;
 import com.mercedesbenz.sechub.sharedkernel.Step;
+import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
 import com.mercedesbenz.sechub.sharedkernel.messaging.AdministrationConfigMessage;
@@ -54,6 +55,11 @@ public class AdministrationConfigService {
     public void updateAutoCleanupConfiguration(AdministrationAutoCleanupConfig configuration) {
         Assert.notNull(configuration, "configuration may not be null");
 
+        long calculateCleanupTimeInDays = calculator.calculateCleanupTimeInDays(configuration);
+        if (calculateCleanupTimeInDays < 0) {
+            throw new NotAcceptableException("Negative cleanup time is not accepted!");
+        }
+
         String configurationAsJson = configuration.toJSON();
 
         auditLogService.log("updates auto cleanup configuration to: {}", logSanitizer.sanitize(configurationAsJson, 8192));
@@ -63,7 +69,7 @@ public class AdministrationConfigService {
         // store in own transaction, so never race conditions with events
         transactionService.saveConfigInOwnTransaction(config);
 
-        sendEvent(configuration);
+        sendEvent(calculateCleanupTimeInDays);
     }
 
     public long getAutoCleanupInDays() {
@@ -93,9 +99,9 @@ public class AdministrationConfigService {
     }
 
     @IsSendingAsyncMessage(MessageID.AUTO_CLEANUP_CONFIGURATION_CHANGED)
-    private void sendEvent(AdministrationAutoCleanupConfig config) {
+    private void sendEvent(long calculateCleanupTimeInDays) {
         AdministrationConfigMessage adminConfigMessage = new AdministrationConfigMessage();
-        adminConfigMessage.setAutoCleanupInDays(calculator.calculateCleanupTimeInDays(config));
+        adminConfigMessage.setAutoCleanupInDays(calculateCleanupTimeInDays);
 
         DomainMessage domainMessage = DomainMessageFactory.createEmptyRequest(MessageID.AUTO_CLEANUP_CONFIGURATION_CHANGED);
         domainMessage.set(MessageDataKeys.AUTO_CLEANUP_CONFIG_CHANGE_DATA, adminConfigMessage);

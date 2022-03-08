@@ -40,6 +40,25 @@ class AdministrationAutoCleanupServiceTest {
     }
 
     @Test
+    void cleanup_executes_NOT_delete_job_information_for_minus_1_day() {
+        /* prepare */
+        long days = -1;
+        when(configService.getAutoCleanupInDays()).thenReturn(days);
+        LocalDateTime cleanTime = LocalDateTime.now().minusDays(days);
+        when(timeCalculationService.calculateNowMinusDays(any())).thenReturn(cleanTime);
+
+        /* execute */
+        serviceToTest.cleanup();
+
+        /* test */
+        verify(configService).getAutoCleanupInDays();
+        verify(timeCalculationService, never()).calculateNowMinusDays(any());
+        verify(jobInformationRepository, never()).deleteJobInformationOlderThan(any());
+        // check inspection as expected: never because not executed
+        verify(inspector, never()).inspect(any());
+    }
+
+    @Test
     void cleanup_executes_NOT_delete_job_information_for_0_days() {
         /* prepare */
         long days = 0;

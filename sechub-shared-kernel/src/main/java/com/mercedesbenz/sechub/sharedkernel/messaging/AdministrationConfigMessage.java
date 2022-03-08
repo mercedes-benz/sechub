@@ -13,7 +13,7 @@ import com.mercedesbenz.sechub.sharedkernel.MustBeKeptStable;
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true) // we do ignore to avoid problems from wrong configured values!
-@MustBeKeptStable("This configuration is used by communication between (api) scan,report, scheduler and administration")
+@MustBeKeptStable("This configuration is used by communication between (api) scan, report, scheduler and administration")
 public class AdministrationConfigMessage implements JSONable<AdministrationConfigMessage> {
 
     private long autoCleanupInDays;

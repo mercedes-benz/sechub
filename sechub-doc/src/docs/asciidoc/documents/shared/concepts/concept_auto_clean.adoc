@@ -1,0 +1,53 @@
+// SPDX-License-Identifier: MIT
+[[concept-auto-cleanup]]
+=== Auto cleanup
+To prevent full hard drives there is an option to automatically remove old data.
+
+[NOTE]
+====
+See also
+
+- <<section-usecase-UC_064,UC_064-Admin fetches auto cleanup configuration>>)
+- <<section-usecase-UC_065,UC_065-Admin updates auto cleanup configuration>>)
+- <<section-usecase-UC_066,UC_066-Sechub administration domain auto cleanup>>)
+- <<section-usecase-UC_067,UC_067-Sechub scan domain auto cleanup>>)
+- <<section-usecase-UC_068,UC_068-Sechub schedule domain auto cleanup>>)
+====
+
+
+==== Configuration
+Administrators can configure the auto cleanup configuration by uploading a json configuration via
+REST (see <<section-ucrestdoc-uc-UC_065,REST API for UC_065-Admin updates auto cleanup configuration >>).
+
+[source,json]
+----
+include::concept_auto_cleanup_configuration_example.json[]
+----
+<1> The time unit to use. +
+    Can be 
+    - day(s), DAY(S) 
+    - month(s), MONTH(S)
+    - week(s), WEEK(S) or
+    - year(s), YEAR(S) +
+    
+<2> Amount of time. When `0` is defined, the auto cleanup is deactivated, all other positive values are time 
+    unit related. Negative values are not allowed.
+
+==== Execution
+The execution is automatically done by {sechub}. 
+
+==== Cleaned data
+Data is removed when older than defined time period in
+
+- Scan product results
+- Scan project log 
+- Schedule job entries
+- Administration job information
+
+[NOTE]
+====
+Scan report data is currently NOT deleted. So it can be used for statistics.
+In a later feature there will be specialized statistic tables - when this has been implemented,
+the auto cleanup will be extended to drop old scan report data as well.
+====
+

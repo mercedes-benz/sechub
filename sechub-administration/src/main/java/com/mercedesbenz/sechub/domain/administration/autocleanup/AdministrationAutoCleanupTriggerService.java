@@ -16,7 +16,7 @@ public class AdministrationAutoCleanupTriggerService {
     @Autowired
     AdministrationAutoCleanupService autoCleanupService;
 
-    @MustBeDocumented(TRIGGER_STEP_MUST_BE_DOCMENTED)
+    @MustBeDocumented(TRIGGER_STEP_MUST_BE_DOCUMENTED)
     @Scheduled(initialDelayString = TRIGGER_INITIAL_DELAY_STRING, fixedDelayString = TRIGGER_FIXED_DELAY_STRING)
     @UseCaseAdministrationAutoCleanExecution(@Step(number = TRIGGER_STEP_NUMBER, name = TRIGGER_STEP_NAME, description = TRIGGER_STEP_DESCRIPTION))
     public void triggerAutoCleanup() {

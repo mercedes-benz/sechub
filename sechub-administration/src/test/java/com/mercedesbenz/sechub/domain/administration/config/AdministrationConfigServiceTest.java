@@ -9,11 +9,14 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.ArgumentCaptor;
 
 import com.mercedesbenz.sechub.domain.administration.autocleanup.AdministrationAutoCleanupConfig;
 import com.mercedesbenz.sechub.domain.administration.autocleanup.AdministrationAutoCleanupDaysCalculator;
 import com.mercedesbenz.sechub.sharedkernel.CountableInDaysTimeUnit;
+import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
 import com.mercedesbenz.sechub.sharedkernel.messaging.AdministrationConfigMessage;
@@ -52,6 +55,7 @@ class AdministrationConfigServiceTest {
 
     @Test
     void get_auto_cleanup_in_days_fetches_information_from_database_initial_0() {
+        /* prepare */
         emulateExistingInitialAdministrationConfig();
 
         /* execute */
@@ -63,6 +67,7 @@ class AdministrationConfigServiceTest {
 
     @Test
     void get_auto_cleanup_in_days_fetches_information_from_database() {
+        /* prepare */
         emulateExistingInitialAdministrationConfig().autoCleanupInDays = 42L;
 
         /* execute */
@@ -74,6 +79,7 @@ class AdministrationConfigServiceTest {
 
     @Test
     void auto_cleanup_in_days_changed_stores_information_in_database() {
+        /* prepare */
         emulateExistingInitialAdministrationConfig();
 
         /* execute */
@@ -90,6 +96,7 @@ class AdministrationConfigServiceTest {
 
     @Test
     void auto_cleanup_configuration_change_does_result_in_auto_cleanup_change_event_with_correct_data() {
+        /* prepare */
         emulateExistingInitialAdministrationConfig();
         long days = 42;
         AdministrationAutoCleanupConfig autoCleanupConfiguration = new AdministrationAutoCleanupConfig();
@@ -110,6 +117,7 @@ class AdministrationConfigServiceTest {
 
     @Test
     void an_existing_config_is_updated_with_given_auto_cleanup_config() {
+        /* prepare */
         emulateExistingInitialAdministrationConfig();
 
         AdministrationAutoCleanupConfig autoCleanupConfiguration = new AdministrationAutoCleanupConfig();
@@ -126,8 +134,38 @@ class AdministrationConfigServiceTest {
         assertEquals(storedConfig.autoCleanupConfiguration, autoCleanupConfiguration.toJSON());
     }
 
+    @ParameterizedTest
+    @CsvSource({ "-1", "-100", "-4711" })
+    void when_calculator_calculates_an_negative_days_count_a_non_acceptable_exception_is_thrown(long calculatedDays) {
+        /* prepare */
+        emulateExistingInitialAdministrationConfig();
+
+        AdministrationAutoCleanupConfig autoCleanupConfiguration = new AdministrationAutoCleanupConfig();
+        when(calculator.calculateCleanupTimeInDays(autoCleanupConfiguration)).thenReturn(calculatedDays);
+
+        /* execute + test */
+        assertThrows(NotAcceptableException.class, () -> serviceToTest.updateAutoCleanupConfiguration(autoCleanupConfiguration));
+    }
+
+    @ParameterizedTest
+    @CsvSource({ "0", "1", "100", "4711" })
+    void when_calculator_calculates_a_positive_day_count_or_zero_no__exception_is_thrown_and_an_event_sent(long calculatedDays) {
+        /* prepare */
+        emulateExistingInitialAdministrationConfig();
+
+        AdministrationAutoCleanupConfig autoCleanupConfiguration = new AdministrationAutoCleanupConfig();
+        when(calculator.calculateCleanupTimeInDays(autoCleanupConfiguration)).thenReturn(calculatedDays);
+
+        /* execute */
+        serviceToTest.updateAutoCleanupConfiguration(autoCleanupConfiguration);
+
+        /* test */
+        verify(domainMessageService).sendAsynchron(any());
+    }
+
     @Test
     void an_existing_config_is_updated_with_null_throws_illegal_argument() {
+        /* prepare */
         emulateExistingInitialAdministrationConfig();
 
         AdministrationAutoCleanupConfig autoCleanupConfiguration = null;
@@ -138,6 +176,7 @@ class AdministrationConfigServiceTest {
 
     @Test
     void a_not_existing_config_is_created_blank_and_then_updated_with_given_auto_cleanup_config() {
+        /* prepare */
         emulateMissingAdministrationConfigCreated();
         AdministrationAutoCleanupConfig newAutoCleanConfiguration = new AdministrationAutoCleanupConfig();
         newAutoCleanConfiguration.getCleanupTime().setAmount(1);
@@ -165,7 +204,6 @@ class AdministrationConfigServiceTest {
     private void emulateMissingAdministrationConfigCreated() {
         AdministrationConfig createdAdministrationConfig = new AdministrationConfig();
         when(transactionService.saveConfigInOwnTransaction(any())).thenReturn(createdAdministrationConfig);
-//        when(repository.findById(0)).thenReturn(Optional.empty());
     }
 
     private AdministrationConfig emulateExistingInitialAdministrationConfig() {

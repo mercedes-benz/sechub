@@ -60,7 +60,7 @@ class ScanMessageHandlerTest {
     }
 
     @Test
-    void handler_receiving_auto_cleanup_calls_config_serice_with_message_data() {
+    void handler_receiving_auto_cleanup_calls_config_sevice_with_message_data() {
         /* prepare */
         long days = System.nanoTime();
         AdministrationConfigMessage configMessage = new AdministrationConfigMessage();

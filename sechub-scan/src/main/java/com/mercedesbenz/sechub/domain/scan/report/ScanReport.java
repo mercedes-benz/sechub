@@ -45,7 +45,7 @@ public class ScanReport {
     public static final String CLASS_NAME = ScanReport.class.getSimpleName();
     public static final String PROPERTY_REPORT_STARTED = "started";
 
-    public static final String QUERY_DELETE_REPORTS_OLDER_THAN = "DELETE FROM ScanReport r WHERE r." + PROPERTY_REPORT_STARTED + " <:cleanTimeStamp";
+    public static final String QUERY_DELETE_REPORTS_OLDER_THAN = "DELETE FROM ScanReport r WHERE r." + PROPERTY_REPORT_STARTED + " < :cleanTimeStamp";
 
     @Id
     @GeneratedValue(generator = "UUID")

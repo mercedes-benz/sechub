@@ -57,7 +57,7 @@ public class ScheduleDescriptionGenerator implements Generator {
         for (Map.Entry<String, SortedSet<TableRow>> entries : rowMap.entrySet()) {
             SortedSet<TableRow> table = entries.getValue();
 
-            sb.append("[options=\"header\",cols=\"1,1,1,1\"]\n");
+            sb.append("[options=\"header\",cols=\"1,1,1\"]\n");
             sb.append(".").append(buildTitle(entries.getKey()));
             sb.append("\n|===\n");
             sb.append("|Type   |Definition   |Description\n");

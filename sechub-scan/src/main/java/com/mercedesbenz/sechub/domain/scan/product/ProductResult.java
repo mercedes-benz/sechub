@@ -58,7 +58,7 @@ public class ProductResult {
     public static final String PROPERTY_PRODUCT_CONFIG_UUID = "productExecutorConfigUUID";
     public static final String PROPERTY_PRODUCT_STARTED = "started";
 
-    public static final String QUERY_DELETE_RESULT_OLDER_THAN = "DELETE FROM ProductResult r WHERE r." + PROPERTY_PRODUCT_STARTED + " <:cleanTimeStamp";;
+    public static final String QUERY_DELETE_RESULT_OLDER_THAN = "DELETE FROM ProductResult r WHERE r." + PROPERTY_PRODUCT_STARTED + " < :cleanTimeStamp";;
 
     @Id
     @GeneratedValue(generator = "UUID")

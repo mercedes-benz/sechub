@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mercedesbenz.sechub.domain.scan.access.ScanAccessCountService;
-import com.mercedesbenz.sechub.domain.scan.config.NamePatternIdprovider;
+import com.mercedesbenz.sechub.domain.scan.config.NamePatternIdProvider;
 import com.mercedesbenz.sechub.domain.scan.config.ScanConfigService;
 import com.mercedesbenz.sechub.domain.scan.config.ScanMapping;
 import com.mercedesbenz.sechub.domain.scan.config.ScanMappingConfigurationService;
@@ -205,7 +205,7 @@ public class IntegrationTestScanRestController {
     @SuppressWarnings("deprecation")
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/config/namepattern/{namePatternProviderId}/{name}", method = RequestMethod.GET)
     public String getIdForNameByProvider(@PathVariable("namePatternProviderId") String namePatternProviderId, @PathVariable("name") String name) {
-        NamePatternIdprovider provider = scanMappingConfigurationService.getNamePatternIdProvider(namePatternProviderId);
+        NamePatternIdProvider provider = scanMappingConfigurationService.getNamePatternIdProvider(namePatternProviderId);
         if (provider == null) {
             return null;
         }

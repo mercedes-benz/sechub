@@ -36,6 +36,11 @@ public class AdministrationAutoCleanupService {
     public void cleanup() {
         /* calculate */
         long days = configService.getAutoCleanupInDays();
+
+        if (days < 0) {
+            LOG.error("Found {} days configured for auto cleanup. This should never happen - please check your configuration!", days);
+            return;
+        }
         if (days == 0) {
             LOG.trace("Cancel administration auto cleanup because disabled.");
             return;

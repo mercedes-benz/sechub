@@ -56,7 +56,6 @@ public class UsecaseIdentifierUniqueUsageTest {
 
             String apiName = useCaseDefinition.apiName();
             if (APIConstants.NO_API_AVAILABLE.equals(apiName)) {
-                /* ignore */
                 continue;
             }
             String annotationName = clazz.getSimpleName();

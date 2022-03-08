@@ -30,16 +30,34 @@ class TimeCalculationServiceTest {
     @CsvSource({ "0", "1", "90", "365" })
     @ParameterizedTest
     void now_minus_days_calulation_works(Long days) {
+        /* prepare */
         LocalDateTime now = date_2021_02_01_time_08_15;
         when(systemTime.getNow()).thenReturn(now);
 
+        /* execute */
         LocalDateTime calculated = serviceToTest.calculateNowMinusDays(days);
 
+        /* test */
         if (days == null) {
             assertEquals(now.minusDays(0), calculated);
         } else {
             assertEquals(now.minusDays(days), calculated);
         }
+    }
+
+    @CsvSource({ "-1", "-100", "-365" })
+    @ParameterizedTest
+    void now_minus_days_calulation_works_when_negative_days_are_added(long negativeDays) {
+        /* prepare */
+        LocalDateTime now = date_2021_02_01_time_08_15;
+        when(systemTime.getNow()).thenReturn(now);
+        long plusDays = Math.abs(negativeDays);
+
+        /* execute */
+        LocalDateTime calculated = serviceToTest.calculateNowMinusDays(negativeDays);
+
+        /* test */
+        assertEquals(now.plusDays(plusDays), calculated);
     }
 
 }

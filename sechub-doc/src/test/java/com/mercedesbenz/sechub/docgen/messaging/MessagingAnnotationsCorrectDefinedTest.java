@@ -170,13 +170,17 @@ class MessagingAnnotationsCorrectDefinedTest {
         allSentMessages.addAll(context.messagesReceivedAsynchronous);
         allSentMessages.addAll(context.messagesReceivedSynchronous);
 
-        /* test */
+        Set<MessageID> notReceivedAsynchronousMessages = new HashSet<>();
         for (MessageID message : MessageID.values()) {
             if (!allSentMessages.contains(message)) {
-                if (context.messagesAnswerResultSynchronous.contains(message)) {
-                    /* ignore - it is used as a result for synchronous call, so okay */
-                    continue;
-                }
+                notReceivedAsynchronousMessages.add(message);
+            }
+        }
+
+        /* test */
+        for (MessageID message : notReceivedAsynchronousMessages) {
+            // when also not received synchronous this is a problem:
+            if (!context.messagesAnswerResultSynchronous.contains(message)) {
                 context.markDiagramGenerationProblem(message, "is defined, but never received");
             }
         }
@@ -282,7 +286,7 @@ class MessagingAnnotationsCorrectDefinedTest {
                     try {
                         messageID = annotationClass.getMethod(annotationAttribute).invoke(annotation);
                     } catch (Exception e) {
-                        throw new IllegalStateException("Was not able to inspect:" + annotationClass, e);
+                        throw new IllegalStateException("Was not able to inspect: " + annotationClass, e);
                     }
                     addNullSafe(set, (MessageID) messageID);
                 }
@@ -291,26 +295,26 @@ class MessagingAnnotationsCorrectDefinedTest {
 
         public class ContainerAnnotationExtractor<A extends Annotation, C extends Annotation> extends AnnotationExtractor<A> {
 
-            private Class<C> childAannotationClass;
+            private Class<C> childAnnotationClass;
             private String childAnnotationAttribute;
 
-            public ContainerAnnotationExtractor(Class<A> containerAnnotationClass, String containerAnnotationAttribute, Class<C> childAannotationClass,
+            public ContainerAnnotationExtractor(Class<A> containerAnnotationClass, String containerAnnotationAttribute, Class<C> childAnnotationClass,
                     String childAnnotationAttribute) {
                 super(containerAnnotationClass, containerAnnotationAttribute);
-                this.childAannotationClass = childAannotationClass;
+                this.childAnnotationClass = childAnnotationClass;
                 this.childAnnotationAttribute = childAnnotationAttribute;
             }
 
             @SuppressWarnings("unchecked")
             @Override
             protected void doExtract(Set<MessageID> set, A[] annotations) {
-                AnnotationExtractor<C> childExtractor = new AnnotationExtractor<>(childAannotationClass, childAnnotationAttribute);
+                AnnotationExtractor<C> childExtractor = new AnnotationExtractor<>(childAnnotationClass, childAnnotationAttribute);
                 for (A containerAnnotation : annotations) {
                     Object childAnnotations;
                     try {
                         childAnnotations = annotationClass.getMethod(annotationAttribute).invoke(containerAnnotation);
                     } catch (Exception e) {
-                        throw new IllegalStateException("Was not able to inspect:" + annotationClass, e);
+                        throw new IllegalStateException("Was not able to inspect: " + annotationClass, e);
                     }
                     childExtractor.doExtract(set, (C[]) childAnnotations);
                 }

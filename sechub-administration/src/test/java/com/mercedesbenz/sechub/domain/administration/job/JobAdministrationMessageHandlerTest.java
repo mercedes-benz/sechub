@@ -26,7 +26,7 @@ class JobAdministrationMessageHandlerTest {
     }
 
     @Test
-    void handler_receiving_auto_cleanup_calls_config_serice_with_message_data() {
+    void handler_receiving_auto_cleanup_calls_config_service_with_message_data() {
         /* prepare */
         long days = System.nanoTime();
         AdministrationConfigMessage configMessage = new AdministrationConfigMessage();

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 import com.mercedesbenz.sechub.sharedkernel.Step;
-import com.mercedesbenz.sechub.sharedkernel.usecases.autocleanup.UseCaseAdministrationAutoCleanExecution;
+import com.mercedesbenz.sechub.sharedkernel.usecases.autocleanup.UseCaseScheduleAutoCleanExecution;
 
 @Service
 public class ScheduleAutoCleanupTriggerService {
@@ -16,9 +16,9 @@ public class ScheduleAutoCleanupTriggerService {
     @Autowired
     ScheduleAutoCleanupService autoCleanupService;
 
-    @MustBeDocumented(TRIGGER_STEP_MUST_BE_DOCMENTED)
+    @MustBeDocumented(TRIGGER_STEP_MUST_BE_DOCUMENTED)
     @Scheduled(initialDelayString = TRIGGER_INITIAL_DELAY_STRING, fixedDelayString = TRIGGER_FIXED_DELAY_STRING)
-    @UseCaseAdministrationAutoCleanExecution(@Step(number = TRIGGER_STEP_NUMBER, name = TRIGGER_STEP_NAME, description = TRIGGER_STEP_DESCRIPTION))
+    @UseCaseScheduleAutoCleanExecution(@Step(number = TRIGGER_STEP_NUMBER, name = TRIGGER_STEP_NAME, description = TRIGGER_STEP_DESCRIPTION))
     public void triggerAutoCleanup() {
         autoCleanupService.cleanup();
     }

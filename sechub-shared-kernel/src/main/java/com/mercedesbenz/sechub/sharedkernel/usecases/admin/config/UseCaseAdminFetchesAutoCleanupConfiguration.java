@@ -18,8 +18,8 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 		id=UseCaseIdentifier.UC_ADMIN_FETCHES_AUTO_CLEANUP_CONFIGURATION,
 		group=UseCaseGroup.CONFIGURATION,
 		apiName="adminFetchesAutoCleanupConfiguration",
-		title="Admin fetchesauto cleanup configuration",
-		description="An administrator feches current auto cleanup configuration.")
+		title="Admin fetches auto cleanup configuration",
+		description="An administrator feches current <<concept-auto-cleanup,auto cleanup>> configuration.")
 public @interface UseCaseAdminFetchesAutoCleanupConfiguration{
 
 	Step value();

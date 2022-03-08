@@ -11,6 +11,13 @@ public class TimeCalculationService {
     @Autowired
     SystemTimeProvider systemTime;
 
+    /**
+     * Calculates current time stamp minus days. When days are negative the days are
+     * added instead.
+     *
+     * @param days
+     * @return time stamp, never <code>null</code>
+     */
     public LocalDateTime calculateNowMinusDays(Long days) {
         LocalDateTime now = systemTime.getNow();
         if (days == null) {

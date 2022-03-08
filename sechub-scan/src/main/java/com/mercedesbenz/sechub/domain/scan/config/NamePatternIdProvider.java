@@ -7,15 +7,15 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NamePatternIdprovider {
+public class NamePatternIdProvider {
 
-    private static final Logger LOG = LoggerFactory.getLogger(NamePatternIdprovider.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NamePatternIdProvider.class);
 
     private List<NamePatternToIdEntry> entries = new ArrayList<>();
 
     private String providerId;
 
-    public NamePatternIdprovider(String providerId) {
+    public NamePatternIdProvider(String providerId) {
         this.providerId = providerId;
     }
 
@@ -52,7 +52,7 @@ public class NamePatternIdprovider {
 
     @Override
     public String toString() {
-        return "NamePatternIdprovider [providerId=" + providerId + ", entries=" + entries + "]";
+        return "NamePatternIdProvider [providerId=" + providerId + ", entries=" + entries + "]";
     }
 
 }

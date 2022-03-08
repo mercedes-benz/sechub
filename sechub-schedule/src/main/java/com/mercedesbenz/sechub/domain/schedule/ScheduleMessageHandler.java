@@ -110,7 +110,7 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler {
             handleProcessAccessLevelChanged(request);
             break;
         case AUTO_CLEANUP_CONFIGURATION_CHANGED:
-            handleAutoCleanUpConfiguratoinChanged(request);
+            ReceivedhandleAutoCleanUpConfigurationChanged(request);
             break;
         default:
             throw new IllegalStateException("unhandled message id:" + messageId);
@@ -118,7 +118,7 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler {
     }
 
     @IsReceivingAsyncMessage(MessageID.AUTO_CLEANUP_CONFIGURATION_CHANGED)
-    private void handleAutoCleanUpConfiguratoinChanged(DomainMessage request) {
+    private void ReceivedhandleAutoCleanUpConfigurationChanged(DomainMessage request) {
         AdministrationConfigMessage message = request.get(MessageDataKeys.AUTO_CLEANUP_CONFIG_CHANGE_DATA);
         configService.updateAutoCleanupInDays(message.getAutoCleanupInDays());
     }

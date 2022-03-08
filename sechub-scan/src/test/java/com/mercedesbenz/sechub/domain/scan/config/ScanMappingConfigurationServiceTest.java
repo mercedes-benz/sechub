@@ -21,7 +21,7 @@ public class ScanMappingConfigurationServiceTest {
     @Test
     public void not_initialized_returns_fallback_provider() {
         /* execute */
-        NamePatternIdprovider provider = serviceToTest.getNamePatternIdProvider("xyz");
+        NamePatternIdProvider provider = serviceToTest.getNamePatternIdProvider("xyz");
         /* test */
         assertNotNull(provider);
         assertEquals(null, provider.getIdForName("a-go-project-1"));
@@ -34,7 +34,7 @@ public class ScanMappingConfigurationServiceTest {
                 ScanMappingConfiguration.createFromJSON(ScanDomainTestFileSupport.getTestfileSupport().loadTestFile("scan_config/test_scan_config1.json")));
 
         /* execute */
-        NamePatternIdprovider provider = serviceToTest.getNamePatternIdProvider("someproduct.a.b");
+        NamePatternIdProvider provider = serviceToTest.getNamePatternIdProvider("someproduct.a.b");
         /* test */
         assertNotNull(provider);
         assertEquals("2", provider.getIdForName("a-go-project-1"));
@@ -58,7 +58,7 @@ public class ScanMappingConfigurationServiceTest {
                 ScanMappingConfiguration.createFromJSON(ScanDomainTestFileSupport.getTestfileSupport().loadTestFile("scan_config/test_scan_config2.json")));
 
         /* execute */
-        NamePatternIdprovider provider = serviceToTest.getNamePatternIdProvider("someproduct.a.b");
+        NamePatternIdProvider provider = serviceToTest.getNamePatternIdProvider("someproduct.a.b");
         /* test */
         assertNotNull(provider);
         assertEquals("102", provider.getIdForName("a-go-project-1"));

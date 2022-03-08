@@ -212,7 +212,19 @@ public class Reflections {
                 clazz = Class.forName(className);
                 classesToInspect.add(clazz);
             } catch (ClassNotFoundException e) {
-                LOG.trace("Class not found in sechub-doc classpath, only on source code:{}", className);
+                /*
+                 * We iterate over files - means source code. When we have a
+                 * ClassNotFoundException at this point, the source file is available, but class
+                 * is not inside class path (runtime).
+                 *
+                 * This happens for source files which are found inside file system and given
+                 * directories, but are not inside sechub-doc classpath.
+                 *
+                 * This is normally no error, because we do not inspect all parts. But we log it
+                 * at at least at info level for debugging purposes (e.g. when we add a new
+                 * gradle sub project and it is not documented).
+                 */
+                LOG.info("The class '{}' was not found in sechub-doc classpath, but source file was found at {}", className, file.getAbsolutePath());
             }
         } else {
             LOG.error("Was not able to handle file:{}", file);
