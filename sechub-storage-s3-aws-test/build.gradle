@@ -7,17 +7,16 @@
  * ============================================================================
  */
 dependencies {
-    compile library.slf4j
-    compile project(':sechub-storage-core')
-    compile project(':sechub-storage-s3-aws')
+    implementation spring_boot_dependency.slf4j_api
+    implementation project(':sechub-storage-core')
+    implementation project(':sechub-storage-s3-aws')
 
      // https://mvnrepository.com/artifact/com.adobe.testing/s3mock
-    testCompile group: 'com.adobe.testing', name: 's3mock', version: '2.1.36'
-    testCompile group: 'com.adobe.testing', name: 's3mock-junit4', version: '2.1.36'
-
-    testCompile library.junit
-    testCompile library.mockito
-    testCompile library.mockito_inline
-    testCompile project(':sechub-testframework')
+    testImplementation library.junit4
+    testImplementation library.s3mock
+    testImplementation library.s3mock_junit4
+    testImplementation spring_boot_dependency.mockito_core
+    testImplementation library.mockito_inline
+    testImplementation project(':sechub-testframework')
 
 }

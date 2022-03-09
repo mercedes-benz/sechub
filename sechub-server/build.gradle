@@ -12,21 +12,21 @@ plugins {
  
 dependencies {
 
-    compile project(':sechub-server-core')
+    api project(':sechub-server-core')
 
-    testCompile project(':sechub-testframework')
+    testImplementation project(':sechub-testframework')
 }
 
 task assembleArtifact(type: Zip, group: 'sechub') {
-    archiveName "sechub-server-documentation-${project.version}.zip"
+    archiveFileName= "sechub-server-documentation-${project.version}.zip"
     archiveClassifier.set('documentation')
-    destinationDir file("$buildDir/zip/")
+    destinationDirectory= file("$buildDir/zip/")
     from "${projectDir}/build/go/"
     from "${rootProject.projectDir}/sechub-doc/build/asciidoc"
     exclude '**/sechub-product-delegation-server.*'
     exclude '**/sechub-client.*'
     exclude '**/.asciidoctor/**'
-    description "Assemble archive $archiveName into ${relativePath(destinationDir)}"
+    description "Assemble archive $archiveFileName into ${relativePath(destinationDirectory)}"
 }
 
 /**
