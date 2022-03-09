@@ -74,7 +74,6 @@ ext {
         springboot_devtoolssf:                 "org.springframework.boot:spring-boot-devtools",
 
         springboot_starter_data_jpa:           "org.springframework.boot:spring-boot-starter-data-jpa",
-        springboot_starter_data_mongodb:       "org.springframework.boot:spring-boot-starter-data-mongodb",
         springboot_starter_data_rest:          "org.springframework.boot:spring-boot-starter-data-rest",
         springboot_starter_security :          "org.springframework.boot:spring-boot-starter-security",
         springboot_starter_web:                "org.springframework.boot:spring-boot-starter-web",
