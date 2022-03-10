@@ -2,7 +2,6 @@
 dependencies {
 
     api(library.springboot_starter_batch)
-    implementation(library.flyway)
     
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.7.2'

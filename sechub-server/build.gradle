@@ -13,7 +13,8 @@ plugins {
 dependencies {
 
     api project(':sechub-server-core')
-
+    implementation(library.flyway)
+    
     testImplementation project(':sechub-testframework')
 }
 
