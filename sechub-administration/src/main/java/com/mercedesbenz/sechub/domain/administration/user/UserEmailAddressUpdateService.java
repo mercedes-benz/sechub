@@ -52,8 +52,8 @@ public class UserEmailAddressUpdateService {
 	/* @formatter:on */
     @Transactional
     public void updateUserEmailAddress(String userId, String newEmailAddress) {
-        assertion.isValidUserId(userId);
-        assertion.isValidEmailAddress(newEmailAddress);
+        assertion.assertIsValidUserId(userId);
+        assertion.assertIsValidEmailAddress(newEmailAddress);
 
         User user = userRepository.findOrFailUser(userId);
         String formerEmailAddress = user.getEmailAdress();

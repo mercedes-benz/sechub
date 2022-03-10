@@ -53,7 +53,7 @@ public class AnonymousUserRequestsNewApiTokenServiceTest {
         serviceToTest.anonymousRequestToGetNewApiTokenForUserMailAdress("user@test.com");
 
         /* test */
-        verify(mockedUserAssertion).isValidEmailAddress("user@test.com");
+        verify(mockedUserAssertion).assertIsValidEmailAddress("user@test.com");
     }
 
     @Test

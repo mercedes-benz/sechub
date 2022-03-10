@@ -35,8 +35,8 @@ public class DownloadScanReportService {
     @UseCaseUserDownloadsJobReport(@Step(number = 3, name = "Resolve scan report result"))
     public ScanSecHubReport getScanSecHubReport(String projectId, UUID jobUUID) {
         /* validate */
-        assertion.isValidProjectId(projectId);
-        assertion.isValidJobUUID(jobUUID);
+        assertion.assertIsValidProjectId(projectId);
+        assertion.assertIsValidJobUUID(jobUUID);
 
         scanAssertService.assertUserHasAccessToProject(projectId);
         scanAssertService.assertProjectAllowsReadAccess(projectId);

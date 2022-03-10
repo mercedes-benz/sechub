@@ -58,7 +58,7 @@ public class ProjectUpdateWhitelistService {
     public void updateProjectWhitelist(String projectId, @NotNull List<URI> whitelist) {
         auditLog.log("triggers update of whitelist for project {}. Allowed URIs shall be {}", logSanitizer.sanitize(projectId, 30), whitelist);
 
-        assertion.isValidProjectId(projectId);
+        assertion.assertIsValidProjectId(projectId);
 
         Optional<Project> found = repository.findById(projectId);
         if (!found.isPresent()) {

@@ -26,7 +26,7 @@ public class AuthUserDeleteService {
             Step.NO_NEXT_STEP }, name = "Delete user access", description = "Authorization layer is informed about user deltete and removes access to sechub. But without any project information"))
     public void deleteUser(String userId) {
 
-        assertion.isValidUserId(userId);
+        assertion.assertIsValidUserId(userId);
 
         authUserRepository.deleteById(userId);
         LOG.info("Deleted auth user:{}", userId);

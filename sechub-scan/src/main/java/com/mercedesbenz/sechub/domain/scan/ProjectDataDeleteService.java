@@ -54,7 +54,7 @@ public class ProjectDataDeleteService {
     @Transactional
     @UseCaseAdminDeleteProject(@Step(number = 8, name = "delete all project scan data"))
     public void deleteAllDataForProject(String projectId) {
-        assertion.isValidProjectId(projectId);
+        assertion.assertIsValidProjectId(projectId);
 
         productResultRepository.deleteAllResultsForProject(projectId);
         scanReportRepository.deleteAllReportsForProject(projectId);

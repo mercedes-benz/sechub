@@ -47,7 +47,7 @@ public class ProjectDetailChangeService {
             throw new NotAcceptableException("description field has to be set");
         }
 
-        assertion.isValidProjectId(projectId);
+        assertion.assertIsValidProjectId(projectId);
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("changing project description for project: {}", logSanitizer.sanitize(projectId, 30));

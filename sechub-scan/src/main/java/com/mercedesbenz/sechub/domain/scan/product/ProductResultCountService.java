@@ -17,7 +17,7 @@ public class ProductResultCountService {
     UserInputAssertion assertion;
 
     public long countProjectScanResults(String projectId) {
-        assertion.isValidProjectId(projectId);
+        assertion.assertIsValidProjectId(projectId);
 
         ProductResult probe = new ProductResult();
         probe.projectId = projectId;

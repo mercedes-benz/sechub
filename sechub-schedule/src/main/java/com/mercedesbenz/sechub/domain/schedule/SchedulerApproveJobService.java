@@ -31,8 +31,8 @@ public class SchedulerApproveJobService {
 
     @UseCaseUserApprovesJob(@Step(number = 2, name = "Try to find job annd update execution state", description = "When job is found and user has access job will be marked as ready for execution"))
     public void approveJob(String projectId, UUID jobUUID) {
-        assertion.isValidProjectId(projectId);
-        assertion.isValidJobUUID(jobUUID);
+        assertion.assertIsValidProjectId(projectId);
+        assertion.assertIsValidJobUUID(jobUUID);
 
         assertService.assertUserHasAccessToProject(projectId);
         assertService.assertProjectAllowsWriteAccess(projectId);

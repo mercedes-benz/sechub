@@ -65,7 +65,7 @@ public class AnonymousUserGetAPITokenByOneTimeTokenService {
     @UseCaseUserClicksLinkToGetNewAPIToken(@Step(number = 2, next = { 3,
             4 }, name = "Validation and update", description = "When its a valid one time token a new api token is generated and persisted hashed to user. The token itself is returned. When not valid an emtpy string is the result ..."))
     public String createNewAPITokenForUserByOneTimeToken(String oneTimeToken) {
-        assertion.isValidOneTimeToken(oneTimeToken);
+        assertion.assertIsValidOneTimeToken(oneTimeToken);
 
         Optional<User> found = sechubUserRepository.findByOneTimeToken(oneTimeToken);
         if (!found.isPresent()) {
