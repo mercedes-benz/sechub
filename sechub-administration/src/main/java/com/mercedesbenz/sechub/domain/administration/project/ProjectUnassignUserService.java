@@ -56,8 +56,8 @@ public class ProjectUnassignUserService {
     public void unassignUserFromProject(String userId, String projectId) {
         auditLogService.log("triggers unassignment of user:{} to project:{}", logSanitizer.sanitize(userId, 30), logSanitizer.sanitize(projectId, 30));
 
-        assertion.isValidUserId(userId);
-        assertion.isValidProjectId(projectId);
+        assertion.assertIsValidUserId(userId);
+        assertion.assertIsValidProjectId(projectId);
 
         Project project = projectRepository.findOrFailProject(projectId);
         User user = userRepository.findOrFailUser(userId);

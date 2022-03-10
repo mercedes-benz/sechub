@@ -40,7 +40,7 @@ public class SchedulerCreateJobService {
     @Validated
     @UseCaseUserCreatesNewJob(@Step(number = 2, name = "Persistence and result", description = "Persist a new job entry and return Job UUID"))
     public SchedulerResult createJob(String projectId, @Valid SecHubConfiguration configuration) {
-        assertion.isValidProjectId(projectId);
+        assertion.assertIsValidProjectId(projectId);
 
         /* we set the project id into configuration done by used url! */
         configuration.setProjectId(projectId);

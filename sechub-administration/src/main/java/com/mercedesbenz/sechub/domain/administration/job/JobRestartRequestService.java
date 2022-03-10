@@ -53,7 +53,7 @@ public class JobRestartRequestService {
     @Validated
     @UseCaseAdminRestartsJob(@Step(number = 2, name = "Restart job", description = "Will trigger event that job restart (soft) requested"))
     public void restartJob(UUID jobUUID) {
-        assertion.isValidJobUUID(jobUUID);
+        assertion.assertIsValidJobUUID(jobUUID);
 
         auditLogService.log("Requested restart (soft) of job {}", jobUUID);
 
@@ -66,7 +66,7 @@ public class JobRestartRequestService {
     @Validated
     @UseCaseAdminRestartsJobHard(@Step(number = 2, name = "Restart job", description = "Will trigger event that job restart (hard) requested"))
     public void restartJobHard(UUID jobUUID) {
-        assertion.isValidJobUUID(jobUUID);
+        assertion.assertIsValidJobUUID(jobUUID);
 
         auditLogService.log("Requested restart (hard) of job {}", jobUUID);
 

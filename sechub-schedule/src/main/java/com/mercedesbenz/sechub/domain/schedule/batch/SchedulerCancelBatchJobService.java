@@ -35,13 +35,13 @@ public class SchedulerCancelBatchJobService {
 
     @Transactional
     public boolean stopAllRunningBatchJobsForSechubJobUUID(UUID jobUUID) {
-        assertion.isValidJobUUID(jobUUID);
+        assertion.assertIsValidJobUUID(jobUUID);
         return stopAllRunningBatchJobsForSechubJobUUID(jobUUID, true, false);
     }
 
     @Transactional
     public boolean stopAndAbandonAllRunningBatchJobsForSechubJobUUID(UUID jobUUID) {
-        assertion.isValidJobUUID(jobUUID);
+        assertion.assertIsValidJobUUID(jobUUID);
         return stopAllRunningBatchJobsForSechubJobUUID(jobUUID, true, true);
     }
 

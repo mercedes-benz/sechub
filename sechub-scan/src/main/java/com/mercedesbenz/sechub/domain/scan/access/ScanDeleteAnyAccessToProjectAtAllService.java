@@ -30,7 +30,7 @@ public class ScanDeleteAnyAccessToProjectAtAllService {
     @Transactional
     @UseCaseAdminDeleteProject(@Step(number = 7, name = "revoke any scan access from project"))
     public void deleteAnyAccessDataForProject(String projectId) {
-        assertion.isValidProjectId(projectId);
+        assertion.assertIsValidProjectId(projectId);
 
         scanAccessRepository.deleteAnyAccessForProject(projectId);
 

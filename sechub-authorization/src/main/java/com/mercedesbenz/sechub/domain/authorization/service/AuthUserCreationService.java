@@ -38,7 +38,7 @@ public class AuthUserCreationService {
             Step.NO_NEXT_STEP }, name = "Give user access", description = "Authorization layer is informed about new user and gives access to sechub. But without any project information"))
     @IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)
     public void createUser(String userId, String hashedApiToken) {
-        assertion.isValidUserId(userId);
+        assertion.assertIsValidUserId(userId);
 
         Optional<AuthUser> found = userRepo.findByUserId(userId);
         if (found.isPresent()) {

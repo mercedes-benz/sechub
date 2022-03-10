@@ -29,7 +29,7 @@ public class UserRoleCalculationService {
     UserInputAssertion assertion;
 
     public void recalculateRolesOfUser(String userId) {
-        assertion.isValidUserId(userId);
+        assertion.assertIsValidUserId(userId);
 
         User user = userRepository.findOrFailUser(userId);
 

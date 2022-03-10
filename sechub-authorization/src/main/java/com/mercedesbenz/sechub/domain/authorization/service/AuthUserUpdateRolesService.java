@@ -35,7 +35,7 @@ public class AuthUserUpdateRolesService {
 	@UseCaseAdminAssignsUserToProject(@Step(number=4,next={Step.NO_NEXT_STEP} ,name="Roles changed in auth", description="Authorization layer adds ROLE_USER"))
 	@UseCaseAdminUnassignsUserFromProject(@Step(number=4,next={Step.NO_NEXT_STEP} ,name="Roles changed in auth", description="Authorization layer removes ROLE_USER"))/* @formatter:on */
     public void updateRoles(String userId, Set<String> roles) {
-        assertion.isValidUserId(userId);
+        assertion.assertIsValidUserId(userId);
 
         internalUpdateRoles(userId, roles, 0);
 

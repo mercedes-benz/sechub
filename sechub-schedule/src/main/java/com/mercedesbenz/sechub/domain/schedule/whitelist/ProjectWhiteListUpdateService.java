@@ -26,7 +26,7 @@ public class ProjectWhiteListUpdateService {
 
     @Transactional
     public void update(String projectId, Set<URI> whitelist) {
-        assertion.isValidProjectId(projectId);
+        assertion.assertIsValidProjectId(projectId);
 
         LOG.info("remove old whitelist entries for project {}", projectId);
         /* we just remove all entries and recreate */

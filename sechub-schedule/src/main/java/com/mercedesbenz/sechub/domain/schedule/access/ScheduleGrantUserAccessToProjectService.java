@@ -25,8 +25,8 @@ public class ScheduleGrantUserAccessToProjectService {
 
     @UseCaseAdminAssignsUserToProject(@Step(number = 2, name = "Update schedule authorization parts"))
     public void grantUserAccessToProject(String userId, String projectId) {
-        assertion.isValidUserId(userId);
-        assertion.isValidProjectId(projectId);
+        assertion.assertIsValidUserId(userId);
+        assertion.assertIsValidProjectId(projectId);
 
         ScheduleAccess scheduleAccess = new ScheduleAccess(userId, projectId);
         Optional<ScheduleAccess> potentialAlreadyFound = repository.findById(scheduleAccess.getKey());

@@ -31,7 +31,7 @@ public class UserInputAssertionTest {
         assertToTest.emailValidation = mockedEmailValidation;
 
         /* execute */
-        assertToTest.isValidEmailAddress(validMailAdress);
+        assertToTest.assertIsValidEmailAddress(validMailAdress);
 
         /* test */
         verify(mockedEmailValidation).validate(validMailAdress);

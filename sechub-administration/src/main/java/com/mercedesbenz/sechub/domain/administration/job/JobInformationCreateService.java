@@ -31,8 +31,8 @@ public class JobInformationCreateService {
         String projectId = message.getProjectId();
         UUID jobUUID = message.getJobUUID();
 
-        assertion.isValidProjectId(projectId);
-        assertion.isValidJobUUID(jobUUID);
+        assertion.assertIsValidProjectId(projectId);
+        assertion.assertIsValidJobUUID(jobUUID);
 
         LOG.debug("creating a new job information entry for project={}, job={}", projectId, jobUUID);
 

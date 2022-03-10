@@ -47,7 +47,7 @@ public class AnonymousUserRequestsNewApiTokenService {
     public void anonymousRequestToGetNewApiTokenForUserMailAdress(String userEmail) {
         LOG.info("New api token requested for email address: {})", logSanitizer.sanitize(userEmail, 50));
 
-        assertion.isValidEmailAddress(userEmail);
+        assertion.assertIsValidEmailAddress(userEmail);
 
         Optional<User> found = userRepository.findByEmailAdress(userEmail);
         if (!found.isPresent()) {
