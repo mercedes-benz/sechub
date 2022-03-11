@@ -43,6 +43,9 @@ public class ScanReport {
     /* +............................ JPQL .....................................+ */
     /* +-----------------------------------------------------------------------+ */
     public static final String CLASS_NAME = ScanReport.class.getSimpleName();
+    public static final String PROPERTY_REPORT_STARTED = "started";
+
+    public static final String QUERY_DELETE_REPORTS_OLDER_THAN = "DELETE FROM ScanReport r WHERE r." + PROPERTY_REPORT_STARTED + " < :cleanTimeStamp";
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -51,8 +54,8 @@ public class ScanReport {
     UUID uUID;
 
     @Column(name = COLUMN_SECHUB_JOB_UUID)
-    private UUID secHubJobUUID; // no referential integrity - only as information for report collecting
-                                // necessary
+    UUID secHubJobUUID; // no referential integrity - only as information for report collecting
+                        // necessary
 
     @Type(type = "text") // why not using @Lob, because hibernate/postgres issues. see
                          // https://stackoverflow.com/questions/25094410/hibernate-error-while-persisting-text-datatype?noredirect=1#comment39048566_25094410

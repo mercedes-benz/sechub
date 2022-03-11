@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface SecHubJobRepository extends JpaRepository<ScheduleSecHubJob, UUID>, SecHubJobRepositoryCustom {
 
@@ -32,5 +33,10 @@ public interface SecHubJobRepository extends JpaRepository<ScheduleSecHubJob, UU
     @Modifying
     @Query(value = "DELETE FROM " + ScheduleSecHubJob.CLASS_NAME + " t where t." + PROPERTY_STARTED + " is NULL", nativeQuery = false)
     public void deleteWaitingJobs();
+
+    @Transactional
+    @Modifying
+    @Query(ScheduleSecHubJob.QUERY_DELETE_JOBINFORMATION_OLDER_THAN)
+    public int deleteJobsOlderThan(@Param("cleanTimeStamp") LocalDateTime cleanTimeStamp);
 
 }

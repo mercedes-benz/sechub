@@ -5,6 +5,7 @@ import static com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,10 +40,120 @@ public class ProductResultRepositoryDBTest {
     public void before() {
     }
 
-    @TestConfiguration
-    @EnableAutoConfiguration
-    public static class SimpleTestConfiguration {
+    @Test
+    public void test_data_4_jobs_delete_1_day_still_has_deleted_2() throws Exception {
+        /* prepare */
+        DeleteProductResultTestData testData = new DeleteProductResultTestData();
+        testData.createAndCheckAvailable();
 
+        /* execute */
+        int deleted = repositoryToTest.deleteResultsOlderThan(testData.before_1_day);
+        repositoryToTest.flush();
+
+        /* test */
+        assertEquals(2, deleted);
+    }
+
+    @Test
+    public void test_data_4_jobs_delete_1_day_still_has_2() throws Exception {
+        /* prepare */
+        DeleteProductResultTestData testData = new DeleteProductResultTestData();
+        testData.createAndCheckAvailable();
+
+        /* execute */
+        repositoryToTest.deleteResultsOlderThan(testData.before_1_day);
+        repositoryToTest.flush();
+
+        /* test */
+        List<ProductResult> allJobsNow = repositoryToTest.findAll();
+        assertTrue(allJobsNow.contains(testData.job3_1_day_before_created));
+        assertTrue(allJobsNow.contains(testData.job4_now_created));
+        assertEquals(2, allJobsNow.size());
+    }
+
+    @Test
+    public void test_data_4_jobs_delete_1_day_before_plus1_second_still_has_1() throws Exception {
+        /* prepare */
+        DeleteProductResultTestData testData = new DeleteProductResultTestData();
+        testData.createAndCheckAvailable();
+
+        /* execute */
+        repositoryToTest.deleteResultsOlderThan(testData.before_1_day.plusSeconds(1));
+        repositoryToTest.flush();
+
+        /* test */
+        List<ProductResult> allJobsNow = repositoryToTest.findAll();
+        assertTrue(allJobsNow.contains(testData.job4_now_created));
+        assertEquals(1, allJobsNow.size());
+    }
+
+    @Test
+    public void test_data_4_jobs_delete_1_day_before_plus1_second_has_3_deleted() throws Exception {
+        /* prepare */
+        DeleteProductResultTestData testData = new DeleteProductResultTestData();
+        testData.createAndCheckAvailable();
+
+        /* execute */
+        int deleted = repositoryToTest.deleteResultsOlderThan(testData.before_1_day.plusSeconds(1));
+        repositoryToTest.flush();
+
+        /* test */
+        assertEquals(3, deleted);
+    }
+
+    @Test
+    public void test_data_4_jobs_oldest_90_days_delete_90_days_still_has_4() throws Exception {
+        /* prepare */
+        DeleteProductResultTestData testData = new DeleteProductResultTestData();
+        testData.createAndCheckAvailable();
+
+        /* execute */
+        repositoryToTest.deleteResultsOlderThan(testData.before_90_days);
+        repositoryToTest.flush();
+
+        /* test */
+        List<ProductResult> allJobsNow = repositoryToTest.findAll();
+        assertTrue(allJobsNow.contains(testData.job1_90_days_before_created));
+        assertTrue(allJobsNow.contains(testData.job2_2_days_before_created));
+        assertTrue(allJobsNow.contains(testData.job3_1_day_before_created));
+        assertTrue(allJobsNow.contains(testData.job4_now_created));
+        assertEquals(4, allJobsNow.size());
+    }
+
+    @Test
+    public void test_data_4_jobs_oldest_90_days_delete_89_days() throws Exception {
+        /* prepare */
+        DeleteProductResultTestData testData = new DeleteProductResultTestData();
+        testData.createAndCheckAvailable();
+
+        /* execute */
+        repositoryToTest.deleteResultsOlderThan(testData.before_89_days.minusSeconds(1));
+        repositoryToTest.flush();
+
+        /* test */
+        List<ProductResult> allJobsNow = repositoryToTest.findAll();
+        assertTrue(allJobsNow.contains(testData.job2_2_days_before_created));
+        assertTrue(allJobsNow.contains(testData.job3_1_day_before_created));
+        assertTrue(allJobsNow.contains(testData.job4_now_created));
+        assertEquals(3, allJobsNow.size());
+    }
+
+    @Test
+    public void test_data_4_jobs_oldest_90_days_delete_1_day() throws Exception {
+        /* prepare */
+        DeleteProductResultTestData testData = new DeleteProductResultTestData();
+        testData.createAndCheckAvailable();
+
+        /* execute */
+        repositoryToTest.deleteResultsOlderThan(testData.before_89_days.minusSeconds(1));
+        repositoryToTest.flush();
+
+        /* test */
+        List<ProductResult> allJobsNow = repositoryToTest.findAll();
+        assertTrue(allJobsNow.contains(testData.job2_2_days_before_created));
+        assertTrue(allJobsNow.contains(testData.job3_1_day_before_created));
+        assertTrue(allJobsNow.contains(testData.job4_now_created));
+        assertEquals(3, allJobsNow.size());
     }
 
     @Test
@@ -213,6 +324,52 @@ public class ProductResultRepositoryDBTest {
         assertNotNull(result.uUID);
         assertEquals(result, result1);
         assertEquals(netsparkerContent, result.getResult());
+
+    }
+
+    private class DeleteProductResultTestData {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime before_89_days = now.minusDays(89);
+        LocalDateTime before_90_days = now.minusDays(90);
+        LocalDateTime before_3_days = now.minusDays(3);
+        LocalDateTime before_1_day = now.minusDays(1);
+
+        ProductResult job1_90_days_before_created;
+        ProductResult job2_2_days_before_created;
+        ProductResult job3_1_day_before_created;
+        ProductResult job4_now_created;
+
+        private void createAndCheckAvailable() {
+            job1_90_days_before_created = create(before_90_days, ProductIdentifier.CHECKMARX);
+            job2_2_days_before_created = create(before_3_days, ProductIdentifier.PDS_CODESCAN);
+            job3_1_day_before_created = create(before_1_day, ProductIdentifier.PDS_WEBSCAN);
+            job4_now_created = create(now, ProductIdentifier.PDS_INFRASCAN);
+
+            // check preconditions
+            repositoryToTest.flush();
+            assertEquals(4, repositoryToTest.count());
+            List<ProductResult> allJobsNow = repositoryToTest.findAll();
+            assertTrue(allJobsNow.contains(job1_90_days_before_created));
+            assertTrue(allJobsNow.contains(job2_2_days_before_created));
+            assertTrue(allJobsNow.contains(job3_1_day_before_created));
+            assertTrue(allJobsNow.contains(job4_now_created));
+        }
+
+        private ProductResult create(LocalDateTime since, ProductIdentifier identifier) {
+            ProductResult jobInformation = new ProductResult();
+            jobInformation.projectId = "project1";
+            jobInformation.productIdentifier = identifier;
+            jobInformation.secHubJobUUID = UUID.randomUUID();
+            jobInformation.started = since;
+            entityManager.persist(jobInformation);
+            entityManager.flush();
+            return jobInformation;
+        }
+    }
+
+    @TestConfiguration
+    @EnableAutoConfiguration
+    public static class SimpleTestConfiguration {
 
     }
 

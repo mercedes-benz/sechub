@@ -12,12 +12,14 @@ import com.mercedesbenz.sechub.domain.scan.access.ScanDeleteAnyAccessToProjectAt
 import com.mercedesbenz.sechub.domain.scan.access.ScanGrantUserAccessToProjectService;
 import com.mercedesbenz.sechub.domain.scan.access.ScanRevokeUserAccessAtAllService;
 import com.mercedesbenz.sechub.domain.scan.access.ScanRevokeUserAccessFromProjectService;
-import com.mercedesbenz.sechub.domain.scan.config.UpdateScanConfigService;
+import com.mercedesbenz.sechub.domain.scan.config.ScanConfigService;
+import com.mercedesbenz.sechub.domain.scan.config.UpdateScanMappingConfigurationService;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResultService;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigAccessLevelService;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingIdentifier.MappingType;
+import com.mercedesbenz.sechub.sharedkernel.messaging.AdministrationConfigMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.AsynchronMessageHandler;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageSynchronousResult;
@@ -55,13 +57,16 @@ public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMess
     ProjectDataDeleteService projectDataDeleteService;
 
     @Autowired
-    UpdateScanConfigService updateScanMappingService;
+    UpdateScanMappingConfigurationService updateScanMappingService;
 
     @Autowired
     ProductResultService productResultService;
 
     @Autowired
     ScanProjectConfigAccessLevelService projectAccessLevelService;
+
+    @Autowired
+    ScanConfigService configService;
 
     @Override
     public void receiveAsyncMessage(DomainMessage request) {
@@ -87,9 +92,18 @@ public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMess
         case PROJECT_ACCESS_LEVEL_CHANGED:
             handleProcessAccessLevelChanged(request);
             break;
+        case AUTO_CLEANUP_CONFIGURATION_CHANGED:
+            ReceivedhandleAutoCleanUpConfigurationChanged(request);
+            break;
         default:
             throw new IllegalStateException("unhandled message id:" + messageId);
         }
+    }
+
+    @IsReceivingAsyncMessage(MessageID.AUTO_CLEANUP_CONFIGURATION_CHANGED)
+    private void ReceivedhandleAutoCleanUpConfigurationChanged(DomainMessage request) {
+        AdministrationConfigMessage message = request.get(MessageDataKeys.AUTO_CLEANUP_CONFIG_CHANGE_DATA);
+        configService.updateAutoCleanupInDays(message.getAutoCleanupInDays());
     }
 
     @Override

@@ -77,7 +77,7 @@ public class RestartJobScenario4IntTest {
 
         simulateJobIsStillRunningAndUploadAvailable(sechubJobUUID);
 
-        assertInspections().
+        assertMetaDataInspections().
             hasAmountOfInspections(1).
                 inspectionNr(0).hasId("CHECKMARX");
 
@@ -91,7 +91,7 @@ public class RestartJobScenario4IntTest {
             assertEquals("GREEN was not found, but expected...","GREEN",report);
         }
         /* adapter was called, because product results for purged */
-        assertInspections().
+        assertMetaDataInspections().
             hasAmountOfInspections(2). // why 2? because behavior of product executor is: always call the adapter!
                                        // only adapter is able to know exactly, if the product result is correct, needs a restart
                                        // etc. We try to restart and currently do ignore product result state
@@ -184,7 +184,7 @@ public class RestartJobScenario4IntTest {
 
         /* @formatter:on */
 
-        assertInspections().hasAmountOfInspections(2);
+        assertMetaDataInspections().hasAmountOfInspections(2);
 
         File file = as(SUPER_ADMIN).downloadFullScanDataFor(sechubJobUUID);
 

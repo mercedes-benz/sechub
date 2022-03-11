@@ -13,6 +13,8 @@ include::../shared/configuration/project_scan_config_technical-details.adoc[]
 
 include::../shared/concepts/concept_falsepositive_handling.adoc[]
 
+include::../shared/concepts/concept_auto_clean.adoc[]
+
 === Domain driven design
 include::./../shared/domain_message_bus.adoc[]
 

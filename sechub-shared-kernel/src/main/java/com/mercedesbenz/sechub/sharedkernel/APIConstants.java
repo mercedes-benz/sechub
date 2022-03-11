@@ -22,6 +22,12 @@ public class APIConstants {
     }
 
     /**
+     * Just a pseudo location string, which is used when no API is available. This
+     * can be useful inside usecases where we have no API interfaces available.
+     */
+    public static final String NO_API_AVAILABLE = "/no/api/available";
+
+    /**
      * API starting with this all is accessible - even anonymous!
      */
     public static final String API_ANONYMOUS = "/api/anonymous/";

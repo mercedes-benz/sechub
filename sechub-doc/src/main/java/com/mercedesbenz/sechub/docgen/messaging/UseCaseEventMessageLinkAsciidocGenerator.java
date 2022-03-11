@@ -67,7 +67,7 @@ public class UseCaseEventMessageLinkAsciidocGenerator {
         ab.add("Involved messages\n");
 
         for (String messageId : messageIds) {
-            ab.add("- <<" + DomainMessagingFilesGenerator.createMessagingLinkId(messageId) + "," + messageId + ">>");
+            ab.add("- <<" + DomainMessagingFilesGenerator.createMessagingLinkId(messageId) + "," + createTitle(identifier) + ">>");
         }
         ab.add("====");
         return ab;
@@ -84,19 +84,32 @@ public class UseCaseEventMessageLinkAsciidocGenerator {
     private AsciidocBuilder generateLinkMessageToUsecasesContent(MessageID identifier) {
         AsciidocBuilder ab = new AsciidocBuilder();
 
-        Set<UseCaseIdentifier> uiSet = filterRelatedUseCases(identifier);
-        if (uiSet == null || uiSet.isEmpty()) {
+        Set<UseCaseIdentifier> useCaseIdentifiers = filterRelatedUseCases(identifier);
+        if (useCaseIdentifiers == null || useCaseIdentifiers.isEmpty()) {
             ab.add("// no usecases for message id:" + identifier);
             return ab;
         }
         ab.add("[NOTE]");
         ab.add("====");
         ab.add("Use cases related to this message\n");
-        for (UseCaseIdentifier ui : uiSet) {
-            ab.add("- " + UseCaseAsciiDocFactory.createLinkToUseCase(ui, ui.uniqueId()));
+        for (UseCaseIdentifier useCaseIdentifier : useCaseIdentifiers) {
+            String useCaseTitle = createTitle(useCaseIdentifier);
+
+            ab.add("- " + UseCaseAsciiDocFactory.createLinkToUseCase(useCaseIdentifier, useCaseTitle));
         }
         ab.add("====");
         return ab;
+    }
+
+    private String createTitle(UseCaseIdentifier useCaseIdentifier) {
+        /*
+         * we must build use case title here, because we have no access to UseCaseDef
+         * objects but only enum
+         */
+        String useCaseTitle = useCaseIdentifier.name();
+        useCaseTitle = useCaseTitle.replaceAll("UC_", "");
+        useCaseTitle = useCaseIdentifier.uniqueId() + "-" + useCaseTitle;
+        return useCaseTitle;
     }
 
     private Set<UseCaseIdentifier> filterRelatedUseCases(MessageID identifier) {

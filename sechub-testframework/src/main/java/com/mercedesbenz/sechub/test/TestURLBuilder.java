@@ -516,6 +516,14 @@ public class TestURLBuilder {
         return buildAdminDeletesProductExecutorConfig(uuid.toString());
     }
 
+    public String buildAdminUpdatesAutoCleanupConfigurationUrl() {
+        return buildUrl(API_ADMIN_CONFIG, "autoclean");
+    }
+
+    public String buildAdminFetchesAutoCleanupConfigurationUrl() {
+        return buildUrl(API_ADMIN_CONFIG, "autoclean");
+    }
+
     /* +-----------------------------------------------------------------------+ */
     /* +............................ integration test special (anonymous) .....+ */
     /* +-----------------------------------------------------------------------+ */
@@ -608,10 +616,6 @@ public class TestURLBuilder {
         return buildUrl(API_ANONYMOUS, "integrationtest/config/namepattern", namePatternProviderId, name);
     }
 
-    public String buildIntegrationTestRefreshScanConfigURL() {
-        return buildUrl(API_ANONYMOUS, "integrationtest/config/scan/scanconfig/refresh");
-    }
-
     public String buildClearMetaDataInspectionURL() {
         return buildUrl(API_ANONYMOUS, "integrationtest/metadata/inspections");
     }
@@ -698,6 +702,26 @@ public class TestURLBuilder {
 
     public String buildBaseURL() {
         return buildUrl("");
+    }
+
+    public String buildIntegrationTestFetchScheduleAutoCleanupDaysUrl() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/autocleanup/inspection/schedule/days");
+    }
+
+    public String buildIntegrationTestFetchScanAutoCleanupDaysUrl() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/autocleanup/inspection/scan/days");
+    }
+
+    public String buildIntegrationTestFetchAdministrationAutoCleanupDaysUrl() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/autocleanup/inspection/administration/days");
+    }
+
+    public String buildIntegrationTestResetAutoCleanupInspectionUrl() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/autocleanup/inspection/reset");
+    }
+
+    public String buildIntegrationTestFetchAutoCleanupInspectionDeleteCountsUrl() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/autocleanup/inspection/deleteCounts");
     }
 
 }

@@ -9,17 +9,17 @@ import org.junit.Test;
 
 public class NamePatternIdproviderTest {
 
-    private NamePatternIdprovider providerToTest;
+    private NamePatternIdProvider providerToTest;
 
     @Before
     public void before() {
-        providerToTest = new NamePatternIdprovider("provider.testid");
+        providerToTest = new NamePatternIdProvider("provider.testid");
     }
 
     @Test
     public void providerId_is_returned_and_null_is_allowed_too() {
-        assertEquals("testid", new NamePatternIdprovider("testid").getProviderId());
-        assertEquals(null, new NamePatternIdprovider(null).getProviderId());
+        assertEquals("testid", new NamePatternIdProvider("testid").getProviderId());
+        assertEquals(null, new NamePatternIdProvider(null).getProviderId());
     }
 
     @Test

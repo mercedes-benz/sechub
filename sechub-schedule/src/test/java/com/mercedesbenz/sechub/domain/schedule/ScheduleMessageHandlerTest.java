@@ -6,14 +6,16 @@ import static org.mockito.Mockito.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.core.task.TaskExecutor;
 
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleDeleteAllProjectAcessService;
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleGrantUserAccessToProjectService;
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleRevokeUserAccessAtAllService;
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleRevokeUserAccessFromProjectService;
+import com.mercedesbenz.sechub.domain.schedule.config.SchedulerConfigService;
+import com.mercedesbenz.sechub.sharedkernel.messaging.AdministrationConfigMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.AsynchronMessageHandler;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
@@ -36,14 +38,15 @@ public class ScheduleMessageHandlerTest {
     private ScheduleMessageHandler scheduleHandlerToTest;
     private FakeDomainMessageService fakeDomainMessageService;
 
-    @Before
-    public void before() {
+    @BeforeEach
+    void beforeEach() {
         scheduleHandlerToTest = new ScheduleMessageHandler();
 
         scheduleHandlerToTest.grantService = mock(ScheduleGrantUserAccessToProjectService.class);
         scheduleHandlerToTest.revokeUserFromProjectService = mock(ScheduleRevokeUserAccessFromProjectService.class);
         scheduleHandlerToTest.revokeUserService = mock(ScheduleRevokeUserAccessAtAllService.class);
         scheduleHandlerToTest.deleteAllProjectAccessService = mock(ScheduleDeleteAllProjectAcessService.class);
+        scheduleHandlerToTest.configService = mock(SchedulerConfigService.class);
 
         List<AsynchronMessageHandler> injectedAsynchronousHandlers = new ArrayList<>();
         injectedAsynchronousHandlers.add(scheduleHandlerToTest);
@@ -54,7 +57,24 @@ public class ScheduleMessageHandlerTest {
     }
 
     @Test
-    public void when_sending_message_id_PROJECT_DELETED_the_deleteAllProjectAccessService_is_called() {
+    void handler_receiving_auto_cleanup_calls_config_serice_with_message_data() {
+        /* prepare */
+        long days = System.nanoTime();
+        AdministrationConfigMessage configMessage = new AdministrationConfigMessage();
+        configMessage.setAutoCleanupInDays(days);
+        DomainMessage message = new DomainMessage(MessageID.AUTO_CLEANUP_CONFIGURATION_CHANGED);
+
+        message.set(MessageDataKeys.AUTO_CLEANUP_CONFIG_CHANGE_DATA, configMessage);
+
+        /* execute */
+        scheduleHandlerToTest.receiveAsyncMessage(message);
+
+        /* test */
+        verify(scheduleHandlerToTest.configService).updateAutoCleanupInDays(days);
+    }
+
+    @Test
+    void when_sending_message_id_PROJECT_DELETED_the_deleteAllProjectAccessService_is_called() {
         /* prepare */
         DomainMessage request = new DomainMessage(MessageID.PROJECT_DELETED);
         ProjectMessage content = new ProjectMessage();
@@ -70,7 +90,7 @@ public class ScheduleMessageHandlerTest {
     }
 
     @Test
-    public void when_sending_message_id_USER_ADDED_TO_PROJECT_the_addUserToProjectService_is_called() {
+    void when_sending_message_id_USER_ADDED_TO_PROJECT_the_addUserToProjectService_is_called() {
         /* prepare */
         DomainMessage request = new DomainMessage(MessageID.USER_ADDED_TO_PROJECT);
         UserMessage content = new UserMessage();
@@ -87,7 +107,7 @@ public class ScheduleMessageHandlerTest {
     }
 
     @Test
-    public void when_sending_message_id_USER_REMOVED_FROM_PROJECT_the_revokeUserFromProjectService_is_called() {
+    void when_sending_message_id_USER_REMOVED_FROM_PROJECT_the_revokeUserFromProjectService_is_called() {
         /* prepare */
         DomainMessage request = new DomainMessage(MessageID.USER_REMOVED_FROM_PROJECT);
         UserMessage content = new UserMessage();
@@ -104,7 +124,7 @@ public class ScheduleMessageHandlerTest {
     }
 
     @Test
-    public void when_sending_message_id_USER_DELETED_the_revokeUserService_is_called() {
+    void when_sending_message_id_USER_DELETED_the_revokeUserService_is_called() {
         /* prepare */
         DomainMessage request = new DomainMessage(MessageID.USER_DELETED);
         UserMessage content = new UserMessage();

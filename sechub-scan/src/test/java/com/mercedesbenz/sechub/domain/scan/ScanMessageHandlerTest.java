@@ -6,15 +6,17 @@ import static org.mockito.Mockito.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.core.task.TaskExecutor;
 
 import com.mercedesbenz.sechub.domain.scan.access.ScanDeleteAnyAccessToProjectAtAllService;
 import com.mercedesbenz.sechub.domain.scan.access.ScanGrantUserAccessToProjectService;
 import com.mercedesbenz.sechub.domain.scan.access.ScanRevokeUserAccessAtAllService;
 import com.mercedesbenz.sechub.domain.scan.access.ScanRevokeUserAccessFromProjectService;
+import com.mercedesbenz.sechub.domain.scan.config.ScanConfigService;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigAccessLevelService;
+import com.mercedesbenz.sechub.sharedkernel.messaging.AdministrationConfigMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.AsynchronMessageHandler;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
@@ -32,24 +34,25 @@ import com.mercedesbenz.sechub.sharedkernel.project.ProjectAccessLevel;
  * @author Albert Tregnaghi
  *
  */
-public class ScanMessageHandlerTest {
+class ScanMessageHandlerTest {
 
-    private ScanMessageHandler scheduleHandlerToTest;
+    private ScanMessageHandler messageHandlerToTest;
     private FakeDomainMessageService fakeDomainMessageService;
 
-    @Before
-    public void before() {
-        scheduleHandlerToTest = new ScanMessageHandler();
+    @BeforeEach
+    void before() {
+        messageHandlerToTest = new ScanMessageHandler();
 
-        scheduleHandlerToTest.grantService = mock(ScanGrantUserAccessToProjectService.class);
-        scheduleHandlerToTest.revokeUserFromProjectService = mock(ScanRevokeUserAccessFromProjectService.class);
-        scheduleHandlerToTest.revokeUserService = mock(ScanRevokeUserAccessAtAllService.class);
-        scheduleHandlerToTest.deleteAllProjectAccessService = mock(ScanDeleteAnyAccessToProjectAtAllService.class);
-        scheduleHandlerToTest.projectDataDeleteService = mock(ProjectDataDeleteService.class);
-        scheduleHandlerToTest.projectAccessLevelService = mock(ScanProjectConfigAccessLevelService.class);
+        messageHandlerToTest.grantService = mock(ScanGrantUserAccessToProjectService.class);
+        messageHandlerToTest.revokeUserFromProjectService = mock(ScanRevokeUserAccessFromProjectService.class);
+        messageHandlerToTest.revokeUserService = mock(ScanRevokeUserAccessAtAllService.class);
+        messageHandlerToTest.deleteAllProjectAccessService = mock(ScanDeleteAnyAccessToProjectAtAllService.class);
+        messageHandlerToTest.projectDataDeleteService = mock(ProjectDataDeleteService.class);
+        messageHandlerToTest.projectAccessLevelService = mock(ScanProjectConfigAccessLevelService.class);
+        messageHandlerToTest.configService = mock(ScanConfigService.class);
 
         List<AsynchronMessageHandler> injectedAsynchronousHandlers = new ArrayList<>();
-        injectedAsynchronousHandlers.add(scheduleHandlerToTest);
+        injectedAsynchronousHandlers.add(messageHandlerToTest);
         List<SynchronMessageHandler> injectedSynchronousHandlers = new ArrayList<>();
 
         fakeDomainMessageService = new FakeDomainMessageService(injectedSynchronousHandlers, injectedAsynchronousHandlers);
@@ -57,7 +60,24 @@ public class ScanMessageHandlerTest {
     }
 
     @Test
-    public void when_sending_message_id_PROJECT_ACCESS_LEVEL_CHANGED_changeProjectAccessLevel_is_called() {
+    void handler_receiving_auto_cleanup_calls_config_sevice_with_message_data() {
+        /* prepare */
+        long days = System.nanoTime();
+        AdministrationConfigMessage configMessage = new AdministrationConfigMessage();
+        configMessage.setAutoCleanupInDays(days);
+        DomainMessage message = new DomainMessage(MessageID.AUTO_CLEANUP_CONFIGURATION_CHANGED);
+
+        message.set(MessageDataKeys.AUTO_CLEANUP_CONFIG_CHANGE_DATA, configMessage);
+
+        /* execute */
+        messageHandlerToTest.receiveAsyncMessage(message);
+
+        /* test */
+        verify(messageHandlerToTest.configService).updateAutoCleanupInDays(days);
+    }
+
+    @Test
+    void when_sending_message_id_PROJECT_ACCESS_LEVEL_CHANGED_changeProjectAccessLevel_is_called() {
         /* prepare */
         ProjectAccessLevel newAccessLevel = ProjectAccessLevel.NONE;
         ProjectAccessLevel formerAccessLevel = ProjectAccessLevel.READ_ONLY;
@@ -71,15 +91,15 @@ public class ScanMessageHandlerTest {
         request.set(MessageDataKeys.PROJECT_ACCESS_LEVEL_CHANGE_DATA, content);
 
         /* execute */
-        simulateEventSend(request, scheduleHandlerToTest);
+        simulateEventSend(request, messageHandlerToTest);
 
         /* test */
-        verify(scheduleHandlerToTest.projectAccessLevelService).changeProjectAccessLevel("projectId1", newAccessLevel, formerAccessLevel);
+        verify(messageHandlerToTest.projectAccessLevelService).changeProjectAccessLevel("projectId1", newAccessLevel, formerAccessLevel);
 
     }
 
     @Test
-    public void when_sending_message_id_PROJECT_DELETED_the_deleteAllDataForProject_is_called() {
+    void when_sending_message_id_PROJECT_DELETED_the_deleteAllDataForProject_is_called() {
         /* prepare */
         DomainMessage request = new DomainMessage(MessageID.PROJECT_DELETED);
         ProjectMessage content = new ProjectMessage();
@@ -87,15 +107,15 @@ public class ScanMessageHandlerTest {
         request.set(MessageDataKeys.PROJECT_DELETE_DATA, content);
 
         /* execute */
-        simulateEventSend(request, scheduleHandlerToTest);
+        simulateEventSend(request, messageHandlerToTest);
 
         /* test */
-        verify(scheduleHandlerToTest.projectDataDeleteService).deleteAllDataForProject("projectId1");
+        verify(messageHandlerToTest.projectDataDeleteService).deleteAllDataForProject("projectId1");
 
     }
 
     @Test
-    public void when_sending_message_id_PROJECT_DELETED_the_deleteAllProjectAccessService_is_called() {
+    void when_sending_message_id_PROJECT_DELETED_the_deleteAllProjectAccessService_is_called() {
         /* prepare */
         DomainMessage request = new DomainMessage(MessageID.PROJECT_DELETED);
         ProjectMessage content = new ProjectMessage();
@@ -103,10 +123,10 @@ public class ScanMessageHandlerTest {
         request.set(MessageDataKeys.PROJECT_DELETE_DATA, content);
 
         /* execute */
-        simulateEventSend(request, scheduleHandlerToTest);
+        simulateEventSend(request, messageHandlerToTest);
 
         /* test */
-        verify(scheduleHandlerToTest.deleteAllProjectAccessService).deleteAnyAccessDataForProject("projectId1");
+        verify(messageHandlerToTest.deleteAllProjectAccessService).deleteAnyAccessDataForProject("projectId1");
 
     }
 

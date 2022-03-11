@@ -24,7 +24,7 @@ public class InformAdminsThatNewSchedulerInstanceHasBeenStarted {
     @Value("${sechub.notification.scheduler.startup.enabled:true}")
     @MustBeDocumented(scope = "administration", value = "When enabled, administrators will be informed by notification "
             + "when new scheduler instances are started. " + "Those notifications will also contain information about potential zombie jobs.\n\n"
-            + " When disabled, incoming events wille be ignored and no notification sent.")
+            + " When disabled, incoming events will be ignored and no notification sent.")
     boolean notificationEnabled;
 
     @Autowired
