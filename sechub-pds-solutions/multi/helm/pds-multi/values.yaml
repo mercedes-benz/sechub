@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-    registry: "my.registry.example.org/pds_gosec"
+    registry: "my.registry.example.org/pds_multi"
     tag: "latest"
 
 pds:

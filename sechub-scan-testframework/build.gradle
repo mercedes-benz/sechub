@@ -7,8 +7,10 @@
  */
 dependencies {
 
-    compile project(':sechub-testframework')
-    compile project(':sechub-scan')
+    implementation library.junit4
+
+    implementation project(':sechub-testframework')
+    implementation project(':sechub-scan')
 
 }
 

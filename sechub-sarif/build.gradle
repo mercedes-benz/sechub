@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 dependencies {
-    implementation library.jackson_core
-    implementation library.jackson_databind
+    implementation spring_boot_dependency.jackson_core
+    implementation spring_boot_dependency.jackson_databind
     
-    implementation library.slf4j
-    runtimeOnly library.logback_classic
+    implementation spring_boot_dependency.slf4j_api
+    runtimeOnly spring_boot_dependency.logback_classic
     
     testImplementation project(':sechub-testframework')
-    testImplementation library.junit5_impl
-    testRuntimeOnly library.junit5_runtime
+    testImplementation spring_boot_dependency.junit_jupiter
+    
     
 
 }

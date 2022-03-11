@@ -61,7 +61,7 @@ public class ProjectChangeAccessLevelService {
 
         /* validate */
         notNull(wantedLevel, "project access level may not be null!");
-        assertion.isValidProjectId(projectId);
+        assertion.assertIsValidProjectId(projectId);
 
         Project project = projectRepository.findOrFailProject(projectId);
 

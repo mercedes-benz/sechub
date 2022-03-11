@@ -25,8 +25,8 @@ public class ScanGrantUserAccessToProjectService {
 
     @UseCaseAdminAssignsUserToProject(@Step(number = 3, name = "Update scan authorization parts"))
     public void grantUserAccessToProject(String userId, String projectId) {
-        assertion.isValidUserId(userId);
-        assertion.isValidProjectId(projectId);
+        assertion.assertIsValidUserId(userId);
+        assertion.assertIsValidProjectId(projectId);
 
         ScanAccess scanAccess = new ScanAccess(userId, projectId);
         Optional<ScanAccess> potentialAlreadyFound = repository.findById(scanAccess.getKey());

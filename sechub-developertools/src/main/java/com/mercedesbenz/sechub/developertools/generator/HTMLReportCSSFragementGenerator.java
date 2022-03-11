@@ -3,8 +3,8 @@ package com.mercedesbenz.sechub.developertools.generator;
 
 import java.io.File;
 
-import com.mercedesbenz.sechub.developertools.TextFileWriter;
 import com.mercedesbenz.sechub.integrationtest.TextFileReader;
+import com.mercedesbenz.sechub.integrationtest.TextFileWriter;
 
 /**
  * How to use ? Why this generator?

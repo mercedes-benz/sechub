@@ -17,7 +17,7 @@ ARG PDS_VERSION="0.26.0"
 ARG SCRIPT_FOLDER="/scripts"
 ARG WORKSPACE="/workspace"
 
-# env vars in container:
+# Environment variables in container
 ENV DOWNLOAD_FOLDER="/downloads"
 ENV MOCK_FOLDER="$SCRIPT_FOLDER/mocks"
 ENV PDS_VERSION="${PDS_VERSION}"
@@ -54,10 +54,10 @@ COPY run.sh /run.sh
 RUN chmod +x /run.sh "$SCRIPT_FOLDER"/gosec.sh "$SCRIPT_FOLDER"/gosec_mock.sh
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
-    apt-get update && \
-    apt-get upgrade --assume-yes && \
-    apt-get install --assume-yes w3m wget openjdk-11-jre-headless && \
-    apt-get clean
+    apt-get -qq update && \
+    apt-get -qq --assume-yes upgrade && \
+    apt-get -qq --assume-yes install w3m wget openjdk-11-jre-headless && \
+    apt-get -qq --assume-yes clean
 
 # Install Go
 RUN cd "$DOWNLOAD_FOLDER" && \

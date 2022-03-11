@@ -97,7 +97,7 @@ public class FalsePositiveJobDataService {
     }
 
     private void validateProjectIdAndProjectAccess(String projectId) {
-        userInputAssertion.isValidProjectId(projectId);
+        userInputAssertion.assertIsValidProjectId(projectId);
         scanAssertService.assertUserHasAccessToProject(projectId);
     }
 

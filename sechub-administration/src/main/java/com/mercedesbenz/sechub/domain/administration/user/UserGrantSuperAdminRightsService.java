@@ -57,7 +57,7 @@ public class UserGrantSuperAdminRightsService {
     public void grantSuperAdminRightsFor(String userId) {
         auditLogService.log("Triggered granting admin rights for user {}", logSanitizer.sanitize(userId, 30));
 
-        assertion.isValidUserId(userId);
+        assertion.assertIsValidUserId(userId);
 
         User user = userRepository.findOrFailUser(userId);
 

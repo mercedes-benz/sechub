@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.developertools;
+package com.mercedesbenz.sechub.integrationtest;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -15,7 +15,15 @@ public class TextFileWriter {
 
     private static final Logger LOG = LoggerFactory.getLogger(TextFileWriter.class);
 
+    public void save(String text, File targetFile, Charset charset) throws IOException {
+        internalSave(targetFile, text, true, charset);
+    }
+
     public void save(File targetFile, String text, boolean overwrite) throws IOException {
+        internalSave(targetFile, text, overwrite, Charset.forName("UTF-8"));
+    }
+
+    private void internalSave(File targetFile, String text, boolean overwrite, Charset charset) throws IOException {
         if (targetFile == null) {
             throw new IllegalArgumentException("null not allowed as file!");
         }
@@ -42,9 +50,10 @@ public class TextFileWriter {
                 throw new IllegalStateException("was not able to create new file:" + targetFile);
             }
         }
-        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(targetFile), Charset.forName("UTF-8")))) {
+        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(targetFile), charset))) {
             bw.write(text);
         }
         LOG.info("Written:" + targetFile);
     }
+
 }

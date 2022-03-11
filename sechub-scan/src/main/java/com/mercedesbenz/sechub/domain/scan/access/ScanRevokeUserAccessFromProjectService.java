@@ -24,8 +24,8 @@ public class ScanRevokeUserAccessFromProjectService {
 
     @UseCaseAdminUnassignsUserFromProject(@Step(number = 2, name = "Update authorization parts"))
     public void revokeUserAccessFromProject(String userId, String projectId) {
-        assertion.isValidUserId(userId);
-        assertion.isValidProjectId(projectId);
+        assertion.assertIsValidUserId(userId);
+        assertion.assertIsValidProjectId(projectId);
 
         ProjectAccessCompositeKey id = new ProjectAccessCompositeKey(userId, projectId);
         repository.deleteById(id);
