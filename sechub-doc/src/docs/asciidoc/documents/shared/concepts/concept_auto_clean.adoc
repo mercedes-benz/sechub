@@ -37,7 +37,7 @@ include::concept_auto_cleanup_configuration_example.json[]
 The execution is automatically done by {sechub}. 
 
 ==== Cleaned data
-Data is removed when older than defined time period in
+All data which is older than the defined time period is removed from:
 
 - Scan product results
 - Scan project log 

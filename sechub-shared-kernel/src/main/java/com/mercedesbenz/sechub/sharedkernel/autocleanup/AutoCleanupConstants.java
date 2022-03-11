@@ -11,8 +11,7 @@ public class AutoCleanupConstants {
 
     public static final String TRIGGER_STEP_MUST_BE_DOCUMENTED = "Auto cleanup is triggered by a cron job operation - default is one day to delay after last execution. "
             + "As initial delay " + DEFAULT_INITIAL_DELAY_MILLIS
-            + " milliseconds are defined. It can be configured different, so when you need to startup a cluster "
-            + "time shifted, simply change the initial delay values in your wanted way.";
+            + " milliseconds are defined. It can be configured differently. This is useful when you need to startup a cluster. Simply change the initial delay values in to allow the cluster to startup.";
 
     public static final String TRIGGER_INITIAL_DELAY_STRING = "${sechub.config.trigger.autoclean.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS + "}";
     public static final String TRIGGER_FIXED_DELAY_STRING = "${sechub.config.trigger.autoclean.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}";

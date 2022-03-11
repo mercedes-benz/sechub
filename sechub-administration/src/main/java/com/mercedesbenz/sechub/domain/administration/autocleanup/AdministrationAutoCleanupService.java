@@ -38,7 +38,7 @@ public class AdministrationAutoCleanupService {
         long days = configService.getAutoCleanupInDays();
 
         if (days < 0) {
-            LOG.error("Found {} days configured for auto cleanup. This should never happen - please check your configuration!", days);
+            LOG.error("Found {} days configured for auto cleanup. Negative values are not allowed. Please check your configuration.", days);
             return;
         }
         if (days == 0) {
