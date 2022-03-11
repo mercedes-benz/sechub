@@ -65,8 +65,8 @@ ext {
       restDocsApiSpec:                         "0.16.0",
       
       /* Owasp Zap wrapper */
-      owaspzap_client_api:					   "1.10.0",
-      jcommander:							   "1.82",
+      owaspzap_client_api:                     "1.10.0",
+      jcommander:                              "1.82",
     
       
    ]    
@@ -141,9 +141,9 @@ ext {
         
         dom4j:                                 "org.dom4j:dom4j:${libraryVersion.dom4j}",
         
-        owaspzap_client_api:				   "org.zaproxy:zap-clientapi:${libraryVersion.owaspzap_client_api}",
-		 
-		jcommander:							   "com.beust:jcommander:${libraryVersion.jcommander}",
+        owaspzap_client_api:                   "org.zaproxy:zap-clientapi:${libraryVersion.owaspzap_client_api}",
+         
+        jcommander:                            "com.beust:jcommander:${libraryVersion.jcommander}",
    ]
    
 

@@ -7,6 +7,8 @@ import java.io.File;
 
 import org.junit.jupiter.api.Test;
 
+import com.mercedesbenz.sechub.commons.TextFileReader;
+
 class SecHubScanConfigurationTest {
 
     @Test

@@ -8,21 +8,19 @@
 dependencies {
     implementation project(':sechub-commons-model')
     implementation project(':sechub-commons-core')
-    implementation project(':sechub-testframework')
-    implementation library.slf4j
-    implementation library.logback_classic
-    implementation library.jackson_JDK8
-    implementation library.jackson_core
-    implementation library.jackson_databind
+    testImplementation project(':sechub-testframework')
+    
     implementation library.owaspzap_client_api
     implementation library.jcommander
-	
-	testImplementation library.junit5_impl
-    testImplementation library.junit5_runtime
-    testImplementation library.junit5_params
+        
+	implementation spring_boot_dependency.slf4j_api
+    implementation spring_boot_dependency.logback_classic
+    
+	testImplementation spring_boot_dependency.junit_jupiter
+    testImplementation spring_boot_dependency.junit_jupiter_params
 }
 
-task buildWrapperOwaspZap(type: Jar) {
+task buildWrapperOwaspZap(type: Jar, dependsOn: build) {
     group 'sechub'
     description 'Builds the SecHub Owasp Zap Wrapper CLI tool.'
     archiveBaseName = 'wrapperowaspzap'
@@ -34,6 +32,6 @@ task buildWrapperOwaspZap(type: Jar) {
     from { 
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } 
     }
-
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     with jar
 }

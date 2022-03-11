@@ -7,9 +7,9 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.commons.TextFileReader;
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
-import com.mercedesbenz.sechub.integrationtest.TextFileReader;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanConfiguration;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapServerConfiguration;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.ProxyInformation;

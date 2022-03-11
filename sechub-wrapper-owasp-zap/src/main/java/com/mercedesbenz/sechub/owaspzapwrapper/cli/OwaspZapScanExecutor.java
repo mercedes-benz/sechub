@@ -52,8 +52,7 @@ public class OwaspZapScanExecutor {
             scan = new HTTPBasicAuthScan(clientApi, scanConfig);
             break;
         default:
-            scan = new UnauthenticatedScan(clientApi, scanConfig);
-            break;
+            throw new IllegalStateException("No matching scan type could be found.");
         }
         return scan;
     }
