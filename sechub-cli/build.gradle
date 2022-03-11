@@ -54,9 +54,9 @@ task testGo(type:Exec) {
 
   //on windows:
     if (OSUtil.isWindows()){
-        commandLine 'cmd', '/c', 'go', 'test', 'mercedes-benz.com/sechub/cli', 'mercedes-benz.com/sechub/util', '-v'
+        commandLine 'cmd', '/c', 'go', 'test', 'mercedes-benz.com/sechub/cli', 'mercedes-benz.com/sechub/util'
     }else{
-        commandLine 'go', 'test', 'mercedes-benz.com/sechub/cli', 'mercedes-benz.com/sechub/util', '-v'
+        commandLine 'go', 'test', 'mercedes-benz.com/sechub/cli', 'mercedes-benz.com/sechub/util'
     }
 
 }
