@@ -7,7 +7,7 @@ import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.auth.AuthenticationType;
 
 public class SecHubWebScanConfigurationHelper {
-    private static final int DEFAULT_MAX_SCAN_DURATION = 2880000; // 8 hours in milliseconds
+    private static final int DEFAULT_MAX_SCAN_DURATION = 28800000; // 8 hours in milliseconds
 
     public AuthenticationType determineAuthenticationType(SecHubWebScanConfiguration secHubWebScanConfiguration) {
         if (secHubWebScanConfiguration == null) {
