@@ -162,7 +162,6 @@ func NewConfigByFlags() *Config {
 			configFromInit.action = flag.Arg(0)
 		}
 	}
-	fmt.Println("Action=" + configFromInit.action)
 
 	return &configFromInit
 }
