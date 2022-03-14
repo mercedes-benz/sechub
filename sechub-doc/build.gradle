@@ -300,7 +300,7 @@ task generateOpenapi() {
     	//
     	// The steps are:
     	//
-    	// 1. read in the OpenAPI file
+    	// 1. read in the generated OpenAPI file
     	// 2. get the values which contain a `oneOf` element
     	// 3. overwrite the `oneOf` with `string`
     	// 4. write the modified JSON structure back into the generated OpenAPI 3 file
@@ -347,6 +347,9 @@ task generateOpenapi() {
     	
     	def listOfUsersSchema = jsonObject.components.schemas.ListOfUsers
     	listOfUsersSchema.items = stringType
+
+    	def projectWhiteListSchema = jsonObject.components.schemas.ProjectWhitelist
+    	projectWhiteListSchema.properties.whiteList.properties.uris.items=stringType
     	
     	// Write JSON
     	def json = JsonOutput.toJson(jsonObject)
