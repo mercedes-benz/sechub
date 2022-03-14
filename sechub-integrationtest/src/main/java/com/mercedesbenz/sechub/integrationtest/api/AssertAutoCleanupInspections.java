@@ -2,10 +2,9 @@ package com.mercedesbenz.sechub.integrationtest.api;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.junit.Assert;
-
-import wiremock.com.google.common.base.Objects;
 
 import com.mercedesbenz.sechub.integrationtest.internal.TestJsonDeleteCount;
 
@@ -137,10 +136,10 @@ public class AssertAutoCleanupInspections {
         public ActionState validate(List<TestJsonDeleteCount> counts, StringBuilder problemMessageBuilder) {
             boolean found = false;
             for (TestJsonDeleteCount count : counts) {
-                if (!Objects.equal(variant, count.variant)) {
+                if (!Objects.equals(variant, count.variant)) {
                     continue;
                 }
-                if (!Objects.equal(className, count.className)) {
+                if (!Objects.equals(className, count.className)) {
                     continue;
                 }
                 if (expectedDeletes != count.deleteCount) {
