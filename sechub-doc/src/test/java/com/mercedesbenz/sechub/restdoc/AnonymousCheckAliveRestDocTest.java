@@ -1,12 +1,10 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
-import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
 import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.head;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.lang.annotation.Annotation;
 
@@ -24,7 +22,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.server.core.AnonymousCheckAliveRestController;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
@@ -59,15 +56,13 @@ public class AnonymousCheckAliveRestDocTest {
         			head(apiEndpoint)
         		).
         andExpect(status().isOk()).
-        andDo(document(RestDocFactory.createPath(useCase, "HEAD"),
-                resource(
-                        ResourceSnippetParameters.builder().
-                            summary(RestDocFactory.createSummary(useCase)).
-                            description(RestDocFactory.createDescription(useCase)).
-                            tag(RestDocFactory.extractTag(apiEndpoint)).
-                            build()
-                         )
-                ));
+        andDo(defineRestService().
+                with().
+                    useCaseData(useCase, "HEAD").
+                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                and().
+                document()
+        );
 
         /* @formatter:on */
     }
@@ -85,15 +80,13 @@ public class AnonymousCheckAliveRestDocTest {
         			get(apiEndpoint)
         		).
         andExpect(status().isOk()).
-        andDo(document(RestDocFactory.createPath(useCase, "GET"),
-                resource(
-                        ResourceSnippetParameters.builder().
-                            summary(RestDocFactory.createSummary(useCase)).
-                            description(RestDocFactory.createDescription(useCase)).
-                            tag(RestDocFactory.extractTag(apiEndpoint)).
-                            build()
-                         )
-                ));
+        andDo(defineRestService().
+                with().
+                    useCaseData(useCase, "GET").
+                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                and().
+                document()
+        );
 
         /* @formatter:on */
     }

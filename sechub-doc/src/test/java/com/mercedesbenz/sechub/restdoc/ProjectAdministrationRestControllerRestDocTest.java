@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
-import static com.epages.restdocs.apispec.ResourceDocumentation.*;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
 import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
 import static com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -10,7 +9,6 @@ import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -39,7 +37,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.domain.administration.project.CreateProjectInputValidator;
 import com.mercedesbenz.sechub.domain.administration.project.ListProjectsService;
@@ -152,13 +149,13 @@ public class ProjectAdministrationRestControllerRestDocTest {
 				        + "\"metaData\":{\"key1\":\"value1\", \"key2\":\"value2\"}}")
 				).
 		andExpect(status().isCreated()).
-		andDo(document(RestDocFactory.createPath(useCase),
-                resource(
-                        ResourceSnippetParameters.builder().
-                            summary(RestDocFactory.createSummary(useCase)).
-                            description(RestDocFactory.createDescription(useCase)).
-                            tag(RestDocFactory.extractTag(apiEndpoint)).
-                            requestSchema(OpenApiSchema.PROJECT.getSchema()).
+		andDo(defineRestService().
+                with().
+                    useCaseData(useCase).
+                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                    requestSchema(OpenApiSchema.PROJECT.getSchema()).
+                and().
+                document(
                             requestFields(
                                     fieldWithPath(ProjectJsonInput.PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
                                     fieldWithPath(ProjectJsonInput.PROPERTY_NAME).description("Name of the project to create. Is also used as a unique ID!"),
@@ -167,8 +164,6 @@ public class ProjectAdministrationRestControllerRestDocTest {
                                     fieldWithPath(ProjectJsonInput.PROPERTY_WHITELIST+"."+ProjectWhiteList.PROPERTY_URIS).description("All URIs used now for whitelisting. Former parts will be replaced completely!"),
                                     fieldWithPath(ProjectJsonInput.PROPERTY_METADATA).description("An JSON object containing metadata key-value pairs defined for this project").optional(),
                                     fieldWithPath(ProjectJsonInput.PROPERTY_METADATA + ".*").description("An arbitrary metadata key-value pair").optional()
-                            ).
-                            build()
                          )
 				));
 
@@ -193,17 +188,15 @@ public class ProjectAdministrationRestControllerRestDocTest {
         		get(apiEndpoint).
         		contentType(MediaType.APPLICATION_JSON_VALUE)).
                     andExpect(status().isOk()).
-        			andDo(document(RestDocFactory.createPath(useCase),
-        	                resource(
-        	                        ResourceSnippetParameters.builder().
-        	                            summary(RestDocFactory.createSummary(useCase)).
-        	                            description(RestDocFactory.createDescription(useCase)).
-        	                            tag(RestDocFactory.extractTag(apiEndpoint)).
-        	                            responseSchema(OpenApiSchema.PROJECT_LIST.getSchema()).
+                    andDo(defineRestService().
+                            with().
+                                useCaseData(useCase).
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                                responseSchema(OpenApiSchema.PROJECT_LIST.getSchema()).
+                            and().
+                            document(
         	                            responseFields(
         	                                    fieldWithPath("[]").description("List of project Ids").optional()
-        	                            ).
-        	                            build()
         	                         )
         			        ));
 
@@ -223,16 +216,14 @@ public class ProjectAdministrationRestControllerRestDocTest {
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				).
 		andExpect(status().isOk()).
-		andDo(document(RestDocFactory.createPath(useCase),
-                resource(
-                        ResourceSnippetParameters.builder().
-                            summary(RestDocFactory.createSummary(useCase)).
-                            description(RestDocFactory.createDescription(useCase)).
-                            tag(RestDocFactory.extractTag(apiEndpoint)).
+		andDo(defineRestService().
+                with().
+                    useCaseData(useCase).
+                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                and().
+                document(
                             pathParameters(
                                     parameterWithName(PROJECT_ID.paramName()).description("The id for project to delete")
-                            ).
-                            build()
                          )
 				));
 		/* @formatter:on */
@@ -251,17 +242,15 @@ public class ProjectAdministrationRestControllerRestDocTest {
                 contentType(MediaType.APPLICATION_JSON_VALUE)
                 ).
         andExpect(status().isOk()).
-        andDo(document(RestDocFactory.createPath(useCase),
-                resource(
-                        ResourceSnippetParameters.builder().
-                            summary(RestDocFactory.createSummary(useCase)).
-                            description(RestDocFactory.createDescription(useCase)).
-                            tag(RestDocFactory.extractTag(apiEndpoint)).
+        andDo(defineRestService().
+                with().
+                    useCaseData(useCase).
+                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                and().
+                document(
                             pathParameters(
                                     parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
                                     parameterWithName(USER_ID.paramName()).description("The user id of the user to assign to project as the owner")
-                            ).
-                            build()
                          )
                 ));
         /* @formatter:on */
@@ -270,6 +259,9 @@ public class ProjectAdministrationRestControllerRestDocTest {
     @Test
     @UseCaseRestDoc(useCase = UseCaseAdministratorChangesProjectAccessLevel.class)
     public void restdoc_change_project_access_level() throws Exception {
+
+        Class<UseCaseAdministratorChangesProjectAccessLevel> useCase = UseCaseAdministratorChangesProjectAccessLevel.class;
+        String apiEndpoint = https(PORT_USED).buildAdminChangesProjectAccessLevelUrl(PROJECT_ID.pathElement(), PROJECT_ACCESS_LEVEL.pathElement());
 
         /* prepare */
         StringBuilder acceptedValues = new StringBuilder();
@@ -290,11 +282,16 @@ public class ProjectAdministrationRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-                post(https(PORT_USED).buildAdminChangesProjectAccessLevelUrl(PROJECT_ID.pathElement(), PROJECT_ACCESS_LEVEL.pathElement()), "projectId1", ProjectAccessLevel.READ_ONLY.getId()).
+                post(apiEndpoint, "projectId1", ProjectAccessLevel.READ_ONLY.getId()).
                 contentType(MediaType.APPLICATION_JSON_VALUE)
                 ).
         andExpect(status().isOk()).
-        andDo(document(RestDocFactory.createPath(UseCaseAdministratorChangesProjectAccessLevel.class),
+        andDo(defineRestService().
+                with().
+                    useCaseData(useCase).
+                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                and().
+                document(
                 pathParameters(
                         parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
                         parameterWithName(PROJECT_ACCESS_LEVEL.paramName()).description("The new project access level. "+acceptedValues.toString())
@@ -317,17 +314,15 @@ public class ProjectAdministrationRestControllerRestDocTest {
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				).
 		andExpect(status().isOk()).
-		andDo(document(RestDocFactory.createPath(useCase),
-                resource(
-                        ResourceSnippetParameters.builder().
-                            summary(RestDocFactory.createSummary(useCase)).
-                            description(RestDocFactory.createDescription(useCase)).
-                            tag(RestDocFactory.extractTag(apiEndpoint)).
+		andDo(defineRestService().
+                with().
+                    useCaseData(useCase).
+                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                and().
+                document(
                             pathParameters(
                                     parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
                                     parameterWithName(USER_ID.paramName()).description("The user id of the user to assign to project")
-                            ).
-                            build()
                          )
 				));
 
@@ -347,17 +342,15 @@ public class ProjectAdministrationRestControllerRestDocTest {
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				).
 		andExpect(status().isOk()).
-		andDo(document(RestDocFactory.createPath(useCase),
-                resource(
-                        ResourceSnippetParameters.builder().
-                            summary(RestDocFactory.createSummary(useCase)).
-                            description(RestDocFactory.createDescription(useCase)).
-                            tag(RestDocFactory.extractTag(apiEndpoint)).
+		andDo(defineRestService().
+                with().
+                    useCaseData(useCase).
+                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                and().
+                document(
                             pathParameters(
                                     parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
                                     parameterWithName(USER_ID.paramName()).description("The user id of the user to unassign from project")
-                            ).
-                            build()
                          )
 				));
 
@@ -412,17 +405,17 @@ public class ProjectAdministrationRestControllerRestDocTest {
 		).
 		andDo(print()).
 		andExpect(status().isOk()).
-		andDo(document(RestDocFactory.createPath(useCase),
-                resource(
-                        ResourceSnippetParameters.builder().
-                            summary(RestDocFactory.createSummary(useCase)).
-                            description(RestDocFactory.createDescription(useCase)).
-                            tag(RestDocFactory.extractTag(apiEndpoint)).
-                            responseSchema(OpenApiSchema.PROJECT_DETAILS.getSchema()).
-				pathParameters(
+		andDo(defineRestService().
+                with().
+                    useCaseData(useCase).
+                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                    responseSchema(OpenApiSchema.PROJECT_DETAILS.getSchema()).
+                and().
+                document(
+                        pathParameters(
 							parameterWithName(PROJECT_ID.paramName()).description("The id for project to show details for")
-                            ).
-				responseFields(
+                            ),
+                        responseFields(
                             fieldWithPath(ProjectDetailInformation.PROPERTY_PROJECT_ID).description("The name of the project"),
                             fieldWithPath(ProjectDetailInformation.PROPERTY_USERS).description("A list of all users having access to the project"),
 							fieldWithPath(ProjectDetailInformation.PROPERTY_OWNER).description("Username of the owner of this project. An owner is the person in charge."),
@@ -431,8 +424,6 @@ public class ProjectAdministrationRestControllerRestDocTest {
                             fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA + ".key1").description("An arbitrary metadata key"),
 							fieldWithPath(ProjectDetailInformation.PROPERTY_ACCESSLEVEL).description("The project access level"),
 							fieldWithPath(ProjectDetailInformation.PROPERTY_DESCRIPTION).description("The project description.")
-                            ).
-                            build()
 						)
 				));
 
@@ -489,17 +480,17 @@ public class ProjectAdministrationRestControllerRestDocTest {
                 */
         andDo(print()).
         andExpect(status().isOk()).
-        andDo(document(RestDocFactory.createPath(useCase),
-                resource(
-                        ResourceSnippetParameters.builder().
-                            summary(RestDocFactory.createSummary(useCase)).
-                            description(RestDocFactory.createDescription(useCase)).
-                            tag(RestDocFactory.extractTag(apiEndpoint)).
-                            responseSchema(OpenApiSchema.PROJECT_DETAILS.getSchema()).
-                pathParameters(
+        andDo(defineRestService().
+                with().
+                    useCaseData(useCase).
+                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                    responseSchema(OpenApiSchema.PROJECT_DETAILS.getSchema()).
+                and().
+                document(
+                        pathParameters(
                             parameterWithName(PROJECT_ID.paramName()).description("The id for project to change details for")
-                            ).
-                responseFields(
+                            ),
+                        responseFields(
                             fieldWithPath(ProjectDetailInformation.PROPERTY_PROJECT_ID).description("The name of the project."),
                             fieldWithPath(ProjectDetailInformation.PROPERTY_USERS).description("A list of all users having access to the project."),
                             fieldWithPath(ProjectDetailInformation.PROPERTY_OWNER).description("Username of the owner of this project. An owner is the person in charge."),
@@ -508,8 +499,6 @@ public class ProjectAdministrationRestControllerRestDocTest {
                             fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA + ".key1").description("An arbitrary metadata key."),
                             fieldWithPath(ProjectDetailInformation.PROPERTY_ACCESSLEVEL).description("The project access level"),
                             fieldWithPath(ProjectDetailInformation.PROPERTY_DESCRIPTION).description("The project description.")
-                            ).
-                            build()
                         )
                 ));
 

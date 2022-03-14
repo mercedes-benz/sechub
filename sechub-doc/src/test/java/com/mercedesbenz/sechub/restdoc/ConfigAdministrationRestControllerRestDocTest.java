@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
-import static com.epages.restdocs.apispec.ResourceDocumentation.*;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
 import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -26,7 +25,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.domain.administration.autocleanup.AdministrationAutoCleanupConfig;
 import com.mercedesbenz.sechub.domain.administration.config.AdministrationConfigService;
@@ -77,15 +75,13 @@ public class ConfigAdministrationRestControllerRestDocTest {
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				).
 		andExpect(status().isAccepted()).
-		andDo(document(RestDocFactory.createPath(useCase),
-                resource(
-                        ResourceSnippetParameters.builder().
-                            summary(RestDocFactory.createSummary(useCase)).
-                            description(RestDocFactory.createDescription(useCase)).
-                            tag(RestDocFactory.extractTag(apiEndpoint)).
-                            build()
-                        )
-		        ));
+		andDo(defineRestService().
+                with().
+                    useCaseData(useCase).
+                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                and().
+                document()
+        );
 		/* @formatter:on */
     }
 
@@ -106,15 +102,13 @@ public class ConfigAdministrationRestControllerRestDocTest {
 				).
 		andExpect(status().isOk()).
 		andExpect(content().json(config.toJSON())).
-		andDo(document(RestDocFactory.createPath(useCase),
-                    resource(
-                            ResourceSnippetParameters.builder().
-                                summary(RestDocFactory.createSummary(useCase)).
-                                description(RestDocFactory.createDescription(useCase)).
-                                tag(RestDocFactory.extractTag(apiEndpoint)).
-                                build()
-                            )
-		        ));
+		andDo(defineRestService().
+                with().
+                    useCaseData(useCase).
+                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                and().
+                document()
+        );
 		/* @formatter:on */
     }
 

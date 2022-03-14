@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
-import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
 import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
 import static com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -30,7 +29,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.domain.administration.signup.SignupAdministrationRestController;
 import com.mercedesbenz.sechub.domain.administration.signup.SignupDeleteService;
@@ -43,6 +41,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.admin.signup.UseCaseAdminDe
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.signup.UseCaseAdminListsOpenUserSignups;
 import com.mercedesbenz.sechub.test.ExampleConstants;
 import com.mercedesbenz.sechub.test.TestPortProvider;
+import com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(SignupAdministrationRestController.class)
@@ -81,21 +80,20 @@ public class SignupAdministrationRestControllerRestDocTest {
         		get(apiEndpoint)
         		).
         			andExpect(status().isOk()).
-        			andDo(document(RestDocFactory.createPath(useCase),
-        	                resource(
-        	                        ResourceSnippetParameters.builder().
-        	                            summary(RestDocFactory.createSummary(useCase)).
-        	                            description(RestDocFactory.createDescription(useCase)).
-        	                            tag(RestDocFactory.extractTag(apiEndpoint)).
-        	                            responseSchema(OpenApiSchema.SIGNUP_LIST.getSchema()).
-        	                            responseFields(
-        	                                    fieldWithPath("[]").description("List of user signups").optional(),
-        	                                    fieldWithPath("[]."+RestDocPathParameter.USER_ID.paramName()).type(JsonFieldType.STRING).description("The user id"),
-        	                                    fieldWithPath("[]."+RestDocPathParameter.EMAIL_ADDRESS.paramName()).type(JsonFieldType.STRING).description("The email address")
-        	                            ).
-        	                            build()
-        	                        )
-        		));
+        			andDo(defineRestService().
+        			        with().
+        			            useCaseData(useCase).
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                                responseSchema(OpenApiSchema.SIGNUP_LIST.getSchema()).
+                            and().
+            			    document(
+        	                    responseFields(
+        	                            fieldWithPath("[]").description("List of user signups").optional(),
+        	                            fieldWithPath("[]."+RestDocPathParameter.USER_ID.paramName()).type(JsonFieldType.STRING).description("The user id"),
+        	                            fieldWithPath("[]."+RestDocPathParameter.EMAIL_ADDRESS.paramName()).type(JsonFieldType.STRING).description("The email address")
+        	                    )
+        	            )
+        		);
 
 		/* @formatter:on */
     }
@@ -112,18 +110,17 @@ public class SignupAdministrationRestControllerRestDocTest {
         		delete(apiEndpoint,"userId1")
         		).
         			andExpect(status().isOk()).
-        			andDo(document(RestDocFactory.createPath(useCase),
-                            resource(
-                                    ResourceSnippetParameters.builder().
-                                        summary(RestDocFactory.createSummary(useCase)).
-                                        description(RestDocFactory.createDescription(useCase)).
-                                        tag(RestDocFactory.extractTag(apiEndpoint)).
-                                        pathParameters(
-                                                parameterWithName(USER_ID.paramName()).description("The userId of the signup which shall be deleted")
-                                        ).
-                                        build()
-                                    )
-        			        ));
+        			andDo(defineRestService().
+                            with().
+                                useCaseData(useCase).
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                            and().
+            			    document(
+                                pathParameters(
+                                        parameterWithName(USER_ID.paramName()).description("The userId of the signup which shall be deleted")
+                                )
+                            )
+        			);
 
 		/* @formatter:on */
     }
