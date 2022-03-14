@@ -138,6 +138,9 @@ func parseConfigFromEnvironment(config *Config) {
 
 // NewConfigByFlags parses commandline flags which override environment variable settings or defaults defined in init()
 func NewConfigByFlags() *Config {
+	// Normalize arguments from commandline
+	os.Args = normalizeCMDLineArgs(os.Args)
+
 	// Parse command line options
 	flag.Parse()
 
@@ -151,9 +154,15 @@ func NewConfigByFlags() *Config {
 	} else if flagVersion {
 		configFromInit.action = showVersionAction
 	} else {
-		// read action from commandline
-		configFromInit.action = flag.Arg(0)
+		if len(flag.Args()) == 0 {
+			// Default: Show help if no action is given
+			configFromInit.action = showHelpAction
+		} else {
+			// read `action` from commandline
+			configFromInit.action = flag.Arg(0)
+		}
 	}
+	fmt.Println("Action=" + configFromInit.action)
 
 	return &configFromInit
 }
@@ -247,4 +256,38 @@ func validateRequestedReportFormat(config *Config) {
 		sechubUtil.LogWarning("Unsupported report format '" + config.reportFormat + "'. Changing to 'json'.")
 		config.reportFormat = "json"
 	}
+}
+
+// normalizeCMDLineArgs - Make sure that the `action` is last in the argument list
+//                        Otherwise flag.Parse() will not work properly.
+func normalizeCMDLineArgs(args []string) []string {
+	if len(args) == 1 {
+		return args
+	}
+
+	action := ""
+	pos := -1
+	for i, arg := range args[1:] {
+		if !strings.HasPrefix(arg, "-") {
+			action = arg
+			if i == 0 || (i == pos+1 && i != 1) {
+				// exit loop if 1st argument or if two consecuting values appear
+				pos = i
+				break
+			}
+			pos = i
+		}
+	}
+
+	var result []string
+	if pos == -1 {
+		result = args
+	} else {
+		result = args[:pos+1]
+		if pos < len(args) {
+			result = append(result, args[pos+2:]...)
+		}
+		result = append(result, action)
+	}
+	return result
 }
