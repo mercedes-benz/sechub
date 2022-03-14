@@ -133,3 +133,30 @@ func Example_validateRequestedReportFormatMakesLowercase2() {
 	// NOTICE: Converted requested report format 'Json' to lowercase. Because it contained uppercase characters, which are not accepted by SecHub server.
 	// json
 }
+
+func Example_normalizeCMDLineArgs() {
+	// PREPARE
+	argList0 := []string{"./sechub"}
+	argList1 := []string{"./sechub", "scan"}
+	argList2 := []string{"./sechub", "-jobUUID", "3bdcc5c5-c2b6-4599-be84-f74380680808", "getReport"}
+	argList3 := []string{"./sechub", "getReport", "-jobUUID", "3bdcc5c5-c2b6-4599-be84-f74380680808"}
+	argList4 := []string{"./sechub", "-configfile", "my-sechub.json", "scan", "-stop-on-yellow"}
+	argList5 := []string{"./sechub", "-configfile", "my-sechub.json", "scan", "-wait", "30"}
+	argList6 := []string{"./sechub", "-version"}
+	// EXECUTE
+	fmt.Println(normalizeCMDLineArgs(argList0))
+	fmt.Println(normalizeCMDLineArgs(argList1))
+	fmt.Println(normalizeCMDLineArgs(argList2))
+	fmt.Println(normalizeCMDLineArgs(argList3))
+	fmt.Println(normalizeCMDLineArgs(argList4))
+	fmt.Println(normalizeCMDLineArgs(argList5))
+	fmt.Println(normalizeCMDLineArgs(argList6))
+	// Output:
+	// [./sechub]
+	// [./sechub scan]
+	// [./sechub -jobUUID 3bdcc5c5-c2b6-4599-be84-f74380680808 getReport]
+	// [./sechub -jobUUID 3bdcc5c5-c2b6-4599-be84-f74380680808 getReport]
+	// [./sechub -configfile my-sechub.json -stop-on-yellow scan]
+	// [./sechub -configfile my-sechub.json -wait 30 scan]
+	// [./sechub -version]
+}
