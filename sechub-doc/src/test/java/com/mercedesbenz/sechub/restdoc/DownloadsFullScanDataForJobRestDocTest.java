@@ -41,6 +41,7 @@ import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPI
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
+import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc.SpringRestDocOutput;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminDownloadsFullScanDataForJob;
 import com.mercedesbenz.sechub.test.ExampleConstants;
 import com.mercedesbenz.sechub.test.TestPortProvider;
@@ -84,7 +85,13 @@ public class DownloadsFullScanDataForJobRestDocTest {
     }
 
     @Test
-    @UseCaseRestDoc(useCase = UseCaseAdminDownloadsFullScanDataForJob.class)
+    @UseCaseRestDoc(useCase = UseCaseAdminDownloadsFullScanDataForJob.class, wanted = {
+
+            SpringRestDocOutput.PATH_PARAMETERS,
+
+            SpringRestDocOutput.REQUEST_FIELDS,
+
+            SpringRestDocOutput.CURL_REQUEST })
     public void restdoc_admin_downloads_fullscan_data_for_job() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminDownloadsZipFileContainingFullScanDataFor(JOB_UUID.pathElement());

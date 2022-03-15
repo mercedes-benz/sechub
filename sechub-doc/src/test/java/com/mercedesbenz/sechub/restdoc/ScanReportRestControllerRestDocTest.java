@@ -40,6 +40,7 @@ import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReportRestController;
 import com.mercedesbenz.sechub.domain.scan.report.ScanSecHubReport;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
+import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc.SpringRestDocOutput;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserDownloadsJobReport;
 import com.mercedesbenz.sechub.test.ExampleConstants;
 import com.mercedesbenz.sechub.test.TestPortProvider;
@@ -65,7 +66,13 @@ public class ScanReportRestControllerRestDocTest {
 
     private UUID jobUUID;
 
-    @UseCaseRestDoc(useCase = UseCaseUserDownloadsJobReport.class, variant = "JSON")
+    @UseCaseRestDoc(useCase = UseCaseUserDownloadsJobReport.class, variant = "JSON", wanted = {
+
+            SpringRestDocOutput.PATH_PARAMETERS,
+
+            SpringRestDocOutput.REQUEST_FIELDS,
+
+            SpringRestDocOutput.CURL_REQUEST })
     @Test
     @WithMockUser
     public void get_report_from_existing_job_returns_information_as_json_when_type_is_APPLICATION_JSON_UTF8() throws Exception {
@@ -104,7 +111,13 @@ public class ScanReportRestControllerRestDocTest {
 	    /* @formatter:on */
     }
 
-    @UseCaseRestDoc(useCase = UseCaseUserDownloadsJobReport.class, variant = "HTML")
+    @UseCaseRestDoc(useCase = UseCaseUserDownloadsJobReport.class, variant = "HTML", wanted = {
+
+            SpringRestDocOutput.PATH_PARAMETERS,
+
+            SpringRestDocOutput.REQUEST_FIELDS,
+
+            SpringRestDocOutput.CURL_REQUEST })
     @Test
     @WithMockUser
     public void get_report_from_existing_job_returns_information_as_html_when_type_is_APPLICATION_XHTML_XML() throws Exception {

@@ -11,7 +11,8 @@ import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.lang.annotation.Annotation;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +31,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
+import com.mercedesbenz.sechub.domain.administration.signup.Signup;
 import com.mercedesbenz.sechub.domain.administration.signup.SignupAdministrationRestController;
 import com.mercedesbenz.sechub.domain.administration.signup.SignupDeleteService;
 import com.mercedesbenz.sechub.domain.administration.signup.SignupRepository;
@@ -73,13 +75,26 @@ public class SignupAdministrationRestControllerRestDocTest {
         String apiEndpoint = https(PORT_USED).buildAdminListsUserSignupsUrl();
         Class<? extends Annotation> useCase = UseCaseAdminListsOpenUserSignups.class;
 
-        when(signupRepository.findAll()).thenReturn(Collections.emptyList());
+        Signup signup1 = new Signup();
+        signup1.setEmailAdress("john.smith@example.com");
+        signup1.setUserId("johnsmith");
+
+        Signup signup2 = new Signup();
+        signup2.setEmailAdress("jane.smith@example.com");
+        signup2.setUserId("janesmith");
+
+        List<Signup> signupList = new ArrayList<>();
+        signupList.add(signup1);
+        signupList.add(signup2);
+
+        when(signupRepository.findAll()).thenReturn(signupList);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(apiEndpoint)
         		).
         			andExpect(status().isOk()).
+        			andExpect(content().json("[{\"userId\":\"johnsmith\",\"emailAdress\":\"john.smith@example.com\"},{\"userId\":\"janesmith\",\"emailAdress\":\"jane.smith@example.com\"}]")).
         			andDo(defineRestService().
         			        with().
         			            useCaseData(useCase).
@@ -90,7 +105,7 @@ public class SignupAdministrationRestControllerRestDocTest {
         	                    responseFields(
         	                            fieldWithPath("[]").description("List of user signups").optional(),
         	                            fieldWithPath("[]."+RestDocPathParameter.USER_ID.paramName()).type(JsonFieldType.STRING).description("The user id"),
-        	                            fieldWithPath("[]."+RestDocPathParameter.EMAIL_ADDRESS.paramName()).type(JsonFieldType.STRING).description("The email address")
+        	                            fieldWithPath("[].emailAdress").type(JsonFieldType.STRING).description("The email address")
         	                    )
         	            )
         		);
