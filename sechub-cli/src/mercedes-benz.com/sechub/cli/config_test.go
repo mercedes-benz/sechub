@@ -5,7 +5,10 @@ package cli
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"testing"
+
+	sechubTestUtil "mercedes-benz.com/sechub/testutil"
 )
 
 func TestConfigByFlagsThrowsNoError(t *testing.T) {
@@ -159,4 +162,55 @@ func Example_normalizeCMDLineArgs() {
 	// [./sechub -configfile my-sechub.json -stop-on-yellow scan]
 	// [./sechub -configfile my-sechub.json -wait 30 scan]
 	// [./sechub -version]
+}
+
+func Example_tempFile() {
+	// PREPARE
+	var config1 Config
+	var config2 Config
+	config1.tempDir = "."
+	config2.tempDir = "/tmp/my_dir"
+	context1 := NewContext(&config1)
+	context2 := NewContext(&config2)
+
+	// EXECUTE
+	result1 := tempFile(context1, "sources.zip")
+	result2 := tempFile(context2, "sources.zip")
+
+	// TEST
+	fmt.Println(result1)
+	fmt.Println(result2)
+	// Output:
+	// sources.zip
+	// /tmp/my_dir/sources.zip
+}
+
+func Test_validateTempDir(t *testing.T) {
+	// PREPARE
+	tempDir := sechubTestUtil.InitializeTestTempDir(t)
+	defer os.RemoveAll(tempDir)
+
+	regularFile := filepath.Join(tempDir, "regular_file")
+	sechubTestUtil.CreateTestFile(regularFile, 0644, []byte(""), t)
+
+	var config1 Config
+	var config2 Config
+	var config3 Config
+	var config4 Config
+	config1.tempDir = "."
+	config2.tempDir = "/this/really/does/not/exist"
+	config3.tempDir = tempDir
+	config4.tempDir = regularFile
+
+	// EXECUTE
+	result1 := validateTempDir(&config1)
+	result2 := validateTempDir(&config2)
+	result3 := validateTempDir(&config3)
+	result4 := validateTempDir(&config4)
+
+	// TEST
+	sechubTestUtil.AssertTrue(result1, t)
+	sechubTestUtil.AssertFalse(result2, t)
+	sechubTestUtil.AssertTrue(result3, t)
+	sechubTestUtil.AssertFalse(result4, t)
 }
