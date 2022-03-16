@@ -185,6 +185,7 @@ asciidoctorj {
 }
 
 task convertSecHubHTMLPages(type: Copy){
+    dependsOn asciidoctor
 
      /* Why those replace pattern stuff ?
       * ----------------------------------
@@ -216,6 +217,8 @@ task convertSecHubHTMLPages(type: Copy){
 }
 
 task copyImagesToFinalDir(type: Copy) {
+    dependsOn asciidoctor
+
     from "${imagesBuildDir}"
     into "${finalHTMLDir}/images"
 }
