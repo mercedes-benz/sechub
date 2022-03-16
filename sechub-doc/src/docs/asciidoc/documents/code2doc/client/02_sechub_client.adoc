@@ -230,7 +230,7 @@ In below table, there is an overview of what can be defined where.
 | file | -file ||
 | job uuid | -jobUUID ||
 | network timeout | -timeout||
-| output folder | -output ||
+| output folder or file | -output ||
 | poll interval | -wait | SECHUB_WAITTIME_DEFAULT |
 | project id | -project | SECHUB_PROJECT |project
 | quiet mode | -quiet | SECHUB_QUIET |
@@ -274,8 +274,8 @@ Here is an overview of mandatory parameter for each `action`:
   Shows help and terminates
 - `-jobUUID <string>` +
   `{sechub}` job uuid (mandatory when using 'getStatus' or 'getReport')
-- `-output <path to folder>` +
-  Output folder for reports etc. (defaults to current working directory)
+- `-output <path to folder or file>` +
+  Where to place reports, false-positive files etc. Can be a directory, a file name or a file path (defaults to current working directory and default file names)
 - `-project <string>` +
   Unique project id - mandatory, but can also be defined in config file or via environment variable.
 - `-quiet` +
