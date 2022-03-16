@@ -164,24 +164,33 @@ func Example_normalizeCMDLineArgs() {
 	// [./sechub -version]
 }
 
-func Example_tempFile() {
+func Example_tempFile_current_dir() {
 	// PREPARE
-	var config1 Config
-	var config2 Config
-	config1.tempDir = "."
-	config2.tempDir = "/tmp/my_dir"
-	context1 := NewContext(&config1)
-	context2 := NewContext(&config2)
+	var config Config
+	config.tempDir = "."
+	context := NewContext(&config)
 
 	// EXECUTE
-	result1 := tempFile(context1, "sources.zip")
-	result2 := tempFile(context2, "sources.zip")
+	result := tempFile(context, "sources.zip")
 
 	// TEST
-	fmt.Println(result1)
-	fmt.Println(result2)
+	fmt.Println(result)
 	// Output:
 	// sources.zip
+}
+
+func Example_tempFile_absolute_path() {
+	// PREPARE
+	var config Config
+	config.tempDir = "/tmp/my_dir"
+	context := NewContext(&config)
+
+	// EXECUTE
+	result := tempFile(context, "sources.zip")
+
+	// TEST
+	fmt.Println(result)
+	// Output:
 	// /tmp/my_dir/sources.zip
 }
 
