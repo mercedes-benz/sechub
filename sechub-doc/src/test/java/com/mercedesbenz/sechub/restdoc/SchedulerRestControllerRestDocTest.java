@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
-import static com.epages.restdocs.apispec.ResourceDocumentation.*;
 import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.*;
 import static com.mercedesbenz.sechub.commons.model.TestSecHubConfigurationBuilder.*;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
 import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
 import static com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -12,7 +11,6 @@ import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.io.InputStream;
@@ -42,7 +40,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.StringUtils;
 
-import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfiguration;
@@ -148,29 +145,27 @@ public class SchedulerRestControllerRestDocTest {
 	    		).
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
-	    			andDo(document(RestDocFactory.createPath(useCase, "Code Scan"),
-	    			                resource(
-	    			                        ResourceSnippetParameters.builder().
-	    			                            summary(RestDocFactory.createSummary(useCase)).
-	    			                            description(RestDocFactory.createDescription(useCase)).
-	    			                            tag(RestDocFactory.extractTag(apiEndpoint)).
-	    			                            requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
-	    			                            responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+	    			andDo(defineRestService().
+	    	                with().
+	    	                    useCaseData(useCase, "Code Scan").
+	    	                    tag(RestDocFactory.extractTag(apiEndpoint)).
+	    	                    requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
+	    	                    responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+	    	                and().
+	    	                document(
 	    			                            pathParameters(
 	    			                                    parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
-	    			                            ).
+	    			                            ),
 	    			                            requestFields(
 	    			                                    fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
 	    			                                    fieldWithPath(PROPERTY_CODE_SCAN).description("Code scan configuration block").optional(),
 	    			                                    fieldWithPath(PROPERTY_CODE_SCAN+"."+SecHubCodeScanConfiguration.PROPERTY_FILESYSTEM+"."+SecHubFileSystemConfiguration.PROPERTY_FOLDERS).description("Code scan sources from given file system folders").optional()
 
-	    			                            ).
+	    			                            ),
 	    			                            responseFields(
 	    			                                    fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
-	    			                            ).
-	    			                            build()
-	    			                        )
-	    			                ));
+	    			                            )
+   			                ));
 
 	    /* @formatter:on */
     }
@@ -201,29 +196,27 @@ public class SchedulerRestControllerRestDocTest {
 	    		).
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
-	    			andDo(document(RestDocFactory.createPath(useCase,"Infrastructure scan"),
-                            resource(
-                                    ResourceSnippetParameters.builder().
-                                        summary(RestDocFactory.createSummary(useCase)).
-                                        description(RestDocFactory.createDescription(useCase)).
-                                        tag(RestDocFactory.extractTag(apiEndpoint)).
-                                        requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
-                                        responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+	    			andDo(defineRestService().
+	    	                with().
+	    	                    useCaseData(useCase, "Infrastructure scan").
+	    	                    tag(RestDocFactory.extractTag(apiEndpoint)).
+	    	                    requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
+	    	                    responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+	    	                and().
+	    	                document(
                                         pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
-                                        ).
+                                        ),
                                         requestFields(
                                                 fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
                                                 fieldWithPath(PROPERTY_INFRA_SCAN).description("Infrastructure configuration block").optional(),
                                                 fieldWithPath(PROPERTY_INFRA_SCAN+"."+SecHubInfrastructureScanConfiguration.PROPERTY_URIS).description("Infrastructure URIs to scan for").optional(),
                                                 fieldWithPath(PROPERTY_INFRA_SCAN+"."+SecHubInfrastructureScanConfiguration.PROPERTY_IPS).description("Infrastructure IPs to scan for").optional()
 
-                                        ).
+                                        ),
                                         responseFields(
                                                 fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
 
-                                        ).
-                                        build()
                                     )
                             ));
 
@@ -265,17 +258,17 @@ public class SchedulerRestControllerRestDocTest {
 	    		).
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
-	    			andDo(document(RestDocFactory.createPath(useCase,"Web Scan anonymous"),
-                            resource(
-                                    ResourceSnippetParameters.builder().
-                                        summary(RestDocFactory.createSummary(useCase)).
-                                        description(RestDocFactory.createDescription(useCase)).
-                                        tag(RestDocFactory.extractTag(apiEndpoint)).
-                                        requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
-                                        responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+	    			andDo(defineRestService().
+                            with().
+                                useCaseData(useCase, "Web Scan anonymous").
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                                requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
+                                responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+                            and().
+                            document(
                                         pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
-                                        ).
+                                        ),
                                         requestFields(
                                                 fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
                                                 fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
@@ -285,13 +278,10 @@ public class SchedulerRestControllerRestDocTest {
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_INCLUDES+"[]").description("Include URL sub-paths to scan. Example: /hidden").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_EXCLUDES+"[]").description("Exclude URL sub-paths to scan. Example: /admin").optional()
 
-                                        ).
+                                        ),
                                         responseFields(
                                                 fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
-
-                                        ).
-                                        build()
-                                    )
+                                        )
 	    			      ));
 
 	    /* @formatter:on */
@@ -323,17 +313,17 @@ public class SchedulerRestControllerRestDocTest {
 	    		).
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
-	    			andDo(document(RestDocFactory.createPath(useCase,"Web Scan login basic"),
-                            resource(
-                                    ResourceSnippetParameters.builder().
-                                        summary(RestDocFactory.createSummary(useCase)).
-                                        description(RestDocFactory.createDescription(useCase)).
-                                        tag(RestDocFactory.extractTag(apiEndpoint)).
-                                        requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
-                                        responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+	    			andDo(defineRestService().
+                            with().
+                                useCaseData(useCase, "Web Scan login basic").
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                                requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
+                                responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+                            and().
+                            document(
                                         pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
-                                        ).
+                                        ),
                                         requestFields(
                                                 fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
                                                 fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
@@ -344,13 +334,10 @@ public class SchedulerRestControllerRestDocTest {
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_BASIC+".user").description("username").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_BASIC+".password").description("password").optional()
 
-                                        ).
+                                        ),
                                         responseFields(
                                                 fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
-
-                                        ).
-                                        build()
-                                    )
+                                        )
 	    			    ));
 
 	    /* @formatter:on */
@@ -414,17 +401,17 @@ public class SchedulerRestControllerRestDocTest {
 	    		).
 	    		andExpect(status().isOk()).
 	    		andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
-	    		andDo(document(RestDocFactory.createPath(useCase,"Web Scan login form scripted"),
-	    		        resource(
-	    		                ResourceSnippetParameters.builder().
-                                        summary(RestDocFactory.createSummary(useCase)).
-                                        description(RestDocFactory.createDescription(useCase)).
-                                        tag(RestDocFactory.extractTag(apiEndpoint)).
-                                        requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
-                                        responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+	    		andDo(defineRestService().
+                        with().
+                            useCaseData(useCase, "Web Scan login form scripted").
+                            tag(RestDocFactory.extractTag(apiEndpoint)).
+                            requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
+                            responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+                        and().
+                        document(
                                         pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
-                                        ).
+                                        ),
                                         requestFields(
                                             fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
     										fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
@@ -438,13 +425,10 @@ public class SchedulerRestControllerRestDocTest {
     										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM+"."+SCRIPT+".pages[].actions[].value").description("value").optional(),
     										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM+"."+SCRIPT+".pages[].actions[].description").description("description").optional(),
     										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM+"."+SCRIPT+".pages[].actions[].unit").description("the time unit to wait: millisecond, second, minute, hour, day.").optional()
-                                        ).
+                                        ),
                                         responseFields(
                                                 fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
-
-                                        ).
-                                        build()
-                                    )
+                                        )
 	    		    ));
 	    /* @formatter:on */
     }
@@ -481,24 +465,22 @@ public class SchedulerRestControllerRestDocTest {
         		).
         			andExpect(status().isOk()).
         					// https://docs.spring.io/spring-restdocs/docs/2.0.2.RELEASE/reference/html5/
-        					andDo(document(RestDocFactory.createPath(useCase),
-                                    resource(
-                                            ResourceSnippetParameters.builder().
-                                                summary(RestDocFactory.createSummary(useCase)).
-                                                description(RestDocFactory.createDescription(useCase)).
-                                                tag(RestDocFactory.extractTag(apiEndpoint)).
-                                                pathParameters(
-                                                        parameterWithName("projectId").description("The id of the project where sourcecode shall be uploaded for"),
-                                                        parameterWithName("jobUUID").description("The jobUUID for sechub job")
-                                                ).
-                                                requestParameters(
-                                                        parameterWithName("checkSum").description("A sha256 checksum for file upload validation")
-                                                ).
-                                                build()
-                                            ),
+        			andDo(defineRestService().
+                            with().
+                                useCaseData(useCase).
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                            and().
+                            document(
+                                    pathParameters(
+                                            parameterWithName("projectId").description("The id of the project where sourcecode shall be uploaded for"),
+                                            parameterWithName("jobUUID").description("The jobUUID for sechub job")
+                                    ),
+                                    requestParameters(
+                                            parameterWithName("checkSum").description("A sha256 checksum for file upload validation")
+                                    ),
                                     // TODO jeeppler, 2020-12-07: It is not possible to document this part properly in OpenAPI.
                                     // See: https://github.com/ePages-de/restdocs-api-spec/issues/105
-        							requestParts(partWithName("file").description("The sourcecode as zipfile to upload"))
+                					requestParts(partWithName("file").description("The sourcecode as zipfile to upload"))
         			));
 
         /* @formatter:on */
@@ -533,17 +515,15 @@ public class SchedulerRestControllerRestDocTest {
 	    			contentType(MediaType.APPLICATION_JSON_VALUE)
 	    		).
 	    			andExpect(status().isOk()).
-	    					andDo(document(RestDocFactory.createPath(useCase),
-	                                resource(
-	                                        ResourceSnippetParameters.builder().
-	                                            summary(RestDocFactory.createSummary(useCase)).
-	                                            description(RestDocFactory.createDescription(useCase)).
-	                                            tag(RestDocFactory.extractTag(apiEndpoint)).
-	                                            pathParameters(
+	    			andDo(defineRestService().
+                            with().
+                                useCaseData(useCase).
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                            and().
+                            document(
+	                                        pathParameters(
 	                                                    parameterWithName("projectId").description("The id of the project where sechub job shall be approved"),
 	                                                    parameterWithName("jobUUID").description("The jobUUID for sechub job")
-	                                            ).
-	                                            build()
 	                                        )
 	    				));
 
@@ -580,17 +560,17 @@ public class SchedulerRestControllerRestDocTest {
         		).
         			andExpect(status().isOk()).
         			andExpect(content().json("{jobUUID:"+randomUUID.toString()+", result:OK, state:ENDED, trafficLight:GREEN}")).
-        					andDo(document(RestDocFactory.createPath(useCase),
-                                  resource(
-                                      ResourceSnippetParameters.builder().
-                                          summary(RestDocFactory.createSummary(useCase)).
-                                          description(RestDocFactory.createDescription(useCase)).
-                                          tag(RestDocFactory.extractTag(apiEndpoint)).
-                                          responseSchema(OpenApiSchema.JOB_STATUS.getSchema()).
+        			andDo(defineRestService().
+                            with().
+                                useCaseData(useCase).
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                                responseSchema(OpenApiSchema.JOB_STATUS.getSchema()).
+                            and().
+                            document(
                                           pathParameters(
                                             parameterWithName("projectId").description("The id of the project where sechub job was started for"),
                                             parameterWithName("jobUUID").description("The jobUUID for sechub job")
-                                          ).
+                                          ),
                                           responseFields(
                                             fieldWithPath(ScheduleJobStatus.PROPERTY_JOBUUID).description("The job uuid"),
                                             fieldWithPath(ScheduleJobStatus.PROPERTY_CREATED).description("Creation timestamp of job"),
@@ -600,10 +580,8 @@ public class SchedulerRestControllerRestDocTest {
                                             fieldWithPath(ScheduleJobStatus.PROPERTY_STATE).description("State of job"),
                                             fieldWithPath(ScheduleJobStatus.PROPERTY_RESULT).description("Result of job"),
                                             fieldWithPath(ScheduleJobStatus.PROPERTY_TRAFFICLIGHT).description("Trafficlight of job - but only available when job has been done. Possible states are "+StringUtils.arrayToDelimitedString(TrafficLight.values(),", "))
-                                            ).
-                                          build()
-                                       )
-        							)
+                                          )
+                            )
         		);
 
         /* @formatter:on */

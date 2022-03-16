@@ -3,7 +3,10 @@ package com.mercedesbenz.sechub.test;
 public class TestConstants {
 
     /**
-     * System property for defining manual test /test applications.
+     * System property for defining manual test /test applications. When system
+     * property is <code>true</code>, the manual test will not be ignored/is no
+     * longer disabled. The property is necessary to have those tests not executed
+     * per default in gradle builds.
      */
     public static final String MANUAL_TEST_BY_DEVELOPER = "sechub.manual.test.by.developer";
 

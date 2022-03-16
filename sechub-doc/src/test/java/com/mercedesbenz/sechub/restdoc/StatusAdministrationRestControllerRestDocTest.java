@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
-import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
 import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
 import static com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter.*;
 import static org.mockito.Mockito.*;
@@ -30,7 +29,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.domain.administration.mapping.FetchMappingService;
 import com.mercedesbenz.sechub.domain.administration.mapping.MappingAdministrationRestController;
@@ -97,22 +95,20 @@ public class StatusAdministrationRestControllerRestDocTest {
 				*/
 		andDo(print()).
 		andExpect(status().isOk()).
-		andDo(document(RestDocFactory.createPath(useCase),
-		        resource(
-		                ResourceSnippetParameters.builder().
-		                    summary(RestDocFactory.createSummary(useCase)).
-		                    description(RestDocFactory.createDescription(useCase)).
-		                    tag(RestDocFactory.extractTag(apiEndpoint)).
-        		            responseSchema(OpenApiSchema.MAPPING_CONFIGURATION.getSchema()).
+		andDo(defineRestService().
+                with().
+                    useCaseData(useCase).
+                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                    responseSchema(OpenApiSchema.MAPPING_CONFIGURATION.getSchema()).
+                and().
+                document(
                             pathParameters(
                                     parameterWithName(MAPPING_ID.paramName()).description("The mapping Id")
-                            ).
+                            ),
                             responseFields(
                                     fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_PATTERN).description("Pattern"),
                                     fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_REPLACEMENT).description("Replacement"),
                                     fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_COMMENT).description("Comment")
-                            ).
-                            build()
         		        )
 		        ));
 
@@ -135,23 +131,21 @@ public class StatusAdministrationRestControllerRestDocTest {
                 */
         andDo(print()).
         andExpect(status().isOk()).
-        andDo(document(RestDocFactory.createPath(useCase),
-                resource(
-                        ResourceSnippetParameters.builder().
-                            summary(RestDocFactory.createSummary(useCase)).
-                            description(RestDocFactory.createDescription(useCase)).
-                            tag(RestDocFactory.extractTag(apiEndpoint)).
+        andDo(defineRestService().
+                with().
+                    useCaseData(useCase).
+                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                    requestSchema(OpenApiSchema.MAPPING_CONFIGURATION.getSchema()).
+                and().
+                document(
                             pathParameters(
                                     parameterWithName(MAPPING_ID.paramName()).description("The mappingID, identifiying which mapping shall be updated")
-                                ).
+                            ),
                             requestFields(
                                     fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_PATTERN).description("Pattern"),
                                     fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_REPLACEMENT).description("Replacement"),
                                     fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_COMMENT).description("Comment")
-                            ).
-                            requestSchema(OpenApiSchema.MAPPING_CONFIGURATION.getSchema()).
-                            build()
-                        )
+                            )
                 ));
 
         /* @formatter:on */

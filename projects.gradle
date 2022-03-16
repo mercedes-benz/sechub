@@ -98,6 +98,7 @@ projectType = [
             ]
     ]
 }
+
 /* dynamically define java projects */
 projectType.springBootProjects.addAll(projectType.springBootSecHubServerProjects)
 projectType.springBootProjects.addAll(projectType.springBootPDSProjects)
