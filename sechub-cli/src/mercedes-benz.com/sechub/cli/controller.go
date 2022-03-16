@@ -114,7 +114,7 @@ func prepareCodeScan(context *Context) {
 		/* nothing set, so no upload */
 		return
 	}
-	context.sourceZipFileName = fmt.Sprintf("sourcecode-%s.zip", context.config.secHubJobUUID)
+	context.sourceZipFileName = tempFile(context, fmt.Sprintf("sourcecode-%s.zip", context.config.projectID))
 
 	/* compress all folders to one single zip file*/
 	config := sechubUtil.ZipConfig{

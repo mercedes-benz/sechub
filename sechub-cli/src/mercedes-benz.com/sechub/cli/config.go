@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"path/filepath"
 	"reflect"
 	"strconv"
 	"strings"
@@ -31,6 +32,7 @@ type Config struct {
 	secHubJobUUID         string
 	server                string
 	stopOnYellow          bool
+	tempDir               string
 	timeOutNanoseconds    int64
 	timeOutSeconds        int
 	trustAll              bool
@@ -43,6 +45,7 @@ type Config struct {
 var configFromInit Config = Config{
 	configFilePath: DefaultSecHubConfigFile,
 	reportFormat:   DefaultReportFormat,
+	tempDir:        DefaultTempDir,
 	timeOutSeconds: DefaultTimeoutInSeconds,
 	waitSeconds:    DefaultWaitTime,
 }
@@ -59,6 +62,7 @@ var missingFieldHelpTexts = map[string]string{
 	"file":           "Input file name is not provided which is mandatory for this action. Can be defined with option '-file'.",
 }
 
+// Global Go initialization (is called before main())
 func init() {
 	prepareOptionsFromCommandline(&configFromInit)
 	parseConfigFromEnvironment(&configFromInit)
@@ -87,6 +91,8 @@ func prepareOptionsFromCommandline(config *Config) {
 		serverOption, config.server, "Server url of sechub server to use - e.g. 'https://sechub.example.com:8443'. Mandatory, but can also be defined in environment variable "+SechubServerEnvVar+" or in config file")
 	flag.BoolVar(&config.stopOnYellow,
 		stopOnYellowOption, config.stopOnYellow, "Makes a yellow traffic light in the scan also break the build")
+	flag.StringVar(&config.tempDir,
+		tempDirOption, config.tempDir, "Temporary directory - Temporary files will be placed here. Can also be defined in environment variable "+SechubTempDir)
 	flag.IntVar(&config.timeOutSeconds,
 		timeoutOption, config.timeOutSeconds, "Timeout for network communication in seconds.")
 	flag.StringVar(&config.user,
@@ -108,12 +114,14 @@ func parseConfigFromEnvironment(config *Config) {
 		os.Getenv(SechubKeepTempfilesEnvVar) == "true"
 	config.quiet =
 		os.Getenv(SechubQuietEnvVar) == "true"
-	serverFromEnv :=
-		os.Getenv(SechubServerEnvVar)
-	projectFromEnv :=
-		os.Getenv(SechubProjectEnvVar)
 	config.trustAll =
 		os.Getenv(SechubTrustAllEnvVar) == "true"
+	projectFromEnv :=
+		os.Getenv(SechubProjectEnvVar)
+	serverFromEnv :=
+		os.Getenv(SechubServerEnvVar)
+	tempDirFromEnv :=
+		os.Getenv(SechubTempDir)
 	userFromEnv :=
 		os.Getenv(SechubUserIDEnvVar)
 	waittimeFromEnv :=
@@ -127,6 +135,9 @@ func parseConfigFromEnvironment(config *Config) {
 	}
 	if serverFromEnv != "" {
 		config.server = serverFromEnv
+	}
+	if tempDirFromEnv != "" {
+		config.tempDir = tempDirFromEnv
 	}
 	if userFromEnv != "" {
 		config.user = userFromEnv
@@ -223,7 +234,12 @@ func assertValidConfig(configPtr *Config) {
 		}
 	}
 
-	validateRequestedReportFormat(configPtr)
+	if !validateRequestedReportFormat(configPtr) {
+		errorsFound = true
+	}
+	if !validateTempDir(configPtr) {
+		errorsFound = true
+	}
 
 	if errorsFound {
 		showHelpHint()
@@ -248,13 +264,14 @@ func isConfigFieldFilled(configPTR *Config, field string) bool {
 }
 
 // validateRequestedReportFormat issue warning in case of an unknown report format + lowercase if needed
-func validateRequestedReportFormat(config *Config) {
+func validateRequestedReportFormat(config *Config) bool {
 	config.reportFormat = lowercaseOrNotice(config.reportFormat, "requested report format")
 
 	if !sechubUtil.StringArrayContains(SupportedReportFormats, config.reportFormat) {
 		sechubUtil.LogWarning("Unsupported report format '" + config.reportFormat + "'. Changing to 'json'.")
 		config.reportFormat = "json"
 	}
+	return true
 }
 
 // normalizeCMDLineArgs - Make sure that the `action` is last in the argument list
@@ -289,4 +306,28 @@ func normalizeCMDLineArgs(args []string) []string {
 		result = append(result, action)
 	}
 	return result
+}
+
+// tempFile - creates a filepath depending on configured temp dir
+func tempFile(context *Context, filename string) string {
+	if context.config.tempDir == "." {
+		return filename
+	}
+	return context.config.tempDir + "/" + filename
+}
+
+func validateTempDir(config *Config) bool {
+	tempDirAbsolute, _ := filepath.Abs(config.tempDir)
+	fileinfo, err := os.Stat(tempDirAbsolute)
+	if os.IsNotExist(err) {
+		sechubUtil.LogError("Declared tempdir does not exist: '" + config.tempDir + "' (" + tempDirAbsolute + ")")
+		return false
+	}
+	if !fileinfo.IsDir() {
+		sechubUtil.LogError("Declared tempdir is not a directory: '" + config.tempDir + "' (" + tempDirAbsolute + ")")
+		return false
+	}
+
+	config.tempDir = tempDirAbsolute
+	return true
 }

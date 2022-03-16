@@ -12,6 +12,9 @@ const DefaultSecHubConfigFile = "sechub.json"
 // DefaultReportFormat - Report format if not configured differently
 const DefaultReportFormat = "json"
 
+// DefaultTempDir - Create temporary files in current directory if not configured differently
+const DefaultTempDir = "."
+
 // DefaultWaitTime - Wait time in seconds.
 // Will be used
 // - for automatic status checks etc. when action=scan
@@ -113,6 +116,7 @@ const quietOption = "quiet"
 const reportformatOption = "reportformat"
 const serverOption = "server"
 const stopOnYellowOption = "stop-on-yellow"
+const tempDirOption = "tempdir"
 const timeoutOption = "timeout"
 const userOption = "user"
 const versionOption = "version"
@@ -142,6 +146,9 @@ const SechubServerEnvVar = "SECHUB_SERVER"
 
 // SechubProjectEnvVar - environment variable to set the project ID
 const SechubProjectEnvVar = "SECHUB_PROJECT"
+
+// SechubTempDir - environment variable to set the directory for temporary files
+const SechubTempDir = "SECHUB_TEMP_DIR"
 
 // SechubTrustAllEnvVar - environment variable to disable ssl certificate checking
 const SechubTrustAllEnvVar = "SECHUB_TRUSTALL"
