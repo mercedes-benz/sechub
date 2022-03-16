@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
-import com.mercedesbenz.sechub.integrationtest.TextFileReader;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.auth.AuthenticationType;
+import com.mercedesbenz.sechub.test.TestFileReader;
 
 class SecHubWebScanConfigurationHelperTest {
 
@@ -38,8 +38,7 @@ class SecHubWebScanConfigurationHelperTest {
     void determines_AuthenticationType_sechub_config_has_basic_auth() {
         /* prepare */
         File file = new File("src/test/resources/sechub-config-examples/basic-auth.json");
-        TextFileReader fileReader = new TextFileReader();
-        String sechubConfigJSON = fileReader.loadTextFile(file);
+        String sechubConfigJSON = TestFileReader.loadTextFile(file);
         SecHubScanConfiguration sechubConfig = SecHubScanConfiguration.createFromJSON(sechubConfigJSON);
         SecHubWebScanConfiguration secHubWebScanConfiguration = sechubConfig.getWebScan().get();
 
