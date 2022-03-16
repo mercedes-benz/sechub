@@ -54,7 +54,7 @@ public class OwaspZapScanConfigurationFactory {
 												.setActiveScanEnabled(settings.isActiveScanEnabled())
 												.setServerConfig(serverConfig)
 												.setAuthenticationType(authType)
-												.setMaxScanDurationinMillis(maxScanDurationInMinutes)
+												.setMaxScanDurationInMillis(maxScanDurationInMinutes)
 												.setSecHubWebScanConfiguration(sechubWebConfig)
 												.setAdditionalProxyInformation(proxyInformation)
 											  .build();
@@ -64,9 +64,9 @@ public class OwaspZapScanConfigurationFactory {
 
     private SecHubWebScanConfiguration createSecHubWebConfigFromSecHubConfigFile(CommandLineSettings settings) {
         TextFileReader fileReader = new TextFileReader();
-        String sechubConfigJSON = fileReader.loadTextFile(settings.getSecHubConfigFile());
-        if (sechubConfigJSON != null) {
-            SecHubScanConfiguration sechubConfig = SecHubScanConfiguration.createFromJSON(sechubConfigJSON);
+        String sechubConfigJson = fileReader.loadTextFile(settings.getSecHubConfigFile());
+        if (sechubConfigJson != null) {
+            SecHubScanConfiguration sechubConfig = SecHubScanConfiguration.createFromJSON(sechubConfigJson);
             return sechubConfig.getWebScan().get();
         }
         return new SecHubWebScanConfiguration();
@@ -87,9 +87,15 @@ public class OwaspZapScanConfigurationFactory {
             zapApiKey = environmentVariableReader.readAsString(EnvironmentVariableConstants.ZAP_API_KEY_ENV_VARIABLE_NAME);
         }
 
-        if (zapHost == null || zapPort <= 0 || zapApiKey == null) {
-            throw new IllegalStateException(
-                    "Owasp Zap server config was not set correctly. Please check the Owasp Zap Server environment variables/command line parameters.");
+        if (zapHost == null) {
+            throw new IllegalStateException("Owasp Zap host is null. Please set the Owasp Zap host to the host use by the Owasp Zap.");
+        }
+
+        if (zapPort <= 0) {
+            throw new IllegalStateException("Owasp Zap Port was set to " + zapPort + ". Please set the Owasp Zap port to the port used by the Owasp Zap.");
+        }
+        if (zapApiKey == null) {
+            throw new IllegalStateException("Owasp Zap API-Key is null. Please set the Owasp Zap API-key to the same value set inside your Owasp Zap.");
         }
         return new OwaspZapServerConfiguration(zapHost, zapPort, zapApiKey);
     }
@@ -106,7 +112,7 @@ public class OwaspZapScanConfigurationFactory {
         }
 
         if (proxyHost == null || proxyPort <= 0) {
-            LOG.info("No additional proxy was found. Continuing without addtional proxy...");
+            LOG.info("No proxy settings were provided. Continuing without proxy...");
             return null;
         }
         return new ProxyInformation(proxyHost, proxyPort);

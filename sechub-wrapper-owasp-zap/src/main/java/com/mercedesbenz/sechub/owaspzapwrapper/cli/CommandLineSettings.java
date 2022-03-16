@@ -24,7 +24,7 @@ public class CommandLineSettings {
         return targetURL;
     }
 
-    @Parameter(names = { "--report" }, description = "The output file, where the report will be written.", required = true)
+    @Parameter(names = { "--report" }, description = "The output file, where the report will be written to.", required = true)
     private String reportFile;
 
     public Path getReportFile() {
@@ -93,7 +93,7 @@ public class CommandLineSettings {
         return zapApiKey;
     }
 
-    @Parameter(names = { "--verbose" }, description = "Set this option to provide more output during scanning.", required = false)
+    @Parameter(names = { "--verbose" }, description = "Set this option to provide additional output while scanning.", required = false)
     private boolean verbose;
 
     public boolean isVerboseEnabled() {

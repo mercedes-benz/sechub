@@ -22,7 +22,7 @@ public class OwaspZapScanConfiguration {
 
     private AuthenticationType authenticationType;
 
-    private long maxScanDurationinMillis;
+    private long maxScanDurationInMillis;
 
     private SecHubWebScanConfiguration secHubWebScanConfiguration;
 
@@ -67,8 +67,8 @@ public class OwaspZapScanConfiguration {
         return authenticationType;
     }
 
-    public long getMaxScanDurationinMillis() {
-        return maxScanDurationinMillis;
+    public long getMaxScanDurationInMillis() {
+        return maxScanDurationInMillis;
     }
 
     public SecHubWebScanConfiguration getSecHubWebScanConfiguration() {
@@ -99,7 +99,7 @@ public class OwaspZapScanConfiguration {
 
         private AuthenticationType authenticationType;
 
-        private long maxScanDurationinMillis;
+        private long maxScanDurationInMillis;
 
         private SecHubWebScanConfiguration secHubWebScanConfiguration;
 
@@ -145,8 +145,8 @@ public class OwaspZapScanConfiguration {
             return this;
         }
 
-        public OwaspZapBasicScanConfigurationBuilder setMaxScanDurationinMillis(long maxScanDurationinMillis) {
-            this.maxScanDurationinMillis = maxScanDurationinMillis;
+        public OwaspZapBasicScanConfigurationBuilder setMaxScanDurationInMillis(long maxScanDurationInMillis) {
+            this.maxScanDurationInMillis = maxScanDurationInMillis;
             return this;
         }
 
@@ -171,7 +171,7 @@ public class OwaspZapScanConfiguration {
             owaspZapBasicScanConfiguration.targetUri = this.targetUri;
             owaspZapBasicScanConfiguration.authenticationType = this.authenticationType;
 
-            owaspZapBasicScanConfiguration.maxScanDurationinMillis = this.maxScanDurationinMillis;
+            owaspZapBasicScanConfiguration.maxScanDurationInMillis = this.maxScanDurationInMillis;
 
             owaspZapBasicScanConfiguration.secHubWebScanConfiguration = this.secHubWebScanConfiguration;
 

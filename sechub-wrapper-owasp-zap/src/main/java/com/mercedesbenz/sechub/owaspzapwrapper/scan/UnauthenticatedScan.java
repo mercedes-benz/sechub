@@ -28,7 +28,7 @@ public class UnauthenticatedScan extends AbstractScan {
         /* @formatter:off */
 		ApiResponse responseSpider = clientApi.spider.scan(
 				targetUrlAsString,
-				maxChildren ,
+				maxChildren,
 				recurse,
 				contextName,
 				subTreeOnly);

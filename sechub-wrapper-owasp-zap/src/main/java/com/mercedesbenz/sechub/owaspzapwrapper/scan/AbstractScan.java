@@ -31,7 +31,7 @@ public abstract class AbstractScan implements OwaspZapScan {
 
     protected String contextId;
 
-    private ScanDurationHelper scanTimingHelper;
+    private ScanDurationHelper scanDurationHelper;
     private long remainingScanTime;
 
     private SecHubIncludeExcludeToOwaspZapURIHelper includeExcludeConverter;
@@ -39,15 +39,28 @@ public abstract class AbstractScan implements OwaspZapScan {
     public AbstractScan(ClientApi clientApi, OwaspZapScanConfiguration scanConfig) {
         this.clientApi = clientApi;
         this.scanConfig = scanConfig;
-        this.scanTimingHelper = new ScanDurationHelper();
-        this.remainingScanTime = scanConfig.getMaxScanDurationinMillis();
+        this.scanDurationHelper = new ScanDurationHelper();
+        this.remainingScanTime = scanConfig.getMaxScanDurationInMillis();
         this.includeExcludeConverter = new SecHubIncludeExcludeToOwaspZapURIHelper();
     }
 
     @Override
     public void scan() {
         try {
-            scanUnsafe();
+            createContext();
+            addIncludedAndExcludedUrlsToContext();
+            if (scanConfig.isAjaxSpiderEnabled()) {
+                runAjaxSpider();
+            }
+
+            runSpider();
+
+            passiveScan();
+
+            if (scanConfig.isActiveScanEnabled()) {
+                runActiveScan();
+            }
+            generateOwaspZapReport();
         } catch (ClientApiException e) {
             LOG.error("For scan {}: An error occured while scanning! Reason: {}", scanConfig.getContextName(), e.getMessage(), e);
         }
@@ -83,21 +96,22 @@ public abstract class AbstractScan implements OwaspZapScan {
      * @throws ClientApiException
      */
     protected void waitForSpiderResults(ApiResponse response) throws ClientApiException {
-        String scanID = ((ApiResponseElement) response).getValue();
+        String scanId = ((ApiResponseElement) response).getValue();
         int progressSpider = 0;
 
         long startTime = System.currentTimeMillis();
-        long maxDuration = scanTimingHelper.computeSpiderMaxScanDuration(scanConfig.isActiveScanEnabled(), scanConfig.isAjaxSpiderEnabled(), remainingScanTime);
+        long maxDuration = scanDurationHelper.computeSpiderMaxScanDuration(scanConfig.isActiveScanEnabled(), scanConfig.isAjaxSpiderEnabled(),
+                remainingScanTime);
 
         boolean timeOut = false;
 
         while (progressSpider < 100 && !timeOut) {
             waitForNextCheck();
-            progressSpider = Integer.parseInt(((ApiResponseElement) clientApi.spider.status(scanID)).getValue());
+            progressSpider = Integer.parseInt(((ApiResponseElement) clientApi.spider.status(scanId)).getValue());
             LOG.info("For scan {}: Spider progress {}%", scanConfig.getContextName(), progressSpider);
 
             if (scanConfig.isVerboseOutput()) {
-                List<ApiResponse> spiderResults = ((ApiResponseList) clientApi.spider.results(scanID)).getItems();
+                List<ApiResponse> spiderResults = ((ApiResponseList) clientApi.spider.results(scanId)).getItems();
                 for (ApiResponse result : spiderResults) {
                     LOG.info("For scan {}: Result: {}", scanConfig.getContextName(), result.toString());
                 }
@@ -105,7 +119,7 @@ public abstract class AbstractScan implements OwaspZapScan {
             timeOut = System.currentTimeMillis() - startTime > maxDuration;
         }
         /* stop spider - otherwise running in background */
-        clientApi.spider.stop(scanID);
+        clientApi.spider.stop(scanId);
 
         LOG.info("For scan {}: Spider completed.", scanConfig.getContextName());
         remainingScanTime = remainingScanTime - (System.currentTimeMillis() - startTime);
@@ -122,7 +136,7 @@ public abstract class AbstractScan implements OwaspZapScan {
         String ajaxSpiderStatus = null;
 
         long startTime = System.currentTimeMillis();
-        long maxDuration = scanTimingHelper.computeAjaxSpiderMaxScanDuration(scanConfig.isActiveScanEnabled(), remainingScanTime);
+        long maxDuration = scanDurationHelper.computeAjaxSpiderMaxScanDuration(scanConfig.isActiveScanEnabled(), remainingScanTime);
 
         boolean timeOut = false;
 
@@ -155,7 +169,7 @@ public abstract class AbstractScan implements OwaspZapScan {
     protected void passiveScan() throws ClientApiException {
         LOG.info("For scan {}: Starting passive scan.", scanConfig.getContextName());
         long startTime = System.currentTimeMillis();
-        long maxDuration = scanTimingHelper.computePassiveScanMaxScanDuration(scanConfig.isActiveScanEnabled(), scanConfig.isAjaxSpiderEnabled(),
+        long maxDuration = scanDurationHelper.computePassiveScanMaxScanDuration(scanConfig.isActiveScanEnabled(), scanConfig.isAjaxSpiderEnabled(),
                 remainingScanTime);
 
         int numberOfRecords = Integer.parseInt(((ApiResponseElement) clientApi.pscan.recordsToScan()).getValue());
@@ -178,7 +192,7 @@ public abstract class AbstractScan implements OwaspZapScan {
      * @throws ClientApiException
      */
     protected void waitForActiveScanResults(ApiResponse response) throws ClientApiException {
-        String scanID = ((ApiResponseElement) response).getValue();
+        String scanId = ((ApiResponseElement) response).getValue();
         int progressActive = 0;
 
         long startTime = System.currentTimeMillis();
@@ -187,12 +201,12 @@ public abstract class AbstractScan implements OwaspZapScan {
         while (progressActive < 100 && !timeOut) {
             waitForNextCheck();
 
-            progressActive = Integer.parseInt(((ApiResponseElement) clientApi.ascan.status(scanID)).getValue());
+            progressActive = Integer.parseInt(((ApiResponseElement) clientApi.ascan.status(scanId)).getValue());
             LOG.info("For scan {}: Active scan progress {}%", scanConfig.getContextName(), progressActive);
 
             timeOut = (System.currentTimeMillis() - startTime) > maxDuration;
         }
-        clientApi.ascan.stop(scanID);
+        clientApi.ascan.stop(scanId);
         LOG.info("For scan {}: Active scan completed.", scanConfig.getContextName());
     }
 
@@ -250,23 +264,6 @@ public abstract class AbstractScan implements OwaspZapScan {
         } catch (ClientApiException e) {
             LOG.error("For scan {}: Error writing report file", scanConfig.getContextName(), e);
         }
-    }
-
-    private void scanUnsafe() throws ClientApiException {
-        createContext();
-        addIncludedAndExcludedUrlsToContext();
-        if (scanConfig.isAjaxSpiderEnabled()) {
-            runAjaxSpider();
-        }
-
-        runSpider();
-
-        passiveScan();
-
-        if (scanConfig.isActiveScanEnabled()) {
-            runActiveScan();
-        }
-        generateOwaspZapReport();
     }
 
     private void waitForNextCheck() {

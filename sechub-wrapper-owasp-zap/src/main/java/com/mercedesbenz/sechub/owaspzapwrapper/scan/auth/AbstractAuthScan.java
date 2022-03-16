@@ -27,7 +27,21 @@ public abstract class AbstractAuthScan extends AbstractScan implements AuthScan 
     @Override
     public void scan() {
         try {
-            scanUnsafe();
+            createContext();
+            addIncludedAndExcludedUrlsToContext();
+            init();
+            if (scanConfig.isAjaxSpiderEnabled()) {
+                runAjaxSpider();
+            }
+
+            runSpider();
+
+            passiveScan();
+
+            if (scanConfig.isActiveScanEnabled()) {
+                runActiveScan();
+            }
+            generateOwaspZapReport();
         } catch (ClientApiException e) {
             LOG.error("For scan {}: An error occured while scanning! Reason: {}", scanConfig.getContextName(), e.getMessage(), e);
         }
@@ -98,21 +112,4 @@ public abstract class AbstractAuthScan extends AbstractScan implements AuthScan 
         }
     }
 
-    private void scanUnsafe() throws ClientApiException {
-        createContext();
-        addIncludedAndExcludedUrlsToContext();
-        init();
-        if (scanConfig.isAjaxSpiderEnabled()) {
-            runAjaxSpider();
-        }
-
-        runSpider();
-
-        passiveScan();
-
-        if (scanConfig.isActiveScanEnabled()) {
-            runActiveScan();
-        }
-        generateOwaspZapReport();
-    }
 }
