@@ -139,15 +139,22 @@ func downloadSechubReport(context *Context) {
 		os.Exit(ExitCodeFailed)
 	}
 
-	// Example:  sechub_report_myproject_cdde8927-2df4-461c-b775-2dec9497e8b1.json
-	fileName := "sechub_report_" + context.config.projectID + "_" + context.config.secHubJobUUID + "." + context.config.reportFormat
+	fileName := context.config.outputFileName
+	if fileName == "" {
+		// Example:  sechub_report_myproject_cdde8927-2df4-461c-b775-2dec9497e8b1.json
+		fileName = "sechub_report_" + context.config.projectID + "_" + context.config.secHubJobUUID + "." + context.config.reportFormat
+	}
 
 	report := ReportDownload{serverResult: getSecHubJobReport(context), outputFolder: context.config.outputFolder, outputFileName: fileName}
 	report.save(context)
 }
 
 func downloadFalsePositivesList(context *Context) {
-	fileName := "sechub-false-positives-" + context.config.projectID + ".json"
+	fileName := context.config.outputFileName
+	if fileName == "" {
+		// Example: sechub-false-positives-myproject.json
+		fileName = "sechub-false-positives-" + context.config.projectID + ".json"
+	}
 
 	list := FalsePositivesList{serverResult: getFalsePositivesList(context), outputFolder: context.config.outputFolder, outputFileName: fileName}
 	list.save(context)

@@ -323,13 +323,13 @@ func tempFile(context *Context, filename string) string {
 
 func validateTempDir(config *Config) bool {
 	tempDirAbsolute, _ := filepath.Abs(config.tempDir)
-	fileinfo, err := os.Stat(tempDirAbsolute)
-	if os.IsNotExist(err) {
-		sechubUtil.LogError("Declared tempdir does not exist: '" + config.tempDir + "' (" + tempDirAbsolute + ")")
-		return false
-	}
-	if !fileinfo.IsDir() {
-		sechubUtil.LogError("Declared tempdir is not a directory: '" + config.tempDir + "' (" + tempDirAbsolute + ")")
+
+	if !sechubUtil.VerifyDirectoryExists(tempDirAbsolute) {
+		directoryLocation := tempDirAbsolute
+		if config.tempDir != tempDirAbsolute {
+			directoryLocation = fmt.Sprintf("%s (%s)", config.tempDir, tempDirAbsolute)
+		}
+		sechubUtil.LogError("Invalid value passed with '-" + tempDirOption + "': File does not exist or is not a directory: " + directoryLocation)
 		return false
 	}
 
@@ -339,5 +339,28 @@ func validateTempDir(config *Config) bool {
 
 // validateOutputLocation - Check given output location and fill config.outputFolder and config.outputFileName accordingly
 func validateOutputLocation(config *Config) bool {
+	if config.outputLocation == "" || config.outputLocation == "." {
+		config.outputFolder = "."
+	} else if !strings.Contains(config.outputLocation, "/") && !strings.Contains(config.outputLocation, string(os.PathSeparator)) {
+		// Only a name is provided - can be an output file name or a directory
+		if sechubUtil.VerifyDirectoryExists(config.outputLocation) {
+			config.outputFolder, _ = filepath.Abs(config.outputLocation)
+		} else {
+			config.outputFolder = "."
+			config.outputFileName = config.outputLocation
+		}
+	} else {
+		dir := filepath.Dir(config.outputLocation)
+		if !sechubUtil.VerifyDirectoryExists(dir) {
+			sechubUtil.LogError("Invalid value passed with '-" + outputOption + "': Directory does not exist: " + dir)
+			return false
+		}
+		if sechubUtil.VerifyDirectoryExists(config.outputLocation) {
+			config.outputFolder, _ = filepath.Abs(config.outputLocation)
+		} else {
+			config.outputFolder, _ = filepath.Abs(dir)
+			config.outputFileName = filepath.Base(config.outputLocation)
+		}
+	}
 	return true
 }
