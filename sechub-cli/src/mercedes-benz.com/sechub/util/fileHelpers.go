@@ -70,3 +70,16 @@ func FindNewestMatchingFileInDir(filePattern string, dir string) string {
 	}
 	return newestFile
 }
+
+// VerifyDirectoryExists - verify that directory exists on the file system
+func VerifyDirectoryExists(directory string) bool {
+	fileinfo, err := os.Stat(directory)
+	if os.IsNotExist(err) {
+		return false
+	}
+	if !fileinfo.IsDir() {
+		return false
+	}
+
+	return true
+}

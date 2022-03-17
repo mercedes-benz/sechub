@@ -25,7 +25,9 @@ type Config struct {
 	file                  string
 	ignoreDefaultExcludes bool
 	keepTempFiles         bool
+	outputFileName        string
 	outputFolder          string
+	outputLocation        string
 	projectID             string
 	quiet                 bool
 	reportFormat          string
@@ -79,8 +81,8 @@ func prepareOptionsFromCommandline(config *Config) {
 		helpOption, false, "Shows help and terminates")
 	flag.StringVar(&config.secHubJobUUID,
 		jobUUIDOption, "", "SecHub job uuid - Mandatory for actions '"+getStatusAction+"' or '"+getReportAction+"'")
-	flag.StringVar(&config.outputFolder,
-		outputOption, ".", "Output folder for reports etc.")
+	flag.StringVar(&config.outputLocation,
+		outputOption, "", "Where to place reports, false-positive files etc. Can be a directory, a file name or a file path. (Defaults to current directory)")
 	flag.StringVar(&config.projectID,
 		projectOption, config.projectID, "SecHub project id - Mandatory, but can also be defined in environment variable "+SechubProjectEnvVar+" or in config file")
 	flag.BoolVar(&config.quiet,
@@ -177,9 +179,9 @@ func NewConfigByFlags() *Config {
 	return &configFromInit
 }
 
-func assertValidConfig(configPtr *Config) {
-	if configPtr.trustAll {
-		if !configPtr.quiet {
+func assertValidConfig(config *Config) {
+	if config.trustAll {
+		if !config.quiet {
 			sechubUtil.LogWarning("Configured to trust all - means unknown service certificate is accepted. Don't use this in production!")
 		}
 	}
@@ -205,39 +207,42 @@ func assertValidConfig(configPtr *Config) {
 	 * 					Validation
 	 * --------------------------------------------------
 	 */
-	if configPtr.action == "" {
+	if config.action == "" {
 		sechubUtil.LogError("sechub action not set")
 		showHelpHint()
 		os.Exit(ExitCodeMissingParameter)
 	}
 
 	errorsFound := false
-	if mandatoryFields, ok := checklist[configPtr.action]; ok {
+	if mandatoryFields, ok := checklist[config.action]; ok {
 		for _, fieldname := range mandatoryFields {
-			if !isConfigFieldFilled(configPtr, fieldname) {
+			if !isConfigFieldFilled(config, fieldname) {
 				errorsFound = true
 			}
 		}
 	} else {
-		sechubUtil.LogError("Unknown action: '" + configPtr.action + "'")
+		sechubUtil.LogError("Unknown action: '" + config.action + "'")
 		errorsFound = true
 	}
 
-	if configPtr.action == interactiveMarkFalsePositivesAction && configPtr.file == "" {
+	if config.action == interactiveMarkFalsePositivesAction && config.file == "" {
 		// Let's try to find the latest report and take this as file
-		configPtr.file = sechubUtil.FindNewestMatchingFileInDir("sechub_report_.+\\.json$", configPtr.outputFolder)
-		if configPtr.file == "" {
+		config.file = sechubUtil.FindNewestMatchingFileInDir("sechub_report_.+\\.json$", config.outputLocation)
+		if config.file == "" {
 			sechubUtil.LogError("Input file is needed for action '" + interactiveMarkFalsePositivesAction + "'. Please define input file with -file option.")
 			errorsFound = true
 		} else {
-			fmt.Printf("Using latest report file %q.\n", configPtr.file)
+			fmt.Printf("Using latest report file %q.\n", config.file)
 		}
 	}
 
-	if !validateRequestedReportFormat(configPtr) {
+	if !validateRequestedReportFormat(config) {
 		errorsFound = true
 	}
-	if !validateTempDir(configPtr) {
+	if !validateTempDir(config) {
+		errorsFound = true
+	}
+	if !validateOutputLocation(config) {
 		errorsFound = true
 	}
 
@@ -247,10 +252,10 @@ func assertValidConfig(configPtr *Config) {
 	}
 
 	// For convenience: lowercase user id and project id if needed
-	configPtr.user = lowercaseOrNotice(configPtr.user, "user id")
-	configPtr.projectID = lowercaseOrNotice(configPtr.projectID, "project id")
+	config.user = lowercaseOrNotice(config.user, "user id")
+	config.projectID = lowercaseOrNotice(config.projectID, "project id")
 	// Remove trailing slash from url if present
-	configPtr.server = strings.TrimSuffix(configPtr.server, "/")
+	config.server = strings.TrimSuffix(config.server, "/")
 }
 
 // isConfigFieldFilled checks if field is not empty or is 'true' in case of boolean type
@@ -318,16 +323,44 @@ func tempFile(context *Context, filename string) string {
 
 func validateTempDir(config *Config) bool {
 	tempDirAbsolute, _ := filepath.Abs(config.tempDir)
-	fileinfo, err := os.Stat(tempDirAbsolute)
-	if os.IsNotExist(err) {
-		sechubUtil.LogError("Declared tempdir does not exist: '" + config.tempDir + "' (" + tempDirAbsolute + ")")
-		return false
-	}
-	if !fileinfo.IsDir() {
-		sechubUtil.LogError("Declared tempdir is not a directory: '" + config.tempDir + "' (" + tempDirAbsolute + ")")
+
+	if !sechubUtil.VerifyDirectoryExists(tempDirAbsolute) {
+		directoryLocation := tempDirAbsolute
+		if config.tempDir != tempDirAbsolute {
+			directoryLocation = fmt.Sprintf("%s (%s)", config.tempDir, tempDirAbsolute)
+		}
+		sechubUtil.LogError("Invalid value passed with '-" + tempDirOption + "': File does not exist or is not a directory: " + directoryLocation)
 		return false
 	}
 
 	config.tempDir = tempDirAbsolute
+	return true
+}
+
+// validateOutputLocation - Check given output location and fill config.outputFolder and config.outputFileName accordingly
+func validateOutputLocation(config *Config) bool {
+	if config.outputLocation == "" || config.outputLocation == "." {
+		config.outputFolder = "."
+	} else if !strings.Contains(config.outputLocation, "/") && !strings.Contains(config.outputLocation, string(os.PathSeparator)) {
+		// Only a name is provided - can be an output file name or a directory
+		if sechubUtil.VerifyDirectoryExists(config.outputLocation) {
+			config.outputFolder, _ = filepath.Abs(config.outputLocation)
+		} else {
+			config.outputFolder = "."
+			config.outputFileName = config.outputLocation
+		}
+	} else {
+		dir := filepath.Dir(config.outputLocation)
+		if !sechubUtil.VerifyDirectoryExists(dir) {
+			sechubUtil.LogError("Invalid value passed with '-" + outputOption + "': Directory does not exist: " + dir)
+			return false
+		}
+		if sechubUtil.VerifyDirectoryExists(config.outputLocation) {
+			config.outputFolder, _ = filepath.Abs(config.outputLocation)
+		} else {
+			config.outputFolder, _ = filepath.Abs(dir)
+			config.outputFileName = filepath.Base(config.outputLocation)
+		}
+	}
 	return true
 }

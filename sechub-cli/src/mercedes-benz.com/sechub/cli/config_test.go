@@ -223,3 +223,129 @@ func Test_validateTempDir(t *testing.T) {
 	sechubTestUtil.AssertTrue(result3, t)
 	sechubTestUtil.AssertFalse(result4, t)
 }
+
+func Test_validateOutputLocation_current_dir(t *testing.T) {
+	// PREPARE
+	var config Config
+	config.outputLocation = "."
+
+	// EXECUTE
+	result := validateOutputLocation(&config)
+
+	// TEST
+	sechubTestUtil.AssertTrue(result, t)
+	sechubTestUtil.AssertEquals(".", config.outputFolder, t)
+	sechubTestUtil.AssertEquals("", config.outputFileName, t)
+}
+
+func Test_validateOutputLocation_relative_dir(t *testing.T) {
+	// PREPARE
+	tempDir := "Test_validateOutputLocation_relative_dir"
+	sechubTestUtil.CreateTestDirectory(tempDir, 0755, t)
+	defer os.RemoveAll(tempDir)
+
+	var config Config
+	config.outputLocation = tempDir
+
+	// EXECUTE
+	result := validateOutputLocation(&config)
+
+	// TEST
+	sechubTestUtil.AssertTrue(result, t)
+	sechubTestUtil.AssertStringContains(config.outputFolder, tempDir, t)
+	sechubTestUtil.AssertEquals("", config.outputFileName, t)
+}
+
+func Test_validateOutputLocation_absolute_dir(t *testing.T) {
+	// PREPARE
+	tempDir := sechubTestUtil.InitializeTestTempDir(t)
+	sechubTestUtil.CreateTestDirectory(tempDir, 0755, t)
+	defer os.RemoveAll(tempDir)
+
+	var config Config
+	config.outputLocation = tempDir
+
+	// EXECUTE
+	result := validateOutputLocation(&config)
+
+	// TEST
+	sechubTestUtil.AssertTrue(result, t)
+	sechubTestUtil.AssertStringContains(config.outputFolder, tempDir, t)
+	sechubTestUtil.AssertEquals("", config.outputFileName, t)
+}
+
+func Test_validateOutputLocation_non_existing_dir(t *testing.T) {
+	// PREPARE
+	tempDir := "/this/really/does/not/exist"
+	var config Config
+	config.outputLocation = tempDir
+
+	// EXECUTE
+	result := validateOutputLocation(&config)
+
+	// TEST
+	sechubTestUtil.AssertFalse(result, t)
+}
+
+func Test_validateOutputLocation_absolute_filepath(t *testing.T) {
+	// PREPARE
+	tempFile := "testfile.json"
+	tempDir := sechubTestUtil.InitializeTestTempDir(t)
+	sechubTestUtil.CreateTestDirectory(tempDir, 0755, t)
+	defer os.RemoveAll(tempDir)
+
+	var config Config
+	config.outputLocation = filepath.Join(tempDir, tempFile)
+
+	// EXECUTE
+	result := validateOutputLocation(&config)
+
+	// TEST
+	sechubTestUtil.AssertTrue(result, t)
+	sechubTestUtil.AssertEquals(tempDir, config.outputFolder, t)
+	sechubTestUtil.AssertEquals(tempFile, config.outputFileName, t)
+}
+
+func Test_validateOutputLocation_invalid_filepath(t *testing.T) {
+	// PREPARE
+	tempFile := "testfile.json"
+	tempDir := "/this/really/does/not/exist"
+
+	var config Config
+	config.outputLocation = filepath.Join(tempDir, tempFile)
+
+	// EXECUTE
+	result := validateOutputLocation(&config)
+
+	// TEST
+	sechubTestUtil.AssertFalse(result, t)
+}
+
+func Test_validateOutputLocation_filename_only(t *testing.T) {
+	// PREPARE
+	tempFile := "Test_validateOutputLocation_filename_only.json"
+
+	var config Config
+	config.outputLocation = tempFile
+
+	// EXECUTE
+	result := validateOutputLocation(&config)
+
+	// TEST
+	sechubTestUtil.AssertTrue(result, t)
+	sechubTestUtil.AssertEquals(".", config.outputFolder, t)
+	sechubTestUtil.AssertEquals(tempFile, config.outputFileName, t)
+}
+
+func Test_validateOutputLocation_empty(t *testing.T) {
+	// PREPARE
+	var config Config
+
+	// EXECUTE
+	result := validateOutputLocation(&config)
+
+	// TEST
+	sechubTestUtil.AssertTrue(result, t)
+	sechubTestUtil.AssertEquals(".", config.outputFolder, t)
+	sechubTestUtil.AssertEquals("", config.outputFileName, t)
+}
