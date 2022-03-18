@@ -10,7 +10,7 @@ import java.net.URI;
 import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
+import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
 import javax.net.ssl.HostnameVerifier;
@@ -23,6 +23,7 @@ import javax.net.ssl.X509TrustManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitRuntimeException;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.ProxyInformation;
 
 /**
@@ -32,6 +33,7 @@ import com.mercedesbenz.sechub.owaspzapwrapper.config.ProxyInformation;
  */
 public class TargetConnectionChecker {
     private static final Logger LOG = LoggerFactory.getLogger(TargetConnectionChecker.class);
+    private static final String TLS = "TLS";
 
     /**
      * Tests if site is reachable - no matter if certificate is self signed or not
@@ -41,22 +43,17 @@ public class TargetConnectionChecker {
      * @param proxyInformation
      * @return <code>true</code> when reachable otherwise <code>false</code>
      */
-    public static boolean isSiteReachable(URI targetUri, ProxyInformation proxyInformation) {
+    public boolean isTargetReachable(URI targetUri, ProxyInformation proxyInformation) {
+
         URL urlToCheckConnection;
         try {
             urlToCheckConnection = targetUri.toURL();
         } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("Target URI: " + targetUri + " could not be transformed into URL!");
+            throw new MustExitRuntimeException("Target URI " + targetUri + " could not be converted to URL!", null);
         }
-        if ("https".equals(urlToCheckConnection.getProtocol())) {
-            TrustManager[] trustAllCerts = createTrustAllCertsManager();
 
-            installAllTrustingTrustManager(urlToCheckConnection, trustAllCerts);
-
-            HostnameVerifier allHostsValid = createAllTrustingHostNameVerifier();
-            // Install the all-trusting host verifier
-            HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-        }
+        TrustManager pseudoTrustManager = createTrustManagerWhichTrustsEveryBody();
+        SSLContext sslContext = createSSLContextForTrustManager(pseudoTrustManager);
 
         try {
             LOG.info("Trying to reach target URL: {}", urlToCheckConnection.toExternalForm());
@@ -67,56 +64,66 @@ public class TargetConnectionChecker {
                 Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyInformation.getHost(), proxyInformation.getPort()));
                 connection = (HttpURLConnection) urlToCheckConnection.openConnection(proxy);
             }
+            if (connection instanceof HttpsURLConnection) {
+                HttpsURLConnection httpsUrlConnection = (HttpsURLConnection) connection;
+                httpsUrlConnection.setSSLSocketFactory(sslContext.getSocketFactory());
+                httpsUrlConnection.setHostnameVerifier(new AllowAllHostnameVerifier());
+            }
+
             int responseCode = connection.getResponseCode();
             if (isReponseCodeValid(responseCode)) {
                 LOG.info("Target is reachable.");
                 return true;
             } else {
-                LOG.info("Target is NOT reachable. Aborting Scan...");
+                LOG.error("Target is NOT reachable. Aborting Scan...");
             }
         } catch (IOException e) {
             LOG.error("An exception occurred while checking if target URL is reachable: {} because: {}", urlToCheckConnection.toExternalForm(), e.getMessage());
         }
         return false;
+
     }
 
-    static boolean isReponseCodeValid(int responseCode) {
+    boolean isReponseCodeValid(int responseCode) {
         return responseCode < 400 || responseCode == 401 || responseCode == 403;
     }
 
-    private static TrustManager[] createTrustAllCertsManager() {
-        TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+    private X509TrustManager createTrustManagerWhichTrustsEveryBody() {
+        return new X509TrustManager() {
+
+            private X509Certificate[] emptyCertificatesArray = new X509Certificate[] {};
+
+            public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                /* we do not check the client - we trust all */
+            }
+
+            public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                /* we do not check the server - we trust all */
+            }
+
             public X509Certificate[] getAcceptedIssuers() {
-                return null;
-            }
-
-            public void checkClientTrusted(X509Certificate[] certs, String authType) {
-            }
-
-            public void checkServerTrusted(X509Certificate[] certs, String authType) {
-            }
-        } };
-        return trustAllCerts;
-    }
-
-    private static void installAllTrustingTrustManager(URL targetUrl, TrustManager[] trustAllCerts) {
-        try {
-            SSLContext sslContext = SSLContext.getInstance("SSL");
-            sslContext.init(null, trustAllCerts, new SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
-        } catch (KeyManagementException | NoSuchAlgorithmException e) {
-            LOG.error("An exception occurred while installing the all-trusting trust manager for checking if target URL is reachable: {}",
-                    targetUrl.toExternalForm(), e);
-        }
-    }
-
-    private static HostnameVerifier createAllTrustingHostNameVerifier() {
-        HostnameVerifier allHostsValid = new HostnameVerifier() {
-            public boolean verify(String hostname, SSLSession session) {
-                return true;
+                return emptyCertificatesArray;
             }
         };
-        return allHostsValid;
     }
 
+    private SSLContext createSSLContextForTrustManager(TrustManager trustManager) {
+        SSLContext sslContext = null;
+        try {
+            sslContext = SSLContext.getInstance(TLS);
+            sslContext.init(null, new TrustManager[] { trustManager }, null);
+
+            return sslContext;
+        } catch (NoSuchAlgorithmException | KeyManagementException e) {
+            throw new IllegalStateException("Was not able to create trust all context", e);
+        }
+
+    }
+
+    private class AllowAllHostnameVerifier implements HostnameVerifier {
+        @Override
+        public boolean verify(String hostname, SSLSession session) {
+            return true;
+        }
+    }
 }

@@ -23,7 +23,7 @@ public class UnauthenticatedScan extends AbstractScan {
         String subTreeOnly = "true";
         String recurse = "true";
         String maxChildren = null;
-        String targetUrlAsString = scanConfig.getTargetUrlAsString();
+        String targetUrlAsString = scanConfig.getTargetUriAsString();
         LOG.info("For scan {}: Starting Spider.", contextName);
         /* @formatter:off */
 		ApiResponse responseSpider = clientApi.spider.scan(
@@ -41,7 +41,7 @@ public class UnauthenticatedScan extends AbstractScan {
         String inScope = "true";
         String subTreeOnly = "true";
         String contextName = scanConfig.getContextName();
-        String targetUrlAsString = scanConfig.getTargetUrlAsString();
+        String targetUrlAsString = scanConfig.getTargetUriAsString();
         LOG.info("For scan {}: Starting AjaxSpider.", scanConfig.getContextName());
         /* @formatter:off */
 		ApiResponse responseAjaxSpider = clientApi.ajaxSpider.scan(
@@ -55,7 +55,7 @@ public class UnauthenticatedScan extends AbstractScan {
 
     @Override
     protected void runActiveScan() throws ClientApiException {
-        String targetUrlAsString = scanConfig.getTargetUrlAsString();
+        String targetUrlAsString = scanConfig.getTargetUriAsString();
         String inScopeOnly = "true";
         String recurse = "true";
         String scanPolicyName = null;

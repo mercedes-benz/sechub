@@ -10,7 +10,6 @@ import org.zaproxy.clientapi.core.ClientApiException;
 import com.mercedesbenz.sechub.commons.model.login.BasicLoginConfiguration;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanConfiguration;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.auth.SessionManagementType;
-import com.mercedesbenz.sechub.owaspzapwrapper.helper.OwaspZapApiResponseHelper;
 
 public class HTTPBasicAuthScan extends AbstractAuthScan {
 
@@ -47,7 +46,11 @@ public class HTTPBasicAuthScan extends AbstractAuthScan {
         clientApi.authentication.setAuthenticationMethod(contextId, authMethodName, authMethodConfigParams.toString());
 
         String methodName = SessionManagementType.HTTP_AUTH_SESSION_MANAGEMENT.getOwaspZapSessionManagementMethod();
-        clientApi.sessionManagement.setSessionManagementMethod(contextId, methodName, null);
+
+        // methodconfigparams in case of http basic auth is null, because it is
+        // configured automatically
+        String methodconfigparams = null;
+        clientApi.sessionManagement.setSessionManagementMethod(contextId, methodName, methodconfigparams);
     }
 
     private void initScanUser() throws ClientApiException {
@@ -55,7 +58,7 @@ public class HTTPBasicAuthScan extends AbstractAuthScan {
         String password = new String(basicLoginConfiguration.getPassword());
 
         ApiResponse creatUserResponse = clientApi.users.newUser(contextId, username);
-        userId = OwaspZapApiResponseHelper.getIdOfApiRepsonse(creatUserResponse);
+        userId = apiResponseHelper.getIdOfApiRepsonse(creatUserResponse);
 
         /* @formatter:off */
 		StringBuilder authCredentialsConfigParams = new StringBuilder();

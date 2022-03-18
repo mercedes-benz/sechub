@@ -7,7 +7,12 @@ import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.auth.AuthenticationType;
 
 public class SecHubWebScanConfigurationHelper {
-    private static final int DEFAULT_MAX_SCAN_DURATION = 28800000; // 8 hours in milliseconds
+    private static final int SECONDS_IN_MS = 1000;
+    private static final int MINUTES_IN_MS = 60 * SECONDS_IN_MS;
+    private static final int HOURS_IN_MS = 60 * MINUTES_IN_MS;
+    private static final int DAYS_IN_MS = 24 * HOURS_IN_MS;
+
+    private static final int DEFAULT_MAX_SCAN_DURATION = 8 * HOURS_IN_MS;
 
     public AuthenticationType determineAuthenticationType(SecHubWebScanConfiguration secHubWebScanConfiguration) {
         if (secHubWebScanConfiguration == null) {
@@ -24,7 +29,7 @@ public class SecHubWebScanConfigurationHelper {
         return AuthenticationType.UNAUTHENTICATED;
     }
 
-    public long retrieveMaxScanDurationInMillis(SecHubWebScanConfiguration sechubWebConfig) {
+    public long fetchMaxScanDurationInMillis(SecHubWebScanConfiguration sechubWebConfig) {
         if (!sechubWebConfig.getMaxScanDuration().isPresent()) {
             return DEFAULT_MAX_SCAN_DURATION;
         }
@@ -34,13 +39,13 @@ public class SecHubWebScanConfigurationHelper {
 
         switch (sechubTimeUnit) {
         case DAY:
-            return maxScanDuration * 1000 * 60 * 60 * 24;
+            return maxScanDuration * DAYS_IN_MS;
         case HOUR:
-            return maxScanDuration * 1000 * 60 * 60;
+            return maxScanDuration * HOURS_IN_MS;
         case MINUTE:
-            return maxScanDuration * 1000 * 60;
+            return maxScanDuration * MINUTES_IN_MS;
         case SECOND:
-            return maxScanDuration * 1000;
+            return maxScanDuration * SECONDS_IN_MS;
         case MILLISECOND:
             return maxScanDuration;
         default:

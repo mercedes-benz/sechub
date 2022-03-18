@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 == Owasp Zap Wrapper
 
 Owasp Zap Wrapper CLI for PDS

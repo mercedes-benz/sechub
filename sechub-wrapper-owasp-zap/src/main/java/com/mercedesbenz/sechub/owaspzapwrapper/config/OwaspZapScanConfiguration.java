@@ -55,7 +55,7 @@ public class OwaspZapScanConfiguration {
         return contextName;
     }
 
-    public String getTargetUrlAsString() {
+    public String getTargetUriAsString() {
         return getTargetUri().toString();
     }
 
@@ -75,6 +75,12 @@ public class OwaspZapScanConfiguration {
         return secHubWebScanConfiguration;
     }
 
+    /**
+     * Resolves proxy information if available
+     *
+     * @return proxy information or <code>null</code> when no proxy information
+     *         available
+     */
     public ProxyInformation getProxyInformation() {
         return proxyInformation;
     }
@@ -155,7 +161,7 @@ public class OwaspZapScanConfiguration {
             return this;
         }
 
-        public OwaspZapBasicScanConfigurationBuilder setAdditionalProxyInformation(ProxyInformation proxyInformation) {
+        public OwaspZapBasicScanConfigurationBuilder setProxyInformation(ProxyInformation proxyInformation) {
             this.proxyInformation = proxyInformation;
             return this;
         }

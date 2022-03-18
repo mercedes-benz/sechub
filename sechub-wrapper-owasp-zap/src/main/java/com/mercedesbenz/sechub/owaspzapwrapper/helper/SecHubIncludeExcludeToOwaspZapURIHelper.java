@@ -13,21 +13,21 @@ public class SecHubIncludeExcludeToOwaspZapURIHelper {
 
         List<String> listOfUrls = new LinkedList<>();
         for (String url : subSites) {
-            StringBuilder buildUrl = new StringBuilder();
-            buildUrl.append(targetUrl);
+            StringBuilder urlBuilder = new StringBuilder();
+            urlBuilder.append(targetUrl);
 
             if (!url.startsWith("/")) {
-                buildUrl.append("/");
+                urlBuilder.append("/");
             }
 
             if (url.endsWith("/")) {
-                buildUrl.append(url.substring(0, url.length() - 1));
+                urlBuilder.append(url.substring(0, url.length() - 1));
             } else {
-                buildUrl.append(url);
+                urlBuilder.append(url);
             }
-            buildUrl.append(".*");
+            urlBuilder.append(".*");
 
-            listOfUrls.add(buildUrl.toString());
+            listOfUrls.add(urlBuilder.toString());
         }
         return listOfUrls;
     }

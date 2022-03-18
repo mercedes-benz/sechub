@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.owaspzapwrapper.cli;
+package com.mercedesbenz.sechub.owaspzapwrapper.config;
 
 import java.net.URI;
 import java.util.UUID;
@@ -7,12 +7,10 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.commons.TextFileReader;
-import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
-import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanConfiguration;
-import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapServerConfiguration;
-import com.mercedesbenz.sechub.owaspzapwrapper.config.ProxyInformation;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.CommandLineSettings;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitCode;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitRuntimeException;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.auth.AuthenticationType;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.BaseTargetUriFactory;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.SecHubWebScanConfigurationHelper;
@@ -22,19 +20,30 @@ import com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableReader;
 public class OwaspZapScanConfigurationFactory {
     private static final Logger LOG = LoggerFactory.getLogger(OwaspZapScanConfigurationFactory.class);
 
-    private SecHubWebScanConfigurationHelper sechubWebConfigHelper = new SecHubWebScanConfigurationHelper();
-    private EnvironmentVariableReader environmentVariableReader = new EnvironmentVariableReader();
-    private BaseTargetUriFactory targetUriFactory = new BaseTargetUriFactory();
+    SecHubWebScanConfigurationHelper sechubWebConfigHelper;
+    EnvironmentVariableReader environmentVariableReader;
+    BaseTargetUriFactory targetUriFactory;
+    SechubWebConfigProvider webConfigProvider;
+
+    public OwaspZapScanConfigurationFactory() {
+        sechubWebConfigHelper = new SecHubWebScanConfigurationHelper();
+        environmentVariableReader = new EnvironmentVariableReader();
+        targetUriFactory = new BaseTargetUriFactory();
+        webConfigProvider = new SechubWebConfigProvider();
+    }
 
     public OwaspZapScanConfiguration create(CommandLineSettings settings) {
+        if (settings == null) {
+            throw new MustExitRuntimeException("Command line settings must not be null!", MustExitCode.COMMANDLINE_CONFIGURATION_INVALID);
+        }
         /* Wrapper settings */
         OwaspZapServerConfiguration serverConfig = createOwaspZapServerConfig(settings);
         ProxyInformation proxyInformation = createProxyInformation(settings);
 
         /* SecHub settings */
         URI targetUri = targetUriFactory.create(settings.getTargetURL());
-        SecHubWebScanConfiguration sechubWebConfig = createSecHubWebConfigFromSecHubConfigFile(settings);
-        long maxScanDurationInMinutes = sechubWebConfigHelper.retrieveMaxScanDurationInMillis(sechubWebConfig);
+        SecHubWebScanConfiguration sechubWebConfig = webConfigProvider.getSecHubWebConfiguration(settings.getSecHubConfigFile());
+        long maxScanDurationInMillis = sechubWebConfigHelper.fetchMaxScanDurationInMillis(sechubWebConfig);
 
         AuthenticationType authType = sechubWebConfigHelper.determineAuthenticationType(sechubWebConfig);
 
@@ -42,6 +51,7 @@ public class OwaspZapScanConfigurationFactory {
         String contextName = settings.getJobUUID();
         if (contextName == null) {
             contextName = UUID.randomUUID().toString();
+            LOG.warn("The job UUID was not set. Using randomly generated UUID: {} as fallback.", contextName);
         }
 
         /* @formatter:off */
@@ -49,27 +59,17 @@ public class OwaspZapScanConfigurationFactory {
 												.setTargetUri(targetUri)
 												.setVerboseOutput(settings.isVerboseEnabled())
 												.setReportFile(settings.getReportFile())
-												.setContextName(contextName.toString())
+												.setContextName(contextName)
 												.setAjaxSpiderEnabled(settings.isAjaxSpiderEnabled())
 												.setActiveScanEnabled(settings.isActiveScanEnabled())
 												.setServerConfig(serverConfig)
 												.setAuthenticationType(authType)
-												.setMaxScanDurationInMillis(maxScanDurationInMinutes)
+												.setMaxScanDurationInMillis(maxScanDurationInMillis)
 												.setSecHubWebScanConfiguration(sechubWebConfig)
-												.setAdditionalProxyInformation(proxyInformation)
+												.setProxyInformation(proxyInformation)
 											  .build();
 		/* @formatter:on */
         return scanConfig;
-    }
-
-    private SecHubWebScanConfiguration createSecHubWebConfigFromSecHubConfigFile(CommandLineSettings settings) {
-        TextFileReader fileReader = new TextFileReader();
-        String sechubConfigJson = fileReader.loadTextFile(settings.getSecHubConfigFile());
-        if (sechubConfigJson != null) {
-            SecHubScanConfiguration sechubConfig = SecHubScanConfiguration.createFromJSON(sechubConfigJson);
-            return sechubConfig.getWebScan().get();
-        }
-        return new SecHubWebScanConfiguration();
     }
 
     private OwaspZapServerConfiguration createOwaspZapServerConfig(CommandLineSettings settings) {
@@ -88,14 +88,17 @@ public class OwaspZapScanConfigurationFactory {
         }
 
         if (zapHost == null) {
-            throw new IllegalStateException("Owasp Zap host is null. Please set the Owasp Zap host to the host use by the Owasp Zap.");
+            throw new MustExitRuntimeException("Owasp Zap host is null. Please set the Owasp Zap host to the host use by the Owasp Zap.",
+                    MustExitCode.ZAP_CONFIGURATION_INVALID);
         }
 
         if (zapPort <= 0) {
-            throw new IllegalStateException("Owasp Zap Port was set to " + zapPort + ". Please set the Owasp Zap port to the port used by the Owasp Zap.");
+            throw new MustExitRuntimeException("Owasp Zap Port was set to " + zapPort + ". Please set the Owasp Zap port to the port used by the Owasp Zap.",
+                    MustExitCode.ZAP_CONFIGURATION_INVALID);
         }
         if (zapApiKey == null) {
-            throw new IllegalStateException("Owasp Zap API-Key is null. Please set the Owasp Zap API-key to the same value set inside your Owasp Zap.");
+            throw new MustExitRuntimeException("Owasp Zap API-Key is null. Please set the Owasp Zap API-key to the same value set inside your Owasp Zap.",
+                    MustExitCode.ZAP_CONFIGURATION_INVALID);
         }
         return new OwaspZapServerConfiguration(zapHost, zapPort, zapApiKey);
     }

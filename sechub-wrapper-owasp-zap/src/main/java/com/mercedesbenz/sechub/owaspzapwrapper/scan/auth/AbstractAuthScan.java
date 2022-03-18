@@ -11,6 +11,8 @@ import org.zaproxy.clientapi.core.ApiResponse;
 import org.zaproxy.clientapi.core.ClientApi;
 import org.zaproxy.clientapi.core.ClientApiException;
 
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitCode;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitRuntimeException;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanConfiguration;
 import com.mercedesbenz.sechub.owaspzapwrapper.scan.AbstractScan;
 
@@ -27,29 +29,16 @@ public abstract class AbstractAuthScan extends AbstractScan implements AuthScan 
     @Override
     public void scan() {
         try {
-            createContext();
-            addIncludedAndExcludedUrlsToContext();
-            init();
-            if (scanConfig.isAjaxSpiderEnabled()) {
-                runAjaxSpider();
-            }
-
-            runSpider();
-
-            passiveScan();
-
-            if (scanConfig.isActiveScanEnabled()) {
-                runActiveScan();
-            }
-            generateOwaspZapReport();
+            scanUnsafe();
         } catch (ClientApiException e) {
             LOG.error("For scan {}: An error occured while scanning! Reason: {}", scanConfig.getContextName(), e.getMessage(), e);
+            throw new MustExitRuntimeException("An error occurred during the scan execution", e, MustExitCode.EXECUTION_FAILED);
         }
     }
 
     @Override
     protected void runSpider() throws ClientApiException {
-        String url = scanConfig.getTargetUrlAsString();
+        String url = scanConfig.getTargetUriAsString();
         String maxchildren = null;
         String recurse = "true";
         String subtreeonly = "true";
@@ -69,7 +58,7 @@ public abstract class AbstractAuthScan extends AbstractScan implements AuthScan 
     @Override
     protected void runAjaxSpider() throws ClientApiException {
         String contextname = scanConfig.getContextName();
-        String url = scanConfig.getTargetUrlAsString();
+        String url = scanConfig.getTargetUriAsString();
         String subtreeonly = "true";
         LOG.info("For scan {}: Starting authenticated Ajax Spider.", scanConfig.getContextName());
         /* @formatter:off */
@@ -85,7 +74,7 @@ public abstract class AbstractAuthScan extends AbstractScan implements AuthScan 
 
     @Override
     protected void runActiveScan() throws ClientApiException {
-        String url = scanConfig.getTargetUrlAsString();
+        String url = scanConfig.getTargetUriAsString();
         String recurse = "true";
         String scanpolicyname = null;
         String method = null;
@@ -110,6 +99,29 @@ public abstract class AbstractAuthScan extends AbstractScan implements AuthScan 
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException("This should not happen because we always use UTF-8: " + e);
         }
+    }
+
+    private void scanUnsafe() throws ClientApiException {
+        setupBasicConfiguration();
+        setupAdditonalProxyConfiguration();
+
+        createContext();
+        addIncludedAndExcludedUrlsToContext();
+        init();
+        if (scanConfig.isAjaxSpiderEnabled()) {
+            runAjaxSpider();
+        }
+
+        runSpider();
+
+        passiveScan();
+
+        if (scanConfig.isActiveScanEnabled()) {
+            runActiveScan();
+        }
+        generateOwaspZapReport();
+
+        cleanUp();
     }
 
 }

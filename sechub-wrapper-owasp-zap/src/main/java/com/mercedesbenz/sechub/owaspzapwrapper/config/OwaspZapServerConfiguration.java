@@ -7,7 +7,7 @@ public class OwaspZapServerConfiguration {
     private int zaproxyPort;
     private String zaproxyApiKey;
 
-    public OwaspZapServerConfiguration(String zaproxyAddress, int zaproxyPort, String zaproxyApiKey) {
+    OwaspZapServerConfiguration(String zaproxyAddress, int zaproxyPort, String zaproxyApiKey) {
         this.zaproxyAddress = zaproxyAddress;
         this.zaproxyPort = zaproxyPort;
         this.zaproxyApiKey = zaproxyApiKey;

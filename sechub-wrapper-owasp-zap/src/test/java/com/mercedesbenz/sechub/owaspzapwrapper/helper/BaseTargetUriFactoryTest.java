@@ -12,6 +12,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullSource;
 
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitRuntimeException;
+
 class BaseTargetUriFactoryTest {
 
     private BaseTargetUriFactory factoryToTest;
@@ -24,12 +26,10 @@ class BaseTargetUriFactoryTest {
     @ParameterizedTest
     @CsvSource({ "127.0.0.1", "127.0.0.1:8080", "htts://172.118.11.23", "htts://172.118.11.23:8080", "https:172.118.11.23", "http:172.118.11.23:8080" })
     @NullSource
-    void throws_exception_for_invalid_urls(String url) {
+    void throws_mustexitruntimeexception_for_invalid_urls(String url) {
 
         /* test */
-        assertThrows(IllegalArgumentException.class, () -> {
-            factoryToTest.create(url);
-        });
+        assertThrows(MustExitRuntimeException.class, () -> factoryToTest.create(url));
     }
 
     @Test

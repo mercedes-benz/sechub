@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.owaspzapwrapper.scan;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,7 +17,10 @@ import org.zaproxy.clientapi.core.ApiResponseList;
 import org.zaproxy.clientapi.core.ClientApi;
 import org.zaproxy.clientapi.core.ClientApiException;
 
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitCode;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitRuntimeException;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanConfiguration;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.ProxyInformation;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.OwaspZapApiResponseHelper;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.ScanDurationHelper;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.SecHubIncludeExcludeToOwaspZapURIHelper;
@@ -26,15 +30,16 @@ public abstract class AbstractScan implements OwaspZapScan {
 
     private static final int CHECK_SCAN_STATUS_TIME_IN_MILLISECONDS = 3000;
 
-    protected ClientApi clientApi;
-    protected OwaspZapScanConfiguration scanConfig;
-
-    protected String contextId;
-
     private ScanDurationHelper scanDurationHelper;
     private long remainingScanTime;
 
     private SecHubIncludeExcludeToOwaspZapURIHelper includeExcludeConverter;
+
+    protected ClientApi clientApi;
+    protected OwaspZapScanConfiguration scanConfig;
+
+    protected String contextId;
+    protected OwaspZapApiResponseHelper apiResponseHelper;
 
     public AbstractScan(ClientApi clientApi, OwaspZapScanConfiguration scanConfig) {
         this.clientApi = clientApi;
@@ -42,27 +47,16 @@ public abstract class AbstractScan implements OwaspZapScan {
         this.scanDurationHelper = new ScanDurationHelper();
         this.remainingScanTime = scanConfig.getMaxScanDurationInMillis();
         this.includeExcludeConverter = new SecHubIncludeExcludeToOwaspZapURIHelper();
+        this.apiResponseHelper = new OwaspZapApiResponseHelper();
     }
 
     @Override
     public void scan() {
         try {
-            createContext();
-            addIncludedAndExcludedUrlsToContext();
-            if (scanConfig.isAjaxSpiderEnabled()) {
-                runAjaxSpider();
-            }
-
-            runSpider();
-
-            passiveScan();
-
-            if (scanConfig.isActiveScanEnabled()) {
-                runActiveScan();
-            }
-            generateOwaspZapReport();
+            scanUnsafe();
         } catch (ClientApiException e) {
-            LOG.error("For scan {}: An error occured while scanning! Reason: {}", scanConfig.getContextName(), e.getMessage(), e);
+            throw new MustExitRuntimeException("For scan: " + scanConfig.getContextName() + ". An error occured while scanning!", e,
+                    MustExitCode.EXECUTION_FAILED);
         }
     }
 
@@ -74,7 +68,7 @@ public abstract class AbstractScan implements OwaspZapScan {
     protected void createContext() throws ClientApiException {
         LOG.info("Creating context: {}", scanConfig.getContextName());
         ApiResponse createContextRepsonse = clientApi.context.newContext(scanConfig.getContextName());
-        this.contextId = OwaspZapApiResponseHelper.getIdOfApiRepsonse(createContextRepsonse);
+        this.contextId = apiResponseHelper.getIdOfApiRepsonse(createContextRepsonse);
     }
 
     /**
@@ -147,6 +141,10 @@ public abstract class AbstractScan implements OwaspZapScan {
 
             if (scanConfig.isVerboseOutput()) {
                 String numberOfResults = ((ApiResponseElement) clientApi.ajaxSpider.numberOfResults()).getValue();
+                // Every iteration that checks the progress of the ajax spider logs the
+                // currently available results if verbose output is enabled.
+                // The results are fetched from the first index "0" (string instead of integer
+                // in this API call).
                 List<ApiResponse> spiderResults = ((ApiResponseList) clientApi.ajaxSpider.results("0", numberOfResults)).getItems();
                 for (ApiResponse result : spiderResults) {
                     LOG.info("For scan {}: Result: {}", scanConfig.getContextName(), result.toString(0));
@@ -213,26 +211,27 @@ public abstract class AbstractScan implements OwaspZapScan {
     /**
      * Generates the SARIF report for the current scan, identified using the context
      * name.
+     *
+     * @throws ClientApiException
      */
-    protected void generateOwaspZapReport() {
+    protected void generateOwaspZapReport() throws ClientApiException {
         LOG.info("For scan {}: Writing results to report...", scanConfig.getContextName());
         Path reportFile = scanConfig.getReportFile();
 
-        try {
-            String title = scanConfig.getContextName();
-            String template = "sarif-json";
-            String theme = null;
-            String description = null;
-            String contexts = scanConfig.getContextName();
-            String sites = null;
-            String sections = null;
-            String includedconfidences = null;
-            String includedrisks = null;
-            String reportfilename = reportFile.getFileName().toString();
-            String reportfilenamepattern = null;
-            String reportdir = resolveParentDirectoryPath(reportFile);
-            String display = null;
-            /* @formatter:off */
+        String title = scanConfig.getContextName();
+        String template = "sarif-json";
+        String theme = null;
+        String description = null;
+        String contexts = scanConfig.getContextName();
+        String sites = null;
+        String sections = null;
+        String includedconfidences = null;
+        String includedrisks = null;
+        String reportfilename = reportFile.getFileName().toString();
+        String reportfilenamepattern = null;
+        String reportdir = resolveParentDirectoryPath(reportFile);
+        String display = null;
+        /* @formatter:off */
 			// we use the context name as report title
 			clientApi.reports.generate(
 					title,
@@ -250,20 +249,66 @@ public abstract class AbstractScan implements OwaspZapScan {
 					display);
 			/* @formatter:on */
 
-            // rename is necessary if the file extension is not .json, because Owasp Zap
-            // adds the file extension .json since we create a json report. Might not be
-            // necessary anymore if we have the sarif support
-            renameReportFileIfFileExtensionIsNotJSON();
+        // rename is necessary if the file extension is not .json, because Owasp Zap
+        // adds the file extension .json since we create a json report. Might not be
+        // necessary anymore if we have the sarif support
+        renameReportFileIfFileExtensionIsNotJSON();
 
-            LOG.info("For scan {}: Report can be found at {}", scanConfig.getContextName(), reportFile.toFile().getAbsolutePath());
+        LOG.info("For scan {}: Report can be found at {}", scanConfig.getContextName(), reportFile.toFile().getAbsolutePath());
 
-            // clean up after scan only if report was done correctly
-            // to investigate errors we keep the session otherwise, because a new scan
-            // always starts a new session, if it worked here or not does not matter
-            cleanUp();
-        } catch (ClientApiException e) {
-            LOG.error("For scan {}: Error writing report file", scanConfig.getContextName(), e);
+    }
+
+    protected void cleanUp() throws ClientApiException {
+        // to ensure parts from previous scan are deleted
+        LOG.info("Cleaning up by starting new and empty session...", scanConfig.getContextName());
+        clientApi.core.newSession("Cleaned after scan", "true");
+        LOG.info("Cleanup successful.");
+    }
+
+    protected void setupBasicConfiguration() throws ClientApiException {
+        LOG.info("Creating new session inside the Owasp Zap");
+        // to ensure parts from previous scan are deleted
+        clientApi.core.newSession(scanConfig.getContextName(), "true");
+        LOG.info("Setting default of how many alerts of the same rule will be inside the report to unlimited.");
+        // setting this value to zero means unlimited
+        clientApi.core.setOptionMaximumAlertInstances("0");
+    }
+
+    protected void setupAdditonalProxyConfiguration() throws ClientApiException {
+        ProxyInformation proxyInformation = scanConfig.getProxyInformation();
+        if (proxyInformation != null) {
+            String proxyHost = proxyInformation.getHost();
+            int proxyPort = proxyInformation.getPort();
+            LOG.info("Using proxy {}:{} to reach target.", proxyHost, proxyPort);
+            clientApi.core.setOptionProxyChainName(proxyHost);
+            clientApi.core.setOptionProxyChainPort(proxyPort);
+            clientApi.core.setOptionUseProxyChain(true);
+        } else {
+            LOG.info("No proxy was set, continuing without proxy.");
+            clientApi.core.setOptionUseProxyChain(false);
         }
+    }
+
+    private void scanUnsafe() throws ClientApiException {
+        setupBasicConfiguration();
+        setupAdditonalProxyConfiguration();
+
+        createContext();
+        addIncludedAndExcludedUrlsToContext();
+        if (scanConfig.isAjaxSpiderEnabled()) {
+            runAjaxSpider();
+        }
+
+        runSpider();
+
+        passiveScan();
+
+        if (scanConfig.isActiveScanEnabled()) {
+            runActiveScan();
+        }
+        generateOwaspZapReport();
+
+        cleanUp();
     }
 
     private void waitForNextCheck() {
@@ -280,10 +325,11 @@ public abstract class AbstractScan implements OwaspZapScan {
 
     private String resolveParentDirectoryPath(Path reportFile) {
         if (reportFile == null) {
-            throw new IllegalArgumentException("Report file not set");
+            throw new MustExitRuntimeException("For scan: " + scanConfig.getContextName() + ". Report file not set.", MustExitCode.REPORT_FILE_ERROR);
         }
         if (Files.isDirectory(reportFile)) {
-            throw new IllegalArgumentException("Report file may not be a directory!");
+            throw new MustExitRuntimeException("For scan: " + scanConfig.getContextName() + ". Report file must not be a directory!",
+                    MustExitCode.REPORT_FILE_ERROR);
         }
 
         Path parent = reportFile.getParent();
@@ -292,30 +338,37 @@ public abstract class AbstractScan implements OwaspZapScan {
         return absolutePath.toString();
     }
 
+    /**
+     * This method is used to rename the file back to the specified name in case the
+     * file did not end with .json.
+     *
+     * The reason for this method is that the Owasp Zap appends ".json" to the
+     * result file if we generate a report in json format. The PDS result.txt will
+     * then be called result.txt.json. Because of this behaviour the file will be
+     * renamed.
+     */
     private void renameReportFileIfFileExtensionIsNotJSON() {
-        String reportFile = scanConfig.getReportFile().toAbsolutePath().toFile().getAbsolutePath();
-        if (!reportFile.endsWith(".json")) {
+        String specifiedReportFile = scanConfig.getReportFile().toAbsolutePath().toFile().getAbsolutePath();
+        // If the Owasp Zap creates the file below, it will be renamed to the originally
+        // specified name
+        File owaspZapCreatedFile = new File(specifiedReportFile + ".json");
+        if (owaspZapCreatedFile.exists()) {
             try {
-                Path owaspzapReport = Paths.get(reportFile + ".json");
+                Path owaspzapReport = Paths.get(specifiedReportFile + ".json");
                 Files.move(owaspzapReport, owaspzapReport.resolveSibling(scanConfig.getReportFile().toAbsolutePath()), StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
-                LOG.error("For scan {}: Could not rename report file.", scanConfig.getContextName(), e);
+
+                throw new MustExitRuntimeException("For scan: " + scanConfig.getContextName() + ". An error occurred renaming the report file", e,
+                        MustExitCode.REPORT_FILE_ERROR);
             }
         }
     }
 
-    private void cleanUp() throws ClientApiException {
-        // to ensure parts from previous scan are deleted
-        LOG.info("Cleaning up by starting new and empty session...", scanConfig.getContextName());
-        clientApi.core.newSession("Cleaned after scan", "true");
-        LOG.info("Cleanup successful.");
-    }
-
     private void registerUrlsIncludedInContext() throws ClientApiException {
-        clientApi.context.includeInContext(scanConfig.getContextName(), scanConfig.getTargetUrlAsString() + ".*");
+        clientApi.context.includeInContext(scanConfig.getContextName(), scanConfig.getTargetUriAsString() + ".*");
 
         if (scanConfig.getSecHubWebScanConfiguration().getIncludes().isPresent()) {
-            List<String> includedUrls = includeExcludeConverter.createListOfUrls(scanConfig.getTargetUrlAsString(),
+            List<String> includedUrls = includeExcludeConverter.createListOfUrls(scanConfig.getTargetUriAsString(),
                     scanConfig.getSecHubWebScanConfiguration().getIncludes().get());
 
             for (String url : includedUrls) {
@@ -326,7 +379,7 @@ public abstract class AbstractScan implements OwaspZapScan {
 
     private void registerUrlsExcludedFromContext() throws ClientApiException {
         if (scanConfig.getSecHubWebScanConfiguration().getExcludes().isPresent()) {
-            List<String> excludedUrls = includeExcludeConverter.createListOfUrls(scanConfig.getTargetUrlAsString(),
+            List<String> excludedUrls = includeExcludeConverter.createListOfUrls(scanConfig.getTargetUriAsString(),
                     scanConfig.getSecHubWebScanConfiguration().getExcludes().get());
 
             for (String url : excludedUrls) {
@@ -344,7 +397,7 @@ public abstract class AbstractScan implements OwaspZapScan {
     protected abstract void runSpider() throws ClientApiException;
 
     /**
-     * Runs webdriver oriented spider (suitable for single page applications)- just
+     * Runs web driver oriented spider (suitable for single page applications)- just
      * clicking.... creates tree
      *
      * @throws ClientApiException

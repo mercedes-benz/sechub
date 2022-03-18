@@ -1,60 +1,56 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.owaspzapwrapper.cli;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zaproxy.clientapi.core.ClientApi;
-import org.zaproxy.clientapi.core.ClientApiException;
 
 import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapClientApiFactory;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanConfiguration;
-import com.mercedesbenz.sechub.owaspzapwrapper.config.auth.AuthenticationType;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.ProxyInformation;
 import com.mercedesbenz.sechub.owaspzapwrapper.scan.OwaspZapScan;
-import com.mercedesbenz.sechub.owaspzapwrapper.scan.UnauthenticatedScan;
-import com.mercedesbenz.sechub.owaspzapwrapper.scan.auth.HTTPBasicAuthScan;
 import com.mercedesbenz.sechub.owaspzapwrapper.util.TargetConnectionChecker;
 
 public class OwaspZapScanExecutor {
+    private static final Logger LOG = LoggerFactory.getLogger(OwaspZapScanExecutor.class);
 
-    public class OwaspZapScanExecutorException extends Exception {
+    OwaspZapScanResolver resolver;
+    OwaspZapClientApiFactory clientApiFactory;
 
-        private static final long serialVersionUID = 1L;
+    TargetConnectionChecker connectionChecker;
 
-        public OwaspZapScanExecutorException(String message) {
-            super(message);
-        }
-
+    public OwaspZapScanExecutor() {
+        clientApiFactory = new OwaspZapClientApiFactory();
+        resolver = new OwaspZapScanResolver();
+        connectionChecker = new TargetConnectionChecker();
     }
 
-    public void execute(OwaspZapScanConfiguration scanConfig) throws OwaspZapScanExecutorException {
-        if (!TargetConnectionChecker.isSiteReachable(scanConfig.getTargetUri(), scanConfig.getProxyInformation())) {
-            throw new OwaspZapScanExecutorException("Target url: " + scanConfig.getTargetUri() + " is not reachable!");
+    public void execute(OwaspZapScanConfiguration scanConfig) throws MustExitRuntimeException {
+        if (!connectionChecker.isTargetReachable(scanConfig.getTargetUri(), scanConfig.getProxyInformation())) {
+            // Build error message containing proxy if it was set.
+            String errorMessage = createErrorMessage(scanConfig);
+            throw new MustExitRuntimeException(errorMessage, MustExitCode.EXECUTION_FAILED);
         }
         ClientApi clientApi = null;
 
-        try {
-            clientApi = new OwaspZapClientApiFactory().create(scanConfig);
-        } catch (ClientApiException e) {
-            throw new OwaspZapScanExecutorException("Creating Owasp Zap ClientApi object failed because: " + e.getMessage());
-        }
+        clientApi = clientApiFactory.create(scanConfig.getServerConfig());
 
-        OwaspZapScan owaspZapScan = resolveScanImplementation(scanConfig, clientApi);
+        OwaspZapScan owaspZapScan = resolver.resolveScanImplementation(scanConfig, clientApi);
+        LOG.info("Starting Owasp Zap scan.");
         owaspZapScan.scan();
 
     }
 
-    private OwaspZapScan resolveScanImplementation(OwaspZapScanConfiguration scanConfig, ClientApi clientApi) {
-        OwaspZapScan scan;
-        AuthenticationType authenticationType = scanConfig.getAuthenticationType();
-        switch (authenticationType) {
-        case UNAUTHENTICATED:
-            scan = new UnauthenticatedScan(clientApi, scanConfig);
-            break;
-        case HTTP_BASIC_AUTHENTICATION:
-            scan = new HTTPBasicAuthScan(clientApi, scanConfig);
-            break;
-        default:
-            throw new IllegalStateException("No matching scan type could be found.");
+    private String createErrorMessage(OwaspZapScanConfiguration scanConfig) {
+        ProxyInformation proxyInformation = scanConfig.getProxyInformation();
+
+        String errorMessage = "Target url: " + scanConfig.getTargetUri() + " is not reachable!";
+        if (proxyInformation != null) {
+            errorMessage = "Target url: " + scanConfig.getTargetUri() + " is not reachable via " + proxyInformation.getHost() + ":" + proxyInformation.getPort()
+                    + "!";
         }
-        return scan;
+
+        return errorMessage;
     }
 
 }

@@ -4,15 +4,16 @@ package com.mercedesbenz.sechub.commons;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class TextFileReader {
 
-    public String loadTextFile(File file) {
+    public String loadTextFile(File file) throws IOException {
         return loadTextFile(file, "\n");
     }
 
-    public String loadTextFile(File file, String lineBreak) {
+    public String loadTextFile(File file, String lineBreak) throws IOException {
         StringBuilder sb = new StringBuilder();
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
@@ -27,8 +28,6 @@ public class TextFileReader {
                 firstEntry = false;// this prevents additional line break at end of file...
             }
             return sb.toString();
-        } catch (Exception e) {
-            throw new IllegalStateException("Testcase corrupt: Cannot read test file " + file.getAbsolutePath(), e);
         }
     }
 }

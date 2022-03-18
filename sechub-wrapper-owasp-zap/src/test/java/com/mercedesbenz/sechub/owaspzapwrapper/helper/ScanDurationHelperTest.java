@@ -28,8 +28,8 @@ class ScanDurationHelperTest {
         long passiveScanDuration = scanDurationHelperToTest.computePassiveScanMaxScanDuration(activeScanEnabled, ajaxSpiderEnabled, remainingMaxDuration);
 
         /* test */
-        assertEquals(spiderDuration, 5000);
-        assertEquals(passiveScanDuration, 5000);
+        assertEquals(5000, spiderDuration);
+        assertEquals(5000, passiveScanDuration);
     }
 
     @Test
@@ -47,9 +47,9 @@ class ScanDurationHelperTest {
         long passiveScanDuration = scanDurationHelperToTest.computePassiveScanMaxScanDuration(activeScanEnabled, ajaxSpiderEnabled, remainingMaxDuration);
 
         /* test */
-        assertEquals(ajaxSpiderDuration, 7000);
-        assertEquals(spiderDuration, 900);
-        assertEquals(passiveScanDuration, 2100);
+        assertEquals(7000, ajaxSpiderDuration);
+        assertEquals(900, spiderDuration);
+        assertEquals(2100, passiveScanDuration);
     }
 
     @Test
@@ -66,9 +66,9 @@ class ScanDurationHelperTest {
         long activeScanDuration = remainingMaxDuration - passiveScanDuration;
 
         /* test */
-        assertEquals(spiderDuration, 3000);
-        assertEquals(passiveScanDuration, 2100);
-        assertEquals(activeScanDuration, 4900);
+        assertEquals(3000, spiderDuration);
+        assertEquals(2100, passiveScanDuration);
+        assertEquals(4900, activeScanDuration);
     }
 
     @Test
@@ -87,10 +87,10 @@ class ScanDurationHelperTest {
         long activeScanDuration = remainingMaxDuration - passiveScanDuration;
 
         /* test */
-        assertEquals(ajaxSpiderDuration, 4000);
-        assertEquals(spiderDuration, 600);
-        assertEquals(passiveScanDuration, 540);
-        assertEquals(activeScanDuration, 4860);
+        assertEquals(4000, ajaxSpiderDuration);
+        assertEquals(600, spiderDuration);
+        assertEquals(540, passiveScanDuration);
+        assertEquals(4860, activeScanDuration);
     }
 
 }
