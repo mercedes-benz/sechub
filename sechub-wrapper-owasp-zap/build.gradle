@@ -18,6 +18,7 @@ dependencies {
     
 	testImplementation spring_boot_dependency.junit_jupiter
     testImplementation spring_boot_dependency.junit_jupiter_params
+    testImplementation spring_boot_dependency.mockito_core
 }
 
 task buildWrapperOwaspZap(type: Jar, dependsOn: build) {
