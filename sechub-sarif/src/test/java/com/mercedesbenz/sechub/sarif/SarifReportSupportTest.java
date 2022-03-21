@@ -20,7 +20,6 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.integrationtest.TextFileReader;
 import com.mercedesbenz.sechub.sarif.model.CodeFlow;
 import com.mercedesbenz.sechub.sarif.model.Level;
 import com.mercedesbenz.sechub.sarif.model.PropertyBag;
@@ -29,13 +28,13 @@ import com.mercedesbenz.sechub.sarif.model.ReportingConfiguration;
 import com.mercedesbenz.sechub.sarif.model.Result;
 import com.mercedesbenz.sechub.sarif.model.Rule;
 import com.mercedesbenz.sechub.sarif.model.Run;
+import com.mercedesbenz.sechub.test.TestFileReader;
 
 class SarifReportSupportTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(SarifReportSupportTest.class);
 
     private static FilenameFilter sarifFileEndingFilter;
-    private static TextFileReader reader;
 
     private static File sarifTutorialSamplesFolder;
     private static File sarifSpecificationSnippetsFolder;
@@ -54,7 +53,6 @@ class SarifReportSupportTest {
                 return name.endsWith(".sarif") || name.endsWith(".sarif.json");
             }
         };
-        reader = new TextFileReader();
 
         sarifTutorialSamplesFolder = new File("./src/test/resources/examples/microsoft/sarif-tutorials/samples");
         sarifSpecificationSnippetsFolder = new File("./src/test/resources/examples/specification");
@@ -203,7 +201,7 @@ class SarifReportSupportTest {
             LOG.info("Reading sarif report:{}", file);
             count++;
 
-            String sarifJson = reader.loadTextFile(file);
+            String sarifJson = TestFileReader.loadTextFile(file);
             assertNotNull(sarifJson);
 
             /* execute */

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.commons.model;
+package com.mercedesbenz.sechub.test;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -8,13 +8,10 @@ import java.io.InputStreamReader;
 
 public class TestFileReader {
 
-    /**
-     * Load text file
-     *
-     * @param file
-     * @param lineBreak
-     * @return
-     */
+    public static String loadTextFile(File file) {
+        return loadTextFile(file, "\n");
+    }
+
     public static String loadTextFile(File file, String lineBreak) {
         StringBuilder sb = new StringBuilder();
 
