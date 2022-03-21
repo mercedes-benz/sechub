@@ -27,17 +27,17 @@ To use the wrapper see the help below:
 ----
 Usage: OwaspZapWrapper [options]
   Options:
-    --activeScan, -A
-      Set this option to enable owasp zap active scan.
+    --activeScan
+      Set this option to enable Owasp Zap active scan.
       Default: false
-    --ajaxSpider, -as
-      Set this option to enable owasp zap ajaxSpider.
+    --ajaxSpider
+      Set this option to enable Owasp Zap ajaxSpider.
       Default: false
-    --help, -h
+    --help
       Shows help and provides information on how to use the wrapper.
-    --jobUUID, -j
-      The Job-UUID, which will be used as internal identifier for the owasp 
-      zap scan context.
+    --jobUUID
+      The Job-UUID, which will be used as internal identifier for the Owasp 
+      Zap scan context.
     --proxyHost
       Specify a proxy host. You can also set the environment variable 
       PROXY_HOST, instead of using this parameter.
@@ -45,24 +45,24 @@ Usage: OwaspZapWrapper [options]
       Specify a proxy port. You can also set the environment variable 
       PROXY_PORT, instead of using this parameter.
       Default: 0
-  * --report, -r
-      The output file, where the report will be written.
-    --sechubConfigfile, -s
-      The sechub config file, containing additonal configurations for the 
+  * --report
+      The output file, where the report will be written to.
+    --sechubConfigfile
+      The SecHub config file, containing additonal configurations for the 
       scan. 
-  * --targetURL, -t
+  * --targetURL
       Specifies the target url to be scanned.
-    --verbose, -v
-      Set this option to provide more output during scanning.
+    --verbose
+      Set this option to provide additional output while scanning.
       Default: false
-    --zapApiKey, -K
-      Specifies the owasp zap host api key. You can also set the environment 
+    --zapApiKey
+      Specifies the Owasp Zap host api key. You can also set the environment 
       variable ZAP_API_KEY, instead of using this parameter.
-    --zapHost, -H
-      Specifies the owasp zap host address. You can also set the environment 
+    --zapHost
+      Specifies the Owasp Zap host address. You can also set the environment 
       variable ZAP_HOST, instead of using this parameter.
-    --zapPort, -P
-      Specifies the owasp zap host port. You can also set the environment 
+    --zapPort
+      Specifies the Owasp Zap host port. You can also set the environment 
       variable ZAP_PORT, instead of using this parameter.
       Default: 0
 ----
