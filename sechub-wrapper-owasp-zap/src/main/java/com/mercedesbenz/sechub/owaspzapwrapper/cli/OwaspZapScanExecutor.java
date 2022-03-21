@@ -46,8 +46,7 @@ public class OwaspZapScanExecutor {
 
         String errorMessage = "Target url: " + scanConfig.getTargetUri() + " is not reachable!";
         if (proxyInformation != null) {
-            errorMessage = "Target url: " + scanConfig.getTargetUri() + " is not reachable via " + proxyInformation.getHost() + ":" + proxyInformation.getPort()
-                    + "!";
+            errorMessage += errorMessage + " via " + proxyInformation.getHost() + ":" + proxyInformation.getPort();
         }
 
         return errorMessage;
