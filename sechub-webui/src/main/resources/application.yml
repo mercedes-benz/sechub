@@ -1,0 +1,6 @@
+server:
+  port:
+    4443
+    
+sechub:
+  serverUrl: "https://localhost:8080"

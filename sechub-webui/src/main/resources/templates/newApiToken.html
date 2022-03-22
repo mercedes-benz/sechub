@@ -1,0 +1,12 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header (title='Projects')">
+<title>Projects</title>
+</head>
+<body>
+	<nav th:replace="fragments/navbar"></nav>
+	<h1>Requested new API token</h1>
+	<p>New API token sent to: <span th:text="${userEmail}">mail@example.org</span></p>
+	<footer th:replace="fragments/footer"></footer>
+</body>
+</html>

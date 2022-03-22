@@ -72,9 +72,15 @@ projectType = [
                     project(':sechub-scan-product-pds'),
             ],
             
+            /* SecHub frontend projects */
+            springBootWebUiProjects:[
+                   project(':sechub-webui'),
+            ],
+            
             bootableSpringApplicationProjects:[
                    project(':sechub-server'),
                    project(':sechub-pds'),
+                   //project(':sechub-webui'),
             ],
 
             /* documentation projects */
@@ -104,7 +110,7 @@ projectType.springBootProjects.addAll(projectType.springBootSecHubServerProjects
 projectType.springBootProjects.addAll(projectType.springBootPDSProjects)
 projectType.springBootProjects.addAll(projectType.springBootAdapterProjects)
 projectType.springBootProjects.addAll(projectType.springDocProjects)
-//projectType.springBootProjects.addAll(projectType.springBootFrontentProjects)
+projectType.springBootProjects.addAll(projectType.springBootWebUiProjects)
 
 projectType.javaProjects.addAll(projectType.springBootProjects)
 

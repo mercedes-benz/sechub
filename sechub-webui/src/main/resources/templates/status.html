@@ -1,0 +1,19 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header (title='SecHub - Status')">
+<title>Projects</title>
+</head>
+<body>
+	<nav th:replace="fragments/navbar"></nav>
+	<main>
+		<h1>Status</h1>
+		<p>Scheduler: enabled/disabled</p>
+		<p>Jobs running: 5</p>
+		<p>Jobs waiting: 10</p>
+		<p>Jobs all: 52 114</p>
+		
+		<p>Server Version 0.25.0</p>
+	</main>
+	<footer th:replace="fragments/footer"></footer>
+</body>
+</html>

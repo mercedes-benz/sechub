@@ -1,0 +1,19 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head> 
+    <title>Navbar</title> 
+</head>
+<body>
+<nav th:fragment="navbar">
+	<ul>
+		<li><a href="/">Projects</a></li>
+		<li><a href="/status">Status</a></li>
+	</ul>
+	<h3>Profile</h3>
+	<ul>
+		<li><a href="/requestNewApiToken">Request new API Token</a></li>
+		<li><a href="/logout">Logout</a></li>
+	</ul>
+</nav>
+</body>
+</html>

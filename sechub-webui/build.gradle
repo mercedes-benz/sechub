@@ -1,0 +1,24 @@
+// SPDX-License-Identifier: MIT
+ /*============================================================================
+ * Build file for subproject
+ *
+ * Root build file: "${rootProject.projectDir}/build.gradle"
+ * ============================================================================
+ */
+ 
+plugins {
+    id 'org.springframework.boot' apply true
+}
+
+dependencies {
+    implementation library.springboot_starter_web
+    implementation library.springboot_starter_data_jpa
+    implementation library.springboot_starter_security
+    implementation library.springboot_starter_thymeleaf
+    implementation library.logstashLogbackEncoder
+    implementation library.database_h2
+    implementation library.database_postgres
+    implementation library.springframework_webflux
+    
+    developmentOnly library.springframework_devtools
+}

@@ -69,7 +69,10 @@ include 'sechub-cli',
 'sechub-analyzer-cli',
 
 // java API library
- 'sechub-api-java'
+'sechub-api-java',
+
+/* sechub web ui */
+'sechub-webui'
 
 
 buildCache {
