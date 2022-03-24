@@ -74,35 +74,38 @@ func handleHTTPRequestAndResponse(context *Context, request *http.Request) *http
 	return response
 }
 
-// Creates a new file upload http request with optional extra params
-func newfileUploadRequest(uploadToURL string, params map[string]string, paramName, path string) (*http.Request, error) {
-	file, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
+// Creates a new file upload http request with optional extra params (low memory footprint regardless the file size)
+func newFileUploadRequestViaPipe(uploadToURL string, params map[string]string, paramName, zipfilename string) (*http.Request, error) {
+	r, w := io.Pipe()
+	m := multipart.NewWriter(w)
 
-	body := &bytes.Buffer{}
-	writer := multipart.NewWriter(body)
-	part, err := writer.CreateFormFile(paramName, filepath.Base(path))
-	if err != nil {
-		return nil, err
-	}
-	_, err = io.Copy(part, file)
+	go func() {
+		defer w.Close()
 
-	if err != nil {
-		return nil, err
-	}
+		for key, val := range params {
+			_ = m.WriteField(key, val)
+		}
 
-	for key, val := range params {
-		_ = writer.WriteField(key, val)
-	}
-	err = writer.Close()
-	if err != nil {
-		return nil, err
-	}
+		part, err := m.CreateFormFile(paramName, filepath.Base(zipfilename))
+		if err != nil {
+			return
+		}
 
-	request, err := http.NewRequest("POST", uploadToURL, body)
-	request.Header.Set("Content-Type", writer.FormDataContentType())
+		file, err := os.Open(zipfilename)
+		if err != nil {
+			return
+		}
+		defer file.Close()
+
+		if _, err = io.Copy(part, file); err != nil {
+			return
+		}
+
+		m.Close() // Write trailing boundary end line
+	}()
+
+	request, err := http.NewRequest("POST", uploadToURL, r)
+	request.Header.Set("Content-Type", m.FormDataContentType())
+
 	return request, err
 }
