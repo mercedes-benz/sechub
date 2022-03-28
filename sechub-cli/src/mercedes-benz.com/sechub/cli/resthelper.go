@@ -132,17 +132,18 @@ func computeContentLengthOfFileUpload(params map[string]string, paramName, zipfi
 	<binary content of zip file here>
 	--f76dd0c1a814e0af2f4d197827fd9caa1e9636276e064454356141ae1347--
 	*/
-	const ContentLengthMultipartBoundary = 63                                             // multipart boundary line including \n
+	const ContentLengthMultipartBoundary = 63                                             // multipart boundary line including newlines
 	const ContentLengthMultipartBoundaryTrailingLine = ContentLengthMultipartBoundary + 2 // multipart boundary line plus `--`
 
-	const ContentLengthFormData = 46 // Content-Disposition: form-data; name="..."  (including \n)
+	const ContentLengthFormData = 46 // Content-Disposition: form-data; name="..."  (including newlines)
 
 	const ContentLengthFormDataZipFile = 100
 	// Content-Disposition: form-data; name="file"; filename="sourcecode.zip"
 	// Content-Type: application/octet-stream
-	// (including multiple \n)
+	// (including newlines)
 
 	contentLength = 0
+	// multipart form-data parameter list
 	for key, val := range params {
 		contentLength += ContentLengthMultipartBoundary
 		contentLength += ContentLengthFormData
@@ -150,14 +151,12 @@ func computeContentLengthOfFileUpload(params map[string]string, paramName, zipfi
 		contentLength += int64(len(val))
 	}
 
-	// uploaded .zip file part
+	// multipart .zip file part
 	contentLength += ContentLengthMultipartBoundary
 	contentLength += ContentLengthFormDataZipFile
 	contentLength += int64(len(paramName))
 	contentLength += int64(len(filepath.Base(zipfilename)))
 	contentLength += sechubUtil.GetFileSize(zipfilename)
-
-	// TODO: read size of zip file from disk (util/filehelpers?)
 
 	// multipart trailing line
 	contentLength += ContentLengthMultipartBoundaryTrailingLine
