@@ -31,6 +31,7 @@ func Test_computeContentLengthOfFileUpload(t *testing.T) {
 	// EXECUTE
 	request, _ := newFileUploadRequestViaPipe(buildUploadSourceCodeAPICall(context), extraParams, "file", testfile)
 	realContentLength := sechubTestUtil.CountBytesInStream(request.Body)
+
 	// TEST
 	fmt.Printf("Real content length: %d bytes\n", realContentLength)
 	fmt.Printf("Computed content length: %d bytes\n", request.ContentLength)
