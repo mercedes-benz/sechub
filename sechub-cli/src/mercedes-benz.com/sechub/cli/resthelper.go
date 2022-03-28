@@ -106,31 +106,7 @@ func newFileUploadRequestViaPipe(uploadToURL string, params map[string]string, p
 
 	request, err := http.NewRequest("POST", uploadToURL, r)
 	request.Header.Set("Content-Type", m.FormDataContentType())
-	// request.Header.Set("Content-Length", "1641")
-	// fmt.Println(request.Header)
-
-	// Set HTTP protocol 1.1 and ContentLength to -1 will create a `transfer-encoding: chunked`.
-	// This avoids warnings about missing content length on server side.
-	// request.ContentLength = -1
-
 	request.ContentLength = computeContentLengthOfFileUpload(params, paramName, zipfilename)
-	fmt.Printf("Computed Content-Length = %d\n", request.ContentLength)
-
-	buf := make([]byte, 1)
-	summe := 0
-
-	for err == nil {
-		_, err = io.ReadAtLeast(r, buf, 1)
-		if err == io.EOF {
-			break
-		}
-		// fmt.Print(numberOfBytes)
-		// fmt.Print(" gelesen. Zeichen =")
-		// fmt.Println(string(buf))
-		summe++
-	}
-	fmt.Printf("    Real Content-Length = %d\n", summe)
-	// TODO: Write a test to check if computed size equals real stream size
 
 	return request, err
 }
@@ -159,9 +135,9 @@ func computeContentLengthOfFileUpload(params map[string]string, paramName, zipfi
 	const ContentLengthMultipartBoundary = 63                                             // multipart boundary line including \n
 	const ContentLengthMultipartBoundaryTrailingLine = ContentLengthMultipartBoundary + 2 // multipart boundary line plus `--`
 
-	const ContentLengthFormData = 42 // Content-Disposition: form-data; name="..."  (including \n)
+	const ContentLengthFormData = 46 // Content-Disposition: form-data; name="..."  (including \n)
 
-	const ContentLengthFormDataZipFile = 92
+	const ContentLengthFormDataZipFile = 100
 	// Content-Disposition: form-data; name="file"; filename="sourcecode.zip"
 	// Content-Type: application/octet-stream
 	// (including multiple \n)
@@ -179,6 +155,7 @@ func computeContentLengthOfFileUpload(params map[string]string, paramName, zipfi
 	contentLength += ContentLengthFormDataZipFile
 	contentLength += int64(len(paramName))
 	contentLength += int64(len(filepath.Base(zipfilename)))
+	contentLength += sechubUtil.GetFileSize(zipfilename)
 
 	// TODO: read size of zip file from disk (util/filehelpers?)
 
