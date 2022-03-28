@@ -106,6 +106,60 @@ func newFileUploadRequestViaPipe(uploadToURL string, params map[string]string, p
 
 	request, err := http.NewRequest("POST", uploadToURL, r)
 	request.Header.Set("Content-Type", m.FormDataContentType())
+	request.ContentLength = computeContentLengthOfFileUpload(params, paramName, zipfilename)
 
 	return request, err
+}
+
+func computeContentLengthOfFileUpload(params map[string]string, paramName, zipfilename string) (contentLength int64) {
+	/* Real world example of multipart content sent to SecHub server when uploading:
+	--f76dd0c1a814e0af2f4d197827fd9caa1e9636276e064454356141ae1347
+	Content-Disposition: form-data; name="title"
+
+	Sourcecode zipped
+	--f76dd0c1a814e0af2f4d197827fd9caa1e9636276e064454356141ae1347
+	Content-Disposition: form-data; name="author"
+
+	Sechub client 0.0.0-285d1b6-dirty-20220324161639
+	--f76dd0c1a814e0af2f4d197827fd9caa1e9636276e064454356141ae1347
+	Content-Disposition: form-data; name="checkSum"
+
+	ccdcf7c07a8461f8aeb44f6bbd2166d184c79f7acfd86cb3415dcb452f274a63
+	--f76dd0c1a814e0af2f4d197827fd9caa1e9636276e064454356141ae1347
+	Content-Disposition: form-data; name="file"; filename="sourcecode-testproject.zip"
+	Content-Type: application/octet-stream
+
+	<binary content of zip file here>
+	--f76dd0c1a814e0af2f4d197827fd9caa1e9636276e064454356141ae1347--
+	*/
+	const ContentLengthMultipartBoundary = 63                                             // multipart boundary line including newlines
+	const ContentLengthMultipartBoundaryTrailingLine = ContentLengthMultipartBoundary + 2 // multipart boundary line plus `--`
+
+	const ContentLengthFormData = 46 // Content-Disposition: form-data; name="..."  (including newlines)
+
+	const ContentLengthFormDataZipFile = 100
+	// Content-Disposition: form-data; name="file"; filename="sourcecode.zip"
+	// Content-Type: application/octet-stream
+	// (including newlines)
+
+	contentLength = 0
+	// multipart form-data parameter list
+	for key, val := range params {
+		contentLength += ContentLengthMultipartBoundary
+		contentLength += ContentLengthFormData
+		contentLength += int64(len(key))
+		contentLength += int64(len(val))
+	}
+
+	// multipart .zip file part
+	contentLength += ContentLengthMultipartBoundary
+	contentLength += ContentLengthFormDataZipFile
+	contentLength += int64(len(paramName))
+	contentLength += int64(len(filepath.Base(zipfilename)))
+	contentLength += sechubUtil.GetFileSize(zipfilename)
+
+	// multipart trailing line
+	contentLength += ContentLengthMultipartBoundaryTrailingLine
+
+	return contentLength
 }

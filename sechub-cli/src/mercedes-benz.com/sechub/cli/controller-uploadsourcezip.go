@@ -3,6 +3,7 @@
 package cli
 
 import (
+	"fmt"
 	"os"
 
 	sechubUtil "mercedes-benz.com/sechub/util"
@@ -26,6 +27,8 @@ func uploadSourceZipFile(context *Context) {
 
 	request, err := newFileUploadRequestViaPipe(buildUploadSourceCodeAPICall(context), extraParams, "file", context.sourceZipFileName)
 	sechubUtil.HandleError(err, ExitCodeIOError)
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Sending %v:%v", request.Method, request.URL))
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Content length of upload request: %d bytes", request.ContentLength))
 
 	request.SetBasicAuth(context.config.user, context.config.apiToken)
 
