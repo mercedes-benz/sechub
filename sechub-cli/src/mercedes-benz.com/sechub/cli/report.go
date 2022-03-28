@@ -95,7 +95,6 @@ func getSecHubJobReport(context *Context) []byte {
 	data, err := ioutil.ReadAll(response.Body)
 	sechubUtil.HandleHTTPError(err, ExitCodeHTTPError)
 
-	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("SecHub job report: %s", string(data)))
 	return data
 }
 
@@ -104,12 +103,11 @@ func newSecHubReportFromFile(context *Context) SecHubReport {
 
 	/* open file and check exists */
 	jsonFile, err := os.Open(context.config.file)
-	defer jsonFile.Close()
-
 	if sechubUtil.HandleIOError(err) {
 		showHelpHint()
 		os.Exit(ExitCodeIOError)
 	}
+	defer jsonFile.Close()
 
 	var filecontent []byte
 	filecontent, err = ioutil.ReadAll(jsonFile)

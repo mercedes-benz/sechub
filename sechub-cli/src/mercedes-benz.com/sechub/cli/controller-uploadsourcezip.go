@@ -27,8 +27,11 @@ func uploadSourceZipFile(context *Context) {
 
 	request, err := newFileUploadRequestViaPipe(buildUploadSourceCodeAPICall(context), extraParams, "file", context.sourceZipFileName)
 	sechubUtil.HandleError(err, ExitCodeIOError)
-	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Sending %v:%v", request.Method, request.URL))
-	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Content length of upload request: %d bytes", request.ContentLength))
+
+	if context.config.debug || context.config.debugHTTP {
+		sechubUtil.LogDebug(true, fmt.Sprintf("HTTP %v %v", request.Method, request.URL))
+		sechubUtil.LogDebug(true, fmt.Sprintf("Content length of HTTP upload request: %d bytes", request.ContentLength))
+	}
 
 	request.SetBasicAuth(context.config.user, context.config.apiToken)
 
