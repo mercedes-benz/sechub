@@ -28,7 +28,11 @@ func sendWithDefaultHeader(method string, url string, context *Context) *http.Re
 
 func sendWithHeader(method string, url string, context *Context, header map[string]string) *http.Response {
 	/* we use inputForContentProcessing - means origin content, unfilled, prevents password leak in logs */
-	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Sending %s:%s\n Headers: %s\n Origin-Content: %q", method, url, header, context.inputForContentProcessing))
+	if context.config.debugHTTP {
+		sechubUtil.LogDebug(true, fmt.Sprintf("HTTP %s %s\n Headers: %s\n Origin-Content: %q", method, url, header, context.inputForContentProcessing))
+	} else {
+		sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("HTTP %s %s\n", method, url))
+	}
 
 	/* prepare */
 	request, err1 := http.NewRequest(method, url, bytes.NewBuffer(context.contentToSend)) // we use "contentToSend" and not "inputForContentProcessing" !
@@ -68,7 +72,11 @@ func handleHTTPRequestAndResponse(context *Context, request *http.Request) *http
 		}
 	}
 
-	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("HTTP response: %+v", response))
+	if context.config.debugHTTP {
+		sechubUtil.LogDebug(true, fmt.Sprintf("HTTP response:\n%+v", response))
+	} else {
+		sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("HTTP response code: %d", response.StatusCode))
+	}
 	sechubUtil.HandleHTTPResponse(response, ExitCodeHTTPError) // Will exit if we still got a 4xx or 5xx StatusCode
 
 	return response
