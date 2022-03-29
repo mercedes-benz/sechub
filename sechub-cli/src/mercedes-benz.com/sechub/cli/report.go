@@ -105,7 +105,7 @@ func newSecHubReportFromFile(context *Context) SecHubReport {
 	jsonFile, err := os.Open(context.config.file)
 	if sechubUtil.HandleIOError(err) {
 		showHelpHint()
-		os.Exit(ExitCodeIOError)
+		os.Exit(ExitCodeIOError) // exiting from go implicitely closes all open files
 	}
 	defer jsonFile.Close()
 
