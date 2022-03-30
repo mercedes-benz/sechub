@@ -21,21 +21,21 @@ import com.mercedesbenz.sechub.adapter.pds.PDSAdapter;
 import com.mercedesbenz.sechub.adapter.pds.PDSCodeScanConfig;
 import com.mercedesbenz.sechub.adapter.pds.PDSCodeScanConfigImpl;
 import com.mercedesbenz.sechub.adapter.pds.PDSMetaDataID;
-import com.mercedesbenz.sechub.domain.scan.TargetRegistry.TargetRegistryInfo;
-import com.mercedesbenz.sechub.domain.scan.product.AbstractCodeScanProductExecutor;
+import com.mercedesbenz.sechub.commons.model.ScanType;
+import com.mercedesbenz.sechub.domain.scan.product.AbstractProductExecutor;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
+import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.sharedkernel.SystemEnvironment;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspection;
 import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspector;
-import com.mercedesbenz.sechub.sharedkernel.resilience.ResilientActionExecutor;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
 
 @Service
-public class PDSCodeScanProductExecutor extends AbstractCodeScanProductExecutor<PDSInstallSetup> {
+public class PDSCodeScanProductExecutor extends AbstractProductExecutor {
 
     private static final String SOURCECODE_ZIP_CHECKSUM = "sourcecode.zip.checksum";
 
@@ -61,31 +61,24 @@ public class PDSCodeScanProductExecutor extends AbstractCodeScanProductExecutor<
     @Autowired
     PDSResilienceConsultant pdsResilienceConsultant;
 
-    ResilientActionExecutor<ProductResult> resilientActionExecutor;
-
     public PDSCodeScanProductExecutor() {
-        /* we create here our own instance - only for this service! */
-        this.resilientActionExecutor = new ResilientActionExecutor<>();
-
+        super(ProductIdentifier.PDS_CODESCAN, ScanType.CODE_SCAN);
     }
 
     @PostConstruct
     protected void postConstruct() {
         this.resilientActionExecutor.add(pdsResilienceConsultant);
     }
-
     @Override
-    protected List<ProductResult> executeWithAdapter(SecHubExecutionContext context, ProductExecutorContext executorContext, PDSInstallSetup setup,
-            TargetRegistryInfo info) throws Exception {
+    protected List<ProductResult> executeByAdapter(ProductExecutorData data) throws Exception {
         LOG.debug("Trigger PDS adapter execution");
 
+        ProductExecutorContext executorContext = data.getProductExecutorContext();
         PDSExecutorConfigSuppport configSupport = PDSExecutorConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
                 systemEnvironment);
-        if (configSupport.isTargetTypeForbidden(info.getTargetType())) {
-            LOG.info("pds adapter does not accept target type:{} so cancel execution");
-            return Collections.emptyList();
-        }
 
+        SecHubExecutionContext context = data.getSechubExecutionContext();
+        
         UUID jobUUID = context.getSechubJobUUID();
         String projectId = context.getConfiguration().getProjectId();
 
@@ -111,12 +104,12 @@ public class PDSCodeScanProductExecutor extends AbstractCodeScanProductExecutor<
 
                             setSecHubConfigModel(context.getConfiguration()).
 
-                            configure(createAdapterOptionsStrategy(context)).
+                            configure(createAdapterOptionsStrategy(data)).
 
-                            setTimeToWaitForNextCheckOperationInMilliseconds(configSupport.getTimeToWaitForNextCheckOperationInMilliseconds(setup)).
-                            setTimeOutInMinutes(configSupport.getTimeoutInMinutes(setup)).
+                            setTimeToWaitForNextCheckOperationInMilliseconds(configSupport.getTimeToWaitForNextCheckOperationInMilliseconds(installSetup)).
+                            setTimeOutInMinutes(configSupport.getTimeoutInMinutes(installSetup)).
 
-                            setFileSystemSourceFolders(info.getCodeUploadFileSystemFolders()).
+                            setFileSystemSourceFolders(data.getCodeUploadFileSystemFolders()).
                             setSourceCodeZipFileInputStream(sourceCodeZipFileInputStream).
                             setSourceZipFileChecksum(sourceZipFileChecksum).
 
@@ -166,17 +159,13 @@ public class PDSCodeScanProductExecutor extends AbstractCodeScanProductExecutor<
     }
 
     @Override
-    public ProductIdentifier getIdentifier() {
-        return ProductIdentifier.PDS_CODESCAN;
-    }
-
-    @Override
-    protected PDSInstallSetup getInstallSetup() {
-        return installSetup;
-    }
-
-    @Override
     public int getVersion() {
         return 1;
     }
+
+    @Override
+    protected void customize(ProductExecutorData data) {
+        
+    }
+
 }

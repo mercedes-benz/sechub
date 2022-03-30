@@ -56,7 +56,7 @@ public class WebConfigBuilderStrategyTest {
 
         Set<String> expectedIncludes = new HashSet<>();
         expectedIncludes.add("/admin");
-        expectedIncludes.add("/support/hidden.html");
+        expectedIncludes.add("/networkTargetDataSupport/hidden.html");
         expectedIncludes.add("/hidden");
 
         Set<String> expectedExcludes = new HashSet<>();

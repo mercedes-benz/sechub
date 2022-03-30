@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.netsparker;
 
-import com.mercedesbenz.sechub.domain.scan.TargetIdentifiyingOneInstallSetup;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetDataProvider;
 
-public interface NetsparkerInstallSetup extends TargetIdentifiyingOneInstallSetup {
+public interface NetsparkerInstallSetup extends NetworkTargetDataProvider{
 
     public int getScanResultCheckPeriodInMinutes();
 

@@ -4,7 +4,7 @@ package com.mercedesbenz.sechub.domain.scan.product.pds;
 import static com.mercedesbenz.sechub.sharedkernel.util.Assert.*;
 
 import com.mercedesbenz.sechub.commons.pds.PDSKeyProvider;
-import com.mercedesbenz.sechub.domain.scan.TargetType;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
 
 /**
  * These providers/keys are used by sechub PDS product executors at runtime
@@ -15,9 +15,9 @@ import com.mercedesbenz.sechub.domain.scan.TargetType;
  */
 public enum SecHubProductExecutionPDSKeyProvider implements PDSKeyProvider<SecHubProductExecutionPDSKey> {
 
-    PDS_FORBIDS_TARGETTYPE_INTERNET(createSupportTargetType(TargetType.INTERNET)),
+    PDS_FORBIDS_TARGETTYPE_INTERNET(createSupportTargetType(NetworkTargetType.INTERNET)),
 
-    PDS_FORBIDS_TARGETTYPE_INTRANET(createSupportTargetType(TargetType.INTRANET)),
+    PDS_FORBIDS_TARGETTYPE_INTRANET(createSupportTargetType(NetworkTargetType.INTRANET)),
 
     TIME_TO_WAIT_FOR_NEXT_CHECKOPERATION_IN_MILLISECONDS(new AdapterSetupPDSKey(PDSProductExecutorKeyConstants.TIME_TO_WAIT_NEXT_CHECK_MILLIS,
             "When this is set, the value will be used to wait for next check on PDS server. If not, the default from PDS install set up is used instead.")),
@@ -41,7 +41,7 @@ public enum SecHubProductExecutionPDSKeyProvider implements PDSKeyProvider<SecHu
         return key;
     }
 
-    private static ForbiddenTargetTypePDSKey createSupportTargetType(TargetType type) {
+    private static ForbiddenTargetTypePDSKey createSupportTargetType(NetworkTargetType type) {
         return new ForbiddenTargetTypePDSKey("pds.productexecutor.forbidden.targettype." + type.name().toLowerCase(),
                 "When this key is set to true, than this pds instance does not scan " + type.name() + "!", type);
     }

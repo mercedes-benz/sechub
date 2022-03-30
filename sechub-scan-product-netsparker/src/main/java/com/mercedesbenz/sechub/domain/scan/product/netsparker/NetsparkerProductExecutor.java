@@ -15,18 +15,21 @@ import com.mercedesbenz.sechub.adapter.netsparker.NetsparkerAdapter;
 import com.mercedesbenz.sechub.adapter.netsparker.NetsparkerAdapterConfig;
 import com.mercedesbenz.sechub.adapter.netsparker.NetsparkerConfig;
 import com.mercedesbenz.sechub.adapter.netsparker.NetsparkerMetaDataID;
-import com.mercedesbenz.sechub.domain.scan.OneInstallSetupConfigBuilderStrategy;
-import com.mercedesbenz.sechub.domain.scan.TargetRegistry.TargetRegistryInfo;
-import com.mercedesbenz.sechub.domain.scan.TargetType;
+import com.mercedesbenz.sechub.commons.model.ScanType;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetDataAdapterConfigurationStrategy;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetRegistry.NetworkTargetInfo;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
 import com.mercedesbenz.sechub.domain.scan.WebConfigBuilderStrategy;
-import com.mercedesbenz.sechub.domain.scan.product.AbstractWebScanProductExecutor;
+import com.mercedesbenz.sechub.domain.scan.WebScanNetworkLocationProvider;
+import com.mercedesbenz.sechub.domain.scan.product.AbstractProductExecutor;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
+import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
+import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 
 @Service
-public class NetsparkerProductExecutor extends AbstractWebScanProductExecutor<NetsparkerInstallSetup> {
+public class NetsparkerProductExecutor extends AbstractProductExecutor {
 
     private static final Logger LOG = LoggerFactory.getLogger(NetsparkerProductExecutor.class);
 
@@ -36,22 +39,27 @@ public class NetsparkerProductExecutor extends AbstractWebScanProductExecutor<Ne
     @Autowired
     NetsparkerInstallSetup installSetup;
 
-    @Override
-    protected NetsparkerInstallSetup getInstallSetup() {
-        return installSetup;
+    public NetsparkerProductExecutor() {
+        super(ProductIdentifier.NETSPARKER, ScanType.WEB_SCAN);
     }
-
+    
     @Override
-    protected List<ProductResult> executeWithAdapter(SecHubExecutionContext context, ProductExecutorContext executorContext, NetsparkerInstallSetup setup,
-            TargetRegistryInfo info) throws Exception {
-
-        URI targetURI = info.getURI();
+    protected void customize(ProductExecutorData data) {
+        SecHubConfiguration sechubConfiguration = data.getSechubExecutionContext().getConfiguration();
+        data.setNetworkLocationProvider(new WebScanNetworkLocationProvider(sechubConfiguration));
+        data.setNetworkTargetDataProvider(installSetup);
+        
+    }
+    @Override
+    protected List<ProductResult> executeByAdapter(ProductExecutorData data) throws Exception {
+        NetworkTargetInfo info = data.getCurrentNetworkTargetInfo();
+        URI targetURI = info.getURI(); 
         if (targetURI == null) {
             /* no targets defined */
             return Collections.emptyList();
         }
-        TargetType targetType = info.getTargetType();
-        LOG.debug("Trigger netsparker adapter execution for target {} and setup {} ", targetType, setup);
+        NetworkTargetType targetType = info.getTargetType();
+        LOG.debug("Trigger netsparker adapter execution for target {}", targetType);
 
         List<ProductResult> results = new ArrayList<>();
 
@@ -62,26 +70,27 @@ public class NetsparkerProductExecutor extends AbstractWebScanProductExecutor<Ne
          * result corresponding to target URI.
          */
         /* @formatter:off */
-		executorContext.useFirstFormerResultHavingMetaData(NetsparkerMetaDataID.KEY_TARGET_URI, targetURI);
+		ProductExecutorContext productExecutorContext = data.getProductExecutorContext();
+        productExecutorContext.useFirstFormerResultHavingMetaData(NetsparkerMetaDataID.KEY_TARGET_URI, targetURI);
 
 		NetsparkerAdapterConfig netsparkerConfig = NetsparkerConfig.builder().
-				configure(createAdapterOptionsStrategy(context)).
-				configure(new WebConfigBuilderStrategy(context)).
-				configure(new OneInstallSetupConfigBuilderStrategy(setup)).
-				setTimeToWaitForNextCheckOperationInMinutes(setup.getScanResultCheckPeriodInMinutes()).
-				setTimeOutInMinutes(setup.getScanResultCheckTimeOutInMinutes()).
-				setTraceID(context.getTraceLogIdAsString()).
-				setAgentName(setup.getAgentName()).
-				setAgentGroupName(setup.getIdentifier(targetType)).
-				setPolicyID(setup.getDefaultPolicyId()).
-				setLicenseID(setup.getNetsparkerLicenseId()).
+				configure(createAdapterOptionsStrategy(data)).
+				configure(new WebConfigBuilderStrategy(data.getSechubExecutionContext())).
+				configure(new NetworkTargetDataAdapterConfigurationStrategy(installSetup, targetType)).
+				setTimeToWaitForNextCheckOperationInMinutes(installSetup.getScanResultCheckPeriodInMinutes()).
+				setTimeOutInMinutes(installSetup.getScanResultCheckTimeOutInMinutes()).
+				setTraceID(data.getTraceLogIdAsString()).
+				setAgentName(installSetup.getAgentName()).
+				setAgentGroupName(data.getNetworkTargetDataSupport().getIdentifier(targetType)).
+				setPolicyID(installSetup.getDefaultPolicyId()).
+				setLicenseID(installSetup.getNetsparkerLicenseId()).
 				setTargetURI(targetURI).build();
 		/* @formatter:on */
 
         /* execute NETSPARKER by adapter and return product result */
-        String xml = netsparkerAdapter.start(netsparkerConfig, executorContext.getCallback());
+        String xml = netsparkerAdapter.start(netsparkerConfig, productExecutorContext.getCallback());
 
-        ProductResult currentProductResult = executorContext.getCurrentProductResult();
+        ProductResult currentProductResult = productExecutorContext.getCurrentProductResult();
         currentProductResult.setResult(xml);
         results.add(currentProductResult);
 
@@ -89,13 +98,9 @@ public class NetsparkerProductExecutor extends AbstractWebScanProductExecutor<Ne
     }
 
     @Override
-    public ProductIdentifier getIdentifier() {
-        return ProductIdentifier.NETSPARKER;
-    }
-
-    @Override
     public int getVersion() {
         return 1;
     }
+
 
 }

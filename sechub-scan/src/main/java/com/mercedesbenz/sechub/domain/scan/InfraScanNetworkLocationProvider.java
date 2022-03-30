@@ -1,5 +1,4 @@
-// SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.domain.scan.product;
+package com.mercedesbenz.sechub.domain.scan;
 
 import java.net.InetAddress;
 import java.net.URI;
@@ -7,16 +6,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfiguration;
-import com.mercedesbenz.sechub.domain.scan.InstallSetup;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 
-public abstract class AbstractInfrastructureScanProductExecutor<S extends InstallSetup> extends AbstractInstallSetupProductExecutor<S>
-        implements InfrastructureScanProductExecutor {
+public class InfraScanNetworkLocationProvider implements NetworkLocationProvider{
 
+    private SecHubConfiguration config;
+    
+    public InfraScanNetworkLocationProvider(SecHubConfiguration config) {
+        this.config=config;
+    }
+    
     @Override
-    protected List<URI> resolveURIsForTarget(SecHubConfiguration config) {
+    public List<URI> getURIs() {
         /* assert INFRASCAN configuration available */
         Optional<SecHubInfrastructureScanConfiguration> infraScan = config.getInfraScan();
         if (!infraScan.isPresent()) {
@@ -32,7 +34,7 @@ public abstract class AbstractInfrastructureScanProductExecutor<S extends Instal
     }
 
     @Override
-    protected List<InetAddress> resolveInetAdressForTarget(SecHubConfiguration config) {
+    public List<InetAddress> getInetAdresses() {
         if (config == null) {
             return Collections.emptyList();
         }
@@ -41,11 +43,6 @@ public abstract class AbstractInfrastructureScanProductExecutor<S extends Instal
             return Collections.emptyList();
         }
         return infraScan.get().getIps();
-    }
-
-    @Override
-    protected ScanType getScanType() {
-        return ScanType.INFRA_SCAN;
     }
 
 }

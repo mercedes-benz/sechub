@@ -19,12 +19,12 @@ public class CheckmarxExecutorConfigSuppport extends DefaultExecutorConfigSuppor
     private static final Logger LOG = LoggerFactory.getLogger(CheckmarxExecutorConfigSuppport.class);
 
     /**
-     * Creates the configuration support and VALIDATE. This will fail when
+     * Creates the configuration networkTargetDataSupport and VALIDATE. This will fail when
      * configuration data is not valid (e.g. mandatory keys missing)
      *
      * @param config
      * @param systemEnvironment
-     * @return support
+     * @return networkTargetDataSupport
      * @throws NotAcceptableException when configuration is not valid
      */
     public static CheckmarxExecutorConfigSuppport createSupportAndAssertConfigValid(ProductExecutorConfig config, SystemEnvironment systemEnvironment) {

@@ -10,61 +10,46 @@ public class TargetTypeTest {
     @Test
     public void healthcheck() {
 
-        assertEquals("Hmm.. seems there is a new target typeToTest which is not tested, please add + modify...", 5, TargetType.values().length);
+        assertEquals("Hmm.. amount of available target types differs! eems there is a new target typeToTest which is not tested, please add + modify...", 4, NetworkTargetType.values().length);
     }
 
     @Test
     public void INTRANET_test() {
-        TargetType typeToTest = TargetType.INTRANET;
+        NetworkTargetType typeToTest = NetworkTargetType.INTRANET;
 
         assertTrue(typeToTest.isIntranet());
         assertTrue(typeToTest.isValid());
 
         assertFalse(typeToTest.isInternet());
-        assertFalse(typeToTest.isCodeUpload());
-    }
-
-    @Test
-    public void CODEUPLOAD_test() {
-        TargetType typeToTest = TargetType.CODE_UPLOAD;
-
-        assertTrue(typeToTest.isValid());
-        assertTrue(typeToTest.isCodeUpload());
-
-        assertFalse(typeToTest.isInternet());
-        assertFalse(typeToTest.isIntranet());
     }
 
     @Test
     public void INTERNET_test() {
-        TargetType typeToTest = TargetType.INTERNET;
+        NetworkTargetType typeToTest = NetworkTargetType.INTERNET;
 
         assertTrue(typeToTest.isInternet());
         assertTrue(typeToTest.isValid());
 
-        assertFalse(typeToTest.isCodeUpload());
         assertFalse(typeToTest.isIntranet());
-
     }
 
     @Test
     public void UNKNOWN_test() {
-        TargetType typeToTest = TargetType.UNKNOWN;
+        NetworkTargetType typeToTest = NetworkTargetType.UNKNOWN;
 
         assertNothingReturnsTrue(typeToTest);
     }
 
     @Test
     public void ILLEGAL_test() {
-        TargetType typeToTest = TargetType.ILLEGAL;
+        NetworkTargetType typeToTest = NetworkTargetType.ILLEGAL;
 
         assertNothingReturnsTrue(typeToTest);
     }
 
-    private void assertNothingReturnsTrue(TargetType typeToTest) {
+    private void assertNothingReturnsTrue(NetworkTargetType typeToTest) {
         assertFalse(typeToTest.isInternet());
         assertFalse(typeToTest.isIntranet());
         assertFalse(typeToTest.isValid());
-        assertFalse(typeToTest.isCodeUpload());
     }
 }

@@ -4,7 +4,7 @@ package com.mercedesbenz.sechub.domain.scan.resolve;
 import java.net.InetAddress;
 import java.net.URI;
 
-import com.mercedesbenz.sechub.domain.scan.Target;
+import com.mercedesbenz.sechub.domain.scan.NetworkTarget;
 
 public interface TargetResolver {
 
@@ -14,7 +14,7 @@ public interface TargetResolver {
      * @param uri
      * @return target, never <code>null</code>
      */
-    public Target resolveTarget(URI uri);
+    public NetworkTarget resolveTarget(URI uri);
 
     /**
      * Resolves target for given IP adress
@@ -22,14 +22,6 @@ public interface TargetResolver {
      * @param inetAdress
      * @return target, never <code>null</code>
      */
-    public Target resolveTarget(InetAddress inetAdress);
+    public NetworkTarget resolveTarget(InetAddress inetAdress);
 
-    /**
-     * Resolves target for given path
-     *
-     * @param path
-     * @return target, never <code>null</code>
-     * @throws IllegalArgumentException if identifier cannot be handled
-     */
-    public Target resolveTargetForPath(String path);
 }

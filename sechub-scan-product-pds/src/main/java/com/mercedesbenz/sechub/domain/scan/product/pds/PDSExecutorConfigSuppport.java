@@ -13,22 +13,25 @@ import com.mercedesbenz.sechub.commons.pds.PDSConfigDataKeyProvider;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.commons.pds.PDSKey;
 import com.mercedesbenz.sechub.commons.pds.PDSKeyProvider;
-import com.mercedesbenz.sechub.domain.scan.TargetType;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetDataProvider;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.mercedesbenz.sechub.sharedkernel.SystemEnvironment;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.sharedkernel.validation.Validation;
 
-public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport {
+public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport implements NetworkTargetDataProvider {
 
+    public static final String PARAM_ID = "pds.executor.config.support";
+    
     /**
-     * Creates the configuration support and VALIDATE. This will fail when
+     * Creates the configuration networkTargetDataSupport and VALIDATE. This will fail when
      * configuration data is not valid (e.g. mandatory keys missing)
      *
      * @param config
      * @param systemEnvironment
-     * @return support
+     * @return networkTargetDataSupport
      * @throws NotAcceptableException when configuration is not valid
      */
     public static PDSExecutorConfigSuppport createSupportAndAssertConfigValid(ProductExecutorConfig config, SystemEnvironment systemEnvironment) {
@@ -102,7 +105,7 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport {
         return getParameterBooleanValue(SecHubProductExecutionPDSKeyProvider.TRUST_ALL_CERTIFICATES);
     }
 
-    public boolean isTargetTypeForbidden(TargetType targetType) {
+    public boolean isTargetTypeForbidden(NetworkTargetType targetType) {
         boolean forbidden = false;
         for (SecHubProductExecutionPDSKeyProvider provider : SecHubProductExecutionPDSKeyProvider.values()) {
             if (forbidden) {
@@ -136,6 +139,56 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport {
 
     private boolean getParameterBooleanValue(PDSKeyProvider<? extends PDSKey> provider) {
         return getParameterBooleanValue(provider.getKey().getId());
+    }
+
+    @Override
+    public String getIdentifierWhenInternetTarget() {
+        return config.getName();
+    }
+
+    @Override
+    public String getIdentifierWhenIntranetTarget() {
+        return config.getName();
+    }
+
+    @Override
+    public String getBaseURLWhenInternetTarget() {
+        return getProductBaseURL();
+    }
+
+    @Override
+    public String getBaseURLWhenIntranetTarget() {
+        return getProductBaseURL();
+    }
+
+    @Override
+    public String getUsernameWhenInternetTarget() {
+        return getUser();
+    }
+
+    @Override
+    public String getUsernameWhenIntranetTarget() {
+        return getUser();
+    }
+
+    @Override
+    public String getPasswordWhenInternetTarget() {
+        return getPasswordOrAPIToken();
+    }
+
+    @Override
+    public String getPasswordWhenIntranetTarget() {
+        return getPasswordOrAPIToken();
+    }
+
+    @Override
+    public boolean isHavingUntrustedCertificateForIntranet() {
+       return isTrustAllCertificatesEnabled();
+    }
+
+    @Override
+    public boolean isHavingUntrustedCertificateForInternet() {
+        return isTrustAllCertificatesEnabled();
     }
 
 }

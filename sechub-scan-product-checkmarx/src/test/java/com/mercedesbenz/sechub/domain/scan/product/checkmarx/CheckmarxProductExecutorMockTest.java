@@ -27,8 +27,6 @@ import com.mercedesbenz.sechub.adapter.AdapterLogId;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
-import com.mercedesbenz.sechub.domain.scan.Target;
-import com.mercedesbenz.sechub.domain.scan.TargetType;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorCallback;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
@@ -37,7 +35,6 @@ import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetup;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetupCredentials;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetupJobParameter;
-import com.mercedesbenz.sechub.domain.scan.resolve.TargetResolver;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.SystemEnvironment;
 import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
@@ -48,8 +45,11 @@ import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingEntry;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.metadata.DefaultMetaDataInspector;
+import com.mercedesbenz.sechub.sharedkernel.resilience.ResilientActionExecutor;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
+
+import net.bytebuddy.implementation.bind.annotation.Super;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { CheckmarxProductExecutor.class, CheckmarxResilienceConsultant.class,
@@ -75,15 +75,10 @@ public class CheckmarxProductExecutorMockTest {
     StorageService storageService;
 
     @MockBean
-    TargetResolver targetResolver;
-
-    @MockBean
     SystemEnvironment systemEnvironment;
 
     @Before
     public void before() throws Exception {
-        when(installSetup.isAbleToScan(TargetType.CODE_UPLOAD)).thenReturn(true);
-        when(targetResolver.resolveTargetForPath(eq(PATH_EXAMPLE1))).thenReturn(new Target("sourcecode...", TargetType.CODE_UPLOAD));
         JobStorage storage = Mockito.mock(JobStorage.class);
         when(storage.fetch(any())).thenReturn(new StringInputStream("something as a code..."));
         when(storageService.getJobStorage(any(), any())).thenReturn(storage);
@@ -91,7 +86,7 @@ public class CheckmarxProductExecutorMockTest {
 
     @Test
     public void action_executor_contains_checkmarx_resilience_consultant_after_postConstruct() {
-        assertTrue(executorToTest.resilientActionExecutor.containsConsultant(CheckmarxResilienceConsultant.class));
+        assertTrue(executorToTest.fetchResilientExecutor().containsConsultant(CheckmarxResilienceConsultant.class));
     }
 
     @Test

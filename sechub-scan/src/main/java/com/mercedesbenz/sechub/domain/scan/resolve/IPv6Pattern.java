@@ -27,7 +27,7 @@ public class IPv6Pattern implements InetAddressPattern {
         this.valid = false;
         if (parts.length != 8) {
             /*
-             * we do NOT support short form but only long variant, which has always 8 parts
+             * we do NOT networkTargetDataSupport short form but only long variant, which has always 8 parts
              */
             LOG.debug(
                     "Pattern '{}' not valid for IPv6 (we do not provide compact form for patterns, only long variant). Amount of dividers must be 8 and not {}.",

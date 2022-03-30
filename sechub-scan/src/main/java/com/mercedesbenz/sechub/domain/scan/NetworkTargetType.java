@@ -1,22 +1,17 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan;
 
-public enum TargetType {
+public enum NetworkTargetType {
 
     /**
-     * Target is an URL/IP available from INTRANET
+     * NetworkTarget is an URL/IP available from INTRANET
      */
     INTRANET(true),
 
     /**
-     * Target is an URL/IP available from INTERNET
+     * NetworkTarget is an URL/IP available from INTERNET
      */
     INTERNET(true),
-
-    /**
-     * Uploaded code
-     */
-    CODE_UPLOAD(true),
 
     /**
      * An illegal target, e.g. "localhost", "127.0.0.0"
@@ -30,7 +25,7 @@ public enum TargetType {
 
     private boolean valid;
 
-    private TargetType(boolean valid) {
+    private NetworkTargetType(boolean valid) {
         this.valid = valid;
     }
 
@@ -44,15 +39,11 @@ public enum TargetType {
     }
 
     public boolean isIntranet() {
-        return TargetType.INTRANET.equals(this);
+        return NetworkTargetType.INTRANET.equals(this);
     }
 
     public boolean isInternet() {
-        return TargetType.INTERNET.equals(this);
-    }
-
-    public boolean isCodeUpload() {
-        return TargetType.CODE_UPLOAD.equals(this);
+        return NetworkTargetType.INTERNET.equals(this);
     }
 
     /**

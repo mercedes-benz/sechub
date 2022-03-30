@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.mercedesbenz.sechub.commons.pds.PDSConfigDataKeyProvider;
-import com.mercedesbenz.sechub.domain.scan.TargetType;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetup;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetupCredentials;
@@ -58,12 +58,12 @@ public class PDSExecutorConfigSuppportTest {
 
     @Test
     public void isTargetTypeForbidden_returns_true_for_target_type_requested_is_internet_when_internet_is_forbidden_in_configuration() {
-        assertEquals(true, supportToTest.isTargetTypeForbidden(TargetType.INTERNET));
+        assertEquals(true, supportToTest.isTargetTypeForbidden(NetworkTargetType.INTERNET));
     }
 
     @Test
     public void isTargetTypeForbidden_returns_false_for_target_type_requested_is_intranet_when_internet_is_forbidden_in_configuration() {
-        assertEquals(false, supportToTest.isTargetTypeForbidden(TargetType.INTRANET));
+        assertEquals(false, supportToTest.isTargetTypeForbidden(NetworkTargetType.INTRANET));
     }
 
 }

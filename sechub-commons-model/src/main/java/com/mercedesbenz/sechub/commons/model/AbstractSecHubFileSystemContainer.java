@@ -2,7 +2,7 @@ package com.mercedesbenz.sechub.commons.model;
 
 import java.util.Optional;
 
-public abstract class AbstractSecHubFileSystemContainer {
+public abstract class AbstractSecHubFileSystemContainer implements SecHubFileSystemContainer {
 
     public static final String PROPERTY_FILESYSTEM = "fileSystem";
     
@@ -12,6 +12,7 @@ public abstract class AbstractSecHubFileSystemContainer {
         this.fileSystem = Optional.ofNullable(fileSystem);
     }
 
+    @Override
     public Optional<SecHubFileSystemConfiguration> getFileSystem() {
         return fileSystem;
     }

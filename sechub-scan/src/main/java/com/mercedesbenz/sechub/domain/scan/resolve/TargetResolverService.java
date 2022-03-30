@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.mercedesbenz.sechub.domain.scan.Target;
-import com.mercedesbenz.sechub.domain.scan.TargetType;
+import com.mercedesbenz.sechub.domain.scan.NetworkTarget;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 
 /**
@@ -58,55 +58,45 @@ public class TargetResolverService implements TargetResolver {
     }
 
     @Override
-    public Target resolveTargetForPath(String path) {
-        /*
-         * currently there is no strategy - we simple accept this always as a code
-         * upload
-         */
-        TargetType codeUploadType = TargetType.CODE_UPLOAD;
-        return new Target(path, codeUploadType);
-    }
-
-    @Override
-    public Target resolveTarget(URI uri) {
+    public NetworkTarget resolveTarget(URI uri) {
         ensureInitialized();
 
         if (uri == null) {
-            return new Target(uri, TargetType.UNKNOWN);
+            return new NetworkTarget(uri, NetworkTargetType.UNKNOWN);
         }
         if (illegalURItargetDetector != null) {
             if (illegalURItargetDetector.isIllegal(uri)) {
-                return new Target(uri, TargetType.ILLEGAL);
+                return new NetworkTarget(uri, NetworkTargetType.ILLEGAL);
             }
         }
-        Target resolved = null;
+        NetworkTarget resolved = null;
         if (usedUriTargetResolveStrategy != null) {
             resolved = usedUriTargetResolveStrategy.resolveTargetFor(uri);
         }
         if (resolved == null) {
-            resolved = new Target(uri, TargetType.INTERNET);
+            resolved = new NetworkTarget(uri, NetworkTargetType.INTERNET);
         }
         return resolved;
     }
 
     @Override
-    public Target resolveTarget(InetAddress inetAdress) {
+    public NetworkTarget resolveTarget(InetAddress inetAdress) {
         ensureInitialized();
 
         if (inetAdress == null) {
-            return new Target(inetAdress, TargetType.UNKNOWN);
+            return new NetworkTarget(inetAdress, NetworkTargetType.UNKNOWN);
         }
         if (illegalInetAddressTargetDetector != null) {
             if (illegalInetAddressTargetDetector.isIllegal(inetAdress)) {
-                return new Target(inetAdress, TargetType.ILLEGAL);
+                return new NetworkTarget(inetAdress, NetworkTargetType.ILLEGAL);
             }
         }
-        Target resolved = null;
+        NetworkTarget resolved = null;
         if (usedInetAddressTargetResolveStrategy != null) {
             resolved = usedInetAddressTargetResolveStrategy.resolveTargetFor(inetAdress);
         }
         if (resolved == null) {
-            resolved = new Target(inetAdress, TargetType.INTERNET);
+            resolved = new NetworkTarget(inetAdress, NetworkTargetType.INTERNET);
         }
         return resolved;
     }

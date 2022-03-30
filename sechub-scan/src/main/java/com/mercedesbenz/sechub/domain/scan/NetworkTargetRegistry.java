@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Target registry is a data container object used by product executors. <br>
+ * NetworkTarget registry is a data container object used by product executors. <br>
  * It is created on execution time and filled up with configuration data. <br>
  * After fill up the target will be registered and target registry info can be
  * fetched, which contains runtime information.
@@ -22,11 +22,11 @@ import java.util.Set;
  * @author Albert Tregnaghi
  *
  */
-public class TargetRegistry {
+public class NetworkTargetRegistry {
 
-    private Map<TargetType, List<Target>> map = new EnumMap<>(TargetType.class);
+    private Map<NetworkTargetType, List<NetworkTarget>> map = new EnumMap<>(NetworkTargetType.class);
 
-    public TargetRegistry() {
+    public NetworkTargetRegistry() {
 
     }
 
@@ -36,13 +36,13 @@ public class TargetRegistry {
      *
      * @param target
      */
-    public void register(Target target) {
+    public void register(NetworkTarget target) {
         notNull(target, "target may not be null!");
 
-        TargetType type = target.getType();
+        NetworkTargetType type = target.getType();
         notNull(type, "target type may not be null!");
 
-        List<Target> list = getListFor(type);
+        List<NetworkTarget> list = getListFor(type);
         list.add(target);
     }
 
@@ -53,22 +53,22 @@ public class TargetRegistry {
      * @param type
      * @return
      */
-    public TargetRegistryInfo createRegistryInfo(TargetType type) {
-        return new TargetRegistryInfo(type);
+    public NetworkTargetInfo createRegistryInfo(NetworkTargetType type) {
+        return new NetworkTargetInfo(type);
     }
 
     /**
      * @param type
      * @return unmodifiable list for given target type, never <code>null</code>
      */
-    public List<Target> getTargetsFor(TargetType type) {
+    public List<NetworkTarget> getTargetsFor(NetworkTargetType type) {
         notNull(type, "given type may not be null!");
 
-        List<Target> list = getListFor(type);
+        List<NetworkTarget> list = getListFor(type);
         return Collections.unmodifiableList(list);
     }
 
-    List<Target> getListFor(TargetType type) {
+    List<NetworkTarget> getListFor(NetworkTargetType type) {
         return map.computeIfAbsent(type, k -> new ArrayList<>());
     }
 
@@ -78,25 +78,25 @@ public class TargetRegistry {
      * @author Albert Tregnaghi
      *
      */
-    public class TargetRegistryInfo {
+    public class NetworkTargetInfo {
 
-        private TargetType type;
+        private NetworkTargetType type;
 
-        private TargetRegistryInfo(TargetType type) {
+        private NetworkTargetInfo(NetworkTargetType type) {
             notNull(type, "type may not be null!");
 
             this.type = type;
         }
 
         /**
-         * Returns a set for target URIs for this kind of {@link TargetType}
+         * Returns a set for target URIs for this kind of {@link NetworkTargetType}
          *
          * @return set, never <code>null</code>
          */
         public Set<URI> getURIs() {
-            List<Target> list = TargetRegistry.this.getTargetsFor(type);
+            List<NetworkTarget> list = NetworkTargetRegistry.this.getTargetsFor(type);
             Set<URI> uris = new LinkedHashSet<>();
-            for (Target target : list) {
+            for (NetworkTarget target : list) {
                 URI uri = target.getUrl();
                 if (uri != null) {
                     uris.add(uri);
@@ -106,7 +106,7 @@ public class TargetRegistry {
         }
 
         /**
-         * Returns target URI for this kind of {@link TargetType}, which will be the
+         * Returns target URI for this kind of {@link NetworkTargetType}, which will be the
          * first element from URI list.
          *
          * This is a convenience method for scan types where we can have only ONE target
@@ -127,26 +127,10 @@ public class TargetRegistry {
             return uri;
         }
 
-        /**
-         * @return a set, never <code>null</code> containing all system folder pathes
-         *         used for code upload, or an empty list
-         */
-        public Set<String> getCodeUploadFileSystemFolders() {
-            List<Target> list = TargetRegistry.this.getTargetsFor(type);
-            Set<String> identifiers = new LinkedHashSet<>();
-            for (Target target : list) {
-                String identifier = target.getIdentifierWithoutPrefix();
-                if (identifier != null) {
-                    identifiers.add(identifier);
-                }
-            }
-            return identifiers;
-        }
-
         public Set<InetAddress> getIPs() {
-            List<Target> list = TargetRegistry.this.getTargetsFor(type);
+            List<NetworkTarget> list = NetworkTargetRegistry.this.getTargetsFor(type);
             Set<InetAddress> inetAdresses = new LinkedHashSet<>();
-            for (Target target : list) {
+            for (NetworkTarget target : list) {
                 InetAddress uri = target.getInetAdress();
                 if (uri != null) {
                     inetAdresses.add(uri);
@@ -156,9 +140,9 @@ public class TargetRegistry {
         }
 
         /**
-         * @return the {@link TargetType} for this scan
+         * @return the {@link NetworkTargetType} for this scan
          */
-        public TargetType getTargetType() {
+        public NetworkTargetType getTargetType() {
             return type;
         }
 
@@ -170,7 +154,6 @@ public class TargetRegistry {
         public boolean containsAtLeastOneTarget() {
             boolean containsAtLeastOneTarget = !getURIs().isEmpty();
             containsAtLeastOneTarget = containsAtLeastOneTarget || !getIPs().isEmpty();
-            containsAtLeastOneTarget = containsAtLeastOneTarget || !getCodeUploadFileSystemFolders().isEmpty();
             return containsAtLeastOneTarget;
         }
 

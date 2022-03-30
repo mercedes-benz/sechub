@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.nessus;
 
-import java.net.InetAddress;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,19 +14,21 @@ import com.mercedesbenz.sechub.adapter.AbstractAdapterConfigBuilder;
 import com.mercedesbenz.sechub.adapter.nessus.NessusAdapter;
 import com.mercedesbenz.sechub.adapter.nessus.NessusAdapterConfig;
 import com.mercedesbenz.sechub.adapter.nessus.NessusConfig;
-import com.mercedesbenz.sechub.domain.scan.TargetIdentifyingMultiInstallSetupConfigBuilderStrategy;
-import com.mercedesbenz.sechub.domain.scan.TargetRegistry.TargetRegistryInfo;
-import com.mercedesbenz.sechub.domain.scan.TargetType;
-import com.mercedesbenz.sechub.domain.scan.product.AbstractInfrastructureScanProductExecutor;
+import com.mercedesbenz.sechub.commons.model.ScanType;
+import com.mercedesbenz.sechub.domain.scan.InfraScanNetworkLocationProvider;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetDataAdapterConfigurationStrategy;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetRegistry.NetworkTargetInfo;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
+import com.mercedesbenz.sechub.domain.scan.product.AbstractProductExecutor;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
+import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 
 @Service
-public class NessusProductExecutor extends AbstractInfrastructureScanProductExecutor<NessusInstallSetup> {
+public class NessusProductExecutor extends AbstractProductExecutor {
 
     private static final Logger LOG = LoggerFactory.getLogger(NessusProductExecutor.class);
 
@@ -52,54 +53,58 @@ public class NessusProductExecutor extends AbstractInfrastructureScanProductExec
 
     @Autowired
     NessusInstallSetup installSetup;
-
+    
+    public NessusProductExecutor() {
+        super(ProductIdentifier.NESSUS, ScanType.CODE_SCAN);
+    }
+    
     @Override
-    protected List<ProductResult> executeWithAdapter(SecHubExecutionContext context, ProductExecutorContext executorContext, NessusInstallSetup setup,
-            TargetRegistryInfo data) throws Exception {
-        if (data.getURIs().isEmpty() && data.getIPs().isEmpty()) {
+    protected List<ProductResult> executeByAdapter(ProductExecutorData data) throws Exception {
+        NetworkTargetInfo info = data.getCurrentNetworkTargetInfo();
+        
+        if (info.getURIs().isEmpty() && info.getIPs().isEmpty()) {
+            LOG.debug("{} Nessus scan not possible because no uri or ip defined",data.getTraceLogId());
             return Collections.emptyList();
         }
-        TargetType targetType = data.getTargetType();
-        LOG.debug("Trigger nessus adapter execution for target type {} and setup {} ", targetType, setup);
+        
+        NetworkTargetType targetType = info.getTargetType();
+        LOG.debug("Trigger nessus adapter execution for target type {}", targetType);
+        
         /* @formatter:off */
 		NessusAdapterConfig nessusConfig = NessusConfig.builder().
-				configure(createAdapterOptionsStrategy(context)).
-				configure(new TargetIdentifyingMultiInstallSetupConfigBuilderStrategy(setup,targetType)).
+				configure(createAdapterOptionsStrategy(data)).
+				configure(new NetworkTargetDataAdapterConfigurationStrategy(installSetup,targetType)).
 				setTimeToWaitForNextCheckOperationInMinutes(scanResultCheckPeriodInMinutes).
 				setTimeOutInMinutes(scanResultCheckTimeOutInMinutes).
 				setProxyHostname(proxyHostname).
 				setProxyPort(proxyPort).
-				setTraceID(context.getTraceLogIdAsString()).
-				setPolicyID(setup.getDefaultPolicyId()).
-				setTargetIPs(data.getIPs()).
-				setTargetURIs(data.getURIs()).build();
+				setTraceID(data.getTraceLogIdAsString()).
+				setPolicyID(installSetup.getDefaultPolicyId()).
+				setTargetIPs(info.getIPs()).
+				setTargetURIs(info.getURIs()).build();
 		/* @formatter:on */
 
         /* execute NESSUS by adapter and return product result */
-        String xml = nessusAdapter.start(nessusConfig, executorContext.getCallback());
+        ProductExecutorContext productExecutorContext = data.getProductExecutorContext();
+        String xml = nessusAdapter.start(nessusConfig, productExecutorContext.getCallback());
 
-        ProductResult productResult = executorContext.getCurrentProductResult(); // product result is set by callback
+        ProductResult productResult = productExecutorContext.getCurrentProductResult(); // product result is set by callback
         productResult.setResult(xml);
         return Collections.singletonList(productResult);
-    }
-
-    @Override
-    public ProductIdentifier getIdentifier() {
-        return ProductIdentifier.NESSUS;
-    }
-
-    @Override
-    protected NessusInstallSetup getInstallSetup() {
-        return installSetup;
-    }
-
-    protected List<InetAddress> resolveInetAdressForTarget(SecHubConfiguration config) {
-        return super.resolveInetAdressForTarget(config);
     }
 
     @Override
     public int getVersion() {
         return 1;
     }
+
+    @Override
+    protected void customize(ProductExecutorData data) {
+        SecHubConfiguration secHubConfiguration = data.getSechubExecutionContext().getConfiguration();
+        
+        data.setNetworkLocationProvider(new InfraScanNetworkLocationProvider(secHubConfiguration));
+        data.setNetworkTargetDataProvider(installSetup);
+    }
+
 
 }

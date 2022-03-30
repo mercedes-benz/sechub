@@ -1,30 +1,36 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+import java.net.InetAddress;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 public class TargetTest {
 
     @Test
-    public void new_target_with_identifier__id_without_prefix_adds_automatically_prefix() {
+    void target_with_address_and_type_internet_is_correct_handled() {
         /* execute */
-        Target target = new Target("id1", TargetType.CODE_UPLOAD);
-
+        NetworkTarget target = new NetworkTarget(Mockito.mock(InetAddress.class), NetworkTargetType.INTERNET);
+        
         /* test */
-        assertEquals("code_upload://id1", target.getIdentifier());
-        assertEquals("id1", target.getIdentifierWithoutPrefix());
+        assertTrue(target.getType().isInternet());
+        assertTrue(target.getType().isValid());
+        assertFalse(target.getType().isIntranet());
     }
-
+    
     @Test
-    public void new_target_with_identifier__id_with_prefix_adds_no_additional_prefix() {
+    void target_with_address_and_type_intranet_is_correct_handled() {
         /* execute */
-        Target target = new Target("id1", TargetType.CODE_UPLOAD);
-
+        NetworkTarget target = new NetworkTarget(Mockito.mock(InetAddress.class), NetworkTargetType.INTRANET);
+        
         /* test */
-        assertEquals("code_upload://id1", target.getIdentifier());
-        assertEquals("id1", target.getIdentifierWithoutPrefix());
+        assertTrue(target.getType().isIntranet());
+        assertTrue(target.getType().isValid());
+        assertFalse(target.getType().isInternet());
     }
+      
+
 
 }

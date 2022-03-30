@@ -5,12 +5,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.adapter.AbstractAdapterConfigBuilder;
-import com.mercedesbenz.sechub.domain.scan.AbstractTargetIdentifyingMultiInstallSetup;
-import com.mercedesbenz.sechub.domain.scan.TargetType;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 
 @Component
-public class NessusInstallSetupImpl extends AbstractTargetIdentifyingMultiInstallSetup implements NessusInstallSetup {
+public class NessusInstallSetupImpl implements NessusInstallSetup{
 
     @Value("${sechub.adapter.nessus.intranet.baseurl:}")
     @MustBeDocumented("Base url of nessus used for intranet scans")
@@ -45,7 +43,7 @@ public class NessusInstallSetupImpl extends AbstractTargetIdentifyingMultiInstal
     private boolean trustAllCertificatesNecessary;
 
     @Override
-    protected String getBaseURLWhenInternetTarget() {
+    public String getBaseURLWhenInternetTarget() {
         return internetNessusBaseURL;
     }
 
@@ -54,32 +52,47 @@ public class NessusInstallSetupImpl extends AbstractTargetIdentifyingMultiInstal
     }
 
     @Override
-    protected String getBaseURLWhenIntranetTarget() {
+    public String getBaseURLWhenIntranetTarget() {
         return intranetNessusBaseURL;
     }
 
     @Override
-    protected String getUsernameWhenInternetTarget() {
+    public String getUsernameWhenInternetTarget() {
         return internetNessusUserId;
     }
 
     @Override
-    protected String getUsernameWhenIntranetTarget() {
+    public String getUsernameWhenIntranetTarget() {
         return intranetNessusUserId;
     }
 
     @Override
-    protected String getPasswordWhenInternetTarget() {
+    public String getPasswordWhenInternetTarget() {
         return internetNessusPassword;
     }
 
     @Override
-    protected String getPasswordWhenIntranetTarget() {
+    public String getPasswordWhenIntranetTarget() {
         return intranetNessusPassword;
     }
 
     @Override
-    public boolean isHavingUntrustedCertificate(TargetType target) {
+    public String getIdentifierWhenInternetTarget() {
+        return null;
+    }
+
+    @Override
+    public String getIdentifierWhenIntranetTarget() {
+        return null;
+    }
+
+    @Override
+    public boolean isHavingUntrustedCertificateForIntranet() {
+        return trustAllCertificatesNecessary;
+    }
+
+    @Override
+    public boolean isHavingUntrustedCertificateForInternet() {
         return trustAllCertificatesNecessary;
     }
 

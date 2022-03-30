@@ -29,7 +29,7 @@ public class LocalDeveloperFileSetupSupport {
 
     private LocalDeveloperFileSetupSupport() {
 
-        logInfo("Local developer support initializing");
+        logInfo("Local developer networkTargetDataSupport initializing");
         File userHome = new File(System.getProperty("user.home"));
         File sechubHidden = new File(userHome, ".sechub");
         File sechubDevConfig = new File(sechubHidden, "sechub-developer.properties");
@@ -47,7 +47,7 @@ public class LocalDeveloperFileSetupSupport {
         try (FileInputStream fis = new FileInputStream(sechubDevConfig)) {
             properties.load(fis);
             alwaysSecHubIntegrationTestRunning = Boolean.parseBoolean(properties.getProperty(IntegrationTestSetup.SECHUB_INTEGRATIONTEST_RUNNING, "false"));
-            logInfo("Local developer support has been initialized");
+            logInfo("Local developer networkTargetDataSupport has been initialized");
         } catch (Exception e) {
             logError("Was not able to load developer config file", e);
         }

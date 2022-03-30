@@ -62,7 +62,7 @@ public class FullScanDataRestController {
             support.writeScanData(fullScanData, outputStream);
         } catch (IOException e) {
             LOG.error("Was not able to provide zip file for full scan data of {}", logSanitizer.sanitize(sechubJobUUID, -1), e);
-            throw new NotFoundException("Was not able to support zip file, see logs for details");
+            throw new NotFoundException("Was not able to networkTargetDataSupport zip file, see logs for details");
         }
     }
 
