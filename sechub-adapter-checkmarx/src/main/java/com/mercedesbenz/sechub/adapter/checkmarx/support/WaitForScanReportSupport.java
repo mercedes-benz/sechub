@@ -59,6 +59,10 @@ class WaitForScanReportSupport extends WaitForStateSupport<CheckmarxAdapterConte
 
             LOG.debug("Report status: {}. Checkmarx report Id: {}.", details.status, reportId);
 
+            if (details.status.equalsIgnoreCase("failed")) {
+                LOG.warn("Scan report status is: failed. Checkmarx report Id: {}.", reportId);
+            }
+
         } catch (HttpStatusCodeException e) {
             if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
                 /* ok just no longer in queue / or never existed */
