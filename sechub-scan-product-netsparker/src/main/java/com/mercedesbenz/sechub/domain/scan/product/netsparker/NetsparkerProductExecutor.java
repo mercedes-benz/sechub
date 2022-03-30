@@ -42,18 +42,19 @@ public class NetsparkerProductExecutor extends AbstractProductExecutor {
     public NetsparkerProductExecutor() {
         super(ProductIdentifier.NETSPARKER, ScanType.WEB_SCAN);
     }
-    
+
     @Override
     protected void customize(ProductExecutorData data) {
         SecHubConfiguration sechubConfiguration = data.getSechubExecutionContext().getConfiguration();
         data.setNetworkLocationProvider(new WebScanNetworkLocationProvider(sechubConfiguration));
         data.setNetworkTargetDataProvider(installSetup);
-        
+
     }
+
     @Override
     protected List<ProductResult> executeByAdapter(ProductExecutorData data) throws Exception {
         NetworkTargetInfo info = data.getCurrentNetworkTargetInfo();
-        URI targetURI = info.getURI(); 
+        URI targetURI = info.getURI();
         if (targetURI == null) {
             /* no targets defined */
             return Collections.emptyList();
@@ -101,6 +102,5 @@ public class NetsparkerProductExecutor extends AbstractProductExecutor {
     public int getVersion() {
         return 1;
     }
-
 
 }

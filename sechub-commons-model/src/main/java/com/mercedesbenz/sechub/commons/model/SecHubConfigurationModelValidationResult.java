@@ -20,7 +20,7 @@ public class SecHubConfigurationModelValidationResult {
     /**
      * Tries to find error data for first occurrence of given error inside this
      * result
-     * 
+     *
      * @param error
      * @return error data or <code>null</code> if such error is not inside this
      *         result

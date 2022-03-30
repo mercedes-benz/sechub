@@ -73,9 +73,9 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
     protected void postConstruct() {
         this.resilientActionExecutor.add(checkmarxResilienceConsultant);
     }
-    
+
     // just to make it accessible inside test
-    ResilientActionExecutor<ProductResult> fetchResilientExecutor(){
+    ResilientActionExecutor<ProductResult> fetchResilientExecutor() {
         return this.resilientActionExecutor;
     }
 
@@ -83,14 +83,13 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
     protected List<ProductResult> executeByAdapter(ProductExecutorData data) throws Exception {
         LOG.debug("Trigger checkmarx adapter execution");
 
-        
         UUID jobUUID = data.getSechubExecutionContext().getSechubJobUUID();
         String projectId = data.getSechubExecutionContext().getConfiguration().getProjectId();
 
         JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
 
-        CheckmarxExecutorConfigSuppport configSupport = CheckmarxExecutorConfigSuppport.createSupportAndAssertConfigValid(data.getProductExecutorContext().getExecutorConfig(),
-                systemEnvironment);
+        CheckmarxExecutorConfigSuppport configSupport = CheckmarxExecutorConfigSuppport
+                .createSupportAndAssertConfigValid(data.getProductExecutorContext().getExecutorConfig(), systemEnvironment);
 
         CheckmarxResilienceCallback callback = new CheckmarxResilienceCallback(configSupport, data.getProductExecutorContext());
 
@@ -159,7 +158,7 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
 
     @Override
     protected void customize(ProductExecutorData data) {
-        
+
     }
 
 }

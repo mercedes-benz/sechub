@@ -19,5 +19,4 @@ public class CheckmarxInstallSetupImpl implements CheckmarxInstallSetup {
         return trustAllCertificatesNecessary;
     }
 
-
 }

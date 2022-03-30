@@ -7,7 +7,7 @@ import java.util.List;
 public class SecHubFileSystemConfiguration {
 
     public static final String PROPERTY_FOLDERS = "folders";
-    public static final String PROPERTY_FILES= "files";
+    public static final String PROPERTY_FILES = "files";
 
     private List<String> files = new ArrayList<>();
     private List<String> folders = new ArrayList<>();
@@ -15,7 +15,7 @@ public class SecHubFileSystemConfiguration {
     public List<String> getFolders() {
         return folders;
     }
-    
+
     public List<String> getFiles() {
         return files;
     }

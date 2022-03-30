@@ -86,8 +86,9 @@ public class SecHubConfigurationModelValidator {
     private void handleUsages(InternalValidationContext context, SecHubDataConfigurationUsageByName usageByName) {
         Set<String> names = usageByName.getNamesOfUsedDataConfigurationObjects();
         for (String name : names) {
-            if (! context.wellknownObjectNames.contains(name)) {
-                context.result.addError(REFERENCED_DATA_CONFIG_OBJECT_NAME_NOT_EXISTING,"The referenced name:'"+SimpleStringUtils.truncateWhenTooLong(name, MAX_NAME_LENGTH)+"' is not found in model");
+            if (!context.wellknownObjectNames.contains(name)) {
+                context.result.addError(REFERENCED_DATA_CONFIG_OBJECT_NAME_NOT_EXISTING,
+                        "The referenced name:'" + SimpleStringUtils.truncateWhenTooLong(name, MAX_NAME_LENGTH) + "' is not found in model");
             }
         }
     }
@@ -100,19 +101,19 @@ public class SecHubConfigurationModelValidator {
 
         SecHubWebScanConfiguration webScan = webScanOpt.get();
         URI uri = webScan.getUri();
-        
+
         if (SimpleNetworkUtils.isURINullOrEmpty(uri)) {
-            
+
             context.result.addError(WEB_SCAN_HAS_NO_URL_DEFINED);
-            
+
         } else if (!SimpleNetworkUtils.isHttpProtocol(uri)) {
-            
+
             String schema = SimpleStringUtils.truncateWhenTooLong(uri.getScheme(), 5);
             context.result.addError(WEB_SCAN_URL_HAS_UNSUPPORTED_SCHEMA, "Schema was: " + schema + " but supported is only HTTP/HTTPS");
         }
-        
+
         handleOpenApi(context, webScan);
-        
+
     }
 
     private void handleOpenApi(InternalValidationContext context, SecHubWebScanConfiguration webScan) {
@@ -120,7 +121,7 @@ public class SecHubConfigurationModelValidator {
         if (!openApiopt.isPresent()) {
             return;
         }
-        
+
         SecHubOpenAPIConfiguration openApi = openApiopt.get();
         handleUsages(context, openApi);
     }
@@ -153,7 +154,7 @@ public class SecHubConfigurationModelValidator {
     private void validateNameUniquenAndNotNull(InternalValidationContext context, Collection<? extends SecHubDataConfigurationObject> configurationObjects) {
 
         SecHubConfigurationModelValidationResult result = context.result;
-        
+
         for (SecHubDataConfigurationObject configurationObject : configurationObjects) {
             String uniqueName = configurationObject.getUniqueName();
             if (uniqueName == null) {

@@ -26,18 +26,18 @@ public class ProductExecutorContextTest {
         callback = mock(ProductExecutorCallback.class);
         config = mock(ProductExecutorConfig.class);
         when(callback.getMetaDataConverter()).thenReturn(converter);
-        
+
         /* execute */
         contextToTest = new ProductExecutorContext(config, formerResults);
-        contextToTest.callback=callback;
+        contextToTest.callback = callback;
 
     }
 
     @Test
     public void useFirstFormerResult_set_current_product_result_with_null_when_no_former_result_available() {
-        
+
         contextToTest.useFirstFormerResult();
-        
+
         /* test */
         verify(callback).setCurrentProductResult(null);
     }
@@ -49,7 +49,7 @@ public class ProductExecutorContextTest {
         ProductResult result2 = new ProductResult();
         formerResults.add(result1);
         formerResults.add(result2);
-        
+
         /* execute */
         contextToTest.useFirstFormerResult();
 
@@ -90,7 +90,7 @@ public class ProductExecutorContextTest {
         result1.setMetaData(converter.convertToJSONOrNull(metaData1));
         result2.setMetaData(null);
         result3.setMetaData(converter.convertToJSONOrNull(metaData2));
-        
+
         contextToTest.useFirstFormerResult();
         verify(callback, times(1)).setCurrentProductResult(result3); // by constructor...
 

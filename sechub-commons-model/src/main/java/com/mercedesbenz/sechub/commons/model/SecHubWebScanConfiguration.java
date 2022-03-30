@@ -24,11 +24,11 @@ public class SecHubWebScanConfiguration {
     Optional<List<String>> excludes = Optional.empty();
 
     Optional<SecHubOpenAPIConfiguration> openApi = Optional.empty();
-    
+
     public Optional<SecHubOpenAPIConfiguration> getOpenApi() {
         return openApi;
     }
-    
+
     public URI getUri() {
         return uri;
     }

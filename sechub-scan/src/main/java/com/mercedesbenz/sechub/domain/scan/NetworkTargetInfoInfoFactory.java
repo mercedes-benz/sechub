@@ -23,7 +23,6 @@ public class NetworkTargetInfoInfoFactory {
         this.targetResolver = targetResolver;
         this.identifier = identifier;
     }
-    
 
     public NetworkTargetInfo createInfo(NetworkTargetType targetType, UUIDTraceLogID traceLogId, NetworkLocationProvider networkLocationProvider,
             NetworkTargetDataSuppport support) {

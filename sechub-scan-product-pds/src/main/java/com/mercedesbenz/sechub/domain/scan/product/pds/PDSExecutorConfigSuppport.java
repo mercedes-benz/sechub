@@ -24,10 +24,10 @@ import com.mercedesbenz.sechub.sharedkernel.validation.Validation;
 public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport implements NetworkTargetDataProvider {
 
     public static final String PARAM_ID = "pds.executor.config.support";
-    
+
     /**
-     * Creates the configuration networkTargetDataSupport and VALIDATE. This will fail when
-     * configuration data is not valid (e.g. mandatory keys missing)
+     * Creates the configuration networkTargetDataSupport and VALIDATE. This will
+     * fail when configuration data is not valid (e.g. mandatory keys missing)
      *
      * @param config
      * @param systemEnvironment
@@ -183,7 +183,7 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport impl
 
     @Override
     public boolean isHavingUntrustedCertificateForIntranet() {
-       return isTrustAllCertificatesEnabled();
+        return isTrustAllCertificatesEnabled();
     }
 
     @Override

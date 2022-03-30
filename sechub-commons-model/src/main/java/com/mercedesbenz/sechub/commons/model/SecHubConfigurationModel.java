@@ -63,7 +63,7 @@ public class SecHubConfigurationModel {
     public Optional<SecHubDataConfiguration> getData() {
         return data;
     }
-    
+
     public void setData(SecHubDataConfiguration data) {
         this.data = Optional.ofNullable(data);
     }

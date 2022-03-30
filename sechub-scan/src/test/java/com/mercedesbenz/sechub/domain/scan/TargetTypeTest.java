@@ -10,7 +10,8 @@ public class TargetTypeTest {
     @Test
     public void healthcheck() {
 
-        assertEquals("Hmm.. amount of available target types differs! eems there is a new target typeToTest which is not tested, please add + modify...", 4, NetworkTargetType.values().length);
+        assertEquals("Hmm.. amount of available target types differs! eems there is a new target typeToTest which is not tested, please add + modify...", 4,
+                NetworkTargetType.values().length);
     }
 
     @Test

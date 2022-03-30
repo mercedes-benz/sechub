@@ -26,8 +26,7 @@ public class ProductExecutorData {
     String traceLogIdAsString;
     Set<String> codeUploadFileSytemFolderPathes;
 
-    
-    ProductExecutorData(){
+    ProductExecutorData() {
     }
 
     public NetworkTargetDataSuppport getNetworkTargetDataSupport() {
@@ -41,7 +40,7 @@ public class ProductExecutorData {
     public NetworkTargetDataProvider getNetworkTargetDataProvider() {
         return networkTargetDataProvider;
     }
-    
+
     public void setNetworkLocationProvider(NetworkLocationProvider networkLocationSupport) {
         this.networkLocationProvider = networkLocationSupport;
     }
@@ -67,7 +66,7 @@ public class ProductExecutorData {
     }
 
     public String getTraceLogIdAsString() {
-       return traceLogIdAsString;
+        return traceLogIdAsString;
     }
 
 }

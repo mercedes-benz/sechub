@@ -30,7 +30,7 @@ class SecHubDataConfigurationObjectInfoFinderTest {
         assertNotNull(result);
         assertTrue(result.isEmpty());
     }
-    
+
     @Test
     void findDataObjectsByName_returns_empty_set_when_model_null() {
         /* execute */
@@ -40,14 +40,15 @@ class SecHubDataConfigurationObjectInfoFinderTest {
         assertNotNull(result);
         assertTrue(result.isEmpty());
     }
+
     @Test
     void findDataObjectsByName_returns_empty_set_when_set_of_names_null() {
         /* prepare */
         SecHubConfigurationModel model = new SecHubConfigurationModel();
-        
+
         /* execute */
         List<SecHubDataConfigurationObjectInfo> result = finderToTest.findDataObjectsByName(model, null);
-        
+
         /* test */
         assertNotNull(result);
         assertTrue(result.isEmpty());

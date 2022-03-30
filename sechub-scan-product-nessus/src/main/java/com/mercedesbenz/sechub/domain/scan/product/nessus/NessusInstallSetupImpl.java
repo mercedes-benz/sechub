@@ -8,7 +8,7 @@ import com.mercedesbenz.sechub.adapter.AbstractAdapterConfigBuilder;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 
 @Component
-public class NessusInstallSetupImpl implements NessusInstallSetup{
+public class NessusInstallSetupImpl implements NessusInstallSetup {
 
     @Value("${sechub.adapter.nessus.intranet.baseurl:}")
     @MustBeDocumented("Base url of nessus used for intranet scans")

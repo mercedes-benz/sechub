@@ -75,7 +75,7 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
         this.resilientActionExecutor = new ResilientActionExecutor<>();
         this.configObjectFinder = new SecHubDataConfigurationObjectInfoFinder();
     }
-    
+
     public final ProductIdentifier getIdentifier() {
         return productIdentifier;
     }

@@ -14,7 +14,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * NetworkTarget registry is a data container object used by product executors. <br>
+ * NetworkTarget registry is a data container object used by product executors.
+ * <br>
  * It is created on execution time and filled up with configuration data. <br>
  * After fill up the target will be registered and target registry info can be
  * fetched, which contains runtime information.
@@ -106,8 +107,8 @@ public class NetworkTargetRegistry {
         }
 
         /**
-         * Returns target URI for this kind of {@link NetworkTargetType}, which will be the
-         * first element from URI list.
+         * Returns target URI for this kind of {@link NetworkTargetType}, which will be
+         * the first element from URI list.
          *
          * This is a convenience method for scan types where we can have only ONE target
          * URI (e.g. web scans).

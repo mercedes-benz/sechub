@@ -69,6 +69,7 @@ public class PDSCodeScanProductExecutor extends AbstractProductExecutor {
     protected void postConstruct() {
         this.resilientActionExecutor.add(pdsResilienceConsultant);
     }
+
     @Override
     protected List<ProductResult> executeByAdapter(ProductExecutorData data) throws Exception {
         LOG.debug("Trigger PDS adapter execution");
@@ -78,7 +79,7 @@ public class PDSCodeScanProductExecutor extends AbstractProductExecutor {
                 systemEnvironment);
 
         SecHubExecutionContext context = data.getSechubExecutionContext();
-        
+
         UUID jobUUID = context.getSechubJobUUID();
         String projectId = context.getConfiguration().getProjectId();
 
@@ -165,7 +166,7 @@ public class PDSCodeScanProductExecutor extends AbstractProductExecutor {
 
     @Override
     protected void customize(ProductExecutorData data) {
-        
+
     }
 
 }

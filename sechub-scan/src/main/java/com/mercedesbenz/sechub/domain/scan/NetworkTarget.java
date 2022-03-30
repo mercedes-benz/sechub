@@ -8,8 +8,8 @@ import java.util.Objects;
 import com.mercedesbenz.sechub.sharedkernel.util.Assert;
 
 /**
- * NetworkTarget class. This will contain meta data and information about the kind of
- * the target. E.g. if its INTRANET or INTERNET
+ * NetworkTarget class. This will contain meta data and information about the
+ * kind of the target. E.g. if its INTRANET or INTERNET
  *
  * @author Albert Tregnaghi
  *

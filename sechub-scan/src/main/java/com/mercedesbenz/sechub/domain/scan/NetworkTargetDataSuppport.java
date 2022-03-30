@@ -23,7 +23,7 @@ public class NetworkTargetDataSuppport {
         }
         throw createUnsupportedTargetTypeException(target);
     }
-    
+
     public final boolean isAbleToScan(NetworkTargetType type) {
         if (type == null) {
             return false;
@@ -83,18 +83,18 @@ public class NetworkTargetDataSuppport {
         throw createUnsupportedTargetTypeException(target);
     }
 
-    private  static IllegalStateException createUnsupportedTargetTypeException(NetworkTargetType type) {
+    private static IllegalStateException createUnsupportedTargetTypeException(NetworkTargetType type) {
         return new IllegalStateException("target type not supported:" + type);
     }
 
-    private  static boolean isInternet(NetworkTargetType type) {
+    private static boolean isInternet(NetworkTargetType type) {
         if (type == null) {
             return false;
         }
         return type.isInternet();
     }
 
-    private  static boolean isIntranet(NetworkTargetType type) {
+    private static boolean isIntranet(NetworkTargetType type) {
         if (type == null) {
             return false;
         }
@@ -105,10 +105,10 @@ public class NetworkTargetDataSuppport {
         boolean canScanIntranet = isNotEmpty(networkTargetDataProvider.getBaseURLWhenIntranetTarget());
         canScanIntranet = canScanIntranet && isNotEmpty(networkTargetDataProvider.getUsernameWhenIntranetTarget());
         canScanIntranet = canScanIntranet && isNotEmpty(networkTargetDataProvider.getPasswordWhenIntranetTarget());
-        
+
         return canScanIntranet;
     }
-    
+
     private boolean canScanInternet() {
         boolean canScanInternet = isNotEmpty(networkTargetDataProvider.getBaseURLWhenInternetTarget());
         canScanInternet = canScanInternet && isNotEmpty(networkTargetDataProvider.getUsernameWhenInternetTarget());

@@ -12,7 +12,7 @@ public class NetworkTargetDataAdapterConfigurationStrategy implements AdapterCon
 
     /**
      * Creates strategy which will automatically setup
-     * 
+     *
      * <ol>
      * <li>trustAllCertificates</li>
      * <li>user</li>
@@ -21,7 +21,7 @@ public class NetworkTargetDataAdapterConfigurationStrategy implements AdapterCon
      * <li>productBaseUrl</li>
      * </ol>
      *
-     * by information from given network target data provider  
+     * by information from given network target data provider
      *
      * @param setup
      * @param targetType type to use to get data

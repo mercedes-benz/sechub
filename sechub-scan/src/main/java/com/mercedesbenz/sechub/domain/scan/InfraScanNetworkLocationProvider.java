@@ -10,14 +10,14 @@ import java.util.Optional;
 import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 
-public class InfraScanNetworkLocationProvider implements NetworkLocationProvider{
+public class InfraScanNetworkLocationProvider implements NetworkLocationProvider {
 
     private SecHubConfiguration config;
-    
+
     public InfraScanNetworkLocationProvider(SecHubConfiguration config) {
-        this.config=config;
+        this.config = config;
     }
-    
+
     @Override
     public List<URI> getURIs() {
         /* assert INFRASCAN configuration available */

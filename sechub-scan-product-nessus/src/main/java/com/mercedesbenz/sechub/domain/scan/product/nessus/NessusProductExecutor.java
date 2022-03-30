@@ -53,23 +53,23 @@ public class NessusProductExecutor extends AbstractProductExecutor {
 
     @Autowired
     NessusInstallSetup installSetup;
-    
+
     public NessusProductExecutor() {
         super(ProductIdentifier.NESSUS, ScanType.CODE_SCAN);
     }
-    
+
     @Override
     protected List<ProductResult> executeByAdapter(ProductExecutorData data) throws Exception {
         NetworkTargetInfo info = data.getCurrentNetworkTargetInfo();
-        
+
         if (info.getURIs().isEmpty() && info.getIPs().isEmpty()) {
-            LOG.debug("{} Nessus scan not possible because no uri or ip defined",data.getTraceLogId());
+            LOG.debug("{} Nessus scan not possible because no uri or ip defined", data.getTraceLogId());
             return Collections.emptyList();
         }
-        
+
         NetworkTargetType targetType = info.getTargetType();
         LOG.debug("Trigger nessus adapter execution for target type {}", targetType);
-        
+
         /* @formatter:off */
 		NessusAdapterConfig nessusConfig = NessusConfig.builder().
 				configure(createAdapterOptionsStrategy(data)).
@@ -101,10 +101,9 @@ public class NessusProductExecutor extends AbstractProductExecutor {
     @Override
     protected void customize(ProductExecutorData data) {
         SecHubConfiguration secHubConfiguration = data.getSechubExecutionContext().getConfiguration();
-        
+
         data.setNetworkLocationProvider(new InfraScanNetworkLocationProvider(secHubConfiguration));
         data.setNetworkTargetDataProvider(installSetup);
     }
-
 
 }

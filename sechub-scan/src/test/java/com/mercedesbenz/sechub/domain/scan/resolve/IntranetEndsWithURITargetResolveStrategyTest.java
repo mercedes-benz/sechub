@@ -67,7 +67,8 @@ public class IntranetEndsWithURITargetResolveStrategyTest {
 
         assertEquals(new NetworkTarget(URI_HTTP_SOMEWHERE_INTX_EXAMPLE_COM, NetworkTargetType.INTERNET),
                 strategyToTest.resolveTargetFor(URI_HTTP_SOMEWHERE_INTX_EXAMPLE_COM));
-        assertEquals(new NetworkTarget(URI_FTP_SOMEWHERE_INTX_EXAMPLE_COM, NetworkTargetType.INTERNET), strategyToTest.resolveTargetFor(URI_FTP_SOMEWHERE_INTX_EXAMPLE_COM));
+        assertEquals(new NetworkTarget(URI_FTP_SOMEWHERE_INTX_EXAMPLE_COM, NetworkTargetType.INTERNET),
+                strategyToTest.resolveTargetFor(URI_FTP_SOMEWHERE_INTX_EXAMPLE_COM));
     }
 
     @Test
@@ -86,7 +87,8 @@ public class IntranetEndsWithURITargetResolveStrategyTest {
 
         assertEquals(new NetworkTarget(URI_HTTP_SOMEWHERE_INTX_EXAMPLE_COM, NetworkTargetType.INTRANET),
                 strategyToTest.resolveTargetFor(URI_HTTP_SOMEWHERE_INTX_EXAMPLE_COM));
-        assertEquals(new NetworkTarget(URI_FTP_SOMEWHERE_INTX_EXAMPLE_COM, NetworkTargetType.INTRANET), strategyToTest.resolveTargetFor(URI_FTP_SOMEWHERE_INTX_EXAMPLE_COM));
+        assertEquals(new NetworkTarget(URI_FTP_SOMEWHERE_INTX_EXAMPLE_COM, NetworkTargetType.INTRANET),
+                strategyToTest.resolveTargetFor(URI_FTP_SOMEWHERE_INTX_EXAMPLE_COM));
 
     }
 

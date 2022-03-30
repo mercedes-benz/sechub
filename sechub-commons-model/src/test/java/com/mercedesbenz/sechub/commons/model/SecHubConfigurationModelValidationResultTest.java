@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
+import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationResult.SecHubConfigurationModelValidationErrorData;
-
-import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError.*;
 
 class SecHubConfigurationModelValidationResultTest {
 
@@ -27,7 +26,7 @@ class SecHubConfigurationModelValidationResultTest {
         /* test */
         assertTrue(resultToTest.hasError(API_VERSION_NOT_SUPPORTED));
     }
-    
+
     @Test
     void error_added_can_be_fetched() {
         /* execute */

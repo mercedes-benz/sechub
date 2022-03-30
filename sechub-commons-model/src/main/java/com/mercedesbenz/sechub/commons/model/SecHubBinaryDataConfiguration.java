@@ -4,7 +4,7 @@ package com.mercedesbenz.sechub.commons.model;
 public class SecHubBinaryDataConfiguration extends AbstractSecHubFileSystemContainer implements SecHubDataConfigurationObject {
 
     private String uniqueName;
-    
+
     public void setUniqueName(String uniqueName) {
         this.uniqueName = uniqueName;
     }

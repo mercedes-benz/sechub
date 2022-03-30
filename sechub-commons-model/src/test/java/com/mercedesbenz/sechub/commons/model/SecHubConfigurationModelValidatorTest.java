@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.commons.model;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import java.net.InetAddress;
 import java.net.URI;
@@ -9,8 +10,6 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.mockito.Mockito.*;
 
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationResult.SecHubConfigurationModelValidationErrorData;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidator.SecHubConfigurationModelValidationException;
@@ -118,7 +117,7 @@ class SecHubConfigurationModelValidatorTest {
     void infrascanconfig_with_one_ip_results_in_no_error() throws Exception {
         /* prepare */
         SecHubInfrastructureScanConfiguration infraScan = new SecHubInfrastructureScanConfiguration();
-        infraScan.getIps().add(mock(InetAddress.class));//&getByName("localhost"));
+        infraScan.getIps().add(mock(InetAddress.class));// &getByName("localhost"));
 
         SecHubConfigurationModel model = new SecHubConfigurationModel();
         model.setApiVersion("1.0");
@@ -204,43 +203,44 @@ class SecHubConfigurationModelValidatorTest {
         /* test */
         assertFalse(result.hasErrors());
     }
-    
+
     @Test
     void model_having_a_code_scan_configuration_which_references_an_unknown_data_object_results_in_error() {
         /* prepare */
         SecHubConfigurationModel model = createDefaultValidModel();
         model.getCodeScan().get().getNamesOfUsedDataConfigurationObjects().add("config-object-not-existing1");
-        
+
         /* execute + test */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
-        
+
         /* test */
         assertHasError(result, "config-object-not-existing1", SecHubConfigurationModelValidationError.REFERENCED_DATA_CONFIG_OBJECT_NAME_NOT_EXISTING);
         assertEquals(1, result.getErrors().size());
     }
-    
+
     @Test
-    void model_having_a_web_scan_configuration_with_open_api_which_references_an_unknown_data_object_results_in_error() throws Exception{
+    void model_having_a_web_scan_configuration_with_open_api_which_references_an_unknown_data_object_results_in_error() throws Exception {
         /* prepare */
         SecHubConfigurationModel model = createDefaultValidModel();
         SecHubWebScanConfiguration webScan = new SecHubWebScanConfiguration();
         model.setWebScan(webScan);
-        
-        SecHubOpenAPIConfiguration openApi= new SecHubOpenAPIConfiguration();
+
+        SecHubOpenAPIConfiguration openApi = new SecHubOpenAPIConfiguration();
         webScan.openApi = Optional.of(openApi);
-        webScan.uri=createURIforSchema("https");
-        
+        webScan.uri = createURIforSchema("https");
+
         openApi.getNamesOfUsedDataConfigurationObjects().add("unknown-configuration");
-        
+
         /* execute + test */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
-        
+
         /* test */
         assertHasError(result, "unknown-configuration", SecHubConfigurationModelValidationError.REFERENCED_DATA_CONFIG_OBJECT_NAME_NOT_EXISTING);
         assertEquals(1, result.getErrors().size());
     }
+
     @Test
-    void model_having_a_web_scan_configuration_with_open_api_which_references_a_wellknown_data_object_results_in_no_error() throws Exception{
+    void model_having_a_web_scan_configuration_with_open_api_which_references_a_wellknown_data_object_results_in_no_error() throws Exception {
         /* prepare */
         SecHubConfigurationModel model = createDefaultValidModel();
 
@@ -249,19 +249,19 @@ class SecHubConfigurationModelValidatorTest {
         config1.setUniqueName("referenced-open-api-file");
         data.getSources().add(config1);
         model.setData(data);
-        
+
         SecHubWebScanConfiguration webScan = new SecHubWebScanConfiguration();
         model.setWebScan(webScan);
-        
-        SecHubOpenAPIConfiguration openApi= new SecHubOpenAPIConfiguration();
+
+        SecHubOpenAPIConfiguration openApi = new SecHubOpenAPIConfiguration();
         webScan.openApi = Optional.of(openApi);
-        webScan.uri=createURIforSchema("https");
-        
+        webScan.uri = createURIforSchema("https");
+
         openApi.getNamesOfUsedDataConfigurationObjects().add("referenced-open-api-file");
-        
+
         /* execute + test */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
-        
+
         /* test */
         assertFalse(result.hasErrors());
     }
@@ -457,7 +457,7 @@ class SecHubConfigurationModelValidatorTest {
 
     private URI createURIforSchema(String schema) {
         // why mocking a URI? Because of name look ups and more
-        // this slows tests -  using a mock increases performance here
+        // this slows tests - using a mock increases performance here
         URI uri = mock(URI.class);
         when(uri.getScheme()).thenReturn(schema);
         return uri;

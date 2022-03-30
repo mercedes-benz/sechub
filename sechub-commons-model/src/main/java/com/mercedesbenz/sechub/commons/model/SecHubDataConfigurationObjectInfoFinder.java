@@ -11,7 +11,7 @@ public class SecHubDataConfigurationObjectInfoFinder {
 
     public List<SecHubDataConfigurationObjectInfo> findDataObjectsByName(SecHubConfigurationModel model, Set<String> names) {
         List<SecHubDataConfigurationObjectInfo> referenceList = new ArrayList<>();
-        if (model==null || names==null || names.isEmpty()) {
+        if (model == null || names == null || names.isEmpty()) {
             return referenceList;
         }
         Optional<SecHubDataConfiguration> dataOpt = model.getData();

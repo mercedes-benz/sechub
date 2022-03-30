@@ -268,7 +268,8 @@ public class WithSecHubClient {
      *
      * @param project
      * @param location identifier for the config file which shall be used. Its
-     *                 automatically resolved from test file networkTargetDataSupport.
+     *                 automatically resolved from test file
+     *                 networkTargetDataSupport.
      * @return assert object
      */
     public ExecutionResult startSynchronScanFor(TestProject project, IntegrationTestJSONLocation location) {
@@ -281,7 +282,8 @@ public class WithSecHubClient {
      *
      * @param project
      * @param location identifier for the config file which shall be used. Its
-     *                 automatically resolved from test file networkTargetDataSupport.
+     *                 automatically resolved from test file
+     *                 networkTargetDataSupport.
      * @return result
      */
     public ExecutionResult startSynchronScanFor(TestProject project, IntegrationTestJSONLocation location, Map<String, String> environmentVariables) {

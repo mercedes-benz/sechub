@@ -21,8 +21,8 @@ import com.mercedesbenz.sechub.sharedkernel.validation.AssertValidation;
 import com.mercedesbenz.sechub.sharedkernel.validation.Validation;
 
 /**
- * A standard executor configuration networkTargetDataSupport. Supports environment entry
- * evaluation, simple key value checks etc.
+ * A standard executor configuration networkTargetDataSupport. Supports
+ * environment entry evaluation, simple key value checks etc.
  *
  * @author Albert Tregnaghi
  *
