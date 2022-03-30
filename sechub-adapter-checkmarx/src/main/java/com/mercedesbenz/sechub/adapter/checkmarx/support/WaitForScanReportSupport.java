@@ -17,62 +17,59 @@ import com.mercedesbenz.sechub.adapter.support.JSONAdapterSupport.Access;
 
 class WaitForScanReportSupport extends WaitForStateSupport<CheckmarxAdapterContext, CheckmarxAdapterConfig> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(WaitForScanReportSupport.class);
+    private static final Logger LOG = LoggerFactory.getLogger(WaitForScanReportSupport.class);
 
-	private CheckmarxOAuthSupport oauthSupport;
+    private CheckmarxOAuthSupport oauthSupport;
 
-	public WaitForScanReportSupport(CheckmarxOAuthSupport oauthSupport, Adapter<?> adapter) {
-		super(adapter);
-		this.oauthSupport = oauthSupport;
-	}
+    public WaitForScanReportSupport(CheckmarxOAuthSupport oauthSupport, Adapter<?> adapter) {
+        super(adapter);
+        this.oauthSupport = oauthSupport;
+    }
 
-	@Override
-	protected boolean isWaitingForOKWhenInState(String state, CheckmarxAdapterContext context) throws Exception {
-		return context.getReportDetails().isRunning();
-	}
+    @Override
+    protected boolean isWaitingForOKWhenInState(String state, CheckmarxAdapterContext context) throws Exception {
+        return context.getReportDetails().isRunning();
+    }
 
-	@Override
-	protected String getCurrentState(CheckmarxAdapterContext context) throws Exception {
-		fetchScanDetails(context);
-		return null;
-	}
+    @Override
+    protected String getCurrentState(CheckmarxAdapterContext context) throws Exception {
+        fetchScanDetails(context);
+        return null;
+    }
 
 //	https://checkmarx.atlassian.net/wiki/spaces/KC/pages/563806382/Get+Report+Status+by+Id+-+GET+reports+sastScan+id+status+v8.8.0+and+up
 //	https://checkmarx.atlassian.net/wiki/spaces/KC/pages/814121878/Swagger+Examples+v8.8.0+-+v1
-	private void fetchScanDetails(CheckmarxAdapterContext context) throws AdapterException {
+    private void fetchScanDetails(CheckmarxAdapterContext context) throws AdapterException {
 
-		oauthSupport.refreshBearerTokenWhenNecessary(context);
+        oauthSupport.refreshBearerTokenWhenNecessary(context);
 
-		ReportDetails details = context.getReportDetails();
-		long reportId = context.getReportId();
+        ReportDetails details = context.getReportDetails();
+        long reportId = context.getReportId();
 
-		try {
-			LOG.debug("Fetching scan report status for Checkmarx report Id: {}.", reportId);
+        try {
+            LOG.debug("Fetching scan report status for Checkmarx report Id: {}.", reportId);
 
-			RestOperations restTemplate = context.getRestOperations();
-			ResponseEntity<String> queueData = restTemplate
-					.getForEntity(context.getAPIURL("reports/sastScan/" + reportId + "/status"), String.class);
-			String body = queueData.getBody();
+            RestOperations restTemplate = context.getRestOperations();
+            ResponseEntity<String> queueData = restTemplate.getForEntity(context.getAPIURL("reports/sastScan/" + reportId + "/status"), String.class);
+            String body = queueData.getBody();
 
-			Access status = context.json().fetch("status", body);
-			String value = status.fetch("value").asText();
-			details.status = value;
+            Access status = context.json().fetch("status", body);
+            String value = status.fetch("value").asText();
+            details.status = value;
 
-			LOG.debug("Report status: {}. Checkmarx report Id: {}.", details.status, reportId);
+            LOG.debug("Report status: {}. Checkmarx report Id: {}.", details.status, reportId);
 
-		} catch (HttpStatusCodeException e) {
-			if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
-				/* ok just no longer in queue / or never existed */
-				details.notFound = true;
-				LOG.info(
-						"Unable to find Checkmarx report Id: {}. Possible reasons: no longer in queue or never existed.",
-						reportId);
+        } catch (HttpStatusCodeException e) {
+            if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
+                /* ok just no longer in queue / or never existed */
+                details.notFound = true;
+                LOG.info("Unable to find Checkmarx report Id: {}. Possible reasons: no longer in queue or never existed.", reportId);
 
-				return;
-			}
-			throw e; // rethrow
-		}
+                return;
+            }
+            throw e; // rethrow
+        }
 
-	}
+    }
 
 }
