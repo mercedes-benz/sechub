@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.config;
 
 import static org.junit.jupiter.api.Assertions.*;

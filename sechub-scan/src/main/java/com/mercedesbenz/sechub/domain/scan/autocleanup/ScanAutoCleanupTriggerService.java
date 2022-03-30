@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.autocleanup;
 
 import static com.mercedesbenz.sechub.sharedkernel.autocleanup.AutoCleanupConstants.*;

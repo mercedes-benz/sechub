@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
 import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError.*;

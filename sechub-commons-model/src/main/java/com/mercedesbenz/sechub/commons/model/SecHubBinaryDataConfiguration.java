@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
 public class SecHubBinaryDataConfiguration extends AbstractSecHubFileSystemContainer implements SecHubDataConfigurationObject {
