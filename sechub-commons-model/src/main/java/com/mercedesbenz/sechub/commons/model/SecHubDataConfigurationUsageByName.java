@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public interface SecHubDataConfigurationUsageByName {
 
+    public static final String PROPERTY_USE = "use";
+
     /**
      * A set containing names of {@link SecHubDataConfigurationObject}. In JSON the
      * name "use" will be the correct term, which makes it more readable and easier
