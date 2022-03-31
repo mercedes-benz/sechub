@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.adapter.checkmarx.support;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -14,6 +16,8 @@ import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapterContext;
 import com.mercedesbenz.sechub.adapter.support.JSONAdapterSupport.Access;
 
 class WaitForScanReportSupport extends WaitForStateSupport<CheckmarxAdapterContext, CheckmarxAdapterConfig> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(WaitForScanReportSupport.class);
 
     private CheckmarxOAuthSupport oauthSupport;
 
@@ -40,20 +44,31 @@ class WaitForScanReportSupport extends WaitForStateSupport<CheckmarxAdapterConte
         oauthSupport.refreshBearerTokenWhenNecessary(context);
 
         ReportDetails details = context.getReportDetails();
+        long reportId = context.getReportId();
+
         try {
+            LOG.debug("Fetching scan report status for Checkmarx report Id: {}.", reportId);
+
             RestOperations restTemplate = context.getRestOperations();
-            ResponseEntity<String> queueData = restTemplate.getForEntity(context.getAPIURL("reports/sastScan/" + context.getReportId() + "/status"),
-                    String.class);
+            ResponseEntity<String> queueData = restTemplate.getForEntity(context.getAPIURL("reports/sastScan/" + reportId + "/status"), String.class);
             String body = queueData.getBody();
 
             Access status = context.json().fetch("status", body);
             String value = status.fetch("value").asText();
             details.status = value;
 
+            LOG.debug("Report status: {}. Checkmarx report Id: {}.", details.status, reportId);
+
+            if (details.status.equalsIgnoreCase("failed")) {
+                LOG.warn("Scan report status is: failed. Checkmarx report Id: {}.", reportId);
+            }
+
         } catch (HttpStatusCodeException e) {
             if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
                 /* ok just no longer in queue / or never existed */
                 details.notFound = true;
+                LOG.info("Unable to find Checkmarx report Id: {}. Possible reasons: no longer in queue or never existed.", reportId);
+
                 return;
             }
             throw e; // rethrow
