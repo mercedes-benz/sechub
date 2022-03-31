@@ -43,7 +43,7 @@ class WaitForScanStateSupport extends WaitForStateSupport<CheckmarxContext, Chec
         ScanDetails details = context.getScanDetails();
         long scanId = context.getSessionData().getScanId();
         try {
-            LOG.debug("Fetching scan details for scan Id: {}.", scanId);
+            LOG.debug("Downloading Checkmarx report for scan Id: {}.", scanId);
 
             RestOperations restTemplate = context.getRestOperations();
             ResponseEntity<String> queueData = restTemplate.getForEntity(context.getAPIURL("sast/scans/" + scanId), String.class);

@@ -67,7 +67,7 @@ class WaitForQueueStateSupport extends WaitForStateSupport<CheckmarxContext, Che
                     details.newQueueEntryFound = true;
                 }
                 details.failureText = context.json().fetch("stageDetails", body).asText();
-                LOG.info("Scan queue stage fialed. Failure text: {}", details.failureText);
+                LOG.info("Scan queue stage failed. Failure text: {}", details.failureText);
                 break;
             case "Finished":
                 if (!details.newQueueEntryFound) {
