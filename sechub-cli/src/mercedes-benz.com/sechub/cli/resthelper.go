@@ -49,26 +49,29 @@ func sendWithHeader(method string, url string, context *Context, header map[stri
 
 // handleHTTPRequestAndResponse - run http request and handle the response in a resilient way
 func handleHTTPRequestAndResponse(context *Context, request *http.Request) *http.Response {
-	// HTTP call
-	response, err := context.HTTPClient.Do(request)    // e.g. http.Post(createJobURL, "application/json", bytes.NewBuffer(context.contentToSend))
-	sechubUtil.HandleHTTPError(err, ExitCodeHTTPError) // Handle networking errors etc. (exit)
+	var response *http.Response
+	var err error
 
-	// Resilience handling
-	if response.StatusCode > 403 { // StatusCode is in 4xx(400-403 are unrecoverable) or 5xx
-		sechubUtil.LogWarning(
-			fmt.Sprintf("Received unexpected Status Code %d (%s) from server. Retrying in %d seconds...",
-				response.StatusCode, response.Status, context.config.waitSeconds))
+	for retry := 0; retry <= HTTPMaxRetries; retry++ {
+		response, err = context.HTTPClient.Do(request)     // Execute HTTP call
+		sechubUtil.HandleHTTPError(err, ExitCodeHTTPError) // Handle networking errors etc. (exit)
 
-		for retry := 1; retry <= HTTPMaxRetries; retry++ {
-			time.Sleep(time.Duration(context.config.waitSeconds) * time.Second)
+		if response.StatusCode != 503 || request.Method == "POST" {
+			// exit loop on
+			// - any status code beside 503
+			// - HTTP POST, then the message body can only be read once (io.reader) so a subsequent call will fail.
+			break
+		}
 
-			sechubUtil.Log(fmt.Sprintf("          retry %d/%d", retry, HTTPMaxRetries), false)
-			response, err = context.HTTPClient.Do(request) // retry HTTP call
-			sechubUtil.HandleHTTPError(err, ExitCodeHTTPError)
-
-			if response.StatusCode < 400 {
-				break // exit loop on success (1xx, 2xx or 3xx StatusCode)
-			}
+		// Resilience handling
+		if retry == 0 {
+			sechubUtil.LogWarning(
+				fmt.Sprintf("Received Status Code '%d' from SecHub server. Server may be busy. Retrying in %d seconds...",
+					response.StatusCode, context.config.waitSeconds))
+		}
+		time.Sleep(time.Duration(context.config.waitSeconds) * time.Second)
+		if retry < HTTPMaxRetries {
+			sechubUtil.Log(fmt.Sprintf("          retry %d/%d", retry+1, HTTPMaxRetries), false)
 		}
 	}
 
@@ -77,7 +80,7 @@ func handleHTTPRequestAndResponse(context *Context, request *http.Request) *http
 	} else {
 		sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("HTTP response code: %d", response.StatusCode))
 	}
-	sechubUtil.HandleHTTPResponse(response, ExitCodeHTTPError) // Will exit if we still got a 4xx or 5xx StatusCode
+	sechubUtil.HandleHTTPResponse(response, ExitCodeHTTPError)
 
 	return response
 }
