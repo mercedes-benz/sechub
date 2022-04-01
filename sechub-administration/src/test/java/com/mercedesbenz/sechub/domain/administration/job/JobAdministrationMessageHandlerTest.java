@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.job;
 
 import static org.mockito.Mockito.*;
