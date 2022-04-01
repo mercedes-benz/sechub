@@ -1,6 +1,6 @@
 ext {
   spring_boot_dependency = [
-     // Next parts are dependencies used by Spring Boot v 2.6.5
+     // Next parts are dependencies used by Spring Boot v 2.6.6
      // You can use this information to use exact same library version inside
      // your own libraries, where you have no spring boot dependency management
      //
@@ -28,7 +28,7 @@ ext {
      jackson_annotations:                    'com.fasterxml.jackson.core:jackson-annotations:2.13.2',
      jackson_bom:                            'com.fasterxml.jackson:jackson-bom:2.13.2',
      jackson_core:                           'com.fasterxml.jackson.core:jackson-core:2.13.2',
-     jackson_databind:                       'com.fasterxml.jackson.core:jackson-databind:2.13.2',
+     jackson_databind:                       'com.fasterxml.jackson.core:jackson-databind:2.13.2.2',
      jackson_datatype_jdk8:                  'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.13.2',
      jackson_datatype_jsr310:                'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.2',
      jackson_module_parameter_names:         'com.fasterxml.jackson.module:jackson-module-parameter-names:2.13.2',
@@ -102,7 +102,7 @@ ext {
      jackson_annotations:                    '2.13.2',
      jackson_bom:                            '2.13.2',
      jackson_core:                           '2.13.2',
-     jackson_databind:                       '2.13.2',
+     jackson_databind:                       '2.13.2.2',
      jackson_datatype_jdk8:                  '2.13.2',
      jackson_datatype_jsr310:                '2.13.2',
      jackson_module_parameter_names:         '2.13.2',
