@@ -88,6 +88,13 @@ public class UseCaseRestDocModelDataCollector {
         }
         UseCaseRestDocModel model = new UseCaseRestDocModel(useCaseModel);
         Set<Method> annotatedMethods = reflections.getMethodsAnnotatedWith(UseCaseRestDoc.class);
+        if (annotatedMethods.size() == 0) {
+            throw new IllegalStateException("Criticial:Cannot generate REST documentation!\n"
+                    + "Reflections did not find any method annotated with @UseCaseRestDoc!\n"
+                    + "- If you started the collector from your IDE, please do not start directly, but instead start `AsciidocGeneratorManualTest.java`.\n"
+                    + "  Doing this, the classpath will contain automatically all necessary resources.\n"
+                    + "- If you are inside a gradle build this is a criticial problem, because the documentation would not be generated correctly! ");
+        }
         if (DEBUG) {
             LOG.info("> will collect for:{} - {}", annotatedMethods.size(), annotatedMethods);
         }

@@ -73,9 +73,9 @@ public class ProjectCreationService {
             @NotNull ProjectMetaData metaData) {
         LOG.info("Administrator {} triggers create of project:{}, having owner:{}", userContext.getUserId(), projectId, owner);
 
-        assertion.isValidProjectId(projectId);
-        assertion.isValidUserId(owner);
-        assertion.isvalidProjectDescription(description);
+        assertion.assertIsValidProjectId(projectId);
+        assertion.assertIsValidUserId(owner);
+        assertion.assertIsValidProjectDescription(description);
 
         /* assert found */
         Optional<Project> foundProject = projectRepository.findById(projectId);

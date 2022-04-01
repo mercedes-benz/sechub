@@ -131,11 +131,21 @@ public class MessageDataKeys {
      */
     public static final MessageDataKey<UserMessage> USER_EMAIL_ADDRESS_CHANGE_DATA = createUserMessageKey("user.emailaddress.change.data");
 
+    /**
+     * Does contain amount of days after before auto cleanup must be executed
+     */
+    public static final MessageDataKey<AdministrationConfigMessage> AUTO_CLEANUP_CONFIG_CHANGE_DATA = createAdministrationConfigMessageKey(
+            "autocleanup.config.change.data");
+
     /* +-----------------------------------------------------------------------+ */
     /* +............................ Helpers ..................................+ */
     /* +-----------------------------------------------------------------------+ */
     private static MessageDataKey<UserMessage> createUserMessageKey(String id) {
         return createKey(id, new UserMessageDataProvider());
+    }
+
+    private static MessageDataKey<AdministrationConfigMessage> createAdministrationConfigMessageKey(String id) {
+        return createKey(id, new AdministrationConfigMessageDataProvider());
     }
 
     private static MessageDataKey<SchedulerMessage> createSchedulerStatusMessageKey(String id) {

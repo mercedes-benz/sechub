@@ -17,6 +17,7 @@ import com.mercedesbenz.sechub.domain.schedule.config.SchedulerProjectConfigServ
 import com.mercedesbenz.sechub.domain.schedule.status.SchedulerStatusService;
 import com.mercedesbenz.sechub.domain.schedule.whitelist.ProjectWhiteListUpdateService;
 import com.mercedesbenz.sechub.sharedkernel.Step;
+import com.mercedesbenz.sechub.sharedkernel.messaging.AdministrationConfigMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.AsynchronMessageHandler;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.IsReceivingAsyncMessage;
@@ -108,9 +109,18 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler {
         case PROJECT_ACCESS_LEVEL_CHANGED:
             handleProcessAccessLevelChanged(request);
             break;
+        case AUTO_CLEANUP_CONFIGURATION_CHANGED:
+            ReceivedhandleAutoCleanUpConfigurationChanged(request);
+            break;
         default:
             throw new IllegalStateException("unhandled message id:" + messageId);
         }
+    }
+
+    @IsReceivingAsyncMessage(MessageID.AUTO_CLEANUP_CONFIGURATION_CHANGED)
+    private void ReceivedhandleAutoCleanUpConfigurationChanged(DomainMessage request) {
+        AdministrationConfigMessage message = request.get(MessageDataKeys.AUTO_CLEANUP_CONFIG_CHANGE_DATA);
+        configService.updateAutoCleanupInDays(message.getAutoCleanupInDays());
     }
 
     @IsReceivingAsyncMessage(MessageID.PROJECT_ACCESS_LEVEL_CHANGED)

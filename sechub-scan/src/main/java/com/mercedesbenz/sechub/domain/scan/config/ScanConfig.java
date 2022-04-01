@@ -1,53 +1,89 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.config;
 
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Version;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.mercedesbenz.sechub.commons.model.JSONable;
-import com.mercedesbenz.sechub.sharedkernel.MustBeKeptStable;
+/**
+ * Global configuration entry for domain 'scan' inside database. Contains only
+ * ONE row! see {@link #ID}
+ *
+ * @author Albert Tregnaghi
+ *
+ */
+@Entity
+@Table(name = ScanConfig.TABLE_NAME)
+public class ScanConfig {
 
-@JsonIgnoreProperties(ignoreUnknown = true) // we do ignore to avoid problems from wrong configured values!
-@MustBeKeptStable("This configuration is used by admins to have templates for their mapping configurations etc.")
-public class ScanConfig implements JSONable<ScanConfig> {
+    /**
+     * We got only ONE administration configuration entry inside table. So we use
+     * always only the first one here!
+     */
+    public static final Integer ID = Integer.valueOf(0);
 
-    private String apiVersion;
+    /* +-----------------------------------------------------------------------+ */
+    /* +............................ SQL ......................................+ */
+    /* +-----------------------------------------------------------------------+ */
+    public static final String TABLE_NAME = "SCAN_CONFIG";
 
-    private static final ScanConfig JSON_INITIALIZER = new ScanConfig();
+    public static final String COLUMN_ID = "CONFIG_ID";
 
-    private Map<String, List<NamePatternToIdEntry>> namePatternMappings = new TreeMap<>();
+    public static final String COLUMN_AUTO_CLEANUP_IN_DAYS = "CONFIG_AUTO_CLEANUP_IN_DAYS";
 
-    public static ScanConfig createFromJSON(String json) {
-        return JSON_INITIALIZER.fromJSON(json);
+    /* +-----------------------------------------------------------------------+ */
+    /* +............................ JPQL .....................................+ */
+    /* +-----------------------------------------------------------------------+ */
+    public static final String CLASS_NAME = ScanConfig.class.getSimpleName();
+
+    @Id
+    @Column(name = COLUMN_ID, unique = true, nullable = false)
+    Integer id = ID;
+
+    @Column(name = COLUMN_AUTO_CLEANUP_IN_DAYS, nullable = false)
+    Long autoCleanupInDays = Long.valueOf(0); // per default 0 (avoid NPEs when auto casting)
+
+    @Version
+    @Column(name = "VERSION")
+    Integer version;
+
+    public Integer getId() {
+        return id;
     }
 
-    public String getApiVersion() {
-        return apiVersion;
-    }
-
-    public Map<String, List<NamePatternToIdEntry>> getNamePatternMappings() {
-        return namePatternMappings;
-    }
-
-    public void setApiVersion(String apiVersion) {
-        this.apiVersion = apiVersion;
+    public Long getAutoCleanupInDays() {
+        return autoCleanupInDays;
     }
 
     @Override
-    public Class<ScanConfig> getJSONTargetClass() {
-        return ScanConfig.class;
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof ScanConfig)) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
             return false;
         }
         ScanConfig other = (ScanConfig) obj;
-
-        return toJSON().equals(other.toJSON());
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id)) {
+            return false;
+        }
+        return true;
     }
 
 }

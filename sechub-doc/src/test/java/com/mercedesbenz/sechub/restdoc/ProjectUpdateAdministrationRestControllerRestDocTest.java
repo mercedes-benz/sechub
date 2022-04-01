@@ -1,15 +1,14 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
-import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
 import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
 import static com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter.*;
-import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.lang.annotation.Annotation;
 
@@ -29,7 +28,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.domain.administration.project.ProjectJsonInput;
 import com.mercedesbenz.sechub.domain.administration.project.ProjectJsonInput.ProjectWhiteList;
@@ -92,21 +90,19 @@ public class ProjectUpdateAdministrationRestControllerRestDocTest {
         		    content("{\"apiVersion\":\"1.0\", \"whiteList\":{\"uris\":[\"192.168.1.1\",\"https://my.special.server.com/myapp1/\"]}}")
         		).
         			andExpect(status().isOk()).
-        			andDo(document(RestDocFactory.createPath(useCase),
-                            resource(
-                                    ResourceSnippetParameters.builder().
-                                        summary(RestDocFactory.createSummary(useCase)).
-                                        description(RestDocFactory.createDescription(useCase)).
-                                        tag(RestDocFactory.extractTag(apiEndpoint)).
-                                        requestSchema(OpenApiSchema.PROJECT_WHITELIST.getSchema()).
+        			 andDo(defineRestService().
+                             with().
+                                 useCaseData(useCase).
+                                 tag(RestDocFactory.extractTag(apiEndpoint)).
+                                 requestSchema(OpenApiSchema.PROJECT_WHITELIST.getSchema()).
+                             and().
+                             document(
                                         pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The id of the project for which whitelist shall be updated")
-                                        ).
+                                        ),
                                         requestFields(
                                                 fieldWithPath(ProjectJsonInput.PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
                                                 fieldWithPath(ProjectJsonInput.PROPERTY_WHITELIST+"."+ProjectWhiteList.PROPERTY_URIS).description("All URIS used now for whitelisting. Former parts will be replaced completely!")
-                                        ).
-                                        build()
                                      )
         			 ));
 
@@ -127,22 +123,20 @@ public class ProjectUpdateAdministrationRestControllerRestDocTest {
         				content("{\"apiVersion\":\"1.0\", \"metaData\":{\"key1\":\"value1\"}}")
         		).
         	    andExpect(status().isOk()).
-        		andDo(document(RestDocFactory.createPath(useCase),
-                        resource(
-                                ResourceSnippetParameters.builder().
-                                    summary(RestDocFactory.createSummary(useCase)).
-                                    description(RestDocFactory.createDescription(useCase)).
-                                    tag(RestDocFactory.extractTag(apiEndpoint)).
-                                    requestSchema(OpenApiSchema.PROJECT_WHITELIST.getSchema()).
+        	    andDo(defineRestService().
+                        with().
+                            useCaseData(useCase).
+                            tag(RestDocFactory.extractTag(apiEndpoint)).
+                            requestSchema(OpenApiSchema.PROJECT_META_DATA.getSchema()).
+                        and().
+                        document(
                                     pathParameters(
                                             parameterWithName(PROJECT_ID.paramName()).description("The id of the project for which metadata shall be updated")
-                                    ).
+                                    ),
                                     requestFields(
                                             fieldWithPath(ProjectJsonInput.PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
                                             fieldWithPath(ProjectJsonInput.PROPERTY_METADATA).description("Metadata object. Contains key-value pairs."),
                                             fieldWithPath(ProjectJsonInput.PROPERTY_METADATA + ".key1").description("An arbitrary metadata key.")
-                                    ).
-                                    build()
                                  )
         				)
         			);

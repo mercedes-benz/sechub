@@ -37,6 +37,7 @@ import com.mercedesbenz.sechub.integrationtest.api.UserContext;
 import com.mercedesbenz.sechub.integrationtest.api.WithSecHubClient;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 import com.mercedesbenz.sechub.integrationtest.internal.SimpleTestStringList;
+import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData;
 import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper.RestHelperTarget;
@@ -757,6 +758,16 @@ public class DeveloperAdministration {
 
     public void changeProjectAccessLevel(String projectId, ProjectAccessLevel accessLevel) {
         asTestUser().changeProjectAccessLevel(new FixedTestProject(projectId), accessLevel);
+    }
+
+    public String fetchAutoCleanupConfiguration() {
+        TestAutoCleanupData configuration = asTestUser().fetchAutoCleanupConfiguration();
+        return TestJSONHelper.get().createJSON(configuration, true);
+    }
+
+    public String updateAutoCleanupConfiguration(String json) {
+        asTestUser().updateAutoCleanupConfiguration(json);
+        return "Auto cleanup data has been changed";
     }
 
 }

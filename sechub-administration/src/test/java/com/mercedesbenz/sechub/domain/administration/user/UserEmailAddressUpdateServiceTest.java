@@ -83,7 +83,7 @@ class UserEmailAddressUpdateServiceTest {
         serviceToTest.updateUserEmailAddress(KNOWN_USER1, "new.user1@example.com");
 
         /* test */
-        verify(assertion).isValidEmailAddress("new.user1@example.com");
+        verify(assertion).assertIsValidEmailAddress("new.user1@example.com");
     }
 
     @Test
@@ -96,14 +96,14 @@ class UserEmailAddressUpdateServiceTest {
         serviceToTest.updateUserEmailAddress(KNOWN_USER1, "new.user1@example.com");
 
         /* test */
-        verify(assertion).isValidUserId(KNOWN_USER1);
+        verify(assertion).assertIsValidUserId(KNOWN_USER1);
     }
 
     @Test
     void asserts_user_id_parameter_before_user_is_fetched_from_db() {
         /* prepare - just to have no NPE while testing with mock data */
         when(userRepository.findOrFailUser("notfound")).thenThrow(NotFoundException.class);
-        doThrow(TestCanaryException.class).when(assertion).isValidUserId(any());
+        doThrow(TestCanaryException.class).when(assertion).assertIsValidUserId(any());
 
         /* execute + test */
         assertThrows(TestCanaryException.class, () -> serviceToTest.updateUserEmailAddress("novalid", "former.user1@example.com"));
@@ -113,7 +113,7 @@ class UserEmailAddressUpdateServiceTest {
     void asserts_email_parameter_before_user_is_fetched_from_db() {
         /* prepare - just to have no NPE while testing with mock data */
         when(userRepository.findOrFailUser("notfound")).thenThrow(NotFoundException.class);
-        doThrow(TestCanaryException.class).when(assertion).isValidEmailAddress(any());
+        doThrow(TestCanaryException.class).when(assertion).assertIsValidEmailAddress(any());
 
         /* execute + test */
         assertThrows(TestCanaryException.class, () -> serviceToTest.updateUserEmailAddress("notfound", "not-a-valid-email-adress"));

@@ -64,7 +64,7 @@ public class SchedulerCancelJobService {
      */
     @UseCaseAdminCancelsJob(@Step(number = 3, name = "Try to find job and mark as being canceled", description = "When job is found and user has access the state will be updated and marked as canceled"))
     public void cancelJob(UUID jobUUID, String ownerEmailAddress) {
-        assertion.isValidJobUUID(jobUUID);
+        assertion.assertIsValidJobUUID(jobUUID);
 
         Optional<ScheduleSecHubJob> optJob = jobRepository.findById(jobUUID);
         if (!optJob.isPresent()) {

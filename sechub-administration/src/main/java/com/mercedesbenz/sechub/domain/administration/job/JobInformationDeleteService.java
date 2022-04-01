@@ -27,7 +27,7 @@ public class JobInformationDeleteService {
     @Validated
     @UseCaseSchedulerStartsJob(@Step(number = 5, name = "Update admin job info", description = "Deletes store info in admin domain when job is done."))
     public void delete(UUID jobUUID) {
-        assertion.isValidJobUUID(jobUUID);
+        assertion.assertIsValidJobUUID(jobUUID);
 
         LOG.debug("deleting job information for job with uuid:{}", jobUUID);
         repository.deleteJobInformationWithJobUUID(jobUUID);

@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
-import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
 import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -25,7 +24,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.server.core.InfoService;
 import com.mercedesbenz.sechub.server.core.ServerInfoAdministrationRestController;
@@ -72,16 +70,14 @@ public class ServerInfoAdministrationRestControllerRestDocTest {
 				).
 					andExpect(status().isOk()).
 					andExpect(content().string(SERVER_VERSION)).
-					andDo(document(RestDocFactory.createPath(UseCaseAdminChecksServerVersion.class),
-	                           resource(
-	                                    ResourceSnippetParameters.builder().
-	                                        summary(RestDocFactory.createSummary(useCase)).
-	                                        description(RestDocFactory.createDescription(useCase)).
-	                                        tag(RestDocFactory.extractTag(apiEndpoint)).
-                                            responseSchema(OpenApiSchema.SERVER_VERSION.getSchema()).
-	                                        build()
-	                                    )
-					));
+					andDo(defineRestService().
+		                        with().
+		                            useCaseData(useCase).
+		                            tag(RestDocFactory.extractTag(apiEndpoint)).
+		                            responseSchema(OpenApiSchema.SERVER_VERSION.getSchema()).
+		                        and().
+		                        document()
+					);
 		/* @formatter:on */
     }
 

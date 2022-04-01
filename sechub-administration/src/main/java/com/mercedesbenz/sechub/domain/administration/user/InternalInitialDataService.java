@@ -68,8 +68,8 @@ public class InternalInitialDataService {
 
     private void internalCreateInitialUser(String userId, String emailAddress, String unencryptedAPItoken, boolean createAsSuperAdmin) {
 
-        assertion.isValidUserId(userId);
-        assertion.isValidEmailAddress(emailAddress);
+        assertion.assertIsValidUserId(userId);
+        assertion.assertIsValidEmailAddress(emailAddress);
 
         User exampleUser = new User();
         exampleUser.superAdmin = true;

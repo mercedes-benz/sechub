@@ -64,6 +64,7 @@ public class ScheduleSecHubJob {
     public static final String PROPERTY_STARTED = "started";
     public static final String PROPERTY_ENDED = "ended";
 
+    public static final String QUERY_DELETE_JOBINFORMATION_OLDER_THAN = "DELETE FROM ScheduleSecHubJob j WHERE j." + PROPERTY_CREATED + " <:cleanTimeStamp";;
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")

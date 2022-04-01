@@ -21,6 +21,7 @@ import javax.swing.SwingUtilities;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.ActionSupport;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.adapter.ShowProductExecutorTemplatesDialogAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.client.TriggerSecHubClientSynchronousScanAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.config.ConfigureAutoCleanupAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.config.CreateExecutionProfileAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.config.CreateExecutorConfigAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.config.DeleteConfigurationAction;
@@ -241,6 +242,8 @@ public class CommandUI {
         menu.add(mappingsMenu);
         add(mappingsMenu, new FetchGlobalMappingAction(context));
         add(mappingsMenu, new UpdateGlobalMappingAction(context));
+
+        menu.add(new ConfigureAutoCleanupAction(context));
     }
 
     private ShowProductExecutorTemplatesDialogAction register(ShowProductExecutorTemplatesDialogAction action) {

@@ -31,6 +31,8 @@ import com.mercedesbenz.sechub.sharedkernel.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.UserContextService;
+import com.mercedesbenz.sechub.sharedkernel.autocleanup.IntegrationTestAutoCleanupResultInspector;
+import com.mercedesbenz.sechub.sharedkernel.autocleanup.IntegrationTestAutoCleanupResultInspector.JsonDeleteCount;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.sharedkernel.logging.IntegrationTestSecurityLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
@@ -73,6 +75,9 @@ public class IntegrationTestServerRestController {
     private MetaDataInspector metaDataInspector;
 
     @Autowired
+    private IntegrationTestAutoCleanupResultInspector autoCleanupResultInspector;
+
+    @Autowired
     IntegrationTestSecurityLogService securityLogService;
 
     @Autowired
@@ -91,6 +96,18 @@ public class IntegrationTestServerRestController {
             MediaType.APPLICATION_JSON_VALUE })
     public List<SecurityLogData> getSecurityLogData() {
         return securityLogService.getLogData();
+    }
+
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/autocleanup/inspection/reset", method = RequestMethod.POST, produces = {
+            MediaType.APPLICATION_JSON_VALUE })
+    public void resetAutoCleanupInspection() {
+        autoCleanupResultInspector.reset();
+    }
+
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/autocleanup/inspection/deleteCounts", method = RequestMethod.GET, produces = {
+            MediaType.APPLICATION_JSON_VALUE })
+    public List<JsonDeleteCount> fetchAutoCleanupInspectionDeleteCounts() {
+        return autoCleanupResultInspector.createList();
     }
 
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/event/inspection/reset-and-stop", method = RequestMethod.POST, produces = {

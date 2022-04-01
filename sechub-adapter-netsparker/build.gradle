@@ -6,6 +6,5 @@
  * ============================================================================
  */
 dependencies {
-	compile library.apache_commons_lang3
-    compile project(':sechub-adapter')
+    api project(':sechub-adapter')
 }

@@ -14,32 +14,31 @@ import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigInfo;
 import com.mercedesbenz.sechub.domain.scan.product.sereco.SerecoProductResultTransformer;
 import com.mercedesbenz.sechub.domain.scan.product.sereco.TestSerecoProductResultTransformer;
-import com.mercedesbenz.sechub.integrationtest.TextFileReader;
 import com.mercedesbenz.sechub.sereco.importer.CheckmarxV1XMLImporter;
 import com.mercedesbenz.sechub.sereco.importer.ProductResultImporter;
 import com.mercedesbenz.sechub.sereco.importer.SarifV1JSONImporter;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
+import com.mercedesbenz.sechub.test.TestFileReader;
 
 public class ReportTestHelper {
 
     private static final String REPORT_PATH = "./src/test/resources/report/";
-    private static final TextFileReader reader = new TextFileReader();
 
     private static final SarifV1JSONImporter sarifImporter = new SarifV1JSONImporter();
     private static final CheckmarxV1XMLImporter checkmarxImporter = new CheckmarxV1XMLImporter();
     private static final SerecoProductResultTransformer transfomer = new TestSerecoProductResultTransformer();
 
     public static String load3rdPartyReportAsString(String fullName) {
-        return reader.loadTextFile(new File(REPORT_PATH + "input/" + fullName));
+        return TestFileReader.loadTextFile(new File(REPORT_PATH + "input/" + fullName));
     }
 
     public static String loadSarifReport(String name) {
-        return reader.loadTextFile(new File(REPORT_PATH + "input/" + name + ".sarif.json"));
+        return TestFileReader.loadTextFile(new File(REPORT_PATH + "input/" + name + ".sarif.json"));
     }
 
     public static String loadSecHubReport(String name) {
-        return reader.loadTextFile(new File(REPORT_PATH + "output/" + name + ".sechub.json"));
+        return TestFileReader.loadTextFile(new File(REPORT_PATH + "output/" + name + ".sechub.json"));
     }
 
     public static String transformCheckmarxToSecHubReportJSON(String checkmarxXML, String sechubJobUUID) throws IOException, SecHubExecutionException {

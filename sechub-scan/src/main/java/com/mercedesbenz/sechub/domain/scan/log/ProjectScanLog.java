@@ -58,6 +58,8 @@ public class ProjectScanLog {
     public static final String STATUS_FAILED = "FAILED";
     public static final String STATUS_ABANDONED = "ABANDONDED";
 
+    public static final String QUERY_DELETE_LOGS_OLDER_THAN = "DELETE FROM ProjectScanLog log WHERE log." + PROPERTY_STARTED + " < :cleanTimeStamp";;
+
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")

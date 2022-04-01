@@ -60,7 +60,7 @@ public class ProjectDeleteService {
     public void deleteProject(String projectId) {
         auditLogService.log("triggers delete of project {}", logSanitizer.sanitize(projectId, 30));
 
-        assertion.isValidProjectId(projectId);
+        assertion.assertIsValidProjectId(projectId);
 
         Project project = projectRepository.findOrFailProject(projectId);
 

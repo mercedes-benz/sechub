@@ -64,7 +64,7 @@ public class ScanProjectConfigService {
      * @return project scan configuration or <code>null</code>
      */
     public ScanProjectConfig get(String projectId, ScanProjectConfigID configId, boolean checkAccess) {
-        userInputAssertion.isValidProjectId(projectId);
+        userInputAssertion.assertIsValidProjectId(projectId);
         if (checkAccess) {
             scanAssertService.assertUserHasAccessToProject(projectId);
         }
@@ -82,7 +82,7 @@ public class ScanProjectConfigService {
      *                  database
      */
     public void set(String projectId, ScanProjectConfigID configId, String data) {
-        userInputAssertion.isValidProjectId(projectId);
+        userInputAssertion.assertIsValidProjectId(projectId);
         scanAssertService.assertUserHasAccessToProject(projectId);
 
         ScanProjectConfigCompositeKey key = new ScanProjectConfigCompositeKey(configId, projectId);

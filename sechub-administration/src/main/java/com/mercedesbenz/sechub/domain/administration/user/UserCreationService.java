@@ -67,7 +67,7 @@ public class UserCreationService {
         String sanitizedLogUserId = logSanitizer.sanitize(userId, 30);
         auditLog.log("accepts signup of user {}", sanitizedLogUserId);
 
-        assertion.isValidUserId(userId);
+        assertion.assertIsValidUserId(userId);
 
         Optional<Signup> selfRegistration = selfRegistrationRepository.findById(userId);
         if (!selfRegistration.isPresent()) {
@@ -82,7 +82,7 @@ public class UserCreationService {
         }
 
         String emailAdress = selfRegistration.get().getEmailAdress();
-        assertion.isValidEmailAddress(emailAdress);
+        assertion.assertIsValidEmailAddress(emailAdress);
 
         found = userRepository.findByEmailAdress(emailAdress);
 

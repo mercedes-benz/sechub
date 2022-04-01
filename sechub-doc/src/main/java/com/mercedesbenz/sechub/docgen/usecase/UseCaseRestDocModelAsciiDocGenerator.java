@@ -2,15 +2,21 @@
 package com.mercedesbenz.sechub.docgen.usecase;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.SortedSet;
 
+import org.springframework.http.HttpStatus;
+
+import com.mercedesbenz.sechub.docgen.AsciidocUtil;
+import com.mercedesbenz.sechub.docgen.RestDocResourceModel;
 import com.mercedesbenz.sechub.docgen.usecase.UseCaseModel.UseCaseEntry;
+import com.mercedesbenz.sechub.docgen.util.TextFileReader;
 import com.mercedesbenz.sechub.docgen.util.TextFileWriter;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseGroup;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
@@ -19,7 +25,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc.SpringRestDo
 
 public class UseCaseRestDocModelAsciiDocGenerator {
 
-    private TextFileWriter writer;
+    private TextFileReader reader = new TextFileReader();
 
     // [options="header",cols="1,1,1"]
     // |===
@@ -33,7 +39,6 @@ public class UseCaseRestDocModelAsciiDocGenerator {
         Objects.requireNonNull(writer);
         Objects.requireNonNull(model);
 
-        this.writer = writer;
         Context context = new Context();
         for (UseCaseIdentifier identifier : usecases) {
             context.usecasesToInspect.add(identifier.name());
@@ -118,49 +123,123 @@ public class UseCaseRestDocModelAsciiDocGenerator {
         context.addLine("");
         context.addLine(UseCaseAsciiDocFactory.createAnker(entry));
         if (multipleVariants) {
+            String line = headline(h + 1);
             if (entry.variantOriginValue.equals(UseCaseRestDoc.DEFAULT_VARIANT)) {
-                context.addLine(headline(h + 1) + "Standard");
+                line += "Standard";
             } else {
-                context.addLine(headline(h + 1) + entry.variantOriginValue);
+                line += entry.variantOriginValue;
             }
-
+            line = line + " variant";
+            context.addLine(line);
         }
 
-        File[] files = entry.copiedRestDocFolder.listFiles();
-        addHeadersWhenNecessary(files);
-
-        File[] wantedFilesOrdered = orderWantedFiles(files, entry.wanted);
-
-        for (File file : wantedFilesOrdered) {
-            context.addLine("");
-            String prettyFileName = createPrettyPrintedFileName(file);
-            context.addLine("*" + prettyFileName + "*\n");
-            context.addLine("include::" + entry.path + "/" + file.getName() + "[]");
-        }
+        /* generate REST doc details */
+        Map<SpringRestDocOutput, File> map = mapRestDocOutputFilesInOrderedMap(context, entry);
+        appendRestDefinition(context, entry, map);
+        appendRestExample(context, entry, map);
 
     }
 
-    private void addHeadersWhenNecessary(File[] files) {
-        /* headers are automatically added by writer: */
-        for (File file : files) {
-            try {
-                writer.addMissingHeaders(file);
-            } catch (IOException e) {
-                throw new IllegalStateException("Cannot add missing headers", e);
-            }
-        }
-    }
+    private void appendRestExample(Context context, UseCaseRestDocEntry entry, Map<SpringRestDocOutput, File> map) {
+        context.addLine("\n[.big]*Example*");
 
-    private File[] orderWantedFiles(File[] files, SpringRestDocOutput[] wanted) {
-        List<File> orderedWanted = new ArrayList<>();
-        for (SpringRestDocOutput want : wanted) {
-            for (File file : files) {
-                if (want.isWanted(file)) {
-                    orderedWanted.add(file);
+        for (SpringRestDocOutput restDocOutput : entry.wanted) {
+            if (restDocOutput.isExample()) {
+                File outputFile = map.get(restDocOutput);
+                if (outputFile != null) {
+                    addDescripiton(context, entry, outputFile);
                 }
             }
         }
-        return orderedWanted.toArray(new File[orderedWanted.size()]);
+    }
+
+    private void appendRestDefinition(Context context, UseCaseRestDocEntry entry, Map<SpringRestDocOutput, File> map) {
+        context.addLine("\n[.big]*Definition*");
+        appendGeneralRequestInformation(context, map);
+
+        for (SpringRestDocOutput restDocOutput : entry.wanted) {
+            if (restDocOutput.isDefinition()) {
+                File outputFile = map.get(restDocOutput);
+                if (outputFile != null) {
+                    addDescripiton(context, entry, outputFile);
+                }
+            }
+        }
+    }
+
+    private void appendGeneralRequestInformation(Context context, Map<SpringRestDocOutput, File> map) {
+        File resourceFile = map.get(SpringRestDocOutput.RESOURCE);
+        if (resourceFile != null) {
+            String json = reader.loadTextFile(resourceFile);
+
+            RestDocResourceModel model = RestDocResourceModel.fromString(json);
+            context.addLine("[options=\"header\",cols=\"1,6\",title=\"General request information\"]");
+            context.addLine("|===");
+            context.addLine("|                  |Value");
+            context.addLine("|Path      |" + model.request.path);
+            context.addLine("|Method       |" + model.request.method);
+            context.addLine("|Status code  |" + createHttpStatusCodeDescription(model.response.status));
+            context.addLine("|===");
+        }
+    }
+
+    private String createHttpStatusCodeDescription(int statusCode) {
+        if (statusCode <= 0) {
+            return "";
+        }
+        HttpStatus status = HttpStatus.valueOf(statusCode);
+        return status.toString();
+    }
+
+    private Map<SpringRestDocOutput, File> mapRestDocOutputFilesInOrderedMap(Context context, UseCaseRestDocEntry entry) {
+        // create a linked hash map - so we can output ordering from annotation
+        Map<SpringRestDocOutput, File> map = new LinkedHashMap<>();
+
+        File[] files = entry.copiedRestDocFolder.listFiles();
+
+        /* ordered first: */
+        for (SpringRestDocOutput value : entry.wanted) {
+            for (File file : files) {
+                if (value.isRepresentedBy(file)) {
+                    map.put(value, file);
+                }
+            }
+        }
+
+        /* all other after them */
+        for (SpringRestDocOutput value : SpringRestDocOutput.values()) {
+            if (map.containsKey(value)) {
+                // already added by "wanted" parts.
+                continue;
+            }
+            /* not "wanted" - but we add it as well */
+            for (File file : files) {
+                if (value.isRepresentedBy(file)) {
+                    map.put(value, file);
+                }
+            }
+        }
+        return map;
+    }
+
+    private void addDescripiton(Context context, UseCaseRestDocEntry entry, File file) {
+        context.addLine("");
+        String prettyFileName = createPrettyPrintedFileName(file);
+        context.addLine("*" + prettyFileName + "*  +");
+        if (isGeneratedFileEmpty(file)) {
+            context.addLine("_(empty)_");
+        } else {
+            context.addLine("\ninclude::" + entry.path + "/" + file.getName() + "[]");
+        }
+    }
+
+    private boolean isGeneratedFileEmpty(File file) {
+        boolean justEmpty = false;
+        if (SpringRestDocOutput.RESPONSE_BODY.isRepresentedBy(file)) {
+            String content = reader.loadTextFile(file, "\n");
+            justEmpty = AsciidocUtil.isEmptyAsciidocContent(content);
+        }
+        return justEmpty;
     }
 
     private String createPrettyPrintedFileName(File file) {

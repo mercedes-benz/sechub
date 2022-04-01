@@ -21,7 +21,7 @@ import com.mercedesbenz.sechub.docgen.GeneratorConstants;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 
 /**
- * A very simple replacement for `org.reflections` library. But fullfils
+ * A very simple replacement for `org.reflections` library. But fulfills
  * requirements for sechub documentation generation... and works with JDK11
  *
  * @author Albert Tregnaghi
@@ -183,7 +183,7 @@ public class Reflections {
     }
 
     private void scan() {
-        fetchGradleSoureDirectories();
+        initBeforeScan();
         fetchJavaClassNamesToInspect();
     }
 
@@ -203,6 +203,7 @@ public class Reflections {
         } else if (file.isFile()) {
             String className = extractJavaFileName(sourceDirectory, file);
             if (isIgnoredClassName(className)) {
+                LOG.trace("Class ignored:{}", className);
                 return;
             }
 
@@ -211,7 +212,19 @@ public class Reflections {
                 clazz = Class.forName(className);
                 classesToInspect.add(clazz);
             } catch (ClassNotFoundException e) {
-                LOG.warn("Ignored class:{}", className);
+                /*
+                 * We iterate over files - means source code. When we have a
+                 * ClassNotFoundException at this point, the source file is available, but class
+                 * is not inside class path (runtime).
+                 *
+                 * This happens for source files which are found inside file system and given
+                 * directories, but are not inside sechub-doc classpath.
+                 *
+                 * This is normally no error, because we do not inspect all parts. But we log it
+                 * at at least at info level for debugging purposes (e.g. when we add a new
+                 * gradle sub project and it is not documented).
+                 */
+                LOG.info("The class '{}' was not found in sechub-doc classpath, but source file was found at {}", className, file.getAbsolutePath());
             }
         } else {
             LOG.error("Was not able to handle file:{}", file);
@@ -244,7 +257,7 @@ public class Reflections {
         return className;
     }
 
-    private void fetchGradleSoureDirectories() {
+    private void initBeforeScan() {
         File file = new File("sechub-doc");
         File rootFolder = null;
         if (file.exists()) {

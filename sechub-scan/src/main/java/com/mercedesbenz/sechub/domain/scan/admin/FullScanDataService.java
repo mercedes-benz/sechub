@@ -37,7 +37,7 @@ public class FullScanDataService {
 
     @UseCaseAdminDownloadsFullScanDataForJob(@Step(number = 2, name = "Collect all scan data"))
     public FullScanData getFullScanData(UUID sechubJobUUID) {
-        assertion.isValidJobUUID(sechubJobUUID);
+        assertion.assertIsValidJobUUID(sechubJobUUID);
 
         LOG.debug("Start getting full scan data for {}", sechubJobUUID);
 

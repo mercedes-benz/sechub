@@ -1,19 +1,15 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
-import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutionProfile.*;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
 import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
 import static com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter.*;
-import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.lang.annotation.Annotation;
 import java.util.UUID;
@@ -34,7 +30,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
@@ -129,23 +124,21 @@ public class ProductExecutionProfileRestControllerRestDocTest {
 	    			content(JSONConverter.get().toJSON(profile))
 	    		).
 	    			andExpect(status().isCreated()).
-	    			andDo(document(RestDocFactory.createPath(useCase),
-                            resource(
-                                    ResourceSnippetParameters.builder().
-                                        summary(RestDocFactory.createSummary(useCase)).
-                                        description(RestDocFactory.createDescription(useCase)).
-                                        tag(RestDocFactory.extractTag(apiEndpoint)).
-                                        requestSchema(OpenApiSchema.EXECUTION_PROFILE_CREATE.getSchema()).
+	    			andDo(defineRestService().
+                            with().
+                                useCaseData(useCase).
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                                requestSchema(OpenApiSchema.EXECUTION_PROFILE_CREATE.getSchema()).
+                            and().
+                            document(
                                         requestFields(
                                                 fieldWithPath(PROPERTY_DESCRIPTION).description("A short description for the profile"),
                                                 fieldWithPath(PROPERTY_ENABLED).description("Enabled state of profile, default is false").optional(),
                                                 fieldWithPath(PROPERTY_CONFIGURATIONS+"[]").description("Configurations can be linked at creation time as well - see update description").optional(),
                                                 fieldWithPath(PROPERTY_PROJECT_IDS+"[]").description("Projects can be linked by their ids at creation time as well - see update description").optional()
-                                        ).
+                                        ),
                                         pathParameters(
                                                 parameterWithName(PROFILE_ID.paramName()).description("The profile id")
-                                        ).
-                                        build()
                                      )
 	    			        ));
 
@@ -179,13 +172,13 @@ public class ProductExecutionProfileRestControllerRestDocTest {
                     content(JSONConverter.get().toJSON(profile))
                 ).
                     andExpect(status().isOk()).
-                    andDo(document(RestDocFactory.createPath(useCase),
-                            resource(
-                                    ResourceSnippetParameters.builder().
-                                        summary(RestDocFactory.createSummary(useCase)).
-                                        description(RestDocFactory.createDescription(useCase)).
-                                        tag(RestDocFactory.extractTag(apiEndpoint)).
-                                        requestSchema(OpenApiSchema.EXECUTION_PROFILE_UPDATE.getSchema()).
+                    andDo(defineRestService().
+                            with().
+                                useCaseData(useCase).
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                                requestSchema(OpenApiSchema.EXECUTION_PROFILE_UPDATE.getSchema()).
+                            and().
+                            document(
                                         requestFields(
                                                 fieldWithPath(PROPERTY_DESCRIPTION).description("A short description for the profile"),
                                                 fieldWithPath(PROPERTY_ENABLED).description("Enabled state of profile, default is false").optional(),
@@ -195,11 +188,9 @@ public class ProductExecutionProfileRestControllerRestDocTest {
                                                 fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_EXECUTORVERSION).ignored(),
                                                 fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_CREDENTIALS).ignored(),
                                                 fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS).ignored()
-                                        ).
+                                        ),
                                         pathParameters(
                                                 parameterWithName(PROFILE_ID.paramName()).description("The profile id")
-                                        ).
-                                        build()
                                      )
                             ));
 
@@ -222,17 +213,15 @@ public class ProductExecutionProfileRestControllerRestDocTest {
                     contentType(MediaType.APPLICATION_JSON_VALUE)
                 ).
                     andExpect(status().isCreated()).
-                    andDo(document(RestDocFactory.createPath(useCase),
-                            resource(
-                                    ResourceSnippetParameters.builder().
-                                        summary(RestDocFactory.createSummary(useCase)).
-                                        description(RestDocFactory.createDescription(useCase)).
-                                        tag(RestDocFactory.extractTag(apiEndpoint)).
+                    andDo(defineRestService().
+                            with().
+                                useCaseData(useCase).
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                            and().
+                            document(
                                         pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The project id "),
                                                 parameterWithName(PROFILE_ID.paramName()).description("The profile id")
-                                        ).
-                                        build()
                                      )
                     ));
 
@@ -255,17 +244,15 @@ public class ProductExecutionProfileRestControllerRestDocTest {
                     contentType(MediaType.APPLICATION_JSON_VALUE)
                 )./*andDo(print()).*/
                     andExpect(status().isOk()).
-                    andDo(document(RestDocFactory.createPath(useCase),
-                            resource(
-                                    ResourceSnippetParameters.builder().
-                                        summary(RestDocFactory.createSummary(useCase)).
-                                        description(RestDocFactory.createDescription(useCase)).
-                                        tag(RestDocFactory.extractTag(apiEndpoint)).
+                    andDo(defineRestService().
+                            with().
+                                useCaseData(useCase).
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                            and().
+                            document(
                                         pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The project id "),
                                                 parameterWithName(PROFILE_ID.paramName()).description("The profile id")
-                                        ).
-                                        build()
                                      )
                     ));
 
@@ -314,13 +301,13 @@ public class ProductExecutionProfileRestControllerRestDocTest {
                     contentType(MediaType.APPLICATION_JSON_VALUE)
                 ).
                     andExpect(status().isOk()).
-                    andDo(document(RestDocFactory.createPath(useCase),
-                            resource(
-                                    ResourceSnippetParameters.builder().
-                                        summary(RestDocFactory.createSummary(useCase)).
-                                        description(RestDocFactory.createDescription(useCase)).
-                                        tag(RestDocFactory.extractTag(apiEndpoint)).
-                                        responseSchema(OpenApiSchema.EXECUTION_PROFILE_FETCH.getSchema()).
+                    andDo(defineRestService().
+                            with().
+                                useCaseData(useCase).
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                                responseSchema(OpenApiSchema.EXECUTION_PROFILE_FETCH.getSchema()).
+                            and().
+                            document(
                                         responseFields(
                                                 fieldWithPath(PROPERTY_ID).optional().ignored(),
                                                 fieldWithPath(PROPERTY_DESCRIPTION).description("A short description for the profile"),
@@ -336,11 +323,9 @@ public class ProductExecutionProfileRestControllerRestDocTest {
                                                 fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS+"[]."+ProductExecutorConfigSetupJobParameter.PROPERTY_KEY).ignored(),
                                                 fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS+"[]."+ProductExecutorConfigSetupJobParameter.PROPERTY_VALUE).ignored(),
                                                 fieldWithPath(PROPERTY_PROJECT_IDS+"[]").description("Projects can be linked by their ids here")
-                                        ).
+                                        ),
                                         pathParameters(
                                                 parameterWithName(PROFILE_ID.paramName()).description("The profile id")
-                                        ).
-                                        build()
                                      )
                             ));
 
@@ -361,16 +346,14 @@ public class ProductExecutionProfileRestControllerRestDocTest {
                     contentType(MediaType.APPLICATION_JSON_VALUE)
                 ).
                     andExpect(status().isOk()).
-                    andDo(document(RestDocFactory.createPath(useCase),
-                            resource(
-                                    ResourceSnippetParameters.builder().
-                                        summary(RestDocFactory.createSummary(useCase)).
-                                        description(RestDocFactory.createDescription(useCase)).
-                                        tag(RestDocFactory.extractTag(apiEndpoint)).
+                    andDo(defineRestService().
+                            with().
+                                useCaseData(useCase).
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                            and().
+                            document(
                                         pathParameters(
                                                 parameterWithName(PROFILE_ID.paramName()).description("The profile id")
-                                        ).
-                                        build()
                                      )
                             ));
 
@@ -406,20 +389,18 @@ public class ProductExecutionProfileRestControllerRestDocTest {
                     contentType(MediaType.APPLICATION_JSON_VALUE)
                 ).
                     andExpect(status().isOk()).
-                    andDo(document(RestDocFactory.createPath(useCase),
-                            resource(
-                                    ResourceSnippetParameters.builder().
-                                        summary(RestDocFactory.createSummary(useCase)).
-                                        description(RestDocFactory.createDescription(useCase)).
-                                        tag(RestDocFactory.extractTag(apiEndpoint)).
-                                        responseSchema(OpenApiSchema.EXECUTION_PROFILE_LIST.getSchema()).
+                    andDo(defineRestService().
+                            with().
+                                useCaseData(useCase).
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                                responseSchema(OpenApiSchema.EXECUTION_PROFILE_LIST.getSchema()).
+                            and().
+                            document(
                                         responseFields(
                                                 fieldWithPath("type").description("Always `executorProfileList` as an identifier for the list"),
                                                 fieldWithPath("executionProfiles[]."+PROPERTY_ID).description("The profile id"),
                                                 fieldWithPath("executionProfiles[]."+PROPERTY_DESCRIPTION).description("A profile description"),
                                                 fieldWithPath("executionProfiles[]."+PROPERTY_ENABLED).description("Enabled state of profile")
-                                        ).
-                                        build()
                                      )
                             ));
 

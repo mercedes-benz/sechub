@@ -8,6 +8,8 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import com.mercedesbenz.sechub.test.TestFileReader;
+
 class SecHubReportModelTest {
 
     @Test

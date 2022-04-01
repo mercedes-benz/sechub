@@ -70,9 +70,9 @@ public class SchedulerUploadService {
     @UseCaseUserUploadsSourceCode(@Step(number = 2, name = "Try to find project and upload sourcecode as zipfile", description = "When project is found and user has access and job is initializing the sourcecode file will be uploaded"))
     public void uploadSourceCode(String projectId, UUID jobUUID, MultipartFile file, String checkSum) {
         /* assert */
-        assertion.isValidProjectId(projectId);
-        assertion.isValidJobUUID(jobUUID);
-        assertion.isValidSha256Checksum(checkSum);
+        assertion.assertIsValidProjectId(projectId);
+        assertion.assertIsValidJobUUID(jobUUID);
+        assertion.assertIsValidSha256Checksum(checkSum);
 
         notNull(file, "file may not be null!");
 

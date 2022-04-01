@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleAccessCountService;
+import com.mercedesbenz.sechub.domain.schedule.config.SchedulerConfigService;
 import com.mercedesbenz.sechub.domain.schedule.strategy.SchedulerStrategyFactory;
 import com.mercedesbenz.sechub.sharedkernel.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
@@ -35,6 +36,15 @@ public class IntegrationTestSchedulerRestController {
 
     @Autowired
     private SchedulerStrategyFactory schedulerStrategyFactory;
+
+    @Autowired
+    private SchedulerConfigService scheduleConfigService;
+
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/autocleanup/inspection/schedule/days", method = RequestMethod.GET, produces = {
+            MediaType.APPLICATION_JSON_VALUE })
+    public long fetchScheduleAutoCleanupConfiguredDays() {
+        return scheduleConfigService.getAutoCleanupInDays();
+    }
 
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/project/{projectId}/schedule/access/count", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })

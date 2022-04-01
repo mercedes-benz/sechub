@@ -68,6 +68,8 @@ public class JobInformation {
     public static final String QUERY_FIND_ALL_RUNNING_JOBS = "SELECT j FROM JobInformation j where j.status = com.mercedesbenz.sechub.domain.administration.job.JobStatus.RUNNING";
     public static final String QUERY_DELETE_JOBINFORMATION_FOR_JOBUUID = "DELETE FROM JobInformation j WHERE j.jobUUID=:jobUUID";
 
+    public static final String QUERY_DELETE_JOBINFORMATION_OLDER_THAN = "DELETE FROM JobInformation j WHERE j." + PROPERTY_SINCE + " < :cleanTimeStamp";
+
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")

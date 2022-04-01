@@ -10,10 +10,7 @@
 
 subprojects {
 
-	apply plugin: 'maven'
-
 	group = "com.mercedesbenz.sechub"
-    
 
     if (!projectType.publishedLibraries.contains(project)){
         return;
@@ -75,7 +72,7 @@ subprojects {
                    }
                }
            }
-      }
+         }
       }
       
     }

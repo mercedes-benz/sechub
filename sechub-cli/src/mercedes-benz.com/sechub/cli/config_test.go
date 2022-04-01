@@ -5,7 +5,10 @@ package cli
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"testing"
+
+	sechubTestUtil "mercedes-benz.com/sechub/testutil"
 )
 
 func TestConfigByFlagsThrowsNoError(t *testing.T) {
@@ -132,4 +135,217 @@ func Example_validateRequestedReportFormatMakesLowercase2() {
 	// Output:
 	// NOTICE: Converted requested report format 'Json' to lowercase. Because it contained uppercase characters, which are not accepted by SecHub server.
 	// json
+}
+
+func Example_normalizeCMDLineArgs() {
+	// PREPARE
+	argList0 := []string{"./sechub"}
+	argList1 := []string{"./sechub", "scan"}
+	argList2 := []string{"./sechub", "-jobUUID", "3bdcc5c5-c2b6-4599-be84-f74380680808", "getReport"}
+	argList3 := []string{"./sechub", "getReport", "-jobUUID", "3bdcc5c5-c2b6-4599-be84-f74380680808"}
+	argList4 := []string{"./sechub", "-configfile", "my-sechub.json", "scan", "-stop-on-yellow"}
+	argList5 := []string{"./sechub", "-configfile", "my-sechub.json", "scan", "-wait", "30"}
+	argList6 := []string{"./sechub", "-version"}
+	// EXECUTE
+	fmt.Println(normalizeCMDLineArgs(argList0))
+	fmt.Println(normalizeCMDLineArgs(argList1))
+	fmt.Println(normalizeCMDLineArgs(argList2))
+	fmt.Println(normalizeCMDLineArgs(argList3))
+	fmt.Println(normalizeCMDLineArgs(argList4))
+	fmt.Println(normalizeCMDLineArgs(argList5))
+	fmt.Println(normalizeCMDLineArgs(argList6))
+	// Output:
+	// [./sechub]
+	// [./sechub scan]
+	// [./sechub -jobUUID 3bdcc5c5-c2b6-4599-be84-f74380680808 getReport]
+	// [./sechub -jobUUID 3bdcc5c5-c2b6-4599-be84-f74380680808 getReport]
+	// [./sechub -configfile my-sechub.json -stop-on-yellow scan]
+	// [./sechub -configfile my-sechub.json -wait 30 scan]
+	// [./sechub -version]
+}
+
+func Example_tempFile_current_dir() {
+	// PREPARE
+	var config Config
+	config.tempDir = "."
+	context := NewContext(&config)
+
+	// EXECUTE
+	result := tempFile(context, "sources.zip")
+
+	// TEST
+	fmt.Println(result)
+	// Output:
+	// sources.zip
+}
+
+func Example_tempFile_absolute_path() {
+	// PREPARE
+	var config Config
+	config.tempDir = "/tmp/my_dir"
+	context := NewContext(&config)
+
+	// EXECUTE
+	result := tempFile(context, "sources.zip")
+
+	// TEST
+	fmt.Println(result)
+	// Output:
+	// /tmp/my_dir/sources.zip
+}
+
+func Test_validateTempDir(t *testing.T) {
+	// PREPARE
+	tempDir := sechubTestUtil.InitializeTestTempDir(t)
+	defer os.RemoveAll(tempDir)
+
+	regularFile := filepath.Join(tempDir, "regular_file")
+	sechubTestUtil.CreateTestFile(regularFile, 0644, []byte(""), t)
+
+	var config1 Config
+	var config2 Config
+	var config3 Config
+	var config4 Config
+	config1.tempDir = "."
+	config2.tempDir = "/this/really/does/not/exist"
+	config3.tempDir = tempDir
+	config4.tempDir = regularFile
+
+	// EXECUTE
+	result1 := validateTempDir(&config1)
+	result2 := validateTempDir(&config2)
+	result3 := validateTempDir(&config3)
+	result4 := validateTempDir(&config4)
+
+	// TEST
+	sechubTestUtil.AssertTrue(result1, t)
+	sechubTestUtil.AssertFalse(result2, t)
+	sechubTestUtil.AssertTrue(result3, t)
+	sechubTestUtil.AssertFalse(result4, t)
+}
+
+func Test_validateOutputLocation_current_dir(t *testing.T) {
+	// PREPARE
+	var config Config
+	config.outputLocation = "."
+
+	// EXECUTE
+	result := validateOutputLocation(&config)
+
+	// TEST
+	sechubTestUtil.AssertTrue(result, t)
+	sechubTestUtil.AssertEquals(".", config.outputFolder, t)
+	sechubTestUtil.AssertEquals("", config.outputFileName, t)
+}
+
+func Test_validateOutputLocation_relative_dir(t *testing.T) {
+	// PREPARE
+	tempDir := "Test_validateOutputLocation_relative_dir"
+	sechubTestUtil.CreateTestDirectory(tempDir, 0755, t)
+	defer os.RemoveAll(tempDir)
+
+	var config Config
+	config.outputLocation = tempDir
+
+	// EXECUTE
+	result := validateOutputLocation(&config)
+
+	// TEST
+	sechubTestUtil.AssertTrue(result, t)
+	sechubTestUtil.AssertStringContains(config.outputFolder, tempDir, t)
+	sechubTestUtil.AssertEquals("", config.outputFileName, t)
+}
+
+func Test_validateOutputLocation_absolute_dir(t *testing.T) {
+	// PREPARE
+	tempDir := sechubTestUtil.InitializeTestTempDir(t)
+	sechubTestUtil.CreateTestDirectory(tempDir, 0755, t)
+	defer os.RemoveAll(tempDir)
+
+	var config Config
+	config.outputLocation = tempDir
+
+	// EXECUTE
+	result := validateOutputLocation(&config)
+
+	// TEST
+	sechubTestUtil.AssertTrue(result, t)
+	sechubTestUtil.AssertStringContains(config.outputFolder, tempDir, t)
+	sechubTestUtil.AssertEquals("", config.outputFileName, t)
+}
+
+func Test_validateOutputLocation_non_existing_dir(t *testing.T) {
+	// PREPARE
+	tempDir := "/this/really/does/not/exist"
+	var config Config
+	config.outputLocation = tempDir
+
+	// EXECUTE
+	result := validateOutputLocation(&config)
+
+	// TEST
+	sechubTestUtil.AssertFalse(result, t)
+}
+
+func Test_validateOutputLocation_absolute_filepath(t *testing.T) {
+	// PREPARE
+	tempFile := "testfile.json"
+	tempDir := sechubTestUtil.InitializeTestTempDir(t)
+	sechubTestUtil.CreateTestDirectory(tempDir, 0755, t)
+	defer os.RemoveAll(tempDir)
+
+	var config Config
+	config.outputLocation = filepath.Join(tempDir, tempFile)
+
+	// EXECUTE
+	result := validateOutputLocation(&config)
+
+	// TEST
+	sechubTestUtil.AssertTrue(result, t)
+	sechubTestUtil.AssertEquals(tempDir, config.outputFolder, t)
+	sechubTestUtil.AssertEquals(tempFile, config.outputFileName, t)
+}
+
+func Test_validateOutputLocation_invalid_filepath(t *testing.T) {
+	// PREPARE
+	tempFile := "testfile.json"
+	tempDir := "/this/really/does/not/exist"
+
+	var config Config
+	config.outputLocation = filepath.Join(tempDir, tempFile)
+
+	// EXECUTE
+	result := validateOutputLocation(&config)
+
+	// TEST
+	sechubTestUtil.AssertFalse(result, t)
+}
+
+func Test_validateOutputLocation_filename_only(t *testing.T) {
+	// PREPARE
+	tempFile := "Test_validateOutputLocation_filename_only.json"
+
+	var config Config
+	config.outputLocation = tempFile
+
+	// EXECUTE
+	result := validateOutputLocation(&config)
+
+	// TEST
+	sechubTestUtil.AssertTrue(result, t)
+	sechubTestUtil.AssertEquals(".", config.outputFolder, t)
+	sechubTestUtil.AssertEquals(tempFile, config.outputFileName, t)
+}
+
+func Test_validateOutputLocation_empty(t *testing.T) {
+	// PREPARE
+	var config Config
+
+	// EXECUTE
+	result := validateOutputLocation(&config)
+
+	// TEST
+	sechubTestUtil.AssertTrue(result, t)
+	sechubTestUtil.AssertEquals(".", config.outputFolder, t)
+	sechubTestUtil.AssertEquals("", config.outputFileName, t)
 }

@@ -1,16 +1,15 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
-import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
 import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
 import static com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter.*;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.lang.annotation.Annotation;
 import java.time.LocalDateTime;
@@ -34,7 +33,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.domain.administration.project.ProjectAdministrationRestController;
 import com.mercedesbenz.sechub.domain.scan.log.ProjectScanLog;
@@ -95,14 +93,14 @@ public class AdminShowsScanLogsForProjectRestDocTest {
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				).
 		andExpect(status().isOk()).
-		andDo(document(RestDocFactory.createPath(useCase),
+		andDo(defineRestService().
+                with().
+                    useCaseData(useCase).
+                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                    responseSchema(OpenApiSchema.PROJECT_SCAN_LOGS.getSchema()).
+                and().
+                document(
 				/* we do not document more, because its binary / zip file...*/
-                resource(
-                        ResourceSnippetParameters.builder().
-                            summary(RestDocFactory.createSummary(useCase)).
-                            description(RestDocFactory.createDescription(useCase)).
-                            tag(RestDocFactory.extractTag(apiEndpoint)).
-                            responseSchema(OpenApiSchema.PROJECT_SCAN_LOGS.getSchema()).
                             responseFields(
                                     fieldWithPath("[]").description("An array of scan log summary entries"),
                                     fieldWithPath("[].executedBy").description("The user id of the user which executed the scan"),
@@ -110,11 +108,9 @@ public class AdminShowsScanLogsForProjectRestDocTest {
                                     fieldWithPath("[].ended").description("The timestamp when the scan was ended"),
                                     fieldWithPath("[].status").description("A status field about scan situation"),
                                     fieldWithPath("[].sechubJobUUID").description("The uuid of corresponding sechub Job.")
-                            ).
+                            ),
                             pathParameters(
                                     parameterWithName(PROJECT_ID.paramName()).description("The project Id")
-                            ).
-                            build()
                          )
 				    ));
 
