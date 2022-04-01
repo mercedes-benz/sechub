@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.autocleanup;
 
 import com.mercedesbenz.sechub.commons.model.JSONable;

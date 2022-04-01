@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.adapter.checkmarx.support;
 
 import static org.junit.Assert.assertFalse;
