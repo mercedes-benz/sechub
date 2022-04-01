@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Operations</h1>
 <div class="details">
-<span id="revnumber"> Server 0.29.2</span>
+<span id="revnumber"> Server 0.30.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -796,7 +796,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.29.2-20220331120217</code></p>
+<p>Documentation version: <code>Server 0.30.0-20220401131841</code></p>
 </div>
 <div class="paragraph">
 <p>Target audience for this document are <strong>SecHub Operators/Administrators</strong>.</p>
@@ -901,7 +901,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.scheduler.startup.enabled</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">When enabled, administrators will be informed by notification when new scheduler instances are started. Those notifications will also contain information about potential zombie jobs.</p>
-<p class="tableblock"> When disabled, incoming events wille be ignored and no notification sent.</p></td>
+<p class="tableblock"> When disabled, incoming events will be ignored and no notification sent.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1604,21 +1604,75 @@ Starts always with strategy-identifer, colon and value(s). Currently only 'intra
 <div class="sect3">
 <h4 id="scheduling-definitions">2.2.3. Scheduling definitions</h4>
 <table id="link-gen-scheduling" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. Scope 'scheduler'</caption>
+<caption class="title">Table 21. Scope 'administration'</caption>
 <colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
+<col style="width: 7.6923%;">
+<col style="width: 46.1538%;">
+<col style="width: 46.1539%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">Type</th>
 <th class="tableblock halign-left valign-top">Definition</th>
 <th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Fixed</th>
 </tr>
 </thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fixed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">initial delay:${sechub.config.trigger.autoclean.initialdelay:5000} fixed delay:${sechub.config.trigger.autoclean.delay:86400000}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Auto cleanup is triggered by a cron job operation - default is one day to delay after last execution. As initial delay 5000 milliseconds are defined. It can be configured differently. This is useful when you need to startup a cluster. Simply change the initial delay values in to allow the cluster to startup.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 22. Scope 'scan'</caption>
+<colgroup>
+<col style="width: 7.6923%;">
+<col style="width: 46.1538%;">
+<col style="width: 46.1539%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Definition</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fixed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">initial delay:${sechub.config.trigger.autoclean.initialdelay:5000} fixed delay:${sechub.config.trigger.autoclean.delay:86400000}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Auto cleanup is triggered by a cron job operation - default is one day to delay after last execution. As initial delay 5000 milliseconds are defined. It can be configured differently. This is useful when you need to startup a cluster. Simply change the initial delay values in to allow the cluster to startup.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 23. Scope 'schedule'</caption>
+<colgroup>
+<col style="width: 7.6923%;">
+<col style="width: 46.1538%;">
+<col style="width: 46.1539%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Definition</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fixed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">initial delay:${sechub.config.trigger.autoclean.initialdelay:5000} fixed delay:${sechub.config.trigger.autoclean.delay:86400000}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Auto cleanup is triggered by a cron job operation - default is one day to delay after last execution. As initial delay 5000 milliseconds are defined. It can be configured differently. This is useful when you need to startup a cluster. Simply change the initial delay values in to allow the cluster to startup.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fixed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">initial delay:${sechub.config.trigger.nextjob.initialdelay:5000} fixed delay:${sechub.config.trigger.nextjob.delay:10000}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job scheduling is triggered by a cron job operation - default is 10 seconds to delay after last execution. For initial delay 5000 milliseconds are defined. It can be configured differently. This is useful when you need to startup a cluster. Simply change the initial delay values in to allow the cluster to startup.</p></td>
+</tr>
+</tbody>
 </table>
 </div>
 </div>
@@ -3270,7 +3324,7 @@ the assignment to a super administrator. Only with permission of project owner t
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.29.2<br>
+ Server 0.30.0<br>
 </div>
 </div>
 </body>
