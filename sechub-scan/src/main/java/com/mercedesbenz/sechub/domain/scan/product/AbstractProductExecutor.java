@@ -58,7 +58,9 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
 
     private SecHubDataConfigurationObjectInfoFinder configObjectFinder;
 
-    protected AbstractProductExecutor(ProductIdentifier productIdentifier, ScanType scanType) {
+    private int version;
+
+    protected AbstractProductExecutor(ProductIdentifier productIdentifier, int version, ScanType scanType) {
         if (scanType == null) {
             throw new IllegalArgumentException("Scan type may not be null!");
         }
@@ -67,6 +69,7 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
         }
         this.scanType = scanType;
         this.productIdentifier = productIdentifier;
+        this.version = version;
 
         /*
          * we create here our own resilient action executor instance - only for this
@@ -76,8 +79,17 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
         this.configObjectFinder = new SecHubDataConfigurationObjectInfoFinder();
     }
 
+    public final int getVersion() {
+        return version;
+    }
+
     public final ProductIdentifier getIdentifier() {
         return productIdentifier;
+    }
+
+    @Override
+    public ScanType getScanType() {
+        return scanType;
     }
 
     @Override
@@ -286,4 +298,11 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
 
         }
     }
+
+    @Override
+    public String toString() {
+        return "AbstractProductExecutor [" + (productIdentifier != null ? "productIdentifier=" + productIdentifier + ", " : "") + "version=" + version + ", "
+                + (scanType != null ? "scanType=" + scanType : "") + "]";
+    }
+
 }

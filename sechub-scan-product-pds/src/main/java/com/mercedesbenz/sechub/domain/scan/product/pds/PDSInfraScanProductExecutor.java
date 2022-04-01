@@ -45,7 +45,7 @@ public class PDSInfraScanProductExecutor extends AbstractProductExecutor {
     SystemEnvironment systemEnvironment;
 
     public PDSInfraScanProductExecutor() {
-        super(ProductIdentifier.PDS_INFRASCAN, ScanType.INFRA_SCAN);
+        super(ProductIdentifier.PDS_INFRASCAN, 1, ScanType.INFRA_SCAN);
     }
 
     @Override
@@ -118,11 +118,6 @@ public class PDSInfraScanProductExecutor extends AbstractProductExecutor {
 
         }
         return results;
-    }
-
-    @Override
-    public int getVersion() {
-        return 1;
     }
 
     @Override

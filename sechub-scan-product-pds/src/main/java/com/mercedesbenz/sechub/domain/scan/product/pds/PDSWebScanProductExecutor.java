@@ -50,7 +50,7 @@ public class PDSWebScanProductExecutor extends AbstractProductExecutor {
     PDSResilienceConsultant pdsResilienceConsultant;
 
     public PDSWebScanProductExecutor() {
-        super(ProductIdentifier.PDS_WEBSCAN, ScanType.WEB_SCAN);
+        super(ProductIdentifier.PDS_WEBSCAN, 1, ScanType.WEB_SCAN);
     }
 
     @PostConstruct
@@ -127,11 +127,6 @@ public class PDSWebScanProductExecutor extends AbstractProductExecutor {
         results.add(result);
 
         return results;
-    }
-
-    @Override
-    public int getVersion() {
-        return 1;
     }
 
     @Override

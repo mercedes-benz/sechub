@@ -33,6 +33,7 @@ public class PersistentScenarioTestDataProvider {
     public PersistentScenarioTestDataProvider(File file) {
         this.file = file;
         this.file.getParentFile().mkdirs();
+
         properties = new Properties();
         if (this.file.exists()) {
 
@@ -80,7 +81,7 @@ public class PersistentScenarioTestDataProvider {
         try (FileOutputStream fos = new FileOutputStream(file)) {
             properties.store(fos, "DO NOT CHANGE THIS FILE!");
         } catch (IOException e) {
-            throw new IllegalStateException("cannot store:" + file.getAbsolutePath());
+            throw new IllegalStateException("cannot store:" + file.getAbsolutePath(), e);
         }
     }
 

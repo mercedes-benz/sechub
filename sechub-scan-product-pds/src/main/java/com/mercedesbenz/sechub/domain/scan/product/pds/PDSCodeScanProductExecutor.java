@@ -62,7 +62,7 @@ public class PDSCodeScanProductExecutor extends AbstractProductExecutor {
     PDSResilienceConsultant pdsResilienceConsultant;
 
     public PDSCodeScanProductExecutor() {
-        super(ProductIdentifier.PDS_CODESCAN, ScanType.CODE_SCAN);
+        super(ProductIdentifier.PDS_CODESCAN, 1, ScanType.CODE_SCAN);
     }
 
     @PostConstruct
@@ -157,11 +157,6 @@ public class PDSCodeScanProductExecutor extends AbstractProductExecutor {
             return result;
         }
 
-    }
-
-    @Override
-    public int getVersion() {
-        return 1;
     }
 
     @Override

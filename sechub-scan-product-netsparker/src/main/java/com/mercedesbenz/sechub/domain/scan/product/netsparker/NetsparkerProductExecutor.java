@@ -40,7 +40,7 @@ public class NetsparkerProductExecutor extends AbstractProductExecutor {
     NetsparkerInstallSetup installSetup;
 
     public NetsparkerProductExecutor() {
-        super(ProductIdentifier.NETSPARKER, ScanType.WEB_SCAN);
+        super(ProductIdentifier.NETSPARKER, 1, ScanType.WEB_SCAN);
     }
 
     @Override
@@ -96,11 +96,6 @@ public class NetsparkerProductExecutor extends AbstractProductExecutor {
         results.add(currentProductResult);
 
         return results;
-    }
-
-    @Override
-    public int getVersion() {
-        return 1;
     }
 
 }

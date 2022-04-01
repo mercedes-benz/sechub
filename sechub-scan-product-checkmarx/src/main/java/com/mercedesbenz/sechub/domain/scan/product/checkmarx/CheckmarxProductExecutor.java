@@ -66,7 +66,7 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
     CheckmarxResilienceConsultant checkmarxResilienceConsultant;
 
     public CheckmarxProductExecutor() {
-        super(ProductIdentifier.CHECKMARX, ScanType.CODE_SCAN);
+        super(ProductIdentifier.CHECKMARX, 1, ScanType.CODE_SCAN);
     }
 
     @PostConstruct
@@ -149,11 +149,6 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
             return null;
         }
         return storage.fetch("sourcecode.zip");
-    }
-
-    @Override
-    public int getVersion() {
-        return 1;
     }
 
     @Override

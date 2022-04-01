@@ -55,7 +55,7 @@ public class NessusProductExecutor extends AbstractProductExecutor {
     NessusInstallSetup installSetup;
 
     public NessusProductExecutor() {
-        super(ProductIdentifier.NESSUS, ScanType.CODE_SCAN);
+        super(ProductIdentifier.NESSUS, 1, ScanType.INFRA_SCAN);
     }
 
     @Override
@@ -91,11 +91,6 @@ public class NessusProductExecutor extends AbstractProductExecutor {
         ProductResult productResult = productExecutorContext.getCurrentProductResult(); // product result is set by callback
         productResult.setResult(xml);
         return Collections.singletonList(productResult);
-    }
-
-    @Override
-    public int getVersion() {
-        return 1;
     }
 
     @Override
