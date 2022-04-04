@@ -21,6 +21,7 @@ import javax.swing.SwingUtilities;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.ActionSupport;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.adapter.ShowProductExecutorTemplatesDialogAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.client.TriggerSecHubClientSynchronousScanAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.config.ConfigureAutoCleanupAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.config.CreateExecutionProfileAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.config.CreateExecutorConfigAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.config.DeleteConfigurationAction;
@@ -103,6 +104,7 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.user.ListSignupsAc
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.ShowAdminListAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.ShowUserDetailAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.ShowUserListAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.user.UpdateUserEmailAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.privileges.GrantAdminRightsToUserAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.privileges.RevokeAdminRightsFromAdminAction;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
@@ -240,6 +242,8 @@ public class CommandUI {
         menu.add(mappingsMenu);
         add(mappingsMenu, new FetchGlobalMappingAction(context));
         add(mappingsMenu, new UpdateGlobalMappingAction(context));
+
+        menu.add(new ConfigureAutoCleanupAction(context));
     }
 
     private ShowProductExecutorTemplatesDialogAction register(ShowProductExecutorTemplatesDialogAction action) {
@@ -291,6 +295,7 @@ public class CommandUI {
         add(menu, new DeleteUserAction(context));
         menu.addSeparator();
         add(menu, new ShowUserDetailAction(context));
+        add(menu, new UpdateUserEmailAction(context));
         add(menu, new AnonymousRequestNewAPITokenUserAction(context));
         menu.addSeparator();
         add(menu, new ListSignupsAction(context));

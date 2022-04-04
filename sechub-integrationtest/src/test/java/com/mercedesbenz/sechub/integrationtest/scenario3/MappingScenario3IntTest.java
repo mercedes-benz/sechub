@@ -52,7 +52,7 @@ public class MappingScenario3IntTest {
             changeProductExecutorJobParameter(CHECKMARX_V1,MappingIdentifier.CHECKMARX_NEWPROJECT_PRESET_ID.getId(),presetMapping.toJSON());
 
         clearMetaDataInspection();
-        assertInspections().hasAmountOfInspections(0);
+        assertMetaDataInspections().hasAmountOfInspections(0);
 
         /* test */
         ExecutionResult result = as(USER_1).withSecHubClient().
@@ -60,7 +60,7 @@ public class MappingScenario3IntTest {
         UUID sechubJobUUID = result.getSechubJobUUID();
 
         assertNotNull("No sechub jobUUId found-maybe client call failed?", sechubJobUUID);
-        assertInspections().
+        assertMetaDataInspections().
             hasAmountOfInspections(1).
             inspectionNr(0).
                 hasId("CHECKMARX").

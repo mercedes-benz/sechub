@@ -8,8 +8,8 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 /**
- * Configuration entry for scheduler inside database. Contains only ONE row! see
- * {@link #ID}
+ * Global configuration entry for domain 'schedule' inside database. Contains
+ * only ONE row! {@link #ID}
  *
  * @author Albert Tregnaghi
  *
@@ -33,6 +33,8 @@ public class SchedulerConfig {
 
     public static final String COLUMN_JOB_PROCESSING_ENABLED = "CONFIG_JOB_PROCESSING_ENABLED";
 
+    public static final String COLUMN_AUTO_CLEANUP_IN_DAYS = "CONFIG_AUTO_CLEANUP_IN_DAYS";
+
     /* +-----------------------------------------------------------------------+ */
     /* +............................ JPQL .....................................+ */
     /* +-----------------------------------------------------------------------+ */
@@ -44,6 +46,9 @@ public class SchedulerConfig {
 
     @Column(name = COLUMN_JOB_PROCESSING_ENABLED, nullable = false)
     boolean jobProcessingEnabled = true;
+
+    @Column(name = COLUMN_AUTO_CLEANUP_IN_DAYS, nullable = false)
+    Long autoCleanupInDays = Long.valueOf(0); // per default 0 (avoid NPEs when auto casting)
 
     @Version
     @Column(name = "VERSION")
@@ -59,6 +64,10 @@ public class SchedulerConfig {
 
     public Integer getId() {
         return id;
+    }
+
+    public Long getAutoCleanupInDays() {
+        return autoCleanupInDays;
     }
 
     @Override

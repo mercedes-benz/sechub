@@ -11,7 +11,7 @@ public class ReportDetails {
     }
 
     public boolean isRunning() {
-        return isCheckPossible() && !isReportCreated();
+        return isCheckPossible() && !isReportCreated() && !didReportCreationFail();
     }
 
     private boolean isCheckPossible() {
@@ -19,7 +19,10 @@ public class ReportDetails {
     }
 
     private boolean isReportCreated() {
-        return "Created".equals(status);
+        return "Created".equalsIgnoreCase(status);
     }
 
+    private boolean didReportCreationFail() {
+        return "Failed".equalsIgnoreCase(status);
+    }
 }

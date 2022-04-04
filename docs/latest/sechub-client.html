@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Client Documentation</h1>
 <div class="details">
-<span id="revnumber"> Client 0.27.0</span>
+<span id="revnumber"> Client 0.29.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -734,7 +734,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Client 0.27.0-20220127171212</code></p>
+<p>Documentation version: <code>Client 0.29.0-20220401113431</code></p>
 </div>
 <hr>
 <div style="page-break-after: always;"></div>
@@ -772,7 +772,8 @@ Currently the client only supports basic authentication, but of course always on
 You will have no dependencies, just place the single binary file to a location inside your path variable.</p>
 </div>
 <div class="paragraph">
-<p>The latest releases can be found at <a href="https://github.com/mercedes-benz/sechub/wiki/releases" class="bare">https://github.com/mercedes-benz/sechub/wiki/releases</a> . For documentation please look at <a href="https://mercedes-benz.github.io/sechub">SecHub web page</a> .</p>
+<p>Direct download link to the latest client release: <a href="https://mercedes-benz.github.io/sechub/latest/client-download.html" class="bare">https://mercedes-benz.github.io/sechub/latest/client-download.html</a>
+For documentation, please look at <a href="https://mercedes-benz.github.io/sechub">SecHub web page</a> .</p>
 </div>
 </div>
 <div class="sect2">
@@ -807,13 +808,13 @@ You will have no dependencies, just place the single binary file to a location i
 <td class="tableblock halign-left valign-top"><p class="tableblock">linux-386</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Linux</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">AMD and Intel 32-bit</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">For old hardware running Linux as operating system.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Universal client for Linux as operating system. Statically linked - no dependencies. Also for older hardware.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">linux-amd64</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Linux</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">AMD and Intel 64-bit</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The <strong>Linux client</strong>, unless you are using older hardware or an ARM system.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <strong>Linux client</strong>, unless you are using older hardware or an ARM system. Dynamically linked.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">linux-arm</p></td>
@@ -1248,7 +1249,7 @@ Your choices are:</p>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">output folder</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">output folder or file</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">-output</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -1287,6 +1288,12 @@ Your choices are:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">stop on yellow</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">-stop-on-yellow</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">temporary dir</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-tempdir</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SECHUB_TEMP_DIR</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
@@ -1376,11 +1383,11 @@ The api token. Although you can pass it as a runtime option, it is recommended f
 Can <strong>NOT</strong> be defined in config file</p>
 </li>
 <li>
-<p><code>-configfile &lt;string&gt;</code><br>
-Path to <code>SecHub</code> config file, if not defined <code>sechub.json</code> will be used in current directory</p>
+<p><code>-configfile &lt;filepath&gt;</code><br>
+Path to <code>SecHub</code> JSON config file. Defaults to <code>sechub.json</code> in current directory.</p>
 </li>
 <li>
-<p><code>-file &lt;string&gt;</code><br>
+<p><code>-file &lt;filepath&gt;</code><br>
 Defines file to read from for actions <code>markFalsePositives</code> or <code>interactiveMarkFalsePositives</code> or <code>unmarkFalsePositives</code></p>
 </li>
 <li>
@@ -1392,8 +1399,8 @@ Shows help and terminates</p>
 <code>SecHub</code> job uuid (mandatory when using 'getStatus' or 'getReport')</p>
 </li>
 <li>
-<p><code>-output &lt;string&gt;</code><br>
-Output folder for reports etc. per default current dir</p>
+<p><code>-output &lt;path to folder or file&gt;</code><br>
+Where to place reports, false-positive files etc. Can be a directory, a file name or a file path (defaults to current working directory and default file names)</p>
 </li>
 <li>
 <p><code>-project &lt;string&gt;</code><br>
@@ -1405,19 +1412,23 @@ Quiet mode - Suppress all informative output. Can also be defined via environmen
 Only print filenames written to, errors and explicitely requested informations (job-UUID, version, status).</p>
 </li>
 <li>
-<p><code>-reportformat &lt;string&gt;</code><br>
-Output format for reports, supported currently: [html,json]. If not a wellknown format json will always be the fallback. (default "json")</p>
+<p><code>-reportformat &lt;format&gt;</code><br>
+Output format for reports. Currently supported: [html,json]. If not a supported format, "json" will always be the fallback.</p>
 </li>
 <li>
-<p><code>-server &lt;string&gt;</code><br>
+<p><code>-server &lt;url&gt;</code><br>
 Server url of <code>SecHub</code> server to use - e.g. https//example.com:8081. Mandatory, but can also be defined in config file or via environment variable.</p>
 </li>
 <li>
 <p><code>-stop-on-yellow</code><br>
-Makes a yellow traffic light in the scan result also break the build</p>
+A yellow traffic light in the report will result in a non-zero return code.</p>
 </li>
 <li>
-<p><code>-timeout &lt;integer&gt;</code><br>
+<p><code>-tempdir &lt;path to folder&gt;</code><br>
+Temporary files will be placed here. (defaults to current working directory)</p>
+</li>
+<li>
+<p><code>-timeout &lt;seconds&gt;</code><br>
 Timeout for network communication in seconds. (default 120)</p>
 </li>
 <li>
@@ -1429,9 +1440,9 @@ Username - mandatory, but can also be defined in config file or via environment 
 Shows version info and terminates</p>
 </li>
 <li>
-<p><code>-wait &lt;integer&gt;</code><br>
-wait time in seconds (default 60).
-Will be used for periodic status checks when action=<code>scan</code>.</p>
+<p><code>-wait &lt;seconds&gt;</code><br>
+Wait time in seconds (default 60).
+Will be used for periodic status checks when action=<code>scan</code> and for retries of HTTP calls.</p>
 </li>
 </ul>
 </div>
@@ -1460,12 +1471,16 @@ Quiet mode (<code>true</code> or <code>false</code> / unset) - Suppress all info
 The SecHub server url. (same as <code>-server</code> option)</p>
 </li>
 <li>
-<p><code>SECHUB_USERID</code><br>
-The SecHub username. (same as <code>-user</code> option)</p>
+<p><code>SECHUB_TEMP_DIR</code><br>
+Temporary files will be placed here. Make sure that the folder exists and is writeable. (same as <code>-tempdir</code> option)</p>
 </li>
 <li>
 <p><code>SECHUB_TRUSTALL</code><br>
 When set to <code>true</code>, then HTTPS certificate checking will be disabled. May be useful when using self-signed certificates. Please try to avoid this setting for security reasons.</p>
+</li>
+<li>
+<p><code>SECHUB_USERID</code><br>
+The SecHub username. (same as <code>-user</code> option)</p>
 </li>
 </ul>
 </div>
@@ -1476,7 +1491,11 @@ When set to <code>true</code>, then HTTPS certificate checking will be disabled.
 <ul>
 <li>
 <p><code>SECHUB_DEBUG</code><br>
-When set to <code>true</code> then log as much as possible</p>
+When set to <code>true</code> then log as much as possible (but not HTTP request contents)</p>
+</li>
+<li>
+<p><code>SECHUB_DEBUG_HTTP</code><br>
+When set to <code>true</code> then log HTTP request contents.</p>
 </li>
 <li>
 <p><code>SECHUB_IGNORE_DEFAULT_EXCLUDES</code><br>
@@ -1484,7 +1503,7 @@ When set to <code>true</code> then default exclude folders <code>{"**/test/**", 
 </li>
 <li>
 <p><code>SECHUB_KEEP_TEMPFILES</code><br>
-When set to <code>true</code> then .zip files for code scan will not be removed, so you can check, what was uploaded to the <code>SecHub</code> server</p>
+When set to <code>true</code> then <code>sourcecode-&lt;projectID&gt;.zip</code> files for code scan will not be removed, so you can check, what was uploaded to the <code>SecHub</code> server.</p>
 </li>
 <li>
 <p><code>SECHUB_WAITTIME_DEFAULT</code><br>
@@ -1604,7 +1623,9 @@ But of course you can also define additional source file endings - see <a href="
 <td class="tableblock halign-left valign-top"><p class="tableblock">Apex</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">.apex<br>
 .apexp<br>
+.apxc<br>
 .component<br>
+.-meta.xml<br>
 .object<br>
 .page<br>
 .report<br>
@@ -1623,20 +1644,26 @@ But of course you can also define additional source file endings - see <a href="
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">C/C++</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">.c<br>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.ac<br>
+.am<br>
+.c<br>
 .c&#43;&#43;<br>
 .cc<br>
+.cmake<br>
 .cpp<br>
 .cxx<br>
+.ec<br>
 .h<br>
 .h&#43;&#43;<br>
 .hh<br>
 .hpp<br>
-.hxx</p></td>
+.hxx<br>
+.pro</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">C#, VB.NET, Visual Basic, VB Script</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">.bas<br>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.asax<br>
+.bas<br>
 .cls<br>
 .cs<br>
 .cshtml<br>
@@ -1644,11 +1671,21 @@ But of course you can also define additional source file endings - see <a href="
 .ctl<br>
 .dsr<br>
 .frm<br>
+.master<br>
 .sln<br>
 .vb<br>
 .vbp<br>
 .vbs<br>
 .xaml</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cobol</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.cbl<br>
+.cob<br>
+.cpy<br>
+.eco<br>
+.pco<br>
+.sqb</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Go, Protobuf</p></td>
@@ -1658,6 +1695,7 @@ But of course you can also define additional source file endings - see <a href="
 <td class="tableblock halign-left valign-top"><p class="tableblock">Groovy</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">.groovy<br>
 .gsh<br>
+.gsp<br>
 .gvy<br>
 .gy</p></td>
 </tr>
@@ -1668,30 +1706,49 @@ But of course you can also define additional source file endings - see <a href="
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Java ecosystem</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">.hbs<br>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.app<br>
+.cmp<br>
+.evt<br>
+.gradle<br>
+.hbs<br>
 .java<br>
 .javasln<br>
+.jsf<br>
 .jsp<br>
 .jspf<br>
+.mf<br>
 .project<br>
 .properties<br>
 .tag<br>
-.tld</p></td>
+.tld<br>
+.vm<br>
+.xhtml</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">JavaScript</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">.js<br>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.handlebars<br>
+.jade<br>
+.js<br>
 .json<br>
-.jsx</p></td>
+.jsx<br>
+.pug<br>
+.vue<br>
+.xsaccess<br>
+.xsapp<br>
+.xsjs<br>
+.xsjslib</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Kotlin</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">.kt<br>
-.kts</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.ftl<br>
+.kt<br>
+.kts<br>
+,mustache</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Objective C, Swift</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">.m<br>
+.plist<br>
 .swift<br>
 .xib</p></td>
 </tr>
@@ -1726,15 +1783,21 @@ But of course you can also define additional source file endings - see <a href="
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Python, Django</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">.py<br>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.csv<br>
+.gtl<br>
+.latex<br>
+.py<br>
 .py2<br>
 .py3<br>
 .pyi<br>
-.python</p></td>
+.python<br>
+.tex<br>
+.txt</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Ruby</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">.erb<br>
+.lock<br>
 .rb<br>
 .rhtml<br>
 .rjs<br>
@@ -2563,7 +2626,7 @@ Do you want to remove this false positive? ('y' Yes, 'n' No, 's' Skip the rest, 
 ------------------------------------------------------------------
 Side Channel Data Leakage, codeScan severity: HIGH
   Origin: Finding ID 2 in job 0c86134c-2305-41e0-a2d5-e7c31df45d15
-  File: src/main/java/com/daimler/otr/invoice/application/ApplicationService.java
+  File: src/main/java/com/mercedesbenz/otr/invoice/application/ApplicationService.java
   Code:         Invoice invoice = getInvoice(invoiceId).orElseThrow(InvoiceNotFoundException::new);
 (Added by testuser at 2020-08-20 12:43:03; comment: &quot;Another explanation example&quot;)
 ------------------------------------------------------------------
@@ -2726,31 +2789,31 @@ configure the client to do this also on color YELLOW. Only Green is always accep
                 ],
                 <span class="key"><span class="delimiter">&quot;</span><span class="content">severity</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">MEDIUM</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="4"></i><b>(4)</b>
                 <span class="key"><span class="delimiter">&quot;</span><span class="content">code</span><span class="delimiter">&quot;</span></span>: {
-                    <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/daimler/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="5"></i><b>(5)</b>
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="5"></i><b>(5)</b>
                     <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">28</span>,<i class="conum" data-value="6"></i><b>(6)</b>
                     <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">35</span>,
                     <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="content">public static void main(String[] args) throws Exception {</span><span class="delimiter">&quot;</span></span>,
                     <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">args</span><span class="delimiter">&quot;</span></span>,
                     <span class="key"><span class="delimiter">&quot;</span><span class="content">calls</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="7"></i><b>(7)</b>
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/daimler/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,
                         <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">33</span>,
                         <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">17</span>,
                         <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">String path = args[0];</span><span class="delimiter">&quot;</span></span>,
                         <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">args</span><span class="delimiter">&quot;</span></span>,
                         <span class="key"><span class="delimiter">&quot;</span><span class="content">calls</span><span class="delimiter">&quot;</span></span>: {
-                            <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/daimler/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,
+                            <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,
                             <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">33</span>,
                             <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">10</span>,
                             <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">String path = args[0];</span><span class="delimiter">&quot;</span></span>,
                             <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">path</span><span class="delimiter">&quot;</span></span>,
                             <span class="key"><span class="delimiter">&quot;</span><span class="content">calls</span><span class="delimiter">&quot;</span></span>: {
-                                <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/daimler/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,
+                                <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,
                                 <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">34</span>,
                                 <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">38</span>,
                                 <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">File documentsGenFolder = new File(path);</span><span class="delimiter">&quot;</span></span>,
                                 <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">path</span><span class="delimiter">&quot;</span></span>,
                                 <span class="key"><span class="delimiter">&quot;</span><span class="content">calls</span><span class="delimiter">&quot;</span></span>: {
-                                    <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/daimler/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="8"></i><b>(8)</b>
+                                    <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/mercedesbenz/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="8"></i><b>(8)</b>
                                     <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">34</span>,<i class="conum" data-value="9"></i><b>(9)</b>
                                     <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">29</span>,
                                     <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">File documentsGenFolder = new File(path);</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="10"></i><b>(10)</b>
@@ -2772,7 +2835,7 @@ configure the client to do this also on color YELLOW. Only Green is always accep
                 ],
                 <span class="key"><span class="delimiter">&quot;</span><span class="content">severity</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">INFO</span><span class="delimiter">&quot;</span></span>,
                 <span class="key"><span class="delimiter">&quot;</span><span class="content">code</span><span class="delimiter">&quot;</span></span>: {
-                    <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/daimler/sechub/docgen/usecase/UseCaseRestDocModelDataCollector.java</span><span class="delimiter">&quot;</span></span>,
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/mercedesbenz/sechub/docgen/usecase/UseCaseRestDocModelDataCollector.java</span><span class="delimiter">&quot;</span></span>,
                     <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">137</span>,
                     <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">5</span>,
                     <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">} catch (IOException e) {</span><span class="delimiter">&quot;</span></span>,
@@ -2859,7 +2922,7 @@ configure the client to do this also on color YELLOW. Only Green is always accep
 </div>
 <div id="footer">
 <div id="footer-text">
- Client 0.27.0<br>
+ Client 0.29.0<br>
 </div>
 </div>
 </body>

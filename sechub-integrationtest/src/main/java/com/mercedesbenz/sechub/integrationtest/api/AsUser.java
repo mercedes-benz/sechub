@@ -36,6 +36,7 @@ import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultEx
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSupport;
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
 import com.mercedesbenz.sechub.integrationtest.internal.SimpleTestStringList;
+import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData;
 import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
@@ -1050,6 +1051,38 @@ public class AsUser {
         String url = getUrlBuilder().buildAdminChangesProjectAccessLevelUrl(project.getProjectId(), accessLevel.getId());
 
         getRestHelper().post(url);
+    }
+
+    public TestUserDetailInformation fetchUserDetails(TestUser user) {
+        String url = getUrlBuilder().buildAdminShowsUserDetailsUrl(user.getUserId());
+        String json = getRestHelper().getJSON(url);
+        return TestJSONHelper.get().createFromJSON(json, TestUserDetailInformation.class);
+    }
+
+    public void changeEmailAddress(TestUser user, String newEmailAddress) {
+        changeEmailAddress(user.getUserId(), newEmailAddress);
+    }
+
+    public void changeEmailAddress(String userId, String newEmailAddress) {
+        String url = getUrlBuilder().buildAdminChangesUserEmailAddress(userId, newEmailAddress);
+        getRestHelper().put(url);
+    }
+
+    public void updateAutoCleanupConfiguration(TestAutoCleanupData data) {
+        String json = TestJSONHelper.get().createJSON(data);
+        updateAutoCleanupConfiguration(json);
+    }
+
+    public void updateAutoCleanupConfiguration(String json) {
+        String url = getUrlBuilder().buildAdminUpdatesAutoCleanupConfigurationUrl();
+        getRestHelper().putJSON(url, json);
+    }
+
+    public TestAutoCleanupData fetchAutoCleanupConfiguration() {
+        String url = getUrlBuilder().buildAdminFetchesAutoCleanupConfigurationUrl();
+
+        String json = getRestHelper().getJSON(url);
+        return TestJSONHelper.get().createFromJSON(json, TestAutoCleanupData.class);
     }
 
 }

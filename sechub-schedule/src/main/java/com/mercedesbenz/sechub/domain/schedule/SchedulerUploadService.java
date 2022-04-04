@@ -4,26 +4,27 @@ package com.mercedesbenz.sechub.domain.schedule;
 import static com.mercedesbenz.sechub.sharedkernel.util.Assert.*;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.InputStream;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.util.StringInputStream;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
+import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
 import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUploadsSourceCode;
-import com.mercedesbenz.sechub.sharedkernel.util.FileChecksumSHA256Service;
+import com.mercedesbenz.sechub.sharedkernel.util.ChecksumSHA256Service;
 import com.mercedesbenz.sechub.sharedkernel.util.ZipSupport;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
@@ -37,11 +38,19 @@ public class SchedulerUploadService {
 
     private static final Logger LOG = LoggerFactory.getLogger(SchedulerUploadService.class);
 
+    @Value("${sechub.server.upload.validate.zip:true}")
+    @MustBeDocumented(value = "With `false` ZIP validation on sechub server side is disabled. ZIP validation must be done by the delegated security products! You should disable the validation only for testing security product behaviours!")
+    boolean validateZip = true;
+
+    @MustBeDocumented(value = "With `false` checksum validation (sha256) on sechub server side is disabled. Sha256 validation must be done by the delegated security products! You should disable the validation only for testing security product behaviours!")
+    @Value("${sechub.server.upload.validate.checksum:true}")
+    boolean validateChecksum = true;
+
     @Autowired
     StorageService storageService;
 
     @Autowired
-    FileChecksumSHA256Service checksumSHA256Service;
+    ChecksumSHA256Service checksumSHA256Service;
 
     @Autowired
     ScheduleAssertService assertService;
@@ -60,8 +69,11 @@ public class SchedulerUploadService {
 
     @UseCaseUserUploadsSourceCode(@Step(number = 2, name = "Try to find project and upload sourcecode as zipfile", description = "When project is found and user has access and job is initializing the sourcecode file will be uploaded"))
     public void uploadSourceCode(String projectId, UUID jobUUID, MultipartFile file, String checkSum) {
-        assertion.isValidProjectId(projectId);
-        assertion.isValidJobUUID(jobUUID);
+        /* assert */
+        assertion.assertIsValidProjectId(projectId);
+        assertion.assertIsValidJobUUID(jobUUID);
+        assertion.assertIsValidSha256Checksum(checkSum);
+
         notNull(file, "file may not be null!");
 
         String traceLogID = logSanitizer.sanitize(UUIDTraceLogID.traceLogID(jobUUID), -1);
@@ -73,53 +85,66 @@ public class SchedulerUploadService {
 
         assertJobFoundAndStillInitializing(projectId, jobUUID);
 
-        JobStorage jobStorage = storageService.getJobStorage(projectId, jobUUID);
-        Path tmpFile = null;
-        try {
-            /* prepare a tmp file for validation */
-            try {
-                tmpFile = Files.createTempFile("sechub_schedule_upload_tmp", null);
-                file.transferTo(tmpFile);
-            } catch (IOException e) {
-                LOG.error("Was not able to create temp file of zipped sources!", e);
-                throw new SecHubRuntimeException("Was not able to create temp file");
-            }
-            /* validate */
-            assertValidZipFile(tmpFile);
-            assertCheckSumCorrect(checkSum, tmpFile);
+        handleZipValidation(file, traceLogID);
+        handleChecksumValidation(file, checkSum, traceLogID);
 
-            /* now store */
-            try {
-                jobStorage.store(SOURCECODE_ZIP, file.getInputStream());
-                // we also store new checksum - so not necessary to calculate at adapters again!
-                jobStorage.store(SOURCECODE_ZIP_CHECKSUM, new StringInputStream(checkSum));
-            } catch (IOException e) {
-                LOG.error("Was not able to store zipped sources! {}", traceLogID, e);
-                throw new SecHubRuntimeException("Was not able to upload sources");
-            }
-            LOG.info("uploaded sourcecode for {}", traceLogID);
-        } finally {
-            if (tmpFile != null && Files.exists(tmpFile)) {
-                try {
-                    Files.delete(tmpFile);
-                } catch (IOException e) {
-                    LOG.error("Was not able delete former temp file for zipped sources! {}", traceLogID, e);
-                }
-            }
-        }
+        /* now store */
+        storeUploadFileAndSha256Checksum(projectId, jobUUID, file, checkSum, traceLogID);
+        LOG.info("uploaded sourcecode for {}", traceLogID);
 
     }
 
-    private void assertCheckSumCorrect(String checkSum, Path path) {
-        if (!checksumSHA256Service.hasCorrectChecksum(checkSum, path.toAbsolutePath().toString())) {
-            LOG.error("uploaded file has not correct checksum! Something must have happened during the upload!");
+    private void storeUploadFileAndSha256Checksum(String projectId, UUID jobUUID, MultipartFile file, String checkSum, String traceLogID) {
+        JobStorage jobStorage = storageService.getJobStorage(projectId, jobUUID);
+
+        try (InputStream inputStream = file.getInputStream()) {
+            jobStorage.store(SOURCECODE_ZIP, inputStream);
+            // we also store given checksum - so can be reused by security product
+            jobStorage.store(SOURCECODE_ZIP_CHECKSUM, new StringInputStream(checkSum));
+        } catch (IOException e) {
+            LOG.error("Was not able to store zipped sources! {}", traceLogID, e);
+            throw new SecHubRuntimeException("Was not able to upload sources");
+        }
+    }
+
+    private void handleChecksumValidation(MultipartFile file, String checkSum, String traceLogID) {
+        if (!validateChecksum) {
+            return;
+        }
+        try (InputStream inputStream = file.getInputStream()) {
+            /* validate */
+            assertCheckSumCorrect(checkSum, inputStream);
+
+        } catch (IOException e) {
+            LOG.error("Was not able to validate uploaded file checksum", traceLogID, e);
+            throw new SecHubRuntimeException("Was not able to validate uploaded sources checksum");
+        }
+    }
+
+    private void handleZipValidation(MultipartFile file, String traceLogID) {
+        if (!validateZip) {
+            return;
+        }
+        try (InputStream inputStream = file.getInputStream()) {
+            /* validate */
+            assertValidZipFile(inputStream);
+
+        } catch (IOException e) {
+            LOG.error("Was not able to validate uploaded zip file", traceLogID, e);
+            throw new SecHubRuntimeException("Was not able to validate uploaded ZIP sources");
+        }
+    }
+
+    private void assertCheckSumCorrect(String checkSum, InputStream inputStream) {
+        if (!checksumSHA256Service.hasCorrectChecksum(checkSum, inputStream)) {
+            LOG.error("Uploaded file has not correct sha256 checksum! Something must have happened during the upload.");
             throw new NotAcceptableException("Sourcecode checksum check failed");
         }
     }
 
-    private void assertValidZipFile(Path path) {
-        if (!zipSupport.isZipFile(path)) {
-            LOG.error("uploaded file is NOT a valid ZIP file!");
+    private void assertValidZipFile(InputStream inputStream) {
+        if (!zipSupport.isZipFile(inputStream)) {
+            LOG.error("Uploaded file is NOT a valid ZIP file!");
             throw new NotAcceptableException("Sourcecode is not wrapped inside a valid zip file");
         }
     }

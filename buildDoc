@@ -1,4 +1,5 @@
 #!/bin/bash 
+set -e
 cd `dirname $0`
 
 # This script build full documentation and also creates all precondition parts

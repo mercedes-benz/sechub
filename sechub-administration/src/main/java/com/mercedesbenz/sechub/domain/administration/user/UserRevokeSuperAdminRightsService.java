@@ -60,7 +60,7 @@ public class UserRevokeSuperAdminRightsService {
         String sanitizedLogUserId = logSanitizer.sanitize(userId, 30);
         auditLogService.log("Triggered revoking admin rights from user {}", sanitizedLogUserId);
 
-        assertion.isValidUserId(userId);
+        assertion.assertIsValidUserId(userId);
 
         User user = userRepository.findOrFailUser(userId);
 

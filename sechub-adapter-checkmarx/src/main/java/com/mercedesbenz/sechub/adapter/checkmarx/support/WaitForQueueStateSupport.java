@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.adapter.checkmarx.support;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -14,6 +16,8 @@ import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxContext;
 import com.mercedesbenz.sechub.adapter.support.JSONAdapterSupport.Access;
 
 class WaitForQueueStateSupport extends WaitForStateSupport<CheckmarxContext, CheckmarxAdapterConfig> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(WaitForQueueStateSupport.class);
 
     private CheckmarxOAuthSupport oauthSupport;
 
@@ -38,15 +42,19 @@ class WaitForQueueStateSupport extends WaitForStateSupport<CheckmarxContext, Che
         oauthSupport.refreshBearerTokenWhenNecessary(context);
 
         QueueDetails details = context.getQueueDetails();
+        long scanId = context.getSessionData().getScanId();
+
         try {
+            LOG.debug("Fetching scan queue details for Checkmarx scan Id: {}.", scanId);
+
             RestOperations restTemplate = context.getRestOperations();
-            ResponseEntity<String> queueData = restTemplate.getForEntity(context.getAPIURL("sast/scansQueue/" + context.getSessionData().getScanId()),
-                    String.class);
+            ResponseEntity<String> queueData = restTemplate.getForEntity(context.getAPIURL("sast/scansQueue/" + scanId), String.class);
             String body = queueData.getBody();
             Access stage = context.json().fetch("stage", body);
             String value = stage.fetch("value").asText();
 
             details.stageValue = value;
+            LOG.debug("Scan queue stage: {}. Checkmarx scan Id: {}.", details.stageValue, scanId);
 
             switch (details.stageValue) {
             case "New":
@@ -59,6 +67,7 @@ class WaitForQueueStateSupport extends WaitForStateSupport<CheckmarxContext, Che
                     details.newQueueEntryFound = true;
                 }
                 details.failureText = context.json().fetch("stageDetails", body).asText();
+                LOG.info("Scan queue stage failed. Failure text: {}", details.failureText);
                 break;
             case "Finished":
                 if (!details.newQueueEntryFound) {

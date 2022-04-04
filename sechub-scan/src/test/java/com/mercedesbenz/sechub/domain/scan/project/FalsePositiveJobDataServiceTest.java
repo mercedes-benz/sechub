@@ -58,7 +58,7 @@ public class FalsePositiveJobDataServiceTest {
         serviceToTest.addFalsePositives(PROJECT_ID, data);
 
         /* test */
-        verify(userInputAssertion).isValidProjectId(PROJECT_ID);
+        verify(userInputAssertion).assertIsValidProjectId(PROJECT_ID);
         verify(scanAssertService).assertUserHasAccessToProject(PROJECT_ID);
         verify(falsePositiveListValidation).validate(any(FalsePositiveJobDataList.class));
     }

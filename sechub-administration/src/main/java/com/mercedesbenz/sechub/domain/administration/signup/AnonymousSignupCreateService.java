@@ -58,8 +58,8 @@ public class AnonymousSignupCreateService {
 
         LOG.debug("user tries to register himself:{},mail:{}", userId, emailAdress);
 
-        assertion.isValidUserId(userId);
-        assertion.isValidEmailAddress(emailAdress);
+        assertion.assertIsValidUserId(userId);
+        assertion.assertIsValidEmailAddress(emailAdress);
 
         assertNotAlreadySignedIn(userId, emailAdress);
         assertUsernameNotUsedAlready(userId, emailAdress);

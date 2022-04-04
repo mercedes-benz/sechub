@@ -21,7 +21,7 @@ public class MappingUI implements TemplateDataUIPart {
     private ProductExecutorTemplatesDialogUI dialogUI;
     private LoadJSONAdapterDialogAction loadAction;
     private SaveJSONAdapterDialogAction saveAction;
-    private ScanConfigTestJSONasNamePatternDialogAction testAction;
+    private ScanMappingConfigurationTestJSONasNamePatternDialogAction testAction;
     private CopyToClipboardAsPropertyEntryAction copyToClipboardAsPropertyLine;
     private CreateExampleJSONAdapterDialogAction exampleAction;
     private ImportCSVToJSONAdapterDialogAction importCSVAction;
@@ -46,7 +46,7 @@ public class MappingUI implements TemplateDataUIPart {
 
         loadAction = new LoadJSONAdapterDialogAction(this);
         saveAction = new SaveJSONAdapterDialogAction(this);
-        testAction = new ScanConfigTestJSONasNamePatternDialogAction(this);
+        testAction = new ScanMappingConfigurationTestJSONasNamePatternDialogAction(this);
         copyToClipboardAsPropertyLine = new CopyToClipboardAsPropertyEntryAction(this);
         exampleAction = new CreateExampleJSONAdapterDialogAction(this);
         importCSVAction = new ImportCSVToJSONAdapterDialogAction(this);
@@ -82,7 +82,7 @@ public class MappingUI implements TemplateDataUIPart {
         return saveAction;
     }
 
-    public ScanConfigTestJSONasNamePatternDialogAction getTestAction() {
+    public ScanMappingConfigurationTestJSONasNamePatternDialogAction getTestAction() {
         return testAction;
     }
 

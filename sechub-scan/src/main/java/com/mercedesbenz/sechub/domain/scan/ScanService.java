@@ -97,6 +97,7 @@ public class ScanService implements SynchronMessageHandler {
 
     @IsSendingSyncMessageAnswer(value = MessageID.SCAN_DONE, answeringTo = MessageID.START_SCAN, branchName = "success")
     @IsSendingSyncMessageAnswer(value = MessageID.SCAN_FAILED, answeringTo = MessageID.START_SCAN, branchName = "failure")
+    @IsSendingSyncMessageAnswer(value = MessageID.SCAN_ABANDONDED, answeringTo = MessageID.START_SCAN, branchName = "failure")
     DomainMessageSynchronousResult startScan(DomainMessage request) {
 
         SecHubExecutionContext context = null;
@@ -233,10 +234,15 @@ public class ScanService implements SynchronMessageHandler {
         notNull(request, "Request may not be null!");
 
         if (!request.hasID(MessageID.START_SCAN)) {
-            return new DomainMessageSynchronousResult(MessageID.UNSUPPORTED_OPERATION,
-                    new UnsupportedOperationException("Can only handle " + MessageID.START_SCAN));
+            return failBecauseUnsupportedMessage();
         }
         return startScan(request);
+    }
+
+    @IsSendingSyncMessageAnswer(value = MessageID.UNSUPPORTED_OPERATION, answeringTo = MessageID.START_SCAN, branchName = "failure")
+    private DomainMessageSynchronousResult failBecauseUnsupportedMessage() {
+        return new DomainMessageSynchronousResult(MessageID.UNSUPPORTED_OPERATION,
+                new UnsupportedOperationException("Can only handle " + MessageID.START_SCAN));
     }
 
 }

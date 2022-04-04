@@ -169,6 +169,9 @@ then
     printf "\n# Job error stream\n"
     "$pds_api" job_stream_error "$jobUUID"
 else
-    echo "Return the result"
+    printf "\n# Job output stream\n"
+    "$pds_api" job_stream_output "$jobUUID"
+
+    printf "\n# Return the result\n"
     "$pds_api" job_result "$jobUUID"
 fi

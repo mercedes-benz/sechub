@@ -11,9 +11,6 @@ Furthermore, the combination of GoSec and PDS makes it possible to run both insi
 
 This folder contains the necessary scripts to run PDS + GoSec inside a container locally. Additionally, it contains scripts to build and push the PDS + GoSec container to your container registry and a Helm chart to install and run PDS + GoSec in a Kubernetes cluster.
 
-[NOTE]
-We offer Ubuntu based images. What you choose is up to you.
-
 == Run Locally
 
 This is the easiest way to get started.

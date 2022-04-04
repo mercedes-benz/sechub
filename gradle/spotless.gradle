@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 apply plugin: 'com.diffplug.spotless'
 spotless {
 

@@ -63,8 +63,8 @@ public class ProjectChangeOwnerService {
         LOG.info("User {} triggers project owner change - user:{} to project:{}", userContextService.getUserId(), logSanitizer.sanitize(newOnwerUserId, 30),
                 logSanitizer.sanitize(projectId, 30));
 
-        assertion.isValidUserId(newOnwerUserId);
-        assertion.isValidProjectId(projectId);
+        assertion.assertIsValidUserId(newOnwerUserId);
+        assertion.assertIsValidProjectId(projectId);
 
         Project project = projectRepository.findOrFailProject(projectId);
         User newOwner = userRepository.findOrFailUser(newOnwerUserId);

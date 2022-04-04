@@ -8,9 +8,9 @@
  */
 dependencies {
 
-    testCompile library.junit
-    testCompile library.mockito
-    testCompile library.mockito_inline
-    testCompile project(':sechub-testframework')
+    testImplementation library.junit4
+    testImplementation spring_boot_dependency.mockito_core
+    testImplementation library.mockito_inline
+    testImplementation project(':sechub-testframework')
 
 }

@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mercedesbenz.sechub.test.TestFileReader;
 import com.mercedesbenz.sechub.test.TestUtil;
 
 public class SecurityTestHelper {
@@ -366,9 +367,8 @@ public class SecurityTestHelper {
             throw new IllegalStateException(message);
         }
 
-        TextFileReader reader = new TextFileReader();
         File file = new File("./build/test-results/ciphertest/sechub-" + targetType.id + ".json");
-        String text = reader.loadTextFile(file);
+        String text = TestFileReader.loadTextFile(file);
 
         ObjectMapper mapper = JSONTestSupport.DEFAULT.createObjectMapper();
         cipherTestData = mapper.readValue(text.getBytes(), CipherTestData.class);

@@ -24,8 +24,8 @@ public class SchedulerGetJobStatusService {
     @Validated
     @UseCaseUserChecksJobStatus(@Step(number = 2, name = "Try to find project and fail or return job status"))
     public ScheduleJobStatus getJobStatus(String projectId, UUID jobUUID) {
-        assertion.isValidProjectId(projectId);
-        assertion.isValidJobUUID(jobUUID);
+        assertion.assertIsValidProjectId(projectId);
+        assertion.assertIsValidJobUUID(jobUUID);
 
         scheduleAssert.assertUserHasAccessToProject(projectId);
         scheduleAssert.assertProjectAllowsReadAccess(projectId);

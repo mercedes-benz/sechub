@@ -18,7 +18,7 @@ public class ScheduleAccessCountService {
     UserInputAssertion assertion;
 
     public long countProjectAccess(String projectId) {
-        assertion.isValidProjectId(projectId);
+        assertion.assertIsValidProjectId(projectId);
 
         ScheduleAccess probe = new ScheduleAccess();
         probe.key = new ProjectAccessCompositeKey(null, projectId);

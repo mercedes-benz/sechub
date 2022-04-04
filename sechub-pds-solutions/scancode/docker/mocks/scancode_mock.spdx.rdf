@@ -1,0 +1,754 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF
+  xmlns:ns1="http://spdx.org/rdf/terms#"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+>
+  <ns1:SpdxDocument rdf:about="http://www.spdx.org/tools#SPDXRef-DOCUMENT">
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-35">
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+        <ns1:fileName>./sourcecode/samples/zlib/dotzlib/ChecksumImpl.cs</ns1:fileName>
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="N5dd6b63e89234a84b5e0b37b0371bbba">
+            <ns1:algorithm>SHA1</ns1:algorithm>
+            <ns1:checksumValue>3807a0e24a57b92ea301559cab7307b8eab52c51</ns1:checksumValue>
+          </ns1:Checksum>
+        </ns1:checksum>
+        <ns1:copyrightText>(c) Copyright Henrik Ravn 2004
+</ns1:copyrightText>
+        <ns1:licenseInfoInFile rdf:resource="http://spdx.org/licenses/BSL-1.0"/>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-21">
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="N98c1f725bc0b4005b15ddfec72bdf447">
+            <ns1:algorithm>SHA1</ns1:algorithm>
+            <ns1:checksumValue>c1f6818f8ee7bddcc9f444bc94c099729d716d52</ns1:checksumValue>
+          </ns1:Checksum>
+        </ns1:checksum>
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+        <ns1:fileName>./sourcecode/samples/JGroups/src/RouterStub.java</ns1:fileName>
+        <ns1:copyrightText rdf:resource="http://spdx.org/rdf/terms#none"/>
+        <ns1:licenseInfoInFile rdf:resource="http://spdx.org/rdf/terms#none"/>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:hasExtractedLicensingInfo>
+      <ns1:ExtractedLicensingInfo rdf:nodeID="N2f15d7b3e61e4b059ece56f79080c551">
+        <rdfs:comment>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/jboss-eula.yml
+</rdfs:comment>
+        <ns1:licenseId>LicenseRef-scancode-jboss-eula</ns1:licenseId>
+        <ns1:licenseName>JBoss EULA</ns1:licenseName>
+        <ns1:extractedText>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/jboss-eula.yml
+</ns1:extractedText>
+      </ns1:ExtractedLicensingInfo>
+    </ns1:hasExtractedLicensingInfo>
+    <ns1:specVersion>SPDX-2.2</ns1:specVersion>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-27">
+        <ns1:licenseInfoInFile rdf:resource="http://spdx.org/licenses/Zlib"/>
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="N9ef674ecdfbf4d5fb30741f1f3752f56">
+            <ns1:algorithm>SHA1</ns1:algorithm>
+            <ns1:checksumValue>29ed3b8ca3927576e5889dea5880ca0052942c7d</ns1:checksumValue>
+          </ns1:Checksum>
+        </ns1:checksum>
+        <ns1:copyrightText>Copyright (c) 1995-2012 Jean-loup Gailly
+</ns1:copyrightText>
+        <ns1:fileName>./sourcecode/samples/zlib/deflate.h</ns1:fileName>
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-3">
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="N9793ddc0bc004a50baac3d34b1d770e2">
+            <ns1:algorithm>SHA1</ns1:algorithm>
+            <ns1:checksumValue>2e07e32c52d607204fad196052d70e3d18fb8636</ns1:checksumValue>
+          </ns1:Checksum>
+        </ns1:checksum>
+        <ns1:licenseInfoInFile rdf:resource="http://spdx.org/rdf/terms#none"/>
+        <ns1:fileName>./sourcecode/samples/README</ns1:fileName>
+        <ns1:copyrightText rdf:resource="http://spdx.org/rdf/terms#none"/>
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:name rdf:resource="SPDX Document created by ScanCode Toolkit"/>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-26">
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="N684bbc2e9c6446578f9966e92201fa45">
+            <ns1:checksumValue>7b4ace6d698c5dbbfb9a8f047f63228ca54d2e77</ns1:checksumValue>
+            <ns1:algorithm>SHA1</ns1:algorithm>
+          </ns1:Checksum>
+        </ns1:checksum>
+        <ns1:copyrightText>Copyright (c) 1995-2013 Jean-loup Gailly and Mark Adler
+Copyright 1995-2013 Jean-loup Gailly and Mark Adler
+</ns1:copyrightText>
+        <ns1:licenseInfoInFile rdf:resource="http://spdx.org/licenses/Zlib"/>
+        <ns1:fileName>./sourcecode/samples/zlib/deflate.c</ns1:fileName>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:describesPackage>
+      <ns1:Package rdf:about="http://www.spdx.org/tools#SPDXRef-Package">
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-45"/>
+        <ns1:licenseDeclared rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+        <ns1:licenseInfoFromFiles>
+          <ns1:ExtractedLicensingInfo rdf:nodeID="N52d639ff4c1f49deafc64d6e8d8282eb">
+            <rdfs:comment>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/public-domain.yml
+</rdfs:comment>
+            <ns1:extractedText>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/public-domain.yml
+</ns1:extractedText>
+            <ns1:licenseName>Public Domain</ns1:licenseName>
+            <ns1:licenseId>LicenseRef-scancode-public-domain</ns1:licenseId>
+          </ns1:ExtractedLicensingInfo>
+        </ns1:licenseInfoFromFiles>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-42"/>
+        <ns1:licenseInfoFromFiles>
+          <ns1:ExtractedLicensingInfo rdf:nodeID="Nc897518c8213474d881655cb40132f5e">
+            <ns1:extractedText>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/unknown-license-reference.yml
+</ns1:extractedText>
+            <rdfs:comment>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/unknown-license-reference.yml
+</rdfs:comment>
+            <ns1:licenseName>Unknown License file reference</ns1:licenseName>
+            <ns1:licenseId>LicenseRef-scancode-unknown-license-reference</ns1:licenseId>
+          </ns1:ExtractedLicensingInfo>
+        </ns1:licenseInfoFromFiles>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-11"/>
+        <ns1:licenseInfoFromFiles rdf:resource="http://spdx.org/licenses/Apache-2.0"/>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-35"/>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-21"/>
+        <ns1:licenseInfoFromFiles rdf:resource="http://spdx.org/licenses/Zlib"/>
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+        <ns1:packageVerificationCode>
+          <ns1:PackageVerificationCode rdf:nodeID="N22ad1fb5e13e426dbbeab010b276fe86">
+            <ns1:packageVerificationCodeValue>a16cc075835fbc3a0474c60b4c4314dc37a7dee1</ns1:packageVerificationCodeValue>
+          </ns1:PackageVerificationCode>
+        </ns1:packageVerificationCode>
+        <ns1:licenseInfoFromFiles>
+          <ns1:ExtractedLicensingInfo rdf:nodeID="N29c137869f004cb39e4f1bc4d9c6f892">
+            <ns1:extractedText>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/mit-old-style.yml
+</ns1:extractedText>
+            <ns1:licenseId>LicenseRef-scancode-mit-old-style</ns1:licenseId>
+            <ns1:licenseName>MIT Old Style</ns1:licenseName>
+            <rdfs:comment>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/mit-old-style.yml
+</rdfs:comment>
+          </ns1:ExtractedLicensingInfo>
+        </ns1:licenseInfoFromFiles>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-27"/>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-3"/>
+        <ns1:licenseInfoFromFiles rdf:resource="http://spdx.org/licenses/LGPL-2.1-only"/>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-26"/>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-15"/>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-6"/>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-41"/>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-17"/>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-8"/>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-36"/>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-34"/>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-29"/>
+        <ns1:licenseInfoFromFiles rdf:resource="http://spdx.org/licenses/LGPL-2.1-or-later"/>
+        <ns1:licenseInfoFromFiles rdf:resource="http://spdx.org/licenses/CPL-1.0"/>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-18"/>
+        <ns1:licenseInfoFromFiles>
+          <ns1:ExtractedLicensingInfo rdf:nodeID="N3a385101cc814b689a052461c1bc27be">
+            <ns1:licenseId>LicenseRef-scancode-ada-linking-exception</ns1:licenseId>
+            <ns1:extractedText>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/ada-linking-exception.yml
+</ns1:extractedText>
+            <rdfs:comment>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/ada-linking-exception.yml
+</rdfs:comment>
+            <ns1:licenseName>Ada linking exception to GPL 2.0 or later</ns1:licenseName>
+          </ns1:ExtractedLicensingInfo>
+        </ns1:licenseInfoFromFiles>
+        <ns1:licenseInfoFromFiles rdf:resource="http://spdx.org/licenses/MIT"/>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-39"/>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-44"/>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-37"/>
+        <ns1:licenseInfoFromFiles>
+          <ns1:ExtractedLicensingInfo rdf:nodeID="N2dd06da178de4c4e95b263b9a1f28f89">
+            <ns1:licenseName>JBoss EULA</ns1:licenseName>
+            <ns1:extractedText>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/jboss-eula.yml
+</ns1:extractedText>
+            <rdfs:comment>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/jboss-eula.yml
+</rdfs:comment>
+            <ns1:licenseId>LicenseRef-scancode-jboss-eula</ns1:licenseId>
+          </ns1:ExtractedLicensingInfo>
+        </ns1:licenseInfoFromFiles>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-30"/>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-22"/>
+        <ns1:copyrightText>(c) Copyright Henrik Ravn 2004
+Copyright (c) 1991, 1999 Free Software Foundation, Inc.
+Copyright (c) 1995-2005, 2010, 2011, 2012 Jean-loup Gailly
+Copyright (c) 1995-2008 Mark Adler
+Copyright (c) 1995-2010 Jean-loup Gailly, Brian Raiter and Gilles Vollant
+Copyright (c) 1995-2011 Mark Adler
+Copyright (c) 1995-2012 Jean-loup Gailly
+Copyright (c) 1995-2013 Jean-loup Gailly
+Copyright (c) 1995-2013 Jean-loup Gailly and Mark Adler
+Copyright (c) 1997 Christian Michelsen Research AS Advanced Computing
+Copyright (c) 2000 - 2006 The Legion Of The Bouncy Castle (http://www.bouncycastle.org)
+Copyright (c) 2000 The Apache Software Foundation
+Copyright (c) 2002-2004 Dmitriy Anisimkov
+Copyright (c) 2003 Mark Adler
+Copyright (c) 2004 by Henrik Ravn
+Copyright (c) 2005 Brian Goetz and Tim Peierls
+Copyright (c) Henrik Ravn 2004
+Copyright 1995-2013 Jean-loup Gailly and Mark Adler
+Copyright 2005, JBoss Inc., and individual contributors
+Copyright 2006 Red Hat, Inc.
+Copyright 2009, Red Hat Middleware LLC, and individual contributors
+Copyright 2010, Red Hat, Inc. and individual contributors
+copyrighted by the Free Software Foundation
+</ns1:copyrightText>
+        <ns1:licenseInfoFromFiles rdf:resource="http://spdx.org/licenses/Apache-1.1"/>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-9"/>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-12"/>
+        <ns1:licenseInfoFromFiles rdf:resource="http://spdx.org/licenses/CC-BY-2.5"/>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-28"/>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-32"/>
+        <ns1:licenseInfoFromFiles rdf:resource="http://spdx.org/licenses/GPL-2.0-or-later"/>
+        <ns1:Package rdf:resource="SPDXRef-001"/>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-19"/>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-13"/>
+        <ns1:downloadLocation rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-4"/>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-20"/>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-23"/>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-25"/>
+        <ns1:hasFile rdf:resource="http://www.spdx.org/files#SPDXRef-14"/>
+        <ns1:name>sourcecode</ns1:name>
+        <ns1:licenseInfoFromFiles rdf:resource="http://spdx.org/licenses/BSL-1.0"/>
+      </ns1:Package>
+    </ns1:describesPackage>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-15">
+        <ns1:copyrightText>Copyright (c) 1991, 1999 Free Software Foundation, Inc.
+copyrighted by the Free Software Foundation
+</ns1:copyrightText>
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+        <ns1:fileName>./sourcecode/samples/JGroups/licenses/lgpl.txt</ns1:fileName>
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="Nc35bc764380644a5802b50a0d588dd17">
+            <ns1:checksumValue>8f1a637d2e2ed1bdb9eb01a7dccb5c12cc0557e1</ns1:checksumValue>
+            <ns1:algorithm>SHA1</ns1:algorithm>
+          </ns1:Checksum>
+        </ns1:checksum>
+        <ns1:licenseInfoInFile rdf:resource="http://spdx.org/licenses/LGPL-2.1-only"/>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-6">
+        <ns1:licenseInfoInFile rdf:resource="http://spdx.org/rdf/terms#none"/>
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="N28abf40c4e8d4151b9a9c408b14652e8">
+            <ns1:algorithm>SHA1</ns1:algorithm>
+            <ns1:checksumValue>576f0ccfe534d7f5ff5d6400078d3c6586de3abd</ns1:checksumValue>
+          </ns1:Checksum>
+        </ns1:checksum>
+        <ns1:fileName>./sourcecode/samples/arch/zlib.tar.gz</ns1:fileName>
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+        <ns1:copyrightText rdf:resource="http://spdx.org/rdf/terms#none"/>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-34">
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+        <ns1:copyrightText>Copyright (c) 2004 by Henrik Ravn
+</ns1:copyrightText>
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="N90e537b3b706436799218edab71b4523">
+            <ns1:algorithm>SHA1</ns1:algorithm>
+            <ns1:checksumValue>9f1db1177b2e9a014f72bb3cd80be17133e06d16</ns1:checksumValue>
+          </ns1:Checksum>
+        </ns1:checksum>
+        <ns1:fileName>./sourcecode/samples/zlib/dotzlib/AssemblyInfo.cs</ns1:fileName>
+        <ns1:licenseInfoInFile rdf:resource="http://spdx.org/rdf/terms#none"/>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-41">
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+        <ns1:copyrightText>Copyright (c) 1995-2008 Mark Adler
+</ns1:copyrightText>
+        <ns1:fileName>./sourcecode/samples/zlib/infback9/infback9.c</ns1:fileName>
+        <ns1:licenseInfoInFile rdf:resource="http://spdx.org/licenses/Zlib"/>
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="N67846043762642308313fe2601d2df9d">
+            <ns1:algorithm>SHA1</ns1:algorithm>
+            <ns1:checksumValue>17fb362c03755b12f2dda5b12a68cf38162674bd</ns1:checksumValue>
+          </ns1:Checksum>
+        </ns1:checksum>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-8">
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+        <ns1:fileName>./sourcecode/samples/JGroups/EULA</ns1:fileName>
+        <ns1:copyrightText>Copyright 2006 Red Hat, Inc.
+</ns1:copyrightText>
+        <ns1:licenseInfoInFile>
+          <ns1:ExtractedLicensingInfo rdf:nodeID="Nc8d84e76cf0545289eabc64da7a26cd8">
+            <ns1:licenseId>LicenseRef-scancode-jboss-eula</ns1:licenseId>
+            <ns1:licenseName>JBoss EULA</ns1:licenseName>
+            <ns1:extractedText>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/jboss-eula.yml
+</ns1:extractedText>
+            <rdfs:comment>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/jboss-eula.yml
+</rdfs:comment>
+          </ns1:ExtractedLicensingInfo>
+        </ns1:licenseInfoInFile>
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="N9f1c5b352c0342999f2a7413f9debfad">
+            <ns1:checksumValue>eb232aa0424eca9c4136904e6143b72aaa9cf4de</ns1:checksumValue>
+            <ns1:algorithm>SHA1</ns1:algorithm>
+          </ns1:Checksum>
+        </ns1:checksum>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-17">
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+        <ns1:licenseInfoInFile rdf:resource="http://spdx.org/licenses/LGPL-2.1-or-later"/>
+        <ns1:copyrightText>Copyright 2005, JBoss Inc., and individual contributors
+</ns1:copyrightText>
+        <ns1:fileName>./sourcecode/samples/JGroups/src/FixedMembershipToken.java</ns1:fileName>
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="N03cd9c6ed24a46fa8557457d8e8d5a4e">
+            <ns1:checksumValue>5901f73dcc78155a1a2c7b5663a3a11fba400b19</ns1:checksumValue>
+            <ns1:algorithm>SHA1</ns1:algorithm>
+          </ns1:Checksum>
+        </ns1:checksum>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-36">
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="N755ff9319f1849688377a100458c14f7">
+            <ns1:algorithm>SHA1</ns1:algorithm>
+            <ns1:checksumValue>892b34f7865d90a6f949f50d95e49625a10bc7f0</ns1:checksumValue>
+          </ns1:Checksum>
+        </ns1:checksum>
+        <ns1:copyrightText rdf:resource="http://spdx.org/rdf/terms#none"/>
+        <ns1:licenseInfoInFile rdf:resource="http://spdx.org/licenses/BSL-1.0"/>
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+        <ns1:fileName>./sourcecode/samples/zlib/dotzlib/LICENSE_1_0.txt</ns1:fileName>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:hasExtractedLicensingInfo>
+      <ns1:ExtractedLicensingInfo rdf:nodeID="N77f959796fef44008df9c8c393b1d11b">
+        <ns1:licenseName>Public Domain</ns1:licenseName>
+        <ns1:licenseId>LicenseRef-scancode-public-domain</ns1:licenseId>
+        <rdfs:comment>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/public-domain.yml
+</rdfs:comment>
+        <ns1:extractedText>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/public-domain.yml
+</ns1:extractedText>
+      </ns1:ExtractedLicensingInfo>
+    </ns1:hasExtractedLicensingInfo>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-29">
+        <ns1:fileName>./sourcecode/samples/zlib/zutil.c</ns1:fileName>
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="N8c4fd957ed9545a28e0f6cfa0c56dcb8">
+            <ns1:checksumValue>e1af709bff21ae0d4331119a7fc4c19f82932043</ns1:checksumValue>
+            <ns1:algorithm>SHA1</ns1:algorithm>
+          </ns1:Checksum>
+        </ns1:checksum>
+        <ns1:copyrightText>Copyright (c) 1995-2005, 2010, 2011, 2012 Jean-loup Gailly
+</ns1:copyrightText>
+        <ns1:licenseInfoInFile rdf:resource="http://spdx.org/licenses/Zlib"/>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:hasExtractedLicensingInfo>
+      <ns1:ExtractedLicensingInfo rdf:nodeID="N29efaf82b2ab4ab3aa9fd5677d27d3ad">
+        <ns1:licenseId>LicenseRef-scancode-mit-old-style</ns1:licenseId>
+        <ns1:extractedText>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/mit-old-style.yml
+</ns1:extractedText>
+        <ns1:licenseName>MIT Old Style</ns1:licenseName>
+        <rdfs:comment>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/mit-old-style.yml
+</rdfs:comment>
+      </ns1:ExtractedLicensingInfo>
+    </ns1:hasExtractedLicensingInfo>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-18">
+        <ns1:fileName>./sourcecode/samples/JGroups/src/GuardedBy.java</ns1:fileName>
+        <ns1:copyrightText>Copyright (c) 2005 Brian Goetz and Tim Peierls
+</ns1:copyrightText>
+        <ns1:licenseInfoInFile rdf:resource="http://spdx.org/licenses/CC-BY-2.5"/>
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="Nd4eb3ec8a6e54044bb757ea958c1d084">
+            <ns1:checksumValue>981d67087e65e9a44957c026d4b10817cf77d966</ns1:checksumValue>
+            <ns1:algorithm>SHA1</ns1:algorithm>
+          </ns1:Checksum>
+        </ns1:checksum>
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-30">
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="Na9e51a365a3d4585a3184c86af270545">
+            <ns1:checksumValue>b909d27ef9ce51639f76b7ea6b62721e7d1b6bf7</ns1:checksumValue>
+            <ns1:algorithm>SHA1</ns1:algorithm>
+          </ns1:Checksum>
+        </ns1:checksum>
+        <ns1:fileName>./sourcecode/samples/zlib/zutil.h</ns1:fileName>
+        <ns1:licenseInfoInFile rdf:resource="http://spdx.org/licenses/Zlib"/>
+        <ns1:copyrightText>Copyright (c) 1995-2013 Jean-loup Gailly
+</ns1:copyrightText>
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-39">
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="Nd86f1d9ec1ba4e4b90dd73e4f1a4cd91">
+            <ns1:algorithm>SHA1</ns1:algorithm>
+            <ns1:checksumValue>742603cba1af98a1432cc02efb019b1a5760adf2</ns1:checksumValue>
+          </ns1:Checksum>
+        </ns1:checksum>
+        <ns1:fileName>./sourcecode/samples/zlib/gcc_gvmat64/gvmat64.S</ns1:fileName>
+        <ns1:copyrightText>Copyright (c) 1995-2010 Jean-loup Gailly, Brian Raiter and Gilles Vollant
+</ns1:copyrightText>
+        <ns1:licenseInfoInFile rdf:resource="http://spdx.org/licenses/Zlib"/>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-44">
+        <ns1:licenseInfoInFile>
+          <ns1:ExtractedLicensingInfo rdf:nodeID="Ncb2c95d9cb0749f9b4b4f43e5f522d24">
+            <rdfs:comment>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/mit-old-style.yml
+</rdfs:comment>
+            <ns1:licenseName>MIT Old Style</ns1:licenseName>
+            <ns1:extractedText>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/mit-old-style.yml
+</ns1:extractedText>
+            <ns1:licenseId>LicenseRef-scancode-mit-old-style</ns1:licenseId>
+          </ns1:ExtractedLicensingInfo>
+        </ns1:licenseInfoInFile>
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="N803c82697d0d4ef4a978db390b4f454b">
+            <ns1:algorithm>SHA1</ns1:algorithm>
+            <ns1:checksumValue>fca4540d490fff36bb90fd801cf9cd8fc695bb17</ns1:checksumValue>
+          </ns1:Checksum>
+        </ns1:checksum>
+        <ns1:fileName>./sourcecode/samples/zlib/iostream2/zstream.h</ns1:fileName>
+        <ns1:copyrightText>Copyright (c) 1997 Christian Michelsen Research AS Advanced Computing
+</ns1:copyrightText>
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-37">
+        <ns1:licenseInfoInFile rdf:resource="http://spdx.org/licenses/BSL-1.0"/>
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+        <ns1:copyrightText>Copyright (c) Henrik Ravn 2004
+</ns1:copyrightText>
+        <ns1:fileName>./sourcecode/samples/zlib/dotzlib/readme.txt</ns1:fileName>
+        <ns1:licenseInfoInFile>
+          <ns1:ExtractedLicensingInfo rdf:nodeID="N437d83f41cb9461295b6fc02929598ef">
+            <ns1:licenseId>LicenseRef-scancode-unknown-license-reference</ns1:licenseId>
+            <ns1:extractedText>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/unknown-license-reference.yml
+</ns1:extractedText>
+            <rdfs:comment>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/unknown-license-reference.yml
+</rdfs:comment>
+            <ns1:licenseName>Unknown License file reference</ns1:licenseName>
+          </ns1:ExtractedLicensingInfo>
+        </ns1:licenseInfoInFile>
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="N23357d16c4584220a7021ec203223cbc">
+            <ns1:algorithm>SHA1</ns1:algorithm>
+            <ns1:checksumValue>b1229b826f0096808628474538cea8fec2922a9b</ns1:checksumValue>
+          </ns1:Checksum>
+        </ns1:checksum>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:hasExtractedLicensingInfo>
+      <ns1:ExtractedLicensingInfo rdf:nodeID="Nb17060ec74a348dd904470f25ba56f4f">
+        <ns1:licenseName>Unknown License file reference</ns1:licenseName>
+        <rdfs:comment>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/unknown-license-reference.yml
+</rdfs:comment>
+        <ns1:licenseId>LicenseRef-scancode-unknown-license-reference</ns1:licenseId>
+        <ns1:extractedText>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/unknown-license-reference.yml
+</ns1:extractedText>
+      </ns1:ExtractedLicensingInfo>
+    </ns1:hasExtractedLicensingInfo>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-9">
+        <ns1:copyrightText>Copyright (c) 1991, 1999 Free Software Foundation, Inc.
+copyrighted by the Free Software Foundation
+</ns1:copyrightText>
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+        <ns1:fileName>./sourcecode/samples/JGroups/LICENSE</ns1:fileName>
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="N3f423d029c644ae8a3a7f929de78a180">
+            <ns1:algorithm>SHA1</ns1:algorithm>
+            <ns1:checksumValue>e60c2e780886f95df9c9ee36992b8edabec00bcc</ns1:checksumValue>
+          </ns1:Checksum>
+        </ns1:checksum>
+        <ns1:licenseInfoInFile rdf:resource="http://spdx.org/licenses/LGPL-2.1-only"/>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-22">
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="N3fa23421838b4e75a6721dab5cd82b1a">
+            <ns1:algorithm>SHA1</ns1:algorithm>
+            <ns1:checksumValue>eb419dc94cfe11ca318a3e743a7f9f080e70c751</ns1:checksumValue>
+          </ns1:Checksum>
+        </ns1:checksum>
+        <ns1:copyrightText>Copyright 2009, Red Hat Middleware LLC, and individual contributors
+</ns1:copyrightText>
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+        <ns1:fileName>./sourcecode/samples/JGroups/src/RouterStubManager.java</ns1:fileName>
+        <ns1:licenseInfoInFile rdf:resource="http://spdx.org/licenses/LGPL-2.1-or-later"/>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:hasExtractedLicensingInfo>
+      <ns1:ExtractedLicensingInfo rdf:nodeID="N2a663e0c8a654cf087a8d95634203c6a">
+        <ns1:licenseId>LicenseRef-scancode-ada-linking-exception</ns1:licenseId>
+        <ns1:extractedText>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/ada-linking-exception.yml
+</ns1:extractedText>
+        <ns1:licenseName>Ada linking exception to GPL 2.0 or later</ns1:licenseName>
+        <rdfs:comment>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/ada-linking-exception.yml
+</rdfs:comment>
+      </ns1:ExtractedLicensingInfo>
+    </ns1:hasExtractedLicensingInfo>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-12">
+        <ns1:copyrightText rdf:resource="http://spdx.org/rdf/terms#none"/>
+        <ns1:fileName>./sourcecode/samples/JGroups/licenses/apache-2.0.txt</ns1:fileName>
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+        <ns1:licenseInfoInFile rdf:resource="http://spdx.org/licenses/Apache-2.0"/>
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="N807032685eb04122af50e4c863641b47">
+            <ns1:algorithm>SHA1</ns1:algorithm>
+            <ns1:checksumValue>47b573e3824cd5e02a1a3ae99e2735b49e0256e4</ns1:checksumValue>
+          </ns1:Checksum>
+        </ns1:checksum>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:creationInfo>
+      <ns1:CreationInfo rdf:nodeID="N0373be49afac47a1b8e281efba961127">
+        <ns1:creator>Tool: scancode-toolkit 30.1.0</ns1:creator>
+        <ns1:created>2022-02-22T19:04:50Z</ns1:created>
+      </ns1:CreationInfo>
+    </ns1:creationInfo>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-28">
+        <ns1:copyrightText>Copyright (c) 1995-2013 Jean-loup Gailly and Mark Adler
+</ns1:copyrightText>
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="Nb4ce59ba3970491e8727abc383361adf">
+            <ns1:checksumValue>400d35465f179a4acacb5fe749e6ce20a0bbdb84</ns1:checksumValue>
+            <ns1:algorithm>SHA1</ns1:algorithm>
+          </ns1:Checksum>
+        </ns1:checksum>
+        <ns1:licenseInfoInFile rdf:resource="http://spdx.org/licenses/Zlib"/>
+        <ns1:fileName>./sourcecode/samples/zlib/zlib.h</ns1:fileName>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-32">
+        <ns1:copyrightText>Copyright (c) 2002-2004 Dmitriy Anisimkov
+</ns1:copyrightText>
+        <ns1:fileName>./sourcecode/samples/zlib/ada/zlib.ads</ns1:fileName>
+        <ns1:licenseInfoInFile rdf:resource="http://spdx.org/licenses/GPL-2.0-or-later"/>
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="N62b11607465c42d182d377b3990bc367">
+            <ns1:checksumValue>0245a91806d804bf9f0907a3a001a141e9adb61b</ns1:checksumValue>
+            <ns1:algorithm>SHA1</ns1:algorithm>
+          </ns1:Checksum>
+        </ns1:checksum>
+        <ns1:licenseInfoInFile>
+          <ns1:ExtractedLicensingInfo rdf:nodeID="N0370bc5e7a914eefaaf96ef0fad042d7">
+            <ns1:extractedText>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/ada-linking-exception.yml
+</ns1:extractedText>
+            <rdfs:comment>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/ada-linking-exception.yml
+</rdfs:comment>
+            <ns1:licenseName>Ada linking exception to GPL 2.0 or later</ns1:licenseName>
+            <ns1:licenseId>LicenseRef-scancode-ada-linking-exception</ns1:licenseId>
+          </ns1:ExtractedLicensingInfo>
+        </ns1:licenseInfoInFile>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-19">
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+        <ns1:copyrightText>Copyright 2010, Red Hat, Inc. and individual contributors
+</ns1:copyrightText>
+        <ns1:licenseInfoInFile rdf:resource="http://spdx.org/licenses/LGPL-2.1-or-later"/>
+        <ns1:fileName>./sourcecode/samples/JGroups/src/ImmutableReference.java</ns1:fileName>
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="N156fec6d9efc4318949c513e94aa1f5a">
+            <ns1:algorithm>SHA1</ns1:algorithm>
+            <ns1:checksumValue>30f56b876d5576d9869e2c5c509b08db57110592</ns1:checksumValue>
+          </ns1:Checksum>
+        </ns1:checksum>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-13">
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="N8571743a98f442e3a0dc894450ca3505">
+            <ns1:checksumValue>74facb0e9a734479f9cd893b5be3fe1bf651b760</ns1:checksumValue>
+            <ns1:algorithm>SHA1</ns1:algorithm>
+          </ns1:Checksum>
+        </ns1:checksum>
+        <ns1:fileName>./sourcecode/samples/JGroups/licenses/bouncycastle.txt</ns1:fileName>
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+        <ns1:licenseInfoInFile rdf:resource="http://spdx.org/licenses/MIT"/>
+        <ns1:copyrightText>Copyright (c) 2000 - 2006 The Legion Of The Bouncy Castle (http://www.bouncycastle.org)
+</ns1:copyrightText>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-4">
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="N320c39a4f20a4c87952ef78f5f050954">
+            <ns1:algorithm>SHA1</ns1:algorithm>
+            <ns1:checksumValue>01ff4b1de0bc6c75c9cca6e46c80c1802d6976d4</ns1:checksumValue>
+          </ns1:Checksum>
+        </ns1:checksum>
+        <ns1:licenseInfoInFile rdf:resource="http://spdx.org/rdf/terms#none"/>
+        <ns1:fileName>./sourcecode/samples/screenshot.png</ns1:fileName>
+        <ns1:copyrightText rdf:resource="http://spdx.org/rdf/terms#none"/>
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-20">
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="Na3d4b7ceb1c74dd4b356bdd4f9dc3864">
+            <ns1:algorithm>SHA1</ns1:algorithm>
+            <ns1:checksumValue>a8087e5d50da3273536ebda9b87b77aa4ff55deb</ns1:checksumValue>
+          </ns1:Checksum>
+        </ns1:checksum>
+        <ns1:fileName>./sourcecode/samples/JGroups/src/RATE_LIMITER.java</ns1:fileName>
+        <ns1:copyrightText rdf:resource="http://spdx.org/rdf/terms#none"/>
+        <ns1:licenseInfoInFile rdf:resource="http://spdx.org/rdf/terms#none"/>
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:dataLicense rdf:resource="http://spdx.org/licenses/CC0-1.0"/>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-23">
+        <ns1:licenseInfoInFile>
+          <ns1:ExtractedLicensingInfo rdf:nodeID="N7ce2a62e8fc24ae883582dc298584d50">
+            <rdfs:comment>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/public-domain.yml
+</rdfs:comment>
+            <ns1:extractedText>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/public-domain.yml
+</ns1:extractedText>
+            <ns1:licenseName>Public Domain</ns1:licenseName>
+            <ns1:licenseId>LicenseRef-scancode-public-domain</ns1:licenseId>
+          </ns1:ExtractedLicensingInfo>
+        </ns1:licenseInfoInFile>
+        <ns1:fileName>./sourcecode/samples/JGroups/src/S3_PING.java</ns1:fileName>
+        <ns1:licenseInfoInFile>
+          <ns1:ExtractedLicensingInfo rdf:nodeID="N854729fe11f54c04a562efff160dd033">
+            <rdfs:comment>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/public-domain.yml
+</rdfs:comment>
+            <ns1:extractedText>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/public-domain.yml
+</ns1:extractedText>
+            <ns1:licenseName>Public Domain</ns1:licenseName>
+            <ns1:licenseId>LicenseRef-scancode-public-domain</ns1:licenseId>
+          </ns1:ExtractedLicensingInfo>
+        </ns1:licenseInfoInFile>
+        <ns1:copyrightText rdf:resource="http://spdx.org/rdf/terms#none"/>
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="Nee7a7ceee4294427b3597cadc77b590a">
+            <ns1:algorithm>SHA1</ns1:algorithm>
+            <ns1:checksumValue>08dba9986f69719970ead3592dc565465164df0d</ns1:checksumValue>
+          </ns1:Checksum>
+        </ns1:checksum>
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-25">
+        <ns1:licenseInfoInFile rdf:resource="http://spdx.org/licenses/Zlib"/>
+        <ns1:copyrightText>Copyright (c) 1995-2011 Mark Adler
+</ns1:copyrightText>
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="Nd91c7e427d6f4abca72ce37aea73cfe5">
+            <ns1:checksumValue>0cff4808476ce0b5f6f0ebbc69ee2ab2a0eebe43</ns1:checksumValue>
+            <ns1:algorithm>SHA1</ns1:algorithm>
+          </ns1:Checksum>
+        </ns1:checksum>
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+        <ns1:fileName>./sourcecode/samples/zlib/adler32.c</ns1:fileName>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-14">
+        <ns1:licenseInfoInFile rdf:resource="http://spdx.org/licenses/CPL-1.0"/>
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="N03658e871b6e4900bef95ee2f18c2b84">
+            <ns1:checksumValue>681cf776bcd79752543d42490ec7ed22a29fd888</ns1:checksumValue>
+            <ns1:algorithm>SHA1</ns1:algorithm>
+          </ns1:Checksum>
+        </ns1:checksum>
+        <ns1:fileName>./sourcecode/samples/JGroups/licenses/cpl-1.0.txt</ns1:fileName>
+        <ns1:copyrightText rdf:resource="http://spdx.org/rdf/terms#none"/>
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-45">
+        <ns1:licenseInfoInFile rdf:resource="http://spdx.org/rdf/terms#none"/>
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="Nb5ffa88c08414c469cdf031005c203ca">
+            <ns1:checksumValue>e18a6d55cbbd8b832f8d795530553467e5c74fcf</ns1:checksumValue>
+            <ns1:algorithm>SHA1</ns1:algorithm>
+          </ns1:Checksum>
+        </ns1:checksum>
+        <ns1:copyrightText rdf:resource="http://spdx.org/rdf/terms#none"/>
+        <ns1:fileName>./sourcecode/samples/zlib/iostream2/zstream_test.cpp</ns1:fileName>
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:hasExtractedLicensingInfo>
+      <ns1:ExtractedLicensingInfo rdf:nodeID="N71506ff96fde4390888ac2dc4675c3dd">
+        <rdfs:comment>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/public-domain.yml
+</rdfs:comment>
+        <ns1:extractedText>See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/public-domain.yml
+</ns1:extractedText>
+        <ns1:licenseName>Public Domain</ns1:licenseName>
+        <ns1:licenseId>LicenseRef-scancode-public-domain</ns1:licenseId>
+      </ns1:ExtractedLicensingInfo>
+    </ns1:hasExtractedLicensingInfo>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-42">
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="N8fc0700f82c74358a1807ac81d114dac">
+            <ns1:checksumValue>d0486a32b558dcaceded5f0746fad62e680a4734</ns1:checksumValue>
+            <ns1:algorithm>SHA1</ns1:algorithm>
+          </ns1:Checksum>
+        </ns1:checksum>
+        <ns1:fileName>./sourcecode/samples/zlib/infback9/infback9.h</ns1:fileName>
+        <ns1:licenseInfoInFile rdf:resource="http://spdx.org/licenses/Zlib"/>
+        <ns1:copyrightText>Copyright (c) 2003 Mark Adler
+</ns1:copyrightText>
+      </ns1:File>
+    </ns1:referencesFile>
+    <ns1:referencesFile>
+      <ns1:File rdf:about="http://www.spdx.org/files#SPDXRef-11">
+        <ns1:copyrightText>Copyright (c) 2000 The Apache Software Foundation
+</ns1:copyrightText>
+        <ns1:licenseInfoInFile rdf:resource="http://spdx.org/licenses/Apache-1.1"/>
+        <ns1:licenseConcluded rdf:resource="http://spdx.org/rdf/terms#noassertion"/>
+        <ns1:checksum>
+          <ns1:Checksum rdf:nodeID="N93cec150951544ffa7287a6d46b12dcb">
+            <ns1:checksumValue>6b5608d35c3e304532af43db8bbfc5947bef46a6</ns1:checksumValue>
+            <ns1:algorithm>SHA1</ns1:algorithm>
+          </ns1:Checksum>
+        </ns1:checksum>
+        <ns1:fileName>./sourcecode/samples/JGroups/licenses/apache-1.1.txt</ns1:fileName>
+      </ns1:File>
+    </ns1:referencesFile>
+  </ns1:SpdxDocument>
+</rdf:RDF>

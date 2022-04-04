@@ -65,8 +65,8 @@ public class ProjectAssignUserService {
         LOG.info("User {} triggers assignment of user:{} to project:{}", userContextService.getUserId(), logSanitizer.sanitize(userId, 30),
                 logSanitizer.sanitize(projectId, 30));
 
-        assertion.isValidUserId(userId);
-        assertion.isValidProjectId(projectId);
+        assertion.assertIsValidUserId(userId);
+        assertion.assertIsValidProjectId(projectId);
 
         Project project = projectRepository.findOrFailProject(projectId);
         User user = userRepository.findOrFailUser(userId);

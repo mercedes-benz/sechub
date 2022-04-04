@@ -71,6 +71,9 @@ public class UserAdministrationRestControllerMockTest {
     private UserRevokeSuperAdminRightsService userRevokeSuperAdminRightsService;
 
     @MockBean
+    private UserEmailAddressUpdateService userEmailAddressUpdateService;
+
+    @MockBean
     UserListService mockedUserListService;
 
     @Test

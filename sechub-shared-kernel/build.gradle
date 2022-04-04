@@ -12,13 +12,15 @@ plugins {
 dependencies {
 
     api project(':sechub-commons-model')
-    compile project(':sechub-storage-sharedvolume-spring')
-    compile project(':sechub-storage-s3-aws')
-    compile project(':sechub-adapter')
+    api project(':sechub-storage-core')
+    
+    implementation project(':sechub-storage-sharedvolume-spring')
+    api project(':sechub-storage-s3-aws')
+    implementation project(':sechub-adapter')
 
-    compile library.apache_commons_validator
-    compile library.logstashLogbackEncoder
+    implementation library.apache_commons_validator
+    implementation library.logstashLogbackEncoder
 
-    testCompile project(':sechub-testframework')
+    testImplementation project(':sechub-testframework')
 
 }

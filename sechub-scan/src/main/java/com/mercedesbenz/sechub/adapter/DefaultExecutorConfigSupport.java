@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
 import com.mercedesbenz.sechub.domain.scan.NamePatternIdProviderFactory;
-import com.mercedesbenz.sechub.domain.scan.config.NamePatternIdprovider;
+import com.mercedesbenz.sechub.domain.scan.config.NamePatternIdProvider;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetupCredentials;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetupJobParameter;
@@ -33,10 +33,10 @@ public class DefaultExecutorConfigSupport {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultExecutorConfigSupport.class);
 
-    private static final NamePatternIdprovider FALLBACK_NOT_FOUND_PROVIDER = new NamePatternIdprovider("fallback");
+    private static final NamePatternIdProvider FALLBACK_NOT_FOUND_PROVIDER = new NamePatternIdProvider("fallback");
 
     protected Map<String, String> configuredExecutorParameters = new TreeMap<>();
-    private Map<String, NamePatternIdprovider> namePatternIdProviders = new TreeMap<>();
+    private Map<String, NamePatternIdProvider> namePatternIdProviders = new TreeMap<>();
 
     protected ProductExecutorConfig config;
     private SystemEnvironment systemEnvironment;
@@ -144,7 +144,7 @@ public class DefaultExecutorConfigSupport {
      * @return provider never <code>null</code>
      * @throws SecHubRuntimeException when name pattern provider cannot be resolved
      */
-    public NamePatternIdprovider getNamePatternIdProvider(String id) {
+    public NamePatternIdProvider getNamePatternIdProvider(String id) {
         return getNamePatternIdProvider(id, true);
     }
 
@@ -158,8 +158,8 @@ public class DefaultExecutorConfigSupport {
      * @return provider never <code>null</code>
      * @throws SecHubRuntimeException when name pattern provider cannot be resolved
      */
-    public NamePatternIdprovider getNamePatternIdProvider(String id, boolean failWhenNotConfigured) {
-        NamePatternIdprovider provider = namePatternIdProviders.get(id);
+    public NamePatternIdProvider getNamePatternIdProvider(String id, boolean failWhenNotConfigured) {
+        NamePatternIdProvider provider = namePatternIdProviders.get(id);
         if (provider != null) {
             return provider;
         }
@@ -172,10 +172,10 @@ public class DefaultExecutorConfigSupport {
                 return FALLBACK_NOT_FOUND_PROVIDER;
             }
         }
-        NamePatternIdprovider newProvider = providerFactory.createProvider(id, parameterValue);
+        NamePatternIdProvider newProvider = providerFactory.createProvider(id, parameterValue);
         namePatternIdProviders.put(id, newProvider);
 
-        LOG.debug("Created NamePatternIdprovider:{}", newProvider.getProviderId());
+        LOG.debug("Created NamePatternIdProvider:{}", newProvider.getProviderId());
         return newProvider;
     }
 

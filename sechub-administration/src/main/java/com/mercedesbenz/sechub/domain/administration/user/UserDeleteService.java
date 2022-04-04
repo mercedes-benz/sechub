@@ -58,7 +58,7 @@ public class UserDeleteService {
     public void deleteUser(String userId) {
         auditLogService.log("Triggers delete of user {}", logSanitizer.sanitize(userId, 30));
 
-        assertion.isValidUserId(userId);
+        assertion.assertIsValidUserId(userId);
         if (userId.contentEquals(userContext.getUserId())) {
             throw new NotAcceptableException("You are not allowed to delete yourself!");
         }
