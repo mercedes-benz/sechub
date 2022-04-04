@@ -29,7 +29,7 @@ func HandleHTTPError(err error, exitCode int) {
 func HandleHTTPResponse(response *http.Response, exitCode int) {
 	if response.StatusCode >= 400 { // StatusCode is 4xx or 5xx
 		bodytext, _ := ioutil.ReadAll(response.Body)
-		LogError(fmt.Sprintf("The SecHub server responded with HTTP status code '%s'\nbody=%s", response.Status, string(bodytext)))
+		LogError(fmt.Sprintf("The SecHub server responded with HTTP status code '%d'\nbody=%s", response.StatusCode, string(bodytext)))
 		switch response.StatusCode {
 		case 401:
 			fmt.Println("Hint: Unauthorized - Please check if your SecHub credentials (userID and API-token) are valid.")

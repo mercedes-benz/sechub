@@ -83,3 +83,11 @@ func VerifyDirectoryExists(directory string) bool {
 
 	return true
 }
+
+// FindNewestMatchingFileInDir - used e.g. for finding the latest report file
+func GetFileSize(filepath string) int64 {
+	fileinfo, err := os.Stat(filepath)
+	HandleIOError(err)
+
+	return fileinfo.Size()
+}

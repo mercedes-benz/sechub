@@ -320,7 +320,9 @@ Additionally to above cmdline options, you can set some values also via environm
 Settings for debugging/client development:
 
 - `SECHUB_DEBUG` +
-  When set to `true` then log as much as possible
+  When set to `true` then log as much as possible (but not HTTP request contents)
+- `SECHUB_DEBUG_HTTP` +
+  When set to `true` then log HTTP request contents.
 - `SECHUB_IGNORE_DEFAULT_EXCLUDES` +
   When set to `true` then default exclude folders `+{"**/test/**", "**/.git/**"}+` will be included for code scan. In this case, you should declare your own exclude list in the config json.
 - `SECHUB_KEEP_TEMPFILES` +

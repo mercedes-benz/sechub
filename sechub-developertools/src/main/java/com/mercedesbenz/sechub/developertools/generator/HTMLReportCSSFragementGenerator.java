@@ -3,7 +3,7 @@ package com.mercedesbenz.sechub.developertools.generator;
 
 import java.io.File;
 
-import com.mercedesbenz.sechub.integrationtest.TextFileReader;
+import com.mercedesbenz.sechub.commons.TextFileReader;
 import com.mercedesbenz.sechub.integrationtest.TextFileWriter;
 
 /**
