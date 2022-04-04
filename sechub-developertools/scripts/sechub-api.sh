@@ -26,6 +26,8 @@ List of actions and mandatory parameters:
 ACTION [PARAMETERS] - EXPLANATION
 ----------------------------------
 alive_check - alive check (No user needed)
+autocleanup_get - Get autocleanup setting
+autocleanup_set - Define a new autocleanup setting
 executor_create <json-file> - Create executor configuration from JSON file
 executor_delete <executor-uuid> - Delete executor <executor-uuid>
 executor_details <executor-uuid> - Show definition of executor <executor-uuid>
@@ -185,6 +187,31 @@ function generate_short_description {
 function sechub_alive_check {
   echo "Alive status of $SECHUB_SERVER"
   curl $CURL_PARAMS -i -X GET "$SECHUB_SERVER/api/anonymous/check/alive" | $CURL_FILTER
+}
+
+
+function sechub_autocleanup_get {
+  curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/autoclean" | $RESULT_FILTER | $JSON_FORMATTER
+}
+
+
+function generate_autocleanup_data {
+  local unit="$1"
+  local amount="$2"
+  cat <<EOF
+{
+  "cleanupTime": {
+    "unit": "$unit",
+    "amount": $amount
+  }
+}
+EOF
+}
+
+function sechub_autocleanup_set {
+  JSON_DATA="$(generate_autocleanup_data $1 $2)"
+  # curl $CURL_PARAMS -i -X PUT -H 'Content-Type: application/json' -d "" "$SECHUB_SERVER/api/admin/config/autoclean" | $RESULT_FILTER
+  echo curl $CURL_PARAMS -i -X PUT -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/config/autoclean"
 }
 
 
@@ -629,6 +656,12 @@ action="$1" && shift
 case "$action" in
   alive_check)
     $failed || sechub_alive_check
+    ;;
+  autocleanup_get)
+    $failed || sechub_autocleanup_get
+    ;;
+  autocleanup_set)
+    $failed || sechub_autocleanup_set
     ;;
   executor_create)
     EXECUTOR_JSONFILE="$1" ; check_file "$EXECUTOR_JSONFILE" '<json-file>'
