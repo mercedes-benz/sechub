@@ -1,62 +1,167 @@
 ' SPDX-License-Identifier: MIT
+@startuml
+hide fields
+'skinparam linetype polyline
+skinparam linetype ortho
+interface ProductExecutor{
+     + List<ProductResult> execute()
+     + ScanType getScanType()
+     + int getVersion()
+     + boolean isMultipleConfigurationAllomwed()
+}
+class SerecoReportProductExecutor implements ProductExecutor
 
-abstract class AbstractInstallSetupProductExecutor{
-   # <I extends InstallSetup> I getInstallSetup()
-}
-interface ProductExecutor
-interface InstallSetup{
-    + boolean isAbleToScan(TargetType targetType)
-}
-interface TargetResolver
-class TargetRegistry
-class SecHubWebScanConfiguration
-class SecHubInfrastuctureScanConfiguration
+class ProductExecutorData{
+    List<NetworkTargetInfo> networkTargetInfoList;
+    NetworkTargetProductServerDataProvider NetworkTargetProductServerDataProvider;
 
-class Target{
-  + getURI()
-  + getIP()
-  + TargetType getType()
-}
-class TargetData{
-    + TargetType getTargetType()
-    + Set<URI> getTargetURIs()
-    + Set<InetAddress> getTargetIPs()
-}
-enum TargetType {
-  INTERNET
-  INTRANET
-  CODE_UPLOAD
-  ILLEGAL
-  UNKNOWN
+    ProductExecutorContext productExecutorContext;
+    SecHubExecutionContext sechubExecutionContext;
+    UUIDTraceLogID traceLogId;
+    NetworkTargetProductServerDataSuppport networkTargetDataSupport;
+
+    NetworkLocationProvider networkLocationProvider;
+    NetworkTargetInfo currentNetworkTargetInfo;
+    String traceLogIdAsString;
+    Set<String> codeUploadFileSytemFolderPathes;
+
 }
 
-ProductExecutor <|-- AbstractInstallSetupProductExecutor
-AbstractInstallSetupProductExecutor o-- TargetResolver : uses
-AbstractInstallSetupProductExecutor o-- AbstractAdapterConfigBuilder: uses
-AbstractInstallSetupProductExecutor o-- Adapter: calls the adapter with created config
-AbstractInstallSetupProductExecutor "1" - "1" InstallSetup : implementation will \nhave this injected
-AbstractInstallSetupProductExecutor --> InstallSetup : reads
-AbstractInstallSetupProductExecutor *-- TargetRegistry: creates and uses
+ProductExecutorData ..>NetworkLocationProvider
+ProductExecutorData ..>NetworkTargetProductServerDataProvider
+ProductExecutorData ..>NetworkTargetInfo
 
-TargetRegistry "1" *-- "n" Target : contains
-TargetRegistry --> TargetData : provides
-TargetResolver "creates" --> Target
-Target *-- TargetType
-Target "1" *-- "0..1" URI
-Target "1" *-- "0..1" InetAdress
-AbstractInstallSetupProductExecutor --> SecHubConfiguration : reads
 
-SecHubConfiguration *-- SecHubWebScanConfiguration
-SecHubConfiguration *-- SecHubInfrastuctureScanConfiguration
-SecHubConfiguration *-- SecHubCodeScanConfiguration
+abstract class AbstractProductExecutor{
 
-SecHubWebScanConfiguration "1" *-- "n" URI
-SecHubInfrastuctureScanConfiguration "1" *-- "n" URI
-SecHubInfrastuctureScanConfiguration "1" *-- "n" InetAdress
+    # abstract void customize(ProductExecutorData data);
+    # abstract List<ProductResult> executeByAdapter(ProductExecutorData data)
+}
+AbstractProductExecutor -> ProductExecutorData : creates + customizes
+AbstractProductExecutor --> NetworkTargetResolver
 
-note top of TargetResolver: Resolves information on given IP or URI.\nDetermines also the TargetType.\nSo dedicated installation setup can be used
-note bottom of TargetData: Contains information for a \ndedicated TargetType which\ncan be used to call the adapter
+note top of AbstractProductExecutor
+            The base class for mostly all product executors (except for Sereco).
+            The child classes must implmemnt the `customize` method and
+            configure the product executor data object accordingly.
+             
+            It will handle automatically target specific parts
+            for scan types where it is necessary (WebScan, InfraScan).
+            
+            All other scan types (e.g. CodeScan) do not
+            need to setup specific product executor data
+            (like NetworkLocationProvider).
+            
+            
+end note
+interface NetworkTargetProductServerDataProvider {
+    String getIdentifierWhenInternetTarget();
 
-note top of AbstractInstallSetupProductExecutor: This abstract implementation is able to automatically call\nadapter for multiple targets with correct setup data.\n\nE.g.a netsparker product executor uses its injected\nNetsparkerInstallationSetup and differs Intranet and \nIntranet by different agentgroups
-note top of InstallSetup : The install setup contains the information about \nservers, usernames, passwords etc. for the\ncalling of the adaper
+    String getIdentifierWhenIntranetTarget();
+
+    String getBaseURLWhenInternetTarget();
+
+    String getBaseURLWhenIntranetTarget();
+
+    String getUsernameWhenInternetTarget();
+
+    String getUsernameWhenIntranetTarget();
+
+    String getPasswordWhenInternetTarget();
+
+    String getPasswordWhenIntranetTarget();
+
+    boolean isHavingUntrustedCertificateForIntranet();
+
+    boolean isHavingUntrustedCertificateForInternet();
+}
+
+interface NetworkLocationProvider{
+     List<URI> getURIs();
+
+     List<InetAddress> getInetAdresses();
+}
+
+interface NetworkTargetResolver{
+            + NetworkTarget resolveTarget(URI uri);
+            + NetworkTarget resolveTarget(InetAddress inetAdress);
+}
+
+'package NetworkTarget-internal as "If network target handling necessary for this executor" {
+    class NetworkTarget{
+      + getURI()
+      + getInetAdress()
+      + NetworkTargetType getType()
+    }
+    
+    note top of NetworkTarget
+      Represents a network target 
+      to use for a dedicated network type
+    end note
+    
+    enum NetworkTargetType {
+      INTERNET
+      INTRANET
+      ILLEGAL
+      UNKNOWN
+    }
+
+        class NetworkTargetRegistry
+        
+        class NetworkTargetInfoFactory {
+            + NetworkTargetInfo createInfo()
+        }
+        
+        class NetworkTargetInfo{
+            + NetworkTargetType getNetworkTargetType()
+            + Set<URI> getNetworkTargetURIs()
+            + Set<InetAddress> getNetworkTargetIPs()
+        }
+        
+        note top of NetworkTargetInfo
+            Represents (final) information about which 
+            URIs /IPs are for a dedicated network
+            target type (e.g. INTERNET). 
+        end note
+'}
+
+'    package NetworkTargetDataSupport-Internal as "Network target data Support" {
+      
+        interface NetworkTargetProductServerDataProvider
+        class NetworkTargetProductServerDataSuppport{
+            +String getIdentifier(NetworkTargetType target)
+            +boolean isAbletoScan(NetworkTargetType target)
+            +String getBaseURL(NetworkTargetType type)
+            +String getUserId(NetworkTargetType type)
+            +String getPassword(NetworkTargetType target)
+        }
+'    }
+    
+
+NetworkTargetInfoFactory --> NetworkLocationProvider : uses
+NetworkTargetInfoFactory --> NetworkTargetProductServerDataSuppport : uses data support
+
+ProductExecutor <|-- AbstractProductExecutor
+AbstractProductExecutor --> NetworkTargetProductServerDataSuppport: create+use (if necessary)
+AbstractProductExecutor --> NetworkTargetInfoFactory: create+use (if necessary)
+AbstractProductExecutor ..> NetworkTargetInfo
+
+NetworkTargetInfoFactory -> NetworkTargetRegistry: internally created + used
+NetworkTargetProductServerDataSuppport ->  NetworkTargetProductServerDataProvider: uses
+NetworkTargetInfoFactory o-- NetworkTargetResolver : uses
+
+NetworkTargetRegistry "1" *-- "n" NetworkTarget : contains
+NetworkTargetRegistry --> NetworkTargetInfo : provides
+NetworkTargetResolver --> NetworkTarget
+NetworkTarget *-- NetworkTargetType
+
+note top of NetworkLocationProvider
+  Data normally comes from 
+  sechub configuration
+end note  
+note top of NetworkTargetProductServerDataProvider 
+   Data normally comes from an
+   install setup
+end note 
+
 @enduml

@@ -19,6 +19,7 @@ import com.mercedesbenz.sechub.adapter.pds.PDSInfraScanConfigImpl;
 import com.mercedesbenz.sechub.adapter.pds.PDSMetaDataID;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.InfraScanNetworkLocationProvider;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataAdapterConfigurationStrategy;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetRegistry.NetworkTargetInfo;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
 import com.mercedesbenz.sechub.domain.scan.product.AbstractProductExecutor;
@@ -92,12 +93,11 @@ public class PDSInfraScanProductExecutor extends AbstractProductExecutor {
                     setSecHubConfigModel(context.getConfiguration()).
 
                     configure(createAdapterOptionsStrategy(data)).
+                    configure(new NetworkTargetProductServerDataAdapterConfigurationStrategy(configSupport,data.getCurrentNetworkTargetInfo().getTargetType())).
 
                     setTimeToWaitForNextCheckOperationInMilliseconds(configSupport.getTimeToWaitForNextCheckOperationInMilliseconds(installSetup)).
                     setTimeOutInMinutes(configSupport.getTimeoutInMinutes(installSetup)).
 
-                    setUser(configSupport.getUser()).
-                    setPasswordOrAPIToken(configSupport.getPasswordOrAPIToken()).
                     setProjectId(projectId).
 
                     setTraceID(context.getTraceLogIdAsString()).

@@ -1,10 +1,15 @@
 {
     "apiVersion" : "{{ .SHTEST_VERSION }}" ,
 
-    "codeScan": {
+    "data" : {
+        "name" : "the-used-testfolders",
         "fileSystem": {
             "folders": ["{{ .SHTEST_FOLDERS1 }}"]
         }
+    }
+
+    "codeScan": {
+        "use" : [ "the-used-testfolders"]]
      }
 
 }

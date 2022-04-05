@@ -257,9 +257,9 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
         if (productResults != null) {
             LocalDateTime ended = LocalDateTime.now();
 
-            for (ProductResult pr : productResults) {
-                pr.setStarted(started);
-                pr.setEnded(ended);
+            for (ProductResult productResult : productResults) {
+                productResult.setStarted(started);
+                productResult.setEnded(ended);
             }
             targetResults.addAll(productResults);
         }

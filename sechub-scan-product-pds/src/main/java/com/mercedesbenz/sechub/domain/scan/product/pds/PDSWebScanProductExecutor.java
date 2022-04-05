@@ -19,6 +19,7 @@ import com.mercedesbenz.sechub.adapter.pds.PDSMetaDataID;
 import com.mercedesbenz.sechub.adapter.pds.PDSWebScanConfig;
 import com.mercedesbenz.sechub.adapter.pds.PDSWebScanConfigImpl;
 import com.mercedesbenz.sechub.commons.model.ScanType;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataAdapterConfigurationStrategy;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetRegistry.NetworkTargetInfo;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
 import com.mercedesbenz.sechub.domain.scan.WebConfigBuilderStrategy;
@@ -101,12 +102,11 @@ public class PDSWebScanProductExecutor extends AbstractProductExecutor {
 
                         configure(createAdapterOptionsStrategy(data)).
                         configure(new WebConfigBuilderStrategy(context)).
+                        configure(new NetworkTargetProductServerDataAdapterConfigurationStrategy(configSupport,data.getCurrentNetworkTargetInfo().getTargetType())).
 
                         setTimeToWaitForNextCheckOperationInMilliseconds(configSupport.getTimeToWaitForNextCheckOperationInMilliseconds(installSetup)).
                         setTimeOutInMinutes(configSupport.getTimeoutInMinutes(installSetup)).
 
-                        setUser(configSupport.getUser()).
-                        setPasswordOrAPIToken(configSupport.getPasswordOrAPIToken()).
                         setProjectId(projectId).
 
                         setTraceID(context.getTraceLogIdAsString()).
