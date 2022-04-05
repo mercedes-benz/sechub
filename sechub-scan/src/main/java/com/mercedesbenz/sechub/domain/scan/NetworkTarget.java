@@ -41,7 +41,7 @@ public class NetworkTarget {
         return type;
     }
 
-    public URI getUrl() {
+    public URI getURI() {
         return uri;
     }
 
@@ -49,7 +49,7 @@ public class NetworkTarget {
         return inetAdress;
     }
 
-    public String getUriAsString() {
+    public String getURIAsString() {
         if (uri == null) {
             return "null";
         }

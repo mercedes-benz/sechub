@@ -9,23 +9,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetRegistry.NetworkTargetInfo;
-import com.mercedesbenz.sechub.domain.scan.resolve.TargetResolver;
+import com.mercedesbenz.sechub.domain.scan.resolve.NetworkTargetResolver;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
 
-public class NetworkTargetInfoInfoFactory {
+public class NetworkTargetInfoFactory {
 
-    private static final Logger LOG = LoggerFactory.getLogger(NetworkTargetInfoInfoFactory.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NetworkTargetInfoFactory.class);
 
-    private TargetResolver targetResolver;
+    private NetworkTargetResolver targetResolver;
     private String identifier;
 
-    public NetworkTargetInfoInfoFactory(TargetResolver targetResolver, String identifier) {
+    public NetworkTargetInfoFactory(NetworkTargetResolver targetResolver, String identifier) {
         this.targetResolver = targetResolver;
         this.identifier = identifier;
     }
 
     public NetworkTargetInfo createInfo(NetworkTargetType targetType, UUIDTraceLogID traceLogId, NetworkLocationProvider networkLocationProvider,
-            NetworkTargetDataSuppport support) {
+            NetworkTargetProductServerDataSuppport support) {
 
         NetworkTargetRegistry registry = new NetworkTargetRegistry();
         if (support.isAbleToScan(targetType)) {
@@ -44,7 +44,7 @@ public class NetworkTargetInfoInfoFactory {
 
     }
 
-    private void registerURIs(UUIDTraceLogID traceLogId, NetworkTargetDataSuppport support, NetworkTargetRegistry registry, List<URI> uris) {
+    private void registerURIs(UUIDTraceLogID traceLogId, NetworkTargetProductServerDataSuppport support, NetworkTargetRegistry registry, List<URI> uris) {
         if (uris == null || uris.isEmpty()) {
             return;
         }
@@ -59,7 +59,7 @@ public class NetworkTargetInfoInfoFactory {
         }
     }
 
-    private void registerInetAdresses(UUIDTraceLogID traceLogId, NetworkTargetDataSuppport support, NetworkTargetRegistry registry,
+    private void registerInetAdresses(UUIDTraceLogID traceLogId, NetworkTargetProductServerDataSuppport support, NetworkTargetRegistry registry,
             List<InetAddress> inetAdresses) {
         if (inetAdresses == null || inetAdresses.isEmpty()) {
             return;

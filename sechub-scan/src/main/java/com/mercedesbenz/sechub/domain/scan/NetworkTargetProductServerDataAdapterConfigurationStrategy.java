@@ -5,10 +5,10 @@ import com.mercedesbenz.sechub.adapter.AbstractAdapterConfigBuilder;
 import com.mercedesbenz.sechub.adapter.AdapterConfig;
 import com.mercedesbenz.sechub.adapter.AdapterConfigurationStrategy;
 
-public class NetworkTargetDataAdapterConfigurationStrategy implements AdapterConfigurationStrategy {
+public class NetworkTargetProductServerDataAdapterConfigurationStrategy implements AdapterConfigurationStrategy {
 
     private NetworkTargetType targetType;
-    private NetworkTargetDataSuppport support;
+    private NetworkTargetProductServerDataSuppport support;
 
     /**
      * Creates strategy which will automatically setup
@@ -26,9 +26,9 @@ public class NetworkTargetDataAdapterConfigurationStrategy implements AdapterCon
      * @param setup
      * @param targetType type to use to get data
      */
-    public NetworkTargetDataAdapterConfigurationStrategy(NetworkTargetDataProvider dataProvider, NetworkTargetType targetType) {
+    public NetworkTargetProductServerDataAdapterConfigurationStrategy(NetworkTargetProductServerDataProvider dataProvider, NetworkTargetType targetType) {
         this.targetType = targetType;
-        this.support = new NetworkTargetDataSuppport(dataProvider);
+        this.support = new NetworkTargetProductServerDataSuppport(dataProvider);
     }
 
     @Override

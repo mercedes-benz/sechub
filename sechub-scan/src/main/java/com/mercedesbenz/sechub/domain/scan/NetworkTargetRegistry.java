@@ -98,7 +98,7 @@ public class NetworkTargetRegistry {
             List<NetworkTarget> list = NetworkTargetRegistry.this.getTargetsFor(type);
             Set<URI> uris = new LinkedHashSet<>();
             for (NetworkTarget target : list) {
-                URI uri = target.getUrl();
+                URI uri = target.getURI();
                 if (uri != null) {
                     uris.add(uri);
                 }

@@ -16,7 +16,7 @@ import com.mercedesbenz.sechub.adapter.nessus.NessusAdapterConfig;
 import com.mercedesbenz.sechub.adapter.nessus.NessusConfig;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.InfraScanNetworkLocationProvider;
-import com.mercedesbenz.sechub.domain.scan.NetworkTargetDataAdapterConfigurationStrategy;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataAdapterConfigurationStrategy;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetRegistry.NetworkTargetInfo;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
 import com.mercedesbenz.sechub.domain.scan.product.AbstractProductExecutor;
@@ -73,7 +73,7 @@ public class NessusProductExecutor extends AbstractProductExecutor {
         /* @formatter:off */
 		NessusAdapterConfig nessusConfig = NessusConfig.builder().
 				configure(createAdapterOptionsStrategy(data)).
-				configure(new NetworkTargetDataAdapterConfigurationStrategy(installSetup,targetType)).
+				configure(new NetworkTargetProductServerDataAdapterConfigurationStrategy(installSetup,targetType)).
 				setTimeToWaitForNextCheckOperationInMinutes(scanResultCheckPeriodInMinutes).
 				setTimeOutInMinutes(scanResultCheckTimeOutInMinutes).
 				setProxyHostname(proxyHostname).

@@ -3,11 +3,11 @@ package com.mercedesbenz.sechub.domain.scan;
 
 import static com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils.*;
 
-public class NetworkTargetDataSuppport {
+public class NetworkTargetProductServerDataSuppport {
 
-    private NetworkTargetDataProvider networkTargetDataProvider;
+    private NetworkTargetProductServerDataProvider networkTargetDataProvider;
 
-    public NetworkTargetDataSuppport(NetworkTargetDataProvider networkTargetDataProvider) {
+    public NetworkTargetProductServerDataSuppport(NetworkTargetProductServerDataProvider networkTargetDataProvider) {
         if (networkTargetDataProvider == null) {
             throw new IllegalArgumentException("Initializer may not be null");
         }

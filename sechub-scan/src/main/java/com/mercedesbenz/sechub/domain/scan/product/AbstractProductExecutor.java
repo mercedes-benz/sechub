@@ -24,13 +24,13 @@ import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubFileSystemContainer;
 import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
 import com.mercedesbenz.sechub.domain.scan.NetworkLocationProvider;
-import com.mercedesbenz.sechub.domain.scan.NetworkTargetDataProvider;
-import com.mercedesbenz.sechub.domain.scan.NetworkTargetDataSuppport;
-import com.mercedesbenz.sechub.domain.scan.NetworkTargetInfoInfoFactory;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetInfoFactory;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataProvider;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataSuppport;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetRegistry.NetworkTargetInfo;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
 import com.mercedesbenz.sechub.domain.scan.SecHubAdapterOptionsBuilderStrategy;
-import com.mercedesbenz.sechub.domain.scan.resolve.TargetResolver;
+import com.mercedesbenz.sechub.domain.scan.resolve.NetworkTargetResolver;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
@@ -50,7 +50,7 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
     protected final ResilientActionExecutor<ProductResult> resilientActionExecutor;
 
     @Autowired
-    protected TargetResolver targetResolver;
+    protected NetworkTargetResolver targetResolver;
 
     private ScanType scanType;
 
@@ -202,7 +202,7 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
             return;
         }
         /* check preconditions */
-        NetworkTargetDataProvider networkTargetDataProvider = data.networkTargetDataProvider;
+        NetworkTargetProductServerDataProvider networkTargetDataProvider = data.networkTargetDataProvider;
         if (networkTargetDataProvider == null) {
             throw new IllegalStateException("No network target data provider set, but necessary for scantype:" + scanType
                     + "\nInject this at customize method inside " + getClass().getName());
@@ -214,10 +214,10 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
                     + "\nInject this at customize method inside " + getClass().getName());
         }
 
-        NetworkTargetDataSuppport networkTargetDataSupport = new NetworkTargetDataSuppport(networkTargetDataProvider);
+        NetworkTargetProductServerDataSuppport networkTargetDataSupport = new NetworkTargetProductServerDataSuppport(networkTargetDataProvider);
         data.networkTargetDataSupport = networkTargetDataSupport;
 
-        NetworkTargetInfoInfoFactory targetInfoFactory = new NetworkTargetInfoInfoFactory(targetResolver, getClass().getSimpleName());
+        NetworkTargetInfoFactory targetInfoFactory = new NetworkTargetInfoFactory(targetResolver, getClass().getSimpleName());
 
         List<NetworkTargetInfo> targetRegistryInfoList = new ArrayList<>();
         for (NetworkTargetType networkTargetType : NetworkTargetType.values()) {

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan;
 
-public class NoNetworkTargetDataProvider implements NetworkTargetDataProvider {
+public class NoNetworkTargetDataProvider implements NetworkTargetProductServerDataProvider {
 
     @Override
     public String getIdentifierWhenInternetTarget() {

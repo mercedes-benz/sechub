@@ -35,7 +35,7 @@ import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetup;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetupCredentials;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetupJobParameter;
-import com.mercedesbenz.sechub.domain.scan.resolve.TargetResolver;
+import com.mercedesbenz.sechub.domain.scan.resolve.NetworkTargetResolver;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.SystemEnvironment;
 import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
@@ -64,7 +64,7 @@ public class CheckmarxProductExecutorMockTest {
     CheckmarxProductExecutor executorToTest;
 
     @MockBean
-    TargetResolver targetResolver;
+    NetworkTargetResolver targetResolver;
 
     @MockBean
     CheckmarxAdapter checkmarxAdapter;

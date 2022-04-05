@@ -22,7 +22,7 @@ import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
  *
  */
 @Service
-public class TargetResolverService implements TargetResolver {
+public class TargetResolverService implements NetworkTargetResolver {
 
     @Autowired
     IllegalURItargetDetector illegalURItargetDetector;

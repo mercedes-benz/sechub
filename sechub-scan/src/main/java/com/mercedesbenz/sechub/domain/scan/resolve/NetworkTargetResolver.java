@@ -6,7 +6,7 @@ import java.net.URI;
 
 import com.mercedesbenz.sechub.domain.scan.NetworkTarget;
 
-public interface TargetResolver {
+public interface NetworkTargetResolver {
 
     /**
      * Resolves target for given URI

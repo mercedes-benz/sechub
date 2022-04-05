@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.mercedesbenz.sechub.domain.scan.NetworkLocationProvider;
-import com.mercedesbenz.sechub.domain.scan.NetworkTargetDataProvider;
-import com.mercedesbenz.sechub.domain.scan.NetworkTargetDataSuppport;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataProvider;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataSuppport;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetRegistry.NetworkTargetInfo;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
@@ -14,12 +14,12 @@ import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 public class ProductExecutorData {
 
     List<NetworkTargetInfo> networkTargetInfoList;
-    NetworkTargetDataProvider networkTargetDataProvider;
+    NetworkTargetProductServerDataProvider networkTargetDataProvider;
 
     ProductExecutorContext productExecutorContext;
     SecHubExecutionContext sechubExecutionContext;
     UUIDTraceLogID traceLogId;
-    NetworkTargetDataSuppport networkTargetDataSupport;
+    NetworkTargetProductServerDataSuppport networkTargetDataSupport;
 
     NetworkLocationProvider networkLocationProvider;
     NetworkTargetInfo currentNetworkTargetInfo;
@@ -29,15 +29,15 @@ public class ProductExecutorData {
     ProductExecutorData() {
     }
 
-    public NetworkTargetDataSuppport getNetworkTargetDataSupport() {
+    public NetworkTargetProductServerDataSuppport getNetworkTargetDataSupport() {
         return networkTargetDataSupport;
     }
 
-    public void setNetworkTargetDataProvider(NetworkTargetDataProvider networkTargetDataProvider) {
+    public void setNetworkTargetDataProvider(NetworkTargetProductServerDataProvider networkTargetDataProvider) {
         this.networkTargetDataProvider = networkTargetDataProvider;
     }
 
-    public NetworkTargetDataProvider getNetworkTargetDataProvider() {
+    public NetworkTargetProductServerDataProvider getNetworkTargetDataProvider() {
         return networkTargetDataProvider;
     }
 
