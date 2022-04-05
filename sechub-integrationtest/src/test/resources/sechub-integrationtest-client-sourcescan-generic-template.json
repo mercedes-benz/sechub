@@ -2,14 +2,20 @@
     "apiVersion" : "{{ .SHTEST_VERSION }}" ,
 
     "data" : {
-        "name" : "the-used-testfolders",
-        "fileSystem": {
-            "folders": ["{{ .SHTEST_FOLDERS1 }}"]
-        }
-    }
+        "sources" : [ 
+            {
+                "name" : "the-used-testfolders",
+                
+                "fileSystem": {
+                    "folders": ["{{ .SHTEST_FOLDERS1 }}"]
+                }
+            }
+        ]
+        
+    },
 
     "codeScan": {
-        "use" : [ "the-used-testfolders"]]
+        "use" : [ "the-used-testfolders"]
      }
 
 }
