@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.integrationtest.scenario3;
 
-import static com.mercedesbenz.sechub.integrationtest.api.AssertSecHubReport.*;
+import static com.mercedesbenz.sechub.integrationtest.api.AssertSecHubReport.assertSecHubReport;
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 import static com.mercedesbenz.sechub.integrationtest.scenario3.Scenario3.*;
 
@@ -14,6 +14,7 @@ import org.junit.rules.Timeout;
 import org.springframework.http.HttpStatus;
 
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.integrationtest.api.ContainsExpectedContentHttpStatusExceptionTestValidator;
 import com.mercedesbenz.sechub.integrationtest.api.ExecutionConstants;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestJSONLocation;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestMockMode;
@@ -102,7 +103,7 @@ public class ProjectChangeAccessLevelScenario3IntTest {
         /* test 2 */
         expectHttpFailure(()->{
             as(USER_1).getJobStatus(project, jobUUID);
-        }, HttpStatus.FORBIDDEN);
+        }, HttpStatus.FORBIDDEN,new ContainsExpectedContentHttpStatusExceptionTestValidator("Project "+project.getProjectId()+" does currently not allow read access."));
 
         /* execute */ // we reuse the test, so we have not to create another job etc (reduce time cost)
         as(SUPER_ADMIN).changeProjectAccessLevel(project,ProjectAccessLevel.FULL);
@@ -146,7 +147,11 @@ public class ProjectChangeAccessLevelScenario3IntTest {
         // the report cannot be fetched
         expectHttpFailure(()->{
             as(SUPER_ADMIN).getJobReport(project, jobUUID);
-        }, HttpStatus.FORBIDDEN);
+        }, HttpStatus.FORBIDDEN, jsonServerErrorValidatorBuilder().
+                                    status(HttpStatus.FORBIDDEN).
+                                    error("Forbidden").
+                                    message("Project "+project.getProjectId()+" does currently not allow read access.").
+                                 build());
 
         /* execute */ // we reuse the test, so we have not to create another job etc (reduce time cost)
         as(SUPER_ADMIN).changeProjectAccessLevel(project,ProjectAccessLevel.FULL);
