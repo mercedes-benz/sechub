@@ -196,7 +196,7 @@ function check_time_unit {
   check_parameter "$param" "$parameter_name"
   if ! $failed ; then
     if [[ ! ${!param} =~ ^(days?|weeks?|months?|years?)$ ]]; then
-      echo "$parameter_name not a time unit. Expected one of: days, weeks, months, years"
+      echo "$parameter_name is not a valid time unit. Expected one of: days, weeks, months, years"
       failed=true
     fi
   fi
