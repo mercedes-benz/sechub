@@ -27,7 +27,7 @@ ACTION [PARAMETERS] - EXPLANATION
 ----------------------------------
 alive_check - alive check (No user needed)
 autocleanup_get - Get autocleanup setting
-autocleanup_set <value> <unit> - Update autocleanup setting. Unit is one of days, weeks, months, years
+autocleanup_set <value> <time unit> - Update autocleanup setting. <time unit> is one of days, weeks, months, years
 executor_create <json-file> - Create executor configuration from JSON file
 executor_delete <executor-uuid> - Delete executor <executor-uuid>
 executor_details <executor-uuid> - Show definition of executor <executor-uuid>
