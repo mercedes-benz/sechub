@@ -27,7 +27,7 @@ ACTION [PARAMETERS] - EXPLANATION
 ----------------------------------
 alive_check - alive check (No user needed)
 autocleanup_get - Get autocleanup setting
-autocleanup_set - Define a new autocleanup setting
+autocleanup_set <value> <unit> - Update autocleanup setting. Unit is one of days, weeks, months, years
 executor_create <json-file> - Create executor configuration from JSON file
 executor_delete <executor-uuid> - Delete executor <executor-uuid>
 executor_details <executor-uuid> - Show definition of executor <executor-uuid>
@@ -102,6 +102,11 @@ function are_you_sure {
 }
 
 
+function to_lower_case() {
+	echo "$*" | tr [:upper:] [:lower:]
+}
+
+
 function generate_json_key_value {
   local key="$1"
   shift
@@ -170,6 +175,34 @@ function check_file {
 }
 
 
+function check_number {
+  local param="$1"
+  local parameter_name="$2"
+
+  check_parameter "$param" "$parameter_name"
+  if ! $failed ; then
+    if [[ ! ${!param} =~ ^[0-9]+$ ]]; then
+      echo "$parameter_name is not numeric."
+      failed=true
+    fi
+  fi
+}
+
+
+function check_time_unit {
+  param="$1"
+  parameter_name="$2"
+
+  check_parameter "$param" "$parameter_name"
+  if ! $failed ; then
+    if [[ ! ${!param} =~ ^(days?|weeks?|months?|years?)$ ]]; then
+      echo "$parameter_name not a time unit. Expected one of: days, weeks, months, years"
+      failed=true
+    fi
+  fi
+}
+
+
 function generate_short_description {
   local action="$1"
   shift
@@ -196,8 +229,8 @@ function sechub_autocleanup_get {
 
 
 function generate_autocleanup_data {
-  local unit="$1"
-  local amount="$2"
+  local amount="$1"
+  local unit="$2"
   cat <<EOF
 {
   "cleanupTime": {
@@ -210,8 +243,9 @@ EOF
 
 function sechub_autocleanup_set {
   JSON_DATA="$(generate_autocleanup_data $1 $2)"
-  # curl $CURL_PARAMS -i -X PUT -H 'Content-Type: application/json' -d "" "$SECHUB_SERVER/api/admin/config/autoclean" | $RESULT_FILTER
-  echo curl $CURL_PARAMS -i -X PUT -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/config/autoclean"
+  echo "Going to change autocleanup values. This may delete product results and scan reports."
+  are_you_sure
+  curl $CURL_PARAMS -i -X PUT -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/config/autoclean" | $CURL_FILTER
 }
 
 
@@ -661,7 +695,9 @@ case "$action" in
     $failed || sechub_autocleanup_get
     ;;
   autocleanup_set)
-    $failed || sechub_autocleanup_set
+    AUTOCLEANUP_VALUE="$1" ; check_number AUTOCLEANUP_VALUE '<value>'
+    AUTOCLEANUP_UNIT=`to_lower_case "$2"` ; check_time_unit AUTOCLEANUP_UNIT '<time unit>'
+    $failed || sechub_autocleanup_set $AUTOCLEANUP_VALUE $AUTOCLEANUP_UNIT
     ;;
   executor_create)
     EXECUTOR_JSONFILE="$1" ; check_file "$EXECUTOR_JSONFILE" '<json-file>'
