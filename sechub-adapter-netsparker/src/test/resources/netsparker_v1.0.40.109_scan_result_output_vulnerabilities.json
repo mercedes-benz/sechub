@@ -147,7 +147,7 @@
       "ExtraInformation": [
         {
           "Name": "Weakly Signed Certificates",
-          "Value": "sha1RSA - E=exampleintegration@example.org, CN=fscan.intranet.example.org, OU=ITM-TSS, O=Daimler AG, L=Ulm, S=Baden-Wuerttemberg, C=DE"
+          "Value": "sha1RSA - E=exampleintegration@example.org, CN=fscan.intranet.example.org, OU=ITM-TSS, O=Mercedes-Benz Group AG, L=Ulm, S=Baden-Wuerttemberg, C=DE"
         }
       ],
       "KnownVulnerabilities": [],

@@ -27,7 +27,7 @@ sechub:
 
 logging:
  level:
-   com.daimler.sechub: DEBUG
+   com.mercedesbenz.sechub: DEBUG
    org.apache.http: WARN
    org.apache.http.headers: WARN
    org.apache.http.wire: WARN

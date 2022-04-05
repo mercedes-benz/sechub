@@ -3,7 +3,7 @@
 # Logging: suitable for development - e.g. when searching for failures in test cases
 logging:
  level:
-   com.daimler.sechub: DEBUG
+   com.mercedesbenz.sechub: DEBUG
    org.apache.http: DEBUG
    org.springframework: DEBUG
  

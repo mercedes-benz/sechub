@@ -1,17 +1,15 @@
 // SPDX-License-Identifier: MIT
 
 :toc:
+:numbered:
 
 = GoSec + PDS
 
-https://securego.io/[GoSec] is a free and open source static application security testing tool. GoSec is a command line interface (CLI) tool. By combining GoSec with the SecHub https://daimler.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)] in a container, GoSec can be used with SecHub. Another scenario is to use PDS + GoSec standalone.
+https://securego.io/[GoSec] is a free and open source static application security testing tool. GoSec is a command line interface (CLI) tool. By combining GoSec with the SecHub https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)] in a container, GoSec can be used with SecHub. Another scenario is to use PDS + GoSec standalone.
 
 Furthermore, the combination of GoSec and PDS makes it possible to run both inside a Kubernetes cluser or virtual machines.
 
 This folder contains the necessary scripts to run PDS + GoSec inside a container locally. Additionally, it contains scripts to build and push the PDS + GoSec container to your container registry and a Helm chart to install and run PDS + GoSec in a Kubernetes cluster.
-
-[NOTE]
-We offer Ubuntu based images. What you choose is up to you.
 
 == Run Locally
 
@@ -23,7 +21,7 @@ Docker and Docker-Compose need to be installed:
 
 . https://docs.docker.com/engine/install/[Install Docker]
 
-. Linux: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user[Run docker as non Root user]
+. Linux: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user[Use Docker as non Root user]
 
 . https://docs.docker.com/compose/install/[Install Docker-Compose]
 
@@ -160,7 +158,7 @@ GoSec provides vulnerable code samples: https://securego.io/docs/rules/g201-g202
 . Download the job result
 +
 ----
-$ ./pds-api.sh job_result "8d4236cf-b512-40bc-bb70-c247fa4c9c37"
+./pds-api.sh job_result "8d4236cf-b512-40bc-bb70-c247fa4c9c37"
 ----
 +
 Output
@@ -416,7 +414,7 @@ The cluster uses a shared volume defined in `docker-compose`. Docker allows to c
 
 The cluster consists of a PostgreSQL database, a Nginx loadbalancer and one or more PDS server.
 
-image::cluster_shared_volume.svg[Components of cluster with shared volume]
+image::../shared/media/cluster_shared_volume.svg[Components of cluster with shared volume]
 
 ===== Automatic
 
@@ -450,7 +448,7 @@ The cluster uses an object storage to store files. The cluster uses https://gith
 
 The cluster consists of a PostgreSQL database, a Nginx loadbalancer, a SeaweedFS object storage and one or more PDS server.
 
-image::cluster_object_storage.svg[Components of cluster with object storage]
+image::../shared/media/cluster_object_storage.svg[Components of cluster with object storage]
 
 ===== Automatic
 

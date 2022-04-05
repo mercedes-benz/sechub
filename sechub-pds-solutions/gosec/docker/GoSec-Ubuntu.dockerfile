@@ -10,14 +10,14 @@ FROM ${BASE_IMAGE}
 LABEL maintainer="SecHub FOSS Team"
 
 # Build args
-ARG GO="go1.17.5.linux-amd64.tar.gz"
-ARG GOSEC_VERSION="2.9.5"
+ARG GO="go1.18.linux-amd64.tar.gz"
+ARG GOSEC_VERSION="2.11.0"
 ARG PDS_FOLDER="/pds"
-ARG PDS_VERSION="0.24.0"
+ARG PDS_VERSION="0.26.2"
 ARG SCRIPT_FOLDER="/scripts"
 ARG WORKSPACE="/workspace"
 
-# env vars in container:
+# Environment variables in container
 ENV DOWNLOAD_FOLDER="/downloads"
 ENV MOCK_FOLDER="$SCRIPT_FOLDER/mocks"
 ENV PDS_VERSION="${PDS_VERSION}"
@@ -36,13 +36,15 @@ RUN groupadd --gid "$GID" "$USER" && \
 
 # Create folders & change owner of folders
 RUN mkdir --parents "$PDS_FOLDER" "$SCRIPT_FOLDER" "$TOOL_FOLDER" "$WORKSPACE" "$DOWNLOAD_FOLDER" "MOCK_FOLDER" "$SHARED_VOLUME_UPLOAD_DIR" && \
-    chown --recursive "$USER:$USER" "$DOWNLOAD_FOLDER" "$TOOL_FOLDER" "$SCRIPT_FOLDER" "$WORKSPACE" "$SHARED_VOLUMES"
+    # Change owner and workspace and shared volumes folder
+    # the only two folders pds really needs write access to
+    chown --recursive "$USER:$USER" "$WORKSPACE" "$SHARED_VOLUMES"
 
 # Copy mock file
 COPY mock.sarif.json "$MOCK_FOLDER"/mock.sarif.json
 # Copy PDS configfile
 COPY pds-config.json "$PDS_FOLDER"/pds-config.json
-# Copy GoSec stuff
+# Copy GoSec scripts
 COPY gosec.sh "$SCRIPT_FOLDER"/gosec.sh
 COPY gosec_mock.sh "$SCRIPT_FOLDER"/gosec_mock.sh
 # Copy run script into container
@@ -52,15 +54,15 @@ COPY run.sh /run.sh
 RUN chmod +x /run.sh "$SCRIPT_FOLDER"/gosec.sh "$SCRIPT_FOLDER"/gosec_mock.sh
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
-    apt-get update && \
-    apt-get upgrade --assume-yes && \
-    apt-get install --assume-yes w3m wget openjdk-11-jre-headless && \
-    apt-get clean
+    apt-get -qq update && \
+    apt-get -qq --assume-yes upgrade && \
+    apt-get -qq --assume-yes install w3m wget openjdk-11-jre-headless && \
+    apt-get -qq --assume-yes clean
 
 # Install Go
 RUN cd "$DOWNLOAD_FOLDER" && \
     # Get checksum from Go download site
-    GO_CHECKSUM=`w3m https://go.dev/dl/ | grep go1.17.5.linux-amd64.tar.gz | tail -1 | awk '{print $6}'` && \
+    GO_CHECKSUM=`w3m https://go.dev/dl/ | grep "$GO" | tail -1 | awk '{print $6}'` && \
     # create checksum file
     echo "$GO_CHECKSUM $GO" > "$GO.sha256sum" && \
     # download Go
@@ -92,16 +94,16 @@ RUN cd "$DOWNLOAD_FOLDER" && \
 # Install the SecHub Product Delegation Server (PDS)
 RUN cd "$PDS_FOLDER" && \
     # download checksum file
-    wget --no-verbose "https://github.com/Daimler/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar.sha256sum" && \
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar.sha256sum" && \
     # download pds
-    wget --no-verbose "https://github.com/Daimler/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar" && \
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar" && \
     # verify that the checksum and the checksum of the file are same
     sha256sum --check sechub-pds-$PDS_VERSION.jar.sha256sum
 
-# Switch from root to non-root user
-USER "$USER"
-
 # Set workspace
 WORKDIR "$WORKSPACE"
+
+# Switch from root to non-root user
+USER "$USER"
 
 CMD ["/run.sh"]

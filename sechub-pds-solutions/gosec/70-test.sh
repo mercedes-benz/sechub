@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# SPDX-License-Identifier: MIT
 
 file_to_upload="$1"
 json_config="$2"
@@ -168,6 +169,9 @@ then
     printf "\n# Job error stream\n"
     "$pds_api" job_stream_error "$jobUUID"
 else
-    echo "Return the result"
+    printf "\n# Job output stream\n"
+    "$pds_api" job_stream_output "$jobUUID"
+
+    printf "\n# Return the result\n"
     "$pds_api" job_result "$jobUUID"
 fi

@@ -6,7 +6,7 @@ on:
     branches-ignore:
       # we do NOT build the documentation branch, because here we only copy build output
       # of documentation from master branch to the corresponding doc folders -e.g. /docs/latest
-      # So this branch is only for github pages. See https://github.com/Daimler/sechub/issues/481
+      # So this branch is only for github pages. See https://github.com/mercedes-benz/sechub/issues/481
       # for details
       - documentation
       # We ignore everything where tag starts with v* - this is done by release build!
@@ -17,7 +17,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - name: Set up JDK 1.8
         uses: actions/setup-java@v2
         with:
@@ -27,7 +27,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.15.3
+          go-version: 1.17
           stable: true
       - uses: actions/cache@v2
         with:
@@ -50,9 +50,11 @@ jobs:
       - name: Generate and build API Java
         run: ./gradlew :sechub-api-java:buildAPIJava
 
+      # Integration test
       - name: Integration test
         run: ./gradlew integrationtest
 
+      # We use 'if: always()' to run a step even if a previous step failed
       - name: Create combined test report
         if: always()
         run: ./gradlew createCombinedTestReport
@@ -100,27 +102,25 @@ jobs:
           retention-days: 14
 
       - name: Install graphviz (asciidoc diagrams)
-        run: sudo apt-get install graphviz
+        run: sudo apt-get -qq --assume-yes install graphviz
 
       # -----------------------------------------
       # Build Documentation
       # -----------------------------------------
       - name: Create documentation
-        run: ./gradlew documentation-with-pages
+        run: ./gradlew documentation
 
       # -----------------------------------------
       # Upload documentation
       # -----------------------------------------
       - name: Archive documentation HTML
-        if: always()
         uses: actions/upload-artifact@v2
         with:
           name: sechub-docs-html
-          path: docs/latest
+          path: sechub-doc/build/docs/final-html/
           retention-days: 14
 
       - name: Archive documentation PDF
-        if: always()
         uses: actions/upload-artifact@v2
         with:
           name: sechub-docs-pdf
@@ -128,7 +128,6 @@ jobs:
           retention-days: 14
 
       - name: Archive documentation openAPI3
-        if: always()
         uses: actions/upload-artifact@v2
         with:
           name: sechub-api-spec

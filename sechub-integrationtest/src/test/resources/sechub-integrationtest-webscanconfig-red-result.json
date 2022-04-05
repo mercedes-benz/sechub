@@ -3,6 +3,6 @@
 	"apiVersion": "1.0",
 
 	"webScan"   : {
-        "uris": ["https://netsparker.vulnerable.demo.example.org"]
+        "uri": "https://netsparker.vulnerable.demo.example.org"
     }
 }

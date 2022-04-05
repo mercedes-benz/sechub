@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
-[![Build status](https://github.com/Daimler/sechub/workflows/Java%20&%20Go%20CI/badge.svg)](https://github.com/Daimler/sechub/actions?workflow=Java+%26+Go+CI)
+[![Build status](https://github.com/mercedes-benz/sechub/workflows/Java%20&%20Go%20CI/badge.svg)](https://github.com/mercedes-benz/sechub/actions?workflow=Java+%26+Go+CI)
 
 # SecHub
-![SecHub Logo](https://github.com/Daimler/sechub/blob/master/sechub-doc/src/docs/asciidoc/images/sechub-logo.png)
+![SecHub Logo](https://github.com/mercedes-benz/sechub/blob/master/sechub-doc/src/docs/asciidoc/images/sechub-logo.png)
 
 ## Intended Usage
 
@@ -16,7 +16,7 @@ by just using one simple API/client
 
 ## Installation
 
-Please visit <https://github.com/daimler/sechub/wiki/> for detailed information.
+Please visit <https://github.com/mercedes-benz/sechub/wiki/> for detailed information.
 
 ## Contributing
 
@@ -25,7 +25,7 @@ If you want to contribute to this project, please read the [contributing guide](
 
 ## Code of Conduct
 
-Please read our [Code of Conduct](https://github.com/Daimler/daimler-foss/blob/master/CODE_OF_CONDUCT.md) as it is our base for interaction.
+Please read our [Code of Conduct](https://github.com/mercedes-benz/daimler-foss/blob/master/CODE_OF_CONDUCT.md) as it is our base for interaction.
 
 ## License
 

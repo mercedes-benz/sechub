@@ -1,102 +1,104 @@
 #!/bin/bash
-
 # SPDX-License-Identifier: MIT
 
-RED='\033[0;31m'
-LIGHT_RED='\033[1;31m'
-LIGHT_GREEN='\033[1;32m'
-BROWN='\033[0;33m'
-NC='\033[0m' # No Color
+SPDX_TEXT="SPDX-License-Identifier: MIT"
 
+function isColoredTerminal(){
+    # check if stdout is a terminal...
+    if test -t 1; then
 
-#
-# apply spdx template to given file type
-# param 1: fileending (e.g "yaml")
-# param 2: template filename, will use templates inside sechub-other/spdx/template/$filename
-function applySPDXonFirstLine {
-    fileEnding=$1
-    spxTemplate=$2
-
-    echo -e "${LIGHT_GREEN}$Scanning '*.$fileEnding' files${NC}"
-    find -iname \*.$fileEnding | while read file ; do
-        if [[ -d $file ]]; then
-            echo -e "${BROWN}$file${NC} - ${LIGHT_GREEN}ignored because directory.${NC}"
-        elif ! grep -q SPDX-License $file
-        then
-            echo -e "${BROWN}$file${NC} - ${LIGHT_GREEN}appending copyright.${NC}"
-            cat sechub-other/spdx/template/$spxTemplate $file >$file.new && mv $file.new $file
+        # see if it supports colors...
+        ncolors=$(tput colors)
+    
+        if test -n "$ncolors" && test $ncolors -ge 8; then
+            return 0
         fi
+    fi
+    return 1
+}
 
+# apply spdx template to given file type
+# param 1: file ending (e.g "yaml")
+# param 2: SPDX License text to insert
+# param 3: line where to insert the text (starting with 1)
+function applySPDXline {
+    local fileEnding="$1"
+    local spdxMessage="$2"
+    local line="$3"
+
+    echo -e "  ${LIGHT_GREEN}Scanning '*.$fileEnding' files${NC}"
+    # Loop over all files matching the pattern, but skip some patterns like generated files
+    find . -type f -iname \*.$fileEnding \
+    | grep -v '^./.git\|/build/\|/\.gradle/\|gradlew.bat' \
+    | while read file ; do
+        if ! grep -q "$SPDX_TEXT" $file ; then
+            sed -i "${line}i $spdxMessage" "$file"
+            echo -e "${BROWN}$file${NC} - ${LIGHT_GREEN}copyright appended.${NC}"
+        fi
     done
 }
 
-function infoAboutManualParts {
-    echo -e "${LIGHT_GREEN}Manual parts:${NC}"
-    echo -e "${BROWN}- Bash files must be handled manual${NC}"
-    echo "Reason?"
-    echo "        This must be done in second line because of the #! string"
-    echo "        Because apply-copyright-info.sh itself is a bash script and"
-    echo "        also having only a small amount of bash scripts, we do not"
-    echo "        automate this, so developers must add spdx info manually."
-    echo "Why second line?"
-    echo "        This is the exact way done by linux kernel project and so a good "
-    echo "        approach, see https://lwn.net/Articles/739183/ :"
-    echo -e "${BROWN}        \"... For kernel source files, the decision was made that the SPDX tag"
-    echo -e "         should appear as the first line in the file (or the second line for"
-    echo -e "         scripts where the first line must be the #! string)...\"${NC}"
-
+function applySPDXonFirstLine {
+    applySPDXline "$1" "$2" 1
 }
 
-function infoAboutIgnoredParts {
-    echo -e "${LIGHT_GREEN}Ignored parts:${NC}"
-    echo -e "${BROWN}- json files must be ignored${NC}"
-    echo "Reason?"
-    echo -e "       ${LIGHT_RED}Comments are not part of official syntax${NC}, see https://www.json.org/json-en.html"
-    echo "       So many tools and libraries often have problems with javascript comments"
-    echo "       inside JSON. Having declared MIT license also everybody is allowed to remove"
-    echo "       an SPDX enry without licence conflict ... so we decided to add no spdx"
-    echo "       entries in json files."
-
+function applySPDXonSecondLine {
+    applySPDXline "$1" "$2" 2
 }
 
-function startAutoApply {
+#####################################################
+cd `dirname $0`
 
-    applySPDXonFirstLine "java" "spdx_template_doubleslash.txt"
-    applySPDXonFirstLine "groovy" "spdx_template_doubleslash.txt"
-    applySPDXonFirstLine "gradle" "spdx_template_doubleslash.txt"
-    applySPDXonFirstLine "go" "spdx_template_doubleslash.txt"
-    applySPDXonFirstLine "adoc" "spdx_template_doubleslash.txt"
-
-    # for plantuml we do no longer apply automatically, because a comment before
-    # a @startUml is problematic
-
-    applySPDXonFirstLine "properties" "spdx_template_hash.txt"
-
-    applySPDXonFirstLine "yaml" "spdx_template_hash.txt"
-    applySPDXonFirstLine "yml" "spdx_template_hash.txt"
-
-    applySPDXonFirstLine "md" "spdx_template_md.txt"
-}
-
-echo "*******************************"
-echo "* Apply copyright information *"
-echo "*******************************"
-echo
-infoAboutManualParts
-infoAboutIgnoredParts
-echo -e "${LIGHT_GREEN}Automated parts:${NC}"
-echo "When you continue next step the automation will start:"
-
-read -n 1 -p "Continue ?(y/n):" continueSelect
-
-echo
-echo "--------------------------------------------"
-echo "Start applying missing copyright information"
-echo "--------------------------------------------"
-echo
-if [ "$continueSelect" == "y" ]; then
-    startAutoApply
-else
-    echo "Canceled"
+# define color variables when terminal and colors are enabled - otherwise we do not set variables so empty
+if isColoredTerminal ; then
+    RED='\033[0;31m'
+    LIGHT_RED='\033[1;31m'
+    LIGHT_GREEN='\033[1;32m'
+    BROWN='\033[0;33m'
+    NC='\033[0m' # No Color
 fi
 
+echo -e "*******************************"
+echo -e "* Apply copyright information *"
+echo -e "*******************************"
+echo -e
+echo -e "${LIGHT_GREEN}Ignored parts:${NC}"
+echo -e "  ${BROWN}- json files must be ignored${NC}"
+echo -e "  Reason?"
+echo -e "    ${BROWN}Comments are not part of official syntax${NC}, see https://www.json.org/json-en.html"
+echo -e "    So many tools and libraries often have problems with javascript comments"
+echo -e "    inside JSON. Having declared MIT license also everybody is allowed to remove"
+echo -e "    an SPDX enry without licence conflict ... so we decided to add no spdx"
+echo -e "    entries in json files."
+echo -e
+echo -e "${LIGHT_GREEN}Automated parts:${NC}"
+echo -e "  --------------------------------------------"
+echo -e "  Start applying missing copyright information"
+echo -e "  --------------------------------------------"
+
+##########################################################
+# Apply SPDX license headers:
+applySPDXonFirstLine "adoc" "// $SPDX_TEXT"
+applySPDXonFirstLine "bat" ":: $SPDX_TEXT"
+applySPDXonFirstLine "c" "// $SPDX_TEXT"
+applySPDXonFirstLine "dockerfile" "# $SPDX_TEXT"
+applySPDXonFirstLine "go" "// $SPDX_TEXT"
+applySPDXonFirstLine "groovy" "// $SPDX_TEXT"
+applySPDXonFirstLine "gradle" "// $SPDX_TEXT"
+applySPDXonFirstLine "jenkins" "// $SPDX_TEXT"
+applySPDXonFirstLine "java" "// $SPDX_TEXT"
+applySPDXonFirstLine "md" "<!-- $SPDX_TEXT --->"
+applySPDXonFirstLine "properties" "# $SPDX_TEXT"
+applySPDXonSecondLine "py" "# $SPDX_TEXT"
+applySPDXonFirstLine "rb" "# $SPDX_TEXT"
+applySPDXonSecondLine "sh" "# $SPDX_TEXT"
+applySPDXonFirstLine "sql" "-- $SPDX_TEXT"
+applySPDXonFirstLine "yaml" "# $SPDX_TEXT"
+applySPDXonFirstLine "yml" "# $SPDX_TEXT"
+
+# for plantuml we do no longer apply automatically, because a comment before
+# a @startUml is problematic
+
+##########################################################
+
+exit 0

@@ -11,6 +11,11 @@ server:
 sechub:
   config:
     trigger:
+      autoclean:
+        initialdelay: "100"
+        delay: "2000" # every two seconds - we have only a few tests which check auto cleanup, so 
+                      # only those have to wait, other just not bothered by too many checks at same
+                      # time
       nextjob:
         initialdelay: "100"
         # every 100 milliseconds, so we got faster test results
@@ -18,7 +23,7 @@ sechub:
     check:
       canceljob:
         delay: "3000" # every 3 seconds, so all of our tests, except long runningp arts will have only
-                      # on check (which is always done) except multiple. This is to avoid flaky tests,
+                      # one check (which is always done) except multiple. This is to avoid flaky tests,
                       # but gives us possiblity to check multiple ones when necessary (default are 60 seconds
                       # and this too long for test...)
   scan:
@@ -53,7 +58,7 @@ sechub:
            max: 8.0 # Full throttle for integration tests...
 logging:
  level:
-   com.daimler.sechub: DEBUG
+   com.mercedesbenz.sechub: DEBUG
    org.apache.http: WARN
    org.apache.http.headers: WARN
    org.apache.http.wire: WARN

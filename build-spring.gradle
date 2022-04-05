@@ -11,7 +11,7 @@ subprojects {
          }
     }
     
-    ext['junit-jupiter.version'] = '5.6.0'
+    ext['junit-jupiter.version'] = '5.8.2'
 
     logger.info("found spring boot relevant project:$project")
     
@@ -28,51 +28,49 @@ subprojects {
 
 	dependencies {
 
-        testCompile(library.springboot_starter_test)
-        compile(library.springboot_starter_json)
+        testImplementation(library.springboot_starter_test)
+        implementation(library.springboot_starter_json)
         
 
 	    if (projectType.springBootAdapterProjects.contains(project)){
-            // next line: compile only, because spring boot does add android-json on test compile as lightweight imp
-            //compile(library.openjson)
 
             /* REST */
-            compile(library.jackson_JDK8)
-            compile(library.springboot_starter_web)
+            implementation(spring_boot_dependency.jackson_datatype_jdk8)
+            implementation(library.springboot_starter_web)
 
 
             if (! project.name.equals('sechub-adapter')){
-                compile project(':sechub-adapter')
+                api project(':sechub-adapter')
             }
 
-            testCompile library.wiremock
-            testCompile project(':sechub-testframework')
+            testImplementation library.wiremock
+            testImplementation project(':sechub-testframework')
 
         }
 
         if (projectType.springBootSecHubServerProjects.contains(project)){
-            compile(library.springboot_starter_web)
-            compile(library.springboot_starter_validation)
-            testCompile project(':sechub-testframework')
+            api(library.springboot_starter_web)
+            api(library.springboot_starter_validation)
+            testImplementation project(':sechub-testframework')
 
             /* REST */
-            compile(library.jackson_JDK8)
+            implementation(spring_boot_dependency.jackson_datatype_jdk8)
 
             /* database */
-            compile(library.database_postgres)
-            compile(library.database_h2)
-            compile(library.springboot_starter_data_jpa)
+            implementation(library.database_postgres)
+            implementation(library.database_h2)
+            api(library.springboot_starter_data_jpa)
             //compile(library.springboot_starter_actuator)
 
             /* security */
-            compile(library.springboot_starter_security)
-            testCompile(library.springframework_security_test)
+            api(library.springboot_starter_security)
+            testImplementation(library.springframework_security_test)
 
             /* develop */
            // currently deactivated: compile(library.springboot_devtoolssf)
         }
        if (projectType.springDocProjects.contains(project)){
-            compile(library.springboot_starter_web)
+            api(library.springboot_starter_web)
        }
     }
 }
