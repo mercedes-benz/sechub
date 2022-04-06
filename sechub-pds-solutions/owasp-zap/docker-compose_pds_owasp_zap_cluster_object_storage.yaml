@@ -12,6 +12,7 @@ services:
             - .env-cluster-object-storage
         networks:
             - internal
+            - sechub
         depends_on: 
             - database
             - object-storage
@@ -53,6 +54,8 @@ services:
             - "127.0.0.1:9000:9000"
 
 networks:
+  sechub:
+    name: "sechub"
   internal:
     driver: bridge
     ipam:

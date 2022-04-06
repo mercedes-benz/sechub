@@ -12,6 +12,7 @@ services:
             - .env-cluster
         networks:
             - "internal"
+            - "sechub"
         volumes:
             - "shared_volume:/shared_volumes/uploads"
         depends_on: 
@@ -41,6 +42,8 @@ services:
         
 networks:
     internal:
+    sechub:
+      name: "sechub"
 
 volumes:
     shared_volume:

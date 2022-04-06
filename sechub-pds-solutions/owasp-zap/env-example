@@ -66,6 +66,9 @@ S3_BUCKETNAME=pds
 S3_ACCESSKEY=user
 S3_SECRETKEY=Why$5forThat?
 
+# ZAP API key only used internally
+ZAP_API_KEY=change-me
+
 # Proxy settings
 ZAP_PROXY_HOST=127.0.0.1
 ZAP_PROXY_PORT=9999

@@ -18,4 +18,4 @@ fi
 
 
 echo "Starting single Ubuntu container."
-docker-compose --file docker-compose_pds_owasp_zap_ubuntu_external_network.yaml up --build
+docker-compose --file docker-compose_pds_owasp_zap_ubuntu_external_network.yaml up --build --remove-orphans

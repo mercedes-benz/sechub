@@ -329,7 +329,6 @@ docker exec -it pds-owasp-zap-ubuntu bash
 . Connect via remote debugging to the `pds`
 +
 connect via CLI
-(see: )
 +
 ----
 jdb -attach localhost:15024

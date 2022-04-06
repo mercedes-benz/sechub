@@ -2,10 +2,44 @@
 
 # The image argument needs to be placed on top
 ARG BASE_IMAGE
+
+ARG SECHUB_ARTIFACT_FOLDER="/artifacts"
+ARG JAVA_VERSION="11"
+
+#--------------------------
+# Build OWASP ZAP Wrapper
+#--------------------------
+
+FROM ${BASE_IMAGE} AS builder-zap-wrapper
+
+ARG JAVA_VERSION
+ARG SECHUB_ARTIFACT_FOLDER
+
+ARG BUILD_FOLDER="/build"
+ARG GIT_URL="https://github.com/mercedes-benz/sechub.git"
+
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \
+    apt-get install --quiet --assume-yes git "openjdk-$JAVA_VERSION-jdk-headless" && \
+    apt-get clean
+
+RUN mkdir --parent "$BUILD_FOLDER" && \
+    cd "$BUILD_FOLDER" && \
+    git clone "$GIT_URL" && \
+    cd "sechub" && \
+    ./gradlew buildWrapperOwaspZap && \
+    mkdir --parent "$SECHUB_ARTIFACT_FOLDER" && \
+    ls "sechub-wrapper-owasp-zap/build/libs/" && \
+    cp "sechub-wrapper-owasp-zap/build/libs/wrapperowaspzap-0.0.0.jar" --target-directory "$SECHUB_ARTIFACT_FOLDER" && \
+    mv "$SECHUB_ARTIFACT_FOLDER/wrapperowaspzap-0.0.0.jar" "$SECHUB_ARTIFACT_FOLDER/wrapperowaspzap.jar"
+   
+#--------------------------
+# OWASP ZAP + PDS
+#--------------------------
+
 FROM ${BASE_IMAGE}
 
-# The remaining arguments need to be placed after the `FROM`
-# See: https://ryandaniels.ca/blog/docker-dockerfile-arg-from-arg-trouble/
+ARG SECHUB_ARTIFACT_FOLDER
 
 # Folders
 ARG PDS_FOLDER="/pds"
@@ -19,7 +53,7 @@ ENV DOWNLOAD_FOLDER="/downloads"
 ARG USER="zap"
 
 # PDS
-ENV PDS_VERSION=0.25.0
+ENV PDS_VERSION=0.26.2
 
 # OWASP ZAP
 ARG OWASP_ZAP_CHECKSUM="abbfe9ad057b3511043a0f0317d5f91d914145ada5b102a5708f8af6a5e191f8"
@@ -77,7 +111,7 @@ COPY owasp-zap-mock.sh $SCRIPT_FOLDER/owasp-zap-mock.sh
 RUN chmod +x $SCRIPT_FOLDER/owasp-zap-mock.sh
 
 # OWASP ZAP wrapper
-COPY owaspzap-wrapper.jar $TOOL_FOLDER/owaspzap-wrapper.jar
+COPY --from=builder-zap-wrapper "$SECHUB_ARTIFACT_FOLDER" "$TOOL_FOLDER"
 
 # Copy PDS configfile
 COPY pds-config.json "$PDS_FOLDER/pds-config.json"

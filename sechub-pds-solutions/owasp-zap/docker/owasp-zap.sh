@@ -1,6 +1,10 @@
 #!/usr/bin/env sh
 # SPDX-License-Identifier: MIT
 
+sechub_job_uuid=$(echo "$PDS_JOB_WORKSPACE_LOCATION" | cut -d "/" -f 4)
+echo "sechub job uuid: $sechub_job_uuid"
+echo ""
+
 echo "###########################"
 echo "# Starting OWASP ZAP scan #"
 echo "###########################"
@@ -56,4 +60,4 @@ then
     options="$options --sechubConfigfile $sechub_scan_configuration"
 fi
 
-java -jar $TOOL_FOLDER/owaspzap-wrapper.jar $options --zapHost 127.0.0.1 --zapPort 8080 --verbose --targetURL "$PDS_SCAN_TARGET_URL" --report "$PDS_JOB_RESULT_FILE"
+java -jar $TOOL_FOLDER/wrapperowaspzap.jar $options --zapHost 127.0.0.1 --jobUUID "$sechub_job_uuid" --zapPort 8080 --verbose --targetURL "$PDS_SCAN_TARGET_URL" --report "$PDS_JOB_RESULT_FILE"
