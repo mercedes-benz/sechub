@@ -26,6 +26,8 @@ List of actions and mandatory parameters:
 ACTION [PARAMETERS] - EXPLANATION
 ----------------------------------
 alive_check - alive check (No user needed)
+autocleanup_get - Get autocleanup setting
+autocleanup_set <value> <time unit> - Update autocleanup setting. <time unit> is one of days, weeks, months, years
 executor_create <json-file> - Create executor configuration from JSON file
 executor_delete <executor-uuid> - Delete executor <executor-uuid>
 executor_details <executor-uuid> - Show definition of executor <executor-uuid>
@@ -100,6 +102,11 @@ function are_you_sure {
 }
 
 
+function to_lower_case() {
+	echo "$*" | tr [:upper:] [:lower:]
+}
+
+
 function generate_json_key_value {
   local key="$1"
   shift
@@ -131,8 +138,8 @@ function check_choice_parameter {
 
 
 function check_parameter {
-  param="$1"
-  parameter_name="$2"
+  local param="$1"
+  local parameter_name="$2"
   if [ -z "${!param}" ] ; then
     echo "Required parameter $parameter_name is missing"
     failed=true
@@ -141,8 +148,8 @@ function check_parameter {
 
 
 function check_trafficlight {
-  param="$1"
-  parameter_name="$2"
+  local param="$1"
+  local parameter_name="$2"
   case "${!param}" in
     RED|YELLOW|GREEN) ;;
     "") echo "Trafficlight value for $parameter_name not set"
@@ -156,14 +163,42 @@ function check_trafficlight {
 
 
 function check_file {
-  file="$1"
-  parameter_name="$2"
+  local file="$1"
+  local parameter_name="$2"
   if [ -z "$file" ] ; then
     echo "$parameter_name is missing"
     failed=true
   elif [ ! -r "$file" ] ; then
     echo "File \"$file\" is not readable/existing. Please check."
     failed=true
+  fi
+}
+
+
+function check_number {
+  local param="$1"
+  local parameter_name="$2"
+
+  check_parameter "$param" "$parameter_name"
+  if ! $failed ; then
+    if [[ ! ${!param} =~ ^[0-9]+$ ]]; then
+      echo "$parameter_name is not numeric."
+      failed=true
+    fi
+  fi
+}
+
+
+function check_time_unit {
+  local param="$1"
+  local parameter_name="$2"
+
+  check_parameter "$param" "$parameter_name"
+  if ! $failed ; then
+    if [[ ! ${!param} =~ ^(days?|weeks?|months?|years?)$ ]]; then
+      echo "$parameter_name '${!param}' is not a valid time unit. Expected one of: days, weeks, months, years"
+      failed=true
+    fi
   fi
 }
 
@@ -185,6 +220,32 @@ function generate_short_description {
 function sechub_alive_check {
   echo "Alive status of $SECHUB_SERVER"
   curl $CURL_PARAMS -i -X GET "$SECHUB_SERVER/api/anonymous/check/alive" | $CURL_FILTER
+}
+
+
+function sechub_autocleanup_get {
+  curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/autoclean" | $RESULT_FILTER | $JSON_FORMATTER
+}
+
+
+function generate_autocleanup_data {
+  local amount="$1"
+  local unit="$2"
+  cat <<EOF
+{
+  "cleanupTime": {
+    "unit": "$unit",
+    "amount": $amount
+  }
+}
+EOF
+}
+
+function sechub_autocleanup_set {
+  local JSON_DATA="$(generate_autocleanup_data $1 $2)"
+  echo "Going to change autocleanup values. This may delete product results and scan reports."
+  are_you_sure
+  curl $CURL_PARAMS -i -X PUT -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/config/autoclean" | $CURL_FILTER
 }
 
 
@@ -255,7 +316,7 @@ EOF
 }
 
 function sechub_profile_create {
-  JSON_DATA="$(generate_sechub_profile_data $2 $3)"
+  local JSON_DATA="$(generate_sechub_profile_data $2 $3)"
   echo $JSON_DATA | $JSON_FORMATTER
   curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/config/execution/profile/$1" | $CURL_FILTER
 }
@@ -279,22 +340,23 @@ function sechub_profile_list {
 
 
 function sechub_profile_update {
-  JSON_DATA="$(generate_sechub_profile_data $2 $3)"
+  local JSON_DATA="$(generate_sechub_profile_data $2 $3)"
   echo $JSON_DATA | $JSON_FORMATTER
   curl $CURL_PARAMS -i -X PUT -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/config/execution/profile/$1" | $CURL_FILTER
 }
 
 
 function profile_short_description {
-  profile_id="$1"
+  local profile_id="$1"
   mapfile -t resultArray < <(sechub_profile_details $profile_id | jq '.enabled,.configurations[].name')
-  enabled=${resultArray[0]}
+  local enabled=${resultArray[0]}
+  local enabledState
   if [ "$enabled" = "true" ] ; then
     enabledState="enabled"
   else
     enabledState="disabled"
   fi
-  first_run="true"
+  local first_run="true"
   for i in "${resultArray[@]}" ; do
     if [ "$first_run" = "true" ] ; then
       echo "- \"$profile_id\" ($enabledState)"
@@ -334,7 +396,7 @@ EOF
 }
 
 function sechub_project_create {
-  JSON_DATA="$(generate_sechub_project_create_data $1 $2 $3)"
+  local JSON_DATA="$(generate_sechub_project_create_data $1 $2 $3)"
   echo $JSON_DATA | $JSON_FORMATTER  # Show what is sent
   curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/project" | $CURL_FILTER
 }
@@ -353,7 +415,7 @@ function sechub_project_details {
 
 
 function sechub_project_details_all {
-  project_id="$1"
+  local project_id="$1"
   sechub_project_details $project_id
 
   echo "Assigned profiles:"
@@ -382,9 +444,9 @@ function sechub_project_metadata_set {
   local value
   local PROJECT_ID="${1,,}"  # ,, converts to lowercase
   shift
-  JSON_DATA="{\"apiVersion\": \"$SECHUB_API_VERSION\",\"metaData\":{"
-  arr=("$@")
-  first=true
+  local JSON_DATA="{\"apiVersion\": \"$SECHUB_API_VERSION\",\"metaData\":{"
+  local arr=("$@")
+  local first=true
   for i in "${arr[@]}" ; do
     if $first ; then
       first=false
@@ -422,7 +484,7 @@ EOF
 }
 
 function sechub_project_mockdata_set {
-  JSON_DATA="$(generate_sechub_project_mockdata $2 $3 $4)"
+  local JSON_DATA="$(generate_sechub_project_mockdata $2 $3 $4)"
   echo $JSON_DATA | $JSON_FORMATTER  # Show what is sent
   curl $CURL_PARAMS -i -X PUT -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/project/$1/mockdata" | $CURL_FILTER
 }
@@ -629,6 +691,14 @@ action="$1" && shift
 case "$action" in
   alive_check)
     $failed || sechub_alive_check
+    ;;
+  autocleanup_get)
+    $failed || sechub_autocleanup_get
+    ;;
+  autocleanup_set)
+    AUTOCLEANUP_VALUE="$1" ; check_number AUTOCLEANUP_VALUE '<value>'
+    AUTOCLEANUP_UNIT=`to_lower_case "$2"` ; check_time_unit AUTOCLEANUP_UNIT '<time unit>'
+    $failed || sechub_autocleanup_set $AUTOCLEANUP_VALUE $AUTOCLEANUP_UNIT
     ;;
   executor_create)
     EXECUTOR_JSONFILE="$1" ; check_file "$EXECUTOR_JSONFILE" '<json-file>'
