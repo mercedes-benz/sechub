@@ -147,7 +147,7 @@ public class ProjectChangeAccessLevelScenario3IntTest {
         // the report cannot be fetched
         expectHttpFailure(()->{
             as(SUPER_ADMIN).getJobReport(project, jobUUID);
-        }, new JSonMessageHttpStatusExceptionTestValidator(HttpStatus.FORBIDDEN, "Project "+project.getProjectId()+" does currently not allow read access."));                                 
+        }, new JSonMessageHttpStatusExceptionTestValidator(HttpStatus.FORBIDDEN, "Project "+project.getProjectId()+" does currently not allow read access."));
 
         /* execute */ // we reuse the test, so we have not to create another job etc (reduce time cost)
         as(SUPER_ADMIN).changeProjectAccessLevel(project,ProjectAccessLevel.FULL);

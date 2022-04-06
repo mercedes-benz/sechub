@@ -543,8 +543,6 @@ public class TestAPI {
 
     }
 
-    
-
     /**
      * Get uploaded file (means download former uploaded file) from integration test
      * server

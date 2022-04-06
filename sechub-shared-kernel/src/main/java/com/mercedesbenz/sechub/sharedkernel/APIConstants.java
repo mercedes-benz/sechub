@@ -57,4 +57,9 @@ public class APIConstants {
      */
     public static final String ACTUATOR = "/actuator/";
 
+    /**
+     * Error page
+     */
+    public static final String ERROR_PAGE = "/error";
+
 }

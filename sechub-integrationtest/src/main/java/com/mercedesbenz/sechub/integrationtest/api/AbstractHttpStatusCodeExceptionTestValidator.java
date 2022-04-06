@@ -20,7 +20,7 @@ public abstract class AbstractHttpStatusCodeExceptionTestValidator implements Ht
         assertNoHttp20xInside(expectedStatusCodes);
         this.expectedStatusCodes = expectedStatusCodes;
     }
-    
+
     private void assertNoHttp20xInside(HttpStatus... expectedStatusCodes) {
         for (HttpStatus expectedStatusCode : expectedStatusCodes) {
             if (expectedStatusCode.is2xxSuccessful()) {
