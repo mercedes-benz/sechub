@@ -14,11 +14,11 @@ import org.junit.rules.Timeout;
 import org.springframework.http.HttpStatus;
 
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
-import com.mercedesbenz.sechub.integrationtest.api.ContainsExpectedContentHttpStatusExceptionTestValidator;
 import com.mercedesbenz.sechub.integrationtest.api.ExecutionConstants;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestJSONLocation;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestMockMode;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
+import com.mercedesbenz.sechub.integrationtest.api.JSonMessageHttpStatusExceptionTestValidator;
 import com.mercedesbenz.sechub.integrationtest.api.TestDataConstants;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
@@ -103,7 +103,7 @@ public class ProjectChangeAccessLevelScenario3IntTest {
         /* test 2 */
         expectHttpFailure(()->{
             as(USER_1).getJobStatus(project, jobUUID);
-        }, HttpStatus.FORBIDDEN,new ContainsExpectedContentHttpStatusExceptionTestValidator("Project "+project.getProjectId()+" does currently not allow read access."));
+        }, new JSonMessageHttpStatusExceptionTestValidator(HttpStatus.FORBIDDEN, "Project "+project.getProjectId()+" does currently not allow read access."));
 
         /* execute */ // we reuse the test, so we have not to create another job etc (reduce time cost)
         as(SUPER_ADMIN).changeProjectAccessLevel(project,ProjectAccessLevel.FULL);
@@ -147,11 +147,7 @@ public class ProjectChangeAccessLevelScenario3IntTest {
         // the report cannot be fetched
         expectHttpFailure(()->{
             as(SUPER_ADMIN).getJobReport(project, jobUUID);
-        }, HttpStatus.FORBIDDEN, jsonServerErrorValidatorBuilder().
-                                    status(HttpStatus.FORBIDDEN).
-                                    error("Forbidden").
-                                    message("Project "+project.getProjectId()+" does currently not allow read access.").
-                                 build());
+        }, new JSonMessageHttpStatusExceptionTestValidator(HttpStatus.FORBIDDEN, "Project "+project.getProjectId()+" does currently not allow read access."));                                 
 
         /* execute */ // we reuse the test, so we have not to create another job etc (reduce time cost)
         as(SUPER_ADMIN).changeProjectAccessLevel(project,ProjectAccessLevel.FULL);
