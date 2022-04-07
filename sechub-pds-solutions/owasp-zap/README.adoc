@@ -4,7 +4,7 @@
 
 = OWASP ZAP + PDS
 
-https://www.zaproxy.org/[OWASP ZAP] is a free and open source dynamic application security testing tool. By combining OWASP ZAP with the SecHub https://daimler.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)] in a container, OWASP ZAP can be used with SecHub.
+https://www.zaproxy.org/[OWASP ZAP] is a free and open source dynamic application security testing tool. By combining OWASP ZAP with the SecHub https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)] in a container, OWASP ZAP can be used with SecHub.
 
 Furthermore, the combination of OWASP ZAP and PDS make it possible to run both inside a Kubernetes cluser or virtual machines.
 

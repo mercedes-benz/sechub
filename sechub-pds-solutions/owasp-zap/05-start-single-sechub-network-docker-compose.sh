@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: MIT
 
 SCRIPT_DIR=`dirname $0`
-IMAGE_TYPE="$1"
 
 ENVIRONMENT_FILE=".env"
 

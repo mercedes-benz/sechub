@@ -53,7 +53,7 @@ ENV DOWNLOAD_FOLDER="/downloads"
 ARG USER="zap"
 
 # PDS
-ENV PDS_VERSION=0.26.2
+ENV PDS_VERSION=0.27.0
 
 # OWASP ZAP
 ARG OWASP_ZAP_CHECKSUM="abbfe9ad057b3511043a0f0317d5f91d914145ada5b102a5708f8af6a5e191f8"
@@ -94,9 +94,9 @@ RUN cd "$TOOL_FOLDER" && \
 # Install the SecHub Product Delegation Server (PDS)
 RUN cd "$PDS_FOLDER" && \
     # download checksum file
-    wget --no-verbose "https://github.com/Daimler/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar.sha256sum" && \
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar.sha256sum" && \
     # download pds
-    wget --no-verbose "https://github.com/Daimler/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar" && \
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar" && \
     # verify that the checksum and the checksum of the file are same
     sha256sum --check sechub-pds-$PDS_VERSION.jar.sha256sum
 
