@@ -1416,14 +1416,14 @@
 							}
 						}
 					],
-					"semanticVersion": "2.10.0",
+					"semanticVersion": "2.11.0",
 					"supportedTaxonomies": [
 						{
 							"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
 							"name": "CWE"
 						}
 					],
-					"version": "2.10.0"
+					"version": "2.11.0"
 				}
 			}
 		}
@@ -1431,3 +1431,4 @@
 	"$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
 	"version": "2.1.0"
 }
+

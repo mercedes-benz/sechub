@@ -81,8 +81,8 @@ spec:
                       path: /api/anonymous/check/alive
                       port: pds-https-port
                     periodSeconds: 1
-                    # wait 1s x 300 = 5 mins before retrying
                     failureThreshold: 300
+                    # probe every 1s x 300 = 5 mins before restart of container
                     successThreshold: 1
                     timeoutSeconds: 1
                   livenessProbe:
