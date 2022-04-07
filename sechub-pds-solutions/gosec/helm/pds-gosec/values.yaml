@@ -51,4 +51,3 @@ networkPolicy:
         - podSelector:
             matchLabels:
                 name: sechub-adminserver
-
