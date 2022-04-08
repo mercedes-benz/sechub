@@ -59,6 +59,9 @@ public class SecHubConfigurationModelReducedCloningSupport {
                 newModel.setWebScan(new SecHubWebScanConfiguration());
             }
             break;
+        default:
+            LOG.warn("For scan type {} we have no reduced clone implementation. So the created model does not have any content!", scanTypeForClone);
+            break;
         }
 
         String json = newModel.toJSON();

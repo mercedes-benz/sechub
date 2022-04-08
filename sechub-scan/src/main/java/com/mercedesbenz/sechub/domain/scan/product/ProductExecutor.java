@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.domain.scan.product;
 
 import java.util.List;
 
+import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutor;
@@ -29,6 +30,11 @@ public interface ProductExecutor extends ProductIdentifiable, SecHubExecutor<Lis
      * @throws SecHubExecutionException when any problems occuring
      */
     public List<ProductResult> execute(SecHubExecutionContext context, ProductExecutorContext executorContext) throws SecHubExecutionException;
+
+    /**
+     * @return scan type supported by this executor, never <code>null</code>
+     */
+    public ScanType getScanType();
 
     /**
      * @return version of executor

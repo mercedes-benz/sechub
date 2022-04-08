@@ -331,6 +331,8 @@ task generateOpenapi() {
     	scanJobSchema.properties.infraScan.properties.uris.items = stringType
     	scanJobSchema.properties.infraScan.properties.ips.items = stringType
     	scanJobSchema.properties.codeScan.properties.fileSystem.properties.folders.items = stringType
+    	scanJobSchema.properties.codeScan.properties.fileSystem.properties.files.items = stringType
+    	scanJobSchema.properties.codeScan.properties.use.items = stringType
     	scanJobSchema.properties.webScan.properties.includes.items = stringType
     	scanJobSchema.properties.webScan.properties.excludes.items = stringType
 		

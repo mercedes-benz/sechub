@@ -4,7 +4,7 @@ dependencies {
     api(library.springboot_starter_batch)
     
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'io.micrometer:micrometer-registry-prometheus:1.7.2'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
     
     api project(':sechub-shared-kernel')
     api project(':sechub-schedule')

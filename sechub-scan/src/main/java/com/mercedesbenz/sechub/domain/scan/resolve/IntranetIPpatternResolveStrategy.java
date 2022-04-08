@@ -9,8 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.mercedesbenz.sechub.domain.scan.Target;
-import com.mercedesbenz.sechub.domain.scan.TargetType;
+import com.mercedesbenz.sechub.domain.scan.NetworkTarget;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
 
 @Component
 public class IntranetIPpatternResolveStrategy implements InetAdressTargetResolveStrategy {
@@ -58,17 +58,17 @@ public class IntranetIPpatternResolveStrategy implements InetAdressTargetResolve
     }
 
     @Override
-    public Target resolveTargetFor(InetAddress inetAdress) {
-        Target result = null;
+    public NetworkTarget resolveTargetFor(InetAddress inetAdress) {
+        NetworkTarget result = null;
 
         for (InetAddressPattern p : patterns) {
             if (p.isMatching(inetAdress)) {
-                result = new Target(inetAdress, TargetType.INTRANET);
+                result = new NetworkTarget(inetAdress, NetworkTargetType.INTRANET);
                 break;
             }
         }
         if (result == null) {
-            result = new Target(inetAdress, TargetType.INTERNET);
+            result = new NetworkTarget(inetAdress, NetworkTargetType.INTERNET);
         }
         return result;
     }

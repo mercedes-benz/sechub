@@ -4,9 +4,6 @@ package com.mercedesbenz.sechub.sharedkernel.configuration;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.Before;
@@ -15,11 +12,10 @@ import org.mockito.Mockito;
 import org.mockito.verification.VerificationMode;
 import org.springframework.validation.Errors;
 
-import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
-import com.mercedesbenz.sechub.sharedkernel.validation.ApiVersionValidation;
-import com.mercedesbenz.sechub.sharedkernel.validation.ApiVersionValidationFactory;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationResult;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationResult.SecHubConfigurationModelValidationErrorData;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidator;
 import com.mercedesbenz.sechub.sharedkernel.validation.ValidationResult;
 
 public class SecHubConfigurationValidatorTest {
@@ -27,10 +23,11 @@ public class SecHubConfigurationValidatorTest {
     private SecHubConfigurationValidator validatorToTest;
     private Errors errors;
     private SecHubConfiguration target;
-    private ApiVersionValidationFactory apiVersionValidationFactory;
-    private ApiVersionValidation apiValidation;
     private ValidationResult okResult;
     private ValidationResult failedResult;
+    private SecHubConfigurationModelValidatorFactory modelValidatorFactory;
+    private SecHubConfigurationModelValidator modelValidator;
+    private SecHubConfigurationModelValidationResult configurationModelValidationResult;
 
     @Before
     public void before() throws Exception {
@@ -40,12 +37,7 @@ public class SecHubConfigurationValidatorTest {
         failedResult = mock(ValidationResult.class);
         when(failedResult.isValid()).thenReturn(false);
 
-        apiValidation = mock(ApiVersionValidation.class);
-        apiVersionValidationFactory = mock(ApiVersionValidationFactory.class);
-        when(apiValidation.validate(any())).thenReturn(okResult);
         validatorToTest = new SecHubConfigurationValidator();
-        validatorToTest.apiVersionValidationFactory = apiVersionValidationFactory;
-        when(apiVersionValidationFactory.createValidationAccepting(any())).thenReturn(apiValidation);
         errors = mock(Errors.class);
         target = mock(SecHubConfiguration.class);
 
@@ -53,15 +45,38 @@ public class SecHubConfigurationValidatorTest {
         when(target.getApiVersion()).thenReturn("1.0");
         when(target.getWebScan()).thenReturn(Optional.empty());
 
+        configurationModelValidationResult = mock(SecHubConfigurationModelValidationResult.class);
+        modelValidator = mock(SecHubConfigurationModelValidator.class);
+        when(modelValidator.validate(any())).thenReturn(configurationModelValidationResult);
+
+        modelValidatorFactory = mock(SecHubConfigurationModelValidatorFactory.class);
+        when(modelValidatorFactory.createValidator()).thenReturn(modelValidator);
+
+        validatorToTest.modelValidatorFactory = modelValidatorFactory;
+
         validatorToTest.postConstruct();// simulate spring boot post construct
     }
 
     @Test
-    public void illegal_api_is_rejected() throws Exception {
+    public void when_configuration_model_validation_has_missing_api_found_it_is_rejected() throws Exception {
 
         /* prepare */
-        when(target.getApiVersion()).thenReturn("illegal");
-        when(apiValidation.validate(eq("illegal"))).thenReturn(failedResult);
+        simulateModelValidationError(SecHubConfigurationModelValidationError.API_VERSION_NULL);
+
+        /* execute */
+        validatorToTest.validate(target, errors);
+
+        /* test */
+        verify(errors).rejectValue(eq(SecHubConfiguration.PROPERTY_API_VERSION), eq("field.required"), any(),
+                eq(SecHubConfigurationModelValidationError.API_VERSION_NULL.getDefaultMessage()));
+    }
+
+    @Test
+    public void when_configuration_model_validation_has_illegal_api_found_it_is_rejected() throws Exception {
+
+        /* prepare */
+        simulateModelValidationError(SecHubConfigurationModelValidationError.API_VERSION_NOT_SUPPORTED);
+
         /* execute */
         validatorToTest.validate(target, errors);
 
@@ -70,7 +85,9 @@ public class SecHubConfigurationValidatorTest {
     }
 
     @Test
-    public void api_1_0_is_NOT_rejected() throws Exception {
+    public void when_no_error_data_for_any_from_model_validation_it_is_NOT_rejected() throws Exception {
+        /* prepare */
+        when(configurationModelValidationResult.findFirstOccurrenceOf(any())).thenReturn(null);
 
         /* execute */
         validatorToTest.validate(target, errors);
@@ -80,13 +97,9 @@ public class SecHubConfigurationValidatorTest {
     }
 
     @Test
-    public void empty_infrascanconfig_is_rejected() throws Exception {
-
+    public void when_model_validation_complains_about_empty_infrascanconfig_it_is_rejected() throws Exception {
         /* prepare */
-        SecHubInfrastructureScanConfiguration infraScan = mock(SecHubInfrastructureScanConfiguration.class);
-        List<URI> list = new ArrayList<>();
-        when(infraScan.getUris()).thenReturn(list);
-        when(target.getInfraScan()).thenReturn(Optional.of(infraScan));
+        simulateModelValidationError(SecHubConfigurationModelValidationError.INFRA_SCAN_HAS_NO_URIS_OR_IPS_DEFINED);
 
         /* execute */
         validatorToTest.validate(target, errors);
@@ -96,13 +109,9 @@ public class SecHubConfigurationValidatorTest {
     }
 
     @Test
-    public void empty_webconfig_is_rejected() throws Exception {
-
+    public void when_model_validation_complains_about_empty_webconfig_is_rejected() throws Exception {
         /* prepare */
-        SecHubWebScanConfiguration webscan = mock(SecHubWebScanConfiguration.class);
-        URI uri = URI.create("");
-        when(webscan.getUri()).thenReturn(uri);
-        when(target.getWebScan()).thenReturn(Optional.of(webscan));
+        simulateModelValidationError(SecHubConfigurationModelValidationError.WEB_SCAN_HAS_NO_URL_DEFINED);
 
         /* execute */
         validatorToTest.validate(target, errors);
@@ -112,76 +121,20 @@ public class SecHubConfigurationValidatorTest {
     }
 
     @Test
-    public void webconfig_with_uri_as_http_is_NOT_rejected() throws Exception {
-
+    public void when_model_validation_complains_about_wrong_schema_it_is_rejected() throws Exception {
         /* prepare */
-        SecHubWebScanConfiguration webscan = mock(SecHubWebScanConfiguration.class);
-        URI uri = URI.create("http://www.example.com");
-        when(webscan.getUri()).thenReturn(uri);
-        when(target.getWebScan()).thenReturn(Optional.of(webscan));
+        simulateModelValidationError(SecHubConfigurationModelValidationError.WEB_SCAN_URL_HAS_UNSUPPORTED_SCHEMA);
 
         /* execute */
         validatorToTest.validate(target, errors);
 
-        assertNoIllegalSchemaError();
-    }
-
-    @Test
-    public void webconfig_with_uri_as_https_is_NOT_rejected() throws Exception {
-
-        /* prepare */
-        SecHubWebScanConfiguration webscan = mock(SecHubWebScanConfiguration.class);
-        URI uri = URI.create("https://www.example.com");
-        when(webscan.getUri()).thenReturn(uri);
-        when(target.getWebScan()).thenReturn(Optional.of(webscan));
-
-        /* execute */
-        validatorToTest.validate(target, errors);
-
-        assertNoIllegalSchemaError();
-
-    }
-
-    @Test
-    public void webconfig_with_uri_as_ftp_is_rejected() throws Exception {
-
-        /* prepare */
-        SecHubWebScanConfiguration webscan = mock(SecHubWebScanConfiguration.class);
-        URI uri = URI.create("ftp://www.example.com");
-        when(webscan.getUri()).thenReturn(uri);
-        when(target.getWebScan()).thenReturn(Optional.of(webscan));
-
-        /* execute */
-        validatorToTest.validate(target, errors);
-
-        /* test */
         assertIllegalSchemaError();
-
-    }
-
-    @Test
-    public void infraconfig_with_uri_as_ftp_is_NOT_rejected() throws Exception {
-
-        /* prepare */
-        SecHubInfrastructureScanConfiguration webscan = mock(SecHubInfrastructureScanConfiguration.class);
-        List<URI> list = new ArrayList<>();
-        list.add(URI.create("http://www.example.com"));
-        when(webscan.getUris()).thenReturn(list);
-        when(target.getInfraScan()).thenReturn(Optional.of(webscan));
-
-        /* execute */
-        validatorToTest.validate(target, errors);
-
-        /* test */
-        assertNoIllegalSchemaError();
     }
 
     @Test
     public void when_configuration_has_no_scan_config_at__missingScanDefinitionError_occurs() {
         /* prepare */
-        when(target.getCodeScan()).thenReturn(Optional.empty());
-        when(target.getInfraScan()).thenReturn(Optional.empty());
-        when(target.getWebScan()).thenReturn(Optional.empty());
+        simulateModelValidationError(SecHubConfigurationModelValidationError.CONTAINS_NO_SCAN_CONFIGURATION);
 
         /* execute */
         validatorToTest.validate(target, errors);
@@ -190,54 +143,21 @@ public class SecHubConfigurationValidatorTest {
         assertMissingScanDefinitionError();
     }
 
-    @Test
-    public void when_configuration_has_infra_scan_config_at__missingScanDefinitionError_occurs_NOT() {
-        /* prepare */
-        when(target.getCodeScan()).thenReturn(Optional.empty());
-        when(target.getInfraScan()).thenReturn(Optional.of(Mockito.mock(SecHubInfrastructureScanConfiguration.class)));
-        when(target.getWebScan()).thenReturn(Optional.empty());
-
-        /* execute */
-        validatorToTest.validate(target, errors);
-
-        /* test */
-        assertNoMissingScanDefinitionError();
+    void simulateModelValidationError(SecHubConfigurationModelValidationError error) {
+        simulateModelValidationError(error, error.getDefaultMessage());
     }
 
-    @Test
-    public void when_configuration_has_code_scan_config_at__missingScanDefinitionError_occurs_NOT() {
-        /* prepare */
-        when(target.getCodeScan()).thenReturn(Optional.of(Mockito.mock(SecHubCodeScanConfiguration.class)));
-        when(target.getInfraScan()).thenReturn(Optional.empty());
-        when(target.getWebScan()).thenReturn(Optional.empty());
+    void simulateModelValidationError(SecHubConfigurationModelValidationError error, String message) {
+        SecHubConfigurationModelValidationErrorData data = mock(SecHubConfigurationModelValidationErrorData.class);
+        when(data.getError()).thenReturn(error);
+        when(data.getMessage()).thenReturn(message);
 
-        /* execute */
-        validatorToTest.validate(target, errors);
+        when(configurationModelValidationResult.findFirstOccurrenceOf(error)).thenReturn(data);
 
-        /* test */
-        assertNoMissingScanDefinitionError();
-    }
-
-    @Test
-    public void when_configuration_has_web_scan_config_at__missingScanDefinitionError_occurs_NOT() {
-        /* prepare */
-        when(target.getWebScan()).thenReturn(Optional.of(Mockito.mock(SecHubWebScanConfiguration.class)));
-        when(target.getInfraScan()).thenReturn(Optional.empty());
-        when(target.getCodeScan()).thenReturn(Optional.empty());
-
-        /* execute */
-        validatorToTest.validate(target, errors);
-
-        /* test */
-        assertNoMissingScanDefinitionError();
     }
 
     private void assertMissingScanDefinitionError() {
         _assertMissingScanDefinitionError(Mockito.times(1));
-    }
-
-    private void assertNoMissingScanDefinitionError() {
-        _assertMissingScanDefinitionError(Mockito.never());
     }
 
     private void _assertMissingScanDefinitionError(VerificationMode mode) {
@@ -246,10 +166,6 @@ public class SecHubConfigurationValidatorTest {
 
     private void assertIllegalSchemaError() {
         assertError("api.error.webscan.uri.illegalschema", Mockito.times(1));
-    }
-
-    private void assertNoIllegalSchemaError() {
-        assertError("api.error.webscan.uri.illegalschema", Mockito.never());
     }
 
     private void assertError(String identifier, VerificationMode mode) {

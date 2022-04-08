@@ -22,7 +22,7 @@ public class ProductExecutorContextFactory {
 
         ProductExecutorCallbackImpl callback = new ProductExecutorCallbackImpl(executionContext, productExecutorContext, transactionService);
         productExecutorContext.callback = callback;
-        productExecutorContext.afterCallbackSet();
+        productExecutorContext.useFirstFormerResult();
 
         return productExecutorContext;
     }
