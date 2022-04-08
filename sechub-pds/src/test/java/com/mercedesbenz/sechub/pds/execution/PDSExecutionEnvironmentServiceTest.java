@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Map;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,33 @@ class PDSExecutionEnvironmentServiceTest {
         serviceToTest = new PDSExecutionEnvironmentService();
         serviceToTest.converter = converter;
         serviceToTest.serverConfigService = serverConfigService;
+    }
+
+    @Test
+    void sechub_job_is_injected_as_environment_variable_SECHUB_JOB_UUID() {
+        /* prepare */
+        PDSJobConfiguration config = new PDSJobConfiguration();
+
+        UUID uuid = UUID.randomUUID();
+        config.setSechubJobUUID(uuid);
+
+        /* execute */
+        Map<String, String> result = serviceToTest.buildEnvironmentMap(config);
+
+        /* test */
+        assertEquals(uuid.toString(), result.get("SECHUB_JOB_UUID"));
+    }
+
+    @Test
+    void when_no_sechub_job_available_environment_variable_SECHUB_JOB_UUID_is_empty() {
+        /* prepare */
+        PDSJobConfiguration config = new PDSJobConfiguration();
+
+        /* execute */
+        Map<String, String> result = serviceToTest.buildEnvironmentMap(config);
+
+        /* test */
+        assertEquals("", result.get("SECHUB_JOB_UUID"));
     }
 
     @Test
