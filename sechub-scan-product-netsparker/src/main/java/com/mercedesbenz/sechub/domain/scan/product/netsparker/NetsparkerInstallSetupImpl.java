@@ -124,12 +124,12 @@ public class NetsparkerInstallSetupImpl implements NetsparkerInstallSetup {
     }
 
     @Override
-    public boolean isHavingUntrustedCertificateForIntranet() {
+    public boolean hasUntrustedCertificateWhenIntranetTarget() {
         return trustAllCertificatesNecessary;
     }
 
     @Override
-    public boolean isHavingUntrustedCertificateForInternet() {
+    public boolean hasUntrustedCertificateWhenInternetTarget() {
         return trustAllCertificatesNecessary;
     }
 

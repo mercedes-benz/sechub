@@ -117,7 +117,7 @@ class SecHubConfigurationModelValidatorTest {
     void infrascanconfig_with_one_ip_results_in_no_error() throws Exception {
         /* prepare */
         SecHubInfrastructureScanConfiguration infraScan = new SecHubInfrastructureScanConfiguration();
-        infraScan.getIps().add(mock(InetAddress.class));// &getByName("localhost"));
+        infraScan.getIps().add(mock(InetAddress.class));
 
         SecHubConfigurationModel model = new SecHubConfigurationModel();
         model.setApiVersion("1.0");
@@ -311,7 +311,7 @@ class SecHubConfigurationModelValidatorTest {
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
 
         /* test */
-        assertHasError(result, SecHubConfigurationModelValidationError.DATA_CONFIG_OBJECT_NAME_LENGTH_TOO_BIG);
+        assertHasError(result, SecHubConfigurationModelValidationError.DATA_CONFIG_OBJECT_NAME_LENGTH_TOO_LONG);
         assertEquals(1, result.getErrors().size());
     }
 
@@ -331,7 +331,7 @@ class SecHubConfigurationModelValidatorTest {
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
 
         /* test */
-        assertHasError(result, SecHubConfigurationModelValidationError.DATA_CONFIG_OBJECT_NAME_LENGTH_TOO_SMALL);
+        assertHasError(result, SecHubConfigurationModelValidationError.DATA_CONFIG_OBJECT_NAME_LENGTH_TOO_SHORT);
         assertEquals(1, result.getErrors().size());
     }
 
@@ -356,7 +356,7 @@ class SecHubConfigurationModelValidatorTest {
     }
 
     @Test
-    void model_having_one_elements_with_name_not_set_has_error() {
+    void model_having_one_element_with_name_not_set_has_error() {
         /* prepare */
         SecHubConfigurationModel model = createDefaultValidModel();
         SecHubDataConfiguration data = new SecHubDataConfiguration();
@@ -492,11 +492,11 @@ class SecHubConfigurationModelValidatorTest {
             }
             int errorSize = result.getErrors().size();
             if (errorSize <= indexToCheck) {
-                fail("The result has no error at index:" + indexToCheck + ". Size is only:" + errorSize);
+                fail("The result has no error at index: " + indexToCheck + ". Size is only: " + errorSize);
             }
             String message = result.getErrors().get(indexToCheck).getMessage();
             if (!message.contains(messagePart)) {
-                fail("Message problem.\nError:" + error.name() + " was found, but \nthe message did not contain:'" + messagePart + "' but was:\n" + message);
+                fail("Message problem.\nError: " + error.name() + " was found, but \nthe message did not contain: '" + messagePart + "' but was:\n" + message);
             }
 
             return;

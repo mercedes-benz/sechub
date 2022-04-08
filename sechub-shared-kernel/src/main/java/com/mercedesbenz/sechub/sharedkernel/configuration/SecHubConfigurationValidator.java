@@ -101,9 +101,9 @@ public class SecHubConfigurationValidator implements Validator {
             return;
         }
 
-        SecHubConfigurationModelValidationErrorData webScanHasNoUR = modelValidationResult.findFirstOccurrenceOf(WEB_SCAN_HAS_NO_URL_DEFINED);
-        if (webScanHasNoUR != null) {
-            errors.reject("api.error.webscan.target.missing", new Object[] {}, webScanHasNoUR.getMessage());
+        SecHubConfigurationModelValidationErrorData webScanHasNoURL = modelValidationResult.findFirstOccurrenceOf(WEB_SCAN_HAS_NO_URL_DEFINED);
+        if (webScanHasNoURL != null) {
+            errors.reject("api.error.webscan.target.missing", new Object[] {}, webScanHasNoURL.getMessage());
         }
         SecHubConfigurationModelValidationErrorData webScanHasUnsupportedSchema = modelValidationResult
                 .findFirstOccurrenceOf(WEB_SCAN_URL_HAS_UNSUPPORTED_SCHEMA);

@@ -44,12 +44,12 @@ public class NoNetworkTargetDataProvider implements NetworkTargetProductServerDa
     }
 
     @Override
-    public boolean isHavingUntrustedCertificateForIntranet() {
+    public boolean hasUntrustedCertificateWhenIntranetTarget() {
         return false;
     }
 
     @Override
-    public boolean isHavingUntrustedCertificateForInternet() {
+    public boolean hasUntrustedCertificateWhenInternetTarget() {
         return false;
     }
 

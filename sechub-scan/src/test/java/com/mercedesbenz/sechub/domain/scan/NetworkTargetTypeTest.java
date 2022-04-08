@@ -5,12 +5,11 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class TargetTypeTest {
+public class NetworkTargetTypeTest {
 
     @Test
     public void healthcheck() {
-
-        assertEquals("Hmm.. amount of available target types differs! eems there is a new target typeToTest which is not tested, please add + modify...", 4,
+        assertEquals("Hmm.. amount of available target types differs! Seems there is a new target typeToTest which is not tested, please add + modify...", 4,
                 NetworkTargetType.values().length);
     }
 

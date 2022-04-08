@@ -7,7 +7,7 @@ interface ProductExecutor{
      + List<ProductResult> execute()
      + ScanType getScanType()
      + int getVersion()
-     + boolean isMultipleConfigurationAllomwed()
+     + boolean isMultipleConfigurationAllowed()
 }
 class SerecoReportProductExecutor implements ProductExecutor
 
@@ -18,7 +18,7 @@ class ProductExecutorData{
     ProductExecutorContext productExecutorContext;
     SecHubExecutionContext sechubExecutionContext;
     UUIDTraceLogID traceLogId;
-    NetworkTargetProductServerDataSuppport networkTargetDataSupport;
+    NetworkTargetProductServerDataSuppport networkTargetProdcutServerDataSupport;
 
     NetworkLocationProvider networkLocationProvider;
     NetworkTargetInfo currentNetworkTargetInfo;
@@ -71,9 +71,9 @@ interface NetworkTargetProductServerDataProvider {
 
     String getPasswordWhenIntranetTarget();
 
-    boolean isHavingUntrustedCertificateForIntranet();
-
-    boolean isHavingUntrustedCertificateForInternet();
+    boolean hasUntrustedCertificateWhenIntranetTarget();
+    
+    boolean hasUntrustedCertificateWhenInternetTarget();
 }
 
 interface NetworkLocationProvider{
@@ -87,55 +87,50 @@ interface NetworkTargetResolver{
             + NetworkTarget resolveTarget(InetAddress inetAdress);
 }
 
-'package NetworkTarget-internal as "If network target handling necessary for this executor" {
-    class NetworkTarget{
-      + getURI()
-      + getInetAdress()
-      + NetworkTargetType getType()
-    }
-    
-    note top of NetworkTarget
-      Represents a network target 
-      to use for a dedicated network type
-    end note
-    
-    enum NetworkTargetType {
-      INTERNET
-      INTRANET
-      ILLEGAL
-      UNKNOWN
-    }
+class NetworkTarget{
+  + getURI()
+  + getInetAdress()
+  + NetworkTargetType getType()
+}
 
-        class NetworkTargetRegistry
-        
-        class NetworkTargetInfoFactory {
-            + NetworkTargetInfo createInfo()
-        }
-        
-        class NetworkTargetInfo{
-            + NetworkTargetType getNetworkTargetType()
-            + Set<URI> getNetworkTargetURIs()
-            + Set<InetAddress> getNetworkTargetIPs()
-        }
-        
-        note top of NetworkTargetInfo
-            Represents (final) information about which 
-            URIs /IPs are for a dedicated network
-            target type (e.g. INTERNET). 
-        end note
-'}
+note top of NetworkTarget
+  Represents a network target 
+  to use for a dedicated network type
+end note
 
-'    package NetworkTargetDataSupport-Internal as "Network target data Support" {
+enum NetworkTargetType {
+  INTERNET
+  INTRANET
+  ILLEGAL
+  UNKNOWN
+}
+
+class NetworkTargetRegistry
+
+class NetworkTargetInfoFactory {
+    + NetworkTargetInfo createInfo()
+}
+
+class NetworkTargetInfo{
+    + NetworkTargetType getNetworkTargetType()
+    + Set<URI> getNetworkTargetURIs()
+    + Set<InetAddress> getNetworkTargetIPs()
+}
+
+note top of NetworkTargetInfo
+    Represents (final) information about which 
+    URIs /IPs are for a dedicated network
+    target type (e.g. INTERNET). 
+end note
       
-        interface NetworkTargetProductServerDataProvider
-        class NetworkTargetProductServerDataSuppport{
-            +String getIdentifier(NetworkTargetType target)
-            +boolean isAbletoScan(NetworkTargetType target)
-            +String getBaseURL(NetworkTargetType type)
-            +String getUserId(NetworkTargetType type)
-            +String getPassword(NetworkTargetType target)
-        }
-'    }
+interface NetworkTargetProductServerDataProvider
+class NetworkTargetProductServerDataSuppport{
+    +String getIdentifier(NetworkTargetType target)
+    +boolean isAbletoScan(NetworkTargetType target)
+    +String getBaseURL(NetworkTargetType type)
+    +String getUserId(NetworkTargetType type)
+    +String getPassword(NetworkTargetType target)
+}
     
 
 NetworkTargetInfoFactory --> NetworkLocationProvider : uses

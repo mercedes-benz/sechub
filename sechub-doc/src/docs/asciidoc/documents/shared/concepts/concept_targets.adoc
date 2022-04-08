@@ -15,7 +15,7 @@ The class `AbstractProductExecutor` is the single base class for mostly all prod
 automatically provide network target handling for scan types `webScan` and `infraScan`.
 
 The abstract executor will create a `ProductExecutorData` object at runtime let child implementations
-customize it and then prepare all necessary stuff before giving it again to the child implementation
+customize it and then prepare all necessary steps before giving it again to the child implementation
 for final execution. 
 
 For automated target handling the customization of `ProductExecutorData` must set a 

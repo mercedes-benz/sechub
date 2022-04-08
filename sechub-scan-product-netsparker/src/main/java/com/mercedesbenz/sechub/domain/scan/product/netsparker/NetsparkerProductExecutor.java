@@ -82,7 +82,7 @@ public class NetsparkerProductExecutor extends AbstractProductExecutor {
 				setTimeOutInMinutes(installSetup.getScanResultCheckTimeOutInMinutes()).
 				setTraceID(data.getTraceLogIdAsString()).
 				setAgentName(installSetup.getAgentName()).
-				setAgentGroupName(data.getNetworkTargetDataSupport().getIdentifier(targetType)).
+				setAgentGroupName(data.getNetworkTargetProductServerDataSupport().getIdentifier(targetType)).
 				setPolicyID(installSetup.getDefaultPolicyId()).
 				setLicenseID(installSetup.getNetsparkerLicenseId()).
 				setTargetURI(targetURI).build();

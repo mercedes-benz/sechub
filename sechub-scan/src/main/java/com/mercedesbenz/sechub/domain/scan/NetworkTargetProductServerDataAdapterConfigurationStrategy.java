@@ -35,7 +35,7 @@ public class NetworkTargetProductServerDataAdapterConfigurationStrategy implemen
     public <B extends AbstractAdapterConfigBuilder<B, C>, C extends AdapterConfig> void configure(B configBuilder) {
         /* @formatter:off */
 		configBuilder.
-			setTrustAllCertificates(support.isHavingUntrustedCertificate(targetType)).
+			setTrustAllCertificates(support.hasUntrustedCertificate(targetType)).
 			setUser(support.getUserId(targetType)).
 			setPasswordOrAPIToken(support.getPassword(targetType)).
 			setProductBaseUrl(support.getBaseURL(targetType));

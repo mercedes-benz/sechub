@@ -63,12 +63,12 @@ public class NessusProductExecutor extends AbstractProductExecutor {
         NetworkTargetInfo info = data.getCurrentNetworkTargetInfo();
 
         if (info.getURIs().isEmpty() && info.getIPs().isEmpty()) {
-            LOG.debug("{} Nessus scan not possible because no uri or ip defined", data.getTraceLogId());
+            LOG.debug("{} Nessus scan not possible, because no uri or ip defined", data.getTraceLogId());
             return Collections.emptyList();
         }
 
         NetworkTargetType targetType = info.getTargetType();
-        LOG.debug("Trigger nessus adapter execution for target type {}", targetType);
+        LOG.debug("Trigger Nessus adapter execution for target type {}", targetType);
 
         /* @formatter:off */
 		NessusAdapterConfig nessusConfig = NessusConfig.builder().

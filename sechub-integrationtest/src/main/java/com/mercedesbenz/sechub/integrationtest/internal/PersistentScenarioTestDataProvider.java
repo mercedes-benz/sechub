@@ -81,7 +81,7 @@ public class PersistentScenarioTestDataProvider {
         try (FileOutputStream fos = new FileOutputStream(file)) {
             properties.store(fos, "DO NOT CHANGE THIS FILE!");
         } catch (IOException e) {
-            throw new IllegalStateException("cannot store:" + file.getAbsolutePath(), e);
+            throw new IllegalStateException("cannot store: " + file.getAbsolutePath(), e);
         }
     }
 

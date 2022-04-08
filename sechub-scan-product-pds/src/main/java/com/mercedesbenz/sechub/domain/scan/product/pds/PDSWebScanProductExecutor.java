@@ -71,7 +71,7 @@ public class PDSWebScanProductExecutor extends AbstractProductExecutor {
 
         URI targetURI = info.getURI();
         if (targetURI == null) {
-            LOG.warn("NO target URI defined PDS web scan execution");
+            LOG.warn("NO target URI defined for PDS web scan execution");
             return Collections.emptyList();
         }
         NetworkTargetType targetType = info.getTargetType();

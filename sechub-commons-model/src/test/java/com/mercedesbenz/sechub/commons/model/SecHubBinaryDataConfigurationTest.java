@@ -17,7 +17,7 @@ class SecHubBinaryDataConfigurationTest {
     }
 
     @Test
-    void when_unique_name_not_set_in_JSON_it_is_a_uuid() {
+    void when_unique_name_not_set_in_JSON_it_is_null() {
         String json = "{ }";
 
         /* execute */

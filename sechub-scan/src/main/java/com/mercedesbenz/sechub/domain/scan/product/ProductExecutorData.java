@@ -19,18 +19,18 @@ public class ProductExecutorData {
     ProductExecutorContext productExecutorContext;
     SecHubExecutionContext sechubExecutionContext;
     UUIDTraceLogID traceLogId;
-    NetworkTargetProductServerDataSuppport networkTargetDataSupport;
+    NetworkTargetProductServerDataSuppport networkTargetProductServerDataSupport;
 
     NetworkLocationProvider networkLocationProvider;
     NetworkTargetInfo currentNetworkTargetInfo;
     String traceLogIdAsString;
-    Set<String> codeUploadFileSytemFolderPathes;
+    Set<String> codeUploadFileSystemFolderPaths;
 
     ProductExecutorData() {
     }
 
-    public NetworkTargetProductServerDataSuppport getNetworkTargetDataSupport() {
-        return networkTargetDataSupport;
+    public NetworkTargetProductServerDataSuppport getNetworkTargetProductServerDataSupport() {
+        return networkTargetProductServerDataSupport;
     }
 
     public void setNetworkTargetDataProvider(NetworkTargetProductServerDataProvider networkTargetDataProvider) {
@@ -62,7 +62,7 @@ public class ProductExecutorData {
     }
 
     public Set<String> getCodeUploadFileSystemFolders() {
-        return codeUploadFileSytemFolderPathes;
+        return codeUploadFileSystemFolderPaths;
     }
 
     public String getTraceLogIdAsString() {

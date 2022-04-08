@@ -26,12 +26,12 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport impl
     public static final String PARAM_ID = "pds.executor.config.support";
 
     /**
-     * Creates the configuration networkTargetDataSupport and VALIDATE. This will
-     * fail when configuration data is not valid (e.g. mandatory keys missing)
+     * Creates the configuration support and VALIDATE. This will fail when
+     * configuration data is not valid (e.g. mandatory keys missing)
      *
      * @param config
      * @param systemEnvironment
-     * @return networkTargetDataSupport
+     * @return support
      * @throws NotAcceptableException when configuration is not valid
      */
     public static PDSExecutorConfigSuppport createSupportAndAssertConfigValid(ProductExecutorConfig config, SystemEnvironment systemEnvironment) {
@@ -182,12 +182,12 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport impl
     }
 
     @Override
-    public boolean isHavingUntrustedCertificateForIntranet() {
+    public boolean hasUntrustedCertificateWhenIntranetTarget() {
         return isTrustAllCertificatesEnabled();
     }
 
     @Override
-    public boolean isHavingUntrustedCertificateForInternet() {
+    public boolean hasUntrustedCertificateWhenInternetTarget() {
         return isTrustAllCertificatesEnabled();
     }
 

@@ -19,7 +19,7 @@ public interface NetworkTargetProductServerDataProvider {
 
     String getPasswordWhenIntranetTarget();
 
-    boolean isHavingUntrustedCertificateForIntranet();
+    boolean hasUntrustedCertificateWhenIntranetTarget();
 
-    boolean isHavingUntrustedCertificateForInternet();
+    boolean hasUntrustedCertificateWhenInternetTarget();
 }

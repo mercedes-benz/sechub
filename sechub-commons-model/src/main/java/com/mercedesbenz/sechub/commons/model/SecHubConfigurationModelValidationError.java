@@ -11,19 +11,19 @@ public enum SecHubConfigurationModelValidationError {
 
     DATA_CONFIG_OBJECT_NAME_IS_NULL("One data configuration object has `null` as defined named which is not acceptable."),
 
-    DATA_CONFIG_OBJECT_NAME_LENGTH_TOO_SMALL("Data configuration object name length is too small."),
+    DATA_CONFIG_OBJECT_NAME_LENGTH_TOO_SHORT("Data configuration object name length is too small."),
 
-    DATA_CONFIG_OBJECT_NAME_LENGTH_TOO_BIG("Data configuration object name length is too big."),
+    DATA_CONFIG_OBJECT_NAME_LENGTH_TOO_LONG("Data configuration object name length is too big."),
 
     DATA_CONFIG_OBJECT_NAME_IS_NOT_UNIQUE("Data configuration object name is not unique."),
 
-    CONTAINS_NO_SCAN_CONFIGURATION("There is not any scan option given, so cannot start scan!"),
+    CONTAINS_NO_SCAN_CONFIGURATION("Configuration does not contain any scan option. Unable to start scan!"),
 
     INFRA_SCAN_HAS_NO_URIS_OR_IPS_DEFINED("There are no URIs or IPs defined for infra scan, so cannot start scan!"),
 
-    WEB_SCAN_HAS_NO_URL_DEFINED("There are no URLs or URIs defined for web scan, so cannot start scan!"),
+    WEB_SCAN_HAS_NO_URL_DEFINED("There are no URLs or URIs defined for web scan. Cannot start scan!"),
 
-    WEB_SCAN_URL_HAS_UNSUPPORTED_SCHEMA("The URL for webscan has an unsupported schema!"),
+    WEB_SCAN_URL_HAS_UNSUPPORTED_SCHEMA("The URL for web scan has an unsupported schema!"),
 
     REFERENCED_DATA_CONFIG_OBJECT_NAME_NOT_EXISTING("The referenced config object name was not found in object!"),
 

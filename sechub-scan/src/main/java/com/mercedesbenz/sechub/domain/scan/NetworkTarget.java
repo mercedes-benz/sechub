@@ -58,7 +58,7 @@ public class NetworkTarget {
 
     @Override
     public String toString() {
-        return "NetworkTarget [type=" + type + ",uri=" + uri + ", inetAdress=" + inetAdress + "]";
+        return "NetworkTarget [type=" + type + ", uri=" + uri + ", inetAdress=" + inetAdress + "]";
     }
 
     private void assertTargetTypeNotNull(NetworkTargetType type) {

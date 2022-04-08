@@ -114,10 +114,10 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
         if (scanType != ScanType.CODE_SCAN) {
             return;
         }
-        // the information about pathes is interesting for debugging but also necessary
+        // the information about paths is interesting for debugging but also necessary
         // for our integration tests - see mocked_setup.json
-        Set<String> pathes = new LinkedHashSet<>();
-        data.codeUploadFileSytemFolderPathes = pathes;
+        Set<String> paths = new LinkedHashSet<>();
+        data.codeUploadFileSystemFolderPaths = paths;
 
         SecHubConfiguration configuration = data.getSechubExecutionContext().getConfiguration();
         Optional<SecHubCodeScanConfiguration> codeScanOpt = configuration.getCodeScan();
@@ -125,7 +125,7 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
             return;
         }
         SecHubCodeScanConfiguration codeScan = codeScanOpt.get();
-        addFileSystemParts(pathes, codeScan);
+        addFileSystemParts(paths, codeScan);
         Set<String> usedNames = codeScan.getNamesOfUsedDataConfigurationObjects();
         if (usedNames.isEmpty()) {
             return;
@@ -141,11 +141,11 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
                 continue;
             }
             SecHubSourceDataConfiguration sourceDataConfig = (SecHubSourceDataConfiguration) config;
-            addFileSystemParts(pathes, sourceDataConfig);
+            addFileSystemParts(paths, sourceDataConfig);
         }
     }
 
-    private void addFileSystemParts(Set<String> pathes, SecHubFileSystemContainer container) {
+    private void addFileSystemParts(Set<String> paths, SecHubFileSystemContainer container) {
         Optional<SecHubFileSystemConfiguration> fileSystemOpt = container.getFileSystem();
 
         if (!fileSystemOpt.isPresent()) {
@@ -153,8 +153,8 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
         }
         SecHubFileSystemConfiguration fileSystem = fileSystemOpt.get();
 
-        pathes.addAll(fileSystem.getFiles());
-        pathes.addAll(fileSystem.getFolders());
+        paths.addAll(fileSystem.getFiles());
+        paths.addAll(fileSystem.getFolders());
     }
 
     protected abstract void customize(ProductExecutorData data);
@@ -204,18 +204,18 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
         /* check preconditions */
         NetworkTargetProductServerDataProvider networkTargetDataProvider = data.networkTargetDataProvider;
         if (networkTargetDataProvider == null) {
-            throw new IllegalStateException("No network target data provider set, but necessary for scantype:" + scanType
+            throw new IllegalStateException("No network target data provider set, but necessary for scantype: " + scanType
                     + "\nInject this at customize method inside " + getClass().getName());
         }
 
         NetworkLocationProvider networkLocationProvider = data.networkLocationProvider;
         if (networkLocationProvider == null) {
-            throw new IllegalStateException("No network location provier set, but necessary for scantype:" + scanType
+            throw new IllegalStateException("No network location provier set, but necessary for scantype: " + scanType
                     + "\nInject this at customize method inside " + getClass().getName());
         }
 
-        NetworkTargetProductServerDataSuppport networkTargetDataSupport = new NetworkTargetProductServerDataSuppport(networkTargetDataProvider);
-        data.networkTargetDataSupport = networkTargetDataSupport;
+        NetworkTargetProductServerDataSuppport networkTargetProductServerDataSupport = new NetworkTargetProductServerDataSuppport(networkTargetDataProvider);
+        data.networkTargetProductServerDataSupport = networkTargetProductServerDataSupport;
 
         NetworkTargetInfoFactory targetInfoFactory = new NetworkTargetInfoFactory(targetResolver, getClass().getSimpleName());
 
@@ -225,7 +225,7 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
                 continue;
             }
             NetworkTargetInfo infoForThisNetworkTargetType = targetInfoFactory.createInfo(networkTargetType, data.traceLogId, networkLocationProvider,
-                    networkTargetDataSupport);
+                    networkTargetProductServerDataSupport);
             if (infoForThisNetworkTargetType.containsAtLeastOneTarget()) {
                 targetRegistryInfoList.add(infoForThisNetworkTargetType);
             }

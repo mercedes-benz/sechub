@@ -73,12 +73,12 @@ public class NetworkTargetProductServerDataSuppport {
      *
      * @return <code>true</code> when having untrusted certificate
      */
-    boolean isHavingUntrustedCertificate(NetworkTargetType target) {
+    boolean hasUntrustedCertificate(NetworkTargetType target) {
         if (isIntranet(target)) {
-            return networkTargetDataProvider.isHavingUntrustedCertificateForIntranet();
+            return networkTargetDataProvider.hasUntrustedCertificateWhenIntranetTarget();
         }
         if (isInternet(target)) {
-            return networkTargetDataProvider.isHavingUntrustedCertificateForInternet();
+            return networkTargetDataProvider.hasUntrustedCertificateWhenInternetTarget();
         }
         throw createUnsupportedTargetTypeException(target);
     }

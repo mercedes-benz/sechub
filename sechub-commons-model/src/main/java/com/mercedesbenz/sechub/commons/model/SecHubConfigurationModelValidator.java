@@ -88,7 +88,7 @@ public class SecHubConfigurationModelValidator {
         for (String name : names) {
             if (!context.wellknownObjectNames.contains(name)) {
                 context.result.addError(REFERENCED_DATA_CONFIG_OBJECT_NAME_NOT_EXISTING,
-                        "The referenced name:'" + SimpleStringUtils.truncateWhenTooLong(name, MAX_NAME_LENGTH) + "' is not found in model");
+                        "The referenced name: '" + SimpleStringUtils.truncateWhenTooLong(name, MAX_NAME_LENGTH) + "' is not found in model");
             }
         }
     }
@@ -117,12 +117,12 @@ public class SecHubConfigurationModelValidator {
     }
 
     private void handleOpenApi(InternalValidationContext context, SecHubWebScanConfiguration webScan) {
-        Optional<SecHubOpenAPIConfiguration> openApiopt = webScan.getOpenApi();
-        if (!openApiopt.isPresent()) {
+        Optional<SecHubOpenAPIConfiguration> openApiOpt = webScan.getOpenApi();
+        if (!openApiOpt.isPresent()) {
             return;
         }
 
-        SecHubOpenAPIConfiguration openApi = openApiopt.get();
+        SecHubOpenAPIConfiguration openApi = openApiOpt.get();
         handleUsages(context, openApi);
     }
 
@@ -146,12 +146,12 @@ public class SecHubConfigurationModelValidator {
 
         SecHubDataConfiguration data = dataOpt.get();
 
-        validateNameUniquenAndNotNull(context, data.getSources());
-        validateNameUniquenAndNotNull(context, data.getBinaries());
+        validateNameUniqueAndNotNull(context, data.getSources());
+        validateNameUniqueAndNotNull(context, data.getBinaries());
 
     }
 
-    private void validateNameUniquenAndNotNull(InternalValidationContext context, Collection<? extends SecHubDataConfigurationObject> configurationObjects) {
+    private void validateNameUniqueAndNotNull(InternalValidationContext context, Collection<? extends SecHubDataConfigurationObject> configurationObjects) {
 
         SecHubConfigurationModelValidationResult result = context.result;
 
@@ -162,11 +162,11 @@ public class SecHubConfigurationModelValidator {
                 continue;
             }
             if (uniqueName.length() < MIN_NAME_LENGTH) {
-                result.addError(DATA_CONFIG_OBJECT_NAME_LENGTH_TOO_SMALL, "Name '" + uniqueName + "' lengh < " + MIN_NAME_LENGTH + " characters");
+                result.addError(DATA_CONFIG_OBJECT_NAME_LENGTH_TOO_SHORT, "Name '" + uniqueName + "' lengh < " + MIN_NAME_LENGTH + " characters");
             }
 
             if (uniqueName.length() > MAX_NAME_LENGTH) {
-                result.addError(DATA_CONFIG_OBJECT_NAME_LENGTH_TOO_BIG,
+                result.addError(DATA_CONFIG_OBJECT_NAME_LENGTH_TOO_LONG,
                         "Name '" + SimpleStringUtils.truncateWhenTooLong(uniqueName, MAX_NAME_LENGTH) + "' length > " + MAX_NAME_LENGTH + " characters");
             }
 
