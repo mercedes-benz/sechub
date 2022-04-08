@@ -9,14 +9,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigRepository;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetup;
-import com.mercedesbenz.sechub.domain.scan.report.ScanReportProductExecutor;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
@@ -43,6 +45,30 @@ public abstract class AbstractProductExecutionService implements ProductExection
 
     @Autowired
     ProductExecutorContextFactory productExecutorContextFactory;
+
+    @Autowired
+    List<ProductExecutor> allAvailableProductExecutors;
+
+    ScanTypeBasedProductExecutorFilter scanTypeFilter;
+
+    private List<ProductExecutor> registeredProductExecutors = new ArrayList<>();
+
+    public AbstractProductExecutionService() {
+        this.scanTypeFilter = new ScanTypeBasedProductExecutorFilter(getScanType());
+    }
+
+    List<ProductExecutor> getProductExecutors() {
+        return registeredProductExecutors;
+    }
+
+    protected abstract ScanType getScanType();
+
+    @PostConstruct
+    protected void registerProductExecutorsForScanTypes() {
+        this.registeredProductExecutors.addAll(scanTypeFilter.filter(allAvailableProductExecutors));
+
+        LOG.info("{} has registered {} product executors:{}", getClass().getSimpleName(), registeredProductExecutors.size(), registeredProductExecutors);
+    }
 
     /**
      * Executes product executors and stores results. If a result of an executor is
@@ -78,8 +104,6 @@ public abstract class AbstractProductExecutionService implements ProductExection
         executorConfiguration.getSetup().setBaseURL("embedded");
         return executorConfiguration;
     }
-
-    protected abstract List<? extends ProductExecutor> getProductExecutors();
 
     protected abstract boolean isExecutionNecessary(SecHubExecutionContext context, UUIDTraceLogID traceLogID, SecHubConfiguration configuration);
 
@@ -124,7 +148,7 @@ public abstract class AbstractProductExecutionService implements ProductExection
         String projectId = configuration.getProjectId();
         requireNonNull(projectId, "Project id must be set");
 
-        int countOfReports = 0;
+        int countOfReportProductExecutor = 0;
         ProductExecutor serecoProductExecutor = null;
 
         for (ProductExecutor productExecutor : executors) {
@@ -149,15 +173,17 @@ public abstract class AbstractProductExecutionService implements ProductExection
                 }
                 for (ProductExecutorConfig executorConfiguration : executorConfigurations) {
                     runOnExecutorWithOneConfiguration(executorConfiguration, productExecutor, context, projectId, traceLogID);
-                    if (productExecutor instanceof ScanReportProductExecutor) {
-                        countOfReports++;
+
+                    ScanType scanType = productExecutor.getScanType();
+                    if (ScanType.REPORT.equals(scanType)) {
+                        countOfReportProductExecutor++;
                     }
                 }
 
             }
         }
 
-        if (serecoProductExecutor != null && countOfReports == 0) {
+        if (serecoProductExecutor != null && countOfReportProductExecutor == 0) {
             LOG.debug("no dedicated configuration for report execution was executed before, so fallback to sereco default behaviour");
             runOnExecutorWithOneConfiguration(SERECO_FALLBACK, serecoProductExecutor, context, projectId, traceLogID);
         }

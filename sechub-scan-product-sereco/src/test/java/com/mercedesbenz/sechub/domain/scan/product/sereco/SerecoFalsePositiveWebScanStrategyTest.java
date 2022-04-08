@@ -45,9 +45,9 @@ class SerecoFalsePositiveWebScanStrategyTest {
     /* @formatter:off */
 
     /* --------------------------------------------------------------------------------*/
-    /* -----------Target tests---------------------------------------------------------*/
+    /* -----------NetworkTarget tests---------------------------------------------------------*/
     /* --------------------------------------------------------------------------------*/
-    @DisplayName("Not false positive. Target changed to other value in metadata")
+    @DisplayName("Not false positive. NetworkTarget changed to other value in metadata")
     @NullSource
     @EmptySource
     @CsvSource({"other-target", ATTACK_VECTOR1+"."})
@@ -63,7 +63,7 @@ class SerecoFalsePositiveWebScanStrategyTest {
         assertFalse(isFalsePositive);
     }
 
-    @DisplayName("Is false positive. Target changed to similar value in metadata")
+    @DisplayName("Is false positive. NetworkTarget changed to similar value in metadata")
     @CsvSource({TARGET1+"\t", TARGET1+" "})
     @ParameterizedTest
     void is_false_positive_because_metadata_has_same_target_like_vulnerability(String target) {

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.adapter.AbstractAdapterConfigBuilder;
-import com.mercedesbenz.sechub.domain.scan.TargetType;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 
 @Component
@@ -27,18 +26,6 @@ public class PDSInstallSetupImpl implements PDSInstallSetup {
 
     public int getDefaultTimeOutInMinutes() {
         return defaultTimeOutInMinutes;
-    }
-
-    @Override
-    public boolean isAbleToScan(TargetType targetType) {
-        if (targetType == null) {
-            return false;
-        }
-        /*
-         * Otherwise this setup will always answer true - will be done dynamically at
-         * executor reading its configuration.
-         */
-        return true;
     }
 
 }

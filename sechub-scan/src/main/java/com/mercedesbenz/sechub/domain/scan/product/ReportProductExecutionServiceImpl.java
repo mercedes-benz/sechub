@@ -1,22 +1,16 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.mercedesbenz.sechub.domain.scan.report.ScanReportProductExecutor;
+import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 
 /**
- * This service executes all registered {@link ScanReportProductExecutor}
- * instances and stores those data
+ * This service executes all registered product executors having scan type
+ * {@link ScanType#REPORT}
  *
  * @author Albert Tregnaghi
  *
@@ -24,29 +18,14 @@ import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 @Service
 public class ReportProductExecutionServiceImpl extends AbstractProductExecutionService implements ReportProductExecutionService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ReportProductExecutionServiceImpl.class);
-
-    private List<ScanReportProductExecutor> reportProductExecutors = new ArrayList<>();
-
-    @Autowired
-    public ReportProductExecutionServiceImpl(List<ScanReportProductExecutor> reportProductExecutors) {
-        this.reportProductExecutors.addAll(reportProductExecutors);
-
-        LOG.info("Registered report product executors:{}", reportProductExecutors);
+    public boolean isExecutionNecessary(SecHubExecutionContext context, UUIDTraceLogID traceLogID, SecHubConfiguration configuration) {
+        /* reporting does not rely on configuration - must be executed always */
+        return true;
     }
 
     @Override
-    protected List<ScanReportProductExecutor> getProductExecutors() {
-        return reportProductExecutors;
-    }
-
-    public boolean isExecutionNecessary(SecHubExecutionContext context, UUIDTraceLogID traceLogID, SecHubConfiguration configuration) {
-        /*
-         * TODO Albert Tregnaghi, 2018-02-15: here should be checked if this is a
-         * reentrant - and an result is already existing for the report - if exists,
-         * just return false... and we save time...
-         */
-        return true;
+    protected ScanType getScanType() {
+        return ScanType.REPORT;
     }
 
 }

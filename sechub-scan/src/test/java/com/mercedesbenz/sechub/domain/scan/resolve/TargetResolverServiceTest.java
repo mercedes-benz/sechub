@@ -14,8 +14,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.mercedesbenz.sechub.domain.scan.Target;
-import com.mercedesbenz.sechub.domain.scan.TargetType;
+import com.mercedesbenz.sechub.domain.scan.NetworkTarget;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
 
 public class TargetResolverServiceTest {
 
@@ -27,10 +27,10 @@ public class TargetResolverServiceTest {
         URI uri = URI.create("https://productfailure.demo.example.org");
 
         /* execute */
-        Target found = serviceToTest.resolveTarget(uri);
+        NetworkTarget found = serviceToTest.resolveTarget(uri);
 
         /* test */
-        assertEquals(new Target(uri, TargetType.INTERNET), found);
+        assertEquals(new NetworkTarget(uri, NetworkTargetType.INTERNET), found);
     }
 
     @Test
@@ -45,10 +45,10 @@ public class TargetResolverServiceTest {
         URI uri = URI.create("https://productfailure.demo.example.org");
 
         /* execute */
-        Target found = serviceToTest.resolveTarget(uri);
+        NetworkTarget found = serviceToTest.resolveTarget(uri);
 
         /* test */
-        assertEquals(new Target(uri, TargetType.INTERNET), found);
+        assertEquals(new NetworkTarget(uri, NetworkTargetType.INTERNET), found);
 
     }
 
@@ -61,10 +61,10 @@ public class TargetResolverServiceTest {
         InetAddress address = Inet4Address.getByName("172.217.22.99");
 
         /* execute */
-        Target found = serviceToTest.resolveTarget(address);
+        NetworkTarget found = serviceToTest.resolveTarget(address);
 
         /* test */
-        assertEquals(new Target(address, TargetType.INTERNET), found);
+        assertEquals(new NetworkTarget(address, NetworkTargetType.INTERNET), found);
     }
 
     @Test
@@ -80,24 +80,24 @@ public class TargetResolverServiceTest {
         InetAddress address = Inet4Address.getByName("172.217.22.99");
 
         /* execute */
-        Target found = serviceToTest.resolveTarget(address);
+        NetworkTarget found = serviceToTest.resolveTarget(address);
 
         /* test */
-        assertEquals(new Target(address, TargetType.INTERNET), found);
+        assertEquals(new NetworkTarget(address, NetworkTargetType.INTERNET), found);
 
     }
 
     @Test
     public void null_URI_is_resolved_as_unknown_without_strategy_call() throws Exception {
         /* null always handled by fallback strategy as unknown */
-        assertEquals(new Target((URI) null, TargetType.UNKNOWN), serviceToTest.resolveTarget((URI) null));
+        assertEquals(new NetworkTarget((URI) null, NetworkTargetType.UNKNOWN), serviceToTest.resolveTarget((URI) null));
 
         verify(uriTestStrategy1, never()).resolveTargetFor(any());
     }
 
     @Test
     public void null_IP_address_is_resolved_as_unknown_without_strategy_call() throws Exception {
-        assertEquals(new Target((InetAddress) null, TargetType.UNKNOWN), serviceToTest.resolveTarget((InetAddress) null));
+        assertEquals(new NetworkTarget((InetAddress) null, NetworkTargetType.UNKNOWN), serviceToTest.resolveTarget((InetAddress) null));
         verify(ipTestStrategy1, never()).resolveTargetFor(any());
     }
 
@@ -108,7 +108,7 @@ public class TargetResolverServiceTest {
         when(illegalURITargetDetector.isIllegal(uri)).thenReturn(true);
 
         /* test */
-        assertEquals(new Target(uri, TargetType.ILLEGAL), serviceToTest.resolveTarget(uri));
+        assertEquals(new NetworkTarget(uri, NetworkTargetType.ILLEGAL), serviceToTest.resolveTarget(uri));
         verify(illegalURITargetDetector).isIllegal(uri);
     }
 
@@ -120,7 +120,7 @@ public class TargetResolverServiceTest {
         when(illegalInetAdressTargetDetector.isIllegal(inetAddress)).thenReturn(true);
 
         /* execute + test */
-        assertEquals(new Target(inetAddress, TargetType.ILLEGAL), serviceToTest.resolveTarget(inetAddress));
+        assertEquals(new NetworkTarget(inetAddress, NetworkTargetType.ILLEGAL), serviceToTest.resolveTarget(inetAddress));
 
     }
 
@@ -137,10 +137,6 @@ public class TargetResolverServiceTest {
         assertEquals(uriTarget1, serviceToTest.resolveTarget(URI.create("https://example.com")));
     }
 
-    @Test
-    public void path_always_resolved_as_code() throws Exception {
-        assertEquals(new Target("x", TargetType.CODE_UPLOAD), serviceToTest.resolveTargetForPath("x"));
-    }
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
     /* + ................Helpers......................... + */
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
@@ -149,14 +145,14 @@ public class TargetResolverServiceTest {
 
     private URITargetResolveStrategy uriTestStrategy1;
     private URITargetResolveStrategy uriTestStrategy2;
-    private Target uriTarget1;
+    private NetworkTarget uriTarget1;
 
     private IllegalInetAddressTargetDetector illegalInetAdressTargetDetector;
     private IllegalURItargetDetector illegalURITargetDetector;
 
     private InetAdressTargetResolveStrategy ipTestStrategy1;
     private InetAdressTargetResolveStrategy ipTestStrategy2;
-    private Target inetAddressTarget1;
+    private NetworkTarget inetAddressTarget1;
 
     @Before
     public void before() throws Exception {
@@ -190,7 +186,7 @@ public class TargetResolverServiceTest {
         ipTestStrategy1 = mock(InetAdressTargetResolveStrategy.class);
         ipTestStrategy2 = mock(InetAdressTargetResolveStrategy.class);
 
-        inetAddressTarget1 = mock(Target.class);
+        inetAddressTarget1 = mock(NetworkTarget.class);
 
         when(ipTestStrategy1.initialize("ip-test-strategy-1")).thenReturn(true);
         when(ipTestStrategy1.resolveTargetFor(any())).thenReturn(inetAddressTarget1);
@@ -208,7 +204,7 @@ public class TargetResolverServiceTest {
         uriTestStrategy1 = mock(URITargetResolveStrategy.class);
         uriTestStrategy2 = mock(URITargetResolveStrategy.class);
 
-        uriTarget1 = mock(Target.class);
+        uriTarget1 = mock(NetworkTarget.class);
 
         when(uriTestStrategy1.initialize("uri-test-strategy-1")).thenReturn(true);
         when(uriTestStrategy1.resolveTargetFor(any())).thenReturn(uriTarget1);
