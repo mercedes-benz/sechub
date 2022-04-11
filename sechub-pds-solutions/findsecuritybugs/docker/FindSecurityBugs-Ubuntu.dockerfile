@@ -16,11 +16,11 @@ ENV DOWNLOAD_FOLDER="/downloads"
 ENV MOCK_FOLDER="$SCRIPT_FOLDER/mocks"
 
 # FindSecurityBugs (FSB)
-ARG FSB_VERSION="1.11.0"
-ARG FSB_SHA256SUM="3f6e5af3a19e7f0ad1d07a30a3c2afa3d4d822a261ed893b57fe89ed336f04cb"
+ARG FSB_VERSION="1.12.0"
+ARG FSB_SHA256SUM="a50bd4741a68c6886bbc03d20da9ded44bce4dd7d0d2eee19ceb338dd644cd55"
 
 # PDS
-ENV PDS_VERSION=0.25.0
+ENV PDS_VERSION=0.27.0
 
 # Shared volumes
 ENV SHARED_VOLUMES="/shared_volumes"
@@ -39,7 +39,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && \
     apt-get --assume-yes upgrade  && \
-    apt-get --assume-yes install dos2unix unzip wget openjdk-11-jre-headless && \
+    apt-get --assume-yes install dos2unix unzip wget openjdk-17-jre-headless && \
     apt-get --assume-yes clean
 
 # Copy scripts
@@ -67,14 +67,14 @@ RUN cd "$DOWNLOAD_FOLDER" && \
 # Install the SecHub Product Delegation Server (PDS)
 RUN cd "$PDS_FOLDER" && \
     # download checksum file
-    wget --no-verbose "https://github.com/Daimler/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar.sha256sum" && \
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar.sha256sum" && \
     # download pds
-    wget --no-verbose "https://github.com/Daimler/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar" && \
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar" && \
     # verify that the checksum and the checksum of the file are same
     sha256sum --check sechub-pds-$PDS_VERSION.jar.sha256sum
 
 # Copy PDS configfile
-COPY pds-config.json /$PDS_FOLDER/pds-config.json
+COPY pds-config.json "/$PDS_FOLDER/pds-config.json"
 
 # Copy run script into container
 COPY run.sh /run.sh
