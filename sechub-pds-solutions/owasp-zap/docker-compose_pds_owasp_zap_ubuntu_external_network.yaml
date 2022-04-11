@@ -1,0 +1,19 @@
+# SPDX-License-Identifier: MIT
+
+version: "3"
+services:
+  pds-owasp-zap-ubuntu:
+    build:
+      args:
+        - BASE_IMAGE=ubuntu:20.04
+      context: docker/
+      dockerfile: Owasp-Zap-Ubuntu.dockerfile
+    container_name: pds-owasp-zap-ubuntu
+    env_file:
+      - .env
+    networks:
+      - "sechub"
+networks:
+  sechub:
+    external: true
+    name: "sechub"

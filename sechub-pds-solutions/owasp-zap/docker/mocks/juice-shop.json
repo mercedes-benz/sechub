@@ -1,0 +1,2320 @@
+{
+	"@version": "2.11.0",
+	"@generated": "Tue, 12 Oct 2021 20:12:20",
+	"site":[ 
+		{
+			"@name": "https://juice-shop.example.org",
+			"@host": "juice-shop.example.org",
+			"@port": "443",
+			"@ssl": "true",
+			"alerts": [ 
+				{
+					"pluginid": "40018",
+					"alertRef": "40018",
+					"alert": "SQL Injection - SQLite",
+					"name": "SQL Injection - SQLite",
+					"riskcode": "3",
+					"confidence": "2",
+					"riskdesc": "High (Medium)",
+					"desc": "<p>SQL injection may be possible.</p>",
+					"instances":[ 
+						{
+							"uri": "https://juice-shop.example.org/rest/products/search?q=%27%28",
+							"method": "GET",
+							"param": "q",
+							"attack": "'(",
+							"evidence": "SQLITE_ERROR"
+						}
+					],
+					"count": "1",
+					"solution": "<p>Do not trust client side input, even if there is client side validation in place.  </p><p>In general, type check all data on the server side.</p><p>If the application uses JDBC, use PreparedStatement or CallableStatement, with parameters passed by '?'</p><p>If the application uses ASP, use ADO Command Objects with strong type checking and parameterized queries.</p><p>If database Stored Procedures can be used, use them.</p><p>Do *not* concatenate strings into queries in the stored procedure, or use 'exec', 'exec immediate', or equivalent functionality!</p><p>Do not create dynamic SQL queries using simple string concatenation.</p><p>Escape all data received from the client.</p><p>Apply an 'allow list' of allowed characters, or a 'deny list' of disallowed characters in user input.</p><p>Apply the principle of least privilege by using the least privileged database user possible.</p><p>In particular, avoid using the 'sa' or 'db-owner' database users. This does not eliminate SQL injection, but minimizes its impact.</p><p>Grant the minimum database access that is necessary for the application.</p>",
+					"otherinfo": "<p>RDBMS [SQLite] likely, given error message regular expression [SQLITE_ERROR] matched by the HTML results.</p><p>The vulnerability was detected by manipulating the parameter to cause a database error message to be returned and recognised</p>",
+					"reference": "<p>https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html</p>",
+					"cweid": "89",
+					"wascid": "19",
+					"sourceid": "2665"
+				},
+				{
+					"pluginid": "10098",
+					"alertRef": "10098",
+					"alert": "Cross-Domain Misconfiguration",
+					"name": "Cross-Domain Misconfiguration",
+					"riskcode": "2",
+					"confidence": "2",
+					"riskdesc": "Medium (Medium)",
+					"desc": "<p>Web browser data loading may be possible, due to a Cross Origin Resource Sharing (CORS) misconfiguration on the web server</p>",
+					"instances":[ 
+						{
+							"uri": "https://juice-shop.example.org",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/api/Challenges/?name=Score%20Board",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/api/Feedbacks/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/api/Quantitys/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/api/SecurityQuestions/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/i18n/en.json",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/public/favicon_js.ico",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/public/images/carousel/1.jpg",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/public/images/carousel/2.jpg",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/public/images/carousel/3.jpg",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/public/images/carousel/4.jpg",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/public/images/carousel/5.png",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/public/images/carousel/6.jpg",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/public/images/carousel/7.jpg",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/public/images/hackingInstructor.png",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/public/images/JuiceShop_Logo.png",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/public/images/products/20th.jpeg",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/public/images/products/apple_juice.jpg",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/public/images/products/apple_pressings.jpg",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/public/images/products/artwork2.jpg",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/public/images/products/banana_juice.jpg",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/public/images/products/carrot_juice.jpeg",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/public/images/products/eggfruit_juice.jpg",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/public/images/products/fruit_press.jpg",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/public/images/products/green_smoothie.jpg",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/public/images/products/lemon_juice.jpg",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/public/images/products/melon_bike.jpeg",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/public/images/products/no-results.png",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/public/images/products/permafrost.jpg",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/public/images/uploads/%F0%9F%98%BC-",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/public/images/uploads/favorite-hiking-place.png",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/public/images/uploads/IMG_4253.jpg",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/public/images/uploads/magn(et)ificent!-1571814229653.jpg",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/public/images/uploads/my-rare-collectors-item!-%5B%CC%B2%CC%85$%CC%B2%CC%85(%CC%B2%CC%85-%CD%A1%C2%B0-%CD%9C%CA%96-%CD%A1%C2%B0%CC%B2%CC%85)%CC%B2%CC%85$%CC%B2%CC%85%5D-1572603645543.jpg",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/font-mfizz.woff",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/ftp",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/ftp/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/ftp/acquisitions.md",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/ftp/announcement_encrypted.md",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/ftp/coupons_2013.md.bak",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/ftp/eastere.gg",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/ftp/encrypt.pyc",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/ftp/incident-support.kdbx",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/ftp/legal.md",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/ftp/package.json.bak",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/ftp/quarantine",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/ftp/quarantine/juicy_malware_linux_amd_64.url",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/ftp/quarantine/juicy_malware_linux_arm_64.url",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/ftp/quarantine/juicy_malware_macos_64.url",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/ftp/quarantine/juicy_malware_windows_64.exe.url",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/ftp/suspicious_errors.yml",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/main-es2018.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/main-es5.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/MaterialIcons-Regular.woff2",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/polyfills-es2018.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/polyfills-es5.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/rest/admin/application-configuration",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/rest/admin/application-version",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/rest/captcha/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/rest/continue-code",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/rest/languages",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/rest/memories/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/rest/products/search?q=",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/rest/user/whoami",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/robots.txt",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/runtime-es2018.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/runtime-es5.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/sitemap.xml",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/styles.css",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/tutorial-es2018.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/vendor-es2018.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						},
+						{
+							"uri": "https://juice-shop.example.org/vendor-es5.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Access-Control-Allow-Origin: *"
+						}
+					],
+					"count": "73",
+					"solution": "<p>Ensure that sensitive data is not available in an unauthenticated manner (using IP address white-listing, for instance).</p><p>Configure the \"Access-Control-Allow-Origin\" HTTP header to a more restrictive set of domains, or remove all CORS headers entirely, to allow the web browser to enforce the Same Origin Policy (SOP) in a more restrictive manner.</p>",
+					"otherinfo": "<p>The CORS misconfiguration on the web server permits cross-domain read requests from arbitrary third party domains, using unauthenticated APIs on this domain. Web browser implementations do not permit arbitrary third parties to read the response from authenticated APIs, however. This reduces the risk somewhat. This misconfiguration could be used by an attacker to access data that is available in an unauthenticated manner, but which uses some other form of security, such as IP address white-listing.</p>",
+					"reference": "<p>https://vulncat.fortify.com/en/detail?id=desc.config.dotnet.html5_overly_permissive_cors_policy</p>",
+					"cweid": "264",
+					"wascid": "14",
+					"sourceid": "6"
+				},
+				{
+					"pluginid": "3",
+					"alertRef": "3",
+					"alert": "Session ID in URL Rewrite",
+					"name": "Session ID in URL Rewrite",
+					"riskcode": "2",
+					"confidence": "3",
+					"riskdesc": "Medium (High)",
+					"desc": "<p>URL rewrite is used to track user session ID. The session ID may be disclosed via cross-site referer header. In addition, the session ID might be stored in browser history or server logs.</p>",
+					"instances":[ 
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb8-8&sid=V3LVWD0i2uR_0SjRAAAC",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "V3LVWD0i2uR_0SjRAAAC"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb8bt&sid=u2GGUpR627LnpFF5AAAA",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "u2GGUpR627LnpFF5AAAA"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb8ye&sid=V3LVWD0i2uR_0SjRAAAC",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "V3LVWD0i2uR_0SjRAAAC"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb8Ym&sid=u2GGUpR627LnpFF5AAAA",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "u2GGUpR627LnpFF5AAAA"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb_81&sid=9lzmiN_TPh6-aBDxAAAe",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "9lzmiN_TPh6-aBDxAAAe"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb_Ew&sid=jQOa1yhF52kUGPsIAAAg",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "jQOa1yhF52kUGPsIAAAg"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb_F_&sid=jQOa1yhF52kUGPsIAAAg",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "jQOa1yhF52kUGPsIAAAg"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbBKK&sid=Zbgy7nxKM3YhNTYgAAAE",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "Zbgy7nxKM3YhNTYgAAAE"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbBM1&sid=Zbgy7nxKM3YhNTYgAAAE",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "Zbgy7nxKM3YhNTYgAAAE"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbcHr&sid=22UrLm4xkKo-NCZ2AAAU",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "22UrLm4xkKo-NCZ2AAAU"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbcJ8&sid=22UrLm4xkKo-NCZ2AAAU",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "22UrLm4xkKo-NCZ2AAAU"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbDAV&sid=0oCVbLgaxGMpAR-5AAAG",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "0oCVbLgaxGMpAR-5AAAG"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbDCI&sid=0oCVbLgaxGMpAR-5AAAG",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "0oCVbLgaxGMpAR-5AAAG"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbDXC&sid=WCO35oA1LSM3_OYrAAAI",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "WCO35oA1LSM3_OYrAAAI"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbDYr&sid=WCO35oA1LSM3_OYrAAAI",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "WCO35oA1LSM3_OYrAAAI"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbFkL&sid=BldDUpmyxHTpzcYtAAAK",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "BldDUpmyxHTpzcYtAAAK"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbFlL&sid=BldDUpmyxHTpzcYtAAAK",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "BldDUpmyxHTpzcYtAAAK"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbifU&sid=S4Wvy09t532gwzH1AAAW",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "S4Wvy09t532gwzH1AAAW"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrbigp&sid=S4Wvy09t532gwzH1AAAW",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "S4Wvy09t532gwzH1AAAW"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbLmx&sid=phZitZcA0t2GI2TIAAAM",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "phZitZcA0t2GI2TIAAAM"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbLnt&sid=phZitZcA0t2GI2TIAAAM",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "phZitZcA0t2GI2TIAAAM"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbqFb&sid=2QGfRrlRE-yR_LWIAAAY",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "2QGfRrlRE-yR_LWIAAAY"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbqFI&sid=2QGfRrlRE-yR_LWIAAAY",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "2QGfRrlRE-yR_LWIAAAY"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbqWg&sid=b3X9oRIvd-a_I_9WAAAa",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "b3X9oRIvd-a_I_9WAAAa"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbqXz&sid=b3X9oRIvd-a_I_9WAAAa",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "b3X9oRIvd-a_I_9WAAAa"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbTTg&sid=DejJy0y8PV9YtkZSAAAO",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "DejJy0y8PV9YtkZSAAAO"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbTTL&sid=DejJy0y8PV9YtkZSAAAO",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "DejJy0y8PV9YtkZSAAAO"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbtTn&sid=mUKNkVa9YyhroXJnAAAc",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "mUKNkVa9YyhroXJnAAAc"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbtUY&sid=mUKNkVa9YyhroXJnAAAc",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "mUKNkVa9YyhroXJnAAAc"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbU3E&sid=AV4rlvCOovbuF9MVAAAQ",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "AV4rlvCOovbuF9MVAAAQ"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbU5j&sid=AV4rlvCOovbuF9MVAAAQ",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "AV4rlvCOovbuF9MVAAAQ"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbZB7&sid=eCiFd3frOhfFZCXxAAAS",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "eCiFd3frOhfFZCXxAAAS"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbZCB&sid=eCiFd3frOhfFZCXxAAAS",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "eCiFd3frOhfFZCXxAAAS"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrc6_L&sid=eBccJkWda9K9u-teAAAk",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "eBccJkWda9K9u-teAAAk"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrc6to&sid=wY2YCbabl0kbyeubAAAi",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "wY2YCbabl0kbyeubAAAi"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrc70z&sid=eBccJkWda9K9u-teAAAk",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "eBccJkWda9K9u-teAAAk"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrcEty&sid=Dt6xy6KrPole_rriAAAo",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "Dt6xy6KrPole_rriAAAo"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrcEvL&sid=Dt6xy6KrPole_rriAAAo",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "Dt6xy6KrPole_rriAAAo"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrcEZo&sid=DDtdm9X3Kg5o2sIpAAAm",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "DDtdm9X3Kg5o2sIpAAAm"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrcEZZ&sid=DDtdm9X3Kg5o2sIpAAAm",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "DDtdm9X3Kg5o2sIpAAAm"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=websocket&sid=0oCVbLgaxGMpAR-5AAAG",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "0oCVbLgaxGMpAR-5AAAG"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=websocket&sid=22UrLm4xkKo-NCZ2AAAU",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "22UrLm4xkKo-NCZ2AAAU"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=websocket&sid=2QGfRrlRE-yR_LWIAAAY",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "2QGfRrlRE-yR_LWIAAAY"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=websocket&sid=9lzmiN_TPh6-aBDxAAAe",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "9lzmiN_TPh6-aBDxAAAe"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=websocket&sid=AV4rlvCOovbuF9MVAAAQ",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "AV4rlvCOovbuF9MVAAAQ"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=websocket&sid=b3X9oRIvd-a_I_9WAAAa",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "b3X9oRIvd-a_I_9WAAAa"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=websocket&sid=BldDUpmyxHTpzcYtAAAK",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "BldDUpmyxHTpzcYtAAAK"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=websocket&sid=DDtdm9X3Kg5o2sIpAAAm",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "DDtdm9X3Kg5o2sIpAAAm"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=websocket&sid=DejJy0y8PV9YtkZSAAAO",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "DejJy0y8PV9YtkZSAAAO"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=websocket&sid=Dt6xy6KrPole_rriAAAo",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "Dt6xy6KrPole_rriAAAo"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=websocket&sid=eBccJkWda9K9u-teAAAk",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "eBccJkWda9K9u-teAAAk"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=websocket&sid=eCiFd3frOhfFZCXxAAAS",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "eCiFd3frOhfFZCXxAAAS"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=websocket&sid=jQOa1yhF52kUGPsIAAAg",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "jQOa1yhF52kUGPsIAAAg"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=websocket&sid=mUKNkVa9YyhroXJnAAAc",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "mUKNkVa9YyhroXJnAAAc"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=websocket&sid=phZitZcA0t2GI2TIAAAM",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "phZitZcA0t2GI2TIAAAM"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=websocket&sid=S4Wvy09t532gwzH1AAAW",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "S4Wvy09t532gwzH1AAAW"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=websocket&sid=u2GGUpR627LnpFF5AAAA",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "u2GGUpR627LnpFF5AAAA"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=websocket&sid=V3LVWD0i2uR_0SjRAAAC",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "V3LVWD0i2uR_0SjRAAAC"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=websocket&sid=WCO35oA1LSM3_OYrAAAI",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "WCO35oA1LSM3_OYrAAAI"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=websocket&sid=wY2YCbabl0kbyeubAAAi",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "wY2YCbabl0kbyeubAAAi"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=websocket&sid=Zbgy7nxKM3YhNTYgAAAE",
+							"method": "GET",
+							"param": "sid",
+							"attack": "",
+							"evidence": "Zbgy7nxKM3YhNTYgAAAE"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb8bs&sid=u2GGUpR627LnpFF5AAAA",
+							"method": "POST",
+							"param": "sid",
+							"attack": "",
+							"evidence": "u2GGUpR627LnpFF5AAAA"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb8ep&sid=u2GGUpR627LnpFF5AAAA",
+							"method": "POST",
+							"param": "sid",
+							"attack": "",
+							"evidence": "u2GGUpR627LnpFF5AAAA"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb8yd&sid=V3LVWD0i2uR_0SjRAAAC",
+							"method": "POST",
+							"param": "sid",
+							"attack": "",
+							"evidence": "V3LVWD0i2uR_0SjRAAAC"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb8Yk&sid=u2GGUpR627LnpFF5AAAA",
+							"method": "POST",
+							"param": "sid",
+							"attack": "",
+							"evidence": "u2GGUpR627LnpFF5AAAA"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb_80&sid=9lzmiN_TPh6-aBDxAAAe",
+							"method": "POST",
+							"param": "sid",
+							"attack": "",
+							"evidence": "9lzmiN_TPh6-aBDxAAAe"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb_Ev&sid=jQOa1yhF52kUGPsIAAAg",
+							"method": "POST",
+							"param": "sid",
+							"attack": "",
+							"evidence": "jQOa1yhF52kUGPsIAAAg"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbBKH&sid=Zbgy7nxKM3YhNTYgAAAE",
+							"method": "POST",
+							"param": "sid",
+							"attack": "",
+							"evidence": "Zbgy7nxKM3YhNTYgAAAE"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbcHq&sid=22UrLm4xkKo-NCZ2AAAU",
+							"method": "POST",
+							"param": "sid",
+							"attack": "",
+							"evidence": "22UrLm4xkKo-NCZ2AAAU"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbDAU&sid=0oCVbLgaxGMpAR-5AAAG",
+							"method": "POST",
+							"param": "sid",
+							"attack": "",
+							"evidence": "0oCVbLgaxGMpAR-5AAAG"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbDXB&sid=WCO35oA1LSM3_OYrAAAI",
+							"method": "POST",
+							"param": "sid",
+							"attack": "",
+							"evidence": "WCO35oA1LSM3_OYrAAAI"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbFkK&sid=BldDUpmyxHTpzcYtAAAK",
+							"method": "POST",
+							"param": "sid",
+							"attack": "",
+							"evidence": "BldDUpmyxHTpzcYtAAAK"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbifT&sid=S4Wvy09t532gwzH1AAAW",
+							"method": "POST",
+							"param": "sid",
+							"attack": "",
+							"evidence": "S4Wvy09t532gwzH1AAAW"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbLmw&sid=phZitZcA0t2GI2TIAAAM",
+							"method": "POST",
+							"param": "sid",
+							"attack": "",
+							"evidence": "phZitZcA0t2GI2TIAAAM"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbqFG&sid=2QGfRrlRE-yR_LWIAAAY",
+							"method": "POST",
+							"param": "sid",
+							"attack": "",
+							"evidence": "2QGfRrlRE-yR_LWIAAAY"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbqWe&sid=b3X9oRIvd-a_I_9WAAAa",
+							"method": "POST",
+							"param": "sid",
+							"attack": "",
+							"evidence": "b3X9oRIvd-a_I_9WAAAa"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbTTK&sid=DejJy0y8PV9YtkZSAAAO",
+							"method": "POST",
+							"param": "sid",
+							"attack": "",
+							"evidence": "DejJy0y8PV9YtkZSAAAO"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbtTm&sid=mUKNkVa9YyhroXJnAAAc",
+							"method": "POST",
+							"param": "sid",
+							"attack": "",
+							"evidence": "mUKNkVa9YyhroXJnAAAc"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbU3D&sid=AV4rlvCOovbuF9MVAAAQ",
+							"method": "POST",
+							"param": "sid",
+							"attack": "",
+							"evidence": "AV4rlvCOovbuF9MVAAAQ"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbZB6&sid=eCiFd3frOhfFZCXxAAAS",
+							"method": "POST",
+							"param": "sid",
+							"attack": "",
+							"evidence": "eCiFd3frOhfFZCXxAAAS"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrc6_J&sid=eBccJkWda9K9u-teAAAk",
+							"method": "POST",
+							"param": "sid",
+							"attack": "",
+							"evidence": "eBccJkWda9K9u-teAAAk"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrc6tn&sid=wY2YCbabl0kbyeubAAAi",
+							"method": "POST",
+							"param": "sid",
+							"attack": "",
+							"evidence": "wY2YCbabl0kbyeubAAAi"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrcEtx&sid=Dt6xy6KrPole_rriAAAo",
+							"method": "POST",
+							"param": "sid",
+							"attack": "",
+							"evidence": "Dt6xy6KrPole_rriAAAo"
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrcEZW&sid=DDtdm9X3Kg5o2sIpAAAm",
+							"method": "POST",
+							"param": "sid",
+							"attack": "",
+							"evidence": "DDtdm9X3Kg5o2sIpAAAm"
+						}
+					],
+					"count": "84",
+					"solution": "<p>For secure content, put session ID in a cookie. To be even more secure consider using a combination of cookie and URL rewrite.</p>",
+					"otherinfo": "",
+					"reference": "<p>http://seclists.org/lists/webappsec/2002/Oct-Dec/0111.html</p>",
+					"cweid": "200",
+					"wascid": "13",
+					"sourceid": "172"
+				},
+				{
+					"pluginid": "10020",
+					"alertRef": "10020",
+					"alert": "X-Frame-Options Header Not Set",
+					"name": "X-Frame-Options Header Not Set",
+					"riskcode": "2",
+					"confidence": "2",
+					"riskdesc": "Medium (Medium)",
+					"desc": "<p>X-Frame-Options header is not included in the HTTP response to protect against 'ClickJacking' attacks.</p>",
+					"instances":[ 
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb8bs&sid=u2GGUpR627LnpFF5AAAA",
+							"method": "POST",
+							"param": "X-Frame-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb8ep&sid=u2GGUpR627LnpFF5AAAA",
+							"method": "POST",
+							"param": "X-Frame-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb8yd&sid=V3LVWD0i2uR_0SjRAAAC",
+							"method": "POST",
+							"param": "X-Frame-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb8Yk&sid=u2GGUpR627LnpFF5AAAA",
+							"method": "POST",
+							"param": "X-Frame-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb_80&sid=9lzmiN_TPh6-aBDxAAAe",
+							"method": "POST",
+							"param": "X-Frame-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb_Ev&sid=jQOa1yhF52kUGPsIAAAg",
+							"method": "POST",
+							"param": "X-Frame-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbBKH&sid=Zbgy7nxKM3YhNTYgAAAE",
+							"method": "POST",
+							"param": "X-Frame-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbcHq&sid=22UrLm4xkKo-NCZ2AAAU",
+							"method": "POST",
+							"param": "X-Frame-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbDAU&sid=0oCVbLgaxGMpAR-5AAAG",
+							"method": "POST",
+							"param": "X-Frame-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbDXB&sid=WCO35oA1LSM3_OYrAAAI",
+							"method": "POST",
+							"param": "X-Frame-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbFkK&sid=BldDUpmyxHTpzcYtAAAK",
+							"method": "POST",
+							"param": "X-Frame-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbifT&sid=S4Wvy09t532gwzH1AAAW",
+							"method": "POST",
+							"param": "X-Frame-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbLmw&sid=phZitZcA0t2GI2TIAAAM",
+							"method": "POST",
+							"param": "X-Frame-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbqFG&sid=2QGfRrlRE-yR_LWIAAAY",
+							"method": "POST",
+							"param": "X-Frame-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbqWe&sid=b3X9oRIvd-a_I_9WAAAa",
+							"method": "POST",
+							"param": "X-Frame-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbTTK&sid=DejJy0y8PV9YtkZSAAAO",
+							"method": "POST",
+							"param": "X-Frame-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbtTm&sid=mUKNkVa9YyhroXJnAAAc",
+							"method": "POST",
+							"param": "X-Frame-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbU3D&sid=AV4rlvCOovbuF9MVAAAQ",
+							"method": "POST",
+							"param": "X-Frame-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbZB6&sid=eCiFd3frOhfFZCXxAAAS",
+							"method": "POST",
+							"param": "X-Frame-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrc6_J&sid=eBccJkWda9K9u-teAAAk",
+							"method": "POST",
+							"param": "X-Frame-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrc6tn&sid=wY2YCbabl0kbyeubAAAi",
+							"method": "POST",
+							"param": "X-Frame-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrcEtx&sid=Dt6xy6KrPole_rriAAAo",
+							"method": "POST",
+							"param": "X-Frame-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrcEZW&sid=DDtdm9X3Kg5o2sIpAAAm",
+							"method": "POST",
+							"param": "X-Frame-Options",
+							"attack": "",
+							"evidence": ""
+						}
+					],
+					"count": "23",
+					"solution": "<p>Most modern Web browsers support the X-Frame-Options HTTP header. Ensure it's set on all web pages returned by your site (if you expect the page to be framed only by pages on your server (e.g. it's part of a FRAMESET) then you'll want to use SAMEORIGIN, otherwise if you never expect the page to be framed, you should use DENY. Alternatively consider implementing Content Security Policy's \"frame-ancestors\" directive. </p>",
+					"otherinfo": "",
+					"reference": "<p>https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options</p>",
+					"cweid": "1021",
+					"wascid": "15",
+					"sourceid": "112"
+				},
+				{
+					"pluginid": "10017",
+					"alertRef": "10017",
+					"alert": "Cross-Domain JavaScript Source File Inclusion",
+					"name": "Cross-Domain JavaScript Source File Inclusion",
+					"riskcode": "1",
+					"confidence": "2",
+					"riskdesc": "Low (Medium)",
+					"desc": "<p>The page includes one or more script files from a third-party domain.</p>",
+					"instances":[ 
+						{
+							"uri": "https://juice-shop.example.org",
+							"method": "GET",
+							"param": "//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js",
+							"attack": "",
+							"evidence": "<script src=\"//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js\"></script>"
+						},
+						{
+							"uri": "https://juice-shop.example.org",
+							"method": "GET",
+							"param": "//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js",
+							"attack": "",
+							"evidence": "<script src=\"//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js\"></script>"
+						},
+						{
+							"uri": "https://juice-shop.example.org/",
+							"method": "GET",
+							"param": "//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js",
+							"attack": "",
+							"evidence": "<script src=\"//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js\"></script>"
+						},
+						{
+							"uri": "https://juice-shop.example.org/",
+							"method": "GET",
+							"param": "//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js",
+							"attack": "",
+							"evidence": "<script src=\"//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js\"></script>"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/public/images/uploads/%F0%9F%98%BC-",
+							"method": "GET",
+							"param": "//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js",
+							"attack": "",
+							"evidence": "<script src=\"//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js\"></script>"
+						},
+						{
+							"uri": "https://juice-shop.example.org/assets/public/images/uploads/%F0%9F%98%BC-",
+							"method": "GET",
+							"param": "//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js",
+							"attack": "",
+							"evidence": "<script src=\"//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js\"></script>"
+						},
+						{
+							"uri": "https://juice-shop.example.org/sitemap.xml",
+							"method": "GET",
+							"param": "//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js",
+							"attack": "",
+							"evidence": "<script src=\"//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js\"></script>"
+						},
+						{
+							"uri": "https://juice-shop.example.org/sitemap.xml",
+							"method": "GET",
+							"param": "//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js",
+							"attack": "",
+							"evidence": "<script src=\"//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js\"></script>"
+						}
+					],
+					"count": "8",
+					"solution": "<p>Ensure JavaScript source files are loaded from only trusted sources, and the sources can't be controlled by end users of the application.</p>",
+					"otherinfo": "",
+					"reference": "",
+					"cweid": "829",
+					"wascid": "15",
+					"sourceid": "6"
+				},
+				{
+					"pluginid": "2",
+					"alertRef": "2",
+					"alert": "Private IP Disclosure",
+					"name": "Private IP Disclosure",
+					"riskcode": "1",
+					"confidence": "2",
+					"riskdesc": "Low (Medium)",
+					"desc": "<p>A private IP (such as 10.x.x.x, 172.x.x.x, 192.168.x.x) or an Amazon EC2 private hostname (for example, ip-10-0-56-78) has been found in the HTTP response body. This information might be helpful for further attacks targeting internal systems.</p>",
+					"instances":[ 
+						{
+							"uri": "https://juice-shop.example.org/rest/admin/application-configuration",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "192.168.99.100:3000"
+						}
+					],
+					"count": "1",
+					"solution": "<p>Remove the private IP address from the HTTP response body.  For comments, use JSP/ASP/PHP comment instead of HTML/JavaScript comment which can be seen by client browsers.</p>",
+					"otherinfo": "<p>192.168.99.100:3000</p><p></p>",
+					"reference": "<p>https://tools.ietf.org/html/rfc1918</p>",
+					"cweid": "200",
+					"wascid": "13",
+					"sourceid": "78"
+				},
+				{
+					"pluginid": "10096",
+					"alertRef": "10096",
+					"alert": "Timestamp Disclosure - Unix",
+					"name": "Timestamp Disclosure - Unix",
+					"riskcode": "1",
+					"confidence": "1",
+					"riskdesc": "Low (Low)",
+					"desc": "<p>A timestamp was disclosed by the application/web server - Unix</p>",
+					"instances":[ 
+						{
+							"uri": "https://juice-shop.example.org/polyfills-es5.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "62425156"
+						},
+						{
+							"uri": "https://juice-shop.example.org/polyfills-es5.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "94906265"
+						},
+						{
+							"uri": "https://juice-shop.example.org/rest/admin/application-configuration",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "1969196030"
+						},
+						{
+							"uri": "https://juice-shop.example.org/rest/admin/application-configuration",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "1970691216"
+						},
+						{
+							"uri": "https://juice-shop.example.org/rest/admin/application-configuration",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "771984076"
+						},
+						{
+							"uri": "https://juice-shop.example.org/rest/products/search?q=",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "1969196030"
+						},
+						{
+							"uri": "https://juice-shop.example.org/rest/products/search?q=",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "1970691216"
+						},
+						{
+							"uri": "https://juice-shop.example.org/tutorial-es2018.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "771984076"
+						},
+						{
+							"uri": "https://juice-shop.example.org/vendor-es2018.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "0000000004"
+						},
+						{
+							"uri": "https://juice-shop.example.org/vendor-es2018.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "0000000005"
+						},
+						{
+							"uri": "https://juice-shop.example.org/vendor-es2018.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "0000039834"
+						},
+						{
+							"uri": "https://juice-shop.example.org/vendor-es2018.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "0000051215"
+						},
+						{
+							"uri": "https://juice-shop.example.org/vendor-es2018.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "179464974"
+						},
+						{
+							"uri": "https://juice-shop.example.org/vendor-es2018.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "1801948466"
+						},
+						{
+							"uri": "https://juice-shop.example.org/vendor-es2018.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "1801949248"
+						},
+						{
+							"uri": "https://juice-shop.example.org/vendor-es2018.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "1803700518"
+						},
+						{
+							"uri": "https://juice-shop.example.org/vendor-es5.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "0000000004"
+						},
+						{
+							"uri": "https://juice-shop.example.org/vendor-es5.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "0000000005"
+						},
+						{
+							"uri": "https://juice-shop.example.org/vendor-es5.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "0000039834"
+						},
+						{
+							"uri": "https://juice-shop.example.org/vendor-es5.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "0000051215"
+						},
+						{
+							"uri": "https://juice-shop.example.org/vendor-es5.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "179464974"
+						},
+						{
+							"uri": "https://juice-shop.example.org/vendor-es5.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "1801948466"
+						},
+						{
+							"uri": "https://juice-shop.example.org/vendor-es5.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "1801949248"
+						},
+						{
+							"uri": "https://juice-shop.example.org/vendor-es5.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "1803700518"
+						}
+					],
+					"count": "24",
+					"solution": "<p>Manually confirm that the timestamp data is not sensitive, and that the data cannot be aggregated to disclose exploitable patterns.</p>",
+					"otherinfo": "<p>62425156, which evaluates to: 1971-12-24 13:19:16</p>",
+					"reference": "<p>http://projects.webappsec.org/w/page/13246936/Information%20Leakage</p>",
+					"cweid": "200",
+					"wascid": "13",
+					"sourceid": "25"
+				},
+				{
+					"pluginid": "10021",
+					"alertRef": "10021",
+					"alert": "X-Content-Type-Options Header Missing",
+					"name": "X-Content-Type-Options Header Missing",
+					"riskcode": "1",
+					"confidence": "2",
+					"riskdesc": "Low (Medium)",
+					"desc": "<p>The Anti-MIME-Sniffing header X-Content-Type-Options was not set to 'nosniff'. This allows older versions of Internet Explorer and Chrome to perform MIME-sniffing on the response body, potentially causing the response body to be interpreted and displayed as a content type other than the declared content type. Current (early 2014) and legacy versions of Firefox will use the declared content type (if one is set), rather than performing MIME-sniffing.</p>",
+					"instances":[ 
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb8-8&sid=V3LVWD0i2uR_0SjRAAAC",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb8bt&sid=u2GGUpR627LnpFF5AAAA",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb8UA",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb8vR",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb8ye&sid=V3LVWD0i2uR_0SjRAAAC",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb8Ym&sid=u2GGUpR627LnpFF5AAAA",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb_7r",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb_81&sid=9lzmiN_TPh6-aBDxAAAe",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb_Bp",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb_Ew&sid=jQOa1yhF52kUGPsIAAAg",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb_F_&sid=jQOa1yhF52kUGPsIAAAg",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbBG_",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbBKK&sid=Zbgy7nxKM3YhNTYgAAAE",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbBM1&sid=Zbgy7nxKM3YhNTYgAAAE",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbcFH",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbcHr&sid=22UrLm4xkKo-NCZ2AAAU",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbcJ8&sid=22UrLm4xkKo-NCZ2AAAU",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbD89",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbDAV&sid=0oCVbLgaxGMpAR-5AAAG",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbDCI&sid=0oCVbLgaxGMpAR-5AAAG",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbDV5",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbDXC&sid=WCO35oA1LSM3_OYrAAAI",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbDYr&sid=WCO35oA1LSM3_OYrAAAI",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbFhr",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbFkL&sid=BldDUpmyxHTpzcYtAAAK",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbFlL&sid=BldDUpmyxHTpzcYtAAAK",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrbid3",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbifU&sid=S4Wvy09t532gwzH1AAAW",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrbigp&sid=S4Wvy09t532gwzH1AAAW",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbLkQ",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbLmx&sid=phZitZcA0t2GI2TIAAAM",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbLnt&sid=phZitZcA0t2GI2TIAAAM",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbqF0",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbqFb&sid=2QGfRrlRE-yR_LWIAAAY",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbqFI&sid=2QGfRrlRE-yR_LWIAAAY",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbqU1",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbqWg&sid=b3X9oRIvd-a_I_9WAAAa",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbqXz&sid=b3X9oRIvd-a_I_9WAAAa",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbT-7",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbtRZ",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbTTC",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbTTg&sid=DejJy0y8PV9YtkZSAAAO",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbTTL&sid=DejJy0y8PV9YtkZSAAAO",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbtTn&sid=mUKNkVa9YyhroXJnAAAc",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbtUY&sid=mUKNkVa9YyhroXJnAAAc",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbU3E&sid=AV4rlvCOovbuF9MVAAAQ",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbU5j&sid=AV4rlvCOovbuF9MVAAAQ",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbZ8h",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbZB7&sid=eCiFd3frOhfFZCXxAAAS",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbZCB&sid=eCiFd3frOhfFZCXxAAAS",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrc6_L&sid=eBccJkWda9K9u-teAAAk",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrc6tg",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrc6to&sid=wY2YCbabl0kbyeubAAAi",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrc6xn",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrc70z&sid=eBccJkWda9K9u-teAAAk",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrcErs",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrcEty&sid=Dt6xy6KrPole_rriAAAo",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrcEvL&sid=Dt6xy6KrPole_rriAAAo",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrcEZJ",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrcEZo&sid=DDtdm9X3Kg5o2sIpAAAm",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrcEZZ&sid=DDtdm9X3Kg5o2sIpAAAm",
+							"method": "GET",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb8bs&sid=u2GGUpR627LnpFF5AAAA",
+							"method": "POST",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb8ep&sid=u2GGUpR627LnpFF5AAAA",
+							"method": "POST",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb8yd&sid=V3LVWD0i2uR_0SjRAAAC",
+							"method": "POST",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb8Yk&sid=u2GGUpR627LnpFF5AAAA",
+							"method": "POST",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb_80&sid=9lzmiN_TPh6-aBDxAAAe",
+							"method": "POST",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrb_Ev&sid=jQOa1yhF52kUGPsIAAAg",
+							"method": "POST",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbBKH&sid=Zbgy7nxKM3YhNTYgAAAE",
+							"method": "POST",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbcHq&sid=22UrLm4xkKo-NCZ2AAAU",
+							"method": "POST",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbDAU&sid=0oCVbLgaxGMpAR-5AAAG",
+							"method": "POST",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbDXB&sid=WCO35oA1LSM3_OYrAAAI",
+							"method": "POST",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbFkK&sid=BldDUpmyxHTpzcYtAAAK",
+							"method": "POST",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbifT&sid=S4Wvy09t532gwzH1AAAW",
+							"method": "POST",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbLmw&sid=phZitZcA0t2GI2TIAAAM",
+							"method": "POST",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbqFG&sid=2QGfRrlRE-yR_LWIAAAY",
+							"method": "POST",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbqWe&sid=b3X9oRIvd-a_I_9WAAAa",
+							"method": "POST",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbTTK&sid=DejJy0y8PV9YtkZSAAAO",
+							"method": "POST",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbtTm&sid=mUKNkVa9YyhroXJnAAAc",
+							"method": "POST",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbU3D&sid=AV4rlvCOovbuF9MVAAAQ",
+							"method": "POST",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrbZB6&sid=eCiFd3frOhfFZCXxAAAS",
+							"method": "POST",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrc6_J&sid=eBccJkWda9K9u-teAAAk",
+							"method": "POST",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=Nnrc6tn&sid=wY2YCbabl0kbyeubAAAi",
+							"method": "POST",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrcEtx&sid=Dt6xy6KrPole_rriAAAo",
+							"method": "POST",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						},
+						{
+							"uri": "https://juice-shop.example.org/socket.io/?EIO=4&transport=polling&t=NnrcEZW&sid=DDtdm9X3Kg5o2sIpAAAm",
+							"method": "POST",
+							"param": "X-Content-Type-Options",
+							"attack": "",
+							"evidence": ""
+						}
+					],
+					"count": "84",
+					"solution": "<p>Ensure that the application/web server sets the Content-Type header appropriately, and that it sets the X-Content-Type-Options header to 'nosniff' for all web pages.</p><p>If possible, ensure that the end user uses a standards-compliant and modern web browser that does not perform MIME-sniffing at all, or that can be directed by the web application/web server to not perform MIME-sniffing.</p>",
+					"otherinfo": "<p>This issue still applies to error type pages (401, 403, 500, etc.) as those pages are often still affected by injection issues, in which case there is still concern for browsers sniffing pages away from their actual content type.</p><p>At \"High\" threshold this scan rule will not alert on client or server error responses.</p>",
+					"reference": "<p>http://msdn.microsoft.com/en-us/library/ie/gg622941%28v=vs.85%29.aspx</p><p>https://owasp.org/www-community/Security_Headers</p>",
+					"cweid": "693",
+					"wascid": "15",
+					"sourceid": "172"
+				},
+				{
+					"pluginid": "10027",
+					"alertRef": "10027",
+					"alert": "Information Disclosure - Suspicious Comments",
+					"name": "Information Disclosure - Suspicious Comments",
+					"riskcode": "0",
+					"confidence": "1",
+					"riskdesc": "Informational (Low)",
+					"desc": "<p>The response appears to contain suspicious comments which may help an attacker. Note: Matches made within script blocks or files are against the entire content not only comments.</p>",
+					"instances":[ 
+						{
+							"uri": "https://juice-shop.example.org/main-es2018.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "query"
+						},
+						{
+							"uri": "https://juice-shop.example.org/main-es5.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "query"
+						},
+						{
+							"uri": "https://juice-shop.example.org/polyfills-es2018.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "select"
+						},
+						{
+							"uri": "https://juice-shop.example.org/polyfills-es5.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "Select"
+						},
+						{
+							"uri": "https://juice-shop.example.org/tutorial-es2018.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "query"
+						},
+						{
+							"uri": "https://juice-shop.example.org/vendor-es2018.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "query"
+						},
+						{
+							"uri": "https://juice-shop.example.org/vendor-es5.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "query"
+						}
+					],
+					"count": "7",
+					"solution": "<p>Remove all comments that return information that may help an attacker and fix any underlying problems they refer to.</p>",
+					"otherinfo": "<p>The following pattern was used: \\bQUERY\\b and was detected in the element starting with: \"(window.webpackJsonp=window.webpackJsonp||[]).push([[1],{0:function(t,e,a){t.exports=a(\"zUnb\")},zUnb:function(t,e,a){\"use strict\", see evidence field for the suspicious comment/snippet.</p>",
+					"reference": "",
+					"cweid": "200",
+					"wascid": "13",
+					"sourceid": "29"
+				}
+			]
+		}
+	]
+}

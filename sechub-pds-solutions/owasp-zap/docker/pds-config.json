@@ -1,0 +1,80 @@
+{
+  "apiVersion": "1.0",
+  "serverId": "OWASP_ZAP_CLUSTER",
+  "products": [
+    {
+      "id": "PDS_OWASP_ZAP",
+      "path": "/scripts/owasp-zap.sh",
+      "scanType": "webScan",
+      "unzipUploads": false,
+      "description": "Runs OWASP ZAP",
+      "parameters": {
+        "mandatory": [
+          {
+            "key": "pds.scan.target.url",
+            "description": "The target url for the scan."
+          },
+          {
+            "key": "pds.scan.target.type",
+            "description": "The target type of the scan. Possible values are: INTERNET, INTRANET, UNKNOWN"
+          }
+        ],
+        "optional": [
+          {
+            "key": "pds.scan.configuration",
+            "description": "The configuration of the web scan."
+          },
+          {
+            "key": "zap.activescan.enabled",
+            "description": "Active scanning uses known attacks against targets. If this option is enabled OWASP ZAP will actively attack the target."
+          },
+          {
+            "key": "zap.ajaxcrawler.enabled",
+            "description": "The AJAX crawler can crawl single-page and JavaScript pages. In case, this option is enabled the scanning will take more time."
+          },
+          {
+            "key": "zap.use.proxy",
+            "description": "Enable/disable proxy for scanning."
+          }
+        ]
+      }
+    },
+    {
+      "id": "PDS_OWASP_ZAP_MOCK",
+      "path": "/scripts/owasp-zap-mock.sh",
+      "scanType": "webScan",
+      "unzipUploads": false,
+      "description": "Runs OWASP ZAP mock",
+      "parameters": {
+        "mandatory": [
+          {
+            "key": "pds.scan.target.url",
+            "description": "The target url for the scan"
+          },
+          {
+            "key": "pds.scan.target.type",
+            "description": "The target type of the scan. Possible values are: INTERNET, INTRANET, UNKNOWN"
+          }
+        ],
+        "optional": [
+          {
+            "key": "pds.scan.configuration",
+            "description": "The configuration of the web scan"
+          },
+          {
+            "key": "zap.activescan.enabled",
+            "description": "Active scanning uses known attacks against targets. If this option is enabled OWASP ZAP will actively attack the target."
+          },
+          {
+            "key": "zap.ajaxcrawler.enabled",
+            "description": "The AJAX crawler can crawl single-page and JavaScript pages. In case, this option is enabled the scanning will take more time."
+          },
+          {
+            "key": "zap.use.proxy",
+            "description": "Enable/disable proxy for scanning. This overwrites the target type configuration."
+          }
+        ]
+      }
+    }
+  ]
+}
