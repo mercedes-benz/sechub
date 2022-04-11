@@ -171,21 +171,21 @@ jobs:
       # -----------------------------------------
       - name: Archive combined test report
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: combined-sechub-testreport
           path: build/reports/combined-report
           retention-days: 14
       - name: Archive GIT status
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: git-status.txt
           path: build/reports/git-status.txt
           retention-days: 14
       - name: Archive sechub server artifacts
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: sechub-server
           path: sechub-server/build/libs
@@ -193,14 +193,14 @@ jobs:
 
       - name: Archive pds server artifacts
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: sechub-server
           path: sechub-server/build/libs
 
       - name: Archive developer tools artifacts
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: sechub-developertools
           path: sechub-developertools/build/libs
@@ -208,7 +208,7 @@ jobs:
 
       - name: Archive sechub client artifacts
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: sechub-client
           path: sechub-cli/build/go
@@ -227,21 +227,21 @@ jobs:
       # Upload documentation
       # -----------------------------------------
       - name: Archive documentation HTML
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: sechub-docs-html
           path: sechub-doc/build/docs/final-html/
           retention-days: 14
 
       - name: Archive documentation PDF
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: sechub-docs-pdf
           path: sechub-doc/build/docs/asciidoc/*.pdf
           retention-days: 14
 
       - name: Archive documentation openAPI3
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: sechub-api-spec
           path: sechub-doc/build/api-spec/
