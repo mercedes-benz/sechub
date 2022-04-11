@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.PDSIntTestProductIdentifier;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultExecutorConfigurations;
+import com.mercedesbenz.sechub.test.TestConstants;
 
 /**
  * Integration test directly using REST API of integration test PDS (means
@@ -53,7 +54,7 @@ public class DirectPDSAPIJobStreamDataScenario6IntTest {
         String createResult = asPDSUser(PDS_ADMIN).createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN, customParameters);
         UUID pdsJobUUID = assertPDSJobCreateResult(createResult).hasJobUUID().getJobUUID();
         asPDSUser(PDS_TECH_USER).
-            upload(pdsJobUUID, "sourcecode.zip", "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip").
+            upload(pdsJobUUID, TestConstants.SOURCECODE_ZIP, "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip").
             markJobAsReadyToStart(pdsJobUUID);
         /* @formatter:on */
 

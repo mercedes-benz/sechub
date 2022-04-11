@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.mercedesbenz.sechub.integrationtest.JSONTestSupport;
 import com.mercedesbenz.sechub.integrationtest.api.AssertJobScheduler.TestExecutionState;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
+import com.mercedesbenz.sechub.test.TestConstants;
 
 public class AssertUser extends AbstractAssert {
 
@@ -424,7 +425,7 @@ public class AssertUser extends AbstractAssert {
     public AssertUser canUploadSourceZipFile(TestProject project, UUID jobUUID, String pathInsideResources) {
         as(user).upload(project, jobUUID, pathInsideResources);
         /* check if file is uploaded on server location */
-        File downloadedFile = TestAPI.getFileUploaded(project, jobUUID, "sourcecode.zip");
+        File downloadedFile = TestAPI.getFileUploaded(project, jobUUID, TestConstants.SOURCECODE_ZIP);
         assertNotNull(downloadedFile);
         return this;
     }

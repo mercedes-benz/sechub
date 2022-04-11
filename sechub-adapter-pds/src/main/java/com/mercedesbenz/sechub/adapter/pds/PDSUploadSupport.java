@@ -15,10 +15,11 @@ import org.springframework.web.client.RestOperations;
 
 import com.mercedesbenz.sechub.adapter.AdapterException;
 import com.mercedesbenz.sechub.adapter.springextension.MultipartInputStreamFileResource;
+import com.mercedesbenz.sechub.commons.core.CommonConstants;
 
 public class PDSUploadSupport {
 
-    private static final String SOURCECODE_ZIP = "sourcecode.zip";
+    private static final String SOURCECODE_ZIP = CommonConstants.FILENAME_SOURCECODE_ZIP;
 
     public void uploadZippedSourceCode(PDSContext context, PDSSourceZipConfig zipConfig) throws AdapterException {
         String checksum = zipConfig.getSourceCodeZipFileChecksum();

@@ -21,6 +21,7 @@ import com.mercedesbenz.sechub.adapter.pds.PDSAdapter;
 import com.mercedesbenz.sechub.adapter.pds.PDSCodeScanConfig;
 import com.mercedesbenz.sechub.adapter.pds.PDSCodeScanConfigImpl;
 import com.mercedesbenz.sechub.adapter.pds.PDSMetaDataID;
+import com.mercedesbenz.sechub.commons.core.CommonConstants;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.product.AbstractProductExecutor;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
@@ -39,7 +40,7 @@ public class PDSCodeScanProductExecutor extends AbstractProductExecutor {
 
     private static final String SOURCECODE_ZIP_CHECKSUM = "sourcecode.zip.checksum";
 
-    private static final String SOURCECODE_ZIP = "sourcecode.zip";
+    private static final String SOURCECODE_ZIP = CommonConstants.FILENAME_SOURCECODE_ZIP;
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSCodeScanProductExecutor.class);
 

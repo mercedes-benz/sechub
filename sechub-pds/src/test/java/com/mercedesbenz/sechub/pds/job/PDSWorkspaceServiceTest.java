@@ -19,6 +19,7 @@ import com.mercedesbenz.sechub.pds.execution.PDSExecutionParameterEntry;
 import com.mercedesbenz.sechub.pds.storage.PDSMultiStorageService;
 import com.mercedesbenz.sechub.pds.storage.PDSStorageInfoCollector;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
+import com.mercedesbenz.sechub.test.TestConstants;
 import com.mercedesbenz.sechub.test.TestUtil;
 
 class PDSWorkspaceServiceTest {
@@ -60,7 +61,7 @@ class PDSWorkspaceServiceTest {
         /* @formatter:off */
         assertEquals(expectedWorspaceLocation,result.workspaceLocation);
         assertEquals(expectedWorspaceLocation+separatorChar+"output"+separatorChar+"result.txt",result.resultFileLocation);
-        assertEquals(expectedWorspaceLocation+separatorChar+"upload"+separatorChar+"sourcecode.zip",result.zippedSourceLocation);
+        assertEquals(expectedWorspaceLocation+separatorChar+"upload"+separatorChar+TestConstants.SOURCECODE_ZIP,result.zippedSourceLocation);
         assertEquals(expectedWorspaceLocation+separatorChar+"upload"+separatorChar+"unzipped"+separatorChar+"sourcecode",result.unzippedSourceLocation);
         /* @formatter:on */
     }

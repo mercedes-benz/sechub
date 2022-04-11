@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.util.StringInputStream;
+import com.mercedesbenz.sechub.commons.core.CommonConstants;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
@@ -33,7 +34,7 @@ import com.mercedesbenz.sechub.storage.core.StorageService;
 @Service
 public class SchedulerUploadService {
 
-    static final String SOURCECODE_ZIP = "sourcecode.zip";
+    static final String SOURCECODE_ZIP = CommonConstants.FILENAME_SOURCECODE_ZIP;
     static final String SOURCECODE_ZIP_CHECKSUM = SOURCECODE_ZIP + ".checksum";
 
     private static final Logger LOG = LoggerFactory.getLogger(SchedulerUploadService.class);
