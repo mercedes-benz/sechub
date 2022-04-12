@@ -23,85 +23,87 @@ pipeline {
          stage('Initialize') {
              steps {
                script{
-
                     sechubGitBranch = sh(returnStdout: true, script: "git branch | grep \\* | cut -d ' ' -f2").trim()
                     echo "Branch is $sechubGitBranch"
                     if( sechubGitBranch == "master" ) {
-                       echo "Cancel build , because master is build on by release-pipeline.jenkins!"
+                       echo "Cancel build, because master is built by release-pipeline.jenkins!"
                        currentBuild.result = 'SUCCESS'
                        return
                     }
+                }
+            }
+        }
 
+        stage("Builds") {
+            parallel {
+
+                stage('Build Server & API Java') {
+                    environment {
+                        /* against build race conditions - See TestPortProvider.java */
+                        SECHUB_TEST_WIREMOCK_HTTPS_PORT = getJenkinsExecutorPort(8143)
+                        SECHUB_TEST_WIREMOCK_HTTP_PORT = getJenkinsExecutorPort(8180)
+                        SECHUB_TEST_S3MOCK_HTTP_PORT = getJenkinsExecutorPort(9090)
+                        SECHUB_TEST_S3MOCK_HTTPS_PORT = getJenkinsExecutorPort(9190)
+                    }
+                    steps {
+                        script{
+                            echo "SECHUB_TEST_WIREMOCK_HTTPS_PORT=${env.SECHUB_TEST_WIREMOCK_HTTPS_PORT}"
+                            echo "SECHUB_TEST_WIREMOCK_HTTP_PORT=${env.SECHUB_TEST_WIREMOCK_HTTP_PORT}"
+
+                            // We do NOT build sechub-integrationtest
+                            // Reason: because we do NOT want to have the integration tests executed, otherwise gradle will not execute them
+                            // on integration phase again (because nothing has changed, so gradle will cache the results which are ignored ...
+                            callGradleWrapper("ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-integrationtest:test -x :sechub-cli:build -Psechub.test.wiremock.https_port=${env.SECHUB_TEST_WIREMOCK_HTTPS_PORT} -Psechub.test.wiremock.http_port=${env.SECHUB_TEST_WIREMOCK_HTTP_PORT}")
+                            callGradleWrapper(":sechub-api-java:buildAPIJava")
+                    }
+                    }
                 }
 
-            }
-        }
+                stage('Build CLI') {
+                    steps {
+                        script{
+                            callGradleWrapper(':sechub-cli:buildGo :sechub-cli:testGo')
+                        }
+                    }
+                }
 
-        stage('Build Server') {
-          environment {
-             /* against build race conditions - See TestPortProvider.java */
-             SECHUB_TEST_WIREMOCK_HTTPS_PORT = getJenkinsExecutorPort(8143)
-             SECHUB_TEST_WIREMOCK_HTTP_PORT = getJenkinsExecutorPort(8180)
-             SECHUB_TEST_S3MOCK_HTTP_PORT = getJenkinsExecutorPort(9090)
-             SECHUB_TEST_S3MOCK_HTTPS_PORT = getJenkinsExecutorPort(9190)
-          }
-          steps {
-              script{
-                  echo "SECHUB_TEST_WIREMOCK_HTTPS_PORT=${env.SECHUB_TEST_WIREMOCK_HTTPS_PORT}"
-                  echo "SECHUB_TEST_WIREMOCK_HTTP_PORT=${env.SECHUB_TEST_WIREMOCK_HTTP_PORT}"
-
-                  /*
-                   * we do NOT build sechub-integrationtest
-                   * Reason: because we do NOT want to have the integration tests executed, otherwise gradle will not execute them
-                   * on integration phase again (because nothing has changed, so gradle will cache the results which are ignored ...
-                   */
-                  callGradleWrapper("clean ensureLocalhostCertificate build generateOpenapi :sechub-api-java:buildAPIJava -x :sechub-integrationtest:test -x :sechub-cli:build -Psechub.test.wiremock.https_port=${env.SECHUB_TEST_WIREMOCK_HTTPS_PORT} -Psechub.test.wiremock.http_port=${env.SECHUB_TEST_WIREMOCK_HTTP_PORT}")
-
-               }
-            }
-        }
-        stage('Build CLI') {
-            steps {
-              script{
-                  callGradleWrapper(':sechub-cli:buildGo :sechub-cli:testGo')
-               }
             }
         }
 
         stage("test & security") {
             parallel {
+
                 stage('Integration tests') {
                     environment {
-                    /* against build race conditions - See TestPortProvider.java */
-                    SERVER_PORT= getJenkinsExecutorPort(8243)
-                    PDS_PORT= getJenkinsExecutorPort(8543)
+                        /* against build race conditions - See TestPortProvider.java */
+                        SERVER_PORT= getJenkinsExecutorPort(8243)
+                        PDS_PORT= getJenkinsExecutorPort(8543)
 
-                    /* setup s3 storage when defined as secrets - otherwise sharedvolume will be used with temp */
-                    SECHUB_STORAGE_S3_ACCESSKEY = getStringCredentialsOrUndefined('sechub-storage-s3-accesskey')
-                    SECHUB_STORAGE_S3_SECRETKEY = getStringCredentialsOrUndefined('sechub-storage-s3-secretkey')
-                    SECHUB_STORAGE_S3_BUCKETNAME = getStringCredentialsOrUndefined('sechub-storage-s3-bucketname')
-                    SECHUB_STORAGE_S3_ENDPOINT = getStringCredentialsOrUndefined('sechub-storage-s3-endpoint')
+                        /* setup s3 storage when defined as secrets - otherwise sharedvolume will be used with temp */
+                        SECHUB_STORAGE_S3_ACCESSKEY = getStringCredentialsOrUndefined('sechub-storage-s3-accesskey')
+                        SECHUB_STORAGE_S3_SECRETKEY = getStringCredentialsOrUndefined('sechub-storage-s3-secretkey')
+                        SECHUB_STORAGE_S3_BUCKETNAME = getStringCredentialsOrUndefined('sechub-storage-s3-bucketname')
+                        SECHUB_STORAGE_S3_ENDPOINT = getStringCredentialsOrUndefined('sechub-storage-s3-endpoint')
 
-                    // we setup PDS storage with same s3 bucket data
-                    SECHUB_PDS_STORAGE_S3_ACCESSKEY = getStringCredentialsOrUndefined('sechub-storage-s3-accesskey')
-                    SECHUB_PDS_STORAGE_S3_SECRETKEY = getStringCredentialsOrUndefined('sechub-storage-s3-secretkey')
-                    SECHUB_PDS_STORAGE_S3_BUCKETNAME = getStringCredentialsOrUndefined('sechub-storage-s3-bucketname')               
-                    SECHUB_PDS_STORAGE_S3_ENDPOINT = getStringCredentialsOrUndefined('sechub-storage-s3-endpoint')
-                    
-                    SECHUB_INTEGRATIONTEST_PREPARE_WAIT_MS=100
-                    
-                    /* avoid race conditions with management port */
-                    MANAGEMENT_SERVER_PORT= getJenkinsExecutorPort(10250)
-
+                        // we setup PDS storage with same s3 bucket data
+                        SECHUB_PDS_STORAGE_S3_ACCESSKEY = getStringCredentialsOrUndefined('sechub-storage-s3-accesskey')
+                        SECHUB_PDS_STORAGE_S3_SECRETKEY = getStringCredentialsOrUndefined('sechub-storage-s3-secretkey')
+                        SECHUB_PDS_STORAGE_S3_BUCKETNAME = getStringCredentialsOrUndefined('sechub-storage-s3-bucketname')
+                        SECHUB_PDS_STORAGE_S3_ENDPOINT = getStringCredentialsOrUndefined('sechub-storage-s3-endpoint')
+                        
+                        SECHUB_INTEGRATIONTEST_PREPARE_WAIT_MS=100
+                        
+                        /* avoid race conditions with management port */
+                        MANAGEMENT_SERVER_PORT= getJenkinsExecutorPort(10250)
                     }
-
                     steps {
-                    script{
-                        // start integration tests and also create combined test report after all
-                        callGradleWrapper("integrationtest -Psechub.integrationtest.serverport=${env.SERVER_PORT} -Psechub.integrationtest.pdsport=${env.PDS_PORT}")
-                    }
+                        script{
+                            // start integration tests and also create combined test report after all
+                            callGradleWrapper("integrationtest -Psechub.integrationtest.serverport=${env.SERVER_PORT} -Psechub.integrationtest.pdsport=${env.PDS_PORT}")
+                        }
                     }
                 }
+
                 stage('Security scan') {
                     when{
                         not {
@@ -109,29 +111,26 @@ pipeline {
                         }
                     }
 
-
                     environment {
-                    SECHUB_USERID = credentials('sechub-userid')
-                    SECHUB_APITOKEN = credentials('sechub-api-token')
-                    SECHUB_SERVER= credentials('sechub-server')
-
+                        SECHUB_USERID = credentials('sechub-userid')
+                        SECHUB_APITOKEN = credentials('sechub-api-token')
+                        SECHUB_SERVER= credentials('sechub-server')
                     }
                     steps {
-
-                    script{
-                        executeSecHubScan()
+                        script{
+                            executeSecHubScan()
+                        }
                     }
-                    }
-
                 }
+
             }
         }
         
         stage('Build Documentation') {
             steps {
-              script{
-                  callGradleWrapper('documentation')
-               }
+                script{
+                    callGradleWrapper('documentation')
+                }
             }
         }
 
