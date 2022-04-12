@@ -50,7 +50,7 @@ public class SchedulerRestController {
     private SchedulerCreateJobService createJobService;
 
     @Autowired
-    private SchedulerUploadService uploadService;
+    private SchedulerSourcecodeUploadService sourcecodeUploadService;
 
     @Autowired
     private SchedulerGetJobStatusService jobStatusService;
@@ -79,7 +79,7 @@ public class SchedulerRestController {
 				@RequestParam("file") MultipartFile file,
 				@RequestParam("checkSum") String checkSum
 			) {
-		uploadService.uploadSourceCode(projectId, jobUUID, file, checkSum);
+		sourcecodeUploadService.uploadSourceCode(projectId, jobUUID, file, checkSum);
 	}
 	/* @formatter:on */
 

@@ -32,12 +32,12 @@ import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
 
 @Service
-public class SchedulerUploadService {
+public class SchedulerSourcecodeUploadService {
 
     static final String SOURCECODE_ZIP = CommonConstants.FILENAME_SOURCECODE_ZIP;
     static final String SOURCECODE_ZIP_CHECKSUM = SOURCECODE_ZIP + ".checksum";
 
-    private static final Logger LOG = LoggerFactory.getLogger(SchedulerUploadService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SchedulerSourcecodeUploadService.class);
 
     @Value("${sechub.server.upload.validate.zip:true}")
     @MustBeDocumented(value = "With `false` ZIP validation on sechub server side is disabled. ZIP validation must be done by the delegated security products! You should disable the validation only for testing security product behaviours!")

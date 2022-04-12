@@ -62,7 +62,7 @@ import com.mercedesbenz.sechub.domain.schedule.SchedulerCreateJobService;
 import com.mercedesbenz.sechub.domain.schedule.SchedulerGetJobStatusService;
 import com.mercedesbenz.sechub.domain.schedule.SchedulerRestController;
 import com.mercedesbenz.sechub.domain.schedule.SchedulerResult;
-import com.mercedesbenz.sechub.domain.schedule.SchedulerUploadService;
+import com.mercedesbenz.sechub.domain.schedule.SchedulerSourcecodeUploadService;
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleAccess;
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleAccess.ProjectAccessCompositeKey;
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleAccessRepository;
@@ -110,7 +110,7 @@ public class SchedulerRestControllerRestDocTest {
     private SecHubConfigurationValidator sechubConfigurationValidator;
 
     @MockBean
-    private SchedulerUploadService mockeduploadService;
+    private SchedulerSourcecodeUploadService mockeduploadService;
 
     @MockBean
     private SecHubJobRepository mockedJobRepository;

@@ -27,7 +27,7 @@ public class SchedulerSmokeSpringBootTest {
     private SchedulerRestController controller;
 
     @Autowired
-    SchedulerUploadService uploadService;
+    SchedulerSourcecodeUploadService uploadService;
 
     @Test
     public void context_loads_and_some_defaults_are_as_expected() throws Exception {

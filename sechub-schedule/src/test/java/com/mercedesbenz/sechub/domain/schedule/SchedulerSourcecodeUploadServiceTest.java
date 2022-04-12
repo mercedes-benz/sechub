@@ -21,10 +21,10 @@ import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
 
-public class SchedulerUploadServiceTest {
+public class SchedulerSourcecodeUploadServiceTest {
 
     private static final String PROJECT1 = "project1";
-    private SchedulerUploadService serviceToTest;
+    private SchedulerSourcecodeUploadService serviceToTest;
     private ChecksumSHA256Service mockedChecksumService;
     private StorageService mockedStorageService;
     private UUID randomUuid;
@@ -51,7 +51,7 @@ public class SchedulerUploadServiceTest {
         mockedZipSupport = mock(ZipSupport.class);
 
         /* attach at service to test */
-        serviceToTest = new SchedulerUploadService();
+        serviceToTest = new SchedulerSourcecodeUploadService();
         serviceToTest.checksumSHA256Service = mockedChecksumService;
         serviceToTest.storageService = mockedStorageService;
         serviceToTest.assertService = mockedAssertService;

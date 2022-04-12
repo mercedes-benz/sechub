@@ -70,7 +70,7 @@ public class SchedulerRestControllerMockTest {
     private SchedulerGetJobStatusService mockedScheduleJobStatusService;
 
     @MockBean
-    private SchedulerUploadService mockedUploadService;
+    private SchedulerSourcecodeUploadService mockedUploadService;
 
     @MockBean
     private SecHubConfigurationValidator sechubConfigurationValidator;
