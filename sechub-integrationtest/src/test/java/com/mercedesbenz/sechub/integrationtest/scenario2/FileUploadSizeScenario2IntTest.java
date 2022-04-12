@@ -45,7 +45,7 @@ public class FileUploadSizeScenario2IntTest {
      * @throws IOException
      */
     @Test
-    public void when_file_exceeds_5MB_a_NOT_ACCEPTABLE_is_returned() throws IOException {
+    public void when_sourcecode_zipfile_exceeds_configured_max_source_zip_file_size_a_NOT_ACCEPTABLE_is_returned() throws IOException {
         /* @formatter:off */
 		handleBigUpload(true);
 	}
@@ -56,7 +56,7 @@ public class FileUploadSizeScenario2IntTest {
 	 * @throws IOException
 	 */
 	@Test
-	public void when_file_exceeds_NOT_5MB_no_exception_is_thrown() throws IOException {
+	public void when_sourcecode_zipfile_exceeds_NOT_max_source_zip_file_size_no_exception_is_thrown() throws IOException {
 		/* @formatter:off */
 		handleBigUpload(false);
 	}
@@ -72,7 +72,7 @@ public class FileUploadSizeScenario2IntTest {
 					isAssignedToProject(PROJECT_1).
 					canCreateWebScan(PROJECT_1);
 
-		File largeFile = createZipFileContainingMegabytes(tooBig);
+		File largeFile = createZipFileContainingKilobytes(300, tooBig);
 
 		/* test */
 		if (tooBig) {
@@ -95,7 +95,7 @@ public class FileUploadSizeScenario2IntTest {
      * upload contains not only the file but meta information as well (e.g.
      * filename, sha256checksum,..)
      */
-    private File createZipFileContainingMegabytes(boolean uploadShallBeTooLarge) throws FileNotFoundException, IOException {
+    private File createZipFileContainingKilobytes(int maximumKilobytes, boolean uploadShallBeTooLarge) throws FileNotFoundException, IOException {
         String tmpPath = "build/resources/bigFile";
         if (uploadShallBeTooLarge) {
             tmpPath += "-too-large";
@@ -106,8 +106,8 @@ public class FileUploadSizeScenario2IntTest {
         file.getParentFile().mkdirs(); // ensure parent folder structure exists, avoid FileNotFoundException because of
                                        // parent missing
 
-        int maximumUploadSizeInMB = 5;
-        int maximumUploadSizeInBytes = 1024 * 1024 * maximumUploadSizeInMB;
+        int maximumUploadSizeInKb = maximumKilobytes;
+        int maximumUploadSizeInBytes = 1024 * maximumUploadSizeInKb;
         int bytesToOrder = maximumUploadSizeInBytes;
         if (!uploadShallBeTooLarge) {
             bytesToOrder = bytesToOrder - (3 * 1024); // we reduce 3kb (includes zipfile overhead, filename on multipart and sha256

@@ -28,6 +28,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserApp
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserChecksJobStatus;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserCreatesNewJob;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserStartsSynchronousScanByClient;
+import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUploadsBinaries;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUploadsSourceCode;
 
 /**
@@ -82,6 +83,21 @@ public class SchedulerRestController {
 		sourcecodeUploadService.uploadSourceCode(projectId, jobUUID, file, checkSum);
 	}
 	/* @formatter:on */
+
+    /* @formatter:off */
+    @RolesAllowed(RoleConstants.ROLE_USER)
+    @UseCaseUserStartsSynchronousScanByClient(@Step(number=2, name="upload binaries"))
+    @UseCaseUserUploadsBinaries(@Step(number=1,name="Authenticated REST call"/* FIXME de-jcup: activate again:,needsRestDoc=true*/))
+    @RequestMapping(path = "/job/{jobUUID}/binaries", method = RequestMethod.POST)
+    public void uploadBinaries(
+                @PathVariable("projectId") String projectId,
+                @PathVariable("jobUUID") UUID jobUUID,
+                @RequestParam("file") MultipartFile file,
+                @RequestParam("checkSum") String checkSum
+            ) {
+        sourcecodeUploadService.uploadSourceCode(projectId, jobUUID, file, checkSum);
+    }
+    /* @formatter:on */
 
     /* @formatter:off */
 	@Validated

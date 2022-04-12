@@ -62,3 +62,9 @@ logging:
    org.apache.http: WARN
    org.apache.http.headers: WARN
    org.apache.http.wire: WARN
+
+spring:
+ servlet: 
+    # to speed up integration tests, we use here only 300kb
+    multipart.max-file-size: 300KB
+    multipart.max-request-size: 300KB
