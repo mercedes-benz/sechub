@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule;
 
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
 import static com.mercedesbenz.sechub.sharedkernel.util.Assert.*;
 
 import java.io.IOException;
@@ -15,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.util.StringInputStream;
-import com.mercedesbenz.sechub.commons.core.CommonConstants;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
@@ -30,12 +30,8 @@ import com.mercedesbenz.sechub.sharedkernel.util.ZipSupport;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
-
 @Service
 public class SchedulerSourcecodeUploadService {
-
-    static final String SOURCECODE_ZIP = CommonConstants.FILENAME_SOURCECODE_ZIP;
-    static final String SOURCECODE_ZIP_CHECKSUM = SOURCECODE_ZIP + ".checksum";
 
     private static final Logger LOG = LoggerFactory.getLogger(SchedulerSourcecodeUploadService.class);
 
@@ -99,9 +95,9 @@ public class SchedulerSourcecodeUploadService {
         JobStorage jobStorage = storageService.getJobStorage(projectId, jobUUID);
 
         try (InputStream inputStream = file.getInputStream()) {
-            jobStorage.store(SOURCECODE_ZIP, inputStream);
+            jobStorage.store(FILENAME_SOURCECODE_ZIP, inputStream);
             // we also store given checksum - so can be reused by security product
-            jobStorage.store(SOURCECODE_ZIP_CHECKSUM, new StringInputStream(checkSum));
+            jobStorage.store(FILENAME_SOURCECODE_ZIP_CHECKSUM, new StringInputStream(checkSum));
         } catch (IOException e) {
             LOG.error("Was not able to store zipped sources! {}", traceLogID, e);
             throw new SecHubRuntimeException("Was not able to upload sources");
