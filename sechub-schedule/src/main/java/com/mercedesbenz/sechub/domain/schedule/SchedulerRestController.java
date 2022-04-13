@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.domain.schedule;
 import java.util.UUID;
 
 import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,9 @@ public class SchedulerRestController {
     private SchedulerSourcecodeUploadService sourcecodeUploadService;
 
     @Autowired
+    private SchedulerBinaryUploadService binariesUploadService;
+
+    @Autowired
     private SchedulerGetJobStatusService jobStatusService;
 
     @Autowired
@@ -85,17 +89,13 @@ public class SchedulerRestController {
 	/* @formatter:on */
 
     /* @formatter:off */
-    @RolesAllowed(RoleConstants.ROLE_USER)
     @UseCaseUserStartsSynchronousScanByClient(@Step(number=2, name="upload binaries"))
     @UseCaseUserUploadsBinaries(@Step(number=1,name="Authenticated REST call"/* FIXME de-jcup: activate again:,needsRestDoc=true*/))
+    @RolesAllowed(RoleConstants.ROLE_USER)
     @RequestMapping(path = "/job/{jobUUID}/binaries", method = RequestMethod.POST)
-    public void uploadBinaries(
-                @PathVariable("projectId") String projectId,
-                @PathVariable("jobUUID") UUID jobUUID,
-                @RequestParam("file") MultipartFile file,
-                @RequestParam("checkSum") String checkSum
-            ) {
-        sourcecodeUploadService.uploadSourceCode(projectId, jobUUID, file, checkSum);
+    public void uploadBinaries( @PathVariable("projectId") String projectId,
+          @PathVariable("jobUUID") UUID jobUUID, HttpServletRequest request) throws Exception {
+        binariesUploadService.uploadBinaries(projectId, jobUUID, request);
     }
     /* @formatter:on */
 

@@ -73,8 +73,22 @@ public class AsUser {
     public AsUser upload(TestProject project, UUID jobUUID, File file, String checkSum) {
         /* @formatter:off */
 		getRestHelper().upload(getUrlBuilder().
-		    		buildUploadSourceCodeUrl(project.getProjectId(),jobUUID),file,checkSum);
+		        buildUploadSourceCodeUrl(project.getProjectId(),jobUUID),file,checkSum);
 		/* @formatter:on */
+        return this;
+    }
+
+    /**
+     * Upload given file
+     *
+     * @param userWantingToSignup
+     * @return
+     */
+    public AsUser uploadBinaries(TestProject project, UUID jobUUID, File file, String checkSum) {
+        /* @formatter:off */
+        getRestHelper().uploadBinaries(getUrlBuilder().
+                buildUploadBinariesUrl(project.getProjectId(),jobUUID),file,checkSum);
+        /* @formatter:on */
         return this;
     }
 

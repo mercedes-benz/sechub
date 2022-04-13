@@ -39,7 +39,10 @@ public class ServerErrorController implements ErrorController {
 
         Map<String, Object> errorAttributes = getErrorAttributes(status, request, debug);
 
-        return ResponseEntity.status(status).body(new ServerError(status, errorAttributes));
+        ServerError serverError = new ServerError(status, errorAttributes);
+        LOG.info("Returning status: {}, message: {}, details: {}, timeStamp: {}, withTrace: {}", serverError.status, serverError.message, serverError.details,
+                serverError.timeStamp, serverError.trace != null);
+        return ResponseEntity.status(status).body(serverError);
     }
 
     private Map<String, Object> getErrorAttributes(int httpStatus, HttpServletRequest request, boolean debugMode) {

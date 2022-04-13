@@ -30,6 +30,7 @@ import com.mercedesbenz.sechub.sharedkernel.util.ZipSupport;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
+
 @Service
 public class SchedulerSourcecodeUploadService {
 
