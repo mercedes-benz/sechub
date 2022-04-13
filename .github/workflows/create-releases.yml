@@ -552,11 +552,11 @@ jobs:
           asset_path: sechub-pds/build/libs/sechub-pds-${{ github.event.inputs.pds-version }}.jar.sha256sum
           asset_name: sechub-pds-${{ github.event.inputs.pds-version }}.jar.sha256sum
           asset_content_type: text/plain
-      - name: Create sha256 checksum file for PDS OWASP ZAP wrapper
+      - name: Create files and sha256 checksum for PDS OWASP ZAP wrapper
         if: github.event.inputs.pds-version != ''
         run: |
           cd sechub-wrapper-owasp-zap/build/libs/
-          ls -al
+          cp wrapperowaspzap-0.0.0.jar sechub-pds-wrapperowaspzap-${{ github.event.inputs.pds-version }}.jar
           sha256sum sechub-pds-wrapperowaspzap-${{ github.event.inputs.pds-version }}.jar > sechub-pds-wrapperowaspzap-${{ github.event.inputs.pds-version }}.jar.sha256sum
       - name: Upload PDS release asset sechub-pds-wrapperowaspzap-${{ github.event.inputs.pds-version }}.jar
         if: github.event.inputs.pds-version != ''
