@@ -82,8 +82,8 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: sechub-server
-          path: sechub-server/build/libs
+          name: sechub-pds
+          path: sechub-pds/build/libs
 
       - name: Archive developer tools artifacts
         if: always()
