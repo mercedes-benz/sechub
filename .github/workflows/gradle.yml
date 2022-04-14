@@ -41,7 +41,7 @@ jobs:
       - name: Gradle clean
         run: ./gradlew clean
 
-      - name: Build CLI
+      - name: Build Client
         run: ./gradlew :sechub-cli:buildGo :sechub-cli:testGo
 
       - name: Build Server, DAUI and generate OpenAPI file
