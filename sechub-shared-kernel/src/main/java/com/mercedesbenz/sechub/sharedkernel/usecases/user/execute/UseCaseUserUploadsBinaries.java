@@ -19,7 +19,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 		group=UseCaseGroup.SECHUB_EXECUTION,
 		apiName="userUploadsBinaries",
 		title="User uploads binaries",
-		description="user/upload_bianries_description.adoc")
+		description="user/upload_binaries_description.adoc")
 public @interface UseCaseUserUploadsBinaries {
 
 	Step value();

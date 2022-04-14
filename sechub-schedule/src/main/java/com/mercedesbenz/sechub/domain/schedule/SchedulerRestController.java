@@ -55,7 +55,7 @@ public class SchedulerRestController {
     private SchedulerSourcecodeUploadService sourcecodeUploadService;
 
     @Autowired
-    private SchedulerBinaryUploadService binariesUploadService;
+    private SchedulerBinariesUploadService binariesUploadService;
 
     @Autowired
     private SchedulerGetJobStatusService jobStatusService;
@@ -90,7 +90,7 @@ public class SchedulerRestController {
 
     /* @formatter:off */
     @UseCaseUserStartsSynchronousScanByClient(@Step(number=2, name="upload binaries"))
-    @UseCaseUserUploadsBinaries(@Step(number=1,name="Authenticated REST call"/* FIXME de-jcup: activate again:,needsRestDoc=true*/))
+    @UseCaseUserUploadsBinaries(@Step(number=1,name="Authenticated REST call" ,needsRestDoc=true))
     @RolesAllowed(RoleConstants.ROLE_USER)
     @RequestMapping(path = "/job/{jobUUID}/binaries", method = RequestMethod.POST)
     public void uploadBinaries( @PathVariable("projectId") String projectId,

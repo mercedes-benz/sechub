@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.integrationtest.api;
 
+import static com.mercedesbenz.sechub.test.TestConstants.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
@@ -19,7 +20,6 @@ import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSuppo
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubClientExecutor;
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubClientExecutor.ClientAction;
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
-import com.mercedesbenz.sechub.test.TestConstants;
 import com.mercedesbenz.sechub.test.TestFileSupport;
 import com.mercedesbenz.sechub.test.TestUtil;
 
@@ -167,7 +167,7 @@ public class WithSecHubClient {
 
         private File assertFile(TestProject project) {
             /* the filename at upload is currently always sourcecode.zip! */
-            File file = TestAPI.getFileUploaded(project, jobUUID, TestConstants.SOURCECODE_ZIP);
+            File file = TestAPI.getFileUploaded(project, jobUUID, SOURCECODE_ZIP);
             if (file == null) {
                 fail("NO file upload for " + jobUUID + " in project +" + project);
             }

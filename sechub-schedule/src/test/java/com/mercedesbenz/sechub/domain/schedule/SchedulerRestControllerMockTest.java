@@ -70,7 +70,10 @@ public class SchedulerRestControllerMockTest {
     private SchedulerGetJobStatusService mockedScheduleJobStatusService;
 
     @MockBean
-    private SchedulerSourcecodeUploadService mockedUploadService;
+    private SchedulerSourcecodeUploadService mockedSourcecodeUploadService;
+
+    @MockBean
+    private SchedulerBinariesUploadService mockedBinariesUploadService;
 
     @MockBean
     private SecHubConfigurationValidator sechubConfigurationValidator;
@@ -183,7 +186,7 @@ public class SchedulerRestControllerMockTest {
         			param("checkSum", "mychecksum")
         		);
 
-        verify(mockedUploadService).uploadSourceCode(PROJECT1_ID, randomUUID, file1, "mychecksum");
+        verify(mockedSourcecodeUploadService).uploadSourceCode(PROJECT1_ID, randomUUID, file1, "mychecksum");
         /* @formatter:on */
     }
 

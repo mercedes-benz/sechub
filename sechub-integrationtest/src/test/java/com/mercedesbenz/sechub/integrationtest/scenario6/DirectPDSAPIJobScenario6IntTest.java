@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.integrationtest.scenario6;
 
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
+import static com.mercedesbenz.sechub.test.TestConstants.*;
 import static org.junit.Assert.*;
 
 import java.util.UUID;
@@ -15,7 +16,6 @@ import org.springframework.http.HttpStatus;
 
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.PDSIntTestProductIdentifier;
-import com.mercedesbenz.sechub.test.TestConstants;
 
 /**
  * Integration test directly using REST API of integration test PDS (means
@@ -107,7 +107,7 @@ public class DirectPDSAPIJobScenario6IntTest {
         UUID pdsJobUUID = assertPDSJobCreateResult(createResult).hasJobUUID().getJobUUID();
 
         /* execute + test just no error happend*/
-        asPDSUser(PDS_TECH_USER).upload(pdsJobUUID, TestConstants.SOURCECODE_ZIP, "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip");
+        asPDSUser(PDS_TECH_USER).upload(pdsJobUUID, SOURCECODE_ZIP, "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip");
 
         /* @formatter:on */
     }
@@ -121,7 +121,7 @@ public class DirectPDSAPIJobScenario6IntTest {
 
         String createResult = asPDSUser(PDS_TECH_USER).createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
         UUID pdsJobUUID = assertPDSJobCreateResult(createResult).hasJobUUID().getJobUUID();
-        asPDSUser(PDS_TECH_USER).upload(pdsJobUUID, TestConstants.SOURCECODE_ZIP, "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip");
+        asPDSUser(PDS_TECH_USER).upload(pdsJobUUID, SOURCECODE_ZIP, "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip");
 
         /* execute */
         asPDSUser(PDS_TECH_USER).markJobAsReadyToStart(pdsJobUUID);
@@ -181,7 +181,7 @@ public class DirectPDSAPIJobScenario6IntTest {
         UUID pdsJobUUID = assertPDSJobCreateResult(createResult).hasJobUUID().getJobUUID();
 
         /* execute - test just no error */
-        asPDSUser(PDS_ADMIN).upload(pdsJobUUID, TestConstants.SOURCECODE_ZIP, "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip");
+        asPDSUser(PDS_ADMIN).upload(pdsJobUUID, SOURCECODE_ZIP, "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip");
 
         /* @formatter:on */
     }
@@ -195,7 +195,7 @@ public class DirectPDSAPIJobScenario6IntTest {
 
         String createResult = asPDSUser(PDS_ADMIN).createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
         UUID pdsJobUUID = assertPDSJobCreateResult(createResult).hasJobUUID().getJobUUID();
-        asPDSUser(PDS_ADMIN).upload(pdsJobUUID, TestConstants.SOURCECODE_ZIP, "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip");
+        asPDSUser(PDS_ADMIN).upload(pdsJobUUID, SOURCECODE_ZIP, "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip");
 
         /* execute */
         asPDSUser(PDS_ADMIN).markJobAsReadyToStart(pdsJobUUID);
@@ -248,7 +248,7 @@ public class DirectPDSAPIJobScenario6IntTest {
         UUID pdsJobUUID = assertPDSJobCreateResult(createResult).hasJobUUID().getJobUUID();
 
         /* execute + test */
-        expectHttpFailure(()-> asPDSUser(ANONYMOUS).upload(pdsJobUUID, TestConstants.SOURCECODE_ZIP, "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip"), HttpStatus.UNAUTHORIZED);
+        expectHttpFailure(()-> asPDSUser(ANONYMOUS).upload(pdsJobUUID, SOURCECODE_ZIP, "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip"), HttpStatus.UNAUTHORIZED);
 
         /* @formatter:on */
     }

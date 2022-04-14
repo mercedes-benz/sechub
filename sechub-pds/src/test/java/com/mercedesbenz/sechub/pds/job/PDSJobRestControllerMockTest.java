@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.job;
 
+import static com.mercedesbenz.sechub.test.TestConstants.*;
 import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -29,7 +30,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.mercedesbenz.sechub.pds.PDSProfiles;
 import com.mercedesbenz.sechub.pds.security.AbstractAllowPDSAPISecurityConfiguration;
 import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
-import com.mercedesbenz.sechub.test.TestConstants;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
@@ -190,7 +190,7 @@ public class PDSJobRestControllerMockTest {
         UUID jobUUID = UUID.randomUUID();
         String result = "result string";
         MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
-        String fileName = TestConstants.SOURCECODE_ZIP;
+        String fileName = SOURCECODE_ZIP;
 
         /* execute + test */
 

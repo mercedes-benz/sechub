@@ -10,6 +10,7 @@ import java.security.MessageDigest;
 import java.util.Objects;
 import java.util.UUID;
 
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.fileupload.FileItemIterator;
@@ -28,33 +29,33 @@ import org.springframework.stereotype.Service;
 
 import com.amazonaws.util.StringInputStream;
 import com.mercedesbenz.sechub.commons.core.CommonConstants;
+import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
+import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
+import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.error.BadRequestException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
+import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUploadsBinaries;
 import com.mercedesbenz.sechub.sharedkernel.util.ChecksumSHA256Service;
-import com.mercedesbenz.sechub.sharedkernel.util.ZipSupport;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
 
 @Service
-public class SchedulerBinaryUploadService {
+@RolesAllowed(RoleConstants.ROLE_USER)
+public class SchedulerBinariesUploadService {
 
     private static final String PARAMETER_FILE = "file";
-    private static final String PARAMETER_CHECK_SUM = "checkSum";
-    private static final Logger LOG = LoggerFactory.getLogger(SchedulerBinaryUploadService.class);
+    private static final String PARAMETER_CHECKSUM = "checkSum";
+    private static final Logger LOG = LoggerFactory.getLogger(SchedulerBinariesUploadService.class);
     private static final long DEFAULT_MAX_UPLOAD_SIZE_IN_BYTES = 50 * 1024 * 1024; // 50 MByte
-
-    @MustBeDocumented(value = "With `false` checksum validation (sha256) on sechub server side is disabled. Sha256 validation must be done by the delegated security products! You should disable the validation only for testing security product behaviours!")
-    @Value("${sechub.server.upload.validate.checksum:true}")
-    boolean validateChecksum = true;
 
     @MustBeDocumented("Define the maximum amount of bytes accepted for uploading `" + CommonConstants.FILENAME_BINARIES_TAR + "`. The default when not set is "
             + DEFAULT_MAX_UPLOAD_SIZE_IN_BYTES + " (" + (DEFAULT_MAX_UPLOAD_SIZE_IN_BYTES / 1024 / 1024) + " MB)")
     @Value("${sechub.upload.binaries.maximum.bytes:" + DEFAULT_MAX_UPLOAD_SIZE_IN_BYTES + "}")
-    private long maxUploadSize;
+    private long maxUploadSize = DEFAULT_MAX_UPLOAD_SIZE_IN_BYTES;
     @Autowired
     StorageService storageService;
 
@@ -65,9 +66,6 @@ public class SchedulerBinaryUploadService {
     ScheduleAssertService assertService;
 
     @Autowired
-    ZipSupport zipSupport;
-
-    @Autowired
     LogSanitizer logSanitizer;
 
     @Autowired
@@ -76,7 +74,8 @@ public class SchedulerBinaryUploadService {
     @Autowired
     UserInputAssertion assertion;
 
-    public void uploadBinaries(String projectId, UUID jobUUID, HttpServletRequest request) throws Exception {
+    @UseCaseUserUploadsBinaries(@Step(number = 2, name = "Try to find project and upload binaries as tar", description = "When project is found and user has access and job is initializing the binaries file will be uploaded"))
+    public void uploadBinaries(String projectId, UUID jobUUID, HttpServletRequest request) {
         /* assert */
         assertion.assertIsValidProjectId(projectId);
         assertion.assertIsValidJobUUID(jobUUID);
@@ -104,6 +103,17 @@ public class SchedulerBinaryUploadService {
 
             LOG.error("Size limit reached: {}", fileSizeLimitExceededException.getMessage());
             throw new BadRequestException("Binaries upload maximum reached. Please reduce your upload file size.", fileSizeLimitExceededException);
+
+        } catch (UnsupportedEncodingException e) {
+
+            throw new IllegalStateException("Encoding not support - should never happen", e);
+
+        } catch (FileUploadException e) {
+
+            throw new BadRequestException("The given multipart content is not accepted.", e);
+
+        } catch (IOException e) {
+            throw new SecHubRuntimeException("Was not able to upload binaries because of IO problems.", e);
         }
 
     }
@@ -150,7 +160,7 @@ public class SchedulerBinaryUploadService {
             FileItemStream item = iterStream.next();
             String fieldName = item.getFieldName();
             switch (fieldName) {
-            case PARAMETER_CHECK_SUM:
+            case PARAMETER_CHECKSUM:
                 try (InputStream checkSumInputStream = item.openStream()) {
                     checksumFromUser = Streams.asString(checkSumInputStream);
 
@@ -190,7 +200,7 @@ public class SchedulerBinaryUploadService {
             throw new BadRequestException("No  user checksum available for binaries upload!");
         }
         if (checksumCalculated == null) {
-            throw new BadRequestException("Uload of binaries was not possible!");
+            throw new BadRequestException("Upload of binaries was not possible!");
         }
         assertCheckSumCorrect(checksumFromUser, checksumCalculated);
     }

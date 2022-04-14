@@ -58,6 +58,7 @@ import com.mercedesbenz.sechub.domain.schedule.ExecutionResult;
 import com.mercedesbenz.sechub.domain.schedule.ExecutionState;
 import com.mercedesbenz.sechub.domain.schedule.ScheduleJobStatus;
 import com.mercedesbenz.sechub.domain.schedule.SchedulerApproveJobService;
+import com.mercedesbenz.sechub.domain.schedule.SchedulerBinariesUploadService;
 import com.mercedesbenz.sechub.domain.schedule.SchedulerCreateJobService;
 import com.mercedesbenz.sechub.domain.schedule.SchedulerGetJobStatusService;
 import com.mercedesbenz.sechub.domain.schedule.SchedulerRestController;
@@ -76,6 +77,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserApprovesJob;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserChecksJobStatus;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserCreatesNewJob;
+import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUploadsBinaries;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUploadsSourceCode;
 import com.mercedesbenz.sechub.test.ExampleConstants;
 import com.mercedesbenz.sechub.test.TestPortProvider;
@@ -110,7 +112,10 @@ public class SchedulerRestControllerRestDocTest {
     private SecHubConfigurationValidator sechubConfigurationValidator;
 
     @MockBean
-    private SchedulerSourcecodeUploadService mockeduploadService;
+    private SchedulerSourcecodeUploadService mockedSourcecodeUploadService;
+
+    @MockBean
+    private SchedulerBinariesUploadService mockedBinariesUploadService;
 
     @MockBean
     private SecHubJobRepository mockedJobRepository;
@@ -465,7 +470,7 @@ public class SchedulerRestControllerRestDocTest {
         MockMultipartFile file1 = new MockMultipartFile("file", inputStreamTo);
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-        		fileUpload(apiEndpoint, PROJECT1_ID,randomUUID).
+        		multipart(apiEndpoint, PROJECT1_ID,randomUUID).
         			file(file1).param("checkSum", "mychecksum")
         		).
         			andExpect(status().isOk()).
@@ -487,6 +492,59 @@ public class SchedulerRestControllerRestDocTest {
                                     // See: https://github.com/ePages-de/restdocs-api-spec/issues/105
                 					requestParts(partWithName("file").description("The sourcecode as zipfile to upload"))
         			));
+
+        /* @formatter:on */
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseUserUploadsBinaries.class)
+    public void restDoc_userUploadsBinaries() throws Exception {
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildUploadBinariesUrl(PROJECT_ID.pathElement(), JOB_UUID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserUploadsBinaries.class;
+
+        ScheduleSecHubJob job = new ScheduleSecHubJob() {
+            public UUID getUUID() {
+                return randomUUID;
+            };
+        };
+        job.setExecutionResult(ExecutionResult.OK);
+        job.setStarted(LocalDateTime.now().minusMinutes(15));
+        job.setEnded(LocalDateTime.now());
+        job.setExecutionState(ExecutionState.INITIALIZING);
+        job.setOwner("CREATOR1");
+        job.setTrafficLight(TrafficLight.GREEN);
+
+        ScheduleJobStatus status = new ScheduleJobStatus(job);
+
+        when(mockedScheduleJobStatusService.getJobStatus(PROJECT1_ID, randomUUID)).thenReturn(status);
+
+        InputStream inputStreamTo = RestDocTestFileSupport.getTestfileSupport().getInputStreamTo("upload/tarfile_contains_only_test1.txt.tar");
+        MockMultipartFile file1 = new MockMultipartFile("file", inputStreamTo);
+        /* execute + test @formatter:off */
+        this.mockMvc.perform(
+                multipart(apiEndpoint, PROJECT1_ID,randomUUID).
+                    file(file1).param("checkSum", "mychecksum")
+                ).
+                    andExpect(status().isOk()).
+                            // https://docs.spring.io/spring-restdocs/docs/2.0.2.RELEASE/reference/html5/
+                    andDo(defineRestService().
+                            with().
+                                useCaseData(useCase).
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                            and().
+                            document(
+                                    pathParameters(
+                                            parameterWithName("projectId").description("The id of the project where sourcecode shall be uploaded for"),
+                                            parameterWithName("jobUUID").description("The jobUUID for sechub job")
+                                    ),
+                                    requestParameters(
+                                            parameterWithName("checkSum").description("A sha256 checksum for file upload validation")
+                                    ),
+                                    // TODO de-jcup, 2022-04-14: It is not possible to document this part properly in OpenAPI.
+                                    // See: https://github.com/ePages-de/restdocs-api-spec/issues/105
+                                    requestParts(partWithName("file").description("The binaries as tarfile to upload"))
+                    ));
 
         /* @formatter:on */
     }

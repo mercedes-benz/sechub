@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.adapter.pds;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.*;
+import static com.mercedesbenz.sechub.test.TestConstants.*;
 import static org.mockito.Mockito.*;
 
 import java.io.ByteArrayInputStream;
@@ -17,7 +18,6 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.mercedesbenz.sechub.adapter.AdapterMetaDataCallback;
 import com.mercedesbenz.sechub.adapter.pds.data.PDSJobStatus.PDSAdapterJobStatusState;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
-import com.mercedesbenz.sechub.test.TestConstants;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 /**
@@ -61,7 +61,7 @@ public class PDSAdapterV1WireMockTest {
         /* prepare */
         PDSWiremockTestSupport testSupport = PDSWiremockTestSupport.builder(wireMockRule).
                 simulateJobCanBeCreated(sechubJobUUID,productIdentifier,expectedJobParameters).
-                simulateUploadData(TestConstants.SOURCECODE_ZIP).
+                simulateUploadData(SOURCECODE_ZIP).
                 simulateMarkReadyToStart().
                 simulateFetchJobStatus(PDSAdapterJobStatusState.DONE).
                 simulateFetchJobResultOk("testresult").
@@ -93,7 +93,7 @@ public class PDSAdapterV1WireMockTest {
 
         PDSWiremockTestSupport testSupport = PDSWiremockTestSupport.builder(wireMockRule).
                 simulateJobCanBeCreated(sechubJobUUID,productIdentifier,expectedJobParameters).
-                simulateUploadData(TestConstants.SOURCECODE_ZIP).
+                simulateUploadData(SOURCECODE_ZIP).
                 simulateMarkReadyToStart().
                 simulateFetchJobStatus(PDSAdapterJobStatusState.DONE).
                 simulateFetchJobResultOk("testresult").
