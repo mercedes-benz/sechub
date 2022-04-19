@@ -31,7 +31,7 @@ else
     echo "Ajax spider: disabled"
 fi
 
-if [ "$ZAP_USE_PROXY" != "true" ] && [ "$ZAP_USE_PROXY_FOR_PDS_TARGET_TYPE" = "$PDS_SCAN_TARGET_TYPE" ]
+if [ "$ZAP_USE_PROXY" != "true" ] && [ "$ZAP_PROXY_FOR_PDS_TARGET_TYPE" = "$PDS_SCAN_TARGET_TYPE" ]
 then
     ZAP_USE_PROXY="true"
     echo "Using proxy for target type: $PDS_SCAN_TARGET_TYPE"
