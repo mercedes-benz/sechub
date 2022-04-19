@@ -35,6 +35,18 @@
           {
             "key": "zap.use.proxy",
             "description": "Enable/disable proxy for scanning."
+          },
+          {
+            "key": "zap.proxy.host",
+            "description": "Hostname or address of proxy."
+          },
+          {
+            "key": "zap.proxy.port",
+            "description": "Port of proxy."
+          },
+          {
+            "key": "zap.proxy.for.pds.target.type",
+            "description": "Use proxy for PDS target type: INTERNET or INTRANET."
           }
         ]
       }
@@ -72,6 +84,18 @@
           {
             "key": "zap.use.proxy",
             "description": "Enable/disable proxy for scanning. This overwrites the target type configuration."
+          },
+          {
+            "key": "zap.proxy.host",
+            "description": "Hostname or address of proxy."
+          },
+          {
+            "key": "zap.proxy.port",
+            "description": "Port of proxy."
+          },
+          {
+            "key": "zap.proxy.for.pds.target.type",
+            "description": "Use proxy for PDS target type: INTERNET or INTRANET."
           }
         ]
       }
