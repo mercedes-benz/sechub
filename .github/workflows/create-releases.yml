@@ -80,7 +80,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.18
+          go-version: 1.18.1
           stable: true
       - uses: actions/cache@v3.0.1
         id: go-cache
