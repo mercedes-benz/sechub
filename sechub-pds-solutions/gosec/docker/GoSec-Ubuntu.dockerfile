@@ -10,7 +10,7 @@ FROM ${BASE_IMAGE}
 LABEL maintainer="SecHub FOSS Team"
 
 # Build args
-ARG GO="go1.18.linux-amd64.tar.gz"
+ARG GO="go1.18.1.linux-amd64.tar.gz"
 ARG GOSEC_VERSION="2.11.0"
 ARG PDS_FOLDER="/pds"
 ARG PDS_VERSION="0.26.2"
