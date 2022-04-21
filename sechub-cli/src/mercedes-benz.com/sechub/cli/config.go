@@ -42,6 +42,7 @@ type Config struct {
 	user                  string
 	waitNanoseconds       int64
 	waitSeconds           int
+	whitelistAll          bool
 }
 
 // Initialize Config with default values
@@ -131,6 +132,8 @@ func parseConfigFromEnvironment(config *Config) {
 		os.Getenv(SechubUserIDEnvVar)
 	waittimeFromEnv :=
 		os.Getenv(SechubWaittimeDefaultEnvVar)
+	config.whitelistAll =
+		os.Getenv(SechubWhitelistAllEnvVar) == "true"
 
 	if apiTokenFromEnv != "" {
 		config.apiToken = apiTokenFromEnv

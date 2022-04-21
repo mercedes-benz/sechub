@@ -41,6 +41,8 @@ func Example_parseConfigFromEnvironmentVerification() {
 	os.Setenv(SechubUserIDEnvVar, "user-from-environment")
 	config.waitSeconds = 0
 	os.Setenv(SechubWaittimeDefaultEnvVar, "777")
+	config.whitelistAll = false
+	os.Setenv(SechubWhitelistAllEnvVar, "true")
 	// EXECUTE
 	parseConfigFromEnvironment(config)
 	// TEST
@@ -54,6 +56,7 @@ func Example_parseConfigFromEnvironmentVerification() {
 	fmt.Println(config.trustAll)
 	fmt.Println(config.user)
 	fmt.Println(config.waitSeconds)
+	fmt.Println(config.whitelistAll)
 	// Output:
 	// apitoken-from-environment
 	// true
@@ -65,6 +68,7 @@ func Example_parseConfigFromEnvironmentVerification() {
 	// true
 	// user-from-environment
 	// 777
+	// true
 }
 
 func Example_isConfigFieldFilledVerification() {

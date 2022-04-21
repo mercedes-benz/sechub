@@ -162,6 +162,10 @@ const SechubUserIDEnvVar = "SECHUB_USERID"
 // SechubWaittimeDefaultEnvVar - environment variable to set poll interval for synchronous scans
 const SechubWaittimeDefaultEnvVar = "SECHUB_WAITTIME_DEFAULT"
 
+// SechubWhitelistAllEnvVar - environment variable to make it possible to switch off the default witelist for source code files.
+//   Important: DefaultZipExcludeDirPatterns still remains active and can be turned off via SECHUB_IGNORE_DEFAULT_EXCLUDES environment variable.
+const SechubWhitelistAllEnvVar = "SECHUB_WHITELIST_ALL"
+
 /* ---------------------------------- */
 /* -------- Status ------------------ */
 /* ---------------------------------- */

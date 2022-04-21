@@ -94,8 +94,13 @@ func prepareCodeScan(context *Context) {
 	/* currently we only provide filesystem - means zipping etc. */
 	json := context.sechubConfig
 
-	// build regexp list for source code file patterns
-	json.CodeScan.SourceCodePatterns = append(json.CodeScan.SourceCodePatterns, DefaultZipAllowedFilePatterns...)
+	if context.config.whitelistAll {
+		// Accept every file as source code
+		json.CodeScan.SourceCodePatterns = []string{""}
+	} else {
+		// build regexp list for source code file patterns
+		json.CodeScan.SourceCodePatterns = append(json.CodeScan.SourceCodePatterns, DefaultZipAllowedFilePatterns...)
+	}
 
 	// add default exclude patterns to exclude list
 	if !context.config.ignoreDefaultExcludes {
