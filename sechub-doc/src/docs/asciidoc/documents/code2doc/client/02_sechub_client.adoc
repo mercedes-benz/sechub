@@ -231,7 +231,7 @@ In below table, there is an overview of what can be defined where.
 | job uuid | -jobUUID ||
 | network timeout | -timeout||
 | output folder or file | -output ||
-| poll interval | -wait | SECHUB_WAITTIME_DEFAULT |
+| max. poll interval | -wait | SECHUB_WAITTIME_DEFAULT |
 | project id | -project | SECHUB_PROJECT |project
 | quiet mode | -quiet | SECHUB_QUIET |
 | report format | -reportformat||
@@ -296,7 +296,7 @@ Here is an overview of mandatory parameter for each `action`:
 - `-version` +
   Shows version info and terminates
 - `-wait <seconds>` + 
-       Wait time in seconds (default 60). 
+       Maximal wait time in seconds (default 60). 
        Will be used for periodic status checks when action=`scan` and for retries of HTTP calls.
 
 ==== Environment variables
@@ -330,8 +330,7 @@ Settings for debugging/client development:
 - `SECHUB_KEEP_TEMPFILES` +
   When set to `true` then `sourcecode-<projectID>.zip` files for code scan will not be removed, so you can check, what was uploaded to the `{sechub}` server.
 - `SECHUB_WAITTIME_DEFAULT` +
-  Wait time in seconds (default 60). Will be used for automatic status checks etc. when action=`scan`.
-  Try to avoid setting it shorter than 60 seconds, because the load on the `{sechub}` server will be increased.
+  Maximal wait time in seconds (default 60). Will be used for automatic status checks etc. when action=`scan`.
 
 
 ==== Proxy support
