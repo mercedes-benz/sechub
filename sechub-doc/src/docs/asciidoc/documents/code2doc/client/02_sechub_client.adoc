@@ -316,6 +316,8 @@ Additionally to above cmdline options, you can set some values also via environm
   When set to `true`, then HTTPS certificate checking will be disabled. May be useful when using self-signed certificates. Please try to avoid this setting for security reasons.
 - `SECHUB_USERID` +
   The SecHub username. (same as `-user` option)
+- `SECHUB_WHITELIST_ALL` +
+  When set to `true` then ignore the default whitelist for source files and add _every_ file. You may want to define <<sechub-config-example-sourcescan,excludes>> in your `sechub.json` file. _!! Handle with care !!_
 
 Settings for debugging/client development:
 

@@ -189,3 +189,20 @@ func zipOneFolderRecursively(zipWriter *zip.Writer, folder string, zipContext *z
 	})
 	return err
 }
+
+// ReadContentOfZipFile - return files inside a zipfile as a list of strings
+func ReadContentOfZipFile(path string) ([]string, error) {
+	list := []string{}
+
+	zipfile, err := zip.OpenReader(path)
+	if err != nil {
+		return list, err
+	}
+	defer zipfile.Close()
+
+	for _, file := range zipfile.File {
+		name := ConvertBackslashPath(file.Name)
+		list = append(list, name)
+	}
+	return list, err
+}
