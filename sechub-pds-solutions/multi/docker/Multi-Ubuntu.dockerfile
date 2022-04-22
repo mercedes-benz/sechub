@@ -11,7 +11,7 @@ LABEL maintainer="SecHub FOSS Team"
 
 # Build args
 ARG PDS_FOLDER="/pds"
-ARG PDS_VERSION="0.26.0"
+ARG PDS_VERSION="0.27.0"
 ARG SCRIPT_FOLDER="/scripts"
 ARG WORKSPACE="/workspace"
 
