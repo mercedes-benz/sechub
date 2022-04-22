@@ -2,6 +2,8 @@
 
 package cli
 
+import "time"
+
 // CurrentAPIVersion - SecHub current api version
 const CurrentAPIVersion = "1.0"
 
@@ -17,12 +19,24 @@ const DefaultTempDir = "."
 
 // DefaultWaitTime - Wait time in seconds.
 // Will be used
-// - for automatic status checks etc. when action=scan
+// - for maximum pause between automatic status checks when action=scan
 // - for pause between retries for failed HTTP calls
 const DefaultWaitTime = 60
 
+// MinimalWaitTimeSeconds - We don't allow intervals shorter than this to protect the SecHub server
+const MinimalWaitTimeSeconds = 4
+
+// InitialWaitIntervallSeconds WaitIntervallIncreaseFactor - defines client's polling behaviour:
+// 2s - 3s - 4.5s - 7s - 10s - 15s - 23s - 34s - 51s - 60s - 60s - 60s ...
+const InitialWaitIntervallSeconds = 2
+const InitialWaitIntervallNanoseconds = int64(InitialWaitIntervallSeconds * time.Second)
+const WaitIntervallIncreaseFactor = 1.5
+
 // DefaultTimeoutInSeconds - Timeout for network communication in seconds
 const DefaultTimeoutInSeconds = 120
+
+// MinimalTimeoutInSeconds - Minimal allowed timeout setting
+const MinimalTimeoutInSeconds = 10
 
 // DefaultZipExcludeDirPatterns - Define directory patterns to exclude from zip file:
 // - code in directories named "test" is not considered to end up in the binary

@@ -163,11 +163,6 @@ func NewConfigByFlags() *Config {
 	// Parse command line options
 	flag.Parse()
 
-	// We use the configFromInit struct already prefilled with defaults and from environment variables
-	oneSecond := 1 * time.Second
-	configFromInit.waitNanoseconds = int64(configFromInit.waitSeconds) * oneSecond.Nanoseconds()
-	configFromInit.timeOutNanoseconds = int64(configFromInit.timeOutSeconds) * oneSecond.Nanoseconds()
-
 	if flagHelp {
 		configFromInit.action = showHelpAction
 	} else if flagVersion {
@@ -260,8 +255,15 @@ func assertValidConfig(config *Config) {
 	// For convenience: lowercase user id and project id if needed
 	config.user = lowercaseOrNotice(config.user, "user id")
 	config.projectID = lowercaseOrNotice(config.projectID, "project id")
+
 	// Remove trailing slash from url if present
 	config.server = strings.TrimSuffix(config.server, "/")
+
+	config.waitSeconds = validateWaitTimeOrWarning(config.waitSeconds)
+	config.waitNanoseconds = int64(config.waitSeconds) * int64(time.Second)
+
+	config.timeOutSeconds = validateTimeoutOrWarning(config.timeOutSeconds)
+	config.timeOutNanoseconds = int64(config.timeOutSeconds) * int64(time.Second)
 }
 
 // isConfigFieldFilled checks if field is not empty or is 'true' in case of boolean type
@@ -369,4 +371,24 @@ func validateOutputLocation(config *Config) bool {
 		}
 	}
 	return true
+}
+
+func validateWaitTimeOrWarning(waittime int) int {
+	// Verify wait time and ensure MinimalWaitTimeSeconds
+	if waittime < MinimalWaitTimeSeconds {
+		sechubUtil.LogWarning(
+			fmt.Sprintf("Desired wait intervall (%d s) is too small. Setting to %d seconds.", waittime, MinimalWaitTimeSeconds))
+		waittime = MinimalWaitTimeSeconds
+	}
+	return waittime
+}
+
+func validateTimeoutOrWarning(timeout int) int {
+	// Verify timeout and ensure MinimalTimeoutInSeconds
+	if timeout < MinimalTimeoutInSeconds {
+		sechubUtil.LogWarning(
+			fmt.Sprintf("Desired timeout (%d s) is too small. Setting to %d seconds.", timeout, MinimalTimeoutInSeconds))
+		timeout = MinimalTimeoutInSeconds
+	}
+	return timeout
 }

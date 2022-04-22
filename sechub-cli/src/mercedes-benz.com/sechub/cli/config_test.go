@@ -353,3 +353,29 @@ func Test_validateOutputLocation_empty(t *testing.T) {
 	sechubTestUtil.AssertEquals(".", config.outputFolder, t)
 	sechubTestUtil.AssertEquals("", config.outputFileName, t)
 }
+
+func Test_validateWaitTimeOrWarning(t *testing.T) {
+	// PREPARE
+	bigvalue := 10000000
+
+	// EXECUTE
+	result1 := validateWaitTimeOrWarning(0)
+	result2 := validateWaitTimeOrWarning(bigvalue)
+
+	// TEST
+	sechubTestUtil.AssertEquals(MinimalWaitTimeSeconds, result1, t)
+	sechubTestUtil.AssertEquals(bigvalue, result2, t)
+}
+
+func Test_validateTimeoutOrWarning(t *testing.T) {
+	// PREPARE
+	bigvalue := 10000000
+
+	// EXECUTE
+	result1 := validateTimeoutOrWarning(0)
+	result2 := validateTimeoutOrWarning(bigvalue)
+
+	// TEST
+	sechubTestUtil.AssertEquals(MinimalTimeoutInSeconds, result1, t)
+	sechubTestUtil.AssertEquals(bigvalue, result2, t)
+}
