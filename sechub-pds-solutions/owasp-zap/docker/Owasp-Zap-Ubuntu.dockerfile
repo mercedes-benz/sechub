@@ -37,7 +37,7 @@ RUN mkdir --parents "$PDS_FOLDER" "${SCRIPT_FOLDER}" "$TOOL_FOLDER" "$WORKSPACE"
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get upgrade --assume-yes && \
-    apt-get install --assume-yes wget openjdk-${JAVA_VERSION}-jre firefox firefox-geckodriver && \
+    apt-get install --assume-yes wget openjdk-${JAVA_VERSION}-jre firefox && \
     apt-get clean
 
 # Install OWASP ZAP
