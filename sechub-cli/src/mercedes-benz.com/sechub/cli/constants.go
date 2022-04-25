@@ -24,7 +24,7 @@ const DefaultTempDir = "."
 const DefaultWaitTime = 60
 
 // MinimalWaitTimeSeconds - We don't allow intervals shorter than this to protect the SecHub server
-const MinimalWaitTimeSeconds = 4
+const MinimalWaitTimeSeconds = 3
 
 // InitialWaitIntervallSeconds WaitIntervallIncreaseFactor - defines client's polling behaviour:
 // 2s - 3s - 4.5s - 7s - 10s - 15s - 23s - 34s - 51s - 60s - 60s - 60s ...

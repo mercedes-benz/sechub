@@ -86,9 +86,9 @@ Does scan synchronous which means
  - approve job as being ready to start
  - wait for job done,
  - fetch automatically result report to output folder (html or json)
- - returns non-zero on `red` (so usually your build will break on critical or high findings)
+ - returns non-zero on `red` so your build will break on critical or high findings (depends on your build tool)
 
-IMPORTANT: For security reasons always pass your api token via the environment variable `SECHUB_APITOKEN`.
+IMPORTANT: For security reasons always pass your API-token via the environment variable `SECHUB_APITOKEN`.
 
 TIP: The is the most preferred scan action for builds - you only have to make one
      single client call and your are done.
@@ -296,7 +296,7 @@ Here is an overview of mandatory parameter for each `action`:
 - `-version` +
   Shows version info and terminates
 - `-wait <seconds>` + 
-       Maximal wait time in seconds (default 60). 
+       Maximum wait time in seconds (default 60). 
        Will be used for periodic status checks when action=`scan` and for retries of HTTP calls.
 
 ==== Environment variables
@@ -330,7 +330,7 @@ Settings for debugging/client development:
 - `SECHUB_KEEP_TEMPFILES` +
   When set to `true` then `sourcecode-<projectID>.zip` files for code scan will not be removed, so you can check, what was uploaded to the `{sechub}` server.
 - `SECHUB_WAITTIME_DEFAULT` +
-  Maximal wait time in seconds (default 60). Will be used for automatic status checks etc. when action=`scan`.
+  Maximum wait time in seconds (default 60). Will be used for automatic status checks etc. when action=`scan`.
 
 
 ==== Proxy support

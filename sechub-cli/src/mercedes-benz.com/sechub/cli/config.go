@@ -104,7 +104,7 @@ func prepareOptionsFromCommandline(config *Config) {
 	flag.BoolVar(&flagVersion,
 		versionOption, false, "Shows version info and terminates")
 	flag.IntVar(&config.waitSeconds,
-		waitOption, config.waitSeconds, "Maximal wait time in seconds - For status checks of action='"+scanAction+"' and for retries of HTTP calls. Can also be defined in environment variable "+SechubWaittimeDefaultEnvVar)
+		waitOption, config.waitSeconds, "Maximum wait time in seconds - For status checks of action='"+scanAction+"' and for retries of HTTP calls. Can also be defined in environment variable "+SechubWaittimeDefaultEnvVar)
 }
 
 func parseConfigFromEnvironment(config *Config) {
@@ -373,14 +373,14 @@ func validateOutputLocation(config *Config) bool {
 	return true
 }
 
-func validateWaitTimeOrWarning(waittime int) int {
+func validateWaitTimeOrWarning(waitTime int) int {
 	// Verify wait time and ensure MinimalWaitTimeSeconds
-	if waittime < MinimalWaitTimeSeconds {
+	if waitTime < MinimalWaitTimeSeconds {
 		sechubUtil.LogWarning(
-			fmt.Sprintf("Desired wait intervall (%d s) is too small. Setting to %d seconds.", waittime, MinimalWaitTimeSeconds))
-		waittime = MinimalWaitTimeSeconds
+			fmt.Sprintf("Desired wait intervall (%d s) is too small. Setting to %d seconds.", waitTime, MinimalWaitTimeSeconds))
+		waitTime = MinimalWaitTimeSeconds
 	}
-	return waittime
+	return waitTime
 }
 
 func validateTimeoutOrWarning(timeout int) int {
