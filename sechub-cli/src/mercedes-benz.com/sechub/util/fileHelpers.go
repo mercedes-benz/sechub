@@ -46,7 +46,9 @@ func HandleIOError(err error) bool {
 }
 
 // FindNewestMatchingFileInDir - used e.g. for finding the latest report file
-func FindNewestMatchingFileInDir(filePattern string, dir string) string {
+func FindNewestMatchingFileInDir(filePattern string, dir string, debug bool) string {
+	LogDebug(debug, fmt.Sprintf("FindNewestMatchingFileInDir: Pattern='%s' ; dir='%s'", filePattern, dir))
+
 	var newestFile string = ""
 	var newestTime int64 = 0
 
