@@ -50,10 +50,10 @@ public class SchedulerBinariesUploadService {
     private static final String PARAMETER_FILE = "file";
     private static final String PARAMETER_CHECKSUM = "checkSum";
     private static final Logger LOG = LoggerFactory.getLogger(SchedulerBinariesUploadService.class);
-    private static final long DEFAULT_MAX_UPLOAD_SIZE_IN_BYTES = 50 * 1024 * 1024; // 50 MByte
+    private static final long DEFAULT_MAX_UPLOAD_SIZE_IN_BYTES = 50 * 1024 * 1024; // 50 MiB
 
     @MustBeDocumented("Define the maximum amount of bytes accepted for uploading `" + CommonConstants.FILENAME_BINARIES_TAR + "`. The default when not set is "
-            + DEFAULT_MAX_UPLOAD_SIZE_IN_BYTES + " (" + (DEFAULT_MAX_UPLOAD_SIZE_IN_BYTES / 1024 / 1024) + " MB)")
+            + DEFAULT_MAX_UPLOAD_SIZE_IN_BYTES + " (" + (DEFAULT_MAX_UPLOAD_SIZE_IN_BYTES / 1024 / 1024) + " MiB)")
     @Value("${sechub.upload.binaries.maximum.bytes:" + DEFAULT_MAX_UPLOAD_SIZE_IN_BYTES + "}")
     private long maxUploadSize = DEFAULT_MAX_UPLOAD_SIZE_IN_BYTES;
     @Autowired
@@ -89,7 +89,12 @@ public class SchedulerBinariesUploadService {
 
         assertMultipart(request);
 
-        /* start */
+        /* execute upload */
+        handleUploadAndProblems(projectId, jobUUID, request);
+
+    }
+
+    private void handleUploadAndProblems(String projectId, UUID jobUUID, HttpServletRequest request) {
         try {
 
             startUpload(projectId, jobUUID, request);
@@ -115,7 +120,6 @@ public class SchedulerBinariesUploadService {
         } catch (IOException e) {
             throw new SecHubRuntimeException("Was not able to upload binaries because of IO problems.", e);
         }
-
     }
 
     private void startUpload(String projectId, UUID jobUUID, HttpServletRequest request) throws FileUploadException, IOException, UnsupportedEncodingException {
@@ -150,7 +154,7 @@ public class SchedulerBinariesUploadService {
          * This is the reason, why we do not check the user input at the beginning but
          * only at the end. This is maybe inconvenient for the user when forgetting to
          * define a field, but this normally happens only one time and the benefit of
-         * avoiding side effects and also speeding up does matter here.
+         * avoiding side effects. In addition, the performance (speed) does matter here.
          *
          * ------------------------- So please do NOT change! -------------------------
          */
@@ -197,7 +201,7 @@ public class SchedulerBinariesUploadService {
             throw new BadRequestException("No checksum defined by user for binaries upload!");
         }
         if (checksumFromUser == null) {
-            throw new BadRequestException("No  user checksum available for binaries upload!");
+            throw new BadRequestException("No user checksum available for binaries upload!");
         }
         if (checksumCalculated == null) {
             throw new BadRequestException("Upload of binaries was not possible!");
