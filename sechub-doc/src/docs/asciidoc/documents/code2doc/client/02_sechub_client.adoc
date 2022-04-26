@@ -185,7 +185,7 @@ include::sechub_client_falsepositive_list_example_unmark.json[]
 Instead of creating a json file to mark false positives, you can also do this interactively:
 Go to the project directory containing `sechub.json` and a report file from a recent scan and run `sechub interactiveMarkFalsePositives`.
 
-You can select the report file using the `-file` option of the client. Otherwise the latest report file in the current directory is automatically selected.
+You can select the report file using the `-file` option of the client. Otherwise the project's latest report file in the current directory is automatically selected.
 
 For each finding in the reports file, you are prompted: `"Add this as false positive?"`
 Your choices are:
@@ -453,9 +453,9 @@ sechub interactiveMarkFalsePositives
 \ `--.  ___  ___| |_| |_   _| |__  
  `--. \/ _ \/ __|  _  | | | | '_ \ 
 /\__/ /  __/ (__| | | | |_| | |_) |
-\____/ \___|\___\_| |_/\__,_|_.__/ Client Version 0.20.0-b78
+\____/ \___|\___\_| |_/\__,_|_.__/ Client Version 0.29.0-20220401111823
 
-Using latest report file "sechub_report_0a84899f-1305-41e0-a2d5-e7c31d6185fd.json".
+Using latest report file "sechub_report_mytestproject_0a84899f-1305-41e0-a2d5-e7c31d6185fd.json".
 ------------------------------------------------------------------
 1: Side Channel Data Leakage, severity: HIGH
 src/main/java/com/example/testapp/invoice/application/InvoiceApplicationService.java, line 651 column 17
@@ -490,7 +490,7 @@ sechub interactiveUnmarkFalsePositives
 \ `--.  ___  ___| |_| |_   _| |__
  `--. \/ _ \/ __|  _  | | | | '_ \
 /\__/ /  __/ (__| | | | |_| | |_) |
-\____/ \___|\___\_| |_/\__,_|_.__/ Client Version 0.20.0-b78
+\____/ \___|\___\_| |_/\__,_|_.__/ Client Version 0.29.0-20220401111823
 
 - Fetching false-positives list for project "mytestproject".
 ------------------------------------------------------------------

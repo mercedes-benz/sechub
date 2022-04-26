@@ -226,17 +226,6 @@ func assertValidConfig(config *Config) {
 		errorsFound = true
 	}
 
-	if config.action == interactiveMarkFalsePositivesAction && config.file == "" {
-		// Let's try to find the latest report and take this as file
-		config.file = sechubUtil.FindNewestMatchingFileInDir("sechub_report_.+\\.json$", config.outputLocation)
-		if config.file == "" {
-			sechubUtil.LogError("Input file is needed for action '" + interactiveMarkFalsePositivesAction + "'. Please define input file with -file option.")
-			errorsFound = true
-		} else {
-			fmt.Printf("Using latest report file %q.\n", config.file)
-		}
-	}
-
 	if !validateRequestedReportFormat(config) {
 		errorsFound = true
 	}
@@ -245,6 +234,17 @@ func assertValidConfig(config *Config) {
 	}
 	if !validateOutputLocation(config) {
 		errorsFound = true
+	}
+
+	if config.action == interactiveMarkFalsePositivesAction && config.file == "" {
+		// Let's try to find the latest report (default naming scheme) and take this as file
+		config.file = sechubUtil.FindNewestMatchingFileInDir("sechub_report_"+config.projectID+"_.+\\.json$", ".", config.debug)
+		if config.file == "" {
+			sechubUtil.LogError("An input file is needed for action '" + interactiveMarkFalsePositivesAction + "'. Please define input file with -file option.")
+			errorsFound = true
+		} else {
+			fmt.Printf("Using latest report file %q.\n", config.file)
+		}
 	}
 
 	if errorsFound {

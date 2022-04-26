@@ -4,6 +4,7 @@ package cli
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -378,4 +379,31 @@ func Test_validateTimeoutOrWarning(t *testing.T) {
 	// TEST
 	sechubTestUtil.AssertEquals(MinimalTimeoutInSeconds, result1, t)
 	sechubTestUtil.AssertEquals(bigValue, result2, t)
+}
+
+func Example_will_reportfile_be_found_in_current_dir() {
+	// PREPARE
+	var config Config
+	config.action = interactiveMarkFalsePositivesAction
+	config.projectID = "testproject"
+
+	config.user = "testuser"
+	config.apiToken = "not empty"
+	config.server = "https://test.example.org"
+	config.reportFormat = "json"
+	config.timeOutSeconds = 10
+	config.waitSeconds = 60
+
+	// Create report file: sechub_report_testproject_45cd4f59-4be7-4a86-9bc7-47528ced16c2.json
+	reportFileName := "./sechub_report_" + config.projectID + "_45cd4f59-4be7-4a86-9bc7-47528ced16c2.json"
+	ioutil.WriteFile(reportFileName, []byte(""), 0644)
+	defer os.Remove(reportFileName)
+
+	// EXECUTE
+	assertValidConfig(&config)
+
+	// TEST
+
+	// Output:
+	// Using latest report file "sechub_report_testproject_45cd4f59-4be7-4a86-9bc7-47528ced16c2.json".
 }
