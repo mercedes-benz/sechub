@@ -32,15 +32,16 @@ public class TargetResolverService implements NetworkTargetResolver {
 
     @Value("${sechub.target.resolve.strategy.uri:}")
     @MustBeDocumented(value = "*Strategy to decide target types by given URI.* +\n"
-            + "Starts always with strategy-identifer, colon and value(s). Currently only 'intranet-hostname-ends-with' is supported as strategy. For example: "
-            + "`intranet-hostname-ends-with::intranet.example.org,intx.example.com`. Other hostnames are interpreted as being inside INTERNET. "
+            + "Starts always with strategy-identifer, colon and value(s). Values are comma separated. Currently only 'intranet-hostname-ends-with' is supported as strategy. For example: "
+            + "`intranet-hostname-ends-with:intranet.example.org,intx.example.com`. Other hostnames are interpreted as being inside INTERNET. "
             + "But no matter if strategy is defined or not: loopback addresses are always illegal and so ignored.")
     String definedUriStrategy;
 
     @Value("${sechub.target.resolve.strategy.ip:}")
     @MustBeDocumented(value = "*Strategy to decide target types by given IP.* +\n"
-            + "Starts always with strategy-identifer, colon and value(s). Currently only 'intranet-ip-pattern' is supported as strategy. For example: "
-            + "`intranet-ip-pattern:192.168.178.*,[2001:db8:85a3:0:0:8a2e:370:*]`. Other IPs are interpreted as being inside INTERNET. "
+            + "Starts always with strategy-identifer, colon and value(s). Values are comma separated. Currently only 'intranet-ip-pattern' is supported as strategy. Inside this strategy,"
+            + "it is possible to define IPv4 or IPv6 adresses (wildcards are also possible). For example: "
+            + "`intranet-ip-pattern:192.168.178.\\*,2001:db8:85a3:0:0:8a2e:370:\\*`. Other IPs are interpreted as being inside INTERNET. "
             + "But no matter if strategy is defined or not: loopback addresses are always illegal and so ignored")
     String definedInetAddressStrategy;
 
