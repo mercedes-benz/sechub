@@ -28,37 +28,40 @@ public class SchedulerBinariesUploadServiceTest {
 
     private static final String PROJECT1 = "project1";
     private SchedulerBinariesUploadService serviceToTest;
-    private ChecksumSHA256Service mockedChecksumService;
-    private StorageService mockedStorageService;
+    private ChecksumSHA256Service checksumService;
+    private StorageService storageService;
     private UUID randomUuid;
-    private ScheduleAssertService mockedAssertService;
+    private ScheduleAssertService assertService;
 
     private JobStorage storage;
     private HttpServletRequest httpRequest;
+    private SchedulerBinariesUploadConfiguration configuration;
 
     @BeforeEach
     void beforeEach() {
         randomUuid = UUID.randomUUID();
 
-        mockedChecksumService = mock(ChecksumSHA256Service.class);
-        mockedStorageService = mock(StorageService.class);
-        mockedAssertService = mock(ScheduleAssertService.class);
+        checksumService = mock(ChecksumSHA256Service.class);
+        storageService = mock(StorageService.class);
+        assertService = mock(ScheduleAssertService.class);
+        storage = mock(JobStorage.class);
+        httpRequest = mock(HttpServletRequest.class);
+        configuration = mock(SchedulerBinariesUploadConfiguration.class);
 
         ScheduleSecHubJob job = new ScheduleSecHubJob();
-        when(mockedAssertService.assertJob(PROJECT1, randomUuid)).thenReturn(job);
-        storage = mock(JobStorage.class);
-        when(mockedStorageService.getJobStorage(PROJECT1, randomUuid)).thenReturn(storage);
+        when(assertService.assertJob(PROJECT1, randomUuid)).thenReturn(job);
+        when(storageService.getJobStorage(PROJECT1, randomUuid)).thenReturn(storage);
 
         /* attach at service to test */
         serviceToTest = new SchedulerBinariesUploadService();
-        serviceToTest.checksumSHA256Service = mockedChecksumService;
-        serviceToTest.storageService = mockedStorageService;
-        serviceToTest.assertService = mockedAssertService;
+        serviceToTest.checksumSHA256Service = checksumService;
+        serviceToTest.storageService = storageService;
+        serviceToTest.assertService = assertService;
+        serviceToTest.configuration = configuration;
         serviceToTest.logSanitizer = mock(LogSanitizer.class);
         serviceToTest.assertion = mock(UserInputAssertion.class);
         serviceToTest.auditLogService = mock(AuditLogService.class);
 
-        httpRequest = mock(HttpServletRequest.class);
     }
 
     @Test

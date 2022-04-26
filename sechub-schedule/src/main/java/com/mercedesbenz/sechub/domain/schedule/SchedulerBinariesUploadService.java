@@ -24,14 +24,11 @@ import org.apache.commons.io.input.MessageDigestCalculatingInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.amazonaws.util.StringInputStream;
-import com.mercedesbenz.sechub.commons.core.CommonConstants;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
-import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.error.BadRequestException;
@@ -50,12 +47,10 @@ public class SchedulerBinariesUploadService {
     private static final String PARAMETER_FILE = "file";
     private static final String PARAMETER_CHECKSUM = "checkSum";
     private static final Logger LOG = LoggerFactory.getLogger(SchedulerBinariesUploadService.class);
-    private static final long DEFAULT_MAX_UPLOAD_SIZE_IN_BYTES = 50 * 1024 * 1024; // 50 MiB
 
-    @MustBeDocumented("Define the maximum amount of bytes accepted for uploading `" + CommonConstants.FILENAME_BINARIES_TAR + "`. The default when not set is "
-            + DEFAULT_MAX_UPLOAD_SIZE_IN_BYTES + " (" + (DEFAULT_MAX_UPLOAD_SIZE_IN_BYTES / 1024 / 1024) + " MiB)")
-    @Value("${sechub.upload.binaries.maximum.bytes:" + DEFAULT_MAX_UPLOAD_SIZE_IN_BYTES + "}")
-    private long maxUploadSize = DEFAULT_MAX_UPLOAD_SIZE_IN_BYTES;
+    @Autowired
+    SchedulerBinariesUploadConfiguration configuration;
+
     @Autowired
     StorageService storageService;
 
@@ -133,6 +128,9 @@ public class SchedulerBinariesUploadService {
         JobStorage jobStorage = storageService.getJobStorage(projectId, jobUUID);
 
         ServletFileUpload upload = new ServletFileUpload();
+
+        long maxUploadSize = configuration.getMaxUploadSizeInBytes();
+
         upload.setSizeMax(maxUploadSize + 600);// we accept 600 bytes more for header, checksum etc.
         upload.setFileSizeMax(maxUploadSize);
 
@@ -217,7 +215,7 @@ public class SchedulerBinariesUploadService {
 
     private void assertCheckSumCorrect(String checkSumFromUser, String checksumCalculated) {
         if (!Objects.equals(checkSumFromUser, checksumCalculated)) {
-            LOG.error("Uploaded binary file has not correct sha256 checksum! Something must have happened during the upload.");
+            LOG.error("Uploaded binary file has incorrect sha256 checksum! Something must have happened during the upload.");
             throw new BadRequestException("Binaries checksum check failed");
         }
     }

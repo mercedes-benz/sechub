@@ -33,6 +33,7 @@ public class SchedulerSourcecodeUploadServiceTest {
 
     private JobStorage storage;
     private ZipSupport mockedZipSupport;
+    private SchedulerSourcecodeUploadConfiguration configuration;
 
     @BeforeEach
     void beforeEach() {
@@ -49,6 +50,7 @@ public class SchedulerSourcecodeUploadServiceTest {
 
         file = mock(MultipartFile.class);
         mockedZipSupport = mock(ZipSupport.class);
+        configuration = mock(SchedulerSourcecodeUploadConfiguration.class);
 
         /* attach at service to test */
         serviceToTest = new SchedulerSourcecodeUploadService();
@@ -56,6 +58,8 @@ public class SchedulerSourcecodeUploadServiceTest {
         serviceToTest.storageService = mockedStorageService;
         serviceToTest.assertService = mockedAssertService;
         serviceToTest.zipSupport = mockedZipSupport;
+        serviceToTest.configuration = configuration;
+
         serviceToTest.logSanitizer = mock(LogSanitizer.class);
         serviceToTest.assertion = mock(UserInputAssertion.class);
         serviceToTest.auditLogService = mock(AuditLogService.class);
@@ -63,20 +67,13 @@ public class SchedulerSourcecodeUploadServiceTest {
     }
 
     @Test
-    void without_spring_container_zip_validation_is_enabled() {
-        assertTrue(serviceToTest.validateZip);
-    }
-
-    @Test
-    void without_spring_container_checksum_validation_is_enabled() {
-        assertTrue(serviceToTest.validateChecksum);
-    }
-
-    @Test
     void when_checksum_correct_and_is_zip__correct_no_failure() {
         /* prepare */
         when(mockedChecksumService.hasCorrectChecksum(eq("mychecksum"), any())).thenReturn(true);
         when(mockedZipSupport.isZipFile(any())).thenReturn(true);
+
+        when(configuration.isChecksumValidationEnabled()).thenReturn(true);
+        when(configuration.isZipValidationEnabled()).thenReturn(true);
 
         /* execute */
         serviceToTest.uploadSourceCode(PROJECT1, randomUuid, file, "mychecksum");
@@ -88,6 +85,9 @@ public class SchedulerSourcecodeUploadServiceTest {
         when(mockedChecksumService.hasCorrectChecksum(eq("mychecksum"), any())).thenReturn(false);
         when(mockedZipSupport.isZipFile(any())).thenReturn(true);
 
+        when(configuration.isChecksumValidationEnabled()).thenReturn(true);
+        when(configuration.isZipValidationEnabled()).thenReturn(false);
+
         /* execute + test */
         assertThrows(NotAcceptableException.class, () -> serviceToTest.uploadSourceCode(PROJECT1, randomUuid, file, "mychecksum"));
     }
@@ -98,7 +98,8 @@ public class SchedulerSourcecodeUploadServiceTest {
         when(mockedChecksumService.hasCorrectChecksum(eq("mychecksum"), any())).thenReturn(false);
         when(mockedZipSupport.isZipFile(any())).thenReturn(true);
 
-        serviceToTest.validateChecksum = false;
+        when(configuration.isChecksumValidationEnabled()).thenReturn(false);
+        when(configuration.isZipValidationEnabled()).thenReturn(true);
 
         /* execute + test (no exception) */
         serviceToTest.uploadSourceCode(PROJECT1, randomUuid, file, "mychecksum");
@@ -110,7 +111,8 @@ public class SchedulerSourcecodeUploadServiceTest {
         when(mockedChecksumService.hasCorrectChecksum(eq("mychecksum"), any())).thenReturn(true);
         when(mockedZipSupport.isZipFile(any())).thenReturn(false);
 
-        serviceToTest.validateZip = false;
+        when(configuration.isChecksumValidationEnabled()).thenReturn(true);
+        when(configuration.isZipValidationEnabled()).thenReturn(false);
 
         /* execute + test (no exception) */
         serviceToTest.uploadSourceCode(PROJECT1, randomUuid, file, "mychecksum");
@@ -121,6 +123,9 @@ public class SchedulerSourcecodeUploadServiceTest {
         /* prepare */
         when(mockedChecksumService.hasCorrectChecksum(eq("mychecksum"), any())).thenReturn(true);
         when(mockedZipSupport.isZipFile(any())).thenReturn(false);
+
+        when(configuration.isChecksumValidationEnabled()).thenReturn(true);
+        when(configuration.isZipValidationEnabled()).thenReturn(true);
 
         /* execute + test */
         assertThrows(NotAcceptableException.class, () -> serviceToTest.uploadSourceCode(PROJECT1, randomUuid, file, "mychecksum"));

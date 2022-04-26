@@ -13,14 +13,12 @@ import javax.annotation.security.RolesAllowed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.util.StringInputStream;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
-import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
@@ -40,13 +38,8 @@ public class SchedulerSourcecodeUploadService {
 
     private static final Logger LOG = LoggerFactory.getLogger(SchedulerSourcecodeUploadService.class);
 
-    @Value("${sechub.server.upload.validate.zip:true}")
-    @MustBeDocumented(value = "With `false` ZIP validation on sechub server side is disabled. ZIP validation must be done by the delegated security products! You should disable the validation only for testing security product behaviours!")
-    boolean validateZip = true;
-
-    @MustBeDocumented(value = "With `false` source code checksum validation (sha256) on sechub server side is disabled. Sha256 validation must be done by the delegated security products! You should disable the validation only for testing security product behaviours!")
-    @Value("${sechub.server.upload.validate.checksum:true}")
-    boolean validateChecksum = true;
+    @Autowired
+    SchedulerSourcecodeUploadConfiguration configuration;
 
     @Autowired
     StorageService storageService;
@@ -110,7 +103,7 @@ public class SchedulerSourcecodeUploadService {
     }
 
     private void handleChecksumValidation(MultipartFile file, String checkSum, String traceLogID) {
-        if (!validateChecksum) {
+        if (!configuration.isChecksumValidationEnabled()) {
             return;
         }
         try (InputStream inputStream = file.getInputStream()) {
@@ -124,7 +117,7 @@ public class SchedulerSourcecodeUploadService {
     }
 
     private void handleZipValidation(MultipartFile file, String traceLogID) {
-        if (!validateZip) {
+        if (!configuration.isZipValidationEnabled()) {
             return;
         }
         try (InputStream inputStream = file.getInputStream()) {
@@ -139,7 +132,7 @@ public class SchedulerSourcecodeUploadService {
 
     private void assertCheckSumCorrect(String checkSum, InputStream inputStream) {
         if (!checksumSHA256Service.hasCorrectChecksum(checkSum, inputStream)) {
-            LOG.error("Uploaded file has not correct sha256 checksum! Something must have happened during the upload.");
+            LOG.error("Uploaded file has incorrect sha256 checksum! Something must have happened during the upload.");
             throw new NotAcceptableException("Sourcecode checksum check failed");
         }
     }
