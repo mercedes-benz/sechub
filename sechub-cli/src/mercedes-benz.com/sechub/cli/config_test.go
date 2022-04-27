@@ -407,3 +407,54 @@ func Example_will_reportfile_be_found_in_current_dir() {
 	// Output:
 	// Using latest report file "sechub_report_testproject_45cd4f59-4be7-4a86-9bc7-47528ced16c2.json".
 }
+
+func Test_check_if_too_many_cmdline_args_get_capped(t *testing.T) {
+	// PREPARE
+	originalArgs := os.Args
+	os.Args = []string{"sechub"}
+
+	for i := 0; i < MaximumNumberOfCMDLineArguments/2; i++ {
+		os.Args = append(os.Args, "-tempdir")
+		os.Args = append(os.Args, fmt.Sprintf("%d", i))
+	}
+	fmt.Print("os.Args=")
+	fmt.Println(os.Args)
+	before := len(os.Args)
+
+	// EXECUTE
+	validateMaximumNumberOfCMDLineArgumentsOrCapAndWarning()
+
+	// TEST
+	fmt.Print("os.Args=")
+	fmt.Println(os.Args)
+	after := len(os.Args)
+	sechubTestUtil.AssertEquals(MaximumNumberOfCMDLineArguments+1, before, t)
+	sechubTestUtil.AssertEquals(MaximumNumberOfCMDLineArguments, after, t)
+
+	// Restore original arguments
+	os.Args = originalArgs
+}
+
+func Test_check_max_cmdline_args_are_accepted(t *testing.T) {
+	// PREPARE
+	originalArgs := os.Args
+	os.Args = []string{"sechub"}
+
+	for i := 1; i < MaximumNumberOfCMDLineArguments; i++ {
+		os.Args = append(os.Args, "-help")
+	}
+	fmt.Print("os.Args=")
+	fmt.Println(os.Args)
+
+	// EXECUTE
+	validateMaximumNumberOfCMDLineArgumentsOrCapAndWarning()
+
+	// TEST
+	fmt.Print("os.Args=")
+	fmt.Println(os.Args)
+
+	sechubTestUtil.AssertEquals(MaximumNumberOfCMDLineArguments, len(os.Args), t)
+
+	// Restore original arguments
+	os.Args = originalArgs
+}

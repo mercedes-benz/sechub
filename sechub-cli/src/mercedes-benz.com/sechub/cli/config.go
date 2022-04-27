@@ -157,6 +157,8 @@ func parseConfigFromEnvironment(config *Config) {
 
 // NewConfigByFlags parses commandline flags which override environment variable settings or defaults defined in init()
 func NewConfigByFlags() *Config {
+	validateMaximumNumberOfCMDLineArgumentsOrCapAndWarning()
+
 	// Normalize arguments from commandline
 	os.Args = normalizeCMDLineArgs(os.Args)
 
@@ -391,4 +393,11 @@ func validateTimeoutOrWarning(timeout int) int {
 		timeout = MinimalTimeoutInSeconds
 	}
 	return timeout
+}
+
+func validateMaximumNumberOfCMDLineArgumentsOrCapAndWarning() {
+	if len(os.Args) > MaximumNumberOfCMDLineArguments {
+		os.Args = os.Args[0:MaximumNumberOfCMDLineArguments]
+		sechubUtil.LogWarning(fmt.Sprintf("Too many commandline arguments. Capping to %d.", MaximumNumberOfCMDLineArguments))
+	}
 }
