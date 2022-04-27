@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.integrationtest.scenario6;
 
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
+import static com.mercedesbenz.sechub.test.TestConstants.*;
 import static org.junit.Assert.*;
 
 import java.util.HashMap;
@@ -53,7 +54,7 @@ public class DirectPDSAPIJobStreamDataScenario6IntTest {
         String createResult = asPDSUser(PDS_ADMIN).createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN, customParameters);
         UUID pdsJobUUID = assertPDSJobCreateResult(createResult).hasJobUUID().getJobUUID();
         asPDSUser(PDS_TECH_USER).
-            upload(pdsJobUUID, "sourcecode.zip", "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip").
+            upload(pdsJobUUID, SOURCECODE_ZIP, "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip").
             markJobAsReadyToStart(pdsJobUUID);
         /* @formatter:on */
 

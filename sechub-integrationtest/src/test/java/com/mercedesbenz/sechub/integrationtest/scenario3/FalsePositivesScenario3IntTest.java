@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.integrationtest.scenario3;
 
-import static com.mercedesbenz.sechub.integrationtest.api.AssertSecHubReport.*;
+import static com.mercedesbenz.sechub.integrationtest.api.AssertSecHubReport.assertSecHubReport;
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 import static com.mercedesbenz.sechub.integrationtest.scenario3.Scenario3.*;
 import static org.junit.Assert.*;

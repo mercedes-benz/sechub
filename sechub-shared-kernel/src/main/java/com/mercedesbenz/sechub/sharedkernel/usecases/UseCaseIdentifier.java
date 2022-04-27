@@ -153,6 +153,8 @@ public enum UseCaseIdentifier {
 
     UC_SCHEDULE_AUTO_CLEANUP_EXECUTION(68),
 
+    UC_USER_UPLOADS_BINARIES(69),
+
     ;
 
     /* +-----------------------------------------------------------------------+ */
