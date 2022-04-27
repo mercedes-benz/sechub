@@ -75,20 +75,20 @@ public class SecHubConfigurationModelValidator {
     }
 
     private void handleLicenseScanConfiguration(InternalValidationContext context) {
-    	Optional<SecHubLicenseScanConfiguration> licenseScanOpt = context.model.getLicenseScan();
-    	
-    	if (!licenseScanOpt.isPresent()) {
-    		return;
-    	}
-        SecHubDataConfigurationUsageByName licenseScan = licenseScanOpt.get();
-        
-        if (licenseScan.getNamesOfUsedDataConfigurationObjects().isEmpty()) {
-        	context.result.addError(NO_DATA_CONFIG_SPECIFIED_FOR_SCAN);
+        Optional<SecHubLicenseScanConfiguration> licenseScanOpt = context.model.getLicenseScan();
+
+        if (!licenseScanOpt.isPresent()) {
+            return;
         }
-        
+        SecHubDataConfigurationUsageByName licenseScan = licenseScanOpt.get();
+
+        if (licenseScan.getNamesOfUsedDataConfigurationObjects().isEmpty()) {
+            context.result.addError(NO_DATA_CONFIG_SPECIFIED_FOR_SCAN);
+        }
+
         handleUsages(context, licenseScan);
     }
-    
+
     private void handleCodeScanConfiguration(InternalValidationContext context) {
         Optional<SecHubCodeScanConfiguration> codeScanOpt = context.model.getCodeScan();
         if (!codeScanOpt.isPresent()) {

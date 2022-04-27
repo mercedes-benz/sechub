@@ -8,7 +8,7 @@ public enum TestExecutorProductIdentifier {
     PDS_WEBSCAN,
 
     PDS_INFRASCAN,
-    
+
     PDS_LICENSESCAN,
 
     CHECKMARX,

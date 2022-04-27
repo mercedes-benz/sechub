@@ -10,7 +10,7 @@ public enum ScanType {
     WEB_SCAN("webScan"),
 
     INFRA_SCAN("infraScan"),
-    
+
     LICENSE_SCAN("licenseScan"),
 
     /** not really a scan type but a report collector, only internally used */

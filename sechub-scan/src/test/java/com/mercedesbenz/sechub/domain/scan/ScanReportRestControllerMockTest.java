@@ -34,12 +34,12 @@ import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.domain.scan.product.ReportProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.report.CreateScanReportService;
 import com.mercedesbenz.sechub.domain.scan.report.DownloadScanReportService;
+import com.mercedesbenz.sechub.domain.scan.report.DownloadSpdxScanReportService;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReportRepository;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReportRestController;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReportTrafficLightCalculator;
 import com.mercedesbenz.sechub.domain.scan.report.ScanSecHubReport;
-import com.mercedesbenz.sechub.domain.scan.report.DownloadSpdxScanReportService;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
@@ -59,7 +59,7 @@ public class ScanReportRestControllerMockTest {
 
     @MockBean
     private DownloadScanReportService downloadReportService;
-    
+
     @MockBean
     private DownloadSpdxScanReportService serecoSpdaxDownloadService;
 
@@ -193,14 +193,14 @@ public class ScanReportRestControllerMockTest {
 
         /* @formatter:on */
     }
-    
+
     @Test
     @WithMockUser
     public void get_spdx_json_report() throws Exception {
         /* prepare */
-    	String spdxJsonReport = "{ spdx }";
-    	when(serecoSpdaxDownloadService.getScanSpdxJsonReport(PROJECT1_ID, randomUUID)).thenReturn(spdxJsonReport);
-    	
+        String spdxJsonReport = "{ spdx }";
+        when(serecoSpdaxDownloadService.getScanSpdxJsonReport(PROJECT1_ID, randomUUID)).thenReturn(spdxJsonReport);
+
         /* execute + test @formatter:off */
         this.mockMvc.perform(
                 get(https(PORT_USED).buildGetJobReportUrlSpdx(PROJECT1_ID, randomUUID)).accept(MediaType.APPLICATION_JSON)

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.report;
 
 import java.util.List;
@@ -19,46 +20,45 @@ import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 @Service
 public class DownloadSpdxScanReportService {
 
-	@Autowired
-	ScanAssertService scanAssertService;
+    @Autowired
+    ScanAssertService scanAssertService;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Autowired
+    UserInputAssertion assertion;
 
-	@Autowired
-	AuditLogService auditLogService;
+    @Autowired
+    AuditLogService auditLogService;
 
-	@Autowired
-	ProductResultRepository productResultRepository;
+    @Autowired
+    ProductResultRepository productResultRepository;
 
-	@Autowired
-	SpdxJsonResolver spdxJsonResolver;
+    @Autowired
+    SpdxJsonResolver spdxJsonResolver;
 
-	public String getScanSpdxJsonReport(String projectId, UUID jobUUID) {
-		/* validate */
-		assertion.assertIsValidProjectId(projectId);
-		assertion.assertIsValidJobUUID(jobUUID);
+    public String getScanSpdxJsonReport(String projectId, UUID jobUUID) {
+        /* validate */
+        assertion.assertIsValidProjectId(projectId);
+        assertion.assertIsValidJobUUID(jobUUID);
 
-		scanAssertService.assertUserHasAccessToProject(projectId);
-		scanAssertService.assertProjectAllowsReadAccess(projectId);
+        scanAssertService.assertUserHasAccessToProject(projectId);
+        scanAssertService.assertProjectAllowsReadAccess(projectId);
 
-		/* audit */
-		auditLogService.log("starts download of SPDX Json report for job: {}", jobUUID);
+        /* audit */
+        auditLogService.log("starts download of SPDX Json report for job: {}", jobUUID);
 
-		List<ProductResult> productResults = productResultRepository.findAllProductResults(jobUUID,
-				ProductIdentifier.SERECO);
+        List<ProductResult> productResults = productResultRepository.findAllProductResults(jobUUID, ProductIdentifier.SERECO);
 
-		if (productResults.size() != 1) {
-			throw new SecHubRuntimeException("Did not found exactly one product result.");
-		}
+        if (productResults.size() != 1) {
+            throw new SecHubRuntimeException("Did not found exactly one product result.");
+        }
 
-		ProductResult productResult = productResults.iterator().next();
-		String spdxJson = spdxJsonResolver.resolveSpdxJson(productResult);
+        ProductResult productResult = productResults.iterator().next();
+        String spdxJson = spdxJsonResolver.resolveSpdxJson(productResult);
 
-		if (spdxJson == null) {
-			throw new NotFoundException("There was no JSON SPDX report available for job: " + jobUUID);
-		}
+        if (spdxJson == null) {
+            throw new NotFoundException("There was no JSON SPDX report available for job: " + jobUUID);
+        }
 
-		return spdxJson;
-	}
+        return spdxJson;
+    }
 }

@@ -39,7 +39,7 @@ class SecHubConfigurationModelValidatorTest {
         assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_HAS_NO_URL_DEFINED);
         assertEquals(1, result.getErrors().size());
     }
-    
+
     @Test
     void license_scan__empty_config_results_in_error() throws Exception {
         /* prepare */
@@ -60,14 +60,14 @@ class SecHubConfigurationModelValidatorTest {
     @Test
     void license_scan__config_with_data() throws Exception {
         /* prepare */
-    	String dataName = "data-reference-1";
-    	
+        String dataName = "data-reference-1";
+
         SecHubLicenseScanConfiguration licenseScan = new SecHubLicenseScanConfiguration();
         licenseScan.getNamesOfUsedDataConfigurationObjects().add(dataName);
-        
+
         SecHubSourceDataConfiguration dataSource = new SecHubSourceDataConfiguration();
         dataSource.setUniqueName(dataName);
-        
+
         SecHubDataConfiguration dataConfiguration = new SecHubDataConfiguration();
         dataConfiguration.getSources().add(dataSource);
 

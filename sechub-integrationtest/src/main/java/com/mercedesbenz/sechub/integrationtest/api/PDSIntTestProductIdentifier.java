@@ -70,12 +70,10 @@ public enum PDSIntTestProductIdentifier {
      * For details please look at {@link PDSIntTestProductIdentifier}.
      */
     PDS_INTTEST_PRODUCT_WS_SARIF("PDS_INTTEST_PRODUCT_WS_SARIF"),
-    
+
     /**
-     * PDS product identifier for PDS license scan integration test.
-     * The PDS license scan script will return an already existing 
-     * SPDX JSON file as output.
-     * <br>
+     * PDS product identifier for PDS license scan integration test. The PDS license
+     * scan script will return an already existing SPDX JSON file as output. <br>
      * For details please look at {@link PDSIntTestProductIdentifier}.
      */
     PDS_TEST_PRODUCT_LICENSESCAN("PDS_TEST_PRODUCT_LICENSESCAN"),

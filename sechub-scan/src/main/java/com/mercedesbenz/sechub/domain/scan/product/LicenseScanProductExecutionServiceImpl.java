@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product;
 
 import java.util.Optional;
@@ -13,14 +14,14 @@ import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 
 public class LicenseScanProductExecutionServiceImpl extends AbstractProductExecutionService implements LicenseScanProductExecutionService {
     private static final Logger LOG = LoggerFactory.getLogger(LicenseScanProductExecutionServiceImpl.class);
-    
-	@Override
-	protected ScanType getScanType() {
-		return ScanType.LICENSE_SCAN;
-	}
 
-	@Override
-	protected boolean isExecutionNecessary(SecHubExecutionContext context, UUIDTraceLogID traceLogID, SecHubConfiguration configuration) {
+    @Override
+    protected ScanType getScanType() {
+        return ScanType.LICENSE_SCAN;
+    }
+
+    @Override
+    protected boolean isExecutionNecessary(SecHubExecutionContext context, UUIDTraceLogID traceLogID, SecHubConfiguration configuration) {
         Optional<SecHubLicenseScanConfiguration> licenseScanConfiguration = configuration.getLicenseScan();
         if (!licenseScanConfiguration.isPresent()) {
             LOG.trace("No license scan option found for {}", traceLogID);
@@ -28,6 +29,6 @@ public class LicenseScanProductExecutionServiceImpl extends AbstractProductExecu
         }
         LOG.trace("License scan option found {}", traceLogID);
         return true;
-	}
+    }
 
 }

@@ -13,11 +13,11 @@ public class SerecoMetaData {
     private Set<SerecoAnnotation> annotations = new LinkedHashSet<>();
     private List<SerecoLicenseDocument> licenseDocuments = new LinkedList<>();
 
-	public List<SerecoLicenseDocument> getLicenseDocuments() {
-		return licenseDocuments;
-	}
+    public List<SerecoLicenseDocument> getLicenseDocuments() {
+        return licenseDocuments;
+    }
 
-	public Set<SerecoAnnotation> getAnnotations() {
+    public Set<SerecoAnnotation> getAnnotations() {
         return annotations;
     }
 

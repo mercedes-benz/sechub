@@ -49,9 +49,9 @@ public class SecHubConfigurationModelReducedCloningSupport {
                 newModel.setInfraScan(new SecHubInfrastructureScanConfiguration());
             }
             break;
-            
+
         case LICENSE_SCAN:
-        	Optional<SecHubLicenseScanConfiguration> licenseScan = model.getLicenseScan();
+            Optional<SecHubLicenseScanConfiguration> licenseScan = model.getLicenseScan();
             if (licenseScan.isPresent()) {
                 newModel.setLicenseScan(licenseScan.get());
             } else {

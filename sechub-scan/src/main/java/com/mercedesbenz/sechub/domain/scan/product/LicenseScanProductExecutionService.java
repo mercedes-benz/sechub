@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product;
 
 /**
@@ -5,5 +6,5 @@ package com.mercedesbenz.sechub.domain.scan.product;
  * abstract parts when directly using classes)
  */
 public interface LicenseScanProductExecutionService extends ProductExecutionStoreService {
-	
+
 }

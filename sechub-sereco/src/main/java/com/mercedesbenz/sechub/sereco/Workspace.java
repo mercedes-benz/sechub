@@ -116,7 +116,7 @@ public class Workspace {
         workspaceMetaData.getVulnerabilities().addAll(metaData.getVulnerabilities());
 
         workspaceMetaData.getAnnotations().addAll(metaData.getAnnotations());
-        
+
         workspaceMetaData.getLicenseDocuments().addAll(metaData.getLicenseDocuments());
     }
 

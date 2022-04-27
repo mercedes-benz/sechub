@@ -14,7 +14,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface ProductResultRepository extends JpaRepository<ProductResult, UUID>, ProductResultRepositoryCustom {
-	
+
     @Modifying
     @Query(value = "DELETE FROM " + TABLE_NAME + " where " + COLUMN_PROJECT_ID + " = ?1", nativeQuery = true)
     void deleteAllResultsForProject(String projectId);

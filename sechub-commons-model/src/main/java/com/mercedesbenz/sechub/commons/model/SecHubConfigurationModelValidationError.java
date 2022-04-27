@@ -26,7 +26,7 @@ public enum SecHubConfigurationModelValidationError {
     WEB_SCAN_URL_HAS_UNSUPPORTED_SCHEMA("The URL for web scan has an unsupported schema!"),
 
     REFERENCED_DATA_CONFIG_OBJECT_NAME_NOT_EXISTING("The referenced config object name was not found in object!"),
-    
+
     NO_DATA_CONFIG_SPECIFIED_FOR_SCAN("No data config was specified for the scan!");
 
     ;

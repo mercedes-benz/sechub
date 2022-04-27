@@ -524,22 +524,22 @@ public class SecHubConfigurationTest {
         assertTrue("excludes are empty", excludes.get().isEmpty());
         assertEquals(expectedExcludes, excludes.get());
     }
-    
+
     @Test
     public void license_scan_test() {
-    	/* prepare */
-    	String expectedDataConfigName =  "build-artifacts";
-    	String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("licensescan/license_scan.json");
-    	
-    	/* execute */
-    	SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
-    	
-    	/* test */
-    	Optional<SecHubLicenseScanConfiguration> licenseScan = result.getLicenseScan();
-    	assertTrue("license scan must be present", licenseScan.isPresent());
-    	
-    	Set<String> usedDataConfigs = licenseScan.get().getNamesOfUsedDataConfigurationObjects();
-    	assertEquals(1, usedDataConfigs.size());
-    	assertEquals(expectedDataConfigName, usedDataConfigs.iterator().next());
+        /* prepare */
+        String expectedDataConfigName = "build-artifacts";
+        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("licensescan/license_scan.json");
+
+        /* execute */
+        SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
+
+        /* test */
+        Optional<SecHubLicenseScanConfiguration> licenseScan = result.getLicenseScan();
+        assertTrue("license scan must be present", licenseScan.isPresent());
+
+        Set<String> usedDataConfigs = licenseScan.get().getNamesOfUsedDataConfigurationObjects();
+        assertEquals(1, usedDataConfigs.size());
+        assertEquals(expectedDataConfigName, usedDataConfigs.iterator().next());
     }
 }

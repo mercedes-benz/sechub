@@ -513,23 +513,23 @@ public class AsUser {
     }
 
     public String getJobReport(String projectId, UUID jobUUID) {
-    	waitForJobToFinish(projectId, jobUUID);
-    	
+        waitForJobToFinish(projectId, jobUUID);
+
         /* okay report is available - so do download */
         return getRestHelper().getJSON(getUrlBuilder().buildGetJobReportUrl(projectId, jobUUID));
     }
-    
+
     public String getSpdxReport(TestProject project, UUID jobUUID) {
         return getSpdxReport(project.getProjectId(), jobUUID);
     }
-    
+
     public String getSpdxReport(String projectId, UUID jobUUID) {
-    	waitForJobToFinish(projectId, jobUUID);
-    	
+        waitForJobToFinish(projectId, jobUUID);
+
         /* okay report is available - so do download */
         return getRestHelper().getJSON(getUrlBuilder().buildGetJobReportUrlSpdx(projectId, jobUUID));
     }
-    
+
     private void waitForJobToFinish(String projectId, UUID jobUUID) {
         long waitTimeInMillis = 1000;
         int count = 0;

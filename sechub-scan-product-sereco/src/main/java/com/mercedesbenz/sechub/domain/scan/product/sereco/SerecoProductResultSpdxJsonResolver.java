@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.domain.scan.product.sereco;
 
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -20,37 +21,37 @@ public class SerecoProductResultSpdxJsonResolver implements SpdxJsonResolver {
 
     /**
      * Fetches SPDX-Json from Sereco ProductResult
-     * 
+     *
      * @param serecoProductResult from Sereco
      * @return SpdxJson as String or <code>null</code>
      */
     @Override
-	public String resolveSpdxJson(ProductResult serecoProductResult) {
+    public String resolveSpdxJson(ProductResult serecoProductResult) {
         ProductIdentifier productIdentifier = serecoProductResult.getProductIdentifier();
-        
+
         if (!productIdentifier.equals(ProductIdentifier.SERECO)) {
-        	throw new IllegalArgumentException("Must be of type Sereco, but was: " + productIdentifier);
+            throw new IllegalArgumentException("Must be of type Sereco, but was: " + productIdentifier);
         }
 
         String origin = serecoProductResult.getResult();
         SerecoMetaData data = JSONConverter.get().fromJSON(SerecoMetaData.class, origin);
         List<SerecoLicenseDocument> licenseDocuments = data.getLicenseDocuments();
-        
+
         for (SerecoLicenseDocument licenseDocument : licenseDocuments) {
-        	SerecoLicenseSpdx spdx = licenseDocument.getSpdx();
-        	
-        	if (spdx == null) {
-        		continue;
-        	}
-        	
-        	String spdxJson = spdx.getJson();
-        	
-        	if (spdxJson != null) {
-        		return spdxJson;
-        	}
+            SerecoLicenseSpdx spdx = licenseDocument.getSpdx();
+
+            if (spdx == null) {
+                continue;
+            }
+
+            String spdxJson = spdx.getJson();
+
+            if (spdxJson != null) {
+                return spdxJson;
+            }
         }
-        
-        //FIXME logging, in case nothing was found
+
+        // FIXME logging, in case nothing was found
         return null;
     }
 }

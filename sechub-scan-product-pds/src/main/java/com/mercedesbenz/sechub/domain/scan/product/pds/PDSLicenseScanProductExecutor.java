@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.pds;
 
 import java.io.IOException;
@@ -32,13 +33,13 @@ import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspector;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
 
-public class PDSLicenseScanProductExecutor  extends AbstractProductExecutor {
-	private static final Logger LOG = LoggerFactory.getLogger(PDSLicenseScanProductExecutor.class);
+public class PDSLicenseScanProductExecutor extends AbstractProductExecutor {
+    private static final Logger LOG = LoggerFactory.getLogger(PDSLicenseScanProductExecutor.class);
 
     private static final String SOURCECODE_ZIP_CHECKSUM = "sourcecode.zip.checksum";
 
     private static final String SOURCECODE_ZIP = "sourcecode.zip";
-    
+
     @Autowired
     PDSAdapter pdsAdapter;
 
@@ -56,7 +57,6 @@ public class PDSLicenseScanProductExecutor  extends AbstractProductExecutor {
 
     @Autowired
     PDSResilienceConsultant pdsResilienceConsultant;
-
 
     public PDSLicenseScanProductExecutor() {
         super(ProductIdentifier.PDS_LICENSESCAN, 1, ScanType.LICENSE_SCAN);
@@ -85,7 +85,7 @@ public class PDSLicenseScanProductExecutor  extends AbstractProductExecutor {
         ProductResult result = resilientActionExecutor.executeResilient(() -> {
 
             AdapterMetaData metaDataOrNull = executorContext.getCurrentMetaDataOrNull();
-            
+
             /* we reuse existing file upload checksum done by sechub */
             String sourceZipFileChecksum = fetchFileUploadChecksumIfNecessary(storage, metaDataOrNull);
 

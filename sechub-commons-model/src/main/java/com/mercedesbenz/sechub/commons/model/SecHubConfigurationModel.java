@@ -18,7 +18,7 @@ public class SecHubConfigurationModel {
     private Optional<SecHubDataConfiguration> data = Optional.empty();
     private Optional<SecHubLicenseScanConfiguration> licenseScan = Optional.empty();
 
-	private String apiVersion;
+    private String apiVersion;
 
     private String projectId;
 
@@ -69,13 +69,13 @@ public class SecHubConfigurationModel {
     public void setData(SecHubDataConfiguration data) {
         this.data = Optional.ofNullable(data);
     }
-    
-    public Optional<SecHubLicenseScanConfiguration> getLicenseScan() {
-		return licenseScan;
-	}
 
-	public void setLicenseScan(SecHubLicenseScanConfiguration licenseScan) {
-		this.licenseScan = Optional.ofNullable(licenseScan);
-	}
+    public Optional<SecHubLicenseScanConfiguration> getLicenseScan() {
+        return licenseScan;
+    }
+
+    public void setLicenseScan(SecHubLicenseScanConfiguration licenseScan) {
+        this.licenseScan = Optional.ofNullable(licenseScan);
+    }
 
 }

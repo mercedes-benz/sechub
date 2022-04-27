@@ -67,7 +67,7 @@ public class IntegrationTestDefaultProfiles {
      * {@link IntegrationTestDefaultExecutorConfigurations#PDS_V1_WEB_SCAN_B_OWASP_SARIF_RESULTS}
      */
     public static final DefaultTestExecutionProfile PROFILE_8_PDS_WEBSCAN_SARIF = defineProfile8();
-    
+
     public static final DefaultTestExecutionProfile PROFILE_9_PDS_LICENSESCAN_SPDX = defineProfile9();
 
     /**

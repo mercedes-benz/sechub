@@ -41,7 +41,7 @@ public class ScanReportRestController {
 
     @Autowired
     private DownloadScanReportService downloadReportService;
-    
+
     @Autowired
     private DownloadSpdxScanReportService serecoSpdxDownloadService;
 
@@ -82,11 +82,11 @@ public class ScanReportRestController {
 			@PathVariable("jobUUID") UUID jobUUID
 			) {
 		/* @formatter:on */
-		String spdxDocument = serecoSpdxDownloadService.getScanSpdxJsonReport(projectId, jobUUID);
-		
+        String spdxDocument = serecoSpdxDownloadService.getScanSpdxJsonReport(projectId, jobUUID);
+
         return spdxDocument;
     }
-	
+
     private ScanSecHubReport fetchScanSecHubReport(String projectId, UUID jobUUID) {
         return downloadReportService.getScanSecHubReport(projectId, jobUUID);
     }

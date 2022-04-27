@@ -55,7 +55,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
 
     public static final String PDS_WEBSCAN_VARIANT_A = "a";
     public static final String PDS_WEBSCAN_VARIANT_B = "b";
-    
+
     public static final String PDS_LICENSESCAN_VARIANT_A = "a";
 
     /* @formatter:off */
@@ -98,7 +98,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
                                                 PDS_WEBSCAN_VARIANT_A,false,
                                                 PDSIntTestProductIdentifier.PDS_INTTEST_WEBSCAN,
                                                 StorageType.REUSE_SECHUB_DATA);
-    
+
     public static final TestExecutorConfig PDS_V1_LICENSE_SCAN_A = definePDSLicenseScan(
     											PDS_LICENSESCAN_VARIANT_A, false,
     											PDSIntTestProductIdentifier.PDS_TEST_PRODUCT_LICENSESCAN,
@@ -136,7 +136,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
         return definePDSScan(variant, credentialsAsEnvEntries, productIdentfieriId, useSecHubStorage, TestExecutorProductIdentifier.PDS_WEBSCAN);
 
     }
-    
+
     private static TestExecutorConfig definePDSLicenseScan(String variant, boolean credentialsAsEnvEntries, PDSIntTestProductIdentifier pdsProductIdentifier,
             StorageType useSecHubStorage) {
         String productIdentfieriId = createProductIdentifierString(pdsProductIdentifier);
