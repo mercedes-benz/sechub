@@ -8,7 +8,7 @@ import com.mercedesbenz.sechub.developertools.admin.DeveloperAdministration.PDSA
 import com.mercedesbenz.sechub.developertools.admin.ui.SimpleEntry;
 import com.mercedesbenz.sechub.developertools.admin.ui.SimpleEntryListDialogUI;
 import com.mercedesbenz.sechub.developertools.admin.ui.UIContext;
-import com.mercedesbenz.sechub.test.TestPDSServerConfgiuration;
+import com.mercedesbenz.sechub.test.TestPDSServerConfiguration;
 import com.mercedesbenz.sechub.test.TestPDSServerProductConfig;
 
 public abstract class AbstractCreatePDSExamplePropertiesAction extends AbstractPDSAction {
@@ -34,11 +34,11 @@ public abstract class AbstractCreatePDSExamplePropertiesAction extends AbstractP
     public class CreatePDSData {
         public String productId;
         public String jobParametersAsString;
-        public TestPDSServerConfgiuration serverConfig;
+        public TestPDSServerConfiguration serverConfig;
     }
 
     protected CreatePDSData selectProductIdentifierAndCreateExampleProperties(PDSAdministration pds) {
-        TestPDSServerConfgiuration config = pds.fetchServerConfiguration();
+        TestPDSServerConfiguration config = pds.fetchServerConfiguration();
 
         List<SimpleEntry> list = new ArrayList<>();
         for (TestPDSServerProductConfig c : config.products) {

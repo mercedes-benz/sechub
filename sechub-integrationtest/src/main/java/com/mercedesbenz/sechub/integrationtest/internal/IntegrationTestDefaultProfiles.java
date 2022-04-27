@@ -67,6 +67,8 @@ public class IntegrationTestDefaultProfiles {
      * {@link IntegrationTestDefaultExecutorConfigurations#PDS_V1_WEB_SCAN_B_OWASP_SARIF_RESULTS}
      */
     public static final DefaultTestExecutionProfile PROFILE_8_PDS_WEBSCAN_SARIF = defineProfile8();
+    
+    public static final DefaultTestExecutionProfile PROFILE_9_PDS_LICENSESCAN_SPDX = defineProfile9();
 
     /**
      * @return all default profiles
@@ -158,4 +160,13 @@ public class IntegrationTestDefaultProfiles {
         return profile;
     }
 
+    private static DefaultTestExecutionProfile defineProfile9() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_LICENSE_SCAN_A);
+        profile.id = "inttest-p9-pds-licensescan";
+        profile.description = "Profile 9: PDS license scan, reused storage, SPDX JSON file returned";
+        profile.enabled = true;
+        return profile;
+    }
 }

@@ -8,6 +8,8 @@ public enum ProductType {
     WEBSCAN,
 
     INFRASCAN,
+    
+    LICENSESCAN,
 
     ANALYSE,
 

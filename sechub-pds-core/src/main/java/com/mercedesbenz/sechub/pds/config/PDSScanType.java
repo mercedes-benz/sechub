@@ -10,6 +10,8 @@ public enum PDSScanType {
     WEB_SCAN("webScan"),
 
     INFRA_SCAN("infraScan"),
+    
+    LICENSE_SCAN("licenseScan"),
 
     REPORT("report"),
 

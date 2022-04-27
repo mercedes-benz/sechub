@@ -45,6 +45,9 @@ public enum ProductIdentifier {
 
     /** Product delegation server - infrastructure scan execution */
     PDS_INFRASCAN(ProductType.INFRASCAN),
+    
+    /** Product delegation server - license scan */
+    PDS_LICENSESCAN(ProductType.LICENSESCAN),
 
     ;
 

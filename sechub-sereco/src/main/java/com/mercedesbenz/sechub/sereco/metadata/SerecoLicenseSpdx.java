@@ -1,7 +1,7 @@
 package com.mercedesbenz.sechub.sereco.metadata;
 
 public class SerecoLicenseSpdx {
-	private String spdxJson;
+	private String json;
 
 	/**
 	 * The SPDX standard defines several document types.
@@ -14,23 +14,23 @@ public class SerecoLicenseSpdx {
 	 */
 	public static SerecoLicenseSpdx of(String spdx) {
 		SerecoLicenseSpdx spdxLicense = new SerecoLicenseSpdx();
-		spdxLicense.setSpdxJson(spdx);
+		spdxLicense.setJson(spdx);
 		
 		return spdxLicense;
 	}
 	
-	private void setSpdxJson(String spdx) {
-		this.spdxJson = spdx;
+	private void setJson(String spdx) {
+		this.json = spdx;
 	}
 	
-	public String getSpdxJson() {
-		return spdxJson;
+	public String getJson() {
+		return json;
 	}
 	
 	public boolean hasSpdxJson() {
 		boolean hasSpdxJson = false;
 		
-		if (spdxJson != null) {
+		if (json != null) {
 			hasSpdxJson = true;
 		}
 		

@@ -214,6 +214,14 @@ public class TestURLBuilder {
     public String buildGetJobReportUrl(String projectId, String jobUUID) {
         return buildUrl(API_PROJECT, projectId, "report", jobUUID);
     }
+    
+    public String buildGetJobReportUrlSpdx(String projectId, UUID jobUUID) {
+        return buildGetJobReportUrlSpdx(projectId, jobUUID.toString());
+    }
+    
+    public String buildGetJobReportUrlSpdx(String projectId, String jobUUID) {
+        return buildUrl(API_PROJECT, projectId, "report", "spdx", jobUUID);
+    }
 
     public String buildUploadSourceCodeUrl(String projectId, UUID jobUUID) {
         return buildUploadSourceCodeUrl(projectId, jobUUID.toString());

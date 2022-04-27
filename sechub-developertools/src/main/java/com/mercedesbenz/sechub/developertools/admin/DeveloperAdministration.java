@@ -42,7 +42,7 @@ import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper.RestHelperTarget;
 import com.mercedesbenz.sechub.sharedkernel.project.ProjectAccessLevel;
-import com.mercedesbenz.sechub.test.TestPDSServerConfgiuration;
+import com.mercedesbenz.sechub.test.TestPDSServerConfiguration;
 import com.mercedesbenz.sechub.test.TestPDSServerProductConfig;
 import com.mercedesbenz.sechub.test.TestPDSServerProductParameter;
 import com.mercedesbenz.sechub.test.TestURLBuilder;
@@ -221,8 +221,8 @@ public class DeveloperAdministration {
             return "upload done - using uploadname:" + uploadName;
         }
 
-        public TestPDSServerConfgiuration fetchServerConfiguration() {
-            return JSONConverter.get().fromJSON(TestPDSServerConfgiuration.class, fetchServerConfigurationAsString());
+        public TestPDSServerConfiguration fetchServerConfiguration() {
+            return JSONConverter.get().fromJSON(TestPDSServerConfiguration.class, fetchServerConfigurationAsString());
         }
 
         public String getJobOutputStream(UUID jobUUID) {
@@ -233,7 +233,7 @@ public class DeveloperAdministration {
             return restHelper.getStringFromURL(pdsUrlBuilder.pds().buildAdminFetchesJobErrorStreamUrl(jobUUID));
         }
 
-        public ProductIdentifier findProductIdentifier(TestPDSServerConfgiuration config, String productId) {
+        public ProductIdentifier findProductIdentifier(TestPDSServerConfiguration config, String productId) {
             for (TestPDSServerProductConfig c : config.products) {
                 if (c.id.equals(productId)) {
                     switch (c.scanType) {
@@ -251,7 +251,7 @@ public class DeveloperAdministration {
             throw new IllegalStateException("Product id not found:" + productId);
         }
 
-        public String createExampleProperitesAsString(TestPDSServerConfgiuration config, String productId) {
+        public String createExampleProperitesAsString(TestPDSServerConfiguration config, String productId) {
             StringBuilder sb = new StringBuilder();
             for (TestPDSServerProductConfig c : config.products) {
                 if (c.id.equals(productId)) {
