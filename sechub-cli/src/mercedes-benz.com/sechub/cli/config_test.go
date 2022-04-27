@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 
 	sechubTestUtil "mercedes-benz.com/sechub/testutil"
 )
@@ -381,6 +382,20 @@ func Test_validateTimeoutOrWarning(t *testing.T) {
 	sechubTestUtil.AssertEquals(bigValue, result2, t)
 }
 
+func Test_validateInitialWaitIntervalOrWarning(t *testing.T) {
+	// PREPARE
+	var okay int64 = 60 * int64(time.Second) // 60s
+	var tooSmall int64 = 10000000            // 0.01s
+
+	// EXECUTE
+	result1 := validateInitialWaitIntervalOrWarning(okay)
+	result2 := validateInitialWaitIntervalOrWarning(tooSmall)
+
+	// TEST
+	sechubTestUtil.AssertEquals(okay, result1, t)
+	sechubTestUtil.AssertEquals(int64(MinimalInitialWaitIntervalSeconds*float64(time.Second)), result2, t)
+}
+
 func Example_will_reportfile_be_found_in_current_dir() {
 	// PREPARE
 	var config Config
@@ -392,6 +407,7 @@ func Example_will_reportfile_be_found_in_current_dir() {
 	config.server = "https://test.example.org"
 	config.reportFormat = "json"
 	config.timeOutSeconds = 10
+	config.initialWaitIntervalNanoseconds = int64(2 * float64(time.Second))
 	config.waitSeconds = 60
 
 	// Create report file: sechub_report_testproject_45cd4f59-4be7-4a86-9bc7-47528ced16c2.json

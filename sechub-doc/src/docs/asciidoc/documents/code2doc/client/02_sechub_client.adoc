@@ -327,6 +327,8 @@ Settings for debugging/client development:
   When set to `true` then log HTTP request contents.
 - `SECHUB_IGNORE_DEFAULT_EXCLUDES` +
   When set to `true` then default exclude folders `+{"**/test/**", "**/.git/**"}+` will be included for code scan. In this case, you should declare your own exclude list in the config json.
+- `SECHUB_INITIAL_WAIT_INTERVAL` +
+  Initial wait time (floating point number) until SecHub client polls the first time if the report is ready (`sechub scan`). Meant for local integration tests.
 - `SECHUB_KEEP_TEMPFILES` +
   When set to `true` then `sourcecode-<projectID>.zip` files for code scan will not be removed, so you can check, what was uploaded to the `{sechub}` server.
 - `SECHUB_WAITTIME_DEFAULT` +
