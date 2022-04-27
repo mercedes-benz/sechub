@@ -197,6 +197,9 @@ const JobStatusOkay = "OK"
 // MaximumBytesOfSecHubConfig maximum byte length allowed for a sechub config file
 const MaximumBytesOfSecHubConfig = 20000
 
+// MaximumNumberOfCMDLineArguments - maximum number of commandline args. os.Args will be capped if exceeded.
+const MaximumNumberOfCMDLineArguments = 50
+
 /* ---------------------------------- */
 /* -------- Resilience -------------- */
 /* ---------------------------------- */
