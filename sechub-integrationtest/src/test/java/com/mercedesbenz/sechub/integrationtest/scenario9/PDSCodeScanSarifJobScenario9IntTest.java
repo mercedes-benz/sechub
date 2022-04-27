@@ -133,7 +133,7 @@ public class PDSCodeScanSarifJobScenario9IntTest {
 
         /* execute */
         as(USER_1).
-            upload(project, jobUUID, PATH).
+            uploadSourcecode(project, jobUUID, PATH).
             approveJob(project, jobUUID);
 
         waitForJobDone(project, jobUUID,30,true);

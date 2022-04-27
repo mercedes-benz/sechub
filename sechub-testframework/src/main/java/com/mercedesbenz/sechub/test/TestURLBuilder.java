@@ -231,6 +231,14 @@ public class TestURLBuilder {
         return buildUrl(API_PROJECT, projectId, "job", jobUUID, "sourcecode");
     }
 
+    public String buildUploadBinariesUrl(String projectId, UUID jobUUID) {
+        return buildUploadBinariesUrl(projectId, jobUUID.toString());
+    }
+
+    public String buildUploadBinariesUrl(String projectId, String jobUUID) {
+        return buildUrl(API_PROJECT, projectId, "job", jobUUID, "binaries");
+    }
+
     public String buildUserAddsFalsePositiveJobDataListForProject(String projectId) {
         return buildUrl(API_PROJECT, projectId, "false-positives");
     }

@@ -1,0 +1,8 @@
+https://github.com/zaproxy/zap-extensions/releases/download/commonlib-v1.9.0/commonlib-release-1.9.0.zap
+https://github.com/zaproxy/zap-extensions/releases/download/ascanrules-v46/ascanrules-release-46.zap
+https://github.com/zaproxy/zap-extensions/releases/download/selenium-v15.8.0/selenium-release-15.8.0.zap
+https://github.com/zaproxy/zap-extensions/releases/download/spiderAjax-v23.7.0/spiderAjax-release-23.7.0.zap
+https://github.com/zaproxy/zap-extensions/releases/download/pscanrules-v40/pscanrules-release-40.zap
+https://github.com/zaproxy/zap-extensions/releases/download/retire-v0.10.0/retire-release-0.10.0.zap
+https://github.com/zaproxy/zap-extensions/releases/download/domxss-v12/domxss-beta-12.zap
+https://github.com/mercedes-benz/zap-extensions/releases/download/reports-v0.9.1/reports-release-0.10.0.zap

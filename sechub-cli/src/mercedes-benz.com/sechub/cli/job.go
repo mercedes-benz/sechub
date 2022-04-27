@@ -41,8 +41,8 @@ func approveSecHubJob(context *Context) {
 }
 
 func waitForSecHubJobDone(context *Context) (status jobStatusResult) {
-	newLine := true
-	cursor := 0
+	var cursor uint8 = 0
+	waitNanoseconds := InitialWaitIntervallNanoseconds
 
 	sechubUtil.Log(fmt.Sprintf("Waiting for job %s to be done", context.config.secHubJobUUID), context.config.quiet)
 
@@ -53,22 +53,43 @@ func waitForSecHubJobDone(context *Context) (status jobStatusResult) {
 			break
 		}
 
-		// PROGRESS bar ... 50 chars with dot, then next line...
-		if newLine {
-			sechubUtil.PrintIfNotSilent(strings.Repeat(" ", 29), context.config.quiet)
-			newLine = false
+		if !context.config.quiet {
+			// Progress dots
+			cursor = printProgressDot(cursor)
 		}
-		sechubUtil.PrintIfNotSilent(".", context.config.quiet)
-		if cursor++; cursor == 50 {
-			sechubUtil.PrintIfNotSilent("\n", context.config.quiet)
-			cursor = 0
-			newLine = true
-		}
-		time.Sleep(time.Duration(context.config.waitNanoseconds))
+
+		time.Sleep(time.Duration(waitNanoseconds))
+		waitNanoseconds = computeNextWaitInterval(waitNanoseconds, context.config.waitNanoseconds)
 	}
 	sechubUtil.PrintIfNotSilent("\n", context.config.quiet)
 
 	return status
+}
+
+// Print progress dots ... 50 dots, then next line...
+func printProgressDot(cursor uint8) uint8 {
+	if cursor == 0 {
+		// initial identation
+		fmt.Print(strings.Repeat(" ", 29))
+	}
+
+	fmt.Print(".")
+
+	cursor++
+	if cursor == 50 {
+		fmt.Print("\n")
+		cursor = 0
+	}
+
+	return cursor
+}
+
+func computeNextWaitInterval(current int64, max int64) int64 {
+	next := int64(float64(current) * WaitIntervallIncreaseFactor)
+	if next > max {
+		return max
+	}
+	return next
 }
 
 func getSecHubJobStatus(context *Context) (jsonData string) {

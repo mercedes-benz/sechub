@@ -205,7 +205,7 @@ public class ProjectChangeAccessLevelScenario3IntTest {
 
         /* test */
         expectHttpFailure(()->{
-            as(USER_1).upload(project, jobUUID, TestDataConstants.RESOURCE_PATH_ZIPFILE_ONLY_TEST1_TXT);
+            as(USER_1).uploadSourcecode(project, jobUUID, TestDataConstants.RESOURCE_PATH_ZIPFILE_ONLY_TEST1_TXT);
         }, HttpStatus.FORBIDDEN);
 
     }
@@ -258,7 +258,7 @@ public class ProjectChangeAccessLevelScenario3IntTest {
 
         /* test */
         expectHttpFailure(()->{
-            as(USER_1).upload(project, jobUUID, TestDataConstants.RESOURCE_PATH_ZIPFILE_ONLY_TEST1_TXT);
+            as(USER_1).uploadSourcecode(project, jobUUID, TestDataConstants.RESOURCE_PATH_ZIPFILE_ONLY_TEST1_TXT);
         }, HttpStatus.FORBIDDEN);
 
     }

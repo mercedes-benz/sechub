@@ -24,8 +24,8 @@ public class TriggerNewCodeScanJobScenario3User1Action extends IntegrationTestAc
     protected void executeImplAfterRestHelperSwitched(ActionEvent e) {
         UUID uuid = TestAPI.as(Scenario3.USER_1).createCodeScan(Scenario3.PROJECT_1, mode);
         outputAsTextOnSuccess("Job created:" + uuid);
-        TestAPI.as(Scenario3.USER_1).upload(Scenario3.PROJECT_1, uuid, TestDataConstants.RESOURCE_PATH_ZIPFILE_ONLY_TEST1_TXT).approveJob(Scenario3.PROJECT_1,
-                uuid);
+        TestAPI.as(Scenario3.USER_1).uploadSourcecode(Scenario3.PROJECT_1, uuid, TestDataConstants.RESOURCE_PATH_ZIPFILE_ONLY_TEST1_TXT)
+                .approveJob(Scenario3.PROJECT_1, uuid);
         outputAsTextOnSuccess("Job uploaded and approved:" + uuid);
     }
 

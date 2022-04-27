@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import javax.swing.JFileChooser;
 
+import com.mercedesbenz.sechub.commons.core.CommonConstants;
 import com.mercedesbenz.sechub.developertools.admin.DeveloperAdministration.PDSAdministration;
 import com.mercedesbenz.sechub.developertools.admin.ui.UIContext;
 import com.mercedesbenz.sechub.developertools.admin.ui.cache.InputCacheIdentifier;
@@ -26,7 +27,8 @@ public class UploadPDSJobFileAction extends AbstractPDSAction {
             output("cancel pds job uuid");
             return;
         }
-        Optional<String> fileNameOpt = getUserInput("Filename to use on server side (be aware - we got fixed names here at the moment!))", "sourcecode.zip");
+        Optional<String> fileNameOpt = getUserInput("Filename to use on server side (be aware - we got fixed names here at the moment!))",
+                CommonConstants.FILENAME_SOURCECODE_ZIP);
         if (!fileNameOpt.isPresent()) {
             output("cancel pds job uuid");
             return;

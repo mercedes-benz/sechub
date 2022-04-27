@@ -37,29 +37,39 @@ public class ChecksumSHA256Service {
      */
     public String createChecksum(InputStream inputStream) {
         notNull(inputStream, "inputStream may not be null");
-        MessageDigest md;
-        String algorithm = "SHA-256";
-        try {
-            md = MessageDigest.getInstance(algorithm);
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException("Algorithm not supported:" + algorithm);
-        }
+        MessageDigest digest = createSHA256MessageDigest();
+
         // file hashing with DigestInputStream
-        try (DigestInputStream dis = new DigestInputStream(inputStream, md)) {
+        try (DigestInputStream dis = new DigestInputStream(inputStream, digest)) {
             while (dis.read() != -1)
                 ; // empty loop to clear the data
-            md = dis.getMessageDigest();
+            digest = dis.getMessageDigest();
         } catch (IOException e) {
             return null;
         }
 
+        return convertMessageDigestToHex(digest);
+
+    }
+
+    public String convertMessageDigestToHex(MessageDigest digest) {
         // bytes to hex
         StringBuilder result = new StringBuilder();
-        for (byte b : md.digest()) {
+        for (byte b : digest.digest()) {
             result.append(String.format("%02x", b));
         }
         return result.toString();
+    }
 
+    public MessageDigest createSHA256MessageDigest() {
+        MessageDigest digest;
+        String algorithm = "SHA-256";
+        try {
+            digest = MessageDigest.getInstance(algorithm);
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("Algorithm not supported:" + algorithm);
+        }
+        return digest;
     }
 
 }

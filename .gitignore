@@ -48,3 +48,6 @@ java-gen/
 
 # OWASP ZAP
 *.zap
+
+# Asciidoctor
+.asciidoctorconfig.adoc

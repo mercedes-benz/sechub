@@ -64,17 +64,19 @@ public class AsUser {
         return new WithSecHubClient(this);
     }
 
-    /**
-     * Upload given file
-     *
-     * @param userWantingToSignup
-     * @return
-     */
-    public AsUser upload(TestProject project, UUID jobUUID, File file, String checkSum) {
+    public AsUser uploadSourcecode(TestProject project, UUID jobUUID, File file, String checkSum) {
         /* @formatter:off */
 		getRestHelper().upload(getUrlBuilder().
-		    		buildUploadSourceCodeUrl(project.getProjectId(),jobUUID),file,checkSum);
+		        buildUploadSourceCodeUrl(project.getProjectId(),jobUUID),file,checkSum);
 		/* @formatter:on */
+        return this;
+    }
+
+    public AsUser uploadBinaries(TestProject project, UUID jobUUID, File file, String checkSum) {
+        /* @formatter:off */
+        getRestHelper().uploadBinaries(getUrlBuilder().
+                buildUploadBinariesUrl(project.getProjectId(),jobUUID),file,checkSum);
+        /* @formatter:on */
         return this;
     }
 
@@ -85,15 +87,29 @@ public class AsUser {
     }
 
     /**
-     * Upload given resource, checksum will be automatically calculated
+     * Upload given resource as source code, checksum will be automatically
+     * calculated
      *
      * @param userWantingToSignup
      * @return
      */
-    public AsUser upload(TestProject project, UUID jobUUID, String pathInsideResources) {
+    public AsUser uploadSourcecode(TestProject project, UUID jobUUID, String pathInsideResources) {
         File uploadFile = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(pathInsideResources);
         String checkSum = TestAPI.createSHA256Of(uploadFile);
-        upload(project, jobUUID, uploadFile, checkSum);
+        uploadSourcecode(project, jobUUID, uploadFile, checkSum);
+        return this;
+    }
+
+    /**
+     * Upload given resource as binaries, checksum will be automatically calculated
+     *
+     * @param userWantingToSignup
+     * @return
+     */
+    public AsUser uploadBinaries(TestProject project, UUID jobUUID, String pathInsideResources) {
+        File uploadFile = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(pathInsideResources);
+        String checkSum = TestAPI.createSHA256Of(uploadFile);
+        uploadBinaries(project, jobUUID, uploadFile, checkSum);
         return this;
     }
 
@@ -824,7 +840,7 @@ public class AsUser {
 
     public UUID triggerAsyncCodeScanApproveWithoutSourceUploadAndGetJobUUID(TestProject project, IntegrationTestMockMode mode, String pathInsideResources) {
         UUID uuid = triggerAsyncCodeScanAndGetJobUUID(project, mode);
-        upload(project, uuid, pathInsideResources);
+        uploadSourcecode(project, uuid, pathInsideResources);
 
         approveJob(project, uuid);
         return uuid;

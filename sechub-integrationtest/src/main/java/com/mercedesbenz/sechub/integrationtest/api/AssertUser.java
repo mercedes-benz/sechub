@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.integrationtest.api;
 
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
+import static com.mercedesbenz.sechub.test.TestConstants.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
@@ -422,10 +423,20 @@ public class AssertUser extends AbstractAssert {
     }
 
     public AssertUser canUploadSourceZipFile(TestProject project, UUID jobUUID, String pathInsideResources) {
-        as(user).upload(project, jobUUID, pathInsideResources);
+        as(user).uploadSourcecode(project, jobUUID, pathInsideResources);
         /* check if file is uploaded on server location */
-        File downloadedFile = TestAPI.getFileUploaded(project, jobUUID, "sourcecode.zip");
+        File downloadedFile = TestAPI.getFileUploaded(project, jobUUID, SOURCECODE_ZIP);
         assertNotNull(downloadedFile);
+        assertTrue(downloadedFile.exists());
+        return this;
+    }
+
+    public AssertUser canUploadBinariesTarFile(TestProject project, UUID jobUUID, String pathInsideResources) {
+        as(user).uploadBinaries(project, jobUUID, pathInsideResources);
+        /* check if file is uploaded on server location */
+        File downloadedFile = TestAPI.getFileUploaded(project, jobUUID, BINARIES_TAR);
+        assertNotNull(downloadedFile);
+        assertTrue(downloadedFile.exists());
         return this;
     }
 

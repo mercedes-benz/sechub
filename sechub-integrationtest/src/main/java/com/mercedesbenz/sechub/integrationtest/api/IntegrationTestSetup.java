@@ -97,7 +97,8 @@ public class IntegrationTestSetup implements TestRule {
 
     /**
      * Marks this test setup as a long running variant. Means you have to define
-     * additional SECHUB_INTEGRATIONTEST_LONG_RUNNING system property as true, to
+     * additional system property
+     * {@value IntegrationTestSetup#SECHUB_INTEGRATIONTEST_LONG_RUNNING} as true, to
      * have this test not ignored. Use this methods to mark extreme slow tests which
      * normally are not run because seldom used or maybe only by build servers
      *
