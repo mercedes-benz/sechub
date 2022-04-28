@@ -14,6 +14,7 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.pds.PDSAdapter;
@@ -33,6 +34,7 @@ import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspector;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
 
+@Service
 public class PDSLicenseScanProductExecutor extends AbstractProductExecutor {
     private static final Logger LOG = LoggerFactory.getLogger(PDSLicenseScanProductExecutor.class);
 

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubLicenseScanConfiguration;
@@ -12,8 +13,10 @@ import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 
+@Service
 public class LicenseScanProductExecutionServiceImpl extends AbstractProductExecutionService implements LicenseScanProductExecutionService {
-    private static final Logger LOG = LoggerFactory.getLogger(LicenseScanProductExecutionServiceImpl.class);
+	
+	private static final Logger LOG = LoggerFactory.getLogger(LicenseScanProductExecutionServiceImpl.class);
 
     @Override
     protected ScanType getScanType() {

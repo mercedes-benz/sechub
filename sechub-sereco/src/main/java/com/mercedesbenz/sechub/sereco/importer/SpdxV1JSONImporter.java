@@ -3,10 +3,13 @@ package com.mercedesbenz.sechub.sereco.importer;
 
 import java.io.IOException;
 
+import org.springframework.stereotype.Component;
+
 import com.mercedesbenz.sechub.sereco.metadata.SerecoLicenseDocument;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoLicenseSpdx;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
 
+@Component
 public class SpdxV1JSONImporter extends AbstractProductResultImporter {
 
     @Override
@@ -25,7 +28,7 @@ public class SpdxV1JSONImporter extends AbstractProductResultImporter {
 
     @Override
     protected ImportSupport createImportSupport() {
-        return ImportSupport.builder().mustBeJSON().contentIdentifiedBy("\"SPDXID\" : \"SPDXRef-DOCUMENT\"").build();
+        return ImportSupport.builder().mustBeJSON().contentIdentifiedBy("\"SPDXRef-DOCUMENT\"").build();
     }
 
 }
