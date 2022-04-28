@@ -73,7 +73,7 @@ public class ScanService implements SynchronMessageHandler {
 
     @Autowired
     InfrastructureScanProductExecutionService infraScanProductExecutionService;
-    
+
     @Autowired
     LicenseScanProductExecutionService licenseScanProductExecutionService;
 

@@ -15,8 +15,8 @@ import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 
 @Service
 public class LicenseScanProductExecutionServiceImpl extends AbstractProductExecutionService implements LicenseScanProductExecutionService {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(LicenseScanProductExecutionServiceImpl.class);
+
+    private static final Logger LOG = LoggerFactory.getLogger(LicenseScanProductExecutionServiceImpl.class);
 
     @Override
     protected ScanType getScanType() {

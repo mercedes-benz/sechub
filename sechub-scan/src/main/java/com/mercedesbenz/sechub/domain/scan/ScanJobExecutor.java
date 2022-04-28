@@ -16,7 +16,7 @@ import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
 
 /**
- * Finally executes the scan job 
+ * Finally executes the scan job
  */
 class ScanJobExecutor {
     /* the absolute minimum of time to wait for next cancel check */
@@ -144,7 +144,7 @@ class ScanJobExecutor {
         @Override
         public void run() {
             /* runs in own thread so we set job uuid to MDC here ! */
-        	try {
+            try {
                 MDC.clear();
                 MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, sechubJobUUID);
 
