@@ -5,4 +5,4 @@ using the job UUID.
 
 Only SPDX JSON is supported.
 
-In case, there is no SPDX JSON result for a given job the report will be empty.
+In case, there is no SPDX JSON result for a given job an error will be thrown.
