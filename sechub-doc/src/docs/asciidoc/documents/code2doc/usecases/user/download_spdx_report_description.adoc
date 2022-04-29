@@ -1,0 +1,8 @@
+// SPDX-License-Identifier: MIT
+[[sechub-doclink-uc-user-downloads-spdx-job-report]]
+A user wants to download a SPDX report for a finished `{sechub}` job 
+using the job UUID.
+
+Only SPDX JSON is supported.
+
+In case, there is no SPDX JSON result for a given job the report will be empty.

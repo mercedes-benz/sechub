@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
 [[sechub-doclink-uc-user-downloads-job-report]]
-A user wants to download an executed `{sechub}` job by its given job UUID.
+A user wants to download a `{sechub}` report for an executed job 
+by its given job UUID.
 
-The report standard format will be json, so machine readable. But there is
-also the option to download the report as HTML file.
+The report standard format is a human and machine readable JSON format. 
+Additionally, there is the option to download the report as HTML file.
 
-The HTML file and also the JSON will only have a reduced view of the scan
+Both, the HTML and the JSON file have a reduced view of the scan
 results. Code snippets etc. can be found on the real security products.
