@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * 2.1.0 specification entry</a>
  *
  */
-@JsonPropertyOrder({ "repositoryUri", "revisionId", "branch", "revisionTag", "asOfTimeUtc", "mappedTo", "properties" })
+@JsonPropertyOrder({ "repositoryUri", "revisionId", "branch", "revisionTag", "asOfTimeUtc", "mappedTo" })
 public class VersionControlDetails extends SarifObject {
 
     private String repositoryUri;
@@ -81,21 +81,24 @@ public class VersionControlDetails extends SarifObject {
 
     @Override
     public int hashCode() {
-        return Objects.hash(asOfTimeUtc, branch, mappedTo, repositoryUri, revisionId, revisionTag);
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + Objects.hash(asOfTimeUtc, branch, mappedTo, repositoryUri, revisionId, revisionTag);
+        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (!(obj instanceof VersionControlDetails)) {
+        if (!super.equals(obj))
             return false;
-        }
+        if (getClass() != obj.getClass())
+            return false;
         VersionControlDetails other = (VersionControlDetails) obj;
         return Objects.equals(asOfTimeUtc, other.asOfTimeUtc) && Objects.equals(branch, other.branch) && Objects.equals(mappedTo, other.mappedTo)
                 && Objects.equals(repositoryUri, other.repositoryUri) && Objects.equals(revisionId, other.revisionId)
-                && Objects.equals(revisionTag, other.revisionTag) && Objects.equals(getProperties(), other.getProperties());
+                && Objects.equals(revisionTag, other.revisionTag);
     }
 
 }

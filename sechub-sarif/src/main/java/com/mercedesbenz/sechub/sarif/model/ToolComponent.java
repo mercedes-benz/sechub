@@ -17,8 +17,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  *
  */
 @JsonPropertyOrder({ "guid", "name", "fullName", "product", "productSuite", "semanticVersion", "version", "releaseDateUtc", "downloadUri", "informationUri",
-        "organization", "shortDescription", "fullDescription", "language", "rules", "taxa", "isComprehensive", "minimumRequiredLocalizedDataSemanticVersion",
-        "properties" })
+        "organization", "shortDescription", "fullDescription", "language", "rules", "taxa", "isComprehensive", "minimumRequiredLocalizedDataSemanticVersion" })
 public class ToolComponent extends SarifObject {
     private String guid;
     private String name;
@@ -199,19 +198,22 @@ public class ToolComponent extends SarifObject {
 
     @Override
     public int hashCode() {
-        return Objects.hash(downloadUri, fullDescription, fullName, guid, informationUri, isComprehensive, language,
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + Objects.hash(downloadUri, fullDescription, fullName, guid, informationUri, isComprehensive, language,
                 minimumRequiredLocalizedDataSemanticVersion, name, organization, product, productSuite, releaseDateUtc, rules, semanticVersion,
                 shortDescription, taxa, version);
+        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (!(obj instanceof ToolComponent)) {
+        if (!super.equals(obj))
             return false;
-        }
+        if (getClass() != obj.getClass())
+            return false;
         ToolComponent other = (ToolComponent) obj;
         return Objects.equals(downloadUri, other.downloadUri) && Objects.equals(fullDescription, other.fullDescription)
                 && Objects.equals(fullName, other.fullName) && Objects.equals(guid, other.guid) && Objects.equals(informationUri, other.informationUri)
@@ -220,8 +222,7 @@ public class ToolComponent extends SarifObject {
                 && Objects.equals(name, other.name) && Objects.equals(organization, other.organization) && Objects.equals(product, other.product)
                 && Objects.equals(productSuite, other.productSuite) && Objects.equals(releaseDateUtc, other.releaseDateUtc)
                 && Objects.equals(rules, other.rules) && Objects.equals(semanticVersion, other.semanticVersion)
-                && Objects.equals(shortDescription, other.shortDescription) && Objects.equals(taxa, other.taxa) && Objects.equals(version, other.version)
-                && Objects.equals(getProperties(), other.getProperties());
+                && Objects.equals(shortDescription, other.shortDescription) && Objects.equals(taxa, other.taxa) && Objects.equals(version, other.version);
     }
 
 }

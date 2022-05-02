@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * @author Albert Tregnaghi
  *
  */
-@JsonPropertyOrder({ "tool", "taxonomies", "versionControlProvenance", "results", "properties" })
+@JsonPropertyOrder({ "tool", "taxonomies", "versionControlProvenance", "results" })
 public class Run extends SarifObject {
     private Tool tool;
 
@@ -89,15 +89,15 @@ public class Run extends SarifObject {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (!(obj instanceof Run)) {
+        if (obj == null)
             return false;
-        }
+        if (getClass() != obj.getClass())
+            return false;
         Run other = (Run) obj;
         return Objects.equals(results, other.results) && Objects.equals(taxonomies, other.taxonomies) && Objects.equals(tool, other.tool)
-                && Objects.equals(versionControlProvenance, other.versionControlProvenance) && Objects.equals(getProperties(), other.getProperties());
+                && Objects.equals(versionControlProvenance, other.versionControlProvenance);
     }
 
 }

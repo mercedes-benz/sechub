@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * @author Albert Tregnaghi
  *
  */
-@JsonPropertyOrder({ "id", "guid", "name", "shortDescription", "fullDescription", "helpUri", "help", "properties" })
+@JsonPropertyOrder({ "id", "guid", "name", "shortDescription", "fullDescription", "helpUri", "help" })
 public abstract class ReportingDescriptor extends SarifObject {
 
     private String id;
@@ -118,22 +118,25 @@ public abstract class ReportingDescriptor extends SarifObject {
 
     @Override
     public int hashCode() {
-        return Objects.hash(defaultConfiguration, fullDescription, guid, help, helpUri, id, name, relationships, shortDescription);
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + Objects.hash(defaultConfiguration, fullDescription, guid, help, helpUri, id, name, relationships, shortDescription);
+        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (!(obj instanceof ReportingDescriptor)) {
+        if (!super.equals(obj))
             return false;
-        }
+        if (getClass() != obj.getClass())
+            return false;
         ReportingDescriptor other = (ReportingDescriptor) obj;
         return Objects.equals(defaultConfiguration, other.defaultConfiguration) && Objects.equals(fullDescription, other.fullDescription)
                 && Objects.equals(guid, other.guid) && Objects.equals(help, other.help) && Objects.equals(helpUri, other.helpUri)
                 && Objects.equals(id, other.id) && Objects.equals(name, other.name) && Objects.equals(relationships, other.relationships)
-                && Objects.equals(shortDescription, other.shortDescription) && Objects.equals(getProperties(), other.getProperties());
+                && Objects.equals(shortDescription, other.shortDescription);
     }
 
 }
