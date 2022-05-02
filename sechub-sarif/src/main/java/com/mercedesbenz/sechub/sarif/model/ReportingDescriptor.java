@@ -15,32 +15,26 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * @author Albert Tregnaghi
  *
  */
-@JsonPropertyOrder({ "id", "name", "shortDescription", "fullDescription", "help", "properties" })
+@JsonPropertyOrder({ "id", "guid", "name", "shortDescription", "fullDescription", "helpUri", "help", "properties" })
 public abstract class ReportingDescriptor extends SarifObject {
 
     private String id;
-
+    private String guid;
     // see
     // https://docs.oasis-open.org/sarif/sarif/v2.0/csprd02/sarif-v2.0-csprd02.html#_Toc10128041
-    private ReportingConfiguration defaultConfiguration;
 
     private String name;
+
     private Message shortDescription;
     private Message fullDescription;
+    private String helpUri;
     private Message help;
 
+    private ReportingConfiguration defaultConfiguration;
     private List<ReportingDescriptorRelationship> relationships;
 
     public ReportingDescriptor() {
         this.relationships = new LinkedList<>();
-    }
-
-    public ReportingConfiguration getDefaultConfiguration() {
-        return defaultConfiguration;
-    }
-
-    public void setDefaultConfiguration(ReportingConfiguration defaultConfiguration) {
-        this.defaultConfiguration = defaultConfiguration;
     }
 
     public String getId() {
@@ -51,8 +45,12 @@ public abstract class ReportingDescriptor extends SarifObject {
         this.id = id;
     }
 
-    public List<ReportingDescriptorRelationship> getRelationships() {
-        return relationships;
+    public String getGuid() {
+        return guid;
+    }
+
+    public void setGuid(String guid) {
+        this.guid = guid;
     }
 
     public String getName() {
@@ -79,6 +77,14 @@ public abstract class ReportingDescriptor extends SarifObject {
         this.fullDescription = fullDescription;
     }
 
+    public String getHelpUri() {
+        return helpUri;
+    }
+
+    public void setHelpUri(String helpUri) {
+        this.helpUri = helpUri;
+    }
+
     public Message getHelp() {
         return help;
     }
@@ -87,29 +93,51 @@ public abstract class ReportingDescriptor extends SarifObject {
         this.help = help;
     }
 
+    public ReportingConfiguration getDefaultConfiguration() {
+        return defaultConfiguration;
+    }
+
+    public void setDefaultConfiguration(ReportingConfiguration defaultConfiguration) {
+        this.defaultConfiguration = defaultConfiguration;
+    }
+
+    public List<ReportingDescriptorRelationship> getRelationships() {
+        return relationships;
+    }
+
+    public void setRelationships(List<ReportingDescriptorRelationship> relationships) {
+        this.relationships = relationships;
+    }
+
     @Override
     public String toString() {
-        return "Rule [id=" + id + ", name=" + name + ", shortDescription=" + shortDescription + ", fullDescription=" + fullDescription + ", help=" + help
-                + ", properties=" + getProperties() + "]";
+        return "ReportingDescriptor [id=" + id + ", guid=" + guid + ", name=" + name + ", shortDescription="
+                + shortDescription + ", fullDescription=" + fullDescription + ", helpUri=" + helpUri + ", help=" + help
+                + ", defaultConfiguration=" + defaultConfiguration + ", relationships=" + relationships + "]";
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(fullDescription, help, id, name, getProperties(), relationships, shortDescription);
+        return Objects.hash(defaultConfiguration, fullDescription, guid, help, helpUri, id, name, relationships,
+                shortDescription);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (!(obj instanceof ReportingDescriptor)) {
             return false;
-        if (getClass() != obj.getClass())
-            return false;
+        }
         ReportingDescriptor other = (ReportingDescriptor) obj;
-        return Objects.equals(fullDescription, other.fullDescription) && Objects.equals(help, other.help) && Objects.equals(id, other.id)
-                && Objects.equals(name, other.name) && Objects.equals(getProperties(), other.getProperties())
-                && Objects.equals(relationships, other.relationships) && Objects.equals(shortDescription, other.shortDescription);
+        return Objects.equals(defaultConfiguration, other.defaultConfiguration)
+                && Objects.equals(fullDescription, other.fullDescription) && Objects.equals(guid, other.guid)
+                && Objects.equals(help, other.help) && Objects.equals(helpUri, other.helpUri)
+                && Objects.equals(id, other.id) && Objects.equals(name, other.name)
+                && Objects.equals(relationships, other.relationships)
+                && Objects.equals(shortDescription, other.shortDescription)
+                && Objects.equals(getProperties(), other.getProperties());
     }
 
 }
