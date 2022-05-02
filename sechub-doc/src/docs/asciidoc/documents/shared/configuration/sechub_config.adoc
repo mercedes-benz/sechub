@@ -73,8 +73,7 @@ include::sechub_config_example1_sourcescan_filesystem.json[]
 <1> Define code scan
 <2> Use filesystem - so means upload sources to server
 <3> Upload will contain sources from `gamechanger-android/src/main/java` and `gamechanger-server/src/main/java` and their sub folders
-<4> Client only option - if you use REST directly, you can ignore this. +
-    Exclude directories (optional), syntax is similar to https://ant.apache.org/manual/Types/fileset.html[ANT fileset]. +
+<4> Exclude directories (optional), syntax is similar to https://ant.apache.org/manual/Types/fileset.html[ANT fileset]. +
     In the example above all files in following directories are excluded from upload: +
     * `+**/mytestcode/**+` +
     excludes all files under a directory named `build` including sub directories
@@ -84,8 +83,7 @@ include::sechub_config_example1_sourcescan_filesystem.json[]
      Per default, the directories `+**/test/**+` `+**/.git/**+`
 are already excluded:
 
-<5> Client only option - if you use REST directly, you can ignore this. +
-    {sechub} client does only add wellknown sources into created upload zip file. This removes
+<5> {sechub} client does only add wellknown sources into created upload zip file. This removes
     unnecessary stuff and reduces upload size automatically. +
     _E.g. a codescan for a `JPEG` image would not make sense..._ +
     Instead of defining a negative list, we use a positive list and accept only wellknown sources,
