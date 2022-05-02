@@ -111,15 +111,14 @@ public abstract class ReportingDescriptor extends SarifObject {
 
     @Override
     public String toString() {
-        return "ReportingDescriptor [id=" + id + ", guid=" + guid + ", name=" + name + ", shortDescription="
-                + shortDescription + ", fullDescription=" + fullDescription + ", helpUri=" + helpUri + ", help=" + help
-                + ", defaultConfiguration=" + defaultConfiguration + ", relationships=" + relationships + "]";
+        return "ReportingDescriptor [id=" + id + ", guid=" + guid + ", name=" + name + ", shortDescription=" + shortDescription + ", fullDescription="
+                + fullDescription + ", helpUri=" + helpUri + ", help=" + help + ", defaultConfiguration=" + defaultConfiguration + ", relationships="
+                + relationships + "]";
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(defaultConfiguration, fullDescription, guid, help, helpUri, id, name, relationships,
-                shortDescription);
+        return Objects.hash(defaultConfiguration, fullDescription, guid, help, helpUri, id, name, relationships, shortDescription);
     }
 
     @Override
@@ -131,13 +130,10 @@ public abstract class ReportingDescriptor extends SarifObject {
             return false;
         }
         ReportingDescriptor other = (ReportingDescriptor) obj;
-        return Objects.equals(defaultConfiguration, other.defaultConfiguration)
-                && Objects.equals(fullDescription, other.fullDescription) && Objects.equals(guid, other.guid)
-                && Objects.equals(help, other.help) && Objects.equals(helpUri, other.helpUri)
-                && Objects.equals(id, other.id) && Objects.equals(name, other.name)
-                && Objects.equals(relationships, other.relationships)
-                && Objects.equals(shortDescription, other.shortDescription)
-                && Objects.equals(getProperties(), other.getProperties());
+        return Objects.equals(defaultConfiguration, other.defaultConfiguration) && Objects.equals(fullDescription, other.fullDescription)
+                && Objects.equals(guid, other.guid) && Objects.equals(help, other.help) && Objects.equals(helpUri, other.helpUri)
+                && Objects.equals(id, other.id) && Objects.equals(name, other.name) && Objects.equals(relationships, other.relationships)
+                && Objects.equals(shortDescription, other.shortDescription) && Objects.equals(getProperties(), other.getProperties());
     }
 
 }

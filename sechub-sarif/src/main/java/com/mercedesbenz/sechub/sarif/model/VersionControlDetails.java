@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sarif.model;
 
 import java.util.Objects;
@@ -16,87 +17,85 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({ "repositoryUri", "revisionId", "branch", "revisionTag", "asOfTimeUtc", "mappedTo", "properties" })
 public class VersionControlDetails extends SarifObject {
 
-	private String repositoryUri;
-	private String revisionId;
-	private String branch;
-	private String revisionTag;
-	private String asOfTimeUtc;
+    private String repositoryUri;
+    private String revisionId;
+    private String branch;
+    private String revisionTag;
+    private String asOfTimeUtc;
 
-	private ArtifactLocation mappedTo;
+    private ArtifactLocation mappedTo;
 
-	public String getRepositoryUri() {
-		return repositoryUri;
-	}
+    public String getRepositoryUri() {
+        return repositoryUri;
+    }
 
-	public void setRepositoryUri(String repositoryUri) {
-		this.repositoryUri = repositoryUri;
-	}
+    public void setRepositoryUri(String repositoryUri) {
+        this.repositoryUri = repositoryUri;
+    }
 
-	public String getRevisionId() {
-		return revisionId;
-	}
+    public String getRevisionId() {
+        return revisionId;
+    }
 
-	public void setRevisionId(String revisionId) {
-		this.revisionId = revisionId;
-	}
+    public void setRevisionId(String revisionId) {
+        this.revisionId = revisionId;
+    }
 
-	public String getBranch() {
-		return branch;
-	}
+    public String getBranch() {
+        return branch;
+    }
 
-	public void setBranch(String branch) {
-		this.branch = branch;
-	}
+    public void setBranch(String branch) {
+        this.branch = branch;
+    }
 
-	public String getRevisionTag() {
-		return revisionTag;
-	}
+    public String getRevisionTag() {
+        return revisionTag;
+    }
 
-	public void setRevisionTag(String revisionTag) {
-		this.revisionTag = revisionTag;
-	}
+    public void setRevisionTag(String revisionTag) {
+        this.revisionTag = revisionTag;
+    }
 
-	public String getAsOfTimeUtc() {
-		return asOfTimeUtc;
-	}
+    public String getAsOfTimeUtc() {
+        return asOfTimeUtc;
+    }
 
-	public void setAsOfTimeUtc(String asOfTimeUtc) {
-		this.asOfTimeUtc = asOfTimeUtc;
-	}
+    public void setAsOfTimeUtc(String asOfTimeUtc) {
+        this.asOfTimeUtc = asOfTimeUtc;
+    }
 
-	public ArtifactLocation getMappedTo() {
-		return mappedTo;
-	}
+    public ArtifactLocation getMappedTo() {
+        return mappedTo;
+    }
 
-	public void setMappedTo(ArtifactLocation mappedTo) {
-		this.mappedTo = mappedTo;
-	}
+    public void setMappedTo(ArtifactLocation mappedTo) {
+        this.mappedTo = mappedTo;
+    }
 
-	@Override
-	public String toString() {
-		return "VersionControlDetails [repositoryUri=" + repositoryUri + ", revisionId=" + revisionId + ", branch="
-				+ branch + ", revisionTag=" + revisionTag + ", asOfTimeUtc=" + asOfTimeUtc + ", mappedTo=" + mappedTo
-				+ "]";
-	}
+    @Override
+    public String toString() {
+        return "VersionControlDetails [repositoryUri=" + repositoryUri + ", revisionId=" + revisionId + ", branch=" + branch + ", revisionTag=" + revisionTag
+                + ", asOfTimeUtc=" + asOfTimeUtc + ", mappedTo=" + mappedTo + "]";
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(asOfTimeUtc, branch, mappedTo, repositoryUri, revisionId, revisionTag);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(asOfTimeUtc, branch, mappedTo, repositoryUri, revisionId, revisionTag);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!(obj instanceof VersionControlDetails)) {
-			return false;
-		}
-		VersionControlDetails other = (VersionControlDetails) obj;
-		return Objects.equals(asOfTimeUtc, other.asOfTimeUtc) && Objects.equals(branch, other.branch)
-				&& Objects.equals(mappedTo, other.mappedTo) && Objects.equals(repositoryUri, other.repositoryUri)
-				&& Objects.equals(revisionId, other.revisionId) && Objects.equals(revisionTag, other.revisionTag)
-				&& Objects.equals(getProperties(), other.getProperties());
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof VersionControlDetails)) {
+            return false;
+        }
+        VersionControlDetails other = (VersionControlDetails) obj;
+        return Objects.equals(asOfTimeUtc, other.asOfTimeUtc) && Objects.equals(branch, other.branch) && Objects.equals(mappedTo, other.mappedTo)
+                && Objects.equals(repositoryUri, other.repositoryUri) && Objects.equals(revisionId, other.revisionId)
+                && Objects.equals(revisionTag, other.revisionTag) && Objects.equals(getProperties(), other.getProperties());
+    }
 
 }
