@@ -384,8 +384,8 @@ func Test_validateTimeoutOrWarning(t *testing.T) {
 
 func Test_validateInitialWaitIntervalOrWarning(t *testing.T) {
 	// PREPARE
-	var okay int64 = 60 * int64(time.Second) // 60s
-	var tooSmall int64 = 10000000            // 0.01s
+	var okay int64 = 60 * int64(time.Second)                // 60s
+	var tooSmall int64 = int64(0.01 * float64(time.Second)) // 0.01s
 
 	// EXECUTE
 	result1 := validateInitialWaitIntervalOrWarning(okay)

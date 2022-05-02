@@ -393,7 +393,7 @@ func validateWaitTimeOrWarning(waitTime int) int {
 	// Verify wait time and ensure MinimalWaitTimeSeconds
 	if waitTime < MinimalWaitTimeSeconds {
 		sechubUtil.LogWarning(
-			fmt.Sprintf("Desired wait interval (%d s) is too small. Setting to %d seconds.", waitTime, MinimalWaitTimeSeconds))
+			fmt.Sprintf("Desired wait interval (%d s) is too short. Setting it to %d seconds.", waitTime, MinimalWaitTimeSeconds))
 		waitTime = MinimalWaitTimeSeconds
 	}
 	return waitTime
@@ -404,7 +404,7 @@ func validateInitialWaitIntervalOrWarning(intervalNanoseconds int64) int64 {
 	// Verify wait time and ensure minimalInitialWaitIntervalNanoseconds
 	if intervalNanoseconds < minimalInitialWaitIntervalNanoseconds {
 		sechubUtil.LogWarning(
-			fmt.Sprintf("Desired initial wait interval (%v s) is too small. Setting to %v s.",
+			fmt.Sprintf("Desired initial wait interval (%v s) is too short. Setting it to %v s.",
 				float64(intervalNanoseconds)/float64(time.Second),
 				float64(minimalInitialWaitIntervalNanoseconds)/float64(time.Second)))
 		intervalNanoseconds = minimalInitialWaitIntervalNanoseconds
