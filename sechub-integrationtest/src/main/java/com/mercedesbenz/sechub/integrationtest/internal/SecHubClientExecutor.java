@@ -206,6 +206,7 @@ public class SecHubClientExecutor {
 
         Map<String, String> environment = pb.environment();
         environment.put("SECHUB_TRUSTALL", "" + trustAll);
+        environment.put("SECHUB_INITIAL_WAIT_INTERVAL", "0.1");
 
         if (IntegrationTestSetup.SECHUB_CLIENT_DEBUGGING_ENABLED) {
             // we enable only when explicit wanted - so logs are smaller and easier to read
