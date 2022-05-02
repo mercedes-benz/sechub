@@ -3,7 +3,6 @@ package com.mercedesbenz.sechub.adapter.netsparker;
 
 import org.springframework.http.HttpStatus;
 
-/* FIXME Albert Tregnaghi, 2018-03-27: remove this by common exception */
 public class NetsparkerRESTFailureException extends RuntimeException {
 
     private static final long serialVersionUID = 6448794893494468643L;

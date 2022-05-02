@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.adapter.pds;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.*;
+import static com.mercedesbenz.sechub.test.TestConstants.*;
 import static org.mockito.Mockito.*;
 
 import java.io.ByteArrayInputStream;
@@ -60,7 +61,7 @@ public class PDSAdapterV1WireMockTest {
         /* prepare */
         PDSWiremockTestSupport testSupport = PDSWiremockTestSupport.builder(wireMockRule).
                 simulateJobCanBeCreated(sechubJobUUID,productIdentifier,expectedJobParameters).
-                simulateUploadData("sourcecode.zip").
+                simulateUploadData(SOURCECODE_ZIP).
                 simulateMarkReadyToStart().
                 simulateFetchJobStatus(PDSAdapterJobStatusState.DONE).
                 simulateFetchJobResultOk("testresult").
@@ -92,7 +93,7 @@ public class PDSAdapterV1WireMockTest {
 
         PDSWiremockTestSupport testSupport = PDSWiremockTestSupport.builder(wireMockRule).
                 simulateJobCanBeCreated(sechubJobUUID,productIdentifier,expectedJobParameters).
-                simulateUploadData("sourcecode.zip").
+                simulateUploadData(SOURCECODE_ZIP).
                 simulateMarkReadyToStart().
                 simulateFetchJobStatus(PDSAdapterJobStatusState.DONE).
                 simulateFetchJobResultOk("testresult").

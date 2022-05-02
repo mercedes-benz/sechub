@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.job;
 
+import static com.mercedesbenz.sechub.test.TestConstants.*;
 import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -189,7 +190,7 @@ public class PDSJobRestControllerMockTest {
         UUID jobUUID = UUID.randomUUID();
         String result = "result string";
         MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
-        String fileName = "sourcecode.zip";
+        String fileName = SOURCECODE_ZIP;
 
         /* execute + test */
 

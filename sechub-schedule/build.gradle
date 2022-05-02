@@ -8,6 +8,9 @@
 dependencies {
 
     implementation(library.springboot_starter_batch)
+    implementation(library.apache_commons_io)
+    implementation(library.apache_commons_fileupload)
+      
     implementation project(':sechub-shared-kernel')
     
     testImplementation project(':sechub-testframework')

@@ -199,16 +199,16 @@ WARNING: Configured to trust all - means unknown service certificate is accepted
 \ `--.  ___  ___| |_| |_   _| |__
  `--. \/ _ \/ __|  _  | | | | '_ \
 /\__/ /  __/ (__| | | | |_| | |_) |
-\____/ \___|\___\_| |_/\__,_|_.__/ Client Version 0.0.0-3e13084-dirty-20210622120507
+\____/ \___|\___\_| |_/\__,_|_.__/ Client Version 0.0.0-1ba48fa-dirty-20220426102342
 
-2021-06-22 13:26:24 (+02:00) Creating new sechub job
-2021-06-22 13:26:24 (+02:00) Zipping folder: . (/home/user/sechub)
-2021-06-22 13:26:25 (+02:00) Uploading source zip file
-2021-06-22 13:26:26 (+02:00) Approve sechub job
-2021-06-22 13:26:26 (+02:00) Waiting for job 7045e25f-592b-46bf-9713-c31995d37e99 to be done
+2022-04-26 10:33:34 (+02:00) Zipping folder: . (/home/user/sechub)
+2022-04-26 10:33:34 (+02:00) Creating new sechub job
+2022-04-26 10:33:34 (+02:00) Uploading source zip file
+2022-04-26 10:33:35 (+02:00) Approve sechub job
+2022-04-26 10:33:35 (+02:00) Waiting for job 2fbb0553-db8c-4edb-827e-afed282f4140 to be done
                              .
-2021-06-22 13:26:30 (+02:00) Fetching result (format=html) for job 7045e25f-592b-46bf-9713-c31995d37e99
-2021-06-22 13:26:30 (+02:00) SecHub report written to sechub_report_testproject_7045e25f-592b-46bf-9713-c31995d37e99.html
+2022-04-26 10:33:37 (+02:00) Fetching result (format=html) for job 2fbb0553-db8c-4edb-827e-afed282f4140
+2022-04-26 10:33:38 (+02:00) SecHub report written to sechub_report_testproject_2fbb0553-db8c-4edb-827e-afed282f4140.html
   GREEN - no severe security vulnerabilities identified
 ----
 +

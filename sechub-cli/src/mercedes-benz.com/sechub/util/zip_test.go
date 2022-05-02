@@ -2,7 +2,6 @@
 package util
 
 import (
-	"archive/zip"
 	"os"
 	"strings"
 	"testing"
@@ -102,7 +101,7 @@ func TestZipFileCanBeCreated(t *testing.T) {
 	sechubUtil.AssertFileExists(path, t)
 	sechubUtil.AssertMinimalFileSize(path, 300, t) // check if zip file is empty
 
-	list := readContentOfZipFile(path, t)
+	list := readContentOfZipFileTest(path, t)
 
 	sechubUtil.AssertContains(list, strings.TrimPrefix(filename1, "/"), t)
 	sechubUtil.AssertContains(list, strings.TrimPrefix(filename2, "/"), t)
@@ -155,7 +154,7 @@ func TestZipFileCanBeCreated_with_exclude_patterns_applied(t *testing.T) {
 	sechubUtil.AssertFileExists(path, t)
 	sechubUtil.AssertMinimalFileSize(path, 300, t) // check if zip file is empty
 
-	list := readContentOfZipFile(path, t)
+	list := readContentOfZipFileTest(path, t)
 
 	sechubUtil.AssertContainsNot(list, strings.TrimPrefix(filename0, "/"), t) // this file may not be inside, because excluded! (/sub1/file0.txt)
 	sechubUtil.AssertContains(list, strings.TrimPrefix(filename1, "/"), t)    // this must remain
@@ -203,7 +202,7 @@ func TestZipFileCanBeCreated_and_contains_only_sourcefiles(t *testing.T) {
 	sechubUtil.AssertFileExists(path, t)
 	sechubUtil.AssertMinimalFileSize(path, 300, t) // check if zip file is empty
 
-	list := readContentOfZipFile(path, t)
+	list := readContentOfZipFileTest(path, t)
 
 	sechubUtil.AssertContainsNot(list, strings.TrimPrefix(filename0, "/"), t) // file must not be in zip
 	sechubUtil.AssertContains(list, strings.TrimPrefix(filename1, "/"), t)    // file must exist
@@ -258,7 +257,7 @@ func TestZipFileContainsRelativeSourceFolders(t *testing.T) {
 	/* test */
 	sechubUtil.Check(err, t)
 
-	list := readContentOfZipFile(zipfilepath, t)
+	list := readContentOfZipFileTest(zipfilepath, t)
 
 	sechubUtil.AssertContains(list, filepath1, t)
 	sechubUtil.AssertContains(list, filepath2, t)
@@ -284,7 +283,7 @@ func TestZipFileContainsRelativeFoldersOutsideCurrent(t *testing.T) {
 	/* test */
 	sechubUtil.Check(err, t)
 
-	list := readContentOfZipFile(zipfilepath, t)
+	list := readContentOfZipFileTest(zipfilepath, t)
 	// "./../sechub-cli-tmptest/file1.txt" becomes "sechub-cli-tmptest/file1.txt" in zip file
 	sechubUtil.AssertContains(list, "sechub-cli-tmptest/file1.txt", t)
 }
@@ -292,16 +291,11 @@ func TestZipFileContainsRelativeFoldersOutsideCurrent(t *testing.T) {
 /* -------------------------------------*/
 /* --------- Helpers -------------------*/
 /* -------------------------------------*/
-func readContentOfZipFile(path string, t *testing.T) []string {
 
-	zipfile, err := zip.OpenReader(path)
+func readContentOfZipFileTest(path string, t *testing.T) []string {
+
+	list, err := ReadContentOfZipFile(path)
 	sechubUtil.Check(err, t)
-	defer zipfile.Close()
 
-	list := []string{}
-	for _, file := range zipfile.File {
-		name := ConvertBackslashPath(file.Name)
-		list = append(list, name)
-	}
 	return list
 }

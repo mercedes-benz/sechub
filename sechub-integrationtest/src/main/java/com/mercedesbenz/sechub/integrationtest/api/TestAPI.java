@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -449,33 +448,72 @@ public class TestAPI {
     }
 
     /**
-     * Expects an http failure when runnable is executed. If this does not happen,
+     * Expects an HTTP failure when runnable is executed. If this does not happen,
      * dedicated error messages comes up and unit test will fail.
      *
      * @param expectedStatusCode
      * @param runnable
      */
-    public static void expectHttpFailure(Runnable runnable, HttpStatus... expected) {
-        expectHttpFailure(runnable, -1, expected);
+    public static void expectHttpFailure(Runnable runnable, HttpStatus expectedStatusCode) {
+        internalExpectHttpFailure(runnable, -1, expectedStatusCode, null);
     }
 
     /**
-     * Expects an http failure when runnable is executed. If this does not happen,
+     * Expects an HTTP failure when runnable is executed. If this does not happen,
+     * dedicated error messages comes up and unit test will fail.
+     *
+     * @param runnable
+     * @param exceptionValidator if set the exception will be inspected in detail,
+     *                           if <code>null</code> no additional inspection
+     */
+    public static void expectHttpFailure(Runnable runnable, HttpStatusCodeExceptionTestValidator exceptionValidator) {
+        internalExpectHttpFailure(runnable, -1, null, exceptionValidator);
+    }
+
+    /**
+     * Expects an HTTP failure when runnable is executed. If this does not happen,
+     * dedicated error messages comes up and unit test will fail.
+     *
+     * @param runnable
+     * @param exceptionValidator    if set the exception will be inspected in
+     *                              detail, if <code>null</code> no additional
+     *                              inspection
+     * @param timeOutInMilliseconds as long this time out is not reached HTTP 200
+     *                              messages will be ignored and after a short break
+     *                              the runnable will be called again to provoke
+     *                              expected failure.
+     */
+    public static void expectHttpFailure(Runnable runnable, long timeOutInMilliseconds, HttpStatusCodeExceptionTestValidator exceptionValidator) {
+        internalExpectHttpFailure(runnable, timeOutInMilliseconds, null, exceptionValidator);
+    }
+
+    /**
+     * Expects an HTTP failure when runnable is executed. If this does not happen,
      * dedicated error messages comes up and unit test will fail.
      *
      * @param expectedStatusCode
      * @param timeOutInMilliseconds as long this time out is not reached HTTP 200
      *                              messages will be ignored and after a short break
-     *                              the runnnable will be called again to provoke
+     *                              the runnable will be called again to provoke
      *                              expected failure.
      * @param runnable
      */
-    public static void expectHttpFailure(Runnable runnable, long timeOutInMilliseconds, HttpStatus... expected) {
-        if (expected == null || expected.length == 0) {
-            throw new IllegalArgumentException("test case corrupt please add at least one expected error!");
+    public static void expectHttpFailure(Runnable runnable, long timeOutInMilliseconds, HttpStatus expectedStatusCode) {
+        internalExpectHttpFailure(runnable, timeOutInMilliseconds, expectedStatusCode, null);
+    }
+
+    private static void internalExpectHttpFailure(Runnable runnable, long timeOutInMilliseconds, HttpStatus expectedStatusCode,
+            HttpStatusCodeExceptionTestValidator exceptionValidator) {
+        if (exceptionValidator == null) {
+            if (expectedStatusCode == null) {
+                throw new IllegalArgumentException("test case corrupt please add at least one expected error!");
+            }
+            /*
+             * when explicit exception validator set, we always check for Json server error
+             * fields and expected status code
+             */
+            exceptionValidator = new JsonErrorFieldNamesAvailableHttpStatusExceptionTestValidator(expectedStatusCode);
         }
-        /* sanity check: 20x is no HTTP failure... */
-        assertNoHttp20xInside(expected);
 
         long start = System.currentTimeMillis();
         boolean timeElapsed = false;
@@ -483,7 +521,6 @@ public class TestAPI {
             long waitedTimeInMilliseconds = System.currentTimeMillis() - start;
             timeElapsed = waitedTimeInMilliseconds > timeOutInMilliseconds;
 
-            boolean failedAsExpected = false;
             try {
                 runnable.run();
                 if (timeElapsed) {
@@ -495,41 +532,15 @@ public class TestAPI {
                         + " ms. So Wait " + wait + " ms and retry");
                 TestAPI.waitMilliSeconds(wait);
             } catch (HttpStatusCodeException he) {
-                int status = he.getRawStatusCode();
-                failedAsExpected = isAllowed(status, expected);
-                if (failedAsExpected) {
-                    return;
+                if (exceptionValidator != null) {
+                    exceptionValidator.validate(he);
                 }
-                fail("Expected http status codes were:" + Arrays.asList(expected) + " but was " + status + "\nMessage:" + he.getMessage() + ",\nContent:"
-                        + he.getResponseBodyAsString());
+
             } catch (RestClientException e) {
                 fail("Expected a " + HttpStatusCodeException.class.getSimpleName() + " but was " + e.getClass());
             }
         }
 
-    }
-
-    private static boolean isAllowed(int status, HttpStatus... allowed) {
-        for (HttpStatus expectedStatusCode : allowed) {
-            if (expectedStatusCode.value() == status) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static void assertNoHttp20xInside(HttpStatus... expectedStatusCodes) {
-        for (HttpStatus expectedStatusCode : expectedStatusCodes) {
-            if (expectedStatusCode.is2xxSuccessful()) {
-                StringBuilder sb = new StringBuilder();
-                sb.append("Wrong implemented unit test!\n");
-                sb.append("You defined an expected status code inside your test which belongs to 2xxSuccesful familiy:\n");
-                sb.append(expectedStatusCode.getReasonPhrase());
-                sb.append("\n");
-                sb.append("This status is never a failure - so your test is wrong implemented !");
-                throw new IllegalArgumentException(sb.toString());
-            }
-        }
     }
 
     /**

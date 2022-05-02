@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.adapter.pds;
 
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
+
 import java.io.InputStream;
 
 import org.springframework.core.io.Resource;
@@ -18,8 +20,6 @@ import com.mercedesbenz.sechub.adapter.springextension.MultipartInputStreamFileR
 
 public class PDSUploadSupport {
 
-    private static final String SOURCECODE_ZIP = "sourcecode.zip";
-
     public void uploadZippedSourceCode(PDSContext context, PDSSourceZipConfig zipConfig) throws AdapterException {
         String checksum = zipConfig.getSourceCodeZipFileChecksum();
 
@@ -27,7 +27,7 @@ public class PDSUploadSupport {
     }
 
     private void upload(PDSContext context, PDSSourceZipConfig zipConfig, String checkSum) throws AdapterException {
-        String uploadSourceCodeUrl = context.getUrlBuilder().buildUpload(context.getPdsJobUUID(), SOURCECODE_ZIP);
+        String uploadSourceCodeUrl = context.getUrlBuilder().buildUpload(context.getPdsJobUUID(), FILENAME_SOURCECODE_ZIP);
         RestOperations restTemplate = context.getRestOperations();
 
         // see https://www.baeldung.com/spring-rest-template-multipart-upload
@@ -53,7 +53,7 @@ public class PDSUploadSupport {
         if (zipInputstream == null) {
             throw context.asAdapterException("Input stream containing zip file is null!");
         }
-        return new MultipartInputStreamFileResource(zipInputstream, SOURCECODE_ZIP);
+        return new MultipartInputStreamFileResource(zipInputstream, FILENAME_SOURCECODE_ZIP);
     }
 
 }
