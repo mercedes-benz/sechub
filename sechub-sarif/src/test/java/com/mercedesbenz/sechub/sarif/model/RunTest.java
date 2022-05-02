@@ -14,29 +14,37 @@ class RunTest {
     @Test
     void constructor_params_null() {
         /* prepare */
-        Run run = new Run(null, null);
+        Run run = new Run(null, null, null, null);
 
         /* execute */
         Tool tool = run.getTool();
         List<Result> results = run.getResults();
+        List<Taxonomy> taxonomies = run.getTaxonomies();
+        List<VersionControlDetails> versionControlProvenance = run.getVersionControlProvenance();
 
         /* test */
         assertEquals(tool, null);
         assertEquals(results, null);
+        assertEquals(taxonomies, null);
+        assertEquals(versionControlProvenance, null);
     }
 
     @Test
     void constructor_params_not_null() {
         /* prepare */
-        Run run = new Run(new Tool(), new LinkedList<Result>());
+        Run run = new Run(new Tool(), new LinkedList<Result>(), new LinkedList<Taxonomy>(), new LinkedList<VersionControlDetails>());
 
         /* execute */
         Tool tool = run.getTool();
         List<Result> results = run.getResults();
+        List<Taxonomy> taxonomies = run.getTaxonomies();
+        List<VersionControlDetails> versionControlProvenance = run.getVersionControlProvenance();
 
         /* test */
         assertEquals(tool, new Tool());
         assertEquals(results, new LinkedList<Result>());
+        assertEquals(taxonomies, new LinkedList<Taxonomy>());
+        assertEquals(versionControlProvenance, new LinkedList<VersionControlDetails>());
     }
 
     @Test
@@ -49,7 +57,7 @@ class RunTest {
         /* @formatter:off */
         testBothAreEqualAndHaveSameHashCode(createExample(), createExample());
 
-        testBothAreNOTEqual(createExample(), change(createExample(), (rule) -> rule.setTool(new Tool())));
+        testBothAreNOTEqual(createExample(), change(createExample(), (run) -> run.setTool(new Tool())));
         /* @formatter:on */
 
     }

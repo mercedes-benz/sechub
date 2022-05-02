@@ -18,60 +18,90 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * @author Albert Tregnaghi
  *
  */
-@JsonPropertyOrder({ "tool", "results" })
+@JsonPropertyOrder({ "tool", "taxonomies", "versionControlProvenance", "results", "properties" })
 public class Run extends SarifObject {
-    private Tool tool;
+	private Tool tool;
 
-    private List<Result> results;
+	private List<Taxonomy> taxonomies;
 
-    public Run() {
-        results = new LinkedList<Result>();
-    }
+	private List<VersionControlDetails> versionControlProvenance;
 
-    public Run(Tool tool, List<Result> results) {
-        this.tool = tool;
-        this.results = results;
-    }
+	private List<Result> results;
 
-    public void addResult(Result result) {
-        results.add(result);
-    }
+	public Run() {
+		results = new LinkedList<>();
+		taxonomies = new LinkedList<>();
+		versionControlProvenance = new LinkedList<>();
+	}
 
-    public Tool getTool() {
-        return tool;
-    }
+	public Run(Tool tool, List<Result> results, List<Taxonomy> taxonomies,
+			List<VersionControlDetails> versionControlProvenance) {
+		this.tool = tool;
+		this.taxonomies = taxonomies;
+		this.versionControlProvenance = versionControlProvenance;
+		this.results = results;
+	}
 
-    public void setTool(Tool tool) {
-        this.tool = tool;
-    }
+	public void addResult(Result result) {
+		results.add(result);
+	}
 
-    public List<Result> getResults() {
-        return results;
-    }
+	public Tool getTool() {
+		return tool;
+	}
 
-    public void setResults(List<Result> results) {
-        this.results = results;
-    }
+	public void setTool(Tool tool) {
+		this.tool = tool;
+	}
 
-    @Override
-    public String toString() {
-        return "Run [tool=" + tool + ", results=" + results + "]";
-    }
+	public List<Taxonomy> getTaxonomies() {
+		return taxonomies;
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(results, tool);
-    }
+	public void setTaxonomies(List<Taxonomy> taxonomies) {
+		this.taxonomies = taxonomies;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Run other = (Run) obj;
-        return Objects.equals(results, other.results) && Objects.equals(tool, other.tool);
-    }
+	public List<VersionControlDetails> getVersionControlProvenance() {
+		return versionControlProvenance;
+	}
+
+	public void setVersionControlProvenance(List<VersionControlDetails> versionControlProvenance) {
+		this.versionControlProvenance = versionControlProvenance;
+	}
+
+	public List<Result> getResults() {
+		return results;
+	}
+
+	public void setResults(List<Result> results) {
+		this.results = results;
+	}
+
+	@Override
+	public String toString() {
+		return "Run [tool=" + tool + ", taxonomies=" + taxonomies + ", versionControlProvenance="
+				+ versionControlProvenance + ", results=" + results + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(results, taxonomies, tool, versionControlProvenance);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof Run)) {
+			return false;
+		}
+		Run other = (Run) obj;
+		return Objects.equals(results, other.results) && Objects.equals(taxonomies, other.taxonomies)
+				&& Objects.equals(tool, other.tool)
+				&& Objects.equals(versionControlProvenance, other.versionControlProvenance)
+				&& Objects.equals(getProperties(), other.getProperties());
+	}
+
 }
