@@ -17,41 +17,43 @@ import (
 
 // Config for internal CLI calls
 type Config struct {
-	action                string
-	apiToken              string
-	configFilePath        string
-	configFileRead        bool
-	debug                 bool
-	debugHTTP             bool
-	file                  string
-	ignoreDefaultExcludes bool
-	keepTempFiles         bool
-	outputFileName        string
-	outputFolder          string
-	outputLocation        string
-	projectID             string
-	quiet                 bool
-	reportFormat          string
-	secHubJobUUID         string
-	server                string
-	stopOnYellow          bool
-	tempDir               string
-	timeOutNanoseconds    int64
-	timeOutSeconds        int
-	trustAll              bool
-	user                  string
-	waitNanoseconds       int64
-	waitSeconds           int
-	whitelistAll          bool
+	action                         string
+	apiToken                       string
+	configFilePath                 string
+	configFileRead                 bool
+	debug                          bool
+	debugHTTP                      bool
+	file                           string
+	ignoreDefaultExcludes          bool
+	initialWaitIntervalNanoseconds int64
+	keepTempFiles                  bool
+	outputFileName                 string
+	outputFolder                   string
+	outputLocation                 string
+	projectID                      string
+	quiet                          bool
+	reportFormat                   string
+	secHubJobUUID                  string
+	server                         string
+	stopOnYellow                   bool
+	tempDir                        string
+	timeOutNanoseconds             int64
+	timeOutSeconds                 int
+	trustAll                       bool
+	user                           string
+	waitNanoseconds                int64
+	waitSeconds                    int
+	whitelistAll                   bool
 }
 
 // Initialize Config with default values
 var configFromInit Config = Config{
-	configFilePath: DefaultSecHubConfigFile,
-	reportFormat:   DefaultReportFormat,
-	tempDir:        DefaultTempDir,
-	timeOutSeconds: DefaultTimeoutInSeconds,
-	waitSeconds:    DefaultWaitTime,
+	configFilePath:                 DefaultSecHubConfigFile,
+	initialWaitIntervalNanoseconds: int64(DefaultinitialWaitIntervalSeconds * time.Second),
+	reportFormat:                   DefaultReportFormat,
+	tempDir:                        DefaultTempDir,
+	timeOutSeconds:                 DefaultTimeoutInSeconds,
+	waitSeconds:                    DefaultWaitTime,
 }
 
 var flagHelp bool
@@ -122,6 +124,8 @@ func parseConfigFromEnvironment(config *Config) {
 		os.Getenv(SechubQuietEnvVar) == "true"
 	config.trustAll =
 		os.Getenv(SechubTrustAllEnvVar) == "true"
+	initialWaitIntervalFromEnv :=
+		os.Getenv(SechubIninitialWaitIntervalSecondsEnvVar)
 	projectFromEnv :=
 		os.Getenv(SechubProjectEnvVar)
 	serverFromEnv :=
@@ -137,6 +141,14 @@ func parseConfigFromEnvironment(config *Config) {
 
 	if apiTokenFromEnv != "" {
 		config.apiToken = apiTokenFromEnv
+	}
+	if initialWaitIntervalFromEnv != "" {
+		initialWaitInterval, err := strconv.ParseFloat(initialWaitIntervalFromEnv, 64)
+		if err == nil {
+			config.initialWaitIntervalNanoseconds = int64(initialWaitInterval * float64(time.Second))
+		} else {
+			sechubUtil.LogWarning(fmt.Sprintf("Could not parse '%v' as number (read from $%s)", initialWaitIntervalFromEnv, SechubIninitialWaitIntervalSecondsEnvVar))
+		}
 	}
 	if projectFromEnv != "" {
 		config.projectID = projectFromEnv
@@ -261,6 +273,8 @@ func assertValidConfig(config *Config) {
 	// Remove trailing slash from url if present
 	config.server = strings.TrimSuffix(config.server, "/")
 
+	config.initialWaitIntervalNanoseconds = validateInitialWaitIntervalOrWarning(config.initialWaitIntervalNanoseconds)
+
 	config.waitSeconds = validateWaitTimeOrWarning(config.waitSeconds)
 	config.waitNanoseconds = int64(config.waitSeconds) * int64(time.Second)
 
@@ -379,10 +393,23 @@ func validateWaitTimeOrWarning(waitTime int) int {
 	// Verify wait time and ensure MinimalWaitTimeSeconds
 	if waitTime < MinimalWaitTimeSeconds {
 		sechubUtil.LogWarning(
-			fmt.Sprintf("Desired wait intervall (%d s) is too small. Setting to %d seconds.", waitTime, MinimalWaitTimeSeconds))
+			fmt.Sprintf("Desired wait interval (%d s) is too short. Setting it to %d seconds.", waitTime, MinimalWaitTimeSeconds))
 		waitTime = MinimalWaitTimeSeconds
 	}
 	return waitTime
+}
+
+func validateInitialWaitIntervalOrWarning(intervalNanoseconds int64) int64 {
+	minimalInitialWaitIntervalNanoseconds := int64(MinimalInitialWaitIntervalSeconds * float64(time.Second))
+	// Verify wait time and ensure minimalInitialWaitIntervalNanoseconds
+	if intervalNanoseconds < minimalInitialWaitIntervalNanoseconds {
+		sechubUtil.LogWarning(
+			fmt.Sprintf("Desired initial wait interval (%v s) is too short. Setting it to %v s.",
+				float64(intervalNanoseconds)/float64(time.Second),
+				float64(minimalInitialWaitIntervalNanoseconds)/float64(time.Second)))
+		intervalNanoseconds = minimalInitialWaitIntervalNanoseconds
+	}
+	return intervalNanoseconds
 }
 
 func validateTimeoutOrWarning(timeout int) int {
