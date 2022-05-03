@@ -41,7 +41,7 @@ public class TargetResolverService implements NetworkTargetResolver {
     @MustBeDocumented(value = "*Strategy to decide target types by given IP.* +\n"
             + "Starts always with strategy-identifer, colon and value(s). Values are comma separated. Currently only 'intranet-ip-pattern' is supported as strategy. Inside this strategy,"
             + "it is possible to define IPv4 or IPv6 adresses (wildcards are also possible). For example: "
-            + "`intranet-ip-pattern:192.168.178.\\*,2001:db8:85a3:0:0:8a2e:370:\\*`. Other IPs are interpreted as being inside INTERNET. "
+            + "`intranet-ip-pattern:192.168.178.\\*,2001:db8:85a3:0:0:8a2e:370:*`. Other IPs are interpreted as being inside INTERNET. "
             + "But no matter if strategy is defined or not: loopback addresses are always illegal and so ignored")
     String definedInetAddressStrategy;
 
