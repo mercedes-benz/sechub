@@ -23,6 +23,7 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
     private URI rootTargetURI;
     private Set<String> includes;
     private Set<String> excludes;
+    private String targetType;
 
     protected AbstractWebScanAdapterConfigBuilder() {
         super();
@@ -117,6 +118,15 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
         }
         this.targetURI = targetURI;
         this.rootTargetURI = uriShrinkSupport.shrinkToRootURI(targetURI);
+        return (B) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public B setTargetType(String targetType) {
+        if (targetType == null) {
+            return (B) this;
+        }
+        this.targetType = targetType;
         return (B) this;
     }
 
@@ -292,6 +302,7 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
 
         abstractWebScanConfig.maxScanDuration = maxScanDuration;
         abstractWebScanConfig.targetURI = targetURI;
+        abstractWebScanConfig.targetType = targetType;
         abstractWebScanConfig.rootTargetURI = rootTargetURI;
         abstractWebScanConfig.includes = includes;
         abstractWebScanConfig.excludes = excludes;
