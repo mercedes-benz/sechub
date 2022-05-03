@@ -33,11 +33,15 @@ executor_delete <executor-uuid> - Delete executor <executor-uuid>
 executor_details <executor-uuid> - Show definition of executor <executor-uuid>
 executor_list - List all existing executors (json format)
 executor_update <executor-uuid> <json-file> - Update executor <executor-uuid> with <json-file> contents
+job_approve <project-id> <job-uuid> - Approve a job <job-uuid> and mark it as ready to start
 job_cancel <job-uuid> - Cancel job <job-uuid>
+job_create <project-id> <json-file> - Create a new job for a project <project-id> from a SecHub configuration file <json-file> (JSON format)
+job_get_report_spdx_json <project-id> <job-uuid> - Get SPDX JSON report for a specific job <job-uuid> and <project-id>
 job_list_running - List running jobs (json format)
 job_restart <job-uuid> - Restart/activate job <job-uuid>
 job_restart_hard <job-uuid> - Run new backend scan of job <job-uuid>
 job_status <project-id> <job-uuid> - Get status of job <job-uuid> in project <project-id> (json format)
+job_upload_sourcecode <project-id> <job-uuid> <zip-file> - Upload source code <zip-file> for project <project-id> and job <job-uuid>
 profile_create <profile-id> <executor-uuid1>[,<executor-uuid2>...] [<description>]
                Create execution profile <profile-id> with named executors assigned; description optional
 profile_delete <profile-id> - Delete execution profile <profile-id>
@@ -80,7 +84,6 @@ user_signup_decline <new user-id> - Decline registration of <new user-id>
 
 EOF
 }
-
 
 #################################
 # Generic helper functions
@@ -248,7 +251,6 @@ function sechub_autocleanup_set {
   curl $CURL_PARAMS -i -X PUT -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/config/autoclean" | $CURL_FILTER
 }
 
-
 function sechub_executor_create {
   curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' -d "@$1" "$SECHUB_SERVER/api/admin/config/executor" | $RESULT_FILTER
   echo
@@ -281,6 +283,19 @@ function sechub_job_cancel {
   curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/jobs/cancel/$1"
 }
 
+function sechub_job_create {  
+  local PROJECT_ID="$1"
+  local JSON_FILE="$2"
+
+  curl $CURL_PARAMS -i -X POST -H "$JSON_TYPE" --data "@$JSON_FILE" "$SECHUB_SERVER/api/project/$PROJECT_ID/job" | $RESULT_FILTER | $JSON_FORMATTER
+}
+
+function sechub_job_approve {
+  local PROJECT_ID="$1"
+  local JOB_UUID="$2"
+  
+  curl $CURL_PARAMS -i -X PUT -H "$JSON_TYPE" "$SECHUB_SERVER/api/project/$PROJECT_ID/job/$JOB_UUID/approve" | $CURL_FILTER
+}
 
 function sechub_job_restart {
   curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/jobs/restart/$1"
@@ -291,6 +306,12 @@ function sechub_job_restart_hard {
   curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/jobs/restart-hard/$1"
 }
 
+function sechub_job_get_report_spdx_json {
+  local PROJECT_ID="$1"
+  local JOB_UUID="$2"
+
+  curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/$PROJECT_ID/report/spdx/$JOB_UUID" 
+}
 
 function sechub_job_list_running {
   curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/jobs/running" | $RESULT_FILTER | $JSON_FORMATTER
@@ -301,6 +322,29 @@ function sechub_job_status {
   curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/$1/job/$2" | $RESULT_FILTER | $JSON_FORMATTER
 }
 
+function sechub_job_upload_sourcecode {
+  local PROJECT_ID="$1"
+  local JOB_UUID="$2"
+  local ZIP_FILE="$3"
+
+  if [[ ! -f "$ZIP_FILE" ]] ; then
+    echo "File \"$ZIP_FILE\" does not exist."
+    exit 1
+  fi
+
+  local checkSum=$(sha256sum $ZIP_FILE | cut --delimiter=' ' --fields=1)
+
+  curl $CURL_AUTH $CURL_PARAMS -i -X POST --header "Content-Type: multipart/form-data" \
+    --form "file=@$ZIP_FILE" \
+    --form "checkSum=$checkSum" \
+    "$SECHUB_SERVER/api/project/$PROJECT_ID/job/$JOB_UUID/sourcecode" | $RESULT_FILTER
+
+  if [[ "$?" == "0" ]] ; then
+    echo "File \"$ZIP_FILE\" uploaded."
+  else
+    echo "Upload failed."
+  fi
+}
 
 function generate_sechub_profile_data {
   local EXECUTORS=$(echo $1 | awk -F',' '{ for (i = 1; i < NF; i++) { printf("{\"uuid\": \"%s\"}, ", $i) } printf ("{\"uuid\": \"%s\"}", $NF) }')
@@ -615,6 +659,8 @@ function sechub_user_signup_decline {
 
 # -----------------------------
 # main
+readonly JSON_TYPE='Content-Type: application/json'
+
 failed=false
 YES=false
 SECHUB_API_VERSION="1.0"
@@ -720,9 +766,24 @@ case "$action" in
     EXECUTOR_JSONFILE="$2" ; check_file "$EXECUTOR_JSONFILE" '<json-file>'
     $failed || sechub_executor_update "$EXECUTOR_UUID" "$EXECUTOR_JSONFILE"
     ;;
+  job_approve)
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    JOB_UUID="$2" ; check_parameter JOB_UUID '<job-uuid>'
+    $failed || sechub_job_approve "$PROJECT_ID" "$JOB_UUID"
+    ;;
   job_cancel)
     JOB_UUID="$1" ; check_parameter JOB_UUID '<job-uuid>'
     $failed || sechub_job_cancel "$JOB_UUID"
+    ;;
+  job_create)
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    JSON_FILE="$2" ; check_parameter JSON_FILE '<json-file>'
+    $failed || sechub_job_create "$PROJECT_ID" "$JSON_FILE"
+    ;;
+  job_get_report_spdx_json)
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    JSON_FILE="$2" ; check_parameter JSON_FILE '<json-file>'
+    $failed || sechub_job_get_report_spdx_json "$PROJECT_ID" "$JSON_FILE"
     ;;
   job_list_running)
     $failed || sechub_job_list_running
@@ -739,6 +800,12 @@ case "$action" in
     PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
     JOB_UUID="$2"   ; check_parameter JOB_UUID '<job-uuid>'
     $failed || sechub_job_status "$PROJECT_ID" "$JOB_UUID"
+    ;;
+  job_upload_sourcecode)
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    JOB_UUID="$2"   ; check_parameter JOB_UUID '<job-uuid>'
+    ZIP_FILE="$3"   ; check_parameter ZIP_FILE '<zip-file>'
+    $failed || sechub_job_upload_sourcecode "$PROJECT_ID" "$JOB_UUID" "$ZIP_FILE"
     ;;
   profile_create)
     PROFILE_ID="$1" ; check_parameter PROFILE_ID '<profile-id>'
