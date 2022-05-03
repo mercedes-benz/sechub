@@ -10,10 +10,10 @@ FROM ${BASE_IMAGE}
 LABEL maintainer="SecHub FOSS Team"
 
 # Build args
-ARG GO="go1.17.7.linux-amd64.tar.gz"
-ARG GOSEC_VERSION="2.10.0"
+ARG GO="go1.18.1.linux-amd64.tar.gz"
+ARG GOSEC_VERSION="2.11.0"
 ARG PDS_FOLDER="/pds"
-ARG PDS_VERSION="0.26.0"
+ARG PDS_VERSION="0.27.0"
 ARG SCRIPT_FOLDER="/scripts"
 ARG WORKSPACE="/workspace"
 
@@ -40,13 +40,16 @@ RUN mkdir --parents "$PDS_FOLDER" "$SCRIPT_FOLDER" "$TOOL_FOLDER" "$WORKSPACE" "
     # the only two folders pds really needs write access to
     chown --recursive "$USER:$USER" "$WORKSPACE" "$SHARED_VOLUMES"
 
-# Copy mock file
-COPY mock.sarif.json "$MOCK_FOLDER"/mock.sarif.json
+# Copy mock folder
+COPY mocks "$MOCK_FOLDER"
+
 # Copy PDS configfile
 COPY pds-config.json "$PDS_FOLDER"/pds-config.json
+
 # Copy GoSec scripts
 COPY gosec.sh "$SCRIPT_FOLDER"/gosec.sh
 COPY gosec_mock.sh "$SCRIPT_FOLDER"/gosec_mock.sh
+
 # Copy run script into container
 COPY run.sh /run.sh
 

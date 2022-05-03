@@ -1,6 +1,4 @@
 {
-  "version" : "1.0",
-  
   "cleanupTime" : {
     "unit" : "months", //<1>
     "amount" : 3 //<2>

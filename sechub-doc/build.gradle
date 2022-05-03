@@ -303,7 +303,7 @@ task generateOpenapi() {
     	//
     	// The steps are:
     	//
-    	// 1. read in the generated OpenAPI file
+    	// 1. read in the generated OpenAPI file in `/sechub-doc/build/api-spec/openapi3.json`
     	// 2. get the values which contain a `oneOf` element
     	// 3. overwrite the `oneOf` with `string`
     	// 4. write the modified JSON structure back into the generated OpenAPI 3 file
@@ -331,6 +331,8 @@ task generateOpenapi() {
     	scanJobSchema.properties.infraScan.properties.uris.items = stringType
     	scanJobSchema.properties.infraScan.properties.ips.items = stringType
     	scanJobSchema.properties.codeScan.properties.fileSystem.properties.folders.items = stringType
+    	scanJobSchema.properties.codeScan.properties.fileSystem.properties.files.items = stringType
+    	scanJobSchema.properties.codeScan.properties.use.items = stringType
     	scanJobSchema.properties.webScan.properties.includes.items = stringType
     	scanJobSchema.properties.webScan.properties.excludes.items = stringType
 		

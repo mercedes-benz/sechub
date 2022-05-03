@@ -50,6 +50,8 @@ public abstract class AbstractAllowSecHubAPISecurityConfiguration extends WebSec
 
  				antMatchers(APIConstants.API_ANONYMOUS+"**").
  					permitAll().
+ 				antMatchers(APIConstants.ERROR_PAGE).
+ 				    permitAll().
  				antMatchers(APIConstants.ACTUATOR+"**").
  					permitAll().
  				/* to prevent configuration failures - I had this issue before -

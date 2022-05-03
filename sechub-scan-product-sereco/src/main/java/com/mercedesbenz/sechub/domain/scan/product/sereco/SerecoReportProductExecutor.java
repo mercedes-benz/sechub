@@ -13,12 +13,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
+import com.mercedesbenz.sechub.domain.scan.product.ProductExecutor;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResultRepository;
-import com.mercedesbenz.sechub.domain.scan.report.ScanReportProductExecutor;
 import com.mercedesbenz.sechub.sereco.Sereco;
 import com.mercedesbenz.sechub.sereco.Workspace;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
@@ -26,7 +27,7 @@ import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
 
 @Component
-public class SerecoReportProductExecutor implements ScanReportProductExecutor {
+public class SerecoReportProductExecutor implements ProductExecutor {
 
     private static final Logger LOG = LoggerFactory.getLogger(SerecoReportProductExecutor.class);
 
@@ -35,6 +36,12 @@ public class SerecoReportProductExecutor implements ScanReportProductExecutor {
 
     @Autowired
     Sereco sechubReportCollector;
+
+    private final static ScanType SCAN_TYPE = ScanType.REPORT;
+
+    private final static int VERSION = 1;
+
+    private static final ProductIdentifier PRODUCT_IDENTIFIER = ProductIdentifier.SERECO;
 
     /* @formatter:off */
     private static ProductIdentifier[] supportedProductIdentifiers = new ProductIdentifier[] {
@@ -49,7 +56,7 @@ public class SerecoReportProductExecutor implements ScanReportProductExecutor {
 
     @Override
     public ProductIdentifier getIdentifier() {
-        return ProductIdentifier.SERECO;
+        return PRODUCT_IDENTIFIER;
     }
 
     @Override
@@ -115,14 +122,23 @@ public class SerecoReportProductExecutor implements ScanReportProductExecutor {
 		/* @formatter:on */
     }
 
-    /* @formatter:off */
-	private ProductIdentifier[] getSupportedProducts() {
-	    return supportedProductIdentifiers;
-	}
-	/* @formatter:on */
+    private ProductIdentifier[] getSupportedProducts() {
+        return supportedProductIdentifiers;
+    }
 
     @Override
     public int getVersion() {
-        return 1;
+        return VERSION;
+    }
+
+    @Override
+    public ScanType getScanType() {
+        return SCAN_TYPE;
+    }
+
+    @Override
+    public String toString() {
+        return "AbstractProductExecutor [" + (PRODUCT_IDENTIFIER != null ? "PRODUCT_IDENTIFIER=" + PRODUCT_IDENTIFIER + ", " : "") + "VERSION=" + VERSION + ", "
+                + (SCAN_TYPE != null ? "SCAN_TYPE=" + SCAN_TYPE : "") + "]";
     }
 }

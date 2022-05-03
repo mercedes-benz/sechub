@@ -318,7 +318,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
     @SuppressWarnings("deprecation") // we use startDownloadJobReport here - old implementation okay here
     @Test
-    public void sechub_client_can_execute_a_config_file_which_uses_template_variables_of_environment_entries() {
+    public void sechub_client_can_execute_a_config_file_which_uses_template_variables_of_environment_entries_but_no_data_section() {
         /* @formatter:off */
 
 		/* prepare */
@@ -337,7 +337,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 		envEntries.put("SHTEST_FOLDERS1", IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__FAST.getTarget());
 
 		/* execute */
-		IntegrationTestJSONLocation location = CLIENT_JSON_SOURCESCAN_GENERIC_TEMPLATE;
+		IntegrationTestJSONLocation location = IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_GENERIC_TEMPLATE_NO_DATA_SECTION;
 		UUID jobUUID =
 	    as(user).
 			withSecHubClient().

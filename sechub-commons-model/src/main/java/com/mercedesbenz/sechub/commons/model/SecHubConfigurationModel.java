@@ -14,6 +14,7 @@ public class SecHubConfigurationModel {
     private Optional<SecHubWebScanConfiguration> webScan = Optional.empty();
     private Optional<SecHubInfrastructureScanConfiguration> infraScan = Optional.empty();
     private Optional<SecHubCodeScanConfiguration> codeScan = Optional.empty();
+    private Optional<SecHubDataConfiguration> data = Optional.empty();
 
     private String apiVersion;
 
@@ -59,4 +60,11 @@ public class SecHubConfigurationModel {
         return infraScan;
     }
 
+    public Optional<SecHubDataConfiguration> getData() {
+        return data;
+    }
+
+    public void setData(SecHubDataConfiguration data) {
+        this.data = Optional.ofNullable(data);
+    }
 }

@@ -75,7 +75,7 @@ public class InternalInitialDataService {
         exampleUser.superAdmin = true;
 
         if (createAsSuperAdmin && userRepository.exists(Example.of(exampleUser))) {
-            LOG.info("At lelast one admin exists already, so skip initial admin creation of {} ", userId);
+            LOG.info("At least one admin exists already, so skip initial admin creation of {} ", userId);
             return;
         }
         if (createAsSuperAdmin) {
