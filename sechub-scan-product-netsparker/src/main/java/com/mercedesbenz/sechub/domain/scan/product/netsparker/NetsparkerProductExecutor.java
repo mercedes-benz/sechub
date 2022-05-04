@@ -85,6 +85,7 @@ public class NetsparkerProductExecutor extends AbstractProductExecutor {
 				setAgentGroupName(data.getNetworkTargetProductServerDataSupport().getIdentifier(targetType)).
 				setPolicyID(installSetup.getDefaultPolicyId()).
 				setLicenseID(installSetup.getNetsparkerLicenseId()).
+				setTargetType(info.getTargetType().name()).
 				setTargetURI(targetURI).build();
 		/* @formatter:on */
 
