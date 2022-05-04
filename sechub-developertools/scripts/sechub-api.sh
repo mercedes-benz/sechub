@@ -287,14 +287,14 @@ function sechub_job_create {
   local PROJECT_ID="$1"
   local JSON_FILE="$2"
 
-  curl $CURL_PARAMS -i -X POST -H "$JSON_TYPE" --data "@$JSON_FILE" "$SECHUB_SERVER/api/project/$PROJECT_ID/job" | $RESULT_FILTER | $JSON_FORMATTER
+  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' --data "@$JSON_FILE" "$SECHUB_SERVER/api/project/$PROJECT_ID/job" | $RESULT_FILTER | $JSON_FORMATTER
 }
 
 function sechub_job_approve {
   local PROJECT_ID="$1"
   local JOB_UUID="$2"
   
-  curl $CURL_PARAMS -i -X PUT -H "$JSON_TYPE" "$SECHUB_SERVER/api/project/$PROJECT_ID/job/$JOB_UUID/approve" | $CURL_FILTER
+  curl $CURL_PARAMS -i -X PUT -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/$PROJECT_ID/job/$JOB_UUID/approve" | $CURL_FILTER
 }
 
 function sechub_job_restart {
@@ -659,8 +659,6 @@ function sechub_user_signup_decline {
 
 # -----------------------------
 # main
-readonly JSON_TYPE='Content-Type: application/json'
-
 failed=false
 YES=false
 SECHUB_API_VERSION="1.0"
