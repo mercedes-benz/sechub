@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.Set;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.test.TestFileReader;
@@ -48,13 +50,13 @@ class SecHubScanConfigurationTest {
         String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_license_scan_wrong_source_config_example.json"));
 
         /* execute + test */
-        Assertions.assertThrows(JSONConverterException.class, () -> {
+        assertThrows(JSONConverterException.class, () -> {
             SecHubScanConfiguration.createFromJSON(json);
         });
     }
 
     @Test
-    void sechub_job_config_license_scan_JSON_non_existent_scan_type() {
+    void sechub_job_config_fantasy_scan_type_only_no_official_scan_types_inside_but_can_be_read() {
 
         /* prepare */
         String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_unknown_scan_type.json"));
@@ -67,7 +69,18 @@ class SecHubScanConfigurationTest {
         assertFalse(scanConfig.getLicenseScan().isPresent());
         assertFalse(scanConfig.getCodeScan().isPresent());
         assertFalse(scanConfig.getInfraScan().isPresent());
+    }
+    
+    @Test
+    void sechub_job_config_contains_data_section_when_only_fantasy_scan_type_defined() {
 
+        /* prepare */
+        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_unknown_scan_type.json"));
+
+        /* execute */
+        SecHubScanConfiguration scanConfig = SecHubScanConfiguration.createFromJSON(json);
+
+        /* test */
         assertEquals("1.0", scanConfig.getApiVersion());
         assertEquals(1, scanConfig.getData().get().getSources().size());
 

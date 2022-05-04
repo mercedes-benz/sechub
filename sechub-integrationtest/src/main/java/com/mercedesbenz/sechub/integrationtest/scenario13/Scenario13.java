@@ -9,6 +9,28 @@ import com.mercedesbenz.sechub.integrationtest.internal.AbstractSecHubServerTest
 import com.mercedesbenz.sechub.integrationtest.internal.CleanScenario;
 import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
 
+/**
+ * <b><u>Scenario13 - the PDS integration test SPDX license scan scenario (REUSE SECHUB DATA
+ * enabled)</u></b><br>
+ *
+ * The scenario13 does setup SecHub and PDS to a state which allows testing the SPDX license scan.
+ *
+ * In this scenario, the following is automatically initialized at start (old data
+ * removed): <br>
+ * <br>
+ * a) <b> PDS integration test configuration is done automatically.</b> All
+ * configurations from
+ * 'sechub-integrationtest/src/main/resources/pds-config-integrationtest.json'
+ * are used to setup the PDS automatically!<br>
+ * <br>
+ * b) User and project data:
+ *
+ * <pre>
+ * PROJECT_1_ is automatically created
+ * USER_1, is automatically registered, created and assigned to project1
+ * </pre>
+ *
+ */
 public class Scenario13 extends AbstractSecHubServerTestScenario implements PDSTestScenario, CleanScenario {
 
     /**

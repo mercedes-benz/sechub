@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.pds;
 
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
@@ -37,10 +39,6 @@ import com.mercedesbenz.sechub.storage.core.StorageService;
 @Service
 public class PDSLicenseScanProductExecutor extends AbstractProductExecutor {
     private static final Logger LOG = LoggerFactory.getLogger(PDSLicenseScanProductExecutor.class);
-
-    private static final String SOURCECODE_ZIP_CHECKSUM = "sourcecode.zip.checksum";
-
-    private static final String SOURCECODE_ZIP = "sourcecode.zip";
 
     @Autowired
     PDSAdapter pdsAdapter;
@@ -145,14 +143,14 @@ public class PDSLicenseScanProductExecutor extends AbstractProductExecutor {
         if (metaData != null && metaData.hasValue(PDSMetaDataID.KEY_FILEUPLOAD_DONE, true)) {
             return null;
         }
-        return storage.fetch(SOURCECODE_ZIP);
+        return storage.fetch(FILENAME_SOURCECODE_ZIP);
     }
 
     private String fetchFileUploadChecksumIfNecessary(JobStorage storage, AdapterMetaData metaData) throws IOException {
         if (metaData != null && metaData.hasValue(PDSMetaDataID.KEY_FILEUPLOAD_DONE, true)) {
             return null;
         }
-        try (InputStream inputStream = storage.fetch(SOURCECODE_ZIP_CHECKSUM); Scanner scanner = new Scanner(inputStream)) {
+        try (InputStream inputStream = storage.fetch(FILENAME_SOURCECODE_ZIP_CHECKSUM); Scanner scanner = new Scanner(inputStream)) {
             String result = scanner.hasNext() ? scanner.next() : "";
             return result;
         }
