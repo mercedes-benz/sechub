@@ -30,6 +30,11 @@ The SecHub Client is available for a number of platforms. A platform is a combin
 |AMD and Intel 64-bit
 |The **macOS client**.
 
+|darwin-arm64
+|macOS
+|ARM
+|Support for recent Macs with ARM architecture.
+
 |linux-386
 |Linux
 |AMD and Intel 32-bit
