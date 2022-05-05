@@ -24,7 +24,7 @@ public class PDSLicenseScanJobScenario13IntTest {
     public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario13.class);
 
     @Test
-    public void pds_license_scan() {
+    public void test_the_license_scan_module__start_a_new_scan_and_run_pds_license_scan_and_download_report_via_rest() {
         /* prepare */
         String configurationAsJson = IntegrationTestFileSupport.getTestfileSupport().loadTestFile("sechub-integrationtest-licensescanconfig.json");
         SecHubScanConfiguration configuration = SecHubScanConfiguration.createFromJSON(configurationAsJson);

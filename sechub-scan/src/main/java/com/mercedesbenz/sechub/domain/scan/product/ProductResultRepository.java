@@ -2,7 +2,6 @@
 package com.mercedesbenz.sechub.domain.scan.product;
 
 import static com.mercedesbenz.sechub.domain.scan.product.ProductResult.*;
-import static com.mercedesbenz.sechub.domain.scan.product.ProductResult.TABLE_NAME;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

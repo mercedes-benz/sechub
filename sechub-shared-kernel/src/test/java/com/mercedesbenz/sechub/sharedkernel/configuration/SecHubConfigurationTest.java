@@ -526,7 +526,7 @@ public class SecHubConfigurationTest {
     }
 
     @Test
-    public void license_scan_test() {
+    public void a_sechub_configuration_JSON_with_license_scan_can_be_read_and_license_scan_has_correct_data_configuration_reference() {
         /* prepare */
         String expectedDataConfigName = "build-artifacts";
         String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("licensescan/license_scan.json");

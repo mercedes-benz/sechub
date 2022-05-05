@@ -10,13 +10,13 @@ import org.springframework.stereotype.Component;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
-import com.mercedesbenz.sechub.domain.scan.resolve.SpdxJsonResolver;
+import com.mercedesbenz.sechub.domain.scan.resolve.ProductResultSpdxJsonResolver;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoLicenseDocument;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoLicenseSpdx;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
 
 @Component
-public class SerecoProductResultSpdxJsonResolver implements SpdxJsonResolver {
+public class SerecoProductResultSpdxJsonResolver implements ProductResultSpdxJsonResolver {
     private static final Logger LOG = LoggerFactory.getLogger(SerecoProductResultSpdxJsonResolver.class);
 
     /**
@@ -51,7 +51,8 @@ public class SerecoProductResultSpdxJsonResolver implements SpdxJsonResolver {
             }
         }
 
-        // FIXME logging, in case nothing was found
+        LOG.info("No SPDX report found in the product results.");
+
         return null;
     }
 }

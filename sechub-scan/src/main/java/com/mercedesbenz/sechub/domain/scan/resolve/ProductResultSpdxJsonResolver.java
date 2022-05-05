@@ -3,10 +3,10 @@ package com.mercedesbenz.sechub.domain.scan.resolve;
 
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 
-public interface SpdxJsonResolver {
+public interface ProductResultSpdxJsonResolver {
 
     /**
-     * Fetches SPDX-Json from Sereco ProductResult
+     * Fetches SPDX-Json from a ProductResult
      *
      * @param serecoProductResult from Sereco
      * @return SpdxJson as String or <code>null</code>

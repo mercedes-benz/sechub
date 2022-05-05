@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sereco.importer;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 
@@ -11,29 +9,76 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.mercedesbenz.sechub.sereco.ImportParameter;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
 import com.mercedesbenz.sechub.sereco.test.SerecoTestFileSupport;
 
 public class SpdxV1JSONImporterTest {
     private static String spdx_2_2_scancode;
+    private static String spdx_invalid_json;
 
     private SpdxV1JSONImporter importerToTest;
 
     @BeforeAll
     public static void before() {
         spdx_2_2_scancode = loadSpdxTestFile("spdx_scancode_30.1.0.spdx.json");
+        spdx_invalid_json = loadSpdxTestFile("spdx_correct_header_invalid_json.txt");
     }
-
+    
     @BeforeEach
     void beforeEach() {
         importerToTest = new SpdxV1JSONImporter();
     }
 
     @Test
+    void importResult__cannot_import_null() throws IOException {
+        /* prepare */
+        String spdx = null;
+
+        /* execute + test */
+        assertThrows(NullPointerException.class, () -> { importerToTest.importResult(spdx); });
+    }
+    
+    @Test
     void importResult__import_empty_string() throws IOException {
         /* prepare */
         String spdx = "";
+
+        /* execute */
+        SerecoMetaData metaData = importerToTest.importResult(spdx);
+
+        /* test */
+        assertTrue(metaData.getLicenseDocuments().isEmpty());
+    }
+    
+    @Test
+    void importResult__import_empty_json_cannot_be_imported() throws IOException {
+        /* prepare */
+        String spdx = "{}";
+
+        /* execute */
+        SerecoMetaData metaData = importerToTest.importResult(spdx);
+
+        /* test */
+        assertTrue(metaData.getLicenseDocuments().isEmpty());
+    }
+    
+    
+    @Test
+    void importResult__just_text_cannot_be_imported() throws IOException {
+        /* prepare */
+        String spdx = "I am a long text …";
+
+        /* execute */
+        SerecoMetaData metaData = importerToTest.importResult(spdx);
+
+        /* test */
+        assertTrue(metaData.getLicenseDocuments().isEmpty());
+    }
+    
+    @Test
+    void importResult__correct_header_but_corrupt_json_cannot_be_imported() throws IOException {
+        /* prepare */
+        String spdx = spdx_invalid_json;
 
         /* execute */
         SerecoMetaData metaData = importerToTest.importResult(spdx);
@@ -52,32 +97,6 @@ public class SpdxV1JSONImporterTest {
 
         /* test */
         assertNotNull(metaData.getLicenseDocuments().get(0).getSpdx());
-    }
-
-    @Test
-    void createImportSupport__import_spdx_scancode_codescan() {
-        /* prepare */
-
-        ImportParameter paramScancode = ImportParameter.builder().importData(spdx_2_2_scancode).importId("id1").productId("PDS_CODESCAN").build();
-
-        /* execute */
-        ProductImportAbility ableToImportScancodeSpdx = importerToTest.isAbleToImportForProduct(paramScancode);
-
-        /* test */
-        assertEquals(ProductImportAbility.ABLE_TO_IMPORT, ableToImportScancodeSpdx, "Was NOT able to import SPDX JSON!");
-    }
-
-    @Test
-    void createImportSupport__import_spdx_scancode_binaryscan() {
-        /* prepare */
-
-        ImportParameter paramScancode = ImportParameter.builder().importData(spdx_2_2_scancode).importId("id1").productId("PDS_BINARYSCAN").build();
-
-        /* execute */
-        ProductImportAbility ableToImportScancodeSpdx = importerToTest.isAbleToImportForProduct(paramScancode);
-
-        /* test */
-        assertEquals(ProductImportAbility.ABLE_TO_IMPORT, ableToImportScancodeSpdx, "Was NOT able to import SPDX JSON!");
     }
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */

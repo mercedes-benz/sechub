@@ -140,38 +140,6 @@ public class ScanService implements SynchronMessageHandler {
         }
     }
 
-    public CodeScanProductExecutionService getCodeScanProductExecutionService() {
-        return codeScanProductExecutionService;
-    }
-
-    public void setCodeScanProductExecutionService(CodeScanProductExecutionService codeScanProductExecutionService) {
-        this.codeScanProductExecutionService = codeScanProductExecutionService;
-    }
-
-    public WebScanProductExecutionService getWebScanProductExecutionService() {
-        return webScanProductExecutionService;
-    }
-
-    public void setWebScanProductExecutionService(WebScanProductExecutionService webScanProductExecutionService) {
-        this.webScanProductExecutionService = webScanProductExecutionService;
-    }
-
-    public InfrastructureScanProductExecutionService getInfraScanProductExecutionService() {
-        return infraScanProductExecutionService;
-    }
-
-    public void setInfraScanProductExecutionService(InfrastructureScanProductExecutionService infraScanProductExecutionService) {
-        this.infraScanProductExecutionService = infraScanProductExecutionService;
-    }
-
-    public LicenseScanProductExecutionService getLicenseScanProductExecutionService() {
-        return licenseScanProductExecutionService;
-    }
-
-    public void setLicenseScanProductExecutionService(LicenseScanProductExecutionService licenseScanProductExecutionService) {
-        this.licenseScanProductExecutionService = licenseScanProductExecutionService;
-    }
-
     protected void executeScan(SecHubExecutionContext context, DomainMessage request) throws SecHubExecutionException {
         DomainDataTraceLogID sechubJobUUID = traceLogID(request);
 

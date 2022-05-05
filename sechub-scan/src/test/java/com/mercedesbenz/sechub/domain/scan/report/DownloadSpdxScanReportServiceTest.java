@@ -21,7 +21,7 @@ import com.mercedesbenz.sechub.domain.scan.ScanAssertService;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResultRepository;
-import com.mercedesbenz.sechub.domain.scan.resolve.SpdxJsonResolver;
+import com.mercedesbenz.sechub.domain.scan.resolve.ProductResultSpdxJsonResolver;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
@@ -33,7 +33,7 @@ class DownloadSpdxScanReportServiceTest {
     private AuditLogService auditLogService;
     private ProductResultRepository productResultRepository;
     private ScanAssertService scanAssertService;
-    private SpdxJsonResolver spdxJsonResolver;
+    private ProductResultSpdxJsonResolver spdxJsonResolver;
 
     @BeforeEach
     void beforeEach() {
@@ -43,7 +43,7 @@ class DownloadSpdxScanReportServiceTest {
         auditLogService = mock(AuditLogService.class);
         productResultRepository = mock(ProductResultRepository.class);
         scanAssertService = mock(ScanAssertService.class);
-        spdxJsonResolver = mock(SpdxJsonResolver.class);
+        spdxJsonResolver = mock(ProductResultSpdxJsonResolver.class);
 
         serviceToTest.assertion = assertion;
         serviceToTest.auditLogService = auditLogService;
@@ -53,7 +53,7 @@ class DownloadSpdxScanReportServiceTest {
     }
 
     @Test
-    void auditLogging_jobUuid_test() {
+    void audit_log_contains_spdx_json_report_with_job_uuid() {
         /* prepare */
         UUID sechubJobUUID = UUID.randomUUID();
 
@@ -80,7 +80,7 @@ class DownloadSpdxScanReportServiceTest {
     }
 
     @Test
-    void return_result_if_not_null() {
+    void service_returns_spdx_json_resolver_result_for_sereco_productresult() {
         /* prepare */
         UUID sechubJobUUID = UUID.randomUUID();
 
@@ -101,7 +101,7 @@ class DownloadSpdxScanReportServiceTest {
     }
 
     @Test
-    void return_result_null_throws_exception() {
+    void service_throws_not_found_exception_when_spdx_json_resolver_result_is_null_for_sereco_productresult() {
         /* prepare */
         UUID sechubJobUUID = UUID.randomUUID();
 

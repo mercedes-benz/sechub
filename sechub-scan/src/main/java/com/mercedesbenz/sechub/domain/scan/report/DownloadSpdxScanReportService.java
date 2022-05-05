@@ -12,7 +12,7 @@ import com.mercedesbenz.sechub.domain.scan.ScanAssertService;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResultRepository;
-import com.mercedesbenz.sechub.domain.scan.resolve.SpdxJsonResolver;
+import com.mercedesbenz.sechub.domain.scan.resolve.ProductResultSpdxJsonResolver;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
@@ -33,7 +33,7 @@ public class DownloadSpdxScanReportService {
     ProductResultRepository productResultRepository;
 
     @Autowired
-    SpdxJsonResolver spdxJsonResolver;
+    ProductResultSpdxJsonResolver spdxJsonResolver;
 
     public String getScanSpdxJsonReport(String projectId, UUID jobUUID) {
         /* validate */
@@ -49,7 +49,7 @@ public class DownloadSpdxScanReportService {
         List<ProductResult> productResults = productResultRepository.findAllProductResults(jobUUID, ProductIdentifier.SERECO);
 
         if (productResults.size() != 1) {
-            throw new SecHubRuntimeException("Did not found exactly one product result.");
+            throw new SecHubRuntimeException("Did not found exactly one SERECO product result. Instead, " + productResults.size() + " product results were found.");
         }
 
         ProductResult productResult = productResults.iterator().next();

@@ -44,10 +44,10 @@ class SecHubScanConfigurationTest {
     }
 
     @Test
-    void sechub_job_config_license_scan_JSON_cannot_be_deserialized_used_singular_source() {
+    void sechub_job_config_license_scan_JSON_cannot_be_deserialized_because_of_non_existing_key() {
 
         /* prepare */
-        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_license_scan_wrong_source_config_example.json"));
+        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_license_scan_non_existing_key.json"));
 
         /* execute + test */
         assertThrows(JSONConverterException.class, () -> {
