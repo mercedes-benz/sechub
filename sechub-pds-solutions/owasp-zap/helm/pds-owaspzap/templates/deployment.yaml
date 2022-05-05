@@ -46,6 +46,10 @@ spec:
                     - name: ZAP_PROXY_FOR_PDS_TARGET_TYPE
                       value: "{{ .Values.zap.proxy.forPdsTargetType }}"
                     {{- end }}
+                    {{- if .Values.pds.logging.type.enabled }}
+                    - name: LOGGING_TYPE
+                      value: {{ .Values.pds.logging.type.appenderName }}
+                    {{- end }}
                     {{- if .Values.pds.debug.keepReportsInWorkspace }}
                     - name: SECHUB_PDS_WORKSPACE_AUTOCLEAN_DISABLED
                       value: "true"
