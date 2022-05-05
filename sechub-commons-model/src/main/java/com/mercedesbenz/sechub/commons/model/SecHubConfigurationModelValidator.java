@@ -112,17 +112,17 @@ public class SecHubConfigurationModelValidator {
             context.result.addError(WEB_SCAN_URL_HAS_UNSUPPORTED_SCHEMA, "Schema was: " + schema + " but supported is only HTTP/HTTPS");
         }
 
-        handleOpenApi(context, webScan);
+        handleApi(context, webScan);
 
     }
 
-    private void handleOpenApi(InternalValidationContext context, SecHubWebScanConfiguration webScan) {
-        Optional<SecHubOpenAPIConfiguration> openApiOpt = webScan.getOpenApi();
-        if (!openApiOpt.isPresent()) {
+    private void handleApi(InternalValidationContext context, SecHubWebScanConfiguration webScan) {
+        Optional<SecHubWebScanApiConfiguration> apiOpt = webScan.getApi();
+        if (!apiOpt.isPresent()) {
             return;
         }
 
-        SecHubOpenAPIConfiguration openApi = openApiOpt.get();
+        SecHubWebScanApiConfiguration openApi = apiOpt.get();
         handleUsages(context, openApi);
     }
 

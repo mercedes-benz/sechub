@@ -18,19 +18,19 @@ public class SecHubWebScanConfiguration {
     Optional<WebLoginConfiguration> login = Optional.empty();
     Optional<WebScanDurationConfiguration> maxScanDuration = Optional.empty();
 
+    Optional<SecHubWebScanApiConfiguration> api = Optional.empty();
+    
     URI uri;
 
     Optional<List<String>> includes = Optional.empty();
     Optional<List<String>> excludes = Optional.empty();
 
-    Optional<SecHubOpenAPIConfiguration> openApi = Optional.empty();
-
-    public Optional<SecHubOpenAPIConfiguration> getOpenApi() {
-        return openApi;
-    }
-
     public URI getUri() {
         return uri;
+    }
+    
+    public Optional<SecHubWebScanApiConfiguration> getApi(){
+        return api;
     }
 
     public Optional<WebLoginConfiguration> getLogin() {

@@ -225,8 +225,8 @@ class SecHubConfigurationModelValidatorTest {
         SecHubWebScanConfiguration webScan = new SecHubWebScanConfiguration();
         model.setWebScan(webScan);
 
-        SecHubOpenAPIConfiguration openApi = new SecHubOpenAPIConfiguration();
-        webScan.openApi = Optional.of(openApi);
+        SecHubWebScanApiConfiguration openApi = new SecHubWebScanApiConfiguration();
+        webScan.api = Optional.of(openApi);
         webScan.uri = createURIforSchema("https");
 
         openApi.getNamesOfUsedDataConfigurationObjects().add("unknown-configuration");
@@ -253,8 +253,8 @@ class SecHubConfigurationModelValidatorTest {
         SecHubWebScanConfiguration webScan = new SecHubWebScanConfiguration();
         model.setWebScan(webScan);
 
-        SecHubOpenAPIConfiguration openApi = new SecHubOpenAPIConfiguration();
-        webScan.openApi = Optional.of(openApi);
+        SecHubWebScanApiConfiguration openApi = new SecHubWebScanApiConfiguration();
+        webScan.api = Optional.of(openApi);
         webScan.uri = createURIforSchema("https");
 
         openApi.getNamesOfUsedDataConfigurationObjects().add("referenced-open-api-file");
