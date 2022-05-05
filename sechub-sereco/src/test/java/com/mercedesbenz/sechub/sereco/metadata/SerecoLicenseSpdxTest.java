@@ -18,7 +18,7 @@ public class SerecoLicenseSpdxTest {
     @Test
     void of_null_throws_exception() {
         /* execute + test */
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(NullPointerException.class, () -> {
             SerecoLicenseSpdx.of(null);
         });
     }
