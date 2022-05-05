@@ -20,34 +20,34 @@ public class SpdxV1JSONImporter extends AbstractProductResultImporter {
 
     @Override
     public SerecoMetaData importResult(String spdxJson) throws IOException {
-    	Objects.requireNonNull(spdxJson, "SPDX cannot be null.");
-    	
+        Objects.requireNonNull(spdxJson, "SPDX cannot be null.");
+
         SerecoMetaData metaData = new SerecoMetaData();
 
         if (isValidJson(spdxJson)) {
-	        try {
-	            SerecoLicenseSpdx spdxDocument = SerecoLicenseSpdx.of(spdxJson);
-	            SerecoLicenseDocument licenseDocument = new SerecoLicenseDocument();
-	            licenseDocument.setSpdx(spdxDocument);
-	            metaData.getLicenseDocuments().add(licenseDocument);
-	        } catch (IllegalArgumentException e) {
-	        	LOG.info(e.getMessage());
-	        }
+            try {
+                SerecoLicenseSpdx spdxDocument = SerecoLicenseSpdx.of(spdxJson);
+                SerecoLicenseDocument licenseDocument = new SerecoLicenseDocument();
+                licenseDocument.setSpdx(spdxDocument);
+                metaData.getLicenseDocuments().add(licenseDocument);
+            } catch (IllegalArgumentException e) {
+                LOG.info(e.getMessage());
+            }
         }
 
         return metaData;
     }
-    
+
     public boolean isValidJson(String spdxJson) {
-    	ObjectMapper mapper = new ObjectMapper();
-    	
-    	try {
-    		mapper.readTree(spdxJson);
-    	} catch (JacksonException e) {
-    		LOG.info("Unable to read SPDX Json.");
-    		return false;
-    	}
-    	return true;
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            mapper.readTree(spdxJson);
+        } catch (JacksonException e) {
+            LOG.info("Unable to read SPDX Json.");
+            return false;
+        }
+        return true;
     }
 
     @Override

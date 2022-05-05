@@ -70,7 +70,7 @@ class SecHubScanConfigurationTest {
         assertFalse(scanConfig.getCodeScan().isPresent());
         assertFalse(scanConfig.getInfraScan().isPresent());
     }
-    
+
     @Test
     void sechub_job_config_contains_data_section_when_only_fantasy_scan_type_defined() {
 

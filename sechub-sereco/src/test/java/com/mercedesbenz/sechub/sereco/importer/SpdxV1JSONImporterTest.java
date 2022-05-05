@@ -23,7 +23,7 @@ public class SpdxV1JSONImporterTest {
         spdx_2_2_scancode = loadSpdxTestFile("spdx_scancode_30.1.0.spdx.json");
         spdx_invalid_json = loadSpdxTestFile("spdx_correct_header_invalid_json.txt");
     }
-    
+
     @BeforeEach
     void beforeEach() {
         importerToTest = new SpdxV1JSONImporter();
@@ -35,9 +35,11 @@ public class SpdxV1JSONImporterTest {
         String spdx = null;
 
         /* execute + test */
-        assertThrows(NullPointerException.class, () -> { importerToTest.importResult(spdx); });
+        assertThrows(NullPointerException.class, () -> {
+            importerToTest.importResult(spdx);
+        });
     }
-    
+
     @Test
     void importResult__import_empty_string() throws IOException {
         /* prepare */
@@ -49,7 +51,7 @@ public class SpdxV1JSONImporterTest {
         /* test */
         assertTrue(metaData.getLicenseDocuments().isEmpty());
     }
-    
+
     @Test
     void importResult__import_empty_json_cannot_be_imported() throws IOException {
         /* prepare */
@@ -61,8 +63,7 @@ public class SpdxV1JSONImporterTest {
         /* test */
         assertTrue(metaData.getLicenseDocuments().isEmpty());
     }
-    
-    
+
     @Test
     void importResult__just_text_cannot_be_imported() throws IOException {
         /* prepare */
@@ -74,7 +75,7 @@ public class SpdxV1JSONImporterTest {
         /* test */
         assertTrue(metaData.getLicenseDocuments().isEmpty());
     }
-    
+
     @Test
     void importResult__correct_header_but_corrupt_json_cannot_be_imported() throws IOException {
         /* prepare */

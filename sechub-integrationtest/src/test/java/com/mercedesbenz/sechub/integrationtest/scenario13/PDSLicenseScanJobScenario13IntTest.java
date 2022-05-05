@@ -44,7 +44,7 @@ public class PDSLicenseScanJobScenario13IntTest {
 
         /* @formatter:off */
         assertTrue(spdxReport.contains(
-        		"  \"packages\": [\n" + 
+        		"  \"packages\": [\n" +
         		"    {\n" +
         		"      \"packageName\": \"go1.16.4.linux-amd64\",\n" +
                 "      \"SPDXID\": \"SPDXRef-golang-dist\",\n" +

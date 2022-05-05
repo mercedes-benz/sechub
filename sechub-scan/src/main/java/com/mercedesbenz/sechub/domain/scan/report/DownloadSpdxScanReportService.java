@@ -49,7 +49,8 @@ public class DownloadSpdxScanReportService {
         List<ProductResult> productResults = productResultRepository.findAllProductResults(jobUUID, ProductIdentifier.SERECO);
 
         if (productResults.size() != 1) {
-            throw new SecHubRuntimeException("Did not found exactly one SERECO product result. Instead, " + productResults.size() + " product results were found.");
+            throw new SecHubRuntimeException(
+                    "Did not found exactly one SERECO product result. Instead, " + productResults.size() + " product results were found.");
         }
 
         ProductResult productResult = productResults.iterator().next();
