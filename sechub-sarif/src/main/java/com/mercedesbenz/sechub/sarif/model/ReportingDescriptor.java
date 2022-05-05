@@ -20,8 +20,6 @@ public abstract class ReportingDescriptor extends SarifObject {
 
     private String id;
     private String guid;
-    // see
-    // https://docs.oasis-open.org/sarif/sarif/v2.0/csprd02/sarif-v2.0-csprd02.html#_Toc10128041
 
     private String name;
 
@@ -30,6 +28,8 @@ public abstract class ReportingDescriptor extends SarifObject {
     private String helpUri;
     private Message help;
 
+    // see
+    // https://docs.oasis-open.org/sarif/sarif/v2.0/csprd02/sarif-v2.0-csprd02.html#_Toc10128041
     private ReportingConfiguration defaultConfiguration;
     private List<ReportingDescriptorRelationship> relationships;
 
@@ -37,6 +37,9 @@ public abstract class ReportingDescriptor extends SarifObject {
         this.relationships = new LinkedList<>();
     }
 
+    /**
+     * @return id or <code>null</code> when not defined
+     */
     public String getId() {
         return id;
     }
@@ -45,6 +48,9 @@ public abstract class ReportingDescriptor extends SarifObject {
         this.id = id;
     }
 
+    /**
+     * @return guid or <code>null</code> when not defined
+     */
     public String getGuid() {
         return guid;
     }
@@ -53,6 +59,9 @@ public abstract class ReportingDescriptor extends SarifObject {
         this.guid = guid;
     }
 
+    /**
+     * @return name or <code>null</code> when not defined
+     */
     public String getName() {
         return name;
     }
@@ -61,6 +70,10 @@ public abstract class ReportingDescriptor extends SarifObject {
         this.name = name;
     }
 
+    /**
+     * @return Message object with short description or <code>null</code> when not
+     *         defined
+     */
     public Message getShortDescription() {
         return shortDescription;
     }
@@ -69,6 +82,10 @@ public abstract class ReportingDescriptor extends SarifObject {
         this.shortDescription = shortDescription;
     }
 
+    /**
+     * @return Message object with full description or <code>null</code> when not
+     *         defined
+     */
     public Message getFullDescription() {
         return fullDescription;
     }
@@ -77,6 +94,9 @@ public abstract class ReportingDescriptor extends SarifObject {
         this.fullDescription = fullDescription;
     }
 
+    /**
+     * @return Help URI or <code>null</code> when not defined
+     */
     public String getHelpUri() {
         return helpUri;
     }
@@ -85,6 +105,9 @@ public abstract class ReportingDescriptor extends SarifObject {
         this.helpUri = helpUri;
     }
 
+    /**
+     * @return Help or <code>null</code> when not defined
+     */
     public Message getHelp() {
         return help;
     }
@@ -93,6 +116,9 @@ public abstract class ReportingDescriptor extends SarifObject {
         this.help = help;
     }
 
+    /**
+     * @return ReportingConfiguration object or <code>null</code> when not defined
+     */
     public ReportingConfiguration getDefaultConfiguration() {
         return defaultConfiguration;
     }
@@ -101,6 +127,10 @@ public abstract class ReportingDescriptor extends SarifObject {
         this.defaultConfiguration = defaultConfiguration;
     }
 
+    /**
+     * @return list of ReportingDescriptorRelationship objects or <code>null</code>
+     *         when not defined
+     */
     public List<ReportingDescriptorRelationship> getRelationships() {
         return relationships;
     }

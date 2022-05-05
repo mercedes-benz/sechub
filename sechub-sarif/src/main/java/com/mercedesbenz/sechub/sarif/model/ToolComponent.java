@@ -43,6 +43,9 @@ public class ToolComponent extends SarifObject {
         rules = new LinkedList<>();
     }
 
+    /**
+     * @return guid or <code>null</code> when not defined
+     */
     public String getGuid() {
         return guid;
     }
@@ -51,6 +54,9 @@ public class ToolComponent extends SarifObject {
         this.guid = guid;
     }
 
+    /**
+     * @return name or <code>null</code> when not defined
+     */
     public String getName() {
         return name;
     }
@@ -59,6 +65,9 @@ public class ToolComponent extends SarifObject {
         this.name = name;
     }
 
+    /**
+     * @return fullName or <code>null</code> when not defined
+     */
     public String getFullName() {
         return fullName;
     }
@@ -67,6 +76,9 @@ public class ToolComponent extends SarifObject {
         this.fullName = fullName;
     }
 
+    /**
+     * @return product or <code>null</code> when not defined
+     */
     public String getProduct() {
         return product;
     }
@@ -75,6 +87,9 @@ public class ToolComponent extends SarifObject {
         this.product = product;
     }
 
+    /**
+     * @return productSuite or <code>null</code> when not defined
+     */
     public String getProductSuite() {
         return productSuite;
     }
@@ -83,6 +98,9 @@ public class ToolComponent extends SarifObject {
         this.productSuite = productSuite;
     }
 
+    /**
+     * @return semanticVersion or <code>null</code> when not defined
+     */
     public String getSemanticVersion() {
         return semanticVersion;
     }
@@ -91,6 +109,9 @@ public class ToolComponent extends SarifObject {
         this.semanticVersion = semanticVersion;
     }
 
+    /**
+     * @return version or <code>null</code> when not defined
+     */
     public String getVersion() {
         return version;
     }
@@ -99,6 +120,9 @@ public class ToolComponent extends SarifObject {
         this.version = version;
     }
 
+    /**
+     * @return releaseDateUtc or <code>null</code> when not defined
+     */
     public String getReleaseDateUtc() {
         return releaseDateUtc;
     }
@@ -107,6 +131,9 @@ public class ToolComponent extends SarifObject {
         this.releaseDateUtc = releaseDateUtc;
     }
 
+    /**
+     * @return downloadUri or <code>null</code> when not defined
+     */
     public String getDownloadUri() {
         return downloadUri;
     }
@@ -115,6 +142,9 @@ public class ToolComponent extends SarifObject {
         this.downloadUri = downloadUri;
     }
 
+    /**
+     * @return informationUri or <code>null</code> when not defined
+     */
     public String getInformationUri() {
         return informationUri;
     }
@@ -123,6 +153,9 @@ public class ToolComponent extends SarifObject {
         this.informationUri = informationUri;
     }
 
+    /**
+     * @return organization or <code>null</code> when not defined
+     */
     public String getOrganization() {
         return organization;
     }
@@ -131,6 +164,10 @@ public class ToolComponent extends SarifObject {
         this.organization = organization;
     }
 
+    /**
+     * @return Message object with short description or <code>null</code> when not
+     *         defined
+     */
     public Message getShortDescription() {
         return shortDescription;
     }
@@ -139,6 +176,10 @@ public class ToolComponent extends SarifObject {
         this.shortDescription = shortDescription;
     }
 
+    /**
+     * @return Message object with full description or <code>null</code> when not
+     *         defined
+     */
     public Message getFullDescription() {
         return fullDescription;
     }
@@ -147,6 +188,9 @@ public class ToolComponent extends SarifObject {
         this.fullDescription = fullDescription;
     }
 
+    /**
+     * @return language or <code>null</code> when not defined
+     */
     public String getLanguage() {
         return language;
     }
@@ -155,6 +199,9 @@ public class ToolComponent extends SarifObject {
         this.language = language;
     }
 
+    /**
+     * @return list of Rule objects or <code>null</code> when not defined
+     */
     public List<Rule> getRules() {
         return rules;
     }
@@ -163,6 +210,9 @@ public class ToolComponent extends SarifObject {
         this.rules = rules;
     }
 
+    /**
+     * @return list of Taxon objects or <code>null</code> when not defined
+     */
     public List<Taxon> getTaxa() {
         return taxa;
     }
@@ -179,6 +229,10 @@ public class ToolComponent extends SarifObject {
         this.isComprehensive = isComprehensive;
     }
 
+    /**
+     * @return minimumRequiredLocalizedDataSemanticVersion or <code>null</code> when
+     *         not defined
+     */
     public String getMinimumRequiredLocalizedDataSemanticVersion() {
         return minimumRequiredLocalizedDataSemanticVersion;
     }

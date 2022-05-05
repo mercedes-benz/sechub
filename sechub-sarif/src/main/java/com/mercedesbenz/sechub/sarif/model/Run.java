@@ -29,22 +29,24 @@ public class Run extends SarifObject {
     private List<Result> results;
 
     public Run() {
-        results = new LinkedList<>();
-        taxonomies = new LinkedList<>();
-        versionControlProvenance = new LinkedList<>();
+        this(null, new LinkedList<>());
     }
 
-    public Run(Tool tool, List<Result> results, List<Taxonomy> taxonomies, List<VersionControlDetails> versionControlProvenance) {
+    public Run(Tool tool, List<Result> results) {
         this.tool = tool;
-        this.taxonomies = taxonomies;
-        this.versionControlProvenance = versionControlProvenance;
-        this.results = results;
+        this.results = new LinkedList<>();
+        if (results != null) {
+            this.results.addAll(results);
+        }
     }
 
     public void addResult(Result result) {
         results.add(result);
     }
 
+    /**
+     * @return tool object or <code>null</code> when not defined
+     */
     public Tool getTool() {
         return tool;
     }
@@ -53,6 +55,9 @@ public class Run extends SarifObject {
         this.tool = tool;
     }
 
+    /**
+     * @return list of Taxonomy objects or <code>null</code> when not defined
+     */
     public List<Taxonomy> getTaxonomies() {
         return taxonomies;
     }
@@ -61,6 +66,10 @@ public class Run extends SarifObject {
         this.taxonomies = taxonomies;
     }
 
+    /**
+     * @return list of VersionControlDetails objects or <code>null</code> when not
+     *         defined
+     */
     public List<VersionControlDetails> getVersionControlProvenance() {
         return versionControlProvenance;
     }
@@ -69,6 +78,9 @@ public class Run extends SarifObject {
         this.versionControlProvenance = versionControlProvenance;
     }
 
+    /**
+     * @return list of Result objects or <code>null</code> when not defined
+     */
     public List<Result> getResults() {
         return results;
     }

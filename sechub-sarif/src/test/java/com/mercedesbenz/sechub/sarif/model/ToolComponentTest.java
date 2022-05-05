@@ -2,10 +2,17 @@
 package com.mercedesbenz.sechub.sarif.model;
 
 import static com.mercedesbenz.sechub.test.PojoTester.*;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 
 import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mercedesbenz.sechub.test.TestFileReader;
 
 class ToolComponentTest {
 
@@ -35,8 +42,27 @@ class ToolComponentTest {
 
     }
 
+    @Test
+    void tool_component_json_serialization_works_correctly() throws IOException {
+        /* prepare */
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(Include.NON_NULL);
+        File referenceFile = new File("src/test/resources/examples/sarifpropertysnippets/toolcomponent.sarif.json");
+
+        /* execute */
+        String jsonReferenceFromFile = TestFileReader.loadTextFile(referenceFile);
+        assertNotNull(jsonReferenceFromFile);
+
+        ToolComponent toolComponent = mapper.reader().readValue(jsonReferenceFromFile, ToolComponent.class);
+        String jsonCreatedFromObject = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(toolComponent);
+        assertNotNull(jsonCreatedFromObject);
+
+        /* test */
+        assertEquals(jsonReferenceFromFile, jsonCreatedFromObject);
+    }
+
     private ToolComponent createExample() {
-        ToolComponent toolComponent = new Taxonomy();
+        ToolComponent toolComponent = new ToolComponent();
 
         toolComponent.setGuid("d84e9e96-c7c5-11ec-be2f-9ff76f29cb3b");
         toolComponent.setName("name");
