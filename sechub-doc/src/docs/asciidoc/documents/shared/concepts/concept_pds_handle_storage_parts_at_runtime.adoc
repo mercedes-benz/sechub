@@ -3,17 +3,25 @@ The `PDS` does automatically fetch uploaded files from shared <<pds-storage-and-
 temporary into its local filesystem. After the scan has been done, the temporary local files
 will be automatically deleted. 
 
+[[pds-fetches-sourcecode-from-storage]]
 ====== Source code fetching
 Source code is always contained in a file called `sourcecode.zip`.
 When a `PDS` starts a new job, it will fetch the complete ZIP file from <<pds-storage-and-sharing,storage>>
 to it's local storage at:`${PDSJobWorkspaceLocation}/upload/sourcecode.zip`
 
+Afterwards the <<pds-automated-extraction-sourcecode,relevant sources will be automatically extracted>> by inspecting
+the archive <<pds-exlanation-data-structure,data structure>>.
+
+[[pds-fetches-binaries-from-storage]]
 ====== Binaries fetching
-Source code is always contained in a file called `binaries.tar`.
+Binaries are always contained in a file called `binaries.tar`.
 When a `PDS` starts a new job and the scan does references a binary data section, it will fetch 
 the complete TAR file from <<pds-storage-and-sharing,storage>> to it's local storage at
  
 `${WorkspaceLocation}/upload/binaries.tar`. 
+
+Afterwards the <<pds-automated-extraction-binaries,relevant binaries will be automatically extracted>> by inspecting
+the archive <<pds-exlanation-data-structure,data structure>>.
 
 // FIXME 2022-05-06, de-jcup: remove this after binaries are fetched by PDS!
 [CAUTION]
@@ -21,6 +29,7 @@ the complete TAR file from <<pds-storage-and-sharing,storage>> to it's local sto
 The binary fetching  is currently not yet implemented!
 ====
 
+[[pds-exlanation-data-structure]]
 ====== Data structure inside TAR and ZIP files
 include::concept_common_data_structure_tar_and_zip_files.adoc[]
 
@@ -29,15 +38,17 @@ Only files and folders which are available for the configured scan will be autom
 The artificial path element `\__data__` and the reference name will not be contained in extracted 
 folders.
 
+[[sechub-config-data-section]]
 [TIP]
 ====
-You can read the {sechub} technical documentation for more details about the data configuration.
+Please read the {sechub} technical documentation for more details about the data configuration.
+You will find it described at {webPage}. 
 ====
 
 [[pds-automated-extraction-sourcecode]]
 *Automated extraction of source code* +
 
-Let's assume we have a `sourcezip.zip` with following structure:
+Let's assume PDS has <<pds-fetches-sourcecode-from-storage,fetched>> `sourcezip.zip` which contains following structure:
 [source,shell, title="ZIP file example content"]
 ----
 /__data__/
@@ -92,7 +103,7 @@ ${PDSJobWorkspaceLocation}/upload/unzipped/sourcecode
 [[pds-automated-extraction-binaries]]
 *Automated extraction of binaries* +
 
-Let's assume we have a `binaries.tar` with following structure:
+Let's assume PDS has <<pds-fetches-binaries-from-storage,fetched>> `binaries.tar` which contains following structure:
 [source,shell, title="TAR file example content"]
 ----
 /__data__/
