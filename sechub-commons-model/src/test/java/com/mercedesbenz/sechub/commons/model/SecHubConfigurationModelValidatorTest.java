@@ -10,12 +10,16 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationResult.SecHubConfigurationModelValidationErrorData;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidator.SecHubConfigurationModelValidationException;
 
 class SecHubConfigurationModelValidatorTest {
 
+    private static final String VALID_NAME_WITH_MAX_LENGTH = "---------1---------2---------3---------4---------5---------6---------7---------8";
+    private static final String VALID_NAME_BUT_ONE_CHAR_TOO_LONG = VALID_NAME_WITH_MAX_LENGTH + "-";
     private SecHubConfigurationModelValidator validatorToTest;
 
     @BeforeEach
@@ -182,6 +186,45 @@ class SecHubConfigurationModelValidatorTest {
         assertHasError(result, SecHubConfigurationModelValidationError.API_VERSION_NOT_SUPPORTED);
         assertEquals(1, result.getErrors().size());
 
+    }
+
+    @ParameterizedTest
+    @CsvSource({ "n", "_", "-", "1", "name1", "referenced-name_", "the_name_with_slashes", VALID_NAME_WITH_MAX_LENGTH })
+    void model_having_a_data_configuration_with_valid_name_has_no_error(String name) {
+        /* prepare */
+        /* prepare */
+        SecHubConfigurationModel model = createDefaultValidModel();
+        SecHubDataConfiguration data = new SecHubDataConfiguration();
+
+        SecHubSourceDataConfiguration config1 = new SecHubSourceDataConfiguration();
+        config1.setUniqueName(name);
+        data.getSources().add(config1);
+        model.setData(data);
+
+        /* execute + test */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertFalse(result.hasErrors());
+    }
+
+    @ParameterizedTest
+    @CsvSource({ "$", "n$me-", "a@e_", "t§st-1", "config-object-name$1", VALID_NAME_BUT_ONE_CHAR_TOO_LONG })
+    void model_having_a_data_configuration_with_invalid_name_has_error(String name) {
+        /* prepare */
+        SecHubConfigurationModel model = createDefaultValidModel();
+        SecHubDataConfiguration data = new SecHubDataConfiguration();
+
+        SecHubSourceDataConfiguration config1 = new SecHubSourceDataConfiguration();
+        config1.setUniqueName(name);
+        data.getSources().add(config1);
+        model.setData(data);
+
+        /* execute + test */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertTrue(result.hasErrors());
     }
 
     @Test

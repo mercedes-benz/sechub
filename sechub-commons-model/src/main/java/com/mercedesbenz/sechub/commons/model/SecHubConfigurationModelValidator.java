@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
+import static com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils.*;
 import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError.*;
 
 import java.net.URI;
@@ -161,6 +162,12 @@ public class SecHubConfigurationModelValidator {
                 result.addError(DATA_CONFIG_OBJECT_NAME_IS_NULL);
                 continue;
             }
+            if (!hasOnlyAlphabeticDigitOrAdditionalAllowedCharacters(uniqueName, '-', '_')) {
+                result.addError(DATA_CONFIG_OBJECT_NAME_CONTAINS_ILLEGAL_CHARACTERS,
+                        "Name '" + uniqueName + "' may only contain 'a-z','0-9', '-' or '_' characters");
+                continue;
+            }
+
             if (uniqueName.length() < MIN_NAME_LENGTH) {
                 result.addError(DATA_CONFIG_OBJECT_NAME_LENGTH_TOO_SHORT, "Name '" + uniqueName + "' lengh < " + MIN_NAME_LENGTH + " characters");
             }

@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sharedkernel.validation;
 
+import static com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils.*;
+
 public abstract class AbstractSimpleStringValidation extends AbstractValidation<String> {
 
     protected void validateNoUpperCaseCharacters(ValidationContext<String> context) {
@@ -37,32 +39,24 @@ public abstract class AbstractSimpleStringValidation extends AbstractValidation<
 
     protected void validateOnlyAlphabeticDigitOrAllowedParts(ValidationContext<String> context, char... alsoAllowed) {
         String string = context.objectToValidate;
-        if (string == null) {
+        if (hasOnlyAlphabeticDigitOrAdditionalAllowedCharacters(string, alsoAllowed)) {
             return;
         }
-        if (string.isEmpty()) {
-            return;
-        }
-        for (char c : string.toCharArray()) {
-            if (Character.isDigit(c)) {
-                continue;
-            }
-            if (Character.isAlphabetic(c)) {
-                continue;
-            }
-            boolean ok = false;
-            for (char allowed : alsoAllowed) {
-                if (c == allowed) {
-                    ok = true;
-                    continue;
+        StringBuilder sb = new StringBuilder();
+        sb.append("The string '");
+        sb.append(string);
+        sb.append("' contains at least one character being neither a digit, alphebtical");
+        if (alsoAllowed.length > 0) {
+            sb.append("or ");
+            for (int i = 0; i < alsoAllowed.length; i++) {
+                if (i != 0) {
+                    sb.append(',');
                 }
+                sb.append(alsoAllowed[i]);
             }
-            if (ok) {
-                continue;
-            }
-            addErrorMessage(context, "Character must be one of alloweds, but found '" + c + "'.");
-            return;
+            sb.append("]");
         }
+        addErrorMessage(context, sb.toString());
     }
 
     protected void validateNotContainingCharackters(ValidationContext<String> context, char... chars) {

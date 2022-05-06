@@ -27,6 +27,8 @@ public enum SecHubConfigurationModelValidationError {
 
     REFERENCED_DATA_CONFIG_OBJECT_NAME_NOT_EXISTING("The referenced config object name was not found in object!"),
 
+    DATA_CONFIG_OBJECT_NAME_CONTAINS_ILLEGAL_CHARACTERS("Data configuration object contains illegal characters!"),
+
     ;
 
     private String defaultMessage;
