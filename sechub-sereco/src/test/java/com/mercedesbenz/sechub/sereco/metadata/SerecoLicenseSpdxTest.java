@@ -8,11 +8,17 @@ import org.junit.jupiter.api.Test;
 import com.mercedesbenz.sechub.sereco.test.SerecoTestFileSupport;
 
 public class SerecoLicenseSpdxTest {
-    private static String spdx_2_2_scancode;
+    private static String spdx_2_2_scancode_json;
+    private static String spdx_2_2_scancode_tag_value;
+    private static String spdx_2_2_scancode_rdf;
+    private static String spdx_2_2_scancode_yaml;
 
     @BeforeAll
     public static void before() {
-        spdx_2_2_scancode = loadSpdxTestFile("spdx_scancode_30.1.0.spdx.json");
+        spdx_2_2_scancode_json = loadSpdxTestFile("spdx_scancode_30.1.0.spdx.json");
+        spdx_2_2_scancode_tag_value = loadSpdxTestFile("spdx_scancode_30.1.0.spdx");
+        spdx_2_2_scancode_rdf = loadSpdxTestFile("spdx_scancode_30.1.0.spdx.rdf");
+        spdx_2_2_scancode_yaml = loadSpdxTestFile("spdx_scancode_30.1.0.spdx.yaml");
     }
 
     @Test
@@ -34,50 +40,42 @@ public class SerecoLicenseSpdxTest {
     @Test
     void of_spdx_json_can_be_created() {
         /* execute */
-        SerecoLicenseSpdx spdx = SerecoLicenseSpdx.of(spdx_2_2_scancode);
+        SerecoLicenseSpdx spdx = SerecoLicenseSpdx.of(spdx_2_2_scancode_json);
 
         /* test */
         assertTrue(spdx.hasJson());
-        assertEquals(spdx_2_2_scancode, spdx.getJson());
+        assertEquals(spdx_2_2_scancode_json, spdx.getJson());
     }
 
     @Test
     void of_spdx_tag_value_can_be_created() {
-        /* prepare */
-        String tagValue = "SPDXID: SPDXRef-DOCUMENT";
 
         /* execute */
-        SerecoLicenseSpdx spdx = SerecoLicenseSpdx.of(tagValue);
+        SerecoLicenseSpdx spdx = SerecoLicenseSpdx.of(spdx_2_2_scancode_tag_value);
 
         /* test */
         assertTrue(spdx.hasTagValue());
-        assertEquals(tagValue, spdx.getTagValue());
+        assertEquals(spdx_2_2_scancode_tag_value, spdx.getTagValue());
     }
 
     @Test
     void of_spdx_yaml_can_be_created() {
-        /* prepare */
-        String yaml = "SPDXID: \"SPDXRef-DOCUMENT\"";
-
         /* execute */
-        SerecoLicenseSpdx spdx = SerecoLicenseSpdx.of(yaml);
+        SerecoLicenseSpdx spdx = SerecoLicenseSpdx.of(spdx_2_2_scancode_yaml);
 
         /* test */
         assertTrue(spdx.hasYaml());
-        assertEquals(yaml, spdx.getYaml());
+        assertEquals(spdx_2_2_scancode_yaml, spdx.getYaml());
     }
 
     @Test
     void of_spdx_rdf_can_be_created() {
-        /* prepare */
-        String rdf = "\"<rdf:RDF\"";
-
         /* execute */
-        SerecoLicenseSpdx spdx = SerecoLicenseSpdx.of(rdf);
+        SerecoLicenseSpdx spdx = SerecoLicenseSpdx.of(spdx_2_2_scancode_rdf);
 
         /* test */
         assertTrue(spdx.hasRdf());
-        assertEquals(rdf, spdx.getRdf());
+        assertEquals(spdx_2_2_scancode_rdf, spdx.getRdf());
     }
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
