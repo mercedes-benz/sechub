@@ -27,7 +27,7 @@ public class ImporterRegistry {
         for (ProductResultImporter importer : importers) {
             importerNames.add(importer.getName());
         }
-        LOG.info("Registered SERECO importers are:{}", importerNames);
+        LOG.info("Registered SERECO importers are: {}", importerNames);
     }
 
     public List<ProductResultImporter> getImporters() {

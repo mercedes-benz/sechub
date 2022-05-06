@@ -27,6 +27,8 @@ public enum SecHubConfigurationModelValidationError {
 
     REFERENCED_DATA_CONFIG_OBJECT_NAME_NOT_EXISTING("The referenced config object name was not found in object!"),
 
+    NO_DATA_CONFIG_SPECIFIED_FOR_SCAN("No data config was specified for the scan!");
+
     ;
 
     private String defaultMessage;
