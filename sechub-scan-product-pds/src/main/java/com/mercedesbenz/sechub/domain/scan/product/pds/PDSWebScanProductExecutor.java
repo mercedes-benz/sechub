@@ -113,6 +113,7 @@ public class PDSWebScanProductExecutor extends AbstractProductExecutor {
                         setJobParameters(jobParameters).
 
                         setTargetURI(targetURI).
+                        setTargetType(info.getTargetType().name()).
 
                         build();
             /* @formatter:on */

@@ -24,13 +24,16 @@ const DefaultTempDir = "."
 const DefaultWaitTime = 60
 
 // MinimalWaitTimeSeconds - We don't allow intervals shorter than this to protect the SecHub server
-const MinimalWaitTimeSeconds = 3
+const MinimalWaitTimeSeconds = 1
 
-// InitialWaitIntervallSeconds WaitIntervallIncreaseFactor - defines client's polling behaviour:
+// initialWaitIntervalSeconds WaitIntervalIncreaseFactor - defines client's polling behaviour:
 // 2s - 3s - 4.5s - 7s - 10s - 15s - 23s - 34s - 51s - 60s - 60s - 60s ...
-const InitialWaitIntervallSeconds = 2
-const InitialWaitIntervallNanoseconds = int64(InitialWaitIntervallSeconds * time.Second)
-const WaitIntervallIncreaseFactor = 1.5
+const DefaultinitialWaitIntervalSeconds = 2
+const InitialWaitIntervalNanoseconds = int64(DefaultinitialWaitIntervalSeconds * time.Second)
+const WaitIntervalIncreaseFactor = 1.5
+
+// MinimalInitialWaitIntervalSeconds - small value to enable quick integration tests. In real life: please stick with DefaultinitialWaitIntervalSeconds.
+const MinimalInitialWaitIntervalSeconds = 0.1
 
 // DefaultTimeoutInSeconds - Timeout for network communication in seconds
 const DefaultTimeoutInSeconds = 120
@@ -152,6 +155,9 @@ const SechubDebugHTTPEnvVar = "SECHUB_DEBUG_HTTP"
 // SechubIgnoreDefaultExcludesEnvVar - environment variable to make it possible to switch off default excludes (DefaultZipExcludeDirPatterns)
 const SechubIgnoreDefaultExcludesEnvVar = "SECHUB_IGNORE_DEFAULT_EXCLUDES"
 
+// SechubIgnoreDefaultExcludesEnvVar - environment variable to make it possible to switch off default excludes (DefaultZipExcludeDirPatterns)
+const SechubIninitialWaitIntervalSecondsEnvVar = "SECHUB_INITIAL_WAIT_INTERVAL"
+
 // SechubKeepTempfilesEnvVar - environment variable to keep temporary files
 const SechubKeepTempfilesEnvVar = "SECHUB_KEEP_TEMPFILES"
 
@@ -196,6 +202,9 @@ const JobStatusOkay = "OK"
 
 // MaximumBytesOfSecHubConfig maximum byte length allowed for a sechub config file
 const MaximumBytesOfSecHubConfig = 20000
+
+// MaximumNumberOfCMDLineArguments - maximum number of commandline args. os.Args will be capped if exceeded.
+const MaximumNumberOfCMDLineArguments = 50
 
 /* ---------------------------------- */
 /* -------- Resilience -------------- */

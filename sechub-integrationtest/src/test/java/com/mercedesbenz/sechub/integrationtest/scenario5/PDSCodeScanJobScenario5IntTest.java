@@ -50,7 +50,7 @@ public class PDSCodeScanJobScenario5IntTest {
 
         /* execute */
         as(USER_1).
-            upload(project, jobUUID, PATH_LOW).
+            uploadSourcecode(project, jobUUID, PATH_LOW).
             approveJob(project, jobUUID);
 
         waitForJobDone(project, jobUUID,10,true);
@@ -75,7 +75,7 @@ public class PDSCodeScanJobScenario5IntTest {
 
         /* execute */
         as(USER_1).
-            upload(project, jobUUID, PATH_CRITICAL).
+            uploadSourcecode(project, jobUUID, PATH_CRITICAL).
             approveJob(project, jobUUID);
 
         waitForJobDone(project, jobUUID,30,true);

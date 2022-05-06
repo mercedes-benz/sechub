@@ -37,7 +37,7 @@ spec:
                     - name: PDS_CONFIG_EXECUTE_QUEUE_MAX
                       value: "{{ .Values.pds.config.execute.queueMax }}"
                     - name: PDS_CONFIG_EXECUTE_WORKER_THREAD_COUNT
-                      value: "{{ .Values.pds.config.execute.workerThreatCount }}"
+                      value: "{{ .Values.pds.config.execute.workerThreadCount }}"
                     - name: ZAP_PROXY_HOST
                       value: "{{ .Values.zap.proxy.host }}"
                     - name: ZAP_PROXY_PORT
@@ -45,6 +45,14 @@ spec:
                     {{- if .Values.zap.proxy.forPdsTargetType }}
                     - name: ZAP_PROXY_FOR_PDS_TARGET_TYPE
                       value: "{{ .Values.zap.proxy.forPdsTargetType }}"
+                    {{- end }}
+                    {{- if .Values.pds.logging.type.enabled }}
+                    - name: LOGGING_TYPE
+                      value: {{ .Values.pds.logging.type.appenderName }}
+                    {{- end }}
+                    {{- if .Values.pds.debug.keepReportsInWorkspace }}
+                    - name: SECHUB_PDS_WORKSPACE_AUTOCLEAN_DISABLED
+                      value: "true"
                     {{- end }}
                     {{- if .Values.pds.javaDebug.enabled }}
                     - name: JAVA_ENABLE_DEBUG

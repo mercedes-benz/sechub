@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.core.util;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 

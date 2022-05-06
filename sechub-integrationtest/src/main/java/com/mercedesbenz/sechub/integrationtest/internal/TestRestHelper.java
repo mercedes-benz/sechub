@@ -266,6 +266,24 @@ public class TestRestHelper {
         return response.getBody();
     }
 
+    public String uploadBinaries(String uploadBinariesUrl, File file, String checkSum) {
+        // see https://www.baeldung.com/spring-rest-template-multipart-upload
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        FileSystemResource resource = new FileSystemResource(file);
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("file", resource);
+        body.add("checkSum", checkSum);
+
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
+        markLastURL(uploadBinariesUrl);
+        ResponseEntity<String> response = template.postForEntity(uploadBinariesUrl, requestEntity, String.class);
+        return response.getBody();
+    }
+
     private class ErrorHandler extends DefaultResponseErrorHandler {
 
         @Override

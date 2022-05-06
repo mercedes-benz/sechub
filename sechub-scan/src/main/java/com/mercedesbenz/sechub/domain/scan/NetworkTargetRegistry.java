@@ -141,7 +141,7 @@ public class NetworkTargetRegistry {
         }
 
         /**
-         * @return the {@link NetworkTargetType} for this scan
+         * @return the {@link NetworkTargetType} for this scan, never <code>null</code>
          */
         public NetworkTargetType getTargetType() {
             return type;
