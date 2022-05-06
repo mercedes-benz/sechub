@@ -309,21 +309,22 @@ Here some links to examples which are using <<sechub-config-data-section,data>> 
 TIP: If you want to upload binaries, you MUST use the data section, there is no other way to do this.
 
 ===== General JSON syntax 
-[NOTE]
-====
-The next figure shows a full blown example with all possible attributes defined.
-It's is just presents all possibilities. And of course the arrays can contain multiple settings .
-====
+The next figure shows an example which presents all possibilities _(for simplicity the source and 
+binary configuration arrays do contain only just one entry)_.
 
 [source, json, title="General JSON syntax"]
 ----
-include::sechub_config_data_section_simple_general_example.json[]
+include::sechub_config_data_section_general_example1.json[]
 ----
 
 <1> `data`: The main element for data configuration.
 <2> `sources`: Inside this array multiple source data definitions can be listed
 <3> `name`:  Is a unique name for the data configuration element. The name must
-    be unique inside complete sechub configuration file! 
+    be unique inside complete sechub configuration file! Allowed characters are
+     - `a-z`
+     - `0-9`
+     - `-`
+     - `_`
 <4> `fileSystem`: Describes fileystem parts which are available inside this data configuration element
 <5> `files`: An array containing file pathes to use for uploading dedicated files
 <6> `folders`: An array containing folder pathes to use for uploading dedicated folders

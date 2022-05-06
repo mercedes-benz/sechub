@@ -1,0 +1,143 @@
+// SPDX-License-Identifier: MIT
+The `PDS` does automatically fetch uploaded files from shared <<pds-storage-and-sharing,storage>> 
+temporary into its local filesystem. After the scan has been done, the temporary local files
+will be automatically deleted. 
+
+====== Source code fetching
+Source code is always contained in a file called `sourcecode.zip`.
+When a `PDS` starts a new job, it will fetch the complete ZIP file from <<pds-storage-and-sharing,storage>>
+to it's local storage at:`${PDSJobWorkspaceLocation}/upload/sourcecode.zip`
+
+====== Binaries fetching
+Source code is always contained in a file called `binaries.tar`.
+When a `PDS` starts a new job and the scan does references a binary data section, it will fetch 
+the complete TAR file from <<pds-storage-and-sharing,storage>> to it's local storage at
+ 
+`${WorkspaceLocation}/upload/binaries.tar`. 
+
+// FIXME 2022-05-06, de-jcup: remove this after binaries are fetched by PDS!
+[CAUTION]
+====
+The binary fetching  is currently not yet implemented!
+====
+
+====== Data structure inside TAR and ZIP files
+include::concept_common_data_structure_tar_and_zip_files.adoc[]
+
+====== Automated Extraction of relevant parts
+Only files and folders which are available for the configured scan will be automatically extracted! +
+The artificial path element `\__data__` and the reference name will not be contained in extracted 
+folders.
+
+[TIP]
+====
+You can read the {sechub} technical documentation for more details about the data configuration.
+====
+
+[[pds-automated-extraction-sourcecode]]
+*Automated extraction of source code* +
+
+Let's assume we have a `sourcezip.zip` with following structure:
+[source,shell, title="ZIP file example content"]
+----
+/__data__/
+    license-sources/ 
+            somewhere/
+                     file1a.txt 
+                     subfolder1/
+                        file1b.txt
+            file2.txt
+    other-sources/ 
+            file3.txt 
+   
+----
+
+and a {sechub} configuration file like this:
+
+[source,json]
+----
+{
+    // .. assume data section and other parts are configured correctly .. 
+    
+    "licenseScan": { 
+        "use" : ["license-source"]
+    },
+    "codeScan": { 
+        "use" : ["other-source"]
+    }
+}
+----
+
+In the example the {sechub} configuration has a license scan configured which references 
+`license-sources` data configuration and a code scan which references `other-sources`.
+The `PDS` for license scanning will only extract `license-sources`:
+
+[source,shell, title="Output of automated ZIP file extraction by PDS"]
+----
+${PDSJobWorkspaceLocation}/upload/unzipped/sourcecode
+                                       somewhere/
+                                            file1a.txt
+                                            subfolder1
+                                               file1b.txt
+                                       file2.txt
+----
+
+[NOTE]
+====
+`file3.txt` was not extracted, because it is not available for the license scan.
+====
+
+
+
+[[pds-automated-extraction-binaries]]
+*Automated extraction of binaries* +
+
+Let's assume we have a `binaries.tar` with following structure:
+[source,shell, title="TAR file example content"]
+----
+/__data__/
+    license-binaries/ 
+            somewhere/
+                     file1a.bin 
+                     subfolder1/
+                        file1b.bin
+            file2.bin
+    other-binaries/ 
+            file3.bin 
+   
+----
+
+and a {sechub} configuration file like this:
+
+[source,json]
+----
+{
+    // .. assume data section and other parts are configured correctly .. 
+    
+    "licenseScan": { 
+        "use" : ["license-binaries"]
+    },
+    "codeScan": { 
+        "use" : ["other-binaries"]
+    }
+}
+----
+
+In the example the {sechub} configuration has a license scan configured which references 
+`license-binaries` data configuration and a code scan which references `other-binaries`. 
+The `PDS` for license scanning will only extract `license-binaries`:
+
+[source,shell, title="Output of automated ZIP file extraction by PDS"]
+----
+${PDSJobWorkspaceLocation}/upload/extracted/binaries
+                                       somewhere/
+                                            file1a.bin
+                                            subfolder1
+                                               file1b.bin
+                                       file2.bin
+----
+// FIXME 2022-05-06, de-jcup: remove this after binaries are extracted!
+[CAUTION]
+====
+The described binary extraction is currently not yet implemented!
+====
