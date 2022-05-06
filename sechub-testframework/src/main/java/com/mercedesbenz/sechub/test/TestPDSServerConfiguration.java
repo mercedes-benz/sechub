@@ -4,7 +4,7 @@ package com.mercedesbenz.sechub.test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestPDSServerConfgiuration {
+public class TestPDSServerConfiguration {
 
     public String apiVersion;
     public String serverId;

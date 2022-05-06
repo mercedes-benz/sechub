@@ -45,6 +45,49 @@ class SecHubConfigurationModelValidatorTest {
     }
 
     @Test
+    void license_scan__empty_config_results_in_error() throws Exception {
+        /* prepare */
+        SecHubLicenseScanConfiguration licenseScan = new SecHubLicenseScanConfiguration();
+
+        SecHubConfigurationModel model = new SecHubConfigurationModel();
+        model.setApiVersion("1.0");
+        model.setLicenseScan(licenseScan);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertHasError(result, SecHubConfigurationModelValidationError.NO_DATA_CONFIG_SPECIFIED_FOR_SCAN);
+        assertEquals(1, result.getErrors().size());
+    }
+
+    @Test
+    void license_scan__config_with_data() throws Exception {
+        /* prepare */
+        String dataName = "data-reference-1";
+
+        SecHubLicenseScanConfiguration licenseScan = new SecHubLicenseScanConfiguration();
+        licenseScan.getNamesOfUsedDataConfigurationObjects().add(dataName);
+
+        SecHubSourceDataConfiguration dataSource = new SecHubSourceDataConfiguration();
+        dataSource.setUniqueName(dataName);
+
+        SecHubDataConfiguration dataConfiguration = new SecHubDataConfiguration();
+        dataConfiguration.getSources().add(dataSource);
+
+        SecHubConfigurationModel model = new SecHubConfigurationModel();
+        model.setApiVersion("1.0");
+        model.setLicenseScan(licenseScan);
+        model.setData(dataConfiguration);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertFalse(result.hasErrors());
+    }
+
+    @Test
     void webscanconfig_with_https_uri_set_has_no_error() throws Exception {
         /* prepare */
         SecHubWebScanConfiguration webScan = mock(SecHubWebScanConfiguration.class);

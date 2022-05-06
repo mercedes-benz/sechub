@@ -18,10 +18,4 @@
 
 echo "PDS SARIF integrationt test script starting..."
 
-TARGET="$PDS_JOB_WORKSPACE_LOCATION/output/result.txt"
-cp "$PDS_JOB_WORKSPACE_LOCATION/upload/unzipped/sourcecode/returned_sarif_result.json" $TARGET
-
-# Just as an information: The former 2 lines do exactly what this one liner does:
-# cp "$PDS_JOB_WORKSPACE_LOCATION/upload/unzipped/sourcecode/returned_sarif_result.json" ${PDS_JOB_RESULT_FILE}
-
-
+cp "$PDS_JOB_WORKSPACE_LOCATION/upload/unzipped/sourcecode/returned_sarif_result.json" $PDS_JOB_RESULT_FILE

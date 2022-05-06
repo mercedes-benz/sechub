@@ -51,7 +51,8 @@ public class SerecoReportProductExecutor implements ProductExecutor {
 
             ProductIdentifier.PDS_CODESCAN,
             ProductIdentifier.PDS_WEBSCAN,
-            ProductIdentifier.PDS_INFRASCAN};
+            ProductIdentifier.PDS_INFRASCAN,
+            ProductIdentifier.PDS_LICENSESCAN};
     /* @formatter:on */
 
     @Override
