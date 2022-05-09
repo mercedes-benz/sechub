@@ -15,7 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 
-import com.mercedesbenz.sechub.commons.archive.ZipSupport;
+import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
 import com.mercedesbenz.sechub.pds.PDSNotAcceptableException;
 import com.mercedesbenz.sechub.pds.PDSNotFoundException;
 import com.mercedesbenz.sechub.pds.storage.PDSMultiStorageService;
@@ -43,7 +43,7 @@ public class PDSFileUploadJobServiceTest {
     private PDSWorkspaceService workspaceService;
     private PDSMultiStorageService storageService;
     private JobStorage storage;
-    private ZipSupport zipSupport;
+    private ArchiveSupport archiveSupport;
     private PDSArchiveSupportProvider archiveSupportProvider;
 
     @BeforeEach
@@ -55,8 +55,8 @@ public class PDSFileUploadJobServiceTest {
         storageService = mock(PDSMultiStorageService.class);
 
         archiveSupportProvider = mock(PDSArchiveSupportProvider.class);
-        zipSupport = mock(ZipSupport.class);
-        when(archiveSupportProvider.getZipSupport()).thenReturn(zipSupport);
+        archiveSupport = mock(ArchiveSupport.class);
+        when(archiveSupportProvider.getArchiveSupport()).thenReturn(archiveSupport);
 
         storage = mock(JobStorage.class);
         when(storageService.getJobStorage(jobUUID)).thenReturn(storage);
@@ -88,7 +88,7 @@ public class PDSFileUploadJobServiceTest {
         ExtendedMockMultipartFile multiPart = new ExtendedMockMultipartFile("file", result.getBytes());
         String allowedNameWithMaxLength = "123456789-123456789_123456789.123456.zip";
 
-        when(zipSupport.isZipFile(any())).thenReturn(true);
+        when(archiveSupport.isZipFile(any())).thenReturn(true);
 
         /* execute */
         serviceToTest.upload(jobUUID, allowedNameWithMaxLength, multiPart, ACCEPTED_CHECKSUM);
@@ -215,7 +215,7 @@ public class PDSFileUploadJobServiceTest {
         MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
         String allowedNameWithMaxLength = "123456789-123456789_123456789.123456.zip";
 
-        when(zipSupport.isZipFile(any())).thenReturn(true);
+        when(archiveSupport.isZipFile(any())).thenReturn(true);
 
         PDSNotAcceptableException exception = assertThrows(PDSNotAcceptableException.class, () -> {
 
@@ -237,7 +237,7 @@ public class PDSFileUploadJobServiceTest {
         MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
         String allowedNameWithMaxLength = "123456789-123456789_123456789.123456.txt";
 
-        when(zipSupport.isZipFile(any())).thenReturn(false); // would always fail but may not matter, because not a ZIP file...
+        when(archiveSupport.isZipFile(any())).thenReturn(false); // would always fail but may not matter, because not a ZIP file...
 
         PDSNotAcceptableException exception = assertThrows(PDSNotAcceptableException.class, () -> {
 

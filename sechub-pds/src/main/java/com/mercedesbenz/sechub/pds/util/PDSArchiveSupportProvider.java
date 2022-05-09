@@ -3,13 +3,13 @@ package com.mercedesbenz.sechub.pds.util;
 
 import org.springframework.stereotype.Component;
 
-import com.mercedesbenz.sechub.commons.archive.ZipSupport;
+import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
 
 @Component
 public class PDSArchiveSupportProvider {
-    ZipSupport zipSupport = new ZipSupport();
+    ArchiveSupport zipSupport = new ArchiveSupport();
 
-    public ZipSupport getZipSupport() {
+    public ArchiveSupport getArchiveSupport() {
         return zipSupport;
     }
 

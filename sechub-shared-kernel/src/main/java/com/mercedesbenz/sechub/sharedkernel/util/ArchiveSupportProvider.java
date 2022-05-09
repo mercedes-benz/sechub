@@ -3,14 +3,14 @@ package com.mercedesbenz.sechub.sharedkernel.util;
 
 import org.springframework.stereotype.Component;
 
-import com.mercedesbenz.sechub.commons.archive.ZipSupport;
+import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
 
 @Component
 public class ArchiveSupportProvider {
 
-    ZipSupport zipSupport = new ZipSupport();
+    ArchiveSupport zipSupport = new ArchiveSupport();
 
-    public ZipSupport getZipSupport() {
+    public ArchiveSupport getArchiveSupport() {
         return zipSupport;
     }
 

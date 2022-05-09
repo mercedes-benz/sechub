@@ -138,7 +138,7 @@ public class SchedulerSourcecodeUploadService {
     }
 
     private void assertValidZipFile(InputStream inputStream) {
-        if (!archiveSupportProvider.getZipSupport().isZipFileStream(inputStream)) {
+        if (!archiveSupportProvider.getArchiveSupport().isZipFileStream(inputStream)) {
             LOG.error("Uploaded file is NOT a valid ZIP file!");
             throw new NotAcceptableException("Sourcecode is not wrapped inside a valid zip file");
         }

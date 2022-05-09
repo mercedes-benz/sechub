@@ -132,7 +132,7 @@ public class PDSFileUploadJobService {
     }
 
     private void assertValidZipFile(Path path) {
-        if (!archiveSupportProvider.getZipSupport().isZipFile(path)) {
+        if (!archiveSupportProvider.getArchiveSupport().isZipFile(path)) {
             Path fileName = path.getFileName();
 
             LOG.error("uploaded file {} is NOT a valid ZIP file!", fileName);

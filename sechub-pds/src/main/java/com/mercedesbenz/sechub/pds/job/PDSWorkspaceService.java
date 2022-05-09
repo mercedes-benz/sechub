@@ -19,14 +19,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.UnzipResult;
 import com.mercedesbenz.sechub.pds.PDSMustBeDocumented;
 import com.mercedesbenz.sechub.pds.PDSNotFoundException;
 import com.mercedesbenz.sechub.pds.config.PDSProductSetup;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
 import com.mercedesbenz.sechub.pds.storage.PDSMultiStorageService;
 import com.mercedesbenz.sechub.pds.storage.PDSStorageInfoCollector;
-import com.mercedesbenz.sechub.pds.util.PDSFileUnzipSupport;
-import com.mercedesbenz.sechub.pds.util.PDSFileUnzipSupport.UnzipResult;
+import com.mercedesbenz.sechub.pds.util.PDSArchiveSupportProvider;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 
 @Service
@@ -53,7 +53,7 @@ public class PDSWorkspaceService {
     PDSServerConfigurationService serverConfigService;
 
     @Autowired
-    PDSFileUnzipSupport fileUnzipSupport;
+    PDSArchiveSupportProvider archiveSupportProvider;
 
     @Autowired
     PDSStorageInfoCollector storageInfoCollector;
@@ -183,7 +183,7 @@ public class PDSWorkspaceService {
         for (File zipFile : zipFiles) {
 
             File destDir = new File(unzipFolder, FilenameUtils.getBaseName(zipFile.getName()));
-            UnzipResult unzipResult = fileUnzipSupport.unzipArchive(zipFile, destDir);
+            UnzipResult unzipResult = archiveSupportProvider.getArchiveSupport().unzipArchive(zipFile, destDir);
 
             LOG.info("Unzipped {} files to {}", unzipResult.getExtractedFilesCount(), unzipResult.getTargetLocation());
 

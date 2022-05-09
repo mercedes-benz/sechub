@@ -11,7 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.mercedesbenz.sechub.commons.archive.ZipSupport;
+import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
@@ -33,7 +33,7 @@ public class SchedulerSourcecodeUploadServiceTest {
     private MultipartFile file;
 
     private JobStorage storage;
-    private ZipSupport mockedZipSupport;
+    private ArchiveSupport mockedArchiveSupport;
     private ArchiveSupportProvider archiveSupportProvider;
     private SchedulerSourcecodeUploadConfiguration configuration;
 
@@ -52,8 +52,8 @@ public class SchedulerSourcecodeUploadServiceTest {
 
         file = mock(MultipartFile.class);
         archiveSupportProvider = mock(ArchiveSupportProvider.class);
-        mockedZipSupport = mock(ZipSupport.class);
-        when(archiveSupportProvider.getZipSupport()).thenReturn(mockedZipSupport);
+        mockedArchiveSupport = mock(ArchiveSupport.class);
+        when(archiveSupportProvider.getArchiveSupport()).thenReturn(mockedArchiveSupport);
 
         configuration = mock(SchedulerSourcecodeUploadConfiguration.class);
 
@@ -75,7 +75,7 @@ public class SchedulerSourcecodeUploadServiceTest {
     void when_checksum_correct_and_is_zip__correct_no_failure() {
         /* prepare */
         when(mockedChecksumService.hasCorrectChecksum(eq("mychecksum"), any())).thenReturn(true);
-        when(mockedZipSupport.isZipFileStream(any())).thenReturn(true);
+        when(mockedArchiveSupport.isZipFileStream(any())).thenReturn(true);
 
         when(configuration.isChecksumValidationEnabled()).thenReturn(true);
         when(configuration.isZipValidationEnabled()).thenReturn(true);
@@ -88,7 +88,7 @@ public class SchedulerSourcecodeUploadServiceTest {
     void when_checksum_is_NOT_correct_but_valid_zipfile_throws_404() {
         /* prepare */
         when(mockedChecksumService.hasCorrectChecksum(eq("mychecksum"), any())).thenReturn(false);
-        when(mockedZipSupport.isZipFileStream(any())).thenReturn(true);
+        when(mockedArchiveSupport.isZipFileStream(any())).thenReturn(true);
 
         when(configuration.isChecksumValidationEnabled()).thenReturn(true);
         when(configuration.isZipValidationEnabled()).thenReturn(false);
@@ -101,7 +101,7 @@ public class SchedulerSourcecodeUploadServiceTest {
     void when_checksum_is_NOT_correct_but_valid_zipfile_but_checksum_validation_is_disabled_no_failure() {
         /* prepare */
         when(mockedChecksumService.hasCorrectChecksum(eq("mychecksum"), any())).thenReturn(false);
-        when(mockedZipSupport.isZipFileStream(any())).thenReturn(true);
+        when(mockedArchiveSupport.isZipFileStream(any())).thenReturn(true);
 
         when(configuration.isChecksumValidationEnabled()).thenReturn(false);
         when(configuration.isZipValidationEnabled()).thenReturn(true);
@@ -114,7 +114,7 @@ public class SchedulerSourcecodeUploadServiceTest {
     void when_checksum_is_correct_but_NOT_valid_zipfile_but_zip_validation_is_disabled_no_failure() {
         /* prepare */
         when(mockedChecksumService.hasCorrectChecksum(eq("mychecksum"), any())).thenReturn(true);
-        when(mockedZipSupport.isZipFileStream(any())).thenReturn(false);
+        when(mockedArchiveSupport.isZipFileStream(any())).thenReturn(false);
 
         when(configuration.isChecksumValidationEnabled()).thenReturn(true);
         when(configuration.isZipValidationEnabled()).thenReturn(false);
@@ -127,7 +127,7 @@ public class SchedulerSourcecodeUploadServiceTest {
     void when_checksum_is_correct_but_not_valid_zipfile_throws_404() {
         /* prepare */
         when(mockedChecksumService.hasCorrectChecksum(eq("mychecksum"), any())).thenReturn(true);
-        when(mockedZipSupport.isZipFileStream(any())).thenReturn(false);
+        when(mockedArchiveSupport.isZipFileStream(any())).thenReturn(false);
 
         when(configuration.isChecksumValidationEnabled()).thenReturn(true);
         when(configuration.isZipValidationEnabled()).thenReturn(true);
