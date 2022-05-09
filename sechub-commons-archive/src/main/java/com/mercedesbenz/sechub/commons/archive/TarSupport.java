@@ -1,4 +1,4 @@
-package com.mercedesbenz.sechub.pds;
+package com.mercedesbenz.sechub.commons.archive;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,11 +15,11 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.pds.ArchivePathInspector.ArchivePathInspectionResult;
+import com.mercedesbenz.sechub.commons.archive.ArchivePathInspector.ArchivePathInspectionResult;
 
-public class PDSTarSupport {
+public class TarSupport {
     private static final NoInspectorFallbackInspectionResult NO_FILTER_RESULT = new NoInspectorFallbackInspectionResult();
-    private static final Logger LOG = LoggerFactory.getLogger(PDSTarSupport.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TarSupport.class);
 
     public void extractTar(InputStream inputStream, String identifier, File outputDir) throws IOException {
         extractTar(inputStream, identifier, outputDir, null);

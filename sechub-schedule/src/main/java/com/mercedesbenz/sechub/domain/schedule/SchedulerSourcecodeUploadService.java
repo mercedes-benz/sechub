@@ -26,8 +26,8 @@ import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUploadsSourceCode;
+import com.mercedesbenz.sechub.sharedkernel.util.ArchiveSupportProvider;
 import com.mercedesbenz.sechub.sharedkernel.util.ChecksumSHA256Service;
-import com.mercedesbenz.sechub.sharedkernel.util.ZipSupport;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
@@ -51,7 +51,7 @@ public class SchedulerSourcecodeUploadService {
     ScheduleAssertService assertService;
 
     @Autowired
-    ZipSupport zipSupport;
+    ArchiveSupportProvider archiveSupportProvider;
 
     @Autowired
     LogSanitizer logSanitizer;
@@ -138,7 +138,7 @@ public class SchedulerSourcecodeUploadService {
     }
 
     private void assertValidZipFile(InputStream inputStream) {
-        if (!zipSupport.isZipFile(inputStream)) {
+        if (!archiveSupportProvider.getZipSupport().isZipFileStream(inputStream)) {
             LOG.error("Uploaded file is NOT a valid ZIP file!");
             throw new NotAcceptableException("Sourcecode is not wrapped inside a valid zip file");
         }

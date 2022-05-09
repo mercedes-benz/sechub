@@ -15,12 +15,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 
+import com.mercedesbenz.sechub.commons.archive.ZipSupport;
 import com.mercedesbenz.sechub.pds.PDSNotAcceptableException;
 import com.mercedesbenz.sechub.pds.PDSNotFoundException;
 import com.mercedesbenz.sechub.pds.storage.PDSMultiStorageService;
 import com.mercedesbenz.sechub.pds.test.ExtendedMockMultipartFile;
+import com.mercedesbenz.sechub.pds.util.PDSArchiveSupportProvider;
 import com.mercedesbenz.sechub.pds.util.PDSFileChecksumSHA256Service;
-import com.mercedesbenz.sechub.pds.util.PDSZipSupport;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.test.TestUtil;
 
@@ -42,7 +43,8 @@ public class PDSFileUploadJobServiceTest {
     private PDSWorkspaceService workspaceService;
     private PDSMultiStorageService storageService;
     private JobStorage storage;
-    private PDSZipSupport zipSupport;
+    private ZipSupport zipSupport;
+    private PDSArchiveSupportProvider archiveSupportProvider;
 
     @BeforeEach
     void beforeEach() throws Exception {
@@ -51,7 +53,10 @@ public class PDSFileUploadJobServiceTest {
         checksumService = mock(PDSFileChecksumSHA256Service.class);
         workspaceService = mock(PDSWorkspaceService.class);
         storageService = mock(PDSMultiStorageService.class);
-        zipSupport = mock(PDSZipSupport.class);
+
+        archiveSupportProvider = mock(PDSArchiveSupportProvider.class);
+        zipSupport = mock(ZipSupport.class);
+        when(archiveSupportProvider.getZipSupport()).thenReturn(zipSupport);
 
         storage = mock(JobStorage.class);
         when(storageService.getJobStorage(jobUUID)).thenReturn(storage);
@@ -70,7 +75,7 @@ public class PDSFileUploadJobServiceTest {
         serviceToTest.workspaceService = workspaceService;
         serviceToTest.repository = repository;
         serviceToTest.storageService = storageService;
-        serviceToTest.zipSupport = zipSupport;
+        serviceToTest.archiveSupportProvider = archiveSupportProvider;
 
         when(checksumService.hasCorrectChecksum(eq(ACCEPTED_CHECKSUM), any())).thenReturn(true);
         when(checksumService.hasCorrectChecksum(eq(NOT_ACCEPTED_CHECKSUM), any())).thenReturn(false);

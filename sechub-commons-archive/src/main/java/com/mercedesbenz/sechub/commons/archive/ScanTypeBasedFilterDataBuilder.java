@@ -1,35 +1,29 @@
-package com.mercedesbenz.sechub.pds;
+package com.mercedesbenz.sechub.commons.archive;
 
 import java.util.Optional;
 import java.util.Set;
 
+import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationUsageByName;
 import com.mercedesbenz.sechub.commons.model.SecHubOpenAPIConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
-import com.mercedesbenz.sechub.pds.config.PDSScanType;
 
 public class ScanTypeBasedFilterDataBuilder {
-    /*
-     * FIXME Albert Tregnaghi, 2022-05-06: move the logic to sechub commons later.
-     * The model validator should check the logic before sending to PDS! Also PDS
-     * scan type could be removed, we have now access to sechub commons model
-     */
-
 
     private ReferenceNameAndRootFolderArchiveFilterData data = new ReferenceNameAndRootFolderArchiveFilterData();
-    
+
     private ScanTypeBasedFilterDataBuilder() {
-        
+
     }
-    
-    public static ReferenceNameAndRootFolderArchiveFilterData create(PDSScanType type, SecHubConfigurationModel model) {
+
+    public static ReferenceNameAndRootFolderArchiveFilterData create(ScanType type, SecHubConfigurationModel model) {
         ScanTypeBasedFilterDataBuilder builder = new ScanTypeBasedFilterDataBuilder();
         builder.createInternally(type, model);
         return builder.data;
     }
-    
-    private void createInternally(PDSScanType type, SecHubConfigurationModel model) {
+
+    private void createInternally(ScanType type, SecHubConfigurationModel model) {
 
         switch (type) {
         case CODE_SCAN:

@@ -23,8 +23,8 @@ import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
 import com.mercedesbenz.sechub.pds.storage.PDSMultiStorageService;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseUserUploadsJobData;
+import com.mercedesbenz.sechub.pds.util.PDSArchiveSupportProvider;
 import com.mercedesbenz.sechub.pds.util.PDSFileChecksumSHA256Service;
-import com.mercedesbenz.sechub.pds.util.PDSZipSupport;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 
 @Service
@@ -45,7 +45,7 @@ public class PDSFileUploadJobService {
     PDSMultiStorageService storageService;
 
     @Autowired
-    PDSZipSupport zipSupport;
+    PDSArchiveSupportProvider archiveSupportProvider;
 
     @Autowired
     PDSJobRepository repository;
@@ -132,7 +132,7 @@ public class PDSFileUploadJobService {
     }
 
     private void assertValidZipFile(Path path) {
-        if (!zipSupport.isZipFile(path)) {
+        if (!archiveSupportProvider.getZipSupport().isZipFile(path)) {
             Path fileName = path.getFileName();
 
             LOG.error("uploaded file {} is NOT a valid ZIP file!", fileName);

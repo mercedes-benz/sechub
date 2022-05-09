@@ -244,9 +244,9 @@ public class TestFileSupport {
         }
     }
 
-    public static List<File> loadFilesAsFileList(File directory) throws IOException{
+    public static List<File> loadFilesAsFileList(File directory) throws IOException {
         List<File> files = new LinkedList<>();
-         Files.walkFileTree(directory.toPath(), new SimplePathVisitor() {
+        Files.walkFileTree(directory.toPath(), new SimplePathVisitor() {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                 files.add(file.toFile());

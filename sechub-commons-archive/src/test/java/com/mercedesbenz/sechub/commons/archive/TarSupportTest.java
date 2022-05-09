@@ -1,4 +1,4 @@
-package com.mercedesbenz.sechub.pds;
+package com.mercedesbenz.sechub.commons.archive;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,14 +16,14 @@ import org.junit.jupiter.api.Test;
 import com.mercedesbenz.sechub.test.TestFileSupport;
 import com.mercedesbenz.sechub.test.TestUtil;
 
-class PDSTarSupportTest {
+class TarSupportTest {
 
     private static File testTar1File;
     private static File expectedOutputOfTestTar1Folder;
     private static File testTar2File;
     private static File expectedOutputOfTestTar2NoFilterFolder;
     private static File expectedOutputOfTestTar2WithFilterReferenceName1AndNoRootAllowedFolder;
-    private PDSTarSupport supportToTest;
+    private TarSupport supportToTest;
 
     @BeforeAll
     static void beforeAll() throws IOException {
@@ -44,7 +44,7 @@ class PDSTarSupportTest {
 
     @BeforeEach
     void beforeEach() {
-        supportToTest = new PDSTarSupport();
+        supportToTest = new TarSupport();
     }
 
     @Test

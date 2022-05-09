@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.config;
 
+import com.mercedesbenz.sechub.commons.model.ScanType;
+
 public class PDSProductSetup {
     private static final boolean DEFAULT_UNZIP_UPLOADS = true;
 
@@ -10,7 +12,7 @@ public class PDSProductSetup {
 
     private String id;
 
-    private PDSScanType scanType;
+    private ScanType scanType;
 
     private String path;
 
@@ -46,11 +48,11 @@ public class PDSProductSetup {
         this.id = id;
     }
 
-    public PDSScanType getScanType() {
+    public ScanType getScanType() {
         return scanType;
     }
 
-    public void setScanType(PDSScanType scanType) {
+    public void setScanType(ScanType scanType) {
         this.scanType = scanType;
     }
 
