@@ -14,6 +14,7 @@ projectType = [
                project(':sechub-commons-model'),
                project(':sechub-commons-model-testframework'),
                project(':sechub-commons-pds'),
+               project(':sechub-commons-archive'),
                project(':sechub-storage-core'),
                project(':sechub-wrapper-owasp-zap'),
                

@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 buildscript{
 
-	apply from: "${rootProject.projectDir}/libraries.gradle"
-	apply from: "${rootProject.projectDir}/projects.gradle"
+	apply from: "${rootProject.projectDir}/gradle/libraries.gradle"
+	apply from: "${rootProject.projectDir}/gradle/projects.gradle"
 
     def customMavenRepoURL4plugins = System.getenv('CUST_MVN_URL_PLUGINS')
     if (customMavenRepoURL4plugins!=null){
@@ -120,9 +120,9 @@ spotless {
 	}
 }
 
-apply from: "${rootProject.projectDir}/build-versioning.gradle"
-apply from: "${rootProject.projectDir}/build-java.gradle"
-apply from: "${rootProject.projectDir}/build-spring.gradle"
-apply from: "${rootProject.projectDir}/build-maven.gradle"
-apply from: "${rootProject.projectDir}/build-eclipse.gradle"
-apply from: "${rootProject.projectDir}/build-report.gradle"
+apply from: "${rootProject.projectDir}/gradle/build-versioning.gradle"
+apply from: "${rootProject.projectDir}/gradle/build-java.gradle"
+apply from: "${rootProject.projectDir}/gradle/build-spring.gradle"
+apply from: "${rootProject.projectDir}/gradle/build-maven.gradle"
+apply from: "${rootProject.projectDir}/gradle/build-eclipse.gradle"
+apply from: "${rootProject.projectDir}/gradle/build-report.gradle"
