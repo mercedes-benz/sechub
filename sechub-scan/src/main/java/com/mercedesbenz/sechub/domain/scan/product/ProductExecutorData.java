@@ -61,6 +61,11 @@ public class ProductExecutorData {
         return traceLogId;
     }
 
+    /**
+     * This method returns a set with informaiton about
+     *
+     * @return
+     */
     public Set<String> getCodeUploadFileSystemFolders() {
         return codeUploadFileSystemFolderPaths;
     }

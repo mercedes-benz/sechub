@@ -7,40 +7,46 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.UnzipResult;
 import com.mercedesbenz.sechub.test.TestFileSupport;
 import com.mercedesbenz.sechub.test.TestUtil;
 
 class ArchiveSupportTest {
 
     private static File testTar1File;
-    private static File expectedOutputOfTestTar1Folder;
+    private static File expectedTar1Folder;
     private static File testTar2File;
-    private static File expectedOutputOfTestTar2NoFilterFolder;
-    private static File expectedOutputOfTestTar2WithFilterReferenceName1AndNoRootAllowedFolder;
+    private static File expectedTar2WithFilterReferenceName1AndNoRootAllowedFolder;
+    private static File expectedTar2WithFilterReferenceName1AndReferenceName2Folder;
+    private static File expectedOutputOfTestTar2WithRootOnly;
     private ArchiveSupport supportToTest;
 
     @BeforeAll
     static void beforeAll() throws IOException {
-        testTar1File = new File("./src/test/resources/tar/test-tar1/test-tar1.tar");
-        testTar2File = new File("./src/test/resources/tar/test-tar2/test-tar2.tar");
+        testTar1File = ensure("./src/test/resources/tar/test-tar1/test-tar1.tar");
+        testTar2File = ensure("./src/test/resources/tar/test-tar2/test-tar2.tar");
 
-        expectedOutputOfTestTar1Folder = new File("./src/test/resources/tar/test-tar1/expected-extracted");
-        expectedOutputOfTestTar2NoFilterFolder = new File("./src/test/resources/tar/test-tar2/expected-extracted-without-filter");
-        expectedOutputOfTestTar2WithFilterReferenceName1AndNoRootAllowedFolder = new File(
-                "./src/test/resources/tar/test-tar2/expected-extracted-filter-reference-name-1-no-root-allowed");
+        expectedTar1Folder = ensure("./src/test/resources/tar/test-tar1/expected-extracted");
+        expectedTar2WithFilterReferenceName1AndNoRootAllowedFolder = ensureTar2("expected-extracted-reference-name-1-no-root-allowed");
+        expectedTar2WithFilterReferenceName1AndReferenceName2Folder = ensureTar2("expected-extracted-reference-name-1-and-2-no-root-allowed");
+        expectedOutputOfTestTar2WithRootOnly = ensureTar2("expected-extracted-with-root-allowed-only");
 
-        assertTrue(testTar1File.exists(), "Testcase corrupt, tar file not found at:" + testTar1File.getAbsolutePath());
-        assertTrue(testTar2File.exists(), "Testcase corrupt, tar file not found at:" + testTar2File.getAbsolutePath());
+    }
 
-        assertTrue(expectedOutputOfTestTar1Folder.exists(),
-                "Testcase corrupt, expected output folder is not found at:" + expectedOutputOfTestTar1Folder.getAbsolutePath());
+    private static File ensureTar2(String path) {
+        return ensure("./src/test/resources/tar/test-tar2/" + path);
+    }
+
+    private static File ensure(String path) {
+        File file = new File(path);
+        assertTrue(file.exists(), "Testcase corrupt, expected output folder is not found at:" + path);
+        return file;
     }
 
     @BeforeEach
@@ -49,14 +55,17 @@ class ArchiveSupportTest {
     }
 
     @Test
-    void bugfix_773_zipfile_without_explicit_directory_entries_can_be_extracted_as_well() throws Exception {
+    void bugfix_773_zipfile_without_explicit_directory_entries_can_be_extracted_as_well_when_root_folder_is_accepted() throws Exception {
         /* prepare */
         File singleZipfile = resolveTestFile("zipfiles/bugfix-773.zip");
         File targetFolder = TestUtil.createTempDirectoryInBuildFolder("pds_773-bugfix_test").toFile();
         targetFolder.mkdirs();
 
+        SecHubFileStructureConfiguration configuration = new SecHubFileStructureConfiguration();
+        configuration.setRootFolderAccepted(true);
+
         /* execute */
-        UnzipResult result = supportToTest.unzipArchive(singleZipfile, targetFolder);
+        ArchiveExtractionResult result = supportToTest.extractZip(singleZipfile, targetFolder, configuration);
 
         /* test */
         File docs = assertFolderExists(targetFolder, "docs");
@@ -69,14 +78,17 @@ class ArchiveSupportTest {
     }
 
     @Test
-    void single_file_zip_can_be_extracted() throws Exception {
+    void single_file_zip_can_be_extracted_when_root_folder_is_accepted() throws Exception {
         /* prepare */
         File singleZipfile = resolveTestFile("zipfiles/single_file.zip");
         File targetFolder = TestUtil.createTempDirectoryInBuildFolder("pds_sinlgezip_test").toFile();
         targetFolder.mkdirs();
 
+        SecHubFileStructureConfiguration configuration = new SecHubFileStructureConfiguration();
+        configuration.setRootFolderAccepted(true);
+
         /* execute */
-        UnzipResult result = supportToTest.unzipArchive(singleZipfile, targetFolder);
+        ArchiveExtractionResult result = supportToTest.extractZip(singleZipfile, targetFolder, configuration);
 
         /* test */
         assertContainsFiles(targetFolder, "hardcoded_password.go");
@@ -85,14 +97,17 @@ class ArchiveSupportTest {
     }
 
     @Test
-    void two_files_zip_can_be_extracted() throws Exception {
+    void two_files_zip_can_be_extracted_when_root_folder_is_accepted() throws Exception {
         /* prepare */
         File twoFilesZipfile = resolveTestFile("zipfiles/two_files.zip");
         File targetFolder = TestUtil.createTempDirectoryInBuildFolder("pds_twofileszip_test").toFile();
         targetFolder.mkdirs();
 
+        SecHubFileStructureConfiguration configuration = new SecHubFileStructureConfiguration();
+        configuration.setRootFolderAccepted(true);
+
         /* execute */
-        UnzipResult result = supportToTest.unzipArchive(twoFilesZipfile, targetFolder);
+        ArchiveExtractionResult result = supportToTest.extractZip(twoFilesZipfile, targetFolder, configuration);
 
         /* test */
         assertContainsFiles(targetFolder, "hardcoded_password.go", "README.md");
@@ -101,15 +116,18 @@ class ArchiveSupportTest {
     }
 
     @Test
-    void hierarchical_files_zip__contained_folders_and_files_can_be_extracted() throws Exception {
+    void hierarchical_files_zip__contained_folders_and_files_can_be_extracted_when_root_folder_is_accepted() throws Exception {
         /* prepare */
         File abcZipfile = resolveTestFile("zipfiles/hierarchical_files.zip");
 
         File targetFolder = TestUtil.createTempDirectoryInBuildFolder("pds_abczip_test").toFile();
         targetFolder.mkdirs();
 
+        SecHubFileStructureConfiguration configuration = new SecHubFileStructureConfiguration();
+        configuration.setRootFolderAccepted(true);
+
         /* execute */
-        UnzipResult result = supportToTest.unzipArchive(abcZipfile, targetFolder);
+        ArchiveExtractionResult result = supportToTest.extractZip(abcZipfile, targetFolder, configuration);
 
         /* test */
         assertContainsFiles(targetFolder, "abc");
@@ -125,6 +143,157 @@ class ArchiveSupportTest {
 
         assertEquals(4, result.getExtractedFilesCount());
         assertEquals(3, result.getCreatedFoldersCount());
+    }
+
+    @Test
+    void test_tar1_can_be_extracted_and_output_contains_all_files_when_root_folder_accepted_because_no_data() throws Exception {
+        /* prepare */
+        File tarFile = testTar1File;
+
+        File outputDirectory = TestUtil.createTempDirectoryInBuildFolder("tar-test1").toFile();
+        InputStream is = new FileInputStream(tarFile);
+
+        SecHubFileStructureConfiguration configuration = new SecHubFileStructureConfiguration();
+        configuration.setRootFolderAccepted(true);
+
+        /* execute */
+        supportToTest.extractTar(is, tarFile.getAbsolutePath(), outputDirectory, configuration);
+
+        /* test */
+        expectedExtractedFilesAreAllFoundInOutputDirectory(outputDirectory, TestFileSupport.loadFilesAsFileList(expectedTar1Folder), expectedTar1Folder);
+
+    }
+
+    @Test
+    void test_tar1_can_be_extracted_and_output_contains_no_files_when_root_folder_not_accepted() throws Exception {
+        /* prepare */
+        File tarFile = testTar1File;
+
+        File outputDirectory = TestUtil.createTempDirectoryInBuildFolder("tar-test1").toFile();
+        InputStream is = new FileInputStream(tarFile);
+
+        SecHubFileStructureConfiguration configuration = new SecHubFileStructureConfiguration();
+        configuration.setRootFolderAccepted(false);
+
+        /* execute */
+        supportToTest.extractTar(is, tarFile.getAbsolutePath(), outputDirectory, configuration);
+
+        /* test */
+        assertEquals(0, outputDirectory.listFiles().length);
+
+    }
+
+    @Test
+    void test_tar2_can_be_extracted_with_configuration_only_root_folder_accepted_but_contains_only_one_file_from_root() throws Exception {
+        /* prepare */
+        File tarFile = testTar2File;
+        File expectedFilesFolder = expectedOutputOfTestTar2WithRootOnly;
+
+        File outputDirectory = TestUtil.createTempDirectoryInBuildFolder("tar-test2").toFile();
+        List<File> expectedFiles = TestFileSupport.loadFilesAsFileList(expectedFilesFolder);
+        InputStream is = new FileInputStream(tarFile);
+
+        SecHubFileStructureConfiguration configuration = new SecHubFileStructureConfiguration();
+        configuration.setRootFolderAccepted(true);
+
+        /* execute */
+        supportToTest.extractTar(is, tarFile.getAbsolutePath(), outputDirectory, configuration);
+
+        /* test */
+        expectedExtractedFilesAreAllFoundInOutputDirectory(outputDirectory, expectedFiles, expectedFilesFolder);
+
+    }
+
+    @Test
+    void test_tar2_can_be_extracted_with_configuration_no_root_folder_accepted_will_be_empty() throws Exception {
+        /* prepare */
+        File tarFile = testTar2File;
+
+        File outputDirectory = TestUtil.createTempDirectoryInBuildFolder("tar-test2").toFile();
+        InputStream is = new FileInputStream(tarFile);
+
+        SecHubFileStructureConfiguration configuration = new SecHubFileStructureConfiguration();
+        configuration.setRootFolderAccepted(false);
+
+        /* execute */
+        supportToTest.extractTar(is, tarFile.getAbsolutePath(), outputDirectory, configuration);
+
+        /* test */
+        assertEquals(0, outputDirectory.listFiles().length);
+
+    }
+
+    @Test
+    void test_tar2_can_be_extracted_with_referencenamefilter_for_ref_name_1_only_and_output_contains_expected_files() throws Exception {
+        /* prepare */
+        File tarFile = testTar2File;
+        File expectedFilesFolder = expectedTar2WithFilterReferenceName1AndNoRootAllowedFolder;
+
+        File outputDirectory = TestUtil.createTempDirectoryInBuildFolder("tar-test2").toFile();
+        List<File> expectedFiles = TestFileSupport.loadFilesAsFileList(expectedFilesFolder);
+        InputStream is = new FileInputStream(tarFile);
+
+        SecHubFileStructureConfiguration configuration = new SecHubFileStructureConfiguration();
+        configuration.setRootFolderAccepted(false);
+        configuration.addAcceptedReferenceNames(Arrays.asList("reference-name-1"));
+
+        /* execute */
+        supportToTest.extractTar(is, tarFile.getAbsolutePath(), outputDirectory, configuration);
+
+        /* test */
+        expectedExtractedFilesAreAllFoundInOutputDirectory(outputDirectory, expectedFiles, expectedFilesFolder);
+
+    }
+
+    @Test
+    void test_tar2_can_be_extracted_with_referencenamefilter_for_ref_name_1_and_name_2_and_output_contains_expected_files() throws Exception {
+        /* prepare */
+        File tarFile = testTar2File;
+        File expectedFilesFolder = expectedTar2WithFilterReferenceName1AndReferenceName2Folder;
+
+        File outputDirectory = TestUtil.createTempDirectoryInBuildFolder("tar-test2").toFile();
+        List<File> expectedFiles = TestFileSupport.loadFilesAsFileList(expectedFilesFolder);
+        InputStream is = new FileInputStream(tarFile);
+
+        SecHubFileStructureConfiguration configuration = new SecHubFileStructureConfiguration();
+        configuration.setRootFolderAccepted(false);
+        configuration.addAcceptedReferenceNames(Arrays.asList("reference-name-1", "reference-name-2"));
+
+        /* execute */
+        supportToTest.extractTar(is, tarFile.getAbsolutePath(), outputDirectory, configuration);
+
+        /* test */
+        expectedExtractedFilesAreAllFoundInOutputDirectory(outputDirectory, expectedFiles, expectedFilesFolder);
+
+    }
+
+    private void expectedExtractedFilesAreAllFoundInOutputDirectory(File outputDirectory, List<File> allExpectedFiles, File expectedOutputBaseFolder)
+            throws IOException {
+        List<File> allExtractedFiles = TestFileSupport.loadFilesAsFileList(outputDirectory);
+        List<String> relativePathExpected = reduceToRelativePath(allExpectedFiles, expectedOutputBaseFolder);
+        List<String> relativePathExtracted = reduceToRelativePath(allExtractedFiles, outputDirectory);
+
+        for (String expected : relativePathExpected) {
+            if (!relativePathExtracted.contains(expected)) {
+                fail("did not found " + expected + " inside: " + relativePathExtracted + "\nOutput was at:" + outputDirectory.getAbsolutePath());
+            }
+        }
+        assertEquals(allExtractedFiles.size(), allExpectedFiles.size(), "Amount of files did differ!");
+    }
+
+    private List<String> reduceToRelativePath(List<File> files, File parentFolder) {
+        List<String> list = new ArrayList<>();
+        String parentAbsolutePath = parentFolder.getAbsolutePath();
+
+        for (File file : files) {
+            String absolutePath = file.getAbsolutePath();
+            if (absolutePath.startsWith(parentAbsolutePath)) {
+                list.add(absolutePath.substring(parentAbsolutePath.length()));
+            } else {
+                throw new IllegalStateException("Testcase corrupt: " + absolutePath + " is not inside " + parentAbsolutePath);
+            }
+        }
+        return list;
     }
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
@@ -170,118 +339,6 @@ class ArchiveSupportTest {
         File file = new File("./src/test/resources/" + relativePath);
         assertTrue(file.exists(), "File must exist:" + file);
         return file;
-    }
-
-    @Test
-    void test_tar1_can_be_extracted_without_filter_and_output_contains_expected_files() throws Exception {
-        /* prepare */
-        File tarFile = testTar1File;
-
-        File outputDirectory = TestUtil.createTempDirectoryInBuildFolder("tar-test1").toFile();
-        InputStream is = new FileInputStream(tarFile);
-
-        /* execute */
-        supportToTest.extractTar(is, tarFile.getAbsolutePath(), outputDirectory);
-
-        /* test */
-        expectedExtractedFilesAreAllFoundInOutputDirectory(outputDirectory, TestFileSupport.loadFilesAsFileList(expectedOutputOfTestTar1Folder),
-                expectedOutputOfTestTar1Folder);
-
-    }
-
-    @Test
-    void test_tar2_can_be_extracted_without_filter_and_output_contains_expected_files() throws Exception {
-        /* prepare */
-        File tarFile = testTar2File;
-        File expectedFilesFolder = expectedOutputOfTestTar2NoFilterFolder;
-
-        File outputDirectory = TestUtil.createTempDirectoryInBuildFolder("tar-test2").toFile();
-        List<File> expectedFiles = TestFileSupport.loadFilesAsFileList(expectedFilesFolder);
-        InputStream is = new FileInputStream(tarFile);
-
-        /* execute */
-        supportToTest.extractTar(is, tarFile.getAbsolutePath(), outputDirectory);
-
-        /* test */
-        expectedExtractedFilesAreAllFoundInOutputDirectory(outputDirectory, expectedFiles, expectedFilesFolder);
-
-    }
-
-    @Test
-    void test_tar2_can_be_extracted_with_referencenamefilter_for_ref_name_1_only_and_output_contains_expected_files() throws Exception {
-        /* prepare */
-        File tarFile = testTar2File;
-        File expectedFilesFolder = expectedOutputOfTestTar2WithFilterReferenceName1AndNoRootAllowedFolder;
-
-        File outputDirectory = TestUtil.createTempDirectoryInBuildFolder("tar-test2").toFile();
-        List<File> expectedFiles = TestFileSupport.loadFilesAsFileList(expectedFilesFolder);
-        InputStream is = new FileInputStream(tarFile);
-
-        ReferenceNameAndRootFolderArchiveFilterData data = new ReferenceNameAndRootFolderArchiveFilterData();
-        data.rootFolderAccepted = false;
-        data.acceptedReferenceNames.add("reference-name-1");
-
-        /* execute */
-        supportToTest.extractTar(is, tarFile.getAbsolutePath(), outputDirectory, new ReferenceNameAndRootFolderArchivePathInspector(data));
-
-        /* test */
-        expectedExtractedFilesAreAllFoundInOutputDirectory(outputDirectory, expectedFiles, expectedFilesFolder);
-
-    }
-
-    @Test
-    void when_test_tar1_is_extracted_by_filter_accepting_not_subfolder_2_only_2_files_are_found() throws Exception {
-        /* prepare */
-        File outputDirectory = TestUtil.createTempDirectoryInBuildFolder("tar-test").toFile();
-        InputStream is = new FileInputStream(testTar1File);
-
-        ArchivePathInspector inspector = new ArchivePathInspector() {
-
-            @Override
-            public ArchivePathInspectionResult inspect(String path) {
-                ArchivePathInspectionResult result = new ArchivePathInspectionResult();
-                if (!path.contains("subfolder2/")) {
-                    result.accepted = true;
-                }
-                return result;
-            }
-        };
-        /* execute */
-        supportToTest.extractTar(is, testTar1File.getAbsolutePath(), outputDirectory, inspector);
-
-        /* test */
-        List<File> found = TestFileSupport.loadFilesAsFileList(outputDirectory);
-        assertEquals(2, found.size());
-
-    }
-
-    private void expectedExtractedFilesAreAllFoundInOutputDirectory(File outputDirectory, List<File> allExpectedFiles, File expectedOutputBaseFolder)
-            throws IOException {
-        List<File> allExtractedFiles = TestFileSupport.loadFilesAsFileList(outputDirectory);
-        List<String> relativePathExpected = reduceToRelativePath(allExpectedFiles, expectedOutputBaseFolder);
-        List<String> relativePathExtracted = reduceToRelativePath(allExtractedFiles, outputDirectory);
-
-        for (String expected : relativePathExpected) {
-            if (!relativePathExtracted.contains(expected)) {
-                fail("did not found " + expected + " inside: " + relativePathExtracted + "\nOutput was at:" + outputDirectory.getAbsolutePath());
-            }
-        }
-        assertEquals(allExtractedFiles.size(), allExpectedFiles.size(), "Amount of files did differ!");
-    }
-
-    private List<String> reduceToRelativePath(List<File> files, File parentFolder) {
-        List<String> list = new ArrayList<>();
-        String parentAbsolutePath = parentFolder.getAbsolutePath();
-
-        for (File file : files) {
-            String absolutePath = file.getAbsolutePath();
-            if (absolutePath.startsWith(parentAbsolutePath)) {
-                list.add(absolutePath.substring(parentAbsolutePath.length()));
-            } else {
-                throw new IllegalStateException("Testcase corrupt: " + absolutePath + " is not inside " + parentAbsolutePath);
-            }
-        }
-        return list;
     }
 
 }

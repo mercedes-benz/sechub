@@ -19,7 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.UnzipResult;
+import com.mercedesbenz.sechub.commons.archive.ArchiveExtractionResult;
+import com.mercedesbenz.sechub.commons.archive.SecHubFileStructureConfiguration;
+import com.mercedesbenz.sechub.commons.model.ScanType;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.pds.PDSMustBeDocumented;
 import com.mercedesbenz.sechub.pds.PDSNotFoundException;
 import com.mercedesbenz.sechub.pds.config.PDSProductSetup;
@@ -162,10 +165,25 @@ public class PDSWorkspaceService {
         if (!product.isUnzipUploads()) {
             return;
         }
-        unzipUploads(jobUUID, true);
+
+        SecHubConfigurationModel model = resolveAndEnsureSecHubConfigurationModel(config);
+        ScanType scanType = product.getScanType();
+        SecHubFileStructureConfiguration configuration = SecHubFileStructureConfiguration.builder().setScanType(scanType).setModel(model).build();
+
+        unzipUploads(jobUUID, true, configuration);
     }
 
-    void unzipUploads(UUID jobUUID, boolean deleteOriginZipFiles) throws IOException {
+    private SecHubConfigurationModel resolveAndEnsureSecHubConfigurationModel(PDSJobConfiguration config) {
+        PDSJobConfigurationSupport jobConfigurationSupport = new PDSJobConfigurationSupport(config);
+        SecHubConfigurationModel model = jobConfigurationSupport.resolveSecHubConfigurationModel();
+        if (model == null) {
+            LOG.warn("No SecHub configuration model defined for the PDS job! Doing a fallback to an empty model. This may only happen on direct PDS testing!");
+            model = new SecHubConfigurationModel();
+        }
+        return model;
+    }
+
+    void unzipUploads(UUID jobUUID, boolean deleteOriginZipFiles, SecHubFileStructureConfiguration configuration) throws IOException {
         File uploadFolder = getUploadFolder(jobUUID);
         File[] zipFiles = uploadFolder.listFiles(new FileFilter() {
 
@@ -183,7 +201,7 @@ public class PDSWorkspaceService {
         for (File zipFile : zipFiles) {
 
             File destDir = new File(unzipFolder, FilenameUtils.getBaseName(zipFile.getName()));
-            UnzipResult unzipResult = archiveSupportProvider.getArchiveSupport().unzipArchive(zipFile, destDir);
+            ArchiveExtractionResult unzipResult = archiveSupportProvider.getArchiveSupport().extractZip(zipFile, destDir, configuration);
 
             LOG.info("Unzipped {} files to {}", unzipResult.getExtractedFilesCount(), unzipResult.getTargetLocation());
 

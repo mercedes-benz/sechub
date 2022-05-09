@@ -78,6 +78,12 @@ public class PersistentScenarioTestDataProvider {
     }
 
     private void store() {
+        File parentFolder = file.getParentFile();
+        if (!parentFolder.exists()) {
+            if (!parentFolder.mkdirs()) {
+                throw new IllegalStateException("Was not able to create parent folder: " + parentFolder.getAbsolutePath());
+            }
+        }
         try (FileOutputStream fos = new FileOutputStream(file)) {
             properties.store(fos, "DO NOT CHANGE THIS FILE!");
         } catch (IOException e) {

@@ -183,7 +183,11 @@ public class SecHubClientExecutor {
 
             /* start process and wait for execution done */
             Process process = pb.start();
+            long started = System.currentTimeMillis();
+            LOG.debug("sechub client process has been started");
             int exitCode = process.waitFor();
+            long elapsed = System.currentTimeMillis() - started;
+            LOG.debug("sechub client process has been ended: time elapsed:" + elapsed + "ms = " + elapsed / 1000 + " seconds");
 
             ExecutionResult result = extractResult(tmpGoOutputFile, exitCode);
 
