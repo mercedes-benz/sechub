@@ -293,12 +293,12 @@ array attribute `uses` with a list of unique references names.
 ----
 {
     // ..scan definition
-    "use" : [ "reference-name-1","reference-name-2", ".." ] //<1>
+    "use" : [ "reference-name-1","reference-name-2", ... ] //<1>
 }
 ----
 <1> the list of referenced data configurations . The referenced names must exist.
 
-Here some links to examples which are using <<sechub-config-data-section,data>> inside their configurations:
+Here are some links to examples which are using <<sechub-config-data-section,data>> inside their configurations:
 
 - <<sechub-config-example-licensescan-binary,License scan for binaries>> 
 - <<sechub-config-example-licensescan-sources,License scan for sources>> 

@@ -7,7 +7,9 @@ will be automatically deleted.
 ====== Source code fetching
 Source code is always contained in a file called `sourcecode.zip`.
 When a `PDS` starts a new job, it will fetch the complete ZIP file from <<pds-storage-and-sharing,storage>>
-to it's local storage at:`${PDSJobWorkspaceLocation}/upload/sourcecode.zip`
+to it's local storage at
+
+`${PDSJobWorkspaceLocation}/upload/sourcecode.zip`.
 
 Afterwards the <<pds-automated-extraction-sourcecode,relevant sources will be automatically extracted>> by inspecting
 the archive <<pds-exlanation-data-structure,data structure>>.
@@ -34,7 +36,8 @@ The binary fetching  is currently not yet implemented!
 include::concept_common_data_structure_tar_and_zip_files.adoc[]
 
 ====== Automated Extraction of relevant parts
-Only files and folders which are available for the configured scan will be automatically extracted! +
+Only files and folders which are available for the configured scan type will be automatically 
+extracted! +
 The artificial path element `\__data__` and the reference name will not be contained in extracted 
 folders.
 
@@ -51,7 +54,7 @@ You will find it described at {webPage}.
 Let's assume PDS has <<pds-fetches-sourcecode-from-storage,fetched>> `sourcezip.zip` which contains following structure:
 [source,shell, title="ZIP file example content"]
 ----
-/__data__/
+__data__/
     license-sources/ 
             somewhere/
                      file1a.txt 
@@ -71,10 +74,10 @@ and a {sechub} configuration file like this:
     // .. assume data section and other parts are configured correctly .. 
     
     "licenseScan": { 
-        "use" : ["license-source"]
+        "use" : ["license-sources"]
     },
     "codeScan": { 
-        "use" : ["other-source"]
+        "use" : ["other-sources"]
     }
 }
 ----
@@ -88,7 +91,7 @@ The `PDS` for license scanning will only extract `license-sources`:
 ${PDSJobWorkspaceLocation}/upload/unzipped/sourcecode
                                        somewhere/
                                             file1a.txt
-                                            subfolder1
+                                            subfolder1/
                                                file1b.txt
                                        file2.txt
 ----
@@ -106,7 +109,7 @@ ${PDSJobWorkspaceLocation}/upload/unzipped/sourcecode
 Let's assume PDS has <<pds-fetches-binaries-from-storage,fetched>> `binaries.tar` which contains following structure:
 [source,shell, title="TAR file example content"]
 ----
-/__data__/
+__data__/
     license-binaries/ 
             somewhere/
                      file1a.bin 
@@ -143,7 +146,7 @@ The `PDS` for license scanning will only extract `license-binaries`:
 ${PDSJobWorkspaceLocation}/upload/extracted/binaries
                                        somewhere/
                                             file1a.bin
-                                            subfolder1
+                                            subfolder1/
                                                file1b.bin
                                        file2.bin
 ----

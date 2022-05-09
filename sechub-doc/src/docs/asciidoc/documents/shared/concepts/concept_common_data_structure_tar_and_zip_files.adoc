@@ -25,14 +25,14 @@ Only source code scan configuration files may be located inside the root folder!
 
 [source,shell]
 ----
-/${content} #<1>
-/__data__/unique-name-1/${content} #<2> 
-/__data__/unique-name-2/${content} #<3> 
+${content} #<1>
+__data__/unique-name-1/${content} #<2> 
+__data__/unique-name-2/${content} #<3> 
 ...
 ----
 <1> code scan embedded file system data
-<2> content of a data confguration with name "unique-name-1"
-<3> content of a data confguration with name "unique-name-2"
+<2> content of a data configuration with name "unique-name-1"
+<3> content of a data configuration with name "unique-name-2"
 
 
 Here an example:
@@ -50,7 +50,7 @@ include::../configuration/sechub_config_data_section_general_example2.json[]
 The example json configuration defines following content structure inside the upload files:
 [source,shell, title="ZIP file content for sources"]
 ----
-/__data__/
+__data__/
     reference-name-sources-1/ #<2>
                   somewhere/
                      file1.txt 
@@ -65,7 +65,7 @@ The example json configuration defines following content structure inside the up
 The example json configuration would lead to a `TAR` file containing:
 [source,shell,title="TAR file content for binaries"]
 ----
-/__data__/
+__data__/
     reference-name-binaries-1/#<4>
                   somewhere/
                      file1.dll 
