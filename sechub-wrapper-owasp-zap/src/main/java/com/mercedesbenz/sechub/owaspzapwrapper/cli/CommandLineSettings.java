@@ -2,12 +2,12 @@
 package com.mercedesbenz.sechub.owaspzapwrapper.cli;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import com.beust.jcommander.Parameter;
 import com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableConstants;
+import com.mercedesbenz.sechub.owaspzapwrapper.util.FileUtilities;
 
 public class CommandLineSettings {
     @Parameter(names = { "--help" }, description = "Shows help and provides information on how to use the wrapper.", help = true)
@@ -44,15 +44,7 @@ public class CommandLineSettings {
     private String sechubConfigFile;
 
     public File getSecHubConfigFile() {
-        if (sechubConfigFile == null) {
-            return null;
-        }
-        try {
-            return new File(sechubConfigFile).toPath().toRealPath().toAbsolutePath().toFile();
-        } catch (IOException e) {
-            throw new IllegalStateException("Not able to resolve absolute path of: " + sechubConfigFile);
-        }
-
+        return FileUtilities.stringToFile(sechubConfigFile);
     }
 
     @Parameter(names = { "--ajaxSpider" }, description = "Set this option to enable Owasp Zap ajaxSpider.", required = false)
@@ -114,5 +106,20 @@ public class CommandLineSettings {
 
     public int getProxyPort() {
         return proxyPort;
+    }
+
+    @Parameter(names = { "--fullRulesetfile" }, description = "Specify a file with all rules installed for the Owasp Zap.", required = false)
+    private String fullRulesetFile;
+
+    public File getFullRulesetFile() {
+        return FileUtilities.stringToFile(fullRulesetFile);
+    }
+
+    @Parameter(names = {
+            "--rulesDeactivationfile" }, description = "Specify a file with rules to deactivate during the scan inside the Owasp Zap.", required = false)
+    private String rulesDeactvationFile;
+
+    public File getRulesDeactvationFile() {
+        return FileUtilities.stringToFile(rulesDeactvationFile);
     }
 }

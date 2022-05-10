@@ -9,6 +9,9 @@ import static org.mockito.Mockito.*;
 import java.io.File;
 import java.net.URI;
 import java.nio.file.Path;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +23,10 @@ import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.CommandLineSettings;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitRuntimeException;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.auth.AuthenticationType;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.data.DeactivatedRuleReferences;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.data.OwaspZapFullRuleset;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.data.Rule;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.data.RuleReference;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.BaseTargetUriFactory;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.SecHubWebScanConfigurationHelper;
 import com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableReader;
@@ -34,6 +41,8 @@ class OwaspZapScanConfigurationFactoryTest {
 
     private SechubWebConfigProvider webConfigProvider;
 
+    private RuleProvider ruleProvider;
+
     @BeforeEach
     void beforeEach() {
         // create object to test
@@ -44,12 +53,14 @@ class OwaspZapScanConfigurationFactoryTest {
         environmentVariableReader = mock(EnvironmentVariableReader.class);
         targetUriFactory = mock(BaseTargetUriFactory.class);
         webConfigProvider = mock(SechubWebConfigProvider.class);
+        ruleProvider = mock(RuleProvider.class);
 
         // connect mocks with test object
         factoryToTest.sechubWebConfigHelper = sechubWebConfigHelper;
         factoryToTest.environmentVariableReader = environmentVariableReader;
         factoryToTest.targetUriFactory = targetUriFactory;
         factoryToTest.webConfigProvider = webConfigProvider;
+        factoryToTest.ruleProvider = ruleProvider;
     }
 
     @Test
@@ -64,14 +75,14 @@ class OwaspZapScanConfigurationFactoryTest {
         CommandLineSettings settings = createSettingsMockWithNecessaryParts();
         SecHubWebScanConfiguration config = simulateProvidedSecHubConfiguration(settings);
 
-        long maxScanDueration = 4711L;
-        when(sechubWebConfigHelper.fetchMaxScanDurationInMillis(config)).thenReturn(maxScanDueration);
+        long maxScanDuration = 4711L;
+        when(sechubWebConfigHelper.fetchMaxScanDurationInMillis(config)).thenReturn(maxScanDuration);
 
         /* execute */
         OwaspZapScanConfiguration result = factoryToTest.create(settings);
 
         /* test */
-        assertEquals(result.getMaxScanDurationInMillis(), maxScanDueration);
+        assertEquals(result.getMaxScanDurationInMillis(), maxScanDuration);
 
     }
 
@@ -313,9 +324,92 @@ class OwaspZapScanConfigurationFactoryTest {
     }
 
     @Test
-    void sechub_webconfig_helper_retrieveMaxScanDurationInMillis_is_called_with_correct_webconfig() {
+    void commandlinesettings_null_throws_mustexitruntimeexception() {
         /* execute + test */
         assertThrows(MustExitRuntimeException.class, () -> factoryToTest.create(null));
+    }
+
+    @Test
+    void fullruleset_returned_by_helper_is_in_result() {
+        /* prepare */
+        CommandLineSettings settings = createSettingsMockWithNecessaryParts();
+        when(ruleProvider.fetchFullRuleset(any())).thenReturn(createExampleFullRuleset());
+
+        /* execute */
+        OwaspZapScanConfiguration result = factoryToTest.create(settings);
+
+        OwaspZapFullRuleset fullRuleset = result.getFullRuleset();
+
+        /* test */
+        verify(ruleProvider, times(1)).fetchFullRuleset(any());
+        assertNotNull(fullRuleset);
+        assertNotNull(fullRuleset.getRules());
+        assertEquals("link-to-origin", fullRuleset.getOrigin());
+        assertEquals("timestamp", fullRuleset.getTimestamp());
+        assertEquals(1, fullRuleset.getRules().size());
+
+        Iterator<Rule> iterator = fullRuleset.getRules().iterator();
+        assertTrue(iterator.hasNext());
+
+        Rule rule = iterator.next();
+        assertEquals("12345", rule.getId());
+        assertEquals("rule-ref", rule.getRef());
+        assertEquals("rule-name", rule.getName());
+        assertEquals("active", rule.getType());
+        assertEquals("link-to-rule", rule.getLink());
+    }
+
+    @Test
+    void ruletodeactivate_returned_by_helper_is_inside_result() {
+        /* prepare */
+        CommandLineSettings settings = createSettingsMockWithNecessaryParts();
+        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(createExampleDeactivatedRuleReferences());
+
+        /* execute */
+        OwaspZapScanConfiguration result = factoryToTest.create(settings);
+        DeactivatedRuleReferences deactivatedRuleReferences = result.getDeactivatedRuleReferences();
+
+        /* test */
+        verify(ruleProvider, times(1)).fetchDeactivatedRuleReferences(any());
+        assertNotNull(deactivatedRuleReferences);
+        assertNotNull(deactivatedRuleReferences.getDeactivatedRuleReferences());
+        assertEquals(1, deactivatedRuleReferences.getDeactivatedRuleReferences().size());
+
+        Iterator<RuleReference> iterator = deactivatedRuleReferences.getDeactivatedRuleReferences().iterator();
+        assertTrue(iterator.hasNext());
+
+        RuleReference ruleRef = iterator.next();
+        assertEquals("rule-ref", ruleRef.getRef());
+        assertEquals("Rule was deactivated for testing reasons.", ruleRef.getInfo());
+    }
+
+    private OwaspZapFullRuleset createExampleFullRuleset() {
+        OwaspZapFullRuleset fullRuleset = new OwaspZapFullRuleset();
+
+        fullRuleset.setOrigin("link-to-origin");
+        fullRuleset.setTimestamp("timestamp");
+        List<Rule> rules = new LinkedList<Rule>();
+        Rule rule = new Rule();
+        rule.setId("12345");
+        rule.setRef("rule-ref");
+        rule.setName("rule-name");
+        rule.setType("active");
+        rule.setLink("link-to-rule");
+        rules.add(rule);
+        fullRuleset.setRules(rules);
+        return fullRuleset;
+    }
+
+    private DeactivatedRuleReferences createExampleDeactivatedRuleReferences() {
+        DeactivatedRuleReferences deactivatedRuleReferences = new DeactivatedRuleReferences();
+
+        RuleReference ruleRef = new RuleReference();
+        ruleRef.setRef("rule-ref");
+        ruleRef.setInfo("Rule was deactivated for testing reasons.");
+        List<RuleReference> references = new LinkedList<>();
+        references.add(ruleRef);
+        deactivatedRuleReferences.setDeactivatedRuleReferences(references);
+        return deactivatedRuleReferences;
     }
 
     private SecHubWebScanConfiguration simulateProvidedSecHubConfiguration(CommandLineSettings settings) {

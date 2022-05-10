@@ -23,6 +23,10 @@ public enum MustExitCode {
 
     REPORT_FILE_ERROR(7),
 
+    RULE_FILE_ERROR(8),
+
+    SCAN_RULE_ERROR(9),
+
     ;
 
     private int exitCode;
