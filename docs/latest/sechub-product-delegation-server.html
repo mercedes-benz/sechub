@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub PDS Documentation</h1>
 <div class="details">
-<span id="revnumber"> PDS 0.27.0</span>
+<span id="revnumber"> PDS 0.28.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -557,6 +557,14 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#pds-process-handling">3.1.5. Process execution</a>
 <ul class="sectlevel4">
 <li><a href="#how-pds-provides-output-and-error-stream-content-of-running-jobs-in-clustered-environments">3.1.5.1. How PDS provides output and error stream content of running jobs in clustered environments</a></li>
+<li><a href="#how-pds-handles-storage-data">3.1.5.2. How PDS handles storage data</a>
+<ul class="sectlevel5">
+<li><a href="#pds-fetches-sourcecode-from-storage">3.1.5.2.1. Source code fetching</a></li>
+<li><a href="#pds-fetches-binaries-from-storage">3.1.5.2.2. Binaries fetching</a></li>
+<li><a href="#pds-exlanation-data-structure">3.1.5.2.3. Data structure inside TAR and ZIP files</a></li>
+<li><a href="#automated-extraction-of-relevant-parts">3.1.5.2.4. Automated Extraction of relevant parts</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#sechub-integration">3.1.6. SecHub integration</a>
@@ -731,7 +739,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>PDS 0.27.0-pds-20220407151122</code></p>
+<p>Documentation version: <code>PDS 0.28.0-pds-20220511132105</code></p>
 </div>
 <div class="paragraph">
 <p><strong>About PDS (Product Delegation Server)</strong></p>
@@ -757,7 +765,8 @@ for the <code>PDS</code> PODs.</p>
 <h2 id="download">2. Download</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You can download the ready to use .jar binary of SecHub Product Delegation Server(PDS).</p>
+<p>A ready to use executable <code>.jar</code> binary of <code>PDS</code> (Product Delegation Server)
+is available at GitHub.</p>
 </div>
 <div class="paragraph">
 <p>Download link to the latest SecHub PDS release: <a href="https://mercedes-benz.github.io/sechub/latest/pds-download.html" class="bare">https://mercedes-benz.github.io/sechub/latest/pds-download.html</a>
@@ -1206,6 +1215,388 @@ But when the job has finished <em>(no matter if canceled, done or failed)</em> t
 <div class="imageblock">
 <div class="content">
 <img src="images/diagram_pds_overview_stream_access.svg" alt="Overview diagram about stream content fetching in cluster" width="1120" height="1186">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="how-pds-handles-storage-data">3.1.5.2. How PDS handles storage data</h5>
+<div class="paragraph">
+<p>The <code>PDS</code> does automatically fetch uploaded files from shared <a href="#pds-storage-and-sharing">storage</a>
+temporary into its local filesystem. After the scan has been done, the temporary local files
+will be automatically deleted.</p>
+</div>
+<div class="sect5">
+<h6 id="pds-fetches-sourcecode-from-storage">3.1.5.2.1. Source code fetching</h6>
+<div class="paragraph">
+<p>Source code is always contained in a file called <code>sourcecode.zip</code>.
+When a <code>PDS</code> starts a new job, it will fetch the complete ZIP file from <a href="#pds-storage-and-sharing">storage</a>
+to it&#8217;s local storage at</p>
+</div>
+<div class="paragraph">
+<p><code>${PDSJobWorkspaceLocation}/upload/sourcecode.zip</code>.</p>
+</div>
+<div class="paragraph">
+<p>Afterwards the <a href="#pds-automated-extraction-sourcecode">relevant sources will be automatically extracted</a> by inspecting
+the archive <a href="#pds-exlanation-data-structure">data structure</a>.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="pds-fetches-binaries-from-storage">3.1.5.2.2. Binaries fetching</h6>
+<div class="paragraph">
+<p>Binaries are always contained in a file called <code>binaries.tar</code>.
+When a <code>PDS</code> starts a new job and the scan does references a binary data section, it will fetch
+the complete TAR file from <a href="#pds-storage-and-sharing">storage</a> to it&#8217;s local storage at</p>
+</div>
+<div class="paragraph">
+<p><code>${WorkspaceLocation}/upload/binaries.tar</code>.</p>
+</div>
+<div class="paragraph">
+<p>Afterwards the <a href="#pds-automated-extraction-binaries">relevant binaries will be automatically extracted</a> by inspecting
+the archive <a href="#pds-exlanation-data-structure">data structure</a>.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The binary fetching  is currently not yet implemented!</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="pds-exlanation-data-structure">3.1.5.2.3. Data structure inside TAR and ZIP files</h6>
+<div id="data-structure-tar-and-zip-files" class="paragraph">
+<p>The data structure inside <code>TAR</code> and <code>ZIP</code> files contains
+data configuration parts inside <code><em>data</em></code> folder.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Before we introduced the possibility to define referenceable <a href="#sechub-config-data-section">data</a> inside a
+SecHub configuration, we already provided a <code>fileSystem</code> element inside
+ <a href="#sechub-config-code-scan">code scan configuration</a>.</p>
+</div>
+<div class="paragraph">
+<p>For source scans this a more convenient way and we wanted to keep this possiblity - also for
+backward compatibility with existing sechub configuration files.</p>
+</div>
+<div class="paragraph">
+<p>So this is the reason, why <a href="#sechub-config-data-section">data</a> is contained inside <code><em>_data_</em></code>
+folder and there is still content inside the root folder as well.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Only source code scan configuration files may be located inside the root folder!</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">${content} <i class="conum" data-value="1"></i><b>(1)</b>
+__data__/unique-name-1/${content} <i class="conum" data-value="2"></i><b>(2)</b>
+__data__/unique-name-2/${content} <i class="conum" data-value="3"></i><b>(3)</b>
+...</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>code scan embedded file system data</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>content of a data configuration with name "unique-name-1"</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>content of a data configuration with name "unique-name-2"</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Here an example:</p>
+</div>
+<div class="listingblock">
+<div class="title">Example JSON data definition to show resulting TAR and ZIP structures</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span> : [ { <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-sources-1</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="2"></i><b>(2)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : { 
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/file1.txt</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/file2.txt</span><span class="delimiter">&quot;</span></span> ], 
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/subfolder1</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/subfolder2</span><span class="delimiter">&quot;</span></span> ]
+      },
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">excludes</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">**/mytestcode/**</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">**/documentation/**</span><span class="delimiter">&quot;</span></span>], 
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">additionalFilenameExtensions</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">.cplusplus</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">.py9</span><span class="delimiter">&quot;</span></span>] 
+    } ],
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">binaries</span><span class="delimiter">&quot;</span></span> : [ { <i class="conum" data-value="3"></i><b>(3)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-binaries-1</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="4"></i><b>(4)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/file1.dll</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/file2.a</span><span class="delimiter">&quot;</span></span> ], 
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/bin/subfolder1</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/bin/subfolder2</span><span class="delimiter">&quot;</span></span> ] 
+      }
+    },
+     {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-binaries-2</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="5"></i><b>(5)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere-else/file1.dll</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere-else/file2.a</span><span class="delimiter">&quot;</span></span> ],
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere-else/bin/subfolder1</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere-else/bin/subfolder2</span><span class="delimiter">&quot;</span></span> ]
+      }
+    }
+   ]
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>source definition - these structure parts are inside the <code>sourcecode.zip</code> file</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Name of one source data configuration</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>binaries definition - these structure parts are inside the <code>binaries.tar</code> file</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Name of the first binaries data configuration</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Name of the second binaries data configuration</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The example json configuration defines following content structure inside the upload files:</p>
+</div>
+<div class="listingblock">
+<div class="title">ZIP file content for sources</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">__data__/
+    reference-name-sources-1/ <i class="conum" data-value="2"></i><b>(2)</b>
+                  somewhere/
+                     file1.txt
+                     file2.txt
+                     subfolder1/
+                        example-content.py9
+                     subfolder2/
+                        example-content.cplusplus
+                        example-content.txt</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The example json configuration would lead to a <code>TAR</code> file containing:</p>
+</div>
+<div class="listingblock">
+<div class="title">TAR file content for binaries</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">__data__/
+    reference-name-binaries-1/<i class="conum" data-value="4"></i><b>(4)</b>
+                  somewhere/
+                     file1.dll
+                     file2.a
+                     subfolder1/
+                        example-content.bin
+                     subfolder2/
+                        example-content.img
+    reference-name-binaries-2/<i class="conum" data-value="5"></i><b>(5)</b>
+                  somewhere-else/
+                     file1.dll
+                     file2.a
+                     subfolder1/
+                        example-content.bin
+                     subfolder2/
+                        example-content.img</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="automated-extraction-of-relevant-parts">3.1.5.2.4. Automated Extraction of relevant parts</h6>
+<div class="paragraph">
+<p>Only files and folders which are available for the configured scan type will be automatically
+extracted!<br>
+The artificial path element <code><em>_data_</em></code> and the reference name will not be contained in extracted
+folders.</p>
+</div>
+<div id="sechub-config-data-section" class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Please read the SecHub technical documentation for more details about the data configuration.
+You will find it described at <a href="https://mercedes-benz.github.io/sechub" class="bare">https://mercedes-benz.github.io/sechub</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="pds-automated-extraction-sourcecode" class="paragraph">
+<p><strong>Automated extraction of source code</strong><br></p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s assume PDS has <a href="#pds-fetches-sourcecode-from-storage">fetched</a> <code>sourcezip.zip</code> which contains following structure:</p>
+</div>
+<div class="listingblock">
+<div class="title">ZIP file example content</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">__data__/
+    license-sources/
+            somewhere/
+                     file1a.txt
+                     subfolder1/
+                        file1b.txt
+            file2.txt
+    other-sources/
+            file3.txt</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and a SecHub configuration file like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+    <span class="error">/</span><span class="error">/</span> <span class="error">.</span><span class="error">.</span> <span class="error">a</span><span class="error">s</span><span class="error">s</span><span class="error">u</span><span class="error">m</span><span class="error">e</span> <span class="error">d</span><span class="error">a</span><span class="error">t</span><span class="error">a</span> <span class="error">s</span><span class="error">e</span><span class="error">c</span><span class="error">t</span><span class="error">i</span><span class="error">o</span><span class="error">n</span> <span class="error">a</span><span class="error">n</span><span class="error">d</span> <span class="error">o</span><span class="error">t</span><span class="error">h</span><span class="error">e</span><span class="error">r</span> <span class="error">p</span><span class="error">a</span><span class="error">r</span><span class="error">t</span><span class="error">s</span> <span class="error">a</span><span class="error">r</span><span class="error">e</span> <span class="error">c</span><span class="error">o</span><span class="error">n</span><span class="error">f</span><span class="error">i</span><span class="error">g</span><span class="error">u</span><span class="error">r</span><span class="error">e</span><span class="error">d</span> <span class="error">c</span><span class="error">o</span><span class="error">r</span><span class="error">r</span><span class="error">e</span><span class="error">c</span><span class="error">t</span><span class="error">l</span><span class="error">y</span> <span class="error">.</span><span class="error">.</span>
+
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">licenseScan</span><span class="delimiter">&quot;</span></span>: {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [<span class="string"><span class="delimiter">&quot;</span><span class="content">license-sources</span><span class="delimiter">&quot;</span></span>]
+    },
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span>: {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [<span class="string"><span class="delimiter">&quot;</span><span class="content">other-sources</span><span class="delimiter">&quot;</span></span>]
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the example the SecHub configuration has a license scan configured which references
+<code>license-sources</code> data configuration and a code scan which references <code>other-sources</code>.
+The <code>PDS</code> for license scanning will only extract <code>license-sources</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">Output of automated ZIP file extraction by PDS</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">${PDSJobWorkspaceLocation}/upload/unzipped/sourcecode
+                                       somewhere/
+                                            file1a.txt
+                                            subfolder1/
+                                               file1b.txt
+                                       file2.txt</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><code>file3.txt</code> was not extracted, because it is not available for the license scan.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="pds-automated-extraction-binaries" class="paragraph">
+<p><strong>Automated extraction of binaries</strong><br></p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s assume PDS has <a href="#pds-fetches-binaries-from-storage">fetched</a> <code>binaries.tar</code> which contains following structure:</p>
+</div>
+<div class="listingblock">
+<div class="title">TAR file example content</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">__data__/
+    license-binaries/
+            somewhere/
+                     file1a.bin
+                     subfolder1/
+                        file1b.bin
+            file2.bin
+    other-binaries/
+            file3.bin</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and a SecHub configuration file like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+    <span class="error">/</span><span class="error">/</span> <span class="error">.</span><span class="error">.</span> <span class="error">a</span><span class="error">s</span><span class="error">s</span><span class="error">u</span><span class="error">m</span><span class="error">e</span> <span class="error">d</span><span class="error">a</span><span class="error">t</span><span class="error">a</span> <span class="error">s</span><span class="error">e</span><span class="error">c</span><span class="error">t</span><span class="error">i</span><span class="error">o</span><span class="error">n</span> <span class="error">a</span><span class="error">n</span><span class="error">d</span> <span class="error">o</span><span class="error">t</span><span class="error">h</span><span class="error">e</span><span class="error">r</span> <span class="error">p</span><span class="error">a</span><span class="error">r</span><span class="error">t</span><span class="error">s</span> <span class="error">a</span><span class="error">r</span><span class="error">e</span> <span class="error">c</span><span class="error">o</span><span class="error">n</span><span class="error">f</span><span class="error">i</span><span class="error">g</span><span class="error">u</span><span class="error">r</span><span class="error">e</span><span class="error">d</span> <span class="error">c</span><span class="error">o</span><span class="error">r</span><span class="error">r</span><span class="error">e</span><span class="error">c</span><span class="error">t</span><span class="error">l</span><span class="error">y</span> <span class="error">.</span><span class="error">.</span>
+
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">licenseScan</span><span class="delimiter">&quot;</span></span>: {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [<span class="string"><span class="delimiter">&quot;</span><span class="content">license-binaries</span><span class="delimiter">&quot;</span></span>]
+    },
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span>: {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [<span class="string"><span class="delimiter">&quot;</span><span class="content">other-binaries</span><span class="delimiter">&quot;</span></span>]
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the example the SecHub configuration has a license scan configured which references
+<code>license-binaries</code> data configuration and a code scan which references <code>other-binaries</code>.
+The <code>PDS</code> for license scanning will only extract <code>license-binaries</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">Output of automated ZIP file extraction by PDS</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">${PDSJobWorkspaceLocation}/upload/extracted/binaries
+                                       somewhere/
+                                            file1a.bin
+                                            subfolder1/
+                                               file1b.bin
+                                       file2.bin</code></pre>
+</div>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The described binary extraction is currently not yet implemented!</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -1983,6 +2374,10 @@ of the unzipped files will be available inside <code>$PDS_JOB_WORKSPACE_LOCATION
                                       For details about the exact format please look into <a href="https://mercedes-benz.github.io/sechub/latest/sechub-client.html">SecHub client documentation</a> . If you are using
                                       a Java wrapper application inside your PDS scripts, those can use the <code>sechub-commons-model</code> java library which contains <code>SecHubScanConfiguration.java</code>
                                       <em>(Usage is described in JavaDoc)</em>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SECHUB_JOB_UUID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The corresponding SecHub job UUID</p></td>
 </tr>
 </tbody>
 </table>
@@ -2899,7 +3294,7 @@ This will the process hard!
 </div>
 <div id="footer">
 <div id="footer-text">
- PDS 0.27.0<br>
+ PDS 0.28.0<br>
 </div>
 </div>
 </body>
