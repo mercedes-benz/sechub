@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Architecture</h1>
 <div class="details">
-<span id="revnumber"> Server 0.31.0</span>
+<span id="revnumber"> Server 0.32.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -723,6 +723,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#section-usecase-UC_067">7.5.68. UC_067-Sechub scan domain auto cleanup</a></li>
 <li><a href="#section-usecase-UC_068">7.5.69. UC_068-Sechub schedule domain auto cleanup</a></li>
 <li><a href="#section-usecase-UC_069">7.5.70. UC_069-User uploads binaries</a></li>
+<li><a href="#section-usecase-UC_070">7.5.71. UC_070-User downloads job report in SPDX format</a></li>
 </ul>
 </li>
 <li><a href="#section-ucrestdoc">7.6. Rest API documentation</a>
@@ -790,38 +791,39 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#user-unmarks-existing-false-positive-definitons">7.6.30. User unmarks existing false positive definitons</a></li>
 <li><a href="#user-fetches-false-positive-configuration-of-project">7.6.31. User fetches false positive configuration of project</a></li>
 <li><a href="#user-uploads-binaries">7.6.32. User uploads binaries</a></li>
-<li><a href="#user-self-registration">7.6.33. User self registration</a></li>
-<li><a href="#admin-lists-open-user-signups">7.6.34. Admin lists open user signups</a></li>
-<li><a href="#admin-applies-self-registration">7.6.35. Admin applies self registration</a></li>
-<li><a href="#admin-deletes-user-signup">7.6.36. Admin deletes user signup</a></li>
-<li><a href="#user-requests-new-api-token">7.6.37. User requests new API token</a></li>
-<li><a href="#admin-lists-all-running-jobs">7.6.38. Admin lists all running jobs</a></li>
-<li><a href="#admin-cancels-a-job">7.6.39. Admin cancels a job</a></li>
-<li><a href="#admin-restarts-a-job">7.6.40. Admin restarts a job</a></li>
-<li><a href="#admin-restarts-a-job-hard">7.6.41. Admin restarts a job (hard)</a></li>
-<li><a href="#user-defines-mock-data-configuration-for-project">7.6.42. User defines mock data configuration for project</a></li>
-<li><a href="#user-retrieves-mock-data-configuration-for-project">7.6.43. User retrieves mock data configuration for project</a></li>
-<li><a href="#admin-updates-mapping-configuration">7.6.44. Admin updates mapping configuration</a></li>
-<li><a href="#admin-fetches-mapping-configuration">7.6.45. Admin fetches mapping configuration</a></li>
-<li><a href="#admin-creates-an-executor-configuration">7.6.46. Admin creates an executor configuration</a></li>
-<li><a href="#admin-deletes-executor-configuration">7.6.47. Admin deletes executor configuration</a></li>
-<li><a href="#admin-fetches-executor-configuration-list">7.6.48. Admin fetches executor configuration list</a></li>
-<li><a href="#admin-fetches-executor-configuration">7.6.49. Admin fetches executor configuration</a></li>
-<li><a href="#admin-updates-executor-configuration-setup">7.6.50. Admin updates executor configuration setup</a></li>
-<li><a href="#admin-creates-an-execution-profile">7.6.51. Admin creates an execution profile</a></li>
-<li><a href="#admin-deletes-execution-profile">7.6.52. Admin deletes execution profile</a></li>
-<li><a href="#admin-updates-execution-profile">7.6.53. Admin updates execution profile</a></li>
-<li><a href="#admin-fetches-execution-profile">7.6.54. Admin fetches execution profile</a></li>
-<li><a href="#admin-fetches-execution-profile-list">7.6.55. Admin fetches execution profile list</a></li>
-<li><a href="#admin-assigns-execution-profile-to-project">7.6.56. Admin assigns execution profile to project</a></li>
-<li><a href="#admin-unassigns-execution-profile-from-project">7.6.57. Admin unassigns execution profile from project</a></li>
-<li><a href="#admin-fetches-auto-cleanup-configuration">7.6.58. Admin fetches auto cleanup configuration</a></li>
-<li><a href="#admin-updates-auto-cleanup-configuration">7.6.59. Admin updates auto cleanup configuration</a></li>
-<li><a href="#admin-disables-job-processing-in-scheduler">7.6.60. Admin disables job processing in scheduler</a></li>
-<li><a href="#admin-enables-scheduler-job-processing">7.6.61. Admin enables scheduler job processing</a></li>
-<li><a href="#admin-get-scheduler-status">7.6.62. Admin get scheduler status</a></li>
-<li><a href="#admin-lists-status-information">7.6.63. Admin lists status information</a></li>
-<li><a href="#admin-checks-server-version">7.6.64. Admin checks server version</a></li>
+<li><a href="#user-downloads-job-report-in-spdx-format">7.6.33. User downloads job report in SPDX format</a></li>
+<li><a href="#user-self-registration">7.6.34. User self registration</a></li>
+<li><a href="#admin-lists-open-user-signups">7.6.35. Admin lists open user signups</a></li>
+<li><a href="#admin-applies-self-registration">7.6.36. Admin applies self registration</a></li>
+<li><a href="#admin-deletes-user-signup">7.6.37. Admin deletes user signup</a></li>
+<li><a href="#user-requests-new-api-token">7.6.38. User requests new API token</a></li>
+<li><a href="#admin-lists-all-running-jobs">7.6.39. Admin lists all running jobs</a></li>
+<li><a href="#admin-cancels-a-job">7.6.40. Admin cancels a job</a></li>
+<li><a href="#admin-restarts-a-job">7.6.41. Admin restarts a job</a></li>
+<li><a href="#admin-restarts-a-job-hard">7.6.42. Admin restarts a job (hard)</a></li>
+<li><a href="#user-defines-mock-data-configuration-for-project">7.6.43. User defines mock data configuration for project</a></li>
+<li><a href="#user-retrieves-mock-data-configuration-for-project">7.6.44. User retrieves mock data configuration for project</a></li>
+<li><a href="#admin-updates-mapping-configuration">7.6.45. Admin updates mapping configuration</a></li>
+<li><a href="#admin-fetches-mapping-configuration">7.6.46. Admin fetches mapping configuration</a></li>
+<li><a href="#admin-creates-an-executor-configuration">7.6.47. Admin creates an executor configuration</a></li>
+<li><a href="#admin-deletes-executor-configuration">7.6.48. Admin deletes executor configuration</a></li>
+<li><a href="#admin-fetches-executor-configuration-list">7.6.49. Admin fetches executor configuration list</a></li>
+<li><a href="#admin-fetches-executor-configuration">7.6.50. Admin fetches executor configuration</a></li>
+<li><a href="#admin-updates-executor-configuration-setup">7.6.51. Admin updates executor configuration setup</a></li>
+<li><a href="#admin-creates-an-execution-profile">7.6.52. Admin creates an execution profile</a></li>
+<li><a href="#admin-deletes-execution-profile">7.6.53. Admin deletes execution profile</a></li>
+<li><a href="#admin-updates-execution-profile">7.6.54. Admin updates execution profile</a></li>
+<li><a href="#admin-fetches-execution-profile">7.6.55. Admin fetches execution profile</a></li>
+<li><a href="#admin-fetches-execution-profile-list">7.6.56. Admin fetches execution profile list</a></li>
+<li><a href="#admin-assigns-execution-profile-to-project">7.6.57. Admin assigns execution profile to project</a></li>
+<li><a href="#admin-unassigns-execution-profile-from-project">7.6.58. Admin unassigns execution profile from project</a></li>
+<li><a href="#admin-fetches-auto-cleanup-configuration">7.6.59. Admin fetches auto cleanup configuration</a></li>
+<li><a href="#admin-updates-auto-cleanup-configuration">7.6.60. Admin updates auto cleanup configuration</a></li>
+<li><a href="#admin-disables-job-processing-in-scheduler">7.6.61. Admin disables job processing in scheduler</a></li>
+<li><a href="#admin-enables-scheduler-job-processing">7.6.62. Admin enables scheduler job processing</a></li>
+<li><a href="#admin-get-scheduler-status">7.6.63. Admin get scheduler status</a></li>
+<li><a href="#admin-lists-status-information">7.6.64. Admin lists status information</a></li>
+<li><a href="#admin-checks-server-version">7.6.65. Admin checks server version</a></li>
 </ul>
 </li>
 <li><a href="#domain-driven-design">7.7. Domain Driven Design</a>
@@ -995,6 +997,14 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#pds-process-handling">9.4.5. Process execution</a>
 <ul class="sectlevel4">
 <li><a href="#how-pds-provides-output-and-error-stream-content-of-running-jobs-in-clustered-environments">9.4.5.1. How PDS provides output and error stream content of running jobs in clustered environments</a></li>
+<li><a href="#how-pds-handles-storage-data">9.4.5.2. How PDS handles storage data</a>
+<ul class="sectlevel5">
+<li><a href="#pds-fetches-sourcecode-from-storage">9.4.5.2.1. Source code fetching</a></li>
+<li><a href="#pds-fetches-binaries-from-storage">9.4.5.2.2. Binaries fetching</a></li>
+<li><a href="#pds-exlanation-data-structure">9.4.5.2.3. Data structure inside TAR and ZIP files</a></li>
+<li><a href="#automated-extraction-of-relevant-parts">9.4.5.2.4. Automated Extraction of relevant parts</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#sechub-integration">9.4.6. SecHub integration</a>
@@ -1198,7 +1208,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.31.0-20220502152559</code></p>
+<p>Documentation version: <code>Server 0.32.0-20220511153905</code></p>
 </div>
 <div class="paragraph">
 <p>This architecture documentation is based on arc42 template.</p>
@@ -2077,6 +2087,9 @@ The main criterion for the choice of possible scenarios (sequences, workflows) i
 <li>
 <p><a href="#section-usecase-UC_069">UC_069-User uploads binaries</a></p>
 </li>
+<li>
+<p><a href="#section-usecase-UC_070">UC_070-User downloads job report in SPDX format</a></p>
+</li>
 </ul>
 </div>
 </div>
@@ -2783,14 +2796,15 @@ The work itself is triggered/executed here by asynchronous batch operation.</p>
 <div class="sect3">
 <h4 id="section-usecase-UC_010">7.5.11. UC_010-User downloads sechub job report</h4>
 <div id="sechub-doclink-uc-user-downloads-job-report" class="paragraph">
-<p>A user wants to download an executed <code>SecHub</code> job by its given job UUID.</p>
+<p>A user wants to download a <code>SecHub</code> report for an executed job
+by its given job UUID.</p>
 </div>
 <div class="paragraph">
-<p>The report standard format will be json, so machine readable. But there is
-also the option to download the report as HTML file.</p>
+<p>The report standard format is a human and machine readable JSON format.
+Additionally, there is the option to download the report as HTML file.</p>
 </div>
 <div class="paragraph">
-<p>The HTML file and also the JSON will only have a reduced view of the scan
+<p>Both, the HTML and the JSON file have a reduced view of the scan
 results. Code snippets etc. can be found on the real security products.</p>
 </div>
 <div class="paragraph">
@@ -6475,6 +6489,49 @@ the new email address will be sent as well.</p>
 </tbody>
 </table>
 </div>
+<div class="sect3">
+<h4 id="section-usecase-UC_070">7.5.71. UC_070-User downloads job report in SPDX format</h4>
+<div id="sechub-doclink-uc-user-downloads-spdx-job-report" class="paragraph">
+<p>A user wants to download a SPDX report for a finished <code>SecHub</code> job
+using the job UUID.</p>
+</div>
+<div class="paragraph">
+<p>Only SPDX JSON is supported.</p>
+</div>
+<div class="paragraph">
+<p>In case, there is no SPDX JSON result for a given job an error will be thrown.</p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">REST API call to get SPDX JSON report</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="sect2">
 <h3 id="section-ucrestdoc">7.6. Rest API documentation</h3>
@@ -6622,6 +6679,9 @@ the new email address will be sent as well.</p>
 </li>
 <li>
 <p><a href="#section-ucrestdoc-uc-UC_069">REST API for UC_069-User uploads binaries </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_070">REST API for UC_070-User downloads job report in SPDX format </a></p>
 </li>
 </ul>
 </div>
@@ -7506,7 +7566,7 @@ the new email address will be sent as well.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/1dbea7c5-7e04-4e9f-955b-086209ab29ea' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/bbc6f63e-670e-44ed-a8db-12df28e8f82e' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -8379,7 +8439,7 @@ the new email address will be sent as well.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>[{&quot;sechubJobUUID&quot;:&quot;b43795fd-2f2c-4e46-8fb6-4ffaf0819fc1&quot;,&quot;executedBy&quot;:&quot;spartakus&quot;,&quot;started&quot;:&quot;2022-05-01T15:26:12.821&quot;,&quot;ended&quot;:&quot;2022-05-02T15:26:12.821&quot;,&quot;status&quot;:&quot;OK&quot;}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code>[{&quot;sechubJobUUID&quot;:&quot;5d9d88cd-e60c-4b92-abcc-2e9a5ffb001d&quot;,&quot;executedBy&quot;:&quot;spartakus&quot;,&quot;started&quot;:&quot;2022-05-10T15:39:22.532&quot;,&quot;ended&quot;:&quot;2022-05-11T15:39:22.533&quot;,&quot;status&quot;:&quot;OK&quot;}]</code></pre>
 </div>
 </div>
 </div>
@@ -8929,7 +8989,7 @@ the new email address will be sent as well.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;cc1dc6fb-4c40-48f2-b3d5-14c9024084be&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;f12ee1e3-0358-4b60-97fb-0ea5c71a0fc6&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -9068,7 +9128,7 @@ the new email address will be sent as well.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;ab4637dd-00b3-4723-96e4-e3f21813a07e&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;9ec0b378-7a43-483b-9c68-5e58b1c29f71&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -9222,7 +9282,7 @@ the new email address will be sent as well.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;46dd8a1f-0c8d-47a2-bfd5-14fca7751d93&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;6311ad1a-be9b-4144-aa7c-74a4b7dc1533&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -9381,7 +9441,7 @@ the new email address will be sent as well.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;b3ddb9b1-62e7-4cca-998d-01250475d246&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;2c1ae13b-d4d6-4639-858e-04007e9ea497&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -9560,7 +9620,7 @@ the new email address will be sent as well.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;7e4b6cc3-0ce4-4986-b804-734c6bf337dc&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;fab2669f-0371-4a2d-a940-0dff7c2a8252&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -9634,7 +9694,7 @@ the new email address will be sent as well.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/62d91735-7f23-463f-b21a-4deefc8576f0/sourcecode' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/c2f6b606-2bbc-407b-ad71-c8ea62d6d718/sourcecode' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -9717,7 +9777,7 @@ the new email address will be sent as well.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/71eb4bd5-40f8-47d4-8a88-40f20ce0bee2/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/2bd23e63-078a-4c1c-ae36-a47e7abc0697/approve' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -9854,7 +9914,7 @@ the new email address will be sent as well.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/a0352776-1d86-4e06-a151-d89cb2af4ecf' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/9c542d44-62de-453d-80d8-3b25a571b18c' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -9863,7 +9923,7 @@ the new email address will be sent as well.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobUUID&quot;:&quot;a0352776-1d86-4e06-a151-d89cb2af4ecf&quot;,&quot;owner&quot;:&quot;CREATOR1&quot;,&quot;created&quot;:&quot;&quot;,&quot;started&quot;:&quot;2022-05-02T15:11:32.708&quot;,&quot;ended&quot;:&quot;2022-05-02T15:26:32.708&quot;,&quot;state&quot;:&quot;ENDED&quot;,&quot;result&quot;:&quot;OK&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobUUID&quot;:&quot;9c542d44-62de-453d-80d8-3b25a571b18c&quot;,&quot;owner&quot;:&quot;CREATOR1&quot;,&quot;created&quot;:&quot;&quot;,&quot;started&quot;:&quot;2022-05-11T15:24:42.894&quot;,&quot;ended&quot;:&quot;2022-05-11T15:39:42.894&quot;,&quot;state&quot;:&quot;ENDED&quot;,&quot;result&quot;:&quot;OK&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -9938,7 +9998,7 @@ the new email address will be sent as well.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/4badb93a-fbb0-4edb-9daa-f9857ee112c0' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/60a41801-1769-4847-895c-856fed0637d2' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -10010,7 +10070,7 @@ the new email address will be sent as well.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/803323e7-2156-48de-a427-67974aec0456' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/a9a5a984-73cd-4985-90de-9e7a761ea708' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -10502,7 +10562,7 @@ the new email address will be sent as well.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/5bc3897b-0374-4b59-bee0-a5e5eaef5f90/binaries' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/d869e310-cb55-445f-b62d-f4fd8831fbce/binaries' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -F 'file=test1.txt                                                                                           0000664 0001750 0001750 00000000000 13353454574 012170  0                                                                                                    ustar   albert                          albert                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ' \
     -F 'checkSum=mychecksum'</code></pre>
@@ -10514,7 +10574,82 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-self-registration">7.6.33. User self registration</h4>
+<h4 id="user-downloads-job-report-in-spdx-format">7.6.33. User downloads job report in SPDX format</h4>
+<div id="section-ucrestdoc-uc-UC_070" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_070">UC_070-User downloads job report in SPDX format </a></p>
+</div>
+<div id="section-ucrestdoc-UC_070-json" class="paragraph">
+<p><strong class="big">Definition</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 69. General request information</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 85.7143%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/project/{projectId}/report/spdx/{jobUUID}</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GET</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Path parameters</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 70. https://localhost:8081/api/project/{projectId}/report/spdx/{jobUUID}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The project Id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobUUID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The job UUID</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong class="big">Example</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>Curl request</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/4310de1a-8cd3-4434-bc40-6ca637309fba' -i -X GET \
+    -H 'Content-Type: application/json;charset=UTF-8' \
+    -H 'Accept: application/json'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="user-self-registration">7.6.34. User self registration</h4>
 <div id="section-ucrestdoc-uc-UC_001" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_001">UC_001-User self registration </a></p>
 </div>
@@ -10522,7 +10657,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 69. General request information</caption>
+<caption class="title">Table 71. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -10601,7 +10736,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-open-user-signups">7.6.34. Admin lists open user signups</h4>
+<h4 id="admin-lists-open-user-signups">7.6.35. Admin lists open user signups</h4>
 <div id="section-ucrestdoc-uc-UC_002" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_002">UC_002-Admin lists open user signups </a></p>
 </div>
@@ -10609,7 +10744,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 70. General request information</caption>
+<caption class="title">Table 72. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -10690,7 +10825,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-applies-self-registration">7.6.35. Admin applies self registration</h4>
+<h4 id="admin-applies-self-registration">7.6.36. Admin applies self registration</h4>
 <div id="section-ucrestdoc-uc-UC_003" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_003">UC_003-Admin applies self registration </a></p>
 </div>
@@ -10698,7 +10833,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 71. General request information</caption>
+<caption class="title">Table 73. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -10728,7 +10863,7 @@ the new email address will be sent as well.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 72. https://localhost:8081/api/admin/signup/accept/{userId}</caption>
+<caption class="title">Table 74. https://localhost:8081/api/admin/signup/accept/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -10763,7 +10898,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-user-signup">7.6.36. Admin deletes user signup</h4>
+<h4 id="admin-deletes-user-signup">7.6.37. Admin deletes user signup</h4>
 <div id="section-ucrestdoc-uc-UC_019" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_019">UC_019-Admin deletes user signup </a></p>
 </div>
@@ -10771,7 +10906,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 73. General request information</caption>
+<caption class="title">Table 75. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -10801,7 +10936,7 @@ the new email address will be sent as well.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 74. https://localhost:8081/api/admin/signup/{userId}</caption>
+<caption class="title">Table 76. https://localhost:8081/api/admin/signup/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -10836,7 +10971,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-requests-new-api-token">7.6.37. User requests new API token</h4>
+<h4 id="user-requests-new-api-token">7.6.38. User requests new API token</h4>
 <div id="section-ucrestdoc-uc-UC_024" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_024">UC_024-User requests new API token </a></p>
 </div>
@@ -10844,7 +10979,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 75. General request information</caption>
+<caption class="title">Table 77. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -10874,7 +11009,7 @@ the new email address will be sent as well.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 76. https://localhost:8081/api/anonymous/refresh/apitoken/{emailAddress}</caption>
+<caption class="title">Table 78. https://localhost:8081/api/anonymous/refresh/apitoken/{emailAddress}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -10910,7 +11045,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-all-running-jobs">7.6.38. Admin lists all running jobs</h4>
+<h4 id="admin-lists-all-running-jobs">7.6.39. Admin lists all running jobs</h4>
 <div id="section-ucrestdoc-uc-UC_023" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_023">UC_023-Admin lists all running jobs </a></p>
 </div>
@@ -10918,7 +11053,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 77. General request information</caption>
+<caption class="title">Table 79. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -11010,12 +11145,12 @@ the new email address will be sent as well.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>[{&quot;jobUUID&quot;:&quot;4e24fd2a-1793-4899-998d-fea7df2580b1&quot;,&quot;projectId&quot;:&quot;project-name&quot;,&quot;owner&quot;:&quot;owner-userid&quot;,&quot;status&quot;:&quot;RUNNING&quot;,&quot;since&quot;:&quot;2022-05-02T15:26:21.488&quot;,&quot;configuration&quot;:&quot;{ config data }&quot;}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code>[{&quot;jobUUID&quot;:&quot;6bdb592f-183c-4890-a4ed-801aa4fc398e&quot;,&quot;projectId&quot;:&quot;project-name&quot;,&quot;owner&quot;:&quot;owner-userid&quot;,&quot;status&quot;:&quot;RUNNING&quot;,&quot;since&quot;:&quot;2022-05-11T15:39:31.098&quot;,&quot;configuration&quot;:&quot;{ config data }&quot;}]</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-cancels-a-job">7.6.39. Admin cancels a job</h4>
+<h4 id="admin-cancels-a-job">7.6.40. Admin cancels a job</h4>
 <div id="section-ucrestdoc-uc-UC_034" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_034">UC_034-Admin cancels a job </a></p>
 </div>
@@ -11023,7 +11158,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 78. General request information</caption>
+<caption class="title">Table 80. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -11053,7 +11188,7 @@ the new email address will be sent as well.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 79. https://localhost:8081/api/admin/jobs/cancel/{jobUUID}</caption>
+<caption class="title">Table 81. https://localhost:8081/api/admin/jobs/cancel/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11079,7 +11214,7 @@ the new email address will be sent as well.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/b2db472a-6122-44df-a55a-9379badec039' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/b73b7846-54e6-4fbb-8223-2437b586fff6' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -11089,7 +11224,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-restarts-a-job">7.6.40. Admin restarts a job</h4>
+<h4 id="admin-restarts-a-job">7.6.41. Admin restarts a job</h4>
 <div id="section-ucrestdoc-uc-UC_041" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_041">UC_041-Admin restarts a job </a></p>
 </div>
@@ -11097,7 +11232,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 80. General request information</caption>
+<caption class="title">Table 82. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -11127,7 +11262,7 @@ the new email address will be sent as well.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 81. https://localhost:8081/api/admin/jobs/restart/{jobUUID}</caption>
+<caption class="title">Table 83. https://localhost:8081/api/admin/jobs/restart/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11153,7 +11288,7 @@ the new email address will be sent as well.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/ee55b070-ade1-4409-869e-a31ba0779a93' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/2ed0933b-5d9c-43df-94b7-01b0d5ddd0ee' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -11163,7 +11298,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-restarts-a-job-hard">7.6.41. Admin restarts a job (hard)</h4>
+<h4 id="admin-restarts-a-job-hard">7.6.42. Admin restarts a job (hard)</h4>
 <div id="section-ucrestdoc-uc-UC_042" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_042">UC_042-Admin restarts a job (hard) </a></p>
 </div>
@@ -11171,7 +11306,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 82. General request information</caption>
+<caption class="title">Table 84. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -11201,7 +11336,7 @@ the new email address will be sent as well.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 83. https://localhost:8081/api/admin/jobs/restart-hard/{jobUUID}</caption>
+<caption class="title">Table 85. https://localhost:8081/api/admin/jobs/restart-hard/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11227,7 +11362,7 @@ the new email address will be sent as well.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/5ca8e59a-65d9-4a4c-a0d9-438d1cffbf48' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/91b07a91-0ae5-4bd3-897b-66a48c7ddf92' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -11237,7 +11372,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-defines-mock-data-configuration-for-project">7.6.42. User defines mock data configuration for project</h4>
+<h4 id="user-defines-mock-data-configuration-for-project">7.6.43. User defines mock data configuration for project</h4>
 <div id="section-ucrestdoc-uc-UC_035" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_035">UC_035-User defines mock data configuration for project </a></p>
 </div>
@@ -11245,7 +11380,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 84. General request information</caption>
+<caption class="title">Table 86. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -11291,7 +11426,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-retrieves-mock-data-configuration-for-project">7.6.43. User retrieves mock data configuration for project</h4>
+<h4 id="user-retrieves-mock-data-configuration-for-project">7.6.44. User retrieves mock data configuration for project</h4>
 <div id="section-ucrestdoc-uc-UC_036" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_036">UC_036-User retrieves mock data configuration for project </a></p>
 </div>
@@ -11299,7 +11434,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 85. General request information</caption>
+<caption class="title">Table 87. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -11348,7 +11483,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-updates-mapping-configuration">7.6.44. Admin updates mapping configuration</h4>
+<h4 id="admin-updates-mapping-configuration">7.6.45. Admin updates mapping configuration</h4>
 <div id="section-ucrestdoc-uc-UC_037" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_037">UC_037-Admin updates mapping configuration </a></p>
 </div>
@@ -11356,7 +11491,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 86. General request information</caption>
+<caption class="title">Table 88. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -11386,7 +11521,7 @@ the new email address will be sent as well.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 87. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
+<caption class="title">Table 89. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11457,7 +11592,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-mapping-configuration">7.6.45. Admin fetches mapping configuration</h4>
+<h4 id="admin-fetches-mapping-configuration">7.6.46. Admin fetches mapping configuration</h4>
 <div id="section-ucrestdoc-uc-UC_038" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_038">UC_038-Admin fetches mapping configuration </a></p>
 </div>
@@ -11465,7 +11600,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 88. General request information</caption>
+<caption class="title">Table 90. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -11495,7 +11630,7 @@ the new email address will be sent as well.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 89. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
+<caption class="title">Table 91. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11569,7 +11704,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-creates-an-executor-configuration">7.6.46. Admin creates an executor configuration</h4>
+<h4 id="admin-creates-an-executor-configuration">7.6.47. Admin creates an executor configuration</h4>
 <div id="section-ucrestdoc-uc-UC_047" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_047">UC_047-Admin creates an executor configuration </a></p>
 </div>
@@ -11577,7 +11712,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 90. General request information</caption>
+<caption class="title">Table 92. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -11685,12 +11820,12 @@ the new email address will be sent as well.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>033feaaf-3407-424e-8ca1-94cbf58d753b</code></pre>
+<pre class="CodeRay highlight nowrap"><code>f5d0e99c-0782-4211-bfc6-3240b156da73</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-executor-configuration">7.6.47. Admin deletes executor configuration</h4>
+<h4 id="admin-deletes-executor-configuration">7.6.48. Admin deletes executor configuration</h4>
 <div id="section-ucrestdoc-uc-UC_048" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_048">UC_048-Admin deletes executor configuration </a></p>
 </div>
@@ -11698,7 +11833,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 91. General request information</caption>
+<caption class="title">Table 93. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -11728,7 +11863,7 @@ the new email address will be sent as well.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 92. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
+<caption class="title">Table 94. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11754,7 +11889,7 @@ the new email address will be sent as well.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/3ecbc755-4dbd-42a7-959d-63b42d853eb9' -i -X DELETE \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/a4c17030-e11d-45a3-912d-ee6ba2005786' -i -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -11764,7 +11899,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-executor-configuration-list">7.6.48. Admin fetches executor configuration list</h4>
+<h4 id="admin-fetches-executor-configuration-list">7.6.49. Admin fetches executor configuration list</h4>
 <div id="section-ucrestdoc-uc-UC_049" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_049">UC_049-Admin fetches executor configuration list </a></p>
 </div>
@@ -11772,7 +11907,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 93. General request information</caption>
+<caption class="title">Table 95. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -11854,12 +11989,12 @@ the new email address will be sent as well.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;executorConfigurations&quot;:[{&quot;uuid&quot;:&quot;8fca59b1-d322-4ecf-9932-32200f071454&quot;,&quot;name&quot;:&quot;example configuration&quot;,&quot;enabled&quot;:true}],&quot;type&quot;:&quot;executorConfigurationList&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;executorConfigurations&quot;:[{&quot;uuid&quot;:&quot;48db343c-6e4f-41df-9cab-12e0db5a8da5&quot;,&quot;name&quot;:&quot;example configuration&quot;,&quot;enabled&quot;:true}],&quot;type&quot;:&quot;executorConfigurationList&quot;}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-executor-configuration">7.6.49. Admin fetches executor configuration</h4>
+<h4 id="admin-fetches-executor-configuration">7.6.50. Admin fetches executor configuration</h4>
 <div id="section-ucrestdoc-uc-UC_050" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_050">UC_050-Admin fetches executor configuration </a></p>
 </div>
@@ -11867,7 +12002,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 94. General request information</caption>
+<caption class="title">Table 96. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -11897,7 +12032,7 @@ the new email address will be sent as well.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 95. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
+<caption class="title">Table 97. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11992,7 +12127,7 @@ the new email address will be sent as well.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/04165a9b-2f13-4710-b703-32cf8030051c' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/6a3f540b-b616-489c-8199-105d350c2f93' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -12001,12 +12136,12 @@ the new email address will be sent as well.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;04165a9b-2f13-4710-b703-32cf8030051c&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;6a3f540b-b616-489c-8199-105d350c2f93&quot;}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-updates-executor-configuration-setup">7.6.50. Admin updates executor configuration setup</h4>
+<h4 id="admin-updates-executor-configuration-setup">7.6.51. Admin updates executor configuration setup</h4>
 <div id="section-ucrestdoc-uc-UC_051" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_051">UC_051-Admin updates executor configuration setup </a></p>
 </div>
@@ -12014,7 +12149,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 96. General request information</caption>
+<caption class="title">Table 98. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -12044,7 +12179,7 @@ the new email address will be sent as well.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 97. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
+<caption class="title">Table 99. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12134,7 +12269,7 @@ the new email address will be sent as well.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/fe4bf89b-9763-4658-a85b-8f143c990842' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/a28b4fb2-18cc-49a0-8e70-1320d9b8791a' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://productNew.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_NEW_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_NEW_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]}}'</code></pre>
 </div>
@@ -12145,7 +12280,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-creates-an-execution-profile">7.6.51. Admin creates an execution profile</h4>
+<h4 id="admin-creates-an-execution-profile">7.6.52. Admin creates an execution profile</h4>
 <div id="section-ucrestdoc-uc-UC_052" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_052">UC_052-Admin creates an execution profile </a></p>
 </div>
@@ -12153,7 +12288,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 98. General request information</caption>
+<caption class="title">Table 100. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -12183,7 +12318,7 @@ the new email address will be sent as well.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 99. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 101. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12259,7 +12394,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-execution-profile">7.6.52. Admin deletes execution profile</h4>
+<h4 id="admin-deletes-execution-profile">7.6.53. Admin deletes execution profile</h4>
 <div id="section-ucrestdoc-uc-UC_053" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_053">UC_053-Admin deletes execution profile </a></p>
 </div>
@@ -12267,7 +12402,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 100. General request information</caption>
+<caption class="title">Table 102. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -12297,7 +12432,7 @@ the new email address will be sent as well.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 101. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 103. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12333,7 +12468,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-updates-execution-profile">7.6.53. Admin updates execution profile</h4>
+<h4 id="admin-updates-execution-profile">7.6.54. Admin updates execution profile</h4>
 <div id="section-ucrestdoc-uc-UC_054" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_054">UC_054-Admin updates execution profile </a></p>
 </div>
@@ -12341,7 +12476,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 102. General request information</caption>
+<caption class="title">Table 104. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -12371,7 +12506,7 @@ the new email address will be sent as well.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 103. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 105. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12433,7 +12568,7 @@ the new email address will be sent as well.</p>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/existing-profile-1' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;e2a74b77-b94e-46ba-9ef8-00c4a0c54fb5&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
+    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;763ae237-9043-4aca-b0cb-946cd7181a55&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -12442,7 +12577,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-execution-profile">7.6.54. Admin fetches execution profile</h4>
+<h4 id="admin-fetches-execution-profile">7.6.55. Admin fetches execution profile</h4>
 <div id="section-ucrestdoc-uc-UC_055" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_055">UC_055-Admin fetches execution profile </a></p>
 </div>
@@ -12450,7 +12585,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 104. General request information</caption>
+<caption class="title">Table 106. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -12480,7 +12615,7 @@ the new email address will be sent as well.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 105. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 107. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12574,12 +12709,12 @@ the new email address will be sent as well.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;description&quot;:&quot;a description&quot;,&quot;enabled&quot;:true,&quot;configurations&quot;:[{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;9137654d-67e8-4499-8f7f-674e01363ead&quot;}],&quot;projectIds&quot;:[&quot;project-1&quot;,&quot;project-2&quot;]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;description&quot;:&quot;a description&quot;,&quot;enabled&quot;:true,&quot;configurations&quot;:[{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;dc6f2c0b-c028-487f-bbd8-d8a518ec31ed&quot;}],&quot;projectIds&quot;:[&quot;project-1&quot;,&quot;project-2&quot;]}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-execution-profile-list">7.6.55. Admin fetches execution profile list</h4>
+<h4 id="admin-fetches-execution-profile-list">7.6.56. Admin fetches execution profile list</h4>
 <div id="section-ucrestdoc-uc-UC_056" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_056">UC_056-Admin fetches execution profile list </a></p>
 </div>
@@ -12587,7 +12722,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 106. General request information</caption>
+<caption class="title">Table 108. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -12674,7 +12809,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-assigns-execution-profile-to-project">7.6.56. Admin assigns execution profile to project</h4>
+<h4 id="admin-assigns-execution-profile-to-project">7.6.57. Admin assigns execution profile to project</h4>
 <div id="section-ucrestdoc-uc-UC_057" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_057">UC_057-Admin assigns execution profile to project </a></p>
 </div>
@@ -12682,7 +12817,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 107. General request information</caption>
+<caption class="title">Table 109. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -12712,7 +12847,7 @@ the new email address will be sent as well.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 108. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
+<caption class="title">Table 110. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12752,7 +12887,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-unassigns-execution-profile-from-project">7.6.57. Admin unassigns execution profile from project</h4>
+<h4 id="admin-unassigns-execution-profile-from-project">7.6.58. Admin unassigns execution profile from project</h4>
 <div id="section-ucrestdoc-uc-UC_058" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_058">UC_058-Admin unassigns execution profile from project </a></p>
 </div>
@@ -12760,7 +12895,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 109. General request information</caption>
+<caption class="title">Table 111. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -12790,7 +12925,7 @@ the new email address will be sent as well.</p>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 110. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
+<caption class="title">Table 112. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12830,7 +12965,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-auto-cleanup-configuration">7.6.58. Admin fetches auto cleanup configuration</h4>
+<h4 id="admin-fetches-auto-cleanup-configuration">7.6.59. Admin fetches auto cleanup configuration</h4>
 <div id="section-ucrestdoc-uc-UC_064" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_064">UC_064-Admin fetches auto cleanup configuration </a></p>
 </div>
@@ -12838,7 +12973,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 111. General request information</caption>
+<caption class="title">Table 113. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -12886,7 +13021,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-updates-auto-cleanup-configuration">7.6.59. Admin updates auto cleanup configuration</h4>
+<h4 id="admin-updates-auto-cleanup-configuration">7.6.60. Admin updates auto cleanup configuration</h4>
 <div id="section-ucrestdoc-uc-UC_065" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_065">UC_065-Admin updates auto cleanup configuration </a></p>
 </div>
@@ -12894,7 +13029,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 112. General request information</caption>
+<caption class="title">Table 114. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -12939,7 +13074,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-disables-job-processing-in-scheduler">7.6.60. Admin disables job processing in scheduler</h4>
+<h4 id="admin-disables-job-processing-in-scheduler">7.6.61. Admin disables job processing in scheduler</h4>
 <div id="section-ucrestdoc-uc-UC_030" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_030">UC_030-Admin disables job processing in scheduler </a></p>
 </div>
@@ -12947,7 +13082,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 113. General request information</caption>
+<caption class="title">Table 115. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -12991,7 +13126,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-enables-scheduler-job-processing">7.6.61. Admin enables scheduler job processing</h4>
+<h4 id="admin-enables-scheduler-job-processing">7.6.62. Admin enables scheduler job processing</h4>
 <div id="section-ucrestdoc-uc-UC_031" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_031">UC_031-Admin enables scheduler job processing </a></p>
 </div>
@@ -12999,7 +13134,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 114. General request information</caption>
+<caption class="title">Table 116. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -13043,7 +13178,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-get-scheduler-status">7.6.62. Admin get scheduler status</h4>
+<h4 id="admin-get-scheduler-status">7.6.63. Admin get scheduler status</h4>
 <div id="section-ucrestdoc-uc-UC_032" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_032">UC_032-Admin get scheduler status </a></p>
 </div>
@@ -13051,7 +13186,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 115. General request information</caption>
+<caption class="title">Table 117. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -13095,7 +13230,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-status-information">7.6.63. Admin lists status information</h4>
+<h4 id="admin-lists-status-information">7.6.64. Admin lists status information</h4>
 <div id="section-ucrestdoc-uc-UC_033" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_033">UC_033-Admin lists status information </a></p>
 </div>
@@ -13103,7 +13238,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 116. General request information</caption>
+<caption class="title">Table 118. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -13180,7 +13315,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-checks-server-version">7.6.64. Admin checks server version</h4>
+<h4 id="admin-checks-server-version">7.6.65. Admin checks server version</h4>
 <div id="section-ucrestdoc-uc-UC_040" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_040">UC_040-Admin checks server version </a></p>
 </div>
@@ -13188,7 +13323,7 @@ the new email address will be sent as well.</p>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 117. General request information</caption>
+<caption class="title">Table 119. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -14594,7 +14729,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 <p>The next text blocks describe the keys available on SecHub:</p>
 </div>
 <table id="section-gen-config-scope-administration" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 118. Scope 'administration'</caption>
+<caption class="title">Table 120. Scope 'administration'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -14622,7 +14757,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-anonymous" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 119. Scope 'anonymous'</caption>
+<caption class="title">Table 121. Scope 'anonymous'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -14644,7 +14779,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-checkmarx" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 120. Scope 'checkmarx'</caption>
+<caption class="title">Table 122. Scope 'checkmarx'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -14696,7 +14831,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-development" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 121. Scope 'development'</caption>
+<caption class="title">Table 123. Scope 'development'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -14718,7 +14853,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-initial" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 122. Scope 'initial'</caption>
+<caption class="title">Table 124. Scope 'initial'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -14750,7 +14885,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-migration" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 123. Scope 'migration'</caption>
+<caption class="title">Table 125. Scope 'migration'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -14772,7 +14907,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-mock" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 124. Scope 'mock'</caption>
+<caption class="title">Table 126. Scope 'mock'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -14794,7 +14929,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-nessus" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 125. Scope 'nessus'</caption>
+<caption class="title">Table 127. Scope 'nessus'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -14871,7 +15006,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-netsparker" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 126. Scope 'netsparker'</caption>
+<caption class="title">Table 128. Scope 'netsparker'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -14943,7 +15078,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-notification" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 127. Scope 'notification'</caption>
+<caption class="title">Table 129. Scope 'notification'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -14975,7 +15110,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-p" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 128. Scope 'p'</caption>
+<caption class="title">Table 130. Scope 'p'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -15022,7 +15157,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-s" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 129. Scope 's'</caption>
+<caption class="title">Table 131. Scope 's'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -15064,7 +15199,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-scan" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 130. Scope 'scan'</caption>
+<caption class="title">Table 132. Scope 'scan'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -15096,7 +15231,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-scheduler" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 131. Scope 'scheduler'</caption>
+<caption class="title">Table 133. Scope 'scheduler'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -15153,7 +15288,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-sec" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 132. Scope 'sec'</caption>
+<caption class="title">Table 134. Scope 'sec'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -15175,7 +15310,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-security" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 133. Scope 'security'</caption>
+<caption class="title">Table 135. Scope 'security'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -15197,7 +15332,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-server" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 134. Scope 'server'</caption>
+<caption class="title">Table 136. Scope 'server'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -15219,7 +15354,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-storage" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 135. Scope 'storage'</caption>
+<caption class="title">Table 137. Scope 'storage'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -15261,7 +15396,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-system" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 136. Scope 'system'</caption>
+<caption class="title">Table 138. Scope 'system'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -15293,7 +15428,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-target" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 137. Scope 'target'</caption>
+<caption class="title">Table 139. Scope 'target'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -15311,13 +15446,13 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.target.resolve.strategy.ip</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Strategy to decide target types by given IP.</strong><br>
-Starts always with strategy-identifer, colon and value(s). Currently only 'intranet-ip-pattern' is supported as strategy. For example: <code>intranet-ip-pattern:192.168.178.<strong>,[2001:db8:85a3:0:0:8a2e:370:</strong>]</code>. Other IPs are interpreted as being inside INTERNET. But no matter if strategy is defined or not: loopback addresses are always illegal and so ignored</p></td>
+Starts always with strategy-identifer, colon and value(s). Values are comma separated. Currently only 'intranet-ip-pattern' is supported as strategy. Inside this strategy,it is possible to define IPv4 or IPv6 adresses (wildcards are also possible). For example: <code>intranet-ip-pattern:192.168.178.*,2001:db8:85a3:0:0:8a2e:370:*</code>. Other IPs are interpreted as being inside INTERNET. But no matter if strategy is defined or not: loopback addresses are always illegal and so ignored</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.target.resolve.strategy.uri</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Strategy to decide target types by given URI.</strong><br>
-Starts always with strategy-identifer, colon and value(s). Currently only 'intranet-hostname-ends-with' is supported as strategy. For example: <code>intranet-hostname-ends-with::intranet.example.org,intx.example.com</code>. Other hostnames are interpreted as being inside INTERNET. But no matter if strategy is defined or not: loopback addresses are always illegal and so ignored.</p></td>
+Starts always with strategy-identifer, colon and value(s). Values are comma separated. Currently only 'intranet-hostname-ends-with' is supported as strategy. For example: <code>intranet-hostname-ends-with:intranet.example.org,intx.example.com</code>. Other hostnames are interpreted as being inside INTERNET. But no matter if strategy is defined or not: loopback addresses are always illegal and so ignored.</p></td>
 </tr>
 </tbody>
 </table>
@@ -15325,7 +15460,7 @@ Starts always with strategy-identifer, colon and value(s). Currently only 'intra
 <div class="sect3">
 <h4 id="scheduling-definitions">8.2.4. Scheduling definitions</h4>
 <table id="link-gen-scheduling" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 138. Scope 'administration'</caption>
+<caption class="title">Table 140. Scope 'administration'</caption>
 <colgroup>
 <col style="width: 7.6923%;">
 <col style="width: 46.1538%;">
@@ -15347,7 +15482,7 @@ Starts always with strategy-identifer, colon and value(s). Currently only 'intra
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 139. Scope 'scan'</caption>
+<caption class="title">Table 141. Scope 'scan'</caption>
 <colgroup>
 <col style="width: 7.6923%;">
 <col style="width: 46.1538%;">
@@ -15369,7 +15504,7 @@ Starts always with strategy-identifer, colon and value(s). Currently only 'intra
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 140. Scope 'schedule'</caption>
+<caption class="title">Table 142. Scope 'schedule'</caption>
 <colgroup>
 <col style="width: 7.6923%;">
 <col style="width: 46.1538%;">
@@ -15399,7 +15534,7 @@ Starts always with strategy-identifer, colon and value(s). Currently only 'intra
 <div class="sect3">
 <h4 id="sechub-mock-options">8.2.5. Configuration properties for mocked adapters</h4>
 <table id="section-gen-config-scope-abstract" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 141. Scope 'abstract'</caption>
+<caption class="title">Table 143. Scope 'abstract'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -15421,7 +15556,7 @@ Starts always with strategy-identifer, colon and value(s). Currently only 'intra
 </tbody>
 </table>
 <table id="section-gen-config-scope-mocked" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 142. Scope 'mocked'</caption>
+<caption class="title">Table 144. Scope 'mocked'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -16468,6 +16603,388 @@ But when the job has finished <em>(no matter if canceled, done or failed)</em> t
 </div>
 </div>
 </div>
+<div class="sect4">
+<h5 id="how-pds-handles-storage-data">9.4.5.2. How PDS handles storage data</h5>
+<div class="paragraph">
+<p>The <code>PDS</code> does automatically fetch uploaded files from shared <a href="#pds-storage-and-sharing">storage</a>
+temporary into its local filesystem. After the scan has been done, the temporary local files
+will be automatically deleted.</p>
+</div>
+<div class="sect5">
+<h6 id="pds-fetches-sourcecode-from-storage">9.4.5.2.1. Source code fetching</h6>
+<div class="paragraph">
+<p>Source code is always contained in a file called <code>sourcecode.zip</code>.
+When a <code>PDS</code> starts a new job, it will fetch the complete ZIP file from <a href="#pds-storage-and-sharing">storage</a>
+to it&#8217;s local storage at</p>
+</div>
+<div class="paragraph">
+<p><code>${PDSJobWorkspaceLocation}/upload/sourcecode.zip</code>.</p>
+</div>
+<div class="paragraph">
+<p>Afterwards the <a href="#pds-automated-extraction-sourcecode">relevant sources will be automatically extracted</a> by inspecting
+the archive <a href="#pds-exlanation-data-structure">data structure</a>.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="pds-fetches-binaries-from-storage">9.4.5.2.2. Binaries fetching</h6>
+<div class="paragraph">
+<p>Binaries are always contained in a file called <code>binaries.tar</code>.
+When a <code>PDS</code> starts a new job and the scan does references a binary data section, it will fetch
+the complete TAR file from <a href="#pds-storage-and-sharing">storage</a> to it&#8217;s local storage at</p>
+</div>
+<div class="paragraph">
+<p><code>${WorkspaceLocation}/upload/binaries.tar</code>.</p>
+</div>
+<div class="paragraph">
+<p>Afterwards the <a href="#pds-automated-extraction-binaries">relevant binaries will be automatically extracted</a> by inspecting
+the archive <a href="#pds-exlanation-data-structure">data structure</a>.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The binary fetching  is currently not yet implemented!</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="pds-exlanation-data-structure">9.4.5.2.3. Data structure inside TAR and ZIP files</h6>
+<div id="data-structure-tar-and-zip-files" class="paragraph">
+<p>The data structure inside <code>TAR</code> and <code>ZIP</code> files contains
+data configuration parts inside <code><em>data</em></code> folder.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Before we introduced the possibility to define referenceable <a href="#sechub-config-data-section">data</a> inside a
+SecHub configuration, we already provided a <code>fileSystem</code> element inside
+ <a href="#sechub-config-code-scan">code scan configuration</a>.</p>
+</div>
+<div class="paragraph">
+<p>For source scans this a more convenient way and we wanted to keep this possiblity - also for
+backward compatibility with existing sechub configuration files.</p>
+</div>
+<div class="paragraph">
+<p>So this is the reason, why <a href="#sechub-config-data-section">data</a> is contained inside <code><em>_data_</em></code>
+folder and there is still content inside the root folder as well.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Only source code scan configuration files may be located inside the root folder!</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">${content} <i class="conum" data-value="1"></i><b>(1)</b>
+__data__/unique-name-1/${content} <i class="conum" data-value="2"></i><b>(2)</b>
+__data__/unique-name-2/${content} <i class="conum" data-value="3"></i><b>(3)</b>
+...</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>code scan embedded file system data</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>content of a data configuration with name "unique-name-1"</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>content of a data configuration with name "unique-name-2"</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Here an example:</p>
+</div>
+<div class="listingblock">
+<div class="title">Example JSON data definition to show resulting TAR and ZIP structures</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span> : [ { <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-sources-1</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="2"></i><b>(2)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : { 
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/file1.txt</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/file2.txt</span><span class="delimiter">&quot;</span></span> ], 
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/subfolder1</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/subfolder2</span><span class="delimiter">&quot;</span></span> ]
+      },
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">excludes</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">**/mytestcode/**</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">**/documentation/**</span><span class="delimiter">&quot;</span></span>], 
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">additionalFilenameExtensions</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">.cplusplus</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">.py9</span><span class="delimiter">&quot;</span></span>] 
+    } ],
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">binaries</span><span class="delimiter">&quot;</span></span> : [ { <i class="conum" data-value="3"></i><b>(3)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-binaries-1</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="4"></i><b>(4)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/file1.dll</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/file2.a</span><span class="delimiter">&quot;</span></span> ], 
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/bin/subfolder1</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/bin/subfolder2</span><span class="delimiter">&quot;</span></span> ] 
+      }
+    },
+     {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-binaries-2</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="5"></i><b>(5)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere-else/file1.dll</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere-else/file2.a</span><span class="delimiter">&quot;</span></span> ],
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere-else/bin/subfolder1</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere-else/bin/subfolder2</span><span class="delimiter">&quot;</span></span> ]
+      }
+    }
+   ]
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>source definition - these structure parts are inside the <code>sourcecode.zip</code> file</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Name of one source data configuration</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>binaries definition - these structure parts are inside the <code>binaries.tar</code> file</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Name of the first binaries data configuration</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Name of the second binaries data configuration</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The example json configuration defines following content structure inside the upload files:</p>
+</div>
+<div class="listingblock">
+<div class="title">ZIP file content for sources</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">__data__/
+    reference-name-sources-1/ <i class="conum" data-value="2"></i><b>(2)</b>
+                  somewhere/
+                     file1.txt
+                     file2.txt
+                     subfolder1/
+                        example-content.py9
+                     subfolder2/
+                        example-content.cplusplus
+                        example-content.txt</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The example json configuration would lead to a <code>TAR</code> file containing:</p>
+</div>
+<div class="listingblock">
+<div class="title">TAR file content for binaries</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">__data__/
+    reference-name-binaries-1/<i class="conum" data-value="4"></i><b>(4)</b>
+                  somewhere/
+                     file1.dll
+                     file2.a
+                     subfolder1/
+                        example-content.bin
+                     subfolder2/
+                        example-content.img
+    reference-name-binaries-2/<i class="conum" data-value="5"></i><b>(5)</b>
+                  somewhere-else/
+                     file1.dll
+                     file2.a
+                     subfolder1/
+                        example-content.bin
+                     subfolder2/
+                        example-content.img</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="automated-extraction-of-relevant-parts">9.4.5.2.4. Automated Extraction of relevant parts</h6>
+<div class="paragraph">
+<p>Only files and folders which are available for the configured scan type will be automatically
+extracted!<br>
+The artificial path element <code><em>_data_</em></code> and the reference name will not be contained in extracted
+folders.</p>
+</div>
+<div id="sechub-config-data-section" class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Please read the SecHub technical documentation for more details about the data configuration.
+You will find it described at <a href="https://mercedes-benz.github.io/sechub" class="bare">https://mercedes-benz.github.io/sechub</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="pds-automated-extraction-sourcecode" class="paragraph">
+<p><strong>Automated extraction of source code</strong><br></p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s assume PDS has <a href="#pds-fetches-sourcecode-from-storage">fetched</a> <code>sourcezip.zip</code> which contains following structure:</p>
+</div>
+<div class="listingblock">
+<div class="title">ZIP file example content</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">__data__/
+    license-sources/
+            somewhere/
+                     file1a.txt
+                     subfolder1/
+                        file1b.txt
+            file2.txt
+    other-sources/
+            file3.txt</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and a SecHub configuration file like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+    <span class="error">/</span><span class="error">/</span> <span class="error">.</span><span class="error">.</span> <span class="error">a</span><span class="error">s</span><span class="error">s</span><span class="error">u</span><span class="error">m</span><span class="error">e</span> <span class="error">d</span><span class="error">a</span><span class="error">t</span><span class="error">a</span> <span class="error">s</span><span class="error">e</span><span class="error">c</span><span class="error">t</span><span class="error">i</span><span class="error">o</span><span class="error">n</span> <span class="error">a</span><span class="error">n</span><span class="error">d</span> <span class="error">o</span><span class="error">t</span><span class="error">h</span><span class="error">e</span><span class="error">r</span> <span class="error">p</span><span class="error">a</span><span class="error">r</span><span class="error">t</span><span class="error">s</span> <span class="error">a</span><span class="error">r</span><span class="error">e</span> <span class="error">c</span><span class="error">o</span><span class="error">n</span><span class="error">f</span><span class="error">i</span><span class="error">g</span><span class="error">u</span><span class="error">r</span><span class="error">e</span><span class="error">d</span> <span class="error">c</span><span class="error">o</span><span class="error">r</span><span class="error">r</span><span class="error">e</span><span class="error">c</span><span class="error">t</span><span class="error">l</span><span class="error">y</span> <span class="error">.</span><span class="error">.</span>
+
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">licenseScan</span><span class="delimiter">&quot;</span></span>: {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [<span class="string"><span class="delimiter">&quot;</span><span class="content">license-sources</span><span class="delimiter">&quot;</span></span>]
+    },
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span>: {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [<span class="string"><span class="delimiter">&quot;</span><span class="content">other-sources</span><span class="delimiter">&quot;</span></span>]
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the example the SecHub configuration has a license scan configured which references
+<code>license-sources</code> data configuration and a code scan which references <code>other-sources</code>.
+The <code>PDS</code> for license scanning will only extract <code>license-sources</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">Output of automated ZIP file extraction by PDS</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">${PDSJobWorkspaceLocation}/upload/unzipped/sourcecode
+                                       somewhere/
+                                            file1a.txt
+                                            subfolder1/
+                                               file1b.txt
+                                       file2.txt</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><code>file3.txt</code> was not extracted, because it is not available for the license scan.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="pds-automated-extraction-binaries" class="paragraph">
+<p><strong>Automated extraction of binaries</strong><br></p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s assume PDS has <a href="#pds-fetches-binaries-from-storage">fetched</a> <code>binaries.tar</code> which contains following structure:</p>
+</div>
+<div class="listingblock">
+<div class="title">TAR file example content</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">__data__/
+    license-binaries/
+            somewhere/
+                     file1a.bin
+                     subfolder1/
+                        file1b.bin
+            file2.bin
+    other-binaries/
+            file3.bin</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and a SecHub configuration file like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+    <span class="error">/</span><span class="error">/</span> <span class="error">.</span><span class="error">.</span> <span class="error">a</span><span class="error">s</span><span class="error">s</span><span class="error">u</span><span class="error">m</span><span class="error">e</span> <span class="error">d</span><span class="error">a</span><span class="error">t</span><span class="error">a</span> <span class="error">s</span><span class="error">e</span><span class="error">c</span><span class="error">t</span><span class="error">i</span><span class="error">o</span><span class="error">n</span> <span class="error">a</span><span class="error">n</span><span class="error">d</span> <span class="error">o</span><span class="error">t</span><span class="error">h</span><span class="error">e</span><span class="error">r</span> <span class="error">p</span><span class="error">a</span><span class="error">r</span><span class="error">t</span><span class="error">s</span> <span class="error">a</span><span class="error">r</span><span class="error">e</span> <span class="error">c</span><span class="error">o</span><span class="error">n</span><span class="error">f</span><span class="error">i</span><span class="error">g</span><span class="error">u</span><span class="error">r</span><span class="error">e</span><span class="error">d</span> <span class="error">c</span><span class="error">o</span><span class="error">r</span><span class="error">r</span><span class="error">e</span><span class="error">c</span><span class="error">t</span><span class="error">l</span><span class="error">y</span> <span class="error">.</span><span class="error">.</span>
+
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">licenseScan</span><span class="delimiter">&quot;</span></span>: {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [<span class="string"><span class="delimiter">&quot;</span><span class="content">license-binaries</span><span class="delimiter">&quot;</span></span>]
+    },
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span>: {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [<span class="string"><span class="delimiter">&quot;</span><span class="content">other-binaries</span><span class="delimiter">&quot;</span></span>]
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the example the SecHub configuration has a license scan configured which references
+<code>license-binaries</code> data configuration and a code scan which references <code>other-binaries</code>.
+The <code>PDS</code> for license scanning will only extract <code>license-binaries</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">Output of automated ZIP file extraction by PDS</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">${PDSJobWorkspaceLocation}/upload/extracted/binaries
+                                       somewhere/
+                                            file1a.bin
+                                            subfolder1/
+                                               file1b.bin
+                                       file2.bin</code></pre>
+</div>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The described binary extraction is currently not yet implemented!</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="sechub-integration">9.4.6. SecHub integration</h4>
@@ -17330,12 +17847,48 @@ See <a href="https://github.com/mercedes-benz/sechub/issues/12" class="bare">htt
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;Term-1&gt;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;definition-1&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">K8s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://kubernetes.io/">Kubernetes</a>, also known as K8s, is an open-source system for automating deployment,
+                 scaling, and management of containerized applications.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;Term-2&gt;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;definition-2&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Helm</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">"&#8230;&#8203;<a href="https://helm.sh/">Helm</a> is the best way to find, share, and use software built for Kubernetes. &#8230;&#8203;"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Is an acronym for "Product delegation server". This kind of server represents a
+                 very easy way to integrate any security product into SecHub - no matter if it is
+                 a command line tool or has REST API or anything else.<br>
+                <br>
+                 It has a standard
+                 REST API which is wellknown by SecHub and can be used in clusters or as standalone
+                 server.
+                <br>
+                 This server is also maintained by SecHub maintainers.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS-Solutions</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS is a very generic server which can execute anything. The <code>PDS-Solutions</code> are
+                 full working `integrations which run "out-of-the-box". Every solution can
+                 be run a preconfigured PDS either as a single Docker instance, as a Docker compose
+                 cluster or even by <a href="https://kubernetes.io/">K8s</a> via existing <a href="https://helm.sh/">Helm</a> scripts.
+                 The PDS solutions are also maintained by SecHub maintainers.<br>
+                <br>
+                 You can find the solutions at <a href="https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions" class="bare">https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SecHub</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SecHub itself - it is an acronym for "Security Hub" and represents a security
+                 orchestration tool. <br>
+                <br>
+                 It is free and open source and can be found at <a href="https://github.com/mercedes-benz/sechub" class="bare">https://github.com/mercedes-benz/sechub</a>.
+                 The documentation is available at <a href="https://mercedes-benz.github.io/sechub" class="bare">https://mercedes-benz.github.io/sechub</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SecHub configuration file</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Is the JSON configuration file used by a user to start a new
+                                    SecHub job.</p></td>
 </tr>
 </tbody>
 </table>
@@ -17344,7 +17897,7 @@ See <a href="https://github.com/mercedes-benz/sechub/issues/12" class="bare">htt
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.31.0<br>
+ Server 0.32.0<br>
 </div>
 </div>
 </body>
