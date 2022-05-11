@@ -101,4 +101,43 @@ public class SimpleStringUtils {
         }
         return string.substring(0, maxLength - 3) + "...";
     }
+
+    /**
+     * Will test if given string does contain only alphabetic characters (a-z,A-Z),
+     * digits (0-9) or additionally allowed characters.
+     *
+     * @param string            the content to inspect.
+     * @param additionalAllowed
+     * @return <code>true</code> when only allowed characters are contained, or
+     *         given string is <code>null</code> or empty. <code>false</code>
+     *         otherwise.
+     */
+    public static boolean hasOnlyAlphabeticDigitOrAdditionalAllowedCharacters(String string, char... additionalAllowed) {
+        if (string == null) {
+            return true;
+        }
+        if (string.isEmpty()) {
+            return true;
+        }
+        for (char c : string.toCharArray()) {
+            if (Character.isDigit(c)) {
+                continue;
+            }
+            if (Character.isAlphabetic(c)) {
+                continue;
+            }
+            boolean ok = false;
+            for (char allowed : additionalAllowed) {
+                if (c == allowed) {
+                    ok = true;
+                    continue;
+                }
+            }
+            if (ok) {
+                continue;
+            }
+            return false;
+        }
+        return true;
+    }
 }

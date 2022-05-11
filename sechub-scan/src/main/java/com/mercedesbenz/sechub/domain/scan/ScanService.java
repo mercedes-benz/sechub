@@ -18,6 +18,7 @@ import com.mercedesbenz.sechub.commons.model.JSONConverterException;
 import com.mercedesbenz.sechub.domain.scan.log.ProjectScanLogService;
 import com.mercedesbenz.sechub.domain.scan.product.CodeScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.InfrastructureScanProductExecutionService;
+import com.mercedesbenz.sechub.domain.scan.product.LicenseScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResultService;
 import com.mercedesbenz.sechub.domain.scan.product.WebScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfig;
@@ -72,6 +73,9 @@ public class ScanService implements SynchronMessageHandler {
 
     @Autowired
     InfrastructureScanProductExecutionService infraScanProductExecutionService;
+
+    @Autowired
+    LicenseScanProductExecutionService licenseScanProductExecutionService;
 
     @Autowired
     CreateScanReportService reportService;

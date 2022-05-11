@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +19,7 @@ import org.junit.Test;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.JSONConverterException;
 import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubLicenseScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubTimeUnit;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.WebScanDurationConfiguration;
@@ -521,5 +523,23 @@ public class SecHubConfigurationTest {
         List<String> expectedExcludes = new LinkedList<>();
         assertTrue("excludes are empty", excludes.get().isEmpty());
         assertEquals(expectedExcludes, excludes.get());
+    }
+
+    @Test
+    public void a_sechub_configuration_JSON_with_license_scan_can_be_read_and_license_scan_has_correct_data_configuration_reference() {
+        /* prepare */
+        String expectedDataConfigName = "build-artifacts";
+        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("licensescan/license_scan.json");
+
+        /* execute */
+        SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
+
+        /* test */
+        Optional<SecHubLicenseScanConfiguration> licenseScan = result.getLicenseScan();
+        assertTrue("license scan must be present", licenseScan.isPresent());
+
+        Set<String> usedDataConfigs = licenseScan.get().getNamesOfUsedDataConfigurationObjects();
+        assertEquals(1, usedDataConfigs.size());
+        assertEquals(expectedDataConfigName, usedDataConfigs.iterator().next());
     }
 }

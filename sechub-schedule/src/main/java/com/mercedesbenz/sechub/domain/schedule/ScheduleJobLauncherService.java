@@ -66,12 +66,12 @@ public class ScheduleJobLauncherService {
             JobParameters jobParameters = parameterBuilder.buildParams(secHubJobUUID);
 
             /* launch batch job */
-            LOG.debug("Trigger batch job launch :{}", secHubJobUUID);
+            LOG.debug("Trigger batch job launch: {}", secHubJobUUID);
             JobExecution execution = jobLauncher.run(job, jobParameters);
 
             /* job is launched - inspect batch job internal id */
             Long batchJobId = execution.getJobId();
-            LOG.debug("Execution triggered: {} has batch-ID:{}", secHubJobUUID, batchJobId);
+            LOG.debug("Execution triggered: {} has batch-ID: {}", secHubJobUUID, batchJobId);
 
             /* send domain event */
             sendJobStarted(secHubJob.getProjectId(), secHubJobUUID, secHubJob.getJsonConfiguration(), secHubJob.getOwner());
@@ -81,7 +81,7 @@ public class ScheduleJobLauncherService {
              * we do not need to send a "jobEnded" event, because in this case job was never
              * started
              */
-            LOG.error("Not able to run batch job for sechhub :{}", secHubJobUUID);
+            LOG.error("Not able to run batch job for sechhub: {}", secHubJobUUID);
             throw new ScheduleFailedException(e);
         }
 

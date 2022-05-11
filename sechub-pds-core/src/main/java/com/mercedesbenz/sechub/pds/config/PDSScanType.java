@@ -11,6 +11,8 @@ public enum PDSScanType {
 
     INFRA_SCAN("infraScan"),
 
+    LICENSE_SCAN("licenseScan"),
+
     REPORT("report"),
 
     UNKNOWN("unknown"),

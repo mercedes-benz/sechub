@@ -8,6 +8,6 @@ package com.mercedesbenz.sechub.domain.scan.product;
  * @author Albert Tregnaghi
  *
  */
-public interface WebScanProductExecutionService extends ProductExectionStoreService {
+public interface WebScanProductExecutionService extends ProductExecutionStoreService {
 
 }

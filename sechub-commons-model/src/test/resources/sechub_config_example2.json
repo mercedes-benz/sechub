@@ -10,7 +10,7 @@
   },
   "codeScan" : {
     "openApi" : {
-      "uses" : [ "open-api-file-reference" ]
+      "use" : [ "open-api-file-reference" ]
     },
     "uri" : "https://productfailure.demo.example.org"
   }

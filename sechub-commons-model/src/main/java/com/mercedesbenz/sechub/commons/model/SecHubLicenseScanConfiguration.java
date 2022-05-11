@@ -4,7 +4,7 @@ package com.mercedesbenz.sechub.commons.model;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class SecHubOpenAPIConfiguration implements SecHubDataConfigurationUsageByName {
+public class SecHubLicenseScanConfiguration implements SecHubDataConfigurationUsageByName {
 
     private Set<String> namesOfUsedDataConfigurationObjects = new LinkedHashSet<>();
 
@@ -12,5 +12,4 @@ public class SecHubOpenAPIConfiguration implements SecHubDataConfigurationUsageB
     public Set<String> getNamesOfUsedDataConfigurationObjects() {
         return namesOfUsedDataConfigurationObjects;
     }
-
 }

@@ -36,12 +36,14 @@ import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.domain.scan.HTMLScanResultReportModelBuilder;
 import com.mercedesbenz.sechub.domain.scan.report.DownloadScanReportService;
+import com.mercedesbenz.sechub.domain.scan.report.DownloadSpdxScanReportService;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReportRestController;
 import com.mercedesbenz.sechub.domain.scan.report.ScanSecHubReport;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc.SpringRestDocOutput;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserDownloadsJobReport;
+import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserDownloadsSpdxJobReport;
 import com.mercedesbenz.sechub.test.ExampleConstants;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
@@ -60,6 +62,9 @@ public class ScanReportRestControllerRestDocTest {
 
     @MockBean
     private DownloadScanReportService downloadReportService;
+
+    @MockBean
+    private DownloadSpdxScanReportService downloadSpdxReportService;
 
     @MockBean
     HTMLScanResultReportModelBuilder modelBuilder;
@@ -157,6 +162,48 @@ public class ScanReportRestControllerRestDocTest {
         			      ));
 
         /* @formatter:on */
+    }
+
+    @UseCaseRestDoc(useCase = UseCaseUserDownloadsSpdxJobReport.class, variant = "JSON", wanted = {
+
+            SpringRestDocOutput.PATH_PARAMETERS,
+
+            SpringRestDocOutput.REQUEST_FIELDS,
+
+            SpringRestDocOutput.CURL_REQUEST })
+    @Test
+    @WithMockUser
+    public void get_report_from_existing_job_returns_information_as_spdx_json_when_type_is_APPLICATION_JSON_UTF8() throws Exception {
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildGetJobReportUrlSpdx(PROJECT_ID.pathElement(), JOB_UUID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserDownloadsSpdxJobReport.class;
+
+        String spdxReport = "{\"spdxVersion\": \"SPDX-2.2\"}";
+
+        when(downloadSpdxReportService.getScanSpdxJsonReport(PROJECT1_ID, jobUUID)).thenReturn(spdxReport);
+
+        /* execute + test @formatter:off */
+	    this.mockMvc.perform(
+	    		get(apiEndpoint,PROJECT1_ID,jobUUID).
+	    		    accept(MediaType.APPLICATION_JSON_VALUE).
+	    			contentType(MediaType.APPLICATION_JSON_VALUE)
+	    		).
+	    			andExpect(status().isOk()).
+	    			andExpect(content().json(spdxReport)).
+	    			andDo(defineRestService().
+                            with().
+                                useCaseData(useCase, "JSON").
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                                responseSchema(OpenApiSchema.SECHUB_REPORT.getSchema()).
+                            and().
+                            document(
+                                        pathParameters(
+                                                parameterWithName(PROJECT_ID.paramName()).description("The project Id"),
+                                                parameterWithName(JOB_UUID.paramName()).description("The job UUID")
+                                    )
+	    			     ));
+
+	    /* @formatter:on */
     }
 
     @TestConfiguration

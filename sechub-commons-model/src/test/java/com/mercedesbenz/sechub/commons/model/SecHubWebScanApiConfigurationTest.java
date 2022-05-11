@@ -7,7 +7,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
-class SecHubOpenAPIConfigurationTest {
+class SecHubWebScanApiConfigurationTest {
 
     /**
      * We have defined the json attribute "use" for the interface
@@ -20,7 +20,7 @@ class SecHubOpenAPIConfigurationTest {
         String json = "{ \"use\" : [ \"openapi-reference1\"] }";
 
         /* execute */
-        SecHubOpenAPIConfiguration config = JSONConverter.get().fromJSON(SecHubOpenAPIConfiguration.class, json);
+        SecHubWebScanApiConfiguration config = JSONConverter.get().fromJSON(SecHubWebScanApiConfiguration.class, json);
 
         /* test */
         Set<String> set = config.getNamesOfUsedDataConfigurationObjects();
@@ -36,7 +36,7 @@ class SecHubOpenAPIConfigurationTest {
      */
     @Test
     void json_attribute_use_is_handled_correctly_by_to_json() {
-        SecHubOpenAPIConfiguration config = new SecHubOpenAPIConfiguration();
+        SecHubWebScanApiConfiguration config = new SecHubWebScanApiConfiguration();
         config.getNamesOfUsedDataConfigurationObjects().add("ref1");
         config.getNamesOfUsedDataConfigurationObjects().add("ref2");
 

@@ -1,0 +1,21 @@
+{
+  "guid" : "d84e9e96-c7c5-11ec-be2f-9ff76f29cb3b",
+  "name" : "name",
+  "fullName" : "full-name",
+  "product" : "product",
+  "productSuite" : "product-suite",
+  "semanticVersion" : "1.1.2-beta.12",
+  "version" : "1.1.2",
+  "releaseDateUtc" : "2016-02-08T16:08:25.943Z",
+  "downloadUri" : "https://www.myUri.com/download/tool-1.1.2-beta.12.zip",
+  "informationUri" : "https://www.myUri.com/documentation.html",
+  "organization" : "organization",
+  "shortDescription" : { },
+  "fullDescription" : { },
+  "language" : "en",
+  "rules" : [ ],
+  "taxa" : [ ],
+  "minimumRequiredLocalizedDataSemanticVersion" : "1.1",
+  "properties" : { },
+  "comprehensive" : false
+}

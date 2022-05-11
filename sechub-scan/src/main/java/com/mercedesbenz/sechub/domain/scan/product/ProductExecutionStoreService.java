@@ -4,7 +4,7 @@ package com.mercedesbenz.sechub.domain.scan.product;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
 
-public interface ProductExectionStoreService {
+public interface ProductExecutionStoreService {
 
     /**
      * Execute the registered products and store results
