@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Server Rest API Documentation</h1>
 <div class="details">
-<span id="revnumber"> Server 0.31.0</span>
+<span id="revnumber"> Server 0.32.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -544,41 +544,54 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#api-version">2.1.1. API version</a></li>
 <li><a href="#server">2.1.2. Server</a></li>
 <li><a href="#project">2.1.3. Project</a></li>
-<li><a href="#code-scan">2.1.4. Code scan</a>
+<li><a href="#sechub-config-code-scan">2.1.4. Code scan</a>
 <ul class="sectlevel4">
 <li><a href="#upload-sources-from-file-system">2.1.4.1. Upload sources from file system</a></li>
 <li><a href="#example-sechub-json">2.1.4.2. Example sechub.json</a></li>
 </ul>
 </li>
-<li><a href="#web-scan">2.1.5. Web scan</a>
+<li><a href="#license-scan">2.1.5. License scan</a>
 <ul class="sectlevel4">
-<li><a href="#uris">2.1.5.1. URIs</a>
-<ul class="sectlevel5">
-<li><a href="#example-anonymous">2.1.5.1.1. Example anonymous</a></li>
+<li><a href="#sechub-config-example-licensescan-binary">2.1.5.1. Example binary license scan</a></li>
+<li><a href="#sechub-config-example-licensescan-sources">2.1.5.2. Example source license scan</a></li>
+<li><a href="#sechub-config-example-licensescan-combined-with-codescan">2.1.5.3. Example source licence scan with sources code scan combined</a></li>
 </ul>
 </li>
-<li><a href="#login">2.1.5.2. Login</a>
-<ul class="sectlevel5">
-<li><a href="#options">2.1.5.2.1. Options</a></li>
-<li><a href="#example-basic-authentication">2.1.5.2.2. Example basic authentication</a></li>
-<li><a href="#example-form-based-login-with-auto-detect">2.1.5.2.3. Example form based login with auto detect</a></li>
-<li><a href="#example-form-based-login-by-script">2.1.5.2.4. Example form based login by script</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#infrastructure-scan">2.1.6. Infrastructure scan</a>
+<li><a href="#web-scan">2.1.6. Web scan</a>
 <ul class="sectlevel4">
-<li><a href="#uris-2">2.1.6.1. URIs</a>
+<li><a href="#uris">2.1.6.1. URIs</a>
 <ul class="sectlevel5">
-<li><a href="#example-infrascan-one-uri">2.1.6.1.1. Example infrascan one URI</a></li>
+<li><a href="#example-anonymous">2.1.6.1.1. Example anonymous</a></li>
 </ul>
 </li>
-<li><a href="#ips">2.1.6.2. IPs</a>
+<li><a href="#login">2.1.6.2. Login</a>
 <ul class="sectlevel5">
-<li><a href="#example-infrascan-one-ip">2.1.6.2.1. Example infrascan one IP</a></li>
+<li><a href="#options">2.1.6.2.1. Options</a></li>
+<li><a href="#example-basic-authentication">2.1.6.2.2. Example basic authentication</a></li>
+<li><a href="#example-form-based-login-with-auto-detect">2.1.6.2.3. Example form based login with auto detect</a></li>
+<li><a href="#example-form-based-login-by-script">2.1.6.2.4. Example form based login by script</a></li>
+<li><a href="#sechub-config-example-webscan-openapi">2.1.6.2.5. Example OpenAPI scan</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li><a href="#infrastructure-scan">2.1.7. Infrastructure scan</a>
+<ul class="sectlevel4">
+<li><a href="#uris-2">2.1.7.1. URIs</a>
+<ul class="sectlevel5">
+<li><a href="#example-infrascan-one-uri">2.1.7.1.1. Example infrascan one URI</a></li>
+</ul>
+</li>
+<li><a href="#ips">2.1.7.2. IPs</a>
+<ul class="sectlevel5">
+<li><a href="#example-infrascan-one-ip">2.1.7.2.1. Example infrascan one IP</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#sechub-config-data-section">2.1.8. Data</a>
+<ul class="sectlevel4">
+<li><a href="#general-json-syntax">2.1.8.1. General JSON syntax</a></li>
 </ul>
 </li>
 </ul>
@@ -648,38 +661,39 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#user-unmarks-existing-false-positive-definitons">2.2.30. User unmarks existing false positive definitons</a></li>
 <li><a href="#user-fetches-false-positive-configuration-of-project">2.2.31. User fetches false positive configuration of project</a></li>
 <li><a href="#user-uploads-binaries">2.2.32. User uploads binaries</a></li>
-<li><a href="#user-self-registration">2.2.33. User self registration</a></li>
-<li><a href="#admin-lists-open-user-signups">2.2.34. Admin lists open user signups</a></li>
-<li><a href="#admin-applies-self-registration">2.2.35. Admin applies self registration</a></li>
-<li><a href="#admin-deletes-user-signup">2.2.36. Admin deletes user signup</a></li>
-<li><a href="#user-requests-new-api-token">2.2.37. User requests new API token</a></li>
-<li><a href="#admin-lists-all-running-jobs">2.2.38. Admin lists all running jobs</a></li>
-<li><a href="#admin-cancels-a-job">2.2.39. Admin cancels a job</a></li>
-<li><a href="#admin-restarts-a-job">2.2.40. Admin restarts a job</a></li>
-<li><a href="#admin-restarts-a-job-hard">2.2.41. Admin restarts a job (hard)</a></li>
-<li><a href="#user-defines-mock-data-configuration-for-project">2.2.42. User defines mock data configuration for project</a></li>
-<li><a href="#user-retrieves-mock-data-configuration-for-project">2.2.43. User retrieves mock data configuration for project</a></li>
-<li><a href="#admin-updates-mapping-configuration">2.2.44. Admin updates mapping configuration</a></li>
-<li><a href="#admin-fetches-mapping-configuration">2.2.45. Admin fetches mapping configuration</a></li>
-<li><a href="#admin-creates-an-executor-configuration">2.2.46. Admin creates an executor configuration</a></li>
-<li><a href="#admin-deletes-executor-configuration">2.2.47. Admin deletes executor configuration</a></li>
-<li><a href="#admin-fetches-executor-configuration-list">2.2.48. Admin fetches executor configuration list</a></li>
-<li><a href="#admin-fetches-executor-configuration">2.2.49. Admin fetches executor configuration</a></li>
-<li><a href="#admin-updates-executor-configuration-setup">2.2.50. Admin updates executor configuration setup</a></li>
-<li><a href="#admin-creates-an-execution-profile">2.2.51. Admin creates an execution profile</a></li>
-<li><a href="#admin-deletes-execution-profile">2.2.52. Admin deletes execution profile</a></li>
-<li><a href="#admin-updates-execution-profile">2.2.53. Admin updates execution profile</a></li>
-<li><a href="#admin-fetches-execution-profile">2.2.54. Admin fetches execution profile</a></li>
-<li><a href="#admin-fetches-execution-profile-list">2.2.55. Admin fetches execution profile list</a></li>
-<li><a href="#admin-assigns-execution-profile-to-project">2.2.56. Admin assigns execution profile to project</a></li>
-<li><a href="#admin-unassigns-execution-profile-from-project">2.2.57. Admin unassigns execution profile from project</a></li>
-<li><a href="#admin-fetches-auto-cleanup-configuration">2.2.58. Admin fetches auto cleanup configuration</a></li>
-<li><a href="#admin-updates-auto-cleanup-configuration">2.2.59. Admin updates auto cleanup configuration</a></li>
-<li><a href="#admin-disables-job-processing-in-scheduler">2.2.60. Admin disables job processing in scheduler</a></li>
-<li><a href="#admin-enables-scheduler-job-processing">2.2.61. Admin enables scheduler job processing</a></li>
-<li><a href="#admin-get-scheduler-status">2.2.62. Admin get scheduler status</a></li>
-<li><a href="#admin-lists-status-information">2.2.63. Admin lists status information</a></li>
-<li><a href="#admin-checks-server-version">2.2.64. Admin checks server version</a></li>
+<li><a href="#user-downloads-job-report-in-spdx-format">2.2.33. User downloads job report in SPDX format</a></li>
+<li><a href="#user-self-registration">2.2.34. User self registration</a></li>
+<li><a href="#admin-lists-open-user-signups">2.2.35. Admin lists open user signups</a></li>
+<li><a href="#admin-applies-self-registration">2.2.36. Admin applies self registration</a></li>
+<li><a href="#admin-deletes-user-signup">2.2.37. Admin deletes user signup</a></li>
+<li><a href="#user-requests-new-api-token">2.2.38. User requests new API token</a></li>
+<li><a href="#admin-lists-all-running-jobs">2.2.39. Admin lists all running jobs</a></li>
+<li><a href="#admin-cancels-a-job">2.2.40. Admin cancels a job</a></li>
+<li><a href="#admin-restarts-a-job">2.2.41. Admin restarts a job</a></li>
+<li><a href="#admin-restarts-a-job-hard">2.2.42. Admin restarts a job (hard)</a></li>
+<li><a href="#user-defines-mock-data-configuration-for-project">2.2.43. User defines mock data configuration for project</a></li>
+<li><a href="#user-retrieves-mock-data-configuration-for-project">2.2.44. User retrieves mock data configuration for project</a></li>
+<li><a href="#admin-updates-mapping-configuration">2.2.45. Admin updates mapping configuration</a></li>
+<li><a href="#admin-fetches-mapping-configuration">2.2.46. Admin fetches mapping configuration</a></li>
+<li><a href="#admin-creates-an-executor-configuration">2.2.47. Admin creates an executor configuration</a></li>
+<li><a href="#admin-deletes-executor-configuration">2.2.48. Admin deletes executor configuration</a></li>
+<li><a href="#admin-fetches-executor-configuration-list">2.2.49. Admin fetches executor configuration list</a></li>
+<li><a href="#admin-fetches-executor-configuration">2.2.50. Admin fetches executor configuration</a></li>
+<li><a href="#admin-updates-executor-configuration-setup">2.2.51. Admin updates executor configuration setup</a></li>
+<li><a href="#admin-creates-an-execution-profile">2.2.52. Admin creates an execution profile</a></li>
+<li><a href="#admin-deletes-execution-profile">2.2.53. Admin deletes execution profile</a></li>
+<li><a href="#admin-updates-execution-profile">2.2.54. Admin updates execution profile</a></li>
+<li><a href="#admin-fetches-execution-profile">2.2.55. Admin fetches execution profile</a></li>
+<li><a href="#admin-fetches-execution-profile-list">2.2.56. Admin fetches execution profile list</a></li>
+<li><a href="#admin-assigns-execution-profile-to-project">2.2.57. Admin assigns execution profile to project</a></li>
+<li><a href="#admin-unassigns-execution-profile-from-project">2.2.58. Admin unassigns execution profile from project</a></li>
+<li><a href="#admin-fetches-auto-cleanup-configuration">2.2.59. Admin fetches auto cleanup configuration</a></li>
+<li><a href="#admin-updates-auto-cleanup-configuration">2.2.60. Admin updates auto cleanup configuration</a></li>
+<li><a href="#admin-disables-job-processing-in-scheduler">2.2.61. Admin disables job processing in scheduler</a></li>
+<li><a href="#admin-enables-scheduler-job-processing">2.2.62. Admin enables scheduler job processing</a></li>
+<li><a href="#admin-get-scheduler-status">2.2.63. Admin get scheduler status</a></li>
+<li><a href="#admin-lists-status-information">2.2.64. Admin lists status information</a></li>
+<li><a href="#admin-checks-server-version">2.2.65. Admin checks server version</a></li>
 </ul>
 </li>
 </ul>
@@ -801,60 +815,61 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#section-usecase-UC_066">4.1.67. UC_066-Sechub administration domain auto cleanup</a></li>
 <li><a href="#section-usecase-UC_067">4.1.68. UC_067-Sechub scan domain auto cleanup</a></li>
 <li><a href="#section-usecase-UC_068">4.1.69. UC_068-Sechub schedule domain auto cleanup</a></li>
-<li><a href="#section-usecase-UC_069">4.1.70. UC_069-User uploads binaries</a>
+<li><a href="#section-usecase-UC_069">4.1.70. UC_069-User uploads binaries</a></li>
+<li><a href="#section-usecase-UC_070">4.1.71. UC_070-User downloads job report in SPDX format</a>
 <ul class="sectlevel4">
-<li><a href="#section-gen-messaging-overview">4.1.70.1. Overview</a>
+<li><a href="#section-gen-messaging-overview">4.1.71.1. Overview</a>
 <ul class="sectlevel5">
-<li><a href="#diagram">4.1.70.1.1. Diagram</a></li>
-<li><a href="#section-gen-messaging-overview-linklist">4.1.70.1.2. List of all messages</a></li>
+<li><a href="#diagram">4.1.71.1.1. Diagram</a></li>
+<li><a href="#section-gen-messaging-overview-linklist">4.1.71.1.2. List of all messages</a></li>
 </ul>
 </li>
-<li><a href="#section-gen-messaging-auto_cleanup_configuration_changed">4.1.70.2. Message AUTO_CLEANUP_CONFIGURATION_CHANGED</a></li>
-<li><a href="#section-gen-messaging-batch_job_status">4.1.70.3. Message BATCH_JOB_STATUS</a></li>
-<li><a href="#section-gen-messaging-job_canceled">4.1.70.4. Message JOB_CANCELED</a></li>
-<li><a href="#section-gen-messaging-job_done">4.1.70.5. Message JOB_DONE</a></li>
-<li><a href="#section-gen-messaging-job_failed">4.1.70.6. Message JOB_FAILED</a></li>
-<li><a href="#section-gen-messaging-job_restart_canceled">4.1.70.7. Message JOB_RESTART_CANCELED</a></li>
-<li><a href="#section-gen-messaging-job_restart_triggered">4.1.70.8. Message JOB_RESTART_TRIGGERED</a></li>
-<li><a href="#section-gen-messaging-job_results_purged">4.1.70.9. Message JOB_RESULTS_PURGED</a></li>
-<li><a href="#section-gen-messaging-job_result_purge_done">4.1.70.10. Message JOB_RESULT_PURGE_DONE</a></li>
-<li><a href="#section-gen-messaging-job_result_purge_failed">4.1.70.11. Message JOB_RESULT_PURGE_FAILED</a></li>
-<li><a href="#section-gen-messaging-job_started">4.1.70.12. Message JOB_STARTED</a></li>
-<li><a href="#section-gen-messaging-mapping_configuration_changed">4.1.70.13. Message MAPPING_CONFIGURATION_CHANGED</a></li>
-<li><a href="#section-gen-messaging-project_access_level_changed">4.1.70.14. Message PROJECT_ACCESS_LEVEL_CHANGED</a></li>
-<li><a href="#section-gen-messaging-project_created">4.1.70.15. Message PROJECT_CREATED</a></li>
-<li><a href="#section-gen-messaging-project_deleted">4.1.70.16. Message PROJECT_DELETED</a></li>
-<li><a href="#section-gen-messaging-project_owner_changed">4.1.70.17. Message PROJECT_OWNER_CHANGED</a></li>
-<li><a href="#section-gen-messaging-project_whitelist_updated">4.1.70.18. Message PROJECT_WHITELIST_UPDATED</a></li>
-<li><a href="#section-gen-messaging-request_batch_job_status">4.1.70.19. Message REQUEST_BATCH_JOB_STATUS</a></li>
-<li><a href="#section-gen-messaging-request_job_cancelation">4.1.70.20. Message REQUEST_JOB_CANCELATION</a></li>
-<li><a href="#section-gen-messaging-request_job_restart">4.1.70.21. Message REQUEST_JOB_RESTART</a></li>
-<li><a href="#section-gen-messaging-request_job_restart_hard">4.1.70.22. Message REQUEST_JOB_RESTART_HARD</a></li>
-<li><a href="#section-gen-messaging-request_purge_job_results">4.1.70.23. Message REQUEST_PURGE_JOB_RESULTS</a></li>
-<li><a href="#section-gen-messaging-request_scheduler_disable_job_processing">4.1.70.24. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</a></li>
-<li><a href="#section-gen-messaging-request_scheduler_enable_job_processing">4.1.70.25. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</a></li>
-<li><a href="#section-gen-messaging-request_scheduler_status_update">4.1.70.26. Message REQUEST_SCHEDULER_STATUS_UPDATE</a></li>
-<li><a href="#section-gen-messaging-request_user_role_recalculation">4.1.70.27. Message REQUEST_USER_ROLE_RECALCULATION</a></li>
-<li><a href="#section-gen-messaging-scan_abandonded">4.1.70.28. Message SCAN_ABANDONDED</a></li>
-<li><a href="#section-gen-messaging-scan_done">4.1.70.29. Message SCAN_DONE</a></li>
-<li><a href="#section-gen-messaging-scan_failed">4.1.70.30. Message SCAN_FAILED</a></li>
-<li><a href="#section-gen-messaging-scheduler_job_processing_disabled">4.1.70.31. Message SCHEDULER_JOB_PROCESSING_DISABLED</a></li>
-<li><a href="#section-gen-messaging-scheduler_job_processing_enabled">4.1.70.32. Message SCHEDULER_JOB_PROCESSING_ENABLED</a></li>
-<li><a href="#section-gen-messaging-scheduler_started">4.1.70.33. Message SCHEDULER_STARTED</a></li>
-<li><a href="#section-gen-messaging-scheduler_status_update">4.1.70.34. Message SCHEDULER_STATUS_UPDATE</a></li>
-<li><a href="#section-gen-messaging-start_scan">4.1.70.35. Message START_SCAN</a></li>
-<li><a href="#section-gen-messaging-unsupported_operation">4.1.70.36. Message UNSUPPORTED_OPERATION</a></li>
-<li><a href="#section-gen-messaging-user_added_to_project">4.1.70.37. Message USER_ADDED_TO_PROJECT</a></li>
-<li><a href="#section-gen-messaging-user_api_token_changed">4.1.70.38. Message USER_API_TOKEN_CHANGED</a></li>
-<li><a href="#section-gen-messaging-user_becomes_superadmin">4.1.70.39. Message USER_BECOMES_SUPERADMIN</a></li>
-<li><a href="#section-gen-messaging-user_created">4.1.70.40. Message USER_CREATED</a></li>
-<li><a href="#section-gen-messaging-user_deleted">4.1.70.41. Message USER_DELETED</a></li>
-<li><a href="#section-gen-messaging-user_email_address_changed">4.1.70.42. Message USER_EMAIL_ADDRESS_CHANGED</a></li>
-<li><a href="#section-gen-messaging-user_new_api_token_requested">4.1.70.43. Message USER_NEW_API_TOKEN_REQUESTED</a></li>
-<li><a href="#section-gen-messaging-user_no_longer_superadmin">4.1.70.44. Message USER_NO_LONGER_SUPERADMIN</a></li>
-<li><a href="#section-gen-messaging-user_removed_from_project">4.1.70.45. Message USER_REMOVED_FROM_PROJECT</a></li>
-<li><a href="#section-gen-messaging-user_roles_changed">4.1.70.46. Message USER_ROLES_CHANGED</a></li>
-<li><a href="#section-gen-messaging-user_signup_requested">4.1.70.47. Message USER_SIGNUP_REQUESTED</a></li>
+<li><a href="#section-gen-messaging-auto_cleanup_configuration_changed">4.1.71.2. Message AUTO_CLEANUP_CONFIGURATION_CHANGED</a></li>
+<li><a href="#section-gen-messaging-batch_job_status">4.1.71.3. Message BATCH_JOB_STATUS</a></li>
+<li><a href="#section-gen-messaging-job_canceled">4.1.71.4. Message JOB_CANCELED</a></li>
+<li><a href="#section-gen-messaging-job_done">4.1.71.5. Message JOB_DONE</a></li>
+<li><a href="#section-gen-messaging-job_failed">4.1.71.6. Message JOB_FAILED</a></li>
+<li><a href="#section-gen-messaging-job_restart_canceled">4.1.71.7. Message JOB_RESTART_CANCELED</a></li>
+<li><a href="#section-gen-messaging-job_restart_triggered">4.1.71.8. Message JOB_RESTART_TRIGGERED</a></li>
+<li><a href="#section-gen-messaging-job_results_purged">4.1.71.9. Message JOB_RESULTS_PURGED</a></li>
+<li><a href="#section-gen-messaging-job_result_purge_done">4.1.71.10. Message JOB_RESULT_PURGE_DONE</a></li>
+<li><a href="#section-gen-messaging-job_result_purge_failed">4.1.71.11. Message JOB_RESULT_PURGE_FAILED</a></li>
+<li><a href="#section-gen-messaging-job_started">4.1.71.12. Message JOB_STARTED</a></li>
+<li><a href="#section-gen-messaging-mapping_configuration_changed">4.1.71.13. Message MAPPING_CONFIGURATION_CHANGED</a></li>
+<li><a href="#section-gen-messaging-project_access_level_changed">4.1.71.14. Message PROJECT_ACCESS_LEVEL_CHANGED</a></li>
+<li><a href="#section-gen-messaging-project_created">4.1.71.15. Message PROJECT_CREATED</a></li>
+<li><a href="#section-gen-messaging-project_deleted">4.1.71.16. Message PROJECT_DELETED</a></li>
+<li><a href="#section-gen-messaging-project_owner_changed">4.1.71.17. Message PROJECT_OWNER_CHANGED</a></li>
+<li><a href="#section-gen-messaging-project_whitelist_updated">4.1.71.18. Message PROJECT_WHITELIST_UPDATED</a></li>
+<li><a href="#section-gen-messaging-request_batch_job_status">4.1.71.19. Message REQUEST_BATCH_JOB_STATUS</a></li>
+<li><a href="#section-gen-messaging-request_job_cancelation">4.1.71.20. Message REQUEST_JOB_CANCELATION</a></li>
+<li><a href="#section-gen-messaging-request_job_restart">4.1.71.21. Message REQUEST_JOB_RESTART</a></li>
+<li><a href="#section-gen-messaging-request_job_restart_hard">4.1.71.22. Message REQUEST_JOB_RESTART_HARD</a></li>
+<li><a href="#section-gen-messaging-request_purge_job_results">4.1.71.23. Message REQUEST_PURGE_JOB_RESULTS</a></li>
+<li><a href="#section-gen-messaging-request_scheduler_disable_job_processing">4.1.71.24. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</a></li>
+<li><a href="#section-gen-messaging-request_scheduler_enable_job_processing">4.1.71.25. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</a></li>
+<li><a href="#section-gen-messaging-request_scheduler_status_update">4.1.71.26. Message REQUEST_SCHEDULER_STATUS_UPDATE</a></li>
+<li><a href="#section-gen-messaging-request_user_role_recalculation">4.1.71.27. Message REQUEST_USER_ROLE_RECALCULATION</a></li>
+<li><a href="#section-gen-messaging-scan_abandonded">4.1.71.28. Message SCAN_ABANDONDED</a></li>
+<li><a href="#section-gen-messaging-scan_done">4.1.71.29. Message SCAN_DONE</a></li>
+<li><a href="#section-gen-messaging-scan_failed">4.1.71.30. Message SCAN_FAILED</a></li>
+<li><a href="#section-gen-messaging-scheduler_job_processing_disabled">4.1.71.31. Message SCHEDULER_JOB_PROCESSING_DISABLED</a></li>
+<li><a href="#section-gen-messaging-scheduler_job_processing_enabled">4.1.71.32. Message SCHEDULER_JOB_PROCESSING_ENABLED</a></li>
+<li><a href="#section-gen-messaging-scheduler_started">4.1.71.33. Message SCHEDULER_STARTED</a></li>
+<li><a href="#section-gen-messaging-scheduler_status_update">4.1.71.34. Message SCHEDULER_STATUS_UPDATE</a></li>
+<li><a href="#section-gen-messaging-start_scan">4.1.71.35. Message START_SCAN</a></li>
+<li><a href="#section-gen-messaging-unsupported_operation">4.1.71.36. Message UNSUPPORTED_OPERATION</a></li>
+<li><a href="#section-gen-messaging-user_added_to_project">4.1.71.37. Message USER_ADDED_TO_PROJECT</a></li>
+<li><a href="#section-gen-messaging-user_api_token_changed">4.1.71.38. Message USER_API_TOKEN_CHANGED</a></li>
+<li><a href="#section-gen-messaging-user_becomes_superadmin">4.1.71.39. Message USER_BECOMES_SUPERADMIN</a></li>
+<li><a href="#section-gen-messaging-user_created">4.1.71.40. Message USER_CREATED</a></li>
+<li><a href="#section-gen-messaging-user_deleted">4.1.71.41. Message USER_DELETED</a></li>
+<li><a href="#section-gen-messaging-user_email_address_changed">4.1.71.42. Message USER_EMAIL_ADDRESS_CHANGED</a></li>
+<li><a href="#section-gen-messaging-user_new_api_token_requested">4.1.71.43. Message USER_NEW_API_TOKEN_REQUESTED</a></li>
+<li><a href="#section-gen-messaging-user_no_longer_superadmin">4.1.71.44. Message USER_NO_LONGER_SUPERADMIN</a></li>
+<li><a href="#section-gen-messaging-user_removed_from_project">4.1.71.45. Message USER_REMOVED_FROM_PROJECT</a></li>
+<li><a href="#section-gen-messaging-user_roles_changed">4.1.71.46. Message USER_ROLES_CHANGED</a></li>
+<li><a href="#section-gen-messaging-user_signup_requested">4.1.71.47. Message USER_SIGNUP_REQUESTED</a></li>
 </ul>
 </li>
 </ul>
@@ -945,7 +960,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.31.0-20220502152559</code></p>
+<p>Documentation version: <code>Server 0.32.0-20220511162009</code></p>
 </div>
 <hr>
 </div>
@@ -1054,7 +1069,7 @@ When using REST calls directly you do not need the information inside
 </div>
 </div>
 <div class="sect3">
-<h4 id="code-scan">2.1.4. Code scan</h4>
+<h4 id="sechub-config-code-scan">2.1.4. Code scan</h4>
 <div class="paragraph">
 <p><code>codeScan</code> (optional) defines the code scan settings.</p>
 </div>
@@ -1159,7 +1174,7 @@ same for folder <code>documentation</code></p>
 <li>
 <p>default excludes<br>
      Per default, the directories <code>**/test/**</code> <code>**/.git/**</code>
-are already excluded:</p>
+are already excluded.</p>
 </li>
 </ul>
 </div></td>
@@ -1179,12 +1194,128 @@ Inside client documentation you will find a list of the default file endings.</t
 </div>
 </div>
 <div class="sect3">
-<h4 id="web-scan">2.1.5. Web scan</h4>
+<h4 id="license-scan">2.1.5. License scan</h4>
+<div class="paragraph">
+<p><code>licenseScan</code>(optional) defines the license scan settings.</p>
+</div>
+<div class="sect4">
+<h5 id="sechub-config-example-licensescan-binary">2.1.5.1. Example binary license scan</h5>
+<div class="listingblock">
+<div class="title">License scan configuration for binaries</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">binaries</span><span class="delimiter">&quot;</span></span> : [ { 
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">firmware-images</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileystem</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-firmware/images</span><span class="delimiter">&quot;</span></span> ]
+      }
+    } ]
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">licenseScan</span><span class="delimiter">&quot;</span></span> : { 
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">firmware-images</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="2"></i><b>(2)</b>
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>name of the source <a href="#sechub-config-data-section">data</a> configuration: "firmware-images"</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>license scan uses the referenced <a href="#sechub-config-data-section">data</a> configuration "firmware-images"</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="sechub-config-example-licensescan-sources">2.1.5.2. Example source license scan</h5>
+<div class="listingblock">
+<div class="title">License scan configuration for sources</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span> : [ {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">firmware-sources</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileystem</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-firmware/src</span><span class="delimiter">&quot;</span></span> ]
+      }
+    } ]
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">licenseScan</span><span class="delimiter">&quot;</span></span> : { 
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">firmware-sources</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="2"></i><b>(2)</b>
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>name of the source <a href="#sechub-config-data-section">data</a> configuration: "firmware-sources"</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>license scan uses the referenced <a href="#sechub-config-data-section">data</a> configuration "firmware-sources"</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="sechub-config-example-licensescan-combined-with-codescan">2.1.5.3. Example source licence scan with sources code scan combined</h5>
+<div class="listingblock">
+<div class="title">License scan and code scan configuration for sources</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span> : [ {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">firmware-sources</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileystem</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-firmware/src</span><span class="delimiter">&quot;</span></span> ] 
+      }
+    } ]
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">licenseScan</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">firmware-sources</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="2"></i><b>(2)</b>
+  },
+  
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">firmware-sources</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="3"></i><b>(3)</b>
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>name of the source <a href="#sechub-config-data-section">data</a> configuration: "firmware-sources"</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>license scan uses the referenced <a href="#sechub-config-data-section">data</a> configuration "firmware-sources"</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>code scan uses the referenced <a href="#sechub-config-data-section">data</a> configuration "firmware-sources"</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="web-scan">2.1.6. Web scan</h4>
 <div class="paragraph">
 <p><code>webScan</code> (optional) defines the web scan settings.</p>
 </div>
 <div class="sect4">
-<h5 id="uris">2.1.5.1. URIs</h5>
+<h5 id="uris">2.1.6.1. URIs</h5>
 <div class="paragraph">
 <p>Use <code>uri</code> element to define a string array containing uris you want to scan.</p>
 </div>
@@ -1202,7 +1333,7 @@ URI must be one of the whitelisted URLs of your project. Otherwise it will be re
 </table>
 </div>
 <div class="sect5">
-<h6 id="example-anonymous">2.1.5.1.1. Example anonymous</h6>
+<h6 id="example-anonymous">2.1.6.1.1. Example anonymous</h6>
 <div id="sechub-config-example-webscan-anonymous" class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -1215,12 +1346,12 @@ URI must be one of the whitelisted URLs of your project. Otherwise it will be re
      
   <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span>  : {<i class="conum" data-value="1"></i><b>(1)</b>
       <span class="key"><span class="delimiter">&quot;</span><span class="content">uris</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">https://www.gamechanger.example.org</span><span class="delimiter">&quot;</span></span>]<i class="conum" data-value="2"></i><b>(2)</b>
-  }
+  },
   
   <span class="key"><span class="delimiter">&quot;</span><span class="content">maxScanDuration</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="3"></i><b>(3)</b>
     <span class="key"><span class="delimiter">&quot;</span><span class="content">duration</span><span class="delimiter">&quot;</span></span>: <span class="integer">1</span>,
     <span class="key"><span class="delimiter">&quot;</span><span class="content">unit</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">hour</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="4"></i><b>(4)</b>
-  },
+  }
 }</code></pre>
 </div>
 </div>
@@ -1250,7 +1381,7 @@ The unit can be: <code>millisecond</code>, <code>second</code>, <code>minute</co
 </div>
 </div>
 <div class="sect4">
-<h5 id="login">2.1.5.2. Login</h5>
+<h5 id="login">2.1.6.2. Login</h5>
 <div class="paragraph">
 <p>A web scan does work very much better if it has got access to all content
  - so a login is necessary most time. If you do not define a login configuration
@@ -1281,7 +1412,7 @@ SMS provider - <strong>so be careful!</strong></p>
 </table>
 </div>
 <div class="sect5">
-<h6 id="options">2.1.5.2.1. Options</h6>
+<h6 id="options">2.1.6.2.1. Options</h6>
 <div class="paragraph">
 <p>SecHub provides you with 3 options for login:</p>
 </div>
@@ -1322,7 +1453,7 @@ will have a failure at execution time!</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="example-basic-authentication">2.1.5.2.2. Example basic authentication</h6>
+<h6 id="example-basic-authentication">2.1.6.2.2. Example basic authentication</h6>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -1362,7 +1493,7 @@ this is not necessary</td>
 </div>
 </div>
 <div class="sect5">
-<h6 id="example-form-based-login-with-auto-detect">2.1.5.2.3. Example form based login with auto detect</h6>
+<h6 id="example-form-based-login-with-auto-detect">2.1.6.2.3. Example form based login with auto detect</h6>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -1400,7 +1531,7 @@ If you use REST API directly, you must you must use real values!</td>
 </div>
 </div>
 <div class="sect5">
-<h6 id="example-form-based-login-by-script">2.1.5.2.4. Example form based login by script</h6>
+<h6 id="example-form-based-login-by-script">2.1.6.2.4. Example form based login by script</h6>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -1413,7 +1544,7 @@ If you use REST API directly, you must you must use real values!</td>
         <span class="key"><span class="delimiter">&quot;</span><span class="content">script</span><span class="delimiter">&quot;</span></span> : { <i class="conum" data-value="3"></i><b>(3)</b>
           <span class="key"><span class="delimiter">&quot;</span><span class="content">pages</span><span class="delimiter">&quot;</span></span> : [ <i class="conum" data-value="4"></i><b>(4)</b>
                   {
-                    <span class="key"><span class="delimiter">&quot;</span><span class="content">actions</span><span class="delimiter">&quot;</span></span> : [ <span class="error">/</span><span class="error">/</span><span class="error">&lt;</span><span class="integer">5</span><span class="error">&gt;</span> 
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">actions</span><span class="delimiter">&quot;</span></span> : [ <i class="conum" data-value="5"></i><b>(5)</b>
                             {
                               <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">username</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="6"></i><b>(6)</b>
                               <span class="key"><span class="delimiter">&quot;</span><span class="content">selector</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">#example_login_userid</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="7"></i><b>(7)</b>
@@ -1445,7 +1576,7 @@ If you use REST API directly, you must you must use real values!</td>
                             }, 
                             {
                               <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">click</span><span class="delimiter">&quot;</span></span>,
-                              <span class="key"><span class="delimiter">&quot;</span><span class="content">selector</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">#doLogin</span><span class="delimiter">&quot;</span></span>,
+                              <span class="key"><span class="delimiter">&quot;</span><span class="content">selector</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">#doLogin</span><span class="delimiter">&quot;</span></span>
                             } 
                     ]
                  } 
@@ -1548,20 +1679,63 @@ The unit can be: <code>millisecond</code>, <code>second</code>, <code>minute</co
 </table>
 </div>
 </div>
+<div class="sect5">
+<h6 id="sechub-config-example-webscan-openapi">2.1.6.2.5. Example OpenAPI scan</h6>
+<div class="listingblock">
+<div class="title">Open API scan</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : { 
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span> : [ {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">open-api-file-reference</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileystem</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-webapp/src/main/resources/openapi3.json</span><span class="delimiter">&quot;</span></span> ]
+      }
+    } ]
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span> : { 
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">api</span><span class="delimiter">&quot;</span></span> : {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">openApi</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="2"></i><b>(2)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">open-api-file-reference</span><span class="delimiter">&quot;</span></span> ] <i class="conum" data-value="3"></i><b>(3)</b>
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>name of the source <a href="#sechub-config-data-section">data</a> configuration: "open-api-file-reference"</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>web scan uses "openApi" as API type</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>web scan uses the referenced <a href="#sechub-config-data-section">data</a> configuration "open-api-file-reference"
+to obtain the open api configuration file</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="infrastructure-scan">2.1.6. Infrastructure scan</h4>
+<h4 id="infrastructure-scan">2.1.7. Infrastructure scan</h4>
 <div class="paragraph">
 <p><code>infraScan</code> (optional) defines the infrastructure scan settings.</p>
 </div>
 <div class="sect4">
-<h5 id="uris-2">2.1.6.1. URIs</h5>
+<h5 id="uris-2">2.1.7.1. URIs</h5>
 <div class="paragraph">
 <p>Use <code>uris</code> element to define a string array containing <code>URIs</code> you want to scan.</p>
 </div>
 <div class="sect5">
-<h6 id="example-infrascan-one-uri">2.1.6.1.1. Example infrascan one URI</h6>
+<h6 id="example-infrascan-one-uri">2.1.7.1.1. Example infrascan one URI</h6>
 <div id="sechub-config-example-infrascan-with-uri" class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -1593,12 +1767,12 @@ The unit can be: <code>millisecond</code>, <code>second</code>, <code>minute</co
 </div>
 </div>
 <div class="sect4">
-<h5 id="ips">2.1.6.2. IPs</h5>
+<h5 id="ips">2.1.7.2. IPs</h5>
 <div class="paragraph">
 <p>Use <code>ips</code> element to define a string array containing <code>IPs</code> you want to scan.</p>
 </div>
 <div class="sect5">
-<h6 id="example-infrascan-one-ip">2.1.6.2.1. Example infrascan one IP</h6>
+<h6 id="example-infrascan-one-ip">2.1.7.2.1. Example infrascan one IP</h6>
 <div id="sechub-config-example-infrascan-with-ip" class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -1629,6 +1803,169 @@ because scanners do not scan them self.</td>
 </tr>
 </table>
 </div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="sechub-config-data-section">2.1.8. Data</h4>
+<div class="paragraph">
+<p>The <a href="#sechub-config-code-scan">codeScan</a> element provides a way to define
+source code uploads for code scans only.</p>
+</div>
+<div class="paragraph">
+<p>With the (optional) <code>data</code> section users are able to</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>define binary and source upload information</p>
+</li>
+<li>
+<p>reference same uploads by muliple scan types in same job without another upload</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The scan configurations can reference the name data configuration elements by defining the an
+array attribute <code>uses</code> with a list of unique references names.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+    <span class="error">/</span><span class="error">/</span> <span class="error">.</span><span class="error">.</span><span class="error">s</span><span class="error">c</span><span class="error">a</span><span class="error">n</span> <span class="error">d</span><span class="error">e</span><span class="error">f</span><span class="error">i</span><span class="error">n</span><span class="error">i</span><span class="error">t</span><span class="error">i</span><span class="error">o</span><span class="error">n</span>
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-2</span><span class="delimiter">&quot;</span></span>, <span class="error">.</span><span class="error">.</span><span class="error">.</span> ] <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the list of referenced data configurations . The referenced names must exist.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Here are some links to examples which are using <a href="#sechub-config-data-section">data</a> inside their configurations:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#sechub-config-example-licensescan-binary">License scan for binaries</a></p>
+</li>
+<li>
+<p><a href="#sechub-config-example-licensescan-sources">License scan for sources</a></p>
+</li>
+<li>
+<p><a href="#sechub-config-example-licensescan-combined-with-codescan">License scan for sources combined with code scan</a></p>
+</li>
+<li>
+<p><a href="#sechub-config-example-webscan-openapi">OpenAPI web scan</a></p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+If you want to upload binaries, you MUST use the data section, there is no other way to do this.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect4">
+<h5 id="general-json-syntax">2.1.8.1. General JSON syntax</h5>
+<div class="paragraph">
+<p>The next figure shows an example which presents all possibilities <em>(for simplicity the source and
+binary configuration arrays do contain only just one entry)</em>.</p>
+</div>
+<div class="listingblock">
+<div class="title">General JSON syntax</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {<i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span> : [ { <i class="conum" data-value="2"></i><b>(2)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-sources-1</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="3"></i><b>(3)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : { <i class="conum" data-value="4"></i><b>(4)</b>
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/file1.txt</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/file2.txt</span><span class="delimiter">&quot;</span></span> ], <i class="conum" data-value="5"></i><b>(5)</b>
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/subfolder1</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/subfolder2</span><span class="delimiter">&quot;</span></span> ] <i class="conum" data-value="6"></i><b>(6)</b>
+      },
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">excludes</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">**/mytestcode/**</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">**/documentation/**</span><span class="delimiter">&quot;</span></span>], <i class="conum" data-value="7"></i><b>(7)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">additionalFilenameExtensions</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">.cplusplus</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">.py9</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="8"></i><b>(8)</b>
+    } ],
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">binaries</span><span class="delimiter">&quot;</span></span> : [ { <i class="conum" data-value="9"></i><b>(9)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-binaries-1</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="3"></i><b>(3)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/file1.dll</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/file2.a</span><span class="delimiter">&quot;</span></span> ], <i class="conum" data-value="5"></i><b>(5)</b>
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/bin/subfolder1</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/bin/subfolder2</span><span class="delimiter">&quot;</span></span> ] <i class="conum" data-value="6"></i><b>(6)</b>
+      }
+    }
+   ]
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>data</code>: The main element for data configuration.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>sources</code>: Inside this array multiple source data definitions can be listed</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td><code>name</code>:  Is a unique name for the data configuration element. The name must
+be unique inside complete sechub configuration file! Allowed characters are
+<div class="ulist">
+<ul>
+<li>
+<p><code>a-z</code></p>
+</li>
+<li>
+<p><code>0-9</code></p>
+</li>
+<li>
+<p><code>-</code></p>
+</li>
+<li>
+<p><code>_</code></p>
+</li>
+</ul>
+</div></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td><code>fileSystem</code>: Describes fileystem parts which are available inside this data configuration element</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td><code>files</code>: An array containing file pathes to use for uploading dedicated files</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td><code>folders</code>: An array containing folder pathes to use for uploading dedicated folders</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td><code>excludes</code>: Exclude directories (optional) - see <a href="#sechub-config-example-sourcescan">code scan </a>
+for details. The excludes work for sources and binaries the same way.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td><code>additionalFilenameExtensions</code> Introduce additional file name extensions. See <a href="#sechub-config-example-sourcescan">code scan </a>
+for details about default behaviour for sources.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td><code>sources</code>: Inside this array multiple binary data definitions can be listed.</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -1779,6 +2116,9 @@ because scanners do not scan them self.</td>
 </li>
 <li>
 <p><a href="#section-ucrestdoc-uc-UC_069">REST API for UC_069-User uploads binaries </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_070">REST API for UC_070-User downloads job report in SPDX format </a></p>
 </li>
 </ul>
 </div>
@@ -2663,7 +3003,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/1dbea7c5-7e04-4e9f-955b-086209ab29ea' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/83273dd8-a9aa-4baa-9ee8-cda08139d3b3' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -3536,7 +3876,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>[{&quot;sechubJobUUID&quot;:&quot;b43795fd-2f2c-4e46-8fb6-4ffaf0819fc1&quot;,&quot;executedBy&quot;:&quot;spartakus&quot;,&quot;started&quot;:&quot;2022-05-01T15:26:12.821&quot;,&quot;ended&quot;:&quot;2022-05-02T15:26:12.821&quot;,&quot;status&quot;:&quot;OK&quot;}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code>[{&quot;sechubJobUUID&quot;:&quot;92bff0ad-c417-445c-b3c0-f6f9c6814c80&quot;,&quot;executedBy&quot;:&quot;spartakus&quot;,&quot;started&quot;:&quot;2022-05-10T16:20:28.439&quot;,&quot;ended&quot;:&quot;2022-05-11T16:20:28.439&quot;,&quot;status&quot;:&quot;OK&quot;}]</code></pre>
 </div>
 </div>
 </div>
@@ -4086,7 +4426,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;cc1dc6fb-4c40-48f2-b3d5-14c9024084be&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;9d5f8c49-85d2-4276-963a-26c7b24cb5c2&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -4225,7 +4565,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;ab4637dd-00b3-4723-96e4-e3f21813a07e&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;c052caba-c928-4237-9025-1b7b3da795e1&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -4379,7 +4719,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;46dd8a1f-0c8d-47a2-bfd5-14fca7751d93&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;36aba3fc-9a9b-4b76-9997-49297c94cabb&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -4538,7 +4878,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;b3ddb9b1-62e7-4cca-998d-01250475d246&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;5338e136-c4da-4b86-96a8-c1a6ebb0d3a2&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -4717,7 +5057,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;7e4b6cc3-0ce4-4986-b804-734c6bf337dc&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;96064eab-7767-4b54-919a-544337357d58&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -4791,7 +5131,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/62d91735-7f23-463f-b21a-4deefc8576f0/sourcecode' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/d3ea05a2-0573-4daa-b5b0-b8b2201faec8/sourcecode' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -4874,7 +5214,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/71eb4bd5-40f8-47d4-8a88-40f20ce0bee2/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/271ba9b4-0e8c-498a-9547-921ae49c7c45/approve' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -5011,7 +5351,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/a0352776-1d86-4e06-a151-d89cb2af4ecf' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/6043fe34-57c8-4040-bb4f-575a3f2e4173' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -5020,7 +5360,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobUUID&quot;:&quot;a0352776-1d86-4e06-a151-d89cb2af4ecf&quot;,&quot;owner&quot;:&quot;CREATOR1&quot;,&quot;created&quot;:&quot;&quot;,&quot;started&quot;:&quot;2022-05-02T15:11:32.708&quot;,&quot;ended&quot;:&quot;2022-05-02T15:26:32.708&quot;,&quot;state&quot;:&quot;ENDED&quot;,&quot;result&quot;:&quot;OK&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobUUID&quot;:&quot;6043fe34-57c8-4040-bb4f-575a3f2e4173&quot;,&quot;owner&quot;:&quot;CREATOR1&quot;,&quot;created&quot;:&quot;&quot;,&quot;started&quot;:&quot;2022-05-11T16:05:56.285&quot;,&quot;ended&quot;:&quot;2022-05-11T16:20:56.285&quot;,&quot;state&quot;:&quot;ENDED&quot;,&quot;result&quot;:&quot;OK&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -5095,7 +5435,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/4badb93a-fbb0-4edb-9daa-f9857ee112c0' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/6472578e-c2de-42f8-8f5b-75fc30c042bc' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -5167,7 +5507,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/803323e7-2156-48de-a427-67974aec0456' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/4349cee4-e4b0-4b10-a2f5-208a91d50e03' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -5659,7 +5999,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/5bc3897b-0374-4b59-bee0-a5e5eaef5f90/binaries' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/7afa92dd-7b26-4066-8503-bec2865947c7/binaries' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -F 'file=test1.txt                                                                                           0000664 0001750 0001750 00000000000 13353454574 012170  0                                                                                                    ustar   albert                          albert                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ' \
     -F 'checkSum=mychecksum'</code></pre>
@@ -5671,7 +6011,82 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-self-registration">2.2.33. User self registration</h4>
+<h4 id="user-downloads-job-report-in-spdx-format">2.2.33. User downloads job report in SPDX format</h4>
+<div id="section-ucrestdoc-uc-UC_070" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_070">UC_070-User downloads job report in SPDX format </a></p>
+</div>
+<div id="section-ucrestdoc-UC_070-json" class="paragraph">
+<p><strong class="big">Definition</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 69. General request information</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 85.7143%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/project/{projectId}/report/spdx/{jobUUID}</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Method</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GET</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Status code</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">200 OK</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Path parameters</strong> <br></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 70. https://localhost:8081/api/project/{projectId}/report/spdx/{jobUUID}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The project Id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobUUID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The job UUID</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong class="big">Example</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>Curl request</strong> <br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/efacfc5e-09e3-4eb1-a8c4-ac4700f51d3f' -i -X GET \
+    -H 'Content-Type: application/json;charset=UTF-8' \
+    -H 'Accept: application/json'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="user-self-registration">2.2.34. User self registration</h4>
 <div id="section-ucrestdoc-uc-UC_001" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_001">UC_001-User self registration </a></p>
 </div>
@@ -5679,7 +6094,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 69. General request information</caption>
+<caption class="title">Table 71. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -5758,7 +6173,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-open-user-signups">2.2.34. Admin lists open user signups</h4>
+<h4 id="admin-lists-open-user-signups">2.2.35. Admin lists open user signups</h4>
 <div id="section-ucrestdoc-uc-UC_002" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_002">UC_002-Admin lists open user signups </a></p>
 </div>
@@ -5766,7 +6181,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 70. General request information</caption>
+<caption class="title">Table 72. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -5847,7 +6262,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-applies-self-registration">2.2.35. Admin applies self registration</h4>
+<h4 id="admin-applies-self-registration">2.2.36. Admin applies self registration</h4>
 <div id="section-ucrestdoc-uc-UC_003" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_003">UC_003-Admin applies self registration </a></p>
 </div>
@@ -5855,7 +6270,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 71. General request information</caption>
+<caption class="title">Table 73. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -5885,7 +6300,7 @@ because scanners do not scan them self.</td>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 72. https://localhost:8081/api/admin/signup/accept/{userId}</caption>
+<caption class="title">Table 74. https://localhost:8081/api/admin/signup/accept/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -5920,7 +6335,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-user-signup">2.2.36. Admin deletes user signup</h4>
+<h4 id="admin-deletes-user-signup">2.2.37. Admin deletes user signup</h4>
 <div id="section-ucrestdoc-uc-UC_019" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_019">UC_019-Admin deletes user signup </a></p>
 </div>
@@ -5928,7 +6343,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 73. General request information</caption>
+<caption class="title">Table 75. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -5958,7 +6373,7 @@ because scanners do not scan them self.</td>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 74. https://localhost:8081/api/admin/signup/{userId}</caption>
+<caption class="title">Table 76. https://localhost:8081/api/admin/signup/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -5993,7 +6408,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-requests-new-api-token">2.2.37. User requests new API token</h4>
+<h4 id="user-requests-new-api-token">2.2.38. User requests new API token</h4>
 <div id="section-ucrestdoc-uc-UC_024" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_024">UC_024-User requests new API token </a></p>
 </div>
@@ -6001,7 +6416,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 75. General request information</caption>
+<caption class="title">Table 77. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -6031,7 +6446,7 @@ because scanners do not scan them self.</td>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 76. https://localhost:8081/api/anonymous/refresh/apitoken/{emailAddress}</caption>
+<caption class="title">Table 78. https://localhost:8081/api/anonymous/refresh/apitoken/{emailAddress}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6067,7 +6482,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-all-running-jobs">2.2.38. Admin lists all running jobs</h4>
+<h4 id="admin-lists-all-running-jobs">2.2.39. Admin lists all running jobs</h4>
 <div id="section-ucrestdoc-uc-UC_023" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_023">UC_023-Admin lists all running jobs </a></p>
 </div>
@@ -6075,7 +6490,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 77. General request information</caption>
+<caption class="title">Table 79. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -6167,12 +6582,12 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>[{&quot;jobUUID&quot;:&quot;4e24fd2a-1793-4899-998d-fea7df2580b1&quot;,&quot;projectId&quot;:&quot;project-name&quot;,&quot;owner&quot;:&quot;owner-userid&quot;,&quot;status&quot;:&quot;RUNNING&quot;,&quot;since&quot;:&quot;2022-05-02T15:26:21.488&quot;,&quot;configuration&quot;:&quot;{ config data }&quot;}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code>[{&quot;jobUUID&quot;:&quot;19df8116-7049-4852-b755-340f43eef6cf&quot;,&quot;projectId&quot;:&quot;project-name&quot;,&quot;owner&quot;:&quot;owner-userid&quot;,&quot;status&quot;:&quot;RUNNING&quot;,&quot;since&quot;:&quot;2022-05-11T16:20:40.89&quot;,&quot;configuration&quot;:&quot;{ config data }&quot;}]</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-cancels-a-job">2.2.39. Admin cancels a job</h4>
+<h4 id="admin-cancels-a-job">2.2.40. Admin cancels a job</h4>
 <div id="section-ucrestdoc-uc-UC_034" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_034">UC_034-Admin cancels a job </a></p>
 </div>
@@ -6180,7 +6595,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 78. General request information</caption>
+<caption class="title">Table 80. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -6210,7 +6625,7 @@ because scanners do not scan them self.</td>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 79. https://localhost:8081/api/admin/jobs/cancel/{jobUUID}</caption>
+<caption class="title">Table 81. https://localhost:8081/api/admin/jobs/cancel/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6236,7 +6651,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/b2db472a-6122-44df-a55a-9379badec039' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/c1242be3-54bd-49cd-9923-b8ef2ba666ad' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -6246,7 +6661,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-restarts-a-job">2.2.40. Admin restarts a job</h4>
+<h4 id="admin-restarts-a-job">2.2.41. Admin restarts a job</h4>
 <div id="section-ucrestdoc-uc-UC_041" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_041">UC_041-Admin restarts a job </a></p>
 </div>
@@ -6254,7 +6669,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 80. General request information</caption>
+<caption class="title">Table 82. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -6284,7 +6699,7 @@ because scanners do not scan them self.</td>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 81. https://localhost:8081/api/admin/jobs/restart/{jobUUID}</caption>
+<caption class="title">Table 83. https://localhost:8081/api/admin/jobs/restart/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6310,7 +6725,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/ee55b070-ade1-4409-869e-a31ba0779a93' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/96af6d41-0615-4377-9536-98853891259d' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -6320,7 +6735,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-restarts-a-job-hard">2.2.41. Admin restarts a job (hard)</h4>
+<h4 id="admin-restarts-a-job-hard">2.2.42. Admin restarts a job (hard)</h4>
 <div id="section-ucrestdoc-uc-UC_042" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_042">UC_042-Admin restarts a job (hard) </a></p>
 </div>
@@ -6328,7 +6743,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 82. General request information</caption>
+<caption class="title">Table 84. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -6358,7 +6773,7 @@ because scanners do not scan them self.</td>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 83. https://localhost:8081/api/admin/jobs/restart-hard/{jobUUID}</caption>
+<caption class="title">Table 85. https://localhost:8081/api/admin/jobs/restart-hard/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6384,7 +6799,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/5ca8e59a-65d9-4a4c-a0d9-438d1cffbf48' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/acb790d3-9c8a-4899-960e-37d7320475b6' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -6394,7 +6809,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-defines-mock-data-configuration-for-project">2.2.42. User defines mock data configuration for project</h4>
+<h4 id="user-defines-mock-data-configuration-for-project">2.2.43. User defines mock data configuration for project</h4>
 <div id="section-ucrestdoc-uc-UC_035" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_035">UC_035-User defines mock data configuration for project </a></p>
 </div>
@@ -6402,7 +6817,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 84. General request information</caption>
+<caption class="title">Table 86. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -6448,7 +6863,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-retrieves-mock-data-configuration-for-project">2.2.43. User retrieves mock data configuration for project</h4>
+<h4 id="user-retrieves-mock-data-configuration-for-project">2.2.44. User retrieves mock data configuration for project</h4>
 <div id="section-ucrestdoc-uc-UC_036" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_036">UC_036-User retrieves mock data configuration for project </a></p>
 </div>
@@ -6456,7 +6871,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 85. General request information</caption>
+<caption class="title">Table 87. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -6505,7 +6920,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-updates-mapping-configuration">2.2.44. Admin updates mapping configuration</h4>
+<h4 id="admin-updates-mapping-configuration">2.2.45. Admin updates mapping configuration</h4>
 <div id="section-ucrestdoc-uc-UC_037" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_037">UC_037-Admin updates mapping configuration </a></p>
 </div>
@@ -6513,7 +6928,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 86. General request information</caption>
+<caption class="title">Table 88. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -6543,7 +6958,7 @@ because scanners do not scan them self.</td>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 87. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
+<caption class="title">Table 89. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6614,7 +7029,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-mapping-configuration">2.2.45. Admin fetches mapping configuration</h4>
+<h4 id="admin-fetches-mapping-configuration">2.2.46. Admin fetches mapping configuration</h4>
 <div id="section-ucrestdoc-uc-UC_038" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_038">UC_038-Admin fetches mapping configuration </a></p>
 </div>
@@ -6622,7 +7037,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 88. General request information</caption>
+<caption class="title">Table 90. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -6652,7 +7067,7 @@ because scanners do not scan them self.</td>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 89. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
+<caption class="title">Table 91. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6726,7 +7141,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-creates-an-executor-configuration">2.2.46. Admin creates an executor configuration</h4>
+<h4 id="admin-creates-an-executor-configuration">2.2.47. Admin creates an executor configuration</h4>
 <div id="section-ucrestdoc-uc-UC_047" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_047">UC_047-Admin creates an executor configuration </a></p>
 </div>
@@ -6734,7 +7149,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 90. General request information</caption>
+<caption class="title">Table 92. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -6842,12 +7257,12 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>033feaaf-3407-424e-8ca1-94cbf58d753b</code></pre>
+<pre class="CodeRay highlight nowrap"><code>03dd1b60-3f82-4dfb-9f1d-631db4041a70</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-executor-configuration">2.2.47. Admin deletes executor configuration</h4>
+<h4 id="admin-deletes-executor-configuration">2.2.48. Admin deletes executor configuration</h4>
 <div id="section-ucrestdoc-uc-UC_048" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_048">UC_048-Admin deletes executor configuration </a></p>
 </div>
@@ -6855,7 +7270,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 91. General request information</caption>
+<caption class="title">Table 93. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -6885,7 +7300,7 @@ because scanners do not scan them self.</td>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 92. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
+<caption class="title">Table 94. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6911,7 +7326,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/3ecbc755-4dbd-42a7-959d-63b42d853eb9' -i -X DELETE \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/c64a783a-7fc2-4efe-b67f-41535a3efef9' -i -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -6921,7 +7336,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-executor-configuration-list">2.2.48. Admin fetches executor configuration list</h4>
+<h4 id="admin-fetches-executor-configuration-list">2.2.49. Admin fetches executor configuration list</h4>
 <div id="section-ucrestdoc-uc-UC_049" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_049">UC_049-Admin fetches executor configuration list </a></p>
 </div>
@@ -6929,7 +7344,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 93. General request information</caption>
+<caption class="title">Table 95. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -7011,12 +7426,12 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;executorConfigurations&quot;:[{&quot;uuid&quot;:&quot;8fca59b1-d322-4ecf-9932-32200f071454&quot;,&quot;name&quot;:&quot;example configuration&quot;,&quot;enabled&quot;:true}],&quot;type&quot;:&quot;executorConfigurationList&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;executorConfigurations&quot;:[{&quot;uuid&quot;:&quot;ac4aad46-d7ec-4733-90d6-4f2a2f36fb4c&quot;,&quot;name&quot;:&quot;example configuration&quot;,&quot;enabled&quot;:true}],&quot;type&quot;:&quot;executorConfigurationList&quot;}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-executor-configuration">2.2.49. Admin fetches executor configuration</h4>
+<h4 id="admin-fetches-executor-configuration">2.2.50. Admin fetches executor configuration</h4>
 <div id="section-ucrestdoc-uc-UC_050" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_050">UC_050-Admin fetches executor configuration </a></p>
 </div>
@@ -7024,7 +7439,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 94. General request information</caption>
+<caption class="title">Table 96. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -7054,7 +7469,7 @@ because scanners do not scan them self.</td>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 95. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
+<caption class="title">Table 97. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7149,7 +7564,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/04165a9b-2f13-4710-b703-32cf8030051c' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/ac21de6f-194f-4286-a6b4-5f8eb071d877' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -7158,12 +7573,12 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;04165a9b-2f13-4710-b703-32cf8030051c&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;ac21de6f-194f-4286-a6b4-5f8eb071d877&quot;}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-updates-executor-configuration-setup">2.2.50. Admin updates executor configuration setup</h4>
+<h4 id="admin-updates-executor-configuration-setup">2.2.51. Admin updates executor configuration setup</h4>
 <div id="section-ucrestdoc-uc-UC_051" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_051">UC_051-Admin updates executor configuration setup </a></p>
 </div>
@@ -7171,7 +7586,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 96. General request information</caption>
+<caption class="title">Table 98. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -7201,7 +7616,7 @@ because scanners do not scan them self.</td>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 97. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
+<caption class="title">Table 99. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7291,7 +7706,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/fe4bf89b-9763-4658-a85b-8f143c990842' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/746c594e-9402-4a54-8189-aed051de1ffc' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://productNew.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_NEW_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_NEW_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]}}'</code></pre>
 </div>
@@ -7302,7 +7717,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-creates-an-execution-profile">2.2.51. Admin creates an execution profile</h4>
+<h4 id="admin-creates-an-execution-profile">2.2.52. Admin creates an execution profile</h4>
 <div id="section-ucrestdoc-uc-UC_052" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_052">UC_052-Admin creates an execution profile </a></p>
 </div>
@@ -7310,7 +7725,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 98. General request information</caption>
+<caption class="title">Table 100. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -7340,7 +7755,7 @@ because scanners do not scan them self.</td>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 99. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 101. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7416,7 +7831,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-execution-profile">2.2.52. Admin deletes execution profile</h4>
+<h4 id="admin-deletes-execution-profile">2.2.53. Admin deletes execution profile</h4>
 <div id="section-ucrestdoc-uc-UC_053" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_053">UC_053-Admin deletes execution profile </a></p>
 </div>
@@ -7424,7 +7839,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 100. General request information</caption>
+<caption class="title">Table 102. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -7454,7 +7869,7 @@ because scanners do not scan them self.</td>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 101. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 103. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7490,7 +7905,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-updates-execution-profile">2.2.53. Admin updates execution profile</h4>
+<h4 id="admin-updates-execution-profile">2.2.54. Admin updates execution profile</h4>
 <div id="section-ucrestdoc-uc-UC_054" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_054">UC_054-Admin updates execution profile </a></p>
 </div>
@@ -7498,7 +7913,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 102. General request information</caption>
+<caption class="title">Table 104. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -7528,7 +7943,7 @@ because scanners do not scan them self.</td>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 103. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 105. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7590,7 +8005,7 @@ because scanners do not scan them self.</td>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/existing-profile-1' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;e2a74b77-b94e-46ba-9ef8-00c4a0c54fb5&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
+    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;4bf6884c-b9d3-4690-9c79-5839dfb3424f&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -7599,7 +8014,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-execution-profile">2.2.54. Admin fetches execution profile</h4>
+<h4 id="admin-fetches-execution-profile">2.2.55. Admin fetches execution profile</h4>
 <div id="section-ucrestdoc-uc-UC_055" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_055">UC_055-Admin fetches execution profile </a></p>
 </div>
@@ -7607,7 +8022,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 104. General request information</caption>
+<caption class="title">Table 106. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -7637,7 +8052,7 @@ because scanners do not scan them self.</td>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 105. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 107. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7731,12 +8146,12 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;description&quot;:&quot;a description&quot;,&quot;enabled&quot;:true,&quot;configurations&quot;:[{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;9137654d-67e8-4499-8f7f-674e01363ead&quot;}],&quot;projectIds&quot;:[&quot;project-1&quot;,&quot;project-2&quot;]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;description&quot;:&quot;a description&quot;,&quot;enabled&quot;:true,&quot;configurations&quot;:[{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;130e7238-7b78-4592-83d5-93fb9491245f&quot;}],&quot;projectIds&quot;:[&quot;project-1&quot;,&quot;project-2&quot;]}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-execution-profile-list">2.2.55. Admin fetches execution profile list</h4>
+<h4 id="admin-fetches-execution-profile-list">2.2.56. Admin fetches execution profile list</h4>
 <div id="section-ucrestdoc-uc-UC_056" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_056">UC_056-Admin fetches execution profile list </a></p>
 </div>
@@ -7744,7 +8159,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 106. General request information</caption>
+<caption class="title">Table 108. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -7831,7 +8246,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-assigns-execution-profile-to-project">2.2.56. Admin assigns execution profile to project</h4>
+<h4 id="admin-assigns-execution-profile-to-project">2.2.57. Admin assigns execution profile to project</h4>
 <div id="section-ucrestdoc-uc-UC_057" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_057">UC_057-Admin assigns execution profile to project </a></p>
 </div>
@@ -7839,7 +8254,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 107. General request information</caption>
+<caption class="title">Table 109. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -7869,7 +8284,7 @@ because scanners do not scan them self.</td>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 108. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
+<caption class="title">Table 110. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7909,7 +8324,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-unassigns-execution-profile-from-project">2.2.57. Admin unassigns execution profile from project</h4>
+<h4 id="admin-unassigns-execution-profile-from-project">2.2.58. Admin unassigns execution profile from project</h4>
 <div id="section-ucrestdoc-uc-UC_058" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_058">UC_058-Admin unassigns execution profile from project </a></p>
 </div>
@@ -7917,7 +8332,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 109. General request information</caption>
+<caption class="title">Table 111. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -7947,7 +8362,7 @@ because scanners do not scan them self.</td>
 <p><strong>Path parameters</strong> <br></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 110. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
+<caption class="title">Table 112. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7987,7 +8402,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-auto-cleanup-configuration">2.2.58. Admin fetches auto cleanup configuration</h4>
+<h4 id="admin-fetches-auto-cleanup-configuration">2.2.59. Admin fetches auto cleanup configuration</h4>
 <div id="section-ucrestdoc-uc-UC_064" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_064">UC_064-Admin fetches auto cleanup configuration </a></p>
 </div>
@@ -7995,7 +8410,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 111. General request information</caption>
+<caption class="title">Table 113. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -8043,7 +8458,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-updates-auto-cleanup-configuration">2.2.59. Admin updates auto cleanup configuration</h4>
+<h4 id="admin-updates-auto-cleanup-configuration">2.2.60. Admin updates auto cleanup configuration</h4>
 <div id="section-ucrestdoc-uc-UC_065" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_065">UC_065-Admin updates auto cleanup configuration </a></p>
 </div>
@@ -8051,7 +8466,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 112. General request information</caption>
+<caption class="title">Table 114. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -8096,7 +8511,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-disables-job-processing-in-scheduler">2.2.60. Admin disables job processing in scheduler</h4>
+<h4 id="admin-disables-job-processing-in-scheduler">2.2.61. Admin disables job processing in scheduler</h4>
 <div id="section-ucrestdoc-uc-UC_030" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_030">UC_030-Admin disables job processing in scheduler </a></p>
 </div>
@@ -8104,7 +8519,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 113. General request information</caption>
+<caption class="title">Table 115. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -8148,7 +8563,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-enables-scheduler-job-processing">2.2.61. Admin enables scheduler job processing</h4>
+<h4 id="admin-enables-scheduler-job-processing">2.2.62. Admin enables scheduler job processing</h4>
 <div id="section-ucrestdoc-uc-UC_031" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_031">UC_031-Admin enables scheduler job processing </a></p>
 </div>
@@ -8156,7 +8571,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 114. General request information</caption>
+<caption class="title">Table 116. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -8200,7 +8615,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-get-scheduler-status">2.2.62. Admin get scheduler status</h4>
+<h4 id="admin-get-scheduler-status">2.2.63. Admin get scheduler status</h4>
 <div id="section-ucrestdoc-uc-UC_032" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_032">UC_032-Admin get scheduler status </a></p>
 </div>
@@ -8208,7 +8623,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 115. General request information</caption>
+<caption class="title">Table 117. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -8252,7 +8667,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-status-information">2.2.63. Admin lists status information</h4>
+<h4 id="admin-lists-status-information">2.2.64. Admin lists status information</h4>
 <div id="section-ucrestdoc-uc-UC_033" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_033">UC_033-Admin lists status information </a></p>
 </div>
@@ -8260,7 +8675,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 116. General request information</caption>
+<caption class="title">Table 118. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -8337,7 +8752,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-checks-server-version">2.2.64. Admin checks server version</h4>
+<h4 id="admin-checks-server-version">2.2.65. Admin checks server version</h4>
 <div id="section-ucrestdoc-uc-UC_040" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_040">UC_040-Admin checks server version </a></p>
 </div>
@@ -8345,7 +8760,7 @@ because scanners do not scan them self.</td>
 <p><strong class="big">Definition</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 117. General request information</caption>
+<caption class="title">Table 119. General request information</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 85.7143%;">
@@ -8826,6 +9241,9 @@ configure the client to do this also on color YELLOW. Only Green is always accep
 </li>
 <li>
 <p><a href="#section-usecase-UC_069">UC_069-User uploads binaries</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_070">UC_070-User downloads job report in SPDX format</a></p>
 </li>
 </ul>
 </div>
@@ -9533,14 +9951,15 @@ The work itself is triggered/executed here by asynchronous batch operation.</p>
 <div class="sect3">
 <h4 id="section-usecase-UC_010">4.1.11. UC_010-User downloads sechub job report</h4>
 <div id="sechub-doclink-uc-user-downloads-job-report" class="paragraph">
-<p>A user wants to download an executed <code>SecHub</code> job by its given job UUID.</p>
+<p>A user wants to download a <code>SecHub</code> report for an executed job
+by its given job UUID.</p>
 </div>
 <div class="paragraph">
-<p>The report standard format will be json, so machine readable. But there is
-also the option to download the report as HTML file.</p>
+<p>The report standard format is a human and machine readable JSON format.
+Additionally, there is the option to download the report as HTML file.</p>
 </div>
 <div class="paragraph">
-<p>The HTML file and also the JSON will only have a reduced view of the scan
+<p>Both, the HTML and the JSON file have a reduced view of the scan
 results. Code snippets etc. can be found on the real security products.</p>
 </div>
 <div class="paragraph">
@@ -13224,10 +13643,53 @@ the new email address will be sent as well.</p>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_070">4.1.71. UC_070-User downloads job report in SPDX format</h4>
+<div id="sechub-doclink-uc-user-downloads-spdx-job-report" class="paragraph">
+<p>A user wants to download a SPDX report for a finished <code>SecHub</code> job
+using the job UUID.</p>
+</div>
+<div class="paragraph">
+<p>Only SPDX JSON is supported.</p>
+</div>
+<div class="paragraph">
+<p>In case, there is no SPDX JSON result for a given job an error will be thrown.</p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">REST API call to get SPDX JSON report</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
 <div class="sect4">
-<h5 id="section-gen-messaging-overview">4.1.70.1. Overview</h5>
+<h5 id="section-gen-messaging-overview">4.1.71.1. Overview</h5>
 <div class="sect5">
-<h6 id="diagram">4.1.70.1.1. Diagram</h6>
+<h6 id="diagram">4.1.71.1.1. Diagram</h6>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="861" height="3531">
@@ -13235,7 +13697,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="section-gen-messaging-overview-linklist">4.1.70.1.2. List of all messages</h6>
+<h6 id="section-gen-messaging-overview-linklist">4.1.71.1.2. List of all messages</h6>
 <div class="ulist">
 <ul>
 <li>
@@ -13381,7 +13843,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-auto_cleanup_configuration_changed">4.1.70.2. Message AUTO_CLEANUP_CONFIGURATION_CHANGED</h5>
+<h5 id="section-gen-messaging-auto_cleanup_configuration_changed">4.1.71.2. Message AUTO_CLEANUP_CONFIGURATION_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_auto_cleanup_configuration_changed.svg" alt="Sequence diagram of messaging AUTO_CLEANUP_CONFIGURATION_CHANGED" width="1124" height="234">
@@ -13410,7 +13872,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-batch_job_status">4.1.70.3. Message BATCH_JOB_STATUS</h5>
+<h5 id="section-gen-messaging-batch_job_status">4.1.71.3. Message BATCH_JOB_STATUS</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_batch_job_status.svg" alt="Sequence diagram of messaging BATCH_JOB_STATUS" width="559" height="118">
@@ -13418,7 +13880,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_canceled">4.1.70.4. Message JOB_CANCELED</h5>
+<h5 id="section-gen-messaging-job_canceled">4.1.71.4. Message JOB_CANCELED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_canceled.svg" alt="Sequence diagram of messaging JOB_CANCELED" width="774" height="205">
@@ -13426,7 +13888,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_done">4.1.70.5. Message JOB_DONE</h5>
+<h5 id="section-gen-messaging-job_done">4.1.71.5. Message JOB_DONE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_done.svg" alt="Sequence diagram of messaging JOB_DONE" width="571" height="176">
@@ -13458,7 +13920,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_failed">4.1.70.6. Message JOB_FAILED</h5>
+<h5 id="section-gen-messaging-job_failed">4.1.71.6. Message JOB_FAILED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_failed.svg" alt="Sequence diagram of messaging JOB_FAILED" width="747" height="205">
@@ -13466,7 +13928,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_restart_canceled">4.1.70.7. Message JOB_RESTART_CANCELED</h5>
+<h5 id="section-gen-messaging-job_restart_canceled">4.1.71.7. Message JOB_RESTART_CANCELED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_restart_canceled.svg" alt="Sequence diagram of messaging JOB_RESTART_CANCELED" width="606" height="176">
@@ -13498,7 +13960,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_restart_triggered">4.1.70.8. Message JOB_RESTART_TRIGGERED</h5>
+<h5 id="section-gen-messaging-job_restart_triggered">4.1.71.8. Message JOB_RESTART_TRIGGERED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_restart_triggered.svg" alt="Sequence diagram of messaging JOB_RESTART_TRIGGERED" width="617" height="176">
@@ -13530,7 +13992,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_results_purged">4.1.70.9. Message JOB_RESULTS_PURGED</h5>
+<h5 id="section-gen-messaging-job_results_purged">4.1.71.9. Message JOB_RESULTS_PURGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_results_purged.svg" alt="Sequence diagram of messaging JOB_RESULTS_PURGED" width="586" height="176">
@@ -13538,7 +14000,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_result_purge_done">4.1.70.10. Message JOB_RESULT_PURGE_DONE</h5>
+<h5 id="section-gen-messaging-job_result_purge_done">4.1.71.10. Message JOB_RESULT_PURGE_DONE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_result_purge_done.svg" alt="Sequence diagram of messaging JOB_RESULT_PURGE_DONE" width="624" height="118">
@@ -13546,7 +14008,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_result_purge_failed">4.1.70.11. Message JOB_RESULT_PURGE_FAILED</h5>
+<h5 id="section-gen-messaging-job_result_purge_failed">4.1.71.11. Message JOB_RESULT_PURGE_FAILED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_result_purge_failed.svg" alt="Sequence diagram of messaging JOB_RESULT_PURGE_FAILED" width="638" height="118">
@@ -13554,7 +14016,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_started">4.1.70.12. Message JOB_STARTED</h5>
+<h5 id="section-gen-messaging-job_started">4.1.71.12. Message JOB_STARTED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_started.svg" alt="Sequence diagram of messaging JOB_STARTED" width="570" height="176">
@@ -13586,7 +14048,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-mapping_configuration_changed">4.1.70.13. Message MAPPING_CONFIGURATION_CHANGED</h5>
+<h5 id="section-gen-messaging-mapping_configuration_changed">4.1.71.13. Message MAPPING_CONFIGURATION_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_mapping_configuration_changed.svg" alt="Sequence diagram of messaging MAPPING_CONFIGURATION_CHANGED" width="739" height="176">
@@ -13594,7 +14056,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-project_access_level_changed">4.1.70.14. Message PROJECT_ACCESS_LEVEL_CHANGED</h5>
+<h5 id="section-gen-messaging-project_access_level_changed">4.1.71.14. Message PROJECT_ACCESS_LEVEL_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_project_access_level_changed.svg" alt="Sequence diagram of messaging PROJECT_ACCESS_LEVEL_CHANGED" width="852" height="205">
@@ -13602,7 +14064,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-project_created">4.1.70.15. Message PROJECT_CREATED</h5>
+<h5 id="section-gen-messaging-project_created">4.1.71.15. Message PROJECT_CREATED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_project_created.svg" alt="Sequence diagram of messaging PROJECT_CREATED" width="543" height="176">
@@ -13610,7 +14072,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-project_deleted">4.1.70.16. Message PROJECT_DELETED</h5>
+<h5 id="section-gen-messaging-project_deleted">4.1.71.16. Message PROJECT_DELETED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_project_deleted.svg" alt="Sequence diagram of messaging PROJECT_DELETED" width="861" height="234">
@@ -13618,7 +14080,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-project_owner_changed">4.1.70.17. Message PROJECT_OWNER_CHANGED</h5>
+<h5 id="section-gen-messaging-project_owner_changed">4.1.71.17. Message PROJECT_OWNER_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_project_owner_changed.svg" alt="Sequence diagram of messaging PROJECT_OWNER_CHANGED" width="636" height="176">
@@ -13626,7 +14088,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-project_whitelist_updated">4.1.70.18. Message PROJECT_WHITELIST_UPDATED</h5>
+<h5 id="section-gen-messaging-project_whitelist_updated">4.1.71.18. Message PROJECT_WHITELIST_UPDATED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_project_whitelist_updated.svg" alt="Sequence diagram of messaging PROJECT_WHITELIST_UPDATED" width="667" height="176">
@@ -13634,7 +14096,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_batch_job_status">4.1.70.19. Message REQUEST_BATCH_JOB_STATUS</h5>
+<h5 id="section-gen-messaging-request_batch_job_status">4.1.71.19. Message REQUEST_BATCH_JOB_STATUS</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_batch_job_status.svg" alt="Sequence diagram of messaging REQUEST_BATCH_JOB_STATUS" width="662" height="234">
@@ -13666,7 +14128,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_job_cancelation">4.1.70.20. Message REQUEST_JOB_CANCELATION</h5>
+<h5 id="section-gen-messaging-request_job_cancelation">4.1.71.20. Message REQUEST_JOB_CANCELATION</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_job_cancelation.svg" alt="Sequence diagram of messaging REQUEST_JOB_CANCELATION" width="645" height="176">
@@ -13674,7 +14136,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_job_restart">4.1.70.21. Message REQUEST_JOB_RESTART</h5>
+<h5 id="section-gen-messaging-request_job_restart">4.1.71.21. Message REQUEST_JOB_RESTART</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_job_restart.svg" alt="Sequence diagram of messaging REQUEST_JOB_RESTART" width="595" height="176">
@@ -13703,7 +14165,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_job_restart_hard">4.1.70.22. Message REQUEST_JOB_RESTART_HARD</h5>
+<h5 id="section-gen-messaging-request_job_restart_hard">4.1.71.22. Message REQUEST_JOB_RESTART_HARD</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_job_restart_hard.svg" alt="Sequence diagram of messaging REQUEST_JOB_RESTART_HARD" width="663" height="176">
@@ -13732,7 +14194,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_purge_job_results">4.1.70.23. Message REQUEST_PURGE_JOB_RESULTS</h5>
+<h5 id="section-gen-messaging-request_purge_job_results">4.1.71.23. Message REQUEST_PURGE_JOB_RESULTS</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_purge_job_results.svg" alt="Sequence diagram of messaging REQUEST_PURGE_JOB_RESULTS" width="674" height="309">
@@ -13761,7 +14223,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_scheduler_disable_job_processing">4.1.70.24. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</h5>
+<h5 id="section-gen-messaging-request_scheduler_disable_job_processing">4.1.71.24. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_scheduler_disable_job_processing.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING" width="860" height="176">
@@ -13790,7 +14252,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_scheduler_enable_job_processing">4.1.70.25. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</h5>
+<h5 id="section-gen-messaging-request_scheduler_enable_job_processing">4.1.71.25. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_scheduler_enable_job_processing.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING" width="852" height="176">
@@ -13819,7 +14281,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_scheduler_status_update">4.1.70.26. Message REQUEST_SCHEDULER_STATUS_UPDATE</h5>
+<h5 id="section-gen-messaging-request_scheduler_status_update">4.1.71.26. Message REQUEST_SCHEDULER_STATUS_UPDATE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_scheduler_status_update.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_STATUS_UPDATE" width="761" height="176">
@@ -13827,7 +14289,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_user_role_recalculation">4.1.70.27. Message REQUEST_USER_ROLE_RECALCULATION</h5>
+<h5 id="section-gen-messaging-request_user_role_recalculation">4.1.71.27. Message REQUEST_USER_ROLE_RECALCULATION</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="2282" height="380">
@@ -13862,7 +14324,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scan_abandonded">4.1.70.28. Message SCAN_ABANDONDED</h5>
+<h5 id="section-gen-messaging-scan_abandonded">4.1.71.28. Message SCAN_ABANDONDED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scan_abandonded.svg" alt="Sequence diagram of messaging SCAN_ABANDONDED" width="564" height="118">
@@ -13870,7 +14332,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scan_done">4.1.70.29. Message SCAN_DONE</h5>
+<h5 id="section-gen-messaging-scan_done">4.1.71.29. Message SCAN_DONE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scan_done.svg" alt="Sequence diagram of messaging SCAN_DONE" width="477" height="118">
@@ -13878,7 +14340,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scan_failed">4.1.70.30. Message SCAN_FAILED</h5>
+<h5 id="section-gen-messaging-scan_failed">4.1.71.30. Message SCAN_FAILED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scan_failed.svg" alt="Sequence diagram of messaging SCAN_FAILED" width="491" height="118">
@@ -13886,7 +14348,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scheduler_job_processing_disabled">4.1.70.31. Message SCHEDULER_JOB_PROCESSING_DISABLED</h5>
+<h5 id="section-gen-messaging-scheduler_job_processing_disabled">4.1.71.31. Message SCHEDULER_JOB_PROCESSING_DISABLED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scheduler_job_processing_disabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_DISABLED" width="972" height="205">
@@ -13915,7 +14377,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scheduler_job_processing_enabled">4.1.70.32. Message SCHEDULER_JOB_PROCESSING_ENABLED</h5>
+<h5 id="section-gen-messaging-scheduler_job_processing_enabled">4.1.71.32. Message SCHEDULER_JOB_PROCESSING_ENABLED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scheduler_job_processing_enabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_ENABLED" width="968" height="205">
@@ -13944,7 +14406,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scheduler_started">4.1.70.33. Message SCHEDULER_STARTED</h5>
+<h5 id="section-gen-messaging-scheduler_started">4.1.71.33. Message SCHEDULER_STARTED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scheduler_started.svg" alt="Sequence diagram of messaging SCHEDULER_STARTED" width="579" height="176">
@@ -13952,7 +14414,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scheduler_status_update">4.1.70.34. Message SCHEDULER_STATUS_UPDATE</h5>
+<h5 id="section-gen-messaging-scheduler_status_update">4.1.71.34. Message SCHEDULER_STATUS_UPDATE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scheduler_status_update.svg" alt="Sequence diagram of messaging SCHEDULER_STATUS_UPDATE" width="681" height="176">
@@ -13960,7 +14422,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-start_scan">4.1.70.35. Message START_SCAN</h5>
+<h5 id="section-gen-messaging-start_scan">4.1.71.35. Message START_SCAN</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_start_scan.svg" alt="Sequence diagram of messaging START_SCAN" width="485" height="397">
@@ -13992,7 +14454,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-unsupported_operation">4.1.70.36. Message UNSUPPORTED_OPERATION</h5>
+<h5 id="section-gen-messaging-unsupported_operation">4.1.71.36. Message UNSUPPORTED_OPERATION</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_unsupported_operation.svg" alt="Sequence diagram of messaging UNSUPPORTED_OPERATION" width="636" height="118">
@@ -14000,7 +14462,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_added_to_project">4.1.70.37. Message USER_ADDED_TO_PROJECT</h5>
+<h5 id="section-gen-messaging-user_added_to_project">4.1.71.37. Message USER_ADDED_TO_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_added_to_project.svg" alt="Sequence diagram of messaging USER_ADDED_TO_PROJECT" width="732" height="205">
@@ -14029,7 +14491,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_api_token_changed">4.1.70.38. Message USER_API_TOKEN_CHANGED</h5>
+<h5 id="section-gen-messaging-user_api_token_changed">4.1.71.38. Message USER_API_TOKEN_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_api_token_changed.svg" alt="Sequence diagram of messaging USER_API_TOKEN_CHANGED" width="1163" height="234">
@@ -14037,7 +14499,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_becomes_superadmin">4.1.70.39. Message USER_BECOMES_SUPERADMIN</h5>
+<h5 id="section-gen-messaging-user_becomes_superadmin">4.1.71.39. Message USER_BECOMES_SUPERADMIN</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_becomes_superadmin.svg" alt="Sequence diagram of messaging USER_BECOMES_SUPERADMIN" width="663" height="176">
@@ -14045,7 +14507,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_created">4.1.70.40. Message USER_CREATED</h5>
+<h5 id="section-gen-messaging-user_created">4.1.71.40. Message USER_CREATED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_created.svg" alt="Sequence diagram of messaging USER_CREATED" width="625" height="205">
@@ -14074,7 +14536,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_deleted">4.1.70.41. Message USER_DELETED</h5>
+<h5 id="section-gen-messaging-user_deleted">4.1.71.41. Message USER_DELETED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_deleted.svg" alt="Sequence diagram of messaging USER_DELETED" width="1006" height="264">
@@ -14082,7 +14544,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_email_address_changed">4.1.70.42. Message USER_EMAIL_ADDRESS_CHANGED</h5>
+<h5 id="section-gen-messaging-user_email_address_changed">4.1.71.42. Message USER_EMAIL_ADDRESS_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_email_address_changed.svg" alt="Sequence diagram of messaging USER_EMAIL_ADDRESS_CHANGED" width="696" height="176">
@@ -14090,7 +14552,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_new_api_token_requested">4.1.70.43. Message USER_NEW_API_TOKEN_REQUESTED</h5>
+<h5 id="section-gen-messaging-user_new_api_token_requested">4.1.71.43. Message USER_NEW_API_TOKEN_REQUESTED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_new_api_token_requested.svg" alt="Sequence diagram of messaging USER_NEW_API_TOKEN_REQUESTED" width="871" height="205">
@@ -14119,7 +14581,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_no_longer_superadmin">4.1.70.44. Message USER_NO_LONGER_SUPERADMIN</h5>
+<h5 id="section-gen-messaging-user_no_longer_superadmin">4.1.71.44. Message USER_NO_LONGER_SUPERADMIN</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_no_longer_superadmin.svg" alt="Sequence diagram of messaging USER_NO_LONGER_SUPERADMIN" width="687" height="176">
@@ -14127,7 +14589,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_removed_from_project">4.1.70.45. Message USER_REMOVED_FROM_PROJECT</h5>
+<h5 id="section-gen-messaging-user_removed_from_project">4.1.71.45. Message USER_REMOVED_FROM_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_removed_from_project.svg" alt="Sequence diagram of messaging USER_REMOVED_FROM_PROJECT" width="786" height="205">
@@ -14156,7 +14618,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_roles_changed">4.1.70.46. Message USER_ROLES_CHANGED</h5>
+<h5 id="section-gen-messaging-user_roles_changed">4.1.71.46. Message USER_ROLES_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_roles_changed.svg" alt="Sequence diagram of messaging USER_ROLES_CHANGED" width="594" height="176">
@@ -14191,7 +14653,7 @@ the new email address will be sent as well.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_signup_requested">4.1.70.47. Message USER_SIGNUP_REQUESTED</h5>
+<h5 id="section-gen-messaging-user_signup_requested">4.1.71.47. Message USER_SIGNUP_REQUESTED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_signup_requested.svg" alt="Sequence diagram of messaging USER_SIGNUP_REQUESTED" width="629" height="176">
@@ -14226,7 +14688,7 @@ the new email address will be sent as well.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.31.0<br>
+ Server 0.32.0<br>
 </div>
 </div>
 </body>
