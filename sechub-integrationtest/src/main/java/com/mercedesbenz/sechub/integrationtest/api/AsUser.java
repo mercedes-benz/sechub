@@ -559,7 +559,7 @@ public class AsUser {
      * @return execution result
      */
     public ExecutionResult createWebScanAndFetchScanData(TestProject project) {
-        ExecutionResult result = withSecHubClient().startSynchronScanFor(project, IntegrationTestJSONLocation.JSON_WEBSCAN_RED);
+        ExecutionResult result = withSecHubClient().startSynchronScanFor(project, IntegrationTestJSONLocation.CLIENT_JSON_WEBSCAN_RED_ZERO_WAIT);
         return result;
     }
 
@@ -626,7 +626,7 @@ public class AsUser {
         }
 
         if (runMode == null) {
-            runMode = IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__FAST;
+            runMode = IntegrationTestMockMode.WEBSCAN__NETSPARKER_GREEN__ZERO_WAIT;
         }
         String jsonResponse = createWebScanJob(project, runMode);
 
@@ -675,7 +675,7 @@ public class AsUser {
     public UUID createCodeScan(TestProject project, IntegrationTestMockMode runMode) {
         assertProject(project).doesExist();
         if (runMode == null) {
-            runMode = IntegrationTestMockMode.CODE_SCAN__CHECKMARX__YELLOW__FAST;
+            runMode = IntegrationTestMockMode.CODE_SCAN__CHECKMARX__MULTI__ZERO_WAIT;
         }
         String response = createCodeScanJob(project, runMode);
         return fetchJobUUID(response);
@@ -824,12 +824,12 @@ public class AsUser {
     }
 
     public UUID triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(TestProject project) {
-        return triggerAsyncCodeScanApproveWithoutSourceUploadAndGetJobUUID(project, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__SUPERFAST,
+        return triggerAsyncCodeScanApproveWithoutSourceUploadAndGetJobUUID(project, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__10_MS_WATING,
                 TestDataConstants.RESOURCE_PATH_ZIPFILE_ONLY_TEST1_TXT);
     }
 
     public UUID triggerAsyncWebScanGreenLongRunningAndGetJobUUID(TestProject project) {
-        UUID uuid = createWebScan(project, IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING);
+        UUID uuid = createWebScan(project, IntegrationTestMockMode.WEBSCAN__NETSPARKER_GREEN__10_SECONDS_WAITING);
         approveJob(project, uuid);
         return uuid;
     }
@@ -1115,6 +1115,20 @@ public class AsUser {
 
         String json = getRestHelper().getJSON(url);
         return TestJSONHelper.get().createFromJSON(json, TestAutoCleanupData.class);
+    }
+
+    public boolean getBooleanFromURL(String url) {
+        String result = getStringFromURL(url);
+        if (result != null) {
+            String lowerCased = result.toLowerCase();
+            if (lowerCased.equals("true")) {
+                return true;
+            }
+            if (lowerCased.equals("false")) {
+                return false;
+            }
+        }
+        throw new IllegalStateException("Cannot fetch boolean result from url:" + url + " - was not a boolean but " + result);
     }
 
 }

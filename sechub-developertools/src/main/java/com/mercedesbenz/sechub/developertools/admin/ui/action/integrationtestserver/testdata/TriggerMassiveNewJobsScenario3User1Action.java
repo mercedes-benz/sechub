@@ -21,7 +21,7 @@ public class TriggerMassiveNewJobsScenario3User1Action extends IntegrationTestAc
     @Override
     protected void executeImplAfterRestHelperSwitched(ActionEvent e) {
         for (int i = 0; i < MAXIMUM_WEB_SCANS_LONG_RUNNING; i++) {
-            UUID uuid = TestAPI.as(Scenario3.USER_1).createWebScan(Scenario3.PROJECT_1, IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING);
+            UUID uuid = TestAPI.as(Scenario3.USER_1).createWebScan(Scenario3.PROJECT_1, IntegrationTestMockMode.WEBSCAN__NETSPARKER_GREEN__10_SECONDS_WAITING);
             outputAsTextOnSuccess("Long running web scan job created:" + uuid);
             TestAPI.as(Scenario3.USER_1).approveJob(Scenario3.PROJECT_1, uuid);
             outputAsTextOnSuccess("job approved:" + uuid);

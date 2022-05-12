@@ -1,0 +1,10 @@
+{
+    "apiVersion" : "1.0" ,
+    
+    "codeScan": {
+        "fileSystem": {
+            "folders": ["testProject1/test/java"]     
+        }
+     }
+    
+}

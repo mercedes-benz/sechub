@@ -38,7 +38,7 @@ public class ProjectChangeAccessLevelScenario3IntTest {
 
     /* @formatter:off */
     @Test
-    public void a_delete_removes_former_access_level_settings() throws Exception {
+    public void none__test_delete_removes_former_access_level_settings() throws Exception {
         /* prepare + test preconditions */
         TestProject project = PROJECT_1;
         as(SUPER_ADMIN).changeProjectAccessLevel(project,ProjectAccessLevel.NONE);
@@ -60,24 +60,12 @@ public class ProjectChangeAccessLevelScenario3IntTest {
         assertProject(project).hasAccessLevel(ProjectAccessLevel.FULL);
 
         // we start a job by USER1 and download the results- at this moment, this is possible, because project access level of new project is "FULL"
-        IntegrationTestJSONLocation location = IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_YELLOW;
+        // the step does also check if the former access levels have been really been dropped
+        IntegrationTestJSONLocation location = IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_YELLOW_ZERO_WAIT;
         ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
         assertSecHubReport(result).
             hasTrafficLight(TrafficLight.YELLOW);
 
-    }
-    /* @formatter:on */
-
-    /* @formatter:off */
-    @Test
-    public void admin_changes_project_state_to_no_access_project_details_contains_the_information() throws Exception {
-        /* prepare + test preconditions */
-        TestProject project = PROJECT_1;
-        /* execute */
-        as(SUPER_ADMIN).changeProjectAccessLevel(project,ProjectAccessLevel.NONE);
-
-        /* test */
-        assertProject(project).hasAccessLevel(ProjectAccessLevel.NONE);
     }
     /* @formatter:on */
 
@@ -88,7 +76,7 @@ public class ProjectChangeAccessLevelScenario3IntTest {
 	    TestProject project = PROJECT_1;
 
 	    // we start a job by USER1 - at this moment, this is possible, because project access level is "FULL"
-        UUID jobUUID = as(USER_1).createCodeScan(project,IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__FAST);
+        UUID jobUUID = as(USER_1).createCodeScan(project,IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__ZERO_WAIT);
 
         /* execute */
         as(SUPER_ADMIN).changeProjectAccessLevel(project,ProjectAccessLevel.READ_ONLY);
@@ -121,7 +109,7 @@ public class ProjectChangeAccessLevelScenario3IntTest {
         TestProject project = PROJECT_1;
 
         // we start a job by USER1 - at this moment, this is possible, because project access level is "FULL"
-        IntegrationTestJSONLocation location = IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_YELLOW;
+        IntegrationTestJSONLocation location = IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_YELLOW_ZERO_WAIT;
         ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
         assertSecHubReport(result).
             finding().id(1).name("Absolute Path Traversal").isContained().
@@ -160,98 +148,36 @@ public class ProjectChangeAccessLevelScenario3IntTest {
 
     /* @formatter:off */
     @Test
-    public void read_only___user_1_cannot_create_new_job() throws Exception {
+    public void read_only___user_1_cannot_upload_sourcecode_to_existing_job_or_approve_it_or_create_new_job() throws Exception {
         /* prepare + test preconditions */
         TestProject project = PROJECT_1;
+        UUID jobUUID = as(USER_1).createCodeScan(project, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__ZERO_WAIT);
 
         /* execute */
         as(SUPER_ADMIN).changeProjectAccessLevel(project,ProjectAccessLevel.READ_ONLY);
 
         /* test */
-        expectHttpFailure(()->{
-            as(USER_1).createWebScan(project);
-        }, HttpStatus.FORBIDDEN);
 
-    }
-    /* @formatter:on */
-
-    /* @formatter:off */
-    @Test
-    public void read_only___user_1_cannot_approve_existing_job() throws Exception {
-        /* prepare + test preconditions */
-        TestProject project = PROJECT_1;
-        UUID jobUUID = as(USER_1).createWebScan(project);
-
-        /* execute */
-        as(SUPER_ADMIN).changeProjectAccessLevel(project,ProjectAccessLevel.READ_ONLY);
-
-        /* test */
-        expectHttpFailure(()->{
-            as(USER_1).approveJob(project, jobUUID);
-        }, HttpStatus.FORBIDDEN);
-
-    }
-    /* @formatter:on */
-
-    /* @formatter:off */
-    @Test
-    public void read_only___user_1_cannot_upload_sourcecode_to_existing_job() throws Exception {
-        /* prepare + test preconditions */
-        TestProject project = PROJECT_1;
-        UUID jobUUID = as(USER_1).createCodeScan(project, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__FAST);
-
-        /* execute */
-        as(SUPER_ADMIN).changeProjectAccessLevel(project,ProjectAccessLevel.READ_ONLY);
-
-        /* test */
         expectHttpFailure(()->{
             as(USER_1).uploadSourcecode(project, jobUUID, TestDataConstants.RESOURCE_PATH_ZIPFILE_ONLY_TEST1_TXT);
         }, HttpStatus.FORBIDDEN);
 
-    }
-    /* @formatter:on */
-
-    /* @formatter:off */
-    @Test
-    public void none___user_1_cannot_create_new_job() throws Exception {
-        /* prepare + test preconditions */
-        TestProject project = PROJECT_1;
-
-        /* execute */
-        as(SUPER_ADMIN).changeProjectAccessLevel(project,ProjectAccessLevel.NONE);
-
-        /* test */
-        expectHttpFailure(()->{
-            as(USER_1).createWebScan(project);
-        }, HttpStatus.FORBIDDEN);
-
-    }
-    /* @formatter:on */
-
-    /* @formatter:off */
-    @Test
-    public void none___user_1_cannot_approve_existing_job() throws Exception {
-        /* prepare + test preconditions */
-        TestProject project = PROJECT_1;
-        UUID jobUUID = as(USER_1).createWebScan(project);
-
-        /* execute */
-        as(SUPER_ADMIN).changeProjectAccessLevel(project,ProjectAccessLevel.NONE);
-
-        /* test */
         expectHttpFailure(()->{
             as(USER_1).approveJob(project, jobUUID);
         }, HttpStatus.FORBIDDEN);
 
+        expectHttpFailure(()->{
+            as(USER_1).createWebScan(project);
+        }, HttpStatus.FORBIDDEN);
     }
     /* @formatter:on */
 
     /* @formatter:off */
     @Test
-    public void none___user_1_cannot_upload_sourcecode_to_existing_job() throws Exception {
+    public void none___user_1_cannot_upload_sourcecode_to_existing_job_or_approve_it_or_create_new_job() throws Exception {
         /* prepare + test preconditions */
         TestProject project = PROJECT_1;
-        UUID jobUUID = as(USER_1).createCodeScan(project, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__FAST);
+        UUID jobUUID = as(USER_1).createCodeScan(project, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__ZERO_WAIT);
 
         /* execute */
         as(SUPER_ADMIN).changeProjectAccessLevel(project,ProjectAccessLevel.NONE);
@@ -259,6 +185,14 @@ public class ProjectChangeAccessLevelScenario3IntTest {
         /* test */
         expectHttpFailure(()->{
             as(USER_1).uploadSourcecode(project, jobUUID, TestDataConstants.RESOURCE_PATH_ZIPFILE_ONLY_TEST1_TXT);
+        }, HttpStatus.FORBIDDEN);
+
+        expectHttpFailure(()->{
+            as(USER_1).approveJob(project, jobUUID);
+        }, HttpStatus.FORBIDDEN);
+
+        expectHttpFailure(()->{
+            as(USER_1).createWebScan(project);
         }, HttpStatus.FORBIDDEN);
 
     }

@@ -165,6 +165,7 @@ public class IntegrationTestSetup implements TestRule {
             assertNecessaryTestServersRunning();
             assertTestAPIInternalSuperAdminAvailable();
 
+            long startTime = 0;
             /* prepare */
             String testClass = description.getClassName();
             String testMethod = description.getMethodName();
@@ -197,12 +198,13 @@ public class IntegrationTestSetup implements TestRule {
 
                 String info = "\n\n\n" + "  Start of integration test\n\n" + "  - Test class:" + testClass + "\n" + "  - Method:" + testMethod + "\n\n" + "\n";
                 logInfo(info);
-
+                startTime = System.currentTimeMillis();
                 if (sechubServerScenario) {
                     waitForPreparationEventsDone();
                 }
 
             } catch (Throwable e) {
+
                 LOG.error("#########################################################################");
                 LOG.error("#");
                 LOG.error("#         FATAL SCENARIO ERROR");
@@ -213,7 +215,7 @@ public class IntegrationTestSetup implements TestRule {
                 LOG.error("Last url :" + TestRestHelper.getLastUrl());
                 LOG.error("Last data:" + TestRestHelper.getLastData());
 
-                logInfo("\n\n\nEnd of integration test (scenario failure):\n - Test class: " + testClass + "\n - Method:" + testMethod + "\n\n");
+                logEnd(TestTag.SCENARIO_FAILURE, testClass, testMethod, startTime);
 
                 throw e;
             }
@@ -226,8 +228,29 @@ public class IntegrationTestSetup implements TestRule {
                 throw new IntegrationTestException(
                         "HTTP ERROR " + e.getRawStatusCode() + " '" + (code != null ? code.getReasonPhrase() : "?") + "', " + lastURL, e);
             } finally {
-                logInfo("\n\n\nEnd of integration test:\n - Test class: " + testClass + "\n - Method:" + testMethod + "\n\n");
+                logEnd(TestTag.DONE, testClass, testMethod, startTime);
             }
+        }
+
+        private void logEnd(TestTag failureTag, String testClass, String testMethod, long startTime) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("\n\n\nEnd of integration test:\n - Test  : class ");
+            sb.append(testClass);
+            if (failureTag.text != null) {
+                sb.append('(');
+                sb.append(failureTag.text);
+                sb.append(')');
+            }
+            sb.append("\n - Method: ");
+            sb.append(testMethod);
+            sb.append("\n - Time  : ");
+            sb.append(elapsed(startTime) + " ms from start of actual test until end\n\n");
+
+            logInfo(sb.toString());
+        }
+
+        private long elapsed(long startTime) {
+            return System.currentTimeMillis() - startTime;
         }
 
         private void logInfo(String info) {
@@ -390,6 +413,19 @@ public class IntegrationTestSetup implements TestRule {
         }
         LOG.warn("TestAPI is NOT able to list signups - so super admin is NOT available or has not correct permissions!");
         return Boolean.FALSE;
+    }
+
+    private enum TestTag {
+
+        DONE(null),
+
+        SCENARIO_FAILURE("scenario failure");
+
+        private String text;
+
+        private TestTag(String text) {
+            this.text = text;
+        }
     }
 
 }

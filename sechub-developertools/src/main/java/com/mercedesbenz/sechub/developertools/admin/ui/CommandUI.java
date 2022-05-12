@@ -434,16 +434,16 @@ public class CommandUI {
         testDataMenu.addSeparator();
         add(testDataMenu, new TriggerNewInfraScanJobScenario3User1Action(context));
         testDataMenu.addSeparator();
-        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__FAST));
-        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING));
+        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_GREEN__ZERO_WAIT));
+        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_GREEN__10_SECONDS_WAITING));
 
-        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING));
+        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_GREEN__10_SECONDS_WAITING));
 
-        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_ONE_FINDING__FAST));
-        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_MANY_RESULTS__FAST));
+        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_RED__ZERO_WAIT));
+        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_MULTI__ZERO_WAIT));
         testDataMenu.addSeparator();
-        add(testDataMenu, new TriggerNewCodeScanJobScenario3User1Action(context, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__YELLOW__FAST));
-        add(testDataMenu, new TriggerNewCodeScanJobScenario3User1Action(context, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__FAST));
+        add(testDataMenu, new TriggerNewCodeScanJobScenario3User1Action(context, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__MULTI__ZERO_WAIT));
+        add(testDataMenu, new TriggerNewCodeScanJobScenario3User1Action(context, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__1_SECOND_WAITING));
         testDataMenu.addSeparator();
         add(testDataMenu, new TriggerMassiveNewJobsScenario3User1Action(context));
 

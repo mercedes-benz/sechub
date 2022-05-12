@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.integrationtest.api.AsUser.ProjectFalsePositivesDefinition;
+import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestExampleConstants;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSupport;
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubClientExecutor;
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubClientExecutor.ClientAction;
@@ -384,7 +385,7 @@ public class WithSecHubClient {
      * @return
      */
     public ExecutionResult startAndWaitForCodeScan(TestProject project) {
-        return startAndWaitForCodeScan(project, IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_GREEN);
+        return startAndWaitForCodeScan(project, IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_GREEN_ZERO_WAIT);
     }
 
     public ExecutionResult startAndWaitForCodeScan(TestProject project, IntegrationTestJSONLocation location) {
@@ -397,7 +398,8 @@ public class WithSecHubClient {
      * RED traffic light result.<br>
      * <br>
      * Ensure that "https://fscan.intranet.example.org/" is in whitelist of project
-     * to scan!
+     * to scan! (see
+     * {@link IntegrationTestExampleConstants#INFRASCAN_DEFAULT_WHITELEIST_ENTRY}n
      *
      * @param project
      * @return execution result

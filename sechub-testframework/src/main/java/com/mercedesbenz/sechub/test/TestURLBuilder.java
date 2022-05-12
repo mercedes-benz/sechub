@@ -186,7 +186,10 @@ public class TestURLBuilder {
         sb.append(createRootPath());
         sb.append(custom);
         for (Object pathVariable : parts) {
-            sb.append("/");
+            boolean endsAlreadyWithSlash = sb.charAt(sb.length() - 1) != '/';
+            if (endsAlreadyWithSlash) {
+                sb.append("/");
+            }
             sb.append(pathVariable);
         }
         return sb.toString();
@@ -608,12 +611,8 @@ public class TestURLBuilder {
         return buildUrl(API_ANONYMOUS, "integrationtest/log/info");
     }
 
-    public String buildCheckRoleUser() {
-        return buildUrl(API_USER, "integrationtest/check/role/user");
-    }
-
-    public String buildCheckRoleOwner() {
-        return buildUrl(API_OWNER, "integrationtest/check/role/owner");
+    public String buildCheckRole(String role) {
+        return buildUrl(API_ANONYMOUS, "integrationtest/check/role/", role);
     }
 
     public String buildFetchReport(String projectId, UUID sechubJobUUID) {
