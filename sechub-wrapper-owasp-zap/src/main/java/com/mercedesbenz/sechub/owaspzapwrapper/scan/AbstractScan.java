@@ -277,9 +277,10 @@ public abstract class AbstractScan implements OwaspZapScan {
         // setting this value to zero means unlimited
         clientApi.core.setOptionMaximumAlertInstances("0");
 
-        // enable all scanner rules by default
+        // enable all passive scanner rules by default
         clientApi.pscan.enableAllScanners();
-        // null specifies the default policy
+        // enable all passive scanner rules by default
+        // null specifies the default scan policy
         clientApi.ascan.enableAllScanners(null);
     }
 
@@ -310,23 +311,22 @@ public abstract class AbstractScan implements OwaspZapScan {
         }
 
         for (RuleReference ruleRef : rulesReferences) {
-            Rule ruleToDeactivate = fullRuleset.findRuleByRef(ruleRef.getRef());
-
+            Rule ruleToDeactivate = fullRuleset.findRuleByReference(ruleRef.getReference());
             if (isPassiveRule(ruleToDeactivate.getType())) {
                 clientApi.pscan.disableScanners(ruleToDeactivate.getId());
             } else if (isActiveRule(ruleToDeactivate.getType())) {
-                // null specifies the default policy
+                // null specifies the default scan policy
                 clientApi.ascan.disableScanners(ruleToDeactivate.getId(), null);
             }
         }
     }
 
     private boolean isPassiveRule(String type) {
-        return "passive".equals(type);
+        return "passive".equals(type.toLowerCase());
     }
 
     private boolean isActiveRule(String type) {
-        return "active".equals(type);
+        return "active".equals(type.toLowerCase());
     }
 
     private void scanUnsafe() throws ClientApiException {

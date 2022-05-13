@@ -3,19 +3,19 @@ package com.mercedesbenz.sechub.owaspzapwrapper.config.data;
 
 public class RuleReference {
 
-    private String ref;
+    private String reference;
     private String info;
 
     /**
      *
-     * @return ref or <code>null</code> if not set.
+     * @return reference or <code>null</code> if not set.
      */
-    public String getRef() {
-        return ref;
+    public String getReference() {
+        return reference;
     }
 
-    public void setRef(String ref) {
-        this.ref = ref;
+    public void setReference(String reference) {
+        this.reference = reference;
     }
 
     /**

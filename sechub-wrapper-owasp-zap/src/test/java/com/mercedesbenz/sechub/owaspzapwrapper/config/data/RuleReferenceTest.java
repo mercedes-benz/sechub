@@ -17,7 +17,7 @@ class RuleReferenceTest {
         RuleReference ruleReference = new RuleReference();
 
         ruleReference.setInfo("rule-ref-info");
-        ruleReference.setRef("rule-ref");
+        ruleReference.setReference("rule-ref");
         return ruleReference;
     }
 

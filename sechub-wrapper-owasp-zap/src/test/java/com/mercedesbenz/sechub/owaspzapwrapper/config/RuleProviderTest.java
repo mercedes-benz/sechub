@@ -53,7 +53,7 @@ class RuleProviderTest {
         /* test */
         assertNotNull(fullRuleset);
         assertEquals("https://www.zaproxy.org/docs/alerts/", fullRuleset.getOrigin());
-        assertEquals("2022-05-05 15:33:39.190796", fullRuleset.getTimestamp());
+        assertEquals("2022-05-13 14:44:00.635104", fullRuleset.getTimestamp());
         assertNotNull(fullRuleset.getRules());
         assertEquals(146, fullRuleset.getRules().size());
     }

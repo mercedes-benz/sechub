@@ -4,7 +4,6 @@ package com.mercedesbenz.sechub.owaspzapwrapper.config.data;
 public class Rule {
 
     private String id;
-    private String ref;
     private String name;
     private String type;
     private String link;
@@ -19,18 +18,6 @@ public class Rule {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    /**
-     *
-     * @return ref or <code>null</code> if not set.
-     */
-    public String getRef() {
-        return ref;
-    }
-
-    public void setRef(String ref) {
-        this.ref = ref;
     }
 
     /**

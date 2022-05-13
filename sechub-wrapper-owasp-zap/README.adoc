@@ -75,33 +75,60 @@ Usage: OwaspZapWrapper [options]
 
 To deactivate scan rules you need to specify 2 files using 2 command line arguments.
 
-The first file specified using --fullRulesetfile, 
+===== Full ruleset file
+The first file specified using `--fullRulesetfile`, 
 represents the full ruleset of all installed rules inside the Owasp Zap.
-The following snippet is an example of the files structure:
+The following snippet is an example of the file structure:
 [source,json]
 ----
 {
-  "timestamp" : "2022-05-05 15:33:39.190796",
+  "timestamp" : "2022-05-13 14:44:00.635104",
   "origin" : "https://www.zaproxy.org/docs/alerts/",
-  "rules" : [{
-    "id" : "0",
-    "ref" : "Directory-Browsing-0",
-    "name" : "Directory Browsing",
-    "type" : "active",
-    "link" : "https://www.zaproxy.org/docs/alerts/0"
-  }, {
-    "id" : "2",
-    "ref" : "Private-IP-Disclosure-2",
-    "name" : "Private IP Disclosure",
-    "type" : "passive",
-    "link" : "https://www.zaproxy.org/docs/alerts/2"
-  }]
+  "rules" : {
+    "Directory-Browsing-0" : {
+      "id" : "0",
+      "name" : "Directory Browsing",
+      "type" : "active",
+      "link" : "https://www.zaproxy.org/docs/alerts/0"
+    },
+    "Private-IP-Disclosure-2" : {
+      "id" : "2",
+      "name" : "Private IP Disclosure",
+      "type" : "passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/2"
+    }
+  }
 }
 ----
+The file above can be generated using the helper python script https://github.com/mercedes-benz/sechub/tree/develop/sechub-wrapper-owasp-zap/src/main/resourcesowaspzap-ruleset-helper/owaspzap_ruleset_helper.py[*owaspzap_ruleset_helper.py*].
+Before using this script make sure to install the dependencies using https://github.com/mercedes-benz/sechub/tree/develop/sechub-wrapper-owasp-zap/src/main/resourcesowaspzap-ruleset-helper/requirements.txt[*requirements.txt*].
 
-Additionally you need to specify a file with --rulesDeactivationfile,
+If you do not wish to install this on your system, you can use a python virtual environment.
+Please refer to the official https://docs.python.org/3.10/tutorial/venv.html[*documentation*].
+Depending on your default python installation you might need to use `pip3`:
+
+* `pip install -r requirements.txt`
+
+The `owaspzap_ruleset_helper.py` has the following command line options:
+----
+ -h, --help            show this help message and exit
+  --output-file OUTPUT_FILE
+  --wanted-status [{release,beta,alpha} ...]
+                        Specify values separated by spaces like: release beta
+                        alpha
+----
+The parameter `--output-file` is required. Make sure the directory exists, since only the file is created if it does not exist.
+
+With `--wanted-status` you can specify which rules you want to include in result.
+If you do not specify any restrictions, rules of all release status are included.
+This means `alpha`, `beta` and `release`. Please specify this values separated by spaces as shown above.
+
+
+===== Deactivation file
+
+Additionally you need to specify a file with `--rulesDeactivationfile`,
 which represents the rule by using the `ref` part of the file above.
-The following snippet is an example of the files structure:
+The following snippet is an example of the file structure:
 [source,json]
 ----
 {

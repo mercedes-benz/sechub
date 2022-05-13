@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.owaspzapwrapper.config.data;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.mercedesbenz.sechub.commons.model.JSONable;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitCode;
@@ -12,12 +12,16 @@ public class OwaspZapFullRuleset implements JSONable<OwaspZapFullRuleset> {
 
     private String timestamp;
     private String origin;
-    private List<Rule> rules;
+    private Map<String, Rule> rules;
 
     public OwaspZapFullRuleset() {
-        this.rules = new LinkedList<>();
+        this.rules = new HashMap<>();
     }
 
+    /**
+     *
+     * @return timestamp or <code>null</code> if not set.
+     */
     public String getTimestamp() {
         return timestamp;
     }
@@ -26,6 +30,10 @@ public class OwaspZapFullRuleset implements JSONable<OwaspZapFullRuleset> {
         this.timestamp = timestamp;
     }
 
+    /**
+     *
+     * @return origin or <code>null</code> if not set.
+     */
     public String getOrigin() {
         return origin;
     }
@@ -38,35 +46,41 @@ public class OwaspZapFullRuleset implements JSONable<OwaspZapFullRuleset> {
      *
      * @return list of RuleReference objects or <code>null</code> if not set.
      */
-    public List<Rule> getRules() {
+    public Map<String, Rule> getRules() {
         return rules;
     }
 
-    public void setRules(List<Rule> rules) {
+    public void setRules(Map<String, Rule> rules) {
         this.rules = rules;
     }
 
     /**
      *
-     * @return Rule object or <code>null</code> if not found.
+     * @param reference of the rule to search for inside <code>rules</code>
+     * @return rule found by the parameter <code>reference</code>
+     *
+     * @throws MustExitRuntimeException if either parameter <code>reference</code>
+     *                                  or attribute <code>rules</code> is
+     *                                  <code>null</code> or if the rule that was
+     *                                  search for was not found inside
+     *                                  <code>rules</code>.
      */
-    public Rule findRuleByRef(String ref) {
-        if (ref == null) {
-            throw new MustExitRuntimeException("Rule ref to be search for must not be 'null'!", MustExitCode.SCAN_RULE_ERROR);
+    public Rule findRuleByReference(String reference) {
+        if (reference == null) {
+            throw new MustExitRuntimeException("Rule reference to be search for must not be 'null'!", MustExitCode.SCAN_RULE_ERROR);
         }
         if (rules == null) {
-            throw new MustExitRuntimeException("Full ruleset must not be 'null', otherwise this cannot be search for ref: " + ref,
+            throw new MustExitRuntimeException("Full ruleset must not be 'null', otherwise this cannot be search for reference: " + reference,
                     MustExitCode.SCAN_RULE_ERROR);
         }
 
-        for (Rule rule : rules) {
-            if (ref.equals(rule.getRef())) {
-                return rule;
-            }
+        Rule rule = rules.getOrDefault(reference, null);
+        if (rule == null) {
+            throw new MustExitRuntimeException(
+                    "Rule could not be found inside full ruleset. Check installed ruleset for missing rules and specified rules to deactivate for wrong specifications.",
+                    MustExitCode.SCAN_RULE_ERROR);
         }
-        throw new MustExitRuntimeException(
-                "Rule could not be found inside full ruleset. Check installed ruleset for missing rules and specified rules to deactivate for wrong specifications.",
-                MustExitCode.SCAN_RULE_ERROR);
+        return rule;
     }
 
     @Override

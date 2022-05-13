@@ -20,7 +20,7 @@ class DeactivatedRuleReferencesTest {
         DeactivatedRuleReferences deactivatedRuleReferences = new DeactivatedRuleReferences();
 
         RuleReference ruleRef = new RuleReference();
-        ruleRef.setRef("rule-ref");
+        ruleRef.setReference("rule-ref");
         ruleRef.setInfo("Rule was deactivated for testing reasons.");
         List<RuleReference> references = new LinkedList<>();
         references.add(ruleRef);

@@ -17,7 +17,6 @@ class RuleTest {
         Rule rule = new Rule();
 
         rule.setId("12345");
-        rule.setRef("rule-ref");
         rule.setName("rule-name");
         rule.setType("active");
         rule.setLink("link-to-rule");

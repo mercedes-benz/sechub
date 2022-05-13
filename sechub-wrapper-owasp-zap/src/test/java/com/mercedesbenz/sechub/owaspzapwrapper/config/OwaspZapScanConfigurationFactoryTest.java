@@ -9,9 +9,11 @@ import static org.mockito.Mockito.*;
 import java.io.File;
 import java.net.URI;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -348,19 +350,16 @@ class OwaspZapScanConfigurationFactoryTest {
         assertEquals("timestamp", fullRuleset.getTimestamp());
         assertEquals(1, fullRuleset.getRules().size());
 
-        Iterator<Rule> iterator = fullRuleset.getRules().iterator();
-        assertTrue(iterator.hasNext());
-
-        Rule rule = iterator.next();
+        Rule rule = fullRuleset.getRules().getOrDefault("rule-ref", null);
+        assertNotNull(rule);
         assertEquals("12345", rule.getId());
-        assertEquals("rule-ref", rule.getRef());
         assertEquals("rule-name", rule.getName());
         assertEquals("active", rule.getType());
         assertEquals("link-to-rule", rule.getLink());
     }
 
     @Test
-    void ruletodeactivate_returned_by_helper_is_inside_result() {
+    void rule_to_deactivate_returned_by_helper_is_inside_result() {
         /* prepare */
         CommandLineSettings settings = createSettingsMockWithNecessaryParts();
         when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(createExampleDeactivatedRuleReferences());
@@ -379,7 +378,7 @@ class OwaspZapScanConfigurationFactoryTest {
         assertTrue(iterator.hasNext());
 
         RuleReference ruleRef = iterator.next();
-        assertEquals("rule-ref", ruleRef.getRef());
+        assertEquals("rule-ref", ruleRef.getReference());
         assertEquals("Rule was deactivated for testing reasons.", ruleRef.getInfo());
     }
 
@@ -388,14 +387,13 @@ class OwaspZapScanConfigurationFactoryTest {
 
         fullRuleset.setOrigin("link-to-origin");
         fullRuleset.setTimestamp("timestamp");
-        List<Rule> rules = new LinkedList<Rule>();
+        Map<String, Rule> rules = new HashMap<>();
         Rule rule = new Rule();
         rule.setId("12345");
-        rule.setRef("rule-ref");
         rule.setName("rule-name");
         rule.setType("active");
         rule.setLink("link-to-rule");
-        rules.add(rule);
+        rules.put("rule-ref", rule);
         fullRuleset.setRules(rules);
         return fullRuleset;
     }
@@ -404,7 +402,7 @@ class OwaspZapScanConfigurationFactoryTest {
         DeactivatedRuleReferences deactivatedRuleReferences = new DeactivatedRuleReferences();
 
         RuleReference ruleRef = new RuleReference();
-        ruleRef.setRef("rule-ref");
+        ruleRef.setReference("rule-ref");
         ruleRef.setInfo("Rule was deactivated for testing reasons.");
         List<RuleReference> references = new LinkedList<>();
         references.add(ruleRef);
