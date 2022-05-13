@@ -1,0 +1,19 @@
+{
+    "apiVersion" : "1.0",
+    "serverId" : "TERN_CLUSTER", 
+
+    "products" : [
+        {
+            "id" : "PDS_TERN",
+            "path" : "/scripts/tern.sh",
+            "scanType" : "codeScan",
+            "description" : "Runs tern. Tern is a container analysis tool."
+        },
+        {
+            "id" : "PDS_TERN_MOCK",
+            "path" : "/scripts/tern_mock.sh",
+            "scanType" : "codeScan",
+            "description" : "Runs tern. Tern is a container analysis tool."
+        }
+    ]
+}
