@@ -51,9 +51,4 @@ public class Scenario1 extends AbstractGrowingSecHubServerTestScenario {
         initializer().waitUntilUserCanLogin(OWNER_1);
     }
 
-    @Override
-    public String getPrefixMainId() {
-        return "s01";
-    }
-
 }

@@ -5,8 +5,7 @@ import static com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDe
 
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.api.TestUser;
-import com.mercedesbenz.sechub.integrationtest.internal.AbstractSecHubServerTestScenario;
-import com.mercedesbenz.sechub.integrationtest.internal.CleanScenario;
+import com.mercedesbenz.sechub.integrationtest.internal.AbstractGrowingSecHubServerTestScenario;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultProfiles;
 import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
 import com.mercedesbenz.sechub.integrationtest.scenario5.Scenario5;
@@ -38,7 +37,7 @@ import com.mercedesbenz.sechub.integrationtest.scenario5.Scenario5;
  * @author Albert Tregnaghi
  *
  */
-public class Scenario11 extends AbstractSecHubServerTestScenario implements PDSTestScenario, CleanScenario {
+public class Scenario11 extends AbstractGrowingSecHubServerTestScenario implements PDSTestScenario {
 
     /**
      * User 1 is registered on startup, also owner and user of {@link #PROJECT_1}
@@ -75,4 +74,5 @@ public class Scenario11 extends AbstractSecHubServerTestScenario implements PDST
             ;
         /* @formatter:on */
     }
+
 }

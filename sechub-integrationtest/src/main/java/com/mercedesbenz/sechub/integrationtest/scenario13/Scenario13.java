@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.integrationtest.scenario13;
 
-import static com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultProfiles.PROFILE_9_PDS_LICENSESCAN_SPDX;
+import static com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultProfiles.*;
 
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.api.TestUser;
-import com.mercedesbenz.sechub.integrationtest.internal.AbstractSecHubServerTestScenario;
-import com.mercedesbenz.sechub.integrationtest.internal.CleanScenario;
+import com.mercedesbenz.sechub.integrationtest.internal.AbstractGrowingSecHubServerTestScenario;
 import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
 
 /**
@@ -32,7 +31,7 @@ import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
  * </pre>
  *
  */
-public class Scenario13 extends AbstractSecHubServerTestScenario implements PDSTestScenario, CleanScenario {
+public class Scenario13 extends AbstractGrowingSecHubServerTestScenario implements PDSTestScenario {
 
     /**
      * User 1 is registered on startup, also owner and user of {@link #PROJECT_1}

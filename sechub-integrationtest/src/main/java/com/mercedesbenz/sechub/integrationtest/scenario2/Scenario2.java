@@ -83,9 +83,4 @@ public class Scenario2 extends AbstractGrowingSecHubServerTestScenario {
 		/* @formatter:on */
     }
 
-    @Override
-    public String getPrefixMainId() {
-        return "s02";
-    }
-
 }

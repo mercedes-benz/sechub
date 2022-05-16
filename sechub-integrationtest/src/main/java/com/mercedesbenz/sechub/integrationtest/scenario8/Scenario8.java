@@ -29,8 +29,6 @@ import com.mercedesbenz.sechub.integrationtest.internal.AbstractGrowingSecHubSer
  */
 public class Scenario8 extends AbstractGrowingSecHubServerTestScenario {
 
-    public static final String PREFIX_MAIN_ID = "s08";
-
     /**
      * User 1 is registered on startup, also owner and user of {@link #PROJECT_1}
      */
@@ -65,11 +63,6 @@ public class Scenario8 extends AbstractGrowingSecHubServerTestScenario {
 
 			;
 		/* @formatter:on */
-    }
-
-    @Override
-    public String getPrefixMainId() {
-        return PREFIX_MAIN_ID;
     }
 
 }
