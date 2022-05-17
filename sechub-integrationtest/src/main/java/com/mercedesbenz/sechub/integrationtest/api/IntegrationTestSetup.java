@@ -25,8 +25,12 @@ import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubServerTestScenario;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestScenario;
+import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 
 public class IntegrationTestSetup implements TestRule {
+
+    public static final String SECHUB_INTEGRATIONTEST_ONLY_NECESSARY_TESTS_FOR_DOCUMENTATION = "sechub.integrationtest.only.necessary4documentation";
+    public static final String SECHUB_INTEGRATIONTEST_NEVER_NECESSARY_TESTS_FOR_DOCUMENTATION = "sechub.integrationtest.never.necessary4documentation";
 
     private static final String SECHUB_INTEGRATIONTEST_LONG_RUNNING = "sechub.integrationtest.longrunning";
     static final String SECHUB_INTEGRATIONTEST_RUNNING = "sechub.integrationtest.running";
@@ -162,6 +166,7 @@ public class IntegrationTestSetup implements TestRule {
                     Assume.assumeTrue(message, false);
                 }
             }
+            handleDocumentationTestsSpecialIfWanted();
             assertNecessaryTestServersRunning();
             assertTestAPIInternalSuperAdminAvailable();
 
@@ -230,6 +235,35 @@ public class IntegrationTestSetup implements TestRule {
             } finally {
                 logEnd(TestTag.DONE, testClass, testMethod, startTime);
             }
+        }
+
+        private void handleDocumentationTestsSpecialIfWanted() {
+            boolean onlyWhenNecessaryDocumentationTest = Boolean.getBoolean(SECHUB_INTEGRATIONTEST_ONLY_NECESSARY_TESTS_FOR_DOCUMENTATION);
+            boolean neverWhenNecessaryDocumentationTest = Boolean.getBoolean(SECHUB_INTEGRATIONTEST_NEVER_NECESSARY_TESTS_FOR_DOCUMENTATION);
+
+            if (!onlyWhenNecessaryDocumentationTest && !neverWhenNecessaryDocumentationTest) {
+                return;
+            }
+
+            /* sanity check */
+            if (onlyWhenNecessaryDocumentationTest && neverWhenNecessaryDocumentationTest) {
+                String message = "Either define \n-D" + SECHUB_INTEGRATIONTEST_ONLY_NECESSARY_TESTS_FOR_DOCUMENTATION + "=true\nor\n-D"
+                        + SECHUB_INTEGRATIONTEST_NEVER_NECESSARY_TESTS_FOR_DOCUMENTATION + "=true\nBut not both!";
+                throw new IllegalStateException(message);
+            }
+            boolean isADocumentationTest = false;
+            if (TestIsNecessaryForDocumentation.class.isAssignableFrom(description.getTestClass())) {
+                isADocumentationTest = true;
+            }
+            if (onlyWhenNecessaryDocumentationTest && !isADocumentationTest) {
+                String message = "Skipped test because not necessary for documentation and currently only those necessary tests are executed.";
+                Assume.assumeTrue(message, false);
+            }
+            if (neverWhenNecessaryDocumentationTest && isADocumentationTest) {
+                String message = "Skipped test because necessary for documentation and currently we do NOT execute those tests but all others.";
+                Assume.assumeTrue(message, false);
+            }
+
         }
 
         private void logEnd(TestTag failureTag, String testClass, String testMethod, long startTime) {

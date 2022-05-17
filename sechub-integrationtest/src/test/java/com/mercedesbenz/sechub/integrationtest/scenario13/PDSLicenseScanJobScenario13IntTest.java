@@ -1,10 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.integrationtest.scenario13;
 
-import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.as;
-import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.waitForJobDone;
-import static com.mercedesbenz.sechub.integrationtest.scenario13.Scenario13.PROJECT_1;
-import static com.mercedesbenz.sechub.integrationtest.scenario13.Scenario13.USER_1;
+import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
+import static com.mercedesbenz.sechub.integrationtest.scenario13.Scenario13.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.UUID;
