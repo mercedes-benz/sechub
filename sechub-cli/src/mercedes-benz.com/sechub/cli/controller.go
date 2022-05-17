@@ -72,7 +72,7 @@ func Execute() {
  *      code scan parts, do approve
  * --------------------------------------------------*/
 func prepareCreateApproveJob(context *Context) {
-	prepareCodeScan(context)
+	prepareScan(context)
 	createNewSecHubJob(context)
 	handleCodeScanUpload(context)
 	approveSecHubJob(context)
@@ -90,7 +90,7 @@ func handleCodeScanUpload(context *Context) {
 	uploadSourceZipFile(context)
 }
 
-func prepareCodeScan(context *Context) {
+func prepareScan(context *Context) {
 	/* currently we only provide filesystem - means zipping etc. */
 	json := context.sechubConfig
 
@@ -110,10 +110,10 @@ func prepareCodeScan(context *Context) {
 	amountOfFolders := len(json.CodeScan.FileSystem.Folders)
 	var debug = context.config.debug
 	if debug {
-		sechubUtil.LogDebug(debug, fmt.Sprintf("prepareCodeScan - folders=%s", json.CodeScan.FileSystem.Folders))
-		sechubUtil.LogDebug(debug, fmt.Sprintf("prepareCodeScan - excludes=%s", json.CodeScan.Excludes))
-		sechubUtil.LogDebug(debug, fmt.Sprintf("prepareCodeScan - SourceCodePatterns=%s", json.CodeScan.SourceCodePatterns))
-		sechubUtil.LogDebug(debug, fmt.Sprintf("prepareCodeScan - amount of folders found: %d", amountOfFolders))
+		sechubUtil.LogDebug(debug, fmt.Sprintf("prepareScan - folders=%s", json.CodeScan.FileSystem.Folders))
+		sechubUtil.LogDebug(debug, fmt.Sprintf("prepareScan - excludes=%s", json.CodeScan.Excludes))
+		sechubUtil.LogDebug(debug, fmt.Sprintf("prepareScan - SourceCodePatterns=%s", json.CodeScan.SourceCodePatterns))
+		sechubUtil.LogDebug(debug, fmt.Sprintf("prepareScan - amount of folders found: %d", amountOfFolders))
 	}
 	if amountOfFolders == 0 {
 		/* nothing set, so no upload */

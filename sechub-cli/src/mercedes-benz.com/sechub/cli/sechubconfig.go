@@ -19,22 +19,45 @@ import (
 // so Webscan, InfraScan are not handled here (but still uploaded)
 // Only code scan is necessary, because determination necessary if there is an upload necessary or not.
 type SecHubConfig struct {
-	APIVersion string         `json:"apiVersion"`
-	User       string         `json:"user"`
-	ProjectID  string         `json:"project"`
-	Server     string         `json:"server"`
-	CodeScan   CodeScanConfig `json:"codeScan"`
+	APIVersion string                `json:"apiVersion"`
+	User       string                `json:"user"`
+	ProjectID  string                `json:"project"`
+	Server     string                `json:"server"`
+	Data       DataSectionScanConfig `json:"data"`
+	CodeScan   CodeScanConfig        `json:"codeScan"`
 }
 
-// CodeScanConfig contains information how code scan shall be done
-type CodeScanConfig struct {
+type DataSectionScanConfig struct {
+	Binaries []NamedBinaryScanConfig `json:"binaries"`
+	Sources  []NamedCodeScanConfig   `json:"sources"`
+}
+
+// NamedCodeScanConfig contains a filesystem scope for code scans with optional excludes and additionalFilenameExtensions
+type NamedCodeScanConfig struct {
+	Name               string           `json:"name"`
 	FileSystem         FileSystemConfig `json:"fileSystem"`
 	Excludes           []string         `json:"excludes"`
 	SourceCodePatterns []string         `json:"additionalFilenameExtensions"`
 }
 
-// FileSystemConfig contains data for folders
+// NamedCodeScanConfig contains a filesystem scope for binary scans
+type NamedBinaryScanConfig struct {
+	Name       string           `json:"name"`
+	FileSystem FileSystemConfig `json:"fileSystem"`
+}
+
+// CodeScanConfig - definition of a code scan
+type CodeScanConfig struct {
+	Use []string `json:"use"`
+	// From here: kept for backward compatibility. Take "use" in conjunction with data section.
+	FileSystem         FileSystemConfig `json:"fileSystem"`
+	Excludes           []string         `json:"excludes"`
+	SourceCodePatterns []string         `json:"additionalFilenameExtensions"`
+}
+
+// FileSystemConfig contains data for defined files+folders
 type FileSystemConfig struct {
+	Files   []string `json:"files"`
 	Folders []string `json:"folders"`
 }
 
@@ -48,7 +71,7 @@ func fillTemplate(templateSource string, data map[string]string) []byte {
 	err := t.Execute(&tpl, data)
 
 	if err != nil {
-		sechubUtil.LogError("SecHub configuration json is not a valid template")
+		sechubUtil.LogError(fmt.Sprintf("SecHub configuration json is not a valid template:\n%s", err))
 		showHelpHint()
 		os.Exit(ExitCodeMissingConfigFile)
 	}
@@ -61,7 +84,7 @@ func newSecHubConfigFromBytes(bytes []byte) SecHubConfig {
 	/* transform text to json */
 	err := json.Unmarshal(bytes, &sechubConfig)
 	if err != nil {
-		sechubUtil.LogError("SecHub configuration json is not valid json")
+		sechubUtil.LogError(fmt.Sprintf("SecHub configuration json is not valid json:\n%s", err))
 		showHelpHint()
 		os.Exit(ExitCodeMissingConfigFile)
 	}

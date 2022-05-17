@@ -17,7 +17,6 @@ func Test_fillTemplate_without_data_keeps_data_as_is(t *testing.T) {
     {
         "apiVersion" : "1.2.3",
         "codeScan":{
-            "zipDate":"1234",
             "fileSystem": {
                 "folders": ["1111","2222"]
             }
@@ -38,7 +37,6 @@ func Test_fillTemplate_with_data_changes_template_content(t *testing.T) {
     { 
         "apiVersion" : "1.2.3",
         "codeScan":{
-            "zipDate":"1234",
             "fileSystem": {
                 "folders": ["{{ .DATA1 }}","{{ .DATA2 }}"]
             }
@@ -46,10 +44,9 @@ func Test_fillTemplate_with_data_changes_template_content(t *testing.T) {
     }
 	`
 	jStrB := `
-	{ 
+		{ 
         "apiVersion" : "1.2.3",
         "codeScan":{
-            "zipDate":"1234",
             "fileSystem": {
                 "folders": ["12345","67890"]
             }
@@ -91,4 +88,107 @@ func Test_newSecHubConfigFromFile_does_resolve_map_entries(t *testing.T) {
 	AssertEquals("1.0", config.APIVersion, t)
 	AssertEquals("testProject1/src/java", config.CodeScan.FileSystem.Folders[0], t)
 
+}
+
+func Example_newSecHubConfigFromFile_parses_data_sources_section_correctly() {
+	/* prepare */
+	sechubJSON := `
+		{
+			"data": {
+				"sources": [
+					{
+						"name": "reference-name-sources-1",
+						"fileSystem": {
+							"files": [
+								"somewhere/file1.txt",
+								"somewhere/file2.txt"
+							],
+							"folders": [
+								"somewhere/subfolder1",
+								"somewhere/subfolder2"
+							]
+						},
+						"excludes": [
+							"**/mytestcode/**",
+							"**/documentation/**"
+						],
+						"additionalFilenameExtensions": [
+							".cplusplus",
+							".py9"
+						]
+					}
+				]
+			}
+		}
+	`
+	/* execute */
+	result := newSecHubConfigFromBytes([]byte(sechubJSON))
+
+	/* test */
+	fmt.Printf("%+v\n", result.Data.Sources)
+	// Output:
+	// [{Name:reference-name-sources-1 FileSystem:{Files:[somewhere/file1.txt somewhere/file2.txt] Folders:[somewhere/subfolder1 somewhere/subfolder2]} Excludes:[**/mytestcode/** **/documentation/**] SourceCodePatterns:[.cplusplus .py9]}]
+}
+
+func Example_newSecHubConfigFromFile_parses_data_binary_section_correctly() {
+	/* prepare */
+	sechubJSON := `
+		{
+			"data": {
+				"binaries": [
+					{
+						"name": "reference-name-binaries-1",
+						"fileSystem": {
+							"files": [ "somewhere/file1.dll", "somewhere/file2.a" ],
+							"folders": [ "somewhere/bin/subfolder1", "somewhere/bin/subfolder2" ]
+						}
+					},
+					{
+						"name": "reference-name-binaries-2",
+						"fileSystem": {
+							"files": [ "somewhere-else/mylib.so" ],
+							"folders": [ "somewhere-else/lib" ]
+						}
+					}
+				]
+			}
+		}
+	`
+	/* execute */
+	result := newSecHubConfigFromBytes([]byte(sechubJSON))
+
+	/* test */
+	fmt.Printf("%+v\n", result.Data.Binaries)
+	// Output:
+	// [{Name:reference-name-binaries-1 FileSystem:{Files:[somewhere/file1.dll somewhere/file2.a] Folders:[somewhere/bin/subfolder1 somewhere/bin/subfolder2]}} {Name:reference-name-binaries-2 FileSystem:{Files:[somewhere-else/mylib.so] Folders:[somewhere-else/lib]}}]
+}
+
+func Example_newSecHubConfigFromFile_parses_codeScan_use_correctly() {
+	/* prepare */
+	sechubJSON := `
+		{
+			"data": {
+				"sources": [
+					{
+						"name": "mysources-1",
+						"fileSystem": { "folders": [ "src1/" ] }
+					},
+					{
+						"name": "mysources-2",
+						"fileSystem": { "folders": [ "src2/" ] }
+					}
+				]
+			},
+			"codeScan": {
+				"use": [ "mysources-1", "mysources-2" ]
+			}
+		}
+	`
+	/* execute */
+	result := newSecHubConfigFromBytes([]byte(sechubJSON))
+
+	/* test */
+	fmt.Printf("%+v\n", result.CodeScan.Use)
+	// Output:
+	// [mysources-1 mysources-2]
 }
