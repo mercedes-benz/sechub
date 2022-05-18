@@ -4,24 +4,30 @@ package com.mercedesbenz.sechub.integrationtest.scenario8;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.api.TestUser;
 import com.mercedesbenz.sechub.integrationtest.internal.AbstractGrowingSecHubServerTestScenario;
+import com.mercedesbenz.sechub.integrationtest.internal.GrowingScenario;
+import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultProfiles;
 
 /**
+ * <h3>Scenario 8</h3>
+ * <h4>Short description</h4>Playing around with execution behaviours by
+ * changing profiles etc
+ *
+ * <h4>Overview</h4> For a glance over all scenarios, look at
+ * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
+ * Overview}
+ *
+ * <h4>Details</h4> This is a {@link GrowingScenario}.<br>
+ * At this scenario we mess up with duplicate product executor configurations
+ * profiles etc. To have no side effects with existing integration tests we
+ * introduced this scenario. Every test should create own custom profiles. <br>
+ * <br>
+ * In this scenario following is automatically initialized at start
+ *
  * <pre>
- * ---------------------------------------------------------------------------------
- * Scenario 8 -  playing around with execution behaviours by changing profiles etc
- * ---------------------------------------------------------------------------------
- * </pre>
+ * PROJECT_1 is automatically created
+ *    - has execution {@link IntegrationTestDefaultProfiles#PROFILE_1 profile 1} assigned
  *
- * This scenario is like scenario3 but here we mess up with duplicate product
- * executor configurations profiles etc. To have no side effects we introduce
- * this scenario
- *
- * In this scenario following is automatically initialized at start (old data
- * removed as well)
- *
- * <pre>
- * PROJECT_1_ is automatically created
- * USER_1, is automatically registered, created and assigned to project1
+ * USER_1, is automatically registered, created and assigned to PROJECT_1
  * </pre>
  *
  * @author Albert Tregnaghi

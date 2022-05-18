@@ -6,33 +6,42 @@ import static com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDe
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.api.TestUser;
 import com.mercedesbenz.sechub.integrationtest.internal.AbstractGrowingSecHubServerTestScenario;
+import com.mercedesbenz.sechub.integrationtest.internal.GrowingScenario;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultProfiles;
 import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
 import com.mercedesbenz.sechub.integrationtest.scenario5.Scenario5;
 
 /**
- * <b><u>Scenario5 - the PDS integration test standard scenario. Scenario9
- * (REUSE SECHUB DATA enabled!)</u></b><br>
- *
+ * <h3>Scenario 11</h3>
+ * <h4>Short description</h4> A PDS integration test scenario.<br>
+ * <br>
+ * Reuses storage from Sechub.
+ * <h4>Overview</h4> For an overview over all scenarios, look at
+ * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
+ * Overview} <br>
+ * <be>
+ * <h4>Details</h4>This is a {@link GrowingScenario}.<br>
  * In this scenario following is automatically initialized at start (old data
  * removed as well): <br>
  * <br>
  * a) <b> PDS integration test configuration is done automatically!</b> All
  * configurations from
- * 'sechub-integrationtest/src/main/resources/pds-config-integrationtest.json'
+ * <code>sechub-integrationtest/src/main/resources/pds-config-integrationtest.json</code>
  * will be configured automatically!<br>
  * <br>
  * b) User and project data:
  *
  * <pre>
- * PROJECT_1_ is automatically created
- * USER_1, is automatically registered, created and assigned to project1
+ * PROJECT_1 is automatically created
+ *    - has execution {@link IntegrationTestDefaultProfiles#PROFILE_5_PDS_CODESCAN_LAZY_STREAMS profile 5} assigned
+ *
+ * USER_1, is automatically registered, created and assigned to PROJECT_1
  * </pre>
  *
  * c) The error and input streams will contain additional data. Those
  * information will be laziliy available. See
- * {@link IntegrationTestDefaultProfiles#PROFILE_5_PDS_CODESCAN_LAZY_STREAMS}
- * for details.
+ * {@link IntegrationTestDefaultProfiles#PROFILE_5_PDS_CODESCAN_LAZY_STREAMS
+ * PROFILE_5_PDS_CODESCAN_LAZY_STREAMS} for details.
  *
  * @author Albert Tregnaghi
  *

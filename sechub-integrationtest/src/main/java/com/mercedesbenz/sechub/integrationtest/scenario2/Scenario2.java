@@ -6,15 +6,37 @@ import static com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDe
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.api.TestUser;
 import com.mercedesbenz.sechub.integrationtest.internal.AbstractGrowingSecHubServerTestScenario;
+import com.mercedesbenz.sechub.integrationtest.internal.GrowingScenario;
+import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultProfiles;
 
 /**
+ * <h3>Scenario 2</h3>
+ *
+ * <h4>Short description</h4> A simple integration test scenario, multiple user,
+ * profiles and projects
+ *
+ * <h4>Overview</h4> For a glance over all scenarios, look at
+ * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
+ * Overview}
+ *
+ * <h4>Details</h4> This is a {@link GrowingScenario}.<br>
  * In this scenario following is automatically initialized:
  *
  * <pre>
  * USER_1, is automatically registered, created and ready to go... but not assigned to any project
- * PROJECT_1_ is automatically created
  * USER_2, is automatically registered, created and ready to go... but not assigned to any project
- * PROJECT_2_ is automatically created
+ *
+ * PROJECT_1
+ *      - is automatically created
+ *      - has execution {@link IntegrationTestDefaultProfiles#PROFILE_1 profile 1} assigned
+ *
+ * PROJECT_2
+ *   - is automatically created
+ *   - has execution {@link IntegrationTestDefaultProfiles#PROFILE_1 profile 1} assigned
+ *
+ * PROJECT_3
+ *   - is automatically created
+ *   - has execution {@link IntegrationTestDefaultProfiles#PROFILE_1 profile 1} assigned
  * </pre>
  *
  * @author Albert Tregnaghi

@@ -6,13 +6,24 @@ import static com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDe
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.api.TestUser;
 import com.mercedesbenz.sechub.integrationtest.internal.AbstractGrowingSecHubServerTestScenario;
+import com.mercedesbenz.sechub.integrationtest.internal.GrowingScenario;
+import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultProfiles;
 import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
 
 /**
- * <b><u>Scenario13 - the PDS integration test SPDX license scan scenario (REUSE
- * SECHUB DATA enabled)</u></b><br>
+ * <h3>Scenario 13</h3>
  *
- * The scenario13 does setup SecHub and PDS to a state which allows testing the
+ * <h4>Short description</h4> PDS license scan scenario
+ *
+ * <h4>Overview</h4> For a glance over all scenarios, look at
+ * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
+ * Overview}
+ *
+ * <h4>Details</h4> This is a {@link GrowingScenario}.<br>
+ * PDS integration test SPDX license scan scenario. Reuse of SecHub storage is
+ * enabled.<br>
+ *
+ * The scenario does setup SecHub and PDS to a state which allows testing the
  * SPDX license scan.
  *
  * In this scenario, the following is automatically initialized at start (old
@@ -20,14 +31,16 @@ import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
  * <br>
  * a) <b> PDS integration test configuration is done automatically.</b> All
  * configurations from
- * 'sechub-integrationtest/src/main/resources/pds-config-integrationtest.json'
+ * <code>sechub-integrationtest/src/main/resources/pds-config-integrationtest.json</code>
  * are used to setup the PDS automatically!<br>
  * <br>
  * b) User and project data:
  *
  * <pre>
- * PROJECT_1_ is automatically created
- * USER_1, is automatically registered, created and assigned to project1
+ * PROJECT_1 is automatically created
+ * - has execution {@link IntegrationTestDefaultProfiles#PROFILE_9_PDS_LICENSESCAN_SPDX profile 9} assigned
+ *
+ * USER_1, is automatically registered, created and assigned to PROJECT_1
  * </pre>
  *
  */

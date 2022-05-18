@@ -6,11 +6,20 @@ import static com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDe
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.api.TestUser;
 import com.mercedesbenz.sechub.integrationtest.internal.AbstractGrowingSecHubServerTestScenario;
+import com.mercedesbenz.sechub.integrationtest.internal.GrowingScenario;
+import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultProfiles;
 import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
 
 /**
- * <b><u>Scenario10 - the PDS integrationtest SARIF scenario (NO reuse of sechub
- * storage)</u></b><br>
+ * <h3>Scenario 10</h3>
+ * <h4>Short description</h4> PDS integration test SARIF
+ *
+ * <h4>Overview</h4> For a glance over all scenarios, look at
+ * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
+ * Overview}
+ *
+ * <h4>Details</h4>This is a {@link GrowingScenario}.<br>
+ * PDS integrationtest SARIF scenario <b>NO reuse of sechub storage)</b><br>
  *
  * In this scenario following is automatically initialized at start (old data
  * removed as well): <br>
@@ -18,14 +27,16 @@ import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
  * a) <b> PDS integrationtest configuration is done automatically - <b>but we DO
  * NOT use sechub storage here - so PDS will store at its own location pathes
  * and secub will upload sources!</b></b> All configurations from
- * 'sechub-integrationtest/src/main/resources/pds-config-integrationtest.json'
+ * <code>sechub-integrationtest/src/main/resources/pds-config-integrationtest.json</code>
  * will be configured automatically!<br>
  * <br>
  * b) User and project data:
  *
  * <pre>
- * PROJECT_1_ is automatically created
- * USER_1, is automatically registered, created and assigned to project1
+ * PROJECT_1 is automatically created
+ *    - has execution {@link IntegrationTestDefaultProfiles#PROFILE_4_NO_STORAGE_REUSED__PDS_CODESCAN_SARIF profile 4} assigned
+ *
+ * USER_1, is automatically registered, created and assigned to PROJECT_1
  * </pre>
  *
  *
