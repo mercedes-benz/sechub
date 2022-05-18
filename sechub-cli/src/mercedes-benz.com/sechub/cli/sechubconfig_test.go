@@ -192,3 +192,290 @@ func Example_newSecHubConfigFromFile_parses_codeScan_use_correctly() {
 	// Output:
 	// [mysources-1 mysources-2]
 }
+
+func Example_adjustSourceCodePatterns_respects_whitelistAll_false() {
+	/* prepare */
+	var context Context
+	var config Config
+	context.config = &config
+	config.whitelistAll = false
+
+	// Override global DefaultSourceCodeAllowedFilePatterns to get reproducable results
+	DefaultSourceCodeAllowedFilePatterns = []string{".c", ".d", ".e"}
+
+	sechubJSON := `
+		{
+			"data": {
+				"sources": [
+					{
+						"name": "sources-1",
+						"fileSystem": { "folders": [ "." ] },
+						"additionalFilenameExtensions": [
+							".a",
+							".b"
+						]
+					},
+					{
+						"name": "sources-2",
+						"fileSystem": { "folders": [ "." ] },
+						"additionalFilenameExtensions": [
+							".m",
+							".n"
+						]
+					}
+				]
+			},
+			"codeScan":{
+				"fileSystem": { "folders": [ "." ] },
+				"additionalFilenameExtensions": [
+					".y",
+					".z"
+				]
+			}
+		}
+	`
+	sechubConfig := newSecHubConfigFromBytes([]byte(sechubJSON))
+	context.sechubConfig = &sechubConfig
+
+	/* execute */
+	adjustSourceCodePatterns(&context)
+
+	/* test */
+	for _, i := range context.sechubConfig.Data.Sources {
+		fmt.Println(i.SourceCodePatterns)
+	}
+	fmt.Printf("%+v\n", context.sechubConfig.CodeScan.SourceCodePatterns)
+	// Output:
+	// [.a .b .c .d .e]
+	// [.m .n .c .d .e]
+	// [.y .z .c .d .e]
+}
+
+func Example_adjustSourceCodePatterns_respects_whitelistAll_true() {
+	/* prepare */
+	var context Context
+	var config Config
+	context.config = &config
+	config.whitelistAll = true
+
+	// Override global DefaultSourceCodeAllowedFilePatterns to get reproducable results
+	DefaultSourceCodeAllowedFilePatterns = []string{".c", ".d", ".e"}
+
+	sechubJSON := `
+		{
+			"data": {
+				"sources": [
+					{
+						"name": "sources-1",
+						"fileSystem": { "folders": [ "." ] },
+						"additionalFilenameExtensions": [
+							".a",
+							".b"
+						]
+					},
+					{
+						"name": "sources-2",
+						"fileSystem": { "folders": [ "." ] },
+						"additionalFilenameExtensions": [
+							".m",
+							".n"
+						]
+					}
+				]
+			},
+			"codeScan":{
+				"fileSystem": { "folders": [ "." ] },
+				"additionalFilenameExtensions": [
+					".y",
+					".z"
+				]
+			}
+		}
+	`
+	sechubConfig := newSecHubConfigFromBytes([]byte(sechubJSON))
+	context.sechubConfig = &sechubConfig
+
+	/* execute */
+	adjustSourceCodePatterns(&context)
+
+	/* test */
+	fmt.Printf("%+v\n", context.sechubConfig.CodeScan.SourceCodePatterns)
+	for _, i := range context.sechubConfig.Data.Sources {
+		fmt.Println(i.SourceCodePatterns)
+	}
+	// Output:
+	// []
+	// []
+	// []
+}
+
+func Example_adjustSourceCodePatterns_respects_Excludes() {
+	/* prepare */
+	var context Context
+	var config Config
+	context.config = &config
+	config.ignoreDefaultExcludes = false
+
+	// Override global DefaultSourceCodeAllowedFilePatterns to get reproducable results
+	DefaultSourceCodeExcludeDirPatterns = []string{"**/default-exclude1/**", "**/default-exclude2/**"}
+
+	sechubJSON := `
+		{
+			"data": {
+				"sources": [
+					{
+						"name": "sources-1",
+						"fileSystem": { "folders": [ "." ] },
+						"excludes": [
+							"**/data-exclude1/**",
+							"**/data-exclude2/**"
+						]
+					}
+				]
+			},
+			"codeScan":{
+				"fileSystem": { "folders": [ "." ] },
+				"excludes": [
+					"**/old-exclude1/**",
+					"**/old-exclude2/**"
+				]
+			}
+		}
+	`
+	sechubConfig := newSecHubConfigFromBytes([]byte(sechubJSON))
+	context.sechubConfig = &sechubConfig
+
+	/* execute */
+	adjustSourceCodePatterns(&context)
+
+	/* test */
+	fmt.Printf("%+v\n", context.sechubConfig.CodeScan.Excludes)
+	for _, i := range context.sechubConfig.Data.Sources {
+		fmt.Println(i.Excludes)
+	}
+	// Output:
+	// [**/old-exclude1/** **/old-exclude2/** **/default-exclude1/** **/default-exclude2/**]
+	// [**/data-exclude1/** **/data-exclude2/** **/default-exclude1/** **/default-exclude2/**]
+}
+
+func Example_adjustSourceCodePatterns_respects_Excludes_no_default() {
+	/* prepare */
+	var context Context
+	var config Config
+	context.config = &config
+	config.ignoreDefaultExcludes = true
+
+	// Override global DefaultSourceCodeAllowedFilePatterns to get reproducable results
+	DefaultSourceCodeExcludeDirPatterns = []string{"**/default-exclude1/**", "**/default-exclude2/**"}
+
+	sechubJSON := `
+		{
+			"data": {
+				"sources": [
+					{
+						"name": "sources-1",
+						"fileSystem": { "folders": [ "." ] },
+						"excludes": [
+							"**/data-exclude1/**",
+							"**/data-exclude2/**"
+						]
+					}
+				]
+			},
+			"codeScan":{
+				"fileSystem": { "folders": [ "." ] },
+				"excludes": [
+					"**/old-exclude1/**",
+					"**/old-exclude2/**"
+				]
+			}
+		}
+	`
+	sechubConfig := newSecHubConfigFromBytes([]byte(sechubJSON))
+	context.sechubConfig = &sechubConfig
+
+	/* execute */
+	adjustSourceCodePatterns(&context)
+
+	/* test */
+	fmt.Printf("%+v\n", context.sechubConfig.CodeScan.Excludes)
+	for _, i := range context.sechubConfig.Data.Sources {
+		fmt.Println(i.Excludes)
+	}
+	// Output:
+	// [**/old-exclude1/** **/old-exclude2/**]
+	// [**/data-exclude1/** **/data-exclude2/**]
+}
+
+func Example_adjustSourceCodePatterns_works_with_old_format() {
+	/* prepare */
+	var context Context
+	var config Config
+	context.config = &config
+	config.whitelistAll = false
+
+	// Override global DefaultSourceCodeAllowedFilePatterns to get reproducable results
+	DefaultSourceCodeAllowedFilePatterns = []string{".c", ".d", ".e"}
+
+	sechubJSON := `
+		{
+			"codeScan":{
+				"fileSystem": { "folders": [ "." ] }
+			}
+		}
+	`
+	sechubConfig := newSecHubConfigFromBytes([]byte(sechubJSON))
+	context.sechubConfig = &sechubConfig
+
+	/* execute */
+	adjustSourceCodePatterns(&context)
+
+	/* test */
+	fmt.Printf("%+v\n", context.sechubConfig.CodeScan.SourceCodePatterns)
+	for _, i := range context.sechubConfig.Data.Sources {
+		fmt.Println(i.SourceCodePatterns)
+	}
+	// Output:
+	// [.c .d .e]
+}
+
+func Example_adjustSourceCodePatterns_works_with_data_section_format() {
+	/* prepare */
+	var context Context
+	var config Config
+	context.config = &config
+	config.whitelistAll = false
+
+	// Override global DefaultSourceCodeAllowedFilePatterns to get reproducable results
+	DefaultSourceCodeAllowedFilePatterns = []string{".c", ".d", ".e"}
+
+	sechubJSON := `
+	{
+		"data": {
+			"sources": [
+				{
+					"name": "mysources-1",
+					"fileSystem": { "folders": [ "src1/" ] }
+				}
+			]
+		},
+		"codeScan": {
+			"use": [ "mysources-1" ]
+		}
+	}
+	`
+	sechubConfig := newSecHubConfigFromBytes([]byte(sechubJSON))
+	context.sechubConfig = &sechubConfig
+
+	/* execute */
+	adjustSourceCodePatterns(&context)
+
+	/* test */
+	fmt.Printf("%+v\n", context.sechubConfig.CodeScan.SourceCodePatterns)
+	for _, i := range context.sechubConfig.Data.Sources {
+		fmt.Println(i.SourceCodePatterns)
+	}
+	// Output:
+	// []
+	// [.c .d .e]
+}

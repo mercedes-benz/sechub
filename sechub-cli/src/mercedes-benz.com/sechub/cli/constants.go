@@ -41,11 +41,11 @@ const DefaultTimeoutInSeconds = 120
 // MinimalTimeoutInSeconds - Minimal allowed timeout setting
 const MinimalTimeoutInSeconds = 10
 
-// DefaultZipExcludeDirPatterns - Define directory patterns to exclude from zip file:
+// DefaultSourceCodeExcludeDirPatterns - Define directory patterns to exclude from zip file:
 // - code in directories named "test" is not considered to end up in the binary
 // - also ignore ".git" directory
 // - ignore "node_modules" directories which may contain millions of lines of library code
-var DefaultZipExcludeDirPatterns = []string{"**/test/**", "**/.git/**", "**/node_modules/**"}
+var DefaultSourceCodeExcludeDirPatterns = []string{"**/test/**", "**/.git/**", "**/node_modules/**"}
 
 // SupportedReportFormats - Supported output formats for SecHub reports
 var SupportedReportFormats = []string{"json", "html"}
@@ -152,10 +152,10 @@ const SechubDebugEnvVar = "SECHUB_DEBUG"
 // SechubDebugHTTPEnvVar - environment variable to enable additional HTTP logging
 const SechubDebugHTTPEnvVar = "SECHUB_DEBUG_HTTP"
 
-// SechubIgnoreDefaultExcludesEnvVar - environment variable to make it possible to switch off default excludes (DefaultZipExcludeDirPatterns)
+// SechubIgnoreDefaultExcludesEnvVar - environment variable to make it possible to switch off default excludes (DefaultSourceCodeExcludeDirPatterns)
 const SechubIgnoreDefaultExcludesEnvVar = "SECHUB_IGNORE_DEFAULT_EXCLUDES"
 
-// SechubIgnoreDefaultExcludesEnvVar - environment variable to make it possible to switch off default excludes (DefaultZipExcludeDirPatterns)
+// SechubIgnoreDefaultExcludesEnvVar - environment variable to make it possible to switch off default excludes (DefaultSourceCodeExcludeDirPatterns)
 const SechubIninitialWaitIntervalSecondsEnvVar = "SECHUB_INITIAL_WAIT_INTERVAL"
 
 // SechubKeepTempfilesEnvVar - environment variable to keep temporary files
@@ -183,7 +183,7 @@ const SechubUserIDEnvVar = "SECHUB_USERID"
 const SechubWaittimeDefaultEnvVar = "SECHUB_WAITTIME_DEFAULT"
 
 // SechubWhitelistAllEnvVar - environment variable to make it possible to switch off the default witelist for source code files.
-//   Important: DefaultZipExcludeDirPatterns still remains active and can be turned off via SECHUB_IGNORE_DEFAULT_EXCLUDES environment variable.
+//   Important: DefaultSourceCodeExcludeDirPatterns still remains active and can be turned off via SECHUB_IGNORE_DEFAULT_EXCLUDES environment variable.
 const SechubWhitelistAllEnvVar = "SECHUB_WHITELIST_ALL"
 
 /* ---------------------------------- */

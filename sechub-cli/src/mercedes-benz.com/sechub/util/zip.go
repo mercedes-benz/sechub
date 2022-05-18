@@ -15,17 +15,16 @@ import (
 	"strings"
 )
 
-type zipcontext struct {
-	atLeastOneFileZipped bool
-	filename             string
-	config               *ZipConfig
-}
-
 // ZipConfig - contains all necessary things for zipping source code for scanning
 type ZipConfig struct {
+	ZipFileName        string
+	ZipWriter          *zip.Writer
+	PrefixInZip        string
+	Files              []string
 	Folders            []string
 	Excludes           []string
 	SourceCodePatterns []string
+	Quiet              bool
 	Debug              bool
 }
 
@@ -35,30 +34,10 @@ const ZipFileHasNoContent = "Zipfile has no content!"
 // TargetZipFileLoop error message when it comes to an infinite lopp because target inside zipped content
 const TargetZipFileLoop = "Target zipfile would be part of zipped content, leading to infinite loop. Please change target path!"
 
-// ZipFolders - Will zip given content of given folders into given filePath.
-// E.g. when filePath contains subfolder sub1/text1.txt, sub2/text1.txt, sub2/sub3/text1.txt the
-// zip of sub1 and sub2 will result in "sub1/text1.txt, sub2/text1.txt, sub2/sub3/text1.txt"
-//
-func ZipFolders(filePath string, config *ZipConfig, silent bool) (err error) {
-	filename, _ := filepath.Abs(filePath)
-
-	/* create zip file */
-	newZipFile, err := os.Create(filename)
-	if err != nil {
-		return err
-	}
-	defer newZipFile.Close()
-
-	/* create zip writer */
-	zipWriter := zip.NewWriter(newZipFile)
-	defer zipWriter.Close()
-
-	/* define zip context */
-	zipcontext := new(zipcontext)
-	zipcontext.filename = filename
-	zipcontext.config = config
-
-	/* For each folder */
+// Zip - Will zip  content of given folders into given ZipConfig.
+//       Note: ZipConfig.ZipWriter must be created beforehand
+func Zip(config *ZipConfig) (err error) {
+	/* Loop over each defined folder */
 	for _, folder := range config.Folders {
 		// tribute to Windows... (convert \ to / )
 		folder = ConvertBackslashPath(folder)
@@ -67,37 +46,36 @@ func ZipFolders(filePath string, config *ZipConfig, silent bool) (err error) {
 		folder = strings.TrimSuffix(folder, "/")
 
 		// Add folder to zipfile
-		err = zipOneFolderRecursively(zipWriter, folder, zipcontext, silent)
-
+		err = zipOneFolderRecursively(folder, config)
 		if err != nil {
 			return err
 		}
 	}
-	if !zipcontext.atLeastOneFileZipped {
-		return errors.New(ZipFileHasNoContent)
-	}
+
+	// Loop over each defined file
+	// ToDo
 
 	return nil
 }
 
-func zipOneFolderRecursively(zipWriter *zip.Writer, folder string, zipContext *zipcontext, silent bool) error {
+func zipOneFolderRecursively(folder string, config *ZipConfig) error {
 	folderPathAbs, _ := filepath.Abs(folder)
 	if _, err := os.Stat(folderPathAbs); os.IsNotExist(err) {
 		return errors.New("Folder not found: " + folder + " (" + folderPathAbs + ")")
 	}
-	Log(fmt.Sprintf("Zipping folder: %s (%s)", folder, folderPathAbs), silent)
+	Log(fmt.Sprintf("Zipping folder: %s (%s)", folder, folderPathAbs), config.Quiet)
 
 	err := filepath.Walk(folder, func(file string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
 		if info == nil {
-			return errors.New("Did not find folder file info " + folder)
+			return errors.New("Did not find folder file info of " + folder)
 		}
 		if info.IsDir() {
 			return nil
 		}
-		if err != nil {
-			return err
-		}
-		if zipContext.filename == file {
+		if file == config.ZipFileName {
 			return errors.New(TargetZipFileLoop)
 		}
 
@@ -123,11 +101,13 @@ func zipOneFolderRecursively(zipWriter *zip.Writer, folder string, zipContext *z
 			zipPath = strings.TrimPrefix(zipPath, "/")
 		}
 
+		// Finally add Prefix to Zip path
+		zipPath = config.PrefixInZip + zipPath
+
 		// Only accept source code files
 		isSourceCode := false
-		for _, srcPattern := range zipContext.config.SourceCodePatterns {
+		for _, srcPattern := range config.SourceCodePatterns {
 			if strings.HasSuffix(zipPath, srcPattern) {
-				LogDebug(zipContext.config.Debug, fmt.Sprintf("%q matches %q -> is source code", file, srcPattern))
 				isSourceCode = true
 				break
 			}
@@ -135,21 +115,18 @@ func zipOneFolderRecursively(zipWriter *zip.Writer, folder string, zipContext *z
 
 		// no matches above -> ignore file
 		if !isSourceCode {
-			LogDebug(zipContext.config.Debug, fmt.Sprintf("%q has no match with supported file extensions -> skip", zipPath))
 			return nil
 		}
 
 		// Filter excludes
-		for _, excludePattern := range zipContext.config.Excludes {
+		for _, excludePattern := range config.Excludes {
 			if Filepathmatch(zipPath, excludePattern) {
-				LogDebug(zipContext.config.Debug, fmt.Sprintf("%q matches exclude pattern %q -> skip", file, excludePattern))
+				LogDebug(config.Debug, fmt.Sprintf("%q matches exclude pattern %q -> skip", file, excludePattern))
 				return nil
 			}
 		}
 
-		LogDebug(zipContext.config.Debug, "Adding "+zipPath+" <- "+fileAbs)
-
-		/* handle */
+		LogDebug(config.Debug, "Adding "+zipPath+fileAbs)
 		fileToAdd, err := os.Open(file)
 		if err != nil {
 			return err
@@ -175,7 +152,7 @@ func zipOneFolderRecursively(zipWriter *zip.Writer, folder string, zipContext *z
 		// see http://golang.org/pkg/archive/zip/#pkg-constants
 		header.Method = zip.Deflate
 
-		writer, err := zipWriter.CreateHeader(header)
+		writer, err := config.ZipWriter.CreateHeader(header)
 		if err != nil {
 			return err
 		}
@@ -183,8 +160,6 @@ func zipOneFolderRecursively(zipWriter *zip.Writer, folder string, zipContext *z
 			return err
 		}
 
-		/* done */
-		zipContext.atLeastOneFileZipped = true
 		return nil
 	})
 	return err

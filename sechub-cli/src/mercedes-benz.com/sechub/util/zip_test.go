@@ -35,7 +35,7 @@ func TestZipFileBeingPartOfScannedFoldersIsRejected(t *testing.T) {
 	path := dirname1 + "/testoutput.zip"
 
 	/* execute */
-	err := ZipFolders(path, &ZipConfig{Folders: []string{dirname1, dirname2}, SourceCodePatterns: []string{"*.txt"}}, false)
+	err := Zip(path, &ZipConfig{Folders: []string{dirname1, dirname2}, SourceCodePatterns: []string{"*.txt"}}, false)
 
 	/* test */
 	sechubUtil.AssertErrorHasExpectedMessage(err, "Target zipfile would be part of zipped content, leading to infinite loop. Please change target path!", t)
@@ -61,7 +61,7 @@ func TestZipFileEmptyIsRejected(t *testing.T) {
 	path := dir + "/testoutput.zip"
 
 	/* execute */
-	err := ZipFolders(path, &ZipConfig{Folders: []string{dirname1, dirname2}}, false)
+	err := Zip(path, &ZipConfig{Folders: []string{dirname1, dirname2}}, false)
 
 	/* test */
 	sechubUtil.AssertErrorHasExpectedMessage(err, "Zipfile has no content!", t)
@@ -93,7 +93,7 @@ func TestZipFileCanBeCreated(t *testing.T) {
 	path := dir + "/testoutput.zip"
 
 	/* execute */
-	err := ZipFolders(path, &ZipConfig{Folders: []string{dirname1, dirname2}, SourceCodePatterns: []string{".txt"}}, false)
+	err := Zip(path, &ZipConfig{Folders: []string{dirname1, dirname2}, SourceCodePatterns: []string{".txt"}}, false)
 
 	/* test */
 	sechubUtil.Check(err, t)
@@ -146,7 +146,7 @@ func TestZipFileCanBeCreated_with_exclude_patterns_applied(t *testing.T) {
 		Excludes:           []string{"**/file3.txt", "**/f*0*.txt"},
 		SourceCodePatterns: []string{".txt"},
 	}
-	err := ZipFolders(path, &config, false)
+	err := Zip(path, &config, false)
 
 	/* test */
 	sechubUtil.Check(err, t)
@@ -194,7 +194,7 @@ func TestZipFileCanBeCreated_and_contains_only_sourcefiles(t *testing.T) {
 
 	/* execute */
 	config := ZipConfig{Folders: []string{dirname1}, SourceCodePatterns: []string{".c", ".go"}}
-	err := ZipFolders(path, &config, false)
+	err := Zip(path, &config, false)
 
 	/* test */
 	sechubUtil.Check(err, t)
@@ -222,7 +222,7 @@ func TestZipFileNonExistingFolderIsRejected(t *testing.T) {
 	path := dir + "/testoutput.zip"
 
 	/* execute */
-	err := ZipFolders(path, &ZipConfig{Folders: []string{dirname1}}, false)
+	err := Zip(path, &ZipConfig{Folders: []string{dirname1}}, false)
 
 	/* test */
 	sechubUtil.AssertErrorHasExpectedStartMessage(err, "Folder not found:", t)
@@ -252,7 +252,7 @@ func TestZipFileContainsRelativeSourceFolders(t *testing.T) {
 	zipfilepath := RelativeTmpTestDir + "/testoutput.zip"
 
 	/* execute */
-	err := ZipFolders(zipfilepath, &ZipConfig{Folders: []string{dirname1, dirname2}, SourceCodePatterns: []string{".txt"}}, false)
+	err := Zip(zipfilepath, &ZipConfig{Folders: []string{dirname1, dirname2}, SourceCodePatterns: []string{".txt"}}, false)
 
 	/* test */
 	sechubUtil.Check(err, t)
@@ -278,7 +278,7 @@ func TestZipFileContainsRelativeFoldersOutsideCurrent(t *testing.T) {
 	zipfilepath := RelativeTmpTestDir + "/testoutput.zip"
 
 	/* execute */
-	err := ZipFolders(zipfilepath, &ZipConfig{Folders: []string{RelativeTmpTestDir}, SourceCodePatterns: []string{".txt"}}, false)
+	err := Zip(zipfilepath, &ZipConfig{Folders: []string{RelativeTmpTestDir}, SourceCodePatterns: []string{".txt"}}, false)
 
 	/* test */
 	sechubUtil.Check(err, t)
