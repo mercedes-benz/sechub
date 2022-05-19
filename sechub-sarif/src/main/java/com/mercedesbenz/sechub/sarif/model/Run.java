@@ -18,25 +18,35 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * @author Albert Tregnaghi
  *
  */
-@JsonPropertyOrder({ "tool", "results" })
+@JsonPropertyOrder({ "tool", "taxonomies", "versionControlProvenance", "results" })
 public class Run extends SarifObject {
     private Tool tool;
+
+    private List<Taxonomy> taxonomies;
+
+    private List<VersionControlDetails> versionControlProvenance;
 
     private List<Result> results;
 
     public Run() {
-        results = new LinkedList<Result>();
+        this(null, new LinkedList<>());
     }
 
     public Run(Tool tool, List<Result> results) {
         this.tool = tool;
-        this.results = results;
+        this.results = new LinkedList<>();
+        if (results != null) {
+            this.results.addAll(results);
+        }
     }
 
     public void addResult(Result result) {
         results.add(result);
     }
 
+    /**
+     * @return tool object or <code>null</code> when not defined
+     */
     public Tool getTool() {
         return tool;
     }
@@ -45,6 +55,32 @@ public class Run extends SarifObject {
         this.tool = tool;
     }
 
+    /**
+     * @return list of Taxonomy objects or <code>null</code> when not defined
+     */
+    public List<Taxonomy> getTaxonomies() {
+        return taxonomies;
+    }
+
+    public void setTaxonomies(List<Taxonomy> taxonomies) {
+        this.taxonomies = taxonomies;
+    }
+
+    /**
+     * @return list of VersionControlDetails objects or <code>null</code> when not
+     *         defined
+     */
+    public List<VersionControlDetails> getVersionControlProvenance() {
+        return versionControlProvenance;
+    }
+
+    public void setVersionControlProvenance(List<VersionControlDetails> versionControlProvenance) {
+        this.versionControlProvenance = versionControlProvenance;
+    }
+
+    /**
+     * @return list of Result objects or <code>null</code> when not defined
+     */
     public List<Result> getResults() {
         return results;
     }
@@ -55,12 +91,12 @@ public class Run extends SarifObject {
 
     @Override
     public String toString() {
-        return "Run [tool=" + tool + ", results=" + results + "]";
+        return "Run [tool=" + tool + ", taxonomies=" + taxonomies + ", versionControlProvenance=" + versionControlProvenance + ", results=" + results + "]";
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(results, tool);
+        return Objects.hash(results, taxonomies, tool, versionControlProvenance);
     }
 
     @Override
@@ -72,6 +108,8 @@ public class Run extends SarifObject {
         if (getClass() != obj.getClass())
             return false;
         Run other = (Run) obj;
-        return Objects.equals(results, other.results) && Objects.equals(tool, other.tool);
+        return Objects.equals(results, other.results) && Objects.equals(taxonomies, other.taxonomies) && Objects.equals(tool, other.tool)
+                && Objects.equals(versionControlProvenance, other.versionControlProvenance);
     }
+
 }

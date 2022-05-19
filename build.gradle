@@ -32,11 +32,11 @@ plugins {
     id 'org.openapi.generator' version '5.4.0'
     
     // spring
-    id 'org.springframework.boot' version '2.6.6' apply false
+    id 'org.springframework.boot' version '2.6.7' apply false
     
     // spotless code formatter
     // (see https://github.com/diffplug/spotless)
-    id 'com.diffplug.spotless' version '6.3.0'
+    id 'com.diffplug.spotless' version '6.5.2'
     
     // versions plugin for checking new available library versions etc. 
     // (see https://github.com/ben-manes/gradle-versions-plugin)
