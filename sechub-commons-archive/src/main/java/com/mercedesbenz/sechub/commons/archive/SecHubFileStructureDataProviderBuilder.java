@@ -10,26 +10,26 @@ import com.mercedesbenz.sechub.commons.model.SecHubOpenAPIConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 
-public class SecHubFileStructureConfigurationBuilder {
+public class SecHubFileStructureDataProviderBuilder {
 
     private ScanType scanType;
 
     private SecHubConfigurationModel model;
 
-    SecHubFileStructureConfigurationBuilder() {
+    SecHubFileStructureDataProviderBuilder() {
     }
 
-    public SecHubFileStructureConfigurationBuilder setScanType(ScanType type) {
+    public SecHubFileStructureDataProviderBuilder setScanType(ScanType type) {
         this.scanType = type;
         return this;
     }
 
-    public SecHubFileStructureConfigurationBuilder setModel(SecHubConfigurationModel model) {
+    public SecHubFileStructureDataProviderBuilder setModel(SecHubConfigurationModel model) {
         this.model = model;
         return this;
     }
 
-    public SecHubFileStructureConfiguration build() {
+    public SecHubFileStructureDataProvider build() {
         if (scanType == null) {
             throw new IllegalStateException("scanType is not set");
         }
@@ -38,7 +38,7 @@ public class SecHubFileStructureConfigurationBuilder {
             throw new IllegalStateException("model is not set");
         }
 
-        SecHubFileStructureConfiguration data = new SecHubFileStructureConfiguration();
+        MutableSecHubFileStructureDataProvider data = new MutableSecHubFileStructureDataProvider();
 
         switch (scanType) {
         case CODE_SCAN:
@@ -71,7 +71,7 @@ public class SecHubFileStructureConfigurationBuilder {
         return data;
     }
 
-    private void addAllUsages(SecHubFileStructureConfiguration data, Optional<? extends SecHubDataConfigurationUsageByName> scanDefinitionObject,
+    private void addAllUsages(MutableSecHubFileStructureDataProvider data, Optional<? extends SecHubDataConfigurationUsageByName> scanDefinitionObject,
             boolean mustHave) {
         if (!scanDefinitionObject.isPresent()) {
             if (mustHave) {

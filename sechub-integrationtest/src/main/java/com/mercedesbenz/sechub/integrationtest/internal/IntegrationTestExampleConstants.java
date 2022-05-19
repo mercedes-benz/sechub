@@ -19,6 +19,25 @@ public class IntegrationTestExampleConstants {
 
     public static final String PATH_TO_ZIPFILE_WITH_PDS_CODESCAN_LOW_FINDINGS = "pds/codescan/upload/zipfile_contains_inttest_codescan_with_low.zip";
 
+    /**
+     * Tarfile structure
+     *
+     * <pre>
+     *   /__data__
+     *      files-a
+     *         file-a-1.txt (low finding)
+     *         file-a-2.txt (low finding)
+     *         subfolder-1/
+     *             file-a-3.txt ((medium finding)
+     *      files-b
+     *         file-b-1.txt (low finding)
+     *         file-b-2.txt (low finding)
+     *         subfolder-2/
+     *             file-b-3.txt (critical finding)
+     * </pre>
+     */
+    public static final String PATH_TO_TARFILE_WITH_DIFFERENT_DATA_SECTIONS = "pds/codescan/upload/tarfile_contains_different_finding_files_in_different_data_sections.tar";
+
     public static TestDataFolderList TESTDATA_FOLDERS = new TestDataFolderList();
 
     public static class IntegrationTestExampleFolder {

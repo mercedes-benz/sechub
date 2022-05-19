@@ -1,14 +1,10 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.pds;
 
-import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
-
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
@@ -22,7 +18,6 @@ import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.pds.PDSAdapter;
 import com.mercedesbenz.sechub.adapter.pds.PDSLicenseScanConfig;
 import com.mercedesbenz.sechub.adapter.pds.PDSLicenseScanConfigImpl;
-import com.mercedesbenz.sechub.adapter.pds.PDSMetaDataID;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.product.AbstractProductExecutor;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
@@ -58,6 +53,9 @@ public class PDSLicenseScanProductExecutor extends AbstractProductExecutor {
     @Autowired
     PDSResilienceConsultant pdsResilienceConsultant;
 
+    @Autowired
+    JobStorageContentService contentService;
+
     public PDSLicenseScanProductExecutor() {
         super(ProductIdentifier.PDS_LICENSESCAN, 1, ScanType.LICENSE_SCAN);
     }
@@ -87,9 +85,9 @@ public class PDSLicenseScanProductExecutor extends AbstractProductExecutor {
             AdapterMetaData metaDataOrNull = executorContext.getCurrentMetaDataOrNull();
 
             /* we reuse existing file upload checksum done by sechub */
-            String sourceZipFileChecksum = fetchFileUploadChecksumIfNecessary(storage, metaDataOrNull);
+            String sourceZipFileChecksum = contentService.fetchSourceZipFileeUploadChecksumIfNecessary(storage, metaDataOrNull);
 
-            try (InputStream sourceCodeZipFileInputStream = fetchInputStreamIfNecessary(storage, metaDataOrNull)) {
+            try (InputStream sourceCodeZipFileInputStream = contentService.fetchSourceZipFileInputStreamIfNecessary(storage, metaDataOrNull)) {
 
                 /* @formatter:off */
 
@@ -136,24 +134,6 @@ public class PDSLicenseScanProductExecutor extends AbstractProductExecutor {
             }
         });
         return Collections.singletonList(result);
-
-    }
-
-    private InputStream fetchInputStreamIfNecessary(JobStorage storage, AdapterMetaData metaData) throws IOException {
-        if (metaData != null && metaData.hasValue(PDSMetaDataID.KEY_FILEUPLOAD_DONE, true)) {
-            return null;
-        }
-        return storage.fetch(FILENAME_SOURCECODE_ZIP);
-    }
-
-    private String fetchFileUploadChecksumIfNecessary(JobStorage storage, AdapterMetaData metaData) throws IOException {
-        if (metaData != null && metaData.hasValue(PDSMetaDataID.KEY_FILEUPLOAD_DONE, true)) {
-            return null;
-        }
-        try (InputStream inputStream = storage.fetch(FILENAME_SOURCECODE_ZIP_CHECKSUM); Scanner scanner = new Scanner(inputStream)) {
-            String result = scanner.hasNext() ? scanner.next() : "";
-            return result;
-        }
 
     }
 

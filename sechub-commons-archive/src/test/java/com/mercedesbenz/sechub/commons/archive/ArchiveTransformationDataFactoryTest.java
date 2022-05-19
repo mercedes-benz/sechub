@@ -10,11 +10,11 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 class ArchiveTransformationDataFactoryTest {
 
-    private SecHubFileStructureConfiguration configuration;
+    private MutableSecHubFileStructureDataProvider configuration;
 
     @BeforeEach
     void beforeEach() {
-        configuration = new SecHubFileStructureConfiguration();
+        configuration = new MutableSecHubFileStructureDataProvider();
 
     }
 

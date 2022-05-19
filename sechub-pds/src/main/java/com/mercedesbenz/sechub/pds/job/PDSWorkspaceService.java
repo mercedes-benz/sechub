@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.archive.ArchiveExtractionResult;
-import com.mercedesbenz.sechub.commons.archive.SecHubFileStructureConfiguration;
+import com.mercedesbenz.sechub.commons.archive.SecHubFileStructureDataProvider;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.pds.PDSMustBeDocumented;
@@ -168,7 +168,7 @@ public class PDSWorkspaceService {
 
         SecHubConfigurationModel model = resolveAndEnsureSecHubConfigurationModel(config);
         ScanType scanType = product.getScanType();
-        SecHubFileStructureConfiguration configuration = SecHubFileStructureConfiguration.builder().setScanType(scanType).setModel(model).build();
+        SecHubFileStructureDataProvider configuration = SecHubFileStructureDataProvider.builder().setScanType(scanType).setModel(model).build();
 
         unzipUploads(jobUUID, true, configuration);
     }
@@ -183,7 +183,7 @@ public class PDSWorkspaceService {
         return model;
     }
 
-    void unzipUploads(UUID jobUUID, boolean deleteOriginZipFiles, SecHubFileStructureConfiguration configuration) throws IOException {
+    void unzipUploads(UUID jobUUID, boolean deleteOriginZipFiles, SecHubFileStructureDataProvider configuration) throws IOException {
         File uploadFolder = getUploadFolder(jobUUID);
         File[] zipFiles = uploadFolder.listFiles(new FileFilter() {
 

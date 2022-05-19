@@ -5,6 +5,7 @@ import com.mercedesbenz.sechub.integrationtest.scenario10.Scenario10;
 import com.mercedesbenz.sechub.integrationtest.scenario11.Scenario11;
 import com.mercedesbenz.sechub.integrationtest.scenario12.Scenario12;
 import com.mercedesbenz.sechub.integrationtest.scenario13.Scenario13;
+import com.mercedesbenz.sechub.integrationtest.scenario14.Scenario14;
 import com.mercedesbenz.sechub.integrationtest.scenario2.Scenario2;
 import com.mercedesbenz.sechub.integrationtest.scenario3.Scenario3;
 import com.mercedesbenz.sechub.integrationtest.scenario4.Scenario4;
@@ -35,6 +36,7 @@ import com.mercedesbenz.sechub.integrationtest.scenario9.Scenario9;
  * <li>{@link Scenario11 Scenario 11} - Special PDS scenario to test message stream handling, 1 user, 1 project. Project is assigned to {@link IntegrationTestDefaultProfiles#PROFILE_5_PDS_CODESCAN_LAZY_STREAMS Profile 4} (PDS code scan with lazy streams) </li>
  * <li>{@link Scenario12 Scenario 12} - PDS scenario for generic web scan testing. 1 user, 1 project. Project is assigned to {@link IntegrationTestDefaultProfiles#PROFILE_7_PDS_WEBSCAN Profile 7} (PDS code scan SARIF) and {@link IntegrationTestDefaultProfiles#PROFILE_8_PDS_WEBSCAN_SARIF Profile 8} (PDS web scan generic)</li>
  * <li>{@link Scenario13 Scenario 13} - PDS scenario for SPDX license scan testing. 1 user, 1 project. Project is assigned to {@link IntegrationTestDefaultProfiles#PROFILE_7_PDS_WEBSCAN Profile 7} (PDS code scan SARIF) and {@link IntegrationTestDefaultProfiles#PROFILE_9_PDS_LICENSESCAN_SPDX Profile 9} (PDS license scan SPDX)</li>
+ * <li>{@link Scenario14 Scenario 14} - PDS scenario for testing binary and source code data structure handling. 1 user, 1 project. Project is assigned to {@link IntegrationTestDefaultProfiles#PROFILE_2_PDS_CODESCAN Profile 2}</li>
  * </ul>
  * <b3>Profiles</h3>
  * <ul>

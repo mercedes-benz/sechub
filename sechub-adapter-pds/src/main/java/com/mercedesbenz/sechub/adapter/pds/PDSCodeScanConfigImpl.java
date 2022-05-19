@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 
+import com.mercedesbenz.sechub.adapter.AbstractAdapterConfigBuilder;
 import com.mercedesbenz.sechub.adapter.AbstractCodeScanAdapterConfig;
 import com.mercedesbenz.sechub.adapter.AbstractCodeScanAdapterConfigBuilder;
 import com.mercedesbenz.sechub.commons.model.ScanType;
@@ -22,6 +23,7 @@ public class PDSCodeScanConfigImpl extends AbstractCodeScanAdapterConfig impleme
 
     private UUID sechubJobUUID;
     private String pdsProductIdentifier;
+    public InputStream binariesTarFileInputStream;
 
     private PDSCodeScanConfigImpl() {
     }
@@ -52,9 +54,16 @@ public class PDSCodeScanConfigImpl extends AbstractCodeScanAdapterConfig impleme
         private String sourceZipFileChecksum;
         private String pdsProductIdentifier;
         private SecHubConfigurationModel configurationModel;
+        private InputStream binariesTarFileInputStream;
 
         public PDSCodeScanConfigBuilder setSourceCodeZipFileInputStream(InputStream sourceCodeZipFileInputStream) {
             this.sourceCodeZipFileInputStream = sourceCodeZipFileInputStream;
+            return this;
+        }
+
+        public AbstractAdapterConfigBuilder<PDSCodeScanConfigBuilder, PDSCodeScanConfigImpl> setBinariesTarFileInputStream(
+                InputStream binariesTarFileInputStream) {
+            this.binariesTarFileInputStream = binariesTarFileInputStream;
             return this;
         }
 
@@ -82,6 +91,7 @@ public class PDSCodeScanConfigImpl extends AbstractCodeScanAdapterConfig impleme
         protected void customBuild(PDSCodeScanConfigImpl config) {
             config.sourceCodeZipFileInputStream = sourceCodeZipFileInputStream;
             config.sourceZipFileChecksum = sourceZipFileChecksum;
+            config.binariesTarFileInputStream = binariesTarFileInputStream;
 
             if (configurationModel != null) {
                 String reducedConfigJSON = SecHubConfigurationModelReducedCloningSupport.DEFAULT.createReducedScanConfigurationCloneJSON(configurationModel,

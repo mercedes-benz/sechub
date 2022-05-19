@@ -11,6 +11,8 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +36,7 @@ import com.mercedesbenz.sechub.integrationtest.JSONTestSupport;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultExecutorConfigurations;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSupport;
+import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestTemplateFile;
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
 import com.mercedesbenz.sechub.integrationtest.internal.SimpleTestStringList;
 import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData;
@@ -387,7 +390,57 @@ public class AsUser {
         return this;
     }
 
-    private String createCodeScanJob(TestProject project, IntegrationTestMockMode runMode) {
+    /**
+     * Creates a code scan job and returns corresponding job UUID. But job is NOT
+     * approved and so not started!
+     *
+     * @param project
+     * @param runMode
+     * @return job UUID
+     */
+    public UUID createCodeScan(TestProject project, IntegrationTestMockMode runMode) {
+        return createCodeScanJobAndFetchJobUUID(IntegrationTestTemplateFile.CODE_SCAN_1_SOURCE_EMBEDDED, project, runMode, Collections.emptyMap());
+
+    }
+
+    public UUID createScanJobWhichUsesDataReferencedIds(IntegrationTestTemplateFile template, TestProject project, IntegrationTestMockMode runMode,
+            String... dataReferenceIds) {
+        Map<String, String> map = new HashMap<>();
+
+        int index = 0;
+        for (String id : dataReferenceIds) {
+            index++;
+            map.put("__use" + index + "__", id);
+        }
+        return createCodeScanJobAndFetchJobUUID(template, project, runMode, map);
+    }
+
+    private UUID createCodeScanJobAndFetchJobUUID(IntegrationTestTemplateFile template, TestProject project, IntegrationTestMockMode runMode,
+            Map<String, String> data) {
+        assertProject(project).doesExist();
+        if (runMode == null) {
+            runMode = IntegrationTestMockMode.CODE_SCAN__CHECKMARX__MULTI__ZERO_WAIT;
+        }
+        String response = createCodeScanJob(template, project, runMode, data);
+        return fetchJobUUID(response);
+    }
+
+    private static Map<String, String> configTemplateCache = new HashMap<>();
+
+    private String getConfigTemplate(IntegrationTestTemplateFile templateFile) {
+        String templateFilename = templateFile.getTemplateFilename();
+        String template = configTemplateCache.get(templateFilename);
+        if (template == null) {
+            template = IntegrationTestFileSupport.getTestfileSupport().loadTestFile(templateFilename);
+            configTemplateCache.put(templateFilename, template);
+        }
+        return template;
+    }
+
+    private String createCodeScanJob(IntegrationTestTemplateFile template, TestProject project, IntegrationTestMockMode runMode, Map<String, String> data) {
+        Map<String, String> map = new HashMap<>();
+        map.putAll(data);
+
         String folder = null;
         if (runMode != null) {
             folder = runMode.getTarget();
@@ -395,8 +448,7 @@ public class AsUser {
         if (folder == null) {
             folder = "notexisting";
         }
-        String testfile = "sechub-integrationtest-sourcescanconfig1.json";
-        String json = IntegrationTestFileSupport.getTestfileSupport().loadTestFile(testfile);
+        String json = getConfigTemplate(template);
         String projectId = project.getProjectId();
 
         json = json.replaceAll("__projectId__", projectId);
@@ -414,7 +466,7 @@ public class AsUser {
     }
 
     private String createWebScanJobForTargetURL(TestProject project, String targetURL) {
-        String json = IntegrationTestFileSupport.getTestfileSupport().loadTestFile("sechub-integrationtest-webscanconfig1.json");
+        String json = getConfigTemplate(IntegrationTestTemplateFile.WEBSCAN_1);
         String projectId = project.getProjectId();
 
         json = json.replaceAll("__projectId__", projectId);
@@ -462,7 +514,7 @@ public class AsUser {
     }
 
     public AsUser updateWhiteListForProject(TestProject project, List<String> uris) {
-        String json = IntegrationTestFileSupport.getTestfileSupport().loadTestFile("sechub-integrationtest-updatewhitelist1.json");
+        String json = getConfigTemplate(IntegrationTestTemplateFile.UPDATE_WHITELIST);
         StringBuilder sb = new StringBuilder();
         for (Iterator<String> it = uris.iterator(); it.hasNext();) {
             sb.append("\\\"");
@@ -479,7 +531,7 @@ public class AsUser {
     }
 
     public AsUser updateMetaDataForProject(TestProject project, Map<String, String> metaData) {
-        String json = IntegrationTestFileSupport.getTestfileSupport().loadTestFile("sechub-integrationtest-updatemetadata.json");
+        String json = getConfigTemplate(IntegrationTestTemplateFile.UPDATE_METADATA);
         StringBuilder sb = new StringBuilder();
 
         Iterator<Entry<String, String>> iterator = metaData.entrySet().iterator();
@@ -662,24 +714,6 @@ public class AsUser {
         } catch (IOException e) {
             throw new IllegalStateException("io failure, should not occure", e);
         }
-    }
-
-    /**
-     * Creates a code scan job and returns corresponding job UUID. But job is NOT
-     * approved and so not started!
-     *
-     * @param project
-     * @param runMode
-     * @return job UUID
-     */
-    public UUID createCodeScan(TestProject project, IntegrationTestMockMode runMode) {
-        assertProject(project).doesExist();
-        if (runMode == null) {
-            runMode = IntegrationTestMockMode.CODE_SCAN__CHECKMARX__MULTI__ZERO_WAIT;
-        }
-        String response = createCodeScanJob(project, runMode);
-        return fetchJobUUID(response);
-
     }
 
     public File downloadAsTempFileFromURL(String url, UUID jobUUID) {

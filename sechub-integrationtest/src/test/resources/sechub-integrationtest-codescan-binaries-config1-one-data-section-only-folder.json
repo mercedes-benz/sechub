@@ -1,0 +1,21 @@
+{
+
+    "apiVersion": "1.0",
+
+    "project"   : "__projectname__",
+    
+    "data" : { 
+        "binaries" : [ 
+            {
+               "name" : "__use1__",
+               "fileSystem": {
+                    "folders": ["__folder__"]
+               }           
+            }
+        ] 
+    },
+
+    "codeScan": {
+        "use" : [ "__use1__" ]
+     }
+}

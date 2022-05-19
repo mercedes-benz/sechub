@@ -9,7 +9,6 @@ import com.mercedesbenz.sechub.integrationtest.internal.AbstractGrowingSecHubSer
 import com.mercedesbenz.sechub.integrationtest.internal.GrowingScenario;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultProfiles;
 import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
-import com.mercedesbenz.sechub.integrationtest.scenario5.Scenario5;
 
 /**
  * <h3>Scenario 11</h3>
@@ -51,12 +50,12 @@ public class Scenario11 extends AbstractGrowingSecHubServerTestScenario implemen
     /**
      * User 1 is registered on startup, also owner and user of {@link #PROJECT_1}
      */
-    public static final TestUser USER_1 = createTestUser(Scenario5.class, "user1");
+    public static final TestUser USER_1 = createTestUser(Scenario11.class, "user1");
 
     /**
      * Project 1 is created on startup, and has {@link #USER_1} assigned
      */
-    public static final TestProject PROJECT_1 = createTestProject(Scenario5.class, "project1");
+    public static final TestProject PROJECT_1 = createTestProject(Scenario11.class, "project1");
 
     @Override
     protected void initializeTestData() {

@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class SecHubFileStructureConfiguration {
+public class MutableSecHubFileStructureDataProvider implements SecHubFileStructureDataProvider {
 
     private Set<String> acceptedReferenceNames = new LinkedHashSet<>();
 
@@ -22,15 +22,14 @@ public class SecHubFileStructureConfiguration {
         this.acceptedReferenceNames.addAll(uniqueNames);
     }
 
+    @Override
     public boolean isRootFolderAccepted() {
         return rootFolderAccepted;
     }
 
-    Set<String> getAcceptedReferenceNames() {
+    @Override
+    public Set<String> getUnmodifiableSetOfAcceptedReferenceNames() {
         return Collections.unmodifiableSet(acceptedReferenceNames);
     }
 
-    public static SecHubFileStructureConfigurationBuilder builder() {
-        return new SecHubFileStructureConfigurationBuilder();
-    }
 }

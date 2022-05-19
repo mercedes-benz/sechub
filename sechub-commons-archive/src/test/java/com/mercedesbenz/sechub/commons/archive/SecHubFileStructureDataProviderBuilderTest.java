@@ -12,13 +12,13 @@ import com.mercedesbenz.sechub.commons.model.SecHubDataConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
 
-class SecHubFileStructureConfigurationBuilderTest {
+class SecHubFileStructureDataProviderBuilderTest {
 
-    private SecHubFileStructureConfigurationBuilder builderToTest;
+    private SecHubFileStructureDataProviderBuilder builderToTest;
 
     @BeforeEach
     void beforeEach() {
-        builderToTest = SecHubFileStructureConfiguration.builder();
+        builderToTest = SecHubFileStructureDataProvider.builder();
     }
 
     @Test
@@ -42,11 +42,11 @@ class SecHubFileStructureConfigurationBuilderTest {
         SecHubConfigurationModel model = new SecHubConfigurationModel();
 
         /* execute */
-        SecHubFileStructureConfiguration configuration = builderToTest.setModel(model).setScanType(ScanType.CODE_SCAN).build();
+        SecHubFileStructureDataProvider configuration = builderToTest.setModel(model).setScanType(ScanType.CODE_SCAN).build();
 
         /* test */
         assertNotNull(configuration);
-        assertTrue(configuration.getAcceptedReferenceNames().isEmpty());
+        assertTrue(configuration.getUnmodifiableSetOfAcceptedReferenceNames().isEmpty());
         assertTrue(configuration.isRootFolderAccepted());
     }
 
@@ -56,11 +56,11 @@ class SecHubFileStructureConfigurationBuilderTest {
         SecHubConfigurationModel model = new SecHubConfigurationModel();
 
         /* execute */
-        SecHubFileStructureConfiguration configuration = builderToTest.setModel(model).setScanType(ScanType.LICENSE_SCAN).build();
+        SecHubFileStructureDataProvider configuration = builderToTest.setModel(model).setScanType(ScanType.LICENSE_SCAN).build();
 
         /* test */
         assertNotNull(configuration);
-        assertTrue(configuration.getAcceptedReferenceNames().isEmpty());
+        assertTrue(configuration.getUnmodifiableSetOfAcceptedReferenceNames().isEmpty());
         assertFalse(configuration.isRootFolderAccepted());
     }
 
@@ -75,11 +75,11 @@ class SecHubFileStructureConfigurationBuilderTest {
         model.setCodeScan(codeScan);
 
         /* execute */
-        SecHubFileStructureConfiguration configuration = builderToTest.setModel(model).setScanType(ScanType.CODE_SCAN).build();
+        SecHubFileStructureDataProvider configuration = builderToTest.setModel(model).setScanType(ScanType.CODE_SCAN).build();
 
         /* test */
         assertNotNull(configuration);
-        assertTrue(configuration.getAcceptedReferenceNames().isEmpty());
+        assertTrue(configuration.getUnmodifiableSetOfAcceptedReferenceNames().isEmpty());
         assertTrue(configuration.isRootFolderAccepted());
     }
 
@@ -106,11 +106,11 @@ class SecHubFileStructureConfigurationBuilderTest {
         model.setCodeScan(codeScan);
 
         /* execute */
-        SecHubFileStructureConfiguration configuration = builderToTest.setModel(model).setScanType(ScanType.CODE_SCAN).build();
+        SecHubFileStructureDataProvider configuration = builderToTest.setModel(model).setScanType(ScanType.CODE_SCAN).build();
 
         /* test */
         assertNotNull(configuration);
-        assertTrue(configuration.getAcceptedReferenceNames().contains("test-ref-1"));
+        assertTrue(configuration.getUnmodifiableSetOfAcceptedReferenceNames().contains("test-ref-1"));
         assertTrue(configuration.isRootFolderAccepted());
     }
 

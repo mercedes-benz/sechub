@@ -61,7 +61,7 @@ class ArchiveSupportTest {
         File targetFolder = TestUtil.createTempDirectoryInBuildFolder("pds_773-bugfix_test").toFile();
         targetFolder.mkdirs();
 
-        SecHubFileStructureConfiguration configuration = new SecHubFileStructureConfiguration();
+        MutableSecHubFileStructureDataProvider configuration = new MutableSecHubFileStructureDataProvider();
         configuration.setRootFolderAccepted(true);
 
         /* execute */
@@ -84,7 +84,7 @@ class ArchiveSupportTest {
         File targetFolder = TestUtil.createTempDirectoryInBuildFolder("pds_sinlgezip_test").toFile();
         targetFolder.mkdirs();
 
-        SecHubFileStructureConfiguration configuration = new SecHubFileStructureConfiguration();
+        MutableSecHubFileStructureDataProvider configuration = new MutableSecHubFileStructureDataProvider();
         configuration.setRootFolderAccepted(true);
 
         /* execute */
@@ -103,7 +103,7 @@ class ArchiveSupportTest {
         File targetFolder = TestUtil.createTempDirectoryInBuildFolder("pds_twofileszip_test").toFile();
         targetFolder.mkdirs();
 
-        SecHubFileStructureConfiguration configuration = new SecHubFileStructureConfiguration();
+        MutableSecHubFileStructureDataProvider configuration = new MutableSecHubFileStructureDataProvider();
         configuration.setRootFolderAccepted(true);
 
         /* execute */
@@ -123,7 +123,7 @@ class ArchiveSupportTest {
         File targetFolder = TestUtil.createTempDirectoryInBuildFolder("pds_abczip_test").toFile();
         targetFolder.mkdirs();
 
-        SecHubFileStructureConfiguration configuration = new SecHubFileStructureConfiguration();
+        MutableSecHubFileStructureDataProvider configuration = new MutableSecHubFileStructureDataProvider();
         configuration.setRootFolderAccepted(true);
 
         /* execute */
@@ -153,7 +153,7 @@ class ArchiveSupportTest {
         File outputDirectory = TestUtil.createTempDirectoryInBuildFolder("tar-test1").toFile();
         InputStream is = new FileInputStream(tarFile);
 
-        SecHubFileStructureConfiguration configuration = new SecHubFileStructureConfiguration();
+        MutableSecHubFileStructureDataProvider configuration = new MutableSecHubFileStructureDataProvider();
         configuration.setRootFolderAccepted(true);
 
         /* execute */
@@ -172,7 +172,7 @@ class ArchiveSupportTest {
         File outputDirectory = TestUtil.createTempDirectoryInBuildFolder("tar-test1").toFile();
         InputStream is = new FileInputStream(tarFile);
 
-        SecHubFileStructureConfiguration configuration = new SecHubFileStructureConfiguration();
+        MutableSecHubFileStructureDataProvider configuration = new MutableSecHubFileStructureDataProvider();
         configuration.setRootFolderAccepted(false);
 
         /* execute */
@@ -193,7 +193,7 @@ class ArchiveSupportTest {
         List<File> expectedFiles = TestFileSupport.loadFilesAsFileList(expectedFilesFolder);
         InputStream is = new FileInputStream(tarFile);
 
-        SecHubFileStructureConfiguration configuration = new SecHubFileStructureConfiguration();
+        MutableSecHubFileStructureDataProvider configuration = new MutableSecHubFileStructureDataProvider();
         configuration.setRootFolderAccepted(true);
 
         /* execute */
@@ -212,7 +212,7 @@ class ArchiveSupportTest {
         File outputDirectory = TestUtil.createTempDirectoryInBuildFolder("tar-test2").toFile();
         InputStream is = new FileInputStream(tarFile);
 
-        SecHubFileStructureConfiguration configuration = new SecHubFileStructureConfiguration();
+        MutableSecHubFileStructureDataProvider configuration = new MutableSecHubFileStructureDataProvider();
         configuration.setRootFolderAccepted(false);
 
         /* execute */
@@ -233,7 +233,7 @@ class ArchiveSupportTest {
         List<File> expectedFiles = TestFileSupport.loadFilesAsFileList(expectedFilesFolder);
         InputStream is = new FileInputStream(tarFile);
 
-        SecHubFileStructureConfiguration configuration = new SecHubFileStructureConfiguration();
+        MutableSecHubFileStructureDataProvider configuration = new MutableSecHubFileStructureDataProvider();
         configuration.setRootFolderAccepted(false);
         configuration.addAcceptedReferenceNames(Arrays.asList("reference-name-1"));
 
@@ -255,7 +255,7 @@ class ArchiveSupportTest {
         List<File> expectedFiles = TestFileSupport.loadFilesAsFileList(expectedFilesFolder);
         InputStream is = new FileInputStream(tarFile);
 
-        SecHubFileStructureConfiguration configuration = new SecHubFileStructureConfiguration();
+        MutableSecHubFileStructureDataProvider configuration = new MutableSecHubFileStructureDataProvider();
         configuration.setRootFolderAccepted(false);
         configuration.addAcceptedReferenceNames(Arrays.asList("reference-name-1", "reference-name-2"));
 

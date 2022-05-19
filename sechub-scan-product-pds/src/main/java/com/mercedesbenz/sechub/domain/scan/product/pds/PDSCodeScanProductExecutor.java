@@ -1,14 +1,10 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.pds;
 
-import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
-
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
@@ -22,7 +18,6 @@ import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.pds.PDSAdapter;
 import com.mercedesbenz.sechub.adapter.pds.PDSCodeScanConfig;
 import com.mercedesbenz.sechub.adapter.pds.PDSCodeScanConfigImpl;
-import com.mercedesbenz.sechub.adapter.pds.PDSMetaDataID;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.product.AbstractProductExecutor;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
@@ -59,6 +54,9 @@ public class PDSCodeScanProductExecutor extends AbstractProductExecutor {
     @Autowired
     PDSResilienceConsultant pdsResilienceConsultant;
 
+    @Autowired
+    JobStorageContentService contentService;
+
     public PDSCodeScanProductExecutor() {
         super(ProductIdentifier.PDS_CODESCAN, 1, ScanType.CODE_SCAN);
     }
@@ -87,39 +85,42 @@ public class PDSCodeScanProductExecutor extends AbstractProductExecutor {
 
             AdapterMetaData metaDataOrNull = executorContext.getCurrentMetaDataOrNull();
             /* we reuse existing file upload checksum done by sechub */
-            String sourceZipFileChecksum = fetchFileUploadChecksumIfNecessary(storage, metaDataOrNull);
+            String sourceZipFileChecksum = contentService.fetchSourceZipFileeUploadChecksumIfNecessary(storage, metaDataOrNull);
 
-            try (InputStream sourceCodeZipFileInputStream = fetchInputStreamIfNecessary(storage, metaDataOrNull)) {
+            try (InputStream sourceCodeZipFileInputStream = contentService.fetchSourceZipFileInputStreamIfNecessary(storage, metaDataOrNull);
+                    InputStream binariesTarFileInputStream = contentService.fetchBinariesTarFileInputStreamIfNecessary(storage, metaDataOrNull)) {
 
                 /* @formatter:off */
 
-                    Map<String, String> jobParams = configSupport.createJobParametersToSendToPDS(context.getConfiguration());
+                Map<String, String> jobParams = configSupport.createJobParametersToSendToPDS(context.getConfiguration());
 
-                    PDSCodeScanConfig pdsCodeScanConfig =PDSCodeScanConfigImpl.builder().
-                            setPDSProductIdentifier(configSupport.getPDSProductIdentifier()).
-                            setTrustAllCertificates(configSupport.isTrustAllCertificatesEnabled()).
-                            setProductBaseUrl(configSupport.getProductBaseURL()).
-                            setSecHubJobUUID(context.getSechubJobUUID()).
+                PDSCodeScanConfig pdsCodeScanConfig =PDSCodeScanConfigImpl.builder().
+                        setPDSProductIdentifier(configSupport.getPDSProductIdentifier()).
+                        setTrustAllCertificates(configSupport.isTrustAllCertificatesEnabled()).
+                        setProductBaseUrl(configSupport.getProductBaseURL()).
+                        setSecHubJobUUID(context.getSechubJobUUID()).
 
-                            setSecHubConfigModel(context.getConfiguration()).
+                        setSecHubConfigModel(context.getConfiguration()).
 
-                            configure(createAdapterOptionsStrategy(data)).
+                        configure(createAdapterOptionsStrategy(data)).
 
-                            setTimeToWaitForNextCheckOperationInMilliseconds(configSupport.getTimeToWaitForNextCheckOperationInMilliseconds(installSetup)).
-                            setTimeOutInMinutes(configSupport.getTimeoutInMinutes(installSetup)).
+                        setTimeToWaitForNextCheckOperationInMilliseconds(configSupport.getTimeToWaitForNextCheckOperationInMilliseconds(installSetup)).
+                        setTimeOutInMinutes(configSupport.getTimeoutInMinutes(installSetup)).
 
-                            setFileSystemSourceFolders(data.getCodeUploadFileSystemFolders()).
-                            setSourceCodeZipFileInputStream(sourceCodeZipFileInputStream).
-                            setSourceZipFileChecksum(sourceZipFileChecksum).
+//                        setFileSystemSourceFolders(data.getCodeUploadFileSystemFolders()).
+                        setSourceCodeZipFileInputStream(sourceCodeZipFileInputStream).
+                        setSourceZipFileChecksum(sourceZipFileChecksum).
 
-                            setUser(configSupport.getUser()).
-                            setPasswordOrAPIToken(configSupport.getPasswordOrAPIToken()).
-                            setProjectId(projectId).
+                        setBinariesTarFileInputStream(binariesTarFileInputStream).
 
-                            setTraceID(context.getTraceLogIdAsString()).
-                            setJobParameters(jobParams).
+                        setUser(configSupport.getUser()).
+                        setPasswordOrAPIToken(configSupport.getPasswordOrAPIToken()).
+                        setProjectId(projectId).
 
-                            build();
+                        setTraceID(context.getTraceLogIdAsString()).
+                        setJobParameters(jobParams).
+
+                        build();
                     /* @formatter:on */
 
                 /* inspect */
@@ -137,23 +138,6 @@ public class PDSCodeScanProductExecutor extends AbstractProductExecutor {
         });
         return Collections.singletonList(result);
 
-    }
-
-    private InputStream fetchInputStreamIfNecessary(JobStorage storage, AdapterMetaData metaData) throws IOException {
-        if (metaData != null && metaData.hasValue(PDSMetaDataID.KEY_FILEUPLOAD_DONE, true)) {
-            return null;
-        }
-        return storage.fetch(FILENAME_SOURCECODE_ZIP);
-    }
-
-    private String fetchFileUploadChecksumIfNecessary(JobStorage storage, AdapterMetaData metaData) throws IOException {
-        if (metaData != null && metaData.hasValue(PDSMetaDataID.KEY_FILEUPLOAD_DONE, true)) {
-            return null;
-        }
-        try (InputStream x = storage.fetch(FILENAME_SOURCECODE_ZIP_CHECKSUM); Scanner s = new Scanner(x)) {
-            String result = s.hasNext() ? s.next() : "";
-            return result;
-        }
     }
 
     @Override

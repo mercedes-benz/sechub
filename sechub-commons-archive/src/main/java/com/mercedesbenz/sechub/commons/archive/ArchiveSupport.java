@@ -26,7 +26,7 @@ public class ArchiveSupport {
     private static final KeepAsIsTransformationData DO_NOT_TRANSFORM = new KeepAsIsTransformationData();
 
     public ArchiveExtractionResult extractTar(InputStream sourceInputStream, String sourceLocation, File outputDir,
-            SecHubFileStructureConfiguration configuration) throws IOException {
+            SecHubFileStructureDataProvider configuration) throws IOException {
         try (ArchiveInputStream archiveInputStream = new ArchiveStreamFactory().createArchiveInputStream("tar", sourceInputStream)) {
             if (!(archiveInputStream instanceof TarArchiveInputStream)) {
                 throw new IOException("Cannot extract: " + sourceLocation + " because it is not a tar tar");
@@ -39,14 +39,14 @@ public class ArchiveSupport {
 
     }
 
-    public ArchiveExtractionResult extractZip(File file, File destDir, SecHubFileStructureConfiguration configuration) throws IOException {
+    public ArchiveExtractionResult extractZip(File file, File destDir, SecHubFileStructureDataProvider configuration) throws IOException {
         try (FileInputStream fis = new FileInputStream(file)) {
             return extractZip(fis, file.getAbsolutePath(), destDir, configuration);
         }
     }
 
     public ArchiveExtractionResult extractZip(InputStream sourceInputStream, String sourceLocation, File outputDir,
-            SecHubFileStructureConfiguration configuration) throws IOException {
+            SecHubFileStructureDataProvider configuration) throws IOException {
         try (ArchiveInputStream archiveInputStream = new ArchiveStreamFactory().createArchiveInputStream("zip", sourceInputStream)) {
 
             return extract(archiveInputStream, sourceLocation, outputDir, configuration);
@@ -80,7 +80,7 @@ public class ArchiveSupport {
     }
 
     private ArchiveExtractionResult extract(ArchiveInputStream sourceArchiveInputStream, String sourceLocation, File outputDir,
-            SecHubFileStructureConfiguration configuration) throws ArchiveException, IOException {
+            SecHubFileStructureDataProvider configuration) throws ArchiveException, IOException {
 
         ArchiveExtractionResult result = new ArchiveExtractionResult();
         result.targetLocation = outputDir.getAbsolutePath();
@@ -132,7 +132,7 @@ public class ArchiveSupport {
         return result;
     }
 
-    private ArchiveTransformationData createTransformationData(SecHubFileStructureConfiguration configuration, String path) {
+    private ArchiveTransformationData createTransformationData(SecHubFileStructureDataProvider configuration, String path) {
         if (configuration == null) {
             return DO_NOT_TRANSFORM;
         }

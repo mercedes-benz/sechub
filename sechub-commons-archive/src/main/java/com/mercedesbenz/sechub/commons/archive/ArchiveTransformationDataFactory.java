@@ -9,7 +9,7 @@ public class ArchiveTransformationDataFactory {
     private ArchiveTransformationDataFactory() {
     }
 
-    public static ArchiveTransformationData create(SecHubFileStructureConfiguration configuration, String path) {
+    public static ArchiveTransformationData create(SecHubFileStructureDataProvider configuration, String path) {
         if (configuration == null) {
             throw new IllegalArgumentException("Configuration may not be null!");
         }
@@ -33,7 +33,7 @@ public class ArchiveTransformationDataFactory {
         }
     }
 
-    private static ArchiveTransformationData createRootFolderTransformationData(SecHubFileStructureConfiguration configuration) {
+    private static ArchiveTransformationData createRootFolderTransformationData(SecHubFileStructureDataProvider configuration) {
         MutableArchiveTransformationData result = new MutableArchiveTransformationData();
         if (configuration.isRootFolderAccepted()) {
             result.setAccepted(true);
@@ -41,7 +41,7 @@ public class ArchiveTransformationDataFactory {
         return result;
     }
 
-    private static ArchiveTransformationData createDataSectionTransformationData(SecHubFileStructureConfiguration configuration,
+    private static ArchiveTransformationData createDataSectionTransformationData(SecHubFileStructureDataProvider configuration,
             String subfolderBelowDataFolder) {
         MutableArchiveTransformationData result = new MutableArchiveTransformationData();
 
@@ -59,8 +59,8 @@ public class ArchiveTransformationDataFactory {
         return result;
     }
 
-    private static String findAcceptedReferenceNameFor(SecHubFileStructureConfiguration configuration, String path) {
-        for (String acceptedName : configuration.getAcceptedReferenceNames()) {
+    private static String findAcceptedReferenceNameFor(SecHubFileStructureDataProvider configuration, String path) {
+        for (String acceptedName : configuration.getUnmodifiableSetOfAcceptedReferenceNames()) {
             if (path.startsWith(acceptedName)) {
                 return acceptedName;
             }
