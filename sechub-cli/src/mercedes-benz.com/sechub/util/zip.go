@@ -37,7 +37,8 @@ const TargetZipFileLoop = "Target zipfile would be part of zipped content, leadi
 // Zip - Will zip  content of given folders into given ZipConfig.
 //       Note: ZipConfig.ZipWriter must be created beforehand
 func Zip(config *ZipConfig) (err error) {
-	/* Loop over each defined folder */
+
+	// Loop over each defined folder
 	for _, folder := range config.Folders {
 		// tribute to Windows... (convert \ to / )
 		folder = ConvertBackslashPath(folder)
@@ -74,9 +75,6 @@ func zipOneFolderRecursively(folder string, config *ZipConfig) error {
 		}
 		if info.IsDir() {
 			return nil
-		}
-		if file == config.ZipFileName {
-			return errors.New(TargetZipFileLoop)
 		}
 
 		fileAbs, err := filepath.Abs(file)
@@ -124,6 +122,11 @@ func zipOneFolderRecursively(folder string, config *ZipConfig) error {
 				LogDebug(config.Debug, fmt.Sprintf("%q matches exclude pattern %q -> skip", file, excludePattern))
 				return nil
 			}
+		}
+
+		if file == config.ZipFileName {
+			// Cannot add zip file to itself
+			return errors.New(TargetZipFileLoop)
 		}
 
 		LogDebug(config.Debug, "Adding "+zipPath+fileAbs)
