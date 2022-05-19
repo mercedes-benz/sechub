@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.owaspzapwrapper.config.data;
 
-import com.mercedesbenz.sechub.commons.model.JSONable;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
+import com.mercedesbenz.sechub.commons.model.JSONable;
 
 public class DeactivatedRuleReferences implements JSONable<DeactivatedRuleReferences> {
 

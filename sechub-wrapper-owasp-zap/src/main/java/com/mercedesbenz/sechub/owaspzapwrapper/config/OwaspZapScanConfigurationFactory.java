@@ -43,13 +43,13 @@ public class OwaspZapScanConfigurationFactory {
         }
         /* Owasp Zap rule setup */
         OwaspZapFullRuleset fullRuleset = new OwaspZapFullRuleset();
-    	DeactivatedRuleReferences deactivatedRuleReferences = new DeactivatedRuleReferences();
-    	
+        DeactivatedRuleReferences deactivatedRuleReferences = new DeactivatedRuleReferences();
+
         File fullRulesetFile = settings.getFullRulesetFile();
-		File rulesDeactvationFile = settings.getRulesDeactvationFile();
-		if (fullRulesetFile != null && rulesDeactvationFile != null) {
-        	fullRuleset = ruleProvider.fetchFullRuleset(fullRulesetFile);
-        	deactivatedRuleReferences = ruleProvider.fetchDeactivatedRuleReferences(rulesDeactvationFile);
+        File rulesDeactvationFile = settings.getRulesDeactvationFile();
+        if (fullRulesetFile != null && rulesDeactvationFile != null) {
+            fullRuleset = ruleProvider.fetchFullRuleset(fullRulesetFile);
+            deactivatedRuleReferences = ruleProvider.fetchDeactivatedRuleReferences(rulesDeactvationFile);
         }
 
         /* Wrapper settings */
