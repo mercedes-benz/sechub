@@ -4,8 +4,6 @@ package com.mercedesbenz.sechub.domain.scan.product.pds;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 
@@ -28,8 +26,6 @@ import com.mercedesbenz.sechub.sharedkernel.SystemEnvironment;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspection;
 import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspector;
-import com.mercedesbenz.sechub.storage.core.JobStorage;
-import com.mercedesbenz.sechub.storage.core.StorageService;
 
 @Service
 public class PDSLicenseScanProductExecutor extends AbstractProductExecutor {
@@ -42,9 +38,6 @@ public class PDSLicenseScanProductExecutor extends AbstractProductExecutor {
     PDSInstallSetup installSetup;
 
     @Autowired
-    StorageService storageService;
-
-    @Autowired
     SystemEnvironment systemEnvironment;
 
     @Autowired
@@ -54,7 +47,7 @@ public class PDSLicenseScanProductExecutor extends AbstractProductExecutor {
     PDSResilienceConsultant pdsResilienceConsultant;
 
     @Autowired
-    JobStorageContentService contentService;
+    PDSStorageContentProviderFactory contentProviderFactory;
 
     public PDSLicenseScanProductExecutor() {
         super(ProductIdentifier.PDS_LICENSESCAN, 1, ScanType.LICENSE_SCAN);
@@ -75,48 +68,26 @@ public class PDSLicenseScanProductExecutor extends AbstractProductExecutor {
 
         SecHubExecutionContext context = data.getSechubExecutionContext();
 
-        UUID jobUUID = context.getSechubJobUUID();
-        String projectId = context.getConfiguration().getProjectId();
-
-        JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
+        PDSStorageContentProvider contentProvider = contentProviderFactory.createContentProvider(context, configSupport, getScanType());
 
         ProductResult result = resilientActionExecutor.executeResilient(() -> {
 
             AdapterMetaData metaDataOrNull = executorContext.getCurrentMetaDataOrNull();
 
-            /* we reuse existing file upload checksum done by sechub */
-            String sourceZipFileChecksum = contentService.fetchSourceZipFileeUploadChecksumIfNecessary(storage, metaDataOrNull);
-
-            try (InputStream sourceCodeZipFileInputStream = contentService.fetchSourceZipFileInputStreamIfNecessary(storage, metaDataOrNull)) {
-
-                /* @formatter:off */
-
-                    Map<String, String> jobParams = configSupport.createJobParametersToSendToPDS(context.getConfiguration());
+            try (InputStream sourceCodeZipFileInputStreamOrNull = contentProvider.getSourceZipFileInputStreamOrNull(metaDataOrNull);
+                    InputStream binariesTarFileInputStreamOrNull = contentProvider.getBinariesTarFileInputStreamOrNull(metaDataOrNull)) { /* @formatter:off */
 
                     PDSLicenseScanConfig pdsLicenseScanConfig = PDSLicenseScanConfigImpl.builder().
-                            setPDSProductIdentifier(configSupport.getPDSProductIdentifier()).
-                            setTrustAllCertificates(configSupport.isTrustAllCertificatesEnabled()).
-                            setProductBaseUrl(configSupport.getProductBaseURL()).
-                            setSecHubJobUUID(context.getSechubJobUUID()).
-
-                            setSecHubConfigModel(context.getConfiguration()).
-
-                            configure(createAdapterOptionsStrategy(data)).
-
-                            setTimeToWaitForNextCheckOperationInMilliseconds(configSupport.getTimeToWaitForNextCheckOperationInMilliseconds(installSetup)).
-                            setTimeOutInMinutes(configSupport.getTimeoutInMinutes(installSetup)).
-
-                            setFileSystemSourceFolders(data.getCodeUploadFileSystemFolders()).
-                            setSourceCodeZipFileInputStream(sourceCodeZipFileInputStream).
-                            setSourceZipFileChecksum(sourceZipFileChecksum).
-
-                            setUser(configSupport.getUser()).
-                            setPasswordOrAPIToken(configSupport.getPasswordOrAPIToken()).
-                            setProjectId(projectId).
-
-                            setTraceID(context.getTraceLogIdAsString()).
-                            setJobParameters(jobParams).
-
+                            configure(PDSAdapterConfigurationStrategy.builder().
+                                    setScanType(getScanType()).
+                                    setProductExecutorData(data).
+                                    setConfigSupport(configSupport).
+                                    setSourceCodeZipFileInputStreamOrNull(sourceCodeZipFileInputStreamOrNull).
+                                    setBinariesTarFileInputStreamOrNull(binariesTarFileInputStreamOrNull).
+                                    setMetaDataOrNull(metaDataOrNull).
+                                    setContentProvider(contentProvider).
+                                    setInstallSetup(installSetup).
+                                    build()).
                             build();
                     /* @formatter:on */
 

@@ -21,7 +21,7 @@ import com.mercedesbenz.sechub.adapter.springextension.MultipartInputStreamFileR
 public class PDSUploadSupport {
 
     public void uploadZippedSourceCode(PDSContext context, PDSSourceZipConfig zipConfig) throws AdapterException {
-        String checksum = zipConfig.getSourceCodeZipFileChecksum();
+        String checksum = zipConfig.getSourceCodeZipFileChecksumOrNull();
 
         upload(context, zipConfig, checksum);
     }
@@ -49,7 +49,7 @@ public class PDSUploadSupport {
     }
 
     private Resource fetchResource(PDSContext context, PDSSourceZipConfig config) throws AdapterException {
-        InputStream zipInputstream = config.getSourceCodeZipFileInputStream();
+        InputStream zipInputstream = config.getSourceCodeZipFileInputStreamOrNull();
         if (zipInputstream == null) {
             throw context.asAdapterException("Input stream containing zip file is null!");
         }

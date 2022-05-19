@@ -23,6 +23,7 @@ import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxConfig;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxMetaDataID;
 import com.mercedesbenz.sechub.commons.core.CommonConstants;
 import com.mercedesbenz.sechub.commons.model.ScanType;
+import com.mercedesbenz.sechub.domain.scan.SecHubAdapterOptionsBuilderStrategy;
 import com.mercedesbenz.sechub.domain.scan.product.AbstractProductExecutor;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
@@ -103,8 +104,9 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
 
                 /* @formatter:off */
 
+                @SuppressWarnings("deprecation")
                 CheckmarxAdapterConfig checkMarxConfig = CheckmarxConfig.builder().
-    					configure(createAdapterOptionsStrategy(data)).
+    					configure(new SecHubAdapterOptionsBuilderStrategy(data, getScanType())).
     					setTrustAllCertificates(installSetup.isHavingUntrustedCertificate()).
     					setUser(configSupport.getUser()).
     					setPasswordOrAPIToken(configSupport.getPasswordOrAPIToken()).
@@ -113,7 +115,7 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
     					setAlwaysFullScan(callback.isAlwaysFullScanEnabled()).
     					setTimeToWaitForNextCheckOperationInMinutes(scanResultCheckPeriodInMinutes).
     					setTimeOutInMinutes(scanResultCheckTimeOutInMinutes).
-    					setFileSystemSourceFolders(data.getCodeUploadFileSystemFolders()).
+    					setFileSystemSourceFolders(data.getCodeUploadFileSystemFolders()). // to support mocked Checkmarx adapters we MUST use still the deprecated method!
     					setSourceCodeZipFileInputStream(sourceCodeZipFileInputStream).
     					setTeamIdForNewProjects(configSupport.getTeamIdForNewProjects(projectId)).
     					setClientSecret(configSupport.getClientSecret()).

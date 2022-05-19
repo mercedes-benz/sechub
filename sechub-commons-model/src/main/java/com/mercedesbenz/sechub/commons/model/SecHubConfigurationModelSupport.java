@@ -49,7 +49,7 @@ public class SecHubConfigurationModelSupport {
                 return false;
             }
             SecHubWebScanConfiguration webScan = webScanOpt.get();
-            Optional<SecHubOpenAPIConfiguration> apiOpt = webScan.getOpenApi();
+            Optional<SecHubWebScanApiConfiguration> apiOpt = webScan.getApi();
             return isDataTypeContainedOrReferenced(dataType, model, apiOpt);
         default:
             LOG.error("Unsupported scan type: {}", scanType);

@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.domain.scan.product.pds;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -21,9 +22,23 @@ import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.sharedkernel.validation.Validation;
 
-public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport implements NetworkTargetProductServerDataProvider {
+public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport implements NetworkTargetProductServerDataProvider, ReuseSecHubStorageInfoProvider {
 
     public static final String PARAM_ID = "pds.executor.config.support";
+
+    private static final List<PDSKeyProvider<?>> PDS_KEYPROVIDERS_FOR_SENDING_PARAMETERS_TO_PDS;
+    private static final List<PDSKeyProvider<?>> PDS_KEYPROVIDERS_FOR_REUSE_STORAGE_DETECTION_ONLY;
+
+    static {
+        List<PDSKeyProvider<?>> allParameterProviders = new ArrayList<>();
+        allParameterProviders.addAll(Arrays.asList(SecHubProductExecutionPDSKeyProvider.values()));
+        allParameterProviders.addAll(Arrays.asList(PDSConfigDataKeyProvider.values()));
+
+        PDS_KEYPROVIDERS_FOR_SENDING_PARAMETERS_TO_PDS = Collections.unmodifiableList(allParameterProviders);
+
+        List<PDSConfigDataKeyProvider> onlySecHubStorageUseProviderList = Collections.singletonList(PDSConfigDataKeyProvider.PDS_CONFIG_USE_SECHUB_STORAGE);
+        PDS_KEYPROVIDERS_FOR_REUSE_STORAGE_DETECTION_ONLY = Collections.unmodifiableList(onlySecHubStorageUseProviderList);
+    }
 
     /**
      * Creates the configuration support and VALIDATE. This will fail when
@@ -44,11 +59,22 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport impl
 
     public Map<String, String> createJobParametersToSendToPDS(SecHubConfiguration secHubConfiguration) {
 
-        Map<String, String> parametersToSend = new TreeMap<>();
-        List<PDSKeyProvider<?>> providers = new ArrayList<>();
-        providers.addAll(Arrays.asList(SecHubProductExecutionPDSKeyProvider.values()));
-        providers.addAll(Arrays.asList(PDSConfigDataKeyProvider.values()));
+        Map<String, String> parametersToSend = createParametersToSendByProviders(PDS_KEYPROVIDERS_FOR_SENDING_PARAMETERS_TO_PDS);
 
+        /* provide SecHub storage when necessary */
+
+        if (isReusingSecHubStorage(parametersToSend)) {
+            String projectId = secHubConfiguration.getProjectId();
+            String sechubStoragePath = SecHubStorageUtil.createStoragePath(projectId);
+
+            parametersToSend.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SECHUB_STORAGE_PATH, sechubStoragePath);
+        }
+
+        return parametersToSend;
+    }
+
+    private Map<String, String> createParametersToSendByProviders(List<PDSKeyProvider<?>> providers) {
+        Map<String, String> parametersToSend = new TreeMap<>();
         for (String originKey : configuredExecutorParameters.keySet()) {
             PDSKeyProvider<?> foundProvider = null;
             for (PDSKeyProvider<?> provider : providers) {
@@ -63,16 +89,16 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport impl
                 parametersToSend.put(originKey, configuredExecutorParameters.get(originKey));
             }
         }
-        /* provide SecHub storage when necessary */
-        String useSecHubStorage = parametersToSend.get(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE);
-        if (Boolean.parseBoolean(useSecHubStorage)) {
-            String projectId = secHubConfiguration.getProjectId();
-            String sechubStoragePath = SecHubStorageUtil.createStoragePath(projectId);
-
-            parametersToSend.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SECHUB_STORAGE_PATH, sechubStoragePath);
-        }
-
         return parametersToSend;
+    }
+
+    public boolean isReusingSecHubStorage() {
+        return isReusingSecHubStorage(createParametersToSendByProviders(PDS_KEYPROVIDERS_FOR_REUSE_STORAGE_DETECTION_ONLY));
+    }
+
+    private boolean isReusingSecHubStorage(Map<String, String> parametersToSend) {
+        String useSecHubStorage = parametersToSend.get(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE);
+        return Boolean.parseBoolean(useSecHubStorage);
     }
 
     public String getPDSProductIdentifier() {

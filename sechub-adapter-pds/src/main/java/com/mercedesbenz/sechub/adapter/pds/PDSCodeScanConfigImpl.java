@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 
-import com.mercedesbenz.sechub.adapter.AbstractAdapterConfigBuilder;
 import com.mercedesbenz.sechub.adapter.AbstractCodeScanAdapterConfig;
 import com.mercedesbenz.sechub.adapter.AbstractCodeScanAdapterConfigBuilder;
 import com.mercedesbenz.sechub.commons.model.ScanType;
@@ -17,13 +16,14 @@ import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 public class PDSCodeScanConfigImpl extends AbstractCodeScanAdapterConfig implements PDSCodeScanConfig {
 
     private InputStream sourceCodeZipFileInputStream;
+    private InputStream binariesTarFileInputStream;
+
     private String sourceZipFileChecksum;
 
     private Map<String, String> jobParameters;
 
     private UUID sechubJobUUID;
     private String pdsProductIdentifier;
-    public InputStream binariesTarFileInputStream;
 
     private PDSCodeScanConfigImpl() {
     }
@@ -33,20 +33,26 @@ public class PDSCodeScanConfigImpl extends AbstractCodeScanAdapterConfig impleme
     }
 
     @Override
-    public InputStream getSourceCodeZipFileInputStream() {
+    public InputStream getSourceCodeZipFileInputStreamOrNull() {
         return sourceCodeZipFileInputStream;
     }
 
     @Override
-    public String getSourceCodeZipFileChecksum() {
+    public String getSourceCodeZipFileChecksumOrNull() {
         return sourceZipFileChecksum;
+    }
+
+    @Override
+    public InputStream getBinaryTarFileInputStreamOrNull() {
+        return binariesTarFileInputStream;
     }
 
     public static PDSCodeScanConfigBuilder builder() {
         return new PDSCodeScanConfigBuilder();
     }
 
-    public static class PDSCodeScanConfigBuilder extends AbstractCodeScanAdapterConfigBuilder<PDSCodeScanConfigBuilder, PDSCodeScanConfigImpl> {
+    public static class PDSCodeScanConfigBuilder extends AbstractCodeScanAdapterConfigBuilder<PDSCodeScanConfigBuilder, PDSCodeScanConfigImpl>
+            implements PDSAdapterConfigBuilder {
 
         private InputStream sourceCodeZipFileInputStream;
         private Map<String, String> jobParameters;
@@ -56,32 +62,37 @@ public class PDSCodeScanConfigImpl extends AbstractCodeScanAdapterConfig impleme
         private SecHubConfigurationModel configurationModel;
         private InputStream binariesTarFileInputStream;
 
+        @Override
+        public PDSCodeScanConfigBuilder setBinariesTarFileInputStream(InputStream binariesTarFileInputStream) {
+            this.binariesTarFileInputStream = binariesTarFileInputStream;
+            return this;
+        }
+
+        @Override
         public PDSCodeScanConfigBuilder setSourceCodeZipFileInputStream(InputStream sourceCodeZipFileInputStream) {
             this.sourceCodeZipFileInputStream = sourceCodeZipFileInputStream;
             return this;
         }
 
-        public AbstractAdapterConfigBuilder<PDSCodeScanConfigBuilder, PDSCodeScanConfigImpl> setBinariesTarFileInputStream(
-                InputStream binariesTarFileInputStream) {
-            this.binariesTarFileInputStream = binariesTarFileInputStream;
-            return this;
-        }
-
+        @Override
         public PDSCodeScanConfigBuilder setSecHubJobUUID(UUID sechubJobUUID) {
             this.sechubJobUUID = sechubJobUUID;
             return this;
         }
 
+        @Override
         public PDSCodeScanConfigBuilder setSecHubConfigModel(SecHubConfigurationModel model) {
             this.configurationModel = model;
             return this;
         }
 
+        @Override
         public PDSCodeScanConfigBuilder setSourceZipFileChecksum(String sourceZipFileChecksum) {
             this.sourceZipFileChecksum = sourceZipFileChecksum;
             return this;
         }
 
+        @Override
         public PDSCodeScanConfigBuilder setPDSProductIdentifier(String productIdentifier) {
             this.pdsProductIdentifier = productIdentifier;
             return this;
@@ -115,6 +126,7 @@ public class PDSCodeScanConfigImpl extends AbstractCodeScanAdapterConfig impleme
          * @param jobParameters a map with key values
          * @return builder
          */
+        @Override
         public final PDSCodeScanConfigBuilder setJobParameters(Map<String, String> jobParameters) {
             this.jobParameters = jobParameters;
             return this;

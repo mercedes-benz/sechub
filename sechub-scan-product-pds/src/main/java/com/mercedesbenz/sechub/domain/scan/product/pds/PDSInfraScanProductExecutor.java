@@ -5,7 +5,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -45,6 +44,9 @@ public class PDSInfraScanProductExecutor extends AbstractProductExecutor {
     @Autowired
     SystemEnvironment systemEnvironment;
 
+    @Autowired
+    PDSStorageContentProviderFactory contentProviderFactory;
+
     public PDSInfraScanProductExecutor() {
         super(ProductIdentifier.PDS_INFRASCAN, 1, ScanType.INFRA_SCAN);
     }
@@ -73,8 +75,7 @@ public class PDSInfraScanProductExecutor extends AbstractProductExecutor {
         List<ProductResult> results = new ArrayList<>();
 
         SecHubExecutionContext context = data.getSechubExecutionContext();
-        Map<String, String> jobParameters = configSupport.createJobParametersToSendToPDS(context.getConfiguration());
-        String projectId = context.getConfiguration().getProjectId();
+        PDSStorageContentProvider contentProvider = contentProviderFactory.createContentProvider(context, configSupport, getScanType());
 
         for (URI targetURI : targetURIs) {
             /* @formatter:off */
@@ -85,23 +86,15 @@ public class PDSInfraScanProductExecutor extends AbstractProductExecutor {
             executorContext.useFirstFormerResultHavingMetaData(PDSMetaDataID.KEY_TARGET_URI, targetURI);
 
             PDSInfraScanConfig pdsInfraScanConfig = PDSInfraScanConfigImpl.builder().
-                    setPDSProductIdentifier(configSupport.getPDSProductIdentifier()).
-                    setTrustAllCertificates(configSupport.isTrustAllCertificatesEnabled()).
-                    setProductBaseUrl(configSupport.getProductBaseURL()).
-                    setSecHubJobUUID(context.getSechubJobUUID()).
-
-                    setSecHubConfigModel(context.getConfiguration()).
-
-                    configure(createAdapterOptionsStrategy(data)).
+                    configure(PDSAdapterConfigurationStrategy.builder().
+                            setScanType(getScanType()).
+                            setProductExecutorData(data).
+                            setConfigSupport(configSupport).
+                            setContentProvider(contentProvider).
+                            setInstallSetup(installSetup).
+                            build()).
+                    /* additional:*/
                     configure(new NetworkTargetProductServerDataAdapterConfigurationStrategy(configSupport,data.getCurrentNetworkTargetInfo().getTargetType())).
-
-                    setTimeToWaitForNextCheckOperationInMilliseconds(configSupport.getTimeToWaitForNextCheckOperationInMilliseconds(installSetup)).
-                    setTimeOutInMinutes(configSupport.getTimeoutInMinutes(installSetup)).
-
-                    setProjectId(projectId).
-
-                    setTraceID(context.getTraceLogIdAsString()).
-                    setJobParameters(jobParameters).
 
                     setTargetIPs(info.getIPs()).
                     setTargetURIs(info.getURIs()).

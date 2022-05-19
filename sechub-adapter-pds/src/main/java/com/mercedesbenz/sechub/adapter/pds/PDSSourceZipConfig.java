@@ -5,7 +5,7 @@ import java.io.InputStream;
 
 public interface PDSSourceZipConfig extends PDSAdapterConfig {
 
-    InputStream getSourceCodeZipFileInputStream();
+    InputStream getSourceCodeZipFileInputStreamOrNull();
 
-    String getSourceCodeZipFileChecksum();
+    String getSourceCodeZipFileChecksumOrNull();
 }

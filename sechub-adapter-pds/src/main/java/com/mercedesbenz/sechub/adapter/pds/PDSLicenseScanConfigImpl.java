@@ -22,6 +22,7 @@ public class PDSLicenseScanConfigImpl extends AbstractCodeScanAdapterConfig impl
 
     private UUID sechubJobUUID;
     private String pdsProductIdentifier;
+    public InputStream binariesTarFileInputStream;
 
     private PDSLicenseScanConfigImpl() {
     }
@@ -31,13 +32,18 @@ public class PDSLicenseScanConfigImpl extends AbstractCodeScanAdapterConfig impl
     }
 
     @Override
-    public InputStream getSourceCodeZipFileInputStream() {
+    public InputStream getSourceCodeZipFileInputStreamOrNull() {
         return sourceCodeZipFileInputStream;
     }
 
     @Override
-    public String getSourceCodeZipFileChecksum() {
+    public String getSourceCodeZipFileChecksumOrNull() {
         return sourceZipFileChecksum;
+    }
+
+    @Override
+    public InputStream getBinaryTarFileInputStreamOrNull() {
+        return binariesTarFileInputStream;
     }
 
     public static PDSLicenseScanConfigBuilder builder() {
@@ -47,11 +53,18 @@ public class PDSLicenseScanConfigImpl extends AbstractCodeScanAdapterConfig impl
     public static class PDSLicenseScanConfigBuilder extends AbstractCodeScanAdapterConfigBuilder<PDSLicenseScanConfigBuilder, PDSLicenseScanConfigImpl> {
 
         private InputStream sourceCodeZipFileInputStream;
+        private InputStream binariesTarFileInputStream;
+
         private Map<String, String> jobParameters;
         private UUID sechubJobUUID;
         private String sourceZipFileChecksum;
         private String pdsProductIdentifier;
         private SecHubConfigurationModel configurationModel;
+
+        public PDSLicenseScanConfigBuilder setBinariesTarFileInputStream(InputStream binariesTarFileInputStream) {
+            this.binariesTarFileInputStream = binariesTarFileInputStream;
+            return this;
+        }
 
         public PDSLicenseScanConfigBuilder setSourceCodeZipFileInputStream(InputStream sourceCodeZipFileInputStream) {
             this.sourceCodeZipFileInputStream = sourceCodeZipFileInputStream;
@@ -82,6 +95,7 @@ public class PDSLicenseScanConfigImpl extends AbstractCodeScanAdapterConfig impl
         protected void customBuild(PDSLicenseScanConfigImpl config) {
             config.sourceCodeZipFileInputStream = sourceCodeZipFileInputStream;
             config.sourceZipFileChecksum = sourceZipFileChecksum;
+            config.binariesTarFileInputStream = binariesTarFileInputStream;
 
             if (configurationModel != null) {
                 String reducedConfigJSON = SecHubConfigurationModelReducedCloningSupport.DEFAULT.createReducedScanConfigurationCloneJSON(configurationModel,

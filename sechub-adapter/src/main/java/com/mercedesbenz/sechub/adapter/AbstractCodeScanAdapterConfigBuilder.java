@@ -9,12 +9,23 @@ public abstract class AbstractCodeScanAdapterConfigBuilder<B extends AbstractCod
 
     private Set<String> sourceFolders;
 
+    /**
+     * Shall only be used where necessary. We build the
+     * <code>sourceScanTargetString</code> by this information which is used only by
+     * mocked adapters for integration test. For PDS executions we do not mock at
+     * all.
+     *
+     * @param sourceFolders
+     * @return
+     */
     @SuppressWarnings("unchecked")
+    @Deprecated
     public final B setFileSystemSourceFolders(Set<String> sourceFolders) {
         this.sourceFolders = sourceFolders;
         return (B) this;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     void packageInternalCustomBuild(C config) {
         if (sourceFolders == null) {

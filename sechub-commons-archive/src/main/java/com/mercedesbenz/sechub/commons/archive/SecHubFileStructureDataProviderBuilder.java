@@ -6,8 +6,8 @@ import java.util.Set;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationUsageByName;
-import com.mercedesbenz.sechub.commons.model.SecHubOpenAPIConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
+import com.mercedesbenz.sechub.commons.model.SecHubWebScanApiConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 
 public class SecHubFileStructureDataProviderBuilder {
@@ -60,7 +60,7 @@ public class SecHubFileStructureDataProviderBuilder {
                 throw new IllegalStateException("No webscan present but it is a " + scanType);
             }
             SecHubWebScanConfiguration webScan = webScanOpt.get();
-            Optional<SecHubOpenAPIConfiguration> apiOpt = webScan.getOpenApi();
+            Optional<SecHubWebScanApiConfiguration> apiOpt = webScan.getApi();
             addAllUsages(data, apiOpt, false);
             break;
         default:
