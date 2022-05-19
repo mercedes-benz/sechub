@@ -3,10 +3,8 @@
 package cli
 
 import (
-	"archive/zip"
 	"fmt"
 	"os"
-	"path/filepath"
 
 	sechubUtil "mercedes-benz.com/sechub/util"
 )
@@ -85,7 +83,7 @@ func prepareCreateApproveJob(context *Context) {
  * --------------------------------------------------
  */
 func handleCodeScanUpload(context *Context) {
-	if !context.isUploadingSourceZip() {
+	if !context.sourceZipFileExists() {
 		return
 	}
 	sechubUtil.Log("Uploading source zip file", context.config.quiet)
@@ -94,32 +92,39 @@ func handleCodeScanUpload(context *Context) {
 
 func prepareScan(context *Context) {
 
-	//////////////////////////////
-	// Creating sources ZIP file
-	context.sourceZipFileName = tempFile(context, fmt.Sprintf("sourcecode-%s.zip", context.config.projectID))
+	if len(context.sechubConfig.Data.Sources) > 0 || len(context.sechubConfig.CodeScan.FileSystem.Folders) > 0 {
+		//////////////////////////////
+		// Creating sources ZIP file
+		context.sourceZipFileName = tempFile(context, fmt.Sprintf("sourcecode-%s.zip", context.config.projectID))
 
-	// Set source code patterns in
-	// - data.sources
-	// - codeScan
-	// depending on
-	// - DefaultSourceCodeAllowedFilePatterns
-	// - context.config.whitelistAll (deactivates all filters)
-	adjustSourceCodePatterns(context)
+		// Set source code patterns in
+		// - data.sources
+		// - codeScan
+		// depending on
+		// - DefaultSourceCodeAllowedFilePatterns
+		// - context.config.whitelistAll (deactivates all filters)
+		adjustSourceCodePatterns(context)
 
-	err := createSouceCodeZipFile(context)
-	if err != nil {
-		sechubUtil.LogError(fmt.Sprintf("%s\nExiting due to fatal error while creating sources zip file...\n", err))
-		os.Remove(context.sourceZipFileName) // cleanup zip file
-		os.Exit(ExitCodeFailed)
+		err := createSouceCodeZipFile(context)
+		if err != nil {
+			sechubUtil.LogError(fmt.Sprintf("%s\nExiting due to fatal error while creating sources zip file...\n", err))
+			os.Remove(context.sourceZipFileName) // cleanup zip file
+			os.Exit(ExitCodeFailed)
+		}
+
+		// calculate checksum for zip file
+		context.sourceZipFileChecksum = sechubUtil.CreateChecksum(context.sourceZipFileName)
 	}
 
-	// calculate checksum for zip file
-	context.sourceZipFileChecksum = sechubUtil.CreateChecksum(context.sourceZipFileName)
-
+	// ToDo:
+	/// If len(context.sechubConfig.Data.Binaries) > 0 in the sechub.json ; then
 	//////////////////////////////
 	// Creating binaries TAR file
 
 	// ToDo
+
+	/// EndIf
+
 }
 
 func downloadSechubReport(context *Context) {
@@ -147,68 +152,4 @@ func downloadFalsePositivesList(context *Context) {
 
 	list := FalsePositivesList{serverResult: getFalsePositivesList(context), outputFolder: context.config.outputFolder, outputFileName: fileName}
 	list.save(context)
-}
-
-// createSouceCodeZipFile - compress all defined sources into one single zip file
-func createSouceCodeZipFile(context *Context) error {
-	zipFile, _ := filepath.Abs(context.sourceZipFileName)
-
-	// create zip file
-	newZipFile, err := os.Create(zipFile)
-	if err != nil {
-		return err
-	}
-	defer newZipFile.Close()
-
-	// create zip writer
-	zipWriter := zip.NewWriter(newZipFile)
-	defer zipWriter.Close()
-
-	// Support legacy definition:
-	if len(context.sechubConfig.CodeScan.FileSystem.Folders) > 0 {
-		namedCodeScanConfig := NamedCodeScanConfig{
-			Name:               "",
-			FileSystem:         context.sechubConfig.CodeScan.FileSystem,
-			Excludes:           context.sechubConfig.CodeScan.Excludes,
-			SourceCodePatterns: context.sechubConfig.CodeScan.SourceCodePatterns,
-		}
-		err = appendToSourceCodeZipFile(zipFile, zipWriter, namedCodeScanConfig, context.config.quiet, context.config.debug)
-		if err != nil {
-			return err
-		}
-	}
-
-	// ToDo: Support data section
-
-	return nil
-}
-
-func appendToSourceCodeZipFile(zipFile string, zipWriter *zip.Writer, config NamedCodeScanConfig, quiet bool, debug bool) error {
-	prefix := ""
-	if config.Name != "" {
-		prefix = fmt.Sprintf("__data__/%s/", config.Name)
-	}
-	zipConfig := sechubUtil.ZipConfig{
-		ZipFileName:        zipFile,
-		ZipWriter:          zipWriter,
-		PrefixInZip:        prefix,
-		Files:              config.FileSystem.Files,
-		Folders:            config.FileSystem.Folders,
-		Excludes:           config.Excludes,
-		SourceCodePatterns: config.SourceCodePatterns,
-		Quiet:              quiet,
-		Debug:              debug,
-	}
-
-	amountOfFolders := len(config.FileSystem.Folders)
-
-	sechubUtil.LogDebug(debug, fmt.Sprintf("appendToSourceCodeZipFile - %d folders defined: %+v", amountOfFolders, config.FileSystem.Folders))
-	sechubUtil.LogDebug(debug, fmt.Sprintf("appendToSourceCodeZipFile - Excludes: %+v", config.Excludes))
-	sechubUtil.LogDebug(debug, fmt.Sprintf("appendToSourceCodeZipFile - SourceCodePatterns: %+v", config.SourceCodePatterns))
-
-	if amountOfFolders == 0 { // nothing defined, so nothing to do
-		return nil
-	}
-
-	return sechubUtil.Zip(&zipConfig)
 }

@@ -10,7 +10,7 @@ import (
 )
 
 func uploadSourceZipFile(context *Context) {
-	if !context.isUploadingSourceZip() {
+	if !context.sourceZipFileExists() {
 		return
 	}
 
