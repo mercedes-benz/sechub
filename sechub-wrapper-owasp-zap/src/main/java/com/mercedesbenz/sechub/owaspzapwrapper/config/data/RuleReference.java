@@ -14,20 +14,12 @@ public class RuleReference {
         return reference;
     }
 
-    public void setReference(String reference) {
-        this.reference = reference;
-    }
-
     /**
      *
      * @return info or <code>null</code> if not set.
      */
     public String getInfo() {
         return info;
-    }
-
-    public void setInfo(String info) {
-        this.info = info;
     }
 
 }

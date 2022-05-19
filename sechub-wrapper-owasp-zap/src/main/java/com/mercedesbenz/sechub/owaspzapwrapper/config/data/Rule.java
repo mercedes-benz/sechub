@@ -16,20 +16,12 @@ public class Rule {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     /**
      *
      * @return Name or <code>null</code> if not set.
      */
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     /**
@@ -40,20 +32,12 @@ public class Rule {
         return type;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
     /**
      *
      * @return link or <code>null</code> if not set.
      */
     public String getLink() {
         return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
     }
 
 }

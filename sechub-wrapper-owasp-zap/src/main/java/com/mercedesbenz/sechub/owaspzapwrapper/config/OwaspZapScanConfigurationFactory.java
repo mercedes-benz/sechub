@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.owaspzapwrapper.config;
 
+import java.io.File;
 import java.net.URI;
 import java.util.UUID;
 
@@ -41,8 +42,15 @@ public class OwaspZapScanConfigurationFactory {
             throw new MustExitRuntimeException("Command line settings must not be null!", MustExitCode.COMMANDLINE_CONFIGURATION_INVALID);
         }
         /* Owasp Zap rule setup */
-        OwaspZapFullRuleset fullRuleset = ruleProvider.fetchFullRuleset(settings.getFullRulesetFile());
-        DeactivatedRuleReferences deactivatedRuleReferences = ruleProvider.fetchDeactivatedRuleReferences(settings.getRulesDeactvationFile());
+        OwaspZapFullRuleset fullRuleset = new OwaspZapFullRuleset();
+    	DeactivatedRuleReferences deactivatedRuleReferences = new DeactivatedRuleReferences();
+    	
+        File fullRulesetFile = settings.getFullRulesetFile();
+		File rulesDeactvationFile = settings.getRulesDeactvationFile();
+		if (fullRulesetFile != null && rulesDeactvationFile != null) {
+        	fullRuleset = ruleProvider.fetchFullRuleset(fullRulesetFile);
+        	deactivatedRuleReferences = ruleProvider.fetchDeactivatedRuleReferences(rulesDeactvationFile);
+        }
 
         /* Wrapper settings */
         OwaspZapServerConfiguration serverConfig = createOwaspZapServerConfig(settings);

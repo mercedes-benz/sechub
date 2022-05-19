@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.owaspzapwrapper.config.data;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,10 +27,6 @@ public class OwaspZapFullRuleset implements JSONable<OwaspZapFullRuleset> {
         return timestamp;
     }
 
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
-    }
-
     /**
      *
      * @return origin or <code>null</code> if not set.
@@ -38,20 +35,12 @@ public class OwaspZapFullRuleset implements JSONable<OwaspZapFullRuleset> {
         return origin;
     }
 
-    public void setOrigin(String origin) {
-        this.origin = origin;
-    }
-
     /**
      *
      * @return list of RuleReference objects or <code>null</code> if not set.
      */
     public Map<String, Rule> getRules() {
-        return rules;
-    }
-
-    public void setRules(Map<String, Rule> rules) {
-        this.rules = rules;
+        return Collections.unmodifiableMap(rules);
     }
 
     /**

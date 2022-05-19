@@ -45,7 +45,7 @@ class RuleProviderTest {
     @Test
     void valid_fullruleset_file_returns_valid_object() {
         /* prepare */
-        File testFile = new File("src/test/resources/zap-available-rules/zap-full-ruleset.json");
+        File testFile = new File("src/test/resources/zap-available-rules/owaspzap-full-ruleset.json");
 
         /* execute */
         OwaspZapFullRuleset fullRuleset = rulesProvider.fetchFullRuleset(testFile);
@@ -61,7 +61,7 @@ class RuleProviderTest {
     @Test
     void valid_deactivatedrulereferences_file_returns_valid_object() {
         /* prepare */
-        File testFile = new File("src/test/resources/wrapper-deactivated-rule-examples/owasp-zap-wrapper-config.json");
+        File testFile = new File("src/test/resources/wrapper-deactivated-rule-examples/owaspzap-rules-to-deactivate.json");
 
         /* execute */
         DeactivatedRuleReferences deactivatedRuleReferences = rulesProvider.fetchDeactivatedRuleReferences(testFile);
