@@ -8,7 +8,8 @@ import com.mercedesbenz.sechub.adapter.AdapterConfig;
 import com.mercedesbenz.sechub.adapter.AdapterConfigBuilder;
 import com.mercedesbenz.sechub.adapter.AdapterConfigurationStrategy;
 import com.mercedesbenz.sechub.adapter.AdapterMetaData;
-import com.mercedesbenz.sechub.adapter.pds.PDSAdapterConfigBuilder;
+import com.mercedesbenz.sechub.adapter.pds.PDSAdapterConfigurator;
+import com.mercedesbenz.sechub.adapter.pds.PDSAdapterConfiguratorProvider;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
 import com.mercedesbenz.sechub.domain.scan.DefaultAdapterConfigurationStrategy;
@@ -24,6 +25,10 @@ import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
  * <li>SecHub job UUID</li> - from context
  * <li>SecHub configuration model</li> - from context configuration
  * <li>SecHub configuration model</li> - from context configuration
+ * <li>Input streams</li>
+ * <li>Input stream checksums</li>
+ * <li>... and all other PDS specific parts</li> - which are common for every
+ * PDS adapter
  *
  * <ul>
  *
@@ -76,11 +81,6 @@ public class PDSAdapterConfigurationStrategy implements AdapterConfigurationStra
             return this;
         }
 
-        public PDSAdapterConfigurationStrategyBuilder setSourceZipFileChecksum(String sourceZipFileChecksum) {
-            strategyConfig.sourceZipFileChecksumOrNull = sourceZipFileChecksum;
-            return this;
-        }
-
         /**
          * @return {@link PDSAdapterConfigurationStrategy}
          * @throws IllegalStateException when mandatory parameters are not defined (only
@@ -125,7 +125,6 @@ public class PDSAdapterConfigurationStrategy implements AdapterConfigurationStra
         private ScanType scanType;
         private InputStream sourceCodeZipFileInputStreamOrNull;
         private InputStream binariesTarFileInputStreamOrNull;
-        private String sourceZipFileChecksumOrNull;
 
     }
 
@@ -139,40 +138,60 @@ public class PDSAdapterConfigurationStrategy implements AdapterConfigurationStra
 
     @Override
     public <B extends AdapterConfigBuilder, C extends AdapterConfig> void configure(B configBuilder) {
-        if (!(configBuilder instanceof PDSAdapterConfigBuilder)) {
-            throw new IllegalStateException("This strategy can only configure builders which implement PDSAdapterConfigBuilder!");
+        PDSAdapterConfigurator pdsConfigurator = null;
+        if (configBuilder instanceof PDSAdapterConfiguratorProvider) {
+            PDSAdapterConfiguratorProvider provider = (PDSAdapterConfiguratorProvider) configBuilder;
+            pdsConfigurator = provider.getPDSAdapterConfigurator();
+
+        } else if (configBuilder instanceof PDSAdapterConfigurator) {
+            pdsConfigurator = (PDSAdapterConfigurator) configBuilder;
         }
-        configBuilder
-                .configure(new DefaultAdapterConfigurationStrategy(strategyConfig.productExecutorData, strategyConfig.configSupport, strategyConfig.scanType));
+        if (pdsConfigurator == null) {
+            throw new IllegalStateException(
+                    "This strategy can only configure builders which implement PDSAdapterConfigurator or PDSAdapterConfiguratorProvider!");
+        }
+        handleCommonParts(configBuilder);
+        handlePdsParts(pdsConfigurator);
+    }
 
+    private void handlePdsParts(PDSAdapterConfigurator pdsConfigurable) {
         SecHubExecutionContext context = strategyConfig.productExecutorData.getSechubExecutionContext();
-
-        PDSAdapterConfigBuilder pdsConfigBuilder = (PDSAdapterConfigBuilder) configBuilder;
-
-        pdsConfigBuilder.setPDSProductIdentifier(strategyConfig.configSupport.getPDSProductIdentifier());
-        pdsConfigBuilder.setTrustAllCertificates(strategyConfig.configSupport.isTrustAllCertificatesEnabled());
-        pdsConfigBuilder.setSecHubJobUUID(context.getSechubJobUUID());
-        pdsConfigBuilder.setSecHubConfigModel(context.getConfiguration());
-
-        pdsConfigBuilder.setTimeToWaitForNextCheckOperationInMilliseconds(
-                strategyConfig.configSupport.getTimeToWaitForNextCheckOperationInMilliseconds(strategyConfig.installSetup));
-        pdsConfigBuilder.setTimeOutInMinutes(strategyConfig.configSupport.getTimeoutInMinutes(strategyConfig.installSetup));
-
-        pdsConfigBuilder.setSourceCodeZipFileInputStream(strategyConfig.sourceCodeZipFileInputStreamOrNull);
-        pdsConfigBuilder.setSourceZipFileChecksum(strategyConfig.sourceZipFileChecksumOrNull);
-
-        pdsConfigBuilder.setBinariesTarFileInputStream(strategyConfig.binariesTarFileInputStreamOrNull);
-
         Map<String, String> jobParams = strategyConfig.configSupport.createJobParametersToSendToPDS(context.getConfiguration());
-        pdsConfigBuilder.setJobParameters(jobParams);
+        pdsConfigurable.setJobParameters(jobParams);
+        pdsConfigurable.setReusingSecHubStorage(PDSExecutorConfigSuppport.isReusingSecHubStorage(jobParams));
+        pdsConfigurable.setScanType(strategyConfig.scanType);
+        pdsConfigurable.setPdsProductIdentifier(strategyConfig.configSupport.getPDSProductIdentifier());
+        pdsConfigurable.setSecHubJobUUID(context.getSechubJobUUID());
+        pdsConfigurable.setSecHubConfigurationModel(context.getConfiguration());
+
+        pdsConfigurable.setSourceCodeZipFileInputStreamOrNull(strategyConfig.sourceCodeZipFileInputStreamOrNull);
+
+        pdsConfigurable.setBinaryTarFileInputStreamOrNull(strategyConfig.binariesTarFileInputStreamOrNull);
 
         try {
             String sourceZipFileChecksum = strategyConfig.contentProvider.getSourceZipFileUploadChecksumOrNull(strategyConfig.metaDataOrNull);
-            pdsConfigBuilder.setSourceZipFileChecksum(sourceZipFileChecksum);
+            pdsConfigurable.setSourceCodeZipFileChecksumOrNull(sourceZipFileChecksum);
 
         } catch (IOException e) {
             throw new SecHubRuntimeException("Was not able to retrieve source zip upload checksum", e);
         }
+    }
+
+    private <B extends AdapterConfigBuilder> void handleCommonParts(B configBuilder) {
+        /* standard configuration */
+        /*
+         * TODO Albert Tregnaghi, 2022-05-20: We should move the "configBuilder" parts
+         * to another configuration strategy and use this in every adapter not only for
+         * PDS. But we cannot do this as long as the install setup is different and
+         * there are still some static setup - like for checkmarx - and not all
+         * available by configuration support.
+         */
+        configBuilder
+                .configure(new DefaultAdapterConfigurationStrategy(strategyConfig.productExecutorData, strategyConfig.configSupport, strategyConfig.scanType));
+        configBuilder.setTrustAllCertificates(strategyConfig.configSupport.isTrustAllCertificatesEnabled());
+        configBuilder.setTimeToWaitForNextCheckOperationInMilliseconds(
+                strategyConfig.configSupport.getTimeToWaitForNextCheckOperationInMilliseconds(strategyConfig.installSetup));
+        configBuilder.setTimeOutInMinutes(strategyConfig.configSupport.getTimeoutInMinutes(strategyConfig.installSetup));
     }
 
 }

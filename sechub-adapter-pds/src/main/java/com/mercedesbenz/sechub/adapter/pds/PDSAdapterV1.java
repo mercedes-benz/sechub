@@ -20,7 +20,6 @@ import com.mercedesbenz.sechub.adapter.pds.data.PDSJobData;
 import com.mercedesbenz.sechub.adapter.pds.data.PDSJobParameterEntry;
 import com.mercedesbenz.sechub.adapter.pds.data.PDSJobStatus;
 import com.mercedesbenz.sechub.adapter.pds.data.PDSJobStatus.PDSAdapterJobStatusState;
-import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 
 /**
  * This component is able to handle PDS API V1
@@ -62,8 +61,9 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
 
     private void waitForJobDone(PDSContext context) throws AdapterException {
         PDSAdapterConfig config = context.getConfig();
+        PDSAdapterConfigData data = config.getPDSAdapterConfigData();
 
-        UUID secHubJobUUID = config.getSecHubJobUUID();
+        UUID secHubJobUUID = data.getSecHubJobUUID();
         UUID pdsJobUUID = context.getPdsJobUUID();
 
         int count = 0;
@@ -166,33 +166,29 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
     private void uploadJobData(PDSContext context) throws AdapterException {
 
         PDSAdapterConfig config = context.getConfig();
-        /*
-         * TODO Albert Tregnaghi, 2021-05-28: hmm.. in future not only
-         * PDSSourceZipConfig but more:
-         */
-        if (!(config instanceof PDSSourceZipConfig)) {
-            /* no upload necessary */
-            return;
-        }
+        PDSAdapterConfigData data = config.getPDSAdapterConfigData();
 
-        String useSecHubStorage = config.getJobParameters().get(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE);
-        if (Boolean.parseBoolean(useSecHubStorage)) {
+        if (data.isReusingSecHubStorage()) {
             LOG.info("Not uploading job data because configuration wants to use SecHub storage");
             return;
         }
 
-        PDSSourceZipConfig sourceZipConfig = (PDSSourceZipConfig) config;
         AdapterMetaData metaData = context.getRuntimeContext().getMetaData();
-        if (!metaData.hasValue(PDSMetaDataConstants.METADATA_KEY_FILEUPLOAD_DONE, true)) {
-            /* upload source code */
-            PDSUploadSupport uploadSupport = new PDSUploadSupport();
-            uploadSupport.uploadZippedSourceCode(context, sourceZipConfig);
+        if (data.isSourceCodeZipFileRequired()) {
 
-            /* after this - mark file upload done, so on a restart we don't need this */
-            metaData.setValue(PDSMetaDataConstants.METADATA_KEY_FILEUPLOAD_DONE, true);
-            context.getRuntimeContext().getCallback().persist(metaData);
+            if (!metaData.hasValue(PDSMetaDataConstants.METADATA_KEY_FILEUPLOAD_DONE, true)) {
+                /* upload source code */
+                PDSUploadSupport uploadSupport = new PDSUploadSupport();
+                uploadSupport.uploadZippedSourceCode(context, data);
+
+                /* after this - mark file upload done, so on a restart we don't need this */
+                metaData.setValue(PDSMetaDataConstants.METADATA_KEY_FILEUPLOAD_DONE, true);
+                context.getRuntimeContext().getCallback().persist(metaData);
+            } else {
+                LOG.info("Reuse existing upload for:{}", context.getTraceID());
+            }
         } else {
-            LOG.info("Reuse existing upload for:{}", context.getTraceID());
+            LOG.debug("Skipped source code zipfile upload, because not required");
         }
     }
 
@@ -218,7 +214,9 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
 
     private PDSJobData createJobData(PDSContext context) {
         PDSAdapterConfig config = context.getConfig();
-        Map<String, String> parameters = config.getJobParameters();
+        PDSAdapterConfigData data = config.getPDSAdapterConfigData();
+
+        Map<String, String> parameters = data.getJobParameters();
 
         PDSJobData jobData = new PDSJobData();
         for (String key : parameters.keySet()) {
@@ -229,9 +227,9 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
             jobData.parameters.add(parameter);
         }
 
-        UUID secHubJobUUID = config.getSecHubJobUUID();
+        UUID secHubJobUUID = data.getSecHubJobUUID();
         jobData.sechubJobUUID = secHubJobUUID.toString();
-        jobData.productId = config.getPdsProductIdentifier();
+        jobData.productId = data.getPdsProductIdentifier();
 
         return jobData;
     }

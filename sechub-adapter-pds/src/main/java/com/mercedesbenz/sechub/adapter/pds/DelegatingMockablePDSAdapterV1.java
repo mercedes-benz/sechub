@@ -51,7 +51,9 @@ public class DelegatingMockablePDSAdapterV1 extends AbstractAdapter<PDSAdapterCo
 
     @Override
     protected String execute(PDSAdapterConfig config, AdapterRuntimeContext runtimeContext) throws AdapterException {
-        String mockingDisabled = config.getJobParameters().get(JOB_PARAMETER_KEY__PDS_MOCKING_DISABLED);
+        PDSAdapterConfigData data = config.getPDSAdapterConfigData();
+        String mockingDisabled = data.getJobParameters().get(JOB_PARAMETER_KEY__PDS_MOCKING_DISABLED);
+
         boolean useMock = !Boolean.parseBoolean(mockingDisabled);
 
         LOG.info("execution starting, using mocked adapter={}", useMock);

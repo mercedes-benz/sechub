@@ -20,13 +20,13 @@ import com.mercedesbenz.sechub.adapter.springextension.MultipartInputStreamFileR
 
 public class PDSUploadSupport {
 
-    public void uploadZippedSourceCode(PDSContext context, PDSSourceZipConfig zipConfig) throws AdapterException {
-        String checksum = zipConfig.getSourceCodeZipFileChecksumOrNull();
+    public void uploadZippedSourceCode(PDSContext context, PDSAdapterConfigData data) throws AdapterException {
+        String checksum = data.getSourceCodeZipFileChecksumOrNull();
 
-        upload(context, zipConfig, checksum);
+        upload(context, data, checksum);
     }
 
-    private void upload(PDSContext context, PDSSourceZipConfig zipConfig, String checkSum) throws AdapterException {
+    private void upload(PDSContext context, PDSAdapterConfigData data, String checkSum) throws AdapterException {
         String uploadSourceCodeUrl = context.getUrlBuilder().buildUpload(context.getPdsJobUUID(), FILENAME_SOURCECODE_ZIP);
         RestOperations restTemplate = context.getRestOperations();
 
@@ -34,7 +34,7 @@ public class PDSUploadSupport {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-        Resource resource = fetchResource(context, zipConfig);
+        Resource resource = fetchResource(context, data);
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("file", resource);
@@ -48,8 +48,8 @@ public class PDSUploadSupport {
         }
     }
 
-    private Resource fetchResource(PDSContext context, PDSSourceZipConfig config) throws AdapterException {
-        InputStream zipInputstream = config.getSourceCodeZipFileInputStreamOrNull();
+    private Resource fetchResource(PDSContext context, PDSAdapterConfigData data) throws AdapterException {
+        InputStream zipInputstream = data.getSourceCodeZipFileInputStreamOrNull();
         if (zipInputstream == null) {
             throw context.asAdapterException("Input stream containing zip file is null!");
         }

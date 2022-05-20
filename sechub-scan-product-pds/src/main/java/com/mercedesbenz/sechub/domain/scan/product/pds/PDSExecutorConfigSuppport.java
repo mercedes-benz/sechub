@@ -96,7 +96,7 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport impl
         return isReusingSecHubStorage(createParametersToSendByProviders(PDS_KEYPROVIDERS_FOR_REUSE_STORAGE_DETECTION_ONLY));
     }
 
-    private boolean isReusingSecHubStorage(Map<String, String> parametersToSend) {
+    static boolean isReusingSecHubStorage(Map<String, String> parametersToSend) {
         String useSecHubStorage = parametersToSend.get(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE);
         return Boolean.parseBoolean(useSecHubStorage);
     }
