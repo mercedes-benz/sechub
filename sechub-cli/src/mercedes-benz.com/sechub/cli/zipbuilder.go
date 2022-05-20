@@ -25,7 +25,13 @@ func createSouceCodeZipFile(context *Context) error {
 	// create zip writer
 	zipWriter := zip.NewWriter(newZipFile)
 
-	// ToDo: Support data section
+	// Add everything in Data.Sources to zip file
+	for _, item := range context.sechubConfig.Data.Sources {
+		err = appendToSourceCodeZipFile(zipFile, zipWriter, item, context.config.quiet, context.config.debug)
+		if err != nil {
+			return err
+		}
+	}
 
 	// Also support legacy definition:
 	if len(context.sechubConfig.CodeScan.FileSystem.Folders) > 0 {
@@ -59,7 +65,8 @@ func createSouceCodeZipFile(context *Context) error {
 func appendToSourceCodeZipFile(zipFile string, zipWriter *zip.Writer, config NamedCodeScanConfig, quiet bool, debug bool) error {
 	prefix := ""
 	if config.Name != "" {
-		prefix = fmt.Sprintf("__data__/%s/", config.Name)
+		// e.g.: __data__/example-name-1/
+		prefix = fmt.Sprintf("%s/%s/", archiveDataPrefix, config.Name)
 	}
 	zipConfig := sechubUtil.ZipConfig{
 		ZipFileName:        zipFile,
@@ -74,8 +81,10 @@ func appendToSourceCodeZipFile(zipFile string, zipWriter *zip.Writer, config Nam
 	}
 
 	amountOfFolders := len(config.FileSystem.Folders)
+	amountOfFiles := len(config.FileSystem.Files)
 
 	sechubUtil.LogDebug(debug, fmt.Sprintf("appendToSourceCodeZipFile - %d folders defined: %+v", amountOfFolders, config.FileSystem.Folders))
+	sechubUtil.LogDebug(debug, fmt.Sprintf("appendToSourceCodeZipFile - %d files defined: %+v", amountOfFiles, config.FileSystem.Files))
 	sechubUtil.LogDebug(debug, fmt.Sprintf("appendToSourceCodeZipFile - Excludes: %+v", config.Excludes))
 	sechubUtil.LogDebug(debug, fmt.Sprintf("appendToSourceCodeZipFile - SourceCodePatterns: %+v", config.SourceCodePatterns))
 

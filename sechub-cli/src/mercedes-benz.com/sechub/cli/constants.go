@@ -118,6 +118,13 @@ const showHelpAction = "help"
 // showVersionAction - name of action to display SecHub client version
 const showVersionAction = "version"
 
+/* --------------------------------------- */
+/* -------- File Archive Constants ------- */
+/* --------------------------------------- */
+
+// archiveDataPrefix - Prefix in Zip or Tar archives for files from "data" section
+const archiveDataPrefix = "__data__"
+
 /* -------------------------------------- */
 /* -------- Command line options -------- */
 /* -------------------------------------- */

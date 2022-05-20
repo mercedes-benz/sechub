@@ -3,6 +3,7 @@ package util
 
 import (
 	"archive/zip"
+	"fmt"
 	"os"
 	"strings"
 	"testing"
@@ -329,6 +330,36 @@ func TestZipFileContainsRelativeFoldersOutsideCurrent(t *testing.T) {
 	list := readContentOfZipFileTest(zipfilepath, t)
 	// "./../sechub-cli-tmptest/file1.txt" becomes "sechub-cli-tmptest/file1.txt" in zip file
 	sechubUtil.AssertContains(list, "sechub-cli-tmptest/file1.txt", t)
+}
+
+func Example_zipDetectsNonExistingFiles() {
+	/* prepare */
+	var t testing.T
+	RelativeTmpTestDir := "sechub-cli-tmptest"
+	sechubUtil.CreateTestDirectory(RelativeTmpTestDir, 0755, &t)
+	defer os.RemoveAll(RelativeTmpTestDir)
+
+	zipfilepath := RelativeTmpTestDir + "/testoutput.zip"
+	newZipFile, _ := os.Create(zipfilepath)
+	zipWriter := zip.NewWriter(newZipFile)
+
+	config := ZipConfig{
+		ZipFileName: zipfilepath,
+		ZipWriter:   zipWriter,
+		PrefixInZip: "",
+		Files:       []string{RelativeTmpTestDir + "/non-existing-file.txt"},
+	}
+
+	/* execute */
+	err := Zip(&config)
+	zipWriter.Close()
+	newZipFile.Close()
+
+	/* test */
+	fmt.Println(err)
+	// Output:
+	// Folder created: "sechub-cli-tmptest"
+	// open sechub-cli-tmptest/non-existing-file.txt: no such file or directory
 }
 
 /* -------------------------------------*/
