@@ -1,28 +1,55 @@
 {
-  "data" : {
-    "sources" : [ { //<1>
-      "name" : "reference-name-sources-1",//<2>
-      "fileSystem" : { 
-        "files" : [ "somewhere/file1.txt", "somewhere/file2.txt" ], 
-        "folders" : [ "somewhere/subfolder1", "somewhere/subfolder2" ]
+  "data": {
+    "sources": [ //<1>
+      {
+        "name": "reference-name-sources-1", //<2>
+        "fileSystem": {
+          "files": [
+            "somewhere/file1.txt",
+            "somewhere/file2.txt"
+          ],
+          "folders": [
+            "somewhere/subfolder1",
+            "somewhere/subfolder2"
+          ]
+        },
+        "excludes": [
+          "**/mytestcode/**",
+          "**/documentation/**"
+        ],
+        "additionalFilenameExtensions": [
+          ".cplusplus",
+          ".py9"
+        ]
+      }
+    ],
+    "binaries": [ //<3>
+      {
+        "name": "reference-name-binaries-1", //<4>
+        "fileSystem": {
+          "files": [
+            "somewhere/file1.dll",
+            "somewhere/file2.a"
+          ],
+          "folders": [
+            "somewhere/bin/subfolder1",
+            "somewhere/bin/subfolder2"
+          ]
+        }
       },
-      "excludes": ["**/mytestcode/**","**/documentation/**"], 
-      "additionalFilenameExtensions": [".cplusplus",".py9"] 
-    } ],
-    "binaries" : [ { //<3>
-      "name" : "reference-name-binaries-1",//<4>
-      "fileSystem" : {
-        "files" : [ "somewhere/file1.dll", "somewhere/file2.a" ], 
-        "folders" : [ "somewhere/bin/subfolder1", "somewhere/bin/subfolder2" ] 
+      {
+        "name": "reference-name-binaries-2", //<5>
+        "fileSystem": {
+          "files": [
+            "somewhere-else/file1.dll",
+            "somewhere-else/file2.a"
+          ],
+          "folders": [
+            "somewhere-else/bin/subfolder1",
+            "somewhere-else/bin/subfolder2"
+          ]
+        }
       }
-    },
-     {
-      "name" : "reference-name-binaries-2",//<5>
-      "fileSystem" : {
-        "files" : [ "somewhere-else/file1.dll", "somewhere-else/file2.a" ],
-        "folders" : [ "somewhere-else/bin/subfolder1", "somewhere-else/bin/subfolder2" ]
-      }
-    }
-   ]
+    ]
   }
 }

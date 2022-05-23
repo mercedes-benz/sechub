@@ -11,7 +11,7 @@ import (
 	sechubUtil "mercedes-benz.com/sechub/util"
 )
 
-func Test_prepareCodeScan_repects_whitelistAll_and_DefaultZipExcludeDirPatterns(t *testing.T) {
+func Test_prepareScan_respects_whitelistAll_and_DefaultSourceCodeExcludeDirPatterns(t *testing.T) {
 	/* prepare */
 	dir := sechubTestUtil.InitializeTestTempDir(t)
 	defer os.RemoveAll(dir)
@@ -44,7 +44,7 @@ func Test_prepareCodeScan_repects_whitelistAll_and_DefaultZipExcludeDirPatterns(
 	zipfile := dir + "/sourcecode-test.zip"
 
 	/* execute */
-	prepareCodeScan(context)
+	prepareScan(context)
 	list, err := sechubUtil.ReadContentOfZipFile(zipfile)
 	sechubTestUtil.Check(err, t)
 
