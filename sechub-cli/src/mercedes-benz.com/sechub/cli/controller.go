@@ -74,7 +74,7 @@ func Execute() {
 func prepareCreateApproveJob(context *Context) {
 	prepareScan(context)
 	createNewSecHubJob(context)
-	handleCodeScanUpload(context)
+	handleUploads(context)
 	approveSecHubJob(context)
 }
 
@@ -82,12 +82,12 @@ func prepareCreateApproveJob(context *Context) {
  * 		Handle code scan parts
  * --------------------------------------------------
  */
-func handleCodeScanUpload(context *Context) {
-	if !context.sourceZipFileExists() {
-		return
+func handleUploads(context *Context) {
+	if context.sourceZipFileExists() {
+		sechubUtil.Log("Uploading source zip file", context.config.quiet)
+		uploadSourceZipFile(context)
 	}
-	sechubUtil.Log("Uploading source zip file", context.config.quiet)
-	uploadSourceZipFile(context)
+	// To be added here: upload bindaries if defined
 }
 
 func prepareScan(context *Context) {

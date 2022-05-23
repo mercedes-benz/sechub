@@ -150,16 +150,6 @@ func envToMap() (map[string]string, error) {
 }
 
 func adjustSourceCodePatterns(context *Context) {
-	// We still support the old/deprecated format directly in context.sechubConfig.CodeScan:
-	if len(context.sechubConfig.CodeScan.FileSystem.Folders) > 0 {
-		context.sechubConfig.CodeScan.SourceCodePatterns =
-			adjustSourceCodePatternsWhitelistAll(context.sechubConfig.CodeScan.SourceCodePatterns, context.config.whitelistAll)
-
-		if !context.config.ignoreDefaultExcludes {
-			context.sechubConfig.CodeScan.Excludes = append(context.sechubConfig.CodeScan.Excludes, DefaultSourceCodeExcludeDirPatterns...)
-		}
-	}
-
 	for i, item := range context.sechubConfig.Data.Sources {
 		context.sechubConfig.Data.Sources[i].SourceCodePatterns =
 			adjustSourceCodePatternsWhitelistAll(item.SourceCodePatterns, context.config.whitelistAll)
@@ -167,6 +157,16 @@ func adjustSourceCodePatterns(context *Context) {
 		if !context.config.ignoreDefaultExcludes {
 			// add default exclude patterns to exclude list
 			context.sechubConfig.Data.Sources[i].Excludes = append(item.Excludes, DefaultSourceCodeExcludeDirPatterns...)
+		}
+	}
+
+	// We still support the old/legacy format directly in context.sechubConfig.CodeScan:
+	if len(context.sechubConfig.CodeScan.FileSystem.Folders) > 0 {
+		context.sechubConfig.CodeScan.SourceCodePatterns =
+			adjustSourceCodePatternsWhitelistAll(context.sechubConfig.CodeScan.SourceCodePatterns, context.config.whitelistAll)
+
+		if !context.config.ignoreDefaultExcludes {
+			context.sechubConfig.CodeScan.Excludes = append(context.sechubConfig.CodeScan.Excludes, DefaultSourceCodeExcludeDirPatterns...)
 		}
 	}
 }
