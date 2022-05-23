@@ -10,12 +10,8 @@ import (
 )
 
 func uploadSourceZipFile(context *Context) {
-	if !context.sourceZipFileExists() {
-		return
-	}
-
 	if !context.config.keepTempFiles {
-		/* when debug mode enabled we keep the zipped file */
+		// remove zip file after upload
 		defer os.Remove(context.sourceZipFileName)
 	}
 
