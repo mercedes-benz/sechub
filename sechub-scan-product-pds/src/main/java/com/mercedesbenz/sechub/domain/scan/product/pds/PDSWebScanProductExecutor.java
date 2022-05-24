@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.pds.PDSAdapter;
 import com.mercedesbenz.sechub.adapter.pds.PDSMetaDataID;
 import com.mercedesbenz.sechub.adapter.pds.PDSWebScanConfig;
@@ -92,8 +91,7 @@ public class PDSWebScanProductExecutor extends AbstractProductExecutor {
         PDSStorageContentProvider contentProvider = contentProviderFactory.createContentProvider(context, configSupport, getScanType());
 
             ProductResult result = resilientActionExecutor.executeResilient(() -> {
-                AdapterMetaData metaDataOrNull = executorContext.getCurrentMetaDataOrNull();
-                try (InputStream sourceCodeZipFileInputStreamOrNull = contentProvider.getSourceZipFileInputStreamOrNull(metaDataOrNull)){
+                try (InputStream sourceCodeZipFileInputStreamOrNull = contentProvider.getSourceZipFileInputStreamOrNull()){
                 PDSWebScanConfig pdsWebScanConfig = PDSWebScanConfigImpl.builder().
                         configure(PDSAdapterConfigurationStrategy.builder().
                                 setScanType(getScanType()).

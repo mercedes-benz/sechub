@@ -74,10 +74,10 @@ public class WithSecHubClient {
 
     @Deprecated // use startDownloadReport instead (newer implementation uses AssertReport which
                 // has more details and uses common SecHubReport object inside)
-    public AssertSecHubReport startDownloadJobReport(TestProject project, UUID jobUUID, IntegrationTestJSONLocation location) {
+    public AssertReportUnordered startDownloadJobReport(TestProject project, UUID jobUUID, IntegrationTestJSONLocation location) {
         ClientJobReportLoader reportLoader = new ClientJobReportLoader(project, jobUUID, location.getPath());
         String report = reportLoader.loadReport();
-        return TestAPI.assertSecHubReport(report);
+        return TestAPI.assertReportUnordered(report);
     }
 
     public AssertReport startDownloadReport(TestProject project, UUID jobUUID, IntegrationTestJSONLocation location) {

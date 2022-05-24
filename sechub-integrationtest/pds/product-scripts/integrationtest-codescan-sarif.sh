@@ -17,5 +17,7 @@
 # PDS_JOB_RESULT_FILE is a special variable and points directly to result file
 
 echo "PDS SARIF integrationt test script starting..."
+echo ">PDS_JOB_HAS_EXTRACTED_SOURCES =$PDS_JOB_HAS_EXTRACTED_SOURCES"
+echo ">PDS_JOB_HAS_EXTRACTED_BINARIES=$PDS_JOB_HAS_EXTRACTED_BINARIES"
 
 cp "$PDS_JOB_EXTRACTED_SOURCES_FOLDER/returned_sarif_result.json" $PDS_JOB_RESULT_FILE

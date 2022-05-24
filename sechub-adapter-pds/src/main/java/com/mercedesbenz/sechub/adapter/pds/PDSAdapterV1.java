@@ -20,6 +20,7 @@ import com.mercedesbenz.sechub.adapter.pds.data.PDSJobData;
 import com.mercedesbenz.sechub.adapter.pds.data.PDSJobParameterEntry;
 import com.mercedesbenz.sechub.adapter.pds.data.PDSJobStatus;
 import com.mercedesbenz.sechub.adapter.pds.data.PDSJobStatus.PDSAdapterJobStatusState;
+import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationType;
 
 /**
  * This component is able to handle PDS API V1
@@ -32,6 +33,11 @@ import com.mercedesbenz.sechub.adapter.pds.data.PDSJobStatus.PDSAdapterJobStatus
 public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterConfig> implements PDSAdapter {
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSAdapterV1.class);
+    private PDSUploadSupport uploadSupport;
+
+    PDSAdapterV1() {
+        uploadSupport = new PDSUploadSupport();
+    }
 
     @Override
     public int getAdapterVersion() {
@@ -42,7 +48,6 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
     protected String execute(PDSAdapterConfig config, AdapterRuntimeContext runtimeContext) throws AdapterException {
         assertNotInterrupted();
         PDSContext context = new PDSContext(config, this, runtimeContext);
-
         createNewPDSJOB(context);
         assertNotInterrupted();
 
@@ -164,31 +169,81 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
     /* + ................Upload.......................... + */
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
     private void uploadJobData(PDSContext context) throws AdapterException {
-
         PDSAdapterConfig config = context.getConfig();
         PDSAdapterConfigData data = config.getPDSAdapterConfigData();
 
         if (data.isReusingSecHubStorage()) {
-            LOG.info("Not uploading job data because configuration wants to use SecHub storage");
+            LOG.info("No upload necessary: PDS job {} reuses SecHub storage for {}", context.getPdsJobUUID(), context.getTraceID());
             return;
         }
 
+        /* PDS has other storage - we must upload content */
+        handleUploadWhenRequired(context, SecHubDataConfigurationType.SOURCE);
+        handleUploadWhenRequired(context, SecHubDataConfigurationType.BINARY);
+    }
+
+    private void handleUploadWhenRequired(PDSContext context, SecHubDataConfigurationType type) throws AdapterException {
+        PDSAdapterConfig config = context.getConfig();
+        PDSAdapterConfigData data = config.getPDSAdapterConfigData();
+
+        UUID pdsJobUUID = context.getPdsJobUUID();
+        String secHubTraceId = context.getTraceID();
         AdapterMetaData metaData = context.getRuntimeContext().getMetaData();
-        if (data.isSourceCodeZipFileRequired()) {
 
-            if (!metaData.hasValue(PDSMetaDataID.METADATA_KEY_FILEUPLOAD_DONE, true)) {
-                /* upload source code */
-                PDSUploadSupport uploadSupport = new PDSUploadSupport();
-                uploadSupport.uploadZippedSourceCode(context, data);
+        boolean required = checkRequired(data, type);
 
-                /* after this - mark file upload done, so on a restart we don't need this */
-                metaData.setValue(PDSMetaDataID.METADATA_KEY_FILEUPLOAD_DONE, true);
-                context.getRuntimeContext().getCallback().persist(metaData);
-            } else {
-                LOG.info("Reuse existing upload for:{}", context.getTraceID());
-            }
-        } else {
-            LOG.debug("Skipped source code zipfile upload, because not required");
+        if (!required) {
+            LOG.debug("Skipped {} file upload for pds job:{}, because not required", type, pdsJobUUID);
+            return;
+        }
+
+        String sourceUploadMetaDataKey = createUploadMetaDataKey(pdsJobUUID, type);
+
+        if (metaData.hasValue(sourceUploadMetaDataKey, true)) {
+            LOG.info("Reuse existing {} upload for pds job: {} - sechub: {}", type, pdsJobUUID, secHubTraceId);
+            return;
+        }
+
+        LOG.info("Start {} uploading for pds job: {} - sechub: {}", type, pdsJobUUID, secHubTraceId);
+
+        String checksum = fetchChecksumOrNull(data, type);
+        uploadSupport.upload(type, context, data, checksum);
+
+        /* after this - mark file upload done - at least for debugging */
+        metaData.setValue(sourceUploadMetaDataKey, true);
+        context.getRuntimeContext().getCallback().persist(metaData);
+    }
+
+    private boolean checkRequired(PDSAdapterConfigData data, SecHubDataConfigurationType type) {
+        switch (type) {
+        case BINARY:
+            return data.isBinaryTarFileRequired();
+        case SOURCE:
+            return data.isSourceCodeZipFileRequired();
+        default:
+            throw new IllegalArgumentException("scan type: " + type + " is not supported!");
+        }
+    }
+
+    private String fetchChecksumOrNull(PDSAdapterConfigData data, SecHubDataConfigurationType type) {
+        switch (type) {
+        case BINARY:
+            return data.getBinariesTarFileChecksumOrNull();
+        case SOURCE:
+            return data.getSourceCodeZipFileChecksumOrNull();
+        default:
+            throw new IllegalArgumentException("scan type: " + type + " is not supported!");
+        }
+    }
+
+    private String createUploadMetaDataKey(UUID pdsJobUUID, SecHubDataConfigurationType type) {
+        switch (type) {
+        case BINARY:
+            return PDSMetaDataID.createBinaryUploadDoneKey(pdsJobUUID);
+        case SOURCE:
+            return PDSMetaDataID.createSourceUploadDoneKey(pdsJobUUID);
+        default:
+            throw new IllegalArgumentException("scan type: " + type + " is not supported!");
         }
     }
 

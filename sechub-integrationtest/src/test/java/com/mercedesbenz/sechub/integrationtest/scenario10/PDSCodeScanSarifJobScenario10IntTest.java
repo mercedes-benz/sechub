@@ -56,7 +56,7 @@ public class PDSCodeScanSarifJobScenario10IntTest {
 
         /* test */
         // test storage is a sechub storage and no PDS storage
-        String storagePath = getPDSStoragePathForJobUUID(jobUUID); // this is a SecHub job UUID!
+        String storagePath = fetchStoragePathHistoryEntryoForSecHubJobUUID(jobUUID); // this is a SecHub job UUID!
         assertNull("Storage path may not be found for SecHub jobUUID, "
                 + "because storage must be done by PDS itself. But found for "+jobUUID+" path="+storagePath+
                 " - wrong storage used!", storagePath); // storage path must NOT be found for SecHub job UUID because PDS storage with PDS jobUUID must be used!

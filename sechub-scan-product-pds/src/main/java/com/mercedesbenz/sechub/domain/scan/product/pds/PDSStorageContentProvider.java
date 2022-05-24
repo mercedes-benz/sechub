@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
 
-import com.mercedesbenz.sechub.adapter.AdapterMetaData;
-import com.mercedesbenz.sechub.adapter.pds.PDSMetaDataID;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelSupport;
@@ -47,46 +45,41 @@ public class PDSStorageContentProvider {
     }
 
     /**
-     * If the PDS does reuse SecHub storage it will always return <code>null</code>.
-     * When not reused but the files have already been uploaded to PDS (so called
-     * again) the stream will also be <code>null</code>. In any other case the
-     * storage will be called and the underlying input stream fetched.
+     * If the PDS does reuse SecHub storage or no source is required for this scan
+     * this method will return <code>null</code>. In any other case the storage will
+     * be called and the underlying input stream fetched.
      *
-     * @param metaDataOrNull
      * @return stream or <code>null</code>
      * @throws IOException
      */
-    public InputStream getSourceZipFileInputStreamOrNull(AdapterMetaData metaDataOrNull) throws IOException {
+    public InputStream getSourceZipFileInputStreamOrNull() throws IOException {
         if (storage == null) {
+            // in this case no special PDS storage - reuse of sechub storage!
             return null;
         }
         if (!sourceRequired) {
-            return null;
-        }
-        if (metaDataOrNull != null && metaDataOrNull.hasValue(PDSMetaDataID.KEY_FILEUPLOAD_DONE, true)) {
+            /* no source required at all... */
             return null;
         }
         return storage.fetch(FILENAME_SOURCECODE_ZIP);
     }
 
     /**
-     * If the PDS does reuse SecHub storage it will always return <code>null</code>.
-     * When not reused but the files have already been uploaded to PDS (so called
-     * again) the stream will also be <code>null</code>. In any other case the
-     * storage will be called and the underlying existing checksum will be returned
+     * If the PDS does reuse SecHub storage or no source is required for this scan
+     * this method will return <code>null</code>. In any other case the storage will
+     * be called and the underlying checksum fetched.
      *
      * @param metaDataOrNull
-     * @return stream or <code>null</code>
+     * @return checksum or <code>null</code>
      * @throws IOException
      */
-    public String getSourceZipFileUploadChecksumOrNull(AdapterMetaData metaDataOrNull) throws IOException {
+    public String getSourceZipFileUploadChecksumOrNull() throws IOException {
         if (storage == null) {
+            // in this case no special PDS storage - reuse of sechub storage!
             return null;
         }
         if (!sourceRequired) {
-            return null;
-        }
-        if (metaDataOrNull != null && metaDataOrNull.hasValue(PDSMetaDataID.KEY_FILEUPLOAD_DONE, true)) {
+            /* no source required at all - means also no checksum... */
             return null;
         }
         try (InputStream inputStream = storage.fetch(FILENAME_SOURCECODE_ZIP_CHECKSUM); Scanner scanner = new Scanner(inputStream)) {
@@ -97,25 +90,46 @@ public class PDSStorageContentProvider {
     }
 
     /**
-     * If the PDS does reuse SecHub storage it will always return <code>null</code>.
-     * When not reused but the files have already been uploaded to PDS (so called
-     * again) the stream will also be <code>null</code>. In any other case the
-     * storage will be called and the underlying input stream fetched.
+     * If the PDS does reuse SecHub storage or no binaries are required for this
+     * scan this method will return <code>null</code>. In any other case the storage
+     * will be called and the underlying input stream fetched.
      *
      * @param metaDataOrNull
      * @return stream or <code>null</code>
      * @throws IOException
      */
-    public InputStream getBinariesTarFileInputStreamOrNull(AdapterMetaData metaDataOrNull) throws IOException {
+    public InputStream getBinariesTarFileInputStreamOrNull() throws IOException {
         if (storage == null) {
             return null;
         }
         if (!binaryRequired) {
             return null;
         }
-        if (metaDataOrNull != null && metaDataOrNull.hasValue(PDSMetaDataID.KEY_FILEUPLOAD_DONE, true)) {
+        return storage.fetch(FILENAME_BINARIES_TAR);
+    }
+
+    /**
+     * If the PDS does reuse SecHub storage or no binaries are required for this
+     * scan this method will return <code>null</code>. In any other case the storage
+     * will be called and the underlying checksum
+     *
+     * @param metaDataOrNull
+     * @return checksum or <code>null</code>
+     * @throws IOException
+     */
+    public String getBinariesTarFileUploadChecksumOrNull() throws IOException {
+        if (storage == null) {
+            // in this case no special PDS storage - reuse of sechub storage!
             return null;
         }
-        return storage.fetch(FILENAME_BINARIES_TAR);
+        if (!binaryRequired) {
+            /* no binaries required at all - means also no checksum... */
+            return null;
+        }
+        try (InputStream inputStream = storage.fetch(FILENAME_BINARIES_TAR_CHECKSUM); Scanner scanner = new Scanner(inputStream)) {
+            String result = scanner.hasNext() ? scanner.next() : "";
+            return result;
+        }
+
     }
 }

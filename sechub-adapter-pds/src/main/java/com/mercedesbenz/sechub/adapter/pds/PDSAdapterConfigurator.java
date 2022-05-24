@@ -17,6 +17,8 @@ public interface PDSAdapterConfigurator {
 
     void setBinaryTarFileInputStreamOrNull(InputStream binaryTarFileInputStreamOrNull);
 
+    void setBinariesTarFileChecksumOrNull(String binaryTarFileChecksum);
+
     void setSecHubJobUUID(UUID secHubJobUUID);
 
     /**

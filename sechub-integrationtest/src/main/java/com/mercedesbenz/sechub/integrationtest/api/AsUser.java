@@ -77,7 +77,7 @@ public class AsUser {
 
     public AsUser uploadBinaries(TestProject project, UUID jobUUID, File file, String checkSum) {
         /* @formatter:off */
-        getRestHelper().uploadBinaries(getUrlBuilder().
+        getRestHelper().upload(getUrlBuilder().
                 buildUploadBinariesUrl(project.getProjectId(),jobUUID),file,checkSum);
         /* @formatter:on */
         return this;
@@ -864,7 +864,7 @@ public class AsUser {
     }
 
     public UUID triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(TestProject project) {
-        return triggerAsyncCodeScanApproveWithoutSourceUploadAndGetJobUUID(project, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__10_MS_WATING,
+        return triggerAsyncCodeScanApproveWithSourceUploadAndGetJobUUID(project, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__10_MS_WATING,
                 TestDataConstants.RESOURCE_PATH_ZIPFILE_ONLY_TEST1_TXT);
     }
 
@@ -875,10 +875,10 @@ public class AsUser {
     }
 
     public UUID triggerAsyncCodeScanWithPseudoZipUpload(TestProject project, IntegrationTestMockMode mode) {
-        return triggerAsyncCodeScanApproveWithoutSourceUploadAndGetJobUUID(project, mode, TestDataConstants.RESOURCE_PATH_ZIPFILE_ONLY_TEST1_TXT);
+        return triggerAsyncCodeScanApproveWithSourceUploadAndGetJobUUID(project, mode, TestDataConstants.RESOURCE_PATH_ZIPFILE_ONLY_TEST1_TXT);
     }
 
-    public UUID triggerAsyncCodeScanApproveWithoutSourceUploadAndGetJobUUID(TestProject project, IntegrationTestMockMode mode, String pathInsideResources) {
+    public UUID triggerAsyncCodeScanApproveWithSourceUploadAndGetJobUUID(TestProject project, IntegrationTestMockMode mode, String pathInsideResources) {
         UUID uuid = triggerAsyncCodeScanAndGetJobUUID(project, mode);
         uploadSourcecode(project, uuid, pathInsideResources);
 

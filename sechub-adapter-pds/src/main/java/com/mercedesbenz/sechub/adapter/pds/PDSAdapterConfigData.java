@@ -24,6 +24,8 @@ public interface PDSAdapterConfigData {
 
     InputStream getBinaryTarFileInputStreamOrNull();
 
+    String getBinariesTarFileChecksumOrNull();
+
     boolean isReusingSecHubStorage();
 
     boolean isSourceCodeZipFileRequired();

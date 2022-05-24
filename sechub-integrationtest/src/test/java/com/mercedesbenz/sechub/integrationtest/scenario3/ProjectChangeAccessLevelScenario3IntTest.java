@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.integrationtest.scenario3;
 
-import static com.mercedesbenz.sechub.integrationtest.api.AssertSecHubReport.assertSecHubReport;
+import static com.mercedesbenz.sechub.integrationtest.api.AssertReportUnordered.assertReportUnordered;
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 import static com.mercedesbenz.sechub.integrationtest.scenario3.Scenario3.*;
 
@@ -12,8 +12,10 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.Timeout;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException.Forbidden;
 
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.integrationtest.api.AbstractTestExecutable;
 import com.mercedesbenz.sechub.integrationtest.api.ExecutionConstants;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestJSONLocation;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestMockMode;
@@ -59,13 +61,19 @@ public class ProjectChangeAccessLevelScenario3IntTest {
         // now we test that the acces level is full... and not NONE as before the delete...
         assertProject(project).hasAccessLevel(ProjectAccessLevel.FULL);
 
-        // we start a job by USER1 and download the results- at this moment, this is possible, because project access level of new project is "FULL"
-        // the step does also check if the former access levels have been really been dropped
-        IntegrationTestJSONLocation location = IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_YELLOW_ZERO_WAIT;
-        ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
-        assertSecHubReport(result).
-            hasTrafficLight(TrafficLight.YELLOW);
+        // we just start a job by USER1 and check if this possible again.
+        // Because the administration domain must send the event to the scheduler domain.
+        // and we can have race conditions here (means flaky tests). To avoid this
+        // we use TestAPI#executeUntilSuccessOrTimeout
+        executeUntilSuccessOrTimeout(new AbstractTestExecutable(USER_1,3,300, Forbidden.class) {
 
+            @Override
+            public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
+                as(USER_1).triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(project);
+                return true;
+            }
+
+        });
     }
     /* @formatter:on */
 
@@ -111,7 +119,7 @@ public class ProjectChangeAccessLevelScenario3IntTest {
         // we start a job by USER1 - at this moment, this is possible, because project access level is "FULL"
         IntegrationTestJSONLocation location = IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_YELLOW_ZERO_WAIT;
         ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
-        assertSecHubReport(result).
+        assertReportUnordered(result).
             finding().id(1).name("Absolute Path Traversal").isContained().
             hasTrafficLight(TrafficLight.YELLOW);
 

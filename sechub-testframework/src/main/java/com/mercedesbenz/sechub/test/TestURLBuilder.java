@@ -158,8 +158,12 @@ public class TestURLBuilder {
             return buildUrl("");
         }
 
-        public String buildIntegrationTestCheckStoragePath(UUID jobUUID) {
+        public String buildIntegrationTestFetchStoragePathHistoryEntryForSecHubJob(UUID jobUUID) {
             return buildUrl(API_PDS_INTEGRATIONTEST, "storage", jobUUID, "path");
+        }
+
+        public String buildIntegrationTestGetWorkspaceUploadFolder(UUID jobUUID) {
+            return buildUrl(API_PDS_INTEGRATIONTEST, "workspace", jobUUID, "uploadfolder");
         }
 
         public String buildFetchLastStartedJobUUIDUrl() {

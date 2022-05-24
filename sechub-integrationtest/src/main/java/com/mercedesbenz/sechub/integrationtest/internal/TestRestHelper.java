@@ -30,6 +30,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.mercedesbenz.sechub.adapter.TrustAllConfig;
 import com.mercedesbenz.sechub.adapter.support.TrustAllSupport;
+import com.mercedesbenz.sechub.commons.core.CommonConstants;
 import com.mercedesbenz.sechub.integrationtest.api.UserContext;
 
 public class TestRestHelper {
@@ -257,7 +258,7 @@ public class TestRestHelper {
         return UUID.fromString(dataAsString);
     }
 
-    public String upload(String uploadSourceCodeUrl, File file, String checkSum) {
+    public String upload(String uploadUrl, File file, String checkSum) {
         // see https://www.baeldung.com/spring-rest-template-multipart-upload
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -265,31 +266,13 @@ public class TestRestHelper {
         FileSystemResource resource = new FileSystemResource(file);
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("file", resource);
-        body.add("checkSum", checkSum);
+        body.add(CommonConstants.MULTIPART_FILE, resource);
+        body.add(CommonConstants.MULTIPART_CHECKSUM, checkSum);
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-        markLastURL(uploadSourceCodeUrl);
-        ResponseEntity<String> response = template.postForEntity(uploadSourceCodeUrl, requestEntity, String.class);
-        return response.getBody();
-    }
-
-    public String uploadBinaries(String uploadBinariesUrl, File file, String checkSum) {
-        // see https://www.baeldung.com/spring-rest-template-multipart-upload
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-        FileSystemResource resource = new FileSystemResource(file);
-
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("file", resource);
-        body.add("checkSum", checkSum);
-
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-
-        markLastURL(uploadBinariesUrl);
-        ResponseEntity<String> response = template.postForEntity(uploadBinariesUrl, requestEntity, String.class);
+        markLastURL(uploadUrl);
+        ResponseEntity<String> response = template.postForEntity(uploadUrl, requestEntity, String.class);
         return response.getBody();
     }
 

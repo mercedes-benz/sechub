@@ -12,6 +12,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestOperations;
 
+import com.mercedesbenz.sechub.commons.core.CommonConstants;
+
 public class RestOperationsSupport {
 
     private RestOperations restOperations;
@@ -34,8 +36,9 @@ public class RestOperationsSupport {
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         FileSystemResource resource = new FileSystemResource(file);
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("file", resource);
-        body.add("checkSum", checkSum);
+        body.add(CommonConstants.MULTIPART_FILE, resource);
+        body.add(CommonConstants.MULTIPART_CHECKSUM, checkSum);
+
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
         ResponseEntity<String> response = restOperations.postForEntity(uploadURL, requestEntity, String.class);

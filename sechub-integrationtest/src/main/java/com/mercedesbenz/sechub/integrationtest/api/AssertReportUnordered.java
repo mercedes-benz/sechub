@@ -19,15 +19,15 @@ import com.mercedesbenz.sechub.integrationtest.JSONTestSupport;
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
 import com.mercedesbenz.sechub.test.TestFileSupport;
 
-public class AssertSecHubReport {
+public class AssertReportUnordered {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AssertSecHubReport.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AssertReportUnordered.class);
 
     private static String lastOutputLIne;
     private JSONTestSupport jsonTestSupport = JSONTestSupport.DEFAULT;
     private JsonNode jsonObj;
 
-    private AssertSecHubReport(String json) {
+    private AssertReportUnordered(String json) {
         try {
             jsonObj = jsonTestSupport.fromJson(json);
         } catch (IOException e) {
@@ -35,20 +35,18 @@ public class AssertSecHubReport {
         }
     }
 
-    @Deprecated // use assertReport instead (newer implementation has more details and uses
-                // common SecHubReport object inside)
-    public static AssertSecHubReport assertSecHubReport(String json) {
-        return new AssertSecHubReport(json);
+    public static AssertReportUnordered assertReportUnordered(String json) {
+        return new AssertReportUnordered(json);
     }
 
-    public static AssertSecHubReport assertSecHubReport(ExecutionResult result) {
+    public static AssertReportUnordered assertReportUnordered(ExecutionResult result) {
         lastOutputLIne = result.getLastOutputLine();
         File file = result.getJSONReportFile();
         if (!file.exists()) {
             fail("No report file found:" + file.getAbsolutePath() + "\nLast output line was:" + lastOutputLIne);
         }
         String json = TestFileSupport.loadTextFile(file, "\n");
-        return assertSecHubReport(json);
+        return assertReportUnordered(json);
     }
 
     public class AssertFinding {
@@ -86,14 +84,14 @@ public class AssertSecHubReport {
             return this;
         }
 
-        public AssertSecHubReport isContained() {
+        public AssertReportUnordered isContained() {
             check(true);
-            return AssertSecHubReport.this;
+            return AssertReportUnordered.this;
         }
 
-        public AssertSecHubReport isNotContained() {
+        public AssertReportUnordered isNotContained() {
             check(false);
-            return AssertSecHubReport.this;
+            return AssertReportUnordered.this;
         }
 
         private void check(boolean expectedToBeFound) {
@@ -202,7 +200,7 @@ public class AssertSecHubReport {
         return new AssertFinding();
     }
 
-    public AssertSecHubReport hasTrafficLight(TrafficLight trafficLight) {
+    public AssertReportUnordered hasTrafficLight(TrafficLight trafficLight) {
         JsonNode trafficLightNode = jsonObj.get("trafficLight");
         if (trafficLightNode == null) {
             dump();
@@ -223,7 +221,7 @@ public class AssertSecHubReport {
         return this;
     }
 
-    public AssertSecHubReport hasStatus(SecHubStatus expectedStatus) {
+    public AssertReportUnordered hasStatus(SecHubStatus expectedStatus) {
         JsonNode statusNode = jsonObj.get("status");
         if (statusNode == null) {
             dump();
@@ -241,7 +239,7 @@ public class AssertSecHubReport {
      *
      * @return assert object
      */
-    public AssertSecHubReport dump() {
+    public AssertReportUnordered dump() {
         LOG.info("--------------------------------------------------------------------------------------------------------");
         LOG.info("-------------------------------------------------- DUMP -----------------------------------------------");
         LOG.info("--------------------------------------------------------------------------------------------------------");

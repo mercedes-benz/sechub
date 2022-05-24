@@ -7,7 +7,6 @@ import java.util.Map;
 import com.mercedesbenz.sechub.adapter.AdapterConfig;
 import com.mercedesbenz.sechub.adapter.AdapterConfigBuilder;
 import com.mercedesbenz.sechub.adapter.AdapterConfigurationStrategy;
-import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.pds.PDSAdapterConfigurator;
 import com.mercedesbenz.sechub.adapter.pds.PDSAdapterConfiguratorProvider;
 import com.mercedesbenz.sechub.commons.model.ScanType;
@@ -109,15 +108,9 @@ public class PDSAdapterConfigurationStrategy implements AdapterConfigurationStra
             return new PDSAdapterConfigurationStrategy(strategyConfig);
         }
 
-        public PDSAdapterConfigurationStrategyBuilder setMetaDataOrNull(AdapterMetaData metaDataOrNull) {
-            strategyConfig.metaDataOrNull = metaDataOrNull;
-            return this;
-        }
-
     }
 
     private static class PDSAdapterConfigurationStrategyConfig {
-        private AdapterMetaData metaDataOrNull;
         private ProductExecutorData productExecutorData;
         private PDSStorageContentProvider contentProvider;
         private PDSExecutorConfigSuppport configSupport;
@@ -168,13 +161,22 @@ public class PDSAdapterConfigurationStrategy implements AdapterConfigurationStra
         pdsConfigurable.setSourceCodeZipFileInputStreamOrNull(strategyConfig.sourceCodeZipFileInputStreamOrNull);
 
         pdsConfigurable.setBinaryTarFileInputStreamOrNull(strategyConfig.binariesTarFileInputStreamOrNull);
+        pdsConfigurable.setSourceCodeZipFileRequired(strategyConfig.contentProvider.isSourceRequired());
+        pdsConfigurable.setBinaryTarFileRequired(strategyConfig.contentProvider.isBinaryRequired());
 
         try {
-            String sourceZipFileChecksum = strategyConfig.contentProvider.getSourceZipFileUploadChecksumOrNull(strategyConfig.metaDataOrNull);
+            String sourceZipFileChecksum = strategyConfig.contentProvider.getSourceZipFileUploadChecksumOrNull();
             pdsConfigurable.setSourceCodeZipFileChecksumOrNull(sourceZipFileChecksum);
 
         } catch (IOException e) {
             throw new SecHubRuntimeException("Was not able to retrieve source zip upload checksum", e);
+        }
+        try {
+            String binaryTarFileChecksum = strategyConfig.contentProvider.getBinariesTarFileUploadChecksumOrNull();
+            pdsConfigurable.setBinariesTarFileChecksumOrNull(binaryTarFileChecksum);
+
+        } catch (IOException e) {
+            throw new SecHubRuntimeException("Was not able to retrieve tar file upload checksum", e);
         }
     }
 

@@ -21,7 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mercedesbenz.sechub.pds.job.PDSJob;
 import com.mercedesbenz.sechub.pds.job.PDSJobRepository;
+import com.mercedesbenz.sechub.pds.job.PDSWorkspaceService;
 import com.mercedesbenz.sechub.pds.storage.IntegrationTestPDSStorageInfoCollector;
+import com.mercedesbenz.sechub.storage.core.StorageService;
 
 /**
  * Contains additional rest call functionality for integration test server
@@ -40,6 +42,12 @@ public class IntegrationTestPDSRestController {
 
     @Autowired
     PDSJobRepository jobRepository;
+
+    @Autowired
+    PDSWorkspaceService workspaceService;
+
+    @Autowired
+    StorageService storageService;
 
     @Autowired
     private ConfigurableApplicationContext context;
@@ -64,11 +72,20 @@ public class IntegrationTestPDSRestController {
 
     @RequestMapping(path = PDSAPIConstants.API_ANONYMOUS + "integrationtest/storage/{jobUUID}/path", method = RequestMethod.GET, produces = {
             MediaType.TEXT_PLAIN_VALUE })
-    public String fetchStoragePathForJobUUID(@PathVariable("jobUUID") UUID jobUUID) {
-        String storagePathFound = storageInfoCollector.getFetchedJobUUIDStoragePathHistory().get(jobUUID);
+    public String fetchStoragePathHistoryEntryForSecHubJobUUID(@PathVariable("jobUUID") UUID jobUUID) {
+        String storagePathFound = storageInfoCollector.getFetchedSecHubJobUUIDStoragePathHistory().get(jobUUID);
 
         LOG.info("Integration test checks storage path for job uuid:{} - result:{}", jobUUID, storagePathFound);
         return storagePathFound;
+    }
+
+    @RequestMapping(path = PDSAPIConstants.API_ANONYMOUS + "integrationtest/workspace/{jobUUID}/uploadfolder", method = RequestMethod.GET, produces = {
+            MediaType.TEXT_PLAIN_VALUE })
+    public String getWorkspaceUploadFolder(@PathVariable("jobUUID") UUID pdsJobUUID) {
+        String uploadFolder = workspaceService.getUploadFolder(pdsJobUUID).getAbsolutePath();
+
+        LOG.info("Integration test checks upload folder path for pds job uuid:{} - result:{}", pdsJobUUID, uploadFolder);
+        return uploadFolder;
     }
 
     @RequestMapping(path = PDSAPIConstants.API_ANONYMOUS + "integrationtest/last/started/job/uuid", method = RequestMethod.GET, produces = {

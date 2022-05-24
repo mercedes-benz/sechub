@@ -27,6 +27,8 @@ public class PDSAdapterDataConfigurator implements PDSAdapterConfigData, PDSAdap
     private String targetType = EMPTY_TARGET_TYPE;
     private ScanType scanType;
 
+    private String binariesTarFileChecksumOrNull;
+
     public void setTargetType(String targetType) {
         if (targetType == null) {
             this.targetType = EMPTY_TARGET_TYPE;
@@ -80,6 +82,11 @@ public class PDSAdapterDataConfigurator implements PDSAdapterConfigData, PDSAdap
     }
 
     @Override
+    public String getBinariesTarFileChecksumOrNull() {
+        return binariesTarFileChecksumOrNull;
+    }
+
+    @Override
     public boolean isReusingSecHubStorage() {
         return reusingSecHubStorage;
     }
@@ -112,6 +119,11 @@ public class PDSAdapterDataConfigurator implements PDSAdapterConfigData, PDSAdap
     @Override
     public void setSourceCodeZipFileChecksumOrNull(String sourceCodeZipFileChecksumOrNull) {
         this.sourceCodeZipFileChecksumOrNull = sourceCodeZipFileChecksumOrNull;
+    }
+
+    @Override
+    public void setBinariesTarFileChecksumOrNull(String binariesTarFileChecksumOrNull) {
+        this.binariesTarFileChecksumOrNull = binariesTarFileChecksumOrNull;
     }
 
     @Override

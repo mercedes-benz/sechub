@@ -87,7 +87,7 @@ public class PDSCodeScanJobScenario5IntTest {
             hasStatus(SecHubStatus.SUCCESS).
             hasMessages(0);
 
-        assertSecHubReport(report).
+        assertReportUnordered(report).
             hasTrafficLight(RED).
                 // findings from uploaded zip (1:1 mapped by textfile:
                 finding().

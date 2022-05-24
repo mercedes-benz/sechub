@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.pds.PDSAdapter;
 import com.mercedesbenz.sechub.adapter.pds.PDSLicenseScanConfig;
 import com.mercedesbenz.sechub.adapter.pds.PDSLicenseScanConfigImpl;
@@ -72,10 +71,8 @@ public class PDSLicenseScanProductExecutor extends AbstractProductExecutor {
 
         ProductResult result = resilientActionExecutor.executeResilient(() -> {
 
-            AdapterMetaData metaDataOrNull = executorContext.getCurrentMetaDataOrNull();
-
-            try (InputStream sourceCodeZipFileInputStreamOrNull = contentProvider.getSourceZipFileInputStreamOrNull(metaDataOrNull);
-                    InputStream binariesTarFileInputStreamOrNull = contentProvider.getBinariesTarFileInputStreamOrNull(metaDataOrNull)) { /* @formatter:off */
+            try (InputStream sourceCodeZipFileInputStreamOrNull = contentProvider.getSourceZipFileInputStreamOrNull();
+                    InputStream binariesTarFileInputStreamOrNull = contentProvider.getBinariesTarFileInputStreamOrNull()) { /* @formatter:off */
 
                     PDSLicenseScanConfig pdsLicenseScanConfig = PDSLicenseScanConfigImpl.builder().
                             configure(PDSAdapterConfigurationStrategy.builder().
@@ -84,7 +81,6 @@ public class PDSLicenseScanProductExecutor extends AbstractProductExecutor {
                                     setConfigSupport(configSupport).
                                     setSourceCodeZipFileInputStreamOrNull(sourceCodeZipFileInputStreamOrNull).
                                     setBinariesTarFileInputStreamOrNull(binariesTarFileInputStreamOrNull).
-                                    setMetaDataOrNull(metaDataOrNull).
                                     setContentProvider(contentProvider).
                                     setInstallSetup(installSetup).
                                     build()).
