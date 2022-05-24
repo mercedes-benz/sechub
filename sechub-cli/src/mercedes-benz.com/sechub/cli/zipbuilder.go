@@ -88,7 +88,7 @@ func appendToSourceCodeZipFile(zipFile string, zipWriter *zip.Writer, config Nam
 	sechubUtil.LogDebug(debug, fmt.Sprintf("appendToSourceCodeZipFile - Excludes: %+v", config.Excludes))
 	sechubUtil.LogDebug(debug, fmt.Sprintf("appendToSourceCodeZipFile - SourceCodePatterns: %+v", config.SourceCodePatterns))
 
-	if amountOfFolders == 0 { // nothing defined, so nothing to do
+	if amountOfFolders == 0 && amountOfFiles == 0 { // nothing defined, so nothing to do
 		return nil
 	}
 

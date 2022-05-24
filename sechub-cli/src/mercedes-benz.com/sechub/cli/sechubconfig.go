@@ -28,8 +28,8 @@ type SecHubConfig struct {
 }
 
 type DataSectionScanConfig struct {
-	Binaries []NamedBinaryScanConfig `json:"binaries"`
-	Sources  []NamedCodeScanConfig   `json:"sources"`
+	Binaries []NamedBinariesScanConfig `json:"binaries"`
+	Sources  []NamedCodeScanConfig     `json:"sources"`
 }
 
 // NamedCodeScanConfig contains a filesystem scope for code scans with optional excludes and additionalFilenameExtensions
@@ -41,9 +41,10 @@ type NamedCodeScanConfig struct {
 }
 
 // NamedCodeScanConfig contains a filesystem scope for binary scans
-type NamedBinaryScanConfig struct {
+type NamedBinariesScanConfig struct {
 	Name       string           `json:"name"`
 	FileSystem FileSystemConfig `json:"fileSystem"`
+	Excludes   []string         `json:"excludes"`
 }
 
 // CodeScanConfig - definition of a code scan
