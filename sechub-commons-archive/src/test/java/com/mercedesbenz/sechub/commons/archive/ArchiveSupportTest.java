@@ -1,11 +1,11 @@
 package com.mercedesbenz.sechub.commons.archive;
 
+import static com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,6 +25,7 @@ class ArchiveSupportTest {
     private static File expectedTar2WithFilterReferenceName1AndNoRootAllowedFolder;
     private static File expectedTar2WithFilterReferenceName1AndReferenceName2Folder;
     private static File expectedOutputOfTestTar2WithRootOnly;
+
     private ArchiveSupport supportToTest;
 
     @BeforeAll
@@ -65,7 +66,8 @@ class ArchiveSupportTest {
         configuration.setRootFolderAccepted(true);
 
         /* execute */
-        ArchiveExtractionResult result = supportToTest.extractZip(singleZipfile, targetFolder, configuration);
+        ArchiveExtractionResult result = supportToTest.extract(ZIP, new FileInputStream(singleZipfile), singleZipfile.getAbsolutePath(), targetFolder,
+                configuration);
 
         /* test */
         File docs = assertFolderExists(targetFolder, "docs");
@@ -88,7 +90,8 @@ class ArchiveSupportTest {
         configuration.setRootFolderAccepted(true);
 
         /* execute */
-        ArchiveExtractionResult result = supportToTest.extractZip(singleZipfile, targetFolder, configuration);
+        ArchiveExtractionResult result = supportToTest.extract(ZIP, new FileInputStream(singleZipfile), singleZipfile.getAbsolutePath(), targetFolder,
+                configuration);
 
         /* test */
         assertContainsFiles(targetFolder, "hardcoded_password.go");
@@ -107,7 +110,8 @@ class ArchiveSupportTest {
         configuration.setRootFolderAccepted(true);
 
         /* execute */
-        ArchiveExtractionResult result = supportToTest.extractZip(twoFilesZipfile, targetFolder, configuration);
+        ArchiveExtractionResult result = supportToTest.extract(ZIP, new FileInputStream(twoFilesZipfile), twoFilesZipfile.getAbsolutePath(), targetFolder,
+                configuration);
 
         /* test */
         assertContainsFiles(targetFolder, "hardcoded_password.go", "README.md");
@@ -127,7 +131,7 @@ class ArchiveSupportTest {
         configuration.setRootFolderAccepted(true);
 
         /* execute */
-        ArchiveExtractionResult result = supportToTest.extractZip(abcZipfile, targetFolder, configuration);
+        ArchiveExtractionResult result = supportToTest.extract(ZIP, new FileInputStream(abcZipfile), abcZipfile.getAbsolutePath(), targetFolder, configuration);
 
         /* test */
         assertContainsFiles(targetFolder, "abc");
@@ -150,17 +154,16 @@ class ArchiveSupportTest {
         /* prepare */
         File tarFile = testTar1File;
 
-        File outputDirectory = TestUtil.createTempDirectoryInBuildFolder("tar-test1").toFile();
-        InputStream is = new FileInputStream(tarFile);
+        File targetFolder = TestUtil.createTempDirectoryInBuildFolder("tar-test1").toFile();
 
         MutableSecHubFileStructureDataProvider configuration = new MutableSecHubFileStructureDataProvider();
         configuration.setRootFolderAccepted(true);
 
         /* execute */
-        supportToTest.extractTar(is, tarFile.getAbsolutePath(), outputDirectory, configuration);
+        supportToTest.extract(TAR, new FileInputStream(tarFile), tarFile.getAbsolutePath(), targetFolder, configuration);
 
         /* test */
-        expectedExtractedFilesAreAllFoundInOutputDirectory(outputDirectory, TestFileSupport.loadFilesAsFileList(expectedTar1Folder), expectedTar1Folder);
+        expectedExtractedFilesAreAllFoundInOutputDirectory(targetFolder, TestFileSupport.loadFilesAsFileList(expectedTar1Folder), expectedTar1Folder);
 
     }
 
@@ -169,17 +172,16 @@ class ArchiveSupportTest {
         /* prepare */
         File tarFile = testTar1File;
 
-        File outputDirectory = TestUtil.createTempDirectoryInBuildFolder("tar-test1").toFile();
-        InputStream is = new FileInputStream(tarFile);
+        File targetFolder = TestUtil.createTempDirectoryInBuildFolder("tar-test1").toFile();
 
         MutableSecHubFileStructureDataProvider configuration = new MutableSecHubFileStructureDataProvider();
         configuration.setRootFolderAccepted(false);
 
         /* execute */
-        supportToTest.extractTar(is, tarFile.getAbsolutePath(), outputDirectory, configuration);
+        supportToTest.extract(TAR, new FileInputStream(tarFile), tarFile.getAbsolutePath(), targetFolder, configuration);
 
         /* test */
-        assertEquals(0, outputDirectory.listFiles().length);
+        assertEquals(0, targetFolder.listFiles().length);
 
     }
 
@@ -191,13 +193,12 @@ class ArchiveSupportTest {
 
         File outputDirectory = TestUtil.createTempDirectoryInBuildFolder("tar-test2").toFile();
         List<File> expectedFiles = TestFileSupport.loadFilesAsFileList(expectedFilesFolder);
-        InputStream is = new FileInputStream(tarFile);
 
         MutableSecHubFileStructureDataProvider configuration = new MutableSecHubFileStructureDataProvider();
         configuration.setRootFolderAccepted(true);
 
         /* execute */
-        supportToTest.extractTar(is, tarFile.getAbsolutePath(), outputDirectory, configuration);
+        supportToTest.extract(TAR, new FileInputStream(tarFile), tarFile.getAbsolutePath(), outputDirectory, configuration);
 
         /* test */
         expectedExtractedFilesAreAllFoundInOutputDirectory(outputDirectory, expectedFiles, expectedFilesFolder);
@@ -210,13 +211,12 @@ class ArchiveSupportTest {
         File tarFile = testTar2File;
 
         File outputDirectory = TestUtil.createTempDirectoryInBuildFolder("tar-test2").toFile();
-        InputStream is = new FileInputStream(tarFile);
 
         MutableSecHubFileStructureDataProvider configuration = new MutableSecHubFileStructureDataProvider();
         configuration.setRootFolderAccepted(false);
 
         /* execute */
-        supportToTest.extractTar(is, tarFile.getAbsolutePath(), outputDirectory, configuration);
+        supportToTest.extract(TAR, new FileInputStream(tarFile), tarFile.getAbsolutePath(), outputDirectory, configuration);
 
         /* test */
         assertEquals(0, outputDirectory.listFiles().length);
@@ -231,14 +231,13 @@ class ArchiveSupportTest {
 
         File outputDirectory = TestUtil.createTempDirectoryInBuildFolder("tar-test2").toFile();
         List<File> expectedFiles = TestFileSupport.loadFilesAsFileList(expectedFilesFolder);
-        InputStream is = new FileInputStream(tarFile);
 
         MutableSecHubFileStructureDataProvider configuration = new MutableSecHubFileStructureDataProvider();
         configuration.setRootFolderAccepted(false);
         configuration.addAcceptedReferenceNames(Arrays.asList("reference-name-1"));
 
         /* execute */
-        supportToTest.extractTar(is, tarFile.getAbsolutePath(), outputDirectory, configuration);
+        supportToTest.extract(TAR, new FileInputStream(tarFile), tarFile.getAbsolutePath(), outputDirectory, configuration);
 
         /* test */
         expectedExtractedFilesAreAllFoundInOutputDirectory(outputDirectory, expectedFiles, expectedFilesFolder);
@@ -253,14 +252,13 @@ class ArchiveSupportTest {
 
         File outputDirectory = TestUtil.createTempDirectoryInBuildFolder("tar-test2").toFile();
         List<File> expectedFiles = TestFileSupport.loadFilesAsFileList(expectedFilesFolder);
-        InputStream is = new FileInputStream(tarFile);
 
         MutableSecHubFileStructureDataProvider configuration = new MutableSecHubFileStructureDataProvider();
         configuration.setRootFolderAccepted(false);
         configuration.addAcceptedReferenceNames(Arrays.asList("reference-name-1", "reference-name-2"));
 
         /* execute */
-        supportToTest.extractTar(is, tarFile.getAbsolutePath(), outputDirectory, configuration);
+        supportToTest.extract(TAR, new FileInputStream(tarFile), tarFile.getAbsolutePath(), outputDirectory, configuration);
 
         /* test */
         expectedExtractedFilesAreAllFoundInOutputDirectory(outputDirectory, expectedFiles, expectedFilesFolder);

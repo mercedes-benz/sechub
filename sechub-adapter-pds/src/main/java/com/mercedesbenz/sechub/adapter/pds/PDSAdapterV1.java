@@ -176,13 +176,13 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         AdapterMetaData metaData = context.getRuntimeContext().getMetaData();
         if (data.isSourceCodeZipFileRequired()) {
 
-            if (!metaData.hasValue(PDSMetaDataConstants.METADATA_KEY_FILEUPLOAD_DONE, true)) {
+            if (!metaData.hasValue(PDSMetaDataID.METADATA_KEY_FILEUPLOAD_DONE, true)) {
                 /* upload source code */
                 PDSUploadSupport uploadSupport = new PDSUploadSupport();
                 uploadSupport.uploadZippedSourceCode(context, data);
 
                 /* after this - mark file upload done, so on a restart we don't need this */
-                metaData.setValue(PDSMetaDataConstants.METADATA_KEY_FILEUPLOAD_DONE, true);
+                metaData.setValue(PDSMetaDataID.METADATA_KEY_FILEUPLOAD_DONE, true);
                 context.getRuntimeContext().getCallback().persist(metaData);
             } else {
                 LOG.info("Reuse existing upload for:{}", context.getTraceID());

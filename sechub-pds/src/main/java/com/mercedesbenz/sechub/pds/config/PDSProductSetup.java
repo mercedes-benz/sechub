@@ -4,11 +4,11 @@ package com.mercedesbenz.sechub.pds.config;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 
 public class PDSProductSetup {
-    private static final boolean DEFAULT_UNZIP_UPLOADS = true;
+    private static final boolean DEFAULT_EXTRACT_UPLOADS = true;
 
     private static final long DEFAULT_MINUTES_TO_WAIT_FOR_PRODUCRESULT = 120; // 2 hours
 
-    private boolean unzipUploads = DEFAULT_UNZIP_UPLOADS;
+    private boolean extractUploads = DEFAULT_EXTRACT_UPLOADS;
 
     private String id;
 
@@ -72,12 +72,12 @@ public class PDSProductSetup {
         this.description = description;
     }
 
-    public boolean isUnzipUploads() {
-        return unzipUploads;
+    public boolean isExtractUploads() {
+        return extractUploads;
     }
 
-    public void setUnzipUploads(boolean unzipUploads) {
-        this.unzipUploads = unzipUploads;
+    public void setExtractUploads(boolean extractUploads) {
+        this.extractUploads = extractUploads;
     }
 
     public long getMinutesToWaitForProductResult() {

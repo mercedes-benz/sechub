@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.mercedesbenz.sechub.adapter.pds.DelegatingMockablePDSAdapterV1;
+import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.integrationtest.api.PDSIntTestProductIdentifier;
 import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 import com.mercedesbenz.sechub.integrationtest.api.TestExecutorProductIdentifier;
@@ -246,8 +246,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
     private static TestExecutorConfig createTestExecutorConfig() {
         TestExecutorConfig testExecutorConfig = new TestExecutorConfig();
         registeredConfigurations.add(testExecutorConfig);
-        testExecutorConfig.setup.jobParameters
-                .add(new TestExecutorSetupJobParam(DelegatingMockablePDSAdapterV1.JOB_PARAMETER_KEY__PDS_MOCKING_DISABLED, "true"));
+        testExecutorConfig.setup.jobParameters.add(new TestExecutorSetupJobParam(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_MOCKING_DISABLED, "true"));
         return testExecutorConfig;
     }
 

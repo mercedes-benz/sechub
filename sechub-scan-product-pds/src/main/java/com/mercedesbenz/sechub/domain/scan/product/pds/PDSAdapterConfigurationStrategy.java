@@ -156,9 +156,10 @@ public class PDSAdapterConfigurationStrategy implements AdapterConfigurationStra
 
     private void handlePdsParts(PDSAdapterConfigurator pdsConfigurable) {
         SecHubExecutionContext context = strategyConfig.productExecutorData.getSechubExecutionContext();
-        Map<String, String> jobParams = strategyConfig.configSupport.createJobParametersToSendToPDS(context.getConfiguration());
-        pdsConfigurable.setJobParameters(jobParams);
-        pdsConfigurable.setReusingSecHubStorage(PDSExecutorConfigSuppport.isReusingSecHubStorage(jobParams));
+        Map<String, String> jobParameters = strategyConfig.configSupport.createJobParametersToSendToPDS(context.getConfiguration());
+
+        pdsConfigurable.setJobParameters(jobParameters);
+        pdsConfigurable.setReusingSecHubStorage(PDSExecutorConfigSuppport.isReusingSecHubStorage(jobParameters));
         pdsConfigurable.setScanType(strategyConfig.scanType);
         pdsConfigurable.setPdsProductIdentifier(strategyConfig.configSupport.getPDSProductIdentifier());
         pdsConfigurable.setSecHubJobUUID(context.getSechubJobUUID());

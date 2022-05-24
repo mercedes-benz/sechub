@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -246,6 +247,14 @@ public class TestRestHelper {
     public boolean getBooleanFromURL(String url) {
         String dataAsString = getStringFromURL(url);
         return Boolean.parseBoolean(dataAsString);
+    }
+
+    public UUID getUUIDFromURL(String url) {
+        String dataAsString = getStringFromURL(url);
+        if (dataAsString == null) {
+            return null;
+        }
+        return UUID.fromString(dataAsString);
     }
 
     public String upload(String uploadSourceCodeUrl, File file, String checkSum) {

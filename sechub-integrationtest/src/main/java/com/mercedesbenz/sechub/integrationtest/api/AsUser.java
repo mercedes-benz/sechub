@@ -404,24 +404,24 @@ public class AsUser {
     }
 
     public UUID createScanJobWhichUsesDataReferencedIds(IntegrationTestTemplateFile template, TestProject project, IntegrationTestMockMode runMode,
-            String... dataReferenceIds) {
-        Map<String, String> map = new HashMap<>();
-
+            TemplateData data) {
+        Map<String, String> variableMap = new HashMap<>();
+        variableMap.putAll(data.getVariables());
         int index = 0;
-        for (String id : dataReferenceIds) {
+        for (String id : data.getReferenceIds()) {
             index++;
-            map.put("__use" + index + "__", id);
+            variableMap.put("__use" + index + "__", id);
         }
-        return createCodeScanJobAndFetchJobUUID(template, project, runMode, map);
+        return createCodeScanJobAndFetchJobUUID(template, project, runMode, variableMap);
     }
 
     private UUID createCodeScanJobAndFetchJobUUID(IntegrationTestTemplateFile template, TestProject project, IntegrationTestMockMode runMode,
-            Map<String, String> data) {
+            Map<String, String> variableMap) {
         assertProject(project).doesExist();
         if (runMode == null) {
             runMode = IntegrationTestMockMode.CODE_SCAN__CHECKMARX__MULTI__ZERO_WAIT;
         }
-        String response = createCodeScanJob(template, project, runMode, data);
+        String response = createCodeScanJob(template, project, runMode, variableMap);
         return fetchJobUUID(response);
     }
 
@@ -437,9 +437,8 @@ public class AsUser {
         return template;
     }
 
-    private String createCodeScanJob(IntegrationTestTemplateFile template, TestProject project, IntegrationTestMockMode runMode, Map<String, String> data) {
-        Map<String, String> map = new HashMap<>();
-        map.putAll(data);
+    private String createCodeScanJob(IntegrationTestTemplateFile template, TestProject project, IntegrationTestMockMode runMode,
+            Map<String, String> customVariableMap) {
 
         String folder = null;
         if (runMode != null) {
@@ -448,14 +447,21 @@ public class AsUser {
         if (folder == null) {
             folder = "notexisting";
         }
-        String json = getConfigTemplate(template);
+        String templateJson = getConfigTemplate(template);
         String projectId = project.getProjectId();
 
-        json = json.replaceAll("__projectId__", projectId);
+        Map<String, String> map = new HashMap<>();
+        map.putAll(customVariableMap);
+        // add default variables
+        map.put("__projectname__", projectId);
+        map.put("__folder__", folder);
 
-        json = json.replaceAll("__folder__", folder);
+        for (String variableName : map.keySet()) {
+            String replacement = map.get(variableName);
+            templateJson = templateJson.replaceAll(variableName, replacement);
+        }
         String url = getUrlBuilder().buildAddJobUrl(projectId);
-        return getRestHelper().postJson(url, json);
+        return getRestHelper().postJson(url, templateJson);
     }
 
     private String createWebScanJob(TestProject project, IntegrationTestMockMode runMode) {

@@ -51,10 +51,17 @@ public class PDSJobConfigurationSupport {
     }
 
     public boolean isEnabled(String key) {
+        return isEnabled(key, false);
+    }
+
+    public boolean isEnabled(String key, boolean defaultWhenNotSet) {
         if (configuration == null) {
-            return false;
+            return defaultWhenNotSet;
         }
         String param = getStringParameterOrNull(key);
+        if (param == null) {
+            return defaultWhenNotSet;
+        }
         return Boolean.parseBoolean(param);
     }
 

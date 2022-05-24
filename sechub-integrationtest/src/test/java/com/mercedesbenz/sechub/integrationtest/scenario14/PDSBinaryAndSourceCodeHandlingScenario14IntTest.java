@@ -15,6 +15,7 @@ import org.junit.rules.Timeout;
 
 import com.mercedesbenz.sechub.commons.model.SecHubStatus;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
+import com.mercedesbenz.sechub.integrationtest.api.TemplateData;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestTemplateFile;
 
@@ -44,7 +45,10 @@ public class PDSBinaryAndSourceCodeHandlingScenario14IntTest {
 
         /* prepare */
         TestProject project = PROJECT_1;
-        UUID jobUUID = as(USER_1).createScanJobWhichUsesDataReferencedIds(IntegrationTestTemplateFile.CODE_SCAN_2_BINARIES_DATA_ONE_REFERENCE, project, NOT_MOCKED, "files-a");
+        UUID jobUUID = as(USER_1).createScanJobWhichUsesDataReferencedIds(
+                              IntegrationTestTemplateFile.CODE_SCAN_2_BINARIES_DATA_ONE_REFERENCE,
+                              project, NOT_MOCKED,
+                              TemplateData.builder().addReferenceId("files-a").build());
 
         /* execute */
         as(USER_1).

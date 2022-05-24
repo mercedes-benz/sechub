@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -8,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mercedesbenz.sechub.pds.job.PDSJob;
+import com.mercedesbenz.sechub.pds.job.PDSJobRepository;
 import com.mercedesbenz.sechub.pds.storage.IntegrationTestPDSStorageInfoCollector;
 
 /**
@@ -31,6 +37,9 @@ public class IntegrationTestPDSRestController {
 
     @Autowired
     IntegrationTestPDSStorageInfoCollector storageInfoCollector;
+
+    @Autowired
+    PDSJobRepository jobRepository;
 
     @Autowired
     private ConfigurableApplicationContext context;
@@ -60,6 +69,18 @@ public class IntegrationTestPDSRestController {
 
         LOG.info("Integration test checks storage path for job uuid:{} - result:{}", jobUUID, storagePathFound);
         return storagePathFound;
+    }
+
+    @RequestMapping(path = PDSAPIConstants.API_ANONYMOUS + "integrationtest/last/started/job/uuid", method = RequestMethod.GET, produces = {
+            MediaType.APPLICATION_JSON_VALUE })
+    public String fetchLastStartedPDSJobUUID() {
+        List<PDSJob> jobs = jobRepository.findAll(Sort.by(Direction.DESC, PDSJob.PROPERTY_STARTED));
+        Iterator<PDSJob> it = jobs.iterator();
+        if (it.hasNext()) {
+            PDSJob job = it.next();
+            return job.getUUID().toString();
+        }
+        return null;
     }
 
 }

@@ -55,6 +55,7 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.CheckPDSJobRes
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.CheckPDSJobStatusAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.CreateNewPDSExecutionConfigurationAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.CreatePDSJobAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchLastStartedPDSJobStreamsAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSConfigurationAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSJobErrorStreamAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSJobOutputStreamAction;
@@ -422,6 +423,7 @@ public class CommandUI {
             menu.setToolTipText("Not enabled, use \"-D" + ConfigurationSetup.SECHUB_ENABLE_INTEGRATION_TESTSERVER_MENU.getSystemPropertyid()
                     + "=true\" to enable it and run an integration test server!");
         }
+        add(menu, new FetchLastStartedPDSJobStreamsAction(context));
         add(menu, new FetchMockMailsAction(context));
         menu.addSeparator();
         add(menu, new SetProjectMockDataConfigurationAction(context));

@@ -66,8 +66,6 @@ public class TestURLBuilder {
     }
 
     private static final String API_ADMIN = "/api/admin";
-    private static final String API_USER = "/api/user";
-    private static final String API_OWNER = "/api/owner";
     private static final String API_ANONYMOUS = "/api/anonymous";
 
     private static final String API_ADMIN_USER = API_ADMIN + "/user";
@@ -164,6 +162,10 @@ public class TestURLBuilder {
             return buildUrl(API_PDS_INTEGRATIONTEST, "storage", jobUUID, "path");
         }
 
+        public String buildFetchLastStartedJobUUIDUrl() {
+            return buildUrl(API_PDS_INTEGRATIONTEST, "last/started/job/uuid");
+        }
+
         public String buildAdminFetchesJobOutputStreamUrl(UUID jobUUID) {
             return buildUrl(API_ADMIN_JOB, jobUUID, "stream", "output");
         }
@@ -171,6 +173,7 @@ public class TestURLBuilder {
         public String buildAdminFetchesJobErrorStreamUrl(UUID jobUUID) {
             return buildUrl(API_ADMIN_JOB, jobUUID, "stream", "error");
         }
+
     }
 
     public ProductDelegationServerUrlsBuilder pds() {

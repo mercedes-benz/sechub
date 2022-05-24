@@ -1,7 +1,6 @@
 package com.mercedesbenz.sechub.commons.archive;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,9 +22,29 @@ public class ArchiveSupport {
 
     private static final Logger LOG = LoggerFactory.getLogger(ArchiveSupport.class);
 
+    public enum ArchiveType {
+        ZIP, TAR
+    }
+
     private static final KeepAsIsTransformationData DO_NOT_TRANSFORM = new KeepAsIsTransformationData();
 
-    public ArchiveExtractionResult extractTar(InputStream sourceInputStream, String sourceLocation, File outputDir,
+    public ArchiveExtractionResult extract(ArchiveType type, InputStream sourceInputStream, String sourceLocation, File outputDir,
+            SecHubFileStructureDataProvider configuration) throws IOException {
+        if (type == null) {
+            throw new IllegalArgumentException("archive type must be defined!");
+        }
+        switch (type) {
+        case TAR:
+            return extractTar(sourceInputStream, sourceLocation, outputDir, configuration);
+        case ZIP:
+            return extractZip(sourceInputStream, sourceLocation, outputDir, configuration);
+        default:
+            throw new IllegalArgumentException("archive type " + type + " is not supported");
+
+        }
+    }
+
+    private ArchiveExtractionResult extractTar(InputStream sourceInputStream, String sourceLocation, File outputDir,
             SecHubFileStructureDataProvider configuration) throws IOException {
         try (ArchiveInputStream archiveInputStream = new ArchiveStreamFactory().createArchiveInputStream("tar", sourceInputStream)) {
             if (!(archiveInputStream instanceof TarArchiveInputStream)) {
@@ -39,13 +58,7 @@ public class ArchiveSupport {
 
     }
 
-    public ArchiveExtractionResult extractZip(File file, File destDir, SecHubFileStructureDataProvider configuration) throws IOException {
-        try (FileInputStream fis = new FileInputStream(file)) {
-            return extractZip(fis, file.getAbsolutePath(), destDir, configuration);
-        }
-    }
-
-    public ArchiveExtractionResult extractZip(InputStream sourceInputStream, String sourceLocation, File outputDir,
+    private ArchiveExtractionResult extractZip(InputStream sourceInputStream, String sourceLocation, File outputDir,
             SecHubFileStructureDataProvider configuration) throws IOException {
         try (ArchiveInputStream archiveInputStream = new ArchiveStreamFactory().createArchiveInputStream("zip", sourceInputStream)) {
 
@@ -110,15 +123,15 @@ public class ArchiveSupport {
             File outputFile = new File(outputDir, name);
 
             if (entry.isDirectory()) {
-                LOG.debug("Write output directory {}.", outputFile.getAbsolutePath());
+                LOG.debug("Write output directory: {}", outputFile.getAbsolutePath());
                 if (!outputFile.exists()) {
                     result.createdFoldersCount++;
                     if (!outputFile.mkdirs()) {
-                        throw new IOException("Was not able to create directory:" + outputFile.getAbsolutePath());
+                        throw new IOException("Was not able to create directory: " + outputFile.getAbsolutePath());
                     }
                 }
             } else {
-                LOG.debug("Creating output file: ", outputFile.getAbsolutePath());
+                LOG.debug("Creating output file: {}", outputFile.getAbsolutePath());
                 ensureParentFolderExists(outputFile, result);
                 if (outputFile.isDirectory()) {
                     continue;
