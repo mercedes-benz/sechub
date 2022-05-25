@@ -20,7 +20,7 @@ type Context struct {
 	jobStatus                 *jobStatusResult
 }
 
-func (context *Context) isUploadingSourceZip() bool {
+func (context *Context) sourceZipFileExists() bool {
 	return context.sourceZipFileName != ""
 }
 

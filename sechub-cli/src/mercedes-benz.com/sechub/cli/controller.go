@@ -72,9 +72,9 @@ func Execute() {
  *      code scan parts, do approve
  * --------------------------------------------------*/
 func prepareCreateApproveJob(context *Context) {
-	prepareCodeScan(context)
+	prepareScan(context)
 	createNewSecHubJob(context)
-	handleCodeScanUpload(context)
+	handleUploads(context)
 	approveSecHubJob(context)
 }
 
@@ -82,60 +82,49 @@ func prepareCreateApproveJob(context *Context) {
  * 		Handle code scan parts
  * --------------------------------------------------
  */
-func handleCodeScanUpload(context *Context) {
-	if !context.isUploadingSourceZip() {
-		return
+func handleUploads(context *Context) {
+	if context.sourceZipFileExists() {
+		sechubUtil.Log("Uploading source zip file", context.config.quiet)
+		uploadSourceZipFile(context)
 	}
-	sechubUtil.Log("Uploading source zip file", context.config.quiet)
-	uploadSourceZipFile(context)
+	// To be added here: upload bindaries if defined
 }
 
-func prepareCodeScan(context *Context) {
-	/* currently we only provide filesystem - means zipping etc. */
-	json := context.sechubConfig
+func prepareScan(context *Context) {
 
-	if context.config.whitelistAll {
-		// Accept every file as source code
-		json.CodeScan.SourceCodePatterns = []string{""}
-	} else {
-		// build regexp list for source code file patterns
-		json.CodeScan.SourceCodePatterns = append(json.CodeScan.SourceCodePatterns, DefaultZipAllowedFilePatterns...)
+	if len(context.sechubConfig.Data.Sources) > 0 || len(context.sechubConfig.CodeScan.FileSystem.Folders) > 0 {
+		//////////////////////////////
+		// Creating sources ZIP file
+		context.sourceZipFileName = tempFile(context, fmt.Sprintf("sourcecode-%s.zip", context.config.projectID))
+
+		// Set source code patterns in
+		// - data.sources
+		// - codeScan
+		// depending on
+		// - DefaultSourceCodeAllowedFilePatterns
+		// - context.config.whitelistAll (deactivates all filters)
+		adjustSourceCodePatterns(context)
+
+		err := createSouceCodeZipFile(context)
+		if err != nil {
+			sechubUtil.LogError(fmt.Sprintf("%s\nExiting due to fatal error while creating sources zip file...\n", err))
+			os.Remove(context.sourceZipFileName) // cleanup zip file
+			os.Exit(ExitCodeFailed)
+		}
+
+		// calculate checksum for zip file
+		context.sourceZipFileChecksum = sechubUtil.CreateChecksum(context.sourceZipFileName)
 	}
 
-	// add default exclude patterns to exclude list
-	if !context.config.ignoreDefaultExcludes {
-		json.CodeScan.Excludes = append(json.CodeScan.Excludes, DefaultZipExcludeDirPatterns...)
-	}
+	// ToDo:
+	/// If len(context.sechubConfig.Data.Binaries) > 0 in the sechub.json ; then
+	//////////////////////////////
+	// Creating binaries TAR file
 
-	amountOfFolders := len(json.CodeScan.FileSystem.Folders)
-	var debug = context.config.debug
-	if debug {
-		sechubUtil.LogDebug(debug, fmt.Sprintf("prepareCodeScan - folders=%s", json.CodeScan.FileSystem.Folders))
-		sechubUtil.LogDebug(debug, fmt.Sprintf("prepareCodeScan - excludes=%s", json.CodeScan.Excludes))
-		sechubUtil.LogDebug(debug, fmt.Sprintf("prepareCodeScan - SourceCodePatterns=%s", json.CodeScan.SourceCodePatterns))
-		sechubUtil.LogDebug(debug, fmt.Sprintf("prepareCodeScan - amount of folders found: %d", amountOfFolders))
-	}
-	if amountOfFolders == 0 {
-		/* nothing set, so no upload */
-		return
-	}
-	context.sourceZipFileName = tempFile(context, fmt.Sprintf("sourcecode-%s.zip", context.config.projectID))
+	// ToDo
 
-	/* compress all folders to one single zip file*/
-	config := sechubUtil.ZipConfig{
-		Folders:            json.CodeScan.FileSystem.Folders,
-		Excludes:           json.CodeScan.Excludes,
-		SourceCodePatterns: json.CodeScan.SourceCodePatterns,
-		Debug:              context.config.debug} // pass through debug flag
-	err := sechubUtil.ZipFolders(context.sourceZipFileName, &config, context.config.quiet)
-	if err != nil {
-		sechubUtil.LogError(fmt.Sprintf("%s\nExiting due to fatal error...\n", err))
-		os.Remove(context.sourceZipFileName) // cleanup zip file
-		os.Exit(ExitCodeFailed)
-	}
+	/// EndIf
 
-	/* calculate checksum for zip file */
-	context.sourceZipFileChecksum = sechubUtil.CreateChecksum(context.sourceZipFileName)
 }
 
 func downloadSechubReport(context *Context) {

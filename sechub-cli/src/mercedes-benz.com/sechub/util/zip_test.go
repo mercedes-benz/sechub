@@ -2,6 +2,8 @@
 package util
 
 import (
+	"archive/zip"
+	"fmt"
 	"os"
 	"strings"
 	"testing"
@@ -15,57 +17,35 @@ func TestZipFileBeingPartOfScannedFoldersIsRejected(t *testing.T) {
 	defer os.RemoveAll(dir)
 
 	dirname1 := dir + "/sub1"
-	dirname2 := dir + "/sub2"
-	dirname3 := dir + "/sub2/sub3"
-
 	sechubUtil.CreateTestDirectory(dirname1, 0755, t)
-	sechubUtil.CreateTestDirectory(dirname2, 0755, t)
-	sechubUtil.CreateTestDirectory(dirname3, 0755, t)
 
 	filename1 := dirname1 + "/file1.txt"
-	filename2 := dirname2 + "/file2.txt"
-	filename3 := dirname3 + "/file3.txt"
 
 	content := []byte("Hello world!\n")
 	sechubUtil.CreateTestFile(filename1, 0644, content, t)
-	sechubUtil.CreateTestFile(filename2, 0644, content, t)
-	sechubUtil.CreateTestFile(filename3, 0644, content, t)
 
 	// path to zipfile is also part of added files - because in dirname1
 	path := dirname1 + "/testoutput.zip"
 
-	/* execute */
-	err := ZipFolders(path, &ZipConfig{Folders: []string{dirname1, dirname2}, SourceCodePatterns: []string{"*.txt"}}, false)
+	newZipFile, _ := os.Create(path)
 
-	/* test */
-	sechubUtil.AssertErrorHasExpectedMessage(err, "Target zipfile would be part of zipped content, leading to infinite loop. Please change target path!", t)
+	zipWriter := zip.NewWriter(newZipFile)
 
-}
-
-func TestZipFileEmptyIsRejected(t *testing.T) {
-	/* prepare */
-	dir := sechubUtil.InitializeTestTempDir(t)
-	defer os.RemoveAll(dir)
-
-	dirname1 := dir + "/sub1"
-	dirname2 := dir + "/sub2"
-	dirname3 := dir + "/sub2/sub3"
-
-	sechubUtil.CreateTestDirectory(dirname1, 0755, t)
-	sechubUtil.CreateTestDirectory(dirname2, 0755, t)
-	sechubUtil.CreateTestDirectory(dirname3, 0755, t)
-
-	//  we do only add empty folders, but not any content - so zip file will be empty. The implementation
-	//  must ensure that this cannot happen because otherwise we upload empty data which will always have a
-	//  greeen result
-	path := dir + "/testoutput.zip"
+	config := ZipConfig{
+		ZipFileName:        path,
+		ZipWriter:          zipWriter,
+		PrefixInZip:        "",
+		Folders:            []string{dirname1},
+		SourceCodePatterns: []string{".txt", ".zip"},
+	}
 
 	/* execute */
-	err := ZipFolders(path, &ZipConfig{Folders: []string{dirname1, dirname2}}, false)
+	err := Zip(&config)
+	zipWriter.Close()
+	newZipFile.Close()
 
 	/* test */
-	sechubUtil.AssertErrorHasExpectedMessage(err, "Zipfile has no content!", t)
-
+	sechubUtil.AssertErrorHasExpectedMessage(err, TargetZipFileLoop, t)
 }
 
 func TestZipFileCanBeCreated(t *testing.T) {
@@ -91,9 +71,21 @@ func TestZipFileCanBeCreated(t *testing.T) {
 	sechubUtil.CreateTestFile(filename3, 0644, content, t)
 
 	path := dir + "/testoutput.zip"
+	newZipFile, _ := os.Create(path)
+	zipWriter := zip.NewWriter(newZipFile)
+
+	config := ZipConfig{
+		ZipFileName:        path,
+		ZipWriter:          zipWriter,
+		PrefixInZip:        "",
+		Folders:            []string{dirname1, dirname2},
+		SourceCodePatterns: []string{".txt"},
+	}
 
 	/* execute */
-	err := ZipFolders(path, &ZipConfig{Folders: []string{dirname1, dirname2}, SourceCodePatterns: []string{".txt"}}, false)
+	err := Zip(&config)
+	zipWriter.Close()
+	newZipFile.Close()
 
 	/* test */
 	sechubUtil.Check(err, t)
@@ -139,14 +131,22 @@ func TestZipFileCanBeCreated_with_exclude_patterns_applied(t *testing.T) {
 	sechubUtil.CreateTestFile(filename3, 0644, content, t)
 
 	path := dir + "/testoutput.zip"
+	newZipFile, _ := os.Create(path)
+	zipWriter := zip.NewWriter(newZipFile)
 
-	/* execute */
 	config := ZipConfig{
+		ZipFileName:        path,
+		ZipWriter:          zipWriter,
+		PrefixInZip:        "",
 		Folders:            []string{dirname1, dirname2},
 		Excludes:           []string{"**/file3.txt", "**/f*0*.txt"},
 		SourceCodePatterns: []string{".txt"},
 	}
-	err := ZipFolders(path, &config, false)
+
+	/* execute */
+	err := Zip(&config)
+	zipWriter.Close()
+	newZipFile.Close()
 
 	/* test */
 	sechubUtil.Check(err, t)
@@ -161,7 +161,6 @@ func TestZipFileCanBeCreated_with_exclude_patterns_applied(t *testing.T) {
 	sechubUtil.AssertContains(list, strings.TrimPrefix(filename2, "/"), t)    // this must remain
 	sechubUtil.AssertContainsNot(list, strings.TrimPrefix(filename3, "/"), t) // this file may not be inside, because excluded!
 	sechubUtil.AssertSize(list, 2, t)
-
 }
 
 func TestZipFileCanBeCreated_and_contains_only_sourcefiles(t *testing.T) {
@@ -191,10 +190,21 @@ func TestZipFileCanBeCreated_and_contains_only_sourcefiles(t *testing.T) {
 	sechubUtil.CreateTestFile(filename4, 0644, content, t)
 
 	path := dir + "/testoutput.zip"
+	newZipFile, _ := os.Create(path)
+	zipWriter := zip.NewWriter(newZipFile)
+
+	config := ZipConfig{
+		ZipFileName:        path,
+		ZipWriter:          zipWriter,
+		PrefixInZip:        "",
+		Folders:            []string{dirname1},
+		SourceCodePatterns: []string{".c", ".go"},
+	}
 
 	/* execute */
-	config := ZipConfig{Folders: []string{dirname1}, SourceCodePatterns: []string{".c", ".go"}}
-	err := ZipFolders(path, &config, false)
+	err := Zip(&config)
+	zipWriter.Close()
+	newZipFile.Close()
 
 	/* test */
 	sechubUtil.Check(err, t)
@@ -220,13 +230,23 @@ func TestZipFileNonExistingFolderIsRejected(t *testing.T) {
 	dirname1 := dir + "/nonexistant"
 
 	path := dir + "/testoutput.zip"
+	newZipFile, _ := os.Create(path)
+	zipWriter := zip.NewWriter(newZipFile)
+
+	config := ZipConfig{
+		ZipFileName: path,
+		ZipWriter:   zipWriter,
+		PrefixInZip: "",
+		Folders:     []string{dirname1},
+	}
 
 	/* execute */
-	err := ZipFolders(path, &ZipConfig{Folders: []string{dirname1}}, false)
+	err := Zip(&config)
+	zipWriter.Close()
+	newZipFile.Close()
 
 	/* test */
 	sechubUtil.AssertErrorHasExpectedStartMessage(err, "Folder not found:", t)
-
 }
 
 func TestZipFileContainsRelativeSourceFolders(t *testing.T) {
@@ -250,9 +270,21 @@ func TestZipFileContainsRelativeSourceFolders(t *testing.T) {
 	sechubUtil.CreateTestFile(filepath2, 0644, content, t)
 
 	zipfilepath := RelativeTmpTestDir + "/testoutput.zip"
+	newZipFile, _ := os.Create(zipfilepath)
+	zipWriter := zip.NewWriter(newZipFile)
+
+	config := ZipConfig{
+		ZipFileName:        zipfilepath,
+		ZipWriter:          zipWriter,
+		PrefixInZip:        "",
+		Folders:            []string{dirname1, dirname2},
+		SourceCodePatterns: []string{".txt"},
+	}
 
 	/* execute */
-	err := ZipFolders(zipfilepath, &ZipConfig{Folders: []string{dirname1, dirname2}, SourceCodePatterns: []string{".txt"}}, false)
+	err := Zip(&config)
+	zipWriter.Close()
+	newZipFile.Close()
 
 	/* test */
 	sechubUtil.Check(err, t)
@@ -276,9 +308,21 @@ func TestZipFileContainsRelativeFoldersOutsideCurrent(t *testing.T) {
 	sechubUtil.CreateTestFile(filepath1, 0644, content, t)
 
 	zipfilepath := RelativeTmpTestDir + "/testoutput.zip"
+	newZipFile, _ := os.Create(zipfilepath)
+	zipWriter := zip.NewWriter(newZipFile)
+
+	config := ZipConfig{
+		ZipFileName:        zipfilepath,
+		ZipWriter:          zipWriter,
+		PrefixInZip:        "",
+		Folders:            []string{RelativeTmpTestDir},
+		SourceCodePatterns: []string{".txt"},
+	}
 
 	/* execute */
-	err := ZipFolders(zipfilepath, &ZipConfig{Folders: []string{RelativeTmpTestDir}, SourceCodePatterns: []string{".txt"}}, false)
+	err := Zip(&config)
+	zipWriter.Close()
+	newZipFile.Close()
 
 	/* test */
 	sechubUtil.Check(err, t)
@@ -286,6 +330,36 @@ func TestZipFileContainsRelativeFoldersOutsideCurrent(t *testing.T) {
 	list := readContentOfZipFileTest(zipfilepath, t)
 	// "./../sechub-cli-tmptest/file1.txt" becomes "sechub-cli-tmptest/file1.txt" in zip file
 	sechubUtil.AssertContains(list, "sechub-cli-tmptest/file1.txt", t)
+}
+
+func Example_zipDetectsNonExistingFiles() {
+	/* prepare */
+	var t testing.T
+	RelativeTmpTestDir := "sechub-cli-tmptest"
+	sechubUtil.CreateTestDirectory(RelativeTmpTestDir, 0755, &t)
+	defer os.RemoveAll(RelativeTmpTestDir)
+
+	zipfilepath := RelativeTmpTestDir + "/testoutput.zip"
+	newZipFile, _ := os.Create(zipfilepath)
+	zipWriter := zip.NewWriter(newZipFile)
+
+	config := ZipConfig{
+		ZipFileName: zipfilepath,
+		ZipWriter:   zipWriter,
+		PrefixInZip: "",
+		Files:       []string{RelativeTmpTestDir + "/non-existing-file.txt"},
+	}
+
+	/* execute */
+	err := Zip(&config)
+	zipWriter.Close()
+	newZipFile.Close()
+
+	/* test */
+	fmt.Println(err)
+	// Output:
+	// Folder created: "sechub-cli-tmptest"
+	// open sechub-cli-tmptest/non-existing-file.txt: no such file or directory
 }
 
 /* -------------------------------------*/
