@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.job;
 
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -24,7 +26,6 @@ import org.springframework.stereotype.Service;
 import com.mercedesbenz.sechub.commons.archive.ArchiveExtractionResult;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType;
 import com.mercedesbenz.sechub.commons.archive.SecHubFileStructureDataProvider;
-import com.mercedesbenz.sechub.commons.core.CommonConstants;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelSupport;
@@ -153,7 +154,7 @@ public class PDSWorkspaceService {
     }
 
     private boolean isWantedStorageContent(String name, PDSJobConfigurationSupport configurationSupport, PreparationContext preparationContext) {
-        if (CommonConstants.FILENAME_SOURCECODE_ZIP.equals(name)) {
+        if (FILENAME_SOURCECODE_ZIP.equals(name)) {
             if (preparationContext.isSourceAccepted()) {
                 LOG.debug("Sourcecode zip file found and will not be ignored");
                 return true;
@@ -161,7 +162,7 @@ public class PDSWorkspaceService {
             LOG.debug("Sourcecode zip file found but ignored, because preparation context says that sources are not accepted for this job");
             return false;
         }
-        if (CommonConstants.FILENAME_BINARIES_TAR.equals(name)) {
+        if (FILENAME_BINARIES_TAR.equals(name)) {
             if (preparationContext.isBinaryAccepted()) {
                 LOG.debug("Binaries tar file found and will not be ignored");
                 return true;
@@ -427,11 +428,11 @@ public class PDSWorkspaceService {
     }
 
     private Path createBinariesTarFileLocation(Path workspaceFolderPath) {
-        return createWorkspacePathAndEnsureParentDirectories(workspaceFolderPath, UPLOAD + "/" + CommonConstants.FILENAME_BINARIES_TAR);
+        return createWorkspacePathAndEnsureParentDirectories(workspaceFolderPath, UPLOAD + "/" + FILENAME_BINARIES_TAR);
     }
 
     private Path createSourceCodeZipFileLocation(Path workspaceFolderPath) {
-        return createWorkspacePathAndEnsureParentDirectories(workspaceFolderPath, UPLOAD + "/" + CommonConstants.FILENAME_SOURCECODE_ZIP);
+        return createWorkspacePathAndEnsureParentDirectories(workspaceFolderPath, UPLOAD + "/" + FILENAME_SOURCECODE_ZIP);
     }
 
     private Path createExtractedBinariesLocation(Path workspaceFolderPath) {

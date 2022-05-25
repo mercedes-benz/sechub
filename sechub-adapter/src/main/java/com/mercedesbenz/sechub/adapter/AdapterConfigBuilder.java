@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.adapter;
 
 public interface AdapterConfigBuilder/* <B extends AdapterConfigBuilder<B, C>, C extends AdapterConfig> */ {

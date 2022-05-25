@@ -1,4 +1,5 @@
 #!/bin/bash 
+# SPDX-License-Identifier: MIT
 
 source ./shared-functions.sh
 set -e

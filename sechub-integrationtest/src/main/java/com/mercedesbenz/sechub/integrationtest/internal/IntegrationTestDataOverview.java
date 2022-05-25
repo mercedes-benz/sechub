@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.integrationtest.internal;
 
 import com.mercedesbenz.sechub.integrationtest.scenario1.Scenario1;

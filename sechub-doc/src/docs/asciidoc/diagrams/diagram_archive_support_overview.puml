@@ -1,0 +1,42 @@
+' SPDX-License-Identifier: MIT
+@startuml 
+hide empty fields
+hide empty members
+
+enum ScanType
+class SecHubConfigurationModel
+class SecHubFileStructureDataProviderBuilder
+interface SecHubFileStructureDataProvider {
+    boolean isRootFolderAccepted();
+    Set<String> getUnmodifiableSetOfAcceptedReferenceNames();
+}
+class MutableSecHubFileStructureDataProvider extends SecHubFileStructureDataProvider
+interface ArchiveTransformationData{
+  boolean isAccepted();
+  boolean isPathChangeWanted();
+  String getChangedPath();
+}
+
+class ArchiveTransformationDataFactory 
+class ArchiveSupport {
+    ArchiveExtractionResult extract(ArchiveType type, InputStream,...)
+}
+class ArchiveExtractionResult
+class PDSWorkspaceService
+ 
+SecHubFileStructureDataProviderBuilder -> SecHubConfigurationModel : needs
+SecHubFileStructureDataProviderBuilder -> ScanType : needs
+
+SecHubFileStructureDataProviderBuilder --> SecHubFileStructureDataProvider : creates
+
+
+ArchiveTransformationDataFactory --> SecHubFileStructureDataProvider : needs
+ArchiveTransformationDataFactory --> ArchiveTransformationData : creates
+
+ArchiveSupport --> ArchiveExtractionResult : returns
+ArchiveSupport --> ArchiveTransformationDataFactory : uses
+ArchiveSupport --> SecHubFileStructureDataProvider : needs
+
+PDSWorkspaceService --> ArchiveSupport : uses
+PDSWorkspaceService -> SecHubFileStructureDataProviderBuilder: uses
+@enduml 

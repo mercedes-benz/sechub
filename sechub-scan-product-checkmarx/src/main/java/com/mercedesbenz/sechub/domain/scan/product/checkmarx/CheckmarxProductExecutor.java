@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.checkmarx;
 
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
@@ -21,7 +23,6 @@ import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxConfig;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxMetaDataID;
-import com.mercedesbenz.sechub.commons.core.CommonConstants;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.SecHubAdapterOptionsBuilderStrategy;
 import com.mercedesbenz.sechub.domain.scan.product.AbstractProductExecutor;
@@ -151,7 +152,7 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
         if (metaData != null && metaData.hasValue(CheckmarxMetaDataID.KEY_FILEUPLOAD_DONE, true)) {
             return null;
         }
-        return storage.fetch(CommonConstants.FILENAME_SOURCECODE_ZIP);
+        return storage.fetch(FILENAME_SOURCECODE_ZIP);
     }
 
     @Override

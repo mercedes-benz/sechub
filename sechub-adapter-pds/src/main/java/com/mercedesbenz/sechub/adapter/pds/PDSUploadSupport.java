@@ -17,7 +17,6 @@ import org.springframework.web.client.RestOperations;
 
 import com.mercedesbenz.sechub.adapter.AdapterException;
 import com.mercedesbenz.sechub.adapter.springextension.MultipartInputStreamFileResource;
-import com.mercedesbenz.sechub.commons.core.CommonConstants;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationType;
 
 public class PDSUploadSupport {
@@ -33,8 +32,8 @@ public class PDSUploadSupport {
         Resource resource = fetchResource(dataType, context, data);
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add(CommonConstants.MULTIPART_FILE, resource);
-        body.add(CommonConstants.MULTIPART_CHECKSUM, checkSum);
+        body.add(MULTIPART_FILE, resource);
+        body.add(MULTIPART_CHECKSUM, checkSum);
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
         ResponseEntity<String> response = restTemplate.postForEntity(uploadSourceCodeUrl, requestEntity, String.class);

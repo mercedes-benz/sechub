@@ -29,7 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.amazonaws.util.StringInputStream;
-import com.mercedesbenz.sechub.commons.core.CommonConstants;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
 import com.mercedesbenz.sechub.pds.LogSanitizer;
 import com.mercedesbenz.sechub.pds.PDSBadRequestException;
@@ -45,9 +44,6 @@ import com.mercedesbenz.sechub.storage.core.JobStorage;
 @Service
 @RolesAllowed({ PDSRoleConstants.ROLE_SUPERADMIN, PDSRoleConstants.ROLE_USER })
 public class PDSFileUploadJobService {
-
-    private static final String PARAMETER_FILE = CommonConstants.MULTIPART_FILE;
-    private static final String PARAMETER_CHECKSUM = CommonConstants.MULTIPART_CHECKSUM;
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSFileUploadJobService.class);
 
@@ -168,7 +164,7 @@ public class PDSFileUploadJobService {
             FileItemStream item = iterStream.next();
             String fieldName = item.getFieldName();
             switch (fieldName) {
-            case PARAMETER_CHECKSUM:
+            case MULTIPART_CHECKSUM:
                 try (InputStream checkSumInputStream = item.openStream()) {
                     checksumFromUser = Streams.asString(checkSumInputStream);
 
@@ -179,7 +175,7 @@ public class PDSFileUploadJobService {
                 }
                 checkSumDefinedByUser = true;
                 break;
-            case PARAMETER_FILE:
+            case MULTIPART_FILE:
                 try (InputStream fileInputstream = item.openStream()) {
 
                     MessageDigest digest = checksumSHA256Service.createSHA256MessageDigest();

@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.integrationtest.internal;
 
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +32,6 @@ import org.springframework.web.client.RestTemplate;
 
 import com.mercedesbenz.sechub.adapter.TrustAllConfig;
 import com.mercedesbenz.sechub.adapter.support.TrustAllSupport;
-import com.mercedesbenz.sechub.commons.core.CommonConstants;
 import com.mercedesbenz.sechub.integrationtest.api.UserContext;
 
 public class TestRestHelper {
@@ -266,8 +267,8 @@ public class TestRestHelper {
         FileSystemResource resource = new FileSystemResource(file);
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add(CommonConstants.MULTIPART_FILE, resource);
-        body.add(CommonConstants.MULTIPART_CHECKSUM, checkSum);
+        body.add(MULTIPART_FILE, resource);
+        body.add(MULTIPART_CHECKSUM, checkSum);
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 

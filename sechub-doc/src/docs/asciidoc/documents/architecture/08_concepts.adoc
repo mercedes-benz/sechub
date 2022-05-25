@@ -18,6 +18,9 @@ include::../shared/concepts/concept_mappings.adoc[]
 // Product delegation server (headline in include - level3)
 include::../shared/concepts/concept_pds.adoc[]
 
+
+include::../shared/concepts/concept_archive_extraction.adoc[]
+plantuml::diagrams/diagram_archive_support_overview.puml[]
 // False-positive handling (headline in include - level3)
 include::../shared/concepts/concept_falsepositive_handling.adoc[]
 
