@@ -72,9 +72,7 @@ public class PDSBinaryAndSourceCodeHandlingScenario14IntTest {
 
         assertReport(report).
             hasStatus(SecHubStatus.SUCCESS).
-            hasMessages(0);
-
-        assertReport(report).
+            hasMessages(0).
             hasTrafficLight(YELLOW).
             hasFindings(4).
             hasUnordered(). // test unordered to avoid flaky tests because of file walk trough different data sections - result can change...
@@ -97,6 +95,69 @@ public class PDSBinaryAndSourceCodeHandlingScenario14IntTest {
                     scanType(ScanType.CODE_SCAN).
                     severity(Severity.MEDIUM).
                     description("path-info=files-a/subfolder-1/file-a-3.txt");
+        /* @formatter:on */
+    }
+
+    /**
+     * Uses upload file:
+     * {@link IntegrationTestExampleConstants#PATH_TO_ZIPFILE_WITH_DIFFERENT_DATA_SECTIONS}
+     *
+     * and setting of "medium-id" which will result in:
+     *
+     * <pre>
+     *   /__data__
+     *     /medium-id
+     *        data.txt (contains 3 findings: 1xmedium, 1xlow, 1xinfo)
+     * </pre>
+     *
+     * Also one info finding will be added by script per default
+     */
+    @Test
+    public void pds_upload_sources_extracts_automatically_only_wanted_parts_config_references_criticial_id() {
+        /* @formatter:off */
+
+        /* prepare */
+        TestProject project = PROJECT_1;
+        UUID jobUUID = as(USER_1).createScanJobWhichUsesDataReferencedIds(
+                IntegrationTestTemplateFile.CODE_SCAN_3_SOURCES_DATA_ONE_REFERENCE,
+                project, NOT_MOCKED,
+                TemplateData.builder().addReferenceId("medium-id").build());
+
+        /* execute */
+        as(USER_1).
+            uploadSourcecode(project, jobUUID, PATH_TO_ZIPFILE_WITH_DIFFERENT_DATA_SECTIONS).
+            approveJob(project, jobUUID);
+
+        waitForJobDone(project, jobUUID,30,true);
+
+        /* test */
+        String report = as(USER_1).getJobReport(project, jobUUID);
+
+        assertReport(report).
+            hasStatus(SecHubStatus.SUCCESS).
+            hasMessages(0).
+            hasTrafficLight(YELLOW).
+            hasFindings(4).
+            hasUnordered(). // test unordered to avoid flaky tests because of file walk trough different data sections - result can change...
+                finding().
+                    scanType(ScanType.CODE_SCAN).
+                    severity(Severity.INFO).
+                    description("pds.test.key.variantname as PDS_TEST_KEY_VARIANTNAME=a,product1.level as PRODUCT1_LEVEL=42").
+                    isContained().
+                finding().
+                    scanType(ScanType.CODE_SCAN).
+                    severity(Severity.INFO).
+                    description("i am just an information").
+                    isContained().
+                finding().
+                    scanType(ScanType.CODE_SCAN).
+                    severity(Severity.LOW).
+                    description("i am just a low error").
+                    isContained().
+                finding().
+                    scanType(ScanType.CODE_SCAN).
+                    severity(Severity.MEDIUM).
+                    description("i am a medium error");
         /* @formatter:on */
     }
 

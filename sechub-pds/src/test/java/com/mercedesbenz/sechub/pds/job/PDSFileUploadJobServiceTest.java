@@ -10,9 +10,18 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.UUID;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.mock.web.MockServletContext;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
+import com.mercedesbenz.sechub.pds.PDSNotAcceptableException;
+import com.mercedesbenz.sechub.pds.PDSNotFoundException;
 import com.mercedesbenz.sechub.pds.UploadSizeConfiguration;
 import com.mercedesbenz.sechub.pds.storage.PDSMultiStorageService;
 import com.mercedesbenz.sechub.pds.util.PDSArchiveSupportProvider;
@@ -79,194 +88,110 @@ public class PDSFileUploadJobServiceTest {
         when(checksumService.hasCorrectChecksum(eq(ACCEPTED_CHECKSUM), any())).thenReturn(true);
         when(checksumService.hasCorrectChecksum(eq(NOT_ACCEPTED_CHECKSUM), any())).thenReturn(false);
     }
-    /* FIXME Albert Tregnaghi, 2022-05-25:either reimplement or drop these tests! */
-//    @Test
-//    void upload_works_when_uploads_valid_zipfile_so_given_content_is_given_to_storage() throws Exception {
-//        /* prepare */
-//        String result = CONTENT_DATA;
-//        ExtendedMockMultipartFile multiPart = new ExtendedMockMultipartFile(CommonConstants.MULTIPART_FILE, result.getBytes());
-//        String allowedNameWithMaxLength = "123456789-123456789_123456789.123456.zip";
-//
-////        request.setContentType("multipart/form-data; boundary="+boundary);
-//        serviceToTest.upload(jobUUID, "filename", request);
-//
-//        /* test */
-//        InputStream usedFileInputStream = multiPart.getRememberedInputStream();
-//        assertNotNull("File input stream was not fetched!", usedFileInputStream);
-//        verify(storage).store(eq("123456789-123456789_123456789.123456.zip"), eq(usedFileInputStream));
-//
-//    }
 
-//    @Test
-//    void upload_works_when_uploads_is_not_valid_zipfile_but_ends_not_with_zip_so_given_content_is_given_to_storage() throws Exception {
-//        /* prepare */
-//        String result = CONTENT_DATA;
-//        ExtendedMockMultipartFile multiPart = new ExtendedMockMultipartFile("file", result.getBytes());
-//        String allowedNameWithMaxLength = "123456789-123456789_123456789.1234561234";
-//
-//        /* execute */
-//        serviceToTest.upload(jobUUID, allowedNameWithMaxLength, multiPart, ACCEPTED_CHECKSUM);
-//
-//        /* test */
-//        InputStream usedFileInputStream = multiPart.getRememberedInputStream();
-//        assertNotNull("File input stream was not fetched!", usedFileInputStream);
-//        verify(storage).store(eq("123456789-123456789_123456789.1234561234"), eq(usedFileInputStream));
-//
-//    }
-//
-//    @Test
-//    void upload_fails_when_all_correct_but_job_not_found_throws_pds_not_found_exception() {
-//        /* prepare */
-//        String result = CONTENT_DATA;
-//        MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
-//        String fileName = "1234567890123456789012345678901234567890";
-//
-//        PDSNotFoundException exception = assertThrows(PDSNotFoundException.class, () -> {
-//
-//            /* execute */
-//            UUID notExistingJobUUID = UUID.randomUUID();
-//            serviceToTest.upload(notExistingJobUUID, fileName, multiPart, ACCEPTED_CHECKSUM);
-//
-//        });
-//
-//        /* test */
-//        assertTrue(exception.getMessage().contains("Given job does not exist"));
-//
-//    }
-//
-//    @Test
-//    void upload_fails_when_all_correct_job_found_but_in_state_ready_to_start_throws_illegal_argument_exception() {
-//        /* prepare */
-//        String result = CONTENT_DATA;
-//        MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
-//        String fileName = "1234567890123456789012345678901234567890";
-//        job.setState(PDSJobStatusState.READY_TO_START);
-//
-//        PDSNotAcceptableException exception = assertThrows(PDSNotAcceptableException.class, () -> {
-//
-//            /* execute */
-//            serviceToTest.upload(jobUUID, fileName, multiPart, ACCEPTED_CHECKSUM);
-//        });
-//
-//        /* test */
-//        assertTrue(exception.getMessage().contains("accepted is only:[CREATED]"));
-//
-//    }
-//
-//    @Test
-//    void upload_fails_when_containing_filename_length_41_so_filename_length_too_long_throws_illegal_argument_exception() {
-//        /* prepare */
-//        String result = CONTENT_DATA;
-//        MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
-//        String fileName = "12345678901234567890123456789012345678901";
-//        assertEquals(41, fileName.length());// check test string has really 41 (just a sanity check)
-//
-//        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-//
-//            /* execute */
-//            serviceToTest.upload(jobUUID, fileName, multiPart, ACCEPTED_CHECKSUM);
-//        });
-//
-//        /* test */
-//        assertTrue(exception.getMessage().contains("40"));
-//    }
-//
-//    @Test
-//    public void upload_fails_when_containing_filename_with_slash_throws_illegal_argument_exception() {
-//        /* prepare */
-//        String result = CONTENT_DATA;
-//        MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
-//        String fileName = "123456789/123456789012345678901234567890";
-//
-//        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-//
-//            /* execute */
-//            serviceToTest.upload(jobUUID, fileName, multiPart, ACCEPTED_CHECKSUM);
-//        });
-//
-//        /* test */
-//        assertTrue(exception.getMessage().contains("[a-zA-Z"));
-//    }
-//
-//    @Test
-//    void upload_fails_when_containing_filename_with_backslash_throws_illegal_argument_exception() {
-//        /* prepare */
-//        String result = CONTENT_DATA;
-//        MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
-//        String fileName = "123456789\\123456789012345678901234567890";
-//
-//        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-//
-//            /* execute */
-//            serviceToTest.upload(jobUUID, fileName, multiPart, ACCEPTED_CHECKSUM);
-//        });
-//
-//        /* test */
-//        assertTrue(exception.getMessage().contains("[a-zA-Z"));
-//    }
-//
-//    @Test
-//    void upload_fails_when_zipfile_correct_but_checksum_service_says_not_correct_checksum() {
-//        /* prepare */
-//        String result = CONTENT_DATA;
-//        MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
-//        String allowedNameWithMaxLength = "123456789-123456789_123456789.123456.zip";
-//
-//        when(archiveSupport.isZipFile(any())).thenReturn(true);
-//
-//        PDSNotAcceptableException exception = assertThrows(PDSNotAcceptableException.class, () -> {
-//
-//            /* execute */
-//            serviceToTest.upload(jobUUID, allowedNameWithMaxLength, multiPart, NOT_ACCEPTED_CHECKSUM);
-//        });
-//
-//        /* test */
-//        String message = exception.getMessage();
-//
-//        assertTrue(message.contains("checksum"));
-//        assertTrue(message.contains("failed"));
-//    }
-//
-//    @Test
-//    void upload_fails_when_not_a_zipfile_but_checksum_service_says_not_correct_checksum() {
-//        /* prepare */
-//        String result = CONTENT_DATA;
-//        MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
-//        String allowedNameWithMaxLength = "123456789-123456789_123456789.123456.txt";
-//
-//        when(archiveSupport.isZipFile(any())).thenReturn(false); // would always fail but may not matter, because not a ZIP file...
-//
-//        PDSNotAcceptableException exception = assertThrows(PDSNotAcceptableException.class, () -> {
-//
-//            /* execute */
-//            serviceToTest.upload(jobUUID, allowedNameWithMaxLength, multiPart, NOT_ACCEPTED_CHECKSUM);
-//        });
-//
-//        /* test */
-//        String message = exception.getMessage();
-//
-//        assertTrue(message.contains("checksum"));
-//        assertTrue(message.contains("failed"));
-//    }
-//
-//    @Test
-//    void upload_fails_when_filename_ends_with_zip_but_is_not_valid_zip_file() {
-//        /* prepare */
-//        String result = CONTENT_DATA;
-//        MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
-//        String allowedNameWithMaxLength = "123456789-123456789_123456789.123456.zip";
-//
-//        PDSNotAcceptableException exception = assertThrows(PDSNotAcceptableException.class, () -> {
-//
-//            /* execute */
-//            serviceToTest.upload(jobUUID, allowedNameWithMaxLength, multiPart, NOT_ACCEPTED_CHECKSUM);
-//        });
-//
-//        /* test */
-//        String message = exception.getMessage();
-//
-//        assertTrue(message.contains("zip"));
-//        assertTrue(message.contains("valid"));
-//    }
+    @Test
+    void upload_fails_when_all_correct_but_job_not_found_throws_pds_not_found_exception() {
+        /* prepare */
+        String result = CONTENT_DATA;
+        MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
+        String fileName = "1234567890123456789012345678901234567890";
+
+        ServletContext context = new MockServletContext();
+        HttpServletRequest request = MockMvcRequestBuilders.multipart("https://localhost:1234").file(multiPart).buildRequest(context);
+        PDSNotFoundException exception = assertThrows(PDSNotFoundException.class, () -> {
+
+            /* execute */
+            UUID notExistingJobUUID = UUID.randomUUID();
+            serviceToTest.upload(notExistingJobUUID, fileName, request);
+
+        });
+
+        /* test */
+        assertTrue(exception.getMessage().contains("Given job does not exist"));
+
+    }
+
+    @Test
+    void upload_fails_when_all_correct_job_found_but_in_state_ready_to_start_throws_illegal_argument_exception() {
+        /* prepare */
+        String result = CONTENT_DATA;
+        MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
+        String fileName = "1234567890123456789012345678901234567890";
+        job.setState(PDSJobStatusState.READY_TO_START);
+
+        ServletContext context = new MockServletContext();
+        HttpServletRequest request = MockMvcRequestBuilders.multipart("https://localhost:1234").file(multiPart).buildRequest(context);
+
+        PDSNotAcceptableException exception = assertThrows(PDSNotAcceptableException.class, () -> {
+
+            /* execute */
+            serviceToTest.upload(job.getUUID(), fileName, request);
+        });
+
+        /* test */
+        assertTrue(exception.getMessage().contains("accepted is only:[CREATED]"));
+
+    }
+
+    @Test
+    void upload_fails_when_containing_filename_length_41_so_filename_length_too_long_throws_illegal_argument_exception() {
+        /* prepare */
+        String result = CONTENT_DATA;
+        MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
+        String fileName = "12345678901234567890123456789012345678901";
+        assertEquals(41, fileName.length());// check test string has really 41 (just a sanity check)
+
+        ServletContext context = new MockServletContext();
+        HttpServletRequest request = MockMvcRequestBuilders.multipart("https://localhost:1234").file(multiPart).buildRequest(context);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+
+            /* execute */
+            serviceToTest.upload(job.getUUID(), fileName, request);
+        });
+
+        /* test */
+        assertTrue(exception.getMessage().contains("40"));
+    }
+
+    @Test
+    public void upload_fails_when_containing_filename_with_slash_throws_illegal_argument_exception() {
+        /* prepare */
+        String result = CONTENT_DATA;
+        MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
+        String fileName = "123456789/123456789012345678901234567890";
+
+        ServletContext context = new MockServletContext();
+        HttpServletRequest request = MockMvcRequestBuilders.multipart("https://localhost:1234").file(multiPart).buildRequest(context);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+
+            /* execute */
+            serviceToTest.upload(job.getUUID(), fileName, request);
+        });
+
+        /* test */
+        assertTrue(exception.getMessage().contains("[a-zA-Z"));
+    }
+
+    @Test
+    void upload_fails_when_containing_filename_with_backslash_throws_illegal_argument_exception() {
+        /* prepare */
+        String result = CONTENT_DATA;
+        MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
+        String fileName = "123456789\\123456789012345678901234567890";
+
+        ServletContext context = new MockServletContext();
+        HttpServletRequest request = MockMvcRequestBuilders.multipart("https://localhost:1234").file(multiPart).buildRequest(context);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+
+            /* execute */
+            serviceToTest.upload(job.getUUID(), fileName, request);
+        });
+
+        /* test */
+        assertTrue(exception.getMessage().contains("[a-zA-Z"));
+    }
 
 }

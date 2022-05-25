@@ -12,6 +12,8 @@ public enum IntegrationTestTemplateFile {
 
     CODE_SCAN_2_BINARIES_DATA_ONE_REFERENCE("sechub-integrationtest-codescan-binaries-config1-one-data-section-only-folder.json"),
 
+    CODE_SCAN_3_SOURCES_DATA_ONE_REFERENCE("sechub-integrationtest-codescan-sources-config1-one-data-section-only-folder.json"),
+
     ;
 
     private String templateFilename;

@@ -184,6 +184,20 @@ public class AsPDSUser {
 
     public static void upload(TestURLBuilder urlBuilder, TestRestHelper restHelper, UUID pdsJobUUID, String uploadName, File file) {
         String checkSum = TestAPI.createSHA256Of(file);
+        upload(urlBuilder, restHelper, pdsJobUUID, uploadName, file, checkSum);
+    }
+
+    public AsPDSUser uploadWithWrongChecksum(UUID pdsJobUUID, String uploadName, String pathInsideResources) {
+        File uploadFile = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(pathInsideResources);
+        return uploadWithWrongChecksum(pdsJobUUID, uploadName, uploadFile);
+    }
+
+    public AsPDSUser uploadWithWrongChecksum(UUID pdsJobUUID, String uploadName, File file) {
+        upload(getUrlBuilder(), getRestHelper(), pdsJobUUID, uploadName, file, "wrong-checksum");
+        return this;
+    }
+
+    private static void upload(TestURLBuilder urlBuilder, TestRestHelper restHelper, UUID pdsJobUUID, String uploadName, File file, String checkSum) {
         String url = urlBuilder.pds().buildUpload(pdsJobUUID, uploadName);
         restHelper.upload(url, file, checkSum);
     }

@@ -13,6 +13,7 @@ import org.junit.rules.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException.BadRequest;
 
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.PDSIntTestProductIdentifier;
@@ -110,6 +111,27 @@ public class DirectPDSAPIJobScenario6IntTest {
         asPDSUser(PDS_TECH_USER).
             upload(pdsJobUUID, SOURCECODE_ZIP,
                    "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip");
+
+        /* @formatter:on */
+    }
+
+    @Test
+    public void pds_techuser_cannot_upload_job_data_to_PDS_when_wrong_checksum() {
+        /* @formatter:off */
+        /* prepare */
+
+        UUID sechubJobUUID = UUID.randomUUID();
+
+        String createResult = asPDSUser(PDS_TECH_USER).createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
+        UUID pdsJobUUID = assertPDSJobCreateResult(createResult).hasJobUUID().getJobUUID();
+
+        /* execute + test just no error happens */
+        BadRequest exception = assertThrows(BadRequest.class, ()->{
+            asPDSUser(PDS_TECH_USER).
+                uploadWithWrongChecksum(pdsJobUUID, SOURCECODE_ZIP,
+                    "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip");
+        });
+        assertTrue(exception.getMessage().contains("checksum is not a valid"));
 
         /* @formatter:on */
     }

@@ -136,10 +136,6 @@ public class AnonymousSignupRestControllerMockTest {
         /* @formatter:on */
     }
 
-    /*
-     * FIXME Albert Tregnaghi, 2018-07-04: write a test case to ensure the content
-     * (emailadress etc) is really injected !
-     */
     @Test
     public void calling_with_api_1_0_and_userid_set_but_NO_valid_email_returns_HTTP_400_BAD_REQUEST() throws Exception {
         /* prepare */
