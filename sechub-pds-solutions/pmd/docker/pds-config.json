@@ -1,0 +1,13 @@
+{
+    "apiVersion" : "1.0",
+    "serverId" : "PMD_CLUSTER",
+
+    "products" : [
+        {
+            "id" : "PDS_PMD",
+            "path" : "/scripts/pmd.sh",
+            "scanType" : "codeScan",
+            "description" : "Runs the security checker pmd."
+        }
+    ]
+}
