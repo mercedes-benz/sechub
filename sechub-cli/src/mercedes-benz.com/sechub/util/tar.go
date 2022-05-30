@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-// TarConfig - contains all necessary things for tar'ing binary files for scanning
+// TarConfig - contains all necessary information for creating a tar archive for scanning
 type TarConfig struct {
 	TarFileName string
 	TarWriter   *tar.Writer
@@ -28,7 +28,7 @@ type TarConfig struct {
 // TarFileHasNoContent error message saying tar file has no content
 const TarFileHasNoContent = "Tarfile is empty!"
 
-// TargetTarFileLoop error message when it comes to an infinite lopp because target inside tarped content
+// TargetTarFileLoop error message when it comes to an infinite loop because the tar file would be part of its own content
 const TargetTarFileLoop = "Target tarfile would be part of its own content, leading to infinite loop. Please change target path!"
 
 // Tar - Will tar defined folders and files using given TarConfig.
@@ -51,11 +51,11 @@ func Tar(config *TarConfig) (err error) {
 	}
 
 	// Add defined single files to tar file
-	pwdAbs, _ := filepath.Abs(".")
+	currentWorkingDirectory, _ := filepath.Abs(".")
 	var tarPath string
 	for _, file := range config.Files {
 		file = ConvertBackslashPath(file)
-		tarPath, err = normalizeArchivePath(file, pwdAbs)
+		tarPath, err = normalizeArchivePath(file, currentWorkingDirectory)
 		if err != nil {
 			return err
 		}
@@ -72,7 +72,7 @@ func Tar(config *TarConfig) (err error) {
 }
 
 func tarOneFolderRecursively(folder string, config *TarConfig) error {
-	pwdAbs, _ := filepath.Abs(".")
+	currentWorkingDirectory, _ := filepath.Abs(".")
 	folderPathAbs, _ := filepath.Abs(folder)
 	if _, err := os.Stat(folderPathAbs); os.IsNotExist(err) {
 		return errors.New("Folder not found: " + folder + " (" + folderPathAbs + ")")
@@ -91,7 +91,7 @@ func tarOneFolderRecursively(folder string, config *TarConfig) error {
 		}
 
 		var tarPath string
-		tarPath, err = normalizeArchivePath(file, pwdAbs)
+		tarPath, err = normalizeArchivePath(file, currentWorkingDirectory)
 		if err != nil {
 			return err
 		}
@@ -101,7 +101,7 @@ func tarOneFolderRecursively(folder string, config *TarConfig) error {
 
 		// Filter excludes
 		for _, excludePattern := range config.Excludes {
-			if Filepathmatch(tarPath, excludePattern) {
+			if FilePathMatch(tarPath, excludePattern) {
 				LogDebug(config.Debug, fmt.Sprintf("%q matches exclude pattern %q -> skip", file, excludePattern))
 				return nil
 			}
@@ -134,7 +134,7 @@ func tarOneFile(file string, tarPath string, config *TarConfig) error {
 	}
 
 	// Take file metadata as is (owner, access dates etc.)
-	header, _ := tar.FileInfoHeader(info, "symlinks are not supperted")
+	header, _ := tar.FileInfoHeader(info, "symlinks are not supported")
 
 	// Change path in archive to requested tarPath
 	header.Name = tarPath

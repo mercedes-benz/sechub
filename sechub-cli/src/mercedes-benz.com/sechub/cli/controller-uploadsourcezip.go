@@ -41,7 +41,7 @@ func uploadBinariesTarFile(context *Context) {
 	}
 
 	extraParams := map[string]string{
-		"title":    "Binaries tar'ed",
+		"title":    "Binaries for scan",
 		"author":   "Sechub client " + Version(),
 		"checkSum": context.binariesTarFileChecksum,
 	}

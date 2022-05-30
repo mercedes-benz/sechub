@@ -99,12 +99,12 @@ func Test_createBinariesTarFile_DataBinariesSectionWorksWithAbsolutePathes(t *te
 
 	/* test */
 	list, _ := sechubUtil.ListContentOfTarFile(context.binariesTarFileName)
+	sechubTestUtil.AssertSize(list, 5, t)
 	sechubTestUtil.AssertContains(list, archiveDataPrefix+"/"+namedBinariesScanConfig1.Name+filepath1, t)
 	sechubTestUtil.AssertContains(list, archiveDataPrefix+"/"+namedBinariesScanConfig1.Name+filepath4, t)
 	sechubTestUtil.AssertContains(list, archiveDataPrefix+"/"+namedBinariesScanConfig1.Name+filepath5, t)
 	sechubTestUtil.AssertContains(list, archiveDataPrefix+"/"+namedBinariesScanConfig2.Name+filepath2, t)
 	sechubTestUtil.AssertContains(list, archiveDataPrefix+"/"+namedBinariesScanConfig2.Name+filepath3, t)
-	sechubTestUtil.AssertSize(list, 5, t)
 }
 
 func Test_createBinariesTarFile_DataBinariesSectionWorksWithRelativePathes(t *testing.T) {

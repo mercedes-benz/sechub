@@ -148,7 +148,7 @@ func computeContentLengthOfFileUpload(params map[string]string, paramName, filen
 
 	const ContentLengthFormData = 46 // Content-Disposition: form-data; name="..."  (including newlines)
 
-	const ContentLengthFormDataZipFile = 100
+	const ContentLengthFormDataFile = 100
 	// Content-Disposition: form-data; name="file"; filename="sourcecode.zip"
 	// Content-Type: application/octet-stream
 	// (including newlines)
@@ -164,7 +164,7 @@ func computeContentLengthOfFileUpload(params map[string]string, paramName, filen
 
 	// multipart .zip file part
 	contentLength += ContentLengthMultipartBoundary
-	contentLength += ContentLengthFormDataZipFile
+	contentLength += ContentLengthFormDataFile
 	contentLength += int64(len(paramName))
 	contentLength += int64(len(filepath.Base(filename)))
 	contentLength += sechubUtil.GetFileSize(filename)

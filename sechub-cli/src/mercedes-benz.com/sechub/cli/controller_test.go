@@ -72,7 +72,7 @@ func Test_prepareScan_binary_upload_respects_exclude_patterns(t *testing.T) {
 	filename2 := subdir + "/testfile1"
 	filename3 := subsubdir + "/testfile2"
 
-	content := []byte("I am binary :-)\n")
+	content := []byte("I am binary 😀\n")
 	sechubTestUtil.CreateTestFile(filename0, 0644, content, t)
 	sechubTestUtil.CreateTestFile(filename1, 0644, content, t)
 	sechubTestUtil.CreateTestFile(filename2, 0644, content, t)
