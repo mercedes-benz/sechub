@@ -47,7 +47,7 @@ func Test_createBinariesTarFile_EmptyTarFileIsRejected(t *testing.T) {
 	sechubTestUtil.AssertErrorHasExpectedMessage(err, sechubUtil.TarFileHasNoContent, t)
 }
 
-func Test_createBinariesTarFile_DataBinariesSectionWorksWithAbsolutePathes(t *testing.T) {
+func Test_createBinariesTarFile_DataBinariesSectionWorksWithAbsolutePaths(t *testing.T) {
 	/* prepare */
 	var context Context
 	var config Config
@@ -107,7 +107,7 @@ func Test_createBinariesTarFile_DataBinariesSectionWorksWithAbsolutePathes(t *te
 	sechubTestUtil.AssertContains(list, archiveDataPrefix+"/"+namedBinariesScanConfig2.Name+filepath3, t)
 }
 
-func Test_createBinariesTarFile_DataBinariesSectionWorksWithRelativePathes(t *testing.T) {
+func Test_createBinariesTarFile_DataBinariesSectionWorksWithRelativePaths(t *testing.T) {
 	/* prepare */
 	var context Context
 	var config Config
@@ -145,7 +145,7 @@ func Test_createBinariesTarFile_DataBinariesSectionWorksWithRelativePathes(t *te
 
 	/* test */
 	list, _ := sechubUtil.ListContentOfTarFile(context.binariesTarFileName)
+	sechubTestUtil.AssertSize(list, 2, t)
 	sechubTestUtil.AssertContains(list, archiveDataPrefix+"/"+namedBinariesScanConfig1.Name+"/"+filepath1, t)
 	sechubTestUtil.AssertContains(list, archiveDataPrefix+"/"+namedBinariesScanConfig1.Name+"/"+filepath2, t)
-	sechubTestUtil.AssertSize(list, 2, t)
 }
