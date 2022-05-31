@@ -10,15 +10,16 @@ from requests import get
 alert_url = 'https://www.zaproxy.org/docs/alerts/'
 
 
-def generate_owaspzap_ruleset(wanted_status, output_file):
+def generate_owaspzap_ruleset(rule_release_status, output_file):
     response = get(alert_url)
 
     soup = BeautifulSoup(response.content, 'html.parser')
     table_body = soup.find('tbody')
     if table_body is None:
-        raise TypeError('Value of table body variable "tbody" was "None".')
+        raise TypeError(
+            'Unable to find table body. The table body should exists. Value of table body variable "tbody" was "None".')
 
-    rules = create_rules(table_body, wanted_status)
+    rules = create_rules(table_body, rule_release_status)
     owasp_zap_ruleset = {'timestamp': datetime.now().__str__(), 'origin': alert_url, 'rules': rules}
 
     with open(output_file, 'w') as file:
@@ -63,8 +64,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--output-file', required=True)
 
-    parser.add_argument('--wanted-status', required=False, nargs='*',
+    parser.add_argument('--rule-release-status', required=False, nargs='*',
                         type=str, choices=['release', 'beta', 'alpha'], default=['release', 'beta', 'alpha'],
                         help='Specify values separated by spaces like: release beta alpha')
     args = parser.parse_args()
-    generate_owaspzap_ruleset(args.wanted_status, args.output_file)
+    generate_owaspzap_ruleset(args.rule_release_status, args.output_file)
+

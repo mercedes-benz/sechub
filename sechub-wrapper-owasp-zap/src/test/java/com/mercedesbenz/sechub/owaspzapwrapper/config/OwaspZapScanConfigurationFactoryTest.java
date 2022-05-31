@@ -326,7 +326,7 @@ class OwaspZapScanConfigurationFactoryTest {
     }
 
     @Test
-    void commandlinesettings_null_throws_mustexitruntimeexception() {
+    void commandline_settings_null_throws_must_exit_runtime_exception() {
         /* execute + test */
         assertThrows(MustExitRuntimeException.class, () -> factoryToTest.create(null));
     }
