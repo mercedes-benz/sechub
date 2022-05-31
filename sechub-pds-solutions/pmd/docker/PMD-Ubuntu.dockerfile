@@ -10,7 +10,7 @@ FROM ${BASE_IMAGE}
 LABEL maintainer="SecHub FOSS Team"
 
 # Build args
-ARG PMD_VERSION="6.45.0"
+ARG PMD_VERSION="6.46.0"
 ARG PDS_FOLDER="/pds"
 ARG PDS_VERSION="0.27.0"
 ARG SCRIPT_FOLDER="/scripts"
@@ -20,6 +20,7 @@ ARG WORKSPACE="/workspace"
 ENV DOWNLOAD_FOLDER="/downloads"
 ENV MOCK_FOLDER="$SCRIPT_FOLDER/mocks"
 ENV PDS_VERSION="${PDS_VERSION}"
+ENV SCRIPT_FOLDER="${SCRIPT_FOLDER}"
 ENV SHARED_VOLUMES="/shared_volumes"
 ENV SHARED_VOLUME_UPLOAD_DIR="$SHARED_VOLUMES/uploads"
 ENV TOOL_FOLDER="/tools"
@@ -44,8 +45,10 @@ COPY mocks "$MOCK_FOLDER"
 # Copy PDS configfile
 COPY pds-config.json "$PDS_FOLDER"/pds-config.json
 
-# Copy PMD scripts
+# Copy PMD scripts and rulesets
 COPY pmd.sh "$SCRIPT_FOLDER"/pmd.sh
+COPY ruleset-security.xml "$SCRIPT_FOLDER"/ruleset-security.xml
+COPY ruleset-all.xml "$SCRIPT_FOLDER"/ruleset-all.xml
 
 # Copy run script into container
 COPY run.sh /run.sh
@@ -54,10 +57,10 @@ COPY run.sh /run.sh
 RUN chmod +x /run.sh "$SCRIPT_FOLDER"/pmd.sh
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
-    apt-get -qq update && \
-    apt-get -qq --assume-yes upgrade && \
-    apt-get -qq --assume-yes install w3m wget openjdk-11-jre-headless unzip && \
-    apt-get -qq --assume-yes clean
+    apt-get update && \
+    apt-get --assume-yes upgrade && \
+    apt-get --assume-yes install w3m wget openjdk-11-jre-headless unzip && \
+    apt-get --assume-yes clean
 
 # Install PMD
 RUN cd "$DOWNLOAD_FOLDER" && \

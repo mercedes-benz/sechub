@@ -7,7 +7,15 @@
             "id" : "PDS_PMD",
             "path" : "/scripts/pmd.sh",
             "scanType" : "codeScan",
-            "description" : "Runs the security checker pmd."
+            "description" : "PMD is a static source code analyzer.",
+            "parameters" : {
+                "optional" : [
+                    {
+                        "key" : "pmd.ruleset",
+                        "description" : "Analyze source code with ALL rules or SECURITY(enabled by default) rules only."
+                    }
+                ]
+            }
         }
     ]
 }
