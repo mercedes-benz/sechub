@@ -210,6 +210,10 @@ public class DeveloperAdministration {
             return restHelper.getJSON(pdsUrlBuilder.pds().buildGetJobStatus(UUID.fromString(jobUUID)));
         }
 
+        public UUID getUUIDOfLastStartedJob() {
+            return restHelper.getUUIDFromURL(pdsUrlBuilder.pds().buildFetchLastStartedJobUUIDUrl());
+        }
+
         public String markJobAsReadyToStart(UUID jobUUID) {
             AsPDSUser.markJobAsReadyToStart(jobUUID, restHelper, pdsUrlBuilder);
             return "triggered";

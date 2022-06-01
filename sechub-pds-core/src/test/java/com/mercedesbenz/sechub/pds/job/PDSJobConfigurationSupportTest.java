@@ -10,6 +10,9 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.mercedesbenz.sechub.commons.model.JSONConverterException;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
+import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.pds.execution.PDSExecutionParameterEntry;
 
@@ -142,6 +145,44 @@ class PDSJobConfigurationSupportTest {
         assertTrue(result);
     }
 
+    @Test
+    void resolve_sechub_model_returns_null_when_parameter_not_set() {
+        assertNull(supportToTest.resolveSecHubConfigurationModel());
+    }
+
+    @Test
+    void get_sechub_model_json_returns_null_when_parameter_not_set() {
+        assertNull(supportToTest.getSecHubConfigurationModelAsJson());
+    }
+
+    @Test
+    void resolve_sechub_model_returns_model_when_parameter_defined() {
+        /* prepare */
+        SecHubScanConfiguration config = new SecHubScanConfiguration();
+        config.setProjectId("a-cool-project-id");
+        String json = config.toJSON();
+        addParameter(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_CONFIGURATION, json);
+
+        /* execute */
+        SecHubConfigurationModel model = supportToTest.resolveSecHubConfigurationModel();
+
+        /* test */
+        assertNotNull(model);
+        assertEquals("a-cool-project-id", model.getProjectId());
+    }
+
+    @Test
+    void resolve_sechub_model_fails_with_json_converter_exception_when_parameter_is_invalid_json() {
+        /* prepare */
+        addParameter(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_CONFIGURATION, "{");
+
+        /* execute + test */
+        assertThrows(JSONConverterException.class, () -> supportToTest.resolveSecHubConfigurationModel());
+    }
+
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    /* + ................Helpers......................... + */
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
     private void addParameter(String key, String value) {
         PDSExecutionParameterEntry entry = new PDSExecutionParameterEntry();
         entry.setKey(key);

@@ -10,6 +10,7 @@ include 'sechub-cli',
 'sechub-commons-core',
 'sechub-commons-model',
 'sechub-commons-pds',
+'sechub-commons-archive',
 
 /* server POD area */
 'sechub-server',       // executable spring boot jar

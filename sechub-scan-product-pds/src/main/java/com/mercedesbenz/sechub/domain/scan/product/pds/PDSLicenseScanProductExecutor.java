@@ -1,15 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.pds;
 
-import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
-
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 
@@ -18,11 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.pds.PDSAdapter;
 import com.mercedesbenz.sechub.adapter.pds.PDSLicenseScanConfig;
 import com.mercedesbenz.sechub.adapter.pds.PDSLicenseScanConfigImpl;
-import com.mercedesbenz.sechub.adapter.pds.PDSMetaDataID;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.product.AbstractProductExecutor;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
@@ -33,8 +25,6 @@ import com.mercedesbenz.sechub.sharedkernel.SystemEnvironment;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspection;
 import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspector;
-import com.mercedesbenz.sechub.storage.core.JobStorage;
-import com.mercedesbenz.sechub.storage.core.StorageService;
 
 @Service
 public class PDSLicenseScanProductExecutor extends AbstractProductExecutor {
@@ -47,9 +37,6 @@ public class PDSLicenseScanProductExecutor extends AbstractProductExecutor {
     PDSInstallSetup installSetup;
 
     @Autowired
-    StorageService storageService;
-
-    @Autowired
     SystemEnvironment systemEnvironment;
 
     @Autowired
@@ -57,6 +44,9 @@ public class PDSLicenseScanProductExecutor extends AbstractProductExecutor {
 
     @Autowired
     PDSResilienceConsultant pdsResilienceConsultant;
+
+    @Autowired
+    PDSStorageContentProviderFactory contentProviderFactory;
 
     public PDSLicenseScanProductExecutor() {
         super(ProductIdentifier.PDS_LICENSESCAN, 1, ScanType.LICENSE_SCAN);
@@ -77,48 +67,23 @@ public class PDSLicenseScanProductExecutor extends AbstractProductExecutor {
 
         SecHubExecutionContext context = data.getSechubExecutionContext();
 
-        UUID jobUUID = context.getSechubJobUUID();
-        String projectId = context.getConfiguration().getProjectId();
-
-        JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
+        PDSStorageContentProvider contentProvider = contentProviderFactory.createContentProvider(context, configSupport, getScanType());
 
         ProductResult result = resilientActionExecutor.executeResilient(() -> {
 
-            AdapterMetaData metaDataOrNull = executorContext.getCurrentMetaDataOrNull();
-
-            /* we reuse existing file upload checksum done by sechub */
-            String sourceZipFileChecksum = fetchFileUploadChecksumIfNecessary(storage, metaDataOrNull);
-
-            try (InputStream sourceCodeZipFileInputStream = fetchInputStreamIfNecessary(storage, metaDataOrNull)) {
-
-                /* @formatter:off */
-
-                    Map<String, String> jobParams = configSupport.createJobParametersToSendToPDS(context.getConfiguration());
+            try (InputStream sourceCodeZipFileInputStreamOrNull = contentProvider.getSourceZipFileInputStreamOrNull();
+                    InputStream binariesTarFileInputStreamOrNull = contentProvider.getBinariesTarFileInputStreamOrNull()) { /* @formatter:off */
 
                     PDSLicenseScanConfig pdsLicenseScanConfig = PDSLicenseScanConfigImpl.builder().
-                            setPDSProductIdentifier(configSupport.getPDSProductIdentifier()).
-                            setTrustAllCertificates(configSupport.isTrustAllCertificatesEnabled()).
-                            setProductBaseUrl(configSupport.getProductBaseURL()).
-                            setSecHubJobUUID(context.getSechubJobUUID()).
-
-                            setSecHubConfigModel(context.getConfiguration()).
-
-                            configure(createAdapterOptionsStrategy(data)).
-
-                            setTimeToWaitForNextCheckOperationInMilliseconds(configSupport.getTimeToWaitForNextCheckOperationInMilliseconds(installSetup)).
-                            setTimeOutInMinutes(configSupport.getTimeoutInMinutes(installSetup)).
-
-                            setFileSystemSourceFolders(data.getCodeUploadFileSystemFolders()).
-                            setSourceCodeZipFileInputStream(sourceCodeZipFileInputStream).
-                            setSourceZipFileChecksum(sourceZipFileChecksum).
-
-                            setUser(configSupport.getUser()).
-                            setPasswordOrAPIToken(configSupport.getPasswordOrAPIToken()).
-                            setProjectId(projectId).
-
-                            setTraceID(context.getTraceLogIdAsString()).
-                            setJobParameters(jobParams).
-
+                            configure(PDSAdapterConfigurationStrategy.builder().
+                                    setScanType(getScanType()).
+                                    setProductExecutorData(data).
+                                    setConfigSupport(configSupport).
+                                    setSourceCodeZipFileInputStreamOrNull(sourceCodeZipFileInputStreamOrNull).
+                                    setBinariesTarFileInputStreamOrNull(binariesTarFileInputStreamOrNull).
+                                    setContentProvider(contentProvider).
+                                    setInstallSetup(installSetup).
+                                    build()).
                             build();
                     /* @formatter:on */
 
@@ -136,24 +101,6 @@ public class PDSLicenseScanProductExecutor extends AbstractProductExecutor {
             }
         });
         return Collections.singletonList(result);
-
-    }
-
-    private InputStream fetchInputStreamIfNecessary(JobStorage storage, AdapterMetaData metaData) throws IOException {
-        if (metaData != null && metaData.hasValue(PDSMetaDataID.KEY_FILEUPLOAD_DONE, true)) {
-            return null;
-        }
-        return storage.fetch(FILENAME_SOURCECODE_ZIP);
-    }
-
-    private String fetchFileUploadChecksumIfNecessary(JobStorage storage, AdapterMetaData metaData) throws IOException {
-        if (metaData != null && metaData.hasValue(PDSMetaDataID.KEY_FILEUPLOAD_DONE, true)) {
-            return null;
-        }
-        try (InputStream inputStream = storage.fetch(FILENAME_SOURCECODE_ZIP_CHECKSUM); Scanner scanner = new Scanner(inputStream)) {
-            String result = scanner.hasNext() ? scanner.next() : "";
-            return result;
-        }
 
     }
 

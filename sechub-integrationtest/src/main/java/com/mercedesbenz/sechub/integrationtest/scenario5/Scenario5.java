@@ -5,35 +5,45 @@ import static com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDe
 
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.api.TestUser;
-import com.mercedesbenz.sechub.integrationtest.internal.AbstractSecHubServerTestScenario;
-import com.mercedesbenz.sechub.integrationtest.internal.CleanScenario;
+import com.mercedesbenz.sechub.integrationtest.internal.AbstractGrowingSecHubServerTestScenario;
+import com.mercedesbenz.sechub.integrationtest.internal.GrowingScenario;
+import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultProfiles;
 import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
 
 /**
- * <b><u>Scenario5 - the PDS integration test standard scenario.(REUSE SECHUB
- * DATA enabled!)</u></b><br>
+ * <h3>Scenario 5</h3>
+ * <h4>Short description</h4> A PDS integration test scenario with multiple
+ * profiles
  *
- * In this scenario following is automatically initialized at start (old data
- * removed as well): <br>
+ * <h4>Overview</h4> For a glance over all scenarios, look at
+ * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
+ * Overview}
+ *
+ * <h4>Details</h4> This is a {@link GrowingScenario}.<br>
+ * In this scenario following is automatically initialized at start: <br>
  * <br>
  * a) <b> PDS integration test configuration is done automatically!</b> All
  * configurations from
- * 'sechub-integrationtest/src/main/resources/pds-config-integrationtest.json'
+ * <code>sechub-integrationtest/src/main/resources/pds-config-integrationtest.json</code>
  * will be configured automatically!<br>
  * <br>
  * b) User and project data:
  *
  * <pre>
- * PROJECT_1_ is automatically created (assigned to profile 2)
- * PROJECT_2_ is automatically created (assigned to profile 6)
- * USER_1, is automatically registered, created and assigned to project1 and project2
+ * PROJECT_1
+ *  - has execution {@link IntegrationTestDefaultProfiles#PROFILE_2_PDS_CODESCAN profile 2} assigned
+ *
+ * PROJECT_2
+ *  - has execution {@link IntegrationTestDefaultProfiles#PROFILE_6_NO_STORAGE_REUSED__PDS_CODESCAN_PROCESS_EXEC_FAILS_EXITCODE_1 profile 6} assigned
+ *
+ * USER_1, is automatically registered, created and assigned to PROJECT_1 and PROJECT_2
  * </pre>
  *
  *
  * @author Albert Tregnaghi
  *
  */
-public class Scenario5 extends AbstractSecHubServerTestScenario implements PDSTestScenario, CleanScenario {
+public class Scenario5 extends AbstractGrowingSecHubServerTestScenario implements PDSTestScenario {
 
     /**
      * User 1 is registered on startup, also owner and user of {@link #PROJECT_1}

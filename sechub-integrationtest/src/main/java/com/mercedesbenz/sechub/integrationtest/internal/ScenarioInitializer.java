@@ -89,8 +89,8 @@ public class ScenarioInitializer {
     }
 
     @SuppressWarnings("unchecked")
-    public ScenarioInitializer waitUntilUserCanLogin(TestUser user, int seconds) {
-        TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(user, seconds, HttpClientErrorException.class) {
+    public ScenarioInitializer waitUntilUserCanLogin(TestUser user, int secondsBeforeTimeOut) {
+        TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(user, secondsBeforeTimeOut, HttpClientErrorException.class) {
             @Override
             public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
                 assertUser(user).canLogin();
@@ -105,8 +105,8 @@ public class ScenarioInitializer {
     }
 
     @SuppressWarnings("unchecked")
-    public ScenarioInitializer waitUntilUserExists(TestUser user, int seconds) {
-        TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, seconds, HttpClientErrorException.class) {
+    public ScenarioInitializer waitUntilUserExists(TestUser user, int secondsBeforeTimeOut) {
+        TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, secondsBeforeTimeOut, HttpClientErrorException.class) {
             @Override
             public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
                 assertUser(user).doesExist();
@@ -121,8 +121,8 @@ public class ScenarioInitializer {
     }
 
     @SuppressWarnings("unchecked")
-    public ScenarioInitializer waitUntilProjectExists(TestProject project, int seconds) {
-        TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, seconds, HttpClientErrorException.class) {
+    public ScenarioInitializer waitUntilProjectExists(TestProject project, int secondsBeforeTimeOut) {
+        TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, secondsBeforeTimeOut, HttpClientErrorException.class) {
             @Override
             public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
                 assertProject(project).doesExist();

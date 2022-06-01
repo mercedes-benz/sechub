@@ -204,7 +204,7 @@ public class PDSJobRestControllerMockTest {
                     andExpect(status().isOk()
                 );
 
-        verify(mockedFileUploadJobService).upload(jobUUID,fileName, multiPart, "mychecksum");
+        verify(mockedFileUploadJobService).upload(eq(jobUUID),eq(fileName), any());
         /* @formatter:on */
 
     }

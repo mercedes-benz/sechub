@@ -3,7 +3,7 @@ package com.mercedesbenz.sechub.test;
 
 public class TestPDSServerProductConfig {
 
-    public boolean unzipUploads;
+    public boolean extractUploads;
     public String id;
     public String scanType;
     public String path;

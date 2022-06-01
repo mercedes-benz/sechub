@@ -6,21 +6,32 @@ import static com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDe
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.api.TestUser;
 import com.mercedesbenz.sechub.integrationtest.internal.AbstractSecHubServerTestScenario;
+import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultProfiles;
 import com.mercedesbenz.sechub.integrationtest.internal.StaticTestScenario;
 
 /**
- * This is a {@link StaticTestScenario} - please look into details and contract.
- * <b>DO NOT CHANGE ANY DATA here</b> - use this scenario for doing scans etc.
- * <br>
- * . In this scenario following is automatically <b>ONE TIME</b> initialized:
+ * <h3>Scenario 4</h3>
+ * <h4>Short description</h4> A static integration test scenario ready to use
+ * for job execution.
+ *
+ * <h4>Overview</h4> For a glance over all scenarios, look at
+ * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
+ * Overview}
+ *
+ * <h4>Details</h4> This is a {@link StaticTestScenario}.
+ *
+ * <ul>
+ * <li><b>DO NOT CHANGE ANY DATA here</b></li>
+ * <li>Use this scenario for doing scans etc.</li>
+ * </ul>
+ * In this scenario following is automatically <b>ONE TIME</b> initialized:
  *
  * <pre>
  * PROJECT_1_ is automatically created
+ * - has execution {@link IntegrationTestDefaultProfiles#PROFILE_1 profile 1} assigned
+ *
  * USER_1, is automatically registered, created and assigned to project1
  * </pre>
- *
- * <br>
- * Data will NOT be destroyed but reused in all tests!
  *
  * @author Albert Tregnaghi
  *

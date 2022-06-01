@@ -57,6 +57,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminRevo
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminShowsUserDetails;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUpdatesUserEmailAddress;
 import com.mercedesbenz.sechub.test.ExampleConstants;
+import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 import com.mercedesbenz.sechub.test.TestURLBuilder;
 
@@ -66,7 +67,7 @@ import com.mercedesbenz.sechub.test.TestURLBuilder;
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
-public class UserAdministrationRestControllerRestDocTest {
+public class UserAdministrationRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
 
     private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 

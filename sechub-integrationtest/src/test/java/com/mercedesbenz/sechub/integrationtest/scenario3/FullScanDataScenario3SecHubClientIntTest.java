@@ -20,6 +20,8 @@ import org.springframework.http.HttpStatus;
 import com.mercedesbenz.sechub.integrationtest.api.AssertFullScanData;
 import com.mercedesbenz.sechub.integrationtest.api.AssertFullScanData.FullScanDataElement;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
+import com.mercedesbenz.sechub.integrationtest.api.TestProject;
+import com.mercedesbenz.sechub.integrationtest.api.TestUser;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultExecutorConfigurations;
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
 import com.mercedesbenz.sechub.test.junit4.ExpectedExceptionFactory;
@@ -47,7 +49,7 @@ public class FullScanDataScenario3SecHubClientIntTest {
         as(SUPER_ADMIN).updateWhiteListForProject(PROJECT_1, Collections.singletonList("https://netsparker.productfailure.demo.example.org"));
 
         /* prepare - just execute a job */
-        ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(PROJECT_1, JSON_WEBSCAN_SCENARIO3_PRODUCTFAILURE);
+        ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(PROJECT_1, CLIENT_JSON_WEBSCAN_PRODUCTFAILURE_ZERO_WAIT);
         UUID sechubJobUUID = result.getSechubJobUUID();
 
         assertNotNull("No sechub jobUUId found-maybe client call failed?", sechubJobUUID);
@@ -77,16 +79,24 @@ public class FullScanDataScenario3SecHubClientIntTest {
     }
 
     @Test
-    public void when_job_was_executed__admin_is_able_to_download_fullscan_zip_file_for_this_sechub_job() throws IOException {
-        /* check preconditions */
-        assertUser(USER_1).isAssignedToProject(PROJECT_1).hasOwnerRole().hasUserRole();
-
+    public void user_1_starts_job_but_only_admin_can_download_scanlog_or_fullscan_data() throws IOException {
         /* prepare - just execute a job */
-        ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN);
+        TestUser user = USER_1;
+        TestProject project = PROJECT_1;
+        ExecutionResult result = as(user).withSecHubClient().startSynchronScanFor(project, CLIENT_JSON_SOURCESCAN_GREEN_ZERO_WAIT);
         UUID sechubJobUUID = result.getSechubJobUUID();
 
         assertNotNull("No sechub jobUUId found-maybe client call failed?", sechubJobUUID);
 
+        /* exeucte (1) - admin can download scan logs */
+        String json = as(SUPER_ADMIN).getScanLogsForProject(project);
+
+        /* test */
+        assertNotNull(json);
+        assertTrue(json.contains(sechubJobUUID.toString()));
+        assertTrue(json.contains(user.getUserId()));
+
+        /* execute (2) - admin can download full scan data */
         File scanDataZipFile = as(SUPER_ADMIN).downloadFullScanDataFor(sechubJobUUID);
 
         /* execute */
@@ -102,50 +112,15 @@ public class FullScanDataScenario3SecHubClientIntTest {
             containsFiles(5);
 
         FullScanDataElement log = assertFullScanData.resolveFileStartingWith("log_");
-        assertTrue(log.content.contains("executedBy=" + USER_1.getUserId()));
-        assertTrue(log.content.contains("projectId=" + PROJECT_1.getProjectId()));
-        /* @formatter:on*/
-    }
+        assertTrue(log.content.contains("executedBy=" + user.getUserId()));
+        assertTrue(log.content.contains("projectId=" + project.getProjectId()));
 
-    @Test
-    public void when_user1_has_started_job_for_project_admin_is_able_to_fetch_json_scanlog_which_is_containing_jobuuid_and_executor() throws IOException {
-        /* prepare - just execute a job */
-        ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN);
-        UUID sechubJobUUID = result.getSechubJobUUID();
 
-        assertNotNull("No sechub jobUUId found-maybe client call failed?", sechubJobUUID);
+        /* execute (3) + test - user cannot donload logs or full scan data*/
+        expectHttpFailure(() -> as(user).getScanLogsForProject(project), HttpStatus.FORBIDDEN);
+        expectHttpFailure(() -> as(user).downloadFullScanDataFor(sechubJobUUID), HttpStatus.FORBIDDEN);
 
         /* execute */
-        String json = as(SUPER_ADMIN).getScanLogsForProject(PROJECT_1);
-
-        /* test */
-        assertNotNull(json);
-        assertTrue(json.contains(sechubJobUUID.toString()));
-        assertTrue(json.contains(USER_1.getUserId()));
-    }
-
-    @Test
-    public void when_user1_has_started_job_for_project_user1_is_NOT_able_to_fetch_json_scanlog() throws IOException {
-        /* prepare - just execute a job */
-        ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN);
-        UUID sechubJobUUID = result.getSechubJobUUID();
-
-        assertNotNull("No sechub jobUUId found-maybe client call failed?", sechubJobUUID);
-
-        /* execute */
-        expectHttpFailure(() -> as(USER_1).getScanLogsForProject(PROJECT_1), HttpStatus.FORBIDDEN);
-    }
-
-    @Test
-    public void when_user1_has_started_job_for_project_user1_is_NOT_able_to_download_fullscan_zipfile() throws IOException {
-        /* prepare - just execute a job */
-        ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN);
-        UUID sechubJobUUID = result.getSechubJobUUID();
-
-        assertNotNull("No sechub jobUUId found-maybe client call failed?", sechubJobUUID);
-
-        /* execute */
-        expectHttpFailure(() -> as(USER_1).downloadFullScanDataFor(sechubJobUUID), HttpStatus.FORBIDDEN);
     }
 
 }

@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.pds.job;
 import java.util.UUID;
 
 import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -12,9 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.mercedesbenz.sechub.pds.PDSAPIConstants;
 import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
@@ -64,16 +63,14 @@ public class PDSJobRestController {
     }
 
     /* @formatter:off */
-	@Validated
 	@RequestMapping(path = "{jobUUID}/upload/{fileName}", method = RequestMethod.POST)
 	@UseCaseUserUploadsJobData(@PDSStep(name="rest call",description = "user uploads a file to workspace of given job",number=1))
 	public void upload(
 				@PathVariable("jobUUID") UUID jobUUID,
 				@PathVariable("fileName") String fileName,
-				@RequestParam("file") MultipartFile file,
-				@RequestParam("checkSum") String checkSum
+				HttpServletRequest request
 			) {
-		fileUploadJobService.upload(jobUUID,fileName, file,checkSum);
+		fileUploadJobService.upload(jobUUID,fileName,request);
 	}
 	/* @formatter:on */
 

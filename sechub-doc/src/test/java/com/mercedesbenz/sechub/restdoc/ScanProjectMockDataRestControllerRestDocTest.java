@@ -37,6 +37,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.UseCaseUserDefinesProjectMockdata;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.UseCaseUserRetrievesProjectMockdata;
 import com.mercedesbenz.sechub.test.ExampleConstants;
+import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 import com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter;
 
@@ -45,7 +46,7 @@ import com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter;
 @ContextConfiguration(classes = { ScanProjectMockDataRestController.class, ScanProjectMockDataRestControllerRestDocTest.SimpleTestConfiguration.class })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 @ActiveProfiles({ Profiles.MOCKED_PRODUCTS, Profiles.TEST })
-public class ScanProjectMockDataRestControllerRestDocTest {
+public class ScanProjectMockDataRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
 
     private static final String PROJECT1_ID = "project1";
 

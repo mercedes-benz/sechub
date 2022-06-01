@@ -1,0 +1,99 @@
+' SPDX-License-Identifier: MIT
+@startuml
+hide empty fields
+hide empty members
+
+interface PDSAdapterConfigData {
+    Map<String, String> getJobParameters();
+    UUID getSecHubJobUUID();
+    String getPdsProductIdentifier();
+    InputStream getSourceCodeZipFileInputStreamOrNull();
+    String getSourceCodeZipFileChecksumOrNull();
+    InputStream getBinaryTarFileInputStreamOrNull();
+    boolean isReusingSecHubStorage();
+    boolean isSourceCodeZipFileRequired();
+    boolean isBinaryTarFileRequired();
+    SecHubConfigurationModel getSecHubConfigurationModel();
+    ScanType getScanType();
+}
+
+interface PDSAdapterConfigurator{
+   setPdsProductIdentifier(String);
+   setSourceCodeZipFileInputStreamOrNull(InputStream);
+   setSourceCodeZipFileChecksumOrNull(String);
+   setBinaryTarFileInputStreamOrNull(InputStream);
+   setSecHubJobUUID(UUID);
+   setJobParameters(Map<String, String>);
+   setSecHubConfigurationModel(SecHubConfigurationModel);
+   setSourceCodeZipFileRequired(boolean);
+   setBinaryTarFileRequired(boolean);
+   setScanType(ScanType);
+   validateNonCalculatedParts();
+
+   calculate();
+   
+   configure();
+}
+interface PDSAdapterConfigDataProvider{
+    PDSAdapterConfigData getPdsAdapterConfigData()
+}
+interface PDSAdapterConfiguratorProvider{
+    PDSAdapterDataConfigurator getPdsAdapterConfigurator()
+}
+interface PDSAdapterConfig extends PDSAdapterConfigDataProvider
+
+interface PDSAdapterConfigBuilder extends  PDSAdapterConfiguratorProvider
+
+class PDSAdapterDataConfigurator implements PDSAdapterConfigData,PDSAdapterConfigurator{
+   
+}
+
+class PDSAdapterV1
+
+class PDSAdapterConfigurationStrategy 
+
+PDSAdapterConfigurationStrategy --> PDSAdapterConfiguratorProvider #line:orange :uses provider\nto fetch configurator (3a)
+PDSAdapterConfigurationStrategy --> PDSAdapterConfigurator #line:orange :use provided\nconfigurator to\nset PDS data (3b)
+
+together {
+    class PDSCodeScanProductExecutor
+    class PDSCodeScanConfig implements PDSAdapterConfig{
+        PDSAdapterConfigData getPdsAdapterConfigData()
+    }
+    class PDSCodeScanConfigBuilder implements PDSAdapterConfigBuilder{
+        PDSAdapterConfigData getPdsAdapterConfigurator()
+    }
+}
+
+PDSCodeScanProductExecutor --> PDSAdapterConfigurationStrategy #line:orange : creates + use strategy\non config builder(2)
+
+PDSCodeScanConfigBuilder --> PDSCodeScanConfig #line:blue :builds (4)
+
+PDSCodeScanProductExecutor --> PDSCodeScanConfigBuilder #line:blue : create + use (1)
+
+PDSCodeScanConfigBuilder o-- PDSAdapterDataConfigurator
+
+PDSAdapterConfigDataProvider --> PDSAdapterConfigData : provides
+
+PDSAdapterV1 --> PDSAdapterConfig #line:green :uses (6)
+
+PDSCodeScanProductExecutor --> PDSAdapterV1 #line:green : calls (5)
+
+PDSCodeScanConfig o-- PDSAdapterConfigData  
+
+note top of PDSCodeScanProductExecutor
+We show here only PDS Code scan as an example, but it is similar for other PDS scan variants
+end note
+
+note top of PDSAdapterConfigurationStrategy 
+The strategy calculates all necessary data and set the calculated values to the configurator
+end note
+
+note bottom of PDSAdapterDataConfigurator 
+This class represents both worlds: the configurator (to set values) and also the data object.
+Inside custom build method the builder will set this object finally into the created configuration
+(in this example: PDSCodeSCanConfig) as the `PDSAdapterConfigData`
+end note
+
+
+@enduml
