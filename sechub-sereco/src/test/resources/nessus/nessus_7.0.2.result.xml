@@ -6418,7 +6418,7 @@ Here is the list of packages installed on the remote Debian Linux system :
   ii   at-spi2-core  2.22.0-6+deb9u1  amd64  Assistive Technology Service Provider Interface (dbus core)
   ii   atop  2.2.6-4  amd64  Monitor for system resources and process activity
   ii   autoconf  2.69-10  all  automatic configure script builder
-  ii   autoconf-tar  20160916-1  all  Autoconf Macro Archive
+  ii   autoconf-archive  20160916-1  all  Autoconf Macro Archive
   ii   autogen  1:5.18.12-3  amd64  automated text file generator
   ii   autogen-doc  1:5.18.12-3  all  automated text file generator - documentation
   ii   automake  1:1.15-6  all  Tool for generating GNU Standards-compliant Makefiles
@@ -6454,7 +6454,7 @@ Here is the list of packages installed on the remote Debian Linux system :
   ii   dconf-service  0.26.0-2+b1  amd64  simple configuration storage system - D-Bus service
   ii   debconf  1.5.61  all  Debian configuration management system
   ii   debconf-i18n  1.5.61  all  full internationalization support for debconf
-  ii   debian-tar-keyring  2017.5  all  GnuPG tar keys of the Debian tar
+  ii   debian-archive-keyring  2017.5  all  GnuPG archive keys of the Debian archive
   ii   debian-faq  8.1  all  Debian Frequently Asked Questions
   ii   debianutils  4.8.1.1  amd64  Miscellaneous utilities specific to Debian
   ii   dh-python  2.20170125  all  Debian helper tools for packaging Python libraries and applications

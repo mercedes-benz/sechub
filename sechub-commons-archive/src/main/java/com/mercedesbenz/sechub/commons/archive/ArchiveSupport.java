@@ -69,6 +69,17 @@ public class ArchiveSupport {
 
     }
 
+    /**
+     * Checks if given stream can be handled as an input stream. Marked as
+     * deprecated, because the check will not validate content, data sections etc.
+     * As long as source code service uses this method we will keep it, but no other
+     * location should not use the implementation.
+     *
+     * @param inputStream
+     * @return true when strip can be handled as a zip input stream
+     *
+     */
+    @Deprecated
     public boolean isZipFileStream(InputStream inputStream) {
         if (inputStream == null) {
             return false;

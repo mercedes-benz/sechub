@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 === Archive extraction
 
-The <<data-structure-tar-and-zip-files,data structure>> concept does need na automated archive
+The <<data-structure-tar-and-zip-files,data structure>> concept does need an automated archive
 extraction. The main java class is `ArchiveSupport`.
 
 The next figure gives an overview about the involved classes: 

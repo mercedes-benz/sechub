@@ -27,9 +27,9 @@ public enum MockData {
 
     CHECKMARX_GREEN_1_SECOND_WAITING,
 
-    /* Netsparker */
     CHECKMARX_GREEN_ZERO_WAIT_FALLBACK,
 
+    /* Netsparker */
     NETSPARKER_GREEN_ZERO_WAIT,
 
     NETSPARKER_GREEN_10_SECONDS_WAITING,
@@ -40,6 +40,7 @@ public enum MockData {
 
     NETSPARKER_GREEN_ZERO_WAIT_FALLBACK,
 
+    /* Nessus */
     NESSUS_GREEN_ZERO_WAIT,
 
     NESSUS_MULTI_ZERO_WAIT,

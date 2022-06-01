@@ -193,8 +193,8 @@ public class TestURLBuilder {
         sb.append(createRootPath());
         sb.append(custom);
         for (Object pathVariable : parts) {
-            boolean endsAlreadyWithSlash = sb.charAt(sb.length() - 1) != '/';
-            if (endsAlreadyWithSlash) {
+            boolean notAlreadyEndsWithSlash = sb.charAt(sb.length() - 1) != '/';
+            if (notAlreadyEndsWithSlash) {
                 sb.append("/");
             }
             sb.append(pathVariable);

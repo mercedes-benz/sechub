@@ -11,7 +11,7 @@ public class UploadSizeConfiguration {
 
     @PDSMustBeDocumented("Define the maximum amount of bytes accepted for uploading files. The default when not set is " + DEFAULT_MAX_UPLOAD_SIZE_IN_BYTES
             + " (" + (DEFAULT_MAX_UPLOAD_SIZE_IN_BYTES / 1024 / 1024) + " MiB)")
-    @Value("${sechub.upload.binaries.maximum.bytes:" + DEFAULT_MAX_UPLOAD_SIZE_IN_BYTES + "}")
+    @Value("${pds.upload.binaries.maximum.bytes:" + DEFAULT_MAX_UPLOAD_SIZE_IN_BYTES + "}")
     private long maxUploadSizeInBytes;
 
     public long getMaxUploadSizeInBytes() {

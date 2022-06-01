@@ -62,9 +62,12 @@ public class ProductExecutorData {
     }
 
     /**
-     * This method returns a set with informaiton about
+     * This method returns a set with information about the uploaded folders. We use
+     * this information only to handle mock behavior when we simulate code scans. So
+     * use this only where absolutely necessary for mocking.
      *
-     * @return
+     * @deprecated
+     * @return set containing upload folders as a string
      */
     public Set<String> getCodeUploadFileSystemFolders() {
         return codeUploadFileSystemFolderPaths;

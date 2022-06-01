@@ -22,12 +22,6 @@ public interface PDSAdapterConfigurator {
 
     void setSecHubJobUUID(UUID secHubJobUUID);
 
-    /**
-     * Set job parameters - mandatory
-     *
-     * @param jobParameters a map with key values
-     * @return builder
-     */
     void setJobParameters(Map<String, String> jobParameters);
 
     void setSecHubConfigurationModel(SecHubConfigurationModel secHubConfigurationModel);

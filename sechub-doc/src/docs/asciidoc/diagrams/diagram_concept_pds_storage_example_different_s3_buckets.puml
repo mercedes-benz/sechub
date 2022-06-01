@@ -1,3 +1,4 @@
+' SPDX-License-Identifier: MIT
 @startuml
 !include <aws/common>
 !include <aws/Storage/AmazonS3/AmazonS3>
