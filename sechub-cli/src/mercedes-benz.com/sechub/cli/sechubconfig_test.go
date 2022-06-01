@@ -141,7 +141,8 @@ func Example_newSecHubConfigFromFile_parses_data_binary_section_correctly() {
 						"fileSystem": {
 							"files": [ "somewhere/file1.dll", "somewhere/file2.a" ],
 							"folders": [ "somewhere/bin/subfolder1", "somewhere/bin/subfolder2" ]
-						}
+						},
+						"excludes": [ "*.test" ]
 					},
 					{
 						"name": "reference-name-binaries-2",
@@ -160,7 +161,7 @@ func Example_newSecHubConfigFromFile_parses_data_binary_section_correctly() {
 	/* test */
 	fmt.Printf("%+v\n", result.Data.Binaries)
 	// Output:
-	// [{Name:reference-name-binaries-1 FileSystem:{Files:[somewhere/file1.dll somewhere/file2.a] Folders:[somewhere/bin/subfolder1 somewhere/bin/subfolder2]}} {Name:reference-name-binaries-2 FileSystem:{Files:[somewhere-else/mylib.so] Folders:[somewhere-else/lib]}}]
+	// [{Name:reference-name-binaries-1 FileSystem:{Files:[somewhere/file1.dll somewhere/file2.a] Folders:[somewhere/bin/subfolder1 somewhere/bin/subfolder2]} Excludes:[*.test]} {Name:reference-name-binaries-2 FileSystem:{Files:[somewhere-else/mylib.so] Folders:[somewhere-else/lib]} Excludes:[]}]
 }
 
 func Example_newSecHubConfigFromFile_parses_codeScan_use_correctly() {

@@ -8,14 +8,14 @@ import (
 	"strings"
 )
 
-func normalizeArchivePath(file string, pwdAbs string) (string, error) {
+func normalizeArchivePath(file string, currentWorkingDirectory string) (string, error) {
 	fileAbs, err := filepath.Abs(file)
 	if err != nil {
 		return fmt.Sprintf("Could not get absolute filepath of %s", file), err
 	}
 
 	// Make zip path relative to current working directory (the usual case)
-	zipPath := strings.TrimPrefix(fileAbs, pwdAbs)
+	zipPath := strings.TrimPrefix(fileAbs, currentWorkingDirectory)
 
 	// Change to a Unix-Style path if on Windows
 	zipPath = ConvertToUnixStylePath(zipPath)

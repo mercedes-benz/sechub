@@ -32,7 +32,7 @@ type ZipConfig struct {
 // ZipFileHasNoContent error message saying zip file has no content
 const ZipFileHasNoContent = "Zipfile has no content!"
 
-// TargetZipFileLoop error message when it comes to an infinite lopp because target inside zipped content
+// TargetZipFileLoop error message when it comes to an infinite loop because the zip file would be part of its own content
 const TargetZipFileLoop = "Target zipfile would be part of zipped content, leading to infinite loop. Please change target path!"
 
 // Zip - Will zip defined folders and files using given ZipConfig.
@@ -55,11 +55,11 @@ func Zip(config *ZipConfig) (err error) {
 	}
 
 	// Add defined single files to zip file
-	pwdAbs, _ := filepath.Abs(".")
+	currentWorkingDirectory, _ := filepath.Abs(".")
 	var zipPath string
 	for _, file := range config.Files {
 		file = ConvertBackslashPath(file)
-		zipPath, err = normalizeArchivePath(file, pwdAbs)
+		zipPath, err = normalizeArchivePath(file, currentWorkingDirectory)
 		if err != nil {
 			return err
 		}
@@ -76,7 +76,7 @@ func Zip(config *ZipConfig) (err error) {
 }
 
 func zipOneFolderRecursively(folder string, config *ZipConfig) error {
-	pwdAbs, _ := filepath.Abs(".")
+	currentWorkingDirectory, _ := filepath.Abs(".")
 	folderPathAbs, _ := filepath.Abs(folder)
 	if _, err := os.Stat(folderPathAbs); os.IsNotExist(err) {
 		return errors.New("Folder not found: " + folder + " (" + folderPathAbs + ")")
@@ -95,7 +95,7 @@ func zipOneFolderRecursively(folder string, config *ZipConfig) error {
 		}
 
 		var zipPath string
-		zipPath, err = normalizeArchivePath(file, pwdAbs)
+		zipPath, err = normalizeArchivePath(file, currentWorkingDirectory)
 		if err != nil {
 			return err
 		}
@@ -119,7 +119,7 @@ func zipOneFolderRecursively(folder string, config *ZipConfig) error {
 
 		// Filter excludes
 		for _, excludePattern := range config.Excludes {
-			if Filepathmatch(zipPath, excludePattern) {
+			if FilePathMatch(zipPath, excludePattern) {
 				LogDebug(config.Debug, fmt.Sprintf("%q matches exclude pattern %q -> skip", file, excludePattern))
 				return nil
 			}

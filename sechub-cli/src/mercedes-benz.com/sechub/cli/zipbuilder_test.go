@@ -42,7 +42,7 @@ func TestZipFileEmptyIsRejected(t *testing.T) {
 	sechubTestUtil.AssertErrorHasExpectedMessage(err, sechubUtil.ZipFileHasNoContent, t)
 }
 
-func Test_createSouceCodeZipFile_DataSourcesSectionWorksWithAbsolutePathes(t *testing.T) {
+func Test_createSouceCodeZipFile_DataSourcesSectionWorksWithAbsolutePaths(t *testing.T) {
 	/* prepare */
 	var context Context
 	var config Config
@@ -103,7 +103,7 @@ func Test_createSouceCodeZipFile_DataSourcesSectionWorksWithAbsolutePathes(t *te
 	sechubTestUtil.AssertContains(list, archiveDataPrefix+"/"+namedCodeScanConfig2.Name+filepath3, t)
 }
 
-func Test_createSouceCodeZipFile_DataSourcesSectionWorksWithRelativePathes(t *testing.T) {
+func Test_createSouceCodeZipFile_DataSourcesSectionWorksWithRelativePaths(t *testing.T) {
 	/* prepare */
 	var context Context
 	var config Config

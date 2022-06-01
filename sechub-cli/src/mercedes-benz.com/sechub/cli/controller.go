@@ -87,7 +87,10 @@ func handleUploads(context *Context) {
 		sechubUtil.Log("Uploading source zip file", context.config.quiet)
 		uploadSourceZipFile(context)
 	}
-	// To be added here: upload bindaries if defined
+	if context.binariesTarFileExists() {
+		sechubUtil.Log("Uploading binaries tar file", context.config.quiet)
+		uploadBinariesTarFile(context)
+	}
 }
 
 func prepareScan(context *Context) {
@@ -116,15 +119,21 @@ func prepareScan(context *Context) {
 		context.sourceZipFileChecksum = sechubUtil.CreateChecksum(context.sourceZipFileName)
 	}
 
-	// ToDo:
-	/// If len(context.sechubConfig.Data.Binaries) > 0 in the sechub.json ; then
-	//////////////////////////////
-	// Creating binaries TAR file
+	if len(context.sechubConfig.Data.Binaries) > 0 {
+		//////////////////////////////
+		// Creating binaries TAR file
+		context.binariesTarFileName = tempFile(context, fmt.Sprintf("binaries-%s.tar", context.config.projectID))
 
-	// ToDo
+		err := createBinariesTarFile(context)
+		if err != nil {
+			sechubUtil.LogError(fmt.Sprintf("%s\nExiting due to fatal error while creating binaries tar file...\n", err))
+			os.Remove(context.binariesTarFileName) // cleanup tar file
+			os.Exit(ExitCodeFailed)
+		}
 
-	/// EndIf
-
+		// calculate checksum for tar file
+		context.binariesTarFileChecksum = sechubUtil.CreateChecksum(context.binariesTarFileName)
+	}
 }
 
 func downloadSechubReport(context *Context) {
