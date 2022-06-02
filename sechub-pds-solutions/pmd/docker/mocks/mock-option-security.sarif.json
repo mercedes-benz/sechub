@@ -43,7 +43,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "/home/val/sechub/CWE506_Embedded_Malicious_Code__aes_encrypted_payload_01.java"
+                  "uri": "CWE506_Embedded_Malicious_Code__aes_encrypted_payload_01.java"
                 },
                 "region": {
                   "startLine": 39,
