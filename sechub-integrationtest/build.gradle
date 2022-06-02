@@ -138,11 +138,14 @@ task startIntegrationTestPDS(dependsOn: stopOldIntegrationTestPDS){
 
 }
 
-task startIntegrationTestInstances(dependsOn: [startIntegrationTestServer, startIntegrationTestPDS]){
-   
+task cleanIntegrationTestData(type: Delete) {
+    group 'sechub'
+    delete "${project.buildDir}/sechub/integrationtest"
 }
 
-
+task startIntegrationTestInstances(dependsOn: [startIntegrationTestServer, startIntegrationTestPDS, cleanIntegrationTestData]){
+   
+}
 
 task stopIntegrationTestServer(dependsOn: configureIntegrationTestServer){
     doLast{
@@ -192,8 +195,6 @@ task integrationtest(type: Test, dependsOn: startIntegrationTestInstances) {
    
 
 }
-
-
 
 /**
  * Special groovy class for executing external script. This is because exec task of groovy does ALWAYS wait until process has executed.

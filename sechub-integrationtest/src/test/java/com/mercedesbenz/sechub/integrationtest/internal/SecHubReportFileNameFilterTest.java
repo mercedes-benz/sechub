@@ -1,13 +1,16 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.integrationtest.internal;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import com.mercedesbenz.sechub.integrationtest.api.OnlyForRegularTestExecution;
+
+@OnlyForRegularTestExecution
 public class SecHubReportFileNameFilterTest {
 
     @Test
@@ -21,7 +24,7 @@ public class SecHubReportFileNameFilterTest {
         boolean accepted = filter.accept(fileToCheck.getParentFile(), fileToCheck.getName());
 
         /* test */
-        assertTrue("file should be accepted:" + fileToCheck, accepted);
+        assertTrue(accepted, "file should be accepted:" + fileToCheck);
     }
 
     @Test
@@ -35,7 +38,7 @@ public class SecHubReportFileNameFilterTest {
         boolean accepted = filter.accept(fileToCheck.getParentFile(), fileToCheck.getName());
 
         /* test */
-        assertFalse("File should NOT be accepted" + fileToCheck, accepted);
+        assertFalse(accepted, "File should NOT be accepted" + fileToCheck);
     }
 
 }

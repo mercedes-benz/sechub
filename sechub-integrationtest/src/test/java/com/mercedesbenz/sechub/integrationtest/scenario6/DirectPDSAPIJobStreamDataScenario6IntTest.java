@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.PDSIntTestProductIdentifier;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultExecutorConfigurations;
+import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
 
 /**
  * Integration test directly using REST API of integration test PDS (means
@@ -64,9 +65,16 @@ public class DirectPDSAPIJobStreamDataScenario6IntTest {
         String lastOutput = null;
         String lastError = null;
 
+        long started = System.currentTimeMillis();
         /* execute */
         boolean ended = false;
+
         do {
+            if (System.currentTimeMillis() - started > 4000) {
+                String currentStatus = asPDSUser(PDS_TECH_USER).getJobStatus(pdsJobUUID);
+                fail("Was not able to find expected stream data!\n- lastOutput:" + lastOutput + "\n- lastError:" + lastError + "\n- outputTextSet:"
+                        + outputTextSet + "\n- Current job status:\n" + TestJSONHelper.get().beatuifyJSON(currentStatus));
+            }
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {

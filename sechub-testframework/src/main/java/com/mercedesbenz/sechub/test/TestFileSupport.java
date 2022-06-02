@@ -11,7 +11,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.apache.commons.io.file.SimplePathVisitor;
 
 /**
  * Simplifies some issues with eclipse versus gradle scan testing etc. (Gradle
@@ -235,5 +242,17 @@ public class TestFileSupport {
         } catch (IOException e) {
             throw new IllegalStateException("cannot create temp file!", e);
         }
+    }
+
+    public static List<File> loadFilesAsFileList(File directory) throws IOException {
+        List<File> files = new LinkedList<>();
+        Files.walkFileTree(directory.toPath(), new SimplePathVisitor() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                files.add(file.toFile());
+                return super.visitFile(file, attrs);
+            }
+        });
+        return files;
     }
 }

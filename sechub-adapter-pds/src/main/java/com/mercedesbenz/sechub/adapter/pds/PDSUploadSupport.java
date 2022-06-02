@@ -17,16 +17,11 @@ import org.springframework.web.client.RestOperations;
 
 import com.mercedesbenz.sechub.adapter.AdapterException;
 import com.mercedesbenz.sechub.adapter.springextension.MultipartInputStreamFileResource;
+import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationType;
 
 public class PDSUploadSupport {
 
-    public void uploadZippedSourceCode(PDSContext context, PDSSourceZipConfig zipConfig) throws AdapterException {
-        String checksum = zipConfig.getSourceCodeZipFileChecksum();
-
-        upload(context, zipConfig, checksum);
-    }
-
-    private void upload(PDSContext context, PDSSourceZipConfig zipConfig, String checkSum) throws AdapterException {
+    public void upload(SecHubDataConfigurationType dataType, PDSContext context, PDSAdapterConfigData data, String checkSum) throws AdapterException {
         String uploadSourceCodeUrl = context.getUrlBuilder().buildUpload(context.getPdsJobUUID(), FILENAME_SOURCECODE_ZIP);
         RestOperations restTemplate = context.getRestOperations();
 
@@ -34,11 +29,11 @@ public class PDSUploadSupport {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-        Resource resource = fetchResource(context, zipConfig);
+        Resource resource = fetchResource(dataType, context, data);
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("file", resource);
-        body.add("checkSum", checkSum);
+        body.add(MULTIPART_FILE, resource);
+        body.add(MULTIPART_CHECKSUM, checkSum);
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
         ResponseEntity<String> response = restTemplate.postForEntity(uploadSourceCodeUrl, requestEntity, String.class);
@@ -48,12 +43,25 @@ public class PDSUploadSupport {
         }
     }
 
-    private Resource fetchResource(PDSContext context, PDSSourceZipConfig config) throws AdapterException {
-        InputStream zipInputstream = config.getSourceCodeZipFileInputStream();
-        if (zipInputstream == null) {
-            throw context.asAdapterException("Input stream containing zip file is null!");
+    private Resource fetchResource(SecHubDataConfigurationType dataType, PDSContext context, PDSAdapterConfigData data) throws AdapterException {
+        InputStream zipInputstream = null;
+        String fileName = null;
+        switch (dataType) {
+        case BINARY:
+            zipInputstream = data.getBinaryTarFileInputStreamOrNull();
+            fileName = FILENAME_SOURCECODE_ZIP;
+            break;
+        case SOURCE:
+            zipInputstream = data.getSourceCodeZipFileInputStreamOrNull();
+            fileName = FILENAME_BINARIES_TAR;
+            break;
+        default:
+            throw new IllegalStateException("unsupported data type:" + dataType);
         }
-        return new MultipartInputStreamFileResource(zipInputstream, FILENAME_SOURCECODE_ZIP);
+        if (zipInputstream == null) {
+            throw context.asAdapterException("Input stream for " + dataType + " file is null!");
+        }
+        return new MultipartInputStreamFileResource(zipInputstream, fileName);
     }
 
 }

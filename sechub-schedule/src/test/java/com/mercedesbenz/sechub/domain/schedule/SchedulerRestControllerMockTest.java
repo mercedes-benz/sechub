@@ -178,6 +178,7 @@ public class SchedulerRestControllerMockTest {
 
         InputStream inputStreamTo = ScheduleTestFileSupport.getTestfileSupport().getInputStreamTo("upload/zipfile_contains_only_test1.txt.zip");
         MockMultipartFile file1 = new MockMultipartFile("file", inputStreamTo);
+
         /* execute + test @formatter:off */
         this.mockMvc.perform(
         		multipart(https(PORT_USED).

@@ -25,8 +25,12 @@ import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubServerTestScenario;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestScenario;
+import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 
 public class IntegrationTestSetup implements TestRule {
+
+    public static final String SECHUB_INTEGRATIONTEST_ONLY_NECESSARY_TESTS_FOR_DOCUMENTATION = "sechub.integrationtest.only.necessary4documentation";
+    public static final String SECHUB_INTEGRATIONTEST_NEVER_NECESSARY_TESTS_FOR_DOCUMENTATION = "sechub.integrationtest.never.necessary4documentation";
 
     private static final String SECHUB_INTEGRATIONTEST_LONG_RUNNING = "sechub.integrationtest.longrunning";
     static final String SECHUB_INTEGRATIONTEST_RUNNING = "sechub.integrationtest.running";
@@ -162,9 +166,11 @@ public class IntegrationTestSetup implements TestRule {
                     Assume.assumeTrue(message, false);
                 }
             }
+            handleDocumentationTestsSpecialIfWanted();
             assertNecessaryTestServersRunning();
             assertTestAPIInternalSuperAdminAvailable();
 
+            long startTime = 0;
             /* prepare */
             String testClass = description.getClassName();
             String testMethod = description.getMethodName();
@@ -197,12 +203,13 @@ public class IntegrationTestSetup implements TestRule {
 
                 String info = "\n\n\n" + "  Start of integration test\n\n" + "  - Test class:" + testClass + "\n" + "  - Method:" + testMethod + "\n\n" + "\n";
                 logInfo(info);
-
+                startTime = System.currentTimeMillis();
                 if (sechubServerScenario) {
                     waitForPreparationEventsDone();
                 }
 
             } catch (Throwable e) {
+
                 LOG.error("#########################################################################");
                 LOG.error("#");
                 LOG.error("#         FATAL SCENARIO ERROR");
@@ -213,7 +220,7 @@ public class IntegrationTestSetup implements TestRule {
                 LOG.error("Last url :" + TestRestHelper.getLastUrl());
                 LOG.error("Last data:" + TestRestHelper.getLastData());
 
-                logInfo("\n\n\nEnd of integration test (scenario failure):\n - Test class: " + testClass + "\n - Method:" + testMethod + "\n\n");
+                logEnd(TestTag.SCENARIO_FAILURE, testClass, testMethod, startTime);
 
                 throw e;
             }
@@ -226,8 +233,58 @@ public class IntegrationTestSetup implements TestRule {
                 throw new IntegrationTestException(
                         "HTTP ERROR " + e.getRawStatusCode() + " '" + (code != null ? code.getReasonPhrase() : "?") + "', " + lastURL, e);
             } finally {
-                logInfo("\n\n\nEnd of integration test:\n - Test class: " + testClass + "\n - Method:" + testMethod + "\n\n");
+                logEnd(TestTag.DONE, testClass, testMethod, startTime);
             }
+        }
+
+        private void handleDocumentationTestsSpecialIfWanted() {
+            boolean onlyWhenNecessaryDocumentationTest = Boolean.getBoolean(SECHUB_INTEGRATIONTEST_ONLY_NECESSARY_TESTS_FOR_DOCUMENTATION);
+            boolean neverWhenNecessaryDocumentationTest = Boolean.getBoolean(SECHUB_INTEGRATIONTEST_NEVER_NECESSARY_TESTS_FOR_DOCUMENTATION);
+
+            if (!onlyWhenNecessaryDocumentationTest && !neverWhenNecessaryDocumentationTest) {
+                return;
+            }
+
+            /* sanity check */
+            if (onlyWhenNecessaryDocumentationTest && neverWhenNecessaryDocumentationTest) {
+                String message = "Either define \n-D" + SECHUB_INTEGRATIONTEST_ONLY_NECESSARY_TESTS_FOR_DOCUMENTATION + "=true\nor\n-D"
+                        + SECHUB_INTEGRATIONTEST_NEVER_NECESSARY_TESTS_FOR_DOCUMENTATION + "=true\nBut not both!";
+                throw new IllegalStateException(message);
+            }
+            boolean isADocumentationTest = false;
+            if (TestIsNecessaryForDocumentation.class.isAssignableFrom(description.getTestClass())) {
+                isADocumentationTest = true;
+            }
+            if (onlyWhenNecessaryDocumentationTest && !isADocumentationTest) {
+                String message = "Skipped test because not necessary for documentation and currently only those necessary tests are executed.";
+                Assume.assumeTrue(message, false);
+            }
+            if (neverWhenNecessaryDocumentationTest && isADocumentationTest) {
+                String message = "Skipped test because necessary for documentation and currently we do NOT execute those tests but all others.";
+                Assume.assumeTrue(message, false);
+            }
+
+        }
+
+        private void logEnd(TestTag failureTag, String testClass, String testMethod, long startTime) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("\n\n\nEnd of integration test:\n - Test  : class ");
+            sb.append(testClass);
+            if (failureTag.text != null) {
+                sb.append('(');
+                sb.append(failureTag.text);
+                sb.append(')');
+            }
+            sb.append("\n - Method: ");
+            sb.append(testMethod);
+            sb.append("\n - Time  : ");
+            sb.append(elapsed(startTime) + " ms from start of actual test until end\n\n");
+
+            logInfo(sb.toString());
+        }
+
+        private long elapsed(long startTime) {
+            return System.currentTimeMillis() - startTime;
         }
 
         private void logInfo(String info) {
@@ -390,6 +447,19 @@ public class IntegrationTestSetup implements TestRule {
         }
         LOG.warn("TestAPI is NOT able to list signups - so super admin is NOT available or has not correct permissions!");
         return Boolean.FALSE;
+    }
+
+    private enum TestTag {
+
+        DONE(null),
+
+        SCENARIO_FAILURE("scenario failure");
+
+        private String text;
+
+        private TestTag(String text) {
+            this.text = text;
+        }
     }
 
 }

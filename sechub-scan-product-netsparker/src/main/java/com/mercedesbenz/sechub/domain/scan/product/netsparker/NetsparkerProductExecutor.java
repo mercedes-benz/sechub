@@ -19,6 +19,7 @@ import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataAdapterConfigurationStrategy;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetRegistry.NetworkTargetInfo;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
+import com.mercedesbenz.sechub.domain.scan.SecHubAdapterOptionsBuilderStrategy;
 import com.mercedesbenz.sechub.domain.scan.WebConfigBuilderStrategy;
 import com.mercedesbenz.sechub.domain.scan.WebScanNetworkLocationProvider;
 import com.mercedesbenz.sechub.domain.scan.product.AbstractProductExecutor;
@@ -75,7 +76,7 @@ public class NetsparkerProductExecutor extends AbstractProductExecutor {
         productExecutorContext.useFirstFormerResultHavingMetaData(NetsparkerMetaDataID.KEY_TARGET_URI, targetURI);
 
 		NetsparkerAdapterConfig netsparkerConfig = NetsparkerConfig.builder().
-				configure(createAdapterOptionsStrategy(data)).
+				configure(new SecHubAdapterOptionsBuilderStrategy(data, getScanType())).
 				configure(new WebConfigBuilderStrategy(data.getSechubExecutionContext())).
 				configure(new NetworkTargetProductServerDataAdapterConfigurationStrategy(installSetup, targetType)).
 				setTimeToWaitForNextCheckOperationInMinutes(installSetup.getScanResultCheckPeriodInMinutes()).

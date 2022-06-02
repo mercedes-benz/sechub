@@ -168,7 +168,7 @@ public class RestartJobScenario4IntTest {
         /* prepare */
         clearMetaDataInspection();
 
-        UUID sechubJobUUID = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(project,IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING);
+        UUID sechubJobUUID = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(project,IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__4_SECONDS_WAITING);
         waitForJobRunning(project, sechubJobUUID);
         waitMilliSeconds(1000); // let the old job run (so not accidently running at same time)
 

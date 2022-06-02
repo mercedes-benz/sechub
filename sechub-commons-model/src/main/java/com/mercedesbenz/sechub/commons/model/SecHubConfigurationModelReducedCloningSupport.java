@@ -73,7 +73,10 @@ public class SecHubConfigurationModelReducedCloningSupport {
             LOG.warn("For scan type {} we have no reduced clone implementation. So the created model does not have any content!", scanTypeForClone);
             break;
         }
-
+        Optional<SecHubDataConfiguration> dataOpt = model.getData();
+        if (dataOpt.isPresent()) {
+            newModel.setData(dataOpt.get());
+        }
         String json = newModel.toJSON();
         return json;
     }

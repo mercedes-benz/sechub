@@ -35,7 +35,7 @@
             "id" : "PRODUCT_2",
             "path" : "/srv/security/scanner2.sh",
             "scanType" : "infraScan" ,
-            "unzipUploads" : false //<11>
+            "extractUploads" : false //<11>
         }
     ]
 }

@@ -12,7 +12,7 @@ to it's local storage at
 `${PDSJobWorkspaceLocation}/upload/sourcecode.zip`.
 
 Afterwards the <<pds-automated-extraction-sourcecode,relevant sources will be automatically extracted>> by inspecting
-the archive <<pds-exlanation-data-structure,data structure>>.
+the archive <<pds-explanation-data-structure,data structure>>.
 
 [[pds-fetches-binaries-from-storage]]
 ====== Binaries fetching
@@ -23,15 +23,9 @@ the complete TAR file from <<pds-storage-and-sharing,storage>> to it's local sto
 `${WorkspaceLocation}/upload/binaries.tar`. 
 
 Afterwards the <<pds-automated-extraction-binaries,relevant binaries will be automatically extracted>> by inspecting
-the archive <<pds-exlanation-data-structure,data structure>>.
+the archive <<pds-explanation-data-structure,data structure>>.
 
-// FIXME 2022-05-06, de-jcup: remove this after binaries are fetched by PDS!
-[CAUTION]
-====
-The binary fetching  is currently not yet implemented!
-====
-
-[[pds-exlanation-data-structure]]
+[[pds-explanation-data-structure]]
 ====== Data structure inside TAR and ZIP files
 include::concept_common_data_structure_tar_and_zip_files.adoc[]
 
@@ -150,8 +144,3 @@ ${PDSJobWorkspaceLocation}/upload/extracted/binaries
                                                file1b.bin
                                        file2.bin
 ----
-// FIXME 2022-05-06, de-jcup: remove this after binaries are extracted!
-[CAUTION]
-====
-The described binary extraction is currently not yet implemented!
-====

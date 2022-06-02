@@ -9,6 +9,8 @@ import java.security.NoSuchAlgorithmException;
 
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.pds.PDSBadRequestException;
+
 @Service
 public class PDSFileChecksumSHA256Service {
 
@@ -34,13 +36,7 @@ public class PDSFileChecksumSHA256Service {
         if (filepath == null) {
             return null;
         }
-        MessageDigest md;
-        String algorithm = "SHA-256";
-        try {
-            md = MessageDigest.getInstance(algorithm);
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException("Algorithm not supported:" + algorithm);
-        }
+        MessageDigest md = createSHA256MessageDigest();
         // file hashing with DigestInputStream
         try (DigestInputStream dis = new DigestInputStream(new FileInputStream(filepath), md)) {
             while (dis.read() != -1)
@@ -56,6 +52,49 @@ public class PDSFileChecksumSHA256Service {
             result.append(String.format("%02x", b));
         }
         return result.toString();
+
+    }
+
+    public String convertMessageDigestToHex(MessageDigest digest) {
+        // bytes to hex
+        StringBuilder result = new StringBuilder();
+        for (byte b : digest.digest()) {
+            result.append(String.format("%02x", b));
+        }
+        return result.toString();
+    }
+
+    public MessageDigest createSHA256MessageDigest() {
+        MessageDigest md;
+        String algorithm = "SHA-256";
+        try {
+            md = MessageDigest.getInstance(algorithm);
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("Algorithm not supported:" + algorithm);
+        }
+        return md;
+    }
+
+    public void assertValidSha256Checksum(String sha256) {
+        if (sha256 == null || sha256.isEmpty()) {
+            throw new PDSBadRequestException("Sha256 checksum not defined");
+        }
+        for (char c : sha256.toLowerCase().toCharArray()) {
+            if (Character.isDigit(c)) {
+                continue;
+            }
+            switch (c) {
+            case 'a':
+            case 'b':
+            case 'c':
+            case 'd':
+            case 'e':
+            case 'f':
+                /* everything fine */
+                continue;
+            }
+            throw new PDSBadRequestException("Given checksum is not a valid hex encoded sha256 checksum");
+        }
 
     }
 

@@ -42,6 +42,10 @@ public class AssertReport {
         return this;
     }
 
+    public AssertReportUnordered hasUnordered() {
+        return AssertReportUnordered.assertReportUnordered(report.toJSON());
+    }
+
     public AssertReport hasMessages(int expectedAmountOfMessages) {
         assertEquals(expectedAmountOfMessages, report.getMessages().size());
         return this;

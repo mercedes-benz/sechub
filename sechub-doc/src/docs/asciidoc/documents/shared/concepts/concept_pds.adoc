@@ -185,6 +185,9 @@ include::concept_pds_fetch_stream_of_running_job.adoc[]
 ===== How PDS handles storage data
 include::concept_pds_handle_storage_parts_at_runtime.adoc[]
 
+===== How PDS product executors configure the PDS adapter 
+include::concept_pds_adapter_configuration.adoc[]
+
 ==== SecHub integration
 ===== Executors and Adapters
 ====== Executors

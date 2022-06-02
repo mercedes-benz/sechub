@@ -16,7 +16,9 @@ import org.junit.Test;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.mercedesbenz.sechub.adapter.AdapterMetaDataCallback;
+import com.mercedesbenz.sechub.adapter.pds.PDSCodeScanConfigImpl.PDSCodeScanConfigBuilder;
 import com.mercedesbenz.sechub.adapter.pds.data.PDSJobStatus.PDSAdapterJobStatusState;
+import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
@@ -148,17 +150,23 @@ public class PDSAdapterV1WireMockTest {
     /* @formatter:off */
     private PDSAdapterConfig createCodeScanConfiguration(PDSWiremockTestSupport testSupport) {
         String baseURL = testSupport.getTestBaseUrl();
-        PDSAdapterConfig config = PDSCodeScanConfigImpl.builder().
+        PDSCodeScanConfigBuilder builder = PDSCodeScanConfigImpl.builder().
                 setUser("testuser").
                 setTrustAllCertificates(true).
                 setPasswordOrAPIToken("examplepwd").
                 setProjectId(TEST_PROJECT_ID).
-                setPDSProductIdentifier(productIdentifier).
-                setProductBaseUrl(baseURL).
-                setJobParameters(expectedJobParameters).
-                setSecHubJobUUID(sechubJobUUID).
-                setSourceCodeZipFileInputStream(new ByteArrayInputStream("test".getBytes())).
-                setSourceZipFileChecksum("fakeChecksumForfakeServer").build();
+                setProductBaseUrl(baseURL);
+
+        PDSAdapterConfigurator configurator = builder.getPDSAdapterConfigurator();
+        configurator.setPdsProductIdentifier(productIdentifier);
+        configurator.setJobParameters(expectedJobParameters);
+        configurator.setSecHubJobUUID(sechubJobUUID);
+        configurator.setSourceCodeZipFileInputStreamOrNull(new ByteArrayInputStream("test".getBytes()));
+        configurator.setSourceCodeZipFileChecksumOrNull("fakeChecksumForfakeServer");
+        configurator.setScanType(ScanType.CODE_SCAN);
+
+        PDSAdapterConfig config = builder.build();
+
         return config;
     }
     /* @formatter:on */

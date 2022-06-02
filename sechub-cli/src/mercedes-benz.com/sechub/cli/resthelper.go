@@ -86,7 +86,7 @@ func handleHTTPRequestAndResponse(context *Context, request *http.Request) *http
 }
 
 // Creates a new file upload http request with optional extra params (low memory footprint regardless the file size)
-func newFileUploadRequestViaPipe(uploadToURL string, params map[string]string, paramName, zipfilename string) (*http.Request, error) {
+func newFileUploadRequestViaPipe(uploadToURL string, params map[string]string, paramName, filename string) (*http.Request, error) {
 	r, w := io.Pipe()
 	m := multipart.NewWriter(w)
 
@@ -97,12 +97,12 @@ func newFileUploadRequestViaPipe(uploadToURL string, params map[string]string, p
 			_ = m.WriteField(key, val)
 		}
 
-		part, err := m.CreateFormFile(paramName, filepath.Base(zipfilename))
+		part, err := m.CreateFormFile(paramName, filepath.Base(filename))
 		if err != nil {
 			return
 		}
 
-		file, err := os.Open(zipfilename)
+		file, err := os.Open(filename)
 		if err != nil {
 			return
 		}
@@ -117,12 +117,12 @@ func newFileUploadRequestViaPipe(uploadToURL string, params map[string]string, p
 
 	request, err := http.NewRequest("POST", uploadToURL, r)
 	request.Header.Set("Content-Type", m.FormDataContentType())
-	request.ContentLength = computeContentLengthOfFileUpload(params, paramName, zipfilename)
+	request.ContentLength = computeContentLengthOfFileUpload(params, paramName, filename)
 
 	return request, err
 }
 
-func computeContentLengthOfFileUpload(params map[string]string, paramName, zipfilename string) (contentLength int64) {
+func computeContentLengthOfFileUpload(params map[string]string, paramName, filename string) (contentLength int64) {
 	/* Real world example of multipart content sent to SecHub server when uploading:
 	--f76dd0c1a814e0af2f4d197827fd9caa1e9636276e064454356141ae1347
 	Content-Disposition: form-data; name="title"
@@ -148,7 +148,7 @@ func computeContentLengthOfFileUpload(params map[string]string, paramName, zipfi
 
 	const ContentLengthFormData = 46 // Content-Disposition: form-data; name="..."  (including newlines)
 
-	const ContentLengthFormDataZipFile = 100
+	const ContentLengthFormDataFile = 100
 	// Content-Disposition: form-data; name="file"; filename="sourcecode.zip"
 	// Content-Type: application/octet-stream
 	// (including newlines)
@@ -164,10 +164,10 @@ func computeContentLengthOfFileUpload(params map[string]string, paramName, zipfi
 
 	// multipart .zip file part
 	contentLength += ContentLengthMultipartBoundary
-	contentLength += ContentLengthFormDataZipFile
+	contentLength += ContentLengthFormDataFile
 	contentLength += int64(len(paramName))
-	contentLength += int64(len(filepath.Base(zipfilename)))
-	contentLength += sechubUtil.GetFileSize(zipfilename)
+	contentLength += int64(len(filepath.Base(filename)))
+	contentLength += sechubUtil.GetFileSize(filename)
 
 	// multipart trailing line
 	contentLength += ContentLengthMultipartBoundaryTrailingLine
