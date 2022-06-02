@@ -1,0 +1,68 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "PMD",
+          "version": "6.46.0",
+          "informationUri": "https://pmd.github.io/pmd/",
+          "rules": [
+            {
+              "id": "HardCodedCryptoKey",
+              "shortDescription": {
+                "text": "Do not use hard coded encryption keys"
+              },
+              "fullDescription": {
+                "text": "\nDo not use hard coded values for cryptographic operations. Please store keys outside of source code.\n        "
+              },
+              "helpUri": "https://pmd.github.io/pmd-6.46.0/pmd_rules_java_security.html#hardcodedcryptokey",
+              "help": {
+                "text": "\nDo not use hard coded values for cryptographic operations. Please store keys outside of source code.\n        "
+              },
+              "properties": {
+                "ruleset": "Security",
+                "priority": 3,
+                "tags": [
+                  "Security"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "HardCodedCryptoKey",
+          "ruleIndex": 0,
+          "message": {
+            "text": "Do not use hard coded encryption keys"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/home/val/sechub/CWE506_Embedded_Malicious_Code__aes_encrypted_payload_01.java"
+                },
+                "region": {
+                  "startLine": 39,
+                  "startColumn": 57,
+                  "endLine": 39,
+                  "endColumn": 74
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "invocations": [
+        {
+          "executionSuccessful": true,
+          "toolConfigurationNotifications": [],
+          "toolExecutionNotifications": []
+        }
+      ]
+    }
+  ]
+}
