@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mercedesbenz.sechub.pds.execution.PDSExecutionService;
 import com.mercedesbenz.sechub.pds.job.PDSJob;
 import com.mercedesbenz.sechub.pds.job.PDSJobRepository;
 import com.mercedesbenz.sechub.pds.job.PDSWorkspaceService;
@@ -50,6 +51,9 @@ public class IntegrationTestPDSRestController {
     StorageService storageService;
 
     @Autowired
+    PDSExecutionService executionService;
+
+    @Autowired
     private ConfigurableApplicationContext context;
 
     @RequestMapping(path = PDSAPIConstants.API_ANONYMOUS + "integrationtest/alive", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -60,8 +64,13 @@ public class IntegrationTestPDSRestController {
     @RequestMapping(path = PDSAPIConstants.API_ANONYMOUS + "integrationtest/shutdown", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })
     public void shutdownServer() {
-        LOG.info("Integration test server shutdown initiated by closing context...");
+        LOG.info("Integration test server shutdown wished...");
+
+        LOG.info("Shutdown: shutdown spring boot context");
         context.close();
+
+        LOG.info("Shutdown: hard system exit 0");
+        System.exit(0);
     }
 
     @RequestMapping(path = PDSAPIConstants.API_ANONYMOUS + "integrationtest/log/info", method = RequestMethod.POST, produces = {
