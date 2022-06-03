@@ -113,12 +113,17 @@ public class ScanService implements SynchronMessageHandler {
             executeScan(context, request);
 
             ScanReport report = reportService.createReport(context);
-            SecHubReportModel model = SecHubReportModel.fromJSONString(report.getResult());
 
             DomainMessageSynchronousResult response = new DomainMessageSynchronousResult(MessageID.SCAN_DONE);
             response.set(REPORT_TRAFFIC_LIGHT, report.getTrafficLightAsString());
-            response.set(REPORT_MESSAGES, new SecHubMessagesList(model.getMessages()));
 
+            String result = report.getResult();
+            if (result == null) {
+                LOG.warn("Report had no result, means no sechub report model available! Cannot set report messages");
+            } else {
+                SecHubReportModel model = SecHubReportModel.fromJSONString(result);
+                response.set(REPORT_MESSAGES, new SecHubMessagesList(model.getMessages()));
+            }
             return response;
 
         } catch (ScanReportException e) {

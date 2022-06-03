@@ -166,7 +166,8 @@ public class ScanServiceTest {
 
         /* prepare */
         DomainMessage request = prepareValidRequest();
-        doThrow(new SecHubExecutionException("ups...", new RuntimeException())).when(webScanProductExecutionService).executeProductsAndStoreResults(any());
+        doThrow(new SecHubExecutionException("ups...", new RuntimeException("Wanted test failure"))).when(webScanProductExecutionService)
+                .executeProductsAndStoreResults(any());
 
         /* execute */
         DomainMessageSynchronousResult result = serviceToTest.receiveSynchronMessage(request);
@@ -202,7 +203,8 @@ public class ScanServiceTest {
 
         /* prepare */
         DomainMessage request = prepareValidRequest();
-        doThrow(new SecHubExecutionException("ups...", new RuntimeException())).when(webScanProductExecutionService).executeProductsAndStoreResults(any());
+        doThrow(new SecHubExecutionException("ups...", new RuntimeException("Wanted test failure"))).when(webScanProductExecutionService)
+                .executeProductsAndStoreResults(any());
 
         /* execute */
         DomainMessageSynchronousResult result = serviceToTest.receiveSynchronMessage(request);
