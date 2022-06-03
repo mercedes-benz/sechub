@@ -18,6 +18,7 @@ import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.domain.scan.log.ProjectScanLogService;
 import com.mercedesbenz.sechub.domain.scan.product.CodeScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.InfrastructureScanProductExecutionService;
+import com.mercedesbenz.sechub.domain.scan.product.LicenseScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.WebScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.project.ScanMockData;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfig;
@@ -60,6 +61,7 @@ public class ScanServiceTest {
     private ScanProjectConfigService scanProjectConfigService;
     private ScanJobListener scanJobRegistry;
     private ScanProgressMonitorFactory monitorFactory;
+    private LicenseScanProductExecutionService licenseScanProductExecutionService;
     private static final SecHubConfiguration SECHUB_CONFIG = new SecHubConfiguration();
 
     @Before
@@ -78,6 +80,7 @@ public class ScanServiceTest {
         webScanProductExecutionService = mock(WebScanProductExecutionService.class);
         codeScanProductExecutionService = mock(CodeScanProductExecutionService.class);
         infrastructureScanProductExecutionService = mock(InfrastructureScanProductExecutionService.class);
+        licenseScanProductExecutionService = mock(LicenseScanProductExecutionService.class);
         scanLogService = mock(ProjectScanLogService.class);
 
         reportService = mock(CreateScanReportService.class);
@@ -89,6 +92,7 @@ public class ScanServiceTest {
         serviceToTest.webScanProductExecutionService = webScanProductExecutionService;
         serviceToTest.infraScanProductExecutionService = infrastructureScanProductExecutionService;
         serviceToTest.codeScanProductExecutionService = codeScanProductExecutionService;
+        serviceToTest.licenseScanProductExecutionService = licenseScanProductExecutionService;
         serviceToTest.reportService = reportService;
         serviceToTest.storageService = storageService;
         serviceToTest.scanLogService = scanLogService;

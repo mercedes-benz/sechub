@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverterException;
+import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
+import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
 import com.mercedesbenz.sechub.domain.scan.log.ProjectScanLogService;
 import com.mercedesbenz.sechub.domain.scan.product.CodeScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.InfrastructureScanProductExecutionService;
@@ -111,9 +113,12 @@ public class ScanService implements SynchronMessageHandler {
             executeScan(context, request);
 
             ScanReport report = reportService.createReport(context);
+            SecHubReportModel model = SecHubReportModel.fromJSONString(report.getResult());
 
             DomainMessageSynchronousResult response = new DomainMessageSynchronousResult(MessageID.SCAN_DONE);
             response.set(REPORT_TRAFFIC_LIGHT, report.getTrafficLightAsString());
+            response.set(REPORT_MESSAGES, new SecHubMessagesList(model.getMessages()));
+
             return response;
 
         } catch (ScanReportException e) {
