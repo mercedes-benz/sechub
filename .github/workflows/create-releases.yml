@@ -81,7 +81,7 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: 1.18.1
-      - uses: actions/cache@v3.0.2
+      - uses: actions/cache@v3.0.3
         id: go-cache
         with:
           path: |
