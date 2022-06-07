@@ -47,6 +47,7 @@ COPY pds-config.json "$PDS_FOLDER"/pds-config.json
 
 # Copy PMD scripts and rulesets
 COPY pmd.sh "$SCRIPT_FOLDER"/pmd.sh
+COPY pmd_mock.sh "$SCRIPT_FOLDER"/pmd_mock.sh
 COPY ruleset-security.xml "$SCRIPT_FOLDER"/ruleset-security.xml
 COPY ruleset-all.xml "$SCRIPT_FOLDER"/ruleset-all.xml
 
@@ -54,7 +55,7 @@ COPY ruleset-all.xml "$SCRIPT_FOLDER"/ruleset-all.xml
 COPY run.sh /run.sh
 
 # Set execute permissions for scripts
-RUN chmod +x /run.sh "$SCRIPT_FOLDER"/pmd.sh
+RUN chmod +x /run.sh "$SCRIPT_FOLDER"/pmd.sh "$SCRIPT_FOLDER"/pmd_mock.sh
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
