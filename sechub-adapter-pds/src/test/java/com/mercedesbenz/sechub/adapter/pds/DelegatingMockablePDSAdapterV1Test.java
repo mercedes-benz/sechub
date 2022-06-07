@@ -23,6 +23,7 @@ class DelegatingMockablePDSAdapterV1Test {
     private UUID jobUUID;
     private MockedAdapterSetupService setupService;
     private PDSAdapterV1 realPdsAdapter;
+    private PDSAdapterConfigData data;
 
     @BeforeEach
     void beforeEach() {
@@ -33,9 +34,11 @@ class DelegatingMockablePDSAdapterV1Test {
         adapterToTest.realPdsAdapterV1 = realPdsAdapter;
 
         jobUUID = UUID.randomUUID();
+        data = mock(PDSAdapterConfigData.class);
 
         config = mock(PDSAdapterConfig.class);
-        when(config.getSecHubJobUUID()).thenReturn(jobUUID);
+        when(config.getPDSAdapterConfigData()).thenReturn(data);
+        when(data.getSecHubJobUUID()).thenReturn(jobUUID);
 
         runtimeContext = new AdapterRuntimeContext();
     }
@@ -58,7 +61,7 @@ class DelegatingMockablePDSAdapterV1Test {
 
         /* prepare */
         when(realPdsAdapter.execute(any(), any())).thenReturn("pseudo-test-result");
-        when(config.getJobParameters()).thenReturn(map);
+        when(data.getJobParameters()).thenReturn(map);
         /* execute */
         String result = adapterToTest.execute(config, runtimeContext);
 

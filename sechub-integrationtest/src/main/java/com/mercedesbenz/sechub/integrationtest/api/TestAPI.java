@@ -97,12 +97,24 @@ public class TestAPI {
         return new AsPDSUser(user);
     }
 
-    @Deprecated // use assertReport instead (newer implementation , has more details and uses
-                // common SecHubReport object inside)
-    public static AssertSecHubReport assertSecHubReport(String json) {
-        return AssertSecHubReport.assertSecHubReport(json);
+    /**
+     * Asserts given report json - it will try to find report elements
+     *
+     * @param json
+     * @return
+     */
+    public static AssertReportUnordered assertReportUnordered(String json) {
+        return AssertReportUnordered.assertReportUnordered(json);
     }
 
+    /**
+     * Asserts given report json - for checks you will always need to explicit use
+     * indexes and the report must have an explicit ordering - otherwise you have
+     * flaky tests!
+     *
+     * @param json
+     * @return
+     */
     public static AssertReport assertReport(String json) {
         return AssertReport.assertReport(json);
     }
@@ -171,9 +183,29 @@ public class TestAPI {
         getContext().getPDSRestHelper(ANONYMOUS).postPlainText(url, text);
     }
 
-    public static String getPDSStoragePathForJobUUID(UUID jobUUID) {
-        String url = getPDSURLBuilder().pds().buildIntegrationTestCheckStoragePath(jobUUID);
+    /**
+     * When sechub storage is reused, this will return the storage path for the
+     * sechub job uuid otherwise <code>null</code>
+     *
+     * @param secHubJobUUID
+     * @return path or <code>null</code>
+     */
+    public static String fetchStoragePathHistoryEntryoForSecHubJobUUID(UUID secHubJobUUID) {
+        String url = getPDSURLBuilder().pds().buildIntegrationTestFetchStoragePathHistoryEntryForSecHubJob(secHubJobUUID);
         return getContext().getPDSRestHelper(ANONYMOUS).getStringFromURL(url);
+    }
+
+    /**
+     * Resolve local PDS upload folder
+     *
+     * @param pdsJobUUID
+     * @return upload folder in job workspace
+     */
+    public static File resolvePDSWorkspaceUploadFolder(UUID pdsJobUUID) {
+        String url = getPDSURLBuilder().pds().buildIntegrationTestGetWorkspaceUploadFolder(pdsJobUUID);
+        String path = getContext().getPDSRestHelper(ANONYMOUS).getStringFromURL(url);
+        return new File(path);
+
     }
 
     /**
@@ -216,7 +248,6 @@ public class TestAPI {
      *                         feedback and more details about the returned job
      *                         status (which is printed out in test log).
      */
-    @SuppressWarnings("unchecked")
     public static void waitForJobDone(TestProject project, UUID jobUUID, int timeOutInSeconds, boolean jobMayNeverFail) {
         LOG.debug("wait for job done project:{}, job:{}", project.getProjectId(), jobUUID);
 
@@ -262,7 +293,6 @@ public class TestAPI {
      * @param timeToWaitInMillis
      * @param jobUUID
      */
-    @SuppressWarnings("unchecked")
     public static void waitForJobRunning(TestProject project, int timeOutInSeconds, int timeToWaitInMillis, UUID jobUUID) {
         LOG.debug("wait for job running project:{}, job:{}, timeToWaitInMillis{}, timeOutInSeconds:{}", project.getProjectId(), jobUUID, timeToWaitInMillis,
                 timeOutInSeconds);
@@ -284,7 +314,6 @@ public class TestAPI {
      * @param project
      * @param jobUUID
      */
-    @SuppressWarnings("unchecked")
     public static void waitForJobStatusCancelRequested(TestProject project, UUID jobUUID) {
         LOG.debug("wait for job cancel requested project:{}, job:{}", project.getProjectId(), jobUUID);
 
@@ -304,7 +333,6 @@ public class TestAPI {
      * @param project
      * @param jobUUID
      */
-    @SuppressWarnings("unchecked")
     public static void waitForJobStatusFailed(TestProject project, UUID jobUUID) {
         LOG.debug("wait for job failed project:{}, job:{}", project.getProjectId(), jobUUID);
 
@@ -339,7 +367,7 @@ public class TestAPI {
                     }
                 }
                 if (!handled) {
-                    throw new IllegalStateException("An unexpected / unhandled exception occurred at execution time!", exception);
+                    throw new IllegalStateException("An unexpected / unhandled exception occurred at execution time:\n" + exception.getClass(), exception);
                 }
             }
             if (runWasSuccessful) {
@@ -370,22 +398,26 @@ public class TestAPI {
 
     public static <T> T executeCallableAndAcceptAssertionsMaximumTimes(int tries, Callable<T> assertionCallable, int millisBeforeNextRetry) {
         T result = null;
-        AssertionFailedError failure = null;
-        for (int i = 0; i < tries && failure == null; i++) {
+        AssertionError assertionError = null;
+        for (int i = 0; i < tries; i++) {
             try {
                 if (i > 0) {
                     /* we wait before next check */
                     TestAPI.waitMilliSeconds(millisBeforeNextRetry);
                 }
                 result = assertionCallable.call();
-            } catch (AssertionFailedError e) {
-                failure = e;
+            } catch (AssertionError e) {
+                assertionError = e;
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+            if (assertionError == null) {
+                break;
+            }
+            LOG.info("Will try again in {} ms, will try again {} times of {}", millisBeforeNextRetry, tries - i, tries);
         }
-        if (failure != null) {
-            throw failure;
+        if (assertionError != null) {
+            throw assertionError;
         }
         return result;
     }
@@ -1036,7 +1068,6 @@ public class TestAPI {
         waitUntilAutoCleanupInDays(days, url);
     }
 
-    @SuppressWarnings("unchecked")
     private static void waitUntilAutoCleanupInDays(long days, String url) {
         executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, 2, 200) {
             @Override
@@ -1081,7 +1112,6 @@ public class TestAPI {
         waitUntilEveryDomainHasAutoCleanupSynchedToDays(days);
     }
 
-    @SuppressWarnings("unchecked")
     public static void waitUntilAutoCleanupConfigurationChangedTo(TestAutoCleanupData data) {
         executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, 2, 200) {
             @Override

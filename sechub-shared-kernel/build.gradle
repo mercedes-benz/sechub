@@ -12,6 +12,7 @@ plugins {
 dependencies {
 
     api project(':sechub-commons-model')
+    api project(':sechub-commons-archive')
     api project(':sechub-storage-core')
     
     implementation project(':sechub-storage-sharedvolume-spring')

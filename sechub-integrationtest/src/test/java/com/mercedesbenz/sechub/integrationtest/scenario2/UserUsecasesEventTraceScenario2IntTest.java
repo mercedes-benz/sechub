@@ -7,13 +7,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
+import com.mercedesbenz.sechub.integrationtest.IntegrationTestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.integrationtest.api.AssertEventInspection;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 
-public class UserUsecasesEventTraceScenario2IntTest {
+public class UserUsecasesEventTraceScenario2IntTest implements IntegrationTestIsNecessaryForDocumentation {
 
     @Rule
     public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario2.class);

@@ -36,6 +36,10 @@ spec:
                       value: "{{ .Values.pds.config.execute.queueMax }}"
                     - name: PDS_CONFIG_EXECUTE_WORKER_THREAD_COUNT
                       value: "{{ .Values.pds.config.execute.workerThreadCount }}"
+                    {{- if .Values.pds.logging.type.enabled }}
+                    - name: LOGGING_TYPE
+                      value: {{ .Values.pds.logging.type.appenderName }}
+                    {{- end }}
                     {{- if .Values.pds.debug.keepReportsInWorkspace }}
                     - name: SECHUB_PDS_WORKSPACE_AUTOCLEAN_DISABLED
                       value: "true"

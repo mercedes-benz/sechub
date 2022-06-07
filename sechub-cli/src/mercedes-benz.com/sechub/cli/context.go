@@ -15,13 +15,19 @@ type Context struct {
 	contentToSend             []byte // template output used for communication to server - contains replaced parts from env variables (e.g. password instead of variable)
 	HTTPClient                *http.Client
 	sechubConfig              *SecHubConfig
+	binariesTarFileName       string
+	binariesTarFileChecksum   string
 	sourceZipFileChecksum     string
 	sourceZipFileName         string
 	jobStatus                 *jobStatusResult
 }
 
-func (context *Context) isUploadingSourceZip() bool {
+func (context *Context) sourceZipFileExists() bool {
 	return context.sourceZipFileName != ""
+}
+
+func (context *Context) binariesTarFileExists() bool {
+	return context.binariesTarFileName != ""
 }
 
 // NewContext - creates a new CLI context by given config

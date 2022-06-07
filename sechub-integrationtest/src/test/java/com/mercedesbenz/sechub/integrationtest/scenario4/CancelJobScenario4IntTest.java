@@ -58,7 +58,7 @@ public class CancelJobScenario4IntTest {
     public void cancel_a_long_running_codescan_job() {
         /* @formatter:off */
         /* prepare */
-        UUID sechubJobUUD = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(project,IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING);
+        UUID sechubJobUUD = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(project,IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__4_SECONDS_WAITING);
         waitForJobRunning(project, sechubJobUUD);
 
         /* execute */

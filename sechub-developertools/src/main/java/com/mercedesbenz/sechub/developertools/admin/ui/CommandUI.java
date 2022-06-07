@@ -55,6 +55,7 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.CheckPDSJobRes
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.CheckPDSJobStatusAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.CreateNewPDSExecutionConfigurationAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.CreatePDSJobAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchLastStartedPDSJobStreamsAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSConfigurationAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSJobErrorStreamAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSJobOutputStreamAction;
@@ -143,6 +144,7 @@ public class CommandUI {
         register(ShowProductExecutorTemplatesDialogActionFactory.createPDS_CODESCAN_V1Action(context));
         register(ShowProductExecutorTemplatesDialogActionFactory.createPDS_WEBSCAN_V1Action(context));
         register(ShowProductExecutorTemplatesDialogActionFactory.createPDS_INFRASCAN_V1Action(context));
+        register(ShowProductExecutorTemplatesDialogActionFactory.createPDS_LICENSESCAN_V1Action(context));
 
         panel = new JPanel(new BorderLayout());
 
@@ -421,6 +423,7 @@ public class CommandUI {
             menu.setToolTipText("Not enabled, use \"-D" + ConfigurationSetup.SECHUB_ENABLE_INTEGRATION_TESTSERVER_MENU.getSystemPropertyid()
                     + "=true\" to enable it and run an integration test server!");
         }
+        add(menu, new FetchLastStartedPDSJobStreamsAction(context));
         add(menu, new FetchMockMailsAction(context));
         menu.addSeparator();
         add(menu, new SetProjectMockDataConfigurationAction(context));
@@ -434,16 +437,16 @@ public class CommandUI {
         testDataMenu.addSeparator();
         add(testDataMenu, new TriggerNewInfraScanJobScenario3User1Action(context));
         testDataMenu.addSeparator();
-        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__FAST));
-        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING));
+        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_GREEN__ZERO_WAIT));
+        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_GREEN__10_SECONDS_WAITING));
 
-        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING));
+        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_GREEN__10_SECONDS_WAITING));
 
-        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_ONE_FINDING__FAST));
-        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_MANY_RESULTS__FAST));
+        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_RED__ZERO_WAIT));
+        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_MULTI__ZERO_WAIT));
         testDataMenu.addSeparator();
-        add(testDataMenu, new TriggerNewCodeScanJobScenario3User1Action(context, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__YELLOW__FAST));
-        add(testDataMenu, new TriggerNewCodeScanJobScenario3User1Action(context, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__FAST));
+        add(testDataMenu, new TriggerNewCodeScanJobScenario3User1Action(context, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__MULTI__ZERO_WAIT));
+        add(testDataMenu, new TriggerNewCodeScanJobScenario3User1Action(context, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__1_SECOND_WAITING));
         testDataMenu.addSeparator();
         add(testDataMenu, new TriggerMassiveNewJobsScenario3User1Action(context));
 

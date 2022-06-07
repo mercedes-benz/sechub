@@ -28,7 +28,7 @@ public class AssertExecutionResult {
     }
 
     public AssertExecutionResult isTrafficLight(TrafficLight trafficLight) {
-        AssertSecHubReport.assertSecHubReport(getResult()).hasTrafficLight(trafficLight);
+        AssertReportUnordered.assertReportUnordered(getResult()).hasTrafficLight(trafficLight);
         return this;
     }
 

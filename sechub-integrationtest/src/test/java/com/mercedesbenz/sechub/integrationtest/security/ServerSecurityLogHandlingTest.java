@@ -11,10 +11,12 @@ import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.integrationtest.SecurityTestHelper;
 import com.mercedesbenz.sechub.integrationtest.SecurityTestHelper.TestTargetType;
+import com.mercedesbenz.sechub.integrationtest.api.OnlyForRegularTestExecution;
 import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
+@OnlyForRegularTestExecution
 class ServerSecurityLogHandlingTest {
 
     private static SecurityTestHelper securityTestHelper;

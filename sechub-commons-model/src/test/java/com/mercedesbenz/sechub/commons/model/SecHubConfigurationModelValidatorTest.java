@@ -10,12 +10,16 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationResult.SecHubConfigurationModelValidationErrorData;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidator.SecHubConfigurationModelValidationException;
 
 class SecHubConfigurationModelValidatorTest {
 
+    private static final String VALID_NAME_WITH_MAX_LENGTH = "---------1---------2---------3---------4---------5---------6---------7---------8";
+    private static final String VALID_NAME_BUT_ONE_CHAR_TOO_LONG = VALID_NAME_WITH_MAX_LENGTH + "-";
     private SecHubConfigurationModelValidator validatorToTest;
 
     @BeforeEach
@@ -38,6 +42,49 @@ class SecHubConfigurationModelValidatorTest {
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.WEB_SCAN_HAS_NO_URL_DEFINED);
         assertEquals(1, result.getErrors().size());
+    }
+
+    @Test
+    void license_scan__empty_config_results_in_error() throws Exception {
+        /* prepare */
+        SecHubLicenseScanConfiguration licenseScan = new SecHubLicenseScanConfiguration();
+
+        SecHubConfigurationModel model = new SecHubConfigurationModel();
+        model.setApiVersion("1.0");
+        model.setLicenseScan(licenseScan);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertHasError(result, SecHubConfigurationModelValidationError.NO_DATA_CONFIG_SPECIFIED_FOR_SCAN);
+        assertEquals(1, result.getErrors().size());
+    }
+
+    @Test
+    void license_scan__config_with_data() throws Exception {
+        /* prepare */
+        String dataName = "data-reference-1";
+
+        SecHubLicenseScanConfiguration licenseScan = new SecHubLicenseScanConfiguration();
+        licenseScan.getNamesOfUsedDataConfigurationObjects().add(dataName);
+
+        SecHubSourceDataConfiguration dataSource = new SecHubSourceDataConfiguration();
+        dataSource.setUniqueName(dataName);
+
+        SecHubDataConfiguration dataConfiguration = new SecHubDataConfiguration();
+        dataConfiguration.getSources().add(dataSource);
+
+        SecHubConfigurationModel model = new SecHubConfigurationModel();
+        model.setApiVersion("1.0");
+        model.setLicenseScan(licenseScan);
+        model.setData(dataConfiguration);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertFalse(result.hasErrors());
     }
 
     @Test
@@ -184,6 +231,45 @@ class SecHubConfigurationModelValidatorTest {
 
     }
 
+    @ParameterizedTest
+    @CsvSource({ "n", "_", "-", "1", "name1", "referenced-name_", "the_name_with_slashes", VALID_NAME_WITH_MAX_LENGTH })
+    void model_having_a_data_configuration_with_valid_name_has_no_error(String name) {
+        /* prepare */
+        /* prepare */
+        SecHubConfigurationModel model = createDefaultValidModel();
+        SecHubDataConfiguration data = new SecHubDataConfiguration();
+
+        SecHubSourceDataConfiguration config1 = new SecHubSourceDataConfiguration();
+        config1.setUniqueName(name);
+        data.getSources().add(config1);
+        model.setData(data);
+
+        /* execute + test */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertFalse(result.hasErrors());
+    }
+
+    @ParameterizedTest
+    @CsvSource({ "$", "n$me-", "a@e_", "t§st-1", "config-object-name$1", VALID_NAME_BUT_ONE_CHAR_TOO_LONG })
+    void model_having_a_data_configuration_with_invalid_name_has_error(String name) {
+        /* prepare */
+        SecHubConfigurationModel model = createDefaultValidModel();
+        SecHubDataConfiguration data = new SecHubDataConfiguration();
+
+        SecHubSourceDataConfiguration config1 = new SecHubSourceDataConfiguration();
+        config1.setUniqueName(name);
+        data.getSources().add(config1);
+        model.setData(data);
+
+        /* execute + test */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertTrue(result.hasErrors());
+    }
+
     @Test
     void model_having_a_code_scan_configuration_which_references_a_wellknown_data_object_results_in_no_error() {
         /* prepare */
@@ -225,8 +311,8 @@ class SecHubConfigurationModelValidatorTest {
         SecHubWebScanConfiguration webScan = new SecHubWebScanConfiguration();
         model.setWebScan(webScan);
 
-        SecHubOpenAPIConfiguration openApi = new SecHubOpenAPIConfiguration();
-        webScan.openApi = Optional.of(openApi);
+        SecHubWebScanApiConfiguration openApi = new SecHubWebScanApiConfiguration();
+        webScan.api = Optional.of(openApi);
         webScan.uri = createURIforSchema("https");
 
         openApi.getNamesOfUsedDataConfigurationObjects().add("unknown-configuration");
@@ -253,8 +339,8 @@ class SecHubConfigurationModelValidatorTest {
         SecHubWebScanConfiguration webScan = new SecHubWebScanConfiguration();
         model.setWebScan(webScan);
 
-        SecHubOpenAPIConfiguration openApi = new SecHubOpenAPIConfiguration();
-        webScan.openApi = Optional.of(openApi);
+        SecHubWebScanApiConfiguration openApi = new SecHubWebScanApiConfiguration();
+        webScan.api = Optional.of(openApi);
         webScan.uri = createURIforSchema("https");
 
         openApi.getNamesOfUsedDataConfigurationObjects().add("referenced-open-api-file");

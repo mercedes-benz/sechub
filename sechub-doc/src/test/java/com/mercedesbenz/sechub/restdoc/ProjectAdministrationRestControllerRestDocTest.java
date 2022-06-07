@@ -73,6 +73,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminAssi
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminChangesProjectOwner;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUnassignsUserFromProject;
 import com.mercedesbenz.sechub.test.ExampleConstants;
+import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
@@ -82,7 +83,7 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
-public class ProjectAdministrationRestControllerRestDocTest {
+public class ProjectAdministrationRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
 
     private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 

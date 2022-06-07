@@ -6,7 +6,7 @@
       "id": "PDS_OWASP_ZAP",
       "path": "/scripts/owasp-zap.sh",
       "scanType": "webScan",
-      "unzipUploads": false,
+      "extractUploads": false,
       "description": "Runs OWASP ZAP",
       "parameters": {
         "mandatory": [
@@ -55,7 +55,7 @@
       "id": "PDS_OWASP_ZAP_MOCK",
       "path": "/scripts/owasp-zap-mock.sh",
       "scanType": "webScan",
-      "unzipUploads": false,
+      "extractUploads": false,
       "description": "Runs OWASP ZAP mock",
       "parameters": {
         "mandatory": [

@@ -66,8 +66,6 @@ public class TestURLBuilder {
     }
 
     private static final String API_ADMIN = "/api/admin";
-    private static final String API_USER = "/api/user";
-    private static final String API_OWNER = "/api/owner";
     private static final String API_ANONYMOUS = "/api/anonymous";
 
     private static final String API_ADMIN_USER = API_ADMIN + "/user";
@@ -160,8 +158,16 @@ public class TestURLBuilder {
             return buildUrl("");
         }
 
-        public String buildIntegrationTestCheckStoragePath(UUID jobUUID) {
+        public String buildIntegrationTestFetchStoragePathHistoryEntryForSecHubJob(UUID jobUUID) {
             return buildUrl(API_PDS_INTEGRATIONTEST, "storage", jobUUID, "path");
+        }
+
+        public String buildIntegrationTestGetWorkspaceUploadFolder(UUID jobUUID) {
+            return buildUrl(API_PDS_INTEGRATIONTEST, "workspace", jobUUID, "uploadfolder");
+        }
+
+        public String buildFetchLastStartedJobUUIDUrl() {
+            return buildUrl(API_PDS_INTEGRATIONTEST, "last/started/job/uuid");
         }
 
         public String buildAdminFetchesJobOutputStreamUrl(UUID jobUUID) {
@@ -171,6 +177,7 @@ public class TestURLBuilder {
         public String buildAdminFetchesJobErrorStreamUrl(UUID jobUUID) {
             return buildUrl(API_ADMIN_JOB, jobUUID, "stream", "error");
         }
+
     }
 
     public ProductDelegationServerUrlsBuilder pds() {
@@ -186,7 +193,10 @@ public class TestURLBuilder {
         sb.append(createRootPath());
         sb.append(custom);
         for (Object pathVariable : parts) {
-            sb.append("/");
+            boolean notAlreadyEndsWithSlash = sb.charAt(sb.length() - 1) != '/';
+            if (notAlreadyEndsWithSlash) {
+                sb.append("/");
+            }
             sb.append(pathVariable);
         }
         return sb.toString();
@@ -213,6 +223,14 @@ public class TestURLBuilder {
 
     public String buildGetJobReportUrl(String projectId, String jobUUID) {
         return buildUrl(API_PROJECT, projectId, "report", jobUUID);
+    }
+
+    public String buildGetJobReportUrlSpdx(String projectId, UUID jobUUID) {
+        return buildGetJobReportUrlSpdx(projectId, jobUUID.toString());
+    }
+
+    public String buildGetJobReportUrlSpdx(String projectId, String jobUUID) {
+        return buildUrl(API_PROJECT, projectId, "report", "spdx", jobUUID);
     }
 
     public String buildUploadSourceCodeUrl(String projectId, UUID jobUUID) {
@@ -600,12 +618,8 @@ public class TestURLBuilder {
         return buildUrl(API_ANONYMOUS, "integrationtest/log/info");
     }
 
-    public String buildCheckRoleUser() {
-        return buildUrl(API_USER, "integrationtest/check/role/user");
-    }
-
-    public String buildCheckRoleOwner() {
-        return buildUrl(API_OWNER, "integrationtest/check/role/owner");
+    public String buildCheckRole(String role) {
+        return buildUrl(API_ANONYMOUS, "integrationtest/check/role/", role);
     }
 
     public String buildFetchReport(String projectId, UUID sechubJobUUID) {

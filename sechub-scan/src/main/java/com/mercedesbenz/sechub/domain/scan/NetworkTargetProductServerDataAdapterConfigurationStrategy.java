@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan;
 
-import com.mercedesbenz.sechub.adapter.AbstractAdapterConfigBuilder;
 import com.mercedesbenz.sechub.adapter.AdapterConfig;
+import com.mercedesbenz.sechub.adapter.AdapterConfigBuilder;
 import com.mercedesbenz.sechub.adapter.AdapterConfigurationStrategy;
 
 public class NetworkTargetProductServerDataAdapterConfigurationStrategy implements AdapterConfigurationStrategy {
@@ -32,7 +32,7 @@ public class NetworkTargetProductServerDataAdapterConfigurationStrategy implemen
     }
 
     @Override
-    public <B extends AbstractAdapterConfigBuilder<B, C>, C extends AdapterConfig> void configure(B configBuilder) {
+    public <B extends AdapterConfigBuilder, C extends AdapterConfig> void configure(B configBuilder) {
         /* @formatter:off */
 		configBuilder.
 			setTrustAllCertificates(support.hasUntrustedCertificate(targetType)).

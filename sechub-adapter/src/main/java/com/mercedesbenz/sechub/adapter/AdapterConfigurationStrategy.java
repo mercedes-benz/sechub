@@ -16,6 +16,6 @@ public interface AdapterConfigurationStrategy {
      *
      * @param configBuilder
      */
-    <B extends AbstractAdapterConfigBuilder<B, C>, C extends AdapterConfig> void configure(B configBuilder);
+    <B extends AdapterConfigBuilder, C extends AdapterConfig> void configure(B configBuilder);
 
 }

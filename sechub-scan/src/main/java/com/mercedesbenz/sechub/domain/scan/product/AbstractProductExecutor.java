@@ -29,7 +29,6 @@ import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataProvide
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataSuppport;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetRegistry.NetworkTargetInfo;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
-import com.mercedesbenz.sechub.domain.scan.SecHubAdapterOptionsBuilderStrategy;
 import com.mercedesbenz.sechub.domain.scan.resolve.NetworkTargetResolver;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
@@ -265,10 +264,6 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
         }
     }
 
-    protected SecHubAdapterOptionsBuilderStrategy createAdapterOptionsStrategy(ProductExecutorData data) {
-        return new SecHubAdapterOptionsBuilderStrategy(data.getSechubExecutionContext(), scanType);
-    }
-
     private boolean canExecute(SecHubConfigurationModel config) {
         switch (scanType) {
 
@@ -278,6 +273,8 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
             return config.getInfraScan().isPresent();
         case WEB_SCAN:
             return config.getWebScan().isPresent();
+        case LICENSE_SCAN:
+            return config.getLicenseScan().isPresent();
         case UNKNOWN:
             return false;
         default:

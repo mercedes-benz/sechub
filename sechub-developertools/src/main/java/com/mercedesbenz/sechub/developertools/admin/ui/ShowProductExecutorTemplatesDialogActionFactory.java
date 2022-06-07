@@ -44,6 +44,10 @@ public class ShowProductExecutorTemplatesDialogActionFactory {
         return createPDSV1Action(context, ProductIdentifier.PDS_INFRASCAN, 1);
     }
 
+    public static ShowProductExecutorTemplatesDialogAction createPDS_LICENSESCAN_V1Action(UIContext context) {
+        return createPDSV1Action(context, ProductIdentifier.PDS_LICENSESCAN, 1);
+    }
+
     private static ShowProductExecutorTemplatesDialogAction createPDSV1Action(UIContext context, ProductIdentifier identifier, int version) {
         TemplatesDialogData templateDialogData = new TemplatesDialogData();
 

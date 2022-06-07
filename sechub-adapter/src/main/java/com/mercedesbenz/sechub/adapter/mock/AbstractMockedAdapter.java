@@ -194,14 +194,14 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
 
     private void waitIfConfigured(long timeStarted, MockedAdapterSetupEntry setup, String target) {
         long wantedMs = setup.getTimeToElapseInMilliseconds(target);
-        LOG.debug("adapter instance {}, wanted {} milliseconds to elapse for target {}", hashCode(), wantedMs, target);
+        String id = setup.getCombination(target).getId();
         long elapsedMs = System.currentTimeMillis() - timeStarted;
         long timeToWait = wantedMs - elapsedMs;
-        LOG.debug("apter instance {}, will wait {} milliseconds to elapse for target {}", hashCode(), wantedMs, target);
+        LOG.debug("mock setup id: {} will wait {} milliseconds to elapse for target {} - elapsed:", id, wantedMs, target, elapsedMs);
         if (timeToWait > 0) {
             try {
                 Thread.sleep(timeToWait);
-                LOG.debug("adapter instance {}, waited {} milliseconds for target {}", hashCode(), timeToWait, target);
+                LOG.debug("mock setup id: {} waited {} milliseconds for target {}", id, timeToWait, target);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }

@@ -24,7 +24,6 @@ func TestBuildCreateNewSecHubJobAPICall(t *testing.T) {
 
 	/* test*/
 	sechubTestUtil.AssertEquals("https://localhost:8443/api/project/testproject/job", result, t)
-
 }
 
 // https://localhost:8443/api/project/testproject/job/e21b13fc-591e-4abd-b119-755d473c5625/approve
@@ -64,7 +63,6 @@ func TestBuildGetSecHubJobStatusAPICall(t *testing.T) {
 
 	/* test*/
 	sechubTestUtil.AssertEquals("https://localhost:8443/api/project/testproject/job/e21b13fc-591e-4abd-b119-755d473c5625", result, t)
-
 }
 
 // https://localhost:8443/api/project/testproject/report/e21b13fc-591e-4abd-b119-755d473c5625
@@ -84,10 +82,9 @@ func TestBuildGetSecHubJobReportAPICall(t *testing.T) {
 
 	/* test*/
 	sechubTestUtil.AssertEquals("https://localhost:8443/api/project/testproject/report/e21b13fc-591e-4abd-b119-755d473c5625", result, t)
-
 }
 
-// https://localhost:8443/api/project/testproject/job/e21b13fc-591e-4abd-b119-755d473c5625
+// https://localhost:8443/api/project/testproject/job/e21b13fc-591e-4abd-b119-755d473c5625/sourcecode
 func TestBuildPostSecHubUploadSourceCodeAPICall(t *testing.T) {
 	/* prepare */
 	context := new(Context)
@@ -104,10 +101,29 @@ func TestBuildPostSecHubUploadSourceCodeAPICall(t *testing.T) {
 
 	/* test*/
 	sechubTestUtil.AssertEquals("https://localhost:8443/api/project/testproject/job/e21b13fc-591e-4abd-b119-755d473c5625/sourcecode", result, t)
-
 }
 
-// https://localhost:8081/api/project/testproject/false-positives
+// https://localhost:8443/api/project/testproject/job/e21b13fc-591e-4abd-b119-755d473c5625/binaries
+func Example_buildUploadBinariesAPICall() {
+	/* prepare */
+	context := new(Context)
+	config := new(Config)
+
+	context.config = config
+	config.projectID = "testproject"
+	config.server = "https://localhost:8443"
+
+	config.secHubJobUUID = "e21b13fc-591e-4abd-b119-755d473c5625"
+
+	/* execute */
+	result := buildUploadBinariesAPICall(context)
+
+	/* test*/
+	fmt.Println(result)
+	// Output:
+	// https://localhost:8443/api/project/testproject/job/e21b13fc-591e-4abd-b119-755d473c5625/binaries
+}
+
 // https://localhost:8081/api/project/testproject/false-positive
 func Example_buildFalsePositivesAPICalls() {
 	// PREPARE

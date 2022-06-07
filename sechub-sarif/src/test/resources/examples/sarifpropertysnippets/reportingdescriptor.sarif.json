@@ -1,0 +1,28 @@
+{
+  "id" : "12345",
+  "guid" : "d133e848-cbb0-11ec-ba1a-03aa53554942",
+  "name" : "descriptor-name",
+  "shortDescription" : {
+    "text" : "short description"
+  },
+  "fullDescription" : {
+    "text" : "full description, with additional information"
+  },
+  "helpUri" : "https://www.myHelpUri.com",
+  "help" : {
+    "text" : "useful help message"
+  },
+  "defaultConfiguration" : {
+    "level" : "warning"
+  },
+  "relationships" : [ {
+    "target" : {
+      "id" : "77777",
+      "guid" : "8335299e-cbb1-11ec-b5f7-3bf00b854e27",
+      "toolComponent" : {
+        "name" : "tool-component-reference-name",
+        "guid" : "a1c5866a-cbb1-11ec-a2e3-37b8968b2b0f"
+      }
+    }
+  } ]
+}

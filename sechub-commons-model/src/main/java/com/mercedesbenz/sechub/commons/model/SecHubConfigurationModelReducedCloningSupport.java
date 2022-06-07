@@ -49,6 +49,16 @@ public class SecHubConfigurationModelReducedCloningSupport {
                 newModel.setInfraScan(new SecHubInfrastructureScanConfiguration());
             }
             break;
+
+        case LICENSE_SCAN:
+            Optional<SecHubLicenseScanConfiguration> licenseScan = model.getLicenseScan();
+            if (licenseScan.isPresent()) {
+                newModel.setLicenseScan(licenseScan.get());
+            } else {
+                LOG.warn("The model did not contain a license scan configuration - so add new one as fallback");
+                newModel.setLicenseScan(new SecHubLicenseScanConfiguration());
+            }
+            break;
         case WEB_SCAN:
 
             Optional<SecHubWebScanConfiguration> webScan = model.getWebScan();
@@ -63,7 +73,10 @@ public class SecHubConfigurationModelReducedCloningSupport {
             LOG.warn("For scan type {} we have no reduced clone implementation. So the created model does not have any content!", scanTypeForClone);
             break;
         }
-
+        Optional<SecHubDataConfiguration> dataOpt = model.getData();
+        if (dataOpt.isPresent()) {
+            newModel.setData(dataOpt.get());
+        }
         String json = newModel.toJSON();
         return json;
     }

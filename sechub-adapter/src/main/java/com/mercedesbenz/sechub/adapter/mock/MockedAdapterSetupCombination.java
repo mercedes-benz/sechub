@@ -14,11 +14,23 @@ public class MockedAdapterSetupCombination {
      */
     public static final String ANY_OTHER_TARGET = "{any-other-target}";
 
+    private String id;
     private String target;
     private boolean throwsAdapterException;
     private String filePath;
 
     private long timeToElapseInMilliseconds;
+
+    private boolean targetUsedAsFolder;
+    private boolean targetNeedsExistingData;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getTarget() {
         return target;
@@ -50,6 +62,22 @@ public class MockedAdapterSetupCombination {
 
     public long getTimeToElapseInMilliseconds() {
         return timeToElapseInMilliseconds;
+    }
+
+    public boolean isTargetUsedAsFolder() {
+        return targetUsedAsFolder;
+    }
+
+    public void setTargetUsedAsFolder(boolean targetIsNeededAsFolderBySecHubClient) {
+        this.targetUsedAsFolder = targetIsNeededAsFolderBySecHubClient;
+    }
+
+    public boolean isTargetNeedsExistingData() {
+        return targetNeedsExistingData;
+    }
+
+    public void setTargetNeedsExistingData(boolean targetNeedsExistingData) {
+        this.targetNeedsExistingData = targetNeedsExistingData;
     }
 
 }

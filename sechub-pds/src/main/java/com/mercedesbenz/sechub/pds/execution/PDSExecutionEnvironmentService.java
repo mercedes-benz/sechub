@@ -66,21 +66,28 @@ public class PDSExecutionEnvironmentService {
     private void addJobParamDataWhenAccepted(PDSProductSetup productSetup, PDSExecutionParameterEntry jobParam, Map<String, String> map) {
         PDSProdutParameterSetup params = productSetup.getParameters();
 
-        boolean validParam = false;
+        boolean acceptedParameter = false;
+        boolean wellknown = false;
         for (PDSConfigDataKeyProvider provider : PDSConfigDataKeyProvider.values()) {
             ExecutionPDSKey key = provider.getKey();
             if (!key.getId().equals(jobParam.getKey())) {
                 continue;
             }
-            validParam = key.isAvailableInsideScript();
+            wellknown = true;
+            acceptedParameter = key.isAvailableInsideScript();
+            break;
         }
-        validParam = validParam || isJobParameterAcceptedByPDSServerConfiguration(jobParam, params.getMandatory());
-        validParam = validParam || isJobParameterAcceptedByPDSServerConfiguration(jobParam, params.getOptional());
+        acceptedParameter = acceptedParameter || isJobParameterAcceptedByPDSServerConfiguration(jobParam, params.getMandatory());
+        acceptedParameter = acceptedParameter || isJobParameterAcceptedByPDSServerConfiguration(jobParam, params.getOptional());
 
-        if (validParam) {
+        if (acceptedParameter) {
             map.put(converter.convertKeyToEnv(jobParam.getKey()), jobParam.getValue());
         } else {
-            LOG.warn("Ignored invalid job parameter key {} for product id:{} !", jobParam.getKey(), productSetup.getId());
+            if (wellknown) {
+                LOG.debug("Wellknown parameter found - but not available inside script: {}", jobParam.getKey());
+            } else {
+                LOG.warn("Ignored invalid job parameter key: {} for product id: {} !", jobParam.getKey(), productSetup.getId());
+            }
         }
     }
 

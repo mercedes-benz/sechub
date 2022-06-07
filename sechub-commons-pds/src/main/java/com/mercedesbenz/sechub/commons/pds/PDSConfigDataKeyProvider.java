@@ -67,9 +67,18 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
      */
     PDS_SCAN_CONFIGURATION(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_CONFIGURATION,
             "This contains the SecHub configuration as JSON object (but reduced to current scan type, so e.g. a web scan will have no code scan configuration data available")
-                    .markGenerated().markAsAvailableInsideScript())
+                    .markGenerated().markAsAvailableInsideScript()),
 
-    ;
+    /**
+     * A special runtime configuration configuration for PDS servers started with
+     * mocked profile: Normally every PDS call will result in a real execution - no
+     * matter if products shall be mocked or not. Reason: We use always a real PDS
+     * server to communicate and normally do not want any mocks here. But when this
+     * is parameter is set to <code>false</code>, a mock will even be used for PDS.
+     */
+    PDS_MOCKING_DISABLED(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_MOCKING_DISABLED,
+            "When 'true' any PDS adapter call will use real PDS adapter and not a mocked variant.").markAlwaysSentToPDS().markDefaultRecommended()
+                    .withDefault(true));
 
     private ExecutionPDSKey key;
 

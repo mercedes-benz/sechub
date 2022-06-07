@@ -11,12 +11,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
+import com.mercedesbenz.sechub.sharedkernel.util.ArchiveSupportProvider;
 import com.mercedesbenz.sechub.sharedkernel.util.ChecksumSHA256Service;
-import com.mercedesbenz.sechub.sharedkernel.util.ZipSupport;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
@@ -32,7 +33,8 @@ public class SchedulerSourcecodeUploadServiceTest {
     private MultipartFile file;
 
     private JobStorage storage;
-    private ZipSupport mockedZipSupport;
+    private ArchiveSupport mockedArchiveSupport;
+    private ArchiveSupportProvider archiveSupportProvider;
     private SchedulerSourcecodeUploadConfiguration configuration;
 
     @BeforeEach
@@ -49,7 +51,10 @@ public class SchedulerSourcecodeUploadServiceTest {
         when(mockedStorageService.getJobStorage(PROJECT1, randomUuid)).thenReturn(storage);
 
         file = mock(MultipartFile.class);
-        mockedZipSupport = mock(ZipSupport.class);
+        archiveSupportProvider = mock(ArchiveSupportProvider.class);
+        mockedArchiveSupport = mock(ArchiveSupport.class);
+        when(archiveSupportProvider.getArchiveSupport()).thenReturn(mockedArchiveSupport);
+
         configuration = mock(SchedulerSourcecodeUploadConfiguration.class);
 
         /* attach at service to test */
@@ -57,7 +62,7 @@ public class SchedulerSourcecodeUploadServiceTest {
         serviceToTest.checksumSHA256Service = mockedChecksumService;
         serviceToTest.storageService = mockedStorageService;
         serviceToTest.assertService = mockedAssertService;
-        serviceToTest.zipSupport = mockedZipSupport;
+        serviceToTest.archiveSupportProvider = archiveSupportProvider;
         serviceToTest.configuration = configuration;
 
         serviceToTest.logSanitizer = mock(LogSanitizer.class);
@@ -70,7 +75,7 @@ public class SchedulerSourcecodeUploadServiceTest {
     void when_checksum_correct_and_is_zip__correct_no_failure() {
         /* prepare */
         when(mockedChecksumService.hasCorrectChecksum(eq("mychecksum"), any())).thenReturn(true);
-        when(mockedZipSupport.isZipFile(any())).thenReturn(true);
+        when(mockedArchiveSupport.isZipFileStream(any())).thenReturn(true);
 
         when(configuration.isChecksumValidationEnabled()).thenReturn(true);
         when(configuration.isZipValidationEnabled()).thenReturn(true);
@@ -83,7 +88,7 @@ public class SchedulerSourcecodeUploadServiceTest {
     void when_checksum_is_NOT_correct_but_valid_zipfile_throws_404() {
         /* prepare */
         when(mockedChecksumService.hasCorrectChecksum(eq("mychecksum"), any())).thenReturn(false);
-        when(mockedZipSupport.isZipFile(any())).thenReturn(true);
+        when(mockedArchiveSupport.isZipFileStream(any())).thenReturn(true);
 
         when(configuration.isChecksumValidationEnabled()).thenReturn(true);
         when(configuration.isZipValidationEnabled()).thenReturn(false);
@@ -96,7 +101,7 @@ public class SchedulerSourcecodeUploadServiceTest {
     void when_checksum_is_NOT_correct_but_valid_zipfile_but_checksum_validation_is_disabled_no_failure() {
         /* prepare */
         when(mockedChecksumService.hasCorrectChecksum(eq("mychecksum"), any())).thenReturn(false);
-        when(mockedZipSupport.isZipFile(any())).thenReturn(true);
+        when(mockedArchiveSupport.isZipFileStream(any())).thenReturn(true);
 
         when(configuration.isChecksumValidationEnabled()).thenReturn(false);
         when(configuration.isZipValidationEnabled()).thenReturn(true);
@@ -109,7 +114,7 @@ public class SchedulerSourcecodeUploadServiceTest {
     void when_checksum_is_correct_but_NOT_valid_zipfile_but_zip_validation_is_disabled_no_failure() {
         /* prepare */
         when(mockedChecksumService.hasCorrectChecksum(eq("mychecksum"), any())).thenReturn(true);
-        when(mockedZipSupport.isZipFile(any())).thenReturn(false);
+        when(mockedArchiveSupport.isZipFileStream(any())).thenReturn(false);
 
         when(configuration.isChecksumValidationEnabled()).thenReturn(true);
         when(configuration.isZipValidationEnabled()).thenReturn(false);
@@ -122,7 +127,7 @@ public class SchedulerSourcecodeUploadServiceTest {
     void when_checksum_is_correct_but_not_valid_zipfile_throws_404() {
         /* prepare */
         when(mockedChecksumService.hasCorrectChecksum(eq("mychecksum"), any())).thenReturn(true);
-        when(mockedZipSupport.isZipFile(any())).thenReturn(false);
+        when(mockedArchiveSupport.isZipFileStream(any())).thenReturn(false);
 
         when(configuration.isChecksumValidationEnabled()).thenReturn(true);
         when(configuration.isZipValidationEnabled()).thenReturn(true);

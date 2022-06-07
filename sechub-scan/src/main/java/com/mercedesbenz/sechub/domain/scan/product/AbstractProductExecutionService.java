@@ -31,7 +31,7 @@ import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
  * @author Albert Tregnaghi
  *
  */
-public abstract class AbstractProductExecutionService implements ProductExectionStoreService {
+public abstract class AbstractProductExecutionService implements ProductExecutionStoreService {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractProductExecutionService.class);
 
