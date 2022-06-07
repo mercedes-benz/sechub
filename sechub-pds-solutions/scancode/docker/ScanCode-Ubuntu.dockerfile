@@ -9,7 +9,7 @@ FROM ${BASE_IMAGE}
 
 # Build args
 ARG PDS_FOLDER="/pds"
-ARG PDS_VERSION="0.27.0"
+ARG PDS_VERSION="0.29.0"
 ARG PYTHON_VERSION="3.9"
 ARG SCANCODE_VERSION="30.1.0"
 ARG SCANCODE_CHECKSUM="a9e43fdef934335e69e4abf77896225545d3e1fdbbd477ebabc37a4fa5ee2015  scancode-toolkit-30.1.0_py39-linux.tar.xz"
@@ -45,6 +45,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get --assume-yes upgrade  && \
     apt-get --assume-yes install wget \
                                  tar \
+                                 tree \
                                  openjdk-11-jre-headless \
                                  "python${PYTHON_VERSION}" \
                                  "python${PYTHON_VERSION}-distutils" \
@@ -111,8 +112,9 @@ WORKDIR "$WORKSPACE"
 # Switch from root to non-root user
 USER pds
 
-# Configure ScanCode
+# Configure Scancode
 RUN cd "$TOOL_FOLDER/scancode-toolkit-$SCANCODE_VERSION/" && \
-    ./configure
+    ./configure && \
+    ./scancode --help > /dev/null
 
 CMD ["/run.sh"]

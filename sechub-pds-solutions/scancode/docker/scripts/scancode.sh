@@ -4,7 +4,40 @@
 # IMPORTANT: Keep the space in front and back of the list
 output_formats=" json json-pp spdx-tv spdx-rdf spdx-json "
 output_format="--spdx-tv"
-convert_output_to_spdx_json=true
+convert_output_to_spdx_json="true"
+license_score="0"
+scancode_processes="1"
+
+# make sure additional options is never empty
+# otherwise scancode will have problems parsing the
+# parameters and fail
+additional_options=""
+
+echo "-------------"
+echo "SecHub Config"
+echo "-------------"
+
+echo "SecHub Job UUID: $SECHUB_JOB_UUID"
+
+echo "-------"
+echo " Setup "
+echo "-------"
+
+if [[ "$SCANCODE_PROCESSES" -ge 1 ]]
+then
+    scancode_processes="$SCANCODE_PROCESSES"
+    additional_options="$additional_options --processes $scancode_processes"
+fi
+
+if [[ ! -z "$SCANCODE_LICENSE_SCORE" ]]
+then
+    if [[ "$SCANCODE_LICENSE_SCORE" -le 100 && "$SCANCODE_LICENSE_SCORE" -ge 0 ]]
+    then
+        echo "between 0 and 100"
+        license_score="$SCANCODE_LICENSE_SCORE"
+        additional_options="$additional_options --license-score $license_score"
+    fi
+fi
 
 given_output_format="$(echo "$SCANCODE_OUTPUT_FORMAT" | tr '[:upper:]' '[:lower:]')"
 
@@ -25,19 +58,62 @@ then
     fi 
 fi
 
+extracted_folder=""
+if [[ "$PDS_JOB_HAS_EXTRACTED_SOURCES" == "true" ]]
+then
+    echo "Extracted sources"
+    extracted_folder="$PDS_JOB_EXTRACTED_SOURCES_FOLDER"
+elif [[ "$PDS_JOB_HAS_EXTRACTED_BINARIES" == "true" ]]
+then
+    echo "Extracted binaries"
+    extracted_folder="$PDS_JOB_EXTRACTED_BINARIES_FOLDER"
+fi
+
+echo "Extracted folder structure:"
+echo ""
+tree "$extracted_folder"
+
+echo ""
+echo "-------------"
+echo "Starting scan"
+echo "-------------"
+echo ""
+
+echo "Scancode processes: $scancode_processes"
+echo "Minimum license score: $license_score"
+echo "Additional options: $additional_options"
+echo "Output format: $output_format"
+
 spdx_file="$PDS_JOB_RESULT_FILE.spdx"
 
-"$TOOL_FOLDER/scancode-toolkit-$SCANCODE_VERSION/scancode" --verbose --copyright --license --package --email --url --info --processes 2 "$output_format" "$spdx_file" "$PDS_JOB_SOURCECODE_UNZIPPED_FOLDER/"
-
-if $convert_output_to_spdx_json
+if [[ "$EXTRACTCODE_ENABLED" == "true" ]]
 then
-    echo "Converting to SPDX JSON"
-    spdx_json_file="$PDS_JOB_RESULT_FILE.spdx.json"
+  echo "Running extractcode"
+  "$TOOL_FOLDER/scancode-toolkit-$SCANCODE_VERSION/extractcode" $extracted_folder
+fi
 
-    # use the SPDX tool converter to convert the SPDX tag-value to SPDX JSON
-    java -jar "$TOOL_FOLDER/tools-java-$SPDX_TOOL_VERISON-jar-with-dependencies.jar" Convert "$spdx_file" "$spdx_json_file"
-    mv "$spdx_json_file" "$PDS_JOB_RESULT_FILE"
+"$TOOL_FOLDER/scancode-toolkit-$SCANCODE_VERSION/scancode" $additional_options --verbose --strip-root --copyright --license --package --email --url --info $output_format $spdx_file $extracted_folder 2>&1
+
+echo ""
+echo "----------------"
+echo "Preparing result"
+echo "----------------"
+echo ""
+
+if [[ -f "$spdx_file" ]]
+then
+    if $convert_output_to_spdx_json
+    then
+        echo "Converting to SPDX JSON"
+        spdx_json_file="$PDS_JOB_RESULT_FILE.spdx.json"
+
+        # use the SPDX tool converter to convert the SPDX tag-value to SPDX JSON
+        java -jar "$TOOL_FOLDER/tools-java-$SPDX_TOOL_VERISON-jar-with-dependencies.jar" Convert "$spdx_file" "$spdx_json_file"
+        mv "$spdx_json_file" "$PDS_JOB_RESULT_FILE"
+    else
+        echo "Moving file"
+        mv "$PDS_JOB_RESULT_FILE.spdx" "$PDS_JOB_RESULT_FILE"
+    fi
 else
-    echo "Moving file"
-    mv "$PDS_JOB_RESULT_FILE.spdx" "$PDS_JOB_RESULT_FILE"
+    echo "No findings"
 fi
