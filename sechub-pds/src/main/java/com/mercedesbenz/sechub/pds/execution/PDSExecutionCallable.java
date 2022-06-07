@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -17,9 +18,11 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.dao.OptimisticLockingFailureException;
 
 import com.mercedesbenz.sechub.pds.PDSJSONConverterException;
+import com.mercedesbenz.sechub.pds.PDSLogConstants;
 import com.mercedesbenz.sechub.pds.job.PDSCheckJobStatusService;
 import com.mercedesbenz.sechub.pds.job.PDSJobConfiguration;
 import com.mercedesbenz.sechub.pds.job.PDSJobTransactionService;
@@ -83,11 +86,16 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         PDSExecutionResult result = new PDSExecutionResult();
         PDSJobConfiguration config = null;
         try {
+            MDC.clear();
+            MDC.put(PDSLogConstants.MDC_PDS_JOB_UUID, Objects.toString(pdsJobUUID));
+
             jobTransactionService.markJobAsRunningInOwnTransaction(pdsJobUUID);
 
             String configJSON = jobTransactionService.getJobConfiguration(pdsJobUUID);
 
             config = PDSJobConfiguration.fromJSON(configJSON);
+
+            MDC.put(PDSLogConstants.MDC_SECHUB_JOB_UUID, Objects.toString(config.getSechubJobUUID()));
 
             long minutesToWaitForResult = workspaceService.getMinutesToWaitForResult(config);
             if (minutesToWaitForResult < 1) {
@@ -122,6 +130,8 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
         } finally {
             cleanUpWorkspace(pdsJobUUID, config);
+
+            MDC.clear();
         }
 
         /*
