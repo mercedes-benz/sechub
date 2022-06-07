@@ -282,6 +282,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
         environment.put(PDS_JOB_WORKSPACE_LOCATION, locationData.getWorkspaceLocation());
         environment.put(PDS_JOB_RESULT_FILE, locationData.getResultFileLocation());
+        environment.put(PDS_JOB_UUID, jobUUID.toString());
         environment.put(PDS_JOB_SOURCECODE_ZIP_FILE, locationData.getSourceCodeZipFileLocation());
         environment.put(PDS_JOB_BINARIES_TAR_FILE, locationData.getBinariesTarFileLocation());
 
@@ -296,7 +297,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         environment.put(PDS_JOB_HAS_EXTRACTED_SOURCES, "" + workspaceService.hasExtractedSources(jobUUID));
         environment.put(PDS_JOB_HAS_EXTRACTED_BINARIES, "" + workspaceService.hasExtractedBinaries(jobUUID));
 
-        LOG.debug("Prepared launcher script process for job with uuid:{}, path={}, env={}", jobUUID, path, buildEnvironmentMap);
+        LOG.debug("Prepared launcher script process for job with uuid:{}, path={}, buildEnvironmentMap={}", jobUUID, path, buildEnvironmentMap);
 
         LOG.info("Start launcher script for job {}", jobUUID);
         try {

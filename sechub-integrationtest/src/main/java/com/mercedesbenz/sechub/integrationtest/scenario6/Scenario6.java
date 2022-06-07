@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.integrationtest.scenario6;
 
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
+import com.mercedesbenz.sechub.integrationtest.internal.NoSecHubSuperAdminNecessaryScenario;
 import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
 import com.mercedesbenz.sechub.integrationtest.internal.StaticTestScenario;
 
@@ -23,7 +24,7 @@ import com.mercedesbenz.sechub.integrationtest.internal.StaticTestScenario;
  * @author Albert Tregnaghi
  *
  */
-public class Scenario6 implements PDSTestScenario, StaticTestScenario {
+public class Scenario6 implements PDSTestScenario, StaticTestScenario, NoSecHubSuperAdminNecessaryScenario {
 
     private int tempCounter;
 

@@ -29,4 +29,6 @@ public class PDSLauncherScriptEnvironmentConstants {
 
     public static final String PDS_JOB_WORKSPACE_LOCATION = "PDS_JOB_WORKSPACE_LOCATION";
     public static final String PDS_JOB_RESULT_FILE = "PDS_JOB_RESULT_FILE";
+
+    public static final String PDS_JOB_UUID = "PDS_JOB_UUID";
 }
