@@ -64,7 +64,7 @@ public class IntegrationTestPDSRestController {
     @RequestMapping(path = PDSAPIConstants.API_ANONYMOUS + "integrationtest/shutdown", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })
     public void shutdownServer() {
-        LOG.info("Integration test server shutdown wished...");
+        LOG.info("Integration test server shutdown requested...");
 
         LOG.info("Shutdown: shutdown spring boot context");
         context.close();
