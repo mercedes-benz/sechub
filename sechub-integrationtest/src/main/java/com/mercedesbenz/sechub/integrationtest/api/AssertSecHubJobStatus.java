@@ -64,7 +64,7 @@ public class AssertSecHubJobStatus {
                 }
             }
         }
-        fail("The status did not has a message of type:" + type + ", with text:" + text + "\njson was:\n" + JSONConverter.get().toJSON(status));
+        fail("The status has no message of type:" + type + ", with text:" + text + "\njson was:\n" + JSONConverter.get().toJSON(status));
         return null;
     }
 
