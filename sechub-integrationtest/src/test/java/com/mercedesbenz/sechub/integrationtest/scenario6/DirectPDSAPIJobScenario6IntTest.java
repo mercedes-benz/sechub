@@ -230,7 +230,7 @@ public class DirectPDSAPIJobScenario6IntTest {
     }
 
     @Test
-    public void pds_admin_can_mark_job_as_ready_to_start_and_after_while_job_result_is_returned() {
+    public void pds_admin_can_mark_job_as_ready_to_start_after_while_job_is_executed_and_admin_can_fetch_information() {
         /* @formatter:off */
         /* prepare */
 
@@ -249,8 +249,21 @@ public class DirectPDSAPIJobScenario6IntTest {
             LOG.error(report);
             fail("Not expected report but:\n"+report);
         };
+        // we additionally test that the output stream text does contain the info about
+        // the ENV variable "PDS_JOB_UUID" and that it is set correctly
+        // (see integrationtest-codescan.sh for the output details )
+        String outputStreamText = asPDSUser(PDS_ADMIN).getJobOutputStreamText(pdsJobUUID);
+
+        assertTestOutputContainsVariable(outputStreamText,">PDS_JOB_UUID="+pdsJobUUID);
 
         /* @formatter:on */
+    }
+
+    private void assertTestOutputContainsVariable(String outputText, String expectedToBeContained) {
+        assertNotNull(outputText);
+        if (!outputText.contains(expectedToBeContained)) {
+            fail("Searched for '" + expectedToBeContained + "'" + "\nBut output did only contain:\n" + outputText);
+        }
     }
 
     public void anonymous_cannot_create_job() {

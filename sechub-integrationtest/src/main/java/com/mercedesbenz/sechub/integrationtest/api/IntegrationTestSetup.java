@@ -21,6 +21,7 @@ import org.springframework.web.client.ResourceAccessException;
 import ch.qos.logback.classic.Level;
 
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
+import com.mercedesbenz.sechub.integrationtest.internal.NoSecHubSuperAdminNecessaryScenario;
 import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubServerTestScenario;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper;
@@ -168,7 +169,7 @@ public class IntegrationTestSetup implements TestRule {
             }
             handleDocumentationTestsSpecialIfWanted();
             assertNecessaryTestServersRunning();
-            assertTestAPIInternalSuperAdminAvailable();
+            assertTestAPIInternalSuperAdminAvailable(scenario);
 
             long startTime = 0;
             /* prepare */
@@ -327,7 +328,11 @@ public class IntegrationTestSetup implements TestRule {
 
     }
 
-    private static void assertTestAPIInternalSuperAdminAvailable() { // NOSONAR - being static this is outside IntegrationTestStatement
+    private static void assertTestAPIInternalSuperAdminAvailable(TestScenario scenario) { // NOSONAR - being static this is outside IntegrationTestStatement
+        if (scenario instanceof NoSecHubSuperAdminNecessaryScenario) {
+            /* in this case we do not care about the super admin because not necessary. */
+            return;
+        }
         if (testInternalAdminAvailableCache == null) {
             testInternalAdminAvailableCache = testAPIableToListSignupsByInternalUsedSuperAdmin();
         }

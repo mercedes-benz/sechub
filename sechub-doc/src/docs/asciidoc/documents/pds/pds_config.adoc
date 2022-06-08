@@ -113,6 +113,7 @@ NOTE: When no {sechub} configuration model is defined for the `PDS` job, the tra
 //-------------------------------------------------------------------------------------------------
 |PDS_JOB_WORKSPACE_LOCATION         | The workspace job root location 
 |PDS_JOB_RESULT_FILE                | The absolute path to the result file _(this file contains security findings)_.
+|PDS_JOB_UUID                       | The UUID of the current running PDS job.
 |PDS_JOB_SOURCECODE_ZIP_FILE        | The absolute path to the uploaded "sourcecode.zip" file 
 |PDS_JOB_EXTRACTED_SOURCES_FOLDER   | When auto extracting is enabled (default) the uploaded source code is extracted to this folder 
 |PDS_JOB_EXTRACTED_BINARIES_FOLDER  | When auto extracting is enabled (default) the uploaded binaries are extracted to this folder 
