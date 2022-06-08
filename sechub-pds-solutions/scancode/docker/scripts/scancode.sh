@@ -4,7 +4,7 @@
 # IMPORTANT: Keep the space in front and back of the list
 output_formats=" json json-pp spdx-tv spdx-rdf spdx-json "
 output_format="--spdx-tv"
-convert_output_to_spdx_json="true"
+convert_output_to_spdx_json=true
 license_score="0"
 scancode_processes="1"
 
@@ -29,7 +29,7 @@ then
     additional_options="$additional_options --processes $scancode_processes"
 fi
 
-if [[ ! -z "$SCANCODE_LICENSE_SCORE" ]]
+if [[ -n "$SCANCODE_LICENSE_SCORE" ]]
 then
     if [[ "$SCANCODE_LICENSE_SCORE" -le 100 && "$SCANCODE_LICENSE_SCORE" -ge 0 ]]
     then
@@ -59,11 +59,11 @@ then
 fi
 
 extracted_folder=""
-if [[ "$PDS_JOB_HAS_EXTRACTED_SOURCES" == "true" ]]
+if $PDS_JOB_HAS_EXTRACTED_SOURCES
 then
     echo "Extracted sources"
     extracted_folder="$PDS_JOB_EXTRACTED_SOURCES_FOLDER"
-elif [[ "$PDS_JOB_HAS_EXTRACTED_BINARIES" == "true" ]]
+elif $PDS_JOB_HAS_EXTRACTED_BINARIES
 then
     echo "Extracted binaries"
     extracted_folder="$PDS_JOB_EXTRACTED_BINARIES_FOLDER"
@@ -86,7 +86,8 @@ echo "Output format: $output_format"
 
 spdx_file="$PDS_JOB_RESULT_FILE.spdx"
 
-if [[ "$EXTRACTCODE_ENABLED" == "true" ]]
+local extractcode_enabled=$( echo "$EXTRACTCODE_ENABLED" | tr '[:upper:]' '[:lower:]' )
+if [[ "$extractcode_enabled" == "true" ]]
 then
   echo "Running extractcode"
   "$TOOL_FOLDER/scancode-toolkit-$SCANCODE_VERSION/extractcode" $extracted_folder

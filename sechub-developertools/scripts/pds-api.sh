@@ -118,7 +118,7 @@ EOF
 }
 
 function upload {
-  local jobUUID=$1
+  local pdsJobUUID=$1
   local file_to_upload=$2
   local upload_file_name="sourcecode.zip"
 
@@ -133,12 +133,12 @@ function upload {
     upload_file_name="binaries.tar"
   fi
 
-  local checkSum=$(sha256sum $file_to_upload | cut --delimiter=' ' --fields=1)
+  local checkSum=$(sha256sum "$file_to_upload" | cut --delimiter=' ' --fields=1)
 
   curl $CURL_AUTH $CURL_PARAMS -i -X POST --header "Content-Type: multipart/form-data" \
     --form "file=@$file_to_upload" \
     --form "checkSum=$checkSum" \
-    "$PDS_SERVER/api/job/${jobUUID}/upload/$upload_file_name" | $RESULT_FILTER
+    "$PDS_SERVER/api/job/${pdsJobUUID}/upload/$upload_file_name" | $RESULT_FILTER
 
   if [[ "$?" == "0" ]] ; then
     echo "Uploaded file: \"$file_to_upload\""
@@ -234,9 +234,9 @@ case "$action" in
     [ $FAILED == 0 ] && create_job_from_json "$JSON_FILE" 
     ;;
   upload)
-    SECHUB_JOB_UUID="$1" ; check_parameter SECHUB_JOB_UUID
+    PDS_JOB_UUID="$1" ; check_parameter PDS_JOB_UUID
     FILE_TO_UPLOAD="$2" ; check_parameter FILE_TO_UPLOAD
-    [ $FAILED == 0 ] && upload "$SECHUB_JOB_UUID" "$FILE_TO_UPLOAD" 
+    [ $FAILED == 0 ] && upload "$PDS_JOB_UUID" "$FILE_TO_UPLOAD" 
     ;;
   mark_job_ready_to_start)
     JOB_UUID="$1"   ; check_parameter JOB_UUID
