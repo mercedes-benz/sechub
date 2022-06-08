@@ -21,6 +21,10 @@ import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitCode;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitRuntimeException;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanConfiguration;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.ProxyInformation;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.data.DeactivatedRuleReferences;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.data.OwaspZapFullRuleset;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.data.Rule;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.data.RuleReference;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.OwaspZapApiResponseHelper;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.ScanDurationHelper;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.SecHubIncludeExcludeToOwaspZapURIHelper;
@@ -272,6 +276,12 @@ public abstract class AbstractScan implements OwaspZapScan {
         LOG.info("Setting default of how many alerts of the same rule will be inside the report to unlimited.");
         // setting this value to zero means unlimited
         clientApi.core.setOptionMaximumAlertInstances("0");
+
+        // enable all passive scanner rules by default
+        clientApi.pscan.enableAllScanners();
+        // enable all passive scanner rules by default
+        // null specifies the default scan policy
+        clientApi.ascan.enableAllScanners(null);
     }
 
     protected void setupAdditonalProxyConfiguration() throws ClientApiException {
@@ -289,8 +299,39 @@ public abstract class AbstractScan implements OwaspZapScan {
         }
     }
 
+    protected void deactivateRules() throws ClientApiException {
+        OwaspZapFullRuleset fullRuleset = scanConfig.getFullRuleset();
+        DeactivatedRuleReferences deactivatedRuleReferences = scanConfig.getDeactivatedRuleReferences();
+        if (fullRuleset == null && deactivatedRuleReferences == null) {
+            return;
+        }
+        List<RuleReference> rulesReferences = deactivatedRuleReferences.getDeactivatedRuleReferences();
+        if (rulesReferences == null) {
+            return;
+        }
+
+        for (RuleReference ruleRef : rulesReferences) {
+            Rule ruleToDeactivate = fullRuleset.findRuleByReference(ruleRef.getReference());
+            if (isPassiveRule(ruleToDeactivate.getType())) {
+                clientApi.pscan.disableScanners(ruleToDeactivate.getId());
+            } else if (isActiveRule(ruleToDeactivate.getType())) {
+                // null specifies the default scan policy
+                clientApi.ascan.disableScanners(ruleToDeactivate.getId(), null);
+            }
+        }
+    }
+
+    private boolean isPassiveRule(String type) {
+        return "passive".equals(type.toLowerCase());
+    }
+
+    private boolean isActiveRule(String type) {
+        return "active".equals(type.toLowerCase());
+    }
+
     private void scanUnsafe() throws ClientApiException {
         setupBasicConfiguration();
+        deactivateRules();
         setupAdditonalProxyConfiguration();
 
         createContext();
