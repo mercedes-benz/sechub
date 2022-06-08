@@ -122,7 +122,9 @@ NOTE: When no {sechub} configuration model is defined for the `PDS` job, the tra
                                       For details about the exact format please look into https://mercedes-benz.github.io/sechub/latest/sechub-client.html[SecHub client documentation] . If you are using 
                                       a Java wrapper application inside your PDS scripts, those can use the `sechub-commons-model` java library which contains `SecHubScanConfiguration.java` 
                                       _(Usage is described in JavaDoc)_.
-|SECHUB_JOB_UUID                    | The corresponding {sechub} job UUID 
+|SECHUB_JOB_UUID                    | The corresponding {sechub} job UUID
+|PDS_SCAN_TARGET_TYPE 				| The network target type of the target URL. Possible values are: INTERNET, INTRANET. The network target type is injected by SecHub automatically. 
+									  It does not need to be specified explicitly in the PDS Configuration file.
 |===
 
 ==== Parameter variables
