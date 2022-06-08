@@ -59,6 +59,10 @@ public class RestartJobScenario4IntTest {
             assertEquals("GREEN was not found, but expected...","GREEN",report);
         }
 
+        // even when crashes has been done - the restart was green so we have no additional
+        // messages
+        assertJobStatus(project, sechubJobUUID).hasNoMessagesDefined();
+
         /* @formatter:on */
     }
 

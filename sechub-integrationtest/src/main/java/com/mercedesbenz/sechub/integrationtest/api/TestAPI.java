@@ -127,6 +127,10 @@ public class TestAPI {
         return new AssertPDSStatus(json);
     }
 
+    public static AssertSecHubJobStatus assertJobStatus(TestProject project, UUID sechubJobUUID) {
+        return new AssertSecHubJobStatus(sechubJobUUID, project);
+    }
+
     public static AssertPDSCreateJobResult assertPDSJobCreateResult(String json) {
         return new AssertPDSCreateJobResult(json);
     }

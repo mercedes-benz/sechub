@@ -1,0 +1,6 @@
+// SPDX-License-Identifier: MIT
+[[section-shared-concepts-report-dataflow]]
+==== Job status data flow
+
+===== Job execution done, final Job status update
+plantuml::diagrams/diagram_status_update_after_job_has_been_executed.puml[format=svg, title="Delivery"] 

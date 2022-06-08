@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.sharedkernel.messaging;
 
 import java.util.UUID;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 
 /**
@@ -30,6 +31,7 @@ public class MessageDataKeys {
     public static final MessageDataKey<String> ENVIRONMENT_BASE_URL = createKey("environment.base.url", new StringMessageDataProvider());
     public static final MessageDataKey<String> EXECUTED_BY = createKey("common.executedby", new StringMessageDataProvider());
     public static final MessageDataKey<String> REPORT_TRAFFIC_LIGHT = createKey("report.trafficlight", new StringMessageDataProvider());
+    public static final MessageDataKey<SecHubMessagesList> REPORT_MESSAGES = createKey("report.messages", new SecHubMessagesListDataProvider());
     public static final MessageDataKey<UUID> SECHUB_UUID = createKey("sechub.uuid", new UUIDMessageDataProvider());
     public static final MessageDataKey<SecHubConfiguration> SECHUB_CONFIG = createKey("sechub.config", new SecHubConfigurationMessageDataProvider());
     public static final MessageDataKey<BatchJobMessage> BATCH_JOB_ID = createKey("sechub.batchjob.id", new BatchJobMessageDataProvider());

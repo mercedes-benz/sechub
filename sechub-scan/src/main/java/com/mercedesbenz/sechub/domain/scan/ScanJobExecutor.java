@@ -155,6 +155,8 @@ class ScanJobExecutor {
 
             } catch (SecHubExecutionException e) {
                 this.exception = e;
+            } catch (Exception e) {
+                LOG.error("Unhandled exception appeared!", e);
             } finally {
                 MDC.clear();
             }

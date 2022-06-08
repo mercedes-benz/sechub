@@ -2,12 +2,17 @@
 package com.mercedesbenz.sechub.domain.schedule.batch;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import org.jboss.logging.MDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
+import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.domain.schedule.ExecutionResult;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.sharedkernel.LogConstants;
@@ -52,7 +57,7 @@ class SynchronSecHubJobExecutor {
 
                     LOG.info("Executing sechub job: {}", secHubJobUUIDAsString);
 
-                    /* we send no a synchronous SCAN event */
+                    /* we send now a synchronous SCAN event */
                     DomainMessage request = new DomainMessage(MessageID.START_SCAN);
                     request.set(MessageDataKeys.EXECUTED_BY, secHubJob.getOwner());
                     request.set(MessageDataKeys.SECHUB_UUID, secHubJobUUID);
@@ -96,7 +101,8 @@ class SynchronSecHubJobExecutor {
     }
 
     private void markSechHubJobFailed(UUID secHubJobUUID) {
-        updateSecHubJob(secHubJobUUID, ExecutionResult.FAILED, null);
+        SecHubMessage jobFailedMessage = new SecHubMessage(SecHubMessageType.ERROR, "The job execution failed.");
+        updateSecHubJob(secHubJobUUID, ExecutionResult.FAILED, null, Arrays.asList(jobFailedMessage));
 
         LOG.info("marked job as failed:{}", secHubJobUUID);
     }
@@ -105,10 +111,10 @@ class SynchronSecHubJobExecutor {
         ExecutionResult result;
         if (MessageID.SCAN_ABANDONDED.equals(response.getMessageId())) {
             /*
-             * Abandon happens normally only, when doing a restart or an hard internal
-             * cancel. In both situations, the SecHub job execution result inside scheduler
-             * is already set before, and state will also be changed to CANCELED, or on
-             * restart to RUNNING
+             * Abandon happens normally only, when doing a restart or a hard internal cancel
+             * operation. In both situations, the SecHub job execution result inside
+             * scheduler is already set before, and state will also be changed to CANCELED,
+             * or on restart to RUNNING
              */
             LOG.info("Ignore sechub job update, because scan was abandoned");
             return;
@@ -119,11 +125,18 @@ class SynchronSecHubJobExecutor {
             result = ExecutionResult.OK;
         }
         String trafficLightString = response.get(MessageDataKeys.REPORT_TRAFFIC_LIGHT);
-        updateSecHubJob(secHubUUID, result, trafficLightString);
+
+        SecHubMessagesList messagesList = response.get(MessageDataKeys.REPORT_MESSAGES);
+        List<SecHubMessage> messages = null;
+        if (messagesList != null) {
+            messages = messagesList.getSecHubMessages();
+        }
+
+        updateSecHubJob(secHubUUID, result, trafficLightString, messages);
     }
 
-    private void updateSecHubJob(UUID secHubUUID, ExecutionResult result, String trafficLightString) {
-        secHubJobSafeUpdater.safeUpdateOfSecHubJob(secHubUUID, result, trafficLightString);
+    private void updateSecHubJob(UUID secHubUUID, ExecutionResult result, String trafficLightString, List<SecHubMessage> messages) {
+        secHubJobSafeUpdater.safeUpdateOfSecHubJob(secHubUUID, result, trafficLightString, messages);
     }
 
     @IsSendingAsyncMessage(MessageID.JOB_DONE)

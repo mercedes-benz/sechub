@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.domain.schedule.batch;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -12,6 +13,8 @@ import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.domain.schedule.ExecutionResult;
 import com.mercedesbenz.sechub.domain.schedule.SchedulingConstants;
 import com.mercedesbenz.sechub.domain.schedule.batch.BatchConfiguration.BatchJobExecutionScope;
@@ -66,13 +69,10 @@ class ScanExecutionTasklet implements Tasklet {
     }
 
     private void markSechHubJobFailed(UUID secHubJobUUID) {
-        updateSecHubJob(secHubJobUUID, ExecutionResult.FAILED, null);
+        scope.getSecHubJobUpdater().safeUpdateOfSecHubJob(secHubJobUUID, ExecutionResult.FAILED, null,
+                Arrays.asList(new SecHubMessage(SecHubMessageType.ERROR, "Job execution task failed because of an internal error")));
 
         LOG.info("marked sechub as failed:{}", secHubJobUUID);
-    }
-
-    private void updateSecHubJob(UUID secHubUUID, ExecutionResult result, String trafficLightString) {
-        scope.getSecHubJobUpdater().safeUpdateOfSecHubJob(secHubUUID, result, trafficLightString);
     }
 
     @IsSendingAsyncMessage(MessageID.JOB_FAILED)

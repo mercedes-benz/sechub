@@ -1,0 +1,2 @@
+==== Job status fetching
+plantuml::diagrams/diagram_job_status_delivery.puml[format=svg, title="Job status fetrching"] 
