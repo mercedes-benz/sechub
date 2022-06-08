@@ -16,11 +16,11 @@ NOTE: There are some more mandatory parameters, please refer to <<section-genera
 
 ===== Logging
 ====== Default output
-{pds} uses per default logging to stdout, so you just need to use something like
-`fluentd` PODs to gather log output.
+{pds} uses per default logging to `stdout`. In case you are running on Kubernetes or similar platforms you can use
+`fluentd` to gather the log output.
 
 ====== Logstash support
-When you want to use `logstash` (e.g. when using `Kibana`) you just have to set the environment variable 
+When you want to use `logstash` you just have to set the environment variable 
 `LOGGING_TYPE` to `LOGSTASH_JSON` before server starts. 
 
 

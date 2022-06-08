@@ -158,7 +158,7 @@ accidently add the credentials to your repository.
 
 *Logstash support*
 
-When you want to use `logstash` (e.g. when using `Kibana`) you just have to set the environment variable 
+When you want to use `logstash` (e.g. when using `ElasticSearch` or `OpenSearch`) you just have to set the environment variable 
 `LOGGING_TYPE` to `LOGSTASH_JSON` before server starts. 
 
 
