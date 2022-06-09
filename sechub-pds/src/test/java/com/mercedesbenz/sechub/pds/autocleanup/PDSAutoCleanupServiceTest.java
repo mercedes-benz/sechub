@@ -1,0 +1,106 @@
+// SPDX-License-Identifier: MIT
+package com.mercedesbenz.sechub.pds.autocleanup;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+import java.time.LocalDateTime;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+
+import com.mercedesbenz.sechub.pds.config.PDSConfigService;
+import com.mercedesbenz.sechub.pds.job.PDSJobRepository;
+import com.mercedesbenz.sechub.pds.time.TimeCalculationService;
+
+class PDSAutoCleanupServiceTest {
+
+    private PDSAutoCleanupService serviceToTest;
+    private PDSConfigService configService;
+    private PDSJobRepository jobRepository;
+    private TimeCalculationService timeCalculationService;
+    private PDSAutoCleanupResultInspector inspector;
+
+    @BeforeEach
+    void beforeEach() {
+        serviceToTest = new PDSAutoCleanupService();
+
+        configService = mock(PDSConfigService.class);
+        jobRepository = mock(PDSJobRepository.class);
+        timeCalculationService = mock(TimeCalculationService.class);
+        inspector = mock(PDSAutoCleanupResultInspector.class);
+
+        serviceToTest.configService = configService;
+        serviceToTest.jobRepository = jobRepository;
+        serviceToTest.timeCalculationService = timeCalculationService;
+        serviceToTest.inspector = inspector;
+    }
+
+    @Test
+    void cleanup_executes_NOT_delete_job_information_for_minus_1_day() {
+        /* prepare */
+        long days = -1;
+        when(configService.getAutoCleanupInDays()).thenReturn(days);
+        LocalDateTime cleanTime = LocalDateTime.now().minusDays(days);
+        when(timeCalculationService.calculateNowMinusDays(any())).thenReturn(cleanTime);
+
+        /* execute */
+        serviceToTest.cleanup();
+
+        /* test */
+        verify(configService).getAutoCleanupInDays();
+        verify(timeCalculationService, never()).calculateNowMinusDays(any());
+        verify(jobRepository, never()).deleteJobOlderThan(any());
+        // check inspection as expected: never because not executed
+        verify(inspector, never()).inspect(any());
+    }
+
+    @Test
+    void cleanup_executes_NOT_delete_job_information_for_0_days() {
+        /* prepare */
+        long days = 0;
+        when(configService.getAutoCleanupInDays()).thenReturn(days);
+        LocalDateTime cleanTime = LocalDateTime.now().minusDays(days);
+        when(timeCalculationService.calculateNowMinusDays(any())).thenReturn(cleanTime);
+
+        /* execute */
+        serviceToTest.cleanup();
+
+        /* test */
+        verify(configService).getAutoCleanupInDays();
+        verify(timeCalculationService, never()).calculateNowMinusDays(any());
+        verify(jobRepository, never()).deleteJobOlderThan(any());
+        // check inspection as expected: never because not executed
+        verify(inspector, never()).inspect(any());
+    }
+
+    @Test
+    void cleanup_executes_delete_job_information_for_30_days() {
+        /* prepare */
+        long days = 30;
+        when(configService.getAutoCleanupInDays()).thenReturn(days);
+        LocalDateTime cleanTime = LocalDateTime.now().minusDays(days);
+        when(timeCalculationService.calculateNowMinusDays(any())).thenReturn(cleanTime);
+        when(jobRepository.deleteJobOlderThan(cleanTime)).thenReturn(1234);
+
+        /* execute */
+        serviceToTest.cleanup();
+
+        /* test */
+        verify(configService).getAutoCleanupInDays();
+        verify(timeCalculationService).calculateNowMinusDays(eq(days));
+        verify(jobRepository).deleteJobOlderThan(cleanTime);
+
+        // check inspection as expected
+        ArgumentCaptor<PDSAutoCleanupResult> captor = ArgumentCaptor.forClass(PDSAutoCleanupResult.class);
+        verify(inspector).inspect(captor.capture());
+
+        PDSAutoCleanupResult result = captor.getValue();
+        assertEquals(cleanTime, result.getUsedCleanupTimeStamp());
+        assertEquals(days, result.getCleanupTimeInDays());
+        assertEquals(1234, result.getDeletedEntries());
+    }
+
+}

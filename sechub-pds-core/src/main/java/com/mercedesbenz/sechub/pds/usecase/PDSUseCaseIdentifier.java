@@ -3,29 +3,43 @@ package com.mercedesbenz.sechub.pds.usecase;
 
 public enum PDSUseCaseIdentifier {
 
-    UC_USER_CREATES_JOB,
+    /* job */
+    UC_USER_CREATES_JOB(1),
 
-    UC_USER_UPLOADS_JOB_DATA,
+    UC_USER_UPLOADS_JOB_DATA(2),
 
-    UC_USER_MARKS_JOB_READY_TO_START,
+    UC_USER_MARKS_JOB_READY_TO_START(3),
 
-    UC_USER_CANCELS_JOB,
+    UC_USER_CANCELS_JOB(4),
 
-    UC_USER_FETCHES_STATUS_OF_JOB,
+    UC_USER_FETCHES_STATUS_OF_JOB(5),
 
-    UC_USER_FETCHES_JOB_RESULT,
+    UC_USER_FETCHES_JOB_RESULT(6),
 
-    UC_ADMIN_FETCHES_MONITORING_STATUS,
+    /* monitoring */
+    UC_ADMIN_FETCHES_MONITORING_STATUS(7),
 
-    UC_ANONYMOUS_CHECK_ALIVE,
+    UC_ANONYMOUS_CHECK_ALIVE(8),
 
-    UC_ADMIN_FETCHES_JOB_RESULT_OR_FAILURE_TEXT,
+    /* result */
+    UC_ADMIN_FETCHES_JOB_RESULT_OR_FAILURE_TEXT(9),
 
-    UC_ADMIN_FETCHES_SERVER_CONFIGURATION,
+    /* configuration */
+    UC_ADMIN_FETCHES_SERVER_CONFIGURATION(10),
 
-    UC_ADMIN_FETCHES_OUTPUT_STREAM,
+    /* streams */
+    UC_ADMIN_FETCHES_OUTPUT_STREAM(11),
 
-    UC_ADMIN_FETCHES_ERROR_STREAM,;
+    UC_ADMIN_FETCHES_ERROR_STREAM(12),
+
+    /* auto cleanup */
+    UC_ADMIN_FETCHES_AUTO_CLEANUP_CONFIGURATION(13),
+
+    UC_ADMIN_UPDATES_AUTO_CLEANUP_CONFIGURATION(14),
+
+    UC_SYSTEM_AUTO_CLEANUP_EXECUTION(15),
+
+    ;
 
     /* +---------------------------------------------------------------------+ */
     /* +............................ Helpers ................................+ */
@@ -38,17 +52,15 @@ public enum PDSUseCaseIdentifier {
     }
 
     private static final int WANTED_ID_LENGTH = 3;
-    private static int counter;
 
-    private PDSUseCaseIdentifier() {
-        this.uniqueId = createUseCaseID();
+    private PDSUseCaseIdentifier(int usecaseNumber) {
+        this.uniqueId = createUseCaseID(usecaseNumber);
     }
 
-    private static String createUseCaseID() {
-        counter++;
+    static String createUseCaseID(int usecaseNumber) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(counter);
+        sb.append(usecaseNumber);
         while (sb.length() < WANTED_ID_LENGTH) {
             sb.insert(0, "0");
         }

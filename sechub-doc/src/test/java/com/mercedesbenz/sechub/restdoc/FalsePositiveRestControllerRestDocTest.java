@@ -5,8 +5,8 @@ import static com.mercedesbenz.sechub.domain.scan.project.FalsePositiveJobData.*
 import static com.mercedesbenz.sechub.domain.scan.project.FalsePositiveJobDataList.*;
 import static com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectConfiguration.*;
 import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;

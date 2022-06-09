@@ -42,10 +42,11 @@ import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper.RestHelperTarget;
 import com.mercedesbenz.sechub.sharedkernel.project.ProjectAccessLevel;
+import com.mercedesbenz.sechub.test.PDSTestURLBuilder;
+import com.mercedesbenz.sechub.test.SecHubTestURLBuilder;
 import com.mercedesbenz.sechub.test.TestPDSServerConfiguration;
 import com.mercedesbenz.sechub.test.TestPDSServerProductConfig;
 import com.mercedesbenz.sechub.test.TestPDSServerProductParameter;
-import com.mercedesbenz.sechub.test.TestURLBuilder;
 import com.mercedesbenz.sechub.test.executionprofile.TestExecutionProfile;
 import com.mercedesbenz.sechub.test.executionprofile.TestExecutionProfileList;
 import com.mercedesbenz.sechub.test.executorconfig.TestExecutorConfig;
@@ -56,7 +57,7 @@ public class DeveloperAdministration {
     private ConfigProvider provider;
     private AdminUserContext userContext;
     private TestRestHelper restHelper;
-    private TestURLBuilder urlBuilder;
+    private SecHubTestURLBuilder urlBuilder;
     private ErrorHandler errorHandler;
     private UIContext uiContext;
 
@@ -151,11 +152,11 @@ public class DeveloperAdministration {
         return errorHandler;
     }
 
-    public TestURLBuilder getUrlBuilder() {
+    public SecHubTestURLBuilder getUrlBuilder() {
         if (urlBuilder == null) {
             int port = provider.getPort();
             String server = provider.getServer();
-            urlBuilder = new TestURLBuilder(provider.getProtocol(), port, server);
+            urlBuilder = new SecHubTestURLBuilder(provider.getProtocol(), port, server);
         }
         return urlBuilder;
     }
@@ -174,24 +175,24 @@ public class DeveloperAdministration {
 
     public class PDSAdministration {
 
-        private TestURLBuilder pdsUrlBuilder;
+        private PDSTestURLBuilder pdsUrlBuilder;
 
-        public TestURLBuilder getUrlBuilder() {
+        public PDSTestURLBuilder getUrlBuilder() {
             return pdsUrlBuilder;
         }
 
         public PDSAdministration(String hostname, int port, String userid, String apiToken) {
-            pdsUrlBuilder = new TestURLBuilder("https", port, hostname);
+            pdsUrlBuilder = new PDSTestURLBuilder("https", port, hostname);
             TestUser user = new FixedTestUser(userid, apiToken, userid + "_pds@example.com");
             restHelper = new TestRestHelper(user, RestHelperTarget.SECHUB_PDS);
         }
 
         public String fetchServerConfigurationAsString() {
-            return restHelper.getJSON(pdsUrlBuilder.pds().buildAdminGetServerConfiguration());
+            return restHelper.getJSON(pdsUrlBuilder.buildAdminGetServerConfiguration());
         }
 
         public String getServerAlive() {
-            return restHelper.headStringFromURL(pdsUrlBuilder.pds().buildAnonymousCheckAlive());
+            return restHelper.headStringFromURL(pdsUrlBuilder.buildAnonymousCheckAlive());
         }
 
         public String createPDSJob(UUID sechubJobUUID, String productId, Map<String, String> params) {
@@ -199,19 +200,19 @@ public class DeveloperAdministration {
         }
 
         public String getExecutionStatus() {
-            return restHelper.getJSON(pdsUrlBuilder.pds().buildAdminGetMonitoringStatus());
+            return restHelper.getJSON(pdsUrlBuilder.buildAdminGetMonitoringStatus());
         }
 
         public String getJobResultOrError(String jobUUID) {
-            return restHelper.getJSON(pdsUrlBuilder.pds().buildGetJobResultOrErrorText(UUID.fromString(jobUUID)));
+            return restHelper.getJSON(pdsUrlBuilder.buildGetJobResultOrErrorText(UUID.fromString(jobUUID)));
         }
 
         public String getJobStatus(String jobUUID) {
-            return restHelper.getJSON(pdsUrlBuilder.pds().buildGetJobStatus(UUID.fromString(jobUUID)));
+            return restHelper.getJSON(pdsUrlBuilder.buildGetJobStatus(UUID.fromString(jobUUID)));
         }
 
         public UUID getUUIDOfLastStartedJob() {
-            return restHelper.getUUIDFromURL(pdsUrlBuilder.pds().buildFetchLastStartedJobUUIDUrl());
+            return restHelper.getUUIDFromURL(pdsUrlBuilder.buildFetchLastStartedJobUUIDUrl());
         }
 
         public String markJobAsReadyToStart(UUID jobUUID) {
@@ -230,11 +231,11 @@ public class DeveloperAdministration {
         }
 
         public String getJobOutputStream(UUID jobUUID) {
-            return restHelper.getStringFromURL(pdsUrlBuilder.pds().buildAdminFetchesJobOutputStreamUrl(jobUUID));
+            return restHelper.getStringFromURL(pdsUrlBuilder.buildAdminFetchesJobOutputStreamUrl(jobUUID));
         }
 
         public String getJobErrorStream(UUID jobUUID) {
-            return restHelper.getStringFromURL(pdsUrlBuilder.pds().buildAdminFetchesJobErrorStreamUrl(jobUUID));
+            return restHelper.getStringFromURL(pdsUrlBuilder.buildAdminFetchesJobErrorStreamUrl(jobUUID));
         }
 
         public ProductIdentifier findProductIdentifier(TestPDSServerConfiguration config, String productId) {

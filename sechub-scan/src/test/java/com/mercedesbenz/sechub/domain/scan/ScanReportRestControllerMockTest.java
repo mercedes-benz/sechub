@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan;
 
-import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;

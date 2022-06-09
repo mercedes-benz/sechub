@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule;
 
-import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
