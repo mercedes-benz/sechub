@@ -6,17 +6,12 @@
       "id": "PDS_OWASP_ZAP",
       "path": "/scripts/owasp-zap.sh",
       "scanType": "webScan",
-      "extractUploads": false,
       "description": "Runs OWASP ZAP",
       "parameters": {
         "mandatory": [
           {
             "key": "pds.scan.target.url",
             "description": "The target url for the scan."
-          },
-          {
-            "key": "pds.scan.target.type",
-            "description": "The target type of the scan. Possible values are: INTERNET, INTRANET, UNKNOWN"
           }
         ],
         "optional": [
@@ -55,17 +50,12 @@
       "id": "PDS_OWASP_ZAP_MOCK",
       "path": "/scripts/owasp-zap-mock.sh",
       "scanType": "webScan",
-      "extractUploads": false,
       "description": "Runs OWASP ZAP mock",
       "parameters": {
         "mandatory": [
           {
             "key": "pds.scan.target.url",
             "description": "The target url for the scan"
-          },
-          {
-            "key": "pds.scan.target.type",
-            "description": "The target type of the scan. Possible values are: INTERNET, INTRANET, UNKNOWN"
           }
         ],
         "optional": [
