@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.ArgumentCaptor;
 
 import com.mercedesbenz.sechub.pds.config.PDSConfigService;
@@ -39,7 +41,7 @@ class PDSAutoCleanupServiceTest {
     }
 
     @Test
-    void cleanup_executes_NOT_delete_job_information_for_minus_1_day() {
+    void cleanup_executes_NOT_delete_job_when_config_service_returns_minus_1_day() {
         /* prepare */
         long days = -1;
         when(configService.getAutoCleanupInDays()).thenReturn(days);
@@ -58,7 +60,7 @@ class PDSAutoCleanupServiceTest {
     }
 
     @Test
-    void cleanup_executes_NOT_delete_job_information_for_0_days() {
+    void cleanup_executes_NOT_delete_job_when_config_servic_returns_0_days() {
         /* prepare */
         long days = 0;
         when(configService.getAutoCleanupInDays()).thenReturn(days);
@@ -76,10 +78,10 @@ class PDSAutoCleanupServiceTest {
         verify(inspector, never()).inspect(any());
     }
 
-    @Test
-    void cleanup_executes_delete_job_information_for_30_days() {
+    @ParameterizedTest
+    @CsvSource({ "1", "2,", "30", "200" })
+    void cleanup_executes_delete_job_when_config_service_returns_days_bigger_than_zero(long days) {
         /* prepare */
-        long days = 30;
         when(configService.getAutoCleanupInDays()).thenReturn(days);
         LocalDateTime cleanTime = LocalDateTime.now().minusDays(days);
         when(timeCalculationService.calculateNowMinusDays(any())).thenReturn(cleanTime);

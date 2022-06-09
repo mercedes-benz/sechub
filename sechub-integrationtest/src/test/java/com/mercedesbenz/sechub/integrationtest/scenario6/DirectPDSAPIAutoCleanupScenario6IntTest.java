@@ -24,6 +24,7 @@ public class DirectPDSAPIAutoCleanupScenario6IntTest {
     public void auto_cleanup_executed_when_admin_configures_cleanupdays_1() {
         /* prepare */
         TestAutoCleanupData data = new TestAutoCleanupData(1, TestCleanupTimeUnit.DAY);
+
         /* execute */
         asPDSUser(PDS_ADMIN).updateAutoCleanupConfiguration(data);
 
@@ -35,8 +36,10 @@ public class DirectPDSAPIAutoCleanupScenario6IntTest {
 
         assertPDSAutoCleanupInspections().
 
-            // inspection must contain the info that delte for job has been run and has not deleted anything
-            addExpectedDeleteInspection("pds-job","com.mercedesbenz.sechub.pds.autocleanup.AdministrationAutoCleanupService",0).
+            // inspection must contain the info that delete for job has been run and has not deleted anything
+            // this just tests, that the cleanup service has been called by time trigger!
+            // the logic inside the PDSAutoCleanupService itself is tested in another unit test!
+            addExpectedDeleteInspection("pds-job","com.mercedesbenz.sechub.pds.autocleanup.PDSAutoCleanupService",0).
 
             addExpectedDifferentKindOfDeleteInspections(1).
 

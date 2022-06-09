@@ -37,7 +37,7 @@ public enum PDSUseCaseIdentifier {
 
     UC_ADMIN_UPDATES_AUTO_CLEANUP_CONFIGURATION(14),
 
-    UC_SYSTEM_AUTO_CLEANUP_EXECUTION(15),
+    UC_SYSTEM_AUTO_CLEANUP_EXECUTION(15, false),
 
     ;
 
@@ -46,6 +46,7 @@ public enum PDSUseCaseIdentifier {
     /* +---------------------------------------------------------------------+ */
 
     private String uniqueId;
+    private boolean hasRestApi;
 
     public String uniqueId() {
         return uniqueId;
@@ -54,7 +55,16 @@ public enum PDSUseCaseIdentifier {
     private static final int WANTED_ID_LENGTH = 3;
 
     private PDSUseCaseIdentifier(int usecaseNumber) {
+        this(usecaseNumber, true);
+    }
+
+    private PDSUseCaseIdentifier(int usecaseNumber, boolean hasRestAPI) {
         this.uniqueId = createUseCaseID(usecaseNumber);
+        this.hasRestApi = hasRestAPI;
+    }
+
+    public boolean hasRestApi() {
+        return hasRestApi;
     }
 
     static String createUseCaseID(int usecaseNumber) {
