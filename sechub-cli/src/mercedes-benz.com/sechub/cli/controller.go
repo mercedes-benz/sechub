@@ -10,9 +10,15 @@ import (
 )
 
 type jobStatusResult struct {
-	State        string `json:"state"`
-	Result       string `json:"result"`
-	TrafficLight string `json:"trafficLight"`
+	State        string             `json:"state"`
+	Result       string             `json:"result"`
+	TrafficLight string             `json:"trafficLight"`
+	Messages     []JobStatusMessage `json:"messages"`
+}
+
+type JobStatusMessage struct {
+	Type string `json:"type"`
+	Text string `json:"text"`
 }
 
 type jobScheduleResult struct {

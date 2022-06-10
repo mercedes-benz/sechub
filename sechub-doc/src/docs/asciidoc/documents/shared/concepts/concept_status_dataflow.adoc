@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-[[section-shared-concepts-report-dataflow]]
+
 ==== Job status data flow
 
 ===== Job execution done, final Job status update

@@ -110,10 +110,32 @@ func getSecHubJobStatus(context *Context) (jsonData string) {
 }
 
 func printSecHubJobSummaryAndFailOnTrafficLight(context *Context) {
-	/* Evaluate traffic light */
+	// Handle messages from server
+	errorInJobMessage := false
+	numberOfMessages := len(context.jobStatus.Messages)
+
+	if numberOfMessages > 0 {
+		fmt.Print("Message")
+		if numberOfMessages > 1 {
+			fmt.Print("s")
+		}
+		fmt.Println(" from SecHub server:")
+		for _, message := range context.jobStatus.Messages {
+			fmt.Printf("  -> %s: %s\n", message.Type, message.Text)
+			if message.Type == "ERROR" {
+				errorInJobMessage = true
+			}
+		}
+	}
+
+	// Evaluate traffic light
 	switch context.jobStatus.TrafficLight {
 	case "RED":
-		fmt.Fprintln(os.Stderr, "  RED alert - security vulnerabilities identified (critical or high)")
+		if errorInJobMessage {
+			fmt.Fprintln(os.Stderr, "  RED alert - server error while job execution")
+		} else {
+			fmt.Fprintln(os.Stderr, "  RED alert - security vulnerabilities identified (critical or high)")
+		}
 		os.Exit(ExitCodeFailed)
 	case "YELLOW":
 		yellowMessage := "  YELLOW alert - security vulnerabilities identified (but not critical or high)"
