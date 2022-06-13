@@ -3,9 +3,9 @@ package com.mercedesbenz.sechub.integrationtest.scenario6;
 
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 
+import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.rules.Timeout;
 
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
@@ -49,8 +49,8 @@ public class DirectPDSAPIAutoCleanupScenario6IntTest {
 
     }
 
-    @AfterAll
-    static void afterAll() {
+    @AfterClass
+    public static void afterAll() {
         /* disable */
         resetPDSAutoCleanupDaysToZero();
     }

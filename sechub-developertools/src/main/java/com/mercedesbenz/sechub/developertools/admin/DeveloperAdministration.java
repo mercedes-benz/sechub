@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.developertools.admin;
 
+import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +33,6 @@ import com.mercedesbenz.sechub.integrationtest.api.AsUser;
 import com.mercedesbenz.sechub.integrationtest.api.FixedTestProject;
 import com.mercedesbenz.sechub.integrationtest.api.FixedTestUser;
 import com.mercedesbenz.sechub.integrationtest.api.InternalAccess;
-import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 import com.mercedesbenz.sechub.integrationtest.api.TestUser;
 import com.mercedesbenz.sechub.integrationtest.api.UserContext;
 import com.mercedesbenz.sechub.integrationtest.api.WithSecHubClient;
@@ -297,6 +298,16 @@ public class DeveloperAdministration {
             /* @formatter:on */
             String properties = sb.toString();
             return properties;
+        }
+
+        public String fetchPDSAutoCleanupConfiguration() {
+            TestAutoCleanupData configuration = asPDSUser(PDS_ADMIN).fetchAutoCleanupConfiguration();
+            return TestJSONHelper.get().createJSON(configuration, true);
+        }
+
+        public String updatePDSAutoCleanupConfiguration(String json) {
+            asPDSUser(PDS_ADMIN).updateAutoCleanupConfiguration(json);
+            return "PDS auto cleanup data has been changed";
         }
 
     }
@@ -620,7 +631,7 @@ public class DeveloperAdministration {
         String user = provider.getUser();
         String token = provider.getApiToken();
         TestUser testUser = new FixedTestUser(user, token);
-        return TestAPI.as(testUser);
+        return as(testUser);
     }
 
     public WithSecHubClient withSecHubClientOnDefinedBinPath() {
@@ -738,7 +749,7 @@ public class DeveloperAdministration {
     }
 
     private AsUser asTestUser() {
-        return TestAPI.as(userContext.toTestUser());
+        return as(userContext.toTestUser());
     }
 
     public TestExecutionProfileList fetchExecutionProfileList() {
@@ -772,7 +783,7 @@ public class DeveloperAdministration {
 
     public String updateAutoCleanupConfiguration(String json) {
         asTestUser().updateAutoCleanupConfiguration(json);
-        return "Auto cleanup data has been changed";
+        return "SecHub auto cleanup data has been changed";
     }
 
 }
