@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.rules.Timeout;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
+import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubReportVersion;
 import com.mercedesbenz.sechub.commons.model.SecHubStatus;
 import com.mercedesbenz.sechub.commons.model.Severity;
@@ -61,6 +62,9 @@ public class PDSCodeScanJobScenario5IntTest {
             hasReportVersion(SecHubReportVersion.VERSION_1_0).
             hasStatus(SecHubStatus.FAILED).
             hasMessages(1);
+
+        // check the job status contains also message
+        assertJobStatus(project, jobUUID).hasMessages(1).hasMessage(SecHubMessageType.ERROR,"Job execution failed because of an internal problem");
         /* @formatter:on */
     }
 

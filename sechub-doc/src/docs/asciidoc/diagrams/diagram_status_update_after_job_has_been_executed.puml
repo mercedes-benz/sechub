@@ -1,0 +1,61 @@
+' SPDX-License-Identifier: MIT
+@startuml
+
+hide empty fields
+hide empty methods
+
+skinparam linetype polyline
+'skinparam linetype ortho
+
+package com.mercedesbenz.sechub.domain.schedule {
+    class ScheduleJobStatus{
+        + ScheduleJobStatus(ScheduleSecHubJob)
+    }
+    
+    class ScheduleSecHubJob<<Entity>>
+    
+    class SecHubJobSafeUpdater
+    
+    class SynchronSecHubJobExecutor{
+        updateSecHubJob(UUID secHubUUID, DomainMessageSynchronousResult)
+    }
+}
+package com.mercedesbenz.sechub.domain.scan {
+    class ScanService {
+       ~ startScan(...)
+    }
+
+    class ScanReport {
+        String result
+        TrafficLight trafficLight
+    }
+    
+    note right of ScanReport::result
+     the result (column) inside database
+     represents the sechub report model as json
+    end note
+    
+    class CreateScanReportService
+}
+
+class DomainMessageService
+
+ScheduleJobStatus ---> ScheduleSecHubJob: needs info from
+
+SecHubJobSafeUpdater -> ScheduleSecHubJob: updates job
+
+SynchronSecHubJobExecutor -> SecHubJobSafeUpdater: trigger update
+ScanService ---> DomainMessageService : sends synchron domain message result
+note on link 
+     The scan service will set
+     necessary parts for caller (scheduler) into 
+     the domain message.
+     (traffic light, messages, etc.)
+end note
+
+DomainMessageService ---> SynchronSecHubJobExecutor
+
+CreateScanReportService -> ScanReport :creates
+ScanService -> CreateScanReportService
+
+@enduml 

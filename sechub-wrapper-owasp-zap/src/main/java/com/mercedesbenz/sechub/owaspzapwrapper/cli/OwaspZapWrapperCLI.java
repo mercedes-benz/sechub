@@ -38,7 +38,7 @@ public class OwaspZapWrapperCLI {
         try {
             scanConfig = parser.parse(args);
         } catch (OwaspZapWrapperCommandLineParserException e) {
-            LOG.error("An error occurred while parsing the command line arguments: ", e.getCause());
+            LOG.error("An error occurred while parsing the command line arguments: ", e);
             throw new MustExitRuntimeException("Scan configuration was invalid.", e, MustExitCode.COMMANDLINE_CONFIGURATION_INVALID);
         }
         return scanConfig;

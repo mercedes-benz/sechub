@@ -65,8 +65,13 @@ public class IntegrationTestPDSRestController {
     @RequestMapping(path = PDSAPIConstants.API_ANONYMOUS + "integrationtest/shutdown", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })
     public void shutdownServer() {
-        LOG.info("Integration test server shutdown initiated by closing context...");
+        LOG.info("Integration test server shutdown requested...");
+
+        LOG.info("Shutdown: shutdown spring boot context");
         context.close();
+
+        LOG.info("Shutdown: hard system exit 0");
+        System.exit(0);
     }
 
     @RequestMapping(path = PDSAPIConstants.API_ANONYMOUS + "integrationtest/log/info", method = RequestMethod.POST, produces = {

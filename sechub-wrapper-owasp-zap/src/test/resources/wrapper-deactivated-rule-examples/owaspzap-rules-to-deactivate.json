@@ -1,0 +1,9 @@
+{
+  "deactivatedRuleReferences" : [ {
+    "reference" : "Timestamp-Disclosure-10096",
+    "info" : "Rule was deactivated for testing reasons."
+  }, {
+    "reference" : "Cross-Site-Scripting-(Reflected)-40012",
+    "info" : "Rule was deactivated for testing reasons."
+  } ]
+}

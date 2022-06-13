@@ -1,0 +1,8 @@
+// SPDX-License-Identifier: MIT
+=== Job status
+After a {sechub} job has been created, it has a status which will change at the different process
+steps. Some of these steps are described here.
+
+include::concept_status_fetching.adoc[]
+
+include::concept_status_dataflow.adoc[]
