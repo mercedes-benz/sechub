@@ -157,7 +157,7 @@ func downloadSechubReport(context *Context) {
 		case ReportFormatJSON:
 			fileExtension = ".json"
 		case ReportFormatSPDXJSON:
-			fileExtension = ".json"
+			fileExtension = ".spdx.json"
 		}
 		// Example:  sechub_report_myproject_cdde8927-2df4-461c-b775-2dec9497e8b1.json
 		fileName = "sechub_report_" + context.config.projectID + "_" + context.config.secHubJobUUID + fileExtension
