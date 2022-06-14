@@ -3,6 +3,9 @@ package com.mercedesbenz.sechub.commons.archive;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Arrays;
+import java.util.Set;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,6 +26,72 @@ class SecHubFileStructureDataProviderBuilderTest {
     }
 
     @Test
+    void include_file_pattern_not_set_results_in_empty_list() {
+        /* prepare */
+        SecHubConfigurationModel model = new SecHubConfigurationModel();
+
+        /* execute */
+        SecHubFileStructureDataProvider dataProvider = builderToTest.setModel(model).setScanType(ScanType.CODE_SCAN).build();
+
+        /* test */
+        assertNotNull(dataProvider);
+        assertNotNull(dataProvider.getUnmodifiableIncludeFilePatterns());
+        assertTrue(dataProvider.getUnmodifiableIncludeFilePatterns().isEmpty());
+    }
+
+    @Test
+    void exclude_file_pattern_not_set_results_in_empty_list() {
+        /* prepare */
+        SecHubConfigurationModel model = new SecHubConfigurationModel();
+
+        /* execute */
+        SecHubFileStructureDataProvider dataProvider = builderToTest.setModel(model).setScanType(ScanType.CODE_SCAN).build();
+
+        /* test */
+        assertNotNull(dataProvider);
+        assertNotNull(dataProvider.getUnmodifiableExcludeFilePatterns());
+        assertTrue(dataProvider.getUnmodifiableExcludeFilePatterns().isEmpty());
+    }
+
+    @Test
+    void exclude_file_pattern_set_results_in_filled_patterns_in_build_dataProvider() {
+        /* prepare */
+        SecHubConfigurationModel model = new SecHubConfigurationModel();
+
+        /* execute */
+        SecHubFileStructureDataProvider dataProvider = builderToTest.setModel(model).setScanType(ScanType.CODE_SCAN)
+                .setExcludedFilePatterns(Arrays.asList("*.go", "*.html")).build();
+
+        /* test */
+        assertNotNull(dataProvider);
+        Set<String> excludeFilePatterns = dataProvider.getUnmodifiableExcludeFilePatterns();
+
+        assertNotNull(excludeFilePatterns);
+        assertFalse(excludeFilePatterns.isEmpty());
+        assertTrue(excludeFilePatterns.contains("*.go"));
+        assertTrue(excludeFilePatterns.contains("*.html"));
+    }
+
+    @Test
+    void include_file_pattern_set_results_in_filled_patterns_in_build_dataProvider() {
+        /* prepare */
+        SecHubConfigurationModel model = new SecHubConfigurationModel();
+
+        /* execute */
+        SecHubFileStructureDataProvider dataProvider = builderToTest.setModel(model).setScanType(ScanType.CODE_SCAN)
+                .setIncludedFilePatterns(Arrays.asList("*.go", "*.html")).build();
+
+        /* test */
+        assertNotNull(dataProvider);
+        Set<String> includeFilePatterns = dataProvider.getUnmodifiableIncludeFilePatterns();
+
+        assertNotNull(includeFilePatterns);
+        assertFalse(includeFilePatterns.isEmpty());
+        assertTrue(includeFilePatterns.contains("*.go"));
+        assertTrue(includeFilePatterns.contains("*.html"));
+    }
+
+    @Test
     void nothing_set_throws_illegal_state_exception() {
         assertThrows(IllegalStateException.class, () -> builderToTest.build());
     }
@@ -38,35 +107,35 @@ class SecHubFileStructureDataProviderBuilderTest {
     }
 
     @Test
-    void for_scanType_codescan_and_empty_model_builder_creates_an_configuration() {
+    void for_scanType_codescan_and_empty_model_builder_creates_an_dataProvider() {
         /* prepare */
         SecHubConfigurationModel model = new SecHubConfigurationModel();
 
         /* execute */
-        SecHubFileStructureDataProvider configuration = builderToTest.setModel(model).setScanType(ScanType.CODE_SCAN).build();
+        SecHubFileStructureDataProvider dataProvider = builderToTest.setModel(model).setScanType(ScanType.CODE_SCAN).build();
 
         /* test */
-        assertNotNull(configuration);
-        assertTrue(configuration.getUnmodifiableSetOfAcceptedReferenceNames().isEmpty());
-        assertTrue(configuration.isRootFolderAccepted());
+        assertNotNull(dataProvider);
+        assertTrue(dataProvider.getUnmodifiableSetOfAcceptedReferenceNames().isEmpty());
+        assertTrue(dataProvider.isRootFolderAccepted());
     }
 
     @Test
-    void for_scanType_licensescan_and_empty_model_builder_creates_an_configuration() {
+    void for_scanType_licensescan_and_empty_model_builder_creates_an_dataProvider() {
         /* prepare */
         SecHubConfigurationModel model = new SecHubConfigurationModel();
 
         /* execute */
-        SecHubFileStructureDataProvider configuration = builderToTest.setModel(model).setScanType(ScanType.LICENSE_SCAN).build();
+        SecHubFileStructureDataProvider dataProvider = builderToTest.setModel(model).setScanType(ScanType.LICENSE_SCAN).build();
 
         /* test */
-        assertNotNull(configuration);
-        assertTrue(configuration.getUnmodifiableSetOfAcceptedReferenceNames().isEmpty());
-        assertFalse(configuration.isRootFolderAccepted());
+        assertNotNull(dataProvider);
+        assertTrue(dataProvider.getUnmodifiableSetOfAcceptedReferenceNames().isEmpty());
+        assertFalse(dataProvider.isRootFolderAccepted());
     }
 
     @Test
-    void for_scanType_codescan_and_model_with_codescan_embedded_filesystem_builder_creates_a_configuration() {
+    void for_scanType_codescan_and_model_with_codescan_embedded_filesystem_builder_creates_a_dataProvider() {
         /* prepare */
         SecHubConfigurationModel model = new SecHubConfigurationModel();
         SecHubCodeScanConfiguration codeScan = new SecHubCodeScanConfiguration();
@@ -76,16 +145,16 @@ class SecHubFileStructureDataProviderBuilderTest {
         model.setCodeScan(codeScan);
 
         /* execute */
-        SecHubFileStructureDataProvider configuration = builderToTest.setModel(model).setScanType(ScanType.CODE_SCAN).build();
+        SecHubFileStructureDataProvider dataProvider = builderToTest.setModel(model).setScanType(ScanType.CODE_SCAN).build();
 
         /* test */
-        assertNotNull(configuration);
-        assertTrue(configuration.getUnmodifiableSetOfAcceptedReferenceNames().isEmpty());
-        assertTrue(configuration.isRootFolderAccepted());
+        assertNotNull(dataProvider);
+        assertTrue(dataProvider.getUnmodifiableSetOfAcceptedReferenceNames().isEmpty());
+        assertTrue(dataProvider.isRootFolderAccepted());
     }
 
     @Test
-    void for_scanType_codescan_and_model_with_codescan_by_data_section_filesystem_builder_creates_a_configuration() {
+    void for_scanType_codescan_and_model_with_codescan_by_data_section_filesystem_builder_creates_a_dataProvider() {
         /* prepare */
         SecHubConfigurationModel model = new SecHubConfigurationModel();
         SecHubCodeScanConfiguration codeScan = new SecHubCodeScanConfiguration();
@@ -107,12 +176,12 @@ class SecHubFileStructureDataProviderBuilderTest {
         model.setCodeScan(codeScan);
 
         /* execute */
-        SecHubFileStructureDataProvider configuration = builderToTest.setModel(model).setScanType(ScanType.CODE_SCAN).build();
+        SecHubFileStructureDataProvider dataProvider = builderToTest.setModel(model).setScanType(ScanType.CODE_SCAN).build();
 
         /* test */
-        assertNotNull(configuration);
-        assertTrue(configuration.getUnmodifiableSetOfAcceptedReferenceNames().contains("test-ref-1"));
-        assertTrue(configuration.isRootFolderAccepted());
+        assertNotNull(dataProvider);
+        assertTrue(dataProvider.getUnmodifiableSetOfAcceptedReferenceNames().contains("test-ref-1"));
+        assertTrue(dataProvider.isRootFolderAccepted());
     }
 
 }

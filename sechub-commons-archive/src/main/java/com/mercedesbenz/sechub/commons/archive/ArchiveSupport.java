@@ -19,13 +19,14 @@ import org.slf4j.LoggerFactory;
 
 public class ArchiveSupport {
 
+    private static final KeepAsIsTransformationData DO_NOT_TRANSFORM = new KeepAsIsTransformationData();
     private static final Logger LOG = LoggerFactory.getLogger(ArchiveSupport.class);
 
-    public enum ArchiveType {
-        ZIP, TAR
-    }
+    private ArchiveTransformationDataFactory archiveTransformationDataFactory;
 
-    private static final KeepAsIsTransformationData DO_NOT_TRANSFORM = new KeepAsIsTransformationData();
+    public ArchiveSupport() {
+        this.archiveTransformationDataFactory = new ArchiveTransformationDataFactory();
+    }
 
     public ArchiveExtractionResult extract(ArchiveType type, InputStream sourceInputStream, String sourceLocation, File outputDir,
             SecHubFileStructureDataProvider configuration) throws IOException {
@@ -147,11 +148,11 @@ public class ArchiveSupport {
         return result;
     }
 
-    private ArchiveTransformationData createTransformationData(SecHubFileStructureDataProvider configuration, String path) {
-        if (configuration == null) {
+    private ArchiveTransformationData createTransformationData(SecHubFileStructureDataProvider dataProvider, String path) {
+        if (dataProvider == null) {
             return DO_NOT_TRANSFORM;
         }
-        return ArchiveTransformationDataFactory.create(configuration, path);
+        return archiveTransformationDataFactory.create(dataProvider, path);
     }
 
     private void ensureParentFolderExists(File outputFile, ArchiveExtractionResult result) throws IOException {
@@ -180,6 +181,10 @@ public class ArchiveSupport {
             result.createdFoldersCount += count;
         }
 
+    }
+
+    public enum ArchiveType {
+        ZIP, TAR
     }
 
     private static class KeepAsIsTransformationData implements ArchiveTransformationData {
