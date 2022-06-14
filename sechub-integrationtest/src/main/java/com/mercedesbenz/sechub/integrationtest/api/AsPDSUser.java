@@ -9,8 +9,10 @@ import java.util.UUID;
 
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSupport;
+import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData;
+import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper;
-import com.mercedesbenz.sechub.test.TestURLBuilder;
+import com.mercedesbenz.sechub.test.PDSTestURLBuilder;
 import com.mercedesbenz.sechub.test.TestUtil;
 
 public class AsPDSUser {
@@ -26,7 +28,7 @@ public class AsPDSUser {
         return getContext().getPDSRestHelper(user);
     }
 
-    private TestURLBuilder getUrlBuilder() {
+    private PDSTestURLBuilder getPDSUrlBuilder() {
         return getContext().getPDSUrlBuilder();
     }
 
@@ -36,16 +38,16 @@ public class AsPDSUser {
 
     public void markJobAsReadyToStart(UUID jobUUID) {
         TestRestHelper restHelper = getRestHelper();
-        TestURLBuilder urlBuilder = getUrlBuilder();
+        PDSTestURLBuilder urlBuilder = getPDSUrlBuilder();
         markJobAsReadyToStart(jobUUID, restHelper, urlBuilder);
     }
 
-    public static void markJobAsReadyToStart(UUID jobUUID, TestRestHelper restHelper, TestURLBuilder urlBuilder) {
-        restHelper.put(urlBuilder.pds().buildMarkJobReadyToStart(jobUUID));
+    public static void markJobAsReadyToStart(UUID jobUUID, TestRestHelper restHelper, PDSTestURLBuilder urlBuilder) {
+        restHelper.put(urlBuilder.buildMarkJobReadyToStart(jobUUID));
     }
 
     public String getJobStatus(UUID jobUUID) {
-        return getRestHelper().getJSON(getUrlBuilder().pds().buildGetJobStatus(jobUUID));
+        return getRestHelper().getJSON(getPDSUrlBuilder().buildGetJobStatus(jobUUID));
     }
 
     public String getJobReport(UUID jobUUID) {
@@ -84,24 +86,24 @@ public class AsPDSUser {
         }
         /* okay report is available - so do download */
         if (orGetErrorText) {
-            return getRestHelper().getJSON(getUrlBuilder().pds().buildGetJobResultOrErrorText(jobUUID));
+            return getRestHelper().getJSON(getPDSUrlBuilder().buildGetJobResultOrErrorText(jobUUID));
         }
-        return getRestHelper().getJSON(getUrlBuilder().pds().buildGetJobResult(jobUUID));
+        return getRestHelper().getJSON(getPDSUrlBuilder().buildGetJobResult(jobUUID));
     }
 
     public boolean getIsAlive() {
-        getRestHelper().head(getUrlBuilder().pds().buildAnonymousCheckAlive());
+        getRestHelper().head(getPDSUrlBuilder().buildAnonymousCheckAlive());
         return true;
     }
 
     public String getMonitoringStatus() {
-        String url = getUrlBuilder().pds().buildAdminGetMonitoringStatus();
+        String url = getPDSUrlBuilder().buildAdminGetMonitoringStatus();
         String result = getRestHelper().getJSON(url);
         return result;
     }
 
     public AsPDSUser cancelJob(UUID jobUUID) {
-        String url = getUrlBuilder().pds().buildCancelJob(jobUUID);
+        String url = getPDSUrlBuilder().buildCancelJob(jobUUID);
         getRestHelper().post(url);
         return this;
     }
@@ -134,12 +136,13 @@ public class AsPDSUser {
 
     private String createJobFor(UUID sechubJobUUID, String productId, Map<String, String> params) {
         TestRestHelper restHelper = getRestHelper();
-        TestURLBuilder urlBuilder = getUrlBuilder();
+        PDSTestURLBuilder urlBuilder = getPDSUrlBuilder();
         return createJobFor(sechubJobUUID, params, productId, restHelper, urlBuilder);
     }
 
-    public static String createJobFor(UUID sechubJobUUID, Map<String, String> params, String productId, TestRestHelper restHelper, TestURLBuilder urlBuilder) {
-        String url = urlBuilder.pds().buildCreateJob();
+    public static String createJobFor(UUID sechubJobUUID, Map<String, String> params, String productId, TestRestHelper restHelper,
+            PDSTestURLBuilder urlBuilder) {
+        String url = urlBuilder.buildCreateJob();
         StringBuilder sb = new StringBuilder();
         sb.append("{\"apiVersion\":\"1.0\",\"sechubJobUUID\":\"").append(sechubJobUUID.toString()).append("\",\"productId\":\"").append(productId)
                 .append("\",");
@@ -166,23 +169,23 @@ public class AsPDSUser {
     }
 
     public AsPDSUser upload(UUID pdsJobUUID, String uploadName, File file) {
-        upload(getUrlBuilder(), getRestHelper(), pdsJobUUID, uploadName, file);
+        upload(getPDSUrlBuilder(), getRestHelper(), pdsJobUUID, uploadName, file);
         return this;
     }
 
     public String getJobOutputStreamText(UUID jobUUID) {
-        String url = getUrlBuilder().pds().buildAdminFetchesJobOutputStreamUrl(jobUUID);
+        String url = getPDSUrlBuilder().buildAdminFetchesJobOutputStreamUrl(jobUUID);
         String result = getRestHelper().getStringFromURL(url);
         return result;
     }
 
     public String getJobErrorStreamText(UUID jobUUID) {
-        String url = getUrlBuilder().pds().buildAdminFetchesJobErrorStreamUrl(jobUUID);
+        String url = getPDSUrlBuilder().buildAdminFetchesJobErrorStreamUrl(jobUUID);
         String result = getRestHelper().getStringFromURL(url);
         return result;
     }
 
-    public static void upload(TestURLBuilder urlBuilder, TestRestHelper restHelper, UUID pdsJobUUID, String uploadName, File file) {
+    public static void upload(PDSTestURLBuilder urlBuilder, TestRestHelper restHelper, UUID pdsJobUUID, String uploadName, File file) {
         String checkSum = TestAPI.createSHA256Of(file);
         upload(urlBuilder, restHelper, pdsJobUUID, uploadName, file, checkSum);
     }
@@ -193,19 +196,37 @@ public class AsPDSUser {
     }
 
     public AsPDSUser uploadWithWrongChecksum(UUID pdsJobUUID, String uploadName, File file) {
-        upload(getUrlBuilder(), getRestHelper(), pdsJobUUID, uploadName, file, "wrong-checksum");
+        upload(getPDSUrlBuilder(), getRestHelper(), pdsJobUUID, uploadName, file, "wrong-checksum");
         return this;
     }
 
-    private static void upload(TestURLBuilder urlBuilder, TestRestHelper restHelper, UUID pdsJobUUID, String uploadName, File file, String checkSum) {
-        String url = urlBuilder.pds().buildUpload(pdsJobUUID, uploadName);
+    private static void upload(PDSTestURLBuilder urlBuilder, TestRestHelper restHelper, UUID pdsJobUUID, String uploadName, File file, String checkSum) {
+        String url = urlBuilder.buildUpload(pdsJobUUID, uploadName);
         restHelper.upload(url, file, checkSum);
     }
 
     public String getServerConfiguration() {
-        String url = getUrlBuilder().pds().buildAdminGetServerConfiguration();
+        String url = getPDSUrlBuilder().buildAdminGetServerConfiguration();
         String result = getRestHelper().getJSON(url);
         return result;
+    }
+
+    public void updateAutoCleanupConfiguration(TestAutoCleanupData data) {
+        String json = TestJSONHelper.get().createJSON(data);
+        updateAutoCleanupConfiguration(json);
+
+    }
+
+    public void updateAutoCleanupConfiguration(String json) {
+        String url = getPDSUrlBuilder().buildAdminUpdatesAutoCleanupConfigurationUrl();
+        getRestHelper().putJSON(url, json);
+    }
+
+    public TestAutoCleanupData fetchAutoCleanupConfiguration() {
+        String url = getPDSUrlBuilder().buildAdminFetchesAutoCleanupConfigurationUrl();
+
+        String json = getRestHelper().getJSON(url);
+        return TestJSONHelper.get().createFromJSON(json, TestAutoCleanupData.class);
     }
 
 }

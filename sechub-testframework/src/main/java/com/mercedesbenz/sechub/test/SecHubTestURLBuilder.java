@@ -3,67 +3,7 @@ package com.mercedesbenz.sechub.test;
 
 import java.util.UUID;
 
-public class TestURLBuilder {
-
-    /**
-     * This enum represents common used identifiers inside rest documentation. Use
-     * this enumeration for building URLs inside your RestDoc tests and use
-     * parameters for data, so documentation is using these parameters - see
-     * references for examples.
-     *
-     * @author Albert Tregnaghi
-     *
-     */
-    public enum RestDocPathParameter {
-        JOB_UUID("jobUUID"),
-
-        PROJECT_ID("projectId"),
-
-        USER_ID("userId"),
-
-        ONE_TIME_TOKEN("oneTimeToken"),
-
-        EMAIL_ADDRESS("emailAddress"),
-
-        MAPPING_ID("mappingId"),
-
-        FINDING_ID("findingId"),
-
-        PROFILE_ID("profileId"),
-
-        UUID_PARAMETER("uuid"),
-
-        PROJECT_ACCESS_LEVEL("projectAccessLevel"),
-
-        ;
-
-        private String restDocName;
-        private String urlPart;
-
-        private RestDocPathParameter(String id) {
-            this.restDocName = id;
-            this.urlPart = "{" + id + "}";
-        }
-
-        /**
-         *
-         * We do NOT use name() because its an enum...
-         *
-         * @return The name of the parameter - e.g. when path element is "{userId}" then
-         *         this method returns "userId".
-         */
-        public String paramName() {
-            return restDocName;
-        }
-
-        /**
-         * @return path element in url. For example: when pathName is "userId" this
-         *         method returns "{userId}"
-         */
-        public String pathElement() {
-            return urlPart;
-        }
-    }
+public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
 
     private static final String API_ADMIN = "/api/admin";
     private static final String API_ANONYMOUS = "/api/anonymous";
@@ -79,127 +19,20 @@ public class TestURLBuilder {
     private static final String API_ADMIN_CONFIG_MAPPING = API_ADMIN_CONFIG + "/mapping";
     private static final String API_PROJECT = "/api/project";
 
-    private String protocol;
-    private String hostname;
-    private int port;
-
-    public static TestURLBuilder https(int port) {
-        return new TestURLBuilder("https", port);
+    public static SecHubTestURLBuilder https(int port) {
+        return new SecHubTestURLBuilder("https", port);
     }
 
-    public static TestURLBuilder http(int port) {
-        return new TestURLBuilder("http", port);
+    public static SecHubTestURLBuilder http(int port) {
+        return new SecHubTestURLBuilder("http", port);
     }
 
-    public TestURLBuilder(String protocol, int port) {
+    public SecHubTestURLBuilder(String protocol, int port) {
         this(protocol, port, "localhost");
     }
 
-    public TestURLBuilder(String protocol, int port, String hostname) {
-        this.protocol = protocol;
-        this.port = port;
-        this.hostname = hostname;
-    }
-
-    /**
-     * Special url builder - only for PDS parts
-     *
-     * @author Albert Tregnaghi
-     *
-     */
-    public class ProductDelegationServerUrlsBuilder {
-
-        private static final String API_PDS_JOB = "/api/job";
-        private static final String API_PDS_ANONYMOUS = "/api/anonymous";
-        private static final String API_PDS_INTEGRATIONTEST = "/api/anonymous/integrationtest";
-        private static final String API_PDS_ADMIN = "/api/admin";
-
-        public String buildCreateJob() {
-            return buildUrl(API_PDS_JOB, "create");
-        }
-
-        public String buildGetJobStatus(UUID jobUUID) {
-            return buildUrl(API_PDS_JOB, jobUUID.toString(), "status");
-        }
-
-        public String buildGetJobResult(UUID jobUUID) {
-            return buildUrl(API_PDS_JOB, jobUUID.toString(), "result");
-        }
-
-        public String buildUpload(UUID jobUUID, String fileName) {
-            return buildUrl(API_PDS_JOB, jobUUID.toString(), "upload", fileName);
-        }
-
-        public String buildMarkJobReadyToStart(UUID jobUUID) {
-            return buildUrl(API_PDS_JOB, jobUUID.toString(), "mark-ready-to-start");
-        }
-
-        public String buildCancelJob(UUID jobUUID) {
-            return buildUrl(API_PDS_JOB, jobUUID.toString(), "cancel");
-        }
-
-        public String buildAdminGetMonitoringStatus() {
-            return buildUrl(API_PDS_ADMIN, "monitoring/status");
-        }
-
-        public String buildAnonymousCheckAlive() {
-            return buildUrl(API_PDS_ANONYMOUS, "check/alive");
-        }
-
-        public String buildGetJobResultOrErrorText(UUID jobUUID) {
-            return buildUrl(API_PDS_ADMIN, "job", jobUUID, "result");
-        }
-
-        public String buildAdminGetServerConfiguration() {
-            return buildUrl(API_PDS_ADMIN, "config/server");
-        }
-
-        public String buildBaseUrl() {
-            return buildUrl("");
-        }
-
-        public String buildIntegrationTestFetchStoragePathHistoryEntryForSecHubJob(UUID jobUUID) {
-            return buildUrl(API_PDS_INTEGRATIONTEST, "storage", jobUUID, "path");
-        }
-
-        public String buildIntegrationTestGetWorkspaceUploadFolder(UUID jobUUID) {
-            return buildUrl(API_PDS_INTEGRATIONTEST, "workspace", jobUUID, "uploadfolder");
-        }
-
-        public String buildFetchLastStartedJobUUIDUrl() {
-            return buildUrl(API_PDS_INTEGRATIONTEST, "last/started/job/uuid");
-        }
-
-        public String buildAdminFetchesJobOutputStreamUrl(UUID jobUUID) {
-            return buildUrl(API_ADMIN_JOB, jobUUID, "stream", "output");
-        }
-
-        public String buildAdminFetchesJobErrorStreamUrl(UUID jobUUID) {
-            return buildUrl(API_ADMIN_JOB, jobUUID, "stream", "error");
-        }
-
-    }
-
-    public ProductDelegationServerUrlsBuilder pds() {
-        return new ProductDelegationServerUrlsBuilder();
-    }
-
-    /* +-----------------------------------------------------------------------+ */
-    /* +............................ common ...................................+ */
-    /* +-----------------------------------------------------------------------+ */
-
-    public String buildUrl(String custom, Object... parts) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(createRootPath());
-        sb.append(custom);
-        for (Object pathVariable : parts) {
-            boolean notAlreadyEndsWithSlash = sb.charAt(sb.length() - 1) != '/';
-            if (notAlreadyEndsWithSlash) {
-                sb.append("/");
-            }
-            sb.append(pathVariable);
-        }
-        return sb.toString();
+    public SecHubTestURLBuilder(String protocol, int port, String hostname) {
+        super(protocol, port, hostname);
     }
 
     /* +-----------------------------------------------------------------------+ */
@@ -327,10 +160,6 @@ public class TestURLBuilder {
     /* +-----------------------------------------------------------------------+ */
     /* +............................ admin/projects ...........................+ */
     /* +-----------------------------------------------------------------------+ */
-
-    private String createRootPath() {
-        return protocol + "://" + hostname + ":" + port;
-    }
 
     public String buildDeleteProjectUrl(String projectId) {
         return buildUrl(API_ADMIN_PROJECT, projectId);
@@ -602,10 +431,6 @@ public class TestURLBuilder {
         return buildUrl(API_ANONYMOUS, "integrationtest/" + projectId + "/" + jobUUID + "/uploaded/" + fileName);
     }
 
-    public String buildServerURL() {
-        return createRootPath();
-    }
-
     public String buildGetServerVersionUrl() {
         return buildUrl(API_ADMIN, "info/version");
     }
@@ -720,10 +545,6 @@ public class TestURLBuilder {
 
     public String buildIntegrationTestGetSecurityLogs() {
         return buildUrl(API_ANONYMOUS, "integrationtest/logs/security");
-    }
-
-    public String buildBaseURL() {
-        return buildUrl("");
     }
 
     public String buildIntegrationTestFetchScheduleAutoCleanupDaysUrl() {

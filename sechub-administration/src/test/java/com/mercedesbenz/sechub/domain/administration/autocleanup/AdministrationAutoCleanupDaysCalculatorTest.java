@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.domain.administration.autoclean;
+package com.mercedesbenz.sechub.domain.administration.autocleanup;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -7,9 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-
-import com.mercedesbenz.sechub.domain.administration.autocleanup.AdministrationAutoCleanupConfig;
-import com.mercedesbenz.sechub.domain.administration.autocleanup.AdministrationAutoCleanupDaysCalculator;
 
 class AdministrationAutoCleanupDaysCalculatorTest {
 

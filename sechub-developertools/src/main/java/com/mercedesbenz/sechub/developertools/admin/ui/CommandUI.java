@@ -22,6 +22,7 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.ActionSupport;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.adapter.ShowProductExecutorTemplatesDialogAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.client.TriggerSecHubClientSynchronousScanAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.config.ConfigureAutoCleanupAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.config.ConfigurePDSAutoCleanupAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.config.CreateExecutionProfileAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.config.CreateExecutorConfigAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.config.DeleteConfigurationAction;
@@ -277,6 +278,8 @@ public class CommandUI {
         add(menu, new CheckPDSJobResultOrErrorAction(context));
         add(menu, new FetchPDSJobOutputStreamAction(context));
         add(menu, new FetchPDSJobErrorStreamAction(context));
+        menu.addSeparator();
+        menu.add(new ConfigurePDSAutoCleanupAction(context));
     }
 
     private void createUserMenu() {

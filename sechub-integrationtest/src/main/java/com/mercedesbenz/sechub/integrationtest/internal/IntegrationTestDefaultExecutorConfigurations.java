@@ -14,8 +14,8 @@ import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 import com.mercedesbenz.sechub.integrationtest.api.TestExecutorProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingEntry;
+import com.mercedesbenz.sechub.test.PDSTestURLBuilder;
 import com.mercedesbenz.sechub.test.TestPortProvider;
-import com.mercedesbenz.sechub.test.TestURLBuilder;
 import com.mercedesbenz.sechub.test.executorconfig.TestExecutorConfig;
 import com.mercedesbenz.sechub.test.executorconfig.TestExecutorSetupJobParam;
 
@@ -159,7 +159,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
         config.productIdentifier = sechubProductIdentifier.name();
         config.name = INTTEST_NAME_PREFIX + middleConfigName + variant;
 
-        config.setup.baseURL = TestURLBuilder.https(TestPortProvider.DEFAULT_INSTANCE.getIntegrationTestPDSPort()).pds().buildBaseUrl();
+        config.setup.baseURL = PDSTestURLBuilder.https(TestPortProvider.DEFAULT_INSTANCE.getIntegrationTestPDSPort()).buildBaseUrl();
         config.uuid = null;// not initialized - is done at creation time by scenario initializer!
 
         if (credentialsAsEnvEntries) {

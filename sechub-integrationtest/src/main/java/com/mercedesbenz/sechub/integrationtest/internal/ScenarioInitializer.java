@@ -88,7 +88,6 @@ public class ScenarioInitializer {
         return waitUntilUserCanLogin(user, DEFAULT_TIME_TO_WAIT_FOR_RESOURCE_CREATION);
     }
 
-    @SuppressWarnings("unchecked")
     public ScenarioInitializer waitUntilUserCanLogin(TestUser user, int secondsBeforeTimeOut) {
         TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(user, secondsBeforeTimeOut, HttpClientErrorException.class) {
             @Override
@@ -104,7 +103,6 @@ public class ScenarioInitializer {
         return waitUntilUserExists(user, DEFAULT_TIME_TO_WAIT_FOR_RESOURCE_CREATION);
     }
 
-    @SuppressWarnings("unchecked")
     public ScenarioInitializer waitUntilUserExists(TestUser user, int secondsBeforeTimeOut) {
         TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, secondsBeforeTimeOut, HttpClientErrorException.class) {
             @Override
@@ -120,7 +118,6 @@ public class ScenarioInitializer {
         return waitUntilProjectExists(project, DEFAULT_TIME_TO_WAIT_FOR_RESOURCE_CREATION);
     }
 
-    @SuppressWarnings("unchecked")
     public ScenarioInitializer waitUntilProjectExists(TestProject project, int secondsBeforeTimeOut) {
         TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, secondsBeforeTimeOut, HttpClientErrorException.class) {
             @Override

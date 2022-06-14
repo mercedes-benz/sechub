@@ -19,7 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mercedesbenz.sechub.pds.execution.PDSExecutionService;
+import com.mercedesbenz.sechub.pds.autocleanup.IntegrationTestPDSAutoCleanupResultInspector;
+import com.mercedesbenz.sechub.pds.autocleanup.IntegrationTestPDSAutoCleanupResultInspector.JsonDeleteCount;
 import com.mercedesbenz.sechub.pds.job.PDSJob;
 import com.mercedesbenz.sechub.pds.job.PDSJobRepository;
 import com.mercedesbenz.sechub.pds.job.PDSWorkspaceService;
@@ -51,7 +52,7 @@ public class IntegrationTestPDSRestController {
     StorageService storageService;
 
     @Autowired
-    PDSExecutionService executionService;
+    IntegrationTestPDSAutoCleanupResultInspector autoCleanupResultInspector;
 
     @Autowired
     private ConfigurableApplicationContext context;
@@ -107,6 +108,18 @@ public class IntegrationTestPDSRestController {
             return job.getUUID().toString();
         }
         return null;
+    }
+
+    @RequestMapping(path = PDSAPIConstants.API_ANONYMOUS + "integrationtest/autocleanup/inspection/reset", method = RequestMethod.POST, produces = {
+            MediaType.APPLICATION_JSON_VALUE })
+    public void resetAutoCleanupInspection() {
+        autoCleanupResultInspector.reset();
+    }
+
+    @RequestMapping(path = PDSAPIConstants.API_ANONYMOUS + "integrationtest/autocleanup/inspection/deleteCounts", method = RequestMethod.GET, produces = {
+            MediaType.APPLICATION_JSON_VALUE })
+    public List<JsonDeleteCount> fetchAutoCleanupInspectionDeleteCounts() {
+        return autoCleanupResultInspector.createList();
     }
 
 }
