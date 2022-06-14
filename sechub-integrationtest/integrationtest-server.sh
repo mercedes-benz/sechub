@@ -5,7 +5,7 @@
 exec 3>&1 1>>integrationtest-console.log 2>&1
 
 # --------------------------------------------------
-#  Start / Stop script for integartion test server
+#  Start / Stop script for integration test server
 # --------------------------------------------------
 cd `dirname $0`
 
@@ -45,7 +45,6 @@ function checkAlive(){
     else
         log "-> Integration test server is not responding (state = $SECHUB_ITS_ALIVE_HTTP_STATUS)"
     fi
-
 }
 
 function status(){
@@ -57,8 +56,7 @@ function status(){
 
 function deleteTmpFolder(){
     log "deleting temporary folder: $DELETE_TMP_FOLDER"
-    rm "$DELETE_TMP_FOLDER" -rf 
-    
+    rm -rf "$DELETE_TMP_FOLDER"
 }
 
 # We use this function to wait for another integration test server to be stopped.
@@ -202,7 +200,7 @@ function defineSharedVolumeBasePath(){
 
 function defineDeleteTmpFolder(){
     if [ -z "$1" ] ; then
-        log "> no tmpFolder to delete deinfed - so cannot delete anything!"
+        log "> no tmpFolder to delete defined - so cannot delete anything!"
         exit 3
     else
         DELETE_TMP_FOLDER="$1"
