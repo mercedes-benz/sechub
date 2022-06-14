@@ -32,12 +32,6 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.config.ListExecuti
 import com.mercedesbenz.sechub.developertools.admin.ui.action.config.ListExecutorConfigurationsAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.developerbatchops.DeveloperBatchCreateCheckmarxTestSetupAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.integrationtestserver.FetchMockMailsAction;
-import com.mercedesbenz.sechub.developertools.admin.ui.action.integrationtestserver.testdata.CreateScenario2TestDataAction;
-import com.mercedesbenz.sechub.developertools.admin.ui.action.integrationtestserver.testdata.CreateScenario3TestDataAction;
-import com.mercedesbenz.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerMassiveNewJobsScenario3User1Action;
-import com.mercedesbenz.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewCodeScanJobScenario3User1Action;
-import com.mercedesbenz.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewInfraScanJobScenario3User1Action;
-import com.mercedesbenz.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewWebScanJobScenario3User1Action;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.job.CancelJobAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.job.DownloadFullscanDataForJobAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.job.DownloadHTMLReportForJobAction;
@@ -109,7 +103,6 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.user.UpdateUserEma
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.privileges.GrantAdminRightsToUserAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.privileges.RevokeAdminRightsFromAdminAction;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
-import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestMockMode;
 
 public class CommandUI {
     private static final ImageIcon EDIT_ROAD_BLACK_ICON = new ImageIcon(CommandUI.class.getResource("/icons/material-io/twotone_edit_road_black_18dp.png"));
@@ -418,11 +411,14 @@ public class CommandUI {
     private void createIntegrationTestServerMenu() {
         JMenu menu = new JMenu("Integration TestServer");
         menuBar.add(menu);
+
         if (!ConfigurationSetup.isIntegrationTestServerMenuEnabled()) {
             menu.setEnabled(false);
             menu.setToolTipText("Not enabled, use \"-D" + ConfigurationSetup.SECHUB_ENABLE_INTEGRATION_TESTSERVER_MENU.getSystemPropertyid()
                     + "=true\" to enable it and run an integration test server!");
+            return;
         }
+
         add(menu, new FetchLastStartedPDSJobStreamsAction(context));
         add(menu, new FetchMockMailsAction(context));
         menu.addSeparator();
@@ -432,23 +428,15 @@ public class CommandUI {
 
         JMenu testDataMenu = new JMenu("Testdata");
         menu.add(testDataMenu);
-        add(testDataMenu, new CreateScenario2TestDataAction(context));
-        add(testDataMenu, new CreateScenario3TestDataAction(context));
-        testDataMenu.addSeparator();
-        add(testDataMenu, new TriggerNewInfraScanJobScenario3User1Action(context));
-        testDataMenu.addSeparator();
-        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_GREEN__ZERO_WAIT));
-        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_GREEN__10_SECONDS_WAITING));
 
-        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_GREEN__10_SECONDS_WAITING));
+        try {
+            new IntegrationTestDataMenuAppender().appendMenuEntries(context, testDataMenu);
+        } catch (ExceptionInInitializerError e) {
 
-        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_RED__ZERO_WAIT));
-        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_MULTI__ZERO_WAIT));
-        testDataMenu.addSeparator();
-        add(testDataMenu, new TriggerNewCodeScanJobScenario3User1Action(context, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__MULTI__ZERO_WAIT));
-        add(testDataMenu, new TriggerNewCodeScanJobScenario3User1Action(context, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__1_SECOND_WAITING));
-        testDataMenu.addSeparator();
-        add(testDataMenu, new TriggerMassiveNewJobsScenario3User1Action(context));
+            testDataMenu.add(ActionSupport.getInstance().createErrorReplacementAction("Cannot add test data actions",
+                    "Was not able to initialize test data actions.\n" + "This works only from IDE and not from standalone application.\n" + "\n"
+                            + "Explanation: The necessary mock data file is not published but only available inside sources."));
+        }
 
     }
 
