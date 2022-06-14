@@ -11,7 +11,7 @@ cd `dirname $0`
 
 PDS_DEFAULT_PORT=8444
 PDS_DEFAULT_VERSION="0.0.0"
-PDS_DEFAULT_TEMPFOLDER="temp-pds"
+PDS_DEFAULT_TEMPFOLDER="temp-shared"
 
 function log() {
     echo "$1" | tee /dev/fd/3
@@ -54,11 +54,6 @@ function status(){
     fi
 }
 
-function deleteTmpFolder(){
-    log "deleting temporary folder: $DELETE_TMP_FOLDER"
-    rm -rf "$DELETE_TMP_FOLDER"
-}
-
 # We use this function to wait for another integration test PDS to be stopped.
 # This can happen on a multi branch pipeline build
 #
@@ -92,7 +87,7 @@ function waitForAlive(){
 
     # init variables
     secondsToWait=10
-    maxLoop=24 # means 24*10 = 240 seconds = 4 minutes max
+    maxLoop=6 # means 6*10 = 60 seconds = 1 minute max
     timoutSeconds=$((maxLoop*secondsToWait))
 
     loopCount=0
@@ -149,7 +144,7 @@ function stopServer(){
 # Starts integration test PDS, needs PDS version as first parameter to identify jar to start with...
 function startServer(){
     if [ -z "$PDS_VERSION" ] ; then
-        log "Server version is missing as second parameter!"
+        log "PDS version is missing as second parameter!"
         usage
         exit 1
     fi
@@ -198,16 +193,6 @@ function defineSharedVolumeBasePath(){
     fi
 }
 
-function defineDeleteTmpFolder(){
-    if [ -z "$1" ] ; then
-        log "> no tmpFolder to delete defined - so cannot delete anything!"
-        exit 3
-    else
-        DELETE_TMP_FOLDER="$1"
-        log "> tmpFolder to delete defined with: $DELETE_TMP_FOLDER"
-    fi
-}
-
 function defineServerPort(){
     if [ -z "$1" ] ; then
         PDS_PORT=$PDS_DEFAULT_PORT
@@ -235,9 +220,6 @@ function handleArguments() {
             defineServerPort "$3"
             defineSharedVolumeBasePath "$4"
             ;;
-        deleteTmpFolder)
-            defineDeleteTmpFolder "$1"
-            ;;
         *)
             # other port
             defineServerPort "$2"
@@ -261,6 +243,5 @@ case "$SERVER_COMMAND" in
     waitForStop) waitForStop ;;
     waitForAlive) waitForAlive ;;
     status) status ;;
-    deleteTmpFolder) deleteTmpFolder ;;
     *) usage ;;
 esac

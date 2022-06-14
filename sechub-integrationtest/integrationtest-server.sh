@@ -11,7 +11,7 @@ cd `dirname $0`
 
 SECHUB_DEFAULT_PORT=8443
 SECHUB_DEFAULT_VERSION="0.0.0"
-SECHUB_DEFAULT_TEMPFOLDER="temp"
+SECHUB_DEFAULT_TEMPFOLDER="temp-shared"
 
 function log() {
     echo "$1" | tee /dev/fd/3
