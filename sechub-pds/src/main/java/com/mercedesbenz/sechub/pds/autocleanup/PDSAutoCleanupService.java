@@ -31,7 +31,7 @@ public class PDSAutoCleanupService {
     @Autowired
     PDSJobRepository jobRepository;
 
-    @UseCaseSystemExecutesAutoCleanup(@PDSStep(number = 2, name = "Delete old data", description = "deletes old job information"))
+    @UseCaseSystemExecutesAutoCleanup(@PDSStep(number = 2, name = "Delete old data", description = "deletes old PDS job data"))
     public void cleanup() {
         /* calculate */
         long days = configService.getAutoCleanupInDays();

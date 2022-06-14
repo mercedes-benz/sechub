@@ -37,8 +37,8 @@ public class PDSConfigService {
     @Autowired
     PDSAutoCleanupDaysCalculator calculator;
 
-    @UseCaseAdminFetchesAutoCleanupConfiguration(@PDSStep(number = 2, next = { 3, 4,
-            5 }, name = "Updates auto cleanup config", description = "Updates auto cleanup configuration as JSON in database and sends event"))
+    @UseCaseAdminUpdatesAutoCleanupConfiguration(@PDSStep(number = 2, next = { 3, 4,
+            5 }, name = "Updates auto cleanup config", description = "Updates auto cleanup configuration as JSON in database"))
     public void updateAutoCleanupConfiguration(PDSAutoCleanupConfig configuration) {
         Assert.notNull(configuration, "configuration may not be null");
 
@@ -63,7 +63,7 @@ public class PDSConfigService {
         return config.getAutoCleanupInDays();
     }
 
-    @UseCaseAdminUpdatesAutoCleanupConfiguration(@PDSStep(number = 3, name = "Administration domain receives auto cleanup event", description = "Received event in administration domain about auto cleanup configuration change. Stores data, so available for next auto clean execution"))
+    @UseCaseAdminUpdatesAutoCleanupConfiguration(@PDSStep(number = 3, name = "Calculate auto cleanup days", description = "After receiving the new cleanup configuration as JSON the cleanup days will be calculated and persisted as well"))
     public void updateAutoCleanupInDays(long autoCleanupInDays) {
         PDSConfig config = getOrCreateConfig();
         config.autoCleanupInDays = autoCleanupInDays;
