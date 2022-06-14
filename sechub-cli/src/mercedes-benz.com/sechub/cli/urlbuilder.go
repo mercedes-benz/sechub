@@ -45,7 +45,13 @@ func buildGetSecHubJobStatusAPICall(context *Context) string {
 func buildGetSecHubJobReportAPICall(context *Context) string {
 	context.contentToSend = nil // Do not send content
 	context.inputForContentProcessing = nil
+
 	apiPart := fmt.Sprintf("project/%s/report/%s", context.config.projectID, context.config.secHubJobUUID)
+
+	if context.config.reportFormat == ReportFormatSPDXJSON {
+		apiPart = fmt.Sprintf("project/%s/report/spdx/%s", context.config.projectID, context.config.secHubJobUUID)
+	}
+
 	return buildAPIUrl(&context.config.server, &apiPart)
 }
 
