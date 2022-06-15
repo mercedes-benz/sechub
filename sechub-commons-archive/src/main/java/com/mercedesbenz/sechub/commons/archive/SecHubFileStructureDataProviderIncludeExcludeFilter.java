@@ -1,6 +1,7 @@
 package com.mercedesbenz.sechub.commons.archive;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -38,15 +39,43 @@ public class SecHubFileStructureDataProviderIncludeExcludeFilter {
     }
 
     private boolean isFilteredByNotIncluded(String path, SecHubFileStructureDataProvider dataProvider) {
+
         Set<String> includePatterns = dataProvider.getUnmodifiableIncludeFilePatterns();
         if (includePatterns == null || includePatterns.isEmpty()) {
             return false;
         }
-        return !isPathMatchedByWildCardsInSet(path, includePatterns);
+
+        Set<String> safeIncludePatterns = convertToSetWithoutNullOrEmptyPatterns(includePatterns);
+        /* @formatter:on */
+        if (safeIncludePatterns.isEmpty()) {
+            return false;
+        }
+        return !isPathMatchedByWildCardsInSet(path, safeIncludePatterns);
     }
 
     private boolean isFilteredByExcluded(String path, SecHubFileStructureDataProvider dataProvider) {
-        return isPathMatchedByWildCardsInSet(path, dataProvider.getUnmodifiableExcludeFilePatterns());
+        Set<String> excludePatterns = dataProvider.getUnmodifiableExcludeFilePatterns();
+        if (excludePatterns == null || excludePatterns.isEmpty()) {
+            return false;
+        }
+        Set<String> safeExcludePatterns = convertToSetWithoutNullOrEmptyPatterns(excludePatterns);
+        if (safeExcludePatterns.isEmpty()) {
+            return false;
+        }
+
+        /* @formatter:off */
+        return isPathMatchedByWildCardsInSet(path, safeExcludePatterns);
+        /* @formatter:on */
+    }
+
+    private Set<String> convertToSetWithoutNullOrEmptyPatterns(Set<String> excludePatterns) {
+        /* @formatter:off */
+        Set<String> collect = excludePatterns.
+                stream().
+                filter((pattern) -> pattern != null && !pattern.isEmpty()).
+                collect(Collectors.toSet());
+        /* @formatter:on */
+        return collect;
     }
 
     private boolean isPathMatchedByWildCardsInSet(String path, Set<String> wildCards) {
@@ -67,7 +96,8 @@ public class SecHubFileStructureDataProviderIncludeExcludeFilter {
         if (wildCard == null || wildCard.isEmpty()) {
             return false;
         }
-        return FilenameUtils.wildcardMatch(path, wildCard);
+        boolean matched = FilenameUtils.wildcardMatch(path, wildCard);
+        return matched;
     }
 
 }

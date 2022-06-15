@@ -24,4 +24,14 @@ class PDSConfigDataKeyProviderTest {
         assertTrue(PDSConfigDataKeyProvider.PDS_CONFIG_SECHUB_STORAGE_PATH.getKey().isGenerated());
     }
 
+    @Test
+    void sechub_filefilter_includes_is_sent_to_pds() {
+        assertTrue(PDSConfigDataKeyProvider.PDS_CONFIG_FILEFILTER_INCLUDES.getKey().isSentToPDS());
+    }
+
+    @Test
+    void sechub_filefilter_excludes_is_sent_to_pds() {
+        assertTrue(PDSConfigDataKeyProvider.PDS_CONFIG_FILEFILTER_EXCLUDES.getKey().isSentToPDS());
+    }
+
 }

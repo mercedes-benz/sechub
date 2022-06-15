@@ -62,7 +62,6 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport impl
         Map<String, String> parametersToSend = createParametersToSendByProviders(PDS_KEYPROVIDERS_FOR_SENDING_PARAMETERS_TO_PDS);
 
         /* provide SecHub storage when necessary */
-
         if (isReusingSecHubStorage(parametersToSend)) {
             String projectId = secHubConfiguration.getProjectId();
             String sechubStoragePath = SecHubStorageUtil.createStoragePath(projectId);

@@ -168,8 +168,10 @@ public class AssertReportUnordered {
                 }
             }
             if (found == null && expectedToBeFound) {
+                dump();
                 fail("Not found finding:" + this + "\n\nSource:" + jsonObj.toPrettyString());
             } else if (found != null && !expectedToBeFound) {
+                dump();
                 fail("Did found entry:" + found.toPrettyString() + ", by searching for :" + this + "\n\nSource:" + jsonObj.toPrettyString());
             }
         }

@@ -50,6 +50,20 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
                     .markGenerated()),
 
     /**
+     * Contains file filter include information
+     */
+    PDS_CONFIG_FILEFILTER_INCLUDES(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_FILEFILTER_INCLUDES,
+            "This containts a comma separated list of wildcards for file includes (e.g. `*.go,*.html, test1.txt` would include every go file, every HTML file and files named `test1.txt`). When every fill wwill be included - except those which are explicit excluded.")
+                    .markAlwaysSentToPDS()),
+
+    /**
+     * Contains file filter exclude information
+     */
+    PDS_CONFIG_FILEFILTER_EXCLUDES(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_FILEFILTER_EXCLUDES,
+            "This containts a comma separated list of wildcards for file excludes (e.g. `*.go,*.html, test1.txt` would excluded every go file, every HTML file and files named `test1.txt`). When empty none of the files will be excluded. The exclude operation will be done AFTER the include file filtering has happend.")
+                    .markAlwaysSentToPDS()),
+
+    /**
      * This is automatically given to PDS by SecHub - depending on scan type. E.g.
      * for a webscan this will be used to identify the current webscan target URL to
      * start scanning.

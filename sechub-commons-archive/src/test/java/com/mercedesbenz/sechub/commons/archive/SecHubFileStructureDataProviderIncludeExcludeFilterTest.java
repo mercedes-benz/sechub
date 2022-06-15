@@ -78,6 +78,42 @@ class SecHubFileStructureDataProviderIncludeExcludeFilterTest {
         assertEquals(expectedToBeFiltered, filtered);
     }
 
+    @Test
+    void similar_to_integrationtest_combined_filtering() {
+        /* prepare */
+        Set<String> includes = new LinkedHashSet<>();
+        includes.add("*included-folder/*");
+
+        Set<String> excludes = new LinkedHashSet<>();
+        excludes.add("*excluded-folder/**");
+        excludes.add("*excluded*.txt");
+
+        SecHubFileStructureDataProvider provider = createMockProvider(excludes, includes);
+
+        /* execute + test */
+        assertFiltered("excluded-folder/file-x-1.txt", provider);
+        assertFiltered("files-b/included-folder/excluded-1.txt", provider);
+
+        assertNotFiltered("included-folder/file-b-1.txt", provider);
+        assertNotFiltered("files-b/included-folder/file-b-1.txt", provider);
+    }
+
+    private void assertFiltered(String path, SecHubFileStructureDataProvider provider) {
+        assertFiltered(true, path, provider);
+    }
+
+    private void assertNotFiltered(String path, SecHubFileStructureDataProvider provider) {
+        assertFiltered(false, path, provider);
+    }
+
+    private void assertFiltered(boolean expectedToBeFiltered, String path, SecHubFileStructureDataProvider provider) {
+        boolean filtered = filterToTest.isFiltered(path, provider);
+
+        if (filtered != expectedToBeFiltered) {
+            fail("Path: '" + path + "' must be filtered: " + expectedToBeFiltered + ", but was: " + filtered);
+        }
+    }
+
     @ParameterizedTest(name = "path \"{0}\" with include pattern \"{1}\" and exclude pattern \"{2}\" - isFiltered() must return {3}")
     /* @formatter:off */
     @CsvSource({
@@ -92,6 +128,9 @@ class SecHubFileStructureDataProviderIncludeExcludeFilterTest {
         "/home/mypath/something.txt,*.txt,/home/mypath/some*.txt,true",
         "/home/otherpath/something.txt,*.txt,/home/mypath/some*.txt,false",
         "/home/otherpath/something.txt,*.txt,/home/**/some*.txt,true",
+        "/home/otherpath/something.txt,/home/**/some*.txt,,false",
+        "/home/otherpath/something.txt,,/home/**/some*.txt,true",
+        "/home/otherpath/something.txt,,,false",
         "/home/otherpath/subpath/something.txt,*.txt,/home/**/some*.txt,true",
         "test1.txt,test1.txt,test.*,false",
         "test1.txt,test1.txt,test1.*,true",

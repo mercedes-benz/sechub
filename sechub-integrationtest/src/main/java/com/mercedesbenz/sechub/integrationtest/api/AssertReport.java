@@ -38,7 +38,10 @@ public class AssertReport {
 
     public AssertReport hasFindings(int expectedCount) {
         List<SecHubFinding> findings = assertFindings(report);
-        assertEquals(expectedCount, findings.size());
+        if (expectedCount != findings.size()) {
+            dump();
+            assertEquals(expectedCount, findings.size());
+        }
         return this;
     }
 
@@ -47,7 +50,10 @@ public class AssertReport {
     }
 
     public AssertReport hasMessages(int expectedAmountOfMessages) {
-        assertEquals(expectedAmountOfMessages, report.getMessages().size());
+        if (expectedAmountOfMessages != report.getMessages().size()) {
+            dump();
+            assertEquals(expectedAmountOfMessages, report.getMessages().size());
+        }
         return this;
     }
 
@@ -60,7 +66,10 @@ public class AssertReport {
     }
 
     public AssertReport hasTrafficLight(TrafficLight expectedLight) {
-        assertEquals(expectedLight, report.getTrafficLight());
+        if (!Objects.equals(expectedLight, report.getTrafficLight())) {
+            dump();
+            assertEquals(expectedLight, report.getTrafficLight());
+        }
         return this;
     }
 
@@ -262,7 +271,7 @@ public class AssertReport {
         LOG.info("-----------------------------------------------------------");
         LOG.info("----------------------------DUMP---------------------------");
         LOG.info("-----------------------------------------------------------");
-        LOG.info(report.toJSON());
+        LOG.info("\n" + report.toFormattedJSON());
         LOG.info("-----------------------------------------------------------");
         return this;
     }
