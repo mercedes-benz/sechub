@@ -150,6 +150,7 @@ func downloadSechubReport(context *Context) {
 
 	fileName := context.config.outputFileName
 	if fileName == "" {
+		// Use default report file name if not yet defined
 		fileExtension := ""
 		switch context.config.reportFormat {
 		case ReportFormatHTML:
