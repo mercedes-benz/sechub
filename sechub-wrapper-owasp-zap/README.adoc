@@ -12,7 +12,6 @@ All configurations in a way that the command line parameters always overwrite th
 ZAP_HOST=127.0.0.1
 ZAP_PORT=8090
 ZAP_API_KEY=change-me
-
 ----
 
 To Specify an additional proxy you can set the following environment variables or use the corresponding command line options.
@@ -33,6 +32,8 @@ Usage: OwaspZapWrapper [options]
     --ajaxSpider
       Set this option to enable Owasp Zap ajaxSpider.
       Default: false
+    --fullRulesetfile
+      Specify a file with all rules installed for the Owasp Zap.
     --help
       Shows help and provides information on how to use the wrapper.
     --jobUUID
@@ -47,6 +48,9 @@ Usage: OwaspZapWrapper [options]
       Default: 0
   * --report
       The output file, where the report will be written to.
+    --rulesDeactivationfile
+      Specify a file with rules to deactivate during the scan inside the Owasp 
+      Zap. 
     --sechubConfigfile
       The SecHub config file, containing additonal configurations for the 
       scan. 
@@ -65,4 +69,78 @@ Usage: OwaspZapWrapper [options]
       Specifies the Owasp Zap host port. You can also set the environment 
       variable ZAP_PORT, instead of using this parameter.
       Default: 0
+----
+
+==== Deactivate scan rules
+
+To deactivate scan rules you need to specify 2 files using 2 command line arguments.
+
+===== Full ruleset file
+The first file specified using `--fullRulesetfile`, 
+represents the full ruleset of all installed rules inside the Owasp Zap.
+The following snippet is an example of the file structure:
+
+[source,json]
+----
+{
+  "timestamp" : "2022-05-13 14:44:00.635104",
+  "origin" : "https://www.zaproxy.org/docs/alerts/",
+  "rules" : {
+    "Directory-Browsing-0" : {
+      "id" : "0",
+      "name" : "Directory Browsing",
+      "type" : "active",
+      "link" : "https://www.zaproxy.org/docs/alerts/0"
+    },
+    "Private-IP-Disclosure-2" : {
+      "id" : "2",
+      "name" : "Private IP Disclosure",
+      "type" : "passive",
+      "link" : "https://www.zaproxy.org/docs/alerts/2"
+    }
+  }
+}
+----
+
+The file above can be generated using the helper Python script link:src/main/resources/owaspzap-ruleset-helper/owaspzap_ruleset_helper.py[owaspzap_ruleset_helper.py].
+Before using this script make sure to install the dependencies using link:src/main/resources/owaspzap-ruleset-helper/requirements.txt[requirements.txt].
+
+If you do not wish to install this on your system, you can use a Python virtual environment.
+Please refer to the official https://docs.python.org/3.10/tutorial/venv.html[*documentation*].
+Depending on your default Python installation you might need to use `pip3`:
+
+* `pip install -r requirements.txt`
+
+The `owaspzap_ruleset_helper.py` has the following command line options:
+----
+ -h, --help            show this help message and exit
+  --output-file OUTPUT_FILE
+  --rule-release-status [{release,beta,alpha} ...]
+                        Specify values separated by spaces like: release beta alpha
+----
+
+The parameter `--output-file` is required. Make sure the directory exists, since only the file is created if it does not exist.
+
+With `--rule-release-status` you can specify which rules you want to include in the result.
+If you do not specify any restrictions, rules of all release status are included.
+This means `alpha`, `beta` and `release`. Please specify this values separated by spaces as shown above.
+
+
+===== Deactivation file
+
+Additionally you need to specify a file with `--rulesDeactivationfile`,
+which represents the rule by using the `ref` part of the file above.
+The following snippet is an example of the file structure:
+
+[source,json]
+----
+{
+  "deactivatedRuleReferences" : [{
+    "ref" : "Directory-Browsing-0",
+    "info" : "Rule was deactivated because of ..."
+  }, {
+    "ref" : "Private-IP-Disclosure-2",
+    "info" : "Rule was deactivated for testing reasons."
+  }]
+}
 ----

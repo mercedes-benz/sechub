@@ -10,9 +10,15 @@ import (
 )
 
 type jobStatusResult struct {
-	State        string `json:"state"`
-	Result       string `json:"result"`
-	TrafficLight string `json:"trafficLight"`
+	State        string             `json:"state"`
+	Result       string             `json:"result"`
+	TrafficLight string             `json:"trafficLight"`
+	Messages     []JobStatusMessage `json:"messages"`
+}
+
+type JobStatusMessage struct {
+	Type string `json:"type"`
+	Text string `json:"text"`
 }
 
 type jobScheduleResult struct {
@@ -72,9 +78,9 @@ func Execute() {
  *      code scan parts, do approve
  * --------------------------------------------------*/
 func prepareCreateApproveJob(context *Context) {
-	prepareCodeScan(context)
+	prepareScan(context)
 	createNewSecHubJob(context)
-	handleCodeScanUpload(context)
+	handleUploads(context)
 	approveSecHubJob(context)
 }
 
@@ -82,55 +88,58 @@ func prepareCreateApproveJob(context *Context) {
  * 		Handle code scan parts
  * --------------------------------------------------
  */
-func handleCodeScanUpload(context *Context) {
-	if !context.isUploadingSourceZip() {
-		return
+func handleUploads(context *Context) {
+	if context.sourceZipFileExists() {
+		sechubUtil.Log("Uploading source zip file", context.config.quiet)
+		uploadSourceZipFile(context)
 	}
-	sechubUtil.Log("Uploading source zip file", context.config.quiet)
-	uploadSourceZipFile(context)
+	if context.binariesTarFileExists() {
+		sechubUtil.Log("Uploading binaries tar file", context.config.quiet)
+		uploadBinariesTarFile(context)
+	}
 }
 
-func prepareCodeScan(context *Context) {
-	/* currently we only provide filesystem - means zipping etc. */
-	json := context.sechubConfig
+func prepareScan(context *Context) {
 
-	// build regexp list for source code file patterns
-	json.CodeScan.SourceCodePatterns = append(json.CodeScan.SourceCodePatterns, DefaultZipAllowedFilePatterns...)
+	if len(context.sechubConfig.Data.Sources) > 0 || len(context.sechubConfig.CodeScan.FileSystem.Folders) > 0 {
+		//////////////////////////////
+		// Creating sources ZIP file
+		context.sourceZipFileName = tempFile(context, fmt.Sprintf("sourcecode-%s.zip", context.config.projectID))
 
-	// add default exclude patterns to exclude list
-	if !context.config.ignoreDefaultExcludes {
-		json.CodeScan.Excludes = append(json.CodeScan.Excludes, DefaultZipExcludeDirPatterns...)
+		// Set source code patterns in
+		// - data.sources
+		// - codeScan
+		// depending on
+		// - DefaultSourceCodeAllowedFilePatterns
+		// - context.config.whitelistAll (deactivates all filters)
+		adjustSourceCodePatterns(context)
+
+		err := createSouceCodeZipFile(context)
+		if err != nil {
+			sechubUtil.LogError(fmt.Sprintf("%s\nExiting due to fatal error while creating sources zip file...\n", err))
+			os.Remove(context.sourceZipFileName) // cleanup zip file
+			os.Exit(ExitCodeFailed)
+		}
+
+		// calculate checksum for zip file
+		context.sourceZipFileChecksum = sechubUtil.CreateChecksum(context.sourceZipFileName)
 	}
 
-	amountOfFolders := len(json.CodeScan.FileSystem.Folders)
-	var debug = context.config.debug
-	if debug {
-		sechubUtil.LogDebug(debug, fmt.Sprintf("prepareCodeScan - folders=%s", json.CodeScan.FileSystem.Folders))
-		sechubUtil.LogDebug(debug, fmt.Sprintf("prepareCodeScan - excludes=%s", json.CodeScan.Excludes))
-		sechubUtil.LogDebug(debug, fmt.Sprintf("prepareCodeScan - SourceCodePatterns=%s", json.CodeScan.SourceCodePatterns))
-		sechubUtil.LogDebug(debug, fmt.Sprintf("prepareCodeScan - amount of folders found: %d", amountOfFolders))
-	}
-	if amountOfFolders == 0 {
-		/* nothing set, so no upload */
-		return
-	}
-	context.sourceZipFileName = tempFile(context, fmt.Sprintf("sourcecode-%s.zip", context.config.projectID))
+	if len(context.sechubConfig.Data.Binaries) > 0 {
+		//////////////////////////////
+		// Creating binaries TAR file
+		context.binariesTarFileName = tempFile(context, fmt.Sprintf("binaries-%s.tar", context.config.projectID))
 
-	/* compress all folders to one single zip file*/
-	config := sechubUtil.ZipConfig{
-		Folders:            json.CodeScan.FileSystem.Folders,
-		Excludes:           json.CodeScan.Excludes,
-		SourceCodePatterns: json.CodeScan.SourceCodePatterns,
-		Debug:              context.config.debug} // pass through debug flag
-	err := sechubUtil.ZipFolders(context.sourceZipFileName, &config, context.config.quiet)
-	if err != nil {
-		sechubUtil.LogError(fmt.Sprintf("%s\nExiting due to fatal error...\n", err))
-		os.Remove(context.sourceZipFileName) // cleanup zip file
-		os.Exit(ExitCodeFailed)
-	}
+		err := createBinariesTarFile(context)
+		if err != nil {
+			sechubUtil.LogError(fmt.Sprintf("%s\nExiting due to fatal error while creating binaries tar file...\n", err))
+			os.Remove(context.binariesTarFileName) // cleanup tar file
+			os.Exit(ExitCodeFailed)
+		}
 
-	/* calculate checksum for zip file */
-	context.sourceZipFileChecksum = sechubUtil.CreateChecksum(context.sourceZipFileName)
+		// calculate checksum for tar file
+		context.binariesTarFileChecksum = sechubUtil.CreateChecksum(context.binariesTarFileName)
+	}
 }
 
 func downloadSechubReport(context *Context) {
@@ -141,11 +150,25 @@ func downloadSechubReport(context *Context) {
 
 	fileName := context.config.outputFileName
 	if fileName == "" {
+		// Use default report file name if not yet defined
+		fileExtension := ""
+		switch context.config.reportFormat {
+		case ReportFormatHTML:
+			fileExtension = ".html"
+		case ReportFormatJSON:
+			fileExtension = ".json"
+		case ReportFormatSPDXJSON:
+			fileExtension = ".spdx.json"
+		}
 		// Example:  sechub_report_myproject_cdde8927-2df4-461c-b775-2dec9497e8b1.json
-		fileName = "sechub_report_" + context.config.projectID + "_" + context.config.secHubJobUUID + "." + context.config.reportFormat
+		fileName = "sechub_report_" + context.config.projectID + "_" + context.config.secHubJobUUID + fileExtension
 	}
 
-	report := ReportDownload{serverResult: getSecHubJobReport(context), outputFolder: context.config.outputFolder, outputFileName: fileName}
+	report := ReportDownload{
+		serverResult:   getSecHubJobReport(context),
+		outputFolder:   context.config.outputFolder,
+		outputFileName: fileName,
+	}
 	report.save(context)
 }
 

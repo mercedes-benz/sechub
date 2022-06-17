@@ -1,20 +1,26 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
-import java.util.Optional;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
-public class SecHubCodeScanConfiguration {
+/**
+ * Represents a sechub code scan configuration. It contains a reference set of
+ * names of used data configuration objects. As a shortcut (and being downward
+ * compatible) the class also extends {@link AbstractSecHubFileSystemContainer}
+ * so users can define filesystem configuration also directly without an
+ * explicit referenced data section.
+ *
+ * @author Albert Tregnaghi
+ *
+ */
+public class SecHubCodeScanConfiguration extends AbstractSecHubFileSystemContainer implements SecHubDataConfigurationUsageByName {
 
-    public static final String PROPERTY_FILESYSTEM = "fileSystem";
+    private Set<String> namesOfUsedDataConfigurationObjects = new LinkedHashSet<>();
 
-    private Optional<SecHubFileSystemConfiguration> fileSystem = Optional.empty();
-
-    public void setFileSystem(SecHubFileSystemConfiguration fileSystem) {
-        this.fileSystem = Optional.ofNullable(fileSystem);
-    }
-
-    public Optional<SecHubFileSystemConfiguration> getFileSystem() {
-        return fileSystem;
+    @Override
+    public Set<String> getNamesOfUsedDataConfigurationObjects() {
+        return namesOfUsedDataConfigurationObjects;
     }
 
 }

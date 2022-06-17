@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.adapter.support;
 
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
+
 import java.io.File;
 
 import org.springframework.core.io.FileSystemResource;
@@ -34,8 +36,9 @@ public class RestOperationsSupport {
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         FileSystemResource resource = new FileSystemResource(file);
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("file", resource);
-        body.add("checkSum", checkSum);
+        body.add(MULTIPART_FILE, resource);
+        body.add(MULTIPART_CHECKSUM, checkSum);
+
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
         ResponseEntity<String> response = restOperations.postForEntity(uploadURL, requestEntity, String.class);

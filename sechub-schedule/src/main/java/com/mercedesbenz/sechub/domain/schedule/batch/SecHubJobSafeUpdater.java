@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.domain.schedule.batch;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -12,10 +13,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.domain.schedule.ExecutionResult;
 import com.mercedesbenz.sechub.domain.schedule.ExecutionState;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
+import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJobMessagesSupport;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 
 @Component
@@ -23,6 +26,8 @@ public class SecHubJobSafeUpdater {
 
     @Autowired
     private SecHubJobRepository repository;
+
+    private ScheduleSecHubJobMessagesSupport jobMessagesSupport = new ScheduleSecHubJobMessagesSupport();
 
     private static final Logger LOG = LoggerFactory.getLogger(SecHubJobSafeUpdater.class);
 
@@ -37,7 +42,7 @@ public class SecHubJobSafeUpdater {
      * @param secHubJob
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void safeUpdateOfSecHubJob(UUID sechubUUID, ExecutionResult result, String trafficLightString) {
+    public void safeUpdateOfSecHubJob(UUID sechubUUID, ExecutionResult result, String trafficLightString, List<SecHubMessage> messages) {
         Optional<ScheduleSecHubJob> secHubJobOptional = repository.findById(sechubUUID);
         if (!secHubJobOptional.isPresent()) {
             LOG.error("Sechub job with UUID:{} not found! Maybe deleted in meantime?", sechubUUID);
@@ -52,6 +57,10 @@ public class SecHubJobSafeUpdater {
         secHubJob.setExecutionResult(result);
         secHubJob.setTrafficLight(TrafficLight.fromString(trafficLightString));
         secHubJob.setEnded(LocalDateTime.now());
+
+        if (messages != null) {
+            jobMessagesSupport.addMessages(secHubJob, messages);
+        }
 
         repository.save(secHubJob);
 

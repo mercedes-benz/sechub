@@ -133,14 +133,14 @@ public class PDSCodeScanSarifJobScenario9IntTest {
 
         /* execute */
         as(USER_1).
-            upload(project, jobUUID, PATH).
+            uploadSourcecode(project, jobUUID, PATH).
             approveJob(project, jobUUID);
 
         waitForJobDone(project, jobUUID,30,true);
 
         /* test */
         // test storage is a SecHub storage and no PDS storage
-        String storagePath = getPDSStoragePathForJobUUID(jobUUID); // this is a SecHub job UUID!
+        String storagePath = fetchStoragePathHistoryEntryoForSecHubJobUUID(jobUUID); // this is a SecHub job UUID!
         assertNotNull("Storage path not found for SecHub job UUID:"+jobUUID+" - wrong storage used!",storagePath); // storage path must be found for sechub job uuid,
         if (!storagePath.contains("jobstorage/"+project.getProjectId())){
             fail("unexpected jobstorage path found:"+storagePath);

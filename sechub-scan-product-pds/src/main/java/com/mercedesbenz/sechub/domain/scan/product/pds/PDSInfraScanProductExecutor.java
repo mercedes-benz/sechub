@@ -5,7 +5,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -17,17 +16,22 @@ import com.mercedesbenz.sechub.adapter.pds.PDSAdapter;
 import com.mercedesbenz.sechub.adapter.pds.PDSInfraScanConfig;
 import com.mercedesbenz.sechub.adapter.pds.PDSInfraScanConfigImpl;
 import com.mercedesbenz.sechub.adapter.pds.PDSMetaDataID;
-import com.mercedesbenz.sechub.domain.scan.TargetRegistry.TargetRegistryInfo;
-import com.mercedesbenz.sechub.domain.scan.TargetType;
-import com.mercedesbenz.sechub.domain.scan.product.AbstractInfrastructureScanProductExecutor;
+import com.mercedesbenz.sechub.commons.model.ScanType;
+import com.mercedesbenz.sechub.domain.scan.InfraScanNetworkLocationProvider;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataAdapterConfigurationStrategy;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetRegistry.NetworkTargetInfo;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
+import com.mercedesbenz.sechub.domain.scan.product.AbstractProductExecutor;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
+import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.sharedkernel.SystemEnvironment;
+import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 
 @Service
-public class PDSInfraScanProductExecutor extends AbstractInfrastructureScanProductExecutor<PDSInstallSetup> {
+public class PDSInfraScanProductExecutor extends AbstractProductExecutor {
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSInfraScanProductExecutor.class);
 
@@ -40,23 +44,28 @@ public class PDSInfraScanProductExecutor extends AbstractInfrastructureScanProdu
     @Autowired
     SystemEnvironment systemEnvironment;
 
-    @Override
-    protected PDSInstallSetup getInstallSetup() {
-        return installSetup;
+    @Autowired
+    PDSStorageContentProviderFactory contentProviderFactory;
+
+    public PDSInfraScanProductExecutor() {
+        super(ProductIdentifier.PDS_INFRASCAN, 1, ScanType.INFRA_SCAN);
     }
 
     @Override
-    protected List<ProductResult> executeWithAdapter(SecHubExecutionContext context, ProductExecutorContext executorContext, PDSInstallSetup setup,
-            TargetRegistryInfo info) throws Exception {
+    protected List<ProductResult> executeByAdapter(ProductExecutorData data) throws Exception {
+        NetworkTargetInfo info = data.getCurrentNetworkTargetInfo();
 
         Set<URI> targetURIs = info.getURIs();
         if (targetURIs.isEmpty()) {
             /* no targets defined */
             return Collections.emptyList();
         }
-        TargetType targetType = info.getTargetType();
-        PDSExecutorConfigSuppport configSupport = PDSExecutorConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
-                systemEnvironment);
+        NetworkTargetType targetType = info.getTargetType();
+        ProductExecutorContext executorContext = data.getProductExecutorContext();
+
+        /* we reuse config support created inside customize method */
+        PDSExecutorConfigSuppport configSupport = (PDSExecutorConfigSuppport) data.getNetworkTargetDataProvider();
+
         if (configSupport.isTargetTypeForbidden(targetType)) {
             LOG.info("pds adapter does not accept target type:{} so cancel execution");
             return Collections.emptyList();
@@ -65,8 +74,8 @@ public class PDSInfraScanProductExecutor extends AbstractInfrastructureScanProdu
 
         List<ProductResult> results = new ArrayList<>();
 
-        Map<String, String> jobParameters = configSupport.createJobParametersToSendToPDS(context.getConfiguration());
-        String projectId = context.getConfiguration().getProjectId();
+        SecHubExecutionContext context = data.getSechubExecutionContext();
+        PDSStorageContentProvider contentProvider = contentProviderFactory.createContentProvider(context, configSupport, getScanType());
 
         for (URI targetURI : targetURIs) {
             /* @formatter:off */
@@ -77,24 +86,15 @@ public class PDSInfraScanProductExecutor extends AbstractInfrastructureScanProdu
             executorContext.useFirstFormerResultHavingMetaData(PDSMetaDataID.KEY_TARGET_URI, targetURI);
 
             PDSInfraScanConfig pdsInfraScanConfig = PDSInfraScanConfigImpl.builder().
-                    setPDSProductIdentifier(configSupport.getPDSProductIdentifier()).
-                    setTrustAllCertificates(configSupport.isTrustAllCertificatesEnabled()).
-                    setProductBaseUrl(configSupport.getProductBaseURL()).
-                    setSecHubJobUUID(context.getSechubJobUUID()).
-
-                    setSecHubConfigModel(context.getConfiguration()).
-
-                    configure(createAdapterOptionsStrategy(context)).
-
-                    setTimeToWaitForNextCheckOperationInMilliseconds(configSupport.getTimeToWaitForNextCheckOperationInMilliseconds(setup)).
-                    setTimeOutInMinutes(configSupport.getTimeoutInMinutes(setup)).
-
-                    setUser(configSupport.getUser()).
-                    setPasswordOrAPIToken(configSupport.getPasswordOrAPIToken()).
-                    setProjectId(projectId).
-
-                    setTraceID(context.getTraceLogIdAsString()).
-                    setJobParameters(jobParameters).
+                    configure(PDSAdapterConfigurationStrategy.builder().
+                            setScanType(getScanType()).
+                            setProductExecutorData(data).
+                            setConfigSupport(configSupport).
+                            setContentProvider(contentProvider).
+                            setInstallSetup(installSetup).
+                            build()).
+                    /* additional:*/
+                    configure(new NetworkTargetProductServerDataAdapterConfigurationStrategy(configSupport,data.getCurrentNetworkTargetInfo().getTargetType())).
 
                     setTargetIPs(info.getIPs()).
                     setTargetURIs(info.getURIs()).
@@ -114,13 +114,14 @@ public class PDSInfraScanProductExecutor extends AbstractInfrastructureScanProdu
     }
 
     @Override
-    public ProductIdentifier getIdentifier() {
-        return ProductIdentifier.PDS_INFRASCAN;
-    }
+    protected void customize(ProductExecutorData data) {
+        SecHubConfiguration secHubConfiguration = data.getSechubExecutionContext().getConfiguration();
+        data.setNetworkLocationProvider(new InfraScanNetworkLocationProvider(secHubConfiguration));
 
-    @Override
-    public int getVersion() {
-        return 1;
+        ProductExecutorContext executorContext = data.getProductExecutorContext();
+        PDSExecutorConfigSuppport configSupport = PDSExecutorConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
+                systemEnvironment);
+        data.setNetworkTargetDataProvider(configSupport);
     }
 
 }

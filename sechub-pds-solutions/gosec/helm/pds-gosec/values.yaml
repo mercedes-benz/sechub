@@ -10,6 +10,16 @@ image:
 
 pds:
     startMode: localserver
+    config:
+        execute:
+            queueMax: 10
+            workerThreadCount: 1
+    logging:
+        type:
+            enabled: false
+            appenderName: "LOGSTASH_JSON"
+    debug:
+        keepReportsInWorkspace: false
     javaDebug:
         enabled: false
     keepContainerAliveAfterPDSCrashed: false
@@ -51,4 +61,3 @@ networkPolicy:
         - podSelector:
             matchLabels:
                 name: sechub-adminserver
-

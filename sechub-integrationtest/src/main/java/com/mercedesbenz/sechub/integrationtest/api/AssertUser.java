@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.integrationtest.api;
 
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
+import static com.mercedesbenz.sechub.test.TestConstants.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
@@ -13,7 +14,6 @@ import java.util.UUID;
 import junit.framework.AssertionFailedError;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -218,35 +218,6 @@ public class AssertUser extends AbstractAssert {
     }
 
     /**
-     * Asserts that the user can assign targetUser as owner to given project. Will
-     * fail if the project or target user does not exist before, or assignment is
-     * not possible.<br>
-     * <br>
-     * After this is executed the user is assigned as new owner to project or test
-     * fails
-     *
-     * @param targetUser
-     * @param project
-     * @return
-     */
-    public AssertUser canAssignOwnerToProject(TestUser targetUser, TestProject project) {
-        /* @formatter:off */
-        assertProject(project).
-            doesExist();
-        assertUser(targetUser).
-            doesExist().
-            isNotOwnerOf(project);
-
-        as(this.user).
-            assignOwnerToProject(targetUser, project);
-
-        assertUser(targetUser).
-            isOwnerOf(project);
-        /* @formatter:on */
-        return this;
-    }
-
-    /**
      * Asserts that the user can assign targetUser to given project. Will fail if
      * the project or target user does not exist before, or assignment is not
      * possible.<br>
@@ -422,10 +393,20 @@ public class AssertUser extends AbstractAssert {
     }
 
     public AssertUser canUploadSourceZipFile(TestProject project, UUID jobUUID, String pathInsideResources) {
-        as(user).upload(project, jobUUID, pathInsideResources);
+        as(user).uploadSourcecode(project, jobUUID, pathInsideResources);
         /* check if file is uploaded on server location */
-        File downloadedFile = TestAPI.getFileUploaded(project, jobUUID, "sourcecode.zip");
+        File downloadedFile = TestAPI.getFileUploaded(project, jobUUID, SOURCECODE_ZIP);
         assertNotNull(downloadedFile);
+        assertTrue(downloadedFile.exists());
+        return this;
+    }
+
+    public AssertUser canUploadBinariesTarFile(TestProject project, UUID jobUUID, String pathInsideResources) {
+        as(user).uploadBinaries(project, jobUUID, pathInsideResources);
+        /* check if file is uploaded on server location */
+        File downloadedFile = TestAPI.getFileUploaded(project, jobUUID, BINARIES_TAR);
+        assertNotNull(downloadedFile);
+        assertTrue(downloadedFile.exists());
         return this;
     }
 
@@ -437,43 +418,47 @@ public class AssertUser extends AbstractAssert {
         return new AssertJobScheduler<AssertUser>(this, user, project);
     }
 
-    public AssertUser hasUserRole() {
-        try {
-            as(user).getStringFromURL(getUrlBuilder().buildCheckRoleUser());
-        } catch (HttpClientErrorException e) {
-            if (e.getRawStatusCode() == 403) {
-                fail("User has not user role or access layer has an error");
+    private void assertUserHasRole(String role, boolean shallHave) {
+        TestAPI.executeRunnableAndAcceptAssertionsMaximumTimes(5, () -> {
+
+            boolean result = as(user).getBooleanFromURL(getUrlBuilder().buildCheckRole(role));
+            if (shallHave) {
+                if (!result) {
+                    fail("User:" + user.getUserId() + " does not have role '" + role + "' !");
+                }
+            } else {
+                if (result) {
+                    fail("User:" + user.getUserId() + " has role '" + role + "' !");
+                }
             }
-            throw e;
-        }
+
+        }, 300);
+
+    }
+
+    public AssertUser hasUserRole() {
+        assertUserHasRole("user", true);
         return this;
     }
 
     public AssertUser hasOwnerRole() {
-        try {
-            as(user).getStringFromURL(getUrlBuilder().buildCheckRoleOwner());
-        } catch (HttpClientErrorException e) {
-            if (e.getRawStatusCode() == 403) {
-                fail("User has not owner role or access layer has an error");
-            }
-            throw e;
-        }
+        assertUserHasRole("owner", true);
+        return this;
+    }
+
+    public AssertUser hasNotUserRole() {
+        assertUserHasRole("user", false);
+        return this;
+    }
+
+    public AssertUser hasNotOwnerRole() {
+        assertUserHasRole("owner", false);
         return this;
     }
 
     public AssertUser isOwnerOf(TestProject project) {
         assertProject(project).hasOwner(user);
         assertTrue(checkIsOwnerOfProject(project, fetchUserDetails())); // test user.ownedProjects
-        return this;
-    }
-
-    public AssertUser hasNotUserRole() {
-        expectHttpFailure(() -> as(user).getStringFromURL(getUrlBuilder().buildCheckRoleUser()), 10000, HttpStatus.FORBIDDEN);
-        return this;
-    }
-
-    public AssertUser hasNotOwnerRole() {
-        expectHttpFailure(() -> as(user).getStringFromURL(getUrlBuilder().buildCheckRoleOwner()), 10000, HttpStatus.FORBIDDEN);
         return this;
     }
 

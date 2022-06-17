@@ -26,16 +26,22 @@ List of actions and mandatory parameters:
 ACTION [PARAMETERS] - EXPLANATION
 ----------------------------------
 alive_check - alive check (No user needed)
+autocleanup_get - Get autocleanup setting
+autocleanup_set <value> <time unit> - Update autocleanup setting. <time unit> is one of days, weeks, months, years
 executor_create <json-file> - Create executor configuration from JSON file
 executor_delete <executor-uuid> - Delete executor <executor-uuid>
 executor_details <executor-uuid> - Show definition of executor <executor-uuid>
 executor_list - List all existing executors (json format)
 executor_update <executor-uuid> <json-file> - Update executor <executor-uuid> with <json-file> contents
+job_approve <project-id> <job-uuid> - Approve a job <job-uuid> and mark it as ready to start
 job_cancel <job-uuid> - Cancel job <job-uuid>
+job_create <project-id> <json-file> - Create a new job for a project <project-id> from a SecHub configuration file <json-file> (JSON format)
+job_get_report_spdx_json <project-id> <job-uuid> - Get SPDX JSON report for a specific job <job-uuid> and <project-id>
 job_list_running - List running jobs (json format)
 job_restart <job-uuid> - Restart/activate job <job-uuid>
 job_restart_hard <job-uuid> - Run new backend scan of job <job-uuid>
 job_status <project-id> <job-uuid> - Get status of job <job-uuid> in project <project-id> (json format)
+job_upload_sourcecode <project-id> <job-uuid> <zip-file> - Upload source code <zip-file> for project <project-id> and job <job-uuid>
 profile_create <profile-id> <executor-uuid1>[,<executor-uuid2>...] [<description>]
                Create execution profile <profile-id> with named executors assigned; description optional
 profile_delete <profile-id> - Delete execution profile <profile-id>
@@ -79,7 +85,6 @@ user_signup_decline <new user-id> - Decline registration of <new user-id>
 EOF
 }
 
-
 #################################
 # Generic helper functions
 
@@ -97,6 +102,11 @@ function are_you_sure {
       exit 0
       ;;
   esac
+}
+
+
+function to_lower_case() {
+	echo "$*" | tr [:upper:] [:lower:]
 }
 
 
@@ -131,8 +141,8 @@ function check_choice_parameter {
 
 
 function check_parameter {
-  param="$1"
-  parameter_name="$2"
+  local param="$1"
+  local parameter_name="$2"
   if [ -z "${!param}" ] ; then
     echo "Required parameter $parameter_name is missing"
     failed=true
@@ -141,8 +151,8 @@ function check_parameter {
 
 
 function check_trafficlight {
-  param="$1"
-  parameter_name="$2"
+  local param="$1"
+  local parameter_name="$2"
   case "${!param}" in
     RED|YELLOW|GREEN) ;;
     "") echo "Trafficlight value for $parameter_name not set"
@@ -156,14 +166,42 @@ function check_trafficlight {
 
 
 function check_file {
-  file="$1"
-  parameter_name="$2"
+  local file="$1"
+  local parameter_name="$2"
   if [ -z "$file" ] ; then
     echo "$parameter_name is missing"
     failed=true
   elif [ ! -r "$file" ] ; then
     echo "File \"$file\" is not readable/existing. Please check."
     failed=true
+  fi
+}
+
+
+function check_number {
+  local param="$1"
+  local parameter_name="$2"
+
+  check_parameter "$param" "$parameter_name"
+  if ! $failed ; then
+    if [[ ! ${!param} =~ ^[0-9]+$ ]]; then
+      echo "$parameter_name is not numeric."
+      failed=true
+    fi
+  fi
+}
+
+
+function check_time_unit {
+  local param="$1"
+  local parameter_name="$2"
+
+  check_parameter "$param" "$parameter_name"
+  if ! $failed ; then
+    if [[ ! ${!param} =~ ^(days?|weeks?|months?|years?)$ ]]; then
+      echo "$parameter_name '${!param}' is not a valid time unit. Expected one of: days, weeks, months, years"
+      failed=true
+    fi
   fi
 }
 
@@ -187,6 +225,31 @@ function sechub_alive_check {
   curl $CURL_PARAMS -i -X GET "$SECHUB_SERVER/api/anonymous/check/alive" | $CURL_FILTER
 }
 
+
+function sechub_autocleanup_get {
+  curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/autoclean" | $RESULT_FILTER | $JSON_FORMATTER
+}
+
+
+function generate_autocleanup_data {
+  local amount="$1"
+  local unit="$2"
+  cat <<EOF
+{
+  "cleanupTime": {
+    "unit": "$unit",
+    "amount": $amount
+  }
+}
+EOF
+}
+
+function sechub_autocleanup_set {
+  local JSON_DATA="$(generate_autocleanup_data $1 $2)"
+  echo "Going to change autocleanup values. This may delete product results and scan reports."
+  are_you_sure
+  curl $CURL_PARAMS -i -X PUT -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/config/autoclean" | $CURL_FILTER
+}
 
 function sechub_executor_create {
   curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' -d "@$1" "$SECHUB_SERVER/api/admin/config/executor" | $RESULT_FILTER
@@ -220,6 +283,19 @@ function sechub_job_cancel {
   curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/jobs/cancel/$1"
 }
 
+function sechub_job_create {  
+  local PROJECT_ID="$1"
+  local JSON_FILE="$2"
+
+  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' --data "@$JSON_FILE" "$SECHUB_SERVER/api/project/$PROJECT_ID/job" | $RESULT_FILTER | $JSON_FORMATTER
+}
+
+function sechub_job_approve {
+  local PROJECT_ID="$1"
+  local JOB_UUID="$2"
+  
+  curl $CURL_PARAMS -i -X PUT -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/$PROJECT_ID/job/$JOB_UUID/approve" | $CURL_FILTER
+}
 
 function sechub_job_restart {
   curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/jobs/restart/$1"
@@ -230,6 +306,12 @@ function sechub_job_restart_hard {
   curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/jobs/restart-hard/$1"
 }
 
+function sechub_job_get_report_spdx_json {
+  local PROJECT_ID="$1"
+  local JOB_UUID="$2"
+
+  curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/$PROJECT_ID/report/spdx/$JOB_UUID" 
+}
 
 function sechub_job_list_running {
   curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/jobs/running" | $RESULT_FILTER | $JSON_FORMATTER
@@ -240,6 +322,29 @@ function sechub_job_status {
   curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/$1/job/$2" | $RESULT_FILTER | $JSON_FORMATTER
 }
 
+function sechub_job_upload_sourcecode {
+  local PROJECT_ID="$1"
+  local JOB_UUID="$2"
+  local ZIP_FILE="$3"
+
+  if [[ ! -f "$ZIP_FILE" ]] ; then
+    echo "File \"$ZIP_FILE\" does not exist."
+    exit 1
+  fi
+
+  local checkSum=$(sha256sum $ZIP_FILE | cut --delimiter=' ' --fields=1)
+
+  curl $CURL_AUTH $CURL_PARAMS -i -X POST --header "Content-Type: multipart/form-data" \
+    --form "file=@$ZIP_FILE" \
+    --form "checkSum=$checkSum" \
+    "$SECHUB_SERVER/api/project/$PROJECT_ID/job/$JOB_UUID/sourcecode" | $RESULT_FILTER
+
+  if [[ "$?" == "0" ]] ; then
+    echo "File \"$ZIP_FILE\" uploaded."
+  else
+    echo "Upload failed."
+  fi
+}
 
 function generate_sechub_profile_data {
   local EXECUTORS=$(echo $1 | awk -F',' '{ for (i = 1; i < NF; i++) { printf("{\"uuid\": \"%s\"}, ", $i) } printf ("{\"uuid\": \"%s\"}", $NF) }')
@@ -255,7 +360,7 @@ EOF
 }
 
 function sechub_profile_create {
-  JSON_DATA="$(generate_sechub_profile_data $2 $3)"
+  local JSON_DATA="$(generate_sechub_profile_data $2 $3)"
   echo $JSON_DATA | $JSON_FORMATTER
   curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/config/execution/profile/$1" | $CURL_FILTER
 }
@@ -279,22 +384,23 @@ function sechub_profile_list {
 
 
 function sechub_profile_update {
-  JSON_DATA="$(generate_sechub_profile_data $2 $3)"
+  local JSON_DATA="$(generate_sechub_profile_data $2 $3)"
   echo $JSON_DATA | $JSON_FORMATTER
   curl $CURL_PARAMS -i -X PUT -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/config/execution/profile/$1" | $CURL_FILTER
 }
 
 
 function profile_short_description {
-  profile_id="$1"
+  local profile_id="$1"
   mapfile -t resultArray < <(sechub_profile_details $profile_id | jq '.enabled,.configurations[].name')
-  enabled=${resultArray[0]}
+  local enabled=${resultArray[0]}
+  local enabledState
   if [ "$enabled" = "true" ] ; then
     enabledState="enabled"
   else
     enabledState="disabled"
   fi
-  first_run="true"
+  local first_run="true"
   for i in "${resultArray[@]}" ; do
     if [ "$first_run" = "true" ] ; then
       echo "- \"$profile_id\" ($enabledState)"
@@ -334,7 +440,7 @@ EOF
 }
 
 function sechub_project_create {
-  JSON_DATA="$(generate_sechub_project_create_data $1 $2 $3)"
+  local JSON_DATA="$(generate_sechub_project_create_data $1 $2 $3)"
   echo $JSON_DATA | $JSON_FORMATTER  # Show what is sent
   curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/project" | $CURL_FILTER
 }
@@ -353,7 +459,7 @@ function sechub_project_details {
 
 
 function sechub_project_details_all {
-  project_id="$1"
+  local project_id="$1"
   sechub_project_details $project_id
 
   echo "Assigned profiles:"
@@ -382,9 +488,9 @@ function sechub_project_metadata_set {
   local value
   local PROJECT_ID="${1,,}"  # ,, converts to lowercase
   shift
-  JSON_DATA="{\"apiVersion\": \"$SECHUB_API_VERSION\",\"metaData\":{"
-  arr=("$@")
-  first=true
+  local JSON_DATA="{\"apiVersion\": \"$SECHUB_API_VERSION\",\"metaData\":{"
+  local arr=("$@")
+  local first=true
   for i in "${arr[@]}" ; do
     if $first ; then
       first=false
@@ -422,7 +528,7 @@ EOF
 }
 
 function sechub_project_mockdata_set {
-  JSON_DATA="$(generate_sechub_project_mockdata $2 $3 $4)"
+  local JSON_DATA="$(generate_sechub_project_mockdata $2 $3 $4)"
   echo $JSON_DATA | $JSON_FORMATTER  # Show what is sent
   curl $CURL_PARAMS -i -X PUT -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/project/$1/mockdata" | $CURL_FILTER
 }
@@ -630,6 +736,14 @@ case "$action" in
   alive_check)
     $failed || sechub_alive_check
     ;;
+  autocleanup_get)
+    $failed || sechub_autocleanup_get
+    ;;
+  autocleanup_set)
+    AUTOCLEANUP_VALUE="$1" ; check_number AUTOCLEANUP_VALUE '<value>'
+    AUTOCLEANUP_UNIT=`to_lower_case "$2"` ; check_time_unit AUTOCLEANUP_UNIT '<time unit>'
+    $failed || sechub_autocleanup_set $AUTOCLEANUP_VALUE $AUTOCLEANUP_UNIT
+    ;;
   executor_create)
     EXECUTOR_JSONFILE="$1" ; check_file "$EXECUTOR_JSONFILE" '<json-file>'
     $failed || sechub_executor_create "$EXECUTOR_JSONFILE"
@@ -650,9 +764,24 @@ case "$action" in
     EXECUTOR_JSONFILE="$2" ; check_file "$EXECUTOR_JSONFILE" '<json-file>'
     $failed || sechub_executor_update "$EXECUTOR_UUID" "$EXECUTOR_JSONFILE"
     ;;
+  job_approve)
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    JOB_UUID="$2" ; check_parameter JOB_UUID '<job-uuid>'
+    $failed || sechub_job_approve "$PROJECT_ID" "$JOB_UUID"
+    ;;
   job_cancel)
     JOB_UUID="$1" ; check_parameter JOB_UUID '<job-uuid>'
     $failed || sechub_job_cancel "$JOB_UUID"
+    ;;
+  job_create)
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    JSON_FILE="$2" ; check_parameter JSON_FILE '<json-file>'
+    $failed || sechub_job_create "$PROJECT_ID" "$JSON_FILE"
+    ;;
+  job_get_report_spdx_json)
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    JSON_FILE="$2" ; check_parameter JSON_FILE '<json-file>'
+    $failed || sechub_job_get_report_spdx_json "$PROJECT_ID" "$JSON_FILE"
     ;;
   job_list_running)
     $failed || sechub_job_list_running
@@ -669,6 +798,12 @@ case "$action" in
     PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
     JOB_UUID="$2"   ; check_parameter JOB_UUID '<job-uuid>'
     $failed || sechub_job_status "$PROJECT_ID" "$JOB_UUID"
+    ;;
+  job_upload_sourcecode)
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    JOB_UUID="$2"   ; check_parameter JOB_UUID '<job-uuid>'
+    ZIP_FILE="$3"   ; check_parameter ZIP_FILE '<zip-file>'
+    $failed || sechub_job_upload_sourcecode "$PROJECT_ID" "$JOB_UUID" "$ZIP_FILE"
     ;;
   profile_create)
     PROFILE_ID="$1" ; check_parameter PROFILE_ID '<profile-id>'

@@ -8,7 +8,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper;
-import com.mercedesbenz.sechub.test.TestURLBuilder;
+import com.mercedesbenz.sechub.test.SecHubTestURLBuilder;
 
 public abstract class AbstractAssert {
 
@@ -24,7 +24,7 @@ public abstract class AbstractAssert {
         return getContext().getRestHelper(user);
     }
 
-    TestURLBuilder getUrlBuilder() {
+    SecHubTestURLBuilder getUrlBuilder() {
         return getContext().getUrlBuilder();
     }
 

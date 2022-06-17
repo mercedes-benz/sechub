@@ -41,8 +41,8 @@ func approveSecHubJob(context *Context) {
 }
 
 func waitForSecHubJobDone(context *Context) (status jobStatusResult) {
-	newLine := true
-	cursor := 0
+	var cursor uint8 = 0
+	waitNanoseconds := context.config.initialWaitIntervalNanoseconds
 
 	sechubUtil.Log(fmt.Sprintf("Waiting for job %s to be done", context.config.secHubJobUUID), context.config.quiet)
 
@@ -53,22 +53,43 @@ func waitForSecHubJobDone(context *Context) (status jobStatusResult) {
 			break
 		}
 
-		// PROGRESS bar ... 50 chars with dot, then next line...
-		if newLine {
-			sechubUtil.PrintIfNotSilent(strings.Repeat(" ", 29), context.config.quiet)
-			newLine = false
+		if !context.config.quiet {
+			// Progress dots
+			cursor = printProgressDot(cursor)
 		}
-		sechubUtil.PrintIfNotSilent(".", context.config.quiet)
-		if cursor++; cursor == 50 {
-			sechubUtil.PrintIfNotSilent("\n", context.config.quiet)
-			cursor = 0
-			newLine = true
-		}
-		time.Sleep(time.Duration(context.config.waitNanoseconds))
+
+		time.Sleep(time.Duration(waitNanoseconds))
+		waitNanoseconds = computeNextWaitInterval(waitNanoseconds, context.config.waitNanoseconds)
 	}
 	sechubUtil.PrintIfNotSilent("\n", context.config.quiet)
 
 	return status
+}
+
+// Print progress dots ... 50 dots, then next line...
+func printProgressDot(cursor uint8) uint8 {
+	if cursor == 0 {
+		// initial identation
+		fmt.Print(strings.Repeat(" ", 29))
+	}
+
+	fmt.Print(".")
+
+	cursor++
+	if cursor == 50 {
+		fmt.Print("\n")
+		cursor = 0
+	}
+
+	return cursor
+}
+
+func computeNextWaitInterval(current int64, max int64) int64 {
+	next := int64(float64(current) * WaitIntervalIncreaseFactor)
+	if next > max {
+		return max
+	}
+	return next
 }
 
 func getSecHubJobStatus(context *Context) (jsonData string) {
@@ -89,10 +110,32 @@ func getSecHubJobStatus(context *Context) (jsonData string) {
 }
 
 func printSecHubJobSummaryAndFailOnTrafficLight(context *Context) {
-	/* Evaluate traffic light */
+	// Handle messages from server
+	errorInJobMessage := false
+	numberOfMessages := len(context.jobStatus.Messages)
+
+	if numberOfMessages > 0 {
+		fmt.Print("Message")
+		if numberOfMessages > 1 {
+			fmt.Print("s")
+		}
+		fmt.Println(" from SecHub server:")
+		for _, message := range context.jobStatus.Messages {
+			fmt.Printf("  -> %s: %s\n", message.Type, message.Text)
+			if message.Type == "ERROR" {
+				errorInJobMessage = true
+			}
+		}
+	}
+
+	// Evaluate traffic light
 	switch context.jobStatus.TrafficLight {
 	case "RED":
-		fmt.Fprintln(os.Stderr, "  RED alert - security vulnerabilities identified (critical or high)")
+		if errorInJobMessage {
+			fmt.Fprintln(os.Stderr, "  RED alert - server error while job execution")
+		} else {
+			fmt.Fprintln(os.Stderr, "  RED alert - security vulnerabilities identified (critical or high)")
+		}
 		os.Exit(ExitCodeFailed)
 	case "YELLOW":
 		yellowMessage := "  YELLOW alert - security vulnerabilities identified (but not critical or high)"

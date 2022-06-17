@@ -10,10 +10,20 @@ image:
 
 pds:
     startMode: localserver
+    maxFileUploadSize: 20MB
+    config:
+        execute:
+            queueMax: 10
+            workerThreadCount: 1
+    logging:
+        type:
+            enabled: false
+            appenderName: "LOGSTASH_JSON"
+    debug:
+        keepReportsInWorkspace: false
     javaDebug:
         enabled: false
     keepContainerAliveAfterPDSCrashed: false
-    maxFileUploadSize: 20MB
 
 users:
     technical:

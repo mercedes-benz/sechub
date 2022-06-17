@@ -27,7 +27,7 @@ public class AdministrationConfig {
     /* +-----------------------------------------------------------------------+ */
     /* +............................ SQL ......................................+ */
     /* +-----------------------------------------------------------------------+ */
-    public static final String TABLE_NAME = "ADMIN_CONFIG";
+    public static final String TABLE_NAME = "ADM_CONFIG";
 
     public static final String COLUMN_ID = "CONFIG_ID";
 

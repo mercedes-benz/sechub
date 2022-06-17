@@ -5,26 +5,37 @@ import static com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDe
 
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.api.TestUser;
-import com.mercedesbenz.sechub.integrationtest.internal.AbstractSecHubServerTestScenario;
-import com.mercedesbenz.sechub.integrationtest.internal.CleanScenario;
+import com.mercedesbenz.sechub.integrationtest.internal.AbstractGrowingSecHubServerTestScenario;
+import com.mercedesbenz.sechub.integrationtest.internal.GrowingScenario;
+import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultProfiles;
 import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
 
 /**
- * <b><u>Scenario12 - the PDS integration test SARIF scenario (REUSE SECHUB DATA
- * enabled!)</u></b><br>
+ * <h3>Scenario 12</h3>
+ * <h4>Short description</h4> A PDS integration test scenario.<br>
+ * <br>
+ * Reuses storage from Sechub.
+ * <h4>Overview</h4> For an overview over all scenarios, look at
+ * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
+ * Overview} <br>
+ * <be>
+ * <h4>Details</h4>This is a {@link GrowingScenario}.<br>
+ * PDS integration test SARIF scenario. Reuse of SecHub storage is enabled.<br>
  *
  * In this scenario following is automatically initialized at start (old data
  * removed as well): <br>
  * <br>
  * a) <b> PDS integration test configuration is done automatically!</b> All
  * configurations from
- * 'sechub-integrationtest/src/main/resources/pds-config-integrationtest.json'
+ * <code>sechub-integrationtest/src/main/resources/pds-config-integrationtest.json</code>
  * will be configured automatically!<br>
  * <br>
  * b) User and project data:
  *
  * <pre>
  * PROJECT_1_ is automatically created
+ *  - has execution {@link IntegrationTestDefaultProfiles#PROFILE_7_PDS_WEBSCAN profile 7} assigned
+ *
  * USER_1, is automatically registered, created and assigned to project1
  * </pre>
  *
@@ -32,7 +43,7 @@ import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
  * @author Albert Tregnaghi
  *
  */
-public class Scenario12 extends AbstractSecHubServerTestScenario implements PDSTestScenario, CleanScenario {
+public class Scenario12 extends AbstractGrowingSecHubServerTestScenario implements PDSTestScenario {
 
     /**
      * User 1 is registered on startup, also owner and user of {@link #PROJECT_1}
@@ -69,4 +80,5 @@ public class Scenario12 extends AbstractSecHubServerTestScenario implements PDST
             ;
         /* @formatter:on */
     }
+
 }

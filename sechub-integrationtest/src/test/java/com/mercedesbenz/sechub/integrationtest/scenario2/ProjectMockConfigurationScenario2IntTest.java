@@ -6,7 +6,7 @@ import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 import static com.mercedesbenz.sechub.integrationtest.scenario2.Scenario2.*;
 import static org.junit.Assert.*;
 
-import java.util.Collections;
+import java.util.Arrays;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -14,6 +14,10 @@ import org.springframework.http.HttpStatus;
 
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
+import com.mercedesbenz.sechub.integrationtest.api.TestProject;
+import com.mercedesbenz.sechub.integrationtest.api.TestUser;
+import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestExampleConstants;
+import com.mercedesbenz.sechub.integrationtest.internal.MockData;
 
 public class ProjectMockConfigurationScenario2IntTest {
 
@@ -40,15 +44,6 @@ public class ProjectMockConfigurationScenario2IntTest {
     @Test
     public void user_without_access_cannot_set_project_mockconfiguration() {
         assertUser(USER_1).canNotSetMockConfiguration(PROJECT_1, mockDataEmpty, HttpStatus.NOT_FOUND);
-    }
-
-    @Test
-    public void user_with_access_can_set_project_mockconfiguration() {
-        /* prepare */
-        as(SUPER_ADMIN).assignUserToProject(USER_1, PROJECT_1);
-
-        /* execute + test */
-        assertUser(USER_1).canSetMockConfiguration(PROJECT_1, mockDataEmpty);
     }
 
     /* ------------------------------------------------ */
@@ -92,81 +87,35 @@ public class ProjectMockConfigurationScenario2IntTest {
     /* ------------------------------------------------ */
     /* -----------------Adapter behaviour ------------- */
     /* ------------------------------------------------ */
-
+/* @formatter:off */
     @Test
-    public void default_setup__as_user_of_project_configure_mocks_trigger_web_scan_and_expect_wished_results() {
+    public void a_user_can_change_mock_configuration_and_behavior() {
+        TestUser user = USER_1;
+        TestProject project = PROJECT_1;
+
         /* Step1: prepare */
-        as(SUPER_ADMIN).assignUserToProject(USER_1, PROJECT_1);
-        as(USER_1).setProjectMockConfiguration(PROJECT_1, createMockScanConfig("webScan", TrafficLight.YELLOW));
+        as(SUPER_ADMIN).
+           assignUserToProject(user, project).
+           updateWhiteListForProject(project, Arrays.asList(IntegrationTestExampleConstants.INFRASCAN_DEFAULT_WHITELEIST_ENTRY, MockData.NETSPARKER_RED_ZERO_WAIT.getTarget()));
 
-        /* execute + test */
-        assertResult(as(USER_1).createWebScanAndFetchScanData(PROJECT_1)).isYellow();
+        /* test web scan yellow */
+        as(user).setProjectMockConfiguration(project, createMockScanConfig("webScan", TrafficLight.YELLOW));
+        assertResult(as(user).createWebScanAndFetchScanData(project)).isYellow();
 
-        /* Step2: prepare */
-        as(USER_1).setProjectMockConfiguration(PROJECT_1, createMockScanConfig("webScan", TrafficLight.RED));
+        /* test web scan green */
+        as(user).setProjectMockConfiguration(project, createMockScanConfig("webScan", TrafficLight.GREEN));
+        assertResult(as(user).createWebScanAndFetchScanData(project)).isGreen();
 
-        /* execute + test */
-        assertResult(as(USER_1).createWebScanAndFetchScanData(PROJECT_1)).isRed();
+        /* test code scan red */
+        as(user).setProjectMockConfiguration(project, createMockScanConfig("codeScan", TrafficLight.RED));
+        assertResult(as(user).withSecHubClient().startAndWaitForCodeScan(project)).isRed();
 
-        /* Step2: prepare */
-        as(USER_1).setProjectMockConfiguration(PROJECT_1, createMockScanConfig("webScan", TrafficLight.GREEN));
-
-        /* execute + test */
-        assertResult(as(USER_1).createWebScanAndFetchScanData(PROJECT_1)).isGreen();
+        /* test infra scan green */
+        as(user).setProjectMockConfiguration(project, createMockScanConfig("infraScan", TrafficLight.GREEN));
+        assertResult(as(user).withSecHubClient().createInfraScanAndFetchScanData(project)).isGreen();
 
     }
-
-    @Test
-    public void default_setup__as_user_of_project_configure_mocks_trigger_code_scan_and_expect_wished_results() {
-        /* Step1: prepare */
-        as(SUPER_ADMIN).assignUserToProject(USER_1, PROJECT_1);
-        as(USER_1).setProjectMockConfiguration(PROJECT_1, createMockScanConfig("codeScan", TrafficLight.YELLOW));
-
-        /* execute + test */
-
-        assertResult(as(USER_1).withSecHubClient().startAndWaitForCodeScan(PROJECT_1)).isYellow();
-
-        /* Step2: prepare */
-        as(USER_1).setProjectMockConfiguration(PROJECT_1, createMockScanConfig("codeScan", TrafficLight.RED));
-
-        /* execute + test */
-        assertResult(as(USER_1).withSecHubClient().startAndWaitForCodeScan(PROJECT_1)).isRed();
-
-        /* Step2: prepare */
-        as(USER_1).setProjectMockConfiguration(PROJECT_1, createMockScanConfig("codeScan", TrafficLight.GREEN));
-
-        /* execute + test */
-        assertResult(as(USER_1).withSecHubClient().startAndWaitForCodeScan(PROJECT_1)).isGreen();
-
-    }
-
-    /* @formatter:off */
-	@Test
-	public void default_setup__as_user_of_project_configure_mocks_trigger_infra_scan_and_expect_wished_results() {
-		/* Step1: prepare */
-		as(SUPER_ADMIN).
-			assignUserToProject(USER_1, PROJECT_1).
-			updateWhiteListForProject(PROJECT_1, Collections.singletonList("https://fscan.intranet.example.org/"));
-		as(USER_1).
-			setProjectMockConfiguration(PROJECT_1, createMockScanConfig("infraScan", TrafficLight.YELLOW));
-
-		/* execute + test */
-		assertResult(as(USER_1).withSecHubClient().createInfraScanAndFetchScanData(PROJECT_1)).isYellow();
-
-		/* Step2: prepare */
-		as(USER_1).setProjectMockConfiguration(PROJECT_1, createMockScanConfig("infraScan", TrafficLight.RED));
-
-		/* execute + test */
-		assertResult(as(USER_1).withSecHubClient().createInfraScanAndFetchScanData(PROJECT_1)).isRed();
-
-		/* Step2: prepare */
-		as(USER_1).setProjectMockConfiguration(PROJECT_1, createMockScanConfig("infraScan", TrafficLight.GREEN));
-
-		/* execute + test */
-		assertResult(as(USER_1).withSecHubClient().createInfraScanAndFetchScanData(PROJECT_1)).isGreen();
-
-	}
-	/* @formatter:on */
+    /* @formatter:on */
 
     private static String expect(String scanType, TrafficLight trafficLight) {
         return "{\"" + scanType + "\":{\"result\":\"" + trafficLight.name() + "\"}}";

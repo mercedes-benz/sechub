@@ -14,5 +14,6 @@ dependencies {
     implementation spring_boot_dependency.slf4j_api
 
     implementation library.wiremock
+    implementation library.apache_commons_io
 
 } 

@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.developertools.admin.ui.action.pds;
 
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
+
 import java.io.File;
 import java.util.Optional;
 import java.util.UUID;
@@ -26,7 +28,8 @@ public class UploadPDSJobFileAction extends AbstractPDSAction {
             output("cancel pds job uuid");
             return;
         }
-        Optional<String> fileNameOpt = getUserInput("Filename to use on server side (be aware - we got fixed names here at the moment!))", "sourcecode.zip");
+        Optional<String> fileNameOpt = getUserInput("Filename to use on server side (be aware - we got fixed names here at the moment!))",
+                FILENAME_SOURCECODE_ZIP);
         if (!fileNameOpt.isPresent()) {
             output("cancel pds job uuid");
             return;

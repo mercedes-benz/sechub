@@ -30,6 +30,11 @@ The SecHub Client is available for a number of platforms. A platform is a combin
 |AMD and Intel 64-bit
 |The **macOS client**.
 
+|darwin-arm64
+|macOS
+|ARM
+|Support for recent Macs with ARM architecture.
+
 |linux-386
 |Linux
 |AMD and Intel 32-bit
@@ -86,9 +91,9 @@ Does scan synchronous which means
  - approve job as being ready to start
  - wait for job done,
  - fetch automatically result report to output folder (html or json)
- - break your build when not `green`
+ - returns non-zero on `red` so your build will break on critical or high findings (depends on your build tool)
 
-TIP: For security reasons always pass your api token via the environment variable `SECHUB_APITOKEN`.
+IMPORTANT: For security reasons always pass your API-token via the environment variable `SECHUB_APITOKEN`.
 
 TIP: The is the most preferred scan action for builds - you only have to make one
      single client call and your are done.
@@ -185,7 +190,7 @@ include::sechub_client_falsepositive_list_example_unmark.json[]
 Instead of creating a json file to mark false positives, you can also do this interactively:
 Go to the project directory containing `sechub.json` and a report file from a recent scan and run `sechub interactiveMarkFalsePositives`.
 
-You can select the report file using the `-file` option of the client. Otherwise the latest report file in the current directory is automatically selected.
+You can select the report file using the `-file` option of the client. Otherwise the project's latest report file in the current directory is automatically selected.
 
 For each finding in the reports file, you are prompted: `"Add this as false positive?"`
 Your choices are:
@@ -231,7 +236,7 @@ In below table, there is an overview of what can be defined where.
 | job uuid | -jobUUID ||
 | network timeout | -timeout||
 | output folder or file | -output ||
-| poll interval | -wait | SECHUB_WAITTIME_DEFAULT |
+| max. poll interval | -wait | SECHUB_WAITTIME_DEFAULT |
 | project id | -project | SECHUB_PROJECT |project
 | quiet mode | -quiet | SECHUB_QUIET |
 | report format | -reportformat||
@@ -296,7 +301,7 @@ Here is an overview of mandatory parameter for each `action`:
 - `-version` +
   Shows version info and terminates
 - `-wait <seconds>` + 
-       Wait time in seconds (default 60). 
+       Maximum wait time in seconds (default 60). 
        Will be used for periodic status checks when action=`scan` and for retries of HTTP calls.
 
 ==== Environment variables
@@ -316,6 +321,8 @@ Additionally to above cmdline options, you can set some values also via environm
   When set to `true`, then HTTPS certificate checking will be disabled. May be useful when using self-signed certificates. Please try to avoid this setting for security reasons.
 - `SECHUB_USERID` +
   The SecHub username. (same as `-user` option)
+- `SECHUB_WHITELIST_ALL` +
+  When set to `true` then ignore the default whitelist for source files and add _every_ file. You may want to define <<sechub-config-example-sourcescan,excludes>> in your `sechub.json` file. _!! Handle with care !!_
 
 Settings for debugging/client development:
 
@@ -325,11 +332,12 @@ Settings for debugging/client development:
   When set to `true` then log HTTP request contents.
 - `SECHUB_IGNORE_DEFAULT_EXCLUDES` +
   When set to `true` then default exclude folders `+{"**/test/**", "**/.git/**"}+` will be included for code scan. In this case, you should declare your own exclude list in the config json.
+- `SECHUB_INITIAL_WAIT_INTERVAL` +
+  Initial wait time (floating point number) until SecHub client polls the first time if the report is ready (`sechub scan`). Meant for local integration tests.
 - `SECHUB_KEEP_TEMPFILES` +
   When set to `true` then `sourcecode-<projectID>.zip` files for code scan will not be removed, so you can check, what was uploaded to the `{sechub}` server.
 - `SECHUB_WAITTIME_DEFAULT` +
-  Wait time in seconds (default 60). Will be used for automatic status checks etc. when action=`scan`.
-  Try to avoid setting it shorter than 60 seconds, because the load on the `{sechub}` server will be increased.
+  Maximum wait time in seconds (default 60). Will be used for automatic status checks etc. when action=`scan`.
 
 
 ==== Proxy support
@@ -452,9 +460,9 @@ sechub interactiveMarkFalsePositives
 \ `--.  ___  ___| |_| |_   _| |__  
  `--. \/ _ \/ __|  _  | | | | '_ \ 
 /\__/ /  __/ (__| | | | |_| | |_) |
-\____/ \___|\___\_| |_/\__,_|_.__/ Client Version 0.20.0-b78
+\____/ \___|\___\_| |_/\__,_|_.__/ Client Version 0.29.0-20220401111823
 
-Using latest report file "sechub_report_0a84899f-1305-41e0-a2d5-e7c31d6185fd.json".
+Using latest report file "sechub_report_mytestproject_0a84899f-1305-41e0-a2d5-e7c31d6185fd.json".
 ------------------------------------------------------------------
 1: Side Channel Data Leakage, severity: HIGH
 src/main/java/com/example/testapp/invoice/application/InvoiceApplicationService.java, line 651 column 17
@@ -489,7 +497,7 @@ sechub interactiveUnmarkFalsePositives
 \ `--.  ___  ___| |_| |_   _| |__
  `--. \/ _ \/ __|  _  | | | | '_ \
 /\__/ /  __/ (__| | | | |_| | |_) |
-\____/ \___|\___\_| |_/\__,_|_.__/ Client Version 0.20.0-b78
+\____/ \___|\___\_| |_/\__,_|_.__/ Client Version 0.29.0-20220401111823
 
 - Fetching false-positives list for project "mytestproject".
 ------------------------------------------------------------------

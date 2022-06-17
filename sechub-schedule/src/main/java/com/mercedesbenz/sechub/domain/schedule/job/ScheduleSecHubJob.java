@@ -50,6 +50,8 @@ public class ScheduleSecHubJob {
 
     public static final String COLUMN_RESULT = "RESULT";
 
+    public static final String COLUMN_MESSAGES = "MESSAGES";
+
     /* +-----------------------------------------------------------------------+ */
     /* +............................ JPQL .....................................+ */
     /* +-----------------------------------------------------------------------+ */
@@ -63,6 +65,7 @@ public class ScheduleSecHubJob {
     public static final String PROPERTY_CREATED = "created";
     public static final String PROPERTY_STARTED = "started";
     public static final String PROPERTY_ENDED = "ended";
+    public static final String PROPERTY_MESSAGES = "jsonMessages";
 
     public static final String QUERY_DELETE_JOBINFORMATION_OLDER_THAN = "DELETE FROM ScheduleSecHubJob j WHERE j." + PROPERTY_CREATED + " <:cleanTimeStamp";;
     @Id
@@ -98,9 +101,11 @@ public class ScheduleSecHubJob {
     ExecutionResult executionResult = ExecutionResult.NONE;
 
     @Enumerated(STRING)
-    @Column(name = COLUMN_TRAFFIC_LIGHT, nullable = true) // HIBERNATE 5.2 would support Optional, but currently we use
-                                                          // 5.0.1
+    @Column(name = COLUMN_TRAFFIC_LIGHT, nullable = true)
     TrafficLight trafficLight;
+
+    @Column(name = COLUMN_MESSAGES)
+    private String jsonMessages;
 
     @Version
     @Column(name = "VERSION")
@@ -172,6 +177,14 @@ public class ScheduleSecHubJob {
 
     public TrafficLight getTrafficLight() {
         return trafficLight;
+    }
+
+    public String getJsonMessages() {
+        return jsonMessages;
+    }
+
+    public void setJsonMessages(String jsonMessages) {
+        this.jsonMessages = jsonMessages;
     }
 
     @Override

@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.domain.schedule;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -11,7 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
+import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJobMessagesSupport;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 import com.mercedesbenz.sechub.domain.schedule.strategy.SchedulerStrategy;
 import com.mercedesbenz.sechub.domain.schedule.strategy.SchedulerStrategyFactory;
@@ -36,6 +40,8 @@ public class ScheduleJobMarkerService {
     SchedulerStrategyFactory schedulerStrategyFactory;
 
     private SchedulerStrategy schedulerStrategy;
+
+    private ScheduleSecHubJobMessagesSupport jobMessageSupport = new ScheduleSecHubJobMessagesSupport();
 
     /**
      * @return either schedule job to execute, or <code>null</code> if no one has to
@@ -79,6 +85,7 @@ public class ScheduleJobMarkerService {
         secHubJob.setExecutionResult(ExecutionResult.FAILED);
         secHubJob.setExecutionState(ExecutionState.ENDED);
         secHubJob.setEnded(LocalDateTime.now());
+        jobMessageSupport.addMessages(secHubJob, Arrays.asList(new SecHubMessage(SecHubMessageType.ERROR, "Job execution failed")));
         jobRepository.save(secHubJob);
     }
 }

@@ -3,6 +3,8 @@ package com.mercedesbenz.sechub.commons.model;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +27,7 @@ class SecHubConfigurationModelReducedCloningSupportTest {
     }
 
     @Test
-    public void configuration_having_infra_code_and_webs_config_parts__target_is_codescan() throws Exception {
+    void configuration_having_infra_code_and_webs_config_parts__target_is_codescan() throws Exception {
 
         /* prepare */
 
@@ -58,7 +60,7 @@ class SecHubConfigurationModelReducedCloningSupportTest {
     }
 
     @Test
-    public void configuration_having_infra_code_and_webs_config_parts__target_is_webscan() throws Exception {
+    void configuration_having_infra_code_and_webs_config_parts__target_is_webscan() throws Exception {
 
         /* prepare */
 
@@ -91,7 +93,7 @@ class SecHubConfigurationModelReducedCloningSupportTest {
     }
 
     @Test
-    public void configuration_having_infra_code_and_webs_config_parts__target_is_infrascan() throws Exception {
+    void configuration_having_infra_code_and_webs_config_parts__target_is_infrascan_and_data_present() throws Exception {
 
         /* prepare */
 
@@ -121,6 +123,71 @@ class SecHubConfigurationModelReducedCloningSupportTest {
         assertTrue(resultClone.getInfraScan().isPresent());
         assertFalse(resultClone.getWebScan().isPresent());
         assertFalse(resultClone.getCodeScan().isPresent());
+    }
+
+    @Test
+    void configuration_having_no_infra_scan_but_wanted_after_clone_fallback_infra_scan_present() throws Exception {
+
+        /* prepare */
+
+        /* @formatter:off */
+        SecHubScanConfiguration config = TestSecHubConfigurationBuilder.
+                configureSecHub().
+                build();
+        /* @formatter:on */
+
+        // check preconditions
+        assertFalse(config.getWebScan().isPresent());
+        assertFalse(config.getInfraScan().isPresent());
+        assertFalse(config.getCodeScan().isPresent());
+
+        /* execute */
+        String json = toTest.createReducedScanConfigurationCloneJSON(config, ScanType.INFRA_SCAN);
+
+        /* test */
+        SecHubScanConfiguration resultClone = SecHubScanConfiguration.createFromJSON(json);
+        assertTrue(resultClone.getInfraScan().isPresent());
+        assertFalse(resultClone.getWebScan().isPresent());
+        assertFalse(resultClone.getCodeScan().isPresent());
+    }
+
+    @Test
+    void configuration_having_data_only_after_clone_data_present_as_before() throws Exception {
+
+        /* prepare */
+
+        /* @formatter:off */
+        SecHubScanConfiguration config = TestSecHubConfigurationBuilder.
+                configureSecHub().
+                    data().
+                        withBinary().
+                           uniqueName("unique1").
+                           fileSystemFolders("folder1").
+                        end().
+                    and().
+                build();
+        /* @formatter:on */
+
+        // check preconditions
+        assertTrue(config.getData().isPresent());
+
+        /* execute */
+        String json = toTest.createReducedScanConfigurationCloneJSON(config, ScanType.INFRA_SCAN);
+
+        /* test */
+        SecHubScanConfiguration resultClone = SecHubScanConfiguration.createFromJSON(json);
+        assertTrue(resultClone.getData().isPresent());
+        SecHubDataConfiguration data = resultClone.getData().get();
+        List<SecHubBinaryDataConfiguration> binaries = data.getBinaries();
+        assertEquals(1, binaries.size());
+        SecHubBinaryDataConfiguration binary = binaries.get(0);
+        assertEquals("unique1", binary.getUniqueName());
+        assertTrue(binary.getFileSystem().isPresent());
+        SecHubFileSystemConfiguration fileSystem = binary.getFileSystem().get();
+        assertEquals(1, fileSystem.getFolders().size());
+        String folder = fileSystem.getFolders().iterator().next();
+        assertEquals("folder1", folder);
+
     }
 
 }

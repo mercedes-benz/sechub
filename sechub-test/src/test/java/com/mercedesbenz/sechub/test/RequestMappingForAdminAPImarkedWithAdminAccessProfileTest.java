@@ -22,10 +22,10 @@ import com.mercedesbenz.sechub.sharedkernel.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 
 /**
- * This tests that REST API for adminsitrators is protected by special profile,
- * so operators must explicit start a server with this profile enabled to have a
- * server instance with such high privileges. are really documented. This will
- * prevent to forget documentation tests!
+ * This tests that SecHub REST API for administrators is protected by special
+ * profile, so operators must explicit start a server with this profile enabled
+ * to have a server instance with such high privileges. are really documented.
+ * This will prevent to forget documentation tests!
  *
  * @author Albert Tregnaghi
  *
@@ -142,7 +142,9 @@ public class RequestMappingForAdminAPImarkedWithAdminAccessProfileTest {
 
     private void inspectMethodAnnotatedWithRequestMApping(Map<Class<?>, InspData> map, Method method, Annotation annotation)
             throws IllegalAccessException, InvocationTargetException {
-        for (Method methodInAnnotation : annotation.getClass().getDeclaredMethods()) {
+        Class<? extends Annotation> clazz = annotation.getClass();
+
+        for (Method methodInAnnotation : clazz.getDeclaredMethods()) {
 
             String name = methodInAnnotation.getName();
             if ("path".equals(name)) {
@@ -152,13 +154,17 @@ public class RequestMappingForAdminAPImarkedWithAdminAccessProfileTest {
                 for (String path : valuesArray) {
                     if (path.startsWith(APIConstants.API_ADMINISTRATION)) {
                         /* found - check access restricted */
+                        Class<?> declaringClass = method.getDeclaringClass();
+                        if (declaringClass.getName().startsWith("com.mercedesbenz.sechub.pds")) {
+                            continue;
+                        }
                         if (!isMethodOrClassAnnotatedWithAdminAccessProfile(method)) {
-                            InspData data = map.computeIfAbsent(annotation.getClass(), key -> InspData.create(key));
+                            InspData data = map.computeIfAbsent(clazz, key -> InspData.create(key));
                             data.addMissingAdminAccess("No profile 'admin_access' defined in " + method.toString());
                         }
-                        String classname = method.getDeclaringClass().getSimpleName();
+                        String classname = declaringClass.getSimpleName();
                         if (!classname.endsWith("AdministrationRestController")) {
-                            InspData data = map.computeIfAbsent(annotation.getClass(), key -> InspData.create(key));
+                            InspData data = map.computeIfAbsent(clazz, key -> InspData.create(key));
                             data.addNameConventionProblem(
                                     "Rest controller for admin api must end with AdministrationRestController: but not like:" + classname);
                         }

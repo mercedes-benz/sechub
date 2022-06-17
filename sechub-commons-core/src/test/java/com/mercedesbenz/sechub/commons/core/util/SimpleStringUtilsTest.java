@@ -5,8 +5,34 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 public class SimpleStringUtilsTest {
+
+    @ParameterizedTest
+    @CsvSource({ "name", "age", "test" })
+    void validNames_hasOnlyAlphabeticDigitOrAdditionalAllowedCharacters_no_additional_is_true(String string) {
+        assertThat(SimpleStringUtils.hasOnlyAlphabeticDigitOrAdditionalAllowedCharacters(string), is(true));
+    }
+
+    @ParameterizedTest
+    @CsvSource({ "name-", "age_", "test-1" })
+    void invalidNames_hasOnlyAlphabeticDigitOrAdditionalAllowedCharacters_no_additional_is_false(String string) {
+        assertThat(SimpleStringUtils.hasOnlyAlphabeticDigitOrAdditionalAllowedCharacters(string), is(false));
+    }
+
+    @ParameterizedTest
+    @CsvSource({ "name-", "age_", "test-1" })
+    void validNames_hasOnlyAlphabeticDigitOrAdditionalAllowedCharacters_with_additional_is_true(String string) {
+        assertThat(SimpleStringUtils.hasOnlyAlphabeticDigitOrAdditionalAllowedCharacters(string, '-', '_'), is(true));
+    }
+
+    @ParameterizedTest
+    @CsvSource({ "n$me-", "a@e_", "t§st-1" })
+    void invalidNames_hasOnlyAlphabeticDigitOrAdditionalAllowedCharacters_with_additional_is_false(String string) {
+        assertThat(SimpleStringUtils.hasOnlyAlphabeticDigitOrAdditionalAllowedCharacters(string, '-', '_'), is(false));
+    }
 
     @Test
     void isTrimmedEquals_null_null_is_true() {

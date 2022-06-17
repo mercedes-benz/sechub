@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.resolve;
 
-import com.mercedesbenz.sechub.domain.scan.Target;
+import com.mercedesbenz.sechub.domain.scan.NetworkTarget;
 
 public interface TargetResolveStrategy<T> {
 
@@ -20,6 +20,6 @@ public interface TargetResolveStrategy<T> {
      * @param type
      * @return target, or <code>null</code>
      */
-    Target resolveTargetFor(T type);
+    NetworkTarget resolveTargetFor(T type);
 
 }

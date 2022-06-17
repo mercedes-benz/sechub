@@ -104,7 +104,7 @@ public class Workspace {
             }
             importerNames.append("]");
 
-            LOG.error("For meta data from product={} with importId={} no importers was able to import it! Importers used ={}", param.getProductId(),
+            LOG.error("For meta data from product={} with importId={} no importers were able to import it! Importers used ={}", param.getProductId(),
                     param.getImportId(), importerNames);
             throw new IOException("Import failed, no importer was able to import product result: " + param.getProductId());
         }
@@ -116,6 +116,8 @@ public class Workspace {
         workspaceMetaData.getVulnerabilities().addAll(metaData.getVulnerabilities());
 
         workspaceMetaData.getAnnotations().addAll(metaData.getAnnotations());
+
+        workspaceMetaData.getLicenseDocuments().addAll(metaData.getLicenseDocuments());
     }
 
     public String createReport() {

@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.pds;
 
-import com.mercedesbenz.sechub.domain.scan.InstallSetup;
-
-public interface PDSInstallSetup extends InstallSetup {
+public interface PDSInstallSetup {
 
     /**
      * Resolves amount of milliseconds to wait before next check for scan result

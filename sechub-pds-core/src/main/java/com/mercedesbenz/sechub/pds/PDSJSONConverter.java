@@ -74,7 +74,7 @@ public class PDSJSONConverter {
         }
         try {
             byte[] bytes;
-            if (false || prettyPrinted) {
+            if (prettyPrinted) {
                 bytes = mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(object);
             } else {
                 bytes = mapper.writeValueAsBytes(object);

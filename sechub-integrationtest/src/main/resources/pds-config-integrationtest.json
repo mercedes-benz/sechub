@@ -105,6 +105,12 @@
                     }
                 ]
             }
+        },
+        {
+            "id": "PDS_TEST_PRODUCT_LICENSESCAN",
+            "path": "./../sechub-integrationtest/pds/product-scripts/integrationtest-licensescan.sh",
+            "scanType": "licenseScan",
+            "description": "This is only a fake license scan - used by integration tests."
         }
     ]
 }

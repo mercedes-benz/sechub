@@ -14,7 +14,7 @@ import org.junit.Test;
 import org.slf4j.MDC;
 
 import com.mercedesbenz.sechub.sharedkernel.LogConstants;
-import com.mercedesbenz.sechub.test.TestURLBuilder;
+import com.mercedesbenz.sechub.test.SecHubTestURLBuilder;
 
 public class SecHubServerMDCAsyncHandlerInterceptorTest {
 
@@ -121,7 +121,7 @@ public class SecHubServerMDCAsyncHandlerInterceptorTest {
         /* prepare */
         UUID uuid = UUID.randomUUID();
         when(request.getRequestURI())
-                .thenReturn(TestURLBuilder.https(8443).buildUserRemovesFalsePositiveEntryFromProject("myprojectId", uuid.toString(), "findingid1"));
+                .thenReturn(SecHubTestURLBuilder.https(8443).buildUserRemovesFalsePositiveEntryFromProject("myprojectId", uuid.toString(), "findingid1"));
 
         /* execute */
         interceptorToTest.preHandle(request, response, handler);
@@ -135,7 +135,7 @@ public class SecHubServerMDCAsyncHandlerInterceptorTest {
     public void when_url_is_user_buildApproveJobUrluuid_is_set_and_projectId_as_well() throws Exception {
         /* prepare */
         UUID uuid = UUID.randomUUID();
-        when(request.getRequestURI()).thenReturn(TestURLBuilder.https(8443).buildApproveJobUrl("myprojectId", uuid.toString()));
+        when(request.getRequestURI()).thenReturn(SecHubTestURLBuilder.https(8443).buildApproveJobUrl("myprojectId", uuid.toString()));
 
         /* execute */
         interceptorToTest.preHandle(request, response, handler);

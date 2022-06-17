@@ -20,6 +20,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,6 +91,16 @@ public class PDSExecutionService {
         workers = Executors.newFixedThreadPool(workerThreadCount);
 
         scheduler.scheduleAtFixedRate(watcher, 300, 1000, TimeUnit.MILLISECONDS);
+    }
+
+    @PreDestroy
+    protected void preDestroy() {
+        /*
+         * The field "scheduler" is a `java.util.concurrent.ScheduledExecutorService`
+         * and not a spring component. Because of this, we listen here to the spring
+         * boot destroy signal and shutdown the executor service by our own:
+         */
+        scheduler.shutdown();
     }
 
     @UseCaseUserCancelsJob(@PDSStep(name = "service call", description = "job execution will be canceled in queue", number = 3))

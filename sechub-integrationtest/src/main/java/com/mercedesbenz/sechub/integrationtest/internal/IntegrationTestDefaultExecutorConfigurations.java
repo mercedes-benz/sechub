@@ -8,14 +8,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.mercedesbenz.sechub.adapter.pds.DelegatingMockablePDSAdapterV1;
+import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.integrationtest.api.PDSIntTestProductIdentifier;
 import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 import com.mercedesbenz.sechub.integrationtest.api.TestExecutorProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingEntry;
+import com.mercedesbenz.sechub.test.PDSTestURLBuilder;
 import com.mercedesbenz.sechub.test.TestPortProvider;
-import com.mercedesbenz.sechub.test.TestURLBuilder;
 import com.mercedesbenz.sechub.test.executorconfig.TestExecutorConfig;
 import com.mercedesbenz.sechub.test.executorconfig.TestExecutorSetupJobParam;
 
@@ -55,6 +55,8 @@ public class IntegrationTestDefaultExecutorConfigurations {
 
     public static final String PDS_WEBSCAN_VARIANT_A = "a";
     public static final String PDS_WEBSCAN_VARIANT_B = "b";
+
+    public static final String PDS_LICENSESCAN_VARIANT_A = "a";
 
     /* @formatter:off */
     public static final TestExecutorConfig PDS_V1_CODE_SCAN_A = definePDSCodeScan(
@@ -97,6 +99,11 @@ public class IntegrationTestDefaultExecutorConfigurations {
                                                 PDSIntTestProductIdentifier.PDS_INTTEST_WEBSCAN,
                                                 StorageType.REUSE_SECHUB_DATA);
 
+    public static final TestExecutorConfig PDS_V1_LICENSE_SCAN_A = definePDSLicenseScan(
+    											PDS_LICENSESCAN_VARIANT_A, false,
+    											PDSIntTestProductIdentifier.PDS_TEST_PRODUCT_LICENSESCAN,
+    											StorageType.REUSE_SECHUB_DATA);
+
     /**
      * The executor configuration does result in usage of {@link PDSIntTestProductIdentifier#PDS_INTTEST_PRODUCT_WS_SARIF}.
      */
@@ -130,6 +137,13 @@ public class IntegrationTestDefaultExecutorConfigurations {
 
     }
 
+    private static TestExecutorConfig definePDSLicenseScan(String variant, boolean credentialsAsEnvEntries, PDSIntTestProductIdentifier pdsProductIdentifier,
+            StorageType useSecHubStorage) {
+        String productIdentfieriId = createProductIdentifierString(pdsProductIdentifier);
+        return definePDSScan(variant, credentialsAsEnvEntries, productIdentfieriId, useSecHubStorage, TestExecutorProductIdentifier.PDS_LICENSESCAN);
+
+    }
+
     private static String createProductIdentifierString(PDSIntTestProductIdentifier pdsProductIdentifier) {
         return pdsProductIdentifier != null ? pdsProductIdentifier.getId() : "not-existing";
     }
@@ -145,7 +159,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
         config.productIdentifier = sechubProductIdentifier.name();
         config.name = INTTEST_NAME_PREFIX + middleConfigName + variant;
 
-        config.setup.baseURL = TestURLBuilder.https(TestPortProvider.DEFAULT_INSTANCE.getIntegrationTestPDSPort()).pds().buildBaseUrl();
+        config.setup.baseURL = PDSTestURLBuilder.https(TestPortProvider.DEFAULT_INSTANCE.getIntegrationTestPDSPort()).buildBaseUrl();
         config.uuid = null;// not initialized - is done at creation time by scenario initializer!
 
         if (credentialsAsEnvEntries) {
@@ -232,8 +246,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
     private static TestExecutorConfig createTestExecutorConfig() {
         TestExecutorConfig testExecutorConfig = new TestExecutorConfig();
         registeredConfigurations.add(testExecutorConfig);
-        testExecutorConfig.setup.jobParameters
-                .add(new TestExecutorSetupJobParam(DelegatingMockablePDSAdapterV1.JOB_PARAMETER_KEY__PDS_MOCKING_DISABLED, "true"));
+        testExecutorConfig.setup.jobParameters.add(new TestExecutorSetupJobParam(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_MOCKING_DISABLED, "true"));
         return testExecutorConfig;
     }
 

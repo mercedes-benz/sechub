@@ -2,10 +2,9 @@
 package com.mercedesbenz.sechub.sharedkernel.configuration;
 
 import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel.*;
+import static com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationError.*;
 
-import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
@@ -18,13 +17,10 @@ import org.springframework.validation.ObjectError;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
-import com.mercedesbenz.sechub.commons.core.util.SimpleNetworkUtils;
-import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationResult;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationResult.SecHubConfigurationModelValidationErrorData;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidator;
 import com.mercedesbenz.sechub.sharedkernel.UserContextService;
-import com.mercedesbenz.sechub.sharedkernel.validation.ApiVersionValidation;
-import com.mercedesbenz.sechub.sharedkernel.validation.ApiVersionValidationFactory;
-import com.mercedesbenz.sechub.sharedkernel.validation.ValidationResult;
 
 @Component
 public class SecHubConfigurationValidator implements Validator {
@@ -32,16 +28,16 @@ public class SecHubConfigurationValidator implements Validator {
     private static final Logger LOG = LoggerFactory.getLogger(SecHubConfigurationValidator.class);
 
     @Autowired
-    ApiVersionValidationFactory apiVersionValidationFactory;
-
-    @Autowired
     UserContextService userContextService;
 
-    private ApiVersionValidation apiVersionValidation;
+    @Autowired
+    SecHubConfigurationModelValidatorFactory modelValidatorFactory;
+
+    private SecHubConfigurationModelValidator modelValidator;
 
     @PostConstruct
     void postConstruct() {
-        apiVersionValidation = apiVersionValidationFactory.createValidationAccepting("1.0");
+        modelValidator = modelValidatorFactory.createValidator();
     }
 
     @Override
@@ -54,94 +50,91 @@ public class SecHubConfigurationValidator implements Validator {
         LOG.debug("Start validation for: {}", target);
 
         SecHubConfiguration configuration = (SecHubConfiguration) target;
+        SecHubConfigurationModelValidationResult modelValidationResult = modelValidator.validate(configuration);
 
-        validateAPI(configuration, errors);
-        validateAtLeastOneScanConfiguration(configuration, errors);
-        validateWebScan(configuration, errors);
-        validateInfraScan(configuration, errors);
+        handleExplicitErrorCodes(errors, modelValidationResult);
+        addGenericErrorsWhenNecessary(errors, modelValidationResult);
 
-        if (errors.hasErrors()) {
-            List<ObjectError> objectErrors = errors.getAllErrors();
-            for (ObjectError error : objectErrors) {
-                LOG.info("Rejected sechub configuration from user:{}. Reason: {}", userContextService.getUserId(), error.getDefaultMessage());
-            }
-        }
+        logErrors(errors);
 
     }
 
-    private void validateAtLeastOneScanConfiguration(SecHubConfiguration configuration, Errors errors) {
-        if (errors.hasErrors()) {
-            return;
-        }
-        if (!hasAtLeastOneScanConfiguration(configuration)) {
-            errors.reject("api.error.config.noscan.defined", "There is not any scan option given, so cannot start scan!");
+    private void logErrors(Errors errors) {
+        List<ObjectError> objectErrors = errors.getAllErrors();
+        for (ObjectError error : objectErrors) {
+            LOG.info("Rejected sechub configuration from user:{}. Reason: {}", userContextService.getUserId(), error.getDefaultMessage());
         }
     }
 
-    private void validateWebScan(SecHubConfiguration configuration, Errors errors) {
+    private void addGenericErrorsWhenNecessary(Errors errors, SecHubConfigurationModelValidationResult modelValidationResult) {
         if (errors.hasErrors()) {
+            /* already explicit handled errors - in this case we add not the generic ones */
             return;
         }
-        Optional<SecHubWebScanConfiguration> webscanOption = configuration.getWebScan();
-        if (!webscanOption.isPresent()) {
-            return;
-        }
-
-        SecHubWebScanConfiguration webscan = webscanOption.get();
-        URI uri = webscan.getUri();
-
-        if (SimpleNetworkUtils.isURINullOrEmpty(uri)) {
-            errors.reject("api.error.webscan.target.missing", new Object[] {},
-                    "Webscan configuration contains no target at all - but at one URI is necessary for a webscan!");
-
-        } else {
-            if (!SimpleNetworkUtils.isHttpProtocol(uri)) {
-                errors.reject("api.error.webscan.uri.illegalschema", new Object[] { uri },
-                        "Webscan configuration contains uri '{0}' which is not of supported protocolls (http,https)");
-            }
+        /* okay not handled before with explicit error codes - so add generic errors */
+        List<SecHubConfigurationModelValidationErrorData> modelErrors = modelValidationResult.getErrors();
+        for (SecHubConfigurationModelValidationErrorData data : modelErrors) {
+            errors.reject("api.error.config.generic", data.getMessage());
         }
     }
 
-    private void validateInfraScan(SecHubConfiguration configuration, Errors errors) {
+    private void handleExplicitErrorCodes(Errors errors, SecHubConfigurationModelValidationResult modelValidationResult) {
+        handleAPI(errors, modelValidationResult);
+
+        handleAtLeastOneScanConfiguration(errors, modelValidationResult);
+        handleWebScan(errors, modelValidationResult);
+        handleInfraScan(errors, modelValidationResult);
+    }
+
+    private void handleAtLeastOneScanConfiguration(Errors errors, SecHubConfigurationModelValidationResult modelValidationResult) {
         if (errors.hasErrors()) {
             return;
         }
-        Optional<SecHubInfrastructureScanConfiguration> infraScanOption = configuration.getInfraScan();
-        if (!infraScanOption.isPresent()) {
-            return;
-        }
-        SecHubInfrastructureScanConfiguration infraScan = infraScanOption.get();
-        if (infraScan.getUris().isEmpty() && infraScan.getIps().isEmpty()) {
-            errors.reject("api.error.infrascan.target.missing", new Object[] {},
-                    "Webscan configuration contains no target at all - but at least one URI or IP is necessary for scans!");
+        SecHubConfigurationModelValidationErrorData data = modelValidationResult.findFirstOccurrenceOf(CONTAINS_NO_SCAN_CONFIGURATION);
+        if (data != null) {
+            errors.reject("api.error.config.noscan.defined", data.getMessage());
         }
     }
 
-    private void validateAPI(SecHubConfiguration configuration, Errors errors) {
+    private void handleWebScan(Errors errors, SecHubConfigurationModelValidationResult modelValidationResult) {
         if (errors.hasErrors()) {
             return;
         }
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, PROPERTY_API_VERSION, "field.required");
 
-        if (errors.hasErrors()) {
-            return;
+        SecHubConfigurationModelValidationErrorData webScanHasNoURL = modelValidationResult.findFirstOccurrenceOf(WEB_SCAN_HAS_NO_URL_DEFINED);
+        if (webScanHasNoURL != null) {
+            errors.reject("api.error.webscan.target.missing", new Object[] {}, webScanHasNoURL.getMessage());
         }
-        String apiVersion = configuration.getApiVersion();
-        ValidationResult apiValidationResult = apiVersionValidation.validate(apiVersion);
-
-        if (!apiValidationResult.isValid()) {
-            errors.rejectValue(PROPERTY_API_VERSION, "api.error.unsupported.version", apiValidationResult.getErrorDescription());
+        SecHubConfigurationModelValidationErrorData webScanHasUnsupportedSchema = modelValidationResult
+                .findFirstOccurrenceOf(WEB_SCAN_URL_HAS_UNSUPPORTED_SCHEMA);
+        if (webScanHasUnsupportedSchema != null) {
+            errors.reject("api.error.webscan.uri.illegalschema", new Object[] {}, webScanHasUnsupportedSchema.getMessage());
         }
     }
 
-    private boolean hasAtLeastOneScanConfiguration(SecHubConfiguration configuration) {
-        boolean atLeastOne = false;
-        if (configuration != null) {
-            atLeastOne = atLeastOne || configuration.getCodeScan().isPresent(); /* NOSONAR */
-            atLeastOne = atLeastOne || configuration.getInfraScan().isPresent();
-            atLeastOne = atLeastOne || configuration.getWebScan().isPresent();
+    private void handleInfraScan(Errors errors, SecHubConfigurationModelValidationResult modelValidationResult) {
+        if (errors.hasErrors()) {
+            return;
         }
-        return atLeastOne;
+        SecHubConfigurationModelValidationErrorData data = modelValidationResult.findFirstOccurrenceOf(INFRA_SCAN_HAS_NO_URIS_OR_IPS_DEFINED);
+        if (data != null) {
+            errors.reject("api.error.infrascan.target.missing", new Object[] {}, data.getMessage());
+        }
+    }
+
+    private void handleAPI(Errors errors, SecHubConfigurationModelValidationResult modelValidationResult) {
+        if (errors.hasErrors()) {
+            return;
+        }
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, PROPERTY_API_VERSION, "field.required", API_VERSION_NULL.getDefaultMessage());
+
+        if (errors.hasErrors()) {
+            return;
+        }
+        SecHubConfigurationModelValidationErrorData apiNotSupportedErrorData = modelValidationResult.findFirstOccurrenceOf(API_VERSION_NOT_SUPPORTED);
+        if (apiNotSupportedErrorData != null) {
+            errors.rejectValue(PROPERTY_API_VERSION, "api.error.unsupported.version", apiNotSupportedErrorData.getMessage());
+        }
     }
 
 }

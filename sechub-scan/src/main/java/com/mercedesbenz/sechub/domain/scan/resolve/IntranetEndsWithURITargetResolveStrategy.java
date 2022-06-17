@@ -7,8 +7,8 @@ import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
-import com.mercedesbenz.sechub.domain.scan.Target;
-import com.mercedesbenz.sechub.domain.scan.TargetType;
+import com.mercedesbenz.sechub.domain.scan.NetworkTarget;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
 
 @Component
 public class IntranetEndsWithURITargetResolveStrategy implements URITargetResolveStrategy {
@@ -36,18 +36,18 @@ public class IntranetEndsWithURITargetResolveStrategy implements URITargetResolv
     }
 
     @Override
-    public Target resolveTargetFor(URI uri) {
+    public NetworkTarget resolveTargetFor(URI uri) {
         String host = uri.getHost();
         if (host == null) {
-            return new Target(uri, TargetType.UNKNOWN);
+            return new NetworkTarget(uri, NetworkTargetType.UNKNOWN);
         }
         String hostNameLowercased = host.toLowerCase();
         for (String endsWith : endsWithList) {
             if (hostNameLowercased.endsWith(endsWith)) {
-                return new Target(uri, TargetType.INTRANET);
+                return new NetworkTarget(uri, NetworkTargetType.INTRANET);
             }
         }
-        return new Target(uri, TargetType.INTERNET);
+        return new NetworkTarget(uri, NetworkTargetType.INTERNET);
     }
 
 }

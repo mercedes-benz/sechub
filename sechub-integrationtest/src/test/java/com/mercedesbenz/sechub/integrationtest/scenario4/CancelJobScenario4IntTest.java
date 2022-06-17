@@ -10,6 +10,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestMockMode;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
@@ -47,6 +48,7 @@ public class CancelJobScenario4IntTest {
         waitForJobStatusCancelRequested(project, sechubJobUUD);
         waitForJobStatusFailed(project, sechubJobUUD);
 
+        assertJobStatus(project, sechubJobUUD).hasMessage(SecHubMessageType.INFO,"Job execution was canceled by user");
 
         /* @formatter:on */
     }
@@ -58,7 +60,7 @@ public class CancelJobScenario4IntTest {
     public void cancel_a_long_running_codescan_job() {
         /* @formatter:off */
         /* prepare */
-        UUID sechubJobUUD = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(project,IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING);
+        UUID sechubJobUUD = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(project,IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__4_SECONDS_WAITING);
         waitForJobRunning(project, sechubJobUUD);
 
         /* execute */
@@ -67,6 +69,8 @@ public class CancelJobScenario4IntTest {
         /* test */
         waitForJobStatusCancelRequested(project, sechubJobUUD);
         waitForJobStatusFailed(project, sechubJobUUD);
+
+        assertJobStatus(project, sechubJobUUD).hasMessage(SecHubMessageType.INFO,"Job execution was canceled by user");
 
 
         /* @formatter:on */

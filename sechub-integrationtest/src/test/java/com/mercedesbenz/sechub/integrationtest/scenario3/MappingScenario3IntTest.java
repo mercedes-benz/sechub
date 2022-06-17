@@ -56,7 +56,7 @@ public class MappingScenario3IntTest {
 
         /* test */
         ExecutionResult result = as(USER_1).withSecHubClient().
-                startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN);
+                startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN_ZERO_WAIT);
         UUID sechubJobUUID = result.getSechubJobUUID();
 
         assertNotNull("No sechub jobUUId found-maybe client call failed?", sechubJobUUID);

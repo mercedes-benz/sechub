@@ -11,6 +11,8 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +36,7 @@ import com.mercedesbenz.sechub.integrationtest.JSONTestSupport;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultExecutorConfigurations;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSupport;
+import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestTemplateFile;
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
 import com.mercedesbenz.sechub.integrationtest.internal.SimpleTestStringList;
 import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData;
@@ -41,7 +44,7 @@ import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
 import com.mercedesbenz.sechub.sharedkernel.project.ProjectAccessLevel;
-import com.mercedesbenz.sechub.test.TestURLBuilder;
+import com.mercedesbenz.sechub.test.SecHubTestURLBuilder;
 import com.mercedesbenz.sechub.test.TestUtil;
 import com.mercedesbenz.sechub.test.executionprofile.TestExecutionProfile;
 import com.mercedesbenz.sechub.test.executionprofile.TestExecutionProfileList;
@@ -64,17 +67,19 @@ public class AsUser {
         return new WithSecHubClient(this);
     }
 
-    /**
-     * Upload given file
-     *
-     * @param userWantingToSignup
-     * @return
-     */
-    public AsUser upload(TestProject project, UUID jobUUID, File file, String checkSum) {
+    public AsUser uploadSourcecode(TestProject project, UUID jobUUID, File file, String checkSum) {
         /* @formatter:off */
 		getRestHelper().upload(getUrlBuilder().
-		    		buildUploadSourceCodeUrl(project.getProjectId(),jobUUID),file,checkSum);
+		        buildUploadSourceCodeUrl(project.getProjectId(),jobUUID),file,checkSum);
 		/* @formatter:on */
+        return this;
+    }
+
+    public AsUser uploadBinaries(TestProject project, UUID jobUUID, File file, String checkSum) {
+        /* @formatter:off */
+        getRestHelper().upload(getUrlBuilder().
+                buildUploadBinariesUrl(project.getProjectId(),jobUUID),file,checkSum);
+        /* @formatter:on */
         return this;
     }
 
@@ -85,15 +90,29 @@ public class AsUser {
     }
 
     /**
-     * Upload given resource, checksum will be automatically calculated
+     * Upload given resource as source code, checksum will be automatically
+     * calculated
      *
      * @param userWantingToSignup
      * @return
      */
-    public AsUser upload(TestProject project, UUID jobUUID, String pathInsideResources) {
+    public AsUser uploadSourcecode(TestProject project, UUID jobUUID, String pathInsideResources) {
         File uploadFile = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(pathInsideResources);
         String checkSum = TestAPI.createSHA256Of(uploadFile);
-        upload(project, jobUUID, uploadFile, checkSum);
+        uploadSourcecode(project, jobUUID, uploadFile, checkSum);
+        return this;
+    }
+
+    /**
+     * Upload given resource as binaries, checksum will be automatically calculated
+     *
+     * @param userWantingToSignup
+     * @return
+     */
+    public AsUser uploadBinaries(TestProject project, UUID jobUUID, String pathInsideResources) {
+        File uploadFile = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(pathInsideResources);
+        String checkSum = TestAPI.createSHA256Of(uploadFile);
+        uploadBinaries(project, jobUUID, uploadFile, checkSum);
         return this;
     }
 
@@ -140,7 +159,7 @@ public class AsUser {
         return this;
     }
 
-    private TestURLBuilder getUrlBuilder() {
+    private SecHubTestURLBuilder getUrlBuilder() {
         return getContext().getUrlBuilder();
     }
 
@@ -371,7 +390,56 @@ public class AsUser {
         return this;
     }
 
-    private String createCodeScanJob(TestProject project, IntegrationTestMockMode runMode) {
+    /**
+     * Creates a code scan job and returns corresponding job UUID. But job is NOT
+     * approved and so not started!
+     *
+     * @param project
+     * @param runMode
+     * @return job UUID
+     */
+    public UUID createCodeScan(TestProject project, IntegrationTestMockMode runMode) {
+        return createCodeScanJobAndFetchJobUUID(IntegrationTestTemplateFile.CODE_SCAN_1_SOURCE_EMBEDDED, project, runMode, Collections.emptyMap());
+
+    }
+
+    public UUID createScanJobWhichUsesDataReferencedIds(IntegrationTestTemplateFile template, TestProject project, IntegrationTestMockMode runMode,
+            TemplateData data) {
+        Map<String, String> variableMap = new HashMap<>();
+        variableMap.putAll(data.getVariables());
+        int index = 0;
+        for (String id : data.getReferenceIds()) {
+            index++;
+            variableMap.put("__use" + index + "__", id);
+        }
+        return createCodeScanJobAndFetchJobUUID(template, project, runMode, variableMap);
+    }
+
+    private UUID createCodeScanJobAndFetchJobUUID(IntegrationTestTemplateFile template, TestProject project, IntegrationTestMockMode runMode,
+            Map<String, String> variableMap) {
+        assertProject(project).doesExist();
+        if (runMode == null) {
+            runMode = IntegrationTestMockMode.CODE_SCAN__CHECKMARX__MULTI__ZERO_WAIT;
+        }
+        String response = createCodeScanJob(template, project, runMode, variableMap);
+        return fetchJobUUID(response);
+    }
+
+    private static Map<String, String> configTemplateCache = new HashMap<>();
+
+    private String getConfigTemplate(IntegrationTestTemplateFile templateFile) {
+        String templateFilename = templateFile.getTemplateFilename();
+        String template = configTemplateCache.get(templateFilename);
+        if (template == null) {
+            template = IntegrationTestFileSupport.getTestfileSupport().loadTestFile(templateFilename);
+            configTemplateCache.put(templateFilename, template);
+        }
+        return template;
+    }
+
+    private String createCodeScanJob(IntegrationTestTemplateFile template, TestProject project, IntegrationTestMockMode runMode,
+            Map<String, String> customVariableMap) {
+
         String folder = null;
         if (runMode != null) {
             folder = runMode.getTarget();
@@ -379,15 +447,21 @@ public class AsUser {
         if (folder == null) {
             folder = "notexisting";
         }
-        String testfile = "sechub-integrationtest-sourcescanconfig1.json";
-        String json = IntegrationTestFileSupport.getTestfileSupport().loadTestFile(testfile);
+        String templateJson = getConfigTemplate(template);
         String projectId = project.getProjectId();
 
-        json = json.replaceAll("__projectId__", projectId);
+        Map<String, String> map = new HashMap<>();
+        map.putAll(customVariableMap);
+        // add default variables
+        map.put("__projectname__", projectId);
+        map.put("__folder__", folder);
 
-        json = json.replaceAll("__folder__", folder);
+        for (String variableName : map.keySet()) {
+            String replacement = map.get(variableName);
+            templateJson = templateJson.replaceAll(variableName, replacement);
+        }
         String url = getUrlBuilder().buildAddJobUrl(projectId);
-        return getRestHelper().postJson(url, json);
+        return getRestHelper().postJson(url, templateJson);
     }
 
     private String createWebScanJob(TestProject project, IntegrationTestMockMode runMode) {
@@ -398,7 +472,7 @@ public class AsUser {
     }
 
     private String createWebScanJobForTargetURL(TestProject project, String targetURL) {
-        String json = IntegrationTestFileSupport.getTestfileSupport().loadTestFile("sechub-integrationtest-webscanconfig1.json");
+        String json = getConfigTemplate(IntegrationTestTemplateFile.WEBSCAN_1);
         String projectId = project.getProjectId();
 
         json = json.replaceAll("__projectId__", projectId);
@@ -446,7 +520,7 @@ public class AsUser {
     }
 
     public AsUser updateWhiteListForProject(TestProject project, List<String> uris) {
-        String json = IntegrationTestFileSupport.getTestfileSupport().loadTestFile("sechub-integrationtest-updatewhitelist1.json");
+        String json = getConfigTemplate(IntegrationTestTemplateFile.UPDATE_WHITELIST);
         StringBuilder sb = new StringBuilder();
         for (Iterator<String> it = uris.iterator(); it.hasNext();) {
             sb.append("\\\"");
@@ -463,7 +537,7 @@ public class AsUser {
     }
 
     public AsUser updateMetaDataForProject(TestProject project, Map<String, String> metaData) {
-        String json = IntegrationTestFileSupport.getTestfileSupport().loadTestFile("sechub-integrationtest-updatemetadata.json");
+        String json = getConfigTemplate(IntegrationTestTemplateFile.UPDATE_METADATA);
         StringBuilder sb = new StringBuilder();
 
         Iterator<Entry<String, String>> iterator = metaData.entrySet().iterator();
@@ -497,6 +571,24 @@ public class AsUser {
     }
 
     public String getJobReport(String projectId, UUID jobUUID) {
+        waitForJobToFinish(projectId, jobUUID);
+
+        /* okay report is available - so do download */
+        return getRestHelper().getJSON(getUrlBuilder().buildGetJobReportUrl(projectId, jobUUID));
+    }
+
+    public String getSpdxReport(TestProject project, UUID jobUUID) {
+        return getSpdxReport(project.getProjectId(), jobUUID);
+    }
+
+    public String getSpdxReport(String projectId, UUID jobUUID) {
+        waitForJobToFinish(projectId, jobUUID);
+
+        /* okay report is available - so do download */
+        return getRestHelper().getJSON(getUrlBuilder().buildGetJobReportUrlSpdx(projectId, jobUUID));
+    }
+
+    private void waitForJobToFinish(String projectId, UUID jobUUID) {
         long waitTimeInMillis = 1000;
         int count = 0;
         boolean jobEnded = false;
@@ -515,8 +607,6 @@ public class AsUser {
                     + " ms, no job report state ENDED was accessible!\nLAST fetched jobstatus for " + jobUUID + " in project " + projectId + " was:\n"
                     + jobstatus);
         }
-        /* okay report is available - so do download */
-        return getRestHelper().getJSON(getUrlBuilder().buildGetJobReportUrl(projectId, jobUUID));
     }
 
     /**
@@ -527,7 +617,7 @@ public class AsUser {
      * @return execution result
      */
     public ExecutionResult createWebScanAndFetchScanData(TestProject project) {
-        ExecutionResult result = withSecHubClient().startSynchronScanFor(project, IntegrationTestJSONLocation.JSON_WEBSCAN_RED);
+        ExecutionResult result = withSecHubClient().startSynchronScanFor(project, IntegrationTestJSONLocation.CLIENT_JSON_WEBSCAN_RED_ZERO_WAIT);
         return result;
     }
 
@@ -594,7 +684,7 @@ public class AsUser {
         }
 
         if (runMode == null) {
-            runMode = IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__FAST;
+            runMode = IntegrationTestMockMode.WEBSCAN__NETSPARKER_GREEN__ZERO_WAIT;
         }
         String jsonResponse = createWebScanJob(project, runMode);
 
@@ -630,24 +720,6 @@ public class AsUser {
         } catch (IOException e) {
             throw new IllegalStateException("io failure, should not occure", e);
         }
-    }
-
-    /**
-     * Creates a code scan job and returns corresponding job UUID. But job is NOT
-     * approved and so not started!
-     *
-     * @param project
-     * @param runMode
-     * @return job UUID
-     */
-    public UUID createCodeScan(TestProject project, IntegrationTestMockMode runMode) {
-        assertProject(project).doesExist();
-        if (runMode == null) {
-            runMode = IntegrationTestMockMode.CODE_SCAN__CHECKMARX__YELLOW__FAST;
-        }
-        String response = createCodeScanJob(project, runMode);
-        return fetchJobUUID(response);
-
     }
 
     public File downloadAsTempFileFromURL(String url, UUID jobUUID) {
@@ -792,23 +864,23 @@ public class AsUser {
     }
 
     public UUID triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(TestProject project) {
-        return triggerAsyncCodeScanApproveWithoutSourceUploadAndGetJobUUID(project, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__SUPERFAST,
+        return triggerAsyncCodeScanApproveWithSourceUploadAndGetJobUUID(project, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__10_MS_WATING,
                 TestDataConstants.RESOURCE_PATH_ZIPFILE_ONLY_TEST1_TXT);
     }
 
     public UUID triggerAsyncWebScanGreenLongRunningAndGetJobUUID(TestProject project) {
-        UUID uuid = createWebScan(project, IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING);
+        UUID uuid = createWebScan(project, IntegrationTestMockMode.WEBSCAN__NETSPARKER_GREEN__10_SECONDS_WAITING);
         approveJob(project, uuid);
         return uuid;
     }
 
     public UUID triggerAsyncCodeScanWithPseudoZipUpload(TestProject project, IntegrationTestMockMode mode) {
-        return triggerAsyncCodeScanApproveWithoutSourceUploadAndGetJobUUID(project, mode, TestDataConstants.RESOURCE_PATH_ZIPFILE_ONLY_TEST1_TXT);
+        return triggerAsyncCodeScanApproveWithSourceUploadAndGetJobUUID(project, mode, TestDataConstants.RESOURCE_PATH_ZIPFILE_ONLY_TEST1_TXT);
     }
 
-    public UUID triggerAsyncCodeScanApproveWithoutSourceUploadAndGetJobUUID(TestProject project, IntegrationTestMockMode mode, String pathInsideResources) {
+    public UUID triggerAsyncCodeScanApproveWithSourceUploadAndGetJobUUID(TestProject project, IntegrationTestMockMode mode, String pathInsideResources) {
         UUID uuid = triggerAsyncCodeScanAndGetJobUUID(project, mode);
-        upload(project, uuid, pathInsideResources);
+        uploadSourcecode(project, uuid, pathInsideResources);
 
         approveJob(project, uuid);
         return uuid;
@@ -1083,6 +1155,20 @@ public class AsUser {
 
         String json = getRestHelper().getJSON(url);
         return TestJSONHelper.get().createFromJSON(json, TestAutoCleanupData.class);
+    }
+
+    public boolean getBooleanFromURL(String url) {
+        String result = getStringFromURL(url);
+        if (result != null) {
+            String lowerCased = result.toLowerCase();
+            if (lowerCased.equals("true")) {
+                return true;
+            }
+            if (lowerCased.equals("false")) {
+                return false;
+            }
+        }
+        throw new IllegalStateException("Cannot fetch boolean result from url:" + url + " - was not a boolean but " + result);
     }
 
 }

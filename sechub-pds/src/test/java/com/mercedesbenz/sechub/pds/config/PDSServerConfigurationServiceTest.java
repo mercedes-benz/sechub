@@ -13,6 +13,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.pds.PDSShutdownService;
 import com.mercedesbenz.sechub.test.junit4.ExpectedExceptionFactory;
 
@@ -55,7 +56,7 @@ public class PDSServerConfigurationServiceTest {
         PDSProductSetup product1 = it.next();
         assertEquals("PRODUCT_1", product1.getId());
         assertEquals("/srv/security/scanner1.sh", product1.getPath());
-        assertEquals(PDSScanType.CODE_SCAN, product1.getScanType());
+        assertEquals(ScanType.CODE_SCAN, product1.getScanType());
         assertEquals("codescanner script needs environment variable ENV_CODESCAN_LEVEL set containing 1,2,3", product1.getDescription());
 
         PDSProdutParameterSetup paramSetup = product1.getParameters();
@@ -80,7 +81,7 @@ public class PDSServerConfigurationServiceTest {
 
         PDSProductSetup product2 = it.next();
         assertEquals("PRODUCT_2", product2.getId());
-        assertEquals(PDSScanType.INFRA_SCAN, product2.getScanType());
+        assertEquals(ScanType.INFRA_SCAN, product2.getScanType());
         assertEquals("/srv/security/scanner2.sh", product2.getPath());
 
     }

@@ -84,11 +84,15 @@ func getSecHubJobReport(context *Context) []byte {
 	header := make(map[string]string)
 	header["Content-Type"] = "application/json"
 
-	if context.config.reportFormat == "html" {
+	switch context.config.reportFormat {
+	case ReportFormatHTML:
 		header["Accept"] = "text/html"
-	} else {
+	case ReportFormatJSON:
+		header["Accept"] = "application/json"
+	case ReportFormatSPDXJSON:
 		header["Accept"] = "application/json"
 	}
+
 	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("getSecHubJobReport: header=%q", header))
 	response := sendWithHeader("GET", buildGetSecHubJobReportAPICall(context), context, header)
 

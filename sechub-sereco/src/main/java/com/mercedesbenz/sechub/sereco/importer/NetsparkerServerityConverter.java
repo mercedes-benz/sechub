@@ -12,11 +12,6 @@ import com.mercedesbenz.sechub.sereco.metadata.SerecoSeverity;
 //https://www.netsparker.com/blog/docs-and-faqs/sample-xml-report-vulnerability-mapping-scanner/
 public enum NetsparkerServerityConverter {
 
-    /*
-     * FIXME Albert Tregnaghi, 2019-04-09: hmm.. this must be checked .. see
-     * SECHUB-396
-     */
-
     NONE(SerecoSeverity.INFO),
 
     LOW(SerecoSeverity.LOW),

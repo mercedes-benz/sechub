@@ -11,6 +11,11 @@ public enum ScanType {
 
     INFRA_SCAN("infraScan"),
 
+    LICENSE_SCAN("licenseScan"),
+
+    /** not really a scan type but a report collector, only internally used */
+    REPORT("report"),
+
     /*
      * This is just a fallback for unknown scan type.
      */

@@ -81,6 +81,8 @@ public class PDSJob {
     public static final String PROPERTY_CONFIGURATION = "configuration";
     public static final String PROPERTY_RESULT = "result";
 
+    public static final String QUERY_DELETE_JOB_OLDER_THAN = "DELETE FROM PDSJob j WHERE j." + PROPERTY_CREATED + " < :cleanTimeStamp";
+
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")

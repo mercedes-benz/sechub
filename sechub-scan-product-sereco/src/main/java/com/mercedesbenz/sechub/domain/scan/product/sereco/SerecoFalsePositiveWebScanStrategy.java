@@ -94,7 +94,7 @@ public class SerecoFalsePositiveWebScanStrategy {
         }
         boolean sameData = true;
         /* ---------------------------------------------------- */
-        /* -------------------Target--------------------------- */
+        /* -------------------NetworkTarget--------------------------- */
         /* ---------------------------------------------------- */
         String metaTarget = metaDataWeb.getRequest().getTarget();
         String vulnerabilityTarget = vulnerabilityWeb.getRequest().getTarget();
