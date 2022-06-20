@@ -147,10 +147,7 @@ func printSecHubJobSummaryAndFailOnTrafficLight(context *Context) {
 		}
 	case "GREEN":
 		fmt.Println("  GREEN - no severe security vulnerabilities identified")
-	case "OFF":
-		fmt.Println("  SCAN FAILED - detection of security vulnerabilities failed on server or product")
-		os.Exit(ExitCodeFailed)
-	case "":
+	case "OFF", "":
 		sechubUtil.LogError("No traffic light available! Please check messages and server logs.")
 		os.Exit(ExitCodeFailed)
 	default:
