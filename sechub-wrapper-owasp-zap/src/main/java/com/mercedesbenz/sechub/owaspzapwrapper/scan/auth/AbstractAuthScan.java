@@ -103,6 +103,7 @@ public abstract class AbstractAuthScan extends AbstractScan implements AuthScan 
 
     private void scanUnsafe() throws ClientApiException {
         setupBasicConfiguration();
+        deactivateRules();
         setupAdditonalProxyConfiguration();
 
         createContext();

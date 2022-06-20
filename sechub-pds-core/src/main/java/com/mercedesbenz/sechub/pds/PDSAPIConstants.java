@@ -11,4 +11,8 @@ public class PDSAPIConstants {
      * Error page
      */
     public static final String ERROR_PAGE = "/error";
+
+    /* auto cleanup */
+    public static final String API_AUTOCLEAN = API_ADMIN + "config/autoclean";
+    public static final String API_SERVER_CONFIG = API_ADMIN + "config/server";
 }

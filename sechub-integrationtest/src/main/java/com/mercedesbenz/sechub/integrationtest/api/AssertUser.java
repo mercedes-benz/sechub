@@ -419,16 +419,21 @@ public class AssertUser extends AbstractAssert {
     }
 
     private void assertUserHasRole(String role, boolean shallHave) {
-        boolean result = as(user).getBooleanFromURL(getUrlBuilder().buildCheckRole(role));
-        if (shallHave) {
-            if (!result) {
-                fail("User:" + user.getUserId() + " does not have role '" + role + "' !");
+        TestAPI.executeRunnableAndAcceptAssertionsMaximumTimes(5, () -> {
+
+            boolean result = as(user).getBooleanFromURL(getUrlBuilder().buildCheckRole(role));
+            if (shallHave) {
+                if (!result) {
+                    fail("User:" + user.getUserId() + " does not have role '" + role + "' !");
+                }
+            } else {
+                if (result) {
+                    fail("User:" + user.getUserId() + " has role '" + role + "' !");
+                }
             }
-        } else {
-            if (result) {
-                fail("User:" + user.getUserId() + " has role '" + role + "' !");
-            }
-        }
+
+        }, 300);
+
     }
 
     public AssertUser hasUserRole() {

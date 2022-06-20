@@ -40,14 +40,15 @@ import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultPr
 import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData;
 import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData.TestCleanupTimeUnit;
 import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
-import com.mercedesbenz.sechub.integrationtest.internal.TestJsonDeleteCount;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper;
+import com.mercedesbenz.sechub.integrationtest.internal.autoclean.TestAutoCleanJsonDeleteCount;
 import com.mercedesbenz.sechub.sharedkernel.logging.SecurityLogData;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingEntry;
 import com.mercedesbenz.sechub.sharedkernel.messaging.IntegrationTestEventHistory;
 import com.mercedesbenz.sechub.test.ExampleConstants;
-import com.mercedesbenz.sechub.test.TestURLBuilder;
+import com.mercedesbenz.sechub.test.PDSTestURLBuilder;
+import com.mercedesbenz.sechub.test.SecHubTestURLBuilder;
 import com.mercedesbenz.sechub.test.executionprofile.TestExecutionProfile;
 
 public class TestAPI {
@@ -127,6 +128,10 @@ public class TestAPI {
         return new AssertPDSStatus(json);
     }
 
+    public static AssertSecHubJobStatus assertJobStatus(TestProject project, UUID sechubJobUUID) {
+        return new AssertSecHubJobStatus(sechubJobUUID, project);
+    }
+
     public static AssertPDSCreateJobResult assertPDSJobCreateResult(String json) {
         return new AssertPDSCreateJobResult(json);
     }
@@ -170,7 +175,16 @@ public class TestAPI {
      * @return assert object
      */
     public static AssertAutoCleanupInspections assertAutoCleanupInspections() {
-        return AssertAutoCleanupInspections.assertAutoCleanupInspections();
+        return new AssertAutoCleanupInspections();
+    }
+
+    /**
+     * Creates an assert object to inspect PDS auto cleanup data
+     *
+     * @return assert object
+     */
+    public static AssertPDSAutoCleanupInspections assertPDSAutoCleanupInspections() {
+        return new AssertPDSAutoCleanupInspections();
     }
 
     public static void logInfoOnServer(String text) {
@@ -191,7 +205,7 @@ public class TestAPI {
      * @return path or <code>null</code>
      */
     public static String fetchStoragePathHistoryEntryoForSecHubJobUUID(UUID secHubJobUUID) {
-        String url = getPDSURLBuilder().pds().buildIntegrationTestFetchStoragePathHistoryEntryForSecHubJob(secHubJobUUID);
+        String url = getPDSURLBuilder().buildIntegrationTestFetchStoragePathHistoryEntryForSecHubJob(secHubJobUUID);
         return getContext().getPDSRestHelper(ANONYMOUS).getStringFromURL(url);
     }
 
@@ -202,7 +216,7 @@ public class TestAPI {
      * @return upload folder in job workspace
      */
     public static File resolvePDSWorkspaceUploadFolder(UUID pdsJobUUID) {
-        String url = getPDSURLBuilder().pds().buildIntegrationTestGetWorkspaceUploadFolder(pdsJobUUID);
+        String url = getPDSURLBuilder().buildIntegrationTestGetWorkspaceUploadFolder(pdsJobUUID);
         String path = getContext().getPDSRestHelper(ANONYMOUS).getStringFromURL(url);
         return new File(path);
 
@@ -586,7 +600,7 @@ public class TestAPI {
      * @throws IllegalStateException when other problems are occurring
      */
     public static File getFileUploaded(TestProject project, UUID jobUUID, String fileName) {
-        TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
+        SecHubTestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildGetFileUpload(project.getProjectId(), jobUUID.toString(), fileName);
         try {
             File file = as(ANONYMOUS).downloadAsTempFileFromURL(url, jobUUID);
@@ -648,7 +662,7 @@ public class TestAPI {
         for (MappingEntry entry : entries) {
             data.getEntries().add(entry);
         }
-        TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
+        SecHubTestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildIntegrationTestChangeMappingDirectlyURL(mappingId);
 
         IntegrationTestContext.get().getRestHelper(ANONYMOUS).putJSON(url, data.toJSON());
@@ -657,7 +671,7 @@ public class TestAPI {
 
     public static MappingData fetchMappingDataDirectlyOrNull(String mappingId) {
 
-        TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
+        SecHubTestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildIntegrationTestFetchMappingDirectlyURL(mappingId);
 
         String result = IntegrationTestContext.get().getRestHelper(ANONYMOUS).getJSON(url);
@@ -670,14 +684,14 @@ public class TestAPI {
     }
 
     public static void clearSecurityLogs() {
-        TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
+        SecHubTestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildIntegrationTestClearSecurityLogs();
 
         IntegrationTestContext.get().getRestHelper(ANONYMOUS).delete(url);
     }
 
     public static List<SecurityLogData> getSecurityLogs() {
-        TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
+        SecHubTestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildIntegrationTestGetSecurityLogs();
 
         String json = IntegrationTestContext.get().getRestHelper(ANONYMOUS).getJSON(url);
@@ -692,7 +706,7 @@ public class TestAPI {
 
     public static String getIdForNameByNamePatternProvider(String namePatternProviderId, String name) {
 
-        TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
+        SecHubTestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildIntegrationTestGetIdForNameByNamePatternProvider(namePatternProviderId, name);
 
         String result = IntegrationTestContext.get().getRestHelper(ANONYMOUS).getStringFromURL(url);
@@ -721,14 +735,14 @@ public class TestAPI {
     }
 
     public static void clearMetaDataInspection() {
-        TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
+        SecHubTestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildClearMetaDataInspectionURL();
 
         IntegrationTestContext.get().getSuperAdminRestHelper().delete(url);
     }
 
     public static List<Map<String, Object>> fetchMetaDataInspections() {
-        TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
+        SecHubTestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildFetchMetaDataInspectionsURL();
 
         String json = IntegrationTestContext.get().getSuperAdminRestHelper().getJSON(url);
@@ -940,11 +954,15 @@ public class TestAPI {
         return getContext().getSuperAdminRestHelper();
     }
 
-    private static TestURLBuilder getURLBuilder() {
+    private static TestRestHelper getPDSAdminRestHelper() {
+        return getContext().getPDSRestHelper(PDS_ADMIN);
+    }
+
+    private static SecHubTestURLBuilder getURLBuilder() {
         return getContext().getUrlBuilder();
     }
 
-    private static TestURLBuilder getPDSURLBuilder() {
+    private static PDSTestURLBuilder getPDSURLBuilder() {
         return getContext().getPDSUrlBuilder();
     }
 
@@ -1088,9 +1106,20 @@ public class TestAPI {
         resetIntegrationTestAutoCleanupInspector();
     }
 
+    public static void resetPDSAutoCleanupDaysToZero() {
+        TestAutoCleanupData data = new TestAutoCleanupData(0, TestCleanupTimeUnit.DAY);
+        asPDSUser(PDS_ADMIN).updateAutoCleanupConfiguration(data);
+        waitUntilPDSAutoCleanupConfigurationChangedTo(data);
+    }
+
     private static void resetIntegrationTestAutoCleanupInspector() {
         String url = getURLBuilder().buildIntegrationTestResetAutoCleanupInspectionUrl();
         getSuperAdminRestHelper().post(url);
+    }
+
+    public static void resetPDSIntegrationTestAutoCleanupInspector() {
+        String url = getPDSURLBuilder().buildIntegrationTestResetAutoCleanupInspectionUrl();
+        getPDSAdminRestHelper().post(url);
     }
 
     /**
@@ -1122,22 +1151,43 @@ public class TestAPI {
         });
     }
 
+    public static void waitUntilPDSAutoCleanupConfigurationChangedTo(TestAutoCleanupData data) {
+        executeUntilSuccessOrTimeout(new AbstractTestExecutable(PDS_ADMIN, 2, 200) {
+            @Override
+            public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
+                asPDSUser(PDS_ADMIN).fetchAutoCleanupConfiguration();
+                TestAutoCleanupData autoCleanupConfig2 = asPDSUser(PDS_ADMIN).fetchAutoCleanupConfiguration();
+                return data.equals(autoCleanupConfig2);
+            }
+        });
+    }
+
     public static void waitUntilEveryDomainHasAutoCleanupSynchedToDays(long days) {
         waitUntilScheduleAutoCleanupInDays(days);
         waitUntilScanAutoCleanupInDays(days);
         waitUntilAdministrationAutoCleanupInDays(days);
     }
 
-    public static List<TestJsonDeleteCount> fetchAutoCleanupInspectionDeleteCounts() {
+    public static List<TestAutoCleanJsonDeleteCount> fetchPDSAutoCleanupInspectionDeleteCounts() {
+        String url = getPDSURLBuilder().buildIntegrationTestFetchAutoCleanupInspectionDeleteCountsUrl();
+        String json = getPDSAdminRestHelper().getJSON(url);
+        return convertAutoCleanJson(json);
+    }
+
+    public static List<TestAutoCleanJsonDeleteCount> fetchAutoCleanupInspectionDeleteCounts() {
         String url = getURLBuilder().buildIntegrationTestFetchAutoCleanupInspectionDeleteCountsUrl();
         String json = getSuperAdminRestHelper().getJSON(url);
-        MappingIterator<TestJsonDeleteCount> result = TestJSONHelper.get().createValuesFromJSON(json, TestJsonDeleteCount.class);
+        return convertAutoCleanJson(json);
+
+    }
+
+    private static List<TestAutoCleanJsonDeleteCount> convertAutoCleanJson(String json) {
+        MappingIterator<TestAutoCleanJsonDeleteCount> result = TestJSONHelper.get().createValuesFromJSON(json, TestAutoCleanJsonDeleteCount.class);
         try {
             return result.readAll();
         } catch (IOException e) {
             throw new IllegalStateException("Was not able to inspect test data", e);
         }
-
     }
 
 }

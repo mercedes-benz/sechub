@@ -36,6 +36,7 @@ if [[ "$PDS_TEST_KEY_VARIANTNAME" != "f" ]]; then
     # But for all other variants we can provide some additoinal information in messages     
     echo ">PDS_JOB_HAS_EXTRACTED_SOURCES =$PDS_JOB_HAS_EXTRACTED_SOURCES"
     echo ">PDS_JOB_HAS_EXTRACTED_BINARIES=$PDS_JOB_HAS_EXTRACTED_BINARIES"
+    echo ">PDS_JOB_UUID=$PDS_JOB_UUID"
 fi
 
 if [[ "$PDS_JOB_HAS_EXTRACTED_SOURCES" = "true" ]]; then

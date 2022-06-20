@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.commons.model;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 
@@ -87,13 +89,13 @@ public class JSONConverter {
         }
     }
 
-    public <T> T fromJSON(Class<T> clazz, String jSON) throws JSONConverterException {
+    public <T> T fromJSON(Class<T> clazz, String json) throws JSONConverterException {
         if (clazz == null) {
             throw new IllegalStateException("clazz may not be null!");
         }
         /* Fall back for null values to empty string - avoid NPE */
-        String string = jSON;
-        if (jSON == null) {
+        String string = json;
+        if (json == null) {
             string = "";
         }
         try {
@@ -101,12 +103,35 @@ public class JSONConverter {
             return mapper.readValue(bytes, clazz);
         } catch (IOException e) {
 
-            LOG.debug("JSON conversion failed, origin JSON:\n{}", jSON);
+            LOG.debug("JSON conversion failed, origin JSON:\n{}", json);
             /*
              * we truncate json - because when JSON to big it could flood logs - debugging
              * above is only enabled sometimes, but exceptions do always accurre inside logs
              */
-            String truncatedJSON = SimpleStringUtils.truncateWhenTooLong(jSON, 300);
+            String truncatedJSON = SimpleStringUtils.truncateWhenTooLong(json, 300);
+            throw new JSONConverterException("Was not able to convert JSON string to " + clazz + " object\nContent was:\n" + truncatedJSON, e);
+        }
+    }
+
+    public <T> List<T> fromJSONtoListOf(Class<T> clazz, String json) {
+        if (clazz == null) {
+            throw new IllegalStateException("clazz may not be null!");
+        }
+        /* Fall back for null values to empty string - avoid NPE */
+        String string = json;
+        if (json == null) {
+            string = "";
+        }
+        CollectionType collectionType = mapper.getTypeFactory().constructCollectionType(List.class, clazz);
+        try {
+            return mapper.readValue(string, collectionType);
+        } catch (JsonProcessingException e) {
+            LOG.debug("JSON conversion failed, origin JSON:\n{}", json);
+            /*
+             * we truncate json - because when JSON to big it could flood logs - debugging
+             * above is only enabled sometimes, but exceptions do always accurre inside logs
+             */
+            String truncatedJSON = SimpleStringUtils.truncateWhenTooLong(json, 300);
             throw new JSONConverterException("Was not able to convert JSON string to " + clazz + " object\nContent was:\n" + truncatedJSON, e);
         }
     }

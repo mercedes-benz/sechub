@@ -145,3 +145,24 @@ func Example_buildFalsePositivesAPICalls() {
 	// https://localhost:8443/api/project/testproject/false-positives
 	// https://localhost:8443/api/project/testproject/false-positive
 }
+
+func Example_buildGetSecHubJobReportAPICall_SPDX_JSON() {
+	/* prepare */
+	context := new(Context)
+	config := new(Config)
+
+	context.config = config
+	config.projectID = "testproject"
+	config.server = "https://localhost:8443"
+
+	config.secHubJobUUID = "e21b13fc-591e-4abd-b119-755d473c5625"
+	config.reportFormat = ReportFormatSPDXJSON
+
+	/* execute */
+	result := buildGetSecHubJobReportAPICall(context)
+
+	/* test*/
+	fmt.Println(result)
+	// Output:
+	// https://localhost:8443/api/project/testproject/report/spdx/e21b13fc-591e-4abd-b119-755d473c5625
+}

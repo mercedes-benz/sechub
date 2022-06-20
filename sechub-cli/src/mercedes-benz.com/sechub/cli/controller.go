@@ -10,9 +10,15 @@ import (
 )
 
 type jobStatusResult struct {
-	State        string `json:"state"`
-	Result       string `json:"result"`
-	TrafficLight string `json:"trafficLight"`
+	State        string             `json:"state"`
+	Result       string             `json:"result"`
+	TrafficLight string             `json:"trafficLight"`
+	Messages     []JobStatusMessage `json:"messages"`
+}
+
+type JobStatusMessage struct {
+	Type string `json:"type"`
+	Text string `json:"text"`
 }
 
 type jobScheduleResult struct {
@@ -144,11 +150,25 @@ func downloadSechubReport(context *Context) {
 
 	fileName := context.config.outputFileName
 	if fileName == "" {
+		// Use default report file name if not yet defined
+		fileExtension := ""
+		switch context.config.reportFormat {
+		case ReportFormatHTML:
+			fileExtension = ".html"
+		case ReportFormatJSON:
+			fileExtension = ".json"
+		case ReportFormatSPDXJSON:
+			fileExtension = ".spdx.json"
+		}
 		// Example:  sechub_report_myproject_cdde8927-2df4-461c-b775-2dec9497e8b1.json
-		fileName = "sechub_report_" + context.config.projectID + "_" + context.config.secHubJobUUID + "." + context.config.reportFormat
+		fileName = "sechub_report_" + context.config.projectID + "_" + context.config.secHubJobUUID + fileExtension
 	}
 
-	report := ReportDownload{serverResult: getSecHubJobReport(context), outputFolder: context.config.outputFolder, outputFileName: fileName}
+	report := ReportDownload{
+		serverResult:   getSecHubJobReport(context),
+		outputFolder:   context.config.outputFolder,
+		outputFileName: fileName,
+	}
 	report.save(context)
 }
 

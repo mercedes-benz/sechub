@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.owaspzapwrapper.config;
 
+import java.io.File;
 import java.net.URI;
 import java.util.UUID;
 
@@ -12,6 +13,8 @@ import com.mercedesbenz.sechub.owaspzapwrapper.cli.CommandLineSettings;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitCode;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitRuntimeException;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.auth.AuthenticationType;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.data.DeactivatedRuleReferences;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.data.OwaspZapFullRuleset;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.BaseTargetUriFactory;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.SecHubWebScanConfigurationHelper;
 import com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableConstants;
@@ -24,18 +27,31 @@ public class OwaspZapScanConfigurationFactory {
     EnvironmentVariableReader environmentVariableReader;
     BaseTargetUriFactory targetUriFactory;
     SechubWebConfigProvider webConfigProvider;
+    RuleProvider ruleProvider;
 
     public OwaspZapScanConfigurationFactory() {
         sechubWebConfigHelper = new SecHubWebScanConfigurationHelper();
         environmentVariableReader = new EnvironmentVariableReader();
         targetUriFactory = new BaseTargetUriFactory();
         webConfigProvider = new SechubWebConfigProvider();
+        ruleProvider = new RuleProvider();
     }
 
     public OwaspZapScanConfiguration create(CommandLineSettings settings) {
         if (settings == null) {
             throw new MustExitRuntimeException("Command line settings must not be null!", MustExitCode.COMMANDLINE_CONFIGURATION_INVALID);
         }
+        /* Owasp Zap rule setup */
+        OwaspZapFullRuleset fullRuleset = new OwaspZapFullRuleset();
+        DeactivatedRuleReferences deactivatedRuleReferences = new DeactivatedRuleReferences();
+
+        File fullRulesetFile = settings.getFullRulesetFile();
+        File rulesDeactvationFile = settings.getRulesDeactvationFile();
+        if (fullRulesetFile != null && rulesDeactvationFile != null) {
+            fullRuleset = ruleProvider.fetchFullRuleset(fullRulesetFile);
+            deactivatedRuleReferences = ruleProvider.fetchDeactivatedRuleReferences(rulesDeactvationFile);
+        }
+
         /* Wrapper settings */
         OwaspZapServerConfiguration serverConfig = createOwaspZapServerConfig(settings);
         ProxyInformation proxyInformation = createProxyInformation(settings);
@@ -67,6 +83,8 @@ public class OwaspZapScanConfigurationFactory {
 												.setMaxScanDurationInMillis(maxScanDurationInMillis)
 												.setSecHubWebScanConfiguration(sechubWebConfig)
 												.setProxyInformation(proxyInformation)
+												.setFullRuleset(fullRuleset)
+												.setDeactivatedRuleReferences(deactivatedRuleReferences)
 											  .build();
 		/* @formatter:on */
         return scanConfig;

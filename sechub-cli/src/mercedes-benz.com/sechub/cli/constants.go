@@ -48,7 +48,11 @@ const MinimalTimeoutInSeconds = 10
 var DefaultSourceCodeExcludeDirPatterns = []string{"**/test/**", "**/.git/**", "**/node_modules/**"}
 
 // SupportedReportFormats - Supported output formats for SecHub reports
-var SupportedReportFormats = []string{"json", "html"}
+const ReportFormatJSON = "json"
+const ReportFormatSPDXJSON = "spdx-json"
+const ReportFormatHTML = "html"
+
+var SupportedReportFormats = []string{ReportFormatJSON, ReportFormatHTML, ReportFormatSPDXJSON}
 
 /* ---------------------------------- */
 /* -------- Exit codes -------------- */
