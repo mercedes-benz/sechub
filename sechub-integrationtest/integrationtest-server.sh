@@ -243,12 +243,8 @@ function handleArguments() {
             defineServerPort "$2"
             ;;
     esac
-    if [ -z "$SERVER_PORT" ] ; then
-        SERVER_PORT=$SECHUB_DEFAULT_PORT
-    fi
 
     log "Using https://localhost:$SERVER_PORT/ for integration test server"
-
 }
 
 ##############################################

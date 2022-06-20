@@ -159,6 +159,7 @@ function startServer(){
     fi
 
     log "Starting a sechub-pds (version $PDS_VERSION) in integration test mode"
+    export SERVER_PORT=$PDS_PORT
     export SPRING_PROFILES_ACTIVE=pds_integrationtest,pds_h2
     export SECHUB_SERVER_DEBUG=true
     export SECHUB_PDS_STORAGE_SHAREDVOLUME_UPLOAD_DIR="$SHARED_VOLUME_BASEDIR"
@@ -225,12 +226,8 @@ function handleArguments() {
             defineServerPort "$2"
             ;;
     esac
-    if [ -z "$PDS_PORT" ] ; then
-        PDS_PORT=$PDS_DEFAULT_PORT
-    fi
 
     log "Using https://localhost:$PDS_PORT/ for integration test PDS"
-
 }
 
 ##############################################
