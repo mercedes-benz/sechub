@@ -1,8 +1,7 @@
 #!/bin/bash
 # SPDX-License-Identifier: MIT
 
-# define fd 3 to log into console and log file
-exec 3>&1 1>>integrationtest-console.log 2>&1
+LOGFILE="integrationtest-console.log"
 
 # --------------------------------------------------
 #  Start / Stop script for integration test PDS
@@ -14,12 +13,13 @@ PDS_DEFAULT_VERSION="0.0.0"
 PDS_DEFAULT_TEMPFOLDER="temp-shared"
 
 function log() {
-    echo "$1" | tee /dev/fd/3
+    echo "$1"
+    echo "`date +%Y-%m-%d\ %H:%M:%S` $1" >> "$LOGFILE"
 }
 
 function usage(){
     log "usage: `basename $0` start [<pdsVersion>] [<pdsPort>] [<sharedTempSharedVolumeFolder>]"
-    log "usage: `basename $0` stop|status|waitForStop|waitForAlive [<pdsPort>]"
+    log "       `basename $0` stop|status|waitForStop|waitForAlive [<pdsPort>]"
     log "       Control local PDS for e.g. integrationtests"
     log "       Defaults:"
     log "       - pdsVersion \"$PDS_DEFAULT_VERSION\""
@@ -159,6 +159,7 @@ function startServer(){
     fi
 
     log "Starting a sechub-pds (version $PDS_VERSION) in integration test mode"
+    export SERVER_PORT=$PDS_PORT
     export SPRING_PROFILES_ACTIVE=pds_integrationtest,pds_h2
     export SECHUB_SERVER_DEBUG=true
     export SECHUB_PDS_STORAGE_SHAREDVOLUME_UPLOAD_DIR="$SHARED_VOLUME_BASEDIR"
@@ -175,7 +176,7 @@ function startServer(){
         log ">> INFO: removing old logfile: $pathToLog"
         rm $pathToLog
     fi
-    java -jar $pathToJar > $pathToLog &
+    java -jar $pathToJar > $pathToLog 2>&1 &
     log ">> INFO: Integration test PDS has been started"
     log "         logfiles can be found at: $pathToLog"
     log "         ... waiting for PDS to be up and running ..."
@@ -225,13 +226,11 @@ function handleArguments() {
             defineServerPort "$2"
             ;;
     esac
-    if [ -z "$PDS_PORT" ] ; then
-        PDS_PORT=$PDS_DEFAULT_PORT
-    fi
 
     log "Using https://localhost:$PDS_PORT/ for integration test PDS"
-
 }
+
+##############################################
 log ">> `basename $0` 1:$1, 2:$2, 3:$3, 4:$4"
 log ">> *************************"
 

@@ -1,8 +1,7 @@
 #!/bin/bash
 # SPDX-License-Identifier: MIT
 
-# define fd 3 to log into console and log file
-exec 3>&1 1>>integrationtest-console.log 2>&1
+LOGFILE="integrationtest-console.log"
 
 # --------------------------------------------------
 #  Start / Stop script for integration test server
@@ -14,12 +13,13 @@ SECHUB_DEFAULT_VERSION="0.0.0"
 SECHUB_DEFAULT_TEMPFOLDER="temp-shared"
 
 function log() {
-    echo "$1" | tee /dev/fd/3
+    echo "$1"
+    echo "`date +%Y-%m-%d\ %H:%M:%S` $1" >> "$LOGFILE"
 }
 
 function usage(){
     log "usage: `basename $0` start [<serverVersion>] [<serverPort>] [<sharedTempSharedVolumeFolder>]"
-    log "usage: `basename $0` stop|status|waitForStop|waitForAlive [<serverPort>]"
+    log "       `basename $0` stop|status|waitForStop|waitForAlive [<serverPort>]"
     log "       Control local SecHub server for e.g. integrationtests"
     log "       Defaults:"
     log "       - serverVersion \"$SECHUB_DEFAULT_VERSION\""
@@ -180,7 +180,7 @@ function startServer(){
         log ">> INFO: removing old logfile: $pathToLog"
         rm $pathToLog
     fi
-    java -jar $pathToJar > $pathToLog &
+    java -jar $pathToJar > $pathToLog 2>&1 &
     log ">> INFO: Integration test server has been started"
     log "         logfiles can be found at: $pathToLog"
     log "         ... waiting for server to be up and running ..."
@@ -243,13 +243,11 @@ function handleArguments() {
             defineServerPort "$2"
             ;;
     esac
-    if [ -z "$SERVER_PORT" ] ; then
-        SERVER_PORT=$SECHUB_DEFAULT_PORT
-    fi
 
     log "Using https://localhost:$SERVER_PORT/ for integration test server"
-
 }
+
+##############################################
 log ">> `basename $0` 1:$1, 2:$2, 3:$3, 4:$4"
 log ">> *************************"
 
