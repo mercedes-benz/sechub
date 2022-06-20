@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Operations</h1>
 <div class="details">
-<span id="revnumber"> Server 0.33.0</span>
+<span id="revnumber"> Server 0.34.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -796,7 +796,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.33.0-20220602130426</code></p>
+<p>Documentation version: <code>Server 0.34.0-20220620124023</code></p>
 </div>
 <div class="paragraph">
 <p>Target audience for this document are <strong>SecHub Operators/Administrators</strong>.</p>
@@ -2096,8 +2096,18 @@ accidently add the credentials to your repository.</p>
 <div class="sect5">
 <h6 id="logging-2">2.3.3.4.2. Logging</h6>
 <div class="paragraph">
+<p><strong>Default output</strong></p>
+</div>
+<div class="paragraph">
 <p>SecHub uses per default logging to stdout, so you just need to use something like
 <code>fluentd</code> PODs to gather log output.</p>
+</div>
+<div class="paragraph">
+<p><strong>Logstash support</strong></p>
+</div>
+<div class="paragraph">
+<p>When you want to use <code>logstash</code> (e.g. when using <code>ElasticSearch</code> or <code>OpenSearch</code>) you just have to set the environment variable
+<code>LOGGING_TYPE</code> to <code>LOGSTASH_JSON</code> before server starts.</p>
 </div>
 </div>
 </div>
@@ -3329,7 +3339,7 @@ the assignment to a super administrator. Only with permission of project owner t
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.33.0<br>
+ Server 0.34.0<br>
 </div>
 </div>
 </body>
