@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.developertools.admin.ui;
 
 import javax.swing.AbstractAction;
