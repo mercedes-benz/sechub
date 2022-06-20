@@ -7,22 +7,19 @@ FROM ${BASE_IMAGE}
 # The remaining arguments need to be placed after the `FROM`
 # See: https://ryandaniels.ca/blog/docker-dockerfile-arg-from-arg-trouble/
 
-# Folders
+# Arguments
 ARG PDS_FOLDER="/pds"
 ARG SCRIPT_FOLDER="/scripts"
-ENV TOOL_FOLDER="/tools"
 ARG WORKSPACE="/workspace"
-ENV DOWNLOAD_FOLDER="/downloads"
-ENV MOCK_FOLDER="$SCRIPT_FOLDER/mocks"
-
-# FindSecurityBugs (FSB)
 ARG FSB_VERSION="1.12.0"
 ARG FSB_SHA256SUM="a50bd4741a68c6886bbc03d20da9ded44bce4dd7d0d2eee19ceb338dd644cd55"
+ARG PDS_VERSION
 
-# PDS
-ENV PDS_VERSION=0.27.0
-
-# Shared volumes
+# Environment
+ENV TOOL_FOLDER="/tools"
+ENV DOWNLOAD_FOLDER="/downloads"
+ENV MOCK_FOLDER="$SCRIPT_FOLDER/mocks"
+ENV PDS_VERSION="${PDS_VERSION}"
 ENV SHARED_VOLUMES="/shared_volumes"
 ENV SHARED_VOLUME_UPLOAD_DIR="$SHARED_VOLUMES/uploads"
 
@@ -39,15 +36,8 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && \
     apt-get --assume-yes upgrade  && \
-    apt-get --assume-yes install dos2unix unzip wget openjdk-17-jre-headless && \
+    apt-get --assume-yes install dos2unix unzip wget openjdk-17-jre-headless libxml2-utils tree && \
     apt-get --assume-yes clean
-
-# Copy scripts
-COPY scripts $SCRIPT_FOLDER
-RUN chmod -R +x $SCRIPT_FOLDER
-
-# Mock folder
-COPY mocks $SCRIPT_FOLDER/mocks/
 
 # Install FindSecurityBugs
 RUN cd "$DOWNLOAD_FOLDER" && \
@@ -79,6 +69,17 @@ COPY pds-config.json "/$PDS_FOLDER/pds-config.json"
 # Copy run script into container
 COPY run.sh /run.sh
 RUN chmod +x /run.sh
+
+# Copy findsecuritybugs script into container
+COPY findsecbugs_sechub.sh $TOOL_FOLDER/findsecbugs_sechub.sh
+RUN chmod +x $TOOL_FOLDER/findsecbugs_sechub.sh
+
+# Copy scripts
+COPY scripts $SCRIPT_FOLDER
+RUN chmod -R +x $SCRIPT_FOLDER
+
+# Mock folder
+COPY mocks $SCRIPT_FOLDER/mocks/
 
 # Create the PDS workspace
 WORKDIR "$WORKSPACE"

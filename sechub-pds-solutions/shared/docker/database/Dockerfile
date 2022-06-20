@@ -1,8 +1,11 @@
 # SPDX-License-Identifier: MIT
 
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
-ARG POSTGRES_CONFIG_FOLDER="/etc/postgresql/12/main/"
+ARG POSTGRE_VERSION=14
+ARG POSTGRES_CONFIG_FOLDER="/etc/postgresql/${POSTGRE_VERSION}/main/"
+
+ENV POSTGRE_VERSION="${POSTGRE_VERSION}"
 
 # Install PostgreSQL
 RUN export DEBIAN_FRONTEND=noninteractive && \

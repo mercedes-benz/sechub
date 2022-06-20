@@ -1,11 +1,11 @@
 # SPDX-License-Identifier: MIT
 
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 ENV STORAGE_USER=seaweedfs
 ENV STORAGE_FOLDER=/storage
-ENV SEAWEEDFS_VERSION=2.78
-ENV SEAWEEDFS_CHECKSUM=eec03dadc81ffa8ee39c62f077ee8b35
+ENV SEAWEEDFS_VERSION=3.11
+ENV SEAWEEDFS_CHECKSUM=02d97ff2d368eb97595072ffa84e48ea
 ENV BUCKET_FOLDER=/buckets
 
 # non-root user
@@ -33,7 +33,7 @@ RUN mkdir -p $BUCKET_FOLDER && \
 
 RUN cd /tmp && \
     # download seaweedfs
-    wget --no-verbose "https://github.com/chrislusf/seaweedfs/releases/download/$SEAWEEDFS_VERSION/linux_amd64.tar.gz" && \
+    wget --no-verbose "https://github.com/chrislusf/seaweedfs/releases/download/$SEAWEEDFS_VERSION/linux_amd64.tar.gz"  && \
     # create checksum file
     echo "$SEAWEEDFS_CHECKSUM  linux_amd64.tar.gz" > linux_amd64.tar.gz.md5sum && \
     # verify checksum

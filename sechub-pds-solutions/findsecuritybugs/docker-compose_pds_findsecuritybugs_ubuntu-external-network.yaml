@@ -5,7 +5,8 @@ services:
     pds-findsecuritybugs-ubuntu:
         build:
             args:
-                - BASE_IMAGE=ubuntu:20.04
+                - BASE_IMAGE=ubuntu:22.04
+                - PDS_VERSION=${PDS_VERSION}
             context: docker/
             dockerfile: FindSecurityBugs-Ubuntu.dockerfile
         container_name: pds-findsecuritybugs-ubuntu

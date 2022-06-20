@@ -1,3 +1,0 @@
-# Multiple Tools + PDS
-
-This Helm chart enables one to deploy [FindSecurityBugs](https://find-sec-bugs.github.io/) a free and open source static application security testing tools and the [SecHub Product Delegation Server (PDS)](https://daimler.github.io/sechub/latest/sechub-product-delegation-server.html) into a Kubernetes environment. It is recommended to use the FindSecurityBugs + PDS in combination with [SecHub](https://daimler.github.io/sechub/).
