@@ -43,6 +43,7 @@ class SecHubFileStructureDataProviderIncludeExcludeFilterTest {
         "test2.txt,test.*,false",
         "abc,a*,true",
         "bla.go,*.go,true",
+        "bla.GO,*.go,true",
         "/somewhere/test.txt,*.txt,true"})
     /* @formatter:on */
     void path_is_filtered_excludes_set(String path, String exclude, boolean expectedToBeFiltered) {
@@ -65,6 +66,7 @@ class SecHubFileStructureDataProviderIncludeExcludeFilterTest {
         "test2.txt,test1.txt,true",
         "abc,a*,false",
         "bla.go,*.go,false",
+        "bla.GO,*.go,false",
         "bla.java,*.go,true"})
     /* @formatter:on */
     void path_is_filtered_includes_set(String path, String included, boolean expectedToBeFiltered) {

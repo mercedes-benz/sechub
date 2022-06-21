@@ -129,11 +129,17 @@ NOTE: When no {sechub} configuration model is defined for the `PDS` job, the tra
 |===
 
 ==== Parameter variables
-The parameters described at <<section-pds-server-example-config-file,configuration>> are defined in
-Product executor configurations. At execution time these parameters are available inside
-launcher scripts.
+The parameters described inside the <<section-pds-server-example-config-file,example configuration>> are defined at {sechub} side in
+Product executor configurations or automatically generated. +
+At execution time these parameters are sent by {sechub} to {pds}. Some are also available inside launcher scripts as environment variables.
 
-Mandatory parts are always present, optional ones can be empty - depending on the executor configuration. 
+
+It is possible define custom parameters for {pds} solutions in the <<section-pds-server-example-config-file, configuration>> file.
+Mandatory parts are always present, optional ones can be empty.
+
+We have following standard parameters:
+
+include::../gen/gen_pds_executor_config_parameters.adoc[]
 
 
 

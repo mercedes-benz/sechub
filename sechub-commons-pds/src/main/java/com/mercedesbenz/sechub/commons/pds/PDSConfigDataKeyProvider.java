@@ -2,11 +2,10 @@
 package com.mercedesbenz.sechub.commons.pds;
 
 /**
- * Provides keys which are interpreted <strong>at PDS side</strong>.
- *
- * <h3>Important</h3> The enum values MUST have same name as the env variables
- * provided to PDS script! <i>(makes it easier to understand, to maintain
- * etc.)</i>
+ * Provides keys which are interpreted <strong>at PDS side</strong>. When the
+ * given key (ExecutionPDSKey) is marked as available inside script, the
+ * launcher scripts will have the data injected automatically as environment
+ * variables.
  *
  * @author Albert Tregnaghi
  *
@@ -53,15 +52,20 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
      * Contains file filter include information
      */
     PDS_CONFIG_FILEFILTER_INCLUDES(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_FILEFILTER_INCLUDES,
-            "This containts a comma separated list of wildcards for file includes (e.g. `*.go,*.html, test1.txt` would include every go file, every HTML file and files named `test1.txt`). When every fill wwill be included - except those which are explicit excluded.")
-                    .markAlwaysSentToPDS()),
+            "This contains a comma separated list of path patterns for file includes. These patterns can contain wildcards. Matching will be done case insensitive!"
+                    + "For example: `*.go,*.html, test1.txt` would include every go file, every HTML file and files named `test1.txt`.\n\n"
+                    + "When nothing defined, every content is accepted as include.\n"
+                    + "Every file which is matched by one of the patterns will be included - except those which are explicit excluded.\n\n")
+                            .markAlwaysSentToPDS()),
 
     /**
      * Contains file filter exclude information
      */
     PDS_CONFIG_FILEFILTER_EXCLUDES(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_FILEFILTER_EXCLUDES,
-            "This containts a comma separated list of wildcards for file excludes (e.g. `*.go,*.html, test1.txt` would excluded every go file, every HTML file and files named `test1.txt`). When empty none of the files will be excluded. The exclude operation will be done AFTER the include file filtering has happend.")
-                    .markAlwaysSentToPDS()),
+            "This contains a comma separated list of path patterns for file excludes. These patterns can contain wildcards. Matching will be done case insensitive!"
+                    + "For example: `*.go,*.html, test1.txt` would excluded every go file, every HTML file and files named `test1.txt`.\n\n"
+                    + "When empty none of the files will be excluded. The exclude operation will be done AFTER the include file filtering has happend.")
+                            .markAlwaysSentToPDS()),
 
     /**
      * This is automatically given to PDS by SecHub - depending on scan type. E.g.
@@ -91,8 +95,8 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
      * is parameter is set to <code>false</code>, a mock will even be used for PDS.
      */
     PDS_MOCKING_DISABLED(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_MOCKING_DISABLED,
-            "When 'true' any PDS adapter call will use real PDS adapter and not a mocked variant.").markAlwaysSentToPDS().markDefaultRecommended()
-                    .withDefault(true));
+            "When 'true' any PDS adapter call will use real PDS adapter and not a mocked variant.").markForTestingOnly().markAlwaysSentToPDS()
+                    .markDefaultRecommended().withDefault(true));
 
     private ExecutionPDSKey key;
 
