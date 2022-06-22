@@ -59,7 +59,7 @@ public abstract class AbstractAdapter<A extends AdapterContext<C>, C extends Ada
     }
 
     @Override
-    public final String start(C config, AdapterMetaDataCallback callback) throws AdapterException {
+    public final AdapterExecutionResult start(C config, AdapterMetaDataCallback callback) throws AdapterException {
         AdapterRuntimeContext runtimeContext = new AdapterRuntimeContext();
         runtimeContext.callback = callback;
         runtimeContext.metaData = callback.getMetaDataOrNull();
@@ -91,7 +91,7 @@ public abstract class AbstractAdapter<A extends AdapterContext<C>, C extends Ada
         return runtimeContext.stopped;
     }
 
-    protected abstract String execute(C config, AdapterRuntimeContext runtimeContext) throws AdapterException;
+    protected abstract AdapterExecutionResult execute(C config, AdapterRuntimeContext runtimeContext) throws AdapterException;
 
     /**
      * @param api

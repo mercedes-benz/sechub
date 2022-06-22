@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.adapter.AbstractAdapterConfigBuilder;
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.nessus.NessusAdapter;
 import com.mercedesbenz.sechub.adapter.nessus.NessusAdapterConfig;
 import com.mercedesbenz.sechub.adapter.nessus.NessusConfig;
@@ -87,10 +88,10 @@ public class NessusProductExecutor extends AbstractProductExecutor {
 
         /* execute NESSUS by adapter and return product result */
         ProductExecutorContext productExecutorContext = data.getProductExecutorContext();
-        String xml = nessusAdapter.start(nessusConfig, productExecutorContext.getCallback());
+        AdapterExecutionResult adapterResult = nessusAdapter.start(nessusConfig, productExecutorContext.getCallback());
 
         ProductResult productResult = productExecutorContext.getCurrentProductResult(); // product result is set by callback
-        productResult.setResult(xml);
+        productResult.setResult(adapterResult.getProductResult());
         return Collections.singletonList(productResult);
     }
 

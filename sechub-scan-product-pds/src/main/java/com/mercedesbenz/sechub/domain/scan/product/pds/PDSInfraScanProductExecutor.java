@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.pds.PDSAdapter;
 import com.mercedesbenz.sechub.adapter.pds.PDSInfraScanConfig;
 import com.mercedesbenz.sechub.adapter.pds.PDSInfraScanConfigImpl;
@@ -103,10 +104,10 @@ public class PDSInfraScanProductExecutor extends AbstractProductExecutor {
             /* @formatter:on */
 
             /* execute PDS by adapter and return product result */
-            String xml = pdsAdapter.start(pdsInfraScanConfig, executorContext.getCallback());
+            AdapterExecutionResult adapterResult = pdsAdapter.start(pdsInfraScanConfig, executorContext.getCallback());
 
             ProductResult currentProductResult = executorContext.getCurrentProductResult();
-            currentProductResult.setResult(xml);
+            currentProductResult.setResult(adapterResult.getProductResult());
             results.add(currentProductResult);
 
         }

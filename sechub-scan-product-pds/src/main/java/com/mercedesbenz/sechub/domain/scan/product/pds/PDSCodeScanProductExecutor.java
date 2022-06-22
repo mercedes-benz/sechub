@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.pds.PDSAdapter;
 import com.mercedesbenz.sechub.adapter.pds.PDSCodeScanConfig;
 import com.mercedesbenz.sechub.adapter.pds.PDSCodeScanConfigImpl;
@@ -96,10 +97,10 @@ public class PDSCodeScanProductExecutor extends AbstractProductExecutor {
                 inspection.notice(MetaDataInspection.TRACE_ID, pdsCodeScanConfig.getTraceID());
 
                 /* execute PDS by adapter and update product result */
-                String pdsResult = pdsAdapter.start(pdsCodeScanConfig, executorContext.getCallback());
+                AdapterExecutionResult adapterResult = pdsAdapter.start(pdsCodeScanConfig, executorContext.getCallback());
 
                 ProductResult productResult = executorContext.getCurrentProductResult(); // product result is set by callback
-                productResult.setResult(pdsResult);
+                productResult.setResult(adapterResult.getProductResult());
 
                 return productResult;
             }

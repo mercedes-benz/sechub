@@ -33,7 +33,7 @@ public interface Adapter<C extends AdapterConfig> {
      * @return result
      * @throws NessusAdapterException
      */
-    String start(C config, AdapterMetaDataCallback callback) throws AdapterException;
+    AdapterExecutionResult start(C config, AdapterMetaDataCallback callback) throws AdapterException;
 
     /**
      * Try to stop

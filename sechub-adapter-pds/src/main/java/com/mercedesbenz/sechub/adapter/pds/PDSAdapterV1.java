@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.adapter.AbstractAdapter;
 import com.mercedesbenz.sechub.adapter.AdapterException;
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.AdapterProfiles;
 import com.mercedesbenz.sechub.adapter.AdapterRuntimeContext;
@@ -45,7 +46,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
     }
 
     @Override
-    protected String execute(PDSAdapterConfig config, AdapterRuntimeContext runtimeContext) throws AdapterException {
+    protected AdapterExecutionResult execute(PDSAdapterConfig config, AdapterRuntimeContext runtimeContext) throws AdapterException {
         assertNotInterrupted();
         PDSContext context = new PDSContext(config, this, runtimeContext);
         createNewPDSJOB(context);
@@ -60,7 +61,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         waitForJobDone(context);
         assertNotInterrupted();
 
-        return fetchReport(context);
+        return new AdapterExecutionResult(fetchReport(context));
 
     }
 

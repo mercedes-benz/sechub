@@ -17,6 +17,7 @@ import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterMetaDataCallback;
 import com.mercedesbenz.sechub.adapter.IcrementalAdditionalPrefixAPIURLSupport;
 import com.mercedesbenz.sechub.adapter.support.APIURLSupport;
@@ -270,12 +271,12 @@ public class NessusAdapterV1WireMockTest {
         /* @formatter:on */
 
         /* execute */
-        String result = adapterToTest.start(config, callback);
+        AdapterExecutionResult adapterResult = adapterToTest.start(config, callback);
 
         /* test */
         history.assertAllRememberedUrlsWereRequested();
 
-        assertEquals(xml, result);
+        assertEquals(xml, adapterResult.getProductResult());
     }
 
     private void simulateCheckScanState(String sessionToken, int scanId, int historyId, String state, int expectedCheckNr) {
