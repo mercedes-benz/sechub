@@ -115,9 +115,7 @@ public class PDSWebScanProductExecutor extends AbstractProductExecutor {
                 /* execute PDS by adapter and return product result */
                 AdapterExecutionResult adapterResult = pdsAdapter.start(pdsWebScanConfig, executorContext.getCallback());
 
-                ProductResult currentProductResult = executorContext.getCurrentProductResult();
-                currentProductResult.setResult(adapterResult.getProductResult());
-                return currentProductResult;
+                return updateCurrentProductResult(adapterResult, executorContext);
             }
 
         });

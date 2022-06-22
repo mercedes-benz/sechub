@@ -106,8 +106,7 @@ public class PDSInfraScanProductExecutor extends AbstractProductExecutor {
             /* execute PDS by adapter and return product result */
             AdapterExecutionResult adapterResult = pdsAdapter.start(pdsInfraScanConfig, executorContext.getCallback());
 
-            ProductResult currentProductResult = executorContext.getCurrentProductResult();
-            currentProductResult.setResult(adapterResult.getProductResult());
+            ProductResult currentProductResult = updateCurrentProductResult(adapterResult, executorContext);
             results.add(currentProductResult);
 
         }

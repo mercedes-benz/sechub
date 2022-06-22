@@ -139,10 +139,7 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
                 /* execute checkmarx by adapter and update product result */
                 AdapterExecutionResult adapterResult = checkmarxAdapter.start(checkMarxConfig, data.getProductExecutorContext().getCallback());
 
-                ProductResult productResult = data.getProductExecutorContext().getCurrentProductResult(); // product result is set by callback
-                productResult.setResult(adapterResult.getProductResult());
-
-                return productResult;
+                return updateCurrentProductResult(adapterResult, data.getProductExecutorContext());
             }
         }, callback);
         return Collections.singletonList(result);

@@ -90,8 +90,7 @@ public class NessusProductExecutor extends AbstractProductExecutor {
         ProductExecutorContext productExecutorContext = data.getProductExecutorContext();
         AdapterExecutionResult adapterResult = nessusAdapter.start(nessusConfig, productExecutorContext.getCallback());
 
-        ProductResult productResult = productExecutorContext.getCurrentProductResult(); // product result is set by callback
-        productResult.setResult(adapterResult.getProductResult());
+        ProductResult productResult = updateCurrentProductResult(adapterResult, productExecutorContext);
         return Collections.singletonList(productResult);
     }
 

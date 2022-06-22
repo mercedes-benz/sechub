@@ -99,10 +99,7 @@ public class PDSCodeScanProductExecutor extends AbstractProductExecutor {
                 /* execute PDS by adapter and update product result */
                 AdapterExecutionResult adapterResult = pdsAdapter.start(pdsCodeScanConfig, executorContext.getCallback());
 
-                ProductResult productResult = executorContext.getCurrentProductResult(); // product result is set by callback
-                productResult.setResult(adapterResult.getProductResult());
-
-                return productResult;
+                return updateCurrentProductResult(adapterResult, executorContext);
             }
         });
         return Collections.singletonList(result);

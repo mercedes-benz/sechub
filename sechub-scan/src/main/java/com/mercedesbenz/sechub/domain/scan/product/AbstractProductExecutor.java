@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
@@ -89,6 +90,13 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
     @Override
     public ScanType getScanType() {
         return scanType;
+    }
+
+    protected ProductResult updateCurrentProductResult(AdapterExecutionResult adapterResult, ProductExecutorContext executorContext) {
+        ProductResult productResult = executorContext.getCurrentProductResult(); // product result is set by callback
+        productResult.setResult(adapterResult.getProductResult());
+
+        return productResult;
     }
 
     @Override

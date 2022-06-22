@@ -94,8 +94,7 @@ public class NetsparkerProductExecutor extends AbstractProductExecutor {
         /* execute NETSPARKER by adapter and return product result */
         AdapterExecutionResult adapterResult = netsparkerAdapter.start(netsparkerConfig, productExecutorContext.getCallback());
 
-        ProductResult currentProductResult = productExecutorContext.getCurrentProductResult();
-        currentProductResult.setResult(adapterResult.getProductResult());
+        ProductResult currentProductResult = updateCurrentProductResult(adapterResult, productExecutorContext);
         results.add(currentProductResult);
 
         return results;
