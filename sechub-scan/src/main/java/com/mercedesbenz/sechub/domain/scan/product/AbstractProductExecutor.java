@@ -23,6 +23,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationObjectInfoFi
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationType;
 import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubFileSystemContainer;
+import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
 import com.mercedesbenz.sechub.domain.scan.NetworkLocationProvider;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetInfoFactory;
@@ -93,8 +94,11 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
     }
 
     protected ProductResult updateCurrentProductResult(AdapterExecutionResult adapterResult, ProductExecutorContext executorContext) {
+        SecHubMessagesList messagesList = new SecHubMessagesList(adapterResult.getProductMessages());
+
         ProductResult productResult = executorContext.getCurrentProductResult(); // product result is set by callback
         productResult.setResult(adapterResult.getProductResult());
+        productResult.setMessages(messagesList.toJSON());
 
         return productResult;
     }

@@ -19,7 +19,7 @@ class AdapterExecutionResultTest {
 
         /* test */
         assertEquals("productResult1", result.getProductResult());
-        
+
         List<SecHubMessage> productMessages = result.getProductMessages();
         assertNotNull(productMessages);
         assertTrue(productMessages.isEmpty());
@@ -32,7 +32,7 @@ class AdapterExecutionResultTest {
 
         /* test */
         assertEquals(null, result.getProductResult());
-        
+
         List<SecHubMessage> productMessages = result.getProductMessages();
         assertNotNull(productMessages);
         assertTrue(productMessages.isEmpty());
@@ -40,7 +40,7 @@ class AdapterExecutionResultTest {
 
     @Test
     void product_result_set_two_messages() {
-        
+
         /* prepare */
         SecHubMessage message1 = new SecHubMessage(SecHubMessageType.INFO, "test-info");
         SecHubMessage message2 = new SecHubMessage(SecHubMessageType.WARNING, "test-warning");
@@ -54,11 +54,11 @@ class AdapterExecutionResultTest {
 
         /* test */
         assertEquals("productResult1", result.getProductResult());
-        
+
         List<SecHubMessage> productMessages = result.getProductMessages();
         assertNotNull(productMessages);
         assertEquals(2, productMessages.size());
-        
+
         assertTrue(productMessages.contains(message1));
         assertTrue(productMessages.contains(message2));
     }

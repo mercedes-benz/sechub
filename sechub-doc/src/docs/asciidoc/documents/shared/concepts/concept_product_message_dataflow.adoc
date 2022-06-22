@@ -1,0 +1,19 @@
+// SPDX-License-Identifier: MIT
+[[section-shared-concepts-product-message-dataflow]]
+==== Product messages inside product result
+Every product can add custom messages which shall be available to user.
+
+===== Storing product messages
+The product adapter fetches the information from the product and delivers it to 
+the product executor, who stores the {sechub} messages inside the `ProductResult` entity. 
+
+plantuml::diagrams/diagram_product_messages_storage.puml[format=svg, title="Storing product messages"] 
+
+===== Read and delivery of report data to end user
+`SerecoProductExecutor` collects all {sechub} messages from other job results and combines them
+inside its own data as `SerecoAnnotation`. The annotations will be inspected on report creation
+by `SerecoResultTransformer`. 
+
+Further details for report creation can be found at <<section-shared-concepts-report-dataflow,report data flow>>.
+
+plantuml::diagrams/diagram_product_messages_to_sereco_annotations.puml[format=svg, title="Messages to Sereco annotations"] 

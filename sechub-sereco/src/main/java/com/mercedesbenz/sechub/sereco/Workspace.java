@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.sereco;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,9 +15,11 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.sereco.importer.ProductFailureMetaDataBuilder;
 import com.mercedesbenz.sechub.sereco.importer.ProductImportAbility;
 import com.mercedesbenz.sechub.sereco.importer.ProductResultImporter;
+import com.mercedesbenz.sechub.sereco.metadata.SerecoAnnotation;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
 
@@ -78,6 +81,8 @@ public class Workspace {
                 ProductFailureMetaDataBuilder builder = new ProductFailureMetaDataBuilder();
                 SerecoMetaData metaData = builder.forParam(param).build();
                 mergeWithWorkspaceData(metaData);
+                mergeWithWorkspaceData(param.getProductMessages());
+
                 atLeastOneImporterWasAbleToImport = true;
                 break;
             }
@@ -90,7 +95,10 @@ public class Workspace {
                     return;
                 }
                 mergeWithWorkspaceData(metaData);
+                mergeWithWorkspaceData(param.getProductMessages());
+
                 atLeastOneImporterWasAbleToImport = true;
+
             } else {
                 LOG.debug("Importer {} is NOT able to import {}", importer.getName(), param.getImportId());
             }
@@ -109,6 +117,18 @@ public class Workspace {
             throw new IOException("Import failed, no importer was able to import product result: " + param.getProductId());
         }
 
+    }
+
+    private void mergeWithWorkspaceData(List<SecHubMessage> productMessages) {
+        if (productMessages == null || productMessages.isEmpty()) {
+            return;
+        }
+        Set<SerecoAnnotation> annotations = workspaceMetaData.getAnnotations();
+
+        for (SecHubMessage message : productMessages) {
+            SerecoAnnotation annotation = SerecoAnnotation.fromSecHubMessage(message);
+            annotations.add(annotation);
+        }
     }
 
     private void mergeWithWorkspaceData(SerecoMetaData metaData) {

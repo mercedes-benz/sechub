@@ -1,0 +1,47 @@
+' SPDX-License-Identifier: MIT
+@startuml 
+
+hide empty fields
+hide empty members
+
+class SecHubMessage {
+    
+}
+
+class SecHubMessagesList {
+    <<JSONable>>
+    
+    List<SecHubMessage> getSecHubMessages()
+}
+
+class ProductResult {
+    <<Entity>>
+    String messages
+    String result
+}
+
+interface ProductExecutor
+
+package com.mercedesbenz.sechub.sereco {
+    class SerecoAnnotation
+
+    class SerecoProductExecutor implements ProductExecutor{
+    }
+    
+    
+}
+
+ProductResult --> SecHubMessagesList
+SerecoProductExecutor  --> ProductResult :reads all other product results (1)
+SerecoProductExecutor -> SerecoAnnotation : creates annotations (2) 
+SerecoProductExecutor --> ProductResult  : stores sereco product result (3) 
+SecHubMessagesList o- SecHubMessage 
+
+note right of ProductResult::messages 
+Contains SecHubMessagesList 
+as JSON after update
+by AbstractProductExecutor 
+end note
+
+
+@enduml 
