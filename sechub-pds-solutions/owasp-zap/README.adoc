@@ -47,10 +47,10 @@ The folder contains a start script which does the <<manual-setup, manual>> steps
 [NOTE]
 It is recommended to change the default passwords in the `.env` file to improve security. It is possible to change other values in the `.env` file as well. Any change requires a restart of the container.
 
-. Start container the Ubuntu container using https://docs.docker.com/compose/[Docker Compose]:
+. Start container the Debian container using https://docs.docker.com/compose/[Docker Compose]:
 +
 ----
-docker-compose --file docker-compose_pds_owasp_zap_ubuntu.yaml up --build
+docker-compose --file docker-compose_pds_owasp_zap_debian.yaml up --build
 ----
 
 ==== Together with SecHub
@@ -59,7 +59,7 @@ The container will be started and attached to the `sechub` Network.
 
 IMPORTANT: Make sure the SecHub container is running.
 
-. Start Ubuntu container:
+. Start Debian container:
 +
 ----
 ./05-start-single-sechub-network-docker-compose.sh
@@ -316,10 +316,10 @@ There are several configuration options available for the PDS+OWSAP-Zap `docker-
 
 This section contains information about how to troubleshoot PDS+OWSAP-Zap if something goes wrong.
 
-==== Access the Ubuntu container
+==== Access the Debian container
 
 ----
-docker exec -it pds-owasp-zap-ubuntu bash
+docker exec -it pds-owasp-zap-debian bash
 ----
 
 ==== Java Application Remote Debugging of PDS
@@ -348,18 +348,18 @@ Build container images and push them to registry to run PDS+OWSAP-Zap on virtual
 
 Build the container image.
 
-==== Ubuntu
+==== Debian
 
 . Using the default image: 
 +
 ----
-./10-create-ubuntu-image.sh my.registry.example.org/sechub/pds_owasp_zap v0.1
+./10-create-debian-image.sh my.registry.example.org/sechub/pds_owasp_zap v0.1
 ----
 
 . Using your own base image:
 +
 ----
-./10-create-ubuntu-image.sh my.registry.example.org/sechub/pds_owasp_zap v0.1 "my.registry.example.org/ubuntu:focal"
+./10-create-debian-image.sh my.registry.example.org/sechub/pds_owasp_zap v0.1 "my.registry.example.org/debian:11-slim"
 ----
 
 === Push Image to Registry
