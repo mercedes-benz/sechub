@@ -32,9 +32,8 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.ActionSupport;
 public class DialogUI {
 
     private static final Logger LOG = LoggerFactory.getLogger(DialogUI.class);
-
-    private JFrame frame;
     private JFileChooser fileChooser = new JFileChooser();
+    private JFrame frame;
 
     public DialogUI(JFrame frame) {
         this.frame = frame;
@@ -54,12 +53,27 @@ public class DialogUI {
         JOptionPane.showMessageDialog(frame, message, "Warning", JOptionPane.WARNING_MESSAGE);
     }
 
-    /**
+    /*
      * Selects file by file chooser
+     *
+     * @param initialPath the initial file path or <code>null</code>
      *
      * @return file or <code>null</code>
      */
     public File selectFile(String initialPath) {
+        return selectFile(initialPath, null);
+    }
+
+    /**
+     * Selects file by file chooser
+     *
+     * @param initialPath the initial file path or <code>null</code>
+     * @param fileFilter  a file filter to use, can be <code>null</code>
+     *
+     * @return file or <code>null</code>
+     */
+    public File selectFile(String initialPath, javax.swing.filechooser.FileFilter fileFilter) {
+        fileChooser.setFileFilter(fileFilter);
         if (initialPath != null) {
             File file = new File(initialPath);
 
@@ -71,7 +85,7 @@ public class DialogUI {
                 }
             } else {
                 File parent = file.getParentFile();
-                if (parent.exists()) {
+                if (parent != null && parent.exists()) {
                     fileChooser.setCurrentDirectory(parent);
                     fileChooser.setSelectedFile(file);
                 }
