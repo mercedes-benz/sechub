@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOCase;
 
 public class SecHubFileStructureDataProviderIncludeExcludeFilter {
 
@@ -96,8 +97,7 @@ public class SecHubFileStructureDataProviderIncludeExcludeFilter {
         if (wildCard == null || wildCard.isEmpty()) {
             return false;
         }
-        boolean matched = FilenameUtils.wildcardMatch(path, wildCard);
-        return matched;
+        return FilenameUtils.wildcardMatch(path, wildCard, IOCase.INSENSITIVE);
     }
 
 }
