@@ -143,7 +143,7 @@ public class DialogUI {
         ComboxSelectionDialogUI dialog = new ComboxSelectionDialogUI(frame, title, message, comboboxValues, initialValue);
         dialog.showDialog();
 
-        if (dialog.isCanceled()) {
+        if (!dialog.isOkPressed()) {
             return Optional.empty();
         }
         return Optional.of(dialog.getSelectionFromCombobox());

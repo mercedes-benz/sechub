@@ -255,22 +255,32 @@ public class PDSSolutionTestFilesGenerator {
                 break;
             }
         }
-        if (result == null || result.equals(ScanType.UNKNOWN) || result.equals(ScanType.REPORT)) {
+        if (isScanTypeNotAccepted(result)) {
             StringBuilder sb = new StringBuilder();
             sb.append("Wanted scan type not accepted:");
             sb.append(scanType);
             sb.append(". Accepted types are: [");
-            for (ScanType acceptedScanType : ScanType.values()) {
-                if (acceptedScanType.equals(ScanType.UNKNOWN) || result.equals(ScanType.REPORT)) {
+            for (ScanType scanTypeValue : ScanType.values()) {
+                if (isScanTypeNotAccepted(scanTypeValue)) {
                     continue;
                 }
-                sb.append(acceptedScanType.getId());
+                sb.append(scanTypeValue.getId());
                 sb.append(" ");
             }
             sb.append("]");
             throw new IllegalArgumentException(sb.toString());
         }
         return result;
+    }
+
+    private boolean isScanTypeNotAccepted(ScanType type) {
+        if (type == null) {
+            return true;
+        }
+        if (type.equals(ScanType.UNKNOWN) || type.equals(ScanType.REPORT)) {
+            return true;
+        }
+        return false;
     }
 
 }

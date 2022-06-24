@@ -21,9 +21,9 @@ public class ComboxSelectionDialogUI {
     private JComboBox<String> combobox;
 
     private JButton cancelButton;
-    private JButton finishButton;
+    private JButton okButton;
 
-    private boolean canceled;
+    private boolean okPressed;
 
     private JDialog dialog;
 
@@ -39,7 +39,7 @@ public class ComboxSelectionDialogUI {
         content.add(buttonPanel, BorderLayout.SOUTH);
 
         dialog.setContentPane(content);
-        dialog.getRootPane().setDefaultButton(finishButton);
+        dialog.getRootPane().setDefaultButton(okButton);
         dialog.pack();
         dialog.setLocationRelativeTo(parentFrame);
 
@@ -70,11 +70,11 @@ public class ComboxSelectionDialogUI {
         cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(this::cancelPressed);
 
-        finishButton = new JButton("Finish");
-        finishButton.addActionListener(this::finishPressed);
+        okButton = new JButton("Ok");
+        okButton.addActionListener(this::okPressed);
 
         buttonPanel.add(cancelButton);
-        buttonPanel.add(finishButton);
+        buttonPanel.add(okButton);
         return buttonPanel;
     }
 
@@ -88,7 +88,8 @@ public class ComboxSelectionDialogUI {
         return inputValue;
     }
 
-    private Object finishPressed(ActionEvent x) {
+    private Object okPressed(ActionEvent x) {
+        okPressed = true;
         hideDialog();
         return null;
     }
@@ -98,13 +99,12 @@ public class ComboxSelectionDialogUI {
     }
 
     private Object cancelPressed(ActionEvent x) {
-        canceled = true;
         hideDialog();
         return null;
     }
 
-    public boolean isCanceled() {
-        return canceled;
+    public boolean isOkPressed() {
+        return okPressed;
     }
 
 }
