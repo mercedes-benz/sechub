@@ -17,4 +17,4 @@ fi
 
 
 echo "Starting single Debian container."
-docker-compose --file docker-compose_pds_owasp_zap_debian.yaml up --build --remove-orphans
+docker-compose --file docker-compose_pds_owasp_zap.yaml up --build --remove-orphans
