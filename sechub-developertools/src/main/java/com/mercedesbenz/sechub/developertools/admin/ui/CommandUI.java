@@ -53,6 +53,7 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.CreatePDSJobAc
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchLastStartedPDSJobStreamsAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSConfigurationAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSJobErrorStreamAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSJobMessagesAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSJobOutputStreamAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSJobParameterExampleAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSMonitoringStatusAction;
@@ -278,6 +279,7 @@ public class CommandUI {
         add(menu, new CheckPDSJobResultOrErrorAction(context));
         add(menu, new FetchPDSJobOutputStreamAction(context));
         add(menu, new FetchPDSJobErrorStreamAction(context));
+        add(menu, new FetchPDSJobMessagesAction(context));
         menu.addSeparator();
         menu.add(new ConfigurePDSAutoCleanupAction(context));
     }

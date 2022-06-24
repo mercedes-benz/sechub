@@ -34,6 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.integrationtest.internal.DefaultTestExecutionProfile;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultProfiles;
@@ -1188,6 +1189,25 @@ public class TestAPI {
         } catch (IOException e) {
             throw new IllegalStateException("Was not able to inspect test data", e);
         }
+    }
+
+    public static void dumpPDSJobOutput(UUID jobUUID) {
+
+        AsPDSUser asPDSUser = asPDSUser(PDS_ADMIN);
+        String outputStreamText = asPDSUser.getJobOutputStreamText(jobUUID);
+        String errorStreamText = asPDSUser.getJobErrorStreamText(jobUUID);
+        SecHubMessagesList messages = asPDSUser.getJobMessages(jobUUID);
+
+        System.out.println("-----------------------------------------------------");
+        System.out.println("- DUMP PDS Job: " + jobUUID);
+        System.out.println("-----------------------------------------------------");
+        System.out.println("> Output stream:");
+        System.out.println(outputStreamText);
+        System.out.println("> Error stream:");
+        System.out.println(errorStreamText);
+        System.out.println("> Messages");
+        System.out.println(JSONConverter.get().toJSON(messages, true));
+
     }
 
 }

@@ -59,6 +59,8 @@ public class PDSJob {
 
     public static final String COLUMN_OUTPUT_STREAM_TEXT = "OUTPUT_STREAM_TEXT";
 
+    public static final String COLUMN_MESSAGES = "MESSAGES";
+
     public static final String COLUMN_LAST_STREAM_TEXT_REFRESH_REQUEST = "LAST_STREAM_TEXT_REFRESH_REQUEST";
     public static final String COLUMN_LAST_STREAM_TEXT_UPDATE = "LAST_STREAM_TEXT_UPDATE";
 
@@ -149,6 +151,10 @@ public class PDSJob {
     @Column(name = "VERSION")
     Integer version;
 
+    @Column(name = COLUMN_MESSAGES)
+    @Type(type = "text") // see remarks on COLUMN_RESULT
+    String messages;
+
     public void setServerId(String serverId) {
         this.serverId = serverId;
     }
@@ -223,6 +229,10 @@ public class PDSJob {
 
     public String getErrorStreamText() {
         return errorStreamText;
+    }
+
+    public String getMessages() {
+        return messages;
     }
 
     @Override

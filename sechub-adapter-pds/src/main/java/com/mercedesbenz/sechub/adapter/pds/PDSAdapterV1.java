@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.adapter.pds;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 
@@ -22,6 +24,8 @@ import com.mercedesbenz.sechub.adapter.pds.data.PDSJobParameterEntry;
 import com.mercedesbenz.sechub.adapter.pds.data.PDSJobStatus;
 import com.mercedesbenz.sechub.adapter.pds.data.PDSJobStatus.PDSAdapterJobStatusState;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationType;
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 
 /**
  * This component is able to handle PDS API V1
@@ -61,7 +65,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         waitForJobDone(context);
         assertNotInterrupted();
 
-        return new AdapterExecutionResult(fetchReport(context));
+        return new AdapterExecutionResult(fetchReport(context), fetchMessages(context));
 
     }
 
@@ -148,6 +152,23 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         ResponseEntity<String> response = context.getRestOperations().getForEntity(url, String.class);
 
         return response.getBody();
+    }
+
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    /* + ................Fetch messages.................... + */
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    private Collection<SecHubMessage> fetchMessages(PDSContext context) throws AdapterException {
+        UUID pdsJobUUID = context.getPdsJobUUID();
+        String url = context.getUrlBuilder().buildGetJobMessages(pdsJobUUID);
+
+        ResponseEntity<String> response = context.getRestOperations().getForEntity(url, String.class);
+
+        String body = response.getBody();
+        if (body == null || body.isEmpty()) {
+            return Collections.emptyList();
+        }
+        SecHubMessagesList messagesList = SecHubMessagesList.fromJSONString(body);
+        return messagesList.getSecHubMessages();
     }
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */

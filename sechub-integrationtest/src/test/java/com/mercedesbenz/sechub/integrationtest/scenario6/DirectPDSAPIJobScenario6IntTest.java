@@ -5,6 +5,7 @@ import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 import static com.mercedesbenz.sechub.test.TestConstants.*;
 import static org.junit.Assert.*;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.Rule;
@@ -15,8 +16,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException.BadRequest;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.PDSIntTestProductIdentifier;
+import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 
 /**
  * Integration test directly using REST API of integration test PDS (means
@@ -156,7 +160,7 @@ public class DirectPDSAPIJobScenario6IntTest {
     }
 
     @Test
-    public void pds_techuser_can_mark_job_as_ready_to_start_and_after_while_job_result_is_returned() {
+    public void pds_techuser_can_mark_job_as_ready_to_start_and_after_while_job_result_is_returned_and_user_messages_area_available() {
         /* @formatter:off */
         /* prepare */
 
@@ -169,13 +173,41 @@ public class DirectPDSAPIJobScenario6IntTest {
         /* execute */
         asPDSUser(PDS_TECH_USER).markJobAsReadyToStart(pdsJobUUID);
 
-        /* test */
+        /* test 1: report downloadable and no old files in workspace */
         String report = asPDSUser(PDS_TECH_USER).getJobReport(pdsJobUUID);
         if (!report.contains("CRITICAL")) {
             fail("Report contains not CRITICAL, but:\n"+report);
         }
-        // next line tests, that the extracted files is no longer available - so auto clean worked */
+        // next line tests, that the extracted files is no longer available - so workspace auto clean worked */
         assertPDSWorkspace().containsNOTFile(pdsJobUUID, "upload/unzipped/sourcecode","data.txt");
+
+        /* test 2: messages */
+        SecHubMessagesList messageList= asPDSUser(PDS_TECH_USER).getJobMessages(pdsJobUUID);
+        List<SecHubMessage> messages = messageList.getSecHubMessages();
+        if (messages.size()!=3) {
+            
+            TestAPI.dumpPDSJobOutput(pdsJobUUID);
+            assertEquals("Amount of messages differs!", 3,messages.size());
+        }
+        for (SecHubMessage message : messages) {
+            switch(message.getType()) {
+            case ERROR:
+                assertEquals("error for PDS job: "+pdsJobUUID+" but with\n"
+                        + "    a multine ....\n"
+                        + "    ", message.getText());
+                break;
+            case INFO:
+                assertEquals("info for PDS job: "+pdsJobUUID, message.getText());
+                break;
+            case WARNING:
+                assertEquals("warn for PDS job: "+pdsJobUUID, message.getText());
+                break;
+            default:
+                fail("wrong type detected:"+message.getType());
+                break;
+
+            }
+        }
         /* @formatter:on */
     }
 

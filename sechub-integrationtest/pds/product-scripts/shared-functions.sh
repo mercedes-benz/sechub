@@ -27,3 +27,45 @@ function mergeFolderFilesRecursivelyIntoResultFile(){
 function errEcho () {
     echo "$@" >&2
 }
+
+# ----------------------------------------------------------
+# Helper methods for producing user messages
+# ----------------------------------------------------------
+
+function writeUniqueMessageFile(){
+      MSG_PREFIX=$1
+      MESSAGE=$2
+
+      MESSAGE_FILE_PATH="${PDS_JOB_USER_MESSAGES_FOLDER}/${MSG_PREFIX}message_$(date +%Y-%m-%d_%H.%M.%S_%N).txt"
+      echo "$MESSAGE" > "$MESSAGE_FILE_PATH"
+}
+
+function infoMessage(){
+    writeUniqueMessageFile "INFO_" "$1"
+}
+
+function warnMessage(){
+    writeUniqueMessageFile "WARNING_" "$1"
+}
+
+function errorMessage(){
+    writeUniqueMessageFile "ERROR_" "$1"
+}
+
+# Usage:
+# 
+# ----
+# infoMessage "this is an info message"
+# warnMessage "this is a warning message"
+# errorMessage "this is an error message
+#     with multiple lines... 
+# "
+# ----
+# 
+# The created message file names from the example above look like this: 
+# 
+# $job_folder_workspace/output/messages
+#├── ERROR_message_2022-06-24_17.56.52_822554054.txt
+#├── INFO_message_2022-06-24_17.56.52_818872869.txt
+#└── WARNING_message_2022-06-24_17.56.52_820825342.txt
+
