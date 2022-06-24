@@ -9,7 +9,7 @@ LABEL maintainer="SecHub FOSS Team"
 # Build args
 ARG OWASPZAP_VERSION="2.11.1"
 ARG OWASPZAP_CHECKSUM="abbfe9ad057b3511043a0f0317d5f91d914145ada5b102a5708f8af6a5e191f8"
-ARG PDS_VERSION="0.29.0"
+ARG PDS_VERSION="0.30.0"
 
 ARG JAVA_VERSION="11"
 ARG PDS_FOLDER="/pds"
@@ -37,7 +37,7 @@ RUN mkdir --parents "$PDS_FOLDER" "${SCRIPT_FOLDER}" "$TOOL_FOLDER" "$WORKSPACE"
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get upgrade --assume-yes && \
-    apt-get install --assume-yes wget openjdk-${JAVA_VERSION}-jre firefox && \
+    apt-get install --assume-yes wget openjdk-${JAVA_VERSION}-jre firefox-esr && \
     apt-get clean
 
 # Install OWASP ZAP

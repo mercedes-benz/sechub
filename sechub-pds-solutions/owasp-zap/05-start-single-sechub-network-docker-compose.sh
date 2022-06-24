@@ -16,5 +16,5 @@ else
 fi
 
 
-echo "Starting single Ubuntu container."
-docker-compose --file docker-compose_pds_owasp_zap_ubuntu_external_network.yaml up --build --remove-orphans
+echo "Starting single Debian container."
+docker-compose --file docker-compose_pds_owasp_zap_debian_external_network.yaml up --build --remove-orphans

@@ -4,7 +4,7 @@
 REGISTRY="$1"
 VERSION="$2"
 BASE_IMAGE="$3"  # optional
-DEFAULT_BASE_IMAGE="ubuntu:20.04"
+DEFAULT_BASE_IMAGE="debian:11-slim"
 
 usage() {
   cat - <<EOF
@@ -49,5 +49,5 @@ fi
 
 docker build --pull --no-cache $BUILD_ARGS \
        --tag "$REGISTRY:$VERSION" \
-       --file docker/Owasp-Zap-Ubuntu.dockerfile docker/
+       --file docker/Owasp-Zap-Debian.dockerfile docker/
 docker tag "$REGISTRY:$VERSION" "$REGISTRY:latest"
