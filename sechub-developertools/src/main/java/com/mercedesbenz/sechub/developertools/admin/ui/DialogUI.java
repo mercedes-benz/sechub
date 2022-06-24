@@ -133,6 +133,24 @@ public class DialogUI {
     }
 
     /**
+     * Shows an input dialog for user with a combo box
+     *
+     * @param message
+     * @param identifier
+     * @return
+     */
+    public Optional<String> getUserInputFromCombobox(String message, String title, List<String> comboboxValues, String initialValue) {
+        ComboxSelectionDialogUI dialog = new ComboxSelectionDialogUI(frame, title, message, comboboxValues, initialValue);
+        dialog.showDialog();
+
+        if (dialog.isCanceled()) {
+            return Optional.empty();
+        }
+        return Optional.of(dialog.getSelectionFromCombobox());
+
+    }
+
+    /**
      * Shows an input dialog for user. Last entered values for given identifier will
      * be shown
      *

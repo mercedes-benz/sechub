@@ -22,7 +22,7 @@ public class DeveloperArchiveSupport {
 
             tarOutputStream.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX);
 
-            compressFilesRecusriely(folder.getAbsolutePath(), folder, tarOutputStream);
+            compressFilesRecursively(folder.getAbsolutePath(), folder, tarOutputStream);
             tarOutputStream.finish();
 
         } catch (Exception e) {
@@ -36,7 +36,7 @@ public class DeveloperArchiveSupport {
 
         try (FileOutputStream fos = new FileOutputStream(targetFile);
                 ArchiveOutputStream archiveOutputStram = asf.createArchiveOutputStream(ArchiveStreamFactory.ZIP, fos)) {
-            compressFilesRecusriely(folder.getAbsolutePath(), folder, archiveOutputStram);
+            compressFilesRecursively(folder.getAbsolutePath(), folder, archiveOutputStram);
             archiveOutputStram.finish();
         } catch (Exception e) {
             throw new IOException("Was not able to append folder: " + folder + " to zip: " + targetFile, e);
@@ -44,10 +44,10 @@ public class DeveloperArchiveSupport {
 
     }
 
-    private void compressFilesRecusriely(String baseFolderPath, File file, ArchiveOutputStream aos) throws IOException {
+    private void compressFilesRecursively(String baseFolderPath, File file, ArchiveOutputStream aos) throws IOException {
         if (file.isDirectory()) {
             for (File child : file.listFiles()) {
-                compressFilesRecusriely(baseFolderPath, child, aos);
+                compressFilesRecursively(baseFolderPath, child, aos);
             }
         } else {
 

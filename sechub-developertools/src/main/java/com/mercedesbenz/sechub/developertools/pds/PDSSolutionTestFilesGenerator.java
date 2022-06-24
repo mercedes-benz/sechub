@@ -222,11 +222,11 @@ public class PDSSolutionTestFilesGenerator {
         return recucedSecHubConfigJson;
     }
 
-    private void writePDSJobDataFile(String recucedSecHubConfigJson) throws AdapterException, IOException {
+    private void writePDSJobDataFile(String reducedSecHubConfigJson) throws AdapterException, IOException {
         PDSJobData data = new PDSJobData();
         PDSJobParameterEntry entry = new PDSJobParameterEntry();
         entry.key = PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_CONFIGURATION;
-        entry.value = recucedSecHubConfigJson;
+        entry.value = reducedSecHubConfigJson;
         data.parameters.add(entry);
 
         String pdsJobDataJson = JSONConverter.get().toJSON(data, true);
@@ -255,13 +255,13 @@ public class PDSSolutionTestFilesGenerator {
                 break;
             }
         }
-        if (result == null || result.equals(ScanType.UNKNOWN)) {
+        if (result == null || result.equals(ScanType.UNKNOWN) || result.equals(ScanType.REPORT)) {
             StringBuilder sb = new StringBuilder();
             sb.append("Wanted scan type not accepted:");
             sb.append(scanType);
             sb.append(". Accepted types are: [");
             for (ScanType acceptedScanType : ScanType.values()) {
-                if (acceptedScanType.equals(ScanType.UNKNOWN)) {
+                if (acceptedScanType.equals(ScanType.UNKNOWN) || result.equals(ScanType.REPORT)) {
                     continue;
                 }
                 sb.append(acceptedScanType.getId());

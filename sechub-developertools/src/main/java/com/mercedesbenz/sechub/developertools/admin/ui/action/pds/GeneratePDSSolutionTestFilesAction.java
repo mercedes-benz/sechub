@@ -3,7 +3,9 @@ package com.mercedesbenz.sechub.developertools.admin.ui.action.pds;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -35,17 +37,28 @@ public class GeneratePDSSolutionTestFilesAction extends AbstractUIAction {
             outputAsTextOnSuccess("No file selected - canceled");
             return;
         }
-
-        Optional<String> scanTypeOpt = getContext().getDialogUI().getUserInput("Please enter scan type", ScanType.CODE_SCAN.getId());
+/* @formatter:off */
+        Optional<String> scanTypeOpt = getContext().getDialogUI().
+                getUserInputFromCombobox("Please enter scan type",
+                        "Scan type",
+                        Arrays.asList(ScanType.values()).stream().
+                            filter((scanType)->! (ScanType.UNKNOWN.equals(scanType) || ScanType.REPORT.equals(scanType))).
+                            map((scanType) -> scanType.getId()).
+                            collect(Collectors.toList()),
+                        ScanType.CODE_SCAN.getId());
+                /* @formatter:on */
         if (!scanTypeOpt.isPresent()) {
             outputAsTextOnSuccess("No scan type selected - canceled");
             return;
         }
 
+        String selectedScanType = scanTypeOpt.get();
+        output("Call generator with selected scan type: " + selectedScanType);
+
         try {
             PDSSolutionTestFilesGenerator pdsSolutionGenerator = new PDSSolutionTestFilesGenerator();
             pdsSolutionGenerator.setOutputHandler(getContext().getOutputUI());
-            pdsSolutionGenerator.generate(file.getAbsolutePath(), scanTypeOpt.get());
+            pdsSolutionGenerator.generate(file.getAbsolutePath(), selectedScanType);
 
             outputAsTextOnSuccess("PDS solution test files has been created");
         } catch (Exception ex) {
