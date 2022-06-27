@@ -50,8 +50,6 @@ localserver () {
         echo " * Accesskey: $S3_ACCESSKEY"
     fi
 
-    #-Dpds.upload.binaries.maximum.bytes="$PDS_UPLOAD_BINARIES_MAXIMUM_BYTES" \
-
     # Regarding entropy collection:
     #   with JDK 8+ the "obscure workaround using file:///dev/urandom 
     #   and file:/dev/./urandom is no longer required."

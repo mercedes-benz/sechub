@@ -2,13 +2,13 @@
 
 version: "3"
 services:
-    pds-scancode-debian:
+    pds-scancode:
         build:
             args:
                 - BASE_IMAGE=debian:11-slim
             context: docker/
             dockerfile: ScanCode-Debian.dockerfile
-        container_name: pds-scancode-debian
+        container_name: pds-scancode
         env_file:
             - .env
         ports:
