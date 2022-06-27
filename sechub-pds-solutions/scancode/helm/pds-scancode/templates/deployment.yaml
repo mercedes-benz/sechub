@@ -110,3 +110,15 @@ spec:
                     failureThreshold: 3
                     successThreshold: 1
                     timeoutSeconds: 3
+            volumes:
+                - name: pds-scancode-workspace
+                  ephemeral:
+                    volumeClaimTemplate:
+                      metadata:
+                        labels:
+                          name: {{ .Chart.Name }}
+                      spec:
+                        accessModes: ["ReadWriteOnce"]
+                        resources:
+                          requests:
+                            storage: "{{ .Values.pds.volumes.workspace.size }}"
