@@ -115,6 +115,7 @@ NOTE: When no {sechub} configuration model is defined for the `PDS` job, the tra
 |PDS_JOB_WORKSPACE_LOCATION         | The workspace job root location 
 |PDS_JOB_RESULT_FILE                | The absolute path to the result file _(this file contains security findings)_.
 |PDS_JOB_UUID                       | The UUID of the current running PDS job.
+[[table-link-pds-launcher-script-variable-messages]]
 |PDS_JOB_USER_MESSAGES_FOLDER       a| The absolute path to the user messages folder.
 
 Every text file which is found inside this folder will be returned to user inside reports and status.
@@ -130,7 +131,8 @@ The files must be simple text files and can contain multiple lines.
 [TIP]
 ====
 It is necessary to use always unique names for new user messages - because otherwise you
-would overwrite the old ones...
+would overwrite the old ones. The <<section-shared-concepts-product-message-pds-dataflow,PDS message data flow>> describes
+how the data is gathered.
 ====
 
 Here a solution for bash to create unique names:
@@ -224,7 +226,5 @@ Following files are reserved
 - *result.txt* - this is the result file which *must be created by the executed script* +
   `$PDS_JOB_WORKSPACE_LOCATION/output/result.txt`.
   The path is represented by the variable `PDS_JOB_RESULT_FILE`
-
-
 
    

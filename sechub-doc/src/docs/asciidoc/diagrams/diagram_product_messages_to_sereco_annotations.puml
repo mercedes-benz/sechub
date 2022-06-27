@@ -4,15 +4,7 @@
 hide empty fields
 hide empty members
 
-class SecHubMessage {
-    
-}
-
-class SecHubMessagesList {
-    <<JSONable>>
-    
-    List<SecHubMessage> getSecHubMessages()
-}
+!include module_sechub_messages.puml
 
 class ProductResult {
     <<Entity>>
@@ -35,7 +27,6 @@ ProductResult --> SecHubMessagesList
 SerecoProductExecutor  --> ProductResult :reads all other product results (1)
 SerecoProductExecutor -> SerecoAnnotation : creates annotations (2) 
 SerecoProductExecutor --> ProductResult  : stores sereco product result (3) 
-SecHubMessagesList o- SecHubMessage 
 
 note right of ProductResult::messages 
 Contains SecHubMessagesList 

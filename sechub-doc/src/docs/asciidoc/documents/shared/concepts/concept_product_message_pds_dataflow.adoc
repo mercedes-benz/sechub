@@ -1,0 +1,11 @@
+// SPDX-License-Identifier: MIT
+[[section-shared-concepts-product-message-pds-dataflow]]
+
+Inside a {pds} workspace a special messages folder exists. The launcher script can create there
+dedicated user message files by creating simple text files (see <<table-link-pds-launcher-script-variable-messages,PDS_JOB_USER_MESSAGES_FOLDER>>  
+for details) . After the job has been done (or failed),  
+all files located at this folder are collected and stored as a JSON representing a `SecHubMessageList` inside the 
+{pds} Job. Those {sechub} messages can be fetched by technical user via REST API.
+
+plantuml::diagrams/diagram_product_messages_pds_storage.puml[format=svg, title="PDS user message handling"] 
+

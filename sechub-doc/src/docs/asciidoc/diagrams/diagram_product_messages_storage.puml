@@ -3,17 +3,7 @@
 hide empty fields
 hide empty members
 
-enum SecHubMessageType {
-    ERROR
-    WARNING
-    INFO
-}
-
-class SecHubMessage {
-    SecHubMessageType type
-    String text
-    
-}
+!include module_sechub_messages.puml
 
 class AdapterExecutionResult{
     List<SecHubMessage> getProductMessages()
@@ -21,12 +11,6 @@ class AdapterExecutionResult{
 }
 abstract class AbstractProductExecutor implements ProductExecutor{
     updateCurrentProductResult(AdapterExecutionResult, ...)
-}
-
-class SecHubMessagesList {
-    <<JSONable>>
-    
-    List<SecHubMessage> getSecHubMessages()
 }
 
 class Adapter{
@@ -38,8 +22,6 @@ class ProductResult {
     String messages
     String result
 }
-SecHubMessage o-- SecHubMessageType : has
-
 AdapterExecutionResult -> SecHubMessage : 1...n
 
 AbstractProductExecutor ---> Adapter : calls (1)

@@ -185,7 +185,7 @@ public class DirectPDSAPIJobScenario6IntTest {
         SecHubMessagesList messageList= asPDSUser(PDS_TECH_USER).getJobMessages(pdsJobUUID);
         List<SecHubMessage> messages = messageList.getSecHubMessages();
         if (messages.size()!=3) {
-            
+
             TestAPI.dumpPDSJobOutput(pdsJobUUID);
             assertEquals("Amount of messages differs!", 3,messages.size());
         }
