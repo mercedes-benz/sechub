@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -33,8 +34,11 @@ import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
+import com.mercedesbenz.sechub.domain.scan.admin.FullScanData;
+import com.mercedesbenz.sechub.domain.scan.admin.ScanData;
 import com.mercedesbenz.sechub.integrationtest.internal.DefaultTestExecutionProfile;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultProfiles;
@@ -1182,12 +1186,55 @@ public class TestAPI {
 
     }
 
+    public static FullScanData fetchFullScanData(UUID sechubJobUIUD) {
+
+        String url = getURLBuilder().buildIntegrationTestFetchFullScandata(sechubJobUIUD);
+        String json = getSuperAdminRestHelper().getJSON(url);
+        System.out.println(json);
+        return JSONConverter.get().fromJSON(FullScanData.class, json);
+    }
+
     private static List<TestAutoCleanJsonDeleteCount> convertAutoCleanJson(String json) {
         MappingIterator<TestAutoCleanJsonDeleteCount> result = TestJSONHelper.get().createValuesFromJSON(json, TestAutoCleanJsonDeleteCount.class);
         try {
             return result.readAll();
         } catch (IOException e) {
             throw new IllegalStateException("Was not able to inspect test data", e);
+        }
+    }
+
+    public static List<UUID> fetchAllPDSJobUUIDsForSecHubJob(UUID sechubJobUUID) {
+        FullScanData fullScanData = fetchFullScanData(sechubJobUUID);
+        List<ScanData> all = fullScanData.allScanData;
+
+        // here we have only ONE integration test server, so we know how to access the
+        // PDS server
+        // It is enough to know the pds job uuids
+        List<UUID> pdsJobUUIDs = new ArrayList<>();
+
+        for (ScanData data : all) {
+            if (data.metaData == null || data.metaData.isEmpty()) {
+                continue;
+            }
+            AdapterMetaData metaData = JSONConverter.get().fromJSON(AdapterMetaData.class, data.metaData);
+            String pdsJobUUIDString = metaData.getValue("PDS_JOB_UUID");
+            if (pdsJobUUIDString == null || pdsJobUUIDString.isEmpty()) {
+                continue;
+            }
+            pdsJobUUIDs.add(UUID.fromString(pdsJobUUIDString));
+        }
+
+        return pdsJobUUIDs;
+    }
+
+    public static void dumpAllPDSJobOutputsForSecHubJob(UUID sechubJobUUID) {
+        System.out.println("----------------------------------------------------------------------------------------------------------");
+        System.out.println("- DUMP PDS Jobs for SecHub job: " + sechubJobUUID);
+        System.out.println("----------------------------------------------------------------------------------------------------------");
+
+        List<UUID> pdsJobUUIDs = fetchAllPDSJobUUIDsForSecHubJob(sechubJobUUID);
+        for (UUID pdsJobUUID : pdsJobUUIDs) {
+            dumpPDSJobOutput(pdsJobUUID);
         }
     }
 
@@ -1207,6 +1254,9 @@ public class TestAPI {
         System.out.println(errorStreamText);
         System.out.println("> Messages");
         System.out.println(JSONConverter.get().toJSON(messages, true));
+        System.out.println("> Report");
+        String report = asPDSUser(PDS_ADMIN).getJobReport(jobUUID);
+        System.out.println(report);
 
     }
 

@@ -20,12 +20,15 @@ import com.mercedesbenz.sechub.commons.model.SecHubResult;
 import com.mercedesbenz.sechub.commons.model.SecHubStatus;
 import com.mercedesbenz.sechub.commons.model.Severity;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.integrationtest.internal.SecHubJobAutoDumper;
 
 public class AssertReport {
 
     private static final Logger LOG = LoggerFactory.getLogger(AssertReport.class);
 
     private SecHubReportModel report;
+
+    private SecHubJobAutoDumper autoDumper = new SecHubJobAutoDumper();
 
     public static AssertReport assertReport(String json) {
         return new AssertReport(SecHubReportModel.fromJSONString(json));
@@ -36,9 +39,15 @@ public class AssertReport {
         this.report = report;
     }
 
+    public AssertReport enablePDSAutoDumpOnErrorsForSecHubJob(UUID sechubJobUUID) {
+        this.autoDumper.enablePDSAutoDumpOnErrorsForSecHubJob();
+        this.autoDumper.setSecHubJobUUID(sechubJobUUID);
+        return this;
+    }
+
     public AssertReport hasFindings(int expectedCount) {
         List<SecHubFinding> findings = assertFindings(report);
-        assertEquals(expectedCount, findings.size());
+        autoDumper.execute(() -> assertEquals(expectedCount, findings.size()));
         return this;
     }
 
@@ -47,26 +56,26 @@ public class AssertReport {
     }
 
     public AssertReport hasMessages(int expectedAmountOfMessages) {
-        assertEquals(expectedAmountOfMessages, report.getMessages().size());
+        autoDumper.execute(() -> assertEquals(expectedAmountOfMessages, report.getMessages().size()));
         return this;
     }
 
     public AssertReport hasStatus(SecHubStatus expectedStatus) {
         if (!Objects.equals(expectedStatus, report.getStatus())) {
             dump();
-            assertEquals(expectedStatus, report.getStatus());
+            autoDumper.execute(() -> assertEquals(expectedStatus, report.getStatus()));
         }
         return this;
     }
 
     public AssertReport hasTrafficLight(TrafficLight expectedLight) {
-        assertEquals(expectedLight, report.getTrafficLight());
+        autoDumper.execute(() -> assertEquals(expectedLight, report.getTrafficLight()));
         return this;
     }
 
     public AssertReport hasReportVersion(SecHubReportVersion version) {
         assertNotNull("Wrong implemented unit test, given version may not be null!", version);
-        assertEquals(version.getVersionAsString(), report.getReportVersion());
+        autoDumper.execute(() -> assertEquals(version.getVersionAsString(), report.getReportVersion()));
         return this;
     }
 
@@ -80,7 +89,7 @@ public class AssertReport {
         private SecHubFinding finding;
 
         public AssertFinding(SecHubFinding finding, int number) {
-            assertNotNull("Finding may not be null! But was for number:" + number, finding);
+            autoDumper.execute(() -> assertNotNull("Finding may not be null! But was for number:" + number, finding));
             this.finding = finding;
         }
 
@@ -89,17 +98,17 @@ public class AssertReport {
         }
 
         public AssertFinding hasId(int id) {
-            assertEquals(id, finding.getId());
+            autoDumper.execute(() -> assertEquals(id, finding.getId()));
             return this;
         }
 
         public AssertFinding hasName(String name) {
-            assertEquals(name, finding.getName());
+            autoDumper.execute(() -> assertEquals(name, finding.getName()));
             return this;
         }
 
         public AssertFinding hasScanType(ScanType type) {
-            assertEquals(type, finding.getType());
+            autoDumper.execute(() -> assertEquals(type, finding.getType()));
             return this;
         }
 
@@ -108,7 +117,7 @@ public class AssertReport {
         }
 
         public AssertFinding hasDescription(String description) {
-            assertEquals(description, finding.getDescription());
+            autoDumper.execute(() -> assertEquals(description, finding.getDescription()));
             return this;
         }
 
@@ -117,7 +126,8 @@ public class AssertReport {
                 dump();
                 // we use assertEquals here, so in IDEs we got a compare function (e.g. eclipse
                 // double click on first stacktrace element (ComparisionFailure))
-                assertEquals("The description part '" + descriptionPart + "' is not inside finding!", descriptionPart, finding.getDescription());
+                autoDumper.execute(
+                        () -> assertEquals("The description part '" + descriptionPart + "' is not inside finding!", descriptionPart, finding.getDescription()));
             }
             return this;
         }
@@ -131,10 +141,10 @@ public class AssertReport {
 
             for (String hostname : hostnames) {
                 if (!hostnames2.contains(hostname)) {
-                    fail("Hostname:" + hostname + " not found in finding!");
+                    autoDumper.execute(() -> fail("Hostname:" + hostname + " not found in finding!"));
                 }
             }
-            assertEquals(hostnames.length, hostnames2.size());
+            autoDumper.execute(() -> assertEquals(hostnames.length, hostnames2.size()));
             return this;
         }
 
@@ -151,17 +161,17 @@ public class AssertReport {
 
             for (String reference : references) {
                 if (!references2.contains(reference)) {
-                    fail("Reference:" + reference + " not found in finding!");
+                    autoDumper.execute(() -> fail("Reference:" + reference + " not found in finding!"));
                 }
             }
-            assertEquals(references.length, references2.size());
+            autoDumper.execute(() -> assertEquals(references.length, references2.size()));
             return this;
         }
 
         public AssertFinding hasSeverity(Severity severity) {
             if (!Objects.equals(severity, finding.getSeverity())) {
                 dump();
-                assertEquals("Finding id:" + finding.getId() + " has not expected severity!", severity, finding.getSeverity());
+                autoDumper.execute(() -> assertEquals("Finding id:" + finding.getId() + " has not expected severity!", severity, finding.getSeverity()));
             }
             return this;
         }
@@ -169,9 +179,9 @@ public class AssertReport {
         public AssertFinding hasCweId(int cweId) {
             if (finding.getCweId() == null) {
                 dump();
-                fail("No cwe id found inside finding at all!");
+                autoDumper.execute(() -> fail("No cwe id found inside finding at all!"));
             }
-            assertEquals("CWE id not as expected", cweId, finding.getCweId().intValue());
+            autoDumper.execute(() -> assertEquals("CWE id not as expected", cweId, finding.getCweId().intValue()));
             return this;
         }
 
@@ -201,27 +211,27 @@ public class AssertReport {
             }
 
             public AssertCodeCall hasLocation(String expected) {
-                assertEquals(expected, callStack.getLocation());
+                autoDumper.execute(() -> assertEquals(expected, callStack.getLocation()));
                 return this;
             }
 
             public AssertCodeCall hasSource(String expected) {
-                assertEquals(expected, callStack.getSource());
+                autoDumper.execute(() -> assertEquals(expected, callStack.getSource()));
                 return this;
             }
 
             public AssertCodeCall hasRelevantPart(String expected) {
-                assertEquals(expected, callStack.getRelevantPart());
+                autoDumper.execute(() -> assertEquals(expected, callStack.getRelevantPart()));
                 return this;
             }
 
             public AssertCodeCall hasColumn(int column) {
-                assertEquals(Integer.valueOf(column), callStack.getColumn());
+                autoDumper.execute(() -> assertEquals(Integer.valueOf(column), callStack.getColumn()));
                 return this;
             }
 
             public AssertCodeCall hasLine(int column) {
-                assertEquals(Integer.valueOf(column), callStack.getLine());
+                autoDumper.execute(() -> assertEquals(Integer.valueOf(column), callStack.getLine()));
                 return this;
             }
 
@@ -243,9 +253,9 @@ public class AssertReport {
     private List<SecHubFinding> assertFindings(SecHubReportData report) {
         assertNotNull("Report may not be null", report);
         SecHubResult result = report.getResult();
-        assertNotNull(result);
+        autoDumper.execute(() -> assertNotNull(result));
         List<SecHubFinding> findings = result.getFindings();
-        assertNotNull(findings);
+        autoDumper.execute(() -> assertNotNull(findings));
         return findings;
     }
 

@@ -37,6 +37,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 @Profile({ AdapterProfiles.REAL_PRODUCTS })
 public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterConfig> implements PDSAdapter {
 
+    private static final String PDS_JOB_UUID = "PDS_JOB_UUID";
     private static final Logger LOG = LoggerFactory.getLogger(PDSAdapterV1.class);
     private PDSUploadSupport uploadSupport;
 
@@ -53,7 +54,8 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
     protected AdapterExecutionResult execute(PDSAdapterConfig config, AdapterRuntimeContext runtimeContext) throws AdapterException {
         assertNotInterrupted();
         PDSContext context = new PDSContext(config, this, runtimeContext);
-        createNewPDSJOB(context);
+        createNewPDSJOB(context, runtimeContext);
+
         assertNotInterrupted();
 
         uploadJobData(context);
@@ -272,7 +274,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
     /* + ................Create New Job.................. + */
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    private void createNewPDSJOB(PDSContext context) throws AdapterException {
+    private void createNewPDSJOB(PDSContext context, AdapterRuntimeContext runtimeContext) throws AdapterException {
 
         String json = createJobDataJSON(context);
         String url = context.getUrlBuilder().buildCreateJob();
@@ -280,6 +282,11 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         String jsonResult = context.getRestSupport().postJSON(url, json);
         PDSJobCreateResult result = context.getJsonSupport().fromJSON(PDSJobCreateResult.class, jsonResult);
         context.setPDSJobUUID(UUID.fromString(result.jobUUID));
+
+        AdapterMetaData metaData = runtimeContext.getMetaData();
+        metaData.setValue(PDS_JOB_UUID, result.jobUUID);
+
+        runtimeContext.getCallback().persist(metaData);
     }
 
     private String createJobDataJSON(PDSContext context) throws AdapterException {

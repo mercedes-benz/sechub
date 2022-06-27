@@ -21,8 +21,10 @@ dependencies {
     api project(':sechub-adapter') // we reuse trustall approach from adapters
     api project(':sechub-adapter-pds')
     api project(':sechub-administration') 
+    api project(':sechub-scan') // we add this to have access to FullScanData
     
     api library.junit4
+    
 }
 import java.nio.file.Files;
 import java.nio.file.Paths;
