@@ -29,24 +29,35 @@ echo "---------"
 echo ""
 
 echo "SecHub Job UUID: $SECHUB_JOB_UUID"
-# TODO: Add PDS Job UUID - requires PDS containing #863
-# The workspace location contains the PDS Job UUID
-echo "PDS Job Workspace Location: $PDS_JOB_WORKSPACE_LOCATION"
+echo "PDS Job UUID: $PDS_JOB_UUID"
+echo ""
 
 extracted_folder=""
-if $PDS_JOB_HAS_EXTRACTED_SOURCES
+if [[ "$PDS_JOB_HAS_EXTRACTED_SOURCES" == "true" ]]
 then
     echo "Extracted sources"
     extracted_folder="$PDS_JOB_EXTRACTED_SOURCES_FOLDER"
-elif $PDS_JOB_HAS_EXTRACTED_BINARIES
+elif [[ "$PDS_JOB_HAS_EXTRACTED_BINARIES" == "true" ]]
 then
     echo "Extracted binaries"
     extracted_folder="$PDS_JOB_EXTRACTED_BINARIES_FOLDER"
+else
+    echo ""
+    echo "ERROR: Unrecognized file type. Neither binary nor source."
+    echo ""
+    echo "Workspace location structure:"
+    echo ""
+    tree "$PDS_JOB_WORKSPACE_LOCATION"
+    exit 1
 fi
 
 echo "Extracted folder structure:"
 echo ""
 tree "$extracted_folder"
+echo ""
+
+echo "Size of the extracted folder on disk" 
+du --summarize --human-readable "$extracted_folder"
 
 echo ""
 echo "--------------"
@@ -102,11 +113,12 @@ echo ""
 
 spdx_file="$PDS_JOB_RESULT_FILE.spdx"
 
-local extractcode_enabled=$( echo "$EXTRACTCODE_ENABLED" | tr '[:upper:]' '[:lower:]' )
+extractcode_enabled=$( echo "$EXTRACTCODE_ENABLED" | tr '[:upper:]' '[:lower:]' )
 if [[ "$extractcode_enabled" == "true" ]]
 then
   echo "Running extractcode"
-  "$TOOL_FOLDER/scancode-toolkit-$SCANCODE_VERSION/extractcode" $extracted_folder
+  # `2>&1` -> redirect the verbose output from standard error to standard out
+  "$TOOL_FOLDER/scancode-toolkit-$SCANCODE_VERSION/extractcode" --verbose $extracted_folder 2>&1
 fi
 
 # `2>&1` -> redirect the verbose output from standard error to standard out
@@ -126,7 +138,7 @@ then
         spdx_json_file="$PDS_JOB_RESULT_FILE.spdx.json"
 
         # use the SPDX tool converter to convert the SPDX tag-value to SPDX JSON
-        java -jar "$TOOL_FOLDER/tools-java-$SPDX_TOOL_VERISON-jar-with-dependencies.jar" Convert "$spdx_file" "$spdx_json_file"
+        time java -jar "$TOOL_FOLDER/tools-java-$SPDX_TOOL_VERISON-jar-with-dependencies.jar" Convert "$spdx_file" "$spdx_json_file"
         mv "$spdx_json_file" "$PDS_JOB_RESULT_FILE"
     else
         echo "Moving file"

@@ -5,13 +5,15 @@ services:
     pds-scancode:
         build:
             args:
-                - BASE_IMAGE=ubuntu:20.04
+                - BASE_IMAGE=debian:11-slim
             context: docker/
-            dockerfile: ScanCode-Ubuntu.dockerfile
+            dockerfile: ScanCode-Debian.dockerfile
         env_file:
             - .env-cluster-object-storage
         networks:
             - internal
+        volumes:
+            - ./docker/scripts:/scripts
         depends_on: 
             - database
             - object-storage

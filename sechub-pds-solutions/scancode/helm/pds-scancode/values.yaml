@@ -11,6 +11,10 @@ image:
 pds:
     startMode: localserver
     maxFileUploadSize: 20MB
+    
+    # 100 MiB by default
+    # 1024**2 * 100 = 104857600
+    uploadBinariesMaximumBytes: 104857600
     config:
         execute:
             queueMax: 10

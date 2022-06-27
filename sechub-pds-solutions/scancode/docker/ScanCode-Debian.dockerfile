@@ -9,7 +9,7 @@ FROM ${BASE_IMAGE}
 
 # Build args
 ARG PDS_FOLDER="/pds"
-ARG PDS_VERSION="0.29.0"
+ARG PDS_VERSION="0.30.0"
 ARG PYTHON_VERSION="3.9"
 ARG SCANCODE_VERSION="30.1.0"
 ARG SCANCODE_CHECKSUM="a9e43fdef934335e69e4abf77896225545d3e1fdbbd477ebabc37a4fa5ee2015  scancode-toolkit-30.1.0_py39-linux.tar.xz"
@@ -20,7 +20,7 @@ ARG WORKSPACE="/workspace"
 
 # Environment variables in container
 ENV DOWNLOAD_FOLDER="/downloads"
-ENV MOCK_FOLDER="$SCRIPT_FOLDER/mocks"
+ENV MOCK_FOLDER="/mocks"
 ENV PDS_VERSION="${PDS_VERSION}"
 ENV SCANCODE_VERSION="${SCANCODE_VERSION}"
 ENV SHARED_VOLUMES="/shared_volumes"
@@ -34,7 +34,7 @@ RUN groupadd --gid 2323 pds \
      && useradd --uid 2323 --no-log-init --create-home --gid pds pds
 
 # Create tool, pds, shared volume and download folder
-RUN  mkdir --parents "$TOOL_FOLDER" "$DOWNLOAD_FOLDER" "$PDS_FOLDER" "$SHARED_VOLUME_UPLOAD_DIR" "$WORKSPACE" && \
+RUN  mkdir --parents "$MOCK_FOLDER" "$TOOL_FOLDER" "$DOWNLOAD_FOLDER" "$PDS_FOLDER" "$SHARED_VOLUME_UPLOAD_DIR" "$WORKSPACE" && \
     # Change owner and workspace and shared volumes folder
     # the only two folders pds really needs write access to
     chown --recursive pds:pds "$WORKSPACE" "$SHARED_VOLUMES"
@@ -93,11 +93,11 @@ RUN cd "$PDS_FOLDER" && \
     sha256sum --check sechub-pds-$PDS_VERSION.jar.sha256sum
 
 # Copy scripts
-COPY scripts $SCRIPT_FOLDER
-RUN chmod -R +x $SCRIPT_FOLDER
+COPY scripts "$SCRIPT_FOLDER"
+RUN chmod -R +x "$SCRIPT_FOLDER"
 
 # Mock folder
-COPY mocks $SCRIPT_FOLDER/mocks/
+COPY mocks "$MOCK_FOLDER"
 
 # Copy PDS configfile
 COPY pds-config.json "/$PDS_FOLDER/pds-config.json"

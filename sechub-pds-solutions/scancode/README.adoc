@@ -3,13 +3,13 @@
 :toc:
 :numbered:
 
-= ScanCode + PDS
+= Scancode + PDS
 
-https://github.com/nexB/scancode-toolkit[ScanCode] is a free and open source license scanning tool. ScanCode is a command line interface (CLI) tool. By combining ScanCode with the SecHub https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)] in a container, ScanCode can be used with SecHub. Another scenario is to use PDS + ScanCode standalone.
+https://github.com/nexB/scancode-toolkit[Scancode-Toolkit] is a free and open source license scanning tool. Scancode is a command line interface (CLI) tool. By combining Scancode with the SecHub https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)] in a container, Scancode can be used with SecHub. Another scenario is to use PDS + Scancode standalone.
 
-Furthermore, the combination of ScanCode and PDS makes it possible to run both inside a Kubernetes cluser or virtual machines.
+Furthermore, the combination of Scancode and PDS makes it possible to run both inside a Kubernetes cluser or virtual machines.
 
-This folder contains the necessary scripts to run PDS + ScanCode inside a container locally. Additionally, it contains scripts to build and push the ScanCode + ScanCode container to your container registry and a Helm chart to install and run PDS + ScanCode in a Kubernetes cluster.
+This folder contains the necessary scripts to run PDS + Scancode inside a container locally. Additionally, it contains scripts to build and push the PDS + Scancode container to your container registry and a Helm chart to install and run PDS + Scancode in a Kubernetes cluster.
 
 == Run Locally
 
@@ -44,12 +44,12 @@ The folder contains a start script which does the <<_manually, manual>> steps fo
 . Set values in `.env` file. The values are described in the `env-example` file.
 +
 [NOTE]
-It is recommended to change the default passwords in the `.env` file to improve security. It is possible to change other values in the `.env` file as well. Any change requires a restart of the PDS+ScanCode container.
+It is recommended to change the default passwords in the `.env` file to improve security. It is possible to change other values in the `.env` file as well. Any change requires a restart of the PDS+Scancode container.
 
-. Start container the Ubuntu container using https://docs.docker.com/compose/[Docker Compose]:
+. Start container the Debian container using https://docs.docker.com/compose/[Docker Compose]:
 +
 ----
-docker-compose --file docker-compose_pds_scancode_ubuntu.yaml up --build
+docker-compose --file docker-compose_pds_scancode_debian.yaml up --build
 ----
 
 ==== Together with SecHub
@@ -58,7 +58,7 @@ The container will be started and attached to the `sechub` Network.
 
 WARNING: Make sure the SecHub container is running.
 
-. Start Ubuntu container:
+. Start Debian container:
 +
 ----
 ./05-start-single-sechub-network-docker-compose.sh
@@ -131,7 +131,7 @@ Date: Tue, 08 Jun 2021 16:38:02 GMT
 ----
 +
 [TIP]
-ScanCode provides samples: https://github.com/nexB/scancode-toolkit/tree/develop/samples. Simply, download them. Afterwards, ZIP the folder and upload it.
+Scancode provides samples: https://github.com/nexB/scancode-toolkit/tree/develop/samples. Simply, download them. Afterwards, ZIP the folder and upload it.
 
 . Mark the job ready to start
 +
@@ -173,9 +173,9 @@ Output
     "creators" : [ "Tool: scancode-toolkit 30.1.0" ],
     "licenseListVersion" : "3.14"
   },
-  "name" : "SPDX Document created by ScanCode Toolkit",
+  "name" : "SPDX Document created by Scancode Toolkit",
   "dataLicense" : "CC0-1.0",
-  "comment" : "Generated with ScanCode and provided on an \"AS IS\" BASIS, WITHOUT WARRANTIES\nOR CONDITIONS OF ANY KIND, either express or implied. No content created from\nScanCode should be considered or used as legal advice. Consult an Attorney\nfor any legal advice.\nScanCode is a free software code scanning tool from nexB Inc. and others.\nVisit https://github.com/nexB/scancode-toolkit/ for support and download.",
+  "comment" : "Generated with Scancode and provided on an \"AS IS\" BASIS, WITHOUT WARRANTIES\nOR CONDITIONS OF ANY KIND, either express or implied. No content created from\nScancode should be considered or used as legal advice. Consult an Attorney\nfor any legal advice.\nScancode is a free software code scanning tool from nexB Inc. and others.\nVisit https://github.com/nexB/scancode-toolkit/ for support and download.",
   "hasExtractedLicensingInfos" : [ {
     "licenseId" : "LicenseRef-scancode-ada-linking-exception",
     "comment" : "See details at https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/licenses/ada-linking-exception.yml",
@@ -285,7 +285,7 @@ export PDS_PRODUCT_IDENTFIER=PDS_SCANCODE
 ----
 +
 [NOTE]
-Those values are the default values from `env-initial` and `env-cluster-initial` files. In case you run PDS+ScanCode in Kubernetes or other environments those values will be different.
+Those values are the default values from `env-initial` and `env-cluster-initial` files. In case you run PDS+Scancode in Kubernetes or other environments those values will be different.
 
 . Scan by providing a `ZIP` folder with Go source code.
 +
@@ -313,13 +313,13 @@ image::../shared/media/cluster_shared_volume.svg[Components of cluster with shar
 
 ===== Automatic
 
-Starting several PDS + ScanCode instances:
+Starting several PDS + Scancode instances:
 
 ----
 ./50-start-multiple-docker-compose.sh <replicas>
 ----
 
-Example of starting 3 PDS + ScanCode instances:
+Example of starting 3 PDS + Scancode instances:
 
 ----
 ./50-start-multiple-docker-compose.sh 3
@@ -385,10 +385,10 @@ There are several configuration options available for the PDS + Scancode `docker
 
 This section contains information about how to troubleshoot PDS + Scancode if something goes wrong.
 
-==== Access the Ubuntu container
+==== Access the Debian container
 
 ----
-docker exec -it pds-scancode-ubuntu bash
+docker exec -it pds-scancode-debian bash
 ----
 
 ==== Java Application Remote Debugging of PDS
@@ -418,18 +418,18 @@ Build container images and push them to registry to run PDS + Scancode on virtua
 
 Build the container image.
 
-==== Ubuntu
+==== Debian
 
 . Using the default image: 
 +
 ----
-./10-create-ubuntu-image.sh my.registry.example.org/sechub/pds_scancode_ubuntu v0.1
+./10-create-debian-image.sh my.registry.example.org/sechub/pds_scancode_debian v0.1
 ----
 
 . Using your own base image:
 +
 ----
-./10-create-ubuntu-image.sh my.registry.example.org/sechub/pds_scancode_ubuntu v0.1 "my.registry.example.org/ubuntu:20.04"
+./10-create-debian-image.sh my.registry.example.org/sechub/pds_scancode_debian v0.1 "my.registry.example.org/debian:11-slim"
 ----
 
 === Push Image to Registry
@@ -439,13 +439,13 @@ Push the container image to a registry.
 * Push the version tag only
 +
 ----
-./20-push-image.sh my.registry.example.org/sechub/pds_scancode_ubuntu v0.1
+./20-push-image.sh my.registry.example.org/sechub/pds_scancode_debian v0.1
 ----
 
 * Push the version and `latest` tags
 +
 ----
-./20-push-image.sh my.registry.example.org/sechub/pds_scancode_ubuntu v0.1 yes
+./20-push-image.sh my.registry.example.org/sechub/pds_scancode_debian v0.1 yes
 ----
 
 == Kubernetes
@@ -459,7 +459,7 @@ https://helm.sh/[Helm] is a package manager for Kubernetes.
 ==== Requierments
 
 * https://helm.sh/docs/intro/install/[Helm] installed
-* `pds_scancode_ubuntu` image pushed to registry
+* `pds_scancode_debian` image pushed to registry
 
 ==== Installation
 
@@ -472,7 +472,7 @@ A minimal example configuration file with one instance:
 replicaCount: 1
 
 image:
-   registry: registry.app.corpintra.net/sechub/pds_scancode_ubuntu
+   registry: registry.app.corpintra.net/sechub/pds_scancode_debian
    tag: latest
 
 pds:
@@ -509,7 +509,7 @@ An example configuration file with 3 replicas, postgresql and object storage:
 replicaCount: 3
 
 image:
-   registry: my.registry.example.org/pds_scancode_ubuntu
+   registry: my.registry.example.org/pds_scancode_debian
    tag: latest
 
 pds:
