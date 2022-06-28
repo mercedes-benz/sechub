@@ -32,6 +32,8 @@ spec:
                       value: "{{ .Values.users.technical.id }}"
                     - name: TECHUSER_APITOKEN
                       value: "{{ .Values.users.technical.apiToken }}"
+                    - name: PDS_UPLOAD_BINARIES_MAXIMUM_BYTES
+                      value: "{{ .Values.pds.uploadBinariesMaximumBytes }}"
                     - name: PDS_MAX_FILE_UPLOAD_SIZE
                       value: "{{ .Values.pds.maxFileUploadSize }}"
                     - name: PDS_CONFIG_EXECUTE_QUEUE_MAX
@@ -108,3 +110,15 @@ spec:
                     failureThreshold: 3
                     successThreshold: 1
                     timeoutSeconds: 3
+            volumes:
+                - name: pds-scancode-workspace
+                  ephemeral:
+                    volumeClaimTemplate:
+                      metadata:
+                        labels:
+                          name: {{ .Chart.Name }}
+                      spec:
+                        accessModes: ["ReadWriteOnce"]
+                        resources:
+                          requests:
+                            storage: "{{ .Values.pds.volumes.workspace.size }}"

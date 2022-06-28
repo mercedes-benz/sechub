@@ -54,3 +54,7 @@ S3_ENDPOINT=http://10.2.43.7:9000
 S3_BUCKETNAME=pds
 S3_ACCESSKEY=user
 S3_SECRETKEY=Why$5forThat?
+
+# Binary upload size in bytes
+# 1024**2 * 250 = 100 mebibyte
+PDS_UPLOAD_BINARIES_MAXIMUM_BYTES=262144000
