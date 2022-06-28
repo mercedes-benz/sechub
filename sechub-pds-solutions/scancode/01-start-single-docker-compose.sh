@@ -15,5 +15,5 @@ else
     echo "Using existing environment file: $ENVIRONMENT_FILE."
 fi
 
-echo "Starting single Ubuntu container."
+echo "Starting single container."
 docker-compose --file docker-compose_pds_scancode.yaml up --build --remove-orphans

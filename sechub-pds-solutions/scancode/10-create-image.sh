@@ -48,5 +48,5 @@ fi
 
 docker build --pull --no-cache $BUILD_ARGS \
        --tag "$REGISTRY:$VERSION" \
-       --file docker/ScanCode-Ubuntu.dockerfile docker/
+       --file docker/ScanCode-Debian.dockerfile docker/
 docker tag "$REGISTRY:$VERSION" "$REGISTRY:latest"
