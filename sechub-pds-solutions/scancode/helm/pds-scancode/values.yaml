@@ -14,7 +14,9 @@ pds:
     
     # 100 MiB by default
     # 1024**2 * 100 = 104857600
-    uploadBinariesMaximumBytes: 104857600
+    # declare as string to avoid scientific number
+    # formatting by Kubernetes
+    uploadBinariesMaximumBytes: "104857600"
     config:
         execute:
             queueMax: 10

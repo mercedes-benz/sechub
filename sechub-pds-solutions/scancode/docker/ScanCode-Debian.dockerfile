@@ -46,6 +46,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get --assume-yes install wget \
                                  tar \
                                  tree \
+                                 procps \
                                  openjdk-11-jre-headless \
                                  "python${PYTHON_VERSION}" \
                                  "python${PYTHON_VERSION}-distutils" \
