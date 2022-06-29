@@ -63,7 +63,7 @@ public class ProductResult {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = COLUMN_UUID, updatable = false, nullable = false)
+    @Column(name = COLUMN_UUID, updatable = false, nullable = false, columnDefinition = "UUID")
     UUID uUID;
 
     public UUID getUUID() {
@@ -82,7 +82,7 @@ public class ProductResult {
     @Column(name = COLUMN_RESULT)
     private String result;
 
-    @Column(name = COLUMN_SECHUB_JOB_UUID, updatable = false, nullable = false)
+    @Column(name = COLUMN_SECHUB_JOB_UUID, updatable = false, nullable = false, columnDefinition = "UUID")
     UUID secHubJobUUID;
 
     @Version
@@ -102,7 +102,7 @@ public class ProductResult {
     @Column(name = COLUMN_META_DATA, nullable = true)
     String metaData;
 
-    @Column(name = COLUMN_PRODUCT_CONFIG_UUID, nullable = true) // when null it means we got (old) entries or SERECO fallback
+    @Column(name = COLUMN_PRODUCT_CONFIG_UUID, nullable = true, columnDefinition = "UUID") // when null it means we got (old) entries or SERECO fallback
     UUID productExecutorConfigUUID;
 
     ProductResult() {

@@ -41,7 +41,6 @@ public class PDSJob {
     public static final String TABLE_NAME = "PDS_JOB";
 
     public static final String COLUMN_UUID = "UUID";
-    public static final String COLUMN_SECHUB_JOB_UUID = "SECHUB_JOB_UUID";
 
     public static final String COLUMN_SERVER_ID = "SERVER_ID";
     public static final String COLUMN_STATE = "STATE";
@@ -69,7 +68,6 @@ public class PDSJob {
 
     public static final String PROPERTY_UUID = "uUID";
     public static final String PROPERTY_SERVER_ID = "serverId";
-    public static final String PROPERTY_SECHUB_JOB_UUID = "sechubJobUUID";
 
     public static final String PROPERTY_STATE = "state";
     public static final String PROPERTY_OWNER = "owner";
@@ -86,7 +84,7 @@ public class PDSJob {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = COLUMN_UUID, updatable = false, nullable = false)
+    @Column(name = COLUMN_UUID, updatable = false, nullable = false, columnDefinition = "UUID")
     UUID uUID;
 
     @Column(name = COLUMN_OWNER, nullable = false)
