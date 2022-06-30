@@ -55,7 +55,7 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
             "This contains a comma separated list of path patterns for file includes. These patterns can contain wildcards. Matching will be done case insensitive!"
                     + "For example: `*.go,*.html, test1.txt` would include every go file, every HTML file and files named `test1.txt`.\n\n"
                     + "When nothing defined, every content is accepted as include.\n"
-                    + "Every file which is matched by one of the patterns will be included - except those which are explicit excluded.\n\n")
+                    + "Every file which is matched by one of the patterns will be included - except those which are explicitly excluded.\n\n")
                             .markAlwaysSentToPDS()),
 
     /**

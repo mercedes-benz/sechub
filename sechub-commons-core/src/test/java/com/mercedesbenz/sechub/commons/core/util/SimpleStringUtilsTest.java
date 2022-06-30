@@ -17,12 +17,18 @@ public class SimpleStringUtilsTest {
 
     @ParameterizedTest
     @CsvSource({ "*.go|/**/subfolder/**", "age", "test" })
-    void createListForCommaSeparatedValues(String dataWithPipeSeparator) {
+    void createListForCommaSeparatedValues(String testDataValuesSeparatedByPipe) {
         /* prepare */
-        String[] splitted = dataWithPipeSeparator.split("\\|");
+        String[] valuesArray = testDataValuesSeparatedByPipe.split("\\|");
+
+        String valuesCommaSeparated = String.join(",", valuesArray);
+        List<String> expectedValues = Arrays.asList(valuesArray);
+
+        /* execute */
+        List<String> createdValues = SimpleStringUtils.createListForCommaSeparatedValues(valuesCommaSeparated);
 
         /* execute + test */
-        assertEquals(Arrays.asList(splitted), SimpleStringUtils.createListForCommaSeparatedValues(String.join(",", splitted)));
+        assertEquals(expectedValues, createdValues);
 
     }
 

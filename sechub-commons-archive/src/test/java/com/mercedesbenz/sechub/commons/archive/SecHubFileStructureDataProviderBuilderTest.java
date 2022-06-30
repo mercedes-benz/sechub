@@ -107,7 +107,7 @@ class SecHubFileStructureDataProviderBuilderTest {
     }
 
     @Test
-    void for_scanType_codescan_and_empty_model_builder_creates_an_dataProvider() {
+    void for_scanType_codescan_and_empty_model_builder_creates_a_dataProvider() {
         /* prepare */
         SecHubConfigurationModel model = new SecHubConfigurationModel();
 
@@ -121,7 +121,7 @@ class SecHubFileStructureDataProviderBuilderTest {
     }
 
     @Test
-    void for_scanType_licensescan_and_empty_model_builder_creates_an_dataProvider() {
+    void for_scanType_licensescan_and_empty_model_builder_creates_a_dataProvider() {
         /* prepare */
         SecHubConfigurationModel model = new SecHubConfigurationModel();
 

@@ -117,7 +117,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
      * <li> excludes: {@value IntegrationTestDefaultExecutorConfigurations#EXCLUDES_1}</li>
      * </ul>
      *
-     * It is usesd inside {@link IntegrationTestDefaultProfiles#PROFILE_10_PDS_CODESCAN_INCLUDES_EXCLUDES profile 10}
+     * It is used inside {@link IntegrationTestDefaultProfiles#PROFILE_10_PDS_CODESCAN_INCLUDES_EXCLUDES profile 10}
      *
      */
     public static final TestExecutorConfig PDS_V1_CODE_SCAN_I_INCLUDES_EXCLUDES= definePDSScan(

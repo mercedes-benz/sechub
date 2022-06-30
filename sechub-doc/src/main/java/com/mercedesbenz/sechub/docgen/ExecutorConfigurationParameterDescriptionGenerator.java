@@ -41,16 +41,11 @@ public class ExecutorConfigurationParameterDescriptionGenerator {
         StringBuilder sb = new StringBuilder();
         PDSKey key = provider.getKey();
         if (key != null) {
-            boolean isSentToPDS = key.isSentToPDS();
             if (key instanceof ExecutionPDSKey) {
                 ExecutionPDSKey execKey = (ExecutionPDSKey) key;
                 if (execKey.isAvailableInsideScript()) {
                     String env = keyToEnvConverter.convertKeyToEnv(key.getId());
                     appendInfo("Available as ENV variable `" + env + "` inside launcher script.", sb);
-                }
-                if (!isSentToPDS) {
-                    /* fallback - the keyswhich are inside script are always et... */
-                    isSentToPDS = execKey.isAvailableInsideScript();
                 }
             }
             if (key.isGenerated()) {
