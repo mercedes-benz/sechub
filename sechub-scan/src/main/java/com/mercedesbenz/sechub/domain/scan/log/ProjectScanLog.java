@@ -63,7 +63,7 @@ public class ProjectScanLog {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = COLUMN_UUID, updatable = false, nullable = false)
+    @Column(name = COLUMN_UUID, updatable = false, nullable = false, columnDefinition = "UUID")
     UUID uUID;
 
     @Column(name = COLUMN_EXECUTED_BY)
@@ -72,7 +72,7 @@ public class ProjectScanLog {
     @Column(name = COLUMN_PROJECT_ID, nullable = false)
     String projectId;
 
-    @Column(name = COLUMN_SECHUB_JOB_UUID, nullable = false)
+    @Column(name = COLUMN_SECHUB_JOB_UUID, nullable = false, columnDefinition = "UUID")
     UUID sechubJobUUID;
 
     @Type(type = "text")
