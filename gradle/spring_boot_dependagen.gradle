@@ -1,6 +1,6 @@
 ext {
   spring_boot_dependency = [
-     // Next parts are dependencies used by Spring Boot v 2.7.0
+     // Next parts are dependencies used by Spring Boot v 2.7.1
      // You can use this information to use exact same library version inside
      // your own libraries, where you have no spring boot dependency management
      //
@@ -72,9 +72,9 @@ ext {
      thymeleaf:                              'org.thymeleaf:thymeleaf:3.0.15.RELEASE',
      thymeleaf_extras_java8time:             'org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE',
      thymeleaf_spring5:                      'org.thymeleaf:thymeleaf-spring5:3.0.15.RELEASE',
-     tomcat_embed_core:                      'org.apache.tomcat.embed:tomcat-embed-core:9.0.63',
-     tomcat_embed_el:                        'org.apache.tomcat.embed:tomcat-embed-el:9.0.63',
-     tomcat_embed_websocket:                 'org.apache.tomcat.embed:tomcat-embed-websocket:9.0.63',
+     tomcat_embed_core:                      'org.apache.tomcat.embed:tomcat-embed-core:9.0.64',
+     tomcat_embed_el:                        'org.apache.tomcat.embed:tomcat-embed-el:9.0.64',
+     tomcat_embed_websocket:                 'org.apache.tomcat.embed:tomcat-embed-websocket:9.0.64',
      txw2:                                   'org.glassfish.jaxb:txw2:2.3.6',
      unbescape:                              'org.unbescape:unbescape:1.1.6.RELEASE',
      xmlunit_core:                           'org.xmlunit:xmlunit-core:2.9.0'
@@ -146,9 +146,9 @@ ext {
      thymeleaf:                              '3.0.15.RELEASE',
      thymeleaf_extras_java8time:             '3.0.4.RELEASE',
      thymeleaf_spring5:                      '3.0.15.RELEASE',
-     tomcat_embed_core:                      '9.0.63',
-     tomcat_embed_el:                        '9.0.63',
-     tomcat_embed_websocket:                 '9.0.63',
+     tomcat_embed_core:                      '9.0.64',
+     tomcat_embed_el:                        '9.0.64',
+     tomcat_embed_websocket:                 '9.0.64',
      txw2:                                   '2.3.6',
      unbescape:                              '1.1.6.RELEASE',
      xmlunit_core:                           '2.9.0'
