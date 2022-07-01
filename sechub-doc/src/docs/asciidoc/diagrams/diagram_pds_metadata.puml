@@ -1,0 +1,86 @@
+@startuml
+'----------------------- SecHub ---------------------------
+package "SecHub" as sechub_package{
+    database SecHubDatabase as sechub_db
+    
+    component SechubJob as sechub_job     
+    
+    component PDSProductExecutor as product_executor
+    component PDSAdapter as pds_adapter
+    interface "Adapter meta\ndata callback" as sechub_metadata_callback
+    
+    sechub_job --> product_executor
+    product_executor  --> pds_adapter
+
+    
+    sechub_metadata_callback <..> sechub_db
+    
+    pds_adapter -> sechub_metadata_callback
+}
+
+note top of pds_adapter
+ After the PDS job has been created by the
+ PDS adapter, the <b>PDS_JOB_UUID</b> is stored
+ into database as meta data for the SecHub job. 
+end note
+
+
+
+'----------------------- PDS ---------------------------
+package "PDS" as pds_package {
+
+node "PDS (server process)" as pds{
+
+    component PDSJob as pds_job
+    component PDSExecutionCallable as pds_callable
+    
+    database PDSDatabase as pds_db
+    
+    pds_job -> pds_callable
+    pds_callable <..> pds_db
+    
+}
+
+note top of pds_callable
+ The callable inspects for changes at the 
+ <b>metadata.txt</b> file and will automatically
+ store them into <b>meta data column</b> of <b>PDS job entity</b> 
+ inside PDS database.
+ 
+ The meta data is <b>product specific</b>. Only the
+ product / pds-solution does know what is contained!
+ 
+ The meta data inside the database is just ONE text field.
+ Normally it is JSON - but this dependes on the 
+ underlying product. If the product does not provide 
+ meta data the file does not exist and inside database the 
+ column will be "null". 
+
+end note
+
+node "PDS (scripting process)" as pds_scripting_process {
+    component LauncherScript
+}
+
+!include module_pds_workspace_metadata.puml
+
+sechub_package -> pds_package: "SecHub communicates\n with PDS via REST."
+
+pds_callable --> pds_scripting_process : starts
+
+pds_scripting_process --> pds_workspace_metadata_location
+
+pds_callable -> pds_workspace_metadata_location
+
+note right of pds_scripting_process
+  The PDS scripting process
+  has no access to the PDS
+  database!
+  
+  Meta data will be read from and written to 
+  the metadata file inside the workspace
+end note
+
+}
+
+@enduml 

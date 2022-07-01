@@ -91,6 +91,7 @@ ext {
 
         springframework_restdocs:              "org.springframework.restdocs:spring-restdocs-mockmvc",
         springframework_security_test:         "org.springframework.security:spring-security-test", 
+        springframework_web:                   "org.springframework:spring-web",
 
 
         /* additional (1): version by spring boot dependency management - because inside spring application */
