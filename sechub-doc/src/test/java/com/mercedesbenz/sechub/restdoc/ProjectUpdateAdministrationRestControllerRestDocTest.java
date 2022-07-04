@@ -121,7 +121,7 @@ public class ProjectUpdateAdministrationRestControllerRestDocTest implements Tes
         this.mockMvc.perform(
         		post(apiEndpoint, "projectId1").
         				contentType(MediaType.APPLICATION_JSON_VALUE).
-        				content("{\"apiVersion\":\"1.0\", \"metaDataText\":{\"key1\":\"value1\"}}")
+        				content("{\"apiVersion\":\"1.0\", \"metaData\":{\"key1\":\"value1\"}}")
         		).
         	    andExpect(status().isOk()).
         	    andDo(defineRestService().

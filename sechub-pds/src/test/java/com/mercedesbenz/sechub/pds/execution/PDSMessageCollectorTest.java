@@ -13,7 +13,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
-import com.mercedesbenz.sechub.test.TextFileWriter;
+import com.mercedesbenz.sechub.test.TestFileWriter;
 
 class PDSMessageCollectorTest {
 
@@ -50,7 +50,7 @@ class PDSMessageCollectorTest {
         "msg.txt",
         "something.adoc",
         "WARNING-no-underscore.txt",
-        "ERROR_STREAM-no-underscore.txt",
+        "ERROR-no-underscore.txt",
         "warning-no-underscore.txt",
         "error-no-underscore.txt",
         })
@@ -61,7 +61,7 @@ class PDSMessageCollectorTest {
         tempDir.deleteOnExit();
 
         String messageText = "I am a message!";
-        TextFileWriter writer = new TextFileWriter();
+        TestFileWriter writer = new TestFileWriter();
         writer.save(new File(tempDir, fileName), messageText, false);
 
         /* execute */
@@ -84,7 +84,7 @@ class PDSMessageCollectorTest {
         tempDir.deleteOnExit();
 
         String messageText = "I am a warn message!";
-        TextFileWriter writer = new TextFileWriter();
+        TestFileWriter writer = new TestFileWriter();
         writer.save(new File(tempDir, fileName), messageText, false);
 
         /* execute */
@@ -107,7 +107,7 @@ class PDSMessageCollectorTest {
         tempDir.deleteOnExit();
 
         String messageText = "I am an error message!";
-        TextFileWriter writer = new TextFileWriter();
+        TestFileWriter writer = new TestFileWriter();
         writer.save(new File(tempDir, fileName), messageText, false);
 
         /* execute */

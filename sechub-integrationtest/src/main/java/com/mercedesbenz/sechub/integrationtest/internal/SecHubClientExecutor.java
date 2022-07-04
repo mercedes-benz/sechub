@@ -24,8 +24,8 @@ import com.mercedesbenz.sechub.integrationtest.api.TestUser;
 import com.mercedesbenz.sechub.integrationtest.api.WithSecHubClient.ApiTokenStrategy;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestExampleConstants.IntegrationTestExampleFolder;
 import com.mercedesbenz.sechub.test.TestFileSupport;
+import com.mercedesbenz.sechub.test.TestFileWriter;
 import com.mercedesbenz.sechub.test.TestUtil;
-import com.mercedesbenz.sechub.test.TextFileWriter;
 
 public class SecHubClientExecutor {
 
@@ -390,7 +390,7 @@ public class SecHubClientExecutor {
                 File testFile1 = new File(projectResourceFolder, "TestMeIfYouCan.java");
                 if (!testFile1.exists()) {
                     try {
-                        TextFileWriter writer = new TextFileWriter();
+                        TestFileWriter writer = new TestFileWriter();
                         writer.save("class TestMeifYouCan {}", testFile1, Charset.forName("UTF-8"));
                     } catch (IOException e) {
                         throw new IllegalStateException("Cannot create test output!", e);

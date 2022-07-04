@@ -11,9 +11,9 @@ import java.nio.charset.Charset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TextFileWriter {
+public class TestFileWriter {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TextFileWriter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TestFileWriter.class);
 
     public void save(String text, File targetFile, Charset charset) throws IOException {
         internalSave(targetFile, text, true, charset);
