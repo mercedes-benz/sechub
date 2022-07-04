@@ -12,6 +12,7 @@ public abstract class AbstractPDSKey<T extends PDSKey> implements PDSKey {
     private boolean sentToPDS;
     private String defaultValue;
     private boolean defaultRecommended;
+    private boolean onlyForTesting;
 
     /**
      * Creates a new config data key
@@ -90,6 +91,16 @@ public abstract class AbstractPDSKey<T extends PDSKey> implements PDSKey {
     public T markDefaultRecommended() {
         this.defaultRecommended = true;
         return (T) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T markForTestingOnly() {
+        this.onlyForTesting = true;
+        return (T) this;
+    }
+
+    public boolean isOnlyForTesting() {
+        return onlyForTesting;
     }
 
     @Override

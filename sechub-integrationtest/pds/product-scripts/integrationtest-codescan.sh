@@ -39,14 +39,15 @@ if [[ "$PDS_TEST_KEY_VARIANTNAME" != "f" ]]; then
     echo ">PDS_JOB_USER_MESSAGES_FOLDER=$PDS_JOB_USER_MESSAGES_FOLDER"
     echo ">PDS_JOB_HAS_EXTRACTED_SOURCES =$PDS_JOB_HAS_EXTRACTED_SOURCES"
     echo ">PDS_JOB_HAS_EXTRACTED_BINARIES=$PDS_JOB_HAS_EXTRACTED_BINARIES"
+    echo ">INTEGRATION_TEST_DEBUG=$INTEGRATION_TEST_DEBUG"
 fi
 
 if [[ "$PDS_JOB_HAS_EXTRACTED_SOURCES" = "true" ]]; then
-   mergeFolderFilesRecursivelyIntoResultFile "sources", $PDS_JOB_EXTRACTED_SOURCES_FOLDER ${PDS_JOB_RESULT_FILE}
+   mergeFolderFilesRecursivelyIntoResultFile "sources", $PDS_JOB_EXTRACTED_SOURCES_FOLDER ${PDS_JOB_RESULT_FILE} $INTEGRATION_TEST_DEBUG
 fi
 
 if [[ "$PDS_JOB_HAS_EXTRACTED_BINARIES" = "true" ]]; then
-   mergeFolderFilesRecursivelyIntoResultFile "binaries" $PDS_JOB_EXTRACTED_BINARIES_FOLDER ${PDS_JOB_RESULT_FILE}
+   mergeFolderFilesRecursivelyIntoResultFile "binaries" $PDS_JOB_EXTRACTED_BINARIES_FOLDER ${PDS_JOB_RESULT_FILE} $INTEGRATION_TEST_DEBUG
 fi
 
 # Now we add a "header" so identifyable by importer + synthetic info object to check params

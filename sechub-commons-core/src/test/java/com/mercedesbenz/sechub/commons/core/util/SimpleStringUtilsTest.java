@@ -3,12 +3,71 @@ package com.mercedesbenz.sechub.commons.core.util;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 public class SimpleStringUtilsTest {
+
+    @ParameterizedTest
+    @CsvSource({ "*.go|/**/subfolder/**", "age", "test" })
+    void createListForCommaSeparatedValues(String testDataValuesSeparatedByPipe) {
+        /* prepare */
+        String[] valuesArray = testDataValuesSeparatedByPipe.split("\\|");
+
+        String valuesCommaSeparated = String.join(",", valuesArray);
+        List<String> expectedValues = Arrays.asList(valuesArray);
+
+        /* execute */
+        List<String> createdValues = SimpleStringUtils.createListForCommaSeparatedValues(valuesCommaSeparated);
+
+        /* execute + test */
+        assertEquals(expectedValues, createdValues);
+
+    }
+
+    @Test
+    void createListForCommaSeparatedValues_spaces_in_data_have_no_influence() {
+        /* prepare */
+        List<String> expectedElements = new ArrayList<>();
+        expectedElements.add("*.go");
+        expectedElements.add("/**/subfolder/**");
+        expectedElements.add("something with spaces");
+
+        /* execute + test */
+        assertEquals(expectedElements, SimpleStringUtils.createListForCommaSeparatedValues("*.go,/**/subfolder/**,something with spaces"));
+        assertEquals(expectedElements, SimpleStringUtils.createListForCommaSeparatedValues("*.go, /**/subfolder/**,something with spaces "));
+        assertEquals(expectedElements, SimpleStringUtils.createListForCommaSeparatedValues("  *.go,    /**/subfolder/**  ,something with spaces  "));
+        assertEquals(expectedElements, SimpleStringUtils.createListForCommaSeparatedValues("  *.go,    /**/subfolder/**  ,  something with spaces"));
+
+    }
+
+    @Test
+    void createListForCommaSeparatedValues_null_results_in_empty_list() {
+
+        /* execute */
+        List<String> result = SimpleStringUtils.createListForCommaSeparatedValues(null);
+
+        /* test */
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void createListForCommaSeparatedValues_only_spaces_results_in_empty_list() {
+        /* execute + test */
+        assertTrue(SimpleStringUtils.createListForCommaSeparatedValues("").isEmpty());
+        assertTrue(SimpleStringUtils.createListForCommaSeparatedValues(" ").isEmpty());
+        assertTrue(SimpleStringUtils.createListForCommaSeparatedValues("  ").isEmpty());
+        assertTrue(SimpleStringUtils.createListForCommaSeparatedValues(", , , ,").isEmpty());
+        assertTrue(SimpleStringUtils.createListForCommaSeparatedValues(",    , , ,").isEmpty());
+    }
 
     @ParameterizedTest
     @CsvSource({ "name", "age", "test" })

@@ -3,8 +3,12 @@ package com.mercedesbenz.sechub.pds.job;
 
 import static com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants.*;
 
+import java.util.List;
+
+import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
+import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.pds.execution.PDSExecutionParameterEntry;
 
 public class PDSJobConfigurationSupport {
@@ -81,4 +85,15 @@ public class PDSJobConfigurationSupport {
         return null;
     }
 
+    public List<String> createIncludedFilePatternList() {
+        return createListForParameterWithCommaSeparatedValues(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_FILEFILTER_INCLUDES);
+    }
+
+    public List<String> createExcludedFilePatternList() {
+        return createListForParameterWithCommaSeparatedValues(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_FILEFILTER_EXCLUDES);
+    }
+
+    private List<String> createListForParameterWithCommaSeparatedValues(String key) {
+        return SimpleStringUtils.createListForCommaSeparatedValues(getStringParameterOrNull(key));
+    }
 }

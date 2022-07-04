@@ -263,11 +263,20 @@ public class PDSWorkspaceService {
 
         SecHubConfigurationModel model = resolveAndEnsureSecHubConfigurationModel(config);
         if (model == null) {
+            LOG.warn("No sechub model found - cannot resolve file structure data provider! No filtering will be active.");
             return null;
         }
+        PDSJobConfigurationSupport support = new PDSJobConfigurationSupport(config);
+        /* @formatter:off */
+        SecHubFileStructureDataProvider provider = SecHubFileStructureDataProvider.builder().
+                setScanType(scanType).
+                setModel(model).
+                setExcludedFilePatterns(support.createExcludedFilePatternList()).
+                setIncludedFilePatterns(support.createIncludedFilePatternList()).
+                build();
+        /* @formatter:on */
 
-        SecHubFileStructureDataProvider configuration = SecHubFileStructureDataProvider.builder().setScanType(scanType).setModel(model).build();
-        return configuration;
+        return provider;
     }
 
     private PDSProductSetup resolveProductSetup(PDSJobConfiguration config) {
