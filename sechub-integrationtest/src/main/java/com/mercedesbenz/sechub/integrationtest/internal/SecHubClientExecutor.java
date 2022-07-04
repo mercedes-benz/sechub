@@ -19,13 +19,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
-import com.mercedesbenz.sechub.integrationtest.TextFileWriter;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TestUser;
 import com.mercedesbenz.sechub.integrationtest.api.WithSecHubClient.ApiTokenStrategy;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestExampleConstants.IntegrationTestExampleFolder;
 import com.mercedesbenz.sechub.test.TestFileSupport;
 import com.mercedesbenz.sechub.test.TestUtil;
+import com.mercedesbenz.sechub.test.TextFileWriter;
 
 public class SecHubClientExecutor {
 

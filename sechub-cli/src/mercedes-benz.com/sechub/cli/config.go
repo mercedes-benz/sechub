@@ -297,8 +297,8 @@ func validateRequestedReportFormat(config *Config) bool {
 	config.reportFormat = lowercaseOrNotice(config.reportFormat, "requested report format")
 
 	if !sechubUtil.StringArrayContains(SupportedReportFormats, config.reportFormat) {
-		sechubUtil.LogWarning("Unsupported report format '" + config.reportFormat + "'. Changing to 'json'.")
-		config.reportFormat = "json"
+		sechubUtil.LogWarning("Unsupported report format '" + config.reportFormat + "'. Changing to '" + ReportFormatJSON + "'.")
+		config.reportFormat = ReportFormatJSON
 	}
 	return true
 }

@@ -11,6 +11,12 @@ image:
 pds:
     startMode: localserver
     maxFileUploadSize: 20MB
+    
+    # 100 MiB by default
+    # 1024**2 * 100 = 104857600
+    # declare as string to avoid scientific number
+    # formatting by Kubernetes
+    uploadBinariesMaximumBytes: "104857600"
     config:
         execute:
             queueMax: 10
@@ -24,7 +30,11 @@ pds:
     javaDebug:
         enabled: false
     keepContainerAliveAfterPDSCrashed: false
-
+    volumes:
+        # this value should be greater than,
+        # the `uploadBinariesMaximumBytes` value
+        workspace:
+            size: "1Gi"
 users:
     technical:
         id: "techuser"

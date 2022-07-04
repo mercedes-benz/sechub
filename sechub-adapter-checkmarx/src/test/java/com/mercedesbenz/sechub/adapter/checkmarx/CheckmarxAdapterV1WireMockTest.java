@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.AdapterMetaDataCallback;
 import com.mercedesbenz.sechub.adapter.IcrementalAdditionalPrefixAPIURLSupport;
@@ -149,10 +150,10 @@ public class CheckmarxAdapterV1WireMockTest {
         simulateDownloadReportSuccesful();
 
         /* execute */
-        String result = adapterToTest.start(config, callback);
+        AdapterExecutionResult adapterResult = adapterToTest.start(config, callback);
 
         /* test */
-        assertEquals(CONTENT_FROM_CHECKMARX, result);
+        assertEquals(CONTENT_FROM_CHECKMARX, adapterResult.getProductResult());
         history.assertAllRememberedUrlsWereRequested();
 
     }
@@ -224,11 +225,11 @@ public class CheckmarxAdapterV1WireMockTest {
         simulateDownloadReportSuccesful();
 
         /* execute */
-        String result = adapterToTest.start(config, callback);
+        AdapterExecutionResult adapterResult = adapterToTest.start(config, callback);
 
         /* @formatter:on */
         /* test */
-        assertEquals(CONTENT_FROM_CHECKMARX, result);
+        assertEquals(CONTENT_FROM_CHECKMARX, adapterResult.getProductResult());
         history.assertAllRememberedUrlsWereRequested();
 
     }
@@ -258,11 +259,11 @@ public class CheckmarxAdapterV1WireMockTest {
         simulateDownloadReportSuccesful();
 
         /* execute */
-        String result = adapterToTest.start(config, callback);
+        AdapterExecutionResult adapterResult = adapterToTest.start(config, callback);
 
         /* @formatter:on */
         /* test */
-        assertEquals(CONTENT_FROM_CHECKMARX, result);
+        assertEquals(CONTENT_FROM_CHECKMARX, adapterResult.getProductResult());
         history.assertAllRememberedUrlsWereRequested();
 
     }
@@ -309,11 +310,11 @@ public class CheckmarxAdapterV1WireMockTest {
         simulateDownloadReportSuccesful();
 
         /* execute */
-        String result = adapterToTest.start(config, callback);
+        AdapterExecutionResult adapterResult = adapterToTest.start(config, callback);
 
         /* @formatter:on */
         /* test */
-        assertEquals(CONTENT_FROM_CHECKMARX, result);
+        assertEquals(CONTENT_FROM_CHECKMARX, adapterResult.getProductResult());
         history.assertAllRememberedUrlsWereRequested();
 
     }

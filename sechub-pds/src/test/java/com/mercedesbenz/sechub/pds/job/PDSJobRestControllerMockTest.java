@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.job;
 
+import static com.mercedesbenz.sechub.test.PDSTestURLBuilder.*;
 import static com.mercedesbenz.sechub.test.TestConstants.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -72,6 +73,9 @@ public class PDSJobRestControllerMockTest {
     @MockBean
     private PDSCancelJobService mockedCancelJobService;
 
+    @MockBean
+    private PDSGetJobMessagesService pdsJobMessageService;
+
     @Test
     public void a_job_create_call_calls_creation_service_and_returns_result() throws Exception {
         /* prepare */
@@ -80,7 +84,7 @@ public class PDSJobRestControllerMockTest {
         /* execute */
         /* @formatter:off */
         this.mockMvc.perform(
-        		post(https(PORT_USED).pds().buildCreateJob()).
+        		post(https(PORT_USED).buildCreateJob()).
         			contentType(MediaType.APPLICATION_JSON_VALUE).
         			content("{\"apiVersion\":\"1.0\",\"sechubJobUUID\":\""+sechubJobUUID.toString()+"\"}")
         		).
@@ -115,7 +119,7 @@ public class PDSJobRestControllerMockTest {
         /* execute + test */
         /* @formatter:off */
         this.mockMvc.perform(
-                get(https(PORT_USED).pds().buildGetJobStatus(jobUUID))
+                get(https(PORT_USED).buildGetJobStatus(jobUUID))
                 ).
                     andExpect(status().isOk()).
                     andExpect(content().json(status.toJSON(),true)
@@ -136,7 +140,7 @@ public class PDSJobRestControllerMockTest {
         /* execute + test */
         /* @formatter:off */
         this.mockMvc.perform(
-                get(https(PORT_USED).pds().buildGetJobResult(jobUUID))
+                get(https(PORT_USED).buildGetJobResult(jobUUID))
                 ).
                     andExpect(status().isOk()).
                     andExpect(content().string(result)
@@ -154,7 +158,7 @@ public class PDSJobRestControllerMockTest {
         /* execute + test */
         /* @formatter:off */
         this.mockMvc.perform(
-                put(https(PORT_USED).pds().buildMarkJobReadyToStart(jobUUID))
+                put(https(PORT_USED).buildMarkJobReadyToStart(jobUUID))
                 ).
                     andExpect(status().isOk()
                 );
@@ -173,7 +177,7 @@ public class PDSJobRestControllerMockTest {
         /* execute + test */
         /* @formatter:off */
         this.mockMvc.perform(
-                put(https(PORT_USED).pds().buildCancelJob(jobUUID))
+                put(https(PORT_USED).buildCancelJob(jobUUID))
                 ).
                     andExpect(status().isOk()
                 );
@@ -196,7 +200,7 @@ public class PDSJobRestControllerMockTest {
 
         /* @formatter:off */
         this.mockMvc.perform(
-                multipart(https(PORT_USED).pds().buildUpload(jobUUID,fileName)).
+                multipart(https(PORT_USED).buildUpload(jobUUID,fileName)).
                 file(multiPart).
 
                 param("checkSum", "mychecksum")

@@ -1,8 +1,9 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 public class SecHubMessagesList implements JSONable<SecHubMessagesList> {
 
@@ -12,7 +13,7 @@ public class SecHubMessagesList implements JSONable<SecHubMessagesList> {
 
     private String type = "sechubMessagesList";
 
-    public SecHubMessagesList(Set<SecHubMessage> messages) {
+    public SecHubMessagesList(Collection<SecHubMessage> messages) {
         if (messages == null) {
             return;
         }

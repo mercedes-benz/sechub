@@ -10,6 +10,7 @@ import com.mercedesbenz.sechub.adapter.AbstractAdapter;
 import com.mercedesbenz.sechub.adapter.AdapterConfig;
 import com.mercedesbenz.sechub.adapter.AdapterContext;
 import com.mercedesbenz.sechub.adapter.AdapterException;
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.AdapterRuntimeContext;
 import com.mercedesbenz.sechub.adapter.support.MockSupport;
@@ -79,7 +80,7 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
         return 1;
     }
 
-    public final String execute(C config, AdapterRuntimeContext runtimeContext) throws AdapterException {
+    public final AdapterExecutionResult execute(C config, AdapterRuntimeContext runtimeContext) throws AdapterException {
         long timeStarted = System.currentTimeMillis();
         if (mockSanityCheckEnabled) {
             executeMockSanityCheck(config);
@@ -88,7 +89,7 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
         MockedAdapterSetupEntry setup = setupService.getSetupFor(this, config);
         if (setup == null) {
             LOG.info("did not found adapter setup so returning empty string");
-            return "";
+            return new AdapterExecutionResult("");
         }
 
         String target = config.getTargetAsString();
@@ -114,8 +115,7 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
         assertMetaDataHandledAsExpected(config, runtimeContext);
 
         LOG.trace("Returning content:{}", result);
-
-        return result;
+        return new AdapterExecutionResult(result);
     }
 
     protected void writeInitialAndReusedMetaData(C config, AdapterRuntimeContext runtimeContext) {

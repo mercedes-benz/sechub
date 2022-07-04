@@ -30,7 +30,7 @@ public enum UseCaseIdentifier {
 
     UC_USER_APPROVES_JOB(7),
 
-    UC_SCHEDULER_STARTS_JOB(8),
+    UC_SCHEDULER_STARTS_JOB(8, false),
 
     UC_USER_GET_JOB_STATUS(9),
 
@@ -38,7 +38,7 @@ public enum UseCaseIdentifier {
 
     UC_USER_GET_SPDX_JOB_REPORT(70),
 
-    UC_USER_USES_CLIENT_TO_SCAN(11),
+    UC_USER_USES_CLIENT_TO_SCAN(11, false),
 
     UC_USER_CLICKS_LINK_TO_GET_NEW_API_TOKEN(12),
 
@@ -151,11 +151,11 @@ public enum UseCaseIdentifier {
 
     UC_ADMIN_UPDATES_AUTO_CLEANUP_CONFIGURATION(65),
 
-    UC_ADMINISTRATION_AUTO_CLEANUP_EXECUTION(66),
+    UC_ADMINISTRATION_AUTO_CLEANUP_EXECUTION(66, false),
 
-    UC_SCAN_AUTO_CLEANUP_EXECUTION(67),
+    UC_SCAN_AUTO_CLEANUP_EXECUTION(67, false),
 
-    UC_SCHEDULE_AUTO_CLEANUP_EXECUTION(68),
+    UC_SCHEDULE_AUTO_CLEANUP_EXECUTION(68, false),
 
     UC_USER_UPLOADS_BINARIES(69),
 
@@ -166,6 +166,7 @@ public enum UseCaseIdentifier {
     /* +-----------------------------------------------------------------------+ */
 
     private String uniqueId;
+    private boolean hasRestApi;
 
     public String uniqueId() {
         return uniqueId;
@@ -173,8 +174,17 @@ public enum UseCaseIdentifier {
 
     private static final int WANTED_ID_LENGTH = 3;
 
-    private UseCaseIdentifier(int number) {
+    private UseCaseIdentifier(int usecaseNumber) {
+        this(usecaseNumber, true);
+    }
+
+    private UseCaseIdentifier(int number, boolean hasRestAPI) {
         this.uniqueId = createUseCaseID(number);
+        this.hasRestApi = hasRestAPI;
+    }
+
+    public boolean hasRestApi() {
+        return hasRestApi;
     }
 
     static String createUseCaseID(int usecaseNumber) {
@@ -188,4 +198,5 @@ public enum UseCaseIdentifier {
         sb.insert(0, "UC_");
         return sb.toString();
     }
+
 }

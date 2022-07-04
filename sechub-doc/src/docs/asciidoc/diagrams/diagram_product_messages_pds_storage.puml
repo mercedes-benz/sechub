@@ -1,0 +1,46 @@
+' SPDX-License-Identifier: MIT
+@startuml 
+hide empty fields
+hide empty members
+
+!include module_sechub_messages.puml
+
+class PDSExecutionCallable{
+}
+
+
+class PDSMessageCollector{
+     List<SecHubMessage> collect(File folder)
+}
+
+PDSMessageCollector --> SecHubMessage : creates
+
+note right of PDSMessageCollector::collect 
+collects all files created 
+by launcher script inside 
+messages folder 
+end note
+
+PDSExecutionCallable --> PDSMessageCollector : uses (1)
+
+PDSExecutionCallable --> SecHubMessagesList: creates (2)
+PDSExecutionCallable --> PDSJobTransactionService : stores with (3)
+
+class PDSJobTransactionService {
+     void updateJobMessagesInOwnTransaction(UUID, SecHubMessagesList);
+}
+
+class PDSJob{
+    String messages
+}
+
+note right of PDSJob::messages 
+Contains SecHubMessagesList 
+as JSON after update
+by PDSJobTransactionService 
+end note
+
+PDSJobTransactionService  --> PDSJob: updates
+
+
+@enduml 

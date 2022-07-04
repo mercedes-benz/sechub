@@ -2,8 +2,8 @@
 package com.mercedesbenz.sechub.restdoc;
 
 import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -42,9 +42,9 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.signup.UseCaseAdminDeletesSignup;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.signup.UseCaseAdminListsOpenUserSignups;
 import com.mercedesbenz.sechub.test.ExampleConstants;
+import com.mercedesbenz.sechub.test.RestDocPathParameter;
 import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
-import com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(SignupAdministrationRestController.class)

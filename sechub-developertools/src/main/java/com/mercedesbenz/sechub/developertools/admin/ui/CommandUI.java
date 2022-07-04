@@ -22,6 +22,7 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.ActionSupport;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.adapter.ShowProductExecutorTemplatesDialogAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.client.TriggerSecHubClientSynchronousScanAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.config.ConfigureAutoCleanupAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.config.ConfigurePDSAutoCleanupAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.config.CreateExecutionProfileAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.config.CreateExecutorConfigAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.config.DeleteConfigurationAction;
@@ -52,9 +53,11 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.CreatePDSJobAc
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchLastStartedPDSJobStreamsAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSConfigurationAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSJobErrorStreamAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSJobMessagesAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSJobOutputStreamAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSJobParameterExampleAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSMonitoringStatusAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.GeneratePDSSolutionTestFilesAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.MarkPDSJobReadyAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.ShowPDSConfigurationDialogAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.UploadPDSJobFileAction;
@@ -277,6 +280,20 @@ public class CommandUI {
         add(menu, new CheckPDSJobResultOrErrorAction(context));
         add(menu, new FetchPDSJobOutputStreamAction(context));
         add(menu, new FetchPDSJobErrorStreamAction(context));
+        add(menu, new FetchPDSJobMessagesAction(context));
+        menu.addSeparator();
+        menu.add(createPDSDeveloperToolsMenu());
+        menu.addSeparator();
+        menu.add(new ConfigurePDSAutoCleanupAction(context));
+
+    }
+
+    private JMenu createPDSDeveloperToolsMenu() {
+        JMenu menu = new JMenu("PDS-Developertools");
+
+        menu.add(new GeneratePDSSolutionTestFilesAction(context));
+
+        return menu;
     }
 
     private void createUserMenu() {

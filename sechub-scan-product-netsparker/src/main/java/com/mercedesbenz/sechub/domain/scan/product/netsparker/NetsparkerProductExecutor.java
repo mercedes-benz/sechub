@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.netsparker.NetsparkerAdapter;
 import com.mercedesbenz.sechub.adapter.netsparker.NetsparkerAdapterConfig;
 import com.mercedesbenz.sechub.adapter.netsparker.NetsparkerConfig;
@@ -91,10 +92,9 @@ public class NetsparkerProductExecutor extends AbstractProductExecutor {
 		/* @formatter:on */
 
         /* execute NETSPARKER by adapter and return product result */
-        String xml = netsparkerAdapter.start(netsparkerConfig, productExecutorContext.getCallback());
+        AdapterExecutionResult adapterResult = netsparkerAdapter.start(netsparkerConfig, productExecutorContext.getCallback());
 
-        ProductResult currentProductResult = productExecutorContext.getCurrentProductResult();
-        currentProductResult.setResult(xml);
+        ProductResult currentProductResult = updateCurrentProductResult(adapterResult, productExecutorContext);
         results.add(currentProductResult);
 
         return results;

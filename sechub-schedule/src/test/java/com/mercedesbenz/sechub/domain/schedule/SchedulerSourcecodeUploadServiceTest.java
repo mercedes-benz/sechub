@@ -22,6 +22,7 @@ import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
 
+@SuppressWarnings("deprecation")
 public class SchedulerSourcecodeUploadServiceTest {
 
     private static final String PROJECT1 = "project1";
