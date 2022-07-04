@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSupport;
 import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData;
@@ -71,6 +72,7 @@ public class AsPDSUser {
             }
             if (jobstatus.indexOf("FAILED") != -1) {
                 if (!orGetErrorText) {
+                    TestAPI.dumpPDSJobOutput(jobUUID);
                     throw new IllegalStateException("Job did fail:" + jobstatus);
                 }
                 jobEnded = true;
@@ -227,6 +229,12 @@ public class AsPDSUser {
 
         String json = getRestHelper().getJSON(url);
         return TestJSONHelper.get().createFromJSON(json, TestAutoCleanupData.class);
+    }
+
+    public SecHubMessagesList getJobMessages(UUID pdsJobUUID) {
+        String url = getPDSUrlBuilder().buildGetJobMessages(pdsJobUUID);
+        String json = getRestHelper().getJSON(url);
+        return SecHubMessagesList.fromJSONString(json);
     }
 
 }

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.pds.util;
+package com.mercedesbenz.sechub.commons.model;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -10,11 +10,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
-public class PDSLocalDateTimeSerializer extends StdSerializer<LocalDateTime> {
+public class LocalDateTimeSerializer extends StdSerializer<LocalDateTime> {
 
     private static final long serialVersionUID = 1L;
 
-    public PDSLocalDateTimeSerializer() {
+    public LocalDateTimeSerializer() {
         super(LocalDateTime.class);
     }
 

@@ -48,6 +48,8 @@ public class ProductResult {
 
     public static final String COLUMN_PRODUCT_CONFIG_UUID = "PRODUCT_CONFIG_UUID";
 
+    public static final String COLUMN_MESSAGES = "MESSAGES";
+
     /* +-----------------------------------------------------------------------+ */
     /* +............................ JPQL .....................................+ */
     /* +-----------------------------------------------------------------------+ */
@@ -57,6 +59,7 @@ public class ProductResult {
     public static final String PROPERTY_PRODUCT_IDENTIFIER = "productIdentifier";
     public static final String PROPERTY_PRODUCT_CONFIG_UUID = "productExecutorConfigUUID";
     public static final String PROPERTY_PRODUCT_STARTED = "started";
+    public static final String PROPERTY_MESSAGES = "messages";
 
     public static final String QUERY_DELETE_RESULT_OLDER_THAN = "DELETE FROM ProductResult r WHERE r." + PROPERTY_PRODUCT_STARTED + " < :cleanTimeStamp";;
 
@@ -104,6 +107,10 @@ public class ProductResult {
 
     @Column(name = COLUMN_PRODUCT_CONFIG_UUID, nullable = true, columnDefinition = "UUID") // when null it means we got (old) entries or SERECO fallback
     UUID productExecutorConfigUUID;
+
+    @Type(type = "text")
+    @Column(name = COLUMN_MESSAGES, nullable = true)
+    String messages;
 
     ProductResult() {
         // jpa only
@@ -187,6 +194,14 @@ public class ProductResult {
 
     public UUID getProductExecutorConfigUUID() {
         return productExecutorConfigUUID;
+    }
+
+    public void setMessages(String messages) {
+        this.messages = messages;
+    }
+
+    public String getMessages() {
+        return messages;
     }
 
     @Override

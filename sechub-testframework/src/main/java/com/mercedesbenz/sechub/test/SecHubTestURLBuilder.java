@@ -567,4 +567,8 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
         return buildUrl(API_ANONYMOUS, "integrationtest/autocleanup/inspection/deleteCounts");
     }
 
+    public String buildIntegrationTestFetchFullScandata(UUID sechubJobUIUD) {
+        return buildUrl(API_ANONYMOUS, "integrationtest/job/" + sechubJobUIUD + "/fullscandata");
+    }
+
 }

@@ -45,6 +45,10 @@ public class PDSTestURLBuilder extends AbstractTestURLBuilder {
         return buildUrl(API_PDS_JOB, jobUUID.toString(), "result");
     }
 
+    public String buildGetJobMessages(UUID jobUUID) {
+        return buildUrl(API_PDS_JOB, jobUUID.toString(), "messages");
+    }
+
     public String buildUpload(UUID jobUUID, String fileName) {
         return buildUrl(API_PDS_JOB, jobUUID.toString(), "upload", fileName);
     }
@@ -124,4 +128,5 @@ public class PDSTestURLBuilder extends AbstractTestURLBuilder {
     public String buildAdminFetchesAutoCleanupConfigurationUrl() {
         return buildUrl(API_ADMIN_CONFIG, "autoclean");
     }
+
 }

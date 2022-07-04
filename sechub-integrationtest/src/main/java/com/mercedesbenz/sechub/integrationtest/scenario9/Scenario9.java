@@ -39,7 +39,9 @@ import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
  * USER_1, is automatically registered, created and assigned to project1
  * </pre>
  *
- * c) Execution profiles Following profiles are used inside this scenario
+ * c) Execution profiles
+ *
+ * Following profiles are used inside this scenario
  *
  * <pre>
  * {@link IntegrationTestDefaultProfiles#PROFILE_8_PDS_WEBSCAN_SARIF profile 8}

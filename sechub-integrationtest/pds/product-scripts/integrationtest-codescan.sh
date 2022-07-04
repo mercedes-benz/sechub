@@ -34,9 +34,11 @@ function produceLargerOutputStreamContent() {
 if [[ "$PDS_TEST_KEY_VARIANTNAME" != "f" ]]; then
     # Variant f does provide "lazy streams" with dedicated content and depends on output.
     # But for all other variants we can provide some additoinal information in messages     
+    echo ">PDS_JOB_UUID=$PDS_JOB_UUID"
+    echo ">PDS_TEST_KEY_VARIANTNAME=$PDS_TEST_KEY_VARIANTNAME"
+    echo ">PDS_JOB_USER_MESSAGES_FOLDER=$PDS_JOB_USER_MESSAGES_FOLDER"
     echo ">PDS_JOB_HAS_EXTRACTED_SOURCES =$PDS_JOB_HAS_EXTRACTED_SOURCES"
     echo ">PDS_JOB_HAS_EXTRACTED_BINARIES=$PDS_JOB_HAS_EXTRACTED_BINARIES"
-    echo ">PDS_JOB_UUID=$PDS_JOB_UUID"
 fi
 
 if [[ "$PDS_JOB_HAS_EXTRACTED_SOURCES" = "true" ]]; then
@@ -82,5 +84,17 @@ if [[ "$PDS_TEST_KEY_VARIANTNAME" = "g" ]]; then
     errEcho $(date)
     errEcho "ERROR message before doing an exit 1..."
     exit 1
+fi
+
+if [[ "$PDS_TEST_KEY_VARIANTNAME" = "" ]]; then
+    echo "No variant found - so direct PDS test"
     
+    infoMessage "info for PDS job: $PDS_JOB_UUID"
+    warnMessage "warn for PDS job: $PDS_JOB_UUID"
+    errorMessage "error for PDS job: $PDS_JOB_UUID but with
+    a multine ....
+    "
+    
+    echo "After messages were created I found this inside messages folder:"
+    tree $PDS_JOB_USER_MESSAGES_FOLDER 
 fi

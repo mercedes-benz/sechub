@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobErrorStream;
@@ -134,6 +135,13 @@ public class PDSJobTransactionService {
     }
 
     public void saveInOwnTransaction(PDSJob job) {
+        repository.save(job);
+    }
+
+    public void updateJobMessagesInOwnTransaction(UUID jobUUID, SecHubMessagesList sechubMessageList) {
+        PDSJob job = assertJobFound(jobUUID, repository);
+        job.messages = sechubMessageList.toJSON();
+
         repository.save(job);
     }
 }

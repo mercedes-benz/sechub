@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.adapter.AbstractAdapter;
 import com.mercedesbenz.sechub.adapter.AdapterException;
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterProfiles;
 import com.mercedesbenz.sechub.adapter.AdapterRuntimeContext;
 import com.mercedesbenz.sechub.adapter.mock.MockedAdapter;
@@ -49,7 +50,7 @@ public class DelegatingMockablePDSAdapterV1 extends AbstractAdapter<PDSAdapterCo
     }
 
     @Override
-    protected String execute(PDSAdapterConfig config, AdapterRuntimeContext runtimeContext) throws AdapterException {
+    protected AdapterExecutionResult execute(PDSAdapterConfig config, AdapterRuntimeContext runtimeContext) throws AdapterException {
         PDSAdapterConfigData data = config.getPDSAdapterConfigData();
         String mockingDisabled = data.getJobParameters().get(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_MOCKING_DISABLED);
 

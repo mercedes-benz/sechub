@@ -4,7 +4,7 @@ package com.mercedesbenz.sechub.developertools.generator;
 import java.io.File;
 
 import com.mercedesbenz.sechub.commons.TextFileReader;
-import com.mercedesbenz.sechub.integrationtest.TextFileWriter;
+import com.mercedesbenz.sechub.test.TextFileWriter;
 
 /**
  * How to use ? Why this generator?

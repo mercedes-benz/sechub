@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
@@ -22,6 +23,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationObjectInfoFi
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationType;
 import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubFileSystemContainer;
+import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
 import com.mercedesbenz.sechub.domain.scan.NetworkLocationProvider;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetInfoFactory;
@@ -89,6 +91,16 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
     @Override
     public ScanType getScanType() {
         return scanType;
+    }
+
+    protected ProductResult updateCurrentProductResult(AdapterExecutionResult adapterResult, ProductExecutorContext executorContext) {
+        SecHubMessagesList messagesList = new SecHubMessagesList(adapterResult.getProductMessages());
+
+        ProductResult productResult = executorContext.getCurrentProductResult(); // product result is set by callback
+        productResult.setResult(adapterResult.getProductResult());
+        productResult.setMessages(messagesList.toJSON());
+
+        return productResult;
     }
 
     @Override
