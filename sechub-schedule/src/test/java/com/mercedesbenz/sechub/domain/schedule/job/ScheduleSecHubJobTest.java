@@ -7,7 +7,7 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-public class SecHubJobTest {
+public class ScheduleSecHubJobTest {
 
     @Test
     public void test_equals_and_hashcode_correct_implemented() {

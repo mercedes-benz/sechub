@@ -5,6 +5,6 @@ import org.slf4j.LoggerFactory;
 
 public class Console {
 
-	public static final Logger LOG = LoggerFactory.getLogger("console");
-	
+    public static final Logger LOG = LoggerFactory.getLogger("console");
+
 }

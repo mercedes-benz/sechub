@@ -13,16 +13,16 @@ import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.pds.PDSNotFoundException;
 
-class PDSGetJobStreamContentServiceTest {
+class PDSGetJobExecutionDataContentServiceTest {
 
-    private PDSGetJobStreamContentService serviceToTest;
+    private PDSGetJobExecutionDataContentService serviceToTest;
     private PDSJobRepository repository;
     private PDSStreamContentUpdateChecker refreshCheckCalculator;
     private PDSJobTransactionService jobTransactionService;
 
     @BeforeEach
     void beforeEach() {
-        serviceToTest = new PDSGetJobStreamContentService();
+        serviceToTest = new PDSGetJobExecutionDataContentService();
         repository = mock(PDSJobRepository.class);
         refreshCheckCalculator = mock(PDSStreamContentUpdateChecker.class);
         jobTransactionService = mock(PDSJobTransactionService.class);
@@ -36,7 +36,7 @@ class PDSGetJobStreamContentServiceTest {
 
     @Test
     void initial_default_settings_are_valid() {
-        PDSGetJobStreamContentService plainNewInstance = new PDSGetJobStreamContentService();
+        PDSGetJobExecutionDataContentService plainNewInstance = new PDSGetJobExecutionDataContentService();
 
         assertTrue(plainNewInstance.maximumRefreshCheckRetries > 2);
         assertTrue(plainNewInstance.maximumRefreshRequestRetries > 1);
@@ -80,7 +80,7 @@ class PDSGetJobStreamContentServiceTest {
         assertEquals("output1", result);
         verify(refreshCheckCalculator).isUpdateNecessaryWhenRefreshRequestedNow(job); // must be asked
         verify(jobTransactionService, never()).saveInOwnTransaction(job); // no save done by get
-        verify(jobTransactionService, never()).markJobStreamDataRefreshRequestedInOwnTransaction(job.getUUID()); // no refresh requested
+        verify(jobTransactionService, never()).markJobExecutionDataRefreshRequestedInOwnTransaction(job.getUUID()); // no refresh requested
 
     }
 
@@ -101,7 +101,7 @@ class PDSGetJobStreamContentServiceTest {
         assertEquals("err1", result);
         verify(refreshCheckCalculator).isUpdateNecessaryWhenRefreshRequestedNow(job); // must be asked
         verify(jobTransactionService, never()).saveInOwnTransaction(job); // no save done by get
-        verify(jobTransactionService, never()).markJobStreamDataRefreshRequestedInOwnTransaction(job.getUUID()); // no refresh requested
+        verify(jobTransactionService, never()).markJobExecutionDataRefreshRequestedInOwnTransaction(job.getUUID()); // no refresh requested
 
     }
 
@@ -122,7 +122,7 @@ class PDSGetJobStreamContentServiceTest {
         assertEquals("output1", result);
         verify(refreshCheckCalculator).isUpdateNecessaryWhenRefreshRequestedNow(job); // must be asked
         verify(jobTransactionService, never()).saveInOwnTransaction(job); // no save done by get
-        verify(jobTransactionService).markJobStreamDataRefreshRequestedInOwnTransaction(job.getUUID()); // must be marked
+        verify(jobTransactionService).markJobExecutionDataRefreshRequestedInOwnTransaction(job.getUUID()); // must be marked
 
     }
 
@@ -144,7 +144,7 @@ class PDSGetJobStreamContentServiceTest {
         assertEquals("err1", result);
         verify(refreshCheckCalculator).isUpdateNecessaryWhenRefreshRequestedNow(job); // must be asked
         verify(jobTransactionService, never()).saveInOwnTransaction(job); // no save done by get
-        verify(jobTransactionService).markJobStreamDataRefreshRequestedInOwnTransaction(job.getUUID()); // must be marked
+        verify(jobTransactionService).markJobExecutionDataRefreshRequestedInOwnTransaction(job.getUUID()); // must be marked
 
     }
 
@@ -165,7 +165,7 @@ class PDSGetJobStreamContentServiceTest {
         assertEquals("output1", result);
         verify(refreshCheckCalculator).isUpdateNecessaryWhenRefreshRequestedNow(job); // must be asked
         verify(jobTransactionService, never()).saveInOwnTransaction(job); // no save done by get
-        verify(jobTransactionService).markJobStreamDataRefreshRequestedInOwnTransaction(job.getUUID()); // must be marked
+        verify(jobTransactionService).markJobExecutionDataRefreshRequestedInOwnTransaction(job.getUUID()); // must be marked
 
     }
 
@@ -186,7 +186,7 @@ class PDSGetJobStreamContentServiceTest {
         assertEquals("err1", result);
         verify(refreshCheckCalculator).isUpdateNecessaryWhenRefreshRequestedNow(job); // must be asked
         verify(jobTransactionService, never()).saveInOwnTransaction(job); // no save done by get
-        verify(jobTransactionService).markJobStreamDataRefreshRequestedInOwnTransaction(job.getUUID()); // must be marked
+        verify(jobTransactionService).markJobExecutionDataRefreshRequestedInOwnTransaction(job.getUUID()); // must be marked
 
     }
 

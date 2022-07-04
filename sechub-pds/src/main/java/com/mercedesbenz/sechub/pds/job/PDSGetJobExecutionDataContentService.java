@@ -20,15 +20,16 @@ import com.mercedesbenz.sechub.pds.PDSMustBeDocumented;
 import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobErrorStream;
+import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobMetaData;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobOutputStream;
 import com.mercedesbenz.sechub.pds.util.PDSResilientRetryExecutor;
 import com.mercedesbenz.sechub.pds.util.PDSResilientRetryExecutor.ExceptionThrower;
 
 @Service
 @RolesAllowed(PDSRoleConstants.ROLE_SUPERADMIN)
-public class PDSGetJobStreamContentService {
+public class PDSGetJobExecutionDataContentService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PDSGetJobStreamContentService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PDSGetJobExecutionDataContentService.class);
 
     private static final int DEFAULT_RESILIENCE_MAX_RETRIES = 3;
 
@@ -58,7 +59,7 @@ public class PDSGetJobStreamContentService {
     @Autowired
     PDSStreamContentUpdateChecker refreshCheckCalculator;
 
-    public PDSGetJobStreamContentService() {
+    public PDSGetJobExecutionDataContentService() {
 
         streamDataRefreshExceptionThrower = new ExceptionThrower<IllegalStateException>() {
 
@@ -77,7 +78,7 @@ public class PDSGetJobStreamContentService {
             + "After succesful upate the new result will be returned. ", number = 2))
     public String getJobOutputStreamContentAsText(UUID jobUUID) {
         LOG.info("Administrator starts fetching output stream data for PDS job:{}", jobUUID);
-        return getJobStreamAsText(jobUUID, StreamType.OUTPUT);
+        return getJobStreamAsText(jobUUID, ExecutionDataType.OUTPUT_STREAM);
     }
 
     @RolesAllowed(PDSRoleConstants.ROLE_SUPERADMIN)
@@ -87,7 +88,17 @@ public class PDSGetJobStreamContentService {
             + "After succesful upate the new result will be returned. ", number = 2))
     public String getJobErrorStreamContentAsText(UUID jobUUID) {
         LOG.info("Administrator starts fetching error stream data for PDS job:{}", jobUUID);
-        return getJobStreamAsText(jobUUID, StreamType.ERROR);
+        return getJobStreamAsText(jobUUID, ExecutionDataType.ERROR_STREAM);
+    }
+
+    @RolesAllowed(PDSRoleConstants.ROLE_SUPERADMIN)
+    @UseCaseAdminFetchesJobMetaData(@PDSStep(name = "service call", description = "Meta data of PDS job shall be returned. "
+            + "If the data is available in database and not outdated it will be returned directly. "
+            + "Otherwise job is marked for refresh and service will wait until stream data has been updated by executing machine. "
+            + "After succesful upate the new result will be returned. ", number = 2))
+    public String getJobMetaDataTextOrNull(UUID jobUUID) {
+        LOG.info("Administrator starts fetching meta data for PDS job:{}", jobUUID);
+        return getJobStreamAsText(jobUUID, ExecutionDataType.METADATA);
     }
 
     /**
@@ -98,17 +109,19 @@ public class PDSGetJobStreamContentService {
      * @param streamType
      * @return
      */
-    protected String getJobStreamAsText(UUID jobUUID, StreamType streamType) {
+    protected String getJobStreamAsText(UUID jobUUID, ExecutionDataType streamType) {
         notNull(jobUUID, "job uuid may not be null!");
         notNull(streamType, "streamType may not be null!");
 
         PDSJob job = fetchJobDataContainingStreamContent(jobUUID);
 
         switch (streamType) {
-        case ERROR:
+        case ERROR_STREAM:
             return job.getErrorStreamText();
-        case OUTPUT:
+        case OUTPUT_STREAM:
             return job.getOutputStreamText();
+        case METADATA:
+            return job.getMetaDataText();
         default:
             throw new IllegalStateException("Unsupported stream type:" + streamType);
         }
@@ -130,7 +143,7 @@ public class PDSGetJobStreamContentService {
     private PDSJob triggerRefreshRequestAndWaitForUpdate(PDSJob job) {
         UUID jobUUID = job.getUUID();
 
-        LocalDateTime refreshRequestTime = markJobStreamDataRefreshRequestedResilient(jobUUID);
+        LocalDateTime refreshRequestTime = markJobExecutionDataRefreshRequestedResilient(jobUUID);
 
         /* wait */
         LOG.debug("Wait until refresh request for PDS job:{} has updated stream data", jobUUID);
@@ -167,7 +180,7 @@ public class PDSGetJobStreamContentService {
 
     }
 
-    private LocalDateTime markJobStreamDataRefreshRequestedResilient(UUID jobUUID) {
+    private LocalDateTime markJobExecutionDataRefreshRequestedResilient(UUID jobUUID) {
         LOG.debug("Mark stream data refresh requested for PDS job:{}", jobUUID);
         /*
          * here we execute the refresh request in a resilient way - so updates by other
@@ -177,7 +190,7 @@ public class PDSGetJobStreamContentService {
                 streamDataRefreshExceptionThrower, OptimisticLockingFailureException.class);
 
         LocalDateTime refreshRequestTime = executor.execute(() -> {
-            return jobTransactionService.markJobStreamDataRefreshRequestedInOwnTransaction(jobUUID);
+            return jobTransactionService.markJobExecutionDataRefreshRequestedInOwnTransaction(jobUUID);
         }, "PDS job:" + jobUUID);
         return refreshRequestTime;
     }
@@ -186,8 +199,12 @@ public class PDSGetJobStreamContentService {
         return maximumRefreshRequestRetries;
     }
 
-    private enum StreamType {
-        ERROR, OUTPUT
+    private enum ExecutionDataType {
+        ERROR_STREAM,
+
+        OUTPUT_STREAM,
+
+        METADATA
     }
 
 }

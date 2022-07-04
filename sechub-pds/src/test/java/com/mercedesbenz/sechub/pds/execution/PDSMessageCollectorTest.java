@@ -50,7 +50,7 @@ class PDSMessageCollectorTest {
         "msg.txt",
         "something.adoc",
         "WARNING-no-underscore.txt",
-        "ERROR-no-underscore.txt",
+        "ERROR_STREAM-no-underscore.txt",
         "warning-no-underscore.txt",
         "error-no-underscore.txt",
         })

@@ -208,6 +208,11 @@ public class DirectPDSAPIJobScenario6IntTest {
 
             }
         }
+
+        /* test 3: meta data */
+        String metaData = asPDSUser(PDS_ADMIN).getJobMetaData(pdsJobUUID);
+
+        assertEquals("generated meta data for PDS job:"+pdsJobUUID+"\n",metaData);
         /* @formatter:on */
     }
 
@@ -242,6 +247,11 @@ public class DirectPDSAPIJobScenario6IntTest {
 
         /* test */
         assertPDSJobStatus(result).isInState("CREATED");
+
+        /* test 2: meta data not available at this time*/
+        String metaData = asPDSUser(PDS_ADMIN).getJobMetaData(pdsJobUUID);
+
+        assertEquals(null,metaData); // in this state we do not expect any meta data here!
         /* @formatter:on */
     }
 

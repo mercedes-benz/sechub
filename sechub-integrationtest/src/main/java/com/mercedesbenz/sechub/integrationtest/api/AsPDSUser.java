@@ -237,4 +237,10 @@ public class AsPDSUser {
         return SecHubMessagesList.fromJSONString(json);
     }
 
+    public String getJobMetaData(UUID pdsJobUUID) {
+        String url = getPDSUrlBuilder().buildAdminFetchesJobMetaData(pdsJobUUID);
+        String text = getRestHelper().getStringFromURL(url);
+        return text;
+    }
+
 }

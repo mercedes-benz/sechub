@@ -49,6 +49,8 @@ public class PDSWorkspaceService {
     public static final String OUTPUT = "output";
     public static final String MESSAGES = "messages";
     public static final String RESULT_TXT = "result.txt";
+    public static final String METADATA_TXT = "metadata.txt";
+
     public static final String SYSTEM_OUT_LOG = "system-out.log";
     public static final String SYSTEM_ERROR_LOG = "system-error.log";
 
@@ -385,6 +387,10 @@ public class PDSWorkspaceService {
         return new File(getOutputFolder(jobUUID), RESULT_TXT);
     }
 
+    public File getMetaDataFile(UUID jobUUID) {
+        return new File(getWorkspaceFolder(jobUUID), METADATA_TXT);
+    }
+
     /**
      * Resolves upload folder - if not existing it will be created
      *
@@ -440,6 +446,7 @@ public class PDSWorkspaceService {
         locationData.workspaceLocation = createWorkspacePathAndEnsureParentDirectories(workspaceFolderPath, null).toString();
         locationData.resultFileLocation = createWorkspacePathAndEnsureParentDirectories(workspaceFolderPath, OUTPUT + File.separator + RESULT_TXT).toString();
         locationData.userMessagesLocation = createWorkspacePathAndEnsureDirectory(workspaceFolderPath, OUTPUT + File.separator + MESSAGES).toString();
+        locationData.metaDataFileLocation = createWorkspacePathAndEnsureParentDirectories(workspaceFolderPath, METADATA_TXT).toString();
 
         locationData.extractedSourcesLocation = createExtractedSourcesLocation(workspaceFolderPath).toString();
         locationData.extractedBinariesLocation = createExtractedBinariesLocation(workspaceFolderPath).toString();

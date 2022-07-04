@@ -62,6 +62,7 @@ class PDSWorkspaceServiceTest {
         assertEquals(expectedWorspaceLocation,result.workspaceLocation);
         assertEquals(expectedWorspaceLocation+separatorChar+"output"+separatorChar+"result.txt",result.resultFileLocation);
         assertEquals(expectedWorspaceLocation+separatorChar+"output"+separatorChar+"messages",result.userMessagesLocation);
+        assertEquals(expectedWorspaceLocation+separatorChar+"metadata.txt",result.metaDataFileLocation);
         assertEquals(expectedWorspaceLocation+separatorChar+"upload"+separatorChar+SOURCECODE_ZIP,result.sourceCodeZipFileLocation);
         assertEquals(expectedWorspaceLocation+separatorChar+"upload"+separatorChar+"extracted"+separatorChar+"sources",result.extractedSourcesLocation);
         assertEquals(expectedWorspaceLocation+separatorChar+"upload"+separatorChar+"extracted"+separatorChar+"binaries",result.extractedBinariesLocation);

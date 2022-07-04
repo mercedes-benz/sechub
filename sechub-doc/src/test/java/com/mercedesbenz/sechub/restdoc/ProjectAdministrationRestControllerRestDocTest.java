@@ -147,7 +147,7 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
 				        + "\"description\":\"A description of the project.\", "
 				        + "\"owner\":\"ownerName1\", "
 				        + "\"whiteList\":{\"uris\":[\"192.168.1.1\",\"https://my.special.server.com/myapp1/\"]}, "
-				        + "\"metaData\":{\"key1\":\"value1\", \"key2\":\"value2\"}}")
+				        + "\"metaDataText\":{\"key1\":\"value1\", \"key2\":\"value2\"}}")
 				).
 		andExpect(status().isCreated()).
 		andDo(defineRestService().

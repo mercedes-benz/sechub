@@ -10,16 +10,16 @@ import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
 
 @Service
 public class CheckmarxWrapperScanService {
-    
+
     @Autowired
     CheckmarxAdapter adapter;
 
     public String startScan() {
-        
+
         AdapterMetaDataCallback adapterMetaDataCallBack = null;
-        
+
         CheckmarxAdapterConfig config = null;
-        
+
         try {
             adapter.start(config, adapterMetaDataCallBack);
         } catch (AdapterException e) {

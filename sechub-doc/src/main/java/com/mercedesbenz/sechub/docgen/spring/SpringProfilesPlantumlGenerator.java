@@ -177,7 +177,7 @@ public class SpringProfilesPlantumlGenerator implements Generator {
 
     private void appendErrorsAsComment(ListedProfileModel model, StringBuilder sb) {
         for (String errorMessage : model.errorMessages) {
-            sb.append("'ERROR at generation time: ").append(errorMessage).append("\n");
+            sb.append("'ERROR_STREAM at generation time: ").append(errorMessage).append("\n");
         }
     }
 

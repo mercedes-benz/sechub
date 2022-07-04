@@ -22,7 +22,7 @@ of the job run must be available, see next diagram for details:
 
 plantuml::diagrams/diagram_pds_metadata.puml[] 
 
-===== Checkmarx PDS solution adapter meta data handling
+====== Checkmarx PDS solution adapter meta data handling
 
 The {pds} solution for `Checkmarx` does reuse the already existing `CheckmarxAdapter` class.
 A `sechub-wrapper-checkmarx` gradle project was introduced which contains a simple spring boot

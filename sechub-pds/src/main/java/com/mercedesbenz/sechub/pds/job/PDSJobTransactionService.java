@@ -21,6 +21,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobErrorStream;
+import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobMetaData;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobOutputStream;
 
 @Service
@@ -63,7 +64,8 @@ public class PDSJobTransactionService {
      */
     @UseCaseAdminFetchesJobOutputStream(@PDSStep(name = "Request stream data refresh", description = "Updates the refresh request timestamp in database. This timestamp will be introspected while PDS job process execution - which will fetch and update stream content", number = 3))
     @UseCaseAdminFetchesJobErrorStream(@PDSStep(name = "Request stream data refresh", description = "Updates the refresh request timestamp in database. This timestamp will be introspected while PDS job process execution - which will fetch and update stream content", number = 3))
-    public LocalDateTime markJobStreamDataRefreshRequestedInOwnTransaction(UUID jobUUID) {
+    @UseCaseAdminFetchesJobMetaData(@PDSStep(name = "Request meta data refresh", description = "Updates the refresh request timestamp in database. This timestamp will be introspected while PDS job process execution - which will fetch meta data content (if available)", number = 3))
+    public LocalDateTime markJobExecutionDataRefreshRequestedInOwnTransaction(UUID jobUUID) {
         PDSJob job = assertJobFound(jobUUID, repository);
 
         updateJobRefreshRequestInOwnTransaction(job);
@@ -124,12 +126,13 @@ public class PDSJobTransactionService {
         return pdsJob.getUUID();
     }
 
-    public void updateJobStreamDataInOwnTransaction(UUID jobUUID, String outputStreamData, String errorStreamData) {
+    public void updateJobExecutionDataInOwnTransaction(UUID jobUUID, PDSJobExecutionData data) {
         PDSJob job = assertJobFound(jobUUID, repository);
 
-        job.outputStreamText = outputStreamData;
-        job.errorStreamText = errorStreamData;
+        job.outputStreamText = data.outputStreamData;
+        job.errorStreamText = data.errorStreamData;
         job.lastStreamTextUpdate = LocalDateTime.now();
+        job.metaDataText = data.metaData;
 
         repository.save(job);
     }

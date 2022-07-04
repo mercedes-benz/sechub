@@ -98,4 +98,11 @@ if [[ "$PDS_TEST_KEY_VARIANTNAME" = "" ]]; then
     
     echo "After messages were created I found this inside messages folder:"
     tree $PDS_JOB_USER_MESSAGES_FOLDER 
+    
+    # For direct pds tests, we create a simple metadata.txt when executed:
+    echo "generated meta data for PDS job:$PDS_JOB_UUID" > $PDS_JOB_METADATA_FILE
+    echo "> Meta data was written..."
+    echo "> PDS_JOB_METADATA_FILE=$PDS_JOB_METADATA_FILE"
+   
+    
 fi

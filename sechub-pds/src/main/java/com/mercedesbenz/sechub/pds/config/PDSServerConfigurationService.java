@@ -64,7 +64,7 @@ public class PDSServerConfigurationService {
         }
         if (configuration == null) {
             LOG.error(
-                    "PDS configuration failure\n*****************************\nCONFIG ERROR CANNOT START PDS\n*****************************\nNo configuration available (see former logs for reason), so cannot start PDS server - trigger shutdown to ensure application no longer alive");
+                    "PDS configuration failure\n*****************************\nCONFIG ERROR_STREAM CANNOT START PDS\n*****************************\nNo configuration available (see former logs for reason), so cannot start PDS server - trigger shutdown to ensure application no longer alive");
             shutdownService.shutdownApplication();
         }
         /* define storage id */
