@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.archive;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -17,6 +19,9 @@ public class SecHubFileStructureDataProviderBuilder {
 
     private SecHubConfigurationModel model;
 
+    private List<String> excludePatterns = new ArrayList<>();
+    private List<String> includePatterns = new ArrayList<>();
+
     SecHubFileStructureDataProviderBuilder() {
     }
 
@@ -30,6 +35,22 @@ public class SecHubFileStructureDataProviderBuilder {
         return this;
     }
 
+    public SecHubFileStructureDataProviderBuilder setExcludedFilePatterns(List<String> excludePatterns) {
+        this.excludePatterns.clear();
+        if (excludePatterns != null) {
+            this.excludePatterns.addAll(excludePatterns);
+        }
+        return this;
+    }
+
+    public SecHubFileStructureDataProviderBuilder setIncludedFilePatterns(List<String> includePatterns) {
+        this.includePatterns.clear();
+        if (includePatterns != null) {
+            this.includePatterns.addAll(includePatterns);
+        }
+        return this;
+    }
+
     public SecHubFileStructureDataProvider build() {
         if (scanType == null) {
             throw new IllegalStateException("scanType is not set");
@@ -40,6 +61,8 @@ public class SecHubFileStructureDataProviderBuilder {
         }
 
         MutableSecHubFileStructureDataProvider data = new MutableSecHubFileStructureDataProvider();
+        data.addExcludeFilePatterns(excludePatterns);
+        data.addIncludeFilePatterns(includePatterns);
 
         switch (scanType) {
         case CODE_SCAN:

@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.AdapterMetaDataCallback;
 import com.mercedesbenz.sechub.adapter.SecHubTimeUnitData;
@@ -62,7 +63,7 @@ public class NetsparkerAdapterTestApplication {
         }
         NetsparkerAdapterConfig config = builder.build();
         NetsparkerAdapter netsparker = new NetsparkerAdapterV1();
-        String result = netsparker.start(config, new AdapterMetaDataCallback() {
+        AdapterExecutionResult adapterResult = netsparker.start(config, new AdapterMetaDataCallback() {
 
             AdapterMetaData metaData;
 
@@ -79,7 +80,7 @@ public class NetsparkerAdapterTestApplication {
         });
 
         System.out.println("result:");
-        System.out.println(result);
+        System.out.println(adapterResult.getProductResult());
 
     }
 

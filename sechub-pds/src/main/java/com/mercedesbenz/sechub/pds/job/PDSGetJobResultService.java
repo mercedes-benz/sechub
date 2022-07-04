@@ -17,20 +17,19 @@ import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobResultOrFailure
 import com.mercedesbenz.sechub.pds.usecase.UseCaseUserFetchesJobResult;
 
 @Service
-@RolesAllowed(PDSRoleConstants.ROLE_SUPERADMIN)
 public class PDSGetJobResultService {
 
     @Autowired
     PDSJobRepository repository;
 
-    @UseCaseUserFetchesJobResult(@PDSStep(name = "service call", description = "job result fetch from database, when not done a failure will be shown", number = 2))
+    @UseCaseUserFetchesJobResult(@PDSStep(name = "service call", description = "Fetches job result from database. When job is not already done a failure will be shown", number = 2))
     @RolesAllowed({ PDSRoleConstants.ROLE_SUPERADMIN, PDSRoleConstants.ROLE_USER })
     public String getJobResult(UUID jobUUID) {
         return getJobResult(jobUUID, true);
     }
 
     @RolesAllowed(PDSRoleConstants.ROLE_SUPERADMIN)
-    @UseCaseAdminFetchesJobResultOrFailureText(@PDSStep(name = "service call", description = "result data will be returned - can be empty or even a failure text from job execution.", number = 2))
+    @UseCaseAdminFetchesJobResultOrFailureText(@PDSStep(name = "service call", description = "Result data will be returned - can be empty or even a failure text from job execution.", number = 2))
     public String getJobResultOrFailureText(UUID jobUUID) {
         return getJobResult(jobUUID, false);
     }

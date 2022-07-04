@@ -1,10 +1,15 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sereco;
 
+import java.util.List;
+
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+
 public class ImportParameter {
     private String productId;
     private String importData;
     private String importId;
+    private List<SecHubMessage> productMessages;
 
     public static ImportParamBuilder builder() {
         return new ImportParamBuilder();
@@ -20,6 +25,10 @@ public class ImportParameter {
 
     public String getImportId() {
         return importId;
+    }
+
+    public List<SecHubMessage> getProductMessages() {
+        return productMessages;
     }
 
     /**
@@ -52,6 +61,11 @@ public class ImportParameter {
 
         public ImportParamBuilder importId(String importId) {
             param.importId = importId;
+            return this;
+        }
+
+        public ImportParamBuilder importProductMessages(List<SecHubMessage> messages) {
+            param.productMessages = messages;
             return this;
         }
 

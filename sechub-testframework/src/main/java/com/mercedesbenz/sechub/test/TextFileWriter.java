@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.integrationtest;
+package com.mercedesbenz.sechub.test;
 
 import java.io.BufferedWriter;
 import java.io.File;

@@ -40,6 +40,10 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport impl
         PDS_KEYPROVIDERS_FOR_REUSE_STORAGE_DETECTION_ONLY = Collections.unmodifiableList(onlySecHubStorageUseProviderList);
     }
 
+    public static List<PDSKeyProvider<? extends PDSKey>> getUnmodifiableListOfParameterKeyProvidersSentToPDS() {
+        return PDS_KEYPROVIDERS_FOR_SENDING_PARAMETERS_TO_PDS;
+    }
+
     /**
      * Creates the configuration support and VALIDATE. This will fail when
      * configuration data is not valid (e.g. mandatory keys missing)
@@ -62,7 +66,6 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport impl
         Map<String, String> parametersToSend = createParametersToSendByProviders(PDS_KEYPROVIDERS_FOR_SENDING_PARAMETERS_TO_PDS);
 
         /* provide SecHub storage when necessary */
-
         if (isReusingSecHubStorage(parametersToSend)) {
             String projectId = secHubConfiguration.getProjectId();
             String sechubStoragePath = SecHubStorageUtil.createStoragePath(projectId);

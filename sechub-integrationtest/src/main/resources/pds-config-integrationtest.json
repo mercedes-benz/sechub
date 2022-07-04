@@ -71,6 +71,12 @@
                         "key": "product2.level",
                         "description": "numeric, 1-gets all, 2-only critical,fatal and medium, 3- only critical and fatal"
                     }
+                ], 
+                "optional": [
+                    {
+                        "key": "pds.test.key.variantname",
+                        "description": "a parameter from configuration - will be different in each integration test config from sechub integration test server"
+                    }
                 ]
             }
         },

@@ -7,6 +7,7 @@ import com.mercedesbenz.sechub.integrationtest.scenario10.Scenario10;
 import com.mercedesbenz.sechub.integrationtest.scenario11.Scenario11;
 import com.mercedesbenz.sechub.integrationtest.scenario12.Scenario12;
 import com.mercedesbenz.sechub.integrationtest.scenario13.Scenario13;
+import com.mercedesbenz.sechub.integrationtest.scenario15.Scenario15;
 import com.mercedesbenz.sechub.integrationtest.scenario2.Scenario2;
 import com.mercedesbenz.sechub.integrationtest.scenario3.Scenario3;
 import com.mercedesbenz.sechub.integrationtest.scenario4.Scenario4;
@@ -230,6 +231,33 @@ public class IntegrationTestDefaultProfiles {
     public static final DefaultTestExecutionProfile PROFILE_9_PDS_LICENSESCAN_SPDX = defineProfile9();
 
     /**
+     * <h3>Profile 10</h3>
+     * <h4>Short description</h4>PDS scan profile code scan with include exclude
+     * settings
+     *
+     * <h4>Overview</h4> For a glance over all scenarios, look at
+     * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
+     * Overview}
+     *
+     * <h4>Details</h4> PDS scan profile, returns no real data but some dynamic text
+     * messages - the executor configuration does contain some include and exclude
+     * file filter options:<br>
+     * <br>
+     * <ul>
+     * </ul>
+     * <h5>Contains configurations</h5>
+     * <ul>
+     * <li>{@link IntegrationTestDefaultExecutorConfigurations#PDS_V1_CODE_SCAN_I_INCLUDES_EXCLUDES
+     * PDS code scan I}</li>
+     * </ul>
+     * <h5>Used inside scenarios:</h5>
+     * <ul>
+     * <li>{@link Scenario15}</li>
+     * </ul>
+     */
+    public static final DefaultTestExecutionProfile PROFILE_10_PDS_CODESCAN_INCLUDES_EXCLUDES = defineProfile10();
+
+    /**
      * @return all default profiles
      */
     public static List<DefaultTestExecutionProfile> getAllDefaultProfiles() {
@@ -325,6 +353,17 @@ public class IntegrationTestDefaultProfiles {
         profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_LICENSE_SCAN_A);
         profile.id = "inttest-p9-pds-licensescan";
         profile.description = "Profile 9: PDS license scan, reused storage, SPDX JSON file returned";
+        profile.enabled = true;
+        return profile;
+    }
+
+    private static DefaultTestExecutionProfile defineProfile10() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_CODE_SCAN_I_INCLUDES_EXCLUDES);
+        profile.id = "inttest-p10-pds-incl-exclude"; // not more than 30 chars per profile id, so we use this
+        profile.description = "Profile 10: PDS, reused storage, dynamic text results, has include exclude filters:\nIncludes:"
+                + IntegrationTestDefaultExecutorConfigurations.INCLUDES_1 + "\nExcludes:" + IntegrationTestDefaultExecutorConfigurations.EXCLUDES_1;
         profile.enabled = true;
         return profile;
     }

@@ -6,12 +6,14 @@ import static com.mercedesbenz.sechub.commons.archive.ArchiveConstants.*;
 public class ArchiveTransformationDataFactory {
 
     private static final String EMPTY_SUBFOLDER_PATH = "";
+    SecHubFileStructureDataProviderIncludeExcludeFilter includeExcludefilter;
 
-    private ArchiveTransformationDataFactory() {
+    public ArchiveTransformationDataFactory() {
+        includeExcludefilter = new SecHubFileStructureDataProviderIncludeExcludeFilter();
     }
 
-    public static ArchiveTransformationData create(SecHubFileStructureDataProvider configuration, String path) {
-        if (configuration == null) {
+    public ArchiveTransformationData create(SecHubFileStructureDataProvider dataProvider, String path) {
+        if (dataProvider == null) {
             throw new IllegalArgumentException("Configuration may not be null!");
         }
         if (path == null) {
@@ -20,48 +22,52 @@ public class ArchiveTransformationDataFactory {
 
         if (path.startsWith(DATA_SECTION_FOLDER)) {
 
-            String subFolderPath = path.substring(DATA_SECTION_FOLDER.length());
-            return createDataSectionTransformationData(configuration, subFolderPath);
+            String targetPath = path.substring(DATA_SECTION_FOLDER.length());
+            return createDataSectionTransformationData(dataProvider, targetPath);
 
         } else if (path.equals(DATA_SECTION_IDENTIFIER)) {
             /*
              * edge case - the __data__folder as standalone is also not inside root folder
              */
-            return createDataSectionTransformationData(configuration, EMPTY_SUBFOLDER_PATH);
+            return createDataSectionTransformationData(dataProvider, EMPTY_SUBFOLDER_PATH);
 
         } else {
-            return createRootFolderTransformationData(configuration);
+            return createRootFolderTransformationData(dataProvider, path);
         }
     }
 
-    private static ArchiveTransformationData createRootFolderTransformationData(SecHubFileStructureDataProvider configuration) {
+    private ArchiveTransformationData createRootFolderTransformationData(SecHubFileStructureDataProvider dataProvider, String path) {
         MutableArchiveTransformationData result = new MutableArchiveTransformationData();
-        if (configuration.isRootFolderAccepted()) {
-            result.setAccepted(true);
-        }
-        return result;
-    }
-
-    private static ArchiveTransformationData createDataSectionTransformationData(SecHubFileStructureDataProvider configuration,
-            String subfolderBelowDataFolder) {
-        MutableArchiveTransformationData result = new MutableArchiveTransformationData();
-
-        String referenceName = findAcceptedReferenceNameFor(configuration, subfolderBelowDataFolder);
-        if (referenceName != null) {
-            String referencePathStartElement = referenceName + "/";
-
-            if (subfolderBelowDataFolder.startsWith(referencePathStartElement)) {
-
-                String wantedPath = subfolderBelowDataFolder.substring(referencePathStartElement.length());
+        if (!includeExcludefilter.isFiltered(path, dataProvider)) {
+            if (dataProvider.isRootFolderAccepted()) {
                 result.setAccepted(true);
-                result.setWantedPath(wantedPath);
             }
         }
         return result;
     }
 
-    private static String findAcceptedReferenceNameFor(SecHubFileStructureDataProvider configuration, String path) {
-        for (String acceptedName : configuration.getUnmodifiableSetOfAcceptedReferenceNames()) {
+    private ArchiveTransformationData createDataSectionTransformationData(SecHubFileStructureDataProvider dataProvider, String pathBelowDataFolder) {
+        MutableArchiveTransformationData result = new MutableArchiveTransformationData();
+
+        String referenceName = findAcceptedReferenceNameFor(dataProvider, pathBelowDataFolder);
+        if (referenceName != null) {
+            String referencePathStartElement = referenceName + "/";
+
+            if (pathBelowDataFolder.startsWith(referencePathStartElement)) {
+
+                String wantedPath = pathBelowDataFolder.substring(referencePathStartElement.length());
+                if (!includeExcludefilter.isFiltered(wantedPath, dataProvider)) {
+                    result.setAccepted(true);
+                    result.setWantedPath(wantedPath);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private String findAcceptedReferenceNameFor(SecHubFileStructureDataProvider dataProvider, String path) {
+        for (String acceptedName : dataProvider.getUnmodifiableSetOfAcceptedReferenceNames()) {
             if (path.startsWith(acceptedName)) {
                 return acceptedName;
             }

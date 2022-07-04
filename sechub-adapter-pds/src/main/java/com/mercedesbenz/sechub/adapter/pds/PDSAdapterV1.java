@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.adapter.pds;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.adapter.AbstractAdapter;
 import com.mercedesbenz.sechub.adapter.AdapterException;
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.AdapterProfiles;
 import com.mercedesbenz.sechub.adapter.AdapterRuntimeContext;
@@ -21,6 +24,8 @@ import com.mercedesbenz.sechub.adapter.pds.data.PDSJobParameterEntry;
 import com.mercedesbenz.sechub.adapter.pds.data.PDSJobStatus;
 import com.mercedesbenz.sechub.adapter.pds.data.PDSJobStatus.PDSAdapterJobStatusState;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationType;
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 
 /**
  * This component is able to handle PDS API V1
@@ -32,6 +37,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationType;
 @Profile({ AdapterProfiles.REAL_PRODUCTS })
 public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterConfig> implements PDSAdapter {
 
+    private static final String PDS_JOB_UUID = "PDS_JOB_UUID";
     private static final Logger LOG = LoggerFactory.getLogger(PDSAdapterV1.class);
     private PDSUploadSupport uploadSupport;
 
@@ -45,10 +51,11 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
     }
 
     @Override
-    protected String execute(PDSAdapterConfig config, AdapterRuntimeContext runtimeContext) throws AdapterException {
+    protected AdapterExecutionResult execute(PDSAdapterConfig config, AdapterRuntimeContext runtimeContext) throws AdapterException {
         assertNotInterrupted();
         PDSContext context = new PDSContext(config, this, runtimeContext);
-        createNewPDSJOB(context);
+        createNewPDSJOB(context, runtimeContext);
+
         assertNotInterrupted();
 
         uploadJobData(context);
@@ -60,7 +67,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         waitForJobDone(context);
         assertNotInterrupted();
 
-        return fetchReport(context);
+        return new AdapterExecutionResult(fetchReport(context), fetchMessages(context));
 
     }
 
@@ -147,6 +154,23 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         ResponseEntity<String> response = context.getRestOperations().getForEntity(url, String.class);
 
         return response.getBody();
+    }
+
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    /* + ................Fetch messages.................... + */
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    private Collection<SecHubMessage> fetchMessages(PDSContext context) throws AdapterException {
+        UUID pdsJobUUID = context.getPdsJobUUID();
+        String url = context.getUrlBuilder().buildGetJobMessages(pdsJobUUID);
+
+        ResponseEntity<String> response = context.getRestOperations().getForEntity(url, String.class);
+
+        String body = response.getBody();
+        if (body == null || body.isEmpty()) {
+            return Collections.emptyList();
+        }
+        SecHubMessagesList messagesList = SecHubMessagesList.fromJSONString(body);
+        return messagesList.getSecHubMessages();
     }
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
@@ -250,7 +274,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
     /* + ................Create New Job.................. + */
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    private void createNewPDSJOB(PDSContext context) throws AdapterException {
+    private void createNewPDSJOB(PDSContext context, AdapterRuntimeContext runtimeContext) throws AdapterException {
 
         String json = createJobDataJSON(context);
         String url = context.getUrlBuilder().buildCreateJob();
@@ -258,6 +282,11 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         String jsonResult = context.getRestSupport().postJSON(url, json);
         PDSJobCreateResult result = context.getJsonSupport().fromJSON(PDSJobCreateResult.class, jsonResult);
         context.setPDSJobUUID(UUID.fromString(result.jobUUID));
+
+        AdapterMetaData metaData = runtimeContext.getMetaData();
+        metaData.setValue(PDS_JOB_UUID, result.jobUUID);
+
+        runtimeContext.getCallback().persist(metaData);
     }
 
     private String createJobDataJSON(PDSContext context) throws AdapterException {

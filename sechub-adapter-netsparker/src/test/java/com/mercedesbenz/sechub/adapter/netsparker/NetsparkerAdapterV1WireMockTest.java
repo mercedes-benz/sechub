@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.stubbing.Scenario;
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterMetaDataCallback;
 import com.mercedesbenz.sechub.adapter.IcrementalAdditionalPrefixAPIURLSupport;
 import com.mercedesbenz.sechub.adapter.support.APIURLSupport;
@@ -180,7 +181,7 @@ public class NetsparkerAdapterV1WireMockTest {
 
         AdapterMetaDataCallback callback = mock(AdapterMetaDataCallback.class);
         /* execute */
-        String result = adapterToTest.start(config, callback);
+        AdapterExecutionResult adapterResult = adapterToTest.start(config, callback);
 
         /* test */
         verify(getRequestedFor(urlEqualTo("/netsparkertest_1/api/1.0/websites/get?query=" + WEBSITE_ID)));
@@ -189,7 +190,7 @@ public class NetsparkerAdapterV1WireMockTest {
         verify(getRequestedFor(urlEqualTo("/netsparkertest_4/api/1.0/scans/status/1234567890"))); // scanning
         verify(getRequestedFor(urlEqualTo("/netsparkertest_5/api/1.0/scans/status/1234567890"))); // complete...
 
-        assertEquals(xml, result);
+        assertEquals(xml, adapterResult.getProductResult());
     }
 
     @TestConfiguration

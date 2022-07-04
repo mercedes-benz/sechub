@@ -239,6 +239,10 @@ public class DeveloperAdministration {
             return restHelper.getStringFromURL(pdsUrlBuilder.buildAdminFetchesJobErrorStreamUrl(jobUUID));
         }
 
+        public String getJobMessages(UUID jobUUID) {
+            return restHelper.getStringFromURL(pdsUrlBuilder.buildGetJobMessages(jobUUID));
+        }
+
         public ProductIdentifier findProductIdentifier(TestPDSServerConfiguration config, String productId) {
             for (TestPDSServerProductConfig c : config.products) {
                 if (c.id.equals(productId)) {

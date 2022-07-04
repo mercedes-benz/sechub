@@ -32,8 +32,8 @@ import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.developertools.DeveloperArchiveSupport;
 import com.mercedesbenz.sechub.developertools.OutputHandler;
 import com.mercedesbenz.sechub.developertools.SystemOutputHandler;
-import com.mercedesbenz.sechub.integrationtest.TextFileWriter;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
+import com.mercedesbenz.sechub.test.TextFileWriter;
 
 public class PDSSolutionTestFilesGenerator {
 
