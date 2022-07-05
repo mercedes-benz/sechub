@@ -25,6 +25,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.pds.PDSJSONConverterException;
 import com.mercedesbenz.sechub.pds.PDSLogConstants;
+import com.mercedesbenz.sechub.pds.job.JobConfigurationData;
 import com.mercedesbenz.sechub.pds.job.PDSCheckJobStatusService;
 import com.mercedesbenz.sechub.pds.job.PDSJobConfiguration;
 import com.mercedesbenz.sechub.pds.job.PDSJobExecutionData;
@@ -100,35 +101,16 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
             jobTransactionService.markJobAsRunningInOwnTransaction(pdsJobUUID);
 
-            String configJSON = jobTransactionService.getJobConfiguration(pdsJobUUID);
-
-            config = PDSJobConfiguration.fromJSON(configJSON);
+            JobConfigurationData data = jobTransactionService.getJobConfigurationData(pdsJobUUID);
+            config = PDSJobConfiguration.fromJSON(data.getJobConfigurationJson());
 
             MDC.put(PDSLogConstants.MDC_SECHUB_JOB_UUID, Objects.toString(config.getSechubJobUUID()));
 
-            long minutesToWaitForResult = workspaceService.getMinutesToWaitForResult(config);
-            if (minutesToWaitForResult < 1) {
-                throw new IllegalStateException("Minutes to wait for result configured too low:" + minutesToWaitForResult);
-            }
+            long minutesToWaitForResult = assertMinutesToWaitForResult(config);
 
-            LOG.debug("Start workspace preparation for PDS job: {}", pdsJobUUID);
-            workspaceService.prepareWorkspace(pdsJobUUID, config);
-            workspaceService.extractZipFileUploadsWhenConfigured(pdsJobUUID, config);
-            workspaceService.extractTarFileUploadsWhenConfigured(pdsJobUUID, config);
-
-            String path = workspaceService.getProductPathFor(config);
-            if (path == null) {
-                throw new IllegalStateException("Path not defined for product id:" + config.getProductId());
-            }
-
-            createProcess(pdsJobUUID, config, path);
-
-            StreamDataRefreshRequestWatcherRunnable watcherRunnable = new StreamDataRefreshRequestWatcherRunnable(pdsJobUUID);
-            Thread watcherThread = new Thread(watcherRunnable);
-            watcherThread.setName("exec-data-watcher-" + pdsJobUUID);
-            watcherThread.start();
-
-            waitForProcessEndAndGetResultByFiles(result, pdsJobUUID, config, minutesToWaitForResult, watcherRunnable);
+            pepareWorkspace(config, data);
+            createProcess(pdsJobUUID, config, workspaceService.getProductPathFor(config));
+            waitForProcessEndAndGetResultByFiles(result, pdsJobUUID, config, minutesToWaitForResult);
 
         } catch (Exception e) {
 
@@ -156,8 +138,38 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         return result;
     }
 
-    private void waitForProcessEndAndGetResultByFiles(PDSExecutionResult result, UUID jobUUID, PDSJobConfiguration config, long minutesToWaitForResult,
-            StreamDataRefreshRequestWatcherRunnable watcherRunnable) throws InterruptedException, IOException {
+    private long assertMinutesToWaitForResult(PDSJobConfiguration config) {
+        long minutesToWaitForResult = workspaceService.getMinutesToWaitForResult(config);
+        if (minutesToWaitForResult < 1) {
+            throw new IllegalStateException("Minutes to wait for result configured too low:" + minutesToWaitForResult);
+        }
+        return minutesToWaitForResult;
+    }
+
+    private void pepareWorkspace(PDSJobConfiguration config, JobConfigurationData data) throws IOException {
+        LOG.debug("Start workspace preparation for PDS job: {}", pdsJobUUID);
+        
+        workspaceService.prepareWorkspace(pdsJobUUID, config, data.getMetaData());
+        workspaceService.extractZipFileUploadsWhenConfigured(pdsJobUUID, config);
+        workspaceService.extractTarFileUploadsWhenConfigured(pdsJobUUID, config);
+        
+        LOG.debug("Workspace preparation done for PDS job: {}", pdsJobUUID);
+    }
+
+    private void waitForProcessEndAndGetResultByFiles(PDSExecutionResult result, UUID jobUUID, PDSJobConfiguration config, long minutesToWaitForResult
+            ) throws InterruptedException, IOException {
+       
+        /* watching */
+        String watcherThreadName = "exec-data-watcher-" + pdsJobUUID;
+        
+        LOG.debug("Start watcher thread: {}", watcherThreadName);
+        
+        StreamDataRefreshRequestWatcherRunnable watcherRunnable = new StreamDataRefreshRequestWatcherRunnable(pdsJobUUID);
+        Thread watcherThread = new Thread(watcherRunnable);
+        watcherThread.setName(watcherThreadName);
+        watcherThread.start();
+        
+        /* waiting for process */
         LOG.debug("Wait for process of job with uuid:{}, will wait {} minutes for result from product with id:{}", jobUUID, minutesToWaitForResult,
                 config.getProductId());
         long started = System.currentTimeMillis();
@@ -332,6 +344,10 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
     }
 
     private void createProcess(UUID jobUUID, PDSJobConfiguration config, String path) throws IOException {
+        if (path == null) {
+            throw new IllegalStateException("Path not defined for product id:" + config.getProductId());
+        }
+        
         File currentDir = Paths.get("./").toRealPath().toFile();
         List<String> commands = new ArrayList<>();
         commands.add(path);
@@ -401,10 +417,10 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             process.destroyForcibly();
         } finally {
 
-            String configJSON = jobTransactionService.getJobConfiguration(pdsJobUUID);
+            JobConfigurationData data = jobTransactionService.getJobConfigurationData(pdsJobUUID);
 
             try {
-                PDSJobConfiguration config = PDSJobConfiguration.fromJSON(configJSON);
+                PDSJobConfiguration config = PDSJobConfiguration.fromJSON(data.getJobConfigurationJson());
                 cleanUpWorkspace(pdsJobUUID, config);
             } catch (PDSJSONConverterException e) {
                 LOG.error("Was not able fetch job config for {} - workspace clean only workspace files", pdsJobUUID, e);

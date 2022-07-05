@@ -18,6 +18,7 @@ import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.AdapterProfiles;
 import com.mercedesbenz.sechub.adapter.AdapterRuntimeContext;
+import com.mercedesbenz.sechub.adapter.AdapterRuntimeContext.ExecutionType;
 import com.mercedesbenz.sechub.adapter.pds.data.PDSJobCreateResult;
 import com.mercedesbenz.sechub.adapter.pds.data.PDSJobData;
 import com.mercedesbenz.sechub.adapter.pds.data.PDSJobParameterEntry;
@@ -38,7 +39,9 @@ import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterConfig> implements PDSAdapter {
 
     private static final String PDS_JOB_UUID = "PDS_JOB_UUID";
+
     private static final Logger LOG = LoggerFactory.getLogger(PDSAdapterV1.class);
+
     private PDSUploadSupport uploadSupport;
 
     PDSAdapterV1() {
@@ -53,8 +56,14 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
     @Override
     protected AdapterExecutionResult execute(PDSAdapterConfig config, AdapterRuntimeContext runtimeContext) throws AdapterException {
         assertNotInterrupted();
+
         PDSContext context = new PDSContext(config, this, runtimeContext);
-        createNewPDSJOB(context, runtimeContext);
+        initForExecutionType(context, runtimeContext);
+
+        if (handledStopRequest(context, runtimeContext)) {
+            AdapterExecutionResult result = new AdapterExecutionResult("");
+            return result;
+        }
 
         assertNotInterrupted();
 
@@ -69,6 +78,14 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
 
         return new AdapterExecutionResult(fetchReport(context), fetchMessages(context));
 
+    }
+
+    private boolean handledStopRequest(PDSContext context, AdapterRuntimeContext runtimeContext) {
+        if (runtimeContext.getType() == ExecutionType.STOP) {
+            cancelJob(context);
+            return true;
+        }
+        return false;
     }
 
     private void waitForJobDone(PDSContext context) throws AdapterException {
@@ -86,14 +103,26 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
 
         int timeToWaitForNextCheckOperationInMilliseconds = config.getTimeToWaitForNextCheckOperationInMilliseconds();
 
-        LOG.info("Start waiting for PDS-job:{} to be done. Related SecHub-Job is:{} . Will check every {} ms. Adapter will wait maximum {} ms before timeout.",
-                pdsJobUUID, secHubJobUUID, timeToWaitForNextCheckOperationInMilliseconds, config.getTimeOutInMilliseconds());
+        /* @formatter:off */
+        LOG.info("Start waiting for PDS-job:{} to be done. "
+                + "Related SecHub-Job is: {}. "
+                + "Will check every {} ms. "
+                + "Adapter will wait maximum {} ms before timeout.",
+                pdsJobUUID, 
+                secHubJobUUID, 
+                timeToWaitForNextCheckOperationInMilliseconds, 
+                config.getTimeOutInMilliseconds());
+        /* @formatter:on */
 
         while (!jobEnded && isNotTimeout(config, started)) {
 
             count++;
 
-            LOG.debug("Fetch job status for PDS-job:{}. Elapsed time for {} retries:{} ms", pdsJobUUID, count, calculateElapsedTime(started));
+            if (LOG.isDebugEnabled()) {
+                long currentElapsedTime = calculateElapsedTime(started);
+                
+                LOG.debug("Fetch job status for PDS-job:{}. Elapsed time for {} retries:{} ms", pdsJobUUID, count, currentElapsedTime);
+            }
 
             /* see PDSJobStatusState.java */
             jobstatus = getJobStatus(context);
@@ -272,21 +301,70 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
     }
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    /* + ................Create New Job.................. + */
+    /* + ................Initialize for execution type... + */
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    private void createNewPDSJOB(PDSContext context, AdapterRuntimeContext runtimeContext) throws AdapterException {
+    private void initForExecutionType(PDSContext context, AdapterRuntimeContext runtimeContext) throws AdapterException {
+        String pdsJobUUID = null;
+        ExecutionType type = runtimeContext.getType();
+        switch (type) {
+        case INITIAL:
+            pdsJobUUID = createNewPDSJob(context, runtimeContext);
+            break;
+        case RESTART:
+            pdsJobUUID = runtimeContext.getMetaData().getValue(PDS_JOB_UUID);
+            if (pdsJobUUID == null || pdsJobUUID.isEmpty()) {
+                LOG.warn("PDS job uuid was :{}, so restart not possible. Will create new PDS job as fallback.", pdsJobUUID);
+                pdsJobUUID = createNewPDSJob(context, runtimeContext);
+            } else {
+                LOG.info("Restart in progress, will reuse PDS job: {}", pdsJobUUID);
+            }
+            break;
+        case STOP:
+            pdsJobUUID = runtimeContext.getMetaData().getValue(PDS_JOB_UUID);
+            if (pdsJobUUID == null || pdsJobUUID.isEmpty()) {
+                LOG.error("PDS job uuid was :{}, so stop not possible.", pdsJobUUID);
+                throw asAdapterException("PDS job uuid not set, cannot cancel", context);
+            }
+            break;
+        default:
+            throw new IllegalStateException("the type: " + type + " is not supported");
 
+        }
+        context.setPDSJobUUID(UUID.fromString(pdsJobUUID));
+
+    }
+
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    /* + ................New Job......................... + */
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    private String createNewPDSJob(PDSContext context, AdapterRuntimeContext runtimeContext) throws AdapterException {
         String json = createJobDataJSON(context);
         String url = context.getUrlBuilder().buildCreateJob();
 
         String jsonResult = context.getRestSupport().postJSON(url, json);
         PDSJobCreateResult result = context.getJsonSupport().fromJSON(PDSJobCreateResult.class, jsonResult);
-        context.setPDSJobUUID(UUID.fromString(result.jobUUID));
+        String pdsJobUUID = result.jobUUID;
+
+        LOG.info("New PDS job created with PDS job uuid:{}", pdsJobUUID);
 
         AdapterMetaData metaData = runtimeContext.getMetaData();
-        metaData.setValue(PDS_JOB_UUID, result.jobUUID);
+        metaData.setValue(PDS_JOB_UUID, pdsJobUUID);
 
         runtimeContext.getCallback().persist(metaData);
+        return pdsJobUUID;
+    }
+
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    /* + ................Cancel Job ....................... + */
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    private void cancelJob(PDSContext context) {
+        UUID pdsJobUUID = context.getPdsJobUUID();
+
+        String url = context.getUrlBuilder().buildCancelJob(pdsJobUUID);
+        context.getRestSupport().put(url);
+
+        LOG.info("PDS job canceled: {}", pdsJobUUID);
+
     }
 
     private String createJobDataJSON(PDSContext context) throws AdapterException {

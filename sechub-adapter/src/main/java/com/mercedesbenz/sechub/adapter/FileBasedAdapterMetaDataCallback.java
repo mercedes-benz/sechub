@@ -13,11 +13,11 @@ import com.mercedesbenz.sechub.commons.model.JSONConverter;
  * @author Albert Tregnaghi
  *
  */
-public class FileStoreAdapterMetaDataCallback implements AdapterMetaDataCallback {
+public class FileBasedAdapterMetaDataCallback implements AdapterMetaDataCallback {
 
     private File file;
 
-    public FileStoreAdapterMetaDataCallback(File file) {
+    public FileBasedAdapterMetaDataCallback(File file) {
         if (file == null) {
             throw new IllegalArgumentException("file may not be null!");
         }

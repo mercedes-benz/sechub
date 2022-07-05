@@ -3,7 +3,7 @@
 node "PDS (scripting process)" as checkmarx_scripting {
     component "Checkmarx launcher script" as checkmarx_launcher_script
     
-    node "sechub-checkmarx-wrapper" as sechub_checkmarx_wrapper_jar{
+    node "sechub-wrapper-checkmarx" as sechub_checkmarx_wrapper_jar{
     
         interface "Adapter meta\ndata callback" as pds_metadata_callback
         component CheckmarxAdapter as checkmarx_adapter

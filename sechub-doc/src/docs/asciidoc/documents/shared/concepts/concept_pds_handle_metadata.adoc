@@ -13,6 +13,8 @@ Most times {pds} solutions do not need to store special meta data information: W
 a CLI tool, the result or the failure will just be returned to the {sechub} side.
 
 If it shall be done again (because of on failure) just a new {pds} job will be started. 
+
+If a PDS job has meta data this means it should be restarted
 ====
 
 A {pds} launcher script has no access to the {pds} database!

@@ -12,11 +12,11 @@ import org.junit.jupiter.api.Test;
 import com.mercedesbenz.sechub.test.TestFileWriter;
 import com.mercedesbenz.sechub.test.TestUtil;
 
-class FileStoreAdapterMetaDataCallbackTest {
+class FileBasedAdapterMetaDataCallbackTest {
 
     private static File testFolder;
     private File testFile;
-    private FileStoreAdapterMetaDataCallback callbackToTest;
+    private FileBasedAdapterMetaDataCallback callbackToTest;
 
     @BeforeAll
     static void beforeAll() throws IOException {
@@ -27,7 +27,7 @@ class FileStoreAdapterMetaDataCallbackTest {
     void beforeEach() throws IOException {
         testFile = new File(testFolder, "filestore_" + System.nanoTime() + ".txt");
 
-        callbackToTest = new FileStoreAdapterMetaDataCallback(testFile);
+        callbackToTest = new FileBasedAdapterMetaDataCallback(testFile);
 
     }
 

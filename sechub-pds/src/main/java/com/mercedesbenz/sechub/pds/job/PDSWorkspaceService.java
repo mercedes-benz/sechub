@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.archive.ArchiveExtractionResult;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType;
 import com.mercedesbenz.sechub.commons.archive.SecHubFileStructureDataProvider;
@@ -59,7 +60,7 @@ public class PDSWorkspaceService {
 
     @PDSMustBeDocumented(value = "Set pds workspace root folder path. Inside this path the sub directory `workspace` will be created.", scope = "execution")
     @Value("${sechub.pds.workspace.rootfolder:" + WORKSPACE_PARENT_FOLDER_PATH + "}")
-    String uploadBasePath = WORKSPACE_PARENT_FOLDER_PATH;
+    String workspaceRootFolderPath = WORKSPACE_PARENT_FOLDER_PATH;
 
     @Autowired
     PDSMultiStorageService storageService;
@@ -90,12 +91,22 @@ public class PDSWorkspaceService {
      * </ol>
      *
      * @param config
+     * @param string
      */
-    public void prepareWorkspace(UUID jobUUID, PDSJobConfiguration config) throws IOException {
+    public void prepareWorkspace(UUID jobUUID, PDSJobConfiguration config, String metaData) throws IOException {
 
         PDSJobConfigurationSupport configurationSupport = new PDSJobConfigurationSupport(config);
 
         PreparationContext preparationContext = createPreparationContext(config, configurationSupport);
+
+        if (metaData != null && !metaData.isEmpty()) {
+            File metaDataFile = getMetaDataFile(jobUUID);
+            LOG.debug("Meta data found for PDS job {} - will create metadata file {}", jobUUID, metaDataFile);
+
+            TextFileWriter writer = new TextFileWriter();
+            writer.save(metaDataFile, metaData, true);
+            LOG.info("Created meta data file for PDS job {}", jobUUID);
+        }
 
         File jobFolder = getUploadFolder(jobUUID);
         JobStorage storage = fetchStorage(jobUUID, config);
@@ -228,7 +239,7 @@ public class PDSWorkspaceService {
      *                               permissions)
      */
     public File getWorkspaceFolder(UUID jobUUID) {
-        Path jobWorkspacePath = Paths.get(uploadBasePath, "workspace", jobUUID.toString());
+        Path jobWorkspacePath = Paths.get(workspaceRootFolderPath, "workspace", jobUUID.toString());
         File jobWorkspaceFolder = jobWorkspacePath.toFile();
 
         if (!jobWorkspaceFolder.exists()) {

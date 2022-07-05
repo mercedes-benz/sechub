@@ -101,13 +101,20 @@ public class PDSJobTransactionService {
     }
 
     /**
-     * Read job configuration in own transaction
+     * Read job configuration data in own transaction
      *
      * @param jobUUID
      * @return job configuration, will fail when job is not found
      */
-    public String getJobConfiguration(UUID jobUUID) {
-        return assertJobFound(jobUUID, repository).getJsonConfiguration();
+    public JobConfigurationData getJobConfigurationData(UUID jobUUID) {
+
+        PDSJob job = assertJobFound(jobUUID, repository);
+
+        JobConfigurationData data = new JobConfigurationData();
+        data.jobConfigurationJson = job.getJsonConfiguration();
+        data.metaData = job.getMetaDataText();
+
+        return data;
     }
 
     /**

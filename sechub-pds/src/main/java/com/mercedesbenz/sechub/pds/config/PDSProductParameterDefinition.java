@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.config;
 
-public class PDSProdutParameterDefinition {
+public class PDSProductParameterDefinition {
 
     private String key;
 

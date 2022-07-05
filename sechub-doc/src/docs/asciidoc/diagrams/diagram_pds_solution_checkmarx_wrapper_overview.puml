@@ -1,0 +1,45 @@
+@startuml
+
+hide empty fields
+hide empty methods
+
+class CheckmarxWrapperApplication {
+    
+}
+interface Adapter {
+    start(config,callback)
+}
+interface CheckmarxAdapter extends Adapter
+
+class CheckmarxAdapterV1 implements CheckmarxAdapter{
+    <<real_product>>
+}
+class MockedCheckmarxAdapter implements CheckmarxAdapter{
+    <<mocked_product>>
+}
+
+class CheckmarxWrapperCLIComponent{
+}
+
+class CheckmarxWrapperScanService{
+
+}
+
+class CheckmarxConfig
+
+interface AdapterMetaDataCallback
+class FileBasedAdapterMetaDataCallback implements AdapterMetaDataCallback{
+}
+
+CheckmarxWrapperApplication --> CheckmarxWrapperCLIComponent : on startup
+CheckmarxWrapperCLIComponent --> CheckmarxWrapperScanService
+
+CheckmarxWrapperScanService -->  CheckmarxAdapter : starts adapter\nwith callback and config
+CheckmarxWrapperScanService -->  FileBasedAdapterMetaDataCallback : creates
+CheckmarxWrapperCLIComponent ->  CheckmarxConfig : creates
+
+note top of CheckmarxWrapperApplication
+    This is a standalone spring boot application
+end note
+
+@enduml 

@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import com.beust.jcommander.JCommander;
+import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
+import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxConfig;
 import com.mercedesbenz.sechub.wrapper.checkmarx.Console;
 import com.mercedesbenz.sechub.wrapper.checkmarx.scan.CheckmarxWrapperScanService;
 
@@ -51,7 +53,7 @@ public class CheckmarxWrapperCLIComponent {
                 /* action */
                 switch (arguments.getAction()) {
                 case "start":
-                    scanService.startScan();
+                    scanService.startScan(createConfig());
                     break;
                 default:
                     failWithUnsupportedArgumentCombination("Action " + arguments.getAction() + " is not accepted", commander);
@@ -65,6 +67,16 @@ public class CheckmarxWrapperCLIComponent {
 
         }
 
+    }
+    
+    private CheckmarxAdapterConfig createConfig() {
+        /* @formatter:off */
+        return
+                CheckmarxConfig.builder().
+                    setAlwaysFullScan(false).
+
+                build();
+        /* @formatter:on */
     }
 
     private void failWithUnsupportedArgumentCombination(String message, JCommander commander) {
