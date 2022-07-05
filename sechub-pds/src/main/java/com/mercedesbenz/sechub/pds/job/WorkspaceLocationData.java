@@ -4,8 +4,11 @@ package com.mercedesbenz.sechub.pds.job;
 public class WorkspaceLocationData {
     String workspaceLocation;
     String resultFileLocation;
-    String unzippedSourceLocation;
-    String zippedSourceLocation;
+    String extractedSourcesLocation;
+    String sourceCodeZipFileLocation;
+    String extractedBinariesLocation;
+    String binariesTarFileLocation;
+    String userMessagesLocation;
 
     public String getWorkspaceLocation() {
         return workspaceLocation;
@@ -15,11 +18,23 @@ public class WorkspaceLocationData {
         return resultFileLocation;
     }
 
-    public String getUnzippedSourceLocation() {
-        return unzippedSourceLocation;
+    public String getExtractedSourcesLocation() {
+        return extractedSourcesLocation;
     }
 
-    public String getZippedSourceLocation() {
-        return zippedSourceLocation;
+    public String getSourceCodeZipFileLocation() {
+        return sourceCodeZipFileLocation;
+    }
+
+    public String getExtractedBinariesLocation() {
+        return extractedBinariesLocation;
+    }
+
+    public String getBinariesTarFileLocation() {
+        return binariesTarFileLocation;
+    }
+
+    public String getUserMessagesLocation() {
+        return userMessagesLocation;
     }
 }

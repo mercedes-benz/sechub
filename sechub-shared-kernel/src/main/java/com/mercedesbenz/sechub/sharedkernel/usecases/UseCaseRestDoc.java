@@ -42,9 +42,9 @@ public @interface UseCaseRestDoc {
 
     /**
      * Defines the output files from spring rest doc wanted for generation. The
-     * ordering is also the ordering in output files!
+     * ordering is also used inside output generation.
      *
-     * @return
+     * @return array
      */
     SpringRestDocOutput[] wanted() default {
         /* @formatter:off */
@@ -52,33 +52,65 @@ public @interface UseCaseRestDoc {
 
 		SpringRestDocOutput.REQUEST_FIELDS,
 
-		SpringRestDocOutput.RESPONSE_FIELDS,
+		SpringRestDocOutput.CURL_REQUEST,
 
-		SpringRestDocOutput.CURL_REQUEST
+		SpringRestDocOutput.RESPONSE_BODY,
+
+		SpringRestDocOutput.RESPONSE_FIELDS,
 		};
 
+    public enum SpringRestDocType{
+        DEFINITION,
+
+        EXAMPLE,
+
+        RESOURCE_DATA,
+    }
+
 	public enum SpringRestDocOutput{
-		CURL_REQUEST("curl-request.adoc"),
-		HTTP_REQUEST("http-request.adoc"),
-		HTTP_RESPONSE("http-response.adoc"),
-		HTTPIE_REQUEST("httpie-request.adoc"),
-		REQUEST_BODY("request-body.adoc"),
-		REQUEST_FIELDS("request-fields.adoc"),
-		RESPONSE_BODY("request-body.adoc"),
-		RESPONSE_FIELDS("response-fields.adoc"),
-		PATH_PARAMETERS("path-parameters.adoc")
+		CURL_REQUEST("curl-request.adoc", SpringRestDocType.EXAMPLE),
+
+		HTTP_REQUEST("http-request.adoc",SpringRestDocType.EXAMPLE),
+
+		HTTP_RESPONSE("http-response.adoc",SpringRestDocType.EXAMPLE),
+
+		HTTPIE_REQUEST("httpie-request.adoc",SpringRestDocType.EXAMPLE),
+
+		REQUEST_BODY("request-body.adoc",SpringRestDocType.EXAMPLE),
+
+		REQUEST_FIELDS("request-fields.adoc",SpringRestDocType.DEFINITION),
+
+		RESPONSE_BODY("response-body.adoc",SpringRestDocType.EXAMPLE),
+
+		RESPONSE_FIELDS("response-fields.adoc",SpringRestDocType.DEFINITION),
+
+		PATH_PARAMETERS("path-parameters.adoc",SpringRestDocType.DEFINITION),
+
+		RESOURCE("resource.json", SpringRestDocType.RESOURCE_DATA),
+
 		;
 		/* @formatter:on */
 
-        private String wantedFileName;
+        private String fileName;
+        private SpringRestDocType type;
 
-        SpringRestDocOutput(String fileName) {
-            this.wantedFileName = fileName;
+        SpringRestDocOutput(String fileName, SpringRestDocType type) {
+            this.fileName = fileName;
+            this.type = type;
         }
 
-        public boolean isWanted(File file) {
-            return file.getName().equals(wantedFileName);
+        public boolean isRepresentedBy(File file) {
+            return file.getName().equals(fileName);
         }
+
+        public boolean isExample() {
+            return SpringRestDocType.EXAMPLE == type;
+        }
+
+        public boolean isDefinition() {
+            return SpringRestDocType.DEFINITION == type;
+        }
+
     }
 
 }

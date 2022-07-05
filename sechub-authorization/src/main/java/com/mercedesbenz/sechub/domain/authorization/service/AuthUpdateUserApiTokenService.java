@@ -25,7 +25,7 @@ public class AuthUpdateUserApiTokenService {
 
     @UseCaseUserClicksLinkToGetNewAPIToken(@Step(number = 3, next = { Step.NO_NEXT_STEP }, name = "Update auth data"))
     public void updateAPIToken(String userId, String hashedApiToken) {
-        assertion.isValidUserId(userId);
+        assertion.assertIsValidUserId(userId);
 
         AuthUser user = userRepo.findOrFail(userId);
         user.setHashedApiToken(hashedApiToken);

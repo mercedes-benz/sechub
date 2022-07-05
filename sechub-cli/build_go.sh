@@ -17,12 +17,12 @@ if [[ -z "$package" ]]; then
 fi
 
 if [[ -z "$platforms" ]]; then
-    platforms=("linux/386" "linux/amd64" "linux/arm" "linux/arm64" "darwin/amd64" "windows/amd64" "windows/386")
+    platforms=("linux/386" "linux/amd64" "linux/arm" "linux/arm64" "darwin/amd64" "darwin/arm64" "windows/amd64" "windows/386")
 fi
 
 function init_go_modules() {
     # We build the mod.go files ourselves - so it works with any go version installed
-    pushd "$SRC_PATH"
+    pushd "$SRC_PATH" >/dev/null
     # remove previously generated go.mod files
     rm -f go.mod */go.mod
 
@@ -30,7 +30,7 @@ function init_go_modules() {
     cd main/
     go mod init $MOD_BASENAME
     for i in $SUBMODULES ; do
-        pushd ../$i
+        pushd ../$i >/dev/null
         go mod init $MOD_BASENAME/$i
         popd >/dev/null
         go mod edit -replace $MOD_BASENAME/$i=../$i

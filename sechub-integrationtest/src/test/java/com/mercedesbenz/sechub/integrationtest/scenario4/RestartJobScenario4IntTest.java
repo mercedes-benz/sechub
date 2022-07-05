@@ -59,6 +59,10 @@ public class RestartJobScenario4IntTest {
             assertEquals("GREEN was not found, but expected...","GREEN",report);
         }
 
+        // even when crashes has been done - the restart was green so we have no additional
+        // messages
+        assertJobStatus(project, sechubJobUUID).hasNoMessagesDefined();
+
         /* @formatter:on */
     }
 
@@ -77,7 +81,7 @@ public class RestartJobScenario4IntTest {
 
         simulateJobIsStillRunningAndUploadAvailable(sechubJobUUID);
 
-        assertInspections().
+        assertMetaDataInspections().
             hasAmountOfInspections(1).
                 inspectionNr(0).hasId("CHECKMARX");
 
@@ -91,7 +95,7 @@ public class RestartJobScenario4IntTest {
             assertEquals("GREEN was not found, but expected...","GREEN",report);
         }
         /* adapter was called, because product results for purged */
-        assertInspections().
+        assertMetaDataInspections().
             hasAmountOfInspections(2). // why 2? because behavior of product executor is: always call the adapter!
                                        // only adapter is able to know exactly, if the product result is correct, needs a restart
                                        // etc. We try to restart and currently do ignore product result state
@@ -168,7 +172,7 @@ public class RestartJobScenario4IntTest {
         /* prepare */
         clearMetaDataInspection();
 
-        UUID sechubJobUUID = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(project,IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING);
+        UUID sechubJobUUID = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(project,IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__4_SECONDS_WAITING);
         waitForJobRunning(project, sechubJobUUID);
         waitMilliSeconds(1000); // let the old job run (so not accidently running at same time)
 
@@ -184,7 +188,7 @@ public class RestartJobScenario4IntTest {
 
         /* @formatter:on */
 
-        assertInspections().hasAmountOfInspections(2);
+        assertMetaDataInspections().hasAmountOfInspections(2);
 
         File file = as(SUPER_ADMIN).downloadFullScanDataFor(sechubJobUUID);
 
@@ -236,7 +240,7 @@ public class RestartJobScenario4IntTest {
          * so we must upload again...
          */
         revertJobToStillNotApproved(sechubJobUUD); // make upload possible again...
-        as(USER_1).upload(project, sechubJobUUD, TestDataConstants.RESOURCE_PATH_ZIPFILE_ONLY_TEST1_TXT);
+        as(USER_1).uploadSourcecode(project, sechubJobUUD, TestDataConstants.RESOURCE_PATH_ZIPFILE_ONLY_TEST1_TXT);
         revertJobToStillRunning(sechubJobUUD); // fake it's running
         assertJobIsRunning(project, sechubJobUUD);
     }

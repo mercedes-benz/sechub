@@ -50,6 +50,7 @@ public abstract class AbstractUIAction extends AbstractAction {
     protected void setIcon(URL url) {
         Icon icon = new ImageIcon(url);
         putValue(Action.LARGE_ICON_KEY, icon);
+        putValue(Action.SMALL_ICON, icon);
     }
 
     protected UIContext getContext() {

@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
-import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.lang.annotation.Annotation;
 
@@ -26,7 +25,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.domain.administration.signup.AnonymousSignupCreateService;
 import com.mercedesbenz.sechub.domain.administration.signup.AnonymousSignupRestController;
@@ -39,6 +37,7 @@ import com.mercedesbenz.sechub.sharedkernel.validation.ApiVersionValidationFacto
 import com.mercedesbenz.sechub.sharedkernel.validation.EmailValidationImpl;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserIdValidationImpl;
 import com.mercedesbenz.sechub.test.ExampleConstants;
+import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
@@ -48,7 +47,7 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
 @WithMockUser
 @ActiveProfiles(Profiles.TEST)
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
-public class AnonymousSignupRestControllerRestDocTest {
+public class AnonymousSignupRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
 
     private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
@@ -73,22 +72,23 @@ public class AnonymousSignupRestControllerRestDocTest {
         			content("{\"apiVersion\":\"1.0\",\"userId\":\"valid_userid\",\"emailAdress\":\"valid_mailadress@test.com\"}")
         		)./*andDo(print()).*/
         			andExpect(status().isOk()).
-        			andDo(document(RestDocFactory.createPath(useCase),
-        			                resource(
-        			                        ResourceSnippetParameters.builder().
-        			                            summary(RestDocFactory.createSummary(useCase)).
-        			                            description(RestDocFactory.createDescription(useCase)).
-        			                            tag(RestDocFactory.extractTag(apiEndpoint)).
-        			                            requestSchema(OpenApiSchema.USER_SIGNUP.getSchema()).
-        	                                    requestFields(
-        	                                            fieldWithPath("apiVersion").description("The api version, currently only 1.0 is supported"),
-        	                                            fieldWithPath("userId").description("Wanted userid, the userid must be lowercase only!"),
-        	                                            fieldWithPath("emailAdress").description("Email adress")
-        	                                    ).
-        			                            build()
-        			                         )
+        			andDo(defineRestService().
+        			        with().
+        			            identifier(RestDocFactory.createPath(useCase)).
+        			            summary(RestDocFactory.createSummary(useCase)).
+        			            description(RestDocFactory.createDescription(useCase)).
+        			            tag(RestDocFactory.extractTag(apiEndpoint)).
+        			            requestSchema(OpenApiSchema.USER_SIGNUP.getSchema()).
+        			        and().
+        			        document(
+        	                    requestFields(
+        	                            fieldWithPath("apiVersion").description("The api version, currently only 1.0 is supported"),
+        	                            fieldWithPath("userId").description("Wanted userid, the userid must be lowercase only!"),
+        	                            fieldWithPath("emailAdress").description("Email adress")
+        	                    )
+        			        )
 
-        							));
+        			);
 
         /* @formatter:on */
     }

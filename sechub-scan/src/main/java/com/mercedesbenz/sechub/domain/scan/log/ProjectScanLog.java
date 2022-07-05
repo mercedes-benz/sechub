@@ -15,6 +15,13 @@ import javax.persistence.Version;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.mercedesbenz.sechub.commons.model.LocalDateTimeDeserializer;
+import com.mercedesbenz.sechub.commons.model.LocalDateTimeSerializer;
+
 /**
  * Represents a mapping between a scan, job and and job configuration. So its an
  * INTERNAL information
@@ -24,6 +31,7 @@ import org.hibernate.annotations.Type;
  */
 @Entity
 @Table(name = ProjectScanLog.TABLE_NAME)
+@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class ProjectScanLog {
 
     /* +-----------------------------------------------------------------------+ */
@@ -58,10 +66,12 @@ public class ProjectScanLog {
     public static final String STATUS_FAILED = "FAILED";
     public static final String STATUS_ABANDONED = "ABANDONDED";
 
+    public static final String QUERY_DELETE_LOGS_OLDER_THAN = "DELETE FROM ProjectScanLog log WHERE log." + PROPERTY_STARTED + " < :cleanTimeStamp";;
+
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = COLUMN_UUID, updatable = false, nullable = false)
+    @Column(name = COLUMN_UUID, updatable = false, nullable = false, columnDefinition = "UUID")
     UUID uUID;
 
     @Column(name = COLUMN_EXECUTED_BY)
@@ -70,7 +80,7 @@ public class ProjectScanLog {
     @Column(name = COLUMN_PROJECT_ID, nullable = false)
     String projectId;
 
-    @Column(name = COLUMN_SECHUB_JOB_UUID, nullable = false)
+    @Column(name = COLUMN_SECHUB_JOB_UUID, nullable = false, columnDefinition = "UUID")
     UUID sechubJobUUID;
 
     @Type(type = "text")
@@ -84,9 +94,13 @@ public class ProjectScanLog {
     @Column(name = "VERSION")
     Integer version;
 
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     @Column(name = COLUMN_STARTED) // remark: we setup hibernate to use UTC settings - see application.properties
     LocalDateTime started;
 
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     @Column(name = COLUMN_ENDED) // remark: we setup hibernate to use UTC settings - see application.properties
     LocalDateTime ended;
 

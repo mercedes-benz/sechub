@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.job;
 
+import static com.mercedesbenz.sechub.test.TestConstants.*;
 import static java.io.File.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -60,8 +61,10 @@ class PDSWorkspaceServiceTest {
         /* @formatter:off */
         assertEquals(expectedWorspaceLocation,result.workspaceLocation);
         assertEquals(expectedWorspaceLocation+separatorChar+"output"+separatorChar+"result.txt",result.resultFileLocation);
-        assertEquals(expectedWorspaceLocation+separatorChar+"upload"+separatorChar+"sourcecode.zip",result.zippedSourceLocation);
-        assertEquals(expectedWorspaceLocation+separatorChar+"upload"+separatorChar+"unzipped"+separatorChar+"sourcecode",result.unzippedSourceLocation);
+        assertEquals(expectedWorspaceLocation+separatorChar+"output"+separatorChar+"messages",result.userMessagesLocation);
+        assertEquals(expectedWorspaceLocation+separatorChar+"upload"+separatorChar+SOURCECODE_ZIP,result.sourceCodeZipFileLocation);
+        assertEquals(expectedWorspaceLocation+separatorChar+"upload"+separatorChar+"extracted"+separatorChar+"sources",result.extractedSourcesLocation);
+        assertEquals(expectedWorspaceLocation+separatorChar+"upload"+separatorChar+"extracted"+separatorChar+"binaries",result.extractedBinariesLocation);
         /* @formatter:on */
     }
 

@@ -18,7 +18,7 @@ public class ScanAccessCountService {
     UserInputAssertion assertion;
 
     public long countProjectAccess(String projectId) {
-        assertion.isValidProjectId(projectId);
+        assertion.assertIsValidProjectId(projectId);
 
         ScanAccess probe = new ScanAccess();
         probe.key = new ProjectAccessCompositeKey(null, projectId);

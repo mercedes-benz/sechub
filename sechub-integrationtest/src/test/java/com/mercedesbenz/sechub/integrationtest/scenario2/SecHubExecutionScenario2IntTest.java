@@ -293,4 +293,22 @@ public class SecHubExecutionScenario2IntTest {
 
     }
 
+    @Test
+    public void tar_binaries_file_can_be_uploaded_and_approved() {
+        as(SUPER_ADMIN).assignUserToProject(USER_1, PROJECT_1);
+
+        /* @formatter:off */
+        UUID jobUUID = assertUser(USER_1).
+                doesExist().
+                isAssignedToProject(PROJECT_1).
+                canCreateWebScan(PROJECT_1);
+
+        assertUser(USER_1).
+            canUploadBinariesTarFile(PROJECT_1,jobUUID,TestDataConstants.RESOURCE_PATH_TARFILE_ONLY_TEST1_TXT).
+            canApproveJob(PROJECT_1, jobUUID).
+            canGetReportForJob(PROJECT_1, jobUUID);
+        /* @formatter:on */
+
+    }
+
 }

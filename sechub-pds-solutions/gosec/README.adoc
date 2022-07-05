@@ -11,9 +11,6 @@ Furthermore, the combination of GoSec and PDS makes it possible to run both insi
 
 This folder contains the necessary scripts to run PDS + GoSec inside a container locally. Additionally, it contains scripts to build and push the PDS + GoSec container to your container registry and a Helm chart to install and run PDS + GoSec in a Kubernetes cluster.
 
-[NOTE]
-We offer Ubuntu based images. What you choose is up to you.
-
 == Run Locally
 
 This is the easiest way to get started.
@@ -580,7 +577,7 @@ A minimal example configuration file with one instance:
 replicaCount: 1
 
 image:
-   registry: registry.app.corpintra.net/sechub/pds_gosec_ubuntu
+   registry: my.registry.example.org/sechub/pds_gosec
    tag: latest
 
 pds:
@@ -617,7 +614,7 @@ An example configuration file with 3 replicas, postgresql and object storage:
 replicaCount: 3
 
 image:
-   registry: my.registry.example.org/pds_gosec
+   registry: my.registry.example.org/sechub/pds_gosec
    tag: latest
 
 pds:

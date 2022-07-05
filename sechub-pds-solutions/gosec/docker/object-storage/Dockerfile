@@ -23,10 +23,10 @@ COPY run.sh /run.sh
 RUN chmod +x /run.sh
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
-    apt-get update && \
-    apt-get --assume-yes upgrade  && \
-    apt-get --assume-yes install wget && \
-    apt-get --assume-yes clean
+    apt-get -qq update && \
+    apt-get -qq --assume-yes upgrade  && \
+    apt-get -qq --assume-yes install wget && \
+    apt-get -qq --assume-yes clean
 
 RUN mkdir -p $BUCKET_FOLDER && \
     chown -R "$STORAGE_USER:$STORAGE_USER" /buckets

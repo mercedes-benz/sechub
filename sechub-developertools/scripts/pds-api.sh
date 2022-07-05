@@ -27,7 +27,7 @@ ACTION [PARAMETERS] - EXPLANATION
 check_alive - Check if the server is running.
 create_job <product-id> <sechub-job-uuid> - Create a new job using <product-id> and a <sechub-job-uuid>.
 create_job_from_json <json-file> - Create a new job using a <json-file> JSON file.
-upload_zip <job-uuid> <zip-file> - Upload a <zip-file> ZIP file for an existing job <job-uuid>.
+upload <job-uuid> <file> - Upload a <file> file for an existing job <job-uuid>.
 mark_job_ready_to_start <job-uuid> - Mark a job with <job-uuid> as ready to start.
 job_status <job-uuid> - Get the status of a job using the <job-uuid>.
 job_result <job-uuid> - Get the job result using the <job-uuid>
@@ -105,33 +105,43 @@ function create_job_from_json {
 
 
 function generate_pds_job_data {
+  local sechub_job_uuid="$1"
+  local product_id="$2"
+
   cat <<EOF
 {
   "apiVersion":"$PDS_API_VERSION",
-  "sechubJobUUID":"$1",
-  "productId":"$2"
+  "sechubJobUUID":"$sechub_job_uuid",
+  "productId":"$product_id"
 }
 EOF
 }
 
-function upload_zip {
-  local jobUUID=$1
-  local zip_file=$2
+function upload {
+  local pdsJobUUID=$1
+  local file_to_upload=$2
+  local upload_file_name="sourcecode.zip"
 
-  if [[ ! -f "$zip_file" ]] ; then
-    echo "File \"$zip_file\" does not exist."
+  if [[ ! -f "$file_to_upload" ]] ; then
+    echo "File \"$file_to_upload\" does not exist."
     exit 1
   fi
 
-  local checkSum=$(sha256sum $zip_file | cut --delimiter=' ' --fields=1)
+  local file_to_upload_lowercased=$( echo "$file_to_upload" | tr '[:upper:]' '[:lower:]' )
+  if [[ "$file_to_upload_lowercased" == *.tar ]]
+  then
+    upload_file_name="binaries.tar"
+  fi
+
+  local checkSum=$(sha256sum "$file_to_upload" | cut --delimiter=' ' --fields=1)
 
   curl $CURL_AUTH $CURL_PARAMS -i -X POST --header "Content-Type: multipart/form-data" \
-    --form "file=@$zip_file" \
+    --form "file=@$file_to_upload" \
     --form "checkSum=$checkSum" \
-    "$PDS_SERVER/api/job/${jobUUID}/upload/sourcecode.zip" | $RESULT_FILTER
+    "$PDS_SERVER/api/job/${pdsJobUUID}/upload/$upload_file_name" | $RESULT_FILTER
 
   if [[ "$?" == "0" ]] ; then
-    echo "File \"$zip_file\" uploaded."
+    echo "Uploaded file: \"$file_to_upload\""
   else
     echo "Upload failed."
   fi
@@ -223,10 +233,10 @@ case "$action" in
     JSON_FILE="$1" ; check_parameter JSON_FILE
     [ $FAILED == 0 ] && create_job_from_json "$JSON_FILE" 
     ;;
-  upload_zip)
-    SECHUB_JOB_UUID="$1" ; check_parameter SECHUB_JOB_UUID
-    ZIP_FILE="$2" ; check_parameter ZIP_FILE
-    [ $FAILED == 0 ] && upload_zip "$SECHUB_JOB_UUID" "$ZIP_FILE" 
+  upload)
+    PDS_JOB_UUID="$1" ; check_parameter PDS_JOB_UUID
+    FILE_TO_UPLOAD="$2" ; check_parameter FILE_TO_UPLOAD
+    [ $FAILED == 0 ] && upload "$PDS_JOB_UUID" "$FILE_TO_UPLOAD" 
     ;;
   mark_job_ready_to_start)
     JOB_UUID="$1"   ; check_parameter JOB_UUID

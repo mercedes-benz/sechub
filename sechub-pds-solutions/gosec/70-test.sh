@@ -3,6 +3,7 @@
 
 file_to_upload="$1"
 json_config="$2"
+upload_type="source"
 
 function usage() {
     local script_name=
@@ -137,10 +138,10 @@ fi
 
 echo "Job created. Job UUID: $jobUUID"
 
-"$pds_api" upload_zip "$jobUUID" "$file_to_upload"
+echo "Uploading file: $file_to_upload"
+"$pds_api" upload "$jobUUID" "$file_to_upload"
 
 "$pds_api" mark_job_ready_to_start "$jobUUID"
-
 echo "Job $jobUUID marked as ready to start."
 
 # Check the status of the job
@@ -169,6 +170,9 @@ then
     printf "\n# Job error stream\n"
     "$pds_api" job_stream_error "$jobUUID"
 else
-    echo "Return the result"
+    printf "\n# Job output stream\n"
+    "$pds_api" job_stream_output "$jobUUID"
+
+    printf "\n# Return the result\n"
     "$pds_api" job_result "$jobUUID"
 fi

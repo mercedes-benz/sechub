@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
-import static com.epages.restdocs.apispec.ResourceDocumentation.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.lang.annotation.Annotation;
@@ -32,7 +31,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.domain.administration.project.Project;
 import com.mercedesbenz.sechub.domain.administration.signup.SignupRepository;
@@ -59,8 +57,9 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminRevo
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminShowsUserDetails;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUpdatesUserEmailAddress;
 import com.mercedesbenz.sechub.test.ExampleConstants;
+import com.mercedesbenz.sechub.test.RestDocPathParameter;
+import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
-import com.mercedesbenz.sechub.test.TestURLBuilder;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(UserAdministrationRestController.class)
@@ -68,7 +67,7 @@ import com.mercedesbenz.sechub.test.TestURLBuilder;
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
-public class UserAdministrationRestControllerRestDocTest {
+public class UserAdministrationRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
 
     private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
@@ -115,18 +114,16 @@ public class UserAdministrationRestControllerRestDocTest {
                 put(apiEndpoint, USER_ID, EMAIL_ADDRESS)
                 )./*andDo(print()).*/
         andExpect(status().isOk()).
-        andDo(document(RestDocFactory.createPath(useCase),
-                resource(
-                        ResourceSnippetParameters.builder().
-                            summary(RestDocFactory.createSummary(useCase)).
-                            description(RestDocFactory.createDescription(useCase)).
-                            tag(RestDocFactory.extractTag(apiEndpoint)).
+        andDo(defineRestService().
+                with().
+                    useCaseData(useCase).
+                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                and().
+                document(
                             pathParameters(
                                     parameterWithName(USER_ID.paramName()).description("The userId of the user whose email adress will be changed"),
                                     parameterWithName(EMAIL_ADDRESS.paramName()).description("The new email address")
 
-                            ).
-                            build()
                         )
                 ));
 
@@ -142,19 +139,17 @@ public class UserAdministrationRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
-				post(apiEndpoint, TestURLBuilder.RestDocPathParameter.USER_ID)
+				post(apiEndpoint, RestDocPathParameter.USER_ID)
 				)./*andDo(print()).*/
 		andExpect(status().isOk()).
-		andDo(document(RestDocFactory.createPath(useCase),
-                resource(
-                        ResourceSnippetParameters.builder().
-                            summary(RestDocFactory.createSummary(useCase)).
-                            description(RestDocFactory.createDescription(useCase)).
-                            tag(RestDocFactory.extractTag(apiEndpoint)).
+		andDo(defineRestService().
+                with().
+                    useCaseData(useCase).
+                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                and().
+                document(
                             pathParameters(
                                     parameterWithName(USER_ID.paramName()).description("The userId of the user who becomes admin")
-                            ).
-                            build()
                         )
 				));
 
@@ -170,19 +165,17 @@ public class UserAdministrationRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
-				post(apiEndpoint,TestURLBuilder.RestDocPathParameter.USER_ID)
+				post(apiEndpoint,RestDocPathParameter.USER_ID)
 				).
 		andExpect(status().isOk()).
-		andDo(document(RestDocFactory.createPath(useCase),
-                resource(
-                        ResourceSnippetParameters.builder().
-                            summary(RestDocFactory.createSummary(useCase)).
-                            description(RestDocFactory.createDescription(useCase)).
-                            tag(RestDocFactory.extractTag(apiEndpoint)).
+		andDo(defineRestService().
+                with().
+                    useCaseData(useCase).
+                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                and().
+                document(
                             pathParameters(
                                     parameterWithName(USER_ID.paramName()).description("The userId of the user who becomes admin")
-                            ).
-                            build()
                         )
 				));
 
@@ -198,19 +191,17 @@ public class UserAdministrationRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
-				delete(apiEndpoint, TestURLBuilder.RestDocPathParameter.USER_ID)
+				delete(apiEndpoint, RestDocPathParameter.USER_ID)
 				).
 		andExpect(status().isOk()).
-		andDo(document(RestDocFactory.createPath(useCase),
-                resource(
-                        ResourceSnippetParameters.builder().
-                            summary(RestDocFactory.createSummary(useCase)).
-                            description(RestDocFactory.createDescription(useCase)).
-                            tag(RestDocFactory.extractTag(apiEndpoint)).
+		andDo(defineRestService().
+                with().
+                    useCaseData(useCase).
+                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                and().
+                document(
                             pathParameters(
                                     parameterWithName(USER_ID.paramName()).description("The userId of the user who shall be deleted")
-                            ).
-                            build()
                         )
 				));
 
@@ -229,17 +220,15 @@ public class UserAdministrationRestControllerRestDocTest {
         		post(apiEndpoint, "user1")
         		).
         			andExpect(status().isCreated()).
-        			andDo(document(RestDocFactory.createPath(useCase),
-        	                resource(
-        	                        ResourceSnippetParameters.builder().
-        	                            summary(RestDocFactory.createSummary(useCase)).
-        	                            description(RestDocFactory.createDescription(useCase)).
-        	                            tag(RestDocFactory.extractTag(apiEndpoint)).
+        			andDo(defineRestService().
+                            with().
+                                useCaseData(useCase).
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                            and().
+                            document(
         	                            pathParameters(
         	                                    parameterWithName(USER_ID.paramName()).description("The userId of the signup which shall be accepted")
-        	                            ).
-        	                            build()
-        	                        )
+        	                )
         		));
 
 		/* @formatter:on */
@@ -264,17 +253,15 @@ public class UserAdministrationRestControllerRestDocTest {
 				get(apiEndpoint)
 				).
 		andExpect(status().isOk()).
-		andDo(document(RestDocFactory.createPath(UseCaseAdminListsAllUsers.class),
-                resource(
-                        ResourceSnippetParameters.builder().
-                            summary(RestDocFactory.createSummary(useCase)).
-                            description(RestDocFactory.createDescription(useCase)).
-                            tag(RestDocFactory.extractTag(apiEndpoint)).
-                            responseSchema(OpenApiSchema.USER_LIST.getSchema()).
+		andDo(defineRestService().
+                with().
+                    useCaseData(useCase).
+                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                    responseSchema(OpenApiSchema.USER_LIST.getSchema()).
+                and().
+                document(
                             responseFields(
                                     fieldWithPath("[]").description("List of user Ids").optional()
-                            ).
-                            build()
                         )
 		        ));
 
@@ -299,17 +286,15 @@ public class UserAdministrationRestControllerRestDocTest {
 				get(apiEndpoint)
 				)./*andDo(print()).*/
 		andExpect(status().isOk()).
-		andDo(document(RestDocFactory.createPath(useCase),
-                resource(
-                        ResourceSnippetParameters.builder().
-                            summary(RestDocFactory.createSummary(useCase)).
-                            description(RestDocFactory.createDescription(useCase)).
-                            tag(RestDocFactory.extractTag(apiEndpoint)).
-                            responseSchema(OpenApiSchema.USER_LIST.getSchema()).
+		andDo(defineRestService().
+                with().
+                    useCaseData(useCase).
+                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                    responseSchema(OpenApiSchema.USER_LIST.getSchema()).
+                and().
+                document(
                             responseFields(
                                     fieldWithPath("[]").description("List of admin Ids").optional()
-                            ).
-                            build()
                         )
 				));
 
@@ -341,24 +326,22 @@ public class UserAdministrationRestControllerRestDocTest {
         		get(apiEndpoint, "user1")
         		).
         			andExpect(status().isOk()).
-        			andDo(document(RestDocFactory.createPath(useCase),
-        	                resource(
-        	                        ResourceSnippetParameters.builder().
-        	                            summary(RestDocFactory.createSummary(useCase)).
-        	                            description(RestDocFactory.createDescription(useCase)).
-        	                            tag(RestDocFactory.extractTag(apiEndpoint)).
-        	                            responseSchema(OpenApiSchema.USER_DETAILS.getSchema()).
+        			andDo(defineRestService().
+                            with().
+                                useCaseData(useCase).
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                                responseSchema(OpenApiSchema.USER_DETAILS.getSchema()).
+                            and().
+                            document(
         	                            pathParameters(
         	                                    parameterWithName(USER_ID.paramName()).description("The user id of user to show details for")
-        	                            ).
+        	                            ),
         	                            responseFields(
         	                                    fieldWithPath(UserDetailInformation.PROPERTY_USERNAME).description("The name of the user"),
         	                                    fieldWithPath(UserDetailInformation.PROPERTY_EMAIL).description("The mail adress of the user"),
         	                                    fieldWithPath(UserDetailInformation.PROPERTY_SUPERADMIN).description("True, when this user is a super administrator"),
         	                                    fieldWithPath(UserDetailInformation.PROPERTY_PROJECTS).description("The projects the user has access to"),
         	                                    fieldWithPath(UserDetailInformation.PROPERTY_OWNED_PROJECTS).description("The projects the user is owner of")
-        	                            ).
-        	                            build()
         	                        )
 
         					)

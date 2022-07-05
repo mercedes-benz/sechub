@@ -28,13 +28,25 @@ public class PersistentScenarioTestDataProvider {
     }
 
     /**
+     * Only for PersistentScenarioTestDataProviderTest and internal call from other
+     * constructor. Do not use directly.
+     *
      * @param file
      */
-    public PersistentScenarioTestDataProvider(File file) {
+    PersistentScenarioTestDataProvider(File file) {
+        if (file == null) {
+            throw new IllegalStateException("Wrong usage: file may not be null!");
+        }
         this.file = file;
-        this.file.getParentFile().mkdirs();
+        ensurePropertyFileExists();
+
+    }
+
+    private void ensurePropertyFileExists() {
+        file.getParentFile().mkdirs();
+
         properties = new Properties();
-        if (this.file.exists()) {
+        if (file.exists()) {
 
             try (FileInputStream fis = new FileInputStream(file)) {
                 properties.load(fis);
@@ -56,7 +68,6 @@ public class PersistentScenarioTestDataProvider {
                 throw new IllegalStateException("cannot create growid file:" + file.getAbsolutePath(), e);
             }
         }
-
     }
 
     /**
@@ -69,7 +80,8 @@ public class PersistentScenarioTestDataProvider {
     public void increaseGrowId() {
         grow++;
         if (grow > 9999) {
-            throw new IllegalStateException("Grow ID >9999 - not valid");
+            throw new IllegalStateException(
+                    "Grow ID >9999 - not valid. This should only happen on local development.\nHow to handle this? Please call `gradlew cleanIntegrationTestData` to have a clean counter again and restart tests.");
         }
         properties.put(SECHUB_INTEGRATIONTEST_DATA_GROWINGID, "" + grow);
         store();
@@ -77,10 +89,16 @@ public class PersistentScenarioTestDataProvider {
     }
 
     private void store() {
+        File parentFolder = file.getParentFile();
+        if (!parentFolder.exists()) {
+            if (!parentFolder.mkdirs()) {
+                throw new IllegalStateException("Was not able to create parent folder: " + parentFolder.getAbsolutePath());
+            }
+        }
         try (FileOutputStream fos = new FileOutputStream(file)) {
             properties.store(fos, "DO NOT CHANGE THIS FILE!");
         } catch (IOException e) {
-            throw new IllegalStateException("cannot store:" + file.getAbsolutePath());
+            throw new IllegalStateException("cannot store: " + file.getAbsolutePath(), e);
         }
     }
 

@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Operations</h1>
 <div class="details">
-<span id="revnumber"> Server 0.29.0</span>
+<span id="revnumber"> Server 0.34.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -796,7 +796,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.29.0-20220228155657</code></p>
+<p>Documentation version: <code>Server 0.34.0-20220620124023</code></p>
 </div>
 <div class="paragraph">
 <p>Target audience for this document are <strong>SecHub Operators/Administrators</strong>.</p>
@@ -901,7 +901,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.scheduler.startup.enabled</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">When enabled, administrators will be informed by notification when new scheduler instances are started. Those notifications will also contain information about potential zombie jobs.</p>
-<p class="tableblock"> When disabled, incoming events wille be ignored and no notification sent.</p></td>
+<p class="tableblock"> When disabled, incoming events will be ignored and no notification sent.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1033,8 +1033,30 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tr>
 </tbody>
 </table>
+<table id="section-gen-config-scope-migration" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 6. Scope 'migration'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.migration.flyway.autorepair</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When enabled, flyway migration problems will be automatically repaired</p></td>
+</tr>
+</tbody>
+</table>
 <table id="section-gen-config-scope-mock" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. Scope 'mock'</caption>
+<caption class="title">Table 7. Scope 'mock'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1056,7 +1078,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-nessus" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 7. Scope 'nessus'</caption>
+<caption class="title">Table 8. Scope 'nessus'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1133,7 +1155,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-netsparker" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 8. Scope 'netsparker'</caption>
+<caption class="title">Table 9. Scope 'netsparker'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1205,7 +1227,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-notification" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 9. Scope 'notification'</caption>
+<caption class="title">Table 10. Scope 'notification'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1237,7 +1259,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-p" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. Scope 'p'</caption>
+<caption class="title">Table 11. Scope 'p'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1284,7 +1306,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-s" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. Scope 's'</caption>
+<caption class="title">Table 12. Scope 's'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1326,7 +1348,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-scan" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. Scope 'scan'</caption>
+<caption class="title">Table 13. Scope 'scan'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1358,7 +1380,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-scheduler" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. Scope 'scheduler'</caption>
+<caption class="title">Table 14. Scope 'scheduler'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1400,17 +1422,22 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.server.upload.validate.checksum</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">With <code>false</code> checksum validation (sha256) on sechub server side is disabled. Sha256 validation must be done by the delegated security products! You should disable the validation only for testing security product behaviours!</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">With <code>false</code> source code checksum validation (sha256) on sechub server side is disabled. Sha256 validation must be done by the delegated security products! You should disable the validation only for testing security product behaviours!</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.server.upload.validate.zip</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">With <code>false</code> ZIP validation on sechub server side is disabled. ZIP validation must be done by the delegated security products! You should disable the validation only for testing security product behaviours!</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.upload.binaries.maximum.bytes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">52428800</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define the maximum amount of bytes accepted for uploading <code>binaries.tar</code>. The default when not set is 52428800 (50 MiB)</p></td>
+</tr>
 </tbody>
 </table>
 <table id="section-gen-config-scope-sec" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. Scope 'sec'</caption>
+<caption class="title">Table 15. Scope 'sec'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1432,7 +1459,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-security" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. Scope 'security'</caption>
+<caption class="title">Table 16. Scope 'security'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1454,7 +1481,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-server" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. Scope 'server'</caption>
+<caption class="title">Table 17. Scope 'server'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1476,7 +1503,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-storage" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 17. Scope 'storage'</caption>
+<caption class="title">Table 18. Scope 'storage'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1518,7 +1545,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-system" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 18. Scope 'system'</caption>
+<caption class="title">Table 19. Scope 'system'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1550,7 +1577,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-target" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 19. Scope 'target'</caption>
+<caption class="title">Table 20. Scope 'target'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1568,13 +1595,13 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.target.resolve.strategy.ip</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Strategy to decide target types by given IP.</strong><br>
-Starts always with strategy-identifer, colon and value(s). Currently only 'intranet-ip-pattern' is supported as strategy. For example: <code>intranet-ip-pattern:192.168.178.<strong>,[2001:db8:85a3:0:0:8a2e:370:</strong>]</code>. Other IPs are interpreted as being inside INTERNET. But no matter if strategy is defined or not: loopback addresses are always illegal and so ignored</p></td>
+Starts always with strategy-identifer, colon and value(s). Values are comma separated. Currently only 'intranet-ip-pattern' is supported as strategy. Inside this strategy,it is possible to define IPv4 or IPv6 adresses (wildcards are also possible). For example: <code>intranet-ip-pattern:192.168.178.*,2001:db8:85a3:0:0:8a2e:370:*</code>. Other IPs are interpreted as being inside INTERNET. But no matter if strategy is defined or not: loopback addresses are always illegal and so ignored</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.target.resolve.strategy.uri</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Strategy to decide target types by given URI.</strong><br>
-Starts always with strategy-identifer, colon and value(s). Currently only 'intranet-hostname-ends-with' is supported as strategy. For example: <code>intranet-hostname-ends-with::intranet.example.org,intx.example.com</code>. Other hostnames are interpreted as being inside INTERNET. But no matter if strategy is defined or not: loopback addresses are always illegal and so ignored.</p></td>
+Starts always with strategy-identifer, colon and value(s). Values are comma separated. Currently only 'intranet-hostname-ends-with' is supported as strategy. For example: <code>intranet-hostname-ends-with:intranet.example.org,intx.example.com</code>. Other hostnames are interpreted as being inside INTERNET. But no matter if strategy is defined or not: loopback addresses are always illegal and so ignored.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1582,21 +1609,75 @@ Starts always with strategy-identifer, colon and value(s). Currently only 'intra
 <div class="sect3">
 <h4 id="scheduling-definitions">2.2.3. Scheduling definitions</h4>
 <table id="link-gen-scheduling" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. Scope 'scheduler'</caption>
+<caption class="title">Table 21. Scope 'administration'</caption>
 <colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
+<col style="width: 7.6923%;">
+<col style="width: 46.1538%;">
+<col style="width: 46.1539%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">Type</th>
 <th class="tableblock halign-left valign-top">Definition</th>
 <th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Fixed</th>
 </tr>
 </thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fixed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">initial delay:${sechub.config.trigger.autoclean.initialdelay:5000} fixed delay:${sechub.config.trigger.autoclean.delay:86400000}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Auto cleanup is triggered by a cron job operation - default is one day to delay after last execution. As initial delay 5000 milliseconds are defined. It can be configured differently. This is useful when you need to startup a cluster. Simply change the initial delay values in to allow the cluster to startup.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 22. Scope 'scan'</caption>
+<colgroup>
+<col style="width: 7.6923%;">
+<col style="width: 46.1538%;">
+<col style="width: 46.1539%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Definition</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fixed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">initial delay:${sechub.config.trigger.autoclean.initialdelay:5000} fixed delay:${sechub.config.trigger.autoclean.delay:86400000}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Auto cleanup is triggered by a cron job operation - default is one day to delay after last execution. As initial delay 5000 milliseconds are defined. It can be configured differently. This is useful when you need to startup a cluster. Simply change the initial delay values in to allow the cluster to startup.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 23. Scope 'schedule'</caption>
+<colgroup>
+<col style="width: 7.6923%;">
+<col style="width: 46.1538%;">
+<col style="width: 46.1539%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Definition</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fixed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">initial delay:${sechub.config.trigger.autoclean.initialdelay:5000} fixed delay:${sechub.config.trigger.autoclean.delay:86400000}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Auto cleanup is triggered by a cron job operation - default is one day to delay after last execution. As initial delay 5000 milliseconds are defined. It can be configured differently. This is useful when you need to startup a cluster. Simply change the initial delay values in to allow the cluster to startup.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fixed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">initial delay:${sechub.config.trigger.nextjob.initialdelay:5000} fixed delay:${sechub.config.trigger.nextjob.delay:10000}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job scheduling is triggered by a cron job operation - default is 10 seconds to delay after last execution. For initial delay 5000 milliseconds are defined. It can be configured differently. This is useful when you need to startup a cluster. Simply change the initial delay values in to allow the cluster to startup.</p></td>
+</tr>
+</tbody>
 </table>
 </div>
 </div>
@@ -2015,8 +2096,18 @@ accidently add the credentials to your repository.</p>
 <div class="sect5">
 <h6 id="logging-2">2.3.3.4.2. Logging</h6>
 <div class="paragraph">
+<p><strong>Default output</strong></p>
+</div>
+<div class="paragraph">
 <p>SecHub uses per default logging to stdout, so you just need to use something like
 <code>fluentd</code> PODs to gather log output.</p>
+</div>
+<div class="paragraph">
+<p><strong>Logstash support</strong></p>
+</div>
+<div class="paragraph">
+<p>When you want to use <code>logstash</code> (e.g. when using <code>ElasticSearch</code> or <code>OpenSearch</code>) you just have to set the environment variable
+<code>LOGGING_TYPE</code> to <code>LOGSTASH_JSON</code> before server starts.</p>
 </div>
 </div>
 </div>
@@ -3248,7 +3339,7 @@ the assignment to a super administrator. Only with permission of project owner t
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.29.0<br>
+ Server 0.34.0<br>
 </div>
 </div>
 </body>

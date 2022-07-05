@@ -41,11 +41,7 @@ public class ProductResultService {
         return repository.findAll(Example.of(probe));
     }
 
-    /*
-     * FIXME Albert Tregnaghi, 2020-04-23: we must fix the security-context problem,
-     * see https://github.com/mercedes-benz/sechub/issues/216
-     */
-    // @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
+    @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
     public void deleteAllResultsForJob(UUID sechubJobUUID) {
         ProductResult probe = new ProductResult();
         probe.secHubJobUUID = sechubJobUUID;

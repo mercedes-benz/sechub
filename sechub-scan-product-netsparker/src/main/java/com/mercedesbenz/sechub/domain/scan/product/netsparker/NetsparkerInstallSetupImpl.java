@@ -5,11 +5,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.adapter.AbstractAdapterConfigBuilder;
-import com.mercedesbenz.sechub.domain.scan.AbstractTargetIdentifyingOneInstallSetup;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 
 @Component
-public class NetsparkerInstallSetupImpl extends AbstractTargetIdentifyingOneInstallSetup implements NetsparkerInstallSetup {
+public class NetsparkerInstallSetupImpl implements NetsparkerInstallSetup {
 
     @Value("${sechub.adapter.netsparker.intranet.agentgroupname:}")
     @MustBeDocumented("The name of the agent group to be used by netsparker for *intranet scans*. If not set no agent group will be used.")
@@ -87,33 +86,50 @@ public class NetsparkerInstallSetupImpl extends AbstractTargetIdentifyingOneInst
         return netsparkerLicenseId;
     }
 
-    @Override
-    protected String getIdentifierWhenInternetTarget() {
+    public String getIdentifierWhenInternetTarget() {
         return internetAgentGroupName;
     }
 
-    @Override
-    protected String getIdentifierWhenIntranetTarget() {
+    public String getIdentifierWhenIntranetTarget() {
         return intranetAgentGroupName;
     }
 
-    @Override
-    public String getUserId() {
-        return netsparkerUserId;
-    }
-
-    @Override
-    public String getPassword() {
-        return netsparkerAPIToken;
-    }
-
-    @Override
-    public String getBaseURL() {
+    public String getBaseURLWhenInternetTarget() {
         return netsparkerBaseURL;
     }
 
     @Override
-    public boolean isHavingUntrustedCertificate() {
+    public String getBaseURLWhenIntranetTarget() {
+        return netsparkerBaseURL;
+    }
+
+    @Override
+    public String getUsernameWhenInternetTarget() {
+        return netsparkerUserId;
+    }
+
+    @Override
+    public String getUsernameWhenIntranetTarget() {
+        return netsparkerUserId;
+    }
+
+    @Override
+    public String getPasswordWhenInternetTarget() {
+        return netsparkerAPIToken;
+    }
+
+    @Override
+    public String getPasswordWhenIntranetTarget() {
+        return netsparkerAPIToken;
+    }
+
+    @Override
+    public boolean hasUntrustedCertificateWhenIntranetTarget() {
+        return trustAllCertificatesNecessary;
+    }
+
+    @Override
+    public boolean hasUntrustedCertificateWhenInternetTarget() {
         return trustAllCertificatesNecessary;
     }
 

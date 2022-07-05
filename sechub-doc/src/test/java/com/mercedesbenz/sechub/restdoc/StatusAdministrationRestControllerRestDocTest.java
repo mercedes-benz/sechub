@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
-import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -30,7 +29,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.domain.administration.mapping.FetchMappingService;
 import com.mercedesbenz.sechub.domain.administration.mapping.MappingAdministrationRestController;
@@ -45,8 +43,9 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdmiUpdatesMappingConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesMappingConfiguration;
 import com.mercedesbenz.sechub.test.ExampleConstants;
+import com.mercedesbenz.sechub.test.RestDocPathParameter;
+import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
-import com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(MappingAdministrationRestController.class)
@@ -54,7 +53,7 @@ import com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter;
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
-public class StatusAdministrationRestControllerRestDocTest {
+public class StatusAdministrationRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
 
     private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
@@ -97,22 +96,20 @@ public class StatusAdministrationRestControllerRestDocTest {
 				*/
 		andDo(print()).
 		andExpect(status().isOk()).
-		andDo(document(RestDocFactory.createPath(useCase),
-		        resource(
-		                ResourceSnippetParameters.builder().
-		                    summary(RestDocFactory.createSummary(useCase)).
-		                    description(RestDocFactory.createDescription(useCase)).
-		                    tag(RestDocFactory.extractTag(apiEndpoint)).
-        		            responseSchema(OpenApiSchema.MAPPING_CONFIGURATION.getSchema()).
+		andDo(defineRestService().
+                with().
+                    useCaseData(useCase).
+                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                    responseSchema(OpenApiSchema.MAPPING_CONFIGURATION.getSchema()).
+                and().
+                document(
                             pathParameters(
                                     parameterWithName(MAPPING_ID.paramName()).description("The mapping Id")
-                            ).
+                            ),
                             responseFields(
                                     fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_PATTERN).description("Pattern"),
                                     fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_REPLACEMENT).description("Replacement"),
                                     fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_COMMENT).description("Comment")
-                            ).
-                            build()
         		        )
 		        ));
 
@@ -135,23 +132,21 @@ public class StatusAdministrationRestControllerRestDocTest {
                 */
         andDo(print()).
         andExpect(status().isOk()).
-        andDo(document(RestDocFactory.createPath(useCase),
-                resource(
-                        ResourceSnippetParameters.builder().
-                            summary(RestDocFactory.createSummary(useCase)).
-                            description(RestDocFactory.createDescription(useCase)).
-                            tag(RestDocFactory.extractTag(apiEndpoint)).
+        andDo(defineRestService().
+                with().
+                    useCaseData(useCase).
+                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                    requestSchema(OpenApiSchema.MAPPING_CONFIGURATION.getSchema()).
+                and().
+                document(
                             pathParameters(
                                     parameterWithName(MAPPING_ID.paramName()).description("The mappingID, identifiying which mapping shall be updated")
-                                ).
+                            ),
                             requestFields(
                                     fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_PATTERN).description("Pattern"),
                                     fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_REPLACEMENT).description("Replacement"),
                                     fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_COMMENT).description("Comment")
-                            ).
-                            requestSchema(OpenApiSchema.MAPPING_CONFIGURATION.getSchema()).
-                            build()
-                        )
+                            )
                 ));
 
         /* @formatter:on */

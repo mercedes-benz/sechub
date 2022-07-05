@@ -26,7 +26,7 @@ public class ScanRevokeUserAccessAtAllService {
     @Transactional
     @UseCaseAdminDeletesUser(@Step(number = 3, name = "revoke user from schedule access"))
     public void revokeUserAccess(String userId) {
-        assertion.isValidUserId(userId);
+        assertion.assertIsValidUserId(userId);
 
         repository.deleteAcessForUserAtAll(userId);
 

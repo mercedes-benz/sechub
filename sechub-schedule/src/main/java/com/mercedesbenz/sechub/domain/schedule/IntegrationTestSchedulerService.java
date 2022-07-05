@@ -56,6 +56,7 @@ public class IntegrationTestSchedulerService {
         job.setExecutionState(ExecutionState.INITIALIZING);
         job.setEnded(null);
         job.setTrafficLight(null);
+        job.setJsonMessages(null);
 
         repository.save(job);
     }

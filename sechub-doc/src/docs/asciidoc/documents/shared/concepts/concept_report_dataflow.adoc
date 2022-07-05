@@ -9,4 +9,7 @@ finally written as `ScanReport` entity into the database:
 plantuml::./diagrams/diagram_report_dataflow.plantuml[format=svg, title="Report data flow"] 
 
 ===== Read and delivery of report data to end user
-plantuml::diagrams/diagram_report_delivery.plantuml[format=svg, title="Delivery"] 
+When the user downloads the report, the result inside the persisted scan report entity will be used.
+
+plantuml::diagrams/diagram_report_delivery.plantuml[format=svg, title="Report delivery to user"] 
+

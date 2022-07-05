@@ -1,0 +1,74 @@
+# SPDX-License-Identifier: MIT
+
+# This is just a sample values file.
+
+replicaCount: 1
+
+image:
+    registry: "my.registry.example.org/pds_scancode"
+    tag: "latest"
+
+pds:
+    startMode: localserver
+    maxFileUploadSize: 20MB
+    
+    # 100 MiB by default
+    # 1024**2 * 100 = 104857600
+    # declare as string to avoid scientific number
+    # formatting by Kubernetes
+    uploadBinariesMaximumBytes: "104857600"
+    config:
+        execute:
+            queueMax: 10
+            workerThreadCount: 1
+    logging:
+        type:
+            enabled: false
+            appenderName: "LOGSTASH_JSON"
+    debug:
+        keepReportsInWorkspace: false
+    javaDebug:
+        enabled: false
+    keepContainerAliveAfterPDSCrashed: false
+    volumes:
+        # this value should be greater than,
+        # the `uploadBinariesMaximumBytes` value
+        workspace:
+            size: "1Gi"
+users:
+    technical:
+        id: "techuser"
+    admin:
+        id: "admin"
+
+storage:
+    local:
+        enabled: true
+    s3:
+        enabled: false
+        endpoint: "https://<minio-or-s3-server>:<port>"
+        bucketname: "<my-bucketname>"
+        accesskey: "<my-accesskey>"
+        secretkey: "<my-secretkey>"
+    sharedVolume:
+        enabled: false
+        upload:
+            dir: "/mount/nfs/shares/<sharename>"
+
+database:
+    postgres:
+        enabled: false
+        connection: "jdbc:postgresql://database:5432/pds"
+        username: "scancode"
+        password: "<password-of-db-user>"
+
+networkPolicy:
+    enabled: false
+    ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+                name: sechub-server
+        - podSelector:
+            matchLabels:
+                name: sechub-adminserver

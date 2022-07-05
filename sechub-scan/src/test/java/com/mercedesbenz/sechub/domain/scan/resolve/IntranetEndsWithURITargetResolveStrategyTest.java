@@ -8,8 +8,8 @@ import java.net.URI;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.mercedesbenz.sechub.domain.scan.Target;
-import com.mercedesbenz.sechub.domain.scan.TargetType;
+import com.mercedesbenz.sechub.domain.scan.NetworkTarget;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
 
 public class IntranetEndsWithURITargetResolveStrategyTest {
     private static URI URI_EMPTY = URI.create("");
@@ -56,18 +56,19 @@ public class IntranetEndsWithURITargetResolveStrategyTest {
         strategyToTest.initialize("intranet-hostname-ends-with:intranet.example.org");
 
         /* test */
-        assertEquals(new Target(URI_EMPTY, TargetType.UNKNOWN), strategyToTest.resolveTargetFor(URI_EMPTY));
-        assertEquals(new Target(URI_HTTPS_EXAMPLE_ORG, TargetType.INTERNET), strategyToTest.resolveTargetFor(URI_HTTPS_EXAMPLE_ORG));
-        assertEquals(new Target(URI_HTTPS_SOMEWHERE_INTRANET_EXAMPLE_ORG, TargetType.INTRANET),
+        assertEquals(new NetworkTarget(URI_EMPTY, NetworkTargetType.UNKNOWN), strategyToTest.resolveTargetFor(URI_EMPTY));
+        assertEquals(new NetworkTarget(URI_HTTPS_EXAMPLE_ORG, NetworkTargetType.INTERNET), strategyToTest.resolveTargetFor(URI_HTTPS_EXAMPLE_ORG));
+        assertEquals(new NetworkTarget(URI_HTTPS_SOMEWHERE_INTRANET_EXAMPLE_ORG, NetworkTargetType.INTRANET),
                 strategyToTest.resolveTargetFor(URI_HTTPS_SOMEWHERE_INTRANET_EXAMPLE_ORG));
-        assertEquals(new Target(URI_HTTPS_SOMEWHERE_INTRANET_EXAMPLE_ORG_PORT_1234, TargetType.INTRANET),
+        assertEquals(new NetworkTarget(URI_HTTPS_SOMEWHERE_INTRANET_EXAMPLE_ORG_PORT_1234, NetworkTargetType.INTRANET),
                 strategyToTest.resolveTargetFor(URI_HTTPS_SOMEWHERE_INTRANET_EXAMPLE_ORG_PORT_1234));
-        assertEquals(new Target(URI_HTTPS_SOMEWHERE_INTRANET_EXAMPLE_ORG_PORT_1234_WITH_PATH, TargetType.INTRANET),
+        assertEquals(new NetworkTarget(URI_HTTPS_SOMEWHERE_INTRANET_EXAMPLE_ORG_PORT_1234_WITH_PATH, NetworkTargetType.INTRANET),
                 strategyToTest.resolveTargetFor(URI_HTTPS_SOMEWHERE_INTRANET_EXAMPLE_ORG_PORT_1234_WITH_PATH));
 
-        assertEquals(new Target(URI_HTTP_SOMEWHERE_INTX_EXAMPLE_COM, TargetType.INTERNET),
+        assertEquals(new NetworkTarget(URI_HTTP_SOMEWHERE_INTX_EXAMPLE_COM, NetworkTargetType.INTERNET),
                 strategyToTest.resolveTargetFor(URI_HTTP_SOMEWHERE_INTX_EXAMPLE_COM));
-        assertEquals(new Target(URI_FTP_SOMEWHERE_INTX_EXAMPLE_COM, TargetType.INTERNET), strategyToTest.resolveTargetFor(URI_FTP_SOMEWHERE_INTX_EXAMPLE_COM));
+        assertEquals(new NetworkTarget(URI_FTP_SOMEWHERE_INTX_EXAMPLE_COM, NetworkTargetType.INTERNET),
+                strategyToTest.resolveTargetFor(URI_FTP_SOMEWHERE_INTX_EXAMPLE_COM));
     }
 
     @Test
@@ -77,16 +78,17 @@ public class IntranetEndsWithURITargetResolveStrategyTest {
         strategyToTest.initialize("intranet-hostname-ends-with:intranet.example.org, intx.example.com");
 
         /* test */
-        assertEquals(new Target(URI_EMPTY, TargetType.UNKNOWN), strategyToTest.resolveTargetFor(URI_EMPTY));
-        assertEquals(new Target(URI_HTTPS_EXAMPLE_ORG, TargetType.INTERNET), strategyToTest.resolveTargetFor(URI_HTTPS_EXAMPLE_ORG));
-        assertEquals(new Target(URI_HTTPS_SOMEWHERE_INTRANET_EXAMPLE_ORG, TargetType.INTRANET),
+        assertEquals(new NetworkTarget(URI_EMPTY, NetworkTargetType.UNKNOWN), strategyToTest.resolveTargetFor(URI_EMPTY));
+        assertEquals(new NetworkTarget(URI_HTTPS_EXAMPLE_ORG, NetworkTargetType.INTERNET), strategyToTest.resolveTargetFor(URI_HTTPS_EXAMPLE_ORG));
+        assertEquals(new NetworkTarget(URI_HTTPS_SOMEWHERE_INTRANET_EXAMPLE_ORG, NetworkTargetType.INTRANET),
                 strategyToTest.resolveTargetFor(URI_HTTPS_SOMEWHERE_INTRANET_EXAMPLE_ORG));
-        assertEquals(new Target(URI_HTTPS_SOMEWHERE_INTRANET_EXAMPLE_ORG_PORT_1234, TargetType.INTRANET),
+        assertEquals(new NetworkTarget(URI_HTTPS_SOMEWHERE_INTRANET_EXAMPLE_ORG_PORT_1234, NetworkTargetType.INTRANET),
                 strategyToTest.resolveTargetFor(URI_HTTPS_SOMEWHERE_INTRANET_EXAMPLE_ORG_PORT_1234));
 
-        assertEquals(new Target(URI_HTTP_SOMEWHERE_INTX_EXAMPLE_COM, TargetType.INTRANET),
+        assertEquals(new NetworkTarget(URI_HTTP_SOMEWHERE_INTX_EXAMPLE_COM, NetworkTargetType.INTRANET),
                 strategyToTest.resolveTargetFor(URI_HTTP_SOMEWHERE_INTX_EXAMPLE_COM));
-        assertEquals(new Target(URI_FTP_SOMEWHERE_INTX_EXAMPLE_COM, TargetType.INTRANET), strategyToTest.resolveTargetFor(URI_FTP_SOMEWHERE_INTX_EXAMPLE_COM));
+        assertEquals(new NetworkTarget(URI_FTP_SOMEWHERE_INTX_EXAMPLE_COM, NetworkTargetType.INTRANET),
+                strategyToTest.resolveTargetFor(URI_FTP_SOMEWHERE_INTX_EXAMPLE_COM));
 
     }
 

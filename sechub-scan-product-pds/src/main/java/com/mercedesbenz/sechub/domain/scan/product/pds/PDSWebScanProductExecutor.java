@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.pds;
 
+import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
@@ -14,23 +14,28 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.pds.PDSAdapter;
 import com.mercedesbenz.sechub.adapter.pds.PDSMetaDataID;
 import com.mercedesbenz.sechub.adapter.pds.PDSWebScanConfig;
 import com.mercedesbenz.sechub.adapter.pds.PDSWebScanConfigImpl;
-import com.mercedesbenz.sechub.domain.scan.TargetRegistry.TargetRegistryInfo;
-import com.mercedesbenz.sechub.domain.scan.TargetType;
+import com.mercedesbenz.sechub.commons.model.ScanType;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataAdapterConfigurationStrategy;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetRegistry.NetworkTargetInfo;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
 import com.mercedesbenz.sechub.domain.scan.WebConfigBuilderStrategy;
-import com.mercedesbenz.sechub.domain.scan.product.AbstractWebScanProductExecutor;
+import com.mercedesbenz.sechub.domain.scan.WebScanNetworkLocationProvider;
+import com.mercedesbenz.sechub.domain.scan.product.AbstractProductExecutor;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
+import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.sharedkernel.SystemEnvironment;
+import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
-import com.mercedesbenz.sechub.sharedkernel.resilience.ResilientActionExecutor;
 
 @Service
-public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PDSInstallSetup> {
+public class PDSWebScanProductExecutor extends AbstractProductExecutor {
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSWebScanProductExecutor.class);
 
@@ -46,11 +51,11 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
     @Autowired
     PDSResilienceConsultant pdsResilienceConsultant;
 
-    ResilientActionExecutor<ProductResult> resilientActionExecutor;
+    @Autowired
+    PDSStorageContentProviderFactory contentProviderFactory;
 
     public PDSWebScanProductExecutor() {
-        /* we create here our own instance - only for this service! */
-        this.resilientActionExecutor = new ResilientActionExecutor<>();
+        super(ProductIdentifier.PDS_WEBSCAN, 1, ScanType.WEB_SCAN);
     }
 
     @PostConstruct
@@ -59,71 +64,60 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
     }
 
     @Override
-    protected PDSInstallSetup getInstallSetup() {
-        return installSetup;
-    }
+    protected List<ProductResult> executeByAdapter(ProductExecutorData data) throws Exception {
 
-    @Override
-    protected List<ProductResult> executeWithAdapter(SecHubExecutionContext context, ProductExecutorContext executorContext, PDSInstallSetup setup,
-            TargetRegistryInfo info) throws Exception {
+        ProductExecutorContext executorContext = data.getProductExecutorContext();
+        SecHubExecutionContext context = data.getSechubExecutionContext();
+        NetworkTargetInfo info = data.getCurrentNetworkTargetInfo();
 
-        PDSExecutorConfigSuppport configSupport = PDSExecutorConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
-                systemEnvironment);
+        /* we reuse config support created inside customize method */
+        PDSExecutorConfigSuppport configSupport = (PDSExecutorConfigSuppport) data.getNetworkTargetDataProvider();
 
         URI targetURI = info.getURI();
         if (targetURI == null) {
-            /* no targets defined */
+            LOG.warn("NO target URI defined for PDS web scan execution");
             return Collections.emptyList();
         }
-        TargetType targetType = info.getTargetType();
+        NetworkTargetType targetType = info.getTargetType();
         if (configSupport.isTargetTypeForbidden(targetType)) {
-            LOG.info("pds adapter does not accept target type:{} so cancel execution");
+            LOG.info("PDS adapter does not accept target type:{} so cancel execution");
             return Collections.emptyList();
         }
         LOG.debug("Trigger PDS adapter execution for target {} ", targetType);
 
         List<ProductResult> results = new ArrayList<>();
 
-        String projectId = context.getConfiguration().getProjectId();
-
-        Map<String, String> jobParameters = configSupport.createJobParametersToSendToPDS(context.getConfiguration());
-
         /* @formatter:off */
         executorContext.useFirstFormerResultHavingMetaData(PDSMetaDataID.KEY_TARGET_URI, targetURI);
+        PDSStorageContentProvider contentProvider = contentProviderFactory.createContentProvider(context, configSupport, getScanType());
 
-        ProductResult result = resilientActionExecutor.executeResilient(() -> {
-            PDSWebScanConfig pdsWebScanConfig = PDSWebScanConfigImpl.builder().
-                        setPDSProductIdentifier(configSupport.getPDSProductIdentifier()).
-                        setTrustAllCertificates(configSupport.isTrustAllCertificatesEnabled()).
-                        setProductBaseUrl(configSupport.getProductBaseURL()).
-                        setSecHubJobUUID(context.getSechubJobUUID()).
+            ProductResult result = resilientActionExecutor.executeResilient(() -> {
+                try (InputStream sourceCodeZipFileInputStreamOrNull = contentProvider.getSourceZipFileInputStreamOrNull()){
+                PDSWebScanConfig pdsWebScanConfig = PDSWebScanConfigImpl.builder().
+                        configure(PDSAdapterConfigurationStrategy.builder().
+                                setScanType(getScanType()).
+                                setProductExecutorData(data).
+                                setConfigSupport(configSupport).
+                                setSourceCodeZipFileInputStreamOrNull(sourceCodeZipFileInputStreamOrNull).
+                                setContentProvider(contentProvider).
+                                setInstallSetup(installSetup).
+                                build()).
+                            /* additional: */
+                            configure(new WebConfigBuilderStrategy(context)).
+                            configure(new NetworkTargetProductServerDataAdapterConfigurationStrategy(configSupport,data.getCurrentNetworkTargetInfo().getTargetType())).
 
-                        setSecHubConfigModel(context.getConfiguration()).
+                            setTargetURI(targetURI).
+                            setTargetType(info.getTargetType().name()).
 
-                        configure(createAdapterOptionsStrategy(context)).
-                        configure(new WebConfigBuilderStrategy(context)).
+                            build();
+                /* @formatter:on */
 
-                        setTimeToWaitForNextCheckOperationInMilliseconds(configSupport.getTimeToWaitForNextCheckOperationInMilliseconds(setup)).
-                        setTimeOutInMinutes(configSupport.getTimeoutInMinutes(setup)).
+                /* execute PDS by adapter and return product result */
+                AdapterExecutionResult adapterResult = pdsAdapter.start(pdsWebScanConfig, executorContext.getCallback());
 
-                        setUser(configSupport.getUser()).
-                        setPasswordOrAPIToken(configSupport.getPasswordOrAPIToken()).
-                        setProjectId(projectId).
+                return updateCurrentProductResult(adapterResult, executorContext);
+            }
 
-                        setTraceID(context.getTraceLogIdAsString()).
-                        setJobParameters(jobParameters).
-
-                        setTargetURI(targetURI).
-
-                        build();
-            /* @formatter:on */
-
-            /* execute PDS by adapter and return product result */
-            String pdsResult = pdsAdapter.start(pdsWebScanConfig, executorContext.getCallback());
-
-            ProductResult currentProductResult = executorContext.getCurrentProductResult();
-            currentProductResult.setResult(pdsResult);
-            return currentProductResult;
         });
         results.add(result);
 
@@ -131,13 +125,16 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
     }
 
     @Override
-    public ProductIdentifier getIdentifier() {
-        return ProductIdentifier.PDS_WEBSCAN;
-    }
+    protected void customize(ProductExecutorData data) {
+        SecHubConfiguration secHubConfiguration = data.getSechubExecutionContext().getConfiguration();
+        data.setNetworkLocationProvider(new WebScanNetworkLocationProvider(secHubConfiguration));
 
-    @Override
-    public int getVersion() {
-        return 1;
+        ProductExecutorContext executorContext = data.getProductExecutorContext();
+        PDSExecutorConfigSuppport configSupport = PDSExecutorConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
+                systemEnvironment);
+
+        data.setNetworkTargetDataProvider(configSupport);
+
     }
 
 }

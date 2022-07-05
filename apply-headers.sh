@@ -79,6 +79,8 @@ echo -e "  --------------------------------------------"
 ##########################################################
 # Apply SPDX license headers:
 applySPDXonFirstLine "adoc" "// $SPDX_TEXT"
+applySPDXonFirstLine "puml" "' $SPDX_TEXT"
+applySPDXonFirstLine "plantuml" "' $SPDX_TEXT"
 applySPDXonFirstLine "bat" ":: $SPDX_TEXT"
 applySPDXonFirstLine "c" "// $SPDX_TEXT"
 applySPDXonFirstLine "dockerfile" "# $SPDX_TEXT"

@@ -6,6 +6,7 @@ import java.util.Map;
 import com.mercedesbenz.sechub.adapter.Adapter;
 import com.mercedesbenz.sechub.adapter.AdapterCanceledByUserException;
 import com.mercedesbenz.sechub.adapter.AdapterException;
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterLogId;
 import com.mercedesbenz.sechub.adapter.AdapterMetaDataCallback;
 import com.mercedesbenz.sechub.adapter.TraceIdProvider;
@@ -48,8 +49,8 @@ public class IntegrationTestAdapter implements Adapter<IntegrationTestAdapterCon
     }
 
     @Override
-    public String start(IntegrationTestAdapterConfig config, AdapterMetaDataCallback callback) throws AdapterException {
-        return null;
+    public AdapterExecutionResult start(IntegrationTestAdapterConfig config, AdapterMetaDataCallback callback) throws AdapterException {
+        return new AdapterExecutionResult(null);
     }
 
     @Override

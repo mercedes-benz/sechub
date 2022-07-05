@@ -52,7 +52,7 @@ func AssertContainsNot(list []string, unwanted string, t *testing.T) {
 func AssertSize(list []string, wantedLength int, t *testing.T) {
 	length := len(list)
 	if length != wantedLength {
-		t.Fatalf("Expected size %d but found %d", length, wantedLength)
+		t.Fatalf("Expected size %d but found %d", wantedLength, length)
 	}
 }
 
@@ -79,14 +79,14 @@ func AssertJSONEquals(expected string, given string, t *testing.T) {
 // AssertEquals checks expected value equals given value (any type possible like string, int, ...)
 func AssertEquals(expected interface{}, given interface{}, t *testing.T) {
 	if expected != given {
-		t.Fatalf("Values differ:\n  Expected: %#v (type %T)\n  Got     : %#v (type %T)\n", expected, expected, given, given)
+		t.Fatalf("Values differ:\n   got: %#v (type %T)\n  want: %#v (type %T)\n", given, given, expected, expected)
 	}
 }
 
 // AssertNotEquals checks notExpected value equals given value
 func AssertNotEquals(notExpected interface{}, given interface{}, t *testing.T) {
 	if notExpected == given {
-		t.Fatalf("Values do NOT differ:\n  Unexpected: %#v (type %T)\n  Got       : %#v (type %T)\n", notExpected, notExpected, given, given)
+		t.Fatalf("Values do NOT differ:\n  got     : %#v (type %T)\n  unwanted: %#v (type %T)\n", given, given, notExpected, notExpected)
 	}
 }
 
@@ -149,4 +149,18 @@ func AssertMinimalFileSize(filePath string, size int64, t *testing.T) {
 		t.Fatalf("File %q too small: expected >= %d bytes, but has only %d.", filePath, size, fileinfo.Size())
 	}
 	Check(err, t)
+}
+
+// AssertContains checks wanted string is contained in given string s
+func AssertStringContains(s string, wanted string, t *testing.T) {
+	if !strings.Contains(s, wanted) {
+		t.Fatalf("Did not find \"%s\" inside \"%s\"", wanted, s)
+	}
+}
+
+// AssertStringContainsNot checks unwanted string is not contained in given string s
+func AssertStringContainsNot(s string, unwanted string, t *testing.T) {
+	if strings.Contains(s, unwanted) {
+		t.Fatalf("Found \"%s\" inside \"%s\", but should not be found.", unwanted, s)
+	}
 }

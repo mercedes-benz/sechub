@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -30,21 +30,30 @@ import org.springframework.web.client.RestClientException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
+import com.mercedesbenz.sechub.domain.scan.admin.FullScanData;
+import com.mercedesbenz.sechub.domain.scan.admin.ScanData;
 import com.mercedesbenz.sechub.integrationtest.internal.DefaultTestExecutionProfile;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultProfiles;
+import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData;
+import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData.TestCleanupTimeUnit;
 import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper;
+import com.mercedesbenz.sechub.integrationtest.internal.autoclean.TestAutoCleanJsonDeleteCount;
 import com.mercedesbenz.sechub.sharedkernel.logging.SecurityLogData;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingEntry;
 import com.mercedesbenz.sechub.sharedkernel.messaging.IntegrationTestEventHistory;
 import com.mercedesbenz.sechub.test.ExampleConstants;
-import com.mercedesbenz.sechub.test.TestURLBuilder;
+import com.mercedesbenz.sechub.test.PDSTestURLBuilder;
+import com.mercedesbenz.sechub.test.SecHubTestURLBuilder;
 import com.mercedesbenz.sechub.test.executionprofile.TestExecutionProfile;
 
 public class TestAPI {
@@ -94,12 +103,24 @@ public class TestAPI {
         return new AsPDSUser(user);
     }
 
-    @Deprecated // use assertReport instead (newer implementation , has more details and uses
-                // common SecHubReport object inside)
-    public static AssertSecHubReport assertSecHubReport(String json) {
-        return AssertSecHubReport.assertSecHubReport(json);
+    /**
+     * Asserts given report json - it will try to find report elements
+     *
+     * @param json
+     * @return
+     */
+    public static AssertReportUnordered assertReportUnordered(String json) {
+        return AssertReportUnordered.assertReportUnordered(json);
     }
 
+    /**
+     * Asserts given report json - for checks you will always need to explicit use
+     * indexes and the report must have an explicit ordering - otherwise you have
+     * flaky tests!
+     *
+     * @param json
+     * @return
+     */
     public static AssertReport assertReport(String json) {
         return AssertReport.assertReport(json);
     }
@@ -110,6 +131,10 @@ public class TestAPI {
 
     public static AssertPDSStatus assertPDSJobStatus(String json) {
         return new AssertPDSStatus(json);
+    }
+
+    public static AssertSecHubJobStatus assertJobStatus(TestProject project, UUID sechubJobUUID) {
+        return new AssertSecHubJobStatus(sechubJobUUID, project);
     }
 
     public static AssertPDSCreateJobResult assertPDSJobCreateResult(String json) {
@@ -143,10 +168,28 @@ public class TestAPI {
     /**
      * Creates an assert object to inspect meta data
      *
-     * @return
+     * @return assert object
      */
-    public static AssertInspections assertInspections() {
-        return new AssertInspections();
+    public static AssertMetaDataInspections assertMetaDataInspections() {
+        return new AssertMetaDataInspections();
+    }
+
+    /**
+     * Creates an assert object to inspect auto cleanup data
+     *
+     * @return assert object
+     */
+    public static AssertAutoCleanupInspections assertAutoCleanupInspections() {
+        return new AssertAutoCleanupInspections();
+    }
+
+    /**
+     * Creates an assert object to inspect PDS auto cleanup data
+     *
+     * @return assert object
+     */
+    public static AssertPDSAutoCleanupInspections assertPDSAutoCleanupInspections() {
+        return new AssertPDSAutoCleanupInspections();
     }
 
     public static void logInfoOnServer(String text) {
@@ -159,9 +202,29 @@ public class TestAPI {
         getContext().getPDSRestHelper(ANONYMOUS).postPlainText(url, text);
     }
 
-    public static String getPDSStoragePathForJobUUID(UUID jobUUID) {
-        String url = getPDSURLBuilder().pds().buildIntegrationTestCheckStoragePath(jobUUID);
+    /**
+     * When sechub storage is reused, this will return the storage path for the
+     * sechub job uuid otherwise <code>null</code>
+     *
+     * @param secHubJobUUID
+     * @return path or <code>null</code>
+     */
+    public static String fetchStoragePathHistoryEntryoForSecHubJobUUID(UUID secHubJobUUID) {
+        String url = getPDSURLBuilder().buildIntegrationTestFetchStoragePathHistoryEntryForSecHubJob(secHubJobUUID);
         return getContext().getPDSRestHelper(ANONYMOUS).getStringFromURL(url);
+    }
+
+    /**
+     * Resolve local PDS upload folder
+     *
+     * @param pdsJobUUID
+     * @return upload folder in job workspace
+     */
+    public static File resolvePDSWorkspaceUploadFolder(UUID pdsJobUUID) {
+        String url = getPDSURLBuilder().buildIntegrationTestGetWorkspaceUploadFolder(pdsJobUUID);
+        String path = getContext().getPDSRestHelper(ANONYMOUS).getStringFromURL(url);
+        return new File(path);
+
     }
 
     /**
@@ -204,7 +267,6 @@ public class TestAPI {
      *                         feedback and more details about the returned job
      *                         status (which is printed out in test log).
      */
-    @SuppressWarnings("unchecked")
     public static void waitForJobDone(TestProject project, UUID jobUUID, int timeOutInSeconds, boolean jobMayNeverFail) {
         LOG.debug("wait for job done project:{}, job:{}", project.getProjectId(), jobUUID);
 
@@ -250,7 +312,6 @@ public class TestAPI {
      * @param timeToWaitInMillis
      * @param jobUUID
      */
-    @SuppressWarnings("unchecked")
     public static void waitForJobRunning(TestProject project, int timeOutInSeconds, int timeToWaitInMillis, UUID jobUUID) {
         LOG.debug("wait for job running project:{}, job:{}, timeToWaitInMillis{}, timeOutInSeconds:{}", project.getProjectId(), jobUUID, timeToWaitInMillis,
                 timeOutInSeconds);
@@ -272,7 +333,6 @@ public class TestAPI {
      * @param project
      * @param jobUUID
      */
-    @SuppressWarnings("unchecked")
     public static void waitForJobStatusCancelRequested(TestProject project, UUID jobUUID) {
         LOG.debug("wait for job cancel requested project:{}, job:{}", project.getProjectId(), jobUUID);
 
@@ -292,7 +352,6 @@ public class TestAPI {
      * @param project
      * @param jobUUID
      */
-    @SuppressWarnings("unchecked")
     public static void waitForJobStatusFailed(TestProject project, UUID jobUUID) {
         LOG.debug("wait for job failed project:{}, job:{}", project.getProjectId(), jobUUID);
 
@@ -327,7 +386,7 @@ public class TestAPI {
                     }
                 }
                 if (!handled) {
-                    throw new IllegalStateException("An unexpected / unhandled exception occurred at execution time!", exception);
+                    throw new IllegalStateException("An unexpected / unhandled exception occurred at execution time:\n" + exception.getClass(), exception);
                 }
             }
             if (runWasSuccessful) {
@@ -358,22 +417,26 @@ public class TestAPI {
 
     public static <T> T executeCallableAndAcceptAssertionsMaximumTimes(int tries, Callable<T> assertionCallable, int millisBeforeNextRetry) {
         T result = null;
-        AssertionFailedError failure = null;
-        for (int i = 0; i < tries && failure == null; i++) {
+        AssertionError assertionError = null;
+        for (int i = 0; i < tries; i++) {
             try {
                 if (i > 0) {
                     /* we wait before next check */
                     TestAPI.waitMilliSeconds(millisBeforeNextRetry);
                 }
                 result = assertionCallable.call();
-            } catch (AssertionFailedError e) {
-                failure = e;
+            } catch (AssertionError e) {
+                assertionError = e;
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+            if (assertionError == null) {
+                break;
+            }
+            LOG.info("Will try again in {} ms, will try again {} times of {}", millisBeforeNextRetry, tries - i, tries);
         }
-        if (failure != null) {
-            throw failure;
+        if (assertionError != null) {
+            throw assertionError;
         }
         return result;
     }
@@ -436,33 +499,72 @@ public class TestAPI {
     }
 
     /**
-     * Expects an http failure when runnable is executed. If this does not happen,
+     * Expects an HTTP failure when runnable is executed. If this does not happen,
      * dedicated error messages comes up and unit test will fail.
      *
      * @param expectedStatusCode
      * @param runnable
      */
-    public static void expectHttpFailure(Runnable runnable, HttpStatus... expected) {
-        expectHttpFailure(runnable, -1, expected);
+    public static void expectHttpFailure(Runnable runnable, HttpStatus expectedStatusCode) {
+        internalExpectHttpFailure(runnable, -1, expectedStatusCode, null);
     }
 
     /**
-     * Expects an http failure when runnable is executed. If this does not happen,
+     * Expects an HTTP failure when runnable is executed. If this does not happen,
+     * dedicated error messages comes up and unit test will fail.
+     *
+     * @param runnable
+     * @param exceptionValidator if set the exception will be inspected in detail,
+     *                           if <code>null</code> no additional inspection
+     */
+    public static void expectHttpFailure(Runnable runnable, HttpStatusCodeExceptionTestValidator exceptionValidator) {
+        internalExpectHttpFailure(runnable, -1, null, exceptionValidator);
+    }
+
+    /**
+     * Expects an HTTP failure when runnable is executed. If this does not happen,
+     * dedicated error messages comes up and unit test will fail.
+     *
+     * @param runnable
+     * @param exceptionValidator    if set the exception will be inspected in
+     *                              detail, if <code>null</code> no additional
+     *                              inspection
+     * @param timeOutInMilliseconds as long this time out is not reached HTTP 200
+     *                              messages will be ignored and after a short break
+     *                              the runnable will be called again to provoke
+     *                              expected failure.
+     */
+    public static void expectHttpFailure(Runnable runnable, long timeOutInMilliseconds, HttpStatusCodeExceptionTestValidator exceptionValidator) {
+        internalExpectHttpFailure(runnable, timeOutInMilliseconds, null, exceptionValidator);
+    }
+
+    /**
+     * Expects an HTTP failure when runnable is executed. If this does not happen,
      * dedicated error messages comes up and unit test will fail.
      *
      * @param expectedStatusCode
      * @param timeOutInMilliseconds as long this time out is not reached HTTP 200
      *                              messages will be ignored and after a short break
-     *                              the runnnable wille be called again to provoke
+     *                              the runnable will be called again to provoke
      *                              expected failure.
      * @param runnable
      */
-    public static void expectHttpFailure(Runnable runnable, long timeOutInMilliseconds, HttpStatus... expected) {
-        if (expected == null || expected.length == 0) {
-            throw new IllegalArgumentException("test case corrupt please add at least one expected error!");
+    public static void expectHttpFailure(Runnable runnable, long timeOutInMilliseconds, HttpStatus expectedStatusCode) {
+        internalExpectHttpFailure(runnable, timeOutInMilliseconds, expectedStatusCode, null);
+    }
+
+    private static void internalExpectHttpFailure(Runnable runnable, long timeOutInMilliseconds, HttpStatus expectedStatusCode,
+            HttpStatusCodeExceptionTestValidator exceptionValidator) {
+        if (exceptionValidator == null) {
+            if (expectedStatusCode == null) {
+                throw new IllegalArgumentException("test case corrupt please add at least one expected error!");
+            }
+            /*
+             * when explicit exception validator set, we always check for Json server error
+             * fields and expected status code
+             */
+            exceptionValidator = new JsonErrorFieldNamesAvailableHttpStatusExceptionTestValidator(expectedStatusCode);
         }
-        /* sanity check: 20x is no HTTP failure... */
-        assertNoHttp20xInside(expected);
 
         long start = System.currentTimeMillis();
         boolean timeElapsed = false;
@@ -470,7 +572,6 @@ public class TestAPI {
             long waitedTimeInMilliseconds = System.currentTimeMillis() - start;
             timeElapsed = waitedTimeInMilliseconds > timeOutInMilliseconds;
 
-            boolean failedAsExpected = false;
             try {
                 runnable.run();
                 if (timeElapsed) {
@@ -482,41 +583,15 @@ public class TestAPI {
                         + " ms. So Wait " + wait + " ms and retry");
                 TestAPI.waitMilliSeconds(wait);
             } catch (HttpStatusCodeException he) {
-                int status = he.getRawStatusCode();
-                failedAsExpected = isAllowed(status, expected);
-                if (failedAsExpected) {
-                    return;
+                if (exceptionValidator != null) {
+                    exceptionValidator.validate(he);
                 }
-                fail("Expected http status codes were:" + Arrays.asList(expected) + " but was " + status + "\nMessage:" + he.getMessage() + ",\nContent:"
-                        + he.getResponseBodyAsString());
+
             } catch (RestClientException e) {
                 fail("Expected a " + HttpStatusCodeException.class.getSimpleName() + " but was " + e.getClass());
             }
         }
 
-    }
-
-    private static boolean isAllowed(int status, HttpStatus... allowed) {
-        for (HttpStatus expectedStatusCode : allowed) {
-            if (expectedStatusCode.value() == status) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static void assertNoHttp20xInside(HttpStatus... expectedStatusCodes) {
-        for (HttpStatus expectedStatusCode : expectedStatusCodes) {
-            if (expectedStatusCode.is2xxSuccessful()) {
-                StringBuilder sb = new StringBuilder();
-                sb.append("Wrong implemented unit test!\n");
-                sb.append("You defined an expected status code inside your test which belongs to 2xxSuccesful familiy:\n");
-                sb.append(expectedStatusCode.getReasonPhrase());
-                sb.append("\n");
-                sb.append("This status is never a failure - so your test is wrong implemented !");
-                throw new IllegalArgumentException(sb.toString());
-            }
-        }
     }
 
     /**
@@ -530,7 +605,7 @@ public class TestAPI {
      * @throws IllegalStateException when other problems are occurring
      */
     public static File getFileUploaded(TestProject project, UUID jobUUID, String fileName) {
-        TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
+        SecHubTestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildGetFileUpload(project.getProjectId(), jobUUID.toString(), fileName);
         try {
             File file = as(ANONYMOUS).downloadAsTempFileFromURL(url, jobUUID);
@@ -592,7 +667,7 @@ public class TestAPI {
         for (MappingEntry entry : entries) {
             data.getEntries().add(entry);
         }
-        TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
+        SecHubTestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildIntegrationTestChangeMappingDirectlyURL(mappingId);
 
         IntegrationTestContext.get().getRestHelper(ANONYMOUS).putJSON(url, data.toJSON());
@@ -601,7 +676,7 @@ public class TestAPI {
 
     public static MappingData fetchMappingDataDirectlyOrNull(String mappingId) {
 
-        TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
+        SecHubTestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildIntegrationTestFetchMappingDirectlyURL(mappingId);
 
         String result = IntegrationTestContext.get().getRestHelper(ANONYMOUS).getJSON(url);
@@ -614,14 +689,14 @@ public class TestAPI {
     }
 
     public static void clearSecurityLogs() {
-        TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
+        SecHubTestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildIntegrationTestClearSecurityLogs();
 
         IntegrationTestContext.get().getRestHelper(ANONYMOUS).delete(url);
     }
 
     public static List<SecurityLogData> getSecurityLogs() {
-        TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
+        SecHubTestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildIntegrationTestGetSecurityLogs();
 
         String json = IntegrationTestContext.get().getRestHelper(ANONYMOUS).getJSON(url);
@@ -636,7 +711,7 @@ public class TestAPI {
 
     public static String getIdForNameByNamePatternProvider(String namePatternProviderId, String name) {
 
-        TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
+        SecHubTestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildIntegrationTestGetIdForNameByNamePatternProvider(namePatternProviderId, name);
 
         String result = IntegrationTestContext.get().getRestHelper(ANONYMOUS).getStringFromURL(url);
@@ -665,14 +740,14 @@ public class TestAPI {
     }
 
     public static void clearMetaDataInspection() {
-        TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
+        SecHubTestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildClearMetaDataInspectionURL();
 
         IntegrationTestContext.get().getSuperAdminRestHelper().delete(url);
     }
 
     public static List<Map<String, Object>> fetchMetaDataInspections() {
-        TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
+        SecHubTestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildFetchMetaDataInspectionsURL();
 
         String json = IntegrationTestContext.get().getSuperAdminRestHelper().getJSON(url);
@@ -884,11 +959,15 @@ public class TestAPI {
         return getContext().getSuperAdminRestHelper();
     }
 
-    private static TestURLBuilder getURLBuilder() {
+    private static TestRestHelper getPDSAdminRestHelper() {
+        return getContext().getPDSRestHelper(PDS_ADMIN);
+    }
+
+    private static SecHubTestURLBuilder getURLBuilder() {
         return getContext().getUrlBuilder();
     }
 
-    private static TestURLBuilder getPDSURLBuilder() {
+    private static PDSTestURLBuilder getPDSURLBuilder() {
         return getContext().getPDSUrlBuilder();
     }
 
@@ -995,6 +1074,190 @@ public class TestAPI {
      */
     public static void waitProjectDoesNotExist(TestProject project) {
         assertProject(project).doesNotExist(9);
+    }
+
+    private static void waitUntilScheduleAutoCleanupInDays(long days) {
+        String url = getURLBuilder().buildIntegrationTestFetchScheduleAutoCleanupDaysUrl();
+        waitUntilAutoCleanupInDays(days, url);
+    }
+
+    private static void waitUntilScanAutoCleanupInDays(long days) {
+        String url = getURLBuilder().buildIntegrationTestFetchScanAutoCleanupDaysUrl();
+        waitUntilAutoCleanupInDays(days, url);
+    }
+
+    private static void waitUntilAdministrationAutoCleanupInDays(long days) {
+        String url = getURLBuilder().buildIntegrationTestFetchScanAutoCleanupDaysUrl();
+        waitUntilAutoCleanupInDays(days, url);
+    }
+
+    private static void waitUntilAutoCleanupInDays(long days, String url) {
+        executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, 2, 200) {
+            @Override
+            public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
+                long foundDays = getSuperAdminRestHelper().getLongFromURL(url);
+                return foundDays == days;
+            }
+        });
+    }
+
+    /**
+     * Will ensure complete auto cleanup inspector is reset and that auto cleanup is
+     * set to "wantedFormerDays days" in configuration and also in every domain auto
+     * clean day value.
+     */
+    public static void resetAutoCleanupDays(int wantedFormerDays) {
+        ensureAutoCleanupSetToDays(wantedFormerDays);
+        resetIntegrationTestAutoCleanupInspector();
+    }
+
+    public static void resetPDSAutoCleanupDaysToZero() {
+        TestAutoCleanupData data = new TestAutoCleanupData(0, TestCleanupTimeUnit.DAY);
+        asPDSUser(PDS_ADMIN).updateAutoCleanupConfiguration(data);
+        waitUntilPDSAutoCleanupConfigurationChangedTo(data);
+    }
+
+    private static void resetIntegrationTestAutoCleanupInspector() {
+        String url = getURLBuilder().buildIntegrationTestResetAutoCleanupInspectionUrl();
+        getSuperAdminRestHelper().post(url);
+    }
+
+    public static void resetPDSIntegrationTestAutoCleanupInspector() {
+        String url = getPDSURLBuilder().buildIntegrationTestResetAutoCleanupInspectionUrl();
+        getPDSAdminRestHelper().post(url);
+    }
+
+    /**
+     * Will ensure auto cleanup configuration is set to given days and that every
+     * domain is synched.
+     */
+    public static void ensureAutoCleanupSetToDays(int days) {
+        TestAutoCleanupData wanted = new TestAutoCleanupData(days, TestCleanupTimeUnit.DAY);
+        TestAutoCleanupData autoCleanupConfig = as(SUPER_ADMIN).fetchAutoCleanupConfiguration();
+
+        if (!wanted.equals(autoCleanupConfig)) {
+            /* turn off by setting to 0 days */
+            TestAutoCleanupData data = new TestAutoCleanupData(days, TestCleanupTimeUnit.DAY);
+
+            as(SUPER_ADMIN).updateAutoCleanupConfiguration(data);
+
+            waitUntilAutoCleanupConfigurationChangedTo(data);
+        }
+        waitUntilEveryDomainHasAutoCleanupSynchedToDays(days);
+    }
+
+    public static void waitUntilAutoCleanupConfigurationChangedTo(TestAutoCleanupData data) {
+        executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, 2, 200) {
+            @Override
+            public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
+                TestAutoCleanupData autoCleanupConfig2 = as(SUPER_ADMIN).fetchAutoCleanupConfiguration();
+                return data.equals(autoCleanupConfig2);
+            }
+        });
+    }
+
+    public static void waitUntilPDSAutoCleanupConfigurationChangedTo(TestAutoCleanupData data) {
+        executeUntilSuccessOrTimeout(new AbstractTestExecutable(PDS_ADMIN, 2, 200) {
+            @Override
+            public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
+                asPDSUser(PDS_ADMIN).fetchAutoCleanupConfiguration();
+                TestAutoCleanupData autoCleanupConfig2 = asPDSUser(PDS_ADMIN).fetchAutoCleanupConfiguration();
+                return data.equals(autoCleanupConfig2);
+            }
+        });
+    }
+
+    public static void waitUntilEveryDomainHasAutoCleanupSynchedToDays(long days) {
+        waitUntilScheduleAutoCleanupInDays(days);
+        waitUntilScanAutoCleanupInDays(days);
+        waitUntilAdministrationAutoCleanupInDays(days);
+    }
+
+    public static List<TestAutoCleanJsonDeleteCount> fetchPDSAutoCleanupInspectionDeleteCounts() {
+        String url = getPDSURLBuilder().buildIntegrationTestFetchAutoCleanupInspectionDeleteCountsUrl();
+        String json = getPDSAdminRestHelper().getJSON(url);
+        return convertAutoCleanJson(json);
+    }
+
+    public static List<TestAutoCleanJsonDeleteCount> fetchAutoCleanupInspectionDeleteCounts() {
+        String url = getURLBuilder().buildIntegrationTestFetchAutoCleanupInspectionDeleteCountsUrl();
+        String json = getSuperAdminRestHelper().getJSON(url);
+        return convertAutoCleanJson(json);
+
+    }
+
+    public static FullScanData fetchFullScanData(UUID sechubJobUIUD) {
+
+        String url = getURLBuilder().buildIntegrationTestFetchFullScandata(sechubJobUIUD);
+        String json = getSuperAdminRestHelper().getJSON(url);
+        System.out.println(json);
+        return JSONConverter.get().fromJSON(FullScanData.class, json);
+    }
+
+    private static List<TestAutoCleanJsonDeleteCount> convertAutoCleanJson(String json) {
+        MappingIterator<TestAutoCleanJsonDeleteCount> result = TestJSONHelper.get().createValuesFromJSON(json, TestAutoCleanJsonDeleteCount.class);
+        try {
+            return result.readAll();
+        } catch (IOException e) {
+            throw new IllegalStateException("Was not able to inspect test data", e);
+        }
+    }
+
+    public static List<UUID> fetchAllPDSJobUUIDsForSecHubJob(UUID sechubJobUUID) {
+        FullScanData fullScanData = fetchFullScanData(sechubJobUUID);
+        List<ScanData> all = fullScanData.allScanData;
+
+        // here we have only ONE integration test server, so we know how to access the
+        // PDS server
+        // It is enough to know the pds job uuids
+        List<UUID> pdsJobUUIDs = new ArrayList<>();
+
+        for (ScanData data : all) {
+            if (data.metaData == null || data.metaData.isEmpty()) {
+                continue;
+            }
+            AdapterMetaData metaData = JSONConverter.get().fromJSON(AdapterMetaData.class, data.metaData);
+            String pdsJobUUIDString = metaData.getValue("PDS_JOB_UUID");
+            if (pdsJobUUIDString == null || pdsJobUUIDString.isEmpty()) {
+                continue;
+            }
+            pdsJobUUIDs.add(UUID.fromString(pdsJobUUIDString));
+        }
+
+        return pdsJobUUIDs;
+    }
+
+    public static void dumpAllPDSJobOutputsForSecHubJob(UUID sechubJobUUID) {
+        System.out.println("----------------------------------------------------------------------------------------------------------");
+        System.out.println("- DUMP PDS Jobs for SecHub job: " + sechubJobUUID);
+        System.out.println("----------------------------------------------------------------------------------------------------------");
+
+        List<UUID> pdsJobUUIDs = fetchAllPDSJobUUIDsForSecHubJob(sechubJobUUID);
+        for (UUID pdsJobUUID : pdsJobUUIDs) {
+            dumpPDSJobOutput(pdsJobUUID);
+        }
+    }
+
+    public static void dumpPDSJobOutput(UUID jobUUID) {
+
+        AsPDSUser asPDSUser = asPDSUser(PDS_ADMIN);
+        String outputStreamText = asPDSUser.getJobOutputStreamText(jobUUID);
+        String errorStreamText = asPDSUser.getJobErrorStreamText(jobUUID);
+        SecHubMessagesList messages = asPDSUser.getJobMessages(jobUUID);
+
+        System.out.println("-----------------------------------------------------");
+        System.out.println("- DUMP PDS Job: " + jobUUID);
+        System.out.println("-----------------------------------------------------");
+        System.out.println("> Output stream:");
+        System.out.println(outputStreamText);
+        System.out.println("> Error stream:");
+        System.out.println(errorStreamText);
+        System.out.println("> Messages");
+        System.out.println(JSONConverter.get().toJSON(messages, true));
+        System.out.println("> Report");
+        String report = asPDSUser(PDS_ADMIN).getJobReport(jobUUID);
+        System.out.println(report);
+
     }
 
 }

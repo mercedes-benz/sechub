@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.integrationtest.scenario6;
 
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
+import static com.mercedesbenz.sechub.test.TestConstants.*;
 import static org.junit.Assert.*;
 
 import java.util.HashMap;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.PDSIntTestProductIdentifier;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultExecutorConfigurations;
+import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
 
 /**
  * Integration test directly using REST API of integration test PDS (means
@@ -53,7 +55,7 @@ public class DirectPDSAPIJobStreamDataScenario6IntTest {
         String createResult = asPDSUser(PDS_ADMIN).createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN, customParameters);
         UUID pdsJobUUID = assertPDSJobCreateResult(createResult).hasJobUUID().getJobUUID();
         asPDSUser(PDS_TECH_USER).
-            upload(pdsJobUUID, "sourcecode.zip", "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip").
+            upload(pdsJobUUID, SOURCECODE_ZIP, "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip").
             markJobAsReadyToStart(pdsJobUUID);
         /* @formatter:on */
 
@@ -63,9 +65,16 @@ public class DirectPDSAPIJobStreamDataScenario6IntTest {
         String lastOutput = null;
         String lastError = null;
 
+        long started = System.currentTimeMillis();
         /* execute */
         boolean ended = false;
+
         do {
+            if (System.currentTimeMillis() - started > 4000) {
+                String currentStatus = asPDSUser(PDS_TECH_USER).getJobStatus(pdsJobUUID);
+                fail("Was not able to find expected stream data!\n- lastOutput:" + lastOutput + "\n- lastError:" + lastError + "\n- outputTextSet:"
+                        + outputTextSet + "\n- Current job status:\n" + TestJSONHelper.get().beatuifyJSON(currentStatus));
+            }
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {

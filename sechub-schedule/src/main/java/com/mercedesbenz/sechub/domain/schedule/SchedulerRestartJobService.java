@@ -90,7 +90,7 @@ public class SchedulerRestartJobService {
     }
 
     private void restartJob(UUID jobUUID, String ownerEmailAddress, boolean hard) {
-        assertion.isValidJobUUID(jobUUID);
+        assertion.assertIsValidJobUUID(jobUUID);
 
         auditLogService.log("triggered restart of job:{}, variant:[hard={}]", jobUUID, hard);
 

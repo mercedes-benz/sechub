@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.adapter.AbstractAdapter;
 import com.mercedesbenz.sechub.adapter.AdapterException;
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.AdapterProfiles;
 import com.mercedesbenz.sechub.adapter.AdapterRuntimeContext;
@@ -34,7 +35,7 @@ public class CheckmarxAdapterV1 extends AbstractAdapter<CheckmarxAdapterContext,
     private static final Logger LOG = LoggerFactory.getLogger(CheckmarxAdapterV1.class);
 
     @Override
-    public String execute(CheckmarxAdapterConfig config, AdapterRuntimeContext runtimeContext) throws AdapterException {
+    public AdapterExecutionResult execute(CheckmarxAdapterConfig config, AdapterRuntimeContext runtimeContext) throws AdapterException {
         try {
             assertNotInterrupted();
 
@@ -56,7 +57,8 @@ public class CheckmarxAdapterV1 extends AbstractAdapter<CheckmarxAdapterContext,
             CheckmarxScanReportSupport scanReportSupport = new CheckmarxScanReportSupport();
             scanReportSupport.startFetchReport(oauthSupport, context);
 
-            return context.getResult();
+            return new AdapterExecutionResult(context.getResult());
+
         } catch (Exception e) {
             throw asAdapterException("Was not able to perform scan!", e, config);
         }

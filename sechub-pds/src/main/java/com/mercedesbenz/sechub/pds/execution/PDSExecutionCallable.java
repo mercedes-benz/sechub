@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.execution;
 
+import static com.mercedesbenz.sechub.pds.execution.PDSLauncherScriptEnvironmentConstants.*;
 import static com.mercedesbenz.sechub.pds.util.PDSAssert.*;
 
 import java.io.File;
@@ -9,6 +10,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -16,9 +18,13 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.dao.OptimisticLockingFailureException;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.pds.PDSJSONConverterException;
+import com.mercedesbenz.sechub.pds.PDSLogConstants;
 import com.mercedesbenz.sechub.pds.job.PDSCheckJobStatusService;
 import com.mercedesbenz.sechub.pds.job.PDSJobConfiguration;
 import com.mercedesbenz.sechub.pds.job.PDSJobTransactionService;
@@ -48,24 +54,28 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
     private PDSExecutionEnvironmentService environmentService;
 
-    private UUID jobUUID;
+    private UUID pdsJobUUID;
 
     private PDSCheckJobStatusService jobStatusService;
 
     private ExceptionThrower<IllegalStateException> pdsJobUpdateExceptionThrower;
 
+    private PDSMessageCollector messageCollector;
+
     public PDSExecutionCallable(UUID jobUUID, PDSJobTransactionService jobTransactionService, PDSWorkspaceService workspaceService,
             PDSExecutionEnvironmentService environmentService, PDSCheckJobStatusService jobStatusService) {
-        notNull(jobUUID, "jobUUID may not be null!");
+        notNull(jobUUID, "pdsJobUUID may not be null!");
         notNull(jobTransactionService, "jobTransactionService may not be null!");
         notNull(workspaceService, "workspaceService may not be null!");
         notNull(jobStatusService, "jobStatusService may not be null!");
 
-        this.jobUUID = jobUUID;
+        this.pdsJobUUID = jobUUID;
         this.jobTransactionService = jobTransactionService;
         this.workspaceService = workspaceService;
         this.environmentService = environmentService;
         this.jobStatusService = jobStatusService;
+
+        messageCollector = new PDSMessageCollector();
 
         pdsJobUpdateExceptionThrower = new ExceptionThrower<IllegalStateException>() {
 
@@ -74,52 +84,61 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
                 throw new IllegalStateException("Job stream data refresh failed. " + message, cause);
             }
         };
+
     }
 
     @Override
     public PDSExecutionResult call() throws Exception {
-        LOG.info("Prepare execution of job {}", jobUUID);
+        LOG.info("Prepare execution of PDS job {}", pdsJobUUID);
         PDSExecutionResult result = new PDSExecutionResult();
         PDSJobConfiguration config = null;
         try {
-            jobTransactionService.markJobAsRunningInOwnTransaction(jobUUID);
+            MDC.clear();
+            MDC.put(PDSLogConstants.MDC_PDS_JOB_UUID, Objects.toString(pdsJobUUID));
 
-            String configJSON = jobTransactionService.getJobConfiguration(jobUUID);
+            jobTransactionService.markJobAsRunningInOwnTransaction(pdsJobUUID);
+
+            String configJSON = jobTransactionService.getJobConfiguration(pdsJobUUID);
 
             config = PDSJobConfiguration.fromJSON(configJSON);
+
+            MDC.put(PDSLogConstants.MDC_SECHUB_JOB_UUID, Objects.toString(config.getSechubJobUUID()));
 
             long minutesToWaitForResult = workspaceService.getMinutesToWaitForResult(config);
             if (minutesToWaitForResult < 1) {
                 throw new IllegalStateException("Minutes to wait for result configured too low:" + minutesToWaitForResult);
             }
 
-            LOG.debug("Handle source upload for job with uuid:{}", jobUUID);
-            workspaceService.prepareWorkspace(jobUUID, config);
-            workspaceService.unzipUploadsWhenConfigured(jobUUID, config);
+            LOG.debug("Start workspace preparation for PDS job: {}", pdsJobUUID);
+            workspaceService.prepareWorkspace(pdsJobUUID, config);
+            workspaceService.extractZipFileUploadsWhenConfigured(pdsJobUUID, config);
+            workspaceService.extractTarFileUploadsWhenConfigured(pdsJobUUID, config);
 
             String path = workspaceService.getProductPathFor(config);
             if (path == null) {
                 throw new IllegalStateException("Path not defined for product id:" + config.getProductId());
             }
 
-            createProcess(jobUUID, config, path);
+            createProcess(pdsJobUUID, config, path);
 
-            StreamDataRefreshRequestWatcherRunnable watcherRunnable = new StreamDataRefreshRequestWatcherRunnable(jobUUID);
+            StreamDataRefreshRequestWatcherRunnable watcherRunnable = new StreamDataRefreshRequestWatcherRunnable(pdsJobUUID);
             Thread watcherThread = new Thread(watcherRunnable);
-            watcherThread.setName("stream-watcher-" + jobUUID);
+            watcherThread.setName("stream-watcher-" + pdsJobUUID);
             watcherThread.start();
 
-            waitForProcessEndAndGetResultByFiles(result, jobUUID, config, minutesToWaitForResult, watcherRunnable);
+            waitForProcessEndAndGetResultByFiles(result, pdsJobUUID, config, minutesToWaitForResult, watcherRunnable);
 
         } catch (Exception e) {
 
-            LOG.error("Execution of job uuid:{} failed", jobUUID, e);
+            LOG.error("Execution of job uuid:{} failed", pdsJobUUID, e);
 
             result.failed = true;
-            result.result = "Execution of job uuid:" + jobUUID + " failed. Please look into PDS logs for details and search for former string.";
+            result.result = "Execution of job uuid:" + pdsJobUUID + " failed. Please look into PDS logs for details and search for former string.";
 
         } finally {
-            cleanUpWorkspace(jobUUID, config);
+            cleanUpWorkspace(pdsJobUUID, config);
+
+            MDC.clear();
         }
 
         /*
@@ -130,7 +149,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             result.failed = true;
         }
 
-        LOG.info("Finished execution of job {} with exitCode={}, failed={}", jobUUID, result.exitCode, result.failed);
+        LOG.info("Finished execution of job {} with exitCode={}, failed={}", pdsJobUUID, result.exitCode, result.failed);
 
         return result;
     }
@@ -200,6 +219,26 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         watcherRunnable.stop();
 
         writeStreamDataToDatabase(jobUUID);
+        writeProductMessagesToDatabaseWhenMessagesFound(jobUUID);
+
+    }
+
+    private void writeProductMessagesToDatabaseWhenMessagesFound(UUID jobUUID) {
+        LOG.debug("Collect messages for job:{}", jobUUID);
+        SecHubMessagesList messages = readProductMessages(jobUUID);
+
+        if (messages.getSecHubMessages().isEmpty()) {
+            LOG.debug("No messages for job {} found. So skip database access.", jobUUID);
+            return;
+        }
+
+        LOG.debug("Writing messages to database for job:{}", jobUUID);
+        PDSResilientRetryExecutor<IllegalStateException> executor = new PDSResilientRetryExecutor<>(3, pdsJobUpdateExceptionThrower,
+                OptimisticLockingFailureException.class);
+        executor.execute(() -> {
+            jobTransactionService.updateJobMessagesInOwnTransaction(jobUUID, messages);
+            return null;
+        }, jobUUID.toString());
 
     }
 
@@ -217,6 +256,14 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             return null;
         }, jobUUID.toString());
 
+    }
+
+    private SecHubMessagesList readProductMessages(UUID jobUUID) {
+        File productMessagesFolder = workspaceService.getMessagesFolder(jobUUID);
+
+        List<SecHubMessage> collected = messageCollector.collect(productMessagesFolder);
+
+        return new SecHubMessagesList(collected);
     }
 
     private StreamData readStreamData(UUID jobUUID) {
@@ -278,12 +325,25 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
         WorkspaceLocationData locationData = workspaceService.createLocationData(jobUUID);
 
-        environment.put("PDS_JOB_WORKSPACE_LOCATION", locationData.getWorkspaceLocation());
-        environment.put("PDS_JOB_RESULT_FILE", locationData.getResultFileLocation());
-        environment.put("PDS_JOB_SOURCECODE_ZIP_FILE", locationData.getZippedSourceLocation());
-        environment.put("PDS_JOB_SOURCECODE_UNZIPPED_FOLDER", locationData.getUnzippedSourceLocation());
+        environment.put(PDS_JOB_WORKSPACE_LOCATION, locationData.getWorkspaceLocation());
+        environment.put(PDS_JOB_RESULT_FILE, locationData.getResultFileLocation());
+        environment.put(PDS_JOB_USER_MESSAGES_FOLDER, locationData.getUserMessagesLocation());
+        environment.put(PDS_JOB_UUID, jobUUID.toString());
+        environment.put(PDS_JOB_SOURCECODE_ZIP_FILE, locationData.getSourceCodeZipFileLocation());
+        environment.put(PDS_JOB_BINARIES_TAR_FILE, locationData.getBinariesTarFileLocation());
 
-        LOG.debug("Prepared launcher script process for job with uuid:{}, path={}, env={}", jobUUID, path, buildEnvironmentMap);
+        String extractedSourcesLocation = locationData.getExtractedSourcesLocation();
+
+        environment.put(PDS_JOB_SOURCECODE_UNZIPPED_FOLDER, extractedSourcesLocation);
+        environment.put(PDS_JOB_EXTRACTED_SOURCES_FOLDER, extractedSourcesLocation);
+
+        String extractedBinariesLocation = locationData.getExtractedBinariesLocation();
+        environment.put(PDS_JOB_EXTRACTED_BINARIES_FOLDER, extractedBinariesLocation);
+
+        environment.put(PDS_JOB_HAS_EXTRACTED_SOURCES, "" + workspaceService.hasExtractedSources(jobUUID));
+        environment.put(PDS_JOB_HAS_EXTRACTED_BINARIES, "" + workspaceService.hasExtractedBinaries(jobUUID));
+
+        LOG.debug("Prepared launcher script process for job with uuid:{}, path={}, buildEnvironmentMap={}", jobUUID, path, buildEnvironmentMap);
 
         LOG.info("Start launcher script for job {}", jobUUID);
         try {
@@ -291,7 +351,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             process = builder.start();
 
         } catch (IOException e) {
-            LOG.error("Process start failed for jobUUID:{}. Current directory was:{}", jobUUID, currentDir.getAbsolutePath());
+            LOG.error("Process start failed for pdsJobUUID:{}. Current directory was:{}", jobUUID, currentDir.getAbsolutePath());
             throw e;
         }
     }
@@ -311,13 +371,13 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             process.destroyForcibly();
         } finally {
 
-            String configJSON = jobTransactionService.getJobConfiguration(jobUUID);
+            String configJSON = jobTransactionService.getJobConfiguration(pdsJobUUID);
 
             try {
                 PDSJobConfiguration config = PDSJobConfiguration.fromJSON(configJSON);
-                cleanUpWorkspace(jobUUID, config);
+                cleanUpWorkspace(pdsJobUUID, config);
             } catch (PDSJSONConverterException e) {
-                LOG.error("Was not able fetch job config for {} - workspace clean only workspace files", jobUUID, e);
+                LOG.error("Was not able fetch job config for {} - workspace clean only workspace files", pdsJobUUID, e);
             }
 
         }

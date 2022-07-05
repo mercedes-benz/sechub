@@ -24,6 +24,20 @@ import com.mercedesbenz.sechub.commons.model.login.ActionType;
 public class AbstractWebScanAdapterConfigBuilderTest {
 
     @Test
+    public void target_type_from_builder_is_in_config() throws Exception {
+
+        /* execute */
+        /* @formatter:off */
+        TestWebScanAdapterConfig webScanConfig = new TestAbstractWebScanAdapterConfigBuilder().
+        		setTargetType("the-type").build();
+        /* @formatter:on */
+
+        /* test */
+        String targetType = webScanConfig.getTargetType();
+        assertEquals("the-type", targetType);
+    }
+
+    @Test
     public void login_url() throws MalformedURLException {
         /* prepare */
         URL targetURI = new URL("https://example.org/login");

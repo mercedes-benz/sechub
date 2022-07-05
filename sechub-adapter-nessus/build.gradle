@@ -7,6 +7,6 @@
  */
 dependencies {
 
-    compile project(':sechub-adapter')
+    api project(':sechub-adapter')
 }
  

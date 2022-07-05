@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.integrationtest.api;
 
+import static com.mercedesbenz.sechub.test.TestConstants.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
@@ -15,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.integrationtest.api.AsUser.ProjectFalsePositivesDefinition;
+import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestExampleConstants;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSupport;
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubClientExecutor;
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubClientExecutor.ClientAction;
@@ -72,10 +74,10 @@ public class WithSecHubClient {
 
     @Deprecated // use startDownloadReport instead (newer implementation uses AssertReport which
                 // has more details and uses common SecHubReport object inside)
-    public AssertSecHubReport startDownloadJobReport(TestProject project, UUID jobUUID, IntegrationTestJSONLocation location) {
+    public AssertReportUnordered startDownloadJobReport(TestProject project, UUID jobUUID, IntegrationTestJSONLocation location) {
         ClientJobReportLoader reportLoader = new ClientJobReportLoader(project, jobUUID, location.getPath());
         String report = reportLoader.loadReport();
-        return TestAPI.assertSecHubReport(report);
+        return TestAPI.assertReportUnordered(report);
     }
 
     public AssertReport startDownloadReport(TestProject project, UUID jobUUID, IntegrationTestJSONLocation location) {
@@ -166,7 +168,7 @@ public class WithSecHubClient {
 
         private File assertFile(TestProject project) {
             /* the filename at upload is currently always sourcecode.zip! */
-            File file = TestAPI.getFileUploaded(project, jobUUID, "sourcecode.zip");
+            File file = TestAPI.getFileUploaded(project, jobUUID, SOURCECODE_ZIP);
             if (file == null) {
                 fail("NO file upload for " + jobUUID + " in project +" + project);
             }
@@ -383,7 +385,7 @@ public class WithSecHubClient {
      * @return
      */
     public ExecutionResult startAndWaitForCodeScan(TestProject project) {
-        return startAndWaitForCodeScan(project, IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_GREEN);
+        return startAndWaitForCodeScan(project, IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_GREEN_ZERO_WAIT);
     }
 
     public ExecutionResult startAndWaitForCodeScan(TestProject project, IntegrationTestJSONLocation location) {
@@ -396,7 +398,8 @@ public class WithSecHubClient {
      * RED traffic light result.<br>
      * <br>
      * Ensure that "https://fscan.intranet.example.org/" is in whitelist of project
-     * to scan!
+     * to scan! (see
+     * {@link IntegrationTestExampleConstants#INFRASCAN_DEFAULT_WHITELEIST_ENTRY}n
      *
      * @param project
      * @return execution result

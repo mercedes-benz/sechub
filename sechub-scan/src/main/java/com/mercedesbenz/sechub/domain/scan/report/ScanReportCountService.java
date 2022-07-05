@@ -17,7 +17,7 @@ public class ScanReportCountService {
     UserInputAssertion assertion;
 
     public long countProjectProductResults(String projectId) {
-        assertion.isValidProjectId(projectId);
+        assertion.assertIsValidProjectId(projectId);
 
         ScanReport probe = new ScanReport();
         probe.projectId = projectId;

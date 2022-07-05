@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
-import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
-import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -30,7 +29,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.domain.administration.scheduler.SchedulerStatusEntryKeys;
 import com.mercedesbenz.sechub.domain.administration.status.ListStatusService;
@@ -42,6 +40,7 @@ import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPI
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.status.UseCaseAdminListsStatusInformation;
 import com.mercedesbenz.sechub.test.ExampleConstants;
+import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
@@ -50,7 +49,7 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
-public class MappingAdministrationRestControllerRestDocTest {
+public class MappingAdministrationRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
 
     private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
@@ -101,18 +100,16 @@ public class MappingAdministrationRestControllerRestDocTest {
 				*/
 		andDo(print()).
 		andExpect(status().isOk()).
-		andDo(document(RestDocFactory.createPath(useCase),
-                resource(
-                        ResourceSnippetParameters.builder().
-                            summary(RestDocFactory.createSummary(useCase)).
-                            description(RestDocFactory.createDescription(useCase)).
-                            tag(RestDocFactory.extractTag(apiEndpoint)).
-                            responseSchema(OpenApiSchema.STATUS_INFORMATION.getSchema()).
+		andDo(defineRestService().
+                with().
+                    useCaseData(useCase).
+                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                    responseSchema(OpenApiSchema.STATUS_INFORMATION.getSchema()).
+                and().
+                document(
                             responseFields(
                                     fieldWithPath("[]."+StatusEntry.PROPERTY_KEY).description("Status key identifier"),
                                     fieldWithPath("[]."+StatusEntry.PROPERTY_VALUE).description("Status value")
-                            ).
-                            build()
                          )
 					));
 

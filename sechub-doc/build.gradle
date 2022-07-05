@@ -10,11 +10,45 @@ apply plugin: 'org.asciidoctor.jvm.convert'
 apply plugin: 'org.asciidoctor.jvm.pdf'
 
 dependencies {
-    implementation project(':sechub-server') // we want to expect server and all dependencies for documentation
-    implementation project(':sechub-pds') // we want to expect pds and all dependencies for documentation
+    def wanted = []
+    def unwanted = [
+        'sechub-cli', /* go only, no library dependency here*/
+        'sechub-doc',/* itself ... */
+        'sechub-developertools',/* only tests or tools */
+        'sechub-other',/* not java */
+        'sechub-pds-solutions', /* only pds scripts*/
+        
+        ]
+    /* fetch all sub projects, except unwanted and all only used for testing */
+    for (Project inspectedProject: rootProject.allprojects){
+        if (rootProject.equals(inspectedProject)){
+            // root project is always not wanted
+            continue
+        }
+        def projectName = inspectedProject.name
+        if (projectName.endsWith('test')){
+            // test projects are always not wanted 
+            continue
+        }
+        if (projectName.endsWith('testframework')){
+            // testframework projects are always not wanted 
+            continue
+        }
+        if (unwanted.contains(projectName)){
+            // special unwanted - so inore 
+            continue
+        }
+        wanted << projectName
+        //println ">>$projectName"
+    }
+    /* all projects are added as implementation, so can be inspected by Reflections */
+    for (String wantedProjectName: wanted){
+        implementation project(":${wantedProjectName}") 
+    }
     implementation library.apache_commons_io
+    
     testImplementation library.epages_restdoc_api_spec_mockmvc
-    testImplementation  project(':sechub-commons-model-testframework')
+    testImplementation project(':sechub-commons-model-testframework')
 
     /* next parts are necessary for rest doc generation in conjunction
        with reflection annoation scanning done wiht @UsecaseRestDoc
@@ -48,7 +82,7 @@ task dropOldGeneratedAsciidoc(dependsOn: 'test'){
 task generateAsciidoc(type: JavaExec, dependsOn: 'dropOldGeneratedAsciidoc') {
 
 
-    main = 'com.mercedesbenz.sechub.docgen.AsciidocGenerator'
+    mainClass = 'com.mercedesbenz.sechub.docgen.AsciidocGenerator'
     args = ["${targetAsciiDocGenFolder}"]
     group = 'sechub'
     description = 'Starts asciidoc generator. Will generate planuml files and more'
@@ -81,7 +115,7 @@ asciidoctor {
     outputOptions {
         backends "html5", "pdf"
     
-    separateOutputDirs = false
+        separateOutputDirs = false
     }
 
     baseDir 'src/docs/asciidoc'
@@ -140,19 +174,21 @@ asciidoctor {
 
 asciidoctorj {
 
-    version = '2.5.2'
+    version = "${libraryVersion.asciidoctor_j}"
     
     // Enable jdiagram support (new way)
     // see https://asciidoctor.github.io/asciidoctor-gradle-plugin/development-3.x/user-guide/#diagram
     modules {
        diagram.use() 
-       diagram.version '2.2.1' 
+       diagram.version "${libraryVersion.asciidoctor_j_diagram}" 
     }
 }
 
 task convertSecHubHTMLPages(type: Copy){
+    dependsOn asciidoctor
 
-     /* Albert: Why those replace pattern stuff ?
+     /* Why those replace pattern stuff ?
+      * ----------------------------------
       * Because of PDF problems with rendered images, we were forced to use absolute image pathes so
       * PDF documented has got content inside (see build.gradle in sechub-doc for info)
       *
@@ -181,6 +217,8 @@ task convertSecHubHTMLPages(type: Copy){
 }
 
 task copyImagesToFinalDir(type: Copy) {
+    dependsOn asciidoctor
+
     from "${imagesBuildDir}"
     into "${finalHTMLDir}/images"
 }
@@ -265,7 +303,7 @@ task generateOpenapi() {
     	//
     	// The steps are:
     	//
-    	// 1. read in the OpenAPI file
+    	// 1. read in the generated OpenAPI file in `/sechub-doc/build/api-spec/openapi3.json`
     	// 2. get the values which contain a `oneOf` element
     	// 3. overwrite the `oneOf` with `string`
     	// 4. write the modified JSON structure back into the generated OpenAPI 3 file
@@ -293,6 +331,8 @@ task generateOpenapi() {
     	scanJobSchema.properties.infraScan.properties.uris.items = stringType
     	scanJobSchema.properties.infraScan.properties.ips.items = stringType
     	scanJobSchema.properties.codeScan.properties.fileSystem.properties.folders.items = stringType
+    	scanJobSchema.properties.codeScan.properties.fileSystem.properties.files.items = stringType
+    	scanJobSchema.properties.codeScan.properties.use.items = stringType
     	scanJobSchema.properties.webScan.properties.includes.items = stringType
     	scanJobSchema.properties.webScan.properties.excludes.items = stringType
 		
@@ -312,6 +352,9 @@ task generateOpenapi() {
     	
     	def listOfUsersSchema = jsonObject.components.schemas.ListOfUsers
     	listOfUsersSchema.items = stringType
+
+    	def projectWhiteListSchema = jsonObject.components.schemas.ProjectWhitelist
+    	projectWhiteListSchema.properties.whiteList.properties.uris.items=stringType
     	
     	// Write JSON
     	def json = JsonOutput.toJson(jsonObject)

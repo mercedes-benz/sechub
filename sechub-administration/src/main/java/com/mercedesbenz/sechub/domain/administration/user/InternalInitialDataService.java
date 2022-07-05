@@ -68,14 +68,14 @@ public class InternalInitialDataService {
 
     private void internalCreateInitialUser(String userId, String emailAddress, String unencryptedAPItoken, boolean createAsSuperAdmin) {
 
-        assertion.isValidUserId(userId);
-        assertion.isValidEmailAddress(emailAddress);
+        assertion.assertIsValidUserId(userId);
+        assertion.assertIsValidEmailAddress(emailAddress);
 
         User exampleUser = new User();
         exampleUser.superAdmin = true;
 
         if (createAsSuperAdmin && userRepository.exists(Example.of(exampleUser))) {
-            LOG.info("At lelast one admin exists already, so skip initial admin creation of {} ", userId);
+            LOG.info("At least one admin exists already, so skip initial admin creation of {} ", userId);
             return;
         }
         if (createAsSuperAdmin) {

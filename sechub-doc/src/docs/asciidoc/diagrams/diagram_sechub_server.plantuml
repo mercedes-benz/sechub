@@ -1,3 +1,4 @@
+' SPDX-License-Identifier: MIT
 @startuml
 
 package "Sechub CLI client" {

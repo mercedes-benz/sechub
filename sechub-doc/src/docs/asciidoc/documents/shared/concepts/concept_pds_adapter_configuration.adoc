@@ -1,0 +1,10 @@
+// SPDX-License-Identifier: MIT
+[[concept-pds_adapter_configuration]]
+The different PDS product executors have different config builders which inherit from different abstract base classes
+(e.g. `AbstractCodeScanAdapterConfigBuilder`). We have no multi inheritance in Java, but we do also not 
+want to implement the setup logic (which is complicated) for every PDS product executor again.
+
+There is a specialized adapter configuration strategy for PDS standard setup: `PDSAdapterConfigurationStrategy`. 
+
+===== Overview
+plantuml::diagrams/diagram_pds_adapter_configuration_overview.puml[] 

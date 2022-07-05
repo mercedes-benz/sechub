@@ -33,29 +33,6 @@ public class ProductExecutorContext {
     }
 
     /**
-     * Creates executor context. Does also setup first former result as current
-     * result
-     *
-     * @param config
-     * @param formerResults
-     * @param callback
-     */
-    ProductExecutorContext(ProductExecutorConfig executorConfig, List<ProductResult> formerResults, ProductExecutorCallback callback) {
-        notNull(executorConfig, "executorConfig may not be null");
-        notNull(formerResults, "formerResults may not be null");
-
-        this.executorConfig = executorConfig;
-        this.formerResults = formerResults;
-        this.callback = callback;
-
-        afterCallbackSet();
-    }
-
-    void setCallback(ProductExecutorCallback callback) {
-        this.callback = callback;
-    }
-
-    /**
      * The returned configuration contains configuration setup which will be used by
      * executors - REMARK: some old executors will not use the configuration but
      * insist on environment variables (e.g. CHECKMARX V1, NESSUS V1, NETSPARKER V1)
@@ -77,11 +54,7 @@ public class ProductExecutorContext {
         return null;
     }
 
-    void afterCallbackSet() {
-        useFirstFormerResult();
-    }
-
-    private void useFirstFormerResult() {
+    public void useFirstFormerResult() {
         callback.setCurrentProductResult(getFormerProductResultOrNull());
     }
 

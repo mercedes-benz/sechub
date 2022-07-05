@@ -11,13 +11,20 @@ plugins {
 }
 dependencies {
 
+    /* why as API? because to provide all parts here to developer tools */
     api project(':sechub-testframework')
-    api project(':sechub-adapter') // we reuse trustall approach from adapters
     api project(':sechub-shared-kernel') 
     api project(':sechub-scan-product-pds') // we want configuration entries available
+    api project(':sechub-commons-pds')
     api library.springboot_starter_mail // to have easier access to email parts
     
-    api project(':sechub-commons-pds')
+    api project(':sechub-adapter') // we reuse trustall approach from adapters
+    api project(':sechub-adapter-pds')
+    api project(':sechub-administration') 
+    api project(':sechub-scan') // we add this to have access to FullScanData
+    
+    api library.junit4
+    
 }
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -133,11 +140,14 @@ task startIntegrationTestPDS(dependsOn: stopOldIntegrationTestPDS){
 
 }
 
-task startIntegrationTestInstances(dependsOn: [startIntegrationTestServer, startIntegrationTestPDS]){
-   
+task cleanIntegrationTestData(type: Delete) {
+    group 'sechub'
+    delete "${project.buildDir}/sechub/integrationtest"
 }
 
-
+task startIntegrationTestInstances(dependsOn: [startIntegrationTestServer, startIntegrationTestPDS, cleanIntegrationTestData]){
+   
+}
 
 task stopIntegrationTestServer(dependsOn: configureIntegrationTestServer){
     doLast{
@@ -187,8 +197,6 @@ task integrationtest(type: Test, dependsOn: startIntegrationTestInstances) {
    
 
 }
-
-
 
 /**
  * Special groovy class for executing external script. This is because exec task of groovy does ALWAYS wait until process has executed.
@@ -244,8 +252,6 @@ class IntegrationTestScriptAccess extends CmdExecutor{
               exec.getCommand().add("$sharedVolumeBaseDir");
               
           }
-          
-
           exec.execute(workingDir)
         }
 

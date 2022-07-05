@@ -9,9 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.mercedesbenz.sechub.adapter.FormScriptLoginConfig;
 import com.mercedesbenz.sechub.adapter.LoginConfig;
 import com.mercedesbenz.sechub.adapter.LoginScriptPage;
@@ -78,7 +75,7 @@ public class NetsparkerAdapterWebLoginSupportV1 {
         rootMap.put("FormAuthenticationSettingModel", formAuthenticationSettingModel);
 
         formAuthenticationSettingModel.put("LoginFormUrl", asFormScript.getLoginURL());
-        List<Pair<String, String>> customScripts = generateCustomScripts(asFormScript.getPages());
+        List<Map<String, String>> customScripts = generateCustomScripts(asFormScript.getPages());
 
         formAuthenticationSettingModel.put("DefaultPersonaValidation", true);
         formAuthenticationSettingModel.put("CustomScripts", customScripts);
@@ -94,14 +91,16 @@ public class NetsparkerAdapterWebLoginSupportV1 {
         formAuthenticationSettingModel.put("Personas", personas);
     }
 
-    private List<Pair<String, String>> generateCustomScripts(List<LoginScriptPage> pages) {
+    private List<Map<String, String>> generateCustomScripts(List<LoginScriptPage> pages) {
         NetsparkerLoginScriptGenerator scriptGenerator = new NetsparkerLoginScriptGenerator();
 
-        List<Pair<String, String>> customScripts = new LinkedList<Pair<String, String>>();
+        List<Map<String, String>> customScripts = new LinkedList<Map<String, String>>();
 
         for (LoginScriptPage page : pages) {
             String script = scriptGenerator.generate(page.getActions());
-            customScripts.add(new ImmutablePair<String, String>("Value", script));
+            TreeMap<String, String> map = new TreeMap<String, String>();
+            map.put("Value", script);
+            customScripts.add(map);
         }
 
         return customScripts;

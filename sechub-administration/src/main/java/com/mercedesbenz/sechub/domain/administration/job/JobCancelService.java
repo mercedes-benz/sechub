@@ -48,7 +48,7 @@ public class JobCancelService {
     @Validated
     @UseCaseAdminCancelsJob(@Step(number = 2, name = "Cancel job", description = "Will trigger event that job cancel requested"))
     public void cancelJob(UUID jobUUID) {
-        assertion.isValidJobUUID(jobUUID);
+        assertion.assertIsValidJobUUID(jobUUID);
 
         auditLogService.log("Requested cancelation of job {}", jobUUID);
 

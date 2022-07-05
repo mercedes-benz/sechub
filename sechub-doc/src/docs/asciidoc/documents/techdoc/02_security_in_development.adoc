@@ -10,10 +10,11 @@ used in production. So instead of exposing such options by help we
 use those by explicit ENV entries
 [options="header",cols="1,1,1"]
 |===
-|ENV-NAME       |Value    |Description
+|ENV-NAME          |Value    |Description
 //-----------------------------------------
-|SECHUB_DEBUG   |"true"   |Shows debug outputs
-|SECHUB_TRUSTALL|"true"   |Trust all certificates (only for development). Normally SecHub client does show a warning when `trustall` option is enabled
+|SECHUB_DEBUG      |"true"   |Activates debug logging
+|SECHUB_DEBUG_HTTP |"true"   |Shows HTTP request+response contents including headers
+|SECHUB_TRUSTALL   |"true"   |Trust all certificates (only for development). The SecHub client shows a warning when `trustall` option is enabled
 |===
 
 === Server

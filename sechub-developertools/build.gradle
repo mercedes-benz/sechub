@@ -15,7 +15,10 @@ dependencies {
     implementation project(':sechub-scan')
     
     implementation project(':sechub-commons-pds')
-    
+   
+    implementation library.apache_commons_io
+    implementation library.apache_commons_compress // we need TAR archive support
+
 }
 
 task startIntegrationTestAdminUI(type: JavaExec){
@@ -25,7 +28,7 @@ task startIntegrationTestAdminUI(type: JavaExec){
 
     classpath = sourceSets.main.runtimeClasspath
 
-    main = 'com.mercedesbenz.sechub.developertools.admin.ui.DeveloperAdministrationUI'
+    mainClass = 'com.mercedesbenz.sechub.developertools.admin.ui.DeveloperAdministrationUI'
 
     jvmArgs = ['-Dsechub.developertools.admin.integrationtestserver=true',
                '-Dsechub.developertools.admin.server=localhost',
@@ -38,7 +41,7 @@ task startIntegrationTestAdminUI(type: JavaExec){
 task buildDeveloperAdminUI(type: Jar, dependsOn: build) {
     group 'sechub'
     description 'Builds the SecHub Developer Admin tool as standalone executable jar. Use launch-developer-admin-ui script to execute'
-    baseName = 'sechub-developer-admin-ui'
+    archiveBaseName = 'sechub-developer-admin-ui'
     
     manifest {
         attributes 'Main-Class': 'com.mercedesbenz.sechub.developertools.admin.ui.DeveloperAdministrationUI'
@@ -46,8 +49,10 @@ task buildDeveloperAdminUI(type: Jar, dependsOn: build) {
     
     
     from { 
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } 
+        configurations.runtimeClasspath.collect { 
+            it.isDirectory() ? it : zipTree(it) 
+        } 
     }
-
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     with jar
 }

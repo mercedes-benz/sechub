@@ -1,14 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
-import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
-import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.lang.annotation.Annotation;
 
@@ -28,7 +25,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.domain.scan.project.ScanMockData;
@@ -41,15 +37,16 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.UseCaseUserDefinesProjectMockdata;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.UseCaseUserRetrievesProjectMockdata;
 import com.mercedesbenz.sechub.test.ExampleConstants;
+import com.mercedesbenz.sechub.test.RestDocPathParameter;
+import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
-import com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(ScanProjectMockDataRestController.class)
 @ContextConfiguration(classes = { ScanProjectMockDataRestController.class, ScanProjectMockDataRestControllerRestDocTest.SimpleTestConfiguration.class })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 @ActiveProfiles({ Profiles.MOCKED_PRODUCTS, Profiles.TEST })
-public class ScanProjectMockDataRestControllerRestDocTest {
+public class ScanProjectMockDataRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
 
     private static final String PROJECT1_ID = "project1";
 
@@ -83,16 +80,14 @@ public class ScanProjectMockDataRestControllerRestDocTest {
 	    			content(config.toJSON())
 	    		).
 	    			andExpect(status().isOk()).
-	    			andDo(document(RestDocFactory.createPath(useCase),
-	    	                resource(
-	    	                        ResourceSnippetParameters.builder().
-	    	                            summary(RestDocFactory.createSummary(useCase)).
-	    	                            description(RestDocFactory.createDescription(useCase)).
-	    	                            tag(RestDocFactory.extractTag(apiEndpoint)).
-	    	                            requestSchema(OpenApiSchema.MOCK_DATA_CONFIGURATION.getSchema()).
-	    	                            build()
-	    	                        )
-	    			        ));
+	    			andDo(defineRestService().
+	    	                with().
+	    	                    useCaseData(useCase).
+	    	                    tag(RestDocFactory.extractTag(apiEndpoint)).
+	    	                    requestSchema(OpenApiSchema.MOCK_DATA_CONFIGURATION.getSchema()).
+	    	                and().
+	    	                document()
+	    			);
 	    /* @formatter:on */
     }
 
@@ -123,16 +118,14 @@ public class ScanProjectMockDataRestControllerRestDocTest {
         			andExpect(jsonPath("$.webScan.result").value("YELLOW")).
         			andExpect(jsonPath("$.infraScan.result").value("GREEN")).
 
-        			andDo(document(RestDocFactory.createPath(useCase),
-                            resource(
-                                    ResourceSnippetParameters.builder().
-                                        summary(RestDocFactory.createSummary(useCase)).
-                                        description(RestDocFactory.createDescription(useCase)).
-                                        tag(RestDocFactory.extractTag(apiEndpoint)).
-                                        responseSchema(OpenApiSchema.MOCK_DATA_CONFIGURATION.getSchema()).
-                                        build()
-                                    )
-        			        ));
+        			andDo(defineRestService().
+                            with().
+                                useCaseData(useCase).
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                                responseSchema(OpenApiSchema.MOCK_DATA_CONFIGURATION.getSchema()).
+                            and().
+                            document()
+                    );
 
         /* @formatter:on */
     }

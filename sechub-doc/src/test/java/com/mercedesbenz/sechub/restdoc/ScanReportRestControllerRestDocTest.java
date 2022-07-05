@@ -1,17 +1,15 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
-import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter.*;
-import static org.hamcrest.CoreMatchers.containsString;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
+import static org.hamcrest.CoreMatchers.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -34,24 +32,27 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.domain.scan.HTMLScanResultReportModelBuilder;
 import com.mercedesbenz.sechub.domain.scan.report.DownloadScanReportService;
+import com.mercedesbenz.sechub.domain.scan.report.DownloadSpdxScanReportService;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReportRestController;
 import com.mercedesbenz.sechub.domain.scan.report.ScanSecHubReport;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
+import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc.SpringRestDocOutput;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserDownloadsJobReport;
+import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserDownloadsSpdxJobReport;
 import com.mercedesbenz.sechub.test.ExampleConstants;
+import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(ScanReportRestController.class)
 @ContextConfiguration(classes = { ScanReportRestController.class, ScanReportRestControllerRestDocTest.SimpleTestConfiguration.class })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
-public class ScanReportRestControllerRestDocTest {
+public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
 
     private static final String PROJECT1_ID = "project1";
 
@@ -64,11 +65,20 @@ public class ScanReportRestControllerRestDocTest {
     private DownloadScanReportService downloadReportService;
 
     @MockBean
+    private DownloadSpdxScanReportService downloadSpdxReportService;
+
+    @MockBean
     HTMLScanResultReportModelBuilder modelBuilder;
 
     private UUID jobUUID;
 
-    @UseCaseRestDoc(useCase = UseCaseUserDownloadsJobReport.class, variant = "JSON")
+    @UseCaseRestDoc(useCase = UseCaseUserDownloadsJobReport.class, variant = "JSON", wanted = {
+
+            SpringRestDocOutput.PATH_PARAMETERS,
+
+            SpringRestDocOutput.REQUEST_FIELDS,
+
+            SpringRestDocOutput.CURL_REQUEST })
     @Test
     @WithMockUser
     public void get_report_from_existing_job_returns_information_as_json_when_type_is_APPLICATION_JSON_UTF8() throws Exception {
@@ -91,26 +101,29 @@ public class ScanReportRestControllerRestDocTest {
 	    		).
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json("{\"jobUUID\":\""+jobUUID.toString()+"\",\"result\":{\"count\":0,\"findings\":[]},\"trafficLight\":\"YELLOW\"}")).
-
-	    			andDo(document(RestDocFactory.createPath(useCase, "JSON"),
-                            resource(
-                                    ResourceSnippetParameters.builder().
-                                        summary(RestDocFactory.createSummary(useCase)).
-                                        description(RestDocFactory.createDescription(useCase)).
-                                        tag(RestDocFactory.extractTag(apiEndpoint)).
-                                        responseSchema(OpenApiSchema.SECHUB_REPORT.getSchema()).
+	    			andDo(defineRestService().
+                            with().
+                                useCaseData(useCase, "JSON").
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                                responseSchema(OpenApiSchema.SECHUB_REPORT.getSchema()).
+                            and().
+                            document(
                                         pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The project Id"),
                                                 parameterWithName(JOB_UUID.paramName()).description("The job UUID")
-                                        ).
-                                        build()
                                     )
 	    			     ));
 
 	    /* @formatter:on */
     }
 
-    @UseCaseRestDoc(useCase = UseCaseUserDownloadsJobReport.class, variant = "HTML")
+    @UseCaseRestDoc(useCase = UseCaseUserDownloadsJobReport.class, variant = "HTML", wanted = {
+
+            SpringRestDocOutput.PATH_PARAMETERS,
+
+            SpringRestDocOutput.REQUEST_FIELDS,
+
+            SpringRestDocOutput.CURL_REQUEST })
     @Test
     @WithMockUser
     public void get_report_from_existing_job_returns_information_as_html_when_type_is_APPLICATION_XHTML_XML() throws Exception {
@@ -136,23 +149,62 @@ public class ScanReportRestControllerRestDocTest {
         			andExpect(content().encoding("UTF-8")).
         			andExpect(content().string(containsString(jobUUID.toString()))).
         			andExpect(content().string(containsString("theRedStyle"))).
-
-        			andDo(document(RestDocFactory.createPath(useCase, "HTML"),
-                            resource(
-                                    ResourceSnippetParameters.builder().
-                                        summary(RestDocFactory.createSummary(useCase)).
-                                        description(RestDocFactory.createDescription(useCase)).
-                                        tag(RestDocFactory.extractTag(apiEndpoint)).
-                                        responseSchema(OpenApiSchema.SECHUB_REPORT.getSchema()).
+        			andDo(defineRestService().
+                            with().
+                                useCaseData(useCase, "HTML").
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                                responseSchema(OpenApiSchema.SECHUB_REPORT.getSchema()).
+                            and().
+                            document(
                                         pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The project Id"),
                                                 parameterWithName(JOB_UUID.paramName()).description("The job UUID")
-                                        ).
-                                        build()
                                     )
         			      ));
 
         /* @formatter:on */
+    }
+
+    @UseCaseRestDoc(useCase = UseCaseUserDownloadsSpdxJobReport.class, variant = "JSON", wanted = {
+
+            SpringRestDocOutput.PATH_PARAMETERS,
+
+            SpringRestDocOutput.REQUEST_FIELDS,
+
+            SpringRestDocOutput.CURL_REQUEST })
+    @Test
+    @WithMockUser
+    public void get_report_from_existing_job_returns_information_as_spdx_json_when_type_is_APPLICATION_JSON_UTF8() throws Exception {
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildGetJobReportUrlSpdx(PROJECT_ID.pathElement(), JOB_UUID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserDownloadsSpdxJobReport.class;
+
+        String spdxReport = "{\"spdxVersion\": \"SPDX-2.2\"}";
+
+        when(downloadSpdxReportService.getScanSpdxJsonReport(PROJECT1_ID, jobUUID)).thenReturn(spdxReport);
+
+        /* execute + test @formatter:off */
+	    this.mockMvc.perform(
+	    		get(apiEndpoint,PROJECT1_ID,jobUUID).
+	    		    accept(MediaType.APPLICATION_JSON_VALUE).
+	    			contentType(MediaType.APPLICATION_JSON_VALUE)
+	    		).
+	    			andExpect(status().isOk()).
+	    			andExpect(content().json(spdxReport)).
+	    			andDo(defineRestService().
+                            with().
+                                useCaseData(useCase, "JSON").
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                                responseSchema(OpenApiSchema.SECHUB_REPORT.getSchema()).
+                            and().
+                            document(
+                                        pathParameters(
+                                                parameterWithName(PROJECT_ID.paramName()).description("The project Id"),
+                                                parameterWithName(JOB_UUID.paramName()).description("The job UUID")
+                                    )
+	    			     ));
+
+	    /* @formatter:on */
     }
 
     @TestConfiguration

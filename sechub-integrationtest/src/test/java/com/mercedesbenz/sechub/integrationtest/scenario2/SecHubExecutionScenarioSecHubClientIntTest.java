@@ -25,6 +25,7 @@ import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestMockMode;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.api.TestUser;
+import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestExampleConstants;
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
 
 public class SecHubExecutionScenarioSecHubClientIntTest {
@@ -36,29 +37,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
     public Timeout timeOut = Timeout.seconds(60 * 5);
 
     @Test
-    public void sechub_client_is_able_to_trigger_sourcescan_asynchronous_even_when_user_name_is_uppercased() {
-        /* @formatter:off */
-
-        /* prepare */
-        as(SUPER_ADMIN).
-            assignUserToProject(USER_1, PROJECT_1);
-
-        assertUser(USER_1).
-            doesExist().
-            isAssignedToProject(PROJECT_1);
-
-        /* execute + test */
-        as(USER_1.clonedButWithUpperCasedId()).
-            withSecHubClient().
-                startAsynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN).
-                assertJobTriggered();
-
-        /* @formatter:on */
-
-    }
-
-    @Test
-    public void sechub_client_is_able_to_trigger_sourcescan_asynchronous() {
+    public void sechub_client_is_able_to_trigger_sourcescan_asynchronous_even_when_userid_is_uppercased() {
         /* @formatter:off */
 
 		/* prepare */
@@ -70,9 +49,9 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 			isAssignedToProject(PROJECT_1);
 
 		/* execute + test */
-		as(USER_1).
+		as(USER_1.clonedButWithUpperCasedId()).
 			withSecHubClient().
-				startAsynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN).
+				startAsynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN_ZERO_WAIT).
 				assertJobTriggered();
 
 		/* @formatter:on */
@@ -86,7 +65,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 		/* prepare */
 		as(SUPER_ADMIN).
 			assignUserToProject(USER_1, PROJECT_1).
-			updateWhiteListForProject(PROJECT_1, asList("https://fscan.intranet.example.org"));
+			updateWhiteListForProject(PROJECT_1, asList(IntegrationTestExampleConstants.INFRASCAN_DEFAULT_WHITELEIST_ENTRY));
 
 		assertUser(USER_1).
 			doesExist().
@@ -117,7 +96,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 			assignUserToProject(user, project);
 
 		/* execute */
-		IntegrationTestJSONLocation location = CLIENT_JSON_SOURCESCAN_GREEN;
+		IntegrationTestJSONLocation location = CLIENT_JSON_SOURCESCAN_GREEN_ZERO_WAIT;
 		UUID jobUUID =
 	    as(user).
 			withSecHubClient().
@@ -153,7 +132,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
             assignUserToProject(user, project);
 
         /* execute */
-        IntegrationTestJSONLocation location = CLIENT_JSON_SOURCESCAN_GREEN;
+        IntegrationTestJSONLocation location = CLIENT_JSON_SOURCESCAN_GREEN_ZERO_WAIT;
         UUID jobUUID =
         as(user).
             withSecHubClient().
@@ -194,7 +173,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
         assertProject(project).hasMetaData(metaData);
 
         /* execute */
-        IntegrationTestJSONLocation location = CLIENT_JSON_SOURCESCAN_GREEN;
+        IntegrationTestJSONLocation location = CLIENT_JSON_SOURCESCAN_GREEN_ZERO_WAIT;
         UUID jobUUID =
         as(user).
             withSecHubClient().
@@ -258,7 +237,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
         assertProject(project).hasNoMetaData();
 
         /* execute */
-        IntegrationTestJSONLocation location = CLIENT_JSON_SOURCESCAN_GREEN;
+        IntegrationTestJSONLocation location = CLIENT_JSON_SOURCESCAN_GREEN_ZERO_WAIT;
         UUID jobUUID =
         as(user).
             withSecHubClient().
@@ -295,7 +274,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 			assignUserToProject(user, project);
 
 		/* execute */
-		IntegrationTestJSONLocation location = CLIENT_JSON_SOURCESCAN_GREEN;
+		IntegrationTestJSONLocation location = CLIENT_JSON_SOURCESCAN_GREEN_ZERO_WAIT;
 		UUID jobUUID =
 	    as(user).
 			withSecHubClient().
@@ -318,7 +297,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
     @SuppressWarnings("deprecation") // we use startDownloadJobReport here - old implementation okay here
     @Test
-    public void sechub_client_can_execute_a_config_file_which_uses_template_variables_of_environment_entries() {
+    public void sechub_client_can_execute_a_config_file_which_uses_template_variables_of_environment_entries_but_no_data_section() {
         /* @formatter:off */
 
 		/* prepare */
@@ -334,14 +313,14 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
 		Map<String, String> envEntries = new LinkedHashMap<>();
 		envEntries.put("SHTEST_VERSION", "1.0");
-		envEntries.put("SHTEST_FOLDERS1", IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__FAST.getTarget());
+		envEntries.put("SHTEST_FOLDERS1", IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__1_SECOND_WAITING.getTarget());
 
 		/* execute */
-		IntegrationTestJSONLocation location = CLIENT_JSON_SOURCESCAN_GENERIC_TEMPLATE;
+		IntegrationTestJSONLocation location = IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_GENERIC_TEMPLATE_NO_DATA_SECTION;
 		UUID jobUUID =
 	    as(user).
 			withSecHubClient().
-			startAsynchronScanFor(project, location,envEntries).
+			startAsynchronScanFor(project, location, envEntries).
 			assertFileUploaded(project).
 			assertJobTriggered().
 			getJobUUID();
@@ -381,7 +360,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
 
 		/* execute */
-		IntegrationTestJSONLocation location = CLIENT_JSON_SOURCESCAN_YELLOW;
+		IntegrationTestJSONLocation location = CLIENT_JSON_SOURCESCAN_YELLOW_ZERO_WAIT;
 		UUID jobUUID =
 	    as(user).
 			withSecHubClient().
@@ -417,7 +396,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 		/* execute */
 		as(USER_1).
 			withSecHubClient().
-			startAsynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN).
+			startAsynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN_ZERO_WAIT).
 			assertFileUploaded(PROJECT_1);
 
 		/* @formatter:on */
@@ -472,7 +451,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
 		/* execute */
 		ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(PROJECT_1,
-				CLIENT_JSON_SOURCESCAN_GREEN);
+		        CLIENT_JSON_SOURCESCAN_GREEN_ZERO_WAIT_BIG_CONFIGFILE);
 
 		/* test */
 		assertResult(result).
@@ -497,7 +476,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 		/* execute */
 		ExecutionResult result = as(USER_1).
 				withSecHubClient().
-				startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_YELLOW);
+				startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_YELLOW_ZERO_WAIT);
 
 		/* test */
 		assertResult(result).
@@ -523,7 +502,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 		ExecutionResult result = as(USER_1).
 				withSecHubClient().
 				enableStopOnYellow().
-				startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_YELLOW);
+				startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_YELLOW_ZERO_WAIT);
 
 		/* test */
 		assertResult(result).
@@ -549,7 +528,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 		/* execute */
 		ExecutionResult result = as(USER_1).
 				withSecHubClient().
-				startSynchronScanFor(PROJECT_1, JSON_WEBSCAN_RED);
+				startSynchronScanFor(PROJECT_1, CLIENT_JSON_WEBSCAN_RED_ZERO_WAIT);
 
 		/* test */
 		assertResult(result).
@@ -560,27 +539,4 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
     }
 
-    @Test
-    public void sechub_client_is_able_to_handle_synchronous_and_result_has_trafficlight_green_when_config_is_extreme_big() {
-
-        /* prepare */
-        as(SUPER_ADMIN).assignUserToProject(USER_1, PROJECT_1);
-
-        /* @formatter:off */
-		assertUser(USER_1).
-			doesExist().
-			isAssignedToProject(PROJECT_1);
-
-		/* execute */
-		ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(PROJECT_1,
-				CLIENT_JSON_SOURCESCAN_GREEN_EXTREME_BIG);
-
-		/* test */
-		assertResult(result).
-			isGreen().
-			hasExitCode(0);
-
-		/* @formatter:on */
-
-    }
 }

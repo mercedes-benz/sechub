@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.domain.scan.product.pds;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -13,14 +14,35 @@ import com.mercedesbenz.sechub.commons.pds.PDSConfigDataKeyProvider;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.commons.pds.PDSKey;
 import com.mercedesbenz.sechub.commons.pds.PDSKeyProvider;
-import com.mercedesbenz.sechub.domain.scan.TargetType;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataProvider;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.mercedesbenz.sechub.sharedkernel.SystemEnvironment;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.sharedkernel.validation.Validation;
 
-public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport {
+public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport implements NetworkTargetProductServerDataProvider, ReuseSecHubStorageInfoProvider {
+
+    public static final String PARAM_ID = "pds.executor.config.support";
+
+    private static final List<PDSKeyProvider<?>> PDS_KEYPROVIDERS_FOR_SENDING_PARAMETERS_TO_PDS;
+    private static final List<PDSKeyProvider<?>> PDS_KEYPROVIDERS_FOR_REUSE_STORAGE_DETECTION_ONLY;
+
+    static {
+        List<PDSKeyProvider<?>> allParameterProviders = new ArrayList<>();
+        allParameterProviders.addAll(Arrays.asList(SecHubProductExecutionPDSKeyProvider.values()));
+        allParameterProviders.addAll(Arrays.asList(PDSConfigDataKeyProvider.values()));
+
+        PDS_KEYPROVIDERS_FOR_SENDING_PARAMETERS_TO_PDS = Collections.unmodifiableList(allParameterProviders);
+
+        List<PDSConfigDataKeyProvider> onlySecHubStorageUseProviderList = Collections.singletonList(PDSConfigDataKeyProvider.PDS_CONFIG_USE_SECHUB_STORAGE);
+        PDS_KEYPROVIDERS_FOR_REUSE_STORAGE_DETECTION_ONLY = Collections.unmodifiableList(onlySecHubStorageUseProviderList);
+    }
+
+    public static List<PDSKeyProvider<? extends PDSKey>> getUnmodifiableListOfParameterKeyProvidersSentToPDS() {
+        return PDS_KEYPROVIDERS_FOR_SENDING_PARAMETERS_TO_PDS;
+    }
 
     /**
      * Creates the configuration support and VALIDATE. This will fail when
@@ -41,11 +63,21 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport {
 
     public Map<String, String> createJobParametersToSendToPDS(SecHubConfiguration secHubConfiguration) {
 
-        Map<String, String> parametersToSend = new TreeMap<>();
-        List<PDSKeyProvider<?>> providers = new ArrayList<>();
-        providers.addAll(Arrays.asList(SecHubProductExecutionPDSKeyProvider.values()));
-        providers.addAll(Arrays.asList(PDSConfigDataKeyProvider.values()));
+        Map<String, String> parametersToSend = createParametersToSendByProviders(PDS_KEYPROVIDERS_FOR_SENDING_PARAMETERS_TO_PDS);
 
+        /* provide SecHub storage when necessary */
+        if (isReusingSecHubStorage(parametersToSend)) {
+            String projectId = secHubConfiguration.getProjectId();
+            String sechubStoragePath = SecHubStorageUtil.createStoragePath(projectId);
+
+            parametersToSend.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SECHUB_STORAGE_PATH, sechubStoragePath);
+        }
+
+        return parametersToSend;
+    }
+
+    private Map<String, String> createParametersToSendByProviders(List<PDSKeyProvider<?>> providers) {
+        Map<String, String> parametersToSend = new TreeMap<>();
         for (String originKey : configuredExecutorParameters.keySet()) {
             PDSKeyProvider<?> foundProvider = null;
             for (PDSKeyProvider<?> provider : providers) {
@@ -60,16 +92,16 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport {
                 parametersToSend.put(originKey, configuredExecutorParameters.get(originKey));
             }
         }
-        /* provide SecHub storage when necessary */
-        String useSecHubStorage = parametersToSend.get(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE);
-        if (Boolean.parseBoolean(useSecHubStorage)) {
-            String projectId = secHubConfiguration.getProjectId();
-            String sechubStoragePath = SecHubStorageUtil.createStoragePath(projectId);
-
-            parametersToSend.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SECHUB_STORAGE_PATH, sechubStoragePath);
-        }
-
         return parametersToSend;
+    }
+
+    public boolean isReusingSecHubStorage() {
+        return isReusingSecHubStorage(createParametersToSendByProviders(PDS_KEYPROVIDERS_FOR_REUSE_STORAGE_DETECTION_ONLY));
+    }
+
+    static boolean isReusingSecHubStorage(Map<String, String> parametersToSend) {
+        String useSecHubStorage = parametersToSend.get(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE);
+        return Boolean.parseBoolean(useSecHubStorage);
     }
 
     public String getPDSProductIdentifier() {
@@ -102,7 +134,7 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport {
         return getParameterBooleanValue(SecHubProductExecutionPDSKeyProvider.TRUST_ALL_CERTIFICATES);
     }
 
-    public boolean isTargetTypeForbidden(TargetType targetType) {
+    public boolean isTargetTypeForbidden(NetworkTargetType targetType) {
         boolean forbidden = false;
         for (SecHubProductExecutionPDSKeyProvider provider : SecHubProductExecutionPDSKeyProvider.values()) {
             if (forbidden) {
@@ -136,6 +168,56 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport {
 
     private boolean getParameterBooleanValue(PDSKeyProvider<? extends PDSKey> provider) {
         return getParameterBooleanValue(provider.getKey().getId());
+    }
+
+    @Override
+    public String getIdentifierWhenInternetTarget() {
+        return config.getName();
+    }
+
+    @Override
+    public String getIdentifierWhenIntranetTarget() {
+        return config.getName();
+    }
+
+    @Override
+    public String getBaseURLWhenInternetTarget() {
+        return getProductBaseURL();
+    }
+
+    @Override
+    public String getBaseURLWhenIntranetTarget() {
+        return getProductBaseURL();
+    }
+
+    @Override
+    public String getUsernameWhenInternetTarget() {
+        return getUser();
+    }
+
+    @Override
+    public String getUsernameWhenIntranetTarget() {
+        return getUser();
+    }
+
+    @Override
+    public String getPasswordWhenInternetTarget() {
+        return getPasswordOrAPIToken();
+    }
+
+    @Override
+    public String getPasswordWhenIntranetTarget() {
+        return getPasswordOrAPIToken();
+    }
+
+    @Override
+    public boolean hasUntrustedCertificateWhenIntranetTarget() {
+        return isTrustAllCertificatesEnabled();
+    }
+
+    @Override
+    public boolean hasUntrustedCertificateWhenInternetTarget() {
+        return isTrustAllCertificatesEnabled();
     }
 
 }

@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
-import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -25,7 +24,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.server.core.InfoService;
 import com.mercedesbenz.sechub.server.core.ServerInfoAdministrationRestController;
@@ -35,6 +33,7 @@ import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPI
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.status.UseCaseAdminChecksServerVersion;
 import com.mercedesbenz.sechub.test.ExampleConstants;
+import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
@@ -44,7 +43,7 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
-public class ServerInfoAdministrationRestControllerRestDocTest {
+public class ServerInfoAdministrationRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
 
     private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
@@ -72,16 +71,14 @@ public class ServerInfoAdministrationRestControllerRestDocTest {
 				).
 					andExpect(status().isOk()).
 					andExpect(content().string(SERVER_VERSION)).
-					andDo(document(RestDocFactory.createPath(UseCaseAdminChecksServerVersion.class),
-	                           resource(
-	                                    ResourceSnippetParameters.builder().
-	                                        summary(RestDocFactory.createSummary(useCase)).
-	                                        description(RestDocFactory.createDescription(useCase)).
-	                                        tag(RestDocFactory.extractTag(apiEndpoint)).
-                                            responseSchema(OpenApiSchema.SERVER_VERSION.getSchema()).
-	                                        build()
-	                                    )
-					));
+					andDo(defineRestService().
+		                        with().
+		                            useCaseData(useCase).
+		                            tag(RestDocFactory.extractTag(apiEndpoint)).
+		                            responseSchema(OpenApiSchema.SERVER_VERSION.getSchema()).
+		                        and().
+		                        document()
+					);
 		/* @formatter:on */
     }
 

@@ -9,8 +9,8 @@ import java.net.InetAddress;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.mercedesbenz.sechub.domain.scan.Target;
-import com.mercedesbenz.sechub.domain.scan.TargetType;
+import com.mercedesbenz.sechub.domain.scan.NetworkTarget;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
 
 public class IntraneIPpatternResolveStrategyTest {
 
@@ -59,11 +59,11 @@ public class IntraneIPpatternResolveStrategyTest {
         strategyToTest.initialize("intranet-ip-pattern:2001:CA52:*:*:*:*:*:*");
 
         /* test */
-        assertEquals(new Target(INET_6_ADR1, TargetType.INTRANET), strategyToTest.resolveTargetFor(INET_6_ADR1));
+        assertEquals(new NetworkTarget(INET_6_ADR1, NetworkTargetType.INTRANET), strategyToTest.resolveTargetFor(INET_6_ADR1));
 
-        assertEquals(new Target(INET_6_ADR2, TargetType.INTERNET), strategyToTest.resolveTargetFor(INET_6_ADR2));
-        assertEquals(new Target(INET_4_ADR1, TargetType.INTERNET), strategyToTest.resolveTargetFor(INET_4_ADR1));
-        assertEquals(new Target(INET_4_ADR2, TargetType.INTERNET), strategyToTest.resolveTargetFor(INET_4_ADR2));
+        assertEquals(new NetworkTarget(INET_6_ADR2, NetworkTargetType.INTERNET), strategyToTest.resolveTargetFor(INET_6_ADR2));
+        assertEquals(new NetworkTarget(INET_4_ADR1, NetworkTargetType.INTERNET), strategyToTest.resolveTargetFor(INET_4_ADR1));
+        assertEquals(new NetworkTarget(INET_4_ADR2, NetworkTargetType.INTERNET), strategyToTest.resolveTargetFor(INET_4_ADR2));
     }
 
     @Test
@@ -73,11 +73,11 @@ public class IntraneIPpatternResolveStrategyTest {
         strategyToTest.initialize("intranet-ip-pattern:2001:CA52:*:*:*:*:*:*,2001:DB9:0:0:8:800:200C:*");
 
         /* test */
-        assertEquals(new Target(INET_6_ADR1, TargetType.INTRANET), strategyToTest.resolveTargetFor(INET_6_ADR1));
-        assertEquals(new Target(INET_6_ADR2, TargetType.INTRANET), strategyToTest.resolveTargetFor(INET_6_ADR2));
+        assertEquals(new NetworkTarget(INET_6_ADR1, NetworkTargetType.INTRANET), strategyToTest.resolveTargetFor(INET_6_ADR1));
+        assertEquals(new NetworkTarget(INET_6_ADR2, NetworkTargetType.INTRANET), strategyToTest.resolveTargetFor(INET_6_ADR2));
 
-        assertEquals(new Target(INET_4_ADR1, TargetType.INTERNET), strategyToTest.resolveTargetFor(INET_4_ADR1));
-        assertEquals(new Target(INET_4_ADR2, TargetType.INTERNET), strategyToTest.resolveTargetFor(INET_4_ADR2));
+        assertEquals(new NetworkTarget(INET_4_ADR1, NetworkTargetType.INTERNET), strategyToTest.resolveTargetFor(INET_4_ADR1));
+        assertEquals(new NetworkTarget(INET_4_ADR2, NetworkTargetType.INTERNET), strategyToTest.resolveTargetFor(INET_4_ADR2));
     }
 
     @Test
@@ -87,11 +87,11 @@ public class IntraneIPpatternResolveStrategyTest {
         strategyToTest.initialize("intranet-ip-pattern:192.168.178.*,2001:DB9:0:0:8:800:200C:*");
 
         /* test */
-        assertEquals(new Target(INET_4_ADR1, TargetType.INTRANET), strategyToTest.resolveTargetFor(INET_4_ADR1));
-        assertEquals(new Target(INET_6_ADR2, TargetType.INTRANET), strategyToTest.resolveTargetFor(INET_6_ADR2));
+        assertEquals(new NetworkTarget(INET_4_ADR1, NetworkTargetType.INTRANET), strategyToTest.resolveTargetFor(INET_4_ADR1));
+        assertEquals(new NetworkTarget(INET_6_ADR2, NetworkTargetType.INTRANET), strategyToTest.resolveTargetFor(INET_6_ADR2));
 
-        assertEquals(new Target(INET_6_ADR1, TargetType.INTERNET), strategyToTest.resolveTargetFor(INET_6_ADR1));
-        assertEquals(new Target(INET_4_ADR2, TargetType.INTERNET), strategyToTest.resolveTargetFor(INET_4_ADR2));
+        assertEquals(new NetworkTarget(INET_6_ADR1, NetworkTargetType.INTERNET), strategyToTest.resolveTargetFor(INET_6_ADR1));
+        assertEquals(new NetworkTarget(INET_4_ADR2, NetworkTargetType.INTERNET), strategyToTest.resolveTargetFor(INET_4_ADR2));
     }
 
 }

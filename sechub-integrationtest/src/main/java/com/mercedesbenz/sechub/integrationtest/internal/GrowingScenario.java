@@ -4,7 +4,19 @@ package com.mercedesbenz.sechub.integrationtest.internal;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 
 /**
- * Those scenarios will NOT cleanup their data!
+ * Those scenarios will NOT cleanup their data. Instead the projects, users etc.
+ * have always different ids: At scenario preparation time the {@link #grow()}
+ * method is called which will increase an internal `growId` which is part of
+ * id.<br>
+ * Inside the tests always the same constants are used (e.g.
+ * <code>USER_1</code>) but internally the identifier for database calls etc.
+ * does change.<br>
+ * <br>
+ * Because there is no need to cleanup old data, these tests have a faster
+ * initialization and it is possible to execute them even parallel.<br>
+ * <br>
+ * For an scenario overview look at {@link IntegrationTestDataOverview
+ * Overview}.
  *
  * @author Albert Tregnaghi
  *

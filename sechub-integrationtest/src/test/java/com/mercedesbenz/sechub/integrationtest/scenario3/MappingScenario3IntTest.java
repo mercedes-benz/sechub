@@ -52,15 +52,15 @@ public class MappingScenario3IntTest {
             changeProductExecutorJobParameter(CHECKMARX_V1,MappingIdentifier.CHECKMARX_NEWPROJECT_PRESET_ID.getId(),presetMapping.toJSON());
 
         clearMetaDataInspection();
-        assertInspections().hasAmountOfInspections(0);
+        assertMetaDataInspections().hasAmountOfInspections(0);
 
         /* test */
         ExecutionResult result = as(USER_1).withSecHubClient().
-                startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN);
+                startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN_ZERO_WAIT);
         UUID sechubJobUUID = result.getSechubJobUUID();
 
         assertNotNull("No sechub jobUUId found-maybe client call failed?", sechubJobUUID);
-        assertInspections().
+        assertMetaDataInspections().
             hasAmountOfInspections(1).
             inspectionNr(0).
                 hasId("CHECKMARX").

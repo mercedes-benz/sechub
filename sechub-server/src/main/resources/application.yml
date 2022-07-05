@@ -49,6 +49,7 @@ spring:
     # https://spring.io/guides/gs/uploading-files/
     multipart.max-file-size: 5MB
     multipart.max-request-size: 5MB
+    multipart.resolve-lazily: true
   http: 
     multipart.enabled: false
 # --------------------------------------

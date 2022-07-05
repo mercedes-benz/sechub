@@ -48,7 +48,7 @@ public class ProjectUpdateMetaDataEntityService {
     public void updateProjectMetaData(String projectId, @NotNull ProjectMetaData metaData) {
         auditLog.log("triggers update of metadata for project {}. Updated metadata shall be {}", logSanitizer.sanitize(projectId, 30), metaData);
 
-        assertion.isValidProjectId(projectId);
+        assertion.assertIsValidProjectId(projectId);
 
         Optional<Project> found = repository.findById(projectId);
         if (!found.isPresent()) {

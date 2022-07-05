@@ -9,10 +9,12 @@ import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.adapter.AbstractAdapter;
 import com.mercedesbenz.sechub.adapter.AdapterException;
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterProfiles;
 import com.mercedesbenz.sechub.adapter.AdapterRuntimeContext;
 import com.mercedesbenz.sechub.adapter.mock.MockedAdapter;
 import com.mercedesbenz.sechub.adapter.mock.MockedAdapterSetupService;
+import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 
 /**
  * Special adapter which is per default mocked, but can be defined to use real
@@ -25,8 +27,6 @@ import com.mercedesbenz.sechub.adapter.mock.MockedAdapterSetupService;
 @Component
 public class DelegatingMockablePDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterConfig>
         implements MockedAdapter<PDSAdapterConfig>, PDSAdapter {
-
-    public static final String JOB_PARAMETER_KEY__PDS_MOCKING_DISABLED = "pds.mocking.disabled";
 
     private static final Logger LOG = LoggerFactory.getLogger(DelegatingMockablePDSAdapterV1.class);
 
@@ -50,8 +50,10 @@ public class DelegatingMockablePDSAdapterV1 extends AbstractAdapter<PDSAdapterCo
     }
 
     @Override
-    protected String execute(PDSAdapterConfig config, AdapterRuntimeContext runtimeContext) throws AdapterException {
-        String mockingDisabled = config.getJobParameters().get(JOB_PARAMETER_KEY__PDS_MOCKING_DISABLED);
+    protected AdapterExecutionResult execute(PDSAdapterConfig config, AdapterRuntimeContext runtimeContext) throws AdapterException {
+        PDSAdapterConfigData data = config.getPDSAdapterConfigData();
+        String mockingDisabled = data.getJobParameters().get(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_MOCKING_DISABLED);
+
         boolean useMock = !Boolean.parseBoolean(mockingDisabled);
 
         LOG.info("execution starting, using mocked adapter={}", useMock);

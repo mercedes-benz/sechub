@@ -26,7 +26,7 @@ public class ScheduleDeleteAllProjectAcessService {
     @Transactional
     @UseCaseAdminDeleteProject(@Step(number = 6, name = "Update authorization parts - remove entries for deleted project"))
     public void deleteAnyAccessDataForProject(String projectId) {
-        assertion.isValidProjectId(projectId);
+        assertion.assertIsValidProjectId(projectId);
 
         repository.deleteAnyAccessForProject(projectId);
 

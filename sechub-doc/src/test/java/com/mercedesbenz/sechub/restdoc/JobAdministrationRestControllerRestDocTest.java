@@ -1,16 +1,14 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
-import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter.*;
-import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.lang.annotation.Annotation;
 import java.time.LocalDateTime;
@@ -33,7 +31,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.domain.administration.job.JobAdministrationRestController;
 import com.mercedesbenz.sechub.domain.administration.job.JobCancelService;
@@ -50,6 +47,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseAdminListsAllRun
 import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseAdminRestartsJob;
 import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseAdminRestartsJobHard;
 import com.mercedesbenz.sechub.test.ExampleConstants;
+import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
@@ -58,7 +56,7 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
-public class JobAdministrationRestControllerRestDocTest {
+public class JobAdministrationRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
 
     private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
@@ -105,13 +103,13 @@ public class JobAdministrationRestControllerRestDocTest {
 		andDo(print()).
 				*/
 		andExpect(status().isOk()).
-		andDo(document(RestDocFactory.createPath(useCase),
-                resource(
-                        ResourceSnippetParameters.builder().
-                            summary(RestDocFactory.createSummary(useCase)).
-                            description(RestDocFactory.createDescription(useCase)).
-                            tag(RestDocFactory.extractTag(apiEndpoint)).
-                            responseSchema(OpenApiSchema.RUNNING_JOB_LIST.getSchema()).
+		andDo(defineRestService().
+                with().
+                    useCaseData(useCase).
+                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                    responseSchema(OpenApiSchema.RUNNING_JOB_LIST.getSchema()).
+                and().
+                document(
                             responseFields(
                                     fieldWithPath(inArray(JobInformation.PROPERTY_JOB_UUID)).description("The uuid of the running job"),
                                     fieldWithPath(inArray(JobInformation.PROPERTY_PROJECT_ID)).description("The name of the project the job is running for"),
@@ -119,8 +117,6 @@ public class JobAdministrationRestControllerRestDocTest {
                                     fieldWithPath(inArray(JobInformation.PROPERTY_STATUS)).description("A status information "),
                                     fieldWithPath(inArray(JobInformation.PROPERTY_SINCE)).description("Timestamp since when job has been started"),
                                     fieldWithPath(inArray(JobInformation.PROPERTY_CONFIGURATION)).description("Configuration used for this job")
-                            ).
-                            build()
                          )
 				));
 
@@ -144,16 +140,14 @@ public class JobAdministrationRestControllerRestDocTest {
 		andDo(print()).
 				*/
 		andExpect(status().isOk()).
-		andDo(document(RestDocFactory.createPath(useCase),
-                resource(
-                        ResourceSnippetParameters.builder().
-                            summary(RestDocFactory.createSummary(useCase)).
-                            description(RestDocFactory.createDescription(useCase)).
-                            tag(RestDocFactory.extractTag(apiEndpoint)).
+		andDo(defineRestService().
+                with().
+                    useCaseData(useCase).
+                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                and().
+                document(
                             pathParameters(
                                     parameterWithName(JOB_UUID.paramName()).description("The job UUID")
-                                ).
-                            build()
                          )
 		        ));
 
@@ -177,16 +171,14 @@ public class JobAdministrationRestControllerRestDocTest {
         andDo(print()).
                 */
         andExpect(status().isOk()).
-        andDo(document(RestDocFactory.createPath(useCase),
-                resource(
-                        ResourceSnippetParameters.builder().
-                            summary(RestDocFactory.createSummary(useCase)).
-                            description(RestDocFactory.createDescription(useCase)).
-                            tag(RestDocFactory.extractTag(apiEndpoint)).
+        andDo(defineRestService().
+                with().
+                    useCaseData(useCase).
+                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                and().
+                document(
                             pathParameters(
                                     parameterWithName(JOB_UUID.paramName()).description("The job UUID")
-                            ).
-                            build()
                          )
                 ));
 
@@ -210,16 +202,14 @@ public class JobAdministrationRestControllerRestDocTest {
         andDo(print()).
                 */
         andExpect(status().isOk()).
-        andDo(document(RestDocFactory.createPath(useCase),
-                resource(
-                        ResourceSnippetParameters.builder().
-                            summary(RestDocFactory.createSummary(useCase)).
-                            description(RestDocFactory.createDescription(useCase)).
-                            tag(RestDocFactory.extractTag(apiEndpoint)).
+        andDo(defineRestService().
+                with().
+                    useCaseData(useCase).
+                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                and().
+                document(
                             pathParameters(
                                     parameterWithName(JOB_UUID.paramName()).description("The job UUID")
-                            ).
-                            build()
                          )
               ));
 

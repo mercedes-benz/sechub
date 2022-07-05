@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.mercedesbenz.sechub.adapter.AbstractAdapter;
 import com.mercedesbenz.sechub.adapter.AdapterException;
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterLogId;
 import com.mercedesbenz.sechub.adapter.AdapterProfiles;
 import com.mercedesbenz.sechub.adapter.AdapterRuntimeContext;
@@ -52,7 +53,7 @@ public class NessusAdapterV1 extends AbstractAdapter<NessusAdapterContext, Nessu
     private static final String MSG_APICALL_EXPORT_SCAN_DOWNLOAD = "/scans/{0}/export/{1}/download";
 
     @Override
-    public String execute(NessusAdapterConfig config, AdapterRuntimeContext runtimeContext) throws AdapterException {
+    public AdapterExecutionResult execute(NessusAdapterConfig config, AdapterRuntimeContext runtimeContext) throws AdapterException {
         try {
             NessusContext context = new NessusContext(config, this, runtimeContext);
             NessusWaitForScanStateSupport waitForScanDoneSupport = new NessusWaitForScanStateSupport();
@@ -69,7 +70,9 @@ public class NessusAdapterV1 extends AbstractAdapter<NessusAdapterContext, Nessu
             waitForExportDoneSupport.waitForOK(context);
 
             logout(context);
-            return context.getResult();
+
+            return new AdapterExecutionResult(context.getResult());
+
         } catch (AdapterException e) {
             throw e;
         } catch (Exception e) {

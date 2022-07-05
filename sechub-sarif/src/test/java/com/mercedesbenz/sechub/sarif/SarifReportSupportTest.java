@@ -20,22 +20,24 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.integrationtest.TextFileReader;
 import com.mercedesbenz.sechub.sarif.model.CodeFlow;
 import com.mercedesbenz.sechub.sarif.model.Level;
+import com.mercedesbenz.sechub.sarif.model.Message;
 import com.mercedesbenz.sechub.sarif.model.PropertyBag;
 import com.mercedesbenz.sechub.sarif.model.Report;
 import com.mercedesbenz.sechub.sarif.model.ReportingConfiguration;
 import com.mercedesbenz.sechub.sarif.model.Result;
 import com.mercedesbenz.sechub.sarif.model.Rule;
 import com.mercedesbenz.sechub.sarif.model.Run;
+import com.mercedesbenz.sechub.sarif.model.Taxon;
+import com.mercedesbenz.sechub.sarif.model.Taxonomy;
+import com.mercedesbenz.sechub.test.TestFileReader;
 
 class SarifReportSupportTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(SarifReportSupportTest.class);
 
     private static FilenameFilter sarifFileEndingFilter;
-    private static TextFileReader reader;
 
     private static File sarifTutorialSamplesFolder;
     private static File sarifSpecificationSnippetsFolder;
@@ -54,7 +56,6 @@ class SarifReportSupportTest {
                 return name.endsWith(".sarif") || name.endsWith(".sarif.json");
             }
         };
-        reader = new TextFileReader();
 
         sarifTutorialSamplesFolder = new File("./src/test/resources/examples/microsoft/sarif-tutorials/samples");
         sarifSpecificationSnippetsFolder = new File("./src/test/resources/examples/specification");
@@ -203,7 +204,7 @@ class SarifReportSupportTest {
             LOG.info("Reading sarif report:{}", file);
             count++;
 
-            String sarifJson = reader.loadTextFile(file);
+            String sarifJson = TestFileReader.loadTextFile(file);
             assertNotNull(sarifJson);
 
             /* execute */
@@ -331,6 +332,49 @@ class SarifReportSupportTest {
         ReportingConfiguration defaultConfig2 = rule2.getDefaultConfiguration();
         assertNotNull(defaultConfig2);
         assertEquals(Level.WARNING, defaultConfig2.getLevel());
+    }
+
+    @Test
+    void microsoft_sarif_tutorial_taxonomies_example_taxonomies_deserialized_correclty() throws IOException {
+        /* prepare */
+        File codeFlowReportFile = new File(sarifTutorialSamplesFolder, "Taxonomies.sarif");
+
+        /* execute */
+        Report report = supportToTest.loadReport(codeFlowReportFile);
+
+        /* test */
+        List<Run> runs = report.getRuns();
+        assertEquals(1, runs.size(), "there must be ONE run!");
+
+        Run run = runs.iterator().next();
+        List<Taxonomy> taxonomies = run.getTaxonomies();
+        Map<String, Taxonomy> sortedTaxonomiesMap = new TreeMap<>();
+
+        for (Taxonomy taxonomy : taxonomies) {
+            sortedTaxonomiesMap.put(taxonomy.getGuid(), taxonomy);
+        }
+
+        Taxonomy taxonomy1 = sortedTaxonomiesMap.get("1A567403-868F-405E-92CF-771A9ECB03A1");
+        assertEquals("Requirement levels", taxonomy1.getName());
+        assertEquals(new Message("This taxonomy classifies rules according to whether their use is required or recommended by company policy."),
+                taxonomy1.getShortDescription());
+
+        Map<String, Taxon> sortedTaxaMap = new TreeMap<>();
+        for (Taxon taxon : taxonomy1.getTaxa()) {
+            sortedTaxaMap.put(taxon.getId(), taxon);
+        }
+        Taxon taxon1 = sortedTaxaMap.get("RQL1001");
+        assertNotNull(taxon1);
+        assertEquals("Required", taxon1.getName());
+        assertEquals(new Message("Rules in this category are required by company policy. All violations must be fixed unless an exemption is granted."),
+                taxon1.getShortDescription());
+
+        Taxon taxon2 = sortedTaxaMap.get("RQL1002");
+        assertNotNull(taxon2);
+        assertEquals("Recommended", taxon2.getName());
+        assertEquals(new Message(
+                "Rules in this category are recommended but not required by company policy. Violations should be fixed but an exemption is not required to suppress a result."),
+                taxon2.getShortDescription());
     }
 
 }

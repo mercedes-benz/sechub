@@ -33,7 +33,7 @@ public class SignupDeleteService {
     public void delete(String userId) {
         auditLog.log("triggered delete of user signup: {}", logSanitizer.sanitize(userId, 30));
 
-        assertion.isValidUserId(userId);
+        assertion.assertIsValidUserId(userId);
 
         Signup foundByName = userSelfRegistrationRepository.findOrFailSignup(userId);
         userSelfRegistrationRepository.delete(foundByName);

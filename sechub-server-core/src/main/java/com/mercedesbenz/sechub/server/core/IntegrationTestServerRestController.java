@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +27,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mercedesbenz.sechub.sharedkernel.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.UserContextService;
+import com.mercedesbenz.sechub.sharedkernel.autocleanup.IntegrationTestAutoCleanupResultInspector;
+import com.mercedesbenz.sechub.sharedkernel.autocleanup.IntegrationTestAutoCleanupResultInspector.JsonDeleteCount;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.sharedkernel.logging.IntegrationTestSecurityLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
@@ -73,6 +72,9 @@ public class IntegrationTestServerRestController {
     private MetaDataInspector metaDataInspector;
 
     @Autowired
+    private IntegrationTestAutoCleanupResultInspector autoCleanupResultInspector;
+
+    @Autowired
     IntegrationTestSecurityLogService securityLogService;
 
     @Autowired
@@ -91,6 +93,18 @@ public class IntegrationTestServerRestController {
             MediaType.APPLICATION_JSON_VALUE })
     public List<SecurityLogData> getSecurityLogData() {
         return securityLogService.getLogData();
+    }
+
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/autocleanup/inspection/reset", method = RequestMethod.POST, produces = {
+            MediaType.APPLICATION_JSON_VALUE })
+    public void resetAutoCleanupInspection() {
+        autoCleanupResultInspector.reset();
+    }
+
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/autocleanup/inspection/deleteCounts", method = RequestMethod.GET, produces = {
+            MediaType.APPLICATION_JSON_VALUE })
+    public List<JsonDeleteCount> fetchAutoCleanupInspectionDeleteCounts() {
+        return autoCleanupResultInspector.createList();
     }
 
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/event/inspection/reset-and-stop", method = RequestMethod.POST, produces = {
@@ -132,14 +146,6 @@ public class IntegrationTestServerRestController {
         context.close();
     }
 
-    @RolesAllowed(RoleConstants.ROLE_USER)
-    @RequestMapping(path = APIConstants.API_USER + "integrationtest/check/role/user", method = RequestMethod.GET, produces = {
-            MediaType.APPLICATION_JSON_VALUE })
-    public void checkRoleUser() {
-        LOG.info("Integration test server says user '{}' has allowed role '{}' - all authorities: '{}'", userContextService.getUserId(),
-                RoleConstants.ROLE_USER, userContextService.getAuthories());
-    }
-
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/metadata/inspections", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })
     public List<MapStorageMetaDataInspection> fetchInspections() {
@@ -166,12 +172,24 @@ public class IntegrationTestServerRestController {
         LOG.info("FROM INTEGRATION-TEST:{}", text);
     }
 
-    @RolesAllowed(RoleConstants.ROLE_OWNER)
-    @RequestMapping(path = APIConstants.API_OWNER + "integrationtest/check/role/owner", method = RequestMethod.GET, produces = {
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/check/role/{role}", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })
-    public void checkRoleOwner() {
-        LOG.info("Integration test server says user '{}' has allowed role '{}' - all authorities: '{}'", userContextService.getUserId(),
-                RoleConstants.ROLE_OWNER, userContextService.getAuthories());
+    public boolean checkRole(@PathVariable("role") String role) {
+        String authories = userContextService.getAuthories();
+        String userId = userContextService.getUserId();
+        LOG.info("Integration test server wants to know if current user '{}' has role '{}'", userId, role);
+        boolean hasRole = false;
+        if (authories != null) {
+            String authRole = "ROLE_" + role.toUpperCase();
+            hasRole = authories.indexOf(authRole) != -1;
+
+            LOG.debug("Check if authRole '{}' contained in authorities '{}'", authRole, authories);
+        } else {
+            LOG.info("No authorities found - return false");
+        }
+
+        LOG.info("Result: User '{}' has role {}={}", userId, role, hasRole);
+        return hasRole;
     }
 
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/{projectId}/{jobUUID}/uploaded/{fileName}", method = RequestMethod.GET)

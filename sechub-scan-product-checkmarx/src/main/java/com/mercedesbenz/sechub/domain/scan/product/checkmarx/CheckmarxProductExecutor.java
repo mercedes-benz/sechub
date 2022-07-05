@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.checkmarx;
 
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
@@ -16,19 +18,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.adapter.AbstractAdapterConfigBuilder;
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxConfig;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxMetaDataID;
-import com.mercedesbenz.sechub.domain.scan.TargetRegistry.TargetRegistryInfo;
-import com.mercedesbenz.sechub.domain.scan.product.AbstractCodeScanProductExecutor;
-import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
+import com.mercedesbenz.sechub.commons.model.ScanType;
+import com.mercedesbenz.sechub.domain.scan.SecHubAdapterOptionsBuilderStrategy;
+import com.mercedesbenz.sechub.domain.scan.product.AbstractProductExecutor;
+import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 import com.mercedesbenz.sechub.sharedkernel.SystemEnvironment;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspection;
 import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspector;
 import com.mercedesbenz.sechub.sharedkernel.resilience.ResilientActionExecutor;
@@ -36,7 +39,7 @@ import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
 
 @Service
-public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<CheckmarxInstallSetup> {
+public class CheckmarxProductExecutor extends AbstractProductExecutor {
 
     static final Logger LOG = LoggerFactory.getLogger(CheckmarxProductExecutor.class);
 
@@ -66,12 +69,8 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
     @Autowired
     CheckmarxResilienceConsultant checkmarxResilienceConsultant;
 
-    ResilientActionExecutor<ProductResult> resilientActionExecutor;
-
     public CheckmarxProductExecutor() {
-        /* we create here our own instance - only for this service! */
-        this.resilientActionExecutor = new ResilientActionExecutor<>();
-
+        super(ProductIdentifier.CHECKMARX, 1, ScanType.CODE_SCAN);
     }
 
     @PostConstruct
@@ -79,34 +78,38 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
         this.resilientActionExecutor.add(checkmarxResilienceConsultant);
     }
 
+    // just to make it accessible inside test
+    ResilientActionExecutor<ProductResult> fetchResilientExecutor() {
+        return this.resilientActionExecutor;
+    }
+
     @Override
-    protected List<ProductResult> executeWithAdapter(SecHubExecutionContext context, ProductExecutorContext executorContext, CheckmarxInstallSetup setup,
-            TargetRegistryInfo data) throws Exception {
+    protected List<ProductResult> executeByAdapter(ProductExecutorData data) throws Exception {
         LOG.debug("Trigger checkmarx adapter execution");
 
-        UUID jobUUID = context.getSechubJobUUID();
-        String projectId = context.getConfiguration().getProjectId();
+        UUID jobUUID = data.getSechubExecutionContext().getSechubJobUUID();
+        String projectId = data.getSechubExecutionContext().getConfiguration().getProjectId();
 
         JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
 
-        CheckmarxExecutorConfigSuppport configSupport = CheckmarxExecutorConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
-                systemEnvironment);
+        CheckmarxExecutorConfigSuppport configSupport = CheckmarxExecutorConfigSuppport
+                .createSupportAndAssertConfigValid(data.getProductExecutorContext().getExecutorConfig(), systemEnvironment);
 
-        CheckmarxResilienceCallback callback = new CheckmarxResilienceCallback(configSupport, executorContext);
+        CheckmarxResilienceCallback callback = new CheckmarxResilienceCallback(configSupport, data.getProductExecutorContext());
 
         /* start resilient */
         ProductResult result = resilientActionExecutor.executeResilient(() -> {
 
-            AdapterMetaData metaDataOrNull = executorContext.getCurrentMetaDataOrNull();
+            AdapterMetaData metaDataOrNull = data.getProductExecutorContext().getCurrentMetaDataOrNull();
 
             try (InputStream sourceCodeZipFileInputStream = fetchInputStreamIfNecessary(storage, metaDataOrNull)) {
 
                 /* @formatter:off */
 
+                @SuppressWarnings("deprecation")
                 CheckmarxAdapterConfig checkMarxConfig = CheckmarxConfig.builder().
-    					configure(createAdapterOptionsStrategy(context)).
-
-    					setTrustAllCertificates(setup.isHavingUntrustedCertificate()).
+    					configure(new SecHubAdapterOptionsBuilderStrategy(data, getScanType())).
+    					setTrustAllCertificates(installSetup.isHavingUntrustedCertificate()).
     					setUser(configSupport.getUser()).
     					setPasswordOrAPIToken(configSupport.getPasswordOrAPIToken()).
     					setProductBaseUrl(configSupport.getProductBaseURL()).
@@ -114,14 +117,14 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
     					setAlwaysFullScan(callback.isAlwaysFullScanEnabled()).
     					setTimeToWaitForNextCheckOperationInMinutes(scanResultCheckPeriodInMinutes).
     					setTimeOutInMinutes(scanResultCheckTimeOutInMinutes).
-    					setFileSystemSourceFolders(data.getCodeUploadFileSystemFolders()).
+    					setFileSystemSourceFolders(data.getCodeUploadFileSystemFolders()). // to support mocked Checkmarx adapters we MUST use still the deprecated method!
     					setSourceCodeZipFileInputStream(sourceCodeZipFileInputStream).
     					setTeamIdForNewProjects(configSupport.getTeamIdForNewProjects(projectId)).
     					setClientSecret(configSupport.getClientSecret()).
     					setEngineConfigurationName(configSupport.getEngineConfigurationName()).
     					setPresetIdForNewProjects(configSupport.getPresetIdForNewProjects(projectId)).
     					setProjectId(projectId).
-    					setTraceID(context.getTraceLogIdAsString()).
+    					setTraceID(data.getSechubExecutionContext().getTraceLogIdAsString()).
     					build();
 					/* @formatter:on */
 
@@ -134,12 +137,9 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
                 inspection.notice("alwaysFullScanEnabled", checkMarxConfig.isAlwaysFullScanEnabled());
 
                 /* execute checkmarx by adapter and update product result */
-                String xml = checkmarxAdapter.start(checkMarxConfig, executorContext.getCallback());
+                AdapterExecutionResult adapterResult = checkmarxAdapter.start(checkMarxConfig, data.getProductExecutorContext().getCallback());
 
-                ProductResult productResult = executorContext.getCurrentProductResult(); // product result is set by callback
-                productResult.setResult(xml);
-
-                return productResult;
+                return updateCurrentProductResult(adapterResult, data.getProductExecutorContext());
             }
         }, callback);
         return Collections.singletonList(result);
@@ -150,22 +150,12 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
         if (metaData != null && metaData.hasValue(CheckmarxMetaDataID.KEY_FILEUPLOAD_DONE, true)) {
             return null;
         }
-        return storage.fetch("sourcecode.zip");
+        return storage.fetch(FILENAME_SOURCECODE_ZIP);
     }
 
     @Override
-    public ProductIdentifier getIdentifier() {
-        return ProductIdentifier.CHECKMARX;
-    }
+    protected void customize(ProductExecutorData data) {
 
-    @Override
-    protected CheckmarxInstallSetup getInstallSetup() {
-        return installSetup;
-    }
-
-    @Override
-    public int getVersion() {
-        return 1;
     }
 
 }

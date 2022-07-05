@@ -18,6 +18,9 @@ include::../shared/concepts/concept_mappings.adoc[]
 // Product delegation server (headline in include - level3)
 include::../shared/concepts/concept_pds.adoc[]
 
+
+include::../shared/concepts/concept_archive_extraction.adoc[]
+
 // False-positive handling (headline in include - level3)
 include::../shared/concepts/concept_falsepositive_handling.adoc[]
 
@@ -25,6 +28,10 @@ include::../shared/concepts/concept_falsepositive_handling.adoc[]
 include::../shared/concepts/execution-profiles/concept_execution_profiles_and_config.adoc[]
 
 include::../shared/concepts/concept_product_results.adoc[]
+
+include::../shared/concepts/concept_job_status.adoc[]
+
+include::../shared/concepts/concept_auto_clean.adoc[]
 
 
 

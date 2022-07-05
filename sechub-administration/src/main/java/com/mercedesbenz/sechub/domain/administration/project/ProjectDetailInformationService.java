@@ -41,7 +41,7 @@ public class ProjectDetailInformationService {
             LOG.debug("fetching project details for project:{}", logSanitizer.sanitize(projectId, 30));
         }
 
-        assertion.isValidProjectId(projectId);
+        assertion.assertIsValidProjectId(projectId);
 
         Project project = projectRepository.findOrFailProject(projectId);
 

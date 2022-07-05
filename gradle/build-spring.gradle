@@ -1,0 +1,76 @@
+// SPDX-License-Identifier: MIT
+
+subprojects {
+    if (! projectType.springBootProjects.contains(project)){
+		return;
+    }
+    apply plugin: 'io.spring.dependency-management'
+    dependencyManagement {
+         imports {
+             mavenBom "$springBootMavenBomCoordinates"
+         }
+    }
+    
+    ext['junit-jupiter.version'] = '5.8.2'
+
+    logger.info("found spring boot relevant project:$project")
+    
+    if (projectType.bootableSpringApplicationProjects.contains(project)){
+       apply plugin: 'org.springframework.boot' 
+       
+       springBoot {
+             // creates build-info.properties in META-INF folder which is auto injected in spring
+             // see https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#howto-build-info
+             buildInfo() 
+        }     
+    }
+
+
+	dependencies {
+
+        testImplementation(library.springboot_starter_test)
+        implementation(library.springboot_starter_json)
+        
+
+	    if (projectType.springBootAdapterProjects.contains(project)){
+
+            /* REST */
+            implementation(spring_boot_dependency.jackson_datatype_jdk8)
+            implementation(library.springboot_starter_web)
+
+
+            if (! project.name.equals('sechub-adapter')){
+                api project(':sechub-adapter')
+            }
+
+            testImplementation library.wiremock
+            testImplementation project(':sechub-testframework')
+
+        }
+
+        if (projectType.springBootSecHubServerProjects.contains(project)){
+            api(library.springboot_starter_web)
+            api(library.springboot_starter_validation)
+            testImplementation project(':sechub-testframework')
+
+            /* REST */
+            implementation(spring_boot_dependency.jackson_datatype_jdk8)
+
+            /* database */
+            implementation(library.database_postgres)
+            implementation(library.database_h2)
+            api(library.springboot_starter_data_jpa)
+            //compile(library.springboot_starter_actuator)
+
+            /* security */
+            api(library.springboot_starter_security)
+            testImplementation(library.springframework_security_test)
+
+            /* develop */
+           // currently deactivated: compile(library.springboot_devtoolssf)
+        }
+       if (projectType.springDocProjects.contains(project)){
+            api(library.springboot_starter_web)
+       }
+    }
+}

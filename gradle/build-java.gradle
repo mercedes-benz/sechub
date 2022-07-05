@@ -1,0 +1,131 @@
+// SPDX-License-Identifier: MIT
+/* ============================================================================
+   This file contains the configurations for
+   Java settings
+   ============================================================================
+
+   Included from: "${rootProject.projectDir}/build.gradle"
+   ============================================================================
+ */
+
+if (JavaVersion.current().isJava8Compatible()) {
+  allprojects {
+    tasks.withType(Javadoc) {
+      // turn off doclint
+      options.addStringOption('Xdoclint:none', '-quiet')
+      enabled = false
+    }
+  }
+}
+
+ext.buildContainsFailedTests=false
+
+
+subprojects{
+
+    if (! projectType.javaProjects.contains(project)){
+		return;
+    }
+    
+    apply plugin: 'java'
+    apply plugin: 'java-library'
+
+	/* Setup UTF-8 for compile AND test compilation*/
+	[ compileJava, compileTestJava ]*.options*.encoding = 'UTF-8'
+
+	sourceCompatibility = '1.8'
+	targetCompatibility = '1.8'
+
+
+    def wireMockHttpPortValue = 8180;
+    def wireMockHttpsPortValue = 8143;
+    
+    dependencies {
+        // https://mvnrepository.com/artifact/org.junit.vintage/junit-vintage-engine
+        testImplementation group: 'org.junit.vintage', name: 'junit-vintage-engine', version: '5.8.2'
+        testImplementation 'org.junit.platform:junit-platform-launcher' // fix eclipse 4.16 launching problems , see https://github.com/spring-projects/sts4/issues/431 
+    }
+    
+    test {
+	    /* Per default GRADLE stops the build if one single test fails. We want to have all tests executed. */
+        ignoreFailures = true
+        
+        /* enable junit5 support in gradle! some of our tests are now written in junit5*/
+        useJUnitPlatform()
+
+        def wireMockHttpPortProperty="sechub.test.wiremock.http_port";
+        if ( project.hasProperty(wireMockHttpPortProperty)){
+            wireMockHttpPortValue = project.getProperty(wireMockHttpPortProperty)
+        }
+        def wireMockHttpsPortProperty="sechub.test.wiremock.https_port";
+        if ( project.hasProperty(wireMockHttpsPortProperty)){
+            wireMockHttpsPortValue = project.getProperty(wireMockHttpsPortProperty)
+        }
+
+        environment 'SECHUB_TEST_WIREMOCK_HTTP_PORT', "$wireMockHttpPortValue"
+        environment 'SECHUB_TEST_WIREMOCK_HTTPS_PORT', "$wireMockHttpsPortValue"
+        environment 'SECHUB_BUILD_GRADLE', 'true' // we can use this to check for gradle build inside java tests
+
+
+        // add a collection to track failedTests
+        ext.failedTests = []
+        
+        // add a testlistener to all tasks of type Test
+        tasks.withType(Test) {
+            afterTest { TestDescriptor descriptor, TestResult result ->
+                if(result.resultType == org.gradle.api.tasks.testing.TestResult.ResultType.FAILURE){
+                    buildContainsFailedTests=true
+                    failedTests << ["${descriptor.className}::${descriptor.name}"]
+                }
+            }
+        }
+        
+        // print out tracked failed tests when the build has finished
+        gradle.buildFinished {
+            if(!failedTests.empty){
+                println "Failed tests for ${project.name}:"
+                failedTests.each { failedTest ->
+                    println failedTest
+                }
+                println ""
+            }
+        }
+
+    }
+
+	/**
+	 * Task to create source jars
+	 */
+	task sourcesJar(type: Jar, dependsOn:classes) {
+		classifier = 'sources'
+		from sourceSets.main.allSource
+	}
+
+    /**
+	 * Task to create javadoc jars
+	 */
+	task javadocJar(type: Jar, dependsOn:javadoc) {
+		classifier = 'javadoc'
+		from javadoc.destinationDir
+	}
+
+	/**
+	 * Define artifacts
+	 */
+	artifacts {
+		archives sourcesJar
+		archives javadocJar
+	}
+
+}
+
+allprojects {
+        if(! project.name.equals(rootProject.name) ) {
+            return
+        }
+        gradle.buildFinished {
+        if (buildContainsFailedTests){
+                throw new GradleException('Some tests have failed!')
+            }
+        }
+    }

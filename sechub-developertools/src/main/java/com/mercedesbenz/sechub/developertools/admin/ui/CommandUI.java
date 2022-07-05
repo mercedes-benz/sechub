@@ -21,6 +21,8 @@ import javax.swing.SwingUtilities;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.ActionSupport;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.adapter.ShowProductExecutorTemplatesDialogAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.client.TriggerSecHubClientSynchronousScanAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.config.ConfigureAutoCleanupAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.config.ConfigurePDSAutoCleanupAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.config.CreateExecutionProfileAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.config.CreateExecutorConfigAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.config.DeleteConfigurationAction;
@@ -31,12 +33,6 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.config.ListExecuti
 import com.mercedesbenz.sechub.developertools.admin.ui.action.config.ListExecutorConfigurationsAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.developerbatchops.DeveloperBatchCreateCheckmarxTestSetupAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.integrationtestserver.FetchMockMailsAction;
-import com.mercedesbenz.sechub.developertools.admin.ui.action.integrationtestserver.testdata.CreateScenario2TestDataAction;
-import com.mercedesbenz.sechub.developertools.admin.ui.action.integrationtestserver.testdata.CreateScenario3TestDataAction;
-import com.mercedesbenz.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerMassiveNewJobsScenario3User1Action;
-import com.mercedesbenz.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewCodeScanJobScenario3User1Action;
-import com.mercedesbenz.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewInfraScanJobScenario3User1Action;
-import com.mercedesbenz.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewWebScanJobScenario3User1Action;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.job.CancelJobAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.job.DownloadFullscanDataForJobAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.job.DownloadHTMLReportForJobAction;
@@ -54,11 +50,14 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.CheckPDSJobRes
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.CheckPDSJobStatusAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.CreateNewPDSExecutionConfigurationAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.CreatePDSJobAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchLastStartedPDSJobStreamsAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSConfigurationAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSJobErrorStreamAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSJobMessagesAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSJobOutputStreamAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSJobParameterExampleAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.FetchPDSMonitoringStatusAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.GeneratePDSSolutionTestFilesAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.MarkPDSJobReadyAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.ShowPDSConfigurationDialogAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.pds.UploadPDSJobFileAction;
@@ -107,7 +106,6 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.user.UpdateUserEma
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.privileges.GrantAdminRightsToUserAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.user.privileges.RevokeAdminRightsFromAdminAction;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
-import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestMockMode;
 
 public class CommandUI {
     private static final ImageIcon EDIT_ROAD_BLACK_ICON = new ImageIcon(CommandUI.class.getResource("/icons/material-io/twotone_edit_road_black_18dp.png"));
@@ -142,6 +140,7 @@ public class CommandUI {
         register(ShowProductExecutorTemplatesDialogActionFactory.createPDS_CODESCAN_V1Action(context));
         register(ShowProductExecutorTemplatesDialogActionFactory.createPDS_WEBSCAN_V1Action(context));
         register(ShowProductExecutorTemplatesDialogActionFactory.createPDS_INFRASCAN_V1Action(context));
+        register(ShowProductExecutorTemplatesDialogActionFactory.createPDS_LICENSESCAN_V1Action(context));
 
         panel = new JPanel(new BorderLayout());
 
@@ -241,6 +240,8 @@ public class CommandUI {
         menu.add(mappingsMenu);
         add(mappingsMenu, new FetchGlobalMappingAction(context));
         add(mappingsMenu, new UpdateGlobalMappingAction(context));
+
+        menu.add(new ConfigureAutoCleanupAction(context));
     }
 
     private ShowProductExecutorTemplatesDialogAction register(ShowProductExecutorTemplatesDialogAction action) {
@@ -279,6 +280,20 @@ public class CommandUI {
         add(menu, new CheckPDSJobResultOrErrorAction(context));
         add(menu, new FetchPDSJobOutputStreamAction(context));
         add(menu, new FetchPDSJobErrorStreamAction(context));
+        add(menu, new FetchPDSJobMessagesAction(context));
+        menu.addSeparator();
+        menu.add(createPDSDeveloperToolsMenu());
+        menu.addSeparator();
+        menu.add(new ConfigurePDSAutoCleanupAction(context));
+
+    }
+
+    private JMenu createPDSDeveloperToolsMenu() {
+        JMenu menu = new JMenu("PDS-Developertools");
+
+        menu.add(new GeneratePDSSolutionTestFilesAction(context));
+
+        return menu;
     }
 
     private void createUserMenu() {
@@ -413,11 +428,15 @@ public class CommandUI {
     private void createIntegrationTestServerMenu() {
         JMenu menu = new JMenu("Integration TestServer");
         menuBar.add(menu);
+
         if (!ConfigurationSetup.isIntegrationTestServerMenuEnabled()) {
             menu.setEnabled(false);
             menu.setToolTipText("Not enabled, use \"-D" + ConfigurationSetup.SECHUB_ENABLE_INTEGRATION_TESTSERVER_MENU.getSystemPropertyid()
                     + "=true\" to enable it and run an integration test server!");
+            return;
         }
+
+        add(menu, new FetchLastStartedPDSJobStreamsAction(context));
         add(menu, new FetchMockMailsAction(context));
         menu.addSeparator();
         add(menu, new SetProjectMockDataConfigurationAction(context));
@@ -426,23 +445,15 @@ public class CommandUI {
 
         JMenu testDataMenu = new JMenu("Testdata");
         menu.add(testDataMenu);
-        add(testDataMenu, new CreateScenario2TestDataAction(context));
-        add(testDataMenu, new CreateScenario3TestDataAction(context));
-        testDataMenu.addSeparator();
-        add(testDataMenu, new TriggerNewInfraScanJobScenario3User1Action(context));
-        testDataMenu.addSeparator();
-        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__FAST));
-        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING));
 
-        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING));
+        try {
+            new IntegrationTestDataMenuAppender().appendMenuEntries(context, testDataMenu);
+        } catch (ExceptionInInitializerError e) {
 
-        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_ONE_FINDING__FAST));
-        add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context, IntegrationTestMockMode.WEBSCAN__NETSPARKER_MANY_RESULTS__FAST));
-        testDataMenu.addSeparator();
-        add(testDataMenu, new TriggerNewCodeScanJobScenario3User1Action(context, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__YELLOW__FAST));
-        add(testDataMenu, new TriggerNewCodeScanJobScenario3User1Action(context, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__FAST));
-        testDataMenu.addSeparator();
-        add(testDataMenu, new TriggerMassiveNewJobsScenario3User1Action(context));
+            testDataMenu.add(ActionSupport.getInstance().createErrorReplacementAction("Cannot add test data actions",
+                    "Was not able to initialize test data actions.\n" + "This works only from IDE and not from standalone application.\n" + "\n"
+                            + "Explanation: The necessary mock data file is not published but only available inside sources."));
+        }
 
     }
 

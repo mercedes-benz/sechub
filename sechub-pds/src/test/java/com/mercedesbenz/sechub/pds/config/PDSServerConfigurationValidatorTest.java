@@ -7,6 +7,8 @@ import static org.mockito.Mockito.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.mercedesbenz.sechub.commons.model.ScanType;
+
 public class PDSServerConfigurationValidatorTest {
 
     private PDSServerConfigurationValidator validatorToTest;
@@ -91,12 +93,12 @@ public class PDSServerConfigurationValidatorTest {
 
     private void prepareValidConfiguration() {
         PDSProductSetup setup1 = new PDSProductSetup();
-        setup1.setScanType(PDSScanType.CODE_SCAN);
+        setup1.setScanType(ScanType.CODE_SCAN);
         setup1.setId("productid1");
         setup1.setPath("path1");
 
         PDSProductSetup setup2 = new PDSProductSetup();
-        setup2.setScanType(PDSScanType.INFRA_SCAN);
+        setup2.setScanType(ScanType.INFRA_SCAN);
         setup2.setId("productid2");
         setup2.setPath("path2");
 

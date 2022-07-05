@@ -40,6 +40,7 @@ public class AsciidocGenerator implements Generator {
     DomainMessagingFilesGenerator domainMessagingFilesGenerator = new DomainMessagingFilesGenerator(writer);
     ExampleJSONGenerator exampleJSONGenerator = new ExampleJSONGenerator();
     ClientDocFilesGenerator clientDocFilesGenerator = new ClientDocFilesGenerator();
+    ExecutorConfigurationParameterDescriptionGenerator executorConfigParameterGenerator = new ExecutorConfigurationParameterDescriptionGenerator();
 
     public static void main(String[] args) throws Exception {
         if (args.length != 1) {
@@ -60,6 +61,7 @@ public class AsciidocGenerator implements Generator {
 
         File systemProperitesFile = createSystemProperyTargetFile(documentsGenFolder);
         File pdsSystemProperitesFile = createPDSSystemProperyTargetFile(documentsGenFolder);
+        File pdsPDSExecutorConfigParametersFile = createPDSExecutorConfigurationParametersTargetFile(documentsGenFolder);
 
         File javaLaunchExampleFile = createJavaLaunchExampleTargetFile(documentsGenFolder);
         File scheduleDescriptionFile = createScheduleDescriptionTargetFile(documentsGenFolder);
@@ -98,6 +100,7 @@ public class AsciidocGenerator implements Generator {
         /* PDS */
         generator.generatePDSUseCaseFiles(documentsGenFolder, diagramsGenFolder);
         generator.generatePDSSystemPropertiesDescription(pdsSystemProperitesFile);
+        generator.generatePDSExecutorConfigurationParamters(pdsPDSExecutorConfigParametersFile);
 
     }
 
@@ -217,6 +220,10 @@ public class AsciidocGenerator implements Generator {
         return new File(genFolder, "gen_mockadapterproperties.adoc");
     }
 
+    private static File createPDSExecutorConfigurationParametersTargetFile(File genFolder) {
+        return new File(genFolder, "gen_pds_executor_config_parameters.adoc");
+    }
+
     /**
      * Just an extra method to seperate the fetch mechanism from others
      */
@@ -235,6 +242,11 @@ public class AsciidocGenerator implements Generator {
 
     public void generatePDSSystemPropertiesDescription(File targetFile) throws IOException {
         String text = propertiesGenerator.generate(getCollector().fetchPDSMustBeDocumentParts());
+        writer.save(targetFile, text);
+    }
+
+    private void generatePDSExecutorConfigurationParamters(File targetFile) throws IOException {
+        String text = executorConfigParameterGenerator.generatePDSExecutorConfigurationParamters(targetFile);
         writer.save(targetFile, text);
     }
 

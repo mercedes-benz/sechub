@@ -39,6 +39,11 @@ public interface PDSKey {
     boolean isDefaultRecommended();
 
     /**
+     * @return <code>true</code> when this key is only used for testing
+     */
+    boolean isOnlyForTesting();
+
+    /**
      *
      * @return a default value
      */

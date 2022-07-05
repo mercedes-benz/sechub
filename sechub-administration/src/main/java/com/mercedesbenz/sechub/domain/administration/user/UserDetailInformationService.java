@@ -43,7 +43,7 @@ public class UserDetailInformationService {
     public UserDetailInformation fetchDetails(String userId) {
         LOG.debug("User {} is fetching user details for user:{}", userContext.getUserId(), logSanitizer.sanitize(userId, 30));
 
-        assertion.isValidUserId(userId);
+        assertion.assertIsValidUserId(userId);
 
         User user = userRepository.findOrFailUser(userId);
 

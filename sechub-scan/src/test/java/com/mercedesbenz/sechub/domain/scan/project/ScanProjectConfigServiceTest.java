@@ -41,7 +41,7 @@ public class ScanProjectConfigServiceTest {
         toTest.get("project-id1", ScanProjectConfigID.MOCK_CONFIGURATION);
 
         /* test */
-        verify(toTest.userInputAssertion).isValidProjectId(eq("project-id1"));
+        verify(toTest.userInputAssertion).assertIsValidProjectId(eq("project-id1"));
     }
 
     @Test

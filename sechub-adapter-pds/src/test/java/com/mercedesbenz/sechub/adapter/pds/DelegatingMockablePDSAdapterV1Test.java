@@ -12,6 +12,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterRuntimeContext;
 import com.mercedesbenz.sechub.adapter.mock.MockedAdapterSetupService;
 
@@ -23,6 +24,7 @@ class DelegatingMockablePDSAdapterV1Test {
     private UUID jobUUID;
     private MockedAdapterSetupService setupService;
     private PDSAdapterV1 realPdsAdapter;
+    private PDSAdapterConfigData data;
 
     @BeforeEach
     void beforeEach() {
@@ -33,9 +35,11 @@ class DelegatingMockablePDSAdapterV1Test {
         adapterToTest.realPdsAdapterV1 = realPdsAdapter;
 
         jobUUID = UUID.randomUUID();
+        data = mock(PDSAdapterConfigData.class);
 
         config = mock(PDSAdapterConfig.class);
-        when(config.getSecHubJobUUID()).thenReturn(jobUUID);
+        when(config.getPDSAdapterConfigData()).thenReturn(data);
+        when(data.getSecHubJobUUID()).thenReturn(jobUUID);
 
         runtimeContext = new AdapterRuntimeContext();
     }
@@ -44,11 +48,11 @@ class DelegatingMockablePDSAdapterV1Test {
     void when_nothing_special_real_pds_adapter_is_not_used() throws Exception {
         when(setupService.getSetupFor(any(), any())).thenReturn(null);
         /* execute */
-        String result = adapterToTest.execute(config, runtimeContext);
+        AdapterExecutionResult adapterResult = adapterToTest.execute(config, runtimeContext);
 
         /* test */
         verify(realPdsAdapter, never()).execute(config, runtimeContext);
-        assertEquals("", result); // no setup defined, so mocked adapter does always return ""
+        assertEquals("", adapterResult.getProductResult()); // no setup defined, so mocked adapter does always return ""
     }
 
     @Test
@@ -57,14 +61,14 @@ class DelegatingMockablePDSAdapterV1Test {
         map.put("pds.mocking.disabled", "true");
 
         /* prepare */
-        when(realPdsAdapter.execute(any(), any())).thenReturn("pseudo-test-result");
-        when(config.getJobParameters()).thenReturn(map);
+        when(realPdsAdapter.execute(any(), any())).thenReturn(new AdapterExecutionResult("pseudo-test-result"));
+        when(data.getJobParameters()).thenReturn(map);
         /* execute */
-        String result = adapterToTest.execute(config, runtimeContext);
+        AdapterExecutionResult adapterResult = adapterToTest.execute(config, runtimeContext);
 
         /* test */
         verify(realPdsAdapter, times(1)).execute(config, runtimeContext);
-        assertEquals("pseudo-test-result", result);
+        assertEquals("pseudo-test-result", adapterResult.getProductResult());
     }
 
 }

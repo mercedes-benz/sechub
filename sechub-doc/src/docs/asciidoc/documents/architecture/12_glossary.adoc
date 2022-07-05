@@ -9,6 +9,30 @@
 [options="header"]
 |===
 | Term         | Definition
-| <Term-1>     | <definition-1>
-| <Term-2>     | <definition-2>
+| K8s          |  https://kubernetes.io/[Kubernetes], also known as K8s, is an open-source system for automating deployment, 
+                 scaling, and management of containerized applications.
+| Helm         | "...https://helm.sh/[Helm] is the best way to find, share, and use software built for Kubernetes. ..."
+| PDS          | Is an acronym for "Product delegation server". This kind of server represents a 
+                 very easy way to integrate any security product into {sechub} - no matter if it is 
+                 a command line tool or has REST API or anything else. +
+                 +
+                 It has a standard
+                 REST API which is wellknown by {sechub} and can be used in clusters or as standalone
+                 server. 
+                 +
+                 This server is also maintained by {sechub} maintainers.
+| PDS-Solutions| PDS is a very generic server which can execute anything. The `PDS-Solutions` are
+                 full working `integrations which run "out-of-the-box". Every solution can 
+                 be run a preconfigured PDS either as a single Docker instance, as a Docker compose 
+                 cluster or even by https://kubernetes.io/[K8s] via existing https://helm.sh/[Helm] scripts.
+                 The PDS solutions are also maintained by {sechub} maintainers. +
+                 + 
+                 You can find the solutions at {projectSite}/tree/develop/sechub-pds-solutions
+| {sechub}     | SecHub itself - it is an acronym for "Security Hub" and represents a security 
+                 orchestration tool.  +
+                 +
+                 It is free and open source and can be found at {projectSite}.
+                 The documentation is available at {webPage}. 
+| {sechub} configuration file     | Is the JSON configuration file used by a user to start a new 
+                                    {sechub} job. 
 |===

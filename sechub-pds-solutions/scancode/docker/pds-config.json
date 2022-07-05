@@ -1,0 +1,46 @@
+{
+    "apiVersion": "1.0",
+    "serverId": "SCANCODE_TOOL_CLUSTER",
+    "products": [
+        {
+            "id": "PDS_SCANCODE",
+            "path": "/scripts/scancode.sh",
+            "scanType": "licenseScan",
+            "description": "Runs Scancode.",
+            "parameters": {
+                "optional": [
+                    {
+                        "key": "scancode.output.format",
+                        "description": "Parameter defining the ScanCode output format. Possible values are: json, json-pp, spdx-tv, spdx-json, spdx-rdf. Json-pp stands for json pretty printed. Default: spdx-json."
+                    },
+                    {
+                        "key": "scancode.license.score",
+                        "description": "A natural number between 0 (low macht accuracy) and 100 (high match accuracy). Default 0."
+                    },
+                    {
+                        "key": "scancode.processes",
+                        "description": "The number of processes used by ScanCode. A \"good\" value is the number of CPUs minus 1 (more information: https://github.com/nexB/scancode-toolkit/issues/2980#issuecomment-1146583845). Default 1."
+                    },
+                    {
+                        "key": "extractcode.enabled",
+                        "description": "Extractcode is a helper tool, which extracts archives before scanning. Set it to `true` to enable it. Default: `false`."
+                    }
+                ]
+            }
+        },
+        {
+            "id": "PDS_SCANCODE_MOCK",
+            "path": "/scripts/scancode_mock.sh",
+            "scanType": "licenseScan",
+            "description": "Runs ScanCode mock.",
+            "parameters": {
+                "optional": [
+                    {
+                        "key": "scancode.output.format",
+                        "description": "Parameter defining the ScanCode output format. Possible values are: json, json-pp, spdx-tv, spdx-json, spdx-rdf. Json-pp stands for json pretty printed. Default: spdx-json."
+                    }
+                ]
+            }
+        }
+    ]
+}

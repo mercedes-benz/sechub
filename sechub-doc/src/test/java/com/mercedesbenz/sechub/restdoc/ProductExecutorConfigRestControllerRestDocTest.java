@@ -1,21 +1,16 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.restdoc;
 
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
-import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.lang.annotation.Annotation;
 import java.util.UUID;
@@ -36,7 +31,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
@@ -65,6 +59,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFe
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesExecutorConfigurationList;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminUpdatesExecutorConfig;
 import com.mercedesbenz.sechub.test.ExampleConstants;
+import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 import com.mercedesbenz.sechub.test.executorconfig.TestExecutorConfig;
 import com.mercedesbenz.sechub.test.executorconfig.TestExecutorSetupJobParam;
@@ -75,7 +70,7 @@ import com.mercedesbenz.sechub.test.executorconfig.TestExecutorSetupJobParam;
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
-public class ProductExecutorConfigRestControllerRestDocTest {
+public class ProductExecutorConfigRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
 
     private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
@@ -145,14 +140,14 @@ public class ProductExecutorConfigRestControllerRestDocTest {
 	    		).
 	    			andExpect(status().isCreated()).
 	    			andExpect(content().string(randomUUID.toString())).
-	    			andDo(document(RestDocFactory.createPath(useCase),
-	    	                resource(
-	    	                        ResourceSnippetParameters.builder().
-	    	                            summary(RestDocFactory.createSummary(useCase)).
-	    	                            description(RestDocFactory.createDescription(useCase)).
-	    	                            tag(RestDocFactory.extractTag(apiEndpoint)).
-	    	                            responseSchema(OpenApiSchema.EXECUTOR_CONFIGURATION_ID.getSchema()).
-	    	                            requestSchema(OpenApiSchema.EXECUTOR_CONFIGURATION.getSchema()).
+	    			andDo(defineRestService().
+                            with().
+                                useCaseData(useCase).
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                                responseSchema(OpenApiSchema.EXECUTOR_CONFIGURATION_ID.getSchema()).
+                                requestSchema(OpenApiSchema.EXECUTOR_CONFIGURATION.getSchema()).
+                            and().
+                            document(
 	                                    requestFields(
 	                                            fieldWithPath(PROPERTY_NAME).description("A name for this configuration"),
 	                                            fieldWithPath(PROPERTY_PRODUCTIDENTIFIER).description("Executor product identifier"),
@@ -163,8 +158,6 @@ public class ProductExecutorConfigRestControllerRestDocTest {
 	                                            fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_CREDENTIALS+"."+ProductExecutorConfigSetupCredentials.PROPERTY_PASSWORD).description(CREDENTIALS_PWD_DESCRIPTION),
 	                                            fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS+"[]."+ProductExecutorConfigSetupJobParameter.PROPERTY_KEY).description(JOBPARAM_KEY_DESCRIPTION).optional(),
 	                                            fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS+"[]."+ProductExecutorConfigSetupJobParameter.PROPERTY_VALUE).description(JOBPARAM_VALUE_DESCRIPTION).optional()
-	                                    ).
-	    	                            build()
 	    	                         )
 	    			        ));
 
@@ -200,13 +193,13 @@ public class ProductExecutorConfigRestControllerRestDocTest {
                     content(JSONConverter.get().toJSON(configFromUser))
                 ).
                     andExpect(status().isOk()).
-                    andDo(document(RestDocFactory.createPath(UseCaseAdminUpdatesExecutorConfig.class),
-                            resource(
-                                    ResourceSnippetParameters.builder().
-                                        summary(RestDocFactory.createSummary(useCase)).
-                                        description(RestDocFactory.createDescription(useCase)).
-                                        tag(RestDocFactory.extractTag(apiEndpoint)).
-                                        requestSchema(OpenApiSchema.EXECUTOR_CONFIGURATION.getSchema()).
+                    andDo(defineRestService().
+                            with().
+                                useCaseData(useCase).
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                                requestSchema(OpenApiSchema.EXECUTOR_CONFIGURATION.getSchema()).
+                            and().
+                            document(
                                         requestFields(
                                                 fieldWithPath(PROPERTY_NAME).description("The name of this configuration"),
                                                 fieldWithPath(PROPERTY_PRODUCTIDENTIFIER).description("Executor product identifier"),
@@ -217,11 +210,9 @@ public class ProductExecutorConfigRestControllerRestDocTest {
                                                 fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_CREDENTIALS+"."+ProductExecutorConfigSetupCredentials.PROPERTY_PASSWORD).description(CREDENTIALS_PWD_DESCRIPTION),
                                                 fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS+"[]."+ProductExecutorConfigSetupJobParameter.PROPERTY_KEY).description(JOBPARAM_KEY_DESCRIPTION).optional(),
                                                 fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS+"[]."+ProductExecutorConfigSetupJobParameter.PROPERTY_VALUE).description(JOBPARAM_VALUE_DESCRIPTION).optional()
-                                        ).
+                                        ),
                                         pathParameters(
                                                 parameterWithName(UUID_PARAMETER.paramName()).description("The configuration uuid")
-                                        ).
-                                        build()
                                      )
                 ));
 
@@ -260,13 +251,13 @@ public class ProductExecutorConfigRestControllerRestDocTest {
                     contentType(MediaType.APPLICATION_JSON_VALUE)
                 ).
                     andExpect(status().isOk()).
-                    andDo(document(RestDocFactory.createPath(useCase),
-                            resource(
-                                    ResourceSnippetParameters.builder().
-                                        summary(RestDocFactory.createSummary(useCase)).
-                                        description(RestDocFactory.createDescription(useCase)).
-                                        tag(RestDocFactory.extractTag(apiEndpoint)).
-                                        responseSchema(OpenApiSchema.EXECUTOR_CONFIGURATION_WITH_UUID.getSchema()).
+                    andDo(defineRestService().
+                            with().
+                                useCaseData(useCase).
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                                responseSchema(OpenApiSchema.EXECUTOR_CONFIGURATION_WITH_UUID.getSchema()).
+                            and().
+                            document(
                                         responseFields(
                                                 fieldWithPath(PROPERTY_UUID).description("The uuid of this configuration"),
                                                 fieldWithPath(PROPERTY_NAME).description("The name of this configuration"),
@@ -278,11 +269,9 @@ public class ProductExecutorConfigRestControllerRestDocTest {
                                                 fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_CREDENTIALS+"."+ProductExecutorConfigSetupCredentials.PROPERTY_PASSWORD).description(CREDENTIALS_PWD_DESCRIPTION),
                                                 fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS+"[]."+ProductExecutorConfigSetupJobParameter.PROPERTY_KEY).description(JOBPARAM_KEY_DESCRIPTION).optional(),
                                                 fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS+"[]."+ProductExecutorConfigSetupJobParameter.PROPERTY_VALUE).description(JOBPARAM_VALUE_DESCRIPTION).optional()
-                                        ).
+                                        ),
                                         pathParameters(
                                                 parameterWithName(UUID_PARAMETER.paramName()).description("The configuration uuid")
-                                        ).
-                                        build()
                                      )
                             ));
 
@@ -303,16 +292,14 @@ public class ProductExecutorConfigRestControllerRestDocTest {
                     contentType(MediaType.APPLICATION_JSON_VALUE)
                 ).
                     andExpect(status().isOk()).
-                    andDo(document(RestDocFactory.createPath(useCase),
-                            resource(
-                                    ResourceSnippetParameters.builder().
-                                        summary(RestDocFactory.createSummary(useCase)).
-                                        description(RestDocFactory.createDescription(useCase)).
-                                        tag(RestDocFactory.extractTag(apiEndpoint)).
+                    andDo(defineRestService().
+                            with().
+                                useCaseData(useCase).
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                            and().
+                            document(
                                         pathParameters(
                                                 parameterWithName(UUID_PARAMETER.paramName()).description("The configuration uuid")
-                                        ).
-                                        build()
                                      )
                             ));
 
@@ -340,20 +327,18 @@ public class ProductExecutorConfigRestControllerRestDocTest {
                     contentType(MediaType.APPLICATION_JSON_VALUE)
                 ).
                     andExpect(status().isOk()).
-                    andDo(document(RestDocFactory.createPath(useCase),
-                            resource(
-                                    ResourceSnippetParameters.builder().
-                                        summary(RestDocFactory.createSummary(useCase)).
-                                        description(RestDocFactory.createDescription(useCase)).
-                                        tag(RestDocFactory.extractTag(apiEndpoint)).
-                                        responseSchema(OpenApiSchema.EXECUTOR_CONFIGURATION_LIST.getSchema()).
+                    andDo(defineRestService().
+                            with().
+                                useCaseData(useCase).
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                                responseSchema(OpenApiSchema.EXECUTOR_CONFIGURATION_LIST.getSchema()).
+                            and().
+                            document(
                                         responseFields(
                                                 fieldWithPath("type").description("Always `executorConfigurationList` as an identifier for the list"),
                                                 fieldWithPath("executorConfigurations[]."+PROPERTY_UUID).description("The uuid of the configuration"),
                                                 fieldWithPath("executorConfigurations[]."+PROPERTY_NAME).description("The configuration name"),
                                                 fieldWithPath("executorConfigurations[]."+PROPERTY_ENABLED).description("Enabled state of configuration")
-                                        ).
-                                        build()
                                      )
                             ));
 

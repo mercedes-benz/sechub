@@ -29,7 +29,7 @@ ifdef::techdoc[]
 
 *Usage*
 
-A caller can use the `ScanConfigService` to fetch an `NamePatternIdprovider` which is able to provide
+A caller can use the `ScanMappingConfigurationService` to fetch an `NamePatternIdprovider` which is able to provide
 an ID for a given name. This is a very generic approach and callers must only use unique IDs to 
 have dedicated, name based id mappings.
 
@@ -38,7 +38,7 @@ An ID can be any string. Given regular expressions are handled by https://docs.o
 
 *Cluster handling*
 Synchronization inside cluster is done over database and a special scheduler service:
-`ScanConfigRefreshTriggerService` . This servcie checks periodically if current `scan configuration`
+`ScanMappingConfigurationRefreshTriggerService` . This servcie checks periodically if current `scan configuration`
 has been changed by administrators. If so the name pattern provider will be rebuild.
 
 endif::techdoc[]

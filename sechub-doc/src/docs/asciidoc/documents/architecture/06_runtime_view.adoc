@@ -89,6 +89,6 @@ When failures on last step are occurring (and e.g. we got a succesful scan(s) by
 ==== Product executor versus product execution service
 The service does execute and handle different product executors.
 
-=== Target handling
+=== Network target handling
 
 include::../shared/concepts/concept_targets.adoc[]

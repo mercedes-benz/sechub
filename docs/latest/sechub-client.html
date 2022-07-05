@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Client Documentation</h1>
 <div class="details">
-<span id="revnumber"> Client 0.28.0</span>
+<span id="revnumber"> Client 0.32.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -576,41 +576,54 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#api-version">2.6.1. API version</a></li>
 <li><a href="#server">2.6.2. Server</a></li>
 <li><a href="#project">2.6.3. Project</a></li>
-<li><a href="#code-scan">2.6.4. Code scan</a>
+<li><a href="#sechub-config-code-scan">2.6.4. Code scan</a>
 <ul class="sectlevel4">
 <li><a href="#upload-sources-from-file-system">2.6.4.1. Upload sources from file system</a></li>
 <li><a href="#example-sechub-json">2.6.4.2. Example sechub.json</a></li>
 </ul>
 </li>
-<li><a href="#web-scan">2.6.5. Web scan</a>
+<li><a href="#license-scan">2.6.5. License scan</a>
 <ul class="sectlevel4">
-<li><a href="#uris">2.6.5.1. URIs</a>
-<ul class="sectlevel5">
-<li><a href="#example-anonymous">2.6.5.1.1. Example anonymous</a></li>
+<li><a href="#sechub-config-example-licensescan-binary">2.6.5.1. Example binary license scan</a></li>
+<li><a href="#sechub-config-example-licensescan-sources">2.6.5.2. Example source license scan</a></li>
+<li><a href="#sechub-config-example-licensescan-combined-with-codescan">2.6.5.3. Example source licence scan with sources code scan combined</a></li>
 </ul>
 </li>
-<li><a href="#login">2.6.5.2. Login</a>
-<ul class="sectlevel5">
-<li><a href="#options">2.6.5.2.1. Options</a></li>
-<li><a href="#example-basic-authentication">2.6.5.2.2. Example basic authentication</a></li>
-<li><a href="#example-form-based-login-with-auto-detect">2.6.5.2.3. Example form based login with auto detect</a></li>
-<li><a href="#example-form-based-login-by-script">2.6.5.2.4. Example form based login by script</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#infrastructure-scan">2.6.6. Infrastructure scan</a>
+<li><a href="#web-scan">2.6.6. Web scan</a>
 <ul class="sectlevel4">
-<li><a href="#uris-2">2.6.6.1. URIs</a>
+<li><a href="#uris">2.6.6.1. URIs</a>
 <ul class="sectlevel5">
-<li><a href="#example-infrascan-one-uri">2.6.6.1.1. Example infrascan one URI</a></li>
+<li><a href="#example-anonymous">2.6.6.1.1. Example anonymous</a></li>
 </ul>
 </li>
-<li><a href="#ips">2.6.6.2. IPs</a>
+<li><a href="#login">2.6.6.2. Login</a>
 <ul class="sectlevel5">
-<li><a href="#example-infrascan-one-ip">2.6.6.2.1. Example infrascan one IP</a></li>
+<li><a href="#options">2.6.6.2.1. Options</a></li>
+<li><a href="#example-basic-authentication">2.6.6.2.2. Example basic authentication</a></li>
+<li><a href="#example-form-based-login-with-auto-detect">2.6.6.2.3. Example form based login with auto detect</a></li>
+<li><a href="#example-form-based-login-by-script">2.6.6.2.4. Example form based login by script</a></li>
+<li><a href="#sechub-config-example-webscan-openapi">2.6.6.2.5. Example OpenAPI scan</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li><a href="#infrastructure-scan">2.6.7. Infrastructure scan</a>
+<ul class="sectlevel4">
+<li><a href="#uris-2">2.6.7.1. URIs</a>
+<ul class="sectlevel5">
+<li><a href="#example-infrascan-one-uri">2.6.7.1.1. Example infrascan one URI</a></li>
+</ul>
+</li>
+<li><a href="#ips">2.6.7.2. IPs</a>
+<ul class="sectlevel5">
+<li><a href="#example-infrascan-one-ip">2.6.7.2.1. Example infrascan one IP</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#sechub-config-data-section">2.6.8. Data</a>
+<ul class="sectlevel4">
+<li><a href="#general-json-syntax">2.6.8.1. General JSON syntax</a></li>
 </ul>
 </li>
 </ul>
@@ -734,7 +747,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Client 0.28.0-20220218144111</code></p>
+<p>Documentation version: <code>Client 0.32.0-20220620124023</code></p>
 </div>
 <hr>
 <div style="page-break-after: always;"></div>
@@ -803,6 +816,12 @@ For documentation, please look at <a href="https://mercedes-benz.github.io/sechu
 <td class="tableblock halign-left valign-top"><p class="tableblock">macOS</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">AMD and Intel 64-bit</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The <strong>macOS client</strong>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">darwin-arm64</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">macOS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ARM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Support for recent Macs with ARM architecture.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">linux-386</p></td>
@@ -889,18 +908,18 @@ Please change to correct values.</p>
 <p>fetch automatically result report to output folder (html or json)</p>
 </li>
 <li>
-<p>break your build when not <code>green</code></p>
+<p>returns non-zero on <code>red</code> so your build will break on critical or high findings (depends on your build tool)</p>
 </li>
 </ul>
 </div>
-<div class="admonitionblock tip">
+<div class="admonitionblock important">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
+<i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-For security reasons always pass your api token via the environment variable <code>SECHUB_APITOKEN</code>.
+For security reasons always pass your API-token via the environment variable <code>SECHUB_APITOKEN</code>.
 </td>
 </tr>
 </table>
@@ -1117,7 +1136,7 @@ action <code>unmarkFalsePositives</code></p>
 Go to the project directory containing <code>sechub.json</code> and a report file from a recent scan and run <code>sechub interactiveMarkFalsePositives</code>.</p>
 </div>
 <div class="paragraph">
-<p>You can select the report file using the <code>-file</code> option of the client. Otherwise the latest report file in the current directory is automatically selected.</p>
+<p>You can select the report file using the <code>-file</code> option of the client. Otherwise the project&#8217;s latest report file in the current directory is automatically selected.</p>
 </div>
 <div class="paragraph">
 <p>For each finding in the reports file, you are prompted: <code>"Add this as false positive?"</code>
@@ -1249,13 +1268,13 @@ Your choices are:</p>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">output folder</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">output folder or file</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">-output</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">poll interval</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">max. poll interval</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">-wait</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">SECHUB_WAITTIME_DEFAULT</p></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -1288,6 +1307,12 @@ Your choices are:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">stop on yellow</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">-stop-on-yellow</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">temporary dir</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-tempdir</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SECHUB_TEMP_DIR</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
@@ -1377,11 +1402,11 @@ The api token. Although you can pass it as a runtime option, it is recommended f
 Can <strong>NOT</strong> be defined in config file</p>
 </li>
 <li>
-<p><code>-configfile &lt;string&gt;</code><br>
-Path to <code>SecHub</code> config file, if not defined <code>sechub.json</code> will be used in current directory</p>
+<p><code>-configfile &lt;filepath&gt;</code><br>
+Path to <code>SecHub</code> JSON config file. Defaults to <code>sechub.json</code> in current directory.</p>
 </li>
 <li>
-<p><code>-file &lt;string&gt;</code><br>
+<p><code>-file &lt;filepath&gt;</code><br>
 Defines file to read from for actions <code>markFalsePositives</code> or <code>interactiveMarkFalsePositives</code> or <code>unmarkFalsePositives</code></p>
 </li>
 <li>
@@ -1393,8 +1418,8 @@ Shows help and terminates</p>
 <code>SecHub</code> job uuid (mandatory when using 'getStatus' or 'getReport')</p>
 </li>
 <li>
-<p><code>-output &lt;string&gt;</code><br>
-Output folder for reports etc. per default current dir</p>
+<p><code>-output &lt;path to folder or file&gt;</code><br>
+Where to place reports, false-positive files etc. Can be a directory, a file name or a file path (defaults to current working directory and default file names)</p>
 </li>
 <li>
 <p><code>-project &lt;string&gt;</code><br>
@@ -1406,19 +1431,23 @@ Quiet mode - Suppress all informative output. Can also be defined via environmen
 Only print filenames written to, errors and explicitely requested informations (job-UUID, version, status).</p>
 </li>
 <li>
-<p><code>-reportformat &lt;string&gt;</code><br>
-Output format for reports, supported currently: [html,json]. If not a wellknown format json will always be the fallback. (default "json")</p>
+<p><code>-reportformat &lt;format&gt;</code><br>
+Output format for reports. Currently supported: [html,json]. If not a supported format, "json" will always be the fallback.</p>
 </li>
 <li>
-<p><code>-server &lt;string&gt;</code><br>
+<p><code>-server &lt;url&gt;</code><br>
 Server url of <code>SecHub</code> server to use - e.g. https//example.com:8081. Mandatory, but can also be defined in config file or via environment variable.</p>
 </li>
 <li>
 <p><code>-stop-on-yellow</code><br>
-Makes a yellow traffic light in the scan result also break the build</p>
+A yellow traffic light in the report will result in a non-zero return code.</p>
 </li>
 <li>
-<p><code>-timeout &lt;integer&gt;</code><br>
+<p><code>-tempdir &lt;path to folder&gt;</code><br>
+Temporary files will be placed here. (defaults to current working directory)</p>
+</li>
+<li>
+<p><code>-timeout &lt;seconds&gt;</code><br>
 Timeout for network communication in seconds. (default 120)</p>
 </li>
 <li>
@@ -1430,8 +1459,8 @@ Username - mandatory, but can also be defined in config file or via environment 
 Shows version info and terminates</p>
 </li>
 <li>
-<p><code>-wait &lt;integer&gt;</code><br>
-wait time in seconds (default 60).
+<p><code>-wait &lt;seconds&gt;</code><br>
+Maximum wait time in seconds (default 60).
 Will be used for periodic status checks when action=<code>scan</code> and for retries of HTTP calls.</p>
 </li>
 </ul>
@@ -1461,12 +1490,20 @@ Quiet mode (<code>true</code> or <code>false</code> / unset) - Suppress all info
 The SecHub server url. (same as <code>-server</code> option)</p>
 </li>
 <li>
-<p><code>SECHUB_USERID</code><br>
-The SecHub username. (same as <code>-user</code> option)</p>
+<p><code>SECHUB_TEMP_DIR</code><br>
+Temporary files will be placed here. Make sure that the folder exists and is writeable. (same as <code>-tempdir</code> option)</p>
 </li>
 <li>
 <p><code>SECHUB_TRUSTALL</code><br>
 When set to <code>true</code>, then HTTPS certificate checking will be disabled. May be useful when using self-signed certificates. Please try to avoid this setting for security reasons.</p>
+</li>
+<li>
+<p><code>SECHUB_USERID</code><br>
+The SecHub username. (same as <code>-user</code> option)</p>
+</li>
+<li>
+<p><code>SECHUB_WHITELIST_ALL</code><br>
+When set to <code>true</code> then ignore the default whitelist for source files and add <em>every</em> file. You may want to define <a href="#sechub-config-example-sourcescan">excludes</a> in your <code>sechub.json</code> file. <em>!! Handle with care !!</em></p>
 </li>
 </ul>
 </div>
@@ -1477,20 +1514,27 @@ When set to <code>true</code>, then HTTPS certificate checking will be disabled.
 <ul>
 <li>
 <p><code>SECHUB_DEBUG</code><br>
-When set to <code>true</code> then log as much as possible</p>
+When set to <code>true</code> then log as much as possible (but not HTTP request contents)</p>
+</li>
+<li>
+<p><code>SECHUB_DEBUG_HTTP</code><br>
+When set to <code>true</code> then log HTTP request contents.</p>
 </li>
 <li>
 <p><code>SECHUB_IGNORE_DEFAULT_EXCLUDES</code><br>
 When set to <code>true</code> then default exclude folders <code>{"**/test/**", "**/.git/**"}</code> will be included for code scan. In this case, you should declare your own exclude list in the config json.</p>
 </li>
 <li>
+<p><code>SECHUB_INITIAL_WAIT_INTERVAL</code><br>
+Initial wait time (floating point number) until SecHub client polls the first time if the report is ready (<code>sechub scan</code>). Meant for local integration tests.</p>
+</li>
+<li>
 <p><code>SECHUB_KEEP_TEMPFILES</code><br>
-When set to <code>true</code> then .zip files for code scan will not be removed, so you can check, what was uploaded to the <code>SecHub</code> server</p>
+When set to <code>true</code> then <code>sourcecode-&lt;projectID&gt;.zip</code> files for code scan will not be removed, so you can check, what was uploaded to the <code>SecHub</code> server.</p>
 </li>
 <li>
 <p><code>SECHUB_WAITTIME_DEFAULT</code><br>
-Wait time in seconds (default 60). Will be used for automatic status checks etc. when action=<code>scan</code>.
-Try to avoid setting it shorter than 60 seconds, because the load on the <code>SecHub</code> server will be increased.</p>
+Maximum wait time in seconds (default 60). Will be used for automatic status checks etc. when action=<code>scan</code>.</p>
 </li>
 </ul>
 </div>
@@ -1605,7 +1649,9 @@ But of course you can also define additional source file endings - see <a href="
 <td class="tableblock halign-left valign-top"><p class="tableblock">Apex</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">.apex<br>
 .apexp<br>
+.apxc<br>
 .component<br>
+.-meta.xml<br>
 .object<br>
 .page<br>
 .report<br>
@@ -1624,20 +1670,26 @@ But of course you can also define additional source file endings - see <a href="
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">C/C++</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">.c<br>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.ac<br>
+.am<br>
+.c<br>
 .c&#43;&#43;<br>
 .cc<br>
+.cmake<br>
 .cpp<br>
 .cxx<br>
+.ec<br>
 .h<br>
 .h&#43;&#43;<br>
 .hh<br>
 .hpp<br>
-.hxx</p></td>
+.hxx<br>
+.pro</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">C#, VB.NET, Visual Basic, VB Script</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">.bas<br>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.asax<br>
+.bas<br>
 .cls<br>
 .cs<br>
 .cshtml<br>
@@ -1645,11 +1697,26 @@ But of course you can also define additional source file endings - see <a href="
 .ctl<br>
 .dsr<br>
 .frm<br>
+.master<br>
 .sln<br>
 .vb<br>
 .vbp<br>
 .vbs<br>
 .xaml</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cobol</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.cbl<br>
+.cob<br>
+.cpy<br>
+.eco<br>
+.pco<br>
+.sqb</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Docker</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dockerfile<br>
+.dockerfile</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Go, Protobuf</p></td>
@@ -1659,6 +1726,7 @@ But of course you can also define additional source file endings - see <a href="
 <td class="tableblock halign-left valign-top"><p class="tableblock">Groovy</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">.groovy<br>
 .gsh<br>
+.gsp<br>
 .gvy<br>
 .gy</p></td>
 </tr>
@@ -1669,30 +1737,55 @@ But of course you can also define additional source file endings - see <a href="
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Java ecosystem</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">.hbs<br>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.app<br>
+.cmp<br>
+.evt<br>
+.gradle<br>
+.hbs<br>
 .java<br>
 .javasln<br>
+.jsf<br>
 .jsp<br>
 .jspf<br>
+.mf<br>
 .project<br>
 .properties<br>
 .tag<br>
-.tld</p></td>
+.tld<br>
+.vm<br>
+.xhtml</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">JavaScript</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">.js<br>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.handlebars<br>
+.jade<br>
+.js<br>
 .json<br>
-.jsx</p></td>
+.jsx<br>
+.pug<br>
+.vue<br>
+.xsaccess<br>
+.xsapp<br>
+.xsjs<br>
+.xsjslib</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Kotlin</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">.kt<br>
-.kts</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.ftl<br>
+.kt<br>
+.kts<br>
+,mustache</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Kubernetes, Helm, Docker-Compose</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.yaml<br>
+.yml<br>
+.tpl</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Objective C, Swift</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">.m<br>
+.plist<br>
 .swift<br>
 .xib</p></td>
 </tr>
@@ -1727,15 +1820,21 @@ But of course you can also define additional source file endings - see <a href="
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Python, Django</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">.py<br>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.csv<br>
+.gtl<br>
+.latex<br>
+.py<br>
 .py2<br>
 .py3<br>
 .pyi<br>
-.python</p></td>
+.python<br>
+.tex<br>
+.txt</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Ruby</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">.erb<br>
+.lock<br>
 .rb<br>
 .rhtml<br>
 .rjs<br>
@@ -1746,6 +1845,11 @@ But of course you can also define additional source file endings - see <a href="
 <td class="tableblock halign-left valign-top"><p class="tableblock">.conf<br>
 .sc<br>
 .scala</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Terraform</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.tf<br>
+.tfvars</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Typescript/Angular</p></td>
@@ -1844,7 +1948,7 @@ When using REST calls directly you do not need the information inside
 </div>
 </div>
 <div class="sect3">
-<h4 id="code-scan">2.6.4. Code scan</h4>
+<h4 id="sechub-config-code-scan">2.6.4. Code scan</h4>
 <div class="paragraph">
 <p><code>codeScan</code> (optional) defines the code scan settings.</p>
 </div>
@@ -1934,8 +2038,8 @@ on build servers.</p>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Exclude directories (optional), syntax is similar to <a href="https://ant.apache.org/manual/Types/fileset.html">ANT fileset</a> - `<br>
-In example above all files in following directories are excluded from upload:<br>
+<td>Exclude directories (optional), syntax is similar to <a href="https://ant.apache.org/manual/Types/fileset.html">ANT fileset</a>.<br>
+In the example above all files in following directories are excluded from upload:<br>
 <div class="ulist">
 <ul>
 <li>
@@ -1949,15 +2053,14 @@ same for folder <code>documentation</code></p>
 <li>
 <p>default excludes<br>
      Per default, the directories <code>**/test/**</code> <code>**/.git/**</code>
-are already excluded:</p>
+are already excluded.</p>
 </li>
 </ul>
 </div></td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>Client only option - if you use REST directly, you can ignore this.<br>
-SecHub client does only add wellknown sources into created upload zip file. This removes
+<td>SecHub client does only add wellknown sources into created upload zip file. This removes
 unnecessary stuff and reduces upload size automatically.<br>
 <em>E.g. a codescan for a <code>JPEG</code> image would not make sense&#8230;&#8203;</em><br>
 Instead of defining a negative list, we use a positive list and accept only wellknown sources,
@@ -1970,12 +2073,128 @@ Inside client documentation you will find a list of the default file endings.</t
 </div>
 </div>
 <div class="sect3">
-<h4 id="web-scan">2.6.5. Web scan</h4>
+<h4 id="license-scan">2.6.5. License scan</h4>
+<div class="paragraph">
+<p><code>licenseScan</code>(optional) defines the license scan settings.</p>
+</div>
+<div class="sect4">
+<h5 id="sechub-config-example-licensescan-binary">2.6.5.1. Example binary license scan</h5>
+<div class="listingblock">
+<div class="title">License scan configuration for binaries</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">binaries</span><span class="delimiter">&quot;</span></span> : [ { 
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">firmware-images</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileystem</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-firmware/images</span><span class="delimiter">&quot;</span></span> ]
+      }
+    } ]
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">licenseScan</span><span class="delimiter">&quot;</span></span> : { 
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">firmware-images</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="2"></i><b>(2)</b>
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>name of the source <a href="#sechub-config-data-section">data</a> configuration: "firmware-images"</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>license scan uses the referenced <a href="#sechub-config-data-section">data</a> configuration "firmware-images"</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="sechub-config-example-licensescan-sources">2.6.5.2. Example source license scan</h5>
+<div class="listingblock">
+<div class="title">License scan configuration for sources</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span> : [ {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">firmware-sources</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileystem</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-firmware/src</span><span class="delimiter">&quot;</span></span> ]
+      }
+    } ]
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">licenseScan</span><span class="delimiter">&quot;</span></span> : { 
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">firmware-sources</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="2"></i><b>(2)</b>
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>name of the source <a href="#sechub-config-data-section">data</a> configuration: "firmware-sources"</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>license scan uses the referenced <a href="#sechub-config-data-section">data</a> configuration "firmware-sources"</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="sechub-config-example-licensescan-combined-with-codescan">2.6.5.3. Example source licence scan with sources code scan combined</h5>
+<div class="listingblock">
+<div class="title">License scan and code scan configuration for sources</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span> : [ {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">firmware-sources</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileystem</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-firmware/src</span><span class="delimiter">&quot;</span></span> ] 
+      }
+    } ]
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">licenseScan</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">firmware-sources</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="2"></i><b>(2)</b>
+  },
+  
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">firmware-sources</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="3"></i><b>(3)</b>
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>name of the source <a href="#sechub-config-data-section">data</a> configuration: "firmware-sources"</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>license scan uses the referenced <a href="#sechub-config-data-section">data</a> configuration "firmware-sources"</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>code scan uses the referenced <a href="#sechub-config-data-section">data</a> configuration "firmware-sources"</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="web-scan">2.6.6. Web scan</h4>
 <div class="paragraph">
 <p><code>webScan</code> (optional) defines the web scan settings.</p>
 </div>
 <div class="sect4">
-<h5 id="uris">2.6.5.1. URIs</h5>
+<h5 id="uris">2.6.6.1. URIs</h5>
 <div class="paragraph">
 <p>Use <code>uri</code> element to define a string array containing uris you want to scan.</p>
 </div>
@@ -1993,7 +2212,7 @@ URI must be one of the whitelisted URLs of your project. Otherwise it will be re
 </table>
 </div>
 <div class="sect5">
-<h6 id="example-anonymous">2.6.5.1.1. Example anonymous</h6>
+<h6 id="example-anonymous">2.6.6.1.1. Example anonymous</h6>
 <div id="sechub-config-example-webscan-anonymous" class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -2006,12 +2225,12 @@ URI must be one of the whitelisted URLs of your project. Otherwise it will be re
      
   <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span>  : {<i class="conum" data-value="1"></i><b>(1)</b>
       <span class="key"><span class="delimiter">&quot;</span><span class="content">uris</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">https://www.gamechanger.example.org</span><span class="delimiter">&quot;</span></span>]<i class="conum" data-value="2"></i><b>(2)</b>
-  }
+  },
   
   <span class="key"><span class="delimiter">&quot;</span><span class="content">maxScanDuration</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="3"></i><b>(3)</b>
     <span class="key"><span class="delimiter">&quot;</span><span class="content">duration</span><span class="delimiter">&quot;</span></span>: <span class="integer">1</span>,
     <span class="key"><span class="delimiter">&quot;</span><span class="content">unit</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">hour</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="4"></i><b>(4)</b>
-  },
+  }
 }</code></pre>
 </div>
 </div>
@@ -2041,7 +2260,7 @@ The unit can be: <code>millisecond</code>, <code>second</code>, <code>minute</co
 </div>
 </div>
 <div class="sect4">
-<h5 id="login">2.6.5.2. Login</h5>
+<h5 id="login">2.6.6.2. Login</h5>
 <div class="paragraph">
 <p>A web scan does work very much better if it has got access to all content
  - so a login is necessary most time. If you do not define a login configuration
@@ -2072,7 +2291,7 @@ SMS provider - <strong>so be careful!</strong></p>
 </table>
 </div>
 <div class="sect5">
-<h6 id="options">2.6.5.2.1. Options</h6>
+<h6 id="options">2.6.6.2.1. Options</h6>
 <div class="paragraph">
 <p>SecHub provides you with 3 options for login:</p>
 </div>
@@ -2113,7 +2332,7 @@ will have a failure at execution time!</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="example-basic-authentication">2.6.5.2.2. Example basic authentication</h6>
+<h6 id="example-basic-authentication">2.6.6.2.2. Example basic authentication</h6>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -2153,7 +2372,7 @@ this is not necessary</td>
 </div>
 </div>
 <div class="sect5">
-<h6 id="example-form-based-login-with-auto-detect">2.6.5.2.3. Example form based login with auto detect</h6>
+<h6 id="example-form-based-login-with-auto-detect">2.6.6.2.3. Example form based login with auto detect</h6>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -2191,7 +2410,7 @@ If you use REST API directly, you must you must use real values!</td>
 </div>
 </div>
 <div class="sect5">
-<h6 id="example-form-based-login-by-script">2.6.5.2.4. Example form based login by script</h6>
+<h6 id="example-form-based-login-by-script">2.6.6.2.4. Example form based login by script</h6>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -2204,7 +2423,7 @@ If you use REST API directly, you must you must use real values!</td>
         <span class="key"><span class="delimiter">&quot;</span><span class="content">script</span><span class="delimiter">&quot;</span></span> : { <i class="conum" data-value="3"></i><b>(3)</b>
           <span class="key"><span class="delimiter">&quot;</span><span class="content">pages</span><span class="delimiter">&quot;</span></span> : [ <i class="conum" data-value="4"></i><b>(4)</b>
                   {
-                    <span class="key"><span class="delimiter">&quot;</span><span class="content">actions</span><span class="delimiter">&quot;</span></span> : [ <span class="error">/</span><span class="error">/</span><span class="error">&lt;</span><span class="integer">5</span><span class="error">&gt;</span> 
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">actions</span><span class="delimiter">&quot;</span></span> : [ <i class="conum" data-value="5"></i><b>(5)</b>
                             {
                               <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">username</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="6"></i><b>(6)</b>
                               <span class="key"><span class="delimiter">&quot;</span><span class="content">selector</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">#example_login_userid</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="7"></i><b>(7)</b>
@@ -2236,7 +2455,7 @@ If you use REST API directly, you must you must use real values!</td>
                             }, 
                             {
                               <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">click</span><span class="delimiter">&quot;</span></span>,
-                              <span class="key"><span class="delimiter">&quot;</span><span class="content">selector</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">#doLogin</span><span class="delimiter">&quot;</span></span>,
+                              <span class="key"><span class="delimiter">&quot;</span><span class="content">selector</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">#doLogin</span><span class="delimiter">&quot;</span></span>
                             } 
                     ]
                  } 
@@ -2339,20 +2558,63 @@ The unit can be: <code>millisecond</code>, <code>second</code>, <code>minute</co
 </table>
 </div>
 </div>
+<div class="sect5">
+<h6 id="sechub-config-example-webscan-openapi">2.6.6.2.5. Example OpenAPI scan</h6>
+<div class="listingblock">
+<div class="title">Open API scan</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : { 
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span> : [ {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">open-api-file-reference</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileystem</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-webapp/src/main/resources/openapi3.json</span><span class="delimiter">&quot;</span></span> ]
+      }
+    } ]
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span> : { 
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">api</span><span class="delimiter">&quot;</span></span> : {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">openApi</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="2"></i><b>(2)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">open-api-file-reference</span><span class="delimiter">&quot;</span></span> ] <i class="conum" data-value="3"></i><b>(3)</b>
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>name of the source <a href="#sechub-config-data-section">data</a> configuration: "open-api-file-reference"</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>web scan uses "openApi" as API type</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>web scan uses the referenced <a href="#sechub-config-data-section">data</a> configuration "open-api-file-reference"
+to obtain the open api configuration file</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="infrastructure-scan">2.6.6. Infrastructure scan</h4>
+<h4 id="infrastructure-scan">2.6.7. Infrastructure scan</h4>
 <div class="paragraph">
 <p><code>infraScan</code> (optional) defines the infrastructure scan settings.</p>
 </div>
 <div class="sect4">
-<h5 id="uris-2">2.6.6.1. URIs</h5>
+<h5 id="uris-2">2.6.7.1. URIs</h5>
 <div class="paragraph">
 <p>Use <code>uris</code> element to define a string array containing <code>URIs</code> you want to scan.</p>
 </div>
 <div class="sect5">
-<h6 id="example-infrascan-one-uri">2.6.6.1.1. Example infrascan one URI</h6>
+<h6 id="example-infrascan-one-uri">2.6.7.1.1. Example infrascan one URI</h6>
 <div id="sechub-config-example-infrascan-with-uri" class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -2384,12 +2646,12 @@ The unit can be: <code>millisecond</code>, <code>second</code>, <code>minute</co
 </div>
 </div>
 <div class="sect4">
-<h5 id="ips">2.6.6.2. IPs</h5>
+<h5 id="ips">2.6.7.2. IPs</h5>
 <div class="paragraph">
 <p>Use <code>ips</code> element to define a string array containing <code>IPs</code> you want to scan.</p>
 </div>
 <div class="sect5">
-<h6 id="example-infrascan-one-ip">2.6.6.2.1. Example infrascan one IP</h6>
+<h6 id="example-infrascan-one-ip">2.6.7.2.1. Example infrascan one IP</h6>
 <div id="sechub-config-example-infrascan-with-ip" class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -2420,6 +2682,169 @@ because scanners do not scan them self.</td>
 </tr>
 </table>
 </div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="sechub-config-data-section">2.6.8. Data</h4>
+<div class="paragraph">
+<p>The <a href="#sechub-config-code-scan">codeScan</a> element provides a way to define
+source code uploads for code scans only.</p>
+</div>
+<div class="paragraph">
+<p>With the (optional) <code>data</code> section users are able to</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>define binary and source upload information</p>
+</li>
+<li>
+<p>reference same uploads by muliple scan types in same job without another upload</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The scan configurations can reference the name data configuration elements by defining the an
+array attribute <code>uses</code> with a list of unique references names.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+    <span class="error">/</span><span class="error">/</span> <span class="error">.</span><span class="error">.</span><span class="error">s</span><span class="error">c</span><span class="error">a</span><span class="error">n</span> <span class="error">d</span><span class="error">e</span><span class="error">f</span><span class="error">i</span><span class="error">n</span><span class="error">i</span><span class="error">t</span><span class="error">i</span><span class="error">o</span><span class="error">n</span>
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-2</span><span class="delimiter">&quot;</span></span>, <span class="error">.</span><span class="error">.</span><span class="error">.</span> ] <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the list of referenced data configurations . The referenced names must exist.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Here are some links to examples which are using <a href="#sechub-config-data-section">data</a> inside their configurations:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#sechub-config-example-licensescan-binary">License scan for binaries</a></p>
+</li>
+<li>
+<p><a href="#sechub-config-example-licensescan-sources">License scan for sources</a></p>
+</li>
+<li>
+<p><a href="#sechub-config-example-licensescan-combined-with-codescan">License scan for sources combined with code scan</a></p>
+</li>
+<li>
+<p><a href="#sechub-config-example-webscan-openapi">OpenAPI web scan</a></p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+If you want to upload binaries, you MUST use the data section, there is no other way to do this.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect4">
+<h5 id="general-json-syntax">2.6.8.1. General JSON syntax</h5>
+<div class="paragraph">
+<p>The next figure shows an example which presents all possibilities <em>(for simplicity the source and
+binary configuration arrays do contain only just one entry)</em>.</p>
+</div>
+<div class="listingblock">
+<div class="title">General JSON syntax</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {<i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span> : [ { <i class="conum" data-value="2"></i><b>(2)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-sources-1</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="3"></i><b>(3)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : { <i class="conum" data-value="4"></i><b>(4)</b>
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/file1.txt</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/file2.txt</span><span class="delimiter">&quot;</span></span> ], <i class="conum" data-value="5"></i><b>(5)</b>
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/subfolder1</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/subfolder2</span><span class="delimiter">&quot;</span></span> ] <i class="conum" data-value="6"></i><b>(6)</b>
+      },
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">excludes</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">**/mytestcode/**</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">**/documentation/**</span><span class="delimiter">&quot;</span></span>], <i class="conum" data-value="7"></i><b>(7)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">additionalFilenameExtensions</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">.cplusplus</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">.py9</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="8"></i><b>(8)</b>
+    } ],
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">binaries</span><span class="delimiter">&quot;</span></span> : [ { <i class="conum" data-value="9"></i><b>(9)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-binaries-1</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="3"></i><b>(3)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/file1.dll</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/file2.a</span><span class="delimiter">&quot;</span></span> ], <i class="conum" data-value="5"></i><b>(5)</b>
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/bin/subfolder1</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/bin/subfolder2</span><span class="delimiter">&quot;</span></span> ] <i class="conum" data-value="6"></i><b>(6)</b>
+      }
+    }
+   ]
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>data</code>: The main element for data configuration.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>sources</code>: Inside this array multiple source data definitions can be listed</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td><code>name</code>:  Is a unique name for the data configuration element. The name must
+be unique inside complete sechub configuration file! Allowed characters are
+<div class="ulist">
+<ul>
+<li>
+<p><code>a-z</code></p>
+</li>
+<li>
+<p><code>0-9</code></p>
+</li>
+<li>
+<p><code>-</code></p>
+</li>
+<li>
+<p><code>_</code></p>
+</li>
+</ul>
+</div></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td><code>fileSystem</code>: Describes fileystem parts which are available inside this data configuration element</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td><code>files</code>: An array containing file pathes to use for uploading dedicated files</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td><code>folders</code>: An array containing folder pathes to use for uploading dedicated folders</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td><code>excludes</code>: Exclude directories (optional) - see <a href="#sechub-config-example-sourcescan">code scan </a>
+for details. The excludes work for sources and binaries the same way.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td><code>additionalFilenameExtensions</code> Introduce additional file name extensions. See <a href="#sechub-config-example-sourcescan">code scan </a>
+for details about default behaviour for sources.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td><code>sources</code>: Inside this array multiple binary data definitions can be listed.</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -2512,9 +2937,9 @@ sechub interactiveMarkFalsePositives
 \ `--.  ___  ___| |_| |_   _| |__
  `--. \/ _ \/ __|  _  | | | | '_ \
 /\__/ /  __/ (__| | | | |_| | |_) |
-\____/ \___|\___\_| |_/\__,_|_.__/ Client Version 0.20.0-b78
+\____/ \___|\___\_| |_/\__,_|_.__/ Client Version 0.29.0-20220401111823
 
-Using latest report file &quot;sechub_report_0a84899f-1305-41e0-a2d5-e7c31d6185fd.json&quot;.
+Using latest report file &quot;sechub_report_mytestproject_0a84899f-1305-41e0-a2d5-e7c31d6185fd.json&quot;.
 ------------------------------------------------------------------
 1: Side Channel Data Leakage, severity: HIGH
 src/main/java/com/example/testapp/invoice/application/InvoiceApplicationService.java, line 651 column 17
@@ -2550,7 +2975,7 @@ sechub interactiveUnmarkFalsePositives
 \ `--.  ___  ___| |_| |_   _| |__
  `--. \/ _ \/ __|  _  | | | | '_ \
 /\__/ /  __/ (__| | | | |_| | |_) |
-\____/ \___|\___\_| |_/\__,_|_.__/ Client Version 0.20.0-b78
+\____/ \___|\___\_| |_/\__,_|_.__/ Client Version 0.29.0-20220401111823
 
 - Fetching false-positives list for project &quot;mytestproject&quot;.
 ------------------------------------------------------------------
@@ -2860,7 +3285,7 @@ configure the client to do this also on color YELLOW. Only Green is always accep
 </div>
 <div id="footer">
 <div id="footer-text">
- Client 0.28.0<br>
+ Client 0.32.0<br>
 </div>
 </div>
 </body>

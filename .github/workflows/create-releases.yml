@@ -50,7 +50,7 @@ jobs:
           exit 1
 
       - name: Checkout master
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: master
       # Create temporary local tags, so we build documentation for this tag...
@@ -72,17 +72,16 @@ jobs:
       # Setup + Caching
       # ----------------------
       - name: Set up JDK 1.8
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           java-version: 8
           distribution: adopt
           cache: gradle
       - name: Set up Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
-          go-version: 1.17
-          stable: true
-      - uses: actions/cache@v2
+          go-version: 1.18.1
+      - uses: actions/cache@v3.0.4
         id: go-cache
         with:
           path: |
@@ -111,7 +110,7 @@ jobs:
       - name: Create pull request for SPDX license headers
         id: pr_spdx_headers
         if: steps.apply-headers.outputs.commits != ''
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v4.0.4
         with:
           branch: release-spdx-headers
           branch-suffix: short-commit-hash
@@ -138,10 +137,10 @@ jobs:
         run: ./gradlew :sechub-cli:buildGo :sechub-cli:testGo
 
       # ----------------------
-      # SecHub Server
+      # SecHub Server + PDS
       # ----------------------
-      - name: Build Server
-        run: ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-integrationtest:test -x :sechub-cli:build
+      - name: Build Server and PDS artifacts
+        run: ./gradlew ensureLocalhostCertificate build buildWrapperOwaspZap generateOpenapi buildDeveloperAdminUI -x :sechub-integrationtest:test -x :sechub-cli:build
 
       # ----------------------
       # API Java publish
@@ -171,21 +170,23 @@ jobs:
       # -----------------------------------------
       - name: Archive combined test report
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: combined-sechub-testreport
           path: build/reports/combined-report
           retention-days: 14
+
       - name: Archive GIT status
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: git-status.txt
           path: build/reports/git-status.txt
           retention-days: 14
+
       - name: Archive sechub server artifacts
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: sechub-server
           path: sechub-server/build/libs
@@ -193,14 +194,14 @@ jobs:
 
       - name: Archive pds server artifacts
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
-          name: sechub-server
-          path: sechub-server/build/libs
+          name: sechub-pds
+          path: sechub-pds/build/libs
 
       - name: Archive developer tools artifacts
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: sechub-developertools
           path: sechub-developertools/build/libs
@@ -208,14 +209,14 @@ jobs:
 
       - name: Archive sechub client artifacts
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: sechub-client
           path: sechub-cli/build/go
           retention-days: 14
 
       - name: Install graphviz (asciidoc diagrams)
-        run: sudo apt-get install graphviz
+        run: sudo apt-get -qq --assume-yes install graphviz
 
       # -----------------------------------------
       # Build Documentation
@@ -227,21 +228,21 @@ jobs:
       # Upload documentation
       # -----------------------------------------
       - name: Archive documentation HTML
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: sechub-docs-html
           path: sechub-doc/build/docs/final-html/
           retention-days: 14
 
       - name: Archive documentation PDF
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: sechub-docs-pdf
           path: sechub-doc/build/docs/asciidoc/*.pdf
           retention-days: 14
 
       - name: Archive documentation openAPI3
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: sechub-api-spec
           path: sechub-doc/build/api-spec/
@@ -261,7 +262,7 @@ jobs:
       # -----------------------------------------
       - name: Create pull request for release documentation
         id: pr_release_documentation
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v4.0.4
         with:
           branch: release-documentation
           branch-suffix: short-commit-hash
@@ -310,34 +311,61 @@ jobs:
             For more details please look at [Milestone ${{github.event.inputs.server-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{github.event.inputs.server-milestone-number}}?closed=1)
           draft: true
           prerelease: false
-      - name: Upload Server release asset
-        id: upload-server-release-asset
+      - name: Create sha256 checksum file for SecHub server jar
+        if: github.event.inputs.server-version != ''
+        run: |
+          cd sechub-server/build/libs
+          sha256sum sechub-server-${{ github.event.inputs.server-version }}.jar > sechub-server-${{ github.event.inputs.server-version }}.jar.sha256sum
+      - name: Create sha256 checksum file for SecHub developertools jar
+        if: github.event.inputs.server-version != ''
+        run: |
+          cd sechub-developertools/build/libs/
+          sha256sum sechub-developertools-${{ github.event.inputs.server-version }}.jar > sechub-developertools-${{ github.event.inputs.server-version }}.jar.sha256sum
+      - name: Upload Server release asset sechub-server-${{ github.event.inputs.server-version }}.jar
         if: github.event.inputs.server-version != ''
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_server_release.outputs.upload_url }}
-          asset_path: ./sechub-server/build/libs/sechub-server-${{ github.event.inputs.server-version }}.jar
+          asset_path: sechub-server/build/libs/sechub-server-${{ github.event.inputs.server-version }}.jar
           asset_name: sechub-server-${{ github.event.inputs.server-version }}.jar
           asset_content_type: application/zip
-      - name: Upload SecHub developer tools release asset
-        id: upload-developertools-release-asset
+      - name: Upload Server release asset sechub-server-${{ github.event.inputs.server-version }}.jar.sha256sum
         if: github.event.inputs.server-version != ''
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_server_release.outputs.upload_url }}
-          asset_path: ./sechub-developertools/build/libs/sechub-developertools-${{ github.event.inputs.server-version }}.jar
+          asset_path: sechub-server/build/libs/sechub-server-${{ github.event.inputs.server-version }}.jar.sha256sum
+          asset_name: sechub-server-${{ github.event.inputs.server-version }}.jar.sha256sum
+          asset_content_type: text/plain
+      - name: Upload SecHub release asset sechub-developertools-${{ github.event.inputs.server-version }}.jar
+        if: github.event.inputs.server-version != ''
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_server_release.outputs.upload_url }}
+          asset_path: sechub-developertools/build/libs/sechub-developertools-${{ github.event.inputs.server-version }}.jar
           asset_name: sechub-developertools-${{ github.event.inputs.server-version }}.jar
           asset_content_type: application/zip
+      - name: Upload Server release asset sechub-developertools-${{ github.event.inputs.server-version }}.jar.sha256sum
+        if: github.event.inputs.server-version != ''
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_server_release.outputs.upload_url }}
+          asset_path: sechub-developertools/build/libs/sechub-developertools-${{ github.event.inputs.server-version }}.jar.sha256sum
+          asset_name: sechub-developertools-${{ github.event.inputs.server-version }}.jar.sha256sum
+          asset_content_type: text/plain
       # -----------------------------------------
       # Server documentation:
       # -----------------------------------------
       # sechub-architecture.pdf
       - name: Upload sechub-architecture.pdf release asset
-        id: upload-sechub-doc-architecture-release-asset
         if: github.event.inputs.server-version != ''
         uses: actions/upload-release-asset@v1
         env:
@@ -349,7 +377,6 @@ jobs:
           asset_content_type: application/pdf
       # sechub-operations.pdf
       - name: Upload sechub-operations.pdf release asset
-        id: upload-sechub-doc-operations-release-asset
         if: github.event.inputs.server-version != ''
         uses: actions/upload-release-asset@v1
         env:
@@ -361,7 +388,6 @@ jobs:
           asset_content_type: application/pdf
       # sechub-quickstart-guide.pdf
       - name: Upload sechub-quickstart-guide.pdf release asset
-        id: upload-sechub-doc-quickstart-guide-release-asset
         if: github.event.inputs.server-version != ''
         uses: actions/upload-release-asset@v1
         env:
@@ -374,7 +400,6 @@ jobs:
 
       # sechub-restapi.pdf
       - name: Upload sechub-restapi.pdf release asset
-        id: upload-sechub-doc-restapi-release-asset
         if: github.event.inputs.server-version != ''
         uses: actions/upload-release-asset@v1
         env:
@@ -386,7 +411,6 @@ jobs:
           asset_content_type: application/pdf
 
       - name: Upload sechub-openapi3.json release asset
-        id: upload-sechub-doc-openapi3-release-asset
         if: github.event.inputs.server-version != ''
         uses: actions/upload-release-asset@v1
         env:
@@ -430,16 +454,13 @@ jobs:
             For more details please look at [Milestone ${{github.event.inputs.client-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{github.event.inputs.client-milestone-number}}?closed=1)
           draft: true
           prerelease: false
-      - name: Upload Client release asset create ZIP
-        id: create-client-release-asset
+      - name: Create client release asset sechub-cli-${{ github.event.inputs.client-version }}.zip
         if: github.event.inputs.client-version != ''
         run: |
           cd sechub-cli/build/go
           zip -r sechub-cli.zip platform
           sha256sum sechub-cli.zip > sechub-cli.zip.sha256
-          cd ../../../
-      - name: Upload Client release asset
-        id: upload-client-release-asset
+      - name: Upload Client release asset sechub-cli-${{ github.event.inputs.client-version }}.zip
         if: github.event.inputs.client-version != ''
         uses: actions/upload-release-asset@v1
         env:
@@ -449,8 +470,7 @@ jobs:
           asset_path: ./sechub-cli/build/go/sechub-cli.zip
           asset_name: sechub-cli-${{ github.event.inputs.client-version }}.zip
           asset_content_type: application/zip
-      - name: Upload Client release asset (SHA256)
-        id: upload-client-release-asset-sha256
+      - name: Upload Client release asset sechub-cli-${{ github.event.inputs.client-version }}.zip.sha256
         if: github.event.inputs.client-version != ''
         uses: actions/upload-release-asset@v1
         env:
@@ -459,7 +479,7 @@ jobs:
           upload_url: ${{ steps.create_client_release.outputs.upload_url }}
           asset_path: ./sechub-cli/build/go/sechub-cli.zip.sha256
           asset_name: sechub-cli-${{ github.event.inputs.client-version }}.zip.sha256
-          asset_content_type: application/zip
+          asset_content_type: text/plain
       # sechub-client.pdf
       - name: Upload sechub-client.pdf release asset
         id: upload-sechub-doc-client-release-asset
@@ -506,20 +526,58 @@ jobs:
             For more details please look at [Milestone ${{github.event.inputs.pds-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{github.event.inputs.pds-milestone-number}}?closed=1)
           draft: true
           prerelease: false
-      - name: Upload PDS release asset
-        id: upload-pds-release-asset
+      - name: Create sha256 checksum file for PDS jar
+        if: github.event.inputs.pds-version != ''
+        run: |
+          cd sechub-pds/build/libs/
+          sha256sum sechub-pds-${{ github.event.inputs.pds-version }}.jar > sechub-pds-${{ github.event.inputs.pds-version }}.jar.sha256sum
+      - name: Upload PDS release asset sechub-pds-${{ github.event.inputs.pds-version }}.jar
         if: github.event.inputs.pds-version != ''
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_pds_release.outputs.upload_url }}
-          asset_path: ./sechub-pds/build/libs/sechub-pds-${{ github.event.inputs.pds-version }}.jar
+          asset_path: sechub-pds/build/libs/sechub-pds-${{ github.event.inputs.pds-version }}.jar
           asset_name: sechub-pds-${{ github.event.inputs.pds-version }}.jar
           asset_content_type: application/zip
+      - name: Upload PDS release asset sechub-pds-${{ github.event.inputs.pds-version }}.jar.sha256sum
+        if: github.event.inputs.pds-version != ''
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_pds_release.outputs.upload_url }}
+          asset_path: sechub-pds/build/libs/sechub-pds-${{ github.event.inputs.pds-version }}.jar.sha256sum
+          asset_name: sechub-pds-${{ github.event.inputs.pds-version }}.jar.sha256sum
+          asset_content_type: text/plain
+      - name: Create files and sha256 checksum for PDS OWASP ZAP wrapper
+        if: github.event.inputs.pds-version != ''
+        run: |
+          cd sechub-wrapper-owasp-zap/build/libs/
+          sha256sum sechub-pds-wrapperowaspzap-${{ github.event.inputs.pds-version }}.jar > sechub-pds-wrapperowaspzap-${{ github.event.inputs.pds-version }}.jar.sha256sum
+      - name: Upload PDS release asset sechub-pds-wrapperowaspzap-${{ github.event.inputs.pds-version }}.jar
+        if: github.event.inputs.pds-version != ''
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_pds_release.outputs.upload_url }}
+          asset_path: sechub-wrapper-owasp-zap/build/libs/sechub-pds-wrapperowaspzap-${{ github.event.inputs.pds-version }}.jar
+          asset_name: sechub-pds-wrapperowaspzap-${{ github.event.inputs.pds-version }}.jar
+          asset_content_type: application/zip
+      - name: Upload PDS release asset sechub-pds-wrapperowaspzap-${{ github.event.inputs.pds-version }}.jar.sha256sum
+        if: github.event.inputs.pds-version != ''
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_pds_release.outputs.upload_url }}
+          asset_path: sechub-wrapper-owasp-zap/build/libs/sechub-pds-wrapperowaspzap-${{ github.event.inputs.pds-version }}.jar.sha256sum
+          asset_name: sechub-pds-wrapperowaspzap-${{ github.event.inputs.pds-version }}.jar.sha256sum
+          asset_content_type: text/plain
       # sechub-product-delegation-server.pdf
-      - name: Upload sechub-product-delegation-server.pdf release asset
-        id: upload-sechub-doc-pds-release-asset
+      - name: Upload PDS release asset sechub-product-delegation-server-${{ github.event.inputs.pds-version }}.pdf
         if: github.event.inputs.pds-version != ''
         uses: actions/upload-release-asset@v1
         env:
