@@ -180,7 +180,7 @@ public abstract class AbstractScan implements OwaspZapScan {
             waitForNextCheck();
             clientApi.pscan.recordsToScan();
             numberOfRecords = Integer.parseInt(((ApiResponseElement) clientApi.pscan.recordsToScan()).getValue());
-            LOG.info("For scan {}: Passive scan number of records left for scanning: " + numberOfRecords, scanConfig.getContextName());
+            LOG.info("For scan {}: Passive scan number of records left for scanning: {}", scanConfig.getContextName(), numberOfRecords);
         }
         LOG.info("For scan {}: Passive scan completed.", scanConfig.getContextName());
         remainingScanTime = remainingScanTime - (System.currentTimeMillis() - startTime);
@@ -282,6 +282,9 @@ public abstract class AbstractScan implements OwaspZapScan {
         // enable all passive scanner rules by default
         // null specifies the default scan policy
         clientApi.ascan.enableAllScanners(null);
+
+        // use firefox in headless mode on default
+        clientApi.ajaxSpider.setOptionBrowserId("firefox-headless");
     }
 
     protected void setupAdditonalProxyConfiguration() throws ClientApiException {

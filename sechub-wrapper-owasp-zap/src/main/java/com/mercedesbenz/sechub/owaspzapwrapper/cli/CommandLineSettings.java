@@ -10,6 +10,8 @@ import com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableConstants
 import com.mercedesbenz.sechub.owaspzapwrapper.util.FileUtilities;
 
 public class CommandLineSettings {
+    private static final String DEFAULT_FULL_RULESET_FILE = "src/main/resources/full-rulesets/owasp-zap-full-ruleset-all-release-status.json";
+
     @Parameter(names = { "--help" }, description = "Shows help and provides information on how to use the wrapper.", help = true)
     private boolean help;
 
@@ -109,7 +111,7 @@ public class CommandLineSettings {
     }
 
     @Parameter(names = { "--fullRulesetfile" }, description = "Specify a file with all rules installed for the Owasp Zap.", required = false)
-    private String fullRulesetFile;
+    private String fullRulesetFile = DEFAULT_FULL_RULESET_FILE;
 
     public File getFullRulesetFile() {
         return FileUtilities.stringToFile(fullRulesetFile);
