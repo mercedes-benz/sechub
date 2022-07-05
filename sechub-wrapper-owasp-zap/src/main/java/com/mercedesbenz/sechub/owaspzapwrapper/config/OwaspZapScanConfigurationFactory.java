@@ -47,13 +47,13 @@ public class OwaspZapScanConfigurationFactory {
         DeactivatedRuleReferences deactivatedRuleReferences = createDeactivatedRuleReferencesFromEnvVariable();
 
         File fullRulesetFile = settings.getFullRulesetFile();
-        File rulesDeactvationFile = settings.getRulesDeactvationFile();
+        File rulesDeactivationFile = settings.getRulesDeactvationFile();
 
         if (fullRulesetFile != null) {
             fullRuleset = ruleProvider.fetchFullRuleset(fullRulesetFile);
         }
-        if (rulesDeactvationFile != null && deactivatedRuleReferences.getDeactivatedRuleReferences().isEmpty()) {
-            deactivatedRuleReferences = ruleProvider.fetchDeactivatedRuleReferences(rulesDeactvationFile);
+        if (rulesDeactivationFile != null && deactivatedRuleReferences.getDeactivatedRuleReferences().isEmpty()) {
+            deactivatedRuleReferences = ruleProvider.fetchDeactivatedRuleReferences(rulesDeactivationFile);
         }
 
         /* Wrapper settings */
