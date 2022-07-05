@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 
-FROM ubuntu:22.04
+FROM debian:11-slim
 
 ARG USER=www-data
 

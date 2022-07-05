@@ -34,6 +34,8 @@ spec:
                       value: "{{ .Values.users.technical.apiToken }}"
                     - name: PDS_MAX_FILE_UPLOAD_SIZE
                       value: "{{ .Values.pds.maxFileUploadSize }}"
+                    - name: PDS_UPLOAD_BINARIES_MAXIMUM_BYTES
+                      value: "{{ .Values.pds.uploadBinariesMaximumBytes }}"
                     {{- if .Values.pds.javaDebug.enabled }}
                     - name: JAVA_ENABLE_DEBUG
                       value: "true"
@@ -76,3 +78,16 @@ spec:
                     {{- end}}
                   ports:
                     - containerPort: 8444
+
+            volumes:
+                - name: pds-scancode-workspace
+                  ephemeral:
+                    volumeClaimTemplate:
+                      metadata:
+                        labels:
+                          name: {{ .Chart.Name }}
+                      spec:
+                        accessModes: ["ReadWriteOnce"]
+                        resources:
+                          requests:
+                            storage: "{{ .Values.pds.volumes.workspace.size }}"

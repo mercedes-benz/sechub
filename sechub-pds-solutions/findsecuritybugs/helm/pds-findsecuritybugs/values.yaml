@@ -5,10 +5,13 @@
 replicaCount: 1
 
 image:
-    registry: "my.registry.example.org/pds_gosec"
+    registry: "my.registry.example.org/pds_findsecuritybugs"
     tag: "latest"
 
 pds:
+    # 100 MiB by default
+    # 1024**2 * 100 = 104857600
+    uploadBinariesMaximumBytes: 104857600
     startMode: localserver
     javaDebug:
         enabled: false

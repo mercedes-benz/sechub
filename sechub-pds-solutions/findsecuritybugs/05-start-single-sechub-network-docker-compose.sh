@@ -15,5 +15,5 @@ else
     echo "Using existing environment file: $ENVIRONMENT_FILE."
 fi
 
-echo "Starting single Ubuntu container."
+echo "Starting single container with external network."
 docker-compose --file docker-compose_pds_findsecuritybugs_ubuntu-external-network.yaml up --build --remove-orphans

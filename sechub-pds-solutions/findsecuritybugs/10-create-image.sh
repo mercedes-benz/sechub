@@ -19,9 +19,9 @@ fi
 
 if [[ -z "$BASE_IMAGE" ]]
 then
-    BASE_IMAGE="ubuntu:20.04"
+    BASE_IMAGE="debian:11-slim"
 fi
 
 echo ">> Base image: $BASE_IMAGE"
-docker build --pull --no-cache --build-arg BASE_IMAGE=$BASE_IMAGE --tag "$REGISTRY:$VERSION" --file docker/FindSecurityBugs-Ubuntu.dockerfile docker/
+docker build --pull --no-cache --build-arg BASE_IMAGE=$BASE_IMAGE --tag "$REGISTRY:$VERSION" --file docker/FindSecurityBugs-Debian.dockerfile docker/
 docker tag "$REGISTRY:$VERSION" "$REGISTRY:latest"

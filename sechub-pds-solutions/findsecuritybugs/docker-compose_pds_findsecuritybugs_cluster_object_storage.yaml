@@ -5,14 +5,16 @@ services:
     pds-findsecuritybugs:
         build:
             args:
-                - BASE_IMAGE=ubuntu:22.04
+                - BASE_IMAGE=debian:11-slim
                 - PDS_VERSION=${PDS_VERSION}
             context: docker/
-            dockerfile: FindSecurityBugs-Ubuntu.dockerfile
+            dockerfile: FindSecurityBugs-Debian.dockerfile
         env_file:
             - .env-cluster-object-storage
         networks:
-            - internal
+            - internal-cluster
+        volumes:
+          - ./docker/scripts:/scripts
         depends_on: 
             - database
             - object-storage
@@ -23,7 +25,7 @@ services:
         env_file:
             - .env-cluster-object-storage
         networks:
-            - internal
+            - internal-cluster
         depends_on:
             - pds-findsecuritybugs
         ports:
@@ -35,7 +37,7 @@ services:
         env_file:
             - .env-cluster-object-storage
         networks:
-            - internal
+            - internal-cluster
         ports:
             - "127.0.0.1:5432:5432"
         
@@ -45,7 +47,7 @@ services:
         env_file:
             - .env-cluster-object-storage
         networks:
-            internal:
+            internal-cluster:
                 # A fixed IP address is necessary
                 # otherwise the AWS S3 client used by
                 # the PDS cannot resolve the address
@@ -54,7 +56,7 @@ services:
             - "127.0.0.1:9000:9000"
 
 networks:
-  internal:
+  internal-cluster:
     driver: bridge
     ipam:
       driver: default
