@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.pds.PDSNotAcceptableException;
 import com.mercedesbenz.sechub.pds.config.PDSProductIdentifierValidator;
-import com.mercedesbenz.sechub.pds.config.PDSProductSetup;
 import com.mercedesbenz.sechub.pds.config.PDSProductParameterDefinition;
+import com.mercedesbenz.sechub.pds.config.PDSProductSetup;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
 import com.mercedesbenz.sechub.pds.execution.PDSExecutionParameterEntry;
 

@@ -63,17 +63,17 @@ public abstract class AbstractAdapter<A extends AdapterContext<C>, C extends Ada
         AdapterRuntimeContext runtimeContext = new AdapterRuntimeContext();
         runtimeContext.callback = callback;
         runtimeContext.metaData = callback.getMetaDataOrNull();
-        
+
         if (runtimeContext.metaData == null) {
-        
+
             runtimeContext.metaData = new AdapterMetaData();
             runtimeContext.metaData.adapterVersion = getAdapterVersion();
             runtimeContext.type = ExecutionType.INITIAL;
 
         } else {
-        
+
             runtimeContext.type = ExecutionType.RESTART;
-        
+
         }
         return execute(config, runtimeContext);
     }

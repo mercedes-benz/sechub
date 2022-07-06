@@ -68,7 +68,7 @@ public class CheckmarxWrapperCLIComponent {
         }
 
     }
-    
+
     private CheckmarxAdapterConfig createConfig() {
         /* @formatter:off */
         return

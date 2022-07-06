@@ -26,20 +26,18 @@ public class CheckmarxWrapperScanService {
     @Autowired
     CheckmarxAdapter adapter;
 
-
-    
-    public String startScan(CheckmarxAdapterConfig config) throws Exception{
+    public String startScan(CheckmarxAdapterConfig config) throws Exception {
         File metaDataFile;
-        if (pdsJobMetaDatafile==null || pdsJobMetaDatafile.isEmpty()) {
+        if (pdsJobMetaDatafile == null || pdsJobMetaDatafile.isEmpty()) {
             LOG.warn("PDS job meta data file not set. Will create fallback temp file. For local tests okay but not for production!");
-            
-            metaDataFile= Files.createTempFile("fallback_pds_job_metadata_file", ".txt").toFile();
+
+            metaDataFile = Files.createTempFile("fallback_pds_job_metadata_file", ".txt").toFile();
             LOG.warn("Temporary PDS job meta data file is now2: {}", metaDataFile);
-            
-        }else {
+
+        } else {
             metaDataFile = new File(pdsJobMetaDatafile);
         }
-        
+
         AdapterMetaDataCallback adapterMetaDataCallBack = new FileBasedAdapterMetaDataCallback(metaDataFile);
 
         try {

@@ -148,27 +148,27 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
     private void pepareWorkspace(PDSJobConfiguration config, JobConfigurationData data) throws IOException {
         LOG.debug("Start workspace preparation for PDS job: {}", pdsJobUUID);
-        
+
         workspaceService.prepareWorkspace(pdsJobUUID, config, data.getMetaData());
         workspaceService.extractZipFileUploadsWhenConfigured(pdsJobUUID, config);
         workspaceService.extractTarFileUploadsWhenConfigured(pdsJobUUID, config);
-        
+
         LOG.debug("Workspace preparation done for PDS job: {}", pdsJobUUID);
     }
 
-    private void waitForProcessEndAndGetResultByFiles(PDSExecutionResult result, UUID jobUUID, PDSJobConfiguration config, long minutesToWaitForResult
-            ) throws InterruptedException, IOException {
-       
+    private void waitForProcessEndAndGetResultByFiles(PDSExecutionResult result, UUID jobUUID, PDSJobConfiguration config, long minutesToWaitForResult)
+            throws InterruptedException, IOException {
+
         /* watching */
         String watcherThreadName = "exec-data-watcher-" + pdsJobUUID;
-        
+
         LOG.debug("Start watcher thread: {}", watcherThreadName);
-        
+
         StreamDataRefreshRequestWatcherRunnable watcherRunnable = new StreamDataRefreshRequestWatcherRunnable(pdsJobUUID);
         Thread watcherThread = new Thread(watcherRunnable);
         watcherThread.setName(watcherThreadName);
         watcherThread.start();
-        
+
         /* waiting for process */
         LOG.debug("Wait for process of job with uuid:{}, will wait {} minutes for result from product with id:{}", jobUUID, minutesToWaitForResult,
                 config.getProductId());
@@ -347,7 +347,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         if (path == null) {
             throw new IllegalStateException("Path not defined for product id:" + config.getProductId());
         }
-        
+
         File currentDir = Paths.get("./").toRealPath().toFile();
         List<String> commands = new ArrayList<>();
         commands.add(path);

@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.pds.ExecutionPDSKey;
 import com.mercedesbenz.sechub.commons.pds.PDSConfigDataKeyProvider;
-import com.mercedesbenz.sechub.pds.config.PDSProductSetup;
 import com.mercedesbenz.sechub.pds.config.PDSProductParameterDefinition;
+import com.mercedesbenz.sechub.pds.config.PDSProductSetup;
 import com.mercedesbenz.sechub.pds.config.PDSProdutParameterSetup;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
 import com.mercedesbenz.sechub.pds.job.PDSJobConfiguration;

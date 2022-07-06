@@ -11,8 +11,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
-import com.mercedesbenz.sechub.pds.config.PDSProductSetup;
 import com.mercedesbenz.sechub.pds.config.PDSProductParameterDefinition;
+import com.mercedesbenz.sechub.pds.config.PDSProductSetup;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
 import com.mercedesbenz.sechub.pds.job.PDSJobConfiguration;
 
