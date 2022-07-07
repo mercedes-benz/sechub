@@ -60,6 +60,14 @@ public class AsPDSUser {
     }
 
     public String getJobReport(UUID jobUUID, boolean orGetErrorText, long secondsToWait) {
+        return internalFetchReport(jobUUID, orGetErrorText, secondsToWait, true);
+    }
+
+    String internalFetchReportWithoutAutoDump(UUID jobUUID, long secondsToWait) {
+        return internalFetchReport(jobUUID, false, secondsToWait, false);
+    }
+
+    private String internalFetchReport(UUID jobUUID, boolean orGetErrorText, long secondsToWait, boolean autoDumpEnabled) {
         long waitTimeInMillis = 1000;
         int count = 0;
         boolean jobEnded = false;
@@ -72,7 +80,9 @@ public class AsPDSUser {
             }
             if (jobstatus.indexOf("FAILED") != -1) {
                 if (!orGetErrorText) {
-                    TestAPI.dumpPDSJobOutput(jobUUID);
+                    if (autoDumpEnabled) {
+                        TestAPI.dumpPDSJobOutput(jobUUID);
+                    }
                     throw new IllegalStateException("Job did fail:" + jobstatus);
                 }
                 jobEnded = true;
@@ -176,12 +186,20 @@ public class AsPDSUser {
     }
 
     public String getJobOutputStreamText(UUID jobUUID) {
+        return internalFetchOutputStreamTextWithoutAutoDump(jobUUID);
+    }
+
+    String internalFetchOutputStreamTextWithoutAutoDump(UUID jobUUID) {
         String url = getPDSUrlBuilder().buildAdminFetchesJobOutputStreamUrl(jobUUID);
         String result = getRestHelper().getStringFromURL(url);
         return result;
     }
 
     public String getJobErrorStreamText(UUID jobUUID) {
+        return internalFetchErrorStreamTextWithoutAutoDump(jobUUID);
+    }
+
+    String internalFetchErrorStreamTextWithoutAutoDump(UUID jobUUID) {
         String url = getPDSUrlBuilder().buildAdminFetchesJobErrorStreamUrl(jobUUID);
         String result = getRestHelper().getStringFromURL(url);
         return result;
@@ -232,6 +250,10 @@ public class AsPDSUser {
     }
 
     public SecHubMessagesList getJobMessages(UUID pdsJobUUID) {
+        return internalGetJobMessagesWithoutAutoDump(pdsJobUUID);
+    }
+
+    SecHubMessagesList internalGetJobMessagesWithoutAutoDump(UUID pdsJobUUID) {
         String url = getPDSUrlBuilder().buildGetJobMessages(pdsJobUUID);
         String json = getRestHelper().getJSON(url);
         return SecHubMessagesList.fromJSONString(json);

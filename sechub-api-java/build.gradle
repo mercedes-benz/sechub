@@ -76,6 +76,11 @@ task callOpenAPIJavaGenerator(type: org.openapitools.generator.gradle.plugin.tas
             scmDeveloperConnection		: "",
             scmUrl						: "https://github.com/mercedes-benz/sechub"
     ]
+
+	doFirst {
+        //cleanup openapi gen folder if present
+        delete fileTree ( dir: outputDir )
+    }
 }
 
 tasks.withType(org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
@@ -90,10 +95,9 @@ task buildAPIJava(type:Exec, dependsOn: 'generateAPIJava') {
   description 'This builds only the generated SecHub Java Client'
   dependsOn 'generateAPIJava'
   
-  workingDir = "${project.projectDir}"
+  workingDir = "${project.projectDir}"    
 
-  commandLine './generateAPI.sh', "${project.projectDir}/gen", "${apiPublishNecessary}"
-  
+  commandLine './generateAPI.sh', "${workingDir}/gen", "${apiPublishNecessary}"
 }
 
 task generateAPIJava(dependsOn: callOpenAPIJavaGenerator){

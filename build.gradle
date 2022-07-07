@@ -36,7 +36,7 @@ plugins {
     
     // spotless code formatter
     // (see https://github.com/diffplug/spotless)
-    id 'com.diffplug.spotless' version '6.7.2'
+    id 'com.diffplug.spotless' version '6.8.0'
     
     // versions plugin for checking new available library versions etc. 
     // (see https://github.com/ben-manes/gradle-versions-plugin)

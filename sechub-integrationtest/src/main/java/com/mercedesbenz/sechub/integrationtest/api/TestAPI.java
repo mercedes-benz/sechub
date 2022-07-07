@@ -1228,11 +1228,11 @@ public class TestAPI {
     }
 
     public static void dumpAllPDSJobOutputsForSecHubJob(UUID sechubJobUUID) {
-        System.out.println("----------------------------------------------------------------------------------------------------------");
-        System.out.println("- DUMP PDS Jobs for SecHub job: " + sechubJobUUID);
-        System.out.println("----------------------------------------------------------------------------------------------------------");
+        System.out.println("##########################################################################################################");
+        System.out.println("# DUMP all PDS Jobs for SecHub job: " + sechubJobUUID);
+        System.out.println("##########################################################################################################");
 
-        List<UUID> pdsJobUUIDs = fetchAllPDSJobUUIDsForSecHubJob(sechubJobUUID);
+        List<UUID> pdsJobUUIDs = internalExecuteOrUseFallback(() -> fetchAllPDSJobUUIDsForSecHubJob(sechubJobUUID), new ArrayList<>());
         for (UUID pdsJobUUID : pdsJobUUIDs) {
             dumpPDSJobOutput(pdsJobUUID);
         }
@@ -1241,23 +1241,53 @@ public class TestAPI {
     public static void dumpPDSJobOutput(UUID jobUUID) {
 
         AsPDSUser asPDSUser = asPDSUser(PDS_ADMIN);
-        String outputStreamText = asPDSUser.getJobOutputStreamText(jobUUID);
-        String errorStreamText = asPDSUser.getJobErrorStreamText(jobUUID);
-        SecHubMessagesList messages = asPDSUser.getJobMessages(jobUUID);
 
-        System.out.println("-----------------------------------------------------");
-        System.out.println("- DUMP PDS Job: " + jobUUID);
-        System.out.println("-----------------------------------------------------");
-        System.out.println("> Output stream:");
+        String outputStreamText = internalExecuteOrUseFallback(() -> asPDSUser.internalFetchOutputStreamTextWithoutAutoDump(jobUUID),
+                "cannot fetch output stream");
+        String errorStreamText = internalExecuteOrUseFallback(() -> asPDSUser.internalFetchErrorStreamTextWithoutAutoDump(jobUUID),
+                "cannot fetch error stream");
+
+        SecHubMessagesList messagesList = internalExecuteOrUseFallback(() -> asPDSUser.internalGetJobMessagesWithoutAutoDump(jobUUID), null);
+        String messagesAsString = null;
+        if (messagesList != null) {
+            messagesAsString = internalExecuteOrUseFallback(() -> JSONConverter.get().toJSON(messagesList, true), null);
+        }
+        if (messagesAsString == null) {
+            messagesAsString = "MessagesList was null";
+        }
+
+        String report = internalExecuteOrUseFallback(() -> asPDSUser.internalFetchReportWithoutAutoDump(jobUUID, 1), "Report not available");
+
+        System.out.println("----------------------------------------------------------------------------------------------------------");
+        System.out.println("DUMP - PDS Job: " + jobUUID);
+        System.out.println("----------------------------------------------------------------------------------------------------------");
+        System.out.println("Output stream:");
+        System.out.println("--------------");
         System.out.println(outputStreamText);
-        System.out.println("> Error stream:");
+
+        System.out.println("Error stream:");
+        System.out.println("-------------");
         System.out.println(errorStreamText);
-        System.out.println("> Messages");
-        System.out.println(JSONConverter.get().toJSON(messages, true));
-        System.out.println("> Report");
-        String report = asPDSUser(PDS_ADMIN).getJobReport(jobUUID);
+
+        System.out.println("Messages:");
+        System.out.println("---------");
+        System.out.println(messagesAsString);
+
+        System.out.println("Report:");
+        System.out.println("-------");
         System.out.println(report);
+        System.out.println("----------------------------------------------------------------------------------------------------------");
+        System.out.println("END OF DUMP - PDS Job: " + jobUUID);
+        System.out.println("----------------------------------------------------------------------------------------------------------");
 
     }
 
+    private static <T> T internalExecuteOrUseFallback(Callable<T> callable, T fallback) {
+        try {
+            return callable.call();
+        } catch (Exception e) {
+            System.out.println(">> Internal execute failed. Fallback (" + fallback + ") necessary, because of :" + e.getMessage());
+            return fallback;
+        }
+    }
 }
