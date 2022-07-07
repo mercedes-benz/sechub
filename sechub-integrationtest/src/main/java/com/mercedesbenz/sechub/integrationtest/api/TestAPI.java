@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.integrationtest.api;
 
+import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
@@ -127,6 +128,11 @@ public class TestAPI {
 
     public static AssertFullScanData assertFullScanDataZipFile(File file) {
         return AssertFullScanData.assertFullScanDataZipFile(file);
+    }
+
+    public static AssertPDSStatus assertPDSJobStatus(UUID pdsJobUUID) {
+        String json = asPDSUser(PDS_ADMIN).getJobStatus(pdsJobUUID);
+        return new AssertPDSStatus(json);
     }
 
     public static AssertPDSStatus assertPDSJobStatus(String json) {

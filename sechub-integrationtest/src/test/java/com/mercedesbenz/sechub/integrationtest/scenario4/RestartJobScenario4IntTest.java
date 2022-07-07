@@ -50,7 +50,7 @@ public class RestartJobScenario4IntTest {
         waitForJobDoneAndFailWhenJobIsFailing(project, sechubJobUUID);
 
         /* execute */
-        as(SUPER_ADMIN).restartCodeScanHardAndFetchJobStatus(project,sechubJobUUID);
+        as(SUPER_ADMIN).restartJobHardAndFetchJobStatus(project,sechubJobUUID);
 
         /* test */
         String report = as(USER_1).getJobReport(project.getProjectId(),sechubJobUUID);
@@ -86,7 +86,7 @@ public class RestartJobScenario4IntTest {
                 inspectionNr(0).hasId("CHECKMARX");
 
         /* execute */
-        as(SUPER_ADMIN).restartCodeScanHardAndFetchJobStatus(project,sechubJobUUID);
+        as(SUPER_ADMIN).restartJobHardAndFetchJobStatus(project,sechubJobUUID);
 
         /* test */
         String report = as(USER_1).getJobReport(project.getProjectId(),sechubJobUUID);
@@ -121,7 +121,7 @@ public class RestartJobScenario4IntTest {
         destroyProductResults(sechubJobUUID); // destroy former product result to simulate execution crashed..
 
         /* execute */
-        as(SUPER_ADMIN).restartCodeScanHardAndFetchJobStatus(project,sechubJobUUID);
+        as(SUPER_ADMIN).restartJobHardAndFetchJobStatus(project,sechubJobUUID);
 
         /* test */
         String report = as(USER_1).getJobReport(project.getProjectId(),sechubJobUUID);
@@ -149,7 +149,7 @@ public class RestartJobScenario4IntTest {
 
 
         /* execute */
-        as(SUPER_ADMIN).restartCodeScanAndFetchJobStatus(project,sechubJobUUID);
+        as(SUPER_ADMIN).restartJobAndFetchJobStatus(project,sechubJobUUID);
 
 
         /* test */
@@ -177,7 +177,7 @@ public class RestartJobScenario4IntTest {
         waitMilliSeconds(1000); // let the old job run (so not accidently running at same time)
 
         /* execute */
-        as(SUPER_ADMIN).restartCodeScanAndFetchJobStatus(project,sechubJobUUID);
+        as(SUPER_ADMIN).restartJobAndFetchJobStatus(project,sechubJobUUID);
 
         /* test */
         String report = as(USER_1).getJobReport(project.getProjectId(),sechubJobUUID);
@@ -222,7 +222,7 @@ public class RestartJobScenario4IntTest {
         destroyProductResults(sechubJobUUID); // destroy former product result to simulate execution crashed..
 
         /* execute */
-        as(SUPER_ADMIN).restartCodeScanAndFetchJobStatus(project,sechubJobUUID);
+        as(SUPER_ADMIN).restartJobAndFetchJobStatus(project,sechubJobUUID);
 
         /* test */
         String report = as(USER_1).getJobReport(project.getProjectId(),sechubJobUUID);

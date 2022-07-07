@@ -365,46 +365,48 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         if (pdsJobUUID != null && !pdsJobUUID.isEmpty()) {
             LOG.debug("Restart in progress, try to reuse PDS job: {}", pdsJobUUID);
 
-            PDSAdapterJobStatusState jobState = null;
+            PDSAdapterJobStatusState currentPdsJobState = null;
 
             /* check job status */
             try {
-                PDSJobStatus jobStatus = getJobStatus(context, UUID.fromString(pdsJobUUID));
-                jobState = jobStatus.state;
-                if (jobState != null) {
-                    switch (jobState) {
-                    case DONE:
-                        /* just fetch the former PDS result */
-                        LOG.info("Reuse existing result from PDS job: {} because job is in state: {}.", pdsJobUUID, jobState);
+                PDSJobStatus currentPdsJobStatus = getJobStatus(context, UUID.fromString(pdsJobUUID));
+                currentPdsJobState = currentPdsJobStatus.state;
 
-                        context.setPDSJobUUID(UUID.fromString(pdsJobUUID)); // update context with new UUID
-                        return collectAdapterExecutionResult(context);
+                if (currentPdsJobState == null) {
+                    throw new IllegalStateException("PDS job state null is not supported!");
+                }
 
-                    case CANCELED:
-                    case CANCEL_REQUESTED:
-                    case FAILED:
-                        LOG.info("Cannot reuse PDS job: {} because former job is in state: {}. Will start new one.", pdsJobUUID, jobState);
-                        pdsJobUUID = createNewPDSJobAndRememberInAdapterMetaData(context, runtimeContext);
-                        break;
-                    case CREATED:
-                    case QUEUED:
-                    case READY_TO_START:
-                    case RUNNING:
-                        LOG.info("Reuse PDS job. {} in state: {}", pdsJobUUID, jobState);
-                        break;
-                    default:
-                        throw new IllegalStateException("Job state: " + jobState + " is not supported!");
+                switch (currentPdsJobState) {
 
-                    }
+                case DONE:
+                    /* just fetch the former PDS result */
+                    LOG.info("Reuse existing result from PDS job: {} because job is in state: {}.", pdsJobUUID, currentPdsJobState);
+
+                    context.setPDSJobUUID(UUID.fromString(pdsJobUUID)); // update context with new UUID
+                    return collectAdapterExecutionResult(context);
+
+                case CANCELED:
+                case CANCEL_REQUESTED:
+                case FAILED:
+                    LOG.info("Cannot reuse PDS job: {} because in state {} where result cannot be reused.", pdsJobUUID, currentPdsJobState);
+                    pdsJobUUID = null;
+                    break;
+                case CREATED:
+                case QUEUED:
+                case READY_TO_START:
+                case RUNNING:
+                    LOG.info("PDS job: {} found in state: {}. Means not finished. So just reuse existing job.", pdsJobUUID, currentPdsJobState);
+                    break;
+                default:
+                    throw new IllegalStateException("Job state: " + currentPdsJobState + " is not supported!");
 
                 }
             } catch (RuntimeException e) {
-                LOG.error("Was not able to reuse former PDS job: {}, old job state was: {}.", pdsJobUUID, jobState, e);
+                LOG.error("Was not able to reuse former PDS job: {}, old job state was: {}.", pdsJobUUID, currentPdsJobState, e);
 
                 pdsJobUUID = null;// reset
             }
 
-        } else {
             LOG.warn("PDS job not set inside meta data, was: {}", pdsJobUUID);
         }
 
@@ -447,6 +449,8 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
 
         AdapterMetaData metaData = runtimeContext.getMetaData();
         metaData.setValue(PDS_JOB_UUID, pdsJobUUID);
+        metaData.setValue(PDS_JOB_MARKED_AS_READY, false);
+        metaData.setValue(PDS_JOB_UPLOAD_DONE, false);
 
         runtimeContext.getCallback().persist(metaData);
         return pdsJobUUID;

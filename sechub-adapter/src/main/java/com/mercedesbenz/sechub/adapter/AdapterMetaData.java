@@ -103,7 +103,7 @@ public class AdapterMetaData {
         }
         return Boolean.parseBoolean(value);
     }
-    
+
     /**
      * get meta data as boolean value
      *

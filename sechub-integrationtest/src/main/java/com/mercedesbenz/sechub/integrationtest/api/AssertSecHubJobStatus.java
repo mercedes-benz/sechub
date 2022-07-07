@@ -37,6 +37,7 @@ public class AssertSecHubJobStatus {
     public AssertSecHubJobStatus isInState(TestExecutionState state) {
         return isInState(state.name());
     }
+
     public AssertSecHubJobStatus isInState(String state) {
         autoDumper.execute(() -> assertEquals(state, status.state));
         return this;

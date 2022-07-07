@@ -15,6 +15,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
+import com.mercedesbenz.sechub.adapter.pds.data.PDSJobStatus.PDSAdapterJobStatusState;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubReportVersion;
@@ -73,27 +74,35 @@ public class PDSCodeScanJobScenario5IntTest {
             isInState(TestExecutionState.ENDED).
             hasMessages(1).
             hasMessage(SecHubMessageType.ERROR,"Job execution failed because of an internal problem");
-        /* @formatter:on */
 
-        List<UUID> pdsJobUUIDs = TestAPI.fetchAllPDSJobUUIDsForSecHubJob(jobUUID);
-        assertEquals(1, pdsJobUUIDs.size());
+
 
         // try to restart (will fail again, but we expect here a new PDS job to be used and no re-usage!)
+        assertSecHubRestartWillStartNewJobBecausePDSJobFailed(project, jobUUID);
+
+    }
+
+    private void assertSecHubRestartWillStartNewJobBecausePDSJobFailed(TestProject project, UUID jobUUID) {
+        List<UUID> pdsJobUUIDs = TestAPI.fetchAllPDSJobUUIDsForSecHubJob(jobUUID);
+        assertEquals(1, pdsJobUUIDs.size());
         UUID pdsJobUUID = pdsJobUUIDs.iterator().next();
-        String text = asPDSUser(PDS_ADMIN).getJobReportOrErrorText(pdsJobUUID);
-        System.out.println("text="+text);
+        assertPDSJobStatus(pdsJobUUID).
+            isInState(PDSAdapterJobStatusState.FAILED);
+        /* @formatter:on */
+
         assertNotNull(pdsJobUUID);
 
         revertJobToStillRunning(jobUUID); // fake it's running (so we can restart)
         assertJobIsRunning(project, jobUUID);
-        as(SUPER_ADMIN).restartCodeScanAndFetchJobStatus(project, jobUUID);
+        as(SUPER_ADMIN).restartJobAndFetchJobStatus(project, jobUUID);
+
         List<UUID> pdsJobUUIDs2 = TestAPI.fetchAllPDSJobUUIDsForSecHubJob(jobUUID);
 
         UUID pdsJobUUID2 = pdsJobUUIDs2.iterator().next();
-        
-        assertNotNull(pdsJobUUID2);
-        assertNotEquals("The PDS job was reused but shouldn't! Execution in PDS failed before, so a new pds job must be started but we had a reuse!", pdsJobUUID, pdsJobUUID2);
 
+        assertNotNull(pdsJobUUID2);
+        assertNotEquals("The PDS job was reused but shouldn't! Execution in PDS failed before, so a new pds job must be started but we had a reuse!",
+                pdsJobUUID, pdsJobUUID2);
     }
 
     @Test
