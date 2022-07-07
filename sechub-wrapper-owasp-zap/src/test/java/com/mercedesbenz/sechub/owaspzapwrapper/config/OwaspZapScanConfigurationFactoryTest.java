@@ -401,7 +401,6 @@ class OwaspZapScanConfigurationFactoryTest {
         assertNotNull(deactivatedRuleReferences);
         assertNotNull(deactivatedRuleReferences.getDeactivatedRuleReferences());
         assertEquals(arrayToTestExpectedLength.length, deactivatedRuleReferences.getDeactivatedRuleReferences().size());
-        assertEquals(arrayToTestExpectedLength.length, deactivatedRuleReferences.getDeactivatedRuleReferences().size());
     }
 
     private SecHubWebScanConfiguration simulateProvidedSecHubConfiguration(CommandLineSettings settings) {
