@@ -97,5 +97,8 @@ if [[ "$PDS_TEST_KEY_VARIANTNAME" = "" ]]; then
     "
     
     echo "After messages were created I found this inside messages folder:"
-    tree $PDS_JOB_USER_MESSAGES_FOLDER 
+    echo "----------------------------------------------------------------------------"
+    ls $PDS_JOB_USER_MESSAGES_FOLDER 
+    echo "----------------------------------------------------------------------------"
+    
 fi
