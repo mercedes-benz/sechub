@@ -1217,7 +1217,7 @@ public class TestAPI {
                 continue;
             }
             AdapterMetaData metaData = JSONConverter.get().fromJSON(AdapterMetaData.class, data.metaData);
-            String pdsJobUUIDString = metaData.getValue("PDS_JOB_UUID");
+            String pdsJobUUIDString = metaData.getValueAsStringOrNull("PDS_JOB_UUID");
             if (pdsJobUUIDString == null || pdsJobUUIDString.isEmpty()) {
                 continue;
             }

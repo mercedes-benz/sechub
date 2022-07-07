@@ -147,7 +147,7 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
     }
 
     private InputStream fetchInputStreamIfNecessary(JobStorage storage, AdapterMetaData metaData) throws IOException {
-        if (metaData != null && metaData.hasValue(CheckmarxMetaDataID.KEY_FILEUPLOAD_DONE, true)) {
+        if (metaData != null && metaData.getValueAsBoolean(CheckmarxMetaDataID.KEY_FILEUPLOAD_DONE)) {
             return null;
         }
         return storage.fetch(FILENAME_SOURCECODE_ZIP);

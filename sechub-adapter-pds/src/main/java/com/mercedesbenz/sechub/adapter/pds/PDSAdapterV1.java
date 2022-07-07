@@ -222,7 +222,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
     private void markJobAsReadyIfNecessary(PDSContext context, AdapterRuntimeContext runtimeContext) {
 
         AdapterMetaData metaData = runtimeContext.getMetaData();
-        if (metaData.getValueBoolean(PDS_JOB_MARKED_AS_READY)) {
+        if (metaData.getValueAsBoolean(PDS_JOB_MARKED_AS_READY)) {
             LOG.info("Mark job ready skipped for pds job: {}, becausse already marked as ready");
             /* already uploaded */
             return;
@@ -251,7 +251,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
 
         /* PDS has other storage - we must upload content */
         AdapterMetaData metaData = runtimeContext.getMetaData();
-        if (metaData.getValueBoolean(PDS_JOB_UPLOAD_DONE)) {
+        if (metaData.getValueAsBoolean(PDS_JOB_UPLOAD_DONE)) {
             LOG.info("Upload skipped for pds job: {}, becausse already uploaded");
             /* already uploaded */
             return;
@@ -282,7 +282,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
 
         String sourceUploadMetaDataKey = createUploadMetaDataKey(pdsJobUUID, type);
 
-        if (metaData.hasValue(sourceUploadMetaDataKey, true)) {
+        if (metaData.getValueAsBoolean(sourceUploadMetaDataKey)) {
             LOG.info("Reuse existing {} upload for pds job: {} - sechub: {}", type, pdsJobUUID, secHubTraceId);
             return;
         }
@@ -360,7 +360,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
 
     private AdapterExecutionResult handleExecutionTypeRestart(PDSContext context, AdapterRuntimeContext runtimeContext) throws AdapterException {
         AdapterMetaData metaData = runtimeContext.getMetaData();
-        String pdsJobUUID = metaData.getValue(PDS_JOB_UUID);
+        String pdsJobUUID = metaData.getValueAsStringOrNull(PDS_JOB_UUID);
 
         if (pdsJobUUID != null && !pdsJobUUID.isEmpty()) {
             LOG.debug("Restart in progress, try to reuse PDS job: {}", pdsJobUUID);
@@ -419,8 +419,8 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
 
     private AdapterExecutionResult handleExecutionTypeStop(PDSContext context, AdapterRuntimeContext runtimeContext) throws AdapterException {
         AdapterMetaData metaData = runtimeContext.getMetaData();
-        String pdsJobUUID = metaData.getValue(PDS_JOB_UUID);
-        pdsJobUUID = metaData.getValue(PDS_JOB_UUID);
+        String pdsJobUUID = metaData.getValueAsStringOrNull(PDS_JOB_UUID);
+        pdsJobUUID = metaData.getValueAsStringOrNull(PDS_JOB_UUID);
 
         if (pdsJobUUID == null || pdsJobUUID.isEmpty()) {
             LOG.error("PDS job uuid was :{}, so stop not possible.", pdsJobUUID);

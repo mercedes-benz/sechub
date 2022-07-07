@@ -205,7 +205,7 @@ public class RestartJobScenario4IntTest {
          * (because we have a re-run and every run does adds 2 "+1" to the value
          */
         AdapterMetaData metaData1 = assertFullScanDataZipFile.resolveFile(metaDataFileName).asAdapterMetaData();
-        assertEquals("+1+1+1+1", metaData1.getValue(AbstractMockedAdapter.KEY_METADATA_REUSED));
+        assertEquals("+1+1+1+1", metaData1.getValueAsStringOrNull(AbstractMockedAdapter.KEY_METADATA_REUSED));
     }
 
     @Test

@@ -71,10 +71,10 @@ public class ProductExecutorConfigurationScenario8IntTest {
             containsFiles(7);
 
         AdapterMetaData metaData1 = assertFullScanDataZipFile.resolveFile("metadata_NETSPARKER_"+config1UUID+".json").asAdapterMetaData();
-        assertEquals("+1+1", metaData1.getValue(AbstractMockedAdapter.KEY_METADATA_REUSED));
+        assertEquals("+1+1", metaData1.getValueAsStringOrNull(AbstractMockedAdapter.KEY_METADATA_REUSED));
 
         AdapterMetaData metaData2 = assertFullScanDataZipFile.resolveFile("metadata_NETSPARKER_"+config2UUID+".json").asAdapterMetaData();
-        assertEquals("+1+1", metaData2.getValue(AbstractMockedAdapter.KEY_METADATA_REUSED));
+        assertEquals("+1+1", metaData2.getValueAsStringOrNull(AbstractMockedAdapter.KEY_METADATA_REUSED));
 
         /* @formatter:on */
     }
@@ -127,10 +127,10 @@ public class ProductExecutorConfigurationScenario8IntTest {
 
         /* check adapter persistence of reused meta data not more than two times called */
         AdapterMetaData metaData1 = assertFullScanDataZipFile.resolveFile("metadata_NETSPARKER_"+config1UUID+".json").asAdapterMetaData();
-        assertEquals("+1+1", metaData1.getValue(AbstractMockedAdapter.KEY_METADATA_REUSED));
+        assertEquals("+1+1", metaData1.getValueAsStringOrNull(AbstractMockedAdapter.KEY_METADATA_REUSED));
 
         AdapterMetaData metaData2 = assertFullScanDataZipFile.resolveFile("metadata_NETSPARKER_"+config2UUID+".json").asAdapterMetaData();
-        assertEquals("+1+1", metaData2.getValue(AbstractMockedAdapter.KEY_METADATA_REUSED));
+        assertEquals("+1+1", metaData2.getValueAsStringOrNull(AbstractMockedAdapter.KEY_METADATA_REUSED));
 
         /* @formatter:on */
     }
@@ -180,7 +180,7 @@ public class ProductExecutorConfigurationScenario8IntTest {
 
         /* check adapter persistence of reused meta data not more than two times called */
         AdapterMetaData metaData = assertFullScanDataZipFile.resolveFile("metadata_NETSPARKER_"+config1UUID+".json").asAdapterMetaData();
-        assertEquals("+1+1", metaData.getValue(AbstractMockedAdapter.KEY_METADATA_REUSED));
+        assertEquals("+1+1", metaData.getValueAsStringOrNull(AbstractMockedAdapter.KEY_METADATA_REUSED));
         /* @formatter:on */
     }
 

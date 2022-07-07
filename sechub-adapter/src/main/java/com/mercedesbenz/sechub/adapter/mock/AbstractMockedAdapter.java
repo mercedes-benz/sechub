@@ -130,7 +130,7 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
         AdapterMetaData metaData = assertMetaData(runtimeContext);
         metaData.setValue(KEY_METADATA_BEFORE_WAIT, DEFAULT_METADATA_MOCK_BEFORE_WAIT);
 
-        String value = metaData.getValue(KEY_METADATA_COMBINED);
+        String value = metaData.getValueAsStringOrNull(KEY_METADATA_COMBINED);
         metaData.setValue(KEY_METADATA_COMBINED, value + "+2");
 
         updateReusedEntryAndPersistMetaData(metaData, runtimeContext);
@@ -140,9 +140,9 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
         AdapterMetaData metaData = assertMetaData(runtimeContext);
         metaData.setValue(KEY_METADATA_BEFORE_WAIT, DEFAULT_METADATA_MOCK_BEFORE_WAIT);
 
-        String combined = metaData.getValue(KEY_METADATA_COMBINED);
-        String initial = metaData.getValue(KEY_METADATA_INITIAL);
-        String before = metaData.getValue(KEY_METADATA_BEFORE_WAIT);
+        String combined = metaData.getValueAsStringOrNull(KEY_METADATA_COMBINED);
+        String initial = metaData.getValueAsStringOrNull(KEY_METADATA_INITIAL);
+        String before = metaData.getValueAsStringOrNull(KEY_METADATA_BEFORE_WAIT);
 
         if (!"1+2".equals(combined)) {
             throw new IllegalStateException("meta data for combined value was not as expected ,but:" + combined);
@@ -156,7 +156,7 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
     }
 
     private void updateReusedEntryAndPersistMetaData(AdapterMetaData metaData, AdapterRuntimeContext runtimeContext) {
-        String value = metaData.getValue(KEY_METADATA_REUSED);
+        String value = metaData.getValueAsStringOrNull(KEY_METADATA_REUSED);
         if (value == null) {
             value = "";
         }

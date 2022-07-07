@@ -89,8 +89,8 @@ class FileBasedAdapterMetaDataCallbackTest {
 
         /* test 2 */
         assertNotNull(loadedMetaData);
-        assertEquals("hello world", loadedMetaData.getValue("my.string.key"));
-        assertEquals(true, loadedMetaData.getValueBoolean("my.boolean.key"));
+        assertEquals("hello world", loadedMetaData.getValueAsStringOrNull("my.string.key"));
+        assertEquals(true, loadedMetaData.getValueAsBoolean("my.boolean.key"));
 
     }
 
@@ -111,8 +111,8 @@ class FileBasedAdapterMetaDataCallbackTest {
 
         /* test 2 */
         assertNotNull(loadedMetaData);
-        assertEquals("hello world3", loadedMetaData.getValue("my.string.key"));
-        assertEquals(true, loadedMetaData.getValueBoolean("my.boolean.key"));
+        assertEquals("hello world3", loadedMetaData.getValueAsStringOrNull("my.string.key"));
+        assertEquals(true, loadedMetaData.getValueAsBoolean("my.boolean.key"));
 
     }
 
