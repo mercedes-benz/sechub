@@ -136,7 +136,7 @@ public abstract class AbstractSpringRestAdapterContext<C extends AdapterConfig, 
     protected abstract ClientHttpRequestInterceptor createInterceptorOrNull(C config);
 
     @Override
-    public final RestOperations getRestOperations() {
+    public RestOperations getRestOperations() {
         return restTemplate;
     }
 

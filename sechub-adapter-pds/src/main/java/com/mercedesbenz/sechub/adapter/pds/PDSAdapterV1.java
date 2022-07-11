@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -48,6 +49,9 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
 
     private PDSUploadSupport uploadSupport;
 
+    @Autowired
+    PDSContextFactory contextFactory;
+
     PDSAdapterV1() {
         uploadSupport = new PDSUploadSupport();
     }
@@ -59,25 +63,25 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
 
     @Override
     protected AdapterExecutionResult execute(PDSAdapterConfig config, AdapterRuntimeContext runtimeContext) throws AdapterException {
-        assertNotInterrupted();
+        assertThreadNotInterrupted();
 
-        PDSContext context = new PDSContext(config, this, runtimeContext);
+        PDSContext context = contextFactory.create(config, this, runtimeContext);
 
         AdapterExecutionResult alreadyKnownResult = handleExecutionType(context, runtimeContext);
         if (alreadyKnownResult != null) {
             return alreadyKnownResult;
         }
 
-        assertNotInterrupted();
+        assertThreadNotInterrupted();
 
         uploadJobDataIfNecessary(context, runtimeContext);
-        assertNotInterrupted();
+        assertThreadNotInterrupted();
 
         markJobAsReadyIfNecessary(context, runtimeContext);
-        assertNotInterrupted();
+        assertThreadNotInterrupted();
 
         waitForJobDone(context);
-        assertNotInterrupted();
+        assertThreadNotInterrupted();
 
         return collectAdapterExecutionResult(context);
 
@@ -142,7 +146,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
                 break; // break while...
             }
 
-            assertNotInterrupted();
+            assertThreadNotInterrupted();
 
             try {
                 Thread.sleep(timeToWaitForNextCheckOperationInMilliseconds);
@@ -479,7 +483,9 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
     private PDSJobData createJobData(PDSContext context) {
         PDSAdapterConfig config = context.getConfig();
         PDSAdapterConfigData data = config.getPDSAdapterConfigData();
-
+        if (data == null) {
+            throw new IllegalStateException("Adapter config data may not be null!");
+        }
         Map<String, String> parameters = data.getJobParameters();
 
         PDSJobData jobData = new PDSJobData();

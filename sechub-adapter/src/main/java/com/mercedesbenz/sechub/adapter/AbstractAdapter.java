@@ -39,7 +39,7 @@ public abstract class AbstractAdapter<A extends AdapterContext<C>, C extends Ada
      *
      * @throws AdapterException
      */
-    protected void assertNotInterrupted() throws AdapterException {
+    protected void assertThreadNotInterrupted() throws AdapterException {
         if (Thread.currentThread().isInterrupted()) {
             throw new AdapterException(getAdapterLogId(null), "Execution thread was interrupted");
         }
