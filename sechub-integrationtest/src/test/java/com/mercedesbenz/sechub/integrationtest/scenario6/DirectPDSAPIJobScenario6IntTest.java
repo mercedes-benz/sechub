@@ -5,6 +5,7 @@ import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 import static com.mercedesbenz.sechub.test.TestConstants.*;
 import static org.junit.Assert.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,6 +19,7 @@ import org.springframework.web.client.HttpClientErrorException.BadRequest;
 
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
+import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.PDSIntTestProductIdentifier;
 import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
@@ -278,34 +280,32 @@ public class DirectPDSAPIJobScenario6IntTest {
 
         UUID sechubJobUUID = UUID.randomUUID();
 
-        String createResult = asPDSUser(PDS_ADMIN).createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
-        UUID pdsJobUUID = assertPDSJobCreateResult(createResult).hasJobUUID().getJobUUID();
-        asPDSUser(PDS_ADMIN).upload(pdsJobUUID, SOURCECODE_ZIP, "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip");
+        String createResult = asPDSUser(PDS_ADMIN).
+                createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN,Collections.singletonMap(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED,"true"));
+
+        UUID pdsJobUUID = assertPDSJobCreateResult(createResult).
+                hasJobUUID().
+                getJobUUID();
+
+        asPDSUser(PDS_ADMIN).
+            upload(pdsJobUUID, SOURCECODE_ZIP, "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip");
 
         /* execute */
-        asPDSUser(PDS_ADMIN).markJobAsReadyToStart(pdsJobUUID);
+        asPDSUser(PDS_ADMIN).
+            markJobAsReadyToStart(pdsJobUUID);
 
         /* test */
-        String report = asPDSUser(PDS_ADMIN).getJobReportOrErrorText(pdsJobUUID);
+        String report = asPDSUser(PDS_ADMIN).
+                getJobReportOrErrorText(pdsJobUUID);
         if(!report.contains("CRITICAL")){
             LOG.error(report);
             fail("Not expected report but:\n"+report);
         };
-        // we additionally test that the output stream text does contain the info about
-        // the ENV variable "PDS_JOB_UUID" and that it is set correctly
-        // (see integrationtest-codescan.sh for the output details )
-        String outputStreamText = asPDSUser(PDS_ADMIN).getJobOutputStreamText(pdsJobUUID);
 
-        assertTestOutputContainsVariable(outputStreamText,">PDS_JOB_UUID="+pdsJobUUID);
-
+        assertPDSJob(pdsJobUUID).
+            containsVariableTestOutput("PDS_JOB_UUID",pdsJobUUID).
+            containsVariableTestOutput("PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED",true);
         /* @formatter:on */
-    }
-
-    private void assertTestOutputContainsVariable(String outputText, String expectedToBeContained) {
-        assertNotNull(outputText);
-        if (!outputText.contains(expectedToBeContained)) {
-            fail("Searched for '" + expectedToBeContained + "'" + "\nBut output did only contain:\n" + outputText);
-        }
     }
 
     public void anonymous_cannot_create_job() {

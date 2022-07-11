@@ -220,4 +220,9 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport impl
         return isTrustAllCertificatesEnabled();
     }
 
+    public static boolean isPDSScriptTrustingAllCertificates(Map<String, String> parametersToSend) {
+        String useSecHubStorage = parametersToSend.get(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED);
+        return Boolean.parseBoolean(useSecHubStorage);
+    }
+
 }

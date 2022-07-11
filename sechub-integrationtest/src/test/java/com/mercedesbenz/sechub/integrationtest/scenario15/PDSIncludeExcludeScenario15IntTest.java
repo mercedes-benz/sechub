@@ -18,6 +18,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubStatus;
 import com.mercedesbenz.sechub.commons.model.Severity;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TemplateData;
+import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestExampleConstants;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestTemplateFile;
@@ -99,6 +100,11 @@ public class PDSIncludeExcludeScenario15IntTest {
                     severity(Severity.CRITICAL).
                     description("path-info=files-b/included-folder/subfolder-2/file-b-3.txt").
                     isContained();
+
+        // check the script trust all for this variant (i) is not defined (missing in profile)
+        assertPDSJob(TestAPI.assertAndFetchPDSJobUUIDForSecHubJob(jobUUID)).
+            containsVariableTestOutput("PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED","");
+
         /* @formatter:on */
     }
 

@@ -6,6 +6,7 @@ import static com.mercedesbenz.sechub.integrationtest.api.IntegrationTestMockMod
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 import static com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestExampleConstants.*;
 import static com.mercedesbenz.sechub.integrationtest.scenario14.Scenario14.*;
+import static org.junit.Assert.*;
 
 import java.util.UUID;
 
@@ -18,6 +19,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubStatus;
 import com.mercedesbenz.sechub.commons.model.Severity;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TemplateData;
+import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestExampleConstants;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestTemplateFile;
@@ -71,6 +73,7 @@ public class PDSBinaryAndSourceCodeHandlingScenario14IntTest {
         String report = as(USER_1).getJobReport(project, jobUUID);
 
         assertReport(report).
+            enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
             hasStatus(SecHubStatus.SUCCESS).
             hasMessages(0).
             hasTrafficLight(YELLOW).
@@ -134,6 +137,7 @@ public class PDSBinaryAndSourceCodeHandlingScenario14IntTest {
         String report = as(USER_1).getJobReport(project, jobUUID);
 
         assertReport(report).
+            enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
             hasStatus(SecHubStatus.SUCCESS).
             hasMessages(0).
             hasTrafficLight(YELLOW).
@@ -158,6 +162,11 @@ public class PDSBinaryAndSourceCodeHandlingScenario14IntTest {
                     scanType(ScanType.CODE_SCAN).
                     severity(Severity.MEDIUM).
                     description("i am a medium error");
+
+        assertPDSJob(TestAPI.assertAndFetchPDSJobUUIDForSecHubJob(jobUUID)).
+            containsVariableTestOutput("PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED",true);
+
+
         /* @formatter:on */
     }
 

@@ -69,7 +69,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
                                                 PDS_CODESCAN_VARIANT_A,false,
                                                 PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN,
                                                 StorageType.REUSE_SECHUB_DATA,
-                                                PDS_CODESCAN);
+                                                PDS_CODESCAN, defineScriptTrustAllCertificatesJobParameter(true));
 
     public static final TestExecutorConfig PDS_V1_CODE_SCAN_B = definePDSScan(
                                                 PDS_CODESCAN_VARIANT_B,true,
@@ -87,7 +87,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
                                                 PDS_CODESCAN_VARIANT_D,false,PDSIntTestProductIdentifier.
                                                 PDS_INTTEST_PRODUCT_CS_SARIF,
                                                 StorageType.REUSE_SECHUB_DATA,
-                                                PDS_CODESCAN);
+                                                PDS_CODESCAN,defineScriptTrustAllCertificatesJobParameter(false));
 
     public static final TestExecutorConfig PDS_V1_CODE_SCAN_E_DO_NOT_REUSE_SECHUBDATA = definePDSScan(
                                                 PDS_CODESCAN_VARIANT_E,false,
@@ -164,6 +164,14 @@ public class IntegrationTestDefaultExecutorConfigurations {
 
         list.add(new TestExecutorSetupJobParam(PARAM_KEY_PDS_CONFIG_FILEFILTER_EXCLUDES, EXCLUDES_1));
         list.add(new TestExecutorSetupJobParam(PARAM_KEY_PDS_CONFIG_FILEFILTER_INCLUDES, INCLUDES_1));
+
+        return list;
+    }
+
+    private static List<TestExecutorSetupJobParam> defineScriptTrustAllCertificatesJobParameter(boolean trustAll) {
+        List<TestExecutorSetupJobParam> list = new ArrayList<>();
+
+        list.add(new TestExecutorSetupJobParam(PARAM_KEY_PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED, "" + trustAll));
 
         return list;
     }

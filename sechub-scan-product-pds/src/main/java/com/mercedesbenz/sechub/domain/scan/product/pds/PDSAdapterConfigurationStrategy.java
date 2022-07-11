@@ -158,7 +158,7 @@ public class PDSAdapterConfigurationStrategy implements AdapterConfigurationStra
         pdsConfigurable.setPdsProductIdentifier(strategyConfig.configSupport.getPDSProductIdentifier());
         pdsConfigurable.setSecHubJobUUID(context.getSechubJobUUID());
         pdsConfigurable.setSecHubConfigurationModel(context.getConfiguration());
-
+        pdsConfigurable.setPDSScriptTrustsAllCertificates(PDSExecutorConfigSuppport.isPDSScriptTrustingAllCertificates(jobParameters));
         pdsConfigurable.setSourceCodeZipFileInputStreamOrNull(strategyConfig.sourceCodeZipFileInputStreamOrNull);
 
         pdsConfigurable.setBinaryTarFileInputStreamOrNull(strategyConfig.binariesTarFileInputStreamOrNull);

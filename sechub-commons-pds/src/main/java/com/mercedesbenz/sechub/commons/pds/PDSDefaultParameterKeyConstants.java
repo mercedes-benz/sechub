@@ -36,6 +36,8 @@ public class PDSDefaultParameterKeyConstants {
 
     public static final String PARAM_KEY_PDS_CONFIG_FILEFILTER_INCLUDES = "pds.config.filefilter.includes";
 
+    public static final String PARAM_KEY_PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED = "pds.config.script.trustall.certificates.enabled";
+
     /* ---------------------- */
     /* Integration tests only */
     /* ---------------------- */

@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.integrationtest.api;
 
-import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
@@ -187,6 +186,15 @@ public class TestAPI {
      */
     public static AssertAutoCleanupInspections assertAutoCleanupInspections() {
         return new AssertAutoCleanupInspections();
+    }
+
+    /**
+     * Creates an assert object to inspect PDS jobs
+     *
+     * @return assert object
+     */
+    public static AssertPDSJob assertPDSJob(UUID pdsJobUUID) {
+        return AssertPDSJob.assertPDSJob(pdsJobUUID);
     }
 
     /**
@@ -1207,6 +1215,14 @@ public class TestAPI {
         } catch (IOException e) {
             throw new IllegalStateException("Was not able to inspect test data", e);
         }
+    }
+
+    public static UUID assertAndFetchPDSJobUUIDForSecHubJob(UUID sechubJobUUID) {
+        List<UUID> pdsJobUUIDs = fetchAllPDSJobUUIDsForSecHubJob(sechubJobUUID);
+        assertEquals("Must find one jobUUID", 1, pdsJobUUIDs.size());
+
+        UUID pdsJobUUID = pdsJobUUIDs.iterator().next();
+        return pdsJobUUID;
     }
 
     public static List<UUID> fetchAllPDSJobUUIDsForSecHubJob(UUID sechubJobUUID) {

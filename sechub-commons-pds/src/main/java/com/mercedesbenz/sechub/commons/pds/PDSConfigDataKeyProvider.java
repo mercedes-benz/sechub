@@ -59,6 +59,14 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
                             .markAlwaysSentToPDS()),
 
     /**
+     * Contains file filter include information
+     */
+    PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED(new ExecutionPDSKey(
+            PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED,
+            "When 'true' the PDS adapter script used by the job will have the information and can use this information when it comes to remote operations.")
+                    .markAlwaysSentToPDS().markAsAvailableInsideScript().markDefaultRecommended().withDefault(false)),
+
+    /**
      * Contains file filter exclude information
      */
     PDS_CONFIG_FILEFILTER_EXCLUDES(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_FILEFILTER_EXCLUDES,

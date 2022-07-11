@@ -1,9 +1,15 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.execution;
 
+import com.mercedesbenz.sechub.commons.pds.PDSConfigDataKeyProvider;
+
 /**
- * These constants are used for environment variables given from PDS to launcher
- * scripts
+ * These constants are PDS internal and do not come from SecHub job or executor
+ * configurations. The job parameter parts from outside (e.g. SecHub) are also
+ * available inside the launcher scripts, but only when automatically accepted
+ * (see {@link PDSConfigDataKeyProvider} in combination with
+ * `markAsAvailableInsideScript` ) or configured manually inside the PDS server
+ * configuration file.
  *
  * @author Albert Tregnaghi
  *
@@ -11,7 +17,7 @@ package com.mercedesbenz.sechub.pds.execution;
 public class PDSLauncherScriptEnvironmentConstants {
 
     /*
-     * TODO Albert Tregnaghi, 2022-05-22: This is deprecated becausee we will remove
+     * TODO Albert Tregnaghi, 2022-05-22: This is deprecated because we will remove
      * the old environment variable PDS_JOB_SOURCECODE_UNZIPPED_FOLDER when all
      * existing PDS solutions have been migrated to new environment variable
      * PDS_JOB_EXTRACTED_SOURCES_FOLDER
@@ -35,4 +41,5 @@ public class PDSLauncherScriptEnvironmentConstants {
     public static final String PDS_JOB_USER_MESSAGES_FOLDER = "PDS_JOB_USER_MESSAGES_FOLDER";
 
     public static final String PDS_JOB_METADATA_FILE = "PDS_JOB_METADATA_FILE";
+
 }
