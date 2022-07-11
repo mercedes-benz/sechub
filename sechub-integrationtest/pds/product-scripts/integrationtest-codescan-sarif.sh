@@ -16,8 +16,11 @@
 # PDS_JOB_WORKSPACE_LOCATION is a special variable and points always to job workspace location
 # PDS_JOB_RESULT_FILE is a special variable and points directly to result file
 
+set -e
+source ./../sechub-integrationtest/pds/product-scripts/shared-functions.sh
+
 echo "PDS SARIF integrationt test script starting..."
-echo ">PDS_JOB_HAS_EXTRACTED_SOURCES =$PDS_JOB_HAS_EXTRACTED_SOURCES"
-echo ">PDS_JOB_HAS_EXTRACTED_BINARIES=$PDS_JOB_HAS_EXTRACTED_BINARIES"
+
+dumpPDSVariables
 
 cp "$PDS_JOB_EXTRACTED_SOURCES_FOLDER/returned_sarif_result.json" $PDS_JOB_RESULT_FILE
