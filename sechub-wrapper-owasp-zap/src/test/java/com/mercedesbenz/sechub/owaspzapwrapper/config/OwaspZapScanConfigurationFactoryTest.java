@@ -171,10 +171,10 @@ class OwaspZapScanConfigurationFactoryTest {
 
         assertEquals(proxy, result.getProxyInformation().getHost());
         assertEquals(proxyPort, result.getProxyInformation().getPort());
-        
+
         verify(environmentVariableReader, never()).readAsInt(ZAP_PORT_ENV_VARIABLE_NAME);
         verify(environmentVariableReader, never()).readAsInt(PROXY_PORT_ENV_VARIABLE_NAME);
-        
+
         verify(environmentVariableReader, never()).readAsString(ZAP_HOST_ENV_VARIABLE_NAME);
         verify(environmentVariableReader, never()).readAsString(ZAP_API_KEY_ENV_VARIABLE_NAME);
         verify(environmentVariableReader, never()).readAsString(PROXY_HOST_ENV_VARIABLE_NAME);
