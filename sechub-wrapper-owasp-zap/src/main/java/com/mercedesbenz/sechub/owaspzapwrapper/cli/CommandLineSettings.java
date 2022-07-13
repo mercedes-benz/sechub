@@ -124,4 +124,12 @@ public class CommandLineSettings {
     public File getRulesDeactvationFile() {
         return FileUtilities.stringToFile(rulesDeactvationFile);
     }
+
+    @Parameter(names = { "--deactivateRules" }, description = "Specify a rule references of rules you want to deactivate during the scan inside the Owasp Zap. "
+            + "If you specifiy multiple rules use comma separated values like: rule1,rule,rule3", required = false)
+    private String deactivatedRuleReferences;
+
+    public String getDeactivatedRuleReferences() {
+        return deactivatedRuleReferences;
+    }
 }

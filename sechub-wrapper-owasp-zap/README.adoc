@@ -32,6 +32,10 @@ Usage: OwaspZapWrapper [options]
     --ajaxSpider
       Set this option to enable Owasp Zap ajaxSpider.
       Default: false
+    --deactivateRules
+      Specify a rule references of rules you want to deactivate during the 
+      scan inside the Owasp Zap. If you specifiy multiple rules use comma 
+      separated values like: rule1,rule,rule3
     --fullRulesetfile
       Specify a file with all rules installed for the Owasp Zap.
       Default: src/main/resources/full-rulesets/owasp-zap-full-ruleset-all-release-status.json
@@ -149,10 +153,15 @@ The following snippet is an example of the file structure:
 }
 ----
 
-Another possibility to deactivate certain rules is the environment variable below.
-If this variable is available the file with rule references to deactivate will be ignored. This makes testing more flexible.
-To set the env variable you can use `zap.deactivation.rule.references=Directory-Browsing-0,Private-IP-Disclosure-2`,
-inside the executor config.
+Additionally the rules to deactivate can be specified via command line using `--deactivateRules`. Please use comma separated values like:
+----
+$ java -jar sechub-pds-wrapperowaspzap-0.30.0.jar --deactivateRules Directory-Browsing-0,Private-IP-Disclosure-2
+----
+Another possibility to deactivate certain rules is the environment variable `ZAP_DEACTIVATED_RULE_REFERENCES`.
 ----
 ZAP_DEACTIVATED_RULE_REFERENCES=Directory-Browsing-0,Private-IP-Disclosure-2
 ----
+But if the command line parameter `--deactivateRules` is set, the wrapper ignores this environment variable.
+The rules to deactivate specified via `--rulesDeactivationfile`, will always be added to the list of deactivated rules.
+To set the env variable you can use `zap.deactivation.rule.references=Directory-Browsing-0,Private-IP-Disclosure-2`,
+inside the executor config.
