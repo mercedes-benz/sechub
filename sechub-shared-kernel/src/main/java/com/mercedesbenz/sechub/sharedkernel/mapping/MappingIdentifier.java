@@ -6,7 +6,7 @@ import static java.util.Objects.*;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.mercedesbenz.sechub.sharedkernel.MustBeKeptStable;
+import com.mercedesbenz.sechub.commons.core.MustBeKeptStable;
 import com.mercedesbenz.sechub.sharedkernel.validation.MappingIdValidationImpl;
 import com.mercedesbenz.sechub.sharedkernel.validation.ValidationResult;
 

@@ -4,9 +4,7 @@ package com.mercedesbenz.sechub.domain.scan.product;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -14,17 +12,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
+import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
 import com.mercedesbenz.sechub.commons.model.ScanType;
-import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
-import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationObject;
-import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationObjectInfo;
-import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationObjectInfoFinder;
-import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationType;
-import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubFileSystemContainer;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
-import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
 import com.mercedesbenz.sechub.domain.scan.NetworkLocationProvider;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetInfoFactory;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataProvider;
@@ -53,11 +44,12 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
     @Autowired
     protected NetworkTargetResolver targetResolver;
 
+    @Autowired
+    CodeScanPathCollector codeScanPathCollector;
+
     private ScanType scanType;
 
     private ProductIdentifier productIdentifier;
-
-    private SecHubDataConfigurationObjectInfoFinder configObjectFinder;
 
     private int version;
 
@@ -77,7 +69,6 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
          * executor instance - without spring injection
          */
         this.resilientActionExecutor = new ResilientActionExecutor<>();
-        this.configObjectFinder = new SecHubDataConfigurationObjectInfoFinder();
     }
 
     public final int getVersion() {
@@ -125,47 +116,14 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
         if (scanType != ScanType.CODE_SCAN) {
             return;
         }
-        // the information about paths is interesting for debugging but also necessary
-        // for our integration tests - see mocked_setup.json
-        Set<String> paths = new LinkedHashSet<>();
-        data.codeUploadFileSystemFolderPaths = paths;
 
         SecHubConfiguration configuration = data.getSechubExecutionContext().getConfiguration();
-        Optional<SecHubCodeScanConfiguration> codeScanOpt = configuration.getCodeScan();
-        if (!codeScanOpt.isPresent()) {
-            return;
-        }
-        SecHubCodeScanConfiguration codeScan = codeScanOpt.get();
-        addFileSystemParts(paths, codeScan);
-        Set<String> usedNames = codeScan.getNamesOfUsedDataConfigurationObjects();
-        if (usedNames.isEmpty()) {
-            return;
-        }
-        List<SecHubDataConfigurationObjectInfo> found = configObjectFinder.findDataObjectsByName(configuration, usedNames);
-        for (SecHubDataConfigurationObjectInfo info : found) {
-            if (info.getType() != SecHubDataConfigurationType.SOURCE) {
-                continue;
-            }
-            SecHubDataConfigurationObject config = info.getDataConfigurationObject();
-            if (!(config instanceof SecHubSourceDataConfiguration)) {
-                LOG.warn("source object data was not expected {} but {}", SecHubSourceDataConfiguration.class, config.getClass());
-                continue;
-            }
-            SecHubSourceDataConfiguration sourceDataConfig = (SecHubSourceDataConfiguration) config;
-            addFileSystemParts(paths, sourceDataConfig);
-        }
-    }
+        Set<String> paths = codeScanPathCollector.collectAllCodeScanPathes(configuration);
 
-    private void addFileSystemParts(Set<String> paths, SecHubFileSystemContainer container) {
-        Optional<SecHubFileSystemConfiguration> fileSystemOpt = container.getFileSystem();
+        // the information about paths is interesting for debugging but also necessary
+        // for our integration tests - see mocked_setup.json
+        data.codeUploadFileSystemFolderPaths = paths;
 
-        if (!fileSystemOpt.isPresent()) {
-            return;
-        }
-        SecHubFileSystemConfiguration fileSystem = fileSystemOpt.get();
-
-        paths.addAll(fileSystem.getFiles());
-        paths.addAll(fileSystem.getFolders());
     }
 
     protected abstract void customize(ProductExecutorData data);

@@ -10,9 +10,9 @@ import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.commons.mapping.NamePatternIdProvider;
+import com.mercedesbenz.sechub.commons.mapping.NamePatternIdProviderFactory;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
-import com.mercedesbenz.sechub.domain.scan.NamePatternIdProviderFactory;
-import com.mercedesbenz.sechub.domain.scan.config.NamePatternIdProvider;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetupCredentials;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetupJobParameter;

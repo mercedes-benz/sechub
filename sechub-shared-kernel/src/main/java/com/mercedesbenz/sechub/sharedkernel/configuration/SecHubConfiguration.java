@@ -2,9 +2,9 @@
 package com.mercedesbenz.sechub.sharedkernel.configuration;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.mercedesbenz.sechub.commons.core.MustBeKeptStable;
 import com.mercedesbenz.sechub.commons.model.JSONable;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
-import com.mercedesbenz.sechub.sharedkernel.MustBeKeptStable;
 
 /**
  * Be aware to add only parts into this class and do NOT remove properties being

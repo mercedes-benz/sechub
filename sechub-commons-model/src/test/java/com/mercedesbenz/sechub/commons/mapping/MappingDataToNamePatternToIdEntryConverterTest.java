@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.domain.scan.config;
+package com.mercedesbenz.sechub.commons.mapping;
 
 import static org.junit.Assert.*;
 
@@ -7,9 +7,6 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingEntry;
 
 public class MappingDataToNamePatternToIdEntryConverterTest {
 

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.domain.scan.config;
+package com.mercedesbenz.sechub.commons.mapping;
 
 import java.util.regex.Pattern;
 

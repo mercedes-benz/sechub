@@ -1,12 +1,7 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.domain.scan;
+package com.mercedesbenz.sechub.commons.mapping;
 
 import java.util.List;
-
-import com.mercedesbenz.sechub.domain.scan.config.MappingDataToNamePatternToIdEntryConverter;
-import com.mercedesbenz.sechub.domain.scan.config.NamePatternIdProvider;
-import com.mercedesbenz.sechub.domain.scan.config.NamePatternToIdEntry;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
 
 public class NamePatternIdProviderFactory {
 

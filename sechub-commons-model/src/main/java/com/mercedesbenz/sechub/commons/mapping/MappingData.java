@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.sharedkernel.mapping;
+package com.mercedesbenz.sechub.commons.mapping;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.mercedesbenz.sechub.commons.core.MustBeKeptStable;
 import com.mercedesbenz.sechub.commons.model.JSONable;
-import com.mercedesbenz.sechub.sharedkernel.MustBeKeptStable;
 
 @JsonIgnoreProperties(ignoreUnknown = true) // we do ignore to avoid problems from wrong configured values!
 @MustBeKeptStable("This class is used for updating/fetchin mapping data over REST API")

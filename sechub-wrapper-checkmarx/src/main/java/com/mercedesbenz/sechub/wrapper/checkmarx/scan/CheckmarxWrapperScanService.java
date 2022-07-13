@@ -41,6 +41,7 @@ public class CheckmarxWrapperScanService {
         AdapterMetaDataCallback adapterMetaDataCallBack = new FileBasedAdapterMetaDataCallback(metaDataFile);
 
         try {
+
             adapter.start(config, adapterMetaDataCallBack);
         } catch (AdapterException e) {
             // TODO Auto-generated catch block

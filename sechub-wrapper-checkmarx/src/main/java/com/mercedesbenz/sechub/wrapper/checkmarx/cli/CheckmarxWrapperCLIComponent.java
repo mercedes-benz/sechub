@@ -10,7 +10,11 @@ import org.springframework.stereotype.Component;
 import com.beust.jcommander.JCommander;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxConfig;
+import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
+import com.mercedesbenz.sechub.wrapper.checkmarx.CheckmarxWrapperEnvironment;
 import com.mercedesbenz.sechub.wrapper.checkmarx.Console;
+import com.mercedesbenz.sechub.wrapper.checkmarx.scan.CheckmarxWrapperContext;
+import com.mercedesbenz.sechub.wrapper.checkmarx.scan.CheckmarxWrapperContextFactory;
 import com.mercedesbenz.sechub.wrapper.checkmarx.scan.CheckmarxWrapperScanService;
 
 @Component
@@ -20,6 +24,15 @@ public class CheckmarxWrapperCLIComponent {
 
     @Autowired
     CheckmarxWrapperScanService scanService;
+
+    @Autowired
+    CheckmarxWrapperEnvironment environment;
+
+    @Autowired
+    CodeScanPathCollector codeScanPathCollector;
+
+    @Autowired
+    CheckmarxWrapperContextFactory factory;
 
     @Bean
     public CommandLineRunner initialIntegrationTestAdmin() {
@@ -71,11 +84,36 @@ public class CheckmarxWrapperCLIComponent {
 
     private CheckmarxAdapterConfig createConfig() {
         /* @formatter:off */
-        return
-                CheckmarxConfig.builder().
-                    setAlwaysFullScan(false).
+
+
+        CheckmarxWrapperContext context = factory.create(environment);
+
+        @SuppressWarnings("deprecation")
+        CheckmarxAdapterConfig checkMarxConfig = CheckmarxConfig.builder().
+//                configure(new SecHubAdapterOptionsBuilderStrategy(data, getScanType())).
+                setTrustAllCertificates(environment.isTrustAllCertificatesEnabled()).
+                setUser(environment.getUser()).
+                setPasswordOrAPIToken(environment.getCheckmarxPassword()).
+                setProductBaseUrl(environment.getCheckmarxProductBaseURL()).
+
+                setAlwaysFullScan(environment.isAlwaysFullScanEnabled()).
+                setTimeToWaitForNextCheckOperationInMinutes(environment.getScanResultCheckPeriodInMinutes()).
+                setTimeOutInMinutes(environment.getScanResultCheckTimeOutInMinutes()).
+                setFileSystemSourceFolders(context.createCodeUploadFileSystemFolders()). // to support mocked Checkmarx adapters we MUST use still the deprecated method!
+                setSourceCodeZipFileInputStream(context.createSourceCodeZipFileInputStream()).
+//                setTeamIdForNewProjects(configSupport.getTeamIdForNewProjects(projectId)).
+//                setClientSecret(configSupport.getClientSecret()).
+//                setEngineConfigurationName(configSupport.getEngineConfigurationName()).
+//                setPresetIdForNewProjects(configSupport.getPresetIdForNewProjects(projectId)).
+//                setProjectId(projectId).
+//                setTraceID(context.getSechubExecutionContext().getTraceLogIdAsString()).
+                build();
+            /* @formatter:on */
+
+        return CheckmarxConfig.builder().setAlwaysFullScan(false).
 
                 build();
+
         /* @formatter:on */
     }
 

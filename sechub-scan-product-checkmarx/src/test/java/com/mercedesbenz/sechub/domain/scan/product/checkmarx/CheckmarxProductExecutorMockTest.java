@@ -26,6 +26,9 @@ import com.mercedesbenz.sechub.adapter.AdapterException;
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterLogId;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
+import com.mercedesbenz.sechub.commons.mapping.MappingData;
+import com.mercedesbenz.sechub.commons.mapping.MappingEntry;
+import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorCallback;
@@ -43,8 +46,6 @@ import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPI
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingEntry;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.metadata.DefaultMetaDataInspector;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
@@ -78,6 +79,9 @@ public class CheckmarxProductExecutorMockTest {
 
     @MockBean
     SystemEnvironment systemEnvironment;
+
+    @MockBean
+    CodeScanPathCollector codeScanPathCollector;
 
     @Before
     public void before() throws Exception {

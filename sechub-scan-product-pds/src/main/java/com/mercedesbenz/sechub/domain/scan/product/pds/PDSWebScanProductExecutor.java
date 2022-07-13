@@ -30,7 +30,6 @@ import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
-import com.mercedesbenz.sechub.sharedkernel.SystemEnvironment;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 
@@ -46,7 +45,7 @@ public class PDSWebScanProductExecutor extends AbstractProductExecutor {
     PDSInstallSetup installSetup;
 
     @Autowired
-    SystemEnvironment systemEnvironment;
+    PDSExecutorConfigSuppportServiceCollection serviceCollection;
 
     @Autowired
     PDSResilienceConsultant pdsResilienceConsultant;
@@ -131,7 +130,7 @@ public class PDSWebScanProductExecutor extends AbstractProductExecutor {
 
         ProductExecutorContext executorContext = data.getProductExecutorContext();
         PDSExecutorConfigSuppport configSupport = PDSExecutorConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
-                systemEnvironment);
+                serviceCollection);
 
         data.setNetworkTargetDataProvider(configSupport);
 

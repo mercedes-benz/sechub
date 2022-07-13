@@ -10,8 +10,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.mercedesbenz.sechub.commons.core.MustBeKeptStable;
 import com.mercedesbenz.sechub.commons.model.JSONable;
-import com.mercedesbenz.sechub.sharedkernel.MustBeKeptStable;
 
 /**
  * This message data object contains all possible information about a project

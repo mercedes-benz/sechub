@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.mercedesbenz.sechub.commons.mapping.MappingData;
+import com.mercedesbenz.sechub.commons.mapping.MappingEntry;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.integrationtest.api.PDSIntTestProductIdentifier;
 import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 import com.mercedesbenz.sechub.integrationtest.api.TestExecutorProductIdentifier;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingEntry;
 import com.mercedesbenz.sechub.test.PDSTestURLBuilder;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 import com.mercedesbenz.sechub.test.executorconfig.TestExecutorConfig;

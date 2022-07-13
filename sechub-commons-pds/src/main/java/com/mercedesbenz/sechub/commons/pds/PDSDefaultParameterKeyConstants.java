@@ -30,6 +30,8 @@ public class PDSDefaultParameterKeyConstants {
 
     public static final String PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE = "pds.config.use.sechub.storage";
 
+    public static final String PARAM_KEY_PDS_CONFIG_USE_SECHUB_MAPPINGS = "pds.config.use.sechub.mappings";
+
     public static final String PARAM_KEY_PDS_CONFIG_SECHUB_STORAGE_PATH = "pds.config.sechub.storage.path";
 
     public static final String PARAM_KEY_PDS_CONFIG_FILEFILTER_EXCLUDES = "pds.config.filefilter.excludes";

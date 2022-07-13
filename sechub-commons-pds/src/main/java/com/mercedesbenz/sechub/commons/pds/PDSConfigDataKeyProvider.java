@@ -40,6 +40,17 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
                             .withDefault(true))
 
     ,
+    /**
+     * Special (optional) key inside executor configuration which will be used to
+     * define if PDS will use SecHub mappings. The value contains a comma separated
+     * list of mapping ids.
+     */
+    PDS_CONFIG_USE_SECHUB_MAPPINGS(
+            new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_MAPPINGS, "Contains a comma separated list of mappping ids. "
+                    + "Each defined mapping will be fetched from SecHub DB as JSON and sent as job parameter with " + "the mapping id as name to the PDS.")
+                            .markAlwaysSentToPDS().withDefault(true))
+
+    ,
 
     /**
      * Contains sechub storage location

@@ -30,6 +30,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.mercedesbenz.sechub.commons.mapping.MappingData;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.integrationtest.JSONTestSupport;
@@ -42,7 +43,6 @@ import com.mercedesbenz.sechub.integrationtest.internal.SimpleTestStringList;
 import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData;
 import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
 import com.mercedesbenz.sechub.sharedkernel.project.ProjectAccessLevel;
 import com.mercedesbenz.sechub.test.SecHubTestURLBuilder;
 import com.mercedesbenz.sechub.test.TestUtil;

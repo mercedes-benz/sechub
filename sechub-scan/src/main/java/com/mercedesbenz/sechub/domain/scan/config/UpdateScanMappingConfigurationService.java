@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.mapping.MappingData;
 import com.mercedesbenz.sechub.sharedkernel.Step;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdmiUpdatesMappingConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.validation.MappingDataValidation;

@@ -4,8 +4,8 @@ package com.mercedesbenz.sechub.sharedkernel.validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingEntry;
+import com.mercedesbenz.sechub.commons.mapping.MappingData;
+import com.mercedesbenz.sechub.commons.mapping.MappingEntry;
 
 @Component
 public class MappingDataValidationImpl extends AbstractValidation<MappingData> implements MappingDataValidation {

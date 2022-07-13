@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.sharedkernel;
+package com.mercedesbenz.sechub.commons.core;
 
 /**
  * Marker interface for parts given to user as official API, being machine
