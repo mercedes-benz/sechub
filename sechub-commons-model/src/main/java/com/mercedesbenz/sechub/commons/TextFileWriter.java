@@ -15,6 +15,16 @@ public class TextFileWriter {
 
     private static final Logger LOG = LoggerFactory.getLogger(TextFileWriter.class);
 
+    /**
+     * Saves a given text to a target file. If the parent folder structure does not
+     * exist, it will be automatically created.
+     *
+     * @param targetFile the target file
+     * @param text       content to write
+     * @param overwrite  when <code>true</code>, existing files will be deleted
+     *                   before write
+     * @throws IOException
+     */
     public void save(File targetFile, String text, boolean overwrite) throws IOException {
         internalSave(targetFile, text, overwrite, Charset.forName("UTF-8"));
     }

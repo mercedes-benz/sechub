@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.pds.execution;
-
-import com.mercedesbenz.sechub.commons.pds.PDSConfigDataKeyProvider;
+package com.mercedesbenz.sechub.commons.pds;
 
 /**
  * These constants are PDS internal and do not come from SecHub job or executor
@@ -16,6 +14,7 @@ import com.mercedesbenz.sechub.commons.pds.PDSConfigDataKeyProvider;
  */
 public class PDSLauncherScriptEnvironmentConstants {
 
+    public static final String SECHUB_JOB_UUID = "SECHUB_JOB_UUID";
     /*
      * TODO Albert Tregnaghi, 2022-05-22: This is deprecated because we will remove
      * the old environment variable PDS_JOB_SOURCECODE_UNZIPPED_FOLDER when all

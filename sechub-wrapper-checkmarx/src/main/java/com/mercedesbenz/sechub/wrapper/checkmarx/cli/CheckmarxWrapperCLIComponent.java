@@ -101,12 +101,12 @@ public class CheckmarxWrapperCLIComponent {
                 setTimeOutInMinutes(environment.getScanResultCheckTimeOutInMinutes()).
                 setFileSystemSourceFolders(context.createCodeUploadFileSystemFolders()). // to support mocked Checkmarx adapters we MUST use still the deprecated method!
                 setSourceCodeZipFileInputStream(context.createSourceCodeZipFileInputStream()).
-//                setTeamIdForNewProjects(configSupport.getTeamIdForNewProjects(projectId)).
-//                setClientSecret(configSupport.getClientSecret()).
-//                setEngineConfigurationName(configSupport.getEngineConfigurationName()).
-//                setPresetIdForNewProjects(configSupport.getPresetIdForNewProjects(projectId)).
-//                setProjectId(projectId).
-//                setTraceID(context.getSechubExecutionContext().getTraceLogIdAsString()).
+                setTeamIdForNewProjects(context.getTeamIdForNewProjects()).
+                setClientSecret(environment.getClientSecret()).
+                setEngineConfigurationName(environment.getEngineConfigurationName()).
+                setPresetIdForNewProjects(context.getPresetIdForNewProjects()).
+                setProjectId(context.getProjectId()).
+                setTraceID(environment.getSecHubJobUUID()).
                 build();
             /* @formatter:on */
 

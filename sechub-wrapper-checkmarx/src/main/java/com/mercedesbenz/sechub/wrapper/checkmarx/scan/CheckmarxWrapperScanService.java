@@ -6,28 +6,31 @@ import java.nio.file.Files;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.mercedesbenz.sechub.adapter.AdapterException;
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterMetaDataCallback;
 import com.mercedesbenz.sechub.adapter.FileBasedAdapterMetaDataCallback;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
+import com.mercedesbenz.sechub.commons.pds.PDSUserMessageSupport;
+import com.mercedesbenz.sechub.wrapper.checkmarx.CheckmarxWrapperEnvironment;
 
 @Service
 public class CheckmarxWrapperScanService {
 
     private static final Logger LOG = LoggerFactory.getLogger(CheckmarxWrapperScanService.class);
 
-    @Value("${pds.job.metadata.file:}") // This is normally injected by PDS, look at PDS documentation!
-    String pdsJobMetaDatafile;
-
     @Autowired
     CheckmarxAdapter adapter;
 
+    @Autowired
+    CheckmarxWrapperEnvironment environment;
+
     public String startScan(CheckmarxAdapterConfig config) throws Exception {
         File metaDataFile;
+        String pdsJobMetaDatafile = environment.getPdsJobMetaDatafile();
+
         if (pdsJobMetaDatafile == null || pdsJobMetaDatafile.isEmpty()) {
             LOG.warn("PDS job meta data file not set. Will create fallback temp file. For local tests okay but not for production!");
 
@@ -40,13 +43,11 @@ public class CheckmarxWrapperScanService {
 
         AdapterMetaDataCallback adapterMetaDataCallBack = new FileBasedAdapterMetaDataCallback(metaDataFile);
 
-        try {
+        AdapterExecutionResult adapterResult = adapter.start(config, adapterMetaDataCallBack);
 
-            adapter.start(config, adapterMetaDataCallBack);
-        } catch (AdapterException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return null;
+        PDSUserMessageSupport support = new PDSUserMessageSupport(environment.getPdsUserMessagesFolder());
+        support.writeMessages(adapterResult.getProductMessages());
+
+        return adapterResult.getProductResult();
     }
 }

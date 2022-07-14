@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.wrapper.checkmarx;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import com.mercedesbenz.sechub.commons.mapping.NamePatternIdProviderFactory;
 import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
 
 /**
@@ -15,6 +16,11 @@ import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
  */
 @Component
 public class CheckmarxWrapperPojoFactory {
+
+    @Bean
+    NamePatternIdProviderFactory createProviderFactory() {
+        return new NamePatternIdProviderFactory();
+    }
 
     @Bean
     CodeScanPathCollector createCodeScanPathCollector() {
