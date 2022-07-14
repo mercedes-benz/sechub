@@ -28,7 +28,16 @@
                     {
                         "key": "pds.test.key.variantname",
                         "description": "a parameter from configuration - will be different in each integration test config from sechub integration test server"
+                    },
+                    {
+                        "key": "test.mapping1.replace.project1",
+                        "description": "mapping1 for testing - only in variant j, will have mapping from sechub"
+                    },
+                    {
+                        "key": "test.mapping2.not.existing.in.sechub",
+                        "description": "mapping 2 for testing - only in variant j, will have fallback data (empty)"
                     }
+                    
                 ]
             }
         },

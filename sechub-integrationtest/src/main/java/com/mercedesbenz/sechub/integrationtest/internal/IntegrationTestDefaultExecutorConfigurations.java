@@ -58,6 +58,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
     public static final String PDS_CODESCAN_VARIANT_F = "f";
     public static final String PDS_CODESCAN_VARIANT_G = "g";
     public static final String PDS_CODESCAN_VARIANT_I = "i";
+    public static final String PDS_CODESCAN_VARIANT_J = "j";
 
     public static final String PDS_WEBSCAN_VARIANT_A = "a";
     public static final String PDS_WEBSCAN_VARIANT_B = "b";
@@ -111,7 +112,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
      * A PDS executor configuration for code scan (generic integration test code scan results). It reuses SecHub storage/data.
      * The {@value IntegrationTestDefaultExecutorConfigurations#JOBPARAM_PDS_KEY_FOR_VARIANTNAME} is set to {@value IntegrationTestDefaultExecutorConfigurations#PDS_CODESCAN_VARIANT_I}.
      *
-     * The file filter job paramaters are set to:
+     * The file filter job parameters are set to:
      * <ul>
      * <li> includes: {@value IntegrationTestDefaultExecutorConfigurations#INCLUDES_1}</li>
      * <li> excludes: {@value IntegrationTestDefaultExecutorConfigurations#EXCLUDES_1}</li>
@@ -125,6 +126,27 @@ public class IntegrationTestDefaultExecutorConfigurations {
                                                 PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN,
                                                 StorageType.REUSE_SECHUB_DATA,
                                                 PDS_CODESCAN, defineExcludeIncludes1JobParameters());
+
+    /**
+     * A PDS executor configuration for code scan (generic integration test code scan results). It reuses SecHub storage/data.
+     * The {@value IntegrationTestDefaultExecutorConfigurations#JOBPARAM_PDS_KEY_FOR_VARIANTNAME} is set to {@value IntegrationTestDefaultExecutorConfigurations#PDS_CODESCAN_VARIANT_J}.
+     * <br><br>
+     * PDS job parameter {@value PDSDefaultParameterKeyConstants#PARAM_KEY_PDS_CONFIG_USE_SECHUB_MAPPINGS} does include:
+     * <ul>
+     * <li>{@link IntegrationTestExampleConstants#MAPPING_ID_1_REPLACE_ANY_PROJECT1} ({@value IntegrationTestExampleConstants#MAPPING_ID_1_REPLACE_ANY_PROJECT1})</li>
+     * <li>{@link IntegrationTestExampleConstants#MAPPING_ID_2_NOT_EXISTING_IN_SECHUB} ({@value IntegrationTestExampleConstants#MAPPING_ID_2_NOT_EXISTING_IN_SECHUB})</li>
+     * </ul>
+     * <br>
+     * Attention: Even when this is a growing scenario, the mapping {@value IntegrationTestExampleConstants#MAPPING_ID_1_REPLACE_ANY_PROJECT1}  is only created one time - same as the profile setup. So mapping may NOT be chnaged inside tests (to avoid side effects).
+     * <br>
+     * It is used inside {@link IntegrationTestDefaultProfiles#PROFILE_11_PDS_CODESCAN_MAPPING profile 11}
+     *
+     */
+    public static final TestExecutorConfig PDS_V1_CODE_SCAN_J_MAPPING= definePDSScan(
+            PDS_CODESCAN_VARIANT_J,false,
+            PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN,
+            StorageType.REUSE_SECHUB_DATA,
+            PDS_CODESCAN, defineMappingJobParameters());
 
 
     public static final TestExecutorConfig PDS_V1_WEB_SCAN_A = definePDSScan(
@@ -165,6 +187,14 @@ public class IntegrationTestDefaultExecutorConfigurations {
         list.add(new TestExecutorSetupJobParam(PARAM_KEY_PDS_CONFIG_FILEFILTER_EXCLUDES, EXCLUDES_1));
         list.add(new TestExecutorSetupJobParam(PARAM_KEY_PDS_CONFIG_FILEFILTER_INCLUDES, INCLUDES_1));
 
+        return list;
+    }
+
+    private static List<TestExecutorSetupJobParam> defineMappingJobParameters() {
+        List<TestExecutorSetupJobParam> list = new ArrayList<>();
+
+        list.add(new TestExecutorSetupJobParam(PARAM_KEY_PDS_CONFIG_USE_SECHUB_MAPPINGS, IntegrationTestExampleConstants.MAPPING_ID_1_REPLACE_ANY_PROJECT1
+                + ", " + IntegrationTestExampleConstants.MAPPING_ID_2_NOT_EXISTING_IN_SECHUB));
         return list;
     }
 

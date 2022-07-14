@@ -29,8 +29,9 @@ public class PDSExecutorConfigSuppportTest {
     private static final String PATTERN2A = "pattern2a";
     private static final String PATTERN1B = "pattern1b";
     private static final String PATTERN1A = "pattern1a";
-    private static final String SECHUB_MAPPING_ID_2 = "the.key2";
     private static final String SECHUB_MAPPING_ID_1 = "the.key1";
+    private static final String SECHUB_MAPPING_ID_2 = "the.key2";
+    private static final String SECHUB_MAPPING_ID_3_NOT_KNOWN_BY_SECHUB = "the.key3.not.known.by.sechub";
 
     private static final String CONFIGURED_PDS_PRODUCT_IDENTIFIER = "a_string";
     private PDSExecutorConfigSuppport supportToTest;
@@ -54,8 +55,8 @@ public class PDSExecutorConfigSuppportTest {
         jobParameters.add(
                 new ProductExecutorConfigSetupJobParameter(SecHubProductExecutionPDSKeyProvider.PDS_FORBIDS_TARGETTYPE_INTRANET.getKey().getId(), "false"));
 
-        jobParameters
-                .add(new ProductExecutorConfigSetupJobParameter(PDSConfigDataKeyProvider.PDS_CONFIG_USE_SECHUB_MAPPINGS.getKey().getId(), "the.key1,the.key2"));
+        jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSConfigDataKeyProvider.PDS_CONFIG_USE_SECHUB_MAPPINGS.getKey().getId(),
+                SECHUB_MAPPING_ID_1 + "," + SECHUB_MAPPING_ID_2 + " , " + SECHUB_MAPPING_ID_3_NOT_KNOWN_BY_SECHUB));
 
         when(config.getSetup()).thenReturn(executorConfigSetup);
         credentialsInConfigSetup = new ProductExecutorConfigSetupCredentials();
@@ -141,6 +142,15 @@ public class PDSExecutorConfigSuppportTest {
             }
         }
         assertTrue(foundEntry2a, "entry 2a not found!");
+
+        /* test 3 - the unknown mapping is injected as empty variant */
+        String p3 = parameters.get(SECHUB_MAPPING_ID_3_NOT_KNOWN_BY_SECHUB);
+        assertNotNull(p3, SECHUB_MAPPING_ID_3_NOT_KNOWN_BY_SECHUB + " was not found!");
+        PDSMappingJobParameterData data3 = JSONConverter.get().fromJSON(PDSMappingJobParameterData.class, p3);
+
+        assertEquals(SECHUB_MAPPING_ID_3_NOT_KNOWN_BY_SECHUB, data3.getMappingId());
+        assertEquals(0, data3.getEntries().size());
+
     }
 
 }

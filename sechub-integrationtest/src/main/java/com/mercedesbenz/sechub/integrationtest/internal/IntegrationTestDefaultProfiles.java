@@ -3,11 +3,13 @@ package com.mercedesbenz.sechub.integrationtest.internal;
 
 import java.util.List;
 
+import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.integrationtest.scenario10.Scenario10;
 import com.mercedesbenz.sechub.integrationtest.scenario11.Scenario11;
 import com.mercedesbenz.sechub.integrationtest.scenario12.Scenario12;
 import com.mercedesbenz.sechub.integrationtest.scenario13.Scenario13;
 import com.mercedesbenz.sechub.integrationtest.scenario15.Scenario15;
+import com.mercedesbenz.sechub.integrationtest.scenario16.Scenario16;
 import com.mercedesbenz.sechub.integrationtest.scenario2.Scenario2;
 import com.mercedesbenz.sechub.integrationtest.scenario3.Scenario3;
 import com.mercedesbenz.sechub.integrationtest.scenario4.Scenario4;
@@ -258,6 +260,29 @@ public class IntegrationTestDefaultProfiles {
     public static final DefaultTestExecutionProfile PROFILE_10_PDS_CODESCAN_INCLUDES_EXCLUDES = defineProfile10();
 
     /**
+     * The profile does use executor configuration
+     * {@link IntegrationTestDefaultExecutorConfigurations#PDS_V1_CODE_SCAN_J_MAPPING
+     * PDS_V1_CODE_SCAN_J_MAPPING}
+     *
+     * PDS job parameter
+     * {@value PDSDefaultParameterKeyConstants#PARAM_KEY_PDS_CONFIG_USE_SECHUB_MAPPINGS}
+     * does include:
+     * <ul>
+     * <li>{@link IntegrationTestExampleConstants#MAPPING_ID_1_REPLACE_ANY_PROJECT1}
+     * ({@value IntegrationTestExampleConstants#MAPPING_ID_1_REPLACE_ANY_PROJECT1})</li>
+     * <li>{@link IntegrationTestExampleConstants#MAPPING_ID_2_NOT_EXISTING_IN_SECHUB}
+     * ({@value IntegrationTestExampleConstants#MAPPING_ID_2_NOT_EXISTING_IN_SECHUB})</li>
+     * </ul>
+     *
+     * <h5>Used inside scenarios:</h5>
+     * <ul>
+     * <li>{@link Scenario16}</li>
+     * </ul>
+     *
+     */
+    public static final DefaultTestExecutionProfile PROFILE_11_PDS_CODESCAN_MAPPING = defineProfile11();
+
+    /**
      * @return all default profiles
      */
     public static List<DefaultTestExecutionProfile> getAllDefaultProfiles() {
@@ -364,6 +389,17 @@ public class IntegrationTestDefaultProfiles {
         profile.id = "inttest-p10-pds-incl-exclude"; // not more than 30 chars per profile id, so we use this
         profile.description = "Profile 10: PDS, reused storage, dynamic text results, has include exclude filters:\nIncludes:"
                 + IntegrationTestDefaultExecutorConfigurations.INCLUDES_1 + "\nExcludes:" + IntegrationTestDefaultExecutorConfigurations.EXCLUDES_1;
+        profile.enabled = true;
+        return profile;
+    }
+
+    private static DefaultTestExecutionProfile defineProfile11() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_CODE_SCAN_J_MAPPING);
+        profile.id = "inttest-p11-pds-mapping"; // not more than 30 chars per profile id, so we use this
+        profile.description = "Profile 11: PDS, reused storage, dynamic text results, uses predefined mapping: '"
+                + IntegrationTestExampleConstants.MAPPING_ID_1_REPLACE_ANY_PROJECT1 + "'";
         profile.enabled = true;
         return profile;
     }

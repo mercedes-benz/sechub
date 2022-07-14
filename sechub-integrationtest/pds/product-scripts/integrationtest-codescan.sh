@@ -31,12 +31,23 @@ function produceLargerOutputStreamContent() {
     done
 }
 
+#
+# Dump PDS variables
+#
 if [[ "$PDS_TEST_KEY_VARIANTNAME" != "f" ]]; then
     # Variant f does provide "lazy streams" with dedicated content and depends on output.
     # But for all other variants we can provide some additoinal information in messages     
     dumpPDSVariables   
 fi
 
+if [[ "$PDS_TEST_KEY_VARIANTNAME" = "j" ]]; then
+    dumpVariable "TEST_MAPPING1_REPLACE_PROJECT1"
+    dumpVariable "TEST_MAPPING2_NOT_EXISTING_IN_SECHUB"
+fi
+
+#
+# Handle extreaction
+#
 if [[ "$PDS_JOB_HAS_EXTRACTED_SOURCES" = "true" ]]; then
    mergeFolderFilesRecursivelyIntoResultFile "sources", $PDS_JOB_EXTRACTED_SOURCES_FOLDER ${PDS_JOB_RESULT_FILE} $INTEGRATION_TEST_DEBUG
 fi
@@ -49,6 +60,7 @@ fi
 echo "#PDS_INTTEST_PRODUCT_CODESCAN
 info:pds.test.key.variantname as PDS_TEST_KEY_VARIANTNAME=$PDS_TEST_KEY_VARIANTNAME,product1.level as PRODUCT1_LEVEL=$PRODUCT1_LEVEL
 $(cat ${PDS_JOB_RESULT_FILE})" > ${PDS_JOB_RESULT_FILE}
+
 
 if [[ "$PDS_TEST_KEY_VARIANTNAME" = "f" ]]; then
     produceLargerOutputStreamContent

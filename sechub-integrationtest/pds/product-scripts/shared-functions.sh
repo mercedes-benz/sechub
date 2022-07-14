@@ -9,14 +9,19 @@ function debug(){
 }
 
 function dumpPDSVariables() {
-    echo ">PDS_JOB_UUID=$PDS_JOB_UUID"
-    echo ">PDS_TEST_KEY_VARIANTNAME=$PDS_TEST_KEY_VARIANTNAME"
-    echo ">PDS_JOB_USER_MESSAGES_FOLDER=$PDS_JOB_USER_MESSAGES_FOLDER"
-    echo ">PDS_JOB_HAS_EXTRACTED_SOURCES =$PDS_JOB_HAS_EXTRACTED_SOURCES"
-    echo ">PDS_JOB_HAS_EXTRACTED_BINARIES=$PDS_JOB_HAS_EXTRACTED_BINARIES"
-    echo ">PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED=$PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED"
-    echo ">INTEGRATION_TEST_DEBUG=$INTEGRATION_TEST_DEBUG"
+    dumpVariable "PDS_JOB_UUID"
+    dumpVariable "PDS_TEST_KEY_VARIANTNAME"
+    dumpVariable "PDS_JOB_USER_MESSAGES_FOLDER"
+    dumpVariable "PDS_JOB_HAS_EXTRACTED_SOURCES"
+    dumpVariable "PDS_JOB_HAS_EXTRACTED_BINARIES"
+    dumpVariable "PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED"
+    dumpVariable "INTEGRATION_TEST_DEBUG"
 }
+ 
+function dumpVariable(){
+    local variableName=$1
+    echo ">${variableName}=${!variableName}"
+} 
  
 # Append content from each uploaded file to result file - thosee files do contain info/error messages
 # for the test and will be merged into one result file which is interpreted by integration tests.

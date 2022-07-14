@@ -2,6 +2,8 @@
 # SPDX-License-Identifier: MIT
 
 DEBUG=true
+INTEGRATION_TEST_DEBUG="integration.test.debug.value"
+PDS_TEST_KEY_VARIANTNAME="pds.test.key.variantname.value"
 
 source ./shared-functions.sh
 set -e

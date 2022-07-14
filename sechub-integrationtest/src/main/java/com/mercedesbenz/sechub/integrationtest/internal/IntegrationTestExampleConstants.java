@@ -7,6 +7,12 @@ import java.util.List;
 
 public class IntegrationTestExampleConstants {
 
+    /**
+     * This is just a information for developers to find the PDS configuration file
+     * easier
+     */
+    public static final String PDS_INTEGRATIONTEST_CONFIG_FILEPATH = "sechub-integrationtest/src/main/resources/pds-config-integrationtest.json";
+
     public static final String EXAMPLE_CONTENT_ROOT_PATH = "sechub-integrationtest/build/sechub/example/content/";
 
     /**
@@ -201,6 +207,37 @@ public class IntegrationTestExampleConstants {
         }
 
     }
+
+    public static final String MAPPING_PATTERN_ANY_PROJECT1 = ".*project1*";
+    public static final String MAPPING_REPLACEMENT_FOR_PROJECT1 = "replacement-project1";
+
+    /**
+     * This mapping will be automatically created and is available inside tests. It
+     * uses {@link #MAPPING_ID_1_REPLACE_ANY_PROJECT1}
+     * ({@value #MAPPING_ID_1_REPLACE_ANY_PROJECT1} ) as pattern and
+     * {@link #MAPPING_REPLACEMENT_FOR_PROJECT1}
+     * ({@value #MAPPING_REPLACEMENT_FOR_PROJECT1}) for replacement
+     */
+    public static final String MAPPING_ID_1_REPLACE_ANY_PROJECT1 = "test.mapping1.replace.project1";
+
+    /**
+     * Just the resulting PDS environment name for mapping
+     * {@link #MAPPING_ID_1_REPLACE_ANY_PROJECT1}
+     */
+    public static final String PDS_ENV_NAME_MAPPING_ID_1_REPLACE_ANY_PROJECT1 = "TEST_MAPPING1_REPLACE_PROJECT1";
+
+    /**
+     * This mapping does just not exists on SecHub side. But the id can be
+     * referenced - e.g. inside a PDS SecHub executor configuration to enable
+     * testing if an empty mapping is injected as fallback on PDS side.
+     */
+    public static final String MAPPING_ID_2_NOT_EXISTING_IN_SECHUB = "test.mapping2.not.existing.in.sechub";
+
+    /**
+     * Just the resulting PDS environment name for mapping
+     * {@link #MAPPING_ID_2_NOT_EXISTING_IN_SECHUB}
+     */
+    public static final String PDS_ENV_NAME_MAPPING_ID_2_NOT_EXISTING_IN_SECHUB = "TEST_MAPPING2_NOT_EXISTING_IN_SECHUB";
 
     public static class TestDataFolderList {
 
