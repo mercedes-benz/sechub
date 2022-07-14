@@ -283,7 +283,7 @@ public abstract class AbstractScan implements OwaspZapScan {
         // null specifies the default scan policy
         clientApi.ascan.enableAllScanners(null);
 
-        // use firefox in headless mode on default
+        // use firefox in headless mode by default
         clientApi.ajaxSpider.setOptionBrowserId("firefox-headless");
     }
 
