@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.owaspzapwrapper.config;
 
-import java.io.File;
 import java.net.URI;
 import java.util.UUID;
 
@@ -15,6 +14,7 @@ import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitRuntimeException;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.auth.AuthenticationType;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.data.DeactivatedRuleReferences;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.data.OwaspZapFullRuleset;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.data.RuleReference;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.BaseTargetUriFactory;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.SecHubWebScanConfigurationHelper;
 import com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableConstants;
@@ -42,14 +42,12 @@ public class OwaspZapScanConfigurationFactory {
             throw new MustExitRuntimeException("Command line settings must not be null!", MustExitCode.COMMANDLINE_CONFIGURATION_INVALID);
         }
         /* Owasp Zap rule setup */
-        OwaspZapFullRuleset fullRuleset = new OwaspZapFullRuleset();
-        DeactivatedRuleReferences deactivatedRuleReferences = new DeactivatedRuleReferences();
+        OwaspZapFullRuleset fullRuleset = ruleProvider.fetchFullRuleset(settings.getFullRulesetFile());
+        DeactivatedRuleReferences deactivatedRuleReferences = createDeactivatedRuleReferencesFromSettingsOrEnv(settings);
 
-        File fullRulesetFile = settings.getFullRulesetFile();
-        File rulesDeactvationFile = settings.getRulesDeactvationFile();
-        if (fullRulesetFile != null && rulesDeactvationFile != null) {
-            fullRuleset = ruleProvider.fetchFullRuleset(fullRulesetFile);
-            deactivatedRuleReferences = ruleProvider.fetchDeactivatedRuleReferences(rulesDeactvationFile);
+        DeactivatedRuleReferences ruleReferencesFromFile = ruleProvider.fetchDeactivatedRuleReferences(settings.getRulesDeactvationFile());
+        for (RuleReference reference : ruleReferencesFromFile.getDeactivatedRuleReferences()) {
+            deactivatedRuleReferences.addRuleReference(reference);
         }
 
         /* Wrapper settings */
@@ -88,6 +86,36 @@ public class OwaspZapScanConfigurationFactory {
 											  .build();
 		/* @formatter:on */
         return scanConfig;
+    }
+
+    private DeactivatedRuleReferences createDeactivatedRuleReferencesFromSettingsOrEnv(CommandLineSettings settings) {
+        LOG.info("Reading rules to deactivate from command line if set.");
+        String deactivatedRuleRefsAsString = settings.getDeactivatedRuleReferences();
+
+        // if no rules to deactivate were specified via the command line,
+        // look for rules specified via the corresponding env variable
+        if (deactivatedRuleRefsAsString == null) {
+            LOG.info("Reading rules to deactivate from env variable {} if set.", EnvironmentVariableConstants.ZAP_DEACTIVATED_RULE_REFERENCES);
+            deactivatedRuleRefsAsString = environmentVariableReader.readAsString(EnvironmentVariableConstants.ZAP_DEACTIVATED_RULE_REFERENCES);
+        }
+
+        // if no rules to deactivate were set at all, continue without
+        if (deactivatedRuleRefsAsString == null) {
+            LOG.info("Env variable {} was not set.", EnvironmentVariableConstants.ZAP_DEACTIVATED_RULE_REFERENCES);
+            return new DeactivatedRuleReferences();
+        }
+
+        DeactivatedRuleReferences deactivatedRuleReferences = new DeactivatedRuleReferences();
+        String[] deactivatedRuleRefs = deactivatedRuleRefsAsString.split(",");
+        for (String ruleRef : deactivatedRuleRefs) {
+            // The info is not needed here, it is only for the JSON file and meant to be
+            // used as an additional description for the user
+            String info = "";
+            RuleReference ref = new RuleReference(ruleRef, info);
+            deactivatedRuleReferences.addRuleReference(ref);
+        }
+
+        return deactivatedRuleReferences;
     }
 
     private OwaspZapServerConfiguration createOwaspZapServerConfig(CommandLineSettings settings) {
