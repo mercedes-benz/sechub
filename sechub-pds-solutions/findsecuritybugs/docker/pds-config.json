@@ -1,10 +1,10 @@
 {
     "apiVersion" : "1.0",
-    "serverId" : "FIND_SECURITY_BUGS_CLUSTER", 
+    "serverId" : "FINDSECURITYBUGS_CLUSTER", 
 
     "products" : [
         {
-            "id" : "PDS_FIND_SECURITY_BUGS",
+            "id" : "PDS_FINDSECURITYBUGS",
             "path" : "/scripts/findsecuritybugs.sh",
             "scanType" : "codeScan",
             "description" : "Runs FindSecurityBugs. FindSecurityBugs is a static analysis tool for Java, Kotlin, Scala and Groovy.",
@@ -30,7 +30,7 @@
             }
         },
         {
-            "id" : "PDS_FIND_SECURITY_BUGS_MOCK",
+            "id" : "PDS_FINDSECURITYBUGS_MOCK",
             "path" : "/scripts/findsecuritybugs.sh",
             "scanType" : "codeScan",
             "description" : "Runs FindSecurityBugs mock. It returns a fixed result file.",

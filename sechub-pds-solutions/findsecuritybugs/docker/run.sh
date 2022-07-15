@@ -47,7 +47,6 @@ localserver () {
         echo "Object storage:"
         echo " * Endpoint: $S3_ENDPOINT"
         echo " * Bucketname: $S3_BUCKETNAME"
-        echo " * Accesskey: $S3_ACCESSKEY"
     fi
 
     # Regarding entropy collection:

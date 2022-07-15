@@ -21,6 +21,11 @@ spec:
             containers:
                 - name: {{ .Chart.Name }}
                   image: "{{ .Values.image.registry }}:{{ .Values.image.tag }}"
+                  resources:
+                      requests:
+                          memory: "{{ .Values.resources.requests.memory }}"
+                      limits:
+                          memory: "{{ .Values.resources.limits.memory }}"
                   env:
                     - name: PDS_START_MODE
                       value: "{{ .Values.pds.startMode }}"
@@ -36,6 +41,10 @@ spec:
                       value: "{{ .Values.pds.maxFileUploadSize }}"
                     - name: PDS_UPLOAD_BINARIES_MAXIMUM_BYTES
                       value: "{{ .Values.pds.uploadBinariesMaximumBytes }}"
+                    {{- if .Values.pds.logging.type.enabled }}
+                    - name: LOGGING_TYPE
+                      value: {{ .Values.pds.logging.type.appenderName }}
+                    {{- end }}
                     {{- if .Values.pds.javaDebug.enabled }}
                     - name: JAVA_ENABLE_DEBUG
                       value: "true"
@@ -77,7 +86,27 @@ spec:
                       value: "{{ .Values.storage.sharedVolume.upload.dir }}"
                     {{- end}}
                   ports:
-                    - containerPort: 8444
+                    - name: pds-https-port
+                      containerPort: 8444
+                  startupProbe:
+                    httpGet:
+                      scheme: HTTPS
+                      path: /api/anonymous/check/alive
+                      port: pds-https-port
+                    periodSeconds: 1
+                    failureThreshold: 300
+                    # probe every 1s x 300 = 5 mins before restart of container
+                    successThreshold: 1
+                    timeoutSeconds: 1
+                  livenessProbe:
+                    httpGet:
+                      scheme: HTTPS
+                      path: /api/anonymous/check/alive
+                      port: pds-https-port
+                    periodSeconds: 5
+                    failureThreshold: 3
+                    successThreshold: 1
+                    timeoutSeconds: 3
 
             volumes:
                 - name: pds-scancode-workspace

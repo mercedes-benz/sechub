@@ -8,15 +8,28 @@ image:
     registry: "my.registry.example.org/pds_findsecuritybugs"
     tag: "latest"
 
+resources:
+    requests:
+        memory: 256Mi
+    limits:
+        memory: 1Gi
+
 pds:
     # 100 MiB by default
     # 1024**2 * 100 = 104857600
-    uploadBinariesMaximumBytes: 104857600
+    uploadBinariesMaximumBytes: "104857600"
+    volumes:
+      workspace:
+        size: "1Gi"
     startMode: localserver
     javaDebug:
         enabled: false
     keepContainerAliveAfterPDSCrashed: false
     maxFileUploadSize: 20MB
+    logging:
+        type:
+            enabled: false
+            appenderName: "LOGSTASH_JSON"
 
 users:
     technical:
