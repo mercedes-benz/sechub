@@ -11,6 +11,7 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
 import com.mercedesbenz.sechub.commons.mapping.NamePatternToIdEntry;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.pds.PDSConfigDataKeyProvider;
@@ -21,7 +22,6 @@ import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetup;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetupCredentials;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetupJobParameter;
-import com.mercedesbenz.sechub.sharedkernel.SystemEnvironment;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 
 public class PDSExecutorConfigSuppportTest {
@@ -66,11 +66,11 @@ public class PDSExecutorConfigSuppportTest {
 
         serviceCollection = mock(PDSExecutorConfigSuppportServiceCollection.class);
 
-        SystemEnvironment systemEnvironment = mock(SystemEnvironment.class);
+        SystemEnvironmentVariableSupport systemEnvironmentVariableSupport = mock(SystemEnvironmentVariableSupport.class);
         mappingConfigurationService = mock(ScanMappingConfigurationService.class);
 
         when(serviceCollection.getMappingConfigurationService()).thenReturn(mappingConfigurationService);
-        when(serviceCollection.getSystemEnvironment()).thenReturn(systemEnvironment);
+        when(serviceCollection.getSystemEnvironmentVariableSupport()).thenReturn(systemEnvironmentVariableSupport);
         supportToTest = PDSExecutorConfigSuppport.createSupportAndAssertConfigValid(config, serviceCollection);
     }
 

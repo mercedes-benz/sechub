@@ -7,16 +7,16 @@ import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxConstants;
 import com.mercedesbenz.sechub.commons.mapping.NamePatternIdProvider;
 import com.mercedesbenz.sechub.commons.mapping.NamePatternIdProviderFactory;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
-import com.mercedesbenz.sechub.wrapper.checkmarx.CheckmarxWrapperEnvironment;
+import com.mercedesbenz.sechub.wrapper.checkmarx.cli.CheckmarxWrapperCLIEnvironment;
 
 public class CheckmarxWrapperContext {
 
     private SecHubConfigurationModel configuration;
-    private CheckmarxWrapperEnvironment environment;
+    private CheckmarxWrapperCLIEnvironment environment;
     private NamePatternIdProvider presetIdProvider;
     private NamePatternIdProvider teamIdProvider;
 
-    CheckmarxWrapperContext(SecHubConfigurationModel configuration, CheckmarxWrapperEnvironment environment, NamePatternIdProviderFactory factory) {
+    CheckmarxWrapperContext(SecHubConfigurationModel configuration, CheckmarxWrapperCLIEnvironment environment, NamePatternIdProviderFactory factory) {
         this.configuration = configuration;
         this.environment = environment;
 
@@ -33,7 +33,7 @@ public class CheckmarxWrapperContext {
         return null;
     }
 
-    public CheckmarxWrapperEnvironment getEnvironment() {
+    public CheckmarxWrapperCLIEnvironment getEnvironment() {
         return environment;
     }
 
@@ -42,14 +42,29 @@ public class CheckmarxWrapperContext {
     }
 
     public String getTeamIdForNewProjects() {
-        return teamIdProvider.getIdForName(getProjectId());
+        String projectId = getProjectId();
+        String teamId = teamIdProvider.getIdForName(projectId);
+        if (teamId == null) {
+            throw new IllegalStateException("Was not able to determine the team id for project: " + projectId);
+        }
+        return teamId;
     }
 
     public Long getPresetIdForNewProjects() {
-        return Long.valueOf(presetIdProvider.getIdForName(getProjectId()));
+        String projectId = getProjectId();
+
+        String presetId = presetIdProvider.getIdForName(projectId);
+        if (presetId == null) {
+            throw new IllegalStateException("Was not able to determine the preset id for project: " + projectId);
+        }
+        return Long.valueOf(presetId);
     }
 
     public String getProjectId() {
-        return configuration.getProjectId();
+        String projectId = configuration.getProjectId();
+        if (projectId == null) {
+            throw new IllegalStateException("Project id is missing!");
+        }
+        return projectId;
     }
 }

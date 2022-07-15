@@ -9,7 +9,7 @@ import com.mercedesbenz.sechub.commons.mapping.NamePatternIdProviderFactory;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.JSONConverterException;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
-import com.mercedesbenz.sechub.wrapper.checkmarx.CheckmarxWrapperEnvironment;
+import com.mercedesbenz.sechub.wrapper.checkmarx.cli.CheckmarxWrapperCLIEnvironment;
 
 @Component
 public class CheckmarxWrapperContextFactory {
@@ -19,7 +19,7 @@ public class CheckmarxWrapperContextFactory {
     @Autowired
     NamePatternIdProviderFactory providerFactory;
 
-    public CheckmarxWrapperContext create(CheckmarxWrapperEnvironment environment) {
+    public CheckmarxWrapperContext create(CheckmarxWrapperCLIEnvironment environment) {
 
         SecHubConfigurationModel configuration = createModel(environment.getSechubConfigurationModelAsJson());
 
@@ -29,6 +29,9 @@ public class CheckmarxWrapperContextFactory {
     }
 
     private SecHubConfigurationModel createModel(String json) {
+        if (json == null || json.isEmpty()) {
+            throw new IllegalStateException("No SecHub model JSON found, cannot create model");
+        }
         try {
             return JSONConverter.get().fromJSON(SecHubConfigurationModel.class, json);
 

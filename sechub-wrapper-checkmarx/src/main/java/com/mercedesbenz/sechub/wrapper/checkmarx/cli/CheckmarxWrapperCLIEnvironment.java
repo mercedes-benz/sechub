@@ -1,39 +1,44 @@
-package com.mercedesbenz.sechub.wrapper.checkmarx;
+package com.mercedesbenz.sechub.wrapper.checkmarx.cli;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxConstants;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
+import com.mercedesbenz.sechub.commons.pds.PDSDefaultRuntimeKeyConstants;
+import com.mercedesbenz.sechub.wrapper.checkmarx.CheckmarxWrapperKeyConstants;
 
 @Component
-public class CheckmarxWrapperEnvironment {
+public class CheckmarxWrapperCLIEnvironment {
 
     @Value("${" + PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED + ":false}")
     private boolean trustAllCertificatesEnabled;
 
-    @Value("${pds.job.user.messages.folder}")
+    @Value("${" + PDSDefaultRuntimeKeyConstants.PARAM_KEY_PDS_USER_MESSAGES_FOLDER + "}")
     private String pdsUserMessagesFolder;
 
-    @Value("${pds.job.metadata.file:}") // This is normally injected by PDS, look at PDS documentation!
+    @Value("${" + PDSDefaultRuntimeKeyConstants.PARAM_KEY_PDS_JOB_METADATA_FILE + ":}") // This is normally injected by PDS, look at PDS documentation!
     private String pdsJobMetaDatafile;
 
-    @Value("${" + PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_CONFIGURATION + ":}")
+    @Value("${" + PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_CONFIGURATION + "}")
     private String sechubConfigurationModelAsJson;
 
-    @Value("${" + CheckmarxParameterKeyConstants.PARAM_PDS_CHECKMARX_USER + ":unknown}")
+    @Value("${" + CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_USER + "}")
     private String checkmarxUser;
 
-    @Value("${" + CheckmarxParameterKeyConstants.PARAM_PDS_CHECKMARX_PASSWORD + ":unknown}")
+    @Value("${" + CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_PASSWORD + "}")
     private String checkmarxPassword;
 
-    @Value("${" + CheckmarxParameterKeyConstants.PARAM_PDS_CHECKMARX_BASE_URL + ":unknown}")
+    @Value("${" + CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_BASE_URL + "}")
     private String checkmarxProductBaseURL;
 
+    @Value("${" + CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_ALWAYS_FULLSCAN_ENABLED + ":false}")
     private boolean alwaysFullScanEnabled;
 
+    @Value("${" + CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESULT_CHECK_PERIOD_MINUTES + ":1}")
     private int scanResultCheckPeriodInMinutes;
 
+    @Value("${" + CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESULT_CHECK_TIMOUT_MINUTES + ":300}")
     private int scanResultCheckTimoutInMinutes;
 
     @Value("${" + CheckmarxConstants.MAPPING_CHECKMARX_NEWPROJECT_TEAM_ID + "}")
@@ -45,8 +50,11 @@ public class CheckmarxWrapperEnvironment {
     @Value("${" + PDSDefaultParameterKeyConstants.PARAM_KEY_SECHUB_JOB_UUID + "}")
     private String sechubJobUUID;
 
-    @Value("${" + CheckmarxParameterKeyConstants.PARAM_PDS_CHECKMARX_ENGINE_CONFIGURATION_NAME + "}")
+    @Value("${" + CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_ENGINE_CONFIGURATION_NAME + "}")
     private String checkmarxEngineConfigurationName;
+
+    @Value("${" + CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_MOCKING_ENABLED + ":false}")
+    private boolean mockingEnabled;
 
     public boolean isTrustAllCertificatesEnabled() {
         return trustAllCertificatesEnabled;
@@ -106,6 +114,10 @@ public class CheckmarxWrapperEnvironment {
 
     public String getSecHubJobUUID() {
         return sechubJobUUID;
+    }
+
+    public boolean isMockingEnabled() {
+        return mockingEnabled;
     }
 
 }

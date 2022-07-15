@@ -10,6 +10,7 @@ dependencies {
     implementation project(':sechub-commons-core')
     implementation project(':sechub-commons-pds')
     testImplementation project(':sechub-testframework')
+    
     implementation project(':sechub-adapter-checkmarx')
     
     implementation library.jcommander

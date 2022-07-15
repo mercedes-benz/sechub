@@ -24,6 +24,7 @@ import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxConfig;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxMetaDataID;
+import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.SecHubAdapterOptionsBuilderStrategy;
 import com.mercedesbenz.sechub.domain.scan.product.AbstractProductExecutor;
@@ -31,7 +32,6 @@ import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
-import com.mercedesbenz.sechub.sharedkernel.SystemEnvironment;
 import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspection;
 import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspector;
 import com.mercedesbenz.sechub.sharedkernel.resilience.ResilientActionExecutor;
@@ -64,7 +64,7 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
     MetaDataInspector scanMetaDataCollector;
 
     @Autowired
-    SystemEnvironment systemEnvironment;
+    SystemEnvironmentVariableSupport systemEnvironmentVariableSupport;
 
     @Autowired
     CheckmarxResilienceConsultant checkmarxResilienceConsultant;
@@ -93,7 +93,7 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
         JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
 
         CheckmarxExecutorConfigSuppport configSupport = CheckmarxExecutorConfigSuppport
-                .createSupportAndAssertConfigValid(data.getProductExecutorContext().getExecutorConfig(), systemEnvironment);
+                .createSupportAndAssertConfigValid(data.getProductExecutorContext().getExecutorConfig(), systemEnvironmentVariableSupport);
 
         CheckmarxResilienceCallback callback = new CheckmarxResilienceCallback(configSupport, data.getProductExecutorContext());
 

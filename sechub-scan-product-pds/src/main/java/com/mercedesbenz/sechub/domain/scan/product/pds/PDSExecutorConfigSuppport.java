@@ -70,7 +70,7 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport impl
 
     private PDSExecutorConfigSuppport(ProductExecutorConfig config, PDSExecutorConfigSuppportServiceCollection serviceCollection,
             Validation<ProductExecutorConfig> validation) {
-        super(config, serviceCollection.getSystemEnvironment(), validation);
+        super(config, serviceCollection.getSystemEnvironmentVariableSupport(), validation);
         this.serviceCollection = serviceCollection;
     }
 

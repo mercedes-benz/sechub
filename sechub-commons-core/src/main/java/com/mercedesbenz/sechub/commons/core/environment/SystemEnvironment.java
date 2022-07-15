@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.sharedkernel;
+package com.mercedesbenz.sechub.commons.core.environment;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public class SystemEnvironment {
 
     /**

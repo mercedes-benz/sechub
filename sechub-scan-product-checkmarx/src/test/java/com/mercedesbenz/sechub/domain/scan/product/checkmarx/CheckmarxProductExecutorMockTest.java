@@ -26,6 +26,7 @@ import com.mercedesbenz.sechub.adapter.AdapterException;
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterLogId;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
+import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
 import com.mercedesbenz.sechub.commons.mapping.MappingData;
 import com.mercedesbenz.sechub.commons.mapping.MappingEntry;
 import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
@@ -41,7 +42,6 @@ import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigS
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetupJobParameter;
 import com.mercedesbenz.sechub.domain.scan.resolve.NetworkTargetResolver;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.SystemEnvironment;
 import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
@@ -78,7 +78,7 @@ public class CheckmarxProductExecutorMockTest {
     StorageService storageService;
 
     @MockBean
-    SystemEnvironment systemEnvironment;
+    SystemEnvironmentVariableSupport systemEnvironmentVariableSupport;
 
     @MockBean
     CodeScanPathCollector codeScanPathCollector;
@@ -88,6 +88,9 @@ public class CheckmarxProductExecutorMockTest {
         JobStorage storage = Mockito.mock(JobStorage.class);
         when(storage.fetch(any())).thenReturn(new StringInputStream("something as a code..."));
         when(storageService.getJobStorage(any(), any())).thenReturn(storage);
+
+        when(systemEnvironmentVariableSupport.getValueOrVariableContent("user")).thenReturn("checkmarx-user");
+        when(systemEnvironmentVariableSupport.getValueOrVariableContent("pwd")).thenReturn("checkmarx-password");
     }
 
     @Test

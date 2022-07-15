@@ -14,7 +14,12 @@ public class MappingDataToNamePatternToIdEntryConverter {
 
         for (MappingEntry mappingEntry : data.getEntries()) {
 
-            NamePatternToIdEntry namePattternToIdEntry = new NamePatternToIdEntry(mappingEntry.getPattern(), mappingEntry.getReplacement());
+            String pattern = mappingEntry.getPattern();
+            if (pattern == null) {
+                continue;
+            }
+            String replacement = mappingEntry.getReplacement();
+            NamePatternToIdEntry namePattternToIdEntry = new NamePatternToIdEntry(pattern, replacement);
             list.add(namePattternToIdEntry);
         }
 

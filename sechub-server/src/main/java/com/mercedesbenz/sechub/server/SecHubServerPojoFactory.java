@@ -1,8 +1,11 @@
 package com.mercedesbenz.sechub.server;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironment;
+import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
 import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
 
 /**
@@ -19,5 +22,15 @@ public class SecHubServerPojoFactory {
     @Bean
     CodeScanPathCollector createCodeScanPathCollector() {
         return new CodeScanPathCollector();
+    }
+
+    @Bean
+    SystemEnvironment createSystemEnvironment() {
+        return new SystemEnvironment();
+    }
+
+    @Bean
+    SystemEnvironmentVariableSupport createEnvironementVariableSupport(@Autowired SystemEnvironment systemEnvironment) {
+        return new SystemEnvironmentVariableSupport(systemEnvironment);
     }
 }

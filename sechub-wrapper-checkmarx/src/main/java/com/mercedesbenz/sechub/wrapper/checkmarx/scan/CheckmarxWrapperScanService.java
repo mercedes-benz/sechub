@@ -13,8 +13,10 @@ import com.mercedesbenz.sechub.adapter.AdapterMetaDataCallback;
 import com.mercedesbenz.sechub.adapter.FileBasedAdapterMetaDataCallback;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
+import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxConfig;
+import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
 import com.mercedesbenz.sechub.commons.pds.PDSUserMessageSupport;
-import com.mercedesbenz.sechub.wrapper.checkmarx.CheckmarxWrapperEnvironment;
+import com.mercedesbenz.sechub.wrapper.checkmarx.cli.CheckmarxWrapperCLIEnvironment;
 
 @Service
 public class CheckmarxWrapperScanService {
@@ -25,9 +27,19 @@ public class CheckmarxWrapperScanService {
     CheckmarxAdapter adapter;
 
     @Autowired
-    CheckmarxWrapperEnvironment environment;
+    CheckmarxWrapperCLIEnvironment environment;
 
-    public String startScan(CheckmarxAdapterConfig config) throws Exception {
+    @Autowired
+    CodeScanPathCollector codeScanPathCollector;
+
+    @Autowired
+    CheckmarxWrapperContextFactory factory;
+
+    public String startScan() throws Exception {
+        LOG.info("Start scan");
+
+        CheckmarxAdapterConfig config = createConfig();
+
         File metaDataFile;
         String pdsJobMetaDatafile = environment.getPdsJobMetaDatafile();
 
@@ -49,5 +61,38 @@ public class CheckmarxWrapperScanService {
         support.writeMessages(adapterResult.getProductMessages());
 
         return adapterResult.getProductResult();
+    }
+
+    private CheckmarxAdapterConfig createConfig() {
+        /* @formatter:off */
+
+
+        CheckmarxWrapperContext context = factory.create(environment);
+
+        @SuppressWarnings("deprecation")
+        CheckmarxAdapterConfig checkMarxConfig = CheckmarxConfig.builder().
+//                configure(new SecHubAdapterOptionsBuilderStrategy(data, getScanType())).
+                setTrustAllCertificates(environment.isTrustAllCertificatesEnabled()).
+                setUser(environment.getUser()).
+                setPasswordOrAPIToken(environment.getCheckmarxPassword()).
+                setProductBaseUrl(environment.getCheckmarxProductBaseURL()).
+
+                setAlwaysFullScan(environment.isAlwaysFullScanEnabled()).
+                setTimeToWaitForNextCheckOperationInMinutes(environment.getScanResultCheckPeriodInMinutes()).
+                setTimeOutInMinutes(environment.getScanResultCheckTimeOutInMinutes()).
+                setFileSystemSourceFolders(context.createCodeUploadFileSystemFolders()). // to support mocked Checkmarx adapters we MUST use still the deprecated method!
+                setSourceCodeZipFileInputStream(context.createSourceCodeZipFileInputStream()).
+                setTeamIdForNewProjects(context.getTeamIdForNewProjects()).
+                setClientSecret(environment.getClientSecret()).
+                setEngineConfigurationName(environment.getEngineConfigurationName()).
+                setPresetIdForNewProjects(context.getPresetIdForNewProjects()).
+                setProjectId(context.getProjectId()).
+                setTraceID(environment.getSecHubJobUUID()).
+                build();
+            /* @formatter:on */
+
+        return checkMarxConfig;
+
+        /* @formatter:on */
     }
 }

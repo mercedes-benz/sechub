@@ -3,19 +3,19 @@ package com.mercedesbenz.sechub.domain.scan.product.pds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
 import com.mercedesbenz.sechub.domain.scan.config.ScanMappingConfigurationService;
-import com.mercedesbenz.sechub.sharedkernel.SystemEnvironment;
 
 @Component
 public class PDSExecutorConfigSuppportServiceCollection {
 
     @Autowired
-    SystemEnvironment systemEnvironment;
+    SystemEnvironmentVariableSupport systemEnvironment;
 
     @Autowired
     ScanMappingConfigurationService mappingConfigurationService;
 
-    public SystemEnvironment getSystemEnvironment() {
+    public SystemEnvironmentVariableSupport getSystemEnvironmentVariableSupport() {
         return systemEnvironment;
     }
 
