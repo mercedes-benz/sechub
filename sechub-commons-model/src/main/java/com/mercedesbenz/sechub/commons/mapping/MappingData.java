@@ -31,4 +31,9 @@ public class MappingData implements JSONable<MappingData> {
         return INSTANCE.fromJSON(json);
     }
 
+    @Override
+    public String toString() {
+        return "MappingData [" + (entries != null ? "entries=" + entries : "") + "]";
+    }
+
 }

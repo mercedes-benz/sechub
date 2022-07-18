@@ -11,9 +11,9 @@ public class NamePatternIdProviderFactory {
         converter = new MappingDataToNamePatternToIdEntryConverter();
     }
 
-    public NamePatternIdProvider createProvider(String id, String parameterValue) {
+    public NamePatternIdProvider createProvider(String id, String mappingDataAsJson) {
         NamePatternIdProvider provider;
-        MappingData mappingData = MappingData.fromString(parameterValue);
+        MappingData mappingData = MappingData.fromString(mappingDataAsJson);
         List<NamePatternToIdEntry> entries = converter.convert(mappingData);
 
         provider = new NamePatternIdProvider(id);

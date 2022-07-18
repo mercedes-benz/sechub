@@ -20,8 +20,11 @@ public class CheckmarxWrapperContext {
         this.configuration = configuration;
         this.environment = environment;
 
-        presetIdProvider = factory.createProvider(CheckmarxConstants.MAPPING_CHECKMARX_NEWPROJECT_PRESET_ID, environment.getNewProjectPresetIdMapping());
-        teamIdProvider = factory.createProvider(CheckmarxConstants.MAPPING_CHECKMARX_NEWPROJECT_TEAM_ID, environment.getNewProjectTeamIdMapping());
+        String newProjectPresetIdMappingDataAsJson = environment.getNewProjectPresetIdMapping();
+        String newProjectTeamIdMappingDataAsJson = environment.getNewProjectTeamIdMapping();
+
+        presetIdProvider = factory.createProvider(CheckmarxConstants.MAPPING_CHECKMARX_NEWPROJECT_PRESET_ID, newProjectPresetIdMappingDataAsJson);
+        teamIdProvider = factory.createProvider(CheckmarxConstants.MAPPING_CHECKMARX_NEWPROJECT_TEAM_ID, newProjectTeamIdMappingDataAsJson);
     }
 
     public Set<String> createCodeUploadFileSystemFolders() {

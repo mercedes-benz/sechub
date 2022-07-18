@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
-import com.mercedesbenz.sechub.domain.scan.config.ScanMappingConfigurationService;
+import com.mercedesbenz.sechub.domain.scan.config.ScanMappingRepository;
 
 @Component
 public class PDSExecutorConfigSuppportServiceCollection {
@@ -13,14 +13,13 @@ public class PDSExecutorConfigSuppportServiceCollection {
     SystemEnvironmentVariableSupport systemEnvironment;
 
     @Autowired
-    ScanMappingConfigurationService mappingConfigurationService;
+    ScanMappingRepository scanMappingRepository;
 
     public SystemEnvironmentVariableSupport getSystemEnvironmentVariableSupport() {
         return systemEnvironment;
     }
 
-    public ScanMappingConfigurationService getMappingConfigurationService() {
-        return mappingConfigurationService;
+    public ScanMappingRepository getScanMappingRepository() {
+        return scanMappingRepository;
     }
-
 }

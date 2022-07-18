@@ -65,4 +65,10 @@ public class MappingEntry implements JSONable<MappingEntry> {
         return Objects.equals(comment, other.comment) && Objects.equals(pattern, other.pattern) && Objects.equals(replacement, other.replacement);
     }
 
+    @Override
+    public String toString() {
+        return "MappingEntry [" + (pattern != null ? "pattern=" + pattern + ", " : "") + (replacement != null ? "replacement=" + replacement + ", " : "")
+                + (comment != null ? "comment=" + comment : "") + "]";
+    }
+
 }

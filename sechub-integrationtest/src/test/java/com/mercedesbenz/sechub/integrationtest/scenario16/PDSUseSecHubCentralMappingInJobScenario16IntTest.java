@@ -11,9 +11,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
-import com.mercedesbenz.sechub.commons.mapping.NamePatternToIdEntry;
-import com.mercedesbenz.sechub.commons.model.JSONConverter;
-import com.mercedesbenz.sechub.commons.pds.PDSMappingJobParameterData;
+import com.mercedesbenz.sechub.commons.mapping.MappingData;
+import com.mercedesbenz.sechub.commons.mapping.MappingEntry;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
@@ -45,20 +44,19 @@ public class PDSUseSecHubCentralMappingInJobScenario16IntTest {
         /* test */
         waitForJobDone(project, jobUUID,30,true);
 
-        PDSMappingJobParameterData expectedData1 = new PDSMappingJobParameterData();
-        expectedData1.setMappingId(IntegrationTestExampleConstants.MAPPING_ID_1_REPLACE_ANY_PROJECT1);
-        expectedData1.getEntries().add(new NamePatternToIdEntry(IntegrationTestExampleConstants.MAPPING_PATTERN_ANY_PROJECT1, IntegrationTestExampleConstants.MAPPING_REPLACEMENT_FOR_PROJECT1));
-        String expectedMapping1Json = JSONConverter.get().toJSON(expectedData1);
+        MappingData expectedData1 = new MappingData();
+        expectedData1.getEntries().add(new MappingEntry(
+                    IntegrationTestExampleConstants.MAPPING_1_PATTERN_ANY_PROJECT1,
+                    IntegrationTestExampleConstants.MAPPING_1_REPLACEMENT_FOR_PROJECT1,
+                    IntegrationTestExampleConstants.MAPPING_1_COMMENT));
+        String expectedMapping1Json = expectedData1.toJSON();
 
-        PDSMappingJobParameterData expectedData2 = new PDSMappingJobParameterData();
-        expectedData2.setMappingId(IntegrationTestExampleConstants.MAPPING_ID_2_NOT_EXISTING_IN_SECHUB);
-        String expectedMapping2Json = JSONConverter.get().toJSON(expectedData2,false);
-
+        String expectedMapping2Json = "{}";
 
         // check the script has the mappings injected :
         assertPDSJob(TestAPI.assertAndFetchPDSJobUUIDForSecHubJob(jobUUID)).
-            containsVariableTestOutput(IntegrationTestExampleConstants.PDS_ENV_NAME_MAPPING_ID_1_REPLACE_ANY_PROJECT1,expectedMapping1Json).
-            containsVariableTestOutput(IntegrationTestExampleConstants.PDS_ENV_NAME_MAPPING_ID_2_NOT_EXISTING_IN_SECHUB,expectedMapping2Json);
+            containsVariableTestOutput(IntegrationTestExampleConstants.PDS_ENV_NAME_MAPPING_ID_1_REPLACE_ANY_PROJECT1, expectedMapping1Json).
+            containsVariableTestOutput(IntegrationTestExampleConstants.PDS_ENV_NAME_MAPPING_ID_2_NOT_EXISTING_IN_SECHUB, expectedMapping2Json);
         /* @formatter:on */
     }
 

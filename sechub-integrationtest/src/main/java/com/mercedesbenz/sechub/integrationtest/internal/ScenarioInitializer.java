@@ -77,9 +77,18 @@ public class ScenarioInitializer {
         if (project1Mapping != null) {
             return;
         }
-        MappingEntry entry = new MappingEntry(IntegrationTestExampleConstants.MAPPING_PATTERN_ANY_PROJECT1,
-                IntegrationTestExampleConstants.MAPPING_REPLACEMENT_FOR_PROJECT1, "test mapping for project names, handles project1");
+        MappingEntry entry = new MappingEntry(IntegrationTestExampleConstants.MAPPING_1_PATTERN_ANY_PROJECT1,
+                IntegrationTestExampleConstants.MAPPING_1_REPLACEMENT_FOR_PROJECT1, IntegrationTestExampleConstants.MAPPING_1_COMMENT);
         TestAPI.changeScanMappingDirectly(IntegrationTestExampleConstants.MAPPING_ID_1_REPLACE_ANY_PROJECT1, entry);
+    }
+
+    public static void main(String[] args) {
+        MappingData project1Mapping = new MappingData();
+
+        MappingEntry entry = new MappingEntry(IntegrationTestExampleConstants.MAPPING_1_PATTERN_ANY_PROJECT1,
+                IntegrationTestExampleConstants.MAPPING_1_REPLACEMENT_FOR_PROJECT1, IntegrationTestExampleConstants.MAPPING_1_COMMENT);
+        project1Mapping.getEntries().add(entry);
+        System.out.println(project1Mapping.toJSON());
     }
 
     /**

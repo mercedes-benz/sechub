@@ -23,11 +23,21 @@ class CheckmarxWrapperScanServiceSpringBootTest {
     @Autowired
     CheckmarxWrapperScanService scanService;
 
+    /**
+     * In application-test.properties we have defined to use the mock adapter
+     * variant and also other test relevant parts (team id and preset id mapping).
+     * So we can execute the scan start completely here.
+     *
+     * @throws Exception
+     */
     @Test
-    void test() throws Exception {
-        assertNotNull(scanService);
+    void start_scan_with_checkmarx_mocked_adapter_is_possible_and_returns_not_null() throws Exception {
 
-        scanService.startScan();
+        /* execute */
+        String result = scanService.startScan();
+
+        /* test */
+        assertNotNull(result);
 
     }
 

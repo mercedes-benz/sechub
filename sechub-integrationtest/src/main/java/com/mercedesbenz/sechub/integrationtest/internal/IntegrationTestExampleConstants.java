@@ -208,15 +208,16 @@ public class IntegrationTestExampleConstants {
 
     }
 
-    public static final String MAPPING_PATTERN_ANY_PROJECT1 = ".*project1*";
-    public static final String MAPPING_REPLACEMENT_FOR_PROJECT1 = "replacement-project1";
+    public static final String MAPPING_1_PATTERN_ANY_PROJECT1 = ".*project1*";
+    public static final String MAPPING_1_REPLACEMENT_FOR_PROJECT1 = "replacement-project1";
+    public static final String MAPPING_1_COMMENT = "test mapping for project names, handles project1";
 
     /**
      * This mapping will be automatically created and is available inside tests. It
      * uses {@link #MAPPING_ID_1_REPLACE_ANY_PROJECT1}
      * ({@value #MAPPING_ID_1_REPLACE_ANY_PROJECT1} ) as pattern and
-     * {@link #MAPPING_REPLACEMENT_FOR_PROJECT1}
-     * ({@value #MAPPING_REPLACEMENT_FOR_PROJECT1}) for replacement
+     * {@link #MAPPING_1_REPLACEMENT_FOR_PROJECT1}
+     * ({@value #MAPPING_1_REPLACEMENT_FOR_PROJECT1}) for replacement
      */
     public static final String MAPPING_ID_1_REPLACE_ANY_PROJECT1 = "test.mapping1.replace.project1";
 

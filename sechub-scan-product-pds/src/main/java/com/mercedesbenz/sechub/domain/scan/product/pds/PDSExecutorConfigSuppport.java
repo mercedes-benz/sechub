@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 import org.slf4j.Logger;
@@ -14,15 +15,13 @@ import org.slf4j.LoggerFactory;
 import com.mercedesbenz.sechub.adapter.DefaultExecutorConfigSupport;
 import com.mercedesbenz.sechub.commons.core.util.SecHubStorageUtil;
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
-import com.mercedesbenz.sechub.commons.mapping.NamePatternToIdEntry;
-import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.pds.PDSConfigDataKeyProvider;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.commons.pds.PDSKey;
 import com.mercedesbenz.sechub.commons.pds.PDSKeyProvider;
-import com.mercedesbenz.sechub.commons.pds.PDSMappingJobParameterData;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataProvider;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
+import com.mercedesbenz.sechub.domain.scan.config.ScanMapping;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
@@ -98,17 +97,14 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport impl
                 LOG.warn("Cannot use mapping id: {} because already used as mapping entry by config. Will skip this one.");
                 continue;
             }
-            PDSMappingJobParameterData data = new PDSMappingJobParameterData();
-            data.setMappingId(mappingId);
-
-            List<NamePatternToIdEntry> entries = serviceCollection.getMappingConfigurationService().getNamePatternToIdEntriesOrNull(mappingId);
-
-            if (entries != null) {
-                data.getEntries().addAll(entries);
+            Optional<ScanMapping> scanMapping = serviceCollection.getScanMappingRepository().findById(mappingId);
+            if (scanMapping.isPresent()) {
+                String mappingDataJson = scanMapping.get().getData();
+                parametersToSend.put(mappingId, mappingDataJson);
             } else {
-                LOG.warn("Configuration wants to use sechub mapping {}, but mapping is not found!", mappingId);
+                LOG.warn("Configuration wants to use sechub mapping {}, but mapping is not found! Fallback to empty JSON.", mappingId);
+                parametersToSend.put(mappingId, "{}"); // add empty JSON
             }
-            parametersToSend.put(mappingId, JSONConverter.get().toJSON(data, false));
         }
     }
 
