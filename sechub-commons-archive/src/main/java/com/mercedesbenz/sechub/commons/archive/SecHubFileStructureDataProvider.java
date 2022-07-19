@@ -13,4 +13,8 @@ public interface SecHubFileStructureDataProvider {
         return new SecHubFileStructureDataProviderBuilder();
     }
 
+    Set<String> getUnmodifiableIncludeFilePatterns();
+
+    Set<String> getUnmodifiableExcludeFilePatterns();
+
 }

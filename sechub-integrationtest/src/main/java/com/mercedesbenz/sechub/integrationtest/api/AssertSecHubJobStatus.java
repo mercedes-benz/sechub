@@ -12,10 +12,13 @@ import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestSecHubJobStatus;
+import com.mercedesbenz.sechub.integrationtest.internal.SecHubJobAutoDumper;
 
 public class AssertSecHubJobStatus {
 
     private IntegrationTestSecHubJobStatus status;
+
+    private SecHubJobAutoDumper autoDumper = new SecHubJobAutoDumper();
 
     public AssertSecHubJobStatus(UUID sechubJobUUID, TestProject projectId) {
         String json = TestAPI.as(TestAPI.SUPER_ADMIN).getJobStatus(projectId, sechubJobUUID);
@@ -31,12 +34,12 @@ public class AssertSecHubJobStatus {
     }
 
     public AssertSecHubJobStatus isInState(String state) {
-        assertEquals(state, status.state);
+        autoDumper.execute(() -> assertEquals(state, status.state));
         return this;
     }
 
     public AssertSecHubJobStatus hasJobUUID() {
-        assertNotNull(status.jobUUID);
+        autoDumper.execute(() -> assertNotNull(status.jobUUID));
         return this;
     }
 
@@ -45,13 +48,19 @@ public class AssertSecHubJobStatus {
     }
 
     public AssertSecHubJobStatus hasNoMessagesDefined() {
-        assertNull(status.messages);
+        autoDumper.execute(() -> assertNull(status.messages));
         return this;
     }
 
     public AssertSecHubJobStatus hasMessages(int amount) {
         List<SecHubMessage> foundMessages = getNullSafeMessages();
-        assertEquals("Amount of messages differs", amount, foundMessages.size());
+        autoDumper.execute(() -> assertEquals("Amount of messages differs", amount, foundMessages.size()));
+        return this;
+    }
+
+    public AssertSecHubJobStatus enablePDSAutoDumpOnErrorsForSecHubJob(UUID sechubJobUUID) {
+        this.autoDumper.enablePDSAutoDumpOnErrorsForSecHubJob();
+        this.autoDumper.setSecHubJobUUID(sechubJobUUID);
         return this;
     }
 
@@ -64,7 +73,8 @@ public class AssertSecHubJobStatus {
                 }
             }
         }
-        fail("The status has no message of type:" + type + ", with text:" + text + "\njson was:\n" + JSONConverter.get().toJSON(status));
+        autoDumper.execute(
+                () -> fail("The status has no message of type:" + type + ", with text:" + text + "\njson was:\n" + JSONConverter.get().toJSON(status)));
         return null;
     }
 

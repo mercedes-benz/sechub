@@ -147,8 +147,8 @@ func printSecHubJobSummaryAndFailOnTrafficLight(context *Context) {
 		}
 	case "GREEN":
 		fmt.Println("  GREEN - no severe security vulnerabilities identified")
-	case "":
-		sechubUtil.LogError("No traffic light available! Please check server logs.")
+	case "OFF", "":
+		sechubUtil.LogError("No traffic light available! Please check messages and server logs.")
 		os.Exit(ExitCodeFailed)
 	default:
 		sechubUtil.LogError(fmt.Sprintln("UNKNOWN traffic light:", context.jobStatus.TrafficLight, "- Expected one of: RED, YELLOW, GREEN."))

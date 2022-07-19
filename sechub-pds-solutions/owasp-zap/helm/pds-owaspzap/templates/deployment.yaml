@@ -17,10 +17,15 @@ spec:
                 name: {{ .Chart.Name }}
         spec:
             securityContext:
-                runAsUser: 2323 # user id of the gosec user. Set in the Dockerfile.
+                runAsUser: 2323 # user id of the user. Set in the Dockerfile.
             containers:
                 - name: {{ .Chart.Name }}
                   image: "{{ .Values.image.registry }}:{{ .Values.image.tag }}"
+                  resources:
+                      requests:
+                          memory: "{{ .Values.resources.requests.memory }}"
+                      limits:
+                          memory: "{{ .Values.resources.limits.memory }}"
                   env:
                     - name: PDS_START_MODE
                       value: "{{ .Values.pds.startMode }}"

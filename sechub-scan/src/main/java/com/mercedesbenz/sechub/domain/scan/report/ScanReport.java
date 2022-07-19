@@ -50,10 +50,10 @@ public class ScanReport {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = COLUMN_UUID, updatable = false, nullable = false)
+    @Column(name = COLUMN_UUID, updatable = false, nullable = false, columnDefinition = "UUID")
     UUID uUID;
 
-    @Column(name = COLUMN_SECHUB_JOB_UUID)
+    @Column(name = COLUMN_SECHUB_JOB_UUID, columnDefinition = "UUID")
     UUID secHubJobUUID; // no referential integrity - only as information for report collecting
                         // necessary
 

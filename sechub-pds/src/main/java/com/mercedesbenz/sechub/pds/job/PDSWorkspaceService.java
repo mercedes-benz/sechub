@@ -47,6 +47,7 @@ public class PDSWorkspaceService {
     public static final String EXTRACTED_BINARIES = EXTRACTED + "/binaries";
 
     public static final String OUTPUT = "output";
+    public static final String MESSAGES = "messages";
     public static final String RESULT_TXT = "result.txt";
     public static final String SYSTEM_OUT_LOG = "system-out.log";
     public static final String SYSTEM_ERROR_LOG = "system-error.log";
@@ -262,11 +263,20 @@ public class PDSWorkspaceService {
 
         SecHubConfigurationModel model = resolveAndEnsureSecHubConfigurationModel(config);
         if (model == null) {
+            LOG.warn("No sechub model found - cannot resolve file structure data provider! No filtering will be active.");
             return null;
         }
+        PDSJobConfigurationSupport support = new PDSJobConfigurationSupport(config);
+        /* @formatter:off */
+        SecHubFileStructureDataProvider provider = SecHubFileStructureDataProvider.builder().
+                setScanType(scanType).
+                setModel(model).
+                setExcludedFilePatterns(support.createExcludedFilePatternList()).
+                setIncludedFilePatterns(support.createIncludedFilePatternList()).
+                build();
+        /* @formatter:on */
 
-        SecHubFileStructureDataProvider configuration = SecHubFileStructureDataProvider.builder().setScanType(scanType).setModel(model).build();
-        return configuration;
+        return provider;
     }
 
     private PDSProductSetup resolveProductSetup(PDSJobConfiguration config) {
@@ -387,6 +397,18 @@ public class PDSWorkspaceService {
         return outputFolder;
     }
 
+    /**
+     * Resolves messages folder - if not existing it will be created
+     *
+     * @param jobUUID
+     * @return upload folder
+     */
+    public File getMessagesFolder(UUID jobUUID) {
+        File outputFolder = new File(getOutputFolder(jobUUID), MESSAGES);
+        outputFolder.mkdirs();
+        return outputFolder;
+    }
+
     public long getMinutesToWaitForResult(PDSJobConfiguration config) {
         PDSProductSetup productSetup = serverConfigService.getProductSetupOrNull(config.getProductId());
         if (productSetup == null) {
@@ -417,6 +439,7 @@ public class PDSWorkspaceService {
 
         locationData.workspaceLocation = createWorkspacePathAndEnsureParentDirectories(workspaceFolderPath, null).toString();
         locationData.resultFileLocation = createWorkspacePathAndEnsureParentDirectories(workspaceFolderPath, OUTPUT + File.separator + RESULT_TXT).toString();
+        locationData.userMessagesLocation = createWorkspacePathAndEnsureDirectory(workspaceFolderPath, OUTPUT + File.separator + MESSAGES).toString();
 
         locationData.extractedSourcesLocation = createExtractedSourcesLocation(workspaceFolderPath).toString();
         locationData.extractedBinariesLocation = createExtractedBinariesLocation(workspaceFolderPath).toString();
@@ -441,6 +464,18 @@ public class PDSWorkspaceService {
 
     private Path createExtractedSourcesLocation(Path workspaceFolderPath) {
         return createWorkspacePathAndEnsureParentDirectories(workspaceFolderPath, UPLOAD + "/" + EXTRACTED_SOURCES);
+    }
+
+    private Path createWorkspacePathAndEnsureDirectory(Path workspaceLocation, String subPath) {
+        Path path = createWorkspacePathAndEnsureParentDirectories(workspaceLocation, subPath);
+        if (!Files.exists(path)) {
+            try {
+                Files.createDirectory(path);
+            } catch (IOException e) {
+                throw new IllegalStateException("Was not able to create directory: " + path);
+            }
+        }
+        return path;
     }
 
     private Path createWorkspacePathAndEnsureParentDirectories(Path workspaceLocation, String subPath) {

@@ -47,7 +47,6 @@ localserver () {
         echo "Object storage:"
         echo " * Endpoint: $S3_ENDPOINT"
         echo " * Bucketname: $S3_BUCKETNAME"
-        echo " * Accesskey: $S3_ACCESSKEY"
     fi
 
     # Regarding entropy collection:
@@ -66,6 +65,7 @@ localserver () {
         -Dsechub.pds.config.file=/pds/pds-config.json \
         -Dspring.servlet.multipart.max-file-size="$PDS_MAX_FILE_UPLOAD_SIZE" \
         -Dspring.servlet.multipart.max-request-size="$PDS_MAX_FILE_UPLOAD_SIZE" \
+        -Dpds.upload.binaries.maximum.bytes="$PDS_UPLOAD_BINARIES_MAXIMUM_BYTES" \
         -Dserver.port=8444 \
         -Dserver.address=0.0.0.0 \
         -jar "/pds/sechub-pds-$PDS_VERSION.jar"
@@ -88,6 +88,7 @@ check_setup () {
     check_variable "$TECHUSER_APITOKEN" "TECHUSER_APITOKEN"
     check_variable "$SHARED_VOLUME_UPLOAD_DIR" "SHARED_VOLUME_UPLOAD_DIR"
     check_variable "$PDS_MAX_FILE_UPLOAD_SIZE" "PDS_MAX_FILE_UPLOAD_SIZE"
+    check_variable "$PDS_UPLOAD_BINARIES_MAXIMUM_BYTES" "PDS_UPLOAD_BINARIES_MAXIMUM_BYTES"
 }
 
 check_variable () {

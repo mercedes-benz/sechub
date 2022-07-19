@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.mercedesbenz.sechub.adapter.pds.data.PDSJobStatus.PDSAdapterJobStatusState;
+import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.test.JSONTestUtil;
 import com.mercedesbenz.sechub.test.WiremockUrlHistory;
 
@@ -29,6 +30,7 @@ public class PDSWiremockTestSupport {
     public UUID sechubJobUUID;
     public String pdsProductIdentifier;
     public Map<String, String> pdsJobParameters;
+    public SecHubMessagesList sechubMessageList;
     private PDSTestSupport pdsTestSupport;
     private UUID pdsJobUUID;
     private List<UploadInfo> uploads = new ArrayList<>();
@@ -76,12 +78,34 @@ public class PDSWiremockTestSupport {
             }
             if (pdsFetchJobResult != null) {
                 simulateGetResult(pdsFetchJobResult);
+                simulateGetMessages(sechubMessageList);
             }
 
         } catch (Exception e) {
             throw new RuntimeException("unexpected:" + e.getMessage(), e);
         }
 
+    }
+
+    private void simulateGetMessages(SecHubMessagesList sechubMessageList) {
+        if (pdsJobUUID == null) {
+            throw new IllegalStateException("testcase corrupt? pds job uuid not known here!");
+        }
+        if (pdsFetchJobResult == null) {
+            throw new IllegalStateException("pdsFetchJobResult may not be null here!");
+        }
+        /* @formatter:off */
+        String url = pdsURLBuilder.buildGetJobMessages(pdsJobUUID);
+        if (sechubMessageList==null) {
+            sechubMessageList=new SecHubMessagesList();
+        }
+        stubFor(get(urlEqualTo(history.rememberGET(url))).
+                willReturn(aResponse()
+                    .withStatus(HttpStatus.OK.value())
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(sechubMessageList.toJSON()))
+                );
+        /* @formatter:on */
     }
 
     private void simulateGetResult(GetResult pdsFetchJobResult) {
@@ -219,12 +243,22 @@ public class PDSWiremockTestSupport {
             return this;
         }
 
+        public PDSWiremockTestSupportBuilder simulateFetchJobMessages() {
+            return simulateFetchJobMessages(null);
+        }
+
+        public PDSWiremockTestSupportBuilder simulateFetchJobMessages(SecHubMessagesList messageList) {
+            current.sechubMessageList = messageList;
+            return this;
+        }
+
         PDSWiremockTestSupport build() {
 
             PDSWiremockTestSupport buildResult = current;
             current = new PDSWiremockTestSupport(buildResult.server);
             return buildResult;
         }
+
     }
 
     public String getTestBaseUrl() {

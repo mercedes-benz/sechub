@@ -8,6 +8,7 @@ public class WorkspaceLocationData {
     String sourceCodeZipFileLocation;
     String extractedBinariesLocation;
     String binariesTarFileLocation;
+    String userMessagesLocation;
 
     public String getWorkspaceLocation() {
         return workspaceLocation;
@@ -31,5 +32,9 @@ public class WorkspaceLocationData {
 
     public String getBinariesTarFileLocation() {
         return binariesTarFileLocation;
+    }
+
+    public String getUserMessagesLocation() {
+        return userMessagesLocation;
     }
 }

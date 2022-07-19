@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.AdapterMetaDataCallback;
 import com.mercedesbenz.sechub.test.TestUtil;
@@ -61,7 +62,7 @@ public class CheckmarxAdapterTestApplication {
 		/* @formatter:on */
 
         CheckmarxAdapterV1 adapter = new CheckmarxAdapterV1();
-        String data = adapter.start(config, new AdapterMetaDataCallback() {
+        AdapterExecutionResult adapterResult = adapter.start(config, new AdapterMetaDataCallback() {
 
             @Override
             public void persist(AdapterMetaData metaData) {
@@ -76,7 +77,7 @@ public class CheckmarxAdapterTestApplication {
         });
         File file = TestUtil.createTempFileInBuildFolder("checkmarx-adaptertest-result", "xml").toFile();
         FileWriter fileWriter = new FileWriter(file);
-        fileWriter.write(data);
+        fileWriter.write(adapterResult.getProductResult());
         fileWriter.close();
 
         System.out.println("-----------------------------------------------------------------------------------------------------------------");

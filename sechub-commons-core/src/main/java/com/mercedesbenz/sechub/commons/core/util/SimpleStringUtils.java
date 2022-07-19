@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.core.util;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.StringTokenizer;
 
 public class SimpleStringUtils {
 
@@ -139,5 +142,20 @@ public class SimpleStringUtils {
             return false;
         }
         return true;
+    }
+
+    public static List<String> createListForCommaSeparatedValues(String data) {
+        List<String> patterns = new ArrayList<>();
+        if (data == null) {
+            return patterns;
+        }
+        StringTokenizer tokenizer = new StringTokenizer(data, ",");
+        while (tokenizer.hasMoreTokens()) {
+            String token = tokenizer.nextToken().trim();
+            if (!token.isEmpty()) {
+                patterns.add(token);
+            }
+        }
+        return patterns;
     }
 }

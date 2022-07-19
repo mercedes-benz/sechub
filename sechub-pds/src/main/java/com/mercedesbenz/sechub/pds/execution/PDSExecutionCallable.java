@@ -21,6 +21,8 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.dao.OptimisticLockingFailureException;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.pds.PDSJSONConverterException;
 import com.mercedesbenz.sechub.pds.PDSLogConstants;
 import com.mercedesbenz.sechub.pds.job.PDSCheckJobStatusService;
@@ -58,6 +60,8 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
     private ExceptionThrower<IllegalStateException> pdsJobUpdateExceptionThrower;
 
+    private PDSMessageCollector messageCollector;
+
     public PDSExecutionCallable(UUID jobUUID, PDSJobTransactionService jobTransactionService, PDSWorkspaceService workspaceService,
             PDSExecutionEnvironmentService environmentService, PDSCheckJobStatusService jobStatusService) {
         notNull(jobUUID, "pdsJobUUID may not be null!");
@@ -71,6 +75,8 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         this.environmentService = environmentService;
         this.jobStatusService = jobStatusService;
 
+        messageCollector = new PDSMessageCollector();
+
         pdsJobUpdateExceptionThrower = new ExceptionThrower<IllegalStateException>() {
 
             @Override
@@ -78,6 +84,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
                 throw new IllegalStateException("Job stream data refresh failed. " + message, cause);
             }
         };
+
     }
 
     @Override
@@ -212,6 +219,26 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         watcherRunnable.stop();
 
         writeStreamDataToDatabase(jobUUID);
+        writeProductMessagesToDatabaseWhenMessagesFound(jobUUID);
+
+    }
+
+    private void writeProductMessagesToDatabaseWhenMessagesFound(UUID jobUUID) {
+        LOG.debug("Collect messages for job:{}", jobUUID);
+        SecHubMessagesList messages = readProductMessages(jobUUID);
+
+        if (messages.getSecHubMessages().isEmpty()) {
+            LOG.debug("No messages for job {} found. So skip database access.", jobUUID);
+            return;
+        }
+
+        LOG.debug("Writing messages to database for job:{}", jobUUID);
+        PDSResilientRetryExecutor<IllegalStateException> executor = new PDSResilientRetryExecutor<>(3, pdsJobUpdateExceptionThrower,
+                OptimisticLockingFailureException.class);
+        executor.execute(() -> {
+            jobTransactionService.updateJobMessagesInOwnTransaction(jobUUID, messages);
+            return null;
+        }, jobUUID.toString());
 
     }
 
@@ -229,6 +256,14 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             return null;
         }, jobUUID.toString());
 
+    }
+
+    private SecHubMessagesList readProductMessages(UUID jobUUID) {
+        File productMessagesFolder = workspaceService.getMessagesFolder(jobUUID);
+
+        List<SecHubMessage> collected = messageCollector.collect(productMessagesFolder);
+
+        return new SecHubMessagesList(collected);
     }
 
     private StreamData readStreamData(UUID jobUUID) {
@@ -292,6 +327,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
         environment.put(PDS_JOB_WORKSPACE_LOCATION, locationData.getWorkspaceLocation());
         environment.put(PDS_JOB_RESULT_FILE, locationData.getResultFileLocation());
+        environment.put(PDS_JOB_USER_MESSAGES_FOLDER, locationData.getUserMessagesLocation());
         environment.put(PDS_JOB_UUID, jobUUID.toString());
         environment.put(PDS_JOB_SOURCECODE_ZIP_FILE, locationData.getSourceCodeZipFileLocation());
         environment.put(PDS_JOB_BINARIES_TAR_FILE, locationData.getBinariesTarFileLocation());

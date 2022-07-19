@@ -23,6 +23,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.amazonaws.util.StringInputStream;
 import com.mercedesbenz.sechub.adapter.AdapterException;
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterLogId;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
@@ -109,7 +110,7 @@ public class CheckmarxProductExecutorMockTest {
         /* @formatter:off */
         when(checkmarxAdapter.start(any(),any())).
             thenThrow(new AdapterException(new AdapterLogId("1", "traceId"),"bla bla - Changes exceeded the threshold limit - bla bla")). // first fails
-            thenReturn("result2"); // second: access
+            thenReturn(new AdapterExecutionResult("result2")); // second: access
         /* @formatter:on */
 
         /* execute */
@@ -142,7 +143,7 @@ public class CheckmarxProductExecutorMockTest {
         when(checkmarxAdapter.start(any(),any())).
             thenThrow(new AdapterException(new AdapterLogId("1", "traceId"),"bla bla - Changes exceeded the threshold limit - bla bla")). // first fails
             thenThrow(new AdapterException(new AdapterLogId("2", "traceId"),"bla bla - Changes exceeded the threshold limit - bla bla")). // second fails
-            thenReturn("result2"); // third: would be access but should not happen! resilience shall here only work one time!
+            thenReturn(new AdapterExecutionResult("result2")); // third: would be access but should not happen! resilience shall here only work one time!
         /* @formatter:on */
         SecHubExecutionException expected = null;
 

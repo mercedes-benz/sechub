@@ -1,6 +1,8 @@
 #!/bin/bash 
 # SPDX-License-Identifier: MIT
 
+DEBUG=true
+
 source ./shared-functions.sh
 set -e
 
@@ -12,7 +14,6 @@ echo "| TEST: mergeFolderFilesRecursivelyIntoResultFile |"
 echo "|                                                 |"
 echo "\\-------------------------------------------------/"
 
-DEBUG=false
 
 TEST_DAT_TAR_LOCATION="./../../src/test/resources/pds/codescan/upload/tarfile_contains_different_finding_files_in_different_data_sections.tar"
 
@@ -37,3 +38,23 @@ if [[ "$DEBUG" = "true" ]]; then
 fi
 echo "$TEST_FOLDER_RESULT contains:"
 cat $TEST_FOLDER_RESULT
+
+echo "/-------------------------------------------------\\"
+echo "|                                                 |"
+echo "| TEST: message methods                           |"
+echo "|                                                 |"
+echo "\\-------------------------------------------------/"
+PDS_JOB_USER_MESSAGES_FOLDER=$TEST_FOLDER/output/messages
+rm $PDS_JOB_USER_MESSAGES_FOLDER -rf
+
+mkdir $PDS_JOB_USER_MESSAGES_FOLDER -p
+
+infoMessage "this is an info message"
+warnMessage "this is a warning message"
+errorMessage "this is an error message
+    with multiple lines... 
+"
+echo "Messages at: $PDS_JOB_USER_MESSAGES_FOLDER"
+echo "----------------------------------------------------------------------------"
+ls $PDS_JOB_USER_MESSAGES_FOLDER 
+echo "----------------------------------------------------------------------------"

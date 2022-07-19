@@ -20,6 +20,7 @@ import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseUserCancelsJob;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseUserCreatesJob;
+import com.mercedesbenz.sechub.pds.usecase.UseCaseUserFetchesJobMessages;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseUserFetchesJobResult;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseUserFetchesJobStatus;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseUserMarksJobReadyToStart;
@@ -53,18 +54,21 @@ public class PDSJobRestController {
     private PDSGetJobResultService jobResultService;
 
     @Autowired
+    private PDSGetJobMessagesService jobMessagesService;
+
+    @Autowired
     private PDSCancelJobService cancelJobService;
 
     @Validated
     @RequestMapping(path = "create", method = RequestMethod.POST)
-    @UseCaseUserCreatesJob(@PDSStep(name = "rest call", description = "user creates job. If configuration is not valid an error will be thrown", number = 1))
+    @UseCaseUserCreatesJob(@PDSStep(name = "rest call", description = "User creates job. If configuration is not valid an error will be thrown", number = 1))
     public PDSJobCreateResult createJob(@RequestBody PDSJobConfiguration configuration) {
         return createJobService.createJob(configuration);
     }
 
     /* @formatter:off */
 	@RequestMapping(path = "{jobUUID}/upload/{fileName}", method = RequestMethod.POST)
-	@UseCaseUserUploadsJobData(@PDSStep(name="rest call",description = "user uploads a file to workspace of given job",number=1))
+	@UseCaseUserUploadsJobData(@PDSStep(name="rest call",description = "User uploads a file to workspace of given job",number=1))
 	public void upload(
 				@PathVariable("jobUUID") UUID jobUUID,
 				@PathVariable("fileName") String fileName,
@@ -77,7 +81,7 @@ public class PDSJobRestController {
     /* @formatter:off */
 	@Validated
 	@RequestMapping(path = "{jobUUID}/mark-ready-to-start", method = RequestMethod.PUT)
-	@UseCaseUserMarksJobReadyToStart(@PDSStep(name="rest call",description = "a user marks job as ready to start.",number=1))
+	@UseCaseUserMarksJobReadyToStart(@PDSStep(name="rest call",description = "User marks job as ready to start.",number=1))
 	public void markReadyToStart(
 				@PathVariable("jobUUID") UUID jobUUID) {
 		updateJobTransactionService.markReadyToStartInOwnTransaction(jobUUID);
@@ -87,7 +91,7 @@ public class PDSJobRestController {
     /* @formatter:off */
     @Validated
     @RequestMapping(path = "{jobUUID}/cancel", method = RequestMethod.PUT)
-    @UseCaseUserCancelsJob(@PDSStep(name="rest call",description = "a user cancels job",number=1))
+    @UseCaseUserCancelsJob(@PDSStep(name="rest call",description = "User cancels a job",number=1))
     public void cancelJob(
                 @PathVariable("jobUUID") UUID jobUUID) {
         cancelJobService.cancelJob(jobUUID);
@@ -97,7 +101,7 @@ public class PDSJobRestController {
     /* @formatter:off */
 	@Validated
 	@RequestMapping(path = "{jobUUID}/status", method = RequestMethod.GET)
-	@UseCaseUserFetchesJobStatus(@PDSStep(name="rest call",description = "a user fetches status of job.",number=1))
+	@UseCaseUserFetchesJobStatus(@PDSStep(name="rest call",description = "User fetches status of a job.",number=1))
 	public PDSJobStatus getJobStatus(
 			@PathVariable("jobUUID") UUID jobUUID
 			) {
@@ -109,12 +113,23 @@ public class PDSJobRestController {
     /* @formatter:off */
     @Validated
     @RequestMapping(path = "{jobUUID}/result", method = RequestMethod.GET)
-    @UseCaseUserFetchesJobResult(@PDSStep(name="rest call",description = "a user wants to get result of job",number=1))
+    @UseCaseUserFetchesJobResult(@PDSStep(name="rest call",description = "User wants to get result of a job",number=1))
     public String getJobResult(
             @PathVariable("jobUUID") UUID jobUUID
             ) {
         /* @formatter:on */
         return jobResultService.getJobResult(jobUUID);
+    }
+
+    /* @formatter:off */
+    @Validated
+    @RequestMapping(path = "{jobUUID}/messages", method = RequestMethod.GET)
+    @UseCaseUserFetchesJobMessages(@PDSStep(name="rest call",description = "User wants to get messages of job",number=1))
+    public String getJobMessages(
+            @PathVariable("jobUUID") UUID jobUUID
+            ) {
+        /* @formatter:on */
+        return jobMessagesService.getJobMessages(jobUUID);
     }
 
 }

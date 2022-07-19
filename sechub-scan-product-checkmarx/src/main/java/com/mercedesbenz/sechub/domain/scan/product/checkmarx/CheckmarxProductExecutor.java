@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.adapter.AbstractAdapterConfigBuilder;
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
@@ -136,12 +137,9 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
                 inspection.notice("alwaysFullScanEnabled", checkMarxConfig.isAlwaysFullScanEnabled());
 
                 /* execute checkmarx by adapter and update product result */
-                String xml = checkmarxAdapter.start(checkMarxConfig, data.getProductExecutorContext().getCallback());
+                AdapterExecutionResult adapterResult = checkmarxAdapter.start(checkMarxConfig, data.getProductExecutorContext().getCallback());
 
-                ProductResult productResult = data.getProductExecutorContext().getCurrentProductResult(); // product result is set by callback
-                productResult.setResult(xml);
-
-                return productResult;
+                return updateCurrentProductResult(adapterResult, data.getProductExecutorContext());
             }
         }, callback);
         return Collections.singletonList(result);

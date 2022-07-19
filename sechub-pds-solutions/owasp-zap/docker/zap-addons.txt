@@ -5,4 +5,6 @@ https://github.com/zaproxy/zap-extensions/releases/download/spiderAjax-v23.7.0/s
 https://github.com/zaproxy/zap-extensions/releases/download/pscanrules-v40/pscanrules-release-40.zap
 https://github.com/zaproxy/zap-extensions/releases/download/retire-v0.12.0/retire-release-0.12.0.zap
 https://github.com/zaproxy/zap-extensions/releases/download/domxss-v12/domxss-beta-12.zap
+https://github.com/zaproxy/zap-extensions/releases/download/webdriverlinux-v40/webdriverlinux-release-40.zap
+https://github.com/zaproxy/zap-extensions/releases/download/network-v0.2.0/network-alpha-0.2.0.zap
 https://github.com/mercedes-benz/zap-extensions/releases/download/sarif-report-0.14.0/reports-release-0.14.0.zap
