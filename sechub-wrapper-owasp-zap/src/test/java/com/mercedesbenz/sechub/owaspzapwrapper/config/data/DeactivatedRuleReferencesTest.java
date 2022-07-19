@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.owaspzapwrapper.config.data;
 
 import static org.junit.Assert.assertTrue;
