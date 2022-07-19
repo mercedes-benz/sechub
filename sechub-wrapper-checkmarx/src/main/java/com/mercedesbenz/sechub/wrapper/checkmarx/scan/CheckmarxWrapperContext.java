@@ -1,39 +1,61 @@
 package com.mercedesbenz.sechub.wrapper.checkmarx.scan;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Set;
 
-import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxConstants;
+import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
+import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType;
+import com.mercedesbenz.sechub.commons.core.CommonConstants;
 import com.mercedesbenz.sechub.commons.mapping.NamePatternIdProvider;
-import com.mercedesbenz.sechub.commons.mapping.NamePatternIdProviderFactory;
+import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.wrapper.checkmarx.cli.CheckmarxWrapperCLIEnvironment;
 
 public class CheckmarxWrapperContext {
 
-    private SecHubConfigurationModel configuration;
-    private CheckmarxWrapperCLIEnvironment environment;
-    private NamePatternIdProvider presetIdProvider;
-    private NamePatternIdProvider teamIdProvider;
+    SecHubConfigurationModel configuration;
+    CheckmarxWrapperCLIEnvironment environment;
+    NamePatternIdProvider presetIdProvider;
+    NamePatternIdProvider teamIdProvider;
+    ArchiveSupport archiveSupport;
+    CodeScanPathCollector codeScanPathCollector;
 
-    CheckmarxWrapperContext(SecHubConfigurationModel configuration, CheckmarxWrapperCLIEnvironment environment, NamePatternIdProviderFactory factory) {
-        this.configuration = configuration;
-        this.environment = environment;
-
-        String newProjectPresetIdMappingDataAsJson = environment.getNewProjectPresetIdMapping();
-        String newProjectTeamIdMappingDataAsJson = environment.getNewProjectTeamIdMapping();
-
-        presetIdProvider = factory.createProvider(CheckmarxConstants.MAPPING_CHECKMARX_NEWPROJECT_PRESET_ID, newProjectPresetIdMappingDataAsJson);
-        teamIdProvider = factory.createProvider(CheckmarxConstants.MAPPING_CHECKMARX_NEWPROJECT_TEAM_ID, newProjectTeamIdMappingDataAsJson);
+    CheckmarxWrapperContext() {
     }
 
-    public Set<String> createCodeUploadFileSystemFolders() {
-        return null;
+    public Set<String> calculateCodeUploadFileSystemFolders() {
+        if (configuration == null) {
+            throw new IllegalStateException("configuration model may not be null!");
+        }
+        return codeScanPathCollector.collectAllCodeScanPathes(configuration);
     }
 
-    public InputStream createSourceCodeZipFileInputStream() {
-        // TODO Auto-generated method stub
-        return null;
+    public InputStream createSourceCodeZipFileInputStream() throws IOException {
+        String folderAsString = environment.getPdsJobExtractedSourceFolder();
+        if (folderAsString == null) {
+            throw new IllegalStateException("The folder for the extracted sources is not defined!");
+        }
+        File extractedSourcesFolder = new File(folderAsString);
+        if (!extractedSourcesFolder.exists()) {
+            throw new FileNotFoundException("The folder does not exist:" + folderAsString);
+        }
+        File sourceCodeZipFile = createSourceCodeZipFileForExtractedSources(extractedSourcesFolder);
+
+        return new FileInputStream(sourceCodeZipFile);
+    }
+
+    protected File createSourceCodeZipFileForExtractedSources(File extractedSourcesFolder) throws IOException {
+        File parentFolder = extractedSourcesFolder.getParentFile();
+        File recompressedFolder = new File(parentFolder, "recompressed");
+        File targetArchiveFile = new File(recompressedFolder, CommonConstants.FILENAME_SOURCECODE_ZIP);
+
+        archiveSupport.compressFolder(ArchiveType.ZIP, extractedSourcesFolder, targetArchiveFile);
+
+        return targetArchiveFile;
     }
 
     public CheckmarxWrapperCLIEnvironment getEnvironment() {

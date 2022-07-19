@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType;
 import com.mercedesbenz.sechub.test.TestFileSupport;
 import com.mercedesbenz.sechub.test.TestUtil;
 
@@ -54,6 +56,28 @@ class ArchiveSupportTest {
     @BeforeEach
     void beforeEach() {
         supportToTest = new ArchiveSupport();
+    }
+
+    @Test
+    void compress_zip_works() throws Exception {
+        /* prepare */
+
+        File targetFile = TestUtil.createTempFileInBuildFolder("output", "zip").toFile();
+        File folder = new File("./src/test/resources/tar/test-tar1/expected-extracted");
+
+        /* execute */
+        supportToTest.compressFolder(ArchiveType.ZIP, folder, targetFile);
+
+        /* test */
+        assertTrue(targetFile.exists());
+
+        // extract the created zip file again to rerverse folder
+        Path reverseFolder = TestUtil.createTempDirectoryInBuildFolder("compressed-reverse");
+        supportToTest.extract(ZIP, new FileInputStream(targetFile), targetFile.getAbsolutePath(), reverseFolder.toFile(), null);
+
+        // check extracted same as before
+        expectedExtractedFilesAreAllFoundInOutputDirectory(reverseFolder.toFile(), TestFileSupport.loadFilesAsFileList(expectedTar1Folder), expectedTar1Folder);
+
     }
 
     @Test

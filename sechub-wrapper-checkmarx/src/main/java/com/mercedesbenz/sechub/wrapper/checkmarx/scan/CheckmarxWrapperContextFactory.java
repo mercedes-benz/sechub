@@ -5,7 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxConstants;
+import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
 import com.mercedesbenz.sechub.commons.mapping.NamePatternIdProviderFactory;
+import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.JSONConverterException;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
@@ -19,11 +22,28 @@ public class CheckmarxWrapperContextFactory {
     @Autowired
     NamePatternIdProviderFactory providerFactory;
 
+    @Autowired
+    ArchiveSupport archiveSupport;
+
+    @Autowired
+    CodeScanPathCollector codeScanPathCollector;
+
     public CheckmarxWrapperContext create(CheckmarxWrapperCLIEnvironment environment) {
 
         SecHubConfigurationModel configuration = createModel(environment.getSechubConfigurationModelAsJson());
 
-        CheckmarxWrapperContext result = new CheckmarxWrapperContext(configuration, environment, providerFactory);
+        CheckmarxWrapperContext result = new CheckmarxWrapperContext();
+        result.configuration = configuration;
+        result.environment = environment;
+
+        String newProjectPresetIdMappingDataAsJson = environment.getNewProjectPresetIdMapping();
+        String newProjectTeamIdMappingDataAsJson = environment.getNewProjectTeamIdMapping();
+
+        result.presetIdProvider = providerFactory.createProvider(CheckmarxConstants.MAPPING_CHECKMARX_NEWPROJECT_PRESET_ID,
+                newProjectPresetIdMappingDataAsJson);
+        result.teamIdProvider = providerFactory.createProvider(CheckmarxConstants.MAPPING_CHECKMARX_NEWPROJECT_TEAM_ID, newProjectTeamIdMappingDataAsJson);
+        result.archiveSupport = archiveSupport;
+        result.codeScanPathCollector = codeScanPathCollector;
 
         return result;
     }

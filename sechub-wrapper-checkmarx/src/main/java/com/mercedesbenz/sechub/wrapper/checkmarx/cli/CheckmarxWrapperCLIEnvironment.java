@@ -14,11 +14,14 @@ public class CheckmarxWrapperCLIEnvironment {
     @Value("${" + PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED + ":false}")
     private boolean trustAllCertificatesEnabled;
 
-    @Value("${" + PDSDefaultRuntimeKeyConstants.PARAM_KEY_PDS_USER_MESSAGES_FOLDER + "}")
+    @Value("${" + PDSDefaultRuntimeKeyConstants.RT_KEY_PDS_USER_MESSAGES_FOLDER + "}")
     private String pdsUserMessagesFolder;
 
-    @Value("${" + PDSDefaultRuntimeKeyConstants.PARAM_KEY_PDS_JOB_METADATA_FILE + ":}") // This is normally injected by PDS, look at PDS documentation!
+    @Value("${" + PDSDefaultRuntimeKeyConstants.RT_KEY_PDS_JOB_METADATA_FILE + ":}") // This is normally injected by PDS, look at PDS documentation!
     private String pdsJobMetaDatafile;
+
+    @Value("${" + PDSDefaultRuntimeKeyConstants.RT_KEY_PDS_JOB_EXTRACTED_SOURCE_FOLDER + "}") // This is normally injected by PDS, look at PDS documentation!
+    private String pdsExtractedSourceFolder;
 
     @Value("${" + PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_CONFIGURATION + "}")
     private String sechubConfigurationModelAsJson;
@@ -56,6 +59,9 @@ public class CheckmarxWrapperCLIEnvironment {
     @Value("${" + CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_MOCKING_ENABLED + ":false}")
     private boolean mockingEnabled;
 
+    @Value("${" + CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_CLIENT_SECRET + ":" + CheckmarxConstants.DEFAULT_CLIENT_SECRET + "}")
+    private String clientSecret;
+
     public boolean isTrustAllCertificatesEnabled() {
         return trustAllCertificatesEnabled;
     }
@@ -64,7 +70,7 @@ public class CheckmarxWrapperCLIEnvironment {
         return sechubConfigurationModelAsJson;
     }
 
-    public String getUser() {
+    public String getCheckmarxUser() {
         return checkmarxUser;
     }
 
@@ -105,7 +111,7 @@ public class CheckmarxWrapperCLIEnvironment {
     }
 
     public String getClientSecret() {
-        return CheckmarxConstants.DEFAULT_CLIENT_SECRET;
+        return clientSecret;
     }
 
     public String getEngineConfigurationName() {
@@ -118,6 +124,10 @@ public class CheckmarxWrapperCLIEnvironment {
 
     public boolean isMockingEnabled() {
         return mockingEnabled;
+    }
+
+    public String getPdsJobExtractedSourceFolder() {
+        return pdsExtractedSourceFolder;
     }
 
 }

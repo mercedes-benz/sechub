@@ -6,7 +6,6 @@ import static com.mercedesbenz.sechub.integrationtest.api.IntegrationTestMockMod
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 import static com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestExampleConstants.*;
 import static com.mercedesbenz.sechub.integrationtest.scenario14.Scenario14.*;
-import static org.junit.Assert.*;
 
 import java.util.UUID;
 

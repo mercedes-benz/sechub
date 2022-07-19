@@ -17,4 +17,6 @@ public class CheckmarxWrapperKeyConstants {
     public static final String KEY_PDS_CHECKMARX_RESULT_CHECK_TIMOUT_MINUTES = "pds.checkmarx.result.check.timeout.minutes";
 
     public static final String KEY_PDS_CHECKMARX_MOCKING_ENABLED = "pds.checkmarx.mocking.enabled";
+
+    public static final String KEY_PDS_CHECKMARX_CLIENT_SECRET = "pds.checkmarx.client.secret";
 }

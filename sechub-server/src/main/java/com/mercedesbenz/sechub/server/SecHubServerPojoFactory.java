@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironment;
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
+import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
 import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
 
 /**
@@ -18,6 +19,11 @@ import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
  */
 @Component
 public class SecHubServerPojoFactory {
+
+    @Bean
+    CheckSumSupport createSha256CheckSumSupport() {
+        return new CheckSumSupport();
+    }
 
     @Bean
     CodeScanPathCollector createCodeScanPathCollector() {
