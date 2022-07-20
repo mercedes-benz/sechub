@@ -54,5 +54,7 @@ warnMessage "this is a warning message"
 errorMessage "this is an error message
     with multiple lines... 
 "
-
-tree $PDS_JOB_USER_MESSAGES_FOLDER 
+echo "Messages at: $PDS_JOB_USER_MESSAGES_FOLDER"
+echo "----------------------------------------------------------------------------"
+ls $PDS_JOB_USER_MESSAGES_FOLDER 
+echo "----------------------------------------------------------------------------"

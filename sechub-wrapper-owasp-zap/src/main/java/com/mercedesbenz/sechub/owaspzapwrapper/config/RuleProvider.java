@@ -14,6 +14,12 @@ public class RuleProvider {
 
     private TextFileReader reader = new TextFileReader();
 
+    /**
+     *
+     * @param fullRulesetFile
+     * @return OwaspZapFullRuleset specified by file or new empty
+     *         OwaspZapFullRuleset if file is <code>null</code> or does not exist
+     */
     public OwaspZapFullRuleset fetchFullRuleset(File fullRulesetFile) {
         OwaspZapFullRuleset fullRuleset = new OwaspZapFullRuleset();
         if (fullRulesetFile == null) {
@@ -26,6 +32,13 @@ public class RuleProvider {
         return fullRuleset.fromJSON(contentAsJSON);
     }
 
+    /**
+     *
+     * @param rulesDeactvationFile
+     * @return DeactivatedRuleReferences specified by file or new empty
+     *         DeactivatedRuleReferences if file is <code>null</code> or does not
+     *         exist
+     */
     public DeactivatedRuleReferences fetchDeactivatedRuleReferences(File rulesDeactvationFile) {
         DeactivatedRuleReferences deactivatedRuleReferences = new DeactivatedRuleReferences();
         if (rulesDeactvationFile == null) {

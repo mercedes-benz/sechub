@@ -16,6 +16,15 @@ public class DeactivatedRuleReferences implements JSONable<DeactivatedRuleRefere
     }
 
     /**
+     * Add a RuleReference to the list of rule references.
+     *
+     * @param ruleReference
+     */
+    public void addRuleReference(RuleReference ruleReference) {
+        deactivatedRuleReferences.add(ruleReference);
+    }
+
+    /**
      *
      * @return list of RuleReference objects or <code>null</code> if not set.
      */

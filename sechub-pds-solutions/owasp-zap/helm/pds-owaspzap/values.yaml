@@ -8,6 +8,12 @@ image:
     registry: "my.registry.example.org/pds-owasp-zap"
     tag: "latest"
 
+resources:
+    requests:
+        memory: 512Mi
+    limits:
+        memory: 3Gi
+
 pds:
     startMode: localserver
     config:

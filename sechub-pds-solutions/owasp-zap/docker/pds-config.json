@@ -42,6 +42,10 @@
           {
             "key": "zap.proxy.for.pds.target.type",
             "description": "Use proxy for PDS target type: INTERNET or INTRANET."
+          },
+          {
+          	"key": "zap.deactivated.rule.references",
+          	"description": "Comma separated list of rule references that will be deactivated during the scan."
           }
         ]
       }
@@ -86,6 +90,10 @@
           {
             "key": "zap.proxy.for.pds.target.type",
             "description": "Use proxy for PDS target type: INTERNET or INTRANET."
+          },
+          {
+          	"key": "zap.deactivated.rule.references",
+          	"description": "Comma separated list of rule references that will be deactivated during the scan."
           }
         ]
       }
