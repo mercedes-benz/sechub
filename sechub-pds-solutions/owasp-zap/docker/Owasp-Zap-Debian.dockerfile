@@ -69,6 +69,9 @@ RUN cd "$TOOL_FOLDER" && \
     # verify that the checksum and the checksum of the file are same
     sha256sum --check sechub-pds-wrapperowaspzap-$PDS_VERSION.jar.sha256sum && \
     ln -s sechub-pds-wrapperowaspzap-$PDS_VERSION.jar wrapperowaspzap.jar
+    
+# Copy default full ruleset file
+COPY owasp-zap-full-ruleset-all-release-status.json ${TOOL_FOLDER}/owasp-zap-full-ruleset-all-release-status.json
 
 # Copy mock folders
 COPY mocks/ "$MOCK_FOLDER"
