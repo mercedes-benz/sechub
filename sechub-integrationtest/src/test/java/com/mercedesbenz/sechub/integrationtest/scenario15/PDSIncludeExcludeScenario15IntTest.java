@@ -58,7 +58,7 @@ public class PDSIncludeExcludeScenario15IntTest {
 
         /* prepare */
         TestProject project = PROJECT_1;
-        UUID jobUUID = as(USER_1).createScanJobWhichUsesDataReferencedIds(
+        UUID jobUUID = as(USER_1).createCodeScanWithTemplate(
                 IntegrationTestTemplateFile.CODE_SCAN_2_BINARIES_DATA_ONE_REFERENCE,
                 project, NOT_MOCKED,
                 TemplateData.builder().addReferenceId("files-b").build());
@@ -133,7 +133,7 @@ public class PDSIncludeExcludeScenario15IntTest {
 
         /* prepare */
         TestProject project = PROJECT_1;
-        UUID jobUUID = as(USER_1).createScanJobWhichUsesDataReferencedIds(
+        UUID jobUUID = as(USER_1).createCodeScanWithTemplate(
                 IntegrationTestTemplateFile.CODE_SCAN_3_SOURCES_DATA_ONE_REFERENCE,
                 project, NOT_MOCKED,
                 TemplateData.builder().addReferenceId("files-b").build());

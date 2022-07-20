@@ -6,18 +6,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxConstants;
+import com.mercedesbenz.sechub.adapter.mock.MockDataIdentifierFactory;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
 import com.mercedesbenz.sechub.commons.mapping.NamePatternIdProviderFactory;
-import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.JSONConverterException;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
-import com.mercedesbenz.sechub.wrapper.checkmarx.cli.CheckmarxWrapperCLIEnvironment;
+import com.mercedesbenz.sechub.commons.pds.PDSUserMessageSupport;
+import com.mercedesbenz.sechub.wrapper.checkmarx.cli.CheckmarxWrapperEnvironment;
 
 @Component
-public class CheckmarxWrapperContextFactory {
+public class CheckmarxWrapperScanContextFactory {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CheckmarxWrapperContextFactory.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CheckmarxWrapperScanContextFactory.class);
 
     @Autowired
     NamePatternIdProviderFactory providerFactory;
@@ -26,13 +27,16 @@ public class CheckmarxWrapperContextFactory {
     ArchiveSupport archiveSupport;
 
     @Autowired
-    CodeScanPathCollector codeScanPathCollector;
+    PDSUserMessageSupport messageSupport;
 
-    public CheckmarxWrapperContext create(CheckmarxWrapperCLIEnvironment environment) {
+    @Autowired
+    MockDataIdentifierFactory mockDataIdentifierFactory;
+
+    public CheckmarxWrapperScanContext create(CheckmarxWrapperEnvironment environment) {
 
         SecHubConfigurationModel configuration = createModel(environment.getSechubConfigurationModelAsJson());
 
-        CheckmarxWrapperContext result = new CheckmarxWrapperContext();
+        CheckmarxWrapperScanContext result = new CheckmarxWrapperScanContext();
         result.configuration = configuration;
         result.environment = environment;
 
@@ -43,7 +47,8 @@ public class CheckmarxWrapperContextFactory {
                 newProjectPresetIdMappingDataAsJson);
         result.teamIdProvider = providerFactory.createProvider(CheckmarxConstants.MAPPING_CHECKMARX_NEWPROJECT_TEAM_ID, newProjectTeamIdMappingDataAsJson);
         result.archiveSupport = archiveSupport;
-        result.codeScanPathCollector = codeScanPathCollector;
+        result.messageSupport = messageSupport;
+        result.mockDataIdentifierFactory = mockDataIdentifierFactory;
 
         return result;
     }

@@ -5,13 +5,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
+import com.mercedesbenz.sechub.adapter.mock.MockDataIdentifierFactory;
 import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
@@ -43,6 +43,9 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
 
     @Autowired
     protected NetworkTargetResolver targetResolver;
+
+    @Autowired
+    MockDataIdentifierFactory mockDataIdentifierFactory;
 
     @Autowired
     CodeScanPathCollector codeScanPathCollector;
@@ -106,24 +109,15 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
 
         ProductExecutorData data = createExecutorData(context, executorContext, traceLogId);
 
-        configureSourceCodeHandlingIfNecessary(data);
+        configureMockDataIdentifier(data);
         configureNetworkTargetHandlingIfNecessary(data);
 
         return startExecution(data);
     }
 
-    private void configureSourceCodeHandlingIfNecessary(ProductExecutorData data) {
-        if (scanType != ScanType.CODE_SCAN) {
-            return;
-        }
-
+    private void configureMockDataIdentifier(ProductExecutorData data) {
         SecHubConfiguration configuration = data.getSechubExecutionContext().getConfiguration();
-        Set<String> paths = codeScanPathCollector.collectAllCodeScanPathes(configuration);
-
-        // the information about paths is interesting for debugging but also necessary
-        // for our integration tests - see mocked_setup.json
-        data.codeUploadFileSystemFolderPaths = paths;
-
+        data.mockDataIdentifier = mockDataIdentifierFactory.createMockDataIdentifier(scanType, configuration);
     }
 
     protected abstract void customize(ProductExecutorData data);

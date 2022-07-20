@@ -379,7 +379,7 @@ public class SecHubClientExecutor {
         File exampleScanRootFolder = new File(IntegrationTestFileSupport.getTestfileSupport().getRootFolder(), pathToExamples);
         exampleScanRootFolder.mkdirs();
 
-        List<IntegrationTestExampleFolder> exampleFolders = IntegrationTestExampleConstants.TESTDATA_FOLDERS.getExampleContentFolders();
+        List<IntegrationTestExampleFolder> exampleFolders = IntegrationTestExampleConstants.MOCKDATA_EXAMPLE_CONTENT_PROVIDER.getExampleContentFolders();
         for (IntegrationTestExampleFolder folder : exampleFolders) {
             File projectResourceFolder = new File(exampleScanRootFolder, folder.getPath());
             if (folder.isExistingContent()) {

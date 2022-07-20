@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
+import com.mercedesbenz.sechub.adapter.mock.MockDataIdentifierFactory;
 import com.mercedesbenz.sechub.adapter.pds.PDSAdapter;
 import com.mercedesbenz.sechub.adapter.pds.PDSCodeScanConfig;
 import com.mercedesbenz.sechub.adapter.pds.PDSCodeScanConfigImpl;
@@ -48,6 +49,9 @@ public class PDSCodeScanProductExecutor extends AbstractProductExecutor {
 
     @Autowired
     PDSStorageContentProviderFactory contentProviderFactory;
+
+    @Autowired
+    MockDataIdentifierFactory mockDataIdentifierFactory;
 
     public PDSCodeScanProductExecutor() {
         super(ProductIdentifier.PDS_CODESCAN, 1, ScanType.CODE_SCAN);

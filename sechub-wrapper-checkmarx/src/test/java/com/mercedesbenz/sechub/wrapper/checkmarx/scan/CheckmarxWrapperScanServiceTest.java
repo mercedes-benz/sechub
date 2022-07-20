@@ -6,9 +6,6 @@ import static org.mockito.Mockito.*;
 
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,28 +16,25 @@ import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterMetaDataCallback;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
-import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
 import com.mercedesbenz.sechub.test.TestUtil;
-import com.mercedesbenz.sechub.wrapper.checkmarx.cli.CheckmarxWrapperCLIEnvironment;
+import com.mercedesbenz.sechub.wrapper.checkmarx.cli.CheckmarxWrapperEnvironment;
 
 class CheckmarxWrapperScanServiceTest {
 
     private CheckmarxWrapperScanService serviceToTest;
     private CheckmarxAdapter adapter;
-    private CodeScanPathCollector codeScanPathCollector;
-    private CheckmarxWrapperCLIEnvironment environment;
-    private CheckmarxWrapperContextFactory factory;
-    private CheckmarxWrapperContext context;
+    private CheckmarxWrapperEnvironment environment;
+    private CheckmarxWrapperScanContextFactory factory;
+    private CheckmarxWrapperScanContext context;
     private InputStream inputStreamCreatedByContext;
 
     @BeforeEach
     void beforeEach() throws Exception {
 
         adapter = mock(CheckmarxAdapter.class);
-        codeScanPathCollector = mock(CodeScanPathCollector.class);
-        environment = mock(CheckmarxWrapperCLIEnvironment.class);
-        factory = mock(CheckmarxWrapperContextFactory.class);
-        context = mock(CheckmarxWrapperContext.class);
+        environment = mock(CheckmarxWrapperEnvironment.class);
+        factory = mock(CheckmarxWrapperScanContextFactory.class);
+        context = mock(CheckmarxWrapperScanContext.class);
 
         inputStreamCreatedByContext = mock(InputStream.class);
         when(context.createSourceCodeZipFileInputStream()).thenReturn(inputStreamCreatedByContext);
@@ -52,7 +46,6 @@ class CheckmarxWrapperScanServiceTest {
 
         serviceToTest = new CheckmarxWrapperScanService();
         serviceToTest.adapter = adapter;
-        serviceToTest.codeScanPathCollector = codeScanPathCollector;
         serviceToTest.environment = environment;
         serviceToTest.factory = factory;
 
@@ -87,8 +80,7 @@ class CheckmarxWrapperScanServiceTest {
         when(context.getTeamIdForNewProjects()).thenReturn("team1");
         when(context.getPresetIdForNewProjects()).thenReturn(1L);
 
-        Set<String> folders = new LinkedHashSet<>(Arrays.asList("folder1", "folder2"));
-        when(context.calculateCodeUploadFileSystemFolders()).thenReturn(folders);
+        when(context.createMockDataIdentifier()).thenReturn("folder1;folder2");
 
         /* execute */
         serviceToTest.startScan();
@@ -120,7 +112,7 @@ class CheckmarxWrapperScanServiceTest {
 
         assertEquals("engine1", config.getEngineConfigurationName());
         assertEquals("secret1", config.getClientSecret());
-        assertEquals("folder1;folder2", config.getTargetAsString());
+        assertEquals("folder1;folder2", config.getMockDataIdentifier());
     }
 
 }

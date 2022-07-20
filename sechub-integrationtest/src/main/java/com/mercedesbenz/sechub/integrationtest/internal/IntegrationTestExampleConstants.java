@@ -182,7 +182,7 @@ public class IntegrationTestExampleConstants {
      */
     public static final String PATH_TO_ZIPFILE_WITH_DIFFERENT_DATA_SECTIONS = "pds/codescan/upload/zipfile_contains_inttest_codescan_with_different_data_sections.zip";
 
-    public static TestDataFolderList TESTDATA_FOLDERS = new TestDataFolderList();
+    public static final MockDataIdentifierExampleContentFolderProvider MOCKDATA_EXAMPLE_CONTENT_PROVIDER = new MockDataIdentifierExampleContentFolderProvider();
 
     public static class IntegrationTestExampleFolder {
         private boolean isExistingContent;
@@ -240,7 +240,7 @@ public class IntegrationTestExampleConstants {
      */
     public static final String PDS_ENV_NAME_MAPPING_ID_2_NOT_EXISTING_IN_SECHUB = "TEST_MAPPING2_NOT_EXISTING_IN_SECHUB";
 
-    public static class TestDataFolderList {
+    public static class MockDataIdentifierExampleContentFolderProvider {
 
         private List<IntegrationTestExampleFolder> exampleContentFolders = new ArrayList<>();
 
@@ -248,11 +248,11 @@ public class IntegrationTestExampleConstants {
             return Collections.unmodifiableList(exampleContentFolders);
         }
 
-        private TestDataFolderList() {
+        private MockDataIdentifierExampleContentFolderProvider() {
             for (MockData mockData : MockData.values()) {
-                if (mockData.isTargetUsedAsFolder()) {
-                    String target = mockData.getTarget();
-                    exampleContentFolders.add(new IntegrationTestExampleFolder(target, mockData.isTargetNeedingExistingData()));
+                if (mockData.isMockDataIdentifierUsedAsFolder()) {
+                    String mockDataIdentifierAsFolder = mockData.getMockDataIdentifier();
+                    exampleContentFolders.add(new IntegrationTestExampleFolder(mockDataIdentifierAsFolder, mockData.isNeedsExistingFolder()));
                 }
             }
         }

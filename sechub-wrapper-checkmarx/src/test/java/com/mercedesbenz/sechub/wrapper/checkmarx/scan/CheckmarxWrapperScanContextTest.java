@@ -1,6 +1,7 @@
 package com.mercedesbenz.sechub.wrapper.checkmarx.scan;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.io.BufferedReader;
@@ -8,9 +9,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -18,56 +16,58 @@ import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import com.mercedesbenz.sechub.adapter.mock.MockDataIdentifierFactory;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType;
 import com.mercedesbenz.sechub.commons.core.CommonConstants;
-import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
+import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
+import com.mercedesbenz.sechub.commons.pds.PDSUserMessageSupport;
 import com.mercedesbenz.sechub.test.TestFileWriter;
 import com.mercedesbenz.sechub.test.TestUtil;
-import com.mercedesbenz.sechub.wrapper.checkmarx.cli.CheckmarxWrapperCLIEnvironment;
+import com.mercedesbenz.sechub.wrapper.checkmarx.cli.CheckmarxWrapperEnvironment;
 
-class CheckmarxWrapperContextTest {
+class CheckmarxWrapperScanContextTest {
 
-    private CheckmarxWrapperContext contextToTest;
-    private CheckmarxWrapperCLIEnvironment environment;
+    private CheckmarxWrapperScanContext contextToTest;
+    private CheckmarxWrapperEnvironment environment;
     private SecHubConfigurationModel configuration;
     private ArchiveSupport archiveSupport;
-    private CodeScanPathCollector codeScanPathCollector;
+    private MockDataIdentifierFactory mockDataIdentifierFactory;
+    private PDSUserMessageSupport messageSupport;
 
-    TestFileWriter writer = new TestFileWriter();
+    private TestFileWriter writer = new TestFileWriter();
 
     @BeforeEach
     void beforeEach() {
 
         configuration = mock(SecHubConfigurationModel.class);
-        environment = mock(CheckmarxWrapperCLIEnvironment.class);
+        environment = mock(CheckmarxWrapperEnvironment.class);
         archiveSupport = mock(ArchiveSupport.class);
-        codeScanPathCollector = mock(CodeScanPathCollector.class);
+        messageSupport = mock(PDSUserMessageSupport.class);
 
-        contextToTest = new CheckmarxWrapperContext();
+        mockDataIdentifierFactory = mock(MockDataIdentifierFactory.class);
+
+        contextToTest = new CheckmarxWrapperScanContext();
         contextToTest.configuration = configuration;
         contextToTest.environment = environment;
         contextToTest.archiveSupport = archiveSupport;
-        contextToTest.codeScanPathCollector = codeScanPathCollector;
+        contextToTest.mockDataIdentifierFactory = mockDataIdentifierFactory;
+        contextToTest.messageSupport = messageSupport;
 
     }
 
     @Test
     void folder_calculation_uses_contained_sechub_configuration_and_the_path_collector() {
         /* prepare */
-        when(codeScanPathCollector.collectAllCodeScanPathes(configuration)).thenReturn(new LinkedHashSet<>(Arrays.asList("path1", "path2")));
+        String mockDataIdentifier = "path1;path2";
+        when(mockDataIdentifierFactory.createMockDataIdentifier(ScanType.CODE_SCAN, configuration)).thenReturn(mockDataIdentifier);
 
         /* execute */
-        Set<String> result = contextToTest.calculateCodeUploadFileSystemFolders();
+        String result = contextToTest.createMockDataIdentifier();
 
         /* test */
-        assertNotNull(result);
-        Set<String> expected = new LinkedHashSet<>();
-        expected.add("path1");
-        expected.add("path2");
-
-        assertEquals(expected, result);
+        assertEquals(mockDataIdentifier, result);
     }
 
     @Test
@@ -76,6 +76,7 @@ class CheckmarxWrapperContextTest {
         Path testFolder = TestUtil.createTempDirectoryInBuildFolder("chmx-wrapper-input-stream");
         File extractedFolder = new File(testFolder.toFile(), "extracted");
         extractedFolder.mkdirs();
+        writer.save(new File(extractedFolder, "at-least-one-file.txt"), "content", false);
 
         File expectedCompressFolder = new File(extractedFolder.getParentFile(), "recompressed");
         File expectedTargetFile = new File(expectedCompressFolder, CommonConstants.FILENAME_SOURCECODE_ZIP);

@@ -16,7 +16,7 @@ import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.mock.AbstractMockedAdapter;
 import com.mercedesbenz.sechub.integrationtest.api.AssertFullScanData;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
-import com.mercedesbenz.sechub.integrationtest.api.TestExecutorProductIdentifier;
+import com.mercedesbenz.sechub.integrationtest.api.TestProductExecutorIdentifier;
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
 import com.mercedesbenz.sechub.test.executionprofile.TestExecutionProfile;
 import com.mercedesbenz.sechub.test.executorconfig.TestExecutorConfig;
@@ -37,8 +37,8 @@ public class ProductExecutorConfigurationScenario8IntTest {
         // info: we use NETSPARKER here, because our standard results for a web scan in
         // mocked
         // product results for web scans is currently always NETSPARKER
-        UUID config1UUID = createExecutorConfig(TestExecutorProductIdentifier.NETSPARKER, "exec-config-1");
-        UUID config2UUID = createExecutorConfig(TestExecutorProductIdentifier.NETSPARKER, "exec-config-2");
+        UUID config1UUID = createExecutorConfig(TestProductExecutorIdentifier.NETSPARKER, "exec-config-1");
+        UUID config2UUID = createExecutorConfig(TestProductExecutorIdentifier.NETSPARKER, "exec-config-2");
 
         String profileId = "profile1";
 
@@ -86,8 +86,8 @@ public class ProductExecutorConfigurationScenario8IntTest {
         // info: we use NETSPARKER here, because our standard results for a web scan in
         // mocked
         // product results for web scans is currently always NETSPARKER
-        UUID config1UUID = createExecutorConfig(TestExecutorProductIdentifier.NETSPARKER, "exec-config-1");
-        UUID config2UUID = createExecutorConfig(TestExecutorProductIdentifier.NETSPARKER, "exec-config-2");
+        UUID config1UUID = createExecutorConfig(TestProductExecutorIdentifier.NETSPARKER, "exec-config-1");
+        UUID config2UUID = createExecutorConfig(TestProductExecutorIdentifier.NETSPARKER, "exec-config-2");
 
         String profileId1 = "profile1";
 
@@ -142,7 +142,7 @@ public class ProductExecutorConfigurationScenario8IntTest {
         // info: we use NETSPARKER here, because our standard results for a web scan in
         // mocked
         // product results for web scans is currently always NETSPARKER
-        UUID config1UUID = createExecutorConfig(TestExecutorProductIdentifier.NETSPARKER, "exec-config-1");
+        UUID config1UUID = createExecutorConfig(TestProductExecutorIdentifier.NETSPARKER, "exec-config-1");
 
         /* @formatter:off */
         String profileId1 = "profile1";
@@ -195,7 +195,7 @@ public class ProductExecutorConfigurationScenario8IntTest {
         return profile;
     }
 
-    private UUID createExecutorConfig(TestExecutorProductIdentifier productIdentifier, String name) {
+    private UUID createExecutorConfig(TestProductExecutorIdentifier productIdentifier, String name) {
         TestExecutorConfig config = new TestExecutorConfig();
         config.productIdentifier = productIdentifier.name();
         config.name = name;

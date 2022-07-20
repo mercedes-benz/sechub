@@ -106,7 +106,6 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
 
                 /* @formatter:off */
 
-                @SuppressWarnings("deprecation")
                 CheckmarxAdapterConfig checkMarxConfig = CheckmarxConfig.builder().
     					configure(new SecHubAdapterOptionsBuilderStrategy(data, getScanType())).
     					setTrustAllCertificates(installSetup.isHavingUntrustedCertificate()).
@@ -117,7 +116,6 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
     					setAlwaysFullScan(callback.isAlwaysFullScanEnabled()).
     					setTimeToWaitForNextCheckOperationInMinutes(scanResultCheckPeriodInMinutes).
     					setTimeOutInMinutes(scanResultCheckTimeOutInMinutes).
-    					setFileSystemSourceFolders(data.getCodeUploadFileSystemFolders()). // to support mocked Checkmarx adapters we MUST use still the deprecated method!
     					setSourceCodeZipFileInputStream(sourceCodeZipFileInputStream).
     					setTeamIdForNewProjects(configSupport.getTeamIdForNewProjects(projectId)).
     					setClientSecret(configSupport.getClientSecret()).
@@ -125,6 +123,7 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
     					setPresetIdForNewProjects(configSupport.getPresetIdForNewProjects(projectId)).
     					setProjectId(projectId).
     					setTraceID(data.getSechubExecutionContext().getTraceLogIdAsString()).
+    					setMockDataIdentifier(data.getMockDataIdentifier()).
     					build();
 					/* @formatter:on */
 

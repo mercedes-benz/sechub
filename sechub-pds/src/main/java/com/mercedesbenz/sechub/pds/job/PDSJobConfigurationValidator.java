@@ -31,7 +31,7 @@ public class PDSJobConfigurationValidator {
         if (message == null) {
             return;
         }
-        LOG.warn("pds job configuration not valid - message:{}", message);
+        LOG.error("pds job configuration not valid - message:{}", message);
 
         throw new PDSNotAcceptableException("Configuration invalid:" + message);
 

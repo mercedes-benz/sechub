@@ -15,13 +15,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.mercedesbenz.sechub.adapter.mock.MockedAdapterSetupService;
-import com.mercedesbenz.sechub.wrapper.checkmarx.cli.CheckmarxWrapperCLIEnvironment;
-import com.mercedesbenz.sechub.wrapper.checkmarx.scan.CheckmarxWrapperContextFactory;
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
+import com.mercedesbenz.sechub.wrapper.checkmarx.cli.CheckmarxWrapperEnvironment;
+import com.mercedesbenz.sechub.wrapper.checkmarx.factory.CheckmarxWrapperPojoFactory;
+import com.mercedesbenz.sechub.wrapper.checkmarx.factory.PDSUserMessageSupportFactory;
+import com.mercedesbenz.sechub.wrapper.checkmarx.scan.CheckmarxWrapperScanContextFactory;
 import com.mercedesbenz.sechub.wrapper.checkmarx.scan.CheckmarxWrapperScanService;
 
-@SpringBootTest(classes = { CheckmarxWrapperContextFactory.class, CheckmarxWrapperScanService.class, CheckmarxWrapperPojoFactory.class,
-        CheckmarxWrapperCLIEnvironment.class, MockedAdapterSetupService.class })
+@SpringBootTest(classes = { CheckmarxWrapperScanContextFactory.class, CheckmarxWrapperScanService.class, CheckmarxWrapperPojoFactory.class,
+        CheckmarxWrapperEnvironment.class, PDSUserMessageSupportFactory.class })
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
 class CheckmarxWrapperScanServiceSpringBootTest {
@@ -69,12 +71,16 @@ class CheckmarxWrapperScanServiceSpringBootTest {
     void start_scan_with_checkmarx_mocked_adapter_is_possible_and_returns_not_null() throws Exception {
 
         /* execute */
-        String result = scanService.startScan();
+        AdapterExecutionResult executionResult = scanService.startScan();
 
         /* test */
-        assertNotNull(result);
-        assertTrue(result.startsWith("<?xml"));
-        assertTrue(result.contains("Checkmarx"));
+        String productResult = executionResult.getProductResult();
+
+        assertNotNull(productResult);
+        assertTrue(productResult.startsWith("<?xml"));
+        assertTrue(productResult.contains("Checkmarx"));
+
+        assertEquals(0, executionResult.getProductMessages().size());
 
     }
 

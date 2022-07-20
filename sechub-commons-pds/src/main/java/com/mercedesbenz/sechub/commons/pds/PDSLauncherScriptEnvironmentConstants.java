@@ -7,7 +7,10 @@ package com.mercedesbenz.sechub.commons.pds;
  * available inside the launcher scripts, but only when automatically accepted
  * (see {@link PDSConfigDataKeyProvider} in combination with
  * `markAsAvailableInsideScript` ) or configured manually inside the PDS server
- * configuration file.
+ * configuration file. <br>
+ * <br>
+ * There exists a spring boot key pendant :
+ * {@link PDSDefaultRuntimeKeyConstants}
  *
  * @author Albert Tregnaghi
  *
@@ -33,12 +36,25 @@ public class PDSLauncherScriptEnvironmentConstants {
     public static final String PDS_JOB_BINARIES_TAR_FILE = "PDS_JOB_BINARIES_TAR_FILE";
 
     public static final String PDS_JOB_WORKSPACE_LOCATION = "PDS_JOB_WORKSPACE_LOCATION";
+
+    /**
+     * The location of the result file which will be returned to SecHub as the
+     * product result
+     */
     public static final String PDS_JOB_RESULT_FILE = "PDS_JOB_RESULT_FILE";
 
     public static final String PDS_JOB_UUID = "PDS_JOB_UUID";
 
     public static final String PDS_JOB_USER_MESSAGES_FOLDER = "PDS_JOB_USER_MESSAGES_FOLDER";
 
-    public static final String PDS_JOB_METADATA_FILE = "PDS_JOB_METADATA_FILE";
+    /**
+     * The location of the job meta data file. A wrapper application which uses an
+     * SecHub adapter can write here additional adapter meta information. <br>
+     * <br>
+     * <b>Important:</b> The content must be compatible with
+     * com.mercedesbenz.sechub.adapter.AdapterMetaData!
+     *
+     */
+    public static final String PDS_JOB_ADAPTER_METADATA_FILE = "PDS_JOB_ADAPTER_METADATA_FILE";
 
 }

@@ -6,22 +6,24 @@ import org.springframework.stereotype.Component;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxConstants;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultRuntimeKeyConstants;
-import com.mercedesbenz.sechub.wrapper.checkmarx.CheckmarxWrapperKeyConstants;
 
 @Component
-public class CheckmarxWrapperCLIEnvironment {
+public class CheckmarxWrapperEnvironment {
 
     @Value("${" + PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED + ":false}")
     private boolean trustAllCertificatesEnabled;
 
-    @Value("${" + PDSDefaultRuntimeKeyConstants.RT_KEY_PDS_USER_MESSAGES_FOLDER + "}")
+    @Value("${" + PDSDefaultRuntimeKeyConstants.RT_KEY_PDS_JOB_USER_MESSAGES_FOLDER + "}")
     private String pdsUserMessagesFolder;
 
-    @Value("${" + PDSDefaultRuntimeKeyConstants.RT_KEY_PDS_JOB_METADATA_FILE + ":}") // This is normally injected by PDS, look at PDS documentation!
-    private String pdsJobMetaDatafile;
+    @Value("${" + PDSDefaultRuntimeKeyConstants.RT_KEY_PDS_JOB_ADAPTER_METADATA_FILE + ":}")
+    private String pdsJobAdapterMetaDatafile;
 
-    @Value("${" + PDSDefaultRuntimeKeyConstants.RT_KEY_PDS_JOB_EXTRACTED_SOURCE_FOLDER + "}") // This is normally injected by PDS, look at PDS documentation!
+    @Value("${" + PDSDefaultRuntimeKeyConstants.RT_KEY_PDS_JOB_EXTRACTED_SOURCES_FOLDER + "}")
     private String pdsExtractedSourceFolder;
+
+    @Value("${" + PDSDefaultRuntimeKeyConstants.RT_KEY_PDS_JOB_RESULT_FILE + "}")
+    private String pdsResultFile;
 
     @Value("${" + PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_CONFIGURATION + "}")
     private String sechubConfigurationModelAsJson;
@@ -98,8 +100,8 @@ public class CheckmarxWrapperCLIEnvironment {
         return pdsUserMessagesFolder;
     }
 
-    public String getPdsJobMetaDatafile() {
-        return pdsJobMetaDatafile;
+    public String getPdsJobAdapterMetaDatafile() {
+        return pdsJobAdapterMetaDatafile;
     }
 
     public String getNewProjectTeamIdMapping() {
@@ -128,6 +130,10 @@ public class CheckmarxWrapperCLIEnvironment {
 
     public String getPdsJobExtractedSourceFolder() {
         return pdsExtractedSourceFolder;
+    }
+
+    public String getPdsResultFile() {
+        return pdsResultFile;
     }
 
 }

@@ -283,6 +283,29 @@ public class IntegrationTestDefaultProfiles {
     public static final DefaultTestExecutionProfile PROFILE_11_PDS_CODESCAN_MAPPING = defineProfile11();
 
     /**
+     * The profile does use executor configuration
+     * {@link IntegrationTestDefaultExecutorConfigurations#PDS_V1_CHECKMARX_INTEGRATIONTEST
+     * PDS_V1_CHECKMARX_INTEGRATIONTEST}
+     *
+     * PDS job parameter
+     * {@value PDSDefaultParameterKeyConstants#PARAM_KEY_PDS_CONFIG_USE_SECHUB_MAPPINGS}
+     * does include:
+     * <ul>
+     * <li>{@link IntegrationTestExampleConstants#MAPPING_ID_1_REPLACE_ANY_PROJECT1}
+     * ({@value IntegrationTestExampleConstants#MAPPING_ID_1_REPLACE_ANY_PROJECT1})</li>
+     * <li>{@link IntegrationTestExampleConstants#MAPPING_ID_2_NOT_EXISTING_IN_SECHUB}
+     * ({@value IntegrationTestExampleConstants#MAPPING_ID_2_NOT_EXISTING_IN_SECHUB})</li>
+     * </ul>
+     *
+     * <h5>Used inside scenarios:</h5>
+     * <ul>
+     * <li>{@link Scenario16}</li>
+     * </ul>
+     *
+     */
+    public static final DefaultTestExecutionProfile PROFILE_12_PDS_CHECKMARX_INTEGRATIONTEST = defineProfile12();
+
+    /**
      * @return all default profiles
      */
     public static List<DefaultTestExecutionProfile> getAllDefaultProfiles() {
@@ -400,6 +423,16 @@ public class IntegrationTestDefaultProfiles {
         profile.id = "inttest-p11-pds-mapping"; // not more than 30 chars per profile id, so we use this
         profile.description = "Profile 11: PDS, reused storage, dynamic text results, uses predefined mapping: '"
                 + IntegrationTestExampleConstants.MAPPING_ID_1_REPLACE_ANY_PROJECT1 + "'";
+        profile.enabled = true;
+        return profile;
+    }
+
+    private static DefaultTestExecutionProfile defineProfile12() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_CHECKMARX_INTEGRATIONTEST);
+        profile.id = "inttest-p12-pds-checkmarx";
+        profile.description = "Profile 12: PDS checkmarx, reused storage, dynamic text results";
         profile.enabled = true;
         return profile;
     }

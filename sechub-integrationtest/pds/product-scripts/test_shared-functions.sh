@@ -1,8 +1,16 @@
 #!/bin/bash 
 # SPDX-License-Identifier: MIT
 
+# About
+# -----
+# This bash script is just for testing the "shared-functions.sh" script directly 
+# from command line - without starting an integration test.
+#
+# Reason: Faster devlelopment, debugging and failure search. 
+#
+
+
 DEBUG=true
-INTEGRATION_TEST_DEBUG="integration.test.debug.value"
 PDS_TEST_KEY_VARIANTNAME="pds.test.key.variantname.value"
 
 source ./shared-functions.sh

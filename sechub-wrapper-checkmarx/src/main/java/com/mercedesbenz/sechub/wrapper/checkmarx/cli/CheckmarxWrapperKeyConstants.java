@@ -1,4 +1,4 @@
-package com.mercedesbenz.sechub.wrapper.checkmarx;
+package com.mercedesbenz.sechub.wrapper.checkmarx.cli;
 
 public class CheckmarxWrapperKeyConstants {
 

@@ -9,15 +9,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.adapter.AdapterException;
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterMetaDataCallback;
 import com.mercedesbenz.sechub.adapter.FileBasedAdapterMetaDataCallback;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxConfig;
-import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
-import com.mercedesbenz.sechub.commons.pds.PDSUserMessageSupport;
-import com.mercedesbenz.sechub.wrapper.checkmarx.cli.CheckmarxWrapperCLIEnvironment;
+import com.mercedesbenz.sechub.wrapper.checkmarx.cli.CheckmarxWrapperEnvironment;
 
 @Service
 public class CheckmarxWrapperScanService {
@@ -28,32 +27,24 @@ public class CheckmarxWrapperScanService {
     CheckmarxAdapter adapter;
 
     @Autowired
-    CheckmarxWrapperCLIEnvironment environment;
+    CheckmarxWrapperEnvironment environment;
 
     @Autowired
-    CodeScanPathCollector codeScanPathCollector;
+    CheckmarxWrapperScanContextFactory factory;
 
-    @Autowired
-    CheckmarxWrapperContextFactory factory;
-
-    public String startScan() throws Exception {
+    public AdapterExecutionResult startScan() throws IOException, AdapterException {
         LOG.info("Start scan");
-
-        String pdsUserMessagesFolder = environment.getPdsUserMessagesFolder();
-        if (pdsUserMessagesFolder == null) {
-            throw new IllegalStateException("PDS user messages folder is not set!");
-        }
 
         CheckmarxAdapterConfig config = createConfig();
 
         File metaDataFile;
-        String pdsJobMetaDatafile = environment.getPdsJobMetaDatafile();
+        String pdsJobMetaDatafile = environment.getPdsJobAdapterMetaDatafile();
 
         if (pdsJobMetaDatafile == null || pdsJobMetaDatafile.isEmpty()) {
             LOG.warn("PDS job meta data file not set. Will create fallback temp file. For local tests okay but not for production!");
 
             metaDataFile = Files.createTempFile("fallback_pds_job_metadata_file", ".txt").toFile();
-            LOG.warn("Temporary PDS job meta data file is now2: {}", metaDataFile);
+            LOG.info("Temporary PDS job meta data file is now: {}", metaDataFile);
 
         } else {
             metaDataFile = new File(pdsJobMetaDatafile);
@@ -61,23 +52,16 @@ public class CheckmarxWrapperScanService {
 
         AdapterMetaDataCallback adapterMetaDataCallBack = new FileBasedAdapterMetaDataCallback(metaDataFile);
 
-        AdapterExecutionResult adapterResult = adapter.start(config, adapterMetaDataCallBack);
-
-        PDSUserMessageSupport support = new PDSUserMessageSupport(pdsUserMessagesFolder);
-        support.writeMessages(adapterResult.getProductMessages());
-
-        return adapterResult.getProductResult();
+        return adapter.start(config, adapterMetaDataCallBack);
     }
 
     private CheckmarxAdapterConfig createConfig() throws IOException {
         /* @formatter:off */
 
 
-        CheckmarxWrapperContext context = factory.create(environment);
+        CheckmarxWrapperScanContext context = factory.create(environment);
 
-        @SuppressWarnings("deprecation")
         CheckmarxAdapterConfig checkMarxConfig = CheckmarxConfig.builder().
-//                configure(new SecHubAdapterOptionsBuilderStrategy(data, getScanType())).
                 setTrustAllCertificates(environment.isTrustAllCertificatesEnabled()).
                 setUser(environment.getCheckmarxUser()).
                 setPasswordOrAPIToken(environment.getCheckmarxPassword()).
@@ -86,7 +70,7 @@ public class CheckmarxWrapperScanService {
                 setAlwaysFullScan(environment.isAlwaysFullScanEnabled()).
                 setTimeToWaitForNextCheckOperationInMinutes(environment.getScanResultCheckPeriodInMinutes()).
                 setTimeOutInMinutes(environment.getScanResultCheckTimeOutInMinutes()).
-                setFileSystemSourceFolders(context.calculateCodeUploadFileSystemFolders()). // to support mocked Checkmarx adapters we MUST use still the deprecated method!
+                setMockDataIdentifier(context.createMockDataIdentifier()).
                 setSourceCodeZipFileInputStream(context.createSourceCodeZipFileInputStream()).
                 setTeamIdForNewProjects(context.getTeamIdForNewProjects()).
                 setClientSecret(environment.getClientSecret()).

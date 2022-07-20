@@ -87,7 +87,7 @@ public class ProjectMockConfigurationScenario2IntTest {
     /* ------------------------------------------------ */
     /* -----------------Adapter behaviour ------------- */
     /* ------------------------------------------------ */
-/* @formatter:off */
+    /* @formatter:off */
     @Test
     public void a_user_can_change_mock_configuration_and_behavior() {
         TestUser user = USER_1;
@@ -96,7 +96,7 @@ public class ProjectMockConfigurationScenario2IntTest {
         /* Step1: prepare */
         as(SUPER_ADMIN).
            assignUserToProject(user, project).
-           updateWhiteListForProject(project, Arrays.asList(IntegrationTestExampleConstants.INFRASCAN_DEFAULT_WHITELEIST_ENTRY, MockData.NETSPARKER_RED_ZERO_WAIT.getTarget()));
+           updateWhiteListForProject(project, Arrays.asList(IntegrationTestExampleConstants.INFRASCAN_DEFAULT_WHITELEIST_ENTRY, MockData.NETSPARKER_RED_ZERO_WAIT.getMockDataIdentifier()));
 
         /* test web scan yellow */
         as(user).setProjectMockConfiguration(project, createMockScanConfig("webScan", TrafficLight.YELLOW));

@@ -373,7 +373,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         environment.put(PDS_JOB_WORKSPACE_LOCATION, locationData.getWorkspaceLocation());
         environment.put(PDS_JOB_RESULT_FILE, locationData.getResultFileLocation());
         environment.put(PDS_JOB_USER_MESSAGES_FOLDER, locationData.getUserMessagesLocation());
-        environment.put(PDS_JOB_METADATA_FILE, locationData.getMetaDataFileLocation());
+        environment.put(PDS_JOB_ADAPTER_METADATA_FILE, locationData.getMetaDataFileLocation());
         environment.put(PDS_JOB_UUID, jobUUID.toString());
         environment.put(PDS_JOB_SOURCECODE_ZIP_FILE, locationData.getSourceCodeZipFileLocation());
         environment.put(PDS_JOB_BINARIES_TAR_FILE, locationData.getBinariesTarFileLocation());

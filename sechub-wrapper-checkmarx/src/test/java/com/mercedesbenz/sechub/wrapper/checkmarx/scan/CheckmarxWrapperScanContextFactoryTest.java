@@ -1,46 +1,51 @@
 package com.mercedesbenz.sechub.wrapper.checkmarx.scan;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxConstants;
+import com.mercedesbenz.sechub.adapter.mock.MockDataIdentifierFactory;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
 import com.mercedesbenz.sechub.commons.mapping.NamePatternIdProvider;
 import com.mercedesbenz.sechub.commons.mapping.NamePatternIdProviderFactory;
-import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
-import com.mercedesbenz.sechub.wrapper.checkmarx.cli.CheckmarxWrapperCLIEnvironment;
+import com.mercedesbenz.sechub.commons.pds.PDSUserMessageSupport;
+import com.mercedesbenz.sechub.wrapper.checkmarx.cli.CheckmarxWrapperEnvironment;
 
-class CheckmarxWrapperContextFactoryTest {
+class CheckmarxWrapperScanContextFactoryTest {
 
     private static final String PROJECT1 = "project1";
-    private CheckmarxWrapperContextFactory factoryToTest;
-    private CheckmarxWrapperCLIEnvironment environment;
+    private CheckmarxWrapperScanContextFactory factoryToTest;
+    private CheckmarxWrapperEnvironment environment;
     private NamePatternIdProviderFactory providerFactory;
     private ArchiveSupport archiveSupport;
     private NamePatternIdProvider presetIdProvider;
     private NamePatternIdProvider teamIdProvider;
-    private CodeScanPathCollector codeScanPathCollector;
+    private MockDataIdentifierFactory mockDataIdentifierFactory;
+    private PDSUserMessageSupport messageSupport;
 
     @BeforeEach
     void beforeEach() {
         providerFactory = mock(NamePatternIdProviderFactory.class);
-        environment = mock(CheckmarxWrapperCLIEnvironment.class);
+        environment = mock(CheckmarxWrapperEnvironment.class);
 
         presetIdProvider = mock(NamePatternIdProvider.class);
         teamIdProvider = mock(NamePatternIdProvider.class);
         archiveSupport = mock(ArchiveSupport.class);
-        codeScanPathCollector = mock(CodeScanPathCollector.class);
+        mockDataIdentifierFactory = mock(MockDataIdentifierFactory.class);
+        messageSupport = mock(PDSUserMessageSupport.class);
 
-        factoryToTest = new CheckmarxWrapperContextFactory();
+        factoryToTest = new CheckmarxWrapperScanContextFactory();
 
         factoryToTest.providerFactory = providerFactory;
         factoryToTest.archiveSupport = archiveSupport;
-        factoryToTest.codeScanPathCollector = codeScanPathCollector;
+        factoryToTest.mockDataIdentifierFactory = mockDataIdentifierFactory;
+        factoryToTest.messageSupport = messageSupport;
 
         when(providerFactory.createProvider(eq(CheckmarxConstants.MAPPING_CHECKMARX_NEWPROJECT_PRESET_ID), any())).thenReturn(presetIdProvider);
         when(providerFactory.createProvider(eq(CheckmarxConstants.MAPPING_CHECKMARX_NEWPROJECT_TEAM_ID), any())).thenReturn(teamIdProvider);
@@ -55,7 +60,7 @@ class CheckmarxWrapperContextFactoryTest {
         when(environment.getSechubConfigurationModelAsJson()).thenReturn(secHubModelJson);
 
         /* execute */
-        CheckmarxWrapperContext result = factoryToTest.create(environment);
+        CheckmarxWrapperScanContext result = factoryToTest.create(environment);
 
         /* test */
         assertNotNull(result.configuration);
@@ -63,13 +68,15 @@ class CheckmarxWrapperContextFactoryTest {
         assertNotNull(result.presetIdProvider);
         assertNotNull(result.teamIdProvider);
         assertNotNull(result.archiveSupport);
-        assertNotNull(result.codeScanPathCollector);
+        assertNotNull(result.mockDataIdentifierFactory);
+        assertNotNull(result.messageSupport);
 
         assertEquals(teamIdProvider, result.teamIdProvider);
         assertEquals(presetIdProvider, result.presetIdProvider);
-        assertEquals(codeScanPathCollector, result.codeScanPathCollector);
+        assertEquals(mockDataIdentifierFactory, result.mockDataIdentifierFactory);
         assertEquals(archiveSupport, result.archiveSupport);
         assertEquals(environment, result.environment);
+        assertEquals(messageSupport, result.messageSupport);
     }
 
     @Test
@@ -88,7 +95,7 @@ class CheckmarxWrapperContextFactoryTest {
         when(environment.getSechubConfigurationModelAsJson()).thenReturn(secHubModelJson);
 
         /* execute */
-        CheckmarxWrapperContext result = factoryToTest.create(environment);
+        CheckmarxWrapperScanContext result = factoryToTest.create(environment);
 
         /* test */
         assertNotNull(result);
@@ -113,7 +120,7 @@ class CheckmarxWrapperContextFactoryTest {
         when(providerFactory.createProvider(CheckmarxConstants.MAPPING_CHECKMARX_NEWPROJECT_PRESET_ID, "presetMappingJsonFake")).thenReturn(presetIdProvider);
 
         /* execute */
-        CheckmarxWrapperContext result = factoryToTest.create(environment);
+        CheckmarxWrapperScanContext result = factoryToTest.create(environment);
 
         /* test */
         assertNotNull(result);

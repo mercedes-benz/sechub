@@ -1,5 +1,7 @@
 package com.mercedesbenz.sechub.commons.pds;
 
+import static java.util.Objects.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -11,13 +13,18 @@ import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 
 public class PDSUserMessageSupport {
+
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
 
     private File messageFolder;
-    private TextFileWriter writer = new TextFileWriter();
+    private TextFileWriter writer;
 
-    public PDSUserMessageSupport(String userMessageFolder) {
-        messageFolder = new File(userMessageFolder);
+    public PDSUserMessageSupport(String userMessageFolder, TextFileWriter writer) {
+        requireNonNull(userMessageFolder, "user message folder may not be null!");
+        requireNonNull(writer, "writer may not be null!");
+
+        this.messageFolder = new File(userMessageFolder);
+        this.writer = writer;
     }
 
     public void writeMessages(List<SecHubMessage> productMessages) throws IOException {

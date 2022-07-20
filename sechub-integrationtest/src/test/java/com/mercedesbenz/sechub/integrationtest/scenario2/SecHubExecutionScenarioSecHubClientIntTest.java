@@ -313,7 +313,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
 		Map<String, String> envEntries = new LinkedHashMap<>();
 		envEntries.put("SHTEST_VERSION", "1.0");
-		envEntries.put("SHTEST_FOLDERS1", IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__1_SECOND_WAITING.getTarget());
+		envEntries.put("SHTEST_FOLDERS1", IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__1_SECOND_WAITING.getMockDataIdentifier());
 
 		/* execute */
 		IntegrationTestJSONLocation location = IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_GENERIC_TEMPLATE_NO_DATA_SECTION;

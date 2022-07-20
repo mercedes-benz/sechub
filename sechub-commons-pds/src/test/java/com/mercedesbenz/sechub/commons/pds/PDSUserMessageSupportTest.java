@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.test.TestUtil;
@@ -23,7 +24,7 @@ class PDSUserMessageSupportTest {
         File nonExistingParent = new File(dir.toFile(), "parent-not-existing");
         assertFalse(nonExistingParent.exists());
 
-        PDSUserMessageSupport support = new PDSUserMessageSupport(nonExistingParent.getAbsolutePath());
+        PDSUserMessageSupport support = new PDSUserMessageSupport(nonExistingParent.getAbsolutePath(), new TextFileWriter());
 
         List<SecHubMessage> list = new ArrayList<>();
         list.add(new SecHubMessage(SecHubMessageType.INFO, "info text"));

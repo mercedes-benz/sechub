@@ -1,4 +1,4 @@
-package com.mercedesbenz.sechub.wrapper.checkmarx;
+package com.mercedesbenz.sechub.wrapper.checkmarx.factory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -7,12 +7,17 @@ import org.springframework.stereotype.Component;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapterV1;
 import com.mercedesbenz.sechub.adapter.checkmarx.MockedCheckmarxAdapter;
+import com.mercedesbenz.sechub.adapter.mock.MockDataIdentifierFactory;
+import com.mercedesbenz.sechub.adapter.mock.MockedAdapterSetupService;
+import com.mercedesbenz.sechub.adapter.mock.NullMockDataIdentifierFactory;
+import com.mercedesbenz.sechub.adapter.mock.ScanTypeDependantMockDataIdentifierFactory;
+import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironment;
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
 import com.mercedesbenz.sechub.commons.mapping.NamePatternIdProviderFactory;
 import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
-import com.mercedesbenz.sechub.wrapper.checkmarx.cli.CheckmarxWrapperCLIEnvironment;
+import com.mercedesbenz.sechub.wrapper.checkmarx.cli.CheckmarxWrapperEnvironment;
 
 /**
  * This factory creates some "plain old java" objects and inject them into
@@ -26,11 +31,34 @@ import com.mercedesbenz.sechub.wrapper.checkmarx.cli.CheckmarxWrapperCLIEnvironm
 public class CheckmarxWrapperPojoFactory {
 
     @Autowired
-    CheckmarxWrapperCLIEnvironment environment;
+    CheckmarxWrapperEnvironment environment;
+
+    @Bean
+    MockDataIdentifierFactory createMockDataIdentifierFactory() {
+        if (environment.isMockingEnabled()) {
+            return new ScanTypeDependantMockDataIdentifierFactory();
+        }
+        return new NullMockDataIdentifierFactory();
+    }
 
     @Bean
     ArchiveSupport createArchiveSupport() {
         return new ArchiveSupport();
+    }
+
+    @Bean
+    TextFileWriter createTextFilewRiter() {
+        return new TextFileWriter();
+    }
+
+    /*
+     * Special case: we need this to have MockedCheckmarxAdapter working outside
+     * SecHub. Otherwise the service cannot be injected (reason: no profile handling
+     * in wrapper application [real_products, mocked_products])
+     */
+    @Bean
+    MockedAdapterSetupService createMockAdapterSetupService() {
+        return new MockedAdapterSetupService();
     }
 
     @Bean

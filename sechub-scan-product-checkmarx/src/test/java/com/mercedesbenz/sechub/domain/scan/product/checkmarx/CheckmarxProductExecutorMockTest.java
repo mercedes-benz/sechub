@@ -26,6 +26,7 @@ import com.mercedesbenz.sechub.adapter.AdapterException;
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterLogId;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
+import com.mercedesbenz.sechub.adapter.mock.MockDataIdentifierFactory;
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
 import com.mercedesbenz.sechub.commons.mapping.MappingData;
 import com.mercedesbenz.sechub.commons.mapping.MappingEntry;
@@ -67,6 +68,9 @@ public class CheckmarxProductExecutorMockTest {
 
     @MockBean
     NetworkTargetResolver targetResolver;
+
+    @MockBean
+    MockDataIdentifierFactory mockdataIdentifierFactory;
 
     @MockBean
     CheckmarxAdapter checkmarxAdapter;

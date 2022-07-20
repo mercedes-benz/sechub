@@ -82,6 +82,7 @@ public class NessusProductExecutor extends AbstractProductExecutor {
 				setProxyPort(proxyPort).
 				setTraceID(data.getTraceLogIdAsString()).
 				setPolicyID(installSetup.getDefaultPolicyId()).
+				setMockDataIdentifier(data.getMockDataIdentifier()).
 				setTargetIPs(info.getIPs()).
 				setTargetURIs(info.getURIs()).build();
 		/* @formatter:on */

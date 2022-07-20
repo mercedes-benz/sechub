@@ -1,4 +1,4 @@
-package com.mercedesbenz.sechub.wrapper.checkmarx;
+package com.mercedesbenz.sechub.wrapper.checkmarx.cli;
 
 import com.mercedesbenz.sechub.commons.pds.PDSVariable;
 import com.mercedesbenz.sechub.commons.pds.PDSVariableType;

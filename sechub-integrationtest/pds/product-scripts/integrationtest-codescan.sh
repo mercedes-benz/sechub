@@ -49,11 +49,11 @@ fi
 # Handle extreaction
 #
 if [[ "$PDS_JOB_HAS_EXTRACTED_SOURCES" = "true" ]]; then
-   mergeFolderFilesRecursivelyIntoResultFile "sources", $PDS_JOB_EXTRACTED_SOURCES_FOLDER ${PDS_JOB_RESULT_FILE} $INTEGRATION_TEST_DEBUG
+   mergeFolderFilesRecursivelyIntoResultFile "sources", $PDS_JOB_EXTRACTED_SOURCES_FOLDER ${PDS_JOB_RESULT_FILE} $PDS_DEBUG_ENABLED
 fi
 
 if [[ "$PDS_JOB_HAS_EXTRACTED_BINARIES" = "true" ]]; then
-   mergeFolderFilesRecursivelyIntoResultFile "binaries" $PDS_JOB_EXTRACTED_BINARIES_FOLDER ${PDS_JOB_RESULT_FILE} $INTEGRATION_TEST_DEBUG
+   mergeFolderFilesRecursivelyIntoResultFile "binaries" $PDS_JOB_EXTRACTED_BINARIES_FOLDER ${PDS_JOB_RESULT_FILE} $PDS_DEBUG_ENABLED
 fi
 
 # Now we add a "header" so identifyable by importer + synthetic info object to check params
