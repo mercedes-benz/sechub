@@ -7,12 +7,14 @@
 # The image argument needs to be placed on top
 ARG BASE_IMAGE
 
+# Build args
 ARG BUILD_TYPE="download"
 ARG SECHUB_ARTIFACT_FOLDER="/artifacts"
-ARG SECHUB_VERSION="0.29.0"
+ARG SECHUB_VERSION="0.34.0"
+ARG GO="go1.18.3.linux-amd64.tar.gz"
 
-# possible values are 8, 11, 17
-ARG JAVA_VERSION="8"
+# possible values are 11, 17
+ARG JAVA_VERSION="11"
 
 #-------------------
 # Builder Build
@@ -20,6 +22,8 @@ ARG JAVA_VERSION="8"
 
 FROM ${BASE_IMAGE} AS builder-build
 
+# Build args
+ARG GO
 ARG SECHUB_ARTIFACT_FOLDER
 ARG JAVA_VERSION
 
@@ -27,19 +31,37 @@ ARG BUILD_FOLDER="/build"
 ARG GIT_URL="https://github.com/mercedes-benz/sechub.git"
 ARG TAG=""
 
-RUN mkdir --parent "$SECHUB_ARTIFACT_FOLDER"
+ENV DOWNLOAD_FOLDER="/downloads"
+ENV PATH="/usr/local/go/bin:$PATH"
+
+RUN mkdir --parent "$SECHUB_ARTIFACT_FOLDER" "$DOWNLOAD_FOLDER"
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
-    apt-get install --quiet --assume-yes git golang "openjdk-$JAVA_VERSION-jdk-headless" && \
+    apt-get install --quiet --assume-yes wget w3m git "openjdk-$JAVA_VERSION-jdk-headless" && \
     apt-get clean
+
+# Install Go
+RUN cd "$DOWNLOAD_FOLDER" && \
+    # Get checksum from Go download site
+    GO_CHECKSUM=`w3m https://go.dev/dl/ | grep "$GO" | tail -1 | awk '{print $6}'` && \
+    # create checksum file
+    echo "$GO_CHECKSUM $GO" > "$GO.sha256sum" && \
+    # download Go
+    wget --no-verbose https://go.dev/dl/"${GO}" && \
+    # verify that the checksum and the checksum of the file are same
+    sha256sum --check "$GO.sha256sum" && \
+    # extract Go
+    tar --extract --file "$GO" --directory /usr/local/ && \
+    # remove go tar.gz
+    rm "$GO"
 
 RUN mkdir --parent "$BUILD_FOLDER" && \
     cd "$BUILD_FOLDER" && \
     git clone "$GIT_URL" && \
     cd "sechub" && \
     "./buildExecutables" && \
-    if [ -z "$TAG"]; then git checkout tags/"$TAG" -b "$TAG"; fi && \
+    if [[ -n "$TAG" ]]; then git checkout tags/"$TAG" -b "$TAG"; fi && \
     cp "sechub-server/build/libs/sechub-server-0.0.0.jar" --target-directory "$SECHUB_ARTIFACT_FOLDER"
 
 #-------------------
@@ -85,11 +107,11 @@ LABEL maintainer="SecHub FOSS Team"
 ARG SECHUB_ARTIFACT_FOLDER
 ARG JAVA_VERSION
 
-# env vars in container:
+# env vars in container
 ENV USER="sechub"
 ENV UID="7474"
 ENV GID="${UID}"
-ENV SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR="/shared_volume/uploads"
+ENV SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR="/shared_volumes/uploads"
 
 ARG SECHUB_FOLDER="/sechub"
 

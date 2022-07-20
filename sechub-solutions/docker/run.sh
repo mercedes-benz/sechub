@@ -12,8 +12,10 @@ wait_loop() {
 }
 
 localserver() {
+    check_setup
+
     storage_options="-Dsechub.storage.sharedvolume.upload.dir=$SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR"
-    profiles="dev,h2,real_products"
+    profiles="dev,h2,real_products,mocked_notifications"
 
     java $JAVA_DEBUG_OPTIONS \
         $storage_options \
@@ -21,9 +23,9 @@ localserver() {
         -Dspring.profiles.active="$profiles" \
         -Dsechub.targettype.detection.intranet.hostname.endswith=intranet.example.org \
         -Dsechub.config.trigger.nextjob.initialdelay=0 \
-        -Dsechub.initialadmin.userid=sechubadm \
+        -Dsechub.initialadmin.userid="$ADMIN_USERID" \
         -Dsechub.initialadmin.email=sechubadm@example.org \
-        -Dsechub.initialadmin.apitoken=myTop$ecret! \
+        -Dsechub.initialadmin.apitoken="$ADMIN_APITOKEN" \
         -Dsechub.adapter.netsparker.userid=abc \
         -Dsechub.adapter.netsparker.apitoken=xyz \
         -Dsechub.adapter.netsparker.baseurl=https://example.org \
@@ -36,6 +38,23 @@ localserver() {
         -Dserver.port=8443 \
         -Dserver.address=0.0.0.0 \
         -jar sechub-server*.jar
+}
+
+check_setup () {
+    check_variable "$ADMIN_USERID" "ADMIN_USERID"
+    check_variable "$ADMIN_APITOKEN" "ADMIN_APITOKEN"
+    check_variable "$SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR" "SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR"
+}
+
+check_variable () {
+    value="$1"
+    name="$2"
+
+    if [ -z "$value" ]
+    then
+        echo "Environment variable $name not set."
+        exit 1
+    fi
 }
 
 debug () {
