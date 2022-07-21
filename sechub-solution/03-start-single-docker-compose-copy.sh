@@ -19,5 +19,5 @@ fi
 export BUILDKIT_PROGRESS=plain
 export DOCKER_BUILDKIT=1
 
-echo "Starting single Ubuntu container."
-docker-compose --file docker-compose_sechub_build.yaml up --build --remove-orphans
+echo "Starting single container."
+docker-compose --file docker-compose_sechub_copy.yaml up --build --remove-orphans

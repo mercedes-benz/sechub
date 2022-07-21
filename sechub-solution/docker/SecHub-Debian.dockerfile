@@ -56,6 +56,7 @@ RUN cd "$DOWNLOAD_FOLDER" && \
     # remove go tar.gz
     rm "$GO"
 
+# Build SecHub
 RUN mkdir --parent "$BUILD_FOLDER" && \
     cd "$BUILD_FOLDER" && \
     git clone "$GIT_URL" && \
@@ -80,7 +81,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get install --assume-yes wget && \
     apt-get clean
 
-# Install the SecHub Product Delegation Server (PDS)
+# Download the SecHub server
 RUN cd "$SECHUB_ARTIFACT_FOLDER" && \
     # download checksum file
     wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$SECHUB_VERSION-server/sechub-server-$SECHUB_VERSION.jar.sha256sum" && \
@@ -88,6 +89,20 @@ RUN cd "$SECHUB_ARTIFACT_FOLDER" && \
     wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$SECHUB_VERSION-server/sechub-server-$SECHUB_VERSION.jar" && \
     # verify that the checksum and the checksum of the file are same
     sha256sum --check "sechub-server-$SECHUB_VERSION.jar.sha256sum"
+
+#-------------------
+# Builder Copy Jar
+#-------------------
+
+FROM ${BASE_IMAGE} AS builder-copy
+
+ARG SECHUB_ARTIFACT_FOLDER
+ARG SECHUB_VERSION
+
+RUN mkdir --parent "$SECHUB_ARTIFACT_FOLDER"
+
+# Copy
+COPY copy/sechub-server-*.jar "$SECHUB_ARTIFACT_FOLDER"
 
 #-------------------
 # Builder
