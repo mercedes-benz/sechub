@@ -2,12 +2,13 @@
 
 FROM debian:11-slim
 
+ARG PDS_SOLUTION
 ARG USER=www-data
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get --assume-yes upgrade && \
-    apt-get --assume-yes install nginx openssl && \
+    apt-get --assume-yes install nginx openssl sed && \
     apt-get --assume-yes clean
 
 # Create self-signed certificate
@@ -37,6 +38,7 @@ RUN touch /var/run/nginx.pid && \
 
 # Copy configuration script
 COPY nginx.conf /etc/nginx/nginx.conf
+RUN sed -i "s/y_pds-solution_y/${PDS_SOLUTION}/g" /etc/nginx/nginx.conf
 
 # Copy run script into container
 COPY run.sh /run.sh
