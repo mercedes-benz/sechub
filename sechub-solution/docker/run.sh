@@ -63,10 +63,10 @@ debug () {
 
 if [ "$JAVA_ENABLE_DEBUG" = "true" ]
 then
-    # By using `address=*:15024` the server will bind 
-    # all available IP addresses to port 15024
+    # By using `address=*:15023` the server will bind 
+    # all available IP addresses to port 15023
     # otherwise the container cannot be accessed from outside
-    JAVA_DEBUG_OPTIONS="-agentlib:jdwp=transport=dt_socket,server=y,address=*:15024"
+    JAVA_DEBUG_OPTIONS="-agentlib:jdwp=transport=dt_socket,server=y,address=*:15023"
 fi
 
 if [ "$SECHUB_START_MODE" = "localserver" ]
