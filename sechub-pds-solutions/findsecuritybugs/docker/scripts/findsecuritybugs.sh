@@ -62,7 +62,7 @@ effort_levels=" min less default more max "
 include_file="$TOOL_FOLDER/include.xml"
 additional_options=""
 
-if $PDS_JOB_HAS_EXTRACTED_BINARIES
+if [[ "$PDS_JOB_HAS_EXTRACTED_BINARIES" == "true" ]]
 then
     echo "Extracted folder structure:"
     echo ""
