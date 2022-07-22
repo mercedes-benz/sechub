@@ -15,9 +15,9 @@ project="test-gosec"
 executor_file_name="gosec"
 profile="pds-gosec"
 
-./8000-setup-project-and-user.sh "$project" "$user"
-./8100-create-executor-and-profile.sh "$executor_file_name" "$profile"
-./8101-assign-profile-to-project.sh "$project" "$profile"
+./8800-setup-project-and-user.sh "$project" "$user"
+./8801-create-executor-and-profile.sh "$executor_file_name" "$profile"
+./8802-assign-profile-to-project.sh "$project" "$profile"
 
 echo "Setup of gosec complete"
 echo "Setup:"
