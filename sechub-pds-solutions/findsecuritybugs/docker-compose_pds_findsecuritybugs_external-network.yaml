@@ -1,0 +1,24 @@
+# SPDX-License-Identifier: MIT
+
+version: "3"
+services:
+    pds-findsecuritybugs:
+        build:
+            args:
+                - BASE_IMAGE=debian:11-slim
+                - PDS_VERSION=${PDS_VERSION}
+            context: docker/
+            dockerfile: FindSecurityBugs-Debian.dockerfile
+        container_name: pds-findsecuritybugs
+        hostname: pds-findsecuritybugs
+        env_file:
+            - .env
+        networks:
+            - "sechub"
+        volumes:
+          - ./docker/scripts:/scripts
+
+networks:
+    sechub:
+        external: true
+        name: "sechub"

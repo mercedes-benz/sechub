@@ -29,10 +29,10 @@ plugins {
     id 'org.asciidoctor.jvm.pdf' version '3.3.2'
     
     // open api
-    id 'org.openapi.generator' version '6.0.0'
+    id 'org.openapi.generator' version '6.0.1'
     
     // spring
-    id 'org.springframework.boot' version '2.7.1' apply false
+    id 'org.springframework.boot' version '2.7.2' apply false
     
     // spotless code formatter
     // (see https://github.com/diffplug/spotless)
