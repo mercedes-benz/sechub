@@ -15,12 +15,15 @@ services:
       - "sechub"
     volumes:
       - "shared_volume:/shared_volumes/uploads"
+      - ./docker/scripts:/scripts
     depends_on:
       - database
 
   loadbalancer:
     build:
-      context: docker/loadbalancer
+      context: ../shared/docker/loadbalancer
+      args:
+        - PDS_SOLUTION=pds-owasp-zap
     env_file:
       - .env-cluster
     networks:
@@ -32,7 +35,7 @@ services:
 
   database:
     build:
-      context: docker/database
+      context: ../shared/docker/database
     env_file:
       - .env-cluster
     networks:
