@@ -93,9 +93,12 @@ public class SchedulerSourcecodeUploadService {
         JobStorage jobStorage = storageService.getJobStorage(projectId, jobUUID);
 
         try (InputStream inputStream = file.getInputStream()) {
-            jobStorage.store(FILENAME_SOURCECODE_ZIP, inputStream);
+        	long fileSize = file.getSize();
+        	long checksumSizeInBytes = checkSum.getBytes().length;
+        	
+            jobStorage.store(FILENAME_SOURCECODE_ZIP, inputStream, fileSize);
             // we also store given checksum - so can be reused by security product
-            jobStorage.store(FILENAME_SOURCECODE_ZIP_CHECKSUM, new StringInputStream(checkSum));
+            jobStorage.store(FILENAME_SOURCECODE_ZIP_CHECKSUM, new StringInputStream(checkSum), checksumSizeInBytes);
         } catch (IOException e) {
             LOG.error("Was not able to store zipped sources! {}", traceLogID, e);
             throw new SecHubRuntimeException("Was not able to upload sources");

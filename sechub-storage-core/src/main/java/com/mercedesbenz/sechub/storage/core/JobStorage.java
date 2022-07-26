@@ -6,14 +6,15 @@ import java.io.InputStream;
 import java.util.Set;
 
 public interface JobStorage {
-
+    
     /**
      * Stores given stream for this job
      *
      * @param name   name for storage object
      * @param stream origin data stream
+     * @param contentLengthInBytes content length of the stream in bytes
      */
-    public void store(String name, InputStream stream) throws IOException;
+    public void store(String name, InputStream stream, long contentLengthInBytes) throws IOException;
 
     /**
      * Fetch object with given name

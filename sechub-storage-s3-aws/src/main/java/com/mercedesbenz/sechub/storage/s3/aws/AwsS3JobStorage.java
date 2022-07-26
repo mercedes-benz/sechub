@@ -48,15 +48,21 @@ public class AwsS3JobStorage implements JobStorage {
     }
 
     @Override
-    public void store(String name, InputStream inputStream) throws IOException {
+    public void store(String name, InputStream inputStream, long contentLength) throws IOException {
         requireNonNull(name, "name may not be null!");
         requireNonNull(inputStream, "inputStream may not be null!");
+        
+        if (contentLength < 0) {
+        	throw new IllegalArgumentException("Content length cannot be negative!");
+        }
 
         try (InputStream stream = inputStream) {
             if (!client.doesBucketExistV2(bucketName)) {
                 client.createBucket(bucketName);
             }
             ObjectMetadata meta = new ObjectMetadata();
+            meta.setContentLength(contentLength);
+            
             String objectName = getObjectName(name);
             LOG.debug("store objectName={}", objectName + " on bucket {}", objectName, bucketName);
 

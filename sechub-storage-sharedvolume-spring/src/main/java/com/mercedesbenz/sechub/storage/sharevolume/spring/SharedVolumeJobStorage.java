@@ -49,7 +49,7 @@ public class SharedVolumeJobStorage implements JobStorage {
     }
 
     @Override
-    public void store(String name, InputStream stream) throws IOException {
+    public void store(String name, InputStream stream, long contentLength) throws IOException {
         requireNonNull(name, "name may not be null!");
         requireNonNull(stream, "stream may not be null!");
 

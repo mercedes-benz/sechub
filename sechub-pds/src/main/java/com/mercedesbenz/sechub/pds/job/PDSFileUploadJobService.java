@@ -22,6 +22,7 @@ import org.apache.commons.fileupload.FileUploadBase.SizeLimitExceededException;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
+import org.apache.commons.io.input.CountingInputStream;
 import org.apache.commons.io.input.MessageDigestCalculatingInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -120,6 +121,8 @@ public class PDSFileUploadJobService {
     private void startUpload(UUID jobUUID, HttpServletRequest request, String fileName) throws FileUploadException, IOException, UnsupportedEncodingException {
         /* prepare */
         LOG.debug("Start upload file: {} for PDS job: {}", fileName, jobUUID);
+        
+		long contentLengthInBytesFromUser = request.getContentLengthLong();
 
         String checksumFromUser = null;
         String checksumCalculated = null;
@@ -127,12 +130,22 @@ public class PDSFileUploadJobService {
         boolean fileDefinedByUser = false;
         boolean checkSumDefinedByUser = false;
 
+		long realContentLengthInBytes = -1;
+		
         JobStorage jobStorage = storageService.getJobStorage(jobUUID);
 
         ServletFileUpload upload = new ServletFileUpload();
 
         long maxUploadSize = configuration.getMaxUploadSizeInBytes();
 
+		if (contentLengthInBytesFromUser < 0) {
+			throw new PDSBadRequestException("The content length cannot be negative!");
+		}
+
+		if (contentLengthInBytesFromUser > maxUploadSize) {
+			throw new PDSBadRequestException("The content length exceeds the allowed upload size.");
+		}
+		
         upload.setSizeMax(maxUploadSize + 600);// we accept 600 bytes more for header, checksum etc.
         upload.setFileSizeMax(maxUploadSize);
 
@@ -170,7 +183,7 @@ public class PDSFileUploadJobService {
 
                     checksumSHA256Service.assertValidSha256Checksum(checksumFromUser);
 
-                    jobStorage.store(fileName + DOT_CHECKSUM, new StringInputStream(checksumFromUser));
+                    jobStorage.store(fileName + DOT_CHECKSUM, new StringInputStream(checksumFromUser), checksumFromUser.getBytes().length);
                     LOG.info("uploaded user defined checksum as file for file: {} in PDS job: {}", fileName, jobUUID);
                 }
                 checkSumDefinedByUser = true;
@@ -181,10 +194,13 @@ public class PDSFileUploadJobService {
                     MessageDigest digest = checksumSHA256Service.createSHA256MessageDigest();
 
                     MessageDigestCalculatingInputStream messageDigestInputStream = new MessageDigestCalculatingInputStream(fileInputstream, digest);
-                    jobStorage.store(fileName, messageDigestInputStream);
+                    CountingInputStream byteCountingInputStream = new CountingInputStream(messageDigestInputStream);
+                    
+                    jobStorage.store(fileName, byteCountingInputStream, contentLengthInBytesFromUser);
 
                     LOG.info("uploaded file:{} for job:{}", fileName, jobUUID);
 
+                    realContentLengthInBytes = byteCountingInputStream.getByteCount();
                     checksumCalculated = checksumSHA256Service.convertMessageDigestToHex(digest);
                 }
                 fileDefinedByUser = true;
@@ -197,6 +213,9 @@ public class PDSFileUploadJobService {
         if (!fileDefinedByUser) {
             throw new PDSBadRequestException("No file defined by user for job data upload!");
         }
+		if (realContentLengthInBytes == contentLengthInBytesFromUser) {
+			throw new PDSBadRequestException("The real content length was not equal to the user provided content length.");
+		}
         if (!checkSumDefinedByUser) {
             throw new PDSBadRequestException("No checksum defined by user for job data upload!");
         }

@@ -120,7 +120,7 @@ public class TestUtil {
      *
      * @param prefix     filename prefix
      * @param fileEnding filename ending
-     * @return file
+     * @return filePath
      * @throws IOException
      */
     public static Path createTempFileInBuildFolder(String prefix, String fileEnding, FileAttribute<?>... attributes) throws IOException {
@@ -163,7 +163,7 @@ public class TestUtil {
      *
      * @param explicitFileName the EXACT file name to use.
      *
-     * @return file
+     * @return filePath
      * @throws IOException
      */
     public static Path createTempFileInBuildFolder(String explicitFileName, FileAttribute<?>... attributes) throws IOException {
