@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ServletFileUploadFactory {
-	public ServletFileUpload create() {
-		return new ServletFileUpload();
-	}
+    public ServletFileUpload create() {
+        return new ServletFileUpload();
+    }
 }

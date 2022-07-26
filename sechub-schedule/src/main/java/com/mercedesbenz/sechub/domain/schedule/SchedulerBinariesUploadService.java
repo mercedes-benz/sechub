@@ -45,217 +45,211 @@ import com.mercedesbenz.sechub.storage.core.StorageService;
 @RolesAllowed(RoleConstants.ROLE_USER)
 public class SchedulerBinariesUploadService {
 
-	private static final String PARAMETER_FILE = "file";
-	private static final String PARAMETER_CHECKSUM = "checkSum";
-	private static final Logger LOG = LoggerFactory.getLogger(SchedulerBinariesUploadService.class);
+    private static final String PARAMETER_FILE = "file";
+    private static final String PARAMETER_CHECKSUM = "checkSum";
+    private static final Logger LOG = LoggerFactory.getLogger(SchedulerBinariesUploadService.class);
 
-	@Autowired
-	SchedulerBinariesUploadConfiguration configuration;
+    @Autowired
+    SchedulerBinariesUploadConfiguration configuration;
 
-	@Autowired
-	StorageService storageService;
+    @Autowired
+    StorageService storageService;
 
-	@Autowired
-	ChecksumSHA256Service checksumSHA256Service;
+    @Autowired
+    ChecksumSHA256Service checksumSHA256Service;
 
-	@Autowired
-	ScheduleAssertService assertService;
+    @Autowired
+    ScheduleAssertService assertService;
 
-	@Autowired
-	LogSanitizer logSanitizer;
+    @Autowired
+    LogSanitizer logSanitizer;
 
-	@Autowired
-	AuditLogService auditLogService;
+    @Autowired
+    AuditLogService auditLogService;
 
-	@Autowired
-	UserInputAssertion assertion;
-	
-	@Autowired
-	ServletFileUploadFactory servletFileUploadFactory;
+    @Autowired
+    UserInputAssertion assertion;
 
-	@UseCaseUserUploadsBinaries(@Step(number = 2, name = "Try to find project and upload binaries as tar", description = "When project is found and user has access and job is initializing the binaries file will be uploaded"))
-	public void uploadBinaries(String projectId, UUID jobUUID, HttpServletRequest request) {
-		/* assert */
-		assertion.assertIsValidProjectId(projectId);
-		assertion.assertIsValidJobUUID(jobUUID);
+    @Autowired
+    ServletFileUploadFactory servletFileUploadFactory;
 
-		auditLogService.log("Wants to upload binaries to project {}, {}", logSanitizer.sanitize(projectId, 30),
-				jobUUID);
+    @UseCaseUserUploadsBinaries(@Step(number = 2, name = "Try to find project and upload binaries as tar", description = "When project is found and user has access and job is initializing the binaries file will be uploaded"))
+    public void uploadBinaries(String projectId, UUID jobUUID, HttpServletRequest request) {
+        /* assert */
+        assertion.assertIsValidProjectId(projectId);
+        assertion.assertIsValidJobUUID(jobUUID);
 
-		assertService.assertUserHasAccessToProject(projectId);
-		assertService.assertProjectAllowsWriteAccess(projectId);
+        auditLogService.log("Wants to upload binaries to project {}, {}", logSanitizer.sanitize(projectId, 30), jobUUID);
 
-		assertJobFoundAndStillInitializing(projectId, jobUUID);
+        assertService.assertUserHasAccessToProject(projectId);
+        assertService.assertProjectAllowsWriteAccess(projectId);
 
-		assertMultipart(request);
+        assertJobFoundAndStillInitializing(projectId, jobUUID);
 
-		/* execute upload */
-		handleUploadAndProblems(projectId, jobUUID, request);
+        assertMultipart(request);
 
-	}
+        /* execute upload */
+        handleUploadAndProblems(projectId, jobUUID, request);
 
-	private void handleUploadAndProblems(String projectId, UUID jobUUID, HttpServletRequest request) {
-		try {
+    }
 
-			startUpload(projectId, jobUUID, request);
+    private void handleUploadAndProblems(String projectId, UUID jobUUID, HttpServletRequest request) {
+        try {
 
-		} catch (SizeLimitExceededException sizeLimitExceededException) {
+            startUpload(projectId, jobUUID, request);
 
-			LOG.error("Size limit reached: {}", sizeLimitExceededException.getMessage());
-			throw new BadRequestException("Binaries upload maximum reached. Please reduce your upload size.",
-					sizeLimitExceededException);
+        } catch (SizeLimitExceededException sizeLimitExceededException) {
 
-		} catch (FileSizeLimitExceededException fileSizeLimitExceededException) {
+            LOG.error("Size limit reached: {}", sizeLimitExceededException.getMessage());
+            throw new BadRequestException("Binaries upload maximum reached. Please reduce your upload size.", sizeLimitExceededException);
 
-			LOG.error("Size limit reached: {}", fileSizeLimitExceededException.getMessage());
-			throw new BadRequestException("Binaries upload maximum reached. Please reduce your upload file size.",
-					fileSizeLimitExceededException);
+        } catch (FileSizeLimitExceededException fileSizeLimitExceededException) {
 
-		} catch (UnsupportedEncodingException e) {
+            LOG.error("Size limit reached: {}", fileSizeLimitExceededException.getMessage());
+            throw new BadRequestException("Binaries upload maximum reached. Please reduce your upload file size.", fileSizeLimitExceededException);
 
-			throw new IllegalStateException("Encoding not support - should never happen", e);
+        } catch (UnsupportedEncodingException e) {
 
-		} catch (FileUploadException e) {
+            throw new IllegalStateException("Encoding not support - should never happen", e);
 
-			throw new BadRequestException("The given multipart content is not accepted.", e);
+        } catch (FileUploadException e) {
 
-		} catch (IOException e) {
-			throw new SecHubRuntimeException("Was not able to upload binaries because of IO problems.", e);
-		}
-	}
+            throw new BadRequestException("The given multipart content is not accepted.", e);
 
-	private void startUpload(String projectId, UUID jobUUID, HttpServletRequest request)
-			throws FileUploadException, IOException, UnsupportedEncodingException {
-		/* prepare */
-		long contentLengthInBytesFromUser = request.getContentLengthLong();
+        } catch (IOException e) {
+            throw new SecHubRuntimeException("Was not able to upload binaries because of IO problems.", e);
+        }
+    }
 
-		String checksumFromUser = null;
-		String checksumCalculated = null;
+    private void startUpload(String projectId, UUID jobUUID, HttpServletRequest request) throws FileUploadException, IOException, UnsupportedEncodingException {
+        /* prepare */
+        long contentLengthInBytesFromUser = request.getContentLengthLong();
 
-		boolean fileDefinedByUser = false;
-		boolean checkSumDefinedByUser = false;
+        String checksumFromUser = null;
+        String checksumCalculated = null;
 
-		long realContentLengthInBytes = -1;
+        boolean fileDefinedByUser = false;
+        boolean checkSumDefinedByUser = false;
 
-		JobStorage jobStorage = storageService.getJobStorage(projectId, jobUUID);
+        long realContentLengthInBytes = -1;
 
-		ServletFileUpload upload = servletFileUploadFactory.create();
+        JobStorage jobStorage = storageService.getJobStorage(projectId, jobUUID);
 
-		long maxUploadSize = configuration.getMaxUploadSizeInBytes();
+        ServletFileUpload upload = servletFileUploadFactory.create();
 
-		if (contentLengthInBytesFromUser < 0) {
-			throw new BadRequestException("The content length cannot be negative!");
-		}
+        long maxUploadSize = configuration.getMaxUploadSizeInBytes();
 
-		if (contentLengthInBytesFromUser > maxUploadSize) {
-			throw new BadRequestException("The content length exceeds the allowed upload size.");
-		}
+        if (contentLengthInBytesFromUser < 0) {
+            throw new BadRequestException("The content length cannot be negative!");
+        }
 
-		upload.setSizeMax(maxUploadSize + 600);// we accept 600 bytes more for header, checksum etc.
-		upload.setFileSizeMax(maxUploadSize);
+        if (contentLengthInBytesFromUser > maxUploadSize) {
+            throw new BadRequestException("The content length exceeds the allowed upload size.");
+        }
 
-		/*
-		 * Important: this next call of "upload.getItemIterator(..)" looks very simple,
-		 * but it creates a new <code>FileItemIteratorImpl</code> instances which
-		 * internally does some heavy things on creation: It does create a new input
-		 * stream, checks for max size handling and much more. We want to avoid creating
-		 * the iterator multiple times!
-		 *
-		 * Also any access to the origin request to access the parameter/field names
-		 * does always trigger a multipart resolving which uses again the underlying
-		 * standard Servlet mechanism and the configured max sizes there!
-		 *
-		 * So we could only check parameters with another item iterator when we want to
-		 * handle this specialized, but the item iterator should be created only one
-		 * time (see explained reason before).
-		 *
-		 * This is the reason, why we do not check the user input at the beginning but
-		 * only at the end. This is maybe inconvenient for the user when forgetting to
-		 * define a field, but this normally happens only one time and the benefit of
-		 * avoiding side effects. In addition, the performance (speed) does matter here.
-		 *
-		 * ------------------------- So please do NOT change! -------------------------
-		 */
-		FileItemIterator iterStream = upload.getItemIterator(request);
+        upload.setSizeMax(maxUploadSize + 600);// we accept 600 bytes more for header, checksum etc.
+        upload.setFileSizeMax(maxUploadSize);
 
-		while (iterStream.hasNext()) {
-			FileItemStream item = iterStream.next();
-			String fieldName = item.getFieldName();
-			switch (fieldName) {
-			case PARAMETER_CHECKSUM:
-				try (InputStream checkSumInputStream = item.openStream()) {
-					checksumFromUser = Streams.asString(checkSumInputStream);
+        /*
+         * Important: this next call of "upload.getItemIterator(..)" looks very simple,
+         * but it creates a new <code>FileItemIteratorImpl</code> instances which
+         * internally does some heavy things on creation: It does create a new input
+         * stream, checks for max size handling and much more. We want to avoid creating
+         * the iterator multiple times!
+         *
+         * Also any access to the origin request to access the parameter/field names
+         * does always trigger a multipart resolving which uses again the underlying
+         * standard Servlet mechanism and the configured max sizes there!
+         *
+         * So we could only check parameters with another item iterator when we want to
+         * handle this specialized, but the item iterator should be created only one
+         * time (see explained reason before).
+         *
+         * This is the reason, why we do not check the user input at the beginning but
+         * only at the end. This is maybe inconvenient for the user when forgetting to
+         * define a field, but this normally happens only one time and the benefit of
+         * avoiding side effects. In addition, the performance (speed) does matter here.
+         *
+         * ------------------------- So please do NOT change! -------------------------
+         */
+        FileItemIterator iterStream = upload.getItemIterator(request);
 
-					assertion.assertIsValidSha256Checksum(checksumFromUser);
+        while (iterStream.hasNext()) {
+            FileItemStream item = iterStream.next();
+            String fieldName = item.getFieldName();
+            switch (fieldName) {
+            case PARAMETER_CHECKSUM:
+                try (InputStream checkSumInputStream = item.openStream()) {
+                    checksumFromUser = Streams.asString(checkSumInputStream);
 
-					jobStorage.store(FILENAME_BINARIES_TAR_CHECKSUM, new StringInputStream(checksumFromUser), checksumFromUser.getBytes().length);
-					LOG.info("uploaded user defined checksum as file for {}", jobUUID);
-				}
-				checkSumDefinedByUser = true;
-				break;
-			case PARAMETER_FILE:
-				try (InputStream fileInputstream = item.openStream()) {
+                    assertion.assertIsValidSha256Checksum(checksumFromUser);
 
-					MessageDigest digest = checksumSHA256Service.createSHA256MessageDigest();
+                    jobStorage.store(FILENAME_BINARIES_TAR_CHECKSUM, new StringInputStream(checksumFromUser), checksumFromUser.getBytes().length);
+                    LOG.info("uploaded user defined checksum as file for {}", jobUUID);
+                }
+                checkSumDefinedByUser = true;
+                break;
+            case PARAMETER_FILE:
+                try (InputStream fileInputstream = item.openStream()) {
 
-					MessageDigestCalculatingInputStream messageDigestInputStream = new MessageDigestCalculatingInputStream(
-							fileInputstream, digest);
-					CountingInputStream byteCountingInputStream = new CountingInputStream(messageDigestInputStream);
+                    MessageDigest digest = checksumSHA256Service.createSHA256MessageDigest();
 
-					jobStorage.store(FILENAME_BINARIES_TAR, byteCountingInputStream, contentLengthInBytesFromUser);
-					LOG.info("uploaded binaries for {}", jobUUID);
+                    MessageDigestCalculatingInputStream messageDigestInputStream = new MessageDigestCalculatingInputStream(fileInputstream, digest);
+                    CountingInputStream byteCountingInputStream = new CountingInputStream(messageDigestInputStream);
 
-					realContentLengthInBytes = byteCountingInputStream.getByteCount();
-					checksumCalculated = checksumSHA256Service.convertMessageDigestToHex(digest);
-				}
-				fileDefinedByUser = true;
-				break;
-			default:
-				LOG.warn("Given field '{}' is not supported while uploading binaries to project {}, {}",
-						logSanitizer.sanitize(fieldName, 30), logSanitizer.sanitize(projectId, 30), jobUUID);
-			}
-		}
+                    jobStorage.store(FILENAME_BINARIES_TAR, byteCountingInputStream, contentLengthInBytesFromUser);
+                    LOG.info("uploaded binaries for {}", jobUUID);
 
-		if (!fileDefinedByUser) {
-			throw new BadRequestException("No file defined by user for binaries upload!");
-		}
+                    realContentLengthInBytes = byteCountingInputStream.getByteCount();
+                    checksumCalculated = checksumSHA256Service.convertMessageDigestToHex(digest);
+                }
+                fileDefinedByUser = true;
+                break;
+            default:
+                LOG.warn("Given field '{}' is not supported while uploading binaries to project {}, {}", logSanitizer.sanitize(fieldName, 30),
+                        logSanitizer.sanitize(projectId, 30), jobUUID);
+            }
+        }
 
-		if (realContentLengthInBytes == contentLengthInBytesFromUser) {
-			throw new BadRequestException("The real content length was not equal to the user provided content length.");
-		}
+        if (!fileDefinedByUser) {
+            throw new BadRequestException("No file defined by user for binaries upload!");
+        }
 
-		if (!checkSumDefinedByUser) {
-			throw new BadRequestException("No checksum defined by user for binaries upload!");
-		}
-		if (checksumFromUser == null) {
-			throw new BadRequestException("No user checksum available for binaries upload!");
-		}
-		if (checksumCalculated == null) {
-			throw new BadRequestException("Upload of binaries was not possible!");
-		}
-		assertCheckSumCorrect(checksumFromUser, checksumCalculated);
-	}
+        if (realContentLengthInBytes == contentLengthInBytesFromUser) {
+            throw new BadRequestException("The real content length was not equal to the user provided content length.");
+        }
 
-	private void assertMultipart(HttpServletRequest request) {
-		if (!ServletFileUpload.isMultipartContent(request)) {
-			throw new BadRequestException("The binary upload request did not contain multipart content");
-		}
-	}
+        if (!checkSumDefinedByUser) {
+            throw new BadRequestException("No checksum defined by user for binaries upload!");
+        }
+        if (checksumFromUser == null) {
+            throw new BadRequestException("No user checksum available for binaries upload!");
+        }
+        if (checksumCalculated == null) {
+            throw new BadRequestException("Upload of binaries was not possible!");
+        }
+        assertCheckSumCorrect(checksumFromUser, checksumCalculated);
+    }
 
-	private void assertCheckSumCorrect(String checkSumFromUser, String checksumCalculated) {
-		if (!Objects.equals(checkSumFromUser, checksumCalculated)) {
-			LOG.error(
-					"Uploaded binary file has incorrect sha256 checksum! Something must have happened during the upload.");
-			throw new BadRequestException("Binaries checksum check failed");
-		}
-	}
+    private void assertMultipart(HttpServletRequest request) {
+        if (!ServletFileUpload.isMultipartContent(request)) {
+            throw new BadRequestException("The binary upload request did not contain multipart content");
+        }
+    }
 
-	private void assertJobFoundAndStillInitializing(String projectId, UUID jobUUID) {
-		ScheduleSecHubJob secHubJob = assertService.assertJob(projectId, jobUUID);
-		ExecutionState state = secHubJob.getExecutionState();
-		if (!ExecutionState.INITIALIZING.equals(state)) {
-			throw new BadRequestException("Not in correct state");// upload only possible when in initializing state
-		}
-	}
+    private void assertCheckSumCorrect(String checkSumFromUser, String checksumCalculated) {
+        if (!Objects.equals(checkSumFromUser, checksumCalculated)) {
+            LOG.error("Uploaded binary file has incorrect sha256 checksum! Something must have happened during the upload.");
+            throw new BadRequestException("Binaries checksum check failed");
+        }
+    }
+
+    private void assertJobFoundAndStillInitializing(String projectId, UUID jobUUID) {
+        ScheduleSecHubJob secHubJob = assertService.assertJob(projectId, jobUUID);
+        ExecutionState state = secHubJob.getExecutionState();
+        if (!ExecutionState.INITIALIZING.equals(state)) {
+            throw new BadRequestException("Not in correct state");// upload only possible when in initializing state
+        }
+    }
 
 }

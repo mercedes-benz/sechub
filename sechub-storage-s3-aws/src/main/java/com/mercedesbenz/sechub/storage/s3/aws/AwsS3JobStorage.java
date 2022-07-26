@@ -51,9 +51,9 @@ public class AwsS3JobStorage implements JobStorage {
     public void store(String name, InputStream inputStream, long contentLength) throws IOException {
         requireNonNull(name, "name may not be null!");
         requireNonNull(inputStream, "inputStream may not be null!");
-        
+
         if (contentLength < 0) {
-        	throw new IllegalArgumentException("Content length cannot be negative!");
+            throw new IllegalArgumentException("Content length cannot be negative!");
         }
 
         try (InputStream stream = inputStream) {
@@ -62,7 +62,7 @@ public class AwsS3JobStorage implements JobStorage {
             }
             ObjectMetadata meta = new ObjectMetadata();
             meta.setContentLength(contentLength);
-            
+
             String objectName = getObjectName(name);
             LOG.debug("store objectName={}", objectName + " on bucket {}", objectName, bucketName);
 

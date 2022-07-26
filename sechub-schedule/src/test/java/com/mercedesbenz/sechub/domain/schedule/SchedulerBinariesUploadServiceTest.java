@@ -39,7 +39,7 @@ public class SchedulerBinariesUploadServiceTest {
     private JobStorage storage;
     private HttpServletRequest httpRequest;
     private SchedulerBinariesUploadConfiguration configuration;
-	private ServletFileUploadFactory servletFileUploadFactory;
+    private ServletFileUploadFactory servletFileUploadFactory;
 
     @BeforeEach
     void beforeEach() {
@@ -93,7 +93,7 @@ public class SchedulerBinariesUploadServiceTest {
                 () -> serviceToTest.uploadBinaries(PROJECT1, randomUuid, httpRequest));
 
     }
-    
+
     @Test
     void when_content_length_is_negative() throws IOException {
         /* prepare */
@@ -103,25 +103,25 @@ public class SchedulerBinariesUploadServiceTest {
         when(httpRequest.getMethod()).thenReturn("POST");
         when(httpRequest.getContentType()).thenReturn("multipart/");
         when(httpRequest.getContentLengthLong()).thenReturn((long) -1);
-        
+
         /* execute + test */
         assertThrowsExceptionContainingMessage(BadRequestException.class, "The content length cannot be negative!",
                 () -> serviceToTest.uploadBinaries(PROJECT1, randomUuid, httpRequest));
     }
-    
+
     @Test
     void when_content_length_is_greater_than_max_upload_size_in_bytes() throws IOException {
         /* prepare */
         InputStream input = new ByteArrayInputStream("test".getBytes());
         ServletInputStream inputStream = new DelegatingServletInputStream(input);
-        
+
         when(httpRequest.getInputStream()).thenReturn(inputStream);
         when(httpRequest.getMethod()).thenReturn("POST");
         when(httpRequest.getContentType()).thenReturn("multipart/");
         when(httpRequest.getContentLengthLong()).thenReturn((long) 11);
-        
+
         when(configuration.getMaxUploadSizeInBytes()).thenReturn((long) 10);
-        
+
         /* execute + test */
         assertThrowsExceptionContainingMessage(BadRequestException.class, "The content length exceeds the allowed upload size.",
                 () -> serviceToTest.uploadBinaries(PROJECT1, randomUuid, httpRequest));

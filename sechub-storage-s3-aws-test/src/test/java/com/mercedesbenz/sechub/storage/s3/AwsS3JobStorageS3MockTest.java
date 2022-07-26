@@ -41,8 +41,7 @@ public class AwsS3JobStorageS3MockTest {
 
     @ClassRule
     public static final S3MockRule S3_MOCK_RULE = S3MockRule.builder().withHttpPort(TestPortProvider.DEFAULT_INSTANCE.getS3MockServerHttpPort())
-            .withHttpsPort(TestPortProvider.DEFAULT_INSTANCE.getS3MockServerHttpsPort()).
-            build();
+            .withHttpsPort(TestPortProvider.DEFAULT_INSTANCE.getS3MockServerHttpsPort()).build();
 
     private static AmazonS3 amazonTestClient;
 
@@ -99,9 +98,9 @@ public class AwsS3JobStorageS3MockTest {
         Path tmpFilePath = TestUtil.createTempFileInBuildFolder("storage_test", "txt");
         File tmpFile = tmpFilePath.toFile();
         long contentLength = tmpFile.length();
-        
+
         BufferedWriter bw = Files.newBufferedWriter(tmpFilePath);
-        
+
         bw.write(testContent);
         bw.close();
 
@@ -307,7 +306,7 @@ public class AwsS3JobStorageS3MockTest {
         Path tmpFilePath = TestUtil.createTempFileInBuildFolder("storage_test", "txt");
         File tmpFile = tmpFilePath.toFile();
         long tmpFileSize = tmpFile.length();
-        
+
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(tmpFile))) {
             bw.write(TEST_DATA);
         }

@@ -93,9 +93,9 @@ public class SchedulerSourcecodeUploadService {
         JobStorage jobStorage = storageService.getJobStorage(projectId, jobUUID);
 
         try (InputStream inputStream = file.getInputStream()) {
-        	long fileSize = file.getSize();
-        	long checksumSizeInBytes = checkSum.getBytes().length;
-        	
+            long fileSize = file.getSize();
+            long checksumSizeInBytes = checkSum.getBytes().length;
+
             jobStorage.store(FILENAME_SOURCECODE_ZIP, inputStream, fileSize);
             // we also store given checksum - so can be reused by security product
             jobStorage.store(FILENAME_SOURCECODE_ZIP_CHECKSUM, new StringInputStream(checkSum), checksumSizeInBytes);
