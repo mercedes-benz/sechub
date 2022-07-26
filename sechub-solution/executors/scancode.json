@@ -1,10 +1,10 @@
 {
-    "name": "pds-findsecuritybugs",
-    "productIdentifier": "PDS_CODESCAN",
+    "name": "pds-scancode",
+    "productIdentifier": "PDS_LICENSESCAN",
     "executorVersion": 1,
     "enabled": true,
     "setup": {
-        "baseURL": "https://pds-findsecuritybugs:8444",
+        "baseURL": "https://pds-scancode:8444",
         "credentials": {
             "user": "techuser",
             "password": "pds-apitoken"
@@ -12,7 +12,7 @@
         "jobParameters": [
             {
                 "key": "pds.config.productidentifier",
-                "value": "PDS_FINDSECURITYBUGS"
+                "value": "PDS_SCANCODE"
             },
             {
                 "key": "pds.config.use.sechub.storage",
@@ -24,11 +24,11 @@
             },
             {
                 "key": "pds.productexecutor.timeout.minutes",
-                "value": 60
+                "value": 180
             },
             {
                 "key": "pds.productexecutor.timetowait.nextcheck.milliseconds",
-                "value": 3000
+                "value": 10000
             },
             {
                 "key": "pds.productexecutor.trustall.certificates",
