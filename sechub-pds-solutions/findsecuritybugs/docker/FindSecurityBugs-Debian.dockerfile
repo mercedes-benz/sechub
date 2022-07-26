@@ -13,7 +13,7 @@ ARG SCRIPT_FOLDER="/scripts"
 ARG WORKSPACE="/workspace"
 ARG FSB_VERSION="1.12.0"
 ARG FSB_SHA256SUM="a50bd4741a68c6886bbc03d20da9ded44bce4dd7d0d2eee19ceb338dd644cd55"
-ARG PDS_VERSION="0.30.0"
+ARG PDS_VERSION="0.31.0"
 
 # Environment
 ENV TOOL_FOLDER="/tools"
@@ -76,7 +76,7 @@ RUN chmod +x $TOOL_FOLDER/findsecbugs_sechub.sh
 
 # Copy scripts
 COPY scripts $SCRIPT_FOLDER
-RUN chmod -R +x $SCRIPT_FOLDER
+RUN chmod --recursive +x $SCRIPT_FOLDER
 
 # Mock folder
 COPY mocks $SCRIPT_FOLDER/mocks/
