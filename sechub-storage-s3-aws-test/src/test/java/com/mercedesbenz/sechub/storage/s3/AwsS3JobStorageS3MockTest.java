@@ -97,12 +97,14 @@ public class AwsS3JobStorageS3MockTest {
 
         Path tmpFilePath = TestUtil.createTempFileInBuildFolder("storage_test", "txt");
         File tmpFile = tmpFilePath.toFile();
-        long contentLength = tmpFile.length();
 
         BufferedWriter bw = Files.newBufferedWriter(tmpFilePath);
 
         bw.write(testContent);
         bw.close();
+
+        // the content length of the file after writing test data into it
+        long contentLength = tmpFile.length();
 
         /* execute */
         storage.store("testA", new FileInputStream(tmpFile), contentLength);
@@ -303,13 +305,16 @@ public class AwsS3JobStorageS3MockTest {
     }
 
     private AwsS3JobStorage storeCreatedTestDataFile(String name, AwsS3JobStorage storage) throws IOException, FileNotFoundException {
+        /* prepare */
         Path tmpFilePath = TestUtil.createTempFileInBuildFolder("storage_test", "txt");
         File tmpFile = tmpFilePath.toFile();
-        long tmpFileSize = tmpFile.length();
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(tmpFile))) {
             bw.write(TEST_DATA);
         }
+
+        // the file size after writing test data into it
+        long tmpFileSize = tmpFile.length();
 
         /* execute */
         InputStream inputStream = new FileInputStream(tmpFile);
