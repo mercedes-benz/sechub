@@ -10,13 +10,20 @@ import com.mercedesbenz.sechub.commons.pds.PDSDefaultRuntimeKeyConstants;
 @Component
 public class CheckmarxWrapperEnvironment {
 
+    /********************************/
+    /* PDS common environment setup */
+    /********************************/
+
+    @Value("${" + PDSDefaultParameterKeyConstants.PARAM_KEY_SECHUB_JOB_UUID + "}")
+    private String sechubJobUUID;
+
     @Value("${" + PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED + ":false}")
     private boolean trustAllCertificatesEnabled;
 
     @Value("${" + PDSDefaultRuntimeKeyConstants.RT_KEY_PDS_JOB_USER_MESSAGES_FOLDER + "}")
     private String pdsUserMessagesFolder;
 
-    @Value("${" + PDSDefaultRuntimeKeyConstants.RT_KEY_PDS_JOB_ADAPTER_METADATA_FILE + ":}")
+    @Value("${" + PDSDefaultRuntimeKeyConstants.RT_KEY_PDS_JOB_METADATA_FILE + ":}")
     private String pdsJobAdapterMetaDatafile;
 
     @Value("${" + PDSDefaultRuntimeKeyConstants.RT_KEY_PDS_JOB_EXTRACTED_SOURCES_FOLDER + "}")
@@ -27,6 +34,10 @@ public class CheckmarxWrapperEnvironment {
 
     @Value("${" + PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_CONFIGURATION + "}")
     private String sechubConfigurationModelAsJson;
+
+    /****************************************/
+    /* Checkmarx specific environment setup */
+    /****************************************/
 
     @Value("${" + CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_USER + "}")
     private String checkmarxUser;
@@ -46,15 +57,6 @@ public class CheckmarxWrapperEnvironment {
     @Value("${" + CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_RESULT_CHECK_TIMOUT_MINUTES + ":300}")
     private int scanResultCheckTimoutInMinutes;
 
-    @Value("${" + CheckmarxConstants.MAPPING_CHECKMARX_NEWPROJECT_TEAM_ID + "}")
-    private String newProjectTeamIdMapping;
-
-    @Value("${" + CheckmarxConstants.MAPPING_CHECKMARX_NEWPROJECT_PRESET_ID + "}")
-    private String newProjectPresetIdMapping;
-
-    @Value("${" + PDSDefaultParameterKeyConstants.PARAM_KEY_SECHUB_JOB_UUID + "}")
-    private String sechubJobUUID;
-
     @Value("${" + CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_ENGINE_CONFIGURATION_NAME + "}")
     private String checkmarxEngineConfigurationName;
 
@@ -63,6 +65,16 @@ public class CheckmarxWrapperEnvironment {
 
     @Value("${" + CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_CLIENT_SECRET + ":" + CheckmarxConstants.DEFAULT_CLIENT_SECRET + "}")
     private String clientSecret;
+
+    /**************************************************/
+    /* SecHub mappings for Checkmarx as job parameter */
+    /**************************************************/
+
+    @Value("${" + CheckmarxConstants.MAPPING_CHECKMARX_NEWPROJECT_TEAM_ID + "}")
+    private String newProjectTeamIdMapping;
+
+    @Value("${" + CheckmarxConstants.MAPPING_CHECKMARX_NEWPROJECT_PRESET_ID + "}")
+    private String newProjectPresetIdMapping;
 
     public boolean isTrustAllCertificatesEnabled() {
         return trustAllCertificatesEnabled;

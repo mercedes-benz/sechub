@@ -15,7 +15,7 @@ public class PDSDefaultRuntimeKeyConstants {
 
     public static final String RT_KEY_PDS_JOB_USER_MESSAGES_FOLDER = "pds.job.user.messages.folder";
 
-    public static final String RT_KEY_PDS_JOB_ADAPTER_METADATA_FILE = "pds.job.adapter.metadata.file";
+    public static final String RT_KEY_PDS_JOB_METADATA_FILE = "pds.job.metadata.file";
 
     public static final String RT_KEY_PDS_JOB_EXTRACTED_BINARIES_FOLDER = "pds.job.extracted.binaries.folder";
 

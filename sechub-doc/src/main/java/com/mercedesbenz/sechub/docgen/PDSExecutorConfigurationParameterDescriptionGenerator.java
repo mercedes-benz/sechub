@@ -9,7 +9,7 @@ import com.mercedesbenz.sechub.commons.pds.PDSKeyProvider;
 import com.mercedesbenz.sechub.domain.scan.product.pds.PDSExecutorConfigSuppport;
 import com.mercedesbenz.sechub.pds.execution.PDSKeyToEnvConverter;
 
-public class ExecutorConfigurationParameterDescriptionGenerator {
+public class PDSExecutorConfigurationParameterDescriptionGenerator {
 
     private PDSKeyToEnvConverter keyToEnvConverter = new PDSKeyToEnvConverter();
 

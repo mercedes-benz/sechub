@@ -175,7 +175,7 @@ public class DirectPDSAPIJobScenario6IntTest {
         /* execute */
         asPDSUser(PDS_TECH_USER).markJobAsReadyToStart(pdsJobUUID);
 
-        /* test 1: report downloadable and no old files in workspace */
+        /* test 1: report download possible and no old files in workspace */
         String report = asPDSUser(PDS_TECH_USER).getJobReport(pdsJobUUID);
         if (!report.contains("CRITICAL")) {
             fail("Report contains not CRITICAL, but:\n"+report);

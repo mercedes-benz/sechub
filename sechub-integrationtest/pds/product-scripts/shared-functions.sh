@@ -1,79 +1,13 @@
 #!/bin/bash
 # SPDX-License-Identifier: MIT
-function debug(){
-     MESSAGE=$1
-     DEBUG=$2
-     if [[ "$DEBUG" = "true" ]]; then
-        echo "DEBUG:$MESSAGE"
-     fi
-}
 
-function dumpPDSVariables() {
-    echo ""
-    echo "Dump PDS variables (can be checked in tests):"
-    echo "*********************************************"
-    dumpVariable "PDS_JOB_UUID"
-    dumpVariable "PDS_DEBUG_ENABLED"
-    dumpVariable "PDS_TEST_KEY_VARIANTNAME"
-    dumpVariable "PDS_JOB_USER_MESSAGES_FOLDER"
-    dumpVariable "PDS_JOB_HAS_EXTRACTED_SOURCES"
-    dumpVariable "PDS_JOB_HAS_EXTRACTED_BINARIES"
-    dumpVariable "PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED"
-}
- 
-function dumpVariable(){
-    local variableName=$1
-    echo ">${variableName}=${!variableName}"
-} 
- 
-# Append content from each uploaded file to result file - thosee files do contain info/error messages
-# for the test and will be merged into one result file which is interpreted by integration tests.
-function mergeFolderFilesRecursivelyIntoResultFile(){
-    READING_TYPE=$1
-    FOLDER_TO_READ_AND_MERGE=$2
-    RESULT_FILE=$3
-    DEBUG=$4
-   
-    debug "> reading $READING_TYPE from: ${FOLDER_TO_READ_AND_MERGE}" $DEBUG
-    
-    find ${FOLDER_TO_READ_AND_MERGE} -type f | 
-    while read src
-     do  cat "${src}" >> ${RESULT_FILE}
-     debug "> appended '$src' to ${RESULT_FILE}" $DEBUG
-    done
-}
+source ./shared/shared-logging.sh
+source ./shared/shared-test-variables.sh
+source ./shared/shared-merging.sh
 
-function errEcho () {
-    echo "$@" >&2
-}
-
-# ----------------------------------------------------------
-# Helper methods for producing user messages
-# ----------------------------------------------------------
-
-function writeUniqueMessageFile(){
-      MSG_PREFIX=$1
-      MESSAGE=$2
-
-      MESSAGE_FILE_PATH="${PDS_JOB_USER_MESSAGES_FOLDER}/${MSG_PREFIX}_message_$(date +%Y-%m-%d_%H.%M.%S_%N).txt"
-      echo "$MESSAGE" > "$MESSAGE_FILE_PATH"
-      
-      # additional echo to have the message also in output stream available:
-      echo "${MSG_PREFIX} message: $MESSAGE"
-}
-
-function infoMessage(){
-    writeUniqueMessageFile "INFO" "$1"
-}
-
-function warnMessage(){
-    writeUniqueMessageFile "WARNING" "$1"
-}
-
-function errorMessage(){
-    writeUniqueMessageFile "ERROR" "$1"
-}
-
+# Let us included shared messaging
+# It is also used in 
+source ./shared/shared-messaging-referenced-in-documentation-as-example.sh
 # Usage:
 # 
 # ----

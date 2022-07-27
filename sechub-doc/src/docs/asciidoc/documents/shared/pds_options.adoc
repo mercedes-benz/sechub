@@ -71,13 +71,33 @@ java ... -Dsechub.pds.admin.apitoken={noop}12345exampleToken
 or with an environment entry `SECHUB_PDS_ADMIN_APITOKEN` which
 is e.g. more suitable for a `kubernetes` cluster deployment.
 
-The next text blocks describe the keys available on {pds}:
+[TIP]
+====
+When you have secret information you can define those information as a template by using environment
+variables from your {sechub} installation.
 
+An example:
+
+```
+sechub.pds.admin.apitoken=env:PDS_GOSEC_SOLUTION_APITOKEN
+```
+
+If your SecHub process runs in an environment with variable `PDS_GOSEC_SOLUTION_APITOKEN` set
+to 'very-secret-apitoken1234' _(e.g. by using secrets inside K8s)_, the authentication sent to 
+{pds} by {sechub} will use
+```
+sechub.pds.admin.apitoken=very-secret-apitoken1234
+```
+
+
+====
 
 ifdef::showhintaboutgenerated[]
 include::./../shared/pds_hint_generated_systemproperties.adoc[]
 endif::[]
 
-[[link-gen-systemproperties]]
+[[link-gen-pds-systemproperties]]
 include::./../gen/gen_pds_systemproperties.adoc[]
 
+
+include::pds_solution_configurations.adoc[]

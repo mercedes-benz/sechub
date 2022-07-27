@@ -47,14 +47,6 @@ public class PDSLauncherScriptEnvironmentConstants {
 
     public static final String PDS_JOB_USER_MESSAGES_FOLDER = "PDS_JOB_USER_MESSAGES_FOLDER";
 
-    /**
-     * The location of the job meta data file. A wrapper application which uses an
-     * SecHub adapter can write here additional adapter meta information. <br>
-     * <br>
-     * <b>Important:</b> The content must be compatible with
-     * com.mercedesbenz.sechub.adapter.AdapterMetaData!
-     *
-     */
-    public static final String PDS_JOB_ADAPTER_METADATA_FILE = "PDS_JOB_ADAPTER_METADATA_FILE";
+    public static final String PDS_JOB_METADATA_FILE = "PDS_JOB_METADATA_FILE";
 
 }

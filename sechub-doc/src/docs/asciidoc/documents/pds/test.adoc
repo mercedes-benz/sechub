@@ -1,0 +1,4 @@
+[source, bash]
+----
+include::../../../../../..//sechub-integrationtest/pds/product-scripts/shared/shared-messaging.sh[]
+----
