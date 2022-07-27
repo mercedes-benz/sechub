@@ -10,9 +10,9 @@ FROM ${BASE_IMAGE}
 LABEL maintainer="SecHub FOSS Team"
 
 # Build args
-ARG PMD_VERSION="6.46.0"
+ARG PMD_VERSION="6.47.0"
 ARG PDS_FOLDER="/pds"
-ARG PDS_VERSION="0.27.0"
+ARG PDS_VERSION="0.31.0"
 ARG SCRIPT_FOLDER="/scripts"
 ARG WORKSPACE="/workspace"
 
@@ -46,10 +46,7 @@ COPY mocks "$MOCK_FOLDER"
 COPY pds-config.json "$PDS_FOLDER"/pds-config.json
 
 # Copy PMD scripts and rulesets
-COPY pmd.sh "$SCRIPT_FOLDER"/pmd.sh
-COPY pmd_mock.sh "$SCRIPT_FOLDER"/pmd_mock.sh
-COPY ruleset-security.xml "$SCRIPT_FOLDER"/ruleset-security.xml
-COPY ruleset-all.xml "$SCRIPT_FOLDER"/ruleset-all.xml
+COPY scripts "$SCRIPT_FOLDER"
 
 # Copy run script into container
 COPY run.sh /run.sh
