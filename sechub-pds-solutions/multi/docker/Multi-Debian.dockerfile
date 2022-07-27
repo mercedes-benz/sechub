@@ -29,7 +29,7 @@ RUN groupadd --gid 2323 pds \
      && useradd --uid 2323 --no-log-init --create-home --gid pds pds
 
 # Create tool, pds, shared volume and download folder
-RUN  mkdir --parents "$TOOL_FOLDER" "$DOWNLOAD_FOLDER" "$PDS_FOLDER" "$SHARED_VOLUME_UPLOAD_DIR" "$WORKSPACE" && \
+RUN  mkdir --parents "$SCRIPT_FOLDER" "$TOOL_FOLDER" "$DOWNLOAD_FOLDER" "$PDS_FOLDER" "$SHARED_VOLUME_UPLOAD_DIR" "$WORKSPACE" && \
     # Change owner and workspace and shared volumes folder
     # the only two folders pds really needs write access to
     chown --recursive pds:pds "$WORKSPACE" "$SHARED_VOLUMES"
@@ -62,7 +62,7 @@ RUN cd "$PDS_FOLDER" && \
     sha256sum --check sechub-pds-$PDS_VERSION.jar.sha256sum
 
 # Copy PDS configfile
-COPY pds-config.json /$PDS_FOLDER/pds-config.json
+COPY pds-config.json "/$PDS_FOLDER/pds-config.json"
 
 # Copy run script into container
 COPY run.sh /run.sh
