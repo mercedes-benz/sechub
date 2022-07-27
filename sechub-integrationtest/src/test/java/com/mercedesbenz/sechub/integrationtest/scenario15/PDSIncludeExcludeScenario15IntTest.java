@@ -75,6 +75,7 @@ public class PDSIncludeExcludeScenario15IntTest {
         String report = as(USER_1).getJobReport(project, jobUUID);
 
         assertReport(report).
+            enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
             hasStatus(SecHubStatus.SUCCESS).
             hasMessages(0).
             hasTrafficLight(RED).

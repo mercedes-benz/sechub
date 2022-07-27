@@ -1,13 +1,13 @@
 #!/bin/bash
 # SPDX-License-Identifier: MIT
+SHARED_FUNCTIONS_DIR=$(dirname -- "$0");
+SHARED_DIR=$SHARED_FUNCTIONS_DIR/shared
 
-source ./shared/shared-logging.sh
-source ./shared/shared-test-variables.sh
-source ./shared/shared-merging.sh
+source $SHARED_DIR/shared-logging.sh
+source $SHARED_DIR/shared-test-variables.sh
+source $SHARED_DIR/shared-merging.sh
 
-# Let us included shared messaging
-# It is also used in 
-source ./shared/shared-messaging-referenced-in-documentation-as-example.sh
+source $SHARED_DIR/shared-messaging-referenced-in-documentation-as-example.sh
 # Usage:
 # 
 # ----
