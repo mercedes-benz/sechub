@@ -411,7 +411,8 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
                 pdsJobUUID = null;// reset
             }
 
-            LOG.warn("PDS job not set inside meta data, was: {}", pdsJobUUID);
+        } else {
+            LOG.warn("Cannot restart PDS job because no pds Job UUID was set");
         }
 
         if (pdsJobUUID == null || pdsJobUUID.isEmpty()) {
@@ -426,7 +427,6 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
     private AdapterExecutionResult handleExecutionTypeStop(PDSContext context, AdapterRuntimeContext runtimeContext) throws AdapterException {
         AdapterMetaData metaData = runtimeContext.getMetaData();
         String pdsJobUUID = metaData.getValueAsStringOrNull(PDS_JOB_UUID);
-        pdsJobUUID = metaData.getValueAsStringOrNull(PDS_JOB_UUID);
 
         if (pdsJobUUID == null || pdsJobUUID.isEmpty()) {
             LOG.error("PDS job uuid was :{}, so stop not possible.", pdsJobUUID);

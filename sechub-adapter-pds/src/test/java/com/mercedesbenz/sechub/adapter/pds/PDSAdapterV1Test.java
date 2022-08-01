@@ -74,7 +74,7 @@ class PDSAdapterV1Test {
         /* prepare */
         when(config.getPDSAdapterConfigData()).thenReturn(null);
 
-        /* execute (+test) */
+        /* execute */
         IllegalStateException exception = assertThrows(IllegalStateException.class, () -> adapterToTest.start(config, callback));
 
         /* test */
@@ -92,7 +92,7 @@ class PDSAdapterV1Test {
         preparePDSJobStatus(pdsJobUUID, PDSAdapterJobStatusState.DONE);
         preparePDSMessages(pdsJobUUID, Collections.emptyList());
 
-        /* execute + test */
+        /* execute */
         AdapterExecutionResult result = adapterToTest.start(config, callback);
 
         /* test */
@@ -114,7 +114,7 @@ class PDSAdapterV1Test {
         preparePDSJobStatus(pdsJobUUID, PDSAdapterJobStatusState.DONE);
         preparePDSMessages(pdsJobUUID, Collections.emptyList());
 
-        /* execute + test */
+        /* execute */
         AdapterExecutionResult result = adapterToTest.start(config, callback);
 
         /* test */
@@ -138,7 +138,7 @@ class PDSAdapterV1Test {
         preparePDSJobStatus(pdsJobUUID, PDSAdapterJobStatusState.DONE);
         preparePDSMessages(pdsJobUUID, Collections.emptyList());
 
-        /* execute + test */
+        /* execute */
         AdapterExecutionResult result = adapterToTest.start(config, callback);
 
         /* test */
@@ -148,8 +148,8 @@ class PDSAdapterV1Test {
 
     @ParameterizedTest
     @EnumSource(mode = Mode.INCLUDE, value = PDSAdapterJobStatusState.class, names = { "RUNNING", "CREATED", "QUEUED", "READY_TO_START" })
-    @DisplayName("Restart - Meta data found and PDS job uuid set - but reaused PDS job is not in END state - so wait until job1 is in state done")
-    void restart_pds_job_uuid_found_in_metadata_pds_job_not_compolete_done(PDSAdapterJobStatusState formerPdsJobState) throws Exception {
+    @DisplayName("Restart - Meta data found and PDS job uuid set - but reused PDS job is not in END state - so wait until job1 is in state done")
+    void restart_pds_job_uuid_found_in_metadata_pds_job_not_complete_done(PDSAdapterJobStatusState formerPdsJobState) throws Exception {
         /* prepare */
         prepareMinimumPDSConfig();
 
@@ -163,12 +163,18 @@ class PDSAdapterV1Test {
         preparePDSJobStatus(pdsJobUUID, formerPdsJobState);
         preparePDSMessages(pdsJobUUID, Collections.emptyList());
 
-        /* test - the state to test would fail when no other state appears */
+        /*
+         * simulate job is endless running (we do not wait here, so retires are extreme
+         * fast) and then "Even after ... retries" not ended.
+         */
         IllegalStateException exception = assertThrows(IllegalStateException.class, () -> adapterToTest.start(config, callback));
         TestUtil.assertExceptionMessageStartsWith(exception, "Even after");
         TestUtil.assertExceptionMessageContains(exception, "no job report state acceppted as END was found");
 
-        /* prepare 2 - set now to done */
+        /*
+         * prepare 2 - set now to done, so we can try to restart again. This time it
+         * will succeed.
+         */
         preparePDSJobStatus(pdsJobUUID, PDSAdapterJobStatusState.DONE);
 
         /* execute */
@@ -197,7 +203,7 @@ class PDSAdapterV1Test {
         preparePDSJobStatus(pdsJobUUID2, PDSAdapterJobStatusState.DONE);
         preparePDSMessages(pdsJobUUID2, Collections.emptyList());
 
-        /* execute + test */
+        /* execute */
         AdapterExecutionResult result = adapterToTest.start(config, callback);
 
         /* test */

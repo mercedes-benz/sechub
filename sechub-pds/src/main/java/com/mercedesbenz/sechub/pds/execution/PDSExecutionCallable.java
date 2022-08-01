@@ -28,7 +28,6 @@ import com.mercedesbenz.sechub.pds.PDSLogConstants;
 import com.mercedesbenz.sechub.pds.job.JobConfigurationData;
 import com.mercedesbenz.sechub.pds.job.PDSCheckJobStatusService;
 import com.mercedesbenz.sechub.pds.job.PDSJobConfiguration;
-import com.mercedesbenz.sechub.pds.job.PDSJobExecutionData;
 import com.mercedesbenz.sechub.pds.job.PDSJobTransactionService;
 import com.mercedesbenz.sechub.pds.job.PDSWorkspaceService;
 import com.mercedesbenz.sechub.pds.job.WorkspaceLocationData;
@@ -262,7 +261,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
     private void writeJobExecutionDataToDatabase(UUID jobUUID) {
         LOG.debug("Writing job execution data to database for job:{}", jobUUID);
 
-        final PDSJobExecutionData executionData = readJobExecutionData(jobUUID);
+        final PDSExecutionData executionData = readJobExecutionData(jobUUID);
 
         PDSResilientRetryExecutor<IllegalStateException> executor = new PDSResilientRetryExecutor<>(3, pdsJobUpdateExceptionThrower,
                 OptimisticLockingFailureException.class);
@@ -281,10 +280,10 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         return new SecHubMessagesList(collected);
     }
 
-    private PDSJobExecutionData readJobExecutionData(UUID jobUUID) {
+    private PDSExecutionData readJobExecutionData(UUID jobUUID) {
         String encoding = workspaceService.getFileEncoding(jobUUID);
 
-        PDSJobExecutionData executionData = new PDSJobExecutionData();
+        PDSExecutionData executionData = new PDSExecutionData();
 
         readOutputStream(jobUUID, encoding, executionData);
         readErrorStream(jobUUID, encoding, executionData);
@@ -293,7 +292,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         return executionData;
     }
 
-    private void readMetaData(UUID jobUUID, String encoding, PDSJobExecutionData executionData) {
+    private void readMetaData(UUID jobUUID, String encoding, PDSExecutionData executionData) {
         /* handle meta data file */
         File metaDataFile = workspaceService.getMetaDataFile(jobUUID);
         if (!metaDataFile.exists()) {
@@ -307,7 +306,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
     }
 
-    private void readErrorStream(UUID jobUUID, String encoding, PDSJobExecutionData executionData) {
+    private void readErrorStream(UUID jobUUID, String encoding, PDSExecutionData executionData) {
         /* handle error stream */
         File systemErrorFile = workspaceService.getSystemErrorFile(jobUUID);
         if (!systemErrorFile.exists()) {
@@ -320,7 +319,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         }
     }
 
-    private void readOutputStream(UUID jobUUID, String encoding, PDSJobExecutionData executionData) {
+    private void readOutputStream(UUID jobUUID, String encoding, PDSExecutionData executionData) {
         /* handle output stream */
         File systemOutFile = workspaceService.getSystemOutFile(jobUUID);
         if (!systemOutFile.exists()) {

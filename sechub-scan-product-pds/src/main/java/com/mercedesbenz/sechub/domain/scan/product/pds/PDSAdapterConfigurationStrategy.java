@@ -149,18 +149,19 @@ public class PDSAdapterConfigurationStrategy implements AdapterConfigurationStra
     }
 
     private void handlePdsParts(PDSAdapterConfigurator pdsConfigurable) {
-        SecHubExecutionContext context = strategyConfig.productExecutorData.getSechubExecutionContext();
-        Map<String, String> jobParameters = strategyConfig.configSupport.createJobParametersToSendToPDS(context.getConfiguration());
+        PDSExecutorConfigSuppport configSupport = strategyConfig.configSupport;
 
-        pdsConfigurable.setJobParameters(jobParameters);
-        pdsConfigurable.setReusingSecHubStorage(PDSExecutorConfigSuppport.isReusingSecHubStorage(jobParameters));
+        SecHubExecutionContext context = strategyConfig.productExecutorData.getSechubExecutionContext();
+        Map<String, String> jobParametersToSend = configSupport.createJobParametersToSendToPDS(context.getConfiguration());
+
+        pdsConfigurable.setJobParameters(jobParametersToSend);
+        pdsConfigurable.setReusingSecHubStorage(configSupport.isReusingSecHubStorage());
         pdsConfigurable.setScanType(strategyConfig.scanType);
-        pdsConfigurable.setPdsProductIdentifier(strategyConfig.configSupport.getPDSProductIdentifier());
+        pdsConfigurable.setPdsProductIdentifier(configSupport.getPDSProductIdentifier());
         pdsConfigurable.setSecHubJobUUID(context.getSechubJobUUID());
         pdsConfigurable.setSecHubConfigurationModel(context.getConfiguration());
-        pdsConfigurable.setPDSScriptTrustsAllCertificates(PDSExecutorConfigSuppport.isPDSScriptTrustingAllCertificates(jobParameters));
+        pdsConfigurable.setPDSScriptTrustsAllCertificates(configSupport.isPDSScriptTrustingAllCertificates());
         pdsConfigurable.setSourceCodeZipFileInputStreamOrNull(strategyConfig.sourceCodeZipFileInputStreamOrNull);
-
         pdsConfigurable.setBinaryTarFileInputStreamOrNull(strategyConfig.binariesTarFileInputStreamOrNull);
         pdsConfigurable.setSourceCodeZipFileRequired(strategyConfig.contentProvider.isSourceRequired());
         pdsConfigurable.setBinaryTarFileRequired(strategyConfig.contentProvider.isBinaryRequired());

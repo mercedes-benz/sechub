@@ -29,7 +29,7 @@ public class PDSCheckmarxIntegrationScenario17IntTest {
     TestProject project = PROJECT_1;
 
     @Test
-    public void pds_calls_checkmarx_wrapper_which_uses_mocked_adapter_and_returns_green_checkmarx_result() {
+    public void pds_calls_checkmarx_wrapper_which_uses_mocked_adapter_and_returns_yellow_checkmarx_result() {
         /* @formatter:off */
         /* prepare */
         TestProject project = PROJECT_1;

@@ -10,7 +10,7 @@ import java.io.InputStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class Sha256CheckSumSupportTest {
+class CheckSumSupportTest {
 
     private CheckSumSupport serviceToTest;
 
@@ -33,21 +33,8 @@ class Sha256CheckSumSupportTest {
         inputStream.close();
     }
 
-    private InputStream createFileInputStreamToTestZipfile() throws FileNotFoundException {
-        File file = new File("./src/test/resources/zipfile_contains_only_test1.txt.zip");
-
-        if (!file.exists()) {
-            throw new IllegalStateException("File does not exist: " + file);
-        }
-
-        String absolutePath = file.getAbsolutePath();
-
-        InputStream inputStream = new FileInputStream(new File(absolutePath));
-        return inputStream;
-    }
-
     @Test
-    public void test_simple_sha256_check_works() throws Exception {
+    void test_simple_sha256_check_works() throws Exception {
         /* prepare */
         InputStream inputStream1 = createFileInputStreamToTestZipfile();
         InputStream inputStream2 = createFileInputStreamToTestZipfile();
@@ -64,4 +51,16 @@ class Sha256CheckSumSupportTest {
 
     }
 
+    private InputStream createFileInputStreamToTestZipfile() throws FileNotFoundException {
+        File file = new File("./src/test/resources/zipfile_contains_only_test1.txt.zip");
+
+        if (!file.exists()) {
+            throw new IllegalStateException("File does not exist: " + file);
+        }
+
+        String absolutePath = file.getAbsolutePath();
+
+        InputStream inputStream = new FileInputStream(new File(absolutePath));
+        return inputStream;
+    }
 }

@@ -1,14 +1,16 @@
 package com.mercedesbenz.sechub.wrapper.checkmarx.cli;
 
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxConstants;
+import com.mercedesbenz.sechub.commons.pds.PDSConfigDataKeyProvider;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.commons.pds.PDSSolutionVariableKey;
 import com.mercedesbenz.sechub.commons.pds.PDSSolutionVariableType;
 
 /**
- * A enumeration of the keys used by the Checkmarx wrapper. The default PDS keys
- * are not listed here. They can be found in <TODO> . All of the keys must be
- * defined at the PDS config file to be available as job parameters!
+ * An enumeration of the keys used by the Checkmarx wrapper. The default PDS
+ * keys are not listed here. They can be found in
+ * {@link PDSConfigDataKeyProvider} . All of the keys must be defined at the PDS
+ * config file to be available as job parameters!
  *
  * @author Albert Tregnaghi
  *
@@ -18,13 +20,13 @@ public enum CheckmarxWrapperKeys implements PDSSolutionVariableKey {
     CHECKMARX_USER(
             CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_USER,
             PDSSolutionVariableType.MANDATORY_JOB_PARAMETER,
-            "The user name used to communicate with Checkmarx."
+            "The user name used to communicate with Checkmarx. You can use env:$YOUR_USER_VARIABLENAME to use environment variables instead of real credentials."
             ),
 
     CHECKMARX_PASSOWRD(
             CheckmarxWrapperKeyConstants.KEY_PDS_CHECKMARX_PASSWORD,
             PDSSolutionVariableType.MANDATORY_JOB_PARAMETER,
-            "The password used to communicate with Checkmarx."
+            "The password used to communicate with Checkmarx. You can use env:$YOUR_PWD_VARIABLENAME to use environment variables instead of real credentials."
             ),
 
     CHECKMARX_SERVER_BASE_URL(

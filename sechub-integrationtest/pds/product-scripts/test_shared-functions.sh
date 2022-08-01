@@ -10,7 +10,7 @@
 #
 
 
-DEBUG=true
+DEBUG=false
 PDS_TEST_KEY_VARIANTNAME="pds.test.key.variantname.value"
 
 source ./shared-functions.sh

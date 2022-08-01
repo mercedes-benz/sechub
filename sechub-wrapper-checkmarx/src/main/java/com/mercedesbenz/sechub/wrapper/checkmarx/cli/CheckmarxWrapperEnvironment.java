@@ -73,7 +73,7 @@ public class CheckmarxWrapperEnvironment {
     @Value("${" + CheckmarxConstants.MAPPING_CHECKMARX_NEWPROJECT_TEAM_ID + "}")
     private String newProjectTeamIdMapping;
 
-    @Value("${" + CheckmarxConstants.MAPPING_CHECKMARX_NEWPROJECT_PRESET_ID + "}")
+    @Value("${" + CheckmarxConstants.MAPPING_CHECKMARX_NEWPROJECT_PRESET_ID + ":}")
     private String newProjectPresetIdMapping;
 
     public boolean isTrustAllCertificatesEnabled() {

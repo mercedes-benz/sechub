@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
+import com.mercedesbenz.sechub.pds.execution.PDSExecutionData;
 import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobErrorStream;
@@ -133,13 +134,13 @@ public class PDSJobTransactionService {
         return pdsJob.getUUID();
     }
 
-    public void updateJobExecutionDataInOwnTransaction(UUID jobUUID, PDSJobExecutionData data) {
+    public void updateJobExecutionDataInOwnTransaction(UUID jobUUID, PDSExecutionData data) {
         PDSJob job = assertJobFound(jobUUID, repository);
 
-        job.outputStreamText = data.outputStreamData;
-        job.errorStreamText = data.errorStreamData;
+        job.outputStreamText = data.getOutputStreamData();
+        job.errorStreamText = data.getErrorStreamData();
         job.lastStreamTextUpdate = LocalDateTime.now();
-        job.metaDataText = data.metaData;
+        job.metaDataText = data.getMetaData();
 
         repository.save(job);
     }

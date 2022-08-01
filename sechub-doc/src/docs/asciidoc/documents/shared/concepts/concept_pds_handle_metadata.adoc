@@ -29,7 +29,7 @@ plantuml::diagrams/diagram_pds_metadata.puml[]
 The {pds} solution for `Checkmarx` does reuse the already existing `CheckmarxAdapter` class.
 A `sechub-wrapper-checkmarx` gradle project was introduced which contains a simple spring boot
 CLI application which uses the adapter for communication. The adapter callback is not directly
-reading or writing to the database but uses the cmetadata.txt` file from the {pds} workspace. 
+reading or writing to the database but uses the `metadata.txt` file from the {pds} workspace. 
 
 Look at next figure for more details: 
 

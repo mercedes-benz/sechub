@@ -16,6 +16,8 @@ import com.mercedesbenz.sechub.commons.model.JSONConverter;
 public class FileBasedAdapterMetaDataCallback implements AdapterMetaDataCallback {
 
     private File file;
+    private static TextFileWriter writer = new TextFileWriter();
+    private static TextFileReader reader = new TextFileReader();
 
     public FileBasedAdapterMetaDataCallback(File file) {
         if (file == null) {
@@ -26,7 +28,6 @@ public class FileBasedAdapterMetaDataCallback implements AdapterMetaDataCallback
 
     @Override
     public void persist(AdapterMetaData metaData) {
-        TextFileWriter writer = new TextFileWriter();
         String metaDataJson = JSONConverter.get().toJSON(metaData);
         try {
             writer.save(file, metaDataJson, true);
@@ -41,7 +42,6 @@ public class FileBasedAdapterMetaDataCallback implements AdapterMetaDataCallback
         if (!file.exists()) {
             return null;
         }
-        TextFileReader reader = new TextFileReader();
         try {
 
             String data = reader.loadTextFile(file);

@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.mock.MockDataIdentifierFactory;
-import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
@@ -46,9 +45,6 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
 
     @Autowired
     MockDataIdentifierFactory mockDataIdentifierFactory;
-
-    @Autowired
-    CodeScanPathCollector codeScanPathCollector;
 
     private ScanType scanType;
 

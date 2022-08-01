@@ -58,7 +58,7 @@ class CheckmarxWrapperScanContextTest {
     }
 
     @Test
-    void folder_calculation_uses_contained_sechub_configuration_and_the_path_collector() {
+    void context_uses_mockdata_identifier_factory_to_create_mockdata_identifier() {
         /* prepare */
         String mockDataIdentifier = "path1;path2";
         when(mockDataIdentifierFactory.createMockDataIdentifier(ScanType.CODE_SCAN, configuration)).thenReturn(mockDataIdentifier);
@@ -86,12 +86,14 @@ class CheckmarxWrapperScanContextTest {
 
         when(environment.getPdsJobExtractedSourceFolder()).thenReturn(extractedFolder.getAbsolutePath());
 
-        doAnswer(new Answer<String>() {
+        doAnswer(new Answer<Void>() {
 
             @Override
-            public String answer(InvocationOnMock invocation) throws Throwable {
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                // we simulate that archive support writes a "ZIP" file - instead of doing
+                // a real compression the mock writes a single line into the output file.
                 writer.save(expectedTargetFile, singleLineInWrittenFile, false);
-                return "saved";
+                return null;
             }
         }).when(archiveSupport).compressFolder(eq(ArchiveType.ZIP), eq(extractedFolder), eq(expectedTargetFile));
 
@@ -101,7 +103,8 @@ class CheckmarxWrapperScanContextTest {
         /* test */
         verify(archiveSupport).compressFolder(eq(ArchiveType.ZIP), eq(extractedFolder), eq(expectedTargetFile));
 
-        // now let us check that the input stream can be read and contains the
+        // now let us check that the input stream can be read and contains the text file
+        // written by mocked archive support
         assertNotNull(stream);
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
         String line = reader.readLine();

@@ -17,13 +17,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.wrapper.checkmarx.cli.CheckmarxWrapperEnvironment;
+import com.mercedesbenz.sechub.wrapper.checkmarx.factory.CheckmarxWrapperPDSUserMessageSupportFactory;
 import com.mercedesbenz.sechub.wrapper.checkmarx.factory.CheckmarxWrapperPojoFactory;
-import com.mercedesbenz.sechub.wrapper.checkmarx.factory.PDSUserMessageSupportFactory;
 import com.mercedesbenz.sechub.wrapper.checkmarx.scan.CheckmarxWrapperScanContextFactory;
 import com.mercedesbenz.sechub.wrapper.checkmarx.scan.CheckmarxWrapperScanService;
 
 @SpringBootTest(classes = { CheckmarxWrapperScanContextFactory.class, CheckmarxWrapperScanService.class, CheckmarxWrapperPojoFactory.class,
-        CheckmarxWrapperEnvironment.class, PDSUserMessageSupportFactory.class })
+        CheckmarxWrapperEnvironment.class, CheckmarxWrapperPDSUserMessageSupportFactory.class })
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
 class CheckmarxWrapperScanServiceSpringBootTest {

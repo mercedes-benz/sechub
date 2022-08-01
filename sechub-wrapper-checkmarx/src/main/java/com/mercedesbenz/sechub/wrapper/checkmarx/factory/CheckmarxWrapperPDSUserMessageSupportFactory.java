@@ -9,7 +9,7 @@ import com.mercedesbenz.sechub.commons.pds.PDSUserMessageSupport;
 import com.mercedesbenz.sechub.wrapper.checkmarx.cli.CheckmarxWrapperEnvironment;
 
 @Component
-public class PDSUserMessageSupportFactory {
+public class CheckmarxWrapperPDSUserMessageSupportFactory {
 
     @Autowired
     CheckmarxWrapperEnvironment environment;

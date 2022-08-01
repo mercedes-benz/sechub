@@ -105,13 +105,13 @@ class PDSWorkspaceServiceTest {
         String expectedWorspaceLocation = workspaceRootFolderPath + separatorChar + "workspace" + separatorChar + jobUUID;
 
         /* @formatter:off */
-        assertEquals(expectedWorspaceLocation,result.workspaceLocation);
-        assertEquals(expectedWorspaceLocation+separatorChar+"output"+separatorChar+"result.txt",result.resultFileLocation);
-        assertEquals(expectedWorspaceLocation+separatorChar+"output"+separatorChar+"messages",result.userMessagesLocation);
-        assertEquals(expectedWorspaceLocation+separatorChar+"metadata.txt",result.metaDataFileLocation);
-        assertEquals(expectedWorspaceLocation+separatorChar+"upload"+separatorChar+SOURCECODE_ZIP,result.sourceCodeZipFileLocation);
-        assertEquals(expectedWorspaceLocation+separatorChar+"upload"+separatorChar+"extracted"+separatorChar+"sources",result.extractedSourcesLocation);
-        assertEquals(expectedWorspaceLocation+separatorChar+"upload"+separatorChar+"extracted"+separatorChar+"binaries",result.extractedBinariesLocation);
+        assertEquals(expectedWorspaceLocation,result.getWorkspaceLocation());
+        assertEquals(expectedWorspaceLocation+separatorChar+"output"+separatorChar+"result.txt",result.getResultFileLocation());
+        assertEquals(expectedWorspaceLocation+separatorChar+"output"+separatorChar+"messages",result.getUserMessagesLocation());
+        assertEquals(expectedWorspaceLocation+separatorChar+"metadata.txt",result.getMetaDataFileLocation());
+        assertEquals(expectedWorspaceLocation+separatorChar+"upload"+separatorChar+SOURCECODE_ZIP,result.getSourceCodeZipFileLocation());
+        assertEquals(expectedWorspaceLocation+separatorChar+"upload"+separatorChar+"extracted"+separatorChar+"sources",result.getExtractedSourcesLocation());
+        assertEquals(expectedWorspaceLocation+separatorChar+"upload"+separatorChar+"extracted"+separatorChar+"binaries",result.getExtractedBinariesLocation());
         /* @formatter:on */
     }
 

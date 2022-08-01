@@ -34,7 +34,6 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport impl
     public static final String PARAM_ID = "pds.executor.config.support";
 
     private static final List<PDSKeyProvider<?>> keyProvidersForSendingParametersToPDS;
-    private static final List<PDSKeyProvider<?>> keyProvidersForReusingStorageDetectionOnly;
 
     private PDSExecutorConfigSuppportServiceCollection serviceCollection;
 
@@ -45,8 +44,6 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport impl
 
         keyProvidersForSendingParametersToPDS = Collections.unmodifiableList(allParameterProviders);
 
-        List<PDSConfigDataKeyProvider> onlySecHubStorageUseProviderList = Collections.singletonList(PDSConfigDataKeyProvider.PDS_CONFIG_USE_SECHUB_STORAGE);
-        keyProvidersForReusingStorageDetectionOnly = Collections.unmodifiableList(onlySecHubStorageUseProviderList);
     }
 
     public static List<PDSKeyProvider<? extends PDSKey>> getUnmodifiableListOfParameterKeyProvidersSentToPDS() {
@@ -78,7 +75,7 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport impl
         Map<String, String> parametersToSend = createParametersToSendByProviders(keyProvidersForSendingParametersToPDS);
 
         /* provide SecHub storage when necessary */
-        if (isReusingSecHubStorage(parametersToSend)) {
+        if (isReusingSecHubStorage()) {
             String projectId = secHubConfiguration.getProjectId();
             String sechubStoragePath = SecHubStorageUtil.createStoragePath(projectId);
 
@@ -128,12 +125,7 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport impl
     }
 
     public boolean isReusingSecHubStorage() {
-        return isReusingSecHubStorage(createParametersToSendByProviders(keyProvidersForReusingStorageDetectionOnly));
-    }
-
-    static boolean isReusingSecHubStorage(Map<String, String> parametersToSend) {
-        String useSecHubStorage = parametersToSend.get(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE);
-        return Boolean.parseBoolean(useSecHubStorage);
+        return getParameterBooleanValue(PDSConfigDataKeyProvider.PDS_CONFIG_USE_SECHUB_STORAGE);
     }
 
     public String getPDSProductIdentifier() {
@@ -252,9 +244,8 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport impl
         return isTrustAllCertificatesEnabled();
     }
 
-    public static boolean isPDSScriptTrustingAllCertificates(Map<String, String> parametersToSend) {
-        String useSecHubStorage = parametersToSend.get(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED);
-        return Boolean.parseBoolean(useSecHubStorage);
+    public boolean isPDSScriptTrustingAllCertificates() {
+        return getParameterBooleanValue(PDSConfigDataKeyProvider.PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED);
     }
 
 }

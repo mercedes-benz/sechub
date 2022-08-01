@@ -7,7 +7,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
-import com.mercedesbenz.sechub.wrapper.checkmarx.Console;
 import com.mercedesbenz.sechub.wrapper.checkmarx.scan.CheckmarxWrapperScanService;
 import com.mercedesbenz.sechub.wrapper.checkmarx.scan.CheckmarxWrapperStorageService;
 
@@ -31,7 +30,7 @@ public class CheckmarxWrapperCLI implements CommandLineRunner {
             storageService.store(result);
 
         } catch (Exception e) {
-            Console.LOG.error("Execution failed - {}", e.getMessage());
+            System.out.println("Execution failed - " + e.getMessage());
             LOG.error("Execution failed", e);
 
             System.exit(2);
