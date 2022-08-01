@@ -60,4 +60,4 @@ then
     options="$options --sechubConfigfile $sechub_scan_configuration"
 fi
 
-java -jar $TOOL_FOLDER/wrapperowaspzap.jar $options --zapHost 127.0.0.1 --jobUUID "$sechub_job_uuid" --zapPort 8080 --verbose --targetURL "$PDS_SCAN_TARGET_URL" --report "$PDS_JOB_RESULT_FILE"
+java -jar $TOOL_FOLDER/wrapperowaspzap.jar $options --zapHost 127.0.0.1 --jobUUID "$sechub_job_uuid" --zapPort 8080 --verbose --targetURL "$PDS_SCAN_TARGET_URL" --report "$PDS_JOB_RESULT_FILE" --fullRulesetfile $TOOL_FOLDER/owasp-zap-full-ruleset-all-release-status.json
