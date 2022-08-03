@@ -35,6 +35,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.mercedesbenz.sechub.adapter.AdapterMetaData;
+import com.mercedesbenz.sechub.commons.mapping.MappingData;
+import com.mercedesbenz.sechub.commons.mapping.MappingEntry;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.domain.scan.admin.FullScanData;
@@ -48,8 +50,6 @@ import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.autoclean.TestAutoCleanJsonDeleteCount;
 import com.mercedesbenz.sechub.sharedkernel.logging.SecurityLogData;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingEntry;
 import com.mercedesbenz.sechub.sharedkernel.messaging.IntegrationTestEventHistory;
 import com.mercedesbenz.sechub.test.ExampleConstants;
 import com.mercedesbenz.sechub.test.PDSTestURLBuilder;
@@ -129,6 +129,11 @@ public class TestAPI {
         return AssertFullScanData.assertFullScanDataZipFile(file);
     }
 
+    public static AssertPDSStatus assertPDSJobStatus(UUID pdsJobUUID) {
+        String json = asPDSUser(PDS_ADMIN).getJobStatus(pdsJobUUID);
+        return new AssertPDSStatus(json);
+    }
+
     public static AssertPDSStatus assertPDSJobStatus(String json) {
         return new AssertPDSStatus(json);
     }
@@ -181,6 +186,15 @@ public class TestAPI {
      */
     public static AssertAutoCleanupInspections assertAutoCleanupInspections() {
         return new AssertAutoCleanupInspections();
+    }
+
+    /**
+     * Creates an assert object to inspect PDS jobs
+     *
+     * @return assert object
+     */
+    public static AssertPDSJob assertPDSJob(UUID pdsJobUUID) {
+        return AssertPDSJob.assertPDSJob(pdsJobUUID);
     }
 
     /**
@@ -1203,6 +1217,14 @@ public class TestAPI {
         }
     }
 
+    public static UUID assertAndFetchPDSJobUUIDForSecHubJob(UUID sechubJobUUID) {
+        List<UUID> pdsJobUUIDs = fetchAllPDSJobUUIDsForSecHubJob(sechubJobUUID);
+        assertEquals("Must find one jobUUID", 1, pdsJobUUIDs.size());
+
+        UUID pdsJobUUID = pdsJobUUIDs.iterator().next();
+        return pdsJobUUID;
+    }
+
     public static List<UUID> fetchAllPDSJobUUIDsForSecHubJob(UUID sechubJobUUID) {
         FullScanData fullScanData = fetchFullScanData(sechubJobUUID);
         List<ScanData> all = fullScanData.allScanData;
@@ -1217,7 +1239,7 @@ public class TestAPI {
                 continue;
             }
             AdapterMetaData metaData = JSONConverter.get().fromJSON(AdapterMetaData.class, data.metaData);
-            String pdsJobUUIDString = metaData.getValue("PDS_JOB_UUID");
+            String pdsJobUUIDString = metaData.getValueAsStringOrNull("PDS_JOB_UUID");
             if (pdsJobUUIDString == null || pdsJobUUIDString.isEmpty()) {
                 continue;
             }

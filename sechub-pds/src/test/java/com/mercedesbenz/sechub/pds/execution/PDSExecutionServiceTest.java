@@ -51,7 +51,7 @@ public class PDSExecutionServiceTest {
     public void after() {
         /*
          * destroy executor service - to prevent too much memory/thread consumption in
-         * tests, not necesary in real world
+         * tests, not necessary in real world
          */
         serviceToTest.workers.shutdownNow();
         serviceToTest.scheduler.shutdownNow();

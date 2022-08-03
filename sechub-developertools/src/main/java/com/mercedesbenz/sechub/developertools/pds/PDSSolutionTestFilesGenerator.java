@@ -33,12 +33,12 @@ import com.mercedesbenz.sechub.developertools.DeveloperArchiveSupport;
 import com.mercedesbenz.sechub.developertools.OutputHandler;
 import com.mercedesbenz.sechub.developertools.SystemOutputHandler;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
-import com.mercedesbenz.sechub.test.TextFileWriter;
+import com.mercedesbenz.sechub.test.TestFileWriter;
 
 public class PDSSolutionTestFilesGenerator {
 
     private TextFileReader reader = new TextFileReader();
-    private TextFileWriter writer = new TextFileWriter();
+    private TestFileWriter writer = new TestFileWriter();
     private DeveloperArchiveSupport developerArchiveSupport = new DeveloperArchiveSupport();
     private File tmpFolder;
     private File originConfigFile;

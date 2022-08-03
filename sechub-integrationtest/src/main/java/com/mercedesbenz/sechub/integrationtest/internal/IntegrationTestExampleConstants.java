@@ -7,6 +7,12 @@ import java.util.List;
 
 public class IntegrationTestExampleConstants {
 
+    /**
+     * This is just a information for developers to find the PDS configuration file
+     * easier
+     */
+    public static final String PDS_INTEGRATIONTEST_CONFIG_FILEPATH = "sechub-integrationtest/src/main/resources/pds-config-integrationtest.json";
+
     public static final String EXAMPLE_CONTENT_ROOT_PATH = "sechub-integrationtest/build/sechub/example/content/";
 
     /**
@@ -176,7 +182,7 @@ public class IntegrationTestExampleConstants {
      */
     public static final String PATH_TO_ZIPFILE_WITH_DIFFERENT_DATA_SECTIONS = "pds/codescan/upload/zipfile_contains_inttest_codescan_with_different_data_sections.zip";
 
-    public static TestDataFolderList TESTDATA_FOLDERS = new TestDataFolderList();
+    public static final MockDataIdentifierExampleContentFolderProvider MOCKDATA_EXAMPLE_CONTENT_PROVIDER = new MockDataIdentifierExampleContentFolderProvider();
 
     public static class IntegrationTestExampleFolder {
         private boolean isExistingContent;
@@ -202,7 +208,39 @@ public class IntegrationTestExampleConstants {
 
     }
 
-    public static class TestDataFolderList {
+    public static final String MAPPING_1_PATTERN_ANY_PROJECT1 = ".*project1*";
+    public static final String MAPPING_1_REPLACEMENT_FOR_PROJECT1 = "replacement-project1";
+    public static final String MAPPING_1_COMMENT = "test mapping for project names, handles project1";
+
+    /**
+     * This mapping will be automatically created and is available inside tests. It
+     * uses {@link #MAPPING_ID_1_REPLACE_ANY_PROJECT1}
+     * ({@value #MAPPING_ID_1_REPLACE_ANY_PROJECT1} ) as pattern and
+     * {@link #MAPPING_1_REPLACEMENT_FOR_PROJECT1}
+     * ({@value #MAPPING_1_REPLACEMENT_FOR_PROJECT1}) for replacement
+     */
+    public static final String MAPPING_ID_1_REPLACE_ANY_PROJECT1 = "test.mapping1.replace.project1";
+
+    /**
+     * Just the resulting PDS environment name for mapping
+     * {@link #MAPPING_ID_1_REPLACE_ANY_PROJECT1}
+     */
+    public static final String PDS_ENV_NAME_MAPPING_ID_1_REPLACE_ANY_PROJECT1 = "TEST_MAPPING1_REPLACE_PROJECT1";
+
+    /**
+     * This mapping does just not exists on SecHub side. But the id can be
+     * referenced - e.g. inside a PDS SecHub executor configuration to enable
+     * testing if an empty mapping is injected as fallback on PDS side.
+     */
+    public static final String MAPPING_ID_2_NOT_EXISTING_IN_SECHUB = "test.mapping2.not.existing.in.sechub";
+
+    /**
+     * Just the resulting PDS environment name for mapping
+     * {@link #MAPPING_ID_2_NOT_EXISTING_IN_SECHUB}
+     */
+    public static final String PDS_ENV_NAME_MAPPING_ID_2_NOT_EXISTING_IN_SECHUB = "TEST_MAPPING2_NOT_EXISTING_IN_SECHUB";
+
+    public static class MockDataIdentifierExampleContentFolderProvider {
 
         private List<IntegrationTestExampleFolder> exampleContentFolders = new ArrayList<>();
 
@@ -210,11 +248,11 @@ public class IntegrationTestExampleConstants {
             return Collections.unmodifiableList(exampleContentFolders);
         }
 
-        private TestDataFolderList() {
+        private MockDataIdentifierExampleContentFolderProvider() {
             for (MockData mockData : MockData.values()) {
-                if (mockData.isTargetUsedAsFolder()) {
-                    String target = mockData.getTarget();
-                    exampleContentFolders.add(new IntegrationTestExampleFolder(target, mockData.isTargetNeedingExistingData()));
+                if (mockData.isMockDataIdentifierUsedAsFolder()) {
+                    String mockDataIdentifierAsFolder = mockData.getMockDataIdentifier();
+                    exampleContentFolders.add(new IntegrationTestExampleFolder(mockDataIdentifierAsFolder, mockData.isNeedsExistingFolder()));
                 }
             }
         }

@@ -48,7 +48,7 @@ public class JobUsecasesEventTraceScenario4IntTest implements IntegrationTestIsN
         startEventInspection();
 
         /* execute */
-        as(SUPER_ADMIN).restartCodeScanHardAndFetchJobStatus(project,sechubJobUUD);
+        as(SUPER_ADMIN).restartJobHardAndFetchJobStatus(project,sechubJobUUD);
 
         /* test */
         assertJobHasEnded(project,sechubJobUUD);
@@ -83,7 +83,7 @@ public class JobUsecasesEventTraceScenario4IntTest implements IntegrationTestIsN
         startEventInspection();
 
         /* execute */
-        as(SUPER_ADMIN).restartCodeScanHardAndFetchJobStatus(project,sechubJobUUD);
+        as(SUPER_ADMIN).restartJobHardAndFetchJobStatus(project,sechubJobUUD);
 
         /* test */
         assertJobHasEnded(project,sechubJobUUD);
@@ -145,7 +145,7 @@ public class JobUsecasesEventTraceScenario4IntTest implements IntegrationTestIsN
         startEventInspection();
 
         /* execute */
-        as(SUPER_ADMIN).restartCodeScanHardAndFetchJobStatus(project,sechubJobUUD);
+        as(SUPER_ADMIN).restartJobHardAndFetchJobStatus(project,sechubJobUUD);
 
         /* test */
         assertJobHasEnded(project,sechubJobUUD);
@@ -202,7 +202,7 @@ public class JobUsecasesEventTraceScenario4IntTest implements IntegrationTestIsN
         startEventInspection();
 
         /* execute */
-        as(SUPER_ADMIN).restartCodeScanAndFetchJobStatus(project,sechubJobUUD);
+        as(SUPER_ADMIN).restartJobAndFetchJobStatus(project,sechubJobUUD);
 
 
         /* test */
@@ -241,7 +241,7 @@ public class JobUsecasesEventTraceScenario4IntTest implements IntegrationTestIsN
         startEventInspection();
 
         /* execute */
-        as(SUPER_ADMIN).restartCodeScanAndFetchJobStatus(project,sechubJobUUD);
+        as(SUPER_ADMIN).restartJobAndFetchJobStatus(project,sechubJobUUD);
 
         /* test */
         assertJobHasEnded(project,sechubJobUUD);
@@ -295,7 +295,7 @@ public class JobUsecasesEventTraceScenario4IntTest implements IntegrationTestIsN
         startEventInspection();
 
         /* execute */
-        as(SUPER_ADMIN).restartCodeScanAndFetchJobStatus(project,sechubJobUUD);
+        as(SUPER_ADMIN).restartJobAndFetchJobStatus(project,sechubJobUUD);
 
         /* test */
         assertJobHasEnded(project,sechubJobUUD);

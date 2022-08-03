@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
+import com.mercedesbenz.sechub.adapter.mock.MockDataIdentifierFactory;
 import com.mercedesbenz.sechub.adapter.netsparker.NetsparkerAdapter;
 import com.mercedesbenz.sechub.adapter.netsparker.NetsparkerAdapterConfig;
 import com.mercedesbenz.sechub.adapter.netsparker.NetsparkerConfig;
@@ -40,6 +41,9 @@ public class NetsparkerProductExecutor extends AbstractProductExecutor {
 
     @Autowired
     NetsparkerInstallSetup installSetup;
+
+    @Autowired
+    MockDataIdentifierFactory mockDataIdentifierFactory;
 
     public NetsparkerProductExecutor() {
         super(ProductIdentifier.NETSPARKER, 1, ScanType.WEB_SCAN);
@@ -76,7 +80,7 @@ public class NetsparkerProductExecutor extends AbstractProductExecutor {
 		ProductExecutorContext productExecutorContext = data.getProductExecutorContext();
         productExecutorContext.useFirstFormerResultHavingMetaData(NetsparkerMetaDataID.KEY_TARGET_URI, targetURI);
 
-		NetsparkerAdapterConfig netsparkerConfig = NetsparkerConfig.builder().
+        NetsparkerAdapterConfig netsparkerConfig = NetsparkerConfig.builder().
 				configure(new SecHubAdapterOptionsBuilderStrategy(data, getScanType())).
 				configure(new WebConfigBuilderStrategy(data.getSechubExecutionContext())).
 				configure(new NetworkTargetProductServerDataAdapterConfigurationStrategy(installSetup, targetType)).
@@ -88,6 +92,7 @@ public class NetsparkerProductExecutor extends AbstractProductExecutor {
 				setPolicyID(installSetup.getDefaultPolicyId()).
 				setLicenseID(installSetup.getNetsparkerLicenseId()).
 				setTargetType(info.getTargetType().name()).
+				setMockDataIdentifier(data.getMockDataIdentifier()).
 				setTargetURI(targetURI).build();
 		/* @formatter:on */
 

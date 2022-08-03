@@ -20,12 +20,12 @@ import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
+import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
 import com.mercedesbenz.sechub.pds.PDSNotAcceptableException;
 import com.mercedesbenz.sechub.pds.PDSNotFoundException;
 import com.mercedesbenz.sechub.pds.UploadSizeConfiguration;
 import com.mercedesbenz.sechub.pds.storage.PDSMultiStorageService;
 import com.mercedesbenz.sechub.pds.util.PDSArchiveSupportProvider;
-import com.mercedesbenz.sechub.pds.util.PDSFileChecksumSHA256Service;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.test.TestUtil;
 
@@ -37,7 +37,6 @@ public class PDSFileUploadJobServiceTest {
 
     private PDSFileUploadJobService serviceToTest;
     private UUID jobUUID;
-    private PDSFileChecksumSHA256Service checksumService;
     private Path tmpUploadPath;
 
     private PDSJobRepository repository;
@@ -50,15 +49,17 @@ public class PDSFileUploadJobServiceTest {
     private ArchiveSupport archiveSupport;
     private PDSArchiveSupportProvider archiveSupportProvider;
     private UploadSizeConfiguration configuration;
+    private CheckSumSupport checkSumSupport;
 
     @BeforeEach
     void beforeEach() throws Exception {
         tmpUploadPath = TestUtil.createTempDirectoryInBuildFolder("pds-upload");
         jobUUID = UUID.randomUUID();
-        checksumService = mock(PDSFileChecksumSHA256Service.class);
         workspaceService = mock(PDSWorkspaceService.class);
         storageService = mock(PDSMultiStorageService.class);
         configuration = mock(UploadSizeConfiguration.class);
+        checkSumSupport = mock(CheckSumSupport.class);
+
         when(configuration.getMaxUploadSizeInBytes()).thenReturn(2048L);
 
         archiveSupportProvider = mock(PDSArchiveSupportProvider.class);
@@ -78,15 +79,15 @@ public class PDSFileUploadJobServiceTest {
         when(repository.findById(jobUUID)).thenReturn(jobOption);
 
         serviceToTest = new PDSFileUploadJobService();
-        serviceToTest.checksumSHA256Service = checksumService;
         serviceToTest.workspaceService = workspaceService;
         serviceToTest.repository = repository;
         serviceToTest.storageService = storageService;
         serviceToTest.archiveSupportProvider = archiveSupportProvider;
         serviceToTest.configuration = configuration;
+        serviceToTest.checksumSupport = checkSumSupport;
 
-        when(checksumService.hasCorrectChecksum(eq(ACCEPTED_CHECKSUM), any())).thenReturn(true);
-        when(checksumService.hasCorrectChecksum(eq(NOT_ACCEPTED_CHECKSUM), any())).thenReturn(false);
+        when(checkSumSupport.hasCorrectSha256Checksum(eq(ACCEPTED_CHECKSUM), any())).thenReturn(true);
+        when(checkSumSupport.hasCorrectSha256Checksum(eq(NOT_ACCEPTED_CHECKSUM), any())).thenReturn(false);
     }
 
     @Test

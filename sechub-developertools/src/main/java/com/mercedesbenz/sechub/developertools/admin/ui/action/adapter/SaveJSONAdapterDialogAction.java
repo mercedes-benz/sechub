@@ -3,8 +3,8 @@ package com.mercedesbenz.sechub.developertools.admin.ui.action.adapter;
 
 import java.awt.event.ActionEvent;
 
+import com.mercedesbenz.sechub.commons.mapping.MappingData;
 import com.mercedesbenz.sechub.developertools.admin.DeveloperAdministration;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
 
 public class SaveJSONAdapterDialogAction extends AbstractAdapterDialogMappingAction {
 

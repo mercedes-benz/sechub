@@ -2,14 +2,16 @@
 package com.mercedesbenz.sechub.sereco.importer;
 
 import static com.mercedesbenz.sechub.sereco.test.AssertVulnerabilities.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.sereco.ImportParameter;
@@ -24,27 +26,28 @@ public class CheckmarxV1XMLImporterTest {
 
     private CheckmarxV1XMLImporter importerToTest;
 
-    @Before
-    public void before() {
+    @BeforeEach
+    void beforeEach() {
         importerToTest = new CheckmarxV1XMLImporter();
     }
 
-    @Test
-    public void xmlReportFromCheckmarxV8canBeImported() {
+    @ParameterizedTest
+    @CsvSource({ "Checkmarx", "PDS_CODESCAN" })
+    void xmlReportFromCheckmarxV8canBeImported_for_given_product_id(String productIdentifer) {
         /* prepare */
         String xml = SerecoTestFileSupport.INSTANCE.loadTestFile("checkmarx/sechub-continous-integration.xml");
 
-        ImportParameter param = ImportParameter.builder().importData(xml).importId("id1").productId("Checkmarx").build();
+        ImportParameter param = ImportParameter.builder().importData(xml).importId("id1").productId(productIdentifer).build();
 
         /* execute */
         ProductImportAbility ableToImport = importerToTest.isAbleToImportForProduct(param);
 
         /* test */
-        assertEquals("Was NOT able to import xml!", ProductImportAbility.ABLE_TO_IMPORT, ableToImport);
+        assertEquals(ProductImportAbility.ABLE_TO_IMPORT, ableToImport, "Was NOT able to import valid checkmarx xml for product identifer:" + productIdentifer);
     }
 
     @Test
-    public void emptyXMLcanNotBeImported() {
+    void emptyXMLcanNotBeImported() {
         /* prepare */
         String xml = "<?xml version='1.0'?>";
 
@@ -54,11 +57,11 @@ public class CheckmarxV1XMLImporterTest {
         ProductImportAbility ableToImport = importerToTest.isAbleToImportForProduct(param);
 
         /* test */
-        assertEquals("Was able to import xml!", ProductImportAbility.NOT_ABLE_TO_IMPORT, ableToImport);
+        assertEquals(ProductImportAbility.NOT_ABLE_TO_IMPORT, ableToImport, "Was able to import xml!");
     }
 
     @Test
-    public void bookStoreExampleXMLcanNotBeImported() {
+    void bookStoreExampleXMLcanNotBeImported() {
         /* prepare */
         String xml = "<?xml version='1.0'?><bookstore><available><book name='lord of the rings' id='!'/></available></bookstore>";
 
@@ -68,11 +71,11 @@ public class CheckmarxV1XMLImporterTest {
         ProductImportAbility ableToImport = importerToTest.isAbleToImportForProduct(param);
 
         /* test */
-        assertEquals("Was able to import xml!", ProductImportAbility.NOT_ABLE_TO_IMPORT, ableToImport);
+        assertEquals(ProductImportAbility.NOT_ABLE_TO_IMPORT, ableToImport, "Was able to import xml!");
     }
 
     @Test
-    public void xmlReportFromCheckmarxVhasNoDescriptionButCodeInfo() throws Exception {
+    void xmlReportFromCheckmarxVhasNoDescriptionButCodeInfo() throws Exception {
         /* prepare */
         String xml = SerecoTestFileSupport.INSTANCE.loadTestFile("checkmarx/sechub-continous-integration-with-false-positive.xml");
 
@@ -113,7 +116,7 @@ public class CheckmarxV1XMLImporterTest {
     }
 
     @Test
-    public void xmlReportFromCheckmarxV8containsDeeplink() throws Exception {
+    void xmlReportFromCheckmarxV8containsDeeplink() throws Exception {
         /* prepare */
         String xml = SerecoTestFileSupport.INSTANCE.loadTestFile("checkmarx/sechub-continous-integration-with-false-positive.xml");
 
@@ -131,7 +134,7 @@ public class CheckmarxV1XMLImporterTest {
     }
 
     @Test
-    public void xmlReportFromCheckmarxV8_with_false_positive_canBeImported_and_contains_not_false_positive() throws IOException {
+    void xmlReportFromCheckmarxV8_with_false_positive_canBeImported_and_contains_not_false_positive() throws IOException {
         /* prepare */
         String xml = SerecoTestFileSupport.INSTANCE.loadTestFile("checkmarx/sechub-continous-integration-with-false-positive.xml");
 
@@ -147,7 +150,7 @@ public class CheckmarxV1XMLImporterTest {
     }
 
     @Test
-    public void load_example1_contains_expected_data() throws IOException {
+    void load_example1_contains_expected_data() throws IOException {
         /* prepare */
         String xml = SerecoTestFileSupport.INSTANCE.loadTestFileFromRoot("sechub-other/testoutput/checkmarx-example1.xml");
 

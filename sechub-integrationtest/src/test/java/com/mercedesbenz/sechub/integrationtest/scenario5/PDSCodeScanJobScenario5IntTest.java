@@ -2,22 +2,28 @@
 package com.mercedesbenz.sechub.integrationtest.scenario5;
 
 import static com.mercedesbenz.sechub.commons.model.TrafficLight.*;
+import static com.mercedesbenz.sechub.integrationtest.api.AssertJob.*;
 import static com.mercedesbenz.sechub.integrationtest.api.IntegrationTestMockMode.*;
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 import static com.mercedesbenz.sechub.integrationtest.scenario5.Scenario5.*;
+import static org.junit.Assert.*;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
+import com.mercedesbenz.sechub.adapter.pds.data.PDSJobStatus.PDSAdapterJobStatusState;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubReportVersion;
 import com.mercedesbenz.sechub.commons.model.SecHubStatus;
 import com.mercedesbenz.sechub.commons.model.Severity;
+import com.mercedesbenz.sechub.integrationtest.api.AssertJobScheduler.TestExecutionState;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
+import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultExecutorConfigurations;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestExampleConstants;
@@ -64,8 +70,39 @@ public class PDSCodeScanJobScenario5IntTest {
             hasMessages(1);
 
         // check the job status contains also message
-        assertJobStatus(project, jobUUID).hasMessages(1).hasMessage(SecHubMessageType.ERROR,"Job execution failed because of an internal problem");
+        assertJobStatus(project, jobUUID).
+            isInState(TestExecutionState.ENDED).
+            hasMessages(1).
+            hasMessage(SecHubMessageType.ERROR,"Job execution failed because of an internal problem");
+
+
+
+        // try to restart (will fail again, but we expect here a new PDS job to be used and no re-usage!)
+        assertSecHubRestartWillStartNewJobBecausePDSJobFailed(project, jobUUID);
+
+    }
+
+    private void assertSecHubRestartWillStartNewJobBecausePDSJobFailed(TestProject project, UUID jobUUID) {
+        List<UUID> pdsJobUUIDs = TestAPI.fetchAllPDSJobUUIDsForSecHubJob(jobUUID);
+        assertEquals(1, pdsJobUUIDs.size());
+        UUID pdsJobUUID = pdsJobUUIDs.iterator().next();
+        assertPDSJobStatus(pdsJobUUID).
+            isInState(PDSAdapterJobStatusState.FAILED);
         /* @formatter:on */
+
+        assertNotNull(pdsJobUUID);
+
+        revertJobToStillRunning(jobUUID); // fake it's running (so we can restart)
+        assertJobIsRunning(project, jobUUID);
+        as(SUPER_ADMIN).restartJobAndFetchJobStatus(project, jobUUID);
+
+        List<UUID> pdsJobUUIDs2 = TestAPI.fetchAllPDSJobUUIDsForSecHubJob(jobUUID);
+
+        UUID pdsJobUUID2 = pdsJobUUIDs2.iterator().next();
+
+        assertNotNull(pdsJobUUID2);
+        assertNotEquals("The PDS job was reused but shouldn't! Execution in PDS failed before, so a new pds job must be started but we had a reuse!",
+                pdsJobUUID, pdsJobUUID2);
     }
 
     @Test

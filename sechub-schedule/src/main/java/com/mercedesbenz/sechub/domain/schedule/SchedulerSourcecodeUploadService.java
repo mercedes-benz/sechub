@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.util.StringInputStream;
+import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
@@ -27,7 +28,6 @@ import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUploadsSourceCode;
 import com.mercedesbenz.sechub.sharedkernel.util.ArchiveSupportProvider;
-import com.mercedesbenz.sechub.sharedkernel.util.ChecksumSHA256Service;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
@@ -45,7 +45,7 @@ public class SchedulerSourcecodeUploadService {
     StorageService storageService;
 
     @Autowired
-    ChecksumSHA256Service checksumSHA256Service;
+    CheckSumSupport checkSumSupport;
 
     @Autowired
     ScheduleAssertService assertService;
@@ -131,7 +131,7 @@ public class SchedulerSourcecodeUploadService {
     }
 
     private void assertCheckSumCorrect(String checkSum, InputStream inputStream) {
-        if (!checksumSHA256Service.hasCorrectChecksum(checkSum, inputStream)) {
+        if (!checkSumSupport.hasCorrectSha256Checksum(checkSum, inputStream)) {
             LOG.error("Uploaded file has incorrect sha256 checksum! Something must have happened during the upload.");
             throw new NotAcceptableException("Sourcecode checksum check failed");
         }

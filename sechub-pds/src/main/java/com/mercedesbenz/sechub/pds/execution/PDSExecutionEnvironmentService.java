@@ -13,16 +13,15 @@ import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.pds.ExecutionPDSKey;
 import com.mercedesbenz.sechub.commons.pds.PDSConfigDataKeyProvider;
+import com.mercedesbenz.sechub.commons.pds.PDSLauncherScriptEnvironmentConstants;
+import com.mercedesbenz.sechub.pds.config.PDSProductParameterDefinition;
 import com.mercedesbenz.sechub.pds.config.PDSProductSetup;
-import com.mercedesbenz.sechub.pds.config.PDSProdutParameterDefinition;
 import com.mercedesbenz.sechub.pds.config.PDSProdutParameterSetup;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
 import com.mercedesbenz.sechub.pds.job.PDSJobConfiguration;
 
 @Service
 public class PDSExecutionEnvironmentService {
-
-    public static final String CONSTANT_SECHUB_JOB_UUID = "SECHUB_JOB_UUID";
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSExecutionEnvironmentService.class);
 
@@ -51,13 +50,13 @@ public class PDSExecutionEnvironmentService {
     }
 
     private void addSecHubJobUUIDAsEnvironmentEntry(PDSJobConfiguration config, Map<String, String> map) {
-        map.put(CONSTANT_SECHUB_JOB_UUID, fetchSecHubJobUUIDasString(config));
+        map.put(PDSLauncherScriptEnvironmentConstants.SECHUB_JOB_UUID, fetchSecHubJobUUIDasString(config));
     }
 
     private String fetchSecHubJobUUIDasString(PDSJobConfiguration config) {
         UUID sechubJobUUID = config.getSechubJobUUID();
         if (sechubJobUUID == null) {
-            LOG.error("No SecHub job UUID found, environment variable: {} will be empty", CONSTANT_SECHUB_JOB_UUID);
+            LOG.error("No SecHub job UUID found, environment variable: {} will be empty", PDSLauncherScriptEnvironmentConstants.SECHUB_JOB_UUID);
             return "";
         }
         return sechubJobUUID.toString();
@@ -91,8 +90,8 @@ public class PDSExecutionEnvironmentService {
         }
     }
 
-    private boolean isJobParameterAcceptedByPDSServerConfiguration(PDSExecutionParameterEntry jobParam, List<PDSProdutParameterDefinition> definitions) {
-        for (PDSProdutParameterDefinition paramDef : definitions) {
+    private boolean isJobParameterAcceptedByPDSServerConfiguration(PDSExecutionParameterEntry jobParam, List<PDSProductParameterDefinition> definitions) {
+        for (PDSProductParameterDefinition paramDef : definitions) {
             if (paramDef.getKey().equals(jobParam.getKey())) {
                 return true;
             }

@@ -101,6 +101,10 @@ public class PDSTestURLBuilder extends AbstractTestURLBuilder {
         return buildUrl(API_ADMIN_JOB, jobUUID, "stream", "error");
     }
 
+    public String buildAdminFetchesJobMetaData(UUID pdsJobUUID) {
+        return buildUrl(API_ADMIN_JOB, pdsJobUUID.toString(), "metadata");
+    }
+
     public String buildAdminUpdatesAutoCleanupConfigurationUrl() {
         return buildUrl(API_ADMIN_CONFIG, "autoclean");
     }
