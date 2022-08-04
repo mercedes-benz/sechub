@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileAttribute;
@@ -244,6 +246,20 @@ public class TestUtil {
         if (!message.startsWith(expectedMessageStart)) {
             assertEquals("Is not starting with: " + expectedMessageStart, message);
         }
+    }
+
+    public static boolean hasAtLeastOneMethodWithAnnotation(Class<?> clazz, Class<? extends Annotation> annotation) {
+        Method[] methods = clazz.getDeclaredMethods();
+        for (Method method : methods) {
+            Annotation[] annotated = method.getAnnotationsByType(annotation);
+            if (annotated == null || annotated.length == 0) {
+                continue;
+            } else {
+                return true;
+            }
+
+        }
+        return false;
     }
 
 }

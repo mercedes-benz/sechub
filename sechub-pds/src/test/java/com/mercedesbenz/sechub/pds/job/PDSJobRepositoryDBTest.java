@@ -1,15 +1,17 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.job;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.EnumSource.Mode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -17,7 +19,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.mercedesbenz.sechub.pds.PDSProfiles;
 import com.mercedesbenz.sechub.pds.PDSShutdownService;
@@ -28,7 +30,7 @@ import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationValidator;
 import com.mercedesbenz.sechub.pds.config.PDSServerIdentifierValidator;
 
 @ActiveProfiles(PDSProfiles.TEST)
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @DataJpaTest
 @ContextConfiguration(classes = { PDSPathExecutableValidator.class, PDSServerIdentifierValidator.class, PDSServerConfigurationValidator.class,
         PDSProductIdentifierValidator.class, PDSShutdownService.class, PDSJobRepository.class, PDSServerConfigurationService.class,
@@ -44,12 +46,73 @@ public class PDSJobRepositoryDBTest {
     @Autowired
     private PDSServerConfigurationService serverConfigService;
 
-    @Before
-    public void before() {
+    @ParameterizedTest
+    @EnumSource(value = PDSJobStatusState.class, mode = Mode.EXCLUDE, names = "CANCEL_REQUESTED")
+    void findAllJobsInState_returns_empty_list_forjobs_not_in_state_CANCEL_REQUESTED(PDSJobStatusState state) throws Exception {
+        /* prepare */
+        DeleteJobTestData testData = new DeleteJobTestData();
+        testData.createAndCheckAvailable();
+
+        PDSJob pdsJob = testData.job3_1_day_before_created;
+        pdsJob.setState(state);
+
+        /* execute */
+        List<PDSJob> result = repositoryToTest.findAllJobsInState(PDSJobStatusState.CANCEL_REQUESTED);
+
+        /* test */
+        assertEquals(0, result.size());
     }
 
     @Test
-    public void test_data_4_jobs_delete_1_day_still_has_2() throws Exception {
+    void findAllJobsInState_returns_one_entry_when_one_job_is_in_state_CANCEL_REQUESTED() throws Exception {
+        /* prepare */
+        DeleteJobTestData testData = new DeleteJobTestData();
+        testData.createAndCheckAvailable();
+        PDSJob pdsJob = testData.job3_1_day_before_created;
+        pdsJob.setState(PDSJobStatusState.CANCEL_REQUESTED);
+
+        entityManager.persist(pdsJob);
+        entityManager.flush();
+
+        /* execute */
+        List<PDSJob> result = repositoryToTest.findAllJobsInState(PDSJobStatusState.CANCEL_REQUESTED);
+
+        /* test */
+        assertEquals(1, result.size());
+        assertTrue(result.contains(pdsJob));
+    }
+
+    @Test
+    void findAllJobsInState_returns_three_entries_when_3_jobs_are_in_state_CANCEL_REQUESTED() throws Exception {
+        /* prepare */
+        DeleteJobTestData testData = new DeleteJobTestData();
+        testData.createAndCheckAvailable();
+        PDSJob pdsJob1 = testData.job1_90_days_before_created;
+        pdsJob1.setState(PDSJobStatusState.CANCEL_REQUESTED);
+
+        PDSJob pdsJob2 = testData.job2_2_days_before_created;
+        pdsJob2.setState(PDSJobStatusState.CANCEL_REQUESTED);
+
+        PDSJob pdsJob3 = testData.job3_1_day_before_created;
+        pdsJob3.setState(PDSJobStatusState.CANCEL_REQUESTED);
+
+        entityManager.persist(pdsJob1);
+        entityManager.persist(pdsJob2);
+        entityManager.persist(pdsJob3);
+        entityManager.flush();
+
+        /* execute */
+        List<PDSJob> result = repositoryToTest.findAllJobsInState(PDSJobStatusState.CANCEL_REQUESTED);
+
+        /* test */
+        assertEquals(3, result.size());
+        assertTrue(result.contains(pdsJob1));
+        assertTrue(result.contains(pdsJob2));
+        assertTrue(result.contains(pdsJob3));
+    }
+
+    @Test
+    void test_data_4_jobs_delete_1_day_still_has_2() throws Exception {
         /* prepare */
         DeleteJobTestData testData = new DeleteJobTestData();
         testData.createAndCheckAvailable();
@@ -66,7 +129,7 @@ public class PDSJobRepositoryDBTest {
     }
 
     @Test
-    public void test_data_4_jobs_delete_1_day_before_plus1_second_still_has_1() throws Exception {
+    void test_data_4_jobs_delete_1_day_before_plus1_second_still_has_1() throws Exception {
         /* prepare */
         DeleteJobTestData testData = new DeleteJobTestData();
         testData.createAndCheckAvailable();
@@ -82,7 +145,7 @@ public class PDSJobRepositoryDBTest {
     }
 
     @Test
-    public void test_data_4_jobs_delete_1_day_before_plus1_second_counts_3_deleted_entries() throws Exception {
+    void test_data_4_jobs_delete_1_day_before_plus1_second_counts_3_deleted_entries() throws Exception {
         /* prepare */
         DeleteJobTestData testData = new DeleteJobTestData();
         testData.createAndCheckAvailable();
@@ -96,7 +159,7 @@ public class PDSJobRepositoryDBTest {
     }
 
     @Test
-    public void test_data_4_jobs_oldest_90_days_delete_90_days_still_has_4() throws Exception {
+    void test_data_4_jobs_oldest_90_days_delete_90_days_still_has_4() throws Exception {
         /* prepare */
         DeleteJobTestData testData = new DeleteJobTestData();
         testData.createAndCheckAvailable();
@@ -115,7 +178,7 @@ public class PDSJobRepositoryDBTest {
     }
 
     @Test
-    public void test_data_4_jobs_oldest_90_days_delete_90_days_counts_0_deleted_entries() throws Exception {
+    void test_data_4_jobs_oldest_90_days_delete_90_days_counts_0_deleted_entries() throws Exception {
         /* prepare */
         DeleteJobTestData testData = new DeleteJobTestData();
         testData.createAndCheckAvailable();
@@ -129,7 +192,7 @@ public class PDSJobRepositoryDBTest {
     }
 
     @Test
-    public void test_data_4_jobs_oldest_90_days_delete_89_days() throws Exception {
+    void test_data_4_jobs_oldest_90_days_delete_89_days() throws Exception {
         /* prepare */
         DeleteJobTestData testData = new DeleteJobTestData();
         testData.createAndCheckAvailable();
@@ -147,7 +210,7 @@ public class PDSJobRepositoryDBTest {
     }
 
     @Test
-    public void test_data_4_jobs_oldest_90_days_delete_1_day() throws Exception {
+    void test_data_4_jobs_oldest_90_days_delete_1_day() throws Exception {
         /* prepare */
         DeleteJobTestData testData = new DeleteJobTestData();
         testData.createAndCheckAvailable();
@@ -165,7 +228,7 @@ public class PDSJobRepositoryDBTest {
     }
 
     @Test
-    public void findByServerIdAndStatus_returns_0_for_RUNNING_and_SERVERDI1_when_nothing_created() {
+    void findByServerIdAndStatus_returns_0_for_RUNNING_and_SERVERDI1_when_nothing_created() {
         /* execute */
         long amount = repositoryToTest.countJobsOfServerInState("SERVERID1", PDSJobStatusState.RUNNING);
 
@@ -175,7 +238,7 @@ public class PDSJobRepositoryDBTest {
     }
 
     @Test
-    public void findByServerIdAndStatus_returns_2_for_RUNNING_and_SERVERDI1_when_two_created_and_in_state_running() {
+    void findByServerIdAndStatus_returns_2_for_RUNNING_and_SERVERDI1_when_two_created_and_in_state_running() {
         /* prepare */
         createJob(PDSJobStatusState.RUNNING);
         createJob(PDSJobStatusState.RUNNING);
@@ -189,7 +252,7 @@ public class PDSJobRepositoryDBTest {
     }
 
     @Test
-    public void findByServerIdAndStatus_returns_1_for_RUNNING_and_SERVERDI1_when_two_created_but_only_one_for_this_server_and_in_state_running() {
+    void findByServerIdAndStatus_returns_1_for_RUNNING_and_SERVERDI1_when_two_created_but_only_one_for_this_server_and_in_state_running() {
         /* prepare */
         createJob(PDSJobStatusState.RUNNING);
         createJob(PDSJobStatusState.RUNNING, "OTHER_SERVER_ID_FOR_TEST");
@@ -203,7 +266,7 @@ public class PDSJobRepositoryDBTest {
     }
 
     @Test
-    public void findByServerIdAndStatus_returns_3_for_CREATED_for_this_server_when_mixed_up_with_other_parts_from_same_serve_and_other_servers() {
+    void findByServerIdAndStatus_returns_3_for_CREATED_for_this_server_when_mixed_up_with_other_parts_from_same_serve_and_other_servers() {
         /* prepare */
         createJob(PDSJobStatusState.CREATED);
         createJob(PDSJobStatusState.CREATED);
@@ -223,7 +286,7 @@ public class PDSJobRepositoryDBTest {
     }
 
     @Test
-    public void when_no_job_created_findNextJobToExecute_returns_optional_not_present() {
+    void when_no_job_created_findNextJobToExecute_returns_optional_not_present() {
         /* execute */
         Optional<PDSJob> nextJob = repositoryToTest.findNextJobToExecute();
 
@@ -233,7 +296,7 @@ public class PDSJobRepositoryDBTest {
     }
 
     @Test
-    public void when_one_jobs_created_findNextJobToExecute_returns_none() {
+    void when_one_jobs_created_findNextJobToExecute_returns_none() {
         /* prepare */
         createJob(PDSJobStatusState.CREATED);
 
@@ -246,7 +309,7 @@ public class PDSJobRepositoryDBTest {
     }
 
     @Test
-    public void when_one_jobs_marked_as_ready_to_start_findNextJobToExecute_returns_this_one() {
+    void when_one_jobs_marked_as_ready_to_start_findNextJobToExecute_returns_this_one() {
         /* prepare */
         PDSJob job1 = createJob(PDSJobStatusState.READY_TO_START, 0);
 
@@ -260,7 +323,7 @@ public class PDSJobRepositoryDBTest {
     }
 
     @Test
-    public void when_two_jobs_just_created_findNextJobToExecute_returns_none() {
+    void when_two_jobs_just_created_findNextJobToExecute_returns_none() {
         /* prepare */
         createJob(PDSJobStatusState.CREATED, 0);
         createJob(PDSJobStatusState.CREATED, 1);
@@ -276,7 +339,7 @@ public class PDSJobRepositoryDBTest {
     }
 
     @Test
-    public void when_two_jobs_ready_to_start_findNextJobToExecute_returns_older_one() {
+    void when_two_jobs_ready_to_start_findNextJobToExecute_returns_older_one() {
         /* prepare */
         PDSJob job1 = createJob(PDSJobStatusState.READY_TO_START, 1);
         createJob(PDSJobStatusState.READY_TO_START, 0);
@@ -291,7 +354,7 @@ public class PDSJobRepositoryDBTest {
     }
 
     @Test
-    public void when_two_jobs_exist_but_older_is_already_running_findNextJobToExecute_returns_new_ready_to_start() {
+    void when_two_jobs_exist_but_older_is_already_running_findNextJobToExecute_returns_new_ready_to_start() {
         /* prepare */
         createJob(PDSJobStatusState.RUNNING, 2);
         PDSJob job2 = createJob(PDSJobStatusState.READY_TO_START, 1);
@@ -306,7 +369,7 @@ public class PDSJobRepositoryDBTest {
     }
 
     @Test
-    public void when_two_jobs_exist_but_older_is_done_and_newer_already_running_findNextJobToExecute_returns_none() {
+    void when_two_jobs_exist_but_older_is_done_and_newer_already_running_findNextJobToExecute_returns_none() {
         /* prepare */
         createJob(PDSJobStatusState.DONE, 1);
         createJob(PDSJobStatusState.RUNNING, 0);
@@ -320,7 +383,7 @@ public class PDSJobRepositoryDBTest {
     }
 
     @Test
-    public void when_two_jobs_exist_but_older_is_canceled_and_newer_failed_findNextJobToExecute_returns_none() {
+    void when_two_jobs_exist_but_older_is_canceled_and_newer_failed_findNextJobToExecute_returns_none() {
         /* prepare */
         createJob(PDSJobStatusState.CANCEL_REQUESTED, 1);
         createJob(PDSJobStatusState.FAILED, 0);

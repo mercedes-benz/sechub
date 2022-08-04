@@ -37,7 +37,7 @@ import com.mercedesbenz.sechub.pds.job.PDSJobStatusState;
 import com.mercedesbenz.sechub.pds.job.PDSJobTransactionService;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesMonitoringStatus;
-import com.mercedesbenz.sechub.pds.usecase.UseCaseUserCancelsJob;
+import com.mercedesbenz.sechub.pds.usecase.UseCaseSystemHandlesJobCancelRequests;
 
 /**
  * This class is responsible for all execution queuing parts - it will also know
@@ -103,8 +103,14 @@ public class PDSExecutionService {
         scheduler.shutdown();
     }
 
-    @UseCaseUserCancelsJob(@PDSStep(name = "service call", description = "job execution will be canceled in queue", number = 3))
-    public boolean cancel(UUID jobUUID) {
+    /**
+     * Tries to cancels given job
+     *
+     * @param jobUUID
+     * @return {@link CancelResult}, never <code>null</code>
+     */
+    @UseCaseSystemHandlesJobCancelRequests(@PDSStep(name = "service call", description = "job execution will be canceled in queue", number = 3))
+    public CancelResult cancel(UUID jobUUID) {
         notNull(jobUUID, "job uuid may not be null!");
 
         synchronized (jobsInQueue) {
@@ -117,23 +123,36 @@ public class PDSExecutionService {
                     if (future.isDone()) {
                         /* already done or canceled */
                         LOG.info("cancelation of job with uuid:{} skipped, because already done", jobUUID);
-                        return false;
+                        return CancelResult.JOB_FOUND_CANCEL_WAS_DONE;
                     }
                     boolean canceled = future.cancel(true);
                     if (canceled) {
                         LOG.info("canceled job with uuid:{}", jobUUID);
+                        return CancelResult.JOB_FOUND_CANCEL_WAS_DONE;
                     } else {
                         LOG.warn("cancelation of not done job with uuid:{} returned false - this should not happen");
+                        return CancelResult.JOB_FOUND_CANCEL_WAS_NOT_POSSIBLE;
+
                     }
-                    return canceled;
                 }
             }
             /*
              * job not found - either never existed or already canceled/done and removed by
              * watcher
              */
-            return false;
+            return CancelResult.JOB_NOT_FOUND;
         }
+    }
+
+    public enum CancelResult {
+        JOB_FOUND_CANCEL_WAS_DONE,
+
+        JOB_FOUND_JOB_ALREADY_DONE,
+
+        JOB_FOUND_CANCEL_WAS_NOT_POSSIBLE,
+
+        JOB_NOT_FOUND,
+
     }
 
     public boolean isQueueFull() {
@@ -243,7 +262,7 @@ public class PDSExecutionService {
          * @param future
          * @return <code>true</code> when work can be removed from jobsInQueue
          */
-        @UseCaseUserCancelsJob(@PDSStep(name = "queue work", description = "canceled job will be marked as CANCELED in db", number = 5))
+        @UseCaseSystemHandlesJobCancelRequests(@PDSStep(name = "queue work", description = "canceled job will be marked as CANCELED in db", number = 5))
         private boolean isFutureDoneAndChangesToDatabaseCanBeApplied(Entry<UUID, Future<PDSExecutionResult>> entry, Future<PDSExecutionResult> future) {
             UUID jobUUID = entry.getKey();
 

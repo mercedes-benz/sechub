@@ -35,7 +35,7 @@ import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobErrorStream;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobMetaData;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobOutputStream;
-import com.mercedesbenz.sechub.pds.usecase.UseCaseUserCancelsJob;
+import com.mercedesbenz.sechub.pds.usecase.UseCaseSystemHandlesJobCancelRequests;
 import com.mercedesbenz.sechub.pds.util.PDSResilientRetryExecutor;
 import com.mercedesbenz.sechub.pds.util.PDSResilientRetryExecutor.ExceptionThrower;
 
@@ -406,7 +406,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
      *
      * @param mayInterruptIfRunning
      */
-    @UseCaseUserCancelsJob(@PDSStep(name = "process cancelation", description = "process created by job will be destroyed", number = 4))
+    @UseCaseSystemHandlesJobCancelRequests(@PDSStep(name = "process cancelation", description = "process created by job will be destroyed", number = 4))
     void prepareForCancel(boolean mayInterruptIfRunning) {
         if (process == null || !process.isAlive()) {
             return;

@@ -42,7 +42,7 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
         PDSFileUploadJobService.class,
         PDSCreateJobService.class,
         PDSGetJobResultService.class,
-        PDSCancelJobService.class,
+        PDSRequestJobCancelationService.class,
         PDSGetJobStatusService.class,
 		PDSJobRestControllerMockTest.SimpleTestConfiguration.class })
 /* @formatter:on */
@@ -71,7 +71,7 @@ public class PDSJobRestControllerMockTest {
     private PDSJobTransactionService mockedMarkReadyToStartJobService;
 
     @MockBean
-    private PDSCancelJobService mockedCancelJobService;
+    private PDSRequestJobCancelationService mockedCancelJobService;
 
     @MockBean
     private PDSGetJobMessagesService pdsJobMessageService;
@@ -184,7 +184,7 @@ public class PDSJobRestControllerMockTest {
 
         /* @formatter:on */
 
-        verify(mockedCancelJobService).cancelJob(jobUUID);
+        verify(mockedCancelJobService).requectJobCancelation(jobUUID);
 
     }
 
