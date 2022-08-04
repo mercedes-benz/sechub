@@ -67,7 +67,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
     private PDSProcessAdapterFactory processAdapterFactory;
 
     public PDSExecutionCallable(UUID jobUUID, PDSJobTransactionService jobTransactionService, PDSWorkspaceService workspaceService,
-            PDSExecutionEnvironmentService environmentService, PDSCheckJobStatusService jobStatusService, PDSProcessAdapterFactory procesBuilderFactory) {
+            PDSExecutionEnvironmentService environmentService, PDSCheckJobStatusService jobStatusService, PDSProcessAdapterFactory processAdapterFactory) {
         notNull(jobUUID, "pdsJobUUID may not be null!");
         notNull(jobTransactionService, "jobTransactionService may not be null!");
         notNull(workspaceService, "workspaceService may not be null!");
@@ -78,7 +78,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         this.workspaceService = workspaceService;
         this.environmentService = environmentService;
         this.jobStatusService = jobStatusService;
-        this.processAdapterFactory = procesBuilderFactory;
+        this.processAdapterFactory = processAdapterFactory;
 
         messageCollector = new PDSMessageCollector();
 

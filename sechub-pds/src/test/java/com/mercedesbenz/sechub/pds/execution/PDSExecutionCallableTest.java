@@ -13,6 +13,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
+import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.pds.job.JobConfigurationData;
 import com.mercedesbenz.sechub.pds.job.PDSCheckJobStatusService;
 import com.mercedesbenz.sechub.pds.job.PDSJobTransactionService;
@@ -107,7 +110,7 @@ class PDSExecutionCallableTest {
     }
 
     @Test
-    void a_timeout_does_write_exeuction_result_data() throws Exception {
+    void a_timeout_does_write_execution_result_data() throws Exception {
         /* prepare */
         simulateProcessTimeOut();
 
@@ -147,6 +150,41 @@ class PDSExecutionCallableTest {
         assertEquals("the output", executionData.getOutputStreamData());
         assertEquals("an error", executionData.getErrorStreamData());
         assertEquals("meta data", executionData.getMetaData());
+    }
+
+    @Test
+    void no_timeout_does_not_fail_and_writes_messages() throws Exception {
+        /* prepare */
+        simulateProcessDone();
+
+        /* execute */
+        PDSExecutionResult result = callableToTest.call();
+
+        /* test */
+        assertFalse(result.failed);
+        assertJob1MessageHasBeenPersistedToDB();
+
+    }
+
+    @Test
+    void a_timeout_does_fail_and_writes_messages() throws Exception {
+        /* prepare */
+        simulateProcessTimeOut();
+
+        /* execute */
+        PDSExecutionResult result = callableToTest.call();
+
+        /* test */
+        assertTrue(result.failed);
+        assertJob1MessageHasBeenPersistedToDB();
+
+    }
+
+    private void assertJob1MessageHasBeenPersistedToDB() {
+        SecHubMessagesList list = new SecHubMessagesList();
+        list.getSecHubMessages().add(new SecHubMessage(SecHubMessageType.INFO, "message1"));
+
+        verify(jobTransactionService).updateJobMessagesInOwnTransaction(eq(jobUUID), eq(list));
     }
 
     private void simulateProcessDone() throws InterruptedException {

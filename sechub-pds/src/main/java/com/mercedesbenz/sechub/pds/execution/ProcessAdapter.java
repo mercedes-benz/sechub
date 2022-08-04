@@ -3,9 +3,8 @@ package com.mercedesbenz.sechub.pds.execution;
 import java.util.concurrent.TimeUnit;
 
 /**
- * An adapter for process access. Via this class we can mock processes in tests.
- * (Process is not correctly mockable via Mockito because the implementation
- * methods are still called)
+ * An adapter for processes. Via this class we can mock processes in tests very
+ * easy with Mockito.
  */
 public class ProcessAdapter {
 
@@ -15,11 +14,11 @@ public class ProcessAdapter {
         this.process = process;
     }
 
-    public boolean waitFor(long minutesToWaitForResult, TimeUnit minutes) throws InterruptedException {
+    public boolean waitFor(long minutesToWaitForResult, TimeUnit timeUnit) throws InterruptedException {
         if (process == null) {
             return false;
         }
-        return process.waitFor(minutesToWaitForResult, minutes);
+        return process.waitFor(minutesToWaitForResult, timeUnit);
     }
 
     public boolean isAlive() {
