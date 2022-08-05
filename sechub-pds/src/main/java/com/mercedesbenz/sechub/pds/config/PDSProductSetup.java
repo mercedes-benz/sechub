@@ -36,9 +36,10 @@ public class PDSProductSetup {
     }
 
     /**
-     * Represents the product identifier suitable for sechub
+     * Represents the product identifier suitable for sechub. May not be null - this
+     * will be ensured by validation.
      *
-     * @return
+     * @return product identifier, never <code>null</code>
      */
     public String getId() {
         return id;

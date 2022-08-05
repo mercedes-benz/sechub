@@ -7,6 +7,8 @@ public class PDSProductParameterDefinition {
 
     private String description;
 
+    private String _default; // default is java keyword => "_" as prefix was necessary...
+
     public String getKey() {
         return key;
     }
@@ -21,5 +23,17 @@ public class PDSProductParameterDefinition {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getDefault() {
+        return _default;
+    }
+
+    public void setDefault(String defaultValue) {
+        this._default = defaultValue;
+    }
+
+    public boolean hasDefault() {
+        return _default != null;
     }
 }

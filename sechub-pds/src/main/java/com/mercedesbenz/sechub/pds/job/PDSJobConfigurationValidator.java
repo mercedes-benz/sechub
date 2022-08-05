@@ -70,9 +70,12 @@ public class PDSJobConfigurationValidator {
                 }
             }
             if (!found) {
-                return "mandatory parameter not found:'" + mandatoryKey + "'";
+                if (!mandatory.hasDefault()) {
+                    return "mandatory parameter not found:'" + mandatoryKey + "'";
+                }
             }
         }
         return null;
     }
+
 }
