@@ -64,6 +64,8 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
     private PDSMessageCollector messageCollector;
 
+    private ProcessHandlingDataFactory handlingDataFactory;
+
     public PDSExecutionCallable(UUID jobUUID, PDSJobTransactionService jobTransactionService, PDSWorkspaceService workspaceService,
             PDSExecutionEnvironmentService environmentService, PDSCheckJobStatusService jobStatusService) {
         notNull(jobUUID, "pdsJobUUID may not be null!");
@@ -78,6 +80,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         this.jobStatusService = jobStatusService;
 
         messageCollector = new PDSMessageCollector();
+        handlingDataFactory = new ProcessHandlingDataFactory();
 
         pdsJobUpdateExceptionThrower = new ExceptionThrower<IllegalStateException>() {
 
@@ -372,6 +375,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         environment.put(PDS_JOB_WORKSPACE_LOCATION, locationData.getWorkspaceLocation());
         environment.put(PDS_JOB_RESULT_FILE, locationData.getResultFileLocation());
         environment.put(PDS_JOB_USER_MESSAGES_FOLDER, locationData.getUserMessagesLocation());
+        environment.put(PDS_JOB_EVENTS_FOLDER, locationData.getEventsLocation());
         environment.put(PDS_JOB_METADATA_FILE, locationData.getMetaDataFileLocation());
         environment.put(PDS_JOB_UUID, jobUUID.toString());
         environment.put(PDS_JOB_SOURCECODE_ZIP_FILE, locationData.getSourceCodeZipFileLocation());
@@ -406,14 +410,23 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
      *
      * @param mayInterruptIfRunning
      */
-    @UseCaseSystemHandlesJobCancelRequests(@PDSStep(name = "process cancelation", description = "process created by job will be destroyed", number = 4))
+    @UseCaseSystemHandlesJobCancelRequests(@PDSStep(name = "process cancelation", description = "process created by job will be destroyed. If configured, a given time in seconds will be waited, to give the process the chance handle some cleanup and to end itself.", number = 4))
     void prepareForCancel(boolean mayInterruptIfRunning) {
         if (process == null || !process.isAlive()) {
             return;
         }
+
+        ProcessHandlingData processHandlingData = null;
+        ExecutionEventData cancelEventData = workspaceService.fetchEventDataOrNull(pdsJobUUID, ExecutionEventType.CANCEL_REQUESTED);
+
+        if (cancelEventData == null) {
+            LOG.warn("No cancel event data found for job:{}. Cannot create dedicated process handling data. No process wait possible.", pdsJobUUID);
+        } else {
+            processHandlingData = handlingDataFactory.createForCancelOperation(cancelEventData);
+        }
+
         try {
-            LOG.info("Cancelation of process: {} will destroy underlying process forcibly");
-            process.destroyForcibly();
+            handleProcessCancelation(processHandlingData);
         } finally {
 
             JobConfigurationData data = jobTransactionService.getJobConfigurationData(pdsJobUUID);
@@ -427,6 +440,45 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
         }
 
+    }
+
+    private void handleProcessCancelation(ProcessHandlingData processHandlingData) {
+        if (isWaitOnCancelOperationAccepted(processHandlingData)) {
+            LOG.info("Cancel job : {}: give process chance to cancel. Will wait maximum of {} seconds.", pdsJobUUID,
+                    processHandlingData.millisecondsToWaitForNextCheck);
+
+            long startTimeStamp = System.currentTimeMillis();
+            long maxTimeStamp = startTimeStamp + (processHandlingData.millisecondsToWaitForNextCheck * 1000);
+
+            while (startTimeStamp < maxTimeStamp) {
+                if (process.isAlive()) {
+                    try {
+                        LOG.debug("Cancel job: {}: wait {} milliseconds before next process alive check.", pdsJobUUID,
+                                processHandlingData.millisecondsToWaitForNextCheck);
+                        Thread.sleep(processHandlingData.millisecondsToWaitForNextCheck);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+            }
+            LOG.info("Cancel job: {}: waited {} milliseconds at all", pdsJobUUID, System.currentTimeMillis() - startTimeStamp);
+
+        } else {
+            LOG.info("Cancel job: {}: will not wait.", pdsJobUUID);
+        }
+        if (process.isAlive()) {
+            LOG.info("Cancel job: {}: still alive, will destroy underlying process forcibly.", pdsJobUUID);
+            process.destroyForcibly();
+        } else {
+            LOG.info("Cancel job: {}: has terminated itself.", pdsJobUUID);
+        }
+    }
+
+    private boolean isWaitOnCancelOperationAccepted(ProcessHandlingData processHandlingData) {
+        if (processHandlingData == null) {
+            return false;
+        }
+        return processHandlingData.secondsToWaitForProcess > 0;
     }
 
     private void cleanUpWorkspace(UUID jobUUID, PDSJobConfiguration config) {

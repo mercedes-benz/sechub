@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,10 +25,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.TextFileReader;
 import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.archive.ArchiveExtractionResult;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType;
 import com.mercedesbenz.sechub.commons.archive.SecHubFileStructureDataProvider;
+import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.JSONConverterException;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelSupport;
@@ -34,6 +39,9 @@ import com.mercedesbenz.sechub.pds.PDSMustBeDocumented;
 import com.mercedesbenz.sechub.pds.PDSNotFoundException;
 import com.mercedesbenz.sechub.pds.config.PDSProductSetup;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
+import com.mercedesbenz.sechub.pds.execution.ExecutionEventData;
+import com.mercedesbenz.sechub.pds.execution.ExecutionEventDetailIdentifier;
+import com.mercedesbenz.sechub.pds.execution.ExecutionEventType;
 import com.mercedesbenz.sechub.pds.storage.PDSMultiStorageService;
 import com.mercedesbenz.sechub.pds.storage.PDSStorageInfoCollector;
 import com.mercedesbenz.sechub.pds.util.PDSArchiveSupportProvider;
@@ -49,6 +57,7 @@ public class PDSWorkspaceService {
 
     public static final String OUTPUT = "output";
     public static final String MESSAGES = "messages";
+    public static final String EVENTS = "events";
     public static final String RESULT_TXT = "result.txt";
     public static final String METADATA_TXT = "metadata.txt";
 
@@ -73,6 +82,12 @@ public class PDSWorkspaceService {
 
     @Autowired
     PDSStorageInfoCollector storageInfoCollector;
+
+    @Autowired
+    TextFileWriter textFileWriter;
+
+    @Autowired
+    TextFileReader textFileReader;
 
     @PDSMustBeDocumented(value = "Defines if workspace is automatically cleaned when no longer necessary - means launcher script has been executed and finished (failed or done)", scope = "execution")
     @Value("${sechub.pds.workspace.autoclean.disabled:false}")
@@ -457,6 +472,7 @@ public class PDSWorkspaceService {
         locationData.workspaceLocation = createWorkspacePathAndEnsureParentDirectories(workspaceFolderPath, null).toString();
         locationData.resultFileLocation = createWorkspacePathAndEnsureParentDirectories(workspaceFolderPath, OUTPUT + File.separator + RESULT_TXT).toString();
         locationData.userMessagesLocation = createWorkspacePathAndEnsureDirectory(workspaceFolderPath, OUTPUT + File.separator + MESSAGES).toString();
+        locationData.eventsLocation = createEventFolderLocation(workspaceFolderPath).toString();
         locationData.metaDataFileLocation = createWorkspacePathAndEnsureParentDirectories(workspaceFolderPath, METADATA_TXT).toString();
 
         locationData.extractedSourcesLocation = createExtractedSourcesLocation(workspaceFolderPath).toString();
@@ -466,6 +482,111 @@ public class PDSWorkspaceService {
         locationData.binariesTarFileLocation = createBinariesTarFileLocation(workspaceFolderPath).toString();
 
         return locationData;
+    }
+
+    /**
+     * Sends the event into workspace - means a dedicated event file is written
+     *
+     * @param jobUUID   uuid of job
+     * @param eventType event type
+     */
+    public void sendEvent(UUID jobUUID, ExecutionEventType eventType) {
+        sendEvent(jobUUID, eventType, null);
+    }
+
+    /**
+     * Sends the event into workspace - means a dedicated event file is written
+     *
+     * @param jobUUID
+     * @param eventType
+     * @param eventData
+     */
+    public void sendEvent(UUID jobUUID, ExecutionEventType eventType, ExecutionEventData eventData) {
+        if (jobUUID == null) {
+            throw new IllegalArgumentException("job uuid must be set!");
+        }
+        if (eventType == null) {
+            throw new IllegalArgumentException("event type be set!");
+        }
+        if (eventData == null) {
+            eventData = new ExecutionEventData();
+        }
+
+        eventData.setDetail(ExecutionEventDetailIdentifier.EVENT_TYPE, eventType.getId());
+
+        String eventJson = JSONConverter.get().toJSON(eventData);
+
+        File eventFileToWrite = getEventFile(jobUUID, eventType);
+        try {
+            textFileWriter.save(eventFileToWrite, eventJson, true);
+        } catch (IOException e) {
+            LOG.error("Was not able to send event: {} with text: '{}' to workspace for PDS job: {}", eventType, eventJson, jobUUID, e);
+            throw new IllegalStateException("Execution event storage failed for job: " + jobUUID, e);
+
+        }
+    }
+
+    /**
+     * Fetch event data for an execution event.
+     *
+     * @param jobUUID
+     * @param eventType
+     * @return event data or <code>null</code> when the event file was not found
+     * @throws IllegalStateException when event file cannot be read or contains
+     *                               illegal JSON
+     */
+    public ExecutionEventData fetchEventDataOrNull(UUID jobUUID, ExecutionEventType eventType) {
+        if (jobUUID == null) {
+            throw new IllegalArgumentException("job UUID must be set!");
+        }
+        if (eventType == null) {
+            throw new IllegalArgumentException("event type must be set!");
+        }
+        File eventFileToRead = getEventFile(jobUUID, eventType);
+        if (!eventFileToRead.exists()) {
+            return null;
+        }
+        String json = null;
+        try {
+            json = textFileReader.loadTextFile(eventFileToRead);
+        } catch (IOException e) {
+            LOG.error("Was not able to read event: {} from file: '{}' of PDS job: {}", eventType, eventFileToRead, jobUUID, e);
+            throw new IllegalStateException("Execution event reading failed for job: " + jobUUID, e);
+        }
+        if (json.isEmpty()) {
+            try {
+                BasicFileAttributes fileAttrs = Files.readAttributes(eventFileToRead.toPath(), BasicFileAttributes.class);
+                FileTime fileTime = fileAttrs.creationTime();
+
+                ExecutionEventData fallback = new ExecutionEventData(fileTime.toInstant());
+                fallback.setDetail(ExecutionEventDetailIdentifier.EVENT_TYPE, eventType.getId());
+            } catch (IOException e) {
+                LOG.error("Was not able to create missing data for empty json for event: {} from file: '{}' of PDS job: {}", eventType, eventFileToRead,
+                        jobUUID, e);
+                throw new IllegalStateException("Execution event reading fallback for empty json failed for job: " + jobUUID, e);
+            }
+
+        }
+        try {
+            ExecutionEventData eventData = JSONConverter.get().fromJSON(ExecutionEventData.class, json);
+            return eventData;
+
+        } catch (JSONConverterException e) {
+            LOG.error("Was not able to convert event data for event: {} from file: '{}' to workspace for PDS job: {}", eventType, eventFileToRead, jobUUID, e);
+            throw new IllegalStateException("Execution event reading failed for job: " + jobUUID, e);
+        }
+
+    }
+
+    private File getEventFile(UUID jobUUID, ExecutionEventType event) {
+        Path workspaceFolderPath = getWorkspaceFolderPath(jobUUID);
+        Path eventFolder = createEventFolderLocation(workspaceFolderPath);
+        File eventFileToWrite = new File(eventFolder.toFile(), event.name().toLowerCase() + ".json");
+        return eventFileToWrite;
+    }
+
+    private Path createEventFolderLocation(Path workspaceFolderPath) {
+        return createWorkspacePathAndEnsureParentDirectories(workspaceFolderPath, EVENTS);
     }
 
     private Path createBinariesTarFileLocation(Path workspaceFolderPath) {

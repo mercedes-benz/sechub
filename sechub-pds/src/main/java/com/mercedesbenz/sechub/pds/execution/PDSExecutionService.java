@@ -35,6 +35,7 @@ import com.mercedesbenz.sechub.pds.job.PDSJob;
 import com.mercedesbenz.sechub.pds.job.PDSJobRepository;
 import com.mercedesbenz.sechub.pds.job.PDSJobStatusState;
 import com.mercedesbenz.sechub.pds.job.PDSJobTransactionService;
+import com.mercedesbenz.sechub.pds.job.PDSWorkspaceService;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesMonitoringStatus;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseSystemHandlesJobCancelRequests;
@@ -60,6 +61,8 @@ public class PDSExecutionService {
     private static final Logger LOG = LoggerFactory.getLogger(PDSExecutionService.class);
     private static final int DEFAULT_WORKER_THREAD_COUNT = 5;
     private static final int DEFAULT_QUEUE_MAX = 50;
+    private static final int DEFAULT_TIME_TO_WAIT_IN_SECONDS_FOR_SCRIPT_CANCELATION = 0;
+    private static final int DEFAULT_TIME_TO_WAIT_IN_MILLISECONDS_FOR_SCRIPT_CANCELATION_CHECK = 300;
     ExecutorService workers;
 
     final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -74,6 +77,18 @@ public class PDSExecutionService {
     @Value("${sechub.pds.config.execute.queue.max:" + DEFAULT_QUEUE_MAX + "}")
     int queueMax = DEFAULT_QUEUE_MAX;
 
+    @PDSMustBeDocumented(value = "Time in seconds to wait after the event `cancel_requested` was sent to the script. "
+            + "When nothing defined, the default value is: " + DEFAULT_TIME_TO_WAIT_IN_SECONDS_FOR_SCRIPT_CANCELATION
+            + " which leads to no wait at all. PDS solutions do need this only when a cancel operation shall do some additional stuff "
+            + "(e.g. trigger cancel on 3rd party system etc.)", scope = "execution")
+    @Value("${sechub.pds.config.execute.event.cancelrequest.seconds.wait:" + DEFAULT_TIME_TO_WAIT_IN_SECONDS_FOR_SCRIPT_CANCELATION + "}")
+    int secondsToWaitForScriptCancelation = DEFAULT_TIME_TO_WAIT_IN_SECONDS_FOR_SCRIPT_CANCELATION;
+
+    @PDSMustBeDocumented(value = "Time in milliseconds to wait for next check when the waiting time for script cancel operation is not 0. "
+            + "When nothing defined, the default value is: " + DEFAULT_TIME_TO_WAIT_IN_MILLISECONDS_FOR_SCRIPT_CANCELATION_CHECK, scope = "execution")
+    @Value("${sechub.pds.config.execute.event.cancelrequest.seconds.wait:" + DEFAULT_TIME_TO_WAIT_IN_MILLISECONDS_FOR_SCRIPT_CANCELATION_CHECK + "}")
+    private String millisecondsToWaitForCancelCheckInterval;
+
     /* only for tests to turn off watcher */
     boolean watcherDisabled;
 
@@ -85,6 +100,9 @@ public class PDSExecutionService {
 
     @Autowired
     PDSJobRepository repository;
+
+    @Autowired
+    PDSWorkspaceService workspaceService;
 
     @PostConstruct
     protected void postConstruct() {
@@ -125,7 +143,19 @@ public class PDSExecutionService {
                         LOG.info("cancelation of job with uuid:{} skipped, because already done", jobUUID);
                         return CancelResult.JOB_FOUND_CANCEL_WAS_DONE;
                     }
+
+                    ExecutionEventData eventData = new ExecutionEventData();
+                    eventData.setDetail(ExecutionEventDetailIdentifier.CANCEL_REQUEST_SECONDS_TO_WAIT_FOR_PROCESS, secondsToWaitForScriptCancelation);
+                    eventData.setDetail(ExecutionEventDetailIdentifier.CANCEL_REQUEST_MILLSECONDS_FOR_CHECK_INTERVAL, millisecondsToWaitForCancelCheckInterval);
+
+                    workspaceService.sendEvent(jobUUID, ExecutionEventType.CANCEL_REQUESTED, eventData);
+
+                    /*
+                     * the next call will trigger PDSExecutionCallable to cancel which will use the
+                     * event data for further inspections
+                     */
                     boolean canceled = future.cancel(true);
+
                     if (canceled) {
                         LOG.info("canceled job with uuid:{}", jobUUID);
                         return CancelResult.JOB_FOUND_CANCEL_WAS_DONE;
