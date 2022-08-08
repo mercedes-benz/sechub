@@ -144,7 +144,7 @@ public class PDSFileUploadJobService {
         }
 
         long maxUploadSizeWithHeaders = maxUploadSize + 600; // we accept 600 bytes more for header, checksum etc.
-        
+
         if (contentLengthInBytesFromUser > maxUploadSizeWithHeaders) {
             throw new PDSBadRequestException("The content length exceeds the allowed upload size.");
         }
