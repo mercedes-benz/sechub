@@ -50,7 +50,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
     private static final Logger LOG = LoggerFactory.getLogger(PDSExecutionCallable.class);
 
     private PDSJobTransactionService jobTransactionService;
-    private Process process;
+    private ProcessAdapter process;
 
     private PDSWorkspaceService workspaceService;
 
@@ -64,8 +64,10 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
     private PDSMessageCollector messageCollector;
 
+    private PDSProcessAdapterFactory processAdapterFactory;
+
     public PDSExecutionCallable(UUID jobUUID, PDSJobTransactionService jobTransactionService, PDSWorkspaceService workspaceService,
-            PDSExecutionEnvironmentService environmentService, PDSCheckJobStatusService jobStatusService) {
+            PDSExecutionEnvironmentService environmentService, PDSCheckJobStatusService jobStatusService, PDSProcessAdapterFactory processAdapterFactory) {
         notNull(jobUUID, "pdsJobUUID may not be null!");
         notNull(jobTransactionService, "jobTransactionService may not be null!");
         notNull(workspaceService, "workspaceService may not be null!");
@@ -76,6 +78,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         this.workspaceService = workspaceService;
         this.environmentService = environmentService;
         this.jobStatusService = jobStatusService;
+        this.processAdapterFactory = processAdapterFactory;
 
         messageCollector = new PDSMessageCollector();
 
@@ -155,7 +158,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         LOG.debug("Workspace preparation done for PDS job: {}", pdsJobUUID);
     }
 
-    private void waitForProcessEndAndGetResultByFiles(PDSExecutionResult result, UUID jobUUID, PDSJobConfiguration config, long minutesToWaitForResult)
+    void waitForProcessEndAndGetResultByFiles(PDSExecutionResult result, UUID jobUUID, PDSJobConfiguration config, long minutesToWaitForResult)
             throws InterruptedException, IOException {
 
         /* watching */
@@ -177,22 +180,32 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         long timeElapsedInMilliseconds = System.currentTimeMillis() - started;
 
         if (!exitDoneInTime) {
-            LOG.error("Job {} failed - product id:{} time out reached.", jobUUID, config.getProductId());
+            LOG.error("Job execution {} failed - product id:{} time out reached.", jobUUID, config.getProductId());
 
             result.failed = true;
             result.result = "Product time out.";
             result.exitCode = 1;
+
             prepareForCancel(true);
 
-            watcherRunnable.stop();
+        } else {
+            LOG.debug("Job execution {} done - product id:{}.", jobUUID, config.getProductId());
+            result.failed = false;
+            result.result = ""; // initial just empty
+            result.exitCode = process.exitValue();
+            LOG.debug("Process of job with uuid:{} ended after {} ms - for product with id:{}", jobUUID, timeElapsedInMilliseconds, config.getProductId());
 
-            return;
+            storeResultFileOrCreateShrinkedProblemDataInstead(result, jobUUID);
         }
 
-        result.exitCode = process.exitValue();
-        result.result = "";
-        LOG.debug("Process of job with uuid:{} ended after {} ms - for product with id:{}", jobUUID, timeElapsedInMilliseconds, config.getProductId());
+        watcherRunnable.stop();
 
+        writeJobExecutionDataToDatabase(jobUUID);
+        writeProductMessagesToDatabaseWhenMessagesFound(jobUUID);
+
+    }
+
+    private void storeResultFileOrCreateShrinkedProblemDataInstead(PDSExecutionResult result, UUID jobUUID) throws IOException {
         File file = workspaceService.getResultFile(jobUUID);
         String encoding = workspaceService.getFileEncoding(jobUUID);
 
@@ -228,12 +241,6 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
                     shrinkedErrorStream);
 
         }
-
-        watcherRunnable.stop();
-
-        writeJobExecutionDataToDatabase(jobUUID);
-        writeProductMessagesToDatabaseWhenMessagesFound(jobUUID);
-
     }
 
     private void writeProductMessagesToDatabaseWhenMessagesFound(UUID jobUUID) {
@@ -393,7 +400,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         LOG.info("Start launcher script for job {}", jobUUID);
         try {
 
-            process = builder.start();
+            process = processAdapterFactory.startProcess(builder);
 
         } catch (IOException e) {
             LOG.error("Process start failed for pdsJobUUID:{}. Current directory was:{}", jobUUID, currentDir.getAbsolutePath());
@@ -412,7 +419,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             return;
         }
         try {
-            LOG.info("Cancelation of process: {} will destroy underlying process forcibly");
+            LOG.info("Cancelation of process for PDS job. Will destroy underlying process forcibly");
             process.destroyForcibly();
         } finally {
 
