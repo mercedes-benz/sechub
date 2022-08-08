@@ -26,6 +26,11 @@ import com.mercedesbenz.sechub.adapter.AdapterException;
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterLogId;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
+import com.mercedesbenz.sechub.adapter.mock.MockDataIdentifierFactory;
+import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
+import com.mercedesbenz.sechub.commons.mapping.MappingData;
+import com.mercedesbenz.sechub.commons.mapping.MappingEntry;
+import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorCallback;
@@ -38,13 +43,10 @@ import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigS
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetupJobParameter;
 import com.mercedesbenz.sechub.domain.scan.resolve.NetworkTargetResolver;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.SystemEnvironment;
 import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingEntry;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.metadata.DefaultMetaDataInspector;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
@@ -68,6 +70,9 @@ public class CheckmarxProductExecutorMockTest {
     NetworkTargetResolver targetResolver;
 
     @MockBean
+    MockDataIdentifierFactory mockdataIdentifierFactory;
+
+    @MockBean
     CheckmarxAdapter checkmarxAdapter;
 
     @MockBean
@@ -77,13 +82,19 @@ public class CheckmarxProductExecutorMockTest {
     StorageService storageService;
 
     @MockBean
-    SystemEnvironment systemEnvironment;
+    SystemEnvironmentVariableSupport systemEnvironmentVariableSupport;
+
+    @MockBean
+    CodeScanPathCollector codeScanPathCollector;
 
     @Before
     public void before() throws Exception {
         JobStorage storage = Mockito.mock(JobStorage.class);
         when(storage.fetch(any())).thenReturn(new StringInputStream("something as a code..."));
         when(storageService.getJobStorage(any(), any())).thenReturn(storage);
+
+        when(systemEnvironmentVariableSupport.getValueOrVariableContent("user")).thenReturn("checkmarx-user");
+        when(systemEnvironmentVariableSupport.getValueOrVariableContent("pwd")).thenReturn("checkmarx-password");
     }
 
     @Test

@@ -26,6 +26,8 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
+import com.mercedesbenz.sechub.commons.pds.PDSSolutionVariableKey;
+import com.mercedesbenz.sechub.commons.pds.PDSSolutionVariableType;
 import com.mercedesbenz.sechub.developertools.JSONDeveloperHelper;
 import com.mercedesbenz.sechub.developertools.admin.ui.UIContext;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.adapter.MappingUI.MappingPanel;
@@ -35,6 +37,7 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.adapter.TemplatesD
 import com.mercedesbenz.sechub.developertools.admin.ui.util.SortedMapToTextConverter;
 import com.mercedesbenz.sechub.developertools.admin.ui.util.TextToSortedMapConverter;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
+import com.mercedesbenz.sechub.wrapper.checkmarx.cli.CheckmarxWrapperKeys;
 
 public class ProductExecutorTemplatesDialogUI {
 
@@ -146,6 +149,10 @@ public class ProductExecutorTemplatesDialogUI {
         JMenu exportMenu = new JMenu("Export");
         menuBar.add(exportMenu);
         exportMenu.add(new ExportAllToClipboardAction());
+
+        JMenu additionalMenu = new JMenu("Additional");
+        menuBar.add(additionalMenu);
+        additionalMenu.add(new AddCheckmarxWrapperKeysAction());
         return menuBar;
     }
 
@@ -239,6 +246,36 @@ public class ProductExecutorTemplatesDialogUI {
             additional = ";color:blue";
         }
         return PRE_HTML + additional + "\">";
+    }
+
+    private void addPDSSolutionVariablesAsKeyValues(PDSSolutionVariableKey[] values) {
+        for (PDSSolutionVariableKey provider : values) {
+            String key = provider.getVariableKey();
+
+            TemplateData templateData = dialogData.getData(key);
+            if (templateData == null) {
+                templateData = new TemplateData();
+                templateData.key = key;
+                templateData.type = Type.KEY_VALUE;
+
+                PDSSolutionVariableType type = provider.getVariableType();
+
+                switch (type) {
+                case MANDATORY_JOB_PARAMETER:
+                    templateData.necessarity = Necessarity.MANDATORY;
+                    break;
+                case OPTIONAL_JOB_PARAMETER:
+                    templateData.necessarity = Necessarity.OPTIONAL;
+                    break;
+                default:
+                    templateData.necessarity = Necessarity.UNKNOWN;
+                    break;
+
+                }
+                templateData.description = provider.getVariableDescription();
+            }
+            updateOrCreate(templateData, templateData.recommendedValue);
+        }
     }
 
     private class ExportAllToResultOutputContentAction extends ExportAllAction {
@@ -405,6 +442,24 @@ public class ProductExecutorTemplatesDialogUI {
                     map.put(key, compressedJsonOrText);
                 }
             }
+        }
+
+    }
+
+    private class AddCheckmarxWrapperKeysAction extends AbstractAction {
+
+        private static final long serialVersionUID = 1L;
+
+        public AddCheckmarxWrapperKeysAction() {
+            super("Add checkmarx wrapper solution keys");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            PDSSolutionVariableKey[] values = CheckmarxWrapperKeys.values();
+            addPDSSolutionVariablesAsKeyValues(values);
+
         }
 
     }

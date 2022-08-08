@@ -76,9 +76,9 @@ COPY owasp-zap-full-ruleset-all-release-status.json ${TOOL_FOLDER}/owasp-zap-ful
 # Copy mock folders
 COPY mocks/ "$MOCK_FOLDER"
 
-# Setup scripts
-COPY owasp-zap.sh ${SCRIPT_FOLDER}/owasp-zap.sh
-COPY owasp-zap-mock.sh ${SCRIPT_FOLDER}/owasp-zap-mock.sh
+# Copy scripts
+COPY scripts $SCRIPT_FOLDER
+RUN chmod --recursive +x $SCRIPT_FOLDER
 
 # Copy PDS configfile
 COPY pds-config.json "$PDS_FOLDER/pds-config.json"
@@ -88,9 +88,6 @@ COPY zap-addons.txt "$TOOL_FOLDER/zap-addons.txt"
 
 # Copy run script into container
 COPY run.sh /run.sh
-
-# Make scripts executable
-RUN chmod +x ${SCRIPT_FOLDER}/owasp-zap.sh ${SCRIPT_FOLDER}/owasp-zap-mock.sh /run.sh
 
 # Create the PDS workspace
 WORKDIR "$WORKSPACE"

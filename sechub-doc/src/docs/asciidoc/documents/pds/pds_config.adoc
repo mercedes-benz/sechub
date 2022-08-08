@@ -116,10 +116,13 @@ NOTE: When no {sechub} configuration model is defined for the `PDS` job, the tra
 |PDS_JOB_RESULT_FILE                | The absolute path to the result file _(this file contains security findings)_.
 |PDS_JOB_UUID                       | The UUID of the current running PDS job.
 [[table-link-pds-launcher-script-variable-messages]]
-|PDS_JOB_USER_MESSAGES_FOLDER       a| The absolute path to the user messages folder.
+|PDS_JOB_USER_MESSAGES_FOLDER       a| The absolute path to the user <<section-config-messaging,messages folder>>.
 
 Every text file which is found inside this folder will be returned to user inside reports and status.
 
+There is a <<example-shared-messaging,snippet for bash>> to create unique names.
+
+ 
 When a file starts with
  
 - `ERROR_` the user message will be of type `error`.
@@ -135,56 +138,6 @@ would overwrite the old ones. The <<section-shared-concepts-product-message-pds-
 how the data is gathered.
 ====
 
-Here a solution for bash to create unique names:
-
-[source, bash]
-----
-#!/bin/bash
-# You can paste this snippet inside your launcher script and use it to handle messages
-
-function writeUniqueMessageFile(){
-      MSG_PREFIX=$1
-      MESSAGE=$2
-
-      MESSAGE_FILE_PATH="${PDS_JOB_USER_MESSAGES_FOLDER}/${MSG_PREFIX}_message_$(date +%Y-%m-%d_%H.%M.%S_%N).txt"
-      echo "$MESSAGE" > "$MESSAGE_FILE_PATH"
-      
-      # additional echo to have the message also in output stream available:
-      echo "${MSG_PREFIX} message: $MESSAGE"
-}
-
-function infoMessage(){
-    writeUniqueMessageFile "INFO" "$1"
-}
-
-function warnMessage(){
-    writeUniqueMessageFile "WARNING" "$1"
-}
-
-function errorMessage(){
-    writeUniqueMessageFile "ERROR" "$1"
-}
-
-
-----
-Usage:
-
-[source, bash]
-----
- infoMessage "this is an info message"
- warnMessage "this is a warning message"
- errorMessage "this is an error message
-     with multiple lines... 
- "
-----
- 
-
-The former call did create following message files which contain the given text parts: 
- 
-    $job_folder_workspace/output/messages
-    ├── ERROR_message_2022-06-24_17.56.52_822554054.txt
-    ├── INFO_message_2022-06-24_17.56.52_818872869.txt
-    └── WARNING_message_2022-06-24_17.56.52_820825342.txt
 
 |PDS_JOB_SOURCECODE_ZIP_FILE        | The absolute path to the uploaded "sourcecode.zip" file 
 |PDS_JOB_EXTRACTED_SOURCES_FOLDER   | When auto extracting is enabled (default) the uploaded source code is extracted to this folder 
@@ -237,4 +190,30 @@ Following files are reserved
   `$PDS_JOB_WORKSPACE_LOCATION/output/result.txt`.
   The path is represented by the variable `PDS_JOB_RESULT_FILE`
 
-   
+[[section-config-messaging]]
+==== Messaging
+We can write text files into the folder defined in <<table-link-pds-launcher-script-variable-messages,PDS_JOB_USER_MESSAGES_FOLDER>> 
+to send product messages back to users.
+
+Info, error and warnings will be available inside the {sechub} report and also inside the job status for the user.
+    
+===== Snippets
+[[example-shared-messaging]]
+====== Bash messaging
+Here a working solution for creating unique message files from bash scripts:
+[source, bash]
+----
+include::../../../../../..//sechub-integrationtest/pds/product-scripts/shared/shared-messaging-referenced-in-documentation-as-example.sh[]
+----
+Usage:
+
+[source, bash]
+----
+include::../../../../../..//sechub-integrationtest/pds/product-scripts/shared/shared-messaging-referenced-in-documentation-as-example-usage.sh[]
+----
+ 
+
+The former call did create following message files which contain the given text parts: 
+----
+include::../../../../../..//sechub-integrationtest/pds/product-scripts/shared/shared-messaging-referenced-in-documentation-as-example-output.txt[]
+----   

@@ -18,11 +18,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.DelegatingServletInputStream;
 
+import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.sharedkernel.error.BadRequestException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
-import com.mercedesbenz.sechub.sharedkernel.util.ChecksumSHA256Service;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
@@ -31,7 +31,7 @@ public class SchedulerBinariesUploadServiceTest {
 
     private static final String PROJECT1 = "project1";
     private SchedulerBinariesUploadService serviceToTest;
-    private ChecksumSHA256Service checksumService;
+    private CheckSumSupport checkSumSupport;
     private StorageService storageService;
     private UUID randomUuid;
     private ScheduleAssertService assertService;
@@ -45,7 +45,7 @@ public class SchedulerBinariesUploadServiceTest {
     void beforeEach() {
         randomUuid = UUID.randomUUID();
 
-        checksumService = mock(ChecksumSHA256Service.class);
+        checkSumSupport = mock(CheckSumSupport.class);
         storageService = mock(StorageService.class);
         assertService = mock(ScheduleAssertService.class);
         storage = mock(JobStorage.class);
@@ -59,7 +59,7 @@ public class SchedulerBinariesUploadServiceTest {
 
         /* attach at service to test */
         serviceToTest = new SchedulerBinariesUploadService();
-        serviceToTest.checksumSHA256Service = checksumService;
+        serviceToTest.checkSumSupport = checkSumSupport;
         serviceToTest.storageService = storageService;
         serviceToTest.assertService = assertService;
         serviceToTest.configuration = configuration;

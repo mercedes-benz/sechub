@@ -72,7 +72,7 @@ public class AdapterMetaData {
      * @param key - if key is <code>null</code> it will be handled like "null"
      * @return value or <code>null</code>
      */
-    public String getValue(String key) {
+    public String getValueAsStringOrNull(String key) {
         return metaData.get(failSafeKey(key));
     }
 
@@ -82,8 +82,8 @@ public class AdapterMetaData {
      * @param key - if key is <code>null</code> it will be handled like "null"
      * @return value or <code>null</code>
      */
-    public Long getValueLong(String key) {
-        String value = getValue(key);
+    public Long getValueAsLongOrNull(String key) {
+        String value = getValueAsStringOrNull(key);
         if (value == null) {
             return null;
         }
@@ -94,10 +94,24 @@ public class AdapterMetaData {
      * get meta data as boolean value
      *
      * @param key - if key is <code>null</code> it will be handled like "null"
+     * @return <code>true</code> when value is "true", otherwise "false"
+     */
+    public boolean getValueAsBoolean(String key) {
+        String value = getValueAsStringOrNull(key);
+        if (value == null) {
+            return false;
+        }
+        return Boolean.parseBoolean(value);
+    }
+
+    /**
+     * get meta data as boolean value
+     *
+     * @param key - if key is <code>null</code> it will be handled like "null"
      * @return value or <code>null</code>
      */
-    public Boolean getValueBoolean(String key) {
-        String value = getValue(key);
+    public Boolean getValueAsBooleanOrNull(String key) {
+        String value = getValueAsStringOrNull(key);
         if (value == null) {
             return null;
         }
@@ -110,8 +124,8 @@ public class AdapterMetaData {
      * @param key - if key is <code>null</code> it will be handled like "null"
      * @return value or <code>null</code>
      */
-    public URI getValueURI(String key) {
-        String value = getValue(key);
+    public URI getValueAsURIorNull(String key) {
+        String value = getValueAsStringOrNull(key);
         if (value == null) {
             return null;
         }
@@ -125,19 +139,8 @@ public class AdapterMetaData {
      * @param expectedValue
      * @return
      */
-    public boolean hasValue(String key, boolean expectedValue) {
-        return hasValue(key, "" + expectedValue);
-    }
-
-    /**
-     * Check if contains expected value for given key
-     *
-     * @param key
-     * @param expectedValue
-     * @return
-     */
     public boolean hasValue(String key, String expectedValue) {
-        String value = getValue(key);
+        String value = getValueAsStringOrNull(key);
         return Objects.equals(value, expectedValue);
     }
 

@@ -69,6 +69,8 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 
     protected URIShrinkSupport uriShrinkSupport;
 
+    private String mockDataIdentifier;
+
     protected AbstractAdapterConfigBuilder() {
         uriShrinkSupport = createURIShrinkSupport();
     }
@@ -109,6 +111,12 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
             return (B) this;
         }
         this.timeToWaitForNextCheckOperationInMilliseconds = minutes * TIME_1_MINUTE_IN_MILLISECONDS;
+        return (B) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public final B setMockDataIdentifier(String mockDataIdentifier) {
+        this.mockDataIdentifier = mockDataIdentifier;
         return (B) this;
     }
 
@@ -282,6 +290,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 
         abstractAdapterConfig.traceID = traceID;
         abstractAdapterConfig.projectId = projectId;
+        abstractAdapterConfig.mockDataIdentifier = mockDataIdentifier;
         abstractAdapterConfig.getOptions().putAll(options);
 
         packageInternalCustomBuild(config);

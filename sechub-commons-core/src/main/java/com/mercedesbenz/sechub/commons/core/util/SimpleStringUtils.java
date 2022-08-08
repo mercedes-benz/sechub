@@ -144,12 +144,30 @@ public class SimpleStringUtils {
         return true;
     }
 
-    public static List<String> createListForCommaSeparatedValues(String data) {
+    /**
+     * Creates a list for comma separated string.<br>
+     * <br>
+     * Example:
+     *
+     * <pre>
+     * The string "a,b,c,de,f" will be transformed to a list containing strings:
+     *
+     *  -"a"
+     *  -"b"
+     *  -"c"
+     *  -"de"
+     *  -"f".
+     * </pre>
+     *
+     * @param string
+     * @return list with values, never <code>null</code>
+     */
+    public static List<String> createListForCommaSeparatedValues(String string) {
         List<String> patterns = new ArrayList<>();
-        if (data == null) {
+        if (string == null) {
             return patterns;
         }
-        StringTokenizer tokenizer = new StringTokenizer(data, ",");
+        StringTokenizer tokenizer = new StringTokenizer(string, ",");
         while (tokenizer.hasMoreTokens()) {
             String token = tokenizer.nextToken().trim();
             if (!token.isEmpty()) {

@@ -57,7 +57,7 @@ public class UseCaseEventOverviewPlantUmlGenerator {
         return usecaseNameToMessageIdsMap;
     }
 
-    public void generate() {
+    public void generateAndRememberUsecaseNamesToMessageIdMapping() {
         LOG.info("start collecting event trace data from:" + folderToStartFrom.getAbsolutePath());
 
         File[] files = folderToStartFrom.listFiles();

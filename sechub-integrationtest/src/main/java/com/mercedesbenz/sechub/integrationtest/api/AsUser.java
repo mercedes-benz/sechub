@@ -30,6 +30,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.mercedesbenz.sechub.commons.mapping.MappingData;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.integrationtest.JSONTestSupport;
@@ -42,7 +43,6 @@ import com.mercedesbenz.sechub.integrationtest.internal.SimpleTestStringList;
 import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData;
 import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
 import com.mercedesbenz.sechub.sharedkernel.project.ProjectAccessLevel;
 import com.mercedesbenz.sechub.test.SecHubTestURLBuilder;
 import com.mercedesbenz.sechub.test.TestUtil;
@@ -403,8 +403,7 @@ public class AsUser {
 
     }
 
-    public UUID createScanJobWhichUsesDataReferencedIds(IntegrationTestTemplateFile template, TestProject project, IntegrationTestMockMode runMode,
-            TemplateData data) {
+    public UUID createCodeScanWithTemplate(IntegrationTestTemplateFile template, TestProject project, IntegrationTestMockMode runMode, TemplateData data) {
         Map<String, String> variableMap = new HashMap<>();
         variableMap.putAll(data.getVariables());
         int index = 0;
@@ -440,13 +439,6 @@ public class AsUser {
     private String createCodeScanJob(IntegrationTestTemplateFile template, TestProject project, IntegrationTestMockMode runMode,
             Map<String, String> customVariableMap) {
 
-        String folder = null;
-        if (runMode != null) {
-            folder = runMode.getTarget();
-        }
-        if (folder == null) {
-            folder = "notexisting";
-        }
         String templateJson = getConfigTemplate(template);
         String projectId = project.getProjectId();
 
@@ -454,7 +446,16 @@ public class AsUser {
         map.putAll(customVariableMap);
         // add default variables
         map.put("__projectname__", projectId);
-        map.put("__folder__", folder);
+        if (!customVariableMap.containsKey("__folder__")) {
+            String folder = null;
+            if (runMode != null) {
+                folder = runMode.getMockDataIdentifier();
+            }
+            if (folder == null) {
+                folder = "notexisting";
+            }
+            map.put("__folder__", folder);
+        }
 
         for (String variableName : map.keySet()) {
             String replacement = map.get(variableName);
@@ -495,7 +496,7 @@ public class AsUser {
     private String createTargetURIForSechubConfiguration(IntegrationTestMockMode runMode, List<String> whites) {
         String acceptedURI1 = null;
         if (runMode != null) {
-            acceptedURI1 = runMode.getTarget();
+            acceptedURI1 = runMode.getMockDataIdentifier();
         }
         if (acceptedURI1 != null) {
             return acceptedURI1;
@@ -506,7 +507,7 @@ public class AsUser {
         /* okay, no runmode used having whitelist entry */
         List<String> copy = new ArrayList<>(whites);
         for (IntegrationTestMockMode mode : IntegrationTestMockMode.values()) {
-            String target = mode.getTarget();
+            String target = mode.getMockDataIdentifier();
             if (target != null) {
                 /* we drop all existing run mode parts here - to avoid side effects */
                 copy.remove(target);
@@ -621,13 +622,13 @@ public class AsUser {
         return result;
     }
 
-    public String restartCodeScanAndFetchJobStatus(TestProject project, UUID sechubJobUUID) {
+    public String restartJobAndFetchJobStatus(TestProject project, UUID sechubJobUUID) {
         restartJob(sechubJobUUID);
         waitForJobDoneAndEvenWaitWhileJobIsFailing(project, sechubJobUUID);
         return getJobStatus(project.getProjectId(), sechubJobUUID);
     }
 
-    public String restartCodeScanHardAndFetchJobStatus(TestProject project, UUID sechubJobUUID) {
+    public String restartJobHardAndFetchJobStatus(TestProject project, UUID sechubJobUUID) {
         restartJobHard(sechubJobUUID);
         waitForJobDoneAndEvenWaitWhileJobIsFailing(project, sechubJobUUID);
         return getJobStatus(project.getProjectId(), sechubJobUUID);

@@ -25,6 +25,10 @@ public class AdapterRuntimeContext {
     }
 
     public enum ExecutionType {
-        INITIAL, RESTART, STOP
+        INITIAL,
+
+        RESTART,
+
+        STOP
     }
 }

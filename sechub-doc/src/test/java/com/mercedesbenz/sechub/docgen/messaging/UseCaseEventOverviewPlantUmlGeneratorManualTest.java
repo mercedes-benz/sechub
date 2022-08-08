@@ -25,6 +25,6 @@ class UseCaseEventOverviewPlantUmlGeneratorManualTest {
         LOG.info("start plantuml generation with \nsource folder:{}\noutputfolder :{}", sourceFolder.getAbsolutePath(), outputFolder.getAbsolutePath());
 
         UseCaseEventOverviewPlantUmlGenerator generator = new UseCaseEventOverviewPlantUmlGenerator(sourceFolder, outputFolder);
-        generator.generate();
+        generator.generateAndRememberUsecaseNamesToMessageIdMapping();
     }
 }

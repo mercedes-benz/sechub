@@ -27,10 +27,10 @@ import org.junit.rules.Timeout;
 import org.springframework.web.client.HttpClientErrorException.BadRequest;
 import org.springframework.web.client.HttpClientErrorException.NotAcceptable;
 
+import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSupport;
-import com.mercedesbenz.sechub.sharedkernel.util.ChecksumSHA256Service;
 import com.mercedesbenz.sechub.test.JUnitAssertionAddon.UnitTestExecutable;
 import com.mercedesbenz.sechub.test.junit4.ExpectedExceptionFactory;
 
@@ -45,7 +45,7 @@ public class FileUploadSizeScenario2IntTest {
     @Rule
     public ExpectedException expected = ExpectedExceptionFactory.none();
 
-    private ChecksumSHA256Service checksumSHA256Service = new ChecksumSHA256Service();
+    private CheckSumSupport checkSumSupport = new CheckSumSupport();
 
     private TestData testData;
 
@@ -199,7 +199,7 @@ public class FileUploadSizeScenario2IntTest {
                 try (InputStream inputStream = new FileInputStream(fileToUpload)) {
                     String checksum = data.userChecksum;
                     if (checksum == null) {
-                        checksum = checksumSHA256Service.createChecksum(inputStream);
+                        checksum = checkSumSupport.createSha256Checksum(inputStream);
                     }
                     as(USER_1).uploadBinaries(PROJECT_1, jobUUID, fileToUpload, checksum);
                 }
@@ -246,7 +246,7 @@ public class FileUploadSizeScenario2IntTest {
                 try (InputStream inputStream = new FileInputStream(fileToUpload)) {
                     String checksum = data.userChecksum;
                     if (checksum == null) {
-                        checksum = checksumSHA256Service.createChecksum(inputStream);
+                        checksum = checkSumSupport.createSha256Checksum(inputStream);
                     }
                     as(USER_1).uploadSourcecode(PROJECT_1, jobUUID, fileToUpload, checksum);
                 }

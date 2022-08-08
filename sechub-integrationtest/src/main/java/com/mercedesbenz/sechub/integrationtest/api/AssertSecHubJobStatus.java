@@ -11,6 +11,7 @@ import java.util.UUID;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
+import com.mercedesbenz.sechub.integrationtest.api.AssertJobScheduler.TestExecutionState;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestSecHubJobStatus;
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubJobAutoDumper;
 
@@ -31,6 +32,10 @@ public class AssertSecHubJobStatus {
 
     private void initWithJson(String json) {
         status = IntegrationTestSecHubJobStatus.fromJson(json);
+    }
+
+    public AssertSecHubJobStatus isInState(TestExecutionState state) {
+        return isInState(state.name());
     }
 
     public AssertSecHubJobStatus isInState(String state) {

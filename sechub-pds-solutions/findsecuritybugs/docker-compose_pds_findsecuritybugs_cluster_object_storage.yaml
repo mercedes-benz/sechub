@@ -22,6 +22,8 @@ services:
     loadbalancer:
         build:
             context: ../shared/docker/loadbalancer
+            args:
+                - PDS_SOLUTION=pds-findsecuritybugs
         env_file:
             - .env-cluster-object-storage
         networks:

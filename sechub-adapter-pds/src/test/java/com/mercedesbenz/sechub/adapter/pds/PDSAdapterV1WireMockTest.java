@@ -47,6 +47,7 @@ public class PDSAdapterV1WireMockTest {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().port(HTTP_PORT).httpsPort(HTTPS_PORT));
+
     private String productIdentifier;
     private UUID sechubJobUUID;
     private Map<String, String> expectedJobParameters;
@@ -54,6 +55,8 @@ public class PDSAdapterV1WireMockTest {
     @Before
     public void beforeEach() {
         adapterToTest = new PDSAdapterV1();
+        adapterToTest.contextFactory = new PDSContextFactoryImpl();
+
         callback = mock(AdapterMetaDataCallback.class);
 
         productIdentifier = "EXAMPLE_PRODUCT";

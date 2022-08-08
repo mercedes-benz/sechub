@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.amazonaws.util.StringInputStream;
+import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
@@ -36,7 +37,6 @@ import com.mercedesbenz.sechub.sharedkernel.error.BadRequestException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUploadsBinaries;
-import com.mercedesbenz.sechub.sharedkernel.util.ChecksumSHA256Service;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.storage.core.StorageService;
@@ -56,7 +56,7 @@ public class SchedulerBinariesUploadService {
     StorageService storageService;
 
     @Autowired
-    ChecksumSHA256Service checksumSHA256Service;
+    CheckSumSupport checkSumSupport;
 
     @Autowired
     ScheduleAssertService assertService;
@@ -194,7 +194,7 @@ public class SchedulerBinariesUploadService {
             case PARAMETER_FILE:
                 try (InputStream fileInputstream = item.openStream()) {
 
-                    MessageDigest digest = checksumSHA256Service.createSHA256MessageDigest();
+                    MessageDigest digest = checkSumSupport.createSha256MessageDigest();
 
                     MessageDigestCalculatingInputStream messageDigestInputStream = new MessageDigestCalculatingInputStream(fileInputstream, digest);
                     CountingInputStream byteCountingInputStream = new CountingInputStream(messageDigestInputStream);
@@ -203,7 +203,7 @@ public class SchedulerBinariesUploadService {
                     LOG.info("uploaded binaries for {}", jobUUID);
 
                     realContentLengthInBytes = byteCountingInputStream.getByteCount();
-                    checksumCalculated = checksumSHA256Service.convertMessageDigestToHex(digest);
+                    checksumCalculated = checkSumSupport.convertMessageDigestToHex(digest);
                 }
                 fileDefinedByUser = true;
                 break;

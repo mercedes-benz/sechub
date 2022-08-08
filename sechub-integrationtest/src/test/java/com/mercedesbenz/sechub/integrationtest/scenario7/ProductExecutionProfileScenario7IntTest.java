@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.junit.rules.Timeout;
 
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
-import com.mercedesbenz.sechub.integrationtest.api.TestExecutorProductIdentifier;
+import com.mercedesbenz.sechub.integrationtest.api.TestProductExecutorIdentifier;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.test.executionprofile.TestExecutionProfile;
 import com.mercedesbenz.sechub.test.executorconfig.TestExecutorConfig;
@@ -336,7 +336,7 @@ public class ProductExecutionProfileScenario7IntTest {
 
     private UUID createTestExecutorConfig() {
         TestExecutorConfig config = new TestExecutorConfig();
-        config.productIdentifier = TestExecutorProductIdentifier.PDS_CODESCAN.name();
+        config.productIdentifier = TestProductExecutorIdentifier.PDS_CODESCAN.name();
         config.name = "pds gosec-1";
         config.executorVersion = 1;
         config.enabled = false;

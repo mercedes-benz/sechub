@@ -49,8 +49,7 @@ public class SecHubAdapterOptionsBuilderStrategy implements AdapterConfiguration
 		String mockDataResultLowerCased = fetchMockConfigurationResultLowerCased();
 		if (mockDataResultLowerCased!=null) {
 		configBuilder.
-		 	setOption(AdapterOptionKey.MOCK_CONFIGURATION_RESULT, mockDataResultLowerCased)
-		 	;
+		 	setOption(AdapterOptionKey.MOCK_CONFIGURATION_RESULT, mockDataResultLowerCased);
 		}
 		/* @formatter:on */
 

@@ -43,6 +43,8 @@ public class MockedAdapterSetupService {
 
     private <A extends AdapterContext<C>, C extends AdapterConfig> MockedAdapterSetupEntry createDynamicResultByAdapter(AbstractMockedAdapter<A, C> adapter,
             C config) {
+        LOG.info("Use dynamic result from adapter options");
+
         String result = config.getOptions().get(AdapterOptionKey.MOCK_CONFIGURATION_RESULT);
         String pathToResult = adapter.getPathToMockResultFile(result);
 
@@ -51,7 +53,7 @@ public class MockedAdapterSetupService {
 
         /* we create the mock setup dynamically: */
         MockedAdapterSetupCombination combination = new MockedAdapterSetupCombination();
-        combination.setTarget(config.getTargetAsString());// we provide same target as in config, so always okay
+        combination.setMockDataIdentifier(config.getMockDataIdentifier());
         combination.setThrowsAdapterException(false);// maybe in future this could be configured as well ?
         combination.setTimeToElapseInMilliseconds(1000L);
         combination.setFilePath(pathToResult);
@@ -64,6 +66,9 @@ public class MockedAdapterSetupService {
     private <A extends AdapterContext<C>, C extends AdapterConfig> MockedAdapterSetupEntry createStaticResultByTargets(AbstractMockedAdapter<A, C> adapter) {
         String adapterId = adapter.createAdapterId();
         ensureSetupLoaded();
+
+        LOG.info("Use static setup for adapter id: {}", adapterId);
+
         return staticMockSetup.getEntryFor(adapterId);
     }
 
@@ -77,6 +82,8 @@ public class MockedAdapterSetupService {
     private void loadConfiguredSetup() {
 
         try {
+            LOG.info("Loading conifgured setup from {}", filePath);
+
             String json = mockSupport.loadResourceString(filePath);
             staticMockSetup = JSONAdapterSupport.FOR_UNKNOWN_ADAPTER.fromJSON(MockedAdapterSetup.class, json);
         } catch (Exception e) {
