@@ -118,7 +118,8 @@ public class SchedulerBinariesUploadServiceTest {
         when(httpRequest.getInputStream()).thenReturn(inputStream);
         when(httpRequest.getMethod()).thenReturn("POST");
         when(httpRequest.getContentType()).thenReturn("multipart/");
-        when(httpRequest.getContentLengthLong()).thenReturn((long) 11);
+        when(httpRequest.getContentLengthLong()).thenReturn((long) 11 + 600); // Add 600 bytes for headers.
+        when(servletFileUploadFactory.create()).thenReturn(new ServletFileUpload());
 
         when(configuration.getMaxUploadSizeInBytes()).thenReturn((long) 10);
 
