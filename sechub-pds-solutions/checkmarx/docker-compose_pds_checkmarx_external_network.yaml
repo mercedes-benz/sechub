@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: MIT
+
+version: "3"
+services:
+  pds-checkmarx:
+    build:
+      args:
+        - BASE_IMAGE=debian:11-slim
+      context: docker/
+      dockerfile: Checkmarx-Debian.dockerfile
+    container_name: pds-checkmarx
+    env_file:
+      - .env
+    networks:
+      - "sechub"
+networks:
+  sechub:
+    external: true

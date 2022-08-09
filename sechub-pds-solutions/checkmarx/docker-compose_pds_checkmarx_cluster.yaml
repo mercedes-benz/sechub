@@ -1,0 +1,48 @@
+# SPDX-License-Identifier: MIT
+
+version: "3"
+services:
+  pds-checkmarx:
+    build:
+      args:
+        - BASE_IMAGE=debian:11-slim
+      context: docker/
+      dockerfile: Checkmarx-Debian.dockerfile
+    env_file:
+      - .env-cluster
+    networks:
+      - "internal"
+      - "sechub"
+    volumes:
+      - "shared_volume:/shared_volumes/uploads"
+    depends_on:
+      - database
+
+  loadbalancer:
+    build:
+      context: docker/loadbalancer
+    env_file:
+      - .env-cluster
+    networks:
+      - "internal"
+    depends_on:
+      - pds-checkmarx
+    ports:
+      - "127.0.0.1:8444:8444"
+
+  database:
+    build:
+      context: docker/database
+    env_file:
+      - .env-cluster
+    networks:
+      - "internal"
+    ports:
+      - "127.0.0.1:5432:5432"
+
+networks:
+  internal:
+  sechub:
+
+volumes:
+  shared_volume:
