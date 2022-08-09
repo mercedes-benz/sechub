@@ -4,9 +4,9 @@
 declare -r SCRIPT_PARAMETERS="<project> <profile>"
 sechub_api="../sechub-developertools/scripts/sechub-api.sh"
 
-current_directory="$(dirname "$0")"
-source "$current_directory/8900-helper.sh"
-source "$current_directory/8901-check-setup.sh"
+cd $(dirname "$0")
+source 8900-helper.sh
+source 8901-check-setup.sh
 
 check_sechub_server_setup "$0" "$SCRIPT_PARAMETERS"
 
@@ -45,13 +45,15 @@ if [[ "$is_project_in_list" == "false"  ]]
 then
     print_error_message "Project does not exist."
     exit 1
-elif [[ "$is_profile_in_profiles" == "false" ]]
+fi
+
+if [[ "$is_profile_in_profiles" == "false" ]]
 then
     print_error_message "Profile does not exist."
     exit 1
-else
-    # in case project and profile exist assign them to each other
-    $sechub_api project_assign_profile "$project" "$profile"
-
-    echo "Assigned profile $profile to project $project"
 fi
+
+# in case project and profile exist assign them to each other
+$sechub_api project_assign_profile "$project" "$profile"
+
+echo "Assigned profile $profile to project $project"

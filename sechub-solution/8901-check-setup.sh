@@ -38,8 +38,8 @@ function check_sechub_server_setup() {
 
     if [[ -z "$alive_check" ]]
     then
-        printf "\n[ERROR] The SecHub server $SECHUB_SERVER is not to running.\n"
-        printf "[ERROR] Check if the PDS is running.\n"
+        printf "\n[ERROR] The SecHub server $SECHUB_SERVER is not running.\n"
+        printf "Check if the SecHub server is running.\n"
         exit 3
     fi
 }

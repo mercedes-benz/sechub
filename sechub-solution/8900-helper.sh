@@ -34,3 +34,20 @@ function print_error_message() {
 
     printf "[ERROR] $message\n"
 }
+
+function setup_complete_message_for_tool() {
+    local tool="$1"
+
+    printf "Setup of $tool complete\n"
+}
+
+function setup_project_user_executor_profile() {
+    local "$project"
+    local "$user"
+    local "$executor_file_name"
+    local "$profile"
+
+    ./8800-setup-project-and-user.sh "$project" "$user"
+    ./8801-create-executor-and-profile.sh "$executor_file_name" "$profile"
+    ./8802-assign-profile-to-project.sh "$project" "$profile"
+}

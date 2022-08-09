@@ -4,9 +4,9 @@
 declare -r SCRIPT_PARAMETERS="<project-id> <user>"
 sechub_api="../sechub-developertools/scripts/sechub-api.sh"
 
-current_directory="$(dirname "$0")"
-source "$current_directory/8900-helper.sh"
-source "$current_directory/8901-check-setup.sh"
+cd $(dirname "$0")
+source 8900-helper.sh
+source 8901-check-setup.sh
 
 check_sechub_server_setup "$0" "$SCRIPT_PARAMETERS"
 
