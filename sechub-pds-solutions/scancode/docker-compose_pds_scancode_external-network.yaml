@@ -9,6 +9,7 @@ services:
             context: docker/
             dockerfile: ScanCode-Debian.dockerfile
         container_name: pds-scancode
+        hostname: pds-scancode
         volumes:
             - ./docker/scripts:/scripts
         env_file:

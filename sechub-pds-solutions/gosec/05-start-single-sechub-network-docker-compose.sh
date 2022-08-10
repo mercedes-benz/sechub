@@ -15,5 +15,5 @@ else
     echo "Using existing environment file: $ENVIRONMENT_FILE."
 fi
 
-echo "Starting single Ubuntu container."
-docker-compose --file docker-compose_pds_gosec_ubuntu-external-network.yaml up --build --remove-orphans
+echo "Starting single container."
+docker-compose --file docker-compose_pds_gosec_external-network.yaml up --build --remove-orphans

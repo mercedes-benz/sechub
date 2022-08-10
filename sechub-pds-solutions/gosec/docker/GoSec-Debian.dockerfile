@@ -10,10 +10,10 @@ FROM ${BASE_IMAGE}
 LABEL maintainer="SecHub FOSS Team"
 
 # Build args
-ARG GO="go1.18.1.linux-amd64.tar.gz"
-ARG GOSEC_VERSION="2.11.0"
+ARG GO="go1.18.4.linux-amd64.tar.gz"
+ARG GOSEC_VERSION="2.12.0"
 ARG PDS_FOLDER="/pds"
-ARG PDS_VERSION="0.27.0"
+ARG PDS_VERSION="0.31.0"
 ARG SCRIPT_FOLDER="/scripts"
 ARG WORKSPACE="/workspace"
 
@@ -46,21 +46,17 @@ COPY mocks "$MOCK_FOLDER"
 # Copy PDS configfile
 COPY pds-config.json "$PDS_FOLDER"/pds-config.json
 
-# Copy GoSec scripts
-COPY gosec.sh "$SCRIPT_FOLDER"/gosec.sh
-COPY gosec_mock.sh "$SCRIPT_FOLDER"/gosec_mock.sh
-
 # Copy run script into container
 COPY run.sh /run.sh
 
-# Set execute permissions for scripts
-RUN chmod +x /run.sh "$SCRIPT_FOLDER"/gosec.sh "$SCRIPT_FOLDER"/gosec_mock.sh
+# Set execute permissions for run script
+RUN chmod +x /run.sh
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
-    apt-get -qq update && \
-    apt-get -qq --assume-yes upgrade && \
-    apt-get -qq --assume-yes install w3m wget openjdk-11-jre-headless && \
-    apt-get -qq --assume-yes clean
+    apt-get update && \
+    apt-get --assume-yes upgrade && \
+    apt-get --assume-yes install w3m wget openjdk-11-jre-headless && \
+    apt-get --assume-yes clean
 
 # Install Go
 RUN cd "$DOWNLOAD_FOLDER" && \
@@ -102,6 +98,10 @@ RUN cd "$PDS_FOLDER" && \
     wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar" && \
     # verify that the checksum and the checksum of the file are same
     sha256sum --check sechub-pds-$PDS_VERSION.jar.sha256sum
+
+# Copy scripts
+COPY scripts $SCRIPT_FOLDER
+RUN chmod --recursive +x $SCRIPT_FOLDER
 
 # Set workspace
 WORKDIR "$WORKSPACE"
