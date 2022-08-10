@@ -16,4 +16,4 @@ else
 fi
 
 echo "Starting single container."
-docker-compose --file docker-compose_pds_pmd.yaml up --build --remove-orphans
+docker-compose --file docker-compose_pds_pmd_external-network.yaml up --build --remove-orphans
