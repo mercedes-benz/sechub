@@ -70,10 +70,13 @@ include 'sechub-cli',
 'sechub-analyzer-cli',
 
 // java API library
- 'sechub-api-java'
+ 'sechub-api-java',
 
 // Wrapper OWASP ZAP
-'sechub-wrapper-owasp-zap'
+'sechub-wrapper-owasp-zap',
+
+// Wrapper checkmarx
+'sechub-wrapper-checkmarx'
 
 buildCache {
     def useTempCache = System.getenv('SECHUB_BUILD_USE_TMP_CACHE')

@@ -22,7 +22,6 @@ import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
-import com.mercedesbenz.sechub.sharedkernel.SystemEnvironment;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspection;
 import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspector;
@@ -38,7 +37,7 @@ public class PDSLicenseScanProductExecutor extends AbstractProductExecutor {
     PDSInstallSetup installSetup;
 
     @Autowired
-    SystemEnvironment systemEnvironment;
+    PDSExecutorConfigSuppportServiceCollection serviceCollection;
 
     @Autowired
     MetaDataInspector scanMetaDataCollector;
@@ -64,7 +63,7 @@ public class PDSLicenseScanProductExecutor extends AbstractProductExecutor {
 
         ProductExecutorContext executorContext = data.getProductExecutorContext();
         PDSExecutorConfigSuppport configSupport = PDSExecutorConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
-                systemEnvironment);
+                serviceCollection);
 
         SecHubExecutionContext context = data.getSechubExecutionContext();
 

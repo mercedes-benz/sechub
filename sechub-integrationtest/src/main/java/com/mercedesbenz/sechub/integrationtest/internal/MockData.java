@@ -57,16 +57,16 @@ public enum MockData {
         return id;
     }
 
-    public boolean isTargetUsedAsFolder() {
-        return getCombination().isTargetUsedAsFolder();
+    public boolean isMockDataIdentifierUsedAsFolder() {
+        return getCombination().isMockDataIdentifierUsedAsFolder();
     }
 
-    public boolean isTargetNeedingExistingData() {
-        return getCombination().isTargetNeedsExistingData();
+    public boolean isNeedsExistingFolder() {
+        return getCombination().isNeedsExistingFolder();
     }
 
-    public String getTarget() {
-        return getCombination().getTarget();
+    public String getMockDataIdentifier() {
+        return getCombination().getMockDataIdentifier();
     }
 
     public String getMockResultFilePath() {

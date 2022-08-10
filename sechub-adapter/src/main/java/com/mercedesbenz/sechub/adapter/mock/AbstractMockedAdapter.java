@@ -92,7 +92,8 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
             return new AdapterExecutionResult("");
         }
 
-        String target = config.getTargetAsString();
+        String mockDataIdentifier = config.getMockDataIdentifier();
+        LOG.info("{} will use mock data identifier: {}", getClass(), mockDataIdentifier);
 
         /* first meta data persistence call - write some test meta data... */
         writeInitialAndReusedMetaData(config, runtimeContext);
@@ -101,16 +102,16 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
          * throw an error - if we have configured the adapter to throw an error to
          * simulate product failures...
          */
-        throwExceptionIfConfigured(config, setup, target);
+        throwExceptionIfConfigured(config, setup, mockDataIdentifier);
 
         /* no error wanted, so load result.... */
-        String result = loadResultAsConfigured(setup, target);
+        String result = loadResultAsConfigured(setup, mockDataIdentifier);
 
         /* second meta data persistence call - write/update some test meta data... */
         writeBeforeWaitAndReusedMetaData(config, runtimeContext);
 
         /* wait configured time (simulates product elapsing time) */
-        waitIfConfigured(timeStarted, setup, target);
+        waitIfConfigured(timeStarted, setup, mockDataIdentifier);
 
         assertMetaDataHandledAsExpected(config, runtimeContext);
 
@@ -130,7 +131,7 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
         AdapterMetaData metaData = assertMetaData(runtimeContext);
         metaData.setValue(KEY_METADATA_BEFORE_WAIT, DEFAULT_METADATA_MOCK_BEFORE_WAIT);
 
-        String value = metaData.getValue(KEY_METADATA_COMBINED);
+        String value = metaData.getValueAsStringOrNull(KEY_METADATA_COMBINED);
         metaData.setValue(KEY_METADATA_COMBINED, value + "+2");
 
         updateReusedEntryAndPersistMetaData(metaData, runtimeContext);
@@ -140,9 +141,9 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
         AdapterMetaData metaData = assertMetaData(runtimeContext);
         metaData.setValue(KEY_METADATA_BEFORE_WAIT, DEFAULT_METADATA_MOCK_BEFORE_WAIT);
 
-        String combined = metaData.getValue(KEY_METADATA_COMBINED);
-        String initial = metaData.getValue(KEY_METADATA_INITIAL);
-        String before = metaData.getValue(KEY_METADATA_BEFORE_WAIT);
+        String combined = metaData.getValueAsStringOrNull(KEY_METADATA_COMBINED);
+        String initial = metaData.getValueAsStringOrNull(KEY_METADATA_INITIAL);
+        String before = metaData.getValueAsStringOrNull(KEY_METADATA_BEFORE_WAIT);
 
         if (!"1+2".equals(combined)) {
             throw new IllegalStateException("meta data for combined value was not as expected ,but:" + combined);
@@ -156,7 +157,7 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
     }
 
     private void updateReusedEntryAndPersistMetaData(AdapterMetaData metaData, AdapterRuntimeContext runtimeContext) {
-        String value = metaData.getValue(KEY_METADATA_REUSED);
+        String value = metaData.getValueAsStringOrNull(KEY_METADATA_REUSED);
         if (value == null) {
             value = "";
         }
@@ -173,9 +174,9 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
         return metaData;
     }
 
-    private String loadResultAsConfigured(MockedAdapterSetupEntry setup, String target) {
-        String resultFilePath = setup.getResultFilePathFor(target);
-        LOG.info("adapter instance {} will use result file path :{} for targeturl:{}", hashCode(), resultFilePath, target);
+    private String loadResultAsConfigured(MockedAdapterSetupEntry setup, String mockDataIdentifier) {
+        String resultFilePath = setup.getResultFilePathFor(mockDataIdentifier);
+        LOG.info("adapter instance {} will use result file path :{} for mock data identifier: {}", hashCode(), resultFilePath, mockDataIdentifier);
         if (resultFilePath == null) {
             throw new IllegalStateException("result file path not configured!");
         }
@@ -185,23 +186,23 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
         return resource;
     }
 
-    private void throwExceptionIfConfigured(C config, MockedAdapterSetupEntry setup, String target) throws AdapterException {
-        if (setup.isThrowingAdapterExceptionFor(target)) {
+    private void throwExceptionIfConfigured(C config, MockedAdapterSetupEntry setup, String mockDataIdentifier) throws AdapterException {
+        if (setup.isThrowingAdapterExceptionFor(mockDataIdentifier)) {
             LOG.info("adapter instance {} setup wants an error, so start throwing", hashCode());
-            throw asAdapterException("Wanted mock failure for " + target, config);
+            throw asAdapterException("Wanted mock failure for " + mockDataIdentifier, config);
         }
     }
 
-    private void waitIfConfigured(long timeStarted, MockedAdapterSetupEntry setup, String target) {
-        long wantedMs = setup.getTimeToElapseInMilliseconds(target);
-        String id = setup.getCombination(target).getId();
+    private void waitIfConfigured(long timeStarted, MockedAdapterSetupEntry setup, String mockDataIdentifier) {
+        long wantedMs = setup.getTimeToElapseInMilliseconds(mockDataIdentifier);
+        String id = setup.getCombination(mockDataIdentifier).getId();
         long elapsedMs = System.currentTimeMillis() - timeStarted;
         long timeToWait = wantedMs - elapsedMs;
-        LOG.debug("mock setup id: {} will wait {} milliseconds to elapse for target {} - elapsed:", id, wantedMs, target, elapsedMs);
+        LOG.debug("mock setup id: {} will wait {} milliseconds to elapse for mock data identifier: {} - elapsed:", id, wantedMs, mockDataIdentifier, elapsedMs);
         if (timeToWait > 0) {
             try {
                 Thread.sleep(timeToWait);
-                LOG.debug("mock setup id: {} waited {} milliseconds for target {}", id, timeToWait, target);
+                LOG.debug("mock setup id: {} waited {} milliseconds for mock data identifier: {}", id, timeToWait, mockDataIdentifier);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }

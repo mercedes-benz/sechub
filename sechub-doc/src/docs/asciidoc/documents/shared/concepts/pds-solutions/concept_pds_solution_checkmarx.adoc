@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: MIT
+==== Checkmarx PDS solution
+
+The checkmarx PDS solution uses `sechub-wrapper-checkmarx` which is a standalone Spring Boot application. 
+If started in non production mode, the data will be mocked when inside IDE. 
+
+plantuml::diagrams/diagram_pds_solution_checkmarx_wrapper_overview.puml[]
+
+
+==== PDS code scan executor Configuration
+
+include::../../../gen/pds-solutions/gen_checkmarx_wrapper_env_and_job_parameter_table.adoc[]

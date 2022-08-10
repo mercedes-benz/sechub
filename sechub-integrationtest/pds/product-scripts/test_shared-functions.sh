@@ -1,7 +1,17 @@
 #!/bin/bash 
 # SPDX-License-Identifier: MIT
 
-DEBUG=true
+# About
+# -----
+# This bash script is just for testing the "shared-functions.sh" script directly 
+# from command line - without starting an integration test.
+#
+# Reason: Faster devlelopment, debugging and failure search. 
+#
+
+
+DEBUG=false
+PDS_TEST_KEY_VARIANTNAME="pds.test.key.variantname.value"
 
 source ./shared-functions.sh
 set -e
@@ -49,12 +59,21 @@ rm $PDS_JOB_USER_MESSAGES_FOLDER -rf
 
 mkdir $PDS_JOB_USER_MESSAGES_FOLDER -p
 
-infoMessage "this is an info message"
-warnMessage "this is a warning message"
-errorMessage "this is an error message
-    with multiple lines... 
-"
+# next line uses messaging function (included by hared-functions.sh and being part of documentation)
+source ./shared/shared-messaging-referenced-in-documentation-as-example-usage.sh
+
 echo "Messages at: $PDS_JOB_USER_MESSAGES_FOLDER"
 echo "----------------------------------------------------------------------------"
 ls $PDS_JOB_USER_MESSAGES_FOLDER 
 echo "----------------------------------------------------------------------------"
+
+echo "Attention! This should look similar to:"
+cat ./shared/shared-messaging-referenced-in-documentation-as-example-output.txt
+
+echo "/-------------------------------------------------\\"
+echo "|                                                 |"
+echo "| TEST: dump PDS variables                        |"
+echo "|                                                 |"
+echo "\\-------------------------------------------------/"
+
+dumpPDSVariables

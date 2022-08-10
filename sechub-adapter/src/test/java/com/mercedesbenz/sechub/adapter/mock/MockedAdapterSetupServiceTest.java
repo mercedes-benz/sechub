@@ -65,7 +65,7 @@ public class MockedAdapterSetupServiceTest {
         options.put(AdapterOptionKey.MOCK_CONFIGURATION_RESULT, "yellow");
         when(config.getOptions()).thenReturn(options);
 
-        when(config.getTargetAsString()).thenReturn("target1");
+        when(config.getMockDataIdentifier()).thenReturn("mockDataIdentifier1");
         when(mockedCheckmarxAdapter.getPathToMockResultFile("yellow")).thenReturn("pathFromAdapter");
 
         /* execute */
@@ -73,9 +73,9 @@ public class MockedAdapterSetupServiceTest {
 
         /* test */
         assertNotNull(checkmarxSetup);
-        MockedAdapterSetupCombination combination = checkmarxSetup.getCombination("target1");
+        MockedAdapterSetupCombination combination = checkmarxSetup.getCombination("mockDataIdentifier1");
         assertNotNull(combination);
-        assertEquals("target1", combination.getTarget());
+        assertEquals("mockDataIdentifier1", combination.getMockDataIdentifier());
         assertEquals("Filepath differs", "pathFromAdapter", combination.getFilePath());
         assertFalse(combination.isThrowsAdapterException());
         assertEquals(1000L, combination.getTimeToElapseInMilliseconds());

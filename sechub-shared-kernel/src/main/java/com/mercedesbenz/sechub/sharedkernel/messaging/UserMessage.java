@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.mercedesbenz.sechub.commons.core.MustBeKeptStable;
 import com.mercedesbenz.sechub.commons.model.JSONable;
-import com.mercedesbenz.sechub.sharedkernel.MustBeKeptStable;
 
 /**
  * This message data object contains all possible information about an user

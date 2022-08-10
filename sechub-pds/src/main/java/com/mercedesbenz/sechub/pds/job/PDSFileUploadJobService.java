@@ -29,6 +29,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.amazonaws.util.StringInputStream;
+import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
+import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport.CheckSumValidationResult;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
 import com.mercedesbenz.sechub.pds.LogSanitizer;
 import com.mercedesbenz.sechub.pds.PDSBadRequestException;
@@ -38,7 +40,6 @@ import com.mercedesbenz.sechub.pds.storage.PDSMultiStorageService;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseUserUploadsJobData;
 import com.mercedesbenz.sechub.pds.util.PDSArchiveSupportProvider;
-import com.mercedesbenz.sechub.pds.util.PDSFileChecksumSHA256Service;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 
 @Service
@@ -50,7 +51,7 @@ public class PDSFileUploadJobService {
     private static final int MAX_FILENAME_LENGTH = 40;
 
     @Autowired
-    PDSFileChecksumSHA256Service checksumSHA256Service;
+    CheckSumSupport checksumSupport;
 
     @Autowired
     PDSWorkspaceService workspaceService;
@@ -168,7 +169,10 @@ public class PDSFileUploadJobService {
                 try (InputStream checkSumInputStream = item.openStream()) {
                     checksumFromUser = Streams.asString(checkSumInputStream);
 
-                    checksumSHA256Service.assertValidSha256Checksum(checksumFromUser);
+                    CheckSumValidationResult validationResult = checksumSupport.validateSha256Checksum(checksumFromUser);
+                    if (!validationResult.isValid()) {
+                        throw new PDSBadRequestException(validationResult.getMessage());
+                    }
 
                     jobStorage.store(fileName + DOT_CHECKSUM, new StringInputStream(checksumFromUser));
                     LOG.info("uploaded user defined checksum as file for file: {} in PDS job: {}", fileName, jobUUID);
@@ -178,14 +182,14 @@ public class PDSFileUploadJobService {
             case MULTIPART_FILE:
                 try (InputStream fileInputstream = item.openStream()) {
 
-                    MessageDigest digest = checksumSHA256Service.createSHA256MessageDigest();
+                    MessageDigest digest = checksumSupport.createSha256MessageDigest();
 
                     MessageDigestCalculatingInputStream messageDigestInputStream = new MessageDigestCalculatingInputStream(fileInputstream, digest);
                     jobStorage.store(fileName, messageDigestInputStream);
 
                     LOG.info("uploaded file:{} for job:{}", fileName, jobUUID);
 
-                    checksumCalculated = checksumSHA256Service.convertMessageDigestToHex(digest);
+                    checksumCalculated = checksumSupport.convertMessageDigestToHex(digest);
                 }
                 fileDefinedByUser = true;
                 break;

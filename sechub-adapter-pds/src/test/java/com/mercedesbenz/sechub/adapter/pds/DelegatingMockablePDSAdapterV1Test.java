@@ -29,7 +29,8 @@ class DelegatingMockablePDSAdapterV1Test {
     @BeforeEach
     void beforeEach() {
         setupService = mock(MockedAdapterSetupService.class);
-        adapterToTest = new DelegatingMockablePDSAdapterV1(setupService);
+        PDSContextFactory contextFactory = mock(PDSContextFactory.class);
+        adapterToTest = new DelegatingMockablePDSAdapterV1(setupService, contextFactory);
         // we simulate real PDS adapter - mocked adapter can be used as is*/
         realPdsAdapter = mock(PDSAdapterV1.class);
         adapterToTest.realPdsAdapterV1 = realPdsAdapter;

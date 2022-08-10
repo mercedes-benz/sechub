@@ -13,8 +13,10 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingEntry;
+import com.mercedesbenz.sechub.commons.mapping.MappingData;
+import com.mercedesbenz.sechub.commons.mapping.MappingDataToNamePatternToIdEntryConverter;
+import com.mercedesbenz.sechub.commons.mapping.MappingEntry;
+import com.mercedesbenz.sechub.commons.mapping.NamePatternToIdEntry;
 
 public class ScanMappingToScanMappingConfigurationTransformerTest {
 

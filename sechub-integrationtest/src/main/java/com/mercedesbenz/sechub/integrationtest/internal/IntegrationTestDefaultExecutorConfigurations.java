@@ -3,18 +3,19 @@ package com.mercedesbenz.sechub.integrationtest.internal;
 
 import static com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants.*;
 import static com.mercedesbenz.sechub.domain.scan.product.pds.PDSProductExecutorKeyConstants.*;
-import static com.mercedesbenz.sechub.integrationtest.api.TestExecutorProductIdentifier.*;
+import static com.mercedesbenz.sechub.integrationtest.api.TestProductExecutorIdentifier.*;
+import static com.mercedesbenz.sechub.wrapper.checkmarx.cli.CheckmarxWrapperKeyConstants.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.mercedesbenz.sechub.commons.mapping.MappingData;
+import com.mercedesbenz.sechub.commons.mapping.MappingEntry;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.integrationtest.api.PDSIntTestProductIdentifier;
 import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
-import com.mercedesbenz.sechub.integrationtest.api.TestExecutorProductIdentifier;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingEntry;
+import com.mercedesbenz.sechub.integrationtest.api.TestProductExecutorIdentifier;
 import com.mercedesbenz.sechub.test.PDSTestURLBuilder;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 import com.mercedesbenz.sechub.test.executorconfig.TestExecutorConfig;
@@ -58,6 +59,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
     public static final String PDS_CODESCAN_VARIANT_F = "f";
     public static final String PDS_CODESCAN_VARIANT_G = "g";
     public static final String PDS_CODESCAN_VARIANT_I = "i";
+    public static final String PDS_CODESCAN_VARIANT_J = "j";
 
     public static final String PDS_WEBSCAN_VARIANT_A = "a";
     public static final String PDS_WEBSCAN_VARIANT_B = "b";
@@ -69,7 +71,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
                                                 PDS_CODESCAN_VARIANT_A,false,
                                                 PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN,
                                                 StorageType.REUSE_SECHUB_DATA,
-                                                PDS_CODESCAN);
+                                                PDS_CODESCAN, defineScriptTrustAllCertificatesJobParameter(true));
 
     public static final TestExecutorConfig PDS_V1_CODE_SCAN_B = definePDSScan(
                                                 PDS_CODESCAN_VARIANT_B,true,
@@ -87,7 +89,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
                                                 PDS_CODESCAN_VARIANT_D,false,PDSIntTestProductIdentifier.
                                                 PDS_INTTEST_PRODUCT_CS_SARIF,
                                                 StorageType.REUSE_SECHUB_DATA,
-                                                PDS_CODESCAN);
+                                                PDS_CODESCAN,defineScriptTrustAllCertificatesJobParameter(false));
 
     public static final TestExecutorConfig PDS_V1_CODE_SCAN_E_DO_NOT_REUSE_SECHUBDATA = definePDSScan(
                                                 PDS_CODESCAN_VARIANT_E,false,
@@ -111,7 +113,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
      * A PDS executor configuration for code scan (generic integration test code scan results). It reuses SecHub storage/data.
      * The {@value IntegrationTestDefaultExecutorConfigurations#JOBPARAM_PDS_KEY_FOR_VARIANTNAME} is set to {@value IntegrationTestDefaultExecutorConfigurations#PDS_CODESCAN_VARIANT_I}.
      *
-     * The file filter job paramaters are set to:
+     * The file filter job parameters are set to:
      * <ul>
      * <li> includes: {@value IntegrationTestDefaultExecutorConfigurations#INCLUDES_1}</li>
      * <li> excludes: {@value IntegrationTestDefaultExecutorConfigurations#EXCLUDES_1}</li>
@@ -125,6 +127,27 @@ public class IntegrationTestDefaultExecutorConfigurations {
                                                 PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN,
                                                 StorageType.REUSE_SECHUB_DATA,
                                                 PDS_CODESCAN, defineExcludeIncludes1JobParameters());
+
+    /**
+     * A PDS executor configuration for code scan (generic integration test code scan results). It reuses SecHub storage/data.
+     * The {@value IntegrationTestDefaultExecutorConfigurations#JOBPARAM_PDS_KEY_FOR_VARIANTNAME} is set to {@value IntegrationTestDefaultExecutorConfigurations#PDS_CODESCAN_VARIANT_J}.
+     * <br><br>
+     * PDS job parameter {@value PDSDefaultParameterKeyConstants#PARAM_KEY_PDS_CONFIG_USE_SECHUB_MAPPINGS} does include:
+     * <ul>
+     * <li>{@link IntegrationTestExampleConstants#MAPPING_ID_1_REPLACE_ANY_PROJECT1} ({@value IntegrationTestExampleConstants#MAPPING_ID_1_REPLACE_ANY_PROJECT1})</li>
+     * <li>{@link IntegrationTestExampleConstants#MAPPING_ID_2_NOT_EXISTING_IN_SECHUB} ({@value IntegrationTestExampleConstants#MAPPING_ID_2_NOT_EXISTING_IN_SECHUB})</li>
+     * </ul>
+     * <br>
+     * Attention: Even when this is a growing scenario, the mapping {@value IntegrationTestExampleConstants#MAPPING_ID_1_REPLACE_ANY_PROJECT1}  is only created one time - same as the profile setup. So mapping may NOT be chnaged inside tests (to avoid side effects).
+     * <br>
+     * It is used inside {@link IntegrationTestDefaultProfiles#PROFILE_11_PDS_CODESCAN_MAPPING profile 11}
+     *
+     */
+    public static final TestExecutorConfig PDS_V1_CODE_SCAN_J_MAPPING= definePDSScan(
+            PDS_CODESCAN_VARIANT_J,false,
+            PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN,
+            StorageType.REUSE_SECHUB_DATA,
+            PDS_CODESCAN, defineMappingJobParameters());
 
 
     public static final TestExecutorConfig PDS_V1_WEB_SCAN_A = definePDSScan(
@@ -148,6 +171,13 @@ public class IntegrationTestDefaultExecutorConfigurations {
             StorageType.REUSE_SECHUB_DATA,
             PDS_WEBSCAN);
 
+    public static final TestExecutorConfig PDS_V1_CHECKMARX_INTEGRATIONTEST = definePDSScan(
+            "default", false,
+            PDSIntTestProductIdentifier.PDS_CHECKMARX_INTEGRATIONTEST,
+            StorageType.REUSE_SECHUB_DATA,
+            PDS_CODESCAN, definePDSCheckmarxParameters());
+
+
     /* @formatter:on */
 
     public static final String PDS_ENV_VARIABLENAME_TECHUSER_ID = "TEST_PDS_TECHUSER_ID";
@@ -159,6 +189,24 @@ public class IntegrationTestDefaultExecutorConfigurations {
         return Collections.unmodifiableList(registeredConfigurations);
     }
 
+    private static List<TestExecutorSetupJobParam> definePDSCheckmarxParameters() {
+        List<TestExecutorSetupJobParam> parameters = new ArrayList<>();
+
+        parameters.add(new TestExecutorSetupJobParam(KEY_PDS_CHECKMARX_ALWAYS_FULLSCAN_ENABLED, "true"));
+
+        parameters.add(new TestExecutorSetupJobParam(KEY_PDS_CHECKMARX_BASE_URL, "https://localhost:6931/not-real-checkmarx"));
+        parameters.add(new TestExecutorSetupJobParam(KEY_PDS_CHECKMARX_USER, "checkmarx-fakeuser"));
+        parameters.add(new TestExecutorSetupJobParam(KEY_PDS_CHECKMARX_PASSWORD, "checkmarx-fakepassword"));
+
+        parameters.add(new TestExecutorSetupJobParam(KEY_PDS_CHECKMARX_ENGINE_CONFIGURATION_NAME, "engine1"));
+
+        addCheckmarxDefaultTeamIdAndPresetMappingData(parameters);
+
+        /* add team id mapping */
+
+        return parameters;
+    }
+
     private static List<TestExecutorSetupJobParam> defineExcludeIncludes1JobParameters() {
         List<TestExecutorSetupJobParam> list = new ArrayList<>();
 
@@ -168,17 +216,33 @@ public class IntegrationTestDefaultExecutorConfigurations {
         return list;
     }
 
+    private static List<TestExecutorSetupJobParam> defineMappingJobParameters() {
+        List<TestExecutorSetupJobParam> list = new ArrayList<>();
+
+        list.add(new TestExecutorSetupJobParam(PARAM_KEY_PDS_CONFIG_USE_SECHUB_MAPPINGS, IntegrationTestExampleConstants.MAPPING_ID_1_REPLACE_ANY_PROJECT1
+                + ", " + IntegrationTestExampleConstants.MAPPING_ID_2_NOT_EXISTING_IN_SECHUB));
+        return list;
+    }
+
+    private static List<TestExecutorSetupJobParam> defineScriptTrustAllCertificatesJobParameter(boolean trustAll) {
+        List<TestExecutorSetupJobParam> list = new ArrayList<>();
+
+        list.add(new TestExecutorSetupJobParam(PARAM_KEY_PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED, "" + trustAll));
+
+        return list;
+    }
+
     private static String createProductIdentifierString(PDSIntTestProductIdentifier pdsProductIdentifier) {
         return pdsProductIdentifier != null ? pdsProductIdentifier.getId() : null;
     }
 
     private static TestExecutorConfig definePDSScan(String variant, boolean credentialsAsEnvEntries, PDSIntTestProductIdentifier pdsProductIdentifier,
-            StorageType storageType, TestExecutorProductIdentifier sechubProductIdentifier) {
+            StorageType storageType, TestProductExecutorIdentifier sechubProductIdentifier) {
         return definePDSScan(variant, credentialsAsEnvEntries, pdsProductIdentifier, storageType, sechubProductIdentifier, null);
     }
 
     private static TestExecutorConfig definePDSScan(String variant, boolean credentialsAsEnvEntries, PDSIntTestProductIdentifier pdsProductIdentifier,
-            StorageType storageType, TestExecutorProductIdentifier sechubProductIdentifier, List<TestExecutorSetupJobParam> additionalJobParameters) {
+            StorageType storageType, TestProductExecutorIdentifier sechubProductIdentifier, List<TestExecutorSetupJobParam> additionalJobParameters) {
         String productIdentifierId = createProductIdentifierString(pdsProductIdentifier);
 
         TestExecutorConfig config = createTestExecutorConfig();
@@ -248,17 +312,21 @@ public class IntegrationTestDefaultExecutorConfigurations {
         config.setup.credentials.password = "checkmarx-password";
         config.uuid = null;// not initialized - is done at creation time by scenario initializer!
 
+        List<TestExecutorSetupJobParam> jobParameters = config.setup.jobParameters;
+        addCheckmarxDefaultTeamIdAndPresetMappingData(jobParameters);
+
+        return config;
+    }
+
+    private static void addCheckmarxDefaultTeamIdAndPresetMappingData(List<TestExecutorSetupJobParam> jobParameters) {
         MappingData teamIdMappingData = new MappingData();
         teamIdMappingData.getEntries().add(CHECKMARX_TEAMID_MAPPING_DEFAULT_MAPPING);
 
         MappingData presetIdMappingData = new MappingData();
         presetIdMappingData.getEntries().add(CHECKMARX_PRESETID_MAPPING_DEFAULT_MAPPING);
 
-        List<TestExecutorSetupJobParam> jobParameters = config.setup.jobParameters;
         jobParameters.add(new TestExecutorSetupJobParam("checkmarx.newproject.teamid.mapping", teamIdMappingData.toJSON()));
         jobParameters.add(new TestExecutorSetupJobParam("checkmarx.newproject.presetid.mapping", presetIdMappingData.toJSON()));
-
-        return config;
     }
 
     private static TestExecutorConfig defineNessusConfig() {

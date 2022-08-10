@@ -60,6 +60,8 @@ public class PDSJob {
 
     public static final String COLUMN_MESSAGES = "MESSAGES";
 
+    public static final String COLUMN_META_DATA = "META_DATA";
+
     public static final String COLUMN_LAST_STREAM_TEXT_REFRESH_REQUEST = "LAST_STREAM_TEXT_REFRESH_REQUEST";
     public static final String COLUMN_LAST_STREAM_TEXT_UPDATE = "LAST_STREAM_TEXT_UPDATE";
 
@@ -153,6 +155,10 @@ public class PDSJob {
     @Type(type = "text") // see remarks on COLUMN_RESULT
     String messages;
 
+    @Column(name = COLUMN_META_DATA)
+    @Type(type = "text") // see remarks on COLUMN_RESULT
+    String metaDataText;
+
     public void setServerId(String serverId) {
         this.serverId = serverId;
     }
@@ -231,6 +237,10 @@ public class PDSJob {
 
     public String getMessages() {
         return messages;
+    }
+
+    public String getMetaDataText() {
+        return metaDataText;
     }
 
     @Override

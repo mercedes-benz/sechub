@@ -81,7 +81,7 @@ public class CheckmarxScanSupport {
         oauthSupport.refreshBearerTokenWhenNecessary(context);
 
         AdapterMetaData metaData = context.getRuntimeContext().getMetaData();
-        Long scanIdLong = metaData.getValueLong(CheckmarxMetaDataID.KEY_SCAN_ID);
+        Long scanIdLong = metaData.getValueAsLongOrNull(CheckmarxMetaDataID.KEY_SCAN_ID);
         long scanId = -1;
         if (scanIdLong == null) {
             LOG.info("Trigger new scan entry in checkmarx queue");
