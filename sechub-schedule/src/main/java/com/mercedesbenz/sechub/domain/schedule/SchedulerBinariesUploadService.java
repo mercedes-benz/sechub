@@ -217,7 +217,7 @@ public class SchedulerBinariesUploadService {
             throw new BadRequestException("No file defined by user for binaries upload!");
         }
 
-        if (realContentLengthInBytes == contentLengthInBytesFromUser) {
+        if (realContentLengthInBytes != contentLengthInBytesFromUser) {
             throw new BadRequestException("The real content length was not equal to the user provided content length.");
         }
 

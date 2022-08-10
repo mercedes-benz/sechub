@@ -165,7 +165,7 @@ public class TestUtil {
      *
      * @param explicitFileName the EXACT file name to use.
      *
-     * @return filePath
+     * @return file
      * @throws IOException
      */
     public static Path createTempFileInBuildFolder(String explicitFileName, FileAttribute<?>... attributes) throws IOException {

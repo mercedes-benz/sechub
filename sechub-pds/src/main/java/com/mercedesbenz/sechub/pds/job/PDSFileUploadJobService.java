@@ -1,9 +1,12 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.job;
 
-import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
-import static com.mercedesbenz.sechub.pds.job.PDSJobAssert.*;
-import static com.mercedesbenz.sechub.pds.util.PDSAssert.*;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.DOT_CHECKSUM;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.MULTIPART_CHECKSUM;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.MULTIPART_FILE;
+import static com.mercedesbenz.sechub.pds.job.PDSJobAssert.assertJobFound;
+import static com.mercedesbenz.sechub.pds.job.PDSJobAssert.assertJobIsInState;
+import static com.mercedesbenz.sechub.pds.util.PDSAssert.notNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -71,6 +74,9 @@ public class PDSFileUploadJobService {
 
     @Autowired
     LogSanitizer logSanitizer;
+    
+    @Autowired
+    PDSServletFileUploadFactory servletFileUploadFactory;
 
     @UseCaseUserUploadsJobData(@PDSStep(name = "service call", description = "uploaded file is stored by storage service", number = 2))
     public void upload(UUID jobUUID, String fileName, HttpServletRequest request) {
@@ -135,7 +141,7 @@ public class PDSFileUploadJobService {
 
         JobStorage jobStorage = storageService.getJobStorage(jobUUID);
 
-        ServletFileUpload upload = new ServletFileUpload();
+        ServletFileUpload upload = servletFileUploadFactory.create();
 
         long maxUploadSize = configuration.getMaxUploadSizeInBytes();
 
@@ -219,7 +225,7 @@ public class PDSFileUploadJobService {
         if (!fileDefinedByUser) {
             throw new PDSBadRequestException("No file defined by user for job data upload!");
         }
-        if (realContentLengthInBytes == contentLengthInBytesFromUser) {
+        if (realContentLengthInBytes != contentLengthInBytesFromUser) {
             throw new PDSBadRequestException("The real content length was not equal to the user provided content length.");
         }
         if (!checkSumDefinedByUser) {
