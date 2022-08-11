@@ -1,0 +1,13 @@
+@startuml
+node "PDS Workspace" as workspace{
+
+    folder "/$workspace/$pdsJobUUID/metadata.txt" as pds_workspace_metadata_location
+}
+
+note right of pds_workspace_metadata_location
+ Inside this file the product specific meta data
+ is contained.
+ If the file does not exist, no meta data is available. 
+end note
+
+@enduml 

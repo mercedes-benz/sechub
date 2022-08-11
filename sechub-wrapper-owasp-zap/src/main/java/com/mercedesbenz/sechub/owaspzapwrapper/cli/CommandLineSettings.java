@@ -108,7 +108,7 @@ public class CommandLineSettings {
         return proxyPort;
     }
 
-    @Parameter(names = { "--fullRulesetfile" }, description = "Specify a file with all rules installed for the Owasp Zap.", required = false)
+    @Parameter(names = { "--fullRulesetfile" }, description = "Specify a file with all rules installed for the Owasp Zap.", required = true)
     private String fullRulesetFile;
 
     public File getFullRulesetFile() {
@@ -121,5 +121,13 @@ public class CommandLineSettings {
 
     public File getRulesDeactvationFile() {
         return FileUtilities.stringToFile(rulesDeactvationFile);
+    }
+
+    @Parameter(names = { "--deactivateRules" }, description = "Specify references of rules you want to deactivate during the scan inside the Owasp Zap. "
+            + "If you specifiy multiple rules use comma separated values like: rule1,rule,rule3", required = false)
+    private String deactivatedRuleReferences;
+
+    public String getDeactivatedRuleReferences() {
+        return deactivatedRuleReferences;
     }
 }

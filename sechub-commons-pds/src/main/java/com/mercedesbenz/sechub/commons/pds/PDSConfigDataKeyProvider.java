@@ -40,6 +40,17 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
                             .withDefault(true))
 
     ,
+    /**
+     * Special (optional) key inside executor configuration which will be used to
+     * define if PDS will use SecHub mappings. The value contains a comma separated
+     * list of mapping ids.
+     */
+    PDS_CONFIG_USE_SECHUB_MAPPINGS(
+            new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_MAPPINGS, "Contains a comma separated list of mappping ids. "
+                    + "Each defined mapping will be fetched from SecHub DB as JSON and sent as job parameter with " + "the mapping id as name to the PDS.")
+                            .markAlwaysSentToPDS().withDefault(true))
+
+    ,
 
     /**
      * Contains sechub storage location
@@ -57,6 +68,14 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
                     + "When nothing defined, every content is accepted as include.\n"
                     + "Every file which is matched by one of the patterns will be included - except those which are explicitly excluded.\n\n")
                             .markAlwaysSentToPDS()),
+
+    /**
+     * Contains file filter include information
+     */
+    PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED(new ExecutionPDSKey(
+            PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED,
+            "When 'true' the PDS adapter script used by the job will have the information and can use this information when it comes to remote operations.")
+                    .markAlwaysSentToPDS().markAsAvailableInsideScript().markDefaultRecommended().withDefault(false)),
 
     /**
      * Contains file filter exclude information

@@ -1,0 +1,3 @@
+SECHUB_START_MODE="localserver"
+ADMIN_USERID="admin"
+ADMIN_APITOKEN="myTop$ecret!"

@@ -1,0 +1,22 @@
+# SPDX-License-Identifier: MIT
+
+version: "3"
+services:
+  pds-multi:
+    build:
+      args:
+        - BASE_IMAGE=debian:11-slim
+      context: docker/
+      dockerfile: Multi-Debian.dockerfile
+    container_name: pds-multi
+    env_file:
+      - .env
+    volumes:
+      - ./docker/scripts:/scripts
+    ports:
+      - "127.0.0.1:8444:8444"
+      - "127.0.0.1:15024:15024"
+    networks:
+      - "internal"
+networks:
+  internal:

@@ -51,7 +51,7 @@ public class PDSExecutionServiceTest {
     public void after() {
         /*
          * destroy executor service - to prevent too much memory/thread consumption in
-         * tests, not necesary in real world
+         * tests, not necessary in real world
          */
         serviceToTest.workers.shutdownNow();
         serviceToTest.scheduler.shutdownNow();
@@ -64,7 +64,7 @@ public class PDSExecutionServiceTest {
 
         public TestPDSExecutionCallable(UUID jobUUID, long waitMillis, PDSExecutionResult result) {
             super(jobUUID, mock(PDSJobTransactionService.class), mock(PDSWorkspaceService.class), mock(PDSExecutionEnvironmentService.class),
-                    mock(PDSCheckJobStatusService.class));
+                    mock(PDSCheckJobStatusService.class), mock(PDSProcessAdapterFactory.class));
             this.waitMillis = waitMillis;
             this.result = result;
         }

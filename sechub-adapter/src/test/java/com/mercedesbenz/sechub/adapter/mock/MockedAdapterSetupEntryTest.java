@@ -43,7 +43,7 @@ public class MockedAdapterSetupEntryTest {
         /* prepare */
         MockedAdapterSetupCombination combination = new MockedAdapterSetupCombination();
         combination.setFilePath("bla");
-        combination.setTarget("xyz");
+        combination.setMockDataIdentifier("xyz");
         entryToTest.getCombinations().add(combination);
 
         /* test */
@@ -54,7 +54,7 @@ public class MockedAdapterSetupEntryTest {
     public void defined_throws_adapter_exceptions_returns_true() {
         /* prepare */
         MockedAdapterSetupCombination combination = new MockedAdapterSetupCombination();
-        combination.setTarget("xyz");
+        combination.setMockDataIdentifier("xyz");
         combination.setThrowsAdapterException(true);
 
         entryToTest.getCombinations().add(combination);
@@ -68,7 +68,7 @@ public class MockedAdapterSetupEntryTest {
         /* prepare */
         MockedAdapterSetupCombination combination2 = new MockedAdapterSetupCombination();
         combination2.setFilePath("bla");
-        combination2.setTarget("xyz");
+        combination2.setMockDataIdentifier("xyz");
         entryToTest.getCombinations().add(combination2);
         addAnyOtherCombination();
 
@@ -78,7 +78,7 @@ public class MockedAdapterSetupEntryTest {
 
     private void addAnyOtherCombination() {
         MockedAdapterSetupCombination combination = new MockedAdapterSetupCombination();
-        combination.setTarget(MockedAdapterSetupCombination.ANY_OTHER_TARGET);
+        combination.setMockDataIdentifier(MockedAdapterSetupCombination.ANY_OTHER_TARGET);
         combination.setFilePath("filepath-any");
 
         entryToTest.getCombinations().add(combination);

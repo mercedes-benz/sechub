@@ -20,7 +20,9 @@ services:
 
     loadbalancer:
         build:
-            context: docker/loadbalancer
+            context: ../shared/docker/loadbalancer
+            args:
+                - PDS_SOLUTION=pds-scancode
         env_file:
             - .env-cluster
         networks:
@@ -32,7 +34,7 @@ services:
     
     database:
         build:
-            context: docker/database
+            context: ../shared/docker/database
         env_file:
             - .env-cluster
         networks:

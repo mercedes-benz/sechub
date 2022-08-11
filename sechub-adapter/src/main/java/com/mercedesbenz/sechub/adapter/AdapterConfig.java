@@ -48,8 +48,18 @@ public interface AdapterConfig extends TrustAllConfig, TraceIdProvider {
     /**
      * Returns a target string.
      *
-     * @return target string or <code>null</code> if none defined
+     * @return target string or <code>null</code> if none defined (e.g. for code
+     *         scans)
      */
     String getTargetAsString();
+
+    /**
+     * If the adapter configuration is for a mock, and a special mock behavior shall
+     * happen,an identifier for the mock data to use will be returned. In all other
+     * cases this method returns <code>null</code>.
+     *
+     * @return a mock data identifier or <code>null</code>
+     */
+    String getMockDataIdentifier();
 
 }

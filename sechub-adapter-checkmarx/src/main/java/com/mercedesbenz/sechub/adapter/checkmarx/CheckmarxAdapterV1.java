@@ -37,7 +37,7 @@ public class CheckmarxAdapterV1 extends AbstractAdapter<CheckmarxAdapterContext,
     @Override
     public AdapterExecutionResult execute(CheckmarxAdapterConfig config, AdapterRuntimeContext runtimeContext) throws AdapterException {
         try {
-            assertNotInterrupted();
+            assertThreadNotInterrupted();
 
             CheckmarxContext context = new CheckmarxContext(config, this, runtimeContext);
             context.setFullScan(context.isNewProject() || config.isAlwaysFullScanEnabled());
@@ -45,15 +45,15 @@ public class CheckmarxAdapterV1 extends AbstractAdapter<CheckmarxAdapterContext,
             CheckmarxOAuthSupport oauthSupport = new CheckmarxOAuthSupport();
             oauthSupport.loginAndGetOAuthToken(context);
 
-            assertNotInterrupted();
+            assertThreadNotInterrupted();
             /* ensure project and get project context */
             CheckmarxProjectSupport projectSupport = new CheckmarxProjectSupport();
             projectSupport.ensureProjectExists(context);
 
-            assertNotInterrupted();
+            assertThreadNotInterrupted();
             handleUploadSourceCodeAndStartScan(oauthSupport, context);
 
-            assertNotInterrupted();
+            assertThreadNotInterrupted();
             CheckmarxScanReportSupport scanReportSupport = new CheckmarxScanReportSupport();
             scanReportSupport.startFetchReport(oauthSupport, context);
 
@@ -83,7 +83,7 @@ public class CheckmarxAdapterV1 extends AbstractAdapter<CheckmarxAdapterContext,
 
     private void uploadSourceCodeAndStartScan(CheckmarxOAuthSupport oauthSupport, CheckmarxContext context) throws AdapterException {
         AdapterMetaData metaData = context.getRuntimeContext().getMetaData();
-        if (!metaData.hasValue(CheckmarxMetaDataID.KEY_FILEUPLOAD_DONE, true)) {
+        if (!metaData.getValueAsBoolean(CheckmarxMetaDataID.KEY_FILEUPLOAD_DONE)) {
             /* upload source code */
             oauthSupport.refreshBearerTokenWhenNecessary(context);
 

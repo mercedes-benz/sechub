@@ -10,6 +10,7 @@ import java.io.File;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.mercedesbenz.sechub.docgen.AsciidocGenerator.GenContext;
 import com.mercedesbenz.sechub.docgen.spring.ScheduleDescriptionGenerator;
 import com.mercedesbenz.sechub.docgen.spring.SystemPropertiesDescriptionGenerator;
 import com.mercedesbenz.sechub.docgen.util.ClasspathDataCollector;
@@ -61,14 +62,15 @@ public class AsciidocGeneratorTest {
     public void calls_properties_generator_and_saves() throws Exception {
 
         /* prepare */
-        File targetFile = new File("outputfile");
+        GenContext genContext = new GenContext();
+        genContext.systemProperitesFile = new File("outputfile");
 
         /* execute */
-        generatorToTest.generateSystemPropertiesDescription(targetFile);
+        generatorToTest.generateSystemPropertiesDescription(genContext);
 
         /* test */
         verify(generatorToTest.propertiesGenerator).generate(any());
-        verify(generatorToTest.writer).save(targetFile, "properties-test");
+        verify(generatorToTest.writer).save(genContext.systemProperitesFile, "properties-test");
 
     }
 
@@ -76,14 +78,15 @@ public class AsciidocGeneratorTest {
     public void calls_schedule_generator_and_saves() throws Exception {
 
         /* prepare */
-        File targetFile = new File("outputfile");
+        GenContext genContext = new GenContext();
+        genContext.scheduleDescriptionFile = new File("outputfile");
 
         /* execute */
-        generatorToTest.generateScheduleDescription(targetFile);
+        generatorToTest.generateScheduleDescription(genContext);
 
         /* test */
         verify(generatorToTest.scheduleDescriptionGenerator).generate(generatorToTest.collector);
-        verify(generatorToTest.writer).save(targetFile, "schedule-test");
+        verify(generatorToTest.writer).save(genContext.scheduleDescriptionFile, "schedule-test");
 
     }
 

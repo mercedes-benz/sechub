@@ -18,6 +18,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubStatus;
 import com.mercedesbenz.sechub.commons.model.Severity;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TemplateData;
+import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestExampleConstants;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestTemplateFile;
@@ -57,7 +58,7 @@ public class PDSIncludeExcludeScenario15IntTest {
 
         /* prepare */
         TestProject project = PROJECT_1;
-        UUID jobUUID = as(USER_1).createScanJobWhichUsesDataReferencedIds(
+        UUID jobUUID = as(USER_1).createCodeScanWithTemplate(
                 IntegrationTestTemplateFile.CODE_SCAN_2_BINARIES_DATA_ONE_REFERENCE,
                 project, NOT_MOCKED,
                 TemplateData.builder().addReferenceId("files-b").build());
@@ -74,6 +75,7 @@ public class PDSIncludeExcludeScenario15IntTest {
         String report = as(USER_1).getJobReport(project, jobUUID);
 
         assertReport(report).
+            enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
             hasStatus(SecHubStatus.SUCCESS).
             hasMessages(0).
             hasTrafficLight(RED).
@@ -99,6 +101,11 @@ public class PDSIncludeExcludeScenario15IntTest {
                     severity(Severity.CRITICAL).
                     description("path-info=files-b/included-folder/subfolder-2/file-b-3.txt").
                     isContained();
+
+        // check the script trust all for this variant (i) is not defined (missing in profile)
+        assertPDSJob(TestAPI.assertAndFetchPDSJobUUIDForSecHubJob(jobUUID)).
+            containsVariableTestOutput("PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED","");
+
         /* @formatter:on */
     }
 
@@ -127,7 +134,7 @@ public class PDSIncludeExcludeScenario15IntTest {
 
         /* prepare */
         TestProject project = PROJECT_1;
-        UUID jobUUID = as(USER_1).createScanJobWhichUsesDataReferencedIds(
+        UUID jobUUID = as(USER_1).createCodeScanWithTemplate(
                 IntegrationTestTemplateFile.CODE_SCAN_3_SOURCES_DATA_ONE_REFERENCE,
                 project, NOT_MOCKED,
                 TemplateData.builder().addReferenceId("files-b").build());

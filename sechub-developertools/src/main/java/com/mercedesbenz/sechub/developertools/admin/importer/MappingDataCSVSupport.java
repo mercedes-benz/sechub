@@ -4,8 +4,8 @@ package com.mercedesbenz.sechub.developertools.admin.importer;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingEntry;
+import com.mercedesbenz.sechub.commons.mapping.MappingData;
+import com.mercedesbenz.sechub.commons.mapping.MappingEntry;
 
 public class MappingDataCSVSupport {
 

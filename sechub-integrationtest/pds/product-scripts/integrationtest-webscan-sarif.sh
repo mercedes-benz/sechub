@@ -5,6 +5,12 @@ function errEcho () {
     echo "$@" >&2
 }
 
+source ./../sechub-integrationtest/pds/product-scripts/shared-functions.sh
+
+echo "PDS webscan SARIF integrationt test script starting..."
+
+dumpPDSVariables
+
 echo "PDS SARIF web scan test script starting... "
 echo "- configured variant:'$PDS_TEST_KEY_VARIANTNAME'"
 echo "- current working directory: $(pwd)"

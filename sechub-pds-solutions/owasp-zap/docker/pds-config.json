@@ -6,6 +6,7 @@
       "id": "PDS_OWASP_ZAP",
       "path": "/scripts/owasp-zap.sh",
       "scanType": "webScan",
+      "minutesToWaitForProductResult": 510,
       "description": "Runs OWASP ZAP",
       "parameters": {
         "mandatory": [
@@ -42,6 +43,10 @@
           {
             "key": "zap.proxy.for.pds.target.type",
             "description": "Use proxy for PDS target type: INTERNET or INTRANET."
+          },
+          {
+          	"key": "zap.deactivated.rule.references",
+          	"description": "Comma separated list of rule references that will be deactivated during the scan."
           }
         ]
       }
@@ -86,6 +91,10 @@
           {
             "key": "zap.proxy.for.pds.target.type",
             "description": "Use proxy for PDS target type: INTERNET or INTRANET."
+          },
+          {
+          	"key": "zap.deactivated.rule.references",
+          	"description": "Comma separated list of rule references that will be deactivated during the scan."
           }
         ]
       }
