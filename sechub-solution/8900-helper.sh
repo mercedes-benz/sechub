@@ -42,10 +42,10 @@ function setup_complete_message_for_tool() {
 }
 
 function setup_project_user_executor_profile() {
-    local "$project"
-    local "$user"
-    local "$executor_file_name"
-    local "$profile"
+    local project="$1"
+    local user="$2"
+    local executor_file_name="$3"
+    local profile="$4"
 
     ./8800-setup-project-and-user.sh "$project" "$user"
     ./8801-create-executor-and-profile.sh "$executor_file_name" "$profile"
