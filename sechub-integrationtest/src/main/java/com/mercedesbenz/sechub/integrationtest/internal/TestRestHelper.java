@@ -263,6 +263,9 @@ public class TestRestHelper {
         // see https://www.baeldung.com/spring-rest-template-multipart-upload
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        
+        long contentLength = file.length();
+        headers.setContentLength(contentLength);
 
         FileSystemResource resource = new FileSystemResource(file);
 
