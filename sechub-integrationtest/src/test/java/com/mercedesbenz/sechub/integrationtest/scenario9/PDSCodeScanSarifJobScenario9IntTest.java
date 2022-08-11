@@ -83,7 +83,6 @@ public class PDSCodeScanSarifJobScenario9IntTest {
                    hasSeverity(Severity.MEDIUM).
                    hasDescriptionContaining("either allow wildcard sources");
 
-
         /* --------------------------------------------------------*/
         /* Phase 2: WebScan with false positive data definition set*/
         /*          Next web scan for same project does not contain*/
@@ -166,6 +165,13 @@ public class PDSCodeScanSarifJobScenario9IntTest {
                    hasScanType(ScanType.CODE_SCAN).
                    hasSeverity(Severity.MEDIUM).
                    hasDescription("Rails 5.0.0 has a vulnerability that may allow CSRF token forgery. Upgrade to Rails 5.2.4.3 or patch.");
+
+
+        // check script trust all is defined here with "false". Because PROFILE_3_PDS_CODESCAN_SARIF
+        // uses PDS_V1_CODE_SCAN_D which has defined the parameter as false
+        assertPDSJob(assertAndFetchPDSJobUUIDForSecHubJob(jobUUID)).
+            containsVariableTestOutput("PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED", "false");
+
 
         /* @formatter:on */
     }

@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.mapping.NamePatternIdProvider;
+import com.mercedesbenz.sechub.commons.mapping.NamePatternToIdEntry;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdmiUpdatesMappingConfiguration;
@@ -118,6 +120,11 @@ public class ScanMappingConfigurationService {
                 providers.put(providerId, provider);
             }
         }
+    }
+
+    public List<NamePatternToIdEntry> getNamePatternToIdEntriesOrNull(String mappingId) {
+        Map<String, List<NamePatternToIdEntry>> configMappings = config.getNamePatternMappings();
+        return configMappings.get(mappingId);
     }
 
 }

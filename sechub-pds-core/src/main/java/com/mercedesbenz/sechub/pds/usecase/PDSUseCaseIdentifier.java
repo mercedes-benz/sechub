@@ -18,6 +18,8 @@ public enum PDSUseCaseIdentifier {
 
     UC_USER_FETCHES_JOB_MESSAGES(16),
 
+    UC_ADMIN_FETCHES_JOB_META_DATA(17),
+
     /* monitoring */
     UC_ADMIN_FETCHES_MONITORING_STATUS(7),
 

@@ -3,8 +3,8 @@ package com.mercedesbenz.sechub.integrationtest.api;
 
 import static org.junit.Assert.*;
 
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingEntry;
+import com.mercedesbenz.sechub.commons.mapping.MappingData;
+import com.mercedesbenz.sechub.commons.mapping.MappingEntry;
 
 public class AssertMapping extends AbstractAssert {
 

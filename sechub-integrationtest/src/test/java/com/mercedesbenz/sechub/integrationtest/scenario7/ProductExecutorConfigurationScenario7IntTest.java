@@ -13,7 +13,7 @@ import org.junit.rules.Timeout;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
-import com.mercedesbenz.sechub.integrationtest.api.TestExecutorProductIdentifier;
+import com.mercedesbenz.sechub.integrationtest.api.TestProductExecutorIdentifier;
 import com.mercedesbenz.sechub.test.executorconfig.TestExecutorConfig;
 import com.mercedesbenz.sechub.test.executorconfig.TestExecutorConfigList;
 import com.mercedesbenz.sechub.test.executorconfig.TestExecutorConfigListEntry;
@@ -31,7 +31,7 @@ public class ProductExecutorConfigurationScenario7IntTest {
     public void an_admin_can_create_a_new_product_executor_config_and_it_returns_uuid() {
         /* prepare */
         TestExecutorConfig config = new TestExecutorConfig();
-        config.productIdentifier = TestExecutorProductIdentifier.PDS_CODESCAN.name();
+        config.productIdentifier = TestProductExecutorIdentifier.PDS_CODESCAN.name();
         config.name = "pds gosec-1";
         config.executorVersion = 1;
         config.setup.baseURL = "https://baseurl.product.example.com/start";
@@ -50,7 +50,7 @@ public class ProductExecutorConfigurationScenario7IntTest {
 
         /* prepare */
         TestExecutorConfig config = new TestExecutorConfig();
-        config.productIdentifier = TestExecutorProductIdentifier.PDS_CODESCAN.name();
+        config.productIdentifier = TestProductExecutorIdentifier.PDS_CODESCAN.name();
         config.name = "pds gosec-1";
         config.executorVersion = 1;
         config.setup.baseURL = "https://baseurl.product.example.com/start";
@@ -79,7 +79,7 @@ public class ProductExecutorConfigurationScenario7IntTest {
 
         /* prepare */
         TestExecutorConfig config = new TestExecutorConfig();
-        config.productIdentifier=TestExecutorProductIdentifier.PDS_CODESCAN.name();
+        config.productIdentifier=TestProductExecutorIdentifier.PDS_CODESCAN.name();
         config.name="pds gosec-1";
         config.executorVersion=1;
         config.setup.baseURL="https://baseurl.product.example.com/start";
@@ -94,7 +94,7 @@ public class ProductExecutorConfigurationScenario7IntTest {
             hasJobParameters(2);
 
         TestExecutorConfig config2 = new TestExecutorConfig();
-        config2.productIdentifier=TestExecutorProductIdentifier.PDS_INFRASCAN.name();
+        config2.productIdentifier=TestProductExecutorIdentifier.PDS_INFRASCAN.name();
         config2.name="pds gosec-1-renamed";
         config2.executorVersion=2;
         config2.enabled=true;
@@ -119,7 +119,7 @@ public class ProductExecutorConfigurationScenario7IntTest {
 
         /* prepare */
         TestExecutorConfig config = new TestExecutorConfig();
-        config.productIdentifier = TestExecutorProductIdentifier.PDS_CODESCAN.name();
+        config.productIdentifier = TestProductExecutorIdentifier.PDS_CODESCAN.name();
         config.name = "pds gosec-3";
         config.executorVersion = 1;
         config.setup.baseURL = "https://baseurl.product.example.com/start";
@@ -139,7 +139,7 @@ public class ProductExecutorConfigurationScenario7IntTest {
 
         /* prepare */
         TestExecutorConfig config = new TestExecutorConfig();
-        config.productIdentifier = TestExecutorProductIdentifier.PDS_CODESCAN.name();
+        config.productIdentifier = TestProductExecutorIdentifier.PDS_CODESCAN.name();
         config.name = "pds gosec-forlist-check";
         config.executorVersion = 1;
         config.enabled = true;

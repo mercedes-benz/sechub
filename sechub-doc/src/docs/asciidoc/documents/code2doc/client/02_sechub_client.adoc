@@ -168,6 +168,8 @@ include::../../shared/false-positives/false-positives-REST-API-content-example1.
 <4> ID of finding, which shall be marked as false positive
 <5> Comment (optional) describing the reason why this is handled as false positive
 
+NOTE: Providing an empty list here does *NOT delete* the declared false positives! +
+Since `markFalsePositives` only adds false positives, an empty `jobData` list has no effect at all. (don't do this)
 
 ===== getFalsePositives
 This will fetch the false positives list of your project as JSON - format is same as for `markFalsePositives`

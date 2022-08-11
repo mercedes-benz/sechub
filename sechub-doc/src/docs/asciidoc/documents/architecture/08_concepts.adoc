@@ -33,6 +33,7 @@ include::../shared/concepts/concept_job_status.adoc[]
 
 include::../shared/concepts/concept_auto_clean.adoc[]
 
+include::../shared/concepts/pds-solutions/concept_pds_solution.adoc[]
 
 
 

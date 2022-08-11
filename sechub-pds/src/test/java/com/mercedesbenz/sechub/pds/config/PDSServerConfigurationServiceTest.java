@@ -61,21 +61,21 @@ public class PDSServerConfigurationServiceTest {
 
         PDSProdutParameterSetup paramSetup = product1.getParameters();
         assertNotNull(paramSetup);
-        List<PDSProdutParameterDefinition> mandatory = paramSetup.getMandatory();
+        List<PDSProductParameterDefinition> mandatory = paramSetup.getMandatory();
         assertEquals(2, mandatory.size());
-        Iterator<PDSProdutParameterDefinition> mit = mandatory.iterator();
-        PDSProdutParameterDefinition m1 = mit.next();
-        PDSProdutParameterDefinition m2 = mit.next();
+        Iterator<PDSProductParameterDefinition> mit = mandatory.iterator();
+        PDSProductParameterDefinition m1 = mit.next();
+        PDSProductParameterDefinition m2 = mit.next();
 
         assertEquals("product1.qualititycheck.enabled", m1.getKey());
         assertEquals("when 'true' quality scan results are added as well", m1.getDescription());
         assertEquals("product1.level", m2.getKey());
         assertEquals("numeric, 1-gets all, 2-only critical,fatal and medium, 3- only critical and fatal", m2.getDescription());
 
-        List<PDSProdutParameterDefinition> optional = paramSetup.getOptional();
+        List<PDSProductParameterDefinition> optional = paramSetup.getOptional();
         assertEquals(1, optional.size());
-        Iterator<PDSProdutParameterDefinition> oit = optional.iterator();
-        PDSProdutParameterDefinition o1 = oit.next();
+        Iterator<PDSProductParameterDefinition> oit = optional.iterator();
+        PDSProductParameterDefinition o1 = oit.next();
         assertEquals("product1.add.tipoftheday", o1.getKey());
         assertEquals("add tip of the day as info", o1.getDescription());
 

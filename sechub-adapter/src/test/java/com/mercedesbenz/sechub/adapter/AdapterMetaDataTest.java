@@ -28,15 +28,15 @@ public class AdapterMetaDataTest {
 
     @Test
     public void adapter_getvalue_for_unknown_key_returns_null() {
-        assertEquals(null, metaDataToTest.getValue("xyz"));
-        assertEquals(null, metaDataToTest.getValue(null));
+        assertEquals(null, metaDataToTest.getValueAsStringOrNull("xyz"));
+        assertEquals(null, metaDataToTest.getValueAsStringOrNull(null));
         assertEquals(0, metaDataToTest.getKeys().size());
     }
 
     @Test
     public void adapter_getvalue_for_known_key_returns_value() {
         metaDataToTest.setValue("xyz", "123");
-        assertEquals("123", metaDataToTest.getValue("xyz"));
+        assertEquals("123", metaDataToTest.getValueAsStringOrNull("xyz"));
         assertEquals(1, metaDataToTest.getKeys().size());
         assertTrue(metaDataToTest.getKeys().contains("xyz"));
 
@@ -46,7 +46,7 @@ public class AdapterMetaDataTest {
     public void adapter_setvalue_with_null() {
         metaDataToTest.setValue("xyz", "123");
         metaDataToTest.setValue("xyz", null);
-        assertEquals(null, metaDataToTest.getValue("xyz"));
+        assertEquals(null, metaDataToTest.getValueAsStringOrNull("xyz"));
 
     }
 
@@ -68,18 +68,18 @@ public class AdapterMetaDataTest {
 
     @Test
     public void adapter_setvalue_with_key_null_is_same_as_string_null() {
-        assertEquals(null, metaDataToTest.getValue(null));
+        assertEquals(null, metaDataToTest.getValueAsStringOrNull(null));
         assertEquals(0, metaDataToTest.getKeys().size());
 
         metaDataToTest.setValue(null, "123");
-        assertEquals("123", metaDataToTest.getValue(null));
-        assertEquals("123", metaDataToTest.getValue("null"));
+        assertEquals("123", metaDataToTest.getValueAsStringOrNull(null));
+        assertEquals("123", metaDataToTest.getValueAsStringOrNull("null"));
         assertEquals(1, metaDataToTest.getKeys().size());
         assertTrue(metaDataToTest.getKeys().contains("null"));
 
         metaDataToTest.setValue("null", "456");
-        assertEquals("456", metaDataToTest.getValue(null));
-        assertEquals("456", metaDataToTest.getValue("null"));
+        assertEquals("456", metaDataToTest.getValueAsStringOrNull(null));
+        assertEquals("456", metaDataToTest.getValueAsStringOrNull("null"));
         assertEquals(1, metaDataToTest.getKeys().size());
         assertTrue(metaDataToTest.getKeys().contains("null"));
 

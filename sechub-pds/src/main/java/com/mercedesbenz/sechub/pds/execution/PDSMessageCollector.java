@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.execution;
 
 import static com.mercedesbenz.sechub.pds.util.PDSAssert.*;

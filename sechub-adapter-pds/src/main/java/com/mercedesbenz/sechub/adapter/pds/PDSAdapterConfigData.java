@@ -37,4 +37,6 @@ public interface PDSAdapterConfigData {
 
     ScanType getScanType();
 
+    boolean isPDSScriptTrustingAllCertificates();
+
 }

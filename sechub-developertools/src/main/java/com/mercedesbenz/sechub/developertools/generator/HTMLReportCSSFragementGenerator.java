@@ -4,7 +4,7 @@ package com.mercedesbenz.sechub.developertools.generator;
 import java.io.File;
 
 import com.mercedesbenz.sechub.commons.TextFileReader;
-import com.mercedesbenz.sechub.test.TextFileWriter;
+import com.mercedesbenz.sechub.test.TestFileWriter;
 
 /**
  * How to use ? Why this generator?
@@ -39,7 +39,7 @@ public class HTMLReportCSSFragementGenerator {
     private static String CSS_FRAGMENT_START = "<style type=\"text/css\" th:fragment=\"styles\">";
 
     private static final TextFileReader reader = new TextFileReader();
-    private static final TextFileWriter writer = new TextFileWriter();
+    private static final TestFileWriter writer = new TestFileWriter();
 
     public static void main(String[] args) throws Exception {
         File scanHTMLFolder = new File("./../sechub-scan/src/main/resources/templates/report/html");

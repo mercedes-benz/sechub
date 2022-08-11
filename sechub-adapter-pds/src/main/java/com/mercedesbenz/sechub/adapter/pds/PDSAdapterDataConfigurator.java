@@ -30,6 +30,8 @@ public class PDSAdapterDataConfigurator implements PDSAdapterConfigData, PDSAdap
 
     private String binariesTarFileChecksumOrNull;
 
+    private boolean pdsScriptTrustsAllCertificates;
+
     public void setTargetType(String targetType) {
         if (targetType == null) {
             this.targetType = EMPTY_TARGET_TYPE;
@@ -157,6 +159,16 @@ public class PDSAdapterDataConfigurator implements PDSAdapterConfigData, PDSAdap
 
     public void setBinaryTarFileRequired(boolean binaryTarFileRequired) {
         this.binaryTarFileRequired = binaryTarFileRequired;
+    }
+
+    @Override
+    public void setPDSScriptTrustsAllCertificates(boolean trustAllCertificates) {
+        this.pdsScriptTrustsAllCertificates = trustAllCertificates;
+    }
+
+    @Override
+    public boolean isPDSScriptTrustingAllCertificates() {
+        return pdsScriptTrustsAllCertificates;
     }
 
     @Override

@@ -6,7 +6,7 @@ import java.util.regex.PatternSyntaxException;
 
 import org.springframework.stereotype.Component;
 
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingEntry;
+import com.mercedesbenz.sechub.commons.mapping.MappingEntry;
 
 @Component
 public class MappingEntryValidationImpl extends AbstractValidation<MappingEntry> implements MappingEntryValidation {
