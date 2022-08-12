@@ -47,6 +47,7 @@ public class SchedulerBinariesUploadService {
 
     private static final String PARAMETER_FILE = "file";
     private static final String PARAMETER_CHECKSUM = "checkSum";
+    private static final String FILE_SIZE_HEADER_FIELD_NAME = "x-binary-file-size";
     private static final Logger LOG = LoggerFactory.getLogger(SchedulerBinariesUploadService.class);
 
     @Autowired
@@ -123,8 +124,8 @@ public class SchedulerBinariesUploadService {
 
     private void startUpload(String projectId, UUID jobUUID, HttpServletRequest request) throws FileUploadException, IOException, UnsupportedEncodingException {
         /* prepare */
-        long contentLengthInBytesFromUser = request.getContentLengthLong();
-
+        long binaryFileSizeFromUser = getBinaryFileSize(request);
+        
         String checksumFromUser = null;
         String checksumCalculated = null;
 
@@ -138,15 +139,10 @@ public class SchedulerBinariesUploadService {
         ServletFileUpload upload = servletFileUploadFactory.create();
 
         long maxUploadSize = configuration.getMaxUploadSizeInBytes();
-
-        if (contentLengthInBytesFromUser < 0) {
-            throw new BadRequestException("The content length cannot be negative!");
-        }
-
         long maxUploadSizeWithHeaders = maxUploadSize + 600; // we accept 600 bytes more for header, checksum etc.
 
-        if (contentLengthInBytesFromUser > maxUploadSizeWithHeaders) {
-            throw new BadRequestException("The content length exceeds the allowed upload size.");
+        if (binaryFileSizeFromUser > maxUploadSizeWithHeaders) {
+            throw new BadRequestException("The file size in header field " + FILE_SIZE_HEADER_FIELD_NAME + " exceeds the allowed upload size.");
         }
 
         upload.setSizeMax(maxUploadSizeWithHeaders);
@@ -199,7 +195,7 @@ public class SchedulerBinariesUploadService {
                     MessageDigestCalculatingInputStream messageDigestInputStream = new MessageDigestCalculatingInputStream(fileInputstream, digest);
                     CountingInputStream byteCountingInputStream = new CountingInputStream(messageDigestInputStream);
 
-                    jobStorage.store(FILENAME_BINARIES_TAR, byteCountingInputStream, contentLengthInBytesFromUser);
+                    jobStorage.store(FILENAME_BINARIES_TAR, byteCountingInputStream, binaryFileSizeFromUser);
                     LOG.info("uploaded binaries for {}", jobUUID);
 
                     realContentLengthInBytes = byteCountingInputStream.getByteCount();
@@ -217,8 +213,8 @@ public class SchedulerBinariesUploadService {
             throw new BadRequestException("No file defined by user for binaries upload!");
         }
 
-        if (realContentLengthInBytes != contentLengthInBytesFromUser) {
-            throw new BadRequestException("The real content length was not equal to the user provided content length.");
+        if (realContentLengthInBytes != binaryFileSizeFromUser) {
+            throw new BadRequestException("The real file size was not equal to the user provided file size length.");
         }
 
         if (!checkSumDefinedByUser) {
@@ -231,6 +227,28 @@ public class SchedulerBinariesUploadService {
             throw new BadRequestException("Upload of binaries was not possible!");
         }
         assertCheckSumCorrect(checksumFromUser, checksumCalculated);
+    }
+    
+    private long getBinaryFileSize(HttpServletRequest request) {
+    	long binaryFileSizeFromUser = -1;
+    	
+    	String binaryFileSizeFromUserField = request.getHeader(FILE_SIZE_HEADER_FIELD_NAME);
+    	
+        if (binaryFileSizeFromUserField == null) {
+            throw new BadRequestException("Header field " + FILE_SIZE_HEADER_FIELD_NAME + " not set.");
+        }
+    	
+    	try {
+    		binaryFileSizeFromUser = Long.valueOf(binaryFileSizeFromUserField);
+    	} catch(NumberFormatException ex) {
+    		throw new BadRequestException("The file size in header field " + FILE_SIZE_HEADER_FIELD_NAME + " is not formatted as a number.");
+    	}
+    	
+        if (binaryFileSizeFromUser < 0) {
+            throw new BadRequestException("The file size in header field " + FILE_SIZE_HEADER_FIELD_NAME + " cannot be negative.");
+        }
+        
+    	return binaryFileSizeFromUser;
     }
 
     private void assertMultipart(HttpServletRequest request) {

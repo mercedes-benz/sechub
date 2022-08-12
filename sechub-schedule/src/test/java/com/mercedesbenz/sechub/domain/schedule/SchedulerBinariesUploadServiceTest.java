@@ -30,6 +30,7 @@ import com.mercedesbenz.sechub.storage.core.StorageService;
 public class SchedulerBinariesUploadServiceTest {
 
     private static final String PROJECT1 = "project1";
+    private static final String FILE_SIZE_HEADER_FIELD_NAME = "x-binary-file-size";
     private SchedulerBinariesUploadService serviceToTest;
     private CheckSumSupport checkSumSupport;
     private StorageService storageService;
@@ -69,7 +70,7 @@ public class SchedulerBinariesUploadServiceTest {
         serviceToTest.servletFileUploadFactory = servletFileUploadFactory;
 
     }
-
+    
     @Test
     void when_no_multipart_in_http_request_a_bad_request_is_returned() {
         /* execute + test */
@@ -81,12 +82,16 @@ public class SchedulerBinariesUploadServiceTest {
     @Test
     void when_illegal_content_bad_request_returned() throws Exception {
         /* prepare */
-        InputStream input = new ByteArrayInputStream("i-am-illegal-content-without boundary or multipart".getBytes());
+    	String fileContent = "i-am-illegal-content-without boundary or multipart";
+        InputStream input = new ByteArrayInputStream(fileContent.getBytes());
         ServletInputStream inputStream = new DelegatingServletInputStream(input);
         when(httpRequest.getMethod()).thenReturn("POST");
         when(httpRequest.getContentType()).thenReturn("multipart/");
         when(httpRequest.getInputStream()).thenReturn(inputStream);
         when(servletFileUploadFactory.create()).thenReturn(new ServletFileUpload());
+        
+        String numberOfBytes = String.valueOf(fileContent.getBytes().length);
+        when(httpRequest.getHeader(FILE_SIZE_HEADER_FIELD_NAME)).thenReturn(numberOfBytes);
 
         /* execute + test */
         assertThrowsExceptionContainingMessage(BadRequestException.class, "multipart content is not accepted",
@@ -95,22 +100,51 @@ public class SchedulerBinariesUploadServiceTest {
     }
 
     @Test
-    void when_content_length_is_negative() throws IOException {
+    void when_x_binary_header_field_not_set() throws IOException {
         /* prepare */
         InputStream input = new ByteArrayInputStream("test".getBytes());
         ServletInputStream inputStream = new DelegatingServletInputStream(input);
         when(httpRequest.getInputStream()).thenReturn(inputStream);
         when(httpRequest.getMethod()).thenReturn("POST");
         when(httpRequest.getContentType()).thenReturn("multipart/");
-        when(httpRequest.getContentLengthLong()).thenReturn((long) -1);
+        
+        /* execute + test */
+        assertThrowsExceptionContainingMessage(BadRequestException.class, "Header field " + FILE_SIZE_HEADER_FIELD_NAME + " not set.",
+                () -> serviceToTest.uploadBinaries(PROJECT1, randomUuid, httpRequest));
+    }
+    
+    @Test
+    void when_x_binary_header_field_contains_not_a_number() throws IOException {
+        /* prepare */
+        InputStream input = new ByteArrayInputStream("test".getBytes());
+        ServletInputStream inputStream = new DelegatingServletInputStream(input);
+        when(httpRequest.getHeader(FILE_SIZE_HEADER_FIELD_NAME)).thenReturn("invalid number");
+        when(httpRequest.getInputStream()).thenReturn(inputStream);
+        when(httpRequest.getMethod()).thenReturn("POST");
+        when(httpRequest.getContentType()).thenReturn("multipart/");
+        
+        /* execute + test */
+        assertThrowsExceptionContainingMessage(BadRequestException.class, "The file size in header field " + FILE_SIZE_HEADER_FIELD_NAME + " is not formatted as a number.",
+                () -> serviceToTest.uploadBinaries(PROJECT1, randomUuid, httpRequest));
+    }
+    
+    @Test
+    void when_x_binary_header_field_is_negative() throws IOException {
+        /* prepare */
+        InputStream input = new ByteArrayInputStream("test".getBytes());
+        ServletInputStream inputStream = new DelegatingServletInputStream(input);
+        when(httpRequest.getHeader(FILE_SIZE_HEADER_FIELD_NAME)).thenReturn("-1");
+        when(httpRequest.getInputStream()).thenReturn(inputStream);
+        when(httpRequest.getMethod()).thenReturn("POST");
+        when(httpRequest.getContentType()).thenReturn("multipart/");
 
         /* execute + test */
-        assertThrowsExceptionContainingMessage(BadRequestException.class, "The content length cannot be negative!",
+        assertThrowsExceptionContainingMessage(BadRequestException.class, "The file size in header field " + FILE_SIZE_HEADER_FIELD_NAME + " cannot be negative.",
                 () -> serviceToTest.uploadBinaries(PROJECT1, randomUuid, httpRequest));
     }
 
     @Test
-    void when_content_length_is_greater_than_max_upload_size_in_bytes() throws IOException {
+    void when_x_binary_header_field_is_greater_than_max_upload_size_in_bytes() throws IOException {
         /* prepare */
         InputStream input = new ByteArrayInputStream("test".getBytes());
         ServletInputStream inputStream = new DelegatingServletInputStream(input);
@@ -118,13 +152,13 @@ public class SchedulerBinariesUploadServiceTest {
         when(httpRequest.getInputStream()).thenReturn(inputStream);
         when(httpRequest.getMethod()).thenReturn("POST");
         when(httpRequest.getContentType()).thenReturn("multipart/");
-        when(httpRequest.getContentLengthLong()).thenReturn((long) 11 + 600); // Add 600 bytes for headers.
+        when(httpRequest.getHeader(FILE_SIZE_HEADER_FIELD_NAME)).thenReturn("611"); // Add 600 bytes for headers.
         when(servletFileUploadFactory.create()).thenReturn(new ServletFileUpload());
 
         when(configuration.getMaxUploadSizeInBytes()).thenReturn((long) 10);
 
         /* execute + test */
-        assertThrowsExceptionContainingMessage(BadRequestException.class, "The content length exceeds the allowed upload size.",
+        assertThrowsExceptionContainingMessage(BadRequestException.class, "The file size in header field " + FILE_SIZE_HEADER_FIELD_NAME + " exceeds the allowed upload size.",
                 () -> serviceToTest.uploadBinaries(PROJECT1, randomUuid, httpRequest));
     }
 }
