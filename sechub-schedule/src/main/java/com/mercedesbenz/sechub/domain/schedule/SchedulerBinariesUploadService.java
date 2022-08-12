@@ -45,7 +45,7 @@ import com.mercedesbenz.sechub.storage.core.StorageService;
 @RolesAllowed(RoleConstants.ROLE_USER)
 public class SchedulerBinariesUploadService {
 
-    public static final String FILE_SIZE_HEADER_FIELD_NAME = "x-binary-file-size";
+    public static final String FILE_SIZE_HEADER_FIELD_NAME = "x-file-size";
     private static final String PARAMETER_FILE = "file";
     private static final String PARAMETER_CHECKSUM = "checkSum";
     private static final Logger LOG = LoggerFactory.getLogger(SchedulerBinariesUploadService.class);
@@ -212,11 +212,9 @@ public class SchedulerBinariesUploadService {
         if (!fileDefinedByUser) {
             throw new BadRequestException("No file defined by user for binaries upload!");
         }
-
         if (realContentLengthInBytes != binaryFileSizeFromUser) {
             throw new BadRequestException("The real file size was not equal to the user provided file size length.");
         }
-
         if (!checkSumDefinedByUser) {
             throw new BadRequestException("No checksum defined by user for binaries upload!");
         }

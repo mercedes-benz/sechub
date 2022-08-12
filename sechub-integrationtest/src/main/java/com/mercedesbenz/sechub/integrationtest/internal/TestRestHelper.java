@@ -35,7 +35,7 @@ import com.mercedesbenz.sechub.adapter.support.TrustAllSupport;
 import com.mercedesbenz.sechub.integrationtest.api.UserContext;
 
 public class TestRestHelper {
-    private static final String FILE_SIZE_HEADER_FIELD_NAME = "x-binary-file-size";
+    private static final String FILE_SIZE_HEADER_FIELD_NAME = "x-file-size";
 
     public static enum RestHelperTarget {
         SECHUB_SERVER, SECHUB_PDS,

@@ -50,6 +50,8 @@ import com.mercedesbenz.sechub.storage.core.JobStorage;
 @RolesAllowed({ PDSRoleConstants.ROLE_SUPERADMIN, PDSRoleConstants.ROLE_USER })
 public class PDSFileUploadJobService {
 
+    public static final String FILE_SIZE_HEADER_FIELD_NAME = "x-file-size";
+
     private static final Logger LOG = LoggerFactory.getLogger(PDSFileUploadJobService.class);
 
     private static final int MAX_FILENAME_LENGTH = 40;
@@ -129,7 +131,7 @@ public class PDSFileUploadJobService {
         /* prepare */
         LOG.debug("Start upload file: {} for PDS job: {}", fileName, jobUUID);
 
-        long contentLengthInBytesFromUser = request.getContentLengthLong();
+        long binaryFileSizeFromUser = getBinaryFileSize(request);
 
         String checksumFromUser = null;
         String checksumCalculated = null;
@@ -144,15 +146,10 @@ public class PDSFileUploadJobService {
         ServletFileUpload upload = servletFileUploadFactory.create();
 
         long maxUploadSize = configuration.getMaxUploadSizeInBytes();
-
-        if (contentLengthInBytesFromUser < 0) {
-            throw new PDSBadRequestException("The content length cannot be negative!");
-        }
-
         long maxUploadSizeWithHeaders = maxUploadSize + 600; // we accept 600 bytes more for header, checksum etc.
 
-        if (contentLengthInBytesFromUser > maxUploadSizeWithHeaders) {
-            throw new PDSBadRequestException("The content length exceeds the allowed upload size.");
+        if (binaryFileSizeFromUser > maxUploadSizeWithHeaders) {
+            throw new PDSBadRequestException("The file size in header field " + FILE_SIZE_HEADER_FIELD_NAME + " exceeds the allowed upload size.");
         }
 
         upload.setSizeMax(maxUploadSizeWithHeaders);
@@ -208,7 +205,7 @@ public class PDSFileUploadJobService {
                     MessageDigestCalculatingInputStream messageDigestInputStream = new MessageDigestCalculatingInputStream(fileInputstream, digest);
                     CountingInputStream byteCountingInputStream = new CountingInputStream(messageDigestInputStream);
 
-                    jobStorage.store(fileName, byteCountingInputStream, contentLengthInBytesFromUser);
+                    jobStorage.store(fileName, byteCountingInputStream, binaryFileSizeFromUser);
 
                     LOG.info("uploaded file:{} for job:{}", fileName, jobUUID);
 
@@ -225,8 +222,8 @@ public class PDSFileUploadJobService {
         if (!fileDefinedByUser) {
             throw new PDSBadRequestException("No file defined by user for job data upload!");
         }
-        if (realContentLengthInBytes != contentLengthInBytesFromUser) {
-            throw new PDSBadRequestException("The real content length was not equal to the user provided content length.");
+        if (realContentLengthInBytes != binaryFileSizeFromUser) {
+            throw new PDSBadRequestException("The real file size was not equal to the user provided file size length.");
         }
         if (!checkSumDefinedByUser) {
             throw new PDSBadRequestException("No checksum defined by user for job data upload!");
@@ -238,6 +235,28 @@ public class PDSFileUploadJobService {
             throw new PDSBadRequestException("Upload of binaries was not possible!");
         }
         assertCheckSumCorrect(checksumFromUser, checksumCalculated);
+    }
+
+    private long getBinaryFileSize(HttpServletRequest request) {
+        long binaryFileSizeFromUser = -1;
+
+        String binaryFileSizeFromUserField = request.getHeader(FILE_SIZE_HEADER_FIELD_NAME);
+
+        if (binaryFileSizeFromUserField == null) {
+            throw new PDSBadRequestException("Header field " + FILE_SIZE_HEADER_FIELD_NAME + " not set.");
+        }
+
+        try {
+            binaryFileSizeFromUser = Long.valueOf(binaryFileSizeFromUserField);
+        } catch (NumberFormatException ex) {
+            throw new PDSBadRequestException("The file size in header field " + FILE_SIZE_HEADER_FIELD_NAME + " is not formatted as a number.");
+        }
+
+        if (binaryFileSizeFromUser < 0) {
+            throw new PDSBadRequestException("The file size in header field " + FILE_SIZE_HEADER_FIELD_NAME + " cannot be negative.");
+        }
+
+        return binaryFileSizeFromUser;
     }
 
     private void assertMultipart(HttpServletRequest request) {
