@@ -45,9 +45,9 @@ import com.mercedesbenz.sechub.storage.core.StorageService;
 @RolesAllowed(RoleConstants.ROLE_USER)
 public class SchedulerBinariesUploadService {
 
+    public static final String FILE_SIZE_HEADER_FIELD_NAME = "x-binary-file-size";
     private static final String PARAMETER_FILE = "file";
     private static final String PARAMETER_CHECKSUM = "checkSum";
-    private static final String FILE_SIZE_HEADER_FIELD_NAME = "x-binary-file-size";
     private static final Logger LOG = LoggerFactory.getLogger(SchedulerBinariesUploadService.class);
 
     @Autowired
@@ -125,7 +125,7 @@ public class SchedulerBinariesUploadService {
     private void startUpload(String projectId, UUID jobUUID, HttpServletRequest request) throws FileUploadException, IOException, UnsupportedEncodingException {
         /* prepare */
         long binaryFileSizeFromUser = getBinaryFileSize(request);
-        
+
         String checksumFromUser = null;
         String checksumCalculated = null;
 
@@ -228,27 +228,27 @@ public class SchedulerBinariesUploadService {
         }
         assertCheckSumCorrect(checksumFromUser, checksumCalculated);
     }
-    
+
     private long getBinaryFileSize(HttpServletRequest request) {
-    	long binaryFileSizeFromUser = -1;
-    	
-    	String binaryFileSizeFromUserField = request.getHeader(FILE_SIZE_HEADER_FIELD_NAME);
-    	
+        long binaryFileSizeFromUser = -1;
+
+        String binaryFileSizeFromUserField = request.getHeader(FILE_SIZE_HEADER_FIELD_NAME);
+
         if (binaryFileSizeFromUserField == null) {
             throw new BadRequestException("Header field " + FILE_SIZE_HEADER_FIELD_NAME + " not set.");
         }
-    	
-    	try {
-    		binaryFileSizeFromUser = Long.valueOf(binaryFileSizeFromUserField);
-    	} catch(NumberFormatException ex) {
-    		throw new BadRequestException("The file size in header field " + FILE_SIZE_HEADER_FIELD_NAME + " is not formatted as a number.");
-    	}
-    	
+
+        try {
+            binaryFileSizeFromUser = Long.valueOf(binaryFileSizeFromUserField);
+        } catch (NumberFormatException ex) {
+            throw new BadRequestException("The file size in header field " + FILE_SIZE_HEADER_FIELD_NAME + " is not formatted as a number.");
+        }
+
         if (binaryFileSizeFromUser < 0) {
             throw new BadRequestException("The file size in header field " + FILE_SIZE_HEADER_FIELD_NAME + " cannot be negative.");
         }
-        
-    	return binaryFileSizeFromUser;
+
+        return binaryFileSizeFromUser;
     }
 
     private void assertMultipart(HttpServletRequest request) {
