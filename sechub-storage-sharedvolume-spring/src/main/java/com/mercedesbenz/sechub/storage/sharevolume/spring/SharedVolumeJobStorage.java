@@ -110,4 +110,9 @@ public class SharedVolumeJobStorage implements JobStorage {
         return names;
     }
 
+    @Override
+    public void store(String name, InputStream stream) throws IOException {
+        store(name, stream, -1);
+    }
+
 }

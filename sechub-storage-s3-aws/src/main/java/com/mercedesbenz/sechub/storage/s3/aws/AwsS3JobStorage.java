@@ -56,22 +56,7 @@ public class AwsS3JobStorage implements JobStorage {
             throw new IllegalArgumentException("Content length cannot be negative!");
         }
 
-        try (InputStream stream = inputStream) {
-            if (!client.doesBucketExistV2(bucketName)) {
-                client.createBucket(bucketName);
-            }
-            ObjectMetadata meta = new ObjectMetadata();
-            meta.setContentLength(contentLength);
-
-            String objectName = getObjectName(name);
-            LOG.debug("store objectName={}", objectName + " on bucket {}", objectName, bucketName);
-
-            client.putObject(bucketName, objectName, stream, meta);
-
-        } catch (Exception e) {
-            throw new IOException("Store of " + name + " to s3 failed", e);
-        }
-
+        storeInS3(name, inputStream, contentLength);
     }
 
     @Override
@@ -158,4 +143,32 @@ public class AwsS3JobStorage implements JobStorage {
         }
     }
 
+    @Override
+    public void store(String name, InputStream inputStream) throws IOException {
+        requireNonNull(name, "name may not be null!");
+        requireNonNull(inputStream, "inputStream may not be null!");
+
+        storeInS3(name, inputStream, null);
+    }
+
+    private void storeInS3(String name, InputStream inputStream, Long contentLength) throws IOException {
+        try (InputStream stream = inputStream) {
+            if (!client.doesBucketExistV2(bucketName)) {
+                client.createBucket(bucketName);
+            }
+            ObjectMetadata meta = new ObjectMetadata();
+
+            if (contentLength != null) {
+                meta.setContentLength(contentLength);
+            }
+
+            String objectName = getObjectName(name);
+            LOG.debug("store objectName={}", objectName + " on bucket {}", objectName, bucketName);
+
+            client.putObject(bucketName, objectName, stream, meta);
+
+        } catch (Exception e) {
+            throw new IOException("Store of " + name + " to s3 failed", e);
+        }
+    }
 }

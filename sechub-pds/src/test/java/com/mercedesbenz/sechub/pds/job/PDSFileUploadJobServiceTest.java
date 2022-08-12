@@ -198,26 +198,6 @@ public class PDSFileUploadJobServiceTest {
     }
 
     @Test
-    void upload_fails_when_no_x_file_size_header_set() {
-        /* prepare */
-        String result = CONTENT_DATA;
-        MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
-        String fileName = "binaries.tar";
-
-        ServletContext context = new MockServletContext();
-        HttpServletRequest request = MockMvcRequestBuilders.multipart("https://localhost:1234").file(multiPart).buildRequest(context);
-
-        PDSBadRequestException exception = assertThrows(PDSBadRequestException.class, () -> {
-
-            /* execute */
-            serviceToTest.upload(job.getUUID(), fileName, request);
-        });
-
-        /* test */
-        assertEquals("Header field " + FILE_SIZE_HEADER_FIELD_NAME + " not set.", exception.getMessage());
-    }
-
-    @Test
     void upload_fails_when_no_x_file_size_header_negative() {
         /* prepare */
         String result = CONTENT_DATA;
