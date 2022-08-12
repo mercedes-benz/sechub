@@ -15,10 +15,10 @@ import org.mockito.stubbing.Answer;
 import com.mercedesbenz.sechub.commons.model.SecHubResult;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.domain.scan.ReportTransformationResult;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
 import com.mercedesbenz.sechub.domain.scan.SecHubReportProductTransformerService;
 import com.mercedesbenz.sechub.domain.scan.product.ReportProductExecutionService;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 
 public class ReportServiceTest {
 

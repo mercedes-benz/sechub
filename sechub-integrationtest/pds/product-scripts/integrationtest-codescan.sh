@@ -19,6 +19,11 @@
 # Info: 
 # we are inside "sechub-pds" sub folder at execution time, because the PDS server instance runs her...
 # so we must source from other location...
+#
+# 
+# Remark: This file is automatically started by a Junit test: SharedFunctionScriptTest. So it 
+#         is part of the build process.
+#
 set -e
 source ./../sechub-integrationtest/pds/product-scripts/shared-functions.sh
 
@@ -57,6 +62,11 @@ if [[ "$PDS_JOB_HAS_EXTRACTED_BINARIES" = "true" ]]; then
 fi
 
 # Now we add a "header" so identifyable by importer + synthetic info object to check params
+if [[ ! -f "${PDS_JOB_RESULT_FILE}" ]]; then
+    touch ${PDS_JOB_RESULT_FILE}
+    echo "${PDS_JOB_RESULT_FILE} was missing - created empty file"
+fi
+
 echo "#PDS_INTTEST_PRODUCT_CODESCAN
 info:pds.test.key.variantname as PDS_TEST_KEY_VARIANTNAME=$PDS_TEST_KEY_VARIANTNAME,product1.level as PRODUCT1_LEVEL=$PRODUCT1_LEVEL
 $(cat ${PDS_JOB_RESULT_FILE})" > ${PDS_JOB_RESULT_FILE}
@@ -90,9 +100,21 @@ fi
 
 if [[ "$PDS_TEST_KEY_VARIANTNAME" = "g" ]]; then
     errEcho $(date)
-    errEcho "ERROR message before doing an exit 1..."
+    errEcho "ERROR output before doing an exit 1..."
     exit 1
 fi
+
+if [[ "$PDS_TEST_KEY_VARIANTNAME" = "k" ]]; then
+    infoMessage "script is starting to inspect event folder: $PDS_JOB_EVENTS_FOLDER"
+
+    counter=0
+    if waitForEventAndSendMessage "cancel_requested" 0.3 12 ; then
+       exit 0
+    else
+       exit 5    
+    fi
+fi
+
 
 if [[ "$PDS_TEST_KEY_VARIANTNAME" = "" ]]; then
     echo "No variant found - so direct PDS test"
@@ -103,7 +125,7 @@ if [[ "$PDS_TEST_KEY_VARIANTNAME" = "" ]]; then
     a multine ....
     "
     
-    echo "After messages were created I found this inside messages folder:"
+    echo "After messages were created, I found this inside messages folder:"
     echo "----------------------------------------------------------------------------"
     ls $PDS_JOB_USER_MESSAGES_FOLDER 
     echo "----------------------------------------------------------------------------"

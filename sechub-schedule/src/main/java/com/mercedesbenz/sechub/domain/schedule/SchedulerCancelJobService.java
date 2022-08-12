@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
-import com.mercedesbenz.sechub.domain.schedule.batch.SchedulerCancelBatchJobService;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJobMessagesSupport;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
@@ -56,9 +55,6 @@ public class SchedulerCancelJobService {
     @Autowired
     JobOperator operator;
 
-    @Autowired
-    SchedulerCancelBatchJobService cancelBatchJobService;
-
     private ScheduleSecHubJobMessagesSupport jobMessageSupport = new ScheduleSecHubJobMessagesSupport();
 
     /**
@@ -79,36 +75,47 @@ public class SchedulerCancelJobService {
         }
         ScheduleSecHubJob secHubJob = optJob.get();
 
-        cancelBatchJobService.stopAllRunningBatchJobsForSechubJobUUID(jobUUID);
-        markJobAsCanceled(secHubJob);
+        markJobAsCanceledRequested(secHubJob);
 
-        LOG.info("job {} has been canceled", jobUUID);
-
-        sendJobCanceled(secHubJob, ownerEmailAddress);
+        sendJobCancellationRunning(secHubJob, ownerEmailAddress);
 
     }
 
-    private void markJobAsCanceled(ScheduleSecHubJob secHubJob) {
+    private void markJobAsCanceledRequested(ScheduleSecHubJob secHubJob) {
         ExecutionState state = secHubJob.getExecutionState();
         if (ExecutionState.ENDED.equals(state)) {
             throw new NotAcceptableException("Not able to cancel because job has already ended!");
         }
+        /*
+         * Only when execution result is NONE the further execution is possible -
+         * otherwise the job has been already processed (done/failed or canceled)
+         */
         if (!ExecutionResult.NONE.equals(secHubJob.getExecutionResult())) {
             throw new NotAcceptableException("Not able to cancel because job has already a result:" + secHubJob.getExecutionResult());
         }
+
+        /*
+         * se the job in a state where the processing from client side can break very
+         * fast
+         */
         secHubJob.setExecutionState(ExecutionState.CANCEL_REQUESTED);
         secHubJob.setExecutionResult(ExecutionResult.FAILED); // we mark job as failed, because canceled and so did not work. So we need no
-                                                              // special result like "CANCELED". It simply did not work, reason can be found
-                                                              // in execution state
+                                                              // special execution result like "CANCELED". The job simply did not work and the
+                                                              // reason can be found in execution state
         secHubJob.setEnded(LocalDateTime.now());
+
+        /* add message about the cancellation - so available in status and report */
         jobMessageSupport.addMessages(secHubJob, Arrays.asList(new SecHubMessage(SecHubMessageType.INFO, "Job execution was canceled by user")));
 
         jobRepository.save(secHubJob);
+
+        LOG.info("Persisted SecHub job {} with sexecution state: {} and result: {}", secHubJob.getUUID(), secHubJob.getExecutionState(),
+                secHubJob.getExecutionResult());
     }
 
-    @IsSendingAsyncMessage(MessageID.JOB_CANCELED)
-    private void sendJobCanceled(ScheduleSecHubJob secHubJob, String ownerEmailAddress) {
-        DomainMessage request = DomainMessageFactory.createEmptyRequest(MessageID.JOB_CANCELED);
+    @IsSendingAsyncMessage(MessageID.JOB_CANCELLATION_RUNNING)
+    private void sendJobCancellationRunning(ScheduleSecHubJob secHubJob, String ownerEmailAddress) {
+        DomainMessage request = DomainMessageFactory.createEmptyRequest(MessageID.JOB_CANCELLATION_RUNNING);
 
         JobMessage message = new JobMessage();
         message.setJobUUID(secHubJob.getUUID());

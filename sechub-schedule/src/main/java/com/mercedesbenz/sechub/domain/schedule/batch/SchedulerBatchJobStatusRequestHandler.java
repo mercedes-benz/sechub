@@ -21,6 +21,8 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.messaging.SynchronMessageHandler;
 
 @Component
+@Deprecated // It is not clear if this class should still be used - currently we do not need
+            // the batch job state
 public class SchedulerBatchJobStatusRequestHandler implements SynchronMessageHandler {
 
     @Autowired

@@ -3,54 +3,60 @@ package com.mercedesbenz.sechub.pds.execution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterValueConstants;
+import com.mercedesbenz.sechub.pds.job.PDSJobConfiguration;
+import com.mercedesbenz.sechub.pds.job.PDSJobConfigurationSupport;
+
 public class ProcessHandlingDataFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(ProcessHandlingDataFactory.class);
 
-    private static final int MAXIMUM_ACCEPTED_SECONDS_TO_WAIT_FOR_PROCESS_ON_CANCEL = 60 * 10; // ten minutes max
-    private static final int DEFAULT_0_SECONDS_TO_WAIT_FOR_PROCESS_ON_CANCEL = 0;
+    public ProcessHandlingData createForCancelOperation(PDSJobConfiguration configuration) {
 
-    private static int MAXIMUM_MILLISECONDS_FOR_CHECK_INTERVAL = 5000; // 5 seconds
-    private static int MINIMUM_MILLISECONDS_FOR_CHECK_INTERVAL = 300;
+        PDSJobConfigurationSupport configurationSupport = new PDSJobConfigurationSupport(configuration);
 
-    public ProcessHandlingData createForCancelOperation(ExecutionEventData cancelEventData) {
         ProcessHandlingData data = new ProcessHandlingData();
-        data.millisecondsToWaitForNextCheck = calculateMillisecondsToWaitForNextCheck(cancelEventData);
-        data.secondsToWaitForProcess = calculateSecondsToWaitForProcess(cancelEventData);
+        data.millisecondsToWaitForNextCheck = calculateMillisecondsToWaitForNextCheck(configurationSupport);
+        data.secondsToWaitForProcess = calculateSecondsToWaitForProcess(configurationSupport);
 
         return data;
     }
 
-    private int calculateMillisecondsToWaitForNextCheck(ExecutionEventData cancelEventData) {
-        int millisecondsToWaitForNextCheck = cancelEventData.getDetail(ExecutionEventDetailIdentifier.CANCEL_REQUEST_MILLSECONDS_FOR_CHECK_INTERVAL,
-                MINIMUM_MILLISECONDS_FOR_CHECK_INTERVAL);
-        if (millisecondsToWaitForNextCheck > MAXIMUM_MILLISECONDS_FOR_CHECK_INTERVAL) {
+    private int calculateMillisecondsToWaitForNextCheck(PDSJobConfigurationSupport configuration) {
+        int maxCheck = PDSDefaultParameterValueConstants.MAXIMUM_TIME_TO_WAIT_IN_MILLISECONDS_FOR_SCRIPT_CANCELLATION_CHECK;
+        int minCheck = PDSDefaultParameterValueConstants.MINIMUM_TIME_TO_WAIT_IN_MILLISECONDS_FOR_SCRIPT_CANCELLATION_CHECK;
+
+        int millisecondsToWaitForNextCheck = configuration.getMillisecondsToWaitForNextCheck();
+        if (millisecondsToWaitForNextCheck > maxCheck) {
             /* maybe wrong configured, or script has changed the event... */
-            LOG.warn("Cancel event wants to check each {} milliseconds. But this exceeds our accepted maximum of {} seconds!s", millisecondsToWaitForNextCheck,
-                    MAXIMUM_MILLISECONDS_FOR_CHECK_INTERVAL);
-            millisecondsToWaitForNextCheck = MAXIMUM_MILLISECONDS_FOR_CHECK_INTERVAL;
+            LOG.warn(
+                    "Cancel event wants to check each {} milliseconds. But this exceeds our accepted maximum of {} seconds! Will set fallback to {} milliseconds.",
+                    millisecondsToWaitForNextCheck, maxCheck, maxCheck);
+            millisecondsToWaitForNextCheck = maxCheck;
         }
-        if (millisecondsToWaitForNextCheck < MINIMUM_MILLISECONDS_FOR_CHECK_INTERVAL) {
+        if (millisecondsToWaitForNextCheck < minCheck) {
             /* maybe wrong configured, or script has changed the event... */
-            LOG.warn("Cancel event wants to check each {} milliseconds. But this is lower than our accepted minimum of {} milliseconds!s",
-                    millisecondsToWaitForNextCheck, MINIMUM_MILLISECONDS_FOR_CHECK_INTERVAL);
-            millisecondsToWaitForNextCheck = MINIMUM_MILLISECONDS_FOR_CHECK_INTERVAL;
+            LOG.warn(
+                    "Cancel event wants to check each {} milliseconds. But this is lower than our accepted minimum of {} milliseconds! Will fallback to {} seconds.",
+                    millisecondsToWaitForNextCheck, minCheck, minCheck);
+            millisecondsToWaitForNextCheck = minCheck;
         }
         return millisecondsToWaitForNextCheck;
     }
 
-    private int calculateSecondsToWaitForProcess(ExecutionEventData cancelEventData) {
-        int secondsToWaitForProcess = cancelEventData.getDetail(ExecutionEventDetailIdentifier.CANCEL_REQUEST_SECONDS_TO_WAIT_FOR_PROCESS,
-                DEFAULT_0_SECONDS_TO_WAIT_FOR_PROCESS_ON_CANCEL);
-        if (secondsToWaitForProcess > MAXIMUM_ACCEPTED_SECONDS_TO_WAIT_FOR_PROCESS_ON_CANCEL) {
+    private int calculateSecondsToWaitForProcess(PDSJobConfigurationSupport configuration) {
+        int maxWait = PDSDefaultParameterValueConstants.MAXIMUM_TIME_TO_WAIT_IN_SECONDS_FOR_SCRIPT_CANCELLATION;
+        int minWait = PDSDefaultParameterValueConstants.NO_TIME_TO_WAIT_IN_SECONDS_FOR_SCRIPT_CANCELLATION;
+
+        int secondsToWaitForProcess = configuration.getSecondsToWaitForProcess();
+        if (secondsToWaitForProcess > maxWait) {
             /* maybe wrong configured, or script has changed the event... */
-            LOG.warn("Cancel event wants to wait for {} seconds. But this exceeds our accepted maximum of {} seconds!s", secondsToWaitForProcess,
-                    MAXIMUM_ACCEPTED_SECONDS_TO_WAIT_FOR_PROCESS_ON_CANCEL);
-            secondsToWaitForProcess = MAXIMUM_ACCEPTED_SECONDS_TO_WAIT_FOR_PROCESS_ON_CANCEL;
+            LOG.warn("Cancel event wants to wait for {} seconds. But this exceeds accepted maximum of {} seconds!", secondsToWaitForProcess, maxWait);
+            secondsToWaitForProcess = maxWait;
         }
-        if (secondsToWaitForProcess < 0) {
-            LOG.warn("Cancel event wants to wait for {} seconds. But negative values are not allowed.");
-            secondsToWaitForProcess = 0;
+        if (secondsToWaitForProcess < minWait) {
+            LOG.warn("Cancel event wants to wait for {} seconds. But this is lower than accepted minimum of {} seconds!");
+            secondsToWaitForProcess = minWait;
         }
         return secondsToWaitForProcess;
     }

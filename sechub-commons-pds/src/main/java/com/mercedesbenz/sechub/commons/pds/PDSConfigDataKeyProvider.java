@@ -36,8 +36,7 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
     PDS_CONFIG_USE_SECHUB_STORAGE(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE,
             "When 'true' the SecHub storage will be reused by PDS server. In this case SecHub will not upload job data to PDS.\n"
                     + "But it's crucial to have same root storage setup on PDS server side (e.g. same s3 bucket for S3 storage, or same NFS base for shared volumes).\n"
-                    + "When not `true` or not defined, pds will use its own storage locations").markAlwaysSentToPDS().markDefaultRecommended()
-                            .withDefault(true))
+                    + "When not `true` or not defined, pds will use its own storage locations").markSendToPDS().markDefaultRecommended().withDefault(true))
 
     ,
     /**
@@ -48,7 +47,7 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
     PDS_CONFIG_USE_SECHUB_MAPPINGS(
             new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_MAPPINGS, "Contains a comma separated list of mappping ids. "
                     + "Each defined mapping will be fetched from SecHub DB as JSON and sent as job parameter with " + "the mapping id as name to the PDS.")
-                            .markAlwaysSentToPDS().withDefault(true))
+                            .markSendToPDS().withDefault(true))
 
     ,
 
@@ -66,8 +65,7 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
             "This contains a comma separated list of path patterns for file includes. These patterns can contain wildcards. Matching will be done case insensitive!"
                     + "For example: `*.go,*.html, test1.txt` would include every go file, every HTML file and files named `test1.txt`.\n\n"
                     + "When nothing defined, every content is accepted as include.\n"
-                    + "Every file which is matched by one of the patterns will be included - except those which are explicitly excluded.\n\n")
-                            .markAlwaysSentToPDS()),
+                    + "Every file which is matched by one of the patterns will be included - except those which are explicitly excluded.\n\n").markSendToPDS()),
 
     /**
      * Contains file filter include information
@@ -75,7 +73,7 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
     PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED(new ExecutionPDSKey(
             PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED,
             "When 'true' the PDS adapter script used by the job will have the information and can use this information when it comes to remote operations.")
-                    .markAlwaysSentToPDS().markAsAvailableInsideScript().markDefaultRecommended().withDefault(false)),
+                    .markSendToPDS().markAsAvailableInsideScript().markDefaultRecommended().withDefault(false)),
 
     /**
      * Contains file filter exclude information
@@ -84,7 +82,7 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
             "This contains a comma separated list of path patterns for file excludes. These patterns can contain wildcards. Matching will be done case insensitive!"
                     + "For example: `*.go,*.html, test1.txt` would excluded every go file, every HTML file and files named `test1.txt`.\n\n"
                     + "When empty none of the files will be excluded. The exclude operation will be done AFTER the include file filtering has happend.")
-                            .markAlwaysSentToPDS()),
+                            .markSendToPDS()),
 
     /**
      * This is automatically given to PDS by SecHub - depending on scan type. E.g.
@@ -106,6 +104,18 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
             "This contains the SecHub configuration as JSON object (but reduced to current scan type, so e.g. a web scan will have no code scan configuration data available")
                     .markGenerated().markAsAvailableInsideScript()),
 
+    PDS_CONFIG_CANCEL_EVENT_CHECKINTERVAL_MILLISECONDS(new ExecutionPDSKey(
+            PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_CANCEL_EVENT_CHECKINTERVAL_MILLISECONDS,
+            "This is the maximum time the launcher script process will be kept alive after a cancellation event is sent. "
+                    + "This gives the launcher script process a chance to recognize the cancel event and do some final cancel parts and exit gracefully.")
+                            .markSendToPDS()),
+
+    PDS_CONFIG_CANCEL_MAXIMUM_WAITTIME_SECOND(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_CANCEL_MAXIMUM_WAITTIME_SECONDS,
+            "The time in seconds PDS will check again if the launcher script process is alive or not when the process shall be canceled. When nothing defined, the default value is:"
+                    + PDSDefaultParameterValueConstants.DEFAULT_TIME_TO_WAIT_IN_SECONDS_FOR_SCRIPT_CANCELLATION + ". If the value is "
+                    + PDSDefaultParameterValueConstants.NO_TIME_TO_WAIT_IN_SECONDS_FOR_SCRIPT_CANCELLATION + " the process will be terminated without waiting.")
+                            .markSendToPDS()),
+
     /**
      * A special runtime configuration configuration for PDS servers started with
      * mocked profile: Normally every PDS call will result in a real execution - no
@@ -114,7 +124,7 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
      * is parameter is set to <code>false</code>, a mock will even be used for PDS.
      */
     PDS_MOCKING_DISABLED(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_MOCKING_DISABLED,
-            "When 'true' any PDS adapter call will use real PDS adapter and not a mocked variant.").markForTestingOnly().markAlwaysSentToPDS()
+            "When 'true' any PDS adapter call will use real PDS adapter and not a mocked variant.").markForTestingOnly().markSendToPDS()
                     .markDefaultRecommended().withDefault(true));
 
     private ExecutionPDSKey key;

@@ -54,7 +54,7 @@ public class IntegrationTestAdapter implements Adapter<IntegrationTestAdapterCon
     }
 
     @Override
-    public boolean stop(IntegrationTestAdapterConfig config, AdapterMetaDataCallback callback) throws AdapterException {
+    public boolean cancel(IntegrationTestAdapterConfig config, AdapterMetaDataCallback callback) throws AdapterException {
         return false;
     }
 

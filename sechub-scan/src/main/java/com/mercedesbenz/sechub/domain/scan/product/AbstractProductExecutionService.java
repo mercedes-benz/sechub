@@ -16,13 +16,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionException;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigRepository;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetup;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
 
 /**
  * Abstract base implementation for all product execution services. Service will
@@ -83,7 +83,7 @@ public abstract class AbstractProductExecutionService implements ProductExecutio
             UUIDTraceLogID traceLogID = traceLogID(context.getSechubJobUUID());
 
             SecHubConfiguration configuration = context.getConfiguration();
-            if (context.isCanceledOrAbandonded()) {
+            if (context.isCancelRequestedOrAbandonded()) {
                 LOG.debug("{} canceled or abandoned, so ignored by {}", traceLogID, getClass().getSimpleName());
                 return;
             }
@@ -115,7 +115,7 @@ public abstract class AbstractProductExecutionService implements ProductExecutio
         LOG.info("Start executor:{} config:{} and wait for result. {}", executor.getIdentifier(), executorConfigUUID, traceLogID);
 
         List<ProductResult> productResults = executor.execute(context, executorContext);
-        if (context.isCanceledOrAbandonded()) {
+        if (context.isCancelRequestedOrAbandonded()) {
             return Collections.emptyList();
         }
         int amount = 0;
@@ -152,7 +152,7 @@ public abstract class AbstractProductExecutionService implements ProductExecutio
         ProductExecutor serecoProductExecutor = null;
 
         for (ProductExecutor productExecutor : executors) {
-            if (context.isCanceledOrAbandonded()) {
+            if (context.isCancelRequestedOrAbandonded()) {
                 return;
             }
             ProductIdentifier productIdentifier = productExecutor.getIdentifier();
@@ -211,7 +211,7 @@ public abstract class AbstractProductExecutionService implements ProductExecutio
         List<ProductResult> productResults = null;
         try {
             productResults = execute(productExecutor, executorContext, context, traceLogID);
-            if (context.isCanceledOrAbandonded()) {
+            if (context.isCancelRequestedOrAbandonded()) {
                 return;
             }
             if (productResults == null) {
@@ -234,7 +234,7 @@ public abstract class AbstractProductExecutionService implements ProductExecutio
             }
             productResults.add(currentResult);
         }
-        if (context.isCanceledOrAbandonded()) {
+        if (context.isCancelRequestedOrAbandonded()) {
             return;
         }
         /* execution was successful - so persist new results */

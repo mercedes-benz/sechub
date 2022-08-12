@@ -3,12 +3,13 @@ package com.mercedesbenz.sechub.domain.scan.product;
 
 import java.util.List;
 
+import com.mercedesbenz.sechub.adapter.AdapterConfig;
 import com.mercedesbenz.sechub.domain.scan.NetworkLocationProvider;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataProvider;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataSuppport;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetRegistry.NetworkTargetInfo;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 
 public class ProductExecutorData {
 
@@ -24,6 +25,7 @@ public class ProductExecutorData {
     NetworkTargetInfo currentNetworkTargetInfo;
     String traceLogIdAsString;
     String mockDataIdentifier;
+    private AdapterConfig rememberedAdapterConfig;
 
     ProductExecutorData() {
     }
@@ -71,6 +73,18 @@ public class ProductExecutorData {
 
     public String getTraceLogIdAsString() {
         return traceLogIdAsString;
+    }
+
+    public void rememberAdapterConfig(AdapterConfig config) {
+        this.rememberedAdapterConfig = config;
+    }
+
+    public AdapterConfig getRememberedAdapterConfig() {
+        return rememberedAdapterConfig;
+    }
+
+    public void forgetRememberedAdapterConfig() {
+        this.rememberedAdapterConfig = null;
     }
 
 }

@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @PDSUseCaseDefinition(
         id=PDSUseCaseIdentifier.UC_SYSTEM_HANDLES_JOB_CANCEL_REQUESTS,
         group=PDSUseCaseGroup.JOB_EXECUTION,
-        title="System handles job cancelation requests",
+        title="System handles job cancellation requests",
         description="The PDS does handle job cancel requests. For every PDS job where a cancel request is active and the PDS instance does runs this job, the PDS will cancel it. When a orphaned cancel request is detected, this request will be handled as well.")
 public @interface UseCaseSystemHandlesJobCancelRequests {
     PDSStep value();

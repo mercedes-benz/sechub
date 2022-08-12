@@ -14,10 +14,10 @@ import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.domain.scan.ReportTransformationResult;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionException;
 import com.mercedesbenz.sechub.domain.scan.SecHubReportProductTransformerService;
 import com.mercedesbenz.sechub.domain.scan.product.ReportProductExecutionService;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
 
 @Service
 public class CreateScanReportService {

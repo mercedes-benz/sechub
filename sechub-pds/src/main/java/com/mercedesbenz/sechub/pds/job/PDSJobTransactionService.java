@@ -155,4 +155,11 @@ public class PDSJobTransactionService {
 
         repository.save(job);
     }
+
+    public void markJobAsCancelRequestedInOwnTransaction(UUID jobUUID) {
+        PDSJob job = assertJobFound(jobUUID, repository);
+        job.setState(PDSJobStatusState.CANCEL_REQUESTED);
+        repository.save(job);
+
+    }
 }

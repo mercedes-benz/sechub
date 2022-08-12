@@ -23,7 +23,7 @@ import com.mercedesbenz.sechub.pds.usecase.UseCaseUserFetchesJobMessages;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseUserFetchesJobResult;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseUserFetchesJobStatus;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseUserMarksJobReadyToStart;
-import com.mercedesbenz.sechub.pds.usecase.UseCaseUserRequestsJobCancelation;
+import com.mercedesbenz.sechub.pds.usecase.UseCaseUserRequestsJobCancellation;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseUserUploadsJobData;
 
 /**
@@ -57,7 +57,7 @@ public class PDSJobRestController {
     private PDSGetJobMessagesService jobMessagesService;
 
     @Autowired
-    private PDSRequestJobCancelationService requestJobCancelationService;
+    private PDSRequestJobCancellationService requestJobCancellationService;
 
     @Validated
     @RequestMapping(path = "create", method = RequestMethod.POST)
@@ -91,10 +91,10 @@ public class PDSJobRestController {
     /* @formatter:off */
     @Validated
     @RequestMapping(path = "{jobUUID}/cancel", method = RequestMethod.PUT)
-    @UseCaseUserRequestsJobCancelation(@PDSStep(name="rest call",description = "User cancels a job",number=1))
+    @UseCaseUserRequestsJobCancellation(@PDSStep(name="rest call",description = "User cancels a job",number=1))
     public void cancelJob(
                 @PathVariable("jobUUID") UUID jobUUID) {
-        requestJobCancelationService.requectJobCancelation(jobUUID);
+        requestJobCancellationService.requestJobCancellation(jobUUID);
     }
     /* @formatter:on */
 

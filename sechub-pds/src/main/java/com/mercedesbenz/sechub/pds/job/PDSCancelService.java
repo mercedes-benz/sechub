@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +18,10 @@ import org.springframework.stereotype.Service;
 import com.mercedesbenz.sechub.pds.PDSMustBeDocumented;
 import com.mercedesbenz.sechub.pds.execution.PDSExecutionService;
 import com.mercedesbenz.sechub.pds.execution.PDSExecutionService.CancelResult;
-import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseSystemHandlesJobCancelRequests;
 
 @Service
-@RolesAllowed({ PDSRoleConstants.ROLE_USER, PDSRoleConstants.ROLE_SUPERADMIN })
 public class PDSCancelService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSCancelService.class);
@@ -43,8 +39,14 @@ public class PDSCancelService {
 
     @UseCaseSystemHandlesJobCancelRequests(@PDSStep(name = "service call", description = "cancels job if executed by this PDS and handles orphaned cancel requestes", number = 2))
     public void handleJobCancelRequests() {
-
         List<PDSJob> jobsWhereCancelIsRequested = repository.findAllJobsInState(PDSJobStatusState.CANCEL_REQUESTED);
+
+        int size = jobsWhereCancelIsRequested.size();
+        if (size == 0) {
+            LOG.trace("Did not find jobs where cancel is requested");
+            return;
+        }
+        LOG.info("Found jobs where cancel is requested: {}", size);
 
         List<PDSJob> potentialOrphaned = new ArrayList<>();
 
@@ -61,7 +63,7 @@ public class PDSCancelService {
                 potentialOrphaned.add(jobToCancel);
                 break;
             default:
-                throw new IllegalStateException("The handling for result:" + result + " is not implemented");
+                LOG.error("The handling for execution result:{} is not implemented!", result);
 
             }
         }
@@ -72,15 +74,20 @@ public class PDSCancelService {
 
     private void handlePotentialOrphans(List<PDSJob> potentialOrphaned) {
         if (potentialOrphaned.isEmpty()) {
+            LOG.trace("Did not find jobs having potential orphaned cancel requests.");
             return;
         }
         Instant nHoursbefore = LocalDateTime.now().minusMinutes(minutesToWaitBeforeTreatedAsOrphaned).toInstant(ZoneOffset.UTC);
 
+        LOG.info("Inspect potential orphaned cancel requests: {}", potentialOrphaned.size());
+        int orphaned = 0;
         for (PDSJob potentialOrphan : potentialOrphaned) {
             if (isOrphaned(potentialOrphan, nHoursbefore)) {
+                orphaned++;
                 hardSetJobStateToCanceledIfpossible(potentialOrphan);
             }
         }
+        LOG.info("Found and handled {} orphaned requests", orphaned);
     }
 
     private void hardSetJobStateToCanceledIfpossible(PDSJob potentialOrphan) {

@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import com.mercedesbenz.sechub.commons.TextFileReader;
+import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironment;
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
 import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
@@ -38,5 +40,15 @@ public class PDSPojoFactory {
     @Bean
     SystemEnvironmentVariableSupport createEnvironementVariableSupport(@Autowired SystemEnvironment systemEnvironment) {
         return new SystemEnvironmentVariableSupport(systemEnvironment);
+    }
+
+    @Bean
+    TextFileWriter createTextFileWriter() {
+        return new TextFileWriter();
+    }
+
+    @Bean
+    TextFileReader createTextFileReader() {
+        return new TextFileReader();
     }
 }

@@ -146,8 +146,8 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
         case PROJECT_DELETED:
             handleProjectDeleted(request.get(MessageDataKeys.PROJECT_DELETE_DATA), request.get(MessageDataKeys.ENVIRONMENT_BASE_URL));
             break;
-        case JOB_CANCELED:
-            handleJobCanceled(request.get(MessageDataKeys.JOB_CANCEL_DATA));
+        case JOB_CANCELLATION_RUNNING:
+            handleJobCancellationRunning(request.get(MessageDataKeys.JOB_CANCEL_DATA));
             break;
         case JOB_RESTART_CANCELED:
             handleRestartJobCanceled(request.get(MessageDataKeys.JOB_RESTART_DATA), request.get(MessageDataKeys.ENVIRONMENT_BASE_URL));
@@ -200,8 +200,8 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
 
     }
 
-    @IsReceivingAsyncMessage(MessageID.JOB_CANCELED)
-    private void handleJobCanceled(JobMessage jobMessage) {
+    @IsReceivingAsyncMessage(MessageID.JOB_CANCELLATION_RUNNING)
+    private void handleJobCancellationRunning(JobMessage jobMessage) {
         informUserThatJobHasBeenCanceledService.notify(jobMessage);
     }
 

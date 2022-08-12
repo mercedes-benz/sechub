@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.sharedkernel.execution;
+package com.mercedesbenz.sechub.domain.scan;
 
 /**
  * Execute something for sechub

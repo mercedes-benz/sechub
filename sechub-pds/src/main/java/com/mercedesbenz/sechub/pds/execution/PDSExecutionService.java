@@ -61,8 +61,6 @@ public class PDSExecutionService {
     private static final Logger LOG = LoggerFactory.getLogger(PDSExecutionService.class);
     private static final int DEFAULT_WORKER_THREAD_COUNT = 5;
     private static final int DEFAULT_QUEUE_MAX = 50;
-    private static final int DEFAULT_TIME_TO_WAIT_IN_SECONDS_FOR_SCRIPT_CANCELATION = 0;
-    private static final int DEFAULT_TIME_TO_WAIT_IN_MILLISECONDS_FOR_SCRIPT_CANCELATION_CHECK = 300;
     ExecutorService workers;
 
     final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -76,18 +74,6 @@ public class PDSExecutionService {
     @PDSMustBeDocumented(value = "Set amount of maximum executed parts in queue for same time", scope = "execution")
     @Value("${sechub.pds.config.execute.queue.max:" + DEFAULT_QUEUE_MAX + "}")
     int queueMax = DEFAULT_QUEUE_MAX;
-
-    @PDSMustBeDocumented(value = "Time in seconds to wait after the event `cancel_requested` was sent to the script. "
-            + "When nothing defined, the default value is: " + DEFAULT_TIME_TO_WAIT_IN_SECONDS_FOR_SCRIPT_CANCELATION
-            + " which leads to no wait at all. PDS solutions do need this only when a cancel operation shall do some additional stuff "
-            + "(e.g. trigger cancel on 3rd party system etc.)", scope = "execution")
-    @Value("${sechub.pds.config.execute.event.cancelrequest.seconds.wait:" + DEFAULT_TIME_TO_WAIT_IN_SECONDS_FOR_SCRIPT_CANCELATION + "}")
-    int secondsToWaitForScriptCancelation = DEFAULT_TIME_TO_WAIT_IN_SECONDS_FOR_SCRIPT_CANCELATION;
-
-    @PDSMustBeDocumented(value = "Time in milliseconds to wait for next check when the waiting time for script cancel operation is not 0. "
-            + "When nothing defined, the default value is: " + DEFAULT_TIME_TO_WAIT_IN_MILLISECONDS_FOR_SCRIPT_CANCELATION_CHECK, scope = "execution")
-    @Value("${sechub.pds.config.execute.event.cancelrequest.seconds.wait:" + DEFAULT_TIME_TO_WAIT_IN_MILLISECONDS_FOR_SCRIPT_CANCELATION_CHECK + "}")
-    private String millisecondsToWaitForCancelCheckInterval;
 
     /* only for tests to turn off watcher */
     boolean watcherDisabled;
@@ -131,6 +117,8 @@ public class PDSExecutionService {
     public CancelResult cancel(UUID jobUUID) {
         notNull(jobUUID, "job uuid may not be null!");
 
+        LOG.debug("Try to cancel PDS job: {} if running at this cluster member", jobUUID);
+
         synchronized (jobsInQueue) {
 
             Iterator<Entry<UUID, Future<PDSExecutionResult>>> it = jobsInQueue.entrySet().iterator();
@@ -140,13 +128,12 @@ public class PDSExecutionService {
                     Future<PDSExecutionResult> future = entry.getValue();
                     if (future.isDone()) {
                         /* already done or canceled */
-                        LOG.info("cancelation of job with uuid:{} skipped, because already done", jobUUID);
+                        LOG.info("cancellation of job with uuid:{} skipped, because already done", jobUUID);
                         return CancelResult.JOB_FOUND_CANCEL_WAS_DONE;
                     }
+                    LOG.debug("Found PDS job: {} running at this cluster member", jobUUID);
 
                     ExecutionEventData eventData = new ExecutionEventData();
-                    eventData.setDetail(ExecutionEventDetailIdentifier.CANCEL_REQUEST_SECONDS_TO_WAIT_FOR_PROCESS, secondsToWaitForScriptCancelation);
-                    eventData.setDetail(ExecutionEventDetailIdentifier.CANCEL_REQUEST_MILLSECONDS_FOR_CHECK_INTERVAL, millisecondsToWaitForCancelCheckInterval);
 
                     workspaceService.sendEvent(jobUUID, ExecutionEventType.CANCEL_REQUESTED, eventData);
 
@@ -157,10 +144,10 @@ public class PDSExecutionService {
                     boolean canceled = future.cancel(true);
 
                     if (canceled) {
-                        LOG.info("canceled job with uuid:{}", jobUUID);
+                        LOG.info("OK: canceled PDS job: {}", jobUUID);
                         return CancelResult.JOB_FOUND_CANCEL_WAS_DONE;
                     } else {
-                        LOG.warn("cancelation of not done job with uuid:{} returned false - this should not happen");
+                        LOG.warn("NOT DONE: was not able to cancel PDS job :{} returned false - this should not happen");
                         return CancelResult.JOB_FOUND_CANCEL_WAS_NOT_POSSIBLE;
 
                     }

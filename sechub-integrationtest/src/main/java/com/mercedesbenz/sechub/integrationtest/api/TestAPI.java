@@ -347,15 +347,39 @@ public class TestAPI {
      * @param project
      * @param jobUUID
      */
-    public static void waitForJobStatusCancelRequested(TestProject project, UUID jobUUID) {
-        LOG.debug("wait for job cancel requested project:{}, job:{}", project.getProjectId(), jobUUID);
+    public static void waitForJobStatusCancelRequestedOrCanceled(TestProject project, UUID jobUUID) {
+        LOG.debug("wait for job stats is 'cancel requested' or 'canceled'. project:{}, job:{}", project.getProjectId(), jobUUID);
 
         executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, 5, HttpClientErrorException.class) {
             @Override
             public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
                 String status = as(getUser()).getJobStatus(project.getProjectId(), jobUUID);
                 LOG.debug(">>>>>>>>>JOB:STATUS:" + status);
-                return status.contains("CANCEL_REQUESTED");
+                return status.contains("CANCEL_REQUESTED") || status.contains("CANCELED");
+            }
+        });
+    }
+
+    /**
+     * Waits for sechub job being finally canceled - after 5 seconds time out is
+     * reached
+     *
+     * @param project
+     * @param jobUUID
+     */
+    public static void waitForJobStatusCanceled(TestProject project, UUID jobUUID, boolean dumpPDSOutputOnTimeOut) {
+        LOG.debug("wait for job stats is 'canceled'. project:{}, job:{}", project.getProjectId(), jobUUID);
+        Runnable runnable = null;
+        if (dumpPDSOutputOnTimeOut) {
+            runnable = new AutoDumpPDSOutputForSecHubJobUUIDRunnable(jobUUID);
+        }
+
+        executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, 5, runnable, HttpClientErrorException.class) {
+            @Override
+            public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
+                String status = as(getUser()).getJobStatus(project.getProjectId(), jobUUID);
+                LOG.debug(">>>>>>>>>JOB:STATUS:" + status);
+                return status.contains("CANCELED");
             }
         });
     }
@@ -417,6 +441,15 @@ public class TestAPI {
             }
         } while (notExceeded(maxMilliseconds, start));
 
+        Runnable timeOutRunnable = testExecutable.getTimeOutRunnable();
+        if (timeOutRunnable != null) {
+            try {
+                timeOutRunnable.run();
+            } catch (RuntimeException e) {
+                System.err.println("Problem in test framework happend:");
+                e.printStackTrace();
+            }
+        }
         /* was not possible to execute succesful in given time range */
         fail("Timeout of waiting for successful execution - waited " + testExecutable.getTimeoutInSeconds() + " seconds");
         return;

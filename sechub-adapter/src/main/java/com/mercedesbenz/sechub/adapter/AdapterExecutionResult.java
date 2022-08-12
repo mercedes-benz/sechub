@@ -12,7 +12,20 @@ public class AdapterExecutionResult {
 
     private String productResult;
 
+    /**
+     * Create an empty adapter execution result which is marked as "stopped"
+     *
+     * @return execution result
+     */
+    public static AdapterExecutionResult createStopResult() {
+        AdapterExecutionResult result = new AdapterExecutionResult("");
+        result.stopped = true;
+        return result;
+    }
+
     private List<SecHubMessage> productMessages = new ArrayList<>();
+
+    private boolean stopped;
 
     public AdapterExecutionResult(String productResult) {
         this(productResult, null);
@@ -42,5 +55,9 @@ public class AdapterExecutionResult {
      */
     public String getProductResult() {
         return productResult;
+    }
+
+    public boolean hasBeenStopped() {
+        return stopped;
     }
 }

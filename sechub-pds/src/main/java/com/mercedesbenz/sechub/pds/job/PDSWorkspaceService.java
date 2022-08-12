@@ -517,6 +517,8 @@ public class PDSWorkspaceService {
         String eventJson = JSONConverter.get().toJSON(eventData);
 
         File eventFileToWrite = getEventFile(jobUUID, eventType);
+        LOG.debug("Send event {} to workspace for sechub job: {}", eventType, jobUUID);
+
         try {
             textFileWriter.save(eventFileToWrite, eventJson, true);
         } catch (IOException e) {

@@ -117,7 +117,9 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
                 config.getTimeOutInMilliseconds());
         /* @formatter:on */
 
-        while (!jobEnded && isNotTimeout(config, started)) {
+        StateFulTimeOutCheck timeOutCheck = new StateFulTimeOutCheck();
+
+        while (!jobEnded && timeOutCheck.isNotTimeout(config, started)) {
 
             count++;
 
@@ -136,7 +138,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
                 jobEnded = true;
                 break;
             case FAILED:
-                throw asAdapterException("PDS job execution failed", config);
+                throw asAdapterException("PDS job execution failed: TimeOut=" + timeOutCheck.wasTimeOut() + ",JobEnded=" + jobEnded, config);
             case CANCELED:
                 throw asAdapterCanceledByUserException(config);
             default:
@@ -151,7 +153,8 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
             try {
                 Thread.sleep(timeToWaitForNextCheckOperationInMilliseconds);
             } catch (InterruptedException e) {
-                throw new AdapterException(getAdapterLogId(null), "Execution thread was interrupted");
+                throw new AdapterException(getAdapterLogId(null),
+                        "Execution thread was interrupted. Type:" + context.getRuntimeContext().getType() + ", Thread was:" + Thread.currentThread().getName());
             }
 
         }
@@ -164,8 +167,17 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
 
     }
 
-    private boolean isNotTimeout(PDSAdapterConfig config, long started) {
-        return calculateElapsedTime(started) < config.getTimeOutInMilliseconds();
+    private class StateFulTimeOutCheck {
+        boolean stillTimeLeft = true;
+
+        boolean isNotTimeout(PDSAdapterConfig config, long started) {
+            stillTimeLeft = calculateElapsedTime(started) < config.getTimeOutInMilliseconds();
+            return stillTimeLeft;
+        }
+
+        boolean wasTimeOut() {
+            return !stillTimeLeft;
+        }
     }
 
     private long calculateElapsedTime(long started) {
@@ -346,7 +358,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
             return handleExecutionTypeInitial(context, runtimeContext);
         case RESTART:
             return handleExecutionTypeRestart(context, runtimeContext);
-        case STOP:
+        case CANCEL:
             return handleExecutionTypeStop(context, runtimeContext);
         default:
             throw new IllegalStateException("the execution type: " + executionType + " is not supported");
@@ -435,7 +447,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         context.setPDSJobUUID(UUID.fromString(pdsJobUUID));
         cancelJob(context);
 
-        return new AdapterExecutionResult("");
+        return AdapterExecutionResult.createStopResult();
     }
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */

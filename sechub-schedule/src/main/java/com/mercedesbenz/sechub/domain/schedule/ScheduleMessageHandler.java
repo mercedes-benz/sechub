@@ -14,6 +14,7 @@ import com.mercedesbenz.sechub.domain.schedule.access.ScheduleRevokeUserAccessAt
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleRevokeUserAccessFromProjectService;
 import com.mercedesbenz.sechub.domain.schedule.config.SchedulerConfigService;
 import com.mercedesbenz.sechub.domain.schedule.config.SchedulerProjectConfigService;
+import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobTransactionService;
 import com.mercedesbenz.sechub.domain.schedule.status.SchedulerStatusService;
 import com.mercedesbenz.sechub.domain.schedule.whitelist.ProjectWhiteListUpdateService;
 import com.mercedesbenz.sechub.sharedkernel.Step;
@@ -64,6 +65,9 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler {
     @Autowired
     SchedulerProjectConfigService projectConfigService;
 
+    @Autowired
+    SecHubJobTransactionService jobTransactionService;
+
     @Override
     public void receiveAsyncMessage(DomainMessage request) {
         MessageID messageId = request.getMessageId();
@@ -97,7 +101,7 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler {
         case REQUEST_SCHEDULER_STATUS_UPDATE:
             handleSchedulerStatusRefreshRequest(request);
             break;
-        case REQUEST_JOB_CANCELATION:
+        case REQUEST_JOB_CANCELLATION:
             handleCancelJobRequested(request);
             break;
         case REQUEST_JOB_RESTART:
@@ -110,15 +114,26 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler {
             handleProcessAccessLevelChanged(request);
             break;
         case AUTO_CLEANUP_CONFIGURATION_CHANGED:
-            ReceivedhandleAutoCleanUpConfigurationChanged(request);
+            handleAutoCleanUpConfigurationChanged(request);
+            break;
+        case PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE:
+            handleProductExecutorCancelOperationsDone(request);
             break;
         default:
             throw new IllegalStateException("unhandled message id:" + messageId);
         }
     }
 
+    @IsReceivingAsyncMessage(MessageID.PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE)
+    private void handleProductExecutorCancelOperationsDone(DomainMessage request) {
+        JobMessage jobCancelData = request.get(MessageDataKeys.JOB_CANCEL_DATA);
+        UUID jobUUID = jobCancelData.getJobUUID();
+        jobTransactionService.updateExecutionStateInOwnTransaction(jobUUID, ExecutionState.CANCEL_REQUESTED);
+
+    }
+
     @IsReceivingAsyncMessage(MessageID.AUTO_CLEANUP_CONFIGURATION_CHANGED)
-    private void ReceivedhandleAutoCleanUpConfigurationChanged(DomainMessage request) {
+    private void handleAutoCleanUpConfigurationChanged(DomainMessage request) {
         AdministrationConfigMessage message = request.get(MessageDataKeys.AUTO_CLEANUP_CONFIG_CHANGE_DATA);
         configService.updateAutoCleanupInDays(message.getAutoCleanupInDays());
     }
@@ -151,7 +166,7 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler {
         restartJobService.restartJobHard(jobUUID, message.getOwnerEmailAddress());
     }
 
-    @IsReceivingAsyncMessage(MessageID.REQUEST_JOB_CANCELATION)
+    @IsReceivingAsyncMessage(MessageID.REQUEST_JOB_CANCELLATION)
     private void handleCancelJobRequested(DomainMessage request) {
         JobMessage message = request.get(MessageDataKeys.JOB_CANCEL_DATA);
         cancelJobService.cancelJob(message.getJobUUID(), message.getOwnerEmailAddress());

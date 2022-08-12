@@ -15,9 +15,9 @@ import org.junit.jupiter.params.provider.EnumSource.Mode;
 
 import com.mercedesbenz.sechub.pds.PDSNotAcceptableException;
 
-public class PDSRequestJobCancelationServiceTest {
+public class PDSRequestJobCancellationServiceTest {
 
-    private PDSRequestJobCancelationService serviceToTest;
+    private PDSRequestJobCancellationService serviceToTest;
     private UUID jobUUID;
     private PDSJobRepository repository;
     private PDSJob job;
@@ -32,7 +32,7 @@ public class PDSRequestJobCancelationServiceTest {
 
         when(repository.findById(jobUUID)).thenReturn(Optional.of(job));
 
-        serviceToTest = new PDSRequestJobCancelationService();
+        serviceToTest = new PDSRequestJobCancellationService();
         serviceToTest.repository = repository;
     }
 
@@ -43,7 +43,7 @@ public class PDSRequestJobCancelationServiceTest {
         job.setState(state);
         try {
             /* execute */
-            serviceToTest.requectJobCancelation(jobUUID);
+            serviceToTest.requestJobCancellation(jobUUID);
 
         } catch (PDSNotAcceptableException e) {
             assertTrue(e.getMessage().contains("accepted is only:[RUNNING]"));
@@ -57,7 +57,7 @@ public class PDSRequestJobCancelationServiceTest {
         job.setState(state);
 
         /* execute */
-        serviceToTest.requectJobCancelation(jobUUID);
+        serviceToTest.requestJobCancellation(jobUUID);
 
     }
 
@@ -67,7 +67,7 @@ public class PDSRequestJobCancelationServiceTest {
         job.state = PDSJobStatusState.RUNNING;
 
         /* execute */
-        serviceToTest.requectJobCancelation(jobUUID);
+        serviceToTest.requestJobCancellation(jobUUID);
 
         /* test */
         assertEquals(PDSJobStatusState.CANCEL_REQUESTED, job.getState());

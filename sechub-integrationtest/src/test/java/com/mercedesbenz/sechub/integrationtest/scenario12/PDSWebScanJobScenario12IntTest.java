@@ -98,7 +98,7 @@ public class PDSWebScanJobScenario12IntTest {
         /* additional testing : messages*/
 
         assertJobStatus(project, jobUUID).
-            enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
+            enablePDSAutoDumpOnErrorsForSecHubJob().
             hasMessage(SecHubMessageType.INFO,"info from webscan by PDS for sechub job uuid: "+jobUUID).
             hasMessage(SecHubMessageType.WARNING,"warning from webscan by PDS for sechub job uuid: "+jobUUID).
             hasMessage(SecHubMessageType.ERROR,"error from webscan by PDS for sechub job uuid: "+jobUUID);

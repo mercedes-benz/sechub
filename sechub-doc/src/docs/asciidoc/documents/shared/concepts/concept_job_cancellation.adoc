@@ -1,0 +1,8 @@
+=== SecHub job cancellation
+
+An administrator is able to cancel a running SecHub job. This is done across different domains
+and there are multiple events involved. The next diagram shall bring an overview.
+
+plantuml::diagrams/diagram_sechub_job_cancellation.puml[format=svg, title="Overview SecHub job cancellation"]
+
+

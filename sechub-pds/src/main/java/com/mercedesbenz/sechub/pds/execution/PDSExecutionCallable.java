@@ -66,6 +66,8 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
     private ProcessHandlingDataFactory handlingDataFactory;
 
+    private PDSJobConfiguration config;
+
     public PDSExecutionCallable(UUID jobUUID, PDSJobTransactionService jobTransactionService, PDSWorkspaceService workspaceService,
             PDSExecutionEnvironmentService environmentService, PDSCheckJobStatusService jobStatusService) {
         notNull(jobUUID, "pdsJobUUID may not be null!");
@@ -96,7 +98,6 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
     public PDSExecutionResult call() throws Exception {
         LOG.info("Prepare execution of PDS job {}", pdsJobUUID);
         PDSExecutionResult result = new PDSExecutionResult();
-        PDSJobConfiguration config = null;
         try {
             MDC.clear();
             MDC.put(PDSLogConstants.MDC_PDS_JOB_UUID, Objects.toString(pdsJobUUID));
@@ -253,7 +254,6 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
                 OptimisticLockingFailureException.class);
         executor.execute(() -> {
             jobTransactionService.updateJobMessagesInOwnTransaction(jobUUID, messages);
-            return null;
         }, jobUUID.toString());
 
     }
@@ -410,23 +410,22 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
      *
      * @param mayInterruptIfRunning
      */
-    @UseCaseSystemHandlesJobCancelRequests(@PDSStep(name = "process cancelation", description = "process created by job will be destroyed. If configured, a given time in seconds will be waited, to give the process the chance handle some cleanup and to end itself.", number = 4))
+    @UseCaseSystemHandlesJobCancelRequests(@PDSStep(name = "process cancellation", description = "process created by job will be destroyed. If configured, a given time in seconds will be waited, to give the process the chance handle some cleanup and to end itself.", number = 4))
     void prepareForCancel(boolean mayInterruptIfRunning) {
         if (process == null || !process.isAlive()) {
             return;
         }
 
         ProcessHandlingData processHandlingData = null;
-        ExecutionEventData cancelEventData = workspaceService.fetchEventDataOrNull(pdsJobUUID, ExecutionEventType.CANCEL_REQUESTED);
 
-        if (cancelEventData == null) {
-            LOG.warn("No cancel event data found for job:{}. Cannot create dedicated process handling data. No process wait possible.", pdsJobUUID);
+        if (config == null) {
+            LOG.warn("No configuration available for job:{}. Cannot create dedicated process handling data. No process wait possible.", pdsJobUUID);
         } else {
-            processHandlingData = handlingDataFactory.createForCancelOperation(cancelEventData);
+            processHandlingData = handlingDataFactory.createForCancelOperation(config);
         }
 
         try {
-            handleProcessCancelation(processHandlingData);
+            handleProcessCancellation(processHandlingData);
         } finally {
 
             JobConfigurationData data = jobTransactionService.getJobConfigurationData(pdsJobUUID);
@@ -442,10 +441,10 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
     }
 
-    private void handleProcessCancelation(ProcessHandlingData processHandlingData) {
+    private void handleProcessCancellation(ProcessHandlingData processHandlingData) {
         if (isWaitOnCancelOperationAccepted(processHandlingData)) {
-            LOG.info("Cancel job : {}: give process chance to cancel. Will wait maximum of {} seconds.", pdsJobUUID,
-                    processHandlingData.millisecondsToWaitForNextCheck);
+            LOG.info("Cancel job: {}: give process chance to cancel. Will wait a maximum time of {} seconds. The check intervall is: {} milliseconds",
+                    pdsJobUUID, processHandlingData.secondsToWaitForProcess, processHandlingData.millisecondsToWaitForNextCheck);
 
             long startTimeStamp = System.currentTimeMillis();
             long maxTimeStamp = startTimeStamp + (processHandlingData.millisecondsToWaitForNextCheck * 1000);
@@ -476,9 +475,12 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
     private boolean isWaitOnCancelOperationAccepted(ProcessHandlingData processHandlingData) {
         if (processHandlingData == null) {
+            LOG.debug("Not waiting because no process handling data!");
             return false;
         }
-        return processHandlingData.secondsToWaitForProcess > 0;
+        boolean waiting = processHandlingData.secondsToWaitForProcess > 0;
+        LOG.debug("Waiting on cancel operation: {}, seconsToWaitForProcess: {}", waiting, processHandlingData.secondsToWaitForProcess);
+        return waiting;
     }
 
     private void cleanUpWorkspace(UUID jobUUID, PDSJobConfiguration config) {

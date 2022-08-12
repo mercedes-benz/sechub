@@ -26,7 +26,7 @@ public class PDSJobStatus {
         /** JOB is currently running */
         RUNNING,
 
-        /** JOB cancelation has been requested */
+        /** JOB cancellation has been requested */
         CANCEL_REQUESTED,
 
         /** JOB has been canceled */

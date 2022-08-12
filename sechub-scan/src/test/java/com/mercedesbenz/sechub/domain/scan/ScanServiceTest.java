@@ -29,8 +29,6 @@ import com.mercedesbenz.sechub.domain.scan.report.CreateScanReportService;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
 import com.mercedesbenz.sechub.sharedkernel.ProgressMonitor;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
 import com.mercedesbenz.sechub.sharedkernel.messaging.AsynchronMessageHandler;
 import com.mercedesbenz.sechub.sharedkernel.messaging.BatchJobMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
@@ -62,6 +60,7 @@ public class ScanServiceTest {
     private ScanJobListener scanJobRegistry;
     private ScanProgressMonitorFactory monitorFactory;
     private LicenseScanProductExecutionService licenseScanProductExecutionService;
+    private ProductExecutionServiceContainer productExecutionServiceContainer;
     private static final SecHubConfiguration SECHUB_CONFIG = new SecHubConfiguration();
 
     @Before
@@ -89,10 +88,14 @@ public class ScanServiceTest {
         when(reportService.createReport(any())).thenReturn(report);
 
         serviceToTest = new ScanService();
-        serviceToTest.webScanProductExecutionService = webScanProductExecutionService;
-        serviceToTest.infraScanProductExecutionService = infrastructureScanProductExecutionService;
-        serviceToTest.codeScanProductExecutionService = codeScanProductExecutionService;
-        serviceToTest.licenseScanProductExecutionService = licenseScanProductExecutionService;
+        productExecutionServiceContainer = mock(ProductExecutionServiceContainer.class);
+        serviceToTest.productExecutionServiceContainer = productExecutionServiceContainer;
+
+        when(productExecutionServiceContainer.getWebScanProductExecutionService()).thenReturn(webScanProductExecutionService);
+        when(productExecutionServiceContainer.getInfraScanProductExecutionService()).thenReturn(infrastructureScanProductExecutionService);
+        when(productExecutionServiceContainer.getCodeScanProductExecutionService()).thenReturn(codeScanProductExecutionService);
+        when(productExecutionServiceContainer.getLicenseScanProductExecutionService()).thenReturn(licenseScanProductExecutionService);
+
         serviceToTest.reportService = reportService;
         serviceToTest.storageService = storageService;
         serviceToTest.scanLogService = scanLogService;

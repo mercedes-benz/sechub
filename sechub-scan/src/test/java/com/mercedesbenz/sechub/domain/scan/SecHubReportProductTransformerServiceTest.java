@@ -20,8 +20,6 @@ import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResultRepository;
 import com.mercedesbenz.sechub.domain.scan.product.config.WithoutProductExecutorConfigInfo;
 import com.mercedesbenz.sechub.domain.scan.report.ReportProductResultTransformer;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
 import com.mercedesbenz.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class SecHubReportProductTransformerServiceTest {

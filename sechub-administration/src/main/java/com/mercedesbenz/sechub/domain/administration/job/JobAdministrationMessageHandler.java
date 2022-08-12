@@ -44,8 +44,8 @@ public class JobAdministrationMessageHandler implements AsynchronMessageHandler 
         case JOB_FAILED:
             handleJobFailed(request);
             break;
-        case JOB_CANCELED:
-            handleJobCanceled(request);
+        case JOB_CANCELLATION_RUNNING:
+            handleJobCancellationRunning(request);
             break;
         case AUTO_CLEANUP_CONFIGURATION_CHANGED:
             handleAutoCleanUpConfigurationChanged(request);
@@ -61,8 +61,8 @@ public class JobAdministrationMessageHandler implements AsynchronMessageHandler 
         configService.updateAutoCleanupInDays(message.getAutoCleanupInDays());
     }
 
-    @IsReceivingAsyncMessage(MessageID.JOB_CANCELED)
-    private void handleJobCanceled(DomainMessage request) {
+    @IsReceivingAsyncMessage(MessageID.JOB_CANCELLATION_RUNNING)
+    private void handleJobCancellationRunning(DomainMessage request) {
         JobMessage message = request.get(MessageDataKeys.JOB_CANCEL_DATA);
         // we do drop job info - we only hold running and waiting jobs!
         deleteService.delete(message.getJobUUID());
