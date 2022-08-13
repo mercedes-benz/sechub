@@ -37,15 +37,15 @@ package com.mercedesbenz.sechub.domain.administration {
     
     JobAdministrationRestController -> JobCancelService
     
-    JobCancelService  --> DomainMessageService  #blue;line.dashed;text:blue : sends async REQUEST_JOB_CANCELLATION (C1) 
+    JobCancelService  --> DomainMessageService  #blue;line.dashed;text:blue : sends async REQUEST_JOB_CANCELLATION (B 2.1) 
     
-    DomainMessageService --> JobAdministrationMessageHandler #green;line.dashed;text:green : sends async CANCELLATION_RUNNING (D1)
+    DomainMessageService --> JobAdministrationMessageHandler #green;line.dashed;text:green : sends async CANCELLATION_RUNNING (B 3.1)
 }
 
 package com.mercedesbenz.sechub.domain.notification {
     class NotificationMessageHandler
     
-    DomainMessageService --> NotificationMessageHandler #green;line.dashed;text:green : sends async CANCELLATION_RUNNING (D1)
+    DomainMessageService --> NotificationMessageHandler #green;line.dashed;text:green : sends async CANCELLATION_RUNNING (B 3.1)
 }
 
  
@@ -55,6 +55,9 @@ package com.mercedesbenz.sechub.domain.schedule {
  package com.mercedesbenz.sechub.domain.schedule.batch {
     
         class SchedulerCancelBatchJobService {
+        }
+        class SchedulerBatchJobStatusRequestHandler {
+            
         }
     
         class AsyncJobLauncher extends SimpleJobLauncher {
@@ -68,14 +71,13 @@ package com.mercedesbenz.sechub.domain.schedule {
         AsyncJobLauncher --> ScanExecutionTasklet : starts
        
         SchedulerCancelBatchJobService  -> JobOperator #blue;line.dashed : stops batch job
+        SchedulerBatchJobStatusRequestHandler -> JobExplorer #Fuchsia;line.dashed :reads status
     
     }   
 
    
     
-    class SchedulerJobStatusRequestHandler {
-            
-    }
+    
    
     class ScheduleJobLauncherService {
     
@@ -97,7 +99,8 @@ package com.mercedesbenz.sechub.domain.schedule {
     
     note top of SchedulerCancelJobService #palegreen;line.dashed;text:green
             The steps
-            - D*
+            - B 2.3
+            - B 3.*
             are only triggered when the SecHub job has 
             the execution result NONE. 
             
@@ -108,17 +111,17 @@ package com.mercedesbenz.sechub.domain.schedule {
     SchedulerJobBatchTriggerService --> ScheduleJobLauncherService : uses
     ScheduleJobLauncherService --> AsyncJobLauncher : uses
     
-    ScheduleMessagehandler  --> SchedulerCancelJobService #blue;line.dashed;text:blue : "calls cancel service\nbecause of C2"
-    SchedulerCancelJobService --> ScheduleSecHubJob #blue;line.dashed;text:blue : marks as CANCEL_REQUESTED (C3)
+    ScheduleMessagehandler  --> SchedulerCancelJobService #blue;line.dashed;text:blue : "calls cancel service\nbecause of B 2.2"
+    SchedulerCancelJobService --> ScheduleSecHubJob #blue;line.dashed;text:blue : marks as CANCEL_REQUESTED (B 2.3)
+    SchedulerCancelJobService --> SchedulerCancelBatchJobService #blue;line.dashed;text:blue : cancel spring Batch job (B 2.3)
+    
     
     ScheduleJobLauncherService <-> ScanExecutionTasklet
     
-    DomainMessageService <--> SchedulerCancelJobService #green;line.dashed;text:green : sends async CANCELLATION_RUNNING (D1)
-    DomainMessageService  --> ScheduleMessagehandler #blue;line.dashed;text:blue : sends async REQUEST_JOB_CANCELLATION (C1)
-    DomainMessageService  <--> SchedulerJobStatusRequestHandler  #Fuchsia;line.dashed;text:Fuchsia : sends synch REQUEST_SCHEDULER_JOB_STATUS (B1)
+    DomainMessageService <--> SchedulerCancelJobService #green;line.dashed;text:green : sends async CANCELLATION_RUNNING (B 3.1)
+    DomainMessageService  --> ScheduleMessagehandler #blue;line.dashed;text:blue : sends async REQUEST_JOB_CANCELLATION (B 2.1)
+    DomainMessageService  <--> SchedulerBatchJobStatusRequestHandler  #Fuchsia;line.dashed;text:Fuchsia : sends synch REQUEST_BATCH_JOB_STATUS (A 2.1)
     
-    DomainMessageService --> ScheduleMessagehandler #orange;line.dashed;text:orange : receives "PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE" (E1) ASYNCHRON
-    ScheduleMessagehandler --> ScheduleSecHubJob #orange;line.dashed;text:orange : "set SecHub job finally as CANCELED"
     
 }
 
@@ -132,7 +135,6 @@ package com.mercedesbenz.sechub.domain.scan {
     }
     
     interface ProductExecutor {
-        + List<ProductResult> execute(SecHubExecutionContext context, ProductExecutorContext executorContext) 
     
     }
     
@@ -152,15 +154,13 @@ package com.mercedesbenz.sechub.domain.scan {
     node ExecutorThread{
     }
     
-    class ScanJobCancellationRunnable #orange {
+    class ScanJobCancellationRunnable {
     }
     
     node CancellationThread{
     }
     
     interface Adapter {
-     + AdapterExecutionResult start(C config, AdapterMetaDataCallback callback)
-     + boolean cancel(C config, AdapterMetaDataCallback callback)
     } 
     
     interface ProductExecutionStoreService {
@@ -172,30 +172,17 @@ package com.mercedesbenz.sechub.domain.scan {
     
     }
     
-    
-    abstract class AbstractProductExecutor implements ProductExecutor {
+    class ProductExecutionServiceContainer {
     }
     
-    interface CanceableProductExecutor extends ProductExecutor {
-        + boolean cancel(ProductExecutorData data)
+    abstract class AbstractProductExecutor implements ProductExecutor{
     }
     
+    interface CanceableProductExecutor extends ProductExecutor
     class ScanJobRunnableData {
     }
     class ProductExecutorData {
     }
-    
-    class SecHubExecutionHistory{
-    
-    }
-    class SecHubExecutionHistoryElement{
-    
-    }
-    SecHubExecutionContext o-- SecHubExecutionHistory 
-    
-    SecHubExecutionHistory *-- SecHubExecutionHistoryElement
-    SecHubExecutionHistoryElement --> ProductExecutorData 
-    SecHubExecutionHistoryElement --> ProductExecutor 
     
     note top of ScanJobExecutor 
         The scan job executor is central point of 
@@ -210,50 +197,48 @@ package com.mercedesbenz.sechub.domain.scan {
     AbstractProductExecutor --> SecHubExecutionContext : uses
     
     AbstractProductExecutionService --> ProductResult : stores results
-    AbstractProductExecutionService --> ProductExecutor: uses
+    AbstractProductExecutionService -> ProductExecutor: uses
     AbstractProductExecutionService --> SecHubExecutionContext: uses
     
-    ProductExecutor --> Adapter: configures and uses
+    ProductExecutor -> Adapter: configures and uses
     ProductExecutor --> SecHubExecutionContext: uses
     
     AbstractProductExecutionService --> ProductExecutor : calls
     
-    ScanService ..> ScanJobExecutor : creates + uses (A3)
+    ScanService ..> ScanJobExecutor : creates + uses (A 1.3)
     ScanJobExecutor --> ScanProgressMonitor #fuchsia 
     
     ExecutorThread ..> ScanJobExecutionRunnable: runs
     CancellationThread ..> ScanJobCancellationRunnable: runs
     
-    ScanJobExecutor --> ScanJobExecutionRunnable : creates 
-    ScanJobExecutor --> ScanJobExecutionRunnable #fuchsia;text:fuchsia : cancels 
-    ScanJobExecutor --> ExecutorThread : starts
-    ScanJobExecutor --> ScanJobCancellationRunnable #fuchsia;text:fuchsia : creates if necessary
-    ScanJobExecutor --> CancellationThread #fuchsia;text:fuchsia : starts when necessary
-    ScanJobExecutor --> SecHubExecutionContext : creates context 
+    ScanJobExecutor  -> ScanJobExecutionRunnable : creates 
+    ScanJobExecutor  -> ScanJobExecutionRunnable #fuchsia;text:fuchsia : cancels 
+    ScanJobExecutor  -> ExecutorThread : starts
+    ScanJobExecutor  -> ScanJobCancellationRunnable #fuchsia;text:fuchsia : creates if necessary
+    ScanJobExecutor  -> CancellationThread #fuchsia;text:fuchsia : starts when necessary
+    ScanJobExecutor  -> SecHubExecutionContext : creates context 
     ScanJobExecutor --> ScanJobRunnableData : creates
     
     ScanJobRunnableData o-- SecHubExecutionContext 
+    ScanJobRunnableData o-- ProductExecutionServiceContainer
     
     ScanJobExecutionRunnable --> SecHubExecutionContext
     ScanJobExecutionRunnable --> ExecutorThread: "interrupts ExecutorThread\nwhen being canceled.\nThis immediately interrupts all product calls hard." 
     ScanJobExecutionRunnable --> SecHubExecutionContext : "marks as cancel requested\nso available in product executors"
     ScanJobExecutionRunnable --> ScanJobRunnableData
     ScanJobExecutionRunnable --> ProductExecutionStoreService : calls
-    ProductExecutionStoreService --> ProductExecutor
     
     ScanJobCancellationRunnable --> ScanJobRunnableData
-    ScanJobCancellationRunnable --> SecHubExecutionHistory
     ScanJobCancellationRunnable --> SecHubExecutionContext : "uses information about \nproduct executors and data"
-    ScanJobCancellationRunnable --> CanceableProductExecutor 
 
-    ScanExecutionTasklet <--> DomainMessageService #silver;line.dashed;text:silver  : sends "START_SCAN" (A1) SYNCHRON
+    ScanExecutionTasklet <--> DomainMessageService #silver;line.dashed;text:silver  : sends "START_SCAN" (A 1.1) SYNCHRON
     
-    ScanProgressMonitor  <--> DomainMessageService #Fuchsia;line.dashed;text:Fuchsia : "sends synchron REQUEST_SCHEDULER_JOB_STATUS (B1)\nand receives job status"
-    ScanService <--> DomainMessageService  #silver;line.dashed;text:silver : recevies "START_SCAN" (A2) SYNCHRON (returns result)
+    ScanProgressMonitor  <--> DomainMessageService #Fuchsia;line.dashed;text:Fuchsia : "sends synchron REQUEST_BATCH_JOB_STATUS (A 2.1)\nand receives job status"
+    ScanService <--> DomainMessageService  #silver;line.dashed;text:silver : recevies "START_SCAN" (A 1.2) SYNCHRON (returns result)
     
     Adapter ---> Procuct : communication
     
-    ScanJobCancellationRunnable --> DomainMessageService #orange;line.dashed;text:orange : sends "PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE" (E1) ASYNCHRON
+     
 }
 
 node Procuct{
@@ -267,11 +252,10 @@ end note
 
 legend top right
  |= Event Nr. |= Message ID |= What happens at this event ? |
- |<back:silver> A1 </back>| START_SCAN | Scan - running |
- |<back:fuchsia> B1 </back>| REQUEST_SCHEDULER_JOB_STATUS | Scan - periodic inspection if scheduler job marked as cancel requested | 
- |<back:blue> C1 </back>| REQUEST_JOB_CANCELLATION | Cancel request started  | 
- |<back:green> D1 </back>| CANCELLATION_RUNNING | Cancel scan running/ ongoing |
- |<back:orange> E1 </back>| PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE | Product execucutor cancel operations have finished (post processing done |
+ |<back:silver> A 1.*</back>| START_SCAN | Scan - running |
+ |<back:fuchsia> A 2.*</back>| REQUEST_BATCH_JOB_STATUS | Scan - periodic inspection of batch job still running | 
+ |<back:steelblue> B 2.*</back>| REQUEST_JOB_CANCELLATION | Cancel scan request triggered, batch job interrupted - has impact to A 2.* |
+ |<back:green> B 3.*</back>| CANCELLATION_RUNNING | Cancel scan request done, cancel operation ongoing |
  endlegend
 
 @enduml
