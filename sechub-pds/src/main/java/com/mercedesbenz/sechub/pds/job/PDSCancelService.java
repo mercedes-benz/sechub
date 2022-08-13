@@ -7,6 +7,7 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,9 @@ public class PDSCancelService {
 
     @Autowired
     PDSJobRepository repository;
+
+    @Autowired
+    PDSJobTransactionService jobTransactionService;
 
     @Autowired
     PDSExecutionService executionService;
@@ -80,38 +84,42 @@ public class PDSCancelService {
         Instant nHoursbefore = LocalDateTime.now().minusMinutes(minutesToWaitBeforeTreatedAsOrphaned).toInstant(ZoneOffset.UTC);
 
         LOG.info("Inspect potential orphaned cancel requests: {}", potentialOrphaned.size());
-        int orphaned = 0;
+        int amountOfOrphansfound = 0;
+        int amountOfOrpahnsStillExisiting = 0;
         for (PDSJob potentialOrphan : potentialOrphaned) {
             if (isOrphaned(potentialOrphan, nHoursbefore)) {
-                orphaned++;
-                hardSetJobStateToCanceledIfpossible(potentialOrphan);
+                amountOfOrphansfound++;
+                if (!hardSetJobStateToCanceledIfpossible(potentialOrphan.getUUID())) {
+                    amountOfOrpahnsStillExisiting++;
+                }
             }
         }
-        LOG.info("Found and handled {} orphaned requests", orphaned);
+        LOG.info("Found {} oprhans. After processing {} orphans still exists.", amountOfOrphansfound, amountOfOrpahnsStillExisiting);
     }
 
-    private void hardSetJobStateToCanceledIfpossible(PDSJob potentialOrphan) {
-        PDSJob jobToHardReset = potentialOrphan;
-        jobToHardReset.setState(PDSJobStatusState.CANCELED);
+    private boolean hardSetJobStateToCanceledIfpossible(UUID pdsJobUUID) {
         try {
-            LOG.info("Recognized orphaned cancel request for PDS job: {}. Will hard reset state to: {}", jobToHardReset.getUUID(), jobToHardReset.getState());
-            repository.save(jobToHardReset);
+            LOG.info("Recognized orphaned cancel request for PDS job: {}. Will try to hard set job state to CANCELED", pdsJobUUID);
 
+            jobTransactionService.markJobAsCanceledInOwnTransaction(pdsJobUUID);
+
+            return true;
         } catch (ConcurrencyFailureException ce) {
-            Optional<PDSJob> jobReadAgainOpt = repository.findById(jobToHardReset.getUUID());
+            Optional<PDSJob> jobReadAgainOpt = repository.findById(pdsJobUUID);
             if (!jobReadAgainOpt.isPresent()) {
-                LOG.info("The job {} is no longer found. So cancel is not possible.", jobToHardReset.getUUID());
+                LOG.info("The job {} is no longer found. So cancel is not needed.", pdsJobUUID);
                 /* maybe auto cleanup... no longer existing - so just ignore */
-                return;
+                return true;
             }
             PDSJob jobReadAgain = jobReadAgainOpt.get();
-            if (!PDSJobStatusState.CANCEL_REQUESTED.equals(jobReadAgain.getState())) {
+            if (PDSJobStatusState.CANCELED.equals(jobReadAgain.getState())) {
                 LOG.info("Cancel operation was already done by another PDS instance for PDS job: {}. New state found: {}", jobReadAgain.getUUID(),
                         jobReadAgain.getState());
                 /* just already done by another PDS instance - so ignore gracefully */
-                return;
+                return true;
             }
-            LOG.warn("Concurency problem - cannot reset state for job: {}. And was also not done by another PDS.", jobToHardReset.getUUID(), ce);
+            LOG.warn("Concurency problem - cannot reset state for job: {}. And was also not done by another PDS.", pdsJobUUID, ce);
+            return false;
         }
     }
 

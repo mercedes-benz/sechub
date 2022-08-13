@@ -68,6 +68,8 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
     private PDSJobConfiguration config;
 
+    private boolean cancelOperationsHasBeenStarted;
+
     public PDSExecutionCallable(UUID jobUUID, PDSJobTransactionService jobTransactionService, PDSWorkspaceService workspaceService,
             PDSExecutionEnvironmentService environmentService, PDSCheckJobStatusService jobStatusService) {
         notNull(jobUUID, "pdsJobUUID may not be null!");
@@ -135,8 +137,10 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         if (result.exitCode != 0) {
             result.failed = true;
         }
+        result.canceled = cancelOperationsHasBeenStarted;
 
-        LOG.info("Finished execution of job {} with exitCode={}, failed={}", pdsJobUUID, result.exitCode, result.failed);
+        LOG.info("Finished execution of job {} with exitCode={}, failed={}, cancelOperationsHasBeenStarted={}", pdsJobUUID, result.exitCode, result.failed,
+                cancelOperationsHasBeenStarted);
 
         return result;
     }
@@ -163,14 +167,14 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             throws InterruptedException, IOException {
 
         /* watching */
-        String watcherThreadName = "exec-data-watcher-" + pdsJobUUID;
+        String watcherThreadName = "PDSJob:" + pdsJobUUID + "-stream-watcher";
 
         LOG.debug("Start watcher thread: {}", watcherThreadName);
 
-        StreamDataRefreshRequestWatcherRunnable watcherRunnable = new StreamDataRefreshRequestWatcherRunnable(pdsJobUUID);
-        Thread watcherThread = new Thread(watcherRunnable);
-        watcherThread.setName(watcherThreadName);
-        watcherThread.start();
+        StreamDataRefreshRequestWatcherRunnable streamDatawatcherRunnable = new StreamDataRefreshRequestWatcherRunnable(pdsJobUUID);
+        Thread streamDataWatcherThread = new Thread(streamDatawatcherRunnable);
+        streamDataWatcherThread.setName(watcherThreadName);
+        streamDataWatcherThread.start();
 
         /* waiting for process */
         LOG.debug("Wait for process of job with uuid:{}, will wait {} minutes for result from product with id:{}", jobUUID, minutesToWaitForResult,
@@ -188,7 +192,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             result.exitCode = 1;
             prepareForCancel(true);
 
-            watcherRunnable.stop();
+            streamDatawatcherRunnable.stop();
 
             return;
         }
@@ -211,33 +215,42 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             result.failed = true;
             result.result = "Result file not found at " + file.getAbsolutePath();
 
-            File systemOutFile = workspaceService.getSystemOutFile(jobUUID);
-            String shrinkedOutputStream = null;
-            String shrinkedErrorStream = null;
-
-            if (systemOutFile.exists()) {
-                String output = FileUtils.readFileToString(systemOutFile, encoding);
-                result.result += "\nOutput:\n" + output;
-                shrinkedOutputStream = maximum1024chars(output);
-            }
-
-            File systemErrorFile = workspaceService.getSystemErrorFile(jobUUID);
-            if (systemErrorFile.exists()) {
-                String error = FileUtils.readFileToString(systemErrorFile, encoding);
-                result.result += "\nErrors:\n" + error;
-                shrinkedErrorStream = maximum1024chars(error);
-            }
+            String shrinkedOutputStream = createShrinkedOutput(result, jobUUID, encoding);
+            String shrinkedErrorStream = createShrinkedError(result, jobUUID, encoding);
 
             LOG.error("job {} wrote no result file - here part of console log:\noutput stream:\n{}\nerror stream:\n{}", jobUUID, shrinkedOutputStream,
                     shrinkedErrorStream);
 
         }
 
-        watcherRunnable.stop();
+        streamDatawatcherRunnable.stop();
 
         writeJobExecutionDataToDatabase(jobUUID);
         writeProductMessagesToDatabaseWhenMessagesFound(jobUUID);
 
+    }
+
+    private String createShrinkedError(PDSExecutionResult result, UUID jobUUID, String encoding) throws IOException {
+        String shrinkedErrorStream = null;
+        File systemErrorFile = workspaceService.getSystemErrorFile(jobUUID);
+        if (systemErrorFile.exists()) {
+            String error = FileUtils.readFileToString(systemErrorFile, encoding);
+            result.result += "\nErrors:\n" + error;
+            shrinkedErrorStream = maximum1024chars(error);
+        }
+        return shrinkedErrorStream;
+    }
+
+    private String createShrinkedOutput(PDSExecutionResult result, UUID jobUUID, String encoding) throws IOException {
+        File systemOutFile = workspaceService.getSystemOutFile(jobUUID);
+        String shrinkedOutputStream = null;
+
+        if (systemOutFile.exists()) {
+            String output = FileUtils.readFileToString(systemOutFile, encoding);
+            result.result += "\nOutput:\n" + output;
+            shrinkedOutputStream = maximum1024chars(output);
+        }
+        return shrinkedOutputStream;
     }
 
     private void writeProductMessagesToDatabaseWhenMessagesFound(UUID jobUUID) {
@@ -406,15 +419,20 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
     }
 
     /**
-     * Is called before cancel operation on caller / task side
+     * Is called before cancel operation on caller (user) side or when time out of
+     * execution has been reached!
      *
      * @param mayInterruptIfRunning
+     * @return <code>true</code> when the process has terminated itself or a hard
+     *         termination was done. <code>false</code> when process cancellation
+     *         failed
      */
     @UseCaseSystemHandlesJobCancelRequests(@PDSStep(name = "process cancellation", description = "process created by job will be destroyed. If configured, a given time in seconds will be waited, to give the process the chance handle some cleanup and to end itself.", number = 4))
-    void prepareForCancel(boolean mayInterruptIfRunning) {
+    boolean prepareForCancel(boolean mayInterruptIfRunning) {
         if (process == null || !process.isAlive()) {
-            return;
+            return true;
         }
+        cancelOperationsHasBeenStarted = true;
 
         ProcessHandlingData processHandlingData = null;
 
@@ -426,6 +444,9 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
         try {
             handleProcessCancellation(processHandlingData);
+            return true;
+        } catch (RuntimeException e) {
+            return false;
         } finally {
 
             JobConfigurationData data = jobTransactionService.getJobConfigurationData(pdsJobUUID);
@@ -442,25 +463,24 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
     }
 
     private void handleProcessCancellation(ProcessHandlingData processHandlingData) {
+
         if (isWaitOnCancelOperationAccepted(processHandlingData)) {
+            int millisecondsToWaitForNextCheck = processHandlingData.getMillisecondsToWaitForNextCheck();
             LOG.info("Cancel job: {}: give process chance to cancel. Will wait a maximum time of {} seconds. The check intervall is: {} milliseconds",
-                    pdsJobUUID, processHandlingData.secondsToWaitForProcess, processHandlingData.millisecondsToWaitForNextCheck);
+                    pdsJobUUID, processHandlingData.getSecondsToWaitForProcess(), millisecondsToWaitForNextCheck);
 
-            long startTimeStamp = System.currentTimeMillis();
-            long maxTimeStamp = startTimeStamp + (processHandlingData.millisecondsToWaitForNextCheck * 1000);
-
-            while (startTimeStamp < maxTimeStamp) {
+            while (processHandlingData.isStillWaitingForProcessAccepted()) {
                 if (process.isAlive()) {
                     try {
-                        LOG.debug("Cancel job: {}: wait {} milliseconds before next process alive check.", pdsJobUUID,
-                                processHandlingData.millisecondsToWaitForNextCheck);
-                        Thread.sleep(processHandlingData.millisecondsToWaitForNextCheck);
+
+                        LOG.debug("Cancel job: {}: wait {} milliseconds before next process alive check.", pdsJobUUID, millisecondsToWaitForNextCheck);
+                        Thread.sleep(millisecondsToWaitForNextCheck);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
                 }
             }
-            LOG.info("Cancel job: {}: waited {} milliseconds at all", pdsJobUUID, System.currentTimeMillis() - startTimeStamp);
+            LOG.info("Cancel job: {}: waited {} milliseconds at all", pdsJobUUID, System.currentTimeMillis() - processHandlingData.getProcessStartTimeStamp());
 
         } else {
             LOG.info("Cancel job: {}: will not wait.", pdsJobUUID);
@@ -478,9 +498,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             LOG.debug("Not waiting because no process handling data!");
             return false;
         }
-        boolean waiting = processHandlingData.secondsToWaitForProcess > 0;
-        LOG.debug("Waiting on cancel operation: {}, seconsToWaitForProcess: {}", waiting, processHandlingData.secondsToWaitForProcess);
-        return waiting;
+        return processHandlingData.isStillWaitingForProcessAccepted();
     }
 
     private void cleanUpWorkspace(UUID jobUUID, PDSJobConfiguration config) {

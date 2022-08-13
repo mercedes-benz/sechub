@@ -28,7 +28,6 @@ public class PDSGetJobMessagesService {
         notNull(jobUUID, "job uuid may not be null!");
 
         PDSJob job = assertJobFound(jobUUID, repository);
-        assertJobIsInState(job, PDSJobStatusState.DONE, PDSJobStatusState.FAILED);
 
         String json = job.getMessages();
         if (json != null) {

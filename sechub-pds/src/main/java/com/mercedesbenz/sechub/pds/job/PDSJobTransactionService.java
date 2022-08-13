@@ -90,6 +90,7 @@ public class PDSJobTransactionService {
         if (started != null) {
             job.setStarted(started);
         }
+        PDSJobStatusState oldState = job.getState();
         assertJobIsInState(job, acceptedStatesBefore);
 
         job.setState(newState);
@@ -98,7 +99,7 @@ public class PDSJobTransactionService {
         }
 
         repository.save(job);
-        LOG.debug("Updated job in own transaction - PDS job uuid={}, state={}", job.getUUID(), job.getState());
+        LOG.debug("Updated job in own transaction - PDS job uuid={}, newState={}, newState={}", job.getUUID(), job.getState(), oldState);
     }
 
     /**
@@ -157,9 +158,24 @@ public class PDSJobTransactionService {
     }
 
     public void markJobAsCancelRequestedInOwnTransaction(UUID jobUUID) {
+        updatJobStatusState(jobUUID, PDSJobStatusState.CANCEL_REQUESTED);
+    }
+
+    public void markJobAsCanceledInOwnTransaction(UUID jobUUID) {
+        updatJobStatusState(jobUUID, PDSJobStatusState.CANCELED);
+    }
+
+    private void updatJobStatusState(UUID jobUUID, PDSJobStatusState state) {
         PDSJob job = assertJobFound(jobUUID, repository);
-        job.setState(PDSJobStatusState.CANCEL_REQUESTED);
+        PDSJobStatusState oldState = job.getState();
+        if (state == oldState) {
+            LOG.info("Did not change PDS job: {} status state:{} already set.", jobUUID, state);
+            return;
+        }
+        job.setState(state);
         repository.save(job);
 
+        LOG.info("Changed PDS job: {} from status state: {} to: {}", jobUUID, oldState, state);
     }
+
 }

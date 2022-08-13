@@ -15,9 +15,9 @@ public class ProcessHandlingDataFactory {
 
         PDSJobConfigurationSupport configurationSupport = new PDSJobConfigurationSupport(configuration);
 
-        ProcessHandlingData data = new ProcessHandlingData();
-        data.millisecondsToWaitForNextCheck = calculateMillisecondsToWaitForNextCheck(configurationSupport);
-        data.secondsToWaitForProcess = calculateSecondsToWaitForProcess(configurationSupport);
+        int millisecondsToWaitForNextCheck = calculateMillisecondsToWaitForNextCheck(configurationSupport);
+        int secondsToWaitForProcess = calculateSecondsToWaitForProcess(configurationSupport);
+        ProcessHandlingData data = new ProcessHandlingData(secondsToWaitForProcess, millisecondsToWaitForNextCheck);
 
         return data;
     }

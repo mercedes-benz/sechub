@@ -87,6 +87,7 @@ public class PDSFileUploadJobService {
             LOG.error("Was not able to upload file: {} for job: {}.", fileName, jobUUID, e);
             throw e;
         }
+        LOG.info("Upload has been done for PDS job: {}", jobUUID);
 
     }
 

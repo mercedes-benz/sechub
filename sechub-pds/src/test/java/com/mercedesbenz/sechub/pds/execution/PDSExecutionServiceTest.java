@@ -79,7 +79,8 @@ public class PDSExecutionServiceTest {
         }
 
         @Override
-        void prepareForCancel(boolean mayInterruptIfRunning) {
+        boolean prepareForCancel(boolean mayInterruptIfRunning) {
+            return true;
         }
 
     }

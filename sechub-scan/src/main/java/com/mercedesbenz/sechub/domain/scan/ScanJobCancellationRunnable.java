@@ -86,8 +86,10 @@ class ScanJobCancellationRunnable implements Runnable {
     private void sendEventThatProduductExecutorsHaveBeenCanceled() {
         DomainMessageService domainMessageService = runnableData.getExecutionServiceContainer().getDomainMessageService();
         DomainMessage request = new DomainMessage(MessageID.PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE);
-        JobMessage jobCancelData = request.get(MessageDataKeys.JOB_CANCEL_DATA);
+
+        JobMessage jobCancelData = new JobMessage();
         jobCancelData.setJobUUID(runnableData.getSechubJobUUID());
+        request.set(MessageDataKeys.JOB_CANCEL_DATA, jobCancelData);
 
         domainMessageService.sendAsynchron(request);
     }

@@ -7,4 +7,5 @@ public class PDSExecutionResult {
     boolean failed;
 
     String result;
+    boolean canceled;
 }

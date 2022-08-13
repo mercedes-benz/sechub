@@ -17,6 +17,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import junit.framework.AssertionFailedError;
 
@@ -34,13 +35,12 @@ import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.mercedesbenz.sechub.adapter.AdapterMetaData;
+import com.mercedesbenz.sechub.adapter.pds.data.PDSJobStatus.PDSAdapterJobStatusState;
 import com.mercedesbenz.sechub.commons.mapping.MappingData;
 import com.mercedesbenz.sechub.commons.mapping.MappingEntry;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.domain.scan.admin.FullScanData;
-import com.mercedesbenz.sechub.domain.scan.admin.ScanData;
 import com.mercedesbenz.sechub.integrationtest.internal.DefaultTestExecutionProfile;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultProfiles;
@@ -316,6 +316,33 @@ public class TestAPI {
      */
     public static void waitForJobRunning(TestProject project, UUID jobUUID) {
         waitForJobRunning(project, 5, 300, jobUUID);
+    }
+
+    public static UUID waitForFirstPDSJobOfSecHubJobAndReturnPDSJobUUID(UUID sechubJobUUID) {
+        String errorMessage = "Not at least one PDS job uuid was found for sechub job:" + sechubJobUUID;
+        return executeCallableAndAcceptAssertionsMaximumTimes(15, () -> {
+
+            List<UUID> allPDSJobUUIDs = TestAPI.fetchAllPDSJobUUIDsForSecHubJob(sechubJobUUID);
+            assertTrue(errorMessage, allPDSJobUUIDs.size() > 0);
+            return allPDSJobUUIDs.iterator().next();
+        }, 1000);
+    }
+
+    public static void waitForPDSJobInState(PDSAdapterJobStatusState state, int timeOutInSeconds, int timeToWaitInMillis, UUID pdsJobUUID,
+            boolean dumpPDSOutputOnTimeOut) {
+        Runnable runnable = null;
+        if (dumpPDSOutputOnTimeOut) {
+            runnable = new AutoDumpPDSOutputForPDSJobUUIDRunnable(pdsJobUUID);
+        }
+        executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, timeOutInSeconds, timeToWaitInMillis, runnable, HttpClientErrorException.class) {
+            @Override
+            public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
+                String status = asPDSUser(PDS_ADMIN).getJobStatus(pdsJobUUID);
+                LOG.debug(">>>>>>>>>PDS JOB:STATUS:" + status);
+                return status.contains(state.toString());
+            }
+        });
+
     }
 
     /**
@@ -1259,27 +1286,34 @@ public class TestAPI {
     }
 
     public static List<UUID> fetchAllPDSJobUUIDsForSecHubJob(UUID sechubJobUUID) {
-        FullScanData fullScanData = fetchFullScanData(sechubJobUUID);
-        List<ScanData> all = fullScanData.allScanData;
 
-        // here we have only ONE integration test server, so we know how to access the
-        // PDS server
-        // It is enough to know the pds job uuids
-        List<UUID> pdsJobUUIDs = new ArrayList<>();
+        // this makes problem with canceled parts. we try new approach by directly fetch
+        // the information via special integration test controller
 
-        for (ScanData data : all) {
-            if (data.metaData == null || data.metaData.isEmpty()) {
-                continue;
-            }
-            AdapterMetaData metaData = JSONConverter.get().fromJSON(AdapterMetaData.class, data.metaData);
-            String pdsJobUUIDString = metaData.getValueAsStringOrNull("PDS_JOB_UUID");
-            if (pdsJobUUIDString == null || pdsJobUUIDString.isEmpty()) {
-                continue;
-            }
-            pdsJobUUIDs.add(UUID.fromString(pdsJobUUIDString));
-        }
+//        FullScanData fullScanData = fetchFullScanData(sechubJobUUID);
+//        List<ScanData> all = fullScanData.allScanData;
+//
+//        // here we have only ONE integration test server, so we know how to access the
+//        // PDS server
+//        // It is enough to know the PDS job UUIDs
+//        List<UUID> pdsJobUUIDs = new ArrayList<>();
+//
+//        for (ScanData data : all) {
+//            if (data.metaData == null || data.metaData.isEmpty()) {
+//                continue;
+//            }
+//            AdapterMetaData metaData = JSONConverter.get().fromJSON(AdapterMetaData.class, data.metaData);
+//            String pdsJobUUIDString = metaData.getValueAsStringOrNull("PDS_JOB_UUID");
+//            if (pdsJobUUIDString == null || pdsJobUUIDString.isEmpty()) {
+//                continue;
+//            }
+//            pdsJobUUIDs.add(UUID.fromString(pdsJobUUIDString));
+//        }
 
-        return pdsJobUUIDs;
+        String url = getURLBuilder().buildIntegrationtTestFetchAllPDSJobUUIDSForSecHubJob(sechubJobUUID);
+        String json = getSuperAdminRestHelper().getJSON(url);
+        List<String> found = TestJSONHelper.get().createFromJSONAsList(json, String.class);
+        return found.stream().map((string) -> UUID.fromString(string)).collect(Collectors.toList());
     }
 
     public static void dumpAllPDSJobOutputsForSecHubJob(UUID sechubJobUUID) {
@@ -1311,26 +1345,45 @@ public class TestAPI {
             messagesAsString = "MessagesList was null";
         }
 
-        String report = internalExecuteOrUseFallback(() -> asPDSUser.internalFetchReportWithoutAutoDump(jobUUID, 1), "Report not available");
+        String report = internalExecuteOrUseFallback(() -> asPDSUser.internalFetchReportWithoutAutoDump(jobUUID, 1), ">>>>>>No report avialable<<<<<<");
+
+        Object status = internalExecuteOrUseFallback(() -> asPDSUser.internalFetchStatusWithoutAutoDump(jobUUID), ">>>>>>No status avialable<<<<<<");
 
         System.out.println("----------------------------------------------------------------------------------------------------------");
         System.out.println("DUMP - PDS Job: " + jobUUID);
         System.out.println("----------------------------------------------------------------------------------------------------------");
+        System.out.println("Status:");
+        System.out.println(status);
+        System.out.println();
         System.out.println("Output stream:");
         System.out.println("--------------");
-        System.out.println(outputStreamText);
-
+        if (outputStreamText == null || outputStreamText.isEmpty()) {
+            System.out.println(">>>>>>No output avialable<<<<<<");
+        } else {
+            System.out.println(outputStreamText);
+        }
+        System.out.println();
         System.out.println("Error stream:");
         System.out.println("-------------");
-        System.out.println(errorStreamText);
+        if (errorStreamText == null || errorStreamText.isEmpty()) {
+            System.out.println(">>>>>>No error output avialable<<<<<<");
+        } else {
+            System.out.println(errorStreamText);
+        }
+        System.out.println();
 
         System.out.println("Messages:");
         System.out.println("---------");
-        System.out.println(messagesAsString);
-
+        if (messagesAsString == null || messagesAsString.isEmpty()) {
+            System.out.println(">>>>>>No messages avialable<<<<<<");
+        } else {
+            System.out.println(messagesAsString);
+        }
+        System.out.println();
         System.out.println("Report:");
         System.out.println("-------");
         System.out.println(report);
+        System.out.println();
         System.out.println("----------------------------------------------------------------------------------------------------------");
         System.out.println("END OF DUMP - PDS Job: " + jobUUID);
         System.out.println("----------------------------------------------------------------------------------------------------------");

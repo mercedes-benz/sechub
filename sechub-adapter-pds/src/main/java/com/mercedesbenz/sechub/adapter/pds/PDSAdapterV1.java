@@ -140,6 +140,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
             case FAILED:
                 throw asAdapterException("PDS job execution failed: TimeOut=" + timeOutCheck.wasTimeOut() + ",JobEnded=" + jobEnded, config);
             case CANCELED:
+            case CANCEL_REQUESTED:
                 throw asAdapterCanceledByUserException(config);
             default:
                 // just do nothing else
@@ -441,7 +442,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         String pdsJobUUID = metaData.getValueAsStringOrNull(PDS_JOB_UUID);
 
         if (pdsJobUUID == null || pdsJobUUID.isEmpty()) {
-            LOG.error("PDS job uuid was :{}, so stop not possible.", pdsJobUUID);
+            LOG.error("PDS job uuid form adapter meta data was :{}, so stop not possible.", pdsJobUUID);
             throw asAdapterException("PDS job uuid not set, cannot cancel", context);
         }
         context.setPDSJobUUID(UUID.fromString(pdsJobUUID));

@@ -63,7 +63,7 @@ class ScanJobExecutor {
         ScanJobRunnableData runnableData = new ScanJobRunnableData(sechubJobUUID, executionServiceContainer, context);
 
         ScanJobExecutionRunnable scanJobExecutionRunnable = new ScanJobExecutionRunnable(runnableData);
-        Thread executorThread = new Thread(scanJobExecutionRunnable, "SecHub-exec-" + sechubJobUUID + "-" + progress.getId());
+        Thread executorThread = new Thread(scanJobExecutionRunnable, "SecHubJob:" + sechubJobUUID + "-exec");
         runnableData.setRunnableThread(executorThread);
 
         try {
@@ -163,7 +163,7 @@ class ScanJobExecutor {
          * its job while being interrupted. So cancel thread necessary.
          */
         ScanJobCancellationRunnable cancelRunnable = new ScanJobCancellationRunnable(data);
-        Thread cancelThread = new Thread(cancelRunnable, "SecHub-cancel-" + data.getSechubJobUUID());
+        Thread cancelThread = new Thread(cancelRunnable, "SecHubJob:" + data.getSechubJobUUID() + "-cancel");
         data.setRunnableThread(cancelThread);
         cancelThread.start();
     }

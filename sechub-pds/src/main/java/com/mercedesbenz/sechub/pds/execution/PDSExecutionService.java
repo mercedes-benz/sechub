@@ -144,10 +144,13 @@ public class PDSExecutionService {
                     boolean canceled = future.cancel(true);
 
                     if (canceled) {
-                        LOG.info("OK: canceled PDS job: {}", jobUUID);
+                        LOG.info("CANCEL done: canceled PDS job: {}", jobUUID);
+                        updateService.markJobAsCanceledInOwnTransaction(jobUUID);
                         return CancelResult.JOB_FOUND_CANCEL_WAS_DONE;
                     } else {
-                        LOG.warn("NOT DONE: was not able to cancel PDS job :{} returned false - this should not happen");
+                        LOG.info(
+                                "CANCEL NOT done: was not able to cancel PDS job :{} - should not happen. Please read logs for details. This will be an orphaned cancel request.",
+                                jobUUID);
                         return CancelResult.JOB_FOUND_CANCEL_WAS_NOT_POSSIBLE;
 
                     }
@@ -309,7 +312,9 @@ public class PDSExecutionService {
                             LOG.debug("Fetch job result from future, pds job uuid={}, state={}", job.getUUID(), job.getState());
                             job.setResult(callResult.result);
 
-                            if (callResult.failed) {
+                            if (callResult.canceled) {
+                                job.setState(PDSJobStatusState.CANCELED);
+                            } else if (callResult.failed) {
                                 job.setState(PDSJobStatusState.FAILED);
                             } else {
                                 job.setState(PDSJobStatusState.DONE);
@@ -317,10 +322,12 @@ public class PDSExecutionService {
 
                         } catch (InterruptedException e) {
                             LOG.error("Job with uuid:{} was interrupted", jobUUID, e);
+
                             job.setState(PDSJobStatusState.FAILED);
                             job.setResult("Job interrupted");
                         } catch (ExecutionException e) {
                             LOG.error("Job with uuid:{} failed in execution", jobUUID, e);
+
                             job.setState(PDSJobStatusState.FAILED);
                             job.setResult("Job execution failed");
                         }

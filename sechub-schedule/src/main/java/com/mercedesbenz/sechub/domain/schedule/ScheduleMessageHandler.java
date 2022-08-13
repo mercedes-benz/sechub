@@ -128,7 +128,7 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler {
     private void handleProductExecutorCancelOperationsDone(DomainMessage request) {
         JobMessage jobCancelData = request.get(MessageDataKeys.JOB_CANCEL_DATA);
         UUID jobUUID = jobCancelData.getJobUUID();
-        jobTransactionService.updateExecutionStateInOwnTransaction(jobUUID, ExecutionState.CANCEL_REQUESTED);
+        jobTransactionService.updateExecutionStateInOwnTransaction(jobUUID, ExecutionState.CANCELED);
 
     }
 

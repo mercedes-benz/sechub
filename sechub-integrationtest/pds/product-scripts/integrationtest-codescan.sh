@@ -108,7 +108,7 @@ if [[ "$PDS_TEST_KEY_VARIANTNAME" = "k" ]]; then
     infoMessage "script is starting to inspect event folder: $PDS_JOB_EVENTS_FOLDER"
 
     counter=0
-    if waitForEventAndSendMessage "cancel_requested" 0.3 12 ; then
+    if waitForEventAndSendMessage "cancel_requested" 0.3 30 ; then
        exit 0
     else
        exit 5    
