@@ -324,6 +324,28 @@ public abstract class AbstractScan implements OwaspZapScan {
         }
     }
 
+    protected void loadApiDefinitions() throws ClientApiException {
+        if (scanConfig.getApiDefinitionFile() == null) {
+            LOG.info("For scan {}: No file with API definition found!", scanConfig.getContextName());
+            return;
+        }
+        if (scanConfig.getSecHubWebScanConfiguration().getApi().isEmpty()) {
+            throw new MustExitRuntimeException("For scan :" + scanConfig.getContextName() + " No API type was definied!",
+                    MustExitCode.SECHUB_CONFIGURATION_INVALID);
+        }
+
+        switch (scanConfig.getSecHubWebScanConfiguration().getApi().get().getType()) {
+        case OPEN_API:
+            clientApi.openapi.importFile(scanConfig.getApiDefinitionFile().toString(), scanConfig.getTargetUriAsString(), contextId);
+            break;
+        default:
+            // should never happen since API type is an Enum
+            // Failure should happen before getting here
+            throw new MustExitRuntimeException("For scan :" + scanConfig.getContextName() + " Unknown API type was definied!",
+                    MustExitCode.SECHUB_CONFIGURATION_INVALID);
+        }
+    }
+
     private boolean isPassiveRule(String type) {
         return "passive".equals(type.toLowerCase());
     }
@@ -339,6 +361,7 @@ public abstract class AbstractScan implements OwaspZapScan {
 
         createContext();
         addIncludedAndExcludedUrlsToContext();
+        loadApiDefinitions();
         if (scanConfig.isAjaxSpiderEnabled()) {
             runAjaxSpider();
         }

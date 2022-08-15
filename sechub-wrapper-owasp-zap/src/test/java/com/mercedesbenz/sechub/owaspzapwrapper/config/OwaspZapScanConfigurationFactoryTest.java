@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.owaspzapwrapper.config;
 
+import static com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableConstants.PDS_JOB_EXTRACTED_SOURCES_FOLDER;
 import static com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableConstants.PROXY_HOST_ENV_VARIABLE_NAME;
 import static com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableConstants.PROXY_PORT_ENV_VARIABLE_NAME;
 import static com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableConstants.ZAP_API_KEY_ENV_VARIABLE_NAME;
@@ -30,7 +31,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.CommandLineSettings;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitRuntimeException;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.auth.AuthenticationType;
@@ -48,8 +48,6 @@ class OwaspZapScanConfigurationFactoryTest {
     private EnvironmentVariableReader environmentVariableReader;
     private BaseTargetUriFactory targetUriFactory;
 
-    private SechubWebConfigProvider webConfigProvider;
-
     private RuleProvider ruleProvider;
 
     private File fullRulesetFile;
@@ -64,14 +62,12 @@ class OwaspZapScanConfigurationFactoryTest {
         sechubWebConfigHelper = mock(SecHubWebScanConfigurationHelper.class);
         environmentVariableReader = mock(EnvironmentVariableReader.class);
         targetUriFactory = mock(BaseTargetUriFactory.class);
-        webConfigProvider = mock(SechubWebConfigProvider.class);
         ruleProvider = mock(RuleProvider.class);
 
         // connect mocks with test object
         factoryToTest.sechubWebConfigHelper = sechubWebConfigHelper;
         factoryToTest.environmentVariableReader = environmentVariableReader;
         factoryToTest.targetUriFactory = targetUriFactory;
-        factoryToTest.webConfigProvider = webConfigProvider;
         factoryToTest.ruleProvider = ruleProvider;
 
         // create test data
@@ -89,10 +85,8 @@ class OwaspZapScanConfigurationFactoryTest {
     void created_configuration_has_max_scan_duration_from_sechub_webconfig() {
         /* prepare */
         CommandLineSettings settings = createSettingsMockWithNecessaryParts();
-        SecHubWebScanConfiguration config = simulateProvidedSecHubConfiguration(settings);
-
         long maxScanDuration = 4711L;
-        when(sechubWebConfigHelper.fetchMaxScanDurationInMillis(config)).thenReturn(maxScanDuration);
+        when(sechubWebConfigHelper.fetchMaxScanDurationInMillis(any())).thenReturn(maxScanDuration);
         when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         /* execute */
@@ -100,21 +94,6 @@ class OwaspZapScanConfigurationFactoryTest {
 
         /* test */
         assertEquals(result.getMaxScanDurationInMillis(), maxScanDuration);
-
-    }
-
-    @Test
-    void configuration_returned_by_provider_is_inside_result() {
-        /* prepare */
-        CommandLineSettings settings = createSettingsMockWithNecessaryParts();
-        SecHubWebScanConfiguration config = simulateProvidedSecHubConfiguration(settings);
-        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
-
-        /* execute */
-        OwaspZapScanConfiguration result = factoryToTest.create(settings);
-
-        /* test */
-        assertEquals(result.getSecHubWebScanConfiguration(), config);
 
     }
 
@@ -148,7 +127,7 @@ class OwaspZapScanConfigurationFactoryTest {
         /* test */
         String contextName = result.getContextName();
         assertNotNull(contextName);
-        UUID.fromString(contextName);// just check it us a uuid... (otherwise exception)
+        UUID.fromString(contextName);// just check it is a UUID
     }
 
     @ParameterizedTest
@@ -260,10 +239,8 @@ class OwaspZapScanConfigurationFactoryTest {
     void authentication_type_from_config_is_in_result() {
         /* prepare */
         CommandLineSettings settings = createSettingsMockWithNecessaryParts();
-        SecHubWebScanConfiguration config = simulateProvidedSecHubConfiguration(settings);
-
         AuthenticationType type = AuthenticationType.FORM_BASED_AUTHENTICATION;
-        when(sechubWebConfigHelper.determineAuthenticationType(config)).thenReturn(type);
+        when(sechubWebConfigHelper.determineAuthenticationType(any())).thenReturn(type);
         when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         /* execute */
@@ -468,13 +445,25 @@ class OwaspZapScanConfigurationFactoryTest {
         verify(environmentVariableReader, times(1)).readAsString(ZAP_DEACTIVATED_RULE_REFERENCES);
     }
 
-    private SecHubWebScanConfiguration simulateProvidedSecHubConfiguration(CommandLineSettings settings) {
-        File file = new File("not-existing-just-placeholder");
-        when(settings.getSecHubConfigFile()).thenReturn(file);
+    @Test
+    void api_definition_file_from_sechub_scan_config_is_inside_result() {
+        /* prepare */
+        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
+        CommandLineSettings settings = createSettingsMockWithNecessaryPartsWithoutRuleFiles();
 
-        SecHubWebScanConfiguration config = new SecHubWebScanConfiguration();
-        when(webConfigProvider.getSecHubWebConfiguration(file)).thenReturn(config);
-        return config;
+        File sechubScanConfigFile = new File("src/test/resources/sechub-config-examples/not-auth-with-openapi-file.json");
+        String extractedSourcesPath = "path/to/extracted/sources";
+        when(settings.getSecHubConfigFile()).thenReturn(sechubScanConfigFile);
+        when(environmentVariableReader.readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER)).thenReturn(extractedSourcesPath);
+
+        Path expectedPathToApiDefinitionFile = new File(extractedSourcesPath, "openapi3.json").toPath();
+
+        /* execute */
+        OwaspZapScanConfiguration result = factoryToTest.create(settings);
+
+        /* test */
+        verify(environmentVariableReader, times(1)).readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER);
+        assertEquals(expectedPathToApiDefinitionFile, result.getApiDefinitionFile());
     }
 
     private CommandLineSettings createSettingsMockWithNecessaryParts() {

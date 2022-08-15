@@ -109,6 +109,7 @@ public abstract class AbstractAuthScan extends AbstractScan implements AuthScan 
         createContext();
         addIncludedAndExcludedUrlsToContext();
         init();
+        loadApiDefinitions();
         if (scanConfig.isAjaxSpiderEnabled()) {
             runAjaxSpider();
         }

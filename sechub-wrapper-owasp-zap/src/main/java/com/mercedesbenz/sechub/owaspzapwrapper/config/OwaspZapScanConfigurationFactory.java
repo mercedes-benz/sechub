@@ -2,11 +2,13 @@
 package com.mercedesbenz.sechub.owaspzapwrapper.config;
 
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.CommandLineSettings;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitCode;
@@ -26,15 +28,17 @@ public class OwaspZapScanConfigurationFactory {
     SecHubWebScanConfigurationHelper sechubWebConfigHelper;
     EnvironmentVariableReader environmentVariableReader;
     BaseTargetUriFactory targetUriFactory;
-    SechubWebConfigProvider webConfigProvider;
     RuleProvider ruleProvider;
+    ApiDefinitionFileProvider apiDefinitionFileProvider;
+    SecHubScanConfigProvider secHubScanConfigProvider;
 
     public OwaspZapScanConfigurationFactory() {
         sechubWebConfigHelper = new SecHubWebScanConfigurationHelper();
         environmentVariableReader = new EnvironmentVariableReader();
         targetUriFactory = new BaseTargetUriFactory();
-        webConfigProvider = new SechubWebConfigProvider();
         ruleProvider = new RuleProvider();
+        apiDefinitionFileProvider = new ApiDefinitionFileProvider();
+        secHubScanConfigProvider = new SecHubScanConfigProvider();
     }
 
     public OwaspZapScanConfiguration create(CommandLineSettings settings) {
@@ -56,10 +60,14 @@ public class OwaspZapScanConfigurationFactory {
 
         /* SecHub settings */
         URI targetUri = targetUriFactory.create(settings.getTargetURL());
-        SecHubWebScanConfiguration sechubWebConfig = webConfigProvider.getSecHubWebConfiguration(settings.getSecHubConfigFile());
+
+        SecHubScanConfiguration sechubScanConfig = secHubScanConfigProvider.getSecHubWebConfiguration(settings.getSecHubConfigFile());
+        SecHubWebScanConfiguration sechubWebConfig = getSecHubWebConfiguration(sechubScanConfig);
         long maxScanDurationInMillis = sechubWebConfigHelper.fetchMaxScanDurationInMillis(sechubWebConfig);
 
         AuthenticationType authType = sechubWebConfigHelper.determineAuthenticationType(sechubWebConfig);
+
+        Path apiDefinitionFile = createPathToApiDefinitionFileOrNull(sechubScanConfig);
 
         /* we always use the SecHub job UUID as OWASP Zap context name */
         String contextName = settings.getJobUUID();
@@ -83,6 +91,7 @@ public class OwaspZapScanConfigurationFactory {
 												.setProxyInformation(proxyInformation)
 												.setFullRuleset(fullRuleset)
 												.setDeactivatedRuleReferences(deactivatedRuleReferences)
+												.setApiDefinitionFile(apiDefinitionFile)
 											  .build();
 		/* @formatter:on */
         return scanConfig;
@@ -167,4 +176,20 @@ public class OwaspZapScanConfigurationFactory {
         return new ProxyInformation(proxyHost, proxyPort);
     }
 
+    private SecHubWebScanConfiguration getSecHubWebConfiguration(SecHubScanConfiguration sechubConfig) {
+        if (sechubConfig.getWebScan().isEmpty()) {
+            return new SecHubWebScanConfiguration();
+        }
+        return sechubConfig.getWebScan().get();
+    }
+
+    private Path createPathToApiDefinitionFileOrNull(SecHubScanConfiguration sechubScanConfig) {
+        // use the extracted sources folder path if sources where uploaded and extracted
+        // on the PDS
+        String extractedSourcesFolderPath = environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_JOB_EXTRACTED_SOURCES_FOLDER);
+        if (extractedSourcesFolderPath == null) {
+            return null;
+        }
+        return apiDefinitionFileProvider.fetchApiDefinitionFile(extractedSourcesFolderPath, sechubScanConfig);
+    }
 }
