@@ -32,7 +32,11 @@ builds - means to get fast feedback.
 
 *Please setup CI by...*
 
-- Jenkins > create new Item -> `Multibranch pipeline`, name: `sechub-open-source-ci` +
+- Jenkins -> Manage -> Manage Credentials
+  ** add `sechub-server` containing the {secHub} server url
+  ** add `sechub-userid` containing the {secHub} user id
+  ** add `sechub-api-token` containing the api token for sechub-userid
+- Jenkins -> create new Item -> `Multibranch pipeline`, name: `sechub-open-source-ci` +
 - Branch sources: `Git`+
   * Project repository: `https://github.com/mercedes-benz/sechub.git` +
   * Behaviours:
