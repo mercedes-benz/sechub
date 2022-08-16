@@ -14,10 +14,44 @@ wait_loop() {
 localserver() {
     check_setup
 
+    profiles="dev,real_products,mocked_notifications"
+    database_options=""
     storage_options="-Dsechub.storage.sharedvolume.upload.dir=$SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR"
-    profiles="dev,h2,real_products,mocked_notifications"
 
-    java $JAVA_DEBUG_OPTIONS \
+    if [ "$POSTGRES_ENABLED" = true ]
+    then
+        echo "Using database: Postgres"
+
+        profiles="$profiles,postgres"
+        database_options="-Dspring.datasource.url=$DATABASE_CONNECTION -Dspring.datasource.username=$DATABASE_USERNAME  -Dspring.datasource.password=$DATABASE_PASSWORD"
+
+        echo "Database connection:"
+        echo " * URL: $DATABASE_CONNECTION"
+        echo " * Username: $DATABASE_USERNAME"
+        echo " * Password: $DATABASE_PASSWORD"
+    else
+        echo "Using database: H2"
+        profiles="$profiles,h2"
+    fi
+
+    if [ "$S3_ENABLED" = true ]
+    then
+        echo "Using object storage"
+
+        storage_options="-Dsechub.pds.storage.s3.endpoint=$S3_ENDPOINT"
+        storage_options="$storage_options -Dsechub.pds.storage.s3.bucketname=$S3_BUCKETNAME"
+        storage_options="$storage_options -Dsechub.pds.storage.s3.accesskey=$S3_ACCESSKEY"
+        storage_options="$storage_options -Dsechub.pds.storage.s3.secretkey=$S3_SECRETKEY"
+
+        echo "Object storage:"
+        echo " * Endpoint: $S3_ENDPOINT"
+        echo " * Bucketname: $S3_BUCKETNAME"
+        echo " * Accesskey: $S3_ACCESSKEY"
+    fi
+
+    echo "Activated profiles: $profiles"
+
+    java $JAVA_DEBUG_OPTIONS $database_options \
         $storage_options \
         -Dfile.encoding=UTF-8 \
         -Dspring.profiles.active="$profiles" \
@@ -37,7 +71,7 @@ localserver() {
         -Dsechub.notification.smtp.hostname=example.org \
         -Dserver.port=8443 \
         -Dserver.address=0.0.0.0 \
-        -jar sechub-server*.jar
+        -jar /sechub/sechub-server*.jar
 }
 
 check_setup () {

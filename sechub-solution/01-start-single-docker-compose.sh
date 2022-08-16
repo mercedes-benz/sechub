@@ -1,23 +1,23 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: MIT
 
-SCRIPT_DIR=`dirname $0`
-
 ENVIRONMENT_FILE=".env"
 
-if [[ ! -f  "$ENVIRONMENT_FILE" ]]
-then
-    echo "Environment file does not exist."
-    echo "Creating default environment file $ENVIRONMENT_FILE for you."
+resource_limits_enabled="$1"
+compose_file="docker-compose_sechub"
 
-    cp "$SCRIPT_DIR/env-initial" "$SCRIPT_DIR/$ENVIRONMENT_FILE"
-else
-    echo "Using existing environment file: $ENVIRONMENT_FILE."
-fi
+cd $(dirname "$0")
+source "0000-helper.sh"
+
+setup_environment_file "$ENVIRONMENT_FILE" "env-initial"
 
 # Use Docker BuildKit
 export BUILDKIT_PROGRESS=plain
 export DOCKER_BUILDKIT=1
 
-echo "Starting single container."
-docker-compose --file docker-compose_sechub.yaml up --build --remove-orphans
+if [[ "$resource_limits_enabled" == "yes" ]]
+then
+    compose_file="docker-compose_sechub_resource_limits"
+fi
+
+docker-compose --file "$compose_file.yaml" up --build --remove-orphans

@@ -1,0 +1,52 @@
+# SPDX-License-Identifier: MIT
+
+version: "3"
+services:
+    sechub:
+        build:
+            args:
+                - BASE_IMAGE=debian:11-slim
+                - BUILD_TYPE=${BUILD_TYPE}
+            context: docker/
+            dockerfile: SecHub-Debian.dockerfile
+        deploy:
+          resources:
+            limits:
+              memory: ${MEMORY_LIMIT}
+              cpus: ${CPU_LIMIT}
+        env_file:
+            - .env-cluster
+        networks:
+            - "internal"
+        volumes:
+            - "shared_volume:/shared_volumes/uploads"
+        depends_on: 
+            - database
+
+    loadbalancer:
+        build:
+            context: supporting/loadbalancer
+        env_file:
+            - .env-cluster
+        networks:
+            - "internal"
+        depends_on:
+            - sechub
+        ports:
+            - "127.0.0.1:8443:8443"
+    
+    database:
+        build:
+            context: supporting/database
+        env_file:
+            - .env-cluster
+        networks:
+            - "internal"
+        ports:
+            - "127.0.0.1:5432:5432"
+        
+networks:
+    internal:
+
+volumes:
+    shared_volume:

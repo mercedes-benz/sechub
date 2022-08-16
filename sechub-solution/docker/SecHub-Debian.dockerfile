@@ -34,6 +34,8 @@ ARG TAG=""
 ENV DOWNLOAD_FOLDER="/downloads"
 ENV PATH="/usr/local/go/bin:$PATH"
 
+RUN echo "Builder: Build"
+
 RUN mkdir --parent "$SECHUB_ARTIFACT_FOLDER" "$DOWNLOAD_FOLDER"
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
@@ -74,6 +76,8 @@ FROM ${BASE_IMAGE} AS builder-download
 ARG SECHUB_ARTIFACT_FOLDER
 ARG SECHUB_VERSION
 
+RUN echo "Builder: Download"
+
 RUN mkdir --parent "$SECHUB_ARTIFACT_FOLDER"
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
@@ -99,6 +103,8 @@ FROM ${BASE_IMAGE} AS builder-copy
 ARG SECHUB_ARTIFACT_FOLDER
 ARG SECHUB_VERSION
 
+RUN echo "Builder: Copy"
+
 RUN mkdir --parent "$SECHUB_ARTIFACT_FOLDER"
 
 # Copy
@@ -109,7 +115,6 @@ COPY copy/sechub-server-*.jar "$SECHUB_ARTIFACT_FOLDER"
 #-------------------
 
 FROM builder-${BUILD_TYPE} as builder
-RUN echo "build stage"
 
 #-------------------
 # SecHub Server Image
