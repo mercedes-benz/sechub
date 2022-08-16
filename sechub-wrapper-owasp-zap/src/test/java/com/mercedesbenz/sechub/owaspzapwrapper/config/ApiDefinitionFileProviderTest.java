@@ -117,8 +117,8 @@ class ApiDefinitionFileProviderTest {
         /* @formatter:off */
         return Stream.of(
         		Arguments.of(Named.of("Sources part empty", "{\"apiVersion\":\"1.0\",\"data\":{\"sources\":[]},\"webScan\":{\"uri\":\"https://localhost:8443\",\"api\":{\"type\":\"openApi\",\"use\":[\"open-api-file-reference\"]}}}")),
-                Arguments.of(Named.of("Sources part more than one file", "{\"apiVersion\":\"1.0\",\"data\":{\"sources\":[{\"name\":\"open-api-file-reference\",\"fileSystem\":{\"files\":[\"openapi3.json\"]}},{\"name\":\"second-reference\",\"fileSystem\":{\"files\":[\"second-openapi-file.json\"]}}]},\"webScan\":{\"uri\":\"https://localhost:8443\",\"api\":{\"type\":\"openApi\",\"use\":[\"open-api-file-reference\",\"second-reference\"]}}}")),
-                Arguments.of(Named.of("Binaries part used instead of sources", "{\"apiVersion\":\"1.0\",\"data\":{\"binaries\":[{\"name\":\"open-api-file-reference\"}]},\"webScan\":{\"uri\":\"https://localhost:8443\",\"api\":{\"type\":\"openApi\",\"use\":[\"open-api-file-reference\"]}}}")));
+        		Arguments.of(Named.of("Sources part more than one file", "{\"apiVersion\":\"1.0\",\"data\":{\"sources\":[{\"name\":\"open-api-file-reference\",\"fileSystem\":{\"files\":[\"openapi3.json\"]}},{\"name\":\"second-reference\",\"fileSystem\":{\"files\":[\"second-openapi-file.json\"]}}]},\"webScan\":{\"uri\":\"https://localhost:8443\",\"api\":{\"type\":\"openApi\",\"use\":[\"open-api-file-reference\",\"second-reference\"]}}}")),
+        		Arguments.of(Named.of("Binaries part used instead of sources", "{\"apiVersion\":\"1.0\",\"data\":{\"binaries\":[{\"name\":\"open-api-file-reference\"}]},\"webScan\":{\"uri\":\"https://localhost:8443\",\"api\":{\"type\":\"openApi\",\"use\":[\"open-api-file-reference\"]}}}")));
         /* @formatter:on */
     }
 
@@ -126,7 +126,7 @@ class ApiDefinitionFileProviderTest {
         /* @formatter:off */
         return Stream.of(
         		Arguments.of(Named.of("Filesystem part empty", "{\"apiVersion\":\"1.0\",\"data\":{\"sources\":[{\"name\":\"open-api-file-reference\",\"fileSystem\":{}}]},\"webScan\":{\"uri\":\"https://localhost:8443\",\"api\":{\"type\":\"openApi\",\"use\":[\"open-api-file-reference\"]}}}")),
-                Arguments.of(Named.of("Filesystem part more than one file", "{\"apiVersion\":\"1.0\",\"data\":{\"sources\":[{\"name\":\"open-api-file-reference\",\"fileSystem\":{\"files\":[\"openapi3.json\", \"second-file.json\"]}}]},\"webScan\":{\"uri\":\"https://localhost:8443\",\"api\":{\"type\":\"openApi\",\"use\":[\"open-api-file-reference\"]}}}")));
+        		Arguments.of(Named.of("Filesystem part more than one file", "{\"apiVersion\":\"1.0\",\"data\":{\"sources\":[{\"name\":\"open-api-file-reference\",\"fileSystem\":{\"files\":[\"openapi3.json\", \"second-file.json\"]}}]},\"webScan\":{\"uri\":\"https://localhost:8443\",\"api\":{\"type\":\"openApi\",\"use\":[\"open-api-file-reference\"]}}}")));
         /* @formatter:on */
     }
 
