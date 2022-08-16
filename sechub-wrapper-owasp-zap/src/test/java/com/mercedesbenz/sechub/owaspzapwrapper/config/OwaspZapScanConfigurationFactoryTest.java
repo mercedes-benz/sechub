@@ -451,7 +451,7 @@ class OwaspZapScanConfigurationFactoryTest {
         when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
         CommandLineSettings settings = createSettingsMockWithNecessaryPartsWithoutRuleFiles();
 
-        File sechubScanConfigFile = new File("src/test/resources/sechub-config-examples/not-auth-with-openapi-file.json");
+        File sechubScanConfigFile = new File("src/test/resources/sechub-config-examples/no-auth-with-openapi-file.json");
         String extractedSourcesPath = "path/to/extracted/sources";
         when(settings.getSecHubConfigFile()).thenReturn(sechubScanConfigFile);
         when(environmentVariableReader.readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER)).thenReturn(extractedSourcesPath);
