@@ -30,7 +30,7 @@ public class ApiDefinitionFileProvider {
             throw new MustExitRuntimeException("SecHub scan config must not be null!", MustExitCode.EXECUTION_FAILED);
         }
 
-        if (sechubConfig.getData().isEmpty()) {
+        if (!sechubConfig.getData().isPresent()) {
             throw new MustExitRuntimeException("Data section should not be empty since a sources folder was found.", MustExitCode.SECHUB_CONFIGURATION_INVALID);
         }
 
@@ -39,7 +39,7 @@ public class ApiDefinitionFileProvider {
             throw new MustExitRuntimeException("Sources must contain exactly 1 entry.", MustExitCode.SECHUB_CONFIGURATION_INVALID);
         }
 
-        if (sourceData.get(0).getFileSystem().isEmpty()) {
+        if (!sourceData.get(0).getFileSystem().isPresent()) {
             throw new MustExitRuntimeException("Sources filesystem part must be set at this stage.", MustExitCode.SECHUB_CONFIGURATION_INVALID);
         }
 

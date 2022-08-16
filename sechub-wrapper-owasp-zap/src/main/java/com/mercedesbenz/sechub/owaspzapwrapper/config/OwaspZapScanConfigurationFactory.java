@@ -177,7 +177,7 @@ public class OwaspZapScanConfigurationFactory {
     }
 
     private SecHubWebScanConfiguration getSecHubWebConfiguration(SecHubScanConfiguration sechubConfig) {
-        if (sechubConfig.getWebScan().isEmpty()) {
+        if (!sechubConfig.getWebScan().isPresent()) {
             return new SecHubWebScanConfiguration();
         }
         return sechubConfig.getWebScan().get();

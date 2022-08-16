@@ -329,7 +329,7 @@ public abstract class AbstractScan implements OwaspZapScan {
             LOG.info("For scan {}: No file with API definition found!", scanConfig.getContextName());
             return;
         }
-        if (scanConfig.getSecHubWebScanConfiguration().getApi().isEmpty()) {
+        if (!scanConfig.getSecHubWebScanConfiguration().getApi().isPresent()) {
             throw new MustExitRuntimeException("For scan :" + scanConfig.getContextName() + " No API type was definied!",
                     MustExitCode.SECHUB_CONFIGURATION_INVALID);
         }
