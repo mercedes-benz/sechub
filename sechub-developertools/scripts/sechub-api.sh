@@ -42,6 +42,7 @@ job_restart <job-uuid> - Restart/activate job <job-uuid>
 job_restart_hard <job-uuid> - Run new backend scan of job <job-uuid>
 job_status <project-id> <job-uuid> - Get status of job <job-uuid> in project <project-id> (json format)
 job_upload_sourcecode <project-id> <job-uuid> <zip-file> - Upload source code <zip-file> for project <project-id> and job <job-uuid>
+job_upload_binaries <project-id> <job-uuid> <tar-file> - Upload source code <tar-file> for project <project-id> and job <job-uuid>
 profile_create <profile-id> <executor-uuid1>[,<executor-uuid2>...] [<description>]
                Create execution profile <profile-id> with named executors assigned; description optional
 profile_delete <profile-id> - Delete execution profile <profile-id>
@@ -341,6 +342,33 @@ function sechub_job_upload_sourcecode {
 
   if [[ "$?" == "0" ]] ; then
     echo "File \"$ZIP_FILE\" uploaded."
+  else
+    echo "Upload failed."
+  fi
+}
+
+function sechub_job_upload_binaries {
+  local PROJECT_ID="$1"
+  local JOB_UUID="$2"
+  local TAR_FILE="$3"
+
+  if [[ ! -f "$TAR_FILE" ]] ; then
+    echo "File \"$TAR_FILE\" does not exist."
+    exit 1
+  fi
+
+  local checkSum=$(sha256sum $TAR_FILE | cut --delimiter=' ' --fields=1)
+  local fileSize=$(ls -l "$TAR_FILE" | cut --delimiter=' ' --fields 5)
+
+  curl $CURL_AUTH $CURL_PARAMS -i -X POST \
+    --header "Content-Type: multipart/form-data" \
+    --header "x-file-size: $fileSize" \
+    --form "file=@$TAR_FILE" \
+    --form "checkSum=$checkSum" \
+    "$SECHUB_SERVER/api/project/$PROJECT_ID/job/$JOB_UUID/binaries" | $RESULT_FILTER
+
+  if [[ "$?" == "0" ]] ; then
+    echo "File \"$TAR_FILE\" uploaded."
   else
     echo "Upload failed."
   fi
@@ -804,6 +832,12 @@ case "$action" in
     JOB_UUID="$2"   ; check_parameter JOB_UUID '<job-uuid>'
     ZIP_FILE="$3"   ; check_parameter ZIP_FILE '<zip-file>'
     $failed || sechub_job_upload_sourcecode "$PROJECT_ID" "$JOB_UUID" "$ZIP_FILE"
+    ;;
+  job_upload_binaries)
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    JOB_UUID="$2"   ; check_parameter JOB_UUID '<job-uuid>'
+    TAR_FILE="$3"   ; check_parameter TAR_FILE '<tar-file>'
+    $failed || sechub_job_upload_binaries "$PROJECT_ID" "$JOB_UUID" "$TAR_FILE"
     ;;
   profile_create)
     PROFILE_ID="$1" ; check_parameter PROFILE_ID '<profile-id>'
