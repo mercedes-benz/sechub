@@ -84,48 +84,46 @@ pipeline {
 
         stage('Integration tests') {
             environment {
-               /* against build race conditions - See TestPortProvider.java */
-               SERVER_PORT= getJenkinsExecutorPort(8243)
+                /* against build race conditions - See TestPortProvider.java */
+                SERVER_PORT= getJenkinsExecutorPort(8243)
+                PDS_PORT= getJenkinsExecutorPort(8543)
 
-               /* setup s3 storage when defined as secrets - otherwise sharedvolume will be used with temp */
-               SECHUB_STORAGE_S3_ACCESSKEY = getStringCredentialsOrUndefined('sechub-storage-s3-accesskey')
-               SECHUB_STORAGE_S3_SECRETKEY = getStringCredentialsOrUndefined('sechub-storage-s3-secretkey')
-               SECHUB_STORAGE_S3_BUCKETNAME = getStringCredentialsOrUndefined('sechub-storage-s3-bucketname')
-               SECHUB_STORAGE_S3_ENDPOINT = getStringCredentialsOrUndefined('sechub-storage-s3-endpoint')
-               
-               // we setup PDS storage with same s3 bucket data
-               SECHUB_PDS_STORAGE_S3_ACCESSKEY = getStringCredentialsOrUndefined('sechub-storage-s3-accesskey')
-               SECHUB_PDS_STORAGE_S3_SECRETKEY = getStringCredentialsOrUndefined('sechub-storage-s3-secretkey')
-               SECHUB_PDS_STORAGE_S3_BUCKETNAME = getStringCredentialsOrUndefined('sechub-storage-s3-bucketname')               
-               SECHUB_PDS_STORAGE_S3_ENDPOINT = getStringCredentialsOrUndefined('sechub-storage-s3-endpoint')
+                /* setup s3 storage when defined as secrets - otherwise sharedvolume will be used with temp */
+                SECHUB_STORAGE_S3_ACCESSKEY = getStringCredentialsOrUndefined('sechub-storage-s3-accesskey')
+                SECHUB_STORAGE_S3_SECRETKEY = getStringCredentialsOrUndefined('sechub-storage-s3-secretkey')
+                SECHUB_STORAGE_S3_BUCKETNAME = getStringCredentialsOrUndefined('sechub-storage-s3-bucketname')
+                SECHUB_STORAGE_S3_ENDPOINT = getStringCredentialsOrUndefined('sechub-storage-s3-endpoint')
 
-               SECHUB_INTEGRATIONTEST_PREPARE_WAIT_MS=100
-               
-               /* avoid race conditions with management port */
-               MANAGEMENT_SERVER_PORT= getJenkinsExecutorPort(10250)
+                // we setup PDS storage with same s3 bucket data
+                SECHUB_PDS_STORAGE_S3_ACCESSKEY = getStringCredentialsOrUndefined('sechub-storage-s3-accesskey')
+                SECHUB_PDS_STORAGE_S3_SECRETKEY = getStringCredentialsOrUndefined('sechub-storage-s3-secretkey')
+                SECHUB_PDS_STORAGE_S3_BUCKETNAME = getStringCredentialsOrUndefined('sechub-storage-s3-bucketname')
+                SECHUB_PDS_STORAGE_S3_ENDPOINT = getStringCredentialsOrUndefined('sechub-storage-s3-endpoint')
 
+                SECHUB_INTEGRATIONTEST_PREPARE_WAIT_MS=100
+
+                /* avoid race conditions with management port */
+                MANAGEMENT_SERVER_PORT= getJenkinsExecutorPort(10250)
             }
-
             steps {
-              script{
-                  callGradleWrapper("integrationtest -Psechub.integrationtest.serverport=${env.SERVER_PORT}")
-               }
+                script{
+                    callGradleWrapper("integrationtest -Psechub.integrationtest.serverport=${env.SERVER_PORT} -Psechub.integrationtest.pdsport=${env.PDS_PORT}")
+                }
             }
         }
 
         stage('Build Documentation') {
             steps {
-              script{
-                  callGradleWrapper('documentation')
-               }
+                script{
+                    callGradleWrapper('documentation')
+                }
             }
         }
 
         stage('Publish release artifacts') {
             when {
-                 expression { context.isAnyRelease() }
+                expression { context.isAnyRelease() }
             }
-            
             steps {
                 echo 'This step is now ignored - because already done by GitHub actions - see https://github.com/mercedes-benz/sechub/actions'
             }
@@ -140,12 +138,11 @@ pipeline {
                  expression { context.isServerRelease() }
             }
             steps {
-                    // trigger other pipeline job :
-                    build job: 'sechub-server-released',
-                       propagate: true,
-                       wait: false,
-                       parameters: [string(name: 'SERVERVERSION', value:"${context.serverVersion}")]
-
+                // trigger other pipeline job :
+                build job: 'sechub-server-released',
+                    propagate: true,
+                    wait: false,
+                    parameters: [string(name: 'SERVERVERSION', value:"${context.serverVersion}")]
             }
         }
 
@@ -154,12 +151,11 @@ pipeline {
                  expression { context.isClientRelease() }
             }
             steps {
-                    // trigger other pipeline job :
-                    build job: 'sechub-client-released',
-                       propagate: true,
-                       wait: false,
-                       parameters: [string(name: 'CLIENTVERSION', value:"${context.clientVersion}")]
-
+                // trigger other pipeline job :
+                build job: 'sechub-client-released',
+                    propagate: true,
+                    wait: false,
+                    parameters: [string(name: 'CLIENTVERSION', value:"${context.clientVersion}")]
             }
         }
 
@@ -168,12 +164,11 @@ pipeline {
                  expression { context.isPdsRelease() }
             }
             steps {
-                    // trigger other pipeline job :
-                    build job: 'sechub-pds-released',
-                       propagate: true,
-                       wait: false,
-                       parameters: [string(name: 'PDS_VERSION', value:"${context.pdsVersion}")]
-
+                // trigger other pipeline job :
+                build job: 'sechub-pds-released',
+                    propagate: true,
+                    wait: false,
+                    parameters: [string(name: 'PDS_VERSION', value:"${context.pdsVersion}")]
             }
         }
 
