@@ -7,14 +7,17 @@ source "0000-helper.sh"
 REPLICAS="$1"
 ENVIRONMENT_FILE=".env-cluster-object-storage"
 
-if [[ ! -f  "$ENVIRONMENT_FILE" ]]
-then
-    echo "Environment file does not exist."
-    echo "Creating default environment file $ENVIRONMENT_FILE for you."
+resource_limits_enabled="$2"
+compose_file="docker-compose_sechub_cluster_object_storage"
 
-    cat "env-initial" "env-initial-cluster" "env-initial-cluster-object-storage" > "$ENVIRONMENT_FILE"
-else
-    echo "Using existing environment file: $ENVIRONMENT_FILE."
+# Only variables from .env can be used in the Docker-Compose file
+# all other variables are only available in the container
+setup_environment_file ".env" "env-initial"
+setup_environment_file "$ENVIRONMENT_FILE" "env-initial-sechub" "env-initial-cluster" "env-initial-cluster-object-storage"
+
+if [[ "$resource_limits_enabled" == "yes" ]]
+then
+    compose_file="docker-compose_sechub_cluster_object_storage_resource_limits"
 fi
 
 if [[ -z "$REPLICAS" ]]
@@ -25,4 +28,9 @@ else
     echo "Starting cluster of $REPLICAS containers."
 fi
 
-docker-compose --file docker-compose_pds_gosec_cluster_object_storage.yaml up --scale pds-gosec=$REPLICAS --build --remove-orphans
+# Use Docker BuildKit
+export BUILDKIT_PROGRESS=plain
+export DOCKER_BUILDKIT=1
+
+echo "Compose file: $compose_file"
+docker-compose --file "$compose_file.yaml" up --scale sechub=$REPLICAS --build --remove-orphans

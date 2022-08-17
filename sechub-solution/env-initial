@@ -1,9 +1,3 @@
-# Start mode of SecHub. 
-# Possible values are: localserver, debug
-SECHUB_START_MODE="localserver"
-ADMIN_USERID="admin"
-ADMIN_APITOKEN="myTop$ecret!"
-
 # Resource limits
 MEMORY_LIMIT=300M
 CPU_LIMIT=1.0
@@ -14,10 +8,4 @@ CPU_LIMIT=1.0
 # copy - copies jar into container
 # download - downloads the SecHub jar
 BUILD_TYPE=download
-
-# Enable Java Debugging
-JAVA_ENABLE_DEBUG=false
-
-# Keep the container alive after it crashed
-KEEP_CONTAINER_ALIVE_AFTER_PDS_CRASHED=false
 

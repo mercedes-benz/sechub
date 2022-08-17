@@ -10,7 +10,10 @@ ENVIRONMENT_FILE=".env-cluster"
 resource_limits_enabled="$2"
 compose_file="docker-compose_sechub_cluster"
 
-setup_environment_file "$ENVIRONMENT_FILE" "env-initial" "env-initial-cluster"
+# Only variables from .env can be used in the Docker-Compose file
+# all other variables are only available in the container
+setup_environment_file ".env" "env-initial"
+setup_environment_file "$ENVIRONMENT_FILE" "env-initial-sechub" "env-initial-cluster"
 
 if [[ "$resource_limits_enabled" == "yes" ]]
 then
@@ -29,4 +32,5 @@ fi
 export BUILDKIT_PROGRESS=plain
 export DOCKER_BUILDKIT=1
 
+echo "Compose file: $compose_file"
 docker-compose --file "$compose_file.yaml" up --scale sechub=$REPLICAS --build --remove-orphans

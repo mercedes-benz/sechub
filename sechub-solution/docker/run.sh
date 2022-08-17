@@ -38,10 +38,10 @@ localserver() {
     then
         echo "Using object storage"
 
-        storage_options="-Dsechub.pds.storage.s3.endpoint=$S3_ENDPOINT"
-        storage_options="$storage_options -Dsechub.pds.storage.s3.bucketname=$S3_BUCKETNAME"
-        storage_options="$storage_options -Dsechub.pds.storage.s3.accesskey=$S3_ACCESSKEY"
-        storage_options="$storage_options -Dsechub.pds.storage.s3.secretkey=$S3_SECRETKEY"
+        storage_options="-Dsechub.storage.s3.endpoint=$S3_ENDPOINT"
+        storage_options="$storage_options -Dsechub.storage.s3.bucketname=$S3_BUCKETNAME"
+        storage_options="$storage_options -Dsechub.storage.s3.accesskey=$S3_ACCESSKEY"
+        storage_options="$storage_options -Dsechub.storage.s3.secretkey=$S3_SECRETKEY"
 
         echo "Object storage:"
         echo " * Endpoint: $S3_ENDPOINT"
@@ -49,6 +49,8 @@ localserver() {
         echo " * Accesskey: $S3_ACCESSKEY"
     fi
 
+    echo "Upload source code maximum bytes: $SECHUB_MAX_FILE_UPLOAD_SIZE"
+    echo "Upload binaries maximum bytes: $SECHUB_UPLOAD_BINARIES_MAXIMUM_BYTES"
     echo "Activated profiles: $profiles"
 
     java $JAVA_DEBUG_OPTIONS $database_options \
@@ -60,6 +62,9 @@ localserver() {
         -Dsechub.initialadmin.userid="$ADMIN_USERID" \
         -Dsechub.initialadmin.email=sechubadm@example.org \
         -Dsechub.initialadmin.apitoken="$ADMIN_APITOKEN" \
+        -Dspring.servlet.multipart.max-file-size="$SECHUB_MAX_FILE_UPLOAD_SIZE" \
+        -Dspring.servlet.multipart.max-request-size="$SECHUB_MAX_FILE_UPLOAD_SIZE" \
+        -Dsechub.upload.binaries.maximum.bytes="$SECHUB_UPLOAD_BINARIES_MAXIMUM_BYTES" \
         -Dsechub.adapter.netsparker.userid=abc \
         -Dsechub.adapter.netsparker.apitoken=xyz \
         -Dsechub.adapter.netsparker.baseurl=https://example.org \

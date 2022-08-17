@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: MIT
 
-ENVIRONMENT_FILE=".env"
+ENVIRONMENT_FILE=".env-single"
 
 resource_limits_enabled="$1"
 compose_file="docker-compose_sechub"
@@ -9,7 +9,10 @@ compose_file="docker-compose_sechub"
 cd $(dirname "$0")
 source "0000-helper.sh"
 
-setup_environment_file "$ENVIRONMENT_FILE" "env-initial"
+# Only variables from .env can be used in the Docker-Compose file
+# all other variables are only available in the container
+setup_environment_file ".env" "env-initial"
+setup_environment_file "$ENVIRONMENT_FILE" "env-initial-sechub"
 
 # Use Docker BuildKit
 export BUILDKIT_PROGRESS=plain
@@ -20,4 +23,5 @@ then
     compose_file="docker-compose_sechub_resource_limits"
 fi
 
+echo "Compose file: $compose_file"
 docker-compose --file "$compose_file.yaml" up --build --remove-orphans
