@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 
 // Release  pipeline script for jenkins
-// Only master branch is  build by this script - other branches are build by "continous-integration-multibranch-pipeline.jenkins"
-// For details please refer /sechub-doc/src/docs/asciidoc/documents/buildserver/jenkins-pipeline.adoc
+// Only the master branch is built by this script - the other branches are built by "continous-integration-multibranch-pipeline.jenkins"
+// For details please refer to /sechub-doc/src/docs/asciidoc/documents/buildserver/jenkins-pipeline.adoc
 
 def context = new SecHubBuildContext();
 def sechubGitBranch ="unknown"
@@ -289,10 +289,6 @@ class SecHubBuildContext{
     boolean serverRelease
     boolean pdsRelease
 
-    // Obsolete?
-    // boolean clientBuildDone
-    // boolean serverBuildDone
-
     String releaseInfoString
 
     public SecHubBuildContext(){
@@ -316,70 +312,9 @@ class SecHubBuildContext{
         return result.substring(0,index);
     }
 
-    // Obsolete?
-    // public boolean isStartEmailNeeded(){
-    //     return isAnyRelease()
-    // }
-    // 
-    // public boolean isFailEmailNeeded(){
-    //     return true; // always
-    // }
-    // 
-    // public boolean isSuccesssEmailNeeded(){
-    //     return isAnyRelease()
-    // }
-    // 
-    // public void setClientBuildDone(boolean done){
-    //     this.clientBuildDone=done
-    // }
-    // 
-    // public void setServerBuildDone(boolean done){
-    //     this.serverBuildDone=done
-    // }
-    // 
-    // public void setWebsiteBuildDone(boolean done){
-    //     this.websiteBuildDone=done
-    // }
-
-
-    /**
-     * Returns true when client or sever deployment.
-     * Interesting for interdepent deployment tests.
-     * E.g.
-     *  - a server deployment should have integration test + client build before.
-     *  - a client deployment should have also integration test - means server build before
-     *    to have a working local integration test server
-     */
-
-    // Obsolete?
-    // public boolean isClientOrServerRelease(){
-    //     return isClientRelease() || isServerRelease();
-    // }
-
     public boolean isAnyRelease(){
         return isClientRelease() || isServerRelease() || isPdsRelease();
     }
-
-    // Obsolete?
-    // public boolean isSuccessFul(){
-    //     if (! isAnyRelease()){
-    //         return false
-    //     }
-    //
-    //     if (isClientRelease()) {
-    //        if (! this.clientBuildDone){
-    //            return false
-    //        }
-    //     }
-    //
-    //     if (isServerRelease()) {
-    //        if (! this.serverBuildDone){
-    //            return false
-    //        }
-    //     }
-    //
-    //     return true
-    // }
 
     public void init(String[ ] commitTags){
         def versionCommitTags = commitTags.findAll {it.startsWith("v")}
