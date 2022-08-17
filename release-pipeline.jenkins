@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-// Release  pipeline script for jenkins
+// Release pipeline script for jenkins
 // Only the master branch is built by this script - the other branches are built by "continous-integration-multibranch-pipeline.jenkins"
 // For details please refer to /sechub-doc/src/docs/asciidoc/documents/buildserver/jenkins-pipeline.adoc
 
@@ -46,6 +46,9 @@ pipeline {
         }
 
         stage("Builds") {
+            when {
+                expression { context.isAnyRelease() }
+            }
             parallel {
 
                 stage('Build Server and PDS') {
@@ -85,6 +88,9 @@ pipeline {
         }
 
         stage('Integration tests') {
+            when {
+                expression { context.isAnyRelease() }
+            }
             environment {
                 /* against build race conditions - See TestPortProvider.java */
                 SERVER_PORT= getJenkinsExecutorPort(8243)
@@ -116,6 +122,9 @@ pipeline {
         }
 
         stage('Build Documentation') {
+            when {
+                expression { context.isAnyRelease() }
+            }
             steps {
                 script{
                     callGradleWrapper('documentation')
