@@ -19,7 +19,7 @@ ARG WORKSPACE="/workspace"
 
 # Environment variables in container
 ENV DOWNLOAD_FOLDER="/downloads"
-ENV MOCK_FOLDER="$SCRIPT_FOLDER/mocks"
+ENV MOCK_FOLDER="/mocks"
 ENV PDS_VERSION="${PDS_VERSION}"
 ENV SHARED_VOLUMES="/shared_volumes"
 ENV SHARED_VOLUME_UPLOAD_DIR="$SHARED_VOLUMES/uploads"

@@ -2,7 +2,6 @@
 package com.mercedesbenz.sechub.domain.scan.product;
 
 import java.util.List;
-import java.util.Set;
 
 import com.mercedesbenz.sechub.domain.scan.NetworkLocationProvider;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataProvider;
@@ -24,7 +23,7 @@ public class ProductExecutorData {
     NetworkLocationProvider networkLocationProvider;
     NetworkTargetInfo currentNetworkTargetInfo;
     String traceLogIdAsString;
-    Set<String> codeUploadFileSystemFolderPaths;
+    String mockDataIdentifier;
 
     ProductExecutorData() {
     }
@@ -62,15 +61,12 @@ public class ProductExecutorData {
     }
 
     /**
-     * This method returns a set with information about the uploaded folders. We use
-     * this information only to handle mock behavior when we simulate code scans. So
-     * use this only where absolutely necessary for mocking.
+     * Returns mock data identifier (if necessary)
      *
-     * @deprecated
-     * @return set containing upload folders as a string
+     * @return identifier or <code>null</code>
      */
-    public Set<String> getCodeUploadFileSystemFolders() {
-        return codeUploadFileSystemFolderPaths;
+    public String getMockDataIdentifier() {
+        return mockDataIdentifier;
     }
 
     public String getTraceLogIdAsString() {

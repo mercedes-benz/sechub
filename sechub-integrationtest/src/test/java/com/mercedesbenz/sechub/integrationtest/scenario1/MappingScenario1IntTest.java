@@ -6,9 +6,9 @@ import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 import org.junit.Rule;
 import org.junit.Test;
 
+import com.mercedesbenz.sechub.commons.mapping.MappingData;
+import com.mercedesbenz.sechub.commons.mapping.MappingEntry;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingEntry;
 
 public class MappingScenario1IntTest {
     private static final String TEST_UPDATE_MAPPING_ID = "sechub.integrationtest.mapping.updatecheck";

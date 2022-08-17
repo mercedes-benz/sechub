@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.mercedesbenz.sechub.commons.mapping.NamePatternToIdEntry;
 import com.mercedesbenz.sechub.domain.scan.ScanDomainTestFileSupport;
 
 public class ScanMappingConfigurationTest {

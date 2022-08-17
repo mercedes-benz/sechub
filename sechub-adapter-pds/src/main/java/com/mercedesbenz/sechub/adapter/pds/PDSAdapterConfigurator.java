@@ -58,4 +58,6 @@ public interface PDSAdapterConfigurator {
         calculate();
     }
 
+    void setPDSScriptTrustsAllCertificates(boolean trustAllCertificates);
+
 }

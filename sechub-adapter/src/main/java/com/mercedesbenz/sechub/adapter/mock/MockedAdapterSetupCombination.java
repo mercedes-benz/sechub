@@ -15,14 +15,14 @@ public class MockedAdapterSetupCombination {
     public static final String ANY_OTHER_TARGET = "{any-other-target}";
 
     private String id;
-    private String target;
+    private String mockDataIdentifier;
     private boolean throwsAdapterException;
     private String filePath;
 
     private long timeToElapseInMilliseconds;
 
-    private boolean targetUsedAsFolder;
-    private boolean targetNeedsExistingData;
+    private boolean mockDataIdentifierUsedAsFolder;
+    private boolean needsExistingFolder;
 
     public String getId() {
         return id;
@@ -32,12 +32,12 @@ public class MockedAdapterSetupCombination {
         this.id = id;
     }
 
-    public String getTarget() {
-        return target;
+    public String getMockDataIdentifier() {
+        return mockDataIdentifier;
     }
 
-    public void setTarget(String target) {
-        this.target = target;
+    public void setMockDataIdentifier(String target) {
+        this.mockDataIdentifier = target;
     }
 
     public boolean isThrowsAdapterException() {
@@ -64,20 +64,20 @@ public class MockedAdapterSetupCombination {
         return timeToElapseInMilliseconds;
     }
 
-    public boolean isTargetUsedAsFolder() {
-        return targetUsedAsFolder;
+    public boolean isMockDataIdentifierUsedAsFolder() {
+        return mockDataIdentifierUsedAsFolder;
     }
 
-    public void setTargetUsedAsFolder(boolean targetIsNeededAsFolderBySecHubClient) {
-        this.targetUsedAsFolder = targetIsNeededAsFolderBySecHubClient;
+    public void setMockDataIdentifierUsedAsFolder(boolean targetIsNeededAsFolderBySecHubClient) {
+        this.mockDataIdentifierUsedAsFolder = targetIsNeededAsFolderBySecHubClient;
     }
 
-    public boolean isTargetNeedsExistingData() {
-        return targetNeedsExistingData;
+    public boolean isNeedsExistingFolder() {
+        return needsExistingFolder;
     }
 
-    public void setTargetNeedsExistingData(boolean targetNeedsExistingData) {
-        this.targetNeedsExistingData = targetNeedsExistingData;
+    public void setNeedsExistingFolder(boolean targetNeedsExistingData) {
+        this.needsExistingFolder = targetNeedsExistingData;
     }
 
 }

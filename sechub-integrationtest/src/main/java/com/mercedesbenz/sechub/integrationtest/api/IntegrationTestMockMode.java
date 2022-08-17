@@ -69,16 +69,16 @@ public enum IntegrationTestMockMode {
 
     ;
 
-    private String target;
+    private String mockDataIdentifier;
     private boolean isTargetUsableAsWhiteListEntry;
 
     private IntegrationTestMockMode(MockData mockData) {
 
-        this.target = mockData != null ? mockData.getTarget() : null;
+        this.mockDataIdentifier = mockData != null ? mockData.getMockDataIdentifier() : null;
         isTargetUsableAsWhiteListEntry = false;
-        if (target != null) {
+        if (mockDataIdentifier != null) {
             try {
-                new URI(target);
+                new URI(mockDataIdentifier);
                 isTargetUsableAsWhiteListEntry = true;
             } catch (URISyntaxException e) {
                 /* means is no URI */
@@ -86,8 +86,8 @@ public enum IntegrationTestMockMode {
         }
     }
 
-    public String getTarget() {
-        return target;
+    public String getMockDataIdentifier() {
+        return mockDataIdentifier;
     }
 
     public boolean isTargetUsableAsWhitelistEntry() {

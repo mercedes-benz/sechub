@@ -11,8 +11,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
+import com.mercedesbenz.sechub.pds.config.PDSProductParameterDefinition;
 import com.mercedesbenz.sechub.pds.config.PDSProductSetup;
-import com.mercedesbenz.sechub.pds.config.PDSProdutParameterDefinition;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
 import com.mercedesbenz.sechub.pds.job.PDSJobConfiguration;
 
@@ -106,9 +106,9 @@ class PDSExecutionEnvironmentServiceTest {
         // create product setup configuration
         PDSProductSetup setup = new PDSProductSetup();
         setup.setId("productid1");
-        PDSProdutParameterDefinition def1 = new PDSProdutParameterDefinition();
+        PDSProductParameterDefinition def1 = new PDSProductParameterDefinition();
         def1.setKey("p1.keya");
-        PDSProdutParameterDefinition def2 = new PDSProdutParameterDefinition();
+        PDSProductParameterDefinition def2 = new PDSProductParameterDefinition();
         def2.setKey("p1.keyb");
 
         setup.getParameters().getMandatory().add(def1);

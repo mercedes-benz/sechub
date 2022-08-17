@@ -9,7 +9,7 @@ LABEL maintainer="SecHub FOSS Team"
 # Build args
 ARG OWASPZAP_VERSION="2.11.1"
 ARG OWASPZAP_CHECKSUM="abbfe9ad057b3511043a0f0317d5f91d914145ada5b102a5708f8af6a5e191f8"
-ARG PDS_VERSION="0.30.0"
+ARG PDS_VERSION="0.31.0"
 
 ARG JAVA_VERSION="11"
 ARG PDS_FOLDER="/pds"
@@ -76,9 +76,9 @@ COPY owasp-zap-full-ruleset-all-release-status.json ${TOOL_FOLDER}/owasp-zap-ful
 # Copy mock folders
 COPY mocks/ "$MOCK_FOLDER"
 
-# Setup scripts
-COPY owasp-zap.sh ${SCRIPT_FOLDER}/owasp-zap.sh
-COPY owasp-zap-mock.sh ${SCRIPT_FOLDER}/owasp-zap-mock.sh
+# Copy scripts
+COPY scripts $SCRIPT_FOLDER
+RUN chmod --recursive +x $SCRIPT_FOLDER
 
 # Copy PDS configfile
 COPY pds-config.json "$PDS_FOLDER/pds-config.json"
@@ -88,9 +88,6 @@ COPY zap-addons.txt "$TOOL_FOLDER/zap-addons.txt"
 
 # Copy run script into container
 COPY run.sh /run.sh
-
-# Make scripts executable
-RUN chmod +x ${SCRIPT_FOLDER}/owasp-zap.sh ${SCRIPT_FOLDER}/owasp-zap-mock.sh /run.sh
 
 # Create the PDS workspace
 WORKDIR "$WORKSPACE"

@@ -6,10 +6,10 @@ import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.adapter.DefaultExecutorConfigSupport;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxConstants;
+import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig;
-import com.mercedesbenz.sechub.sharedkernel.SystemEnvironment;
 import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.validation.Validation;
@@ -27,12 +27,14 @@ public class CheckmarxExecutorConfigSuppport extends DefaultExecutorConfigSuppor
      * @return support
      * @throws NotAcceptableException when configuration is not valid
      */
-    public static CheckmarxExecutorConfigSuppport createSupportAndAssertConfigValid(ProductExecutorConfig config, SystemEnvironment systemEnvironment) {
-        return new CheckmarxExecutorConfigSuppport(config, systemEnvironment, new CheckmarxProductExecutorMinimumConfigValidation());
+    public static CheckmarxExecutorConfigSuppport createSupportAndAssertConfigValid(ProductExecutorConfig config,
+            SystemEnvironmentVariableSupport variableSupport) {
+        return new CheckmarxExecutorConfigSuppport(config, variableSupport, new CheckmarxProductExecutorMinimumConfigValidation());
     }
 
-    private CheckmarxExecutorConfigSuppport(ProductExecutorConfig config, SystemEnvironment systemEnvironment, Validation<ProductExecutorConfig> validation) {
-        super(config, systemEnvironment, validation);
+    private CheckmarxExecutorConfigSuppport(ProductExecutorConfig config, SystemEnvironmentVariableSupport variableSupport,
+            Validation<ProductExecutorConfig> validation) {
+        super(config, variableSupport, validation);
     }
 
     public boolean isAlwaysFullScanEnabled() {

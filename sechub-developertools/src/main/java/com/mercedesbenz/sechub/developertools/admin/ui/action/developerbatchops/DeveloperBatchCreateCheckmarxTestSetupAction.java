@@ -13,7 +13,7 @@ import com.mercedesbenz.sechub.developertools.admin.ui.UIContext;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.AbstractUIAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.cache.InputCacheIdentifier;
 import com.mercedesbenz.sechub.developertools.admin.ui.util.DataCollectorUtils;
-import com.mercedesbenz.sechub.integrationtest.api.TestExecutorProductIdentifier;
+import com.mercedesbenz.sechub.integrationtest.api.TestProductExecutorIdentifier;
 import com.mercedesbenz.sechub.test.executionprofile.TestExecutionProfile;
 import com.mercedesbenz.sechub.test.executorconfig.TestExecutorConfig;
 
@@ -62,7 +62,7 @@ public class DeveloperBatchCreateCheckmarxTestSetupAction extends AbstractUIActi
         long timeStamp = System.currentTimeMillis();
 
         TestExecutorConfig config = new TestExecutorConfig();
-        config.productIdentifier = TestExecutorProductIdentifier.CHECKMARX.name();
+        config.productIdentifier = TestProductExecutorIdentifier.CHECKMARX.name();
         config.executorVersion = 1;
         config.name = "tmp-chkmx-cfg-" + timeStamp;
         config.enabled = true;

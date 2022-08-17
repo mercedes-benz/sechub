@@ -33,7 +33,7 @@ This project is licensed under the [MIT LICENSE](LICENSE).
 
 ## Provider Information
 
-Please visit <https://www.daimler-tss.com/en/imprint/> for information on the provider.
+Please visit <https://www.mercedes-benz-techinnovation.com/en/imprint/> for information on the provider.
 
 Notice: Before you use the program in productive use, please take all necessary precautions,
 e.g. testing and verifying the program with regard to your specific use.

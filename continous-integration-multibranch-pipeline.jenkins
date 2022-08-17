@@ -112,6 +112,7 @@ pipeline {
                     }
 
                     environment {
+                        SECHUB_PROJECT = 'sechub'
                         SECHUB_USERID = credentials('sechub-userid')
                         SECHUB_APITOKEN = credentials('sechub-api-token')
                         SECHUB_SERVER= credentials('sechub-server')
@@ -188,9 +189,9 @@ void callGradleWrapper(String gradleCommand) {
 void executeSecHubScan() {
 
      if (isUnix()) {
-         sh "sechub -project sechub scan"
+         sh "sechub scan"
      } else {
-         bat "sechub.exe -project sechub scan"
+         bat "sechub.exe scan"
      }
 }
 

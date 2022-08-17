@@ -39,8 +39,8 @@ public class AdapterMetaDataConverterTest {
         AdapterMetaData metaDataback = converterToTest.convertToMetaDataOrNull(text);
 
         /* test */
-        assertEquals("value1", metaDataback.getValue("key1"));
-        assertEquals("value1.2", metaDataback.getValue("sub1.key2"));
+        assertEquals("value1", metaDataback.getValueAsStringOrNull("key1"));
+        assertEquals("value1.2", metaDataback.getValueAsStringOrNull("sub1.key2"));
     }
 
 }

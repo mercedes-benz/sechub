@@ -23,6 +23,8 @@ dependencies {
     api project(':sechub-administration') 
     api project(':sechub-scan') // we add this to have access to FullScanData
     
+    api project(':sechub-wrapper-checkmarx') // we have access to the parameter constants..
+    
     api library.junit4
     
 }

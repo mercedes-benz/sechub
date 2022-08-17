@@ -6,22 +6,22 @@ import java.util.List;
 
 public class PDSProdutParameterSetup {
 
-    private List<PDSProdutParameterDefinition> mandatory = new ArrayList<>();
-    private List<PDSProdutParameterDefinition> optional = new ArrayList<>();
+    private List<PDSProductParameterDefinition> mandatory = new ArrayList<>();
+    private List<PDSProductParameterDefinition> optional = new ArrayList<>();
 
-    public List<PDSProdutParameterDefinition> getMandatory() {
+    public List<PDSProductParameterDefinition> getMandatory() {
         return mandatory;
     }
 
-    public List<PDSProdutParameterDefinition> getOptional() {
+    public List<PDSProductParameterDefinition> getOptional() {
         return optional;
     }
 
-    public void setMandatory(List<PDSProdutParameterDefinition> mandatory) {
+    public void setMandatory(List<PDSProductParameterDefinition> mandatory) {
         this.mandatory = mandatory;
     }
 
-    public void setOptional(List<PDSProdutParameterDefinition> optional) {
+    public void setOptional(List<PDSProductParameterDefinition> optional) {
         this.optional = optional;
     }
 }

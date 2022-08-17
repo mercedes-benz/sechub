@@ -7,8 +7,8 @@ import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.mercedesbenz.sechub.commons.core.MustBeKeptStable;
 import com.mercedesbenz.sechub.commons.model.JSONable;
-import com.mercedesbenz.sechub.sharedkernel.MustBeKeptStable;
 
 @JsonIgnoreProperties(ignoreUnknown = true) // we do ignore to avoid problems from wrong configured values!
 @JsonInclude(value = Include.NON_ABSENT)

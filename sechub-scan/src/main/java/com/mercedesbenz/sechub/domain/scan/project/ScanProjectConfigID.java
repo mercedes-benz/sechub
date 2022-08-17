@@ -3,7 +3,7 @@ package com.mercedesbenz.sechub.domain.scan.project;
 
 import static com.mercedesbenz.sechub.sharedkernel.util.Assert.*;
 
-import com.mercedesbenz.sechub.sharedkernel.MustBeKeptStable;
+import com.mercedesbenz.sechub.commons.core.MustBeKeptStable;
 
 @MustBeKeptStable("You can rename enums, but do not change id parts, because used inside DB!")
 public enum ScanProjectConfigID {

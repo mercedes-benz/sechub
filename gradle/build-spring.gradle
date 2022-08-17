@@ -36,7 +36,7 @@ subprojects {
 
             /* REST */
             implementation(spring_boot_dependency.jackson_datatype_jdk8)
-            implementation(library.springboot_starter_web)
+            implementation(library.springframework_web)
 
 
             if (! project.name.equals('sechub-adapter')){

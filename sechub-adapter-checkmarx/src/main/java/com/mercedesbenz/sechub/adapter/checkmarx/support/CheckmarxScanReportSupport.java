@@ -93,7 +93,7 @@ public class CheckmarxScanReportSupport {
         String traceId = context.getTraceID();
 
         AdapterMetaData metaData = context.getRuntimeContext().getMetaData();
-        Long reportIdLong = metaData.getValueLong(CheckmarxMetaDataID.KEY_REPORT_ID);
+        Long reportIdLong = metaData.getValueAsLongOrNull(CheckmarxMetaDataID.KEY_REPORT_ID);
         long reportId = -1;
         if (reportIdLong == null) {
             LOG.info("Trigger new report in queue. Trace Id: {}", traceId);
