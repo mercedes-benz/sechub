@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 
-// Release  pipeline script for jenkins
-// Only master branch is  build by this script - other branches are build by "continous-integration-multibranch-pipeline.jenkins"
-// For details please refer /sechub-doc/src/docs/asciidoc/documents/buildserver/jenkins-pipeline.adoc
+// Release pipeline script for jenkins
+// Only the master branch is built by this script - the other branches are built by "continous-integration-multibranch-pipeline.jenkins"
+// For details please refer to /sechub-doc/src/docs/asciidoc/documents/buildserver/jenkins-pipeline.adoc
 
 def context = new SecHubBuildContext();
 def sechubGitBranch ="unknown"
@@ -40,95 +40,109 @@ pipeline {
                             to: '$DEFAULT_RECIPIENTS'
                         )
                     }
+                    callGradleWrapper("clean")
+                }
+            }
+        }
 
+        stage("Builds") {
+            when {
+                expression { context.isAnyRelease() }
+            }
+            parallel {
+
+                stage('Build Server and PDS') {
+                    environment {
+                        /* against build race conditions - See TestPortProvider.java */
+                        SECHUB_TEST_WIREMOCK_HTTPS_PORT = getJenkinsExecutorPort(8143)
+                        SECHUB_TEST_WIREMOCK_HTTP_PORT = getJenkinsExecutorPort(8180)
+
+                        SECHUB_TEST_S3MOCK_HTTP_PORT = getJenkinsExecutorPort(9090)
+                        SECHUB_TEST_S3MOCK_HTTPS_PORT = getJenkinsExecutorPort(9190)
+                    }
+                    steps {
+                        script{
+                            echo "SECHUB_TEST_WIREMOCK_HTTPS_PORT=${env.SECHUB_TEST_WIREMOCK_HTTPS_PORT}"
+                            echo "SECHUB_TEST_WIREMOCK_HTTP_PORT=${env.SECHUB_TEST_WIREMOCK_HTTP_PORT}"
+
+                            /*
+                            * We do NOT build sechub-integrationtest
+                            * Reason: because we do NOT want to have the integration tests executed, otherwise gradle will not execute them
+                            * on integration phase again (because nothing has changed, so gradle will cache the results which are ignored ...
+                            */
+                            callGradleWrapper("ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-integrationtest:test -x :sechub-cli:build -Psechub.test.wiremock.https_port=${env.SECHUB_TEST_WIREMOCK_HTTPS_PORT} -Psechub.test.wiremock.http_port=${env.SECHUB_TEST_WIREMOCK_HTTP_PORT}")
+                            callGradleWrapper(":sechub-api-java:buildAPIJava")
+                        }
+                    }
                 }
 
+                stage('Build Client') {
+                    steps {
+                        script{
+                            callGradleWrapper(':sechub-cli:buildGo :sechub-cli:testGo')
+                        }
+                    }
+                }
 
             }
         }
 
-        stage('Build Server') {
-          environment {
-             /* against build race conditions - See TestPortProvider.java */
-             SECHUB_TEST_WIREMOCK_HTTPS_PORT = getJenkinsExecutorPort(8143)
-             SECHUB_TEST_WIREMOCK_HTTP_PORT = getJenkinsExecutorPort(8180)
-
-             SECHUB_TEST_S3MOCK_HTTP_PORT = getJenkinsExecutorPort(9090)
-             SECHUB_TEST_S3MOCK_HTTPS_PORT = getJenkinsExecutorPort(9190)
-          }
-          steps {
-              script{
-                  echo "SECHUB_TEST_WIREMOCK_HTTPS_PORT=${env.SECHUB_TEST_WIREMOCK_HTTPS_PORT}"
-                  echo "SECHUB_TEST_WIREMOCK_HTTP_PORT=${env.SECHUB_TEST_WIREMOCK_HTTP_PORT}"
-
-                  /*
-                   * we do NOT build sechub-integrationtest
-                   * Reason: because we do NOT want to have the integration tests executed, otherwise gradle will not execute them
-                   * on integration phase again (because nothing has changed, so gradle will cache the results which are ignored ...
-                   */
-                  callGradleWrapper("clean ensureLocalhostCertificate build -x :sechub-integrationtest:test -x :sechub-cli:build -Psechub.test.wiremock.https_port=${env.SECHUB_TEST_WIREMOCK_HTTPS_PORT} -Psechub.test.wiremock.http_port=${env.SECHUB_TEST_WIREMOCK_HTTP_PORT}")
-
-               }
-            }
-        }
-        stage('Build CLI') {
-            steps {
-              script{
-                  callGradleWrapper(':sechub-cli:buildGo :sechub-cli:testGo')
-               }
-            }
-        }
         stage('Integration tests') {
-            environment {
-               /* against build race conditions - See TestPortProvider.java */
-               SERVER_PORT= getJenkinsExecutorPort(8243)
-
-               /* setup s3 storage when defined as secrets - otherwise sharedvolume will be used with temp */
-               SECHUB_STORAGE_S3_ACCESSKEY = getStringCredentialsOrUndefined('sechub-storage-s3-accesskey')
-               SECHUB_STORAGE_S3_SECRETKEY = getStringCredentialsOrUndefined('sechub-storage-s3-secretkey')
-               SECHUB_STORAGE_S3_BUCKETNAME = getStringCredentialsOrUndefined('sechub-storage-s3-bucketname')
-               SECHUB_STORAGE_S3_ENDPOINT = getStringCredentialsOrUndefined('sechub-storage-s3-endpoint')
-               
-               // we setup PDS storage with same s3 bucket data
-               SECHUB_PDS_STORAGE_S3_ACCESSKEY = getStringCredentialsOrUndefined('sechub-storage-s3-accesskey')
-               SECHUB_PDS_STORAGE_S3_SECRETKEY = getStringCredentialsOrUndefined('sechub-storage-s3-secretkey')
-               SECHUB_PDS_STORAGE_S3_BUCKETNAME = getStringCredentialsOrUndefined('sechub-storage-s3-bucketname')               
-               SECHUB_PDS_STORAGE_S3_ENDPOINT = getStringCredentialsOrUndefined('sechub-storage-s3-endpoint')
-
-               SECHUB_INTEGRATIONTEST_PREPARE_WAIT_MS=100
-               
-               /* avoid race conditions with management port */
-               MANAGEMENT_SERVER_PORT= getJenkinsExecutorPort(10250)
-
+            when {
+                expression { context.isAnyRelease() }
             }
+            environment {
+                /* against build race conditions - See TestPortProvider.java */
+                SERVER_PORT= getJenkinsExecutorPort(8243)
+                PDS_PORT= getJenkinsExecutorPort(8543)
 
+                /* setup s3 storage when defined as secrets - otherwise sharedvolume will be used with temp */
+                SECHUB_STORAGE_S3_ACCESSKEY = getStringCredentialsOrUndefined('sechub-storage-s3-accesskey')
+                SECHUB_STORAGE_S3_SECRETKEY = getStringCredentialsOrUndefined('sechub-storage-s3-secretkey')
+                SECHUB_STORAGE_S3_BUCKETNAME = getStringCredentialsOrUndefined('sechub-storage-s3-bucketname')
+                SECHUB_STORAGE_S3_ENDPOINT = getStringCredentialsOrUndefined('sechub-storage-s3-endpoint')
+
+                // we setup PDS storage with same s3 bucket data
+                SECHUB_PDS_STORAGE_S3_ACCESSKEY = getStringCredentialsOrUndefined('sechub-storage-s3-accesskey')
+                SECHUB_PDS_STORAGE_S3_SECRETKEY = getStringCredentialsOrUndefined('sechub-storage-s3-secretkey')
+                SECHUB_PDS_STORAGE_S3_BUCKETNAME = getStringCredentialsOrUndefined('sechub-storage-s3-bucketname')
+                SECHUB_PDS_STORAGE_S3_ENDPOINT = getStringCredentialsOrUndefined('sechub-storage-s3-endpoint')
+
+                SECHUB_INTEGRATIONTEST_PREPARE_WAIT_MS=100
+
+                /* avoid race conditions with management port */
+                MANAGEMENT_SERVER_PORT= getJenkinsExecutorPort(10250)
+            }
             steps {
-              script{
-                  callGradleWrapper("integrationtest -Psechub.integrationtest.serverport=${env.SERVER_PORT}")
-               }
+                script{
+                    // start integration tests and also create combined test report after all
+                    callGradleWrapper("integrationtest -Psechub.integrationtest.serverport=${env.SERVER_PORT} -Psechub.integrationtest.pdsport=${env.PDS_PORT}")
+                }
             }
         }
 
         stage('Build Documentation') {
+            when {
+                expression { context.isAnyRelease() }
+            }
             steps {
-              script{
-                  callGradleWrapper('documentation')
-               }
+                script{
+                    callGradleWrapper('documentation')
+                }
             }
         }
 
         stage('Publish release artifacts') {
             when {
-                 expression { context.isAnyRelease() }
+                expression { context.isAnyRelease() }
             }
-            
             steps {
-                echo 'This step is now ignored - because alreadyd done by GitHub actions - see https://github.com/mercedes-benz/sechub/actions'
+                echo 'This step is now ignored - because already done by GitHub actions - see https://github.com/mercedes-benz/sechub/actions'
             }
         }
 
         /**
-         * How to handle this in your build ?
+         * How to handle these triggers in your build ?
          * See /sechub-doc/src/docs/asciidoc/documents/buildserver/jenkins-pipeline.adoc
          */
         stage('Trigger server released') {
@@ -136,36 +150,44 @@ pipeline {
                  expression { context.isServerRelease() }
             }
             steps {
-                    // trigger other pipeline job :
-                    build job: 'sechub-server-released',
-                       propagate: true,
-                       wait: false,
-                       parameters: [string(name: 'SERVERVERSION', value:"${context.serverVersion}")]
-
+                // trigger other pipeline job :
+                build job: 'sechub-server-released',
+                    propagate: true,
+                    wait: false,
+                    parameters: [string(name: 'SERVERVERSION', value:"${context.serverVersion}")]
             }
         }
-        /**
-         * How to handle this in your build ?
-         * See /sechub-doc/src/docs/asciidoc/documents/buildserver/jenkins-pipeline.adoc
-         */
+
         stage('Trigger client released') {
             when {
                  expression { context.isClientRelease() }
             }
             steps {
-                    // trigger other pipeline job :
-                    build job: 'sechub-client-released',
-                       propagate: true,
-                       wait: false,
-                       parameters: [string(name: 'CLIENTVERSION', value:"${context.clientVersion}")]
-
+                // trigger other pipeline job :
+                build job: 'sechub-client-released',
+                    propagate: true,
+                    wait: false,
+                    parameters: [string(name: 'CLIENTVERSION', value:"${context.clientVersion}")]
             }
         }
 
+        stage('Trigger PDS released') {
+            when {
+                 expression { context.isPdsRelease() }
+            }
+            steps {
+                // trigger other pipeline job :
+                build job: 'sechub-pds-released',
+                    propagate: true,
+                    wait: false,
+                    parameters: [string(name: 'PDS_VERSION', value:"${context.pdsVersion}")]
+            }
+        }
 
     }
 
     post {
+
         failure {
             script {
                 if (context.isAnyRelease()){
@@ -186,19 +208,21 @@ pipeline {
                 }
             }
         }
+
         success {
-                script {
-                    if (context.isSuccesssEmailNeeded()){
+            script {
+                if (context.isAnyRelease()){
                     releaseInfo = context.getReleaseInfo()
                     emailext (
                         subject:"[ SUCCESS ]Release - Build:${env.BUILD_NUMBER}",
                         body:"Continous integration build with release publish sucessfully done. Triggered additional jobs.\n$releaseInfo\n\n"+
-                             "${env.BUILD_URL}",
+                            "${env.BUILD_URL}",
                         to: '$DEFAULT_RECIPIENTS'
                     )
                 }
-              }
+            }
         }
+
         always {
             junit '**/build/test-results/*/TEST-*.xml'
             script{
@@ -207,6 +231,7 @@ pipeline {
             archive 'build/archive/combined-sechub-testreport.zip'
         }
     }
+
 }
 
 // --------------------------------------------------------------------------
@@ -267,12 +292,11 @@ class SecHubBuildContext{
 
     String clientVersion
     String serverVersion
+    String pdsVersion
 
     boolean clientRelease
     boolean serverRelease
-
-    boolean clientBuildDone
-    boolean serverBuildDone
+    boolean pdsRelease
 
     String releaseInfoString
 
@@ -297,65 +321,8 @@ class SecHubBuildContext{
         return result.substring(0,index);
     }
 
-    public boolean isStartEmailNeeded(){
-        return isAnyRelease()
-    }
-
-    public boolean isFailEmailNeeded(){
-        return true;// always
-    }
-
-    public boolean isSuccesssEmailNeeded(){
-        return isAnyRelease()
-    }
-
-    public void setClientBuildDone(boolean done){
-        this.clientBuildDone=done
-    }
-
-    public void setServerBuildDone(boolean done){
-        this.serverBuildDone=done
-    }
-
-    public void setWebsiteBuildDone(boolean done){
-        this.websiteBuildDone=done
-    }
-
-
-    /**
-     * Returns true when client or sever deployment.
-     * Interesting for interdepent deployment tests.
-     * E.g.
-     *  - a server deployment should have integration test + client build before.
-     *  - a client deployment should have also integration test - means server build before
-     *    to have a working local integration test server
-     */
-    public boolean isClientOrServerRelease(){
-        return isClientRelease() || isServerRelease();
-    }
-
     public boolean isAnyRelease(){
-        return isClientRelease() || isServerRelease();
-    }
-
-    public boolean isSuccessFul(){
-        if (! isAnyRelease()){
-            return false
-        }
-
-        if (isClientRelease()) {
-           if (! this.clientBuildDone){
-               return false
-           }
-        }
-
-        if (isServerRelease()) {
-           if (! this.serverBuildDone){
-               return false
-           }
-        }
-
-        return true
+        return isClientRelease() || isServerRelease() || isPdsRelease();
     }
 
     public void init(String[ ] commitTags){
@@ -364,6 +331,7 @@ class SecHubBuildContext{
         // we got vX.Y.Z-server and vX.Y.Z-client tags
         def clientVersionCommitTag = versionCommitTags.find{ it.contains("-client") }
         def serverVersionCommitTag = versionCommitTags.find{ it.contains("-server") }
+        def pdsVersionCommitTag = versionCommitTags.find{ it.contains("-pds") }
 
         releaseInfoString = "Release(s):"
         if (clientVersionCommitTag == null || clientVersionCommitTag.empty){
@@ -381,12 +349,18 @@ class SecHubBuildContext{
             serverVersion=getSimplifiedVersion(serverVersionCommitTag)
             releaseInfoString=releaseInfoString+" " + serverVersionCommitTag
         }
+
+        if (pdsVersionCommitTag == null || pdsVersionCommitTag.empty){
+            pdsRelease=false;
+        }else{
+            pdsRelease=true;
+            pdsVersion=getSimplifiedVersion(pdsVersionCommitTag)
+            releaseInfoString=releaseInfoString+" " + pdsVersionCommitTag
+        }
     }
 
     public String getReleaseInfo(){
         return releaseInfoString
     }
 
-
 }
-
