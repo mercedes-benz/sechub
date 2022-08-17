@@ -40,6 +40,7 @@ pipeline {
                             to: '$DEFAULT_RECIPIENTS'
                         )
                     }
+                    callGradleWrapper("clean")
                 }
             }
         }
@@ -66,7 +67,8 @@ pipeline {
                             * Reason: because we do NOT want to have the integration tests executed, otherwise gradle will not execute them
                             * on integration phase again (because nothing has changed, so gradle will cache the results which are ignored ...
                             */
-                            callGradleWrapper("clean ensureLocalhostCertificate build -x :sechub-integrationtest:test -x :sechub-cli:build -Psechub.test.wiremock.https_port=${env.SECHUB_TEST_WIREMOCK_HTTPS_PORT} -Psechub.test.wiremock.http_port=${env.SECHUB_TEST_WIREMOCK_HTTP_PORT}")
+                            callGradleWrapper("ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-integrationtest:test -x :sechub-cli:build -Psechub.test.wiremock.https_port=${env.SECHUB_TEST_WIREMOCK_HTTPS_PORT} -Psechub.test.wiremock.http_port=${env.SECHUB_TEST_WIREMOCK_HTTP_PORT}")
+                            callGradleWrapper(":sechub-api-java:buildAPIJava")
                         }
                     }
                 }
@@ -107,6 +109,7 @@ pipeline {
             }
             steps {
                 script{
+                    // start integration tests and also create combined test report after all
                     callGradleWrapper("integrationtest -Psechub.integrationtest.serverport=${env.SERVER_PORT} -Psechub.integrationtest.pdsport=${env.PDS_PORT}")
                 }
             }
