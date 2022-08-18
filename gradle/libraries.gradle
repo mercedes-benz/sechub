@@ -33,7 +33,7 @@ ext {
       jsoup:                                   "1.15.2",
       re2j:                                    "1.7",
       logstash_logback_encoder:                "7.2",
-      aws_java_sdk_s3:                         "1.12.284",
+      aws_java_sdk_s3:                         "1.12.266",
       postgresql:                              "42.4.2",
                                               
       /* JDK > 9 needs these ones: */         
@@ -54,7 +54,7 @@ ext {
       /* testing */                            
       junit4:                                  "4.13.2",
       wiremock:                                "2.27.2",
-      s3mock:                                  "2.4.16",
+      s3mock:                                  "2.4.13",
 
       /* gradle plugins */      
       dependency_check:                        "7.1.1",
