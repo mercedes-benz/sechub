@@ -274,6 +274,7 @@ func Example_tarDetectsNonExistingFiles() {
 		TarWriter:   tarWriter,
 		PrefixInTar: "",
 		Files:       []string{RelativeTmpTestDir + "/non-existing-file.bin"},
+		Quiet:       true,
 	}
 
 	/* execute */

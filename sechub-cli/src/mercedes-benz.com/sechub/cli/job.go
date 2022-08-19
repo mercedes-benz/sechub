@@ -18,7 +18,7 @@ import (
  * --------------------------------------------------
  */
 func createNewSecHubJob(context *Context) {
-	sechubUtil.Log("Creating new sechub job", context.config.quiet)
+	sechubUtil.Log("Creating new SecHub job", context.config.quiet)
 	response := sendWithDefaultHeader("POST", buildCreateNewSecHubJobAPICall(context), context)
 
 	data, err := ioutil.ReadAll(response.Body)
