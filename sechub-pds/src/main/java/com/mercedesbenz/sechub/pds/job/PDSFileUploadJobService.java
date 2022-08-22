@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.pds.job;
 
 import static com.mercedesbenz.sechub.commons.core.CommonConstants.DOT_CHECKSUM;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.FILE_SIZE_HEADER_FIELD_NAME;
 import static com.mercedesbenz.sechub.commons.core.CommonConstants.MULTIPART_CHECKSUM;
 import static com.mercedesbenz.sechub.commons.core.CommonConstants.MULTIPART_FILE;
 import static com.mercedesbenz.sechub.pds.job.PDSJobAssert.assertJobFound;
@@ -49,8 +50,6 @@ import com.mercedesbenz.sechub.storage.core.JobStorage;
 @Service
 @RolesAllowed({ PDSRoleConstants.ROLE_SUPERADMIN, PDSRoleConstants.ROLE_USER })
 public class PDSFileUploadJobService {
-
-    public static final String FILE_SIZE_HEADER_FIELD_NAME = "x-file-size";
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSFileUploadJobService.class);
 

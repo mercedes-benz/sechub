@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.job;
 
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.FILE_SIZE_HEADER_FIELD_NAME;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -32,7 +33,6 @@ import com.mercedesbenz.sechub.test.TestUtil;
 
 public class PDSFileUploadJobServiceTest {
 
-    private static final String FILE_SIZE_HEADER_FIELD_NAME = PDSFileUploadJobService.FILE_SIZE_HEADER_FIELD_NAME;
     private static final String CONTENT_DATA = "content data";
     private static final String ACCEPTED_CHECKSUM = "checksum-accepted";
     private static final String NOT_ACCEPTED_CHECKSUM = "checksum-failing";

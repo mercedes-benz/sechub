@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule;
 
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.FILE_SIZE_HEADER_FIELD_NAME;
 import static com.mercedesbenz.sechub.test.JUnitAssertionAddon.assertThrowsExceptionContainingMessage;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -30,7 +31,6 @@ import com.mercedesbenz.sechub.storage.core.StorageService;
 public class SchedulerBinariesUploadServiceTest {
 
     private static final String PROJECT1 = "project1";
-    private static final String FILE_SIZE_HEADER_FIELD_NAME = SchedulerBinariesUploadService.FILE_SIZE_HEADER_FIELD_NAME;
     private SchedulerBinariesUploadService serviceToTest;
     private CheckSumSupport checkSumSupport;
     private StorageService storageService;

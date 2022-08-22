@@ -44,8 +44,6 @@ import com.mercedesbenz.sechub.storage.core.StorageService;
 @Service
 @RolesAllowed(RoleConstants.ROLE_USER)
 public class SchedulerBinariesUploadService {
-
-    public static final String FILE_SIZE_HEADER_FIELD_NAME = "x-file-size";
     private static final String PARAMETER_FILE = "file";
     private static final String PARAMETER_CHECKSUM = "checkSum";
     private static final Logger LOG = LoggerFactory.getLogger(SchedulerBinariesUploadService.class);
