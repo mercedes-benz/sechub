@@ -7,6 +7,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,8 @@ import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 public class FalsePositiveJobDataService {
 
     private static final ScanProjectConfigID CONFIG_ID = ScanProjectConfigID.FALSE_POSITIVE_CONFIGURATION;
+
+    private static final Logger LOG = LoggerFactory.getLogger(FalsePositiveJobDataService.class);
 
     @Autowired
     ScanReportRepository scanReportRepository;
@@ -52,6 +56,11 @@ public class FalsePositiveJobDataService {
         validateUserInputAndProjectAccess(projectId, data);
 
         auditLogService.log("triggers add of {} false postive entries to project {}", data.getJobData().size(), projectId);
+
+        if (data.getJobData().isEmpty()) {
+            LOG.debug("User false positive job data list has no entries - so skip further steps");
+            return;
+        }
 
         FalsePositiveProjectConfiguration config = fetchOrCreateConfiguration(projectId);
 
@@ -84,11 +93,7 @@ public class FalsePositiveJobDataService {
 
         FalsePositiveProjectConfiguration config = fetchOrCreateConfiguration(projectId);
 
-        dropMetaData(config);
         return config;
-    }
-
-    private void dropMetaData(FalsePositiveProjectConfiguration config) {
     }
 
     private void validateUserInputAndProjectAccess(String projectId, FalsePositiveJobDataList data) {
