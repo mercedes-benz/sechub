@@ -4,12 +4,7 @@ package com.mercedesbenz.sechub.storage.s3;
 import static com.mercedesbenz.sechub.test.JUnitAssertionAddon.assertThrowsExceptionContainingMessage;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
@@ -19,11 +14,8 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.mercedesbenz.sechub.storage.s3.aws.AwsS3JobStorage;
 
 class AwsS3JobStorageTest {
     private String bucketName;
@@ -94,28 +86,5 @@ class AwsS3JobStorageTest {
         /* execute + test */
         assertThrowsExceptionContainingMessage(IllegalArgumentException.class, "Content length cannot be negative!",
                 () -> jobStorage.store(fileName, input, contentLength));
-    }
-
-    @Test
-    void store_content_and_check_content_length() throws IOException {
-        /* prepare */
-        String fileName = "test-file.txt";
-        String data = "test";
-        InputStream input = new ByteArrayInputStream(data.getBytes());
-        long contentLength = data.length();
-        when(mockedClient.doesBucketExistV2(bucketName)).thenReturn(true);
-        ArgumentCaptor<ObjectMetadata> metadataCaptor = ArgumentCaptor.forClass(ObjectMetadata.class);
-
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentLength(contentLength);
-
-        /* execute */
-        jobStorage.store(fileName, input, contentLength);
-
-        /* test */
-        verify(mockedClient, times(1)).putObject(eq(bucketName), any(String.class), any(InputStream.class), metadataCaptor.capture());
-
-        ObjectMetadata capturedMetadata = metadataCaptor.getValue();
-        assertEquals(contentLength, capturedMetadata.getContentLength());
     }
 }

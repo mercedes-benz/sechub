@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.storage.s3.aws;
+package com.mercedesbenz.sechub.storage.s3;
 
 import static java.util.Objects.*;
 
@@ -15,12 +15,18 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.event.ProgressEvent;
+import com.amazonaws.event.ProgressEventType;
+import com.amazonaws.event.ProgressListener;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectsRequest;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.amazonaws.services.s3.transfer.TransferManager;
+import com.amazonaws.services.s3.transfer.Upload;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 
 public class AwsS3JobStorage implements JobStorage {
@@ -31,6 +37,9 @@ public class AwsS3JobStorage implements JobStorage {
     private String bucketName;
     private String storagePath;
     private UUID jobUUID;
+    private TransferManager transferManager;
+
+    AwsS3TransferManagerFactory transferManagerFactory = new AwsS3TransferManagerFactory();
 
     /**
      * Creates a new AWS S3 storage object
@@ -45,6 +54,7 @@ public class AwsS3JobStorage implements JobStorage {
         this.client = client;
         this.storagePath = storagePath;
         this.jobUUID = jobUUID;
+        this.transferManager = transferManagerFactory.create(client);
     }
 
     @Override
@@ -163,12 +173,88 @@ public class AwsS3JobStorage implements JobStorage {
             }
 
             String objectName = getObjectName(name);
-            LOG.debug("store objectName={}", objectName + " on bucket {}", objectName, bucketName);
+            LOG.debug("Start upload of objectName={}", objectName + " to bucket {}", objectName, bucketName);
 
-            client.putObject(bucketName, objectName, stream, meta);
+            // The Transfer Manager is by default non-blocking, which means it will not wait
+            // for the upload to finish and returns immediately
+            Upload upload = transferManager.upload(bucketName, objectName, stream, meta);
+
+            ProgressListener progressListener = createProgressListener(upload, name);
+            upload.addProgressListener(progressListener);
+
+            try {
+                upload.waitForCompletion();
+                LOG.debug("Successfully uploaded objectName={}", objectName + " to bucket {}", objectName, bucketName);
+            } catch (AmazonClientException e) {
+                LOG.error("Error while uploading objectName={}", objectName + " to bucket {}", objectName, bucketName);
+                LOG.error(e.getMessage());
+            }
 
         } catch (Exception e) {
             throw new IOException("Store of " + name + " to s3 failed", e);
         }
+    }
+
+    private ProgressListener createProgressListener(Upload upload, String objectName) {
+        ProgressListener progressListener = new ProgressListener() {
+            private int previousPercentTransferred = 0;
+
+            private int getPreviousPercentTransferred() {
+                return previousPercentTransferred;
+            }
+
+            private void setPreviousPercentTransferred(int previousPercentTransferred) {
+                this.previousPercentTransferred = previousPercentTransferred;
+            }
+
+            private void resetPreviousPercentTransferred() {
+                setPreviousPercentTransferred(0);
+            }
+
+            @Override
+            public void progressChanged(ProgressEvent progressEvent) {
+                if (upload == null) {
+                    return;
+                }
+
+                ProgressEventType progressEventType = progressEvent.getEventType();
+
+                if (progressEventType.isByteCountEvent()) {
+                	int percentTransferred = (int) upload.getProgress().getPercentTransferred();
+                	printStatusMessage(percentTransferred);
+                }
+
+                switch (progressEvent.getEventType()) {
+                case TRANSFER_COMPLETED_EVENT:
+                    LOG.info("Transfer of {} completed.", objectName);
+                    resetPreviousPercentTransferred();
+                    break;
+                case TRANSFER_FAILED_EVENT:
+                    resetPreviousPercentTransferred();
+                    LOG.error("Transfer of {} failed.", objectName);
+                    break;
+                case TRANSFER_STARTED_EVENT:
+                    LOG.info("Transfer of {} started.", objectName);
+                    resetPreviousPercentTransferred();
+                    break;
+                default:
+                    break;
+
+                }
+            }
+
+            private void printStatusMessage(int percentTransferred) {
+                if (percentTransferred > getPreviousPercentTransferred()) {
+                	// print progress only every 10 percent
+                	if ((percentTransferred % 10) == 0) {
+                		setPreviousPercentTransferred(percentTransferred);
+                    	LOG.debug("Percent transfered: " + percentTransferred);
+                	}
+                }
+            }
+
+        };
+
+        return progressListener;
     }
 }
