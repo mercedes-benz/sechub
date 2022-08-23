@@ -220,8 +220,8 @@ public class AwsS3JobStorage implements JobStorage {
                 ProgressEventType progressEventType = progressEvent.getEventType();
 
                 if (progressEventType.isByteCountEvent()) {
-                	int percentTransferred = (int) upload.getProgress().getPercentTransferred();
-                	printStatusMessage(percentTransferred);
+                    int percentTransferred = (int) upload.getProgress().getPercentTransferred();
+                    printStatusMessage(percentTransferred);
                 }
 
                 switch (progressEvent.getEventType()) {
@@ -245,11 +245,11 @@ public class AwsS3JobStorage implements JobStorage {
 
             private void printStatusMessage(int percentTransferred) {
                 if (percentTransferred > getPreviousPercentTransferred()) {
-                	// print progress only every 10 percent
-                	if ((percentTransferred % 10) == 0) {
-                		setPreviousPercentTransferred(percentTransferred);
-                    	LOG.debug("Percent transfered: " + percentTransferred);
-                	}
+                    // print progress only every 10 percent
+                    if ((percentTransferred % 10) == 0) {
+                        setPreviousPercentTransferred(percentTransferred);
+                        LOG.debug("Percent transfered: " + percentTransferred);
+                    }
                 }
             }
 
