@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 . Place a single SecHub Jar into this folder. 
 . Name it `sechub-server-0.0.0.jar`
 . Run `03-start-single-docker-compose-copy.sh` to start the container

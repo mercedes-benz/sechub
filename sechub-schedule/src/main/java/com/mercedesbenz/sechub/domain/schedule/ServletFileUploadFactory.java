@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule;
 
 import org.apache.commons.fileupload.servlet.ServletFileUpload;

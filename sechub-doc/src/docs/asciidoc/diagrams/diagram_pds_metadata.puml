@@ -1,3 +1,4 @@
+' SPDX-License-Identifier: MIT
 @startuml
 '----------------------- SecHub ---------------------------
 package "SecHub" as sechub_package{

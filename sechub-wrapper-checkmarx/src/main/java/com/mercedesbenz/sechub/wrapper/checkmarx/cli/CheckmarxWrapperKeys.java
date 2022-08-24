@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.wrapper.checkmarx.cli;
 
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxConstants;
