@@ -11,7 +11,7 @@ debug () {
 
 server () {
     # start PostgreSQL server
-    pg_ctlcluster "${POSTGRE_VERSION}" main start
+    pg_ctlcluster "${POSTGRES_VERSION}" main start
 
     # Create a new user with a password
     psql --command="CREATE USER $DATABASE_USERNAME WITH PASSWORD '$DATABASE_PASSWORD';"
@@ -30,7 +30,7 @@ server () {
 
     # check PostgreSQL server status,
     # for the container to stay alive
-    while pg_ctlcluster "${POSTGRE_VERSION}" main status
+    while pg_ctlcluster "${POSTGRES_VERSION}" main status
     do
         sleep 300
     done

@@ -9,3 +9,15 @@ CPU_LIMIT=1.0
 # download - downloads the SecHub jar
 BUILD_TYPE=download
 
+# The SecHub version used if the BUILD_TYPE is set to `download` 
+SECHUB_VERSION="0.34.0"
+
+# Go version used
+GO="go1.19.linux-amd64.tar.gz"
+
+# The Java version used
+JAVA_VERSION="11"
+
+# Git information if the BUILD_TYPE is set to `build`
+TAG=""
+BRANCH=""
