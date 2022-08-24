@@ -4,8 +4,8 @@ package com.mercedesbenz.sechub.owaspzapwrapper.helper;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitCode;
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitRuntimeException;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperExitCode;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 
 public class BaseTargetUriFactory {
 
@@ -15,19 +15,19 @@ public class BaseTargetUriFactory {
 
     private URI createBaseURIForTarget(String targetUri) {
         if (targetUri == null) {
-            throw new MustExitRuntimeException("Target URI may not be null.", MustExitCode.TARGET_URL_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("Target URI may not be null.", ZapWrapperExitCode.TARGET_URL_CONFIGURATION_INVALID);
         }
         String sanitizedTargetUri = sanitizeTargetUri(targetUri);
         URI uri;
         try {
             uri = URI.create(sanitizedTargetUri);
         } catch (IllegalArgumentException e) {
-            throw new MustExitRuntimeException("Target URI could not be converted from string.", e, MustExitCode.TARGET_URL_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("Target URI could not be converted from string.", e, ZapWrapperExitCode.TARGET_URL_CONFIGURATION_INVALID);
         }
 
         String scheme = uri.getScheme();
         if (!isValidScheme(scheme)) {
-            throw new MustExitRuntimeException("URI: " + uri.toString() + " does not contain valid scheme!", MustExitCode.TARGET_URL_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("URI: " + uri.toString() + " does not contain valid scheme!", ZapWrapperExitCode.TARGET_URL_CONFIGURATION_INVALID);
         }
 
         String userInfo = null;
@@ -42,7 +42,7 @@ public class BaseTargetUriFactory {
         try {
             rootURI = new URI(scheme, userInfo, host, port, path, query, fragment);
         } catch (URISyntaxException e) {
-            throw new MustExitRuntimeException("Was not able to build base uri for: " + uri, e, MustExitCode.TARGET_URL_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("Was not able to build base uri for: " + uri, e, ZapWrapperExitCode.TARGET_URL_CONFIGURATION_INVALID);
         }
         return rootURI;
     }

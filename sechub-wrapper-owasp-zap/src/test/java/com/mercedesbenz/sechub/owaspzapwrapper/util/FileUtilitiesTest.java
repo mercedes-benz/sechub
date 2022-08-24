@@ -7,14 +7,14 @@ import java.io.File;
 
 import org.junit.jupiter.api.Test;
 
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitRuntimeException;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 
 class FileUtilitiesTest {
 
     @Test
     void file_not_existing_throws_mustexitruntimeexception() {
         /* execute + test */
-        assertThrows(MustExitRuntimeException.class, () -> FileUtilities.stringToFile("not-existing-file.json"));
+        assertThrows(ZapWrapperRuntimeException.class, () -> FileUtilities.stringToFile("not-existing-file.json"));
     }
 
     @Test

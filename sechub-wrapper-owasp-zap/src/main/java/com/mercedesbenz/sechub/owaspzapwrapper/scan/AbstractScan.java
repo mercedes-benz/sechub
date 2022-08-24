@@ -17,8 +17,8 @@ import org.zaproxy.clientapi.core.ApiResponseList;
 import org.zaproxy.clientapi.core.ClientApi;
 import org.zaproxy.clientapi.core.ClientApiException;
 
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitCode;
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitRuntimeException;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperExitCode;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanConfiguration;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.ProxyInformation;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.data.DeactivatedRuleReferences;
@@ -59,8 +59,8 @@ public abstract class AbstractScan implements OwaspZapScan {
         try {
             scanUnsafe();
         } catch (ClientApiException e) {
-            throw new MustExitRuntimeException("For scan: " + scanConfig.getContextName() + ". An error occured while scanning!", e,
-                    MustExitCode.EXECUTION_FAILED);
+            throw new ZapWrapperRuntimeException("For scan: " + scanConfig.getContextName() + ". An error occured while scanning!", e,
+                    ZapWrapperExitCode.EXECUTION_FAILED);
         }
     }
 
@@ -330,8 +330,8 @@ public abstract class AbstractScan implements OwaspZapScan {
             return;
         }
         if (!scanConfig.getSecHubWebScanConfiguration().getApi().isPresent()) {
-            throw new MustExitRuntimeException("For scan :" + scanConfig.getContextName() + " No API type was definied!",
-                    MustExitCode.SECHUB_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("For scan :" + scanConfig.getContextName() + " No API type was definied!",
+                    ZapWrapperExitCode.SECHUB_CONFIGURATION_INVALID);
         }
 
         switch (scanConfig.getSecHubWebScanConfiguration().getApi().get().getType()) {
@@ -341,8 +341,8 @@ public abstract class AbstractScan implements OwaspZapScan {
         default:
             // should never happen since API type is an Enum
             // Failure should happen before getting here
-            throw new MustExitRuntimeException("For scan :" + scanConfig.getContextName() + " Unknown API type was definied!",
-                    MustExitCode.SECHUB_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("For scan :" + scanConfig.getContextName() + " Unknown API type was definied!",
+                    ZapWrapperExitCode.SECHUB_CONFIGURATION_INVALID);
         }
     }
 
@@ -392,11 +392,11 @@ public abstract class AbstractScan implements OwaspZapScan {
 
     private String resolveParentDirectoryPath(Path reportFile) {
         if (reportFile == null) {
-            throw new MustExitRuntimeException("For scan: " + scanConfig.getContextName() + ". Report file not set.", MustExitCode.REPORT_FILE_ERROR);
+            throw new ZapWrapperRuntimeException("For scan: " + scanConfig.getContextName() + ". Report file not set.", ZapWrapperExitCode.REPORT_FILE_ERROR);
         }
         if (Files.isDirectory(reportFile)) {
-            throw new MustExitRuntimeException("For scan: " + scanConfig.getContextName() + ". Report file must not be a directory!",
-                    MustExitCode.REPORT_FILE_ERROR);
+            throw new ZapWrapperRuntimeException("For scan: " + scanConfig.getContextName() + ". Report file must not be a directory!",
+                    ZapWrapperExitCode.REPORT_FILE_ERROR);
         }
 
         Path parent = reportFile.getParent();
@@ -425,8 +425,8 @@ public abstract class AbstractScan implements OwaspZapScan {
                 Files.move(owaspzapReport, owaspzapReport.resolveSibling(scanConfig.getReportFile().toAbsolutePath()), StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
 
-                throw new MustExitRuntimeException("For scan: " + scanConfig.getContextName() + ". An error occurred renaming the report file", e,
-                        MustExitCode.REPORT_FILE_ERROR);
+                throw new ZapWrapperRuntimeException("For scan: " + scanConfig.getContextName() + ". An error occurred renaming the report file", e,
+                        ZapWrapperExitCode.REPORT_FILE_ERROR);
             }
         }
     }

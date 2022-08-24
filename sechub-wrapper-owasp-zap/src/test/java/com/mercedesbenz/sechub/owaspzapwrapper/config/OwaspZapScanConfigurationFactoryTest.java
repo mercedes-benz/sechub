@@ -32,7 +32,7 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.CommandLineSettings;
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitRuntimeException;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.auth.AuthenticationType;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.data.DeactivatedRuleReferences;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.data.OwaspZapFullRuleset;
@@ -78,7 +78,7 @@ class OwaspZapScanConfigurationFactoryTest {
     @Test
     void commandLineSettings_object_is_null_results_in_mustexitruntimeexception() {
         /* execute + test */
-        assertThrows(MustExitRuntimeException.class, () -> factoryToTest.create(null));
+        assertThrows(ZapWrapperRuntimeException.class, () -> factoryToTest.create(null));
     }
 
     @Test
@@ -231,7 +231,7 @@ class OwaspZapScanConfigurationFactoryTest {
         when(settings.getZapApiKey()).thenReturn(apiKey);
 
         /* execute + test */
-        assertThrows(MustExitRuntimeException.class, () -> factoryToTest.create(settings));
+        assertThrows(ZapWrapperRuntimeException.class, () -> factoryToTest.create(settings));
 
     }
 
@@ -335,9 +335,9 @@ class OwaspZapScanConfigurationFactoryTest {
     }
 
     @Test
-    void commandline_settings_null_throws_must_exit_runtime_exception() {
+    void commandline_settings_null_throws_zap_wrapper_runtime_exception() {
         /* execute + test */
-        assertThrows(MustExitRuntimeException.class, () -> factoryToTest.create(null));
+        assertThrows(ZapWrapperRuntimeException.class, () -> factoryToTest.create(null));
     }
 
     @Test

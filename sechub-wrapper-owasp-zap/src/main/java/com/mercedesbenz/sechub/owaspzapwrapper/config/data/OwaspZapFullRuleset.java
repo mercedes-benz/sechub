@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.mercedesbenz.sechub.commons.model.JSONable;
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitCode;
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitRuntimeException;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperExitCode;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 
 public class OwaspZapFullRuleset implements JSONable<OwaspZapFullRuleset> {
 
@@ -48,7 +48,7 @@ public class OwaspZapFullRuleset implements JSONable<OwaspZapFullRuleset> {
      * @param reference of the rule to search for inside <code>rules</code>
      * @return rule found by the parameter <code>reference</code>
      *
-     * @throws MustExitRuntimeException if either parameter <code>reference</code>
+     * @throws ZapWrapperRuntimeException if either parameter <code>reference</code>
      *                                  or attribute <code>rules</code> is
      *                                  <code>null</code> or if the rule that was
      *                                  search for was not found inside
@@ -56,18 +56,18 @@ public class OwaspZapFullRuleset implements JSONable<OwaspZapFullRuleset> {
      */
     public Rule findRuleByReference(String reference) {
         if (reference == null) {
-            throw new MustExitRuntimeException("Rule reference to be search for must not be 'null'!", MustExitCode.SCAN_RULE_ERROR);
+            throw new ZapWrapperRuntimeException("Rule reference to be search for must not be 'null'!", ZapWrapperExitCode.SCAN_RULE_ERROR);
         }
         if (rules == null) {
-            throw new MustExitRuntimeException("Full ruleset must not be 'null', otherwise this cannot be search for reference: " + reference,
-                    MustExitCode.SCAN_RULE_ERROR);
+            throw new ZapWrapperRuntimeException("Full ruleset must not be 'null', otherwise this cannot be search for reference: " + reference,
+                    ZapWrapperExitCode.SCAN_RULE_ERROR);
         }
 
         Rule rule = rules.getOrDefault(reference, null);
         if (rule == null) {
-            throw new MustExitRuntimeException(
+            throw new ZapWrapperRuntimeException(
                     "Rule could not be found inside full ruleset. Check installed ruleset for missing rules and specified rules to deactivate for wrong specifications.",
-                    MustExitCode.SCAN_RULE_ERROR);
+                    ZapWrapperExitCode.SCAN_RULE_ERROR);
         }
         return rule;
     }

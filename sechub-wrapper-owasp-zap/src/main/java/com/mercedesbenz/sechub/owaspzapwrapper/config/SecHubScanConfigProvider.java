@@ -6,8 +6,8 @@ import java.io.IOException;
 
 import com.mercedesbenz.sechub.commons.TextFileReader;
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitCode;
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitRuntimeException;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperExitCode;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 
 public class SecHubScanConfigProvider {
     public SecHubScanConfiguration getSecHubWebConfiguration(File secHubConfigFile) {
@@ -22,7 +22,7 @@ public class SecHubScanConfigProvider {
             sechubConfigJson = fileReader.loadTextFile(secHubConfigFile);
             sechubScanConfig = SecHubScanConfiguration.createFromJSON(sechubConfigJson);
         } catch (IOException e) {
-            throw new MustExitRuntimeException("Was not able to read sechub config file: " + secHubConfigFile, e, MustExitCode.SECHUB_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("Was not able to read sechub config file: " + secHubConfigFile, e, ZapWrapperExitCode.SECHUB_CONFIGURATION_INVALID);
         }
         return sechubScanConfig;
     }

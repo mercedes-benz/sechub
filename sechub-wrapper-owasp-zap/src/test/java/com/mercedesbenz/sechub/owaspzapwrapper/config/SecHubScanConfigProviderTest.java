@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.BasicLoginConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitRuntimeException;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 
 class SecHubScanConfigProviderTest {
 
@@ -51,12 +51,12 @@ class SecHubScanConfigProviderTest {
     }
 
     @Test
-    void get_sechub_web_config_by_sechub_file_throws_must_exit_runtime_exception() {
+    void get_sechub_web_config_by_sechub_file_throws_zap_wrapper_runtime_exception() {
         /* prepare */
         File testFile = new File("not-existing-file");
 
         /* execute + test */
-        assertThrows(MustExitRuntimeException.class, () -> providerToTest.getSecHubWebConfiguration(testFile));
+        assertThrows(ZapWrapperRuntimeException.class, () -> providerToTest.getSecHubWebConfiguration(testFile));
 
     }
 

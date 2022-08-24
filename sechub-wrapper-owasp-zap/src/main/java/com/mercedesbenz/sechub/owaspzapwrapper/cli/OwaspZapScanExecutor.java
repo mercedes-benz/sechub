@@ -25,11 +25,11 @@ public class OwaspZapScanExecutor {
         connectionChecker = new TargetConnectionChecker();
     }
 
-    public void execute(OwaspZapScanConfiguration scanConfig) throws MustExitRuntimeException {
+    public void execute(OwaspZapScanConfiguration scanConfig) throws ZapWrapperRuntimeException {
         if (!connectionChecker.isTargetReachable(scanConfig.getTargetUri(), scanConfig.getProxyInformation())) {
             // Build error message containing proxy if it was set.
             String errorMessage = createErrorMessage(scanConfig);
-            throw new MustExitRuntimeException(errorMessage, MustExitCode.EXECUTION_FAILED);
+            throw new ZapWrapperRuntimeException(errorMessage, ZapWrapperExitCode.EXECUTION_FAILED);
         }
         ClientApi clientApi = null;
 

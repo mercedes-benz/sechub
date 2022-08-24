@@ -10,7 +10,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.zaproxy.clientapi.core.ClientApi;
 import org.zaproxy.clientapi.core.ClientApiException;
 
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitRuntimeException;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 
 class OwaspZapClientApiFactoryTest {
 
@@ -24,7 +24,7 @@ class OwaspZapClientApiFactoryTest {
     @Test
     void server_config_is_null_throws_mustexcitruntimeexception() throws ClientApiException {
         /* execute + test */
-        assertThrows(MustExitRuntimeException.class, () -> factoryToTest.create(null));
+        assertThrows(ZapWrapperRuntimeException.class, () -> factoryToTest.create(null));
     }
 
     @Test
@@ -52,7 +52,7 @@ class OwaspZapClientApiFactoryTest {
         OwaspZapServerConfiguration serverConfig = new OwaspZapServerConfiguration(host, port, apiKey);
 
         /* execute + test */
-        assertThrows(MustExitRuntimeException.class, () -> factoryToTest.create(serverConfig));
+        assertThrows(ZapWrapperRuntimeException.class, () -> factoryToTest.create(serverConfig));
     }
 
 }

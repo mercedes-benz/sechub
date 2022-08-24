@@ -9,7 +9,7 @@ import org.zaproxy.clientapi.core.ApiResponse;
 import org.zaproxy.clientapi.core.ApiResponseElement;
 import org.zaproxy.clientapi.core.ApiResponseList;
 
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitRuntimeException;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 
 class OwaspZapApiResponseHelperTest {
 
@@ -26,7 +26,7 @@ class OwaspZapApiResponseHelperTest {
         ApiResponse response = new ApiResponseList("example");
 
         /* execute + test */
-        assertThrows(MustExitRuntimeException.class, () -> helperToTest.getIdOfApiRepsonse(response));
+        assertThrows(ZapWrapperRuntimeException.class, () -> helperToTest.getIdOfApiRepsonse(response));
     }
 
     @Test

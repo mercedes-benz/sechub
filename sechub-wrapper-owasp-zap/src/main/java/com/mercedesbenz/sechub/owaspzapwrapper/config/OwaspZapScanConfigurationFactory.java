@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.CommandLineSettings;
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitCode;
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitRuntimeException;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperExitCode;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.auth.AuthenticationType;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.data.DeactivatedRuleReferences;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.data.OwaspZapFullRuleset;
@@ -43,7 +43,7 @@ public class OwaspZapScanConfigurationFactory {
 
     public OwaspZapScanConfiguration create(CommandLineSettings settings) {
         if (settings == null) {
-            throw new MustExitRuntimeException("Command line settings must not be null!", MustExitCode.COMMANDLINE_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("Command line settings must not be null!", ZapWrapperExitCode.COMMANDLINE_CONFIGURATION_INVALID);
         }
         /* Owasp Zap rule setup */
         OwaspZapFullRuleset fullRuleset = ruleProvider.fetchFullRuleset(settings.getFullRulesetFile());
@@ -143,17 +143,17 @@ public class OwaspZapScanConfigurationFactory {
         }
 
         if (zapHost == null) {
-            throw new MustExitRuntimeException("Owasp Zap host is null. Please set the Owasp Zap host to the host use by the Owasp Zap.",
-                    MustExitCode.ZAP_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("Owasp Zap host is null. Please set the Owasp Zap host to the host use by the Owasp Zap.",
+                    ZapWrapperExitCode.ZAP_CONFIGURATION_INVALID);
         }
 
         if (zapPort <= 0) {
-            throw new MustExitRuntimeException("Owasp Zap Port was set to " + zapPort + ". Please set the Owasp Zap port to the port used by the Owasp Zap.",
-                    MustExitCode.ZAP_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("Owasp Zap Port was set to " + zapPort + ". Please set the Owasp Zap port to the port used by the Owasp Zap.",
+                    ZapWrapperExitCode.ZAP_CONFIGURATION_INVALID);
         }
         if (zapApiKey == null) {
-            throw new MustExitRuntimeException("Owasp Zap API-Key is null. Please set the Owasp Zap API-key to the same value set inside your Owasp Zap.",
-                    MustExitCode.ZAP_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("Owasp Zap API-Key is null. Please set the Owasp Zap API-key to the same value set inside your Owasp Zap.",
+                    ZapWrapperExitCode.ZAP_CONFIGURATION_INVALID);
         }
         return new OwaspZapServerConfiguration(zapHost, zapPort, zapApiKey);
     }
