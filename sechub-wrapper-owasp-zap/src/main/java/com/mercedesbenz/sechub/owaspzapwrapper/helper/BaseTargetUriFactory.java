@@ -27,7 +27,8 @@ public class BaseTargetUriFactory {
 
         String scheme = uri.getScheme();
         if (!isValidScheme(scheme)) {
-            throw new ZapWrapperRuntimeException("URI: " + uri.toString() + " does not contain valid scheme!", ZapWrapperExitCode.TARGET_URL_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("URI: " + uri.toString() + " does not contain valid scheme!",
+                    ZapWrapperExitCode.TARGET_URL_CONFIGURATION_INVALID);
         }
 
         String userInfo = null;

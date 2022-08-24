@@ -49,10 +49,10 @@ public class OwaspZapFullRuleset implements JSONable<OwaspZapFullRuleset> {
      * @return rule found by the parameter <code>reference</code>
      *
      * @throws ZapWrapperRuntimeException if either parameter <code>reference</code>
-     *                                  or attribute <code>rules</code> is
-     *                                  <code>null</code> or if the rule that was
-     *                                  search for was not found inside
-     *                                  <code>rules</code>.
+     *                                    or attribute <code>rules</code> is
+     *                                    <code>null</code> or if the rule that was
+     *                                    search for was not found inside
+     *                                    <code>rules</code>.
      */
     public Rule findRuleByReference(String reference) {
         if (reference == null) {

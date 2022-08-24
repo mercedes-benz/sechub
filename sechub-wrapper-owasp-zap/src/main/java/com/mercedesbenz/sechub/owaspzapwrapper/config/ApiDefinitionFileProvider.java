@@ -32,7 +32,8 @@ public class ApiDefinitionFileProvider {
         }
 
         if (!sechubConfig.getData().isPresent()) {
-            throw new ZapWrapperRuntimeException("Data section should not be empty since a sources folder was found.", ZapWrapperExitCode.SECHUB_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("Data section should not be empty since a sources folder was found.",
+                    ZapWrapperExitCode.SECHUB_CONFIGURATION_INVALID);
         }
 
         List<SecHubSourceDataConfiguration> sourceData = sechubConfig.getData().get().getSources();
@@ -46,7 +47,8 @@ public class ApiDefinitionFileProvider {
 
         List<String> files = sourceData.get(0).getFileSystem().get().getFiles();
         if (files.size() != 1) {
-            throw new ZapWrapperRuntimeException("Sources filesystem files part must contain exactly 1 entry.", ZapWrapperExitCode.SECHUB_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("Sources filesystem files part must contain exactly 1 entry.",
+                    ZapWrapperExitCode.SECHUB_CONFIGURATION_INVALID);
         }
 
         File result = new File(extractedSourcesFolderPath, files.get(0));
