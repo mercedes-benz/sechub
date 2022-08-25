@@ -527,9 +527,7 @@ function sechub_project_metadata_set {
     else
       JSON_DATA+=", "
     fi
-    echo "sechub_project_metadata_set \"$i\""
     key=`echo $i | awk -F':' '{print $1}'`
-    echo $i | awk -F':' '{$1=""; print $0}'
     # The awk script enables that the separator ':' can also be part of the value and is passed through
     # e.g.:  "mykey:myvalue is:2" ; value will be "myvalue is:2"
     value=$(echo $i | awk -F':' '{ for (i = 2; i < NF; i++) { printf("%s:", $i) } print $NF }')
@@ -935,12 +933,8 @@ case "$action" in
     METADATA="$2" ; check_parameter METADATA '<key1>:<value1>' # We expect at least one pair
     shift
     for item in "$@"; do
-      echo "\"${item}\""
       METADATA_LIST+=("${item}")
     done
-    # for i in "${METADATA_LIST[@]}"; do
-    #     echo "main: \"${i}\""
-    # done
     $failed || sechub_project_metadata_set "$PROJECT_ID" "${METADATA_LIST[@]}"
     ;;
   project_mockdata_list)
