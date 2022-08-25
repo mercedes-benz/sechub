@@ -64,6 +64,7 @@ project_mockdata_set <project-id> <code> <web> <infra> - define mocked results (
 project_scan_list <project-id> - List scan jobs for project <project-id> (json format)
 project_set_accesslevel <project-id> <accesslevel> - Set access level of project <project-id> to one of: full read_only none
 project_set_owner <project-id> <owner> - Change owner of project <project-id> to <owner>
+project_set_whitelist_uris <project-id> <uri1>[,<uri2>...] - Set whitelist uris for project <project-id>
 project_unassign_profile <project-id> <profile-id> - Unassign execution profile <profile-id> from project <project-id>
 project_unassign_user <project-id> <user-id> - Unassign user from project (revoke scanning)
 scheduler_disable - Stop SecHub job scheduler
@@ -74,11 +75,12 @@ server_version - Print version of SecHub server
 superadmin_grant <user-id> - Grant superadmin role to user <user-id>
 superadmin_list - List all superadmin users (json format)
 superadmin_revoke - Revoke superadmin role from user <user-id>
+user_change_email <user-id> <new email address> - Update the email of user <user-id>
 user_delete <user-id> - Delete user <user-id>
 user_details <user-id> - List details of user <user-id> (json format)
 user_list - List all users (json format)
 user_list_open_signups - List all users waiting to get their signup accepted (json format)
-user_reset_apitoken <email address> - Request new api token for <email address> (invalidates current api token immediately)
+user_reset_apitoken <email address> - Request new api token for <email address>
 user_signup <new user-id> <email address> - Add <new user-id> with <email address> (needs to be accepted then)
 user_signup_accept <new user-id> - Accept registration of <new user-id>
 user_signup_decline <new user-id> - Decline registration of <new user-id>
@@ -577,6 +579,29 @@ function sechub_project_set_owner {
 }
 
 
+function generate_sechub_whitelist_data {
+  local uri_list=""
+  if [ -n "$1" ] ; then
+    uri_list=$(echo $1 | awk -F',' '{ for (i = 1; i < NF; i++) { printf("\"%s\",", $i) } printf ("\"%s\"", $NF) }')
+  fi
+  cat <<EOF
+{
+  "apiVersion": "$SECHUB_API_VERSION",
+  "whiteList": {
+    "uris":[$uri_list]
+  }
+}
+EOF
+}
+
+
+function sechub_project_set_whitelist_uris {
+  local JSON_DATA="$(generate_sechub_whitelist_data $2)"
+  echo $JSON_DATA | $JSON_FORMATTER
+  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/project/$1/whitelist" | $CURL_FILTER
+}
+
+
 function sechub_project_unassign_profile {
   curl $CURL_PARAMS -i -X DELETE -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/execution/profile/$2/project/$1" | $RESULT_FILTER | $JSON_FORMATTER
 }
@@ -629,6 +654,11 @@ function sechub_superadmin_list {
 
 function sechub_superadmin_revoke {
   curl $CURL_PARAMS -i -X POST "$SECHUB_SERVER/api/admin/user/$1/revoke/superadmin" | $CURL_FILTER
+}
+
+
+function sechub_user_change_email {
+  curl $CURL_PARAMS -i -X PUT "$SECHUB_SERVER/api/admin/user/$1/email/$2" | $CURL_FILTER
 }
 
 
@@ -938,6 +968,11 @@ case "$action" in
     PROJECT_OWNER="$2" ; check_parameter PROJECT_OWNER '<owner>'
     $failed || sechub_project_set_owner "$PROJECT_ID" "$PROJECT_OWNER"
     ;;
+  project_set_whitelist_uris)
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    WHITELIST_URIS="$2" # No check - we also accept an empty parameter -> clear whitelist
+    $failed || sechub_project_set_whitelist_uris "$PROJECT_ID" "$WHITELIST_URIS"
+    ;;
   project_unassign_profile)
     PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
     PROFILE_ID="$2" ; check_parameter PROFILE_ID '<profile-id>'
@@ -973,6 +1008,11 @@ case "$action" in
   superadmin_revoke)
     SECHUB_USER="$1" ; check_parameter SECHUB_USER '<user-id>'
     $failed || sechub_superadmin_revoke "$SECHUB_USER"
+    ;;
+  user_change_email)
+    SECHUB_USER="$1" ; check_parameter SECHUB_USER '<user-id>'
+    SECHUB_NEW_EMAIL="$2" ; check_parameter SECHUB_NEW_EMAIL '<new email address>'
+    $failed || sechub_user_change_email "$SECHUB_USER" "$SECHUB_NEW_EMAIL"
     ;;
   user_delete)
     SECHUB_USER="$1" ; check_parameter SECHUB_USER '<user-id>'
