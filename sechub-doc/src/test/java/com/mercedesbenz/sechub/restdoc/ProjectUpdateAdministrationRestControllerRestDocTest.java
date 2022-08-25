@@ -5,6 +5,8 @@ import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
@@ -87,6 +89,7 @@ public class ProjectUpdateAdministrationRestControllerRestDocTest implements Tes
         /* execute + test @formatter:off */
         this.mockMvc.perform(
         		    post(apiEndpoint, "projectId1").
+        		    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue()).
         		    contentType(MediaType.APPLICATION_JSON_VALUE).
         		    content("{\"apiVersion\":\"1.0\", \"whiteList\":{\"uris\":[\"192.168.1.1\",\"https://my.special.server.com/myapp1/\"]}}")
         		).
@@ -98,6 +101,9 @@ public class ProjectUpdateAdministrationRestControllerRestDocTest implements Tes
                                  requestSchema(OpenApiSchema.PROJECT_WHITELIST.getSchema()).
                              and().
                              document(
+		    	                		requestHeaders(
+		    	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+		    	                		),
                                         pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The id of the project for which whitelist shall be updated")
                                         ),
@@ -120,6 +126,7 @@ public class ProjectUpdateAdministrationRestControllerRestDocTest implements Tes
         /* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(apiEndpoint, "projectId1").
+        				header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue()).
         				contentType(MediaType.APPLICATION_JSON_VALUE).
         				content("{\"apiVersion\":\"1.0\", \"metaData\":{\"key1\":\"value1\"}}")
         		).
@@ -131,6 +138,9 @@ public class ProjectUpdateAdministrationRestControllerRestDocTest implements Tes
                             requestSchema(OpenApiSchema.PROJECT_META_DATA.getSchema()).
                         and().
                         document(
+	    	                		requestHeaders(
+	    	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	    	                		),
                                     pathParameters(
                                             parameterWithName(PROJECT_ID.paramName()).description("The id of the project for which metadata shall be updated")
                                     ),
