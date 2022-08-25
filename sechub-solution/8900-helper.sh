@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 function json_is_element_in_array() {
+# SPDX-License-Identifier: MIT
     local element="$1"
     local elements="$2"
 

@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 source "8900-helper.sh"
+# SPDX-License-Identifier: MIT
 
 script_name=""
 parameters=""

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.storage.s3.aws;
+package com.mercedesbenz.sechub.storage.s3;
 
 import static java.util.Objects.*;
 

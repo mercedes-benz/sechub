@@ -35,7 +35,6 @@ import com.mercedesbenz.sechub.adapter.support.TrustAllSupport;
 import com.mercedesbenz.sechub.integrationtest.api.UserContext;
 
 public class TestRestHelper {
-
     public static enum RestHelperTarget {
         SECHUB_SERVER, SECHUB_PDS,
     }
@@ -263,6 +262,10 @@ public class TestRestHelper {
         // see https://www.baeldung.com/spring-rest-template-multipart-upload
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        headers.set("", checkSum);
+        String fileSize = String.valueOf(file.length());
+        headers.set(FILE_SIZE_HEADER_FIELD_NAME, fileSize);
 
         FileSystemResource resource = new FileSystemResource(file);
 
