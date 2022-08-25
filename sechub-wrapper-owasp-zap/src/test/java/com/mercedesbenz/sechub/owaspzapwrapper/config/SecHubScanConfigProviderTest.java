@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.owaspzapwrapper.config;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 
@@ -11,15 +13,15 @@ import org.junit.jupiter.api.Test;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.BasicLoginConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitRuntimeException;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 
-class SechubWebConfigProviderTest {
+class SecHubScanConfigProviderTest {
 
-    private SechubWebConfigProvider providerToTest;
+    private SecHubScanConfigProvider providerToTest;
 
     @BeforeEach
     void beforeEach() {
-        providerToTest = new SechubWebConfigProvider();
+        providerToTest = new SecHubScanConfigProvider();
     }
 
     @Test
@@ -28,7 +30,7 @@ class SechubWebConfigProviderTest {
         File testFile = new File("src/test/resources/sechub-config-examples/basic-auth.json");
 
         /* execute */
-        SecHubWebScanConfiguration sechubWebConfig = providerToTest.getSecHubWebConfiguration(testFile);
+        SecHubWebScanConfiguration sechubWebConfig = providerToTest.getSecHubWebConfiguration(testFile).getWebScan().get();
 
         /* test */
         assertEquals(sechubWebConfig.getUri().toString(), "https://127.0.0.1:8080");
@@ -49,12 +51,12 @@ class SechubWebConfigProviderTest {
     }
 
     @Test
-    void get_sechub_web_config_by_sechub_file_throws_mustexitruntimeexception() {
+    void get_sechub_web_config_by_sechub_file_throws_zap_wrapper_runtime_exception() {
         /* prepare */
         File testFile = new File("not-existing-file");
 
         /* execute + test */
-        assertThrows(MustExitRuntimeException.class, () -> providerToTest.getSecHubWebConfiguration(testFile));
+        assertThrows(ZapWrapperRuntimeException.class, () -> providerToTest.getSecHubWebConfiguration(testFile));
 
     }
 
