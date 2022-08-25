@@ -5,7 +5,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
+import com.mercedesbenz.sechub.commons.mapping.MappingData;
+import com.mercedesbenz.sechub.commons.mapping.MappingDataToNamePatternToIdEntryConverter;
 
 @Component
 public class ScanMappingToScanMappingConfigurationTransformer {

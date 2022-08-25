@@ -78,6 +78,8 @@ public enum PDSIntTestProductIdentifier {
      */
     PDS_TEST_PRODUCT_LICENSESCAN("PDS_TEST_PRODUCT_LICENSESCAN"),
 
+    PDS_CHECKMARX_INTEGRATIONTEST("PDS_CHECKMARX_INTEGRATIONTEST"),
+
     ;
 
     private String id;

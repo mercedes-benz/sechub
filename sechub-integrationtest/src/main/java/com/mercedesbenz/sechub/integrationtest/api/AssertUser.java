@@ -17,9 +17,9 @@ import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.mercedesbenz.sechub.commons.mapping.MappingData;
 import com.mercedesbenz.sechub.integrationtest.JSONTestSupport;
 import com.mercedesbenz.sechub.integrationtest.api.AssertJobScheduler.TestExecutionState;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
 
 public class AssertUser extends AbstractAssert {
 

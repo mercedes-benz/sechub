@@ -134,8 +134,11 @@ function upload {
   fi
 
   local checkSum=$(sha256sum "$file_to_upload" | cut --delimiter=' ' --fields=1)
+  local fileSize=$(ls -l "$file_to_upload" | cut --delimiter=' ' --fields 5)
 
-  curl $CURL_AUTH $CURL_PARAMS -i -X POST --header "Content-Type: multipart/form-data" \
+  curl $CURL_AUTH $CURL_PARAMS -i -X POST \
+    --header "Content-Type: multipart/form-data" \
+    --header "x-file-size: $fileSize" \
     --form "file=@$file_to_upload" \
     --form "checkSum=$checkSum" \
     "$PDS_SERVER/api/job/${pdsJobUUID}/upload/$upload_file_name" | $RESULT_FILTER

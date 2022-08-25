@@ -63,7 +63,7 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
 
         private String clientSecret = DEFAULT_CLIENT_SECRET; // per default use default client secret
 
-        private String engineConfigurationName = CheckmarxConstants.DEFAULT_CHECKMARX_ENGINECONFIGURATION_MULTILANGANGE_SCAN_NAME;
+        private String engineConfigurationName;
         private boolean alwaysFullScanEnabled;
 
         /**
@@ -114,7 +114,12 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
             config.presetIdForNewProjects = presetIdForNewProjects;
             config.sourceCodeZipFileInputStream = sourceCodeZipFileInputStream;
             config.clientSecret = clientSecret;
-            config.engineConfigurationName = engineConfigurationName;
+            if (engineConfigurationName == null || engineConfigurationName.isEmpty()) {
+                /* fallback to default team id */
+                config.engineConfigurationName = CheckmarxConstants.DEFAULT_CHECKMARX_ENGINECONFIGURATION_MULTILANGANGE_SCAN_NAME;
+            } else {
+                config.engineConfigurationName = engineConfigurationName;
+            }
             config.alwaysFullScanEnabled = alwaysFullScanEnabled;
         }
 

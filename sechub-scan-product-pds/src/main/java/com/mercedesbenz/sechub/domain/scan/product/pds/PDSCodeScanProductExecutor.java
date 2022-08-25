@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
+import com.mercedesbenz.sechub.adapter.mock.MockDataIdentifierFactory;
 import com.mercedesbenz.sechub.adapter.pds.PDSAdapter;
 import com.mercedesbenz.sechub.adapter.pds.PDSCodeScanConfig;
 import com.mercedesbenz.sechub.adapter.pds.PDSCodeScanConfigImpl;
@@ -22,7 +23,6 @@ import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
-import com.mercedesbenz.sechub.sharedkernel.SystemEnvironment;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspection;
 import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspector;
@@ -39,7 +39,7 @@ public class PDSCodeScanProductExecutor extends AbstractProductExecutor {
     PDSInstallSetup installSetup;
 
     @Autowired
-    SystemEnvironment systemEnvironment;
+    PDSExecutorConfigSuppportServiceCollection serviceCollection;
 
     @Autowired
     MetaDataInspector scanMetaDataCollector;
@@ -49,6 +49,9 @@ public class PDSCodeScanProductExecutor extends AbstractProductExecutor {
 
     @Autowired
     PDSStorageContentProviderFactory contentProviderFactory;
+
+    @Autowired
+    MockDataIdentifierFactory mockDataIdentifierFactory;
 
     public PDSCodeScanProductExecutor() {
         super(ProductIdentifier.PDS_CODESCAN, 1, ScanType.CODE_SCAN);
@@ -65,7 +68,7 @@ public class PDSCodeScanProductExecutor extends AbstractProductExecutor {
 
         ProductExecutorContext executorContext = data.getProductExecutorContext();
         PDSExecutorConfigSuppport configSupport = PDSExecutorConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
-                systemEnvironment);
+                serviceCollection);
 
         SecHubExecutionContext context = data.getSechubExecutionContext();
 

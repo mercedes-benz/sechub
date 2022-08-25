@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sereco.importer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mercedesbenz.sechub.sereco.ImportParameter;
 
 /**
@@ -14,7 +17,7 @@ public class ImportSupport {
 
     private static final char BOM = 65279;
 
-    private String productId;
+    private List<String> productIds;
 
     private String contentIdentifier;
 
@@ -35,7 +38,7 @@ public class ImportSupport {
     }
 
     public static class ImportSupportBuilder {
-        String productId;
+        List<String> productIds = new ArrayList<>();
         String contentIdentifier;
 
         private boolean checkXML;
@@ -47,10 +50,21 @@ public class ImportSupport {
         }
 
         public ImportSupportBuilder productId(String productId) {
-            if (productId == null) {
-                this.productId = null;
-            } else {
-                this.productId = productId.toLowerCase();
+            this.productIds.clear();
+            if (productId != null) {
+                this.productIds.add(productId.toLowerCase());
+            }
+            return this;
+        }
+
+        public ImportSupportBuilder productIds(String... productIds) {
+            this.productIds.clear();
+            if (productIds != null) {
+                for (String productId : productIds) {
+                    if (productId != null) {
+                        this.productIds.add(productId.toLowerCase());
+                    }
+                }
             }
             return this;
         }
@@ -96,7 +110,7 @@ public class ImportSupport {
             support.checkJSON = checkJSON;
             support.checkXML = checkXML;
             support.contentIdentifier = contentIdentifier;
-            support.productId = productId;
+            support.productIds = productIds;
 
             return support;
         }
@@ -135,14 +149,14 @@ public class ImportSupport {
     }
 
     private boolean isProductIdentified(String productId) {
-        if (this.productId == null) {
-            return true; // when not set we accept all
+        if (this.productIds.isEmpty()) {
+            return true; // when nothing defined set we accept all
         }
         if (productId == null) {
             return false;
         }
         String lowerCased = productId.trim().toLowerCase();
-        return lowerCased.equals(this.productId);
+        return productIds.contains(lowerCased);
     }
 
     private boolean isContentIdentified(String content) {

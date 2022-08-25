@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.job;
 
-import static org.junit.Assert.*;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.FILE_SIZE_HEADER_FIELD_NAME;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -20,12 +21,13 @@ import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
+import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
+import com.mercedesbenz.sechub.pds.PDSBadRequestException;
 import com.mercedesbenz.sechub.pds.PDSNotAcceptableException;
 import com.mercedesbenz.sechub.pds.PDSNotFoundException;
 import com.mercedesbenz.sechub.pds.UploadSizeConfiguration;
 import com.mercedesbenz.sechub.pds.storage.PDSMultiStorageService;
 import com.mercedesbenz.sechub.pds.util.PDSArchiveSupportProvider;
-import com.mercedesbenz.sechub.pds.util.PDSFileChecksumSHA256Service;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.test.TestUtil;
 
@@ -37,7 +39,6 @@ public class PDSFileUploadJobServiceTest {
 
     private PDSFileUploadJobService serviceToTest;
     private UUID jobUUID;
-    private PDSFileChecksumSHA256Service checksumService;
     private Path tmpUploadPath;
 
     private PDSJobRepository repository;
@@ -50,15 +51,17 @@ public class PDSFileUploadJobServiceTest {
     private ArchiveSupport archiveSupport;
     private PDSArchiveSupportProvider archiveSupportProvider;
     private UploadSizeConfiguration configuration;
+    private CheckSumSupport checkSumSupport;
 
     @BeforeEach
     void beforeEach() throws Exception {
         tmpUploadPath = TestUtil.createTempDirectoryInBuildFolder("pds-upload");
         jobUUID = UUID.randomUUID();
-        checksumService = mock(PDSFileChecksumSHA256Service.class);
         workspaceService = mock(PDSWorkspaceService.class);
         storageService = mock(PDSMultiStorageService.class);
         configuration = mock(UploadSizeConfiguration.class);
+        checkSumSupport = mock(CheckSumSupport.class);
+
         when(configuration.getMaxUploadSizeInBytes()).thenReturn(2048L);
 
         archiveSupportProvider = mock(PDSArchiveSupportProvider.class);
@@ -78,15 +81,15 @@ public class PDSFileUploadJobServiceTest {
         when(repository.findById(jobUUID)).thenReturn(jobOption);
 
         serviceToTest = new PDSFileUploadJobService();
-        serviceToTest.checksumSHA256Service = checksumService;
         serviceToTest.workspaceService = workspaceService;
         serviceToTest.repository = repository;
         serviceToTest.storageService = storageService;
         serviceToTest.archiveSupportProvider = archiveSupportProvider;
         serviceToTest.configuration = configuration;
+        serviceToTest.checksumSupport = checkSumSupport;
 
-        when(checksumService.hasCorrectChecksum(eq(ACCEPTED_CHECKSUM), any())).thenReturn(true);
-        when(checksumService.hasCorrectChecksum(eq(NOT_ACCEPTED_CHECKSUM), any())).thenReturn(false);
+        when(checkSumSupport.hasCorrectSha256Checksum(eq(ACCEPTED_CHECKSUM), any())).thenReturn(true);
+        when(checkSumSupport.hasCorrectSha256Checksum(eq(NOT_ACCEPTED_CHECKSUM), any())).thenReturn(false);
     }
 
     @Test
@@ -194,4 +197,51 @@ public class PDSFileUploadJobServiceTest {
         assertTrue(exception.getMessage().contains("[a-zA-Z"));
     }
 
+    @Test
+    void upload_fails_when_no_x_file_size_header_negative() {
+        /* prepare */
+        String result = CONTENT_DATA;
+        MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
+        String fileName = "binaries.tar";
+
+        ServletContext context = new MockServletContext();
+
+        /* formatter:off */
+        HttpServletRequest request = MockMvcRequestBuilders.multipart("https://localhost:1234").file(multiPart).header(FILE_SIZE_HEADER_FIELD_NAME, "-1")
+                .buildRequest(context);
+        /* formatter:on */
+
+        PDSBadRequestException exception = assertThrows(PDSBadRequestException.class, () -> {
+
+            /* execute */
+            serviceToTest.upload(job.getUUID(), fileName, request);
+        });
+
+        /* test */
+        assertEquals("The file size in header field " + FILE_SIZE_HEADER_FIELD_NAME + " cannot be negative.", exception.getMessage());
+    }
+
+    @Test
+    void upload_fails_when_no_x_file_size_header_invalid_number() {
+        /* prepare */
+        String result = CONTENT_DATA;
+        MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
+        String fileName = "binaries.tar";
+
+        ServletContext context = new MockServletContext();
+
+        /* formatter:off */
+        HttpServletRequest request = MockMvcRequestBuilders.multipart("https://localhost:1234").file(multiPart).header(FILE_SIZE_HEADER_FIELD_NAME, "abcabc")
+                .buildRequest(context);
+        /* formatter:on */
+
+        PDSBadRequestException exception = assertThrows(PDSBadRequestException.class, () -> {
+
+            /* execute */
+            serviceToTest.upload(job.getUUID(), fileName, request);
+        });
+
+        /* test */
+        assertEquals("The file size in header field " + FILE_SIZE_HEADER_FIELD_NAME + " is not formatted as a number.", exception.getMessage());
+    }
 }

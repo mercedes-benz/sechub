@@ -12,6 +12,7 @@ import com.mercedesbenz.sechub.sharedkernel.validation.AbstractValidation;
 import com.mercedesbenz.sechub.sharedkernel.validation.ApiVersionValidation;
 import com.mercedesbenz.sechub.sharedkernel.validation.ApiVersionValidationFactory;
 import com.mercedesbenz.sechub.sharedkernel.validation.ValidationContext;
+import com.mercedesbenz.sechub.sharedkernel.validation.ValidationResult;
 
 @Component
 public class FalsePositiveJobDataListValidationImpl extends AbstractValidation<FalsePositiveJobDataList> implements FalsePositiveJobDataListValidation {
@@ -22,7 +23,7 @@ public class FalsePositiveJobDataListValidationImpl extends AbstractValidation<F
     private ApiVersionValidation apiVersionValidation;
 
     @Autowired
-    FalsePositiveJobDataValidationImpl falsePositiveJobDataValidation;
+    FalsePositiveJobDataValidation falsePositiveJobDataValidation;
 
     @PostConstruct
     void postConstruct() {
@@ -31,7 +32,7 @@ public class FalsePositiveJobDataListValidationImpl extends AbstractValidation<F
 
     @Override
     protected void setup(AbstractValidation<FalsePositiveJobDataList>.ValidationConfig config) {
-        config.minLength = 1;
+        config.minLength = 0; // empty list is also accepted
         config.maxLength = 500; // we allow maximum 500 entries in one list
     }
 
@@ -63,7 +64,7 @@ public class FalsePositiveJobDataListValidationImpl extends AbstractValidation<F
         List<FalsePositiveJobData> jobDataList = target.getJobData();
         validateNotNull(context, jobDataList, "jobDataList");
 
-        validateMinSize(context, jobDataList, 1, "jobDataList");
+        validateMinSize(context, jobDataList, getConfig().minLength, "jobDataList");
         validateMaxSize(context, jobDataList, getConfig().maxLength, "jobDataList");
 
         if (context.isInValid()) {
@@ -71,7 +72,10 @@ public class FalsePositiveJobDataListValidationImpl extends AbstractValidation<F
         }
 
         for (FalsePositiveJobData jobData : jobDataList) {
-            falsePositiveJobDataValidation.validate(jobData);
+            ValidationResult resultForJobData = falsePositiveJobDataValidation.validate(jobData);
+            if (!resultForJobData.isValid()) {
+                context.addErrors(resultForJobData);
+            }
         }
     }
 

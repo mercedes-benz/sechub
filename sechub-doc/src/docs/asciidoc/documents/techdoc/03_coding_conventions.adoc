@@ -338,7 +338,7 @@ RestDoc tests are designed to check fields, params and results described in docu
 There is no logic testing inside those tests. They are more or less just for documentation. On the other hand
 the MockTest pendants are only for logic testing, so also destructive variants and more technical parts are tested here.
 
-====== How can I ensure that I do not forget to describe necesary REST API parts?
+====== How can I ensure that I do not forget to describe necessary REST API parts?
 Every call to REST API must be described as a part for <<section-coding-convention-usecases, use cases >>. So there is
 a usecase annotation used at the restcontroller method which should have a method with an `@Step` result. At the `@Step`
 annotation there is a field `needsRestDoc` which is per default set to `false`. For steps doing rest operations and

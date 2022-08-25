@@ -1,9 +1,13 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.job;
 
-import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
-import static com.mercedesbenz.sechub.pds.job.PDSJobAssert.*;
-import static com.mercedesbenz.sechub.pds.util.PDSAssert.*;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.DOT_CHECKSUM;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.FILE_SIZE_HEADER_FIELD_NAME;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.MULTIPART_CHECKSUM;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.MULTIPART_FILE;
+import static com.mercedesbenz.sechub.pds.job.PDSJobAssert.assertJobFound;
+import static com.mercedesbenz.sechub.pds.job.PDSJobAssert.assertJobIsInState;
+import static com.mercedesbenz.sechub.pds.util.PDSAssert.notNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,6 +26,7 @@ import org.apache.commons.fileupload.FileUploadBase.SizeLimitExceededException;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
+import org.apache.commons.io.input.CountingInputStream;
 import org.apache.commons.io.input.MessageDigestCalculatingInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +34,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.amazonaws.util.StringInputStream;
+import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
+import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport.CheckSumValidationResult;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
 import com.mercedesbenz.sechub.pds.LogSanitizer;
 import com.mercedesbenz.sechub.pds.PDSBadRequestException;
@@ -38,7 +45,6 @@ import com.mercedesbenz.sechub.pds.storage.PDSMultiStorageService;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseUserUploadsJobData;
 import com.mercedesbenz.sechub.pds.util.PDSArchiveSupportProvider;
-import com.mercedesbenz.sechub.pds.util.PDSFileChecksumSHA256Service;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 
 @Service
@@ -50,7 +56,7 @@ public class PDSFileUploadJobService {
     private static final int MAX_FILENAME_LENGTH = 40;
 
     @Autowired
-    PDSFileChecksumSHA256Service checksumSHA256Service;
+    CheckSumSupport checksumSupport;
 
     @Autowired
     PDSWorkspaceService workspaceService;
@@ -69,6 +75,9 @@ public class PDSFileUploadJobService {
 
     @Autowired
     LogSanitizer logSanitizer;
+
+    @Autowired
+    PDSServletFileUploadFactory servletFileUploadFactory;
 
     @UseCaseUserUploadsJobData(@PDSStep(name = "service call", description = "uploaded file is stored by storage service", number = 2))
     public void upload(UUID jobUUID, String fileName, HttpServletRequest request) {
@@ -121,19 +130,28 @@ public class PDSFileUploadJobService {
         /* prepare */
         LOG.debug("Start upload file: {} for PDS job: {}", fileName, jobUUID);
 
+        Long binaryFileSizeFromUser = getBinaryFileSize(request);
+
         String checksumFromUser = null;
         String checksumCalculated = null;
 
         boolean fileDefinedByUser = false;
         boolean checkSumDefinedByUser = false;
 
+        long realContentLengthInBytes = -1;
+
         JobStorage jobStorage = storageService.getJobStorage(jobUUID);
 
-        ServletFileUpload upload = new ServletFileUpload();
+        ServletFileUpload upload = servletFileUploadFactory.create();
 
         long maxUploadSize = configuration.getMaxUploadSizeInBytes();
+        long maxUploadSizeWithHeaders = maxUploadSize + 600; // we accept 600 bytes more for header, checksum etc.
 
-        upload.setSizeMax(maxUploadSize + 600);// we accept 600 bytes more for header, checksum etc.
+        if (binaryFileSizeFromUser != null && binaryFileSizeFromUser > maxUploadSizeWithHeaders) {
+            throw new PDSBadRequestException("The file size in header field " + FILE_SIZE_HEADER_FIELD_NAME + " exceeds the allowed upload size.");
+        }
+
+        upload.setSizeMax(maxUploadSizeWithHeaders);
         upload.setFileSizeMax(maxUploadSize);
 
         /*
@@ -168,9 +186,12 @@ public class PDSFileUploadJobService {
                 try (InputStream checkSumInputStream = item.openStream()) {
                     checksumFromUser = Streams.asString(checkSumInputStream);
 
-                    checksumSHA256Service.assertValidSha256Checksum(checksumFromUser);
+                    CheckSumValidationResult validationResult = checksumSupport.validateSha256Checksum(checksumFromUser);
+                    if (!validationResult.isValid()) {
+                        throw new PDSBadRequestException(validationResult.getMessage());
+                    }
 
-                    jobStorage.store(fileName + DOT_CHECKSUM, new StringInputStream(checksumFromUser));
+                    jobStorage.store(fileName + DOT_CHECKSUM, new StringInputStream(checksumFromUser), checksumFromUser.getBytes().length);
                     LOG.info("uploaded user defined checksum as file for file: {} in PDS job: {}", fileName, jobUUID);
                 }
                 checkSumDefinedByUser = true;
@@ -178,14 +199,21 @@ public class PDSFileUploadJobService {
             case MULTIPART_FILE:
                 try (InputStream fileInputstream = item.openStream()) {
 
-                    MessageDigest digest = checksumSHA256Service.createSHA256MessageDigest();
+                    MessageDigest digest = checksumSupport.createSha256MessageDigest();
 
                     MessageDigestCalculatingInputStream messageDigestInputStream = new MessageDigestCalculatingInputStream(fileInputstream, digest);
-                    jobStorage.store(fileName, messageDigestInputStream);
+                    CountingInputStream byteCountingInputStream = new CountingInputStream(messageDigestInputStream);
+
+                    if (binaryFileSizeFromUser == null) {
+                        jobStorage.store(fileName, byteCountingInputStream);
+                    } else {
+                        jobStorage.store(fileName, byteCountingInputStream, binaryFileSizeFromUser);
+                    }
 
                     LOG.info("uploaded file:{} for job:{}", fileName, jobUUID);
 
-                    checksumCalculated = checksumSHA256Service.convertMessageDigestToHex(digest);
+                    realContentLengthInBytes = byteCountingInputStream.getByteCount();
+                    checksumCalculated = checksumSupport.convertMessageDigestToHex(digest);
                 }
                 fileDefinedByUser = true;
                 break;
@@ -197,6 +225,9 @@ public class PDSFileUploadJobService {
         if (!fileDefinedByUser) {
             throw new PDSBadRequestException("No file defined by user for job data upload!");
         }
+        if (binaryFileSizeFromUser != null && realContentLengthInBytes != binaryFileSizeFromUser) {
+            throw new PDSBadRequestException("The real file size was not equal to the user provided file size length.");
+        }
         if (!checkSumDefinedByUser) {
             throw new PDSBadRequestException("No checksum defined by user for job data upload!");
         }
@@ -207,6 +238,26 @@ public class PDSFileUploadJobService {
             throw new PDSBadRequestException("Upload of binaries was not possible!");
         }
         assertCheckSumCorrect(checksumFromUser, checksumCalculated);
+    }
+
+    private Long getBinaryFileSize(HttpServletRequest request) {
+        Long binaryFileSizeFromUser = null;
+
+        String binaryFileSizeFromUserField = request.getHeader(FILE_SIZE_HEADER_FIELD_NAME);
+
+        if (binaryFileSizeFromUserField != null) {
+            try {
+                binaryFileSizeFromUser = Long.valueOf(binaryFileSizeFromUserField);
+            } catch (NumberFormatException ex) {
+                throw new PDSBadRequestException("The file size in header field " + FILE_SIZE_HEADER_FIELD_NAME + " is not formatted as a number.");
+            }
+
+            if (binaryFileSizeFromUser < 0) {
+                throw new PDSBadRequestException("The file size in header field " + FILE_SIZE_HEADER_FIELD_NAME + " cannot be negative.");
+            }
+        }
+
+        return binaryFileSizeFromUser;
     }
 
     private void assertMultipart(HttpServletRequest request) {

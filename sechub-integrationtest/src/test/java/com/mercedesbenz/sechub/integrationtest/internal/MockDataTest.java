@@ -20,7 +20,7 @@ class MockDataTest {
 
             /* content exists */
             assertNotNull(mockData.getMockResultFilePath());
-            assertNotNull(mockData.getTarget());
+            assertNotNull(mockData.getMockDataIdentifier());
         }
     }
 

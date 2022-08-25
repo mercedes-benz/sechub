@@ -12,7 +12,7 @@ resources:
     requests:
         memory: 512Mi
     limits:
-        memory: 3Gi
+        memory: 6Gi
 
 pds:
     startMode: localserver
@@ -29,6 +29,13 @@ pds:
     javaDebug:
         enabled: false
     keepContainerAliveAfterPDSCrashed: false
+    volumes:
+      pdsWorkspace:
+         enabled: false
+         size: 3Gi
+      zapWorkspace:
+         enabled: false
+         size: 15Gi
 
 zap:
     apiKey: "<random-api-key>"

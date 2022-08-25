@@ -8,7 +8,6 @@ dependencies{
     api spring_boot_dependency.jackson_core
     api spring_boot_dependency.jackson_databind
     api spring_boot_dependency.jackson_datatype_jdk8
-    api spring_boot_dependency.slf4j_api
     
     api project(':sechub-commons-core')
     

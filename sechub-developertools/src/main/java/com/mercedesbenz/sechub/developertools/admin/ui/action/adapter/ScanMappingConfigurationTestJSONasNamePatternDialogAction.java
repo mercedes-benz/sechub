@@ -5,12 +5,12 @@ import java.awt.event.ActionEvent;
 import java.util.Collections;
 import java.util.Optional;
 
+import com.mercedesbenz.sechub.commons.mapping.MappingData;
+import com.mercedesbenz.sechub.commons.mapping.NamePatternIdProvider;
 import com.mercedesbenz.sechub.domain.scan.config.DeveloperToolsScanMappingConfigurationService;
-import com.mercedesbenz.sechub.domain.scan.config.NamePatternIdProvider;
 import com.mercedesbenz.sechub.domain.scan.config.ScanMapping;
 import com.mercedesbenz.sechub.domain.scan.config.ScanMappingConfiguration;
 import com.mercedesbenz.sechub.domain.scan.config.ScanMappingToScanMappingConfigurationTransformer;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingIdentifier;
 
 public class ScanMappingConfigurationTestJSONasNamePatternDialogAction extends AbstractAdapterDialogMappingAction {
