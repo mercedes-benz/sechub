@@ -8,6 +8,7 @@ import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
@@ -41,6 +42,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.StringUtils;
 
+import com.mercedesbenz.sechub.commons.core.CommonConstants;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationUsageByName;
 import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
@@ -526,8 +528,11 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         MockMultipartFile file1 = new MockMultipartFile("file", inputStreamTo);
         /* execute + test @formatter:off */
         this.mockMvc.perform(
+
                 multipart(apiEndpoint, PROJECT1_ID, randomUUID).
-                    file(file1).param("checkSum", "mychecksum")
+                    file(file1).
+                    param("checkSum", "mychecksum").
+                    header(CommonConstants.FILE_SIZE_HEADER_FIELD_NAME, file1.getBytes().length)
                 ).
                     andExpect(status().isOk()).
                             // https://docs.spring.io/spring-restdocs/docs/2.0.2.RELEASE/reference/html5/
@@ -543,6 +548,9 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                     ),
                                     requestParameters(
                                             parameterWithName("checkSum").description("A sha256 checksum for file upload validation")
+                                    ),
+                                    requestHeaders(
+                                    		headerWithName(CommonConstants.FILE_SIZE_HEADER_FIELD_NAME).description("The file size of the tar-archive to upload in bytes. Needs to be a positive integer value.")
                                     ),
                                     // TODO de-jcup, 2022-04-14: It is not possible to document this part properly in OpenAPI.
                                     // See: https://github.com/ePages-de/restdocs-api-spec/issues/105
