@@ -11,11 +11,11 @@ import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 
 public class SecHubScanConfigProvider {
     public SecHubScanConfiguration getSecHubWebConfiguration(File secHubConfigFile) {
-        TextFileReader fileReader = new TextFileReader();
-
         if (secHubConfigFile == null) {
             return new SecHubScanConfiguration();
         }
+        TextFileReader fileReader = new TextFileReader();
+
         String sechubConfigJson;
         SecHubScanConfiguration sechubScanConfig;
         try {

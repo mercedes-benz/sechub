@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,7 @@ import org.zaproxy.clientapi.core.ApiResponseList;
 import org.zaproxy.clientapi.core.ClientApi;
 import org.zaproxy.clientapi.core.ClientApiException;
 
+import com.mercedesbenz.sechub.commons.model.SecHubWebScanApiConfiguration;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanConfiguration;
@@ -329,12 +331,13 @@ public abstract class AbstractScan implements OwaspZapScan {
             LOG.info("For scan {}: No file with API definition found!", scanConfig.getContextName());
             return;
         }
-        if (!scanConfig.getSecHubWebScanConfiguration().getApi().isPresent()) {
+        Optional<SecHubWebScanApiConfiguration> apiConfig = scanConfig.getSecHubWebScanConfiguration().getApi();
+        if (!apiConfig.isPresent()) {
             throw new ZapWrapperRuntimeException("For scan :" + scanConfig.getContextName() + " No API type was definied!",
                     ZapWrapperExitCode.SECHUB_CONFIGURATION_INVALID);
         }
 
-        switch (scanConfig.getSecHubWebScanConfiguration().getApi().get().getType()) {
+        switch (apiConfig.get().getType()) {
         case OPEN_API:
             clientApi.openapi.importFile(scanConfig.getApiDefinitionFile().toString(), scanConfig.getTargetUriAsString(), contextId);
             break;
