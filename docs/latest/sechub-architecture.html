@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Architecture</h1>
 <div class="details">
-<span id="revnumber"> Server 0.34.0</span>
+<span id="revnumber"> Server 0.35.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -997,16 +997,22 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#pds-process-handling">9.4.5. Process execution</a>
 <ul class="sectlevel4">
 <li><a href="#how-pds-provides-output-and-error-stream-content-of-running-jobs-in-clustered-environments">9.4.5.1. How PDS provides output and error stream content of running jobs in clustered environments</a></li>
-<li><a href="#how-pds-handles-storage-data">9.4.5.2. How PDS handles storage data</a>
+<li><a href="#how-pds-handles-meta-data">9.4.5.2. How PDS handles meta data</a>
 <ul class="sectlevel5">
-<li><a href="#pds-fetches-sourcecode-from-storage">9.4.5.2.1. Source code fetching</a></li>
-<li><a href="#pds-fetches-binaries-from-storage">9.4.5.2.2. Binaries fetching</a></li>
-<li><a href="#pds-explanation-data-structure">9.4.5.2.3. Data structure inside TAR and ZIP files</a></li>
-<li><a href="#automated-extraction-of-relevant-parts">9.4.5.2.4. Automated Extraction of relevant parts</a></li>
+<li><a href="#checkmarx-pds-solution-adapter-meta-data-handling">9.4.5.2.1. Checkmarx PDS solution adapter meta data handling</a></li>
 </ul>
 </li>
-<li><a href="#how-pds-product-executors-configure-the-pds-adapter">9.4.5.3. How PDS product executors configure the PDS adapter</a></li>
-<li><a href="#overview-4">9.4.5.4. Overview</a></li>
+<li><a href="#how-pds-handles-storage-data">9.4.5.3. How PDS handles storage data</a>
+<ul class="sectlevel5">
+<li><a href="#pds-fetches-sourcecode-from-storage">9.4.5.3.1. Source code fetching</a></li>
+<li><a href="#pds-fetches-binaries-from-storage">9.4.5.3.2. Binaries fetching</a></li>
+<li><a href="#pds-explanation-data-structure">9.4.5.3.3. Data structure inside TAR and ZIP files</a></li>
+<li><a href="#automated-extraction-of-relevant-parts">9.4.5.3.4. Automated Extraction of relevant parts</a></li>
+</ul>
+</li>
+<li><a href="#how-pds-handles-user-messages">9.4.5.4. How PDS handles user messages</a></li>
+<li><a href="#how-pds-product-executors-configure-the-pds-adapter">9.4.5.5. How PDS product executors configure the PDS adapter</a></li>
+<li><a href="#overview-4">9.4.5.6. Overview</a></li>
 </ul>
 </li>
 <li><a href="#sechub-integration">9.4.6. SecHub integration</a>
@@ -1087,10 +1093,16 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 </li>
 <li><a href="#product-results">9.9. Product results</a>
 <ul class="sectlevel3">
-<li><a href="#section-shared-concepts-report-dataflow">9.9.1. Report data flow</a>
+<li><a href="#section-shared-concepts-product-message-dataflow">9.9.1. Product messages inside product result</a>
 <ul class="sectlevel4">
-<li><a href="#creation-of-scanreport-entities">9.9.1.1. Creation of ScanReport entities</a></li>
+<li><a href="#storing-product-messages">9.9.1.1. Storing product messages</a></li>
 <li><a href="#read-and-delivery-of-report-data-to-end-user">9.9.1.2. Read and delivery of report data to end user</a></li>
+</ul>
+</li>
+<li><a href="#section-shared-concepts-report-dataflow">9.9.2. Report data flow</a>
+<ul class="sectlevel4">
+<li><a href="#creation-of-scanreport-entities">9.9.2.1. Creation of ScanReport entities</a></li>
+<li><a href="#read-and-delivery-of-report-data-to-end-user-2">9.9.2.2. Read and delivery of report data to end user</a></li>
 </ul>
 </li>
 </ul>
@@ -1110,6 +1122,12 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#configuration-3">9.11.1. Configuration</a></li>
 <li><a href="#execution">9.11.2. Execution</a></li>
 <li><a href="#cleaned-data">9.11.3. Cleaned data</a></li>
+</ul>
+</li>
+<li><a href="#pds-solutions">9.12. PDS solutions</a>
+<ul class="sectlevel3">
+<li><a href="#checkmarx-pds-solution">9.12.1. Checkmarx PDS solution</a></li>
+<li><a href="#pds-code-scan-executor-configuration">9.12.2. PDS code scan executor Configuration</a></li>
 </ul>
 </li>
 </ul>
@@ -1221,7 +1239,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.34.0-20220620124023</code></p>
+<p>Documentation version: <code>Server 0.35.0-20220825132154</code></p>
 </div>
 <div class="paragraph">
 <p>This architecture documentation is based on arc42 template.</p>
@@ -2933,14 +2951,14 @@ build will break.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">upload sourcecode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">upload binaries</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">upload binaries</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">upload sourcecode</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -2954,14 +2972,14 @@ build will break.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">download job report and traffic light</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">get job status</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">get job status</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">download job report and traffic light</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -3184,17 +3202,17 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Update schedule authorization parts</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Assign user</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The service will add the user to the project. If user does not have ROLE_USER it will obtain it</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Assign user</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update schedule authorization parts</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The service will add the user to the project. If user does not have ROLE_USER it will obtain it</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -3283,24 +3301,24 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Unassign user</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The service will remove the user to the project. If users has no longer access to projects ROLE_USER will be removed</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
@@ -4113,14 +4131,14 @@ user signup is accepted by admin.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler to send updates about current status.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler domain to disable scheduler job processing</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler domain to disable scheduler job processing</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler to send updates about current status.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -5051,6 +5069,13 @@ results because such information was formerly deleted</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inform sechub admins when job restart was canceled</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Try to restart job</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -5060,15 +5085,8 @@ results because such information was formerly deleted</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Try to rstart job (hard)</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">When job is found, a restart will be triggered. Existing batch jobs will be terminated</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Inform sechub admins when job restart was canceled</p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When job is found, a restart will be triggered. Existing batch jobs will be terminated</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
@@ -7579,7 +7597,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/6086e034-eb68-4240-9c2d-7d6808201bb2' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/5732cc4f-a6a5-49bf-9fc2-4d0531504720' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -8452,7 +8470,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>[{&quot;sechubJobUUID&quot;:&quot;acdc35c1-a168-4920-93b9-b5a53e2c7030&quot;,&quot;executedBy&quot;:&quot;spartakus&quot;,&quot;started&quot;:&quot;2022-06-19T12:40:38.524&quot;,&quot;ended&quot;:&quot;2022-06-20T12:40:38.524&quot;,&quot;status&quot;:&quot;OK&quot;}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code>[{&quot;sechubJobUUID&quot;:&quot;dfd07968-f57b-4350-934e-eee26a3ba547&quot;,&quot;executedBy&quot;:&quot;spartakus&quot;,&quot;started&quot;:&quot;2022-08-24T13:22:07.499&quot;,&quot;ended&quot;:&quot;2022-08-25T13:22:07.499&quot;,&quot;status&quot;:&quot;OK&quot;}]</code></pre>
 </div>
 </div>
 </div>
@@ -9002,7 +9020,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;2d411fe8-2ab6-45b3-9805-d967ea01032c&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;ceca7f60-efdd-417a-807d-e1ca632b6e44&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -9141,7 +9159,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;2467257e-8adb-4337-839d-889dddddeda2&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;b90b2945-c507-4835-b4d6-97d315db7608&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -9295,7 +9313,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;dd21e9f1-4393-4ae7-b1a1-67dfde56c57c&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;81c9f728-8cf5-4491-9517-fe0a8749f6b9&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -9454,7 +9472,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;4832a51a-4f98-48e0-8fcf-0a7240d0e1d0&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;6435c915-3d28-4410-b35a-7a91c989a48d&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -9633,7 +9651,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;19403877-01c4-4420-96e7-d0a5200848dc&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;cee660eb-45b0-48f6-8916-809b6d8eefe0&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -9707,7 +9725,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/b5b139ac-1580-444e-959c-ae2c78ae9d39/sourcecode' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/fece0390-3c1b-4508-a1b5-7958cae16ffc/sourcecode' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -9790,7 +9808,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/97bf3add-4bd2-40b1-b428-69208a635b65/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/e502e4cf-9445-455b-9bb9-abb5ccffbd9e/approve' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -9927,7 +9945,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/4fe54ee4-639e-4254-8b46-ce66ebaa6042' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/f62810f6-5f30-485d-b4de-81c7288c428c' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -9936,7 +9954,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobUUID&quot;:&quot;4fe54ee4-639e-4254-8b46-ce66ebaa6042&quot;,&quot;owner&quot;:&quot;CREATOR1&quot;,&quot;created&quot;:&quot;&quot;,&quot;started&quot;:&quot;2022-06-20T12:26:00.374&quot;,&quot;ended&quot;:&quot;2022-06-20T12:41:00.374&quot;,&quot;state&quot;:&quot;ENDED&quot;,&quot;result&quot;:&quot;OK&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobUUID&quot;:&quot;f62810f6-5f30-485d-b4de-81c7288c428c&quot;,&quot;owner&quot;:&quot;CREATOR1&quot;,&quot;created&quot;:&quot;&quot;,&quot;started&quot;:&quot;2022-08-25T13:07:25.37&quot;,&quot;ended&quot;:&quot;2022-08-25T13:22:25.37&quot;,&quot;state&quot;:&quot;ENDED&quot;,&quot;result&quot;:&quot;OK&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -10011,7 +10029,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/e0fcf52b-be6a-41fd-a0fc-604fb938faa8' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/443944aa-079a-4432-b4ad-46d87fdeae68' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -10083,7 +10101,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/c9e4b25e-c8de-4ed4-b363-69f629ff5683' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/5ffa8551-ec6b-4956-9702-b788333d351f' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -10575,8 +10593,9 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/1369878f-c8ce-440c-b233-599e82b05612/binaries' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/640ef462-2b65-4df3-86a4-592122b39670/binaries' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
+    -H 'x-file-size: 10240' \
     -F 'file=test1.txt                                                                                           0000664 0001750 0001750 00000000000 13353454574 012170  0                                                                                                    ustar   albert                          albert                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ' \
     -F 'checkSum=mychecksum'</code></pre>
 </div>
@@ -10655,7 +10674,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/a9b1b498-5158-4746-9c50-7033feca144b' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/84e3212e-4e05-4a20-af75-f06cd6955847' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -11158,7 +11177,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>[{&quot;jobUUID&quot;:&quot;6ef806a0-3ca4-43e7-bab4-e033fb07cfa1&quot;,&quot;projectId&quot;:&quot;project-name&quot;,&quot;owner&quot;:&quot;owner-userid&quot;,&quot;status&quot;:&quot;RUNNING&quot;,&quot;since&quot;:&quot;2022-06-20T12:40:48.09&quot;,&quot;configuration&quot;:&quot;{ config data }&quot;}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code>[{&quot;jobUUID&quot;:&quot;8a0a4188-d72a-4645-9379-1e44b6594e46&quot;,&quot;projectId&quot;:&quot;project-name&quot;,&quot;owner&quot;:&quot;owner-userid&quot;,&quot;status&quot;:&quot;RUNNING&quot;,&quot;since&quot;:&quot;2022-08-25T13:22:15.105&quot;,&quot;configuration&quot;:&quot;{ config data }&quot;}]</code></pre>
 </div>
 </div>
 </div>
@@ -11227,7 +11246,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/40c7456f-4202-4671-aac1-49f0417d2797' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/00196fe1-20a2-4a8d-be8f-d34b60796b94' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -11301,7 +11320,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/c4f11c33-9f28-4e2b-ae5e-21099b8e9db7' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/c56cc37a-6867-426a-8de8-29e2191df595' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -11375,7 +11394,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/eda704de-f035-47f6-b776-e8eae78effab' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/db2318e3-443c-43c9-9795-456516c776cb' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -11833,7 +11852,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>7586bd66-1bcc-4ac2-9587-80413c81e5b4</code></pre>
+<pre class="CodeRay highlight nowrap"><code>b61c50a5-aa67-40ff-a651-17dbacdb3d2a</code></pre>
 </div>
 </div>
 </div>
@@ -11902,7 +11921,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/be99ec1f-ba79-4142-8ebd-53e5ee37e99e' -i -X DELETE \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/40badd1d-e702-4339-92ca-a662fd60073e' -i -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -12002,7 +12021,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;executorConfigurations&quot;:[{&quot;uuid&quot;:&quot;7911e978-ac18-4d05-a31a-1b2ef9f61db1&quot;,&quot;name&quot;:&quot;example configuration&quot;,&quot;enabled&quot;:true}],&quot;type&quot;:&quot;executorConfigurationList&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;executorConfigurations&quot;:[{&quot;uuid&quot;:&quot;a3a9831a-8d2c-4d33-98d4-13bed87165d9&quot;,&quot;name&quot;:&quot;example configuration&quot;,&quot;enabled&quot;:true}],&quot;type&quot;:&quot;executorConfigurationList&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -12140,7 +12159,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/f2c1809a-e3b1-42f3-a1d0-3a2181410f1d' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/ddb7383f-df0c-491f-9a8a-2e0de0adc4a1' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -12149,7 +12168,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;f2c1809a-e3b1-42f3-a1d0-3a2181410f1d&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;ddb7383f-df0c-491f-9a8a-2e0de0adc4a1&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -12282,7 +12301,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/faeedd92-8359-43df-8997-f3911b1e5ed7' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/bee673f8-e680-4b1c-b7b6-9baeeca9fd9e' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://productNew.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_NEW_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_NEW_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]}}'</code></pre>
 </div>
@@ -12581,7 +12600,7 @@ using the job UUID.</p>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/existing-profile-1' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;048576ee-b7b1-4940-98d1-e76c2b2a6f97&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
+    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;e8cff529-6d8b-4f97-a7d9-319f11db834a&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -12722,7 +12741,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;description&quot;:&quot;a description&quot;,&quot;enabled&quot;:true,&quot;configurations&quot;:[{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;58c6eb8c-fc1d-4b0f-ac4a-29ec21508643&quot;}],&quot;projectIds&quot;:[&quot;project-1&quot;,&quot;project-2&quot;]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;description&quot;:&quot;a description&quot;,&quot;enabled&quot;:true,&quot;configurations&quot;:[{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;391846ec-8bfa-4fff-8f93-e3d4249b992b&quot;}],&quot;projectIds&quot;:[&quot;project-1&quot;,&quot;project-2&quot;]}</code></pre>
 </div>
 </div>
 </div>
@@ -13418,7 +13437,7 @@ one domain calls another one.</p>
 <h6 id="diagram">7.7.2.1.1. Diagram</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="838" height="3531">
+<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="861" height="3531">
 </div>
 </div>
 </div>
@@ -13572,7 +13591,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-auto_cleanup_configuration_changed">7.7.2.2. Message AUTO_CLEANUP_CONFIGURATION_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_auto_cleanup_configuration_changed.svg" alt="Sequence diagram of messaging AUTO_CLEANUP_CONFIGURATION_CHANGED" width="1140" height="234">
+<img src="images/gen_domain_messaging_auto_cleanup_configuration_changed.svg" alt="Sequence diagram of messaging AUTO_CLEANUP_CONFIGURATION_CHANGED" width="1124" height="234">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -13785,7 +13804,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-project_access_level_changed">7.7.2.14. Message PROJECT_ACCESS_LEVEL_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_project_access_level_changed.svg" alt="Sequence diagram of messaging PROJECT_ACCESS_LEVEL_CHANGED" width="868" height="205">
+<img src="images/gen_domain_messaging_project_access_level_changed.svg" alt="Sequence diagram of messaging PROJECT_ACCESS_LEVEL_CHANGED" width="852" height="205">
 </div>
 </div>
 </div>
@@ -13801,7 +13820,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-project_deleted">7.7.2.16. Message PROJECT_DELETED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_project_deleted.svg" alt="Sequence diagram of messaging PROJECT_DELETED" width="877" height="234">
+<img src="images/gen_domain_messaging_project_deleted.svg" alt="Sequence diagram of messaging PROJECT_DELETED" width="861" height="234">
 </div>
 </div>
 </div>
@@ -13825,7 +13844,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-request_batch_job_status">7.7.2.19. Message REQUEST_BATCH_JOB_STATUS</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_batch_job_status.svg" alt="Sequence diagram of messaging REQUEST_BATCH_JOB_STATUS" width="678" height="234">
+<img src="images/gen_domain_messaging_request_batch_job_status.svg" alt="Sequence diagram of messaging REQUEST_BATCH_JOB_STATUS" width="662" height="234">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -14018,7 +14037,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-request_user_role_recalculation">7.7.2.27. Message REQUEST_USER_ROLE_RECALCULATION</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="2282" height="380">
+<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="2244" height="380">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -14151,7 +14170,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-start_scan">7.7.2.35. Message START_SCAN</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_start_scan.svg" alt="Sequence diagram of messaging START_SCAN" width="555" height="397">
+<img src="images/gen_domain_messaging_start_scan.svg" alt="Sequence diagram of messaging START_SCAN" width="485" height="397">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -14191,7 +14210,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_added_to_project">7.7.2.37. Message USER_ADDED_TO_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_added_to_project.svg" alt="Sequence diagram of messaging USER_ADDED_TO_PROJECT" width="748" height="205">
+<img src="images/gen_domain_messaging_user_added_to_project.svg" alt="Sequence diagram of messaging USER_ADDED_TO_PROJECT" width="732" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -14220,7 +14239,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_api_token_changed">7.7.2.38. Message USER_API_TOKEN_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_api_token_changed.svg" alt="Sequence diagram of messaging USER_API_TOKEN_CHANGED" width="1163" height="234">
+<img src="images/gen_domain_messaging_user_api_token_changed.svg" alt="Sequence diagram of messaging USER_API_TOKEN_CHANGED" width="1068" height="234">
 </div>
 </div>
 </div>
@@ -14236,7 +14255,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_created">7.7.2.40. Message USER_CREATED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_created.svg" alt="Sequence diagram of messaging USER_CREATED" width="625" height="205">
+<img src="images/gen_domain_messaging_user_created.svg" alt="Sequence diagram of messaging USER_CREATED" width="615" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -14265,7 +14284,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_deleted">7.7.2.41. Message USER_DELETED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_deleted.svg" alt="Sequence diagram of messaging USER_DELETED" width="1015" height="264">
+<img src="images/gen_domain_messaging_user_deleted.svg" alt="Sequence diagram of messaging USER_DELETED" width="1006" height="264">
 </div>
 </div>
 </div>
@@ -14281,7 +14300,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_new_api_token_requested">7.7.2.43. Message USER_NEW_API_TOKEN_REQUESTED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_new_api_token_requested.svg" alt="Sequence diagram of messaging USER_NEW_API_TOKEN_REQUESTED" width="964" height="205">
+<img src="images/gen_domain_messaging_user_new_api_token_requested.svg" alt="Sequence diagram of messaging USER_NEW_API_TOKEN_REQUESTED" width="871" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -14318,7 +14337,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_removed_from_project">7.7.2.45. Message USER_REMOVED_FROM_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_removed_from_project.svg" alt="Sequence diagram of messaging USER_REMOVED_FROM_PROJECT" width="802" height="205">
+<img src="images/gen_domain_messaging_user_removed_from_project.svg" alt="Sequence diagram of messaging USER_REMOVED_FROM_PROJECT" width="786" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -14575,7 +14594,7 @@ a target type - so for different target types we can define two different PDS ex
 <h6 id="overview-3">8.2.1.1.1. Overview</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles.svg" alt="Diagram" width="2424" height="235">
+<img src="images/gen_springprofiles.svg" alt="Diagram" width="2427" height="235">
 </div>
 <div class="title">Figure 6. Spring profiles and their explicit/implicit included parts</div>
 </div>
@@ -14612,7 +14631,7 @@ the profile on this machine. So you prevent illegal administrative access attemp
 <h6 id="dev">8.2.1.1.3. DEV</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles-dev.svg" alt="Diagram" width="1316" height="274">
+<img src="images/gen_springprofiles-dev.svg" alt="Diagram" width="1307" height="274">
 </div>
 <div class="title">Figure 8. Spring profile dev and its explicit/implicit included parts</div>
 </div>
@@ -14625,7 +14644,7 @@ starting - but its extreme flexible and has only a dependency to localserver</p>
 <h6 id="integration-test">8.2.1.1.4. Integration-Test</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles-integrationtest.svg" alt="Diagram" width="1352" height="271">
+<img src="images/gen_springprofiles-integrationtest.svg" alt="Diagram" width="1396" height="271">
 </div>
 <div class="title">Figure 9. Spring profile integrationtest and its explicit/implicit included parts</div>
 </div>
@@ -16617,14 +16636,74 @@ But when the job has finished <em>(no matter if canceled, done or failed)</em> t
 </div>
 </div>
 <div class="sect4">
-<h5 id="how-pds-handles-storage-data">9.4.5.2. How PDS handles storage data</h5>
+<h5 id="how-pds-handles-meta-data">9.4.5.2. How PDS handles meta data</h5>
+<div id="concept-pds_solution_metadata" class="paragraph">
+<p>When communication of PDS with the used product is stateful and is a long running operation,
+it can be useful to store such state/meta data.</p>
+</div>
+<div class="paragraph">
+<p>One use case is the restart possibility for a SecHub job. Another one are debugging or
+trace information.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Most times PDS solutions do not need to store special meta data information: When the PDS job starts
+a CLI tool, the result or the failure will just be returned to the SecHub side.</p>
+</div>
+<div class="paragraph">
+<p>If it shall be done again (because of on failure) just a new PDS job will be started.</p>
+</div>
+<div class="paragraph">
+<p>If a PDS job has meta data this means it should be restarted</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>A PDS launcher script has no access to the PDS database!
+If meta data shall be read or written, we just have the workspace file <code>metadata.txt</code>.
+Inside this file the product relevant meta data
+of the job run must be available, see next diagram for details:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/diagram_pds_metadata.png" alt="Diagram" width="1824" height="979">
+</div>
+</div>
+<div class="sect5">
+<h6 id="checkmarx-pds-solution-adapter-meta-data-handling">9.4.5.2.1. Checkmarx PDS solution adapter meta data handling</h6>
+<div class="paragraph">
+<p>The PDS solution for <code>Checkmarx</code> does reuse the already existing <code>CheckmarxAdapter</code> class.
+A <code>sechub-wrapper-checkmarx</code> gradle project was introduced which contains a simple spring boot
+CLI application which uses the adapter for communication. The adapter callback is not directly
+reading or writing to the database but uses the <code>metadata.txt</code> file from the PDS workspace.</p>
+</div>
+<div class="paragraph">
+<p>Look at next figure for more details:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/diagram_pds_solution_checkmarx_overview.png" alt="Diagram" width="1423" height="447">
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="how-pds-handles-storage-data">9.4.5.3. How PDS handles storage data</h5>
 <div class="paragraph">
 <p>The <code>PDS</code> does automatically fetch uploaded files from shared <a href="#pds-storage-and-sharing">storage</a>
 temporary into its local filesystem. After the scan has been done, the temporary local files
 will be automatically deleted.</p>
 </div>
 <div class="sect5">
-<h6 id="pds-fetches-sourcecode-from-storage">9.4.5.2.1. Source code fetching</h6>
+<h6 id="pds-fetches-sourcecode-from-storage">9.4.5.3.1. Source code fetching</h6>
 <div class="paragraph">
 <p>Source code is always contained in a file called <code>sourcecode.zip</code>.
 When a <code>PDS</code> starts a new job, it will fetch the complete ZIP file from <a href="#pds-storage-and-sharing">storage</a>
@@ -16639,7 +16718,7 @@ the archive <a href="#pds-explanation-data-structure">data structure</a>.</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="pds-fetches-binaries-from-storage">9.4.5.2.2. Binaries fetching</h6>
+<h6 id="pds-fetches-binaries-from-storage">9.4.5.3.2. Binaries fetching</h6>
 <div class="paragraph">
 <p>Binaries are always contained in a file called <code>binaries.tar</code>.
 When a <code>PDS</code> starts a new job and the scan does references a binary data section, it will fetch
@@ -16654,7 +16733,7 @@ the archive <a href="#pds-explanation-data-structure">data structure</a>.</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="pds-explanation-data-structure">9.4.5.2.3. Data structure inside TAR and ZIP files</h6>
+<h6 id="pds-explanation-data-structure">9.4.5.3.3. Data structure inside TAR and ZIP files</h6>
 <div id="data-structure-tar-and-zip-files" class="paragraph">
 <p>The data structure inside <code>TAR</code> and <code>ZIP</code> files contains
 data configuration parts inside <code><em>data</em></code> folder.</p>
@@ -16853,7 +16932,7 @@ __data__/unique-name-2/${content} <i class="conum" data-value="3"></i><b>(3)</b>
 </div>
 </div>
 <div class="sect5">
-<h6 id="automated-extraction-of-relevant-parts">9.4.5.2.4. Automated Extraction of relevant parts</h6>
+<h6 id="automated-extraction-of-relevant-parts">9.4.5.3.4. Automated Extraction of relevant parts</h6>
 <div class="paragraph">
 <p>Only files and folders which are available for the configured scan type will be automatically
 extracted!<br>
@@ -16998,7 +17077,23 @@ The <code>PDS</code> for license scanning will only extract <code>license-binari
 </div>
 </div>
 <div class="sect4">
-<h5 id="how-pds-product-executors-configure-the-pds-adapter">9.4.5.3. How PDS product executors configure the PDS adapter</h5>
+<h5 id="how-pds-handles-user-messages">9.4.5.4. How PDS handles user messages</h5>
+<div id="section-shared-concepts-product-message-pds-dataflow" class="paragraph">
+<p>Inside a PDS workspace a special messages folder exists. The launcher script can create there
+dedicated user message files by creating simple text files (see <a href="#table-link-pds-launcher-script-variable-messages">PDS_JOB_USER_MESSAGES_FOLDER</a>
+for details) . After the job has been done (or failed),
+all files located at this folder are collected and stored as a JSON representing a <code>SecHubMessageList</code> inside the
+PDS Job. Those SecHub messages can be fetched by technical user via REST API.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/diagram_product_messages_pds_storage.svg" alt="Diagram" width="1395" height="532">
+</div>
+<div class="title">Figure 10. PDS user message handling</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="how-pds-product-executors-configure-the-pds-adapter">9.4.5.5. How PDS product executors configure the PDS adapter</h5>
 <div id="concept-pds_adapter_configuration" class="paragraph">
 <p>The different PDS product executors have different config builders which inherit from different abstract base classes
 (e.g. <code>AbstractCodeScanAdapterConfigBuilder</code>). We have no multi inheritance in Java, but we do also not
@@ -17009,7 +17104,7 @@ want to implement the setup logic (which is complicated) for every PDS product e
 </div>
 </div>
 <div class="sect4">
-<h5 id="overview-4">9.4.5.4. Overview</h5>
+<h5 id="overview-4">9.4.5.6. Overview</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/diagram_pds_adapter_configuration_overview.png" alt="Diagram" width="1494" height="926">
@@ -17556,7 +17651,7 @@ not for all other projects a runtime configuration is necessary.</p>
 <div class="content">
 <img src="images/diagram_overview_execution_profiles_and_config.svg" alt="Diagram" width="946" height="476">
 </div>
-<div class="title">Figure 10. Overview profiles and configurations</div>
+<div class="title">Figure 11. Overview profiles and configurations</div>
 </div>
 </div>
 <div class="sect3">
@@ -17627,27 +17722,66 @@ When no report collector is configured/available the embedded report product <co
 </table>
 </div>
 <div class="sect3">
-<h4 id="section-shared-concepts-report-dataflow">9.9.1. Report data flow</h4>
+<h4 id="section-shared-concepts-product-message-dataflow">9.9.1. Product messages inside product result</h4>
+<div class="paragraph">
+<p>Every product can add custom messages which shall be available to user.</p>
+</div>
 <div class="sect4">
-<h5 id="creation-of-scanreport-entities">9.9.1.1. Creation of ScanReport entities</h5>
+<h5 id="storing-product-messages">9.9.1.1. Storing product messages</h5>
+<div class="paragraph">
+<p>The product adapter fetches the information from the product and delivers it to
+the product executor, who stores the SecHub messages inside the <code>ProductResult</code> entity.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/diagram_product_messages_storage.svg" alt="Diagram" width="906" height="710">
+</div>
+<div class="title">Figure 12. Storing product messages</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="read-and-delivery-of-report-data-to-end-user">9.9.1.2. Read and delivery of report data to end user</h5>
+<div class="paragraph">
+<p><code>SerecoProductExecutor</code> collects all SecHub messages from other job results and combines them
+inside its own data as <code>SerecoAnnotation</code>. The annotations will be inspected on report creation
+by <code>SerecoResultTransformer</code>.</p>
+</div>
+<div class="paragraph">
+<p>Further details for report creation can be found at <a href="#section-shared-concepts-report-dataflow">report data flow</a>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/diagram_product_messages_to_sereco_annotations.svg" alt="Diagram" width="744" height="771">
+</div>
+<div class="title">Figure 13. Messages to Sereco annotations</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-shared-concepts-report-dataflow">9.9.2. Report data flow</h4>
+<div class="sect4">
+<h5 id="creation-of-scanreport-entities">9.9.2.1. Creation of ScanReport entities</h5>
 <div class="paragraph">
 <p>Here a graphical overview how the report data is created by the <code>ScanService</code> and
 finally written as <code>ScanReport</code> entity into the database:</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diagram_report_dataflow.svg" alt="Diagram" width="872" height="618">
+<img src="images/diagram_report_dataflow.svg" alt="Diagram" width="872" height="538">
 </div>
-<div class="title">Figure 11. Report data flow</div>
+<div class="title">Figure 14. Report data flow</div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="read-and-delivery-of-report-data-to-end-user">9.9.1.2. Read and delivery of report data to end user</h5>
+<h5 id="read-and-delivery-of-report-data-to-end-user-2">9.9.2.2. Read and delivery of report data to end user</h5>
+<div class="paragraph">
+<p>When the user downloads the report, the result inside the persisted scan report entity will be used.</p>
+</div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diagram_report_delivery.svg" alt="Diagram" width="506" height="431">
+<img src="images/diagram_report_delivery.svg" alt="Diagram" width="506" height="375">
 </div>
-<div class="title">Figure 12. Delivery</div>
+<div class="title">Figure 15. Report delivery to user</div>
 </div>
 </div>
 </div>
@@ -17664,7 +17798,7 @@ steps. Some of these steps are described here.</p>
 <div class="content">
 <img src="images/diagram_job_status_delivery.svg" alt="Diagram" width="645" height="318">
 </div>
-<div class="title">Figure 13. Job status fetrching</div>
+<div class="title">Figure 16. Job status fetrching</div>
 </div>
 </div>
 <div class="sect3">
@@ -17675,7 +17809,7 @@ steps. Some of these steps are described here.</p>
 <div class="content">
 <img src="images/diagram_status_update_after_job_has_been_executed.svg" alt="Diagram" width="1257" height="621">
 </div>
-<div class="title">Figure 14. Delivery</div>
+<div class="title">Figure 17. Delivery</div>
 </div>
 </div>
 </div>
@@ -17808,6 +17942,110 @@ the auto cleanup will be extended to drop old scan report data as well.</p>
 </tr>
 </table>
 </div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="pds-solutions">9.12. PDS solutions</h3>
+<div class="paragraph">
+<p>It is easy to integrate security products, even command line tools without a network API, into
+<code>SecHub</code> via <code>PDS</code> (Product delegation server).</p>
+</div>
+<div class="paragraph">
+<p>A PDS solution is a ready-made package for SecHub in which a PDS and the necessary security
+products are already pre-installed and can be used directly without additional adjustments.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The PDS solutions can be found at <a href="https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions" class="bare">https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="checkmarx-pds-solution">9.12.1. Checkmarx PDS solution</h4>
+<div class="paragraph">
+<p>The checkmarx PDS solution uses <code>sechub-wrapper-checkmarx</code> which is a standalone Spring Boot application.
+If started in non production mode, the data will be mocked when inside IDE.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/diagram_pds_solution_checkmarx_wrapper_overview.png" alt="Diagram" width="1151" height="615">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="pds-code-scan-executor-configuration">9.12.2. PDS code scan executor Configuration</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 30%;">
+<col>
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Job parameter</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.user</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mandatory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The user name used to communicate with Checkmarx. You can use env:$YOUR_USER_VARIABLENAME to use environment variables instead of real credentials.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mandatory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The password used to communicate with Checkmarx. You can use env:$YOUR_PWD_VARIABLENAME to use environment variables instead of real credentials.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.baseurl</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mandatory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The base URL of the Checkmarx server.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.engine.configuration.name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The engine to use - when empty, the default engine will be used.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.always.fullscan.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When 'true', Checkmarx will do a full scan and not a delta scan.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.result.check.period.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The time period in minutes when the next check for Checkmarx resuls will be done. An example: If you define <code>3</code>,every 3 minutes PDS will check the current state of the job.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.result.check.timeout.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum time in minutes when the checkmarx communication does time out and the connection will be terminated.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.mocking.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When 'true' than, instead of the real Checkmarx adapter, a mock adapter will be used. This is only necessary for tests.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">checkmarx.newproject.teamid.mapping</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mandatory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Can be either defined directly as job parameter (json mapping), or we can send it automatically by reusing an existing SecHub mapping. As an example: 'pds.config.use.sechub.mappings=checkmarx.newproject.teamid.mapping,checkmarx.newproject.presetid.mapping'</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">checkmarx.newproject.presetid.mapping</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If not the default preset Id shall be used, it can be either defined directly as job paramter (json mapping), or we can send it automatically by reusing an existing SecHub mapping. As an example: 'pds.config.use.sechub.mappings=checkmarx.newproject.teamid.mapping,checkmarx.newproject.presetid.mapping'</p></td>
+</tr>
+</tbody>
+</table>
 <div style="page-break-after: always;"></div>
 </div>
 </div>
@@ -17921,6 +18159,18 @@ See <a href="https://github.com/mercedes-benz/sechub/issues/12" class="bare">htt
 </thead>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Adapter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">In scope of SecHub the term "adapter" is used for product adapters. They represent<br>
+                 a communication object which does know how to start/restart a security product and
+                 fetch the result. SecHub and also some wrapper applications in PDS-solutions do use
+                 the adapters for communication and to mock products. The adapter does not</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Executor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An executor (or product executor) handles the complete communication with a product via an adapter.
+                 The executor is repsonsible for resilience and writes the results from adapter into SecHub database.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">K8s</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://kubernetes.io/">Kubernetes</a>, also known as K8s, is an open-source system for automating deployment,
                  scaling, and management of containerized applications.</p></td>
@@ -17928,6 +18178,15 @@ See <a href="https://github.com/mercedes-benz/sechub/issues/12" class="bare">htt
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Helm</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">"&#8230;&#8203;<a href="https://helm.sh/">Helm</a> is the best way to find, share, and use software built for Kubernetes. &#8230;&#8203;"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mapping</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The mapping feature inside SecHub is a generic pattern replacement approach. Via a REST API
+                 administrators can define the mappings with regular expression patterns and dedicate values/
+                 replacements.<br>
+                <br>
+                 Inside SecHub or PDS the mappings can be used - e.g. to configure a security
+                 product dependently on a project name.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">PDS</p></td>
@@ -17942,7 +18201,7 @@ See <a href="https://github.com/mercedes-benz/sechub/issues/12" class="bare">htt
                  This server is also maintained by SecHub maintainers.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">PDS-Solutions</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS-Solution</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">PDS is a very generic server which can execute anything. The <code>PDS-Solutions</code> are
                  full working `integrations which run "out-of-the-box". Every solution can
                  be run a preconfigured PDS either as a single Docker instance, as a Docker compose
@@ -17961,8 +18220,15 @@ See <a href="https://github.com/mercedes-benz/sechub/issues/12" class="bare">htt
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">SecHub configuration file</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Is the JSON configuration file used by a user to start a new
-                                    SecHub job.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Is the JSON configuration file used by a user to start a new SecHub job.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wrapper</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A wrapper or "wrapper application" is a standalone application used inside a PDS-solution
+                 when it comes to a more sophisticated way of product communication.
+                 Normally such an application is written in Java and uses some common SecHub
+                 libraries and has more logic inside. Example are the Checkmarx wrapper and
+                 the OWASP Zap wrapper.</p></td>
 </tr>
 </tbody>
 </table>
@@ -17971,7 +18237,7 @@ See <a href="https://github.com/mercedes-benz/sechub/issues/12" class="bare">htt
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.34.0<br>
+ Server 0.35.0<br>
 </div>
 </div>
 </body>

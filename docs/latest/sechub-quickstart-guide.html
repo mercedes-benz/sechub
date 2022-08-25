@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Quickstart Guide</h1>
 <div class="details">
-<span id="revnumber"> Server 0.34.0</span>
+<span id="revnumber"> Server 0.35.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -541,9 +541,8 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#requirements">1.1. Requirements</a>
 <ul class="sectlevel3">
 <li><a href="#alpine-linux">1.1.1. Alpine Linux</a></li>
-<li><a href="#debian">1.1.2. Debian</a></li>
+<li><a href="#debianubuntu">1.1.2. Debian/Ubuntu</a></li>
 <li><a href="#fedora-and-centos">1.1.3. Fedora and CentOS</a></li>
-<li><a href="#ubuntu">1.1.4. Ubuntu</a></li>
 </ul>
 </li>
 <li><a href="#instructions">1.2. Instructions</a>
@@ -640,7 +639,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.34.0-20220620124023</code></p>
+<p>Documentation version: <code>Server 0.35.0-20220825132154</code></p>
 </div>
 </div>
 </div>
@@ -752,7 +751,7 @@ Cross-compiling the SecHub client on Alpine Linux 3.11 does not work (Go version
 </div>
 </div>
 <div class="sect3">
-<h4 id="debian">1.1.2. Debian</h4>
+<h4 id="debianubuntu">1.1.2. Debian/Ubuntu</h4>
 <div class="listingblock">
 <div class="content">
 <pre>sudo apt install openjdk-11-jdk-headless golang git curl jq</pre>
@@ -765,7 +764,19 @@ Cross-compiling the SecHub client on Alpine Linux 3.11 does not work (Go version
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Tested with Debian 10 "Buster".
+Tested with Debian 10 "Buster", Ubuntu 18.04 "Bionic" and 20.04 "Focal" LTS.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+If the version of your GoLang is below 1.15, please install a more recent version from <a href="https://go.dev/dl/">here</a>, because you can&#8217;t compile the executables.
 </td>
 </tr>
 </table>
@@ -786,26 +797,6 @@ Tested with Debian 10 "Buster".
 </td>
 <td class="content">
 Tested with Fedora 34 and CentOS 8.
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="ubuntu">1.1.4. Ubuntu</h4>
-<div class="listingblock">
-<div class="content">
-<pre>sudo apt install openjdk-11-jdk-headless golang git curl jq</pre>
-</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-Tested with Ubuntu 18.04 "Bionic" and 20.04 "Focal" LTS.
 </td>
 </tr>
 </table>
@@ -920,7 +911,7 @@ password: int-test_onlyuser-pwd</pre>
 export SECHUB_USERID=int-test_superadmin
 export SECHUB_APITOKEN=int-test_superadmin-pwd
 export SECHUB_TRUSTALL=true
-export PATH=&quot;`pwd`/sechub-cli/build/go/platform/linux-amd64:`pwd`/sechub-developertools/scripts:$PATH&quot;</code></pre>
+export PATH=&quot;$PATH:`pwd`/sechub-cli/build/go/platform/linux-amd64:`pwd`/sechub-developertools/scripts&quot;</code></pre>
 </div>
 </div>
 </li>
@@ -1045,7 +1036,7 @@ For real results, you have to define an 'execution profile' with a scanner (via 
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.34.0<br>
+ Server 0.35.0<br>
 </div>
 </div>
 </body>
