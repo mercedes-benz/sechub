@@ -1,3 +1,6 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: MIT
+
 function json_is_element_in_array() {
     local element="$1"
     local elements="$2"
@@ -37,8 +40,13 @@ function print_error_message() {
 
 function setup_complete_message_for_tool() {
     local tool="$1"
+    local user="$2"
+    local project="$3"
 
-    printf "Setup of $tool complete\n"
+    printf "\nSetup of $tool complete:\n\n"
+    echo "- user: $user"
+    echo "- project: $project"
+    printf "\nsechub -project $project scan\n"
 }
 
 function setup_project_user_executor_profile() {

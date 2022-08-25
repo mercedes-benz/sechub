@@ -14,10 +14,46 @@ wait_loop() {
 localserver() {
     check_setup
 
+    profiles="dev,real_products,mocked_notifications"
+    database_options=""
     storage_options="-Dsechub.storage.sharedvolume.upload.dir=$SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR"
-    profiles="dev,h2,real_products,mocked_notifications"
 
-    java $JAVA_DEBUG_OPTIONS \
+    if [ "$POSTGRES_ENABLED" = true ]
+    then
+        echo "Using database: Postgres"
+
+        profiles="$profiles,postgres"
+        database_options="-Dspring.datasource.url=$DATABASE_CONNECTION -Dspring.datasource.username=$DATABASE_USERNAME  -Dspring.datasource.password=$DATABASE_PASSWORD"
+
+        echo "Database connection:"
+        echo " * URL: $DATABASE_CONNECTION"
+        echo " * Username: $DATABASE_USERNAME"
+        echo " * Password: $DATABASE_PASSWORD"
+    else
+        echo "Using database: H2"
+        profiles="$profiles,h2"
+    fi
+
+    if [ "$S3_ENABLED" = true ]
+    then
+        echo "Using object storage"
+
+        storage_options="-Dsechub.storage.s3.endpoint=$S3_ENDPOINT"
+        storage_options="$storage_options -Dsechub.storage.s3.bucketname=$S3_BUCKETNAME"
+        storage_options="$storage_options -Dsechub.storage.s3.accesskey=$S3_ACCESSKEY"
+        storage_options="$storage_options -Dsechub.storage.s3.secretkey=$S3_SECRETKEY"
+
+        echo "Object storage:"
+        echo " * Endpoint: $S3_ENDPOINT"
+        echo " * Bucketname: $S3_BUCKETNAME"
+        echo " * Accesskey: $S3_ACCESSKEY"
+    fi
+
+    echo "Upload source code maximum bytes: $SECHUB_MAX_FILE_UPLOAD_SIZE"
+    echo "Upload binaries maximum bytes: $SECHUB_UPLOAD_BINARIES_MAXIMUM_BYTES"
+    echo "Activated profiles: $profiles"
+
+    java $JAVA_DEBUG_OPTIONS $database_options \
         $storage_options \
         -Dfile.encoding=UTF-8 \
         -Dspring.profiles.active="$profiles" \
@@ -26,6 +62,9 @@ localserver() {
         -Dsechub.initialadmin.userid="$ADMIN_USERID" \
         -Dsechub.initialadmin.email=sechubadm@example.org \
         -Dsechub.initialadmin.apitoken="$ADMIN_APITOKEN" \
+        -Dspring.servlet.multipart.max-file-size="$SECHUB_MAX_FILE_UPLOAD_SIZE" \
+        -Dspring.servlet.multipart.max-request-size="$SECHUB_MAX_FILE_UPLOAD_SIZE" \
+        -Dsechub.upload.binaries.maximum.bytes="$SECHUB_UPLOAD_BINARIES_MAXIMUM_BYTES" \
         -Dsechub.adapter.netsparker.userid=abc \
         -Dsechub.adapter.netsparker.apitoken=xyz \
         -Dsechub.adapter.netsparker.baseurl=https://example.org \
@@ -37,7 +76,7 @@ localserver() {
         -Dsechub.notification.smtp.hostname=example.org \
         -Dserver.port=8443 \
         -Dserver.address=0.0.0.0 \
-        -jar sechub-server*.jar
+        -jar /sechub/sechub-server*.jar
 }
 
 check_setup () {

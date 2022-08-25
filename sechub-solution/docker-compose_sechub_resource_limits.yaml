@@ -14,6 +14,11 @@ services:
         - BRANCH=${BRANCH}
       context: docker/
       dockerfile: SecHub-Debian.dockerfile
+    deploy:
+      resources:
+        limits:
+          memory: ${MEMORY_LIMIT}
+          cpus: ${CPU_LIMIT}
     container_name: sechub
     hostname: sechub
     env_file:

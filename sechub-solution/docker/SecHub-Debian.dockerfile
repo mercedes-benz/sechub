@@ -9,12 +9,17 @@ ARG BASE_IMAGE
 
 # Build args
 ARG BUILD_TYPE="download"
-ARG SECHUB_ARTIFACT_FOLDER="/artifacts"
+
 ARG SECHUB_VERSION="0.34.0"
-ARG GO="go1.18.3.linux-amd64.tar.gz"
+ARG GO="go1.19.linux-amd64.tar.gz"
+ARG TAG=""
+ARG BRANCH=""
 
 # possible values are 11, 17
 ARG JAVA_VERSION="11"
+
+# Artifact folder
+ARG SECHUB_ARTIFACT_FOLDER="/artifacts"
 
 #-------------------
 # Builder Build
@@ -26,13 +31,16 @@ FROM ${BASE_IMAGE} AS builder-build
 ARG GO
 ARG SECHUB_ARTIFACT_FOLDER
 ARG JAVA_VERSION
+ARG TAG
+ARG BRANCH
 
 ARG BUILD_FOLDER="/build"
 ARG GIT_URL="https://github.com/mercedes-benz/sechub.git"
-ARG TAG=""
 
 ENV DOWNLOAD_FOLDER="/downloads"
 ENV PATH="/usr/local/go/bin:$PATH"
+
+RUN echo "Builder: Build"
 
 RUN mkdir --parent "$SECHUB_ARTIFACT_FOLDER" "$DOWNLOAD_FOLDER"
 
@@ -61,9 +69,10 @@ RUN mkdir --parent "$BUILD_FOLDER" && \
     cd "$BUILD_FOLDER" && \
     git clone "$GIT_URL" && \
     cd "sechub" && \
+    if [ ! -z "$BRANCH" ]; then git checkout "$BRANCH"; fi && \
+    if [ ! -z "$TAG" ]; then git checkout tags/"$TAG" -b "$TAG"; fi && \
     "./buildExecutables" && \
-    if [[ -n "$TAG" ]]; then git checkout tags/"$TAG" -b "$TAG"; fi && \
-    cp "sechub-server/build/libs/sechub-server-0.0.0.jar" --target-directory "$SECHUB_ARTIFACT_FOLDER"
+    cp sechub-server/build/libs/sechub-server-*.jar --target-directory "$SECHUB_ARTIFACT_FOLDER"
 
 #-------------------
 # Builder Download
@@ -73,6 +82,8 @@ FROM ${BASE_IMAGE} AS builder-download
 
 ARG SECHUB_ARTIFACT_FOLDER
 ARG SECHUB_VERSION
+
+RUN echo "Builder: Download"
 
 RUN mkdir --parent "$SECHUB_ARTIFACT_FOLDER"
 
@@ -99,6 +110,8 @@ FROM ${BASE_IMAGE} AS builder-copy
 ARG SECHUB_ARTIFACT_FOLDER
 ARG SECHUB_VERSION
 
+RUN echo "Builder: Copy"
+
 RUN mkdir --parent "$SECHUB_ARTIFACT_FOLDER"
 
 # Copy
@@ -109,7 +122,6 @@ COPY copy/sechub-server-*.jar "$SECHUB_ARTIFACT_FOLDER"
 #-------------------
 
 FROM builder-${BUILD_TYPE} as builder
-RUN echo "build stage"
 
 #-------------------
 # SecHub Server Image

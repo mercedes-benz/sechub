@@ -1,3 +1,6 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: MIT
+
 source "8900-helper.sh"
 
 script_name=""
