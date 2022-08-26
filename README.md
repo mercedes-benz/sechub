@@ -2,7 +2,8 @@
 [![Build status](https://github.com/mercedes-benz/sechub/workflows/Java%20&%20Go%20CI/badge.svg)](https://github.com/mercedes-benz/sechub/actions?workflow=Java+%26+Go+CI)
 
 # SecHub
-![SecHub Logo](https://github.com/mercedes-benz/sechub/blob/master/sechub-doc/src/docs/asciidoc/images/sechub-logo.png)
+
+!["Eugen" - the SecHub mascot](sechub-doc/src/docs/asciidoc/images/sechub-logo.png)
 
 ## Intended Usage
 

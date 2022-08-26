@@ -13,4 +13,6 @@ public class CommonConstants {
     public final static String MULTIPART_FILE = "file";
     public final static String MULTIPART_CHECKSUM = "checkSum";
 
+    public final static String FILE_SIZE_HEADER_FIELD_NAME = "x-file-size";
+
 }

@@ -34,6 +34,7 @@ const TargetTarFileLoop = "Target tarfile would be part of its own content, lead
 // Tar - Will tar defined folders and files using given TarConfig.
 //       Note: TarConfig.TarWriter must be created beforehand!
 func Tar(config *TarConfig) (err error) {
+	Log(fmt.Sprintf("Creating tar archive for upload (%s)", config.TarFileName), config.Quiet)
 
 	// Add defined folders to tar file
 	for _, folder := range config.Folders {
@@ -61,6 +62,7 @@ func Tar(config *TarConfig) (err error) {
 		}
 		// Add prefix to tarPath
 		tarPath = config.PrefixInTar + tarPath
+		Log(fmt.Sprintf("Adding file '%s' to tar", file), config.Quiet)
 
 		err = tarOneFile(file, tarPath, config)
 		if err != nil {
@@ -77,7 +79,7 @@ func tarOneFolderRecursively(folder string, config *TarConfig) error {
 	if _, err := os.Stat(folderPathAbs); os.IsNotExist(err) {
 		return errors.New("Folder not found: " + folder + " (" + folderPathAbs + ")")
 	}
-	Log(fmt.Sprintf("Creating tar archive from folder '%s' (%s)", folder, folderPathAbs), config.Quiet)
+	Log(fmt.Sprintf("Adding folder '%s' to tar (%s)", folder, folderPathAbs), config.Quiet)
 
 	err := filepath.Walk(folder, func(file string, info os.FileInfo, err error) error {
 		if err != nil {

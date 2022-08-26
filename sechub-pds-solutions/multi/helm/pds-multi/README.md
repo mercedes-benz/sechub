@@ -8,4 +8,4 @@ The tools are:
 - [Bandit](https://github.com/PyCQA/bandit)
 - [Flawfinder](https://dwheeler.com/flawfinder/)
 - [mobsfscan](https://github.com/MobSF/mobsfscan)
-- [njsscan]https://github.com/ajinabraham/njsscan
+- [njsscan](https://github.com/ajinabraham/njsscan)

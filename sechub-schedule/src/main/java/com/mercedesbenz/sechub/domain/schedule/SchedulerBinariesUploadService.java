@@ -20,6 +20,7 @@ import org.apache.commons.fileupload.FileUploadBase.SizeLimitExceededException;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
+import org.apache.commons.io.input.CountingInputStream;
 import org.apache.commons.io.input.MessageDigestCalculatingInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +44,6 @@ import com.mercedesbenz.sechub.storage.core.StorageService;
 @Service
 @RolesAllowed(RoleConstants.ROLE_USER)
 public class SchedulerBinariesUploadService {
-
     private static final String PARAMETER_FILE = "file";
     private static final String PARAMETER_CHECKSUM = "checkSum";
     private static final Logger LOG = LoggerFactory.getLogger(SchedulerBinariesUploadService.class);
@@ -68,6 +68,9 @@ public class SchedulerBinariesUploadService {
 
     @Autowired
     UserInputAssertion assertion;
+
+    @Autowired
+    ServletFileUploadFactory servletFileUploadFactory;
 
     @UseCaseUserUploadsBinaries(@Step(number = 2, name = "Try to find project and upload binaries as tar", description = "When project is found and user has access and job is initializing the binaries file will be uploaded"))
     public void uploadBinaries(String projectId, UUID jobUUID, HttpServletRequest request) {
@@ -119,19 +122,28 @@ public class SchedulerBinariesUploadService {
 
     private void startUpload(String projectId, UUID jobUUID, HttpServletRequest request) throws FileUploadException, IOException, UnsupportedEncodingException {
         /* prepare */
+        long binaryFileSizeFromUser = getBinaryFileSize(request);
+
         String checksumFromUser = null;
         String checksumCalculated = null;
 
         boolean fileDefinedByUser = false;
         boolean checkSumDefinedByUser = false;
 
+        long realContentLengthInBytes = -1;
+
         JobStorage jobStorage = storageService.getJobStorage(projectId, jobUUID);
 
-        ServletFileUpload upload = new ServletFileUpload();
+        ServletFileUpload upload = servletFileUploadFactory.create();
 
         long maxUploadSize = configuration.getMaxUploadSizeInBytes();
+        long maxUploadSizeWithHeaders = maxUploadSize + 600; // we accept 600 bytes more for header, checksum etc.
 
-        upload.setSizeMax(maxUploadSize + 600);// we accept 600 bytes more for header, checksum etc.
+        if (binaryFileSizeFromUser > maxUploadSizeWithHeaders) {
+            throw new BadRequestException("The file size in header field " + FILE_SIZE_HEADER_FIELD_NAME + " exceeds the allowed upload size.");
+        }
+
+        upload.setSizeMax(maxUploadSizeWithHeaders);
         upload.setFileSizeMax(maxUploadSize);
 
         /*
@@ -168,7 +180,7 @@ public class SchedulerBinariesUploadService {
 
                     assertion.assertIsValidSha256Checksum(checksumFromUser);
 
-                    jobStorage.store(FILENAME_BINARIES_TAR_CHECKSUM, new StringInputStream(checksumFromUser));
+                    jobStorage.store(FILENAME_BINARIES_TAR_CHECKSUM, new StringInputStream(checksumFromUser), checksumFromUser.getBytes().length);
                     LOG.info("uploaded user defined checksum as file for {}", jobUUID);
                 }
                 checkSumDefinedByUser = true;
@@ -179,9 +191,12 @@ public class SchedulerBinariesUploadService {
                     MessageDigest digest = checkSumSupport.createSha256MessageDigest();
 
                     MessageDigestCalculatingInputStream messageDigestInputStream = new MessageDigestCalculatingInputStream(fileInputstream, digest);
-                    jobStorage.store(FILENAME_BINARIES_TAR, messageDigestInputStream);
+                    CountingInputStream byteCountingInputStream = new CountingInputStream(messageDigestInputStream);
+
+                    jobStorage.store(FILENAME_BINARIES_TAR, byteCountingInputStream, binaryFileSizeFromUser);
                     LOG.info("uploaded binaries for {}", jobUUID);
 
+                    realContentLengthInBytes = byteCountingInputStream.getByteCount();
                     checksumCalculated = checkSumSupport.convertMessageDigestToHex(digest);
                 }
                 fileDefinedByUser = true;
@@ -195,6 +210,9 @@ public class SchedulerBinariesUploadService {
         if (!fileDefinedByUser) {
             throw new BadRequestException("No file defined by user for binaries upload!");
         }
+        if (realContentLengthInBytes != binaryFileSizeFromUser) {
+            throw new BadRequestException("The real file size was not equal to the user provided file size length.");
+        }
         if (!checkSumDefinedByUser) {
             throw new BadRequestException("No checksum defined by user for binaries upload!");
         }
@@ -205,6 +223,28 @@ public class SchedulerBinariesUploadService {
             throw new BadRequestException("Upload of binaries was not possible!");
         }
         assertCheckSumCorrect(checksumFromUser, checksumCalculated);
+    }
+
+    private long getBinaryFileSize(HttpServletRequest request) {
+        long binaryFileSizeFromUser = -1;
+
+        String binaryFileSizeFromUserField = request.getHeader(FILE_SIZE_HEADER_FIELD_NAME);
+
+        if (binaryFileSizeFromUserField == null) {
+            throw new BadRequestException("Header field " + FILE_SIZE_HEADER_FIELD_NAME + " not set.");
+        }
+
+        try {
+            binaryFileSizeFromUser = Long.valueOf(binaryFileSizeFromUserField);
+        } catch (NumberFormatException ex) {
+            throw new BadRequestException("The file size in header field " + FILE_SIZE_HEADER_FIELD_NAME + " is not formatted as a number.");
+        }
+
+        if (binaryFileSizeFromUser < 0) {
+            throw new BadRequestException("The file size in header field " + FILE_SIZE_HEADER_FIELD_NAME + " cannot be negative.");
+        }
+
+        return binaryFileSizeFromUser;
     }
 
     private void assertMultipart(HttpServletRequest request) {

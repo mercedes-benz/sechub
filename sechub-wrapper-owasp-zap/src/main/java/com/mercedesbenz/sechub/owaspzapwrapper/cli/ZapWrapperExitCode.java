@@ -7,7 +7,7 @@ package com.mercedesbenz.sechub.owaspzapwrapper.cli;
  * the scan did exit with an error.
  *
  */
-public enum MustExitCode {
+public enum ZapWrapperExitCode {
 
     EXECUTION_FAILED(1),
 
@@ -31,7 +31,7 @@ public enum MustExitCode {
 
     private int exitCode;
 
-    private MustExitCode(int exitCode) {
+    private ZapWrapperExitCode(int exitCode) {
         this.exitCode = exitCode;
     }
 

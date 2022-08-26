@@ -16,8 +16,4 @@ profile="pds-findsecuritybugs"
 
 setup_project_user_executor_profile "$project" "$user" "$executor_file_name" "$profile"
 
-setup_complete_message_for_tool "FindSecurityBugs" 
-echo "Setup:"
-echo "user: $user"
-echo "project: $project"
-echo "sechub -project $project scan"
+setup_complete_message_for_tool "FindSecurityBugs" "$user" "$project"

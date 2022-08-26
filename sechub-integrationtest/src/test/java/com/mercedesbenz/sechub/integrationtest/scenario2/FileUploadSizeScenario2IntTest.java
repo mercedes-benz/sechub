@@ -61,7 +61,7 @@ public class FileUploadSizeScenario2IntTest {
         testData.tooBig = true;
 
         testData.expectedException = BadRequest.class;
-        testData.expectedErrorMessagePart = "Binaries upload maximum reached";
+        testData.expectedErrorMessagePart = "The file size in header field x-file-size exceeds the allowed upload size.";
 
         /* execute + test */
         handleBinariesUpload(testData);
