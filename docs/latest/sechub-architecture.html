@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Architecture</h1>
 <div class="details">
-<span id="revnumber"> Server 0.35.0</span>
+<span id="revnumber"> Server 0.35.1</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -1239,7 +1239,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.35.0-20220825132154</code></p>
+<p>Documentation version: <code>Server 0.35.1-20220826134836</code></p>
 </div>
 <div class="paragraph">
 <p>This architecture documentation is based on arc42 template.</p>
@@ -7597,7 +7597,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/5732cc4f-a6a5-49bf-9fc2-4d0531504720' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/965a2ad7-dabf-42ce-b460-e71e849b1cd5' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -8470,7 +8470,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>[{&quot;sechubJobUUID&quot;:&quot;dfd07968-f57b-4350-934e-eee26a3ba547&quot;,&quot;executedBy&quot;:&quot;spartakus&quot;,&quot;started&quot;:&quot;2022-08-24T13:22:07.499&quot;,&quot;ended&quot;:&quot;2022-08-25T13:22:07.499&quot;,&quot;status&quot;:&quot;OK&quot;}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code>[{&quot;sechubJobUUID&quot;:&quot;cfddcb89-04c5-41c7-8d87-4d2b931e987d&quot;,&quot;executedBy&quot;:&quot;spartakus&quot;,&quot;started&quot;:&quot;2022-08-25T13:48:50.066&quot;,&quot;ended&quot;:&quot;2022-08-26T13:48:50.066&quot;,&quot;status&quot;:&quot;OK&quot;}]</code></pre>
 </div>
 </div>
 </div>
@@ -9020,7 +9020,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;ceca7f60-efdd-417a-807d-e1ca632b6e44&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;a8946c05-95aa-46e0-8785-4de48f0fbe76&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -9159,7 +9159,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;b90b2945-c507-4835-b4d6-97d315db7608&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;345d4171-7edd-489b-8379-f7bbc3ed82cb&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -9313,7 +9313,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;81c9f728-8cf5-4491-9517-fe0a8749f6b9&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;7d198fab-4896-43cd-81f9-938e4e592765&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -9472,7 +9472,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;6435c915-3d28-4410-b35a-7a91c989a48d&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;807d464e-1d11-43e5-a93b-097af16788e1&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -9651,7 +9651,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;cee660eb-45b0-48f6-8916-809b6d8eefe0&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;5a34cb4b-573c-4ce4-b308-b9d2753ccf7c&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -9725,7 +9725,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/fece0390-3c1b-4508-a1b5-7958cae16ffc/sourcecode' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/b750d36f-2b9b-414a-9bd7-36ee562831f2/sourcecode' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -9808,7 +9808,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/e502e4cf-9445-455b-9bb9-abb5ccffbd9e/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/eef1063c-fad8-448e-a883-ad51127ba415/approve' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -9945,7 +9945,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/f62810f6-5f30-485d-b4de-81c7288c428c' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/2a281671-9cd8-45b2-aebd-c5e1a53cfce6' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -9954,7 +9954,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobUUID&quot;:&quot;f62810f6-5f30-485d-b4de-81c7288c428c&quot;,&quot;owner&quot;:&quot;CREATOR1&quot;,&quot;created&quot;:&quot;&quot;,&quot;started&quot;:&quot;2022-08-25T13:07:25.37&quot;,&quot;ended&quot;:&quot;2022-08-25T13:22:25.37&quot;,&quot;state&quot;:&quot;ENDED&quot;,&quot;result&quot;:&quot;OK&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobUUID&quot;:&quot;2a281671-9cd8-45b2-aebd-c5e1a53cfce6&quot;,&quot;owner&quot;:&quot;CREATOR1&quot;,&quot;created&quot;:&quot;&quot;,&quot;started&quot;:&quot;2022-08-26T13:34:11.065&quot;,&quot;ended&quot;:&quot;2022-08-26T13:49:11.065&quot;,&quot;state&quot;:&quot;ENDED&quot;,&quot;result&quot;:&quot;OK&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -10029,7 +10029,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/443944aa-079a-4432-b4ad-46d87fdeae68' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/9fa12d50-f290-4149-9a0d-9e07182031ad' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -10101,7 +10101,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/5ffa8551-ec6b-4956-9702-b788333d351f' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/cff43d95-5884-4035-b7ee-ca1fd9be0b9f' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -10593,7 +10593,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/640ef462-2b65-4df3-86a4-592122b39670/binaries' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/524adbcf-6c51-4861-a642-0d7955c17499/binaries' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -H 'x-file-size: 10240' \
     -F 'file=test1.txt                                                                                           0000664 0001750 0001750 00000000000 13353454574 012170  0                                                                                                    ustar   albert                          albert                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ' \
@@ -10674,7 +10674,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/84e3212e-4e05-4a20-af75-f06cd6955847' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/8aa585ee-a041-475c-aac0-613707e9ba78' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -11177,7 +11177,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>[{&quot;jobUUID&quot;:&quot;8a0a4188-d72a-4645-9379-1e44b6594e46&quot;,&quot;projectId&quot;:&quot;project-name&quot;,&quot;owner&quot;:&quot;owner-userid&quot;,&quot;status&quot;:&quot;RUNNING&quot;,&quot;since&quot;:&quot;2022-08-25T13:22:15.105&quot;,&quot;configuration&quot;:&quot;{ config data }&quot;}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code>[{&quot;jobUUID&quot;:&quot;0138750d-9cfd-40b8-81d4-6325c9a49a7d&quot;,&quot;projectId&quot;:&quot;project-name&quot;,&quot;owner&quot;:&quot;owner-userid&quot;,&quot;status&quot;:&quot;RUNNING&quot;,&quot;since&quot;:&quot;2022-08-26T13:48:59.156&quot;,&quot;configuration&quot;:&quot;{ config data }&quot;}]</code></pre>
 </div>
 </div>
 </div>
@@ -11246,7 +11246,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/00196fe1-20a2-4a8d-be8f-d34b60796b94' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/578688f2-1f75-41f2-8f0a-3e4aaac83a25' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -11320,7 +11320,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/c56cc37a-6867-426a-8de8-29e2191df595' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/fc7a6e1a-a66a-49c7-838a-0a2417e78127' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -11394,7 +11394,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/db2318e3-443c-43c9-9795-456516c776cb' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/6ad77ba1-b5d7-455f-bd7e-73cac14cf32d' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -11852,7 +11852,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>b61c50a5-aa67-40ff-a651-17dbacdb3d2a</code></pre>
+<pre class="CodeRay highlight nowrap"><code>a2106b95-1eab-472a-9fa6-b1a23281b5d7</code></pre>
 </div>
 </div>
 </div>
@@ -11921,7 +11921,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/40badd1d-e702-4339-92ca-a662fd60073e' -i -X DELETE \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/b53bb544-7f23-46b5-b4f0-5d9984ee5f30' -i -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -12021,7 +12021,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;executorConfigurations&quot;:[{&quot;uuid&quot;:&quot;a3a9831a-8d2c-4d33-98d4-13bed87165d9&quot;,&quot;name&quot;:&quot;example configuration&quot;,&quot;enabled&quot;:true}],&quot;type&quot;:&quot;executorConfigurationList&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;executorConfigurations&quot;:[{&quot;uuid&quot;:&quot;eedc4397-86e7-496f-aac4-c01729c485e7&quot;,&quot;name&quot;:&quot;example configuration&quot;,&quot;enabled&quot;:true}],&quot;type&quot;:&quot;executorConfigurationList&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -12159,7 +12159,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/ddb7383f-df0c-491f-9a8a-2e0de0adc4a1' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/d641369c-1ebd-4931-8922-e21eea7712ff' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -12168,7 +12168,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;ddb7383f-df0c-491f-9a8a-2e0de0adc4a1&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;d641369c-1ebd-4931-8922-e21eea7712ff&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -12301,7 +12301,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/bee673f8-e680-4b1c-b7b6-9baeeca9fd9e' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/077c740b-d58b-4cd0-a6e8-a534654c0254' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://productNew.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_NEW_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_NEW_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]}}'</code></pre>
 </div>
@@ -12600,7 +12600,7 @@ using the job UUID.</p>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/existing-profile-1' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;e8cff529-6d8b-4f97-a7d9-319f11db834a&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
+    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;d1c5fb00-b9e1-4f40-bff4-bb19c63dba6e&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -12741,7 +12741,7 @@ using the job UUID.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;description&quot;:&quot;a description&quot;,&quot;enabled&quot;:true,&quot;configurations&quot;:[{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;391846ec-8bfa-4fff-8f93-e3d4249b992b&quot;}],&quot;projectIds&quot;:[&quot;project-1&quot;,&quot;project-2&quot;]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;description&quot;:&quot;a description&quot;,&quot;enabled&quot;:true,&quot;configurations&quot;:[{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;f2f4b2e1-ecfe-4f1b-96f9-29bed751b5c5&quot;}],&quot;projectIds&quot;:[&quot;project-1&quot;,&quot;project-2&quot;]}</code></pre>
 </div>
 </div>
 </div>
@@ -18237,7 +18237,7 @@ See <a href="https://github.com/mercedes-benz/sechub/issues/12" class="bare">htt
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.35.0<br>
+ Server 0.35.1<br>
 </div>
 </div>
 </body>
