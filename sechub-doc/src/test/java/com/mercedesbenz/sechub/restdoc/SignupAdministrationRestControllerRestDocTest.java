@@ -139,6 +139,9 @@ public class SignupAdministrationRestControllerRestDocTest implements TestIsNece
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
                             and().
             			    document(
+        	                	requestHeaders(
+        	                			headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+        	                	),
                                 pathParameters(
                                         parameterWithName(USER_ID.paramName()).description("The userId of the signup which shall be deleted")
                                 )
