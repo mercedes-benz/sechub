@@ -3,7 +3,7 @@
 
 # SecHub
 
-<img src="sechub-doc/src/docs/asciidoc/images/sechub-logo.png" alt='"Eugen" - the SecHub mascot' title='"Eugen" - the SecHub mascot' width="10%" />
+!["Eugen" - the SecHub mascot](sechub-doc/src/docs/asciidoc/images/sechub-logo.png)
 
 ## Intended Usage
 
