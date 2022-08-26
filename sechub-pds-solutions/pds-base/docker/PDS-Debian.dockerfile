@@ -9,12 +9,14 @@ ARG BASE_IMAGE
 
 # Build args
 ARG PDS_VERSION
-ARG BUILD_TYPE="download"
-ARG PDS_ARTIFACT_FOLDER="/artifacts"
-ARG GO="go1.18.3.linux-amd64.tar.gz"
+ARG BUILD_TYPE
+ARG GO="go1.19.linux-amd64.tar.gz"
 
 # possible values are 11, 17
 ARG JAVA_VERSION="11"
+
+# Artifact folder 
+ARG PDS_ARTIFACT_FOLDER="/artifacts"
 
 #-------------------
 # Builder Build
@@ -61,9 +63,10 @@ RUN mkdir --parent "$BUILD_FOLDER" && \
     cd "$BUILD_FOLDER" && \
     git clone "$GIT_URL" && \
     cd "sechub" && \
+    if [ ! -z "$BRANCH" ]; then git checkout "$BRANCH"; fi && \
+    if [ ! -z "$TAG" ]; then git checkout tags/"$TAG" -b "$TAG"; fi && \
     "./buildExecutables" && \
-    if [[ -n "$TAG" ]]; then git checkout tags/"$TAG" -b "$TAG"; fi && \
-    cp "sechub-server/build/libs/sechub-server-0.0.0.jar" --target-directory "$PDS_ARTIFACT_FOLDER"
+    cp sechub-pds/build/libs/sechub-pds-*.jar --target-directory "$PDS_ARTIFACT_FOLDER"
 
 #-------------------
 # Builder Download
@@ -102,7 +105,7 @@ ARG PDS_VERSION
 RUN mkdir --parent "$PDS_ARTIFACT_FOLDER"
 
 # Copy
-COPY copy/sechub-server-*.jar "$PDS_ARTIFACT_FOLDER"
+COPY copy/sechub-pds-*.jar "$PDS_ARTIFACT_FOLDER"
 
 #-------------------
 # Builder
@@ -117,6 +120,13 @@ RUN echo "build stage"
 
 FROM ${BASE_IMAGE} AS sechub
 
+# Annotations according to the Open Containers Image Spec: 
+#  https://github.com/opencontainers/image-spec/blob/main/annotations.md
+
+# Required by GitHub to link repository and image
+LABEL org.opencontainers.image.source="https://github.com/mercedes-benz/sechub"
+LABEL org.opencontainers.image.title="PDS Base Image"
+LABEL org.opencontainers.image.description="The base image for the Product Delegation Server"
 LABEL maintainer="SecHub FOSS Team"
 
 ARG PDS_ARTIFACT_FOLDER
@@ -127,32 +137,43 @@ ARG PDS_VERSION
 ENV USER="pds"
 ENV UID="2323"
 ENV GID="${UID}"
-ENV SHARED_VOLUME_UPLOAD_DIR="/shared_volumes/uploads"
+ENV SHARED_VOLUMES="/shared_volumes"
+ENV SHARED_VOLUME_UPLOAD_DIR="$SHARED_VOLUMES/uploads"
 ENV PDS_VERSION="${PDS_VERSION}"
-
-# arg vars in container
-ARG PDS_FOLDER="/pds"
-ARG SCRIPT_FOLDER="/scripts"
+ENV PDS_FOLDER="/pds"
+ENV SCRIPT_FOLDER="/scripts"
+ENV DOWNLOAD_FOLDER="/downloads"
+ENV MOCK_FOLDER="/mocks"
+ENV TOOL_FOLDER="/tools"
+ENV WORKSPACE="/workspace"
 
 # non-root user
 # using fixed group and user ids
 RUN groupadd --gid "$GID" "$USER" && \
     useradd --uid "$UID" --gid "$GID" --no-log-init --create-home "$USER"
 
-RUN mkdir --parent "$PDS_FOLDER" "$SHARED_VOLUME_UPLOAD_DIR"
+# Create folders & change owner of folders
+RUN mkdir --parents "$PDS_FOLDER" "$SCRIPT_FOLDER" "$TOOL_FOLDER" "$WORKSPACE" "$DOWNLOAD_FOLDER" "$MOCK_FOLDER" "$SHARED_VOLUME_UPLOAD_DIR" && \
+    # Change owner and workspace and shared volumes folder
+    # the only two folders pds really needs write access to
+    chown --recursive "$USER:$USER" "$WORKSPACE" "$SHARED_VOLUMES"
+
 COPY --from=builder "$PDS_ARTIFACT_FOLDER" "$PDS_FOLDER"
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get upgrade --assume-yes --quiet && \
-    apt-get install --assume-yes --quiet "openjdk-$JAVA_VERSION-jre-headless" && \
+    apt-get install --assume-yes --quiet "openjdk-$JAVA_VERSION-jre-headless" tree && \
     apt-get clean
 
 # Copy run script into container
 COPY run.sh /run.sh
 
+# Copy run script into container
+COPY run_additional.sh /run_additional.sh
+
 # Set execute permissions for scripts
-RUN chmod +x /run.sh
+RUN chmod +x /run.sh /run_additional.sh
 
 # Set permissions
 RUN chown --recursive "$USER:$USER" "$PDS_FOLDER" "$SHARED_VOLUME_UPLOAD_DIR"

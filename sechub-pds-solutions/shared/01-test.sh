@@ -21,6 +21,7 @@ export PDS_PRODUCT_IDENTFIER=<pds-product-identifier>
 optional:
 
 export RETRIES=<number-of-retries>
+export RESULT_FILE=<path-to-result-file>
 
 
 # Example:
@@ -167,12 +168,24 @@ then
     printf "\n# Job output stream\n"
     "$pds_api" job_stream_output "$jobUUID"
 
-    printf "\n# Job error stream\n"
-    "$pds_api" job_stream_error "$jobUUID"
+    if [[ -n "$RESULT_FILE" ]]
+    then
+        printf "\n# Writing job error stream to $RESULT_FILE \n"
+        "$pds_api" job_stream_error "$jobUUID" > "$RESULT_FILE"
+    else
+        printf "\n# Job error stream\n"
+        "$pds_api" job_stream_error "$jobUUID"
+    fi
 else
     printf "\n# Job output stream\n"
     "$pds_api" job_stream_output "$jobUUID"
 
-    printf "\n# Return the result\n"
-    "$pds_api" job_result "$jobUUID"
+    if [[ -n "$RESULT_FILE" ]]
+    then
+        printf "\n# Writing result to file $RESULT_FILE\n"
+        "$pds_api" job_result "$jobUUID" > "$RESULT_FILE"
+    else
+        printf "\n# Return the result\n"
+        "$pds_api" job_result "$jobUUID"
+    fi
 fi

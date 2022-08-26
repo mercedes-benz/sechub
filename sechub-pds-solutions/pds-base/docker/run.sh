@@ -1,6 +1,9 @@
 #!/usr/bin/env sh
 # SPDX-License-Identifier: MIT
 
+# the . dot command is like the bash buid-in command `source`
+. "/run_additional.sh"
+
 JAVA_DEBUG_OPTIONS=""
 
 wait_loop() {
@@ -11,15 +14,20 @@ wait_loop() {
     done
 }
 
-debug () {
+debug() {
     wait_loop
 }
 
 # Start with localserver settings 
 localserver () {
+    start_server "pds_localserver"
+}
+
+start_server() {
+    profiles="$1"
+
     check_setup
 
-    profiles="pds_localserver"
     database_options=""
     storage_options="-Dsechub.pds.storage.sharedvolume.upload.dir=$SHARED_VOLUME_UPLOAD_DIR"
 
@@ -49,6 +57,9 @@ localserver () {
         echo " * Bucketname: $S3_BUCKETNAME"
     fi
 
+    # call the additional function in the run_additional.sh script
+    run_additional
+
     # Regarding entropy collection:
     #   with JDK 8+ the "obscure workaround using file:///dev/urandom 
     #   and file:/dev/./urandom is no longer required."
@@ -68,7 +79,7 @@ localserver () {
         -Dpds.upload.binaries.maximum.bytes="$PDS_UPLOAD_BINARIES_MAXIMUM_BYTES" \
         -Dserver.port=8444 \
         -Dserver.address=0.0.0.0 \
-        -jar "/pds/sechub-pds-$PDS_VERSION.jar"
+        -jar /pds/sechub-pds-*.jar
     
     keep_container_alive_or_exit
 }

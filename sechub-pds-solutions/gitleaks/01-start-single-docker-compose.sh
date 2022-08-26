@@ -18,4 +18,4 @@ export BUILDKIT_PROGRESS=plain
 export DOCKER_BUILDKIT=1
 
 echo "Starting single container."
-docker-compose --file docker-compose_pds.yaml up --build --remove-orphans
+docker-compose --file docker-compose_gitleaks.yaml up --build --remove-orphans

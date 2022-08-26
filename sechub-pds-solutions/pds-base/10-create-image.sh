@@ -11,13 +11,14 @@ DEFAULT_BUILD_TYPE="download"
 usage() {
   cat - <<EOF
 usage: $0 <docker registry> <version tag> [<base image>]
-Builds a docker image of SecHub PDS with Scancode
-for <docker registry> with tag <version tag>.
+Builds a docker image of SecHub PDS for <docker registry> 
+with tag <version tag>.
+
 Optional: <base image> ; defaults to $DEFAULT_BASE_IMAGE
+Optional: <build type> ; defaults to $DEFAULT_BUILD_TYPE
 
 Additionally these environment variables can be defined:
-- PDS_VERSION - version of SecHub PDS to use. E.g. 0.27.0
-- SCANCODE_VERSION - Scancode version to use. E.g. 30.1.0
+- PDS_VERSION - version of SecHub PDS to use. E.g. 0.32.0
 EOF
 }
 
@@ -42,13 +43,18 @@ fi
 BUILD_ARGS="--build-arg BASE_IMAGE=$BASE_IMAGE"
 echo ">> Base image: $BASE_IMAGE"
 
-BUILD_ARGS+="--build-arg BUILD_TYPE=$BUILD_TYPE"
+BUILD_ARGS+=" --build-arg BUILD_TYPE=$BUILD_TYPE"
 echo ">> Build type: $BUILD_TYPE"
 
 if [[ ! -z "$PDS_VERSION" ]] ; then
     echo ">> SecHub PDS version: $PDS_VERSION"
     BUILD_ARGS+=" --build-arg PDS_VERSION=$PDS_VERSION"
 fi
+
+# Use Docker BuildKit
+# nesessary for switching between build stages
+export BUILDKIT_PROGRESS=plain
+export DOCKER_BUILDKIT=1
 
 docker build --pull --no-cache $BUILD_ARGS \
        --tag "$REGISTRY:$VERSION" \
