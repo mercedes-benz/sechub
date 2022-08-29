@@ -6,6 +6,8 @@ import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
@@ -90,8 +92,9 @@ public class AdminShowsScanLogsForProjectRestDocTest implements TestIsNecessaryF
 
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
-				get(apiEndpoint,PROJECT1).
-				contentType(MediaType.APPLICATION_JSON_VALUE)
+				  get(apiEndpoint,PROJECT1).
+				  contentType(MediaType.APPLICATION_JSON_VALUE).
+				  header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
 				).
 		andExpect(status().isOk()).
 		andDo(defineRestService().
@@ -101,7 +104,10 @@ public class AdminShowsScanLogsForProjectRestDocTest implements TestIsNecessaryF
                     responseSchema(OpenApiSchema.PROJECT_SCAN_LOGS.getSchema()).
                 and().
                 document(
-				/* we do not document more, because its binary / zip file...*/
+	                		requestHeaders(
+	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                		),
+                			/* we do not document more, because its binary / zip file...*/
                             responseFields(
                                     fieldWithPath("[]").description("An array of scan log summary entries"),
                                     fieldWithPath("[].executedBy").description("The user id of the user which executed the scan"),
@@ -112,7 +118,7 @@ public class AdminShowsScanLogsForProjectRestDocTest implements TestIsNecessaryF
                             ),
                             pathParameters(
                                     parameterWithName(PROJECT_ID.paramName()).description("The project Id")
-                         )
+                            )
 				    ));
 
 		/* @formatter:on */
