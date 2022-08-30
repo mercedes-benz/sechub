@@ -28,10 +28,11 @@ FROM ${BASE_IMAGE} AS builder-build
 ARG GO
 ARG PDS_ARTIFACT_FOLDER
 ARG JAVA_VERSION
+ARG TAG
+ARG BRANCH
 
 ARG BUILD_FOLDER="/build"
 ARG GIT_URL="https://github.com/mercedes-benz/sechub.git"
-ARG TAG=""
 
 ENV DOWNLOAD_FOLDER="/downloads"
 ENV PATH="/usr/local/go/bin:$PATH"
@@ -58,13 +59,16 @@ RUN cd "$DOWNLOAD_FOLDER" && \
     # remove go tar.gz
     rm "$GO"
 
+# Copy clone script
+COPY --chmod=755 clone.sh "$BUILD_FOLDER/clone.sh"
+
 # Build SecHub
 RUN mkdir --parent "$BUILD_FOLDER" && \
     cd "$BUILD_FOLDER" && \
-    git clone "$GIT_URL" && \
+    # execute the clone script
+    ./clone.sh "$GIT_URL" "$BRANCH" "$TAG" && \
     cd "sechub" && \
-    if [ ! -z "$BRANCH" ]; then git checkout "$BRANCH"; fi && \
-    if [ ! -z "$TAG" ]; then git checkout tags/"$TAG" -b "$TAG"; fi && \
+    # Build PDS
     "./buildExecutables" && \
     cp sechub-pds/build/libs/sechub-pds-*.jar --target-directory "$PDS_ARTIFACT_FOLDER"
 
@@ -125,8 +129,8 @@ FROM ${BASE_IMAGE} AS sechub
 
 # Required by GitHub to link repository and image
 LABEL org.opencontainers.image.source="https://github.com/mercedes-benz/sechub"
-LABEL org.opencontainers.image.title="PDS Base Image"
-LABEL org.opencontainers.image.description="The base image for the Product Delegation Server"
+LABEL org.opencontainers.image.title="SecHub PDS Base Image"
+LABEL org.opencontainers.image.description="The base image for the SecHub Product Delegation Server (PDS)"
 LABEL maintainer="SecHub FOSS Team"
 
 ARG PDS_ARTIFACT_FOLDER
@@ -166,10 +170,10 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get install --assume-yes --quiet "openjdk-$JAVA_VERSION-jre-headless" tree && \
     apt-get clean
 
-# Copy run script into container
+# Copy run script into the container
 COPY run.sh /run.sh
 
-# Copy run script into container
+# Copy the additional "hook" script into the container
 COPY run_additional.sh /run_additional.sh
 
 # Set execute permissions for scripts

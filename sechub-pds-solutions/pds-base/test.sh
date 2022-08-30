@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 exit_code=0
+test_directory="test"
 
 # start container
 nohup ./01-start-single-docker-compose.sh &
@@ -11,11 +12,14 @@ export PDS_SERVER="https://localhost:8444"
 export PDS_USERID="admin"
 export PDS_APITOKEN="pds-apitoken"
 export PDS_PRODUCT_IDENTFIER="PDS"
-export RESULT_FILE="result.txt"
+export RESULT_FILE="$(pwd)/$test_directory/result.txt"
 
-reference_file="docker/mocks/mock.sarif.json"
+reference_file="../docker/mocks/mock.sarif.json"
 
 pds_api="../../sechub-developertools/scripts/pds-api.sh"
+
+# remove existing test directory
+rm --recursive --force "$test_directory"
 
 is_running="false"
 retries=500
@@ -40,6 +44,11 @@ then
     exit 3
 fi
 
+# Swtich to temporary test folder
+cd `dirname $0`
+mkdir "$test_directory"
+cd "$test_directory"
+
 # Create ZIP
 # Setup environment
 test_file="test.txt"
@@ -48,7 +57,7 @@ touch "$test_file"
 zip "$test_zip" "$test_file"
 
 # Start scan
-"../shared/01-test.sh" "$test_zip"
+"../../shared/01-test.sh" "$test_zip"
 
 # Compare result
 diff --ignore-all-space "$reference_file" "$RESULT_FILE"
@@ -64,5 +73,7 @@ docker stop pds
 
 echo "Cleaning up"
 rm "$test_file" "$test_zip" "nohup.out" "$RESULT_FILE"
+cd ../
+rmdir "$test_directory"
 
 exit "$exit_code"
