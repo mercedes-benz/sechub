@@ -7,7 +7,7 @@ upload_type="source"
 
 function usage() {
    
-    cat - <<'USAGE'
+    cat - <<USAGE
 usage: `basename $0` <file-to-upload> [<job-configuration-file>]
 
 # Please set the environment variables:
