@@ -63,7 +63,7 @@ public class SechubServerTest {
         authMap.put("basic", basicAuthentication);
 
         apiClient = new ApiClient(authMap);
-        apiClient.setBasePath(fullConnectionURI.toString());
+        apiClient.setBasePath(fullConnectionURI);
 
         AdminApi apiInstance = new AdminApi(apiClient);
         try {
