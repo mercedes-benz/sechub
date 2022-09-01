@@ -23,7 +23,9 @@ public class SechubServerTest {
 
     public SechubServerTest(SecHubClient secHubClient) {
         this.secHubClient = secHubClient;
-        fullConnectionURI.append(secHubClient.getHostUri()).append(":").append(secHubClient.getHostPort());
+        StringBuilder sb = new StringBuilder();
+        sb.append(secHubClient.getHostUri()).append(":").append(secHubClient.getHostPort());
+        fullConnectionURI = sb.toString();
     }
 
     public void runAllTests() {
