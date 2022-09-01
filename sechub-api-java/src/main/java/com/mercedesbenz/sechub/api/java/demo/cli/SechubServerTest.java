@@ -19,11 +19,13 @@ public class SechubServerTest {
     private static final Logger LOG = LoggerFactory.getLogger(SechubServerTest.class);
     SecHubClient secHubClient = null;
     ApiClient apiClient = null;
-    StringBuilder fullConnectionURI = new StringBuilder();
+    String fullConnectionURI = "";
 
     public SechubServerTest(SecHubClient secHubClient) {
         this.secHubClient = secHubClient;
-        fullConnectionURI.append(secHubClient.getHostUri()).append(":").append(secHubClient.getHostPort());
+        StringBuilder sb = new StringBuilder();
+        sb.append(secHubClient.getHostUri()).append(":").append(secHubClient.getHostPort());
+        fullConnectionURI = sb.toString();
     }
 
     public void runAllTests() {
@@ -37,7 +39,7 @@ public class SechubServerTest {
     private boolean isServerAlive() {
         LOG.info("*** Check on whether Sechub server is alive.");
         apiClient = Configuration.getDefaultApiClient();
-        apiClient.setBasePath(fullConnectionURI.toString());
+        apiClient.setBasePath(fullConnectionURI);
 
         AnonymousApi apiInstance = new AnonymousApi(apiClient);
         try {
@@ -61,7 +63,7 @@ public class SechubServerTest {
         authMap.put("basic", basicAuthentication);
 
         apiClient = new ApiClient(authMap);
-        apiClient.setBasePath(fullConnectionURI.toString());
+        apiClient.setBasePath(fullConnectionURI);
 
         AdminApi apiInstance = new AdminApi(apiClient);
         try {
