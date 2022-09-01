@@ -39,7 +39,7 @@ public class SechubServerTest {
     private boolean isServerAlive() {
         LOG.info("*** Check on whether Sechub server is alive.");
         apiClient = Configuration.getDefaultApiClient();
-        apiClient.setBasePath(fullConnectionURI.toString());
+        apiClient.setBasePath(fullConnectionURI);
 
         AnonymousApi apiInstance = new AnonymousApi(apiClient);
         try {
