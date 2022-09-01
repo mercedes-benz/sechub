@@ -19,7 +19,7 @@ public class SechubServerTest {
     private static final Logger LOG = LoggerFactory.getLogger(SechubServerTest.class);
     SecHubClient secHubClient = null;
     ApiClient apiClient = null;
-    StringBuilder fullConnectionURI = new StringBuilder();
+    String fullConnectionURI = "";
 
     public SechubServerTest(SecHubClient secHubClient) {
         this.secHubClient = secHubClient;
