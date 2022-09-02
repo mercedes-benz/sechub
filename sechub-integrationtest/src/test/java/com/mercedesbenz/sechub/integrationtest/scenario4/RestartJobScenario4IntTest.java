@@ -50,7 +50,7 @@ public class RestartJobScenario4IntTest {
         waitForJobDoneAndFailWhenJobIsFailing(project, sechubJobUUID);
 
         /* execute */
-        as(SUPER_ADMIN).restartCodeScanHardAndFetchJobStatus(project,sechubJobUUID);
+        as(SUPER_ADMIN).restartJobHardAndFetchJobStatus(project,sechubJobUUID);
 
         /* test */
         String report = as(USER_1).getJobReport(project.getProjectId(),sechubJobUUID);
@@ -58,6 +58,10 @@ public class RestartJobScenario4IntTest {
         if (!report.contains("GREEN")) {
             assertEquals("GREEN was not found, but expected...","GREEN",report);
         }
+
+        // even when crashes has been done - the restart was green so we have no additional
+        // messages
+        assertJobStatus(project, sechubJobUUID).hasNoMessagesDefined();
 
         /* @formatter:on */
     }
@@ -82,7 +86,7 @@ public class RestartJobScenario4IntTest {
                 inspectionNr(0).hasId("CHECKMARX");
 
         /* execute */
-        as(SUPER_ADMIN).restartCodeScanHardAndFetchJobStatus(project,sechubJobUUID);
+        as(SUPER_ADMIN).restartJobHardAndFetchJobStatus(project,sechubJobUUID);
 
         /* test */
         String report = as(USER_1).getJobReport(project.getProjectId(),sechubJobUUID);
@@ -117,7 +121,7 @@ public class RestartJobScenario4IntTest {
         destroyProductResults(sechubJobUUID); // destroy former product result to simulate execution crashed..
 
         /* execute */
-        as(SUPER_ADMIN).restartCodeScanHardAndFetchJobStatus(project,sechubJobUUID);
+        as(SUPER_ADMIN).restartJobHardAndFetchJobStatus(project,sechubJobUUID);
 
         /* test */
         String report = as(USER_1).getJobReport(project.getProjectId(),sechubJobUUID);
@@ -145,7 +149,7 @@ public class RestartJobScenario4IntTest {
 
 
         /* execute */
-        as(SUPER_ADMIN).restartCodeScanAndFetchJobStatus(project,sechubJobUUID);
+        as(SUPER_ADMIN).restartJobAndFetchJobStatus(project,sechubJobUUID);
 
 
         /* test */
@@ -168,12 +172,12 @@ public class RestartJobScenario4IntTest {
         /* prepare */
         clearMetaDataInspection();
 
-        UUID sechubJobUUID = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(project,IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING);
+        UUID sechubJobUUID = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(project,IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__4_SECONDS_WAITING);
         waitForJobRunning(project, sechubJobUUID);
         waitMilliSeconds(1000); // let the old job run (so not accidently running at same time)
 
         /* execute */
-        as(SUPER_ADMIN).restartCodeScanAndFetchJobStatus(project,sechubJobUUID);
+        as(SUPER_ADMIN).restartJobAndFetchJobStatus(project,sechubJobUUID);
 
         /* test */
         String report = as(USER_1).getJobReport(project.getProjectId(),sechubJobUUID);
@@ -201,7 +205,7 @@ public class RestartJobScenario4IntTest {
          * (because we have a re-run and every run does adds 2 "+1" to the value
          */
         AdapterMetaData metaData1 = assertFullScanDataZipFile.resolveFile(metaDataFileName).asAdapterMetaData();
-        assertEquals("+1+1+1+1", metaData1.getValue(AbstractMockedAdapter.KEY_METADATA_REUSED));
+        assertEquals("+1+1+1+1", metaData1.getValueAsStringOrNull(AbstractMockedAdapter.KEY_METADATA_REUSED));
     }
 
     @Test
@@ -218,7 +222,7 @@ public class RestartJobScenario4IntTest {
         destroyProductResults(sechubJobUUID); // destroy former product result to simulate execution crashed..
 
         /* execute */
-        as(SUPER_ADMIN).restartCodeScanAndFetchJobStatus(project,sechubJobUUID);
+        as(SUPER_ADMIN).restartJobAndFetchJobStatus(project,sechubJobUUID);
 
         /* test */
         String report = as(USER_1).getJobReport(project.getProjectId(),sechubJobUUID);
@@ -236,7 +240,7 @@ public class RestartJobScenario4IntTest {
          * so we must upload again...
          */
         revertJobToStillNotApproved(sechubJobUUD); // make upload possible again...
-        as(USER_1).upload(project, sechubJobUUD, TestDataConstants.RESOURCE_PATH_ZIPFILE_ONLY_TEST1_TXT);
+        as(USER_1).uploadSourcecode(project, sechubJobUUD, TestDataConstants.RESOURCE_PATH_ZIPFILE_ONLY_TEST1_TXT);
         revertJobToStillRunning(sechubJobUUD); // fake it's running
         assertJobIsRunning(project, sechubJobUUD);
     }

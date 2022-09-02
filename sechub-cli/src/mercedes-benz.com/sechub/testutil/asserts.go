@@ -52,7 +52,7 @@ func AssertContainsNot(list []string, unwanted string, t *testing.T) {
 func AssertSize(list []string, wantedLength int, t *testing.T) {
 	length := len(list)
 	if length != wantedLength {
-		t.Fatalf("Expected size %d but found %d", length, wantedLength)
+		t.Fatalf("Expected size %d but found %d", wantedLength, length)
 	}
 }
 

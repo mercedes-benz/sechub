@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import com.mercedesbenz.sechub.adapter.AbstractAdapterConfigBuilder;
 import com.mercedesbenz.sechub.adapter.AbstractWebScanAdapterConfig;
 import com.mercedesbenz.sechub.adapter.AbstractWebScanAdapterConfigBuilder;
 import com.mercedesbenz.sechub.adapter.AbstractWebScanAdapterConfigBuilder.LoginBuilder.FormScriptLoginBuilder.FormScriptLoginPageBuilder;
 import com.mercedesbenz.sechub.adapter.AdapterConfig;
+import com.mercedesbenz.sechub.adapter.AdapterConfigBuilder;
 import com.mercedesbenz.sechub.adapter.AdapterConfigurationStrategy;
 import com.mercedesbenz.sechub.adapter.SecHubTimeUnitData;
 import com.mercedesbenz.sechub.commons.model.SecHubTimeUnit;
@@ -51,7 +51,7 @@ public class WebConfigBuilderStrategy implements AdapterConfigurationStrategy/* 
 
     @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public <B extends AbstractAdapterConfigBuilder<B, C>, C extends AdapterConfig> void configure(B configBuilder) {
+    public <B extends AdapterConfigBuilder, C extends AdapterConfig> void configure(B configBuilder) {
         if (!(configBuilder instanceof AbstractWebScanAdapterConfigBuilder)) {
             throw new IllegalArgumentException("Wrong usage in code: Only accetable for web scan adapters!");
         }

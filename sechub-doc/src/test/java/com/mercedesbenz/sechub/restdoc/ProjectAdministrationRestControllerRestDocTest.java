@@ -2,10 +2,12 @@
 package com.mercedesbenz.sechub.restdoc;
 
 import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
@@ -73,6 +75,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminAssi
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminChangesProjectOwner;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUnassignsUserFromProject;
 import com.mercedesbenz.sechub.test.ExampleConstants;
+import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
@@ -82,7 +85,7 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
-public class ProjectAdministrationRestControllerRestDocTest {
+public class ProjectAdministrationRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
 
     private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
@@ -140,13 +143,14 @@ public class ProjectAdministrationRestControllerRestDocTest {
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				post(apiEndpoint).
-				contentType(MediaType.APPLICATION_JSON_VALUE).
-				content("{\"apiVersion\":\"1.0\", "
-				        + "\"name\":\"projectId\", "
-				        + "\"description\":\"A description of the project.\", "
-				        + "\"owner\":\"ownerName1\", "
-				        + "\"whiteList\":{\"uris\":[\"192.168.1.1\",\"https://my.special.server.com/myapp1/\"]}, "
-				        + "\"metaData\":{\"key1\":\"value1\", \"key2\":\"value2\"}}")
+					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue()).
+					contentType(MediaType.APPLICATION_JSON_VALUE).
+					content("{\"apiVersion\":\"1.0\", "
+					        + "\"name\":\"projectId\", "
+					        + "\"description\":\"A description of the project.\", "
+					        + "\"owner\":\"ownerName1\", "
+					        + "\"whiteList\":{\"uris\":[\"192.168.1.1\",\"https://my.special.server.com/myapp1/\"]}, "
+					        + "\"metaData\":{\"key1\":\"value1\", \"key2\":\"value2\"}}")
 				).
 		andExpect(status().isCreated()).
 		andDo(defineRestService().
@@ -156,6 +160,9 @@ public class ProjectAdministrationRestControllerRestDocTest {
                     requestSchema(OpenApiSchema.PROJECT.getSchema()).
                 and().
                 document(
+	                		requestHeaders(
+	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                		),
                             requestFields(
                                     fieldWithPath(ProjectJsonInput.PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
                                     fieldWithPath(ProjectJsonInput.PROPERTY_NAME).description("Name of the project to create. Is also used as a unique ID!"),
@@ -184,21 +191,26 @@ public class ProjectAdministrationRestControllerRestDocTest {
         when(listProjectsService.listProjects()).thenReturn(ids);
 
         /* execute + test @formatter:off */
-        this.mockMvc.perform(
-        		get(apiEndpoint).
-        		contentType(MediaType.APPLICATION_JSON_VALUE)).
-                    andExpect(status().isOk()).
-                    andDo(defineRestService().
-                            with().
-                                useCaseData(useCase).
-                                tag(RestDocFactory.extractTag(apiEndpoint)).
-                                responseSchema(OpenApiSchema.PROJECT_LIST.getSchema()).
-                            and().
-                            document(
-        	                            responseFields(
-        	                                    fieldWithPath("[]").description("List of project Ids").optional()
-        	                         )
-        			        ));
+		this.mockMvc
+				.perform(
+						get(apiEndpoint).
+							header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue()).
+							contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(status().isOk())
+				.andDo(defineRestService().
+						with().
+							useCaseData(useCase).
+							tag(RestDocFactory.extractTag(apiEndpoint)).
+							responseSchema(OpenApiSchema.PROJECT_LIST.getSchema()).
+						and().
+						document(
+								requestHeaders(
+										headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+								),
+								responseFields(
+										fieldWithPath("[]").description("List of project Ids").optional()
+								)
+				));
 
 		/* @formatter:on */
     }
@@ -213,7 +225,8 @@ public class ProjectAdministrationRestControllerRestDocTest {
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				delete(apiEndpoint,"projectId1").
-				contentType(MediaType.APPLICATION_JSON_VALUE)
+					contentType(MediaType.APPLICATION_JSON_VALUE).
+					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
 				).
 		andExpect(status().isOk()).
 		andDo(defineRestService().
@@ -222,9 +235,12 @@ public class ProjectAdministrationRestControllerRestDocTest {
                     tag(RestDocFactory.extractTag(apiEndpoint)).
                 and().
                 document(
+	                		requestHeaders(
+	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                		),
                             pathParameters(
                                     parameterWithName(PROJECT_ID.paramName()).description("The id for project to delete")
-                         )
+                            )
 				));
 		/* @formatter:on */
     }
@@ -239,7 +255,8 @@ public class ProjectAdministrationRestControllerRestDocTest {
         /* execute + test @formatter:off */
         this.mockMvc.perform(
                 post(apiEndpoint, "projectId1", "userId1").
-                contentType(MediaType.APPLICATION_JSON_VALUE)
+	                contentType(MediaType.APPLICATION_JSON_VALUE).
+	                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
                 ).
         andExpect(status().isOk()).
         andDo(defineRestService().
@@ -248,10 +265,13 @@ public class ProjectAdministrationRestControllerRestDocTest {
                     tag(RestDocFactory.extractTag(apiEndpoint)).
                 and().
                 document(
+	                		requestHeaders(
+	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                		),
                             pathParameters(
                                     parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
                                     parameterWithName(USER_ID.paramName()).description("The user id of the user to assign to project as the owner")
-                         )
+                            )
                 ));
         /* @formatter:on */
     }
@@ -283,7 +303,8 @@ public class ProjectAdministrationRestControllerRestDocTest {
         /* execute + test @formatter:off */
         this.mockMvc.perform(
                 post(apiEndpoint, "projectId1", ProjectAccessLevel.READ_ONLY.getId()).
-                contentType(MediaType.APPLICATION_JSON_VALUE)
+	                contentType(MediaType.APPLICATION_JSON_VALUE).
+	                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
                 ).
         andExpect(status().isOk()).
         andDo(defineRestService().
@@ -292,10 +313,13 @@ public class ProjectAdministrationRestControllerRestDocTest {
                     tag(RestDocFactory.extractTag(apiEndpoint)).
                 and().
                 document(
-                pathParameters(
-                        parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
-                        parameterWithName(PROJECT_ACCESS_LEVEL.paramName()).description("The new project access level. "+acceptedValues.toString())
-                        )
+                		requestHeaders(
+                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+                		),
+		                pathParameters(
+		                        parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
+		                        parameterWithName(PROJECT_ACCESS_LEVEL.paramName()).description("The new project access level. "+acceptedValues.toString())
+		                )
                 ));
 
         /* @formatter:on */
@@ -311,7 +335,8 @@ public class ProjectAdministrationRestControllerRestDocTest {
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				post(apiEndpoint, "projectId1", "userId1").
-				contentType(MediaType.APPLICATION_JSON_VALUE)
+					contentType(MediaType.APPLICATION_JSON_VALUE).
+					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
 				).
 		andExpect(status().isOk()).
 		andDo(defineRestService().
@@ -320,10 +345,13 @@ public class ProjectAdministrationRestControllerRestDocTest {
                     tag(RestDocFactory.extractTag(apiEndpoint)).
                 and().
                 document(
+	                		requestHeaders(
+	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                		),
                             pathParameters(
                                     parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
                                     parameterWithName(USER_ID.paramName()).description("The user id of the user to assign to project")
-                         )
+                            )
 				));
 
 		/* @formatter:on */
@@ -339,7 +367,8 @@ public class ProjectAdministrationRestControllerRestDocTest {
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				delete(apiEndpoint,"userId1", "projectId1").
-				contentType(MediaType.APPLICATION_JSON_VALUE)
+					contentType(MediaType.APPLICATION_JSON_VALUE).
+					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
 				).
 		andExpect(status().isOk()).
 		andDo(defineRestService().
@@ -348,10 +377,13 @@ public class ProjectAdministrationRestControllerRestDocTest {
                     tag(RestDocFactory.extractTag(apiEndpoint)).
                 and().
                 document(
+	                		requestHeaders(
+	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                		),
                             pathParameters(
                                     parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
                                     parameterWithName(USER_ID.paramName()).description("The user id of the user to unassign from project")
-                         )
+                            )
 				));
 
 		/* @formatter:on */
@@ -401,7 +433,8 @@ public class ProjectAdministrationRestControllerRestDocTest {
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				get(apiEndpoint,"projectId1").
-				contentType(MediaType.APPLICATION_JSON_VALUE)
+					contentType(MediaType.APPLICATION_JSON_VALUE).
+					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
 		).
 		andDo(print()).
 		andExpect(status().isOk()).
@@ -412,9 +445,12 @@ public class ProjectAdministrationRestControllerRestDocTest {
                     responseSchema(OpenApiSchema.PROJECT_DETAILS.getSchema()).
                 and().
                 document(
+                		requestHeaders(
+                			headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+                		),
                         pathParameters(
 							parameterWithName(PROJECT_ID.paramName()).description("The id for project to show details for")
-                            ),
+                        ),
                         responseFields(
                             fieldWithPath(ProjectDetailInformation.PROPERTY_PROJECT_ID).description("The name of the project"),
                             fieldWithPath(ProjectDetailInformation.PROPERTY_USERS).description("A list of all users having access to the project"),
@@ -472,10 +508,11 @@ public class ProjectAdministrationRestControllerRestDocTest {
         /* execute + test @formatter:off */
         this.mockMvc.perform(
                 post(apiEndpoint, "projectId1").
-                content("{\n"
-                        + "  \"description\" : \"new description\"\n"
-                        + "}").
-                contentType(MediaType.APPLICATION_JSON_VALUE)
+	                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue()).
+	                content("{\n"
+	                        + "  \"description\" : \"new description\"\n"
+	                        + "}").
+	                contentType(MediaType.APPLICATION_JSON_VALUE)
                 )./*
                 */
         andDo(print()).
@@ -487,9 +524,12 @@ public class ProjectAdministrationRestControllerRestDocTest {
                     responseSchema(OpenApiSchema.PROJECT_DETAILS.getSchema()).
                 and().
                 document(
+                		requestHeaders(
+                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+                		),
                         pathParameters(
                             parameterWithName(PROJECT_ID.paramName()).description("The id for project to change details for")
-                            ),
+                        ),
                         responseFields(
                             fieldWithPath(ProjectDetailInformation.PROPERTY_PROJECT_ID).description("The name of the project."),
                             fieldWithPath(ProjectDetailInformation.PROPERTY_USERS).description("A list of all users having access to the project."),

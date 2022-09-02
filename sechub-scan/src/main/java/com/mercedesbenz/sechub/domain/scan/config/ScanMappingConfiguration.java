@@ -6,8 +6,9 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.mercedesbenz.sechub.commons.core.MustBeKeptStable;
+import com.mercedesbenz.sechub.commons.mapping.NamePatternToIdEntry;
 import com.mercedesbenz.sechub.commons.model.JSONable;
-import com.mercedesbenz.sechub.sharedkernel.MustBeKeptStable;
 
 @JsonIgnoreProperties(ignoreUnknown = true) // we do ignore to avoid problems from wrong configured values!
 @MustBeKeptStable("This configuration is used by admins to have templates for their mapping configurations etc.")

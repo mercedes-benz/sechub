@@ -34,6 +34,16 @@ public interface JSONable<T> {
     }
 
     /**
+     * Converts object to JSON - pretty printed
+     *
+     * @return
+     * @throws JSONConverterException
+     */
+    default String toFormattedJSON() throws JSONConverterException {
+        return getConverter().toJSON(this, true);
+    }
+
+    /**
      * @return the json converter
      */
     @JsonIgnore

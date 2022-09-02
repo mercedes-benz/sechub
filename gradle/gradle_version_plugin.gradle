@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 // https://github.com/ben-manes/gradle-versions-plugin
 
 def isNonStable = { String version ->

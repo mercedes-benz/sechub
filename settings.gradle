@@ -10,6 +10,7 @@ include 'sechub-cli',
 'sechub-commons-core',
 'sechub-commons-model',
 'sechub-commons-pds',
+'sechub-commons-archive',
 
 /* server POD area */
 'sechub-server',       // executable spring boot jar
@@ -69,11 +70,13 @@ include 'sechub-cli',
 'sechub-analyzer-cli',
 
 // java API library
-'sechub-api-java',
+ 'sechub-api-java',
 
-/* sechub web ui */
-'sechub-webui'
+// Wrapper OWASP ZAP
+'sechub-wrapper-owasp-zap',
 
+// Wrapper checkmarx
+'sechub-wrapper-checkmarx'
 
 buildCache {
     def useTempCache = System.getenv('SECHUB_BUILD_USE_TMP_CACHE')
@@ -86,3 +89,5 @@ buildCache {
     }
      
 }
+
+include 'sechub-wrapper-owasp-zap'

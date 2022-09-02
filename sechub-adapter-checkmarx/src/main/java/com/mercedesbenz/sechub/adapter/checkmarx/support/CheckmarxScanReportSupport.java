@@ -89,15 +89,17 @@ public class CheckmarxScanReportSupport {
     // https://checkmarx.atlassian.net/wiki/spaces/KC/pages/223379587/Register+Scan+Report+-+POST+reports+sastScan
     void triggerNewReport(CheckmarxOAuthSupport oauthSupport, CheckmarxAdapterContext context) throws AdapterException {
         oauthSupport.refreshBearerTokenWhenNecessary(context);
+        long scanId = context.getScanId();
+        String traceId = context.getTraceID();
 
         AdapterMetaData metaData = context.getRuntimeContext().getMetaData();
-        Long reportIdLong = metaData.getValueLong(CheckmarxMetaDataID.KEY_REPORT_ID);
+        Long reportIdLong = metaData.getValueAsLongOrNull(CheckmarxMetaDataID.KEY_REPORT_ID);
         long reportId = -1;
         if (reportIdLong == null) {
-            LOG.info("Trigger new report in queue");
+            LOG.info("Trigger new report in queue. Trace Id: {}", traceId);
             Map<String, Object> json = new TreeMap<>();
             json.put("reportType", "XML");
-            json.put("scanId", context.getScanId());
+            json.put("scanId", scanId);
 
             String url = context.getAPIURL("reports/sastScan");
             String jsonAsString = context.json().toJSON(json);
@@ -106,6 +108,7 @@ public class CheckmarxScanReportSupport {
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<String> request = new HttpEntity<>(jsonAsString, headers);
 
+            LOG.debug("Sending request for new report generation for scan Id: {}. Trace Id: {}.", scanId, traceId);
             RestOperations restTemplate = context.getRestOperations();
             ResponseEntity<String> result = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
             if (!result.getStatusCode().equals(HttpStatus.ACCEPTED)) {
@@ -116,12 +119,13 @@ public class CheckmarxScanReportSupport {
             reportId = context.json().fetch("reportId", body).asLong();
             metaData.setValue(CheckmarxMetaDataID.KEY_REPORT_ID, reportId);
 
+            LOG.debug("The report generation request was successful. Received new report Id {} for scan Id {}. Trace Id: {}", reportId, scanId, traceId);
             context.getRuntimeContext().getCallback().persist(metaData);
 
         } else {
             /* just reuse existing data */
             reportId = reportIdLong.longValue();
-            LOG.info("Reuse existing reportId:{} for {}", reportId, context.getTraceID());
+            LOG.info("Reuse existing reportId: {} for {}", reportId, traceId);
         }
         context.setReportId(reportId);
     }

@@ -32,8 +32,22 @@ spec:
                       value: "{{ .Values.users.technical.id }}"
                     - name: TECHUSER_APITOKEN
                       value: "{{ .Values.users.technical.apiToken }}"
+                    - name: PDS_UPLOAD_BINARIES_MAXIMUM_BYTES
+                      value: "{{ .Values.pds.uploadBinariesMaximumBytes }}"
                     - name: PDS_MAX_FILE_UPLOAD_SIZE
                       value: "{{ .Values.pds.maxFileUploadSize }}"
+                    - name: PDS_CONFIG_EXECUTE_QUEUE_MAX
+                      value: "{{ .Values.pds.config.execute.queueMax }}"
+                    - name: PDS_CONFIG_EXECUTE_WORKER_THREAD_COUNT
+                      value: "{{ .Values.pds.config.execute.workerThreadCount }}"
+                    {{- if .Values.pds.logging.type.enabled }}
+                    - name: LOGGING_TYPE
+                      value: {{ .Values.pds.logging.type.appenderName }}
+                    {{- end }}
+                    {{- if .Values.pds.debug.keepReportsInWorkspace }}
+                    - name: SECHUB_PDS_WORKSPACE_AUTOCLEAN_DISABLED
+                      value: "true"
+                    {{- end }}
                     {{- if .Values.pds.javaDebug.enabled }}
                     - name: JAVA_ENABLE_DEBUG
                       value: "true"
@@ -75,4 +89,39 @@ spec:
                       value: "{{ .Values.storage.sharedVolume.upload.dir }}"
                     {{- end}}
                   ports:
-                    - containerPort: 8444
+                    - name: pds-https-port
+                      containerPort: 8444
+                  startupProbe:
+                    httpGet:
+                      scheme: HTTPS
+                      path: /api/anonymous/check/alive
+                      port: pds-https-port
+                    periodSeconds: 1
+                    failureThreshold: 300
+                    # probe every 1s x 300 = 5 mins before restart of container
+                    successThreshold: 1
+                    timeoutSeconds: 1
+                  livenessProbe:
+                    httpGet:
+                      scheme: HTTPS
+                      path: /api/anonymous/check/alive
+                      port: pds-https-port
+                    periodSeconds: 5
+                    failureThreshold: 3
+                    successThreshold: 1
+                    timeoutSeconds: 3
+                  volumeMounts:
+                     - mountPath: "/workspace"
+                       name: pds-scancode-workspace
+            volumes:
+                - name: pds-scancode-workspace
+                  ephemeral:
+                    volumeClaimTemplate:
+                      metadata:
+                        labels:
+                          name: {{ .Chart.Name }}
+                      spec:
+                        accessModes: ["ReadWriteOnce"]
+                        resources:
+                          requests:
+                            storage: "{{ .Values.pds.volumes.workspace.size }}"

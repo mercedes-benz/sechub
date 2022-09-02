@@ -2,8 +2,11 @@
 package com.mercedesbenz.sechub.integrationtest.scenario6;
 
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
+import static com.mercedesbenz.sechub.test.TestConstants.*;
 import static org.junit.Assert.*;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.Rule;
@@ -12,9 +15,14 @@ import org.junit.rules.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException.BadRequest;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
+import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.PDSIntTestProductIdentifier;
+import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 
 /**
  * Integration test directly using REST API of integration test PDS (means
@@ -96,7 +104,7 @@ public class DirectPDSAPIJobScenario6IntTest {
     }
 
     @Test
-    public void pds_techuser_can_upload_content_to_PDS() {
+    public void pds_techuser_can_upload_sourcecode_content_to_PDS() {
         /* @formatter:off */
         /* prepare */
 
@@ -105,14 +113,16 @@ public class DirectPDSAPIJobScenario6IntTest {
         String createResult = asPDSUser(PDS_TECH_USER).createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
         UUID pdsJobUUID = assertPDSJobCreateResult(createResult).hasJobUUID().getJobUUID();
 
-        /* execute + test just no error happend*/
-        asPDSUser(PDS_TECH_USER).upload(pdsJobUUID, "sourcecode.zip", "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip");
+        /* execute + test just no error happens */
+        asPDSUser(PDS_TECH_USER).
+            upload(pdsJobUUID, SOURCECODE_ZIP,
+                   "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip");
 
         /* @formatter:on */
     }
 
     @Test
-    public void pds_techuser_can_mark_job_as_ready_to_start_and_after_while_job_result_is_returned() {
+    public void pds_techuser_cannot_upload_job_data_to_PDS_when_wrong_checksum() {
         /* @formatter:off */
         /* prepare */
 
@@ -120,18 +130,91 @@ public class DirectPDSAPIJobScenario6IntTest {
 
         String createResult = asPDSUser(PDS_TECH_USER).createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
         UUID pdsJobUUID = assertPDSJobCreateResult(createResult).hasJobUUID().getJobUUID();
-        asPDSUser(PDS_TECH_USER).upload(pdsJobUUID, "sourcecode.zip", "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip");
+
+        /* execute + test just no error happens */
+        BadRequest exception = assertThrows(BadRequest.class, ()->{
+            asPDSUser(PDS_TECH_USER).
+                uploadWithWrongChecksum(pdsJobUUID, SOURCECODE_ZIP,
+                    "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip");
+        });
+        assertTrue(exception.getMessage().contains("checksum is not a valid"));
+
+        /* @formatter:on */
+    }
+
+    @Test
+    public void pds_techuser_can_upload_binaries_content_to_PDS() {
+        /* @formatter:off */
+        /* prepare */
+
+        UUID sechubJobUUID = UUID.randomUUID();
+
+        String createResult = asPDSUser(PDS_TECH_USER).createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
+        UUID pdsJobUUID = assertPDSJobCreateResult(createResult).hasJobUUID().getJobUUID();
+
+        /* execute + test just no error happens */
+        asPDSUser(PDS_TECH_USER).
+              upload(pdsJobUUID,
+              BINARIES_TAR,
+              "pds/codescan/upload/tarfile_contains_different_finding_files_in_different_data_sections.tar");
+
+        /* @formatter:on */
+    }
+
+    @Test
+    public void pds_techuser_can_mark_job_as_ready_to_start_and_after_while_job_result_is_returned_and_user_messages_area_available() {
+        /* @formatter:off */
+        /* prepare */
+
+        UUID sechubJobUUID = UUID.randomUUID();
+
+        String createResult = asPDSUser(PDS_TECH_USER).createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
+        UUID pdsJobUUID = assertPDSJobCreateResult(createResult).hasJobUUID().getJobUUID();
+        asPDSUser(PDS_TECH_USER).upload(pdsJobUUID, SOURCECODE_ZIP, "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip");
 
         /* execute */
         asPDSUser(PDS_TECH_USER).markJobAsReadyToStart(pdsJobUUID);
 
-        /* test */
+        /* test 1: report download possible and no old files in workspace */
         String report = asPDSUser(PDS_TECH_USER).getJobReport(pdsJobUUID);
         if (!report.contains("CRITICAL")) {
             fail("Report contains not CRITICAL, but:\n"+report);
         }
-        // next line tests, that the extracted files is no longer available - so auto clean worked */
+        // next line tests, that the extracted files is no longer available - so workspace auto clean worked */
         assertPDSWorkspace().containsNOTFile(pdsJobUUID, "upload/unzipped/sourcecode","data.txt");
+
+        /* test 2: messages */
+        SecHubMessagesList messageList= asPDSUser(PDS_TECH_USER).getJobMessages(pdsJobUUID);
+        List<SecHubMessage> messages = messageList.getSecHubMessages();
+        if (messages.size()!=3) {
+
+            TestAPI.dumpPDSJobOutput(pdsJobUUID);
+            assertEquals("Amount of messages differs!", 3,messages.size());
+        }
+        for (SecHubMessage message : messages) {
+            switch(message.getType()) {
+            case ERROR:
+                assertEquals("error for PDS job: "+pdsJobUUID+" but with\n"
+                        + "    a multine ....\n"
+                        + "    ", message.getText());
+                break;
+            case INFO:
+                assertEquals("info for PDS job: "+pdsJobUUID, message.getText());
+                break;
+            case WARNING:
+                assertEquals("warn for PDS job: "+pdsJobUUID, message.getText());
+                break;
+            default:
+                fail("wrong type detected:"+message.getType());
+                break;
+
+            }
+        }
+
+        /* test 3: meta data */
+        String metaData = asPDSUser(PDS_ADMIN).getJobMetaData(pdsJobUUID);
+
+        assertEquals("generated meta data for PDS job:"+pdsJobUUID+"\n",metaData);
         /* @formatter:on */
     }
 
@@ -166,6 +249,11 @@ public class DirectPDSAPIJobScenario6IntTest {
 
         /* test */
         assertPDSJobStatus(result).isInState("CREATED");
+
+        /* test 2: meta data not available at this time*/
+        String metaData = asPDSUser(PDS_ADMIN).getJobMetaData(pdsJobUUID);
+
+        assertEquals(null,metaData); // in this state we do not expect any meta data here!
         /* @formatter:on */
     }
 
@@ -180,32 +268,43 @@ public class DirectPDSAPIJobScenario6IntTest {
         UUID pdsJobUUID = assertPDSJobCreateResult(createResult).hasJobUUID().getJobUUID();
 
         /* execute - test just no error */
-        asPDSUser(PDS_ADMIN).upload(pdsJobUUID, "sourcecode.zip", "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip");
+        asPDSUser(PDS_ADMIN).upload(pdsJobUUID, SOURCECODE_ZIP, "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip");
 
         /* @formatter:on */
     }
 
     @Test
-    public void pds_admin_can_mark_job_as_ready_to_start_and_after_while_job_result_is_returned() {
+    public void pds_admin_can_mark_job_as_ready_to_start_after_while_job_is_executed_and_admin_can_fetch_information() {
         /* @formatter:off */
         /* prepare */
 
         UUID sechubJobUUID = UUID.randomUUID();
 
-        String createResult = asPDSUser(PDS_ADMIN).createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
-        UUID pdsJobUUID = assertPDSJobCreateResult(createResult).hasJobUUID().getJobUUID();
-        asPDSUser(PDS_ADMIN).upload(pdsJobUUID, "sourcecode.zip", "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip");
+        String createResult = asPDSUser(PDS_ADMIN).
+                createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN,Collections.singletonMap(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED,"true"));
+
+        UUID pdsJobUUID = assertPDSJobCreateResult(createResult).
+                hasJobUUID().
+                getJobUUID();
+
+        asPDSUser(PDS_ADMIN).
+            upload(pdsJobUUID, SOURCECODE_ZIP, "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip");
 
         /* execute */
-        asPDSUser(PDS_ADMIN).markJobAsReadyToStart(pdsJobUUID);
+        asPDSUser(PDS_ADMIN).
+            markJobAsReadyToStart(pdsJobUUID);
 
         /* test */
-        String report = asPDSUser(PDS_ADMIN).getJobReportOrErrorText(pdsJobUUID);
+        String report = asPDSUser(PDS_ADMIN).
+                getJobReportOrErrorText(pdsJobUUID);
         if(!report.contains("CRITICAL")){
             LOG.error(report);
             fail("Not expected report but:\n"+report);
         };
 
+        assertPDSJob(pdsJobUUID).
+            containsVariableTestOutput("PDS_JOB_UUID",pdsJobUUID).
+            containsVariableTestOutput("PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED",true);
         /* @formatter:on */
     }
 
@@ -247,7 +346,7 @@ public class DirectPDSAPIJobScenario6IntTest {
         UUID pdsJobUUID = assertPDSJobCreateResult(createResult).hasJobUUID().getJobUUID();
 
         /* execute + test */
-        expectHttpFailure(()-> asPDSUser(ANONYMOUS).upload(pdsJobUUID, "sourcecode.zip", "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip"), HttpStatus.UNAUTHORIZED);
+        expectHttpFailure(()-> asPDSUser(ANONYMOUS).upload(pdsJobUUID, SOURCECODE_ZIP, "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip"), HttpStatus.UNAUTHORIZED);
 
         /* @formatter:on */
     }

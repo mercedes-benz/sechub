@@ -2,8 +2,10 @@
 package com.mercedesbenz.sechub.restdoc;
 
 import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -37,15 +39,16 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.UseCaseUserDefinesProjectMockdata;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.UseCaseUserRetrievesProjectMockdata;
 import com.mercedesbenz.sechub.test.ExampleConstants;
+import com.mercedesbenz.sechub.test.RestDocPathParameter;
+import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
-import com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(ScanProjectMockDataRestController.class)
 @ContextConfiguration(classes = { ScanProjectMockDataRestController.class, ScanProjectMockDataRestControllerRestDocTest.SimpleTestConfiguration.class })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 @ActiveProfiles({ Profiles.MOCKED_PRODUCTS, Profiles.TEST })
-public class ScanProjectMockDataRestControllerRestDocTest {
+public class ScanProjectMockDataRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
 
     private static final String PROJECT1_ID = "project1";
 
@@ -71,12 +74,13 @@ public class ScanProjectMockDataRestControllerRestDocTest {
         config.setInfraScan(new ScanMockData(TrafficLight.GREEN));
 
         /* @formatter:off */
-		/* execute + test @formatter:off */
+		/* execute + test */
 	    this.mockMvc.perform(
 	    		put(apiEndpoint,PROJECT1_ID).
 	    			accept(MediaType.APPLICATION_JSON_VALUE).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
-	    			content(config.toJSON())
+	    			content(config.toJSON()).
+	    			header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
 	    		).
 	    			andExpect(status().isOk()).
 	    			andDo(defineRestService().
@@ -85,8 +89,11 @@ public class ScanProjectMockDataRestControllerRestDocTest {
 	    	                    tag(RestDocFactory.extractTag(apiEndpoint)).
 	    	                    requestSchema(OpenApiSchema.MOCK_DATA_CONFIGURATION.getSchema()).
 	    	                and().
-	    	                document()
-	    			);
+	    	                document(
+	                            		requestHeaders(
+	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                            		)
+	    			));
 	    /* @formatter:on */
     }
 
@@ -110,7 +117,8 @@ public class ScanProjectMockDataRestControllerRestDocTest {
         this.mockMvc.perform(
         		get(apiEndpoint, PROJECT1_ID).
         			accept(MediaType.APPLICATION_JSON_VALUE).
-        			contentType(MediaType.APPLICATION_JSON_VALUE)
+        			contentType(MediaType.APPLICATION_JSON_VALUE).
+        			header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
         		).
         			andExpect(status().isOk()).
         			andExpect(jsonPath("$.codeScan.result").value("RED")).
@@ -123,7 +131,11 @@ public class ScanProjectMockDataRestControllerRestDocTest {
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
                                 responseSchema(OpenApiSchema.MOCK_DATA_CONFIGURATION.getSchema()).
                             and().
-                            document()
+                            document(
+	                            		requestHeaders(
+	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                            		)
+                            		)
                     );
 
         /* @formatter:on */

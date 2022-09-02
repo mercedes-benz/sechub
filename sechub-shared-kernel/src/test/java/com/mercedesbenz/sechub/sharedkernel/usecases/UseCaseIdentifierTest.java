@@ -6,19 +6,19 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class UseCaseIdentifierTest {
 
     @Test
-    public void usecase_numbers_are_unique() {
+    void usecase_numbers_are_unique() {
         for (UseCaseIdentifier identifier : UseCaseIdentifier.values()) {
             searchForDuplicates(identifier);
         }
     }
 
     @Test
-    public void usecase_numbers_are_without_fragmentation() {
+    void usecase_numbers_are_without_fragmentation() {
         List<String> list = new ArrayList<>();
         for (UseCaseIdentifier identifier : UseCaseIdentifier.values()) {
             list.add(identifier.uniqueId());

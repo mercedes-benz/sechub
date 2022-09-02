@@ -26,13 +26,7 @@ public class ProductFailureMetaDataBuilder {
         String descriptionAsString = description.toString();
         SerecoMetaData data = new SerecoMetaData();
 
-        /* deprecated way: we add an artifical vulnerability */
-        SerecoVulnerability vulnerability = new SerecoVulnerability();
-        vulnerability.setSeverity(SerecoSeverity.CRITICAL);
-        vulnerability.setType("SecHub failure");
-        vulnerability.setDescription(descriptionAsString);
-
-        data.getVulnerabilities().add(vulnerability);
+        addArtificialVulnerability(descriptionAsString, data);
 
         /* new way */
         SerecoAnnotation failedMessage = new SerecoAnnotation();
@@ -42,6 +36,17 @@ public class ProductFailureMetaDataBuilder {
         data.getAnnotations().add(failedMessage);
 
         return data;
+    }
+
+    @Deprecated
+    /* deprecated way: we add an artificial vulnerability */
+    private void addArtificialVulnerability(String descriptionAsString, SerecoMetaData data) {
+        SerecoVulnerability vulnerability = new SerecoVulnerability();
+        vulnerability.setSeverity(SerecoSeverity.CRITICAL);
+        vulnerability.setType("SecHub failure");
+        vulnerability.setDescription(descriptionAsString);
+
+        data.getVulnerabilities().add(vulnerability);
     }
 
     public ProductFailureMetaDataBuilder forParam(ImportParameter param) {

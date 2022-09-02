@@ -18,6 +18,7 @@ import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
 import org.slf4j.Logger;
 
+import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigRepository;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetup;
@@ -33,7 +34,10 @@ public class AbstractProductExecutionServiceTest {
     public ExpectedException expected = ExpectedExceptionFactory.none();
 
     private static final ProductIdentifier USED_PRODUCT_IDENTIFIER = ProductIdentifier.NESSUS;
+    private static final int USED_PRODUCT_EXECUTOR_VERSION = 1;
+
     private AbstractProductExecutionService serviceToTest;
+
     private UUIDTraceLogID traceLogID;
     private SecHubExecutionContext context;
     private ProductExecutor executor;
@@ -41,16 +45,15 @@ public class AbstractProductExecutionServiceTest {
     private ProductResultRepository productResultRepository;
     private Logger logger;
     private UUID sechubJobUUID;
-
     private ProductExecutorContextFactory productExecutorContextFactory;
     private ProductExecutorContext productExecutorContext;
-
-    private int USED_PRODUCT_EXECUTOR_VERSION = 1;
-
     private ProductExecutorConfig config1;
 
     @Before
     public void before() throws Exception {
+        serviceToTest = new TestImplAbstractProductExecutionService();
+        serviceToTest.allAvailableProductExecutors = new ArrayList<>();
+
         SecHubConfiguration configuration = new SecHubConfiguration();
         configuration.setProjectId("projectid1");
 
@@ -58,7 +61,6 @@ public class AbstractProductExecutionServiceTest {
         logger = mock(Logger.class);
         traceLogID = mock(UUIDTraceLogID.class);
 
-        serviceToTest = new TestImplAbstractProductExecutionService();
         executors = new ArrayList<>();
         executor = mock(ProductExecutor.class);
         when(executor.getIdentifier()).thenReturn(USED_PRODUCT_IDENTIFIER);
@@ -117,6 +119,29 @@ public class AbstractProductExecutionServiceTest {
         verify(productExecutorContext).persist(result);
         verify(logger, never()).error(any(), eq(USED_PRODUCT_IDENTIFIER), eq(traceLogID));
 
+    }
+
+    @Test
+    public void service_uses_scan_type_filter_for_product_executor_registration_and_returns_filtered_result_for_executors() throws Exception {
+        List<ProductExecutor> filteredExecutors = new ArrayList<>();
+        serviceToTest.scanTypeFilter = mock(ScanTypeBasedProductExecutorFilter.class);
+        when(serviceToTest.scanTypeFilter.filter(any())).thenReturn(filteredExecutors);
+
+        ProductExecutor productExecutor1 = mock(ProductExecutor.class);
+        ProductExecutor productExecutor2 = mock(ProductExecutor.class);
+
+        serviceToTest.allAvailableProductExecutors.add(productExecutor1);
+        serviceToTest.allAvailableProductExecutors.add(productExecutor2);
+
+        filteredExecutors.add(productExecutor2);
+
+        /* execute */
+        serviceToTest.registerProductExecutorsForScanTypes();
+        List<ProductExecutor> result = serviceToTest.getProductExecutors();
+
+        /* test */
+        assertEquals(1, result.size());
+        assertTrue(result.contains(productExecutor2));
     }
 
     @Test
@@ -185,7 +210,7 @@ public class AbstractProductExecutionServiceTest {
 
     private class TestImplAbstractProductExecutionService extends AbstractProductExecutionService {
 
-        private List<ProductExecutor> list = new ArrayList<>();
+        private ScanType scanType;
 
         @Override
         protected boolean isExecutionNecessary(SecHubExecutionContext context, UUIDTraceLogID traceLogID, SecHubConfiguration configuration) {
@@ -198,8 +223,11 @@ public class AbstractProductExecutionServiceTest {
         }
 
         @Override
-        protected List<ProductExecutor> getProductExecutors() {
-            return list;
+        protected ScanType getScanType() {
+            if (scanType == null) {
+                scanType = ScanType.UNKNOWN;
+            }
+            return scanType;
         }
 
     }

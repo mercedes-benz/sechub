@@ -5,21 +5,25 @@ services:
     pds-gosec:
         build:
             args:
-                - BASE_IMAGE=ubuntu:20.04
+                - BASE_IMAGE=${BASE_IMAGE}
             context: docker/
-            dockerfile: GoSec-Ubuntu.dockerfile
+            dockerfile: GoSec-Debian.dockerfile
         env_file:
+            - .env
             - .env-cluster
         networks:
             - "internal"
         volumes:
             - "shared_volume:/shared_volumes/uploads"
+            - ./docker/scripts:/scripts
         depends_on: 
             - database
 
     loadbalancer:
         build:
-            context: docker/loadbalancer
+            context: ../shared/docker/loadbalancer
+            args:
+                - PDS_SOLUTION=pds-gosec
         env_file:
             - .env-cluster
         networks:
@@ -31,7 +35,7 @@ services:
     
     database:
         build:
-            context: docker/database
+            context: ../shared/docker/database
         env_file:
             - .env-cluster
         networks:

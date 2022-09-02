@@ -4,12 +4,14 @@ ASP: .ascx .aspx
 C/C++: .ac .am .c .c++ .cc .cmake .cpp .cxx .ec .h .h++ .hh .hpp .hxx .pro
 C#, VB.NET, Visual Basic, VB Script: .asax .bas .cls .cs .cshtml .csproj .ctl .dsr .frm .master .sln .vb .vbp .vbs .xaml
 Cobol: .cbl .cob .cpy .eco .pco .sqb
+Docker: Dockerfile .dockerfile
 Go, Protobuf: .go
 Groovy: .groovy .gsh .gsp .gvy .gy
 HTML: .htm .html
 Java ecosystem: .app .cmp .evt .gradle .hbs .java .javasln .jsf .jsp .jspf .mf .project .properties .tag .tld .vm .xhtml
 JavaScript: .handlebars .jade .js .json .jsx .pug .vue .xsaccess .xsapp .xsjs .xsjslib
 Kotlin: .ftl .kt .kts ,mustache
+Kubernetes, Helm, Docker-Compose: .yaml .yml .tpl
 Objective C, Swift: .m .plist .swift .xib
 Perl: .pl .plx .pm .psgi
 php: .ctp .php .php3 .php4 .php5 .php5.6 .phtm .phtml .tpl .twig
@@ -17,5 +19,6 @@ PL/SQL: .pck .pkb .pkh .pks .pls .sql
 Python, Django: .csv .gtl .latex .py .py2 .py3 .pyi .python .tex .txt
 Ruby: .erb .lock .rb .rhtml .rjs .rxml
 Scala: .conf .sc .scala
+Terraform: .tf .tfvars
 Typescript/Angular: .ts .tsx
 Others: .build .cgi .config .inc .xml

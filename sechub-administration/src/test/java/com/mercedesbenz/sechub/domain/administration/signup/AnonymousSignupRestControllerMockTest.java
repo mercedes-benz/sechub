@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.signup;
 
-import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -136,10 +136,6 @@ public class AnonymousSignupRestControllerMockTest {
         /* @formatter:on */
     }
 
-    /*
-     * FIXME Albert Tregnaghi, 2018-07-04: write a test case to ensure the content
-     * (emailadress etc) is really injected !
-     */
     @Test
     public void calling_with_api_1_0_and_userid_set_but_NO_valid_email_returns_HTTP_400_BAD_REQUEST() throws Exception {
         /* prepare */

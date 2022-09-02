@@ -14,8 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.mercedesbenz.sechub.domain.scan.Target;
-import com.mercedesbenz.sechub.domain.scan.TargetType;
+import com.mercedesbenz.sechub.domain.scan.NetworkTarget;
+import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
 
 /**
  * Inside application-test.properties we have defined strategies, which will
@@ -40,10 +40,10 @@ public class TargetResolverServiceSpringBootTest {
         URI uri = URI.create("https://productfailure.demo.example.org");
 
         /* execute */
-        Target found = serviceToTest.resolveTarget(uri);
+        NetworkTarget found = serviceToTest.resolveTarget(uri);
 
         /* test */
-        assertEquals(new Target(uri, TargetType.INTERNET), found);
+        assertEquals(new NetworkTarget(uri, NetworkTargetType.INTERNET), found);
 
     }
 
@@ -53,10 +53,10 @@ public class TargetResolverServiceSpringBootTest {
         InetAddress address = Inet4Address.getByName("172.217.22.99");
 
         /* execute */
-        Target found = serviceToTest.resolveTarget(address);
+        NetworkTarget found = serviceToTest.resolveTarget(address);
 
         /* test */
-        assertEquals(new Target(address, TargetType.INTERNET), found);
+        assertEquals(new NetworkTarget(address, NetworkTargetType.INTERNET), found);
 
     }
 
@@ -66,10 +66,10 @@ public class TargetResolverServiceSpringBootTest {
         URI uri = URI.create("https://something.intranet.example.org");
 
         /* execute */
-        Target found = serviceToTest.resolveTarget(uri);
+        NetworkTarget found = serviceToTest.resolveTarget(uri);
 
         /* test */
-        assertEquals(new Target(uri, TargetType.INTRANET), found);
+        assertEquals(new NetworkTarget(uri, NetworkTargetType.INTRANET), found);
 
     }
 
@@ -79,23 +79,10 @@ public class TargetResolverServiceSpringBootTest {
         InetAddress address = Inet4Address.getByName("192.168.22.99");
 
         /* execute */
-        Target found = serviceToTest.resolveTarget(address);
+        NetworkTarget found = serviceToTest.resolveTarget(address);
 
         /* test */
-        assertEquals(new Target(address, TargetType.INTRANET), found);
-
-    }
-
-    @Test
-    public void path_example_slash_src_is_CODE_UPLOAD() throws Exception {
-        /* prepare */
-        String path = "example/src";
-
-        /* execute */
-        Target found = serviceToTest.resolveTargetForPath(path);
-
-        /* test */
-        assertEquals(new Target(path, TargetType.CODE_UPLOAD), found);
+        assertEquals(new NetworkTarget(address, NetworkTargetType.INTRANET), found);
 
     }
 

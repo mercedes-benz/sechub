@@ -14,18 +14,30 @@ public class MockedAdapterSetupCombination {
      */
     public static final String ANY_OTHER_TARGET = "{any-other-target}";
 
-    private String target;
+    private String id;
+    private String mockDataIdentifier;
     private boolean throwsAdapterException;
     private String filePath;
 
     private long timeToElapseInMilliseconds;
 
-    public String getTarget() {
-        return target;
+    private boolean mockDataIdentifierUsedAsFolder;
+    private boolean needsExistingFolder;
+
+    public String getId() {
+        return id;
     }
 
-    public void setTarget(String target) {
-        this.target = target;
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getMockDataIdentifier() {
+        return mockDataIdentifier;
+    }
+
+    public void setMockDataIdentifier(String target) {
+        this.mockDataIdentifier = target;
     }
 
     public boolean isThrowsAdapterException() {
@@ -50,6 +62,22 @@ public class MockedAdapterSetupCombination {
 
     public long getTimeToElapseInMilliseconds() {
         return timeToElapseInMilliseconds;
+    }
+
+    public boolean isMockDataIdentifierUsedAsFolder() {
+        return mockDataIdentifierUsedAsFolder;
+    }
+
+    public void setMockDataIdentifierUsedAsFolder(boolean targetIsNeededAsFolderBySecHubClient) {
+        this.mockDataIdentifierUsedAsFolder = targetIsNeededAsFolderBySecHubClient;
+    }
+
+    public boolean isNeedsExistingFolder() {
+        return needsExistingFolder;
+    }
+
+    public void setNeedsExistingFolder(boolean targetNeedsExistingData) {
+        this.needsExistingFolder = targetNeedsExistingData;
     }
 
 }

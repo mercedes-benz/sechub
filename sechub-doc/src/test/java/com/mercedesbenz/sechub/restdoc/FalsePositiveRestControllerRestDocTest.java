@@ -5,9 +5,11 @@ import static com.mercedesbenz.sechub.domain.scan.project.FalsePositiveJobData.*
 import static com.mercedesbenz.sechub.domain.scan.project.FalsePositiveJobDataList.*;
 import static com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectConfiguration.*;
 import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
@@ -62,6 +64,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserMar
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUnmarksFalsePositives;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.test.ExampleConstants;
+import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
@@ -70,7 +73,7 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
-public class FalsePositiveRestControllerRestDocTest {
+public class FalsePositiveRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
 
     private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
     private static final String PROJECT1_ID = "project1";
@@ -125,9 +128,11 @@ public class FalsePositiveRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
-				put(apiEndpoint, PROJECT1_ID).
-		contentType(MediaType.APPLICATION_JSON_VALUE).
-        content(content)).
+			put(apiEndpoint, PROJECT1_ID).
+			contentType(MediaType.APPLICATION_JSON_VALUE).
+	        content(content).
+	        header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+        ).
 		andExpect(status().isOk()).
 		/*andDo(print()).*/
 		andDo(defineRestService().
@@ -137,6 +142,9 @@ public class FalsePositiveRestControllerRestDocTest {
                     requestSchema(OpenApiSchema.FALSE_POSITVES_FOR_JOB.getSchema()).
                 and().
                 document(
+	                		requestHeaders(
+	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                		),
                             requestFields(
                                     fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
                                     fieldWithPath(PROPERTY_TYPE).description("The type of the json content. Currently only accepted value is '"+FalsePositiveJobDataList.ACCEPTED_TYPE+"'."),
@@ -167,7 +175,8 @@ public class FalsePositiveRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-                delete(apiEndpoint,PROJECT1_ID,jobUUID,findingId)
+                delete(apiEndpoint,PROJECT1_ID,jobUUID,findingId).
+                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
         ).
         andExpect(status().isOk()).
         /*andDo(print()).*/
@@ -177,6 +186,9 @@ public class FalsePositiveRestControllerRestDocTest {
                     tag(RestDocFactory.extractTag(apiEndpoint)).
                 and().
                 document(
+	                		requestHeaders(
+	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                		),
                             pathParameters(
                                     parameterWithName(PROJECT_ID.paramName()).description("The project id"),
                                     parameterWithName(JOB_UUID.paramName()).description("Job uuid"),
@@ -238,7 +250,8 @@ public class FalsePositiveRestControllerRestDocTest {
         String codeMetaDataPath = metaDataPath+"."+FalsePositiveMetaData.PROPERTY_CODE;
 
         this.mockMvc.perform(
-                get(apiEndpoint,PROJECT1_ID)
+                get(apiEndpoint,PROJECT1_ID).
+                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
         ).
         andExpect(status().isOk()).
         /*andDo(print()).*/
@@ -249,6 +262,9 @@ public class FalsePositiveRestControllerRestDocTest {
                     responseSchema(OpenApiSchema.FALSE_POSITVES.getSchema()).
                 and().
                 document(
+	                		requestHeaders(
+	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                		),
                             responseFields(
                                     fieldWithPath(PROPERTY_FALSE_POSITIVES).description("Job data list containing false positive setup based on former jobs"),
                                     fieldWithPath(PROPERTY_FALSE_POSITIVES+"[]."+FalsePositiveEntry.PROPERTY_AUTHOR).description("User id of author who created false positive"),

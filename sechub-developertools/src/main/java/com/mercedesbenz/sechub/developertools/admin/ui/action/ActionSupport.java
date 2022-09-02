@@ -13,6 +13,7 @@ import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
 import javax.swing.text.DefaultEditorKit;
@@ -127,6 +128,29 @@ public class ActionSupport {
         List<JMenuItem> menuItems = new ArrayList<>();
         menuItems.add(new JMenuItem(new CleanOutputAreaAction(component)));
         return menuItems;
+    }
+
+    public Action createErrorReplacementAction(String text, String description) {
+        return new ErrorReplacementAction(text, description);
+    }
+
+    private class ErrorReplacementAction extends AbstractAction {
+
+        private static final long serialVersionUID = 1L;
+        private String description;
+        private String title;
+
+        private ErrorReplacementAction(String title, String description) {
+            super(title);
+            this.title = title;
+            this.description = description;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JOptionPane.showMessageDialog(null, description, title, JOptionPane.ERROR_MESSAGE);
+        }
+
     }
 
     private class UndoAction extends AbstractAction {

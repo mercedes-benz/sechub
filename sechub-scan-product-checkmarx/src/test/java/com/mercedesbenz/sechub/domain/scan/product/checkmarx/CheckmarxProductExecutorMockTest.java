@@ -23,12 +23,16 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.amazonaws.util.StringInputStream;
 import com.mercedesbenz.sechub.adapter.AdapterException;
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterLogId;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
+import com.mercedesbenz.sechub.adapter.mock.MockDataIdentifierFactory;
+import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
+import com.mercedesbenz.sechub.commons.mapping.MappingData;
+import com.mercedesbenz.sechub.commons.mapping.MappingEntry;
+import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
-import com.mercedesbenz.sechub.domain.scan.Target;
-import com.mercedesbenz.sechub.domain.scan.TargetType;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorCallback;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
@@ -37,15 +41,12 @@ import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetup;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetupCredentials;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetupJobParameter;
-import com.mercedesbenz.sechub.domain.scan.resolve.TargetResolver;
+import com.mercedesbenz.sechub.domain.scan.resolve.NetworkTargetResolver;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.SystemEnvironment;
 import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingEntry;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.metadata.DefaultMetaDataInspector;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
@@ -66,6 +67,12 @@ public class CheckmarxProductExecutorMockTest {
     CheckmarxProductExecutor executorToTest;
 
     @MockBean
+    NetworkTargetResolver targetResolver;
+
+    @MockBean
+    MockDataIdentifierFactory mockdataIdentifierFactory;
+
+    @MockBean
     CheckmarxAdapter checkmarxAdapter;
 
     @MockBean
@@ -75,23 +82,24 @@ public class CheckmarxProductExecutorMockTest {
     StorageService storageService;
 
     @MockBean
-    TargetResolver targetResolver;
+    SystemEnvironmentVariableSupport systemEnvironmentVariableSupport;
 
     @MockBean
-    SystemEnvironment systemEnvironment;
+    CodeScanPathCollector codeScanPathCollector;
 
     @Before
     public void before() throws Exception {
-        when(installSetup.isAbleToScan(TargetType.CODE_UPLOAD)).thenReturn(true);
-        when(targetResolver.resolveTargetForPath(eq(PATH_EXAMPLE1))).thenReturn(new Target("sourcecode...", TargetType.CODE_UPLOAD));
         JobStorage storage = Mockito.mock(JobStorage.class);
         when(storage.fetch(any())).thenReturn(new StringInputStream("something as a code..."));
         when(storageService.getJobStorage(any(), any())).thenReturn(storage);
+
+        when(systemEnvironmentVariableSupport.getValueOrVariableContent("user")).thenReturn("checkmarx-user");
+        when(systemEnvironmentVariableSupport.getValueOrVariableContent("pwd")).thenReturn("checkmarx-password");
     }
 
     @Test
     public void action_executor_contains_checkmarx_resilience_consultant_after_postConstruct() {
-        assertTrue(executorToTest.resilientActionExecutor.containsConsultant(CheckmarxResilienceConsultant.class));
+        assertTrue(executorToTest.fetchResilientExecutor().containsConsultant(CheckmarxResilienceConsultant.class));
     }
 
     @Test
@@ -113,7 +121,7 @@ public class CheckmarxProductExecutorMockTest {
         /* @formatter:off */
         when(checkmarxAdapter.start(any(),any())).
             thenThrow(new AdapterException(new AdapterLogId("1", "traceId"),"bla bla - Changes exceeded the threshold limit - bla bla")). // first fails
-            thenReturn("result2"); // second: access
+            thenReturn(new AdapterExecutionResult("result2")); // second: access
         /* @formatter:on */
 
         /* execute */
@@ -146,7 +154,7 @@ public class CheckmarxProductExecutorMockTest {
         when(checkmarxAdapter.start(any(),any())).
             thenThrow(new AdapterException(new AdapterLogId("1", "traceId"),"bla bla - Changes exceeded the threshold limit - bla bla")). // first fails
             thenThrow(new AdapterException(new AdapterLogId("2", "traceId"),"bla bla - Changes exceeded the threshold limit - bla bla")). // second fails
-            thenReturn("result2"); // third: would be access but should not happen! resilience shall here only work one time!
+            thenReturn(new AdapterExecutionResult("result2")); // third: would be access but should not happen! resilience shall here only work one time!
         /* @formatter:on */
         SecHubExecutionException expected = null;
 

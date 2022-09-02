@@ -15,11 +15,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
+import com.mercedesbenz.sechub.commons.mapping.MappingData;
+import com.mercedesbenz.sechub.commons.mapping.MappingEntry;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultExecutorConfigurations;
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingEntry;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingIdentifier;
 
 public class MappingScenario3IntTest {
@@ -56,7 +56,7 @@ public class MappingScenario3IntTest {
 
         /* test */
         ExecutionResult result = as(USER_1).withSecHubClient().
-                startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN);
+                startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN_ZERO_WAIT);
         UUID sechubJobUUID = result.getSechubJobUUID();
 
         assertNotNull("No sechub jobUUId found-maybe client call failed?", sechubJobUUID);

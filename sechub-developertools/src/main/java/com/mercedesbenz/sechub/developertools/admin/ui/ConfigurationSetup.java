@@ -38,6 +38,8 @@ public enum ConfigurationSetup {
 
     SECHUB_MASS_OPERATION_PARENTDIRECTORY("sechub.developertools.admin.massoperation.parentdirectory", true),
 
+    PDS_SOLUTION_GENERATOR_SECHUB_CONFIGURATION_DIRECTORY("pds.solution.generator.config.sechub.parentdirectory", true),
+
     /**
      * Usage: for example -Dsechub.developertools.output.font.settings="courier 18"
      */

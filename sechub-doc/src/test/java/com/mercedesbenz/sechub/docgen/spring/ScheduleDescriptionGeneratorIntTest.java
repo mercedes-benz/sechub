@@ -31,10 +31,6 @@ public class ScheduleDescriptionGeneratorIntTest {
         String text = generatorToTest.generate(new ClasspathDataCollector());
 
         /* test */
-        /*
-         * FIXME Albert Tregnaghi, 2018-01-11: with JDK 8 it works with JKD10 this does
-         * not work !
-         */
         assertFalse(text.isEmpty());
 
     }

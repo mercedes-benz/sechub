@@ -3,9 +3,11 @@ package com.mercedesbenz.sechub.restdoc;
 
 import static com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutionProfile.*;
 import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
@@ -60,6 +62,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFe
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminUnassignsExecutionProfileFromProject;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminUpdatesExecutionProfile;
 import com.mercedesbenz.sechub.test.ExampleConstants;
+import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 import com.mercedesbenz.sechub.test.executionprofile.TestExecutionProfile;
 import com.mercedesbenz.sechub.test.executionprofile.TestExecutionProfileList;
@@ -73,7 +76,7 @@ import com.mercedesbenz.sechub.test.executorconfig.TestExecutorSetupJobParam;
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
-public class ProductExecutionProfileRestControllerRestDocTest {
+public class ProductExecutionProfileRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
 
     private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
@@ -121,7 +124,8 @@ public class ProductExecutionProfileRestControllerRestDocTest {
 	    this.mockMvc.perform(
 	    		post(apiEndpoint, profileId).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
-	    			content(JSONConverter.get().toJSON(profile))
+	    			content(JSONConverter.get().toJSON(profile)).
+	    			header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
 	    		).
 	    			andExpect(status().isCreated()).
 	    			andDo(defineRestService().
@@ -131,6 +135,9 @@ public class ProductExecutionProfileRestControllerRestDocTest {
                                 requestSchema(OpenApiSchema.EXECUTION_PROFILE_CREATE.getSchema()).
                             and().
                             document(
+	                            		requestHeaders(
+	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                            		),
                                         requestFields(
                                                 fieldWithPath(PROPERTY_DESCRIPTION).description("A short description for the profile"),
                                                 fieldWithPath(PROPERTY_ENABLED).description("Enabled state of profile, default is false").optional(),
@@ -169,7 +176,8 @@ public class ProductExecutionProfileRestControllerRestDocTest {
         this.mockMvc.perform(
                 put(apiEndpoint, profileId).
                     contentType(MediaType.APPLICATION_JSON_VALUE).
-                    content(JSONConverter.get().toJSON(profile))
+                    content(JSONConverter.get().toJSON(profile)).
+                    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
                 ).
                     andExpect(status().isOk()).
                     andDo(defineRestService().
@@ -179,6 +187,9 @@ public class ProductExecutionProfileRestControllerRestDocTest {
                                 requestSchema(OpenApiSchema.EXECUTION_PROFILE_UPDATE.getSchema()).
                             and().
                             document(
+	                            		requestHeaders(
+	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                            		),
                                         requestFields(
                                                 fieldWithPath(PROPERTY_DESCRIPTION).description("A short description for the profile"),
                                                 fieldWithPath(PROPERTY_ENABLED).description("Enabled state of profile, default is false").optional(),
@@ -209,8 +220,9 @@ public class ProductExecutionProfileRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-                post(apiEndpoint, profileId,projectId).
-                    contentType(MediaType.APPLICATION_JSON_VALUE)
+                	post(apiEndpoint, profileId,projectId).
+                    contentType(MediaType.APPLICATION_JSON_VALUE).
+                    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
                 ).
                     andExpect(status().isCreated()).
                     andDo(defineRestService().
@@ -219,10 +231,13 @@ public class ProductExecutionProfileRestControllerRestDocTest {
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
                             and().
                             document(
-                                        pathParameters(
-                                                parameterWithName(PROJECT_ID.paramName()).description("The project id "),
-                                                parameterWithName(PROFILE_ID.paramName()).description("The profile id")
-                                     )
+	                            		requestHeaders(
+	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                            		),
+	                                    pathParameters(
+	                                                parameterWithName(PROJECT_ID.paramName()).description("The project id "),
+	                                                parameterWithName(PROFILE_ID.paramName()).description("The profile id")
+	                                    )
                     ));
 
         /* @formatter:on */
@@ -241,8 +256,9 @@ public class ProductExecutionProfileRestControllerRestDocTest {
         /* execute + test @formatter:off */
         this.mockMvc.perform(
                 delete(apiEndpoint, profileId,projectId).
-                    contentType(MediaType.APPLICATION_JSON_VALUE)
-                )./*andDo(print()).*/
+                    contentType(MediaType.APPLICATION_JSON_VALUE).
+                    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                ).
                     andExpect(status().isOk()).
                     andDo(defineRestService().
                             with().
@@ -250,10 +266,13 @@ public class ProductExecutionProfileRestControllerRestDocTest {
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
                             and().
                             document(
+	                            		requestHeaders(
+	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                            		),
                                         pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The project id "),
                                                 parameterWithName(PROFILE_ID.paramName()).description("The profile id")
-                                     )
+                                        )
                     ));
 
         /* @formatter:on */
@@ -298,7 +317,8 @@ public class ProductExecutionProfileRestControllerRestDocTest {
         /* execute + test @formatter:off */
         this.mockMvc.perform(
                 get(apiEndpoint, profileId).
-                    contentType(MediaType.APPLICATION_JSON_VALUE)
+                    contentType(MediaType.APPLICATION_JSON_VALUE).
+                    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
                 ).
                     andExpect(status().isOk()).
                     andDo(defineRestService().
@@ -308,6 +328,9 @@ public class ProductExecutionProfileRestControllerRestDocTest {
                                 responseSchema(OpenApiSchema.EXECUTION_PROFILE_FETCH.getSchema()).
                             and().
                             document(
+	                            		requestHeaders(
+	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                            		),
                                         responseFields(
                                                 fieldWithPath(PROPERTY_ID).optional().ignored(),
                                                 fieldWithPath(PROPERTY_DESCRIPTION).description("A short description for the profile"),
@@ -343,7 +366,8 @@ public class ProductExecutionProfileRestControllerRestDocTest {
 	    String profileId= "profile-to-delete-1";
 	    this.mockMvc.perform(
                 delete(apiEndpoint, profileId).
-                    contentType(MediaType.APPLICATION_JSON_VALUE)
+                    contentType(MediaType.APPLICATION_JSON_VALUE).
+                    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
                 ).
                     andExpect(status().isOk()).
                     andDo(defineRestService().
@@ -352,9 +376,12 @@ public class ProductExecutionProfileRestControllerRestDocTest {
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
                             and().
                             document(
+	                            		requestHeaders(
+	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                            		),
                                         pathParameters(
                                                 parameterWithName(PROFILE_ID.paramName()).description("The profile id")
-                                     )
+                                        )
                             ));
 
         /* @formatter:on */
@@ -386,7 +413,8 @@ public class ProductExecutionProfileRestControllerRestDocTest {
         /* execute + test @formatter:off */
         this.mockMvc.perform(
                 get(apiEndpoint).
-                    contentType(MediaType.APPLICATION_JSON_VALUE)
+                    contentType(MediaType.APPLICATION_JSON_VALUE).
+                    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
                 ).
                     andExpect(status().isOk()).
                     andDo(defineRestService().
@@ -396,12 +424,15 @@ public class ProductExecutionProfileRestControllerRestDocTest {
                                 responseSchema(OpenApiSchema.EXECUTION_PROFILE_LIST.getSchema()).
                             and().
                             document(
+	                            		requestHeaders(
+	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                            		),
                                         responseFields(
                                                 fieldWithPath("type").description("Always `executorProfileList` as an identifier for the list"),
                                                 fieldWithPath("executionProfiles[]."+PROPERTY_ID).description("The profile id"),
                                                 fieldWithPath("executionProfiles[]."+PROPERTY_DESCRIPTION).description("A profile description"),
                                                 fieldWithPath("executionProfiles[]."+PROPERTY_ENABLED).description("Enabled state of profile")
-                                     )
+                                        )
                             ));
 
         /* @formatter:on */

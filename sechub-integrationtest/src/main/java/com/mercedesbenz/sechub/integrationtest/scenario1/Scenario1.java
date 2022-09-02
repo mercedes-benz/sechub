@@ -6,8 +6,19 @@ import static com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDe
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.api.TestUser;
 import com.mercedesbenz.sechub.integrationtest.internal.AbstractGrowingSecHubServerTestScenario;
+import com.mercedesbenz.sechub.integrationtest.internal.GrowingScenario;
 
 /**
+ *
+ * <h3>Scenario 1</h3>
+ * <h4>Short description</h4> A very simple integration test scenario. Most
+ * parts only available as constants but not really created.
+ *
+ * <h4>Overview</h4> For a glance over all scenarios, look at
+ * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
+ * Overview}
+ *
+ * <h4>Details</h4> This is a {@link GrowingScenario}.<br>
  * In this scenario nearly nothing of the constants is existing, except
  * "OWNER_1" which is necessary for project creation tests
  *
@@ -49,11 +60,6 @@ public class Scenario1 extends AbstractGrowingSecHubServerTestScenario {
     @Override
     protected void waitForTestDataAvailable() {
         initializer().waitUntilUserCanLogin(OWNER_1);
-    }
-
-    @Override
-    public String getPrefixMainId() {
-        return "s01";
     }
 
 }

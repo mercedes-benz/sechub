@@ -48,7 +48,7 @@ public class ProjectDeleteScenario3IntTest {
         as(SUPER_ADMIN).deleteProject(PROJECT_2);
 
         /* test */
-        waitAsyncDeleteEventsDone();
+        wait2SecondsSoAsyncDeleteEventsDone();
 
         assertProject(PROJECT_1).
             doesNotExist().
@@ -76,10 +76,10 @@ public class ProjectDeleteScenario3IntTest {
 			isAssignedToProject(PROJECT_1);
 
 		/* prepare - just execute two jobs */
-		ExecutionResult result1 = as(USER_1).withSecHubClient().startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN);
+		ExecutionResult result1 = as(USER_1).withSecHubClient().startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN_ZERO_WAIT);
 		UUID sechubJobUUID1 = result1.getSechubJobUUID();
 
-		ExecutionResult result2 = as(USER_1).withSecHubClient().startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_YELLOW);
+		ExecutionResult result2 = as(USER_1).withSecHubClient().startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_YELLOW_ZERO_WAIT);
 		UUID sechubJobUUID2 = result2.getSechubJobUUID();
 
 		/* check preconditions */
@@ -95,7 +95,7 @@ public class ProjectDeleteScenario3IntTest {
 		as(SUPER_ADMIN).deleteProject(PROJECT_1);
 
 		/* test */
-		waitAsyncDeleteEventsDone();
+		wait2SecondsSoAsyncDeleteEventsDone();
 
 		assertProject(PROJECT_1).
 			doesNotExist().
@@ -105,7 +105,7 @@ public class ProjectDeleteScenario3IntTest {
 	}
 	/* @formatter:on */
 
-    private void waitAsyncDeleteEventsDone() {
+    private void wait2SecondsSoAsyncDeleteEventsDone() {
         // We wait here to let the new (async) access change happen
         // Unfortunately this depends on the environment where tests are
         // executed! On a dedicated build server

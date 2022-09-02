@@ -55,7 +55,7 @@ class S3RealLiveStorageManualTest {
         String testDataAsString = "This is some test data as a simple string\nJust another line...";
 
         /* store */
-        jobStorage.store(S3_OBJECT_NAME, new StringInputStream(testDataAsString));
+        jobStorage.store(S3_OBJECT_NAME, new StringInputStream(testDataAsString), testDataAsString.getBytes().length);
         boolean existsAfterStore = jobStorage.isExisting(S3_OBJECT_NAME);
 
         /* fetch */

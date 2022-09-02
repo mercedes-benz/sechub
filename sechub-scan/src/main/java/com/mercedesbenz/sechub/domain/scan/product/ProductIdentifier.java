@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product;
 
-import com.mercedesbenz.sechub.sharedkernel.MustBeKeptStable;
+import com.mercedesbenz.sechub.commons.core.MustBeKeptStable;
 
 /**
  * An enumeration with all currently known products identifiers. If one of the
@@ -45,6 +45,9 @@ public enum ProductIdentifier {
 
     /** Product delegation server - infrastructure scan execution */
     PDS_INFRASCAN(ProductType.INFRASCAN),
+
+    /** Product delegation server - license scan */
+    PDS_LICENSESCAN(ProductType.LICENSESCAN),
 
     ;
 

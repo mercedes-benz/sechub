@@ -2,10 +2,12 @@
 package com.mercedesbenz.sechub.restdoc;
 
 import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
@@ -45,6 +47,7 @@ import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPI
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminShowsScanLogsForProject;
 import com.mercedesbenz.sechub.test.ExampleConstants;
+import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
@@ -53,7 +56,7 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles(Profiles.TEST)
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
-public class AdminShowsScanLogsForProjectRestDocTest {
+public class AdminShowsScanLogsForProjectRestDocTest implements TestIsNecessaryForDocumentation {
 
     private static final String PROJECT1 = "project1";
 
@@ -89,8 +92,9 @@ public class AdminShowsScanLogsForProjectRestDocTest {
 
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
-				get(apiEndpoint,PROJECT1).
-				contentType(MediaType.APPLICATION_JSON_VALUE)
+				  get(apiEndpoint,PROJECT1).
+				  contentType(MediaType.APPLICATION_JSON_VALUE).
+				  header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
 				).
 		andExpect(status().isOk()).
 		andDo(defineRestService().
@@ -100,7 +104,10 @@ public class AdminShowsScanLogsForProjectRestDocTest {
                     responseSchema(OpenApiSchema.PROJECT_SCAN_LOGS.getSchema()).
                 and().
                 document(
-				/* we do not document more, because its binary / zip file...*/
+	                		requestHeaders(
+	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                		),
+                			/* we do not document more, because its binary / zip file...*/
                             responseFields(
                                     fieldWithPath("[]").description("An array of scan log summary entries"),
                                     fieldWithPath("[].executedBy").description("The user id of the user which executed the scan"),
@@ -111,7 +118,7 @@ public class AdminShowsScanLogsForProjectRestDocTest {
                             ),
                             pathParameters(
                                     parameterWithName(PROJECT_ID.paramName()).description("The project Id")
-                         )
+                            )
 				    ));
 
 		/* @formatter:on */

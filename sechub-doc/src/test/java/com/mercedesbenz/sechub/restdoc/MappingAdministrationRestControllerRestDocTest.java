@@ -2,8 +2,10 @@
 package com.mercedesbenz.sechub.restdoc;
 
 import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
@@ -40,6 +42,7 @@ import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPI
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.status.UseCaseAdminListsStatusInformation;
 import com.mercedesbenz.sechub.test.ExampleConstants;
+import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
@@ -48,7 +51,7 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
-public class MappingAdministrationRestControllerRestDocTest {
+public class MappingAdministrationRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
 
     private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
@@ -93,10 +96,10 @@ public class MappingAdministrationRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
-				get(apiEndpoint).
-				contentType(MediaType.APPLICATION_JSON_VALUE)
-				)./*
-				*/
+					get(apiEndpoint).
+					contentType(MediaType.APPLICATION_JSON_VALUE).
+					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+				).
 		andDo(print()).
 		andExpect(status().isOk()).
 		andDo(defineRestService().
@@ -106,6 +109,9 @@ public class MappingAdministrationRestControllerRestDocTest {
                     responseSchema(OpenApiSchema.STATUS_INFORMATION.getSchema()).
                 and().
                 document(
+                		requestHeaders(
+                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+                		),
                             responseFields(
                                     fieldWithPath("[]."+StatusEntry.PROPERTY_KEY).description("Status key identifier"),
                                     fieldWithPath("[]."+StatusEntry.PROPERTY_VALUE).description("Status value")

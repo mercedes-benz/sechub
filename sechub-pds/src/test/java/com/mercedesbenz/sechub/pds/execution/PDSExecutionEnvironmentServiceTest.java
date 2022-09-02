@@ -5,13 +5,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Map;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
+import com.mercedesbenz.sechub.pds.config.PDSProductParameterDefinition;
 import com.mercedesbenz.sechub.pds.config.PDSProductSetup;
-import com.mercedesbenz.sechub.pds.config.PDSProdutParameterDefinition;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
 import com.mercedesbenz.sechub.pds.job.PDSJobConfiguration;
 
@@ -29,6 +30,33 @@ class PDSExecutionEnvironmentServiceTest {
         serviceToTest = new PDSExecutionEnvironmentService();
         serviceToTest.converter = converter;
         serviceToTest.serverConfigService = serverConfigService;
+    }
+
+    @Test
+    void sechub_job_is_injected_as_environment_variable_SECHUB_JOB_UUID() {
+        /* prepare */
+        PDSJobConfiguration config = new PDSJobConfiguration();
+
+        UUID uuid = UUID.randomUUID();
+        config.setSechubJobUUID(uuid);
+
+        /* execute */
+        Map<String, String> result = serviceToTest.buildEnvironmentMap(config);
+
+        /* test */
+        assertEquals(uuid.toString(), result.get("SECHUB_JOB_UUID"));
+    }
+
+    @Test
+    void when_no_sechub_job_available_environment_variable_SECHUB_JOB_UUID_is_empty() {
+        /* prepare */
+        PDSJobConfiguration config = new PDSJobConfiguration();
+
+        /* execute */
+        Map<String, String> result = serviceToTest.buildEnvironmentMap(config);
+
+        /* test */
+        assertEquals("", result.get("SECHUB_JOB_UUID"));
     }
 
     @Test
@@ -78,9 +106,9 @@ class PDSExecutionEnvironmentServiceTest {
         // create product setup configuration
         PDSProductSetup setup = new PDSProductSetup();
         setup.setId("productid1");
-        PDSProdutParameterDefinition def1 = new PDSProdutParameterDefinition();
+        PDSProductParameterDefinition def1 = new PDSProductParameterDefinition();
         def1.setKey("p1.keya");
-        PDSProdutParameterDefinition def2 = new PDSProdutParameterDefinition();
+        PDSProductParameterDefinition def2 = new PDSProductParameterDefinition();
         def2.setKey("p1.keyb");
 
         setup.getParameters().getMandatory().add(def1);

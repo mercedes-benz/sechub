@@ -28,7 +28,7 @@ jobs:
 
       # Build
       - name: Set up JDK 1.8
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           java-version: 8
           distribution: adopt
@@ -51,14 +51,14 @@ jobs:
       # -----------------------------------------
       - name: Archive combined test report
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: combined-sechub-testreport
           path: build/reports/combined-report
           retention-days: 14
       - name: Archive GIT status
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: git-status.txt
           path: build/reports/git-status.txt

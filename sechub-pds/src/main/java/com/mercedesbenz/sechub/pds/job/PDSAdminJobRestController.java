@@ -18,6 +18,7 @@ import com.mercedesbenz.sechub.pds.PDSAPIConstants;
 import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobErrorStream;
+import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobMetaData;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobOutputStream;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobResultOrFailureText;
 
@@ -37,7 +38,7 @@ public class PDSAdminJobRestController {
     private PDSGetJobResultService jobResultService;
 
     @Autowired
-    private PDSGetJobStreamContentService jobStreamContentService;
+    private PDSGetJobExecutionDataContentService jobStreamContentService;
 
     /* @formatter:off */
     @Validated
@@ -70,6 +71,17 @@ public class PDSAdminJobRestController {
             ) {
         /* @formatter:on */
         return jobStreamContentService.getJobErrorStreamContentAsText(jobUUID);
+    }
+
+    /* @formatter:off */
+    @Validated
+    @RequestMapping(path = "job/{jobUUID}/metadata", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
+    @UseCaseAdminFetchesJobMetaData(@PDSStep(name="rest call",description = "an admin fetches meta data text or null.", number=1))
+    public String getJobMetaDataContentAsText(
+            @PathVariable("jobUUID") UUID jobUUID
+            ) {
+        /* @formatter:on */
+        return jobStreamContentService.getJobMetaDataTextOrNull(jobUUID);
     }
 
 }

@@ -40,6 +40,8 @@ public abstract class AbstractAllowPDSAPISecurityConfiguration extends WebSecuri
                     hasAnyAuthority(ROLE_SUPERADMIN).
  				antMatchers(PDSAPIConstants.API_ANONYMOUS+"**").
  					permitAll().
+ 				antMatchers(PDSAPIConstants.ERROR_PAGE).
+ 				    permitAll().
  				/* to prevent configuration failures - I had this issue before -
  				 * all other matchers do deny all. So if not correct
  				 * configured nobody has access - please keep the denyAll parts

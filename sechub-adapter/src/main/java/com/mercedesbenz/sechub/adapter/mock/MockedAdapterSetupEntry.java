@@ -56,27 +56,27 @@ public class MockedAdapterSetupEntry {
         return combinations;
     }
 
-    public MockedAdapterSetupCombination getCombination(String target) {
-        MockedAdapterSetupCombination combi = internalExactGetCombination(target);
+    public MockedAdapterSetupCombination getCombination(String mockDataIdentifier) {
+        MockedAdapterSetupCombination combi = internalExactGetCombination(mockDataIdentifier);
         if (combi != null) {
             return combi;
         }
         return internalExactGetCombination(MockedAdapterSetupCombination.ANY_OTHER_TARGET);
     }
 
-    private MockedAdapterSetupCombination internalExactGetCombination(String target) {
-        if (target == null) {
+    private MockedAdapterSetupCombination internalExactGetCombination(String mockDataIdentifier) {
+        if (mockDataIdentifier == null) {
             return null;
         }
         for (MockedAdapterSetupCombination combination : combinations) {
             if (combination == null) {
                 continue;
             }
-            String combinationTarget = combination.getTarget();
-            if (combinationTarget == null) {
+            String combinationMockDataIdentifier = combination.getMockDataIdentifier();
+            if (combinationMockDataIdentifier == null) {
                 continue;
             }
-            if (target.startsWith(combinationTarget)) {
+            if (mockDataIdentifier.startsWith(combinationMockDataIdentifier)) {
                 return combination;
             }
         }

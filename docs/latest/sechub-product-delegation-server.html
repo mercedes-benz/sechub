@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub PDS Documentation</h1>
 <div class="details">
-<span id="revnumber"> PDS 0.26.1</span>
+<span id="revnumber"> PDS 0.32.1</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -557,6 +557,22 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#pds-process-handling">3.1.5. Process execution</a>
 <ul class="sectlevel4">
 <li><a href="#how-pds-provides-output-and-error-stream-content-of-running-jobs-in-clustered-environments">3.1.5.1. How PDS provides output and error stream content of running jobs in clustered environments</a></li>
+<li><a href="#how-pds-handles-meta-data">3.1.5.2. How PDS handles meta data</a>
+<ul class="sectlevel5">
+<li><a href="#checkmarx-pds-solution-adapter-meta-data-handling">3.1.5.2.1. Checkmarx PDS solution adapter meta data handling</a></li>
+</ul>
+</li>
+<li><a href="#how-pds-handles-storage-data">3.1.5.3. How PDS handles storage data</a>
+<ul class="sectlevel5">
+<li><a href="#pds-fetches-sourcecode-from-storage">3.1.5.3.1. Source code fetching</a></li>
+<li><a href="#pds-fetches-binaries-from-storage">3.1.5.3.2. Binaries fetching</a></li>
+<li><a href="#pds-explanation-data-structure">3.1.5.3.3. Data structure inside TAR and ZIP files</a></li>
+<li><a href="#automated-extraction-of-relevant-parts">3.1.5.3.4. Automated Extraction of relevant parts</a></li>
+</ul>
+</li>
+<li><a href="#how-pds-handles-user-messages">3.1.5.4. How PDS handles user messages</a></li>
+<li><a href="#how-pds-product-executors-configure-the-pds-adapter">3.1.5.5. How PDS product executors configure the PDS adapter</a></li>
+<li><a href="#overview">3.1.5.6. Overview</a></li>
 </ul>
 </li>
 <li><a href="#sechub-integration">3.1.6. SecHub integration</a>
@@ -581,7 +597,13 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#section-start-configuration">4.1.1. Minimum start configuration</a>
 <ul class="sectlevel4">
 <li><a href="#prod-profile">4.1.1.1. PROD profile</a></li>
-<li><a href="#integration-test-mode">4.1.1.2. Integration test mode</a></li>
+<li><a href="#logging">4.1.1.2. Logging</a>
+<ul class="sectlevel5">
+<li><a href="#default-output">4.1.1.2.1. Default output</a></li>
+<li><a href="#logstash-support">4.1.1.2.2. Logstash support</a></li>
+</ul>
+</li>
+<li><a href="#integration-test-mode">4.1.1.3. Integration test mode</a></li>
 </ul>
 </li>
 <li><a href="#section-db-configuration">4.1.2. Database configuration</a>
@@ -590,6 +612,11 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 </ul>
 </li>
 <li><a href="#section-general-configuration">4.1.3. General configuration</a></li>
+<li><a href="#section-pds-solution-configurations">4.1.4. PDS solution configurations</a>
+<ul class="sectlevel4">
+<li><a href="#section-pds-checkmarx-configuration">4.1.4.1. PDS Checkmarx solution</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#tech-user-credentials">4.2. Tech user credentials</a></li>
@@ -606,8 +633,17 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#output">4.6.3.2. Output</a></li>
 </ul>
 </li>
-<li><a href="#storage-configuration">4.6.4. Storage configuration</a></li>
-<li><a href="#usage-of-sechub-storage">4.6.5. Usage of SecHub storage</a></li>
+<li><a href="#section-config-messaging">4.6.4. Messaging</a>
+<ul class="sectlevel4">
+<li><a href="#snippets">4.6.4.1. Snippets</a>
+<ul class="sectlevel5">
+<li><a href="#example-shared-messaging">4.6.4.1.1. Bash messaging</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#storage-configuration">4.6.5. Storage configuration</a></li>
+<li><a href="#usage-of-sechub-storage">4.6.6. Usage of SecHub storage</a></li>
 </ul>
 </li>
 <li><a href="#section-usecases">4.7. Use cases</a>
@@ -617,6 +653,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#anonymous">4.7.1.1. Anonymous</a></li>
 <li><a href="#job-execution">4.7.1.2. Job execution</a></li>
 <li><a href="#monitoring">4.7.1.3. Monitoring</a></li>
+<li><a href="#auto-cleanup">4.7.1.4. Auto cleanup</a></li>
 </ul>
 </li>
 <li><a href="#section-usecase-PDS_UC_001">4.7.2. PDS_UC_001-User creates job</a></li>
@@ -631,6 +668,11 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#section-usecase-PDS_UC_010">4.7.11. PDS_UC_010-Admin fetches server configuration</a></li>
 <li><a href="#section-usecase-PDS_UC_011">4.7.12. PDS_UC_011-Admin fetches job output stream</a></li>
 <li><a href="#section-usecase-PDS_UC_012">4.7.13. PDS_UC_012-Admin fetches job error stream</a></li>
+<li><a href="#section-usecase-PDS_UC_013">4.7.14. PDS_UC_013-Admin fetches auto cleanup configuration</a></li>
+<li><a href="#section-usecase-PDS_UC_014">4.7.15. PDS_UC_014-Admin updates auto cleanup configuration</a></li>
+<li><a href="#section-usecase-PDS_UC_015">4.7.16. PDS_UC_015-System executes auto cleanup</a></li>
+<li><a href="#section-usecase-PDS_UC_016">4.7.17. PDS_UC_016-User fetches job messages</a></li>
+<li><a href="#section-usecase-PDS_UC_017">4.7.18. PDS_UC_017-Admin fetches job meta data</a></li>
 </ul>
 </li>
 <li><a href="#rest-api">4.8. REST API</a>
@@ -731,7 +773,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>PDS 0.26.1-pds-20220303145702</code></p>
+<p>Documentation version: <code>PDS 0.32.1-pds-20220826134836</code></p>
 </div>
 <div class="paragraph">
 <p><strong>About PDS (Product Delegation Server)</strong></p>
@@ -757,7 +799,8 @@ for the <code>PDS</code> PODs.</p>
 <h2 id="download">2. Download</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You can download the ready to use .jar binary of SecHub Product Delegation Server(PDS).</p>
+<p>A ready to use executable <code>.jar</code> binary of <code>PDS</code> (Product Delegation Server)
+is available at GitHub.</p>
 </div>
 <div class="paragraph">
 <p>Download link to the latest SecHub PDS release: <a href="https://mercedes-benz.github.io/sechub/latest/pds-download.html" class="bare">https://mercedes-benz.github.io/sechub/latest/pds-download.html</a>
@@ -1209,6 +1252,482 @@ But when the job has finished <em>(no matter if canceled, done or failed)</em> t
 </div>
 </div>
 </div>
+<div class="sect4">
+<h5 id="how-pds-handles-meta-data">3.1.5.2. How PDS handles meta data</h5>
+<div id="concept-pds_solution_metadata" class="paragraph">
+<p>When communication of PDS with the used product is stateful and is a long running operation,
+it can be useful to store such state/meta data.</p>
+</div>
+<div class="paragraph">
+<p>One use case is the restart possibility for a SecHub job. Another one are debugging or
+trace information.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Most times PDS solutions do not need to store special meta data information: When the PDS job starts
+a CLI tool, the result or the failure will just be returned to the SecHub side.</p>
+</div>
+<div class="paragraph">
+<p>If it shall be done again (because of on failure) just a new PDS job will be started.</p>
+</div>
+<div class="paragraph">
+<p>If a PDS job has meta data this means it should be restarted</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>A PDS launcher script has no access to the PDS database!
+If meta data shall be read or written, we just have the workspace file <code>metadata.txt</code>.
+Inside this file the product relevant meta data
+of the job run must be available, see next diagram for details:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/diagram_pds_metadata.png" alt="Diagram" width="1824" height="979">
+</div>
+</div>
+<div class="sect5">
+<h6 id="checkmarx-pds-solution-adapter-meta-data-handling">3.1.5.2.1. Checkmarx PDS solution adapter meta data handling</h6>
+<div class="paragraph">
+<p>The PDS solution for <code>Checkmarx</code> does reuse the already existing <code>CheckmarxAdapter</code> class.
+A <code>sechub-wrapper-checkmarx</code> gradle project was introduced which contains a simple spring boot
+CLI application which uses the adapter for communication. The adapter callback is not directly
+reading or writing to the database but uses the <code>metadata.txt</code> file from the PDS workspace.</p>
+</div>
+<div class="paragraph">
+<p>Look at next figure for more details:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/diagram_pds_solution_checkmarx_overview.png" alt="Diagram" width="1423" height="447">
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="how-pds-handles-storage-data">3.1.5.3. How PDS handles storage data</h5>
+<div class="paragraph">
+<p>The <code>PDS</code> does automatically fetch uploaded files from shared <a href="#pds-storage-and-sharing">storage</a>
+temporary into its local filesystem. After the scan has been done, the temporary local files
+will be automatically deleted.</p>
+</div>
+<div class="sect5">
+<h6 id="pds-fetches-sourcecode-from-storage">3.1.5.3.1. Source code fetching</h6>
+<div class="paragraph">
+<p>Source code is always contained in a file called <code>sourcecode.zip</code>.
+When a <code>PDS</code> starts a new job, it will fetch the complete ZIP file from <a href="#pds-storage-and-sharing">storage</a>
+to it&#8217;s local storage at</p>
+</div>
+<div class="paragraph">
+<p><code>${PDSJobWorkspaceLocation}/upload/sourcecode.zip</code>.</p>
+</div>
+<div class="paragraph">
+<p>Afterwards the <a href="#pds-automated-extraction-sourcecode">relevant sources will be automatically extracted</a> by inspecting
+the archive <a href="#pds-explanation-data-structure">data structure</a>.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="pds-fetches-binaries-from-storage">3.1.5.3.2. Binaries fetching</h6>
+<div class="paragraph">
+<p>Binaries are always contained in a file called <code>binaries.tar</code>.
+When a <code>PDS</code> starts a new job and the scan does references a binary data section, it will fetch
+the complete TAR file from <a href="#pds-storage-and-sharing">storage</a> to it&#8217;s local storage at</p>
+</div>
+<div class="paragraph">
+<p><code>${WorkspaceLocation}/upload/binaries.tar</code>.</p>
+</div>
+<div class="paragraph">
+<p>Afterwards the <a href="#pds-automated-extraction-binaries">relevant binaries will be automatically extracted</a> by inspecting
+the archive <a href="#pds-explanation-data-structure">data structure</a>.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="pds-explanation-data-structure">3.1.5.3.3. Data structure inside TAR and ZIP files</h6>
+<div id="data-structure-tar-and-zip-files" class="paragraph">
+<p>The data structure inside <code>TAR</code> and <code>ZIP</code> files contains
+data configuration parts inside <code><em>data</em></code> folder.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Before we introduced the possibility to define referenceable <a href="#sechub-config-data-section">data</a> inside a
+SecHub configuration, we already provided a <code>fileSystem</code> element inside
+ <a href="#sechub-config-code-scan">code scan configuration</a>.</p>
+</div>
+<div class="paragraph">
+<p>For source scans this a more convenient way and we wanted to keep this possiblity - also for
+backward compatibility with existing sechub configuration files.</p>
+</div>
+<div class="paragraph">
+<p>So this is the reason, why <a href="#sechub-config-data-section">data</a> is contained inside <code><em>_data_</em></code>
+folder and there is still content inside the root folder as well.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Only source code scan configuration files may be located inside the root folder!</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">${content} <i class="conum" data-value="1"></i><b>(1)</b>
+__data__/unique-name-1/${content} <i class="conum" data-value="2"></i><b>(2)</b>
+__data__/unique-name-2/${content} <i class="conum" data-value="3"></i><b>(3)</b>
+...</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>code scan embedded file system data</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>content of a data configuration with name "unique-name-1"</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>content of a data configuration with name "unique-name-2"</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Here an example:</p>
+</div>
+<div class="listingblock">
+<div class="title">Example JSON data definition to show resulting TAR and ZIP structures</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span>: {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span>: [ <i class="conum" data-value="1"></i><b>(1)</b>
+      {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-sources-1</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span>: {
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span>: [
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/file1.txt</span><span class="delimiter">&quot;</span></span>,
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/file2.txt</span><span class="delimiter">&quot;</span></span>
+          ],
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span>: [
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/subfolder1</span><span class="delimiter">&quot;</span></span>,
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/subfolder2</span><span class="delimiter">&quot;</span></span>
+          ]
+        },
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">excludes</span><span class="delimiter">&quot;</span></span>: [
+          <span class="string"><span class="delimiter">&quot;</span><span class="content">**/mytestcode/**</span><span class="delimiter">&quot;</span></span>,
+          <span class="string"><span class="delimiter">&quot;</span><span class="content">**/documentation/**</span><span class="delimiter">&quot;</span></span>
+        ],
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">additionalFilenameExtensions</span><span class="delimiter">&quot;</span></span>: [
+          <span class="string"><span class="delimiter">&quot;</span><span class="content">.cplusplus</span><span class="delimiter">&quot;</span></span>,
+          <span class="string"><span class="delimiter">&quot;</span><span class="content">.py9</span><span class="delimiter">&quot;</span></span>
+        ]
+      }
+    ],
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">binaries</span><span class="delimiter">&quot;</span></span>: [ <i class="conum" data-value="3"></i><b>(3)</b>
+      {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-binaries-1</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="4"></i><b>(4)</b>
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span>: {
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span>: [
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/file1.dll</span><span class="delimiter">&quot;</span></span>,
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/file2.a</span><span class="delimiter">&quot;</span></span>
+          ],
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span>: [
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/bin/subfolder1</span><span class="delimiter">&quot;</span></span>,
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere/bin/subfolder2</span><span class="delimiter">&quot;</span></span>
+          ]
+        }
+      },
+      {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">reference-name-binaries-2</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="5"></i><b>(5)</b>
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span>: {
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span>: [
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere-else/file1.dll</span><span class="delimiter">&quot;</span></span>,
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere-else/file2.a</span><span class="delimiter">&quot;</span></span>
+          ],
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span>: [
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere-else/bin/subfolder1</span><span class="delimiter">&quot;</span></span>,
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">somewhere-else/bin/subfolder2</span><span class="delimiter">&quot;</span></span>
+          ]
+        }
+      }
+    ]
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>source definition - these structure parts are inside the <code>sourcecode.zip</code> file</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Name of one source data configuration</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>binaries definition - these structure parts are inside the <code>binaries.tar</code> file</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Name of the first binaries data configuration</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Name of the second binaries data configuration</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The example json configuration defines following content structure inside the upload files:</p>
+</div>
+<div class="listingblock">
+<div class="title">ZIP file content for sources</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">__data__/
+    reference-name-sources-1/ <i class="conum" data-value="2"></i><b>(2)</b>
+                  somewhere/
+                     file1.txt
+                     file2.txt
+                     subfolder1/
+                        example-content.py9
+                     subfolder2/
+                        example-content.cplusplus
+                        example-content.txt</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The example json configuration would lead to a <code>TAR</code> file containing:</p>
+</div>
+<div class="listingblock">
+<div class="title">TAR file content for binaries</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">__data__/
+    reference-name-binaries-1/<i class="conum" data-value="4"></i><b>(4)</b>
+                  somewhere/
+                     file1.dll
+                     file2.a
+                     subfolder1/
+                        example-content.bin
+                     subfolder2/
+                        example-content.img
+    reference-name-binaries-2/<i class="conum" data-value="5"></i><b>(5)</b>
+                  somewhere-else/
+                     file1.dll
+                     file2.a
+                     subfolder1/
+                        example-content.bin
+                     subfolder2/
+                        example-content.img</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="automated-extraction-of-relevant-parts">3.1.5.3.4. Automated Extraction of relevant parts</h6>
+<div class="paragraph">
+<p>Only files and folders which are available for the configured scan type will be automatically
+extracted!<br>
+The artificial path element <code><em>_data_</em></code> and the reference name will not be contained in extracted
+folders.</p>
+</div>
+<div id="sechub-config-data-section" class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Please read the SecHub technical documentation for more details about the data configuration.
+You will find it described at <a href="https://mercedes-benz.github.io/sechub" class="bare">https://mercedes-benz.github.io/sechub</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="pds-automated-extraction-sourcecode" class="paragraph">
+<p><strong>Automated extraction of source code</strong><br></p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s assume PDS has <a href="#pds-fetches-sourcecode-from-storage">fetched</a> <code>sourcezip.zip</code> which contains following structure:</p>
+</div>
+<div class="listingblock">
+<div class="title">ZIP file example content</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">__data__/
+    license-sources/
+            somewhere/
+                     file1a.txt
+                     subfolder1/
+                        file1b.txt
+            file2.txt
+    other-sources/
+            file3.txt</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and a SecHub configuration file like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+    <span class="error">/</span><span class="error">/</span> <span class="error">.</span><span class="error">.</span> <span class="error">a</span><span class="error">s</span><span class="error">s</span><span class="error">u</span><span class="error">m</span><span class="error">e</span> <span class="error">d</span><span class="error">a</span><span class="error">t</span><span class="error">a</span> <span class="error">s</span><span class="error">e</span><span class="error">c</span><span class="error">t</span><span class="error">i</span><span class="error">o</span><span class="error">n</span> <span class="error">a</span><span class="error">n</span><span class="error">d</span> <span class="error">o</span><span class="error">t</span><span class="error">h</span><span class="error">e</span><span class="error">r</span> <span class="error">p</span><span class="error">a</span><span class="error">r</span><span class="error">t</span><span class="error">s</span> <span class="error">a</span><span class="error">r</span><span class="error">e</span> <span class="error">c</span><span class="error">o</span><span class="error">n</span><span class="error">f</span><span class="error">i</span><span class="error">g</span><span class="error">u</span><span class="error">r</span><span class="error">e</span><span class="error">d</span> <span class="error">c</span><span class="error">o</span><span class="error">r</span><span class="error">r</span><span class="error">e</span><span class="error">c</span><span class="error">t</span><span class="error">l</span><span class="error">y</span> <span class="error">.</span><span class="error">.</span>
+
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">licenseScan</span><span class="delimiter">&quot;</span></span>: {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [<span class="string"><span class="delimiter">&quot;</span><span class="content">license-sources</span><span class="delimiter">&quot;</span></span>]
+    },
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span>: {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [<span class="string"><span class="delimiter">&quot;</span><span class="content">other-sources</span><span class="delimiter">&quot;</span></span>]
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the example the SecHub configuration has a license scan configured which references
+<code>license-sources</code> data configuration and a code scan which references <code>other-sources</code>.
+The <code>PDS</code> for license scanning will only extract <code>license-sources</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">Output of automated ZIP file extraction by PDS</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">${PDSJobWorkspaceLocation}/upload/unzipped/sourcecode
+                                       somewhere/
+                                            file1a.txt
+                                            subfolder1/
+                                               file1b.txt
+                                       file2.txt</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><code>file3.txt</code> was not extracted, because it is not available for the license scan.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="pds-automated-extraction-binaries" class="paragraph">
+<p><strong>Automated extraction of binaries</strong><br></p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s assume PDS has <a href="#pds-fetches-binaries-from-storage">fetched</a> <code>binaries.tar</code> which contains following structure:</p>
+</div>
+<div class="listingblock">
+<div class="title">TAR file example content</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">__data__/
+    license-binaries/
+            somewhere/
+                     file1a.bin
+                     subfolder1/
+                        file1b.bin
+            file2.bin
+    other-binaries/
+            file3.bin</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and a SecHub configuration file like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+    <span class="error">/</span><span class="error">/</span> <span class="error">.</span><span class="error">.</span> <span class="error">a</span><span class="error">s</span><span class="error">s</span><span class="error">u</span><span class="error">m</span><span class="error">e</span> <span class="error">d</span><span class="error">a</span><span class="error">t</span><span class="error">a</span> <span class="error">s</span><span class="error">e</span><span class="error">c</span><span class="error">t</span><span class="error">i</span><span class="error">o</span><span class="error">n</span> <span class="error">a</span><span class="error">n</span><span class="error">d</span> <span class="error">o</span><span class="error">t</span><span class="error">h</span><span class="error">e</span><span class="error">r</span> <span class="error">p</span><span class="error">a</span><span class="error">r</span><span class="error">t</span><span class="error">s</span> <span class="error">a</span><span class="error">r</span><span class="error">e</span> <span class="error">c</span><span class="error">o</span><span class="error">n</span><span class="error">f</span><span class="error">i</span><span class="error">g</span><span class="error">u</span><span class="error">r</span><span class="error">e</span><span class="error">d</span> <span class="error">c</span><span class="error">o</span><span class="error">r</span><span class="error">r</span><span class="error">e</span><span class="error">c</span><span class="error">t</span><span class="error">l</span><span class="error">y</span> <span class="error">.</span><span class="error">.</span>
+
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">licenseScan</span><span class="delimiter">&quot;</span></span>: {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [<span class="string"><span class="delimiter">&quot;</span><span class="content">license-binaries</span><span class="delimiter">&quot;</span></span>]
+    },
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span>: {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [<span class="string"><span class="delimiter">&quot;</span><span class="content">other-binaries</span><span class="delimiter">&quot;</span></span>]
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the example the SecHub configuration has a license scan configured which references
+<code>license-binaries</code> data configuration and a code scan which references <code>other-binaries</code>.
+The <code>PDS</code> for license scanning will only extract <code>license-binaries</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">Output of automated ZIP file extraction by PDS</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">${PDSJobWorkspaceLocation}/upload/extracted/binaries
+                                       somewhere/
+                                            file1a.bin
+                                            subfolder1/
+                                               file1b.bin
+                                       file2.bin</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="how-pds-handles-user-messages">3.1.5.4. How PDS handles user messages</h5>
+<div id="section-shared-concepts-product-message-pds-dataflow" class="paragraph">
+<p>Inside a PDS workspace a special messages folder exists. The launcher script can create there
+dedicated user message files by creating simple text files (see <a href="#table-link-pds-launcher-script-variable-messages">PDS_JOB_USER_MESSAGES_FOLDER</a>
+for details) . After the job has been done (or failed),
+all files located at this folder are collected and stored as a JSON representing a <code>SecHubMessageList</code> inside the
+PDS Job. Those SecHub messages can be fetched by technical user via REST API.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/diagram_product_messages_pds_storage.svg" alt="Diagram" width="1395" height="532">
+</div>
+<div class="title">Figure 1. PDS user message handling</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="how-pds-product-executors-configure-the-pds-adapter">3.1.5.5. How PDS product executors configure the PDS adapter</h5>
+<div id="concept-pds_adapter_configuration" class="paragraph">
+<p>The different PDS product executors have different config builders which inherit from different abstract base classes
+(e.g. <code>AbstractCodeScanAdapterConfigBuilder</code>). We have no multi inheritance in Java, but we do also not
+want to implement the setup logic (which is complicated) for every PDS product executor again.</p>
+</div>
+<div class="paragraph">
+<p>There is a specialized adapter configuration strategy for PDS standard setup: <code>PDSAdapterConfigurationStrategy</code>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="overview">3.1.5.6. Overview</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/diagram_pds_adapter_configuration_overview.png" alt="Diagram" width="1494" height="926">
+</div>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="sechub-integration">3.1.6. SecHub integration</h4>
@@ -1363,7 +1882,24 @@ There are some more mandatory parameters, please refer to <a href="#section-gene
 </div>
 </div>
 <div class="sect4">
-<h5 id="integration-test-mode">4.1.1.2. Integration test mode</h5>
+<h5 id="logging">4.1.1.2. Logging</h5>
+<div class="sect5">
+<h6 id="default-output">4.1.1.2.1. Default output</h6>
+<div class="paragraph">
+<p>PDS uses per default logging to <code>stdout</code>. In case you are running on Kubernetes or similar platforms you can use
+<code>fluentd</code> to gather the log output.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="logstash-support">4.1.1.2.2. Logstash support</h6>
+<div class="paragraph">
+<p>When you want to use <code>logstash</code> you just have to set the environment variable
+<code>LOGGING_TYPE</code> to <code>LOGSTASH_JSON</code> before server starts.</p>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="integration-test-mode">4.1.1.3. Integration test mode</h5>
 <div class="paragraph">
 <p>You can start a PDS in integration test mode if you just want to
 test</p>
@@ -1433,8 +1969,38 @@ use these keys as Java system properties but also as environment entries.</p>
 <p>or with an environment entry <code>SECHUB_PDS_ADMIN_APITOKEN</code> which
 is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
 <div class="paragraph">
-<p>The next text blocks describe the keys available on PDS:</p>
+<p>When you have secret information you can define those information as a template by using environment
+variables from your SecHub installation.</p>
+</div>
+<div class="paragraph">
+<p>An example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>sechub.pds.admin.apitoken=env:PDS_GOSEC_SOLUTION_APITOKEN</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If your SecHub process runs in an environment with variable <code>PDS_GOSEC_SOLUTION_APITOKEN</code> set
+to 'very-secret-apitoken1234' <em>(e.g. by using secrets inside K8s)</em>, the authentication sent to
+PDS by SecHub will use</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>sechub.pds.admin.apitoken=very-secret-apitoken1234</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <table id="section-gen-config-scope-credentials" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. Scope 'credentials'</caption>
@@ -1741,6 +2307,142 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tr>
 </tbody>
 </table>
+<table id="section-gen-config-scope-upload" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 11. Scope 'upload'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.upload.binaries.maximum.bytes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">52428800</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define the maximum amount of bytes accepted for uploading files. The default when not set is 52428800 (50 MiB)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="section-pds-solution-configurations">4.1.4. PDS solution configurations</h4>
+<div class="paragraph">
+<p>Some of the existing PDS solutions do have special configuration parameters which are listed here
+inside the following sub chapters:</p>
+</div>
+<div class="sect4">
+<h5 id="section-pds-checkmarx-configuration">4.1.4.1. PDS Checkmarx solution</h5>
+<div class="paragraph">
+<p>The PDS checkmarx solution does internally use a <code>sechub-wrapper-checkmarx</code> Spring Boot application.
+The application is able to use all  <a href="#link-gen-pds-systemproperties">PDS job parameters</a>  and some
+additional keys which are listed in the next table.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The used Checkmarx wrapper can handle it&#8217;s job parameter values as a template by using environment
+variables from your PDS installation.</p>
+</div>
+<div class="paragraph">
+<p>An example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>pds.checkmarx.password=env:PDS_CHECKMARX_PWD</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If your PDS process runs in an environment with variable <code>PDS_CHECKMARX_PWD</code> set
+to 'very-secret-pwd1234' <em>(e.g. by using secrets inside K8s)</em>, the authentication sent from
+PDS to Checmarx will use</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>pds.checkmarx.password=very-secret-pwd123</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 30%;">
+<col>
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Job parameter</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.user</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mandatory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The user name used to communicate with Checkmarx. You can use env:$YOUR_USER_VARIABLENAME to use environment variables instead of real credentials.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mandatory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The password used to communicate with Checkmarx. You can use env:$YOUR_PWD_VARIABLENAME to use environment variables instead of real credentials.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.baseurl</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mandatory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The base URL of the Checkmarx server.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.engine.configuration.name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The engine to use - when empty, the default engine will be used.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.always.fullscan.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When 'true', Checkmarx will do a full scan and not a delta scan.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.result.check.period.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The time period in minutes when the next check for Checkmarx resuls will be done. An example: If you define <code>3</code>,every 3 minutes PDS will check the current state of the job.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.result.check.timeout.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum time in minutes when the checkmarx communication does time out and the connection will be terminated.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.checkmarx.mocking.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When 'true' than, instead of the real Checkmarx adapter, a mock adapter will be used. This is only necessary for tests.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">checkmarx.newproject.teamid.mapping</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mandatory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Can be either defined directly as job parameter (json mapping), or we can send it automatically by reusing an existing SecHub mapping. As an example: 'pds.config.use.sechub.mappings=checkmarx.newproject.teamid.mapping,checkmarx.newproject.presetid.mapping'</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">checkmarx.newproject.presetid.mapping</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If not the default preset Id shall be used, it can be either defined directly as job paramter (json mapping), or we can send it automatically by reusing an existing SecHub mapping. As an example: 'pds.config.use.sechub.mappings=checkmarx.newproject.teamid.mapping,checkmarx.newproject.presetid.mapping'</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -1859,7 +2561,7 @@ Must be <strong>unique</strong> for this product. Allowed characters are [a-zA-Z
             <span class="key"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">PRODUCT_2</span><span class="delimiter">&quot;</span></span>,
             <span class="key"><span class="delimiter">&quot;</span><span class="content">path</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">/srv/security/scanner2.sh</span><span class="delimiter">&quot;</span></span>,
             <span class="key"><span class="delimiter">&quot;</span><span class="content">scanType</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">infraScan</span><span class="delimiter">&quot;</span></span> ,
-            <span class="key"><span class="delimiter">&quot;</span><span class="content">unzipUploads</span><span class="delimiter">&quot;</span></span> : <span class="value">false</span> <i class="conum" data-value="11"></i><b>(11)</b>
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">extractUploads</span><span class="delimiter">&quot;</span></span> : <span class="value">false</span> <i class="conum" data-value="11"></i><b>(11)</b>
         }
     ]
 }</code></pre>
@@ -1934,8 +2636,23 @@ SecHub will</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="11"></i><b>11</b></td>
-<td>defines if PDS will automatically extract ZIP files - default is <code>true</code>. When <code>true</code> the content
-of the unzipped files will be available inside <code>$PDS_JOB_WORKSPACE_LOCATION/uploads/unzipped/${nameOfUploadFileWithoutZipExt}</code></td>
+<td>defines if <code>PDS</code> will automatically extract archive files - default is <code>true</code>. When <code>true</code> the content
+of <code>zip</code> source files will be available inside <code>$PDS_JOB_EXTRACTED_SOURCES_FOLDER</code>, <code>tar</code> files containing binaries can be found at <code>$PDS_JOB_EXTRACTED_BINARIES_FOLDER</code>.
+The extraction will automatically filter and transform archive content as described at <a href="#data-structure-tar-and-zip-files">data structure definition</a>.
+Also the environment variables <code>$PDS_JOB_HAS_EXTRACTED_SOURCES</code> and <code>$PDS_JOB_HAS_EXTRACTED_BINARIES</code> are automatically defined.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When no SecHub configuration model is defined for the <code>PDS</code> job, the transformation and filtering described at &lt;11&gt; will accept all binaries and all sources which are uploaded.
+      But this can happen only when PDS is used without SecHub - normally only for testing PDS solutions.
+</td>
 </tr>
 </table>
 </div>
@@ -1946,8 +2663,8 @@ of the unzipped files will be available inside <code>$PDS_JOB_WORKSPACE_LOCATION
 <h4 id="generated-variables">4.6.1. Generated variables</h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
 </colgroup>
 <thead>
 <tr>
@@ -1965,12 +2682,68 @@ of the unzipped files will be available inside <code>$PDS_JOB_WORKSPACE_LOCATION
 <td class="tableblock halign-left valign-top"><p class="tableblock">The absolute path to the result file <em>(this file contains security findings)</em>.</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS_JOB_UUID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The UUID of the current running PDS job.
+<a id="table-link-pds-launcher-script-variable-messages"></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS_JOB_USER_MESSAGES_FOLDER</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The absolute path to the user <a href="#section-config-messaging">messages folder</a>.</p>
+</div>
+<div class="paragraph">
+<p>Every text file which is found inside this folder will be returned to user inside reports and status.</p>
+</div>
+<div class="paragraph">
+<p>There is a <a href="#example-shared-messaging">snippet for bash</a> to create unique names.</p>
+</div>
+<div class="paragraph">
+<p>When a file starts with</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ERROR_</code> the user message will be of type <code>error</code>.</p>
+</li>
+<li>
+<p><code>WARNING_</code> the user message will be of type <code>warning</code>.</p>
+</li>
+<li>
+<p>None of the former ones, the corresponding SecHubMessage will be of type <code>info</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The files must be simple text files and can contain multiple lines.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>It is necessary to use always unique names for new user messages - because otherwise you
+would overwrite the old ones. The <a href="#section-shared-concepts-product-message-pds-dataflow">PDS message data flow</a> describes
+how the data is gathered.</p>
+</div>
+</td>
+</tr>
+</table>
+</div></div></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">PDS_JOB_SOURCECODE_ZIP_FILE</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The absolute path to the uploaded "sourcecode.zip" file</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">PDS_JOB_SOURCECODE_UNZIPPED_FOLDER</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">When auto unzipping is enabled (default) the uploaded source code is unzipped to this folder</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS_JOB_EXTRACTED_SOURCES_FOLDER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When auto extracting is enabled (default) the uploaded source code is extracted to this folder</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS_JOB_EXTRACTED_BINARIES_FOLDER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When auto extracting is enabled (default) the uploaded binaries are extracted to this folder</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">PDS_SCAN_TARGET_URL</p></td>
@@ -1984,19 +2757,303 @@ of the unzipped files will be available inside <code>$PDS_JOB_WORKSPACE_LOCATION
                                       a Java wrapper application inside your PDS scripts, those can use the <code>sechub-commons-model</code> java library which contains <code>SecHubScanConfiguration.java</code>
                                       <em>(Usage is described in JavaDoc)</em>.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SECHUB_JOB_UUID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The corresponding SecHub job UUID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS_SCAN_TARGET_TYPE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The network target type of the target URL. Possible values are: INTERNET, INTRANET. The network target type is injected by SecHub automatically.
+									  It does not need to be specified explicitly in the PDS Configuration file.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
 <div class="sect3">
 <h4 id="parameter-variables">4.6.2. Parameter variables</h4>
 <div class="paragraph">
-<p>The parameters described at <a href="#section-pds-server-example-config-file">configuration</a> are defined in
-Product executor configurations. At execution time these parameters are available inside
-launcher scripts.</p>
+<p>The parameters described inside the <a href="#section-pds-server-example-config-file">example configuration</a> are defined at SecHub side in
+Product executor configurations or automatically generated.<br>
+At execution time these parameters are sent by SecHub to PDS. Some are also available inside launcher scripts as environment variables.</p>
 </div>
 <div class="paragraph">
-<p>Mandatory parts are always present, optional ones can be empty - dependeing on the executor configuration.</p>
+<p>It is possible define custom parameters for PDS solutions in the <a href="#section-pds-server-example-config-file">configuration</a> file.
+Mandatory parts are always present, optional ones can be empty.</p>
 </div>
+<div class="paragraph">
+<p>We have following standard parameters:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 12. PDS executor configuration parameters</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Additional info</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.productexecutor.forbidden.targettype.internet</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+When this key is set to true, than this pds instance does not scan INTERNET!
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.productexecutor.forbidden.targettype.intranet</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+When this key is set to true, than this pds instance does not scan INTRANET!
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.productexecutor.timetowait.nextcheck.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+When this is set, the value will be used to wait for next check on PDS server. If not, the default from PDS install set up is used instead.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.productexecutor.timeout.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+When this is set, the value will be used to wait before timeout happens happens when no communication with PDS server is possible. If not, the default from PDS install set up is used instead.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.productexecutor.trustall.certificates</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+When 'true' then all certificates are accepted. Do not use this in production!
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.productidentifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+Contains the product identifier, so PDS knows which part is to call on it's side.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Available as ENV variable <code>PDS_CONFIG_PRODUCTIDENTIFIER</code> inside launcher script.</p>
+</li>
+<li>
+<p><strong>Mandatory</strong></p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.scan.target.type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+Contains the target type (depending on scan type) and will be just an additional information for PDS from SecHub.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Available as ENV variable <code>PDS_SCAN_TARGET_TYPE</code> inside launcher script.</p>
+</li>
+<li>
+<p><strong>Generated</strong></p>
+</li>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.use.sechub.storage</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+When 'true' the SecHub storage will be reused by PDS server. In this case SecHub will not upload job data to PDS.
+But it's crucial to have same root storage setup on PDS server side (e.g. same s3 bucket for S3 storage, or same NFS base for shared volumes).
+When not `true` or not defined, pds will use its own storage locations
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+<li>
+<p>Default is "true"</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.use.sechub.mappings</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+Contains a comma separated list of mappping ids. Each defined mapping will be fetched from SecHub DB as JSON and sent as job parameter with the mapping id as name to the PDS.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+<li>
+<p>Default is "true"</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.sechub.storage.path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+This contains the sechub storage location when sechub storage shall be used. So PDS knows location - in combination with sechub job UUID reuse is possible
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p><strong>Generated</strong></p>
+</li>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.filefilter.includes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+This contains a comma separated list of path patterns for file includes. These patterns can contain wildcards. Matching will be done case insensitive!For example: `*.go,*.html, test1.txt` would include every go file, every HTML file and files named `test1.txt`.</p>
+<p class="tableblock">When nothing defined, every content is accepted as include.
+Every file which is matched by one of the patterns will be included - except those which are explicitly excluded.</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.script.trustall.certificates.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+When 'true' the PDS adapter script used by the job will have the information and can use this information when it comes to remote operations.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Available as ENV variable <code>PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED</code> inside launcher script.</p>
+</li>
+<li>
+<p>Optional</p>
+</li>
+<li>
+<p>Default is "false"</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.filefilter.excludes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+This contains a comma separated list of path patterns for file excludes. These patterns can contain wildcards. Matching will be done case insensitive!For example: `*.go,*.html, test1.txt` would excluded every go file, every HTML file and files named `test1.txt`.</p>
+<p class="tableblock">When empty none of the files will be excluded. The exclude operation will be done AFTER the include file filtering has happend.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.scan.target.url</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+This contains the Target URL for current scan i.e webscan. Will not be set in all scan types. E.g. for a code scan this environment variable will not be available
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Available as ENV variable <code>PDS_SCAN_TARGET_URL</code> inside launcher script.</p>
+</li>
+<li>
+<p><strong>Generated</strong></p>
+</li>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.scan.configuration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+This contains the SecHub configuration as JSON object (but reduced to current scan type, so e.g. a web scan will have no code scan configuration data available
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Available as ENV variable <code>PDS_SCAN_CONFIGURATION</code> inside launcher script.</p>
+</li>
+<li>
+<p><strong>Generated</strong></p>
+</li>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.mocking.disabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+When 'true' any PDS adapter call will use real PDS adapter and not a mocked variant.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+<li>
+<p>Default is "true"</p>
+</li>
+<li>
+<p><strong>Only for testing</strong></p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect3">
 <h4 id="file-locations">4.6.3. File locations</h4>
@@ -2035,7 +3092,82 @@ The path is represented by the variable <code>PDS_JOB_RESULT_FILE</code></p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="storage-configuration">4.6.4. Storage configuration</h4>
+<h4 id="section-config-messaging">4.6.4. Messaging</h4>
+<div class="paragraph">
+<p>We can write text files into the folder defined in <a href="#table-link-pds-launcher-script-variable-messages">PDS_JOB_USER_MESSAGES_FOLDER</a>
+to send product messages back to users.</p>
+</div>
+<div class="paragraph">
+<p>Info, error and warnings will be available inside the SecHub report and also inside the job status for the user.</p>
+</div>
+<div class="sect4">
+<h5 id="snippets">4.6.4.1. Snippets</h5>
+<div class="sect5">
+<h6 id="example-shared-messaging">4.6.4.1.1. Bash messaging</h6>
+<div class="paragraph">
+<p>Here a working solution for creating unique message files from bash scripts:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">#!/bin/bash
+# SPDX-License-Identifier: MIT
+# You can paste this snippet inside your launcher script and use it to handle messages
+
+function writeUniqueMessageFile(){
+      MSG_PREFIX=$1
+      MESSAGE=$2
+
+      MESSAGE_FILE_PATH=&quot;${PDS_JOB_USER_MESSAGES_FOLDER}/${MSG_PREFIX}_message_$(date +%Y-%m-%d_%H.%M.%S_%N).txt&quot;
+      echo &quot;$MESSAGE&quot; &gt; &quot;$MESSAGE_FILE_PATH&quot;
+      
+      # additional echo to have the message also in output stream available:
+      echo &quot;${MSG_PREFIX} message: $MESSAGE&quot;
+}
+
+function infoMessage(){
+    writeUniqueMessageFile &quot;INFO&quot; &quot;$1&quot;
+}
+
+function warnMessage(){
+    writeUniqueMessageFile &quot;WARNING&quot; &quot;$1&quot;
+}
+
+function errorMessage(){
+    writeUniqueMessageFile &quot;ERROR&quot; &quot;$1&quot;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Usage:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">#!/bin/bash 
+# SPDX-License-Identifier: MIT
+
+infoMessage &quot;this is an info message&quot;
+warnMessage &quot;this is a warning message&quot;
+errorMessage &quot;this is an error message
+     with multiple lines... 
+&quot;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The former call did create following message files which contain the given text parts:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$job_folder_workspace/output/messages
+├── ERROR_message_2022-06-24_17.56.52_822554054.txt
+├── INFO_message_2022-06-24_17.56.52_818872869.txt
+└── WARNING_message_2022-06-24_17.56.52_820825342.txt</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="storage-configuration">4.6.5. Storage configuration</h4>
 <div class="paragraph">
 <p>In PDS we need to store job data (e.g. zipped source code).</p>
 </div>
@@ -2048,7 +3180,7 @@ You can either define a shared volume (normally a NFS) or a S3 storage.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="usage-of-sechub-storage">4.6.5. Usage of SecHub storage</h4>
+<h4 id="usage-of-sechub-storage">4.6.6. Usage of SecHub storage</h4>
 <div class="paragraph">
 <p>When using own storage for PDS servers, SecHub has to upload already pesisted job data <em>(e.g. zipped sourcecode for SAST scannings)</em>
 again to PDS storage-</p>
@@ -2134,6 +3266,12 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <li>
 <p><a href="#section-usecase-PDS_UC_012">PDS_UC_012-Admin fetches job error stream</a></p>
 </li>
+<li>
+<p><a href="#section-usecase-PDS_UC_016">PDS_UC_016-User fetches job messages</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-PDS_UC_017">PDS_UC_017-Admin fetches job meta data</a></p>
+</li>
 </ul>
 </div>
 </div>
@@ -2149,6 +3287,25 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 </li>
 <li>
 <p><a href="#section-usecase-PDS_UC_010">PDS_UC_010-Admin fetches server configuration</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="auto-cleanup">4.7.1.4. Auto cleanup</h5>
+<div class="paragraph">
+<p>Usecases about auto cleanup operations</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-usecase-PDS_UC_013">PDS_UC_013-Admin fetches auto cleanup configuration</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-PDS_UC_014">PDS_UC_014-Admin updates auto cleanup configuration</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-PDS_UC_015">PDS_UC_015-System executes auto cleanup</a></p>
 </li>
 </ul>
 </div>
@@ -2185,7 +3342,7 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">user creates job. If configuration is not valid an error will be thrown</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User creates job. If configuration is not valid an error will be thrown</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
@@ -2228,7 +3385,7 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">user uploads a file to workspace of given job</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User uploads a file to workspace of given job</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
@@ -2271,7 +3428,7 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">a user marks job as ready to start.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User marks job as ready to start.</p></td>
 </tr>
 </tbody>
 </table>
@@ -2307,7 +3464,7 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">a user cancels job</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User cancels a job</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
@@ -2364,7 +3521,7 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">a user fetches status of job.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User fetches status of a job.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
@@ -2407,14 +3564,14 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">a user wants to get result of job</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User wants to get result of a job</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">job result fetch from database, when not done a failure will be shown</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fetches job result from database. When job is not already done a failure will be shown</p></td>
 </tr>
 </tbody>
 </table>
@@ -2555,7 +3712,7 @@ instead of result - but it&#8217;s no JSON!</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">result data will be returned - can be empty or even a failure text from job execution.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Result data will be returned - can be empty or even a failure text from job execution.</p></td>
 </tr>
 </tbody>
 </table>
@@ -2645,10 +3802,10 @@ instead of result - but it&#8217;s no JSON!</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Update stream data</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update ouptut stream data</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Reads all stream data (output and error ) from workspace files and stores content inside database. Will also refresh update time stamp for caching mechanism.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reads output stream data from workspace files and stores content inside database. Will also refresh update time stamp for caching mechanism.</p></td>
 </tr>
 </tbody>
 </table>
@@ -2702,10 +3859,246 @@ instead of result - but it&#8217;s no JSON!</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Update stream data</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update error stream data</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Reads all stream data (output and error ) from workspace files and stores content inside database. Will also refresh update time stamp for caching mechanism.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reads error stream data from workspace files and stores content inside database. Will also refresh update time stamp for caching mechanism.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-PDS_UC_013">4.7.14. PDS_UC_013-Admin fetches auto cleanup configuration</h4>
+<div class="paragraph">
+<p>An administrator can fetch the auto cleanup configuration via REST.</p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator fetches auto cleanup configuration</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fetches auto cleanup config</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fetches auto cleanup configuration from database</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-PDS_UC_014">4.7.15. PDS_UC_014-Admin updates auto cleanup configuration</h4>
+<div class="paragraph">
+<p>An administrator can update the auto cleanup configuration via REST.</p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator changes auto cleanup configuration</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Updates auto cleanup config</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3, 4, 5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Updates auto cleanup configuration as JSON in database</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Calculate auto cleanup days</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">After receiving the new cleanup configuration as JSON the cleanup days will be calculated and persisted as well</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-PDS_UC_015">4.7.16. PDS_UC_015-System executes auto cleanup</h4>
+<div class="paragraph">
+<p>The PDS does execute an auto cleanup operation.</p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Scheduling</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Checks for parts to auto clean.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Delete old data</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">deletes old PDS job data</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-PDS_UC_016">4.7.17. PDS_UC_016-User fetches job messages</h4>
+<div class="paragraph">
+<p>A user fetches the messages a product has sent back to user at the end of a job.</p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User wants to get messages of job</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fetches job messages from database. When job is not already done a failure will be shown</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-PDS_UC_017">4.7.18. PDS_UC_017-Admin fetches job meta data</h4>
+<div class="paragraph">
+<p>An administrator can fetch the meta data of a PDS jobvia REST. Even when the PDS job is still running this is possible.</p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">an admin fetches meta data text or null.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Meta data of PDS job shall be returned. If the data is available in database and not outdated it will be returned directly. Otherwise job is marked for refresh and service will wait until stream data has been updated by executing machine. After succesful upate the new result will be returned.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Request meta data refresh</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Updates the refresh request timestamp in database. This timestamp will be introspected while PDS job process execution - which will fetch meta data content (if available)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update meta data</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reads meta data from workspace file and stores content inside database if not null. Will also refresh update time stamp for caching mechanism.</p></td>
 </tr>
 </tbody>
 </table>
@@ -2899,7 +4292,7 @@ This will the process hard!
 </div>
 <div id="footer">
 <div id="footer-text">
- PDS 0.26.1<br>
+ PDS 0.32.1<br>
 </div>
 </div>
 </body>

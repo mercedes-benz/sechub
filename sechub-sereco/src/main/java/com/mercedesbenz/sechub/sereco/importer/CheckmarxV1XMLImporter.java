@@ -173,7 +173,7 @@ public class CheckmarxV1XMLImporter extends AbstractProductResultImporter {
         /* @formatter:off */
 		return ImportSupport.
 							builder().
-								productId("Checkmarx").
+								productIds("Checkmarx","PDS_CODESCAN").
 								contentIdentifiedBy("CxXMLResults").
 								mustBeXML().
 								build();

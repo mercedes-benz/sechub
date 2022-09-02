@@ -36,7 +36,7 @@ public class IntegrationTestPDSStorageInfoCollector implements PDSStorageInfoCol
         fetchedJobUUIDStoragePathHistory.put(sechubJobUUID, storagePath);
     }
 
-    public Map<UUID, String> getFetchedJobUUIDStoragePathHistory() {
+    public Map<UUID, String> getFetchedSecHubJobUUIDStoragePathHistory() {
         return fetchedJobUUIDStoragePathHistory;
     }
 

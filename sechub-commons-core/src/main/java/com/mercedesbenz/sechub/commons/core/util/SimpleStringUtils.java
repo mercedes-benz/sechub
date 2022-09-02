@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.core.util;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.StringTokenizer;
 
 public class SimpleStringUtils {
 
@@ -100,5 +103,77 @@ public class SimpleStringUtils {
             return string;
         }
         return string.substring(0, maxLength - 3) + "...";
+    }
+
+    /**
+     * Will test if given string does contain only alphabetic characters (a-z,A-Z),
+     * digits (0-9) or additionally allowed characters.
+     *
+     * @param string            the content to inspect.
+     * @param additionalAllowed
+     * @return <code>true</code> when only allowed characters are contained, or
+     *         given string is <code>null</code> or empty. <code>false</code>
+     *         otherwise.
+     */
+    public static boolean hasOnlyAlphabeticDigitOrAdditionalAllowedCharacters(String string, char... additionalAllowed) {
+        if (string == null) {
+            return true;
+        }
+        if (string.isEmpty()) {
+            return true;
+        }
+        for (char c : string.toCharArray()) {
+            if (Character.isDigit(c)) {
+                continue;
+            }
+            if (Character.isAlphabetic(c)) {
+                continue;
+            }
+            boolean ok = false;
+            for (char allowed : additionalAllowed) {
+                if (c == allowed) {
+                    ok = true;
+                    continue;
+                }
+            }
+            if (ok) {
+                continue;
+            }
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Creates a list for comma separated string.<br>
+     * <br>
+     * Example:
+     *
+     * <pre>
+     * The string "a,b,c,de,f" will be transformed to a list containing strings:
+     *
+     *  -"a"
+     *  -"b"
+     *  -"c"
+     *  -"de"
+     *  -"f".
+     * </pre>
+     *
+     * @param string
+     * @return list with values, never <code>null</code>
+     */
+    public static List<String> createListForCommaSeparatedValues(String string) {
+        List<String> patterns = new ArrayList<>();
+        if (string == null) {
+            return patterns;
+        }
+        StringTokenizer tokenizer = new StringTokenizer(string, ",");
+        while (tokenizer.hasMoreTokens()) {
+            String token = tokenizer.nextToken().trim();
+            if (!token.isEmpty()) {
+                patterns.add(token);
+            }
+        }
+        return patterns;
     }
 }

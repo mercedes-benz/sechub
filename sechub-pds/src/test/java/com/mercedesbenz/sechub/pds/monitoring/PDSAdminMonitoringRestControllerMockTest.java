@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.monitoring;
 
-import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
+import static com.mercedesbenz.sechub.test.PDSTestURLBuilder.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -64,7 +64,7 @@ public class PDSAdminMonitoringRestControllerMockTest {
         /* execute + test */
         /* @formatter:off */
         this.mockMvc.perform(
-                get(https(PORT_USED).pds().buildAdminGetMonitoringStatus())
+                get(https(PORT_USED).buildAdminGetMonitoringStatus())
                 ).
                     andExpect(status().isOk()).
                     andExpect(content().json(expectedJSON)

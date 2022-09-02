@@ -2,9 +2,11 @@
 package com.mercedesbenz.sechub.restdoc;
 
 import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
@@ -29,6 +31,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.mercedesbenz.sechub.commons.mapping.MappingData;
+import com.mercedesbenz.sechub.commons.mapping.MappingEntry;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.domain.administration.mapping.FetchMappingService;
 import com.mercedesbenz.sechub.domain.administration.mapping.MappingAdministrationRestController;
@@ -36,15 +40,14 @@ import com.mercedesbenz.sechub.domain.administration.mapping.UpdateMappingServic
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingEntry;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdmiUpdatesMappingConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesMappingConfiguration;
 import com.mercedesbenz.sechub.test.ExampleConstants;
+import com.mercedesbenz.sechub.test.RestDocPathParameter;
+import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
-import com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(MappingAdministrationRestController.class)
@@ -52,7 +55,7 @@ import com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter;
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
-public class StatusAdministrationRestControllerRestDocTest {
+public class StatusAdministrationRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
 
     private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
@@ -90,7 +93,8 @@ public class StatusAdministrationRestControllerRestDocTest {
 
 		this.mockMvc.perform(
 				get(apiEndpoint, MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId()).
-				contentType(MediaType.APPLICATION_JSON_VALUE)
+					contentType(MediaType.APPLICATION_JSON_VALUE).
+					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
 				)./*
 				*/
 		andDo(print()).
@@ -102,6 +106,9 @@ public class StatusAdministrationRestControllerRestDocTest {
                     responseSchema(OpenApiSchema.MAPPING_CONFIGURATION.getSchema()).
                 and().
                 document(
+	                		requestHeaders(
+	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                		),
                             pathParameters(
                                     parameterWithName(MAPPING_ID.paramName()).description("The mapping Id")
                             ),
@@ -125,8 +132,9 @@ public class StatusAdministrationRestControllerRestDocTest {
         /* execute + test @formatter:off */
         this.mockMvc.perform(
                 put(apiEndpoint, MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId()).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                content(mappingDataTeam.toJSON())
+	                contentType(MediaType.APPLICATION_JSON_VALUE).
+	                content(mappingDataTeam.toJSON()).
+	                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
                 )./*
                 */
         andDo(print()).
@@ -138,6 +146,9 @@ public class StatusAdministrationRestControllerRestDocTest {
                     requestSchema(OpenApiSchema.MAPPING_CONFIGURATION.getSchema()).
                 and().
                 document(
+	                		requestHeaders(
+	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                		),
                             pathParameters(
                                     parameterWithName(MAPPING_ID.paramName()).description("The mappingID, identifiying which mapping shall be updated")
                             ),

@@ -33,7 +33,7 @@ public class PDSServerErrorController implements ErrorController {
 
     @RequestMapping(value = "${server.error.path}", produces = { "application/json" })
     ResponseEntity<PDSServerError> error(HttpServletRequest request, HttpServletResponse response) {
-        LOG.info("handling error on rest side");
+        LOG.trace("handling error on rest side");
 
         int status = response.getStatus();
 

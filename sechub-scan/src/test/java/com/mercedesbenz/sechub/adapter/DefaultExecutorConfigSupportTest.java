@@ -10,18 +10,18 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetup;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetupCredentials;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetupJobParameter;
-import com.mercedesbenz.sechub.sharedkernel.SystemEnvironment;
 
 public class DefaultExecutorConfigSupportTest {
     private DefaultExecutorConfigSupport supportToTest;
     private ProductExecutorConfig config;
     private ProductExecutorConfigSetup setup;
     private ProductExecutorConfigSetupCredentials credentialsInConfigSetup;
-    private SystemEnvironment systemEnvironment;
+    private SystemEnvironmentVariableSupport environmentVariableSupport;
     private List<ProductExecutorConfigSetupJobParameter> jobParameters;
 
     @Before
@@ -43,8 +43,8 @@ public class DefaultExecutorConfigSupportTest {
 
         when(setup.getJobParameters()).thenReturn(jobParameters);
 
-        systemEnvironment = mock(SystemEnvironment.class);
-        supportToTest = new DefaultExecutorConfigSupport(config, systemEnvironment, null);
+        environmentVariableSupport = mock(SystemEnvironmentVariableSupport.class);
+        supportToTest = new DefaultExecutorConfigSupport(config, environmentVariableSupport, null);
     }
 
     @Test
@@ -118,32 +118,21 @@ public class DefaultExecutorConfigSupportTest {
     }
 
     @Test
-    public void direct_credentials_in_config_setup_are_returned_directly() {
-        /* prepare */
-        credentialsInConfigSetup.setUser("user1");
-        credentialsInConfigSetup.setPassword("pwd1");
-
-        /* execute + test */
-        assertEquals("user1", supportToTest.getUser());
-        assertEquals("pwd1", supportToTest.getPasswordOrAPIToken());
-    }
-
-    @Test
-    public void env_marked_credentials_in_config_setup_are_returned_evaluated() {
+    public void env_variable_support_handles_user_and_password() {
 
         /* prepare */
-        String tempUserName = "testuser" + System.currentTimeMillis();
-        String tempPwdFake = "pwd" + System.currentTimeMillis();
+        String environmentTestUserName = "testuser" + System.currentTimeMillis();
+        String environmentTestPwd = "pwd" + System.currentTimeMillis();
 
-        when(systemEnvironment.getEnv("INTTEST_SECHUB_MYPRODUCT_USERNAME")).thenReturn(tempUserName);
-        when(systemEnvironment.getEnv("INTTEST_SECHUB_MYPRODUCT_PWD")).thenReturn(tempPwdFake);
+        when(environmentVariableSupport.getValueOrVariableContent("a")).thenReturn(environmentTestUserName);
+        when(environmentVariableSupport.getValueOrVariableContent("b")).thenReturn(environmentTestPwd);
 
-        credentialsInConfigSetup.setUser("env:INTTEST_SECHUB_MYPRODUCT_USERNAME");
-        credentialsInConfigSetup.setPassword("env:INTTEST_SECHUB_MYPRODUCT_PWD");
+        credentialsInConfigSetup.setUser("a");
+        credentialsInConfigSetup.setPassword("b");
 
         /* execute + test */
-        assertEquals(tempUserName, supportToTest.getUser());
-        assertEquals(tempPwdFake, supportToTest.getPasswordOrAPIToken());
+        assertEquals(environmentTestUserName, supportToTest.getUser());
+        assertEquals(environmentTestPwd, supportToTest.getPasswordOrAPIToken());
     }
 
 }

@@ -20,7 +20,7 @@ import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
  * @param <B> Builder
  * @param <C> Adapter configuration
  */
-public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConfigBuilder<B, C>, C extends AdapterConfig> {
+public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConfigBuilder<B, C>, C extends AdapterConfig> implements AdapterConfigBuilder {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractAdapterConfigBuilder.class);
 
@@ -69,6 +69,8 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 
     protected URIShrinkSupport uriShrinkSupport;
 
+    private String mockDataIdentifier;
+
     protected AbstractAdapterConfigBuilder() {
         uriShrinkSupport = createURIShrinkSupport();
     }
@@ -88,6 +90,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
      * @param strategy
      * @return builder (configured by strategy)
      */
+    @Override
     @SuppressWarnings("unchecked")
     public final B configure(AdapterConfigurationStrategy strategy) {
         strategy.configure((B) this);
@@ -101,12 +104,19 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
      *                see {@link #DOCUMENT_INFO_CHECK_IN_MINUTES}
      * @return builder
      */
+    @Override
     @SuppressWarnings("unchecked")
     public final B setTimeToWaitForNextCheckOperationInMinutes(int minutes) {
         if (minutes < 0) {
             return (B) this;
         }
         this.timeToWaitForNextCheckOperationInMilliseconds = minutes * TIME_1_MINUTE_IN_MILLISECONDS;
+        return (B) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public final B setMockDataIdentifier(String mockDataIdentifier) {
+        this.mockDataIdentifier = mockDataIdentifier;
         return (B) this;
     }
 
@@ -117,6 +127,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
      *                see {@link #DOCUMENT_INFO_CHECK_IN_MILLISECONDS}
      * @return builder
      */
+    @Override
     @SuppressWarnings("unchecked")
     public final B setTimeToWaitForNextCheckOperationInMilliseconds(int milliseconds) {
         if (milliseconds < 0) {
@@ -134,6 +145,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
      *                         used!" see {@link #DOCUMENT_INFO_TIMEOUT_IN_MINUTES}
      * @return
      */
+    @Override
     @SuppressWarnings("unchecked")
     public final B setTimeOutInMinutes(int timeOutInMinutes) {
         if (timeOutInMinutes < 0) {
@@ -143,6 +155,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
         return (B) this;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public final B setUser(String userID) {
         this.user = userID;
@@ -155,6 +168,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
      * @param password a password or an API token
      * @return builder
      */
+    @Override
     @SuppressWarnings("unchecked")
     public final B setPasswordOrAPIToken(String password) {
         this.passwordOrApiToken = encrypt(password);
@@ -165,6 +179,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
         return CryptoAccess.CRYPTO_STRING.seal(password);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public final B setTraceID(String traceID) {
         this.traceID = traceID;
@@ -177,30 +192,35 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
      * @param baseURL
      * @return
      */
+    @Override
     @SuppressWarnings("unchecked")
     public final B setProductBaseUrl(String baseURL) {
         this.productBaseURL = baseURL;
         return (B) this;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public final B setProxyHostname(String hostname) {
         this.proxyHostname = hostname;
         return (B) this;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public final B setProxyPort(int proxyPort) {
         this.proxyPort = proxyPort;
         return (B) this;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public final B setPolicyID(String policyID) {
         this.policyID = policyID;
         return (B) this;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public B setProjectId(String projectId) {
         this.projectId = projectId;
@@ -214,6 +234,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
      * @param value  string representation of option value
      *
      */
+    @Override
     @SuppressWarnings("unchecked")
     public B setOption(AdapterOptionKey option, String value) {
         if (option == null) {
@@ -235,6 +256,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
      * @param trustAllCertificates
      * @return
      */
+    @Override
     @SuppressWarnings("unchecked")
     public B setTrustAllCertificates(boolean trustAllCertificates) {
         this.trustAllCertificatesEnabled = trustAllCertificates;
@@ -268,6 +290,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 
         abstractAdapterConfig.traceID = traceID;
         abstractAdapterConfig.projectId = projectId;
+        abstractAdapterConfig.mockDataIdentifier = mockDataIdentifier;
         abstractAdapterConfig.getOptions().putAll(options);
 
         packageInternalCustomBuild(config);

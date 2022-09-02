@@ -21,6 +21,7 @@ import com.mercedesbenz.sechub.sharedkernel.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserDownloadsJobReport;
+import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserDownloadsSpdxJobReport;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserStartsSynchronousScanByClient;
 
 /**
@@ -42,8 +43,11 @@ public class ScanReportRestController {
     @Autowired
     private DownloadScanReportService downloadReportService;
 
+    @Autowired
+    private DownloadSpdxScanReportService serecoSpdxDownloadService;
+
     /* @formatter:off */
-	@UseCaseUserDownloadsJobReport(@Step(number=1,next= {3},name="REST API call to get JSON report",needsRestDoc=true))
+	@UseCaseUserDownloadsJobReport(@Step(number=1, next= {3}, name="REST API call to get JSON report", needsRestDoc=true))
 	@UseCaseUserStartsSynchronousScanByClient(@Step(number=4, name="download job report and traffic light"))
 	@RequestMapping(path = "/report/{jobUUID}", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public ScanSecHubReport getScanSecHubReportAsJSON(
@@ -56,7 +60,7 @@ public class ScanReportRestController {
     }
 
     /* @formatter:off */
-	@UseCaseUserDownloadsJobReport(@Step(number=2,next= {3},name="REST API call to get HTML report",needsRestDoc=true))
+	@UseCaseUserDownloadsJobReport(@Step(number=2, next= {3}, name="REST API call to get HTML report", needsRestDoc=true))
 	@RequestMapping(path = "/report/{jobUUID}", method = RequestMethod.GET, produces= {"application/xhtml+xml", "text/html","text/html;charset=UTF-8"})
 	@ResponseBody
 	public ModelAndView getScanSecHubReportAsHTML(
@@ -68,6 +72,20 @@ public class ScanReportRestController {
 
         Map<String, Object> model = htmlModelBuilder.build(scanSecHubReport);
         return new ModelAndView("report/html/scanresult", model);
+    }
+
+    /* @formatter:off */
+	@UseCaseUserDownloadsSpdxJobReport(@Step(number=1,name="REST API call to get SPDX JSON report", needsRestDoc=true))
+	@RequestMapping(path = "/report/spdx/{jobUUID}", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
+	@ResponseBody
+	public String getScanSecHubReportAsSpdxJson(
+			@PathVariable("projectId") String projectId,
+			@PathVariable("jobUUID") UUID jobUUID
+			) {
+		/* @formatter:on */
+        String spdxDocument = serecoSpdxDownloadService.getScanSpdxJsonReport(projectId, jobUUID);
+
+        return spdxDocument;
     }
 
     private ScanSecHubReport fetchScanSecHubReport(String projectId, UUID jobUUID) {

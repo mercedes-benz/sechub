@@ -18,6 +18,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import com.mercedesbenz.sechub.adapter.AbstractAdapter;
 import com.mercedesbenz.sechub.adapter.AdapterException;
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.AdapterProfiles;
 import com.mercedesbenz.sechub.adapter.AdapterRuntimeContext;
@@ -52,7 +53,7 @@ public class NetsparkerAdapterV1 extends AbstractAdapter<NetsparkerAdapterContex
     private NetsparkerAdapterWebLoginSupportV1 webLoginSupport = new NetsparkerAdapterWebLoginSupportV1();
 
     @Override
-    public String execute(NetsparkerAdapterConfig config, AdapterRuntimeContext runtimeContext) throws AdapterException {
+    public AdapterExecutionResult execute(NetsparkerAdapterConfig config, AdapterRuntimeContext runtimeContext) throws AdapterException {
         try {
             NetsparkerContext context = new NetsparkerContext(config, this, runtimeContext);
             NetsparkerWaitForStateSupport waitSupport = new NetsparkerWaitForStateSupport();
@@ -63,7 +64,7 @@ public class NetsparkerAdapterV1 extends AbstractAdapter<NetsparkerAdapterContex
 
             fetchReport(context);
 
-            return context.getResult();
+            return new AdapterExecutionResult(context.getResult());
         } catch (AdapterException e) {
             throw e;
         } catch (Exception e) {

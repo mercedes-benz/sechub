@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 buildscript{
 
-	apply from: "${rootProject.projectDir}/libraries.gradle"
-	apply from: "${rootProject.projectDir}/projects.gradle"
+	apply from: "${rootProject.projectDir}/gradle/libraries.gradle"
+	apply from: "${rootProject.projectDir}/gradle/projects.gradle"
 
     def customMavenRepoURL4plugins = System.getenv('CUST_MVN_URL_PLUGINS')
     if (customMavenRepoURL4plugins!=null){
@@ -29,14 +29,14 @@ plugins {
     id 'org.asciidoctor.jvm.pdf' version '3.3.2'
     
     // open api
-    id 'org.openapi.generator' version '5.4.0'
+    id 'org.openapi.generator' version '6.0.1'
     
     // spring
-    id 'org.springframework.boot' version '2.6.4' apply false
+    id 'org.springframework.boot' version '2.7.3' apply false
     
     // spotless code formatter
     // (see https://github.com/diffplug/spotless)
-    id 'com.diffplug.spotless' version '6.3.0'
+    id 'com.diffplug.spotless' version '6.9.1'
     
     // versions plugin for checking new available library versions etc. 
     // (see https://github.com/ben-manes/gradle-versions-plugin)
@@ -120,9 +120,9 @@ spotless {
 	}
 }
 
-apply from: "${rootProject.projectDir}/build-versioning.gradle"
-apply from: "${rootProject.projectDir}/build-java.gradle"
-apply from: "${rootProject.projectDir}/build-spring.gradle"
-apply from: "${rootProject.projectDir}/build-maven.gradle"
-apply from: "${rootProject.projectDir}/build-eclipse.gradle"
-apply from: "${rootProject.projectDir}/build-report.gradle"
+apply from: "${rootProject.projectDir}/gradle/build-versioning.gradle"
+apply from: "${rootProject.projectDir}/gradle/build-java.gradle"
+apply from: "${rootProject.projectDir}/gradle/build-spring.gradle"
+apply from: "${rootProject.projectDir}/gradle/build-maven.gradle"
+apply from: "${rootProject.projectDir}/gradle/build-eclipse.gradle"
+apply from: "${rootProject.projectDir}/gradle/build-report.gradle"

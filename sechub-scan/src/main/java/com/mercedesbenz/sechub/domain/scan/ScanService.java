@@ -15,9 +15,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverterException;
+import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
+import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
 import com.mercedesbenz.sechub.domain.scan.log.ProjectScanLogService;
 import com.mercedesbenz.sechub.domain.scan.product.CodeScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.InfrastructureScanProductExecutionService;
+import com.mercedesbenz.sechub.domain.scan.product.LicenseScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResultService;
 import com.mercedesbenz.sechub.domain.scan.product.WebScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfig;
@@ -74,6 +77,9 @@ public class ScanService implements SynchronMessageHandler {
     InfrastructureScanProductExecutionService infraScanProductExecutionService;
 
     @Autowired
+    LicenseScanProductExecutionService licenseScanProductExecutionService;
+
+    @Autowired
     CreateScanReportService reportService;
 
     @Autowired
@@ -110,6 +116,14 @@ public class ScanService implements SynchronMessageHandler {
 
             DomainMessageSynchronousResult response = new DomainMessageSynchronousResult(MessageID.SCAN_DONE);
             response.set(REPORT_TRAFFIC_LIGHT, report.getTrafficLightAsString());
+
+            String result = report.getResult();
+            if (result == null) {
+                LOG.warn("Report had no result, means no sechub report model available! Cannot set report messages");
+            } else {
+                SecHubReportModel model = SecHubReportModel.fromJSONString(result);
+                response.set(REPORT_MESSAGES, new SecHubMessagesList(model.getMessages()));
+            }
             return response;
 
         } catch (ScanReportException e) {

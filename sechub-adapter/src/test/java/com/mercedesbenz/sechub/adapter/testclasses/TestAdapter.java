@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.adapter.testclasses;
 
 import com.mercedesbenz.sechub.adapter.AbstractAdapter;
 import com.mercedesbenz.sechub.adapter.AdapterException;
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterRuntimeContext;
 
 public class TestAdapter extends AbstractAdapter<TestAdapterContextInterface, TestAdapterConfigInterface> implements TestAdapterInterface {
@@ -19,8 +20,8 @@ public class TestAdapter extends AbstractAdapter<TestAdapterContextInterface, Te
     }
 
     @Override
-    public String execute(TestAdapterConfigInterface config, AdapterRuntimeContext runtimeContext) throws AdapterException {
-        return null;
+    public AdapterExecutionResult execute(TestAdapterConfigInterface config, AdapterRuntimeContext runtimeContext) throws AdapterException {
+        return new AdapterExecutionResult(null);
     }
 
     @Override

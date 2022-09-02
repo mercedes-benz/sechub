@@ -15,6 +15,9 @@ import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionAbandonedEx
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
 
+/**
+ * Finally executes the scan job
+ */
 class ScanJobExecutor {
     /* the absolute minimum of time to wait for next cancel check */
     private static final int MINIMUM_CANCEL_CHECK_TIME_MILLISECONDS = 100;
@@ -148,9 +151,12 @@ class ScanJobExecutor {
                 scanService.codeScanProductExecutionService.executeProductsAndStoreResults(context);
                 scanService.webScanProductExecutionService.executeProductsAndStoreResults(context);
                 scanService.infraScanProductExecutionService.executeProductsAndStoreResults(context);
+                scanService.licenseScanProductExecutionService.executeProductsAndStoreResults(context);
 
             } catch (SecHubExecutionException e) {
                 this.exception = e;
+            } catch (Exception e) {
+                LOG.error("Unhandled exception appeared!", e);
             } finally {
                 MDC.clear();
             }

@@ -2,9 +2,11 @@
 package com.mercedesbenz.sechub.restdoc;
 
 import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
@@ -42,8 +44,9 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.signup.UseCaseAdminDeletesSignup;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.signup.UseCaseAdminListsOpenUserSignups;
 import com.mercedesbenz.sechub.test.ExampleConstants;
+import com.mercedesbenz.sechub.test.RestDocPathParameter;
+import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
-import com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(SignupAdministrationRestController.class)
@@ -51,7 +54,7 @@ import com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter;
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
-public class SignupAdministrationRestControllerRestDocTest {
+public class SignupAdministrationRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
 
     private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
@@ -91,7 +94,8 @@ public class SignupAdministrationRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-        		get(apiEndpoint)
+        		get(apiEndpoint).
+        			header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
         		).
         			andExpect(status().isOk()).
         			andExpect(content().json("[{\"userId\":\"johnsmith\",\"emailAdress\":\"john.smith@example.com\"},{\"userId\":\"janesmith\",\"emailAdress\":\"jane.smith@example.com\"}]")).
@@ -102,11 +106,14 @@ public class SignupAdministrationRestControllerRestDocTest {
                                 responseSchema(OpenApiSchema.SIGNUP_LIST.getSchema()).
                             and().
             			    document(
-        	                    responseFields(
-        	                            fieldWithPath("[]").description("List of user signups").optional(),
-        	                            fieldWithPath("[]."+RestDocPathParameter.USER_ID.paramName()).type(JsonFieldType.STRING).description("The user id"),
-        	                            fieldWithPath("[].emailAdress").type(JsonFieldType.STRING).description("The email address")
-        	                    )
+        	                		requestHeaders(
+        	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+        	                		),
+	        	                    responseFields(
+	        	                            fieldWithPath("[]").description("List of user signups").optional(),
+	        	                            fieldWithPath("[]."+RestDocPathParameter.USER_ID.paramName()).type(JsonFieldType.STRING).description("The user id"),
+	        	                            fieldWithPath("[].emailAdress").type(JsonFieldType.STRING).description("The email address")
+	        	                    )
         	            )
         		);
 
@@ -122,7 +129,8 @@ public class SignupAdministrationRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-        		delete(apiEndpoint,"userId1")
+        		delete(apiEndpoint,"userId1").
+        			header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
         		).
         			andExpect(status().isOk()).
         			andDo(defineRestService().
@@ -131,6 +139,9 @@ public class SignupAdministrationRestControllerRestDocTest {
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
                             and().
             			    document(
+        	                	requestHeaders(
+        	                			headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+        	                	),
                                 pathParameters(
                                         parameterWithName(USER_ID.paramName()).description("The userId of the signup which shall be deleted")
                                 )

@@ -48,3 +48,9 @@ java-gen/
 
 # OWASP ZAP
 *.zap
+
+# Asciidoctor
+.asciidoctorconfig.adoc
+
+# macOS
+.DS_Store

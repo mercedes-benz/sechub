@@ -25,4 +25,4 @@ else
     echo "Starting cluster of $REPLICAS containers."
 fi
 
-docker-compose --file docker-compose_pds_scancode_object_storage.yaml up --scale pds-scancode=$REPLICAS --build --remove-orphans
+docker-compose --file docker-compose_pds_scancode_cluster_object_storage.yaml up --scale pds-scancode=$REPLICAS --build --remove-orphans

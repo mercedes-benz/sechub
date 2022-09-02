@@ -19,11 +19,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
-import com.mercedesbenz.sechub.integrationtest.TextFileWriter;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TestUser;
 import com.mercedesbenz.sechub.integrationtest.api.WithSecHubClient.ApiTokenStrategy;
+import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestExampleConstants.IntegrationTestExampleFolder;
 import com.mercedesbenz.sechub.test.TestFileSupport;
+import com.mercedesbenz.sechub.test.TestFileWriter;
 import com.mercedesbenz.sechub.test.TestUtil;
 
 public class SecHubClientExecutor {
@@ -61,6 +62,8 @@ public class SecHubClientExecutor {
     private Path outputFolder;
     private String sechubClientBinaryPath;
     private boolean trustAll;
+    private File cachedExecutableFile;
+    private static File cachedExampleContentFolder;
 
     public class ExecutionResult {
         private int exitCode;
@@ -183,7 +186,10 @@ public class SecHubClientExecutor {
 
             /* start process and wait for execution done */
             Process process = pb.start();
+            long started = System.currentTimeMillis();
             int exitCode = process.waitFor();
+            long elapsed = System.currentTimeMillis() - started;
+            LOG.debug("Sechub client process has been executed. Time elapsed:" + elapsed + "ms = " + elapsed / 1000 + " seconds");
 
             ExecutionResult result = extractResult(tmpGoOutputFile, exitCode);
 
@@ -206,6 +212,7 @@ public class SecHubClientExecutor {
 
         Map<String, String> environment = pb.environment();
         environment.put("SECHUB_TRUSTALL", "" + trustAll);
+        environment.put("SECHUB_INITIAL_WAIT_INTERVAL", "0.1");
 
         if (IntegrationTestSetup.SECHUB_CLIENT_DEBUGGING_ENABLED) {
             // we enable only when explicit wanted - so logs are smaller and easier to read
@@ -328,8 +335,10 @@ public class SecHubClientExecutor {
     }
 
     private File resolveExistingExecutableAndAppendAdditionalCommands() {
+        if (cachedExecutableFile != null) {
+            return cachedExecutableFile;
+        }
         File executableFile = null;
-        LOG.debug("sechub client binary path:{}", sechubClientBinaryPath);
 
         if (sechubClientBinaryPath == null) {
             String parentFolder = "sechub-cli/build/go/platform/"; // when not set we use build location
@@ -343,17 +352,25 @@ public class SecHubClientExecutor {
             }
             File executableParentFolder = new File(IntegrationTestFileSupport.getTestfileSupport().getRootFolder(), parentFolder);
             executableFile = new File(executableParentFolder, sechubExeName);
+            LOG.debug("SecHub client path: Calculated: {}", executableFile.getAbsoluteFile());
         } else {
+            LOG.debug("SecHub client path: Use defined: {}", sechubClientBinaryPath);
             executableFile = new File(sechubClientBinaryPath);
         }
 
         if (!executableFile.exists()) {
             throw new SecHubClientNotFoundException(executableFile);
         }
-        return executableFile;
+        cachedExecutableFile = executableFile;
+
+        return cachedExecutableFile;
     }
 
     private File ensureExampleContentFoldersExist() {
+        if (cachedExampleContentFolder != null) {
+            return cachedExampleContentFolder;
+        }
+        LOG.debug("Start ensuring example content folders for sechub client executor");
         /*
          * because SecHub client checks for existing folders we must ensure integration
          * test do scan existing folders so we ensure example content/folders exists
@@ -362,17 +379,18 @@ public class SecHubClientExecutor {
         File exampleScanRootFolder = new File(IntegrationTestFileSupport.getTestfileSupport().getRootFolder(), pathToExamples);
         exampleScanRootFolder.mkdirs();
 
-        for (IntegrationTestExampleFolders folder : IntegrationTestExampleFolders.values()) {
-            File projectResourceFoldder = new File(exampleScanRootFolder, folder.getPath());
+        List<IntegrationTestExampleFolder> exampleFolders = IntegrationTestExampleConstants.MOCKDATA_EXAMPLE_CONTENT_PROVIDER.getExampleContentFolders();
+        for (IntegrationTestExampleFolder folder : exampleFolders) {
+            File projectResourceFolder = new File(exampleScanRootFolder, folder.getPath());
             if (folder.isExistingContent()) {
-                assertTrue("This projectResourceFolder must already exist but doesnt:" + projectResourceFoldder.getAbsolutePath(),
-                        projectResourceFoldder.isDirectory() && projectResourceFoldder.exists());
+                assertTrue("This projectResourceFolder must already exist but doesnt:" + projectResourceFolder.getAbsolutePath(),
+                        projectResourceFolder.isDirectory() && projectResourceFolder.exists());
             } else {
-                projectResourceFoldder.mkdirs();// we generate this one
-                File testFile1 = new File(projectResourceFoldder, "TestMeIfYouCan.java");
+                projectResourceFolder.mkdirs();// we generate this one
+                File testFile1 = new File(projectResourceFolder, "TestMeIfYouCan.java");
                 if (!testFile1.exists()) {
                     try {
-                        TextFileWriter writer = new TextFileWriter();
+                        TestFileWriter writer = new TestFileWriter();
                         writer.save("class TestMeifYouCan {}", testFile1, Charset.forName("UTF-8"));
                     } catch (IOException e) {
                         throw new IllegalStateException("Cannot create test output!", e);
@@ -381,7 +399,8 @@ public class SecHubClientExecutor {
                 }
             }
         }
-        return exampleScanRootFolder;
+        cachedExampleContentFolder = exampleScanRootFolder;
+        return cachedExampleContentFolder;
     }
 
     public void setTrustAll(boolean trustAll) {

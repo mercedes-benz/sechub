@@ -12,6 +12,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
+import com.mercedesbenz.sechub.integrationtest.IntegrationTestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.integrationtest.api.AssertEventInspection;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TestDataConstants;
@@ -19,7 +20,7 @@ import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 
-public class JobUsecasesEventTraceScenario4IntTest {
+public class JobUsecasesEventTraceScenario4IntTest implements IntegrationTestIsNecessaryForDocumentation {
 
     @Rule
     public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario4.class);
@@ -47,7 +48,7 @@ public class JobUsecasesEventTraceScenario4IntTest {
         startEventInspection();
 
         /* execute */
-        as(SUPER_ADMIN).restartCodeScanHardAndFetchJobStatus(project,sechubJobUUD);
+        as(SUPER_ADMIN).restartJobHardAndFetchJobStatus(project,sechubJobUUD);
 
         /* test */
         assertJobHasEnded(project,sechubJobUUD);
@@ -82,7 +83,7 @@ public class JobUsecasesEventTraceScenario4IntTest {
         startEventInspection();
 
         /* execute */
-        as(SUPER_ADMIN).restartCodeScanHardAndFetchJobStatus(project,sechubJobUUD);
+        as(SUPER_ADMIN).restartJobHardAndFetchJobStatus(project,sechubJobUUD);
 
         /* test */
         assertJobHasEnded(project,sechubJobUUD);
@@ -144,7 +145,7 @@ public class JobUsecasesEventTraceScenario4IntTest {
         startEventInspection();
 
         /* execute */
-        as(SUPER_ADMIN).restartCodeScanHardAndFetchJobStatus(project,sechubJobUUD);
+        as(SUPER_ADMIN).restartJobHardAndFetchJobStatus(project,sechubJobUUD);
 
         /* test */
         assertJobHasEnded(project,sechubJobUUD);
@@ -201,7 +202,7 @@ public class JobUsecasesEventTraceScenario4IntTest {
         startEventInspection();
 
         /* execute */
-        as(SUPER_ADMIN).restartCodeScanAndFetchJobStatus(project,sechubJobUUD);
+        as(SUPER_ADMIN).restartJobAndFetchJobStatus(project,sechubJobUUD);
 
 
         /* test */
@@ -240,7 +241,7 @@ public class JobUsecasesEventTraceScenario4IntTest {
         startEventInspection();
 
         /* execute */
-        as(SUPER_ADMIN).restartCodeScanAndFetchJobStatus(project,sechubJobUUD);
+        as(SUPER_ADMIN).restartJobAndFetchJobStatus(project,sechubJobUUD);
 
         /* test */
         assertJobHasEnded(project,sechubJobUUD);
@@ -294,7 +295,7 @@ public class JobUsecasesEventTraceScenario4IntTest {
         startEventInspection();
 
         /* execute */
-        as(SUPER_ADMIN).restartCodeScanAndFetchJobStatus(project,sechubJobUUD);
+        as(SUPER_ADMIN).restartJobAndFetchJobStatus(project,sechubJobUUD);
 
         /* test */
         assertJobHasEnded(project,sechubJobUUD);
@@ -337,7 +338,7 @@ public class JobUsecasesEventTraceScenario4IntTest {
          * so we must upload again...
          */
         revertJobToStillNotApproved(sechubJobUUD); // make upload possible again...
-        as(USER_1).upload(project, sechubJobUUD, TestDataConstants.RESOURCE_PATH_ZIPFILE_ONLY_TEST1_TXT);
+        as(USER_1).uploadSourcecode(project, sechubJobUUD, TestDataConstants.RESOURCE_PATH_ZIPFILE_ONLY_TEST1_TXT);
         revertJobToStillRunning(sechubJobUUD); // fake it's running
         assertJobIsRunning(project, sechubJobUUD);
     }

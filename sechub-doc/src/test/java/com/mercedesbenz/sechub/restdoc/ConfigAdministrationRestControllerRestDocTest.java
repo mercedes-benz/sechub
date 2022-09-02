@@ -2,8 +2,10 @@
 package com.mercedesbenz.sechub.restdoc;
 
 import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -37,6 +39,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesAutoCleanupConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.config.UseCaseAdminUpdatesAutoCleanupConfiguration;
 import com.mercedesbenz.sechub.test.ExampleConstants;
+import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
@@ -45,7 +48,7 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
-public class ConfigAdministrationRestControllerRestDocTest {
+public class ConfigAdministrationRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
 
     private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
@@ -70,9 +73,10 @@ public class ConfigAdministrationRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
-				put(apiEndpoint).
-				content(config.toJSON()).
-				contentType(MediaType.APPLICATION_JSON_VALUE)
+					put(apiEndpoint).
+					content(config.toJSON()).
+					contentType(MediaType.APPLICATION_JSON_VALUE).
+					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
 				).
 		andExpect(status().isAccepted()).
 		andDo(defineRestService().
@@ -80,8 +84,11 @@ public class ConfigAdministrationRestControllerRestDocTest {
                     useCaseData(useCase).
                     tag(RestDocFactory.extractTag(apiEndpoint)).
                 and().
-                document()
-        );
+                document(
+	                		requestHeaders(
+	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                		)
+                ));
 		/* @formatter:on */
     }
 
@@ -97,8 +104,9 @@ public class ConfigAdministrationRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
-				get(apiEndpoint).
-				contentType(MediaType.APPLICATION_JSON_VALUE)
+					get(apiEndpoint).
+					contentType(MediaType.APPLICATION_JSON_VALUE).
+					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
 				).
 		andExpect(status().isOk()).
 		andExpect(content().json(config.toJSON())).
@@ -107,8 +115,11 @@ public class ConfigAdministrationRestControllerRestDocTest {
                     useCaseData(useCase).
                     tag(RestDocFactory.extractTag(apiEndpoint)).
                 and().
-                document()
-        );
+                document(
+                		requestHeaders(
+                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+                		)
+        ));
 		/* @formatter:on */
     }
 

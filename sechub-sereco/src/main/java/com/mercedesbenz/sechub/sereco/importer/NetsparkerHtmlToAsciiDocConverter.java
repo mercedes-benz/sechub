@@ -6,13 +6,12 @@ import java.util.regex.Pattern;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.safety.Whitelist;
+import org.jsoup.safety.Safelist;
 import org.jsoup.select.Elements;
 
 /**
  * Converts the Netsparker HTML to the AsciiDoc plain text format
  */
-@SuppressWarnings("deprecation")
 public class NetsparkerHtmlToAsciiDocConverter {
 
     private final static Pattern NO_BREAK_SPACE_PATTERN = Pattern.compile("Â&nbsp;");
@@ -26,7 +25,7 @@ public class NetsparkerHtmlToAsciiDocConverter {
      */
     public static String convert(String unsanitizedHtml) {
         // Sanitize HTML to prevent Cross-Site-Scripting (XSS)
-        String html = Jsoup.clean(unsanitizedHtml, Whitelist.relaxed());
+        String html = Jsoup.clean(unsanitizedHtml, Safelist.relaxed());
 
         html = removeStrangeSymbols(html);
 

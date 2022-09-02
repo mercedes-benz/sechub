@@ -20,8 +20,8 @@ import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.mercedesbenz.sechub.pds.util.PDSLocalDateTimeDeserializer;
-import com.mercedesbenz.sechub.pds.util.PDSLocalDateTimeSerializer;
+import com.mercedesbenz.sechub.commons.model.LocalDateTimeDeserializer;
+import com.mercedesbenz.sechub.commons.model.LocalDateTimeSerializer;
 
 /**
  * Represents a PDS Job which contains information about ownership, related
@@ -41,7 +41,6 @@ public class PDSJob {
     public static final String TABLE_NAME = "PDS_JOB";
 
     public static final String COLUMN_UUID = "UUID";
-    public static final String COLUMN_SECHUB_JOB_UUID = "SECHUB_JOB_UUID";
 
     public static final String COLUMN_SERVER_ID = "SERVER_ID";
     public static final String COLUMN_STATE = "STATE";
@@ -59,6 +58,10 @@ public class PDSJob {
 
     public static final String COLUMN_OUTPUT_STREAM_TEXT = "OUTPUT_STREAM_TEXT";
 
+    public static final String COLUMN_MESSAGES = "MESSAGES";
+
+    public static final String COLUMN_META_DATA = "META_DATA";
+
     public static final String COLUMN_LAST_STREAM_TEXT_REFRESH_REQUEST = "LAST_STREAM_TEXT_REFRESH_REQUEST";
     public static final String COLUMN_LAST_STREAM_TEXT_UPDATE = "LAST_STREAM_TEXT_UPDATE";
 
@@ -69,7 +72,6 @@ public class PDSJob {
 
     public static final String PROPERTY_UUID = "uUID";
     public static final String PROPERTY_SERVER_ID = "serverId";
-    public static final String PROPERTY_SECHUB_JOB_UUID = "sechubJobUUID";
 
     public static final String PROPERTY_STATE = "state";
     public static final String PROPERTY_OWNER = "owner";
@@ -81,10 +83,12 @@ public class PDSJob {
     public static final String PROPERTY_CONFIGURATION = "configuration";
     public static final String PROPERTY_RESULT = "result";
 
+    public static final String QUERY_DELETE_JOB_OLDER_THAN = "DELETE FROM PDSJob j WHERE j." + PROPERTY_CREATED + " < :cleanTimeStamp";
+
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = COLUMN_UUID, updatable = false, nullable = false)
+    @Column(name = COLUMN_UUID, updatable = false, nullable = false, columnDefinition = "UUID")
     UUID uUID;
 
     @Column(name = COLUMN_OWNER, nullable = false)
@@ -99,28 +103,28 @@ public class PDSJob {
     String serverId;
 
     @Column(name = COLUMN_CREATED, nullable = false) // remark: we setup hibernate to use UTC settings - see
-    @JsonDeserialize(using = PDSLocalDateTimeDeserializer.class)
-    @JsonSerialize(using = PDSLocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     LocalDateTime created;
 
     @Column(name = COLUMN_STARTED) // remark: we setup hibernate to use UTC settings - see application.properties
-    @JsonDeserialize(using = PDSLocalDateTimeDeserializer.class)
-    @JsonSerialize(using = PDSLocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     LocalDateTime started;
 
     @Column(name = COLUMN_ENDED) // remark: we setup hibernate to use UTC settings - see application.properties
-    @JsonDeserialize(using = PDSLocalDateTimeDeserializer.class)
-    @JsonSerialize(using = PDSLocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     LocalDateTime ended;
 
     @Column(name = COLUMN_LAST_STREAM_TEXT_REFRESH_REQUEST) // remark: we setup hibernate to use UTC settings - see application.properties
-    @JsonDeserialize(using = PDSLocalDateTimeDeserializer.class)
-    @JsonSerialize(using = PDSLocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     LocalDateTime lastStreamTextRefreshRequest;
 
     @Column(name = COLUMN_LAST_STREAM_TEXT_UPDATE) // remark: we setup hibernate to use UTC settings - see application.properties
-    @JsonDeserialize(using = PDSLocalDateTimeDeserializer.class)
-    @JsonSerialize(using = PDSLocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     LocalDateTime lastStreamTextUpdate;
 
     @Column(name = COLUMN_CONFIGURATION)
@@ -146,6 +150,14 @@ public class PDSJob {
     @Version
     @Column(name = "VERSION")
     Integer version;
+
+    @Column(name = COLUMN_MESSAGES)
+    @Type(type = "text") // see remarks on COLUMN_RESULT
+    String messages;
+
+    @Column(name = COLUMN_META_DATA)
+    @Type(type = "text") // see remarks on COLUMN_RESULT
+    String metaDataText;
 
     public void setServerId(String serverId) {
         this.serverId = serverId;
@@ -221,6 +233,14 @@ public class PDSJob {
 
     public String getErrorStreamText() {
         return errorStreamText;
+    }
+
+    public String getMessages() {
+        return messages;
+    }
+
+    public String getMetaDataText() {
+        return metaDataText;
     }
 
     @Override

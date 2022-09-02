@@ -2,8 +2,8 @@
 package com.mercedesbenz.sechub.domain.administration.signup;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.mercedesbenz.sechub.commons.core.MustBeKeptStable;
 import com.mercedesbenz.sechub.commons.model.JSONable;
-import com.mercedesbenz.sechub.sharedkernel.MustBeKeptStable;
 
 @JsonIgnoreProperties(ignoreUnknown = true) // we do ignore to avoid problems from wrong configured values!
 @MustBeKeptStable("This configuration is used by frontends to self register a user It has to be backward compatible. To afford this we will NOT remove older parts since final API releases")

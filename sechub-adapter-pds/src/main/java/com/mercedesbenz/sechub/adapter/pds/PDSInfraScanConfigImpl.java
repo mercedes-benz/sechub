@@ -1,85 +1,50 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.adapter.pds;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.UUID;
-
 import com.mercedesbenz.sechub.adapter.AbstractInfraScanAdapterConfig;
 import com.mercedesbenz.sechub.adapter.AbstractInfraScanAdapterConfigBuilder;
-import com.mercedesbenz.sechub.commons.model.ScanType;
-import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
-import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelReducedCloningSupport;
-import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 
 public class PDSInfraScanConfigImpl extends AbstractInfraScanAdapterConfig implements PDSInfraScanConfig {
 
-    Map<String, String> jobParameters;
-    UUID sechubJobUUID;
-    String pdsProductIdentifier;
+    private PDSAdapterConfigData configData;
 
     private PDSInfraScanConfigImpl() {
     }
 
-    public String getPdsProductIdentifier() {
-        return pdsProductIdentifier;
+    @Override
+    public PDSAdapterConfigData getPDSAdapterConfigData() {
+        return configData;
     }
 
     public static PDSInfraScanConfigBuilder builder() {
         return new PDSInfraScanConfigBuilder();
     }
 
-    public static class PDSInfraScanConfigBuilder extends AbstractInfraScanAdapterConfigBuilder<PDSInfraScanConfigBuilder, PDSInfraScanConfigImpl> {
+    public static class PDSInfraScanConfigBuilder extends AbstractInfraScanAdapterConfigBuilder<PDSInfraScanConfigBuilder, PDSInfraScanConfigImpl>
+            implements PDSAdapterConfigBuilder {
 
-        private Map<String, String> jobParameters;
-        private UUID sechubJobUUID;
-        private String pdsProductIdentifier;
-        private SecHubConfigurationModel configurationModel;
-
-        public PDSInfraScanConfigBuilder setPDSProductIdentifier(String productIdentifier) {
-            this.pdsProductIdentifier = productIdentifier;
-            return this;
-        }
-
-        @Override
-        protected void customBuild(PDSInfraScanConfigImpl config) {
-            jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_TARGET_TYPE, config.getTargetType());
-
-            if (configurationModel != null) {
-                String reducedConfigJSON = SecHubConfigurationModelReducedCloningSupport.DEFAULT.createReducedScanConfigurationCloneJSON(configurationModel,
-                        ScanType.INFRA_SCAN);
-                jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_CONFIGURATION, reducedConfigJSON);
-            }
-
-            config.jobParameters = Collections.unmodifiableMap(jobParameters);
-            config.sechubJobUUID = sechubJobUUID;
-            config.pdsProductIdentifier = pdsProductIdentifier;
-        }
+        private PDSAdapterDataConfigurator configurator = new PDSAdapterDataConfigurator();
 
         @Override
         protected PDSInfraScanConfigImpl buildInitialConfig() {
             return new PDSInfraScanConfigImpl();
         }
 
-        public PDSInfraScanConfigBuilder setSecHubJobUUID(UUID sechubJobUUID) {
-            this.sechubJobUUID = sechubJobUUID;
-            return this;
+        @Override
+        public PDSAdapterConfigurator getPDSAdapterConfigurator() {
+            return configurator;
         }
 
-        public PDSInfraScanConfigBuilder setSecHubConfigModel(SecHubConfigurationModel model) {
-            this.configurationModel = model;
-            return this;
-        }
+        @Override
+        protected void customBuild(PDSInfraScanConfigImpl config) {
+            /*
+             * we must set the target type before calling configurator.configure() !
+             * Otherwise job parameters not correct calculated
+             */
+            configurator.setTargetType(config.getTargetType());
 
-        /**
-         * Set job parameters - mandatory
-         *
-         * @param jobParameters a map with key values
-         * @return builder
-         */
-        public final PDSInfraScanConfigBuilder setJobParameters(Map<String, String> jobParameters) {
-            this.jobParameters = jobParameters;
-            return this;
+            configurator.configure();
+            config.configData = configurator;
         }
 
         @Override
@@ -89,26 +54,8 @@ public class PDSInfraScanConfigImpl extends AbstractInfraScanAdapterConfig imple
             assertProjectIdSet();
             assertProductBaseURLSet();
 
-            if (pdsProductIdentifier == null) {
-                throw new IllegalStateException("pds product identifier not set!");
-            }
-            if (jobParameters == null) {
-                throw new IllegalStateException("job parameters not set!");
-            }
-            if (sechubJobUUID == null) {
-                throw new IllegalStateException("sechubJobUUID not set!");
-            }
         }
 
     }
 
-    @Override
-    public Map<String, String> getJobParameters() {
-        return jobParameters;
-    }
-
-    @Override
-    public UUID getSecHubJobUUID() {
-        return sechubJobUUID;
-    }
 }
