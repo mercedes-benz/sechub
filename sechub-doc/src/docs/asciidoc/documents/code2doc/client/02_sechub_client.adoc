@@ -106,6 +106,8 @@ See here for details: <<section-client-configuration-file,Configuration file>>
 SECHUB_APITOKEN=${apitoken}
 sechub scan
 ----
+TIP: If you prefer the report in HTML format: +
+     `sechub -reportformat html scan`
 
 ===== scanAsync
 
@@ -140,7 +142,7 @@ sechub -jobUUID ${jobUUID} getStatus
 ----
 
 ===== getReport
-Will fetch report as json (result will only exist when job is done)
+Will fetch report as json. (result will only exist when job is done)
 
 **Minimum call syntax**
 ----
@@ -168,6 +170,8 @@ include::../../shared/false-positives/false-positives-REST-API-content-example1.
 <4> ID of finding, which shall be marked as false positive
 <5> Comment (optional) describing the reason why this is handled as false positive
 
+NOTE: Providing an empty list here does *NOT delete* the declared false positives! +
+Since `markFalsePositives` only adds false positives, an empty `jobData` list has no effect at all. (don't do this)
 
 ===== getFalsePositives
 This will fetch the false positives list of your project as JSON - format is same as for `markFalsePositives`
@@ -287,7 +291,7 @@ Here is an overview of mandatory parameter for each `action`:
   Quiet mode - Suppress all informative output. Can also be defined via environment variable `SECHUB_QUIET=true`. +
   Only print filenames written to, errors and explicitely requested informations (job-UUID, version, status).
 - `-reportformat <format>` +
-  Output format for reports. Currently supported: [html,json]. If not a supported format, "json" will always be the fallback.
+  Output format for reports. Currently supported: [`json`, `html`, `spdx-json`]. If an unsupported format string is provided, "json" will always be the fallback.
 - `-server <url>` +
   Server url of `{sechub}` server to use - e.g. https//example.com:8081. Mandatory, but can also be defined in config file or via environment variable.
 - `-stop-on-yellow` +

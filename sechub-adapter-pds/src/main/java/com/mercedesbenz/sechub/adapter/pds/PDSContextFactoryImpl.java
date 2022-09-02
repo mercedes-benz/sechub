@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.adapter.pds;
 
 import org.springframework.stereotype.Component;

@@ -34,7 +34,7 @@ ext {
       re2j:                                    "1.7",
       logstash_logback_encoder:                "7.2",
       aws_java_sdk_s3:                         "1.12.266",
-      postgresql:                              "42.4.0",
+      postgresql:                              "42.4.2",
                                               
       /* JDK > 9 needs these ones: */         
       jaxb_api:                                "2.3.1",

@@ -19,7 +19,7 @@ ARG WORKSPACE="/workspace"
 
 # Environment variables in container
 ENV DOWNLOAD_FOLDER="/downloads"
-ENV MOCK_FOLDER="$SCRIPT_FOLDER/mocks"
+ENV MOCK_FOLDER="/mocks"
 ENV PDS_VERSION="${PDS_VERSION}"
 ENV SHARED_VOLUMES="/shared_volumes"
 ENV SHARED_VOLUME_UPLOAD_DIR="$SHARED_VOLUMES/uploads"
@@ -35,7 +35,7 @@ RUN groupadd --gid "$GID" "$USER" && \
     useradd --uid "$UID" --gid "$GID" --no-log-init --create-home "$USER"
 
 # Create folders & change owner of folders
-RUN mkdir --parents "$PDS_FOLDER" "$SCRIPT_FOLDER" "$TOOL_FOLDER" "$WORKSPACE" "$DOWNLOAD_FOLDER" "MOCK_FOLDER" "$SHARED_VOLUME_UPLOAD_DIR" && \
+RUN mkdir --parents "$PDS_FOLDER" "$SCRIPT_FOLDER" "$TOOL_FOLDER" "$WORKSPACE" "$DOWNLOAD_FOLDER" "$MOCK_FOLDER" "$SHARED_VOLUME_UPLOAD_DIR" && \
     # Change owner and workspace and shared volumes folder
     # the only two folders pds really needs write access to
     chown --recursive "$USER:$USER" "$WORKSPACE" "$SHARED_VOLUMES"

@@ -77,7 +77,7 @@ class OwaspZapScanExecutorTest {
         when(connectionChecker.isTargetReachable(targetUri, null)).thenReturn(false);
 
         /* execute + test */
-        assertThrows(MustExitRuntimeException.class, () -> executorToTest.execute(scanConfig));
+        assertThrows(ZapWrapperRuntimeException.class, () -> executorToTest.execute(scanConfig));
 
         verify(connectionChecker).isTargetReachable(targetUri, null);
 

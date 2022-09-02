@@ -34,6 +34,8 @@ public class OwaspZapScanConfiguration {
 
     private DeactivatedRuleReferences deactivatedRuleReferences;
 
+    private Path apiDefinitionFile;
+
     private OwaspZapScanConfiguration() {
     }
 
@@ -99,6 +101,14 @@ public class OwaspZapScanConfiguration {
         return deactivatedRuleReferences;
     }
 
+    /**
+     *
+     * @return api defintion file or <code>null</code> if not available
+     */
+    public Path getApiDefinitionFile() {
+        return apiDefinitionFile;
+    }
+
     public static OwaspZapBasicScanConfigurationBuilder builder() {
         return new OwaspZapBasicScanConfigurationBuilder();
     }
@@ -128,6 +138,8 @@ public class OwaspZapScanConfiguration {
         private OwaspZapFullRuleset fullRuleset;
 
         private DeactivatedRuleReferences deactivatedRuleReferences;
+
+        private Path apiDefinitionFile;
 
         public OwaspZapBasicScanConfigurationBuilder setServerConfig(OwaspZapServerConfiguration serverConfig) {
             this.serverConfig = serverConfig;
@@ -194,6 +206,11 @@ public class OwaspZapScanConfiguration {
             return this;
         }
 
+        public OwaspZapBasicScanConfigurationBuilder setApiDefinitionFile(Path apiDefinitionFile) {
+            this.apiDefinitionFile = apiDefinitionFile;
+            return this;
+        }
+
         public OwaspZapScanConfiguration build() {
             OwaspZapScanConfiguration owaspZapBasicScanConfiguration = new OwaspZapScanConfiguration();
             owaspZapBasicScanConfiguration.serverConfig = this.serverConfig;
@@ -213,6 +230,8 @@ public class OwaspZapScanConfiguration {
 
             owaspZapBasicScanConfiguration.fullRuleset = this.fullRuleset;
             owaspZapBasicScanConfiguration.deactivatedRuleReferences = this.deactivatedRuleReferences;
+
+            owaspZapBasicScanConfiguration.apiDefinitionFile = this.apiDefinitionFile;
 
             return owaspZapBasicScanConfiguration;
         }

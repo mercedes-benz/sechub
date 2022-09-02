@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 [[section-pds-solution-configurations]]
 ==== PDS solution configurations
 Some of the existing PDS solutions do have special configuration parameters which are listed here

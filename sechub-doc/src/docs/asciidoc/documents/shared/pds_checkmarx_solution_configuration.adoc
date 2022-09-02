@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 [[section-pds-checkmarx-configuration]]
 ===== PDS Checkmarx solution
 

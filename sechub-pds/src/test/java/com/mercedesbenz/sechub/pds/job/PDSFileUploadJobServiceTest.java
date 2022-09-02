@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.job;
 
-import static org.junit.Assert.*;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.FILE_SIZE_HEADER_FIELD_NAME;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -21,6 +22,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
 import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
+import com.mercedesbenz.sechub.pds.PDSBadRequestException;
 import com.mercedesbenz.sechub.pds.PDSNotAcceptableException;
 import com.mercedesbenz.sechub.pds.PDSNotFoundException;
 import com.mercedesbenz.sechub.pds.UploadSizeConfiguration;
@@ -195,4 +197,51 @@ public class PDSFileUploadJobServiceTest {
         assertTrue(exception.getMessage().contains("[a-zA-Z"));
     }
 
+    @Test
+    void upload_fails_when_no_x_file_size_header_negative() {
+        /* prepare */
+        String result = CONTENT_DATA;
+        MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
+        String fileName = "binaries.tar";
+
+        ServletContext context = new MockServletContext();
+
+        /* formatter:off */
+        HttpServletRequest request = MockMvcRequestBuilders.multipart("https://localhost:1234").file(multiPart).header(FILE_SIZE_HEADER_FIELD_NAME, "-1")
+                .buildRequest(context);
+        /* formatter:on */
+
+        PDSBadRequestException exception = assertThrows(PDSBadRequestException.class, () -> {
+
+            /* execute */
+            serviceToTest.upload(job.getUUID(), fileName, request);
+        });
+
+        /* test */
+        assertEquals("The file size in header field " + FILE_SIZE_HEADER_FIELD_NAME + " cannot be negative.", exception.getMessage());
+    }
+
+    @Test
+    void upload_fails_when_no_x_file_size_header_invalid_number() {
+        /* prepare */
+        String result = CONTENT_DATA;
+        MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
+        String fileName = "binaries.tar";
+
+        ServletContext context = new MockServletContext();
+
+        /* formatter:off */
+        HttpServletRequest request = MockMvcRequestBuilders.multipart("https://localhost:1234").file(multiPart).header(FILE_SIZE_HEADER_FIELD_NAME, "abcabc")
+                .buildRequest(context);
+        /* formatter:on */
+
+        PDSBadRequestException exception = assertThrows(PDSBadRequestException.class, () -> {
+
+            /* execute */
+            serviceToTest.upload(job.getUUID(), fileName, request);
+        });
+
+        /* test */
+        assertEquals("The file size in header field " + FILE_SIZE_HEADER_FIELD_NAME + " is not formatted as a number.", exception.getMessage());
+    }
 }

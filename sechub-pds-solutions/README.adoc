@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 == PDS-Solutions
 
 It is easy to integrate security products, even command line tools without a network API, into 
@@ -17,5 +18,5 @@ Every solution works "out-of-the-box" and can be started as
 Look into the sub folders for the `PDS-Solutions` - every folder contains a  `README.adoc` file
 which describes the solution in detail.
 
-For more technical information please lookt at the https://mercedes-benz.github.io/sechub/[online documentation]. 
+For more technical information please look at the https://mercedes-benz.github.io/sechub/[online documentation]. 
 ====  

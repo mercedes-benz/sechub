@@ -7,6 +7,8 @@ import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -97,7 +99,8 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
 	    this.mockMvc.perform(
 	    		get(apiEndpoint,PROJECT1_ID,jobUUID).
 	    		    accept(MediaType.APPLICATION_JSON_VALUE).
-	    			contentType(MediaType.APPLICATION_JSON_VALUE)
+	    			contentType(MediaType.APPLICATION_JSON_VALUE).
+	    			header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
 	    		).
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json("{\"jobUUID\":\""+jobUUID.toString()+"\",\"result\":{\"count\":0,\"findings\":[]},\"trafficLight\":\"YELLOW\"}")).
@@ -108,10 +111,13 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
                                 responseSchema(OpenApiSchema.SECHUB_REPORT.getSchema()).
                             and().
                             document(
-                                        pathParameters(
+	                            		requestHeaders(
+	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                            		),
+                                    	pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The project Id"),
                                                 parameterWithName(JOB_UUID.paramName()).description("The job UUID")
-                                    )
+                                    	)
 	    			     ));
 
 	    /* @formatter:on */
@@ -142,7 +148,8 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
         this.mockMvc.perform(
         		get(apiEndpoint,PROJECT1_ID,jobUUID).
         		    accept(MediaType.APPLICATION_XHTML_XML).
-        			contentType(MediaType.APPLICATION_JSON_VALUE)
+        			contentType(MediaType.APPLICATION_JSON_VALUE).
+        			header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
         		).
         			andExpect(status().isOk()).
         			andExpect(content().contentType("text/html;charset=UTF-8")).
@@ -156,10 +163,13 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
                                 responseSchema(OpenApiSchema.SECHUB_REPORT.getSchema()).
                             and().
                             document(
+	                            		requestHeaders(
+	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                            		),
                                         pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The project Id"),
                                                 parameterWithName(JOB_UUID.paramName()).description("The job UUID")
-                                    )
+                                        )
         			      ));
 
         /* @formatter:on */
@@ -187,7 +197,8 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
 	    this.mockMvc.perform(
 	    		get(apiEndpoint,PROJECT1_ID,jobUUID).
 	    		    accept(MediaType.APPLICATION_JSON_VALUE).
-	    			contentType(MediaType.APPLICATION_JSON_VALUE)
+	    			contentType(MediaType.APPLICATION_JSON_VALUE).
+	    			header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
 	    		).
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json(spdxReport)).
@@ -198,10 +209,13 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
                                 responseSchema(OpenApiSchema.SECHUB_REPORT.getSchema()).
                             and().
                             document(
+	                            		requestHeaders(
+	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                            		),
                                         pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The project Id"),
                                                 parameterWithName(JOB_UUID.paramName()).description("The job UUID")
-                                    )
+                                        )
 	    			     ));
 
 	    /* @formatter:on */
