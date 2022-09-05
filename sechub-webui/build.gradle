@@ -18,7 +18,7 @@ dependencies {
     implementation library.logstashLogbackEncoder
     implementation library.database_h2
     implementation library.database_postgres
-    implementation library.springframework_webflux
+    implementation library.springboot_starter_webflux
     
-    developmentOnly library.springframework_devtools
+    developmentOnly library.springboot_devtoolssf
 }

@@ -1,18 +1,31 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header (title='SecHub - Status')">
-<title>Projects</title>
+<title>Status</title>
 </head>
 <body>
 	<nav th:replace="fragments/navbar"></nav>
 	<main>
 		<h1>Status</h1>
-		<p>Scheduler: enabled/disabled</p>
-		<p>Jobs running: 5</p>
-		<p>Jobs waiting: 10</p>
-		<p>Jobs all: 52 114</p>
-		
-		<p>Server Version 0.25.0</p>
+		<table>
+			<tbody>
+				<tr>
+					<td>Scheduler</td><td>enabled</td>
+				</tr>
+				<tr>
+					<td>Jobs running</td><td>5</td>
+				</tr>
+				<tr>
+					<td>Jobs waiting</td><td>10</td>
+				</tr>
+				<tr>
+					<td>Jobs all</td><td>52 114</td>
+				</tr>
+				<tr>
+					<td>Server version</td><td th:text="${sechubServerVersion}">0.25.0</td>
+				</tr>
+			</tbody>
+		</table>
 	</main>
 	<footer th:replace="fragments/footer"></footer>
 </body>

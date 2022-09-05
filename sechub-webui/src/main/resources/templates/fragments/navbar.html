@@ -6,13 +6,17 @@
 <body>
 <nav th:fragment="navbar">
 	<ul>
-		<li><a href="/">Projects</a></li>
+		<li><a href="/" th:text="#{projects}">Projects</a></li>
 		<li><a href="/status">Status</a></li>
 	</ul>
 	<h3>Profile</h3>
 	<ul>
-		<li><a href="/requestNewApiToken">Request new API Token</a></li>
-		<li><a href="/logout">Logout</a></li>
+		<li><a href="/requestNewApiToken" th:text="#{request-new-api-token}">Request new API Token</a></li>
+		<li><a href="/logout" th:text="#{loggout}">Logout</a></li>
+	</ul>
+	<ul>
+		<li><a href="?lang=en" th:text="#{switch-en}">English</a></li>
+		<li><a href="?lang=de" th:text="#{switch-de}">German</a></li>
 	</ul>
 </nav>
 </body>

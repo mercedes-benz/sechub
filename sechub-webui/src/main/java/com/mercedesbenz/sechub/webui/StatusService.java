@@ -1,6 +1,7 @@
 package com.mercedesbenz.sechub.webui;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -8,19 +9,21 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Service
-public class NewApiTokenService {
+public class StatusService {
 	@Autowired
 	private WebClient webClient;
 
-	/*
-	 * Request new API token: https://mercedes-benz.github.io/sechub/latest/sechub-restapi.html#user-requests-new-api-token
-	 * curl 'https://sechub.example.com/api/anonymous/refresh/apitoken/emailAdress@test.com' -i -X POST -H 'Content-Type: application/json;charset=UTF-8'
-	 */
-	public String requestNewApiToken(String email) {
-		
+	@Value("${sechub.userid}")
+	private String userId;
+	
+	@Value("${sechub.apiToken}")
+	private String apiToken;
+	
+	public String getServerVersion() {
 		return webClient.
-				post().
-				uri("api/anonymous/refresh/apitoken/" + email).
+				get().
+				uri("/api/admin/info/version").
+				headers(httpHeaders -> httpHeaders.setBasicAuth(userId, apiToken)).
 				retrieve().
 	              onStatus(HttpStatus::is4xxClientError,
 	                      error -> Mono.error(new RuntimeException("API not found"))).
@@ -28,6 +31,5 @@ public class NewApiTokenService {
 	                      error -> Mono.error(new RuntimeException("Server is not responding"))).
 	            bodyToMono(String.class).
 	            block();
-	             
 	}
 }

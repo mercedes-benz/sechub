@@ -1,11 +1,11 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/header :: header (title='Projects')">
-<title>Projects</title>
+<head th:replace="fragments/header :: header (title=#{projects})">
+<title th:text="#{projects}">Projects</title>
 </head>
 <body>
 	<nav th:replace="fragments/navbar"></nav>
-	<h1>Projects</h1>
+	<h1 th:text="#{projects}">Projects</h1>
 	<ul>
 		<li><a href="/projects/1/scans">Project 1</a></li>
 		<li>Project 2</li>

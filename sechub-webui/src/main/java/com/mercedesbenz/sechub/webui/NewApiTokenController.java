@@ -9,15 +9,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class NewApiTokenController {
 	@Autowired
-	NewApiTokenService service;
+	NewApiTokenService newApiTokenService;
 	
 	@Value("${sechub.serverUrl}")
 	private String secHubServerUrl;
 	
 	@GetMapping("/requestNewApiToken")
 	String requestNewApiToken(Model model) {
-		System.out.println(service.requestNewApiToken());
+		// TODO: Replace with real user email once proper authentication is added
+		String email = "email@example.org";
+		
+		newApiTokenService.requestNewApiToken(email);
 		model.addAttribute("sechubServerUrl", secHubServerUrl);
+		model.addAttribute("userEmail", email);
+		
 		return "newApiToken";
 	}
 }
