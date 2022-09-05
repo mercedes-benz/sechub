@@ -10,26 +10,18 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class StatusService {
-	@Autowired
-	private WebClient webClient;
+    @Autowired
+    private WebClient webClient;
 
-	@Value("${sechub.userid}")
-	private String userId;
-	
-	@Value("${sechub.apiToken}")
-	private String apiToken;
-	
-	public String getServerVersion() {
-		return webClient.
-				get().
-				uri("/api/admin/info/version").
-				headers(httpHeaders -> httpHeaders.setBasicAuth(userId, apiToken)).
-				retrieve().
-	              onStatus(HttpStatus::is4xxClientError,
-	                      error -> Mono.error(new RuntimeException("API not found"))).
-	              onStatus(HttpStatus::is5xxServerError,
-	                      error -> Mono.error(new RuntimeException("Server is not responding"))).
-	            bodyToMono(String.class).
-	            block();
-	}
+    @Value("${sechub.userid}")
+    private String userId;
+
+    @Value("${sechub.apiToken}")
+    private String apiToken;
+
+    public String getServerVersion() {
+        return webClient.get().uri("/api/admin/info/version").headers(httpHeaders -> httpHeaders.setBasicAuth(userId, apiToken)).retrieve()
+                .onStatus(HttpStatus::is4xxClientError, error -> Mono.error(new RuntimeException("API not found")))
+                .onStatus(HttpStatus::is5xxServerError, error -> Mono.error(new RuntimeException("Server is not responding"))).bodyToMono(String.class).block();
+    }
 }

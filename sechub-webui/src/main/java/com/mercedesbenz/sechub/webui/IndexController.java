@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class IndexController {
-	@Value("${sechub.serverUrl}")
-	private String secHubServerUrl;
-	
-	@GetMapping("/")
-	String index(Model model) {	
-		model.addAttribute("sechubServerUrl", secHubServerUrl);
-		return "index";
-	}
+    @Value("${sechub.serverUrl}")
+    private String secHubServerUrl;
+
+    @GetMapping("/")
+    String index(Model model) {
+        model.addAttribute("sechubServerUrl", secHubServerUrl);
+        return "index";
+    }
 }

@@ -12,9 +12,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
 public class SecurityConfiguration {
-	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-		/* @formatter:off */
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        /* @formatter:off */
 		httpSecurity.
 			authorizeRequests().
 			// allow unauthenticated access to css, js and images
@@ -29,17 +29,17 @@ public class SecurityConfiguration {
 				logoutSuccessUrl("/login")
 			;
 		/* @formatter:on */
-		
-		return httpSecurity.build();
-	}
-	
-	@Bean
-	public UserDetailsService userDetailsService() {
-		/* @formatter:off */
+
+        return httpSecurity.build();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        /* @formatter:off */
 		UserDetails user = User.withDefaultPasswordEncoder().
 				username("user").password("password").roles("USER").
 				build();
 		return new InMemoryUserDetailsManager(user);
 		/* @formatter:on */
-	}
+    }
 }

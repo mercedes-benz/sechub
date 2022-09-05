@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class ScansController {
-	@Value("${sechub.serverUrl}")
-	private String secHubServerUrl;
-	
-	@GetMapping("/projects/{projectId}/scans")
-	String scans(Model model) {
-		model.addAttribute("sechubServerUrl", secHubServerUrl);
-		return "scans";
-	}
+    @Value("${sechub.serverUrl}")
+    private String secHubServerUrl;
+
+    @GetMapping("/projects/{projectId}/scans")
+    String scans(Model model) {
+        model.addAttribute("sechubServerUrl", secHubServerUrl);
+        return "scans";
+    }
 }

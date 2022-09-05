@@ -8,18 +8,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class StatusController {
-	@Autowired
-	StatusService statusService;
-	
-	@Value("${sechub.serverUrl}")
-	private String secHubServerUrl;
+    @Autowired
+    StatusService statusService;
 
-	@GetMapping("/status")
-	String status(Model model) {
-		String secHubServerVersion = statusService.getServerVersion();
-		
-		model.addAttribute("sechubServerUrl", secHubServerUrl);
-		model.addAttribute("sechubServerVersion", secHubServerVersion);
-		return "status";
-	}
+    @Value("${sechub.serverUrl}")
+    private String secHubServerUrl;
+
+    @GetMapping("/status")
+    String status(Model model) {
+        String secHubServerVersion = statusService.getServerVersion();
+
+        model.addAttribute("sechubServerUrl", secHubServerUrl);
+        model.addAttribute("sechubServerVersion", secHubServerVersion);
+        return "status";
+    }
 }
