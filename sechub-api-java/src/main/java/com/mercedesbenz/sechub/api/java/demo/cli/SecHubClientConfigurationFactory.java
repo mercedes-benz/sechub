@@ -16,19 +16,16 @@ public class SecHubClientConfigurationFactory {
 
     public SecHubClient create(CommandLineSettings settings) {
         URI serverUri = null;
-        if (settings.getServerUri() != null)
-            serverUri = URI.create(settings.getServerUri());
+        if (settings.getServer() != null)
+            serverUri = URI.create(settings.getServer());
 
-        int serverPort = settings.getServerPort();
         String userId = settings.getUserId();
         String apiToken = settings.getApiToken();
+        String trustAll = settings.getTrustAll();
 
-        String envServerUri = environmentVariableReader.readAsString(EnvironmentVariableConstants.SECHUB_SERVER_URI);
+        String envServerUri = environmentVariableReader.readAsString(EnvironmentVariableConstants.SECHUB_SERVER);
         if (serverUri == null && envServerUri != null) {
             serverUri = URI.create(envServerUri);
-        }
-        if (serverPort <= 0 || serverPort > 65535) {
-            serverPort = environmentVariableReader.readAsInt(EnvironmentVariableConstants.SECHUB_SERVER_PORT);
         }
         if (userId == null) {
             userId = environmentVariableReader.readAsString(EnvironmentVariableConstants.SECHUB_USERID);
@@ -36,15 +33,13 @@ public class SecHubClientConfigurationFactory {
         if (apiToken == null) {
             apiToken = environmentVariableReader.readAsString(EnvironmentVariableConstants.SECHUB_APITOKEN);
         }
+        if (trustAll == null) {
+            trustAll = environmentVariableReader.readAsString(EnvironmentVariableConstants.SECHUB_TRUSTALL);
+        }
 
         if (!isServerUriValid(serverUri)) {
             throw new SecHubClientConfigurationRuntimeException(
-                    "Sechub server's URI is invalid. Please set the Sechub server's URI as an environment variable (SECHUB_SERVER_URI) or as a program argument (--serverUri).");
-        }
-
-        if (serverPort <= 0 || serverPort > 65535) {
-            throw new SecHubClientConfigurationRuntimeException("Sechub server's port is set to " + serverPort
-                    + ". Please set the Sechub server's port as an environment variable (SECHUB_SERVER_PORT) or as a program argument (--serverPort).");
+                    "Sechub server's URI is invalid. Please set the Sechub server's URI as an environment variable (SECHUB_SERVER) or as a program argument (--server).");
         }
 
         if (userId == null) {
@@ -57,18 +52,29 @@ public class SecHubClientConfigurationFactory {
                     "Privileged user's API token is null. Please set the privileged user's API token as an environment variable (SECHUB_APITOKEN) or as a program argument (--apiToken).");
         }
 
-        return SecHubClient.create(userId, apiToken, serverUri.toString(), serverPort);
+        if (!isTrustAllValid(trustAll)) {
+            throw new SecHubClientConfigurationRuntimeException(
+                    "trustAll value is invalid. Please set the trustAll as an environment variable (SECHUB_TRUSTALL) or as a program argument (--trustAll). Correct values are true and false.");
+        }
+        return trustAll == null ? SecHubClient.create(userId, apiToken, serverUri)
+                : SecHubClient.create(userId, apiToken, serverUri, Boolean.parseBoolean(trustAll));
     }
 
     private boolean isServerUriValid(URI serverUri) {
         if (serverUri == null)
             return false;
-        if (!serverUri.getScheme().equals("http") && !serverUri.getScheme().equals("https"))
+        if (!serverUri.getScheme().equals("https"))
             return false;
         if (!serverUri.getPath().isEmpty())
             return false;
-        if (serverUri.getPort() != -1)
+        if (serverUri.getPort() <= 0 || serverUri.getPort() > 65535)
             return false;
         return true;
+    }
+
+    private boolean isTrustAllValid(String trustAll) {
+        if (trustAll == null || trustAll.equals("false") || trustAll.equals("true"))
+            return true;
+        return false;
     }
 }

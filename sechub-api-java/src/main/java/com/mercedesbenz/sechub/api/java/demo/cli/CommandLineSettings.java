@@ -11,20 +11,12 @@ public class CommandLineSettings {
         return help;
     }
 
-    @Parameter(names = { "--serverUri" }, description = "Specifies the Sechub Server URI. You can also set the environment variable "
-            + EnvironmentVariableConstants.SECHUB_SERVER_URI + ", instead of using this parameter.", required = false)
-    private String serverUri;
+    @Parameter(names = { "--server" }, description = "Specifies the Sechub Server URI. You can also set the environment variable "
+            + EnvironmentVariableConstants.SECHUB_SERVER + ", instead of using this parameter.", required = false)
+    private String server;
 
-    public String getServerUri() {
-        return serverUri;
-    }
-
-    @Parameter(names = { "--serverPort" }, description = "Specifies the Sechub Server port. You can also set the environment variable "
-            + EnvironmentVariableConstants.SECHUB_SERVER_PORT + ", instead of using this parameter.", required = false)
-    private int serverPort;
-
-    public int getServerPort() {
-        return serverPort;
+    public String getServer() {
+        return server;
     }
 
     @Parameter(names = { "--userId" }, description = "Specifies the Sechub Server privileged user id. You can also set the environment variable "
@@ -41,6 +33,15 @@ public class CommandLineSettings {
 
     public String getApiToken() {
         return apiToken;
+    }
+
+    @Parameter(names = {
+            "--trustAll" }, description = "When set to true, then HTTPS certificate checking will be disabled. May be useful when using self-signed certificates. Please try to avoid this setting for security reasons. You can also set the environment variable "
+                    + EnvironmentVariableConstants.SECHUB_TRUSTALL + ", instead of using this parameter.", required = false)
+    private String trustAll;
+
+    public String getTrustAll() {
+        return trustAll;
     }
 
 }

@@ -44,7 +44,17 @@ Open API library must be in the following folder:
 gen/build/libs/sechub-api-java-0.0.0.jar
 ----
 
-When you want to build the OpenAPI Test Tool, just do:
+When you want to build the OpenAPI Test Tool, do next:
+
+- generate Open API json file
+----
+sechub$ ./gradlew generateOpenapi -x:sechub-api-java:compileJava
+----
+- build Open API library
+----
+sechub$ ./gradlew :sechub-api-java:buildAPIJava
+----
+- build OpenAPI Test Tool
 ----
 sechub$ ./gradlew buildOpenAPITestTool
 ----

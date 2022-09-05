@@ -39,9 +39,9 @@ public class OpenAPITestTool {
             secHubClient = parser.parse(args);
             LOG.info("Granted the following Sechub connection parameters:");
             LOG.info("*** Sechub server URI: " + secHubClient.getHostUri());
-            LOG.info("*** Sechub server port: " + secHubClient.getHostPort());
             LOG.info("*** Privileged user id: " + secHubClient.getUsername());
             LOG.info("*** Privileged user's API token: " + secHubClient.getSealedApiToken());
+            LOG.info("*** trustAll: " + secHubClient.isTrustAll());
         } catch (SecHubClientConfigurationRuntimeException e) {
             LOG.error("An error occurred while parsing the command line arguments: ", e);
             throw new OpenAPITestToolRuntimeException("Connection configuration was invalid.");
