@@ -1,0 +1,50 @@
+= Analyze Container Resources
+
+The idea of these scripts is simple. Record and collect the information of a single container and afterwards analyze the recorded information. 
+
+The objective is to better understand how much resources SecHub or a PDS-Solution use or any other container. The focus of these scripts is to profile the container temporarly and not to monitor them long term.
+
+The folder contains two scripts:
+
+. to record container resources
+. to analyze and visualize the resources
+
+== Record Resource Usage
+
+. To record the container resource usage:
++
+----
+Usage: basename ./record-resources.sh <container-id> <result-file>
+----
++
+For example:
++
+----
+./record-resources.sh 26d4dfc259a5 recording.csv
+----
+
+== Analyze & Visualize
+
+. Install the dependencies:
++
+----
+pip install -r requierements.txt
+----
+
+. Analyze a recorded file:
++
+----
+./analyze-resources.py <result_file> [<graph-output-folder>]
+----
++
+For example:
++
+----
+./analyze-resources.py recording.csv
+----
++
+Or
++
+----
+./analyze-resources.py recording.csv .
+----
