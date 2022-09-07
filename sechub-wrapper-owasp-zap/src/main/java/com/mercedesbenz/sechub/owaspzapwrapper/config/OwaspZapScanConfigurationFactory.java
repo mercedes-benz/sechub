@@ -184,12 +184,9 @@ public class OwaspZapScanConfigurationFactory {
     }
 
     private Path createPathToApiDefinitionFileOrNull(SecHubScanConfiguration sechubScanConfig) {
-        // use the extracted sources folder path if sources where uploaded and extracted
-        // on the PDS
+        // use the extracted sources folder path, where all text files are uploaded and
+        // extracted
         String extractedSourcesFolderPath = environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_JOB_EXTRACTED_SOURCES_FOLDER);
-        if (extractedSourcesFolderPath == null) {
-            return null;
-        }
         return apiDefinitionFileProvider.fetchApiDefinitionFile(extractedSourcesFolderPath, sechubScanConfig);
     }
 }
