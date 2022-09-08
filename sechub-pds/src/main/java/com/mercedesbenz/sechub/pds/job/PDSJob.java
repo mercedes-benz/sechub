@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.mercedesbenz.sechub.commons.model.LocalDateTimeDeserializer;
 import com.mercedesbenz.sechub.commons.model.LocalDateTimeSerializer;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 
 /**
  * Represents a PDS Job which contains information about ownership, related

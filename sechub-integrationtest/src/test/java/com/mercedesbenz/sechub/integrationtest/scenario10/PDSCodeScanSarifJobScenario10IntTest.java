@@ -18,10 +18,10 @@ import org.junit.rules.Timeout;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubStatus;
 import com.mercedesbenz.sechub.commons.model.Severity;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
-import com.mercedesbenz.sechub.pds.job.PDSJobStatusState;
 
 /**
  * Integration test doing code scans by integration test servers (sechub server,

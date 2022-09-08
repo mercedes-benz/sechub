@@ -30,7 +30,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobCreateResult;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatus;
-import com.mercedesbenz.sechub.pds.job.PDSJobStatusState;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.test.TestUtil;
 
 class PDSAdapterV1Test {

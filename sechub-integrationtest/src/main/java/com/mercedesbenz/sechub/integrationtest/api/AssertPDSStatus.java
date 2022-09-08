@@ -5,9 +5,8 @@ import static org.junit.Assert.*;
 
 import java.util.UUID;
 
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestPDSJobStatus;
-import com.mercedesbenz.sechub.pds.job.PDSJobStatusState;
-
 
 public class AssertPDSStatus {
 

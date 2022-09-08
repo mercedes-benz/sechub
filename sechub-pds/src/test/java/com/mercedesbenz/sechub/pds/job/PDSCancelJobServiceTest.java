@@ -10,6 +10,7 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.pds.PDSNotAcceptableException;
 import com.mercedesbenz.sechub.pds.execution.PDSExecutionService;
 

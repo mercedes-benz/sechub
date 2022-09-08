@@ -27,7 +27,7 @@ import com.mercedesbenz.sechub.commons.pds.data.PDSJobCreateResult;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobData;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobParameterEntry;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatus;
-import com.mercedesbenz.sechub.pds.job.PDSJobStatusState;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 
 /**
  * This component is able to handle PDS API V1

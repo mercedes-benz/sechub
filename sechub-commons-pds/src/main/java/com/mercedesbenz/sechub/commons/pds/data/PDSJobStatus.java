@@ -3,8 +3,6 @@ package com.mercedesbenz.sechub.commons.pds.data;
 
 import java.util.UUID;
 
-import com.mercedesbenz.sechub.pds.job.PDSJobStatusState;
-
 public class PDSJobStatus {
 
     public UUID jobUUID;

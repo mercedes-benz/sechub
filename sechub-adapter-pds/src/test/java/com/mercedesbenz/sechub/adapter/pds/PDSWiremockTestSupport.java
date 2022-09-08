@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
-import com.mercedesbenz.sechub.pds.job.PDSJobStatusState;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.test.JSONTestUtil;
 import com.mercedesbenz.sechub.test.WiremockUrlHistory;
 

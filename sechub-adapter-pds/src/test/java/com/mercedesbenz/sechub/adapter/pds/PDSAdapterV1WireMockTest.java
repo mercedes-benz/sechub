@@ -25,7 +25,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
-import com.mercedesbenz.sechub.pds.job.PDSJobStatusState;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 /**

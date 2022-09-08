@@ -12,9 +12,9 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
 import com.mercedesbenz.sechub.pds.job.PDSJobRepository;
-import com.mercedesbenz.sechub.pds.job.PDSJobStatusState;
 
 public class PDSMonitoringStatusServiceTest {
 
