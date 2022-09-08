@@ -2,11 +2,11 @@
 package com.mercedesbenz.sechub.api.java;
 
 import static com.mercedesbenz.sechub.api.java.AssertJavaClientAPI.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 
 import com.mercedesbenz.sechub.commons.model.Severity;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
@@ -107,10 +107,9 @@ public class SecHubClientTest {
 
         /* execute + test */
         /* @formatter:off */
-        assertThrows(
-                "The report is not a SecHub report and cannot be read. It should throw an exception.",
-                SecHubReportException.class,
-                () -> SecHubClient.importSecHubJsonReport(file));
+        assertThrows(SecHubReportException.class,
+                () -> SecHubClient.importSecHubJsonReport(file),
+                "The report is not a SecHub report and cannot be read. It should throw an exception.");
         /* @formatter:on */
     }
 

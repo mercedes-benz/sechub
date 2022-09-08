@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.api.java;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,7 +17,7 @@ public class AssertReport {
     private SecHubReport report;
 
     AssertReport(SecHubReport report) {
-        assertNotNull("Report may not be null", report);
+        assertNotNull(report, "Report may not be null");
         this.report = report;
     }
 
@@ -42,7 +42,7 @@ public class AssertReport {
         private SecHubFinding finding;
 
         public AssertFinding(SecHubFinding finding, int number) {
-            assertNotNull("Finding may not be null! But was for number:" + number, finding);
+            assertNotNull(finding, "Finding may not be null! But was for number:" + number);
             this.finding = finding;
         }
 
@@ -160,7 +160,7 @@ public class AssertReport {
     }
 
     private List<SecHubFinding> assertFindings(SecHubReport report) {
-        assertNotNull("Report may not be null", report);
+        assertNotNull(report, "Report may not be null");
         SecHubResult result = report.getResult();
         assertNotNull(result);
         List<SecHubFinding> findings = result.getFindings();
