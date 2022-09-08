@@ -22,8 +22,21 @@ dependencies {
 
 }
 
-jar {
+
+task buildPDSToolsCLI(type: Jar, dependsOn: build) {
+    group 'sechub'
+    description 'Builds the PDS tools as standalone executable jar'
+    archiveBaseName = 'sechub-pds-tools-cli'
+    
     manifest {
         attributes 'Main-Class': 'com.mercedesbenz.sechub.pds.tools.PDSToolsCLI'
     }
+    
+    from { 
+        configurations.runtimeClasspath.collect { 
+            it.isDirectory() ? it : zipTree(it) 
+        } 
+    }
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    with jar
 }

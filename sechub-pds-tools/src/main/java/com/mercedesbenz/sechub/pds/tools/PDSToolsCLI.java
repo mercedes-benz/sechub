@@ -56,7 +56,7 @@ public class PDSToolsCLI {
             break;
 
         default:
-            showHelpAndExit("Unrecognized command", 2);
+            showHelpAndExit("Unrecognized command:" + command, 2);
         }
     }
 
