@@ -3,8 +3,10 @@ package com.mercedesbenz.sechub.commons.model.login;
 
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mercedesbenz.sechub.commons.model.SecHubTimeUnit;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Action {
 
     ActionType type;
