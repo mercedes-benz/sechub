@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.developertools;
+package com.mercedesbenz.sechub.pds.tools.handler;
 
-public class SystemOutputHandler implements OutputHandler {
+public class PrintStreamConsoleHandler implements ConsoleHandler {
 
     @Override
     public void output(String text) {

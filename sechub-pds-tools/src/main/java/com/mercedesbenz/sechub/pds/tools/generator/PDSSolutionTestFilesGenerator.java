@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.developertools.pds;
+package com.mercedesbenz.sechub.pds.tools.generator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,10 +11,10 @@ import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 
-import com.mercedesbenz.sechub.adapter.AdapterException;
 import com.mercedesbenz.sechub.adapter.pds.data.PDSJobData;
 import com.mercedesbenz.sechub.adapter.pds.data.PDSJobParameterEntry;
 import com.mercedesbenz.sechub.commons.TextFileReader;
+import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.archive.ArchiveConstants;
 import com.mercedesbenz.sechub.commons.archive.SecHubFileStructureDataProvider;
 import com.mercedesbenz.sechub.commons.core.CommonConstants;
@@ -29,18 +29,16 @@ import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationObject;
 import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubFileSystemContainer;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
-import com.mercedesbenz.sechub.developertools.DeveloperArchiveSupport;
-import com.mercedesbenz.sechub.developertools.OutputHandler;
-import com.mercedesbenz.sechub.developertools.SystemOutputHandler;
-import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
-import com.mercedesbenz.sechub.test.TestFileWriter;
+import com.mercedesbenz.sechub.pds.tools.archive.DeveloperArchiveSupport;
+import com.mercedesbenz.sechub.pds.tools.handler.ConsoleHandler;
+import com.mercedesbenz.sechub.pds.tools.handler.PrintStreamConsoleHandler;
 
 public class PDSSolutionTestFilesGenerator {
 
     private TextFileReader reader = new TextFileReader();
-    private TestFileWriter writer = new TestFileWriter();
+    private TextFileWriter writer = new TextFileWriter();
     private DeveloperArchiveSupport developerArchiveSupport = new DeveloperArchiveSupport();
-    private File tmpFolder;
+    private File targetFolder;
     private File originConfigFile;
     private boolean createPseudoFilesWhenNotExisting = true;
 
@@ -49,13 +47,13 @@ public class PDSSolutionTestFilesGenerator {
         geno.generate(args);
     }
 
-    private OutputHandler outputHandler;
+    private ConsoleHandler outputHandler;
     private ScanType scanType;
     private SecHubConfigurationModel config;
 
-    OutputHandler getOutputHandler() {
+    ConsoleHandler getOutputHandler() {
         if (outputHandler == null) {
-            outputHandler = new SystemOutputHandler();
+            outputHandler = new PrintStreamConsoleHandler();
         }
         return outputHandler;
     }
@@ -64,7 +62,7 @@ public class PDSSolutionTestFilesGenerator {
         this.createPseudoFilesWhenNotExisting = create;
     }
 
-    public void setOutputHandler(OutputHandler outputHandler) {
+    public void setOutputHandler(ConsoleHandler outputHandler) {
         this.outputHandler = outputHandler;
     }
 
@@ -74,7 +72,7 @@ public class PDSSolutionTestFilesGenerator {
             getOutputHandler().error("please call with ${pathToSechubConfigFile} ${scanType}");
             throw new IllegalArgumentException("wrong number of parameters");
         }
-        return generate(args[0], args[1]);
+        return generate(args[0], args[1], null);
     }
 
     /**
@@ -85,13 +83,17 @@ public class PDSSolutionTestFilesGenerator {
      * @return folder where files are generated into
      * @throws Exception
      */
-    public File generate(String pathToSecHubConfigFile, String wantedScanType) throws Exception {
+    public File generate(String pathToSecHubConfigFile, String wantedScanType, File targetFolderOrNull) throws Exception {
         try {
 
             ensureScanType(wantedScanType);
             ensureSecHubConfiguration(pathToSecHubConfigFile);
 
-            tmpFolder = Files.createTempDirectory("pds_solution_gen").toFile();
+            if (targetFolderOrNull != null) {
+                targetFolder = targetFolderOrNull;
+            } else {
+                targetFolder = Files.createTempDirectory("pds_solution_gen").toFile();
+            }
 
             writeSecHubConfigurationToTempFolder();
 
@@ -100,8 +102,8 @@ public class PDSSolutionTestFilesGenerator {
 
             writeTarAndZipFilesAsConfiguredInSecHubConfigFile();
 
-            getOutputHandler().output("Written files to:" + tmpFolder.getAbsolutePath());
-            return tmpFolder;
+            getOutputHandler().output("Written files to:" + targetFolder.getAbsolutePath());
+            return targetFolder;
         } catch (Exception e) {
             getOutputHandler().error("Generation failed:" + e.getMessage());
             throw e;
@@ -110,21 +112,21 @@ public class PDSSolutionTestFilesGenerator {
     }
 
     private void writeSecHubConfigurationToTempFolder() throws JSONConverterException, IOException {
-        writer.save(new File(tmpFolder, "original-used-sechub-configfile.json"), JSONConverter.get().toJSON(config, true), false);
+        writer.save(new File(targetFolder, "original-used-sechub-configfile.json"), JSONConverter.get().toJSON(config, true), false);
 
     }
 
     private void writeTarAndZipFilesAsConfiguredInSecHubConfigFile() throws IOException {
 
-        File extracted = new File(tmpFolder, "extracted");
+        File extracted = new File(targetFolder, "extracted");
 
         File binaryCopy = new File(extracted, "binaries");
         File sourceCopy = new File(extracted, "source");
 
         copyOriginFilesToExtractedFolder(binaryCopy, sourceCopy);
 
-        developerArchiveSupport.compressToTar(binaryCopy, new File(tmpFolder, CommonConstants.FILENAME_BINARIES_TAR));
-        developerArchiveSupport.compressToZip(sourceCopy, new File(tmpFolder, CommonConstants.FILENAME_SOURCECODE_ZIP));
+        developerArchiveSupport.compressToTar(binaryCopy, new File(targetFolder, CommonConstants.FILENAME_BINARIES_TAR));
+        developerArchiveSupport.compressToZip(sourceCopy, new File(targetFolder, CommonConstants.FILENAME_SOURCECODE_ZIP));
 
         SecHubFileStructureDataProvider.builder().setModel(config).setScanType(scanType).build();
     }
@@ -214,15 +216,15 @@ public class PDSSolutionTestFilesGenerator {
 
     private String writeReducedConfigFile() throws IOException {
         String recucedSecHubConfigJson = SecHubConfigurationModelReducedCloningSupport.DEFAULT.createReducedScanConfigurationCloneJSON(config, scanType);
-        SecHubConfigurationModel reducedConfig = SecHubConfiguration.createFromJSON(recucedSecHubConfigJson);
+        SecHubConfigurationModel reducedConfig = JSONConverter.get().fromJSON(SecHubConfigurationModel.class, recucedSecHubConfigJson);
         recucedSecHubConfigJson = JSONConverter.get().toJSON(reducedConfig, true);
 
-        File reducedSecHubConfigFile = new File(tmpFolder, "reducedSecHubJson_for_" + scanType.getId() + ".json");
+        File reducedSecHubConfigFile = new File(targetFolder, "reducedSecHubJson_for_" + scanType.getId() + ".json");
         writer.save(reducedSecHubConfigFile, recucedSecHubConfigJson, true);
         return recucedSecHubConfigJson;
     }
 
-    private void writePDSJobDataFile(String reducedSecHubConfigJson) throws AdapterException, IOException {
+    private void writePDSJobDataFile(String reducedSecHubConfigJson) throws IOException {
         PDSJobData data = new PDSJobData();
         PDSJobParameterEntry entry = new PDSJobParameterEntry();
         entry.key = PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_CONFIGURATION;
@@ -230,7 +232,7 @@ public class PDSSolutionTestFilesGenerator {
         data.parameters.add(entry);
 
         String pdsJobDataJson = JSONConverter.get().toJSON(data, true);
-        File pdsJobDataFile = new File(tmpFolder, "pdsJobData.json");
+        File pdsJobDataFile = new File(targetFolder, "pdsJobData.json");
         writer.save(pdsJobDataFile, pdsJobDataJson, true);
     }
 
@@ -244,7 +246,8 @@ public class PDSSolutionTestFilesGenerator {
             throw new FileNotFoundException("Sechub configuration file not found:" + originConfigFile.getAbsolutePath());
         }
         String json = reader.loadTextFile(originConfigFile);
-        config = SecHubConfiguration.createFromJSON(json);
+
+        config = JSONConverter.get().fromJSON(SecHubConfigurationModel.class, json);
     }
 
     private ScanType findScanTypeByArgument(String scanType) {
