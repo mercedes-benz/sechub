@@ -24,13 +24,13 @@ import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.AdapterMetaDataCallback;
 import com.mercedesbenz.sechub.adapter.AdapterRuntimeContext;
-import com.mercedesbenz.sechub.adapter.pds.data.PDSJobCreateResult;
-import com.mercedesbenz.sechub.adapter.pds.data.PDSJobStatus;
-import com.mercedesbenz.sechub.adapter.pds.data.PDSJobStatus.PDSAdapterJobStatusState;
 import com.mercedesbenz.sechub.adapter.support.JSONAdapterSupport;
 import com.mercedesbenz.sechub.adapter.support.RestOperationsSupport;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobCreateResult;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatus;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatus.PDSAdapterJobStatusState;
 import com.mercedesbenz.sechub.test.TestUtil;
 
 class PDSAdapterV1Test {

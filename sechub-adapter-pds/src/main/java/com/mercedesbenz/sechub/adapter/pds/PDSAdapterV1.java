@@ -20,14 +20,14 @@ import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.AdapterProfiles;
 import com.mercedesbenz.sechub.adapter.AdapterRuntimeContext;
 import com.mercedesbenz.sechub.adapter.AdapterRuntimeContext.ExecutionType;
-import com.mercedesbenz.sechub.adapter.pds.data.PDSJobCreateResult;
-import com.mercedesbenz.sechub.adapter.pds.data.PDSJobData;
-import com.mercedesbenz.sechub.adapter.pds.data.PDSJobParameterEntry;
-import com.mercedesbenz.sechub.adapter.pds.data.PDSJobStatus;
-import com.mercedesbenz.sechub.adapter.pds.data.PDSJobStatus.PDSAdapterJobStatusState;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationType;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobCreateResult;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobData;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobParameterEntry;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatus;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatus.PDSAdapterJobStatusState;
 
 /**
  * This component is able to handle PDS API V1

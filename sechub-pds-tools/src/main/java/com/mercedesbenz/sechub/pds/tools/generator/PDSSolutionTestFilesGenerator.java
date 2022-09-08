@@ -11,8 +11,6 @@ import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 
-import com.mercedesbenz.sechub.adapter.pds.data.PDSJobData;
-import com.mercedesbenz.sechub.adapter.pds.data.PDSJobParameterEntry;
 import com.mercedesbenz.sechub.commons.TextFileReader;
 import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.archive.ArchiveConstants;
@@ -29,6 +27,8 @@ import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationObject;
 import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubFileSystemContainer;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobData;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobParameterEntry;
 import com.mercedesbenz.sechub.pds.tools.archive.DeveloperArchiveSupport;
 import com.mercedesbenz.sechub.pds.tools.handler.ConsoleHandler;
 import com.mercedesbenz.sechub.pds.tools.handler.PrintStreamConsoleHandler;

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.adapter.pds.data;
+package com.mercedesbenz.sechub.commons.pds.data;
 
 import java.util.ArrayList;
 import java.util.List;
