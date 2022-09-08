@@ -25,7 +25,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
-import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatus.PDSAdapterJobStatusState;
+import com.mercedesbenz.sechub.pds.job.PDSJobStatusState;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 /**
@@ -74,7 +74,7 @@ public class PDSAdapterV1WireMockTest {
                 simulateJobCanBeCreated(sechubJobUUID,productIdentifier,expectedJobParameters).
                 simulateUploadData(SOURCECODE_ZIP).
                 simulateMarkReadyToStart().
-                simulateFetchJobStatus(PDSAdapterJobStatusState.DONE).
+                simulateFetchJobStatus(PDSJobStatusState.DONE).
                 simulateFetchJobResultOk("testresult").
                 simulateFetchJobMessages().
                 build();
@@ -107,7 +107,7 @@ public class PDSAdapterV1WireMockTest {
                 simulateJobCanBeCreated(sechubJobUUID,productIdentifier,expectedJobParameters).
                 simulateUploadData(SOURCECODE_ZIP).
                 simulateMarkReadyToStart().
-                simulateFetchJobStatus(PDSAdapterJobStatusState.DONE).
+                simulateFetchJobStatus(PDSJobStatusState.DONE).
                 simulateFetchJobResultOk("testresult").
                 simulateFetchJobMessages().
                 build();
@@ -139,7 +139,7 @@ public class PDSAdapterV1WireMockTest {
                 simulateJobCanBeCreated(sechubJobUUID,productIdentifier,expectedJobParameters).
                 //no simulate upload here!
                 simulateMarkReadyToStart().
-                simulateFetchJobStatus(PDSAdapterJobStatusState.DONE).
+                simulateFetchJobStatus(PDSJobStatusState.DONE).
                 simulateFetchJobResultOk("testresult").
                 simulateFetchJobMessages().
                 build();
@@ -175,7 +175,7 @@ public class PDSAdapterV1WireMockTest {
                 simulateJobCanBeCreated(sechubJobUUID,productIdentifier,expectedJobParameters).
                 //no simulate upload here!
                 simulateMarkReadyToStart().
-                simulateFetchJobStatus(PDSAdapterJobStatusState.DONE).
+                simulateFetchJobStatus(PDSJobStatusState.DONE).
                 simulateFetchJobResultOk("testresult").
                 simulateFetchJobMessages(messagesFromPDS).
                 build();

@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
-import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatus.PDSAdapterJobStatusState;
+import com.mercedesbenz.sechub.pds.job.PDSJobStatusState;
 import com.mercedesbenz.sechub.test.JSONTestUtil;
 import com.mercedesbenz.sechub.test.WiremockUrlHistory;
 
@@ -48,7 +48,7 @@ public class PDSWiremockTestSupport {
     }
 
     private static class StateQueueInfo {
-        PDSAdapterJobStatusState state;
+        PDSJobStatusState state;
     }
 
     private static class GetResult {
@@ -222,7 +222,7 @@ public class PDSWiremockTestSupport {
             return this;
         }
 
-        public PDSWiremockTestSupportBuilder simulateFetchJobStatus(PDSAdapterJobStatusState status) {
+        public PDSWiremockTestSupportBuilder simulateFetchJobStatus(PDSJobStatusState status) {
             StateQueueInfo info = new StateQueueInfo();
             info.state = status;
             current.stateRequestsResults.add(info);

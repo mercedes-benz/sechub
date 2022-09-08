@@ -27,7 +27,7 @@ import com.mercedesbenz.sechub.commons.pds.data.PDSJobCreateResult;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobData;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobParameterEntry;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatus;
-import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatus.PDSAdapterJobStatusState;
+import com.mercedesbenz.sechub.pds.job.PDSJobStatusState;
 
 /**
  * This component is able to handle PDS API V1
@@ -130,7 +130,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
             /* see PDSJobStatusState.java */
             jobstatus = getJobStatus(context);
 
-            PDSAdapterJobStatusState state = jobstatus.state;
+            PDSJobStatusState state = jobstatus.state;
             switch (state) {
             case DONE:
                 jobEnded = true;
@@ -369,7 +369,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         if (pdsJobUUID != null && !pdsJobUUID.isEmpty()) {
             LOG.debug("Restart in progress, try to reuse PDS job: {}", pdsJobUUID);
 
-            PDSAdapterJobStatusState currentPdsJobState = null;
+            PDSJobStatusState currentPdsJobState = null;
 
             /* check job status */
             try {
