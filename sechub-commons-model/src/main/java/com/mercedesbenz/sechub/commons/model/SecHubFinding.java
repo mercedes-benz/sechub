@@ -320,7 +320,7 @@ public class SecHubFinding implements Comparable<SecHubFinding> {
 
     @Override
     public String toString() {
-        return "SecHubFinding: id:" + id + ", severity:" + severity + ", cweId:" + cweId + ", cveId:" + cveId + ",scanType:" + type;
+        return "SecHubFinding: id:" + id + ", severity:" + severity + ", name:" + name + ", cweId:" + cweId + ", cveId:" + cveId + ",scanType:" + type;
     }
 
 }
