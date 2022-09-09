@@ -20,6 +20,7 @@ dependencies {
     testImplementation spring_boot_dependency.junit_jupiter
 }
 
+// TODO: Preparation for unified SecHub Client
 sourceSets {
     main {
     	java {
@@ -78,8 +79,8 @@ task callOpenAPIJavaGenerator(type: org.openapitools.generator.gradle.plugin.tas
             licenseUrl					: "https://github.com/mercedes-benz/sechub/blob/develop/LICENSE",
             developerEmail				: "",
             developerName				: "",
-            developerOrganization 		: "Mercedes-Benz Tech Innovation",
-            developerOrganizationUrl	: "https://www.mercedes-benz-techinnovation.com/",
+            developerOrganization       : "Mercedes-Benz Tech Innovation",
+            developerOrganizationUrl    : "https://www.mercedes-benz-techinnovation.com/",
             scmConnection				: "",
             scmDeveloperConnection		: "",
             scmUrl						: "https://github.com/mercedes-benz/sechub"
