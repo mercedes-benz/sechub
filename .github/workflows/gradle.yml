@@ -44,7 +44,7 @@ jobs:
         run: ./gradlew :sechub-cli:buildGo :sechub-cli:testGo
 
       - name: Build Server, DAUI and generate OpenAPI file
-        run: ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-integrationtest:test -x :sechub-cli:build
+        run: ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI buildPDSToolsCLI -x :sechub-integrationtest:test -x :sechub-cli:build
 
       - name: Generate and build API Java
         run: ./gradlew :sechub-api-java:buildAPIJava
@@ -83,6 +83,13 @@ jobs:
         with:
           name: sechub-pds
           path: sechub-pds/build/libs
+          
+      - name: Archive pds tools artifacts
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: sechub-pds-tools
+          path: sechub-pds-tools/build/libs
 
       - name: Archive developer tools artifacts
         if: always()
