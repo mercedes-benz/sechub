@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.domain.scan.product.sereco;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,6 +16,7 @@ import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeCallStack;
 import com.mercedesbenz.sechub.commons.model.SecHubFinding;
 import com.mercedesbenz.sechub.commons.model.SecHubResult;
+import com.mercedesbenz.sechub.commons.model.Severity;
 import com.mercedesbenz.sechub.domain.scan.AssertSecHubResult;
 import com.mercedesbenz.sechub.domain.scan.ReportTransformationResult;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
@@ -46,11 +48,6 @@ public class SerecoProductResultTransformerTest {
 
         /* test */
         AssertSecHubResult.assertSecHubResult(result.getResult()).hasFindings(1);
-    }
-
-    private ProductResult createProductResult(String converted) {
-        ProductResult r = new ProductResult(UUID.randomUUID(), "project1", new WithoutProductExecutorConfigInfo(ProductIdentifier.PDS_WEBSCAN), converted);
-        return r;
     }
 
     @Test
@@ -125,6 +122,32 @@ public class SerecoProductResultTransformerTest {
         /* @formatter:on */
     }
 
+    @Test
+    public void transformation_does_sort_findings() throws Exception {
+        /* prepare */
+        String converted = createMetaDataWithTwoVulnerabilitiesWrongOrdered();
+
+        /* execute */
+        ReportTransformationResult result = transformerToTest.transform(createProductResult(converted));
+
+        /* test */
+        List<SecHubFinding> findings = result.getResult().getFindings();
+        assertEquals(2, findings.size());
+
+        Iterator<SecHubFinding> iterator = findings.iterator();
+        SecHubFinding first = iterator.next();
+        SecHubFinding second = iterator.next();
+
+        assertEquals(Severity.CRITICAL, first.getSeverity());
+        assertEquals(Severity.MEDIUM, second.getSeverity());
+
+    }
+
+    private ProductResult createProductResult(String converted) {
+        ProductResult r = new ProductResult(UUID.randomUUID(), "project1", new WithoutProductExecutorConfigInfo(ProductIdentifier.PDS_WEBSCAN), converted);
+        return r;
+    }
+
     private String createMetaDataWithOneVulnerabilityFound() {
         SerecoMetaData data = new SerecoMetaData();
         List<SerecoVulnerability> vulnerabilities = data.getVulnerabilities();
@@ -140,6 +163,32 @@ public class SerecoProductResultTransformerTest {
         cl.setCapec("capec1");
 
         vulnerabilities.add(v1);
+
+        String converted = JSONConverter.get().toJSON(data);
+        return converted;
+    }
+
+    private String createMetaDataWithTwoVulnerabilitiesWrongOrdered() {
+        SerecoMetaData data = new SerecoMetaData();
+        List<SerecoVulnerability> vulnerabilities = data.getVulnerabilities();
+
+        SerecoVulnerability vulnerability1 = new SerecoVulnerability();
+        vulnerability1.setDescription("desc1");
+        vulnerability1.setSeverity(SerecoSeverity.MEDIUM);
+        vulnerability1.setType("type1");
+        vulnerability1.setScanType(ScanType.WEB_SCAN);
+        vulnerability1.setSolution("solution1");
+
+        vulnerabilities.add(vulnerability1);
+
+        SerecoVulnerability vulnerability2 = new SerecoVulnerability();
+        vulnerability2.setDescription("desc1");
+        vulnerability2.setSeverity(SerecoSeverity.CRITICAL);
+        vulnerability2.setType("type1");
+        vulnerability2.setScanType(ScanType.WEB_SCAN);
+        vulnerability2.setSolution("solution1");
+
+        vulnerabilities.add(vulnerability2);
 
         String converted = JSONConverter.get().toJSON(data);
         return converted;

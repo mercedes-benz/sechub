@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.mercedesbenz.sechub.commons.model.web.SecHubReportWeb;
 
 @JsonInclude(Include.NON_EMPTY)
-public class SecHubFinding {
+public class SecHubFinding implements Comparable<SecHubFinding> {
 
     int id;
 
@@ -269,6 +269,58 @@ public class SecHubFinding {
 
         String typeId = this.type.getId();
         return type.equalsIgnoreCase(typeId);
+    }
+
+    @Override
+    public int compareTo(SecHubFinding o) {
+        if (o == null) {
+            return 1;
+        }
+        int otherSeverityLevel = 0;
+        int severityLevel = 0;
+
+        Severity otherSeverity = o.severity;
+        if (otherSeverity != null) {
+            otherSeverityLevel = otherSeverity.getLevel();
+        }
+        if (severity != null) {
+            severityLevel = severity.getLevel();
+        }
+
+        int severityCompare = otherSeverityLevel - severityLevel;
+        if (severityCompare != 0) {
+            return severityCompare;
+        }
+
+        int otherCweInt = Integer.MAX_VALUE;
+        int cweInt = Integer.MAX_VALUE;
+        if (o.cweId != null) {
+            otherCweInt = o.cweId;
+        }
+        if (cweId != null) {
+            cweInt = cweId;
+        }
+        int cweCompare = cweInt - otherCweInt;
+        if (cweCompare != 0) {
+            return cweCompare;
+        }
+
+        String cveString = "_";
+        String otherCveString = "_";
+
+        if (o.cveId != null) {
+            otherCveString = o.cveId;
+        }
+        if (cveId != null) {
+            cveString = cveId;
+        }
+        int cveCompare = cveString.compareTo(otherCveString);
+        return cveCompare;
+    }
+
+    @Override
+    public String toString() {
+        return "SecHubFinding: id:" + id + ", severity:" + severity + ", cweId:" + cweId + ", cveId:" + cveId + ",scanType:" + type;
     }
 
 }
