@@ -31,10 +31,10 @@ public class PDSToolsCLI {
         String command = args[0];
         switch (command) {
 
-        case "--help":
+        case PDSToolsCLiConstants.CMD_HELP:
             showHelp();
             exitHandler.exit(0);
-        case "--generate":
+        case PDSToolsCLiConstants.CMD_GENERATE:
             PDSSolutionTestFilesGenerator generator = new PDSSolutionTestFilesGenerator();
             generator.setOutputHandler(consoleHandler);
 
@@ -67,13 +67,42 @@ public class PDSToolsCLI {
     }
 
     private void showHelp() {
+        consoleHandler.output("SecHub PDS tools CLI");
+        consoleHandler.output("--------------------");
         consoleHandler.output("Usage:");
-        consoleHandler.output("--help                                          ");
-        consoleHandler.output("   show this output");
-        consoleHandler.output("");
-        consoleHandler.output("--generate ${secHubConfigFilePath} ${scanType} [$targetFolderPath] ");
-        consoleHandler.output("   generate PDS test files for given config. Given scan type");
-        consoleHandler.output("   can be: codeScan, licenseScan, webScan etc. When no target folder");
-        consoleHandler.output("   is defined, a temp folder will be created and used");
+
+        for (PDSToolCLICommand cmd : MainPDSToolsCLICommands.values()) {
+            StringBuilder cmdSb = new StringBuilder();
+            cmdSb.append(cmd.getCommandString());
+            for (PDSToolCLICommandArgument argument : cmd.getArguments()) {
+                cmdSb.append(" ");
+                if (argument.isOptional()) {
+                    cmdSb.append("[");
+                }
+                cmdSb.append("${");
+                cmdSb.append(argument.getName());
+                cmdSb.append("}");
+
+                if (argument.isOptional()) {
+                    cmdSb.append("]");
+                }
+            }
+
+            consoleHandler.output(cmdSb.toString());
+            consoleHandler.output("   " + cmd.getDescription());
+
+            for (PDSToolCLICommandArgument argument : cmd.getArguments()) {
+                StringBuilder argSb = new StringBuilder();
+                argSb.append("     - ");
+                argSb.append(argument.getName());
+
+                if (argument.isOptional()) {
+                    argSb.append(" (optional)");
+                }
+                consoleHandler.output(argSb.toString());
+                consoleHandler.output("        " + argument.getDescription());
+            }
+
+        }
     }
 }
