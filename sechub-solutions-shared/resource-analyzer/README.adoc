@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 = Analyze Container Resources
 
 The idea of these scripts is simple. Record and collect the information of a single container and afterwards analyze the recorded information. 
