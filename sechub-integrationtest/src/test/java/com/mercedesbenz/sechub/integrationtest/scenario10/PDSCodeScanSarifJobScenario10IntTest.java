@@ -15,10 +15,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
-import com.mercedesbenz.sechub.adapter.pds.data.PDSJobStatus.PDSAdapterJobStatusState;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubStatus;
 import com.mercedesbenz.sechub.commons.model.Severity;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
@@ -80,7 +80,7 @@ public class PDSCodeScanSarifJobScenario10IntTest {
                    codeCall(0).
                       hasLocation("Gemfile.lock").
                       hasLine(115).
-               andFinding(1).
+               andFinding(28). // 28 because the findings are sorted
                    hasName("BRAKE0116").
                    hasScanType(ScanType.CODE_SCAN).
                    hasSeverity(Severity.MEDIUM).
@@ -98,7 +98,7 @@ public class PDSCodeScanSarifJobScenario10IntTest {
         List<UUID> pdsJobUUIDs = TestAPI.fetchAllPDSJobUUIDsForSecHubJob(jobUUID);
         assertEquals(1, pdsJobUUIDs.size());
         UUID pdsJobUUID = pdsJobUUIDs.iterator().next();
-        assertPDSJobStatus(pdsJobUUID).isInState(PDSAdapterJobStatusState.DONE);
+        assertPDSJobStatus(pdsJobUUID).isInState(PDSJobStatusState.DONE);
         /* @formatter:on */
 
         assertNotNull(pdsJobUUID);

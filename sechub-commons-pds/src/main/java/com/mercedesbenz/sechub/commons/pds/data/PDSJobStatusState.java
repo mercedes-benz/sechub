@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.pds.job;
+package com.mercedesbenz.sechub.commons.pds.data;
 
 public enum PDSJobStatusState {
 

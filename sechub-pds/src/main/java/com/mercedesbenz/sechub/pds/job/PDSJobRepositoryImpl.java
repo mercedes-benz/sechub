@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.job;
 
+import static com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState.*;
 import static com.mercedesbenz.sechub.pds.job.PDSJob.*;
-import static com.mercedesbenz.sechub.pds.job.PDSJobStatusState.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +14,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
 
 public class PDSJobRepositoryImpl implements PDSJobRepositoryCustom {

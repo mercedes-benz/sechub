@@ -15,6 +15,7 @@ dependencies {
     implementation project(':sechub-scan')
     
     implementation project(':sechub-commons-pds')
+    implementation project(':sechub-pds-tools')
     implementation project(':sechub-wrapper-checkmarx')
    
     implementation library.apache_commons_io

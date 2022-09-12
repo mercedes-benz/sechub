@@ -4,6 +4,9 @@ package com.mercedesbenz.sechub.commons.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SecHubFileSystemConfiguration {
 
     public static final String PROPERTY_FOLDERS = "folders";

@@ -6,6 +6,7 @@ class VersionData{
     private static final String ID_SERVER = "server"
     private static final String ID_WEBSITE = "website"
     private static final String ID_LIBRARIES = "libraries"
+    private static final String ID_PDS_TOOLS = "pds-tools"
     
     private static Map<String,VersionInfo> map = new HashMap<>();
     
@@ -29,6 +30,7 @@ class VersionData{
         initialize(ID_PDS,    "PDS    ")
         initialize(ID_WEBSITE,"Website")
         initialize(ID_LIBRARIES,"Libraries")
+        initialize(ID_PDS_TOOLS,"PDS-Tools")
     }
     
     
@@ -83,6 +85,13 @@ class VersionData{
      */
     public static String getPdsVersion(){
         return map.get(ID_PDS).getShortVersion()
+    }
+    
+    /**
+     * Convenience method, returns short name 
+     */
+    public static String getPdsToolsVersion(){
+        return map.get(ID_PDS_TOOLS).getShortVersion()
     }
     
       /**

@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -44,15 +43,31 @@ class SecHubScanConfigurationTest {
     }
 
     @Test
-    void sechub_job_config_license_scan_JSON_cannot_be_deserialized_because_of_non_existing_key() {
+    void sechub_job_config_license_scan_JSON_can_be_deserialized_even_with_unknown_key() {
 
         /* prepare */
         String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_license_scan_non_existing_key.json"));
 
         /* execute + test */
-        assertThrows(JSONConverterException.class, () -> {
-            SecHubScanConfiguration.createFromJSON(json);
-        });
+        SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
+        assertNotNull(config);
+
+        // A configuration is returned - now test some content, so it is clear it is not
+        // a fall back dummy...
+        Optional<SecHubDataConfiguration> data = config.getData();
+        assertTrue(data.isPresent());
+
+        List<SecHubSourceDataConfiguration> sources = data.get().getSources();
+        assertEquals(1, sources.size());
+
+        SecHubSourceDataConfiguration dataConfiguration = sources.iterator().next();
+        Optional<SecHubFileSystemConfiguration> fileSystem = dataConfiguration.getFileSystem();
+        assertTrue(fileSystem.isPresent());
+
+        List<String> folders = fileSystem.get().getFolders();
+        assertEquals(1, folders.size());
+        assertTrue(folders.contains("myProject/source"));
+
     }
 
     @Test
