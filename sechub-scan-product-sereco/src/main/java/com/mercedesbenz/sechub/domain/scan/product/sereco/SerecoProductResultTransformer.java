@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.sereco;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -122,6 +123,9 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
 
             findings.add(finding);
         }
+
+        // we sort the findings
+        Collections.sort(findings);
 
         handleAnnotations(sechubJobUUID, data, transformerResult);
 

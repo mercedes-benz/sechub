@@ -6,11 +6,10 @@ json_config="$2"
 upload_type="source"
 
 function usage() {
-    local script_name=
-    echo "`basename $0` <file-to-upload> [<job-configuration-file>]"
-    echo ""
-    
-    cat <<'USAGE'
+   
+    cat - <<USAGE
+usage: `basename $0` <file-to-upload> [<job-configuration-file>]
+
 # Please set the environment variables:
 
 export PDS_SERVER=https://<server>:<port>
@@ -21,6 +20,7 @@ export PDS_PRODUCT_IDENTFIER=<pds-product-identifier>
 optional:
 
 export RETRIES=<number-of-retries>
+export RESULT_FILE=<path-to-result-file>
 
 
 # Example:
@@ -116,6 +116,7 @@ then
     fi
 fi
 
+cd $(dirname "$0")
 pds_api="../../sechub-developertools/scripts/pds-api.sh"
 
 check_alive=`$pds_api check_alive`
@@ -166,13 +167,21 @@ if [[ $(did_job_fail $status) == "yes" ]]
 then
     printf "\n# Job output stream\n"
     "$pds_api" job_stream_output "$jobUUID"
-
+    
     printf "\n# Job error stream\n"
     "$pds_api" job_stream_error "$jobUUID"
+
+    exit 1
 else
     printf "\n# Job output stream\n"
     "$pds_api" job_stream_output "$jobUUID"
 
-    printf "\n# Return the result\n"
-    "$pds_api" job_result "$jobUUID"
+    if [[ -n "$RESULT_FILE" ]]
+    then
+        printf "\n# Writing result to file $RESULT_FILE\n"
+        "$pds_api" job_result "$jobUUID" > "$RESULT_FILE"
+    else
+        printf "\n# Return the result\n"
+        "$pds_api" job_result "$jobUUID"
+    fi
 fi

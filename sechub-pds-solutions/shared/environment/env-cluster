@@ -1,0 +1,9 @@
+# The loadbalancer start mode
+#   debug - starts only the container
+#   server - starts the loadbalancer
+LOADBALANCER_START_MODE=server
+
+# Location of the shared volume upload dir
+# The default is set in the container via Docker
+SHARED_VOLUME_UPLOAD_DIR=/shared_volumes/uploads
+
