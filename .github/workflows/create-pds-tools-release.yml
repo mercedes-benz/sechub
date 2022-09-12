@@ -8,7 +8,7 @@ on:
         description: PDS-Tools Version (e.g. 0.1.0)
         required: true
       pds-tools-milestone-number:
-        description: PDS-Tools Milestone number (e.g. 45)
+        description: PDS-Tools Milestone number (e.g. 70)
         required: true
 jobs:
   release-version:
@@ -90,7 +90,9 @@ jobs:
       # To identifiy parts not in git history and leading to "-dirty-$commitId" markern in documentation
       - name: Inspect GIT status
         if: always()
-        run: git status > build/reports/git-status.txt
+        run: |
+          mkdir build/reports -p
+          git status > build/reports/git-status.txt
 
       - name: Archive GIT status
         if: always()

@@ -35,12 +35,12 @@ def buildVersionFiles(){
     def commitTags = gitTags.findAll { it.commit == git.head()}
     def versionCommitTags = commitTags.findAll {it.name.startsWith("v")}
 
-    // we got vX.Y.Z-server and vX.Y.Z-client tags
-    def serverVersionCommitTag = versionCommitTags.find{ it.name.contains("-server") }
-    def clientVersionCommitTag = versionCommitTags.find{ it.name.contains("-client") }
-    def pdsVersionCommitTag = versionCommitTags.find{ it.name.contains("-pds") }
-    def pdsToolsVersionCommitTag = versionCommitTags.find{ it.name.contains("-pds-tools") }
-    def librariesVersionCommitTag = versionCommitTags.find{ it.name.contains("-libraries") }
+    // We use "v${major}.${minor}.${hotfix}-${type}" pattern for tag names
+    def serverVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-server") }
+    def clientVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-client") }
+    def pdsVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-pds") }
+    def pdsToolsVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-pds-tools") }
+    def librariesVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-libraries") }
 
     def unstagedChanges = git.status().unstaged
     def stagedChanges = git.status().staged

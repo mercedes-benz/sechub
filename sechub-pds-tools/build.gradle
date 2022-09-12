@@ -8,6 +8,9 @@
 plugins {
     id 'java-library'
 }
+
+version =   VersionData.getPdsToolsVersion()
+
 dependencies {
 
     implementation project(':sechub-commons-pds')
