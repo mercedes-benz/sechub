@@ -66,7 +66,6 @@ task callOpenAPIJavaGenerator(type: org.openapitools.generator.gradle.plugin.tas
     		version                     : "${project.version}",
             performBeanValidation		: "false",
             useBeanValidation    		: "false",
-            java8                		: "true",
             dateLibrary          		: "java8",
             serializableModel    		: "true",
             serializationLibrary 		: "jackson",
@@ -74,7 +73,7 @@ task callOpenAPIJavaGenerator(type: org.openapitools.generator.gradle.plugin.tas
             artifactDescription			: "The SecHub API library for Java",
             artifactUrl					: "https://github.com/mercedes-benz/sechub",
             legacyDiscriminatorBehavior : "false",
-            library 					: "jersey2",
+            library 					: "native", // Uses the Java HTTP Client (available in Java 11+)
             licenseName 				: "MIT",
             licenseUrl					: "https://github.com/mercedes-benz/sechub/blob/develop/LICENSE",
             developerEmail				: "",
