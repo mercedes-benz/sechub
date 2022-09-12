@@ -8,10 +8,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
 import com.mercedesbenz.sechub.pds.execution.PDSExecutionStatus;
 import com.mercedesbenz.sechub.pds.job.PDSJobRepository;
-import com.mercedesbenz.sechub.pds.job.PDSJobStatusState;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesMonitoringStatus;
 

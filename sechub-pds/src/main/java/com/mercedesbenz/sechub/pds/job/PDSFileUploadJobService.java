@@ -37,6 +37,7 @@ import com.amazonaws.util.StringInputStream;
 import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
 import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport.CheckSumValidationResult;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.pds.LogSanitizer;
 import com.mercedesbenz.sechub.pds.PDSBadRequestException;
 import com.mercedesbenz.sechub.pds.UploadSizeConfiguration;

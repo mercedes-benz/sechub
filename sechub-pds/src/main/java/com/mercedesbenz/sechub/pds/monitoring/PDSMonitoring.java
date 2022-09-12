@@ -6,9 +6,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.pds.PDSJSONConverter;
 import com.mercedesbenz.sechub.pds.PDSJSONConverterException;
-import com.mercedesbenz.sechub.pds.job.PDSJobStatusState;
 
 public class PDSMonitoring {
 

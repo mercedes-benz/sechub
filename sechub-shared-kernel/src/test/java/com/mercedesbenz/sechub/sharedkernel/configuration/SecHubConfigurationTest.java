@@ -542,4 +542,30 @@ public class SecHubConfigurationTest {
         assertEquals(1, usedDataConfigs.size());
         assertEquals(expectedDataConfigName, usedDataConfigs.iterator().next());
     }
+
+    @Test
+    public void a_sechub_configuration_JSON_with_data_section_containing_unknown_excludes_can_be_read() {
+        /* prepare */
+        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("codescan/code_scan-with-datasections-and-unknown-excludes.json");
+
+        /* execute */
+        SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
+
+        /* test */
+        assertNotNull(result);
+        assertEquals("1.2.3", result.getApiVersion());
+    }
+
+    @Test
+    public void a_sechub_configuration_JSON_with_combined_unknown_properties_can_be_read() {
+        /* prepare */
+        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("combined_config_with_unknown_parts_everywhere.json");
+
+        /* execute */
+        SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
+
+        /* test */
+        assertNotNull(result);
+        assertEquals("2.1.0", result.getApiVersion());
+    }
 }

@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.mercedesbenz.sechub.commons.model.web.SecHubReportWeb;
 
 @JsonInclude(Include.NON_EMPTY)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SecHubFinding implements Comparable<SecHubFinding> {
 
     int id;

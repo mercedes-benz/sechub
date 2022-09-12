@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.pds.execution.PDSExecutionService;
 import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;

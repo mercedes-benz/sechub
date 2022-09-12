@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.developertools;
+package com.mercedesbenz.sechub.pds.tools.archive;
 
 import java.io.File;
 import java.io.FileInputStream;
