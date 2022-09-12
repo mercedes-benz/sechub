@@ -3,6 +3,8 @@ package com.mercedesbenz.sechub.restdoc;
 
 import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -72,7 +74,8 @@ public class SchedulerAdministrationRestControllerRestDocTest implements TestIsN
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				post(apiEndpoint).
-				contentType(MediaType.APPLICATION_JSON_VALUE)
+					contentType(MediaType.APPLICATION_JSON_VALUE).
+					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
 				).
 		andExpect(status().isAccepted()).
 		andDo(defineRestService().
@@ -80,7 +83,11 @@ public class SchedulerAdministrationRestControllerRestDocTest implements TestIsN
                     useCaseData(useCase).
                     tag(RestDocFactory.extractTag(apiEndpoint)).
                 and().
-                document()
+                document(
+	                		requestHeaders(
+	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                		)
+                		)
 		);
 		/* @formatter:on */
     }
@@ -95,7 +102,8 @@ public class SchedulerAdministrationRestControllerRestDocTest implements TestIsN
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				post(apiEndpoint).
-				contentType(MediaType.APPLICATION_JSON_VALUE)
+					contentType(MediaType.APPLICATION_JSON_VALUE).
+					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
 				).
 		andExpect(status().isAccepted()).
 		andDo(defineRestService().
@@ -103,7 +111,11 @@ public class SchedulerAdministrationRestControllerRestDocTest implements TestIsN
                     useCaseData(useCase).
                     tag(RestDocFactory.extractTag(apiEndpoint)).
                 and().
-                document()
+                document(
+                		requestHeaders(
+                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+                		)
+                )
 		);
 		/* @formatter:on */
     }
@@ -118,7 +130,8 @@ public class SchedulerAdministrationRestControllerRestDocTest implements TestIsN
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				post(https(PORT_USED).buildAdminEnablesSchedulerJobProcessing()).
-				contentType(MediaType.APPLICATION_JSON_VALUE)
+					contentType(MediaType.APPLICATION_JSON_VALUE).
+					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
 				).
 		andExpect(status().isAccepted()).
 		andDo(defineRestService().
@@ -126,7 +139,11 @@ public class SchedulerAdministrationRestControllerRestDocTest implements TestIsN
                     useCaseData(useCase).
                     tag(RestDocFactory.extractTag(apiEndpoint)).
                 and().
-                document()
+                document(
+                		requestHeaders(
+                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+                		)
+                )
         );
 		/* @formatter:on */
     }

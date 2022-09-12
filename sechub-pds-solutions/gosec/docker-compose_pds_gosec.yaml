@@ -5,12 +5,13 @@ services:
     pds-gosec:
         build:
             args:
-                - BASE_IMAGE=debian:11-slim
+                - BASE_IMAGE=${BASE_IMAGE}
             context: docker/
             dockerfile: GoSec-Debian.dockerfile
         container_name: pds-gosec
         env_file:
             - .env
+            - .env-single
         ports:
             - "127.0.0.1:8444:8444"
             - "127.0.0.1:15024:15024"

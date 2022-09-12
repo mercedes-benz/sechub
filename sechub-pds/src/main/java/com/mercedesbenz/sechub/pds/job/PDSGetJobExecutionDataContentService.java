@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.pds.PDSMustBeDocumented;
 import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;

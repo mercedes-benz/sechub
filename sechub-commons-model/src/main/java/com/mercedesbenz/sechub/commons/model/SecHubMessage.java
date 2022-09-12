@@ -3,6 +3,9 @@ package com.mercedesbenz.sechub.commons.model;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SecHubMessage implements Comparable<SecHubMessage> {
 
     private SecHubMessageType type;

@@ -19,6 +19,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.pds.PDSProfiles;
 import com.mercedesbenz.sechub.pds.PDSShutdownService;
 import com.mercedesbenz.sechub.pds.config.PDSPathExecutableValidator;

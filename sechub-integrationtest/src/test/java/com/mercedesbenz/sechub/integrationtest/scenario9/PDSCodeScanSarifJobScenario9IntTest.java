@@ -160,7 +160,7 @@ public class PDSCodeScanSarifJobScenario9IntTest {
                    codeCall(0).
                       hasLocation("Gemfile.lock").
                       hasLine(115).
-               andFinding(1).
+               andFinding(28). // 28 because it is sorted
                    hasName("BRAKE0116").
                    hasScanType(ScanType.CODE_SCAN).
                    hasSeverity(Severity.MEDIUM).

@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.pds.PDSJSONConverterException;
 import com.mercedesbenz.sechub.pds.PDSNotAcceptableException;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
