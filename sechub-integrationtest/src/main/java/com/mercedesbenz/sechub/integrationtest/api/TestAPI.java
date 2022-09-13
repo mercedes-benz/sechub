@@ -328,7 +328,7 @@ public class TestAPI {
         }, 1000);
     }
 
-    public static void waitForPDSJobInState(PDSAdapterJobStatusState state, int timeOutInSeconds, int timeToWaitInMillis, UUID pdsJobUUID,
+    public static void waitForPDSJobInState(PDSAdapterJobStatusState wantedState, int timeOutInSeconds, int timeToWaitInMillis, UUID pdsJobUUID,
             boolean dumpPDSOutputOnTimeOut) {
         Runnable runnable = null;
         if (dumpPDSOutputOnTimeOut) {
@@ -339,7 +339,16 @@ public class TestAPI {
             public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
                 String status = asPDSUser(PDS_ADMIN).getJobStatus(pdsJobUUID);
                 LOG.debug(">>>>>>>>>PDS JOB:STATUS:" + status);
-                return status.contains(state.toString());
+                boolean wantedStateFound = status.contains(wantedState.toString());
+
+                if (wantedState != PDSAdapterJobStatusState.FAILED) {
+                    boolean statusIsFailed = status.contains(PDSAdapterJobStatusState.FAILED.toString());
+                    if (statusIsFailed) {
+                        /* it has failed and failed is not expected - so this is a problem! */
+                        fail("The status of PDS job:" + pdsJobUUID + " is " + status + " - wanted was " + wantedState);
+                    }
+                }
+                return wantedStateFound;
             }
         });
 
@@ -493,6 +502,8 @@ public class TestAPI {
         T result = null;
         AssertionError assertionError = null;
         for (int i = 0; i < tries; i++) {
+            /* reset error */
+            assertionError = null;
             try {
                 if (i > 0) {
                     /* we wait before next check */
@@ -1287,33 +1298,12 @@ public class TestAPI {
 
     public static List<UUID> fetchAllPDSJobUUIDsForSecHubJob(UUID sechubJobUUID) {
 
-        // this makes problem with canceled parts. we try new approach by directly fetch
-        // the information via special integration test controller
-
-//        FullScanData fullScanData = fetchFullScanData(sechubJobUUID);
-//        List<ScanData> all = fullScanData.allScanData;
-//
-//        // here we have only ONE integration test server, so we know how to access the
-//        // PDS server
-//        // It is enough to know the PDS job UUIDs
-//        List<UUID> pdsJobUUIDs = new ArrayList<>();
-//
-//        for (ScanData data : all) {
-//            if (data.metaData == null || data.metaData.isEmpty()) {
-//                continue;
-//            }
-//            AdapterMetaData metaData = JSONConverter.get().fromJSON(AdapterMetaData.class, data.metaData);
-//            String pdsJobUUIDString = metaData.getValueAsStringOrNull("PDS_JOB_UUID");
-//            if (pdsJobUUIDString == null || pdsJobUUIDString.isEmpty()) {
-//                continue;
-//            }
-//            pdsJobUUIDs.add(UUID.fromString(pdsJobUUIDString));
-//        }
-
         String url = getURLBuilder().buildIntegrationtTestFetchAllPDSJobUUIDSForSecHubJob(sechubJobUUID);
         String json = getSuperAdminRestHelper().getJSON(url);
         List<String> found = TestJSONHelper.get().createFromJSONAsList(json, String.class);
-        return found.stream().map((string) -> UUID.fromString(string)).collect(Collectors.toList());
+        List<UUID> jobUUIDS = found.stream().map((string) -> UUID.fromString(string)).collect(Collectors.toList());
+        LOG.info("Found PDS job uuids:{} for sechub job:{}", jobUUIDS, sechubJobUUID);
+        return jobUUIDS;
     }
 
     public static void dumpAllPDSJobOutputsForSecHubJob(UUID sechubJobUUID) {

@@ -41,17 +41,16 @@ public class PDSCancellationScenario18IntTest {
             enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
             approveJob(project, jobUUID);
 
-        waitForJobRunning(PROJECT_1, jobUUID);
-
         /* wait until PDS has started the job */
         UUID pdsJobUUID = waitForFirstPDSJobOfSecHubJobAndReturnPDSJobUUID(jobUUID);
-        waitForPDSJobInState(PDSAdapterJobStatusState.RUNNING, 15, 300, pdsJobUUID,true);
+        waitForPDSJobInState(PDSAdapterJobStatusState.RUNNING, 5, 300, pdsJobUUID,true);
 
         /* execute */
         as(SUPER_ADMIN).cancelJob(jobUUID);
 
         /* test */
         waitForJobStatusCanceled(project, jobUUID, true);
+
         assertJobStatus(PROJECT_1,jobUUID).
             enablePDSAutoDumpOnErrorsForSecHubJob().
             hasMessage(SecHubMessageType.INFO, "Job execution was canceled by user");

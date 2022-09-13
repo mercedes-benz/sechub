@@ -478,6 +478,9 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
+                } else {
+                    LOG.info("Process of job: {} is no longer alive", pdsJobUUID);
+                    break;
                 }
             }
             LOG.info("Cancel job: {}: waited {} milliseconds at all", pdsJobUUID, System.currentTimeMillis() - processHandlingData.getProcessStartTimeStamp());

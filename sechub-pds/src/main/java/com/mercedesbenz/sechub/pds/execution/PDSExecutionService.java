@@ -144,12 +144,12 @@ public class PDSExecutionService {
                     boolean canceled = future.cancel(true);
 
                     if (canceled) {
-                        LOG.info("CANCEL done: canceled PDS job: {}", jobUUID);
+                        LOG.info("Cancel SUCCESSFUL: canceled PDS job: {}", jobUUID);
                         updateService.markJobAsCanceledInOwnTransaction(jobUUID);
                         return CancelResult.JOB_FOUND_CANCEL_WAS_DONE;
                     } else {
                         LOG.info(
-                                "CANCEL NOT done: was not able to cancel PDS job :{} - should not happen. Please read logs for details. This will be an orphaned cancel request.",
+                                "Cancel FAILED: was not able to cancel PDS job :{} - should not happen. Please read logs for details. This will be an orphaned cancel request.",
                                 jobUUID);
                         return CancelResult.JOB_FOUND_CANCEL_WAS_NOT_POSSIBLE;
 

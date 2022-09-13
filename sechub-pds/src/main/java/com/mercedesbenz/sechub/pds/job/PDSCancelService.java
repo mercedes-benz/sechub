@@ -103,6 +103,9 @@ public class PDSCancelService {
 
             jobTransactionService.markJobAsCanceledInOwnTransaction(pdsJobUUID);
 
+            LOG.warn(
+                    "PDS job:{} has been hard marked as canceled. This was only a cleanup in database! The origin PDS server launcher script process was not really stopped.");
+
             return true;
         } catch (ConcurrencyFailureException ce) {
             Optional<PDSJob> jobReadAgainOpt = repository.findById(pdsJobUUID);
