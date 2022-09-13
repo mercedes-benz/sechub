@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.storage.sharevolume.spring;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -47,12 +48,14 @@ class SharedVolumeJobStorageTest {
     private SharedVolumeJobStorage storeTestData(UUID jobUUID, String fileName) throws IOException, FileNotFoundException {
         SharedVolumeJobStorage storage = new SharedVolumeJobStorage(rootLocation, "test1", jobUUID);
 
-        Path tmpFile = TestUtil.createTempFileInBuildFolder("storage_test", "txt");
+        Path tmpFilePath = TestUtil.createTempFileInBuildFolder("storage_test", "txt");
+        File tmpFile = tmpFilePath.toFile();
+        long tmpFileSize = tmpFile.length();
 
         /* execute */
-        InputStream inputStream = new FileInputStream(tmpFile.toFile());
+        InputStream inputStream = new FileInputStream(tmpFile);
         InputStream inputStreamSpy = Mockito.spy(inputStream);
-        storage.store(fileName, inputStreamSpy);
+        storage.store(fileName, inputStreamSpy, tmpFileSize);
         return storage;
     }
 

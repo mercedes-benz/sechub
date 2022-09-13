@@ -10,6 +10,8 @@ services:
       dockerfile: Owasp-Zap-Debian.dockerfile
     env_file:
       - .env-cluster-object-storage
+    volumes:
+      - ./docker/scripts:/scripts
     networks:
       - internal
       - sechub
@@ -19,7 +21,9 @@ services:
 
   loadbalancer:
     build:
-      context: docker/loadbalancer
+      context: ../shared/docker/loadbalancer
+      args:
+        - PDS_SOLUTION=pds-owasp-zap
     env_file:
       - .env-cluster-object-storage
     networks:
@@ -31,7 +35,7 @@ services:
 
   database:
     build:
-      context: docker/database
+      context: ../shared/docker/database
     env_file:
       - .env-cluster-object-storage
     networks:
@@ -41,7 +45,7 @@ services:
 
   object-storage:
     build:
-      context: docker/object-storage
+      context: ../shared/docker/object-storage
     env_file:
       - .env-cluster-object-storage
     networks:

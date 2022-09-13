@@ -42,6 +42,7 @@ job_restart <job-uuid> - Restart/activate job <job-uuid>
 job_restart_hard <job-uuid> - Run new backend scan of job <job-uuid>
 job_status <project-id> <job-uuid> - Get status of job <job-uuid> in project <project-id> (json format)
 job_upload_sourcecode <project-id> <job-uuid> <zip-file> - Upload source code <zip-file> for project <project-id> and job <job-uuid>
+job_upload_binaries <project-id> <job-uuid> <tar-file> - Upload source code <tar-file> for project <project-id> and job <job-uuid>
 profile_create <profile-id> <executor-uuid1>[,<executor-uuid2>...] [<description>]
                Create execution profile <profile-id> with named executors assigned; description optional
 profile_delete <profile-id> - Delete execution profile <profile-id>
@@ -63,6 +64,7 @@ project_mockdata_set <project-id> <code> <web> <infra> - define mocked results (
 project_scan_list <project-id> - List scan jobs for project <project-id> (json format)
 project_set_accesslevel <project-id> <accesslevel> - Set access level of project <project-id> to one of: full read_only none
 project_set_owner <project-id> <owner> - Change owner of project <project-id> to <owner>
+project_set_whitelist_uris <project-id> <uri1>[,<uri2>...] - Set whitelist uris for project <project-id>
 project_unassign_profile <project-id> <profile-id> - Unassign execution profile <profile-id> from project <project-id>
 project_unassign_user <project-id> <user-id> - Unassign user from project (revoke scanning)
 scheduler_disable - Stop SecHub job scheduler
@@ -73,11 +75,12 @@ server_version - Print version of SecHub server
 superadmin_grant <user-id> - Grant superadmin role to user <user-id>
 superadmin_list - List all superadmin users (json format)
 superadmin_revoke - Revoke superadmin role from user <user-id>
+user_change_email <user-id> <new email address> - Update the email of user <user-id>
 user_delete <user-id> - Delete user <user-id>
 user_details <user-id> - List details of user <user-id> (json format)
 user_list - List all users (json format)
 user_list_open_signups - List all users waiting to get their signup accepted (json format)
-user_reset_apitoken <email address> - Request new api token for <email address> (invalidates current api token immediately)
+user_reset_apitoken <email address> - Request new api token for <email address>
 user_signup <new user-id> <email address> - Add <new user-id> with <email address> (needs to be accepted then)
 user_signup_accept <new user-id> - Accept registration of <new user-id>
 user_signup_decline <new user-id> - Decline registration of <new user-id>
@@ -346,6 +349,33 @@ function sechub_job_upload_sourcecode {
   fi
 }
 
+function sechub_job_upload_binaries {
+  local PROJECT_ID="$1"
+  local JOB_UUID="$2"
+  local TAR_FILE="$3"
+
+  if [[ ! -f "$TAR_FILE" ]] ; then
+    echo "File \"$TAR_FILE\" does not exist."
+    exit 1
+  fi
+
+  local checkSum=$(sha256sum $TAR_FILE | cut --delimiter=' ' --fields=1)
+  local fileSize=$(ls -l "$TAR_FILE" | cut --delimiter=' ' --fields 5)
+
+  curl $CURL_AUTH $CURL_PARAMS -i -X POST \
+    --header "Content-Type: multipart/form-data" \
+    --header "x-file-size: $fileSize" \
+    --form "file=@$TAR_FILE" \
+    --form "checkSum=$checkSum" \
+    "$SECHUB_SERVER/api/project/$PROJECT_ID/job/$JOB_UUID/binaries" | $RESULT_FILTER
+
+  if [[ "$?" == "0" ]] ; then
+    echo "File \"$TAR_FILE\" uploaded."
+  else
+    echo "Upload failed."
+  fi
+}
+
 function generate_sechub_profile_data {
   local EXECUTORS=$(echo $1 | awk -F',' '{ for (i = 1; i < NF; i++) { printf("{\"uuid\": \"%s\"}, ", $i) } printf ("{\"uuid\": \"%s\"}", $NF) }')
   shift
@@ -497,9 +527,7 @@ function sechub_project_metadata_set {
     else
       JSON_DATA+=", "
     fi
-    echo "sechub_project_metadata_set \"$i\""
     key=`echo $i | awk -F':' '{print $1}'`
-    echo $i | awk -F':' '{$1=""; print $0}'
     # The awk script enables that the separator ':' can also be part of the value and is passed through
     # e.g.:  "mykey:myvalue is:2" ; value will be "myvalue is:2"
     value=$(echo $i | awk -F':' '{ for (i = 2; i < NF; i++) { printf("%s:", $i) } print $NF }')
@@ -546,6 +574,29 @@ function sechub_project_set_accesslevel {
 
 function sechub_project_set_owner {
   curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1/owner/$2" | $CURL_FILTER
+}
+
+
+function generate_sechub_whitelist_data {
+  local uri_list=""
+  if [ -n "$1" ] ; then
+    uri_list=$(echo $1 | awk -F',' '{ for (i = 1; i < NF; i++) { printf("\"%s\",", $i) } printf ("\"%s\"", $NF) }')
+  fi
+  cat <<EOF
+{
+  "apiVersion": "$SECHUB_API_VERSION",
+  "whiteList": {
+    "uris":[$uri_list]
+  }
+}
+EOF
+}
+
+
+function sechub_project_set_whitelist_uris {
+  local JSON_DATA="$(generate_sechub_whitelist_data $2)"
+  echo $JSON_DATA | $JSON_FORMATTER
+  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/project/$1/whitelist" | $CURL_FILTER
 }
 
 
@@ -601,6 +652,11 @@ function sechub_superadmin_list {
 
 function sechub_superadmin_revoke {
   curl $CURL_PARAMS -i -X POST "$SECHUB_SERVER/api/admin/user/$1/revoke/superadmin" | $CURL_FILTER
+}
+
+
+function sechub_user_change_email {
+  curl $CURL_PARAMS -i -X PUT "$SECHUB_SERVER/api/admin/user/$1/email/$2" | $CURL_FILTER
 }
 
 
@@ -805,6 +861,12 @@ case "$action" in
     ZIP_FILE="$3"   ; check_parameter ZIP_FILE '<zip-file>'
     $failed || sechub_job_upload_sourcecode "$PROJECT_ID" "$JOB_UUID" "$ZIP_FILE"
     ;;
+  job_upload_binaries)
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    JOB_UUID="$2"   ; check_parameter JOB_UUID '<job-uuid>'
+    TAR_FILE="$3"   ; check_parameter TAR_FILE '<tar-file>'
+    $failed || sechub_job_upload_binaries "$PROJECT_ID" "$JOB_UUID" "$TAR_FILE"
+    ;;
   profile_create)
     PROFILE_ID="$1" ; check_parameter PROFILE_ID '<profile-id>'
     EXECUTORS="$2" ; check_parameter EXECUTORS '<executor-uuid1>[,<executor-uuid2>...]'
@@ -871,12 +933,8 @@ case "$action" in
     METADATA="$2" ; check_parameter METADATA '<key1>:<value1>' # We expect at least one pair
     shift
     for item in "$@"; do
-      echo "\"${item}\""
       METADATA_LIST+=("${item}")
     done
-    # for i in "${METADATA_LIST[@]}"; do
-    #     echo "main: \"${i}\""
-    # done
     $failed || sechub_project_metadata_set "$PROJECT_ID" "${METADATA_LIST[@]}"
     ;;
   project_mockdata_list)
@@ -903,6 +961,11 @@ case "$action" in
     PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
     PROJECT_OWNER="$2" ; check_parameter PROJECT_OWNER '<owner>'
     $failed || sechub_project_set_owner "$PROJECT_ID" "$PROJECT_OWNER"
+    ;;
+  project_set_whitelist_uris)
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    WHITELIST_URIS="$2" # No check - we also accept an empty parameter -> clear whitelist
+    $failed || sechub_project_set_whitelist_uris "$PROJECT_ID" "$WHITELIST_URIS"
     ;;
   project_unassign_profile)
     PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
@@ -939,6 +1002,11 @@ case "$action" in
   superadmin_revoke)
     SECHUB_USER="$1" ; check_parameter SECHUB_USER '<user-id>'
     $failed || sechub_superadmin_revoke "$SECHUB_USER"
+    ;;
+  user_change_email)
+    SECHUB_USER="$1" ; check_parameter SECHUB_USER '<user-id>'
+    SECHUB_NEW_EMAIL="$2" ; check_parameter SECHUB_NEW_EMAIL '<new email address>'
+    $failed || sechub_user_change_email "$SECHUB_USER" "$SECHUB_NEW_EMAIL"
     ;;
   user_delete)
     SECHUB_USER="$1" ; check_parameter SECHUB_USER '<user-id>'

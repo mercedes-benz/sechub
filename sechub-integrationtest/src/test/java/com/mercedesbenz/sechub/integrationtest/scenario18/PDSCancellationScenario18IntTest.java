@@ -13,10 +13,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
-import com.mercedesbenz.sechub.adapter.pds.data.PDSJobStatus.PDSAdapterJobStatusState;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 
@@ -43,7 +43,7 @@ public class PDSCancellationScenario18IntTest {
 
         /* wait until PDS has started the job */
         UUID pdsJobUUID = waitForFirstPDSJobOfSecHubJobAndReturnPDSJobUUID(jobUUID);
-        waitForPDSJobInState(PDSAdapterJobStatusState.RUNNING, 5, 300, pdsJobUUID,true);
+        waitForPDSJobInState(PDSJobStatusState.RUNNING, 5, 300, pdsJobUUID,true);
 
         /* execute */
         as(SUPER_ADMIN).cancelJob(jobUUID);
@@ -55,7 +55,7 @@ public class PDSCancellationScenario18IntTest {
             enablePDSAutoDumpOnErrorsForSecHubJob().
             hasMessage(SecHubMessageType.INFO, "Job execution was canceled by user");
 
-        waitForPDSJobInState(PDSAdapterJobStatusState.CANCELED, 25, 300, pdsJobUUID,true);
+        waitForPDSJobInState(PDSJobStatusState.CANCELED, 25, 300, pdsJobUUID,true);
 
         SecHubMessagesList messages = asPDSUser(PDS_ADMIN).getJobMessages(pdsJobUUID);
         List<SecHubMessage> sechubMessages = messages.getSecHubMessages();

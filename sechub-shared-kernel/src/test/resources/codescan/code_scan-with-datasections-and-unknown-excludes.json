@@ -1,0 +1,25 @@
+{
+  "apiVersion" : "1.2.3",
+  "codeScan" : { 
+    "use" : [ "reference-name-sources-1"]
+  },
+  "data" : {
+    "sources" : [ { 
+      "name" : "reference-name-sources-1",
+      "fileSystem" : { 
+        "files" : [ "somewhere/file1.txt", "somewhere/file2.txt" ], 
+        "folders" : [ "somewhere/subfolder1", "somewhere/subfolder2" ] 
+      },
+      "excludes": ["**/mytestcode/**","**/documentation/**"], 
+      "additionalFilenameExtensions": [".cplusplus",".py9"] 
+    } ],
+    "binaries" : [ { 
+      "name" : "reference-name-binaries-1",
+      "fileSystem" : {
+        "files" : [ "somewhere/file1.dll", "somewhere/file2.a" ], 
+        "folders" : [ "somewhere/bin/subfolder1", "somewhere/bin/subfolder2" ] 
+      }
+    }
+   ]
+  }
+}

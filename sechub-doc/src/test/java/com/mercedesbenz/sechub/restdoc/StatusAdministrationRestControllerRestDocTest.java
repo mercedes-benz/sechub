@@ -5,6 +5,8 @@ import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
@@ -91,7 +93,8 @@ public class StatusAdministrationRestControllerRestDocTest implements TestIsNece
 
 		this.mockMvc.perform(
 				get(apiEndpoint, MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId()).
-				contentType(MediaType.APPLICATION_JSON_VALUE)
+					contentType(MediaType.APPLICATION_JSON_VALUE).
+					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
 				)./*
 				*/
 		andDo(print()).
@@ -103,6 +106,9 @@ public class StatusAdministrationRestControllerRestDocTest implements TestIsNece
                     responseSchema(OpenApiSchema.MAPPING_CONFIGURATION.getSchema()).
                 and().
                 document(
+	                		requestHeaders(
+	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                		),
                             pathParameters(
                                     parameterWithName(MAPPING_ID.paramName()).description("The mapping Id")
                             ),
@@ -126,8 +132,9 @@ public class StatusAdministrationRestControllerRestDocTest implements TestIsNece
         /* execute + test @formatter:off */
         this.mockMvc.perform(
                 put(apiEndpoint, MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId()).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                content(mappingDataTeam.toJSON())
+	                contentType(MediaType.APPLICATION_JSON_VALUE).
+	                content(mappingDataTeam.toJSON()).
+	                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
                 )./*
                 */
         andDo(print()).
@@ -139,6 +146,9 @@ public class StatusAdministrationRestControllerRestDocTest implements TestIsNece
                     requestSchema(OpenApiSchema.MAPPING_CONFIGURATION.getSchema()).
                 and().
                 document(
+	                		requestHeaders(
+	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                		),
                             pathParameters(
                                     parameterWithName(MAPPING_ID.paramName()).description("The mappingID, identifiying which mapping shall be updated")
                             ),

@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"time"
 
 	sechubUtil "mercedes-benz.com/sechub/util"
@@ -27,30 +28,36 @@ func sendWithDefaultHeader(method string, url string, context *Context) *http.Re
 }
 
 func sendWithHeader(method string, url string, context *Context, header map[string]string) *http.Response {
-	/* we use inputForContentProcessing - means origin content, unfilled, prevents password leak in logs */
-	if context.config.debugHTTP {
-		sechubUtil.LogDebug(true, fmt.Sprintf("HTTP %s %s\n Headers: %s\n Origin-Content: %q", method, url, header, context.inputForContentProcessing))
-	} else {
-		sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("HTTP %s %s\n", method, url))
-	}
-
 	/* prepare */
 	request, err1 := http.NewRequest(method, url, bytes.NewBuffer(context.contentToSend)) // we use "contentToSend" and not "inputForContentProcessing" !
 	sechubUtil.HandleHTTPError(err1, ExitCodeHTTPError)
-	request.SetBasicAuth(context.config.user, context.config.apiToken)
 
 	for key := range header {
 		request.Header.Set(key, header[key])
 	}
 
 	/* send */
-	return handleHTTPRequestAndResponse(context, request)
+	return handleHTTPRequestAndResponse(context, request, true)
 }
 
 // handleHTTPRequestAndResponse - run http request and handle the response in a resilient way
-func handleHTTPRequestAndResponse(context *Context, request *http.Request) *http.Response {
+func handleHTTPRequestAndResponse(context *Context, request *http.Request, printContentOfRequest bool) *http.Response {
 	var response *http.Response
 	var err error
+
+	/* we use inputForContentProcessing - means origin content, unfilled, prevents password leak in logs */
+	if context.config.debugHTTP {
+		sechubUtil.LogDebug(true, fmt.Sprintf("HTTP %s %s\n  HTTP Headers: %s\n  Content length of HTTP request: %d bytes",
+			request.Method, request.URL, request.Header, request.ContentLength))
+		if printContentOfRequest {
+			sechubUtil.LogDebug(true, fmt.Sprintf("Content of HTTP request: %q", context.inputForContentProcessing))
+		}
+	} else {
+		sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("HTTP %s %s", request.Method, request.URL))
+	}
+
+	// Set authorization data after logging - so no secrets are logged
+	request.SetBasicAuth(context.config.user, context.config.apiToken)
 
 	for retry := 0; retry <= HTTPMaxRetries; retry++ {
 		response, err = context.HTTPClient.Do(request)     // Execute HTTP call
@@ -117,12 +124,15 @@ func newFileUploadRequestViaPipe(uploadToURL string, params map[string]string, p
 
 	request, err := http.NewRequest("POST", uploadToURL, r)
 	request.Header.Set("Content-Type", m.FormDataContentType())
-	request.ContentLength = computeContentLengthOfFileUpload(params, paramName, filename)
+
+	filesize := sechubUtil.GetFileSize(filename)
+	request.Header.Set("x-file-size", strconv.FormatInt(filesize, 10))
+	request.ContentLength = computeContentLengthOfFileUpload(params, paramName, filename, filesize)
 
 	return request, err
 }
 
-func computeContentLengthOfFileUpload(params map[string]string, paramName, filename string) (contentLength int64) {
+func computeContentLengthOfFileUpload(params map[string]string, paramName, filename string, filesize int64) (contentLength int64) {
 	/* Real world example of multipart content sent to SecHub server when uploading:
 	--f76dd0c1a814e0af2f4d197827fd9caa1e9636276e064454356141ae1347
 	Content-Disposition: form-data; name="title"
@@ -167,7 +177,7 @@ func computeContentLengthOfFileUpload(params map[string]string, paramName, filen
 	contentLength += ContentLengthFormDataFile
 	contentLength += int64(len(paramName))
 	contentLength += int64(len(filepath.Base(filename)))
-	contentLength += sechubUtil.GetFileSize(filename)
+	contentLength += filesize
 
 	// multipart trailing line
 	contentLength += ContentLengthMultipartBoundaryTrailingLine

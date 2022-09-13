@@ -5,6 +5,8 @@ import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -100,8 +102,9 @@ public class DownloadsFullScanDataForJobRestDocTest implements TestIsNecessaryFo
 
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
-				get(apiEndpoint,jobUUID).
-				contentType(MediaType.APPLICATION_JSON_VALUE)
+					get(apiEndpoint,jobUUID).
+					contentType(MediaType.APPLICATION_JSON_VALUE).
+					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
 				).
 		andExpect(status().isOk()).
 		andDo(defineRestService().
@@ -111,6 +114,9 @@ public class DownloadsFullScanDataForJobRestDocTest implements TestIsNecessaryFo
                     responseSchema(OpenApiSchema.FULL_SCAN_DATA_ZIP.getSchema()).
                 and().
                 document(
+	                		requestHeaders(
+	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                		),
                             pathParameters(
                                     parameterWithName(JOB_UUID.paramName()).description("The job UUID")
                 )

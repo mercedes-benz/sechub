@@ -15,12 +15,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
-import com.mercedesbenz.sechub.adapter.pds.data.PDSJobStatus.PDSAdapterJobStatusState;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubReportVersion;
 import com.mercedesbenz.sechub.commons.model.SecHubStatus;
 import com.mercedesbenz.sechub.commons.model.Severity;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.integrationtest.api.AssertJobScheduler.TestExecutionState;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
@@ -87,7 +87,7 @@ public class PDSCodeScanJobScenario5IntTest {
         assertEquals(1, pdsJobUUIDs.size());
         UUID pdsJobUUID = pdsJobUUIDs.iterator().next();
         assertPDSJobStatus(pdsJobUUID).
-            isInState(PDSAdapterJobStatusState.FAILED);
+            isInState(PDSJobStatusState.FAILED);
         /* @formatter:on */
 
         assertNotNull(pdsJobUUID);

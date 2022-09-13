@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.adapter.pds;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,13 +24,13 @@ import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.AdapterMetaDataCallback;
 import com.mercedesbenz.sechub.adapter.AdapterRuntimeContext;
-import com.mercedesbenz.sechub.adapter.pds.data.PDSJobCreateResult;
-import com.mercedesbenz.sechub.adapter.pds.data.PDSJobStatus;
-import com.mercedesbenz.sechub.adapter.pds.data.PDSJobStatus.PDSAdapterJobStatusState;
 import com.mercedesbenz.sechub.adapter.support.JSONAdapterSupport;
 import com.mercedesbenz.sechub.adapter.support.RestOperationsSupport;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobCreateResult;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatus;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.test.TestUtil;
 
 class PDSAdapterV1Test {
@@ -89,7 +90,7 @@ class PDSAdapterV1Test {
         UUID pdsJobUUID = pdsJobUUID1;
 
         preparePDSJobCreation(pdsJobUUID);
-        preparePDSJobStatus(pdsJobUUID, PDSAdapterJobStatusState.DONE);
+        preparePDSJobStatus(pdsJobUUID, PDSJobStatusState.DONE);
         preparePDSMessages(pdsJobUUID, Collections.emptyList());
 
         /* execute */
@@ -111,7 +112,7 @@ class PDSAdapterV1Test {
         when(callback.getMetaDataOrNull()).thenReturn(metaData);
 
         preparePDSJobCreation(pdsJobUUID);
-        preparePDSJobStatus(pdsJobUUID, PDSAdapterJobStatusState.DONE);
+        preparePDSJobStatus(pdsJobUUID, PDSJobStatusState.DONE);
         preparePDSMessages(pdsJobUUID, Collections.emptyList());
 
         /* execute */
@@ -135,7 +136,7 @@ class PDSAdapterV1Test {
 
         // test no job created: we just prepare no job creation here! If job creation
         // would be called, the test will fail
-        preparePDSJobStatus(pdsJobUUID, PDSAdapterJobStatusState.DONE);
+        preparePDSJobStatus(pdsJobUUID, PDSJobStatusState.DONE);
         preparePDSMessages(pdsJobUUID, Collections.emptyList());
 
         /* execute */
@@ -147,9 +148,9 @@ class PDSAdapterV1Test {
     }
 
     @ParameterizedTest
-    @EnumSource(mode = Mode.INCLUDE, value = PDSAdapterJobStatusState.class, names = { "RUNNING", "CREATED", "QUEUED", "READY_TO_START" })
+    @EnumSource(mode = Mode.INCLUDE, value = PDSJobStatusState.class, names = { "RUNNING", "CREATED", "QUEUED", "READY_TO_START" })
     @DisplayName("Restart - Meta data found and PDS job uuid set - but reused PDS job is not in END state - so wait until job1 is in state done")
-    void restart_pds_job_uuid_found_in_metadata_pds_job_not_complete_done(PDSAdapterJobStatusState formerPdsJobState) throws Exception {
+    void restart_pds_job_uuid_found_in_metadata_pds_job_not_complete_done(PDSJobStatusState formerPdsJobState) throws Exception {
         /* prepare */
         prepareMinimumPDSConfig();
 
@@ -175,7 +176,7 @@ class PDSAdapterV1Test {
          * prepare 2 - set now to done, so we can try to restart again. This time it
          * will succeed.
          */
-        preparePDSJobStatus(pdsJobUUID, PDSAdapterJobStatusState.DONE);
+        preparePDSJobStatus(pdsJobUUID, PDSJobStatusState.DONE);
 
         /* execute */
         AdapterExecutionResult result = adapterToTest.start(config, callback);
@@ -186,9 +187,9 @@ class PDSAdapterV1Test {
     }
 
     @ParameterizedTest
-    @EnumSource(mode = Mode.INCLUDE, value = PDSAdapterJobStatusState.class, names = { "CANCELED", "CANCEL_REQUESTED", "FAILED" })
+    @EnumSource(mode = Mode.INCLUDE, value = PDSJobStatusState.class, names = { "CANCELED", "CANCEL_REQUESTED", "FAILED" })
     @DisplayName("Restart - Meta data found and PDS job uuid set - but former job state was not reusable. Must create + use new PDS job 2")
-    void restart_pds_job_uuid_found_in_metadata_but_was_canceled(PDSAdapterJobStatusState formerPdsJobState) throws Exception {
+    void restart_pds_job_uuid_found_in_metadata_but_was_canceled(PDSJobStatusState formerPdsJobState) throws Exception {
         /* prepare */
         prepareMinimumPDSConfig();
 
@@ -200,7 +201,7 @@ class PDSAdapterV1Test {
         preparePDSJobStatus(formerPdsJobUUID, formerPdsJobState);
 
         preparePDSJobCreation(pdsJobUUID2);
-        preparePDSJobStatus(pdsJobUUID2, PDSAdapterJobStatusState.DONE);
+        preparePDSJobStatus(pdsJobUUID2, PDSJobStatusState.DONE);
         preparePDSMessages(pdsJobUUID2, Collections.emptyList());
 
         /* execute */
@@ -212,9 +213,9 @@ class PDSAdapterV1Test {
     }
 
     @ParameterizedTest
-    @EnumSource(value = PDSAdapterJobStatusState.class)
+    @EnumSource(value = PDSJobStatusState.class)
     @DisplayName("Cancel - Meta data found and PDS job uuid set and former job state can be canceled")
-    void stop_pds_job_uuid_found_in_metadata_and_running(PDSAdapterJobStatusState formerPdsJobState) throws Exception {
+    void stop_pds_job_uuid_found_in_metadata_and_running(PDSJobStatusState formerPdsJobState) throws Exception {
         /* prepare */
         prepareMinimumPDSConfig();
 
@@ -226,7 +227,7 @@ class PDSAdapterV1Test {
         preparePDSJobStatus(formerPdsJobUUID, formerPdsJobState);
 
         preparePDSJobCreation(pdsJobUUID2);
-        preparePDSJobStatus(pdsJobUUID2, PDSAdapterJobStatusState.DONE);
+        preparePDSJobStatus(pdsJobUUID2, PDSJobStatusState.DONE);
         preparePDSMessages(pdsJobUUID2, Collections.emptyList());
 
         /* execute */
@@ -246,7 +247,7 @@ class PDSAdapterV1Test {
         when(restSupport.postJSON(any(), any())).thenReturn(JSON.toJSON(createResult));
     }
 
-    private void preparePDSJobStatus(UUID pdsJobUUID, PDSAdapterJobStatusState state) {
+    private void preparePDSJobStatus(UUID pdsJobUUID, PDSJobStatusState state) {
         PDSJobStatus jobStatus = new PDSJobStatus();
         jobStatus.state = state;
         ResponseEntity<PDSJobStatus> responseEntity = new ResponseEntity<>(jobStatus, HttpStatus.OK);

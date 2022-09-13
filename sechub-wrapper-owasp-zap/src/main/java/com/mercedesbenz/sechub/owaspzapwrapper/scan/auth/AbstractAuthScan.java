@@ -11,8 +11,8 @@ import org.zaproxy.clientapi.core.ApiResponse;
 import org.zaproxy.clientapi.core.ClientApi;
 import org.zaproxy.clientapi.core.ClientApiException;
 
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitCode;
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitRuntimeException;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperExitCode;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanConfiguration;
 import com.mercedesbenz.sechub.owaspzapwrapper.scan.AbstractScan;
 
@@ -32,7 +32,7 @@ public abstract class AbstractAuthScan extends AbstractScan implements AuthScan 
             scanUnsafe();
         } catch (ClientApiException e) {
             LOG.error("For scan {}: An error occured while scanning! Reason: {}", scanConfig.getContextName(), e.getMessage(), e);
-            throw new MustExitRuntimeException("An error occurred during the scan execution", e, MustExitCode.EXECUTION_FAILED);
+            throw new ZapWrapperRuntimeException("An error occurred during the scan execution", e, ZapWrapperExitCode.EXECUTION_FAILED);
         }
     }
 
@@ -109,6 +109,7 @@ public abstract class AbstractAuthScan extends AbstractScan implements AuthScan 
         createContext();
         addIncludedAndExcludedUrlsToContext();
         init();
+        loadApiDefinitions();
         if (scanConfig.isAjaxSpiderEnabled()) {
             runAjaxSpider();
         }

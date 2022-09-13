@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +18,9 @@ import org.zaproxy.clientapi.core.ApiResponseList;
 import org.zaproxy.clientapi.core.ClientApi;
 import org.zaproxy.clientapi.core.ClientApiException;
 
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitCode;
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitRuntimeException;
+import com.mercedesbenz.sechub.commons.model.SecHubWebScanApiConfiguration;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperExitCode;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanConfiguration;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.ProxyInformation;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.data.DeactivatedRuleReferences;
@@ -59,8 +61,8 @@ public abstract class AbstractScan implements OwaspZapScan {
         try {
             scanUnsafe();
         } catch (ClientApiException e) {
-            throw new MustExitRuntimeException("For scan: " + scanConfig.getContextName() + ". An error occured while scanning!", e,
-                    MustExitCode.EXECUTION_FAILED);
+            throw new ZapWrapperRuntimeException("For scan: " + scanConfig.getContextName() + ". An error occured while scanning!", e,
+                    ZapWrapperExitCode.EXECUTION_FAILED);
         }
     }
 
@@ -324,6 +326,29 @@ public abstract class AbstractScan implements OwaspZapScan {
         }
     }
 
+    protected void loadApiDefinitions() throws ClientApiException {
+        if (scanConfig.getApiDefinitionFile() == null) {
+            LOG.info("For scan {}: No file with API definition found!", scanConfig.getContextName());
+            return;
+        }
+        Optional<SecHubWebScanApiConfiguration> apiConfig = scanConfig.getSecHubWebScanConfiguration().getApi();
+        if (!apiConfig.isPresent()) {
+            throw new ZapWrapperRuntimeException("For scan :" + scanConfig.getContextName() + " No API type was definied!",
+                    ZapWrapperExitCode.SECHUB_CONFIGURATION_INVALID);
+        }
+
+        switch (apiConfig.get().getType()) {
+        case OPEN_API:
+            clientApi.openapi.importFile(scanConfig.getApiDefinitionFile().toString(), scanConfig.getTargetUriAsString(), contextId);
+            break;
+        default:
+            // should never happen since API type is an Enum
+            // Failure should happen before getting here
+            throw new ZapWrapperRuntimeException("For scan :" + scanConfig.getContextName() + " Unknown API type was definied!",
+                    ZapWrapperExitCode.SECHUB_CONFIGURATION_INVALID);
+        }
+    }
+
     private boolean isPassiveRule(String type) {
         return "passive".equals(type.toLowerCase());
     }
@@ -339,6 +364,7 @@ public abstract class AbstractScan implements OwaspZapScan {
 
         createContext();
         addIncludedAndExcludedUrlsToContext();
+        loadApiDefinitions();
         if (scanConfig.isAjaxSpiderEnabled()) {
             runAjaxSpider();
         }
@@ -369,11 +395,11 @@ public abstract class AbstractScan implements OwaspZapScan {
 
     private String resolveParentDirectoryPath(Path reportFile) {
         if (reportFile == null) {
-            throw new MustExitRuntimeException("For scan: " + scanConfig.getContextName() + ". Report file not set.", MustExitCode.REPORT_FILE_ERROR);
+            throw new ZapWrapperRuntimeException("For scan: " + scanConfig.getContextName() + ". Report file not set.", ZapWrapperExitCode.REPORT_FILE_ERROR);
         }
         if (Files.isDirectory(reportFile)) {
-            throw new MustExitRuntimeException("For scan: " + scanConfig.getContextName() + ". Report file must not be a directory!",
-                    MustExitCode.REPORT_FILE_ERROR);
+            throw new ZapWrapperRuntimeException("For scan: " + scanConfig.getContextName() + ". Report file must not be a directory!",
+                    ZapWrapperExitCode.REPORT_FILE_ERROR);
         }
 
         Path parent = reportFile.getParent();
@@ -402,8 +428,8 @@ public abstract class AbstractScan implements OwaspZapScan {
                 Files.move(owaspzapReport, owaspzapReport.resolveSibling(scanConfig.getReportFile().toAbsolutePath()), StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
 
-                throw new MustExitRuntimeException("For scan: " + scanConfig.getContextName() + ". An error occurred renaming the report file", e,
-                        MustExitCode.REPORT_FILE_ERROR);
+                throw new ZapWrapperRuntimeException("For scan: " + scanConfig.getContextName() + ". An error occurred renaming the report file", e,
+                        ZapWrapperExitCode.REPORT_FILE_ERROR);
             }
         }
     }

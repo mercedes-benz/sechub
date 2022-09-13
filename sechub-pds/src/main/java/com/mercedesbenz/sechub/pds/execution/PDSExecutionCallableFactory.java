@@ -14,6 +14,9 @@ import com.mercedesbenz.sechub.pds.job.PDSWorkspaceService;
 public class PDSExecutionCallableFactory {
 
     @Autowired
+    PDSProcessAdapterFactory processAdapterFactory;
+
+    @Autowired
     PDSJobTransactionService updateJobTransactionService;
 
     @Autowired
@@ -26,6 +29,6 @@ public class PDSExecutionCallableFactory {
     PDSExecutionEnvironmentService environmentService;
 
     public PDSExecutionCallable createCallable(UUID jobUUID) {
-        return new PDSExecutionCallable(jobUUID, updateJobTransactionService, workspaceService, environmentService, jobStatusService);
+        return new PDSExecutionCallable(jobUUID, updateJobTransactionService, workspaceService, environmentService, jobStatusService, processAdapterFactory);
     }
 }

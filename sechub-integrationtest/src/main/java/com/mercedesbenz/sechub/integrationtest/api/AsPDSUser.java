@@ -7,8 +7,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import com.mercedesbenz.sechub.adapter.pds.data.PDSJobStatus;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatus;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSupport;
 import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData;

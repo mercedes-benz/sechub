@@ -24,6 +24,10 @@
                     {
                         "key": "extractcode.enabled",
                         "description": "Extractcode is a helper tool, which extracts archives before scanning. Set it to `true` to enable it. Default: `false`."
+                    },
+                    {
+                        "key": "scancode.timeout",
+                        "description": "Stop scanning a file if scanning takes longer than a timeout in seconds (as natural number). Default 120."
                     }
                 ]
             }

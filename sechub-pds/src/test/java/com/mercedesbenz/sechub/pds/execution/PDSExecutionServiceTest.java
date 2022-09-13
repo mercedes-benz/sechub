@@ -64,7 +64,7 @@ public class PDSExecutionServiceTest {
 
         public TestPDSExecutionCallable(UUID jobUUID, long waitMillis, PDSExecutionResult result) {
             super(jobUUID, mock(PDSJobTransactionService.class), mock(PDSWorkspaceService.class), mock(PDSExecutionEnvironmentService.class),
-                    mock(PDSCheckJobStatusService.class));
+                    mock(PDSCheckJobStatusService.class), mock(PDSProcessAdapterFactory.class));
             this.waitMillis = waitMillis;
             this.result = result;
         }

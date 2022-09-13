@@ -35,11 +35,11 @@ import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.mercedesbenz.sechub.adapter.pds.data.PDSJobStatus.PDSAdapterJobStatusState;
 import com.mercedesbenz.sechub.commons.mapping.MappingData;
 import com.mercedesbenz.sechub.commons.mapping.MappingEntry;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.domain.scan.admin.FullScanData;
 import com.mercedesbenz.sechub.integrationtest.internal.DefaultTestExecutionProfile;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
@@ -328,7 +328,7 @@ public class TestAPI {
         }, 1000);
     }
 
-    public static void waitForPDSJobInState(PDSAdapterJobStatusState wantedState, int timeOutInSeconds, int timeToWaitInMillis, UUID pdsJobUUID,
+    public static void waitForPDSJobInState(PDSJobStatusState wantedState, int timeOutInSeconds, int timeToWaitInMillis, UUID pdsJobUUID,
             boolean dumpPDSOutputOnTimeOut) {
         Runnable runnable = null;
         if (dumpPDSOutputOnTimeOut) {
@@ -341,8 +341,8 @@ public class TestAPI {
                 LOG.debug(">>>>>>>>>PDS JOB:STATUS:" + status);
                 boolean wantedStateFound = status.contains(wantedState.toString());
 
-                if (wantedState != PDSAdapterJobStatusState.FAILED) {
-                    boolean statusIsFailed = status.contains(PDSAdapterJobStatusState.FAILED.toString());
+                if (wantedState != PDSJobStatusState.FAILED) {
+                    boolean statusIsFailed = status.contains(PDSJobStatusState.FAILED.toString());
                     if (statusIsFailed) {
                         /* it has failed and failed is not expected - so this is a problem! */
                         fail("The status of PDS job:" + pdsJobUUID + " is " + status + " - wanted was " + wantedState);

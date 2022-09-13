@@ -1,0 +1,19 @@
+{
+    "apiVersion" : "1.0",
+    "serverId" : "GITLEAKS_CLUSTER", 
+
+    "products" : [
+        {
+            "id" : "PDS_GITLEAKS",
+            "path" : "/scripts/gitleaks.sh",
+            "scanType" : "codeScan",
+            "description" : "Gitleaks"
+        },
+        {
+            "id" : "PDS_GITLEAKS_MOCK",
+            "path" : "/scripts/gitleaks_mock.sh",
+            "scanType" : "codeScan",
+            "description" : "Gitleaks"
+        }
+    ]
+}

@@ -94,7 +94,7 @@ func handleUploads(context *Context) {
 		uploadSourceZipFile(context)
 	}
 	if context.binariesTarFileExists() {
-		sechubUtil.Log("Uploading binaries tar file", context.config.quiet)
+		sechubUtil.Log("Uploading binaries tar archive", context.config.quiet)
 		uploadBinariesTarFile(context)
 	}
 }

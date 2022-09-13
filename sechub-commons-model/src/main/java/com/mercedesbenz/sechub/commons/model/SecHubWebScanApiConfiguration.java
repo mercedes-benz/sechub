@@ -4,6 +4,9 @@ package com.mercedesbenz.sechub.commons.model;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SecHubWebScanApiConfiguration implements SecHubDataConfigurationUsageByName {
 
     public static final String PROPERTY_TYPE = "type";

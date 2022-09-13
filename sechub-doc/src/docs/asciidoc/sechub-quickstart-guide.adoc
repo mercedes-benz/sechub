@@ -29,15 +29,15 @@ The following topics are covered:
 
 === Requirements
 
-* Java SDK
-* Go
+* Java JDK 11+
+* Go 1.16+
 * Git
 * cURL
 * jq
 
 [NOTE]
 --
-SecHub is compatible with Java 8 and will continue to do so. We aim to support all long term support versions (LTS) of the JDK: Java 8, 11 and 17 when released.
+Only long term support (LTS) versions of Java are supported.
 
 SecHub can be build and runs with https://openjdk.java.net/groups/hotspot/[OpenJDK Hotspot] and https://www.eclipse.org/openj9/[Eclipse OpenJ9].
 --
@@ -52,13 +52,15 @@ NOTE: Tested with Alpine Linux 3.12, 3.13 and 3.14.
 
 WARNING: Cross-compiling the SecHub client on Alpine Linux 3.11 does not work (Go version go1.13.13 linux/amd64). 
 
-==== Debian
+==== Debian/Ubuntu
 
 ----
 sudo apt install openjdk-11-jdk-headless golang git curl jq
 ----
 
-NOTE: Tested with Debian 10 "Buster".
+NOTE: Tested with Debian 10 "Buster", Ubuntu 18.04 "Bionic" and 20.04 "Focal" LTS.
+
+WARNING: If the version of your GoLang is below 1.15, please install a more recent version from https://go.dev/dl/[here], because you can't compile the executables.
 
 ==== Fedora and CentOS
 
@@ -67,14 +69,6 @@ sudo dnf install java-11-openjdk-devel golang git curl jq
 ----
 
 NOTE: Tested with Fedora 34 and CentOS 8.
-
-==== Ubuntu
-
-----
-sudo apt install openjdk-11-jdk-headless golang git curl jq
-----
-
-NOTE: Tested with Ubuntu 18.04 "Bionic" and 20.04 "Focal" LTS.
 
 === Instructions
 
@@ -146,7 +140,7 @@ export SECHUB_SERVER=https://localhost:8443
 export SECHUB_USERID=int-test_superadmin
 export SECHUB_APITOKEN=int-test_superadmin-pwd
 export SECHUB_TRUSTALL=true
-export PATH="`pwd`/sechub-cli/build/go/platform/linux-amd64:`pwd`/sechub-developertools/scripts:$PATH"
+export PATH="$PATH:`pwd`/sechub-cli/build/go/platform/linux-amd64:`pwd`/sechub-developertools/scripts"
 ----
 
 . Test: List all users as administrator

@@ -5,8 +5,10 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SecHubWebScanConfiguration {
 
     public static final String PROPERTY_URI = "uri";

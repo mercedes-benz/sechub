@@ -5,6 +5,8 @@ import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
 import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
@@ -92,7 +94,8 @@ public class SignupAdministrationRestControllerRestDocTest implements TestIsNece
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-        		get(apiEndpoint)
+        		get(apiEndpoint).
+        			header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
         		).
         			andExpect(status().isOk()).
         			andExpect(content().json("[{\"userId\":\"johnsmith\",\"emailAdress\":\"john.smith@example.com\"},{\"userId\":\"janesmith\",\"emailAdress\":\"jane.smith@example.com\"}]")).
@@ -103,11 +106,14 @@ public class SignupAdministrationRestControllerRestDocTest implements TestIsNece
                                 responseSchema(OpenApiSchema.SIGNUP_LIST.getSchema()).
                             and().
             			    document(
-        	                    responseFields(
-        	                            fieldWithPath("[]").description("List of user signups").optional(),
-        	                            fieldWithPath("[]."+RestDocPathParameter.USER_ID.paramName()).type(JsonFieldType.STRING).description("The user id"),
-        	                            fieldWithPath("[].emailAdress").type(JsonFieldType.STRING).description("The email address")
-        	                    )
+        	                		requestHeaders(
+        	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+        	                		),
+	        	                    responseFields(
+	        	                            fieldWithPath("[]").description("List of user signups").optional(),
+	        	                            fieldWithPath("[]."+RestDocPathParameter.USER_ID.paramName()).type(JsonFieldType.STRING).description("The user id"),
+	        	                            fieldWithPath("[].emailAdress").type(JsonFieldType.STRING).description("The email address")
+	        	                    )
         	            )
         		);
 
@@ -123,7 +129,8 @@ public class SignupAdministrationRestControllerRestDocTest implements TestIsNece
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-        		delete(apiEndpoint,"userId1")
+        		delete(apiEndpoint,"userId1").
+        			header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
         		).
         			andExpect(status().isOk()).
         			andDo(defineRestService().
@@ -132,6 +139,9 @@ public class SignupAdministrationRestControllerRestDocTest implements TestIsNece
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
                             and().
             			    document(
+        	                	requestHeaders(
+        	                			headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+        	                	),
                                 pathParameters(
                                         parameterWithName(USER_ID.paramName()).description("The userId of the signup which shall be deleted")
                                 )
