@@ -22,10 +22,12 @@ public class PDSRequestJobCancellationServiceTest {
     private UUID jobUUID;
     private PDSJobRepository repository;
     private PDSJob job;
+    private PDSJobTransactionService transactionService;
 
     @BeforeEach
     void before() throws Exception {
         repository = mock(PDSJobRepository.class);
+        transactionService = mock(PDSJobTransactionService.class);
 
         jobUUID = UUID.randomUUID();
         job = new PDSJob();
@@ -35,6 +37,7 @@ public class PDSRequestJobCancellationServiceTest {
 
         serviceToTest = new PDSRequestJobCancellationService();
         serviceToTest.repository = repository;
+        serviceToTest.transactionService = transactionService;
     }
 
     @ParameterizedTest
@@ -63,7 +66,7 @@ public class PDSRequestJobCancellationServiceTest {
     }
 
     @Test
-    void canceling_a_running_job_does_change_job_state_to_cancel_requested() {
+    void canceling_a_running_job_marks_job_as_cancel_requested_in_own_transaction() {
         /* prepare */
         job.state = PDSJobStatusState.RUNNING;
 
@@ -71,7 +74,20 @@ public class PDSRequestJobCancellationServiceTest {
         serviceToTest.requestJobCancellation(jobUUID);
 
         /* test */
-        assertEquals(PDSJobStatusState.CANCEL_REQUESTED, job.getState());
+        verify(transactionService).markJobAsCancelRequestedInOwnTransaction(job.getUUID());
+
+    }
+
+    @Test
+    void canceling_an_already_cancel_requested_job_does_not_mark_job_as_cancel_requested_again() {
+        /* prepare */
+        job.state = PDSJobStatusState.CANCEL_REQUESTED;
+
+        /* execute */
+        serviceToTest.requestJobCancellation(jobUUID);
+
+        /* test */
+        verify(transactionService, never()).markJobAsCancelRequestedInOwnTransaction(job.getUUID());
 
     }
 

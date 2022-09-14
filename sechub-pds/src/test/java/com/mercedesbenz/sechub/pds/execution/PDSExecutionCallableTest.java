@@ -73,7 +73,7 @@ class PDSExecutionCallableTest {
         when(locationData.getUserMessagesLocation()).thenReturn(messageFolder.getAbsolutePath());
         when(locationData.getMetaDataFileLocation()).thenReturn(metaDataFile.getAbsolutePath());
         when(locationData.getEventsLocation()).thenReturn(eventsFolder.getAbsolutePath());
-        
+
         when(locationData.getSourceCodeZipFileLocation()).thenReturn("not-defined-src-zip");
         when(locationData.getBinariesTarFileLocation()).thenReturn("not-defined-bin-tar");
         when(locationData.getExtractedBinariesLocation()).thenReturn("not-defined-bin-extraction");
