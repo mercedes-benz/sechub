@@ -25,6 +25,7 @@ class PDSCancelServiceTest {
     private PDSJobRepository repository;
 
     private PDSCancelService serviceToTest;
+    private PDSJobTransactionService jobTransactionService;
 
     @BeforeEach
     void beforeEach() {
@@ -36,10 +37,13 @@ class PDSCancelServiceTest {
         serviceToTest.repository = repository;
 
         serviceToTest.minutesToWaitBeforeTreatedAsOrphaned = 0; // define here just 0 will not wait
+
+        jobTransactionService = mock(PDSJobTransactionService.class);
+        serviceToTest.jobTransactionService = jobTransactionService;
     }
 
     @Test
-    @DisplayName("One job in state CANCEL_REQUESTED - found - no additional save done")
+    @DisplayName("One job in state CANCEL_REQUESTED - found - not marked as canceled")
     void cancelJobsWhereRequested_1() {
         /* prepare */
         UUID jobUUID = UUID.randomUUID();
@@ -55,10 +59,11 @@ class PDSCancelServiceTest {
         /* test */
         verify(executionService).cancel(jobUUID);
         verify(repository, never()).save(job);
+        verify(jobTransactionService, never()).markJobAsCanceledInOwnTransaction(jobUUID);
     }
 
     @Test
-    @DisplayName("One job in state CANCEL_REQUESTED - found but cancel not possible - treat as orphaned (saved as CANCELED)")
+    @DisplayName("One job in state CANCEL_REQUESTED - found but cancel not possible - treat as orphaned (marked as CANCELED)")
     void cancelJobsWhereRequested_2() {
         /* prepare */
         UUID jobUUID = UUID.randomUUID();
@@ -73,11 +78,9 @@ class PDSCancelServiceTest {
         serviceToTest.handleJobCancelRequests();
 
         /* test */
-        ArgumentCaptor<PDSJob> pdsJobCaptor = ArgumentCaptor.forClass(PDSJob.class);
+        verify(repository).findAllJobsInState(PDSJobStatusState.CANCEL_REQUESTED);
         verify(executionService).cancel(jobUUID);
-        verify(repository).save(pdsJobCaptor.capture());
-        PDSJob jobSaved = pdsJobCaptor.getValue();
-        assertEquals(PDSJobStatusState.CANCELED, jobSaved.getState());
+        verify(jobTransactionService).markJobAsCanceledInOwnTransaction(jobUUID);
 
     }
 
@@ -99,6 +102,7 @@ class PDSCancelServiceTest {
         /* test */
         verify(executionService).cancel(jobUUID);
         verify(repository, never()).save(any());
+        verify(jobTransactionService, never()).markJobAsCanceledInOwnTransaction(jobUUID);
     }
 
     @Test
@@ -122,6 +126,7 @@ class PDSCancelServiceTest {
         /* test */
         verify(executionService).cancel(jobUUID);
         verify(repository, never()).save(any());
+        verify(jobTransactionService, never()).markJobAsCanceledInOwnTransaction(jobUUID);
     }
 
     @Test
@@ -145,10 +150,11 @@ class PDSCancelServiceTest {
         /* test */
         verify(executionService).cancel(jobUUID);
         verify(repository, never()).save(any());
+        verify(jobTransactionService, never()).markJobAsCanceledInOwnTransaction(jobUUID);
     }
 
     @Test
-    @DisplayName("One job in state CANCEL_REQUESTED - not found - job too old, so treated as orphaned (saved as CANCELED)")
+    @DisplayName("One job in state CANCEL_REQUESTED - not found - job too old, so treated as orphaned (marked as CANCELED)")
     void cancelJobsWhereRequested_6() {
         /* prepare */
         UUID jobUUID = UUID.randomUUID();
@@ -166,11 +172,9 @@ class PDSCancelServiceTest {
         serviceToTest.handleJobCancelRequests();
 
         /* test */
-        ArgumentCaptor<PDSJob> pdsJobCaptor = ArgumentCaptor.forClass(PDSJob.class);
         verify(executionService).cancel(jobUUID);
-        verify(repository).save(pdsJobCaptor.capture());
-        PDSJob jobSaved = pdsJobCaptor.getValue();
-        assertEquals(PDSJobStatusState.CANCELED, jobSaved.getState());
+        verify(repository).findAllJobsInState(PDSJobStatusState.CANCEL_REQUESTED);
+        verify(jobTransactionService).markJobAsCanceledInOwnTransaction(jobUUID);
 
     }
 
@@ -186,6 +190,7 @@ class PDSCancelServiceTest {
         /* test */
         verify(executionService, never()).cancel(any());
         verify(repository, never()).save(any());
+        verify(jobTransactionService, never()).markJobAsCanceledInOwnTransaction(any());
     }
 
     @Test
@@ -235,12 +240,8 @@ class PDSCancelServiceTest {
         assertTrue(canceledJobUUIDs.contains(job3FoundInExecutionCancelDone.uUID));
         assertTrue(canceledJobUUIDs.contains(job4FoundInExeuctionCancelNotPossible.uUID));
 
-        ArgumentCaptor<PDSJob> pdsJobCaptor = ArgumentCaptor.forClass(PDSJob.class);
-        verify(repository, times(2)).save(pdsJobCaptor.capture());
-
-        List<PDSJob> jobsSaved = pdsJobCaptor.getAllValues();
-        assertTrue(jobsSaved.contains(job1NotFoundInExecutionButOrphaned));
-        assertTrue(jobsSaved.contains(job4FoundInExeuctionCancelNotPossible));
+        verify(jobTransactionService).markJobAsCanceledInOwnTransaction(job1NotFoundInExecutionButOrphaned.uUID);
+        verify(jobTransactionService).markJobAsCanceledInOwnTransaction(job4FoundInExeuctionCancelNotPossible.uUID);
 
     }
 
