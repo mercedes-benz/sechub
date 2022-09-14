@@ -137,12 +137,6 @@ public enum MessageID {
 
     JOB_RESULT_PURGE_FAILED(MessageDataKeys.SECHUB_UUID),
 
-    @Deprecated // was used by scan progress monitor - but not suitable for scan cancellation
-    REQUEST_BATCH_JOB_STATUS(MessageDataKeys.BATCH_JOB_STATUS),
-
-    @Deprecated // was used by scan progress monitor - but not suitable for scan cancellation
-    BATCH_JOB_STATUS(MessageDataKeys.BATCH_JOB_STATUS),
-
     REQUEST_SCHEDULER_JOB_STATUS(MessageDataKeys.SCHEDULER_JOB_STATUS),
 
     SCHEDULER_JOB_STATUS(MessageDataKeys.SCHEDULER_JOB_STATUS),
