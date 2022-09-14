@@ -115,6 +115,9 @@ public class JobUsecasesEventTraceScenario4IntTest implements IntegrationTestIsN
                  from("com.mercedesbenz.sechub.domain.schedule.batch.SynchronSecHubJobExecutor$1").
                  to("com.mercedesbenz.sechub.domain.scan.ScanService").
            /* 6 */
+           syncEvent(MessageID.REQUEST_SCHEDULER_JOB_STATUS).
+                 from("com.mercedesbenz.sechub.domain.scan.ScanProgressMonitor").
+                 to("com.mercedesbenz.sechub.domain.schedule.job.SchedulerJobStatusRequestHandler").
            /* 7 */
            asyncEvent(MessageID.JOB_DONE).
                  from("com.mercedesbenz.sechub.domain.schedule.batch.SynchronSecHubJobExecutor").
@@ -169,12 +172,15 @@ public class JobUsecasesEventTraceScenario4IntTest implements IntegrationTestIsN
                  from("com.mercedesbenz.sechub.domain.schedule.batch.SynchronSecHubJobExecutor$1").
                  to("com.mercedesbenz.sechub.domain.scan.ScanService").
            /* 5 */
+           syncEvent(MessageID.REQUEST_SCHEDULER_JOB_STATUS).
+                 from("com.mercedesbenz.sechub.domain.scan.ScanProgressMonitor").
+                 to("com.mercedesbenz.sechub.domain.schedule.job.SchedulerJobStatusRequestHandler").
            /* 6 */
            asyncEvent(MessageID.JOB_DONE).
                  from("com.mercedesbenz.sechub.domain.schedule.batch.SynchronSecHubJobExecutor").
                  to("com.mercedesbenz.sechub.domain.administration.job.JobAdministrationMessageHandler").
-        /* assert + write */
-        assertAsExpectedAndCreateHistoryFile(UseCaseIdentifier.UC_ADMIN_RESTARTS_JOB_HARD.name(),"crashed_jvm_with_product_result");
+           /* assert + write */
+           assertAsExpectedAndCreateHistoryFile(UseCaseIdentifier.UC_ADMIN_RESTARTS_JOB_HARD.name(),"crashed_jvm_with_product_result");
         /* @formatter:on */
     }
 
@@ -258,12 +264,15 @@ public class JobUsecasesEventTraceScenario4IntTest implements IntegrationTestIsN
                  from("com.mercedesbenz.sechub.domain.schedule.batch.SynchronSecHubJobExecutor$1").
                  to("com.mercedesbenz.sechub.domain.scan.ScanService").
            /* 4 */
+           syncEvent(MessageID.REQUEST_SCHEDULER_JOB_STATUS).
+                 from("com.mercedesbenz.sechub.domain.scan.ScanProgressMonitor").
+                 to("com.mercedesbenz.sechub.domain.schedule.job.SchedulerJobStatusRequestHandler").
            /* 5 */
            asyncEvent(MessageID.JOB_DONE).
                  from("com.mercedesbenz.sechub.domain.schedule.batch.SynchronSecHubJobExecutor").
                  to("com.mercedesbenz.sechub.domain.administration.job.JobAdministrationMessageHandler").
-        /* assert + write */
-        assertAsExpectedAndCreateHistoryFile(UseCaseIdentifier.UC_ADMIN_RESTARTS_JOB.name(),"crashed_jvm_with_product_result");
+           /* assert + write */
+           assertAsExpectedAndCreateHistoryFile(UseCaseIdentifier.UC_ADMIN_RESTARTS_JOB.name(),"crashed_jvm_with_product_result");
         /* @formatter:on */
 
     }
@@ -309,12 +318,15 @@ public class JobUsecasesEventTraceScenario4IntTest implements IntegrationTestIsN
                  from("com.mercedesbenz.sechub.domain.schedule.batch.SynchronSecHubJobExecutor$1").
                  to("com.mercedesbenz.sechub.domain.scan.ScanService").
            /* 4 */
+           syncEvent(MessageID.REQUEST_SCHEDULER_JOB_STATUS).
+                 from("com.mercedesbenz.sechub.domain.scan.ScanProgressMonitor").
+                 to("com.mercedesbenz.sechub.domain.schedule.job.SchedulerJobStatusRequestHandler").
            /* 5 */
            asyncEvent(MessageID.JOB_DONE).
                  from("com.mercedesbenz.sechub.domain.schedule.batch.SynchronSecHubJobExecutor").
                  to("com.mercedesbenz.sechub.domain.administration.job.JobAdministrationMessageHandler").
-        /* assert + write */
-        assertAsExpectedAndCreateHistoryFile(UseCaseIdentifier.UC_ADMIN_RESTARTS_JOB.name(),"crashed_jvm_with_product_result");
+           /* assert + write */
+           assertAsExpectedAndCreateHistoryFile(UseCaseIdentifier.UC_ADMIN_RESTARTS_JOB.name(),"crashed_jvm_with_product_result");
         /* @formatter:on */
     }
 
