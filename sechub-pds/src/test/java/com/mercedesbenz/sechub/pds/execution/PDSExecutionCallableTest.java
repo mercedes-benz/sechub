@@ -40,6 +40,7 @@ class PDSExecutionCallableTest {
     private File errorFile;
     private File outputFile;
     private File messageFolder;
+    private File eventsFolder;
     private File metaDataFile;
 
     @BeforeEach
@@ -51,6 +52,7 @@ class PDSExecutionCallableTest {
         outputFile = new File(workspaceTestDataJob1Folder, "output.txt");
         metaDataFile = new File(workspaceTestDataJob1Folder, "metadata.txt");
         messageFolder = new File(workspaceTestDataJob1Folder, "messages");
+        eventsFolder = new File(workspaceTestDataJob1Folder, "events");
 
         assertTrue(messageFolder.exists());
         assertTrue(resultFile.exists());
@@ -70,6 +72,8 @@ class PDSExecutionCallableTest {
         when(locationData.getResultFileLocation()).thenReturn(resultFile.getAbsolutePath());
         when(locationData.getUserMessagesLocation()).thenReturn(messageFolder.getAbsolutePath());
         when(locationData.getMetaDataFileLocation()).thenReturn(metaDataFile.getAbsolutePath());
+        when(locationData.getEventsLocation()).thenReturn(eventsFolder.getAbsolutePath());
+        
         when(locationData.getSourceCodeZipFileLocation()).thenReturn("not-defined-src-zip");
         when(locationData.getBinariesTarFileLocation()).thenReturn("not-defined-bin-tar");
         when(locationData.getExtractedBinariesLocation()).thenReturn("not-defined-bin-extraction");
@@ -104,6 +108,7 @@ class PDSExecutionCallableTest {
         PDSExecutionResult result = callableToTest.call();
 
         /* test */
+        assertJobHasMarkedAsRunningInOwnTransaction();
         assertTrue(result.failed);
         // internally an illegal state is thrown before any execution,
         verify(processAdapterFactory, never()).startProcess(any());
@@ -119,6 +124,7 @@ class PDSExecutionCallableTest {
         PDSExecutionResult result = callableToTest.call();
 
         /* test */
+        assertJobHasMarkedAsRunningInOwnTransaction();
         assertTrue(result.failed);
         assertEquals("Product time out.", result.result);
 
@@ -141,6 +147,7 @@ class PDSExecutionCallableTest {
         PDSExecutionResult result = callableToTest.call();
 
         /* test */
+        assertJobHasMarkedAsRunningInOwnTransaction();
         assertFalse(result.failed);
         assertEquals("the result", result.result);
 
@@ -162,6 +169,7 @@ class PDSExecutionCallableTest {
         PDSExecutionResult result = callableToTest.call();
 
         /* test */
+        assertJobHasMarkedAsRunningInOwnTransaction();
         assertFalse(result.failed);
         assertJob1MessageHasBeenPersistedToDB();
 
@@ -176,9 +184,18 @@ class PDSExecutionCallableTest {
         PDSExecutionResult result = callableToTest.call();
 
         /* test */
+        assertJobHasMarkedAsRunningInOwnTransaction();
         assertTrue(result.failed);
         assertJob1MessageHasBeenPersistedToDB();
 
+    }
+
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    /* + ................Helpers......................... + */
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+
+    private void assertJobHasMarkedAsRunningInOwnTransaction() {
+        verify(jobTransactionService).markJobAsRunningInOwnTransaction(jobUUID);
     }
 
     private void assertJob1MessageHasBeenPersistedToDB() {
