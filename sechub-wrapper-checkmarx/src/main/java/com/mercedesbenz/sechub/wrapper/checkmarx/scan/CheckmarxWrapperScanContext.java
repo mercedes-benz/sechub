@@ -67,7 +67,9 @@ public class CheckmarxWrapperScanContext {
     }
 
     /**
-     * Resolves preset id for new projects. If <code>null</code>, Checkmarx will use the default preset. 
+     * Resolves preset id for new projects. If <code>null</code>, Checkmarx will use
+     * the default preset.
+     *
      * @return preset id or <code>null</code>
      */
     public Long getPresetIdForNewProjects() {

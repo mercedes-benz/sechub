@@ -90,7 +90,8 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
         /**
          * When we create a new project this is the team ID to use
          *
-         * @param presetId the preset identifier as long or <code>null</code> when default preset shall be used.
+         * @param presetId the preset identifier as long or <code>null</code> when
+         *                 default preset shall be used.
          * @return builder
          */
         public CheckmarxConfigBuilder setPresetIdForNewProjects(Long presetId) {
