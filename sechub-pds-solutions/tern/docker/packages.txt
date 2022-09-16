@@ -1,0 +1,2 @@
+tern==2.10.0
+scancode-toolkit[full]==30.1.0

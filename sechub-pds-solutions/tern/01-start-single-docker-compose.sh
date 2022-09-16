@@ -16,4 +16,4 @@ else
 fi
 
 echo "Starting single Ubuntu container."
-docker-compose --file docker-compose_pds_tern_ubuntu.yaml up --build --remove-orphans
+docker-compose --file docker-compose_pds_tern.yaml up --build --remove-orphans

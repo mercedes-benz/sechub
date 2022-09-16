@@ -11,7 +11,10 @@ LABEL maintainer="SecHub FOSS Team"
 
 # Build args
 ARG PDS_FOLDER="/pds"
-ARG PDS_VERSION="0.27.0"
+
+# The minimum version needs to be 0.29.0
+# otherwise the binary uploads do not work
+ARG PDS_VERSION="0.31.0"
 ARG SCRIPT_FOLDER="/scripts"
 ARG WORKSPACE="/workspace"
 
@@ -43,23 +46,34 @@ COPY mocks "$MOCK_FOLDER"
 # Copy PDS configfile
 COPY pds-config.json "$PDS_FOLDER"/pds-config.json
 
-# Copy Tern scripts
-COPY tern.sh "$SCRIPT_FOLDER"/tern.sh
-COPY tern_mock.sh "$SCRIPT_FOLDER"/tern_mock.sh
-
 # Copy run script into container
 COPY run.sh /run.sh
 
-# Set execute permissions for scripts
-RUN chmod +x /run.sh "$SCRIPT_FOLDER"/tern.sh "$SCRIPT_FOLDER"/tern_mock.sh
+# Set execute permissions run script
+RUN chmod +x /run.sh
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get --quiet update && \
     apt-get --quiet --assume-yes upgrade && \
-    apt-get --quiet --assume-yes install wget openjdk-11-jre-headless attr findutils jq gcc skopeo python3-pip git sudo fuse-overlayfs fuse3 && \
+    apt-get --quiet --assume-yes install wget \
+                                         openjdk-11-jre-headless \
+                                         attr \
+                                         jq \
+                                         skopeo \
+                                         python3-pip \
+                                         git \
+                                         bzip2 \
+                                         xz-utils \
+                                         zlib1g \ 
+                                         libxml2-dev \
+                                         libxslt1-dev \
+                                         libgomp1 \
+                                         libpopt0 && \
     apt-get --quiet --assume-yes clean
 
-RUN pip3 install --no-warn-script-location tern
+# Install Tern and Scancode-Toolkit
+COPY packages.txt $TOOL_FOLDER/packages.txt
+RUN pip install --no-warn-script-location -r $TOOL_FOLDER/packages.txt
 
 # Install the SecHub Product Delegation Server (PDS)
 RUN cd "$PDS_FOLDER" && \
@@ -70,10 +84,11 @@ RUN cd "$PDS_FOLDER" && \
     # verify that the checksum and the checksum of the file are same
     sha256sum --check sechub-pds-$PDS_VERSION.jar.sha256sum
 
+# Copy scripts
+COPY scripts "$SCRIPT_FOLDER"
+RUN chmod --recursive +x "$SCRIPT_FOLDER"
+
 # Set workspace
 WORKDIR "$WORKSPACE"
-
-# Switch from root to non-root user
-#USER "$USER"
 
 CMD ["/run.sh"]
