@@ -31,7 +31,7 @@ public class DirectPDSAPICheckmarxWrapperScenario6IntTest {
     public Timeout timeOut = Timeout.seconds(600);
 
     @Test
-    public void pds_techuser_can_start_checkmarx_scan_with_job_configuration_and_is_able_to_fetch_result() {
+    public void pds_techuser_can_start_checkmarx_scan_with_job_configuration_and_PDS_job_is_done() {
         /* @formatter:off */
         /* prepare */
         String json =TestFileReader.loadTextFile("src/test/resources/pds/checkmarx-wrapper/checkmarx-pds-job1.json");
