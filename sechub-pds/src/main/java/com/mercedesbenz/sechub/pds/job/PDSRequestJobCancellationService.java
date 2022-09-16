@@ -54,32 +54,31 @@ public class PDSRequestJobCancellationService {
         PDSResilientRetryExecutor<IllegalStateException> executor = new PDSResilientRetryExecutor<>(3, pdsJobUpdateExceptionThrower,
                 OptimisticLockingFailureException.class);
         executor.execute(() -> {
+
             PDSJob job = assertJobFound(jobUUID, repository);
-            if (PDSJobStatusState.CANCEL_REQUESTED.equals(job.getState()) || PDSJobStatusState.CANCELED.equals(job.getState())) {
-                LOG.debug("Cancel request ignored because already in state:{}", job.getState());
+            PDSJobStatusState jobState = job.getState();
+
+            if (PDSJobStatusState.CANCEL_REQUESTED.equals(jobState) || PDSJobStatusState.CANCELED.equals(jobState)) {
+                LOG.debug("Cancel request ignored because already in state:{}", jobState);
                 return;
             }
-            PDSJobStatusState state = job.getState();
-            switch (state) {
+            switch (jobState) {
             case CANCELED:
             case CANCEL_REQUESTED:
             case DONE:
             case FAILED:
-                LOG.info("PDS job is already in state: {} - so skip cancellation");
+                LOG.info("PDS job: {} is already in state: {} - so skip cancellation request", jobUUID, jobState);
                 return;
             case QUEUED:
             case READY_TO_START:
             case CREATED:
             case RUNNING:
             default:
-                break;
-
+                LOG.info("PDS job: {} was in state: {} - so start cancellation request", jobUUID, jobState);
             }
-            LOG.info("PDS job is currently in state: {} - will now mark as cancel requested");
-
-            LOG.info("Request cancellation of PDS job: {} ", jobUUID);
 
             transactionService.markJobAsCancelRequestedInOwnTransaction(jobUUID);
+            
         }, jobUUID.toString());
 
     }

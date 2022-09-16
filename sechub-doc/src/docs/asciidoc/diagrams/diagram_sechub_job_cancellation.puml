@@ -202,8 +202,8 @@ package com.mercedesbenz.sechub.domain.scan {
         the scan steep in scan domain. 
         
         It does the start of the scan itself and 
-        does also periodically the inspect the ~scheduler~ 
-        batch job status via event bus
+        does also periodically the inspect the scheduler 
+        job status via event bus
     end note
 
     AbstractProductExecutor --> ProductExecutorData : creates

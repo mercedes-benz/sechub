@@ -193,7 +193,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             result.failed = false;
             result.exitCode = process.exitValue();
 
-            LOG.debug("Process of job with uuid:{} ended after {} ms - for product with id:{}", jobUUID, timeElapsedInMilliseconds, config.getProductId());
+            LOG.debug("Process of job with uuid:{} ended after with exit code: {} after {} ms - for product with id: {}", jobUUID, result.exitCode, timeElapsedInMilliseconds, config.getProductId());
 
             storeResultFileOrCreateShrinkedProblemDataInstead(result, jobUUID);
 

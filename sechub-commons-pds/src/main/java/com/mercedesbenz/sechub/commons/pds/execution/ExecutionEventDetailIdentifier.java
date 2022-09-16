@@ -1,4 +1,4 @@
-package com.mercedesbenz.sechub.pds.execution;
+package com.mercedesbenz.sechub.commons.pds.execution;
 
 public enum ExecutionEventDetailIdentifier {
 

@@ -100,7 +100,8 @@ public class PDSJobTransactionService {
         }
 
         repository.save(job);
-        LOG.debug("Updated job in own transaction - PDS job uuid={}, newState={}, newState={}", job.getUUID(), job.getState(), oldState);
+
+        LOG.debug("Updated job in own transaction - PDS job uuid: {}, newState: {}, oldState: {}", job.getUUID(), job.getState(), oldState);
     }
 
     /**

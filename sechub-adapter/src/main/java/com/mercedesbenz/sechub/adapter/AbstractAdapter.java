@@ -93,7 +93,7 @@ public abstract class AbstractAdapter<A extends AdapterContext<C>, C extends Ada
 
         AdapterExecutionResult result = execute(config, runtimeContext);
 
-        return result.hasBeenStopped();
+        return result.hasBeenCanceled();
     }
 
     protected abstract AdapterExecutionResult execute(C config, AdapterRuntimeContext runtimeContext) throws AdapterException;

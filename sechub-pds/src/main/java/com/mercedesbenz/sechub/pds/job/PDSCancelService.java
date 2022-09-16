@@ -82,13 +82,13 @@ public class PDSCancelService {
             LOG.trace("Did not find jobs having potential orphaned cancel requests.");
             return;
         }
-        Instant nHoursbefore = LocalDateTime.now().minusMinutes(minutesToWaitBeforeTreatedAsOrphaned).toInstant(ZoneOffset.UTC);
+        Instant lastAccepted = LocalDateTime.now().minusMinutes(minutesToWaitBeforeTreatedAsOrphaned).toInstant(ZoneOffset.UTC);
 
         LOG.info("Inspect potential orphaned cancel requests: {}", potentialOrphaned.size());
         int amountOfOrphansfound = 0;
         int amountOfOrpahnsStillExisiting = 0;
         for (PDSJob potentialOrphan : potentialOrphaned) {
-            if (isOrphaned(potentialOrphan, nHoursbefore)) {
+            if (isOrphaned(potentialOrphan, lastAccepted)) {
                 amountOfOrphansfound++;
                 if (!hardSetJobStateToCanceledIfpossible(potentialOrphan.getUUID())) {
                     amountOfOrpahnsStillExisiting++;
@@ -127,16 +127,16 @@ public class PDSCancelService {
         }
     }
 
-    private boolean isOrphaned(PDSJob job, Instant instantAcceptedLast) {
+    private boolean isOrphaned(PDSJob job, Instant lastAccepted) {
         LocalDateTime creationTime = job.getCreated();
         if (creationTime == null) {
             LOG.warn("PDS job: {} had no creation timestamp! Strange situation. Accepted as orphaned anyway.", job.getUUID());
             return true;
         }
         Instant creationTimeInstant = creationTime.toInstant(ZoneOffset.UTC);
-        boolean orphaned = creationTimeInstant.isBefore(instantAcceptedLast);
+        boolean orphaned = creationTimeInstant.isBefore(lastAccepted);
 
-        LOG.debug("PDS job: {}, orphan detected: {}, instantAcceptedLast:{}, creationTimeInstant:{}", job.getUUID(), instantAcceptedLast, creationTimeInstant);
+        LOG.debug("PDS job: {}, orphan detected: {}, instantAcceptedLast:{}, creationTimeInstant:{}", job.getUUID(), lastAccepted, creationTimeInstant);
 
         return orphaned;
     }

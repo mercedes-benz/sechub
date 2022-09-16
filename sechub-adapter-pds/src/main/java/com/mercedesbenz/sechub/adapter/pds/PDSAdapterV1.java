@@ -360,7 +360,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         case RESTART:
             return handleExecutionTypeRestart(context, runtimeContext);
         case CANCEL:
-            return handleExecutionTypeStop(context, runtimeContext);
+            return handleExecutionTypeCancel(context, runtimeContext);
         default:
             throw new IllegalStateException("the execution type: " + executionType + " is not supported");
         }
@@ -437,18 +437,18 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         return NO_EXISTING_ADAPTER_EXECUTION_RESULT;
     }
 
-    private AdapterExecutionResult handleExecutionTypeStop(PDSContext context, AdapterRuntimeContext runtimeContext) throws AdapterException {
+    private AdapterExecutionResult handleExecutionTypeCancel(PDSContext context, AdapterRuntimeContext runtimeContext) throws AdapterException {
         AdapterMetaData metaData = runtimeContext.getMetaData();
         String pdsJobUUID = metaData.getValueAsStringOrNull(PDS_JOB_UUID);
 
         if (pdsJobUUID == null || pdsJobUUID.isEmpty()) {
-            LOG.error("PDS job uuid form adapter meta data was :{}, so stop not possible.", pdsJobUUID);
+            LOG.error("PDS job uuid from adapter meta data was :{}, so stop not possible.", pdsJobUUID);
             throw asAdapterException("PDS job uuid not set, cannot cancel", context);
         }
         context.setPDSJobUUID(UUID.fromString(pdsJobUUID));
         cancelJob(context);
 
-        return AdapterExecutionResult.createStopResult();
+        return AdapterExecutionResult.createCancelResult();
     }
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */

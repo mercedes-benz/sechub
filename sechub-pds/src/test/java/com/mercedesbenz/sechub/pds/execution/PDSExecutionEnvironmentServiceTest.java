@@ -120,7 +120,6 @@ class PDSExecutionEnvironmentServiceTest {
         // fake key conversion
         when(converter.convertKeyToEnv("p1.keya")).thenReturn("KEY_A");
         when(converter.convertKeyToEnv("p1.keyb")).thenReturn("KEY_B");
-        when(converter.convertKeyToEnv("p1.keyc.unknown")).thenReturn("KEY_C");
 
         /* execute */
         Map<String, String> result = serviceToTest.buildEnvironmentMap(config);
@@ -164,7 +163,6 @@ class PDSExecutionEnvironmentServiceTest {
         // fake key conversion
         when(converter.convertKeyToEnv("p1.keya")).thenReturn("KEY_A");
         when(converter.convertKeyToEnv("p1.keyb")).thenReturn("KEY_B");
-        when(converter.convertKeyToEnv("p1.keyc.unknown")).thenReturn("KEY_C");
 
         /* execute */
         Map<String, String> result = serviceToTest.buildEnvironmentMap(config);
@@ -172,7 +170,7 @@ class PDSExecutionEnvironmentServiceTest {
         /* test */
         assertEquals("value1", result.get("KEY_A")); // value set, default is ignored
         assertEquals("p1.defaultb", result.get("KEY_B")); // default used because no value set
-        assertEquals(null, result.get("KEY_C"));
+        assertEquals(null, result.get("KEY_UNKNOWN"));
 
     }
 
@@ -208,7 +206,6 @@ class PDSExecutionEnvironmentServiceTest {
         // fake key conversion
         when(converter.convertKeyToEnv("p1.keya")).thenReturn("KEY_A");
         when(converter.convertKeyToEnv("p1.keyb")).thenReturn("KEY_B");
-        when(converter.convertKeyToEnv("p1.keyc.unknown")).thenReturn("KEY_C");
 
         /* execute */
         Map<String, String> result = serviceToTest.buildEnvironmentMap(config);
@@ -216,7 +213,7 @@ class PDSExecutionEnvironmentServiceTest {
         /* test */
         assertEquals("value1", result.get("KEY_A")); // value set, default is ignored
         assertEquals("p1.defaultb", result.get("KEY_B")); // default used because no value set
-        assertEquals(null, result.get("KEY_C"));
+        assertEquals(null, result.get("KEY_UNKNOWN"));
 
     }
 

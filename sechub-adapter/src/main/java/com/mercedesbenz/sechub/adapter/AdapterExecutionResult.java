@@ -17,15 +17,15 @@ public class AdapterExecutionResult {
      *
      * @return execution result
      */
-    public static AdapterExecutionResult createStopResult() {
+    public static AdapterExecutionResult createCancelResult() {
         AdapterExecutionResult result = new AdapterExecutionResult("");
-        result.stopped = true;
+        result.canceled = true;
         return result;
     }
 
     private List<SecHubMessage> productMessages = new ArrayList<>();
 
-    private boolean stopped;
+    private boolean canceled;
 
     public AdapterExecutionResult(String productResult) {
         this(productResult, null);
@@ -57,7 +57,7 @@ public class AdapterExecutionResult {
         return productResult;
     }
 
-    public boolean hasBeenStopped() {
-        return stopped;
+    public boolean hasBeenCanceled() {
+        return canceled;
     }
 }
