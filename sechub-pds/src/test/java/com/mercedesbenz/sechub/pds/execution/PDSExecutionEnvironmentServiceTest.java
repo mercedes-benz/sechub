@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.pds.execution;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -119,7 +120,6 @@ class PDSExecutionEnvironmentServiceTest {
         // fake key conversion
         when(converter.convertKeyToEnv("p1.keya")).thenReturn("KEY_A");
         when(converter.convertKeyToEnv("p1.keyb")).thenReturn("KEY_B");
-        when(converter.convertKeyToEnv("p1.keyc.unknown")).thenReturn("KEY_C");
 
         /* execute */
         Map<String, String> result = serviceToTest.buildEnvironmentMap(config);
@@ -128,6 +128,92 @@ class PDSExecutionEnvironmentServiceTest {
         assertEquals("value1", result.get("KEY_A"));
         assertEquals("value2", result.get("KEY_B"));
         assertEquals(null, result.get("KEY_C"));
+
+    }
+
+    @Test
+    void a_mandatory_parameter_with_default_will_have_default_in_environmen_when_not_set() {
+        /* prepare */
+        // create job configuration
+        PDSJobConfiguration config = new PDSJobConfiguration();
+        config.setProductId("productid1");
+        PDSExecutionParameterEntry entry1 = new PDSExecutionParameterEntry();
+        entry1.setKey("p1.keya");
+        entry1.setValue("value1");
+
+        config.getParameters().add(entry1);
+
+        // create product setup configuration
+        PDSProductSetup setup = new PDSProductSetup();
+        setup.setId("productid1");
+        PDSProductParameterDefinition def1 = new PDSProductParameterDefinition();
+        def1.setKey("p1.keya");
+        def1.setDefault("p1.defaulta");
+
+        PDSProductParameterDefinition def2 = new PDSProductParameterDefinition();
+        def2.setKey("p1.keyb");
+        def2.setDefault("p1.defaultb");
+
+        List<PDSProductParameterDefinition> mandatoryList = setup.getParameters().getMandatory();
+        mandatoryList.add(def1);
+        mandatoryList.add(def2);
+
+        when(serverConfigService.getProductSetupOrNull("productid1")).thenReturn(setup);
+
+        // fake key conversion
+        when(converter.convertKeyToEnv("p1.keya")).thenReturn("KEY_A");
+        when(converter.convertKeyToEnv("p1.keyb")).thenReturn("KEY_B");
+
+        /* execute */
+        Map<String, String> result = serviceToTest.buildEnvironmentMap(config);
+
+        /* test */
+        assertEquals("value1", result.get("KEY_A")); // value set, default is ignored
+        assertEquals("p1.defaultb", result.get("KEY_B")); // default used because no value set
+        assertEquals(null, result.get("KEY_UNKNOWN"));
+
+    }
+
+    @Test
+    void an_optional_parameter_with_default_will_have_default_in_environmen_when_not_set() {
+        /* prepare */
+        // create job configuration
+        PDSJobConfiguration config = new PDSJobConfiguration();
+        config.setProductId("productid1");
+        PDSExecutionParameterEntry entry1 = new PDSExecutionParameterEntry();
+        entry1.setKey("p1.keya");
+        entry1.setValue("value1");
+
+        config.getParameters().add(entry1);
+
+        // create product setup configuration
+        PDSProductSetup setup = new PDSProductSetup();
+        setup.setId("productid1");
+        PDSProductParameterDefinition def1 = new PDSProductParameterDefinition();
+        def1.setKey("p1.keya");
+        def1.setDefault("p1.defaulta");
+
+        PDSProductParameterDefinition def2 = new PDSProductParameterDefinition();
+        def2.setKey("p1.keyb");
+        def2.setDefault("p1.defaultb");
+
+        List<PDSProductParameterDefinition> optionalList = setup.getParameters().getOptional();
+        optionalList.add(def1);
+        optionalList.add(def2);
+
+        when(serverConfigService.getProductSetupOrNull("productid1")).thenReturn(setup);
+
+        // fake key conversion
+        when(converter.convertKeyToEnv("p1.keya")).thenReturn("KEY_A");
+        when(converter.convertKeyToEnv("p1.keyb")).thenReturn("KEY_B");
+
+        /* execute */
+        Map<String, String> result = serviceToTest.buildEnvironmentMap(config);
+
+        /* test */
+        assertEquals("value1", result.get("KEY_A")); // value set, default is ignored
+        assertEquals("p1.defaultb", result.get("KEY_B")); // default used because no value set
+        assertEquals(null, result.get("KEY_UNKNOWN"));
 
     }
 

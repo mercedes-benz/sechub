@@ -6,7 +6,7 @@
 # This bash script is just for testing the "integrationtest-checkmarx.sh" script directly 
 # from command line - without starting an integration test.
 #
-# Reason: Faster devlelopment, debugging and failure search. 
+# Reason: Faster development, debugging and failure search. 
 #
 
 

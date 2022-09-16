@@ -7,7 +7,6 @@ import com.mercedesbenz.sechub.adapter.AdapterConfigurationStrategy;
 import com.mercedesbenz.sechub.adapter.DefaultExecutorConfigSupport;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 
 /**
  * This strategy will configure

@@ -19,6 +19,9 @@ sechub:
                retries: 20        
                timetowait: 300    # faster feedback
        trigger:
+         jobcancellation:
+            initialdelay: "100"
+            delay: 1000    # every second 
          autoclean:
             initialdelay: "100"
             delay: "2000" # every two seconds - we have only a few tests which check auto cleanup, so 

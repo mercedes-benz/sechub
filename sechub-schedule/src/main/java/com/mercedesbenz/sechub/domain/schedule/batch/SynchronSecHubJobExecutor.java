@@ -92,10 +92,6 @@ class SynchronSecHubJobExecutor {
     }
 
     private void sendJobDoneMessageWhenNotAbandonded(UUID secHubJobUUID, DomainMessageSynchronousResult response) {
-        if (MessageID.SCAN_ABANDONDED.equals(response.getMessageId())) {
-            LOG.info("Will not send job done message, because scan was abandoned");
-            return;
-        }
         LOG.debug("Will send job done message for: {}", secHubJobUUID);
         sendJobDone(secHubJobUUID);
     }
@@ -109,16 +105,7 @@ class SynchronSecHubJobExecutor {
 
     private void updateSecHubJob(UUID secHubUUID, DomainMessageSynchronousResult response) {
         ExecutionResult result;
-        if (MessageID.SCAN_ABANDONDED.equals(response.getMessageId())) {
-            /*
-             * Abandon happens normally only, when doing a restart or a hard internal cancel
-             * operation. In both situations, the SecHub job execution result inside
-             * scheduler is already set before, and state will also be changed to CANCELED,
-             * or on restart to RUNNING
-             */
-            LOG.info("Ignore sechub job update, because scan was abandoned");
-            return;
-        }
+
         if (response.hasFailed()) {
             result = ExecutionResult.FAILED;
         } else {

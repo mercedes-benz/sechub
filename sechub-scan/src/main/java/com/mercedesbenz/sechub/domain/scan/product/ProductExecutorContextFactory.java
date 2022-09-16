@@ -6,8 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 
 @Component
 public class ProductExecutorContextFactory {

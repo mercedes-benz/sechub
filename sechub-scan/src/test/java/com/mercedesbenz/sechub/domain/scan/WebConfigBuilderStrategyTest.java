@@ -25,7 +25,6 @@ import com.mercedesbenz.sechub.adapter.LoginScriptPage;
 import com.mercedesbenz.sechub.adapter.SecHubTimeUnitData;
 import com.mercedesbenz.sechub.commons.model.SecHubTimeUnit;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 
 public class WebConfigBuilderStrategyTest {
 

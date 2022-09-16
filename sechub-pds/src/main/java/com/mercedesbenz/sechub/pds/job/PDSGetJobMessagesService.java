@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
-import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseUserFetchesJobMessages;
@@ -29,7 +28,6 @@ public class PDSGetJobMessagesService {
         notNull(jobUUID, "job uuid may not be null!");
 
         PDSJob job = assertJobFound(jobUUID, repository);
-        assertJobIsInState(job, PDSJobStatusState.DONE, PDSJobStatusState.FAILED);
 
         String json = job.getMessages();
         if (json != null) {

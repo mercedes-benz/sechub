@@ -38,8 +38,9 @@ public class ProductResultTransactionService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ProductResult persistResult(UUIDTraceLogID traceLogID, ProductResult productResult) {
         ProductResult result = productResultRepository.save(productResult);
-        LOG.debug("persisted result of product id: {}  , executor config uuid: {}, product result uuid: {} - traceLogId:{}",
-                productResult.getProductIdentifier(), productResult.getProductExecutorConfigUUID(), productResult.getUUID(), traceLogID);
+        LOG.debug("Persisted result of product id: {}  , executor config uuid: {}, product result uuid: {}, traceLogId:{}, metaData:{}",
+                productResult.getProductIdentifier(), productResult.getProductExecutorConfigUUID(), productResult.getUUID(), traceLogID,
+                productResult.getMetaData());
         return result;
     }
 

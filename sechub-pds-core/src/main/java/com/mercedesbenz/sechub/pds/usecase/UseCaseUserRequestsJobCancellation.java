@@ -10,11 +10,11 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @PDSUseCaseDefinition(
-		id=PDSUseCaseIdentifier.UC_USER_CANCELS_JOB,
+		id=PDSUseCaseIdentifier.UC_USER_REQUESTS_JOB_CANCELLATION,
 		group=PDSUseCaseGroup.JOB_EXECUTION,
 		title="User cancels job",
-		description="A user cancel an existing PDS job")
-public @interface UseCaseUserCancelsJob {
+		description="A user requests to cancel a PDS job")
+public @interface UseCaseUserRequestsJobCancellation {
     PDSStep value();
 }
 /* @formatter:on */

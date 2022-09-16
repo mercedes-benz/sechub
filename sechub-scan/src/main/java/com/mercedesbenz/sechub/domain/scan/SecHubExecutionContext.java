@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.sharedkernel.execution;
+package com.mercedesbenz.sechub.domain.scan;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,6 +8,8 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.domain.scan.product.ProductExecutor;
+import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 import com.mercedesbenz.sechub.sharedkernel.TypedKey;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
@@ -21,39 +23,44 @@ import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
  */
 public class SecHubExecutionContext {
 
+    private static final SecHubExecutionOperationType DEFAULT_OPERATION_TYPE = SecHubExecutionOperationType.SCAN;
+
     private static final Logger LOG = LoggerFactory.getLogger(SecHubExecutionContext.class);
 
+    private SecHubExecutionHistory executionHistory;
     private UUID sechubJobUUID;
     private SecHubConfiguration configuration;
     private UUIDTraceLogID traceLogId;
     private String executedBy;
     private Map<String, Object> dataMap = new HashMap<>();
 
-    private boolean abandonded;
+    private boolean cancelRequested;
 
-    private boolean canceled;
+    private SecHubExecutionOperationType operationType;
 
     public SecHubExecutionContext(UUID sechubJobUUID, SecHubConfiguration configuration, String executedBy) {
+        this(sechubJobUUID, configuration, executedBy, null);
+    }
+
+    public SecHubExecutionContext(UUID sechubJobUUID, SecHubConfiguration configuration, String executedBy, SecHubExecutionOperationType operationType) {
         this.sechubJobUUID = sechubJobUUID;
         this.configuration = configuration;
         this.executedBy = executedBy;
         this.traceLogId = UUIDTraceLogID.traceLogID(sechubJobUUID);
+        this.operationType = operationType == null ? DEFAULT_OPERATION_TYPE : operationType;
+        this.executionHistory = new SecHubExecutionHistory();
     }
 
-    public void markAbandonded() {
-        abandonded = true;
+    public SecHubExecutionOperationType getOperationType() {
+        return operationType;
     }
 
-    public void markCanceled() {
-        canceled = true;
+    public void markCancelRequested() {
+        cancelRequested = true;
     }
 
-    public boolean isCanceled() {
-        return canceled;
-    }
-
-    public boolean isCanceledOrAbandonded() {
-        return canceled || abandonded;
+    public boolean isCancelRequested() {
+        return cancelRequested;
     }
 
     public String getExecutedBy() {
@@ -118,8 +125,16 @@ public class SecHubExecutionContext {
         return false;
     }
 
-    public boolean isAbandonded() {
-        return abandonded;
+    SecHubExecutionHistory getExecutionHistory() {
+        return executionHistory;
+    }
+
+    public SecHubExecutionHistoryElement remember(ProductExecutor productExecutor, ProductExecutorData data) {
+        return executionHistory.remember(productExecutor, data);
+    }
+
+    public void forget(SecHubExecutionHistoryElement historyElement) {
+        executionHistory.forget(historyElement);
     }
 
 }

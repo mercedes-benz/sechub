@@ -79,7 +79,7 @@ public abstract class AbstractAdapter<A extends AdapterContext<C>, C extends Ada
     }
 
     @Override
-    public final boolean stop(C config, AdapterMetaDataCallback callback) throws AdapterException {
+    public final boolean cancel(C config, AdapterMetaDataCallback callback) throws AdapterException {
         AdapterMetaData metaData = callback.getMetaDataOrNull();
 
         if (metaData == null) {
@@ -89,11 +89,11 @@ public abstract class AbstractAdapter<A extends AdapterContext<C>, C extends Ada
         AdapterRuntimeContext runtimeContext = new AdapterRuntimeContext();
         runtimeContext.callback = null;
         runtimeContext.metaData = metaData;
-        runtimeContext.type = ExecutionType.STOP;
+        runtimeContext.type = ExecutionType.CANCEL;
 
-        execute(config, runtimeContext);
+        AdapterExecutionResult result = execute(config, runtimeContext);
 
-        return runtimeContext.stopped;
+        return result.hasBeenCanceled();
     }
 
     protected abstract AdapterExecutionResult execute(C config, AdapterRuntimeContext runtimeContext) throws AdapterException;

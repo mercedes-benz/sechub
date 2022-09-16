@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.integrationtest.internal;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.MappingIterator;
@@ -133,6 +135,17 @@ public class TestJSONHelper {
 
     public String createJSON(Object object) {
         return createJSON(object, false);
+    }
+
+    public <T> List<T> createFromJSONAsList(String json, Class<T> class1) {
+        List<T> list;
+        try {
+            list = getMapper().readValue(json, new TypeReference<List<T>>() {
+            });
+        } catch (JsonProcessingException e) {
+            throw new JSONConverterException("Was not able to convert json to a list of " + class1.getName(), e);
+        }
+        return list;
     }
 
 }

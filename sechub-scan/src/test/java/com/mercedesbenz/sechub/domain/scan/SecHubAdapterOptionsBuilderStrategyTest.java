@@ -14,7 +14,6 @@ import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 import com.mercedesbenz.sechub.domain.scan.project.ScanMockData;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectMockDataConfiguration;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 
 public class SecHubAdapterOptionsBuilderStrategyTest {
 

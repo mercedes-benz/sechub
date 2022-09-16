@@ -1,13 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.job;
 
-import static com.mercedesbenz.sechub.commons.core.CommonConstants.DOT_CHECKSUM;
-import static com.mercedesbenz.sechub.commons.core.CommonConstants.FILE_SIZE_HEADER_FIELD_NAME;
-import static com.mercedesbenz.sechub.commons.core.CommonConstants.MULTIPART_CHECKSUM;
-import static com.mercedesbenz.sechub.commons.core.CommonConstants.MULTIPART_FILE;
-import static com.mercedesbenz.sechub.pds.job.PDSJobAssert.assertJobFound;
-import static com.mercedesbenz.sechub.pds.job.PDSJobAssert.assertJobIsInState;
-import static com.mercedesbenz.sechub.pds.util.PDSAssert.notNull;
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
+import static com.mercedesbenz.sechub.pds.job.PDSJobAssert.*;
+import static com.mercedesbenz.sechub.pds.util.PDSAssert.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -96,6 +92,7 @@ public class PDSFileUploadJobService {
             LOG.error("Was not able to upload file: {} for job: {}.", fileName, jobUUID, e);
             throw e;
         }
+        LOG.info("Upload has been done for PDS job: {}", jobUUID);
 
     }
 

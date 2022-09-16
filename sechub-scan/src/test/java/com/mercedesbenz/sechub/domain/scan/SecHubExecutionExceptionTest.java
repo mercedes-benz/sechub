@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.sharedkernel.execution;
+package com.mercedesbenz.sechub.domain.scan;
 
-import static com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException.*;
+import static com.mercedesbenz.sechub.domain.scan.SecHubExecutionException.*;
 import static org.hamcrest.Matchers.*;
 
 import org.junit.Rule;

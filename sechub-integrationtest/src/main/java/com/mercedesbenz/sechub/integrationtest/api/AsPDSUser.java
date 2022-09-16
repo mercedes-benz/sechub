@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatus;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSupport;
 import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData;
@@ -263,6 +264,12 @@ public class AsPDSUser {
         String url = getPDSUrlBuilder().buildAdminFetchesJobMetaData(pdsJobUUID);
         String text = getRestHelper().getStringFromURL(url);
         return text;
+    }
+
+    PDSJobStatus internalFetchStatusWithoutAutoDump(UUID jobUUID) {
+        String url = getPDSUrlBuilder().buildGetJobStatus(jobUUID);
+        String json = getRestHelper().getJSON(url);
+        return TestJSONHelper.get().createFromJSON(json, PDSJobStatus.class);
     }
 
 }

@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.pds.execution;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Iterator;
@@ -11,9 +12,12 @@ import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.commons.pds.execution.ExecutionEventData;
+import com.mercedesbenz.sechub.commons.pds.execution.ExecutionEventType;
 import com.mercedesbenz.sechub.pds.job.PDSCheckJobStatusService;
 import com.mercedesbenz.sechub.pds.job.PDSJob;
 import com.mercedesbenz.sechub.pds.job.PDSJobRepository;
@@ -32,11 +36,14 @@ public class PDSExecutionServiceTest {
 
     private PDSJobTransactionService updateService;
 
+    private PDSWorkspaceService workspaceService;
+
     @Before
     public void before() throws Exception {
         repository = mock(PDSJobRepository.class);
         executionCallableFactory = mock(PDSExecutionCallableFactory.class);
         updateService = mock(PDSJobTransactionService.class);
+        workspaceService = mock(PDSWorkspaceService.class);
 
         result1 = new PDSExecutionResult();
 
@@ -45,6 +52,7 @@ public class PDSExecutionServiceTest {
         serviceToTest.repository = repository;
         serviceToTest.executionCallableFactory = executionCallableFactory;
         serviceToTest.updateService = updateService;
+        serviceToTest.workspaceService = workspaceService;
     }
 
     @After
@@ -79,7 +87,8 @@ public class PDSExecutionServiceTest {
         }
 
         @Override
-        void prepareForCancel(boolean mayInterruptIfRunning) {
+        boolean prepareForCancel(boolean mayInterruptIfRunning) {
+            return true;
         }
 
     }
@@ -168,6 +177,9 @@ public class PDSExecutionServiceTest {
         assertEquals(job1.getStarted(), entry1.started);
         assertEquals(uuid1, entry1.jobUUID);
 
+        // no cancel event sent
+        verify(workspaceService, never()).sendEvent(eq(job1.getUUID()), any());
+
         PDSExecutionJobInQueueStatusEntry entry2 = it.next();
         assertTrue(entry2.done);
         assertTrue(entry2.canceled);
@@ -177,6 +189,13 @@ public class PDSExecutionServiceTest {
         assertEquals(job2.getStarted(), entry2.started);
         assertEquals(uuid2, entry2.jobUUID);
 
+        // check cancel request execution event is sent
+        ArgumentCaptor<ExecutionEventData> eventDataCaptor = ArgumentCaptor.forClass(ExecutionEventData.class);
+        verify(workspaceService).sendEvent(eq(job2.getUUID()), eq(ExecutionEventType.CANCEL_REQUESTED), eventDataCaptor.capture());
+
+        ExecutionEventData eventData = eventDataCaptor.getValue();
+        assertNotNull(eventData.getCreationTimeStamp());
+
         PDSExecutionJobInQueueStatusEntry entry3 = it.next();
         assertFalse(entry3.done);
         assertFalse(entry3.canceled);
@@ -185,6 +204,8 @@ public class PDSExecutionServiceTest {
         assertEquals(job3.getStarted(), entry3.started);
         assertEquals(uuid3, entry3.jobUUID);
 
+        // no cancel event sent
+        verify(workspaceService, never()).sendEvent(eq(job3.getUUID()), any());
     }
 
     private void assertQueueNoLongerAndNotTimedOut(int maxLoops, long timeToWaitInMillisPerLoop) throws InterruptedException {

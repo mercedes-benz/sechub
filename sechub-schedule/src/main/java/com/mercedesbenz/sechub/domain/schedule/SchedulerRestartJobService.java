@@ -116,8 +116,7 @@ public class SchedulerRestartJobService {
         }
 
         /*
-         * when we have still running batch jobs we must terminate them as well +
-         * abandon
+         * when we have still running batch jobs we must terminate them as well
          */
         schedulerCancelJobService.stopAndAbandonAllRunningBatchJobsForSechubJobUUID(jobUUID);
 

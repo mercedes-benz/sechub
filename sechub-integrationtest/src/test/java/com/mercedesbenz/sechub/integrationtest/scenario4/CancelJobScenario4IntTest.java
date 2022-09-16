@@ -45,7 +45,7 @@ public class CancelJobScenario4IntTest {
         as(SUPER_ADMIN).cancelJob(sechubJobUUD);
 
         /* test */
-        waitForJobStatusCancelRequested(project, sechubJobUUD);
+        waitForJobStatusCancelRequestedOrCanceled(project, sechubJobUUD);
         waitForJobStatusFailed(project, sechubJobUUD);
 
         assertJobStatus(project, sechubJobUUD).hasMessage(SecHubMessageType.INFO,"Job execution was canceled by user");
@@ -67,7 +67,7 @@ public class CancelJobScenario4IntTest {
         as(SUPER_ADMIN).cancelJob(sechubJobUUD);
 
         /* test */
-        waitForJobStatusCancelRequested(project, sechubJobUUD);
+        waitForJobStatusCancelRequestedOrCanceled(project, sechubJobUUD);
         waitForJobStatusFailed(project, sechubJobUUD);
 
         assertJobStatus(project, sechubJobUUD).hasMessage(SecHubMessageType.INFO,"Job execution was canceled by user");

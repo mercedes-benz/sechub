@@ -112,6 +112,7 @@ class PDSWorkspaceServiceTest {
         assertEquals(expectedWorspaceLocation+separatorChar+"upload"+separatorChar+SOURCECODE_ZIP,result.getSourceCodeZipFileLocation());
         assertEquals(expectedWorspaceLocation+separatorChar+"upload"+separatorChar+"extracted"+separatorChar+"sources",result.getExtractedSourcesLocation());
         assertEquals(expectedWorspaceLocation+separatorChar+"upload"+separatorChar+"extracted"+separatorChar+"binaries",result.getExtractedBinariesLocation());
+        assertEquals(expectedWorspaceLocation+separatorChar+"events",result.getEventsLocation());
         /* @formatter:on */
     }
 
