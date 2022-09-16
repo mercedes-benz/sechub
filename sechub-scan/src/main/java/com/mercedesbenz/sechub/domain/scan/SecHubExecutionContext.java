@@ -34,8 +34,6 @@ public class SecHubExecutionContext {
     private String executedBy;
     private Map<String, Object> dataMap = new HashMap<>();
 
-    private boolean abandonded;
-
     private boolean cancelRequested;
 
     private SecHubExecutionOperationType operationType;
@@ -57,20 +55,12 @@ public class SecHubExecutionContext {
         return operationType;
     }
 
-    public void markAbandonded() {
-        abandonded = true;
-    }
-
     public void markCancelRequested() {
         cancelRequested = true;
     }
 
     public boolean isCancelRequested() {
         return cancelRequested;
-    }
-
-    public boolean isCancelRequestedOrAbandonded() {
-        return cancelRequested || abandonded;
     }
 
     public String getExecutedBy() {
@@ -133,10 +123,6 @@ public class SecHubExecutionContext {
 
     public boolean isDeleteFormerResultsWanted() {
         return false;
-    }
-
-    public boolean isAbandonded() {
-        return abandonded;
     }
 
     SecHubExecutionHistory getExecutionHistory() {

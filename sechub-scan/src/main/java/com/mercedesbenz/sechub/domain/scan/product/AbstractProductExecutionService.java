@@ -83,8 +83,8 @@ public abstract class AbstractProductExecutionService implements ProductExecutio
             UUIDTraceLogID traceLogID = traceLogID(context.getSechubJobUUID());
 
             SecHubConfiguration configuration = context.getConfiguration();
-            if (context.isCancelRequestedOrAbandonded()) {
-                LOG.debug("{} canceled or abandoned, so ignored by {}", traceLogID, getClass().getSimpleName());
+            if (context.isCancelRequested()) {
+                LOG.debug("{} canceled, so ignored by {}", traceLogID, getClass().getSimpleName());
                 return;
             }
             if (!isExecutionNecessary(context, traceLogID, configuration)) {
@@ -115,7 +115,7 @@ public abstract class AbstractProductExecutionService implements ProductExecutio
         LOG.info("Start executor:{} config:{} and wait for result. {}", executor.getIdentifier(), executorConfigUUID, traceLogID);
 
         List<ProductResult> productResults = executor.execute(context, executorContext);
-        if (context.isCancelRequestedOrAbandonded()) {
+        if (context.isCancelRequested()) {
             return Collections.emptyList();
         }
         int amount = 0;
@@ -152,7 +152,7 @@ public abstract class AbstractProductExecutionService implements ProductExecutio
         ProductExecutor serecoProductExecutor = null;
 
         for (ProductExecutor productExecutor : executors) {
-            if (context.isCancelRequestedOrAbandonded()) {
+            if (context.isCancelRequested()) {
                 return;
             }
             ProductIdentifier productIdentifier = productExecutor.getIdentifier();
@@ -211,7 +211,7 @@ public abstract class AbstractProductExecutionService implements ProductExecutio
         List<ProductResult> productResults = null;
         try {
             productResults = execute(productExecutor, executorContext, context, traceLogID);
-            if (context.isCancelRequestedOrAbandonded()) {
+            if (context.isCancelRequested()) {
                 return;
             }
             if (productResults == null) {
@@ -234,7 +234,7 @@ public abstract class AbstractProductExecutionService implements ProductExecutio
             }
             productResults.add(currentResult);
         }
-        if (context.isCancelRequestedOrAbandonded()) {
+        if (context.isCancelRequested()) {
             return;
         }
         /* execution was successful - so persist new results */

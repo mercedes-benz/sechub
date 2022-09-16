@@ -71,11 +71,11 @@ public class PDSCancellationScenario18IntTest {
             messageTypesFound.add(sechubMessage.getType());
             messageTextsFound.add(sechubMessage.getText());
         }
-        
+
         // We have two special info messages here. Each has info type
         assertTrue(messageTypesFound.contains(SecHubMessageType.INFO));
         assertEquals(1, messageTypesFound.size());
-        
+
         // Now check for the final cancel successful message:
         assertTrue(messageTextsFound.contains("Event type:cancel_requested was received and handled by script"));
 

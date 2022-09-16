@@ -84,7 +84,6 @@ public class ScanService implements SynchronMessageHandler {
 
     @IsSendingSyncMessageAnswer(value = MessageID.SCAN_DONE, answeringTo = MessageID.START_SCAN, branchName = "success")
     @IsSendingSyncMessageAnswer(value = MessageID.SCAN_FAILED, answeringTo = MessageID.START_SCAN, branchName = "failure")
-    @IsSendingSyncMessageAnswer(value = MessageID.SCAN_ABANDONDED, answeringTo = MessageID.START_SCAN, branchName = "failure")
     DomainMessageSynchronousResult startScan(DomainMessage request) {
 
         SecHubExecutionContext context = null;
@@ -110,10 +109,6 @@ public class ScanService implements SynchronMessageHandler {
         } catch (ScanReportException e) {
             LOG.error("Execution was possible, but report failed." + traceLogID(request), e);
             return new DomainMessageSynchronousResult(MessageID.SCAN_FAILED, e);
-
-        } catch (SecHubExecutionAbandonedException e) {
-            LOG.info("Execution abandoned on scan {} - message: {}", traceLogID(request), e.getMessage());
-            return new DomainMessageSynchronousResult(MessageID.SCAN_ABANDONDED, e);
         } catch (SecHubExecutionException e) {
             LOG.error("Execution problems on scan." + traceLogID(request), e);
             return new DomainMessageSynchronousResult(MessageID.SCAN_FAILED, e);
@@ -124,9 +119,7 @@ public class ScanService implements SynchronMessageHandler {
             if (context == null) {
                 LOG.warn("No sechub execution context available, so cannot check state or cleanup storage");
             } else {
-                if (!context.isAbandonded()) {
-                    cleanupStorage(context);
-                }
+                cleanupStorage(context);
             }
         }
     }
@@ -148,11 +141,8 @@ public class ScanService implements SynchronMessageHandler {
             scanLogService.logScanEnded(logUUID);
 
         } catch (Exception e) {
-            if (context.isAbandonded()) {
-                scanLogService.logScanAbandoned(logUUID);
-            } else {
-                scanLogService.logScanFailed(logUUID);
-            }
+            scanLogService.logScanFailed(logUUID);
+
             /* rethrow when already an execution exception */
             if (e instanceof SecHubExecutionException) {
                 SecHubExecutionException exceptionToRethrow = (SecHubExecutionException) e;

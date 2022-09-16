@@ -50,10 +50,6 @@ public class ProjectScanLogService {
         logEndedWithStatus(logUUID, ProjectScanLog.STATUS_FAILED);
     }
 
-    public void logScanAbandoned(UUID logUUID) {
-        logEndedWithStatus(logUUID, ProjectScanLog.STATUS_ABANDONED);
-    }
-
     private void logEndedWithStatus(UUID logScanUUID, String status) {
         Optional<ProjectScanLog> optLog = repository.findById(logScanUUID);
         if (!optLog.isPresent()) {

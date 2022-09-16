@@ -18,11 +18,6 @@ public enum MessageID {
     SCAN_FAILED,
 
     /**
-     * Will happen because of scan has been restarted
-     */
-    SCAN_ABANDONDED,
-
-    /**
      * This message will contain full data of an created user. Secure data will be
      * only contained hashed.
      *

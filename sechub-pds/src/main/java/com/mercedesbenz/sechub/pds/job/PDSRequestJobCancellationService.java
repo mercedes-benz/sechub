@@ -78,7 +78,7 @@ public class PDSRequestJobCancellationService {
             }
 
             transactionService.markJobAsCancelRequestedInOwnTransaction(jobUUID);
-            
+
         }, jobUUID.toString());
 
     }

@@ -8,7 +8,6 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.sharedkernel.Abandonable;
 import com.mercedesbenz.sechub.sharedkernel.NullProgressMonitor;
 import com.mercedesbenz.sechub.sharedkernel.ProgressMonitor;
 
@@ -104,37 +103,12 @@ class ScanJobExecutor {
             /* no failure - so just return */
             return;
         }
-        /*
-         * abdoned exception are treated special: executor will NOT persist result in
-         * this case!
-         */
-        if (exception instanceof SecHubExecutionAbandonedException) {
-            LOG.debug("Rethrow SecHubExecutionAbandonedException");
-            throw exception; // just rethrow abandoned
-        }
-        LOG.debug("No SecHubExecutionAbandonedException");
-        if (progress instanceof Abandonable) {
-            LOG.debug("Start abandoble check");
-            Abandonable abandonable = (Abandonable) progress;
-            if (abandonable.isAbandoned()) {
-                LOG.debug("Done abandoble check- IS abandonded");
-                throw new SecHubExecutionAbandonedException(context, "A failure happend, but already abandoned job", exception);
-            }
-            LOG.debug("Done abandoble check- not abandonded");
-
-        }
-        LOG.debug("Rethrow normal sechub execution exception");
         throw exception;
     }
 
-    private void handleCancelRequested(ScanJobExecutionRunnable executionRunable, UUID sechubJobUUID) throws SecHubExecutionAbandonedException {
+    private void handleCancelRequested(ScanJobExecutionRunnable executionRunable, UUID sechubJobUUID) {
         LOG.info("Received cancel signal, so start canceling job: {}", sechubJobUUID);
-        cancelExecutoinRunnableAndFailIfAbandoned(executionRunable, sechubJobUUID);
 
-        /*
-         * not abandoned, so we shall also try to cancel the operations still in
-         * execution history
-         */
         ScanJobRunnableData data = executionRunable.getRunnableData();
         if (data.getException() != null) {
             /*
@@ -166,21 +140,6 @@ class ScanJobExecutor {
         Thread cancelThread = new Thread(cancelRunnable, "SecHubJob:" + data.getSechubJobUUID() + "-cancel");
         data.setRunnableThread(cancelThread);
         cancelThread.start();
-    }
-
-    private void cancelExecutoinRunnableAndFailIfAbandoned(ScanJobExecutionRunnable executionRunable, UUID sechubJobUUID)
-            throws SecHubExecutionAbandonedException {
-        executionRunable.cancelScanJob();
-
-        if (!(progress instanceof Abandonable)) {
-            return;
-        }
-        Abandonable abandoble = (Abandonable) progress;
-        LOG.info("Check if job {} shall be abandoned", sechubJobUUID);
-        if (abandoble.isAbandoned()) {
-            LOG.info("Must abandon {}", sechubJobUUID);
-            throw new SecHubExecutionAbandonedException(context, "Abandonded job " + sechubJobUUID + " because canceled", null);
-        }
     }
 
 }
