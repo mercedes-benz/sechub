@@ -17,41 +17,43 @@ import (
 
 // Config for internal CLI calls
 type Config struct {
-	action                string
-	apiToken              string
-	configFilePath        string
-	configFileRead        bool
-	debug                 bool
-	debugHTTP             bool
-	file                  string
-	ignoreDefaultExcludes bool
-	keepTempFiles         bool
-	outputFileName        string
-	outputFolder          string
-	outputLocation        string
-	projectID             string
-	quiet                 bool
-	reportFormat          string
-	secHubJobUUID         string
-	server                string
-	stopOnYellow          bool
-	tempDir               string
-	timeOutNanoseconds    int64
-	timeOutSeconds        int
-	trustAll              bool
-	user                  string
-	waitNanoseconds       int64
-	waitSeconds           int
-	whitelistAll          bool
+	action                         string
+	apiToken                       string
+	configFilePath                 string
+	configFileRead                 bool
+	debug                          bool
+	debugHTTP                      bool
+	file                           string
+	ignoreDefaultExcludes          bool
+	initialWaitIntervalNanoseconds int64
+	keepTempFiles                  bool
+	outputFileName                 string
+	outputFolder                   string
+	outputLocation                 string
+	projectID                      string
+	quiet                          bool
+	reportFormat                   string
+	secHubJobUUID                  string
+	server                         string
+	stopOnYellow                   bool
+	tempDir                        string
+	timeOutNanoseconds             int64
+	timeOutSeconds                 int
+	trustAll                       bool
+	user                           string
+	waitNanoseconds                int64
+	waitSeconds                    int
+	whitelistAll                   bool
 }
 
 // Initialize Config with default values
 var configFromInit Config = Config{
-	configFilePath: DefaultSecHubConfigFile,
-	reportFormat:   DefaultReportFormat,
-	tempDir:        DefaultTempDir,
-	timeOutSeconds: DefaultTimeoutInSeconds,
-	waitSeconds:    DefaultWaitTime,
+	configFilePath:                 DefaultSecHubConfigFile,
+	initialWaitIntervalNanoseconds: int64(DefaultinitialWaitIntervalSeconds * time.Second),
+	reportFormat:                   DefaultReportFormat,
+	tempDir:                        DefaultTempDir,
+	timeOutSeconds:                 DefaultTimeoutInSeconds,
+	waitSeconds:                    DefaultWaitTime,
 }
 
 var flagHelp bool
@@ -104,7 +106,7 @@ func prepareOptionsFromCommandline(config *Config) {
 	flag.BoolVar(&flagVersion,
 		versionOption, false, "Shows version info and terminates")
 	flag.IntVar(&config.waitSeconds,
-		waitOption, config.waitSeconds, "Wait time in seconds - For status checks of action='"+scanAction+"' and for retries of HTTP calls. Can also be defined in environment variable "+SechubWaittimeDefaultEnvVar)
+		waitOption, config.waitSeconds, "Maximum wait time in seconds - For status checks of action='"+scanAction+"' and for retries of HTTP calls. Can also be defined in environment variable "+SechubWaittimeDefaultEnvVar)
 }
 
 func parseConfigFromEnvironment(config *Config) {
@@ -122,6 +124,8 @@ func parseConfigFromEnvironment(config *Config) {
 		os.Getenv(SechubQuietEnvVar) == "true"
 	config.trustAll =
 		os.Getenv(SechubTrustAllEnvVar) == "true"
+	initialWaitIntervalFromEnv :=
+		os.Getenv(SechubIninitialWaitIntervalSecondsEnvVar)
 	projectFromEnv :=
 		os.Getenv(SechubProjectEnvVar)
 	serverFromEnv :=
@@ -137,6 +141,14 @@ func parseConfigFromEnvironment(config *Config) {
 
 	if apiTokenFromEnv != "" {
 		config.apiToken = apiTokenFromEnv
+	}
+	if initialWaitIntervalFromEnv != "" {
+		initialWaitInterval, err := strconv.ParseFloat(initialWaitIntervalFromEnv, 64)
+		if err == nil {
+			config.initialWaitIntervalNanoseconds = int64(initialWaitInterval * float64(time.Second))
+		} else {
+			sechubUtil.LogWarning(fmt.Sprintf("Could not parse '%v' as number (read from $%s)", initialWaitIntervalFromEnv, SechubIninitialWaitIntervalSecondsEnvVar))
+		}
 	}
 	if projectFromEnv != "" {
 		config.projectID = projectFromEnv
@@ -157,16 +169,13 @@ func parseConfigFromEnvironment(config *Config) {
 
 // NewConfigByFlags parses commandline flags which override environment variable settings or defaults defined in init()
 func NewConfigByFlags() *Config {
+	validateMaximumNumberOfCMDLineArgumentsOrCapAndWarning()
+
 	// Normalize arguments from commandline
 	os.Args = normalizeCMDLineArgs(os.Args)
 
 	// Parse command line options
 	flag.Parse()
-
-	// We use the configFromInit struct already prefilled with defaults and from environment variables
-	oneSecond := 1 * time.Second
-	configFromInit.waitNanoseconds = int64(configFromInit.waitSeconds) * oneSecond.Nanoseconds()
-	configFromInit.timeOutNanoseconds = int64(configFromInit.timeOutSeconds) * oneSecond.Nanoseconds()
 
 	if flagHelp {
 		configFromInit.action = showHelpAction
@@ -231,17 +240,6 @@ func assertValidConfig(config *Config) {
 		errorsFound = true
 	}
 
-	if config.action == interactiveMarkFalsePositivesAction && config.file == "" {
-		// Let's try to find the latest report and take this as file
-		config.file = sechubUtil.FindNewestMatchingFileInDir("sechub_report_.+\\.json$", config.outputLocation)
-		if config.file == "" {
-			sechubUtil.LogError("Input file is needed for action '" + interactiveMarkFalsePositivesAction + "'. Please define input file with -file option.")
-			errorsFound = true
-		} else {
-			fmt.Printf("Using latest report file %q.\n", config.file)
-		}
-	}
-
 	if !validateRequestedReportFormat(config) {
 		errorsFound = true
 	}
@@ -252,6 +250,17 @@ func assertValidConfig(config *Config) {
 		errorsFound = true
 	}
 
+	if config.action == interactiveMarkFalsePositivesAction && config.file == "" {
+		// Let's try to find the latest report (default naming scheme) and take this as file
+		config.file = sechubUtil.FindNewestMatchingFileInDir("sechub_report_"+config.projectID+"_.+\\.json$", ".", config.debug)
+		if config.file == "" {
+			sechubUtil.LogError("An input file is needed for action '" + interactiveMarkFalsePositivesAction + "'. Please define input file with -file option.")
+			errorsFound = true
+		} else {
+			fmt.Printf("Using latest report file %q.\n", config.file)
+		}
+	}
+
 	if errorsFound {
 		showHelpHint()
 		os.Exit(ExitCodeMissingParameter)
@@ -260,8 +269,17 @@ func assertValidConfig(config *Config) {
 	// For convenience: lowercase user id and project id if needed
 	config.user = lowercaseOrNotice(config.user, "user id")
 	config.projectID = lowercaseOrNotice(config.projectID, "project id")
+
 	// Remove trailing slash from url if present
 	config.server = strings.TrimSuffix(config.server, "/")
+
+	config.initialWaitIntervalNanoseconds = validateInitialWaitIntervalOrWarning(config.initialWaitIntervalNanoseconds)
+
+	config.waitSeconds = validateWaitTimeOrWarning(config.waitSeconds)
+	config.waitNanoseconds = int64(config.waitSeconds) * int64(time.Second)
+
+	config.timeOutSeconds = validateTimeoutOrWarning(config.timeOutSeconds)
+	config.timeOutNanoseconds = int64(config.timeOutSeconds) * int64(time.Second)
 }
 
 // isConfigFieldFilled checks if field is not empty or is 'true' in case of boolean type
@@ -279,8 +297,8 @@ func validateRequestedReportFormat(config *Config) bool {
 	config.reportFormat = lowercaseOrNotice(config.reportFormat, "requested report format")
 
 	if !sechubUtil.StringArrayContains(SupportedReportFormats, config.reportFormat) {
-		sechubUtil.LogWarning("Unsupported report format '" + config.reportFormat + "'. Changing to 'json'.")
-		config.reportFormat = "json"
+		sechubUtil.LogWarning("Unsupported report format '" + config.reportFormat + "'. Changing to '" + ReportFormatJSON + "'.")
+		config.reportFormat = ReportFormatJSON
 	}
 	return true
 }
@@ -369,4 +387,44 @@ func validateOutputLocation(config *Config) bool {
 		}
 	}
 	return true
+}
+
+func validateWaitTimeOrWarning(waitTime int) int {
+	// Verify wait time and ensure MinimalWaitTimeSeconds
+	if waitTime < MinimalWaitTimeSeconds {
+		sechubUtil.LogWarning(
+			fmt.Sprintf("Desired wait interval (%d s) is too short. Setting it to %d seconds.", waitTime, MinimalWaitTimeSeconds))
+		waitTime = MinimalWaitTimeSeconds
+	}
+	return waitTime
+}
+
+func validateInitialWaitIntervalOrWarning(intervalNanoseconds int64) int64 {
+	minimalInitialWaitIntervalNanoseconds := int64(MinimalInitialWaitIntervalSeconds * float64(time.Second))
+	// Verify wait time and ensure minimalInitialWaitIntervalNanoseconds
+	if intervalNanoseconds < minimalInitialWaitIntervalNanoseconds {
+		sechubUtil.LogWarning(
+			fmt.Sprintf("Desired initial wait interval (%v s) is too short. Setting it to %v s.",
+				float64(intervalNanoseconds)/float64(time.Second),
+				float64(minimalInitialWaitIntervalNanoseconds)/float64(time.Second)))
+		intervalNanoseconds = minimalInitialWaitIntervalNanoseconds
+	}
+	return intervalNanoseconds
+}
+
+func validateTimeoutOrWarning(timeout int) int {
+	// Verify timeout and ensure MinimalTimeoutInSeconds
+	if timeout < MinimalTimeoutInSeconds {
+		sechubUtil.LogWarning(
+			fmt.Sprintf("Desired timeout (%d s) is too small. Setting to %d seconds.", timeout, MinimalTimeoutInSeconds))
+		timeout = MinimalTimeoutInSeconds
+	}
+	return timeout
+}
+
+func validateMaximumNumberOfCMDLineArgumentsOrCapAndWarning() {
+	if len(os.Args) > MaximumNumberOfCMDLineArguments {
+		os.Args = os.Args[0:MaximumNumberOfCMDLineArguments]
+		sechubUtil.LogWarning(fmt.Sprintf("Too many commandline arguments. Capping to %d.", MaximumNumberOfCMDLineArguments))
+	}
 }

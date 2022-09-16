@@ -3,15 +3,18 @@ package com.mercedesbenz.sechub.domain.schedule;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.mercedesbenz.sechub.commons.core.MustBeKeptStable;
 import com.mercedesbenz.sechub.commons.model.JSONable;
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
-import com.mercedesbenz.sechub.sharedkernel.MustBeKeptStable;
+import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJobMessagesSupport;
 
 /**
  * This class represents the schedule job status which can be obtained by REST
@@ -37,6 +40,8 @@ public class ScheduleJobStatus implements JSONable<ScheduleJobStatus> {
     public static final String PROPERTY_RESULT = "result";
     public static final String PROPERTY_TRAFFICLIGHT = "trafficLight";
 
+    private static final ScheduleSecHubJobMessagesSupport jobMessagesSupport = new ScheduleSecHubJobMessagesSupport();;
+
     UUID jobUUID;
 
     String owner;
@@ -49,6 +54,8 @@ public class ScheduleJobStatus implements JSONable<ScheduleJobStatus> {
     String result;
 
     String trafficLight;
+
+    List<SecHubMessage> messages;
 
     ScheduleJobStatus() {
 
@@ -70,6 +77,9 @@ public class ScheduleJobStatus implements JSONable<ScheduleJobStatus> {
         this.state = convertToString(secHubJob.getExecutionState());
         this.result = convertToString(secHubJob.getExecutionResult());
         this.trafficLight = convertToString(secHubJob.getTrafficLight());
+
+        this.messages = jobMessagesSupport.fetchMessagesOrNull(secHubJob);
+
     }
 
     private String convertToString(ExecutionResult result) {

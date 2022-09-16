@@ -1,0 +1,1587 @@
+{
+    "version": "2.1.0",
+    "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+    "runs": [
+        {
+            "tool": {
+                "extensions": [
+                    {
+                        "version": "4.6.0",
+                        "name": "edu.umd.cs.findbugs.plugins.core",
+                        "shortDescription": {
+                            "text": "Core SpotBugs plugin"
+                        },
+                        "informationUri": "https://github.com/spotbugs",
+                        "organization": "SpotBugs project"
+                    },
+                    {
+                        "version": "",
+                        "name": "com.h3xstream.findsecbugs",
+                        "shortDescription": {
+                            "text": "Find Security Bugs"
+                        },
+                        "informationUri": "https://find-sec-bugs.github.io",
+                        "organization": "Find Security Bugs"
+                    }
+                ],
+                "driver": {
+                    "name": "SpotBugs",
+                    "version": "4.6.0",
+                    "language": "en",
+                    "informationUri": "https://spotbugs.github.io/",
+                    "rules": [
+                        {
+                            "id": "XSS_SERVLET",
+                            "shortDescription": {
+                                "text": "Potential XSS in Servlet."
+                            },
+                            "messageStrings": {
+                                "default": {
+                                    "text": "This use of {0} could be vulnerable to XSS in the Servlet."
+                                }
+                            },
+                            "helpUri": "https://find-sec-bugs.github.io/bugs.htm#XSS_SERVLET",
+                            "properties": {
+                                "tags": [
+                                    "SECURITY"
+                                ]
+                            }
+                        },
+                        {
+                            "id": "WEAK_MESSAGE_DIGEST_MD5",
+                            "shortDescription": {
+                                "text": "MD2, MD4 and MD5 are weak hash functions."
+                            },
+                            "messageStrings": {
+                                "default": {
+                                    "text": "This API {0} (MDX) is not a recommended cryptographic hash function."
+                                }
+                            },
+                            "helpUri": "https://find-sec-bugs.github.io/bugs.htm#WEAK_MESSAGE_DIGEST_MD5",
+                            "properties": {
+                                "tags": [
+                                    "SECURITY"
+                                ]
+                            }
+                        },
+                        {
+                            "id": "LDAP_INJECTION",
+                            "shortDescription": {
+                                "text": "Potential LDAP Injection."
+                            },
+                            "messageStrings": {
+                                "default": {
+                                    "text": "This use of {0} can be vulnerable to LDAP injection."
+                                }
+                            },
+                            "helpUri": "https://find-sec-bugs.github.io/bugs.htm#LDAP_INJECTION",
+                            "properties": {
+                                "tags": [
+                                    "SECURITY"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            },
+            "invocations": [
+                {
+                    "exitCode": 1,
+                    "exitSignalName": "ERROR,MISSING CLASS,BUGS FOUND",
+                    "executionSuccessful": false
+                }
+            ],
+            "results": [
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "javax/servlet/ServletOutputStream.print(Ljava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "javax/servlet/http/HttpServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 580
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "doTrace(HttpServletRequest, HttpServletResponse)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "javax.servlet.http.HttpServlet.doTrace(HttpServletRequest, HttpServletResponse)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "WEAK_MESSAGE_DIGEST_MD5",
+                    "ruleIndex": 1,
+                    "message": {
+                        "id": "default",
+                        "text": "MD2, MD4 and MD5 are weak hash functions",
+                        "arguments": [
+                            "MD5"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/authenticator/DigestAuthenticator.java"
+                                },
+                                "region": {
+                                    "startLine": 92
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "new DigestAuthenticator()",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "new org.apache.catalina.authenticator.DigestAuthenticator()"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "java/io/PrintWriter.print(Ljava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/manager/HTMLManagerServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 631
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "list(HttpServletRequest, HttpServletResponse, String, StringManager)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.manager.HTMLManagerServlet.list(HttpServletRequest, HttpServletResponse, String, StringManager)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "java/io/PrintWriter.print(Ljava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/manager/JMXProxyServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 141
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "getAttribute(PrintWriter, String, String, String)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.manager.JMXProxyServlet.getAttribute(PrintWriter, String, String, String)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "java/io/PrintWriter.print(Ljava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/manager/JMXProxyServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 143
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "getAttribute(PrintWriter, String, String, String)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.manager.JMXProxyServlet.getAttribute(PrintWriter, String, String, String)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "java/io/PrintWriter.print(Ljava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/manager/JMXProxyServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 147
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "getAttribute(PrintWriter, String, String, String)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.manager.JMXProxyServlet.getAttribute(PrintWriter, String, String, String)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "java/io/PrintWriter.println(Ljava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/manager/JMXProxyServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 206
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "invokeOperation(PrintWriter, String, String, String[])",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.manager.JMXProxyServlet.invokeOperation(PrintWriter, String, String, String[])"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "java/io/PrintWriter.println(Ljava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/manager/JMXProxyServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 209
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "invokeOperation(PrintWriter, String, String, String[])",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.manager.JMXProxyServlet.invokeOperation(PrintWriter, String, String, String[])"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "java/io/PrintWriter.println(Ljava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/manager/ManagerServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 1077
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "serverinfo(PrintWriter, StringManager)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.manager.ManagerServlet.serverinfo(PrintWriter, StringManager)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "java/io/PrintWriter.print(Ljava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/manager/StatusTransformer.java"
+                                },
+                                "region": {
+                                    "startLine": 132
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "writeServerInfo(PrintWriter, Object[], int)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.manager.StatusTransformer.writeServerInfo(PrintWriter, Object[], int)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "java/io/PrintWriter.print(Ljava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/manager/host/HTMLHostManagerServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 421
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "list(HttpServletRequest, HttpServletResponse, String, StringManager)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.manager.host.HTMLHostManagerServlet.list(HttpServletRequest, HttpServletResponse, String, StringManager)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "WEAK_MESSAGE_DIGEST_MD5",
+                    "ruleIndex": 1,
+                    "message": {
+                        "id": "default",
+                        "text": "MD2, MD4 and MD5 are weak hash functions",
+                        "arguments": [
+                            "MD5"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/realm/RealmBase.java"
+                                },
+                                "region": {
+                                    "startLine": 1180
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "getDigest(String, String)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.realm.RealmBase.getDigest(String, String)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "javax/servlet/ServletOutputStream.println(Ljava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/CGIServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 373
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "printServletEnvironment(ServletOutputStream, HttpServletRequest, HttpServletResponse)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.CGIServlet.printServletEnvironment(ServletOutputStream, HttpServletRequest, HttpServletResponse)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "javax/servlet/ServletOutputStream.println(Ljava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/CGIServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 385
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "printServletEnvironment(ServletOutputStream, HttpServletRequest, HttpServletResponse)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.CGIServlet.printServletEnvironment(ServletOutputStream, HttpServletRequest, HttpServletResponse)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "javax/servlet/ServletOutputStream.println(Ljava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/CGIServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 390
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "printServletEnvironment(ServletOutputStream, HttpServletRequest, HttpServletResponse)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.CGIServlet.printServletEnvironment(ServletOutputStream, HttpServletRequest, HttpServletResponse)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "javax/servlet/ServletOutputStream.println(Ljava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/CGIServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 393
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "printServletEnvironment(ServletOutputStream, HttpServletRequest, HttpServletResponse)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.CGIServlet.printServletEnvironment(ServletOutputStream, HttpServletRequest, HttpServletResponse)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "javax/servlet/ServletOutputStream.println(Ljava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/CGIServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 407
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "printServletEnvironment(ServletOutputStream, HttpServletRequest, HttpServletResponse)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.CGIServlet.printServletEnvironment(ServletOutputStream, HttpServletRequest, HttpServletResponse)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "javax/servlet/ServletOutputStream.println(Ljava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/CGIServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 412
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "printServletEnvironment(ServletOutputStream, HttpServletRequest, HttpServletResponse)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.CGIServlet.printServletEnvironment(ServletOutputStream, HttpServletRequest, HttpServletResponse)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "javax/servlet/ServletOutputStream.println(Ljava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/CGIServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 416
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "printServletEnvironment(ServletOutputStream, HttpServletRequest, HttpServletResponse)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.CGIServlet.printServletEnvironment(ServletOutputStream, HttpServletRequest, HttpServletResponse)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "javax/servlet/ServletOutputStream.println(Ljava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/CGIServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 418
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "printServletEnvironment(ServletOutputStream, HttpServletRequest, HttpServletResponse)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.CGIServlet.printServletEnvironment(ServletOutputStream, HttpServletRequest, HttpServletResponse)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "javax/servlet/ServletOutputStream.println(Ljava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/CGIServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 420
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "printServletEnvironment(ServletOutputStream, HttpServletRequest, HttpServletResponse)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.CGIServlet.printServletEnvironment(ServletOutputStream, HttpServletRequest, HttpServletResponse)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "javax/servlet/ServletOutputStream.println(Ljava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/CGIServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 422
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "printServletEnvironment(ServletOutputStream, HttpServletRequest, HttpServletResponse)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.CGIServlet.printServletEnvironment(ServletOutputStream, HttpServletRequest, HttpServletResponse)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "javax/servlet/ServletOutputStream.println(Ljava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/CGIServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 432
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "printServletEnvironment(ServletOutputStream, HttpServletRequest, HttpServletResponse)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.CGIServlet.printServletEnvironment(ServletOutputStream, HttpServletRequest, HttpServletResponse)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "javax/servlet/ServletOutputStream.println(Ljava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/CGIServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 434
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "printServletEnvironment(ServletOutputStream, HttpServletRequest, HttpServletResponse)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.CGIServlet.printServletEnvironment(ServletOutputStream, HttpServletRequest, HttpServletResponse)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "LDAP_INJECTION",
+                    "ruleIndex": 2,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential LDAP Injection",
+                        "arguments": [
+                            "org/apache/naming/resources/ProxyDirContext.lookup(Ljava/lang/String;)Ljava/lang/Object;"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/DefaultServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 659
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "doDelete(HttpServletRequest, HttpServletResponse)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.DefaultServlet.doDelete(HttpServletRequest, HttpServletResponse)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "LDAP_INJECTION",
+                    "ruleIndex": 2,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential LDAP Injection",
+                        "arguments": [
+                            "org/apache/naming/resources/ProxyDirContext.lookup(Ljava/lang/String;)Ljava/lang/Object;"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/DefaultServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 519
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "doPut(HttpServletRequest, HttpServletResponse)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.DefaultServlet.doPut(HttpServletRequest, HttpServletResponse)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "LDAP_INJECTION",
+                    "ruleIndex": 2,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential LDAP Injection",
+                        "arguments": [
+                            "org/apache/naming/resources/ProxyDirContext.lookup(Ljava/lang/String;)Ljava/lang/Object;"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/DefaultServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 596
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "executePartialPut(HttpServletRequest, DefaultServlet$Range, String)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.DefaultServlet.executePartialPut(HttpServletRequest, DefaultServlet$Range, String)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "java/io/PrintWriter.write(Ljava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/DefaultServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 1526
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "renderHtml(String, CacheEntry)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.DefaultServlet.renderHtml(String, CacheEntry)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "javax/servlet/http/HttpServletResponse.sendError(ILjava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/DefaultServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 781
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "serveResource(HttpServletRequest, HttpServletResponse, boolean)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.DefaultServlet.serveResource(HttpServletRequest, HttpServletResponse, boolean)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "javax/servlet/http/HttpServletResponse.sendError(ILjava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/DefaultServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 797
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "serveResource(HttpServletRequest, HttpServletResponse, boolean)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.DefaultServlet.serveResource(HttpServletRequest, HttpServletResponse, boolean)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "javax/servlet/http/HttpServletResponse.sendError(ILjava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/DefaultServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 835
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "serveResource(HttpServletRequest, HttpServletResponse, boolean)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.DefaultServlet.serveResource(HttpServletRequest, HttpServletResponse, boolean)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "LDAP_INJECTION",
+                    "ruleIndex": 2,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential LDAP Injection",
+                        "arguments": [
+                            "javax/naming/directory/DirContext.lookup(Ljava/lang/String;)Ljava/lang/Object;"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/WebdavServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 1750
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "copyResource(DirContext, Hashtable, String, String)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.WebdavServlet.copyResource(DirContext, Hashtable, String, String)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "LDAP_INJECTION",
+                    "ruleIndex": 2,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential LDAP Injection",
+                        "arguments": [
+                            "javax/naming/directory/DirContext.lookup(Ljava/lang/String;)Ljava/lang/Object;"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/WebdavServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 1964
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "deleteCollection(HttpServletRequest, DirContext, String, Hashtable)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.WebdavServlet.deleteCollection(HttpServletRequest, DirContext, String, Hashtable)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "LDAP_INJECTION",
+                    "ruleIndex": 2,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential LDAP Injection",
+                        "arguments": [
+                            "org/apache/naming/resources/ProxyDirContext.lookup(Ljava/lang/String;)Ljava/lang/Object;"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/WebdavServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 1864
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "deleteResource(String, HttpServletRequest, HttpServletResponse, boolean)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.WebdavServlet.deleteResource(String, HttpServletRequest, HttpServletResponse, boolean)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "LDAP_INJECTION",
+                    "ruleIndex": 2,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential LDAP Injection",
+                        "arguments": [
+                            "javax/naming/directory/DirContext.lookup(Ljava/lang/String;)Ljava/lang/Object;"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/WebdavServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 2650
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "determineMethodsAllowed(DirContext, HttpServletRequest)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.WebdavServlet.determineMethodsAllowed(DirContext, HttpServletRequest)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "LDAP_INJECTION",
+                    "ruleIndex": 2,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential LDAP Injection",
+                        "arguments": [
+                            "org/apache/naming/resources/ProxyDirContext.lookup(Ljava/lang/String;)Ljava/lang/Object;"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/WebdavServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 1143
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "doLock(HttpServletRequest, HttpServletResponse)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.WebdavServlet.doLock(HttpServletRequest, HttpServletResponse)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "LDAP_INJECTION",
+                    "ruleIndex": 2,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential LDAP Injection",
+                        "arguments": [
+                            "org/apache/naming/resources/ProxyDirContext.lookup(Ljava/lang/String;)Ljava/lang/Object;"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/WebdavServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 1303
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "doLock(HttpServletRequest, HttpServletResponse)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.WebdavServlet.doLock(HttpServletRequest, HttpServletResponse)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "LDAP_INJECTION",
+                    "ruleIndex": 2,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential LDAP Injection",
+                        "arguments": [
+                            "org/apache/naming/resources/ProxyDirContext.lookup(Ljava/lang/String;)Ljava/lang/Object;"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/WebdavServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 781
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "doMkcol(HttpServletRequest, HttpServletResponse)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.WebdavServlet.doMkcol(HttpServletRequest, HttpServletResponse)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "LDAP_INJECTION",
+                    "ruleIndex": 2,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential LDAP Injection",
+                        "arguments": [
+                            "org/apache/naming/resources/ProxyDirContext.lookup(Ljava/lang/String;)Ljava/lang/Object;"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/WebdavServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 605
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "doPropfind(HttpServletRequest, HttpServletResponse)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.WebdavServlet.doPropfind(HttpServletRequest, HttpServletResponse)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "LDAP_INJECTION",
+                    "ruleIndex": 2,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential LDAP Injection",
+                        "arguments": [
+                            "org/apache/naming/resources/ProxyDirContext.lookup(Ljava/lang/String;)Ljava/lang/Object;"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/WebdavServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 675
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "doPropfind(HttpServletRequest, HttpServletResponse)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.WebdavServlet.doPropfind(HttpServletRequest, HttpServletResponse)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "WEAK_MESSAGE_DIGEST_MD5",
+                    "ruleIndex": 1,
+                    "message": {
+                        "id": "default",
+                        "text": "MD2, MD4 and MD5 are weak hash functions",
+                        "arguments": [
+                            "MD5"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/WebdavServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 306
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "init()",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.WebdavServlet.init()"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "javax/servlet/http/HttpServletResponse.sendError(ILjava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/WebdavServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 642
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "doPropfind(HttpServletRequest, HttpServletResponse)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.WebdavServlet.doPropfind(HttpServletRequest, HttpServletResponse)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "javax/servlet/http/HttpServletResponse.sendError(ILjava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/servlets/WebdavServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 694
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "doPropfind(HttpServletRequest, HttpServletResponse)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.servlets.WebdavServlet.doPropfind(HttpServletRequest, HttpServletResponse)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "javax/servlet/http/HttpServletResponse.sendError(ILjava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/ssi/SSIServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 162
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "requestHandler(HttpServletRequest, HttpServletResponse)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.ssi.SSIServlet.requestHandler(HttpServletRequest, HttpServletResponse)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "javax/servlet/http/HttpServletResponse.sendError(ILjava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/catalina/ssi/SSIServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 168
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "requestHandler(HttpServletRequest, HttpServletResponse)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.catalina.ssi.SSIServlet.requestHandler(HttpServletRequest, HttpServletResponse)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "XSS_SERVLET",
+                    "ruleIndex": 0,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential XSS in Servlet",
+                        "arguments": [
+                            "javax/servlet/http/HttpServletResponse.sendError(ILjava/lang/String;)V"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/jasper/servlet/JspServlet.java"
+                                },
+                                "region": {
+                                    "startLine": 415
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "handleMissingResource(HttpServletRequest, HttpServletResponse, String)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.jasper.servlet.JspServlet.handleMissingResource(HttpServletRequest, HttpServletResponse, String)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "LDAP_INJECTION",
+                    "ruleIndex": 2,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential LDAP Injection",
+                        "arguments": [
+                            "javax/naming/directory/DirContext.lookup(Ljava/lang/String;)Ljava/lang/Object;"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/naming/resources/ProxyDirContext.java"
+                                },
+                                "region": {
+                                    "startLine": 308
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "lookup(String)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.naming.resources.ProxyDirContext.lookup(String)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "LDAP_INJECTION",
+                    "ruleIndex": 2,
+                    "message": {
+                        "id": "default",
+                        "text": "Potential LDAP Injection",
+                        "arguments": [
+                            "javax/naming/directory/DirContext.lookup(Ljava/lang/String;)Ljava/lang/Object;"
+                        ]
+                    },
+                    "level": "warning",
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "org/apache/naming/resources/ProxyDirContext.java"
+                                },
+                                "region": {
+                                    "startLine": 1465
+                                }
+                            },
+                            "logicalLocations": [
+                                {
+                                    "name": "lookupCache(String)",
+                                    "kind": "function",
+                                    "fullyQualifiedName": "org.apache.naming.resources.ProxyDirContext.lookupCache(String)"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "originalUriBaseIds": {}
+        }
+    ]
+}

@@ -10,4 +10,6 @@ The report product merge result will be stored as a `ProductResult` as well in d
 
 NOTE: When no report collector is configured/available the embedded report product `Sereco` ("SecHub report collector") will be used .  
 
+include::concept_product_message_dataflow.adoc[]
+
 include::concept_report_dataflow.adoc[]

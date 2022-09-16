@@ -32,7 +32,7 @@ public class JobScenario2IntTest {
         /* @formatter:off */
 
 		UUID jobUUID = assertUser(USER_1).
-			canCreateWebScan(PROJECT_1,IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING);
+			canCreateWebScan(PROJECT_1,IntegrationTestMockMode.WEBSCAN__NETSPARKER_GREEN__10_SECONDS_WAITING);
 
 		assertUser(USER_1).
 			onJobScheduling(PROJECT_1).
@@ -82,7 +82,7 @@ public class JobScenario2IntTest {
         /* @formatter:off */
 
 		UUID jobUUID = assertUser(USER_1).
-			canCreateWebScan(PROJECT_1,IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING);
+			canCreateWebScan(PROJECT_1,IntegrationTestMockMode.WEBSCAN__NETSPARKER_GREEN__10_SECONDS_WAITING);
 
 		assertUser(USER_1).
 			canApproveJob(PROJECT_1, jobUUID);
@@ -101,7 +101,7 @@ public class JobScenario2IntTest {
         /* @formatter:off */
 
 		UUID jobUUID = assertUser(USER_1).
-			canCreateWebScan(PROJECT_1,IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__FAST);
+			canCreateWebScan(PROJECT_1,IntegrationTestMockMode.WEBSCAN__NETSPARKER_GREEN__ZERO_WAIT);
 
         assertUser(USER_1).
 			onJobScheduling(PROJECT_1).

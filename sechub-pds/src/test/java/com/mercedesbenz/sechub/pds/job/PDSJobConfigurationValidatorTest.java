@@ -12,8 +12,8 @@ import org.junit.rules.ExpectedException;
 
 import com.mercedesbenz.sechub.pds.PDSNotAcceptableException;
 import com.mercedesbenz.sechub.pds.config.PDSProductIdentifierValidator;
+import com.mercedesbenz.sechub.pds.config.PDSProductParameterDefinition;
 import com.mercedesbenz.sechub.pds.config.PDSProductSetup;
-import com.mercedesbenz.sechub.pds.config.PDSProdutParameterDefinition;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
 import com.mercedesbenz.sechub.test.junit4.ExpectedExceptionFactory;
 
@@ -50,7 +50,7 @@ public class PDSJobConfigurationValidatorTest {
         /* prepare */
         PDSJobConfiguration config = prepareValidConfig();
 
-        PDSProdutParameterDefinition optional = new PDSProdutParameterDefinition();
+        PDSProductParameterDefinition optional = new PDSProductParameterDefinition();
         optional.setKey("the.optional.key");
         setup1.getParameters().getOptional().add(optional);
 
@@ -71,7 +71,7 @@ public class PDSJobConfigurationValidatorTest {
         /* prepare */
         PDSJobConfiguration config = prepareValidConfig();
 
-        PDSProdutParameterDefinition mandatoryParameter = new PDSProdutParameterDefinition();
+        PDSProductParameterDefinition mandatoryParameter = new PDSProductParameterDefinition();
         mandatoryParameter.setKey("the.necessary.key");
         setup1.getParameters().getMandatory().add(mandatoryParameter);
 

@@ -1,0 +1,57 @@
+' SPDX-License-Identifier: MIT
+@startuml
+
+hide empty fields
+hide empty methods
+
+class CheckmarxWrapperApplication {
+    
+}
+interface CheckmarxAdapter
+
+class CheckmarxAdapterV1 implements CheckmarxAdapter{
+    <<real_product>>
+}
+class MockedCheckmarxAdapter implements CheckmarxAdapter{
+    <<mocked_product>>
+}
+
+class CheckmarxWrapperCLI{
+}
+
+class CheckmarxWrapperScanService{
+
+}
+
+class CheckmarxConfig
+
+interface AdapterMetaDataCallback
+class FileBasedAdapterMetaDataCallback implements AdapterMetaDataCallback{
+}
+
+CheckmarxWrapperApplication --> CheckmarxWrapperCLI : on startup
+CheckmarxWrapperCLI --> CheckmarxWrapperScanService :[1]
+CheckmarxWrapperCLI --> CheckmarxWrapperStorageService :[2]
+
+CheckmarxWrapperScanService -->  CheckmarxAdapter : starts adapter\nwith callback and config
+CheckmarxWrapperScanService -->  FileBasedAdapterMetaDataCallback : creates
+CheckmarxWrapperScanService -->  AdapterExecutionResult : returns
+CheckmarxWrapperStorageService ..>  AdapterExecutionResult : reads
+CheckmarxWrapperScanService ->  CheckmarxConfig : creates
+
+CheckmarxWrapperScanService ..> CheckmarxWrapperEnvironment
+CheckmarxWrapperStorageService ..> CheckmarxWrapperEnvironment
+
+CheckmarxAdapter .> CheckmarxConfig: uses
+
+note top of CheckmarxWrapperApplication
+    This is a standalone spring boot application
+end note
+
+note top of CheckmarxWrapperStorageService
+    Stores the result and 
+    also the the user messages 
+    on filesystem, to allow PDS to access it. 
+end note
+
+@enduml 

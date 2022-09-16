@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.integrationtest.internal;
 
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +35,6 @@ import com.mercedesbenz.sechub.adapter.support.TrustAllSupport;
 import com.mercedesbenz.sechub.integrationtest.api.UserContext;
 
 public class TestRestHelper {
-
     public static enum RestHelperTarget {
         SECHUB_SERVER, SECHUB_PDS,
     }
@@ -248,21 +250,33 @@ public class TestRestHelper {
         return Boolean.parseBoolean(dataAsString);
     }
 
-    public String upload(String uploadSourceCodeUrl, File file, String checkSum) {
+    public UUID getUUIDFromURL(String url) {
+        String dataAsString = getStringFromURL(url);
+        if (dataAsString == null) {
+            return null;
+        }
+        return UUID.fromString(dataAsString);
+    }
+
+    public String upload(String uploadUrl, File file, String checkSum) {
         // see https://www.baeldung.com/spring-rest-template-multipart-upload
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
+        headers.set("", checkSum);
+        String fileSize = String.valueOf(file.length());
+        headers.set(FILE_SIZE_HEADER_FIELD_NAME, fileSize);
+
         FileSystemResource resource = new FileSystemResource(file);
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("file", resource);
-        body.add("checkSum", checkSum);
+        body.add(MULTIPART_FILE, resource);
+        body.add(MULTIPART_CHECKSUM, checkSum);
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-        markLastURL(uploadSourceCodeUrl);
-        ResponseEntity<String> response = template.postForEntity(uploadSourceCodeUrl, requestEntity, String.class);
+        markLastURL(uploadUrl);
+        ResponseEntity<String> response = template.postForEntity(uploadUrl, requestEntity, String.class);
         return response.getBody();
     }
 

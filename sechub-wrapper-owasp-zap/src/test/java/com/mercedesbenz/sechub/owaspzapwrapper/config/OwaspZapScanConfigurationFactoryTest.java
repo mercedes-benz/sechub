@@ -1,10 +1,23 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.owaspzapwrapper.config;
 
-import static com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableConstants.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableConstants.PDS_JOB_EXTRACTED_SOURCES_FOLDER;
+import static com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableConstants.PROXY_HOST_ENV_VARIABLE_NAME;
+import static com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableConstants.PROXY_PORT_ENV_VARIABLE_NAME;
+import static com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableConstants.ZAP_API_KEY_ENV_VARIABLE_NAME;
+import static com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableConstants.ZAP_DEACTIVATED_RULE_REFERENCES;
+import static com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableConstants.ZAP_HOST_ENV_VARIABLE_NAME;
+import static com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableConstants.ZAP_PORT_ENV_VARIABLE_NAME;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.net.URI;
@@ -15,11 +28,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.CommandLineSettings;
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitRuntimeException;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.auth.AuthenticationType;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.data.DeactivatedRuleReferences;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.data.OwaspZapFullRuleset;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.BaseTargetUriFactory;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.SecHubWebScanConfigurationHelper;
 import com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableReader;
@@ -32,7 +48,10 @@ class OwaspZapScanConfigurationFactoryTest {
     private EnvironmentVariableReader environmentVariableReader;
     private BaseTargetUriFactory targetUriFactory;
 
-    private SechubWebConfigProvider webConfigProvider;
+    private RuleProvider ruleProvider;
+
+    private File fullRulesetFile;
+    private File deactivationFile;
 
     @BeforeEach
     void beforeEach() {
@@ -43,49 +62,38 @@ class OwaspZapScanConfigurationFactoryTest {
         sechubWebConfigHelper = mock(SecHubWebScanConfigurationHelper.class);
         environmentVariableReader = mock(EnvironmentVariableReader.class);
         targetUriFactory = mock(BaseTargetUriFactory.class);
-        webConfigProvider = mock(SechubWebConfigProvider.class);
+        ruleProvider = mock(RuleProvider.class);
 
         // connect mocks with test object
         factoryToTest.sechubWebConfigHelper = sechubWebConfigHelper;
         factoryToTest.environmentVariableReader = environmentVariableReader;
         factoryToTest.targetUriFactory = targetUriFactory;
-        factoryToTest.webConfigProvider = webConfigProvider;
+        factoryToTest.ruleProvider = ruleProvider;
+
+        // create test data
+        fullRulesetFile = new File("src/test/resources/zap-available-rules/owaspzap-full-ruleset.json");
+        deactivationFile = new File("src/test/resources/wrapper-deactivated-rule-examples/owaspzap-rules-to-deactivate.json");
     }
 
     @Test
     void commandLineSettings_object_is_null_results_in_mustexitruntimeexception() {
         /* execute + test */
-        assertThrows(MustExitRuntimeException.class, () -> factoryToTest.create(null));
+        assertThrows(ZapWrapperRuntimeException.class, () -> factoryToTest.create(null));
     }
 
     @Test
     void created_configuration_has_max_scan_duration_from_sechub_webconfig() {
         /* prepare */
         CommandLineSettings settings = createSettingsMockWithNecessaryParts();
-        SecHubWebScanConfiguration config = simulateProvidedSecHubConfiguration(settings);
-
-        long maxScanDueration = 4711L;
-        when(sechubWebConfigHelper.fetchMaxScanDurationInMillis(config)).thenReturn(maxScanDueration);
-
-        /* execute */
-        OwaspZapScanConfiguration result = factoryToTest.create(settings);
-
-        /* test */
-        assertEquals(result.getMaxScanDurationInMillis(), maxScanDueration);
-
-    }
-
-    @Test
-    void configuration_returned_by_provider_is_inside_result() {
-        /* prepare */
-        CommandLineSettings settings = createSettingsMockWithNecessaryParts();
-        SecHubWebScanConfiguration config = simulateProvidedSecHubConfiguration(settings);
+        long maxScanDuration = 4711L;
+        when(sechubWebConfigHelper.fetchMaxScanDurationInMillis(any())).thenReturn(maxScanDuration);
+        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         /* execute */
         OwaspZapScanConfiguration result = factoryToTest.create(settings);
 
         /* test */
-        assertEquals(result.getSecHubWebScanConfiguration(), config);
+        assertEquals(result.getMaxScanDurationInMillis(), maxScanDuration);
 
     }
 
@@ -96,6 +104,7 @@ class OwaspZapScanConfigurationFactoryTest {
 
         String jobUUID = "12345";
         when(settings.getJobUUID()).thenReturn(jobUUID);
+        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         /* execute */
         OwaspZapScanConfiguration result = factoryToTest.create(settings);
@@ -110,6 +119,7 @@ class OwaspZapScanConfigurationFactoryTest {
         /* prepare */
         CommandLineSettings settings = createSettingsMockWithNecessaryParts();
         when(settings.getJobUUID()).thenReturn(null);
+        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         /* execute */
         OwaspZapScanConfiguration result = factoryToTest.create(settings);
@@ -117,7 +127,7 @@ class OwaspZapScanConfigurationFactoryTest {
         /* test */
         String contextName = result.getContextName();
         assertNotNull(contextName);
-        UUID.fromString(contextName);// just check it us a uuid... (otherwise exception)
+        UUID.fromString(contextName);// just check it is a UUID
     }
 
     @ParameterizedTest
@@ -131,6 +141,7 @@ class OwaspZapScanConfigurationFactoryTest {
         when(settings.getZapApiKey()).thenReturn(apiKey);
         when(settings.getProxyHost()).thenReturn(proxy);
         when(settings.getProxyPort()).thenReturn(proxyPort);
+        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         /* execute */
         OwaspZapScanConfiguration result = factoryToTest.create(settings);
@@ -145,8 +156,12 @@ class OwaspZapScanConfigurationFactoryTest {
         assertEquals(proxy, result.getProxyInformation().getHost());
         assertEquals(proxyPort, result.getProxyInformation().getPort());
 
-        verify(environmentVariableReader, never()).readAsInt(any());
-        verify(environmentVariableReader, never()).readAsString(any());
+        verify(environmentVariableReader, never()).readAsInt(ZAP_PORT_ENV_VARIABLE_NAME);
+        verify(environmentVariableReader, never()).readAsInt(PROXY_PORT_ENV_VARIABLE_NAME);
+
+        verify(environmentVariableReader, never()).readAsString(ZAP_HOST_ENV_VARIABLE_NAME);
+        verify(environmentVariableReader, never()).readAsString(ZAP_API_KEY_ENV_VARIABLE_NAME);
+        verify(environmentVariableReader, never()).readAsString(PROXY_HOST_ENV_VARIABLE_NAME);
     }
 
     @ParameterizedTest
@@ -155,6 +170,7 @@ class OwaspZapScanConfigurationFactoryTest {
             int proxyPort) {
         /* prepare */
         CommandLineSettings settings = mock(CommandLineSettings.class);
+        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
         when(environmentVariableReader.readAsString(ZAP_HOST_ENV_VARIABLE_NAME)).thenReturn(host);
         when(environmentVariableReader.readAsString(ZAP_API_KEY_ENV_VARIABLE_NAME)).thenReturn(apiKey);
         when(environmentVariableReader.readAsInt(ZAP_PORT_ENV_VARIABLE_NAME)).thenReturn(port);
@@ -181,6 +197,7 @@ class OwaspZapScanConfigurationFactoryTest {
         CommandLineSettings settings = createSettingsMockWithNecessaryParts();
         when(settings.getProxyHost()).thenReturn(null);
         when(settings.getProxyPort()).thenReturn(0);
+        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         when(environmentVariableReader.readAsString(PROXY_HOST_ENV_VARIABLE_NAME)).thenReturn(null);
         when(environmentVariableReader.readAsInt(PROXY_PORT_ENV_VARIABLE_NAME)).thenReturn(0);
@@ -205,6 +222,7 @@ class OwaspZapScanConfigurationFactoryTest {
         /* prepare */
         CommandLineSettings settings = mock(CommandLineSettings.class);
         when(settings.getZapHost()).thenReturn(host);
+        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
         if (port != null) {
             // when not defined in CSV, null is used. The mock does use int primitive,
             // so we just do not set it.
@@ -213,7 +231,7 @@ class OwaspZapScanConfigurationFactoryTest {
         when(settings.getZapApiKey()).thenReturn(apiKey);
 
         /* execute + test */
-        assertThrows(MustExitRuntimeException.class, () -> factoryToTest.create(settings));
+        assertThrows(ZapWrapperRuntimeException.class, () -> factoryToTest.create(settings));
 
     }
 
@@ -221,10 +239,9 @@ class OwaspZapScanConfigurationFactoryTest {
     void authentication_type_from_config_is_in_result() {
         /* prepare */
         CommandLineSettings settings = createSettingsMockWithNecessaryParts();
-        SecHubWebScanConfiguration config = simulateProvidedSecHubConfiguration(settings);
-
         AuthenticationType type = AuthenticationType.FORM_BASED_AUTHENTICATION;
-        when(sechubWebConfigHelper.determineAuthenticationType(config)).thenReturn(type);
+        when(sechubWebConfigHelper.determineAuthenticationType(any())).thenReturn(type);
+        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         /* execute */
         OwaspZapScanConfiguration result = factoryToTest.create(settings);
@@ -243,6 +260,7 @@ class OwaspZapScanConfigurationFactoryTest {
 
         URI createdUri = URI.create("https://fromfactory.example.com");
         when(targetUriFactory.create(targetUri)).thenReturn(createdUri);
+        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         /* execute */
         OwaspZapScanConfiguration result = factoryToTest.create(settings);
@@ -258,6 +276,7 @@ class OwaspZapScanConfigurationFactoryTest {
         /* prepare */
         CommandLineSettings settings = createSettingsMockWithNecessaryParts();
         when(settings.isVerboseEnabled()).thenReturn(verboseEnabled);
+        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         /* execute */
         OwaspZapScanConfiguration result = factoryToTest.create(settings);
@@ -273,6 +292,7 @@ class OwaspZapScanConfigurationFactoryTest {
         /* prepare */
         CommandLineSettings settings = createSettingsMockWithNecessaryParts();
         when(settings.isAjaxSpiderEnabled()).thenReturn(enabled);
+        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         /* execute */
         OwaspZapScanConfiguration result = factoryToTest.create(settings);
@@ -288,6 +308,7 @@ class OwaspZapScanConfigurationFactoryTest {
         /* prepare */
         CommandLineSettings settings = createSettingsMockWithNecessaryParts();
         when(settings.isActiveScanEnabled()).thenReturn(enabled);
+        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         /* execute */
         OwaspZapScanConfiguration result = factoryToTest.create(settings);
@@ -303,6 +324,7 @@ class OwaspZapScanConfigurationFactoryTest {
         CommandLineSettings settings = createSettingsMockWithNecessaryParts();
         Path path = new File("not-existing").toPath();
         when(settings.getReportFile()).thenReturn(path);
+        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         /* execute */
         OwaspZapScanConfiguration result = factoryToTest.create(settings);
@@ -313,18 +335,135 @@ class OwaspZapScanConfigurationFactoryTest {
     }
 
     @Test
-    void sechub_webconfig_helper_retrieveMaxScanDurationInMillis_is_called_with_correct_webconfig() {
+    void commandline_settings_null_throws_zap_wrapper_runtime_exception() {
         /* execute + test */
-        assertThrows(MustExitRuntimeException.class, () -> factoryToTest.create(null));
+        assertThrows(ZapWrapperRuntimeException.class, () -> factoryToTest.create(null));
     }
 
-    private SecHubWebScanConfiguration simulateProvidedSecHubConfiguration(CommandLineSettings settings) {
-        File file = new File("not-existing-just-placeholder");
-        when(settings.getSecHubConfigFile()).thenReturn(file);
+    @Test
+    void fullruleset_returned_by_provider_is_in_result() {
+        /* prepare */
+        CommandLineSettings settings = createSettingsMockWithNecessaryParts();
+        when(ruleProvider.fetchFullRuleset(fullRulesetFile)).thenReturn(createOwaspZapFullRuleset());
+        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
-        SecHubWebScanConfiguration config = new SecHubWebScanConfiguration();
-        when(webConfigProvider.getSecHubWebConfiguration(file)).thenReturn(config);
-        return config;
+        /* execute */
+        OwaspZapScanConfiguration result = factoryToTest.create(settings);
+
+        OwaspZapFullRuleset fullRuleset = result.getFullRuleset();
+
+        /* test */
+        verify(ruleProvider, times(1)).fetchFullRuleset(any());
+        assertNotNull(fullRuleset);
+        assertNotNull(fullRuleset.getRules());
+        assertEquals("https://www.zaproxy.org/docs/alerts/", fullRuleset.getOrigin());
+        assertEquals("2022-05-13 14:44:00.635104", fullRuleset.getTimestamp());
+        assertEquals(146, fullRuleset.getRules().size());
+    }
+
+    @Test
+    void rules_to_deactivate_returned_by_provider_is_inside_result() {
+        /* prepare */
+        CommandLineSettings settings = createSettingsMockWithNecessaryParts();
+        when(ruleProvider.fetchDeactivatedRuleReferences(deactivationFile)).thenReturn(createDeactivatedRuleReferences());
+
+        /* execute */
+        OwaspZapScanConfiguration result = factoryToTest.create(settings);
+        DeactivatedRuleReferences deactivatedRuleReferences = result.getDeactivatedRuleReferences();
+
+        /* test */
+        verify(ruleProvider, times(1)).fetchDeactivatedRuleReferences(any());
+        assertNotNull(deactivatedRuleReferences);
+        assertNotNull(deactivatedRuleReferences.getDeactivatedRuleReferences());
+        assertEquals(2, deactivatedRuleReferences.getDeactivatedRuleReferences().size());
+
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = { "", "Cross-Site-Scripting-(DOM-Based)-40026,Timestamp-Disclosure-10096",
+            "Cross-Site-Scripting-(DOM-Based)-40026,Timestamp-Disclosure-10096,Cross-Domain-Misconfiguration-10098" })
+    void rules_to_deactivate_returned_by_env_variable_is_inside_result(String value) {
+        /* prepare */
+        CommandLineSettings settings = createSettingsMockWithNecessaryPartsWithoutRuleFiles();
+        when(environmentVariableReader.readAsString(ZAP_DEACTIVATED_RULE_REFERENCES)).thenReturn(value);
+        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
+
+        String[] arrayToTestExpectedLength = {};
+        if (value != null) {
+            arrayToTestExpectedLength = value.split(",");
+        }
+
+        /* execute */
+        OwaspZapScanConfiguration result = factoryToTest.create(settings);
+        DeactivatedRuleReferences deactivatedRuleReferences = result.getDeactivatedRuleReferences();
+
+        /* test */
+        assertNotNull(deactivatedRuleReferences);
+        assertNotNull(deactivatedRuleReferences.getDeactivatedRuleReferences());
+        assertEquals(arrayToTestExpectedLength.length, deactivatedRuleReferences.getDeactivatedRuleReferences().size());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "", "Cross-Site-Scripting-(DOM-Based)-40026,Timestamp-Disclosure-10096",
+            "Cross-Site-Scripting-(DOM-Based)-40026,Timestamp-Disclosure-10096,Cross-Domain-Misconfiguration-10098" })
+    void rules_to_deactivate_returned_by_command_line_parameter_is_inside_result(String value) {
+        /* prepare */
+        CommandLineSettings settings = createSettingsMockWithNecessaryPartsWithoutRuleFiles();
+        when(settings.getDeactivatedRuleReferences()).thenReturn(value);
+        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
+
+        String[] arrayToTestExpectedLength = {};
+        if (value != null) {
+            arrayToTestExpectedLength = value.split(",");
+        }
+
+        /* execute */
+        OwaspZapScanConfiguration result = factoryToTest.create(settings);
+        DeactivatedRuleReferences deactivatedRuleReferences = result.getDeactivatedRuleReferences();
+
+        /* test */
+        assertNotNull(deactivatedRuleReferences);
+        assertNotNull(deactivatedRuleReferences.getDeactivatedRuleReferences());
+        assertEquals(arrayToTestExpectedLength.length, deactivatedRuleReferences.getDeactivatedRuleReferences().size());
+
+        verify(environmentVariableReader, never()).readAsString(ZAP_DEACTIVATED_RULE_REFERENCES);
+    }
+
+    @ParameterizedTest
+    @NullSource
+    void rules_to_deactivate_returned_by_command_line_is_null_environment_varibale_reader_is_called_as_fallback(String value) {
+        /* prepare */
+        CommandLineSettings settings = createSettingsMockWithNecessaryPartsWithoutRuleFiles();
+        when(settings.getDeactivatedRuleReferences()).thenReturn(value);
+        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
+
+        /* execute */
+        factoryToTest.create(settings);
+
+        /* test */
+        verify(environmentVariableReader, times(1)).readAsString(ZAP_DEACTIVATED_RULE_REFERENCES);
+    }
+
+    @Test
+    void api_definition_file_from_sechub_scan_config_is_inside_result() {
+        /* prepare */
+        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
+        CommandLineSettings settings = createSettingsMockWithNecessaryPartsWithoutRuleFiles();
+
+        File sechubScanConfigFile = new File("src/test/resources/sechub-config-examples/no-auth-with-openapi-file.json");
+        String extractedSourcesPath = "path/to/extracted/sources";
+        when(settings.getSecHubConfigFile()).thenReturn(sechubScanConfigFile);
+        when(environmentVariableReader.readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER)).thenReturn(extractedSourcesPath);
+
+        Path expectedPathToApiDefinitionFile = new File(extractedSourcesPath, "openapi3.json").toPath();
+
+        /* execute */
+        OwaspZapScanConfiguration result = factoryToTest.create(settings);
+
+        /* test */
+        verify(environmentVariableReader, times(1)).readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER);
+        assertEquals(expectedPathToApiDefinitionFile, result.getApiDefinitionFile());
     }
 
     private CommandLineSettings createSettingsMockWithNecessaryParts() {
@@ -332,7 +471,33 @@ class OwaspZapScanConfigurationFactoryTest {
         when(settings.getZapHost()).thenReturn("https://zaphot.example.com");
         when(settings.getZapPort()).thenReturn(815);
         when(settings.getZapApiKey()).thenReturn("secret-key");
+
+        when(settings.getFullRulesetFile()).thenReturn(fullRulesetFile);
+        when(settings.getRulesDeactvationFile()).thenReturn(deactivationFile);
+
         return settings;
+    }
+
+    private CommandLineSettings createSettingsMockWithNecessaryPartsWithoutRuleFiles() {
+        CommandLineSettings settings = mock(CommandLineSettings.class);
+        when(settings.getZapHost()).thenReturn("https://zaphot.example.com");
+        when(settings.getZapPort()).thenReturn(815);
+        when(settings.getZapApiKey()).thenReturn("secret-key");
+
+        when(settings.getFullRulesetFile()).thenReturn(null);
+        when(settings.getRulesDeactvationFile()).thenReturn(null);
+
+        return settings;
+    }
+
+    private OwaspZapFullRuleset createOwaspZapFullRuleset() {
+        RuleProvider provider = new RuleProvider();
+        return provider.fetchFullRuleset(fullRulesetFile);
+    }
+
+    private DeactivatedRuleReferences createDeactivatedRuleReferences() {
+        RuleProvider provider = new RuleProvider();
+        return provider.fetchDeactivatedRuleReferences(deactivationFile);
     }
 
 }

@@ -27,6 +27,10 @@ public class PDSUrlBuilder {
         return buildUrl(API_PDS_JOB, jobUUID.toString(), "result");
     }
 
+    public String buildGetJobMessages(UUID jobUUID) {
+        return buildUrl(API_PDS_JOB, jobUUID.toString(), "messages");
+    }
+
     public String buildUpload(UUID jobUUID, String fileName) {
         return buildUpload(jobUUID.toString(), fileName);
     }

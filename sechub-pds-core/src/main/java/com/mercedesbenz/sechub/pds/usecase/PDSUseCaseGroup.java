@@ -9,6 +9,8 @@ public enum PDSUseCaseGroup {
 
     MONITORING("Monitoring", "Monitoring usecases"),
 
+    AUTO_CLEANUP("Auto cleanup", "Usecases about auto cleanup operations"),
+
     OTHER("Other", "All other use cases"),
 
     ;

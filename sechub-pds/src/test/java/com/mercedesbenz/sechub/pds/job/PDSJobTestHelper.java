@@ -4,6 +4,8 @@ package com.mercedesbenz.sechub.pds.job;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
+
 public class PDSJobTestHelper {
 
     /**

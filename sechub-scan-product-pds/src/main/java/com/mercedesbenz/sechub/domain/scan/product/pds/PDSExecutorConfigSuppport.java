@@ -3,27 +3,52 @@ package com.mercedesbenz.sechub.domain.scan.product.pds;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.adapter.DefaultExecutorConfigSupport;
 import com.mercedesbenz.sechub.commons.core.util.SecHubStorageUtil;
+import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 import com.mercedesbenz.sechub.commons.pds.PDSConfigDataKeyProvider;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.commons.pds.PDSKey;
 import com.mercedesbenz.sechub.commons.pds.PDSKeyProvider;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataProvider;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
+import com.mercedesbenz.sechub.domain.scan.config.ScanMapping;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig;
-import com.mercedesbenz.sechub.sharedkernel.SystemEnvironment;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.sharedkernel.validation.Validation;
 
-public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport implements NetworkTargetProductServerDataProvider {
+public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport implements NetworkTargetProductServerDataProvider, ReuseSecHubStorageInfoProvider {
+
+    private static final Logger LOG = LoggerFactory.getLogger(PDSExecutorConfigSuppport.class);
 
     public static final String PARAM_ID = "pds.executor.config.support";
+
+    private static final List<PDSKeyProvider<?>> keyProvidersForSendingParametersToPDS;
+
+    private PDSExecutorConfigSuppportServiceCollection serviceCollection;
+
+    static {
+        List<PDSKeyProvider<?>> allParameterProviders = new ArrayList<>();
+        allParameterProviders.addAll(Arrays.asList(SecHubProductExecutionPDSKeyProvider.values()));
+        allParameterProviders.addAll(Arrays.asList(PDSConfigDataKeyProvider.values()));
+
+        keyProvidersForSendingParametersToPDS = Collections.unmodifiableList(allParameterProviders);
+
+    }
+
+    public static List<PDSKeyProvider<? extends PDSKey>> getUnmodifiableListOfParameterKeyProvidersSentToPDS() {
+        return keyProvidersForSendingParametersToPDS;
+    }
 
     /**
      * Creates the configuration support and VALIDATE. This will fail when
@@ -34,21 +59,54 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport impl
      * @return support
      * @throws NotAcceptableException when configuration is not valid
      */
-    public static PDSExecutorConfigSuppport createSupportAndAssertConfigValid(ProductExecutorConfig config, SystemEnvironment systemEnvironment) {
-        return new PDSExecutorConfigSuppport(config, systemEnvironment, new PDSProductExecutorMinimumConfigValidation());
+    public static PDSExecutorConfigSuppport createSupportAndAssertConfigValid(ProductExecutorConfig config,
+            PDSExecutorConfigSuppportServiceCollection serviceCollection) {
+        return new PDSExecutorConfigSuppport(config, serviceCollection, new PDSProductExecutorMinimumConfigValidation());
     }
 
-    private PDSExecutorConfigSuppport(ProductExecutorConfig config, SystemEnvironment systemEnvironment, Validation<ProductExecutorConfig> validation) {
-        super(config, systemEnvironment, validation);
+    private PDSExecutorConfigSuppport(ProductExecutorConfig config, PDSExecutorConfigSuppportServiceCollection serviceCollection,
+            Validation<ProductExecutorConfig> validation) {
+        super(config, serviceCollection.getSystemEnvironmentVariableSupport(), validation);
+        this.serviceCollection = serviceCollection;
     }
 
     public Map<String, String> createJobParametersToSendToPDS(SecHubConfiguration secHubConfiguration) {
 
-        Map<String, String> parametersToSend = new TreeMap<>();
-        List<PDSKeyProvider<?>> providers = new ArrayList<>();
-        providers.addAll(Arrays.asList(SecHubProductExecutionPDSKeyProvider.values()));
-        providers.addAll(Arrays.asList(PDSConfigDataKeyProvider.values()));
+        Map<String, String> parametersToSend = createParametersToSendByProviders(keyProvidersForSendingParametersToPDS);
 
+        /* provide SecHub storage when necessary */
+        if (isReusingSecHubStorage()) {
+            String projectId = secHubConfiguration.getProjectId();
+            String sechubStoragePath = SecHubStorageUtil.createStoragePath(projectId);
+
+            parametersToSend.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SECHUB_STORAGE_PATH, sechubStoragePath);
+        }
+        addMappingsAsJobParameter(parametersToSend);
+        return parametersToSend;
+    }
+
+    private void addMappingsAsJobParameter(Map<String, String> parametersToSend) {
+        String useSecHubMappingsEntry = parametersToSend.get(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_MAPPINGS);
+
+        List<String> mappingIds = SimpleStringUtils.createListForCommaSeparatedValues(useSecHubMappingsEntry);
+        for (String mappingId : mappingIds) {
+            if (parametersToSend.containsKey(mappingId)) {
+                LOG.warn("Cannot use mapping id: {} because already used as mapping entry by config. Will skip this one.");
+                continue;
+            }
+            Optional<ScanMapping> scanMapping = serviceCollection.getScanMappingRepository().findById(mappingId);
+            if (scanMapping.isPresent()) {
+                String mappingDataJson = scanMapping.get().getData();
+                parametersToSend.put(mappingId, mappingDataJson);
+            } else {
+                LOG.warn("Configuration wants to use sechub mapping {}, but mapping is not found! Fallback to empty JSON.", mappingId);
+                parametersToSend.put(mappingId, "{}"); // add empty JSON
+            }
+        }
+    }
+
+    private Map<String, String> createParametersToSendByProviders(List<PDSKeyProvider<?>> providers) {
+        Map<String, String> parametersToSend = new TreeMap<>();
         for (String originKey : configuredExecutorParameters.keySet()) {
             PDSKeyProvider<?> foundProvider = null;
             for (PDSKeyProvider<?> provider : providers) {
@@ -63,16 +121,11 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport impl
                 parametersToSend.put(originKey, configuredExecutorParameters.get(originKey));
             }
         }
-        /* provide SecHub storage when necessary */
-        String useSecHubStorage = parametersToSend.get(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE);
-        if (Boolean.parseBoolean(useSecHubStorage)) {
-            String projectId = secHubConfiguration.getProjectId();
-            String sechubStoragePath = SecHubStorageUtil.createStoragePath(projectId);
-
-            parametersToSend.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SECHUB_STORAGE_PATH, sechubStoragePath);
-        }
-
         return parametersToSend;
+    }
+
+    public boolean isReusingSecHubStorage() {
+        return getParameterBooleanValue(PDSConfigDataKeyProvider.PDS_CONFIG_USE_SECHUB_STORAGE);
     }
 
     public String getPDSProductIdentifier() {
@@ -189,6 +242,10 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport impl
     @Override
     public boolean hasUntrustedCertificateWhenInternetTarget() {
         return isTrustAllCertificatesEnabled();
+    }
+
+    public boolean isPDSScriptTrustingAllCertificates() {
+        return getParameterBooleanValue(PDSConfigDataKeyProvider.PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED);
     }
 
 }

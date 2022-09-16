@@ -6,9 +6,9 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.mercedesbenz.sechub.pds.job.PDSJobStatusState;
-import com.mercedesbenz.sechub.pds.util.PDSLocalDateTimeDeserializer;
-import com.mercedesbenz.sechub.pds.util.PDSLocalDateTimeSerializer;
+import com.mercedesbenz.sechub.commons.model.LocalDateTimeDeserializer;
+import com.mercedesbenz.sechub.commons.model.LocalDateTimeSerializer;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 
 public class PDSExecutionJobInQueueStatusEntry {
 
@@ -20,12 +20,12 @@ public class PDSExecutionJobInQueueStatusEntry {
 
     public PDSJobStatusState state;
 
-    @JsonDeserialize(using = PDSLocalDateTimeDeserializer.class)
-    @JsonSerialize(using = PDSLocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     public LocalDateTime created;
 
-    @JsonDeserialize(using = PDSLocalDateTimeDeserializer.class)
-    @JsonSerialize(using = PDSLocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     public LocalDateTime started;
 
 }

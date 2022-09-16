@@ -20,6 +20,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,10 +30,10 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.pds.PDSMustBeDocumented;
 import com.mercedesbenz.sechub.pds.job.PDSJob;
 import com.mercedesbenz.sechub.pds.job.PDSJobRepository;
-import com.mercedesbenz.sechub.pds.job.PDSJobStatusState;
 import com.mercedesbenz.sechub.pds.job.PDSJobTransactionService;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesMonitoringStatus;
@@ -90,6 +91,16 @@ public class PDSExecutionService {
         workers = Executors.newFixedThreadPool(workerThreadCount);
 
         scheduler.scheduleAtFixedRate(watcher, 300, 1000, TimeUnit.MILLISECONDS);
+    }
+
+    @PreDestroy
+    protected void preDestroy() {
+        /*
+         * The field "scheduler" is a `java.util.concurrent.ScheduledExecutorService`
+         * and not a spring component. Because of this, we listen here to the spring
+         * boot destroy signal and shutdown the executor service by our own:
+         */
+        scheduler.shutdown();
     }
 
     @UseCaseUserCancelsJob(@PDSStep(name = "service call", description = "job execution will be canceled in queue", number = 3))

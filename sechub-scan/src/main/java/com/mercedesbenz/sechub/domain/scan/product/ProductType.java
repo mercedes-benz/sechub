@@ -9,6 +9,8 @@ public enum ProductType {
 
     INFRASCAN,
 
+    LICENSESCAN,
+
     ANALYSE,
 
     REPORT_COLLECTOR,

@@ -12,8 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.developertools.admin.ui.action.ActionSupport;
+import com.mercedesbenz.sechub.pds.tools.handler.ConsoleHandler;
 
-public class OutputUI {
+public class OutputUI implements ConsoleHandler {
 
     private static final String OUTPUT_FONT_SETTINGS = ConfigurationSetup.getOutputFontSettings("courier 10");
     private JPanel panel;
@@ -40,10 +41,6 @@ public class OutputUI {
         outputTextArea.append(text);
         outputTextArea.append("\n");
         outputTextArea.setCaretPosition(outputTextArea.getText().length());
-    }
-
-    public void error(String message) {
-        error(message, null);
     }
 
     public void error(String message, Throwable t) {

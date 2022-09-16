@@ -52,7 +52,7 @@ PODs* _(means this is a shared kernel / bottle neck but necessary)_
 
 ==== Server Application
 
-{sechub} server is a written in `Java` and needs at least `JDK 8`.
+{sechub} server is a written in `Java` and needs at least `JDK 11`.
 
 You can configure {sechub} server by system properties or also by  environment
 variables.
@@ -151,6 +151,14 @@ accidently add the credentials to your repository.
 ====
 
 ====== Logging
+*Default output*
 
 {sechub} uses per default logging to stdout, so you just need to use something like
 `fluentd` PODs to gather log output.
+
+*Logstash support*
+
+When you want to use `logstash` (e.g. when using `ElasticSearch` or `OpenSearch`) you just have to set the environment variable 
+`LOGGING_TYPE` to `LOGSTASH_JSON` before server starts. 
+
+

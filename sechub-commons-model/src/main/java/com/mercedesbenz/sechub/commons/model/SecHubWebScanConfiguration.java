@@ -5,8 +5,10 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SecHubWebScanConfiguration {
 
     public static final String PROPERTY_URI = "uri";
@@ -18,19 +20,19 @@ public class SecHubWebScanConfiguration {
     Optional<WebLoginConfiguration> login = Optional.empty();
     Optional<WebScanDurationConfiguration> maxScanDuration = Optional.empty();
 
+    Optional<SecHubWebScanApiConfiguration> api = Optional.empty();
+
     URI uri;
 
     Optional<List<String>> includes = Optional.empty();
     Optional<List<String>> excludes = Optional.empty();
 
-    Optional<SecHubOpenAPIConfiguration> openApi = Optional.empty();
-
-    public Optional<SecHubOpenAPIConfiguration> getOpenApi() {
-        return openApi;
-    }
-
     public URI getUri() {
         return uri;
+    }
+
+    public Optional<SecHubWebScanApiConfiguration> getApi() {
+        return api;
     }
 
     public Optional<WebLoginConfiguration> getLogin() {

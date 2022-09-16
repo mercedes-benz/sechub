@@ -61,7 +61,7 @@ class OwaspZapScanResolverTest {
         ClientApi clientApi = mock(ClientApi.class);
 
         /* execute + test */
-        assertThrows(MustExitRuntimeException.class, () -> resolverToTest.resolveScanImplementation(scanConfig, clientApi));
+        assertThrows(ZapWrapperRuntimeException.class, () -> resolverToTest.resolveScanImplementation(scanConfig, clientApi));
     }
 
     @ParameterizedTest
@@ -73,7 +73,7 @@ class OwaspZapScanResolverTest {
         ClientApi clientApi = mock(ClientApi.class);
 
         /* execute + test */
-        assertThrows(MustExitRuntimeException.class, () -> resolverToTest.resolveScanImplementation(scanConfig, clientApi));
+        assertThrows(ZapWrapperRuntimeException.class, () -> resolverToTest.resolveScanImplementation(scanConfig, clientApi));
     }
 
 }

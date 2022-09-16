@@ -13,16 +13,15 @@ import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.pds.ExecutionPDSKey;
 import com.mercedesbenz.sechub.commons.pds.PDSConfigDataKeyProvider;
+import com.mercedesbenz.sechub.commons.pds.PDSLauncherScriptEnvironmentConstants;
+import com.mercedesbenz.sechub.pds.config.PDSProductParameterDefinition;
 import com.mercedesbenz.sechub.pds.config.PDSProductSetup;
-import com.mercedesbenz.sechub.pds.config.PDSProdutParameterDefinition;
 import com.mercedesbenz.sechub.pds.config.PDSProdutParameterSetup;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
 import com.mercedesbenz.sechub.pds.job.PDSJobConfiguration;
 
 @Service
 public class PDSExecutionEnvironmentService {
-
-    public static final String CONSTANT_SECHUB_JOB_UUID = "SECHUB_JOB_UUID";
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSExecutionEnvironmentService.class);
 
@@ -51,13 +50,13 @@ public class PDSExecutionEnvironmentService {
     }
 
     private void addSecHubJobUUIDAsEnvironmentEntry(PDSJobConfiguration config, Map<String, String> map) {
-        map.put(CONSTANT_SECHUB_JOB_UUID, fetchSecHubJobUUIDasString(config));
+        map.put(PDSLauncherScriptEnvironmentConstants.SECHUB_JOB_UUID, fetchSecHubJobUUIDasString(config));
     }
 
     private String fetchSecHubJobUUIDasString(PDSJobConfiguration config) {
         UUID sechubJobUUID = config.getSechubJobUUID();
         if (sechubJobUUID == null) {
-            LOG.error("No SecHub job UUID found, environment variable: {} will be empty", CONSTANT_SECHUB_JOB_UUID);
+            LOG.error("No SecHub job UUID found, environment variable: {} will be empty", PDSLauncherScriptEnvironmentConstants.SECHUB_JOB_UUID);
             return "";
         }
         return sechubJobUUID.toString();
@@ -66,26 +65,33 @@ public class PDSExecutionEnvironmentService {
     private void addJobParamDataWhenAccepted(PDSProductSetup productSetup, PDSExecutionParameterEntry jobParam, Map<String, String> map) {
         PDSProdutParameterSetup params = productSetup.getParameters();
 
-        boolean validParam = false;
+        boolean acceptedParameter = false;
+        boolean wellknown = false;
         for (PDSConfigDataKeyProvider provider : PDSConfigDataKeyProvider.values()) {
             ExecutionPDSKey key = provider.getKey();
             if (!key.getId().equals(jobParam.getKey())) {
                 continue;
             }
-            validParam = key.isAvailableInsideScript();
+            wellknown = true;
+            acceptedParameter = key.isAvailableInsideScript();
+            break;
         }
-        validParam = validParam || isJobParameterAcceptedByPDSServerConfiguration(jobParam, params.getMandatory());
-        validParam = validParam || isJobParameterAcceptedByPDSServerConfiguration(jobParam, params.getOptional());
+        acceptedParameter = acceptedParameter || isJobParameterAcceptedByPDSServerConfiguration(jobParam, params.getMandatory());
+        acceptedParameter = acceptedParameter || isJobParameterAcceptedByPDSServerConfiguration(jobParam, params.getOptional());
 
-        if (validParam) {
+        if (acceptedParameter) {
             map.put(converter.convertKeyToEnv(jobParam.getKey()), jobParam.getValue());
         } else {
-            LOG.warn("Ignored invalid job parameter key {} for product id:{} !", jobParam.getKey(), productSetup.getId());
+            if (wellknown) {
+                LOG.debug("Wellknown parameter found - but not available inside script: {}", jobParam.getKey());
+            } else {
+                LOG.warn("Ignored invalid job parameter key: {} for product id: {} !", jobParam.getKey(), productSetup.getId());
+            }
         }
     }
 
-    private boolean isJobParameterAcceptedByPDSServerConfiguration(PDSExecutionParameterEntry jobParam, List<PDSProdutParameterDefinition> definitions) {
-        for (PDSProdutParameterDefinition paramDef : definitions) {
+    private boolean isJobParameterAcceptedByPDSServerConfiguration(PDSExecutionParameterEntry jobParam, List<PDSProductParameterDefinition> definitions) {
+        for (PDSProductParameterDefinition paramDef : definitions) {
             if (paramDef.getKey().equals(jobParam.getKey())) {
                 return true;
             }

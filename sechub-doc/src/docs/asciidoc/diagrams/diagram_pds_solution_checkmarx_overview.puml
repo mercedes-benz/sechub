@@ -1,0 +1,30 @@
+' SPDX-License-Identifier: MIT
+@startuml
+
+node "PDS (scripting process)" as checkmarx_scripting {
+    component "Checkmarx launcher script" as checkmarx_launcher_script
+    
+    node "sechub-wrapper-checkmarx" as sechub_checkmarx_wrapper_jar{
+    
+        interface "Adapter meta\ndata callback" as pds_metadata_callback
+        component CheckmarxAdapter as checkmarx_adapter
+        
+    }
+    
+}
+
+!include module_pds_workspace_metadata.puml
+
+checkmarx_adapter --> pds_metadata_callback
+
+checkmarx_launcher_script --> sechub_checkmarx_wrapper_jar : starts a new JVM running the wrapper
+
+pds_metadata_callback <-> pds_workspace_metadata_location
+
+note top of pds_metadata_callback
+   The implementation does write and read
+   adapter meta data from and into workspace
+   meta data text file (as JSON).
+end note
+
+@enduml 

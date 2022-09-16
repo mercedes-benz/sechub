@@ -2,7 +2,8 @@
 [![Build status](https://github.com/mercedes-benz/sechub/workflows/Java%20&%20Go%20CI/badge.svg)](https://github.com/mercedes-benz/sechub/actions?workflow=Java+%26+Go+CI)
 
 # SecHub
-![SecHub Logo](https://github.com/mercedes-benz/sechub/blob/master/sechub-doc/src/docs/asciidoc/images/sechub-logo.png)
+
+!["Eugen" - the SecHub mascot](sechub-doc/src/docs/asciidoc/images/sechub-logo.png)
 
 ## Intended Usage
 
@@ -25,7 +26,7 @@ If you want to contribute to this project, please read the [contributing guide](
 
 ## Code of Conduct
 
-Please read our [Code of Conduct](https://github.com/mercedes-benz/daimler-foss/blob/master/CODE_OF_CONDUCT.md) as it is our base for interaction.
+Please read our [Code of Conduct](https://github.com/mercedes-benz/foss/blob/master/CODE_OF_CONDUCT.md) as it is our base for interaction.
 
 ## License
 
@@ -33,7 +34,7 @@ This project is licensed under the [MIT LICENSE](LICENSE).
 
 ## Provider Information
 
-Please visit <https://www.daimler-tss.com/en/imprint/> for information on the provider.
+Please visit <https://www.mercedes-benz-techinnovation.com/en/imprint/> for information on the provider.
 
 Notice: Before you use the program in productive use, please take all necessary precautions,
 e.g. testing and verifying the program with regard to your specific use.

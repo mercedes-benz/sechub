@@ -25,7 +25,7 @@ public class OwaspZapWrapperCLI {
             LOG.info("Starting the scan.");
             startExecution(scanConfig);
 
-        } catch (MustExitRuntimeException e) {
+        } catch (ZapWrapperRuntimeException e) {
             LOG.error("Must exit with exit code {} because: {}.", e.getExitCode().getExitCode(), e.getMessage(), e);
             System.exit(e.getExitCode().getExitCode());
         }
@@ -38,8 +38,8 @@ public class OwaspZapWrapperCLI {
         try {
             scanConfig = parser.parse(args);
         } catch (OwaspZapWrapperCommandLineParserException e) {
-            LOG.error("An error occurred while parsing the command line arguments: ", e.getCause());
-            throw new MustExitRuntimeException("Scan configuration was invalid.", e, MustExitCode.COMMANDLINE_CONFIGURATION_INVALID);
+            LOG.error("An error occurred while parsing the command line arguments: ", e);
+            throw new ZapWrapperRuntimeException("Scan configuration was invalid.", e, ZapWrapperExitCode.COMMANDLINE_CONFIGURATION_INVALID);
         }
         return scanConfig;
     }

@@ -1,0 +1,154 @@
+// SPDX-License-Identifier: MIT
+/* ============================================================================
+   Library definitions for project 'sechub'
+   ============================================================================
+   Define here library dependencies and use them inside your build.gradle
+   files in sub projects.
+
+   Included from: "${rootProject.projectDir}/build.gradle"
+   ============================================================================
+
+ */
+apply from: "${rootProject.projectDir}/gradle/spring_boot_dependagen.gradle"
+
+ext {
+
+   /* 
+    * About this file:
+    * ---------------- 
+    * This is our CENTRAL library setup.
+    * Every subproject does reuse this setup - if you have additional libraries to add,
+    * make definitions according to existing ones.
+    * 
+    * We always change versions in variables of `libraryVersion` array.
+    * 
+    * Remark: You can find all these dependencies online at https://mvnrepository.com/ 
+    */
+   libraryVersion = [
+      /* 
+       * Every version of each additional library NOT being managed by spring boot dependency 
+       * management is defined here:
+       */                                     
+      dom4j:                                   "2.1.3",
+      jsoup:                                   "1.15.2",
+      re2j:                                    "1.7",
+      logstash_logback_encoder:                "7.2",
+      aws_java_sdk_s3:                         "1.12.266",
+      postgresql:                              "42.4.2",
+                                              
+      /* JDK > 9 needs these ones: */         
+      jaxb_api:                                "2.3.1",
+      activation:                              "1.1.1",
+      xml_bind:                                "2.2.0",
+                                              
+      /* apache http components*/             
+      apache_httpcomponents_client:            "4.5.13",
+                                             
+      /* apache commons */                   
+      apache_commons_cli:                      "1.5.0",
+      apache_commons_io:                       "2.11.0",
+      apache_commons_validator:                "1.7",
+      apache_commons_fileupload:               "1.4",
+      apache_commons_compress:                 "1.21",
+                 
+      /* testing */                            
+      junit4:                                  "4.13.2",
+      wiremock:                                "2.27.2",
+      s3mock:                                  "2.4.13",
+
+      /* gradle plugins */      
+      dependency_check:                        "7.1.1",
+      grgit:                                   "4.0.1",
+      
+      /* documentation */
+      asciidoctor_j:                           "2.5.2",
+      asciidoctor_j_diagram:                   "2.2.1",
+      // openapi3-generator, releases see https://github.com/ePages-de/restdocs-api-spec/releases
+      restDocsApiSpec:                         "0.16.2",
+      
+      /* Owasp Zap wrapper */
+      owaspzap_client_api:                     "1.10.0",
+      jcommander:                              "1.82",
+    
+   ]    
+   
+   library = [
+        /* spring */
+        springboot_starter_thymeleaf:          "org.springframework.boot:spring-boot-starter-thymeleaf",
+
+        springboot_devtoolssf:                 "org.springframework.boot:spring-boot-devtools",
+
+        springboot_starter_data_jpa:           "org.springframework.boot:spring-boot-starter-data-jpa",
+        springboot_starter_data_rest:          "org.springframework.boot:spring-boot-starter-data-rest",
+        springboot_starter_security :          "org.springframework.boot:spring-boot-starter-security",
+        springboot_starter_web:                "org.springframework.boot:spring-boot-starter-web",
+        springboot_starter_test:               "org.springframework.boot:spring-boot-starter-test",
+        springboot_starter_batch:              "org.springframework.boot:spring-boot-starter-batch",
+        springboot_starter_json:               "org.springframework.boot:spring-boot-starter-json",
+        springboot_starter_actuator:           "org.springframework.boot:spring-boot-starter-actuator",
+        springboot_starter_mail:               "org.springframework.boot:spring-boot-starter-mail",
+        springboot_starter_validation:         "org.springframework.boot:spring-boot-starter-validation",
+
+        springframework_restdocs:              "org.springframework.restdocs:spring-restdocs-mockmvc",
+        springframework_security_test:         "org.springframework.security:spring-security-test", 
+        springframework_web:                   "org.springframework:spring-web",
+
+
+        /* additional (1): version by spring boot dependency management - because inside spring application */
+        database_h2:                           "com.h2database:h2",
+        // here we do NOT set a library version - will be handled automatically by spring boot dependency management
+        flyway:                                "org.flywaydb:flyway-core",
+
+
+        /* additional (2): version based on other libraries used by spring boot */      
+        mockito_inline:                        "org.mockito:mockito-inline:${spring_boot_dependency_version.mockito_core}",
+        jackson_jr_all:                        "com.fasterxml.jackson.jr:jackson-jr-all:${spring_boot_dependency_version.jackson_core}",
+
+
+        /* addtional (3) : additional stuff defined explicit by sechub sub projects*/
+        database_postgres:                     "org.postgresql:postgresql:${libraryVersion.postgresql}",
+        amazonaws_sdk:                         "com.amazonaws:aws-java-sdk-s3:${libraryVersion.aws_java_sdk_s3}",
+        logstashLogbackEncoder        :        "net.logstash.logback:logstash-logback-encoder:${libraryVersion.logstash_logback_encoder}",
+
+        apache_httpcomponents_client:          "org.apache.httpcomponents:httpclient:${libraryVersion.apache_httpcomponents_client}",
+
+        apache_commons_validator:              "commons-validator:commons-validator:${libraryVersion.apache_commons_validator}",
+        apache_commons_io:                     "commons-io:commons-io:${libraryVersion.apache_commons_io}",
+        apache_commons_cli:                    "commons-cli:commons-cli:${libraryVersion.apache_commons_cli}",
+        apache_commons_fileupload:             "commons-fileupload:commons-fileupload:${libraryVersion.apache_commons_fileupload}",
+        apache_commons_compress:               "org.apache.commons:commons-compress:${libraryVersion.apache_commons_compress}",
+        
+        // JDK 10 build problems handling
+        // https://stackoverflow.com/questions/43574426/how-to-resolve-java-langnoclassdeffounderror-javax-xml-bind-jaxbexception-in-j
+        jdk_missing_jaxb_api:                  "javax.xml.bind:jaxb-api:${libraryVersion.jaxb_api}",
+        jdk_missing_activation:                "javax.activation:activation:${libraryVersion.activation}",
+        jdk_missing_jaxb_impl:                 "javax.xml.bind:com.springsource.javax.xml.bind:${libraryVersion.xml_bind}",
+        
+        // our integration tests (and some old unit tests) still use junit 4     
+        junit4:                                "junit:junit:${libraryVersion.junit4}",
+        wiremock:                              "com.github.tomakehurst:wiremock-standalone:${libraryVersion.wiremock}",
+        s3mock:                                "com.adobe.testing:s3mock:${libraryVersion.s3mock}",
+        s3mock_junit4:                         "com.adobe.testing:s3mock-junit4:${libraryVersion.s3mock}",
+        /*
+         * RE2 is a regular expression engine that runs in time linear in the size of the input.
+         * It's the default RegularExpression engine of Go
+         * 
+         * Link: https://github.com/google/re2j
+         */
+        google_re2j:                           "com.google.re2j:re2j:${libraryVersion.re2j}",
+        
+        /* epages - see https://github.com/ePages-de/restdocs-api-spec */
+        epages_restdoc_api_spec_mockmvc:       "com.epages:restdocs-api-spec-mockmvc:${libraryVersion.restDocsApiSpec}",
+        
+        /* jsoup: Java HTML Parser - see: https://github.com/jhy/jsoup */
+        jsoup:                                 "org.jsoup:jsoup:${libraryVersion.jsoup}",
+        
+        dom4j:                                 "org.dom4j:dom4j:${libraryVersion.dom4j}",
+        
+        owaspzap_client_api:                   "org.zaproxy:zap-clientapi:${libraryVersion.owaspzap_client_api}",
+         
+        jcommander:                            "com.beust:jcommander:${libraryVersion.jcommander}",
+   ]
+   
+
+}

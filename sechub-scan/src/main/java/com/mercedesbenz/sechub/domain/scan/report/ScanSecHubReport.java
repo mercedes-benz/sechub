@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.mercedesbenz.sechub.commons.core.MustBeKeptStable;
 import com.mercedesbenz.sechub.commons.model.JSONConverterException;
 import com.mercedesbenz.sechub.commons.model.JSONable;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
@@ -19,7 +20,6 @@ import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
 import com.mercedesbenz.sechub.commons.model.SecHubResult;
 import com.mercedesbenz.sechub.commons.model.SecHubStatus;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
-import com.mercedesbenz.sechub.sharedkernel.MustBeKeptStable;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
 
 @JsonIgnoreProperties(ignoreUnknown = true)

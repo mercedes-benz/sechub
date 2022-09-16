@@ -41,7 +41,7 @@ public class TestProject {
 
             for (IntegrationTestMockMode mode : IntegrationTestMockMode.values()) {
                 if (mode.isTargetUsableAsWhitelistEntry()) {
-                    whiteListUrls.add(mode.getTarget());
+                    whiteListUrls.add(mode.getMockDataIdentifier());
                 }
             }
         }

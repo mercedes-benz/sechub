@@ -7,8 +7,9 @@ import java.util.Map;
 import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 import com.mercedesbenz.sechub.integrationtest.api.TestUser;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper.RestHelperTarget;
+import com.mercedesbenz.sechub.test.PDSTestURLBuilder;
+import com.mercedesbenz.sechub.test.SecHubTestURLBuilder;
 import com.mercedesbenz.sechub.test.TestPortProvider;
-import com.mercedesbenz.sechub.test.TestURLBuilder;
 
 /**
  * Test context class. Contains initial data like port, hostname etc.
@@ -28,9 +29,9 @@ public class IntegrationTestContext {
     private int port = TestPortProvider.DEFAULT_INSTANCE.getIntegrationTestServerPort();
     private int pdsPort = TestPortProvider.DEFAULT_INSTANCE.getIntegrationTestPDSPort();
 
-    private TestURLBuilder urlBuilder;
+    private SecHubTestURLBuilder urlBuilder;
 
-    private TestURLBuilder pdsUrlBuilder;
+    private PDSTestURLBuilder pdsUrlBuilder;
 
     private TestUser superAdminUser = TestAPI.SUPER_ADMIN;
 
@@ -61,16 +62,16 @@ public class IntegrationTestContext {
         this.pdsPort = pdsPort;
     }
 
-    public TestURLBuilder getUrlBuilder() {
+    public SecHubTestURLBuilder getUrlBuilder() {
         if (urlBuilder == null) {
-            urlBuilder = new TestURLBuilder("https", port, hostname);
+            urlBuilder = new SecHubTestURLBuilder("https", port, hostname);
         }
         return urlBuilder;
     }
 
-    public TestURLBuilder getPDSUrlBuilder() {
+    public PDSTestURLBuilder getPDSUrlBuilder() {
         if (pdsUrlBuilder == null) {
-            pdsUrlBuilder = new TestURLBuilder("https", pdsPort, hostname);
+            pdsUrlBuilder = new PDSTestURLBuilder("https", pdsPort, hostname);
         }
         return pdsUrlBuilder;
     }

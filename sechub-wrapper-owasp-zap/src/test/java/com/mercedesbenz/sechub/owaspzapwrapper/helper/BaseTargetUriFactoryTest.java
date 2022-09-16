@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.owaspzapwrapper.helper;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.net.URI;
 
@@ -12,7 +11,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullSource;
 
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitRuntimeException;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 
 class BaseTargetUriFactoryTest {
 
@@ -29,7 +28,7 @@ class BaseTargetUriFactoryTest {
     void throws_mustexitruntimeexception_for_invalid_urls(String url) {
 
         /* test */
-        assertThrows(MustExitRuntimeException.class, () -> factoryToTest.create(url));
+        assertThrows(ZapWrapperRuntimeException.class, () -> factoryToTest.create(url));
     }
 
     @Test

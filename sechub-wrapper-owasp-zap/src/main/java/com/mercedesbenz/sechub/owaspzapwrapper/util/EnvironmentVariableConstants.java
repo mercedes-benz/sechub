@@ -13,4 +13,8 @@ public class EnvironmentVariableConstants {
 
     public static final String PROXY_PORT_ENV_VARIABLE_NAME = "PROXY_PORT";
 
+    public static final String ZAP_DEACTIVATED_RULE_REFERENCES = "ZAP_DEACTIVATED_RULE_REFERENCES";
+
+    public static final String PDS_JOB_EXTRACTED_SOURCES_FOLDER = "PDS_JOB_EXTRACTED_SOURCES_FOLDER";
+
 }

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.integrationtest.api;
 
 import org.springframework.web.client.HttpStatusCodeException;

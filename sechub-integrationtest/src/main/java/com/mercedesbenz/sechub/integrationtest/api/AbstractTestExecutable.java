@@ -9,12 +9,13 @@ public abstract class AbstractTestExecutable implements TestExecutable {
     private Class<? extends Exception>[] handledExceptions;
     private long timeToWaitInMillis;
 
-    @SuppressWarnings("unchecked")
+    @SafeVarargs
     public AbstractTestExecutable(TestUser user, int timeoutInSeconds, Class<? extends Exception>... handledExceptions) {
         this(user, timeoutInSeconds, 300, handledExceptions);
     }
 
     @SuppressWarnings("unchecked")
+    @SafeVarargs
     public AbstractTestExecutable(TestUser user, int timeoutInSeconds, long timeToWaitInMillis, Class<? extends Exception>... handledExceptions) {
         this.user = user;
         this.timeoutInSeconds = timeoutInSeconds;

@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.rules.Timeout;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.Severity;
@@ -70,6 +71,8 @@ public class PDSWebScanJobScenario12IntTest {
         // finding 1: contains target url and more
         // finding 2: contains sechub configuration (only web parts)
         String descriptionFinding2WithDataInside = assertReport(sechubReport).
+            enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
+            hasMessages(3).
             finding(0).
                 hasSeverity(Severity.INFO).
                 hasDescriptionContaining("PRODUCT2_LEVEL=4711").// this comes from custom mandatory parameter from PDS config
@@ -80,7 +83,6 @@ public class PDSWebScanJobScenario12IntTest {
 
         String returndPdsScanConfigurationJSON =
                  descriptionFinding2WithDataInside.substring("PDS_SCAN_CONFIGURATION=".length());
-        /* @formatter:on */
 
         // the returned JSON must be a valid sechub scan configuration
         SecHubScanConfiguration returnedConfiguration = SecHubScanConfiguration.createFromJSON(returndPdsScanConfigurationJSON);
@@ -93,6 +95,15 @@ public class PDSWebScanJobScenario12IntTest {
         assertNotNull(webConfiguration.getUri());
         assertEquals(JSONConverter.get().toJSON(configuration, true), JSONConverter.get().toJSON(returnedConfiguration, true));
 
+        /* additional testing : messages*/
+
+        assertJobStatus(project, jobUUID).
+            enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
+            hasMessage(SecHubMessageType.INFO,"info from webscan by PDS for sechub job uuid: "+jobUUID).
+            hasMessage(SecHubMessageType.WARNING,"warning from webscan by PDS for sechub job uuid: "+jobUUID).
+            hasMessage(SecHubMessageType.ERROR,"error from webscan by PDS for sechub job uuid: "+jobUUID);
+
+        /* @formatter:on */
     }
 
 }

@@ -12,6 +12,9 @@ public class TestConstants {
     public static final String MANUAL_TEST_BY_DEVELOPER = "sechub.manual.test.by.developer";
 
     public static final String DESCRIPTION_DISABLED_BECAUSE_A_MANUAL_TEST_FOR_GENERATION = "This test can be used by developers to generate content. "
-            + "Not necesary for normal CI tests. A developer can run the 'test' to produce very fast generated outtput, "
+            + "Not necessary for normal CI tests. A developer can run the 'test' to produce very fast generated outtput, "
             + "without starting the Spring Boot application or any Gradle task(so much faster)";
+
+    public final static String SOURCECODE_ZIP = "sourcecode.zip";
+    public final static String BINARIES_TAR = "binaries.tar";
 }

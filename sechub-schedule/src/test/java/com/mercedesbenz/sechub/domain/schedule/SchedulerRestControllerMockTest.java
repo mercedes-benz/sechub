@@ -1,18 +1,13 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule;
 
-import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.io.InputStream;
 import java.time.LocalDateTime;
@@ -75,7 +70,10 @@ public class SchedulerRestControllerMockTest {
     private SchedulerGetJobStatusService mockedScheduleJobStatusService;
 
     @MockBean
-    private SchedulerUploadService mockedUploadService;
+    private SchedulerSourcecodeUploadService mockedSourcecodeUploadService;
+
+    @MockBean
+    private SchedulerBinariesUploadService mockedBinariesUploadService;
 
     @MockBean
     private SecHubConfigurationValidator sechubConfigurationValidator;
@@ -180,6 +178,7 @@ public class SchedulerRestControllerMockTest {
 
         InputStream inputStreamTo = ScheduleTestFileSupport.getTestfileSupport().getInputStreamTo("upload/zipfile_contains_only_test1.txt.zip");
         MockMultipartFile file1 = new MockMultipartFile("file", inputStreamTo);
+
         /* execute + test @formatter:off */
         this.mockMvc.perform(
         		multipart(https(PORT_USED).
@@ -188,7 +187,7 @@ public class SchedulerRestControllerMockTest {
         			param("checkSum", "mychecksum")
         		);
 
-        verify(mockedUploadService).uploadSourceCode(PROJECT1_ID, randomUUID, file1, "mychecksum");
+        verify(mockedSourcecodeUploadService).uploadSourceCode(PROJECT1_ID, randomUUID, file1, "mychecksum");
         /* @formatter:on */
     }
 

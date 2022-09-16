@@ -2,9 +2,11 @@
 package com.mercedesbenz.sechub.restdoc;
 
 import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
@@ -47,6 +49,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseAdminListsAllRun
 import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseAdminRestartsJob;
 import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseAdminRestartsJobHard;
 import com.mercedesbenz.sechub.test.ExampleConstants;
+import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
@@ -55,7 +58,7 @@ import com.mercedesbenz.sechub.test.TestPortProvider;
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
-public class JobAdministrationRestControllerRestDocTest {
+public class JobAdministrationRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
 
     private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
@@ -96,11 +99,10 @@ public class JobAdministrationRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
-				get(apiEndpoint).
-				contentType(MediaType.APPLICATION_JSON_VALUE)
-				)./*
-		andDo(print()).
-				*/
+					get(apiEndpoint).
+					contentType(MediaType.APPLICATION_JSON_VALUE).
+					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+				).
 		andExpect(status().isOk()).
 		andDo(defineRestService().
                 with().
@@ -109,14 +111,17 @@ public class JobAdministrationRestControllerRestDocTest {
                     responseSchema(OpenApiSchema.RUNNING_JOB_LIST.getSchema()).
                 and().
                 document(
-                            responseFields(
-                                    fieldWithPath(inArray(JobInformation.PROPERTY_JOB_UUID)).description("The uuid of the running job"),
-                                    fieldWithPath(inArray(JobInformation.PROPERTY_PROJECT_ID)).description("The name of the project the job is running for"),
-                                    fieldWithPath(inArray(JobInformation.PROPERTY_OWNER)).description("Owner of the job - means user which triggered it"),
-                                    fieldWithPath(inArray(JobInformation.PROPERTY_STATUS)).description("A status information "),
-                                    fieldWithPath(inArray(JobInformation.PROPERTY_SINCE)).description("Timestamp since when job has been started"),
-                                    fieldWithPath(inArray(JobInformation.PROPERTY_CONFIGURATION)).description("Configuration used for this job")
-                         )
+	                		requestHeaders(
+	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                		),
+	                        responseFields(
+	                                    fieldWithPath(inArray(JobInformation.PROPERTY_JOB_UUID)).description("The uuid of the running job"),
+	                                    fieldWithPath(inArray(JobInformation.PROPERTY_PROJECT_ID)).description("The name of the project the job is running for"),
+	                                    fieldWithPath(inArray(JobInformation.PROPERTY_OWNER)).description("Owner of the job - means user which triggered it"),
+	                                    fieldWithPath(inArray(JobInformation.PROPERTY_STATUS)).description("A status information "),
+	                                    fieldWithPath(inArray(JobInformation.PROPERTY_SINCE)).description("Timestamp since when job has been started"),
+	                                    fieldWithPath(inArray(JobInformation.PROPERTY_CONFIGURATION)).description("Configuration used for this job")
+	                         )
 				));
 
 		/* @formatter:on */
@@ -133,11 +138,10 @@ public class JobAdministrationRestControllerRestDocTest {
 		UUID jobUUID = UUID.randomUUID();
 
 		this.mockMvc.perform(
-				post(apiEndpoint, jobUUID).
-				contentType(MediaType.APPLICATION_JSON_VALUE)
-				)./*
-		andDo(print()).
-				*/
+					post(apiEndpoint, jobUUID).
+					contentType(MediaType.APPLICATION_JSON_VALUE).
+					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+				).
 		andExpect(status().isOk()).
 		andDo(defineRestService().
                 with().
@@ -145,9 +149,12 @@ public class JobAdministrationRestControllerRestDocTest {
                     tag(RestDocFactory.extractTag(apiEndpoint)).
                 and().
                 document(
-                            pathParameters(
-                                    parameterWithName(JOB_UUID.paramName()).description("The job UUID")
-                         )
+                		requestHeaders(
+                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+                		),
+                        pathParameters(
+                                parameterWithName(JOB_UUID.paramName()).description("The job UUID")
+                        )
 		        ));
 
 		/* @formatter:on */
@@ -164,11 +171,10 @@ public class JobAdministrationRestControllerRestDocTest {
         UUID jobUUID = UUID.randomUUID();
 
         this.mockMvc.perform(
-                post(apiEndpoint, jobUUID).
-                contentType(MediaType.APPLICATION_JSON_VALUE)
-                )./*
-        andDo(print()).
-                */
+	                post(apiEndpoint, jobUUID).
+	                contentType(MediaType.APPLICATION_JSON_VALUE).
+	                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                ).
         andExpect(status().isOk()).
         andDo(defineRestService().
                 with().
@@ -176,7 +182,10 @@ public class JobAdministrationRestControllerRestDocTest {
                     tag(RestDocFactory.extractTag(apiEndpoint)).
                 and().
                 document(
-                            pathParameters(
+                		 requestHeaders(
+                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+                		 ),
+                         pathParameters(
                                     parameterWithName(JOB_UUID.paramName()).description("The job UUID")
                          )
                 ));
@@ -195,11 +204,10 @@ public class JobAdministrationRestControllerRestDocTest {
         UUID jobUUID = UUID.randomUUID();
 
         this.mockMvc.perform(
-                post(apiEndpoint,jobUUID).
-                contentType(MediaType.APPLICATION_JSON_VALUE)
-                )./*
-        andDo(print()).
-                */
+	                post(apiEndpoint,jobUUID).
+	                contentType(MediaType.APPLICATION_JSON_VALUE).
+	                header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                ).
         andExpect(status().isOk()).
         andDo(defineRestService().
                 with().
@@ -207,9 +215,12 @@ public class JobAdministrationRestControllerRestDocTest {
                     tag(RestDocFactory.extractTag(apiEndpoint)).
                 and().
                 document(
-                            pathParameters(
+                		requestHeaders(
+                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+                		),
+                        pathParameters(
                                     parameterWithName(JOB_UUID.paramName()).description("The job UUID")
-                         )
+                        )
               ));
 
         /* @formatter:on */

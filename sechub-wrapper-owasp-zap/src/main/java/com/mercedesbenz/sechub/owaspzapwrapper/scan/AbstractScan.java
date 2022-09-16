@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,10 +18,15 @@ import org.zaproxy.clientapi.core.ApiResponseList;
 import org.zaproxy.clientapi.core.ClientApi;
 import org.zaproxy.clientapi.core.ClientApiException;
 
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitCode;
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitRuntimeException;
+import com.mercedesbenz.sechub.commons.model.SecHubWebScanApiConfiguration;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperExitCode;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanConfiguration;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.ProxyInformation;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.data.DeactivatedRuleReferences;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.data.OwaspZapFullRuleset;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.data.Rule;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.data.RuleReference;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.OwaspZapApiResponseHelper;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.ScanDurationHelper;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.SecHubIncludeExcludeToOwaspZapURIHelper;
@@ -55,8 +61,8 @@ public abstract class AbstractScan implements OwaspZapScan {
         try {
             scanUnsafe();
         } catch (ClientApiException e) {
-            throw new MustExitRuntimeException("For scan: " + scanConfig.getContextName() + ". An error occured while scanning!", e,
-                    MustExitCode.EXECUTION_FAILED);
+            throw new ZapWrapperRuntimeException("For scan: " + scanConfig.getContextName() + ". An error occured while scanning!", e,
+                    ZapWrapperExitCode.EXECUTION_FAILED);
         }
     }
 
@@ -176,7 +182,7 @@ public abstract class AbstractScan implements OwaspZapScan {
             waitForNextCheck();
             clientApi.pscan.recordsToScan();
             numberOfRecords = Integer.parseInt(((ApiResponseElement) clientApi.pscan.recordsToScan()).getValue());
-            LOG.info("For scan {}: Passive scan number of records left for scanning: " + numberOfRecords, scanConfig.getContextName());
+            LOG.info("For scan {}: Passive scan number of records left for scanning: {}", scanConfig.getContextName(), numberOfRecords);
         }
         LOG.info("For scan {}: Passive scan completed.", scanConfig.getContextName());
         remainingScanTime = remainingScanTime - (System.currentTimeMillis() - startTime);
@@ -272,6 +278,15 @@ public abstract class AbstractScan implements OwaspZapScan {
         LOG.info("Setting default of how many alerts of the same rule will be inside the report to unlimited.");
         // setting this value to zero means unlimited
         clientApi.core.setOptionMaximumAlertInstances("0");
+
+        // enable all passive scanner rules by default
+        clientApi.pscan.enableAllScanners();
+        // enable all passive scanner rules by default
+        // null specifies the default scan policy
+        clientApi.ascan.enableAllScanners(null);
+
+        // use firefox in headless mode by default
+        clientApi.ajaxSpider.setOptionBrowserId("firefox-headless");
     }
 
     protected void setupAdditonalProxyConfiguration() throws ClientApiException {
@@ -289,12 +304,67 @@ public abstract class AbstractScan implements OwaspZapScan {
         }
     }
 
+    protected void deactivateRules() throws ClientApiException {
+        OwaspZapFullRuleset fullRuleset = scanConfig.getFullRuleset();
+        DeactivatedRuleReferences deactivatedRuleReferences = scanConfig.getDeactivatedRuleReferences();
+        if (fullRuleset == null && deactivatedRuleReferences == null) {
+            return;
+        }
+        List<RuleReference> rulesReferences = deactivatedRuleReferences.getDeactivatedRuleReferences();
+        if (rulesReferences == null) {
+            return;
+        }
+
+        for (RuleReference ruleRef : rulesReferences) {
+            Rule ruleToDeactivate = fullRuleset.findRuleByReference(ruleRef.getReference());
+            if (isPassiveRule(ruleToDeactivate.getType())) {
+                clientApi.pscan.disableScanners(ruleToDeactivate.getId());
+            } else if (isActiveRule(ruleToDeactivate.getType())) {
+                // null specifies the default scan policy
+                clientApi.ascan.disableScanners(ruleToDeactivate.getId(), null);
+            }
+        }
+    }
+
+    protected void loadApiDefinitions() throws ClientApiException {
+        if (scanConfig.getApiDefinitionFile() == null) {
+            LOG.info("For scan {}: No file with API definition found!", scanConfig.getContextName());
+            return;
+        }
+        Optional<SecHubWebScanApiConfiguration> apiConfig = scanConfig.getSecHubWebScanConfiguration().getApi();
+        if (!apiConfig.isPresent()) {
+            throw new ZapWrapperRuntimeException("For scan :" + scanConfig.getContextName() + " No API type was definied!",
+                    ZapWrapperExitCode.SECHUB_CONFIGURATION_INVALID);
+        }
+
+        switch (apiConfig.get().getType()) {
+        case OPEN_API:
+            clientApi.openapi.importFile(scanConfig.getApiDefinitionFile().toString(), scanConfig.getTargetUriAsString(), contextId);
+            break;
+        default:
+            // should never happen since API type is an Enum
+            // Failure should happen before getting here
+            throw new ZapWrapperRuntimeException("For scan :" + scanConfig.getContextName() + " Unknown API type was definied!",
+                    ZapWrapperExitCode.SECHUB_CONFIGURATION_INVALID);
+        }
+    }
+
+    private boolean isPassiveRule(String type) {
+        return "passive".equals(type.toLowerCase());
+    }
+
+    private boolean isActiveRule(String type) {
+        return "active".equals(type.toLowerCase());
+    }
+
     private void scanUnsafe() throws ClientApiException {
         setupBasicConfiguration();
+        deactivateRules();
         setupAdditonalProxyConfiguration();
 
         createContext();
         addIncludedAndExcludedUrlsToContext();
+        loadApiDefinitions();
         if (scanConfig.isAjaxSpiderEnabled()) {
             runAjaxSpider();
         }
@@ -325,11 +395,11 @@ public abstract class AbstractScan implements OwaspZapScan {
 
     private String resolveParentDirectoryPath(Path reportFile) {
         if (reportFile == null) {
-            throw new MustExitRuntimeException("For scan: " + scanConfig.getContextName() + ". Report file not set.", MustExitCode.REPORT_FILE_ERROR);
+            throw new ZapWrapperRuntimeException("For scan: " + scanConfig.getContextName() + ". Report file not set.", ZapWrapperExitCode.REPORT_FILE_ERROR);
         }
         if (Files.isDirectory(reportFile)) {
-            throw new MustExitRuntimeException("For scan: " + scanConfig.getContextName() + ". Report file must not be a directory!",
-                    MustExitCode.REPORT_FILE_ERROR);
+            throw new ZapWrapperRuntimeException("For scan: " + scanConfig.getContextName() + ". Report file must not be a directory!",
+                    ZapWrapperExitCode.REPORT_FILE_ERROR);
         }
 
         Path parent = reportFile.getParent();
@@ -358,8 +428,8 @@ public abstract class AbstractScan implements OwaspZapScan {
                 Files.move(owaspzapReport, owaspzapReport.resolveSibling(scanConfig.getReportFile().toAbsolutePath()), StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
 
-                throw new MustExitRuntimeException("For scan: " + scanConfig.getContextName() + ". An error occurred renaming the report file", e,
-                        MustExitCode.REPORT_FILE_ERROR);
+                throw new ZapWrapperRuntimeException("For scan: " + scanConfig.getContextName() + ". An error occurred renaming the report file", e,
+                        ZapWrapperExitCode.REPORT_FILE_ERROR);
             }
         }
     }

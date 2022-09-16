@@ -18,7 +18,7 @@ public interface ProductExecutor extends ProductIdentifiable, SecHubExecutor<Lis
     /**
      * Execute within SecHub execution context. <br>
      * <br>
-     * Why is there a list as an result here? Because product can be executed in
+     * Why is there a list as a result here? Because product can be executed in
      * different target situations we have a list of product results here (this is
      * only interesting when sechub execution does one scan for multiple
      * installation targets - e.g. when a scan configuration scans intranet and also
@@ -42,7 +42,7 @@ public interface ProductExecutor extends ProductIdentifiable, SecHubExecutor<Lis
     public int getVersion();
 
     /**
-     * Determines if it is okay to deefine multiple configurations of same executor.
+     * Determines if it is okay to define multiple configurations of same executor.
      * Default is false
      *
      * @return <code>true</code> when it is allowed to install multiple executors

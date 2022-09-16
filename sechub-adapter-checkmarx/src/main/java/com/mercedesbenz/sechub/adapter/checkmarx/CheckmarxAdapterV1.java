@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.adapter.AbstractAdapter;
 import com.mercedesbenz.sechub.adapter.AdapterException;
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.AdapterProfiles;
 import com.mercedesbenz.sechub.adapter.AdapterRuntimeContext;
@@ -34,9 +35,9 @@ public class CheckmarxAdapterV1 extends AbstractAdapter<CheckmarxAdapterContext,
     private static final Logger LOG = LoggerFactory.getLogger(CheckmarxAdapterV1.class);
 
     @Override
-    public String execute(CheckmarxAdapterConfig config, AdapterRuntimeContext runtimeContext) throws AdapterException {
+    public AdapterExecutionResult execute(CheckmarxAdapterConfig config, AdapterRuntimeContext runtimeContext) throws AdapterException {
         try {
-            assertNotInterrupted();
+            assertThreadNotInterrupted();
 
             CheckmarxContext context = new CheckmarxContext(config, this, runtimeContext);
             context.setFullScan(context.isNewProject() || config.isAlwaysFullScanEnabled());
@@ -44,19 +45,20 @@ public class CheckmarxAdapterV1 extends AbstractAdapter<CheckmarxAdapterContext,
             CheckmarxOAuthSupport oauthSupport = new CheckmarxOAuthSupport();
             oauthSupport.loginAndGetOAuthToken(context);
 
-            assertNotInterrupted();
+            assertThreadNotInterrupted();
             /* ensure project and get project context */
             CheckmarxProjectSupport projectSupport = new CheckmarxProjectSupport();
             projectSupport.ensureProjectExists(context);
 
-            assertNotInterrupted();
+            assertThreadNotInterrupted();
             handleUploadSourceCodeAndStartScan(oauthSupport, context);
 
-            assertNotInterrupted();
+            assertThreadNotInterrupted();
             CheckmarxScanReportSupport scanReportSupport = new CheckmarxScanReportSupport();
             scanReportSupport.startFetchReport(oauthSupport, context);
 
-            return context.getResult();
+            return new AdapterExecutionResult(context.getResult());
+
         } catch (Exception e) {
             throw asAdapterException("Was not able to perform scan!", e, config);
         }
@@ -81,7 +83,7 @@ public class CheckmarxAdapterV1 extends AbstractAdapter<CheckmarxAdapterContext,
 
     private void uploadSourceCodeAndStartScan(CheckmarxOAuthSupport oauthSupport, CheckmarxContext context) throws AdapterException {
         AdapterMetaData metaData = context.getRuntimeContext().getMetaData();
-        if (!metaData.hasValue(CheckmarxMetaDataID.KEY_FILEUPLOAD_DONE, true)) {
+        if (!metaData.getValueAsBoolean(CheckmarxMetaDataID.KEY_FILEUPLOAD_DONE)) {
             /* upload source code */
             oauthSupport.refreshBearerTokenWhenNecessary(context);
 

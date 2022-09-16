@@ -39,7 +39,7 @@ public abstract class AbstractAdapter<A extends AdapterContext<C>, C extends Ada
      *
      * @throws AdapterException
      */
-    protected void assertNotInterrupted() throws AdapterException {
+    protected void assertThreadNotInterrupted() throws AdapterException {
         if (Thread.currentThread().isInterrupted()) {
             throw new AdapterException(getAdapterLogId(null), "Execution thread was interrupted");
         }
@@ -59,18 +59,23 @@ public abstract class AbstractAdapter<A extends AdapterContext<C>, C extends Ada
     }
 
     @Override
-    public final String start(C config, AdapterMetaDataCallback callback) throws AdapterException {
-        AdapterRuntimeContext r = new AdapterRuntimeContext();
-        r.callback = callback;
-        r.metaData = callback.getMetaDataOrNull();
-        if (r.metaData == null) {
-            r.metaData = new AdapterMetaData();
-            r.metaData.adapterVersion = getAdapterVersion();
-            r.type = ExecutionType.INITIAL;
+    public final AdapterExecutionResult start(C config, AdapterMetaDataCallback callback) throws AdapterException {
+        AdapterRuntimeContext runtimeContext = new AdapterRuntimeContext();
+        runtimeContext.callback = callback;
+        runtimeContext.metaData = callback.getMetaDataOrNull();
+
+        if (runtimeContext.metaData == null) {
+
+            runtimeContext.metaData = new AdapterMetaData();
+            runtimeContext.metaData.adapterVersion = getAdapterVersion();
+            runtimeContext.type = ExecutionType.INITIAL;
+
         } else {
-            r.type = ExecutionType.RESTART;
+
+            runtimeContext.type = ExecutionType.RESTART;
+
         }
-        return execute(config, r);
+        return execute(config, runtimeContext);
     }
 
     @Override
@@ -81,17 +86,17 @@ public abstract class AbstractAdapter<A extends AdapterContext<C>, C extends Ada
             return false;
         }
 
-        AdapterRuntimeContext r = new AdapterRuntimeContext();
-        r.callback = null;
-        r.metaData = metaData;
-        r.type = ExecutionType.STOP;
+        AdapterRuntimeContext runtimeContext = new AdapterRuntimeContext();
+        runtimeContext.callback = null;
+        runtimeContext.metaData = metaData;
+        runtimeContext.type = ExecutionType.STOP;
 
-        execute(config, r);
+        execute(config, runtimeContext);
 
-        return r.stopped;
+        return runtimeContext.stopped;
     }
 
-    protected abstract String execute(C config, AdapterRuntimeContext runtimeContext) throws AdapterException;
+    protected abstract AdapterExecutionResult execute(C config, AdapterRuntimeContext runtimeContext) throws AdapterException;
 
     /**
      * @param api

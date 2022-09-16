@@ -19,7 +19,7 @@ public class OwaspZapScanResolver {
         OwaspZapScan scan;
         AuthenticationType authenticationType = scanConfig.getAuthenticationType();
         if (authenticationType == null) {
-            throw new MustExitRuntimeException("No matching scan type could be found.", MustExitCode.AUTHENTICATIONTYPE_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("No matching scan type could be found.", ZapWrapperExitCode.AUTHENTICATIONTYPE_CONFIGURATION_INVALID);
         }
 
         switch (authenticationType) {
@@ -32,7 +32,7 @@ public class OwaspZapScanResolver {
             LOG.info("Using http basic authentication scan");
             break;
         default:
-            throw new MustExitRuntimeException("No matching scan type could be found.", MustExitCode.AUTHENTICATIONTYPE_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("No matching scan type could be found.", ZapWrapperExitCode.AUTHENTICATIONTYPE_CONFIGURATION_INVALID);
         }
         return scan;
     }

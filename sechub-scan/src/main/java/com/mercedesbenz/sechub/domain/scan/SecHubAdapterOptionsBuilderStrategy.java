@@ -6,11 +6,12 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.adapter.AbstractAdapterConfigBuilder;
 import com.mercedesbenz.sechub.adapter.AdapterConfig;
+import com.mercedesbenz.sechub.adapter.AdapterConfigBuilder;
 import com.mercedesbenz.sechub.adapter.AdapterConfigurationStrategy;
 import com.mercedesbenz.sechub.adapter.AdapterOptionKey;
 import com.mercedesbenz.sechub.commons.model.ScanType;
+import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 import com.mercedesbenz.sechub.domain.scan.project.ScanMockData;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectMockDataConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
@@ -37,19 +38,18 @@ public class SecHubAdapterOptionsBuilderStrategy implements AdapterConfiguration
     private SecHubExecutionContext context;
     private ScanType scanType;
 
-    public SecHubAdapterOptionsBuilderStrategy(SecHubExecutionContext context, ScanType scanType) {
-        this.context = context;
+    public SecHubAdapterOptionsBuilderStrategy(ProductExecutorData data, ScanType scanType) {
+        this.context = data.getSechubExecutionContext();
         this.scanType = scanType;
     }
 
     @Override
-    public <B extends AbstractAdapterConfigBuilder<B, C>, C extends AdapterConfig> void configure(B configBuilder) {
+    public <B extends AdapterConfigBuilder, C extends AdapterConfig> void configure(B configBuilder) {
         /* @formatter:off */
 		String mockDataResultLowerCased = fetchMockConfigurationResultLowerCased();
 		if (mockDataResultLowerCased!=null) {
 		configBuilder.
-		 	setOption(AdapterOptionKey.MOCK_CONFIGURATION_RESULT, mockDataResultLowerCased)
-		 	;
+		 	setOption(AdapterOptionKey.MOCK_CONFIGURATION_RESULT, mockDataResultLowerCased);
 		}
 		/* @formatter:on */
 

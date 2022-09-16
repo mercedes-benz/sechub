@@ -5,7 +5,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -13,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.pds.PDSAdapter;
 import com.mercedesbenz.sechub.adapter.pds.PDSInfraScanConfig;
 import com.mercedesbenz.sechub.adapter.pds.PDSInfraScanConfigImpl;
@@ -27,7 +27,6 @@ import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
-import com.mercedesbenz.sechub.sharedkernel.SystemEnvironment;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 
@@ -43,7 +42,10 @@ public class PDSInfraScanProductExecutor extends AbstractProductExecutor {
     PDSInstallSetup installSetup;
 
     @Autowired
-    SystemEnvironment systemEnvironment;
+    PDSExecutorConfigSuppportServiceCollection serviceCollection;
+
+    @Autowired
+    PDSStorageContentProviderFactory contentProviderFactory;
 
     public PDSInfraScanProductExecutor() {
         super(ProductIdentifier.PDS_INFRASCAN, 1, ScanType.INFRA_SCAN);
@@ -73,8 +75,7 @@ public class PDSInfraScanProductExecutor extends AbstractProductExecutor {
         List<ProductResult> results = new ArrayList<>();
 
         SecHubExecutionContext context = data.getSechubExecutionContext();
-        Map<String, String> jobParameters = configSupport.createJobParametersToSendToPDS(context.getConfiguration());
-        String projectId = context.getConfiguration().getProjectId();
+        PDSStorageContentProvider contentProvider = contentProviderFactory.createContentProvider(context, configSupport, getScanType());
 
         for (URI targetURI : targetURIs) {
             /* @formatter:off */
@@ -85,23 +86,15 @@ public class PDSInfraScanProductExecutor extends AbstractProductExecutor {
             executorContext.useFirstFormerResultHavingMetaData(PDSMetaDataID.KEY_TARGET_URI, targetURI);
 
             PDSInfraScanConfig pdsInfraScanConfig = PDSInfraScanConfigImpl.builder().
-                    setPDSProductIdentifier(configSupport.getPDSProductIdentifier()).
-                    setTrustAllCertificates(configSupport.isTrustAllCertificatesEnabled()).
-                    setProductBaseUrl(configSupport.getProductBaseURL()).
-                    setSecHubJobUUID(context.getSechubJobUUID()).
-
-                    setSecHubConfigModel(context.getConfiguration()).
-
-                    configure(createAdapterOptionsStrategy(data)).
+                    configure(PDSAdapterConfigurationStrategy.builder().
+                            setScanType(getScanType()).
+                            setProductExecutorData(data).
+                            setConfigSupport(configSupport).
+                            setContentProvider(contentProvider).
+                            setInstallSetup(installSetup).
+                            build()).
+                    /* additional:*/
                     configure(new NetworkTargetProductServerDataAdapterConfigurationStrategy(configSupport,data.getCurrentNetworkTargetInfo().getTargetType())).
-
-                    setTimeToWaitForNextCheckOperationInMilliseconds(configSupport.getTimeToWaitForNextCheckOperationInMilliseconds(installSetup)).
-                    setTimeOutInMinutes(configSupport.getTimeoutInMinutes(installSetup)).
-
-                    setProjectId(projectId).
-
-                    setTraceID(context.getTraceLogIdAsString()).
-                    setJobParameters(jobParameters).
 
                     setTargetIPs(info.getIPs()).
                     setTargetURIs(info.getURIs()).
@@ -110,10 +103,9 @@ public class PDSInfraScanProductExecutor extends AbstractProductExecutor {
             /* @formatter:on */
 
             /* execute PDS by adapter and return product result */
-            String xml = pdsAdapter.start(pdsInfraScanConfig, executorContext.getCallback());
+            AdapterExecutionResult adapterResult = pdsAdapter.start(pdsInfraScanConfig, executorContext.getCallback());
 
-            ProductResult currentProductResult = executorContext.getCurrentProductResult();
-            currentProductResult.setResult(xml);
+            ProductResult currentProductResult = updateCurrentProductResult(adapterResult, executorContext);
             results.add(currentProductResult);
 
         }
@@ -127,7 +119,7 @@ public class PDSInfraScanProductExecutor extends AbstractProductExecutor {
 
         ProductExecutorContext executorContext = data.getProductExecutorContext();
         PDSExecutorConfigSuppport configSupport = PDSExecutorConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
-                systemEnvironment);
+                serviceCollection);
         data.setNetworkTargetDataProvider(configSupport);
     }
 

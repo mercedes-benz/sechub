@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Operations</h1>
 <div class="details">
-<span id="revnumber"> Server 0.30.0</span>
+<span id="revnumber"> Server 0.35.2</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -637,11 +637,12 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 </li>
 <li><a href="#product-specific-details">2.7.2. Product specific details</a>
 <ul class="sectlevel4">
-<li><a href="#checkmarx">2.7.2.1. Checkmarx</a>
+<li><a href="#pds">2.7.2.1. PDS</a></li>
+<li><a href="#checkmarx">2.7.2.2. Checkmarx</a>
 <ul class="sectlevel5">
-<li><a href="#mapping-teams-and-presets-for-new-projects">2.7.2.1.1. Mapping teams and presets for new projects</a></li>
-<li><a href="#how-to-obtain-preset-id">2.7.2.1.2. How to obtain preset id</a></li>
-<li><a href="#how-to-obtain-team-id">2.7.2.1.3. How to obtain team id</a></li>
+<li><a href="#mapping-teams-and-presets-for-new-projects">2.7.2.2.1. Mapping teams and presets for new projects</a></li>
+<li><a href="#how-to-obtain-preset-id">2.7.2.2.2. How to obtain preset id</a></li>
+<li><a href="#how-to-obtain-team-id">2.7.2.2.3. How to obtain team id</a></li>
 </ul>
 </li>
 </ul>
@@ -669,38 +670,52 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 </li>
 <li><a href="#security-products">3. Security Products</a>
 <ul class="sectlevel2">
-<li><a href="#checkmarx-2">3.1. Checkmarx</a>
+<li><a href="#pds-2">3.1. PDS</a>
 <ul class="sectlevel3">
-<li><a href="#what-does-the-adapter-do">3.1.1. What does the adapter do?</a>
+<li><a href="#general-2">3.1.1. General</a></li>
+<li><a href="#pds-solutions">3.1.2. PDS solutions</a>
 <ul class="sectlevel4">
-<li><a href="#what-must-be-done-on-checkmarx-ui">3.1.1.1. What must be done on Checkmarx UI</a></li>
-<li><a href="#what-can-be-configured-for-sechub">3.1.1.2. What can be configured for SecHub ?</a>
+<li><a href="#gosec">3.1.2.1. GoSec</a></li>
+<li><a href="#multi">3.1.2.2. Multi</a></li>
+<li><a href="#owasp-zap">3.1.2.3. Owasp-Zap</a></li>
+<li><a href="#pmd">3.1.2.4. PMD</a></li>
+<li><a href="#scancode">3.1.2.5. ScanCode</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#checkmarx-2">3.2. Checkmarx</a>
+<ul class="sectlevel3">
+<li><a href="#what-does-the-adapter-do">3.2.1. What does the adapter do?</a>
+<ul class="sectlevel4">
+<li><a href="#what-must-be-done-on-checkmarx-ui">3.2.1.1. What must be done on Checkmarx UI</a></li>
+<li><a href="#what-can-be-configured-for-sechub">3.2.1.2. What can be configured for SecHub ?</a>
 <ul class="sectlevel5">
-<li><a href="#environment">3.1.1.2.1. Environment</a></li>
-<li><a href="#runtime">3.1.1.2.2. Runtime</a></li>
+<li><a href="#environment">3.2.1.2.1. Environment</a></li>
+<li><a href="#runtime">3.2.1.2.2. Runtime</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#summary">3.1.2. Summary</a></li>
+<li><a href="#summary">3.2.2. Summary</a></li>
 </ul>
 </li>
-<li><a href="#netsparker">3.2. Netsparker</a>
+<li><a href="#netsparker">3.3. Netsparker</a>
 <ul class="sectlevel3">
-<li><a href="#what-does-the-adapter-do-2">3.2.1. What does the adapter do?</a></li>
-<li><a href="#what-must-be-done-on-netsparker-ui">3.2.2. What must be done on Netsparker UI</a>
+<li><a href="#what-does-the-adapter-do-2">3.3.1. What does the adapter do?</a></li>
+<li><a href="#what-must-be-done-on-netsparker-ui">3.3.2. What must be done on Netsparker UI</a>
 <ul class="sectlevel4">
-<li><a href="#users">3.2.2.1. Users</a></li>
+<li><a href="#users">3.3.2.1. Users</a></li>
 </ul>
 </li>
-<li><a href="#summary-2">3.2.3. Summary</a></li>
+<li><a href="#summary-2">3.3.3. Summary</a></li>
 </ul>
 </li>
-<li><a href="#nessus">3.3. Nessus</a>
+<li><a href="#nessus">3.4. Nessus</a>
 <ul class="sectlevel3">
-<li><a href="#what-does-the-adapter-do-3">3.3.1. What does the adapter do?</a></li>
-<li><a href="#what-must-be-done-on-nessus-ui">3.3.2. What must be done on Nessus UI</a></li>
-<li><a href="#summary-3">3.3.3. Summary</a></li>
+<li><a href="#what-does-the-adapter-do-3">3.4.1. What does the adapter do?</a></li>
+<li><a href="#what-must-be-done-on-nessus-ui">3.4.2. What must be done on Nessus UI</a></li>
+<li><a href="#summary-3">3.4.3. Summary</a></li>
 </ul>
 </li>
 </ul>
@@ -796,7 +811,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.30.0-20220401131841</code></p>
+<p>Documentation version: <code>Server 0.35.2-20220915150519</code></p>
 </div>
 <div class="paragraph">
 <p>Target audience for this document are <strong>SecHub Operators/Administrators</strong>.</p>
@@ -1422,12 +1437,17 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.server.upload.validate.checksum</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">With <code>false</code> checksum validation (sha256) on sechub server side is disabled. Sha256 validation must be done by the delegated security products! You should disable the validation only for testing security product behaviours!</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">With <code>false</code> source code checksum validation (sha256) on sechub server side is disabled. Sha256 validation must be done by the delegated security products! You should disable the validation only for testing security product behaviours!</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.server.upload.validate.zip</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">With <code>false</code> ZIP validation on sechub server side is disabled. ZIP validation must be done by the delegated security products! You should disable the validation only for testing security product behaviours!</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.upload.binaries.maximum.bytes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">52428800</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define the maximum amount of bytes accepted for uploading <code>binaries.tar</code>. The default when not set is 52428800 (50 MiB)</p></td>
 </tr>
 </tbody>
 </table>
@@ -1590,13 +1610,13 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.target.resolve.strategy.ip</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Strategy to decide target types by given IP.</strong><br>
-Starts always with strategy-identifer, colon and value(s). Currently only 'intranet-ip-pattern' is supported as strategy. For example: <code>intranet-ip-pattern:192.168.178.<strong>,[2001:db8:85a3:0:0:8a2e:370:</strong>]</code>. Other IPs are interpreted as being inside INTERNET. But no matter if strategy is defined or not: loopback addresses are always illegal and so ignored</p></td>
+Starts always with strategy-identifer, colon and value(s). Values are comma separated. Currently only 'intranet-ip-pattern' is supported as strategy. Inside this strategy,it is possible to define IPv4 or IPv6 adresses (wildcards are also possible). For example: <code>intranet-ip-pattern:192.168.178.*,2001:db8:85a3:0:0:8a2e:370:*</code>. Other IPs are interpreted as being inside INTERNET. But no matter if strategy is defined or not: loopback addresses are always illegal and so ignored</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.target.resolve.strategy.uri</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Strategy to decide target types by given URI.</strong><br>
-Starts always with strategy-identifer, colon and value(s). Currently only 'intranet-hostname-ends-with' is supported as strategy. For example: <code>intranet-hostname-ends-with::intranet.example.org,intx.example.com</code>. Other hostnames are interpreted as being inside INTERNET. But no matter if strategy is defined or not: loopback addresses are always illegal and so ignored.</p></td>
+Starts always with strategy-identifer, colon and value(s). Values are comma separated. Currently only 'intranet-hostname-ends-with' is supported as strategy. For example: <code>intranet-hostname-ends-with:intranet.example.org,intx.example.com</code>. Other hostnames are interpreted as being inside INTERNET. But no matter if strategy is defined or not: loopback addresses are always illegal and so ignored.</p></td>
 </tr>
 </tbody>
 </table>
@@ -2091,8 +2111,18 @@ accidently add the credentials to your repository.</p>
 <div class="sect5">
 <h6 id="logging-2">2.3.3.4.2. Logging</h6>
 <div class="paragraph">
+<p><strong>Default output</strong></p>
+</div>
+<div class="paragraph">
 <p>SecHub uses per default logging to stdout, so you just need to use something like
 <code>fluentd</code> PODs to gather log output.</p>
+</div>
+<div class="paragraph">
+<p><strong>Logstash support</strong></p>
+</div>
+<div class="paragraph">
+<p>When you want to use <code>logstash</code> (e.g. when using <code>ElasticSearch</code> or <code>OpenSearch</code>) you just have to set the environment variable
+<code>LOGGING_TYPE</code> to <code>LOGSTASH_JSON</code> before server starts.</p>
 </div>
 </div>
 </div>
@@ -2564,9 +2594,292 @@ concept and the format.</p>
 <div class="sect3">
 <h4 id="product-specific-details">2.7.2. Product specific details</h4>
 <div class="sect4">
-<h5 id="checkmarx">2.7.2.1. Checkmarx</h5>
+<h5 id="pds">2.7.2.1. PDS</h5>
+<div class="paragraph">
+<p>For PDS we have a set of predefined configuration parameters <em>(see next table)</em> and the possibility
+to define custom parameters.</p>
+</div>
+<div class="paragraph">
+<p>Some of the predefined parameters are generated.
+In this case the user cannot define them in the executor configuration, but they
+are listed here for the sake of completeness.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 24. PDS executor configuration parameters</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Additional info</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.productexecutor.forbidden.targettype.internet</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+When this key is set to true, than this pds instance does not scan INTERNET!
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.productexecutor.forbidden.targettype.intranet</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+When this key is set to true, than this pds instance does not scan INTRANET!
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.productexecutor.timetowait.nextcheck.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+When this is set, the value will be used to wait for next check on PDS server. If not, the default from PDS install set up is used instead.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.productexecutor.timeout.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+When this is set, the value will be used to wait before timeout happens happens when no communication with PDS server is possible. If not, the default from PDS install set up is used instead.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.productexecutor.trustall.certificates</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+When 'true' then all certificates are accepted. Do not use this in production!
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.productidentifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+Contains the product identifier, so PDS knows which part is to call on it's side.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Available as ENV variable <code>PDS_CONFIG_PRODUCTIDENTIFIER</code> inside launcher script.</p>
+</li>
+<li>
+<p><strong>Mandatory</strong></p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.scan.target.type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+Contains the target type (depending on scan type) and will be just an additional information for PDS from SecHub.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Available as ENV variable <code>PDS_SCAN_TARGET_TYPE</code> inside launcher script.</p>
+</li>
+<li>
+<p><strong>Generated</strong></p>
+</li>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.use.sechub.storage</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+When 'true' the SecHub storage will be reused by PDS server. In this case SecHub will not upload job data to PDS.
+But it's crucial to have same root storage setup on PDS server side (e.g. same s3 bucket for S3 storage, or same NFS base for shared volumes).
+When not `true` or not defined, pds will use its own storage locations
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+<li>
+<p>Default is "true"</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.use.sechub.mappings</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+Contains a comma separated list of mappping ids. Each defined mapping will be fetched from SecHub DB as JSON and sent as job parameter with the mapping id as name to the PDS.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+<li>
+<p>Default is "true"</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.sechub.storage.path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+This contains the sechub storage location when sechub storage shall be used. So PDS knows location - in combination with sechub job UUID reuse is possible
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p><strong>Generated</strong></p>
+</li>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.filefilter.includes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+This contains a comma separated list of path patterns for file includes. These patterns can contain wildcards. Matching will be done case insensitive!For example: `*.go,*.html, test1.txt` would include every go file, every HTML file and files named `test1.txt`.</p>
+<p class="tableblock">When nothing defined, every content is accepted as include.
+Every file which is matched by one of the patterns will be included - except those which are explicitly excluded.</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.script.trustall.certificates.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+When 'true' the PDS adapter script used by the job will have the information and can use this information when it comes to remote operations.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Available as ENV variable <code>PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED</code> inside launcher script.</p>
+</li>
+<li>
+<p>Optional</p>
+</li>
+<li>
+<p>Default is "false"</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.filefilter.excludes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+This contains a comma separated list of path patterns for file excludes. These patterns can contain wildcards. Matching will be done case insensitive!For example: `*.go,*.html, test1.txt` would excluded every go file, every HTML file and files named `test1.txt`.</p>
+<p class="tableblock">When empty none of the files will be excluded. The exclude operation will be done AFTER the include file filtering has happend.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.scan.target.url</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+This contains the Target URL for current scan i.e webscan. Will not be set in all scan types. E.g. for a code scan this environment variable will not be available
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Available as ENV variable <code>PDS_SCAN_TARGET_URL</code> inside launcher script.</p>
+</li>
+<li>
+<p><strong>Generated</strong></p>
+</li>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.scan.configuration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+This contains the SecHub configuration as JSON object (but reduced to current scan type, so e.g. a web scan will have no code scan configuration data available
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Available as ENV variable <code>PDS_SCAN_CONFIGURATION</code> inside launcher script.</p>
+</li>
+<li>
+<p><strong>Generated</strong></p>
+</li>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.mocking.disabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+When 'true' any PDS adapter call will use real PDS adapter and not a mocked variant.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+<li>
+<p>Default is "true"</p>
+</li>
+<li>
+<p><strong>Only for testing</strong></p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="checkmarx">2.7.2.2. Checkmarx</h5>
 <div class="sect5">
-<h6 id="mapping-teams-and-presets-for-new-projects">2.7.2.1.1. Mapping teams and presets for new projects</h6>
+<h6 id="mapping-teams-and-presets-for-new-projects">2.7.2.2.1. Mapping teams and presets for new projects</h6>
 <div class="paragraph">
 <p>When a user starts a scan and a <code>checkmarx</code> project does not already exist, it will be created.</p>
 </div>
@@ -2673,7 +2986,7 @@ as shown in following example:</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="how-to-obtain-preset-id">2.7.2.1.2. How to obtain preset id</h6>
+<h6 id="how-to-obtain-preset-id">2.7.2.2.2. How to obtain preset id</h6>
 <div class="paragraph">
 <p>Unfortunately the preset ID is necessary for REST calls, but not
 visible at Checkmarx UI.</p>
@@ -2684,7 +2997,7 @@ web tools in you browser (e.g. enable network monitoring and change preset id at
 </div>
 </div>
 <div class="sect5">
-<h6 id="how-to-obtain-team-id">2.7.2.1.3. How to obtain team id</h6>
+<h6 id="how-to-obtain-team-id">2.7.2.2.3. How to obtain team id</h6>
 <div class="paragraph">
 <p>Unfortunately the team ID is necessary for REST calls, but not
 visible at Checkmarx UI.</p>
@@ -2898,9 +3211,104 @@ You must only setup those products you have listed inside your
 </table>
 </div>
 <div class="sect2">
-<h3 id="checkmarx-2">3.1. Checkmarx</h3>
+<h3 id="pds-2">3.1. PDS</h3>
 <div class="sect3">
-<h4 id="what-does-the-adapter-do">3.1.1. What does the adapter do?</h4>
+<h4 id="general-2">3.1.1. General</h4>
+<div class="paragraph">
+<p>The PDS adapters can communicate with the PDS instances which delegates to the underlying
+security products.</p>
+</div>
+<div class="paragraph">
+<p>Via PDS every security product, even simple CLI tools, can be easily integrated
+into SecHub.</p>
+</div>
+<div class="paragraph">
+<p>Please look into <code>Product delegation server</code> documentation for more information about the PDS in common.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="pds-solutions">3.1.2. PDS solutions</h4>
+<div class="paragraph">
+<p>There are already ready to use PDS implementations available - we call them "PDS solutions".</p>
+</div>
+<div class="paragraph">
+<p>Every PDS solution does work out of the box and provide the possibility to start in following three flavors:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>docker (single instance)</p>
+</li>
+<li>
+<p>docker compose (cluster)</p>
+</li>
+<li>
+<p>helm charts (k8s cluster)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The next sub chapters list the current implementations:</p>
+</div>
+<div class="sect4">
+<h5 id="gosec">3.1.2.1. GoSec</h5>
+<div class="paragraph">
+<p>The PDS integration of <a href="https://securego.io">GoSec</a> (SAST) can be found at
+<a href="https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/gosec" class="bare">https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/gosec</a></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="multi">3.1.2.2. Multi</h5>
+<div class="paragraph">
+<p>This solution does integrate multiple SAST tools:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/PyCQA/bandit">Bandit</a></p>
+</li>
+<li>
+<p><a href="https://dwheeler.com/flawfinder/">FlawFinder</a></p>
+</li>
+<li>
+<p><a href="https://github.com/MobSF/mobsfscan">mobsfscan</a></p>
+</li>
+<li>
+<p><a href="https://github.com/ajinabraham/njsscan">njsscan</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>It can be found at <a href="https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/multi" class="bare">https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/multi</a></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="owasp-zap">3.1.2.3. Owasp-Zap</h5>
+<div class="paragraph">
+<p>This solution does integrate the <a href="https://www.zaproxy.org/" class="bare">https://www.zaproxy.org/</a> (web application scanner) - please look at
+<a href="https://github.com/mercedes-benz/sechub/blob/develop/sechub-pds-solutions/owasp-zap/" class="bare">https://github.com/mercedes-benz/sechub/blob/develop/sechub-pds-solutions/owasp-zap/</a></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="pmd">3.1.2.4. PMD</h5>
+<div class="paragraph">
+<p><a href="https://pmd.github.io/" class="bare">https://pmd.github.io/</a> stand normally for quality checks, but it does also provide some security check mechanism. The integration can be found at
+<a href="https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/pmd" class="bare">https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/pmd</a></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="scancode">3.1.2.5. ScanCode</h5>
+<div class="paragraph">
+<p>Implements <a href="https://github.com/nexB/scancode-toolkit" class="bare">https://github.com/nexB/scancode-toolkit</a> as a license scan tool:
+<a href="https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/scancode" class="bare">https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/scancode</a></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="checkmarx-2">3.2. Checkmarx</h3>
+<div class="sect3">
+<h4 id="what-does-the-adapter-do">3.2.1. What does the adapter do?</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -2941,7 +3349,7 @@ You must only setup those products you have listed inside your
 </ol>
 </div>
 <div class="sect4">
-<h5 id="what-must-be-done-on-checkmarx-ui">3.1.1.1. What must be done on Checkmarx UI</h5>
+<h5 id="what-must-be-done-on-checkmarx-ui">3.2.1.1. What must be done on Checkmarx UI</h5>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -2954,15 +3362,15 @@ You must only setup those products you have listed inside your
 </div>
 </div>
 <div class="sect4">
-<h5 id="what-can-be-configured-for-sechub">3.1.1.2. What can be configured for SecHub ?</h5>
+<h5 id="what-can-be-configured-for-sechub">3.2.1.2. What can be configured for SecHub ?</h5>
 <div class="sect5">
-<h6 id="environment">3.1.1.2.1. Environment</h6>
+<h6 id="environment">3.2.1.2.1. Environment</h6>
 <div class="paragraph">
 <p>Please look at <a href="#section-gen-config-scope-checkmarx">checkmarx config</a>  section.</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="runtime">3.1.1.2.2. Runtime</h6>
+<h6 id="runtime">3.2.1.2.2. Runtime</h6>
 <div class="admonitionblock warning">
 <table>
 <tr>
@@ -3007,7 +3415,7 @@ Standard properties (like base URL, user id etc.) are currently NOT used from
 </div>
 </div>
 <div class="sect3">
-<h4 id="summary">3.1.2. Summary</h4>
+<h4 id="summary">3.2.2. Summary</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -3038,9 +3446,9 @@ Fix team ID will change in future to provide grouping of results in
 </div>
 </div>
 <div class="sect2">
-<h3 id="netsparker">3.2. Netsparker</h3>
+<h3 id="netsparker">3.3. Netsparker</h3>
 <div class="sect3">
-<h4 id="what-does-the-adapter-do-2">3.2.1. What does the adapter do?</h4>
+<h4 id="what-does-the-adapter-do-2">3.3.1. What does the adapter do?</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -3116,9 +3524,9 @@ not default.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="what-must-be-done-on-netsparker-ui">3.2.2. What must be done on Netsparker UI</h4>
+<h4 id="what-must-be-done-on-netsparker-ui">3.3.2. What must be done on Netsparker UI</h4>
 <div class="sect4">
-<h5 id="users">3.2.2.1. Users</h5>
+<h5 id="users">3.3.2.1. Users</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -3136,7 +3544,7 @@ not default.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="summary-2">3.2.3. Summary</h4>
+<h4 id="summary-2">3.3.3. Summary</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -3164,9 +3572,9 @@ Currently Netsparker adapter will always use ONE team user (admin) to
 </div>
 </div>
 <div class="sect2">
-<h3 id="nessus">3.3. Nessus</h3>
+<h3 id="nessus">3.4. Nessus</h3>
 <div class="sect3">
-<h4 id="what-does-the-adapter-do-3">3.3.1. What does the adapter do?</h4>
+<h4 id="what-does-the-adapter-do-3">3.4.1. What does the adapter do?</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -3206,7 +3614,7 @@ will be used</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="what-must-be-done-on-nessus-ui">3.3.2. What must be done on Nessus UI</h4>
+<h4 id="what-must-be-done-on-nessus-ui">3.4.2. What must be done on Nessus UI</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -3216,7 +3624,7 @@ will be used</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="summary-3">3.3.3. Summary</h4>
+<h4 id="summary-3">3.4.3. Summary</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -3324,7 +3732,7 @@ the assignment to a super administrator. Only with permission of project owner t
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.30.0<br>
+ Server 0.35.2<br>
 </div>
 </div>
 </body>

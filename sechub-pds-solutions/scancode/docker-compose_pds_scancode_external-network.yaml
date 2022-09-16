@@ -1,0 +1,24 @@
+# SPDX-License-Identifier: MIT
+
+version: "3"
+services:
+    pds-scancode:
+        build:
+            args:
+                - BASE_IMAGE=${BASE_IMAGE}
+            context: docker/
+            dockerfile: ScanCode-Debian.dockerfile
+        container_name: pds-scancode
+        hostname: pds-scancode
+        volumes:
+            - ./docker/scripts:/scripts
+        env_file:
+            - .env
+            - .env-single
+        networks:
+            - "sechub"
+
+networks:
+    sechub:
+        external: true
+        name: "sechub"

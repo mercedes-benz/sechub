@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.adapter.AbstractAdapterConfigBuilder;
+import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.nessus.NessusAdapter;
 import com.mercedesbenz.sechub.adapter.nessus.NessusAdapterConfig;
 import com.mercedesbenz.sechub.adapter.nessus.NessusConfig;
@@ -19,6 +20,7 @@ import com.mercedesbenz.sechub.domain.scan.InfraScanNetworkLocationProvider;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataAdapterConfigurationStrategy;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetRegistry.NetworkTargetInfo;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
+import com.mercedesbenz.sechub.domain.scan.SecHubAdapterOptionsBuilderStrategy;
 import com.mercedesbenz.sechub.domain.scan.product.AbstractProductExecutor;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
@@ -72,7 +74,7 @@ public class NessusProductExecutor extends AbstractProductExecutor {
 
         /* @formatter:off */
 		NessusAdapterConfig nessusConfig = NessusConfig.builder().
-				configure(createAdapterOptionsStrategy(data)).
+				configure(new SecHubAdapterOptionsBuilderStrategy(data, getScanType())).
 				configure(new NetworkTargetProductServerDataAdapterConfigurationStrategy(installSetup,targetType)).
 				setTimeToWaitForNextCheckOperationInMinutes(scanResultCheckPeriodInMinutes).
 				setTimeOutInMinutes(scanResultCheckTimeOutInMinutes).
@@ -80,16 +82,16 @@ public class NessusProductExecutor extends AbstractProductExecutor {
 				setProxyPort(proxyPort).
 				setTraceID(data.getTraceLogIdAsString()).
 				setPolicyID(installSetup.getDefaultPolicyId()).
+				setMockDataIdentifier(data.getMockDataIdentifier()).
 				setTargetIPs(info.getIPs()).
 				setTargetURIs(info.getURIs()).build();
 		/* @formatter:on */
 
         /* execute NESSUS by adapter and return product result */
         ProductExecutorContext productExecutorContext = data.getProductExecutorContext();
-        String xml = nessusAdapter.start(nessusConfig, productExecutorContext.getCallback());
+        AdapterExecutionResult adapterResult = nessusAdapter.start(nessusConfig, productExecutorContext.getCallback());
 
-        ProductResult productResult = productExecutorContext.getCurrentProductResult(); // product result is set by callback
-        productResult.setResult(xml);
+        ProductResult productResult = updateCurrentProductResult(adapterResult, productExecutorContext);
         return Collections.singletonList(productResult);
     }
 

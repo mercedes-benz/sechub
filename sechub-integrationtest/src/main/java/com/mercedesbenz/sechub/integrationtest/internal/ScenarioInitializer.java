@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.HttpClientErrorException;
 
+import com.mercedesbenz.sechub.commons.mapping.MappingData;
+import com.mercedesbenz.sechub.commons.mapping.MappingEntry;
 import com.mercedesbenz.sechub.integrationtest.api.AbstractTestExecutable;
 import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
@@ -23,6 +25,7 @@ public class ScenarioInitializer {
 
     private static final int DEFAULT_TIME_TO_WAIT_FOR_RESOURCE_CREATION = 3;
     private static final Logger LOG = LoggerFactory.getLogger(ScenarioInitializer.class);
+    private static boolean mappingCheckDone;
 
     public ScenarioInitializer createProject(TestProject project, TestUser owner) {
         TestAPI.as(TestAPI.SUPER_ADMIN).createProject(project, owner.getUserId());
@@ -36,6 +39,7 @@ public class ScenarioInitializer {
     }
 
     private ScenarioInitializer ensureDefaultExecutionProfile(DefaultTestExecutionProfile profile) {
+        ensureDefaultMappingsAvailableInEveryProfile();
         if (TestAPI.canReloadExecutionProfileData(profile)) {
             return this;
         }
@@ -58,6 +62,33 @@ public class ScenarioInitializer {
         realProfile.configurations.addAll(realConfigurations);
         TestAPI.as(TestAPI.SUPER_ADMIN).updateProductExecutionProfile(profile.id, realProfile);
         return this;
+    }
+
+    private void ensureDefaultMappingsAvailableInEveryProfile() {
+        if (mappingCheckDone) {
+            return;
+        }
+        ensureMapping1();
+        mappingCheckDone = true;
+    }
+
+    private void ensureMapping1() {
+        MappingData project1Mapping = TestAPI.fetchMappingDataDirectlyOrNull(IntegrationTestExampleConstants.MAPPING_ID_1_REPLACE_ANY_PROJECT1);
+        if (project1Mapping != null) {
+            return;
+        }
+        MappingEntry entry = new MappingEntry(IntegrationTestExampleConstants.MAPPING_1_PATTERN_ANY_PROJECT1,
+                IntegrationTestExampleConstants.MAPPING_1_REPLACEMENT_FOR_PROJECT1, IntegrationTestExampleConstants.MAPPING_1_COMMENT);
+        TestAPI.changeScanMappingDirectly(IntegrationTestExampleConstants.MAPPING_ID_1_REPLACE_ANY_PROJECT1, entry);
+    }
+
+    public static void main(String[] args) {
+        MappingData project1Mapping = new MappingData();
+
+        MappingEntry entry = new MappingEntry(IntegrationTestExampleConstants.MAPPING_1_PATTERN_ANY_PROJECT1,
+                IntegrationTestExampleConstants.MAPPING_1_REPLACEMENT_FOR_PROJECT1, IntegrationTestExampleConstants.MAPPING_1_COMMENT);
+        project1Mapping.getEntries().add(entry);
+        System.out.println(project1Mapping.toJSON());
     }
 
     /**
@@ -88,9 +119,8 @@ public class ScenarioInitializer {
         return waitUntilUserCanLogin(user, DEFAULT_TIME_TO_WAIT_FOR_RESOURCE_CREATION);
     }
 
-    @SuppressWarnings("unchecked")
-    public ScenarioInitializer waitUntilUserCanLogin(TestUser user, int seconds) {
-        TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(user, seconds, HttpClientErrorException.class) {
+    public ScenarioInitializer waitUntilUserCanLogin(TestUser user, int secondsBeforeTimeOut) {
+        TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(user, secondsBeforeTimeOut, HttpClientErrorException.class) {
             @Override
             public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
                 assertUser(user).canLogin();
@@ -104,9 +134,8 @@ public class ScenarioInitializer {
         return waitUntilUserExists(user, DEFAULT_TIME_TO_WAIT_FOR_RESOURCE_CREATION);
     }
 
-    @SuppressWarnings("unchecked")
-    public ScenarioInitializer waitUntilUserExists(TestUser user, int seconds) {
-        TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, seconds, HttpClientErrorException.class) {
+    public ScenarioInitializer waitUntilUserExists(TestUser user, int secondsBeforeTimeOut) {
+        TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, secondsBeforeTimeOut, HttpClientErrorException.class) {
             @Override
             public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
                 assertUser(user).doesExist();
@@ -120,9 +149,8 @@ public class ScenarioInitializer {
         return waitUntilProjectExists(project, DEFAULT_TIME_TO_WAIT_FOR_RESOURCE_CREATION);
     }
 
-    @SuppressWarnings("unchecked")
-    public ScenarioInitializer waitUntilProjectExists(TestProject project, int seconds) {
-        TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, seconds, HttpClientErrorException.class) {
+    public ScenarioInitializer waitUntilProjectExists(TestProject project, int secondsBeforeTimeOut) {
+        TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, secondsBeforeTimeOut, HttpClientErrorException.class) {
             @Override
             public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
                 assertProject(project).doesExist();

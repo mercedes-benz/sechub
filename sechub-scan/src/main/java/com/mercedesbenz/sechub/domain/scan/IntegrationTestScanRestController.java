@@ -17,8 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mercedesbenz.sechub.commons.mapping.MappingData;
+import com.mercedesbenz.sechub.commons.mapping.NamePatternIdProvider;
 import com.mercedesbenz.sechub.domain.scan.access.ScanAccessCountService;
-import com.mercedesbenz.sechub.domain.scan.config.NamePatternIdProvider;
+import com.mercedesbenz.sechub.domain.scan.admin.FullScanData;
+import com.mercedesbenz.sechub.domain.scan.admin.FullScanDataService;
 import com.mercedesbenz.sechub.domain.scan.config.ScanConfigService;
 import com.mercedesbenz.sechub.domain.scan.config.ScanMapping;
 import com.mercedesbenz.sechub.domain.scan.config.ScanMappingConfigurationService;
@@ -36,7 +39,6 @@ import com.mercedesbenz.sechub.domain.scan.product.config.WithoutProductExecutor
 import com.mercedesbenz.sechub.domain.scan.report.ScanReportCountService;
 import com.mercedesbenz.sechub.sharedkernel.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
 
 /**
  * Contains additional rest call functionality for integration tests on scan
@@ -76,6 +78,9 @@ public class IntegrationTestScanRestController {
     private ProductResultService productResultService;
 
     @Autowired
+    private FullScanDataService fullScanDataService;
+
+    @Autowired
     ProductResultRepository productResultRepository;
 
     @Autowired
@@ -112,6 +117,12 @@ public class IntegrationTestScanRestController {
             MediaType.APPLICATION_JSON_VALUE })
     public long countScanResults(@PathVariable("projectId") String projectId) {
         return productResultCountService.countProjectScanResults(projectId);
+    }
+
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/job/{jobUUID}/fullscandata", method = RequestMethod.GET, produces = {
+            MediaType.APPLICATION_JSON_VALUE })
+    public FullScanData countScanResults(@PathVariable("jobUUID") UUID secHubJobUUID) {
+        return fullScanDataService.getFullScanData(secHubJobUUID);
     }
 
     @RequestMapping(path = APIConstants.API_ANONYMOUS

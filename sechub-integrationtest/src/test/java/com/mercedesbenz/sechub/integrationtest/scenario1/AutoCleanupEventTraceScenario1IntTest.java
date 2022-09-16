@@ -9,13 +9,14 @@ import org.junit.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.rules.Timeout;
 
+import com.mercedesbenz.sechub.integrationtest.IntegrationTestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData;
 import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData.TestCleanupTimeUnit;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 
-public class AutoCleanupEventTraceScenario1IntTest {
+public class AutoCleanupEventTraceScenario1IntTest implements IntegrationTestIsNecessaryForDocumentation {
 
     @Rule
     public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario1.class);

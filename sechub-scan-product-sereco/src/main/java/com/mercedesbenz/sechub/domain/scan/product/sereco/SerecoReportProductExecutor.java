@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.domain.scan.product.sereco;
 import static com.mercedesbenz.sechub.sereco.ImportParameter.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -14,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutor;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
@@ -51,7 +54,8 @@ public class SerecoReportProductExecutor implements ProductExecutor {
 
             ProductIdentifier.PDS_CODESCAN,
             ProductIdentifier.PDS_WEBSCAN,
-            ProductIdentifier.PDS_INFRASCAN};
+            ProductIdentifier.PDS_INFRASCAN,
+            ProductIdentifier.PDS_LICENSESCAN};
     /* @formatter:on */
 
     @Override
@@ -103,6 +107,16 @@ public class SerecoReportProductExecutor implements ProductExecutor {
         String importData = productResult.getResult();
         String productId = productResult.getProductIdentifier().name();
 
+        List<SecHubMessage> productMessages = new ArrayList<>();
+        String messagesJson = productResult.getMessages();
+        if (messagesJson != null) {
+            SecHubMessagesList messagesList = SecHubMessagesList.fromJSONString(messagesJson);
+            List<SecHubMessage> messages = messagesList.getSecHubMessages();
+            if (messages != null) {
+                productMessages.addAll(messages);
+            }
+        }
+
         LOG.debug("{} found product result for '{}'", traceLogId, productId);
 
         UUID uuid = productResult.getUUID();
@@ -114,6 +128,7 @@ public class SerecoReportProductExecutor implements ProductExecutor {
 			workspace.doImport(builder().
 						productId(productId).
 						importData(importData).
+						importProductMessages(productMessages).
 						importId(docId)
 					.build());
 		} catch (IOException e) {

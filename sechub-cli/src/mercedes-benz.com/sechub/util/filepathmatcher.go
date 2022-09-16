@@ -9,13 +9,13 @@ import (
 	"strings"
 )
 
-// Filepathmatch - This method provides ANT like selectors.
+// FilePathMatch - This method provides ANT like selectors.
 // See https://ant.apache.org/manual/dirtasks.html
 // For example: "**/a*.txt" will accept
 //               - "/home/tester/xyz/a1234.txt"
 //               - "a1b.txt"
 //
-func Filepathmatch(path string, pattern string) (result bool) {
+func FilePathMatch(path string, pattern string) (result bool) {
 
 	// Let's turn the ant style pattern into a regexp:
 	doublestarPatterns := strings.Split(pattern, "**/")

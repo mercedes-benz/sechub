@@ -8,6 +8,6 @@ package com.mercedesbenz.sechub.domain.scan.product;
  * @author Albert Tregnaghi
  *
  */
-public interface InfrastructureScanProductExecutionService extends ProductExectionStoreService {
+public interface InfrastructureScanProductExecutionService extends ProductExecutionStoreService {
 
 }

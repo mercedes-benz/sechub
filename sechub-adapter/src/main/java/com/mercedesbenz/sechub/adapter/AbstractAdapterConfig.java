@@ -35,6 +35,8 @@ public abstract class AbstractAdapterConfig implements AdapterConfig {
 
     boolean trustAllCertificatesEnabled;
 
+    String mockDataIdentifier;
+
     private Map<AdapterOptionKey, String> options = new HashMap<>();
 
     protected AbstractAdapterConfig() {
@@ -58,6 +60,10 @@ public abstract class AbstractAdapterConfig implements AdapterConfig {
     @Override
     public final String getProductBaseURL() {
         return productBaseURL;
+    }
+
+    public String getMockDataIdentifier() {
+        return mockDataIdentifier;
     }
 
     @Override

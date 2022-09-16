@@ -2,9 +2,10 @@
 package com.mercedesbenz.sechub.restdoc;
 
 import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
-import static com.mercedesbenz.sechub.test.TestURLBuilder.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
@@ -57,8 +58,9 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminRevo
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminShowsUserDetails;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUpdatesUserEmailAddress;
 import com.mercedesbenz.sechub.test.ExampleConstants;
+import com.mercedesbenz.sechub.test.RestDocPathParameter;
+import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
-import com.mercedesbenz.sechub.test.TestURLBuilder;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(UserAdministrationRestController.class)
@@ -66,7 +68,7 @@ import com.mercedesbenz.sechub.test.TestURLBuilder;
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
-public class UserAdministrationRestControllerRestDocTest {
+public class UserAdministrationRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
 
     private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
@@ -110,8 +112,9 @@ public class UserAdministrationRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-                put(apiEndpoint, USER_ID, EMAIL_ADDRESS)
-                )./*andDo(print()).*/
+                  put(apiEndpoint, USER_ID, EMAIL_ADDRESS).
+                  	header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                ).
         andExpect(status().isOk()).
         andDo(defineRestService().
                 with().
@@ -119,6 +122,9 @@ public class UserAdministrationRestControllerRestDocTest {
                     tag(RestDocFactory.extractTag(apiEndpoint)).
                 and().
                 document(
+	                		requestHeaders(
+	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                		),
                             pathParameters(
                                     parameterWithName(USER_ID.paramName()).description("The userId of the user whose email adress will be changed"),
                                     parameterWithName(EMAIL_ADDRESS.paramName()).description("The new email address")
@@ -138,8 +144,9 @@ public class UserAdministrationRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
-				post(apiEndpoint, TestURLBuilder.RestDocPathParameter.USER_ID)
-				)./*andDo(print()).*/
+				  post(apiEndpoint, RestDocPathParameter.USER_ID).
+				  	header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+				).
 		andExpect(status().isOk()).
 		andDo(defineRestService().
                 with().
@@ -147,11 +154,13 @@ public class UserAdministrationRestControllerRestDocTest {
                     tag(RestDocFactory.extractTag(apiEndpoint)).
                 and().
                 document(
-                            pathParameters(
+	                		requestHeaders(
+	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                		),
+                         	pathParameters(
                                     parameterWithName(USER_ID.paramName()).description("The userId of the user who becomes admin")
-                        )
+                            )
 				));
-
 		/* @formatter:on */
     }
 
@@ -164,7 +173,8 @@ public class UserAdministrationRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
-				post(apiEndpoint,TestURLBuilder.RestDocPathParameter.USER_ID)
+				  post(apiEndpoint,RestDocPathParameter.USER_ID).
+				  	header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
 				).
 		andExpect(status().isOk()).
 		andDo(defineRestService().
@@ -173,9 +183,12 @@ public class UserAdministrationRestControllerRestDocTest {
                     tag(RestDocFactory.extractTag(apiEndpoint)).
                 and().
                 document(
+	                		requestHeaders(
+	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                		),
                             pathParameters(
                                     parameterWithName(USER_ID.paramName()).description("The userId of the user who becomes admin")
-                        )
+                            )
 				));
 
 		/* @formatter:on */
@@ -190,7 +203,8 @@ public class UserAdministrationRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
-				delete(apiEndpoint, TestURLBuilder.RestDocPathParameter.USER_ID)
+					delete(apiEndpoint, RestDocPathParameter.USER_ID).
+					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
 				).
 		andExpect(status().isOk()).
 		andDo(defineRestService().
@@ -199,8 +213,11 @@ public class UserAdministrationRestControllerRestDocTest {
                     tag(RestDocFactory.extractTag(apiEndpoint)).
                 and().
                 document(
-                            pathParameters(
-                                    parameterWithName(USER_ID.paramName()).description("The userId of the user who shall be deleted")
+                		requestHeaders(
+                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+                		),
+                        pathParameters(
+                                parameterWithName(USER_ID.paramName()).description("The userId of the user who shall be deleted")
                         )
 				));
 
@@ -216,7 +233,8 @@ public class UserAdministrationRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-        		post(apiEndpoint, "user1")
+        		  post(apiEndpoint, "user1").
+        		  header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
         		).
         			andExpect(status().isCreated()).
         			andDo(defineRestService().
@@ -225,10 +243,13 @@ public class UserAdministrationRestControllerRestDocTest {
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
                             and().
                             document(
-        	                            pathParameters(
-        	                                    parameterWithName(USER_ID.paramName()).description("The userId of the signup which shall be accepted")
-        	                )
-        		));
+                            		requestHeaders(
+                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+                            		),
+        	                        pathParameters(
+        	                                 parameterWithName(USER_ID.paramName()).description("The userId of the signup which shall be accepted")
+        	                        )
+                    ));
 
 		/* @formatter:on */
     }
@@ -249,7 +270,8 @@ public class UserAdministrationRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
-				get(apiEndpoint)
+				  get(apiEndpoint).
+				  header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
 				).
 		andExpect(status().isOk()).
 		andDo(defineRestService().
@@ -259,6 +281,9 @@ public class UserAdministrationRestControllerRestDocTest {
                     responseSchema(OpenApiSchema.USER_LIST.getSchema()).
                 and().
                 document(
+                		requestHeaders(
+                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+                		),
                             responseFields(
                                     fieldWithPath("[]").description("List of user Ids").optional()
                         )
@@ -282,8 +307,9 @@ public class UserAdministrationRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
-				get(apiEndpoint)
-				)./*andDo(print()).*/
+				  get(apiEndpoint).
+				  header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+				).
 		andExpect(status().isOk()).
 		andDo(defineRestService().
                 with().
@@ -292,6 +318,9 @@ public class UserAdministrationRestControllerRestDocTest {
                     responseSchema(OpenApiSchema.USER_LIST.getSchema()).
                 and().
                 document(
+	                		requestHeaders(
+	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                		),
                             responseFields(
                                     fieldWithPath("[]").description("List of admin Ids").optional()
                         )
@@ -322,7 +351,8 @@ public class UserAdministrationRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-        		get(apiEndpoint, "user1")
+        			get(apiEndpoint, "user1").
+  				  	header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
         		).
         			andExpect(status().isOk()).
         			andDo(defineRestService().
@@ -332,6 +362,9 @@ public class UserAdministrationRestControllerRestDocTest {
                                 responseSchema(OpenApiSchema.USER_DETAILS.getSchema()).
                             and().
                             document(
+	                            		requestHeaders(
+	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                            		),
         	                            pathParameters(
         	                                    parameterWithName(USER_ID.paramName()).description("The user id of user to show details for")
         	                            ),

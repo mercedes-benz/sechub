@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.mercedesbenz.sechub.commons.mapping.NamePatternIdProvider;
 import com.mercedesbenz.sechub.domain.scan.ScanDomainTestFileSupport;
 
 @SuppressWarnings("deprecation") // we explicit use the deprecated method, because it is only for tests..

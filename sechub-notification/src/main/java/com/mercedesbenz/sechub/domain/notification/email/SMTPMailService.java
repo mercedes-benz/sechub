@@ -18,10 +18,10 @@ public class SMTPMailService implements EmailService {
     private static final Logger LOG = LoggerFactory.getLogger(SMTPMailService.class);
 
     @Autowired
-    public JavaMailSender mailSender;
+    JavaMailSender mailSender;
 
     @Autowired
-    private SimpleMailMessageSupport mailMessageSupport;
+    SimpleMailMessageSupport mailMessageSupport;
 
     @Override
     public void send(SimpleMailMessage message) {

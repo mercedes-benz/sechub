@@ -2,16 +2,21 @@
 package com.mercedesbenz.sechub.owaspzapwrapper.config;
 
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.CommandLineSettings;
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitCode;
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitRuntimeException;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperExitCode;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.auth.AuthenticationType;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.data.DeactivatedRuleReferences;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.data.OwaspZapFullRuleset;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.data.RuleReference;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.BaseTargetUriFactory;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.SecHubWebScanConfigurationHelper;
 import com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableConstants;
@@ -23,29 +28,46 @@ public class OwaspZapScanConfigurationFactory {
     SecHubWebScanConfigurationHelper sechubWebConfigHelper;
     EnvironmentVariableReader environmentVariableReader;
     BaseTargetUriFactory targetUriFactory;
-    SechubWebConfigProvider webConfigProvider;
+    RuleProvider ruleProvider;
+    ApiDefinitionFileProvider apiDefinitionFileProvider;
+    SecHubScanConfigProvider secHubScanConfigProvider;
 
     public OwaspZapScanConfigurationFactory() {
         sechubWebConfigHelper = new SecHubWebScanConfigurationHelper();
         environmentVariableReader = new EnvironmentVariableReader();
         targetUriFactory = new BaseTargetUriFactory();
-        webConfigProvider = new SechubWebConfigProvider();
+        ruleProvider = new RuleProvider();
+        apiDefinitionFileProvider = new ApiDefinitionFileProvider();
+        secHubScanConfigProvider = new SecHubScanConfigProvider();
     }
 
     public OwaspZapScanConfiguration create(CommandLineSettings settings) {
         if (settings == null) {
-            throw new MustExitRuntimeException("Command line settings must not be null!", MustExitCode.COMMANDLINE_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("Command line settings must not be null!", ZapWrapperExitCode.COMMANDLINE_CONFIGURATION_INVALID);
         }
+        /* Owasp Zap rule setup */
+        OwaspZapFullRuleset fullRuleset = ruleProvider.fetchFullRuleset(settings.getFullRulesetFile());
+        DeactivatedRuleReferences deactivatedRuleReferences = createDeactivatedRuleReferencesFromSettingsOrEnv(settings);
+
+        DeactivatedRuleReferences ruleReferencesFromFile = ruleProvider.fetchDeactivatedRuleReferences(settings.getRulesDeactvationFile());
+        for (RuleReference reference : ruleReferencesFromFile.getDeactivatedRuleReferences()) {
+            deactivatedRuleReferences.addRuleReference(reference);
+        }
+
         /* Wrapper settings */
         OwaspZapServerConfiguration serverConfig = createOwaspZapServerConfig(settings);
         ProxyInformation proxyInformation = createProxyInformation(settings);
 
         /* SecHub settings */
         URI targetUri = targetUriFactory.create(settings.getTargetURL());
-        SecHubWebScanConfiguration sechubWebConfig = webConfigProvider.getSecHubWebConfiguration(settings.getSecHubConfigFile());
+
+        SecHubScanConfiguration sechubScanConfig = secHubScanConfigProvider.getSecHubWebConfiguration(settings.getSecHubConfigFile());
+        SecHubWebScanConfiguration sechubWebConfig = getSecHubWebConfiguration(sechubScanConfig);
         long maxScanDurationInMillis = sechubWebConfigHelper.fetchMaxScanDurationInMillis(sechubWebConfig);
 
         AuthenticationType authType = sechubWebConfigHelper.determineAuthenticationType(sechubWebConfig);
+
+        Path apiDefinitionFile = createPathToApiDefinitionFileOrNull(sechubScanConfig);
 
         /* we always use the SecHub job UUID as OWASP Zap context name */
         String contextName = settings.getJobUUID();
@@ -67,9 +89,42 @@ public class OwaspZapScanConfigurationFactory {
 												.setMaxScanDurationInMillis(maxScanDurationInMillis)
 												.setSecHubWebScanConfiguration(sechubWebConfig)
 												.setProxyInformation(proxyInformation)
+												.setFullRuleset(fullRuleset)
+												.setDeactivatedRuleReferences(deactivatedRuleReferences)
+												.setApiDefinitionFile(apiDefinitionFile)
 											  .build();
 		/* @formatter:on */
         return scanConfig;
+    }
+
+    private DeactivatedRuleReferences createDeactivatedRuleReferencesFromSettingsOrEnv(CommandLineSettings settings) {
+        LOG.info("Reading rules to deactivate from command line if set.");
+        String deactivatedRuleRefsAsString = settings.getDeactivatedRuleReferences();
+
+        // if no rules to deactivate were specified via the command line,
+        // look for rules specified via the corresponding env variable
+        if (deactivatedRuleRefsAsString == null) {
+            LOG.info("Reading rules to deactivate from env variable {} if set.", EnvironmentVariableConstants.ZAP_DEACTIVATED_RULE_REFERENCES);
+            deactivatedRuleRefsAsString = environmentVariableReader.readAsString(EnvironmentVariableConstants.ZAP_DEACTIVATED_RULE_REFERENCES);
+        }
+
+        // if no rules to deactivate were set at all, continue without
+        if (deactivatedRuleRefsAsString == null) {
+            LOG.info("Env variable {} was not set.", EnvironmentVariableConstants.ZAP_DEACTIVATED_RULE_REFERENCES);
+            return new DeactivatedRuleReferences();
+        }
+
+        DeactivatedRuleReferences deactivatedRuleReferences = new DeactivatedRuleReferences();
+        String[] deactivatedRuleRefs = deactivatedRuleRefsAsString.split(",");
+        for (String ruleRef : deactivatedRuleRefs) {
+            // The info is not needed here, it is only for the JSON file and meant to be
+            // used as an additional description for the user
+            String info = "";
+            RuleReference ref = new RuleReference(ruleRef, info);
+            deactivatedRuleReferences.addRuleReference(ref);
+        }
+
+        return deactivatedRuleReferences;
     }
 
     private OwaspZapServerConfiguration createOwaspZapServerConfig(CommandLineSettings settings) {
@@ -88,17 +143,17 @@ public class OwaspZapScanConfigurationFactory {
         }
 
         if (zapHost == null) {
-            throw new MustExitRuntimeException("Owasp Zap host is null. Please set the Owasp Zap host to the host use by the Owasp Zap.",
-                    MustExitCode.ZAP_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("Owasp Zap host is null. Please set the Owasp Zap host to the host use by the Owasp Zap.",
+                    ZapWrapperExitCode.ZAP_CONFIGURATION_INVALID);
         }
 
         if (zapPort <= 0) {
-            throw new MustExitRuntimeException("Owasp Zap Port was set to " + zapPort + ". Please set the Owasp Zap port to the port used by the Owasp Zap.",
-                    MustExitCode.ZAP_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("Owasp Zap Port was set to " + zapPort + ". Please set the Owasp Zap port to the port used by the Owasp Zap.",
+                    ZapWrapperExitCode.ZAP_CONFIGURATION_INVALID);
         }
         if (zapApiKey == null) {
-            throw new MustExitRuntimeException("Owasp Zap API-Key is null. Please set the Owasp Zap API-key to the same value set inside your Owasp Zap.",
-                    MustExitCode.ZAP_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("Owasp Zap API-Key is null. Please set the Owasp Zap API-key to the same value set inside your Owasp Zap.",
+                    ZapWrapperExitCode.ZAP_CONFIGURATION_INVALID);
         }
         return new OwaspZapServerConfiguration(zapHost, zapPort, zapApiKey);
     }
@@ -121,4 +176,17 @@ public class OwaspZapScanConfigurationFactory {
         return new ProxyInformation(proxyHost, proxyPort);
     }
 
+    private SecHubWebScanConfiguration getSecHubWebConfiguration(SecHubScanConfiguration sechubConfig) {
+        if (!sechubConfig.getWebScan().isPresent()) {
+            return new SecHubWebScanConfiguration();
+        }
+        return sechubConfig.getWebScan().get();
+    }
+
+    private Path createPathToApiDefinitionFileOrNull(SecHubScanConfiguration sechubScanConfig) {
+        // use the extracted sources folder path, where all text files are uploaded and
+        // extracted
+        String extractedSourcesFolderPath = environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_JOB_EXTRACTED_SOURCES_FOLDER);
+        return apiDefinitionFileProvider.fetchApiDefinitionFile(extractedSourcesFolderPath, sechubScanConfig);
+    }
 }

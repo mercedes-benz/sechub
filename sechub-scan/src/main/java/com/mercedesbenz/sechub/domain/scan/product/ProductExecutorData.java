@@ -2,7 +2,6 @@
 package com.mercedesbenz.sechub.domain.scan.product;
 
 import java.util.List;
-import java.util.Set;
 
 import com.mercedesbenz.sechub.domain.scan.NetworkLocationProvider;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataProvider;
@@ -24,7 +23,7 @@ public class ProductExecutorData {
     NetworkLocationProvider networkLocationProvider;
     NetworkTargetInfo currentNetworkTargetInfo;
     String traceLogIdAsString;
-    Set<String> codeUploadFileSystemFolderPaths;
+    String mockDataIdentifier;
 
     ProductExecutorData() {
     }
@@ -61,8 +60,13 @@ public class ProductExecutorData {
         return traceLogId;
     }
 
-    public Set<String> getCodeUploadFileSystemFolders() {
-        return codeUploadFileSystemFolderPaths;
+    /**
+     * Returns mock data identifier (if necessary)
+     *
+     * @return identifier or <code>null</code>
+     */
+    public String getMockDataIdentifier() {
+        return mockDataIdentifier;
     }
 
     public String getTraceLogIdAsString() {

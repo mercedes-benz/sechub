@@ -132,6 +132,17 @@ endif::usecasedoc[]
 
 ==== Product specific details
 
+===== {pds}
+For {pds} we have a set of predefined configuration parameters _(see next table)_ and the possibility
+to define custom parameters. 
+
+Some of the predefined parameters are generated.
+In this case the user cannot define them in the executor configuration, but they
+are listed here for the sake of completeness.
+
+include::../../gen/gen_pds_executor_config_parameters.adoc[]
+
+
 ===== Checkmarx
 ====== Mapping teams and presets for new projects
 When a user starts a scan and a `checkmarx` project does not already exist, it will be created.

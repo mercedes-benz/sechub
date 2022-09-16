@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.test;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -120,7 +122,7 @@ public class TestUtil {
      *
      * @param prefix     filename prefix
      * @param fileEnding filename ending
-     * @return file
+     * @return filePath
      * @throws IOException
      */
     public static Path createTempFileInBuildFolder(String prefix, String fileEnding, FileAttribute<?>... attributes) throws IOException {
@@ -227,6 +229,20 @@ public class TestUtil {
 
         public boolean isWindows() {
             return windows;
+        }
+    }
+
+    public static void assertExceptionMessageContains(IllegalStateException exception, String expectedMessageToBeContained) {
+        String message = exception.getMessage();
+        if (!message.contains(expectedMessageToBeContained)) {
+            assertEquals("Is not containing: " + expectedMessageToBeContained, message);
+        }
+    }
+
+    public static void assertExceptionMessageStartsWith(IllegalStateException exception, String expectedMessageStart) {
+        String message = exception.getMessage();
+        if (!message.startsWith(expectedMessageStart)) {
+            assertEquals("Is not starting with: " + expectedMessageStart, message);
         }
     }
 

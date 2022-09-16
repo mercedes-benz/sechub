@@ -6,6 +6,8 @@ import java.nio.file.Path;
 
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.auth.AuthenticationType;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.data.DeactivatedRuleReferences;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.data.OwaspZapFullRuleset;
 
 public class OwaspZapScanConfiguration {
     private OwaspZapServerConfiguration serverConfig;
@@ -27,6 +29,12 @@ public class OwaspZapScanConfiguration {
     private SecHubWebScanConfiguration secHubWebScanConfiguration;
 
     private ProxyInformation proxyInformation;
+
+    private OwaspZapFullRuleset fullRuleset;
+
+    private DeactivatedRuleReferences deactivatedRuleReferences;
+
+    private Path apiDefinitionFile;
 
     private OwaspZapScanConfiguration() {
     }
@@ -85,6 +93,22 @@ public class OwaspZapScanConfiguration {
         return proxyInformation;
     }
 
+    public OwaspZapFullRuleset getFullRuleset() {
+        return fullRuleset;
+    }
+
+    public DeactivatedRuleReferences getDeactivatedRuleReferences() {
+        return deactivatedRuleReferences;
+    }
+
+    /**
+     *
+     * @return api defintion file or <code>null</code> if not available
+     */
+    public Path getApiDefinitionFile() {
+        return apiDefinitionFile;
+    }
+
     public static OwaspZapBasicScanConfigurationBuilder builder() {
         return new OwaspZapBasicScanConfigurationBuilder();
     }
@@ -110,6 +134,12 @@ public class OwaspZapScanConfiguration {
         private SecHubWebScanConfiguration secHubWebScanConfiguration;
 
         private ProxyInformation proxyInformation;
+
+        private OwaspZapFullRuleset fullRuleset;
+
+        private DeactivatedRuleReferences deactivatedRuleReferences;
+
+        private Path apiDefinitionFile;
 
         public OwaspZapBasicScanConfigurationBuilder setServerConfig(OwaspZapServerConfiguration serverConfig) {
             this.serverConfig = serverConfig;
@@ -166,6 +196,21 @@ public class OwaspZapScanConfiguration {
             return this;
         }
 
+        public OwaspZapBasicScanConfigurationBuilder setFullRuleset(OwaspZapFullRuleset fullRuleset) {
+            this.fullRuleset = fullRuleset;
+            return this;
+        }
+
+        public OwaspZapBasicScanConfigurationBuilder setDeactivatedRuleReferences(DeactivatedRuleReferences deactivatedRuleReferences) {
+            this.deactivatedRuleReferences = deactivatedRuleReferences;
+            return this;
+        }
+
+        public OwaspZapBasicScanConfigurationBuilder setApiDefinitionFile(Path apiDefinitionFile) {
+            this.apiDefinitionFile = apiDefinitionFile;
+            return this;
+        }
+
         public OwaspZapScanConfiguration build() {
             OwaspZapScanConfiguration owaspZapBasicScanConfiguration = new OwaspZapScanConfiguration();
             owaspZapBasicScanConfiguration.serverConfig = this.serverConfig;
@@ -182,6 +227,11 @@ public class OwaspZapScanConfiguration {
             owaspZapBasicScanConfiguration.secHubWebScanConfiguration = this.secHubWebScanConfiguration;
 
             owaspZapBasicScanConfiguration.proxyInformation = this.proxyInformation;
+
+            owaspZapBasicScanConfiguration.fullRuleset = this.fullRuleset;
+            owaspZapBasicScanConfiguration.deactivatedRuleReferences = this.deactivatedRuleReferences;
+
+            owaspZapBasicScanConfiguration.apiDefinitionFile = this.apiDefinitionFile;
 
             return owaspZapBasicScanConfiguration;
         }

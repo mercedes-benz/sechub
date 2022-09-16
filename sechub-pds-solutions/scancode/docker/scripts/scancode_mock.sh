@@ -20,7 +20,7 @@ case "$given_output_format" in
         mock_file="$MOCK_FOLDER/scancode_mock.spdx.rdf"
 esac
 
-# Mock is scan output of: https://github.com/OWASP/NodeGoat
+# Mock is scan output of the `samples` folder in: https://github.com/nexB/scancode-toolkit
 echo "Running ScanCode mock"
 echo "Given output format: $given_output_format"
 echo "Mock file: $mock_file"

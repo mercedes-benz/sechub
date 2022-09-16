@@ -2,6 +2,8 @@
 
 package cli
 
+import "time"
+
 // CurrentAPIVersion - SecHub current api version
 const CurrentAPIVersion = "1.0"
 
@@ -17,21 +19,40 @@ const DefaultTempDir = "."
 
 // DefaultWaitTime - Wait time in seconds.
 // Will be used
-// - for automatic status checks etc. when action=scan
+// - for maximum pause between automatic status checks when action=scan
 // - for pause between retries for failed HTTP calls
 const DefaultWaitTime = 60
+
+// MinimalWaitTimeSeconds - We don't allow intervals shorter than this to protect the SecHub server
+const MinimalWaitTimeSeconds = 1
+
+// initialWaitIntervalSeconds WaitIntervalIncreaseFactor - defines client's polling behaviour:
+// 2s - 3s - 4.5s - 7s - 10s - 15s - 23s - 34s - 51s - 60s - 60s - 60s ...
+const DefaultinitialWaitIntervalSeconds = 2
+const InitialWaitIntervalNanoseconds = int64(DefaultinitialWaitIntervalSeconds * time.Second)
+const WaitIntervalIncreaseFactor = 1.5
+
+// MinimalInitialWaitIntervalSeconds - small value to enable quick integration tests. In real life: please stick with DefaultinitialWaitIntervalSeconds.
+const MinimalInitialWaitIntervalSeconds = 0.1
 
 // DefaultTimeoutInSeconds - Timeout for network communication in seconds
 const DefaultTimeoutInSeconds = 120
 
-// DefaultZipExcludeDirPatterns - Define directory patterns to exclude from zip file:
+// MinimalTimeoutInSeconds - Minimal allowed timeout setting
+const MinimalTimeoutInSeconds = 10
+
+// DefaultSourceCodeExcludeDirPatterns - Define directory patterns to exclude from zip file:
 // - code in directories named "test" is not considered to end up in the binary
 // - also ignore ".git" directory
 // - ignore "node_modules" directories which may contain millions of lines of library code
-var DefaultZipExcludeDirPatterns = []string{"**/test/**", "**/.git/**", "**/node_modules/**"}
+var DefaultSourceCodeExcludeDirPatterns = []string{"**/test/**", "**/.git/**", "**/node_modules/**"}
 
 // SupportedReportFormats - Supported output formats for SecHub reports
-var SupportedReportFormats = []string{"json", "html"}
+const ReportFormatJSON = "json"
+const ReportFormatSPDXJSON = "spdx-json"
+const ReportFormatHTML = "html"
+
+var SupportedReportFormats = []string{ReportFormatJSON, ReportFormatHTML, ReportFormatSPDXJSON}
 
 /* ---------------------------------- */
 /* -------- Exit codes -------------- */
@@ -101,6 +122,13 @@ const showHelpAction = "help"
 // showVersionAction - name of action to display SecHub client version
 const showVersionAction = "version"
 
+/* --------------------------------------- */
+/* -------- File Archive Constants ------- */
+/* --------------------------------------- */
+
+// archiveDataPrefix - Prefix in Zip or Tar archives for files from "data" section
+const archiveDataPrefix = "__data__"
+
 /* -------------------------------------- */
 /* -------- Command line options -------- */
 /* -------------------------------------- */
@@ -135,8 +163,11 @@ const SechubDebugEnvVar = "SECHUB_DEBUG"
 // SechubDebugHTTPEnvVar - environment variable to enable additional HTTP logging
 const SechubDebugHTTPEnvVar = "SECHUB_DEBUG_HTTP"
 
-// SechubIgnoreDefaultExcludesEnvVar - environment variable to make it possible to switch off default excludes (DefaultZipExcludeDirPatterns)
+// SechubIgnoreDefaultExcludesEnvVar - environment variable to make it possible to switch off default excludes (DefaultSourceCodeExcludeDirPatterns)
 const SechubIgnoreDefaultExcludesEnvVar = "SECHUB_IGNORE_DEFAULT_EXCLUDES"
+
+// SechubIgnoreDefaultExcludesEnvVar - environment variable to make it possible to switch off default excludes (DefaultSourceCodeExcludeDirPatterns)
+const SechubIninitialWaitIntervalSecondsEnvVar = "SECHUB_INITIAL_WAIT_INTERVAL"
 
 // SechubKeepTempfilesEnvVar - environment variable to keep temporary files
 const SechubKeepTempfilesEnvVar = "SECHUB_KEEP_TEMPFILES"
@@ -163,7 +194,7 @@ const SechubUserIDEnvVar = "SECHUB_USERID"
 const SechubWaittimeDefaultEnvVar = "SECHUB_WAITTIME_DEFAULT"
 
 // SechubWhitelistAllEnvVar - environment variable to make it possible to switch off the default witelist for source code files.
-//   Important: DefaultZipExcludeDirPatterns still remains active and can be turned off via SECHUB_IGNORE_DEFAULT_EXCLUDES environment variable.
+//   Important: DefaultSourceCodeExcludeDirPatterns still remains active and can be turned off via SECHUB_IGNORE_DEFAULT_EXCLUDES environment variable.
 const SechubWhitelistAllEnvVar = "SECHUB_WHITELIST_ALL"
 
 /* ---------------------------------- */
@@ -182,6 +213,9 @@ const JobStatusOkay = "OK"
 
 // MaximumBytesOfSecHubConfig maximum byte length allowed for a sechub config file
 const MaximumBytesOfSecHubConfig = 20000
+
+// MaximumNumberOfCMDLineArguments - maximum number of commandline args. os.Args will be capped if exceeded.
+const MaximumNumberOfCMDLineArguments = 50
 
 /* ---------------------------------- */
 /* -------- Resilience -------------- */

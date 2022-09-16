@@ -3,6 +3,9 @@ package com.mercedesbenz.sechub.commons.model;
 
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class AbstractSecHubFileSystemContainer implements SecHubFileSystemContainer {
 
     public static final String PROPERTY_FILESYSTEM = "fileSystem";

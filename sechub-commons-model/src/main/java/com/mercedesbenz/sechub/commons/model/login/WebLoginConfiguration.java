@@ -4,6 +4,9 @@ package com.mercedesbenz.sechub.commons.model.login;
 import java.net.URL;
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class WebLoginConfiguration {
 
     public static final String PROPERTY_BASIC = "basic";

@@ -15,6 +15,7 @@ import com.mercedesbenz.sechub.docgen.messaging.DomainMessagingFilesGenerator;
 import com.mercedesbenz.sechub.docgen.messaging.DomainMessagingModel;
 import com.mercedesbenz.sechub.docgen.messaging.UseCaseEventMessageLinkAsciidocGenerator;
 import com.mercedesbenz.sechub.docgen.messaging.UseCaseEventOverviewPlantUmlGenerator;
+import com.mercedesbenz.sechub.docgen.pds.CheckmarxWrapperDocumentationGenerator;
 import com.mercedesbenz.sechub.docgen.spring.ScheduleDescriptionGenerator;
 import com.mercedesbenz.sechub.docgen.spring.SpringProfilesPlantumlGenerator;
 import com.mercedesbenz.sechub.docgen.spring.SpringProfilesPlantumlGenerator.SpringProfileGenoConfig;
@@ -31,87 +32,146 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 public class AsciidocGenerator implements Generator {
 
     ClasspathDataCollector collector;
-    SystemPropertiesDescriptionGenerator propertiesGenerator = new SystemPropertiesDescriptionGenerator();
-    SystemPropertiesJavaLaunchExampleGenerator javaLaunchExampleGenerator = new SystemPropertiesJavaLaunchExampleGenerator();
-    ScheduleDescriptionGenerator scheduleDescriptionGenerator = new ScheduleDescriptionGenerator();
-    UseCaseAsciiDocGenerator useCaseModelAsciiDocGenerator = new UseCaseAsciiDocGenerator();
-    UseCaseRestDocModelAsciiDocGenerator useCaseRestDocModelAsciiDocGenerator = new UseCaseRestDocModelAsciiDocGenerator();
     TextFileWriter writer = new TextFileWriter();
-    DomainMessagingFilesGenerator domainMessagingFilesGenerator = new DomainMessagingFilesGenerator(writer);
-    ExampleJSONGenerator exampleJSONGenerator = new ExampleJSONGenerator();
+
+    /* ---------------------------------- */
+    /* ----- GENERATORS ----------------- */
+    /* ---------------------------------- */
+
+    /* Common (PDS+SecHub) */
+    SystemPropertiesDescriptionGenerator propertiesGenerator = new SystemPropertiesDescriptionGenerator();
+    UseCaseAsciiDocGenerator useCaseModelAsciiDocGenerator = new UseCaseAsciiDocGenerator();
+
+    /* SecHub */
     ClientDocFilesGenerator clientDocFilesGenerator = new ClientDocFilesGenerator();
 
+    ExampleJSONGenerator exampleJSONGenerator = new ExampleJSONGenerator();
+
+    SystemPropertiesJavaLaunchExampleGenerator javaLaunchExampleGenerator = new SystemPropertiesJavaLaunchExampleGenerator();
+    ScheduleDescriptionGenerator scheduleDescriptionGenerator = new ScheduleDescriptionGenerator();
+    UseCaseRestDocModelAsciiDocGenerator useCaseRestDocModelAsciiDocGenerator = new UseCaseRestDocModelAsciiDocGenerator();
+    DomainMessagingFilesGenerator domainMessagingFilesGenerator = new DomainMessagingFilesGenerator(writer);
+
+    UseCaseEventOverviewPlantUmlGenerator usecaseEventOverviewGenerator;
+    UseCaseEventMessageLinkAsciidocGenerator useCaseEventMessageLinkAsciidocGenerator;
+
+    /* PDS */
+    PDSExecutorConfigurationParameterDescriptionGenerator pdsExecutorConfigParameterGenerator = new PDSExecutorConfigurationParameterDescriptionGenerator();
+    CheckmarxWrapperDocumentationGenerator checkmarxWrapperEnvGenerator = new CheckmarxWrapperDocumentationGenerator();
+
     public static void main(String[] args) throws Exception {
+        output(">AsciidocGenerator starting");
+
         if (args.length != 1) {
             throw new IllegalArgumentException("call with target gen folder as first parameter only!");
         }
-        output(">AsciidocGenerator starting");
-
-        Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-        root.setLevel(Level.INFO); // avoid waringings from
-        Logger reflections = (Logger) LoggerFactory.getLogger("org.reflections");
-        reflections.setLevel(Level.ERROR);
-
         String path = args[0];
-        File documentsGenFolder = new File(path);
-        File documentsFolder = documentsGenFolder.getParentFile();
-        File diagramsFolder = new File(documentsFolder.getParentFile(), "diagrams");
-        File diagramsGenFolder = new File(diagramsFolder, "gen");
 
-        File systemProperitesFile = createSystemProperyTargetFile(documentsGenFolder);
-        File pdsSystemProperitesFile = createPDSSystemProperyTargetFile(documentsGenFolder);
-
-        File javaLaunchExampleFile = createJavaLaunchExampleTargetFile(documentsGenFolder);
-        File scheduleDescriptionFile = createScheduleDescriptionTargetFile(documentsGenFolder);
-        File specialMockValuePropertiesFile = createSpecialMockConfigurationPropertiesTargetFile(documentsGenFolder);
-        File messagingFile = createMessagingTargetFile(documentsGenFolder);
-
-        /* ---------------------- */
-        /* --- PRE-generation --- */
-        /* ---------------------- */
-        File jsonEventDataFolder = new File("./../sechub-integrationtest/build/test-results/event-trace");
-        UseCaseEventOverviewPlantUmlGenerator usecaseEventOverviewGenerator = new UseCaseEventOverviewPlantUmlGenerator(jsonEventDataFolder, diagramsGenFolder);
-        usecaseEventOverviewGenerator.generate();
-        Map<UseCaseIdentifier, Set<String>> useCasetoMessageIdsMap = usecaseEventOverviewGenerator.getUsecaseNameToMessageIdsMap();
-
-        UseCaseEventMessageLinkAsciidocGenerator useCaseEventMessageLinkAsciidocGenerator = new UseCaseEventMessageLinkAsciidocGenerator(useCasetoMessageIdsMap,
-                documentsGenFolder);
-        useCaseEventMessageLinkAsciidocGenerator.generate();
-
-        /* ----------------------- */
-        /* --- Main-generation --- */
-        /* ----------------------- */
-        AsciidocGenerator generator = new AsciidocGenerator();
-
-        /* SECHUB */
-        generator.generateExampleFiles(documentsGenFolder);
-        generator.generateClientParts(documentsGenFolder);
-        generator.fetchMustBeDocumentParts();
-        generator.generateSystemPropertiesDescription(systemProperitesFile);
-        generator.generateJavaLaunchExample(javaLaunchExampleFile);
-        generator.generateScheduleDescription(scheduleDescriptionFile);
-        generator.generateMockPropertiesDescription(specialMockValuePropertiesFile);
-        generator.generateMessagingFiles(messagingFile, diagramsGenFolder);
-        generator.generateUseCaseFiles(documentsGenFolder, diagramsGenFolder);
-        generator.generateProfilesOverview(diagramsGenFolder);
-
-        /* PDS */
-        generator.generatePDSUseCaseFiles(documentsGenFolder, diagramsGenFolder);
-        generator.generatePDSSystemPropertiesDescription(pdsSystemProperitesFile);
+        AsciidocGenerator asciidocGenerator = new AsciidocGenerator();
+        asciidocGenerator.generate(path);
 
     }
 
-    private void generateClientParts(File documentsGenFolder) throws IOException {
+    public AsciidocGenerator() {
+        initLogging();
+    }
+
+    private void initLogging() {
+        /* do some logging setup stuff to avoid unnecessary logs */
+        Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+        root.setLevel(Level.INFO); // avoid warnings
+        Logger reflections = (Logger) LoggerFactory.getLogger("org.reflections");
+        reflections.setLevel(Level.ERROR);
+    }
+
+    static class GenContext {
+        File documentsGenFolder;
+        File documentsFolder;
+        File diagramsFolder;
+        File diagramsGenFolder;
+        File systemProperitesFile;
+        File pdsSystemProperitesFile;
+        File pdsPDSExecutorConfigParametersFile;
+        File javaLaunchExampleFile;
+        File scheduleDescriptionFile;
+        File specialMockValuePropertiesFile;
+        File messagingFile;
+    }
+
+    private void generate(String path) throws IOException {
+        GenContext context = initContext(path);
+
+        /* SECHUB */
+        generateUseCaseEventData(context); // must be done initial
+
+        generateExampleFiles(context);
+        generateClientParts(context);
+        fetchMustBeDocumentParts();
+        generateSystemPropertiesDescription(context);
+        generateJavaLaunchExample(context);
+        generateScheduleDescription(context);
+        generateMockPropertiesDescription(context);
+        generateMessagingFiles(context);
+        generateUseCaseFiles(context);
+        generateProfilesOverview(context);
+
+        /* PDS */
+        generatePDSUseCaseFiles(context);
+        generatePDSSystemPropertiesDescription(context);
+        generatePDSExecutorConfigurationParamters(context);
+
+        /* PDS-solution */
+        generateCheckmarxPDSSolutionParts(context);
+    }
+
+    private void generateUseCaseEventData(GenContext context) throws IOException {
+        File jsonEventDataFolder = new File("./../sechub-integrationtest/build/test-results/event-trace");
+        usecaseEventOverviewGenerator = new UseCaseEventOverviewPlantUmlGenerator(jsonEventDataFolder, context.diagramsGenFolder);
+        usecaseEventOverviewGenerator.generateAndRememberUsecaseNamesToMessageIdMapping();
+        Map<UseCaseIdentifier, Set<String>> useCasetoMessageIdsMap = usecaseEventOverviewGenerator.getUsecaseNameToMessageIdsMap();
+
+        useCaseEventMessageLinkAsciidocGenerator = new UseCaseEventMessageLinkAsciidocGenerator(useCasetoMessageIdsMap, context.documentsGenFolder);
+        useCaseEventMessageLinkAsciidocGenerator.generate();
+    }
+
+    private GenContext initContext(String path) {
+        GenContext context = new GenContext();
+
+        context.documentsGenFolder = new File(path);
+        context.documentsFolder = context.documentsGenFolder.getParentFile();
+        context.diagramsFolder = new File(context.documentsFolder.getParentFile(), "diagrams");
+        context.diagramsGenFolder = new File(context.diagramsFolder, "gen");
+
+        context.systemProperitesFile = createSystemProperyTargetFile(context.documentsGenFolder);
+        context.pdsSystemProperitesFile = createPDSSystemProperyTargetFile(context.documentsGenFolder);
+        context.pdsPDSExecutorConfigParametersFile = createPDSExecutorConfigurationParametersTargetFile(context.documentsGenFolder);
+
+        context.javaLaunchExampleFile = createJavaLaunchExampleTargetFile(context.documentsGenFolder);
+        context.scheduleDescriptionFile = createScheduleDescriptionTargetFile(context.documentsGenFolder);
+        context.specialMockValuePropertiesFile = createSpecialMockConfigurationPropertiesTargetFile(context.documentsGenFolder);
+        context.messagingFile = createMessagingTargetFile(context.documentsGenFolder);
+        return context;
+    }
+
+    private void generateCheckmarxPDSSolutionParts(GenContext context) throws IOException {
+        String table = checkmarxWrapperEnvGenerator.generateEnvironmentAndJobParameterTable();
+
+        File clientGenDocFolder = new File(context.documentsGenFolder, "pds-solutions");
+        File targetFile = new File(clientGenDocFolder, "gen_checkmarx_wrapper_env_and_job_parameter_table.adoc");
+        writer.save(targetFile, table);
+    }
+
+    private void generateClientParts(GenContext context) throws IOException {
 
         String defaultZipAllowedFilePatternsTable = clientDocFilesGenerator.generateDefaultZipAllowedFilePatternsTable();
-        File clientGenDocFolder = new File(documentsGenFolder, "client");
+        File clientGenDocFolder = new File(context.documentsGenFolder, "client");
         File targetFile = new File(clientGenDocFolder, "gen_table_default_zip_allowed_file_patterns.adoc");
         writer.save(targetFile, defaultZipAllowedFilePatternsTable);
     }
 
-    private void generateExampleFiles(File documentsGenFolder) throws IOException {
-        generateExample("project_mockdata_config1.json", documentsGenFolder, exampleJSONGenerator.generateScanProjectMockDataConfiguration1());
-        generateExample("project_mockdata_config2.json", documentsGenFolder, exampleJSONGenerator.generateScanProjectMockDataConfiguration2());
+    private void generateExampleFiles(GenContext context) throws IOException {
+        generateExample("project_mockdata_config1.json", context.documentsGenFolder, exampleJSONGenerator.generateScanProjectMockDataConfiguration1());
+        generateExample("project_mockdata_config2.json", context.documentsGenFolder, exampleJSONGenerator.generateScanProjectMockDataConfiguration2());
 
     }
 
@@ -121,16 +181,16 @@ public class AsciidocGenerator implements Generator {
         writer.save(targetFile, content);
     }
 
-    private void generateProfilesOverview(File diagramsGenFolder) throws IOException {
+    private void generateProfilesOverview(GenContext context) throws IOException {
         SpringProfilesPlantumlGenerator geno = new SpringProfilesPlantumlGenerator();
 
         /* generate overview */
-        generateSpringProfilePlantUML(diagramsGenFolder, geno, SpringProfilesPlantumlGenerator.config().build());
+        generateSpringProfilePlantUML(context.diagramsGenFolder, geno, SpringProfilesPlantumlGenerator.config().build());
 
-        generateSpringProfilePlantUML(diagramsGenFolder, geno, SpringProfilesPlantumlGenerator.config().filterToProfile("prod").build());
-        generateSpringProfilePlantUML(diagramsGenFolder, geno, SpringProfilesPlantumlGenerator.config().filterToProfile("dev")
+        generateSpringProfilePlantUML(context.diagramsGenFolder, geno, SpringProfilesPlantumlGenerator.config().filterToProfile("prod").build());
+        generateSpringProfilePlantUML(context.diagramsGenFolder, geno, SpringProfilesPlantumlGenerator.config().filterToProfile("dev")
                 .satelites("mocked_notifications", "mocked_products", "real_products", "h2", "postgres").build());
-        generateSpringProfilePlantUML(diagramsGenFolder, geno, SpringProfilesPlantumlGenerator.config().filterToProfile("integrationtest")
+        generateSpringProfilePlantUML(context.diagramsGenFolder, geno, SpringProfilesPlantumlGenerator.config().filterToProfile("integrationtest")
                 .satelites("mocked_products", "real_products", "h2", "postgres").build());
 
     }
@@ -148,22 +208,22 @@ public class AsciidocGenerator implements Generator {
         writer.save(targetFile, text);
     }
 
-    private void generateMessagingFiles(File messagingFile, File diagramsGenFolder) throws IOException {
+    private void generateMessagingFiles(GenContext context) throws IOException {
         DomainMessagingModel model = getCollector().fetchDomainMessagingModel();
-        domainMessagingFilesGenerator.generateMessagingFiles(messagingFile, diagramsGenFolder, model);
+        domainMessagingFilesGenerator.generateMessagingFiles(context.messagingFile, context.diagramsGenFolder, model);
     }
 
-    private void generateUseCaseFiles(File documentsGenFolder, File diagramsGenFolder) throws IOException {
+    private void generateUseCaseFiles(GenContext context) throws IOException {
         UseCaseModel model = getCollector().fetchUseCaseModel();
         UseCaseRestDocModel restDocModel = getCollector().fetchUseCaseRestDocModel(model);
 
-        String useCaseAsciidoc = useCaseModelAsciiDocGenerator.generateAsciidoc(model, diagramsGenFolder);
+        String useCaseAsciidoc = useCaseModelAsciiDocGenerator.generateAsciidoc(model, context.diagramsGenFolder);
 
-        File targetFile = new File(documentsGenFolder, "gen_usecases.adoc");
+        File targetFile = new File(context.documentsGenFolder, "gen_usecases.adoc");
         writer.save(targetFile, useCaseAsciidoc);
 
         String usecaseRestDoc = useCaseRestDocModelAsciiDocGenerator.generateAsciidoc(writer, restDocModel, true, UseCaseIdentifier.values());
-        File targetFile2 = new File(documentsGenFolder, "gen_uc_restdoc.adoc");
+        File targetFile2 = new File(context.documentsGenFolder, "gen_uc_restdoc.adoc");
         writer.save(targetFile2, usecaseRestDoc);
 
         /* @formatter:off */
@@ -174,17 +234,17 @@ public class AsciidocGenerator implements Generator {
 				UseCaseIdentifier.UC_USER_GET_JOB_REPORT,
 				UseCaseIdentifier.UC_USER_GET_JOB_STATUS);
 		/* @formatter:on */
-        File targetFile3 = new File(documentsGenFolder, "gen_uc_websiteumentation_restdoc.adoc");
+        File targetFile3 = new File(context.documentsGenFolder, "gen_uc_websiteumentation_restdoc.adoc");
         writer.save(targetFile3, usecaseRestDocUserDocumentation);
 
     }
 
-    private void generatePDSUseCaseFiles(File documentsGenFolder, File diagramsGenFolder) throws IOException {
+    private void generatePDSUseCaseFiles(GenContext context) throws IOException {
         UseCaseModel model = getCollector().fetchPDSUseCaseModel();
 
-        String useCaseAsciidoc = useCaseModelAsciiDocGenerator.generateAsciidoc(model, diagramsGenFolder, false, false);
+        String useCaseAsciidoc = useCaseModelAsciiDocGenerator.generateAsciidoc(model, context.diagramsGenFolder, false, false);
 
-        File targetFile = new File(documentsGenFolder, "gen_pds-usecases.adoc");
+        File targetFile = new File(context.documentsGenFolder, "gen_pds-usecases.adoc");
         writer.save(targetFile, useCaseAsciidoc);
     }
 
@@ -217,6 +277,10 @@ public class AsciidocGenerator implements Generator {
         return new File(genFolder, "gen_mockadapterproperties.adoc");
     }
 
+    private static File createPDSExecutorConfigurationParametersTargetFile(File genFolder) {
+        return new File(genFolder, "gen_pds_executor_config_parameters.adoc");
+    }
+
     /**
      * Just an extra method to seperate the fetch mechanism from others
      */
@@ -228,29 +292,34 @@ public class AsciidocGenerator implements Generator {
         getCollector().fetchDomainMessagingModel();
     }
 
-    public void generateSystemPropertiesDescription(File targetFile) throws IOException {
+    public void generateSystemPropertiesDescription(GenContext context) throws IOException {
         String text = propertiesGenerator.generate(getCollector().fetchMustBeDocumentParts());
-        writer.save(targetFile, text);
+        writer.save(context.systemProperitesFile, text);
     }
 
-    public void generatePDSSystemPropertiesDescription(File targetFile) throws IOException {
+    public void generatePDSSystemPropertiesDescription(GenContext context) throws IOException {
         String text = propertiesGenerator.generate(getCollector().fetchPDSMustBeDocumentParts());
-        writer.save(targetFile, text);
+        writer.save(context.pdsSystemProperitesFile, text);
     }
 
-    public void generateJavaLaunchExample(File targetFile) throws IOException {
+    private void generatePDSExecutorConfigurationParamters(GenContext context) throws IOException {
+        String text = pdsExecutorConfigParameterGenerator.generatePDSExecutorConfigurationParamters(context.pdsPDSExecutorConfigParametersFile);
+        writer.save(context.pdsPDSExecutorConfigParametersFile, text);
+    }
+
+    public void generateJavaLaunchExample(GenContext context) throws IOException {
         String text = javaLaunchExampleGenerator.generate(getCollector().fetchMustBeDocumentParts());
-        writer.save(targetFile, text);
+        writer.save(context.javaLaunchExampleFile, text);
     }
 
-    public void generateScheduleDescription(File targetFile) throws IOException {
+    public void generateScheduleDescription(GenContext context) throws IOException {
         String text = scheduleDescriptionGenerator.generate(getCollector());
-        writer.save(targetFile, text);
+        writer.save(context.scheduleDescriptionFile, text);
     }
 
-    private void generateMockPropertiesDescription(File targetFile) throws IOException {
+    private void generateMockPropertiesDescription(GenContext context) throws IOException {
         String text = propertiesGenerator.generate(getCollector().fetchMockAdapterSpringValueDocumentationParts());
-        writer.save(targetFile, text);
+        writer.save(context.specialMockValuePropertiesFile, text);
     }
 
     private ClasspathDataCollector getCollector() {

@@ -13,7 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import com.mercedesbenz.sechub.integrationtest.api.MockEmailEntry;
 import com.mercedesbenz.sechub.integrationtest.api.TestUser;
 import com.mercedesbenz.sechub.integrationtest.api.TextSearchMode;
-import com.mercedesbenz.sechub.test.TestURLBuilder;
+import com.mercedesbenz.sechub.test.SecHubTestURLBuilder;
 
 public class MockEmailAccess {
 
@@ -42,7 +42,7 @@ public class MockEmailAccess {
         return getContext().getTemplateForSuperAdmin().getTemplate();
     }
 
-    private TestURLBuilder getUrlBuilder() {
+    private SecHubTestURLBuilder getUrlBuilder() {
         return getContext().getUrlBuilder();
     }
 

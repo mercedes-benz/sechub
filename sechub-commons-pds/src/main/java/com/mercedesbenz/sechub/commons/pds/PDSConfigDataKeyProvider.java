@@ -2,11 +2,10 @@
 package com.mercedesbenz.sechub.commons.pds;
 
 /**
- * Provides keys which are interpreted <strong>at PDS side</strong>.
- *
- * <h3>Important</h3> The enum values MUST have same name as the env variables
- * provided to PDS script! <i>(makes it easier to understand, to maintain
- * etc.)</i>
+ * Provides keys which are interpreted <strong>at PDS side</strong>. When the
+ * given key (ExecutionPDSKey) is marked as available inside script, the
+ * launcher scripts will have the data injected automatically as environment
+ * variables.
  *
  * @author Albert Tregnaghi
  *
@@ -41,6 +40,17 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
                             .withDefault(true))
 
     ,
+    /**
+     * Special (optional) key inside executor configuration which will be used to
+     * define if PDS will use SecHub mappings. The value contains a comma separated
+     * list of mapping ids.
+     */
+    PDS_CONFIG_USE_SECHUB_MAPPINGS(
+            new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_MAPPINGS, "Contains a comma separated list of mappping ids. "
+                    + "Each defined mapping will be fetched from SecHub DB as JSON and sent as job parameter with " + "the mapping id as name to the PDS.")
+                            .markAlwaysSentToPDS().withDefault(true))
+
+    ,
 
     /**
      * Contains sechub storage location
@@ -48,6 +58,33 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
     PDS_CONFIG_SECHUB_STORAGE_PATH(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SECHUB_STORAGE_PATH,
             "This contains the sechub storage location when sechub storage shall be used. So PDS knows location - in combination with sechub job UUID reuse is possible")
                     .markGenerated()),
+
+    /**
+     * Contains file filter include information
+     */
+    PDS_CONFIG_FILEFILTER_INCLUDES(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_FILEFILTER_INCLUDES,
+            "This contains a comma separated list of path patterns for file includes. These patterns can contain wildcards. Matching will be done case insensitive!"
+                    + "For example: `*.go,*.html, test1.txt` would include every go file, every HTML file and files named `test1.txt`.\n\n"
+                    + "When nothing defined, every content is accepted as include.\n"
+                    + "Every file which is matched by one of the patterns will be included - except those which are explicitly excluded.\n\n")
+                            .markAlwaysSentToPDS()),
+
+    /**
+     * Contains file filter include information
+     */
+    PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED(new ExecutionPDSKey(
+            PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED,
+            "When 'true' the PDS adapter script used by the job will have the information and can use this information when it comes to remote operations.")
+                    .markAlwaysSentToPDS().markAsAvailableInsideScript().markDefaultRecommended().withDefault(false)),
+
+    /**
+     * Contains file filter exclude information
+     */
+    PDS_CONFIG_FILEFILTER_EXCLUDES(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_FILEFILTER_EXCLUDES,
+            "This contains a comma separated list of path patterns for file excludes. These patterns can contain wildcards. Matching will be done case insensitive!"
+                    + "For example: `*.go,*.html, test1.txt` would excluded every go file, every HTML file and files named `test1.txt`.\n\n"
+                    + "When empty none of the files will be excluded. The exclude operation will be done AFTER the include file filtering has happend.")
+                            .markAlwaysSentToPDS()),
 
     /**
      * This is automatically given to PDS by SecHub - depending on scan type. E.g.
@@ -67,9 +104,18 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
      */
     PDS_SCAN_CONFIGURATION(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_CONFIGURATION,
             "This contains the SecHub configuration as JSON object (but reduced to current scan type, so e.g. a web scan will have no code scan configuration data available")
-                    .markGenerated().markAsAvailableInsideScript())
+                    .markGenerated().markAsAvailableInsideScript()),
 
-    ;
+    /**
+     * A special runtime configuration configuration for PDS servers started with
+     * mocked profile: Normally every PDS call will result in a real execution - no
+     * matter if products shall be mocked or not. Reason: We use always a real PDS
+     * server to communicate and normally do not want any mocks here. But when this
+     * is parameter is set to <code>false</code>, a mock will even be used for PDS.
+     */
+    PDS_MOCKING_DISABLED(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_MOCKING_DISABLED,
+            "When 'true' any PDS adapter call will use real PDS adapter and not a mocked variant.").markForTestingOnly().markAlwaysSentToPDS()
+                    .markDefaultRecommended().withDefault(true));
 
     private ExecutionPDSKey key;
 

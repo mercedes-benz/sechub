@@ -3,8 +3,10 @@ package com.mercedesbenz.sechub.commons.model.login;
 
 import javax.crypto.SealedObject;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AutoDetectUserLoginConfiguration {
 
     private CryptoAccess<char[]> cryptoAccess = CryptoAccess.CRYPTO_CHAR_ARRAY;

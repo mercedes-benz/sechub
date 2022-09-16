@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.monitoring;
 
-import static com.mercedesbenz.sechub.test.TestURLBuilder.*;
+import static com.mercedesbenz.sechub.test.PDSTestURLBuilder.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -46,7 +46,7 @@ public class PDSAnonymousCheckAliveRestControllerMockTest {
         /* execute + test */
         /* @formatter:off */
         this.mockMvc.perform(
-                head(https(PORT_USED).pds().buildAnonymousCheckAlive())
+                head(https(PORT_USED).buildAnonymousCheckAlive())
                 ).
                     andExpect(status().isOk()
                 );
@@ -62,7 +62,7 @@ public class PDSAnonymousCheckAliveRestControllerMockTest {
         /* execute + test */
         /* @formatter:off */
         this.mockMvc.perform(
-                get(https(PORT_USED).pds().buildAnonymousCheckAlive())
+                get(https(PORT_USED).buildAnonymousCheckAlive())
                 ).
                     andExpect(status().isOk()
                 );

@@ -2,9 +2,9 @@
 package com.mercedesbenz.sechub.sharedkernel.messaging;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.mercedesbenz.sechub.commons.core.MustBeKeptStable;
+import com.mercedesbenz.sechub.commons.mapping.MappingData;
 import com.mercedesbenz.sechub.commons.model.JSONable;
-import com.mercedesbenz.sechub.sharedkernel.MustBeKeptStable;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
 
 /**
  * This message data object contains mapping information

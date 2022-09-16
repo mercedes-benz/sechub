@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.sereco;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -123,6 +124,9 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
             findings.add(finding);
         }
 
+        // we sort the findings
+        Collections.sort(findings);
+
         handleAnnotations(sechubJobUUID, data, transformerResult);
 
         /* when status is not set already, no failure has appeared and we mark as OK */
@@ -220,7 +224,7 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
             /* internal errors are marked with status failed */
             transformerResult.setStatus(SecHubStatus.FAILED);
             /* we add an information to user as well */
-            appendSecHubMessage(transformerResult, new SecHubMessage(SecHubMessageType.ERROR, "Job execution failed because of an internal problem."));
+            appendSecHubMessage(transformerResult, new SecHubMessage(SecHubMessageType.ERROR, "Job execution failed because of an internal problem"));
             return;
         default:
             // nothing
