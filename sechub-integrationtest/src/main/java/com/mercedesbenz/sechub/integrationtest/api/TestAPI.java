@@ -10,6 +10,7 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -1307,17 +1308,28 @@ public class TestAPI {
     }
 
     public static void dumpAllPDSJobOutputsForSecHubJob(UUID sechubJobUUID) {
+        dumpAllPDSJobOutputsForSecHubJob(sechubJobUUID, null);
+    }
+
+    public static void dumpAllPDSJobOutputsForSecHubJob(UUID sechubJobUUID, TestOutputOptions options) {
         System.out.println("##########################################################################################################");
         System.out.println("# DUMP all PDS Jobs for SecHub job: " + sechubJobUUID);
         System.out.println("##########################################################################################################");
 
         List<UUID> pdsJobUUIDs = internalExecuteOrUseFallback(() -> fetchAllPDSJobUUIDsForSecHubJob(sechubJobUUID), new ArrayList<>());
         for (UUID pdsJobUUID : pdsJobUUIDs) {
-            dumpPDSJobOutput(pdsJobUUID);
+            dumpPDSJobOutput(pdsJobUUID, options);
         }
     }
 
     public static void dumpPDSJobOutput(UUID jobUUID) {
+        dumpPDSJobOutput(jobUUID, null);
+    }
+
+    public static void dumpPDSJobOutput(UUID jobUUID, TestOutputOptions options) {
+        if (options == null) {
+            options = TestOutputOptions.create();
+        }
 
         AsPDSUser asPDSUser = asPDSUser(PDS_ADMIN);
 
@@ -1342,38 +1354,47 @@ public class TestAPI {
         System.out.println("----------------------------------------------------------------------------------------------------------");
         System.out.println("DUMP - PDS Job: " + jobUUID);
         System.out.println("----------------------------------------------------------------------------------------------------------");
-        System.out.println("Status:");
-        System.out.println(status);
-        System.out.println();
-        System.out.println("Output stream:");
-        System.out.println("--------------");
-        if (outputStreamText == null || outputStreamText.isEmpty()) {
-            System.out.println(">>>>>>No output avialable<<<<<<");
-        } else {
-            System.out.println(outputStreamText);
+        if (options.isWithStatus()) {
+            System.out.println("Status:");
+            System.out.println(status);
+            System.out.println();
         }
-        System.out.println();
-        System.out.println("Error stream:");
-        System.out.println("-------------");
-        if (errorStreamText == null || errorStreamText.isEmpty()) {
-            System.out.println(">>>>>>No error output avialable<<<<<<");
-        } else {
-            System.out.println(errorStreamText);
+        if (options.isWithOutput()) {
+            System.out.println("Output stream:");
+            System.out.println("--------------");
+            if (outputStreamText == null || outputStreamText.isEmpty()) {
+                System.out.println(">>>>>>No output avialable<<<<<<");
+            } else {
+                System.out.println(outputStreamText);
+            }
+            System.out.println();
         }
-        System.out.println();
-
-        System.out.println("Messages:");
-        System.out.println("---------");
-        if (messagesAsString == null || messagesAsString.isEmpty()) {
-            System.out.println(">>>>>>No messages avialable<<<<<<");
-        } else {
-            System.out.println(messagesAsString);
+        if (options.isWithError()) {
+            System.out.println("Error stream:");
+            System.out.println("-------------");
+            if (errorStreamText == null || errorStreamText.isEmpty()) {
+                System.out.println(">>>>>>No error output avialable<<<<<<");
+            } else {
+                System.out.println(errorStreamText);
+            }
+            System.out.println();
         }
-        System.out.println();
-        System.out.println("Report:");
-        System.out.println("-------");
-        System.out.println(report);
-        System.out.println();
+        if (options.isWithMessages()) {
+            System.out.println("Messages:");
+            System.out.println("---------");
+            if (messagesAsString == null || messagesAsString.isEmpty()) {
+                System.out.println(">>>>>>No messages avialable<<<<<<");
+            } else {
+                System.out.println(messagesAsString);
+            }
+            System.out.println();
+        }
+        if (options.isWithReport()) {
+            System.out.println("Report:");
+            System.out.println("-------");
+            System.out.println(report);
+            System.out.println();
+        }
         System.out.println("----------------------------------------------------------------------------------------------------------");
         System.out.println("END OF DUMP - PDS Job: " + jobUUID);
         System.out.println("----------------------------------------------------------------------------------------------------------");
@@ -1387,5 +1408,34 @@ public class TestAPI {
             System.out.println(">> Internal execute failed. Fallback (" + fallback + ") necessary, because of :" + e.getMessage());
             return fallback;
         }
+    }
+
+    public static String createPDSJobFor(UUID sechubJobUUID, Map<String, String> params, String productId, TestRestHelper restHelper,
+            PDSTestURLBuilder urlBuilder) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"apiVersion\":\"1.0\",\"sechubJobUUID\":\"").append(sechubJobUUID.toString()).append("\",\"productId\":\"").append(productId)
+                .append("\",");
+        sb.append("\"parameters\":[");
+
+        Iterator<String> it = params.keySet().iterator();
+        while (it.hasNext()) {
+            String key = it.next();
+            sb.append("{\"key\":\"").append(key).append("\",");
+            sb.append("\"value\":\"").append(params.get(key)).append("\"}");
+            if (it.hasNext()) {
+                sb.append(',');
+            }
+        }
+        sb.append("]}}");
+
+        String jobConfigurationJson = sb.toString();
+
+        return createPDSJob(restHelper, urlBuilder, jobConfigurationJson);
+    }
+
+    public static String createPDSJob(TestRestHelper restHelper, PDSTestURLBuilder urlBuilder, String jobConfigurationJson) {
+        String url = urlBuilder.buildCreateJob();
+        String result = restHelper.postJson(url, jobConfigurationJson);
+        return result;
     }
 }

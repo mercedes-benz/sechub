@@ -33,6 +33,7 @@ import com.mercedesbenz.sechub.integrationtest.api.AsUser;
 import com.mercedesbenz.sechub.integrationtest.api.FixedTestProject;
 import com.mercedesbenz.sechub.integrationtest.api.FixedTestUser;
 import com.mercedesbenz.sechub.integrationtest.api.InternalAccess;
+import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 import com.mercedesbenz.sechub.integrationtest.api.TestUser;
 import com.mercedesbenz.sechub.integrationtest.api.UserContext;
 import com.mercedesbenz.sechub.integrationtest.api.WithSecHubClient;
@@ -197,7 +198,7 @@ public class DeveloperAdministration {
         }
 
         public String createPDSJob(UUID sechubJobUUID, String productId, Map<String, String> params) {
-            return AsPDSUser.createJobFor(sechubJobUUID, params, productId, restHelper, pdsUrlBuilder);
+            return TestAPI.createPDSJobFor(sechubJobUUID, params, productId, restHelper, pdsUrlBuilder);
         }
 
         public String getExecutionStatus() {

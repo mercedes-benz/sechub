@@ -66,12 +66,18 @@ public class CheckmarxWrapperScanContext {
         return teamId;
     }
 
+    /**
+     * Resolves preset id for new projects. If <code>null</code>, Checkmarx will use
+     * the default preset.
+     *
+     * @return preset id or <code>null</code>
+     */
     public Long getPresetIdForNewProjects() {
         String projectId = getProjectId();
 
         String presetId = presetIdProvider.getIdForName(projectId);
         if (presetId == null) {
-            throw new IllegalStateException("Was not able to determine the preset id for project: " + projectId);
+            return null;
         }
         return Long.valueOf(presetId);
     }
