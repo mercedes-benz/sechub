@@ -13,6 +13,7 @@ import org.junit.rules.Timeout;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
+import com.mercedesbenz.sechub.integrationtest.api.TestUser;
 import com.mercedesbenz.sechub.test.TestFileReader;
 
 /**
@@ -34,6 +35,8 @@ public class DirectPDSAPICheckmarxWrapperScenario6IntTest {
     public void pds_techuser_can_start_checkmarx_scan_with_job_configuration_and_PDS_job_is_done() {
         /* @formatter:off */
         /* prepare */
+        TestUser user = PDS_TECH_USER;
+        
         String json =TestFileReader.loadTextFile("src/test/resources/pds/checkmarx-wrapper/checkmarx-pds-job1.json");
 
         String createResult = asPDSUser(PDS_ADMIN).
@@ -43,12 +46,12 @@ public class DirectPDSAPICheckmarxWrapperScenario6IntTest {
                 hasJobUUID().
                 getJobUUID();
 
-        asPDSUser(PDS_ADMIN).
+        asPDSUser(user).
             upload(pdsJobUUID, SOURCECODE_ZIP, "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip");
 
 
         /* execute */
-        asPDSUser(PDS_ADMIN).
+        asPDSUser(user).
             markJobAsReadyToStart(pdsJobUUID);
 
         /* test */
