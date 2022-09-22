@@ -58,7 +58,7 @@ ext {
 
       /* gradle plugins */      
       dependency_check:                        "7.2.1",
-      grgit:                                   "4.0.1",
+      grgit:                                   "5.0.0",
       
       /* documentation */
       asciidoctor_j:                           "2.5.2",
