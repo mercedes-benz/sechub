@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: MIT
 
+REPLICAS="$1"
+
 cd $(dirname "$0")
 source "../shared/scripts/9999-helper.sh"
 
