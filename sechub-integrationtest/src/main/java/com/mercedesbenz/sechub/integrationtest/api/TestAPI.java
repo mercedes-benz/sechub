@@ -11,6 +11,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -1436,6 +1437,27 @@ public class TestAPI {
     public static String createPDSJob(TestRestHelper restHelper, PDSTestURLBuilder urlBuilder, String jobConfigurationJson) {
         String url = urlBuilder.buildCreateJob();
         String result = restHelper.postJson(url, jobConfigurationJson);
+        return result;
+    }
+
+    public static Map<String, String> fetchPDSVariableTestOutputMap(UUID pdsJobUUID) {
+        Map<String, String> result = new LinkedHashMap<>();
+
+        String outputStreamText = asPDSUser(PDS_ADMIN).getJobOutputStreamText(pdsJobUUID);
+        assertNotNull(outputStreamText);
+
+        String[] lines = outputStreamText.split("\n");
+        for (String line : lines) {
+            if (line.startsWith(">") && line.length() > 1) {
+                String shrinked = line.substring(1);
+                String[] splitted = shrinked.split("=");
+                if (splitted.length > 1) {
+                    String variableName = splitted[0];
+                    String variableValue = splitted[1];
+                    result.put(variableName, variableValue);
+                }
+            }
+        }
         return result;
     }
 }

@@ -56,6 +56,12 @@ public class IntegrationTestExampleConstants {
     public static final String PATH_TO_ZIPFILE_WITH_PDS_CODESCAN_LOW_FINDINGS = "pds/codescan/upload/zipfile_contains_inttest_codescan_with_low.zip";
 
     /**
+     * Sha256 checksum for
+     * {@value #PATH_TO_ZIPFILE_WITH_PDS_CODESCAN_LOW_FINDINGS}/data.txt
+     */
+    public static final String SHA256SUM_FOR_DATA_TXT_FILE_IN_ZIPFILE_WITH_PDS_CODESCAN_LOW_FINDINGS = "7d09bec9c44ba241e4dc948706727456fbca2fce9a6b024371f63307ae017372";
+
+    /**
      * Tar file structure
      *
      * <pre>

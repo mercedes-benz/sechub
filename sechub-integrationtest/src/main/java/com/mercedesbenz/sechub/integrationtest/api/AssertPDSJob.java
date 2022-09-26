@@ -4,11 +4,14 @@ package com.mercedesbenz.sechub.integrationtest.api;
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 import static org.junit.Assert.*;
 
+import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class AssertPDSJob {
 
     private UUID pdsJobUUID;
+    private Map<String, String> cachedVariableMap;
 
     public static AssertPDSJob assertPDSJob(UUID pdsJobUUID) {
         return new AssertPDSJob(pdsJobUUID);
@@ -26,15 +29,23 @@ public class AssertPDSJob {
     }
 
     public AssertPDSJob containsVariableTestOutput(String variableName, String expectedValue) {
-        String outputStreamText = asPDSUser(PDS_ADMIN).getJobOutputStreamText(pdsJobUUID);
-        assertNotNull(outputStreamText);
+        if (cachedVariableMap == null) {
+            cachedVariableMap = TestAPI.fetchPDSVariableTestOutputMap(pdsJobUUID);
+        }
 
         String expectedToBeContained = ">" + variableName + "=" + expectedValue;
+        String variableValue = cachedVariableMap.get(variableName);
 
-        if (!outputStreamText.contains(expectedToBeContained)) {
-            // we use equals methods to have the compare inside IDE. Easier to find
-            // similarities etc.
-            assertEquals("Searched for:\n\n" + expectedToBeContained, "But output did only contain:\n\n" + outputStreamText);
+        if (!Objects.equals(expectedToBeContained, variableValue)) {
+            if (variableValue == null) {
+                String outputStreamText = asPDSUser(PDS_ADMIN).getJobOutputStreamText(pdsJobUUID);
+                // we use equals methods to have the compare inside IDE. Easier to find
+                // similarities etc.
+                assertEquals("Searched for:\n\n" + expectedToBeContained, "But output did only contain:\n\n" + outputStreamText);
+
+            } else {
+                assertEquals(expectedToBeContained, variableValue);
+            }
         }
         return this;
     }
