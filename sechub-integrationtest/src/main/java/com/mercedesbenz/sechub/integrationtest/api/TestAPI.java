@@ -1451,11 +1451,15 @@ public class TestAPI {
             if (line.startsWith(">") && line.length() > 1) {
                 String shrinked = line.substring(1);
                 String[] splitted = shrinked.split("=");
-                if (splitted.length > 1) {
-                    String variableName = splitted[0];
-                    String variableValue = splitted[1];
-                    result.put(variableName, variableValue);
+                String variableName = "";
+                String variableValue = "";
+                if (splitted.length > 0) {
+                    variableName = splitted[0];
                 }
+                if (splitted.length > 1) {
+                    variableValue = splitted[1];
+                }
+                result.put(variableName, variableValue);
             }
         }
         return result;

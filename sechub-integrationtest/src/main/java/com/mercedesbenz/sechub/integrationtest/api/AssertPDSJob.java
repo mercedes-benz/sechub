@@ -33,18 +33,18 @@ public class AssertPDSJob {
             cachedVariableMap = TestAPI.fetchPDSVariableTestOutputMap(pdsJobUUID);
         }
 
-        String expectedToBeContained = ">" + variableName + "=" + expectedValue;
         String variableValue = cachedVariableMap.get(variableName);
 
-        if (!Objects.equals(expectedToBeContained, variableValue)) {
+        if (!Objects.equals(expectedValue, variableValue)) {
             if (variableValue == null) {
+                String expectedToBeContained = ">" + variableName + "=" + expectedValue;
                 String outputStreamText = asPDSUser(PDS_ADMIN).getJobOutputStreamText(pdsJobUUID);
                 // we use equals methods to have the compare inside IDE. Easier to find
                 // similarities etc.
                 assertEquals("Searched for:\n\n" + expectedToBeContained, "But output did only contain:\n\n" + outputStreamText);
 
             } else {
-                assertEquals(expectedToBeContained, variableValue);
+                assertEquals(expectedValue, variableValue);
             }
         }
         return this;
