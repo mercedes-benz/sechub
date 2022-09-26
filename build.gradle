@@ -29,14 +29,14 @@ plugins {
     id 'org.asciidoctor.jvm.pdf' version '3.3.2'
     
     // open api
-    id 'org.openapi.generator' version '6.0.1'
+    id 'org.openapi.generator' version '6.1.0'
     
     // spring
-    id 'org.springframework.boot' version '2.7.3' apply false
+    id 'org.springframework.boot' version '2.7.4' apply false
     
     // spotless code formatter
     // (see https://github.com/diffplug/spotless)
-    id 'com.diffplug.spotless' version '6.9.1'
+    id 'com.diffplug.spotless' version '6.11.0'
     
     // versions plugin for checking new available library versions etc. 
     // (see https://github.com/ben-manes/gradle-versions-plugin)
