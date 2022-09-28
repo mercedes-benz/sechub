@@ -10,6 +10,7 @@ public class WorkspaceLocationData {
     String binariesTarFileLocation;
     String userMessagesLocation;
     String metaDataFileLocation;
+    String eventsLocation;
 
     public String getWorkspaceLocation() {
         return workspaceLocation;
@@ -41,5 +42,9 @@ public class WorkspaceLocationData {
 
     public String getMetaDataFileLocation() {
         return metaDataFileLocation;
+    }
+
+    public String getEventsLocation() {
+        return eventsLocation;
     }
 }

@@ -7,6 +7,7 @@ output_format="--spdx-tv"
 convert_output_to_spdx_json=true
 license_score="0"
 scancode_processes="1"
+file_scan_timeout="120"
 
 # make sure additional options is never empty
 # otherwise scancode will have problems parsing the
@@ -82,6 +83,16 @@ then
     fi
 fi
 
+echo "User provided timeout: $SCANCODE_TIMEOUT"
+if [[ -n "$SCANCODE_TIMEOUT" ]]
+then
+    if [[ "$SCANCODE_TIMEOUT" -ge 1 ]]
+    then
+        file_scan_timeout="$SCANCODE_TIMEOUT"
+        additional_options="$additional_options --timeout $file_scan_timeout"
+    fi
+fi
+
 given_output_format="$(echo "$SCANCODE_OUTPUT_FORMAT" | tr '[:upper:]' '[:lower:]')"
 
 echo "Possible output formats: $output_formats"
@@ -107,6 +118,7 @@ echo ""
 
 echo "Scancode processes: $scancode_processes"
 echo "Minimum license score: $license_score"
+echo "Timeout: $file_scan_timeout"
 echo "Additional options: $additional_options"
 echo "Output format: $output_format"
 echo ""
@@ -122,6 +134,9 @@ then
 fi
 
 # `2>&1` -> redirect the verbose output from standard error to standard out
+# TODO: 
+# debug mode -> write --json-pp INFO_message_xyz.txt to get the output as message or parts of it?
+# write the error file to ERROR_messages_xyz.txt to get more information about errors
 "$TOOL_FOLDER/scancode-toolkit-$SCANCODE_VERSION/scancode" $additional_options --verbose --strip-root --copyright --license --package --email --url --info $output_format $spdx_file $extracted_folder 2>&1
 
 echo ""

@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.domain.scan.ReportTransformationResult;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionException;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigInfo;
@@ -18,7 +19,6 @@ import com.mercedesbenz.sechub.sereco.importer.CheckmarxV1XMLImporter;
 import com.mercedesbenz.sechub.sereco.importer.ProductResultImporter;
 import com.mercedesbenz.sechub.sereco.importer.SarifV1JSONImporter;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
 import com.mercedesbenz.sechub.test.TestFileReader;
 
 public class ReportTestHelper {

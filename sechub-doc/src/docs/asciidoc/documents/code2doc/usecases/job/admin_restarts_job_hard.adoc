@@ -28,7 +28,7 @@ The restart will
 - be canceled, when execution already finished
 - delete all former product results and also adapter meta data
 - check for running batch jobs with {sechub} job UUID. +
-  If there are existing batch operations, those will be stopped and abandoned 
+  If there are existing batch operations, those will be stopped 
 - new scan will be restarted immediately without scheduling, will not try to reuse existing 
   results because such information was formerly deleted
 

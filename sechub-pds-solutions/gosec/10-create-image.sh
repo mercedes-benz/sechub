@@ -3,18 +3,16 @@
 
 REGISTRY="$1"
 VERSION="$2"
-BASE_IMAGE="$3"  # optional
-DEFAULT_BASE_IMAGE="debian:11-slim"
+BASE_IMAGE="$3"
 
 usage() {
   cat - <<EOF
-usage: $0 <docker registry> <version tag> [<base image>]
+usage: $0 <docker registry> <version tag> <base image>
 Builds a docker image of SecHub PDS with GoSec
 for <docker registry> with tag <version tag>.
-Optional: <base image> ; defaults to $DEFAULT_BASE_IMAGE
+Required: <base image> ; for example ghcr.io/mercedes-benz/sechub/pds-base:v0.32.1
 
 Additionally these environment variables can be defined:
-- PDS_VERSION - version of SecHub PDS to use. E.g. 0.24.0
 - GOSEC_VERSION - GoSec version to use. E.g. 2.9.5
 EOF
 }
@@ -30,21 +28,21 @@ if [[ -z "$VERSION" ]] ; then
 fi
 
 if [[ -z "$BASE_IMAGE" ]]; then
-    BASE_IMAGE="$DEFAULT_BASE_IMAGE"
+  echo "Please provide a base image as 3rd parameter."
+  exit 1
 fi
 
 BUILD_ARGS="--build-arg BASE_IMAGE=$BASE_IMAGE"
 echo ">> Base image: $BASE_IMAGE"
 
-if [[ ! -z "$PDS_VERSION" ]] ; then
-    echo ">> SecHub PDS version: $PDS_VERSION"
-    BUILD_ARGS+=" --build-arg PDS_VERSION=$PDS_VERSION"
-fi
-
 if [[ ! -z "$GOSEC_VERSION" ]] ; then
     echo ">> GoSec version: $GOSEC_VERSION"
-    BUILD_ARGS+=" --build-arg GOSEC_VERSION=$GOSEC_VERSION"
+    BUILD_ARGS=" --build-arg GOSEC_VERSION=$GOSEC_VERSION"
 fi
+
+# Use Docker BuildKit
+export BUILDKIT_PROGRESS=plain
+export DOCKER_BUILDKIT=1
 
 docker build --pull --no-cache $BUILD_ARGS \
        --tag "$REGISTRY:$VERSION" \

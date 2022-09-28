@@ -22,7 +22,6 @@ public class BatchJobMessage implements JSONable<BatchJobMessage> {
     private long batchJobId;
     private boolean canceled;
     private boolean existing;
-    private boolean abandoned;
 
     @Override
     public Class<BatchJobMessage> getJSONTargetClass() {
@@ -59,14 +58,6 @@ public class BatchJobMessage implements JSONable<BatchJobMessage> {
 
     public boolean isExisting() {
         return existing;
-    }
-
-    public void setAbandoned(boolean abandoned) {
-        this.abandoned = abandoned;
-    }
-
-    public boolean isAbandoned() {
-        return abandoned;
     }
 
 }

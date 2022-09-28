@@ -22,38 +22,35 @@ class ApiDefinitionFileProviderTest {
     private ApiDefinitionFileProvider providerToTest = new ApiDefinitionFileProvider();;
 
     @Test
-    void sources_folder_is_null_results_in_must_exit_exception() {
-        /* execute + test */
-        ZapWrapperRuntimeException exception = assertThrows(ZapWrapperRuntimeException.class,
-                () -> providerToTest.fetchApiDefinitionFile(null, new SecHubScanConfiguration()));
+    void sources_folder_is_null_results_in_null_as_api_file_path() {
+        /* execute */
+        Path result = providerToTest.fetchApiDefinitionFile(null, new SecHubScanConfiguration());
 
-        assertEquals("Sources folder must not be null!", exception.getMessage());
-        assertEquals(ZapWrapperExitCode.EXECUTION_FAILED, exception.getExitCode());
+        /* test */
+        assertEquals(null, result);
     }
 
     @Test
-    void sechub_scan_config_is_null_results_in_must_exit_exception() {
-        /* execute + test */
-        ZapWrapperRuntimeException exception = assertThrows(ZapWrapperRuntimeException.class,
-                () -> providerToTest.fetchApiDefinitionFile("/example/path/to/extracted/sources", null));
+    void sechub_scan_config_is_null_results_in_null_as_api_file_path() {
+        /* execute */
+        Path result = providerToTest.fetchApiDefinitionFile("/example/path/to/extracted/sources", null);
 
-        assertEquals("SecHub scan config must not be null!", exception.getMessage());
-        assertEquals(ZapWrapperExitCode.EXECUTION_FAILED, exception.getExitCode());
+        /* test */
+        assertEquals(null, result);
     }
 
     @Test
-    void missing_data_section_part_results_in_zap_wrapper_runtime_exception() {
+    void missing_data_section_part_results_in_null_as_api_file_path() {
         /* prepare */
         String sechubScanConfigJSON = "{\"apiVersion\":\"1.0\","
                 + "\"webScan\":{\"uri\":\"https://localhost:8443\",\"api\":{\"type\":\"openApi\",\"use\":[\"open-api-file-reference\"]}}}";
         SecHubScanConfiguration sechubScanConfiguration = SecHubScanConfiguration.createFromJSON(sechubScanConfigJSON);
 
-        /* execute + test */
-        ZapWrapperRuntimeException exception = assertThrows(ZapWrapperRuntimeException.class,
-                () -> providerToTest.fetchApiDefinitionFile("/example/path/to/extracted/sources", sechubScanConfiguration));
+        /* execute */
+        Path result = providerToTest.fetchApiDefinitionFile("/example/path/to/extracted/sources", sechubScanConfiguration);
 
-        assertEquals("Data section should not be empty since a sources folder was found.", exception.getMessage());
-        assertEquals(ZapWrapperExitCode.SECHUB_CONFIGURATION_INVALID, exception.getExitCode());
+        /* test */
+        assertEquals(null, result);
     }
 
     @ParameterizedTest

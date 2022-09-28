@@ -104,5 +104,4 @@ public class NetsparkerProductExecutor extends AbstractProductExecutor {
 
         return results;
     }
-
 }

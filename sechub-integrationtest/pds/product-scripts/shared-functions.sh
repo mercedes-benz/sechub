@@ -1,9 +1,12 @@
 #!/bin/bash
 # SPDX-License-Identifier: MIT
+set -e
 SHARED_FUNCTIONS_DIR=$(dirname -- "$0");
 SHARED_DIR=$SHARED_FUNCTIONS_DIR/shared
 
+source $SHARED_DIR/shared-constants.sh
 source $SHARED_DIR/shared-logging.sh
+source $SHARED_DIR/shared-events.sh
 source $SHARED_DIR/shared-test-variables.sh
 source $SHARED_DIR/shared-merging.sh
 

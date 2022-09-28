@@ -1,0 +1,277 @@
+@startuml
+
+'Hide empty parts:
+hide empty fields
+hide empty methods
+
+'You can find more examles at https://plantuml.com/class-diagram
+
+!include module_sechub_job.puml
+!include module_sechub_eventbus.puml
+!include module_sechub_productresult.puml
+
+package org.springframework.batch {
+    class JobExplorer {
+    }
+    class JobOperator {
+    }
+    
+    class SimpleJobLauncher {
+    }
+    
+    database BatchJobs {
+    }
+    
+    JobExplorer --> BatchJobs
+    JobOperator --> BatchJobs
+    
+}
+
+package com.mercedesbenz.sechub.domain.administration {
+    
+    class JobAdministrationRestController   
+    
+    class JobAdministrationMessageHandler
+    
+    class JobCancelService #Lightblue;text:blue ##MediumBlue
+    
+    JobAdministrationRestController -> JobCancelService
+    
+    JobCancelService  --> DomainMessageService  #blue;line.dashed;text:blue : sends async REQUEST_JOB_CANCELLATION (C1) 
+    
+    DomainMessageService --> JobAdministrationMessageHandler #green;line.dashed;text:green : sends async CANCELLATION_RUNNING (D1)
+}
+
+package com.mercedesbenz.sechub.domain.notification {
+    class NotificationMessageHandler
+    
+    DomainMessageService --> NotificationMessageHandler #green;line.dashed;text:green : sends async CANCELLATION_RUNNING (D1)
+}
+
+ 
+
+package com.mercedesbenz.sechub.domain.schedule {
+
+ package com.mercedesbenz.sechub.domain.schedule.batch {
+    
+        class SchedulerCancelBatchJobService {
+        }
+    
+        class AsyncJobLauncher extends SimpleJobLauncher {
+        }
+        class ScanExecutionTasklet {
+        }
+        
+        class BatchConfiguration {
+        }
+    
+        AsyncJobLauncher --> ScanExecutionTasklet : starts
+       
+        SchedulerCancelBatchJobService  -> JobOperator #blue;line.dashed : stops batch job
+    
+    }   
+
+   
+    
+    class SchedulerJobStatusRequestHandler {
+            
+    }
+   
+    class ScheduleJobLauncherService {
+    
+    }
+    
+
+    class SchedulerJobBatchTriggerService {
+    }
+    
+    
+    
+    class ScheduleMessagehandler {
+        handleCancelJobRequested()
+    }
+    
+    class SchedulerCancelJobService #paleGreen;text:green ##Black {
+    }
+    
+    
+    note top of SchedulerCancelJobService #palegreen;line.dashed;text:green
+            The steps
+            - D*
+            are only triggered when the SecHub job has 
+            the execution result NONE. 
+            
+            The execution state is <b>not</b> inspected.
+    end note 
+    BatchConfiguration --> ScanExecutionTasklet : creates
+    SchedulerJobBatchTriggerService --> ScheduleSecHubJob : stores result
+    SchedulerJobBatchTriggerService --> ScheduleJobLauncherService : uses
+    ScheduleJobLauncherService --> AsyncJobLauncher : uses
+    
+    ScheduleMessagehandler  --> SchedulerCancelJobService #blue;line.dashed;text:blue : "calls cancel service\nbecause of C2"
+    SchedulerCancelJobService --> ScheduleSecHubJob #blue;line.dashed;text:blue : marks as CANCEL_REQUESTED (C3)
+    
+    ScheduleJobLauncherService <-> ScanExecutionTasklet
+    
+    DomainMessageService <--> SchedulerCancelJobService #green;line.dashed;text:green : sends async CANCELLATION_RUNNING (D1)
+    DomainMessageService  --> ScheduleMessagehandler #blue;line.dashed;text:blue : sends async REQUEST_JOB_CANCELLATION (C1)
+    DomainMessageService  <--> SchedulerJobStatusRequestHandler  #Fuchsia;line.dashed;text:Fuchsia : sends synch REQUEST_SCHEDULER_JOB_STATUS (B1)
+    
+    DomainMessageService --> ScheduleMessagehandler #orange;line.dashed;text:orange : receives "PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE" (E1) ASYNCHRON
+    ScheduleMessagehandler --> ScheduleSecHubJob #orange;line.dashed;text:orange : "set SecHub job finally as CANCELED"
+    
+}
+
+package com.mercedesbenz.sechub.domain.scan {
+
+    class SecHubExecutionContext {
+        markCancelRequested()
+    }
+
+    class ScanProgressMonitor #Fuchsia;text:black ##fuchsia {
+    }
+    
+    interface ProductExecutor {
+        + List<ProductResult> execute(SecHubExecutionContext context, ProductExecutorContext executorContext) 
+    
+    }
+    
+    class ScanService #silver {
+        
+        startScan()
+    }
+    
+     
+    class ScanJobExecutor #silver {
+    
+    }
+    
+    class ScanJobExecutionRunnable {
+    }
+    
+    node ExecutorThread{
+    }
+    
+    class ScanJobCancellationRunnable #orange {
+    }
+    
+    node CancellationThread{
+    }
+    
+    interface Adapter {
+     + AdapterExecutionResult start(C config, AdapterMetaDataCallback callback)
+     + boolean cancel(C config, AdapterMetaDataCallback callback)
+    } 
+    
+    interface ProductExecutionStoreService {
+        + executeProductsAndStoreResults(SecHubExecutionContext context)
+    }
+    
+    
+    abstract class AbstractProductExecutionService implements ProductExecutionStoreService{
+    
+    }
+    
+    
+    abstract class AbstractProductExecutor implements ProductExecutor {
+    }
+    
+    interface CanceableProductExecutor extends ProductExecutor {
+        + boolean cancel(ProductExecutorData data)
+    }
+    
+    class ScanJobRunnableData {
+    }
+    class ProductExecutorData {
+    }
+    
+    class SecHubExecutionHistory{
+    
+    }
+    class SecHubExecutionHistoryElement{
+    
+    }
+    SecHubExecutionContext o-- SecHubExecutionHistory 
+    
+    SecHubExecutionHistory *-- SecHubExecutionHistoryElement
+    SecHubExecutionHistoryElement --> ProductExecutorData 
+    SecHubExecutionHistoryElement --> ProductExecutor 
+    
+    note top of ScanJobExecutor 
+        The scan job executor is central point of 
+        the scan steep in scan domain. 
+        
+        It does the start of the scan itself and 
+        does also periodically the inspect the scheduler 
+        job status via event bus
+    end note
+
+    AbstractProductExecutor --> ProductExecutorData : creates
+    AbstractProductExecutor --> SecHubExecutionContext : uses
+    
+    AbstractProductExecutionService --> ProductResult : stores results
+    AbstractProductExecutionService --> ProductExecutor: uses
+    AbstractProductExecutionService --> SecHubExecutionContext: uses
+    
+    ProductExecutor --> Adapter: configures and uses
+    ProductExecutor --> SecHubExecutionContext: uses
+    
+    AbstractProductExecutionService --> ProductExecutor : calls
+    
+    ScanService ..> ScanJobExecutor : creates + uses (A3)
+    ScanJobExecutor --> ScanProgressMonitor #fuchsia 
+    
+    ExecutorThread ..> ScanJobExecutionRunnable: runs
+    CancellationThread ..> ScanJobCancellationRunnable: runs
+    
+    ScanJobExecutor --> ScanJobExecutionRunnable : creates 
+    ScanJobExecutor --> ScanJobExecutionRunnable #fuchsia;text:fuchsia : cancels 
+    ScanJobExecutor --> ExecutorThread : starts
+    ScanJobExecutor --> ScanJobCancellationRunnable #fuchsia;text:fuchsia : creates if necessary
+    ScanJobExecutor --> CancellationThread #fuchsia;text:fuchsia : starts when necessary
+    ScanJobExecutor --> SecHubExecutionContext : creates context 
+    ScanJobExecutor --> ScanJobRunnableData : creates
+    
+    ScanJobRunnableData o-- SecHubExecutionContext 
+    
+    ScanJobExecutionRunnable --> SecHubExecutionContext
+    ScanJobExecutionRunnable --> ExecutorThread: "interrupts ExecutorThread\nwhen being canceled.\nThis immediately interrupts all product calls hard." 
+    ScanJobExecutionRunnable --> SecHubExecutionContext : "marks as cancel requested\nso available in product executors"
+    ScanJobExecutionRunnable --> ScanJobRunnableData
+    ScanJobExecutionRunnable --> ProductExecutionStoreService : calls
+    ProductExecutionStoreService --> ProductExecutor
+    
+    ScanJobCancellationRunnable --> ScanJobRunnableData
+    ScanJobCancellationRunnable --> SecHubExecutionHistory
+    ScanJobCancellationRunnable --> SecHubExecutionContext : "uses information about \nproduct executors and data"
+    ScanJobCancellationRunnable --> CanceableProductExecutor 
+
+    ScanExecutionTasklet <--> DomainMessageService #silver;line.dashed;text:silver  : sends "START_SCAN" (A1) SYNCHRON
+    
+    ScanProgressMonitor  <--> DomainMessageService #Fuchsia;line.dashed;text:Fuchsia : "sends synchron REQUEST_SCHEDULER_JOB_STATUS (B1)\nand receives job status"
+    ScanService <--> DomainMessageService  #silver;line.dashed;text:silver : recevies "START_SCAN" (A2) SYNCHRON (returns result)
+    
+    Adapter ---> Procuct : communication
+    
+    ScanJobCancellationRunnable --> DomainMessageService #orange;line.dashed;text:orange : sends "PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE" (E1) ASYNCHRON
+}
+
+node Procuct{
+}
+
+
+note top of DomainMessageService
+    Is used to have event 
+    communications between domains
+end note
+
+legend top right
+ |= Event Nr. |= Message ID |= What happens at this event ? |
+ |<back:silver> A1 </back>| START_SCAN | Scan - running |
+ |<back:fuchsia> B1 </back>| REQUEST_SCHEDULER_JOB_STATUS | Scan - periodic inspection if scheduler job marked as cancel requested | 
+ |<back:blue> C1 </back>| REQUEST_JOB_CANCELLATION | Cancel request started  | 
+ |<back:green> D1 </back>| CANCELLATION_RUNNING | Cancel scan running/ ongoing |
+ |<back:orange> E1 </back>| PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE | Product execucutor cancel operations have finished (post processing done |
+ endlegend
+
+@enduml

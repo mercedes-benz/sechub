@@ -6,6 +6,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SecHubMessagesList implements JSONable<SecHubMessagesList> {
 
     private static final SecHubMessagesList IMPORTER = new SecHubMessagesList();

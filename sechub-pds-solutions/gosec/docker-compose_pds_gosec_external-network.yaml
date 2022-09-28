@@ -5,13 +5,14 @@ services:
     pds-gosec:
         build:
             args:
-                - BASE_IMAGE=debian:11-slim
+                - BASE_IMAGE=${BASE_IMAGE}
             context: docker/
             dockerfile: GoSec-Debian.dockerfile
         container_name: pds-gosec
         hostname: pds-gosec
         env_file:
             - .env
+            - .env-single
         networks:
             - "sechub"
         volumes:

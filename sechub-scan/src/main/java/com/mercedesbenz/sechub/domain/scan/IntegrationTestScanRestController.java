@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.commons.mapping.MappingData;
 import com.mercedesbenz.sechub.commons.mapping.NamePatternIdProvider;
+import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.domain.scan.access.ScanAccessCountService;
 import com.mercedesbenz.sechub.domain.scan.admin.FullScanData;
 import com.mercedesbenz.sechub.domain.scan.admin.FullScanDataService;
@@ -223,6 +225,39 @@ public class IntegrationTestScanRestController {
         String id = provider.getIdForName(name);
         return id;
 
+    }
+
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/job/{jobUUID}/pds/uuids", method = RequestMethod.GET)
+    public List<UUID> getPDSJobUUIDSForSecHubJOob(@PathVariable("jobUUID") UUID sechubJob) {
+        List<UUID> list = new ArrayList<>();
+        List<ProductResult> productResults = productResultService.fetchAllResultsForJob(sechubJob);
+        boolean pdsResultFound = false;
+        for (ProductResult productResult : productResults) {
+            ProductIdentifier identifier = productResult.getProductIdentifier();
+            if (!identifier.toString().startsWith("PDS_")) {
+                continue;
+            }
+            pdsResultFound = true;
+            String json = productResult.getMetaData();
+            if (json == null) {
+                continue;
+            }
+            try {
+                AdapterMetaData metaData = JSONConverter.get().fromJSON(AdapterMetaData.class, json);
+                String valueOrNull = metaData.getValueAsStringOrNull("PDS_JOB_UUID");
+                if (valueOrNull == null) {
+                    LOG.trace("No PDS_JOB_UUID inside adapter metadata - product result:{}", productResult.getUUID());
+                    continue;
+                }
+                UUID pdsJobUUID = UUID.fromString(valueOrNull);
+                list.add(pdsJobUUID);
+                LOG.info("Found PDS job uuid: {} for sechub job:{}", pdsJobUUID, sechubJob);
+            } catch (RuntimeException e) {
+                LOG.error("Was not able to convert to adapter meta data  - product result uuid:{}, metaData={}", productResult.getUUID(), json);
+            }
+        }
+        LOG.info("PDS product result found in database: {}. list = {}", pdsResultFound, list);
+        return list;
     }
 
 }

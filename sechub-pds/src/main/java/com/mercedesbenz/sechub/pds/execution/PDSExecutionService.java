@@ -30,14 +30,17 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
+import com.mercedesbenz.sechub.commons.pds.execution.ExecutionEventData;
+import com.mercedesbenz.sechub.commons.pds.execution.ExecutionEventType;
 import com.mercedesbenz.sechub.pds.PDSMustBeDocumented;
 import com.mercedesbenz.sechub.pds.job.PDSJob;
 import com.mercedesbenz.sechub.pds.job.PDSJobRepository;
-import com.mercedesbenz.sechub.pds.job.PDSJobStatusState;
 import com.mercedesbenz.sechub.pds.job.PDSJobTransactionService;
+import com.mercedesbenz.sechub.pds.job.PDSWorkspaceService;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesMonitoringStatus;
-import com.mercedesbenz.sechub.pds.usecase.UseCaseUserCancelsJob;
+import com.mercedesbenz.sechub.pds.usecase.UseCaseSystemHandlesJobCancelRequests;
 
 /**
  * This class is responsible for all execution queuing parts - it will also know
@@ -86,6 +89,9 @@ public class PDSExecutionService {
     @Autowired
     PDSJobRepository repository;
 
+    @Autowired
+    PDSWorkspaceService workspaceService;
+
     @PostConstruct
     protected void postConstruct() {
         workers = Executors.newFixedThreadPool(workerThreadCount);
@@ -103,9 +109,17 @@ public class PDSExecutionService {
         scheduler.shutdown();
     }
 
-    @UseCaseUserCancelsJob(@PDSStep(name = "service call", description = "job execution will be canceled in queue", number = 3))
-    public boolean cancel(UUID jobUUID) {
+    /**
+     * Tries to cancels given job
+     *
+     * @param jobUUID
+     * @return {@link CancelResult}, never <code>null</code>
+     */
+    @UseCaseSystemHandlesJobCancelRequests(@PDSStep(name = "service call", description = "job execution will be canceled in queue", number = 3))
+    public CancelResult cancel(UUID jobUUID) {
         notNull(jobUUID, "job uuid may not be null!");
+
+        LOG.debug("Try to cancel PDS job: {} if running at this cluster member", jobUUID);
 
         synchronized (jobsInQueue) {
 
@@ -116,24 +130,51 @@ public class PDSExecutionService {
                     Future<PDSExecutionResult> future = entry.getValue();
                     if (future.isDone()) {
                         /* already done or canceled */
-                        LOG.info("cancelation of job with uuid:{} skipped, because already done", jobUUID);
-                        return false;
+                        LOG.info("cancellation of job with uuid:{} skipped, because already done", jobUUID);
+                        return CancelResult.JOB_FOUND_CANCEL_WAS_DONE;
                     }
+                    LOG.debug("Found PDS job: {} running at this cluster member", jobUUID);
+
+                    ExecutionEventData eventData = new ExecutionEventData();
+
+                    workspaceService.sendEvent(jobUUID, ExecutionEventType.CANCEL_REQUESTED, eventData);
+
+                    /*
+                     * the next call will trigger PDSExecutionCallable to cancel which will use the
+                     * event data for further inspections
+                     */
                     boolean canceled = future.cancel(true);
+
                     if (canceled) {
-                        LOG.info("canceled job with uuid:{}", jobUUID);
+                        LOG.info("Cancel SUCCESSFUL: canceled PDS job: {}", jobUUID);
+                        updateService.markJobAsCanceledInOwnTransaction(jobUUID);
+                        return CancelResult.JOB_FOUND_CANCEL_WAS_DONE;
                     } else {
-                        LOG.warn("cancelation of not done job with uuid:{} returned false - this should not happen");
+                        LOG.info(
+                                "Cancel FAILED: was not able to cancel PDS job :{} - should not happen. Please read logs for details. This will be an orphaned cancel request.",
+                                jobUUID);
+                        return CancelResult.JOB_FOUND_CANCEL_WAS_NOT_POSSIBLE;
+
                     }
-                    return canceled;
                 }
             }
             /*
              * job not found - either never existed or already canceled/done and removed by
              * watcher
              */
-            return false;
+            return CancelResult.JOB_NOT_FOUND;
         }
+    }
+
+    public enum CancelResult {
+        JOB_FOUND_CANCEL_WAS_DONE,
+
+        JOB_FOUND_JOB_ALREADY_DONE,
+
+        JOB_FOUND_CANCEL_WAS_NOT_POSSIBLE,
+
+        JOB_NOT_FOUND,
+
     }
 
     public boolean isQueueFull() {
@@ -243,7 +284,7 @@ public class PDSExecutionService {
          * @param future
          * @return <code>true</code> when work can be removed from jobsInQueue
          */
-        @UseCaseUserCancelsJob(@PDSStep(name = "queue work", description = "canceled job will be marked as CANCELED in db", number = 5))
+        @UseCaseSystemHandlesJobCancelRequests(@PDSStep(name = "queue work", description = "canceled job will be marked as CANCELED in db", number = 5))
         private boolean isFutureDoneAndChangesToDatabaseCanBeApplied(Entry<UUID, Future<PDSExecutionResult>> entry, Future<PDSExecutionResult> future) {
             UUID jobUUID = entry.getKey();
 
@@ -273,7 +314,9 @@ public class PDSExecutionService {
                             LOG.debug("Fetch job result from future, pds job uuid={}, state={}", job.getUUID(), job.getState());
                             job.setResult(callResult.result);
 
-                            if (callResult.failed) {
+                            if (callResult.canceled) {
+                                job.setState(PDSJobStatusState.CANCELED);
+                            } else if (callResult.failed) {
                                 job.setState(PDSJobStatusState.FAILED);
                             } else {
                                 job.setState(PDSJobStatusState.DONE);
@@ -281,10 +324,12 @@ public class PDSExecutionService {
 
                         } catch (InterruptedException e) {
                             LOG.error("Job with uuid:{} was interrupted", jobUUID, e);
+
                             job.setState(PDSJobStatusState.FAILED);
                             job.setResult("Job interrupted");
                         } catch (ExecutionException e) {
                             LOG.error("Job with uuid:{} failed in execution", jobUUID, e);
+
                             job.setState(PDSJobStatusState.FAILED);
                             job.setResult("Job execution failed");
                         }

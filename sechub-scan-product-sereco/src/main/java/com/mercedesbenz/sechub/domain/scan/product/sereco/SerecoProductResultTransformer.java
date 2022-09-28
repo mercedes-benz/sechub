@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.sereco;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -27,6 +28,7 @@ import com.mercedesbenz.sechub.commons.model.web.SecHubReportWebEvidence;
 import com.mercedesbenz.sechub.commons.model.web.SecHubReportWebRequest;
 import com.mercedesbenz.sechub.commons.model.web.SecHubReportWebResponse;
 import com.mercedesbenz.sechub.domain.scan.ReportTransformationResult;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionException;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.domain.scan.report.ReportProductResultTransformer;
@@ -43,7 +45,6 @@ import com.mercedesbenz.sechub.sereco.metadata.SerecoWebEvidence;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWebRequest;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWebResponse;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
 
 @Component
 public class SerecoProductResultTransformer implements ReportProductResultTransformer {
@@ -122,6 +123,9 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
 
             findings.add(finding);
         }
+
+        // we sort the findings
+        Collections.sort(findings);
 
         handleAnnotations(sechubJobUUID, data, transformerResult);
 

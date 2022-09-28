@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 
 import java.util.UUID;
 
-import com.mercedesbenz.sechub.adapter.pds.data.PDSJobStatus.PDSAdapterJobStatusState;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestPDSJobStatus;
 
 public class AssertPDSStatus {
@@ -16,7 +16,7 @@ public class AssertPDSStatus {
         status = IntegrationTestPDSJobStatus.fromJson(json);
     }
 
-    public AssertPDSStatus isInState(PDSAdapterJobStatusState state) {
+    public AssertPDSStatus isInState(PDSJobStatusState state) {
         return isInState(state.name());
     }
 

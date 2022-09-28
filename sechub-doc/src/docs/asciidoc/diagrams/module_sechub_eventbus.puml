@@ -1,0 +1,13 @@
+@startuml 
+
+package com.mercedesbenz.sechub.sharedkernel {
+    class DomainMessageService{
+    }
+    
+    DomainMessageService o-- EventBus
+    
+    queue EventBus{
+    }
+}
+
+@enduml 

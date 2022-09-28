@@ -5,12 +5,16 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 
 public class ApiDefinitionFileProvider {
+    private static final Logger LOG = LoggerFactory.getLogger(ApiDefinitionFileProvider.class);
 
     /**
      *
@@ -21,19 +25,22 @@ public class ApiDefinitionFileProvider {
      *
      * @param extractedSourcesFolderPath
      * @param sechubConfig
-     * @return Path to API definition file
+     * @return Path to API definition file or <code>null</code> if parameters are
+     *         null or no data section is found
      */
     public Path fetchApiDefinitionFile(String extractedSourcesFolderPath, SecHubScanConfiguration sechubConfig) {
         if (extractedSourcesFolderPath == null) {
-            throw new ZapWrapperRuntimeException("Sources folder must not be null!", ZapWrapperExitCode.EXECUTION_FAILED);
+            LOG.info("Extracted sources folder path env variable was not set.");
+            return null;
         }
         if (sechubConfig == null) {
-            throw new ZapWrapperRuntimeException("SecHub scan config must not be null!", ZapWrapperExitCode.EXECUTION_FAILED);
+            LOG.info("SecHub scan configuration was not set.");
+            return null;
         }
 
         if (!sechubConfig.getData().isPresent()) {
-            throw new ZapWrapperRuntimeException("Data section should not be empty since a sources folder was found.",
-                    ZapWrapperExitCode.SECHUB_CONFIGURATION_INVALID);
+            LOG.info("No data section was found. Continuing without searching for API definition.");
+            return null;
         }
 
         List<SecHubSourceDataConfiguration> sourceData = sechubConfig.getData().get().getSources();
