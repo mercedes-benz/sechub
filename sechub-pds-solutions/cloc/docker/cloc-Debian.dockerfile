@@ -12,6 +12,10 @@ LABEL org.opencontainers.image.title="SecHub cloc+PDS Image"
 LABEL org.opencontainers.image.description="A container which combines cloc with the SecHub Product Delegation Server (PDS)"
 LABEL maintainer="SecHub FOSS Team"
 
+# Build args
+ARG CLOC_VERSION="1.94"
+ARG CLOC_TAR="cloc-$CLOC_VERSION.tar.gz"
+
 USER root
 
 # Copy mock folder
@@ -23,8 +27,19 @@ COPY pds-config.json "$PDS_FOLDER"/pds-config.json
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get --assume-yes upgrade && \
-    apt-get --assume-yes install cloc && \
+    apt-get --assume-yes install wget perl && \
     apt-get --assume-yes clean
+
+# Install cloc
+RUN cd "$DOWNLOAD_FOLDER" && \
+    # download cloc
+    wget --no-verbose https://github.com/AlDanial/cloc/releases/download/v"$CLOC_VERSION"/"$CLOC_TAR" && \
+    # extract cloc 
+    tar --extract --file "$CLOC_TAR" && \
+    # remove cloc tar
+    rm $CLOC_TAR && \
+    # copy cloc binary to /usr/local/bin
+    cp cloc-"$CLOC_VERSION"/cloc /usr/local/bin/
 
 # Copy scripts
 COPY scripts $SCRIPT_FOLDER
