@@ -53,24 +53,27 @@ public class PDSSecurityConfiguration extends AbstractAllowPDSAPISecurityConfigu
     public UserDetailsService userDetailsService() {
         /* @formatter:off */
         UserDetails user =
-             User.builder()
-                .username(techUserId)
-                .password(techUserApiToken)
-                .roles(PDSRoles.USER.getRole())
-                .build();
+                User.builder()
+                        .username(techUserId)
+                        .password(disablePasswordEncode(techUserApiToken))
+                        .roles(PDSRoles.USER.getRole())
+                        .build();
         /* remove field after start */
-        techUserApiToken=null;
+        techUserApiToken = null;
 
         UserDetails admin =
                 User.builder()
-                   .username(adminUserId)
-                   .password(adminApiToken)
-                   .roles(PDSRoles.SUPERADMIN.getRole())
-                   .build();
-           /* remove field after start */
-        adminApiToken=null;
+                        .username(adminUserId)
+                        .password(disablePasswordEncode(adminApiToken))
+                        .roles(PDSRoles.SUPERADMIN.getRole())
+                        .build();
+        /* remove field after start */
+        adminApiToken = null;
         /* @formatter:on */
         return new InMemoryUserDetailsManager(user, admin);
     }
 
+    private String disablePasswordEncode(String password) {
+        return "{noop}" + password;
+    }
 }

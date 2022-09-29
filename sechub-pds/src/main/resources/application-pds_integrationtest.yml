@@ -29,10 +29,10 @@ sechub:
                           # time
    techuser:
        userid: pds-inttest-techuser
-       apitoken: "{noop}pds-inttest-apitoken"
+       apitoken: "pds-inttest-apitoken"
    admin:
        userid: pds-inttest-admin
-       apitoken: "{noop}pds-inttest-apitoken"
+       apitoken: "pds-inttest-apitoken"
 
 logging:
  level:
