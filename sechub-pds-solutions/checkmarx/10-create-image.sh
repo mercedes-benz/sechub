@@ -14,7 +14,7 @@ for <docker registry> with tag <version tag>.
 Optional: <base image> ; defaults to $DEFAULT_BASE_IMAGE
 
 Additionally these environment variables can be defined:
-- PDS_VERSION - version of SecHub PDS to use. E.g. 0.27.0
+- BASE_IMAGE - version of SecHub PDS to use. E.g. 0.27.0
 EOF
 }
 
@@ -35,11 +35,6 @@ fi
 
 BUILD_ARGS="--build-arg BASE_IMAGE=$BASE_IMAGE"
 echo ">> Base image: $BASE_IMAGE"
-
-if [[ ! -z "$PDS_VERSION" ]] ; then
-    echo ">> SecHub PDS version: $PDS_VERSION"
-    BUILD_ARGS+=" --build-arg PDS_VERSION=$PDS_VERSION"
-fi
 
 docker build --pull --no-cache $BUILD_ARGS \
        --tag "$REGISTRY:$VERSION" \

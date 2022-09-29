@@ -1,8 +1,76 @@
 # SPDX-License-Identifier: MIT
 
+#-------------------
+# Global Variables
+#-------------------
+
+# The image argument needs to be placed on top
+ARG BASE_IMAGE
+
+# Build args
+ARG BUILD_TYPE
+ARG CHECKMARX_WRAPPER_VERSION
+
+# The base image of the builder
+ARG BUIDLER_BASE_IMAGE="debian:11-slim"
+
+# Artifact folder 
+ARG ARTIFACT_FOLDER="/artifacts"
+
+#-------------------
+# Builder Download
+#-------------------
+
+FROM ${BUIDLER_BASE_IMAGE} AS builder-download
+
+ARG ARTIFACT_FOLDER
+ARG CHECKMARX_WRAPPER_VERSION
+
+RUN mkdir --parent "$ARTIFACT_FOLDER"
+
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \
+    apt-get install --assume-yes wget && \
+    apt-get clean
+
+# Download the Checkmarx Wrapper
+RUN cd "$ARTIFACT_FOLDER" && \
+    # download checksum file
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$CHECKMARX_WRAPPER_VERSION-pds/sechub-pds-wrapper-checkmarx-$CHECKMARX_WRAPPER_VERSION.jar.sha256sum" && \
+    # download wrapper jar
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$CHECKMARX_WRAPPER_VERSION-pds/sechub-pds-wrapper-checkmarx-$CHECKMARX_WRAPPER_VERSION.jar" && \
+    # verify that the checksum and the checksum of the file are same
+    sha256sum --check "sechub-pds-wrapper-checkmarx-$CHECKMARX_WRAPPER_VERSION.jar.sha256sum"
+
+#-------------------
+# Builder Copy Jar
+#-------------------
+
+FROM ${BUIDLER_BASE_IMAGE} AS builder-copy
+
+ARG ARTIFACT_FOLDER
+
+RUN mkdir --parent "$ARTIFACT_FOLDER"
+
+# Copy
+COPY copy/sechub-pds-wrapper-checkmarx-* "$ARTIFACT_FOLDER"
+
+#-------------------
+# Builder
+#-------------------
+
+FROM builder-${BUILD_TYPE} as builder
+RUN echo "build stage"
+
+#-------------------
+# PDS + Checkmarx Image
+#-------------------
+
 # The image argument needs to be placed on top
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
+
+ARG ARTIFACT_FOLDER
 
 LABEL org.opencontainers.image.source="https://github.com/mercedes-benz/sechub"
 LABEL org.opencontainers.image.title="SecHub Checkmarx+PDS Image"
@@ -17,39 +85,18 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get install --assume-yes wget && \
     apt-get clean
 
-# Install SecHub OWASP ZAP wrapper
-RUN cd "$TOOL_FOLDER" && \
-    # download checksum file
-    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-wrapper-checkmarx-$PDS_VERSION.jar.sha256sum" && \
-    # download wrapper jar
-    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-wrapper-checkmarx-$PDS_VERSION.jar" && \
-    # verify that the checksum and the checksum of the file are same
-    sha256sum --check sechub-pds-wrapper-checkmarx-$PDS_VERSION.jar.sha256sum && \
-    ln --symbolic sechub-pds-wrapper-checkmarx-$PDS_VERSION.jar wrapper-checkmarx.jar
+COPY --from=builder "$ARTIFACT_FOLDER" "$TOOL_FOLDER"
+RUN ln --symbolic $TOOL_FOLDER/sechub-pds-wrapper-checkmarx-*.jar $TOOL_FOLDER/sechub-pds-wrapper-checkmarx.jar
 
 # Copy mock folders
 COPY mocks/ "$MOCK_FOLDER"
 
-# Setup scripts
-COPY checkmarx.sh ${SCRIPT_FOLDER}/checkmarx.sh
-COPY checkmarx-mock.sh ${SCRIPT_FOLDER}/checkmarx-mock.sh
+# Copy scripts
+COPY scripts $SCRIPT_FOLDER
+RUN chmod --recursive +x "$SCRIPT_FOLDER"
 
 # Copy PDS configfile
 COPY pds-config.json "$PDS_FOLDER/pds-config.json"
 
-# Copy run script into container
-COPY run.sh /run.sh
-
-# Make scripts executable
-RUN chmod +x ${SCRIPT_FOLDER}/checkmarx.sh ${SCRIPT_FOLDER}/checkmarx-mock.sh /run.sh
-
-# Create the PDS workspace
-WORKDIR "$WORKSPACE"
-
-# Change owner of tool, workspace and pds folder as well as /run.sh
-RUN chown --recursive "$USER:$USER" $TOOL_FOLDER ${SCRIPT_FOLDER} $WORKSPACE $PDS_FOLDER ${SHARED_VOLUMES} /run.sh
-
 # Switch from root to non-root user
 USER "$USER"
-
-CMD ["/run.sh"]
