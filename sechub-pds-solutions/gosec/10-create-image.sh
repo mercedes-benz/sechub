@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: MIT
+cd `dirname $0`
 
 REGISTRY="$1"
 VERSION="$2"
@@ -37,13 +38,14 @@ echo ">> Base image: $BASE_IMAGE"
 
 if [[ ! -z "$GOSEC_VERSION" ]] ; then
     echo ">> GoSec version: $GOSEC_VERSION"
-    BUILD_ARGS=" --build-arg GOSEC_VERSION=$GOSEC_VERSION"
+    BUILD_ARGS="$BUILD_ARGS --build-arg GOSEC_VERSION=$GOSEC_VERSION"
 fi
 
 # Use Docker BuildKit
 export BUILDKIT_PROGRESS=plain
 export DOCKER_BUILDKIT=1
 
+echo "docker build --pull --no-cache $BUILD_ARGS --tag "$REGISTRY:$VERSION" --file docker/GoSec-Debian.dockerfile docker/"
 docker build --pull --no-cache $BUILD_ARGS \
        --tag "$REGISTRY:$VERSION" \
        --file docker/GoSec-Debian.dockerfile docker/
