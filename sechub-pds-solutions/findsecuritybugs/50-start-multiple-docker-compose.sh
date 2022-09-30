@@ -24,4 +24,4 @@ else
     echo "Starting cluster of $REPLICAS containers."
 fi
 
-docker-compose --file docker-compose_pds_findsecuritybugs_cluster.yaml up --scale pds-findsecuritybugs=$REPLICAS --build --remove-orphans
+docker compose --file docker-compose_pds_findsecuritybugs_cluster.yaml up --scale pds-findsecuritybugs=$REPLICAS --build --remove-orphans
