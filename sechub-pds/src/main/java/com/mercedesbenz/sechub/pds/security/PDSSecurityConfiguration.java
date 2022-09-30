@@ -52,10 +52,13 @@ public class PDSSecurityConfiguration extends AbstractAllowPDSAPISecurityConfigu
     @Override
     public UserDetailsService userDetailsService() {
         /* @formatter:off */
+
+        PDSPasswordTransformer pdsPasswordTransformer = new PDSPasswordTransformer();
+
         UserDetails user =
                 User.builder()
                         .username(techUserId)
-                        .password(disablePasswordEncode(techUserApiToken))
+                        .password(pdsPasswordTransformer.transformPassword(techUserApiToken))
                         .roles(PDSRoles.USER.getRole())
                         .build();
         /* remove field after start */
@@ -64,16 +67,12 @@ public class PDSSecurityConfiguration extends AbstractAllowPDSAPISecurityConfigu
         UserDetails admin =
                 User.builder()
                         .username(adminUserId)
-                        .password(disablePasswordEncode(adminApiToken))
+                        .password(pdsPasswordTransformer.transformPassword(adminApiToken))
                         .roles(PDSRoles.SUPERADMIN.getRole())
                         .build();
         /* remove field after start */
         adminApiToken = null;
         /* @formatter:on */
         return new InMemoryUserDetailsManager(user, admin);
-    }
-
-    private String disablePasswordEncode(String password) {
-        return "{noop}" + password;
     }
 }
