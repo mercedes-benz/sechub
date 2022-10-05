@@ -1,0 +1,40 @@
+// SPDX-License-Identifier: MIT
+
+include::documents/gen/server-version.adoc[]
+
+include::documents/config.adoc[]
+
+= image:sechub-logo.png[sechub] SecHub Quickstart Guide
+
+include::documents/shared/about_sechub.adoc[]
+
+include::documents/shared/about_documentation_all.adoc[]
+
+//--
+
+== Introduction
+In this tutorial, you are going to learn how to run locally the SecHub server and the PDS (Product Delegation Server) server for GoSec! +
+After that, you are going to learn how to scan apps written in 'go' for vulnerabilities. +,
+plantuml::diagram_behind_the_scenes_sechub.plantuml[format=svg, title=Setup Overview]
+And optionally, install and work with the SecHub extension for VSCodium.
+
+[TIP]
+--
+This tutorial is tested and intended for Debian and Ubuntu! +
+Although it should also work on different Linux distributions.
+--
+
+
+
+=== Prerequisites
+
+You are going to need: 
+
+* docker for https://docs.docker.com/engine/install/debian/[Debian] | https://docs.docker.com/engine/install/ubuntu/[Ubuntu]
+* docker-compose
+* And possibly jq
+
+Optional:
+
+* VSCodium
+* https://open-vsx.org/extension/mercedes-benz/sechub[SecHub Extension] for VSCodium

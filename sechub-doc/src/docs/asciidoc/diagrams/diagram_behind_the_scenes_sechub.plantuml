@@ -1,0 +1,22 @@
+' @startuml
+' ' !theme materia
+' ' skinparam actorStyle awesome
+' "SecHub" as (api)
+' "PDS + GoSec" as (pds)
+' "User" as user
+
+' user --> api : User uploads \nfiles
+' api --> user : API returns \nthe formated result
+' api --> pds : API sends prepared\nfiles from user
+' pds --> api : Result\nfrom scan
+' @enduml
+@startuml
+actor User
+participant SecHub
+participant "GoSec + PDS" as gosec
+
+User -> SecHub : Uploads files
+SecHub -> gosec : Uploads files
+gosec -> SecHub : Gets result
+SecHub -> User : Download report
+@enduml
