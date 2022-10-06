@@ -3,13 +3,13 @@
 :toc:
 :numbered:
 
-= GoSec + PDS
+= cloc + PDS
 
-https://securego.io/[GoSec] is a free and open source static application security testing tool. GoSec is a command line interface (CLI) tool. By combining GoSec with the SecHub https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)] in a container, GoSec can be used with SecHub. Another scenario is to use GoSec+PDS standalone.
+https://github.com/AlDanial/[cloc] is a free and open source application that counts blank lines, comment lines, and physical lines of source code in many programming languages. It is used on the command line. By combining cloc with the SecHub https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)] in a container, cloc can be used with SecHub. Another scenario is to use cloc+PDS standalone.
 
-Furthermore, the combination of GoSec and PDS makes it possible to run both inside a Kubernetes cluser or virtual machines.
+Furthermore, the combination of cloc and PDS makes it possible to run both inside a Kubernetes cluser or virtual machines.
 
-This folder contains the necessary scripts to run GoSec+PDS inside a container locally. Additionally, it contains scripts to build and push the PDS + GoSec container to your container registry and a Helm chart to install and run GoSec+PDS in a Kubernetes cluster.
+This folder contains the necessary scripts to run cloc+PDS inside a container locally. Additionally, it contains scripts to build and push the PDS + cloc container to your container registry and a Helm chart to install and run cloc+PDS in a Kubernetes cluster.
 
 == Run Locally
 
@@ -21,7 +21,7 @@ Docker and Docker-Compose need to be installed:
 
 . https://docs.docker.com/engine/install/[Install Docker]
 
-. Linux: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user[Use Docker as non Root user]
+. Linux: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user[Use Docker as non root user]
 
 . https://docs.docker.com/compose/install/[Install Docker-Compose]
 
@@ -63,7 +63,7 @@ It is recommended to start with a manual <<_scan>> the first time using the PDS.
 export PDS_SERVER=https://<pds-host>:<port>
 export PDS_USERID=admin
 export PDS_APITOKEN="<pds-admin-apitoken>"
-export PDS_PRODUCT_IDENTFIER=PDS_GOSEC
+export PDS_PRODUCT_IDENTFIER=PDS_CLOC
 ----
 +
 For example:
@@ -72,11 +72,11 @@ For example:
 export PDS_SERVER=https://localhost:8444
 export PDS_USERID=admin
 export PDS_APITOKEN="pds-apitoken"
-export PDS_PRODUCT_IDENTFIER=PDS_GOSEC
+export PDS_PRODUCT_IDENTFIER=PDS_CLOC
 ----
 +
 [NOTE]
-Those values are the default values from `env-initial` and `env-cluster-initial` files. In case you run PDS+GoSec in Kubernetes or other environments those values will be different.
+Those values are the default values from `env-initial` and `env-cluster-initial` files. In case you run PDS+cloc in Kubernetes or other environments those values will be different.
 
 . Scan by providing a `ZIP` folder with Go source code.
 +
@@ -98,7 +98,7 @@ The cluster is created locally via `docker-compose`.
 
 ==== Shared Volume
 
-The cluster uses a shared volume defined in `docker-compose`. Docker allows to create volumes which can be used by multiple instances to upload files to. Reading, extracting and analysing the files is done in the GoSec+PDS container.
+The cluster uses a shared volume defined in `docker-compose`. Docker allows to create volumes which can be used by multiple instances to upload files to. Reading, extracting and analysing the files is done in the cloc+PDS container.
 
 The cluster consists of a PostgreSQL database, a Nginx loadbalancer and one or more PDS server.
 
@@ -106,13 +106,13 @@ image::../shared/media/cluster_shared_volume.svg[Components of cluster with shar
 
 ===== Start Script
 
-Starting several GoSec+PDS instances:
+Starting several cloc+PDS instances:
 
 ----
 ./50-start-multiple-docker-compose.sh <replicas>
 ----
 
-Example of starting 3 GoSec+PDS instances:
+Example of starting 3 cloc+PDS instances:
 
 ----
 ./50-start-multiple-docker-compose.sh 3
@@ -120,7 +120,7 @@ Example of starting 3 GoSec+PDS instances:
 
 ==== Object Storage
 
-The cluster uses an object storage to store files. The cluster uses https://github.com/chrislusf/seaweedfs[SeaweedFS] (S3 compatible) to store files. The PDS instance(s) use the object storage to upload files to. Reading, extracting and analysing the files is done in the GoSec+PDS container.
+The cluster uses an object storage to store files. The cluster uses https://github.com/chrislusf/seaweedfs[SeaweedFS] (S3 compatible) to store files. The PDS instance(s) use the object storage to upload files to. Reading, extracting and analysing the files is done in the cloc+PDS container.
 
 The cluster consists of a PostgreSQL database, a Nginx loadbalancer, a SeaweedFS object storage and one or more PDS server.
 
@@ -128,13 +128,13 @@ image::../shared/media/cluster_object_storage.svg[Components of cluster with obj
 
 ===== Start Script
 
-Starting several GoSec+PDS instances
+Starting several cloc+PDS instances
 
 ----
 ./51-start-multiple-object-storage-docker-compose.sh <replicas>
 ----
 
-Example of starting 3 GoSec+PDS instances
+Example of starting 3 cloc+PDS instances
 
 ----
 ./51-start-multiple-object-storage-docker-compose.sh 3
@@ -142,16 +142,16 @@ Example of starting 3 GoSec+PDS instances
 
 === Change the Configuration
 
-There are several configuration options available for the GoSec+PDS `docker-compose` files. Have a look at `env-example` for more details.
+There are several configuration options available for the cloc+PDS `docker-compose` files. Have a look at `env-example` for more details.
 
 === Troubleshooting
 
-This section contains information about how to troubleshoot GoSec+PDS if something goes wrong.
+This section contains information about how to troubleshoot cloc+PDS if something goes wrong.
 
 ==== Access the container
 
 ----
-docker exec -it pds-gosec bash
+docker exec -it pds-cloc bash
 ----
 
 ==== Java Application Remote Debugging of PDS
@@ -175,7 +175,7 @@ TIP: https://www.eclipse.org/community/eclipse_newsletter/2017/june/article1.php
 
 == Build Image and Push to Registry
 
-Build container images and push them to registry to run GoSec+PDS on virtual machines, Kubernetes or any other distributed system.
+Build container images and push them to registry to run cloc+PDS on virtual machines, Kubernetes or any other distributed system.
 
 === Build Image
 
@@ -186,13 +186,13 @@ Build the container image.
 . Using the default image: 
 +
 ----
-./10-create-image.sh my.registry.example.org/sechub/pds_gosec v0.1
+./10-create-image.sh my.registry.example.org/sechub/pds_cloc v0.1
 ----
 
 . Using your own base image:
 +
 ----
-./10-create-image.sh my.registry.example.org/sechub/pds_gosec v0.1 "my.registry.example.org/debian:11-slim"
+./10-create-image.sh my.registry.example.org/sechub/pds_cloc v0.1 "my.registry.example.org/debian:11-slim"
 ----
 
 === Push Image to Registry
@@ -202,18 +202,18 @@ Push the container image to a registry.
 * Push the version tag only
 +
 ----
-./20-push-image.sh my.registry.example.org/sechub/pds_gosec v0.1
+./20-push-image.sh my.registry.example.org/sechub/pds_cloc v0.1
 ----
 
 * Push the version and `latest` tags
 +
 ----
-./20-push-image.sh my.registry.example.org/sechub/pds_gosec v0.1 yes
+./20-push-image.sh my.registry.example.org/sechub/pds_cloc v0.1 yes
 ----
 
 == Kubernetes
 
-https://kubernetes.io/[Kubernetes] is an open-source container-orchestration system. This sections explains how to deploy and run PDS+GoSec in Kubernetes.
+https://kubernetes.io/[Kubernetes] is an open-source container-orchestration system. This sections explains how to deploy and run PDS+cloc in Kubernetes.
 
 === Helm
 
@@ -222,7 +222,7 @@ https://helm.sh/[Helm] is a package manager for Kubernetes.
 ==== Requierments
 
 * https://helm.sh/docs/intro/install/[Helm] installed
-* `pds_gosec` image pushed to registry
+* `pds_cloc` image pushed to registry
 
 ==== Installation
 
@@ -235,7 +235,7 @@ A minimal example configuration file with one instance:
 replicaCount: 1
 
 image:
-   registry: my.registry.example.org/sechub/pds_gosec
+   registry: my.registry.example.org/sechub/pds_cloc
    tag: latest
 
 pds:
@@ -272,7 +272,7 @@ An example configuration file with 3 replicas, postgresql and object storage:
 replicaCount: 3
 
 image:
-   registry: my.registry.example.org/sechub/pds_gosec
+   registry: my.registry.example.org/sechub/pds_cloc
    tag: latest
 
 pds:
@@ -323,7 +323,7 @@ To generate passwords use `tr -dc A-Za-z0-9 </dev/urandom | head -c 18 ; echo ''
 . Install helm package from file system
 +
 ----
-helm install --values myvalues.yaml pds-gosec helm/pds-gosec/
+helm install --values myvalues.yaml pds-cloc helm/pds-cloc/
 ----
 +
 [TIP]
@@ -334,16 +334,16 @@ Use `helm --namespace <my-namespace> install…` to install the helm chart into 
 ----
 kubectl get pods
 NAME                             READY   STATUS    RESTARTS   AGE
-pds-gosec-545f5bc8-7s6rh         1/1     Running   0          1m43s
-pds-gosec-545f5bc8-px9cs         1/1     Running   0          1m43s
-pds-gosec-545f5bc8-t52p6         1/1     Running   0          3m
+pds-cloc-545f5bc8-7s6rh         1/1     Running   0          1m43s
+pds-cloc-545f5bc8-px9cs         1/1     Running   0          1m43s
+pds-cloc-545f5bc8-t52p6         1/1     Running   0          3m
 
 ----
 
 . Forward port of one of the pods to own machine
 +
 ----
-kubectl port-forward pds-gosec-545f5bc8-7s6rh  8444:8444
+kubectl port-forward pds-cloc-545f5bc8-7s6rh  8444:8444
 ----
 
 . Scan as explained in <<_scan>>.
@@ -353,7 +353,7 @@ kubectl port-forward pds-gosec-545f5bc8-7s6rh  8444:8444
 In case, `my-values.yaml` was changed. Simply, use `helm upgrade` to update the deployment. `helm` will handle scaling up and down as well as changing the configuration.
 
 ----
-helm upgrade --values my-values.yaml pds-gosec helm/pds-gosec/
+helm upgrade --values my-values.yaml pds-cloc helm/pds-cloc/
 ----
 
 ==== Uninstall 
@@ -363,13 +363,13 @@ helm upgrade --values my-values.yaml pds-gosec helm/pds-gosec/
 ----
 helm list
 NAME     	NAMESPACE 	REVISION	UPDATED                                 	STATUS  	CHART                          	APP VERSION
-pds-gosec	my-namespace	1       	2021-06-24 21:54:37.668489822 +0200 CEST	deployed	pds-gosec-0.1.0                	0.21.0 
+pds-cloc	my-namespace	1       	2021-06-24 21:54:37.668489822 +0200 CEST	deployed	pds-cloc-0.1.0                	0.21.0 
 ----
 
 . Helm uninstall
 +
 ----
-helm uninstall pds-gosec
+helm uninstall pds-cloc
 ----
 
 === Troubleshooting
@@ -377,22 +377,22 @@ helm uninstall pds-gosec
 * Access deployment events.
 +
 ----
-kubectl describe pod pds-gosec-545f5bc8-7s6rh
+kubectl describe pod pds-cloc-545f5bc8-7s6rh
 …
 Events:
   Type    Reason     Age   From               Message
   ----    ------     ----  ----               -------
-  Normal  Scheduled  1m    default-scheduler  Successfully assigned sechub-dev/pds-gosec-749fcb8d7f-jjqwn to kube-node01
-  Normal  Pulling    54s   kubelet            Pulling image "my.registry.example.org/sechub/pds_gosec:v0.1"
-  Normal  Pulled     40s   kubelet            Successfully pulled image "my.registry.example.org/sechub/pds_gosec:v0.1" in 13.815348799s
-  Normal  Created    15s   kubelet            Created container pds-gosec
-  Normal  Started    10s   kubelet            Started container pds-gosec
+  Normal  Scheduled  1m    default-scheduler  Successfully assigned sechub-dev/pds-cloc-749fcb8d7f-jjqwn to kube-node01
+  Normal  Pulling    54s   kubelet            Pulling image "my.registry.example.org/sechub/pds_cloc:v0.1"
+  Normal  Pulled     40s   kubelet            Successfully pulled image "my.registry.example.org/sechub/pds_cloc:v0.1" in 13.815348799s
+  Normal  Created    15s   kubelet            Created container pds-cloc
+  Normal  Started    10s   kubelet            Started container pds-cloc
 ----
 
 * Access container logs.
 +
 ----
-kubectl logs pds-gosec-545f5bc8-7s6rh
+kubectl logs pds-cloc-545f5bc8-7s6rh
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -402,7 +402,7 @@ kubectl logs pds-gosec-545f5bc8-7s6rh
  =========|_|==============|___/=/_/_/_/
  :: Spring Boot ::                (v2.4.0)
 
-2021-06-09 14:46:07.310  INFO 7 --- [           main] d.s.p.ProductDelegationServerApplication : Starting ProductDelegationServerApplication using Java 11.0.11 on pds-gosec-749fcb8d7f-jjqwn with PID 7 (/pds/sechub-pds-0.21.0.jar started by gosec in /workspace)
+2021-06-09 14:46:07.310  INFO 7 --- [           main] d.s.p.ProductDelegationServerApplication : Starting ProductDelegationServerApplication using Java 11.0.11 on pds-cloc-749fcb8d7f-jjqwn with PID 7 (/pds/sechub-pds-0.21.0.jar started by cloc in /workspace)
 2021-06-09 14:46:07.312  INFO 7 --- [           main] d.s.p.ProductDelegationServerApplication : The following profiles are active: pds_localserver
 2021-06-09 14:46:08.945  INFO 7 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
 2021-06-09 14:46:08.945  INFO 7 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.39]
@@ -414,5 +414,5 @@ kubectl logs pds-gosec-545f5bc8-7s6rh
 2021-06-09 14:46:13.192  INFO 7 --- [           main] d.s.p.ProductDelegationServerApplication : Started ProductDelegationServerApplication in 6.783 seconds (JVM running for 7.27)
 2021-06-09 14:46:14.206  INFO 7 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : Heartbeat will be initialized
 2021-06-09 14:46:14.206  INFO 7 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : Create new server hearbeat
-2021-06-09 14:46:14.255  INFO 7 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : heartbeat update - serverid:GOSEC_CLUSTER, heartbeatuuid:a46b97b2-4cfb-449d-a171-42b255c4aab8, cluster-member-data:{"hostname":"pds-gosec-749fcb8d7f-jjqwn","ip":"192.168.129.206","port":8444,"heartBeatTimestamp":"2021-06-09T14:46:14.207113","executionState":{"queueMax":50,"jobsInQueue":0,"entries":[]}}
+2021-06-09 14:46:14.255  INFO 7 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : heartbeat update - serverid:CLOC_CLUSTER, heartbeatuuid:a46b97b2-4cfb-449d-a171-42b255c4aab8, cluster-member-data:{"hostname":"pds-cloc-749fcb8d7f-jjqwn","ip":"192.168.129.206","port":8444,"heartBeatTimestamp":"2021-06-09T14:46:14.207113","executionState":{"queueMax":50,"jobsInQueue":0,"entries":[]}}
 ----
