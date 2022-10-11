@@ -1,6 +1,9 @@
 #!/usr/bin/env sh
 # SPDX-License-Identifier: MIT
 
+DEFAULT_PDS_MAX_FILE_UPLOAD_SIZE=-1  # unlimited
+DEFAULT_PDS_UPLOAD_BINARIES_MAXIMUM_BYTES=262144000  # 250 MB
+
 # the . dot command is like the bash buid-in command `source`
 . "/run_additional.sh"
 
@@ -112,6 +115,16 @@ check_variable () {
         exit 1
     fi
 }
+
+##################
+# main
+
+if [ -z "$PDS_MAX_FILE_UPLOAD_SIZE" ] ; then
+  export PDS_MAX_FILE_UPLOAD_SIZE="$DEFAULT_PDS_MAX_FILE_UPLOAD_SIZE"
+fi
+if [ -z "$PDS_MAX_FILE_UPLOAD_SIZE" ] ; then
+  export PDS_UPLOAD_BINARIES_MAXIMUM_BYTES="$DEFAULT_PDS_UPLOAD_BINARIES_MAXIMUM_BYTES"
+fi
 
 if [ "$JAVA_ENABLE_DEBUG" = "true" ]
 then
