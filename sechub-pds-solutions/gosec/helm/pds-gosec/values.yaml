@@ -10,7 +10,7 @@ image:
 
 pds:
     startMode: localserver
-    maxFileUploadSize: 20MB
+    maxFileUploadBytes: 52428800
     config:
         execute:
             queueMax: 10

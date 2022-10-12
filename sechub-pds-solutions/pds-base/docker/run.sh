@@ -1,8 +1,7 @@
 #!/usr/bin/env sh
 # SPDX-License-Identifier: MIT
 
-DEFAULT_PDS_MAX_FILE_UPLOAD_SIZE=-1  # unlimited
-DEFAULT_PDS_UPLOAD_BINARIES_MAXIMUM_BYTES=262144000  # 250 MB
+DEFAULT_PDS_MAX_FILE_UPLOAD_BYTES=52428800  # 50 MB
 
 # the . dot command is like the bash buid-in command `source`
 . "/run_additional.sh"
@@ -77,9 +76,7 @@ start_server() {
         -Dsechub.pds.techuser.apitoken="$TECHUSER_APITOKEN" \
         -Dsechub.pds.workspace.rootfolder=/workspace \
         -Dsechub.pds.config.file=/pds/pds-config.json \
-        -Dspring.servlet.multipart.max-file-size="$PDS_MAX_FILE_UPLOAD_SIZE" \
-        -Dspring.servlet.multipart.max-request-size="$PDS_MAX_FILE_UPLOAD_SIZE" \
-        -Dpds.upload.binaries.maximum.bytes="$PDS_UPLOAD_BINARIES_MAXIMUM_BYTES" \
+        -Dpds.upload.maximum.bytes="$PDS_MAX_FILE_UPLOAD_BYTES" \
         -Dserver.port=8444 \
         -Dserver.address=0.0.0.0 \
         -jar /pds/sechub-pds-*.jar
@@ -101,8 +98,7 @@ check_setup () {
     check_variable "$TECHUSER_USERID" "TECHUSER_USERID"
     check_variable "$TECHUSER_APITOKEN" "TECHUSER_APITOKEN"
     check_variable "$SHARED_VOLUME_UPLOAD_DIR" "SHARED_VOLUME_UPLOAD_DIR"
-    check_variable "$PDS_MAX_FILE_UPLOAD_SIZE" "PDS_MAX_FILE_UPLOAD_SIZE"
-    check_variable "$PDS_UPLOAD_BINARIES_MAXIMUM_BYTES" "PDS_UPLOAD_BINARIES_MAXIMUM_BYTES"
+    check_variable "$PDS_MAX_FILE_UPLOAD_BYTES" "PDS_MAX_FILE_UPLOAD_BYTES"
 }
 
 check_variable () {
@@ -119,11 +115,8 @@ check_variable () {
 ##################
 # main
 
-if [ -z "$PDS_MAX_FILE_UPLOAD_SIZE" ] ; then
-  export PDS_MAX_FILE_UPLOAD_SIZE="$DEFAULT_PDS_MAX_FILE_UPLOAD_SIZE"
-fi
-if [ -z "$PDS_MAX_FILE_UPLOAD_SIZE" ] ; then
-  export PDS_UPLOAD_BINARIES_MAXIMUM_BYTES="$DEFAULT_PDS_UPLOAD_BINARIES_MAXIMUM_BYTES"
+if [ -z "$PDS_MAX_FILE_UPLOAD_BYTES" ] ; then
+  export PDS_MAX_FILE_UPLOAD_BYTES="$DEFAULT_PDS_MAX_FILE_UPLOAD_BYTES"
 fi
 
 if [ "$JAVA_ENABLE_DEBUG" = "true" ]
