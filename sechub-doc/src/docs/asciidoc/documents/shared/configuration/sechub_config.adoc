@@ -125,11 +125,11 @@ include::sechub_config_example11_license_scan_and_code_scan_with_sources_data_re
 ==== Web scan
 `webScan` (optional) defines the web scan settings.
 
-===== URIs
-Use `uri` element to define a string array containing uris you want to scan.
+===== URI
+Use the `uri` element to define a URI you want to scan.
 
-WARNING: URI must be one of the whitelisted URLs of your project. Otherwise it will be rejected.
-         So you are not able to start scanning foreign domains and do _accidently_ an DoS attack...
+WARNING: The URI must be whitelisted in your project. Otherwise it will be rejected.
+         So you are not able to start scanning foreign domains and do _accidently_ attack them...
 
 ====== Example anonymous
 [[sechub-config-example-webscan-anonymous]]
@@ -138,7 +138,7 @@ WARNING: URI must be one of the whitelisted URLs of your project. Otherwise it w
 include::sechub_config_example2_webscan_anonyous.json[]
 ----
 <1> Define web scan
-<2> The `URI` s to scan. Every `URI` listed here must be white listed in `{sechub}` project.
+<2> The `URI` to scan. This `URI` must be white listed in `{sechub}` project.
 <3> *Optional*: Define the maximum duration the scan can take. 
     Scanning a "large" web page/application can take several hours or even days. 
     This option ensures the scan will only run for a limited time.
@@ -146,7 +146,7 @@ include::sechub_config_example2_webscan_anonyous.json[]
     The unit can be: `millisecond`, `second`, `minute`, `hour`, `day`.
 
 ===== Login
-A web scan does work very much better if it has got access to all content
+A web scan does work much better if it has got access to all content
  - so a login is necessary most time. If you do not define a login configuration
  your web scan will be done only as anonymous user.
 
@@ -190,15 +190,6 @@ include::sechub_config_example3_webscan_login_basicauth.json[]
 <3> *Optional*: You can set the realm used for basic authentication. But normally
     this is not necessary
 
-====== Example form based login with auto detect
-[source,json]
-----
-include::sechub_config_example4_webscan_login_form_autodetect.json[]
-----
-<1> URL for web login
-<2> Start of form based login with auto detection. +
-    In this example you see variables in `go template` format. This is {sechub} client specific.
-    If you use REST API directly, you must you must use real values!
 
 ====== Example form based login by script
 [source,json]
