@@ -64,7 +64,10 @@ public abstract class AbstractAllowSecHubAPISecurityConfiguration extends WebSec
 			and().
 		csrf().
 			disable(). /* disable CSRF for api so we have no CSRF-TOKEN problems - POST would not work*/
-			httpBasic();/* no login screen, just basic auth */
+			httpBasic()./* no login screen, just basic auth */
+		and().
+			headers().
+				contentSecurityPolicy("default-src 'none'");
 
  		/* @formatter:on */
     }
