@@ -57,7 +57,8 @@ sechub:
         average:
            max: 8.0 # Full throttle for integration tests...
   upload:
-    maximum:
+   binaries:
+     maximum:
       bytes: 409600 # For testing we only allow 400 kbytes         
 logging:
  level:
