@@ -96,9 +96,16 @@ public class SchedulerSourcecodeUploadService {
             long fileSize = file.getSize();
             long checksumSizeInBytes = checkSum.getBytes().length;
 
+            String fileSizeAsString = "" + fileSize;
+            long fileSizeAsStringSizeInBytes = fileSizeAsString.getBytes().length;
+
             jobStorage.store(FILENAME_SOURCECODE_ZIP, inputStream, fileSize);
+            // we store the file size information inside storage - so we can use this for
+            // PDS uploads when no reuse of storage is wanted.
+            jobStorage.store(FILENAME_SOURCECODE_ZIP_FILESIZE, new StringInputStream(fileSizeAsString), fileSizeAsStringSizeInBytes);
             // we also store given checksum - so can be reused by security product
             jobStorage.store(FILENAME_SOURCECODE_ZIP_CHECKSUM, new StringInputStream(checkSum), checksumSizeInBytes);
+
         } catch (IOException e) {
             LOG.error("Was not able to store zipped sources! {}", traceLogID, e);
             throw new SecHubRuntimeException("Was not able to upload sources");

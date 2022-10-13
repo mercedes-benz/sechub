@@ -197,6 +197,12 @@ public class SchedulerBinariesUploadService {
                     LOG.info("uploaded binaries for {}", jobUUID);
 
                     realContentLengthInBytes = byteCountingInputStream.getByteCount();
+
+                    /* upload file size information to storage */
+                    String fileSizeAsString = "" + realContentLengthInBytes;
+                    long fileSizeAsStringSizeInBytes = fileSizeAsString.getBytes().length;
+                    jobStorage.store(FILENAME_BINARIES_TAR_FILESIZE, new StringInputStream(fileSizeAsString), fileSizeAsStringSizeInBytes);
+
                     checksumCalculated = checkSumSupport.convertMessageDigestToHex(digest);
                 }
                 fileDefinedByUser = true;

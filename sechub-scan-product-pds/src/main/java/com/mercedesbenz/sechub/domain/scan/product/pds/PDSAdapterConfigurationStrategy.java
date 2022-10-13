@@ -166,6 +166,14 @@ public class PDSAdapterConfigurationStrategy implements AdapterConfigurationStra
         pdsConfigurable.setSourceCodeZipFileRequired(strategyConfig.contentProvider.isSourceRequired());
         pdsConfigurable.setBinaryTarFileRequired(strategyConfig.contentProvider.isBinaryRequired());
 
+        handleSourceCodeChecksum(pdsConfigurable);
+        handleSourceCodeFileSize(pdsConfigurable);
+
+        handleBinariesChecksum(pdsConfigurable);
+        handleBinariesFileSize(pdsConfigurable);
+    }
+
+    private void handleSourceCodeChecksum(PDSAdapterConfigurator pdsConfigurable) {
         try {
             String sourceZipFileChecksum = strategyConfig.contentProvider.getSourceZipFileUploadChecksumOrNull();
             pdsConfigurable.setSourceCodeZipFileChecksumOrNull(sourceZipFileChecksum);
@@ -173,6 +181,29 @@ public class PDSAdapterConfigurationStrategy implements AdapterConfigurationStra
         } catch (IOException e) {
             throw new SecHubRuntimeException("Was not able to retrieve source zip upload checksum", e);
         }
+    }
+
+    private void handleBinariesChecksum(PDSAdapterConfigurator pdsConfigurable) {
+        try {
+            String binaryTarFileChecksum = strategyConfig.contentProvider.getBinariesTarFileUploadChecksumOrNull();
+            pdsConfigurable.setBinariesTarFileChecksumOrNull(binaryTarFileChecksum);
+
+        } catch (IOException e) {
+            throw new SecHubRuntimeException("Was not able to retrieve tar file upload checksum", e);
+        }
+    }
+
+    private void handleSourceCodeFileSize(PDSAdapterConfigurator pdsConfigurable) {
+        try {
+            String sourceZipFileChecksum = strategyConfig.contentProvider.getSourceZipFileUploadChecksumOrNull();
+            pdsConfigurable.setSourceCodeZipFileChecksumOrNull(sourceZipFileChecksum);
+
+        } catch (IOException e) {
+            throw new SecHubRuntimeException("Was not able to retrieve source zip upload checksum", e);
+        }
+    }
+
+    private void handleBinariesFileSize(PDSAdapterConfigurator pdsConfigurable) {
         try {
             String binaryTarFileChecksum = strategyConfig.contentProvider.getBinariesTarFileUploadChecksumOrNull();
             pdsConfigurable.setBinariesTarFileChecksumOrNull(binaryTarFileChecksum);

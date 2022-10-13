@@ -50,9 +50,9 @@ public class PDSWiremockTestSupport {
 
     private static class UploadInfo {
         String fileName;
-        int uploadSizeInBytes;
+        long uploadSizeInBytes;
 
-        public int getUploadSizeInBytes() {
+        public long getUploadSizeInBytes() {
             return uploadSizeInBytes;
         }
     }
@@ -244,10 +244,10 @@ public class PDSWiremockTestSupport {
             return this;
         }
 
-        public PDSWiremockTestSupportBuilder simulateUploadData(String fileName) {
+        public PDSWiremockTestSupportBuilder simulateUploadData(String fileName, long size) {
             UploadInfo info = new UploadInfo();
             info.fileName = fileName;
-            info.uploadSizeInBytes = 127345;
+            info.uploadSizeInBytes = size;
             current.uploads.add(info);
             return this;
         }
