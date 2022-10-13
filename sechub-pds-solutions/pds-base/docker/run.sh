@@ -115,7 +115,8 @@ check_variable () {
 ##################
 # main
 
-if [ -z "$PDS_MAX_FILE_UPLOAD_BYTES" ] ; then
+if [ -z "$PDS_MAX_FILE_UPLOAD_BYTES" ]
+then
   export PDS_MAX_FILE_UPLOAD_BYTES="$DEFAULT_PDS_MAX_FILE_UPLOAD_BYTES"
 fi
 
