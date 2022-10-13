@@ -27,4 +27,4 @@ fi
 export BUILDKIT_PROGRESS=plain
 export DOCKER_BUILDKIT=1
 
-docker-compose --file docker-compose_pds_checkmarx_cluster_object_storage.yaml up --scale pds-checkmarx=$REPLICAS --build --remove-orphans
+docker compose --file docker-compose_pds_checkmarx_cluster_object_storage.yaml up --scale pds-checkmarx=$REPLICAS --build --remove-orphans

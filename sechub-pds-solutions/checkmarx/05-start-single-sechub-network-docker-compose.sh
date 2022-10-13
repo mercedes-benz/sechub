@@ -17,4 +17,4 @@ export BUILDKIT_PROGRESS=plain
 export DOCKER_BUILDKIT=1
 
 echo "Starting single Debian container."
-docker-compose --file docker-compose_pds_checkmarx_external_network.yaml up --build --remove-orphans
+docker compose --file docker-compose_pds_checkmarx_external_network.yaml up --build --remove-orphans

@@ -70,19 +70,18 @@ RUN echo "build stage"
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
-ARG ARTIFACT_FOLDER
-
 LABEL org.opencontainers.image.source="https://github.com/mercedes-benz/sechub"
 LABEL org.opencontainers.image.title="SecHub Checkmarx+PDS Image"
 LABEL org.opencontainers.image.description="A container which combines a Checkmarx Wrapper script with the SecHub Product Delegation Server (PDS)"
 LABEL maintainer="SecHub FOSS Team"
+
+ARG ARTIFACT_FOLDER
 
 USER root
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get upgrade --assume-yes && \
-    apt-get install --assume-yes wget && \
     apt-get clean
 
 COPY --from=builder "$ARTIFACT_FOLDER" "$TOOL_FOLDER"
