@@ -82,17 +82,13 @@ public class PDSAdapterV1WireMockTest {
         testSupport.startPDSServerSimulation();
 
         /* @formatter:on */
-
         PDSAdapterConfig config = createCodeScanConfiguration(testSupport);
 
         /* execute */
         adapterToTest.start(config, callback);
 
-        /*
-         * test is done by wiremock - every unexpected call or wrong parameters will
-         * fail test
-         */
-
+        /* test */
+        testSupport.verfifyExpectedCalls();
     }
 
     @Test
@@ -120,10 +116,8 @@ public class PDSAdapterV1WireMockTest {
         /* execute */
         adapterToTest.start(config, callback);
 
-        /*
-         * test is done by wiremock - every unexpected call or wrong parameters will
-         * fail test
-         */
+        /* test */
+        testSupport.verfifyExpectedCalls();
     }
 
     @Test
@@ -137,7 +131,7 @@ public class PDSAdapterV1WireMockTest {
 
         PDSWiremockTestSupport testSupport = PDSWiremockTestSupport.builder(wireMockRule).
                 simulateJobCanBeCreated(sechubJobUUID,productIdentifier,expectedJobParameters).
-                //no simulate upload here!
+                //no simulate upload here! --> if an upload would be called, wiremock would fail, because no stubbing available
                 simulateMarkReadyToStart().
                 simulateFetchJobStatus(PDSJobStatusState.DONE).
                 simulateFetchJobResultOk("testresult").
@@ -152,10 +146,8 @@ public class PDSAdapterV1WireMockTest {
         /* execute */
         adapterToTest.start(config, callback);
 
-        /*
-         * test is done by wiremock - every unexpected call or wrong parameters will
-         * fail test
-         */
+        /* test */
+        testSupport.verfifyExpectedCalls();
 
     }
 
@@ -189,8 +181,8 @@ public class PDSAdapterV1WireMockTest {
         AdapterExecutionResult result = adapterToTest.start(config, callback);
 
         /* test */
+        testSupport.verfifyExpectedCalls();
         assertEquals(Arrays.asList(new SecHubMessage(SecHubMessageType.INFO, "i am the info sent back by wiremock")), result.getProductMessages());
-
     }
 
     /* @formatter:off */
@@ -207,8 +199,13 @@ public class PDSAdapterV1WireMockTest {
         configurator.setPdsProductIdentifier(productIdentifier);
         configurator.setJobParameters(expectedJobParameters);
         configurator.setSecHubJobUUID(sechubJobUUID);
-        configurator.setSourceCodeZipFileInputStreamOrNull(new ByteArrayInputStream("test".getBytes()));
-        configurator.setSourceCodeZipFileChecksumOrNull("fakeChecksumForfakeServer");
+
+        if (! testSupport.useSecHubStorage) {
+            configurator.setSourceCodeZipFileInputStreamOrNull(new ByteArrayInputStream("test".getBytes()));
+            configurator.setSourceCodeZipFileChecksumOrNull("fakeChecksumForfakeServer");
+            configurator.setSourceCodeZipFileRequired(true);
+        }
+        configurator.setReusingSecHubStorage(testSupport.useSecHubStorage);
         configurator.setScanType(ScanType.CODE_SCAN);
 
         PDSAdapterConfig config = builder.build();
