@@ -243,6 +243,8 @@ public class PDSFileUploadJobService {
 
         String fileSizeFromUserField = request.getHeader(FILE_SIZE_HEADER_FIELD_NAME);
 
+        LOG.debug("File size from user field: {}", fileSizeFromUserField);
+
         if (fileSizeFromUserField != null) {
             try {
                 fileSizeFromUser = Long.valueOf(fileSizeFromUserField);
