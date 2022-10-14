@@ -39,8 +39,8 @@ spec:
                       value: "{{ .Values.users.technical.apiToken }}"
                     - name: PDS_MAX_FILE_UPLOAD_SIZE
                       value: "{{ .Values.pds.maxFileUploadSize }}"
-                    - name: PDS_UPLOAD_BINARIES_MAXIMUM_BYTES
-                      value: "{{ .Values.pds.uploadBinariesMaximumBytes }}"
+                    - name: PDS_UPLOAD_MAXIMUM_BYTES
+                      value: "{{ .Values.pds.uploadMaximumBytes }}"
                     {{- if .Values.pds.logging.type.enabled }}
                     - name: LOGGING_TYPE
                       value: {{ .Values.pds.logging.type.appenderName }}

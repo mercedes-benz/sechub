@@ -307,7 +307,14 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         LOG.info("Start {} uploading for pds job: {} - sechub: {}", type, pdsJobUUID, secHubTraceId);
 
         String checksum = fetchChecksumOrNull(data, type);
-        uploadSupport.upload(type, context, data, checksum);
+
+        Long fileSize = fetchFileSizeOrNull(data, type);
+        String fileSizeAsString = null;
+        if (fileSize != null) {
+            fileSizeAsString = "" + fileSize;
+        }
+
+        uploadSupport.upload(type, context, data, checksum, fileSizeAsString);
 
         /* after this - mark file upload done - at least for debugging */
         metaData.setValue(sourceUploadMetaDataKey, true);
@@ -331,6 +338,17 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
             return data.getBinariesTarFileChecksumOrNull();
         case SOURCE:
             return data.getSourceCodeZipFileChecksumOrNull();
+        default:
+            throw new IllegalArgumentException("scan type: " + type + " is not supported!");
+        }
+    }
+
+    private Long fetchFileSizeOrNull(PDSAdapterConfigData data, SecHubDataConfigurationType type) {
+        switch (type) {
+        case BINARY:
+            return data.getBinariesTarFileSizeInBytesOrNull();
+        case SOURCE:
+            return data.getSourceCodeZipFileSizeInBytesOrNull();
         default:
             throw new IllegalArgumentException("scan type: " + type + " is not supported!");
         }
