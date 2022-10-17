@@ -23,7 +23,7 @@ echo "- start sourcing the pds-solution script"
 echo ""
 
 # next line uses same checkmarx start script as the original - will start the wrapper!
-source ./../sechub-pds-solutions/checkmarx/docker/checkmarx.sh
+source ./../sechub-pds-solutions/checkmarx/docker/scripts/checkmarx.sh
 
 # -----------------------
 # Postcheck of zip upload
