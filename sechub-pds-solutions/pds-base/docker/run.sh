@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 DEFAULT_PDS_MAX_FILE_UPLOAD_BYTES=52428800  # 50 MB
+DEFAULT_PDS_HEARTBEAT_LOGGING="true"
 
 # the . dot command is like the bash buid-in command `source`
 . "/run_additional.sh"
@@ -77,6 +78,7 @@ start_server() {
         -Dsechub.pds.workspace.rootfolder=/workspace \
         -Dsechub.pds.config.file=/pds/pds-config.json \
         -Dpds.upload.maximum.bytes="$PDS_MAX_FILE_UPLOAD_BYTES" \
+        -Dsechub.pds.config.heartbeat.verbose.logging.enabled="$PDS_HEARTBEAT_LOGGING" \
         -Dserver.port=8444 \
         -Dserver.address=0.0.0.0 \
         -jar /pds/sechub-pds-*.jar
@@ -118,6 +120,11 @@ check_variable () {
 if [ -z "$PDS_MAX_FILE_UPLOAD_BYTES" ]
 then
   export PDS_MAX_FILE_UPLOAD_BYTES="$DEFAULT_PDS_MAX_FILE_UPLOAD_BYTES"
+fi
+
+if [ -z "$PDS_HEARTBEAT_LOGGING" ]
+then
+  export PDS_HEARTBEAT_LOGGING="$DEFAULT_PDS_HEARTBEAT_LOGGING"
 fi
 
 if [ "$JAVA_ENABLE_DEBUG" = "true" ]
