@@ -2,7 +2,7 @@
 # Possible values are: localserver, debug
 SECHUB_START_MODE="localserver"
 ADMIN_USERID="admin"
-ADMIN_APITOKEN="myTop$ecret!"
+ADMIN_APITOKEN='myTop$ecret!'
 
 # Enable Java Debugging
 JAVA_ENABLE_DEBUG=false

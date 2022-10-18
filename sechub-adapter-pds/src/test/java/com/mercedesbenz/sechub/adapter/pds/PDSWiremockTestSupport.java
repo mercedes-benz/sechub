@@ -13,8 +13,10 @@ import org.springframework.http.HttpStatus;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
+import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.test.JSONTestUtil;
+import com.mercedesbenz.sechub.test.TestVerifier;
 import com.mercedesbenz.sechub.test.WiremockUrlHistory;
 
 public class PDSWiremockTestSupport {
@@ -36,6 +38,9 @@ public class PDSWiremockTestSupport {
     private List<UploadInfo> uploads = new ArrayList<>();
     private List<StateQueueInfo> stateRequestsResults = new ArrayList<>();
 
+    private TestVerifier testVerifier = new TestVerifier();
+    public boolean useSecHubStorage;
+
     public PDSWiremockTestSupport(WireMockServer server) {
         this.server = server;
         this.history = new WiremockUrlHistory();
@@ -45,6 +50,11 @@ public class PDSWiremockTestSupport {
 
     private static class UploadInfo {
         String fileName;
+        long uploadSizeInBytes;
+
+        public long getUploadSizeInBytes() {
+            return uploadSizeInBytes;
+        }
     }
 
     private static class StateQueueInfo {
@@ -68,7 +78,7 @@ public class PDSWiremockTestSupport {
                 simulationJobCreation();
             }
             for (UploadInfo info : uploads) {
-                simulateUploadData(info.fileName);
+                simulateUploadData(info);
             }
             if (pdsMarkReadyToStart) {
                 simulateMarkReadyToStart();
@@ -106,6 +116,7 @@ public class PDSWiremockTestSupport {
                     .withBody(sechubMessageList.toJSON()))
                 );
         /* @formatter:on */
+        testVerifier.add(() -> verify(getRequestedFor(urlEqualTo(url))));
     }
 
     private void simulateGetResult(GetResult pdsFetchJobResult) {
@@ -126,6 +137,8 @@ public class PDSWiremockTestSupport {
                     .withBody("{\"exitCode\" : "+pdsFetchJobResult.exitCode+", \"failed\" : \""+jobResultFailedString+"\", \"result\" : \""+pdsFetchJobResult.result+"\" }"))
                 );
         /* @formatter:on */
+
+        testVerifier.add(() -> verify(getRequestedFor(urlEqualTo(url))));
     }
 
     private void simulateStateRequest(StateQueueInfo info) {
@@ -152,20 +165,35 @@ public class PDSWiremockTestSupport {
         stubFor(put(urlEqualTo(history.rememberPUT(url))).withHeader("content-type", equalTo(APPLICATION_JSON))
                 .willReturn(aResponse().withStatus(HttpStatus.OK.value()).withHeader("Content-Type", APPLICATION_JSON)));
         /* @formatter:on */
+
+        testVerifier.add(() -> verify(putRequestedFor(urlEqualTo(url))));
     }
 
-    private void simulateUploadData(String uploadFileName) {
-
+    private void simulateUploadData(UploadInfo info) {
         if (pdsJobUUID == null) {
             throw new IllegalStateException("testcase corrupt? pds job uuid not known here!");
         }
+        String uploadFileName = info.fileName;
+
         /* @formatter:off */
         String url = pdsURLBuilder.buildUpload(pdsJobUUID, uploadFileName);
-        stubFor(post(urlEqualTo(history.rememberPOST(url)))
-                .withHeader("content-type", containing("multipart/form-data;boundary=")).withRequestBody(containing(uploadFileName))
-                .willReturn(aResponse().withStatus(HttpStatus.OK.value()).withHeader("Content-Type", APPLICATION_JSON)
-                        .withBody("{\"jobUUID\" : \"" + pdsJobUUID.toString() + "\"}")));
+        stubFor(post(urlEqualTo(history.rememberPOST(url))).
+                withHeader("content-type",
+                        containing("multipart/form-data;boundary=")).
+                withHeader("x-file-size",
+                        containing(""+info.getUploadSizeInBytes())).
+                withMultipartRequestBody(
+                        aMultipart().withName("checkSum")).
+                withMultipartRequestBody(
+                        aMultipart().withName("file")).
+
+                willReturn(aResponse().
+                            withStatus(HttpStatus.OK.value()).
+                            withHeader("Content-Type", APPLICATION_JSON).
+                            withBody("{\"jobUUID\" : \"" + pdsJobUUID.toString() + "\"}")));
         /* @formatter:on */
+
+        testVerifier.add(() -> verify(postRequestedFor(urlEqualTo(url))));
     }
 
     private void simulationJobCreation() throws Exception {
@@ -192,6 +220,8 @@ public class PDSWiremockTestSupport {
                         .withBody("{\"jobUUID\" : \""+pdsJobUUID.toString()+"\"}")));
         /* @formatter:on */
 
+        testVerifier.add(() -> verify(postRequestedFor(urlEqualTo(url))));
+
     }
 
     public static class PDSWiremockTestSupportBuilder {
@@ -207,12 +237,17 @@ public class PDSWiremockTestSupport {
             current.sechubJobUUID = sechubJobUUID;
             current.pdsProductIdentifier = pdsProductIdentifier;
             current.pdsJobParameters = parameters;
+
+            if (parameters != null) {
+                current.useSecHubStorage = Boolean.parseBoolean(parameters.get(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE));
+            }
             return this;
         }
 
-        public PDSWiremockTestSupportBuilder simulateUploadData(String fileName) {
+        public PDSWiremockTestSupportBuilder simulateUploadData(String fileName, long size) {
             UploadInfo info = new UploadInfo();
             info.fileName = fileName;
+            info.uploadSizeInBytes = size;
             current.uploads.add(info);
             return this;
         }
@@ -263,6 +298,13 @@ public class PDSWiremockTestSupport {
 
     public String getTestBaseUrl() {
         return server.baseUrl();
+    }
+
+    /**
+     * Verify the stubbing is called as expected
+     */
+    public void verfifyExpectedCalls() {
+        testVerifier.verify();
     }
 
 }

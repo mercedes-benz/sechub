@@ -71,6 +71,7 @@ public class PDSServerConfigurationServiceTest {
         assertEquals("when 'true' quality scan results are added as well", m1.getDescription());
         assertEquals("product1.level", m2.getKey());
         assertEquals("numeric, 1-gets all, 2-only critical,fatal and medium, 3- only critical and fatal", m2.getDescription());
+        assertEquals("1", m2.getDefault());
 
         List<PDSProductParameterDefinition> optional = paramSetup.getOptional();
         assertEquals(1, optional.size());
@@ -78,6 +79,7 @@ public class PDSServerConfigurationServiceTest {
         PDSProductParameterDefinition o1 = oit.next();
         assertEquals("product1.add.tipoftheday", o1.getKey());
         assertEquals("add tip of the day as info", o1.getDescription());
+        assertEquals("Don't add any secrets/credentials to your repository!", o1.getDefault());
 
         PDSProductSetup product2 = it.next();
         assertEquals("PRODUCT_2", product2.getId());

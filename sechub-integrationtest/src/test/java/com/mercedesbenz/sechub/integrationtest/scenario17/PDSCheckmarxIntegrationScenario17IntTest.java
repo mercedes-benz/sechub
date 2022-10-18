@@ -5,7 +5,10 @@ import static com.mercedesbenz.sechub.integrationtest.api.IntegrationTestMockMod
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 import static com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestExampleConstants.*;
 import static com.mercedesbenz.sechub.integrationtest.scenario17.Scenario17.*;
+import static org.junit.Assert.*;
 
+import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.junit.Rule;
@@ -16,9 +19,12 @@ import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TemplateData;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
+import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestExampleConstants;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestTemplateFile;
 
 public class PDSCheckmarxIntegrationScenario17IntTest {
+
+    private static final String TEST_RECOMPRESSED_ZIP_DATA_TXT_SHA256 = "TEST_RECOMPRESSED_ZIP_DATA_TXT_SHA256";
 
     @Rule
     public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario17.class);
@@ -58,6 +64,28 @@ public class PDSCheckmarxIntegrationScenario17IntTest {
             hasTrafficLight(TrafficLight.YELLOW).
             hasFindings(109)
             ;
+
+
+        // check RECOMPRESSED ZIP file content
+        UUID pdsJobUUID = waitForFirstPDSJobOfSecHubJobAndReturnPDSJobUUID(jobUUID);
+        Map<String, String> variables = fetchPDSVariableTestOutputMap(pdsJobUUID);
+        String sha256 = variables.get(TEST_RECOMPRESSED_ZIP_DATA_TXT_SHA256);
+
+        if (sha256!=null) {
+            int firstSpace = sha256.indexOf(" ");
+            if (firstSpace!=-1) {
+                sha256 = sha256.substring(0,firstSpace);
+            }
+        }
+        String expectedSha256 = IntegrationTestExampleConstants.SHA256SUM_FOR_DATA_TXT_FILE_IN_ZIPFILE_WITH_PDS_CODESCAN_LOW_FINDINGS;
+
+        if (! Objects.equals(expectedSha256, sha256)) {
+            String sha256VariableWithPath = variables.get(TEST_RECOMPRESSED_ZIP_DATA_TXT_SHA256);
+            System.out.println("TEST_RECOMPRESSED_ZIP_DATA_TXT_SHA256="+sha256VariableWithPath);
+
+            assertEquals(expectedSha256, sha256);
+        }
+
         /* @formatter:on */
     }
 

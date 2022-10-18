@@ -1,0 +1,36 @@
+{
+    "apiVersion" : "1.0",
+    "sechubJobUUID": "288607bf-ac81-4088-842c-005d5702a9e9", 
+    "productId": "PDS_CHECKMARX_INTEGRATIONTEST",
+    "parameters": [
+        {
+            "key": "pds.scan.configuration",
+            "value": "{\n  \"projectId\": \"sechub_evaluation\",\n  \"codeScan\": {\n    \"fileSystem\": {\n      \"folders\": [\n        \"weaknesses/\"\n      ]\n    }\n  }\n}\n"
+        },
+        {
+            "key": "pds.checkmarx.baseurl",
+            "value": "checkmarx.example.org"
+        },
+        {
+            "key": "checkmarx.newproject.teamid.mapping",
+            "value": "{\"entries\":[{\"pattern\":\".*\",\"replacement\":\"2\",\"comment\":\"sechub-team-default\"}]}"
+        },
+        {
+            "key": "pds.checkmarx.user",
+            "value": "sechub"
+        },
+        {
+            "key": "pds.checkmarx.password",
+            "value": "i-am-a-fake-password"
+        },
+        {
+            "key": "pds.checkmarx.always.fullscan.enabled",
+            "value": "true"
+        },
+        {
+            "key": "pds.checkmarx.engine.configuration.name",
+           "value": "Multi-language Scan"
+        }
+       
+    ]
+}

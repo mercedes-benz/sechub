@@ -1,0 +1,78 @@
+@startuml
+
+'Hide empty parts:
+hide empty fields
+hide empty methods
+
+
+class PDSWorkspaceService {
+      + void sendEvent(UUID jobUUID, ExecutionEventType eventType,ExecutionEventData eventData)
+      + ExecutionEventData fetchEventDataOrNull(UUID jobUUID, ExecutionEventType eventType) {
+}
+
+class ExecutionEventData{
+}
+
+folder $workspace/$jobUUID/events as eventFolder {
+}
+
+queue PDS-Job-Queue as queue{
+}
+
+class PDSExecutionCallableFactory{
+}
+class PDSExecutionCallable{
+}
+
+node launcherScript as launcherScript{
+}
+node launcherScript as launcherScript{
+}
+
+node "Event File" as eventFile{
+}
+
+class PDSBatchTriggerService{
+    + void triggerExecutionOfNextJob()
+}
+
+class PDSJobCancelTriggerService #silver ##[dotted]dimgrey {
+  + void triggerHandleCancelRequests()
+}
+
+class PDSCancelService #silver  ##[dotted]dimgrey{
+  + void handleJobCancelRequests()
+}
+
+PDSBatchTriggerService --> PDSExecutionService
+
+PDSJobCancelTriggerService --> PDSCancelService #silver;line.dotted;text:dimgrey
+PDSCancelService --> PDSExecutionService  #silver;line.dotted;text:dimgrey : cancel job by job UUID
+ 
+PDSExecutionCallableFactory -> PDSExecutionCallable : creates
+PDSWorkspaceService -> eventFile : creates/uses
+PDSWorkspaceService --> eventFolder: writes/reads event files\ninto workspace folder
+eventFolder -> eventFile
+eventFile --> ExecutionEventData: contains files which \nhave JSOn content
+
+launcherScript ---> eventFile : can read
+PDSExecutionCallable -> launcherScript : creates process
+PDSExecutionCallable -> PDSWorkspaceService : prepares workspace, sends events 
+PDSExecutionService --> PDSExecutionCallableFactory: calls
+PDSExecutionService ..> PDSExecutionCallable: uses
+PDSExecutionService *- queue
+queue o-- PDSExecutionCallable
+
+note bottom of eventFile
+    Inside the event folder we have
+    files with name pattern
+    "${eventTypeName}.json". Some
+    events have only one file.
+    
+    Remark: Currently not implemented,
+    but if an event type shall supports multiple
+    files in fture the name pattern shall be:
+    "${eventTypeName}[${nr}].json"
+end note
+
+@enduml

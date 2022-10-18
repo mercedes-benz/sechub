@@ -18,4 +18,12 @@ public interface TestExecutable {
 
     TestUser getUser();
 
+    /**
+     * If there is a special timeout runnable defined, this will be called in case
+     * of time out, before the final assert.failed is called.
+     *
+     * @return runnable or <code>null</code>
+     */
+    public Runnable getTimeOutRunnable();
+
 }

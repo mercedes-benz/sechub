@@ -18,13 +18,15 @@
                     }  ,
                     {
                         "key" : "product1.level",
-                        "description" : "numeric, 1-gets all, 2-only critical,fatal and medium, 3- only critical and fatal"
+                        "description" : "numeric, 1-gets all, 2-only critical,fatal and medium, 3- only critical and fatal",
+                        "default" : "1"
                     }  
                 ],
                 "optional" : [
                     {
                         "key" : "product1.add.tipoftheday",
-                        "description" : "add tip of the day as info"
+                        "description" : "add tip of the day as info",
+                        "default" : "Don't add any secrets/credentials to your repository!"
                     }  
                 ]
             }

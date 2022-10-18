@@ -36,11 +36,11 @@ public interface Adapter<C extends AdapterConfig> {
     AdapterExecutionResult start(C config, AdapterMetaDataCallback callback) throws AdapterException;
 
     /**
-     * Try to stop
+     * Triggers cancel returns <code>true</code> when cancel was done
      *
      * @param config
      * @param callback
      * @return <code>true</code> when stop was possible
      */
-    boolean stop(C config, AdapterMetaDataCallback callback) throws AdapterException;
+    boolean cancel(C config, AdapterMetaDataCallback callback) throws AdapterException;
 }

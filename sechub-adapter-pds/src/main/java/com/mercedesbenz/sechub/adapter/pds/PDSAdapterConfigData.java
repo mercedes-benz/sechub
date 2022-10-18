@@ -39,4 +39,8 @@ public interface PDSAdapterConfigData {
 
     boolean isPDSScriptTrustingAllCertificates();
 
+    Long getBinariesTarFileSizeInBytesOrNull();
+
+    Long getSourceCodeZipFileSizeInBytesOrNull();
+
 }

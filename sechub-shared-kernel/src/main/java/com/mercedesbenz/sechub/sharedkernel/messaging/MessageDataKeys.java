@@ -35,9 +35,14 @@ public class MessageDataKeys {
     public static final MessageDataKey<UUID> SECHUB_UUID = createKey("sechub.uuid", new UUIDMessageDataProvider());
     public static final MessageDataKey<SecHubConfiguration> SECHUB_CONFIG = createKey("sechub.config", new SecHubConfigurationMessageDataProvider());
     public static final MessageDataKey<BatchJobMessage> BATCH_JOB_ID = createKey("sechub.batchjob.id", new BatchJobMessageDataProvider());
+
+    @Deprecated
     public static final MessageDataKey<BatchJobMessage> BATCH_JOB_STATUS = createKey("sechub.batchjob.status", new BatchJobMessageDataProvider());
     public static final MessageDataKey<ClusterMemberMessage> ENVIRONMENT_CLUSTER_MEMBER_STATUS = createKey("environment.cluster.member.status",
             new ClusterMemberMessageDataProvider());
+
+    public static final MessageDataKey<SchedulerJobMessage> SCHEDULER_JOB_STATUS = createKey("sechub.scheduler.job.status",
+            new SchedulerJobMessageDataProvider());
     /**
      * Must contain userid, mail adress
      */

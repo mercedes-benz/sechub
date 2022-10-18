@@ -4,9 +4,9 @@ package com.mercedesbenz.sechub.domain.scan.product;
 import java.util.List;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutor;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionException;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutor;
 
 /**
  *

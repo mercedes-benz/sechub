@@ -25,12 +25,10 @@ class UseCaseEventMessageLinkAsciidocGeneratorManualTest {
 
         Map<UseCaseIdentifier, Set<String>> usecaseToMessageIdMap = new TreeMap<>();
         Set<String> list = new TreeSet<>();
-        list.add(MessageID.BATCH_JOB_STATUS.name());
         list.add(MessageID.JOB_DONE.name());
         usecaseToMessageIdMap.put(UseCaseIdentifier.UC_ADMIN_RESTARTS_JOB, list);
 
         list = new TreeSet<>();
-        list.add(MessageID.BATCH_JOB_STATUS.name());
         list.add(MessageID.JOB_DONE.name());
         usecaseToMessageIdMap.put(UseCaseIdentifier.UC_ADMIN_RESTARTS_JOB_HARD, list);
 

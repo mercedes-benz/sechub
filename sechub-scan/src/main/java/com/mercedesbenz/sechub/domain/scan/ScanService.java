@@ -18,11 +18,7 @@ import com.mercedesbenz.sechub.commons.model.JSONConverterException;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
 import com.mercedesbenz.sechub.domain.scan.log.ProjectScanLogService;
-import com.mercedesbenz.sechub.domain.scan.product.CodeScanProductExecutionService;
-import com.mercedesbenz.sechub.domain.scan.product.InfrastructureScanProductExecutionService;
-import com.mercedesbenz.sechub.domain.scan.product.LicenseScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResultService;
-import com.mercedesbenz.sechub.domain.scan.product.WebScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfig;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigID;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfigService;
@@ -33,16 +29,10 @@ import com.mercedesbenz.sechub.domain.scan.report.ScanReportException;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 import com.mercedesbenz.sechub.sharedkernel.ProgressMonitor;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionAbandonedException;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
-import com.mercedesbenz.sechub.sharedkernel.messaging.BatchJobMessage;
-import com.mercedesbenz.sechub.sharedkernel.messaging.DomainDataTraceLogID;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageSynchronousResult;
 import com.mercedesbenz.sechub.sharedkernel.messaging.IsRecevingSyncMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.IsSendingSyncMessageAnswer;
-import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.messaging.SynchronMessageHandler;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
@@ -68,16 +58,7 @@ public class ScanService implements SynchronMessageHandler {
     StorageService storageService;
 
     @Autowired
-    CodeScanProductExecutionService codeScanProductExecutionService;
-
-    @Autowired
-    WebScanProductExecutionService webScanProductExecutionService;
-
-    @Autowired
-    InfrastructureScanProductExecutionService infraScanProductExecutionService;
-
-    @Autowired
-    LicenseScanProductExecutionService licenseScanProductExecutionService;
+    ProductExecutionServiceContainer productExecutionServiceContainer;
 
     @Autowired
     CreateScanReportService reportService;
@@ -97,13 +78,12 @@ public class ScanService implements SynchronMessageHandler {
     @Autowired
     ScanProgressMonitorFactory monitorFactory;
 
-    @MustBeDocumented("Define delay in milliseconds, for before next job cancelation check will be executed.")
+    @MustBeDocumented("Define delay in milliseconds, for before next job cancellation check will be executed.")
     @Value("${sechub.config.check.canceljob.delay:" + DEFAULT_CHECK_CANCELJOB_DELAY_MILLIS + "}")
     private int millisecondsToWaitBeforeCancelCheck = DEFAULT_CHECK_CANCELJOB_DELAY_MILLIS;
 
     @IsSendingSyncMessageAnswer(value = MessageID.SCAN_DONE, answeringTo = MessageID.START_SCAN, branchName = "success")
     @IsSendingSyncMessageAnswer(value = MessageID.SCAN_FAILED, answeringTo = MessageID.START_SCAN, branchName = "failure")
-    @IsSendingSyncMessageAnswer(value = MessageID.SCAN_ABANDONDED, answeringTo = MessageID.START_SCAN, branchName = "failure")
     DomainMessageSynchronousResult startScan(DomainMessage request) {
 
         SecHubExecutionContext context = null;
@@ -129,10 +109,6 @@ public class ScanService implements SynchronMessageHandler {
         } catch (ScanReportException e) {
             LOG.error("Execution was possible, but report failed." + traceLogID(request), e);
             return new DomainMessageSynchronousResult(MessageID.SCAN_FAILED, e);
-
-        } catch (SecHubExecutionAbandonedException e) {
-            LOG.info("Execution abandoned on scan {} - message: {}", traceLogID(request), e.getMessage());
-            return new DomainMessageSynchronousResult(MessageID.SCAN_ABANDONDED, e);
         } catch (SecHubExecutionException e) {
             LOG.error("Execution problems on scan." + traceLogID(request), e);
             return new DomainMessageSynchronousResult(MessageID.SCAN_FAILED, e);
@@ -143,40 +119,30 @@ public class ScanService implements SynchronMessageHandler {
             if (context == null) {
                 LOG.warn("No sechub execution context available, so cannot check state or cleanup storage");
             } else {
-                if (!context.isAbandonded()) {
-                    cleanupStorage(context);
-                }
+                cleanupStorage(context);
             }
         }
     }
 
     protected void executeScan(SecHubExecutionContext context, DomainMessage request) throws SecHubExecutionException {
-        DomainDataTraceLogID sechubJobUUID = traceLogID(request);
+        UUID sechubJobUUID = context.getSechubJobUUID();
 
-        LOG.info("start scan for {}", sechubJobUUID);
+        LOG.info("Start scan for SecHub job: {}", sechubJobUUID);
 
         UUID logUUID = scanLogService.logScanStarted(context);
         try {
-            BatchJobMessage jobIdMessage = request.get(MessageDataKeys.BATCH_JOB_ID);
-            if (jobIdMessage == null) {
-                throw new IllegalStateException("no batch job id set for sechub job:" + sechubJobUUID);
-            }
-            long batchJobId = jobIdMessage.getBatchJobId();
-
-            ProgressMonitor progressMonitor = monitorFactory.createProgressMonitor(batchJobId);
+            ProgressMonitor progressMonitor = monitorFactory.createProgressMonitor(sechubJobUUID);
 
             /* delegate execution : */
-            ScanJobExecutor executor = new ScanJobExecutor(this, context, progressMonitor, millisecondsToWaitBeforeCancelCheck);
-            executor.execute();
+            ScanJobExecutor executor = new ScanJobExecutor(productExecutionServiceContainer, scanJobListener, context, progressMonitor,
+                    millisecondsToWaitBeforeCancelCheck);
+            executor.startScanAndInspectCancelRequests();
 
             scanLogService.logScanEnded(logUUID);
 
         } catch (Exception e) {
-            if (context.isAbandonded()) {
-                scanLogService.logScanAbandoned(logUUID);
-            } else {
-                scanLogService.logScanFailed(logUUID);
-            }
+            scanLogService.logScanFailed(logUUID);
+
             /* rethrow when already an execution exception */
             if (e instanceof SecHubExecutionException) {
                 SecHubExecutionException exceptionToRethrow = (SecHubExecutionException) e;
@@ -257,6 +223,10 @@ public class ScanService implements SynchronMessageHandler {
     private DomainMessageSynchronousResult failBecauseUnsupportedMessage() {
         return new DomainMessageSynchronousResult(MessageID.UNSUPPORTED_OPERATION,
                 new UnsupportedOperationException("Can only handle " + MessageID.START_SCAN));
+    }
+
+    public void cancelScan(UUID jobUUID) {
+
     }
 
 }

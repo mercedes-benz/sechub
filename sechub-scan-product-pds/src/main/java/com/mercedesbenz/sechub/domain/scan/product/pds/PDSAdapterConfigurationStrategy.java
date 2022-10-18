@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.mercedesbenz.sechub.adapter.AdapterConfig;
 import com.mercedesbenz.sechub.adapter.AdapterConfigBuilder;
 import com.mercedesbenz.sechub.adapter.AdapterConfigurationStrategy;
@@ -13,8 +16,8 @@ import com.mercedesbenz.sechub.adapter.pds.PDSAdapterConfiguratorProvider;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
 import com.mercedesbenz.sechub.domain.scan.DefaultAdapterConfigurationStrategy;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 
 /**
  * This strategy will configure
@@ -36,6 +39,8 @@ import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
  *
  */
 public class PDSAdapterConfigurationStrategy implements AdapterConfigurationStrategy {
+
+    private static final Logger LOG = LoggerFactory.getLogger(PDSAdapterConfigurationStrategy.class);
 
     private PDSAdapterConfigurationStrategyConfig strategyConfig;
 
@@ -166,6 +171,14 @@ public class PDSAdapterConfigurationStrategy implements AdapterConfigurationStra
         pdsConfigurable.setSourceCodeZipFileRequired(strategyConfig.contentProvider.isSourceRequired());
         pdsConfigurable.setBinaryTarFileRequired(strategyConfig.contentProvider.isBinaryRequired());
 
+        handleSourceCodeChecksum(pdsConfigurable);
+        handleSourceCodeFileSize(pdsConfigurable);
+
+        handleBinariesChecksum(pdsConfigurable);
+        handleBinariesFileSize(pdsConfigurable);
+    }
+
+    private void handleSourceCodeChecksum(PDSAdapterConfigurator pdsConfigurable) {
         try {
             String sourceZipFileChecksum = strategyConfig.contentProvider.getSourceZipFileUploadChecksumOrNull();
             pdsConfigurable.setSourceCodeZipFileChecksumOrNull(sourceZipFileChecksum);
@@ -173,12 +186,51 @@ public class PDSAdapterConfigurationStrategy implements AdapterConfigurationStra
         } catch (IOException e) {
             throw new SecHubRuntimeException("Was not able to retrieve source zip upload checksum", e);
         }
+    }
+
+    private void handleBinariesChecksum(PDSAdapterConfigurator pdsConfigurable) {
         try {
             String binaryTarFileChecksum = strategyConfig.contentProvider.getBinariesTarFileUploadChecksumOrNull();
             pdsConfigurable.setBinariesTarFileChecksumOrNull(binaryTarFileChecksum);
 
         } catch (IOException e) {
             throw new SecHubRuntimeException("Was not able to retrieve tar file upload checksum", e);
+        }
+    }
+
+    private void handleSourceCodeFileSize(PDSAdapterConfigurator pdsConfigurable) {
+        try {
+            String sourceZipFileSizeAsString = strategyConfig.contentProvider.getSourceZipFileSizeOrNull();
+            if (sourceZipFileSizeAsString == null) {
+                LOG.warn("No source zip file size available");
+                return;
+            }
+            long sizeAsLong = Long.parseLong(sourceZipFileSizeAsString);
+
+            pdsConfigurable.setSourceCodeZipFileSizeInBytes(sizeAsLong);
+
+        } catch (IOException e) {
+            throw new SecHubRuntimeException("Was not able to retrieve source zip file size", e);
+        } catch (NumberFormatException e) {
+            throw new SecHubRuntimeException("Was not able to retrieve source zip file size because not a number", e);
+        }
+    }
+
+    private void handleBinariesFileSize(PDSAdapterConfigurator pdsConfigurable) {
+        try {
+            String binaryTarFileSizeAsString = strategyConfig.contentProvider.getBinariesTarFileSizeOrNull();
+            if (binaryTarFileSizeAsString == null) {
+                LOG.warn("No binary tar file size available");
+                return;
+            }
+            long sizeAsLong = Long.parseLong(binaryTarFileSizeAsString);
+
+            pdsConfigurable.setBinariesTarFileSizeInBytes(sizeAsLong);
+
+        } catch (IOException e) {
+            throw new SecHubRuntimeException("Was not able to retrieve binary tar file size", e);
+        } catch (NumberFormatException e) {
+            throw new SecHubRuntimeException("Was not able to retrieve binary tar file size because not a number", e);
         }
     }
 

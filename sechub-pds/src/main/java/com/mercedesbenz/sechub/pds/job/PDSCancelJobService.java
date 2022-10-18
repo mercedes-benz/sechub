@@ -17,7 +17,7 @@ import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.pds.execution.PDSExecutionService;
 import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
-import com.mercedesbenz.sechub.pds.usecase.UseCaseUserCancelsJob;
+import com.mercedesbenz.sechub.pds.usecase.UseCaseUserRequestsJobCancellation;
 
 @Service
 @RolesAllowed({ PDSRoleConstants.ROLE_USER, PDSRoleConstants.ROLE_SUPERADMIN })
@@ -31,7 +31,7 @@ public class PDSCancelJobService {
     @Autowired
     PDSExecutionService executionService;
 
-    @UseCaseUserCancelsJob(@PDSStep(name = "service call", description = "trigger change to execution service and marks job status as cancel requested", number = 2))
+    @UseCaseUserRequestsJobCancellation(@PDSStep(name = "service call", description = "trigger change to execution service and marks job status as cancel requested", number = 2))
     public void cancelJob(UUID jobUUID) {
         notNull(jobUUID, "job uuid may not be null!");
 

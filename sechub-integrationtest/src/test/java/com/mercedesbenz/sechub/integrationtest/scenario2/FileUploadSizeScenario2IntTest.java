@@ -32,6 +32,7 @@ import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSupport;
 import com.mercedesbenz.sechub.test.JUnitAssertionAddon.UnitTestExecutable;
+import com.mercedesbenz.sechub.test.TestFileReader;
 import com.mercedesbenz.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class FileUploadSizeScenario2IntTest {
@@ -68,7 +69,7 @@ public class FileUploadSizeScenario2IntTest {
     }
 
     @Test
-    public void when_binaries_tarfile_exceeds_NOT_max_bin_file_size_file_is_uploaded_as_binaries_tar() throws Exception {
+    public void when_binaries_tarfile_exceeds_NOT_max_bin_file_size_file_is_uploaded() throws Exception {
         /* prepare */
         testData.uploadSizeInBytes = CONFIGURED_INTEGRATION_TEST_MAX_GENERAL_UPLOAD_IN_BYTES - 1;
 
@@ -155,7 +156,7 @@ public class FileUploadSizeScenario2IntTest {
     }
 
     @Test
-    public void source_when_sourcecode_zipfile_exceeds_NOT_max_source_zip_file_size_file_is_uploaded_as_binaries_tar() throws Exception {
+    public void when_sourcecode_zipfile_exceeds_NOT_max_source_zip_file_size_file_is_uploaded() throws Exception {
         /* prepare */
         testData.uploadSizeInBytes = CONFIGURED_INTEGRATION_TEST_MAX_GENERAL_UPLOAD_IN_BYTES;
 
@@ -223,9 +224,23 @@ public class FileUploadSizeScenario2IntTest {
             }
 
             /* test (additional when no exception ) */
+
+            // check uploaded file
             File downloadedFile = TestAPI.getFileUploaded(PROJECT_1, jobUUID, data.fileNameAtServerSide);
             assertNotNull("Downloaded file may not be null!", downloadedFile);
             assertTrue("Downloaded file must exist!", downloadedFile.exists());
+
+            long realFileSizeInBytes = downloadedFile.length();
+
+            // check size information file available and as expected
+            File downloadedFileSizeFile = TestAPI.getFileUploaded(PROJECT_1, jobUUID, data.fileNameAtServerSide + ".filesize");
+            assertNotNull("Downloaded filesize file may not be null!", downloadedFileSizeFile);
+            assertTrue("Downloaded filesize file must exist!", downloadedFileSizeFile.exists());
+
+            String fetchedSizeAsString = TestFileReader.loadTextFile(downloadedFileSizeFile);
+            long fetchedSize = Long.parseLong(fetchedSizeAsString);
+
+            assertEquals("Fetched file size not as expected for " + data.fileNameAtServerSide + " !", realFileSizeInBytes, fetchedSize);
         }
 
     }

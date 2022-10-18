@@ -7,7 +7,7 @@
   "project"  : "gamechanger",
      
   "webScan"  : {//<1>
-      "uris": ["https://www.gamechanger.example.org"]//<2>
+      "uri": "https://www.gamechanger.example.org"//<2>
   },
   
   "maxScanDuration": { //<3>

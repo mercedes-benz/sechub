@@ -15,7 +15,7 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @UseCaseDefinition(
-		id=UseCaseIdentifier.UC_ADMIN_RECEIVES_NOTIFICATOIN_ABOUT_CLUSTER_MEMBER_START,
+		id=UseCaseIdentifier.UC_ADMIN_RECEIVES_NOTIFICATION_ABOUT_CLUSTER_MEMBER_START,
 		group=UseCaseGroup.TECHNICAL,
 		apiName="adminReceivesNotificationAboutNewchedulerInstanceStart",
 		title="Admin receives notification about start of a new scheduler instance",

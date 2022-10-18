@@ -2,12 +2,12 @@
 package com.mercedesbenz.sechub.integrationtest.api;
 
 import java.io.File;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatus;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSupport;
 import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData;
@@ -143,36 +143,17 @@ public class AsPDSUser {
             internalParameters.putAll(customParameters);
         }
 
-        return createJobFor(sechubJobUUID, identifier.getId(), internalParameters);
-    }
-
-    private String createJobFor(UUID sechubJobUUID, String productId, Map<String, String> params) {
         TestRestHelper restHelper = getRestHelper();
         PDSTestURLBuilder urlBuilder = getPDSUrlBuilder();
-        return createJobFor(sechubJobUUID, params, productId, restHelper, urlBuilder);
+
+        return TestAPI.createPDSJobFor(sechubJobUUID, internalParameters, identifier.getId(), restHelper, urlBuilder);
     }
 
-    public static String createJobFor(UUID sechubJobUUID, Map<String, String> params, String productId, TestRestHelper restHelper,
-            PDSTestURLBuilder urlBuilder) {
-        String url = urlBuilder.buildCreateJob();
-        StringBuilder sb = new StringBuilder();
-        sb.append("{\"apiVersion\":\"1.0\",\"sechubJobUUID\":\"").append(sechubJobUUID.toString()).append("\",\"productId\":\"").append(productId)
-                .append("\",");
-        sb.append("\"parameters\":[");
+    public String createJobByJsonConfiguration(String json) {
+        TestRestHelper restHelper = getRestHelper();
+        PDSTestURLBuilder urlBuilder = getPDSUrlBuilder();
 
-        Iterator<String> it = params.keySet().iterator();
-        while (it.hasNext()) {
-            String key = it.next();
-            sb.append("{\"key\":\"").append(key).append("\",");
-            sb.append("\"value\":\"").append(params.get(key)).append("\"}");
-            if (it.hasNext()) {
-                sb.append(',');
-            }
-        }
-        sb.append("]}}");
-
-        String result = restHelper.postJson(url, sb.toString());
-        return result;
+        return TestAPI.createPDSJob(restHelper, urlBuilder, json);
     }
 
     public AsPDSUser upload(UUID pdsJobUUID, String fileName, String pathInsideResources) {
@@ -263,6 +244,12 @@ public class AsPDSUser {
         String url = getPDSUrlBuilder().buildAdminFetchesJobMetaData(pdsJobUUID);
         String text = getRestHelper().getStringFromURL(url);
         return text;
+    }
+
+    PDSJobStatus internalFetchStatusWithoutAutoDump(UUID jobUUID) {
+        String url = getPDSUrlBuilder().buildGetJobStatus(jobUUID);
+        String json = getRestHelper().getJSON(url);
+        return TestJSONHelper.get().createFromJSON(json, PDSJobStatus.class);
     }
 
 }

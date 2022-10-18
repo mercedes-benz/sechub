@@ -10,6 +10,7 @@ import com.mercedesbenz.sechub.integrationtest.scenario12.Scenario12;
 import com.mercedesbenz.sechub.integrationtest.scenario13.Scenario13;
 import com.mercedesbenz.sechub.integrationtest.scenario15.Scenario15;
 import com.mercedesbenz.sechub.integrationtest.scenario16.Scenario16;
+import com.mercedesbenz.sechub.integrationtest.scenario18.Scenario18;
 import com.mercedesbenz.sechub.integrationtest.scenario2.Scenario2;
 import com.mercedesbenz.sechub.integrationtest.scenario3.Scenario3;
 import com.mercedesbenz.sechub.integrationtest.scenario4.Scenario4;
@@ -306,6 +307,30 @@ public class IntegrationTestDefaultProfiles {
     public static final DefaultTestExecutionProfile PROFILE_12_PDS_CHECKMARX_INTEGRATIONTEST = defineProfile12();
 
     /**
+     * <h3>Profile 13</h3>
+     * <h4>Short description</h4>PDS scan profile code scan for PDS cancellation by
+     * SecHub
+     *
+     * <h4>Overview</h4> For a glance over all scenarios, look at
+     * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
+     * Overview}
+     *
+     * <h4>Details</h4> PDS scan profile, which provides special script behavior for
+     * PDS cancellation and cancel events: The used script variant does listen to
+     * the cancel event insdie PDS job workspace. If such an event happens a user
+     * message will be set and inform that the cancellation post processing has been
+     * done by the script. <br>
+     * <br>
+     * This can be tested by an integration test and we can ensure the complete
+     * process (sechub->pds->pdsscript->pds>sechub) has been done correctly. <br>
+     * <h5>Used inside scenarios:</h5>
+     * <ul>
+     * <li>{@link Scenario18}</li>
+     * </ul>
+     */
+    public static final DefaultTestExecutionProfile PROFILE_13_PDS_CANCELLATION = defineProfile13();
+
+    /**
      * @return all default profiles
      */
     public static List<DefaultTestExecutionProfile> getAllDefaultProfiles() {
@@ -433,6 +458,16 @@ public class IntegrationTestDefaultProfiles {
         profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_CHECKMARX_INTEGRATIONTEST);
         profile.id = "inttest-p12-pds-checkmarx";
         profile.description = "Profile 12: PDS checkmarx, reused storage, dynamic text results";
+        profile.enabled = true;
+        return profile;
+    }
+
+    private static DefaultTestExecutionProfile defineProfile13() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_CODE_SCAN_K_CANCELLATION);
+        profile.id = "inttest-p13-pds-cancellation";
+        profile.description = "Profile 13: PDS, reused storage, dynamic text results, pds script waits for cancel event.";
         profile.enabled = true;
         return profile;
     }

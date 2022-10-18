@@ -118,7 +118,7 @@ public class CheckmarxWrapperEnvironment {
     }
 
     public String getNewProjectTeamIdMapping() {
-        return newProjectPresetIdMapping;
+        return newProjectTeamIdMapping;
     }
 
     public String getNewProjectPresetIdMapping() {
