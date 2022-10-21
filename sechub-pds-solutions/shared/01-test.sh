@@ -44,7 +44,7 @@ function did_job_fail() {
     echo $job_failed
 }
 
-function is_job_finished () {
+function is_job_finished() {
     local status="$1"
     job_finished="no"
 

@@ -18,6 +18,7 @@ NOTE: The Tern container requires privileged access otherwise Tern will not work
 . Find local image
 +
 ----
+docker images
 REPOSITORY                                               TAG               IMAGE ID       CREATED          SIZE
 test                                                     0.1               599c23350b59   7 hours ago      114MB
 ----

@@ -1,0 +1,7 @@
+# Minimal image
+
+Extremely small image.
+
+## Expected Result
+
+No, result. No package manager is used.

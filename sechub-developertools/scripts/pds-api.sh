@@ -34,6 +34,15 @@ job_result <job-uuid> - Get the job result using the <job-uuid>
 monitoring_status - Monitoring information about the server and jobs
 job_stream_output <job-uuid> - Get the job ouput stream content
 job_stream_error <job-uuid> - Get the job error stream content
+
+Example
+-------
+
+export PDS_SERVER="https://localhost:8444"
+export PDS_USERID="admin"
+export PDS_APITOKEN="pds-apitoken"
+
+./`basename $0` check_alive
 EOF
 }
 

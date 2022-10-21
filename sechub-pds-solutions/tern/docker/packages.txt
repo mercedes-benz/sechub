@@ -1,2 +1,2 @@
-tern==2.10.0
-scancode-toolkit[full]==30.1.0
+tern==2.10.1
+#scancode-toolkit[full]==31.1.1
