@@ -24,4 +24,4 @@ fi
 export BUILDKIT_PROGRESS=plain
 export DOCKER_BUILDKIT=1
 
-docker-compose --file docker-compose_pds_scancode_cluster.yaml up --scale pds-scancode=$REPLICAS --build --remove-orphans
+docker compose --file docker-compose_pds_scancode_cluster.yaml up --scale pds-scancode=$REPLICAS --build --remove-orphans

@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
 
 @Service
@@ -48,10 +48,6 @@ public class ProjectScanLogService {
 
     public void logScanFailed(UUID logUUID) {
         logEndedWithStatus(logUUID, ProjectScanLog.STATUS_FAILED);
-    }
-
-    public void logScanAbandoned(UUID logUUID) {
-        logEndedWithStatus(logUUID, ProjectScanLog.STATUS_ABANDONED);
     }
 
     private void logEndedWithStatus(UUID logScanUUID, String status) {

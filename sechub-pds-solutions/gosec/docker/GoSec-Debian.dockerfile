@@ -71,5 +71,3 @@ WORKDIR "$WORKSPACE"
 
 # Switch from root to non-root user
 USER "$USER"
-
-CMD ["/run.sh"]

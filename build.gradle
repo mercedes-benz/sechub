@@ -29,18 +29,18 @@ plugins {
     id 'org.asciidoctor.jvm.pdf' version '3.3.2'
     
     // open api
-    id 'org.openapi.generator' version '6.0.1'
+    id 'org.openapi.generator' version '6.2.0'
     
     // spring
-    id 'org.springframework.boot' version '2.7.3' apply false
+    id 'org.springframework.boot' version '2.7.5' apply false
     
     // spotless code formatter
     // (see https://github.com/diffplug/spotless)
-    id 'com.diffplug.spotless' version '6.9.1'
+    id 'com.diffplug.spotless' version '6.11.0'
     
     // versions plugin for checking new available library versions etc. 
     // (see https://github.com/ben-manes/gradle-versions-plugin)
-    id 'com.github.ben-manes.versions' version '0.42.0'
+    id 'com.github.ben-manes.versions' version '0.43.0'
     
     // Details about every gradle plugin can be found at 
     // https://plugins.gradle.org/plugin/${pluginId}

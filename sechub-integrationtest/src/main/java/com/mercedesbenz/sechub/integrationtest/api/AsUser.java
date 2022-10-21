@@ -39,6 +39,7 @@ import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultEx
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSupport;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestTemplateFile;
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
+import com.mercedesbenz.sechub.integrationtest.internal.SecHubJobAutoDumper;
 import com.mercedesbenz.sechub.integrationtest.internal.SimpleTestStringList;
 import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData;
 import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
@@ -57,6 +58,7 @@ public class AsUser {
 
     private static final Logger LOG = LoggerFactory.getLogger(AsUser.class);
     private JSONTestSupport jsonTestSupport = JSONTestSupport.DEFAULT;
+    private SecHubJobAutoDumper autoDumper = new SecHubJobAutoDumper();
     TestUser user;
 
     AsUser(TestUser user) {
@@ -67,26 +69,37 @@ public class AsUser {
         return new WithSecHubClient(this);
     }
 
+    public AsUser enablePDSAutoDumpOnErrorsForSecHubJob(UUID sechubJobUUID) {
+        this.autoDumper.enablePDSAutoDumpOnErrorsForSecHubJob();
+        this.autoDumper.setSecHubJobUUID(sechubJobUUID);
+        return this;
+    }
+
     public AsUser uploadSourcecode(TestProject project, UUID jobUUID, File file, String checkSum) {
         /* @formatter:off */
-		getRestHelper().upload(getUrlBuilder().
-		        buildUploadSourceCodeUrl(project.getProjectId(),jobUUID),file,checkSum);
-		/* @formatter:on */
+        autoDumper.execute(() -> getRestHelper().upload(getUrlBuilder().
+		        buildUploadSourceCodeUrl(project.getProjectId(),jobUUID),file,checkSum)
+		);
+        /* @formatter:on */
         return this;
     }
 
     public AsUser uploadBinaries(TestProject project, UUID jobUUID, File file, String checkSum) {
         /* @formatter:off */
+        autoDumper.execute(() ->
         getRestHelper().upload(getUrlBuilder().
-                buildUploadBinariesUrl(project.getProjectId(),jobUUID),file,checkSum);
+                buildUploadBinariesUrl(project.getProjectId(),jobUUID),file,checkSum))
+        ;
         /* @formatter:on */
         return this;
     }
 
     public List<String> listAllUserIds() {
-        String json = getRestHelper().getJSON(getUrlBuilder().buildAdminListsUsersUrl());
-        SimpleTestStringList list = JSONConverter.get().fromJSON(SimpleTestStringList.class, json);
-        return list;
+        return autoDumper.execute(() -> {
+            String json = getRestHelper().getJSON(getUrlBuilder().buildAdminListsUsersUrl());
+            SimpleTestStringList list = JSONConverter.get().fromJSON(SimpleTestStringList.class, json);
+            return list;
+        });
     }
 
     /**
@@ -97,9 +110,11 @@ public class AsUser {
      * @return
      */
     public AsUser uploadSourcecode(TestProject project, UUID jobUUID, String pathInsideResources) {
-        File uploadFile = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(pathInsideResources);
-        String checkSum = TestAPI.createSHA256Of(uploadFile);
-        uploadSourcecode(project, jobUUID, uploadFile, checkSum);
+        autoDumper.execute(() -> {
+            File uploadFile = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(pathInsideResources);
+            String checkSum = TestAPI.createSHA256Of(uploadFile);
+            uploadSourcecode(project, jobUUID, uploadFile, checkSum);
+        });
         return this;
     }
 
@@ -110,9 +125,11 @@ public class AsUser {
      * @return
      */
     public AsUser uploadBinaries(TestProject project, UUID jobUUID, String pathInsideResources) {
-        File uploadFile = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(pathInsideResources);
-        String checkSum = TestAPI.createSHA256Of(uploadFile);
-        uploadBinaries(project, jobUUID, uploadFile, checkSum);
+        autoDumper.execute(() -> {
+            File uploadFile = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(pathInsideResources);
+            String checkSum = TestAPI.createSHA256Of(uploadFile);
+            uploadBinaries(project, jobUUID, uploadFile, checkSum);
+        });
         return this;
     }
 
@@ -809,8 +826,10 @@ public class AsUser {
     }
 
     public AsUser cancelJob(UUID jobUUID) {
-        String url = getUrlBuilder().buildAdminCancelsJob(jobUUID);
-        getRestHelper().post(url);
+        autoDumper.execute(() -> {
+            String url = getUrlBuilder().buildAdminCancelsJob(jobUUID);
+            getRestHelper().post(url);
+        });
         return this;
     }
 

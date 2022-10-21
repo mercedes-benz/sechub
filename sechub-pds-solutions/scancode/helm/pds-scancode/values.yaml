@@ -16,7 +16,7 @@ pds:
     # 1024**2 * 100 = 104857600
     # declare as string to avoid scientific number
     # formatting by Kubernetes
-    uploadBinariesMaximumBytes: "104857600"
+    uploadMaximumBytes: "104857600"
     config:
         execute:
             queueMax: 10
@@ -32,7 +32,7 @@ pds:
     keepContainerAliveAfterPDSCrashed: false
     volumes:
         # this value should be greater than,
-        # the `uploadBinariesMaximumBytes` value
+        # the `uploadMaximumBytes` value
         workspace:
             size: "1Gi"
 users:

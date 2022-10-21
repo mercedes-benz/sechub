@@ -20,12 +20,12 @@ import org.thymeleaf.templateresolver.FileTemplateResolver;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.docgen.util.TextFileWriter;
 import com.mercedesbenz.sechub.domain.scan.ReportTransformationResult;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionException;
 import com.mercedesbenz.sechub.domain.scan.TestHTMLScanResultReportModelBuilder;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReportTrafficLightCalculator;
 import com.mercedesbenz.sechub.domain.scan.report.ScanSecHubReport;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
 import com.mercedesbenz.sechub.test.TestUtil;
 
 /**

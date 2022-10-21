@@ -1,0 +1,54 @@
+// SPDX-License-Identifier: MIT
+== Checkmarx Wrapper
+
+The wrapper is a Boot Application for PDS, which is able to communicate
+with the Checkmarx server and can via a product delegation server (PDS).
+
+[NOTE]
+====
+Checkmarx is a commercial tool for application security testing. You can find more
+information abou the product at https://checkmarx.com
+====
+
+=== Usage
+
+==== Start wrapper
+The wrapper application is an executable jar and needs no command line arguments.
+It automatically uses all 
+https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html#launcher-scripts[standard PDS environment variables] 
+and following special mandatory Checkmarx environment variables:
+
+----
+PDS_CHECKMARX_USER
+PDS_CHECKMARX_PASSWORD
+PDS_CHECKMARX_BASE_URL
+
+CHECKMARX_NEWPROJECT_TEAMID_MAPPING
+----
+
+[IMPORTANT]
+====
+The mandatory `CHECKMARX_NEWPROJECT_TEAMID_MAPPING` and also the optional 
+`CHECKMARX_NEWPROJECT_PRESETID_MAPPING` variable contain SecHub mapping 
+data wich *must be JSON without new lines* (so one line only). The mapping
+data format is described at https://mercedes-benz.github.io/sechub/latest/sechub-techdoc.html#mapping-json-structure
+====
+
+There exists also some optional variables:
+
+----
+PDS_CHECKMARX_RESULT_CHECK_PERIOD_MINUTES
+PDS_CHECKMARX_RESULT_CHECK_TIMOUT_MINUTES
+
+PDS_CHECKMARX_ENGINE_CONFIGURATION_NAME
+PDS_CHECKMARX_ALWAYS_FULLSCAN_ENABLED
+PDS_CHECKMARX_MOCKING_ENABLED
+CHECKMARX_NEWPROJECT_PRESETID_MAPPING
+---- 
+
+[TIP]
+====
+All spring boot values / possible environment variables for the wrapper are described in detail at 
+https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html#section-pds-checkmarx-configuration
+
+====

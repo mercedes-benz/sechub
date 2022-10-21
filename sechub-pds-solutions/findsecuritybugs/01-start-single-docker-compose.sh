@@ -16,4 +16,4 @@ else
 fi
 
 echo "Starting single container."
-docker-compose --file docker-compose_pds_findsecuritybugs.yaml up --build --remove-orphans
+docker compose --file docker-compose_pds_findsecuritybugs.yaml up --build --remove-orphans

@@ -72,7 +72,7 @@ public abstract class AbstractPDSKey<T extends PDSKey> implements PDSKey {
     }
 
     @SuppressWarnings("unchecked")
-    public T markAlwaysSentToPDS() {
+    public T markSendToPDS() {
         this.sentToPDS = true;
         return (T) this;
     }

@@ -212,6 +212,32 @@ class PDSAdapterV1Test {
 
     }
 
+    @ParameterizedTest
+    @EnumSource(value = PDSJobStatusState.class)
+    @DisplayName("Cancel - Meta data found and PDS job uuid set and former job state can be canceled")
+    void stop_pds_job_uuid_found_in_metadata_and_running(PDSJobStatusState formerPdsJobState) throws Exception {
+        /* prepare */
+        prepareMinimumPDSConfig();
+
+        UUID formerPdsJobUUID = pdsJobUUID1;
+        AdapterMetaData metaData = new AdapterMetaData();
+        when(callback.getMetaDataOrNull()).thenReturn(metaData);
+        metaData.setValue("PDS_JOB_UUID", formerPdsJobUUID.toString());
+
+        preparePDSJobStatus(formerPdsJobUUID, formerPdsJobState);
+
+        preparePDSJobCreation(pdsJobUUID2);
+        preparePDSJobStatus(pdsJobUUID2, PDSJobStatusState.DONE);
+        preparePDSMessages(pdsJobUUID2, Collections.emptyList());
+
+        /* execute */
+        boolean stopped = adapterToTest.cancel(config, callback);
+
+        /* test */
+        assertTrue(stopped);
+
+    }
+
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
     /* + ................Helper.......................... + */
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */

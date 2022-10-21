@@ -9,6 +9,7 @@ import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
+import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterValueConstants;
 import com.mercedesbenz.sechub.pds.execution.PDSExecutionParameterEntry;
 
 public class PDSJobConfigurationSupport {
@@ -69,6 +70,18 @@ public class PDSJobConfigurationSupport {
         return Boolean.parseBoolean(param);
     }
 
+    public int getIntParameterOrDefault(String key, int defaultValue) {
+        String value = getStringParameterOrNull(key);
+        if (value == null) {
+            return defaultValue;
+        }
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
+    }
+
     public String getStringParameterOrNull(String key) {
         if (configuration == null) {
             return null;
@@ -95,5 +108,15 @@ public class PDSJobConfigurationSupport {
 
     private List<String> createListForParameterWithCommaSeparatedValues(String key) {
         return SimpleStringUtils.createListForCommaSeparatedValues(getStringParameterOrNull(key));
+    }
+
+    public int getMillisecondsToWaitForNextCheck() {
+        return getIntParameterOrDefault(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_CANCEL_EVENT_CHECKINTERVAL_MILLISECONDS,
+                PDSDefaultParameterValueConstants.DEFAULT_TIME_TO_WAIT_IN_MILLISECONDS_FOR_SCRIPT_CANCELLATION_CHECK);
+    }
+
+    public int getSecondsToWaitForProcess() {
+        return getIntParameterOrDefault(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_CANCEL_MAXIMUM_WAITTIME_SECONDS,
+                PDSDefaultParameterValueConstants.DEFAULT_TIME_TO_WAIT_IN_SECONDS_FOR_SCRIPT_CANCELLATION);
     }
 }

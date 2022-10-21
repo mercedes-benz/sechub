@@ -50,7 +50,7 @@ public class JobCancelService {
     public void cancelJob(UUID jobUUID) {
         assertion.assertIsValidJobUUID(jobUUID);
 
-        auditLogService.log("Requested cancelation of job {}", jobUUID);
+        auditLogService.log("Requested cancellation of job {}", jobUUID);
 
         JobMessage message = buildMessage(jobUUID);
 
@@ -87,10 +87,10 @@ public class JobCancelService {
         return message;
     }
 
-    @IsSendingAsyncMessage(MessageID.REQUEST_JOB_CANCELATION)
+    @IsSendingAsyncMessage(MessageID.REQUEST_JOB_CANCELLATION)
     private void informCancelJobRequested(JobMessage message) {
 
-        DomainMessage infoRequest = DomainMessageFactory.createEmptyRequest(MessageID.REQUEST_JOB_CANCELATION);
+        DomainMessage infoRequest = DomainMessageFactory.createEmptyRequest(MessageID.REQUEST_JOB_CANCELLATION);
         infoRequest.set(MessageDataKeys.JOB_CANCEL_DATA, message);
 
         eventBusService.sendAsynchron(infoRequest);

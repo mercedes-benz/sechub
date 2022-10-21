@@ -28,6 +28,7 @@ import com.mercedesbenz.sechub.commons.model.web.SecHubReportWebEvidence;
 import com.mercedesbenz.sechub.commons.model.web.SecHubReportWebRequest;
 import com.mercedesbenz.sechub.commons.model.web.SecHubReportWebResponse;
 import com.mercedesbenz.sechub.domain.scan.ReportTransformationResult;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionException;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.domain.scan.report.ReportProductResultTransformer;
@@ -44,7 +45,6 @@ import com.mercedesbenz.sechub.sereco.metadata.SerecoWebEvidence;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWebRequest;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWebResponse;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
 
 @Component
 public class SerecoProductResultTransformer implements ReportProductResultTransformer {

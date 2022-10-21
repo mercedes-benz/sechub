@@ -22,7 +22,7 @@ The restart will
 - be canceled, when job does not exist in scheduler 
 - be canceled, when execution already finished
 - check for running batch jobs with {sechub} job UUID. +
-  If there are existing batch operations, those will be stopped and abandoned 
+  If there are existing batch operations, those will be stopped 
 - new scan will be restarted immediately without scheduling, will try to reuse existing 
   results +
   _E.g. when a static code scan job is triggered to a product and

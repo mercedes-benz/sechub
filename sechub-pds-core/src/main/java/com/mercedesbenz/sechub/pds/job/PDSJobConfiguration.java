@@ -57,4 +57,11 @@ public class PDSJobConfiguration {
         return PDSJSONConverter.get().toJSON(this);
     }
 
+    @Override
+    public String toString() {
+        return "PDSJobConfiguration [" + (sechubJobUUID != null ? "sechubJobUUID=" + sechubJobUUID + ", " : "")
+                + (apiVersion != null ? "apiVersion=" + apiVersion + ", " : "") + (productId != null ? "productId=" + productId + ", " : "")
+                + (parameters != null ? "parameters=" + parameters : "") + "]";
+    }
+
 }

@@ -29,6 +29,14 @@ public class PDSResilientRetryExecutor<E extends Exception> {
         this.handledExceptions = handledExceptions;
     }
 
+    public void execute(Runnable runnable, String identifier) throws E {
+        Callable<Void> callable = () -> {
+            runnable.run();
+            return null;
+        };
+        execute(callable, identifier);
+    }
+
     /**
      * Executes callable - with configured amount of retries for dedicated
      * exceptions. Unhandled exceptions will be wrapped inside the target

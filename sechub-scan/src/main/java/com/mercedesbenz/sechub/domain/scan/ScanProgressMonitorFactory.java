@@ -3,6 +3,8 @@ package com.mercedesbenz.sechub.domain.scan;
 
 import static com.mercedesbenz.sechub.sharedkernel.util.Assert.*;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -17,10 +19,10 @@ public class ScanProgressMonitorFactory {
     @Lazy
     DomainMessageService eventBus;
 
-    public ProgressMonitor createProgressMonitor(Long batchJobId) {
-        notNull(batchJobId, "batchjob id must be not null!");
+    public ProgressMonitor createProgressMonitor(UUID sechubJobUUID) {
+        notNull(sechubJobUUID, "sechubJobUUID must be not null!");
 
-        return new ScanProgressMonitor(eventBus, batchJobId);
+        return new ScanProgressMonitor(eventBus, sechubJobUUID);
     }
 
 }

@@ -382,6 +382,10 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
     /* +-----------------------------------------------------------------------+ */
     /* +............................ integration test special (anonymous) .....+ */
     /* +-----------------------------------------------------------------------+ */
+    public String buildIntegrationtTestFetchAllPDSJobUUIDSForSecHubJob(UUID sechubJobUUID) {
+        return buildUrl(API_ANONYMOUS, "integrationtest/job", sechubJobUUID, "pds/uuids");
+    }
+
     public String buildCountProjectScanAccess(String projectId) {
         return buildUrl(API_ANONYMOUS, "integrationtest/project/" + projectId + "/scan/access/count");
     }

@@ -6,7 +6,7 @@
 # This bash script is just for testing the "integrationtest-checkmarx.sh" script directly 
 # from command line - without starting an integration test.
 #
-# Reason: Faster devlelopment, debugging and failure search. 
+# Reason: Faster development, debugging and failure search. 
 #
 
 
@@ -20,10 +20,10 @@ cd ..
 cd ..
 TEST_WORKING_DIR=$(pwd)
 TEST_WORKSPACE=$TEST_WORKING_DIR/build/sechub/test_integrationtest-checkmarx
-echo "- changed to working directory:"
-echo "  $TEST_WORKING_DIR"
+echo "- changed to work space:"
+echo "  $TEST_WORKSPACE"
 echo ""
-echo "- clean working directory"
+echo "- clean work space"
 rm $TEST_WORKSPACE -rf
 echo ""
 echo "- start simulation of PDS call from SecHub by setting environment variables"
@@ -67,5 +67,10 @@ touch $PDS_JOB_EXTRACTED_SOURCES_FOLDER/at-least-one-file.txt
 echo ""
 echo "- start sourcing the integration test script"
 echo ""
-source ./pds/product-scripts/integrationtest-checkmarx.sh
+
+## Simulate same situation as in PDS integration test:
+cd $TEST_WORKING_DIR
+# Next line is same start path as done in integrationtest pds config file:
+./../sechub-integrationtest/pds/product-scripts/integrationtest-checkmarx.sh
+
 

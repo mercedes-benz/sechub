@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubLicenseScanConfiguration;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 
 @Service
 public class LicenseScanProductExecutionServiceImpl extends AbstractProductExecutionService implements LicenseScanProductExecutionService {

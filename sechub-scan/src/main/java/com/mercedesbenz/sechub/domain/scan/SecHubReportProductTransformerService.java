@@ -15,8 +15,6 @@ import org.springframework.stereotype.Service;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResultRepository;
 import com.mercedesbenz.sechub.domain.scan.report.ReportProductResultTransformer;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
 
 @Service
 /**

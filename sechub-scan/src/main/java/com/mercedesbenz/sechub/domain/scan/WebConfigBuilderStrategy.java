@@ -24,7 +24,6 @@ import com.mercedesbenz.sechub.commons.model.login.Page;
 import com.mercedesbenz.sechub.commons.model.login.Script;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 
 /**
  * A common strategy for webscan configuration - usable by every web scan

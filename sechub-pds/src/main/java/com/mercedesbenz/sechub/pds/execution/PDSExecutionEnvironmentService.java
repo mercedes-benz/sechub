@@ -41,12 +41,38 @@ public class PDSExecutionEnvironmentService {
             for (PDSExecutionParameterEntry jobParam : jobParams) {
                 addJobParamDataWhenAccepted(productSetup, jobParam, map);
             }
+
+            addDefaultsForMissingParameters(productSetup, map);
+
         } else {
             LOG.error("No product setup found for product id:{}", productId);
         }
         addSecHubJobUUIDAsEnvironmentEntry(config, map);
-
         return map;
+    }
+
+    private void addDefaultsForMissingParameters(PDSProductSetup productSetup, Map<String, String> map) {
+        PDSProdutParameterSetup parameters = productSetup.getParameters();
+
+        addDefaultsForMissingParametersInList(parameters.getMandatory(), map);
+        addDefaultsForMissingParametersInList(parameters.getOptional(), map);
+    }
+
+    private void addDefaultsForMissingParametersInList(List<PDSProductParameterDefinition> mandatoryParameters, Map<String, String> map) {
+
+        for (PDSProductParameterDefinition mandatoryParameterDefinition : mandatoryParameters) {
+            if (!mandatoryParameterDefinition.hasDefault()) {
+                continue;
+            }
+            String envVariableName = converter.convertKeyToEnv(mandatoryParameterDefinition.getKey());
+
+            String value = map.get(envVariableName);
+
+            if (value == null) {
+                map.put(envVariableName, mandatoryParameterDefinition.getDefault());
+            }
+        }
+
     }
 
     private void addSecHubJobUUIDAsEnvironmentEntry(PDSJobConfiguration config, Map<String, String> map) {
@@ -67,6 +93,7 @@ public class PDSExecutionEnvironmentService {
 
         boolean acceptedParameter = false;
         boolean wellknown = false;
+
         for (PDSConfigDataKeyProvider provider : PDSConfigDataKeyProvider.values()) {
             ExecutionPDSKey key = provider.getKey();
             if (!key.getId().equals(jobParam.getKey())) {
@@ -76,11 +103,13 @@ public class PDSExecutionEnvironmentService {
             acceptedParameter = key.isAvailableInsideScript();
             break;
         }
+
         acceptedParameter = acceptedParameter || isJobParameterAcceptedByPDSServerConfiguration(jobParam, params.getMandatory());
         acceptedParameter = acceptedParameter || isJobParameterAcceptedByPDSServerConfiguration(jobParam, params.getOptional());
 
         if (acceptedParameter) {
-            map.put(converter.convertKeyToEnv(jobParam.getKey()), jobParam.getValue());
+            String envVariableName = converter.convertKeyToEnv(jobParam.getKey());
+            map.put(envVariableName, jobParam.getValue());
         } else {
             if (wellknown) {
                 LOG.debug("Wellknown parameter found - but not available inside script: {}", jobParam.getKey());
