@@ -12,7 +12,7 @@
             }
         ]
     },
-    "SCAN_TYPE": {
+    "_SCAN_TYPE_": {
         "use": [
             "_IMAGE_NAME_"
         ]

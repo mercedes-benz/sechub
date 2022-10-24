@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+
 FROM opensuse/leap
 
 ENV DATA="/data"

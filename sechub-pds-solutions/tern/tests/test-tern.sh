@@ -92,6 +92,9 @@ function build_image() {
 function setup() {
     log_step "Setup"
     helper_download_pds_tools
+}
+
+function create_build_folder() {
     mkdir "$BUILD_FOLDER"
 }
 
@@ -119,15 +122,23 @@ function package_image() {
     local image_path="${image_name}.tar"
     local scan_type="licenseScan"
     local sechub_configuration_file_path="${BUILD_FOLDER}/sechub-config-${image_name}.json"
+    local pds_job_configuration_file_path="${BUILD_FOLDER}/pds-config-${image_name}.json"
     
     save_docker_image "$image_name" "$image_path"
+    create_sechub_config "$image_name" "$image_path" "$sechub_configuration_file_path"
 
-    cp "sechub-config-template.json" "$sechub_configuration_file_path"
-    sed --in-place --expression "s|_IMAGE_NAME_|${image_name}|g; s|_IMAGE_PATH_|${image_path}|g; s|_SCAN_TYPE_|${scan_type}|g" "$sechub_configuration_file_path"
+    generate_binaries_tar "$sechub_configuration_file_path" "$scan_type"
+
+    create_pds_job_config "$pds_job_configuration_file_path"
+}
+
+function generate_binaries_tar() {
+
+    local sechub_configuration_file_path="$1"
+    local scan_type="$2"
 
     java -jar "$TOOLS/sechub-pds-tools-cli-$PDS_TOOLS_CLI_VERSION.jar" --generate "$sechub_configuration_file_path" "$scan_type" "$BUILD_FOLDER"
 }
-
 function save_docker_image() {
     log_step "Saving docker image to file"
 
@@ -138,34 +149,55 @@ function save_docker_image() {
 }
 
 function create_job() {
-    local job_creation_file="$1"
+    local job_config_file="$1"
 
-    # move parts
+    json_job_creation=$( $PDS_API create_job_from_json "$job_config_file" )
+
+    jobUUID=$( echo "$json_job_creation" | jq '.jobUUID' | tr -d \")
+
+    echo "$jobUUID"
+}
+
+function create_sechub_config() {
+    local image_name="$1"
+    local image_path="$2"
+    local sechub_configuration_file_path="$3"
+
+    cp "sechub-config-template.json" "$sechub_configuration_file_path"
+    sed --in-place --expression "s|_IMAGE_NAME_|${image_name}|g; s|_IMAGE_PATH_|${image_path}|g; s|_SCAN_TYPE_|${scan_type}|g" "$sechub_configuration_file_path"
+}
+
+function create_pds_job_config() {
+    local pds_job_configuration_file_path="$1"
+
+    pds_scan_configuration=$( jq --raw-output '.parameters[] | select(.key == "pds.scan.configuration").value' "${BUILD_FOLDER}/pdsJobData.json" )
+
+    cp "pds-job-config-template.json" "$pds_job_configuration_file_path"
+
+    tmp_file="$pds_job_configuration_file_path.tmp"
+    cp "$pds_job_configuration_file_path" "$tmp_file"
+    jq --arg pdsscanconfiguration "$pds_scan_configuration" '(.parameters[] | select(.key == "pds.scan.configuration")).value |= $pdsscanconfiguration' "$tmp_file" > "$pds_job_configuration_file_path"
+    rm "$tmp_file"
 }
 
 function upload_image_and_scan() {
     log_step "Uploading image and scanning"
 
     local file_to_upload="$1"
+    local pds_job_configuration_file_path="$2"
+    local result_file_path="$3"
 
     export PDS_SERVER="https://localhost:8444"
     export PDS_USERID="admin"
     export PDS_APITOKEN="pds-apitoken"
 
-    # create job
 
-    json_config="pds-alpine-config.json"
-    json_job_creation=$( $PDS_API create_job_from_json "$json_config" )
-
-    # check the result for a jobUUID
-    echo "$json_job_creation"
-
-    jobUUID=$( echo "$json_job_creation" | jq '.jobUUID' | tr -d \")
+    jobUUID=$( create_job "$pds_job_configuration_file_path" )
 
     if [[ "$jobUUID" == "null" ]]
     then
         log_error "Unable to create job."
-        echo "$json_job_creation"
+        return 1
     else
         # upload file
         echo "Uploading file: $file_to_upload"
@@ -194,14 +226,13 @@ function upload_image_and_scan() {
         sleep 0.5s
     done
 
-    printf "\n# Return the result\n"
-    "$PDS_API" job_result "$jobUUID"
+    printf "\n# Writing result to: $result_file_path\n"
+    "$PDS_API" job_result "$jobUUID" > "$result_file_path"
 }
 
 function tear_down() {
     log_step "Tear down. Cleanup"
     remove_nohup_log_file
-    #remove_build_folder
 }
 
 function remove_build_folder() {
@@ -212,32 +243,35 @@ function remove_nohup_log_file() {
     rm "nohup.out"
 }
 
-# start tern docker
-# wait for pds to be alive
+function compare_results() {
+    log_step "Compare results."
 
-# for image in images
-#   build image
-#   package image -> pds cli tool
-#   upload to tern
-#   compare results -> remember result
-#
-# stop tern docker
+    local expected_result_file_path="$1"
+    local result_file_path="$2"
 
+    diff "$expected_result_file_path" "$result_file_path"
 
-start_tern_docker
-setup
+    if [[ "$?" -ne 0 ]]
+    then
+        echo "Error: files not equal"
+        return 1
+    fi
 
-if [[ $( wait_for_tern_to_be_alive ) == "yes" ]]
-then
-    # put the steps into a separate script
-    log_step "Waiting successful. PDS Tern is alive"
-    name_docker_image_to_test="sechub-test-alpine"
-    build_image "$name_docker_image_to_test" "alpine/Alpine.dockerfile"
+    return 0
+}
+
+function run_test() {
+    local name="$1"
+    local dockerfile="$2"
+
+    name_docker_image_to_test="$1"
+
+    #result_file_path="$name_docker_image_to_test.spdx.json"
+    result_file_path="$BUILD_FOLDER/$name_docker_image_to_test.spdx.json"
+    expected_result_file_path="expected-results/$name_docker_image_to_test.spdx.json"
+
+    build_image "$name_docker_image_to_test" "$dockerfile"
     package_image "$name_docker_image_to_test"
-    upload_image_and_scan "build/binaries.tar"
-else
-    log_error "Unable to connect to PDS Tern."
-fi
-
-stop_tern_docker
-tear_down
+    upload_image_and_scan "build/binaries.tar" "${BUILD_FOLDER}/pds-config-${name_docker_image_to_test}.json" "$result_file_path"
+    #compare_results "$expected_result_file_path" "$result_file_path"
+}

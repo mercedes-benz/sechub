@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+
 FROM rockylinux:9-minimal
 
 ENV DATA="/data"

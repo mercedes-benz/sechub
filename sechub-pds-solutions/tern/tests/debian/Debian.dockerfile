@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+
 FROM debian:11-slim
 
 ENV DATA="/data"

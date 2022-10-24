@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: MIT
 
-name="sechub-test-debian"
+cd $(dirname "$0")
+source build-run.sh
 
-docker rm "$name"
-docker build --tag "$name" --file debian/Debian.dockerfile .
-docker run --tty --interactive --name "$name" "$name" 
+name="sechub-test-debian"
+dockerfile="debian/Debian.dockerfile"
+
+build_and_run "$name" "$dockerfile" 
