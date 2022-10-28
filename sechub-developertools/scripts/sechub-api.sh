@@ -494,7 +494,7 @@ function sechub_project_details_all {
 
   echo "Assigned profiles:"
   sechub_profile_list | jq '.[].id' | sed 's/"//g' | while read profile_id ; do
-    sechub_profile_details $profile_id | jq '.projectIds' | grep $project_id >/dev/null 2>&1
+    sechub_profile_details $profile_id | jq '.projectIds' | tr --delete ' ",' | grep --line-regexp $project_id >/dev/null 2>&1
     if [ "$?" = "0" ] ; then
       # Print details about profile
       profile_short_description $profile_id
