@@ -57,7 +57,8 @@ public class SignUpRequestedUserNotificationServiceTest {
         verify(mockedMailMessage).setText(stringMessageCaptor.capture());
         String textInMessageBody = stringMessageCaptor.getValue();
         assertTrue(textInMessageBody.contains("Thank you for the registration in SecHub"));
-        assertTrue(textInMessageBody.contains("Please wait of the admin's confirmation"));
+        assertTrue(textInMessageBody.contains("Next steps, an administrator needs to accept your registration for you to get access to SecHub."));
+        assertTrue(textInMessageBody.contains("This might take some time."));
     }
 
 }

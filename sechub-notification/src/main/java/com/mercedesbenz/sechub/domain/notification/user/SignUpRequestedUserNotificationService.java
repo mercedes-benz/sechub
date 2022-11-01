@@ -26,7 +26,8 @@ public class SignUpRequestedUserNotificationService {
         StringBuilder emailContent = new StringBuilder();
 
         emailContent.append("Thank you for the registration in SecHub.\n");
-        emailContent.append("Please wait of the admin's confirmation.\n");
+        emailContent.append("Next steps, an administrator needs to accept your registration for you to get access to SecHub.\n");
+        emailContent.append("This might take some time.\n");
 
         /* send mail */
         SimpleMailMessage message1 = factory.createMessage("Successful registration in SecHub");
