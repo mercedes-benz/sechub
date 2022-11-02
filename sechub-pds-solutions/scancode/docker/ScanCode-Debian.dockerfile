@@ -1,43 +1,28 @@
 # SPDX-License-Identifier: MIT
 
-# The image argument needs to be placed on top
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
-# The remaining arguments need to be placed after the `FROM`
-# See: https://ryandaniels.ca/blog/docker-dockerfile-arg-from-arg-trouble/
+LABEL org.opencontainers.image.source="https://github.com/mercedes-benz/sechub"
+LABEL org.opencontainers.image.title="SecHub Scancode-Toolkit+PDS Image"
+LABEL org.opencontainers.image.description="A container which combines Scancode-Toolkit with the SecHub Product Delegation Server (PDS)"
+LABEL maintainer="SecHub FOSS Team"
 
 # Build args
-ARG PDS_FOLDER="/pds"
-ARG PDS_VERSION="0.30.0"
-ARG PYTHON_VERSION="3.9"
-ARG SCANCODE_VERSION="30.1.0"
-ARG SCANCODE_CHECKSUM="a9e43fdef934335e69e4abf77896225545d3e1fdbbd477ebabc37a4fa5ee2015  scancode-toolkit-30.1.0_py39-linux.tar.xz"
-ARG SCRIPT_FOLDER="/scripts"
-ARG SPDX_TOOL_VERISON="1.0.4"
-ARG SPDX_TOOL_CHECKSUM="e8da16d744d9a39dbc0420f776e0ebae71ce6a0be722941ada2e0e0f755cc4d0  tools-java-1.0.4-jar-with-dependencies.jar"
-ARG WORKSPACE="/workspace"
+ARG SPDX_TOOL_VERISON="1.1.2"
+ARG SPDX_TOOL_CHECKSUM="4a2f1a2f3a12b96fc13675e78871a33dc12f6e44c7dbdcda2e5ea92f994615e8  tools-java-1.1.2-jar-with-dependencies.jar"
 
 # Environment variables in container
-ENV DOWNLOAD_FOLDER="/downloads"
-ENV MOCK_FOLDER="/mocks"
-ENV PDS_VERSION="${PDS_VERSION}"
 ENV SCANCODE_VERSION="${SCANCODE_VERSION}"
-ENV SHARED_VOLUMES="/shared_volumes"
-ENV SHARED_VOLUME_UPLOAD_DIR="$SHARED_VOLUMES/uploads"
 ENV SPDX_TOOL_VERISON="${SPDX_TOOL_VERISON}"
-ENV TOOL_FOLDER="/tools"
 
-# non-root user
-# using fixed group and user ids
-RUN groupadd --gid 2323 pds \
-     && useradd --uid 2323 --no-log-init --create-home --gid pds pds
+USER root
 
-# Create tool, pds, shared volume and download folder
-RUN  mkdir --parents "$MOCK_FOLDER" "$TOOL_FOLDER" "$DOWNLOAD_FOLDER" "$PDS_FOLDER" "$SHARED_VOLUME_UPLOAD_DIR" "$WORKSPACE" && \
-    # Change owner and workspace and shared volumes folder
-    # the only two folders pds really needs write access to
-    chown --recursive pds:pds "$WORKSPACE" "$SHARED_VOLUMES"
+# Copy mock folder
+COPY mocks "$MOCK_FOLDER"
+
+# Copy PDS configfile
+COPY pds-config.json "$PDS_FOLDER"/pds-config.json
 
 # Update image and install dependencies
 RUN export DEBIAN_FRONTEND=noninteractive && \
@@ -47,9 +32,8 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
                                  tar \
                                  tree \
                                  procps \
-                                 openjdk-11-jre-headless \
-                                 "python${PYTHON_VERSION}" \
-                                 "python${PYTHON_VERSION}-distutils" \
+                                 python3 \
+                                 python3-distutils \
                                  python-dev \
                                  bzip2 \
                                  xz-utils \
@@ -57,23 +41,13 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
                                  libxml2-dev \
                                  libxslt1-dev \
                                  libgomp1 \
-                                 libpopt0 && \
+                                 libpopt0 \
+                                 python3-pip && \
     apt-get --assume-yes clean
 
-# Install ScanCode
-RUN cd "$DOWNLOAD_FOLDER" && \
-    # create checksum file
-    echo "$SCANCODE_CHECKSUM" > checksum-scancode-toolkit.sha256sum && \
-    # download ScanCode Toolkit
-    wget --no-verbose "https://github.com/nexB/scancode-toolkit/releases/download/v${SCANCODE_VERSION}/scancode-toolkit-${SCANCODE_VERSION}_py39-linux.tar.xz" && \
-    # check against checksum file
-    sha256sum -c checksum-scancode-toolkit.sha256sum && \
-    # extract ScanCode
-    tar --extract --file "scancode-toolkit-${SCANCODE_VERSION}_py39-linux.tar.xz" --directory "$TOOL_FOLDER/" && \
-    # delete downloded `.tar.xz`
-    rm "scancode-toolkit-${SCANCODE_VERSION}_py39-linux.tar.xz" && \
-    # make tool folder writable
-    chown --recursive pds:pds "$TOOL_FOLDER/"
+# Install Scancode
+COPY packages.txt "${TOOL_FOLDER}/packages.txt"
+RUN pip install -r "${TOOL_FOLDER}/packages.txt"
 
 # Install SPDX Tools Java converter
 RUN cd "$TOOL_FOLDER" && \
@@ -84,38 +58,15 @@ RUN cd "$TOOL_FOLDER" && \
     # check against checksum file
     sha256sum -c checksum-spdx-tool.sha256sum
 
-# Install the SecHub Product Delegation Server (PDS)
-RUN cd "$PDS_FOLDER" && \
-    # download checksum file
-    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar.sha256sum" && \
-    # download pds
-    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar" && \
-    # verify that the checksum and the checksum of the file are same
-    sha256sum --check sechub-pds-$PDS_VERSION.jar.sha256sum
-
 # Copy scripts
-COPY scripts "$SCRIPT_FOLDER"
-RUN chmod -R +x "$SCRIPT_FOLDER"
+COPY scripts $SCRIPT_FOLDER
+RUN chmod --recursive +x $SCRIPT_FOLDER
 
-# Mock folder
-COPY mocks "$MOCK_FOLDER"
+# Patch
+COPY pool.py /usr/local/lib/python3.9/dist-packages/scancode/pool.py
 
-# Copy PDS configfile
-COPY pds-config.json "/$PDS_FOLDER/pds-config.json"
-
-# Copy run script into container
-COPY run.sh /run.sh
-RUN chmod +x /run.sh
-
-# Create the PDS workspace
+# Set workspace
 WORKDIR "$WORKSPACE"
 
 # Switch from root to non-root user
-USER pds
-
-# Configure Scancode
-RUN cd "$TOOL_FOLDER/scancode-toolkit-$SCANCODE_VERSION/" && \
-    ./configure && \
-    ./scancode --help > /dev/null
-
-CMD ["/run.sh"]
+USER "$USER"

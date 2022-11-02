@@ -20,8 +20,17 @@ echo "System"
 echo "------"
 echo ""
 
+# redirect from stderr to stdout. Extractcode writes it version number to stderr.
+extractcode_version=$( extractcode --version 2>&1 )
+
+# redirect from stderr to stdout. Python writes it version number to stderr.
+python_version=$( python3 --version 2>&1 )
+
+printf "%-26s %s\n" "Python:" "$python_version"
 printf "%-26s %s\n" "PDS version:" "$PDS_VERSION"
-printf "%-26s %s\n" "Scancode-Toolkit version:" "$SCANCODE_VERSION"
+printf "Scancode-Toolkit version:\n\n" 
+scancode --version
+printf "\n\n%-26s %s\n" "Extractcode version:" "$extractcode_version"
 
 echo ""
 echo "---------"
@@ -130,14 +139,13 @@ if [[ "$extractcode_enabled" == "true" ]]
 then
   echo "Running extractcode"
   # `2>&1` -> redirect the verbose output from standard error to standard out
-  "$TOOL_FOLDER/scancode-toolkit-$SCANCODE_VERSION/extractcode" --verbose $extracted_folder 2>&1
+  extractcode --verbose $extracted_folder 2>&1
 fi
 
 # `2>&1` -> redirect the verbose output from standard error to standard out
 # TODO: 
 # debug mode -> write --json-pp INFO_message_xyz.txt to get the output as message or parts of it?
-# write the error file to ERROR_messages_xyz.txt to get more information about errors
-"$TOOL_FOLDER/scancode-toolkit-$SCANCODE_VERSION/scancode" $additional_options --verbose --strip-root --copyright --license --package --email --url --info $output_format $spdx_file $extracted_folder 2>&1
+time scancode $additional_options --verbose --strip-root --copyright --license --package --email --url --info $output_format $spdx_file $extracted_folder 2>&1
 
 echo ""
 echo "----------------"

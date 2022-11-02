@@ -4,6 +4,7 @@
 file_to_upload="$1"
 json_config="$2"
 upload_type="source"
+job_start_datetime=""
 
 function usage() {
    
@@ -36,7 +37,7 @@ function did_job_fail() {
     local status="$1"
     job_failed="no"
 
-    if [[ $status == "FAILED" ]]
+    if [[ $status == "FAILED" || $status == "CANCELED" ]]
     then
         job_failed="yes"
     fi
@@ -44,16 +45,28 @@ function did_job_fail() {
     echo $job_failed
 }
 
-function is_job_finished () {
+function is_job_finished() {
     local status="$1"
     job_finished="no"
 
-    if [[ $status == "DONE" || $status == "FINISHED" || $status == "FAILED" ]]
+    if [[ $status == "DONE" || $status == "FINISHED" || $status == "FAILED" || $status == "CANCELED" ]]
     then
         job_finished="yes"
     fi
 
     echo $job_finished
+}
+
+function is_job_running() {
+    local status="$1"
+    job_running="no"
+
+    if [[ $status == "RUNNING" ]]
+    then
+        job_running="yes"
+    fi
+
+    echo $job_running
 }
 
 function parameter_missing() {
@@ -64,6 +77,18 @@ function parameter_missing() {
     usage
 
     exit 1
+}
+
+function seconds_in_between() {
+    local start_datetime="$1"
+    local end_datetime="$2"
+
+    start_time=$(date --date "$start_datetime" '+%s')
+    end_time=$(date --date "$end_datetime" '+%s')
+
+    seconds=$(( end_time - start_time ))
+
+    echo "$seconds" 
 }
 
 if [[ -z "$PDS_SERVER" ]]
@@ -153,6 +178,12 @@ do
     status=`$pds_api job_status "$jobUUID" | jq '.state' | tr -d \"`
     echo "Job status: $status"
 
+    if [[ -z "$job_start_datetime" &&  $(is_job_running $status) == "yes" ]]
+    then
+        job_start_datetime=$( date +"%Y-%m-%d %T" )
+        echo "Job started: $job_start_datetime"
+    fi
+
     if (( $retries % 10 == 0 ))
     then
         printf "\n# Job output stream\n"
@@ -162,6 +193,18 @@ do
     ((retries--))
     sleep 0.5s
 done
+
+job_end_datetime=$( date +"%Y-%m-%d %T" )
+seconds_in_between_start_end=$(seconds_in_between "$job_start_datetime" "$job_end_datetime")
+
+echo "###############"
+echo "## Job finished"
+echo "###############"
+echo ""
+echo "Job status: $status"
+echo "Job started: $job_start_datetime"
+echo "Job ended: $job_end_datetime"
+echo "Job duration: ${seconds_in_between_start_end}s"
 
 if [[ $(did_job_fail $status) == "yes" ]]
 then
