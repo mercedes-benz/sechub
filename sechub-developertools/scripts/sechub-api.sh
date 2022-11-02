@@ -301,12 +301,12 @@ function sechub_job_approve {
 }
 
 function sechub_job_restart {
-  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/jobs/restart/$1"
+  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/jobs/restart/$1" | $CURL_FILTER
 }
 
 
 function sechub_job_restart_hard {
-  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/jobs/restart-hard/$1"
+  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/jobs/restart-hard/$1" | $CURL_FILTER
 }
 
 function sechub_job_get_report_spdx_json {
