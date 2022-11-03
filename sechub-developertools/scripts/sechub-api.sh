@@ -283,7 +283,7 @@ function sechub_executor_list {
 
 
 function sechub_job_cancel {
-  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/jobs/cancel/$1"
+  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/jobs/cancel/$1" | $CURL_FILTER
 }
 
 function sechub_job_create {  
