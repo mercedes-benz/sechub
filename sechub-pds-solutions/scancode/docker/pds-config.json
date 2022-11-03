@@ -33,6 +33,41 @@
                         "key": "scancode.timeout",
                         "description": "Stop scanning a file if scanning takes longer than a timeout in seconds (as natural number).",
                         "default": "120"
+                    },
+                    {
+                        "key": "scancode.scan.copyright",
+                        "description": "Scan for copyrights.",
+                        "default": false
+                    },
+                    {
+                        "key": "scancode.scan.license",
+                        "description": "Scan for licenses.",
+                        "default": true
+                    },
+                    {
+                        "key": "scancode.scan.package",
+                        "description": "Scan for packages.",
+                        "default": false
+                    },
+                    {
+                        "key": "scancode.scan.email",
+                        "description": "Scan for emails.",
+                        "default": false
+                    },
+                    {
+                        "key": "scancode.scan.url",
+                        "description": "Scan for urls.",
+                        "default": false
+                    },
+                    {
+                        "key": "scancode.scan.info",
+                        "description": "Include information regarding the scan.",
+                        "default": true
+                    },
+                    {
+                        "key": "scancode.scan.diagnostics",
+                        "description": "Diagnostic information",
+                        "default": false
                     }
                 ]
             }
@@ -68,6 +103,41 @@
                         "key": "scancode.timeout",
                         "description": "Stop scanning a file if scanning takes longer than a timeout in seconds (as natural number).",
                         "default": "120"
+                    },
+                    {
+                        "key": "scancode.scan.copyright",
+                        "description": "Scan for copyrights.",
+                        "default": false
+                    },
+                    {
+                        "key": "scancode.scan.license",
+                        "description": "Scan for licenses.",
+                        "default": true
+                    },
+                    {
+                        "key": "scancode.scan.package",
+                        "description": "Scan for packages.",
+                        "default": false
+                    },
+                    {
+                        "key": "scancode.scan.email",
+                        "description": "Scan for emails.",
+                        "default": false
+                    },
+                    {
+                        "key": "scancode.scan.url",
+                        "description": "Scan for urls.",
+                        "default": false
+                    },
+                    {
+                        "key": "scancode.scan.info",
+                        "description": "Include information regarding the scan.",
+                        "default": true
+                    },
+                    {
+                        "key": "scancode.scan.diagnostics",
+                        "description": "Diagnostic information",
+                        "default": false
                     }
                 ]
             }

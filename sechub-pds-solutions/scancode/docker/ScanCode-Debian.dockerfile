@@ -59,8 +59,8 @@ RUN cd "$TOOL_FOLDER" && \
     sha256sum -c checksum-spdx-tool.sha256sum
 
 # Copy scripts
-COPY scripts $SCRIPT_FOLDER
-RUN chmod --recursive +x $SCRIPT_FOLDER
+COPY scripts "$SCRIPT_FOLDER"
+RUN chmod --recursive +x "$SCRIPT_FOLDER"
 
 # Patch
 COPY pool.py /usr/local/lib/python3.9/dist-packages/scancode/pool.py

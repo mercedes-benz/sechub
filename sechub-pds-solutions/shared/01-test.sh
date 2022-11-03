@@ -176,13 +176,14 @@ status=""
 while [[ $retries -ge 0 && $(is_job_finished $status) == "no" ]]
 do
     status=`$pds_api job_status "$jobUUID" | jq '.state' | tr -d \"`
-    echo "Job status: $status"
 
     if [[ -z "$job_start_datetime" &&  $(is_job_running $status) == "yes" ]]
     then
         job_start_datetime=$( date +"%Y-%m-%d %T" )
         echo "Job started: $job_start_datetime"
     fi
+
+    echo "Job status: $status"
 
     if (( $retries % 10 == 0 ))
     then
@@ -208,6 +209,9 @@ echo "Job duration: ${seconds_in_between_start_end}s"
 
 if [[ $(did_job_fail $status) == "yes" ]]
 then
+    printf "\n# Job messages\n"
+    "$pds_api" job_messages "$jobUUID"
+
     printf "\n# Job output stream\n"
     "$pds_api" job_stream_output "$jobUUID"
     
@@ -216,6 +220,9 @@ then
 
     exit 1
 else
+    printf "\n# Job messages\n"
+    "$pds_api" job_messages "$jobUUID"
+
     printf "\n# Job output stream\n"
     "$pds_api" job_stream_output "$jobUUID"
 
