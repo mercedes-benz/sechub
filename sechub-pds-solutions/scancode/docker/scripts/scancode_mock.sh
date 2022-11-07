@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: MIT
 
-source "${SCRIPT_FOLDER}/message.sh"
+source "${HELPER_FOLDER}/message.sh"
 
 given_output_format="$(echo "$SCANCODE_OUTPUT_FORMAT" | tr '[:upper:]' '[:lower:]')"
 mock_file="$MOCK_FOLDER/scancode_mock.spdx.json"
@@ -22,6 +22,7 @@ esac
 
 # Mock is scan output of the `samples` folder in: https://github.com/nexB/scancode-toolkit
 infoMessage "Running Scancode mock"
+
 echo "Parameters:"
 echo "- scancode.timeout: $SCANCODE_TIMEOUT"
 echo "- scancode.license.score: $SCANCODE_LICENSE_SCORE"

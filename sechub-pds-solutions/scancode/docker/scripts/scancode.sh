@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: MIT
 
-source "${SCRIPT_FOLDER}/message.sh"
+source "${HELPER_FOLDER}/message.sh"
 
 # IMPORTANT: Keep the space in front and back of the list
 output_formats=" json json-pp spdx-tv spdx-rdf spdx-json "
@@ -23,10 +23,10 @@ echo "System"
 echo "------"
 echo ""
 
-# redirect from stderr to stdout. Extractcode writes it version number to stderr.
+# redirect from stderr to stdout. Extractcode writes its version number to stderr.
 extractcode_version=$( extractcode --version 2>&1 )
 
-# redirect from stderr to stdout. Python writes it version number to stderr.
+# redirect from stderr to stdout. Python writes its version number to stderr.
 python_version=$( python3 --version 2>&1 )
 
 printf "%-26s %s\n" "Python:" "$python_version"

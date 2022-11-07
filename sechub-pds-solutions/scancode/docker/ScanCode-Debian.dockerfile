@@ -28,21 +28,7 @@ COPY pds-config.json "$PDS_FOLDER"/pds-config.json
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get --assume-yes upgrade  && \
-    apt-get --assume-yes install wget \
-                                 tar \
-                                 tree \
-                                 procps \
-                                 python3 \
-                                 python3-distutils \
-                                 python-dev \
-                                 bzip2 \
-                                 xz-utils \
-                                 zlib1g \
-                                 libxml2-dev \
-                                 libxslt1-dev \
-                                 libgomp1 \
-                                 libpopt0 \
-                                 python3-pip && \
+    apt-get --assume-yes install bzip2 libgomp1 libpopt0 libxml2-dev libxslt1-dev procps python-dev python3 python3-distutils python3-pip tar tree wget xz-utils zlib1g &&\
     apt-get --assume-yes clean
 
 # Install Scancode
