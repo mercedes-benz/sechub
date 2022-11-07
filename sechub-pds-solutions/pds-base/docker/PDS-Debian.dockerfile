@@ -178,7 +178,7 @@ COPY run.sh /run.sh
 COPY run_additional.sh /run_additional.sh
 
 # Copy run script into the container
-COPY /helper "$HELPER_FOLDER"
+COPY helper/ "$HELPER_FOLDER"
 
 # Set execute permissions for scripts
 RUN chmod +x /run.sh /run_additional.sh
