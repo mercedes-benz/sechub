@@ -295,7 +295,7 @@ public abstract class AbstractScan implements OwaspZapScan {
             String proxyHost = proxyInformation.getHost();
             int proxyPort = proxyInformation.getPort();
             LOG.info("Using proxy {}:{} to reach target.", proxyHost, proxyPort);
-            clientApi.network.setHttpProxy(proxyHost, ""+proxyPort, null, null, null);
+            clientApi.network.setHttpProxy(proxyHost, "" + proxyPort, null, null, null);
             clientApi.network.setHttpProxyEnabled("true");
             clientApi.network.setHttpProxyAuthEnabled("false");
         } else {
