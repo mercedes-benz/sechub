@@ -9,44 +9,45 @@ import org.slf4j.LoggerFactory;
  * E.g . wire mock tests binding same port on differnt builds... will break at
  * least one build<br>
  * <br>
- * We use System environment entries to provide different ports or when not set
- * use defaults.<br>
- * This class uses no spring boot env/property magic, so build scripts must
- * setup environment variables. When defining some environment parts (e.g.
- * SERVER_PORT) you will override some spring boot setup (e.g. "server.port") as
- * well. For SERVER_PORT this is wanted because integration test server relies
- * on this
+ * We use System properties to provide different ports or when not set use
+ * defaults.<br>
  *
  * @author Albert Tregnaghi
  *
  */
 public class TestPortProvider {
 
-    private static final int DEFAULT_WIREMOCK_HTTPS_PORT = 8444;
-    private static final int DEFAULT_WIREMOCK_HTTP_PORT = 8087;
+    private static final int DEFAULT_WIREMOCK_HTTP_PORT = 8180;
+    private static final int DEFAULT_WIREMOCK_HTTPS_PORT = 8143;
+
     private static final int DEFAULT_INTEGRATIONTEST_SERVER_PORT = 8443;
     private static final int DEFAULT_INTEGRATIONTEST_PDS_PORT = 8444;
+
     private static final int DEFAULT_RESTDOC_HTTPS_PORT = 8081;
     private static final int DEFAULT_MVC_MOCK_HTTPS_PORT = 8081;
 
-    private static final String ENV_SECHUB_TEST_WIREMOCK_HTTP_PORT = "SECHUB_TEST_WIREMOCK_HTTP_PORT";
+    // "normal" tests
+    private static final String PROPERTY_SECHUB_TEST_WIREMOCK_HTTP_PORT = "sechub.test.wiremock.http_port";
+    private static final String PROPERTY_SECHUB_TEST_WIREMOCK_HTTPS_PORT = "sechub.test.wiremock.https_port";
 
-    private static final String ENV_SECHUB_TEST_RESTDOC_HTTPS_PORT = "SECHUB_TEST_RESTDOC_HTTPS_PORT";
-    private static final String ENV_SECHUB_TEST_WIREMOCK_HTTPS_PORT = "SECHUB_TEST_WIREMOCK_HTTPS_PORT";
-    private static final String ENV_SECHUB_TEST_MVCMOCK_HTTPS_PORT = "SECHUB_TEST_MVCMOCK_HTTPS_PORT";
-    private static final String ENV_SECHUB_TEST_S3MOCK_HTTP_PORT = "SECHUB_TEST_S3MOCK_HTTP_PORT";
-    private static final String ENV_SECHUB_TEST_S3MOCK_HTTPS_PORT = "SECHUB_TEST_S3MOCK_HTTPS_PORT";
+    private static final String PROPERTY_SECHUB_TEST_RESTDOC_HTTPS_PORT = "sechub.test.restdoc.https.port";
+    private static final String PROPERTY_SECHUB_TEST_MVCMOCK_HTTPS_PORT = "sechub.test.mvcmock.https.port";
 
-    private static final String ENV_SERVER_PORT = "SERVER_PORT"; // we reuse spring boot "server.port"
-    private static final String ENV_PDS_PORT = "PDS_PORT";
+    private static final String PROPERTY_SECHUB_TEST_S3MOCK_HTTP_PORT = "sechub.test.s3mock.http.port";
+    private static final String PROPERTY_SECHUB_TEST_S3MOCK_HTTPS_PORT = "sechub.test.s3mock.https.port";
+
+    // integration tests
+    private static final String PROPERTY_SECHUB_INTEGRATIONTEST_SERVER_PORT = "sechub.integrationtest.serverport";
+    private static final String PROPERTY_SECHUB_INTEGRATIONTEST_PDS_PORT = "sechub.integrationtest.pdsport";
 
     private static final int DEFAULT_S3MOCK_HTTP_PORT = 9090;
     private static final int DEFAULT_S3MOCK_HTTPS_PORT = 9190;
 
+    private SystemPropertyProvider systemPropertyProvider = new TestEnvironmentProvider();
+
     private int wireMockHttpPort;
     private int wireMockHttpsPort;
     private int integrationTestServerPort;
-    private EnvironmentEntryProvider envProvider = new DefaultEnvironmentEntryProvider();
     private int restDocPort;
     private int mvcMockPort;
     private int s3MockHttpPort;
@@ -58,21 +59,21 @@ public class TestPortProvider {
     public static final TestPortProvider DEFAULT_INSTANCE = new TestPortProvider();
 
     TestPortProvider() {
-        wireMockHttpPort = getEnvOrDefault(ENV_SECHUB_TEST_WIREMOCK_HTTP_PORT, DEFAULT_WIREMOCK_HTTP_PORT);
-        wireMockHttpsPort = getEnvOrDefault(ENV_SECHUB_TEST_WIREMOCK_HTTPS_PORT, DEFAULT_WIREMOCK_HTTPS_PORT);
+        wireMockHttpPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_TEST_WIREMOCK_HTTP_PORT, DEFAULT_WIREMOCK_HTTP_PORT);
+        wireMockHttpsPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_TEST_WIREMOCK_HTTPS_PORT, DEFAULT_WIREMOCK_HTTPS_PORT);
 
-        restDocPort = getEnvOrDefault(ENV_SECHUB_TEST_RESTDOC_HTTPS_PORT, DEFAULT_RESTDOC_HTTPS_PORT);
-        mvcMockPort = getEnvOrDefault(ENV_SECHUB_TEST_MVCMOCK_HTTPS_PORT, DEFAULT_MVC_MOCK_HTTPS_PORT);
+        restDocPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_TEST_RESTDOC_HTTPS_PORT, DEFAULT_RESTDOC_HTTPS_PORT);
+        mvcMockPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_TEST_MVCMOCK_HTTPS_PORT, DEFAULT_MVC_MOCK_HTTPS_PORT);
 
-        integrationTestServerPort = getEnvOrDefault(ENV_SERVER_PORT, DEFAULT_INTEGRATIONTEST_SERVER_PORT);
-        integrationTestPDSPort = getEnvOrDefault(ENV_PDS_PORT, DEFAULT_INTEGRATIONTEST_PDS_PORT);
+        integrationTestServerPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_INTEGRATIONTEST_SERVER_PORT, DEFAULT_INTEGRATIONTEST_SERVER_PORT);
+        integrationTestPDSPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_INTEGRATIONTEST_PDS_PORT, DEFAULT_INTEGRATIONTEST_PDS_PORT);
 
-        s3MockHttpPort = getEnvOrDefault(ENV_SECHUB_TEST_S3MOCK_HTTP_PORT, DEFAULT_S3MOCK_HTTP_PORT);
-        s3MockHttpsPort = getEnvOrDefault(ENV_SECHUB_TEST_S3MOCK_HTTPS_PORT, DEFAULT_S3MOCK_HTTPS_PORT);
+        s3MockHttpPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_TEST_S3MOCK_HTTP_PORT, DEFAULT_S3MOCK_HTTP_PORT);
+        s3MockHttpsPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_TEST_S3MOCK_HTTPS_PORT, DEFAULT_S3MOCK_HTTPS_PORT);
     }
 
-    int getEnvOrDefault(String name, int defaultValue) {
-        int value = convertToInt(getEnvProvider().getEnvEntry(name), defaultValue);
+    int getSystemPropertyOrDefault(String name, int defaultValue) {
+        int value = convertToInt(getSystemPropertyProvider().getSystemProperty(name), defaultValue);
         if (value < 0) {
             return defaultValue;
         }
@@ -123,15 +124,15 @@ public class TestPortProvider {
         return mvcMockPort;
     }
 
-    void setEnvironmentEntryProvider(EnvironmentEntryProvider provider) {
-        if (provider == null) {
-            throw new IllegalArgumentException("Provider may not be null!");
+    void setSystemPropertyProvider(SystemPropertyProvider systemPropertyProvider) {
+        if (systemPropertyProvider == null) {
+            throw new IllegalArgumentException("System property provider may not be null!");
         }
-        this.envProvider = provider;
+        this.systemPropertyProvider = systemPropertyProvider;
     }
 
-    EnvironmentEntryProvider getEnvProvider() {
-        return envProvider;
+    SystemPropertyProvider getSystemPropertyProvider() {
+        return systemPropertyProvider;
     }
 
     public int getS3MockServerHttpPort() {

@@ -20,6 +20,38 @@ if (JavaVersion.current().isJava8Compatible()) {
 
 ext.buildContainsFailedTests=false
 
+/**
+* Returns a map for given groovy property names.
+* If no groovy property does exist for a name, the resulting map will
+* contain the key, but the value will be empty. Otherwise
+* the map will contain the gradle property value.
+*
+* The method can be used to convert from gradle properties to system properies
+* easily. For example: Inside test task definitions, you can simply call
+* 
+* systemProperties groovyPropertiesMap(['key1','key2' ] )
+*
+* 
+*/
+ext.groovyPropertiesMap = { propertyNames ->
+
+    def map = [:]
+
+    propertyNames.each {
+
+        def propertyName = it
+
+        if (project.hasProperty(propertyName)){
+            map.put(propertyName, project.getProperty(propertyName))
+        }else{
+            map.put(propertyName,'')         
+        }
+        
+    }
+
+    return map                
+}
+
 
 subprojects{
 
@@ -37,9 +69,6 @@ subprojects{
 	targetCompatibility = '11'
 
 
-    def wireMockHttpPortValue = 8180;
-    def wireMockHttpsPortValue = 8143;
-    
     dependencies {
         // https://mvnrepository.com/artifact/org.junit.vintage/junit-vintage-engine
         testImplementation group: 'org.junit.vintage', name: 'junit-vintage-engine', version: '5.8.2'
@@ -53,20 +82,17 @@ subprojects{
         /* enable junit5 support in gradle! some of our tests are now written in junit5*/
         useJUnitPlatform()
 
-        def wireMockHttpPortProperty="sechub.test.wiremock.http_port";
-        if ( project.hasProperty(wireMockHttpPortProperty)){
-            wireMockHttpPortValue = project.getProperty(wireMockHttpPortProperty)
-        }
-        def wireMockHttpsPortProperty="sechub.test.wiremock.https_port";
-        if ( project.hasProperty(wireMockHttpsPortProperty)){
-            wireMockHttpsPortValue = project.getProperty(wireMockHttpsPortProperty)
-        }
-
-        environment 'SECHUB_TEST_WIREMOCK_HTTP_PORT', "$wireMockHttpPortValue"
-        environment 'SECHUB_TEST_WIREMOCK_HTTPS_PORT', "$wireMockHttpsPortValue"
-        environment 'SECHUB_BUILD_GRADLE', 'true' // we can use this to check for gradle build inside java tests
-
-
+        // we must set the gradle properties as system properties, so available inside test framework.
+        systemProperties groovyPropertiesMap([ 
+            'sechub.test.wiremock.http_port',
+            'sechub.test.wiremock.https_port',
+            'sechub.test.restdoc.https.port', 
+            'sechub.test.mvcmock.https.port',
+            'sechub.test.s3mock.http.port',
+            'sechub.test.s3mock.https.port' ])
+        
+        systemProperty 'sechub.build.gradle', 'true' // we can use this to check for gradle build inside java tests
+ 
         // add a collection to track failedTests
         ext.failedTests = []
         
