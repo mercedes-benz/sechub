@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: MIT
+
 cd `dirname $0`
 
 REGISTRY="$1"
