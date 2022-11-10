@@ -6,7 +6,7 @@ https://github.com/zaproxy/zap-extensions/releases/download/pscanrules-v44/pscan
 https://github.com/zaproxy/zap-extensions/releases/download/retire-v0.16.0/retire-release-0.16.0.zap
 https://github.com/zaproxy/zap-extensions/releases/download/domxss-v14/domxss-release-14.zap
 https://github.com/zaproxy/zap-extensions/releases/download/webdriverlinux-v46/webdriverlinux-release-46.zap
-https://github.com/zaproxy/zap-extensions/releases/download/network-v0.3.0/network-beta-0.3.0.zap
+https://github.com/zaproxy/zap-extensions/releases/download/network-v0.5.0/network-beta-0.5.0.zap
 https://github.com/zaproxy/zap-extensions/releases/download/openapi-v29/openapi-beta-29.zap
 https://github.com/zaproxy/zap-extensions/releases/download/callhome-v0.5.0/callhome-release-0.5.0.zap
 https://github.com/zaproxy/zap-extensions/releases/download/spider-v0.1.0/spider-release-0.1.0.zap
