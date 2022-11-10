@@ -26,7 +26,6 @@ public class TestPortProvider {
     private static final int DEFAULT_RESTDOC_HTTPS_PORT = 8081;
     private static final int DEFAULT_MVC_MOCK_HTTPS_PORT = 8082;
 
-
     // "normal" tests
     private static final String PROPERTY_SECHUB_TEST_WIREMOCK_HTTP_PORT = "sechub.test.wiremock.http_port";
     private static final String PROPERTY_SECHUB_TEST_WIREMOCK_HTTPS_PORT = "sechub.test.wiremock.https_port";
