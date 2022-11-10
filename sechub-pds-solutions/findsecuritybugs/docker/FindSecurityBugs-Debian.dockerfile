@@ -19,6 +19,8 @@ ARG FINDSECURITYBUGS_SHA256SUM="a50bd4741a68c6886bbc03d20da9ded44bce4dd7d0d2eee1
 # Environment variables in container
 ENV FINDSECURITYBUGS_VERSION="${FINDSECURITYBUGS_VERSION}"
 
+USER root
+
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get --assume-yes upgrade  && \
