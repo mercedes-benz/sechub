@@ -36,8 +36,7 @@ tar --extract --gzip --file ibm-semeru-open-*.tar.gz --directory="$JAVA_DIR"
 rm ibm-semeru-open-*.tar.gz*
 
 # link to java installation
-ln --symbolic $JAVA_DIR/j*/bin/java "/etc/alternatives/java"
-ln --symbolic "/etc/alternatives/java" "/usr/bin/java"
+ln --symbolic $JAVA_DIR/j*/bin/java /usr/bin/java
 
 apt-get remove --assume-yes --quiet wget
 apt-get clean
