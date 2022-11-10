@@ -30,7 +30,7 @@ if [[ -z "$VERSION" ]] ; then
   FAILED=true
 fi
 
-if [[ -z "$BASE_IMAGE" ]]; then
+if [[ -z "$BASE_IMAGE" ]] ; then
   echo "Please provide a base image as 3rd parameter."
   FAILED=true
 fi
@@ -43,9 +43,18 @@ fi
 BUILD_ARGS="--build-arg BASE_IMAGE=$BASE_IMAGE"
 echo ">> Base image: $BASE_IMAGE"
 
+# Enforce FINDSECURITYBUGS_SHA256SUM is defined when building custom version of find-sec-bugs
 if [[ ! -z "$FINDSECURITYBUGS_VERSION" ]] ; then
-    echo ">> FindSecurityBugs version: $FINDSECURITYBUGS_VERSION"
-    BUILD_ARGS="$BUILD_ARGS --build-arg FINDSECURITYBUGS_VERSION=$FINDSECURITYBUGS_VERSION"
+  echo ">> FindSecurityBugs version: $FINDSECURITYBUGS_VERSION"
+  BUILD_ARGS+=" --build-arg FINDSECURITYBUGS_VERSION=$FINDSECURITYBUGS_VERSION"
+
+  if [[ ! -z "$FINDSECURITYBUGS_SHA256SUM" ]] ; then
+    echo "FATAL: Please define sha256 checksum FINDSECURITYBUGS_SHA256SUM for FindSecurityBugs version $FINDSECURITYBUGS_VERSION"
+    exit 1
+  fi
+
+  echo ">> FindSecurityBugs sha256sum: $FINDSECURITYBUGS_SHA256SUM"
+  BUILD_ARGS+=" --build-arg FINDSECURITYBUGS_SHA256SUM=$FINDSECURITYBUGS_SHA256SUM"
 fi
 
 docker build --pull --no-cache $BUILD_ARGS \
