@@ -7,7 +7,7 @@ include::documents/gen/client-version.adoc[]
 
 include::documents/config.adoc[]
 
-= image:sechub-logo.png[sechub] SecHub Client Documentation
+= image:sechub-logo.png[link="{webPage}"] SecHub Client Documentation
 
 == About
 include::documents/shared/about_sechub.adoc[]
