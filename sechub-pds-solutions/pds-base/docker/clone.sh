@@ -11,12 +11,6 @@ then
     exit 1
 fi
 
-if [ "$GIT_URL" == git@* ] || [ "$GIT_URL" == http* ]
-then
-    printf "Git url invalid!\n Does not start with git or http." 1>&2
-    exit 1
-fi
-
 git_args=""
 
 if [ ! -z "$TAG" ]
