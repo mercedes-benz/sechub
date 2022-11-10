@@ -24,7 +24,8 @@ public class TestPortProvider {
     private static final int DEFAULT_INTEGRATIONTEST_PDS_PORT = 8444;
 
     private static final int DEFAULT_RESTDOC_HTTPS_PORT = 8081;
-    private static final int DEFAULT_MVC_MOCK_HTTPS_PORT = 8081;
+    private static final int DEFAULT_MVC_MOCK_HTTPS_PORT = 8082;
+
 
     // "normal" tests
     private static final String PROPERTY_SECHUB_TEST_WIREMOCK_HTTP_PORT = "sechub.test.wiremock.http_port";
@@ -70,10 +71,20 @@ public class TestPortProvider {
 
         s3MockHttpPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_TEST_S3MOCK_HTTP_PORT, DEFAULT_S3MOCK_HTTP_PORT);
         s3MockHttpsPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_TEST_S3MOCK_HTTPS_PORT, DEFAULT_S3MOCK_HTTPS_PORT);
+
+        LOG.info("Test port provider created");
+        LOG.info("Wiremock                https: {}, http: {}", wireMockHttpsPort, wireMockHttpPort);
+        LOG.info("Restdoc                 https: {}", restDocPort);
+        LOG.info("MVCmock                 https: {}", mvcMockPort);
+        LOG.info("S3mock                  https: {}, http: {}", s3MockHttpsPort, s3MockHttpPort);
+        LOG.info("Integration test server https: {}", integrationTestServerPort);
+        LOG.info("Integration test PDS    https: {}", integrationTestPDSPort);
+
     }
 
     int getSystemPropertyOrDefault(String name, int defaultValue) {
-        int value = convertToInt(getSystemPropertyProvider().getSystemProperty(name), defaultValue);
+        String systemProperty = getSystemPropertyProvider().getSystemProperty(name);
+        int value = convertToInt(systemProperty, defaultValue);
         if (value < 0) {
             return defaultValue;
         }
@@ -82,6 +93,9 @@ public class TestPortProvider {
 
     int convertToInt(String intValueAsString, int defaultValue) {
         if (intValueAsString == null) {
+            return defaultValue;
+        }
+        if (intValueAsString.isEmpty()) {
             return defaultValue;
         }
         try {
