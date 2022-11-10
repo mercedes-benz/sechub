@@ -49,7 +49,7 @@ if [[ ! -z "$FINDSECURITYBUGS_VERSION" ]] ; then
   BUILD_ARGS+=" --build-arg FINDSECURITYBUGS_VERSION=$FINDSECURITYBUGS_VERSION"
 
   if [[ -z "$FINDSECURITYBUGS_SHA256SUM" ]] ; then
-    echo "FATAL: Please define sha256 checksum FINDSECURITYBUGS_SHA256SUM for FindSecurityBugs version $FINDSECURITYBUGS_VERSION"
+    echo "FATAL: Please define sha256 checksum in FINDSECURITYBUGS_SHA256SUM environment variable"
     exit 1
   fi
 
