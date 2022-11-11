@@ -26,7 +26,7 @@ pds:
         enabled: false
     keepContainerAliveAfterPDSCrashed: false
     maxFileUploadSize: 20MB
-    heartbeatLogging: true
+    heartbeatLogging: "true"
     logging:
         type:
             enabled: false

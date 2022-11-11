@@ -21,7 +21,7 @@ pds:
         execute:
             queueMax: 10
             workerThreadCount: 1
-    heartbeatLogging: true
+    heartbeatLogging: "true"
     logging:
         type:
             enabled: false

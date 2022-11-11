@@ -11,11 +11,11 @@ image:
 pds:
     startMode: localserver
     maxFileUploadBytes: 52428800
-    heartbeatLogging: true    
     config:
         execute:
             queueMax: 10
             workerThreadCount: 1
+    heartbeatLogging: "true"
     logging:
         type:
             enabled: false
@@ -56,10 +56,10 @@ database:
 networkPolicy:
     enabled: false
     ingress:
-    - from:
-        - podSelector:
-            matchLabels:
-                name: sechub-server
-        - podSelector:
-            matchLabels:
-                name: sechub-adminserver
+        - from:
+              - podSelector:
+                    matchLabels:
+                        name: sechub-server
+              - podSelector:
+                    matchLabels:
+                        name: sechub-adminserver
