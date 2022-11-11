@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: MIT
 
+source "${HELPER_FOLDER}/message.sh"
+
 function log_step() {
     local message="$1"
     printf '\n>> %s\n' "$message"
@@ -27,7 +29,7 @@ tar_files=$(cd "$PDS_JOB_EXTRACTED_BINARIES_FOLDER" && find . -type f -name "*.t
 
 if [[ -z "$tar_files" ]]
 then
-    echo "ERROR: Found no tar file to analyze."
+    errorMessage "Found no tar file to analyze."
     exit 2
 fi
 
@@ -36,8 +38,7 @@ if [[ "$number_of_tar_files" -eq 1 ]]
 then
     echo "Found one tar file to analyze."
 else
-    echo "WARNING: Found more than one tar file."
-    echo "Total number of tar files: $number_of_tar_files"
+    warnMessage "Found more than one tar file. Total number of tar files: $number_of_tar_files"
 fi
 
 tar_file=$( echo "$tar_files" | head -n 1 )
@@ -45,7 +46,7 @@ tar_file_path="$PDS_JOB_EXTRACTED_BINARIES_FOLDER/$tar_file"
 
 if [[ ! -s "$tar_file_path" ]]
 then
-    echo "ERROR: File is empty."
+    errorMessage "File is empty."
     exit 3
 fi
 
@@ -54,6 +55,3 @@ echo "Analyzing: $tar_file"
 echo "Path: $tar_file_path"
 
 tern report -f spdxjson -w "$tar_file_path" -o "$PDS_JOB_RESULT_FILE"
-
-# analyzing container from repository
-#tern report -f spdxjson -i mariadb:latest -o "$PDS_JOB_RESULT_FILE"

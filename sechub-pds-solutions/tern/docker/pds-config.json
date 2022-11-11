@@ -7,15 +7,7 @@
             "id" : "PDS_TERN",
             "path" : "/scripts/tern.sh",
             "scanType" : "licenseScan",
-            "description" : "Runs tern. Tern is a container analysis tool.",
-            "parameters" : {
-                "optional" : [
-                    {
-                        "key" : "tern.use.scancode",
-                        "description" : "ScanCode"
-                    }
-                ]
-            }
+            "description" : "Runs tern. Tern is a container analysis tool."
         },
         {
             "id" : "PDS_TERN_MOCK",

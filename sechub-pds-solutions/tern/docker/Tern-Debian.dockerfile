@@ -9,10 +9,7 @@ LABEL org.opencontainers.image.title="SecHub Tern+PDS Image"
 LABEL org.opencontainers.image.description="A container which combines Tern with the SecHub Product Delegation Server (PDS)"
 LABEL maintainer="SecHub FOSS Team"
 
-ARG SPDX_TOOL_VERISON="1.0.4"
-ARG SPDX_TOOL_CHECKSUM="e8da16d744d9a39dbc0420f776e0ebae71ce6a0be722941ada2e0e0f755cc4d0  tools-java-1.0.4-jar-with-dependencies.jar"
-
-ENV SPDX_TOOL_VERISON="${SPDX_TOOL_VERISON}"
+ARG TERN_VERSION="2.10.1"
 
 # execute commands as root
 USER root
@@ -35,18 +32,8 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
                                          libpopt0 && \
     apt-get --quiet --assume-yes clean
 
-# Install Tern and Scancode-Toolkit
-COPY packages.txt $TOOL_FOLDER/packages.txt
-RUN pip install --no-warn-script-location -r $TOOL_FOLDER/packages.txt
-
-# Install SPDX Tools Java converter
-RUN cd "$TOOL_FOLDER" && \
-    # download SPDX Tools Java 
-    wget --no-verbose "https://repo1.maven.org/maven2/org/spdx/tools-java/${SPDX_TOOL_VERISON}/tools-java-${SPDX_TOOL_VERISON}-jar-with-dependencies.jar" && \
-    # create checksum file
-    echo "$SPDX_TOOL_CHECKSUM" > checksum-spdx-tool.sha256sum && \
-    # check against checksum file
-    sha256sum -c checksum-spdx-tool.sha256sum
+# Install Tern
+RUN pip install --no-warn-script-location "tern==$TERN_VERSION"
 
 # Copy PDS configfile
 COPY pds-config.json "$PDS_FOLDER"/pds-config.json

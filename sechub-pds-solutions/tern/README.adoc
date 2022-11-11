@@ -13,7 +13,8 @@ This folder contains the necessary scripts to run Tern+PDS inside a container lo
 
 NOTE: The Tern container requires privileged access otherwise Tern will not work 
 
-== Export container
+[[export-image]]
+== Export Container Image
 
 . Find local image
 +
@@ -59,7 +60,7 @@ The container will be started and attached to the `sechub` Network.
 
 WARNING: Make sure the SecHub container is running.
 
-. Start FindSecurityBugs+PDS container:
+. Start Tern+PDS container:
 +
 ----
 ./05-start-single-sechub-network-docker-compose.sh
@@ -72,13 +73,49 @@ The steps required to scan with the PDS.
 
 ==== Scan Script 
 
+. Export a container image as explained in: <<export-image>>
+
+. Download the latest `PDS-Tools` from: https://github.com/mercedes-benz/sechub/releases
+
+. Create a SecHub configuration file. For example:
++
+.sechub-configuration.sh
+----
+{
+    "apiVersion": "1.0",
+    "data": {
+        "binaries": [
+            {
+                "name": "test-image-file",
+                "fileSystem": {
+                    "files": [
+                        "test-image.tar"
+                    ]
+                }
+            }
+        ]
+    },
+    "licenseScan": {
+        "use": [
+            "test-image-file"
+        ]
+    }
+}
+----
+
+. Use the PDS-Tools to create a binaries.tar file
++
+----
+java -jar "sechub-pds-tools-cli-<version>.jar" --generate "sechub-configuration.sh" "licenseScan" "."
+----
+
 . Set the environment variables
 +
 ----
 export PDS_SERVER=https://<pds-host>:<port>
 export PDS_USERID=admin
 export PDS_APITOKEN="<pds-admin-apitoken>"
-export PDS_PRODUCT_IDENTFIER=PDS_FINDSECURITYBUGS
+export PDS_PRODUCT_IDENTFIER=PDS_TERN
 ----
 +
 For example:
@@ -87,84 +124,27 @@ For example:
 export PDS_SERVER=https://localhost:8444
 export PDS_USERID=admin
 export PDS_APITOKEN="pds-apitoken"
-export PDS_PRODUCT_IDENTFIER=PDS_FINDSECURITYBUGS
+export PDS_PRODUCT_IDENTFIER=PDS_TERN
 ----
-+
-[NOTE]
-Those values are the default values from `env-initial` and `env-cluster-initial` files. In case you run FindSecurityBugs+PDS in Kubernetes or other environments those values will be different.
 
-. Scan by providing a `TAR` folder with JVM bytecode (JAR, WAR, `.class`).
+. Use the test script from `../shared/01-test.sh` to scan.
 +
 ----
-../shared/01-test.sh <path-to-tar-file>
-----
-+
-For example:
-+
-----
-../shared/01-test.sh ~/myproject.tar
-----
-
-=== Cluster
-
-The cluster is created locally via `docker-compose`.
-
-==== Shared Volume
-
-The cluster uses a shared volume defined in `docker-compose`. Docker allows to create volumes which can be used by multiple instances to upload files to. Reading, extracting and analysing the files is done in the FindSecurityBugs+PDS container.
-
-The cluster consists of a PostgreSQL database, a Nginx loadbalancer and one or more PDS server.
-
-image::../shared/media/cluster_shared_volume.svg[Components of cluster with shared volume]
-
-===== Scan Using Shared Volume
-
-Starting several FindSecurityBugs+PDS instances:
-
-----
-./50-start-multiple-docker-compose.sh <replicas>
-----
-
-Example of starting 3 FindSecurityBugs+PDS instances:
-
-----
-./50-start-multiple-docker-compose.sh 3
-----
-
-==== Object Storage
-
-The cluster uses an object storage to store files. The cluster uses https://github.com/chrislusf/seaweedfs[SeaweedFS] (S3 compatible) to store files. The PDS instance(s) use the object storage to upload files to. Reading, extracting and analysing the files is done in the FindSecurityBugs+PDS container.
-
-The cluster consists of a PostgreSQL database, a Nginx loadbalancer, a SeaweedFS object storage and one or more PDS server.
-
-image::../shared/media/cluster_object_storage.svg[Components of cluster with object storage]
-
-===== Scan Using Object Storage
-
-Starting several FindSecurityBugs+PDS instances
-
-----
-./51-start-multiple-object-storage-docker-compose.sh <replicas>
-----
-
-Example of starting 3 FindSecurityBugs+PDS instances
-
-----
-./51-start-multiple-object-storage-docker-compose.sh 3
+./01-test.sh pds-config-test-image.json binaries.tar
 ----
 
 === Change the Configuration
 
-There are several configuration options available for the FindSecurityBugs+PDS `docker-compose` files. Have a look at `env-example` for more details.
+There are several configuration options available for the Tern+PDS `docker-compose` files. Have a look at the files in `../shared/environment` for more details.
 
 === Troubleshooting
 
-This section contains information about how to troubleshoot FindSecurityBugs+PDS if something goes wrong.
+This section contains information about how to troubleshoot Tern+PDS if something goes wrong.
 
 ==== Access the container
 
 ----
-docker exec -it pds-findsecuritybugs bash
+docker exec -it pds-tern bash
 ----
 
 ==== Java Application Remote Debugging of PDS
@@ -188,7 +168,7 @@ TIP: https://www.eclipse.org/community/eclipse_newsletter/2017/june/article1.php
 
 == Build Image and Push to Registry
 
-Build container images and push them to registry to run FindSecurityBugs+PDS on virtual machines, Kubernetes or any other distributed system.
+Build container images and push them to registry to run Tern+PDS on virtual machines, Kubernetes or any other distributed system.
 
 === Build Image
 
@@ -196,16 +176,10 @@ Build the container image.
 
 ==== Debian
 
-. Using the default image: 
+. With base image: 
 +
 ----
-./10-create-image.sh my.registry.example.org/sechub/pds_findsecuritybugs v0.1
-----
-
-. Using your own base image:
-+
-----
-./10-create-image.sh my.registry.example.org/sechub/pds_findsecuritybugs v0.1 "my.registry.example.org/debian:11-slim"
+./10-create-image.sh my.registry.example.org/sechub/pds_tern v0.1 ghcr.io/mercedes-benz/sechub/pds-base:v0.32.1
 ----
 
 === Push Image to Registry
@@ -215,13 +189,13 @@ Push the container image to a registry.
 * Push the version tag only
 +
 ----
-./20-push-image.sh my.registry.example.org/sechub/pds_findsecuritybugs v0.1
+./20-push-image.sh my.registry.example.org/sechub/pds_tern v0.1
 ----
 
 * Push the version and `latest` tags
 +
 ----
-./20-push-image.sh my.registry.example.org/sechub/pds_findsecuritybugs v0.1 yes
+./20-push-image.sh my.registry.example.org/sechub/pds_tern v0.1 yes
 ----
 
 == Kubernetes

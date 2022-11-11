@@ -9,10 +9,10 @@ source 8901-check-setup.sh
 
 check_sechub_server_setup "$0" "$SCRIPT_PARAMETERS"
 
-user="tern-user"
-project="test-tern"
-executor_file_name="tern"
-profile="pds-tern"
+user="tern-mock"
+project="test-tern-mock"
+executor_file_name="tern_mock"
+profile="pds-tern-mock"
 
 setup_project_user_executor_profile "$project" "$user" "$executor_file_name" "$profile"
 
