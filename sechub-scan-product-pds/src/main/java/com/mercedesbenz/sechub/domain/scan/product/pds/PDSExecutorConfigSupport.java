@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.adapter.DefaultExecutorConfigSupport;
+import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
 import com.mercedesbenz.sechub.commons.core.util.SecHubStorageUtil;
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 import com.mercedesbenz.sechub.commons.pds.PDSConfigDataKeyProvider;
@@ -73,16 +74,34 @@ public class PDSExecutorConfigSupport extends DefaultExecutorConfigSupport imple
     public Map<String, String> createJobParametersToSendToPDS(SecHubConfiguration secHubConfiguration) {
 
         Map<String, String> parametersToSend = createParametersToSendByProviders(keyProvidersForSendingParametersToPDS);
+        handleEnvironmentVariablesInJobParameters(parametersToSend);
 
-        /* provide SecHub storage when necessary */
+        /* handle remaining parts without environment variable conversion */
+        handleSecHubStorageIfNecessary(secHubConfiguration, parametersToSend);
+        addMappingsAsJobParameter(parametersToSend);
+
+        return parametersToSend;
+    }
+
+    private void handleSecHubStorageIfNecessary(SecHubConfiguration secHubConfiguration, Map<String, String> parametersToSend) {
         if (isReusingSecHubStorage()) {
             String projectId = secHubConfiguration.getProjectId();
             String sechubStoragePath = SecHubStorageUtil.createStoragePath(projectId);
 
             parametersToSend.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SECHUB_STORAGE_PATH, sechubStoragePath);
         }
-        addMappingsAsJobParameter(parametersToSend);
-        return parametersToSend;
+    }
+
+    private void handleEnvironmentVariablesInJobParameters(Map<String, String> parametersToSend) {
+        SystemEnvironmentVariableSupport systemEnvironmentVariableSupport = serviceCollection.getSystemEnvironmentVariableSupport();
+
+        parametersToSend.entrySet().forEach(entry -> {
+
+            String value = entry.getValue();
+            String valueOrVariableContent = systemEnvironmentVariableSupport.getValueOrVariableContent(value);
+
+            entry.setValue(valueOrVariableContent);
+        });
     }
 
     private void addMappingsAsJobParameter(Map<String, String> parametersToSend) {
