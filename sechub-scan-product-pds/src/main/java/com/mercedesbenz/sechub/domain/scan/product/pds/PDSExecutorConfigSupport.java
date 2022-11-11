@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.adapter.DefaultExecutorConfigSupport;
+import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
 import com.mercedesbenz.sechub.commons.core.util.SecHubStorageUtil;
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 import com.mercedesbenz.sechub.commons.pds.PDSConfigDataKeyProvider;
@@ -27,9 +28,9 @@ import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.sharedkernel.validation.Validation;
 
-public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport implements NetworkTargetProductServerDataProvider, ReuseSecHubStorageInfoProvider {
+public class PDSExecutorConfigSupport extends DefaultExecutorConfigSupport implements NetworkTargetProductServerDataProvider, ReuseSecHubStorageInfoProvider {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PDSExecutorConfigSuppport.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PDSExecutorConfigSupport.class);
 
     public static final String PARAM_ID = "pds.executor.config.support";
 
@@ -59,12 +60,12 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport impl
      * @return support
      * @throws NotAcceptableException when configuration is not valid
      */
-    public static PDSExecutorConfigSuppport createSupportAndAssertConfigValid(ProductExecutorConfig config,
+    public static PDSExecutorConfigSupport createSupportAndAssertConfigValid(ProductExecutorConfig config,
             PDSExecutorConfigSuppportServiceCollection serviceCollection) {
-        return new PDSExecutorConfigSuppport(config, serviceCollection, new PDSProductExecutorMinimumConfigValidation());
+        return new PDSExecutorConfigSupport(config, serviceCollection, new PDSProductExecutorMinimumConfigValidation());
     }
 
-    private PDSExecutorConfigSuppport(ProductExecutorConfig config, PDSExecutorConfigSuppportServiceCollection serviceCollection,
+    private PDSExecutorConfigSupport(ProductExecutorConfig config, PDSExecutorConfigSuppportServiceCollection serviceCollection,
             Validation<ProductExecutorConfig> validation) {
         super(config, serviceCollection.getSystemEnvironmentVariableSupport(), validation);
         this.serviceCollection = serviceCollection;
@@ -73,16 +74,34 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport impl
     public Map<String, String> createJobParametersToSendToPDS(SecHubConfiguration secHubConfiguration) {
 
         Map<String, String> parametersToSend = createParametersToSendByProviders(keyProvidersForSendingParametersToPDS);
+        handleEnvironmentVariablesInJobParameters(parametersToSend);
 
-        /* provide SecHub storage when necessary */
+        /* handle remaining parts without environment variable conversion */
+        handleSecHubStorageIfNecessary(secHubConfiguration, parametersToSend);
+        addMappingsAsJobParameter(parametersToSend);
+
+        return parametersToSend;
+    }
+
+    private void handleSecHubStorageIfNecessary(SecHubConfiguration secHubConfiguration, Map<String, String> parametersToSend) {
         if (isReusingSecHubStorage()) {
             String projectId = secHubConfiguration.getProjectId();
             String sechubStoragePath = SecHubStorageUtil.createStoragePath(projectId);
 
             parametersToSend.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SECHUB_STORAGE_PATH, sechubStoragePath);
         }
-        addMappingsAsJobParameter(parametersToSend);
-        return parametersToSend;
+    }
+
+    private void handleEnvironmentVariablesInJobParameters(Map<String, String> parametersToSend) {
+        SystemEnvironmentVariableSupport systemEnvironmentVariableSupport = serviceCollection.getSystemEnvironmentVariableSupport();
+
+        parametersToSend.entrySet().forEach(entry -> {
+
+            String value = entry.getValue();
+            String valueOrVariableContent = systemEnvironmentVariableSupport.getValueOrVariableContent(value);
+
+            entry.setValue(valueOrVariableContent);
+        });
     }
 
     private void addMappingsAsJobParameter(Map<String, String> parametersToSend) {
