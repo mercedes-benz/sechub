@@ -54,7 +54,7 @@ COPY scripts $SCRIPT_FOLDER
 RUN chmod --recursive +x $SCRIPT_FOLDER
 
 # Mock folder
-COPY mocks $SCRIPT_FOLDER/mocks/
+COPY mocks $MOCK_FOLDER
 
 # Set workspace
 WORKDIR "$WORKSPACE"
