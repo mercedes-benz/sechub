@@ -41,6 +41,8 @@ spec:
                       value: "{{ .Values.pds.maxFileUploadSize }}"
                     - name: PDS_UPLOAD_MAXIMUM_BYTES
                       value: "{{ .Values.pds.uploadMaximumBytes }}"
+                    - name: PDS_HEARTBEAT_LOGGING
+                      value: "{{ .Values.pds.heartbeatLogging }}"                      
                     {{- if .Values.pds.logging.type.enabled }}
                     - name: LOGGING_TYPE
                       value: {{ .Values.pds.logging.type.appenderName }}
