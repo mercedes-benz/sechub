@@ -10,10 +10,13 @@ CPU_LIMIT=1.0
 BUILD_TYPE=download
 
 # The SecHub version used if the BUILD_TYPE is set to `download` 
-SECHUB_VERSION="0.34.0"
+SECHUB_VERSION="0.35.2"
 
 # Go version used
 GO="go1.19.linux-amd64.tar.gz"
+
+# possible values: temurin, openj9, openjdk
+JAVA_DISTRIBUTION="openjdk"
 
 # The Java version used
 JAVA_VERSION="11"
