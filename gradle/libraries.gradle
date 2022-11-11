@@ -67,7 +67,7 @@ ext {
       restDocsApiSpec:                         "0.16.2",
       
       /* Owasp Zap wrapper */
-      owaspzap_client_api:                     "1.10.0",
+      owaspzap_client_api:                     "1.11.0",
       jcommander:                              "1.82",
     
    ]    
