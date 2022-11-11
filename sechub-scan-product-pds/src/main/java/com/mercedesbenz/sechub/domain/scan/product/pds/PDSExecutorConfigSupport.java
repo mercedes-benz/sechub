@@ -27,9 +27,9 @@ import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.sharedkernel.validation.Validation;
 
-public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport implements NetworkTargetProductServerDataProvider, ReuseSecHubStorageInfoProvider {
+public class PDSExecutorConfigSupport extends DefaultExecutorConfigSupport implements NetworkTargetProductServerDataProvider, ReuseSecHubStorageInfoProvider {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PDSExecutorConfigSuppport.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PDSExecutorConfigSupport.class);
 
     public static final String PARAM_ID = "pds.executor.config.support";
 
@@ -59,12 +59,12 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport impl
      * @return support
      * @throws NotAcceptableException when configuration is not valid
      */
-    public static PDSExecutorConfigSuppport createSupportAndAssertConfigValid(ProductExecutorConfig config,
+    public static PDSExecutorConfigSupport createSupportAndAssertConfigValid(ProductExecutorConfig config,
             PDSExecutorConfigSuppportServiceCollection serviceCollection) {
-        return new PDSExecutorConfigSuppport(config, serviceCollection, new PDSProductExecutorMinimumConfigValidation());
+        return new PDSExecutorConfigSupport(config, serviceCollection, new PDSProductExecutorMinimumConfigValidation());
     }
 
-    private PDSExecutorConfigSuppport(ProductExecutorConfig config, PDSExecutorConfigSuppportServiceCollection serviceCollection,
+    private PDSExecutorConfigSupport(ProductExecutorConfig config, PDSExecutorConfigSuppportServiceCollection serviceCollection,
             Validation<ProductExecutorConfig> validation) {
         super(config, serviceCollection.getSystemEnvironmentVariableSupport(), validation);
         this.serviceCollection = serviceCollection;

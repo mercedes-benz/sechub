@@ -39,7 +39,7 @@ public class PDSExecutorConfigSupportTest {
     private static final String SECHUB_MAPPING_ID_3_NOT_KNOWN_BY_SECHUB = "the.key3.not.known.by.sechub";
 
     private static final String CONFIGURED_PDS_PRODUCT_IDENTIFIER = "a_string";
-    private PDSExecutorConfigSuppport supportToTest;
+    private PDSExecutorConfigSupport supportToTest;
     private ProductExecutorConfig config;
     private ProductExecutorConfigSetup executorConfigSetup;
     private ProductExecutorConfigSetupCredentials credentialsInConfigSetup;
@@ -76,7 +76,7 @@ public class PDSExecutorConfigSupportTest {
 
         when(serviceCollection.getScanMappingRepository()).thenReturn(repository);
         when(serviceCollection.getSystemEnvironmentVariableSupport()).thenReturn(systemEnvironmentVariableSupport);
-        supportToTest = PDSExecutorConfigSuppport.createSupportAndAssertConfigValid(config, serviceCollection);
+        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(config, serviceCollection);
     }
 
     @Test
