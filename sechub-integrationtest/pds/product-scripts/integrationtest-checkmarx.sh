@@ -8,7 +8,6 @@ echo "###############################################"
 
 source ./../sechub-integrationtest/pds/product-scripts/shared-functions.sh
 
-export PDS_DEBUG_ENABLED=true
 export PDS_CHECKMARX_MOCKING_ENABLED=true
 export TOOL_FOLDER=./../sechub-integrationtest/build/pds-tools # gradle bootJar task does inject the
                                                                # wrapper jar here for testing

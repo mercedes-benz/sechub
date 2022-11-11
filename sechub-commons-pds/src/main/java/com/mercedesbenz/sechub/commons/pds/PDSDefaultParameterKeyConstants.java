@@ -23,6 +23,8 @@ public class PDSDefaultParameterKeyConstants {
 
     public static final String PARAM_KEY_PDS_SCAN_TARGET_URL = "pds.scan.target.url";
 
+    public static final String PARAM_KEY_PDS_DEBUG_ENABLED = "pds.debug.enabled";
+
     /**
      * Contains the SecHub configuration model as Json
      */

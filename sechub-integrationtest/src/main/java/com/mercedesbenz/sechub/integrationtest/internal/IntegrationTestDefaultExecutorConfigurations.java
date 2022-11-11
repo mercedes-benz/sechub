@@ -215,9 +215,13 @@ public class IntegrationTestDefaultExecutorConfigurations {
 
         addCheckmarxDefaultTeamIdAndPresetMappingData(parameters);
 
-        /* add team id mapping */
+        enablePDSDebugging(parameters);
 
         return parameters;
+    }
+
+    private static void enablePDSDebugging(List<TestExecutorSetupJobParam> parameters) {
+        parameters.add(new TestExecutorSetupJobParam(PARAM_KEY_PDS_DEBUG_ENABLED, "true"));
     }
 
     private static List<TestExecutorSetupJobParam> defineExcludeIncludes1JobParameters() {
