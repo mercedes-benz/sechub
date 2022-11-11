@@ -23,6 +23,7 @@ import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
+import com.mercedesbenz.sechub.sharedkernel.error.BadRequestException;
 import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
@@ -37,6 +38,12 @@ import com.mercedesbenz.sechub.storage.core.StorageService;
 public class SchedulerSourcecodeUploadService {
 
     private static final Logger LOG = LoggerFactory.getLogger(SchedulerSourcecodeUploadService.class);
+
+    /**
+     * A constant for the size of an empty zip file - see
+     * https://en.wikipedia.org/wiki/ZIP_(file_format)#Limits
+     */
+    private static final long EMPTY_ZIP_FILE_SIZE = 22;
 
     @Autowired
     SchedulerSourcecodeUploadConfiguration configuration;
@@ -94,6 +101,11 @@ public class SchedulerSourcecodeUploadService {
 
         try (InputStream inputStream = file.getInputStream()) {
             long fileSize = file.getSize();
+
+            if (fileSize <= EMPTY_ZIP_FILE_SIZE) {
+                throw new BadRequestException("Uploaded sourcecode zip file may not be empty!");
+            }
+
             long checksumSizeInBytes = checkSum.getBytes().length;
 
             String fileSizeAsString = "" + fileSize;
