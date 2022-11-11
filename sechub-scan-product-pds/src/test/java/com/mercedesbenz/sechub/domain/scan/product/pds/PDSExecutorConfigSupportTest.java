@@ -26,7 +26,7 @@ import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigS
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetupJobParameter;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 
-public class PDSExecutorConfigSuppportTest {
+public class PDSExecutorConfigSupportTest {
 
     private static final String VALUE1B = "value1b";
     private static final String VALUE1A = "value1a";
