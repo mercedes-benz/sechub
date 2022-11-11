@@ -146,6 +146,7 @@ ENV SHARED_VOLUME_UPLOAD_DIR="$SHARED_VOLUMES/uploads"
 ENV PDS_VERSION="${PDS_VERSION}"
 ENV PDS_FOLDER="/pds"
 ENV SCRIPT_FOLDER="/scripts"
+ENV HELPER_FOLDER="/helper"
 ENV DOWNLOAD_FOLDER="/downloads"
 ENV MOCK_FOLDER="/mocks"
 ENV TOOL_FOLDER="/tools"
@@ -157,7 +158,7 @@ RUN groupadd --gid "$GID" "$USER" && \
     useradd --uid "$UID" --gid "$GID" --no-log-init --create-home "$USER"
 
 # Create folders & change owner of folders
-RUN mkdir --parents "$PDS_FOLDER" "$SCRIPT_FOLDER" "$TOOL_FOLDER" "$WORKSPACE" "$DOWNLOAD_FOLDER" "$MOCK_FOLDER" "$SHARED_VOLUME_UPLOAD_DIR" && \
+RUN mkdir --parents "$PDS_FOLDER" "$SCRIPT_FOLDER" "$TOOL_FOLDER" "$WORKSPACE" "$DOWNLOAD_FOLDER" "$MOCK_FOLDER" "$SHARED_VOLUME_UPLOAD_DIR" "$HELPER_FOLDER" && \
     # Change owner and workspace and shared volumes folder
     # the only two folders pds really needs write access to
     chown --recursive "$USER:$USER" "$WORKSPACE" "$SHARED_VOLUMES"
@@ -175,6 +176,9 @@ COPY run.sh /run.sh
 
 # Copy the additional "hook" script into the container
 COPY run_additional.sh /run_additional.sh
+
+# Copy run script into the container
+COPY helper/ "$HELPER_FOLDER"
 
 # Set execute permissions for scripts
 RUN chmod +x /run.sh /run_additional.sh

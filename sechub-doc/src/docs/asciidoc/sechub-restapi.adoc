@@ -7,7 +7,7 @@ include::documents/gen/server-version.adoc[]
 
 include::documents/config.adoc[]
 
-= image:sechub-logo.png[sechub] SecHub Server Rest API Documentation
+= image:sechub-logo.png[link="{webPage}"] SecHub Server Rest API Documentation
 
 == About
 

@@ -11,11 +11,11 @@ image:
 pds:
     startMode: localserver
     maxFileUploadBytes: 52428800
-    heartbeatLogging: true
     config:
         execute:
             queueMax: 10
             workerThreadCount: 1
+    heartbeatLogging: "true"
     logging:
         type:
             enabled: false
