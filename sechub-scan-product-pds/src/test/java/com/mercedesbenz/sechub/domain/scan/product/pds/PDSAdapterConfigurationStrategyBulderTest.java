@@ -22,7 +22,7 @@ class PDSAdapterConfigurationStrategyBulderTest {
     private InputStream binariesInputStream;
     private InputStream sourceInputStream;
 
-    private PDSExecutorConfigSuppport configSupport;
+    private PDSExecutorConfigSupport configSupport;
     private PDSStorageContentProvider contentProvider;
 
     private PDSInstallSetup installSetup;
@@ -36,7 +36,7 @@ class PDSAdapterConfigurationStrategyBulderTest {
     void beforeEach() {
         binariesInputStream = mock(InputStream.class);
         sourceInputStream = mock(InputStream.class);
-        configSupport = mock(PDSExecutorConfigSuppport.class);
+        configSupport = mock(PDSExecutorConfigSupport.class);
         contentProvider = mock(PDSStorageContentProvider.class);
         installSetup = mock(PDSInstallSetup.class);
         productExecutorData = mock(ProductExecutorData.class);

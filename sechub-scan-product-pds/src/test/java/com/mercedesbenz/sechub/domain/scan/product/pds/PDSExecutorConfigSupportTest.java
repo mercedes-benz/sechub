@@ -11,6 +11,8 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
 import com.mercedesbenz.sechub.commons.mapping.MappingData;
@@ -26,26 +28,30 @@ import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigS
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetupJobParameter;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 
-public class PDSExecutorConfigSuppportTest {
+public class PDSExecutorConfigSupportTest {
 
     private static final String VALUE1B = "value1b";
     private static final String VALUE1A = "value1a";
     private static final String VALUE2A = "value2a";
+
     private static final String PATTERN2A = "pattern2a";
     private static final String PATTERN1B = "pattern1b";
     private static final String PATTERN1A = "pattern1a";
+
     private static final String SECHUB_MAPPING_ID_1 = "the.key1";
     private static final String SECHUB_MAPPING_ID_2 = "the.key2";
     private static final String SECHUB_MAPPING_ID_3_NOT_KNOWN_BY_SECHUB = "the.key3.not.known.by.sechub";
+    private static final String COMBINED_MAPPING_VALUE_DATA = SECHUB_MAPPING_ID_1 + "," + SECHUB_MAPPING_ID_2 + " , " + SECHUB_MAPPING_ID_3_NOT_KNOWN_BY_SECHUB;
 
     private static final String CONFIGURED_PDS_PRODUCT_IDENTIFIER = "a_string";
-    private PDSExecutorConfigSuppport supportToTest;
+    private PDSExecutorConfigSupport supportToTest;
     private ProductExecutorConfig config;
     private ProductExecutorConfigSetup executorConfigSetup;
     private ProductExecutorConfigSetupCredentials credentialsInConfigSetup;
     private PDSExecutorConfigSuppportServiceCollection serviceCollection;
     private List<ProductExecutorConfigSetupJobParameter> jobParameters;
     private ScanMappingRepository repository;
+    private SystemEnvironmentVariableSupport systemEnvironmentVariableSupport;
 
     @BeforeEach
     public void before() throws Exception {
@@ -61,7 +67,7 @@ public class PDSExecutorConfigSuppportTest {
                 new ProductExecutorConfigSetupJobParameter(SecHubProductExecutionPDSKeyProvider.PDS_FORBIDS_TARGETTYPE_INTRANET.getKey().getId(), "false"));
 
         jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSConfigDataKeyProvider.PDS_CONFIG_USE_SECHUB_MAPPINGS.getKey().getId(),
-                SECHUB_MAPPING_ID_1 + "," + SECHUB_MAPPING_ID_2 + " , " + SECHUB_MAPPING_ID_3_NOT_KNOWN_BY_SECHUB));
+                COMBINED_MAPPING_VALUE_DATA));
 
         when(config.getSetup()).thenReturn(executorConfigSetup);
         credentialsInConfigSetup = new ProductExecutorConfigSetupCredentials();
@@ -71,12 +77,14 @@ public class PDSExecutorConfigSuppportTest {
 
         serviceCollection = mock(PDSExecutorConfigSuppportServiceCollection.class);
 
-        SystemEnvironmentVariableSupport systemEnvironmentVariableSupport = mock(SystemEnvironmentVariableSupport.class);
+        Answer<String> defaultAnswerWithNoConversion = createAnswerWhichReturnsAlwaysJustTheOriginValue();
+        systemEnvironmentVariableSupport = mock(SystemEnvironmentVariableSupport.class, defaultAnswerWithNoConversion);
+
         repository = mock(ScanMappingRepository.class);
 
         when(serviceCollection.getScanMappingRepository()).thenReturn(repository);
         when(serviceCollection.getSystemEnvironmentVariableSupport()).thenReturn(systemEnvironmentVariableSupport);
-        supportToTest = PDSExecutorConfigSuppport.createSupportAndAssertConfigValid(config, serviceCollection);
+        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(config, serviceCollection);
     }
 
     @Test
@@ -92,6 +100,35 @@ public class PDSExecutorConfigSuppportTest {
     @Test
     void isTargetTypeForbidden_returns_false_for_target_type_requested_is_intranet_when_internet_is_forbidden_in_configuration() {
         assertEquals(false, supportToTest.isTargetTypeForbidden(NetworkTargetType.INTRANET));
+    }
+
+    @Test
+    void createJobParametersToSendToPDS_environmentVariablesEntriesAreReplacedWithTheirContent() {
+        /* prepare */
+        String parameterKey1 = "test.key1";
+        String parameterKey2 = "test.key2";
+        String parameterKey3 = "test.key3";
+
+        jobParameters.add(new ProductExecutorConfigSetupJobParameter(parameterKey1, "env:A_TESTVARIABLE"));
+        jobParameters.add(new ProductExecutorConfigSetupJobParameter(parameterKey2, "env:A_NOT_EXISTING_VARIABLE"));
+        jobParameters.add(new ProductExecutorConfigSetupJobParameter(parameterKey3, "just-a-key-not-converted"));
+
+        // create support again (necessary to have new job parameters included)
+        supportToTest = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(config, serviceCollection);
+
+        when(systemEnvironmentVariableSupport.getValueOrVariableContent("env:A_TESTVARIABLE")).thenReturn("resolved-value");
+        when(systemEnvironmentVariableSupport.getValueOrVariableContent("env:A_NOT_EXISTING_VARIABLE")).thenReturn(null);
+
+        SecHubConfiguration sechubConfiguration = mock(SecHubConfiguration.class);
+
+        /* execute */
+        Map<String, String> parameterMap = supportToTest.createJobParametersToSendToPDS(sechubConfiguration);
+
+        /* test */
+        assertEquals("resolved-value", parameterMap.get(parameterKey1));
+        assertEquals(null, parameterMap.get(parameterKey2));
+        assertEquals("just-a-key-not-converted", parameterMap.get(parameterKey3));
+
     }
 
     @Test
@@ -147,6 +184,11 @@ public class PDSExecutorConfigSuppportTest {
 
         assertEquals(0, data3.getEntries().size());
 
+        /*
+         * test 4 - only the parameters are tried to convert, but NOT the mapping data
+         */
+        verify(systemEnvironmentVariableSupport, times(1)).getValueOrVariableContent(COMBINED_MAPPING_VALUE_DATA);
+        verify(systemEnvironmentVariableSupport, times(1)).getValueOrVariableContent(any());
     }
 
     private void mockSecHubMappingId2InDatabase() {
@@ -172,6 +214,21 @@ public class PDSExecutorConfigSuppportTest {
 
         Optional<ScanMapping> optMapping1 = Optional.of(storedMapping1);
         when(repository.findById(mappingId)).thenReturn(optMapping1);
+    }
+
+    private Answer<String> createAnswerWhichReturnsAlwaysJustTheOriginValue() {
+        return new Answer<String>() {
+
+            @Override
+            public String answer(InvocationOnMock invocation) throws Throwable {
+                Object arg0 = invocation.getArgument(0);
+                if (arg0 == null) {
+                    return null;
+                }
+                return arg0.toString();
+            }
+
+        };
     }
 
 }

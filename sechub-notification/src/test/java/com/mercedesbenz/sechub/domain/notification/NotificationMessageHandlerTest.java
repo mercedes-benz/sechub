@@ -12,6 +12,7 @@ import com.mercedesbenz.sechub.domain.notification.user.InformUsersThatProjectHa
 import com.mercedesbenz.sechub.domain.notification.user.NewAPITokenAppliedUserNotificationService;
 import com.mercedesbenz.sechub.domain.notification.user.NewApiTokenRequestedUserNotificationService;
 import com.mercedesbenz.sechub.domain.notification.user.SignUpRequestedAdminNotificationService;
+import com.mercedesbenz.sechub.domain.notification.user.SignUpRequestedUserNotificationService;
 import com.mercedesbenz.sechub.domain.notification.user.UserDeletedNotificationService;
 import com.mercedesbenz.sechub.domain.notification.user.UserEmailAddressChangedNotificationService;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
@@ -23,6 +24,7 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.UserMessage;
 public class NotificationMessageHandlerTest {
 
     private SignUpRequestedAdminNotificationService mockedSignUpRequestedAdminNotificationService;
+    private SignUpRequestedUserNotificationService mockedSignUpRequestedUserNotificationService;
     private NotificationMessageHandler handlerToTest;
     private NewAPITokenAppliedUserNotificationService mockedNewAPITokenAppliedUserNotificationService;
     private NewApiTokenRequestedUserNotificationService mockedNewApiTokenRequestedUserNotificationService;
@@ -35,6 +37,7 @@ public class NotificationMessageHandlerTest {
     @Before
     public void before() throws Exception {
         mockedSignUpRequestedAdminNotificationService = mock(SignUpRequestedAdminNotificationService.class);
+        mockedSignUpRequestedUserNotificationService = mock(SignUpRequestedUserNotificationService.class);
         mockedNewAPITokenAppliedUserNotificationService = mock(NewAPITokenAppliedUserNotificationService.class);
         mockedNewApiTokenRequestedUserNotificationService = mock(NewApiTokenRequestedUserNotificationService.class);
         mockedUserDeletedNotificationService = mock(UserDeletedNotificationService.class);
@@ -45,6 +48,7 @@ public class NotificationMessageHandlerTest {
 
         handlerToTest = new NotificationMessageHandler();
         handlerToTest.signupRequestedAdminNotificationService = mockedSignUpRequestedAdminNotificationService;
+        handlerToTest.signupRequestedUserNotificationService = mockedSignUpRequestedUserNotificationService;
         handlerToTest.newAPITokenAppliedUserNotificationService = mockedNewAPITokenAppliedUserNotificationService;
         handlerToTest.newApiTokenRequestedUserNotificationService = mockedNewApiTokenRequestedUserNotificationService;
         handlerToTest.userDeletedNotificationService = mockedUserDeletedNotificationService;
@@ -69,6 +73,7 @@ public class NotificationMessageHandlerTest {
 
         /* test */
         verify(mockedSignUpRequestedAdminNotificationService).notify(userMessage);
+        verify(mockedSignUpRequestedUserNotificationService).notify(userMessage);
     }
 
     @Test

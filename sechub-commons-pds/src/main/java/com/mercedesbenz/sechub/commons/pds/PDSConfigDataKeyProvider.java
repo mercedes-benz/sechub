@@ -91,7 +91,15 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
      */
     PDS_SCAN_TARGET_URL(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_TARGET_URL,
             "This contains the Target URL for current scan i.e webscan. Will not be set in all scan types. E.g. for a code scan this environment variable will not be available")
-                    .markGenerated().markAsAvailableInsideScript())
+                    .markGenerated().markAsAvailableInsideScript()),
+
+    /**
+     * A debug flag for PDS which can be used in executor configurations to increase
+     * output level on scan time.
+     */
+    PDS_DEBUG_ENABLED(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_DEBUG_ENABLED,
+            "When 'true', the PDS instance will show up some debug information on scan time. The output level of debugging information differs on PDS solutions/launcher scripts.")
+                    .markDefaultRecommended().withDefault(false).markSendToPDS().markAsAvailableInsideScript())
 
     ,
     /**

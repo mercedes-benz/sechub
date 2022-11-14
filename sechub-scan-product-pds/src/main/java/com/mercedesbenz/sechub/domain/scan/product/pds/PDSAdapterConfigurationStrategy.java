@@ -56,7 +56,7 @@ public class PDSAdapterConfigurationStrategy implements AdapterConfigurationStra
             return this;
         }
 
-        public PDSAdapterConfigurationStrategyBuilder setConfigSupport(PDSExecutorConfigSuppport configSupport) {
+        public PDSAdapterConfigurationStrategyBuilder setConfigSupport(PDSExecutorConfigSupport configSupport) {
             strategyConfig.configSupport = configSupport;
             return this;
         }
@@ -119,7 +119,7 @@ public class PDSAdapterConfigurationStrategy implements AdapterConfigurationStra
     private static class PDSAdapterConfigurationStrategyConfig {
         private ProductExecutorData productExecutorData;
         private PDSStorageContentProvider contentProvider;
-        private PDSExecutorConfigSuppport configSupport;
+        private PDSExecutorConfigSupport configSupport;
         private PDSInstallSetup installSetup;
         private ScanType scanType;
         private InputStream sourceCodeZipFileInputStreamOrNull;
@@ -154,7 +154,7 @@ public class PDSAdapterConfigurationStrategy implements AdapterConfigurationStra
     }
 
     private void handlePdsParts(PDSAdapterConfigurator pdsConfigurable) {
-        PDSExecutorConfigSuppport configSupport = strategyConfig.configSupport;
+        PDSExecutorConfigSupport configSupport = strategyConfig.configSupport;
 
         SecHubExecutionContext context = strategyConfig.productExecutorData.getSechubExecutionContext();
         Map<String, String> jobParametersToSend = configSupport.createJobParametersToSendToPDS(context.getConfiguration());

@@ -34,7 +34,7 @@ public class PDSCodeScanProductExecutor extends AbstractPDSProductExecutor {
         LOG.debug("Trigger PDS adapter execution");
 
         ProductExecutorContext executorContext = data.getProductExecutorContext();
-        PDSExecutorConfigSuppport configSupport = PDSExecutorConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
+        PDSExecutorConfigSupport configSupport = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
                 serviceCollection);
 
         SecHubExecutionContext context = data.getSechubExecutionContext();

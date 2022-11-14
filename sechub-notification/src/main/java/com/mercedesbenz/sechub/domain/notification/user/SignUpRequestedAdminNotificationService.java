@@ -24,7 +24,7 @@ public class SignUpRequestedAdminNotificationService {
     @Autowired
     EmailService emailService;
 
-    @UseCaseUserSignup(@Step(number = 3, next = {
+    @UseCaseUserSignup(@Step(number = 4, next = {
             Step.NO_NEXT_STEP }, name = "Email to admin", description = "A notification is send per email to admins that a new user signup has been created and waits for acceptance."))
     public void notify(UserMessage userMessage) {
         /* build content */

@@ -1,0 +1,8 @@
+// SPDX-License-Identifier: MIT
+
+= SecHub Solutions Shared
+
+Is a folder which contains scripts and tools which can be used by:
+
+- sechub-solution
+- sechub-pds-solutions

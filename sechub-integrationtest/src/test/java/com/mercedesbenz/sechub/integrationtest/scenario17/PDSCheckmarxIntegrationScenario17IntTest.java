@@ -69,6 +69,7 @@ public class PDSCheckmarxIntegrationScenario17IntTest {
         // check RECOMPRESSED ZIP file content
         UUID pdsJobUUID = waitForFirstPDSJobOfSecHubJobAndReturnPDSJobUUID(jobUUID);
         Map<String, String> variables = fetchPDSVariableTestOutputMap(pdsJobUUID);
+
         String sha256 = variables.get(TEST_RECOMPRESSED_ZIP_DATA_TXT_SHA256);
 
         if (sha256!=null) {
@@ -85,7 +86,8 @@ public class PDSCheckmarxIntegrationScenario17IntTest {
 
             assertEquals(expectedSha256, sha256);
         }
-
+        /* check pds debug enabled variable available - we have enabled it inside the executor configuration */
+        assertEquals("true", variables.get("PDS_DEBUG_ENABLED"));
         /* @formatter:on */
     }
 

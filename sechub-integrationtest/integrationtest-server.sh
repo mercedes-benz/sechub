@@ -164,6 +164,7 @@ function startServer(){
     fi
 
     log "Starting a sechub-server (version $SERVER_VERSION) in integration test mode"
+    export SERVER_PORT
     export SPRING_PROFILES_ACTIVE=integrationtest,mocked_products,h2
     export SECHUB_SERVER_DEBUG=true
     export SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR="$SHARED_VOLUME_BASEDIR"
