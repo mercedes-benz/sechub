@@ -36,11 +36,6 @@ if [[ ! -z "$PDS_VERSION" ]] ; then
     BUILD_ARGS+=" --build-arg PDS_VERSION=$PDS_VERSION"
 fi
 
-if [[ ! -z "$OWASPZAP_VERSION" ]] ; then
-    echo ">> OWASP ZAP version: $OWASPZAP_VERSION"
-    BUILD_ARGS+=" --build-arg OWASPZAP_VERSION=$OWASPZAP_VERSION"
-fi
-
 # Enforce OWASPZAP_SHA256SUM is defined when building custom version of find-sec-bugs
 if [[ ! -z "$OWASPZAP_VERSION" ]] ; then
   echo ">> OWASP-ZAP version: $OWASPZAP_VERSION"
