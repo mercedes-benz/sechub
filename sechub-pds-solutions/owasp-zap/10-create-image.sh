@@ -10,10 +10,9 @@ usage() {
 usage: $0 <docker registry> <version tag> [<base image>]
 Builds a docker image of SecHub PDS with OWASP ZAP
 for <docker registry> with tag <version tag>.
-Optional: <base image> ; defaults to $DEFAULT_BASE_IMAGE
+Required: <base image> ; for example ghcr.io/mercedes-benz/sechub/pds-base:v0.32.1
 
 Additionally these environment variables can be defined:
-- PDS_VERSION - version of SecHub PDS to use. E.g. 0.27.0
 - OWASPZAP_VERSION - OWASP ZAP version to use. E.g. 2.11.1
 EOF
 }
