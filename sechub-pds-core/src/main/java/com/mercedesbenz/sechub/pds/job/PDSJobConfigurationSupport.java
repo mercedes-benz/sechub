@@ -3,10 +3,19 @@ package com.mercedesbenz.sechub.pds.job;
 
 import static com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants.*;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
+import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationType;
+import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationTypeListParser;
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterValueConstants;
@@ -14,10 +23,23 @@ import com.mercedesbenz.sechub.pds.execution.PDSExecutionParameterEntry;
 
 public class PDSJobConfigurationSupport {
 
-    private PDSJobConfiguration configuration;
+    public static final Set<SecHubDataConfigurationType> FALLBACK_ALL_DATATYPES_SUPPORTED = Collections
+            .unmodifiableSet(new HashSet<>(Arrays.asList(SecHubDataConfigurationType.values())));
+    private static final SecHubDataConfigurationTypeListParser DEFAULT_SHARED_TYPELIST_PARSER = new SecHubDataConfigurationTypeListParser();
+    private static final Logger LOG = LoggerFactory.getLogger(PDSJobConfigurationSupport.class);
+
+    SecHubDataConfigurationTypeListParser typeListParser;
+    private PDSJobConfiguration jobConfiguration;
 
     public PDSJobConfigurationSupport(PDSJobConfiguration configuration) {
-        this.configuration = configuration;
+        this.jobConfiguration = configuration;
+    }
+
+    private SecHubDataConfigurationTypeListParser getTypeListParser() {
+        if (typeListParser == null) {
+            return DEFAULT_SHARED_TYPELIST_PARSER;
+        }
+        return typeListParser;
     }
 
     /**
@@ -60,7 +82,7 @@ public class PDSJobConfigurationSupport {
     }
 
     public boolean isEnabled(String key, boolean defaultWhenNotSet) {
-        if (configuration == null) {
+        if (jobConfiguration == null) {
             return defaultWhenNotSet;
         }
         String param = getStringParameterOrNull(key);
@@ -83,13 +105,13 @@ public class PDSJobConfigurationSupport {
     }
 
     public String getStringParameterOrNull(String key) {
-        if (configuration == null) {
+        if (jobConfiguration == null) {
             return null;
         }
         if (key == null) {
             return null;
         }
-        for (PDSExecutionParameterEntry entry : configuration.getParameters()) {
+        for (PDSExecutionParameterEntry entry : jobConfiguration.getParameters()) {
             String foundKey = entry.getKey();
             if (key.equals(foundKey)) {
                 return entry.getValue();
@@ -118,5 +140,17 @@ public class PDSJobConfigurationSupport {
     public int getSecondsToWaitForProcess() {
         return getIntParameterOrDefault(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_CANCEL_MAXIMUM_WAITTIME_SECONDS,
                 PDSDefaultParameterValueConstants.DEFAULT_TIME_TO_WAIT_IN_SECONDS_FOR_SCRIPT_CANCELLATION);
+    }
+
+    public Set<SecHubDataConfigurationType> getSupportedDataTypes() {
+        String value = getStringParameterOrNull(PARAM_KEY_PDS_CONFIG_SUPPORTED_DATATYPES);
+
+        Set<SecHubDataConfigurationType> fromParser = getTypeListParser().fetchTypesAsSetOrNull(value);
+        if (fromParser == null) {
+            LOG.warn("Illegal situation - no supported data types found. Switch to fallback.");
+            return FALLBACK_ALL_DATATYPES_SUPPORTED;
+        }
+
+        return fromParser;
     }
 }

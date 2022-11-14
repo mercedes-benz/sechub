@@ -96,6 +96,8 @@ public class SecHubConfigurationModelSupport {
             return atLeastOneNameReferencesOneElementInGivenDataConfiguration(names, data.getBinaries(), dataType);
         case SOURCE:
             return atLeastOneNameReferencesOneElementInGivenDataConfiguration(names, data.getSources(), dataType);
+        case NONE:
+            return false;
         default:
             LOG.error("Datatype {} unknown, so never contained", dataType);
             return false;

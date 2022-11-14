@@ -25,15 +25,19 @@ public class PDSServerConfigurationServiceTest {
     @Rule
     public ExpectedException expected = ExpectedExceptionFactory.none();
     private PDSShutdownService shutdownService;
+    private PDSConfigurationAutoFix serverConfigurationAutoFix;
 
     @Before
     public void before() throws Exception {
 
         serverConfigurationValidator = mock(PDSServerConfigurationValidator.class);
+        serverConfigurationAutoFix = mock(PDSConfigurationAutoFix.class);
+
         shutdownService = mock(PDSShutdownService.class);
 
         serviceToTest = new PDSServerConfigurationService();
         serviceToTest.serverConfigurationValidator = serverConfigurationValidator;
+        serviceToTest.serverConfigurationAutoFix = serverConfigurationAutoFix;
         serviceToTest.shutdownService = shutdownService;
     }
 
@@ -85,6 +89,20 @@ public class PDSServerConfigurationServiceTest {
         assertEquals("PRODUCT_2", product2.getId());
         assertEquals(ScanType.INFRA_SCAN, product2.getScanType());
         assertEquals("/srv/security/scanner2.sh", product2.getPath());
+
+    }
+
+    @Test
+    public void before_config_validator_is_started_the_autofix_is_called() {
+        /* prepare */
+        serviceToTest.pathToConfigFile = "./src/test/resources/config/pds-config-example1.json";
+        when(serverConfigurationValidator.createValidationErrorMessage(any())).thenReturn("reason");
+
+        /* execute */
+        serviceToTest.postConstruct();
+
+        /* test */
+        verify(serverConfigurationAutoFix).autofixWhenNecessary(any());
 
     }
 

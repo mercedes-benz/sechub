@@ -5,13 +5,17 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverterException;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
+import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationType;
+import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationTypeListParser;
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.pds.execution.PDSExecutionParameterEntry;
@@ -32,6 +36,69 @@ class PDSJobConfigurationSupportTest {
         when(config.getParameters()).thenReturn(parameterList);
 
         supportToTest = new PDSJobConfigurationSupport(config);
+    }
+
+    @Test
+    void get_supported_datatypes_uses_typeListParser_and_returns_set_from_parser() {
+        /* prepare */
+        String pseudoTypeList = "value1";
+
+        SecHubDataConfigurationTypeListParser mockedListParser = mock(SecHubDataConfigurationTypeListParser.class);
+        supportToTest.typeListParser = mockedListParser;
+
+        Set<SecHubDataConfigurationType> set = new LinkedHashSet<>();
+
+        when(mockedListParser.fetchTypesAsSetOrNull(pseudoTypeList)).thenReturn(set);
+
+        String key = PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SUPPORTED_DATATYPES;
+        addParameter(key, pseudoTypeList);
+
+        /* execute */
+        Set<SecHubDataConfigurationType> types = supportToTest.getSupportedDataTypes();
+
+        /* test */
+        verify(mockedListParser).fetchTypesAsSetOrNull(pseudoTypeList);
+        assertSame(set, types);
+    }
+
+    @Test
+    void get_supported_datatypes_uses_typeListParser_and_returns_fallback_set_With_every_type_when_parser_retrns_null() {
+        /* prepare */
+        String pseudoTypeList = "value1";
+
+        SecHubDataConfigurationTypeListParser mockedListParser = mock(SecHubDataConfigurationTypeListParser.class);
+        supportToTest.typeListParser = mockedListParser;
+
+        when(mockedListParser.fetchTypesAsSetOrNull(pseudoTypeList)).thenReturn(null);
+
+        String key = PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SUPPORTED_DATATYPES;
+        addParameter(key, pseudoTypeList);
+
+        /* execute */
+        Set<SecHubDataConfigurationType> types = supportToTest.getSupportedDataTypes();
+
+        /* test */
+        verify(mockedListParser).fetchTypesAsSetOrNull(pseudoTypeList);
+        assertNotNull(types);
+        assertEquals(3, types.size());
+
+        assertTrue(types.contains(SecHubDataConfigurationType.SOURCE));
+        assertTrue(types.contains(SecHubDataConfigurationType.BINARY));
+        assertTrue(types.contains(SecHubDataConfigurationType.NONE));
+    }
+
+    @Test
+    void getStringParameterOrNull_returns_defined_value_x_when_x_defined() {
+        /* prepare */
+        String key = PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SUPPORTED_DATATYPES;
+        addParameter(key, "x");
+
+        /* execute */
+        String result = supportToTest.getStringParameterOrNull(key);
+
+        /* test */
+        assertEquals("x", result);
+
     }
 
     @Test

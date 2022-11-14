@@ -37,6 +37,9 @@ public class PDSServerConfigurationService {
     @Autowired
     PDSServerConfigurationValidator serverConfigurationValidator;
 
+    @Autowired
+    PDSConfigurationAutoFix serverConfigurationAutoFix;
+
     private PDSServerConfiguration configuration;
 
     private String storageId;
@@ -49,9 +52,13 @@ public class PDSServerConfigurationService {
             try {
                 String json = FileUtils.readFileToString(file, Charset.forName("UTF-8"));
                 PDSServerConfiguration loadedConfiguration = PDSServerConfiguration.fromJSON(json);
+
+                serverConfigurationAutoFix.autofixWhenNecessary(loadedConfiguration);
+
                 String message = serverConfigurationValidator.createValidationErrorMessage(loadedConfiguration);
                 if (message == null) {
                     configuration = loadedConfiguration;
+
                 } else {
                     LOG.error("configuration file '{}' not valid - reason: {}", file.getAbsolutePath(), message);
                 }
