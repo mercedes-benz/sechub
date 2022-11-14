@@ -21,7 +21,7 @@ USER root
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get upgrade --assume-yes && \
-    apt-get install --assume-yes wget openjdk-8-jre firefox-esr && \
+    apt-get install --assume-yes wget openjdk-11-jre firefox-esr && \
     apt-get clean
 
 # Install OWASP ZAP
