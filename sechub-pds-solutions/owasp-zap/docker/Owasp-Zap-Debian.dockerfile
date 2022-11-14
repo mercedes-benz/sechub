@@ -11,7 +11,7 @@ LABEL maintainer="SecHub FOSS Team"
 
 # Build args
 ARG OWASPZAP_VERSION="2.12.0"
-ARG OWASPZAP_CHECKSUM="7eaf340d9fcc42576c7a5572249fe0bcad6e7acd68098a7ca110e64beab46207"
+ARG OWASPZAP_SHA256SUM="7eaf340d9fcc42576c7a5572249fe0bcad6e7acd68098a7ca110e64beab46207"
 
 # Create folders & change owner of folders
 RUN mkdir --parents "/home/$USER/.ZAP/plugin"
@@ -29,7 +29,7 @@ RUN cd "$TOOL_FOLDER" && \
 	# download latest release of owasp zap
 	wget --no-verbose https://github.com/zaproxy/zaproxy/releases/download/v${OWASPZAP_VERSION}/zaproxy_${OWASPZAP_VERSION}-1_all.deb && \
 	# verify that the checksum and the checksum of the file are same
-    echo "${OWASPZAP_CHECKSUM} zaproxy_${OWASPZAP_VERSION}-1_all.deb" | sha256sum --check && \
+    echo "${OWASPZAP_SHA256SUM} zaproxy_${OWASPZAP_VERSION}-1_all.deb" | sha256sum --check && \
 	dpkg -i zaproxy_${OWASPZAP_VERSION}-1_all.deb && \
 	# remove zaproxy deb package
 	rm zaproxy_${OWASPZAP_VERSION}-1_all.deb

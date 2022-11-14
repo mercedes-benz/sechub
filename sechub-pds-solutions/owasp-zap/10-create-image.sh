@@ -3,8 +3,7 @@
 
 REGISTRY="$1"
 VERSION="$2"
-BASE_IMAGE="$3"  # optional
-DEFAULT_BASE_IMAGE="debian:11-slim"
+BASE_IMAGE="$3"
 
 usage() {
   cat - <<EOF
@@ -30,10 +29,6 @@ if [[ -z "$VERSION" ]] ; then
 fi
 echo ">> Building: $REGISTRY:$VERSION"
 
-if [[ -z "$BASE_IMAGE" ]]; then
-    BASE_IMAGE="$DEFAULT_BASE_IMAGE"
-fi
-
 BUILD_ARGS="--build-arg BASE_IMAGE=$BASE_IMAGE"
 echo ">> Base image: $BASE_IMAGE"
 
@@ -45,6 +40,20 @@ fi
 if [[ ! -z "$OWASPZAP_VERSION" ]] ; then
     echo ">> OWASP ZAP version: $OWASPZAP_VERSION"
     BUILD_ARGS+=" --build-arg OWASPZAP_VERSION=$OWASPZAP_VERSION"
+fi
+
+# Enforce OWASPZAP_SHA256SUM is defined when building custom version of find-sec-bugs
+if [[ ! -z "$OWASPZAP_VERSION" ]] ; then
+  echo ">> OWASP-ZAP version: $OWASPZAP_VERSION"
+  BUILD_ARGS+=" --build-arg OWASPZAP_VERSION=$OWASPZAP_VERSION"
+
+  if [[ -z "$OWASPZAP_SHA256SUM" ]] ; then
+    echo "FATAL: Please define sha256 checksum in OWASPZAP_SHA256SUM environment variable"
+    exit 1
+  fi
+
+  echo ">> OWASP-ZAP sha256sum: $OWASPZAP_SHA256SUM"
+  BUILD_ARGS+=" --build-arg OWASPZAP_SHA256SUM=$OWASPZAP_SHA256SUM"
 fi
 
 docker build --pull --no-cache $BUILD_ARGS \
