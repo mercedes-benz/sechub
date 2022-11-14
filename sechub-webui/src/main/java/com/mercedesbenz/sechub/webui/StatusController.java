@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.webui;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,7 @@ public class StatusController {
     @Autowired
     StatusService statusService;
 
-    @Value("${sechub.serverUrl}")
+    @Value("${sechub.serverurl}")
     private String secHubServerUrl;
 
     @GetMapping("/status")

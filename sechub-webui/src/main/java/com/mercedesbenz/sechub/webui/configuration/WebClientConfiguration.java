@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.webui.configuration;
 
 import javax.net.ssl.SSLException;

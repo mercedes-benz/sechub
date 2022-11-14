@@ -1,0 +1,11 @@
+// SPDX-License-Identifier: MIT
+# WebUI
+
+The WebUI is accessible at: http://localhost:4443/
+
+User access:
+
+user: user
+password: password
+
+WARNING: Don't use this early WebUI in production.
