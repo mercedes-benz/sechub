@@ -1,5 +1,5 @@
 {
-  "timestamp" : "2022-07-05 10:50:05.300767",
+  "timestamp" : "2022-11-07 16:05:01.860710",
   "origin" : "https://www.zaproxy.org/docs/alerts/",
   "rules" : {
     "Directory-Browsing-0" : {
@@ -50,9 +50,9 @@
       "type" : "active",
       "link" : "https://www.zaproxy.org/docs/alerts/43"
     },
-    "Vulnerable-JS-Library-(Powered-by-Retire.js)-10003" : {
+    "Vulnerable-JS-Library-10003" : {
       "id" : "10003",
-      "name" : "Vulnerable JS Library (Powered by Retire.js)",
+      "name" : "Vulnerable JS Library",
       "type" : "passive",
       "link" : "https://www.zaproxy.org/docs/alerts/10003"
     },
@@ -632,9 +632,9 @@
       "type" : "active",
       "link" : "https://www.zaproxy.org/docs/alerts/40034"
     },
-    "Hidden-File-Finder-40035" : {
+    "Hidden-File-Found-40035" : {
       "id" : "40035",
-      "name" : "Hidden File Finder",
+      "name" : "Hidden File Found",
       "type" : "active",
       "link" : "https://www.zaproxy.org/docs/alerts/40035"
     },
@@ -691,6 +691,12 @@
       "name" : "Spring4Shell",
       "type" : "active",
       "link" : "https://www.zaproxy.org/docs/alerts/40045"
+    },
+    "Text4shell-(CVE-2022-42889)-40047" : {
+      "id" : "40047",
+      "name" : "Text4shell (CVE-2022-42889)",
+      "type" : "active",
+      "link" : "https://www.zaproxy.org/docs/alerts/40047"
     },
     "Insecure-JSF-ViewState-90001" : {
       "id" : "90001",

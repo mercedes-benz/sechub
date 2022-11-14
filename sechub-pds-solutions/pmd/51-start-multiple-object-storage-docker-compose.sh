@@ -25,4 +25,4 @@ else
     echo "Starting cluster of $REPLICAS containers."
 fi
 
-docker-compose --file docker-compose_pds_pmd_cluster_object_storage.yaml up --scale pds-pmd=$REPLICAS --build --remove-orphans
+docker compose --file docker-compose_pds_pmd_cluster_object_storage.yaml up --scale pds-pmd=$REPLICAS --build --remove-orphans

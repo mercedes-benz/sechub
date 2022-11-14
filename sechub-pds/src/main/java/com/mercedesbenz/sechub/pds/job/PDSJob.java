@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.mercedesbenz.sechub.commons.model.LocalDateTimeDeserializer;
 import com.mercedesbenz.sechub.commons.model.LocalDateTimeSerializer;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 
 /**
  * Represents a PDS Job which contains information about ownership, related
@@ -84,6 +85,8 @@ public class PDSJob {
     public static final String PROPERTY_RESULT = "result";
 
     public static final String QUERY_DELETE_JOB_OLDER_THAN = "DELETE FROM PDSJob j WHERE j." + PROPERTY_CREATED + " < :cleanTimeStamp";
+
+    public static final String QUERY_FIND_JOBS_IN_STATE = "SELECT j from PDSJob j WHERE j." + PROPERTY_STATE + "= :statusState";
 
     @Id
     @GeneratedValue(generator = "UUID")

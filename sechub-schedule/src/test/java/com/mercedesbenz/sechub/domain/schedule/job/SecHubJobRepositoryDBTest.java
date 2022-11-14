@@ -194,6 +194,7 @@ public class SecHubJobRepositoryDBTest {
 
 		jobCreator.newJob().being(STARTED).createAnd().
 				   newJob().being(CANCEL_REQUESTED).createAnd().
+				   newJob().being(CANCELED).createAnd().
 				   newJob().being(ENDED).create();
 
 		ScheduleSecHubJob expectedNextJob =

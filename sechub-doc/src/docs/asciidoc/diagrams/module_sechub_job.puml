@@ -1,0 +1,27 @@
+@startuml
+' SPDX-License-Identifier: MIT
+package com.mercedesbenz.sechub.domain.schedule {
+
+    class ScheduleSecHubJob <<Entity>> {
+    }
+    
+    enum ExecutionState{
+        INITIALIZING
+        READY_TO_START
+        STARTED
+        CANCEL_REQUESTED
+        CANCELED
+        ENDED
+    }
+    
+    enum ExecutionResult{
+        NONE
+        OK
+        FAILED
+    }
+    
+    ScheduleSecHubJob o-- ExecutionState
+    ScheduleSecHubJob o-- ExecutionResult
+}
+  
+@enduml

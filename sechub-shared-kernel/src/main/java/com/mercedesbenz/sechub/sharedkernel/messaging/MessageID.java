@@ -18,11 +18,6 @@ public enum MessageID {
     SCAN_FAILED,
 
     /**
-     * Will happen because of scan has been restarted
-     */
-    SCAN_ABANDONDED,
-
-    /**
      * This message will contain full data of an created user. Secure data will be
      * only contained hashed.
      *
@@ -109,10 +104,13 @@ public enum MessageID {
     SCHEDULER_STATUS_UPDATE,
 
     /* Request job to be canceled, contains JobUUID */
-    REQUEST_JOB_CANCELATION(MessageDataKeys.JOB_CANCEL_DATA),
+    REQUEST_JOB_CANCELLATION(MessageDataKeys.JOB_CANCEL_DATA),
 
-    /* Informs about Job being canceled, contains job uuid and owner */
-    JOB_CANCELED(MessageDataKeys.JOB_CANCEL_DATA),
+    /*
+     * Informs about Job cancellation has been started and is currently running. The
+     * message contains job uuid and owner
+     */
+    JOB_CANCELLATION_RUNNING(MessageDataKeys.JOB_CANCEL_DATA),
 
     MAPPING_CONFIGURATION_CHANGED(MessageDataKeys.CONFIG_MAPPING_DATA),
 
@@ -134,9 +132,9 @@ public enum MessageID {
 
     JOB_RESULT_PURGE_FAILED(MessageDataKeys.SECHUB_UUID),
 
-    REQUEST_BATCH_JOB_STATUS(MessageDataKeys.BATCH_JOB_STATUS),
+    REQUEST_SCHEDULER_JOB_STATUS(MessageDataKeys.SCHEDULER_JOB_STATUS),
 
-    BATCH_JOB_STATUS(MessageDataKeys.BATCH_JOB_STATUS),
+    SCHEDULER_JOB_STATUS(MessageDataKeys.SCHEDULER_JOB_STATUS),
 
     /**
      * Informs that a scheduler has been started
@@ -158,7 +156,18 @@ public enum MessageID {
     /**
      * Inform that auto cleanup configuration has changed
      */
-    AUTO_CLEANUP_CONFIGURATION_CHANGED(MessageDataKeys.USER_EMAIL_ADDRESS_CHANGE_DATA);
+    AUTO_CLEANUP_CONFIGURATION_CHANGED(MessageDataKeys.USER_EMAIL_ADDRESS_CHANGE_DATA),
+
+    /**
+     * This message will be send when there was a job cancel request and all product
+     * executors which are able to trigger the cancel operation to the products have
+     * been called as well. Means: the post processing for job cancel request has
+     * been done.<br>
+     * <br>
+     *
+     * contains SecHub job UUID
+     */
+    PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE(MessageDataKeys.JOB_CANCEL_DATA);
 
     private Set<MessageDataKey<?>> unmodifiableKeys;
 

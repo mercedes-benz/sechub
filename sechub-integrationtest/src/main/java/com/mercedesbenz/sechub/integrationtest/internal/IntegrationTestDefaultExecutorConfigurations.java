@@ -60,6 +60,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
     public static final String PDS_CODESCAN_VARIANT_G = "g";
     public static final String PDS_CODESCAN_VARIANT_I = "i";
     public static final String PDS_CODESCAN_VARIANT_J = "j";
+    public static final String PDS_CODESCAN_VARIANT_K = "k";
 
     public static final String PDS_WEBSCAN_VARIANT_A = "a";
     public static final String PDS_WEBSCAN_VARIANT_B = "b";
@@ -149,6 +150,18 @@ public class IntegrationTestDefaultExecutorConfigurations {
             StorageType.REUSE_SECHUB_DATA,
             PDS_CODESCAN, defineMappingJobParameters());
 
+    /**
+     * A PDS executor configuration for code scan (generic integration test code scan results). It reuses SecHub storage/data.
+     * The {@value IntegrationTestDefaultExecutorConfigurations#JOBPARAM_PDS_KEY_FOR_VARIANTNAME} is set to {@value IntegrationTestDefaultExecutorConfigurations#PDS_CODESCAN_VARIANT_K}.
+     * <br><br>
+     * It is used inside {@link IntegrationTestDefaultProfiles#PROFILE_13_PDS_CANCELLATION profile 13}
+     */
+    public static final TestExecutorConfig PDS_V1_CODE_SCAN_K_CANCELLATION = definePDSScan(
+            PDS_CODESCAN_VARIANT_K,false,
+            PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN,
+            StorageType.REUSE_SECHUB_DATA,
+            PDS_CODESCAN, defineWaitForCancellation());
+
 
     public static final TestExecutorConfig PDS_V1_WEB_SCAN_A = definePDSScan(
                                                 PDS_WEBSCAN_VARIANT_A,false,
@@ -202,9 +215,13 @@ public class IntegrationTestDefaultExecutorConfigurations {
 
         addCheckmarxDefaultTeamIdAndPresetMappingData(parameters);
 
-        /* add team id mapping */
+        enablePDSDebugging(parameters);
 
         return parameters;
+    }
+
+    private static void enablePDSDebugging(List<TestExecutorSetupJobParam> parameters) {
+        parameters.add(new TestExecutorSetupJobParam(PARAM_KEY_PDS_DEBUG_ENABLED, "true"));
     }
 
     private static List<TestExecutorSetupJobParam> defineExcludeIncludes1JobParameters() {
@@ -213,6 +230,13 @@ public class IntegrationTestDefaultExecutorConfigurations {
         list.add(new TestExecutorSetupJobParam(PARAM_KEY_PDS_CONFIG_FILEFILTER_EXCLUDES, EXCLUDES_1));
         list.add(new TestExecutorSetupJobParam(PARAM_KEY_PDS_CONFIG_FILEFILTER_INCLUDES, INCLUDES_1));
 
+        return list;
+    }
+
+    private static List<TestExecutorSetupJobParam> defineWaitForCancellation() {
+        List<TestExecutorSetupJobParam> list = new ArrayList<>();
+        list.add(new TestExecutorSetupJobParam(PARAM_KEY_PDS_CONFIG_CANCEL_EVENT_CHECKINTERVAL_MILLISECONDS, "100"));
+        list.add(new TestExecutorSetupJobParam(PARAM_KEY_PDS_CONFIG_CANCEL_MAXIMUM_WAITTIME_SECONDS, "20"));
         return list;
     }
 

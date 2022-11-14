@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # SPDX-License-Identifier: MIT
 
-# Mock is scan output of: https://github.com/k-tamura/easybuggy
+# Mock is scan output of `easybuggy.jar` from https://github.com/k-tamura/easybuggy/releases
 # using the fellowing parameters:
 # - "findsecuritybugs.severity": "high"
 # - "findsecuritybugs.effort": "max"

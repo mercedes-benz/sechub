@@ -5,10 +5,10 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.pds.execution.PDSExecutionJobInQueueStatusEntry;
 import com.mercedesbenz.sechub.pds.execution.PDSExecutionStatus;
 import com.mercedesbenz.sechub.pds.job.PDSJob;
-import com.mercedesbenz.sechub.pds.job.PDSJobStatusState;
 
 public class PDSMonitoringTestDataUtil {
 

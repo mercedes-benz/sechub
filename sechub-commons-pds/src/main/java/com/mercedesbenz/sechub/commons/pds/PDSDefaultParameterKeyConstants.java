@@ -23,6 +23,8 @@ public class PDSDefaultParameterKeyConstants {
 
     public static final String PARAM_KEY_PDS_SCAN_TARGET_URL = "pds.scan.target.url";
 
+    public static final String PARAM_KEY_PDS_DEBUG_ENABLED = "pds.debug.enabled";
+
     /**
      * Contains the SecHub configuration model as Json
      */
@@ -44,6 +46,18 @@ public class PDSDefaultParameterKeyConstants {
     public static final String PARAM_KEY_PDS_CONFIG_FILEFILTER_INCLUDES = "pds.config.filefilter.includes";
 
     public static final String PARAM_KEY_PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED = "pds.config.script.trustall.certificates.enabled";
+
+    /**
+     * Maximum time the launcher script process will be kept alive when the PDS job
+     * has been canceled.
+     */
+    public static final String PARAM_KEY_PDS_CONFIG_CANCEL_MAXIMUM_WAITTIME_SECONDS = "pds.config.cancel.maximum.waittime.seconds";
+
+    /**
+     * The time in milliseconds PDS will check again if the launcher script process
+     * is alive or not when the PDS job has been canceled.
+     */
+    public static final String PARAM_KEY_PDS_CONFIG_CANCEL_EVENT_CHECKINTERVAL_MILLISECONDS = "pds.config.cancel.event.checkinterval.milliseconds";
 
     /* ---------------------- */
     /* Integration tests only */

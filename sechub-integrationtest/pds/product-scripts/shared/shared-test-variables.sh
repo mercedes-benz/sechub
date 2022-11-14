@@ -13,6 +13,7 @@ function dumpPDSVariables() {
     dumpVariable "PDS_JOB_HAS_EXTRACTED_BINARIES"
     dumpVariable "PDS_JOB_METADATA_FILE"
     dumpVariable "PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED"
+    dumpVariable "PDS_JOB_EVENTS_FOLDER"
 }
  
 function dumpVariable(){

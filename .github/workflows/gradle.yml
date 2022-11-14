@@ -18,17 +18,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Set up JDK 1.8
+      - name: Set up JDK 11
         uses: actions/setup-java@v3
         with:
-          java-version: 8
-          distribution: adopt
+          java-version: 11
+          distribution: temurin
           cache: gradle
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: 1.18.1
-      - uses: actions/cache@v3.0.8
+          go-version: 1.19.1
+      - uses: actions/cache@v3.0.11
         with:
           path: |
             ~/.cache/go-build
@@ -44,7 +44,7 @@ jobs:
         run: ./gradlew :sechub-cli:buildGo :sechub-cli:testGo
 
       - name: Build Server, DAUI and generate OpenAPI file
-        run: ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-integrationtest:test -x :sechub-cli:build
+        run: ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI buildPDSToolsCLI -x :sechub-integrationtest:test -x :sechub-cli:build --parallel
 
       - name: Generate and build API Java
         run: ./gradlew :sechub-api-java:buildAPIJava
@@ -83,6 +83,13 @@ jobs:
         with:
           name: sechub-pds
           path: sechub-pds/build/libs
+          
+      - name: Archive pds tools artifacts
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: sechub-pds-tools
+          path: sechub-pds-tools/build/libs
 
       - name: Archive developer tools artifacts
         if: always()

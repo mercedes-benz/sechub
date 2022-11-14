@@ -36,6 +36,16 @@ public class CheckmarxWrapperScanContext {
         return mockDataIdentifierFactory.createMockDataIdentifier(ScanType.CODE_SCAN, configuration);
     }
 
+    /**
+     * Creates a ZIP file of extracted sources and returns an input stream to this
+     * file. When the path of the extracted source folder is empty an
+     * {@link IllegalStateException} is thrown. If the extracted folder does not
+     * exist, an {@link FileNotFoundException} is thrown. If the folder exists, but
+     * there are no files inside, an {@link IllegalStateException} will occur.
+     *
+     * @return input stream, never <code>null</code>
+     * @throws IOException, IllegalStateException
+     */
     public InputStream createSourceCodeZipFileInputStream() throws IOException {
         String folderAsString = environment.getPdsJobExtractedSourceFolder();
         if (folderAsString == null) {
@@ -66,12 +76,18 @@ public class CheckmarxWrapperScanContext {
         return teamId;
     }
 
+    /**
+     * Resolves preset id for new projects. If <code>null</code>, Checkmarx will use
+     * the default preset.
+     *
+     * @return preset id or <code>null</code>
+     */
     public Long getPresetIdForNewProjects() {
         String projectId = getProjectId();
 
         String presetId = presetIdProvider.getIdForName(projectId);
         if (presetId == null) {
-            throw new IllegalStateException("Was not able to determine the preset id for project: " + projectId);
+            return null;
         }
         return Long.valueOf(presetId);
     }

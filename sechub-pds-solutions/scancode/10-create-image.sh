@@ -1,45 +1,48 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: MIT
 
+cd `dirname $0`
+
 REGISTRY="$1"
 VERSION="$2"
-BASE_IMAGE="$3"  # optional
-DEFAULT_BASE_IMAGE="debian:11-slim"
+BASE_IMAGE="$3"
 
 usage() {
   cat - <<EOF
-usage: $0 <docker registry> <version tag> [<base image>]
+
+usage: $0 <docker registry> <version tag> <base image>
 Builds a docker image of SecHub PDS with Scancode
 for <docker registry> with tag <version tag>.
-Optional: <base image> ; defaults to $DEFAULT_BASE_IMAGE
+Required: <base image> ; for example ghcr.io/mercedes-benz/sechub/pds-base:v0.32.1
 
 Additionally these environment variables can be defined:
-- PDS_VERSION - version of SecHub PDS to use. E.g. 0.27.0
-- SCANCODE_VERSION - Scancode version to use. E.g. 30.1.0
+- SCANCODE_VERSION - Scancode version to use. E.g. 31.2.1
 EOF
 }
 
+FAILED=false
 if [[ -z "$REGISTRY" ]] ; then
   echo "Please provide a docker registry server as 1st parameter."
-  exit 1
+  FAILED=true
 fi
 
 if [[ -z "$VERSION" ]] ; then
   echo "Please provide a version for the container as 2nd parameter."
-  exit 1
+  FAILED=true
 fi
 
 if [[ -z "$BASE_IMAGE" ]]; then
-    BASE_IMAGE="$DEFAULT_BASE_IMAGE"
+  echo "Please provide a base image as 3rd parameter."
+  FAILED=true
+fi
+
+if $FAILED ; then
+  usage
+  exit 1
 fi
 
 BUILD_ARGS="--build-arg BASE_IMAGE=$BASE_IMAGE"
 echo ">> Base image: $BASE_IMAGE"
-
-if [[ ! -z "$PDS_VERSION" ]] ; then
-    echo ">> SecHub PDS version: $PDS_VERSION"
-    BUILD_ARGS+=" --build-arg PDS_VERSION=$PDS_VERSION"
-fi
 
 if [[ ! -z "$SCANCODE_VERSION" ]] ; then
     echo ">> Scancode version: $SCANCODE_VERSION"

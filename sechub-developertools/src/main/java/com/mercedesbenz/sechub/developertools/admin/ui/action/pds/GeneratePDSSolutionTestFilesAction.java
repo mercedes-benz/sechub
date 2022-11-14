@@ -16,7 +16,7 @@ import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.developertools.admin.ui.ConfigurationSetup;
 import com.mercedesbenz.sechub.developertools.admin.ui.UIContext;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.AbstractUIAction;
-import com.mercedesbenz.sechub.developertools.pds.PDSSolutionTestFilesGenerator;
+import com.mercedesbenz.sechub.pds.tools.generator.PDSSolutionTestFilesGenerator;
 
 public class GeneratePDSSolutionTestFilesAction extends AbstractUIAction {
 
@@ -58,7 +58,7 @@ public class GeneratePDSSolutionTestFilesAction extends AbstractUIAction {
         try {
             PDSSolutionTestFilesGenerator pdsSolutionGenerator = new PDSSolutionTestFilesGenerator();
             pdsSolutionGenerator.setOutputHandler(getContext().getOutputUI());
-            pdsSolutionGenerator.generate(file.getAbsolutePath(), selectedScanType);
+            pdsSolutionGenerator.generate(file.getAbsolutePath(), selectedScanType, null);
 
             outputAsTextOnSuccess("PDS solution test files has been created");
         } catch (Exception ex) {

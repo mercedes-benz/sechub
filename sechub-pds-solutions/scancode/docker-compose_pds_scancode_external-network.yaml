@@ -5,7 +5,7 @@ services:
     pds-scancode:
         build:
             args:
-                - BASE_IMAGE=debian:11-slim
+                - BASE_IMAGE=${BASE_IMAGE}
             context: docker/
             dockerfile: ScanCode-Debian.dockerfile
         container_name: pds-scancode
@@ -14,6 +14,7 @@ services:
             - ./docker/scripts:/scripts
         env_file:
             - .env
+            - .env-single
         networks:
             - "sechub"
 

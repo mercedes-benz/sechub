@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mercedesbenz.sechub.pds.PDSAPIConstants;
 import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
-import com.mercedesbenz.sechub.pds.usecase.UseCaseUserCancelsJob;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseUserCreatesJob;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseUserFetchesJobMessages;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseUserFetchesJobResult;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseUserFetchesJobStatus;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseUserMarksJobReadyToStart;
+import com.mercedesbenz.sechub.pds.usecase.UseCaseUserRequestsJobCancellation;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseUserUploadsJobData;
 
 /**
@@ -57,7 +57,7 @@ public class PDSJobRestController {
     private PDSGetJobMessagesService jobMessagesService;
 
     @Autowired
-    private PDSCancelJobService cancelJobService;
+    private PDSRequestJobCancellationService requestJobCancellationService;
 
     @Validated
     @RequestMapping(path = "create", method = RequestMethod.POST)
@@ -91,10 +91,10 @@ public class PDSJobRestController {
     /* @formatter:off */
     @Validated
     @RequestMapping(path = "{jobUUID}/cancel", method = RequestMethod.PUT)
-    @UseCaseUserCancelsJob(@PDSStep(name="rest call",description = "User cancels a job",number=1))
+    @UseCaseUserRequestsJobCancellation(@PDSStep(name="rest call",description = "User cancels a job",number=1))
     public void cancelJob(
                 @PathVariable("jobUUID") UUID jobUUID) {
-        cancelJobService.cancelJob(jobUUID);
+        requestJobCancellationService.requestJobCancellation(jobUUID);
     }
     /* @formatter:on */
 

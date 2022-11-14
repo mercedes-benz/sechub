@@ -4,7 +4,7 @@ include::documents/gen/server-version.adoc[]
 
 include::documents/config.adoc[]
 
-= image:sechub-logo.png[sechub] SecHub Quickstart Guide
+= image:sechub-logo.png[link="{webPage}"] SecHub Quickstart Guide
 
 include::documents/shared/about_sechub.adoc[]
 
@@ -29,15 +29,15 @@ The following topics are covered:
 
 === Requirements
 
-* Java SDK
-* Go
+* Java JDK 11+
+* Go 1.16+
 * Git
 * cURL
 * jq
 
 [NOTE]
 --
-SecHub is compatible with Java 8 and will continue to do so. We aim to support all long term support versions (LTS) of the JDK: Java 8, 11 and 17 when released.
+Only long term support (LTS) versions of Java are supported.
 
 SecHub can be build and runs with https://openjdk.java.net/groups/hotspot/[OpenJDK Hotspot] and https://www.eclipse.org/openj9/[Eclipse OpenJ9].
 --

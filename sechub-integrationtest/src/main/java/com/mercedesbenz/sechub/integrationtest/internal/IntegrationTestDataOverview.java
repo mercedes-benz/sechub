@@ -8,6 +8,9 @@ import com.mercedesbenz.sechub.integrationtest.scenario12.Scenario12;
 import com.mercedesbenz.sechub.integrationtest.scenario13.Scenario13;
 import com.mercedesbenz.sechub.integrationtest.scenario14.Scenario14;
 import com.mercedesbenz.sechub.integrationtest.scenario15.Scenario15;
+import com.mercedesbenz.sechub.integrationtest.scenario16.Scenario16;
+import com.mercedesbenz.sechub.integrationtest.scenario17.Scenario17;
+import com.mercedesbenz.sechub.integrationtest.scenario18.Scenario18;
 import com.mercedesbenz.sechub.integrationtest.scenario2.Scenario2;
 import com.mercedesbenz.sechub.integrationtest.scenario3.Scenario3;
 import com.mercedesbenz.sechub.integrationtest.scenario4.Scenario4;
@@ -40,6 +43,9 @@ import com.mercedesbenz.sechub.integrationtest.scenario9.Scenario9;
  * <li>{@link Scenario13 Scenario 13} - PDS scenario for SPDX license scan testing. 1 user, 1 project. Project is assigned to {@link IntegrationTestDefaultProfiles#PROFILE_7_PDS_WEBSCAN Profile 7} (PDS code scan SARIF) and {@link IntegrationTestDefaultProfiles#PROFILE_9_PDS_LICENSESCAN_SPDX Profile 9} (PDS license scan SPDX)</li>
  * <li>{@link Scenario14 Scenario 14} - PDS scenario for testing binary and source code data structure handling. 1 user, 1 project. Project is assigned to {@link IntegrationTestDefaultProfiles#PROFILE_2_PDS_CODESCAN Profile 2}</li>
  * <li>{@link Scenario15 Scenario 15} - PDS scenario for testing include and exclude file filtering. 1 user, 1 project. Project is assigned to {@link IntegrationTestDefaultProfiles#PROFILE_10_PDS_CODESCAN_INCLUDES_EXCLUDES Profile 10}</li>
+ * <li>{@link Scenario16 Scenario 16} - PDS scenario for testing mapping. 1 user, 1 project. Project is assigned to {@link IntegrationTestDefaultProfiles#PROFILE_11_PDS_CODESCAN_MAPPING Profile 11}</li>
+ * <li>{@link Scenario17 Scenario 17} - PDS scenario for testing PDS checkmarx wrapper. 1 user, 1 project. Project is assigned to {@link IntegrationTestDefaultProfiles#PROFILE_12_PDS_CHECKMARX_INTEGRATIONTEST Profile 12}</li>
+ * <li>{@link Scenario18 Scenario 18} - PDS scenario for testing PDS cancellation. 1 user, 1 project. Project is assigned to {@link IntegrationTestDefaultProfiles#PROFILE_13_PDS_CANCELLATION Profile 13}</li>
  * </ul>
  * <b3>Profiles</h3>
  * <ul>
@@ -53,6 +59,9 @@ import com.mercedesbenz.sechub.integrationtest.scenario9.Scenario9;
  * <li>{@link IntegrationTestDefaultProfiles#PROFILE_8_PDS_WEBSCAN_SARIF Profile 8} - PDS web scan SARIF</li>
  * <li>{@link IntegrationTestDefaultProfiles#PROFILE_9_PDS_LICENSESCAN_SPDX Profile 9} - PDS license scan SPDX</li>
  * <li>{@link IntegrationTestDefaultProfiles#PROFILE_10_PDS_CODESCAN_INCLUDES_EXCLUDES Profile 10} - PDS code scan with include and exclude settings</li>
+ * <li>{@link IntegrationTestDefaultProfiles#PROFILE_11_PDS_CODESCAN_MAPPING Profile 11} - PDS code scan for testing sechub mapping reuse</li>
+ * <li>{@link IntegrationTestDefaultProfiles#PROFILE_12_PDS_CHECKMARX_INTEGRATIONTEST Profile 12} - PDS code scan for checkmarx integration testing</li>
+ * <li>{@link IntegrationTestDefaultProfiles#PROFILE_13_PDS_CANCELLATION Profile 13} - PDS code scan for cancellation roundtrip testing (sechub-pds-launcherscript-pds-sechub)</li>
  * </ul>
  * @author Albert Tregnaghi
  *

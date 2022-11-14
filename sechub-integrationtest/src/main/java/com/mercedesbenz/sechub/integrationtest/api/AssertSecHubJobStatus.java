@@ -63,9 +63,9 @@ public class AssertSecHubJobStatus {
         return this;
     }
 
-    public AssertSecHubJobStatus enablePDSAutoDumpOnErrorsForSecHubJob(UUID sechubJobUUID) {
+    public AssertSecHubJobStatus enablePDSAutoDumpOnErrorsForSecHubJob() {
         this.autoDumper.enablePDSAutoDumpOnErrorsForSecHubJob();
-        this.autoDumper.setSecHubJobUUID(sechubJobUUID);
+        this.autoDumper.setSecHubJobUUID(this.getJobUUID());
         return this;
     }
 

@@ -115,8 +115,10 @@ NOTE: When no {sechub} configuration model is defined for the `PDS` job, the tra
 |PDS_JOB_WORKSPACE_LOCATION         | The workspace job root location 
 |PDS_JOB_RESULT_FILE                | The absolute path to the result file _(this file contains security findings)_.
 |PDS_JOB_UUID                       | The UUID of the current running PDS job.
+[[table-link-pds-launcher-script-variable-events]]
+|PDS_JOB_EVENTS_FOLDER              | The absolute path to the user <<section-config-events,events folder>>.
 [[table-link-pds-launcher-script-variable-messages]]
-|PDS_JOB_USER_MESSAGES_FOLDER       a| The absolute path to the user <<section-config-messaging,messages folder>>.
+|PDS_JOB_USER_MESSAGES_FOLDER      a| The absolute path to the user <<section-config-messaging,messages folder>>.
 
 Every text file which is found inside this folder will be returned to user inside reports and status.
 
@@ -190,8 +192,27 @@ Following files are reserved
   `$PDS_JOB_WORKSPACE_LOCATION/output/result.txt`.
   The path is represented by the variable `PDS_JOB_RESULT_FILE`
 
+[[section-config-events]]
+==== Events
+Inside the folder defined in <<table-link-pds-launcher-script-variable-events,PDS_JOB_EVENTS_FOLDER>> the PDS
+writes events as json files inside.
+
+Inside the event json file some standard information are always available (event type, creation time stamp ) and 
+some dedicated, event specific details.
+
+===== Cancel requested
+When a file called `cancel_requested.json` is inside this folder, the PDS informs the script, that a cancel operation is ongoing.
+Depending on the {pds} setup, the {pds} cancel service will wait a dedicated time for the script to finish. The time for the check operations and te 
+amount of seconds the {pds} will wait for the script is contained in JSON.
+
+If a {pds} script (or a wrapper application executed by the script) has no special cleanup or follow up tasks on a cancel operation, the event can be ignored.
+But if there are operations to do (e.g. trigger/route the cancel to a 3rd party system) the script or the wrapper should check periodically if the 
+event file is created. When the file exists, the necessary steps should be done by script (or wrapper application).
+
+
+
 [[section-config-messaging]]
-==== Messaging
+==== Product messages
 We can write text files into the folder defined in <<table-link-pds-launcher-script-variable-messages,PDS_JOB_USER_MESSAGES_FOLDER>> 
 to send product messages back to users.
 

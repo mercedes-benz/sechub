@@ -1,17 +1,21 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: MIT
 
+source "${HELPER_FOLDER}/message.sh"
+
 # IMPORTANT: Keep the space in front and back of the list
 output_formats=" json json-pp spdx-tv spdx-rdf spdx-json "
 output_format="--spdx-tv"
 convert_output_to_spdx_json=true
 license_score="0"
 scancode_processes="1"
+file_scan_timeout="120"
+diagnostics_file="diagnostics.json"
 
 # make sure additional options is never empty
 # otherwise scancode will have problems parsing the
 # parameters and fail
-additional_options=""
+options=""
 
 echo ""
 echo "------"
@@ -19,8 +23,17 @@ echo "System"
 echo "------"
 echo ""
 
+# redirect from stderr to stdout. Extractcode writes its version number to stderr.
+extractcode_version=$( extractcode --version 2>&1 )
+
+# redirect from stderr to stdout. Python writes its version number to stderr.
+python_version=$( python3 --version 2>&1 )
+
+printf "%-26s %s\n" "Python:" "$python_version"
 printf "%-26s %s\n" "PDS version:" "$PDS_VERSION"
-printf "%-26s %s\n" "Scancode-Toolkit version:" "$SCANCODE_VERSION"
+printf "Scancode-Toolkit version:\n\n" 
+scancode --version
+printf "\n\n%-26s %s\n" "Extractcode version:" "$extractcode_version"
 
 echo ""
 echo "---------"
@@ -69,7 +82,7 @@ echo "User provided number of scancode processes: $SCANCODE_PROCESSES"
 if [[ "$SCANCODE_PROCESSES" -ge 1 ]]
 then
     scancode_processes="$SCANCODE_PROCESSES"
-    additional_options="$additional_options --processes $scancode_processes"
+    options="$options --processes $scancode_processes"
 fi
 
 echo "User provided license score: $SCANCODE_LICENSE_SCORE"
@@ -78,7 +91,17 @@ then
     if [[ "$SCANCODE_LICENSE_SCORE" -le 100 && "$SCANCODE_LICENSE_SCORE" -ge 0 ]]
     then
         license_score="$SCANCODE_LICENSE_SCORE"
-        additional_options="$additional_options --license-score $license_score"
+        options="$options --license-score $license_score"
+    fi
+fi
+
+echo "User provided timeout: $SCANCODE_TIMEOUT"
+if [[ -n "$SCANCODE_TIMEOUT" ]]
+then
+    if [[ "$SCANCODE_TIMEOUT" -ge 1 ]]
+    then
+        file_scan_timeout="$SCANCODE_TIMEOUT"
+        options="$options --timeout $file_scan_timeout"
     fi
 fi
 
@@ -94,9 +117,44 @@ then
 
     if [[ "$given_output_format" != "spdx-json" ]]
     then
-        convert_output_to_spdx_json=false
+        convert_output_to_spdx_json="false"
         output_format="--$given_output_format"
     fi 
+fi
+
+if [[ "$SCANCODE_SCAN_COPYRIGHT" == "true" ]]
+then
+    options="$options --copyright"
+fi
+
+if [[ "$SCANCODE_SCAN_LICENSE" == "true" ]]
+then
+    options="$options --license"
+fi
+
+if [[ "$SCANCODE_SCAN_PACKAGE" == "true" ]]
+then
+    options="$options --package"
+fi
+
+if [[ "$SCANCODE_SCAN_EMAIL" == "true" ]]
+then
+    options="$options --email"
+fi
+
+if [[ "$SCANCODE_SCAN_URL" == "true" ]]
+then
+    options="$options --url"
+fi
+
+if [[ "$SCANCODE_SCAN_INFO" == "true" ]]
+then
+    options="$options --info"
+fi
+
+if [[ "$SCANCODE_SCAN_DIAGNOSTICS" == "true" ]]
+then
+    options="$options --json $diagnostics_file"
 fi
 
 echo ""
@@ -107,7 +165,8 @@ echo ""
 
 echo "Scancode processes: $scancode_processes"
 echo "Minimum license score: $license_score"
-echo "Additional options: $additional_options"
+echo "Timeout: $file_scan_timeout"
+echo "Options: $options"
 echo "Output format: $output_format"
 echo ""
 
@@ -118,17 +177,22 @@ if [[ "$extractcode_enabled" == "true" ]]
 then
   echo "Running extractcode"
   # `2>&1` -> redirect the verbose output from standard error to standard out
-  "$TOOL_FOLDER/scancode-toolkit-$SCANCODE_VERSION/extractcode" --verbose $extracted_folder 2>&1
+  extractcode --verbose "$extracted_folder" 2>&1
 fi
 
 # `2>&1` -> redirect the verbose output from standard error to standard out
-"$TOOL_FOLDER/scancode-toolkit-$SCANCODE_VERSION/scancode" $additional_options --verbose --strip-root --copyright --license --package --email --url --info $output_format $spdx_file $extracted_folder 2>&1
+scancode $options --verbose --strip-root $output_format $spdx_file "$extracted_folder" 2>&1
 
 echo ""
 echo "----------------"
 echo "Preparing result"
 echo "----------------"
 echo ""
+
+if [[ "$SCANCODE_SCAN_DIAGNOSTICS" == "true" ]]
+then
+    mv "$diagnostics_file" "${PDS_JOB_USER_MESSAGES_FOLDER}/INFO_message_$(date +%Y-%m-%d_%H.%M.%S_%N).txt"
+fi
 
 if [[ -f "$spdx_file" ]]
 then
@@ -138,12 +202,12 @@ then
         spdx_json_file="$PDS_JOB_RESULT_FILE.spdx.json"
 
         # use the SPDX tool converter to convert the SPDX tag-value to SPDX JSON
-        time java -jar "$TOOL_FOLDER/tools-java-$SPDX_TOOL_VERISON-jar-with-dependencies.jar" Convert "$spdx_file" "$spdx_json_file"
+        java -jar "$TOOL_FOLDER/tools-java-$SPDX_TOOL_VERISON-jar-with-dependencies.jar" Convert "$spdx_file" "$spdx_json_file"
         mv "$spdx_json_file" "$PDS_JOB_RESULT_FILE"
     else
         echo "Moving file"
         mv "$PDS_JOB_RESULT_FILE.spdx" "$PDS_JOB_RESULT_FILE"
     fi
 else
-    echo "No findings"
+    warnMessage "No findings"
 fi

@@ -20,14 +20,14 @@ import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.AdapterProfiles;
 import com.mercedesbenz.sechub.adapter.AdapterRuntimeContext;
 import com.mercedesbenz.sechub.adapter.AdapterRuntimeContext.ExecutionType;
-import com.mercedesbenz.sechub.adapter.pds.data.PDSJobCreateResult;
-import com.mercedesbenz.sechub.adapter.pds.data.PDSJobData;
-import com.mercedesbenz.sechub.adapter.pds.data.PDSJobParameterEntry;
-import com.mercedesbenz.sechub.adapter.pds.data.PDSJobStatus;
-import com.mercedesbenz.sechub.adapter.pds.data.PDSJobStatus.PDSAdapterJobStatusState;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationType;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobCreateResult;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobData;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobParameterEntry;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatus;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 
 /**
  * This component is able to handle PDS API V1
@@ -117,7 +117,9 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
                 config.getTimeOutInMilliseconds());
         /* @formatter:on */
 
-        while (!jobEnded && isNotTimeout(config, started)) {
+        StateFulTimeOutCheck timeOutCheck = new StateFulTimeOutCheck();
+
+        while (!jobEnded && timeOutCheck.isNotTimeout(config, started)) {
 
             count++;
 
@@ -130,14 +132,15 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
             /* see PDSJobStatusState.java */
             jobstatus = getJobStatus(context);
 
-            PDSAdapterJobStatusState state = jobstatus.state;
+            PDSJobStatusState state = jobstatus.state;
             switch (state) {
             case DONE:
                 jobEnded = true;
                 break;
             case FAILED:
-                throw asAdapterException("PDS job execution failed", config);
+                throw asAdapterException("PDS job execution failed: TimeOut=" + timeOutCheck.wasTimeOut() + ",JobEnded=" + jobEnded, config);
             case CANCELED:
+            case CANCEL_REQUESTED:
                 throw asAdapterCanceledByUserException(config);
             default:
                 // just do nothing else
@@ -151,7 +154,8 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
             try {
                 Thread.sleep(timeToWaitForNextCheckOperationInMilliseconds);
             } catch (InterruptedException e) {
-                throw new AdapterException(getAdapterLogId(null), "Execution thread was interrupted");
+                throw new AdapterException(getAdapterLogId(null),
+                        "Execution thread was interrupted. Type:" + context.getRuntimeContext().getType() + ", Thread was:" + Thread.currentThread().getName());
             }
 
         }
@@ -164,8 +168,17 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
 
     }
 
-    private boolean isNotTimeout(PDSAdapterConfig config, long started) {
-        return calculateElapsedTime(started) < config.getTimeOutInMilliseconds();
+    private class StateFulTimeOutCheck {
+        boolean stillTimeLeft = true;
+
+        boolean isNotTimeout(PDSAdapterConfig config, long started) {
+            stillTimeLeft = calculateElapsedTime(started) < config.getTimeOutInMilliseconds();
+            return stillTimeLeft;
+        }
+
+        boolean wasTimeOut() {
+            return !stillTimeLeft;
+        }
     }
 
     private long calculateElapsedTime(long started) {
@@ -294,7 +307,14 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         LOG.info("Start {} uploading for pds job: {} - sechub: {}", type, pdsJobUUID, secHubTraceId);
 
         String checksum = fetchChecksumOrNull(data, type);
-        uploadSupport.upload(type, context, data, checksum);
+
+        Long fileSize = fetchFileSizeOrNull(data, type);
+        String fileSizeAsString = null;
+        if (fileSize != null) {
+            fileSizeAsString = "" + fileSize;
+        }
+
+        uploadSupport.upload(type, context, data, checksum, fileSizeAsString);
 
         /* after this - mark file upload done - at least for debugging */
         metaData.setValue(sourceUploadMetaDataKey, true);
@@ -323,6 +343,17 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         }
     }
 
+    private Long fetchFileSizeOrNull(PDSAdapterConfigData data, SecHubDataConfigurationType type) {
+        switch (type) {
+        case BINARY:
+            return data.getBinariesTarFileSizeInBytesOrNull();
+        case SOURCE:
+            return data.getSourceCodeZipFileSizeInBytesOrNull();
+        default:
+            throw new IllegalArgumentException("scan type: " + type + " is not supported!");
+        }
+    }
+
     private String createUploadMetaDataKey(UUID pdsJobUUID, SecHubDataConfigurationType type) {
         switch (type) {
         case BINARY:
@@ -346,8 +377,8 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
             return handleExecutionTypeInitial(context, runtimeContext);
         case RESTART:
             return handleExecutionTypeRestart(context, runtimeContext);
-        case STOP:
-            return handleExecutionTypeStop(context, runtimeContext);
+        case CANCEL:
+            return handleExecutionTypeCancel(context, runtimeContext);
         default:
             throw new IllegalStateException("the execution type: " + executionType + " is not supported");
         }
@@ -369,7 +400,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         if (pdsJobUUID != null && !pdsJobUUID.isEmpty()) {
             LOG.debug("Restart in progress, try to reuse PDS job: {}", pdsJobUUID);
 
-            PDSAdapterJobStatusState currentPdsJobState = null;
+            PDSJobStatusState currentPdsJobState = null;
 
             /* check job status */
             try {
@@ -424,18 +455,18 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         return NO_EXISTING_ADAPTER_EXECUTION_RESULT;
     }
 
-    private AdapterExecutionResult handleExecutionTypeStop(PDSContext context, AdapterRuntimeContext runtimeContext) throws AdapterException {
+    private AdapterExecutionResult handleExecutionTypeCancel(PDSContext context, AdapterRuntimeContext runtimeContext) throws AdapterException {
         AdapterMetaData metaData = runtimeContext.getMetaData();
         String pdsJobUUID = metaData.getValueAsStringOrNull(PDS_JOB_UUID);
 
         if (pdsJobUUID == null || pdsJobUUID.isEmpty()) {
-            LOG.error("PDS job uuid was :{}, so stop not possible.", pdsJobUUID);
+            LOG.error("PDS job uuid from adapter meta data was :{}, so stop not possible.", pdsJobUUID);
             throw asAdapterException("PDS job uuid not set, cannot cancel", context);
         }
         context.setPDSJobUUID(UUID.fromString(pdsJobUUID));
         cancelJob(context);
 
-        return new AdapterExecutionResult("");
+        return AdapterExecutionResult.createCancelResult();
     }
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */

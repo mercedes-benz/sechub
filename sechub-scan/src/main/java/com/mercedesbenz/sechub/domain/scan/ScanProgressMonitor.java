@@ -1,54 +1,53 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan;
 
-import com.mercedesbenz.sechub.sharedkernel.Abandonable;
+import java.util.UUID;
+
 import com.mercedesbenz.sechub.sharedkernel.ProgressMonitor;
-import com.mercedesbenz.sechub.sharedkernel.messaging.BatchJobMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageSynchronousResult;
 import com.mercedesbenz.sechub.sharedkernel.messaging.IsSendingSyncMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
+import com.mercedesbenz.sechub.sharedkernel.messaging.SchedulerJobMessage;
 
-public class ScanProgressMonitor implements ProgressMonitor, Abandonable {
+public class ScanProgressMonitor implements ProgressMonitor {
 
     private DomainMessageService eventBus;
-    private long batchJobId;
+    private UUID sechubJobUUID;
 
-    ScanProgressMonitor(DomainMessageService eventBus, long batchJobId) {
+    ScanProgressMonitor(DomainMessageService eventBus, UUID sechubJobUUID) {
         this.eventBus = eventBus;
-        this.batchJobId = batchJobId;
+        this.sechubJobUUID = sechubJobUUID;
     }
 
     @Override
     public boolean isCanceled() {
-        BatchJobMessage jobStatusRepsonse = sendRequestBatchJobStatusRequestSynchron();
-        return jobStatusRepsonse.isCanceled();
+        SchedulerJobMessage jobStatusResponse = sendRequestBatchJobStatusRequestSynchron();
+        /*
+         * we accept both states here - for the progress it does not matter: it is
+         * canceled
+         */
+        return jobStatusResponse.isCancelRequested() || jobStatusResponse.isCanceled();
     }
 
-    @Override
-    public boolean isAbandoned() {
-        BatchJobMessage jobStatusRepsonse = sendRequestBatchJobStatusRequestSynchron();
-        return jobStatusRepsonse.isAbandoned();
-    }
-
-    @IsSendingSyncMessage(MessageID.REQUEST_BATCH_JOB_STATUS)
-    protected BatchJobMessage sendRequestBatchJobStatusRequestSynchron() {
-        DomainMessage request = new DomainMessage(MessageID.REQUEST_BATCH_JOB_STATUS);
-        BatchJobMessage statusRequestMessage = new BatchJobMessage();
-        statusRequestMessage.setBatchJobId(batchJobId);
-        request.set(MessageDataKeys.BATCH_JOB_STATUS, statusRequestMessage);
+    @IsSendingSyncMessage(MessageID.REQUEST_SCHEDULER_JOB_STATUS)
+    protected SchedulerJobMessage sendRequestBatchJobStatusRequestSynchron() {
+        DomainMessage request = new DomainMessage(MessageID.REQUEST_SCHEDULER_JOB_STATUS);
+        SchedulerJobMessage statusRequestMessage = new SchedulerJobMessage();
+        statusRequestMessage.setSecHubJobUUID(sechubJobUUID);
+        request.set(MessageDataKeys.SCHEDULER_JOB_STATUS, statusRequestMessage);
 
         /* ask for status */
         DomainMessageSynchronousResult response = eventBus.sendSynchron(request);
-        BatchJobMessage jobStatusRepsonse = response.get(MessageDataKeys.BATCH_JOB_STATUS);
+        SchedulerJobMessage jobStatusRepsonse = response.get(MessageDataKeys.SCHEDULER_JOB_STATUS);
         return jobStatusRepsonse;
     }
 
     @Override
     public String getId() {
-        return "" + batchJobId;
+        return "" + sechubJobUUID;
     }
 
 }

@@ -21,13 +21,15 @@ import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationType;
 
 public class PDSUploadSupport {
 
-    public void upload(SecHubDataConfigurationType dataType, PDSContext context, PDSAdapterConfigData data, String checkSum) throws AdapterException {
-        String uploadSourceCodeUrl = context.getUrlBuilder().buildUpload(context.getPdsJobUUID(), FILENAME_SOURCECODE_ZIP);
+    public void upload(SecHubDataConfigurationType dataType, PDSContext context, PDSAdapterConfigData data, String checkSum, String fileSizeAsString)
+            throws AdapterException {
+        String uploadSourceCodeUrl = context.getUrlBuilder().buildUpload(context.getPdsJobUUID(), resolveUploadFileName(dataType));
         RestOperations restTemplate = context.getRestOperations();
 
         // see https://www.baeldung.com/spring-rest-template-multipart-upload
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        headers.set(FILE_SIZE_HEADER_FIELD_NAME, fileSizeAsString);
 
         Resource resource = fetchResource(dataType, context, data);
 
@@ -44,16 +46,35 @@ public class PDSUploadSupport {
     }
 
     private Resource fetchResource(SecHubDataConfigurationType dataType, PDSContext context, PDSAdapterConfigData data) throws AdapterException {
-        InputStream zipInputstream = null;
+        String fileName = resolveUploadFileName(dataType);
+        InputStream zipInputstream = resolveInputStream(dataType, context, data);
+
+        return new MultipartInputStreamFileResource(zipInputstream, fileName);
+    }
+
+    private String resolveUploadFileName(SecHubDataConfigurationType type) {
         String fileName = null;
+        switch (type) {
+        case BINARY:
+            fileName = FILENAME_BINARIES_TAR;
+            break;
+        case SOURCE:
+            fileName = FILENAME_SOURCECODE_ZIP;
+            break;
+        default:
+            throw new IllegalStateException("unsupported data type:" + type);
+        }
+        return fileName;
+    }
+
+    private InputStream resolveInputStream(SecHubDataConfigurationType dataType, PDSContext context, PDSAdapterConfigData data) throws AdapterException {
+        InputStream zipInputstream = null;
         switch (dataType) {
         case BINARY:
             zipInputstream = data.getBinaryTarFileInputStreamOrNull();
-            fileName = FILENAME_SOURCECODE_ZIP;
             break;
         case SOURCE:
             zipInputstream = data.getSourceCodeZipFileInputStreamOrNull();
-            fileName = FILENAME_BINARIES_TAR;
             break;
         default:
             throw new IllegalStateException("unsupported data type:" + dataType);
@@ -61,7 +82,7 @@ public class PDSUploadSupport {
         if (zipInputstream == null) {
             throw context.asAdapterException("Input stream for " + dataType + " file is null!");
         }
-        return new MultipartInputStreamFileResource(zipInputstream, fileName);
+        return zipInputstream;
     }
 
 }

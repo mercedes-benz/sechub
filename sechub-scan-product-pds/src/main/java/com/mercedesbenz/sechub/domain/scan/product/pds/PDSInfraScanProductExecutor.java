@@ -9,11 +9,9 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
-import com.mercedesbenz.sechub.adapter.pds.PDSAdapter;
 import com.mercedesbenz.sechub.adapter.pds.PDSInfraScanConfig;
 import com.mercedesbenz.sechub.adapter.pds.PDSInfraScanConfigImpl;
 import com.mercedesbenz.sechub.adapter.pds.PDSMetaDataID;
@@ -22,30 +20,17 @@ import com.mercedesbenz.sechub.domain.scan.InfraScanNetworkLocationProvider;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataAdapterConfigurationStrategy;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetRegistry.NetworkTargetInfo;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
-import com.mercedesbenz.sechub.domain.scan.product.AbstractProductExecutor;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 
 @Service
-public class PDSInfraScanProductExecutor extends AbstractProductExecutor {
+public class PDSInfraScanProductExecutor extends AbstractPDSProductExecutor {
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSInfraScanProductExecutor.class);
-
-    @Autowired
-    PDSAdapter pdsAdapter;
-
-    @Autowired
-    PDSInstallSetup installSetup;
-
-    @Autowired
-    PDSExecutorConfigSuppportServiceCollection serviceCollection;
-
-    @Autowired
-    PDSStorageContentProviderFactory contentProviderFactory;
 
     public PDSInfraScanProductExecutor() {
         super(ProductIdentifier.PDS_INFRASCAN, 1, ScanType.INFRA_SCAN);
@@ -64,7 +49,7 @@ public class PDSInfraScanProductExecutor extends AbstractProductExecutor {
         ProductExecutorContext executorContext = data.getProductExecutorContext();
 
         /* we reuse config support created inside customize method */
-        PDSExecutorConfigSuppport configSupport = (PDSExecutorConfigSuppport) data.getNetworkTargetDataProvider();
+        PDSExecutorConfigSupport configSupport = (PDSExecutorConfigSupport) data.getNetworkTargetDataProvider();
 
         if (configSupport.isTargetTypeForbidden(targetType)) {
             LOG.info("pds adapter does not accept target type:{} so cancel execution");
@@ -102,8 +87,14 @@ public class PDSInfraScanProductExecutor extends AbstractProductExecutor {
                     build();
             /* @formatter:on */
 
+            /* we temporary store the adapter configuration - necessary for cancellation */
+            data.rememberAdapterConfig(pdsInfraScanConfig);
+
             /* execute PDS by adapter and return product result */
             AdapterExecutionResult adapterResult = pdsAdapter.start(pdsInfraScanConfig, executorContext.getCallback());
+
+            /* cancel not necessary - so forget it */
+            data.forgetRememberedAdapterConfig();
 
             ProductResult currentProductResult = updateCurrentProductResult(adapterResult, executorContext);
             results.add(currentProductResult);
@@ -118,7 +109,7 @@ public class PDSInfraScanProductExecutor extends AbstractProductExecutor {
         data.setNetworkLocationProvider(new InfraScanNetworkLocationProvider(secHubConfiguration));
 
         ProductExecutorContext executorContext = data.getProductExecutorContext();
-        PDSExecutorConfigSuppport configSupport = PDSExecutorConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
+        PDSExecutorConfigSupport configSupport = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
                 serviceCollection);
         data.setNetworkTargetDataProvider(configSupport);
     }

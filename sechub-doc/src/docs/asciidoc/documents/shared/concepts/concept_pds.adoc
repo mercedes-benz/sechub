@@ -191,6 +191,9 @@ include::concept_pds_handle_storage_parts_at_runtime.adoc[]
 ===== How PDS handles user messages
 include::concept_product_message_pds_dataflow.adoc[]
 
+===== How PDS handles execution events
+include::concept_pds_events_dataflow.adoc[]
+
 ===== How PDS product executors configure the PDS adapter 
 include::concept_pds_adapter_configuration.adoc[]
 

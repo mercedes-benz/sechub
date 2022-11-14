@@ -3,6 +3,9 @@ package com.mercedesbenz.sechub.pds.execution;
 
 import java.util.concurrent.FutureTask;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A special future task, which calls
  * {@link PDSExecutionCallable#prepareForCancel(boolean)} before doing cancel
@@ -14,6 +17,8 @@ import java.util.concurrent.FutureTask;
  */
 public class PDSExecutionFutureTask extends FutureTask<PDSExecutionResult> {
 
+    private static final Logger LOG = LoggerFactory.getLogger(PDSExecutionFutureTask.class);
+
     private PDSExecutionCallable execCallable;
 
     public PDSExecutionFutureTask(PDSExecutionCallable callable) {
@@ -24,9 +29,21 @@ public class PDSExecutionFutureTask extends FutureTask<PDSExecutionResult> {
     @Override
     public boolean cancel(boolean mayInterruptIfRunning) {
 
-        execCallable.prepareForCancel(mayInterruptIfRunning);
+        boolean processHasTerminated = execCallable.prepareForCancel(mayInterruptIfRunning);
+        boolean superImplementation = super.cancel(mayInterruptIfRunning);
 
-        return super.cancel(mayInterruptIfRunning);
+        if (processHasTerminated) {
+            if (superImplementation) {
+                LOG.warn(
+                        "This is odd: the process has been already terminated by execution callable - but the super task implementation was able to stop the future?");
+            }
+            return true;
+        } else {
+            if (superImplementation) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

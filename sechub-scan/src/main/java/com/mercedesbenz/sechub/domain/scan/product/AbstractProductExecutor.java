@@ -21,11 +21,12 @@ import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataProvide
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataSuppport;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetRegistry.NetworkTargetInfo;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionException;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionHistoryElement;
 import com.mercedesbenz.sechub.domain.scan.resolve.NetworkTargetResolver;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
 import com.mercedesbenz.sechub.sharedkernel.resilience.ResilientActionExecutor;
 
 /**
@@ -211,7 +212,18 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
     private void executeByAdapterAndSetTime(ProductExecutorData data, List<ProductResult> targetResults) throws Exception {
         LocalDateTime started = LocalDateTime.now();
 
+        SecHubExecutionContext context = data.getSechubExecutionContext();
+
+        /*
+         * the history is used by cancel operation when the thread of this execution is
+         * terminated but we need the data for cancellation
+         */
+        SecHubExecutionHistoryElement historyElement = context.remember(this, data);
+
         List<ProductResult> productResults = executeByAdapter(data);
+
+        /* product execution has been done, so remove from history */
+        context.forget(historyElement);
 
         if (productResults != null) {
             LocalDateTime ended = LocalDateTime.now();

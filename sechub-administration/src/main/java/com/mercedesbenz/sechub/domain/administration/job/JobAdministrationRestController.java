@@ -62,7 +62,7 @@ public class JobAdministrationRestController {
     }
 
     /* @formatter:off */
-	@UseCaseAdminCancelsJob(@Step(number=1,name="Rest call",description="Triggers job cancelation request, owners of project will be informed",needsRestDoc=true))
+	@UseCaseAdminCancelsJob(@Step(number=1,name="Rest call",description="Triggers job cancellation request, owners of project will be informed",needsRestDoc=true))
 	@RequestMapping(path = AdministrationAPIConstants.API_ADMIN_CANCELS_JOB, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public void cancelJob(@PathVariable(name="jobUUID") UUID jobUUID) {
 		/* @formatter:on */

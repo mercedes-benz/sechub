@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: MIT
 
+REPLICAS="$1"
+
 cd $(dirname "$0")
 source "../shared/scripts/9999-helper.sh"
 
@@ -24,4 +26,4 @@ fi
 export BUILDKIT_PROGRESS=plain
 export DOCKER_BUILDKIT=1
 
-docker-compose --file docker-compose_pds_gosec_cluster.yaml up --scale pds-gosec=$REPLICAS --build --remove-orphans
+docker compose --file docker-compose_pds_gosec_cluster.yaml up --scale pds-gosec=$REPLICAS --build --remove-orphans

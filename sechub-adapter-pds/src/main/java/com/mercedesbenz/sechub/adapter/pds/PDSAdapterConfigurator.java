@@ -16,9 +16,13 @@ public interface PDSAdapterConfigurator {
 
     void setSourceCodeZipFileChecksumOrNull(String sourceCodeZipFileChecksumOrNull);
 
+    void setSourceCodeZipFileSizeInBytes(long sourceCodeZipFileSizeInBytes);
+
     void setBinaryTarFileInputStreamOrNull(InputStream binaryTarFileInputStreamOrNull);
 
     void setBinariesTarFileChecksumOrNull(String binaryTarFileChecksum);
+
+    void setBinariesTarFileSizeInBytes(long binariesTarFileSizeInBytes);
 
     void setSecHubJobUUID(UUID secHubJobUUID);
 
