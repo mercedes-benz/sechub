@@ -67,7 +67,7 @@ public class PDSWorkspaceService {
     private static final Logger LOG = LoggerFactory.getLogger(PDSWorkspaceService.class);
     private static final String WORKSPACE_PARENT_FOLDER_PATH = "./";
 
-    @PDSMustBeDocumented(value = "Set pds workspace root folder path. Inside this path the sub directory `workspace` will be created.", scope = "execution")
+    @PDSMustBeDocumented(value = "Set PDS workspace root folder path. Inside this path the sub directory `workspace` will be created.", scope = "execution")
     @Value("${sechub.pds.workspace.rootfolder:" + WORKSPACE_PARENT_FOLDER_PATH + "}")
     String workspaceRootFolderPath = WORKSPACE_PARENT_FOLDER_PATH;
 
@@ -439,14 +439,6 @@ public class PDSWorkspaceService {
         File outputFolder = new File(getOutputFolder(jobUUID), MESSAGES);
         outputFolder.mkdirs();
         return outputFolder;
-    }
-
-    public long getMinutesToWaitForResult(PDSJobConfiguration config) {
-        PDSProductSetup productSetup = serverConfigService.getProductSetupOrNull(config.getProductId());
-        if (productSetup == null) {
-            return -1;
-        }
-        return productSetup.getMinutesToWaitForProductResult();
     }
 
     public boolean hasExtractedSources(UUID jobUUID) {

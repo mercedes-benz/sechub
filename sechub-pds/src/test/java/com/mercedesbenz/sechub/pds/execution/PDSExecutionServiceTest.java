@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.commons.pds.execution.ExecutionEventData;
 import com.mercedesbenz.sechub.commons.pds.execution.ExecutionEventType;
-import com.mercedesbenz.sechub.pds.job.PDSCheckJobStatusService;
 import com.mercedesbenz.sechub.pds.job.PDSJob;
 import com.mercedesbenz.sechub.pds.job.PDSJobRepository;
 import com.mercedesbenz.sechub.pds.job.PDSJobTestHelper;
@@ -71,8 +70,7 @@ public class PDSExecutionServiceTest {
         private PDSExecutionResult result;
 
         public TestPDSExecutionCallable(UUID jobUUID, long waitMillis, PDSExecutionResult result) {
-            super(jobUUID, mock(PDSJobTransactionService.class), mock(PDSWorkspaceService.class), mock(PDSExecutionEnvironmentService.class),
-                    mock(PDSCheckJobStatusService.class), mock(PDSProcessAdapterFactory.class));
+            super(jobUUID, mock(PDSExecutionCallableServiceCollection.class));
             this.waitMillis = waitMillis;
             this.result = result;
         }

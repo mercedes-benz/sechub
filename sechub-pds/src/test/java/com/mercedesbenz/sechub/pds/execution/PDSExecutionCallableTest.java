@@ -42,6 +42,8 @@ class PDSExecutionCallableTest {
     private File messageFolder;
     private File eventsFolder;
     private File metaDataFile;
+    private ProcessHandlingDataFactory processHandlingFactory;
+    private ProductLaunchProcessHandlingData launchProcessHandlingData;
 
     @BeforeEach
     void beforeEach() throws IOException {
@@ -65,6 +67,7 @@ class PDSExecutionCallableTest {
         jobStatusService = mock(PDSCheckJobStatusService.class);
         processAdapterFactory = mock(PDSProcessAdapterFactory.class);
         processAdapter = mock(ProcessAdapter.class);
+        processHandlingFactory = mock(ProcessHandlingDataFactory.class);
 
         data = mock(JobConfigurationData.class);
         locationData = mock(WorkspaceLocationData.class);
@@ -92,8 +95,18 @@ class PDSExecutionCallableTest {
         when(workspaceService.createLocationData(jobUUID)).thenReturn(locationData);
         when(workspaceService.getMessagesFolder(jobUUID)).thenReturn(messageFolder);
 
-        callableToTest = new PDSExecutionCallable(jobUUID, jobTransactionService, workspaceService, environmentService, jobStatusService,
-                processAdapterFactory);
+        launchProcessHandlingData = mock(ProductLaunchProcessHandlingData.class);
+        when(processHandlingFactory.createForLaunchOperation(any())).thenReturn(launchProcessHandlingData);
+
+        PDSExecutionCallableServiceCollection serviceCollection = mock(PDSExecutionCallableServiceCollection.class);
+        when(serviceCollection.getEnvironmentService()).thenReturn(environmentService);
+        when(serviceCollection.getJobStatusService()).thenReturn(jobStatusService);
+        when(serviceCollection.getJobTransactionService()).thenReturn(jobTransactionService);
+        when(serviceCollection.getProcessAdapterFactory()).thenReturn(processAdapterFactory);
+        when(serviceCollection.getWorkspaceService()).thenReturn(workspaceService);
+        when(serviceCollection.getProcessHandlingDataFactory()).thenReturn(processHandlingFactory);
+
+        callableToTest = new PDSExecutionCallable(jobUUID, serviceCollection);
 
         when(processAdapter.isAlive()).thenReturn(true);
 
@@ -210,7 +223,8 @@ class PDSExecutionCallableTest {
     }
 
     private void simulateProcessDone(long timeoutInMinutes) throws InterruptedException {
-        when(workspaceService.getMinutesToWaitForResult(any())).thenReturn(timeoutInMinutes);
+
+        when(launchProcessHandlingData.getMinutesToWaitBeforeProductTimeout()).thenReturn((int) timeoutInMinutes);
         when(processAdapter.waitFor(timeoutInMinutes, TimeUnit.MINUTES)).thenReturn(true);
     }
 
@@ -219,7 +233,7 @@ class PDSExecutionCallableTest {
     }
 
     private void simulateProcessTimeOut(long timeoutInMinutes) throws InterruptedException {
-        when(workspaceService.getMinutesToWaitForResult(any())).thenReturn(timeoutInMinutes);
+        when(launchProcessHandlingData.getMinutesToWaitBeforeProductTimeout()).thenReturn((int) timeoutInMinutes);
         when(processAdapter.waitFor(timeoutInMinutes, TimeUnit.MINUTES)).thenReturn(false);
     }
 }

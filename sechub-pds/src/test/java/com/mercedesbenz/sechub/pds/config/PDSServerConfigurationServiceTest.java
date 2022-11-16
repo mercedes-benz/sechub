@@ -1,32 +1,30 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.config;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
+import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterValueConstants;
 import com.mercedesbenz.sechub.pds.PDSShutdownService;
-import com.mercedesbenz.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class PDSServerConfigurationServiceTest {
 
     private PDSServerConfigurationService serviceToTest;
     private PDSServerConfigurationValidator serverConfigurationValidator;
 
-    @Rule
-    public ExpectedException expected = ExpectedExceptionFactory.none();
     private PDSShutdownService shutdownService;
 
-    @Before
+    @BeforeEach
     public void before() throws Exception {
 
         serverConfigurationValidator = mock(PDSServerConfigurationValidator.class);
@@ -37,8 +35,70 @@ public class PDSServerConfigurationServiceTest {
         serviceToTest.shutdownService = shutdownService;
     }
 
+    @ParameterizedTest
+    @ValueSource(ints = { 0, -1 })
+    void when_minutesToWaitForProduct_is_lower_than_1_systemwide_productTimeOutInMinutes_is_1_after_postconstruct(int configuredMinutes) {
+        /* prepare */
+        serviceToTest.pathToConfigFile = "./src/test/resources/config/pds-config-example1.json";
+        serviceToTest.minutesToWaitForProduct = configuredMinutes;
+
+        /* execute */
+        serviceToTest.postConstruct();
+
+        /* test */
+        assertEquals(1, serviceToTest.getMinutesToWaitForProduct());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { PDSDefaultParameterValueConstants.MAXIMUM_CONFIGURABLE_TIME_TO_WAIT_FOR_PRODUCT_IN_MINUTES + 1,
+            PDSDefaultParameterValueConstants.MAXIMUM_CONFIGURABLE_TIME_TO_WAIT_FOR_PRODUCT_IN_MINUTES + 2000 })
+    void when_minutesToWaitForProduct_is_greater_than_max_value_systemwide_productTimeOutInMinutes_is_default_maxvalue_after_postconstruct(
+            int configuredMinutes) {
+        /* prepare */
+        serviceToTest.pathToConfigFile = "./src/test/resources/config/pds-config-example1.json";
+        serviceToTest.minutesToWaitForProduct = configuredMinutes;
+
+        /* execute */
+        serviceToTest.postConstruct();
+
+        /* test */
+        assertEquals(PDSDefaultParameterValueConstants.MAXIMUM_CONFIGURABLE_TIME_TO_WAIT_FOR_PRODUCT_IN_MINUTES, serviceToTest.getMinutesToWaitForProduct());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 3, 4, 10 })
+    void when_minutesToWaitForProduct_is_greater_than_custom_max_value_2_systemwide_productTimeOutInMinutes_is_custom_maxvalue_after_postconstruct(
+            int configuredMinutes) {
+        /* prepare */
+        serviceToTest.pathToConfigFile = "./src/test/resources/config/pds-config-example1.json";
+        serviceToTest.minutesToWaitForProduct = configuredMinutes;
+        serviceToTest.maximumConfigurableMinutesToWaitForProduct = 2;
+
+        /* execute */
+        serviceToTest.postConstruct();
+
+        /* test */
+        assertEquals(2, serviceToTest.getMinutesToWaitForProduct());
+        ;
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 1, 3000, PDSDefaultParameterValueConstants.MAXIMUM_CONFIGURABLE_TIME_TO_WAIT_FOR_PRODUCT_IN_MINUTES, })
+    void when_minutesToWaitForProduct_is_in_range_between_min_and_max_the_value_is_systemwide_productTimeOutInMinutes_after_postconstruct(
+            int configuredMinutes) {
+        /* prepare */
+        serviceToTest.pathToConfigFile = "./src/test/resources/config/pds-config-example1.json";
+        serviceToTest.minutesToWaitForProduct = configuredMinutes;
+
+        /* execute */
+        serviceToTest.postConstruct();
+
+        /* test */
+        assertEquals(configuredMinutes, serviceToTest.getMinutesToWaitForProduct());
+    }
+
     @Test
-    public void pds_config_example1_can_be_loaded_and_contains_expected_data() {
+    void pds_config_example1_can_be_loaded_and_contains_expected_data() {
         /* prepare */
         serviceToTest.pathToConfigFile = "./src/test/resources/config/pds-config-example1.json";
 
@@ -89,7 +149,7 @@ public class PDSServerConfigurationServiceTest {
     }
 
     @Test
-    public void when_config_file_loaded_but_server_configuration_validator_returns_validator_error_message_shutdown_service_called() {
+    void when_config_file_loaded_but_server_configuration_validator_returns_validator_error_message_shutdown_service_called() {
         /* prepare */
         serviceToTest.pathToConfigFile = "./src/test/resources/config/pds-config-example1.json";
         when(serverConfigurationValidator.createValidationErrorMessage(any())).thenReturn("reason");
@@ -103,7 +163,7 @@ public class PDSServerConfigurationServiceTest {
     }
 
     @Test
-    public void when_config_file_loaded_and_server_configuration_validator_returns_NO_validator_error_message_shutdown_service_is_NOT_called() {
+    void when_config_file_loaded_and_server_configuration_validator_returns_NO_validator_error_message_shutdown_service_is_NOT_called() {
         /* prepare */
         serviceToTest.pathToConfigFile = "./src/test/resources/config/pds-config-example1.json";
         // no serverConfigurationValidator mock setup means null returned...
@@ -117,7 +177,7 @@ public class PDSServerConfigurationServiceTest {
     }
 
     @Test
-    public void when_config_file_NOT_exists_shutdown_service_is_called() {
+    void when_config_file_NOT_exists_shutdown_service_is_called() {
         /* prepare */
         serviceToTest.pathToConfigFile = "./src/test/resources/config/pds-config-example-NOT_EXISTING.json";
 

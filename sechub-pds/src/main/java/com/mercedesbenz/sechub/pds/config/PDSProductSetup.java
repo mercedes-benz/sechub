@@ -6,8 +6,6 @@ import com.mercedesbenz.sechub.commons.model.ScanType;
 public class PDSProductSetup {
     private static final boolean DEFAULT_EXTRACT_UPLOADS = true;
 
-    private static final long DEFAULT_MINUTES_TO_WAIT_FOR_PRODUCRESULT = 120; // 2 hours
-
     private boolean extractUploads = DEFAULT_EXTRACT_UPLOADS;
 
     private String id;
@@ -15,8 +13,6 @@ public class PDSProductSetup {
     private ScanType scanType;
 
     private String path;
-
-    private long minutesToWaitForProductResult = DEFAULT_MINUTES_TO_WAIT_FOR_PRODUCRESULT;
 
     /**
      * The description. Will be available at admin UI at configuration time.
@@ -79,17 +75,6 @@ public class PDSProductSetup {
 
     public void setExtractUploads(boolean extractUploads) {
         this.extractUploads = extractUploads;
-    }
-
-    public long getMinutesToWaitForProductResult() {
-        if (minutesToWaitForProductResult < 1) {
-            minutesToWaitForProductResult = DEFAULT_MINUTES_TO_WAIT_FOR_PRODUCRESULT;
-        }
-        return minutesToWaitForProductResult;
-    }
-
-    public void setMinutesToWaitForProductResult(long minutesToWaitForProductResult) {
-        this.minutesToWaitForProductResult = minutesToWaitForProductResult;
     }
 
 }
