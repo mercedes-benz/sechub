@@ -5,8 +5,8 @@ ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
 LABEL org.opencontainers.image.source="https://github.com/mercedes-benz/sechub"
-LABEL org.opencontainers.image.title="SecHub GoSec+PDS Image"
-LABEL org.opencontainers.image.description="A container which combines GoSec with the SecHub Product Delegation Server (PDS)"
+LABEL org.opencontainers.image.title="SecHub OWASP ZAP + PDS Image"
+LABEL org.opencontainers.image.description="A container which combines OWASP ZAP with the SecHub Product Delegation Server (PDS)"
 LABEL maintainer="SecHub FOSS Team"
 
 # Build args
