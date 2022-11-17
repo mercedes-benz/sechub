@@ -51,5 +51,5 @@ fi
 
 docker build --pull --no-cache $BUILD_ARGS \
        --tag "$REGISTRY:$VERSION" \
-       --file docker/ScanCode-Debian.dockerfile docker/
+       --file docker/Scancode-Debian.dockerfile docker/
 docker tag "$REGISTRY:$VERSION" "$REGISTRY:latest"
