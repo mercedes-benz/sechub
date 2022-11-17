@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.config;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PDSProductSetup {
     private static final boolean DEFAULT_EXTRACT_UPLOADS = true;
 
