@@ -12,6 +12,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
@@ -113,7 +115,7 @@ class PDSExecutionCallableTest {
     }
 
     @Test
-    void minutes_0_from_workspace_fails_without_job_transaction_write() throws Exception {
+    void timeout_with_0_fails_without_job_transaction_write() throws Exception {
         /* prepare */
         simulateProcessTimeOut(0L);
 
@@ -126,6 +128,8 @@ class PDSExecutionCallableTest {
         // internally an illegal state is thrown before any execution,
         verify(processAdapterFactory, never()).startProcess(any());
         verify(jobTransactionService, never()).updateJobExecutionDataInOwnTransaction(any(), any());
+        // check there is no wait for a process at all
+        verify(processAdapter, never()).waitFor(anyLong(), any());
     }
 
     @Test
@@ -201,6 +205,19 @@ class PDSExecutionCallableTest {
         assertTrue(result.failed);
         assertJob1MessageHasBeenPersistedToDB();
 
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 10, 4711 })
+    void process_waiting_is_done_with_value_from_handling_data_factory_and_time_unit_minutes(int value) throws Exception {
+        /* prepare */
+        when(launchProcessHandlingData.getMinutesToWaitBeforeProductTimeout()).thenReturn(value);
+
+        /* execute */
+        callableToTest.call();
+
+        /* test */
+        verify(processAdapter).waitFor(value, TimeUnit.MINUTES);
     }
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */

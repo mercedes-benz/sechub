@@ -31,6 +31,7 @@ public class PDSServerConfigurationService {
 
     private static final int defaultMinutesToWaitForProduct = PDSDefaultParameterValueConstants.DEFAULT_MINUTES_TO_WAIT_FOR_PRODUCRESULT;
     private static final int defaultMaxConfigurableMinutesToWaitForProduct = PDSDefaultParameterValueConstants.MAXIMUM_CONFIGURABLE_TIME_TO_WAIT_FOR_PRODUCT_IN_MINUTES;
+    private static final int minimumConfigurableMinutesToWaitForProduct = PDSDefaultParameterValueConstants.MINIMUM_CONFIGURABLE_TIME_TO_WAIT_FOR_PRODUCT_IN_MINUTES;
 
     @PDSMustBeDocumented(value = "Define path to PDS configuration file", scope = "startup")
     @Value("${sechub.pds.config.file:" + DEFAULT_PATH + "}")
@@ -41,8 +42,8 @@ public class PDSServerConfigurationService {
     int minutesToWaitForProduct = defaultMinutesToWaitForProduct;
 
     @PDSMustBeDocumented(value = "Set maximum configurable time in minutes for parameter: `"
-            + PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_PRODUCT_TIMEOUT_MINUTES
-            + "`. The minimum time is not configurable but always one minute!", scope = "execution")
+            + PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_PRODUCT_TIMEOUT_MINUTES + "`. The minimum time is not configurable but always "
+            + minimumConfigurableMinutesToWaitForProduct + " minute(s).", scope = "execution")
     @Value("${" + PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_PRODUCT_TIMEOUT_MAX_CONFIGURABLE_MINUTES + ":"
             + defaultMaxConfigurableMinutesToWaitForProduct + "}")
     int maximumConfigurableMinutesToWaitForProduct = defaultMaxConfigurableMinutesToWaitForProduct;
@@ -52,8 +53,6 @@ public class PDSServerConfigurationService {
 
     @Autowired
     PDSServerConfigurationValidator serverConfigurationValidator;
-
-    private final int minimumConfigurableMinutesToWaitForProduct = PDSDefaultParameterValueConstants.MINIMUM_CONFIGURABLE_TIME_TO_WAIT_FOR_PRODUCT_IN_MINUTES;
 
     private PDSServerConfiguration configuration;
 

@@ -60,7 +60,7 @@ public class PDSExecutionServiceTest {
         serviceToTest.watcherDisabled = true;
         serviceToTest.repository = repository;
         serviceToTest.executionCallableFactory = executionCallableFactory;
-        serviceToTest.updateService = jobTransactionService;
+        serviceToTest.jobTransactionService = jobTransactionService;
         serviceToTest.workspaceService = workspaceService;
 
     }
