@@ -4,40 +4,24 @@
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
+LABEL org.opencontainers.image.source="https://github.com/mercedes-benz/sechub"
+LABEL org.opencontainers.image.title="SecHub OWASP ZAP + PDS Image"
+LABEL org.opencontainers.image.description="A container which combines OWASP ZAP with the SecHub Product Delegation Server (PDS)"
 LABEL maintainer="SecHub FOSS Team"
 
 # Build args
 ARG OWASPZAP_VERSION="2.12.0"
-ARG OWASPZAP_CHECKSUM="7eaf340d9fcc42576c7a5572249fe0bcad6e7acd68098a7ca110e64beab46207"
-ARG PDS_VERSION="0.33.0"
-
-ARG JAVA_VERSION="11"
-ARG PDS_FOLDER="/pds"
-ARG SCRIPT_FOLDER="/scripts"
-ARG USER="zap"
-ARG WORKSPACE="/workspace"
-
-# Environment vars
-ENV DOWNLOAD_FOLDER="/downloads"
-ENV MOCK_FOLDER="${SCRIPT_FOLDER}/mocks"
-ENV PDS_VERSION="${PDS_VERSION}"
-ENV SHARED_VOLUMES="/shared_volumes"
-ENV SHARED_VOLUME_UPLOAD_DIR="${SHARED_VOLUMES}/uploads"
-ENV TOOL_FOLDER="/tools"
-
-# non-root user
-# using fixed group and user ids
-# zap needs a home directory for the plugins
-RUN groupadd --gid 2323 "$USER" \
-     && useradd --uid 2323 --no-log-init --create-home --gid "$USER" "$USER"
+ARG OWASPZAP_SHA256SUM="7eaf340d9fcc42576c7a5572249fe0bcad6e7acd68098a7ca110e64beab46207"
 
 # Create folders & change owner of folders
-RUN mkdir --parents "$PDS_FOLDER" "${SCRIPT_FOLDER}" "$TOOL_FOLDER" "$WORKSPACE" "$DOWNLOAD_FOLDER" "MOCK_FOLDER" "$SHARED_VOLUME_UPLOAD_DIR" "/home/$USER/.ZAP/plugin"
+RUN mkdir --parents "/home/$USER/.ZAP/plugin"
+
+USER root
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get upgrade --assume-yes && \
-    apt-get install --assume-yes wget openjdk-${JAVA_VERSION}-jre firefox-esr && \
+    apt-get install --assume-yes wget openjdk-11-jre firefox-esr && \
     apt-get clean
 
 # Install OWASP ZAP
@@ -45,20 +29,11 @@ RUN cd "$TOOL_FOLDER" && \
 	# download latest release of owasp zap
 	wget --no-verbose https://github.com/zaproxy/zaproxy/releases/download/v${OWASPZAP_VERSION}/zaproxy_${OWASPZAP_VERSION}-1_all.deb && \
 	# verify that the checksum and the checksum of the file are same
-    echo "${OWASPZAP_CHECKSUM} zaproxy_${OWASPZAP_VERSION}-1_all.deb" | sha256sum --check && \
+    echo "${OWASPZAP_SHA256SUM} zaproxy_${OWASPZAP_VERSION}-1_all.deb" | sha256sum --check && \
 	dpkg -i zaproxy_${OWASPZAP_VERSION}-1_all.deb && \
 	# remove zaproxy deb package
 	rm zaproxy_${OWASPZAP_VERSION}-1_all.deb
 	
-
-# Install the SecHub Product Delegation Server (PDS)
-RUN cd "$PDS_FOLDER" && \
-    # download checksum file
-    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar.sha256sum" && \
-    # download pds
-    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar" && \
-    # verify that the checksum and the checksum of the file are same
-    sha256sum --check sechub-pds-$PDS_VERSION.jar.sha256sum
 
 # Install SecHub OWASP ZAP wrapper
 RUN cd "$TOOL_FOLDER" && \
@@ -86,14 +61,12 @@ COPY pds-config.json "$PDS_FOLDER/pds-config.json"
 # Copy zap addon download urls into container
 COPY zap-addons.txt "$TOOL_FOLDER/zap-addons.txt"
 
-# Copy run script into container
-COPY run.sh /run.sh
+# Copy the additional "hook" script into the container
+COPY run_additional.sh /run_additional.sh
+RUN chmod +x /run_additional.sh
 
 # Create the PDS workspace
 WORKDIR "$WORKSPACE"
-
-# Change owner of tool, workspace and pds folder as well as /run.sh
-RUN chown --recursive "$USER:$USER" $TOOL_FOLDER ${SCRIPT_FOLDER} $WORKSPACE $PDS_FOLDER ${SHARED_VOLUMES} /run.sh /home/$USER/.ZAP
 
 # Switch from root to non-root user
 USER "$USER"
@@ -103,5 +76,3 @@ USER "$USER"
 # via addon manager: owasp-zap -cmd -addoninstall webdriverlinux
 RUN cd "/home/$USER/.ZAP/plugin" && \
     wget --no-verbose --input-file="$TOOL_FOLDER/zap-addons.txt"
-
-CMD ["/run.sh"]

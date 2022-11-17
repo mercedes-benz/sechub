@@ -3,18 +3,16 @@
 
 REGISTRY="$1"
 VERSION="$2"
-BASE_IMAGE="$3"  # optional
-DEFAULT_BASE_IMAGE="debian:11-slim"
+BASE_IMAGE="$3"
 
 usage() {
   cat - <<EOF
 usage: $0 <docker registry> <version tag> [<base image>]
 Builds a docker image of SecHub PDS with OWASP ZAP
 for <docker registry> with tag <version tag>.
-Optional: <base image> ; defaults to $DEFAULT_BASE_IMAGE
+Required: <base image> ; for example ghcr.io/mercedes-benz/sechub/pds-base:v0.32.1
 
 Additionally these environment variables can be defined:
-- PDS_VERSION - version of SecHub PDS to use. E.g. 0.27.0
 - OWASPZAP_VERSION - OWASP ZAP version to use. E.g. 2.11.1
 EOF
 }
@@ -30,10 +28,6 @@ if [[ -z "$VERSION" ]] ; then
 fi
 echo ">> Building: $REGISTRY:$VERSION"
 
-if [[ -z "$BASE_IMAGE" ]]; then
-    BASE_IMAGE="$DEFAULT_BASE_IMAGE"
-fi
-
 BUILD_ARGS="--build-arg BASE_IMAGE=$BASE_IMAGE"
 echo ">> Base image: $BASE_IMAGE"
 
@@ -42,9 +36,18 @@ if [[ ! -z "$PDS_VERSION" ]] ; then
     BUILD_ARGS+=" --build-arg PDS_VERSION=$PDS_VERSION"
 fi
 
+# Enforce OWASPZAP_SHA256SUM is defined when building custom version of find-sec-bugs
 if [[ ! -z "$OWASPZAP_VERSION" ]] ; then
-    echo ">> OWASP ZAP version: $OWASPZAP_VERSION"
-    BUILD_ARGS+=" --build-arg OWASPZAP_VERSION=$OWASPZAP_VERSION"
+  echo ">> OWASP-ZAP version: $OWASPZAP_VERSION"
+  BUILD_ARGS+=" --build-arg OWASPZAP_VERSION=$OWASPZAP_VERSION"
+
+  if [[ -z "$OWASPZAP_SHA256SUM" ]] ; then
+    echo "FATAL: Please define sha256 checksum in OWASPZAP_SHA256SUM environment variable"
+    exit 1
+  fi
+
+  echo ">> OWASP-ZAP sha256sum: $OWASPZAP_SHA256SUM"
+  BUILD_ARGS+=" --build-arg OWASPZAP_SHA256SUM=$OWASPZAP_SHA256SUM"
 fi
 
 docker build --pull --no-cache $BUILD_ARGS \
