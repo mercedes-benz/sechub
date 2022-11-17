@@ -1,0 +1,203 @@
+// SPDX-License-Identifier: MIT
+
+:toc:
+:numbered:
+
+= Tern + PDS
+
+https://github.com/tern-tools/tern[Tern] is a free and container license scanning tool. Tern is a command line interface (CLI) tool. By combining Tern with the SecHub https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)] in a container, Tern can be used with SecHub. Another scenario is to use Tern+PDS standalone.
+
+Furthermore, the combination of Tern and PDS makes it possible to run both inside a virtual machines.
+
+This folder contains the necessary scripts to run Tern+PDS inside a container locally. Additionally, it contains scripts to build and push the Tern+PDS container to your container registry.
+
+NOTE: The Tern container requires privileged access otherwise Tern will not work 
+
+[[export-image]]
+== Export Container Image
+
+. Find local image
++
+----
+docker images
+REPOSITORY                                               TAG               IMAGE ID       CREATED          SIZE
+test                                                     0.1               599c23350b59   7 hours ago      114MB
+----
+
+. Export local image
++
+----
+docker save --output test.tar test
+----
+
+== Run Locally
+
+This is the easiest way to get started.
+
+=== Requirements
+
+Docker and Docker-Compose need to be installed:
+
+. https://docs.docker.com/engine/install/[Install Docker]
+
+. Linux: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user[Use Docker as non Root user]
+
+. https://docs.docker.com/compose/install/[Install Docker-Compose]
+
+=== Single Instance
+
+Start a single instance by using the Bash wrapper script.
+
+The folder contains a start script:
+
+----
+./01-start-single-docker-compose.sh
+----
+
+==== Together with SecHub
+
+The container will be started and attached to the `sechub` Network.
+
+WARNING: Make sure the SecHub container is running.
+
+. Start Tern+PDS container:
++
+----
+./05-start-single-sechub-network-docker-compose.sh
+----
+
+[[scan]]
+=== Scan
+
+The steps required to scan with the PDS.
+
+==== Scan Script 
+
+. Export a container image as explained in: <<export-image>>
+
+. Download the latest `PDS-Tools` from: https://github.com/mercedes-benz/sechub/releases
+
+. Create a SecHub configuration file. For example:
++
+.sechub-configuration.sh
+----
+{
+    "apiVersion": "1.0",
+    "data": {
+        "binaries": [
+            {
+                "name": "test-image-file",
+                "fileSystem": {
+                    "files": [
+                        "test-image.tar"
+                    ]
+                }
+            }
+        ]
+    },
+    "licenseScan": {
+        "use": [
+            "test-image-file"
+        ]
+    }
+}
+----
+
+. Use the PDS-Tools to create a binaries.tar file
++
+----
+java -jar "sechub-pds-tools-cli-<version>.jar" --generate "sechub-configuration.sh" "licenseScan" "."
+----
+
+. Set the environment variables
++
+----
+export PDS_SERVER=https://<pds-host>:<port>
+export PDS_USERID=admin
+export PDS_APITOKEN="<pds-admin-apitoken>"
+export PDS_PRODUCT_IDENTFIER=PDS_TERN
+----
++
+For example:
++
+----
+export PDS_SERVER=https://localhost:8444
+export PDS_USERID=admin
+export PDS_APITOKEN="pds-apitoken"
+export PDS_PRODUCT_IDENTFIER=PDS_TERN
+----
+
+. Use the test script from `../shared/01-test.sh` to scan.
++
+----
+./01-test.sh pds-config-test-image.json binaries.tar
+----
+
+=== Change the Configuration
+
+There are several configuration options available for the Tern+PDS `docker-compose` files. Have a look at the files in `../shared/environment` for more details.
+
+=== Troubleshooting
+
+This section contains information about how to troubleshoot Tern+PDS if something goes wrong.
+
+==== Access the container
+
+----
+docker exec -it pds-tern bash
+----
+
+==== Java Application Remote Debugging of PDS
+
+. Set `JAVA_ENABLE_DEBUG=true` in the `.env` file
+
+. Connect via remote debugging to the `pds`
++
+connect via CLI
+(see: )
++
+----
+jdb -attach localhost:15024
+----
++
+TIP: https://www.baeldung.com/java-application-remote-debugging[Java Application Remote Debugging] and https://www.tutorialspoint.com/jdb/jdb_basic_commands.htm[JDB - Basic Commands]
++
+or connect via IDE (e. g. Eclipse IDE, VSCodium, Eclipse Theia, IntelliJ etc.).
++
+TIP: https://www.eclipse.org/community/eclipse_newsletter/2017/june/article1.php[Debugging the Eclipse IDE for Java Developers]
+
+== Build Image and Push to Registry
+
+Build container images and push them to registry to run Tern+PDS on virtual machines, Kubernetes or any other distributed system.
+
+=== Build Image
+
+Build the container image.
+
+==== Debian
+
+. With base image: 
++
+----
+./10-create-image.sh my.registry.example.org/sechub/pds_tern v0.1 ghcr.io/mercedes-benz/sechub/pds-base:v0.32.1
+----
+
+=== Push Image to Registry
+
+Push the container image to a registry.
+
+* Push the version tag only
++
+----
+./20-push-image.sh my.registry.example.org/sechub/pds_tern v0.1
+----
+
+* Push the version and `latest` tags
++
+----
+./20-push-image.sh my.registry.example.org/sechub/pds_tern v0.1 yes
+----
+
+== Kubernetes
+
+WARNING: Tern is not able to run without priviledged access. Tern needs access to the Docker socket of the node (Docker in Docker). It is not advisable to run Tern+PDS in Kubernetes.
