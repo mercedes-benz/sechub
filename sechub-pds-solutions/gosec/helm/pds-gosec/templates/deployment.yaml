@@ -37,7 +37,7 @@ spec:
                     - name: PDS_MAX_FILE_UPLOAD_BYTES
                       value: "{{ .Values.pds.maxFileUploadBytes }}"
                     - name: PDS_HEARTBEAT_LOGGING
-                      value: "{{ .Values.pds.heartbeatLogging }}"                      
+                      value: "{{ .Values.pds.heartbeatLogging }}"
                     - name: PDS_CONFIG_EXECUTE_QUEUE_MAX
                       value: "{{ .Values.pds.config.execute.queueMax }}"
                     - name: PDS_CONFIG_EXECUTE_WORKER_THREAD_COUNT
