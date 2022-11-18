@@ -49,7 +49,9 @@ start_server() {
     fi
 
     echo "Calling the run_additional.sh script"
+    echo "---"
     /run_additional.sh
+    echo "---"
 
     echo "Starting the SecHub PDS server"
     # Regarding entropy collection:
