@@ -46,10 +46,12 @@ zap:
         forPdsTargetType:
 
 users:
-    technical:
-        id: "techuser"
     admin:
         id: "admin"
+        apiToken: "my-admin-apitoken"
+    technical:
+        id: "techuser"
+        apiToken: "my-techuser-apitoken"
 
 storage:
     local:
