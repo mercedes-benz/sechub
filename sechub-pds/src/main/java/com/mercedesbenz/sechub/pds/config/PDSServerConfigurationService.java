@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
+import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterValueConstants;
 import com.mercedesbenz.sechub.pds.PDSJSONConverterException;
 import com.mercedesbenz.sechub.pds.PDSMustBeDocumented;
 import com.mercedesbenz.sechub.pds.PDSShutdownService;
@@ -27,9 +29,24 @@ public class PDSServerConfigurationService {
 
     private static final String DEFAULT_PATH = "./pds-config.json";
 
+    private static final int defaultMinutesToWaitForProduct = PDSDefaultParameterValueConstants.DEFAULT_MINUTES_TO_WAIT_FOR_PRODUCT;
+    private static final int defaultMaxConfigurableMinutesToWaitForProduct = PDSDefaultParameterValueConstants.MAXIMUM_CONFIGURABLE_TIME_TO_WAIT_FOR_PRODUCT_IN_MINUTES;
+    private static final int minimumConfigurableMinutesToWaitForProduct = PDSDefaultParameterValueConstants.MINIMUM_CONFIGURABLE_TIME_TO_WAIT_FOR_PRODUCT_IN_MINUTES;
+
     @PDSMustBeDocumented(value = "Define path to PDS configuration file", scope = "startup")
     @Value("${sechub.pds.config.file:" + DEFAULT_PATH + "}")
     String pathToConfigFile;
+
+    @PDSMustBeDocumented(value = "Set maximum time a PDS will wait for a product before canceling execution automatically. This value can be overriden as a job parameter as well.", scope = "execution")
+    @Value("${" + PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_PRODUCT_TIMEOUT_MINUTES + ":" + defaultMinutesToWaitForProduct + "}")
+    int minutesToWaitForProduct = defaultMinutesToWaitForProduct;
+
+    @PDSMustBeDocumented(value = "Set maximum configurable time in minutes for parameter: `"
+            + PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_PRODUCT_TIMEOUT_MINUTES + "`. The minimum time is not configurable. It is a fixed value of "
+            + minimumConfigurableMinutesToWaitForProduct + " minute(s).", scope = "execution")
+    @Value("${" + PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_PRODUCT_TIMEOUT_MAX_CONFIGURABLE_MINUTES + ":"
+            + defaultMaxConfigurableMinutesToWaitForProduct + "}")
+    int maximumConfigurableMinutesToWaitForProduct = defaultMaxConfigurableMinutesToWaitForProduct;
 
     @Autowired
     PDSShutdownService shutdownService;
@@ -69,6 +86,23 @@ public class PDSServerConfigurationService {
         }
         /* define storage id */
         storageId = "pds/" + getServerId();
+
+        handleSystemWideProductTimeOutSetting();
+
+    }
+
+    private void handleSystemWideProductTimeOutSetting() {
+        if (minutesToWaitForProduct < minimumConfigurableMinutesToWaitForProduct) {
+            LOG.warn("System wide minutesToWaitForProduct was defined as {}, which is less than minimum of {} minute. Will fallback to one minute!",
+                    minutesToWaitForProduct, minimumConfigurableMinutesToWaitForProduct);
+            minutesToWaitForProduct = minimumConfigurableMinutesToWaitForProduct;
+        }
+
+        if (minutesToWaitForProduct > maximumConfigurableMinutesToWaitForProduct) {
+            LOG.warn("System wide minutesToWaitForProduct was defined as {}, which exceeds maximum. Will set maximum of {} as fallback!",
+                    minutesToWaitForProduct, maximumConfigurableMinutesToWaitForProduct);
+            minutesToWaitForProduct = maximumConfigurableMinutesToWaitForProduct;
+        }
     }
 
     public PDSServerConfiguration getServerConfiguration() {
@@ -98,4 +132,22 @@ public class PDSServerConfigurationService {
         return storageId;
     }
 
+    /**
+     * Returns the system wide configuration of minutes to wait for a product until
+     * automatic cancellation will be done. The returned value will always be valid,
+     * even when there is no dedicated configuration or a wrong configuration.
+     *
+     * @return system wide configuration of minutes to wait for a product
+     */
+    public int getMinutesToWaitForProduct() {
+        return minutesToWaitForProduct;
+    }
+
+    public int getMaximumConfigurableMinutesToWaitForProduct() {
+        return maximumConfigurableMinutesToWaitForProduct;
+    }
+
+    public int getMinimumConfigurableMinutesToWaitForProduct() {
+        return minimumConfigurableMinutesToWaitForProduct;
+    }
 }

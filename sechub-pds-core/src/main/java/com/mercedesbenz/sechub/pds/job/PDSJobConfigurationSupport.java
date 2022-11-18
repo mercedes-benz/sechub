@@ -119,4 +119,8 @@ public class PDSJobConfigurationSupport {
         return getIntParameterOrDefault(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_CANCEL_MAXIMUM_WAITTIME_SECONDS,
                 PDSDefaultParameterValueConstants.DEFAULT_TIME_TO_WAIT_IN_SECONDS_FOR_SCRIPT_CANCELLATION);
     }
+
+    public int getMinutesToWaitBeforeProductTimeOut(int defaultValue) {
+        return getIntParameterOrDefault(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_PRODUCT_TIMEOUT_MINUTES, defaultValue);
+    }
 }

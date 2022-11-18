@@ -4,7 +4,10 @@ package com.mercedesbenz.sechub.pds.config;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PDSProdutParameterSetup {
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class PDSProductParameterSetup {
 
     private List<PDSProductParameterDefinition> mandatory = new ArrayList<>();
     private List<PDSProductParameterDefinition> optional = new ArrayList<>();
