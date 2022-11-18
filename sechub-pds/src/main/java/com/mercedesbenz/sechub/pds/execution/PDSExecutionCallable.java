@@ -27,6 +27,7 @@ import com.mercedesbenz.sechub.pds.PDSJSONConverterException;
 import com.mercedesbenz.sechub.pds.PDSLogConstants;
 import com.mercedesbenz.sechub.pds.job.JobConfigurationData;
 import com.mercedesbenz.sechub.pds.job.PDSCheckJobStatusService;
+import com.mercedesbenz.sechub.pds.job.PDSGetJobStreamService;
 import com.mercedesbenz.sechub.pds.job.PDSJobConfiguration;
 import com.mercedesbenz.sechub.pds.job.PDSJobTransactionService;
 import com.mercedesbenz.sechub.pds.job.PDSWorkspaceService;
@@ -60,6 +61,8 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
     private PDSCheckJobStatusService jobStatusService;
 
+    private PDSGetJobStreamService pdsGetJobStreamService;
+
     private ExceptionThrower<IllegalStateException> pdsJobUpdateExceptionThrower;
 
     private PDSMessageCollector messageCollector;
@@ -73,17 +76,20 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
     private PDSProcessAdapterFactory processAdapterFactory;
 
     public PDSExecutionCallable(UUID jobUUID, PDSJobTransactionService jobTransactionService, PDSWorkspaceService workspaceService,
-            PDSExecutionEnvironmentService environmentService, PDSCheckJobStatusService jobStatusService, PDSProcessAdapterFactory processAdapterFactory) {
+            PDSExecutionEnvironmentService environmentService, PDSCheckJobStatusService jobStatusService, PDSProcessAdapterFactory processAdapterFactory,
+            PDSGetJobStreamService pdsGetJobStreamService) {
         notNull(jobUUID, "pdsJobUUID may not be null!");
         notNull(jobTransactionService, "jobTransactionService may not be null!");
         notNull(workspaceService, "workspaceService may not be null!");
         notNull(jobStatusService, "jobStatusService may not be null!");
+        notNull(pdsGetJobStreamService, "pdsGetJobStreamsService may not be null!");
 
         this.pdsJobUUID = jobUUID;
         this.jobTransactionService = jobTransactionService;
         this.workspaceService = workspaceService;
         this.environmentService = environmentService;
         this.jobStatusService = jobStatusService;
+        this.pdsGetJobStreamService = pdsGetJobStreamService;
         this.processAdapterFactory = processAdapterFactory;
 
         messageCollector = new PDSMessageCollector();
@@ -144,6 +150,11 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
         LOG.info("Finished execution of job {} with exitCode={}, failed={}, cancelOperationsHasBeenStarted={}", pdsJobUUID, result.exitCode, result.failed,
                 cancelOperationsHasBeenStarted);
+
+        if (result.failed) {
+            LOG.info("Job error stream = {}", pdsGetJobStreamService.getJobErrorStream(pdsJobUUID));
+            LOG.info("Job output stream = {}", pdsGetJobStreamService.getJobOutputStream(pdsJobUUID));
+        }
 
         return result;
     }

@@ -19,6 +19,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.pds.job.JobConfigurationData;
 import com.mercedesbenz.sechub.pds.job.PDSCheckJobStatusService;
+import com.mercedesbenz.sechub.pds.job.PDSGetJobStreamService;
 import com.mercedesbenz.sechub.pds.job.PDSJobTransactionService;
 import com.mercedesbenz.sechub.pds.job.PDSWorkspaceService;
 import com.mercedesbenz.sechub.pds.job.WorkspaceLocationData;
@@ -29,6 +30,7 @@ class PDSExecutionCallableTest {
     private PDSWorkspaceService workspaceService;
     private PDSExecutionEnvironmentService environmentService;
     private PDSCheckJobStatusService jobStatusService;
+    private PDSGetJobStreamService pdsGetJobStreamService;
     private UUID jobUUID;
     private PDSExecutionCallable callableToTest;
     private PDSProcessAdapterFactory processAdapterFactory;
@@ -92,8 +94,8 @@ class PDSExecutionCallableTest {
         when(workspaceService.createLocationData(jobUUID)).thenReturn(locationData);
         when(workspaceService.getMessagesFolder(jobUUID)).thenReturn(messageFolder);
 
-        callableToTest = new PDSExecutionCallable(jobUUID, jobTransactionService, workspaceService, environmentService, jobStatusService,
-                processAdapterFactory);
+        callableToTest = new PDSExecutionCallable(jobUUID, jobTransactionService, workspaceService, environmentService, jobStatusService, processAdapterFactory,
+                pdsGetJobStreamService);
 
         when(processAdapter.isAlive()).thenReturn(true);
 
