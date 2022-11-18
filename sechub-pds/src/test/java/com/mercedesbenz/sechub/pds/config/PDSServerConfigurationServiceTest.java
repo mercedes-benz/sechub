@@ -119,7 +119,7 @@ public class PDSServerConfigurationServiceTest {
         assertEquals(ScanType.CODE_SCAN, product1.getScanType());
         assertEquals("codescanner script needs environment variable ENV_CODESCAN_LEVEL set containing 1,2,3", product1.getDescription());
 
-        PDSProdutParameterSetup paramSetup = product1.getParameters();
+        PDSProductParameterSetup paramSetup = product1.getParameters();
         assertNotNull(paramSetup);
         List<PDSProductParameterDefinition> mandatory = paramSetup.getMandatory();
         assertEquals(2, mandatory.size());

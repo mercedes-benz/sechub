@@ -23,13 +23,13 @@ public class PDSProductSetup {
      */
     private String description;
 
-    private PDSProdutParameterSetup parameters = new PDSProdutParameterSetup();
+    private PDSProductParameterSetup parameters = new PDSProductParameterSetup();
 
-    public PDSProdutParameterSetup getParameters() {
+    public PDSProductParameterSetup getParameters() {
         return parameters;
     }
 
-    public void setParameters(PDSProdutParameterSetup parameters) {
+    public void setParameters(PDSProductParameterSetup parameters) {
         this.parameters = parameters;
     }
 

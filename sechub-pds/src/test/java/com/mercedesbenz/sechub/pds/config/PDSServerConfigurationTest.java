@@ -36,7 +36,7 @@ class PDSServerConfigurationTest {
         assertEquals(ScanType.CODE_SCAN, product1.getScanType());
         assertNotNull(product1.getDescription());
 
-        PDSProdutParameterSetup params = product1.getParameters();
+        PDSProductParameterSetup params = product1.getParameters();
         List<PDSProductParameterDefinition> mandatory = params.getMandatory();
         assertEquals(2, mandatory.size());
 

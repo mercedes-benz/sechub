@@ -7,7 +7,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PDSProdutParameterSetup {
+public class PDSProductParameterSetup {
 
     private List<PDSProductParameterDefinition> mandatory = new ArrayList<>();
     private List<PDSProductParameterDefinition> optional = new ArrayList<>();
