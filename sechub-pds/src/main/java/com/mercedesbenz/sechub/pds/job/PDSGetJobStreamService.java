@@ -9,9 +9,6 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.mercedesbenz.sechub.pds.usecase.PDSStep;
-import com.mercedesbenz.sechub.pds.usecase.UseCaseUserFetchesJobStream;
-
 @Service
 public class PDSGetJobStreamService {
 
@@ -20,7 +17,6 @@ public class PDSGetJobStreamService {
     @Autowired
     PDSJobRepository repository;
 
-    @UseCaseUserFetchesJobStream(@PDSStep(name = "service call", description = "returns job's error stream", number = 2))
     public String getJobErrorStream(UUID jobUUID) {
         notNull(jobUUID, "job uuid may not be null!");
 
@@ -29,7 +25,6 @@ public class PDSGetJobStreamService {
         return truncateStream(job.getErrorStreamText());
     }
 
-    @UseCaseUserFetchesJobStream(@PDSStep(name = "service call", description = "returns job's output stream", number = 2))
     public String getJobOutputStream(UUID jobUUID) {
         notNull(jobUUID, "job uuid may not be null!");
 
@@ -39,8 +34,9 @@ public class PDSGetJobStreamService {
     }
 
     private String truncateStream(String stream) {
-        if (stream.length() > TRUNCATED_STREAM_SIZE)
-            return stream.substring(0, TRUNCATED_STREAM_SIZE);
+        if (stream.length() > TRUNCATED_STREAM_SIZE) {
+            return stream.substring(stream.length() - TRUNCATED_STREAM_SIZE, stream.length());
+        }
         return stream;
     }
 
