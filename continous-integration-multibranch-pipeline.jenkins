@@ -100,7 +100,7 @@ pipeline {
                         /* avoid race conditions with management port */
                         MANAGEMENT_SERVER_PORT = getJenkinsExecutorPort(10250)
 
-                        DEBUG_ENABLED = ${params.DEBUG_ENABLED}
+                        DEBUG_ENABLED = "${params.DEBUG_ENABLED}"
                     }
                     steps {
                         script{
