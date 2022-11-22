@@ -11,6 +11,7 @@ import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironment;
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
 import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
 import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelSupport;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationTypeListParser;
 
 /**
@@ -57,5 +58,10 @@ public class PDSPojoFactory {
     @Bean
     TextFileReader createTextFileReader() {
         return new TextFileReader();
+    }
+
+    @Bean
+    SecHubConfigurationModelSupport createSecHubConfigurationModelSupport() {
+        return new SecHubConfigurationModelSupport();
     }
 }

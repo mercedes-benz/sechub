@@ -21,7 +21,7 @@
                     },
                     {
                         "key":  "pds.config.supported.datatypes",
-                        "description": "Supported data types. Should not be changed at runtime",
+                        "description": "Supported data types. Could be changed at runtime via executor configuration as well -  but would makes test situation more complex.",
                         "default": "source"
                     }
                 ],
@@ -167,11 +167,11 @@
                 },
                 {
                   "key": "pds.checkmarx.user",
-                  "description": "The user (or an evn entry) of the checkmarx user."
+                  "description": "The user (or an environment entry) of the checkmarx user."
                 },
                 {
                   "key": "pds.checkmarx.password",
-                  "description": "The password (or an evn entry) of the checkmarx user."
+                  "description": "The password (or an environment entry) of the checkmarx user."
                 },
                 {
                    "key":  "pds.config.supported.datatypes",

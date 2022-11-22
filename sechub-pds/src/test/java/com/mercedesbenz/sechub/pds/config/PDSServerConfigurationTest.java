@@ -56,7 +56,7 @@ class PDSServerConfigurationTest {
         /* test */
         assertEquals("example_with_unknown_parts", configuration.getServerId());
     }
-    
+
     @Test
     void example_configuration_from_documentation_can_be_loaded() throws Exception {
         /* prepare */

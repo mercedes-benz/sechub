@@ -146,8 +146,24 @@ public class PDSJobConfigurationSupport {
         return getIntParameterOrDefault(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_PRODUCT_TIMEOUT_MINUTES, defaultValue);
     }
 
-    public Set<SecHubDataConfigurationType> getSupportedDataTypes() {
+    public String getProductId() {
+        return jobConfiguration.getProductId();
+    }
+
+    /**
+     * Resolves supported data types. Will inspect the job parameter value from the
+     * job configuration. If not available, the default value will be used (if
+     * existing). If still not defined, the fallback set
+     * {@link #FALLBACK_ALL_DATATYPES_SUPPORTED} will be returned.
+     *
+     * @param defaultValue, can be <code>null</code> or empty
+     * @return data types set, never <code>null</code>
+     */
+    public Set<SecHubDataConfigurationType> getSupportedDataTypes(String defaultValue) {
         String value = getStringParameterOrNull(PARAM_KEY_PDS_CONFIG_SUPPORTED_DATATYPES);
+        if (value == null || value.trim().isEmpty()) {
+            value = defaultValue;
+        }
 
         Set<SecHubDataConfigurationType> fromParser = getTypeListParser().fetchTypesAsSetOrNull(value);
         if (fromParser == null) {

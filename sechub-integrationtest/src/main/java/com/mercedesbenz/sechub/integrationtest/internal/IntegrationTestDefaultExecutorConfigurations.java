@@ -188,7 +188,19 @@ public class IntegrationTestDefaultExecutorConfigurations {
             "default", false,
             PDSIntTestProductIdentifier.PDS_CHECKMARX_INTEGRATIONTEST,
             StorageType.REUSE_SECHUB_DATA,
-            PDS_CODESCAN, definePDSCheckmarxParameters());
+            PDS_CODESCAN, definePDSCheckmarxParameters(null,null));
+
+    public static final TestExecutorConfig PDS_V1_CHECKMARX_INTEGRATIONTEST_WRONG_WITH_SOURCE_AND_BINARY = definePDSScan(
+            "default", false,
+            PDSIntTestProductIdentifier.PDS_CHECKMARX_INTEGRATIONTEST,
+            StorageType.REUSE_SECHUB_DATA,
+            PDS_CODESCAN, definePDSCheckmarxParameters("source,binary",null));
+
+    public static final TestExecutorConfig PDS_V1_CHECKMARX_INTEGRATIONTEST_WITH_FILEFILTER_EXCLUDE_TEXTFILES = definePDSScan(
+            "default", false,
+            PDSIntTestProductIdentifier.PDS_CHECKMARX_INTEGRATIONTEST,
+            StorageType.REUSE_SECHUB_DATA,
+            PDS_CODESCAN, definePDSCheckmarxParameters(null,"*.txt"));
 
 
     /* @formatter:on */
@@ -202,7 +214,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
         return Collections.unmodifiableList(registeredConfigurations);
     }
 
-    private static List<TestExecutorSetupJobParam> definePDSCheckmarxParameters() {
+    private static List<TestExecutorSetupJobParam> definePDSCheckmarxParameters(String overrideSupportedDataTypes, String fileFilterExcludes) {
         List<TestExecutorSetupJobParam> parameters = new ArrayList<>();
 
         parameters.add(new TestExecutorSetupJobParam(KEY_PDS_CHECKMARX_ALWAYS_FULLSCAN_ENABLED, "true"));
@@ -212,6 +224,13 @@ public class IntegrationTestDefaultExecutorConfigurations {
         parameters.add(new TestExecutorSetupJobParam(KEY_PDS_CHECKMARX_PASSWORD, "checkmarx-fakepassword"));
 
         parameters.add(new TestExecutorSetupJobParam(KEY_PDS_CHECKMARX_ENGINE_CONFIGURATION_NAME, "engine1"));
+
+        if (overrideSupportedDataTypes != null) {
+            parameters.add(new TestExecutorSetupJobParam(PARAM_KEY_PDS_CONFIG_SUPPORTED_DATATYPES, overrideSupportedDataTypes));
+        }
+        if (fileFilterExcludes != null) {
+            parameters.add(new TestExecutorSetupJobParam(PARAM_KEY_PDS_CONFIG_FILEFILTER_EXCLUDES, fileFilterExcludes));
+        }
 
         addCheckmarxDefaultTeamIdAndPresetMappingData(parameters);
 

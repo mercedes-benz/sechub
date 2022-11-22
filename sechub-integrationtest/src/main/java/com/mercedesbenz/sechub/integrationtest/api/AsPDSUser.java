@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatus;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSupport;
 import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData;
@@ -49,6 +50,17 @@ public class AsPDSUser {
 
     public String getJobStatus(UUID jobUUID) {
         return getRestHelper().getJSON(getPDSUrlBuilder().buildGetJobStatus(jobUUID));
+    }
+
+    public PDSJobStatusState getJobStatusState(UUID jobUUID) {
+        PDSJobStatus pdsJobStatus = getJobStatusObject(jobUUID);
+        return pdsJobStatus.state;
+    }
+
+    public PDSJobStatus getJobStatusObject(UUID jobUUID) {
+        String status = getJobStatus(jobUUID);
+        PDSJobStatus pdsJobStatus = TestJSONHelper.get().createFromJSON(status, PDSJobStatus.class);
+        return pdsJobStatus;
     }
 
     public String getJobReport(UUID jobUUID) {

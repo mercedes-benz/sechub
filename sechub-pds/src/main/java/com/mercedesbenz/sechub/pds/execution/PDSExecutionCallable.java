@@ -29,6 +29,7 @@ import com.mercedesbenz.sechub.pds.job.JobConfigurationData;
 import com.mercedesbenz.sechub.pds.job.PDSCheckJobStatusService;
 import com.mercedesbenz.sechub.pds.job.PDSJobConfiguration;
 import com.mercedesbenz.sechub.pds.job.PDSJobTransactionService;
+import com.mercedesbenz.sechub.pds.job.PDSWorkspacePreparationResult;
 import com.mercedesbenz.sechub.pds.job.PDSWorkspaceService;
 import com.mercedesbenz.sechub.pds.job.WorkspaceLocationData;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
@@ -99,9 +100,18 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
             long minutesToWaitForResult = calculateTimeToWaitForProductInMinutes();
 
-            pepareWorkspace(config, data);
-            createProcess(pdsJobUUID, config, getWorkspaceService().getProductPathFor(config));
-            waitForProcessEndAndGetResultByFiles(result, pdsJobUUID, config, minutesToWaitForResult);
+            PDSWorkspacePreparationResult preparationResult = pepareWorkspace(config, data);
+            if (preparationResult.isLauncherScriptExecutable()) {
+
+                createProcess(pdsJobUUID, config, getWorkspaceService().getProductPathFor(config));
+                waitForProcessEndAndGetResultByFiles(result, pdsJobUUID, config, minutesToWaitForResult);
+
+            } else {
+                LOG.info("Workspace not prepared enough for launcher script, so skipping execution of product: {} for pds job: {}", config.getProductId(),
+                        pdsJobUUID);
+
+                result.exitCode = 0;
+            }
 
         } catch (Exception e) {
 
@@ -142,14 +152,14 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         return minutesToWaitForResult;
     }
 
-    private void pepareWorkspace(PDSJobConfiguration config, JobConfigurationData data) throws IOException {
+    private PDSWorkspacePreparationResult pepareWorkspace(PDSJobConfiguration config, JobConfigurationData data) throws IOException {
         LOG.debug("Start workspace preparation for PDS job: {}", pdsJobUUID);
 
-        getWorkspaceService().prepareWorkspace(pdsJobUUID, config, data.getMetaData());
-        getWorkspaceService().extractZipFileUploadsWhenConfigured(pdsJobUUID, config);
-        getWorkspaceService().extractTarFileUploadsWhenConfigured(pdsJobUUID, config);
+        PDSWorkspaceService workspaceService = getWorkspaceService();
+        PDSWorkspacePreparationResult result = workspaceService.prepare(pdsJobUUID, config, data.getMetaData());
 
-        LOG.debug("Workspace preparation done for PDS job: {}", pdsJobUUID);
+        LOG.debug("Workspace preparation done for PDS job: {} - result: {}", pdsJobUUID, result);
+        return result;
     }
 
     void waitForProcessEndAndGetResultByFiles(PDSExecutionResult result, UUID jobUUID, PDSJobConfiguration config, long minutesToWaitForResult)

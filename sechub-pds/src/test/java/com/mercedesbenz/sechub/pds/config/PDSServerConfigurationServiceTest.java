@@ -39,6 +39,96 @@ public class PDSServerConfigurationServiceTest {
         serviceToTest.shutdownService = shutdownService;
     }
 
+    @Test
+    void getParameterOrNull_returns_mandatory_default_value_when_available() {
+
+        /* prepare */
+        PDSProductParameterDefinition parameterDefinition = new PDSProductParameterDefinition();
+        parameterDefinition.setKey("key");
+        parameterDefinition.setDefault("mandatory-default");
+
+        PDSServerConfiguration configuration = new PDSServerConfiguration();
+        serviceToTest.configuration = configuration;
+
+        PDSProductSetup productSetup = new PDSProductSetup();
+        productSetup.setId("productid");
+        configuration.getProducts().add(productSetup);
+
+        PDSProductParameterSetup parameters = productSetup.getParameters();
+        List<PDSProductParameterDefinition> mandatories = parameters.getMandatory();
+
+        mandatories.add(parameterDefinition);
+
+        /* execute */
+        String result = serviceToTest.getProductParameterDefaultValueOrNull("productid", "key");
+
+        /* test */
+        assertEquals("mandatory-default", result);
+
+    }
+
+    @Test
+    void getParameterOrNull_returns_optional_default_value_when_available() {
+
+        /* prepare */
+        PDSProductParameterDefinition parameterDefinition = new PDSProductParameterDefinition();
+        parameterDefinition.setKey("key");
+        parameterDefinition.setDefault("optional-default");
+
+        PDSServerConfiguration configuration = new PDSServerConfiguration();
+        serviceToTest.configuration = configuration;
+
+        PDSProductSetup productSetup = new PDSProductSetup();
+        productSetup.setId("productid");
+        configuration.getProducts().add(productSetup);
+
+        PDSProductParameterSetup parameters = productSetup.getParameters();
+        List<PDSProductParameterDefinition> optionals = parameters.getOptional();
+
+        optionals.add(parameterDefinition);
+
+        /* execute */
+        String result = serviceToTest.getProductParameterDefaultValueOrNull("productid", "key");
+
+        /* test */
+        assertEquals("optional-default", result);
+
+    }
+
+    @Test
+    void getParameterOrNull_returns_mandatory_default_value_when_optional_and_mandatory_defaults_available() {
+
+        /* prepare */
+        PDSProductParameterDefinition optionalParameterDefinition = new PDSProductParameterDefinition();
+        optionalParameterDefinition.setKey("key");
+        optionalParameterDefinition.setDefault("optional-default");
+
+        PDSProductParameterDefinition mandatoryParameterDefinition = new PDSProductParameterDefinition();
+        mandatoryParameterDefinition.setKey("key");
+        mandatoryParameterDefinition.setDefault("mandatory-default");
+
+        PDSServerConfiguration configuration = new PDSServerConfiguration();
+        serviceToTest.configuration = configuration;
+
+        PDSProductSetup productSetup = new PDSProductSetup();
+        productSetup.setId("productid");
+        configuration.getProducts().add(productSetup);
+
+        PDSProductParameterSetup parameters = productSetup.getParameters();
+        List<PDSProductParameterDefinition> optionals = parameters.getOptional();
+        List<PDSProductParameterDefinition> mandatories = parameters.getMandatory();
+
+        optionals.add(optionalParameterDefinition);
+        mandatories.add(mandatoryParameterDefinition);
+
+        /* execute */
+        String result = serviceToTest.getProductParameterDefaultValueOrNull("productid", "key");
+
+        /* test */
+        assertEquals("mandatory-default", result);
+
+    }
+
     @ParameterizedTest
     @ValueSource(ints = { 0, -1 })
     void when_minutesToWaitForProduct_is_lower_than_1_systemwide_productTimeOutInMinutes_is_1_after_postconstruct(int configuredMinutes) {
