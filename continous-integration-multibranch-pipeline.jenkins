@@ -12,6 +12,10 @@ def sechubGitBranch ="unknown"
 pipeline {
     agent any
 
+    parameters {
+        booleanParam(name: 'DEBUG_ENABLED', defaultValue: false, description: 'When enabled more informations will be printed.')
+    }
+
     environment {
         SECHUB_TRUSTALL= "true" // necessary for integration tests
         SECHUB_SCAN_ENABLED = getStringCredentialsOrUndefined('sechub-scan-enabled')
