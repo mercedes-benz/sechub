@@ -70,7 +70,7 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
                     + "Every file which is matched by one of the patterns will be included - except those which are explicitly excluded.\n\n").markSendToPDS()),
 
     /**
-     * Contains file filter include information
+     * Contains trust all certificates information
      */
     PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED(new ExecutionPDSKey(
             PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED,
@@ -83,6 +83,12 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
             "Can be " + SecHubDataConfigurationType.SOURCE + ", " + SecHubDataConfigurationType.BINARY + ", " + SecHubDataConfigurationType.NONE
                     + " or a combination as a comma separated list. This data should"
                     + "normally not be defined via a default value of an optional PDS configuration parameter.").markSendToPDS()),
+
+    /**
+     * Contains product timeout information
+     */
+    PDS_CONFIG_TIMEOUT_PRODUCT_MINUTES(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_PRODUCT_TIMEOUT_MINUTES,
+            "Maximum allowed time in minutes, before a producct will be timeout - means launcher script is automatically canceled by PDS").markSendToPDS()),
 
     /**
      * Contains file filter exclude information

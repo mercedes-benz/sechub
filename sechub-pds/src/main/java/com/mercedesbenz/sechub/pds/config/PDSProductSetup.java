@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.config;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PDSProductSetup {
     private static final boolean DEFAULT_EXTRACT_UPLOADS = true;
-
-    private static final long DEFAULT_MINUTES_TO_WAIT_FOR_PRODUCRESULT = 120; // 2 hours
 
     private boolean extractUploads = DEFAULT_EXTRACT_UPLOADS;
 
@@ -16,8 +16,6 @@ public class PDSProductSetup {
 
     private String path;
 
-    private long minutesToWaitForProductResult = DEFAULT_MINUTES_TO_WAIT_FOR_PRODUCRESULT;
-
     /**
      * The description. Will be available at admin UI at configuration time.
      * Contains hints about usage (e.g. which variable must be set etc) - but is
@@ -25,13 +23,13 @@ public class PDSProductSetup {
      */
     private String description;
 
-    private PDSProdutParameterSetup parameters = new PDSProdutParameterSetup();
+    private PDSProductParameterSetup parameters = new PDSProductParameterSetup();
 
-    public PDSProdutParameterSetup getParameters() {
+    public PDSProductParameterSetup getParameters() {
         return parameters;
     }
 
-    public void setParameters(PDSProdutParameterSetup parameters) {
+    public void setParameters(PDSProductParameterSetup parameters) {
         this.parameters = parameters;
     }
 
@@ -79,17 +77,6 @@ public class PDSProductSetup {
 
     public void setExtractUploads(boolean extractUploads) {
         this.extractUploads = extractUploads;
-    }
-
-    public long getMinutesToWaitForProductResult() {
-        if (minutesToWaitForProductResult < 1) {
-            minutesToWaitForProductResult = DEFAULT_MINUTES_TO_WAIT_FOR_PRODUCRESULT;
-        }
-        return minutesToWaitForProductResult;
-    }
-
-    public void setMinutesToWaitForProductResult(long minutesToWaitForProductResult) {
-        this.minutesToWaitForProductResult = minutesToWaitForProductResult;
     }
 
 }

@@ -39,6 +39,8 @@ spec:
                       value: "{{ .Values.users.technical.id }}"
                     - name: TECHUSER_APITOKEN
                       value: "{{ .Values.users.technical.apiToken }}"
+                    - name: PDS_HEARTBEAT_LOGGING
+                      value: "{{ .Values.pds.heartbeatLogging }}"
                     - name: ZAP_API_KEY
                       value: "{{ .Values.zap.apiKey }}"
                     - name: PDS_CONFIG_EXECUTE_QUEUE_MAX
@@ -133,7 +135,7 @@ spec:
                        name: pds-owaspzap-zap-workspace
                      {{- end}}
             volumes:
-               {{- if .Values.pds.volumes.pdsWorkspace.enabled }}
+                {{- if .Values.pds.volumes.pdsWorkspace.enabled }}
                 - name: pds-owaspzap-pds-workspace
                   ephemeral:
                     volumeClaimTemplate:
@@ -145,8 +147,8 @@ spec:
                         resources:
                           requests:
                             storage: "{{ .Values.pds.volumes.pdsWorkspace.size }}"
-               {{- end}}
-               {{- if .Values.pds.volumes.zapWorkspace.enabled }}
+                {{- end}}
+                {{- if .Values.pds.volumes.zapWorkspace.enabled }}
                 - name: pds-owaspzap-zap-workspace
                   ephemeral:
                     volumeClaimTemplate:
@@ -158,4 +160,4 @@ spec:
                         resources:
                           requests:
                             storage: "{{ .Values.pds.volumes.zapWorkspace.size }}"
-               {{- end}}
+                {{- end}}

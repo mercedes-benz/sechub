@@ -35,7 +35,7 @@ public class PDSConfigurationAutoFix {
     }
 
     private void ensureSupportedDatatypesDefined(PDSProductSetup productSetup) {
-        PDSProdutParameterSetup parameters = productSetup.getParameters();
+        PDSProductParameterSetup parameters = productSetup.getParameters();
         String key = PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SUPPORTED_DATATYPES;
 
         PDSProductParameterDefinition supportedDataTypes = findDefinition(key, parameters.getMandatory());

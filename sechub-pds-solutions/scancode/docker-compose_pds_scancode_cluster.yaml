@@ -7,7 +7,7 @@ services:
             args:
                 - BASE_IMAGE=${BASE_IMAGE}
             context: docker/
-            dockerfile: ScanCode-Debian.dockerfile
+            dockerfile: Scancode-Debian.dockerfile
         env_file:
             - .env
             - .env-cluster

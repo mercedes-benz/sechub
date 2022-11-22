@@ -20,6 +20,7 @@ pds:
         execute:
             queueMax: 10
             workerThreadCount: 1
+    heartbeatLogging: "true"
     logging:
         type:
             enabled: false
@@ -30,12 +31,12 @@ pds:
         enabled: false
     keepContainerAliveAfterPDSCrashed: false
     volumes:
-      pdsWorkspace:
-         enabled: false
-         size: 3Gi
-      zapWorkspace:
-         enabled: false
-         size: 15Gi
+        pdsWorkspace:
+            enabled: false
+            size: 3Gi
+        zapWorkspace:
+            enabled: false
+            size: 15Gi
 
 zap:
     apiKey: "<random-api-key>"
@@ -45,10 +46,12 @@ zap:
         forPdsTargetType:
 
 users:
-    technical:
-        id: "techuser"
     admin:
         id: "admin"
+        apiToken: "my-admin-apitoken"
+    technical:
+        id: "techuser"
+        apiToken: "my-techuser-apitoken"
 
 storage:
     local:
@@ -74,10 +77,10 @@ database:
 networkPolicy:
     enabled: false
     ingress:
-    - from:
-        - podSelector:
-            matchLabels:
-                name: sechub-server
-        - podSelector:
-            matchLabels:
-                name: sechub-adminserver
+        - from:
+              - podSelector:
+                    matchLabels:
+                        name: sechub-server
+              - podSelector:
+                    matchLabels:
+                        name: sechub-adminserver
