@@ -99,8 +99,6 @@ pipeline {
                         
                         /* avoid race conditions with management port */
                         MANAGEMENT_SERVER_PORT = getJenkinsExecutorPort(10250)
-
-                        DEBUG_ENABLED = "${params.DEBUG_ENABLED}"
                     }
                     steps {
                         script{
@@ -186,7 +184,10 @@ void callGradleWrapper(String gradleCommand) {
      env.JAVA_HOME = "${jdk}"
 
      if (isUnix()) {
-           sh "./gradlew ${gradleCommand}"
+        sh '''
+            export DEBUG_ENABLED
+            ./gradlew ${gradleCommand}
+        '''
      } else {
            bat "gradlew.bat ${gradleCommand}"
      }
