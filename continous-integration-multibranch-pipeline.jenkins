@@ -182,12 +182,12 @@ int getJenkinsExecutorPort(int originPort){
 void callGradleWrapper(String gradleCommand) {
      jdk = tool name: 'JDK_11'
      env.JAVA_HOME = "${jdk}"
+     if (params.DEBUG_ENABLED) {
+        env.DEBUG_ENABLED = "true"
+     }
 
      if (isUnix()) {
-        sh '''
-            export DEBUG_ENABLED
-            ./gradlew ${gradleCommand}
-        '''
+        sh "./gradlew ${gradleCommand}"
      } else {
            bat "gradlew.bat ${gradleCommand}"
      }
