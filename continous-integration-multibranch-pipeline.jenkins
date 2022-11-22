@@ -80,8 +80,8 @@ pipeline {
                 stage('Integration tests') {
                     environment {
                         /* against build race conditions - See TestPortProvider.java */
-                        SERVER_PORT= getJenkinsExecutorPort(8243)
-                        PDS_PORT= getJenkinsExecutorPort(8543)
+                        SERVER_PORT = getJenkinsExecutorPort(8243)
+                        PDS_PORT = getJenkinsExecutorPort(8543)
 
                         /* setup s3 storage when defined as secrets - otherwise sharedvolume will be used with temp */
                         SECHUB_STORAGE_S3_ACCESSKEY = getStringCredentialsOrUndefined('sechub-storage-s3-accesskey')
@@ -98,7 +98,9 @@ pipeline {
                         SECHUB_INTEGRATIONTEST_PREPARE_WAIT_MS=100
                         
                         /* avoid race conditions with management port */
-                        MANAGEMENT_SERVER_PORT= getJenkinsExecutorPort(10250)
+                        MANAGEMENT_SERVER_PORT = getJenkinsExecutorPort(10250)
+
+                        DEBUG_ENABLED = ${params.DEBUG_ENABLED}
                     }
                     steps {
                         script{
