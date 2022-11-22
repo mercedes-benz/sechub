@@ -56,5 +56,17 @@ class PDSServerConfigurationTest {
         /* test */
         assertEquals("example_with_unknown_parts", configuration.getServerId());
     }
+    
+    @Test
+    void example_configuration_from_documentation_can_be_loaded() throws Exception {
+        /* prepare */
+        String json = TestFileReader.loadTextFile(new File("./..//sechub-doc/src/docs/asciidoc/documents/pds/product_delegation_server_config_example1.json"));
+
+        /* execute */
+        PDSServerConfiguration configuration = PDSServerConfiguration.fromJSON(json);
+
+        /* test */
+        assertEquals("UNIQUE_SERVER_ID", configuration.getServerId());
+    }
 
 }

@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import com.mercedesbenz.sechub.commons.TextFileReader;
 import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.archive.ArchiveExtractionResult;
+import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType;
 import com.mercedesbenz.sechub.commons.archive.SecHubFileStructureDataProvider;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
@@ -269,9 +270,7 @@ public class PDSWorkspaceService {
 
     public void extractZipFileUploadsWhenConfigured(UUID jobUUID, PDSJobConfiguration config) throws IOException {
         PDSProductSetup productSetup = resolveProductSetup(config);
-        if (!productSetup.isExtractUploads()) {
-            return;
-        }
+
         ScanType scanType = productSetup.getScanType();
         SecHubFileStructureDataProvider provider = resolveFileStructureDataProviderOrNull(jobUUID, config, scanType);
         extractUploadedZipFiles(jobUUID, true, provider);
@@ -279,9 +278,7 @@ public class PDSWorkspaceService {
 
     public void extractTarFileUploadsWhenConfigured(UUID jobUUID, PDSJobConfiguration config) throws IOException {
         PDSProductSetup productSetup = resolveProductSetup(config);
-        if (!productSetup.isExtractUploads()) {
-            return;
-        }
+        
         ScanType scanType = productSetup.getScanType();
         SecHubFileStructureDataProvider provider = resolveFileStructureDataProviderOrNull(jobUUID, config, scanType);
         exractUploadedTarFiles(jobUUID, true, provider);
@@ -348,10 +345,13 @@ public class PDSWorkspaceService {
         if (!extractionTargetFolder.mkdirs()) {
             throw new IOException("Was not able to create " + extractionTargetFolder.getAbsolutePath());
         }
+        
+        ArchiveSupport archiveSupport = archiveSupportProvider.getArchiveSupport();
 
         for (File archiveFile : archiveFiles) {
             try (FileInputStream archiveFileInputStream = new FileInputStream(archiveFile)) {
-                ArchiveExtractionResult extractionResult = archiveSupportProvider.getArchiveSupport().extract(archiveType, archiveFileInputStream,
+                
+                ArchiveExtractionResult extractionResult = archiveSupport.extract(archiveType, archiveFileInputStream,
                         archiveFile.getAbsolutePath(), extractionTargetFolder, configuration);
 
                 LOG.info("Extracted {} files to {}", extractionResult.getExtractedFilesCount(), extractionResult.getTargetLocation());

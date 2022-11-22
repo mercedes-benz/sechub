@@ -25,7 +25,10 @@
                     {
                         "key" : "product1.add.tipoftheday",
                         "description" : "boolean as string, when 'true' we add always a tip of the day as info to results"
-                    }  
+                    }, {
+                        "key" : "pds.config.supported.datatype", //<11>
+                        "default" : "source" 
+                    } 
                 ]
             }
             
@@ -34,8 +37,15 @@
         {
             "id" : "PRODUCT_2",
             "path" : "/srv/security/scanner2.sh",
-            "scanType" : "infraScan" ,
-            "extractUploads" : false //<11>
+            "scanType" : "infraScan",
+            "parameters" : {
+                "mandatory" : [
+                    {
+                        "key" : "pds.config.supported.datatype", //<12>
+                        "default" : "none" 
+                    }  
+                ]
+            }
         }
     ]
 }
