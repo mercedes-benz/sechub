@@ -6,13 +6,13 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DefaultEnvironmentEntryProviderTest {
+public class TestEnvironmentProviderTest {
 
-    private DefaultEnvironmentEntryProvider providerToTest;
+    private TestEnvironmentProvider providerToTest;
 
     @Before
     public void before() {
-        providerToTest = new DefaultEnvironmentEntryProvider();
+        providerToTest = new TestEnvironmentProvider();
     }
 
     @Test

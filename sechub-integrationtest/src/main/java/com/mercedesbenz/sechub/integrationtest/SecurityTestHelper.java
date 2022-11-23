@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.ConnectException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.cert.Certificate;
@@ -126,11 +127,6 @@ public class SecurityTestHelper {
          * "java.lang.IllegalStateException: connection not yet open"
          */
         print_content(httpsConnection);
-        /*
-         * next connect is important, otherwise we have a
-         * "java.lang.IllegalStateException: connection not yet open"
-         */
-        httpsConnection.connect();
 
         fetchContentAndCheckForSSLHandshakeFailures(context, httpsConnection);
     }
@@ -158,17 +154,23 @@ public class SecurityTestHelper {
 
     }
 
-    private void fetchContentAndCheckForSSLHandshakeFailures(SSLTestContext context, HttpsURLConnection con) {
-        if (con == null) {
+    private void fetchContentAndCheckForSSLHandshakeFailures(SSLTestContext context, HttpsURLConnection httpsConnection) {
+        if (httpsConnection == null) {
             throw new IllegalArgumentException("con may not be null!");
         }
         SSLHandshakeException handshakeException = null;
         try {
 
-            LOG.info("Response Code : " + con.getResponseCode());
-            LOG.info("Cipher Suite : " + con.getCipherSuite());
+            /*
+             * next connect is important, otherwise we have a
+             * "java.lang.IllegalStateException: connection not yet open"
+             */
+            httpsConnection.connect();
 
-            Certificate[] certs = con.getServerCertificates();
+            LOG.info("Response Code : " + httpsConnection.getResponseCode());
+            LOG.info("Cipher Suite : " + httpsConnection.getCipherSuite());
+
+            Certificate[] certs = httpsConnection.getServerCertificates();
             for (Certificate cert : certs) {
                 LOG.info("Cert Type : " + cert.getType());
                 LOG.info("Cert Hash Code : " + cert.hashCode());
@@ -180,6 +182,8 @@ public class SecurityTestHelper {
             throw new IllegalStateException("should not happen in test case");
         } catch (SSLHandshakeException e) {
             handshakeException = e;
+        } catch (ConnectException e) {
+            fail("Was not able to connect to " + httpsConnection.getURL() + " - output was:" + e.getMessage());
         } catch (IOException e) {
             throw new IllegalStateException("should not happen in test case");
         }
@@ -377,7 +381,7 @@ public class SecurityTestHelper {
 
     }
 
-    /* Sanity check - when no server is available we have only unknwon results */
+    /* Sanity check - when no server is available we have only unknown results */
     private void assertNoConnectionHasBeenRefused() {
         boolean atLeastOneConnectionRefused = false;
         for (CipherCheck check : cipherTestData.cipherChecks) {
