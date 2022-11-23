@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: MIT
 
-declare -r checkmarx_wrapper="$TOOL_FOLDER/sechub-pds-wrapper-checkmarx.jar"
+declare -r checkmarx_wrapper="$TOOL_FOLDER/sechub-wrapper-checkmarx.jar"
 
 options="";
 options="$options -Dspring.profiles.active=default"
