@@ -3,8 +3,7 @@
 
 declare -r checkmarx_wrapper="$TOOL_FOLDER/sechub-wrapper-checkmarx.jar"
 
-options="";
-options="$options -Dspring.profiles.active=default"
+options="-Dspring.profiles.active=default"
 
 echo "######################################################"
 echo "# Starting Checkmarx PDS-solution                    #"
