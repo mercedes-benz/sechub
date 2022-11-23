@@ -237,8 +237,9 @@ function handleArguments() {
 log ">> `basename $0` 1:$1, 2:$2, 3:$3, 4:$4"
 log ">> *************************"
 
-if [ "$DEBUG_ENABLED" = "true" ] ; then
-    echo "### environment variables set:"
+if [ "$DEBUG_OUTPUT_ENABLED" = "true" ] ; then
+    echo ">> environment variables set:"
+    echo "###"
     env | sort
     echo "###"
 fi

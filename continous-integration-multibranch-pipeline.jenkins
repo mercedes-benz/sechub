@@ -13,7 +13,7 @@ pipeline {
     agent any
 
     parameters {
-        booleanParam(name: 'DEBUG_ENABLED', defaultValue: false, description: 'When enabled more informations will be printed.')
+        booleanParam(name: 'DEBUG_OUTPUT_ENABLED', defaultValue: false, description: 'When enabled more informations will be printed.')
     }
 
     environment {
@@ -24,15 +24,15 @@ pipeline {
 
     stages {
 
-         stage('Initialize') {
-             steps {
-               script{
+        stage('Initialize') {
+            steps {
+                script{
                     sechubGitBranch = sh(returnStdout: true, script: "git branch | grep \\* | cut -d ' ' -f2").trim()
                     echo "Branch is $sechubGitBranch"
                     if( sechubGitBranch == "master" ) {
-                       echo "Cancel build, because master is built by release-pipeline.jenkins!"
-                       currentBuild.result = 'SUCCESS'
-                       return
+                        echo "Cancel build, because master is built by release-pipeline.jenkins!"
+                        currentBuild.result = 'SUCCESS'
+                        return
                     }
                 }
             }
@@ -151,8 +151,8 @@ pipeline {
             )
         }
         fixed {
-             emailext (
-               subject:"[ BUILD FIXED ] Build:${env.BUILD_NUMBER}, branch: $sechubGitBranch",
+            emailext (
+                subject:"[ BUILD FIXED ] Build:${env.BUILD_NUMBER}, branch: $sechubGitBranch",
                 body:"CI build for branch '$sechubGitBranch' has been fixed.\n"+
                      "${env.BUILD_URL}",
                 to: '$DEFAULT_RECIPIENTS'
@@ -161,7 +161,7 @@ pipeline {
         always {
             junit '**/build/test-results/*/TEST-*.xml'
             script{
-                  callGradleWrapper('createCombinedTestReportZipfile')
+                callGradleWrapper('createCombinedTestReportZipfile')
             }
             archive 'build/archive/combined-sechub-testreport.zip'
         }
@@ -180,49 +180,45 @@ int getJenkinsExecutorPort(int originPort){
 }
 
 void callGradleWrapper(String gradleCommand) {
-     jdk = tool name: 'JDK_11'
-     env.JAVA_HOME = "${jdk}"
-     if (params.DEBUG_ENABLED) {
-        env.DEBUG_ENABLED = "true"
-     }
+    jdk = tool name: 'JDK_11'
+    env.JAVA_HOME = "${jdk}"
 
-     if (isUnix()) {
+    if (isUnix()) {
         sh "./gradlew ${gradleCommand}"
-     } else {
-           bat "gradlew.bat ${gradleCommand}"
-     }
+    } else {
+        bat "gradlew.bat ${gradleCommand}"
+    }
 }
 
 void executeSecHubScan() {
-
-     if (isUnix()) {
-         sh "sechub scan"
-     } else {
-         bat "sechub.exe scan"
-     }
+    if (isUnix()) {
+        sh "sechub scan"
+    } else {
+        bat "sechub.exe scan"
+    }
 }
 
 Object getStringCredentialsOrUndefined(String id){
     result = 'undefined'
     if (stringCredentialsExist(id)){
         try {
-        withCredentials([string(credentialsId: id, variable: 'text')]) {
-          result = ''+text
+            withCredentials([string(credentialsId: id, variable: 'text')]) {
+                result = ''+text
+            }
+        } catch (_) {
         }
-      } catch (_) {
-      }
     }
     return result
 }
 
 boolean stringCredentialsExist(String id) {
-  try {
-    withCredentials([string(credentialsId: id, variable: 'irrelevant')]) {
-      true
+    try {
+        withCredentials([string(credentialsId: id, variable: 'irrelevant')]) {
+            true
+        }
+    } catch (_) {
+        false
     }
-  } catch (_) {
-    false
-  }
 }
 
 /**
@@ -343,6 +339,5 @@ class SecHubBuildContext{
     public String getReleaseInfo(){
         return releaseInfoString
     }
-
 
 }
