@@ -1,0 +1,16 @@
+# SPDX-License-Identifier: MIT
+
+version: "3"
+services:
+    pds-tern:
+        image: ${IMAGE}
+        container_name: pds-tern
+        privileged: true
+        env_file:
+            - .env
+        ports:
+            - "8444:8444" # Bind to all interfaces and make it network accessible (shortcut for 0.0.0.0:8444).
+        networks:
+            - "internal"
+networks:
+    internal:
