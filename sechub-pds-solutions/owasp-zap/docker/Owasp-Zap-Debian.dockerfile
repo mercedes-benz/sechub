@@ -13,7 +13,11 @@ LABEL maintainer="SecHub FOSS Team"
 ARG OWASPZAP_VERSION="2.12.0"
 ARG OWASPZAP_SHA256SUM="7eaf340d9fcc42576c7a5572249fe0bcad6e7acd68098a7ca110e64beab46207"
 
-ARG OWASPZAP_WRAPPER_VERSION=${PDS_VERSION}
+ARG OWASPZAP_WRAPPER_VERSION="0.33.0"
+
+# OWASP ZAP host and port
+ENV ZAP_HOST="127.0.0.1"
+ENV ZAP_PORT="8080"
 
 # Create folders & change owner of folders
 RUN mkdir --parents "/home/$USER/.ZAP/plugin"
