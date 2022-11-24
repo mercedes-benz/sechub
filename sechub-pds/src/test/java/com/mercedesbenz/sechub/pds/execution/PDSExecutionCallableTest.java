@@ -65,6 +65,7 @@ class PDSExecutionCallableTest {
         workspaceService = mock(PDSWorkspaceService.class);
         environmentService = mock(PDSExecutionEnvironmentService.class);
         jobStatusService = mock(PDSCheckJobStatusService.class);
+        pdsGetJobStreamService = mock(PDSGetJobStreamService.class);
         processAdapterFactory = mock(PDSProcessAdapterFactory.class);
         processAdapter = mock(ProcessAdapter.class);
 

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class PDSGetJobStreamService {
 
-    private static final int TRUNCATED_STREAM_SIZE = 2500;
+    protected static final int TRUNCATED_STREAM_SIZE = 2500;
 
     @Autowired
     PDSJobRepository repository;
@@ -33,7 +33,7 @@ public class PDSGetJobStreamService {
         return truncateStream(job.getOutputStreamText());
     }
 
-    private String truncateStream(String stream) {
+    protected String truncateStream(String stream) {
         if (stream.length() > TRUNCATED_STREAM_SIZE) {
             return stream.substring(stream.length() - TRUNCATED_STREAM_SIZE, stream.length());
         }
