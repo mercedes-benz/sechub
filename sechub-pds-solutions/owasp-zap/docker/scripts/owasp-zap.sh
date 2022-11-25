@@ -16,7 +16,7 @@ echo "Starting up OWASP-ZAP server"
 owasp-zap -daemon -silent -nostdout -host $ZAP_HOST -port $ZAP_PORT -config api.key=$ZAP_API_KEY &
 
 echo "Waiting for OWASP-ZAP to start"
-wget --quiet --output-document=- --retry-connrefused --tries=20 --waitretry=6 --header="Accept: application/json" --header="X-ZAP-API-Key: $ZAP_API_KEY" http://$ZAP_HOST:$ZAP_PORT/JSON/core/view/version
+wget --quiet --output-document=- --retry-connrefused --tries=20 --waitretry=6 --header="Accept: application/json" --header="X-ZAP-API-Key: $ZAP_API_KEY" --no-check-certificate https://$ZAP_HOST:$ZAP_PORT/JSON/core/view/version
 if [ $? -ne 0 ]
 then
     echo "OWASP-ZAP did not start after waiting for 2 minutes"
