@@ -18,11 +18,6 @@
                     {
                         "key": "product1.level",
                         "description": "numeric, 1-gets all, 2-only critical,fatal and medium, 3- only critical and fatal"
-                    },
-                    {
-                        "key":  "pds.config.supported.datatypes",
-                        "description": "Supported data types. Could be changed at runtime via executor configuration as well -  but would makes test situation more complex.",
-                        "default": "source"
                     }
                 ],
                 "optional": [
