@@ -52,8 +52,7 @@ public class PDSGetJobStreamServiceTest {
     public void truncate_stream_smaller_then_truncated_stream_size() {
         /* prepare */
         int smallStreamSize = TRUNCATED_STREAM_SIZE - 10;
-        String smallStream = "x";
-        smallStream = smallStream.repeat(smallStreamSize);
+        String smallStream = "x".repeat(smallStreamSize);
 
         /* execute */
         String truncateResult = serviceToTest.truncateStream(smallStream);
@@ -67,8 +66,7 @@ public class PDSGetJobStreamServiceTest {
     public void truncate_stream_larger_then_truncated_stream_size() {
         /* prepare */
         int largeStreamSize = TRUNCATED_STREAM_SIZE + 10;
-        String largeStream = "x";
-        largeStream = largeStream.repeat(largeStreamSize);
+        String largeStream = "x".repeat(largeStreamSize);
 
         /* execute */
         String truncateResult = serviceToTest.truncateStream(largeStream);
@@ -82,8 +80,7 @@ public class PDSGetJobStreamServiceTest {
     public void truncate_stream_same_as_truncated_stream_size() {
         /* prepare */
         int sameStreamSize = TRUNCATED_STREAM_SIZE;
-        String sameStream = "x";
-        sameStream = sameStream.repeat(sameStreamSize);
+        String sameStream = "x".repeat(sameStreamSize);
 
         /* execute */
         String truncateResult = serviceToTest.truncateStream(sameStream);
