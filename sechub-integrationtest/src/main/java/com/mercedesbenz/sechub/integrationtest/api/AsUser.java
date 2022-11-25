@@ -740,19 +740,18 @@ public class AsUser {
         }
     }
 
-    public File downloadAsTempFileFromURL(String url, UUID jobUUID) {
-        String fileName = "sechub-file-redownload-" + jobUUID.toString();
-        String fileEnding = ".zip";
-        return downloadAsTempFileFromURL(url, jobUUID, fileName, fileEnding);
+    public File downloadAsTempFileFromURL(String url, UUID jobUUID, String fileName) {
+        String prefix = "sechub-file-redownload-" + jobUUID.toString();
+        return downloadAsTempFileFromURL(url, jobUUID, prefix, fileName);
     }
 
-    public File downloadAsTempFileFromURL(String url, UUID jobUUID, String fileName, String fileEnding) {
+    public File downloadAsTempFileFromURL(String url, UUID jobUUID, String prefix, String fileEnding) {
 
         // Optional Accept header
         RequestCallback requestCallback = request -> request.getHeaders().setAccept(Arrays.asList(MediaType.APPLICATION_OCTET_STREAM, MediaType.ALL));
 
         ResponseExtractor<File> responseExtractor = response -> {
-            Path path = TestUtil.createTempFileInBuildFolder(fileName, fileEnding);
+            Path path = TestUtil.createTempFileInBuildFolder(prefix, fileEnding);
             Files.copy(response.getBody(), path, StandardCopyOption.REPLACE_EXISTING);
             if (TestUtil.isDeletingTempFiles()) {
                 path.toFile().deleteOnExit();

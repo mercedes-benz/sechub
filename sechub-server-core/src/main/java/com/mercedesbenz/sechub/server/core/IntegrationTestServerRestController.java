@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.server.core;
 
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -14,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -202,6 +201,7 @@ public class IntegrationTestServerRestController {
             return ResponseEntity.notFound().build();
         }
         LOG.info("Integration test server: getJobStorage for {} {}", logSanitizer.sanitize(projectId, 30), jobUUID);
+
         JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
         if (!storage.isExisting(fileName)) {
             throw new NotFoundException("file not uploaded:" + fileName);
@@ -214,13 +214,9 @@ public class IntegrationTestServerRestController {
         headers.add("Expires", "0");
 
         /* @formatter:off */
-		byte[] bytes = new byte[inputStream.available()];
-		new DataInputStream(inputStream).readFully(bytes);
-		ByteArrayResource resource = new ByteArrayResource(bytes);
-
+		InputStreamResource resource = new InputStreamResource(inputStream);
 		return ResponseEntity.ok()
 				.headers(headers)
-				.contentLength(resource.contentLength())
 				.contentType(MediaType.parseMediaType("application/octet-stream"))
 				.body(resource);
 		/* @formatter:on */
