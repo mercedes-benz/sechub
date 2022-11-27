@@ -22,7 +22,11 @@ public class PDSGetJobStreamService {
 
         PDSJob job = assertJobFound(jobUUID, repository);
 
-        return truncateStream(job.getErrorStreamText());
+        return job.getErrorStreamText();
+    }
+
+    public String getJobErrorStreamTruncated(UUID jobUUID) {
+        return truncateStream(getJobErrorStream(jobUUID));
     }
 
     public String getJobOutputStream(UUID jobUUID) {
@@ -31,6 +35,10 @@ public class PDSGetJobStreamService {
         PDSJob job = assertJobFound(jobUUID, repository);
 
         return truncateStream(job.getOutputStreamText());
+    }
+
+    public String getJobOutputStreamTruncated(UUID jobUUID) {
+        return truncateStream(getJobOutputStream(jobUUID));
     }
 
     protected String truncateStream(String stream) {

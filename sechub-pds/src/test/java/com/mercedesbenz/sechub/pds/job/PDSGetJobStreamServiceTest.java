@@ -91,24 +91,48 @@ public class PDSGetJobStreamServiceTest {
     }
 
     @Test
+    public void get_full_error_stream() {
+        /* prepare */
+        job.errorStreamText = "This is an error stream";
+
+        /* execute */
+        String result = serviceToTest.getJobErrorStream(jobUUID);
+
+        /* test */
+        assertEquals("This is an error stream", result);
+    }
+
+    @Test
     public void get_truncated_error_stream() {
         /* prepare */
         job.errorStreamText = "This is an error stream";
 
         /* execute */
-        String truncateResult = serviceToTest.getJobErrorStream(jobUUID);
+        String truncateResult = serviceToTest.getJobErrorStreamTruncated(jobUUID);
 
         /* test */
         assertEquals("This is an error stream", truncateResult);
     }
 
     @Test
-    public void get_truncated_output_stream() {
+    public void get_full_output_stream() {
         /* prepare */
-        job.errorStreamText = "This is an output stream";
+        job.outputStreamText = "This is an output stream";
 
         /* execute */
-        String truncateResult = serviceToTest.getJobErrorStream(jobUUID);
+        String result = serviceToTest.getJobOutputStream(jobUUID);
+
+        /* test */
+        assertEquals("This is an output stream", result);
+    }
+
+    @Test
+    public void get_truncated_output_stream() {
+        /* prepare */
+        job.outputStreamText = "This is an output stream";
+
+        /* execute */
+        String truncateResult = serviceToTest.getJobOutputStreamTruncated(jobUUID);
 
         /* test */
         assertEquals("This is an output stream", truncateResult);
