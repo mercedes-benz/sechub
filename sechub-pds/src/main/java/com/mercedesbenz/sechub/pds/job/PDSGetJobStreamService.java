@@ -41,6 +41,10 @@ public class PDSGetJobStreamService {
         return truncateStream(getJobOutputStream(jobUUID));
     }
 
+    public String getJobOutputStreamTruncated(UUID jobUUID) {
+        return truncateStream(getJobOutputStream(jobUUID));
+    }
+
     protected String truncateStream(String stream) {
         if (stream.length() > TRUNCATED_STREAM_SIZE) {
             return stream.substring(stream.length() - TRUNCATED_STREAM_SIZE, stream.length());
