@@ -152,8 +152,8 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
                 cancelOperationsHasBeenStarted);
 
         if (result.failed) {
-            LOG.info("Job error stream = {}", pdsGetJobStreamService.getJobErrorStream(pdsJobUUID));
-            LOG.info("Job output stream = {}", pdsGetJobStreamService.getJobOutputStream(pdsJobUUID));
+            LOG.info("Job error stream = {}", pdsGetJobStreamService.getJobErrorStreamTruncated(pdsJobUUID));
+            LOG.info("Job output stream = {}", pdsGetJobStreamService.getJobOutputStreamTruncated(pdsJobUUID));
         }
 
         return result;
