@@ -23,16 +23,110 @@ public class PDSServerConfigurationServiceTest {
     private PDSServerConfigurationValidator serverConfigurationValidator;
 
     private PDSShutdownService shutdownService;
+    private PDSConfigurationAutoFix serverConfigurationAutoFix;
 
     @BeforeEach
     public void before() throws Exception {
 
         serverConfigurationValidator = mock(PDSServerConfigurationValidator.class);
+        serverConfigurationAutoFix = mock(PDSConfigurationAutoFix.class);
+
         shutdownService = mock(PDSShutdownService.class);
 
         serviceToTest = new PDSServerConfigurationService();
         serviceToTest.serverConfigurationValidator = serverConfigurationValidator;
+        serviceToTest.serverConfigurationAutoFix = serverConfigurationAutoFix;
         serviceToTest.shutdownService = shutdownService;
+    }
+
+    @Test
+    void getParameterOrNull_returns_mandatory_default_value_when_available() {
+
+        /* prepare */
+        PDSProductParameterDefinition parameterDefinition = new PDSProductParameterDefinition();
+        parameterDefinition.setKey("key");
+        parameterDefinition.setDefault("mandatory-default");
+
+        PDSServerConfiguration configuration = new PDSServerConfiguration();
+        serviceToTest.configuration = configuration;
+
+        PDSProductSetup productSetup = new PDSProductSetup();
+        productSetup.setId("productid");
+        configuration.getProducts().add(productSetup);
+
+        PDSProductParameterSetup parameters = productSetup.getParameters();
+        List<PDSProductParameterDefinition> mandatories = parameters.getMandatory();
+
+        mandatories.add(parameterDefinition);
+
+        /* execute */
+        String result = serviceToTest.getProductParameterDefaultValueOrNull("productid", "key");
+
+        /* test */
+        assertEquals("mandatory-default", result);
+
+    }
+
+    @Test
+    void getParameterOrNull_returns_optional_default_value_when_available() {
+
+        /* prepare */
+        PDSProductParameterDefinition parameterDefinition = new PDSProductParameterDefinition();
+        parameterDefinition.setKey("key");
+        parameterDefinition.setDefault("optional-default");
+
+        PDSServerConfiguration configuration = new PDSServerConfiguration();
+        serviceToTest.configuration = configuration;
+
+        PDSProductSetup productSetup = new PDSProductSetup();
+        productSetup.setId("productid");
+        configuration.getProducts().add(productSetup);
+
+        PDSProductParameterSetup parameters = productSetup.getParameters();
+        List<PDSProductParameterDefinition> optionals = parameters.getOptional();
+
+        optionals.add(parameterDefinition);
+
+        /* execute */
+        String result = serviceToTest.getProductParameterDefaultValueOrNull("productid", "key");
+
+        /* test */
+        assertEquals("optional-default", result);
+
+    }
+
+    @Test
+    void getParameterOrNull_returns_mandatory_default_value_when_optional_and_mandatory_defaults_available() {
+
+        /* prepare */
+        PDSProductParameterDefinition optionalParameterDefinition = new PDSProductParameterDefinition();
+        optionalParameterDefinition.setKey("key");
+        optionalParameterDefinition.setDefault("optional-default");
+
+        PDSProductParameterDefinition mandatoryParameterDefinition = new PDSProductParameterDefinition();
+        mandatoryParameterDefinition.setKey("key");
+        mandatoryParameterDefinition.setDefault("mandatory-default");
+
+        PDSServerConfiguration configuration = new PDSServerConfiguration();
+        serviceToTest.configuration = configuration;
+
+        PDSProductSetup productSetup = new PDSProductSetup();
+        productSetup.setId("productid");
+        configuration.getProducts().add(productSetup);
+
+        PDSProductParameterSetup parameters = productSetup.getParameters();
+        List<PDSProductParameterDefinition> optionals = parameters.getOptional();
+        List<PDSProductParameterDefinition> mandatories = parameters.getMandatory();
+
+        optionals.add(optionalParameterDefinition);
+        mandatories.add(mandatoryParameterDefinition);
+
+        /* execute */
+        String result = serviceToTest.getProductParameterDefaultValueOrNull("productid", "key");
+
+        /* test */
+        assertEquals("mandatory-default", result);
+
     }
 
     @ParameterizedTest
@@ -149,6 +243,19 @@ public class PDSServerConfigurationServiceTest {
     }
 
     @Test
+    public void before_config_validator_is_started_the_autofix_is_called() {
+        /* prepare */
+        serviceToTest.pathToConfigFile = "./src/test/resources/config/pds-config-example1.json";
+        when(serverConfigurationValidator.createValidationErrorMessage(any())).thenReturn("reason");
+
+        /* execute */
+        serviceToTest.postConstruct();
+
+        /* test */
+        verify(serverConfigurationAutoFix).autofixWhenNecessary(any());
+
+    }
+
     void when_config_file_loaded_but_server_configuration_validator_returns_validator_error_message_shutdown_service_called() {
         /* prepare */
         serviceToTest.pathToConfigFile = "./src/test/resources/config/pds-config-example1.json";

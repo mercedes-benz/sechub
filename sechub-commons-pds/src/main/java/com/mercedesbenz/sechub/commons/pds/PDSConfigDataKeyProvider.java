@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.pds;
 
+import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationType;
+
 /**
  * Provides keys which are interpreted <strong>at PDS side</strong>. When the
  * given key (ExecutionPDSKey) is marked as available inside script, the
@@ -74,6 +76,13 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
             PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED,
             "When 'true' the PDS adapter script used by the job will have the information and can use this information when it comes to remote operations.")
                     .markSendToPDS().markAsAvailableInsideScript().markDefaultRecommended().withDefault(false)),
+    /**
+     * Can describe supported data types.
+     */
+    PDS_CONFIG_SUPPORTED_DATATYPES(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SUPPORTED_DATATYPES,
+            "Can be " + SecHubDataConfigurationType.SOURCE + ", " + SecHubDataConfigurationType.BINARY + ", " + SecHubDataConfigurationType.NONE
+                    + " or a combination as a comma separated list. This data should"
+                    + "normally not be defined via a default value of an optional PDS configuration parameter.").markSendToPDS()),
 
     /**
      * Contains product timeout information

@@ -9,6 +9,8 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
+
 @Service
 public class PDSSummaryLogService {
 
@@ -33,7 +35,14 @@ public class PDSSummaryLogService {
         List<PDSProductSetup> products = configuration.getProducts();
         summary.append("\n- Available products: ").append(products.size());
         for (PDSProductSetup setup : products) {
-            summary.append("\n  * ").append(setup.getId());
+            String productId = setup.getId();
+            String defaultSuppportedDataTypes = configurationService.getProductParameterDefaultValueOrNull(productId,
+                    PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SUPPORTED_DATATYPES);
+            summary.append("\n  * ").append(productId);
+            if (defaultSuppportedDataTypes != null) {
+                summary.append("- ");
+                summary.append(defaultSuppportedDataTypes);
+            }
         }
 
         LOG.info(summary.toString());

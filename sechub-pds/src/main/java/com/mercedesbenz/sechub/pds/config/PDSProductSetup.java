@@ -6,9 +6,6 @@ import com.mercedesbenz.sechub.commons.model.ScanType;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PDSProductSetup {
-    private static final boolean DEFAULT_EXTRACT_UPLOADS = true;
-
-    private boolean extractUploads = DEFAULT_EXTRACT_UPLOADS;
 
     private String id;
 
@@ -69,14 +66,6 @@ public class PDSProductSetup {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public boolean isExtractUploads() {
-        return extractUploads;
-    }
-
-    public void setExtractUploads(boolean extractUploads) {
-        this.extractUploads = extractUploads;
     }
 
 }

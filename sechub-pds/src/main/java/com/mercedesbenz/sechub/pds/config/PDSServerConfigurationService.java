@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 
@@ -54,7 +55,10 @@ public class PDSServerConfigurationService {
     @Autowired
     PDSServerConfigurationValidator serverConfigurationValidator;
 
-    private PDSServerConfiguration configuration;
+    @Autowired
+    PDSConfigurationAutoFix serverConfigurationAutoFix;
+
+    PDSServerConfiguration configuration;
 
     private String storageId;
 
@@ -66,9 +70,13 @@ public class PDSServerConfigurationService {
             try {
                 String json = FileUtils.readFileToString(file, Charset.forName("UTF-8"));
                 PDSServerConfiguration loadedConfiguration = PDSServerConfiguration.fromJSON(json);
+
+                serverConfigurationAutoFix.autofixWhenNecessary(loadedConfiguration);
+
                 String message = serverConfigurationValidator.createValidationErrorMessage(loadedConfiguration);
                 if (message == null) {
                     configuration = loadedConfiguration;
+
                 } else {
                     LOG.error("configuration file '{}' not valid - reason: {}", file.getAbsolutePath(), message);
                 }
@@ -111,7 +119,12 @@ public class PDSServerConfigurationService {
 
     public PDSProductSetup getProductSetupOrNull(String productId) {
         for (PDSProductSetup setup : configuration.getProducts()) {
-            if (setup.getId().equals(productId)) {
+            String id = setup.getId();
+            if (id == null) {
+                LOG.error("Product with id null detected! Skip inspection for this entry");
+                continue;
+            }
+            if (id.equals(productId)) {
                 return setup;
             }
         }
@@ -149,5 +162,41 @@ public class PDSServerConfigurationService {
 
     public int getMinimumConfigurableMinutesToWaitForProduct() {
         return minimumConfigurableMinutesToWaitForProduct;
+    }
+
+    /**
+     * Tries to find inside a product the default value for a parameter.<br>
+     * <br>
+     * Remark: If defined twice (mandatory and optional) the mandatory parameter
+     * entry would be returned.
+     *
+     * @param productId the product identifier
+     * @param key       the parameter key
+     * @return default value or <code>null</code> if not defined
+     */
+    public String getProductParameterDefaultValueOrNull(String productId, String key) {
+        PDSProductSetup productSetup = getProductSetupOrNull(productId);
+        if (productSetup == null) {
+            LOG.warn("Product {} not defined - so cannot find parameter for key: {}", productId, key);
+            return null;
+        }
+        PDSProductParameterSetup parameters = productSetup.getParameters();
+        String defaultValue = findDefaultFor(key, parameters.getMandatory());
+        if (defaultValue == null) {
+            defaultValue = findDefaultFor(key, parameters.getOptional());
+        }
+        return defaultValue;
+    }
+
+    private String findDefaultFor(String key, List<PDSProductParameterDefinition> definitions) {
+        if (key == null) {
+            throw new IllegalArgumentException("Given key may not be null!");
+        }
+        for (PDSProductParameterDefinition definition : definitions) {
+            if (key.equals(definition.getKey())) {
+                return definition.getDefault();
+            }
+        }
+        return null;
     }
 }

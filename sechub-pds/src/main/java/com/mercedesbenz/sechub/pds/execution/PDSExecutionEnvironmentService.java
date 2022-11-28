@@ -58,18 +58,18 @@ public class PDSExecutionEnvironmentService {
         addDefaultsForMissingParametersInList(parameters.getOptional(), map);
     }
 
-    private void addDefaultsForMissingParametersInList(List<PDSProductParameterDefinition> mandatoryParameters, Map<String, String> map) {
+    private void addDefaultsForMissingParametersInList(List<PDSProductParameterDefinition> parameterDefinitions, Map<String, String> map) {
 
-        for (PDSProductParameterDefinition mandatoryParameterDefinition : mandatoryParameters) {
-            if (!mandatoryParameterDefinition.hasDefault()) {
+        for (PDSProductParameterDefinition parameterDefinition : parameterDefinitions) {
+            if (!parameterDefinition.hasDefault()) {
                 continue;
             }
-            String envVariableName = converter.convertKeyToEnv(mandatoryParameterDefinition.getKey());
+            String envVariableName = converter.convertKeyToEnv(parameterDefinition.getKey());
 
             String value = map.get(envVariableName);
 
             if (value == null) {
-                map.put(envVariableName, mandatoryParameterDefinition.getDefault());
+                map.put(envVariableName, parameterDefinition.getDefault());
             }
         }
 

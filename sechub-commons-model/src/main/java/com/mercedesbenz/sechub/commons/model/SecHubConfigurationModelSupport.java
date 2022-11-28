@@ -12,10 +12,26 @@ public class SecHubConfigurationModelSupport {
 
     private static final Logger LOG = LoggerFactory.getLogger(SecHubConfigurationModelSupport.class);
 
+    /**
+     * Inspects the given model and checks if for given scan type source content is
+     * available/required for the scan
+     *
+     * @param scanType
+     * @param model
+     * @return <code>true</code> when source reference found for given scan type
+     */
     public boolean isSourceRequired(ScanType scanType, SecHubConfigurationModel model) {
         return isRequired(scanType, model, SecHubDataConfigurationType.SOURCE);
     }
 
+    /**
+     * Inspects the given model and checks if for given scan type binary content is
+     * available/required for the scan
+     *
+     * @param scanType
+     * @param model
+     * @return <code>true</code> when binary reference found for given scan type
+     */
     public boolean isBinaryRequired(ScanType scanType, SecHubConfigurationModel model) {
         return isRequired(scanType, model, SecHubDataConfigurationType.BINARY);
     }
@@ -96,6 +112,8 @@ public class SecHubConfigurationModelSupport {
             return atLeastOneNameReferencesOneElementInGivenDataConfiguration(names, data.getBinaries(), dataType);
         case SOURCE:
             return atLeastOneNameReferencesOneElementInGivenDataConfiguration(names, data.getSources(), dataType);
+        case NONE:
+            return false;
         default:
             LOG.error("Datatype {} unknown, so never contained", dataType);
             return false;

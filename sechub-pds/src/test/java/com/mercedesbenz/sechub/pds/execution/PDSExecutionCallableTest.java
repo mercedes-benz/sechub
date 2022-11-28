@@ -22,6 +22,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.pds.job.JobConfigurationData;
 import com.mercedesbenz.sechub.pds.job.PDSCheckJobStatusService;
 import com.mercedesbenz.sechub.pds.job.PDSJobTransactionService;
+import com.mercedesbenz.sechub.pds.job.PDSWorkspacePreparationResult;
 import com.mercedesbenz.sechub.pds.job.PDSWorkspaceService;
 import com.mercedesbenz.sechub.pds.job.WorkspaceLocationData;
 
@@ -88,6 +89,9 @@ class PDSExecutionCallableTest {
         when(workspaceService.getSystemOutFile(jobUUID)).thenReturn(outputFile);
         when(workspaceService.getMetaDataFile(jobUUID)).thenReturn(metaDataFile);
         when(workspaceService.getResultFile(jobUUID)).thenReturn(resultFile);
+
+        PDSWorkspacePreparationResult launchScriptExecutableResult = new PDSWorkspacePreparationResult(true);
+        when(workspaceService.prepare(eq(jobUUID), any(), any())).thenReturn(launchScriptExecutableResult);
 
         when(data.getJobConfigurationJson()).thenReturn("{}");
 
