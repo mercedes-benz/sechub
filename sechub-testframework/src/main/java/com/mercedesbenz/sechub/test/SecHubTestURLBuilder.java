@@ -93,6 +93,15 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
     public String buildUserFetchesFalsePositiveConfigurationOfProject(String projectId) {
         return buildUrl(API_PROJECT, projectId, "false-positives");
     }
+
+    public String buildUserFetchesListOfJobsForProject(String projectId, String limit) {
+        String url = buildUrl(API_PROJECT, projectId, "jobs");
+        if (limit != null) {
+            url = url + "?limit=" + limit;
+        }
+        return url;
+    }
+
     /* +-----------------------------------------------------------------------+ */
     /* +............................ anonymous ................................+ */
     /* +-----------------------------------------------------------------------+ */

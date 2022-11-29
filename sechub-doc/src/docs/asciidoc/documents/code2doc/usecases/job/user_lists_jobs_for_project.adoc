@@ -1,0 +1,4 @@
+// SPDX-License-Identifier: MIT
+User fetches a list containing information about jobs of a {sechub} project. Per default
+only the last created job is returned, but it is possible to define a limit and fetch more
+than one. In this case the returned entries are ordered by creation date.

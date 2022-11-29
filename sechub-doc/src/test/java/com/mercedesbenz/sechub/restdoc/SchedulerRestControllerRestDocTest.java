@@ -18,6 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -70,12 +71,15 @@ import com.mercedesbenz.sechub.domain.schedule.access.ScheduleAccess;
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleAccess.ProjectAccessCompositeKey;
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleAccessRepository;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
+import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobInfoForUser;
+import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobInfoForUserService;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfigurationValidator;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
+import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseUserListsJobsForProject;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserApprovesJob;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserChecksJobStatus;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserCreatesNewJob;
@@ -127,6 +131,9 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
 
     @MockBean
     private ScheduleAccessRepository mockedProjectRepository;
+
+    @MockBean
+    private SecHubJobInfoForUserService mockedJobInfoForUserService;
 
     private ScheduleAccess project1;
 
@@ -693,6 +700,69 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                           )
                             )
         		);
+
+        /* @formatter:on */
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseUserListsJobsForProject.class)
+    public void restDoc_userListsJobsForProject() throws Exception {
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildUserFetchesListOfJobsForProject(PROJECT_ID.pathElement(), LIMIT.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserListsJobsForProject.class;
+
+        SecHubJobInfoForUser job1 = new SecHubJobInfoForUser();
+        job1.setExecutionResult(ExecutionResult.OK);
+        job1.setExecutionState(ExecutionState.ENDED);
+
+        job1.setJobUUID(randomUUID);
+        job1.setCreated(LocalDateTime.now().minusMinutes(17));
+        job1.setStarted(LocalDateTime.now().minusMinutes(15));
+        job1.setEnded(LocalDateTime.now());
+        job1.setExecutedBy("User1");
+        job1.setTrafficLight(TrafficLight.GREEN);
+
+        List<SecHubJobInfoForUser> list = new ArrayList<>();
+        list.add(job1);
+
+        when(mockedJobInfoForUserService.listJobsForProject(PROJECT1_ID, 1)).thenReturn(list);
+
+        /* execute + test @formatter:off */
+        this.mockMvc.perform(
+                get(apiEndpoint, PROJECT1_ID,1).
+                    contentType(MediaType.APPLICATION_JSON_VALUE).
+                    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                ).
+                    andExpect(status().isOk()).
+                    andExpect(content().json("[{jobUUID:"+randomUUID.toString()+", executionState:ENDED, executionResult:OK, trafficLight:GREEN, executedBy:User1, executionState:ENDED}]")).
+                    andDo(defineRestService().
+                            with().
+                                useCaseData(useCase).
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                                responseSchema(OpenApiSchema.PROJECT_JOB_LIST.getSchema()).
+                            and().
+                            document(
+                                         requestHeaders(
+                                            headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+                                         ),
+                                          pathParameters(
+                                            parameterWithName(PROJECT_ID.paramName()).description("The id of the project where sechub job was started for")
+                                          ),
+                                          requestParameters(
+                                              parameterWithName(LIMIT.paramName()).optional().description("The limit for the result set. When not defined, the default will be "+SchedulerRestController.DEFAULT_JOB_INFORMATION_LIMIT)
+                                          ),
+                                          responseFields(
+                                            fieldWithPath("[]."+SecHubJobInfoForUser.PROPERTY_JOBUUID).description("The job uuid"),
+                                            fieldWithPath("[]."+SecHubJobInfoForUser.PROPERTY_CREATED).description("Creation timestamp of job"),
+                                            fieldWithPath("[]."+SecHubJobInfoForUser.PROPERTY_STARTED).description("Start timestamp of job execution"),
+                                            fieldWithPath("[]."+SecHubJobInfoForUser.PROPERTY_ENDED).description("End timestamp of job execution"),
+                                            fieldWithPath("[]."+SecHubJobInfoForUser.PROPERTY_EXECUTED_BY).description("User who initiated the job"),
+                                            fieldWithPath("[]."+SecHubJobInfoForUser.PROPERTY_EXECUTION_STATE).description("Execution state of job"),
+                                            fieldWithPath("[]."+SecHubJobInfoForUser.PROPERTY_EXECUTION_RESULT).description("Execution result of job"),
+                                            fieldWithPath("[]."+SecHubJobInfoForUser.PROPERTY_TRAFFIC_LIGHT).description("Trafficlight of job - but only available when job has been done. Possible states are "+StringUtils.arrayToDelimitedString(TrafficLight.values(),", "))
+                                          )
+                            )
+                );
 
         /* @formatter:on */
     }

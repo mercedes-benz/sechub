@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule;
 
+import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.security.RolesAllowed;
@@ -20,11 +21,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobInfoForUser;
+import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobInfoForUserService;
 import com.mercedesbenz.sechub.sharedkernel.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfigurationValidator;
+import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseUserListsJobsForProject;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserApprovesJob;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserChecksJobStatus;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserCreatesNewJob;
@@ -45,6 +49,8 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUpl
 @RolesAllowed({ RoleConstants.ROLE_USER, RoleConstants.ROLE_SUPERADMIN })
 public class SchedulerRestController {
 
+    public static final String DEFAULT_JOB_INFORMATION_LIMIT = "1";
+
     @Autowired
     private SchedulerApproveJobService approveJobService;
 
@@ -62,6 +68,9 @@ public class SchedulerRestController {
 
     @Autowired
     private SecHubConfigurationValidator validator;
+
+    @Autowired
+    private SecHubJobInfoForUserService jobInformationService;
 
     @Validated
     @RolesAllowed(RoleConstants.ROLE_USER)
@@ -123,6 +132,19 @@ public class SchedulerRestController {
 			) {
 		/* @formatter:on */
         return jobStatusService.getJobStatus(projectId, jobUUID);
+
+    }
+
+    /* @formatter:off */
+    @Validated
+    @UseCaseUserListsJobsForProject(@Step(number=1, name="get list of jobs in project", needsRestDoc=true))
+    @RequestMapping(path = "/jobs", method = RequestMethod.GET)
+    public List<SecHubJobInfoForUser> listJobsForProject(
+            @PathVariable("projectId") String projectId,
+            @RequestParam(defaultValue = DEFAULT_JOB_INFORMATION_LIMIT, name = "limit") int limit
+            ) {
+        /* @formatter:on */
+        return jobInformationService.listJobsForProject(projectId, limit);
 
     }
 

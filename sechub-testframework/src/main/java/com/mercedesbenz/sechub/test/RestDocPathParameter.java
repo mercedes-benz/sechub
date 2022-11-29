@@ -31,6 +31,8 @@ public enum RestDocPathParameter {
 
     PROJECT_ACCESS_LEVEL("projectAccessLevel"),
 
+    LIMIT("limit"),
+
     ;
 
     private String restDocName;
