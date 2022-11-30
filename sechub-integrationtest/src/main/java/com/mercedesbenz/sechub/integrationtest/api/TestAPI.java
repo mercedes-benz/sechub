@@ -105,12 +105,8 @@ public class TestAPI {
         return new AsPDSUser(user);
     }
 
-    public static AssertUserJobInfo assertUserJobInfo(List<TestSecHubJobInfoForUser> list) {
-        return AssertUserJobInfo.assertInfo(list);
-    }
-
-    public static AssertUserJobInfo assertUserJobInfo(TestSecHubJobInfoForUser info) {
-        return AssertUserJobInfo.assertInfo(info);
+    public static AssertUserJobInfo assertUserJobInfo(TestSecHubJobInfoForUserListPage page) {
+        return AssertUserJobInfo.assertInfo(page);
     }
 
     /**

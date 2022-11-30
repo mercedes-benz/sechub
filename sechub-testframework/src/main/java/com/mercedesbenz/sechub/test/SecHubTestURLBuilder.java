@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.test;
 
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
@@ -94,12 +97,51 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
         return buildUrl(API_PROJECT, projectId, "false-positives");
     }
 
-    public String buildUserFetchesListOfJobsForProject(String projectId, String limit) {
-        String url = buildUrl(API_PROJECT, projectId, "jobs");
-        if (limit != null) {
-            url = url + "?limit=" + limit;
-        }
+    public String buildUserFetchesListOfJobsForProject(String projectId, String size, String page) {
+
+        String url = appendParameters(buildUrl(API_PROJECT, projectId, "jobs"), params().set("size", size).set("page", page).build());
         return url;
+    }
+
+    private static ParameterBuilder params() {
+        return new ParameterBuilder();
+    }
+
+    private static class ParameterBuilder {
+
+        private Map<String, String> map = new LinkedHashMap<>();
+
+        public Map<String, String> build() {
+            return map;
+        }
+
+        public ParameterBuilder set(String key, String value) {
+            if (value != null) {
+                map.put(key, value);
+            }
+            return this;
+        }
+    }
+
+    private String appendParameters(String url, Map<String, String> params) {
+        StringBuilder sb = new StringBuilder();
+        if (params == null || params.isEmpty()) {
+            return url;
+        }
+        sb.append("?");
+
+        Iterator<String> it = params.keySet().iterator();
+        while (it.hasNext()) {
+            String name = it.next();
+            String value = params.get(name);
+            sb.append(name);
+            sb.append('=');
+            sb.append(value);
+            if (it.hasNext()) {
+                sb.append('&');
+            }
+        }
+        return url + sb.toString();
     }
 
     /* +-----------------------------------------------------------------------+ */

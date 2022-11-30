@@ -1,8 +1,5 @@
 package com.mercedesbenz.sechub.domain.schedule.job;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
@@ -28,7 +25,10 @@ public class SecHubJobInfoForUserService {
     private static final Logger LOG = LoggerFactory.getLogger(SecHubJobInfoForUserService.class);
 
     private static final int DEFAULT_MAXIMUM_LIMIT = 100;
-    private static final int MINIMUM = 1;
+    private static final int DEFAULT_MAXIMUM_PAGE = 100;
+    private static final int MINIMUM_SIZE = 1;
+
+    private static final int MINIMUM_PAGE = 0;;
 
     @Autowired
     SecHubJobRepository jobRepository;
@@ -36,37 +36,55 @@ public class SecHubJobInfoForUserService {
     @Autowired
     ScheduleAssertService assertService;
 
-    @Value("${sechub.project.joblist.limit.max:" + DEFAULT_MAXIMUM_LIMIT + "}")
+    @Value("${sechub.project.joblist.size.max:" + DEFAULT_MAXIMUM_LIMIT + "}")
+    @MustBeDocumented("Maximum limit for job information list entries per page")
+    int maximumSize = DEFAULT_MAXIMUM_LIMIT;
+
+    @Value("${sechub.project.joblist.page.max:" + DEFAULT_MAXIMUM_PAGE + "}")
     @MustBeDocumented
-    int maximum = DEFAULT_MAXIMUM_LIMIT;
+    int maximumPage = DEFAULT_MAXIMUM_PAGE;
 
     @PostConstruct
     void postConstruct() {
-        if (maximum < MINIMUM) {
-            LOG.warn("Illegal maximum limit defined: {} - will use: {} as fallback.", maximum, DEFAULT_MAXIMUM_LIMIT);
-            maximum = DEFAULT_MAXIMUM_LIMIT;
+        if (maximumSize < MINIMUM_SIZE) {
+            LOG.warn("Illegal maximum size defined: {} - will use: {} as fallback.", maximumSize, DEFAULT_MAXIMUM_LIMIT);
+            maximumSize = DEFAULT_MAXIMUM_LIMIT;
+        }
+        if (maximumPage < MINIMUM_PAGE) {
+            LOG.warn("Illegal maximum page defined: {} - will use: {} as fallback.", maximumPage, DEFAULT_MAXIMUM_PAGE);
+            maximumPage = DEFAULT_MAXIMUM_PAGE;
         }
     }
 
     @UseCaseUserListsJobsForProject(@Step(number = 2, name = "Assert access by service and fetch job informaiton for user"))
-    public List<SecHubJobInfoForUser> listJobsForProject(String projectId, int limit) {
+    public SecHubJobInfoForUserListPage listJobsForProject(String projectId, int size, int page) {
 
         assertService.assertProjectIdValid(projectId);
         assertService.assertProjectAllowsReadAccess(projectId);
         assertService.assertUserHasAccessToProject(projectId);
 
-        if (limit < MINIMUM) {
-            limit = 1;
-            LOG.warn("Limit was to small, changed to: {}", limit);
+        if (size < MINIMUM_SIZE) {
+            LOG.warn("Size: {} is to small, will change to: {}", size, MINIMUM_SIZE);
+            size = MINIMUM_SIZE;
         }
 
-        if (limit > maximum) {
-            limit = maximum;
+        if (size > maximumSize) {
+            LOG.warn("Size: {} is too big, will change to: {}", size, maximumSize);
+            size = maximumSize;
 
-            LOG.warn("Limit was too big, changed to: {}", limit);
         }
 
-        Pageable pageable = PageRequest.of(0, limit, Sort.by(Direction.DESC, ScheduleSecHubJob.PROPERTY_CREATED));
+        if (page < MINIMUM_PAGE) {
+            LOG.warn("Page:{} was to small, will change to: {}", page, MINIMUM_PAGE);
+            page = MINIMUM_PAGE;
+        }
+
+        if (page > maximumPage) {
+            LOG.warn("Page:{} was too big, will change to: {}", page, maximumPage);
+            page = maximumPage;
+        }
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Direction.DESC, ScheduleSecHubJob.PROPERTY_CREATED));
 
         ScheduleSecHubJob probe = new ScheduleSecHubJob();
         // reset predefined fields
@@ -78,7 +96,10 @@ public class SecHubJobInfoForUserService {
         Example<ScheduleSecHubJob> example = Example.of(probe);
         Page<ScheduleSecHubJob> pageFound = jobRepository.findAll(example, pageable);
 
-        List<SecHubJobInfoForUser> list = new ArrayList<>(pageFound.getSize());
+        SecHubJobInfoForUserListPage listPage = new SecHubJobInfoForUserListPage();
+        listPage.setPage(pageFound.getNumber());
+        listPage.setTotalPages(pageFound.getTotalPages());
+        listPage.setProjectId(projectId);
 
         for (ScheduleSecHubJob job : pageFound) {
 
@@ -94,9 +115,9 @@ public class SecHubJobInfoForUserService {
             infoForUser.setExecutionResult(job.getExecutionResult());
             infoForUser.setTrafficLight(job.getTrafficLight());
 
-            list.add(infoForUser);
+            listPage.getContent().add(infoForUser);
         }
-        return list;
+        return listPage;
     }
 
 }

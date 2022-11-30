@@ -51,7 +51,7 @@ class SecHubJobInfoForUserServiceTest {
         doThrow(new TestCanaryException()).when(assertService).assertUserHasAccessToProject("project1");
 
         /* execute */
-        assertThrows(TestCanaryException.class, () -> serviceToTest.listJobsForProject("project1", 1000));
+        assertThrows(TestCanaryException.class, () -> serviceToTest.listJobsForProject("project1", 1000, 0));
 
         /* test */
         verify(assertService).assertProjectIdValid("project1"); // project validation is done before
@@ -76,7 +76,7 @@ class SecHubJobInfoForUserServiceTest {
         serviceToTest.postConstruct();
 
         /* execute */
-        serviceToTest.listJobsForProject("project1", limit);
+        serviceToTest.listJobsForProject("project1", limit, 0);
 
         /* test */
         ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
@@ -112,7 +112,7 @@ class SecHubJobInfoForUserServiceTest {
         serviceToTest.postConstruct();
 
         /* execute */
-        serviceToTest.listJobsForProject("project1", limit);
+        serviceToTest.listJobsForProject("project1", limit, 0);
 
         /* test */
         ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
@@ -139,11 +139,11 @@ class SecHubJobInfoForUserServiceTest {
         // define given limit always bigger than defined max - so fallback to max must
         // be used.
         int allowedMaxValue = limit - 1;
-        serviceToTest.maximum = allowedMaxValue;
+        serviceToTest.maximumSize = allowedMaxValue;
         serviceToTest.postConstruct();
 
         /* execute */
-        serviceToTest.listJobsForProject("project1", limit);
+        serviceToTest.listJobsForProject("project1", limit, 0);
 
         /* test */
         ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
@@ -160,13 +160,13 @@ class SecHubJobInfoForUserServiceTest {
     @ValueSource(ints = { -100, -1, 0 })
     void when_max_is_accidently_configured_lower_than_1_after_postConstruct_100_is_used_as_fallback(int limit) {
         /* prepare */
-        serviceToTest.maximum = limit;
+        serviceToTest.maximumSize = limit;
 
         /* execute */
         serviceToTest.postConstruct();
 
         /* test */
-        assertEquals(100, serviceToTest.maximum);
+        assertEquals(100, serviceToTest.maximumSize);
     }
 
     @Test
@@ -192,11 +192,12 @@ class SecHubJobInfoForUserServiceTest {
         when(jobRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
 
         /* execute */
-        List<SecHubJobInfoForUser> result = serviceToTest.listJobsForProject("project1", 10);
+        SecHubJobInfoForUserListPage listPage = serviceToTest.listJobsForProject("project1", 10, 0);
 
         /* test */
-        assertEquals(5, result.size());
-        Iterator<SecHubJobInfoForUser> iterator = result.iterator();
+        List<SecHubJobInfoForUser> content = listPage.getContent();
+        assertEquals(5, content.size());
+        Iterator<SecHubJobInfoForUser> iterator = content.iterator();
         SecHubJobInfoForUser info1 = iterator.next();
         SecHubJobInfoForUser info2 = iterator.next();
         SecHubJobInfoForUser info3 = iterator.next();

@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.schedule;
 
-import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.security.RolesAllowed;
@@ -21,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobInfoForUser;
+import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobInfoForUserListPage;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobInfoForUserService;
 import com.mercedesbenz.sechub.sharedkernel.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
@@ -49,7 +48,8 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUpl
 @RolesAllowed({ RoleConstants.ROLE_USER, RoleConstants.ROLE_SUPERADMIN })
 public class SchedulerRestController {
 
-    public static final String DEFAULT_JOB_INFORMATION_LIMIT = "1";
+    public static final String DEFAULT_JOB_INFORMATION_SIZE = "1";
+    public static final String DEFAULT_JOB_INFORMATION_PAGE = "0";
 
     @Autowired
     private SchedulerApproveJobService approveJobService;
@@ -137,14 +137,15 @@ public class SchedulerRestController {
 
     /* @formatter:off */
     @Validated
-    @UseCaseUserListsJobsForProject(@Step(number=1, name="get list of jobs in project", needsRestDoc=true))
+    @UseCaseUserListsJobsForProject(@Step(number=1, name="get pageable list of jobs in project", needsRestDoc=true))
     @RequestMapping(path = "/jobs", method = RequestMethod.GET)
-    public List<SecHubJobInfoForUser> listJobsForProject(
+    public SecHubJobInfoForUserListPage listJobsForProject(
             @PathVariable("projectId") String projectId,
-            @RequestParam(defaultValue = DEFAULT_JOB_INFORMATION_LIMIT, name = "limit") int limit
+            @RequestParam(defaultValue = DEFAULT_JOB_INFORMATION_SIZE, name = "size") int size,
+            @RequestParam(defaultValue = DEFAULT_JOB_INFORMATION_PAGE, name = "page") int page
             ) {
         /* @formatter:on */
-        return jobInformationService.listJobsForProject(projectId, limit);
+        return jobInformationService.listJobsForProject(projectId, size, page);
 
     }
 

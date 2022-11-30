@@ -18,7 +18,7 @@ import com.mercedesbenz.sechub.integrationtest.api.AsUser.ProjectFalsePositivesD
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestJSONLocation;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
-import com.mercedesbenz.sechub.integrationtest.api.TestSecHubJobInfoForUser;
+import com.mercedesbenz.sechub.integrationtest.api.TestSecHubJobInfoForUserListPage;
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
 
 public class FalsePositivesScenario3IntTest {
@@ -124,7 +124,7 @@ public class FalsePositivesScenario3IntTest {
         configuration.isContaining(loops-1, jobUUID);
 
         // fetch last user job - must be the one we have created here...
-        TestSecHubJobInfoForUser jobInfo = as(USER_1).fetchUserJobInfoListOneEntryOrNull(project);
+        TestSecHubJobInfoForUserListPage jobInfo = as(USER_1).fetchUserJobInfoListOneEntryOrNull(project);
         assertUserJobInfo(jobInfo).hasJobInfoFor(jobUUID).withExecutionResult("OK").withOneOfAllolowedExecutionState("ENDED");
         /* @formatter:on */
     }

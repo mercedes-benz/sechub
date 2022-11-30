@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.integrationtest.api;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 
 /**
@@ -10,6 +11,7 @@ import com.mercedesbenz.sechub.commons.model.TrafficLight;
  * from classpath in integration tests)
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TestSecHubJobInfoForUser {
 
     public UUID jobUUID;

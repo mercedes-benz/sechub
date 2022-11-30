@@ -31,7 +31,9 @@ public enum RestDocPathParameter {
 
     PROJECT_ACCESS_LEVEL("projectAccessLevel"),
 
-    LIMIT("limit"),
+    SIZE("size"),
+
+    PAGE("page"),
 
     ;
 

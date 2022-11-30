@@ -4,7 +4,6 @@ package com.mercedesbenz.sechub.integrationtest.scenario19;
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 import static com.mercedesbenz.sechub.integrationtest.scenario19.Scenario19.*;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.junit.Rule;
@@ -13,7 +12,7 @@ import org.junit.rules.Timeout;
 
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
-import com.mercedesbenz.sechub.integrationtest.api.TestSecHubJobInfoForUser;
+import com.mercedesbenz.sechub.integrationtest.api.TestSecHubJobInfoForUserListPage;
 
 /**
  * Integration tests to check operations for user job information fetching
@@ -43,14 +42,17 @@ public class FetchJobInfoForUserIntTest {
         UUID sechubJobUUD2 = as(USER_1).createWebScan(project);
         UUID sechubJobUUD3 = as(USER_1).createWebScan(project);
 
-        /* execute (A) - default limit (1) */
-        TestSecHubJobInfoForUser jobInfoA = as(USER_1).fetchUserJobInfoListOneEntryOrNull(project);
+        /* execute (A) - default size (1) */
+        TestSecHubJobInfoForUserListPage jobInfoListA = as(USER_1).fetchUserJobInfoListOneEntryOrNull(project);
 
         /* test (A) */
-        assertUserJobInfo(jobInfoA).hasJobInfoFor(sechubJobUUD3);
+        assertUserJobInfo(jobInfoListA).
+            hasJobInfoFor(sechubJobUUD3).
+            and().
+            hasProjectId(project.getProjectId());
 
-        /* execute (B) - use limit 2 */
-        List<TestSecHubJobInfoForUser> jobInfoListB = as(USER_1).fetchUserJobInfoList(project, 2);
+        /* execute (B) - use size 2 */
+        TestSecHubJobInfoForUserListPage jobInfoListB = as(USER_1).fetchUserJobInfoList(project, 2);
 
         /* test (B) */
         assertUserJobInfo(jobInfoListB).
@@ -60,12 +62,14 @@ public class FetchJobInfoForUserIntTest {
             hasJobInfoFor(sechubJobUUD2);
 
 
-        /* execute (C) - use limit 10 */
-        List<TestSecHubJobInfoForUser> jobInfoListC = as(USER_1).fetchUserJobInfoList(project, 10);
+        /* execute (C) - use size 10 */
+        TestSecHubJobInfoForUserListPage jobInfoListC = as(USER_1).fetchUserJobInfoList(project, 10);
 
         /* test (C) */
         assertUserJobInfo(jobInfoListC).
             hasEntries(3).
+            hasPage(0).
+            hasTotalPages(1).
             hasJobInfoFor(sechubJobUUD3).
             and().
             hasJobInfoFor(sechubJobUUD2).
@@ -75,11 +79,13 @@ public class FetchJobInfoForUserIntTest {
         /* prepare (D) */
         UUID sechubJobUUD4 = as(USER_1).createWebScan(project);
 
-        /* execute (D) - use limit 2  */
-        List<TestSecHubJobInfoForUser> jobInfoListD = as(USER_1).fetchUserJobInfoList(project, 2);
+        /* execute (D) - use size 2  */
+        TestSecHubJobInfoForUserListPage jobInfoListD = as(USER_1).fetchUserJobInfoList(project, 2);
 
         /* test (D) */
         assertUserJobInfo(jobInfoListD).
+            hasPage(0).
+            hasTotalPages(2).
             hasEntries(2).
             hasJobInfoFor(sechubJobUUD3).
                 withExecutionResult("NONE").
@@ -87,8 +93,8 @@ public class FetchJobInfoForUserIntTest {
             and().
             hasJobInfoFor(sechubJobUUD4);
 
-        /* execute (E) - use limit 0 - will do fallback to one  */
-        List<TestSecHubJobInfoForUser> jobInfoListE = as(USER_1).fetchUserJobInfoList(project, 0);
+        /* execute (E) - use size 0 - will do fallback to one  */
+        TestSecHubJobInfoForUserListPage jobInfoListE = as(USER_1).fetchUserJobInfoList(project, 0);
 
         /* test (E) */
         assertUserJobInfo(jobInfoListE).
@@ -101,8 +107,8 @@ public class FetchJobInfoForUserIntTest {
         as(SUPER_ADMIN).cancelJob(sechubJobUUD4);
         waitForJobStatusCancelRequestedOrCanceled(project, sechubJobUUD4);
 
-        /* execute (F) - use limit 0 - will do fallback to one  */
-        List<TestSecHubJobInfoForUser> jobInfoListF = as(USER_1).fetchUserJobInfoList(project, 0);
+        /* execute (F) - use size 0 and page -1 - will do fallback to one for size and page zero  */
+        TestSecHubJobInfoForUserListPage jobInfoListF = as(USER_1).fetchUserJobInfoList(project, 0, -1);
 
         /* test (F) */
         assertUserJobInfo(jobInfoListF).
@@ -110,6 +116,24 @@ public class FetchJobInfoForUserIntTest {
             hasJobInfoFor(sechubJobUUD4).
                 withExecutionResult("FAILED").
                 withOneOfAllolowedExecutionState("CANCELED", "CANCEL_REQUESTED");
+
+        /* execute (G) - use size 1 - page 1 */
+        TestSecHubJobInfoForUserListPage jobInfoListG = as(USER_1).fetchUserJobInfoList(project, 1, 1);
+
+        /* test (H) */
+        assertUserJobInfo(jobInfoListG).
+            hasEntries(1).
+            hasJobInfoFor(sechubJobUUD3).
+                withExecutionResult("NONE").
+                withOneOfAllolowedExecutionState("INITIALIZING");
+
+        /* execute (H) - use size 1 - page 2 */
+        TestSecHubJobInfoForUserListPage jobInfoListH = as(USER_1).fetchUserJobInfoList(project, 1, 2);
+
+        /* test (H) */
+        assertUserJobInfo(jobInfoListH).
+            hasEntries(1).
+            hasJobInfoFor(sechubJobUUD2);
 
     }
     /* @formatter:on */

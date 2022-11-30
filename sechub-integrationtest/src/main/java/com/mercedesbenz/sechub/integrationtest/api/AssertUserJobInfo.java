@@ -3,7 +3,6 @@ package com.mercedesbenz.sechub.integrationtest.api;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,22 +13,17 @@ import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
 
 public class AssertUserJobInfo {
 
+    public static AssertUserJobInfo assertInfo(TestSecHubJobInfoForUserListPage page) {
+        return new AssertUserJobInfo(page);
+    }
+
     private static final Logger LOG = LoggerFactory.getLogger(AssertUserJobInfo.class);
 
-    private List<TestSecHubJobInfoForUser> list;
+    private TestSecHubJobInfoForUserListPage listPage;
 
-    private AssertUserJobInfo(List<TestSecHubJobInfoForUser> list) {
-        assertNotNull(list);
-        ;
-        this.list = list;
-    }
-
-    public static AssertUserJobInfo assertInfo(TestSecHubJobInfoForUser info) {
-        return assertInfo(Collections.singletonList(info));
-    }
-
-    public static AssertUserJobInfo assertInfo(List<TestSecHubJobInfoForUser> list) {
-        return new AssertUserJobInfo(list);
+    private AssertUserJobInfo(TestSecHubJobInfoForUserListPage listPage) {
+        assertNotNull(listPage);
+        this.listPage = listPage;
     }
 
     public AssertUserJobInfoForJob hasJobInfoFor(UUID jobUUID) {
@@ -41,7 +35,7 @@ public class AssertUserJobInfo {
         private TestSecHubJobInfoForUser info;
 
         private AssertUserJobInfoForJob(UUID jobUUID) {
-            for (TestSecHubJobInfoForUser info : list) {
+            for (TestSecHubJobInfoForUser info : listPage.getContent()) {
                 if (jobUUID.equals(info.jobUUID)) {
                     this.info = info;
                     break;
@@ -82,15 +76,37 @@ public class AssertUserJobInfo {
     }
 
     private void dumpInfoAndfailWith(String message) {
-        String json = TestJSONHelper.get().createJSON(list, true);
+        String json = TestJSONHelper.get().createJSON(listPage, true);
         LOG.info("DUMP user job info:\n{}", json);
 
         fail(message + "\nJson was:\n" + json);
     }
 
     public AssertUserJobInfo hasEntries(int expected) {
-        if (list.size() != expected) {
-            dumpInfoAndfailWith("Not expected amount of job info. Expected:" + expected + ", but was:" + list.size());
+        List<TestSecHubJobInfoForUser> content = listPage.getContent();
+        if (content.size() != expected) {
+            dumpInfoAndfailWith("Not expected amount of job info. Expected:" + expected + ", but was:" + content.size());
+        }
+        return this;
+    }
+
+    public AssertUserJobInfo hasProjectId(String projectId) {
+        if (!projectId.equals(listPage.getProjectId())) {
+            dumpInfoAndfailWith("Expected projectId: " + projectId + " but projectId was: " + listPage.getProjectId());
+        }
+        return this;
+    }
+
+    public AssertUserJobInfo hasPage(int page) {
+        if (listPage.getPage() != page) {
+            dumpInfoAndfailWith("Expected pages: " + page + " but page was: " + listPage.getPage());
+        }
+        return this;
+    }
+
+    public AssertUserJobInfo hasTotalPages(int totalPages) {
+        if (listPage.getTotalPages() != totalPages) {
+            dumpInfoAndfailWith("Expected total pages: " + totalPages + " buttotalPages was: " + listPage.getTotalPages());
         }
         return this;
     }
