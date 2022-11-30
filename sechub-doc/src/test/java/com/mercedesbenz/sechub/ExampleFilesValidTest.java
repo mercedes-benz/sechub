@@ -1,11 +1,18 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
+import com.mercedesbenz.sechub.commons.model.JSONConverterException;
+import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.pds.config.PDSProductParameterDefinition;
 import com.mercedesbenz.sechub.pds.config.PDSProductParameterSetup;
@@ -53,6 +60,42 @@ class ExampleFilesValidTest {
         // make same spear checks
         assertDefaultValue(productSetup1, false, PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SUPPORTED_DATATYPES, "source");
         assertDefaultValue(productSetup2, true, PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SUPPORTED_DATATYPES, "none");
+    }
+
+    @ParameterizedTest
+    @EnumSource(ExampleFile.class)
+    void every_sechub_config_file_is_valid(ExampleFile file) {
+        /* prepare */
+        String json = TestFileReader.loadTextFile(file.getPath());
+        SecHubScanConfiguration config = null;
+
+        /* execute */
+        try {
+            config = SecHubScanConfiguration.createFromJSON(json);
+        } catch (JSONConverterException e) {
+            fail("Could not create SecHubScanConfiguration from json for file: " + file.getPath());
+        }
+
+        /* test */
+        assertNotNull(config);
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ExampleFile.class, names = { "WEBSCAN_ANONYMOUS", "WEBSCAN_BASIC_AUTH", "WEBSCAN_FORM_BASED_SCRIPT_AUTH",
+            "WEBSCAN_OPENAPI_WITH_DATA_REFERENCE" }, mode = EnumSource.Mode.INCLUDE)
+    void every_sechub_config_webscan_file_is_valid_and_has_a_target_uri(ExampleFile file) {
+        /* prepare */
+        String json = TestFileReader.loadTextFile(file.getPath());
+
+        /* execute */
+        SecHubScanConfiguration config = SecHubScanConfiguration.createFromJSON(json);
+
+        /* test */
+        Optional<SecHubWebScanConfiguration> webScanOpt = config.getWebScan();
+        assertTrue(webScanOpt.isPresent(), "Webscan config does exist for file: " + file.getPath());
+
+        SecHubWebScanConfiguration webScan = webScanOpt.get();
+        assertNotNull(webScan.getUri(), "No URI set in file: " + file.getPath());
     }
 
     private void assertDefaultValue(PDSProductSetup setup, boolean isMandatory, String parameterKey, String expectedDefault) {
