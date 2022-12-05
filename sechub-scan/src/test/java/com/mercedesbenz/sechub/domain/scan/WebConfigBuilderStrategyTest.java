@@ -101,6 +101,31 @@ public class WebConfigBuilderStrategyTest {
     }
 
     @Test
+    public void basic_authentication_without_optional_realm() throws Exception {
+        /* prepare */
+        WebConfigBuilderStrategy strategyToTest = createStrategy("sechub_config/webscan_login_basic_without_optional_realm.json");
+        TestAbstractWebScanAdapterConfigBuilder configBuilder = new TestAbstractWebScanAdapterConfigBuilder();
+
+        /* execute */
+        strategyToTest.configure(configBuilder);
+
+        /* test */
+        TestWebScanAdapterConfig result = configBuilder.build();
+        LoginConfig loginConfig = result.getLoginConfig();
+        assertTrue(loginConfig.isBasic());
+        assertEquals("user0", loginConfig.asBasic().getUser());
+        assertEquals("pwd0", loginConfig.asBasic().getPassword());
+        assertEquals(null, loginConfig.asBasic().getRealm());
+
+        // we test external forms - reason: Depending on the JDK implementation URL
+        // equals compares also content so extreme slow. So we use external form
+        // to compare with each other - it is much faster.
+        String fetchedUrlExternalFrom = loginConfig.asBasic().getLoginURL().toExternalForm();
+        String expectedUrlExternalForm = new URL("https://productfailure.demo.example.org/login").toExternalForm();
+        assertEquals(expectedUrlExternalForm, fetchedUrlExternalFrom);
+    }
+
+    @Test
     public void webscan_max_scan_duration() {
         /* prepare */
         WebConfigBuilderStrategy strategyToTest = createStrategy("sechub_config/webscan_max_scan_duration.json");
