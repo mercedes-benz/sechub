@@ -139,10 +139,10 @@ include::sechub_config_example2_webscan_anonyous.json[]
 ----
 <1> Define web scan
 <2> The `URI` to scan. This `URI` must be white listed in `{sechub}` project. Normally without a slash `/` at the end.
-<3> Includes, if you have a special path that is linked nowhere,
+<3> *Optional*: Define includes, if you have a special path that is linked nowhere,
 	so the scanner can not detect it automatically while crawling the application.
 	Always use them starting with a slash (`/`) because they are interpreted relative to the `URI` provided before.
-<4> Excludes, if you have a special path you want to exclude, from the scan.
+<4> *Optional*: Define excludes, if you have a special path you want to exclude, from the scan.
 	Always use them starting with a slash (`/`) because they are interpreted relative to the `URI` provided before.
 <5> *Optional*: Define the maximum duration the scan can take. 
     Scanning a "large" web page/application can take several hours or even days. 
