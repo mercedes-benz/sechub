@@ -189,8 +189,8 @@ include::sechub_config_example3_webscan_login_basicauth.json[]
 ----
 <1> URL for web login
 <2> Basic authentication start, needs user id/name and password.
-<3> You can set the realm used for basic authentication. But normally
-    this is not necessary and you can use an empty string.
+<3> *Optional*: You can set the realm used for basic authentication. But normally
+    this is not necessary.
 
 ====== Example basic authentication
 [source,json]
