@@ -42,11 +42,11 @@ public class AssertUserJobInfo {
                 }
             }
             if (this.info == null) {
-                dumpInfoAndfailWith("Did not contain a job with uud:" + jobUUID);
+                dumpInfoAndfailWith("Did not contain a job with uuid:" + jobUUID);
             }
         }
 
-        public AssertUserJobInfoForJob withOneOfAllolowedExecutionState(String... acceptedStates) {
+        public AssertUserJobInfoForJob withOneOfAllowedExecutionStates(String... acceptedStates) {
             String executionState = info.executionState;
 
             boolean stateFound = false;

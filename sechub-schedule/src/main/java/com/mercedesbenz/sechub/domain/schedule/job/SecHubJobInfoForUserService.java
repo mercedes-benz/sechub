@@ -56,7 +56,7 @@ public class SecHubJobInfoForUserService {
         }
     }
 
-    @UseCaseUserListsJobsForProject(@Step(number = 2, name = "Assert access by service and fetch job informaiton for user"))
+    @UseCaseUserListsJobsForProject(@Step(number = 2, name = "Assert access by service and fetch job information for user"))
     public SecHubJobInfoForUserListPage listJobsForProject(String projectId, int size, int page) {
 
         assertService.assertProjectIdValid(projectId);
@@ -84,6 +84,10 @@ public class SecHubJobInfoForUserService {
             page = maximumPage;
         }
 
+        return loadDataAndCreateListPage(projectId, size, page);
+    }
+
+    private SecHubJobInfoForUserListPage loadDataAndCreateListPage(String projectId, int size, int page) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Direction.DESC, ScheduleSecHubJob.PROPERTY_CREATED));
 
         ScheduleSecHubJob probe = new ScheduleSecHubJob();
@@ -96,6 +100,10 @@ public class SecHubJobInfoForUserService {
         Example<ScheduleSecHubJob> example = Example.of(probe);
         Page<ScheduleSecHubJob> pageFound = jobRepository.findAll(example, pageable);
 
+        return transformToListPage(projectId, pageFound);
+    }
+
+    private SecHubJobInfoForUserListPage transformToListPage(String projectId, Page<ScheduleSecHubJob> pageFound) {
         SecHubJobInfoForUserListPage listPage = new SecHubJobInfoForUserListPage();
         listPage.setPage(pageFound.getNumber());
         listPage.setTotalPages(pageFound.getTotalPages());

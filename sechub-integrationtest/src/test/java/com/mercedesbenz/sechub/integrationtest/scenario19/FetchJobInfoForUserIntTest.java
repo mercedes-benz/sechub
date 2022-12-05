@@ -17,8 +17,6 @@ import com.mercedesbenz.sechub.integrationtest.api.TestSecHubJobInfoForUserListP
 /**
  * Integration tests to check operations for user job information fetching
  *
- * @author Albert Tregnaghi
- *
  */
 public class FetchJobInfoForUserIntTest {
 
@@ -47,6 +45,8 @@ public class FetchJobInfoForUserIntTest {
 
         /* test (A) */
         assertUserJobInfo(jobInfoListA).
+            hasPage(0).
+            hasTotalPages(3).
             hasJobInfoFor(sechubJobUUD3).
             and().
             hasProjectId(project.getProjectId());
@@ -89,7 +89,7 @@ public class FetchJobInfoForUserIntTest {
             hasEntries(2).
             hasJobInfoFor(sechubJobUUD3).
                 withExecutionResult("NONE").
-                withOneOfAllolowedExecutionState("INITIALIZING").
+                withOneOfAllowedExecutionStates("INITIALIZING").
             and().
             hasJobInfoFor(sechubJobUUD4);
 
@@ -101,7 +101,7 @@ public class FetchJobInfoForUserIntTest {
             hasEntries(1).
             hasJobInfoFor(sechubJobUUD4).
                 withExecutionResult("NONE").
-                withOneOfAllolowedExecutionState("INITIALIZING");
+                withOneOfAllowedExecutionStates("INITIALIZING");
 
         /* prepare (F) */
         as(SUPER_ADMIN).cancelJob(sechubJobUUD4);
@@ -115,7 +115,7 @@ public class FetchJobInfoForUserIntTest {
             hasEntries(1).
             hasJobInfoFor(sechubJobUUD4).
                 withExecutionResult("FAILED").
-                withOneOfAllolowedExecutionState("CANCELED", "CANCEL_REQUESTED");
+                withOneOfAllowedExecutionStates("CANCELED", "CANCEL_REQUESTED");
 
         /* execute (G) - use size 1 - page 1 */
         TestSecHubJobInfoForUserListPage jobInfoListG = as(USER_1).fetchUserJobInfoList(project, 1, 1);
@@ -125,7 +125,7 @@ public class FetchJobInfoForUserIntTest {
             hasEntries(1).
             hasJobInfoFor(sechubJobUUD3).
                 withExecutionResult("NONE").
-                withOneOfAllolowedExecutionState("INITIALIZING");
+                withOneOfAllowedExecutionStates("INITIALIZING");
 
         /* execute (H) - use size 1 - page 2 */
         TestSecHubJobInfoForUserListPage jobInfoListH = as(USER_1).fetchUserJobInfoList(project, 1, 2);
@@ -133,7 +133,18 @@ public class FetchJobInfoForUserIntTest {
         /* test (H) */
         assertUserJobInfo(jobInfoListH).
             hasEntries(1).
+            hasTotalPages(4).
             hasJobInfoFor(sechubJobUUD2);
+
+
+        /* execute (I) - use size 1 - page 200 (will be reduced to default max: 100, but still not existing) */
+        TestSecHubJobInfoForUserListPage jobInfoListI = as(USER_1).fetchUserJobInfoList(project, 1, 200);
+
+        /* test (H) */
+        assertUserJobInfo(jobInfoListI).
+            hasPage(100). // reduced to default max value
+            hasTotalPages(4).
+            hasEntries(0);
 
     }
     /* @formatter:on */

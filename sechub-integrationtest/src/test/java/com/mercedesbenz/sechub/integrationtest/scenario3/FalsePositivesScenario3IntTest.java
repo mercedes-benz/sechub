@@ -125,7 +125,7 @@ public class FalsePositivesScenario3IntTest {
 
         // fetch last user job - must be the one we have created here...
         TestSecHubJobInfoForUserListPage jobInfo = as(USER_1).fetchUserJobInfoListOneEntryOrNull(project);
-        assertUserJobInfo(jobInfo).hasJobInfoFor(jobUUID).withExecutionResult("OK").withOneOfAllolowedExecutionState("ENDED");
+        assertUserJobInfo(jobInfo).hasJobInfoFor(jobUUID).withExecutionResult("OK").withOneOfAllowedExecutionStates("ENDED");
         /* @formatter:on */
     }
 

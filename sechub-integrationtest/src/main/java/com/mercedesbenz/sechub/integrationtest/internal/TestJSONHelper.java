@@ -144,14 +144,6 @@ public class TestJSONHelper {
         } catch (JsonProcessingException e) {
             throw new JSONConverterException("Was not able to convert json to a list of " + class1.getName(), e);
         }
-//        List<T> list;
-//        try {
-//            list = getMapper().readValue(json, new TypeReference<List<T>>() {
-//            });
-//        } catch (JsonProcessingException e) {
-//            throw new JSONConverterException("Was not able to convert json to a list of " + class1.getName(), e);
-//        }
-//        return list;
     }
 
 }
