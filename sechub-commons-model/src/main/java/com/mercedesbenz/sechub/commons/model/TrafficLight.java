@@ -13,7 +13,10 @@ public enum TrafficLight {
 
     YELLOW,
 
-    RED;
+    RED,
+
+    /* Traffic light is "turned off" */
+    OFF;
 
     /**
      * Tries to identify traffic light from string.
