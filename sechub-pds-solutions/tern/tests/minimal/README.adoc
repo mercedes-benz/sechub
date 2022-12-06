@@ -1,0 +1,7 @@
+# Minimal image
+
+Extremely small image with a statically compiled binary.
+
+## Expected Result
+
+No, result. No package manager is used.

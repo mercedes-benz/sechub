@@ -9,11 +9,14 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
 import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
+import com.mercedesbenz.sechub.sharedkernel.error.BadRequestException;
 import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
@@ -52,6 +55,8 @@ public class SchedulerSourcecodeUploadServiceTest {
         when(mockedStorageService.getJobStorage(PROJECT1, randomUuid)).thenReturn(storage);
 
         file = mock(MultipartFile.class);
+        when(file.getSize()).thenReturn(1024L); // just not empty
+
         archiveSupportProvider = mock(ArchiveSupportProvider.class);
         mockedArchiveSupport = mock(ArchiveSupport.class);
         when(archiveSupportProvider.getArchiveSupport()).thenReturn(mockedArchiveSupport);
@@ -70,6 +75,22 @@ public class SchedulerSourcecodeUploadServiceTest {
         serviceToTest.assertion = mock(UserInputAssertion.class);
         serviceToTest.auditLogService = mock(AuditLogService.class);
 
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = { 0, 10, 22 })
+    void when_zipfile_is_empty_a_bad_request_400_is_thrown_even_when_zipfile_validation_is_disabled(long fileSize) {
+        /* prepare */
+        when(checkSumSupport.hasCorrectSha256Checksum(eq("mychecksum"), any())).thenReturn(true);
+        when(mockedArchiveSupport.isZipFileStream(any())).thenReturn(true);
+
+        when(configuration.isChecksumValidationEnabled()).thenReturn(false);
+        when(configuration.isZipValidationEnabled()).thenReturn(false);
+
+        when(file.getSize()).thenReturn(fileSize);
+
+        /* execute + test */
+        assertThrows(BadRequestException.class, () -> serviceToTest.uploadSourceCode(PROJECT1, randomUuid, file, "mychecksum"));
     }
 
     @Test

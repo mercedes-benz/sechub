@@ -11,6 +11,7 @@ import com.mercedesbenz.sechub.integrationtest.scenario15.Scenario15;
 import com.mercedesbenz.sechub.integrationtest.scenario16.Scenario16;
 import com.mercedesbenz.sechub.integrationtest.scenario17.Scenario17;
 import com.mercedesbenz.sechub.integrationtest.scenario18.Scenario18;
+import com.mercedesbenz.sechub.integrationtest.scenario19.Scenario19;
 import com.mercedesbenz.sechub.integrationtest.scenario2.Scenario2;
 import com.mercedesbenz.sechub.integrationtest.scenario3.Scenario3;
 import com.mercedesbenz.sechub.integrationtest.scenario4.Scenario4;
@@ -46,6 +47,7 @@ import com.mercedesbenz.sechub.integrationtest.scenario9.Scenario9;
  * <li>{@link Scenario16 Scenario 16} - PDS scenario for testing mapping. 1 user, 1 project. Project is assigned to {@link IntegrationTestDefaultProfiles#PROFILE_11_PDS_CODESCAN_MAPPING Profile 11}</li>
  * <li>{@link Scenario17 Scenario 17} - PDS scenario for testing PDS checkmarx wrapper. 1 user, 1 project. Project is assigned to {@link IntegrationTestDefaultProfiles#PROFILE_12_PDS_CHECKMARX_INTEGRATIONTEST Profile 12}</li>
  * <li>{@link Scenario18 Scenario 18} - PDS scenario for testing PDS cancellation. 1 user, 1 project. Project is assigned to {@link IntegrationTestDefaultProfiles#PROFILE_13_PDS_CANCELLATION Profile 13}</li>
+ * <li>{@link Scenario19 Scenario 19} - Simple scenario for testing job information list fetching for user. 1 user, 1 project.</li>
  * </ul>
  * <b3>Profiles</h3>
  * <ul>

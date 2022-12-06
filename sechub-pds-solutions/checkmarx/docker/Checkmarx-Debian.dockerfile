@@ -36,11 +36,11 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 # Download the Checkmarx Wrapper
 RUN cd "$ARTIFACT_FOLDER" && \
     # download checksum file
-    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$CHECKMARX_WRAPPER_VERSION-pds/sechub-pds-wrapper-checkmarx-$CHECKMARX_WRAPPER_VERSION.jar.sha256sum" && \
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$CHECKMARX_WRAPPER_VERSION-pds/sechub-wrapper-checkmarx-$CHECKMARX_WRAPPER_VERSION.jar.sha256sum" && \
     # download wrapper jar
-    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$CHECKMARX_WRAPPER_VERSION-pds/sechub-pds-wrapper-checkmarx-$CHECKMARX_WRAPPER_VERSION.jar" && \
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$CHECKMARX_WRAPPER_VERSION-pds/sechub-wrapper-checkmarx-$CHECKMARX_WRAPPER_VERSION.jar" && \
     # verify that the checksum and the checksum of the file are same
-    sha256sum --check "sechub-pds-wrapper-checkmarx-$CHECKMARX_WRAPPER_VERSION.jar.sha256sum"
+    sha256sum --check "sechub-wrapper-checkmarx-$CHECKMARX_WRAPPER_VERSION.jar.sha256sum"
 
 #-------------------
 # Builder Copy Jar
@@ -53,7 +53,7 @@ ARG ARTIFACT_FOLDER
 RUN mkdir --parent "$ARTIFACT_FOLDER"
 
 # Copy
-COPY copy/sechub-pds-wrapper-checkmarx-* "$ARTIFACT_FOLDER"
+COPY copy/sechub-wrapper-checkmarx-* "$ARTIFACT_FOLDER"
 
 #-------------------
 # Builder
@@ -85,7 +85,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get clean
 
 COPY --from=builder "$ARTIFACT_FOLDER" "$TOOL_FOLDER"
-RUN ln --symbolic $TOOL_FOLDER/sechub-pds-wrapper-checkmarx-*.jar $TOOL_FOLDER/sechub-pds-wrapper-checkmarx.jar
+RUN ln --symbolic $TOOL_FOLDER/sechub-wrapper-checkmarx-*.jar $TOOL_FOLDER/sechub-wrapper-checkmarx.jar
 
 # Copy mock folders
 COPY mocks/ "$MOCK_FOLDER"

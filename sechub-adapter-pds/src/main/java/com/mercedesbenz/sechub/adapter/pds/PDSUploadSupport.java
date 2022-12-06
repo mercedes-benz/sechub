@@ -55,6 +55,8 @@ public class PDSUploadSupport {
     private String resolveUploadFileName(SecHubDataConfigurationType type) {
         String fileName = null;
         switch (type) {
+        case NONE:
+            return null;
         case BINARY:
             fileName = FILENAME_BINARIES_TAR;
             break;
@@ -68,21 +70,23 @@ public class PDSUploadSupport {
     }
 
     private InputStream resolveInputStream(SecHubDataConfigurationType dataType, PDSContext context, PDSAdapterConfigData data) throws AdapterException {
-        InputStream zipInputstream = null;
+        InputStream inputStream = null;
         switch (dataType) {
+        case NONE:
+            throw new IllegalStateException("There cannot be an inputstream for: " + dataType + ". Illegal situation - should not be called!");
         case BINARY:
-            zipInputstream = data.getBinaryTarFileInputStreamOrNull();
+            inputStream = data.getBinaryTarFileInputStreamOrNull();
             break;
         case SOURCE:
-            zipInputstream = data.getSourceCodeZipFileInputStreamOrNull();
+            inputStream = data.getSourceCodeZipFileInputStreamOrNull();
             break;
         default:
             throw new IllegalStateException("unsupported data type:" + dataType);
         }
-        if (zipInputstream == null) {
+        if (inputStream == null) {
             throw context.asAdapterException("Input stream for " + dataType + " file is null!");
         }
-        return zipInputstream;
+        return inputStream;
     }
 
 }

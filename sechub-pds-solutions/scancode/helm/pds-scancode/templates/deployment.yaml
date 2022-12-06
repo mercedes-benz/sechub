@@ -17,10 +17,17 @@ spec:
                 name: {{ .Chart.Name }}
         spec:
             securityContext:
-                runAsUser: 2323 # user id of the pds user. Set in the Dockerfile.
+                runAsUser: 2323 # user id of the application user. (overrides settings in the Dockerfile)
+                runAsGroup: 2323 # group id of the application group. (overrides setings in the Dockerfile)
+                fsGroup: 2323 # group id of the application group. Set in the Dockerfile. This group has write access to the volumes.
             containers:
                 - name: {{ .Chart.Name }}
                   image: "{{ .Values.image.registry }}:{{ .Values.image.tag }}"
+                  resources:
+                      requests:
+                          memory: "{{ .Values.resources.requests.memory }}"
+                      limits:
+                          memory: "{{ .Values.resources.limits.memory }}"
                   env:
                     - name: PDS_START_MODE
                       value: "{{ .Values.pds.startMode }}"

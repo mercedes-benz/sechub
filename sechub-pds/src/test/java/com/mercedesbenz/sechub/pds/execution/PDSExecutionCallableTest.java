@@ -12,6 +12,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
@@ -20,6 +22,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.pds.job.JobConfigurationData;
 import com.mercedesbenz.sechub.pds.job.PDSCheckJobStatusService;
 import com.mercedesbenz.sechub.pds.job.PDSJobTransactionService;
+import com.mercedesbenz.sechub.pds.job.PDSWorkspacePreparationResult;
 import com.mercedesbenz.sechub.pds.job.PDSWorkspaceService;
 import com.mercedesbenz.sechub.pds.job.WorkspaceLocationData;
 
@@ -42,6 +45,8 @@ class PDSExecutionCallableTest {
     private File messageFolder;
     private File eventsFolder;
     private File metaDataFile;
+    private ProcessHandlingDataFactory processHandlingFactory;
+    private ProductLaunchProcessHandlingData launchProcessHandlingData;
 
     @BeforeEach
     void beforeEach() throws IOException {
@@ -65,6 +70,7 @@ class PDSExecutionCallableTest {
         jobStatusService = mock(PDSCheckJobStatusService.class);
         processAdapterFactory = mock(PDSProcessAdapterFactory.class);
         processAdapter = mock(ProcessAdapter.class);
+        processHandlingFactory = mock(ProcessHandlingDataFactory.class);
 
         data = mock(JobConfigurationData.class);
         locationData = mock(WorkspaceLocationData.class);
@@ -84,6 +90,9 @@ class PDSExecutionCallableTest {
         when(workspaceService.getMetaDataFile(jobUUID)).thenReturn(metaDataFile);
         when(workspaceService.getResultFile(jobUUID)).thenReturn(resultFile);
 
+        PDSWorkspacePreparationResult launchScriptExecutableResult = new PDSWorkspacePreparationResult(true);
+        when(workspaceService.prepare(eq(jobUUID), any(), any())).thenReturn(launchScriptExecutableResult);
+
         when(data.getJobConfigurationJson()).thenReturn("{}");
 
         when(processAdapterFactory.startProcess(any())).thenReturn(processAdapter);
@@ -92,15 +101,25 @@ class PDSExecutionCallableTest {
         when(workspaceService.createLocationData(jobUUID)).thenReturn(locationData);
         when(workspaceService.getMessagesFolder(jobUUID)).thenReturn(messageFolder);
 
-        callableToTest = new PDSExecutionCallable(jobUUID, jobTransactionService, workspaceService, environmentService, jobStatusService,
-                processAdapterFactory);
+        launchProcessHandlingData = mock(ProductLaunchProcessHandlingData.class);
+        when(processHandlingFactory.createForLaunchOperation(any())).thenReturn(launchProcessHandlingData);
+
+        PDSExecutionCallableServiceCollection serviceCollection = mock(PDSExecutionCallableServiceCollection.class);
+        when(serviceCollection.getEnvironmentService()).thenReturn(environmentService);
+        when(serviceCollection.getJobStatusService()).thenReturn(jobStatusService);
+        when(serviceCollection.getJobTransactionService()).thenReturn(jobTransactionService);
+        when(serviceCollection.getProcessAdapterFactory()).thenReturn(processAdapterFactory);
+        when(serviceCollection.getWorkspaceService()).thenReturn(workspaceService);
+        when(serviceCollection.getProcessHandlingDataFactory()).thenReturn(processHandlingFactory);
+
+        callableToTest = new PDSExecutionCallable(jobUUID, serviceCollection);
 
         when(processAdapter.isAlive()).thenReturn(true);
 
     }
 
     @Test
-    void minutes_0_from_workspace_fails_without_job_transaction_write() throws Exception {
+    void timeout_with_0_fails_without_job_transaction_write() throws Exception {
         /* prepare */
         simulateProcessTimeOut(0L);
 
@@ -113,6 +132,8 @@ class PDSExecutionCallableTest {
         // internally an illegal state is thrown before any execution,
         verify(processAdapterFactory, never()).startProcess(any());
         verify(jobTransactionService, never()).updateJobExecutionDataInOwnTransaction(any(), any());
+        // check there is no wait for a process at all
+        verify(processAdapter, never()).waitFor(anyLong(), any());
     }
 
     @Test
@@ -190,6 +211,19 @@ class PDSExecutionCallableTest {
 
     }
 
+    @ParameterizedTest
+    @ValueSource(ints = { 10, 4711 })
+    void process_waiting_is_done_with_value_from_handling_data_factory_and_time_unit_minutes(int value) throws Exception {
+        /* prepare */
+        when(launchProcessHandlingData.getMinutesToWaitBeforeProductTimeout()).thenReturn(value);
+
+        /* execute */
+        callableToTest.call();
+
+        /* test */
+        verify(processAdapter).waitFor(value, TimeUnit.MINUTES);
+    }
+
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
     /* + ................Helpers......................... + */
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
@@ -210,7 +244,8 @@ class PDSExecutionCallableTest {
     }
 
     private void simulateProcessDone(long timeoutInMinutes) throws InterruptedException {
-        when(workspaceService.getMinutesToWaitForResult(any())).thenReturn(timeoutInMinutes);
+
+        when(launchProcessHandlingData.getMinutesToWaitBeforeProductTimeout()).thenReturn((int) timeoutInMinutes);
         when(processAdapter.waitFor(timeoutInMinutes, TimeUnit.MINUTES)).thenReturn(true);
     }
 
@@ -219,7 +254,7 @@ class PDSExecutionCallableTest {
     }
 
     private void simulateProcessTimeOut(long timeoutInMinutes) throws InterruptedException {
-        when(workspaceService.getMinutesToWaitForResult(any())).thenReturn(timeoutInMinutes);
+        when(launchProcessHandlingData.getMinutesToWaitBeforeProductTimeout()).thenReturn((int) timeoutInMinutes);
         when(processAdapter.waitFor(timeoutInMinutes, TimeUnit.MINUTES)).thenReturn(false);
     }
 }

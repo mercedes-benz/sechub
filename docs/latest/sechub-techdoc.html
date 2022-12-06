@@ -529,9 +529,9 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub TechDoc</h1>
+<h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub TechDoc</h1>
 <div class="details">
-<span id="revnumber"> Server 0.35.2</span>
+<span id="revnumber"> Server 0.36.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -834,7 +834,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#mapping">10.1. Mapping</a>
 <ul class="sectlevel3">
 <li><a href="#rest-api-for-global-mapping">10.1.1. REST API for global mapping</a></li>
-<li><a href="#json-structure">10.1.2. JSON structure</a></li>
+<li><a href="#mapping-json-structure">10.1.2. JSON structure</a></li>
 </ul>
 </li>
 <li><a href="#section-initial-profile-and-executors">10.2. Execution profiles</a></li>
@@ -985,36 +985,36 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 </ul>
 </li>
 <li><a href="#section-gen-messaging-auto_cleanup_configuration_changed">10.7.2.2. Message AUTO_CLEANUP_CONFIGURATION_CHANGED</a></li>
-<li><a href="#section-gen-messaging-batch_job_status">10.7.2.3. Message BATCH_JOB_STATUS</a></li>
-<li><a href="#section-gen-messaging-job_canceled">10.7.2.4. Message JOB_CANCELED</a></li>
-<li><a href="#section-gen-messaging-job_done">10.7.2.5. Message JOB_DONE</a></li>
-<li><a href="#section-gen-messaging-job_failed">10.7.2.6. Message JOB_FAILED</a></li>
-<li><a href="#section-gen-messaging-job_restart_canceled">10.7.2.7. Message JOB_RESTART_CANCELED</a></li>
-<li><a href="#section-gen-messaging-job_restart_triggered">10.7.2.8. Message JOB_RESTART_TRIGGERED</a></li>
-<li><a href="#section-gen-messaging-job_results_purged">10.7.2.9. Message JOB_RESULTS_PURGED</a></li>
-<li><a href="#section-gen-messaging-job_result_purge_done">10.7.2.10. Message JOB_RESULT_PURGE_DONE</a></li>
-<li><a href="#section-gen-messaging-job_result_purge_failed">10.7.2.11. Message JOB_RESULT_PURGE_FAILED</a></li>
-<li><a href="#section-gen-messaging-job_started">10.7.2.12. Message JOB_STARTED</a></li>
-<li><a href="#section-gen-messaging-mapping_configuration_changed">10.7.2.13. Message MAPPING_CONFIGURATION_CHANGED</a></li>
+<li><a href="#section-gen-messaging-job_cancellation_running">10.7.2.3. Message JOB_CANCELLATION_RUNNING</a></li>
+<li><a href="#section-gen-messaging-job_done">10.7.2.4. Message JOB_DONE</a></li>
+<li><a href="#section-gen-messaging-job_failed">10.7.2.5. Message JOB_FAILED</a></li>
+<li><a href="#section-gen-messaging-job_restart_canceled">10.7.2.6. Message JOB_RESTART_CANCELED</a></li>
+<li><a href="#section-gen-messaging-job_restart_triggered">10.7.2.7. Message JOB_RESTART_TRIGGERED</a></li>
+<li><a href="#section-gen-messaging-job_results_purged">10.7.2.8. Message JOB_RESULTS_PURGED</a></li>
+<li><a href="#section-gen-messaging-job_result_purge_done">10.7.2.9. Message JOB_RESULT_PURGE_DONE</a></li>
+<li><a href="#section-gen-messaging-job_result_purge_failed">10.7.2.10. Message JOB_RESULT_PURGE_FAILED</a></li>
+<li><a href="#section-gen-messaging-job_started">10.7.2.11. Message JOB_STARTED</a></li>
+<li><a href="#section-gen-messaging-mapping_configuration_changed">10.7.2.12. Message MAPPING_CONFIGURATION_CHANGED</a></li>
+<li><a href="#section-gen-messaging-product_executor_cancel_operations_done">10.7.2.13. Message PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE</a></li>
 <li><a href="#section-gen-messaging-project_access_level_changed">10.7.2.14. Message PROJECT_ACCESS_LEVEL_CHANGED</a></li>
 <li><a href="#section-gen-messaging-project_created">10.7.2.15. Message PROJECT_CREATED</a></li>
 <li><a href="#section-gen-messaging-project_deleted">10.7.2.16. Message PROJECT_DELETED</a></li>
 <li><a href="#section-gen-messaging-project_owner_changed">10.7.2.17. Message PROJECT_OWNER_CHANGED</a></li>
 <li><a href="#section-gen-messaging-project_whitelist_updated">10.7.2.18. Message PROJECT_WHITELIST_UPDATED</a></li>
-<li><a href="#section-gen-messaging-request_batch_job_status">10.7.2.19. Message REQUEST_BATCH_JOB_STATUS</a></li>
-<li><a href="#section-gen-messaging-request_job_cancelation">10.7.2.20. Message REQUEST_JOB_CANCELATION</a></li>
-<li><a href="#section-gen-messaging-request_job_restart">10.7.2.21. Message REQUEST_JOB_RESTART</a></li>
-<li><a href="#section-gen-messaging-request_job_restart_hard">10.7.2.22. Message REQUEST_JOB_RESTART_HARD</a></li>
-<li><a href="#section-gen-messaging-request_purge_job_results">10.7.2.23. Message REQUEST_PURGE_JOB_RESULTS</a></li>
-<li><a href="#section-gen-messaging-request_scheduler_disable_job_processing">10.7.2.24. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</a></li>
-<li><a href="#section-gen-messaging-request_scheduler_enable_job_processing">10.7.2.25. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</a></li>
+<li><a href="#section-gen-messaging-request_job_cancellation">10.7.2.19. Message REQUEST_JOB_CANCELLATION</a></li>
+<li><a href="#section-gen-messaging-request_job_restart">10.7.2.20. Message REQUEST_JOB_RESTART</a></li>
+<li><a href="#section-gen-messaging-request_job_restart_hard">10.7.2.21. Message REQUEST_JOB_RESTART_HARD</a></li>
+<li><a href="#section-gen-messaging-request_purge_job_results">10.7.2.22. Message REQUEST_PURGE_JOB_RESULTS</a></li>
+<li><a href="#section-gen-messaging-request_scheduler_disable_job_processing">10.7.2.23. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</a></li>
+<li><a href="#section-gen-messaging-request_scheduler_enable_job_processing">10.7.2.24. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</a></li>
+<li><a href="#section-gen-messaging-request_scheduler_job_status">10.7.2.25. Message REQUEST_SCHEDULER_JOB_STATUS</a></li>
 <li><a href="#section-gen-messaging-request_scheduler_status_update">10.7.2.26. Message REQUEST_SCHEDULER_STATUS_UPDATE</a></li>
 <li><a href="#section-gen-messaging-request_user_role_recalculation">10.7.2.27. Message REQUEST_USER_ROLE_RECALCULATION</a></li>
-<li><a href="#section-gen-messaging-scan_abandonded">10.7.2.28. Message SCAN_ABANDONDED</a></li>
-<li><a href="#section-gen-messaging-scan_done">10.7.2.29. Message SCAN_DONE</a></li>
-<li><a href="#section-gen-messaging-scan_failed">10.7.2.30. Message SCAN_FAILED</a></li>
-<li><a href="#section-gen-messaging-scheduler_job_processing_disabled">10.7.2.31. Message SCHEDULER_JOB_PROCESSING_DISABLED</a></li>
-<li><a href="#section-gen-messaging-scheduler_job_processing_enabled">10.7.2.32. Message SCHEDULER_JOB_PROCESSING_ENABLED</a></li>
+<li><a href="#section-gen-messaging-scan_done">10.7.2.28. Message SCAN_DONE</a></li>
+<li><a href="#section-gen-messaging-scan_failed">10.7.2.29. Message SCAN_FAILED</a></li>
+<li><a href="#section-gen-messaging-scheduler_job_processing_disabled">10.7.2.30. Message SCHEDULER_JOB_PROCESSING_DISABLED</a></li>
+<li><a href="#section-gen-messaging-scheduler_job_processing_enabled">10.7.2.31. Message SCHEDULER_JOB_PROCESSING_ENABLED</a></li>
+<li><a href="#section-gen-messaging-scheduler_job_status">10.7.2.32. Message SCHEDULER_JOB_STATUS</a></li>
 <li><a href="#section-gen-messaging-scheduler_started">10.7.2.33. Message SCHEDULER_STARTED</a></li>
 <li><a href="#section-gen-messaging-scheduler_status_update">10.7.2.34. Message SCHEDULER_STATUS_UPDATE</a></li>
 <li><a href="#section-gen-messaging-start_scan">10.7.2.35. Message START_SCAN</a></li>
@@ -1395,7 +1395,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.35.2-20220915150519</code></p>
+<p>Documentation version: <code>Server 0.36.0-20221114145749</code></p>
 </div>
 <div class="paragraph">
 <p>Target audience for this document are <strong>SecHub Developers</strong> only!</p>
@@ -1955,7 +1955,7 @@ tests we got fix credentials - <strong>so never use in production!</strong></td>
 <h6 id="overview">3.1.1.1.1. Overview</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles.svg" alt="Diagram" width="2427" height="235">
+<img src="images/gen_springprofiles.svg" alt="Diagram" width="2424" height="235">
 </div>
 <div class="title">Figure 1. Spring profiles and their explicit/implicit included parts</div>
 </div>
@@ -1992,7 +1992,7 @@ the profile on this machine. So you prevent illegal administrative access attemp
 <h6 id="dev">3.1.1.1.3. DEV</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles-dev.svg" alt="Diagram" width="1307" height="274">
+<img src="images/gen_springprofiles-dev.svg" alt="Diagram" width="1284" height="274">
 </div>
 <div class="title">Figure 3. Spring profile dev and its explicit/implicit included parts</div>
 </div>
@@ -2005,7 +2005,7 @@ starting - but its extreme flexible and has only a dependency to localserver</p>
 <h6 id="integration-test">3.1.1.1.4. Integration-Test</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles-integrationtest.svg" alt="Diagram" width="1396" height="271">
+<img src="images/gen_springprofiles-integrationtest.svg" alt="Diagram" width="1412" height="271">
 </div>
 <div class="title">Figure 4. Spring profile integrationtest and its explicit/implicit included parts</div>
 </div>
@@ -2624,7 +2624,7 @@ The system properties described here are <strong>automatically</strong>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.check.canceljob.delay</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">60000</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Define delay in milliseconds, for before next job cancelation check will be executed.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define delay in milliseconds, for before next job cancellation check will be executed.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.scan.scanconfig.refresh.delay</p></td>
@@ -4673,7 +4673,7 @@ listed inside generated messaging diagram(s) <code>gen_domain_messaging_overview
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging" width="1024" height="3531">
+<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging" width="1024" height="3546">
 </div>
 </div>
 <div class="admonitionblock tip">
@@ -5134,7 +5134,7 @@ behaviour like done in <a href="#scan-config-about">scan configuration</a>.</p>
 <div class="sect3">
 <h4 id="rest-api-for-global-mapping">10.1.1. REST API for global mapping</h4>
 <div class="paragraph">
-<p>A global configuration can be done by REST API.</p>
+<p>A global configuration can be done by REST API. The data is defined in <a href="#mapping-json-structure">JSON</a>.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -5148,9 +5148,9 @@ behaviour like done in <a href="#scan-config-about">scan configuration</a>.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="json-structure">10.1.2. JSON structure</h4>
+<h4 id="mapping-json-structure">10.1.2. JSON structure</h4>
 <div class="paragraph">
-<p>given JSON has following structure:</p>
+<p>Given JSON has following structure:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -5711,6 +5711,25 @@ This contains the Target URL for current scan i.e webscan. Will not be set in al
 </div></div></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.debug.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+When 'true', the PDS instance will show up some debug information on scan time. The output level of debugging information differs on PDS solutions/launcher scripts.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Available as ENV variable <code>PDS_DEBUG_ENABLED</code> inside launcher script.</p>
+</li>
+<li>
+<p>Optional</p>
+</li>
+<li>
+<p>Default is "false"</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.scan.configuration</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">
 This contains the SecHub configuration as JSON object (but reduced to current scan type, so e.g. a web scan will have no code scan configuration data available
@@ -5723,6 +5742,32 @@ This contains the SecHub configuration as JSON object (but reduced to current sc
 <li>
 <p><strong>Generated</strong></p>
 </li>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.cancel.event.checkinterval.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+This is the maximum time the launcher script process will be kept alive after a cancellation event is sent. This gives the launcher script process a chance to recognize the cancel event and do some final cancel parts and exit gracefully.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.cancel.maximum.waittime.seconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+The time in seconds PDS will check again if the launcher script process is alive or not when the process shall be canceled. When nothing defined, the default value is:0. If the value is 0 the process will be terminated without waiting.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
 <li>
 <p>Optional</p>
 </li>
@@ -6828,7 +6873,7 @@ one domain calls another one.</p>
 <h6 id="diagram">10.7.2.1.1. Diagram</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="861" height="3531">
+<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="878" height="3546">
 </div>
 </div>
 </div>
@@ -6840,10 +6885,7 @@ one domain calls another one.</p>
 <p><a href="#section-gen-messaging-auto_cleanup_configuration_changed">AUTO_CLEANUP_CONFIGURATION_CHANGED</a></p>
 </li>
 <li>
-<p><a href="#section-gen-messaging-batch_job_status">BATCH_JOB_STATUS</a></p>
-</li>
-<li>
-<p><a href="#section-gen-messaging-job_canceled">JOB_CANCELED</a></p>
+<p><a href="#section-gen-messaging-job_cancellation_running">JOB_CANCELLATION_RUNNING</a></p>
 </li>
 <li>
 <p><a href="#section-gen-messaging-job_done">JOB_DONE</a></p>
@@ -6873,6 +6915,9 @@ one domain calls another one.</p>
 <p><a href="#section-gen-messaging-mapping_configuration_changed">MAPPING_CONFIGURATION_CHANGED</a></p>
 </li>
 <li>
+<p><a href="#section-gen-messaging-product_executor_cancel_operations_done">PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE</a></p>
+</li>
+<li>
 <p><a href="#section-gen-messaging-project_access_level_changed">PROJECT_ACCESS_LEVEL_CHANGED</a></p>
 </li>
 <li>
@@ -6888,10 +6933,7 @@ one domain calls another one.</p>
 <p><a href="#section-gen-messaging-project_whitelist_updated">PROJECT_WHITELIST_UPDATED</a></p>
 </li>
 <li>
-<p><a href="#section-gen-messaging-request_batch_job_status">REQUEST_BATCH_JOB_STATUS</a></p>
-</li>
-<li>
-<p><a href="#section-gen-messaging-request_job_cancelation">REQUEST_JOB_CANCELATION</a></p>
+<p><a href="#section-gen-messaging-request_job_cancellation">REQUEST_JOB_CANCELLATION</a></p>
 </li>
 <li>
 <p><a href="#section-gen-messaging-request_job_restart">REQUEST_JOB_RESTART</a></p>
@@ -6909,13 +6951,13 @@ one domain calls another one.</p>
 <p><a href="#section-gen-messaging-request_scheduler_enable_job_processing">REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</a></p>
 </li>
 <li>
+<p><a href="#section-gen-messaging-request_scheduler_job_status">REQUEST_SCHEDULER_JOB_STATUS</a></p>
+</li>
+<li>
 <p><a href="#section-gen-messaging-request_scheduler_status_update">REQUEST_SCHEDULER_STATUS_UPDATE</a></p>
 </li>
 <li>
 <p><a href="#section-gen-messaging-request_user_role_recalculation">REQUEST_USER_ROLE_RECALCULATION</a></p>
-</li>
-<li>
-<p><a href="#section-gen-messaging-scan_abandonded">SCAN_ABANDONDED</a></p>
 </li>
 <li>
 <p><a href="#section-gen-messaging-scan_done">SCAN_DONE</a></p>
@@ -6928,6 +6970,9 @@ one domain calls another one.</p>
 </li>
 <li>
 <p><a href="#section-gen-messaging-scheduler_job_processing_enabled">SCHEDULER_JOB_PROCESSING_ENABLED</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-scheduler_job_status">SCHEDULER_JOB_STATUS</a></p>
 </li>
 <li>
 <p><a href="#section-gen-messaging-scheduler_started">SCHEDULER_STARTED</a></p>
@@ -6982,7 +7027,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-auto_cleanup_configuration_changed">10.7.2.2. Message AUTO_CLEANUP_CONFIGURATION_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_auto_cleanup_configuration_changed.svg" alt="Sequence diagram of messaging AUTO_CLEANUP_CONFIGURATION_CHANGED" width="1124" height="234">
+<img src="images/gen_domain_messaging_auto_cleanup_configuration_changed.svg" alt="Sequence diagram of messaging AUTO_CLEANUP_CONFIGURATION_CHANGED" width="1140" height="234">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -7008,23 +7053,15 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-batch_job_status">10.7.2.3. Message BATCH_JOB_STATUS</h5>
+<h5 id="section-gen-messaging-job_cancellation_running">10.7.2.3. Message JOB_CANCELLATION_RUNNING</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_batch_job_status.svg" alt="Sequence diagram of messaging BATCH_JOB_STATUS" width="559" height="118">
+<img src="images/gen_domain_messaging_job_cancellation_running.svg" alt="Sequence diagram of messaging JOB_CANCELLATION_RUNNING" width="859" height="205">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_canceled">10.7.2.4. Message JOB_CANCELED</h5>
-<div class="imageblock">
-<div class="content">
-<img src="images/gen_domain_messaging_job_canceled.svg" alt="Sequence diagram of messaging JOB_CANCELED" width="774" height="205">
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="section-gen-messaging-job_done">10.7.2.5. Message JOB_DONE</h5>
+<h5 id="section-gen-messaging-job_done">10.7.2.4. Message JOB_DONE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_done.svg" alt="Sequence diagram of messaging JOB_DONE" width="571" height="176">
@@ -7056,7 +7093,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_failed">10.7.2.6. Message JOB_FAILED</h5>
+<h5 id="section-gen-messaging-job_failed">10.7.2.5. Message JOB_FAILED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_failed.svg" alt="Sequence diagram of messaging JOB_FAILED" width="747" height="205">
@@ -7064,7 +7101,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_restart_canceled">10.7.2.7. Message JOB_RESTART_CANCELED</h5>
+<h5 id="section-gen-messaging-job_restart_canceled">10.7.2.6. Message JOB_RESTART_CANCELED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_restart_canceled.svg" alt="Sequence diagram of messaging JOB_RESTART_CANCELED" width="606" height="176">
@@ -7096,7 +7133,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_restart_triggered">10.7.2.8. Message JOB_RESTART_TRIGGERED</h5>
+<h5 id="section-gen-messaging-job_restart_triggered">10.7.2.7. Message JOB_RESTART_TRIGGERED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_restart_triggered.svg" alt="Sequence diagram of messaging JOB_RESTART_TRIGGERED" width="617" height="176">
@@ -7128,7 +7165,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_results_purged">10.7.2.9. Message JOB_RESULTS_PURGED</h5>
+<h5 id="section-gen-messaging-job_results_purged">10.7.2.8. Message JOB_RESULTS_PURGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_results_purged.svg" alt="Sequence diagram of messaging JOB_RESULTS_PURGED" width="586" height="176">
@@ -7136,7 +7173,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_result_purge_done">10.7.2.10. Message JOB_RESULT_PURGE_DONE</h5>
+<h5 id="section-gen-messaging-job_result_purge_done">10.7.2.9. Message JOB_RESULT_PURGE_DONE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_result_purge_done.svg" alt="Sequence diagram of messaging JOB_RESULT_PURGE_DONE" width="624" height="118">
@@ -7144,7 +7181,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_result_purge_failed">10.7.2.11. Message JOB_RESULT_PURGE_FAILED</h5>
+<h5 id="section-gen-messaging-job_result_purge_failed">10.7.2.10. Message JOB_RESULT_PURGE_FAILED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_result_purge_failed.svg" alt="Sequence diagram of messaging JOB_RESULT_PURGE_FAILED" width="638" height="118">
@@ -7152,7 +7189,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_started">10.7.2.12. Message JOB_STARTED</h5>
+<h5 id="section-gen-messaging-job_started">10.7.2.11. Message JOB_STARTED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_started.svg" alt="Sequence diagram of messaging JOB_STARTED" width="570" height="176">
@@ -7184,7 +7221,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-mapping_configuration_changed">10.7.2.13. Message MAPPING_CONFIGURATION_CHANGED</h5>
+<h5 id="section-gen-messaging-mapping_configuration_changed">10.7.2.12. Message MAPPING_CONFIGURATION_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_mapping_configuration_changed.svg" alt="Sequence diagram of messaging MAPPING_CONFIGURATION_CHANGED" width="739" height="176">
@@ -7192,10 +7229,18 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
+<h5 id="section-gen-messaging-product_executor_cancel_operations_done">10.7.2.13. Message PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_product_executor_cancel_operations_done.svg" alt="Sequence diagram of messaging PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE" width="863" height="176">
+</div>
+</div>
+</div>
+<div class="sect4">
 <h5 id="section-gen-messaging-project_access_level_changed">10.7.2.14. Message PROJECT_ACCESS_LEVEL_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_project_access_level_changed.svg" alt="Sequence diagram of messaging PROJECT_ACCESS_LEVEL_CHANGED" width="852" height="205">
+<img src="images/gen_domain_messaging_project_access_level_changed.svg" alt="Sequence diagram of messaging PROJECT_ACCESS_LEVEL_CHANGED" width="868" height="205">
 </div>
 </div>
 </div>
@@ -7211,7 +7256,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-project_deleted">10.7.2.16. Message PROJECT_DELETED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_project_deleted.svg" alt="Sequence diagram of messaging PROJECT_DELETED" width="861" height="234">
+<img src="images/gen_domain_messaging_project_deleted.svg" alt="Sequence diagram of messaging PROJECT_DELETED" width="877" height="234">
 </div>
 </div>
 </div>
@@ -7232,47 +7277,15 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_batch_job_status">10.7.2.19. Message REQUEST_BATCH_JOB_STATUS</h5>
+<h5 id="section-gen-messaging-request_job_cancellation">10.7.2.19. Message REQUEST_JOB_CANCELLATION</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_batch_job_status.svg" alt="Sequence diagram of messaging REQUEST_BATCH_JOB_STATUS" width="662" height="234">
-</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Use cases related to this message</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="#section-usecase-UC_041">UC_041-ADMIN_RESTARTS_JOB </a></p>
-</li>
-<li>
-<p><a href="#section-usecase-UC_042">UC_042-ADMIN_RESTARTS_JOB_HARD </a></p>
-</li>
-</ul>
-</div>
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect4">
-<h5 id="section-gen-messaging-request_job_cancelation">10.7.2.20. Message REQUEST_JOB_CANCELATION</h5>
-<div class="imageblock">
-<div class="content">
-<img src="images/gen_domain_messaging_request_job_cancelation.svg" alt="Sequence diagram of messaging REQUEST_JOB_CANCELATION" width="645" height="176">
+<img src="images/gen_domain_messaging_request_job_cancellation.svg" alt="Sequence diagram of messaging REQUEST_JOB_CANCELLATION" width="656" height="176">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_job_restart">10.7.2.21. Message REQUEST_JOB_RESTART</h5>
+<h5 id="section-gen-messaging-request_job_restart">10.7.2.20. Message REQUEST_JOB_RESTART</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_job_restart.svg" alt="Sequence diagram of messaging REQUEST_JOB_RESTART" width="595" height="176">
@@ -7301,7 +7314,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_job_restart_hard">10.7.2.22. Message REQUEST_JOB_RESTART_HARD</h5>
+<h5 id="section-gen-messaging-request_job_restart_hard">10.7.2.21. Message REQUEST_JOB_RESTART_HARD</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_job_restart_hard.svg" alt="Sequence diagram of messaging REQUEST_JOB_RESTART_HARD" width="663" height="176">
@@ -7330,7 +7343,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_purge_job_results">10.7.2.23. Message REQUEST_PURGE_JOB_RESULTS</h5>
+<h5 id="section-gen-messaging-request_purge_job_results">10.7.2.22. Message REQUEST_PURGE_JOB_RESULTS</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_purge_job_results.svg" alt="Sequence diagram of messaging REQUEST_PURGE_JOB_RESULTS" width="674" height="309">
@@ -7359,7 +7372,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_scheduler_disable_job_processing">10.7.2.24. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</h5>
+<h5 id="section-gen-messaging-request_scheduler_disable_job_processing">10.7.2.23. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_scheduler_disable_job_processing.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING" width="860" height="176">
@@ -7388,7 +7401,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_scheduler_enable_job_processing">10.7.2.25. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</h5>
+<h5 id="section-gen-messaging-request_scheduler_enable_job_processing">10.7.2.24. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_scheduler_enable_job_processing.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING" width="852" height="176">
@@ -7417,6 +7430,38 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
+<h5 id="section-gen-messaging-request_scheduler_job_status">10.7.2.25. Message REQUEST_SCHEDULER_JOB_STATUS</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_request_scheduler_job_status.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_JOB_STATUS" width="715" height="234">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Use cases related to this message</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-usecase-UC_041">UC_041-ADMIN_RESTARTS_JOB </a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_042">UC_042-ADMIN_RESTARTS_JOB_HARD </a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
 <h5 id="section-gen-messaging-request_scheduler_status_update">10.7.2.26. Message REQUEST_SCHEDULER_STATUS_UPDATE</h5>
 <div class="imageblock">
 <div class="content">
@@ -7428,7 +7473,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-request_user_role_recalculation">10.7.2.27. Message REQUEST_USER_ROLE_RECALCULATION</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="2244" height="380">
+<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="2271" height="380">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -7460,15 +7505,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scan_abandonded">10.7.2.28. Message SCAN_ABANDONDED</h5>
-<div class="imageblock">
-<div class="content">
-<img src="images/gen_domain_messaging_scan_abandonded.svg" alt="Sequence diagram of messaging SCAN_ABANDONDED" width="564" height="118">
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="section-gen-messaging-scan_done">10.7.2.29. Message SCAN_DONE</h5>
+<h5 id="section-gen-messaging-scan_done">10.7.2.28. Message SCAN_DONE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scan_done.svg" alt="Sequence diagram of messaging SCAN_DONE" width="477" height="118">
@@ -7476,7 +7513,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scan_failed">10.7.2.30. Message SCAN_FAILED</h5>
+<h5 id="section-gen-messaging-scan_failed">10.7.2.29. Message SCAN_FAILED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scan_failed.svg" alt="Sequence diagram of messaging SCAN_FAILED" width="491" height="118">
@@ -7484,7 +7521,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scheduler_job_processing_disabled">10.7.2.31. Message SCHEDULER_JOB_PROCESSING_DISABLED</h5>
+<h5 id="section-gen-messaging-scheduler_job_processing_disabled">10.7.2.30. Message SCHEDULER_JOB_PROCESSING_DISABLED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scheduler_job_processing_disabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_DISABLED" width="972" height="205">
@@ -7513,7 +7550,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scheduler_job_processing_enabled">10.7.2.32. Message SCHEDULER_JOB_PROCESSING_ENABLED</h5>
+<h5 id="section-gen-messaging-scheduler_job_processing_enabled">10.7.2.31. Message SCHEDULER_JOB_PROCESSING_ENABLED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scheduler_job_processing_enabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_ENABLED" width="968" height="205">
@@ -7542,6 +7579,14 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
+<h5 id="section-gen-messaging-scheduler_job_status">10.7.2.32. Message SCHEDULER_JOB_STATUS</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_scheduler_job_status.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_STATUS" width="612" height="118">
+</div>
+</div>
+</div>
+<div class="sect4">
 <h5 id="section-gen-messaging-scheduler_started">10.7.2.33. Message SCHEDULER_STARTED</h5>
 <div class="imageblock">
 <div class="content">
@@ -7561,7 +7606,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-start_scan">10.7.2.35. Message START_SCAN</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_start_scan.svg" alt="Sequence diagram of messaging START_SCAN" width="485" height="397">
+<img src="images/gen_domain_messaging_start_scan.svg" alt="Sequence diagram of messaging START_SCAN" width="555" height="353">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -7601,7 +7646,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_added_to_project">10.7.2.37. Message USER_ADDED_TO_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_added_to_project.svg" alt="Sequence diagram of messaging USER_ADDED_TO_PROJECT" width="732" height="205">
+<img src="images/gen_domain_messaging_user_added_to_project.svg" alt="Sequence diagram of messaging USER_ADDED_TO_PROJECT" width="748" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -7646,7 +7691,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_created">10.7.2.40. Message USER_CREATED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_created.svg" alt="Sequence diagram of messaging USER_CREATED" width="615" height="205">
+<img src="images/gen_domain_messaging_user_created.svg" alt="Sequence diagram of messaging USER_CREATED" width="629" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -7675,7 +7720,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_deleted">10.7.2.41. Message USER_DELETED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_deleted.svg" alt="Sequence diagram of messaging USER_DELETED" width="1006" height="264">
+<img src="images/gen_domain_messaging_user_deleted.svg" alt="Sequence diagram of messaging USER_DELETED" width="1015" height="264">
 </div>
 </div>
 </div>
@@ -7691,7 +7736,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_new_api_token_requested">10.7.2.43. Message USER_NEW_API_TOKEN_REQUESTED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_new_api_token_requested.svg" alt="Sequence diagram of messaging USER_NEW_API_TOKEN_REQUESTED" width="871" height="205">
+<img src="images/gen_domain_messaging_user_new_api_token_requested.svg" alt="Sequence diagram of messaging USER_NEW_API_TOKEN_REQUESTED" width="964" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -7728,7 +7773,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_removed_from_project">10.7.2.45. Message USER_REMOVED_FROM_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_removed_from_project.svg" alt="Sequence diagram of messaging USER_REMOVED_FROM_PROJECT" width="786" height="205">
+<img src="images/gen_domain_messaging_user_removed_from_project.svg" alt="Sequence diagram of messaging USER_REMOVED_FROM_PROJECT" width="802" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -8243,6 +8288,14 @@ is persisted.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Email to user</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A notification is send per email to user that a new user signup has been created and waits for acceptance.</p>
+<p class="tableblock"><em>This step is defined at method <code>notify</code> in class `com.mercedesbenz.sechub.domain.notification.user.SignUpRequestedUserNotificationService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Email to admin</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -8926,17 +8979,17 @@ build will break.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">upload binaries</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">upload sourcecode</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>uploadBinaries</code> in class `com.mercedesbenz.sechub.domain.schedule.SchedulerRestController`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>uploadSourceCode</code> in class `com.mercedesbenz.sechub.domain.schedule.SchedulerRestController`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">upload sourcecode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">upload binaries</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>uploadSourceCode</code> in class `com.mercedesbenz.sechub.domain.schedule.SchedulerRestController`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>uploadBinaries</code> in class `com.mercedesbenz.sechub.domain.schedule.SchedulerRestController`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -8947,17 +9000,17 @@ build will break.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">get job status</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">download job report and traffic light</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>getJobStatus</code> in class `com.mercedesbenz.sechub.domain.schedule.SchedulerRestController`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>getScanSecHubReportAsJSON</code> in class `com.mercedesbenz.sechub.domain.scan.report.ScanReportRestController`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">download job report and traffic light</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">get job status</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>getScanSecHubReportAsJSON</code> in class `com.mercedesbenz.sechub.domain.scan.report.ScanReportRestController`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>getJobStatus</code> in class `com.mercedesbenz.sechub.domain.schedule.SchedulerRestController`</em></p></td>
 </tr>
 </tbody>
 </table>
@@ -9338,14 +9391,14 @@ For example a user must have a project assigned to be able to scan on it!</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccessFromProject</code> in class `com.mercedesbenz.sechub.domain.schedule.access.ScheduleRevokeUserAccessFromProjectService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccessFromProject</code> in class `com.mercedesbenz.sechub.domain.scan.access.ScanRevokeUserAccessFromProjectService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccessFromProject</code> in class `com.mercedesbenz.sechub.domain.scan.access.ScanRevokeUserAccessFromProjectService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccessFromProject</code> in class `com.mercedesbenz.sechub.domain.schedule.access.ScheduleRevokeUserAccessFromProjectService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
@@ -9484,14 +9537,14 @@ and that the ownership must be moved before User delete is possible.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">revoke user from schedule access</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccess</code> in class `com.mercedesbenz.sechub.domain.schedule.access.ScheduleRevokeUserAccessAtAllService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccess</code> in class `com.mercedesbenz.sechub.domain.scan.access.ScanRevokeUserAccessAtAllService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">revoke user from schedule access</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccess</code> in class `com.mercedesbenz.sechub.domain.scan.access.ScanRevokeUserAccessAtAllService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccess</code> in class `com.mercedesbenz.sechub.domain.schedule.access.ScheduleRevokeUserAccessAtAllService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
@@ -10308,16 +10361,16 @@ user signup is accepted by admin.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler domain to disable scheduler job processing</p>
-<p class="tableblock"><em>This step is defined at method <code>disableJobProcessing</code> in class `com.mercedesbenz.sechub.domain.administration.scheduler.SwitchSchedulerJobProcessingService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler to send updates about current status.</p>
+<p class="tableblock"><em>This step is defined at method <code>triggerSchedulerStatusRefresh</code> in class `com.mercedesbenz.sechub.domain.administration.scheduler.TriggerSchedulerStatusRefreshService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler to send updates about current status.</p>
-<p class="tableblock"><em>This step is defined at method <code>triggerSchedulerStatusRefresh</code> in class `com.mercedesbenz.sechub.domain.administration.scheduler.TriggerSchedulerStatusRefreshService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler domain to disable scheduler job processing</p>
+<p class="tableblock"><em>This step is defined at method <code>disableJobProcessing</code> in class `com.mercedesbenz.sechub.domain.administration.scheduler.SwitchSchedulerJobProcessingService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -10570,7 +10623,7 @@ user signup is accepted by admin.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Triggers job cancelation request, owners of project will be informed</p>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Triggers job cancellation request, owners of project will be informed</p>
 <p class="tableblock"><em>This step is defined at method <code>cancelJob</code> in class `com.mercedesbenz.sechub.domain.administration.job.JobAdministrationRestController`</em></p></td>
 </tr>
 <tr>
@@ -11071,7 +11124,7 @@ so they will just keep on waiting but get the result as soon as possible.</p>
 </li>
 <li>
 <p>check for running batch jobs with SecHub job UUID.<br>
-If there are existing batch operations, those will be stopped and abandoned</p>
+If there are existing batch operations, those will be stopped</p>
 </li>
 <li>
 <p>new scan will be restarted immediately without scheduling, will try to reuse existing
@@ -11101,7 +11154,7 @@ by the ID, etc. etc. But exact resilience behaviour depends on adapter implement
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/event_overview_uc_admin_restarts_job-variant_crashed_jvm_with_product_result.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_RESTARTS_JOB - variant: crashed jvm with product result" width="733" height="574">
+<img src="images/event_overview_uc_admin_restarts_job-variant_crashed_jvm_with_product_result.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_RESTARTS_JOB - variant: crashed jvm with product result" width="768" height="574">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -11129,10 +11182,10 @@ by the ID, etc. etc. But exact resilience behaviour depends on adapter implement
 <p><a href="#section-gen-messaging-job_started">UC_041-ADMIN_RESTARTS_JOB</a></p>
 </li>
 <li>
-<p><a href="#section-gen-messaging-request_batch_job_status">UC_041-ADMIN_RESTARTS_JOB</a></p>
+<p><a href="#section-gen-messaging-request_job_restart">UC_041-ADMIN_RESTARTS_JOB</a></p>
 </li>
 <li>
-<p><a href="#section-gen-messaging-request_job_restart">UC_041-ADMIN_RESTARTS_JOB</a></p>
+<p><a href="#section-gen-messaging-request_scheduler_job_status">UC_041-ADMIN_RESTARTS_JOB</a></p>
 </li>
 <li>
 <p><a href="#section-gen-messaging-start_scan">UC_041-ADMIN_RESTARTS_JOB</a></p>
@@ -11268,7 +11321,7 @@ is like from "scratch".</p>
 </li>
 <li>
 <p>check for running batch jobs with SecHub job UUID.<br>
-If there are existing batch operations, those will be stopped and abandoned</p>
+If there are existing batch operations, those will be stopped</p>
 </li>
 <li>
 <p>new scan will be restarted immediately without scheduling, will not try to reuse existing
@@ -11295,7 +11348,7 @@ results because such information was formerly deleted</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/event_overview_uc_admin_restarts_job_hard-variant_crashed_jvm_with_product_result.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_RESTARTS_JOB_HARD - variant: crashed jvm with product result" width="787" height="646">
+<img src="images/event_overview_uc_admin_restarts_job_hard-variant_crashed_jvm_with_product_result.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_RESTARTS_JOB_HARD - variant: crashed jvm with product result" width="815" height="646">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -11323,13 +11376,13 @@ results because such information was formerly deleted</p>
 <p><a href="#section-gen-messaging-job_started">UC_042-ADMIN_RESTARTS_JOB_HARD</a></p>
 </li>
 <li>
-<p><a href="#section-gen-messaging-request_batch_job_status">UC_042-ADMIN_RESTARTS_JOB_HARD</a></p>
-</li>
-<li>
 <p><a href="#section-gen-messaging-request_job_restart_hard">UC_042-ADMIN_RESTARTS_JOB_HARD</a></p>
 </li>
 <li>
 <p><a href="#section-gen-messaging-request_purge_job_results">UC_042-ADMIN_RESTARTS_JOB_HARD</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-request_scheduler_job_status">UC_042-ADMIN_RESTARTS_JOB_HARD</a></p>
 </li>
 <li>
 <p><a href="#section-gen-messaging-start_scan">UC_042-ADMIN_RESTARTS_JOB_HARD</a></p>
@@ -11379,13 +11432,6 @@ results because such information was formerly deleted</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Inform sechub admins when job restart was canceled</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>notify</code> in class `com.mercedesbenz.sechub.domain.notification.superadmin.InformAdminsThatJobRestartWasCanceledService`</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Try to restart job</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -11396,9 +11442,16 @@ results because such information was formerly deleted</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Try to rstart job (hard)</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">When job is found, a restart will be triggered. Existing batch jobs will be terminated</p>
 <p class="tableblock"><em>This step is defined at method <code>restartJobHard</code> in class `com.mercedesbenz.sechub.domain.schedule.SchedulerRestartJobService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inform sechub admins when job restart was canceled</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>notify</code> in class `com.mercedesbenz.sechub.domain.notification.superadmin.InformAdminsThatJobRestartWasCanceledService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
@@ -11890,7 +11943,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service updates existing executor configuration</p>
-<p class="tableblock"><em>This step is defined at method <code>updateExecutionProfile</code> in class `com.mercedesbenz.sechub.domain.scan.product.config.UpdateProductExecutionProfileService`</em></p></td>
+<p class="tableblock"><em>This step is defined at method <code>updateProductExecutorSetup</code> in class `com.mercedesbenz.sechub.domain.scan.product.config.UpdateProductExecutorConfigService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
@@ -11898,7 +11951,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service updates existing executor configuration</p>
-<p class="tableblock"><em>This step is defined at method <code>updateProductExecutorSetup</code> in class `com.mercedesbenz.sechub.domain.scan.product.config.UpdateProductExecutorConfigService`</em></p></td>
+<p class="tableblock"><em>This step is defined at method <code>updateExecutionProfile</code> in class `com.mercedesbenz.sechub.domain.scan.product.config.UpdateProductExecutionProfileService`</em></p></td>
 </tr>
 </tbody>
 </table>
@@ -14221,7 +14274,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/d7e87aba-f9bc-49ac-94d4-f03ef96a15c7' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/78f6f925-b773-49ed-8850-4e33153eb243' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -15094,7 +15147,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>[{&quot;sechubJobUUID&quot;:&quot;d35e4df3-73d2-4fef-9f99-327fb1eefdbe&quot;,&quot;executedBy&quot;:&quot;spartakus&quot;,&quot;started&quot;:&quot;2022-09-14T15:05:37.217876&quot;,&quot;ended&quot;:&quot;2022-09-15T15:05:37.217907&quot;,&quot;status&quot;:&quot;OK&quot;}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code>[{&quot;sechubJobUUID&quot;:&quot;61c1c4cd-d67d-47c2-85cc-a807c865d7c0&quot;,&quot;executedBy&quot;:&quot;spartakus&quot;,&quot;started&quot;:&quot;2022-11-13T14:58:04.323058&quot;,&quot;ended&quot;:&quot;2022-11-14T14:58:04.323089&quot;,&quot;status&quot;:&quot;OK&quot;}]</code></pre>
 </div>
 </div>
 </div>
@@ -15644,7 +15697,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;3632bffe-88c8-40c8-86b8-d258d1e26de1&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;fa1c7300-bc84-46a7-8212-93c6ef260a8b&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -15783,7 +15836,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;24cd7f74-17b9-4224-8639-e51bc3851a98&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;17d0d4fe-bdca-4c3e-b370-e5cb6da24481&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -15937,7 +15990,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;552f1caf-122e-47e9-a4f3-5ea12b46149f&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;bf2c57a9-cffd-4dde-b7b7-d4c79a2eb194&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -16096,7 +16149,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;496004ae-b986-4fc9-bd3b-22b28fe8183f&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;edec063c-a67c-4136-b38b-c27fc1313771&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -16275,7 +16328,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;acd63665-3e88-4f30-af23-a9acd1b212e7&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;991c8d85-d1b0-49e0-9894-6ed6964a0733&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -16349,7 +16402,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/92f0d0be-e13d-4915-b6ca-cdc53ba515ea/sourcecode' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/3b34356a-d5b7-489e-8710-2178a4fee776/sourcecode' -i -u 'user:secret' -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -16432,7 +16485,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/a79b529d-0c40-414f-9ca5-952df00fb5e1/approve' -i -u 'user:secret' -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/342f53c0-388e-415b-bc78-a5d460b16982/approve' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -16569,7 +16622,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/32c3301a-5201-43de-9a3c-a16a8d884665' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/e5e5de76-a0e2-41c9-b0ba-25e980d10f0c' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -16578,7 +16631,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobUUID&quot;:&quot;32c3301a-5201-43de-9a3c-a16a8d884665&quot;,&quot;owner&quot;:&quot;CREATOR1&quot;,&quot;created&quot;:&quot;&quot;,&quot;started&quot;:&quot;2022-09-15T14:51:04.898539&quot;,&quot;ended&quot;:&quot;2022-09-15T15:06:04.898565&quot;,&quot;state&quot;:&quot;ENDED&quot;,&quot;result&quot;:&quot;OK&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobUUID&quot;:&quot;e5e5de76-a0e2-41c9-b0ba-25e980d10f0c&quot;,&quot;owner&quot;:&quot;CREATOR1&quot;,&quot;created&quot;:&quot;&quot;,&quot;started&quot;:&quot;2022-11-14T14:43:28.098831&quot;,&quot;ended&quot;:&quot;2022-11-14T14:58:28.098853&quot;,&quot;state&quot;:&quot;ENDED&quot;,&quot;result&quot;:&quot;OK&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -16653,7 +16706,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/8a730d5b-853b-492f-aa50-f53973cef378' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/c3ebfb20-d4a7-4b48-9495-4073fede6197' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -16725,7 +16778,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/1d2328ea-215c-49ed-8703-280bd1368c0e' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/71a75b34-d2ac-40d2-bfa6-a61243582610' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -17217,7 +17270,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/72098c91-f2b7-460d-a0a2-865b87d6c715/binaries' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/68c6fcd7-ea5a-42aa-88ac-1c7be75064d2/binaries' -i -u 'user:secret' -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -H 'x-file-size: 10240' \
     -F 'file=test1.txt                                                                                           0000664 0001750 0001750 00000000000 13353454574 012170  0                                                                                                    ustar   albert                          albert                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ' \
@@ -17298,7 +17351,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/23469552-c8e6-49e5-b82c-2d5b90a20aff' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/df852e6b-bb34-4f99-aa02-01a8f6958d7c' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -17801,7 +17854,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>[{&quot;jobUUID&quot;:&quot;25cefb0c-71e0-46e1-ae48-94bf84f72b3e&quot;,&quot;projectId&quot;:&quot;project-name&quot;,&quot;owner&quot;:&quot;owner-userid&quot;,&quot;status&quot;:&quot;RUNNING&quot;,&quot;since&quot;:&quot;2022-09-15T15:05:48.638712&quot;,&quot;configuration&quot;:&quot;{ config data }&quot;}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code>[{&quot;jobUUID&quot;:&quot;8cb877dd-bd59-4789-91b2-58c149f1807f&quot;,&quot;projectId&quot;:&quot;project-name&quot;,&quot;owner&quot;:&quot;owner-userid&quot;,&quot;status&quot;:&quot;RUNNING&quot;,&quot;since&quot;:&quot;2022-11-14T14:58:14.113006&quot;,&quot;configuration&quot;:&quot;{ config data }&quot;}]</code></pre>
 </div>
 </div>
 </div>
@@ -17870,7 +17923,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/6c0fd6bb-048a-483d-accb-1816ae4c008d' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/4fc9b06d-75ae-4d1b-9d29-cdc6003bf69b' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -17944,7 +17997,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/0c5ed9e6-7f32-438b-9fe7-d7e6a881b263' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/2d9eba04-fe24-4e12-88c7-bf779f6fba9b' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -18018,7 +18071,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/f4704527-7128-464c-8de1-41aae381fafc' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/3cf0c11c-ee52-4c31-b9c5-c9f3e007f74b' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -18476,7 +18529,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>e78cacf0-5e3f-4f43-8521-e05b683a81e2</code></pre>
+<pre class="CodeRay highlight nowrap"><code>c50f692b-ceae-440f-b03e-0723f664ab09</code></pre>
 </div>
 </div>
 </div>
@@ -18545,7 +18598,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/7d6ac8ad-899d-4531-a6e3-02621731d402' -i -u 'user:secret' -X DELETE \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/e8a52260-9779-4d53-9e80-80343b5188ee' -i -u 'user:secret' -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -18645,7 +18698,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;executorConfigurations&quot;:[{&quot;uuid&quot;:&quot;48711f9b-c173-4ed3-aade-9d44be3b4335&quot;,&quot;name&quot;:&quot;example configuration&quot;,&quot;enabled&quot;:true}],&quot;type&quot;:&quot;executorConfigurationList&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;executorConfigurations&quot;:[{&quot;uuid&quot;:&quot;b885eb26-ae73-41cd-b2df-ca1d611f6fb9&quot;,&quot;name&quot;:&quot;example configuration&quot;,&quot;enabled&quot;:true}],&quot;type&quot;:&quot;executorConfigurationList&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -18783,7 +18836,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/6ec94c25-bbad-456f-9e24-97b5a4308a82' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/c0c0be35-34c7-473a-804d-6c75c490abb1' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -18792,7 +18845,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;6ec94c25-bbad-456f-9e24-97b5a4308a82&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;c0c0be35-34c7-473a-804d-6c75c490abb1&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -18925,7 +18978,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/57e5190b-6e9b-464d-a769-54b99257c72e' -i -u 'user:secret' -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/381fe714-8f39-44a8-adac-263b64817664' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://productNew.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_NEW_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_NEW_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]}}'</code></pre>
 </div>
@@ -19224,7 +19277,7 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/existing-profile-1' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;41d5838e-e7c3-4fb3-9bdb-a2008948364a&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
+    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;b5883dee-e7ba-48a2-8e29-612692d94d9a&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -19365,7 +19418,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;description&quot;:&quot;a description&quot;,&quot;enabled&quot;:true,&quot;configurations&quot;:[{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;c160c264-8b4e-46aa-a820-9cbca3d77229&quot;}],&quot;projectIds&quot;:[&quot;project-1&quot;,&quot;project-2&quot;]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;description&quot;:&quot;a description&quot;,&quot;enabled&quot;:true,&quot;configurations&quot;:[{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;2a65aa1b-bafb-4dc6-8d4d-a9722dfe9eb2&quot;}],&quot;projectIds&quot;:[&quot;project-1&quot;,&quot;project-2&quot;]}</code></pre>
 </div>
 </div>
 </div>
@@ -20778,7 +20831,7 @@ configure the client to do this also on color YELLOW. Only Green is always accep
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.35.2<br>
+ Server 0.36.0<br>
 </div>
 </div>
 </body>

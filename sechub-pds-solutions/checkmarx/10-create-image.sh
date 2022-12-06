@@ -38,8 +38,11 @@ echo ">> Base image: $BASE_IMAGE"
 
 if [[ ! -z "$BUILD_TYPE" ]] ; then
     BUILD_ARGS+=" --build-arg BUILD_TYPE=$BUILD_TYPE"
-    echo ">> Build type: $BUILD_TYPE"
+else
+    BUILD_ARGS+=" --build-arg BUILD_TYPE=download"
 fi
+
+echo ">> Build type: $BUILD_TYPE"
 
 if [[ ! -z "$CHECKMARX_WRAPPER_VERSION" ]] ; then
     BUILD_ARGS+=" --build-arg CHECKMARX_WRAPPER_VERSION=$CHECKMARX_WRAPPER_VERSION"

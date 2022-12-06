@@ -79,12 +79,12 @@ public class NetsparkerAdapterV1WireMockTest {
     }
 
     @Test
-    public void start_scan_returns_returns_result_when_using_agentgroup() throws Exception {
+    public void start_scan_returns_result_when_using_agentgroup() throws Exception {
         common_start_scan_returns_result(true);
     }
 
     @Test
-    public void start_scan_returns_returns_result_when_using_agent() throws Exception {
+    public void start_scan_returns_result_when_using_agent() throws Exception {
         common_start_scan_returns_result(false);
     }
 

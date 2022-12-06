@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.pds;
 
+import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationType;
+
 /**
  * All default parameter keys supported by PDS. A PDS can support optional
  * parameters (via its configuration) but these ones are always supported and be
@@ -47,6 +49,9 @@ public class PDSDefaultParameterKeyConstants {
 
     public static final String PARAM_KEY_PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED = "pds.config.script.trustall.certificates.enabled";
 
+    public static final String PARAM_KEY_PDS_CONFIG_PRODUCT_TIMEOUT_MINUTES = "pds.config.product.timeout.minutes";
+    public static final String PARAM_KEY_PDS_CONFIG_PRODUCT_TIMEOUT_MAX_CONFIGURABLE_MINUTES = "pds.config.product.timeout.max.configurable.minutes";
+
     /**
      * Maximum time the launcher script process will be kept alive when the PDS job
      * has been canceled.
@@ -58,6 +63,12 @@ public class PDSDefaultParameterKeyConstants {
      * is alive or not when the PDS job has been canceled.
      */
     public static final String PARAM_KEY_PDS_CONFIG_CANCEL_EVENT_CHECKINTERVAL_MILLISECONDS = "pds.config.cancel.event.checkinterval.milliseconds";
+
+    /**
+     * Define the supported data types. Can contain an entry or a comma separated
+     * list of {@link SecHubDataConfigurationType}
+     */
+    public static final String PARAM_KEY_PDS_CONFIG_SUPPORTED_DATATYPES = "pds.config.supported.datatypes";
 
     /* ---------------------- */
     /* Integration tests only */

@@ -8,6 +8,12 @@ image:
     registry: "my.registry.example.org/pds_scancode"
     tag: "latest"
 
+resources:
+    requests:
+        memory: 256Mi
+    limits:
+        memory: 2Gi
+
 pds:
     startMode: localserver
     maxFileUploadSize: 20MB

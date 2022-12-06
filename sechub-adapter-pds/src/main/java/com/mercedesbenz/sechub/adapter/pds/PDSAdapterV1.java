@@ -290,7 +290,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         String secHubTraceId = context.getTraceID();
         AdapterMetaData metaData = context.getRuntimeContext().getMetaData();
 
-        boolean required = checkRequired(data, type);
+        boolean required = checkUploadRequired(data, type);
 
         if (!required) {
             LOG.debug("Skipped {} file upload for pds job:{}, because not required", type, pdsJobUUID);
@@ -321,8 +321,10 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         context.getRuntimeContext().getCallback().persist(metaData);
     }
 
-    private boolean checkRequired(PDSAdapterConfigData data, SecHubDataConfigurationType type) {
+    private boolean checkUploadRequired(PDSAdapterConfigData data, SecHubDataConfigurationType type) {
         switch (type) {
+        case NONE:
+            return false;
         case BINARY:
             return data.isBinaryTarFileRequired();
         case SOURCE:
@@ -334,6 +336,8 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
 
     private String fetchChecksumOrNull(PDSAdapterConfigData data, SecHubDataConfigurationType type) {
         switch (type) {
+        case NONE:
+            return null;
         case BINARY:
             return data.getBinariesTarFileChecksumOrNull();
         case SOURCE:
@@ -345,6 +349,8 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
 
     private Long fetchFileSizeOrNull(PDSAdapterConfigData data, SecHubDataConfigurationType type) {
         switch (type) {
+        case NONE:
+            return null;
         case BINARY:
             return data.getBinariesTarFileSizeInBytesOrNull();
         case SOURCE:
@@ -356,6 +362,8 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
 
     private String createUploadMetaDataKey(UUID pdsJobUUID, SecHubDataConfigurationType type) {
         switch (type) {
+        case NONE:
+            return null;
         case BINARY:
             return PDSMetaDataID.createBinaryUploadDoneKey(pdsJobUUID);
         case SOURCE:
