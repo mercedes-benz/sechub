@@ -60,7 +60,7 @@ public class RestDocFactory {
         String path = sb.toString();
         if (alreadyCreatedPathes.contains(path)) {
             throw new IllegalStateException("The path: " + path
-                    + "\nis already created.\n\nThis means that a restdoc test did use this path already - and this is odd!\n\nPlease check if you have accidently copied a testcase and reused path cration for old usecase class!");
+                    + "\nis already created.\n\nThis means that a restdoc test did use this path already - and this is odd!\n\nPlease check if you have accidently copied a testcase and reused path creation for old usecase class!");
         }
         alreadyCreatedPathes.add(path);
         return path;

@@ -60,7 +60,11 @@ enum OpenApiSchema {
 
     PROJECT_META_DATA("ProjectMetaData"),
 
-    SERVER_VERSION("ServerVersion");
+    SERVER_VERSION("ServerVersion"),
+
+    PROJECT_JOB_LIST("ProjectJobList"),
+
+    ;
 
     private final Schema schema;
 

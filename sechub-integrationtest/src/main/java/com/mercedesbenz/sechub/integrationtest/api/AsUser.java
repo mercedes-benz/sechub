@@ -1190,4 +1190,40 @@ public class AsUser {
         throw new IllegalStateException("Cannot fetch boolean result from url:" + url + " - was not a boolean but " + result);
     }
 
+    /**
+     * Fetches user job info list without using a limit parameter. The default
+     * without limit is one, so we get only ONE entry or none (if no job has been
+     * started). If the REST call would return more than one entry, this method will
+     * fail, because it would be not the expected and documented behavior!
+     *
+     * @param project
+     * @return info or <code>null</code>, if no job available at all
+     */
+    public TestSecHubJobInfoForUserListPage fetchUserJobInfoListOneEntryOrNull(TestProject project) {
+        TestSecHubJobInfoForUserListPage listPage = fetchUserJobInfoList(project, null, null);
+        if (listPage.getContent().isEmpty()) {
+            return null;
+        }
+        assertEquals("Without parameter job list may container either 0 or 1 entries", 1, listPage.getContent().size());
+        return listPage;
+    }
+
+    public TestSecHubJobInfoForUserListPage fetchUserJobInfoList(TestProject project, int size) {
+        return fetchUserJobInfoList(project, String.valueOf(size), null);
+    }
+
+    public TestSecHubJobInfoForUserListPage fetchUserJobInfoList(TestProject project, int size, int page) {
+        return fetchUserJobInfoList(project, String.valueOf(size), String.valueOf(page));
+    }
+
+    public TestSecHubJobInfoForUserListPage fetchUserJobInfoList(TestProject project, String size, String page) {
+
+        String url = getUrlBuilder().buildUserFetchesListOfJobsForProject(project.getProjectId(), size, page);
+        String json = getRestHelper().getJSON(url);
+
+        TestSecHubJobInfoForUserListPage listPage = TestJSONHelper.get().createFromJSON(json, TestSecHubJobInfoForUserListPage.class);
+        return listPage;
+
+    }
+
 }

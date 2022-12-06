@@ -105,6 +105,10 @@ public class TestAPI {
         return new AsPDSUser(user);
     }
 
+    public static AssertUserJobInfo assertUserJobInfo(TestSecHubJobInfoForUserListPage page) {
+        return AssertUserJobInfo.assertInfo(page);
+    }
+
     /**
      * Asserts given report json - it will try to find report elements
      *
