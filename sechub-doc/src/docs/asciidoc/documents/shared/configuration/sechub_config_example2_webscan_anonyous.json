@@ -7,11 +7,13 @@
   "project"  : "gamechanger",
      
   "webScan"  : {//<1>
-      "uri": "https://www.gamechanger.example.org"//<2>
+      "uri": "https://www.gamechanger.example.org",//<2>
+      "includes": [ "/special/include" ], //<3>
+      "excludes" : [ "/en/contact", "/contact" ] //<4>
   },
   
-  "maxScanDuration": { //<3>
+  "maxScanDuration": { //<5>
     "duration": 1,
-    "unit": "hour" //<4>
+    "unit": "hour" //<6>
   }
 }
