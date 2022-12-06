@@ -1,22 +1,13 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.domain.scan.report;
+package com.mercedesbenz.sechub.commons.model;
 
-import static com.mercedesbenz.sechub.domain.scan.report.AssertCalculation.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
-import com.mercedesbenz.sechub.commons.model.SecHubFinding;
-import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
-import com.mercedesbenz.sechub.commons.model.Severity;
-import com.mercedesbenz.sechub.commons.model.TrafficLight;
-import com.mercedesbenz.sechub.domain.scan.ReportTransformationResult;
-import com.mercedesbenz.sechub.test.junit4.ExpectedExceptionFactory;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * 2018-02-20 we defined following logic which is tested here:
@@ -51,85 +42,78 @@ import com.mercedesbenz.sechub.test.junit4.ExpectedExceptionFactory;
  * @author Albert Tregnaghi
  *
  */
-public class ReportTrafficLightCalculatorTest {
+public class TrafficLightSupportTest {
 
-    private ScanReportTrafficLightCalculator calculatorToTest;
+    private TrafficLightSupport supportToTest;
 
-    @Rule
-    public ExpectedException expected = ExpectedExceptionFactory.none();
-
-    @Before
-    public void before() {
-        calculatorToTest = new ScanReportTrafficLightCalculator();
+    @BeforeEach
+    void before() {
+        supportToTest = new TrafficLightSupport();
     }
     /* +-----------------------------------------------------------------------+ */
     /* +............................ filter test ..........................+ */
     /* +-----------------------------------------------------------------------+ */
 
     @Test
-    public void having_critical_findings_filtering_to_green_returns_only_empty() {
-        assertCalculator(calculatorToTest).withResult(prepareSechubResultWithFindings(Severity.CRITICAL)).isFilteringFindingsTo(TrafficLight.GREEN);
+    void having_critical_findings_filtering_to_green_returns_only_empty() {
+        assertSupport(supportToTest).withResult(prepareSechubResultWithFindings(Severity.CRITICAL)).isFilteringFindingsTo(TrafficLight.GREEN);
     }
 
     @Test
-    public void having_critical_findings_filtering_to_yellow_returns_only_empty() {
-        assertCalculator(calculatorToTest).withResult(prepareSechubResultWithFindings(Severity.CRITICAL)).isFilteringFindingsTo(TrafficLight.GREEN);
+    void having_critical_findings_filtering_to_yellow_returns_only_empty() {
+        assertSupport(supportToTest).withResult(prepareSechubResultWithFindings(Severity.CRITICAL)).isFilteringFindingsTo(TrafficLight.GREEN);
     }
 
     @Test
-    public void having_setup_findings_filtering_to_red_returns_critical_and_high() {
+    void having_setup_findings_filtering_to_red_returns_critical_and_high() {
         /* prepare */
         MultiFindingsTestSetup setup = new MultiFindingsTestSetup();
 
         /* test */
-        assertCalculator(calculatorToTest).withResult(setup.reportTransformationResult).isFilteringFindingsTo(TrafficLight.RED, setup.findingCritical,
+        assertSupport(supportToTest).withResult(setup.reportTransformationResult).isFilteringFindingsTo(TrafficLight.RED, setup.findingCritical,
                 setup.findingHigh);
     }
 
     @Test
-    public void having_setup_findings_filtering_to_yellow_returns_medium_only() {
+    void having_setup_findings_filtering_to_yellow_returns_medium_only() {
         /* prepare */
         MultiFindingsTestSetup setup = new MultiFindingsTestSetup();
 
         /* test */
-        assertCalculator(calculatorToTest).withResult(setup.reportTransformationResult).isFilteringFindingsTo(TrafficLight.YELLOW, setup.findingMedium);
+        assertSupport(supportToTest).withResult(setup.reportTransformationResult).isFilteringFindingsTo(TrafficLight.YELLOW, setup.findingMedium);
     }
 
     @Test
-    public void having_setup_findings_filtering_to_green_returns_low_unclassfied_and_info() {
+    void having_setup_findings_filtering_to_green_returns_low_unclassfied_and_info() {
         /* prepare */
         MultiFindingsTestSetup setup = new MultiFindingsTestSetup();
 
         /* test */
-        assertCalculator(calculatorToTest).withResult(setup.reportTransformationResult).isFilteringFindingsTo(TrafficLight.GREEN, setup.findingLow,
-                setup.findingInfo, setup.findingUnclassified);
+        assertSupport(supportToTest).withResult(setup.reportTransformationResult).isFilteringFindingsTo(TrafficLight.GREEN, setup.findingLow, setup.findingInfo,
+                setup.findingUnclassified);
     }
 
     /* +-----------------------------------------------------------------------+ */
     /* +............................ Single variants ..........................+ */
     /* +-----------------------------------------------------------------------+ */
     @Test
-    public void calculator_called_with_null_returns_() {
-        /* prepare for test */
-        expected.expect(IllegalArgumentException.class);
-
-        /* execute */
-        calculatorToTest.calculateTrafficLight(null);
+    void calculator_called_with_null_returns_() {
+        assertThrows(IllegalArgumentException.class, () -> supportToTest.calculateTrafficLight(null));
     }
 
     @Test
-    public void a_sechub_result_containing_finding_critical__results_in_red() {
+    void a_sechub_result_containing_finding_critical__results_in_red() {
         /* @formatter:off */
-		assertCalculator(calculatorToTest).
+		assertSupport(supportToTest).
 			withResult(prepareSechubResultWithFindings(Severity.CRITICAL)).
 			isCalculatedTo(TrafficLight.RED);
 		/* @formatter:on */
     }
 
     @Test
-    public void a_sechub_result_containing_finding_high__results_in_red() {
+    void a_sechub_result_containing_finding_high__results_in_red() {
         /* @formatter:off */
-		assertCalculator(calculatorToTest).
+		assertSupport(supportToTest).
 			withResult(prepareSechubResultWithFindings(Severity.HIGH)).
 			isCalculatedTo(TrafficLight.RED);
 		/* @formatter:on */
@@ -137,36 +121,36 @@ public class ReportTrafficLightCalculatorTest {
     }
 
     @Test
-    public void a_sechub_result_containing_finding_medium__results_in_yellow() {
+    void a_sechub_result_containing_finding_medium__results_in_yellow() {
         /* @formatter:off */
-		assertCalculator(calculatorToTest).
+		assertSupport(supportToTest).
 			withResult(prepareSechubResultWithFindings(Severity.MEDIUM)).
 			isCalculatedTo(TrafficLight.YELLOW);
 		/* @formatter:on */
     }
 
     @Test
-    public void a_sechub_result_containing_finding_low__results_in_green() {
+    void a_sechub_result_containing_finding_low__results_in_green() {
         /* @formatter:off */
-		assertCalculator(calculatorToTest).
+		assertSupport(supportToTest).
 			withResult(prepareSechubResultWithFindings(Severity.LOW)).
 			isCalculatedTo(TrafficLight.GREEN);
 		/* @formatter:on */
     }
 
     @Test
-    public void a_sechub_result_containing_finding_info__results_in_green() {
+    void a_sechub_result_containing_finding_info__results_in_green() {
         /* @formatter:off */
-		assertCalculator(calculatorToTest).
+		assertSupport(supportToTest).
 			withResult(prepareSechubResultWithFindings(Severity.INFO)).
 			isCalculatedTo(TrafficLight.GREEN);
 		/* @formatter:on */
     }
 
     @Test
-    public void even_an_empty_sechub_results_returns_not_null_but_green() {
+    void even_an_empty_sechub_results_returns_not_null_but_green() {
         /* @formatter:off */
-		assertCalculator(calculatorToTest).
+		assertSupport(supportToTest).
 			withResult(prepareSechubResultWithFindings()).
 			isCalculatedTo(TrafficLight.GREEN);
 		/* @formatter:on */
@@ -176,36 +160,36 @@ public class ReportTrafficLightCalculatorTest {
     /* +............................ Combined variants ........................+ */
     /* +-----------------------------------------------------------------------+ */
     @Test
-    public void a_sechub_result_containing_finding_info_low_info_results_in_green() {
+    void a_sechub_result_containing_finding_info_low_info_results_in_green() {
         /* @formatter:off */
-		assertCalculator(calculatorToTest).
+		assertSupport(supportToTest).
 			withResult(prepareSechubResultWithFindings(Severity.INFO, Severity.LOW, Severity.INFO)).
 			isCalculatedTo(TrafficLight.GREEN);
 		/* @formatter:on */
     }
 
     @Test
-    public void a_sechub_result_containing_finding_info_low_info_medium_results_in_yellow() {
+    void a_sechub_result_containing_finding_info_low_info_medium_results_in_yellow() {
         /* @formatter:off */
-		assertCalculator(calculatorToTest).
+		assertSupport(supportToTest).
 			withResult(prepareSechubResultWithFindings(Severity.INFO, Severity.LOW, Severity.INFO, Severity.MEDIUM)).
 			isCalculatedTo(TrafficLight.YELLOW);
 		/* @formatter:on */
     }
 
     @Test
-    public void a_sechub_result_containing_finding_info_high_info_medium_results_in_red() {
+    void a_sechub_result_containing_finding_info_high_info_medium_results_in_red() {
         /* @formatter:off */
-		assertCalculator(calculatorToTest).
+		assertSupport(supportToTest).
 			withResult(prepareSechubResultWithFindings(Severity.INFO, Severity.HIGH, Severity.INFO, Severity.MEDIUM)).
 			isCalculatedTo(TrafficLight.RED);
 		/* @formatter:on */
     }
 
     @Test
-    public void a_sechub_result_containing_finding_info_critical_info_medium_results_in_red() {
+    void a_sechub_result_containing_finding_info_critical_info_medium_results_in_red() {
         /* @formatter:off */
-		assertCalculator(calculatorToTest).
+		assertSupport(supportToTest).
 			withResult(prepareSechubResultWithFindings(Severity.INFO, Severity.CRITICAL, Severity.INFO, Severity.MEDIUM)).
 			isCalculatedTo(TrafficLight.RED);
 		/* @formatter:on */
@@ -234,10 +218,10 @@ public class ReportTrafficLightCalculatorTest {
         private SecHubFinding findingInfo;
         private SecHubFinding findingUnclassified;
 
-        private ReportTransformationResult reportTransformationResult;
+        private SecHubReportModel reportTransformationResult;
 
         MultiFindingsTestSetup() {
-            reportTransformationResult = new ReportTransformationResult();
+            reportTransformationResult = new SecHubReportModel();
 
             findingCritical = createAndRegisterFinding(Severity.CRITICAL);
             findingHigh = createAndRegisterFinding(Severity.HIGH);
@@ -255,5 +239,48 @@ public class ReportTrafficLightCalculatorTest {
             findings.add(find);
             return find;
         }
+    }
+
+    private static class AssertTrafficLightSupport {
+
+        private TrafficLightSupport calculator;
+        private SecHubReportModel reportModel;
+
+        private AssertTrafficLightSupport(TrafficLightSupport calculator) {
+            this.calculator = calculator;
+        }
+
+        public AssertTrafficLightSupport isFilteringFindingsTo(TrafficLight wanted, SecHubFinding... findings) {
+            List<SecHubFinding> filtered = calculator.filterFindingsFor(reportModel.getResult(), wanted);
+
+            assertNotNull(filtered); // never null!
+            for (SecHubFinding finding : findings) {
+                assertTrue(filtered.contains(finding), "Finding missing:" + finding); // just same object. equals not custom implemented
+            }
+            assertEquals(findings.length, filtered.size());
+            return this;
+
+        }
+
+        public AssertTrafficLightSupport isCalculatedTo(TrafficLight light) {
+            TrafficLight calcLight = calculator.calculateTrafficLight(reportModel.getResult());
+
+            assertNotNull(calcLight); // never null!
+            assertEquals(light, calcLight, "calculated light not as expected!");
+
+            return this;
+
+        }
+
+        public AssertTrafficLightSupport withResult(SecHubReportModel result) {
+            this.reportModel = result;
+            return this;
+        }
+
+    }
+
+    private AssertTrafficLightSupport assertSupport(TrafficLightSupport calculator) {
+        assertNotNull(calculator);
+        return new AssertTrafficLightSupport(calculator);
     }
 }

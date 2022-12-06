@@ -18,13 +18,13 @@ import org.thymeleaf.spring5.dialect.SpringStandardDialect;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.TrafficLightSupport;
 import com.mercedesbenz.sechub.docgen.util.TextFileWriter;
 import com.mercedesbenz.sechub.domain.scan.ReportTransformationResult;
 import com.mercedesbenz.sechub.domain.scan.SecHubExecutionException;
 import com.mercedesbenz.sechub.domain.scan.TestHTMLScanResultReportModelBuilder;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
-import com.mercedesbenz.sechub.domain.scan.report.ScanReportTrafficLightCalculator;
 import com.mercedesbenz.sechub.domain.scan.report.ScanSecHubReport;
 import com.mercedesbenz.sechub.test.TestUtil;
 
@@ -219,15 +219,16 @@ public class ThymeLeafHTMLReportingTest {
                 throw new IllegalStateException("input format not supported:" + inputFormat);
 
             }
-            ScanReportTrafficLightCalculator trafficLightCalculator = new ScanReportTrafficLightCalculator();
-            TestHTMLScanResultReportModelBuilder builder = new TestHTMLScanResultReportModelBuilder(trafficLightCalculator);
+            TrafficLightSupport trafficLightSupport = new TrafficLightSupport();
+            TestHTMLScanResultReportModelBuilder builder = new TestHTMLScanResultReportModelBuilder(trafficLightSupport);
+
             ScanReport report = new ScanReport(sechubReportResult.getJobUUID(), "project1");
             report.setResult(sechubJobUUID);
 
             String sechubReportResultJSON = sechubReportResult.getResult().toJSON();
 
             report.setResult(sechubReportResultJSON);
-            report.setTrafficLight(trafficLightCalculator.calculateTrafficLight(sechubReportResult));
+            report.setTrafficLight(trafficLightSupport.calculateTrafficLight(sechubReportResult.getResult()));
 
             ScanSecHubReport scanReport = new ScanSecHubReport(report);
             storeAsJSONFileForDebuggingWhenTempFilesAreKept(JSONConverter.get().toJSON(scanReport, true), this);

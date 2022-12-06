@@ -12,7 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.model.SecHubResult;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.commons.model.TrafficLightCalculator;
 import com.mercedesbenz.sechub.domain.scan.ReportTransformationResult;
 import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
 import com.mercedesbenz.sechub.domain.scan.SecHubExecutionException;
@@ -31,7 +33,7 @@ public class CreateScanReportService {
     ReportProductExecutionService reportProductExecutionService;
 
     @Autowired
-    ScanReportTrafficLightCalculator trafficLightCalculator;
+    TrafficLightCalculator trafficLightCalculator;
 
     @Autowired
     ScanReportRepository reportRepository;
@@ -86,7 +88,8 @@ public class CreateScanReportService {
         }
 
         /* create and set the traffic light */
-        TrafficLight trafficLight = trafficLightCalculator.calculateTrafficLight(reportTransformerResult);
+        SecHubResult sechubResult = reportTransformerResult.getResult();
+        TrafficLight trafficLight = trafficLightCalculator.calculateTrafficLight(sechubResult);
         scanReport.setTrafficLight(trafficLight);
 
         /* update time stamp */
