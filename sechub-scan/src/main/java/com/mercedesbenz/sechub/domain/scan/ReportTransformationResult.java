@@ -12,4 +12,14 @@ import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
  */
 public class ReportTransformationResult extends SecHubReportModel {
 
+    private boolean atLeastOneRealProductResultContained;
+
+    public void setAtLeastOneRealProductResultContained(boolean containingNoProductResultsAtAl) {
+        this.atLeastOneRealProductResultContained = containingNoProductResultsAtAl;
+    }
+
+    public boolean isAtLeastOneRealProductResultContained() {
+        return atLeastOneRealProductResultContained;
+    }
+
 }

@@ -12,7 +12,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubResult;
+import com.mercedesbenz.sechub.commons.model.SecHubStatus;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.commons.model.TrafficLightCalculator;
 import com.mercedesbenz.sechub.domain.scan.ReportTransformationResult;
@@ -79,7 +82,10 @@ public class CreateScanReportService {
         ReportTransformationResult reportTransformerResult;
         try {
             reportTransformerResult = reportTransformerService.createResult(context);
-
+            if (!reportTransformerResult.isAtLeastOneRealProductResultContained()) {
+                reportTransformerResult.getMessages()
+                        .add(new SecHubMessage(SecHubMessageType.WARNING, "No results from a security product available for this job!"));
+            }
             scanReport.setResultType(ScanReportResultType.MODEL);
             scanReport.setResult(reportTransformerResult.toJSON());
 
@@ -89,7 +95,27 @@ public class CreateScanReportService {
 
         /* create and set the traffic light */
         SecHubResult sechubResult = reportTransformerResult.getResult();
-        TrafficLight trafficLight = trafficLightCalculator.calculateTrafficLight(sechubResult);
+        TrafficLight trafficLight = null;
+
+        if (SecHubStatus.FAILED.equals(reportTransformerResult.getStatus())) {
+            /* at least one product failed - so turn off traffic light */
+            trafficLight = TrafficLight.OFF;
+
+            LOG.debug("At least one product failed, setting trafficlight to: {}", trafficLight);
+
+        } else if (!reportTransformerResult.isAtLeastOneRealProductResultContained()) {
+            /*
+             * products did not fail, but there was not one real product result available.
+             * Can happen when all PDS instances do gracefully ignore results and return
+             * product result with null instead of an text.
+             */
+            trafficLight = TrafficLight.OFF;
+
+            LOG.debug("No real product results found, setting trafficlight to: {}", trafficLight);
+        } else {
+            trafficLight = trafficLightCalculator.calculateTrafficLight(sechubResult);
+            LOG.debug("Product results found, no failures, so setting calculated trafficlight to: {}", trafficLight);
+        }
         scanReport.setTrafficLight(trafficLight);
 
         /* update time stamp */

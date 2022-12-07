@@ -213,19 +213,26 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
         switch (annotationType) {
         case USER_INFO:
             appendSecHubMessage(transformerResult, new SecHubMessage(SecHubMessageType.INFO, annotationValue));
-            return;
+            break;
         case USER_WARNING:
             appendSecHubMessage(transformerResult, new SecHubMessage(SecHubMessageType.WARNING, annotationValue));
-            return;
+            break;
         case USER_ERROR:
             appendSecHubMessage(transformerResult, new SecHubMessage(SecHubMessageType.ERROR, annotationValue));
-            return;
+            break;
         case INTERNAL_ERROR_PRODUCT_FAILED:
             /* internal errors are marked with status failed */
             transformerResult.setStatus(SecHubStatus.FAILED);
             /* we add an information to user as well */
             appendSecHubMessage(transformerResult, new SecHubMessage(SecHubMessageType.ERROR, "Job execution failed because of an internal problem"));
-            return;
+            break;
+        case INTERNAL_INFO_PRODUCT_SUCCESSFUL_IMPORTED:
+            /*
+             * at least one product result was successful imported - means no graceful fall
+             * through, but real product data available in at least one product.
+             */
+            transformerResult.setAtLeastOneRealProductResultContained(true);
+            break;
         default:
             // nothing
             LOG.error("Unhandled sereco annotation type:{}, value:{}, sechub job uuid: {}", annotationType, annotationValue, sechubJobUUID);
