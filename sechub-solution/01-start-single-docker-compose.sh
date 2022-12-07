@@ -11,8 +11,8 @@ source "0000-helper.sh"
 
 # Only variables from .env can be used in the Docker-Compose file
 # all other variables are only available in the container
-setup_environment_file ".env" "env-initial"
-setup_environment_file "$ENVIRONMENT_FILE" "env-initial-sechub"
+setup_environment_file ".env" "env"
+setup_environment_file "$ENVIRONMENT_FILE" "env-sechub"
 
 # Use Docker BuildKit
 export BUILDKIT_PROGRESS=plain

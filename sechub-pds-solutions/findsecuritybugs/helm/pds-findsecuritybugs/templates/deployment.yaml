@@ -17,7 +17,9 @@ spec:
                 name: {{ .Chart.Name }}
         spec:
             securityContext:
-                runAsUser: 2323 # user id of the pds user. Set in the Dockerfile.
+                runAsUser: 2323 # user id of the application user. (overrides settings in the Dockerfile)
+                runAsGroup: 2323 # group id of the application group. (overrides setings in the Dockerfile)
+                fsGroup: 2323 # group id of the application group. Set in the Dockerfile. This group has write access to the volumes.
             containers:
                 - name: {{ .Chart.Name }}
                   image: "{{ .Values.image.registry }}:{{ .Values.image.tag }}"
@@ -41,6 +43,8 @@ spec:
                       value: "{{ .Values.pds.maxFileUploadSize }}"
                     - name: PDS_UPLOAD_MAXIMUM_BYTES
                       value: "{{ .Values.pds.uploadMaximumBytes }}"
+                    - name: PDS_HEARTBEAT_LOGGING
+                      value: "{{ .Values.pds.heartbeatLogging }}"                      
                     {{- if .Values.pds.logging.type.enabled }}
                     - name: LOGGING_TYPE
                       value: {{ .Values.pds.logging.type.appenderName }}

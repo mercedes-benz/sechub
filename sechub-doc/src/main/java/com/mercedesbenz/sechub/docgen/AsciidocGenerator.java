@@ -225,18 +225,6 @@ public class AsciidocGenerator implements Generator {
         String usecaseRestDoc = useCaseRestDocModelAsciiDocGenerator.generateAsciidoc(writer, restDocModel, true, UseCaseIdentifier.values());
         File targetFile2 = new File(context.documentsGenFolder, "gen_uc_restdoc.adoc");
         writer.save(targetFile2, usecaseRestDoc);
-
-        /* @formatter:off */
-		String usecaseRestDocUserDocumentation = useCaseRestDocModelAsciiDocGenerator.generateAsciidoc(writer, restDocModel, true,
-				UseCaseIdentifier.UC_SIGNUP,
-				UseCaseIdentifier.UC_USER_CREATES_JOB,
-				UseCaseIdentifier.UC_USER_APPROVES_JOB,
-				UseCaseIdentifier.UC_USER_GET_JOB_REPORT,
-				UseCaseIdentifier.UC_USER_GET_JOB_STATUS);
-		/* @formatter:on */
-        File targetFile3 = new File(context.documentsGenFolder, "gen_uc_websiteumentation_restdoc.adoc");
-        writer.save(targetFile3, usecaseRestDocUserDocumentation);
-
     }
 
     private void generatePDSUseCaseFiles(GenContext context) throws IOException {

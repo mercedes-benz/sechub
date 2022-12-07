@@ -19,15 +19,7 @@ import com.mercedesbenz.sechub.domain.notification.superadmin.InformAdminsThatSc
 import com.mercedesbenz.sechub.domain.notification.superadmin.InformAdminsThatSchedulerJobProcessingHasBeenEnabledService;
 import com.mercedesbenz.sechub.domain.notification.superadmin.InformAdminsThatUserBecomesAdminNotificationService;
 import com.mercedesbenz.sechub.domain.notification.superadmin.InformAdminsThatUserNoLongerAdminNotificationService;
-import com.mercedesbenz.sechub.domain.notification.user.InformUserThatJobHasBeenCanceledService;
-import com.mercedesbenz.sechub.domain.notification.user.InformUserThatUserBecomesAdminNotificationService;
-import com.mercedesbenz.sechub.domain.notification.user.InformUserThatUserNoLongerAdminNotificationService;
-import com.mercedesbenz.sechub.domain.notification.user.InformUsersThatProjectHasBeenDeletedNotificationService;
-import com.mercedesbenz.sechub.domain.notification.user.NewAPITokenAppliedUserNotificationService;
-import com.mercedesbenz.sechub.domain.notification.user.NewApiTokenRequestedUserNotificationService;
-import com.mercedesbenz.sechub.domain.notification.user.SignUpRequestedAdminNotificationService;
-import com.mercedesbenz.sechub.domain.notification.user.UserDeletedNotificationService;
-import com.mercedesbenz.sechub.domain.notification.user.UserEmailAddressChangedNotificationService;
+import com.mercedesbenz.sechub.domain.notification.user.*;
 import com.mercedesbenz.sechub.sharedkernel.messaging.AsynchronMessageHandler;
 import com.mercedesbenz.sechub.sharedkernel.messaging.ClusterMemberMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
@@ -111,6 +103,9 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
 
     @Autowired
     InformAdminsThatNewSchedulerInstanceHasBeenStarted informAdminsThatNewSchedulerInstanceHasBeenStarted;
+
+    @Autowired
+    SignUpRequestedUserNotificationService signupRequestedUserNotificationService;
 
     @Override
     public void receiveAsyncMessage(DomainMessage request) {
@@ -256,6 +251,7 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
 
     @IsReceivingAsyncMessage(MessageID.USER_SIGNUP_REQUESTED)
     private void handleSignupRequested(UserMessage userMessage) {
+        signupRequestedUserNotificationService.notify(userMessage);
         signupRequestedAdminNotificationService.notify(userMessage);
     }
 

@@ -138,11 +138,16 @@ WARNING: The URI must be whitelisted in your project. Otherwise it will be rejec
 include::sechub_config_example2_webscan_anonyous.json[]
 ----
 <1> Define web scan
-<2> The `URI` to scan. This `URI` must be white listed in `{sechub}` project.
-<3> *Optional*: Define the maximum duration the scan can take. 
+<2> The `URI` to scan. This `URI` must be white listed in `{sechub}` project. Normally without a slash `/` at the end.
+<3> *Optional*: Define includes, if you have a special path that is linked nowhere,
+	so the scanner can not detect it automatically while crawling the application.
+	Always use them starting with a slash (`/`) because they are interpreted relative to the `URI` provided before.
+<4> *Optional*: Define excludes, if you have a special path you want to exclude, from the scan.
+	Always use them starting with a slash (`/`) because they are interpreted relative to the `URI` provided before.
+<5> *Optional*: Define the maximum duration the scan can take. 
     Scanning a "large" web page/application can take several hours or even days. 
     This option ensures the scan will only run for a limited time.
-<4> Define the unit of time. 
+<6> Define the unit of time. 
     The unit can be: `millisecond`, `second`, `minute`, `hour`, `day`.
 
 ===== Login
@@ -165,11 +170,10 @@ SMS provider - *so be careful!*
 
 ====== Options
 
-SecHub provides you with 3 options for login:
+SecHub provides you with 2 options for login:
 
 * basic authentication
 * form based login
-** auto detect
 ** script based
 
 [NOTE]
@@ -178,7 +182,15 @@ When a web scan product (or its adapter) does not support your wanted options yo
 will have a failure at execution time!
 ====
 
-
+====== Example no authentication
+[source,json]
+----
+include::sechub_config_example3_webscan_login_basicauth.json[]
+----
+<1> URL for web login
+<2> Basic authentication start, needs user id/name and password.
+<3> *Optional*: You can set the realm used for basic authentication. But normally
+    this is not necessary.
 
 ====== Example basic authentication
 [source,json]
@@ -187,8 +199,9 @@ include::sechub_config_example3_webscan_login_basicauth.json[]
 ----
 <1> URL for web login
 <2> Basic authentication start, needs user id/name and password.
-<3> *Optional*: You can set the realm used for basic authentication. But normally
-    this is not necessary
+<3> You can set the realm used for basic authentication. But normally
+    this is not necessary and you can use an empty string.
+
 
 
 ====== Example form based login by script

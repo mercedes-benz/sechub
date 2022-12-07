@@ -45,7 +45,7 @@ public class PDSWebScanProductExecutor extends AbstractPDSProductExecutor {
         NetworkTargetInfo info = data.getCurrentNetworkTargetInfo();
 
         /* we reuse config support created inside customize method */
-        PDSExecutorConfigSuppport configSupport = (PDSExecutorConfigSuppport) data.getNetworkTargetDataProvider();
+        PDSExecutorConfigSupport configSupport = (PDSExecutorConfigSupport) data.getNetworkTargetDataProvider();
 
         URI targetURI = info.getURI();
         if (targetURI == null) {
@@ -110,7 +110,7 @@ public class PDSWebScanProductExecutor extends AbstractPDSProductExecutor {
         data.setNetworkLocationProvider(new WebScanNetworkLocationProvider(secHubConfiguration));
 
         ProductExecutorContext executorContext = data.getProductExecutorContext();
-        PDSExecutorConfigSuppport configSupport = PDSExecutorConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
+        PDSExecutorConfigSupport configSupport = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
                 serviceCollection);
 
         data.setNetworkTargetDataProvider(configSupport);

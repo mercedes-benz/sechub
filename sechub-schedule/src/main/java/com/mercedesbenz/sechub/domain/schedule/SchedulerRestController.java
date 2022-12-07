@@ -20,11 +20,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobInfoForUserListPage;
+import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobInfoForUserService;
 import com.mercedesbenz.sechub.sharedkernel.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfigurationValidator;
+import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseUserListsJobsForProject;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserApprovesJob;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserChecksJobStatus;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserCreatesNewJob;
@@ -45,6 +48,9 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUpl
 @RolesAllowed({ RoleConstants.ROLE_USER, RoleConstants.ROLE_SUPERADMIN })
 public class SchedulerRestController {
 
+    public static final String DEFAULT_JOB_INFORMATION_SIZE = "1";
+    public static final String DEFAULT_JOB_INFORMATION_PAGE = "0";
+
     @Autowired
     private SchedulerApproveJobService approveJobService;
 
@@ -62,6 +68,9 @@ public class SchedulerRestController {
 
     @Autowired
     private SecHubConfigurationValidator validator;
+
+    @Autowired
+    private SecHubJobInfoForUserService jobInformationService;
 
     @Validated
     @RolesAllowed(RoleConstants.ROLE_USER)
@@ -123,6 +132,20 @@ public class SchedulerRestController {
 			) {
 		/* @formatter:on */
         return jobStatusService.getJobStatus(projectId, jobUUID);
+
+    }
+
+    /* @formatter:off */
+    @Validated
+    @UseCaseUserListsJobsForProject(@Step(number=1, name="get pageable list of jobs in project", needsRestDoc=true))
+    @RequestMapping(path = "/jobs", method = RequestMethod.GET)
+    public SecHubJobInfoForUserListPage listJobsForProject(
+            @PathVariable("projectId") String projectId,
+            @RequestParam(defaultValue = DEFAULT_JOB_INFORMATION_SIZE, name = "size") int size,
+            @RequestParam(defaultValue = DEFAULT_JOB_INFORMATION_PAGE, name = "page") int page
+            ) {
+        /* @formatter:on */
+        return jobInformationService.listJobsForProject(projectId, size, page);
 
     }
 

@@ -105,6 +105,10 @@ public class TestAPI {
         return new AsPDSUser(user);
     }
 
+    public static AssertUserJobInfo assertUserJobInfo(TestSecHubJobInfoForUserListPage page) {
+        return AssertUserJobInfo.assertInfo(page);
+    }
+
     /**
      * Asserts given report json - it will try to find report elements
      *
@@ -695,7 +699,7 @@ public class TestAPI {
         SecHubTestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildGetFileUpload(project.getProjectId(), jobUUID.toString(), fileName);
         try {
-            File file = as(ANONYMOUS).downloadAsTempFileFromURL(url, jobUUID);
+            File file = as(ANONYMOUS).downloadAsTempFileFromURL(url, jobUUID, fileName);
             return file;
         } catch (HttpStatusCodeException e) {
             if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {

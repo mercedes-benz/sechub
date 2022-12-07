@@ -1,31 +1,79 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.execution;
 
+import static com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterValueConstants.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterValueConstants;
+import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
 import com.mercedesbenz.sechub.pds.job.PDSJobConfiguration;
 import com.mercedesbenz.sechub.pds.job.PDSJobConfigurationSupport;
 
+@Component
 public class ProcessHandlingDataFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(ProcessHandlingDataFactory.class);
 
-    public ProcessHandlingData createForCancelOperation(PDSJobConfiguration configuration) {
+    @Autowired
+    PDSServerConfigurationService serverConfigurationService;
+
+    public ProductCancellationProcessHandlingData createForCancelOperation(PDSJobConfiguration configuration) {
 
         PDSJobConfigurationSupport configurationSupport = new PDSJobConfigurationSupport(configuration);
 
         int millisecondsToWaitForNextCheck = calculateMillisecondsToWaitForNextCheck(configurationSupport);
         int secondsToWaitForProcess = calculateSecondsToWaitForProcess(configurationSupport);
-        ProcessHandlingData data = new ProcessHandlingData(secondsToWaitForProcess, millisecondsToWaitForNextCheck);
+
+        ProductCancellationProcessHandlingData data = new ProductCancellationProcessHandlingData(secondsToWaitForProcess, millisecondsToWaitForNextCheck);
 
         return data;
     }
 
+    public ProductLaunchProcessHandlingData createForLaunchOperation(PDSJobConfiguration configuration) {
+
+        PDSJobConfigurationSupport configurationSupport = new PDSJobConfigurationSupport(configuration);
+
+        int minutesToWaitBeforeProductTimeout = calculateMinutesToWaitForProduct(configurationSupport);
+
+        ProductLaunchProcessHandlingData data = new ProductLaunchProcessHandlingData(minutesToWaitBeforeProductTimeout);
+
+        return data;
+    }
+
+    private int calculateMinutesToWaitForProduct(PDSJobConfigurationSupport configurationSupport) {
+        int systemWideMinutesToWaitForProduct = serverConfigurationService.getMinutesToWaitForProduct();
+
+        int maxCheck = serverConfigurationService.getMaximumConfigurableMinutesToWaitForProduct();
+        int minCheck = serverConfigurationService.getMinimumConfigurableMinutesToWaitForProduct();
+
+        int calculatedMinutesToWaitForProduct = configurationSupport.getMinutesToWaitBeforeProductTimeOut(systemWideMinutesToWaitForProduct);
+
+        if (calculatedMinutesToWaitForProduct > maxCheck) {
+            int wrongValue = calculatedMinutesToWaitForProduct;
+            calculatedMinutesToWaitForProduct = maxCheck;
+
+            LOG.warn(
+                    "Configuration wants to wait for {} minutes for the product. But this exceeds our accepted maximum of {} minutes! Will set fallback to {} minutes.",
+                    wrongValue, maxCheck, calculatedMinutesToWaitForProduct);
+        }
+        if (calculatedMinutesToWaitForProduct < minCheck) {
+            int wrongValue = calculatedMinutesToWaitForProduct;
+            calculatedMinutesToWaitForProduct = minCheck;
+
+            LOG.warn(
+                    "Configuration wants to wait for {} minutes for the product. But this is lower than our accepted minimum of {} minutes! Will set fallback to {} minute(s).",
+                    wrongValue, minCheck, calculatedMinutesToWaitForProduct);
+        }
+        return calculatedMinutesToWaitForProduct;
+
+    }
+
     private int calculateMillisecondsToWaitForNextCheck(PDSJobConfigurationSupport configuration) {
-        int maxCheck = PDSDefaultParameterValueConstants.MAXIMUM_TIME_TO_WAIT_IN_MILLISECONDS_FOR_SCRIPT_CANCELLATION_CHECK;
-        int minCheck = PDSDefaultParameterValueConstants.MINIMUM_TIME_TO_WAIT_IN_MILLISECONDS_FOR_SCRIPT_CANCELLATION_CHECK;
+        int maxCheck = MAXIMUM_TIME_TO_WAIT_IN_MILLISECONDS_FOR_SCRIPT_CANCELLATION_CHECK;
+        int minCheck = MINIMUM_TIME_TO_WAIT_IN_MILLISECONDS_FOR_SCRIPT_CANCELLATION_CHECK;
 
         int millisecondsToWaitForNextCheck = configuration.getMillisecondsToWaitForNextCheck();
         if (millisecondsToWaitForNextCheck > maxCheck) {
@@ -46,8 +94,8 @@ public class ProcessHandlingDataFactory {
     }
 
     private int calculateSecondsToWaitForProcess(PDSJobConfigurationSupport configuration) {
-        int maxWait = PDSDefaultParameterValueConstants.MAXIMUM_TIME_TO_WAIT_IN_SECONDS_FOR_SCRIPT_CANCELLATION;
-        int minWait = PDSDefaultParameterValueConstants.NO_TIME_TO_WAIT_IN_SECONDS_FOR_SCRIPT_CANCELLATION;
+        int maxWait = MAXIMUM_TIME_TO_WAIT_IN_SECONDS_FOR_SCRIPT_CANCELLATION;
+        int minWait = NO_TIME_TO_WAIT_IN_SECONDS_FOR_SCRIPT_CANCELLATION;
 
         int secondsToWaitForProcess = configuration.getSecondsToWaitForProcess();
         if (secondsToWaitForProcess > maxWait) {

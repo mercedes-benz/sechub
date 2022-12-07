@@ -37,6 +37,7 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.job.CancelJobActio
 import com.mercedesbenz.sechub.developertools.admin.ui.action.job.DownloadFullscanDataForJobAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.job.DownloadHTMLReportForJobAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.job.DownloadJSONReportForJobAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.job.GetJobInfoListForUserAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.job.GetJobStatusAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.job.RestartJobAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.job.RestartJobHardAction;
@@ -378,6 +379,9 @@ public class CommandUI {
 
         menu.addSeparator();
         add(menu, new ChangeProjectAccessLevelAction(context));
+
+        menu.addSeparator();
+        add(menu, new GetJobInfoListForUserAction(context));
     }
 
     private void createStatusMenu() {

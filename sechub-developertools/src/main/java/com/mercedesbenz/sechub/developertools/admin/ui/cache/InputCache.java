@@ -36,7 +36,8 @@ public class InputCache {
                 LOG.error("Was not able to set default scan target folder",e);
             }
         }
-
+        set(InputCacheIdentifier.PAGE,"0");
+        set(InputCacheIdentifier.PAGE_SIZE,"1");
         set(InputCacheIdentifier.PDS_PORT, "8444");
 	    set(InputCacheIdentifier.PDS_HOSTNAME, "localhost");
 

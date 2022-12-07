@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.pds;
 
+import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationType;
+
 /**
  * Provides keys which are interpreted <strong>at PDS side</strong>. When the
  * given key (ExecutionPDSKey) is marked as available inside script, the
@@ -68,12 +70,25 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
                     + "Every file which is matched by one of the patterns will be included - except those which are explicitly excluded.\n\n").markSendToPDS()),
 
     /**
-     * Contains file filter include information
+     * Contains trust all certificates information
      */
     PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED(new ExecutionPDSKey(
             PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED,
             "When 'true' the PDS adapter script used by the job will have the information and can use this information when it comes to remote operations.")
                     .markSendToPDS().markAsAvailableInsideScript().markDefaultRecommended().withDefault(false)),
+    /**
+     * Can describe supported data types.
+     */
+    PDS_CONFIG_SUPPORTED_DATATYPES(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SUPPORTED_DATATYPES,
+            "Can be " + SecHubDataConfigurationType.SOURCE + ", " + SecHubDataConfigurationType.BINARY + ", " + SecHubDataConfigurationType.NONE
+                    + " or a combination as a comma separated list. This data should"
+                    + "normally not be defined via a default value of an optional PDS configuration parameter.").markSendToPDS()),
+
+    /**
+     * Contains product timeout information
+     */
+    PDS_CONFIG_TIMEOUT_PRODUCT_MINUTES(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_PRODUCT_TIMEOUT_MINUTES,
+            "Maximum allowed time in minutes, before a producct will be timeout - means launcher script is automatically canceled by PDS").markSendToPDS()),
 
     /**
      * Contains file filter exclude information
@@ -91,7 +106,15 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
      */
     PDS_SCAN_TARGET_URL(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_TARGET_URL,
             "This contains the Target URL for current scan i.e webscan. Will not be set in all scan types. E.g. for a code scan this environment variable will not be available")
-                    .markGenerated().markAsAvailableInsideScript())
+                    .markGenerated().markAsAvailableInsideScript()),
+
+    /**
+     * A debug flag for PDS which can be used in executor configurations to increase
+     * output level on scan time.
+     */
+    PDS_DEBUG_ENABLED(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_DEBUG_ENABLED,
+            "When 'true', the PDS instance will show up some debug information on scan time. The output level of debugging information differs on PDS solutions/launcher scripts.")
+                    .markDefaultRecommended().withDefault(false).markSendToPDS().markAsAvailableInsideScript())
 
     ,
     /**
