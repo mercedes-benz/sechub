@@ -9,7 +9,7 @@
     } ]
   },
   "webScan" : {
-    "uri" : "https://localhost:8443",
+    "url" : "https://localhost:8443",
     "api" : {
       "type" : "openApi",
       "use" : [ "open-api-file-reference" ]

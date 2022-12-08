@@ -7,7 +7,7 @@
   "project"  : "gamechanger",
      
   "webScan"  : {//<1>
-      "uri": "https://www.gamechanger.example.org",//<2>
+      "url": "https://www.gamechanger.example.org",//<2>
       "includes": [ "/special/include" ], //<3>
       "excludes" : [ "/en/contact", "/contact" ] //<4>
   },

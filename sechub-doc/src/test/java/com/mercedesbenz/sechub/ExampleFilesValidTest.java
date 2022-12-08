@@ -95,7 +95,7 @@ class ExampleFilesValidTest {
         assertTrue(webScanOpt.isPresent(), "Webscan config does exist for file: " + file.getPath());
 
         SecHubWebScanConfiguration webScan = webScanOpt.get();
-        assertNotNull(webScan.getUri(), "No URI set in file: " + file.getPath());
+        assertNotNull(webScan.getUrl(), "No URI set in file: " + file.getPath());
     }
 
     private void assertDefaultValue(PDSProductSetup setup, boolean isMandatory, String parameterKey, String expectedDefault) {
