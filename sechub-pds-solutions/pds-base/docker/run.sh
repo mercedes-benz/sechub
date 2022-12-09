@@ -48,11 +48,6 @@ start_server() {
         storage_options="-Dsechub.pds.storage.sharedvolume.upload.dir=$SHARED_VOLUME_UPLOAD_DIR"
     fi
 
-    echo "Calling the run_additional.sh script"
-    echo "---"
-    /run_additional.sh
-    echo "---"
-
     echo "Starting the SecHub PDS server"
     # Regarding entropy collection:
     #   with JDK 8+ the "obscure workaround using file:///dev/urandom 

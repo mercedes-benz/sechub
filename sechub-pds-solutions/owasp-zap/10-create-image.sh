@@ -50,6 +50,11 @@ if [[ ! -z "$OWASPZAP_VERSION" ]] ; then
   BUILD_ARGS+=" --build-arg OWASPZAP_SHA256SUM=$OWASPZAP_SHA256SUM"
 fi
 
+if [[ ! -z "$OWASPZAP_WRAPPER_VERSION" ]] ; then
+    echo ">> Owasp Zap Wrapper version: $OWASPZAP_WRAPPER_VERSION"
+    BUILD_ARGS+=" --build-arg OWASPZAP_WRAPPER_VERSION=$OWASPZAP_WRAPPER_VERSION"
+fi
+
 docker build --pull --no-cache $BUILD_ARGS \
        --tag "$REGISTRY:$VERSION" \
        --file docker/Owasp-Zap-Debian.dockerfile docker/
