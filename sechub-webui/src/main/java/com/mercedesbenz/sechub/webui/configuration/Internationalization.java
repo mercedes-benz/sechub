@@ -10,7 +10,7 @@ import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
 @Configuration
-public class MvcConfigurer implements WebMvcConfigurer {
+public class Internationalization implements WebMvcConfigurer {
     @Bean
     public LocaleResolver localeResolver() {
         return new CookieLocaleResolver();

@@ -13,12 +13,15 @@ public class NewApiTokenService {
     @Autowired
     private WebClient webClient;
 
-    /*
-     * Request new API token:
-     * https://mercedes-benz.github.io/sechub/latest/sechub-restapi.html#user-
-     * requests-new-api-token curl
+    /**
+     * Request new API token as described in
+     * 
+     * <a href="https://mercedes-benz.github.io/sechub/latest/sechub-restapi.html#user- requests-new-api-token">documentation</a>
+     * <pre>
+     *  curl
      * 'https://sechub.example.com/api/anonymous/refresh/apitoken/emailAdress@test.
      * com' -i -X POST -H 'Content-Type: application/json;charset=UTF-8'
+     * </pre>
      */
     public String requestNewApiToken(String email) {
 

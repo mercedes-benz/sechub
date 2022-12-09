@@ -3,11 +3,12 @@
 <head th:replace="fragments/header :: header (title='SecHub - Status')">
 <title>Status</title>
 </head>
-<body>
+<body class="container-flex flex-column">
+	<section th:replace="fragments/banner"></section>
 	<nav th:replace="fragments/navbar"></nav>
-	<main>
-		<h1>Status</h1>
-		<table>
+	<main class="flex-grow padding-thin-all background-light">
+		<h1 class="placeholder">Status</h1>
+		<table class="placeholder">
 			<tbody>
 				<tr>
 					<td>Scheduler</td><td>enabled</td>

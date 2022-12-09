@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.webui.configuration;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
@@ -13,6 +12,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
 public class SecurityConfiguration {
+	@Autowired
+	UserDetailInformationService userDetailInformationService;
+	
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         /* @formatter:off */
@@ -37,10 +39,7 @@ public class SecurityConfiguration {
     @Bean
     public UserDetailsService userDetailsService() {
         /* @formatter:off */
-		UserDetails user = User.withDefaultPasswordEncoder().
-				username("user").password("password").roles("USER").
-				build();
-		return new InMemoryUserDetailsManager(user);
+		return new InMemoryUserDetailsManager(userDetailInformationService.getUser());
 		/* @formatter:on */
     }
 }

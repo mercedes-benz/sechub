@@ -1,3 +1,104 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --color-dark: #100c08;
+    --color-light: #FDFDFD;
+    --color-grey: #696969;
+}
+
 body {
 	font-family: sans-serif;
+	min-height: 100vh
+}
+
+.placeholder {
+	color: var(--color-grey);
+}
+
+.border-thin {
+	border-width: 0.2rem;
+	border-style: solid;
+}
+
+.warning-border-dark-bg {
+	border-color: goldenrod;
+}
+
+.warning-light-bg {
+	color: darkgoldenrod;
+}
+
+.warning-dark-bg {
+	color: goldenrod;
+}
+
+.container-flex {
+	display: flex;
+}
+
+.flex-column {
+	flex-direction: column;
+}
+
+.flex-row {
+	flex-direction: row;
+}
+
+.flex-grow {
+	flex-grow: 1;
+}
+
+.flex-shrink {
+	flex-shrink: 1;
+}
+
+.text-align-center {
+	text-align: center;
+}
+
+.padding-thin-all {
+	padding: 1em;
+}
+
+.menu {
+	list-style: none;
+}
+
+.menu > li {
+	display: inline;
+}
+
+.item > a {
+	color: white;
+}
+
+.item > a:hover {
+	color: gold;
+}
+
+.item > a:visited {
+	color: white;
+}
+
+.text-color-dark {
+	color: var(--color-dark);
+}
+
+.text-color-light {
+	color: var(--color-light);
+}
+
+.background-dark {
+	background: var(--color-dark);
+}
+
+.background-light {
+	background: var(--color-light);
+}
+
+.text-color-white {
+	color: white;
 }

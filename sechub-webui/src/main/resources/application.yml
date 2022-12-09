@@ -6,8 +6,6 @@ server:
 sechub:
   serverUrl: "https://localhost:8443"
   trustAllCertificates: true
-  userid: ${SECHUB_USERID}
-  apiToken: ${SECHUB_APITOKEN}
   
 spring:
   messages:

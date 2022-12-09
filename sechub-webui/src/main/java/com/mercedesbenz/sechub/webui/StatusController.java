@@ -2,7 +2,6 @@
 package com.mercedesbenz.sechub.webui;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,14 +11,14 @@ public class StatusController {
     @Autowired
     StatusService statusService;
 
-    @Value("${sechub.serverurl}")
-    private String secHubServerUrl;
+    @Autowired
+    SecHubServerAccessService accessService;
 
     @GetMapping("/status")
     String status(Model model) {
         String secHubServerVersion = statusService.getServerVersion();
 
-        model.addAttribute("sechubServerUrl", secHubServerUrl);
+        model.addAttribute("sechubServerUrl", accessService.getSecHubServerUrl());
         model.addAttribute("sechubServerVersion", secHubServerVersion);
         return "status";
     }

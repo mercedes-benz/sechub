@@ -72,9 +72,5 @@ subprojects {
        if (projectType.springDocProjects.contains(project)){
             api(library.springboot_starter_web)
        }
-       
-       /* if (projectType.springBootWebUiProjects.contains(project)) {
-       		
-       } */
     }
 }
