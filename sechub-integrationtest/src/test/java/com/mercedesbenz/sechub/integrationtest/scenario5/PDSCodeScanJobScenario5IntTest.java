@@ -67,13 +67,14 @@ public class PDSCodeScanJobScenario5IntTest {
         assertReport(report).
             hasReportVersion(SecHubReportVersion.VERSION_1_0).
             hasStatus(SecHubStatus.FAILED).
-            hasMessages(1);
+            hasMessages(2); //1. Error, 2. Warning about no product results inside report
 
-        // check the job status contains also message
+        // check the job status contains also messages
         assertJobStatus(project, jobUUID).
             isInState(TestExecutionState.ENDED).
-            hasMessages(1).
-            hasMessage(SecHubMessageType.ERROR,"Job execution failed because of an internal problem");
+            hasMessages(2).
+            hasMessage(SecHubMessageType.ERROR,"Job execution failed because of an internal problem!").
+            hasMessage(SecHubMessageType.WARNING,"No results from a security product available for this job!");
 
 
 

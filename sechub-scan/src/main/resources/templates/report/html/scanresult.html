@@ -156,7 +156,7 @@
 				</table>
 			</div>
 		</div>
-		<div class="messages" th:if="!${messages.isEmpty()}">
+		<div class="messages" th:if="${messages!=null && !messages.isEmpty()}">
 		   <h2 class='messagesHeadline'>Messages</h2>
 		   <table class='messagesTable'>
                     <tbody>

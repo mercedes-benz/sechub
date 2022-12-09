@@ -224,7 +224,7 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
             /* internal errors are marked with status failed */
             transformerResult.setStatus(SecHubStatus.FAILED);
             /* we add an information to user as well */
-            appendSecHubMessage(transformerResult, new SecHubMessage(SecHubMessageType.ERROR, "Job execution failed because of an internal problem"));
+            appendSecHubMessage(transformerResult, new SecHubMessage(SecHubMessageType.ERROR, "Job execution failed because of an internal problem!"));
             break;
         case INTERNAL_INFO_PRODUCT_SUCCESSFUL_IMPORTED:
             /*

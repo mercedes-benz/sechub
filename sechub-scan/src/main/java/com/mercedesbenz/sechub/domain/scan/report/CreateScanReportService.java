@@ -83,6 +83,7 @@ public class CreateScanReportService {
         try {
             reportTransformerResult = reportTransformerService.createResult(context);
             if (!reportTransformerResult.isAtLeastOneRealProductResultContained()) {
+                /* in this case we add a warning message for the user inside the report */
                 reportTransformerResult.getMessages()
                         .add(new SecHubMessage(SecHubMessageType.WARNING, "No results from a security product available for this job!"));
             }

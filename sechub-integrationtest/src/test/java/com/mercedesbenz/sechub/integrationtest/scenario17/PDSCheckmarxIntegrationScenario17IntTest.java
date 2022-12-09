@@ -156,16 +156,20 @@ public class PDSCheckmarxIntegrationScenario17IntTest {
         waitForJobDone(project, jobUUID, 30, true);
         String report = as(USER_1).getJobReport(project, jobUUID);
 
-        // When binaries are not enabled traffic light is green - the execution was gracefully skipped
         if (!profileHasBinariesEnabledInExecutor) {
             assertReport(report).
                 enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
                 hasTrafficLight(TrafficLight.OFF). // traffic light off, because the only report which was executed, but there was no result inside!
+                hasMessages(1).
+                hasMessage(SecHubMessageType.WARNING,"No results from a security product available for this job!").
                 hasFindings(0); // no finding, because not executed
         }else {
             assertReport(report).
                 enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
                 hasTrafficLight(TrafficLight.OFF). // traffic light off, because failed
+                hasMessages(2).
+                hasMessage(SecHubMessageType.ERROR,"Job execution failed because of an internal problem!").
+                hasMessage(SecHubMessageType.WARNING,"No results from a security product available for this job!").
                 hasFindings(0); // no finding, because failed
         }
 

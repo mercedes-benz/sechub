@@ -148,18 +148,18 @@ public class HTMLReportHelper {
     }
 
     public String getMessageTypeAsHTMLIcon(SecHubMessageType type) {
-        if (type == null) {
-            return "";
-        }
-        switch (type) {
-        case ERROR:
-            return "&#128711;"; // probibit
-        case INFO:
-            return "&#128712;"; // circle
-        case WARNING:
-            return "&#9888;"; // attention
-        }
+        if (type != null) {
 
+            switch (type) {
+            case ERROR:
+                return "&#128711;"; // probibit
+            case INFO:
+                return "&#128712;"; // circle
+            case WARNING:
+                return "&#9888;"; // attention
+            }
+        }
+        /* fallback always "no icon" */
         return "";
     }
 

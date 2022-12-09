@@ -18,13 +18,14 @@ import org.thymeleaf.spring5.dialect.SpringStandardDialect;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.SecHubResult;
 import com.mercedesbenz.sechub.commons.model.TrafficLightSupport;
 import com.mercedesbenz.sechub.docgen.util.TextFileWriter;
-import com.mercedesbenz.sechub.domain.scan.ReportTransformationResult;
 import com.mercedesbenz.sechub.domain.scan.SecHubExecutionException;
 import com.mercedesbenz.sechub.domain.scan.TestHTMLScanResultReportModelBuilder;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
+import com.mercedesbenz.sechub.domain.scan.report.ScanReportResultType;
 import com.mercedesbenz.sechub.domain.scan.report.ScanSecHubReport;
 import com.mercedesbenz.sechub.test.TestUtil;
 
@@ -129,6 +130,26 @@ public class ThymeLeafHTMLReportingTest {
         storeAsHTMLFileForReportDesignWhenTempFilesAreKept(htmlResult, context);
     }
 
+    @Test
+    void example6_sechub_report_json_file_would_be_shown_as_expected_report_HTML_with_messages() throws Exception {
+        /* prepare */
+        TestReportContext context = new TestReportContext(6, ReportInputFormat.SECHUB_REPORT, "report_without_findings_but_messages");
+        context.sechubJobUUID = "f5fdccc6-45d3-4b45-972c-08ff9ee0dddb";
+
+        /* execute */
+        String htmlResult = processThymeLeafTemplates(context);
+
+        /* test */
+        assertNotNull(htmlResult);
+        assertTrue(htmlResult.contains(context.sechubJobUUID));
+        assertTrue(htmlResult.contains("Job execution failed because of an internal problem!"));
+        assertTrue(htmlResult.contains("No results from a security product available for this job!"));
+        assertTrue(htmlResult.contains("Messages"));
+
+        storeAsHTMLFileForReportDesignWhenTempFilesAreKept(htmlResult, context);
+
+    }
+
     @BeforeAll
     private static void beforAll() {
         thymeleafTemplateEngine = new TemplateEngine();
@@ -167,7 +188,7 @@ public class ThymeLeafHTMLReportingTest {
     }
 
     private enum ReportInputFormat {
-        SARIF, CHECKMARX,
+        SARIF, CHECKMARX, SECHUB_REPORT
     }
 
     private class TestReportContext {
@@ -188,6 +209,9 @@ public class ThymeLeafHTMLReportingTest {
 
         private void initReport() {
             switch (inputFormat) {
+            case SECHUB_REPORT:
+                sourceReportAsString = ReportTestHelper.loadSecHubReportFileTemplate(exampleName + "_" + variant);
+                break;
             case CHECKMARX:
                 sourceReportAsString = ReportTestHelper.load3rdPartyReportAsString(exampleName + "_" + variant + ".xml");
                 break;
@@ -207,32 +231,36 @@ public class ThymeLeafHTMLReportingTest {
         }
 
         private Map<String, Object> createThymeLeafReportData() throws IOException, SecHubExecutionException {
-            ReportTransformationResult sechubReportResult;
+            ScanReport report;
             switch (inputFormat) {
+            case SECHUB_REPORT:
+
+                report = new ScanReport(null, null);
+                report.setResultType(ScanReportResultType.MODEL);
+                String sechubReport = sourceReportAsString.replace("__SECHUB_JOB_UUID__", sechubJobUUID);
+                report.setResult(sechubReport);
+                break;
             case CHECKMARX:
-                sechubReportResult = transformCheckmarxToSecHubReportResult(sourceReportAsString, sechubJobUUID);
+                report = transformCheckmarxToSecHubReportResult(sourceReportAsString, sechubJobUUID);
                 break;
             case SARIF:
-                sechubReportResult = transformSarifToSecHubReportResult(sourceReportAsString, ProductIdentifier.PDS_WEBSCAN, sechubJobUUID);
+                report = transformSarifToScanReport(sourceReportAsString, ProductIdentifier.PDS_WEBSCAN, sechubJobUUID);
                 break;
             default:
                 throw new IllegalStateException("input format not supported:" + inputFormat);
 
             }
             TrafficLightSupport trafficLightSupport = new TrafficLightSupport();
-            TestHTMLScanResultReportModelBuilder builder = new TestHTMLScanResultReportModelBuilder(trafficLightSupport);
+            TestHTMLScanResultReportModelBuilder reportModelBuilder = new TestHTMLScanResultReportModelBuilder(trafficLightSupport);
 
-            ScanReport report = new ScanReport(sechubReportResult.getJobUUID(), "project1");
-            report.setResult(sechubJobUUID);
+            String sechubReportAsJson = report.getResult();
+            SecHubResult sechubResult = SecHubResult.fromJSONString(sechubReportAsJson);
 
-            String sechubReportResultJSON = sechubReportResult.getResult().toJSON();
-
-            report.setResult(sechubReportResultJSON);
-            report.setTrafficLight(trafficLightSupport.calculateTrafficLight(sechubReportResult.getResult()));
+            report.setTrafficLight(trafficLightSupport.calculateTrafficLight(sechubResult));
 
             ScanSecHubReport scanReport = new ScanSecHubReport(report);
             storeAsJSONFileForDebuggingWhenTempFilesAreKept(JSONConverter.get().toJSON(scanReport, true), this);
-            Map<String, Object> tyhmeleafMap = builder.build(scanReport);
+            Map<String, Object> tyhmeleafMap = reportModelBuilder.build(scanReport);
             return tyhmeleafMap;
         }
 
