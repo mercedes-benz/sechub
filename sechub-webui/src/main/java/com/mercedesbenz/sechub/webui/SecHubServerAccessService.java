@@ -11,19 +11,19 @@ public class SecHubServerAccessService {
     @Value("${sechub.trustAllCertificates}")
     private boolean trustAllCertificates;
 
-	public String getSecHubServerUrl() {
-		return secHubServerUrl;
-	}
+    public String getSecHubServerUrl() {
+        return secHubServerUrl;
+    }
 
-	public void setSecHubServerUrl(String secHubServerUrl) {
-		this.secHubServerUrl = secHubServerUrl;
-	}
+    public void setSecHubServerUrl(String secHubServerUrl) {
+        this.secHubServerUrl = secHubServerUrl;
+    }
 
-	public boolean isTrustAllCertificates() {
-		return trustAllCertificates;
-	}
+    public boolean isTrustAllCertificates() {
+        return trustAllCertificates;
+    }
 
-	public void setTrustAllCertificates(boolean trustAllCertificates) {
-		this.trustAllCertificates = trustAllCertificates;
-	}
+    public void setTrustAllCertificates(boolean trustAllCertificates) {
+        this.trustAllCertificates = trustAllCertificates;
+    }
 }

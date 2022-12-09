@@ -9,17 +9,18 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import reactor.netty.http.client.HttpClient;
+
 import com.mercedesbenz.sechub.webui.SecHubServerAccessService;
 
-import reactor.netty.http.client.HttpClient;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 
 @Configuration
 public class WebClientFactory {
-	@Autowired
-	SecHubServerAccessService accessService;
+    @Autowired
+    SecHubServerAccessService accessService;
 
     @Bean
     public WebClient webClient() throws SSLException {

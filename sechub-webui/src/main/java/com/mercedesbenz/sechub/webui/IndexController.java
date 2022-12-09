@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class IndexController {
-	@Autowired
-	SecHubServerAccessService accessService;
+    @Autowired
+    SecHubServerAccessService accessService;
 
     @GetMapping("/")
     String index(Model model) {

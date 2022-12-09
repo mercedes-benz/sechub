@@ -6,9 +6,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserDetailInformationService {
-	public UserDetails getUser() {
-		return User.withDefaultPasswordEncoder().
-				username("user").password("password").roles("USER").
-				build();
-	}
+    public UserDetails getUser() {
+        return User.withDefaultPasswordEncoder().username("user").password("password").roles("USER").build();
+    }
 }

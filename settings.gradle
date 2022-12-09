@@ -80,7 +80,7 @@ include 'sechub-cli',
 'sechub-wrapper-checkmarx'
 
 // WebUI
-'sechub-webui'
+include 'sechub-webui'
 
 buildCache {
     def useTempCache = System.getenv('SECHUB_BUILD_USE_TMP_CACHE')

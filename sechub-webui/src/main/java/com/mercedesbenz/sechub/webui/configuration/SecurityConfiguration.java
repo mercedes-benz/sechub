@@ -12,9 +12,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
 public class SecurityConfiguration {
-	@Autowired
-	UserDetailInformationService userDetailInformationService;
-	
+    @Autowired
+    UserDetailInformationService userDetailInformationService;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         /* @formatter:off */

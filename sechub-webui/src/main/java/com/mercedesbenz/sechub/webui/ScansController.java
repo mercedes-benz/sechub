@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class ScansController {
-	@Autowired
-	SecHubServerAccessService accessSerivce;
+    @Autowired
+    SecHubServerAccessService accessSerivce;
 
     @GetMapping("/projects/{projectId}/scans")
     String scans(Model model) {

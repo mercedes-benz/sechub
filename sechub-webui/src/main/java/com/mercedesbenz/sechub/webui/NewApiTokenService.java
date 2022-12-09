@@ -15,8 +15,11 @@ public class NewApiTokenService {
 
     /**
      * Request new API token as described in
-     * 
-     * <a href="https://mercedes-benz.github.io/sechub/latest/sechub-restapi.html#user- requests-new-api-token">documentation</a>
+     *
+     * <a href=
+     * "https://mercedes-benz.github.io/sechub/latest/sechub-restapi.html#user-
+     * requests-new-api-token">documentation</a>
+     *
      * <pre>
      *  curl
      * 'https://sechub.example.com/api/anonymous/refresh/apitoken/emailAdress@test.
