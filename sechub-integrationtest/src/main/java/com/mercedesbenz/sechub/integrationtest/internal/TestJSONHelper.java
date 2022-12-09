@@ -11,13 +11,13 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mercedesbenz.sechub.commons.model.JSONConverterException;
 
 public class TestJSONHelper {
@@ -65,6 +65,7 @@ public class TestJSONHelper {
         mapper.setSerializationInclusion(Include.NON_NULL);
         // http://www.baeldung.com/jackson-optional
         mapper.registerModule(new Jdk8Module());
+        mapper.registerModule(new JavaTimeModule());
     }
 
     public void assertValidJson(String string) {
@@ -138,14 +139,11 @@ public class TestJSONHelper {
     }
 
     public <T> List<T> createFromJSONAsList(String json, Class<T> class1) {
-        List<T> list;
         try {
-            list = getMapper().readValue(json, new TypeReference<List<T>>() {
-            });
+            return getMapper().readerForListOf(class1).readValue(json);
         } catch (JsonProcessingException e) {
             throw new JSONConverterException("Was not able to convert json to a list of " + class1.getName(), e);
         }
-        return list;
     }
 
 }

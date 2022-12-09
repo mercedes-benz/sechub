@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.integrationtest.scenario4;
 
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 import static com.mercedesbenz.sechub.integrationtest.scenario4.Scenario4.*;
+import static org.junit.Assert.*;
 
 import java.util.UUID;
 
@@ -14,6 +15,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestMockMode;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
+import com.mercedesbenz.sechub.integrationtest.api.TestSecHubJobInfoForUserListPage;
 
 /**
  * Integration tests to check cancel operations works
@@ -49,6 +51,10 @@ public class CancelJobScenario4IntTest {
         waitForJobStatusFailed(project, sechubJobUUD);
 
         assertJobStatus(project, sechubJobUUD).hasMessage(SecHubMessageType.INFO,"Job execution was canceled by user");
+
+        // fetch last user job - must be the one we have created here...
+        TestSecHubJobInfoForUserListPage jobInfo = as(USER_1).fetchUserJobInfoListOneEntryOrNull(project);
+        assertUserJobInfo(jobInfo).hasJobInfoFor(sechubJobUUD).withExecutionResult("FAILED");
 
         /* @formatter:on */
     }

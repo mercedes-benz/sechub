@@ -159,6 +159,8 @@ public enum UseCaseIdentifier {
 
     UC_USER_UPLOADS_BINARIES(69),
 
+    UC_USER_LISTS_JOBS_FOR_PROJECT(71),
+
     ;
 
     /* +-----------------------------------------------------------------------+ */
