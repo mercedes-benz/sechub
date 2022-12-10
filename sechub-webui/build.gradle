@@ -11,14 +11,11 @@ plugins {
 }
 
 dependencies {
-    //implementation library.springboot_starter_web
-    implementation library.springboot_starter_data_jpa
     implementation library.springboot_starter_security
     implementation library.springboot_starter_thymeleaf
     implementation library.logstashLogbackEncoder
-    implementation library.database_h2
-    implementation library.database_postgres
     implementation library.springboot_starter_webflux
+    implementation library.thymeleaf_extras_springsecurity5
     
     developmentOnly library.springboot_devtoolssf
 }

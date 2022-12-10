@@ -6,6 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import reactor.core.publisher.Mono;
+
 @Controller
 public class StatusController {
     @Autowired
@@ -16,7 +18,7 @@ public class StatusController {
 
     @GetMapping("/status")
     String status(Model model) {
-        String secHubServerVersion = statusService.getServerVersion();
+        Mono<String> secHubServerVersion = statusService.getServerVersion();
 
         model.addAttribute("sechubServerUrl", accessService.getSecHubServerUrl());
         model.addAttribute("sechubServerVersion", secHubServerVersion);

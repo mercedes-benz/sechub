@@ -69,6 +69,8 @@ ext {
       /* Owasp Zap wrapper */
       owaspzap_client_api:                     "1.11.0",
       jcommander:                              "1.82",
+      thymeleaf_extras_springsecurity5:        "3.1.0.RELEASE"
+      
     
    ]    
    
@@ -149,6 +151,12 @@ ext {
         owaspzap_client_api:                   "org.zaproxy:zap-clientapi:${libraryVersion.owaspzap_client_api}",
          
         jcommander:                            "com.beust:jcommander:${libraryVersion.jcommander}",
+        
+        /*
+         * Needed for Spring Boot WebFlux CSRF protection - see: https://stackoverflow.com/a/53305169
+         */
+        thymeleaf_extras_springsecurity5:      "org.thymeleaf.extras:thymeleaf-extras-springsecurity5:${libraryVersion.thymeleaf_extras_springsecurity5}"
+        
    ]
    
 

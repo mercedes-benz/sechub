@@ -1,45 +1,45 @@
-// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.webui.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
+import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.csrf.CookieServerCsrfTokenRepository;
+import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
 
-@EnableWebSecurity
+@Configuration
+@EnableWebFluxSecurity
 public class SecurityConfiguration {
     @Autowired
     UserDetailInformationService userDetailInformationService;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity httpSecurity) throws Exception {
+
         /* @formatter:off */
 		httpSecurity.
-			authorizeRequests().
-			// allow unauthenticated access to css, js and images
-			antMatchers("/css/**", "/js/**", "/images/**").permitAll().
-			anyRequest().authenticated().
-			and().
-			formLogin((form) -> form
-					.loginPage("/login")
-					.permitAll()).
-			logout().
-				logoutRequestMatcher(new AntPathRequestMatcher("/logout")).
-				logoutSuccessUrl("/login")
-			;
+			        authorizeExchange().
+					  pathMatchers("/css/**", "/js/**", "/images/**").permitAll().
+					  pathMatchers("/login", "/logout").permitAll().
+					  anyExchange().authenticated().
+					and().
+					  formLogin().loginPage("/login").
+					and().
+					  logout().
+					  requiresLogout(ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, "/logout")).
+					and().
+					  csrf(csrf -> csrf.csrfTokenRepository(new CookieServerCsrfTokenRepository()));
 		/* @formatter:on */
 
         return httpSecurity.build();
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
-        /* @formatter:off */
-		return new InMemoryUserDetailsManager(userDetailInformationService.getUser());
-		/* @formatter:on */
+    public MapReactiveUserDetailsService userDetailsService() {
+        return new MapReactiveUserDetailsService(userDetailInformationService.getUser());
     }
 }

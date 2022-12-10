@@ -26,11 +26,10 @@ public class NewApiTokenService {
      * com' -i -X POST -H 'Content-Type: application/json;charset=UTF-8'
      * </pre>
      */
-    public String requestNewApiToken(String email) {
+    public Mono<String> requestNewApiToken(String email) {
 
         return webClient.post().uri("api/anonymous/refresh/apitoken/" + email).retrieve()
                 .onStatus(HttpStatus::is4xxClientError, error -> Mono.error(new RuntimeException("API not found")))
-                .onStatus(HttpStatus::is5xxServerError, error -> Mono.error(new RuntimeException("Server is not responding"))).bodyToMono(String.class).block();
-
+                .onStatus(HttpStatus::is5xxServerError, error -> Mono.error(new RuntimeException("Server is not responding"))).bodyToMono(String.class);
     }
 }
