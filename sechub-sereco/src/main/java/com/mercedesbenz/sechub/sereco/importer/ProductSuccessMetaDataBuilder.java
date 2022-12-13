@@ -6,7 +6,7 @@ import com.mercedesbenz.sechub.sereco.metadata.SerecoAnnotation;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoAnnotationType;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
 
-public class ProductFailureMetaDataBuilder {
+public class ProductSuccessMetaDataBuilder {
 
     private ImportParameter parameter;
 
@@ -19,22 +19,22 @@ public class ProductFailureMetaDataBuilder {
         StringBuilder description = new StringBuilder();
         description.append("Security product '");
         description.append(productId);
-        description.append("' failed, so cannot give a correct answer.");
+        description.append("' successfully executed and import was possible.");
 
         String descriptionAsString = description.toString();
         SerecoMetaData data = new SerecoMetaData();
 
         /* new way */
-        SerecoAnnotation failedMessage = new SerecoAnnotation();
-        failedMessage.setValue(descriptionAsString);
-        failedMessage.setType(SerecoAnnotationType.INTERNAL_ERROR_PRODUCT_FAILED); // important. Will be used to handle traffic light (OFF)!
+        SerecoAnnotation scuccessMessage = new SerecoAnnotation();
+        scuccessMessage.setValue(descriptionAsString);
+        scuccessMessage.setType(SerecoAnnotationType.INTERNAL_INFO_PRODUCT_SUCCESSFUL_IMPORTED); // important. Will be used to handle traffic light (OFF)!
 
-        data.getAnnotations().add(failedMessage);
+        data.getAnnotations().add(scuccessMessage);
 
         return data;
     }
 
-    public ProductFailureMetaDataBuilder forParam(ImportParameter param) {
+    public ProductSuccessMetaDataBuilder forParam(ImportParameter param) {
         this.parameter = param;
         return this;
     }

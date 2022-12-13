@@ -16,6 +16,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
@@ -37,19 +38,16 @@ public class PDSCheckmarxIntegrationScenario17IntTest {
 
     @Test
     public void pds_calls_checkmarx_wrapper_and_uploads_sources_only_which_is_supported_by_checkmarx_PDS_setup_results_yellow() {
-        /* @formatter:off */
         testCheckmarxPDSJobWithSourceContentUploaded(PROJECT_1);
     }
 
     @Test
     public void pds_calls_checkmarx_wrapper_and_uploads_sources_only_accepted_is_binary_and_source_via_job_parameter_results_yellow() {
-        /* @formatter:off */
         testCheckmarxPDSJobWithSourceContentUploaded(PROJECT_2);
     }
 
     @Test
     public void pds_calls_checkmarx_wrapper_and_uploads_sources_which_would_be_accepted_but_everything_is_filtered_results_in_job_done_without_result() {
-        /* @formatter:off */
         testCheckmarxPDSJobWithSourceContentUploaded(PROJECT_3);
     }
 
@@ -64,6 +62,7 @@ public class PDSCheckmarxIntegrationScenario17IntTest {
     }
 
     private void testCheckmarxPDSJobWithSourceContentUploaded(TestProject project) {
+        /* @formatter:off */
         /* prepare */
         UUID jobUUID = as(USER_1).
                 createCodeScanWithTemplate(
@@ -88,10 +87,10 @@ public class PDSCheckmarxIntegrationScenario17IntTest {
         if (project.equals(PROJECT_3)) {
             assertReport(report).
                 enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
-                hasTrafficLight(TrafficLight.GREEN).
+                hasTrafficLight(TrafficLight.OFF). // no result because of filtering at PDS + graceful fall through, so traffic light must be off
+                hasMessages(1).
+                hasMessage(SecHubMessageType.WARNING,"No results from a security product available for this job!").
                 hasFindings(0);
-
-            // this okay here - all text files are filtered
 
             List<UUID> pdsJobUUIDs = TestAPI.fetchAllPDSJobUUIDsForSecHubJob(jobUUID);
             assertEquals(1,pdsJobUUIDs.size());
@@ -157,12 +156,21 @@ public class PDSCheckmarxIntegrationScenario17IntTest {
         waitForJobDone(project, jobUUID, 30, true);
         String report = as(USER_1).getJobReport(project, jobUUID);
 
-        // When binaries are not enabled traffic light is green - the execution was gracefully skipped
         if (!profileHasBinariesEnabledInExecutor) {
             assertReport(report).
                 enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
-                hasTrafficLight(TrafficLight.GREEN).
+                hasTrafficLight(TrafficLight.OFF). // traffic light off, because the only report which was executed, but there was no result inside!
+                hasMessages(1).
+                hasMessage(SecHubMessageType.WARNING,"No results from a security product available for this job!").
                 hasFindings(0); // no finding, because not executed
+        }else {
+            assertReport(report).
+                enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
+                hasTrafficLight(TrafficLight.OFF). // traffic light off, because failed
+                hasMessages(2).
+                hasMessage(SecHubMessageType.ERROR,"Job execution failed because of an internal problem!").
+                hasMessage(SecHubMessageType.WARNING,"No results from a security product available for this job!").
+                hasFindings(0); // no finding, because failed
         }
 
         // Inspect PDS result
@@ -181,6 +189,7 @@ public class PDSCheckmarxIntegrationScenario17IntTest {
 
             assertNull(jobReport);  // report can be fetched, but is null because no launcher script executed
         }
+
         /* @formatter:on */
     }
 

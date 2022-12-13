@@ -31,6 +31,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.mercedesbenz.sechub.commons.model.SecHubFinding;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.commons.model.TrafficLightCalculator;
 import com.mercedesbenz.sechub.domain.scan.product.ReportProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.report.CreateScanReportService;
 import com.mercedesbenz.sechub.domain.scan.report.DownloadScanReportService;
@@ -38,7 +39,6 @@ import com.mercedesbenz.sechub.domain.scan.report.DownloadSpdxScanReportService;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReportRepository;
 import com.mercedesbenz.sechub.domain.scan.report.ScanReportRestController;
-import com.mercedesbenz.sechub.domain.scan.report.ScanReportTrafficLightCalculator;
 import com.mercedesbenz.sechub.domain.scan.report.ScanSecHubReport;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
@@ -70,7 +70,7 @@ public class ScanReportRestControllerMockTest {
     ReportProductExecutionService reportProductExecutionService;
 
     @MockBean
-    ScanReportTrafficLightCalculator trafficLightCalculator;
+    TrafficLightCalculator trafficLightCalculator;
 
     @MockBean
     ScanReportRepository reportRepository;
