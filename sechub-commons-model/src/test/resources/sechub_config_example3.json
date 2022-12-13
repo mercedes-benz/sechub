@@ -20,6 +20,6 @@
     "openApi" : {
       "use" : [ "open-api-file-reference" ]
     },
-    "uri" : "https://productfailure.demo.example.org"
+    "url" : "https://productfailure.demo.example.org"
   }
 }

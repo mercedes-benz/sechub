@@ -47,7 +47,7 @@ public class ProjectWhiteListSecHubConfigurationValidationService {
         Optional<SecHubWebScanConfiguration> webscanopt = configuration.getWebScan();
         if (webscanopt.isPresent()) {
             SecHubWebScanConfiguration webconf = webscanopt.get();
-            assertWhitelisted(allowed, webconf.getUri());
+            assertWhitelisted(allowed, webconf.getUrl());
         }
 
     }

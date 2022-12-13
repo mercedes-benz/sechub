@@ -107,7 +107,7 @@ public class TestSecHubConfigurationBuilder {
         }
 
         public TestWebConfigurationBuilder addURI(String uri) {
-            TestSecHubConfigurationBuilder.this.testData.webConfig.uri = URI.create(uri);
+            TestSecHubConfigurationBuilder.this.testData.webConfig.url = URI.create(uri);
             return this;
         }
 
