@@ -3,7 +3,7 @@
   "serverId": "OWASP_ZAP_CLUSTER",
   "products": [
     {
-      "id": "PDS_OWASP_ZAP",
+      "id": "PDS_OWASPZAP",
       "path": "/scripts/owasp-zap.sh",
       "scanType": "webScan",
       "minutesToWaitForProductResult": 510,
@@ -52,7 +52,7 @@
       }
     },
     {
-      "id": "PDS_OWASP_ZAP_MOCK",
+      "id": "PDS_OWASPZAP_MOCK",
       "path": "/scripts/owasp-zap-mock.sh",
       "scanType": "webScan",
       "description": "Runs OWASP ZAP mock",

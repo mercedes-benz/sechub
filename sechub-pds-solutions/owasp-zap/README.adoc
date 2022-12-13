@@ -64,7 +64,7 @@ WARNING: Scan only targets you have permission to scan.
 export PDS_SERVER=https://<pds-host>:<port>
 export PDS_USERID=admin
 export PDS_APITOKEN="<pds-admin-apitoken>"
-export PDS_PRODUCT_IDENTFIER=PDS_OWASP_ZAP
+export PDS_PRODUCT_IDENTFIER=PDS_OWASPZAP
 ----
 +
 For example:
@@ -73,7 +73,7 @@ For example:
 export PDS_SERVER=https://localhost:8444
 export PDS_USERID=admin
 export PDS_APITOKEN="pds-apitoken"
-export PDS_PRODUCT_IDENTFIER=PDS_OWASP_ZAP
+export PDS_PRODUCT_IDENTFIER=PDS_OWASPZAP
 ----
 +
 [NOTE]
@@ -103,7 +103,7 @@ or
 {
     "apiVersion" : "1.0",
     "sechubJobUUID": "288607bf-ac81-4088-842c-005d5702a9e9", 
-    "productId": "PDS_OWASP_ZAP",
+    "productId": "PDS_OWASPZAP",
     "parameters": [
         {
             "key" : "pds.scan.target.url",

@@ -12,7 +12,7 @@
         "jobParameters": [
             {
                 "key": "pds.config.productidentifier",
-                "value": "PDS_OWASP_ZAP"
+                "value": "PDS_OWASPZAP"
             },
             {
                 "key": "pds.config.use.sechub.storage",
