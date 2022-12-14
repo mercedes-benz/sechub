@@ -45,6 +45,8 @@ import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
 import com.mercedesbenz.sechub.pds.storage.PDSMultiStorageService;
 import com.mercedesbenz.sechub.pds.storage.PDSStorageInfoCollector;
 import com.mercedesbenz.sechub.pds.util.PDSArchiveSupportProvider;
+import com.mercedesbenz.sechub.pds.util.PDSResilientRetryExecutor;
+import com.mercedesbenz.sechub.pds.util.PDSResilientRetryExecutor.ExceptionThrower;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
 
 @Service
@@ -103,6 +105,18 @@ public class PDSWorkspaceService {
 
     private static final ArchiveFilter ZIP_FILE_FILTER = new SourcecodeZipFileFilter();
 
+    private ExceptionThrower<IOException> readStorageExceptionThrower;
+
+    public PDSWorkspaceService() {
+        readStorageExceptionThrower = new ExceptionThrower<IOException>() {
+
+            @Override
+            public void throwException(String message, Exception cause) throws IOException {
+                throw new IOException("Storage read failed. " + message, cause);
+            }
+        };
+    }
+
     /**
      * Prepares workspace:
      * <ol>
@@ -149,31 +163,61 @@ public class PDSWorkspaceService {
     private void importWantedFilesFromJobStorage(UUID jobUUID, PDSJobConfiguration config, PDSJobConfigurationSupport configurationSupport,
             PDSWorkspacePreparationContext preparationContext) throws IOException {
 
+        PDSResilientRetryExecutor<IOException> resilientStorageReadExecutor = createResilientReadExecutor(preparationContext);
+
         File jobFolder = getUploadFolder(jobUUID);
         JobStorage storage = fetchStorage(jobUUID, config);
-        Set<String> names = storage.listNames();
+
+        Set<String> names = resilientStorageReadExecutor.execute(() -> storage.listNames(), "List storage names for job: " + jobUUID.toString());
 
         LOG.debug("For jobUUID: {} following names are found in storage: {}", jobUUID, names);
 
         for (String name : names) {
 
             if (isWantedStorageContent(name, configurationSupport, preparationContext)) {
+                resilientStorageReadExecutor.execute(() -> readAndCopyStorageToFileSystem(jobUUID, jobFolder, storage, name),
+                        "Read and copy storage: " + name + " for job: " + jobUUID.toString());
 
-                InputStream fetchedInputStream = storage.fetch(name);
-                File uploadFile = new File(jobFolder, name);
-
-                try {
-                    FileUtils.copyInputStreamToFile(fetchedInputStream, uploadFile);
-                    LOG.debug("Imported '{}' for job {} from storage to {}", name, jobUUID, uploadFile.getAbsolutePath());
-                } catch (IOException e) {
-                    LOG.error("Was not able to import {} for job {}, reason:", name, jobUUID, e.getMessage());
-                    throw new IllegalArgumentException("Cannot import given file from storage", e);
-                }
             } else {
                 LOG.debug("Did NOT import '{}' for job {} from storage - was not wanted", name, jobUUID);
             }
 
         }
+    }
+
+    private PDSResilientRetryExecutor<IOException> createResilientReadExecutor(PDSWorkspacePreparationContext preparationContext) {
+        PDSResilientRetryExecutor<IOException> resilientExecutor = new PDSResilientRetryExecutor<>(preparationContext.getJobStorageReadResilienceRetriesMax(),
+                readStorageExceptionThrower, IOException.class);
+
+        resilientExecutor.setMilliSecondsToWaiBeforeRetry(preparationContext.getJobStorageReadResilienceRetryWaitSeconds() * 1000);
+
+        return resilientExecutor;
+    }
+
+    private void readAndCopyStorageToFileSystem(UUID jobUUID, File jobFolder, JobStorage storage, String name) throws IOException {
+
+        File uploadFile = new File(jobFolder, name);
+
+        try (InputStream fetchedInputStream = storage.fetch(name)) {
+
+            try {
+
+                FileUtils.copyInputStreamToFile(fetchedInputStream, uploadFile);
+
+                LOG.debug("Imported '{}' for job {} from storage to {}", name, jobUUID, uploadFile.getAbsolutePath());
+
+            } catch (IOException e) {
+
+                LOG.error("Was not able to copy stream of uploaded file: {} for job {}, reason:", name, jobUUID, e.getMessage());
+
+                if (uploadFile.exists()) {
+                    boolean deleteSuccessful = uploadFile.delete();
+                    LOG.info("Uploaded file existed. Deleted successfully: {}", deleteSuccessful);
+                }
+                throw e;
+            }
+        }
+
     }
 
     void extractZipFileUploadsWhenConfigured(UUID jobUUID, PDSJobConfiguration config, PDSWorkspacePreparationContext preparationContext) throws IOException {

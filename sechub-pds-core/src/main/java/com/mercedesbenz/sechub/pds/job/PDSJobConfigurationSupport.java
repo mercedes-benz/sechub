@@ -23,6 +23,8 @@ import com.mercedesbenz.sechub.pds.execution.PDSExecutionParameterEntry;
 
 public class PDSJobConfigurationSupport {
 
+    private static final int MINIMUM_RETRIES = 0;
+    private static final int MINIMUM_WAIT_SECONDS = 1;
     public static final Set<SecHubDataConfigurationType> FALLBACK_ALL_DATATYPES_SUPPORTED = Collections
             .unmodifiableSet(new HashSet<>(Arrays.asList(SecHubDataConfigurationType.values())));
     private static final SecHubDataConfigurationTypeListParser DEFAULT_SHARED_TYPELIST_PARSER = new SecHubDataConfigurationTypeListParser();
@@ -173,4 +175,29 @@ public class PDSJobConfigurationSupport {
 
         return fromParser;
     }
+
+    public int getJobStorageReadResilienceRetriesMax(int defaultValue) {
+        String key = PARAM_KEY_PDS_CONFIG_JOBSTORAGE_READ_RESILIENCE_RETRIES_MAX;
+
+        int result = getIntParameterOrDefault(key, defaultValue);
+
+        if (result < MINIMUM_RETRIES) {
+            LOG.warn("Configured value for: {} is too small: {} - doing fallback to minimum: {}", key, result, MINIMUM_RETRIES);
+            return MINIMUM_RETRIES;
+        }
+        return result;
+    }
+
+    public int getJobStorageReadResiliencRetryWaitSeconds(int defaultValue) {
+        String key = PARAM_KEY_PDS_CONFIG_JOBSTORAGE_READ_RESILIENCE_RETRY_WAIT_SECONDS;
+
+        int result = getIntParameterOrDefault(key, defaultValue);
+
+        if (result < MINIMUM_WAIT_SECONDS) {
+            LOG.warn("Configured value for: {} is too small: {} - doing fallback to minimum: {}", key, result, MINIMUM_WAIT_SECONDS);
+            return MINIMUM_WAIT_SECONDS;
+        }
+        return result;
+    }
+
 }

@@ -85,6 +85,21 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
                     + "normally not be defined via a default value of an optional PDS configuration parameter.").markSendToPDS()),
 
     /**
+     * Can describe maximum amount of retries when it comes to jobstorage read
+     * problems
+     */
+    PDS_CONFIG_JOBSTORAGE_READ_RESILIENCE_RETRIES_MAX(
+            new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_JOBSTORAGE_READ_RESILIENCE_RETRIES_MAX,
+                    "Defines the maximum amount of retries done when a job storage read access is failing").markSendToPDS()),
+
+    /**
+     * Can describe time to wait in seconds before next retry is done.
+     */
+    PDS_CONFIG_JOBSTORAGE_READ_RESILIENCE_RETRY_WAIT_SECONDS(
+            new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_JOBSTORAGE_READ_RESILIENCE_RETRY_WAIT_SECONDS,
+                    "Defines the time to wait in seconds before the next retry is done (when it comes to storage READ problems)").markSendToPDS()),
+
+    /**
      * Contains product timeout information
      */
     PDS_CONFIG_TIMEOUT_PRODUCT_MINUTES(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_PRODUCT_TIMEOUT_MINUTES,
