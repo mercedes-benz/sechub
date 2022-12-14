@@ -182,7 +182,7 @@ public class PDSJobConfigurationSupport {
         int result = getIntParameterOrDefault(key, defaultValue);
 
         if (result < MINIMUM_RETRIES) {
-            LOG.warn("Configured value for: {} is too small: {} - doing fallback to minimum: {}", key, result, MINIMUM_RETRIES);
+            LOG.warn("Configured value for: {} is too small: {} - falling back to minimum: {}", key, result, MINIMUM_RETRIES);
             return MINIMUM_RETRIES;
         }
         return result;
@@ -194,7 +194,7 @@ public class PDSJobConfigurationSupport {
         int result = getIntParameterOrDefault(key, defaultValue);
 
         if (result < MINIMUM_WAIT_SECONDS) {
-            LOG.warn("Configured value for: {} is too small: {} - doing fallback to minimum: {}", key, result, MINIMUM_WAIT_SECONDS);
+            LOG.warn("Configured value for: {} is too small: {} - falling back to minimum: {}", key, result, MINIMUM_WAIT_SECONDS);
             return MINIMUM_WAIT_SECONDS;
         }
         return result;

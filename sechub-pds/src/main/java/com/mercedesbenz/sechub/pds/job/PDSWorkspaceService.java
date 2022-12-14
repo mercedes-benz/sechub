@@ -208,7 +208,7 @@ public class PDSWorkspaceService {
 
             } catch (IOException e) {
 
-                LOG.error("Was not able to copy stream of uploaded file: {} for job {}, reason:", name, jobUUID, e.getMessage());
+                LOG.error("Was not able to copy stream of uploaded file: {} for job {}, reason: ", name, jobUUID, e.getMessage());
 
                 if (uploadFile.exists()) {
                     boolean deleteSuccessful = uploadFile.delete();

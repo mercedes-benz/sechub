@@ -35,8 +35,8 @@ public class PDSResilientRetryExecutor<E extends Exception> {
      * Creates a resilient retry executor.
      *
      * @param maxRetries        amount of retries done by the executor
-     * @param thrower           the thrower which does throw the final exception.
-     *                          The final exception also the type for the executor.
+     * @param thrower           the thrower which throws the final exception. The
+     *                          final exception also the type for the executor.
      * @param handledExceptions an array of all exception classes which are treated
      *                          to be acceptable for a retry
      */
@@ -109,7 +109,7 @@ public class PDSResilientRetryExecutor<E extends Exception> {
                 result = callable.call();
                 done = true;
                 if (retryNumber > 0) {
-                    LOG.info("The execution of '{}' was succesful", retryNumber, identifier);
+                    LOG.info("The execution of '{}' was succesful", identifier);
                 }
 
             } catch (Exception e) {
@@ -124,7 +124,7 @@ public class PDSResilientRetryExecutor<E extends Exception> {
 
         if (!done) {
             LOG.warn("After {} attempts the execution of '{}' finally failed.", attempts, identifier);
-            thrower.throwException("Even after " + attempts + " attempts it was not possible to execute '" + identifier + "' ! Will throw last cause.",
+            thrower.throwException("Even after " + attempts + " attempts it was not possible to execute '" + identifier + "'! Will throw last cause.",
                     lastCause);
         }
         return result;
