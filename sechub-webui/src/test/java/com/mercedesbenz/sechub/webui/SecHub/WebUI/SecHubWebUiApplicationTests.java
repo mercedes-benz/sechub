@@ -2,27 +2,28 @@
 package com.mercedesbenz.sechub.webui.SecHub.WebUI;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
-@EnableConfigurationProperties
-@RunWith(SpringRunner.class)
-@SpringBootTest(value = { "sechub.userid=user", "sechub.apitoken=example" }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc
+import com.mercedesbenz.sechub.webui.SecHubServerAccessService;
+
+@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT, properties = { "server.port=8042", "management.server.port=9042", "sechub.userid=user",
+        "sechub.apitoken=example" })
+@AutoConfigureWebTestClient
 class SecHubWebUiApplicationTests {
 
     @Autowired
-    private MockMvc mvc;
+    private WebTestClient webTestClient;
+
+    @MockBean
+    private SecHubServerAccessService mockAccessService;
 
     @Test
     void contextLoads(ApplicationContext context) {
@@ -31,11 +32,6 @@ class SecHubWebUiApplicationTests {
 
     @Test
     void index() throws Exception {
-        mvc.perform(get("/").contentType("text/html")).andExpect(status().isFound());
-    }
-
-    @Test
-    void login() throws Exception {
-        mvc.perform(get("/login").contentType("text/html")).andExpect(status().isOk());
+        webTestClient.get().uri("/").exchange().expectStatus().isFound();
     }
 }
