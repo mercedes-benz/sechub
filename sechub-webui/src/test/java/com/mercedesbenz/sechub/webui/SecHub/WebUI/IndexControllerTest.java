@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.webui.SecHub.WebUI;
 
 import org.junit.jupiter.api.Test;
