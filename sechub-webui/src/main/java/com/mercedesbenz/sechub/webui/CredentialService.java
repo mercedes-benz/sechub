@@ -13,27 +13,27 @@ public class CredentialService {
     private SealedObject sealedApiToken;
 
     private CryptoAccess<String> cryptoAccess = new CryptoAccess<>();
-    
+
     @Value("${sechub.userid}")
     private String userId;
 
-	@Value("${sechub.apitoken}")
+    @Value("${sechub.apitoken}")
     private String apiToken;
-	
-	@PostConstruct
-	void handleSensitiveInformation() {
-		// Encrypt (seal apiToken)
-		sealedApiToken = cryptoAccess.seal(apiToken);
-		
-		// Overwrite apiToken value in memory
-		apiToken = null;
-	}
+
+    @PostConstruct
+    void handleSensitiveInformation() {
+        // Encrypt (seal apiToken)
+        sealedApiToken = cryptoAccess.seal(apiToken);
+
+        // Overwrite apiToken value in memory
+        apiToken = null;
+    }
 
     public String getUserId() {
-		return userId;
-	}
+        return userId;
+    }
 
-	public String getApiToken() {
-		return  cryptoAccess.unseal(sealedApiToken);
-	}
+    public String getApiToken() {
+        return cryptoAccess.unseal(sealedApiToken);
+    }
 }

@@ -20,7 +20,8 @@ public class StatusService {
     // TODO: Figure out what credentials are used to communicate to SecHub and how
     // they get injected
     public Mono<String> getServerVersion() {
-        return webClient.get().uri("/api/admin/info/version").headers(httpHeaders -> httpHeaders.setBasicAuth(credentialService.getUserId(), credentialService.getApiToken())).retrieve()
+        return webClient.get().uri("/api/admin/info/version")
+                .headers(httpHeaders -> httpHeaders.setBasicAuth(credentialService.getUserId(), credentialService.getApiToken())).retrieve()
                 .onStatus(HttpStatus::is4xxClientError, error -> Mono.error(new RuntimeException("API not found")))
                 .onStatus(HttpStatus::is5xxServerError, error -> Mono.error(new RuntimeException("Server is not responding"))).bodyToMono(String.class);
 
