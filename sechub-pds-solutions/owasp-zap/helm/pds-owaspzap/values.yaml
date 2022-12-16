@@ -19,7 +19,7 @@ pds:
     config:
         execute:
             queueMax: 10
-            workerThreadCount: 1
+            # workerThreadCount is pinned to 1
     heartbeatLogging: "true"
     logging:
         type:
