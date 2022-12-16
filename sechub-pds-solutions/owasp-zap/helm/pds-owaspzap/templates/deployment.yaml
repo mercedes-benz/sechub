@@ -45,8 +45,9 @@ spec:
                       value: "{{ .Values.zap.apiKey }}"
                     - name: PDS_CONFIG_EXECUTE_QUEUE_MAX
                       value: "{{ .Values.pds.config.execute.queueMax }}"
+                    # Only one scan in parallel possible per pds-owaspzap instance
                     - name: PDS_CONFIG_EXECUTE_WORKER_THREAD_COUNT
-                      value: "{{ .Values.pds.config.execute.workerThreadCount }}"
+                      value: "1"
                     - name: ZAP_PROXY_HOST
                       value: "{{ .Values.zap.proxy.host }}"
                     - name: ZAP_PROXY_PORT
