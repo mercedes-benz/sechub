@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
@@ -279,6 +280,28 @@ class PDSWorkspacePreparationContextFactoryTest {
         assertFalse(result.isBinaryAccepted());
         assertFalse(result.isSourceAccepted());
         assertTrue(result.isNoneAccepted());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 1, 10, 4711 })
+    void preparedContext_has_read_resilience_max_from_configuration_support(int configSupportValue) {
+        /* prepare */
+        when(jobConfigurationSupport.getJobStorageReadResilienceRetriesMax(anyInt())).thenReturn(configSupportValue);
+
+        /* execute */
+        PDSWorkspacePreparationContext result = factoryToTest.createPreparationContext(jobConfigurationSupport);
+        assertEquals(configSupportValue, result.getJobStorageReadResilienceRetriesMax());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 1, 5, 331 })
+    void preparedContext_has_read_resilience_wait_seconds_from_configuration_support(int configSupportValue) {
+        /* prepare */
+        when(jobConfigurationSupport.getJobStorageReadResiliencRetryWaitSeconds(anyInt())).thenReturn(configSupportValue);
+
+        /* execute */
+        PDSWorkspacePreparationContext result = factoryToTest.createPreparationContext(jobConfigurationSupport);
+        assertEquals(configSupportValue, result.getJobStorageReadResilienceRetryWaitSeconds());
     }
 
 }

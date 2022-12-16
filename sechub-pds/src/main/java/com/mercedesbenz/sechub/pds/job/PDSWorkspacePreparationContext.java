@@ -7,6 +7,8 @@ class PDSWorkspacePreparationContext {
     private boolean sourceAccepted;
     private boolean extractedSourceAvailable;
     private boolean extractedBinaryAvailable;
+    private int jobStorageReadResilienceRetriesMax;
+    private int jobStorageReadResilienceRetryWaitSeconds;
 
     public void setNoneAccepted(boolean noneAccepted) {
         this.noneAccepted = noneAccepted;
@@ -46,6 +48,22 @@ class PDSWorkspacePreparationContext {
 
     public boolean isExtractedSourceAvailable() {
         return extractedSourceAvailable;
+    }
+
+    public void setJobStorageReadResilienceRetriesMax(int jobStorageReadResilienceRetriesMax) {
+        this.jobStorageReadResilienceRetriesMax = jobStorageReadResilienceRetriesMax;
+    }
+
+    public int getJobStorageReadResilienceRetriesMax() {
+        return jobStorageReadResilienceRetriesMax;
+    }
+
+    public void setJobStorageReadResilienceRetryWaitSeconds(int jobStorageReadResilienceRetryWaitSeconds) {
+        this.jobStorageReadResilienceRetryWaitSeconds = jobStorageReadResilienceRetryWaitSeconds;
+    }
+
+    public int getJobStorageReadResilienceRetryWaitSeconds() {
+        return jobStorageReadResilienceRetryWaitSeconds;
     }
 
     @Override
