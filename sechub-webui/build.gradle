@@ -11,6 +11,7 @@ plugins {
 }
 
 dependencies {
+    implementation project(':sechub-commons-core')
     implementation library.springboot_starter_security
     implementation library.springboot_starter_thymeleaf
     implementation library.logstashLogbackEncoder
