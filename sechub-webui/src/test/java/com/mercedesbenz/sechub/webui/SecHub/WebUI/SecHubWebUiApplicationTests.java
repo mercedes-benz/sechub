@@ -16,7 +16,16 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import com.mercedesbenz.sechub.webui.CredentialService;
 import com.mercedesbenz.sechub.webui.SecHubServerAccessService;
 
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT, properties = {"server.port=8042"})
+/*
+ * The RANDOM_PORT setting will the start the test application on an available port on the system
+ * 
+ * The operating system is responsible for allocating the port and it is guaranteed to be available (source: https://stackoverflow.com/a/48923117).
+ * As a result, there should never be any conflict even if tests are running in parallel.
+ * 
+ * The random port is injected into the WebTestClient by default. 
+ * In addition, on can get the port using the <code>@LocalServerPort<code> annotation.
+ */
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
 @ActiveProfiles("test")
 class SecHubWebUiApplicationTests {
