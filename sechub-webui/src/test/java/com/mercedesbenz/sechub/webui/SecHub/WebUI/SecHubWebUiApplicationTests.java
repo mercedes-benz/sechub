@@ -10,13 +10,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import com.mercedesbenz.sechub.webui.CredentialService;
 import com.mercedesbenz.sechub.webui.SecHubServerAccessService;
 
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT, properties = { "server.port=8042", "management.server.port=9042", "sechub.userid=user",
-        "sechub.apitoken=example" })
+@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT, properties = {"server.port=8042"})
 @AutoConfigureWebTestClient
+@ActiveProfiles("test")
 class SecHubWebUiApplicationTests {
 
     @Autowired
@@ -24,6 +26,9 @@ class SecHubWebUiApplicationTests {
 
     @MockBean
     private SecHubServerAccessService mockAccessService;
+    
+    @MockBean
+    private CredentialService mockCredentialService;
 
     @Test
     void contextLoads(ApplicationContext context) {

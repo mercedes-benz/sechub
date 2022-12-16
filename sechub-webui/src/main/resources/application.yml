@@ -41,3 +41,14 @@ server:
       123456
     key-alias:
        tomcat
+       
+---
+# Test profile
+spring:
+  config:
+    activate:
+      on-profile: "test"
+      
+server:
+  ssl:
+    enabled: false
