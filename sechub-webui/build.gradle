@@ -19,3 +19,26 @@ dependencies {
     
     developmentOnly library.springboot_devtoolssf
 }
+
+/* make eclipse task depend on ensured local certificate*/
+tasks.eclipse.dependsOn 'ensureLocalhostCertificate'
+
+/**
+ * For integration tests, local develoment etc. we need a generated, private key
+ * which is different for each developer, not accidently committed to git, also
+ * valid on builds etc.
+ *
+ * This is done by dev-ensure_localhost_certificate.sh - for details refer to bash script
+ */
+task ensureLocalhostCertificate(type: Exec) {
+    group 'sechub'
+    description 'Calling this task, will ensure a localhost certificate exists. This is necessary for development and integration tests'
+
+    workingDir "${projectDir}"
+
+    if (OSUtil.isWindows()){
+        commandLine 'cmd', '/c', 'bash', "${projectDir}/dev-ensure_localhost_certificate.sh"
+    }else{
+        commandLine "${projectDir}/dev-ensure_localhost_certificate.sh"
+    }
+}

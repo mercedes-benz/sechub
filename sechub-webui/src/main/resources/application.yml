@@ -1,8 +1,14 @@
 # SPDX-License-Identifier: MIT
+
+# Main settings
 server:
   port:
     4443
-    
+  ssl:
+    enabled: true # always enabled
+    protocol: TLS
+    enabled-protocols: TLSv1.2,TLSv1.3
+
 sechub:
   serverUrl: "https://localhost:8443"
   trustAllCertificates: true
@@ -10,3 +16,28 @@ sechub:
 spring:
   messages:
     basename: "languages/messages"
+---
+# Dev profile
+spring:
+  profiles:
+     group: 
+        "dev": "localserver"
+---
+# Localserver profile
+spring:
+  config:
+    activate:
+      on-profile: "localserver"
+      
+server:
+  ssl:
+    key-store-type:
+      PKCS12
+    key-store:
+       # we use a keystore location which is never tracked by git. 
+       # see dev-create_localhost_certificate.sh and  dev-ensure_localhost_certificate.sh
+       classpath:certificates-untracked/generated-dev-localhost-keystore.p12
+    key-store-password:
+      123456
+    key-alias:
+       tomcat
