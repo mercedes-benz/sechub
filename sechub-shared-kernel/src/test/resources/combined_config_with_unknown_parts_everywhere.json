@@ -1,0 +1,88 @@
+{
+    // This test json is only to check if unknown attributes are ignored and JSON deserialization does not fail
+    "apiVersion": "2.1.0",
+    "unknownRoot" : true,
+       "unknownLicenseScan" : true,
+    "codeScan" : { 
+       "unknownCodeScan" : true,
+       "use" : [ "reference-name-sources-1"]
+    },
+    "licenseScan" : {
+       "unknownLicenseScan" : true,
+       "use" : [ "reference-name-binaries-1"]
+    },
+     "infraScan": {
+        "ips": ["127.0.0.1"],
+        "unknownInfraScan" : true
+    },
+    "webScan": {
+        "unknownWebScan" : true,
+        "url": "https://productfailure.demo.example.org",
+        "login": {
+            "unknownLogin" : true,
+            "url": "https://productfailure.demo.example.org/login",
+            
+            // basic + form makes normally no sense, but this is only for testing deserialization, so okay.
+            "basic": {
+                "unknownBasic" : true,
+                "realm": "realm0",
+                "user": "user0",
+                "password": "pwd0"
+            },
+            
+            "form": {
+                "unknownForm" : true,
+                "script": {
+                    "unknownScript" : true,
+                    "pages": [
+                        {
+                           "unknownPages" : true,
+                            "actions": [
+                                {
+                                   "unknownActions" : true,
+                                    "type": "username",
+                                    "selector": "#example_login_userid",
+                                    "value": "user2"
+                                },
+                                {
+                                    "type": "password",
+                                    "selector": "#example_login_pwd",
+                                    "value": "pwd2"
+                                },
+                                {
+                                    "type": "click",
+                                    "selector": "#example_login_login_button"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    },
+
+   "data" : {
+    "unknownData" : true,
+    "sources" : [ { 
+      "unknownSources" : true,
+      "name" : "reference-name-sources-1",
+      "fileSystem" : { 
+        "unknownFileSystem1" : true,
+        "files" : [ "somewhere/file1.txt", "somewhere/file2.txt" ], 
+        "folders" : [ "somewhere/subfolder1", "somewhere/subfolder2" ] 
+      },
+      "excludes": ["**/mytestcode/**","**/documentation/**"], 
+      "additionalFilenameExtensions": [".cplusplus",".py9"] 
+    } ],
+    "binaries" : [ { 
+      "unknownBinaries" : true,
+      "name" : "reference-name-binaries-1",
+      "fileSystem" : {
+        "unknownFileSystem2" : true,
+        "files" : [ "somewhere/file1.dll", "somewhere/file2.a" ], 
+        "folders" : [ "somewhere/bin/subfolder1", "somewhere/bin/subfolder2" ] 
+      }
+    }
+   ]
+  }
+}

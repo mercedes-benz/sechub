@@ -10,6 +10,7 @@ include 'sechub-cli',
 'sechub-commons-core',
 'sechub-commons-model',
 'sechub-commons-pds',
+'sechub-commons-archive',
 
 /* server POD area */
 'sechub-server',       // executable spring boot jar
@@ -18,17 +19,16 @@ include 'sechub-cli',
 /* PDS */
 'sechub-pds', // pds=product delegation server, executable spring boot jar
 'sechub-pds-core', // core project for test compile dependencies and more
-'sechub-pds-examples', // our pds examples / blue prints
+'sechub-pds-solutions', // our pds ready-to-use solutions / blue prints
+'sechub-pds-tools', // some pds tools
 
 
 /* integration test*/
 'sechub-integrationtest',
-'sechub-pds-integrationtest',
 
 /* server parts */
 'sechub-schedule',
 'sechub-scan',
-'sechub-scan-testbase',
 'sechub-scan-product-netsparker',
 'sechub-scan-product-nessus',
 'sechub-scan-product-checkmarx',
@@ -70,9 +70,14 @@ include 'sechub-cli',
 // Analyzer CLI
 'sechub-analyzer-cli',
 
-// java client library
- 'sechub-client-java'
+// java API library
+ 'sechub-api-java',
 
+// Wrapper OWASP ZAP
+'sechub-wrapper-owasp-zap',
+
+// Wrapper checkmarx
+'sechub-wrapper-checkmarx'
 
 buildCache {
     def useTempCache = System.getenv('SECHUB_BUILD_USE_TMP_CACHE')
@@ -85,3 +90,5 @@ buildCache {
     }
      
 }
+
+include 'sechub-wrapper-owasp-zap'

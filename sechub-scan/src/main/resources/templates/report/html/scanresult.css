@@ -160,10 +160,11 @@
 }
 
 .findingsTable td {
-    padding: 8px;
-    font-family: monospace;
-    vertical-align: top;
-    text-align: left;
+   padding:8px;
+
+   font-family: monospace;
+   vertical-align: top;
+   text-align: left;
 }
 
 .findingsTable td:nth-child(1) {
@@ -172,7 +173,7 @@
 }
 
 .findingsTable td:nth-child(2) {
-    width: 100px;
+    width: 60px;
     padding-left: 10px;
     border-left: 1px solid #cccccc;
 }
@@ -184,8 +185,9 @@
 
 .findingsTable td:nth-child(4) {
     border-left: 1px solid #cccccc;
-    width: 1024px;
+    width: 99%;
     display: block;
+    padding-right: 1%;
 }
 
 .redFindingsTable {
@@ -215,9 +217,15 @@
     font-family: monospace;
 }
 
+.messagesHeadline {
+    color: #3584e4;
+    font-family: monospace;
+}
+
 .rTable {
     display: table;
     padding-top: 0;
+    width:100%;
 }
 
 .rTableRow {
@@ -251,6 +259,7 @@
 .rTableCell, .rTableHead {
     display: table-cell;
     word-break: break-all;
+    padding-right: 5px;
 }
 
 .rTableHead {
@@ -264,3 +273,88 @@ details[open] summary::after {
 details:not([open]) summary::after {
     content: attr(data-open);
 }
+summary{
+   padding-top: 15px;
+}
+
+.rText {
+	white-space: pre-line; 
+}
+
+.rAttackVectorText,
+.rEvidenceText,
+.rBodyText,
+.rBodyBinary {
+   white-space: pre-line;
+   border: thin;
+   border-style: dotted;
+   background-color: #222222;
+   color: #cccccc;
+   overflow-x: hidden;
+   overflow-y: auto;
+   text-align: left;
+   padding: 15px;
+   width: 950px;
+   
+}
+.rBodyText {
+   height: 150px;
+}
+
+.rAttackVectorText {
+    height: 10px;
+}
+
+.rRequestMethod {
+   display:flex
+}
+
+.rRequestMethod > div {
+   vertical-align: text-bottom;
+   padding: 2px 0 0 0;
+   font-weight: bolder;
+}
+.rRequestMethod > textarea {
+   vertical-align: middle;
+   width: 950px;
+   height:16px;
+   border:none; /* the border is only visible when selected */
+}
+
+.rRequestDetailHeadline,
+.rResponseDetailHeadline {
+    text-decoration: underline;
+}
+
+.rCalculatedText {
+   display:flex;
+   flex-direction: row;
+   flex-wrap: wrap;
+   justify-content: flex-start;
+}
+.rCalculatedMarkerInsideText{
+   font-style: italic;
+}
+
+.rLocationHead {
+   width: 400px;
+}
+
+.rAttackVectorHead{
+   width: 300px;
+}
+.rTableSourceHead{
+     padding-right: 0px;
+}
+rTableSourceHead,
+.rEvidenceHead{
+    width: calc(100% - 500px);
+}
+
+.rDetailsContent,
+.rRequestProtocol,
+.rResponseProtocol,
+.rEvidenceStartLine{
+   display:flex;
+}
+

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // +  Initial AsciiDoc editor configuration file - V1.0  +
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -10,3 +11,6 @@
 // :imagesdir: {asciidoctorconfigdir}/images
 // 
 // For more information please take a look at https://github.com/de-jcup/eclipse-asciidoctor-editor/wiki/Asciidoctor-configfiles
+
+// let us include the config so our variables are always in IDE previews available (eclipse, intellij)
+include::{asciidoctorconfigdir}/src/docs/asciidoc/documents/config.adoc[]

@@ -1,0 +1,23 @@
+# Resource limits
+MEMORY_LIMIT=300M
+CPU_LIMIT=1.0
+
+# The build type of SecHub inside the container
+# Possible values are: build, copy, download
+# build - clones and build SecHub
+# copy - copies jar into container
+# download - downloads the SecHub jar
+BUILD_TYPE=download
+
+# The PDS version used if the BUILD_TYPE is set to `download` 
+PDS_VERSION="0.33.0"
+
+# Go version used
+GO="go1.19.linux-amd64.tar.gz"
+
+# The Java version used
+JAVA_VERSION="11"
+
+# Git information if the BUILD_TYPE is set to `build`
+TAG=""
+BRANCH=""

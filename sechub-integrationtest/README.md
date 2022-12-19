@@ -1,30 +1,24 @@
 <!-- SPDX-License-Identifier: MIT --->
 # About sechub-integrationtest project
-This project is the final sechub integration test project. 
 
-Using special stuff only by enabling profile `Profiles.INTEGRATIONTEST`
+This project contains SecHub and PDS integration tests. The tests are done by a special integration 
+test framework which can be found inside `src/main/java`. The integration tests are inside `src/test/java`. 
 
-## Concept "use rest api only"
-The complete test and setup __is done by API calls only!__
-There must be an existing server running to execute the tests! 
+The framework does use some special SecHub and PDS controllers which are only available when the
+servers are started with their activated integration test spring profiles 
+(SecHub: `integrationtest`, PDS: `pds_integrationtest` ).
 
-## Why the "use rest api only" way?
-Doing this will provide following
+## How it works
+Testing and setup __are done by API calls only__. 
+`gradlew integrationtest` will start a SecHub and a PDS server in integration test mode, execute the 
+integration tests and afterwards stop the integration test servers.
 
-- database:
- - switch between H2 and also real postgres database implementation without any changes but switch to another profile
- - we delete and create only parts defined in scenarios. So even when a developer accidently would use the PROD system for
-    integration testing he/she would never kill the complete database... 
-  
-- future ready:
-   - even works when sechub server is divided into different kubernetes PODs (e.g. seperated administration server).
+### Why the "use rest API only" way?
 
-- real live integration
+- future ready: Will even work when SecHub server is no longer a self contained system but
+  would be deployed into separate units
 
-## Setup
-For initial setup an existing super admin ("integrationtestadm") must be created on start which is done by Profiles.INTEGRATIONTEST automatically
+- "real live" integration
 
-## Dependencies
-The project may not have any dependency to sechub code parts and MUST use only the official API as any other user.
 
-The only dependencys are to `sechub-testframework`  because of using common utilitity methods for testing and to `sechub-adapter` because we reuse rest trustall implementation.
+

@@ -1,0 +1,39 @@
+// SPDX-License-Identifier: MIT
+package com.mercedesbenz.sechub.commons.model.login;
+
+import java.util.Optional;
+
+import javax.crypto.SealedObject;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class BasicLoginConfiguration {
+    private CryptoAccess<char[]> cryptoAccess = CryptoAccess.CRYPTO_CHAR_ARRAY;
+
+    private Optional<String> realm = Optional.empty();
+    private char[] user;
+    SealedObject password;
+
+    public Optional<String> getRealm() {
+        return realm;
+    }
+
+    public void setUser(char[] user) {
+        this.user = user;
+    }
+
+    public char[] getUser() {
+        return user;
+    }
+
+    public void setPassword(char[] password) {
+        this.password = cryptoAccess.seal(password);
+    }
+
+    public char[] getPassword() {
+        return cryptoAccess.unseal(password);
+    }
+
+}

@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: MIT
 dependencies {
-	implementation 'org.bouncycastle:bcprov-jdk15on:1.69'
-    testImplementation library.junit5_impl
-    testRuntimeOnly library.junit5_runtime
+    
+    api spring_boot_dependency.slf4j_api
+
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.69'
+
+    testImplementation spring_boot_dependency.junit_jupiter
+    testImplementation spring_boot_dependency.mockito_core
+    
 }

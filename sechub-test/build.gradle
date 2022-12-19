@@ -3,10 +3,14 @@ dependencies {
 
     /* we don reference spring boot application projects but core parts - 
        reason: fat jars are build which cannot be directly used for testing etc. */
-    testCompile project(':sechub-server-core')
-    testCompile project(':sechub-pds-core')
-    testCompile project(':sechub-testframework')
-    testCompile project(':sechub-doc') // here we got the dependency to Reflections 
-
+    testImplementation project(':sechub-server-core')
+    testImplementation project(':sechub-pds-core')
+    testImplementation project(':sechub-adapter')
+    testImplementation project(':sechub-testframework')
+    testImplementation project(':sechub-doc') // here we got the dependency to Reflections 
+    
+    testImplementation project(':sechub-adapter-checkmarx')
+    
+    testImplementation library.springboot_starter_thymeleaf
 }
 

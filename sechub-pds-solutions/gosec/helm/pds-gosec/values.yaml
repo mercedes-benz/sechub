@@ -1,0 +1,65 @@
+# SPDX-License-Identifier: MIT
+
+# This is just a sample values file.
+
+replicaCount: 1
+
+image:
+    registry: "ghcr.io/mercedes-benz/sechub/pds-gosec:latest"
+    tag: "latest"
+
+pds:
+    startMode: localserver
+    maxFileUploadBytes: 52428800
+    config:
+        execute:
+            queueMax: 10
+            workerThreadCount: 1
+    heartbeatLogging: "true"
+    logging:
+        type:
+            enabled: false
+            appenderName: "LOGSTASH_JSON"
+    debug:
+        keepReportsInWorkspace: false
+    javaDebug:
+        enabled: false
+    keepContainerAliveAfterPDSCrashed: false
+
+users:
+    technical:
+        id: "techuser"
+    admin:
+        id: "admin"
+
+storage:
+    local:
+        enabled: true
+    s3:
+        enabled: false
+        endpoint: "https://<minio-or-s3-server>:<port>"
+        bucketname: "<my-bucketname>"
+        accesskey: "<my-accesskey>"
+        secretkey: "<my-secretkey>"
+    sharedVolume:
+        enabled: false
+        upload:
+            dir: "/mount/nfs/shares/<sharename>"
+
+database:
+    postgres:
+        enabled: false
+        connection: "jdbc:postgresql://database:5432/pds"
+        username: "gosec"
+        password: "<password-of-db-user>"
+
+networkPolicy:
+    enabled: false
+    ingress:
+        - from:
+              - podSelector:
+                    matchLabels:
+                        name: sechub-server
+              - podSelector:
+                    matchLabels:
+                        name: sechub-adminserver

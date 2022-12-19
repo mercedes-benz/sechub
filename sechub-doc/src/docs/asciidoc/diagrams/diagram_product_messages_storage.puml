@@ -1,0 +1,40 @@
+' SPDX-License-Identifier: MIT
+@startuml 
+hide empty fields
+hide empty members
+
+!include module_sechub_messages.puml
+
+class AdapterExecutionResult{
+    List<SecHubMessage> getProductMessages()
+    String getProductResult()
+}
+abstract class AbstractProductExecutor implements ProductExecutor{
+    updateCurrentProductResult(AdapterExecutionResult, ...)
+}
+
+class Adapter{
+    
+}
+
+class ProductResult {
+    <<Entity>>
+    String messages
+    String result
+}
+AdapterExecutionResult -> SecHubMessage : 1...n
+
+AbstractProductExecutor ---> Adapter : calls (1)
+AbstractProductExecutor -> SecHubMessagesList : creates (2)
+AbstractProductExecutor ---> ProductResult : updates (3)
+Adapter --> AdapterExecutionResult: returns
+
+
+note right of ProductResult::messages 
+Contains SecHubMessagesList 
+as JSON after update
+by AbstractProductExecutor 
+end note
+
+
+@enduml 

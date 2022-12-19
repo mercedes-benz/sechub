@@ -12,13 +12,13 @@
 // where are images located?
 :imagesdir: ./images
 :mailToAdmin: sechub@example.org
-:projectSite: https://github.com/daimler/sechub
-:webPage: https://daimler.github.io/sechub
+:projectSite: https://github.com/mercedes-benz/sechub
+:webPage: https://mercedes-benz.github.io/sechub
 :sechub: SecHub
 :pds: PDS
 
-:launchServerPackageName: com.daimler.sechub
+:launchServerPackageName: com.mercedesbenz.sechub
 :launchServerClassName: SecHubServerApplication
 
-:launchDevAdminUIPackageName: com.daimler.sechub.developertools.admin.ui
+:launchDevAdminUIPackageName: com.mercedesbenz.sechub.developertools.admin.ui
 :launchDevAdminUIClasName: DeveloperAdministrationUI

@@ -182,6 +182,20 @@ the PDS configuration file and make the script callable.
 ===== How PDS provides output and error stream content of running jobs in clustered environments
 include::concept_pds_fetch_stream_of_running_job.adoc[]
 
+===== How PDS handles meta data
+include::concept_pds_handle_metadata.adoc[]
+
+===== How PDS handles storage data
+include::concept_pds_handle_storage_parts_at_runtime.adoc[]
+
+===== How PDS handles user messages
+include::concept_product_message_pds_dataflow.adoc[]
+
+===== How PDS handles execution events
+include::concept_pds_events_dataflow.adoc[]
+
+===== How PDS product executors configure the PDS adapter 
+include::concept_pds_adapter_configuration.adoc[]
 
 ==== SecHub integration
 ===== Executors and Adapters

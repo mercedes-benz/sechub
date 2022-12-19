@@ -26,7 +26,8 @@ spring:
       # we do not want to have jobs started automatically (parameters needed etc.)
       enabled: false
     ##  Spring Boot Batch Schema file generation:
-    initialize-schema: always
+    jdbc:
+      initialize-schema: always
   jpa:
      # when not defined: spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering.
     open-in-view: false
@@ -49,6 +50,7 @@ spring:
     # https://spring.io/guides/gs/uploading-files/
     multipart.max-file-size: 5MB
     multipart.max-request-size: 5MB
+    multipart.resolve-lazily: true
   http: 
     multipart.enabled: false
 # --------------------------------------

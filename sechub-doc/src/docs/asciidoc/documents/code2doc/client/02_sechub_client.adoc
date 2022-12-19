@@ -14,7 +14,8 @@ NOTE: Currently the client only supports basic authentication, but of course alw
 Download the binary for your operating system where you want to trigger `{sechub}` scanning.
 You will have no dependencies, just place the single binary file to a location inside your path variable.
 
-The latest releases can be found at {projectSite}/wiki/releases . For documentation please look at {webPage}[{secHub} web page] .
+Direct download link to the latest client release: {webPage}/latest/client-download.html
+For documentation, please look at {webPage}[{secHub} web page] .
 
 === Supported Platforms
 
@@ -29,15 +30,20 @@ The SecHub Client is available for a number of platforms. A platform is a combin
 |AMD and Intel 64-bit
 |The **macOS client**.
 
+|darwin-arm64
+|macOS
+|ARM
+|Support for recent Macs with ARM architecture.
+
 |linux-386
 |Linux
 |AMD and Intel 32-bit
-|For old hardware running Linux as operating system.
+|Universal client for Linux as operating system. Statically linked - no dependencies. Also for older hardware.
 
 |linux-amd64
 |Linux
 |AMD and Intel 64-bit
-|The **Linux client**, unless you are using older hardware or an ARM system.
+|The **Linux client**, unless you are using older hardware or an ARM system. Dynamically linked.
 
 |linux-arm
 |Linux
@@ -85,9 +91,9 @@ Does scan synchronous which means
  - approve job as being ready to start
  - wait for job done,
  - fetch automatically result report to output folder (html or json)
- - break your build when not `green`
+ - returns non-zero on `red` so your build will break on critical or high findings (depends on your build tool)
 
-TIP: For security reasons always pass your api token via the environment variable `SECHUB_APITOKEN`.
+IMPORTANT: For security reasons always pass your API-token via the environment variable `SECHUB_APITOKEN`.
 
 TIP: The is the most preferred scan action for builds - you only have to make one
      single client call and your are done.
@@ -100,6 +106,8 @@ See here for details: <<section-client-configuration-file,Configuration file>>
 SECHUB_APITOKEN=${apitoken}
 sechub scan
 ----
+TIP: If you prefer the report in HTML format: +
+     `sechub -reportformat html scan`
 
 ===== scanAsync
 
@@ -134,7 +142,7 @@ sechub -jobUUID ${jobUUID} getStatus
 ----
 
 ===== getReport
-Will fetch report as json (result will only exist when job is done)
+Will fetch report as json. (result will only exist when job is done)
 
 **Minimum call syntax**
 ----
@@ -154,7 +162,7 @@ Select this file by the `-file` argument and start action `markFalsePositives`.
 
 [source, json]
 ----
-include::../../shared/concepts/false-positive-handling/false-positive-REST-API-content-example1.json[]
+include::../../shared/false-positives/false-positives-REST-API-content-example1.json[]
 ----
 <1> api version
 <2> type - must be `falsePositiveJobDataList`
@@ -162,6 +170,8 @@ include::../../shared/concepts/false-positive-handling/false-positive-REST-API-c
 <4> ID of finding, which shall be marked as false positive
 <5> Comment (optional) describing the reason why this is handled as false positive
 
+NOTE: Providing an empty list here does *NOT delete* the declared false positives! +
+Since `markFalsePositives` only adds false positives, an empty `jobData` list has no effect at all. (don't do this)
 
 ===== getFalsePositives
 This will fetch the false positives list of your project as JSON - format is same as for `markFalsePositives`
@@ -177,14 +187,14 @@ action `unmarkFalsePositives`
 
 [source, json]
 ----
-include::sechub_client_falsepositve_list_example_unmark.json[]
+include::sechub_client_falsepositive_list_example_unmark.json[]
 ----
 
 ===== interactiveMarkFalsePositives
 Instead of creating a json file to mark false positives, you can also do this interactively:
 Go to the project directory containing `sechub.json` and a report file from a recent scan and run `sechub interactiveMarkFalsePositives`.
 
-You can select the report file using the `-file` option of the client. Otherwise the latest report file in the current directory is automatically selected.
+You can select the report file using the `-file` option of the client. Otherwise the project's latest report file in the current directory is automatically selected.
 
 For each finding in the reports file, you are prompted: `"Add this as false positive?"`
 Your choices are:
@@ -229,13 +239,14 @@ In below table, there is an overview of what can be defined where.
 | file | -file ||
 | job uuid | -jobUUID ||
 | network timeout | -timeout||
-| output folder | -output ||
-| poll interval | -wait | SECHUB_WAITTIME_DEFAULT |
+| output folder or file | -output ||
+| max. poll interval | -wait | SECHUB_WAITTIME_DEFAULT |
 | project id | -project | SECHUB_PROJECT |project
 | quiet mode | -quiet | SECHUB_QUIET |
 | report format | -reportformat||
 | server url | -server | SECHUB_SERVER | server
 | stop on yellow | -stop-on-yellow||
+| temporary dir | -tempdir | SECHUB_TEMP_DIR |
 | user id | -user | SECHUB_USERID | user
 | web scan config ||| webScan
 |===
@@ -264,36 +275,38 @@ Here is an overview of mandatory parameter for each `action`:
 - `-apitoken <string>` +
   The api token. Although you can pass it as a runtime option, it is recommended for security reasons to define the environment variable `SECHUB_APITOKEN` (see: <<Environment variables>>) and not to use this option.
   Can *NOT* be defined in config file
-- `-configfile <string>` +
-  Path to `{sechub}` config file, if not defined `sechub.json` will be used in current directory
-- `-file <string>` +
+- `-configfile <filepath>` +
+  Path to `{sechub}` JSON config file. Defaults to `sechub.json` in current directory.
+- `-file <filepath>` +
   Defines file to read from for actions `markFalsePositives` or `interactiveMarkFalsePositives` or `unmarkFalsePositives`
 - `-help` +
   Shows help and terminates
 - `-jobUUID <string>` +
   `{sechub}` job uuid (mandatory when using 'getStatus' or 'getReport')
-- `-output <string>` +
-  Output folder for reports etc. per default current dir
+- `-output <path to folder or file>` +
+  Where to place reports, false-positive files etc. Can be a directory, a file name or a file path (defaults to current working directory and default file names)
 - `-project <string>` +
   Unique project id - mandatory, but can also be defined in config file or via environment variable.
 - `-quiet` +
   Quiet mode - Suppress all informative output. Can also be defined via environment variable `SECHUB_QUIET=true`. +
   Only print filenames written to, errors and explicitely requested informations (job-UUID, version, status).
-- `-reportformat <string>` +
-  Output format for reports, supported currently: [html,json]. If not a wellknown format json will always be the fallback. (default "json")
-- `-server <string>` +
+- `-reportformat <format>` +
+  Output format for reports. Currently supported: [`json`, `html`, `spdx-json`]. If an unsupported format string is provided, "json" will always be the fallback.
+- `-server <url>` +
   Server url of `{sechub}` server to use - e.g. https//example.com:8081. Mandatory, but can also be defined in config file or via environment variable.
 - `-stop-on-yellow` +
-  Makes a yellow traffic light in the scan result also break the build
-- `-timeout <integer>` +
+  A yellow traffic light in the report will result in a non-zero return code.
+- `-tempdir <path to folder>` +
+  Temporary files will be placed here. (defaults to current working directory)
+- `-timeout <seconds>` +
   Timeout for network communication in seconds. (default 120)
 - `-user <string>` +
   Username - mandatory, but can also be defined in config file or via environment variable.
 - `-version` +
   Shows version info and terminates
-- `-wait <integer>` + 
-       wait time in seconds (default 60). 
-       Will be used for periodic status checks when action=`scan`.
+- `-wait <seconds>` + 
+       Maximum wait time in seconds (default 60). 
+       Will be used for periodic status checks when action=`scan` and for retries of HTTP calls.
 
 ==== Environment variables
 Additionally to above cmdline options, you can set some values also via environment variables which can be helpful when you have different SecHub environments (like: dev, int, prod)
@@ -306,22 +319,29 @@ Additionally to above cmdline options, you can set some values also via environm
   Quiet mode (`true` or `false` / unset) - Suppress all informative output. (same as `-quiet` option)
 - `SECHUB_SERVER` +
   The SecHub server url. (same as `-server` option)
-- `SECHUB_USERID` +
-  The SecHub username. (same as `-user` option)
+- `SECHUB_TEMP_DIR` +
+  Temporary files will be placed here. Make sure that the folder exists and is writeable. (same as `-tempdir` option)
 - `SECHUB_TRUSTALL` +
   When set to `true`, then HTTPS certificate checking will be disabled. May be useful when using self-signed certificates. Please try to avoid this setting for security reasons.
+- `SECHUB_USERID` +
+  The SecHub username. (same as `-user` option)
+- `SECHUB_WHITELIST_ALL` +
+  When set to `true` then ignore the default whitelist for source files and add _every_ file. You may want to define <<sechub-config-example-sourcescan,excludes>> in your `sechub.json` file. _!! Handle with care !!_
 
 Settings for debugging/client development:
 
 - `SECHUB_DEBUG` +
-  When set to `true` then log as much as possible
+  When set to `true` then log as much as possible (but not HTTP request contents)
+- `SECHUB_DEBUG_HTTP` +
+  When set to `true` then log HTTP request contents.
 - `SECHUB_IGNORE_DEFAULT_EXCLUDES` +
   When set to `true` then default exclude folders `+{"**/test/**", "**/.git/**"}+` will be included for code scan. In this case, you should declare your own exclude list in the config json.
+- `SECHUB_INITIAL_WAIT_INTERVAL` +
+  Initial wait time (floating point number) until SecHub client polls the first time if the report is ready (`sechub scan`). Meant for local integration tests.
 - `SECHUB_KEEP_TEMPFILES` +
-  When set to `true` then .zip files for code scan will not be removed, so you can check, what was uploaded to the `{sechub}` server
+  When set to `true` then `sourcecode-<projectID>.zip` files for code scan will not be removed, so you can check, what was uploaded to the `{sechub}` server.
 - `SECHUB_WAITTIME_DEFAULT` +
-  Wait time in seconds (default 60). Will be used for automatic status checks etc. when action=`scan`.
-  Try to avoid setting it shorter than 60 seconds, because the load on the `{sechub}` server will be increased.
+  Maximum wait time in seconds (default 60). Will be used for automatic status checks etc. when action=`scan`.
 
 
 ==== Proxy support
@@ -444,9 +464,9 @@ sechub interactiveMarkFalsePositives
 \ `--.  ___  ___| |_| |_   _| |__  
  `--. \/ _ \/ __|  _  | | | | '_ \ 
 /\__/ /  __/ (__| | | | |_| | |_) |
-\____/ \___|\___\_| |_/\__,_|_.__/ Client Version 0.20.0-b78
+\____/ \___|\___\_| |_/\__,_|_.__/ Client Version 0.29.0-20220401111823
 
-Using latest report file "sechub_report_0a84899f-1305-41e0-a2d5-e7c31d6185fd.json".
+Using latest report file "sechub_report_mytestproject_0a84899f-1305-41e0-a2d5-e7c31d6185fd.json".
 ------------------------------------------------------------------
 1: Side Channel Data Leakage, severity: HIGH
 src/main/java/com/example/testapp/invoice/application/InvoiceApplicationService.java, line 651 column 17
@@ -481,7 +501,7 @@ sechub interactiveUnmarkFalsePositives
 \ `--.  ___  ___| |_| |_   _| |__
  `--. \/ _ \/ __|  _  | | | | '_ \
 /\__/ /  __/ (__| | | | |_| | |_) |
-\____/ \___|\___\_| |_/\__,_|_.__/ Client Version 0.20.0-b78
+\____/ \___|\___\_| |_/\__,_|_.__/ Client Version 0.29.0-20220401111823
 
 - Fetching false-positives list for project "mytestproject".
 ------------------------------------------------------------------
@@ -495,7 +515,7 @@ Do you want to remove this false positive? ('y' Yes, 'n' No, 's' Skip the rest, 
 ------------------------------------------------------------------
 Side Channel Data Leakage, codeScan severity: HIGH
   Origin: Finding ID 2 in job 0c86134c-2305-41e0-a2d5-e7c31df45d15
-  File: src/main/java/com/daimler/otr/invoice/application/ApplicationService.java
+  File: src/main/java/com/mercedesbenz/otr/invoice/application/ApplicationService.java
   Code:         Invoice invoice = getInvoice(invoiceId).orElseThrow(InvoiceNotFoundException::new);
 (Added by testuser at 2020-08-20 12:43:03; comment: "Another explanation example")
 ------------------------------------------------------------------

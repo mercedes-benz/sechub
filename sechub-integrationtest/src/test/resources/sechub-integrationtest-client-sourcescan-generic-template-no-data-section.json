@@ -1,0 +1,10 @@
+{
+    "apiVersion" : "{{ .SHTEST_VERSION }}" ,
+
+    "codeScan": {
+        "fileSystem": {
+            "folders": ["{{ .SHTEST_FOLDERS1 }}"]
+        }
+     }
+
+}

@@ -1,0 +1,25 @@
+{
+  "apiVersion" : "1.0",
+  "data" : {
+    "sources" : [ {
+      "name" : "open-api-file-reference",
+      "fileystem" : {
+        "files" : [ "gamechanger-webapp/src/main/resources/GeneratorTemplate.groovy" ]
+      }
+    } ]
+  },
+  "codeScan" : {
+    "fileSystem" : {
+      "folders" : [ "gamechanger-android/src/main/java", "gamechanger-server/src/main/java" ]
+    },
+    "excludes" : [ "**/mytestcode/**", "**/documentation/**" ],
+    "additionalFilenameExtensions" : [ ".cplusplus", ".py9" ],
+    "use" : [ "open-api-file-reference"]
+  },
+  "webScan" : {
+    "openApi" : {
+      "use" : [ "open-api-file-reference" ]
+    },
+    "url" : "https://productfailure.demo.example.org"
+  }
+}

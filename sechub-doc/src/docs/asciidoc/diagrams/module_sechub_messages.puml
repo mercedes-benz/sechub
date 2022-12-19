@@ -1,0 +1,29 @@
+' SPDX-License-Identifier: MIT
+@startuml
+
+package com.mercedesbenz.sechub.commons.model {
+    
+    enum SecHubMessageType {
+        ERROR
+        WARNING
+        INFO
+    }
+    
+    class SecHubMessage {
+        SecHubMessageType type
+        String text
+        
+    }
+    
+    class SecHubMessagesList {
+        <<JSONable>>
+        
+        List<SecHubMessage> getSecHubMessages()
+    }
+    
+
+}
+
+SecHubMessage o-- SecHubMessageType : has 
+SecHubMessagesList o-- SecHubMessage 
+@enduml 

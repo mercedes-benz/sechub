@@ -7,7 +7,7 @@ include::documents/gen/pds-version.adoc[]
 
 include::documents/config.adoc[]
 
-= image:sechub-logo.png[sechub] SecHub PDS Documentation
+= image:sechub-logo.png[link="{webPage}"] SecHub PDS Documentation
 
 == About
 include::documents/shared/about_sechub.adoc[]
@@ -24,6 +24,9 @@ include::documents/pds/about_pds.adoc[]
 :numbered:
 
 <<<<
+== Download
+include::documents/pds/pds_download.adoc[]
+
 == Concept
 include::documents/shared/concepts/concept_pds.adoc[]
 

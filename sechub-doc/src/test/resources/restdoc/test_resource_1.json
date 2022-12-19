@@ -1,0 +1,36 @@
+{
+  "operationId" : "adminDeletesUser",
+  "summary" : "Admin deletes a user",
+  "description" : "Admin deletes a user",
+  "privateResource" : false,
+  "deprecated" : false,
+  "request" : {
+    "path" : "/api/admin/user/{userId}",
+    "method" : "DELETE",
+    "contentType" : null,
+    "schema" : null,
+    "headers" : [ ],
+    "pathParameters" : [ {
+      "name" : "userId",
+      "attributes" : { },
+      "description" : "The userId of the user who shall be deleted",
+      "ignored" : false,
+      "type" : "STRING",
+      "optional" : false,
+      "default" : null
+    } ],
+    "requestParameters" : [ ],
+    "requestFields" : [ ],
+    "example" : null,
+    "securityRequirements" : null
+  },
+  "response" : {
+    "status" : 200,
+    "contentType" : null,
+    "schema" : null,
+    "headers" : [ ],
+    "responseFields" : [ ],
+    "example" : null
+  },
+  "tags" : [ "admin" ]
+}

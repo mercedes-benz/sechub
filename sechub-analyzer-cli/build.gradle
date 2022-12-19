@@ -6,28 +6,29 @@
  * ============================================================================
  */
 dependencies {
-	compile library.slf4j
-	compile library.logback_classic
-	compile library.apache_commons_cli
-	compile library.jackson_jr_all
-	compile library.google_re2j
+	implementation spring_boot_dependency.slf4j_api
+	implementation spring_boot_dependency.logback_classic
+	implementation library.apache_commons_cli
+	implementation library.jackson_jr_all
+	implementation library.google_re2j
 	
-	testCompile library.junit
-	testCompile library.mockito
-    testCompile library.hamcrest
+	testImplementation library.junit4
+	testImplementation spring_boot_dependency.mockito_core
+	testImplementation library.mockito_inline
+    testImplementation spring_boot_dependency.hamcrest
 }
 
 task buildAnalyzerCLI(type: Jar) {
     group 'sechub'
     description 'Builds the SecHub Analyzer CLI tool.'
-    baseName = 'analyzer'
+    archiveBaseName = 'analyzer'
     
 	manifest {
-        attributes 'Main-Class': 'com.daimler.sechub.analyzer.cli.SecHubAnalyzerApplication'
+        attributes 'Main-Class': 'com.mercedesbenz.sechub.analyzer.cli.SecHubAnalyzerApplication'
     }
 
     from { 
-    	configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } 
+    	configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } 
     }
 
     with jar

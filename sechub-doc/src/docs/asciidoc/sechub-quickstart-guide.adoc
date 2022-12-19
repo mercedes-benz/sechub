@@ -4,7 +4,7 @@ include::documents/gen/server-version.adoc[]
 
 include::documents/config.adoc[]
 
-= image:sechub-logo.png[sechub] SecHub Quickstart Guide
+= image:sechub-logo.png[link="{webPage}"] SecHub Quickstart Guide
 
 include::documents/shared/about_sechub.adoc[]
 
@@ -29,15 +29,15 @@ The following topics are covered:
 
 === Requirements
 
-* Java SDK
-* Go
+* Java JDK 11+
+* Go 1.16+
 * Git
 * cURL
 * jq
 
 [NOTE]
 --
-SecHub is compatible with Java 8 and will continue to do so. We aim to support all long term support versions (LTS) of the JDK: Java 8, 11 and 17 when released.
+Only long term support (LTS) versions of Java are supported.
 
 SecHub can be build and runs with https://openjdk.java.net/groups/hotspot/[OpenJDK Hotspot] and https://www.eclipse.org/openj9/[Eclipse OpenJ9].
 --
@@ -52,13 +52,15 @@ NOTE: Tested with Alpine Linux 3.12, 3.13 and 3.14.
 
 WARNING: Cross-compiling the SecHub client on Alpine Linux 3.11 does not work (Go version go1.13.13 linux/amd64). 
 
-==== Debian
+==== Debian/Ubuntu
 
 ----
 sudo apt install openjdk-11-jdk-headless golang git curl jq
 ----
 
-NOTE: Tested with Debian 10 "Buster".
+NOTE: Tested with Debian 10 "Buster", Ubuntu 18.04 "Bionic" and 20.04 "Focal" LTS.
+
+WARNING: If the version of your GoLang is below 1.15, please install a more recent version from https://go.dev/dl/[here], because you can't compile the executables.
 
 ==== Fedora and CentOS
 
@@ -68,14 +70,6 @@ sudo dnf install java-11-openjdk-devel golang git curl jq
 
 NOTE: Tested with Fedora 34 and CentOS 8.
 
-==== Ubuntu
-
-----
-sudo apt install openjdk-11-jdk-headless golang git curl jq
-----
-
-NOTE: Tested with Ubuntu 18.04 "Bionic" and 20.04 "Focal" LTS.
-
 === Instructions
 
 Let's start with:
@@ -84,7 +78,7 @@ Let's start with:
 +
 ----
 cd ~
-git clone https://github.com/Daimler/sechub.git
+git clone https://github.com/mercedes-benz/sechub.git
 cd sechub
 ----
 +
@@ -146,13 +140,13 @@ export SECHUB_SERVER=https://localhost:8443
 export SECHUB_USERID=int-test_superadmin
 export SECHUB_APITOKEN=int-test_superadmin-pwd
 export SECHUB_TRUSTALL=true
-export PATH="`pwd`/sechub-cli/build/go/platform/linux-amd64:`pwd`/sechub-developertools/scripts:$PATH"
+export PATH="$PATH:`pwd`/sechub-cli/build/go/platform/linux-amd64:`pwd`/sechub-developertools/scripts"
 ----
 
 . Test: List all users as administrator
 +
 [NOTE]
-`sechub-api.sh` is a helper Bash script based on `curl` that eases the use of the https://daimler.github.io/sechub/latest/sechub-restapi.html[SecHub server REST API]. We use it here to get a list of the users.
+`sechub-api.sh` is a helper Bash script based on `curl` that eases the use of the https://mercedes-benz.github.io/sechub/latest/sechub-restapi.html[SecHub server REST API]. We use it here to get a list of the users.
 +
 [source,bash]
 ----
@@ -199,16 +193,16 @@ WARNING: Configured to trust all - means unknown service certificate is accepted
 \ `--.  ___  ___| |_| |_   _| |__
  `--. \/ _ \/ __|  _  | | | | '_ \
 /\__/ /  __/ (__| | | | |_| | |_) |
-\____/ \___|\___\_| |_/\__,_|_.__/ Client Version 0.0.0-3e13084-dirty-20210622120507
+\____/ \___|\___\_| |_/\__,_|_.__/ Client Version 0.0.0-1ba48fa-dirty-20220426102342
 
-2021-06-22 13:26:24 (+02:00) Creating new sechub job
-2021-06-22 13:26:24 (+02:00) Zipping folder: . (/home/user/sechub)
-2021-06-22 13:26:25 (+02:00) Uploading source zip file
-2021-06-22 13:26:26 (+02:00) Approve sechub job
-2021-06-22 13:26:26 (+02:00) Waiting for job 7045e25f-592b-46bf-9713-c31995d37e99 to be done
+2022-04-26 10:33:34 (+02:00) Zipping folder: . (/home/user/sechub)
+2022-04-26 10:33:34 (+02:00) Creating new sechub job
+2022-04-26 10:33:34 (+02:00) Uploading source zip file
+2022-04-26 10:33:35 (+02:00) Approve sechub job
+2022-04-26 10:33:35 (+02:00) Waiting for job 2fbb0553-db8c-4edb-827e-afed282f4140 to be done
                              .
-2021-06-22 13:26:30 (+02:00) Fetching result (format=html) for job 7045e25f-592b-46bf-9713-c31995d37e99
-2021-06-22 13:26:30 (+02:00) SecHub report written to sechub_report_testproject_7045e25f-592b-46bf-9713-c31995d37e99.html
+2022-04-26 10:33:37 (+02:00) Fetching result (format=html) for job 2fbb0553-db8c-4edb-827e-afed282f4140
+2022-04-26 10:33:38 (+02:00) SecHub report written to sechub_report_testproject_2fbb0553-db8c-4edb-827e-afed282f4140.html
   GREEN - no severe security vulnerabilities identified
 ----
 +
@@ -218,7 +212,7 @@ You can open the SecHub report file in your browser.
 [NOTE]
 In order to scan, you need a `sechub.json` config file. In our case, it is already in the repository so we can use it right away. +
  +
-For real results, you have to define an 'execution profile' with a scanner (via a product adapter) attached. Assign it to your project and you get real results. Have a look at the https://daimler.github.io/sechub/latest/sechub-operations.html#section-initial-profile-and-executors[SecHub operations documentation] for details.
+For real results, you have to define an 'execution profile' with a scanner (via a product adapter) attached. Assign it to your project and you get real results. Have a look at the https://mercedes-benz.github.io/sechub/latest/sechub-operations.html#section-initial-profile-and-executors[SecHub operations documentation] for details.
 
 . Stop SecHub integration test server
 +

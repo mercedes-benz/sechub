@@ -1,0 +1,215 @@
+// SPDX-License-Identifier: MIT
+import groovy.time.TimeCategory
+import groovy.time.TimeDuration
+
+/* ============================================================================
+   This file contains tasks doing versioining
+   Also 'buildVersionFiles' is executed for EVERY gradle call, which is
+   necessary to have allways exact same version in scope, even when calling
+   multiple times. As long as code does not change it will be same version...
+   ============================================================================
+
+   Included from: "${rootProject.projectDir}/build.gradle"
+   ============================================================================
+ */
+
+/*
+ * We do always build the files. See description in headline comment.
+ */
+buildVersionFiles()
+
+allprojects{
+        // normal gradle build is for server so we use server image version
+        // go client uses generated version.go file for runtime info
+        project.version=VersionData.getServerVersion()
+}
+
+
+def buildVersionFiles(){
+    println("BUILD versioning")
+    def start = new Date()
+    // This file contains some logic for calculation of the version number
+
+    def gitTags = git.tag.list()
+
+    def commitTags = gitTags.findAll { it.commit == git.head()}
+    def versionCommitTags = commitTags.findAll {it.name.startsWith("v")}
+
+    // We use "v${major}.${minor}.${hotfix}-${type}" pattern for tag names
+    def serverVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-server") }
+    def clientVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-client") }
+    def pdsVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-pds") }
+    def pdsToolsVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-pds-tools") }
+    def librariesVersionCommitTag = versionCommitTags.find{ it.name.endsWith("-libraries") }
+
+    def unstagedChanges = git.status().unstaged
+    def stagedChanges = git.status().staged
+
+    def noUnstagedChanges = unstagedChanges.getAllChanges().isEmpty()
+    def noStagedChanges = stagedChanges.getAllChanges().isEmpty()
+    def hasChanged = !noUnstagedChanges || !noStagedChanges
+    def buildNumber= getBuildNr()
+
+    // ------------------------
+    // - Client
+    // ------------------------
+
+    // write version code for go client
+    String clientGoVersionTemplate = new File('./sechub-cli/src/mercedes-benz.com/sechub/cli/version.go.template').getText('UTF-8')
+    
+    def clientVersionInfo = VersionData.defineVersion("Client",buildVersionString(clientVersionCommitTag, hasChanged,buildNumber))
+    
+    String clientGoVersionCode = clientGoVersionTemplate.replaceAll("__version__",clientVersionInfo.getFullVersion())
+    def clientVersionFile = new File('./sechub-cli/src/mercedes-benz.com/sechub/cli/version.go')
+    clientVersionFile.write(clientGoVersionCode)
+
+    /* write version info also as asciidoc file*/
+    def clientVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/client-version.adoc')
+    clientVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: Client "+clientVersionInfo.getShortVersion()+"\n:longrevnumber: Client "+clientVersionInfo.getFullVersion()+"\n")
+
+    // ------------------------
+    // - Server
+    // ------------------------
+    def serverVersionInfo =  VersionData.defineVersion("Server",buildVersionString(serverVersionCommitTag, hasChanged,buildNumber))
+    
+     /* write version info also as asciidoc file*/
+    def serverVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/server-version.adoc')
+    serverVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: Server "+serverVersionInfo.getShortVersion()+"\n:longrevnumber: Server "+serverVersionInfo.getFullVersion()+"\n")
+
+    // ------------------------
+    // - PDS
+    // ------------------------
+    def pdsVersionInfo = VersionData.defineVersion("PDS",buildVersionString(pdsVersionCommitTag, hasChanged,buildNumber))
+     /* write version info also as asciidoc file*/
+    def pdsVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/pds-version.adoc')
+    pdsVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: PDS "+pdsVersionInfo.getShortVersion()+"\n:longrevnumber: PDS "+pdsVersionInfo.getFullVersion()+"\n")
+    
+    // ------------------------
+    // - PDS tools
+    // ------------------------
+    def pdsToolsVersionInfo = VersionData.defineVersion("PDS-Tools",buildVersionString(pdsToolsVersionCommitTag, hasChanged,buildNumber))
+
+    // ------------------------
+    // - Libraries
+    // ------------------------
+    def librariesVersionInfo =  VersionData.defineVersion("Libraries",buildVersionString(librariesVersionCommitTag, hasChanged,buildNumber))
+    
+
+    def stop = new Date()
+
+    println(serverVersionInfo.describe());
+    println(clientVersionInfo.describe());
+    println(pdsVersionInfo.describe())
+    println(librariesVersionInfo.describe())
+    println(pdsToolsVersionInfo.describe())
+    
+    TimeDuration td = TimeCategory.minus( stop, start )
+    println("- Time elapsed to build versions:"+td)
+}
+
+/**
+ * Builds version string. When commits are dirty they will be marked addtionally
+ * with "-dirty-$timestamp" so its clear there has been changes. commits having
+ * a dedicated version tag will lead to reduced version info, when no tag defined but
+ * only commit id version will be "0.0.0-$abreviatedCommitId"
+ * also build id is added. For local builds build number starts with l and continues
+ * with timestamp. Server builds will have a b and buildbumber
+ * Examples:
+ * <pre>
+ * All committed:
+ *     local
+ *           tag "v1.0.0-client" will be lead to "1.0.0-l20181108071705"
+ *           tag "v1.1.0-server" will be lead to "1.1.0-l20181108071705"
+ *
+ *           commit:"aebcd" will lead to "0.0.0-aebcd"
+ *      build server (BUILD_NUMBER set)
+ *           tag "v1.0.0-client" will be lead to "1.0.0-b123"
+ *           tag "v1.1.0-server" will be lead to "1.1.0-b123"
+ *
+ *           commit:"aebcd" will lead to "0.0.0-aebcd-b123"
+ *
+ *
+ * Additional change:
+ *      local (no BUILD_NUMBER set)
+ *           former tag "v1.0.0-client" will lead for example to "1.0.0-dirty-l1540999578066"
+ *           former commit:"aebcd" will lead for example to "0.0.0-aebcd-dirty-l1540999578066"
+ *      build server (BUILD_NUMBER set)
+ *           former tag "v1.0.0-client" will lead for example to "1.0.0-dirty-l1540999578066"
+ *           former commit:"aebcd" will lead for example to "0.0.0-aebcd-dirty-l1540999578066"
+ * </pre>
+ */
+def buildVersionString(commitTag, boolean hasChanged, buildNumber){
+    def calcversion = ""
+    if (commitTag == null) {
+        calcversion="0.0.0-${git.head().abbreviatedId}"
+    } else {
+        calcversion = commitTag.name - 'v'
+        // remove identifiers for server, client, ..
+        calcversion=calcversion-"-server"
+        calcversion=calcversion-"-client"
+
+    }
+    if (hasChanged){
+        calcversion="${calcversion}-dirty";
+    }
+    calcversion="${calcversion}-${buildNumber}";
+    return calcversion
+}
+
+def getBuildNr(){
+    if (getServerBuildNr()!=null){
+        return "b"+getServerBuildNr()
+    }else{
+        if (project.hasProperty('sechub.build.timestamp')){
+            if (project.getProperty('sechub.build.timestamp')=="false"){
+                return "latest"
+            }
+        }
+        return getLocalBuildNr()
+    }
+}
+
+def getServerBuildNr(){
+    return System.getenv('BUILD_NUMBER' )
+}
+
+def getLocalBuildNr() {
+    return new Date().format('yyyyMMddHHmmss')
+}
+
+
+/**
+ * Special task which just asserts situation is releaseable.
+ * Does check versions (pds, server, client ARE NOT containing "dirty" inside
+ */
+task assertReleaseable {
+    group = 'sechub'
+    
+    description = '''Asserts calculated versions do not contain a dirty flag inside. 
+                   (This should be called in releases after all artifact creations has nothing changed)'''
+
+    doLast {
+        /* we only assert at execution phase - means when this task is really executed and not only configured...*/
+        if (VersionData.isContainingAtLeastOneDirtyReleaseVersion()){
+            throw new IllegalStateException("At least one version was dirty and marked as a release!")
+        }
+        if (!VersionData.isContainingAtLeastOneRealReleaseVersion()){
+            throw new IllegalStateException("There is not at least one version defined which can be released! 0.0.0 is not an acceptable release version!")
+        }
+    }
+
+}
+
+subprojects{
+    /**
+     * Get the current version for the sub project.
+     * Usage: ./gradlew :eclipse-commons-model:getCurrentVersion
+     */
+    task getCurrentVersion {
+        doLast {
+            println "$project.name"
+            println "$project.version"
+        }
+    }
+}
+

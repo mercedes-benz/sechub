@@ -7,11 +7,13 @@
  */
 dependencies {
 
-    compile library.junit
-    compile library.mockito
-    compile library.hamcrest
-    compile library.slf4j
+    implementation library.junit4
+    implementation spring_boot_dependency.mockito_core
+    implementation library.mockito_inline
+    implementation spring_boot_dependency.hamcrest
+    implementation spring_boot_dependency.slf4j_api
 
-    compile library.wiremock
+    implementation library.wiremock
+    implementation library.apache_commons_io
 
 } 

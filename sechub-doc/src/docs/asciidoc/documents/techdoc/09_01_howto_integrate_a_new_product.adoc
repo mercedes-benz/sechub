@@ -27,8 +27,8 @@ use `EGradle -> Reimport`.
 
 ===== Rename packages
 - Use your IDE to rename package of the adapter so you have your own namespace - e.g.
-when using `com.daimler.sechub.adapter.netsparker` and you want to create an adapter
-for `hubabuba` you should rename the package to `com.daimler.sechub.adapter.hubabuba`.
+when using `com.mercedesbenz.sechub.adapter.netsparker` and you want to create an adapter
+for `hubabuba` you should rename the package to `com.mercedesbenz.sechub.adapter.hubabuba`.
 
 ===== Rename Classes
 - Use your IDE to rename classes, interfaces and enums. When you have copied project `Netsparker adapter`
@@ -70,7 +70,7 @@ be able to extract all necessary data from product results got from
 product executors and merge it into its own meta model. After this `Sereco` will provide a
 report which will be transmitted back to user request.
 
-So we have to write an product importer by implementing `com.daimler.sechub.sereco.importer.ProductResultImporter`.
+So we have to write an product importer by implementing `com.mercedesbenz.sechub.sereco.importer.ProductResultImporter`.
 Of course can use an existing importer as a template.
 
 ==== Adopt and write tests

@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: MIT
+[[section-concept-project-scan-configuration]]
+==== Project scan configuration
+
+A project scan configuration is represented by simple key value pairs inside 
+the database. Every {sechub} project has its own configuration entries.
+These entries are independant of used execution profile.
+
+
+ifdef::techdoc[]
+include::../configuration/project_scan_config_technical-details.adoc[]
+
+endif::techdoc[]

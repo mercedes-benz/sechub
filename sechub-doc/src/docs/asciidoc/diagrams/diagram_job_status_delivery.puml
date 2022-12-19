@@ -1,0 +1,24 @@
+' SPDX-License-Identifier: MIT
+@startuml
+
+hide empty fields
+hide empty methods
+
+class SchedulerGetJobStatusService
+class SchedulerRestController {
+    ScheduleJobStatus getJobStatus()
+}
+class ScheduleJobStatus{
+        + ScheduleJobStatus(ScheduleSecHubJob)
+}
+class ScheduleSecHubJob <<Entity>>{
+}
+
+SchedulerRestController  --> SchedulerGetJobStatusService : uses
+SchedulerRestController ..> ScheduleJobStatus : returns
+
+SchedulerGetJobStatusService --> ScheduleSecHubJob : reads
+SchedulerGetJobStatusService -> ScheduleJobStatus : creates + returns
+
+
+@enduml 

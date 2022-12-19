@@ -1,0 +1,70 @@
+// SPDX-License-Identifier: MIT
+package com.mercedesbenz.sechub.integrationtest.scenario2;
+
+import static com.mercedesbenz.sechub.integrationtest.api.AssertJob.*;
+import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
+import static com.mercedesbenz.sechub.integrationtest.scenario2.Scenario2.*;
+
+import java.util.UUID;
+
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.Timeout;
+
+import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestMockMode;
+import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
+import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
+
+public class SchedulerOnlyOneScanPerProjectStrategyScenario2IntTest {
+
+    @Rule
+    public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario2.class);
+
+    @Rule
+    public Timeout timeOut = Timeout.seconds(30);
+
+    /* +-----------------------------------------------------------------------+ */
+    /* +............................ Start scan job ...........................+ */
+    /* +-----------------------------------------------------------------------+ */
+
+    @Test
+    public void project1_job1_project1_job2_project2_job3__job3_is_executed_before_job2() {
+        /* @formatter:off */
+
+        /* prepare */
+
+        TestAPI.switchSchedulerStrategy("only-one-scan-per-project-at-a-time");
+
+        as(SUPER_ADMIN).
+            assignUserToProject(USER_1, PROJECT_1);
+
+        as(SUPER_ADMIN).
+            assignUserToProject(USER_1, PROJECT_2);
+
+        /* execute */
+        UUID project1job1 = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(PROJECT_1, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__4_SECONDS_WAITING);
+        UUID project1job2 = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(PROJECT_1, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__4_SECONDS_WAITING);
+        UUID project2job3 = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(PROJECT_2, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__4_SECONDS_WAITING);
+
+        /* test */
+        // check job1 is running
+        waitForJobRunning(PROJECT_1, project1job1);
+        assertJobIsRunning(PROJECT_1, project1job1);
+        assertJobHasNotRun(PROJECT_1, project1job2);
+
+        // check job 3 and job1 are running but not job2
+        waitForJobRunning(PROJECT_2, project2job3);
+        assertJobIsRunning(PROJECT_2, project2job3);
+        assertJobIsRunning(PROJECT_1, project1job1);
+
+        assertJobHasNotRun(PROJECT_1, project1job2); // not this job
+
+        // check job 3 is executed when job1 has finished
+        waitForJobDoneAndFailWhenJobIsFailing(PROJECT_1, project1job1);
+        waitForJobDoneAndFailWhenJobIsFailing(PROJECT_1, project1job2); // wait job3 has been done as well
+
+        TestAPI.switchSchedulerStrategy("first-come-first-serve");
+
+        /* @formatter:on */
+    }
+}

@@ -1,0 +1,413 @@
+// SPDX-License-Identifier: MIT
+
+:toc:
+:numbered:
+
+= Scancode + PDS
+
+https://github.com/nexB/scancode-toolkit[Scancode-Toolkit] is a free and open source license scanning tool. Scancode is a command line interface (CLI) tool. By combining Scancode with the SecHub https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)] in a container, Scancode can be used with SecHub. Another scenario is to use PDS + Scancode standalone.
+
+Furthermore, the combination of Scancode and PDS makes it possible to run both inside a Kubernetes cluser or virtual machines.
+
+This folder contains the necessary scripts to run PDS + Scancode inside a container locally. Additionally, it contains scripts to build and push the PDS + Scancode container to your container registry and a Helm chart to install and run PDS + Scancode in a Kubernetes cluster.
+
+== Run Locally
+
+This is the easiest way to get started.
+
+=== Requirements
+
+Docker and Docker-Compose need to be installed:
+
+. https://docs.docker.com/engine/install/[Install Docker]
+
+. Linux: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user[Use Docker as non Root user]
+
+. https://docs.docker.com/compose/install/[Install Docker-Compose]
+
+=== Single Instance
+
+Start a single instance by using the Bash wrapper script which does setup everything <<_automatic,automatically>>.
+
+----
+./01-start-docker-compose.sh
+----
+
+==== Together with SecHub
+
+The container will be started and attached to the `sechub` Network.
+
+WARNING: Make sure the SecHub container is running.
+
+. Start Scancode+PDS container:
++
+----
+./05-start-single-sechub-network-docker-compose.sh
+----
+
+[[scan]]
+=== Scan
+
+The steps required to scan with the PDS.
+
+. Set the environment variables
++
+----
+export PDS_SERVER=https://<pds-host>:<port>
+export PDS_USERID=admin
+export PDS_APITOKEN="<pds-admin-apitoken>"
+export PDS_PRODUCT_IDENTFIER=PDS_SCANCODE
+----
++
+For example:
++
+----
+export PDS_SERVER=https://localhost:8444
+export PDS_USERID=admin
+export PDS_APITOKEN="pds-apitoken"
+export PDS_PRODUCT_IDENTFIER=PDS_SCANCODE
+----
++
+[NOTE]
+Those values are the default values from `env-initial` and `env-cluster-initial` files. In case you run Scancode+PDS in Kubernetes or other environments those values will be different.
+
+. Scan by providing a `ZIP` folder with Go source code.
++
+----
+cd ../shared/
+./01-test.sh <path-to-zip-file>
+----
++
+For example:
++
+----
+cd ../shared/
+./01-test.sh ~/myproject.zip
+----
+
+=== Cluster
+
+The cluster is created locally via `docker-compose`.
+
+==== Shared Volume
+
+The cluster uses a shared volume defined in `docker-compose`. Docker allows to create volumes which can be used by multiple instances to upload files to. Reading, extracting and analysing the files is done in the PDS + Scancode container.
+
+The cluster consists of a PostgreSQL database, a Nginx loadbalancer and one or more PDS server.
+
+image::../shared/media/cluster_shared_volume.svg[Components of cluster with shared volume]
+
+===== Setup Script
+
+Starting several PDS + Scancode instances:
+
+----
+./50-start-multiple-docker-compose.sh <replicas>
+----
+
+Example of starting 3 PDS + Scancode instances:
+
+----
+./50-start-multiple-docker-compose.sh 3
+----
+
+==== Object Storage
+
+The cluster uses an object storage to store files. The cluster uses https://github.com/chrislusf/seaweedfs[SeaweedFS] (S3 compatible) to store files. The PDS instance(s) use the object storage to upload files to. Reading, extracting and analysing the files is done in the PDS + Scancode container.
+
+The cluster consists of a PostgreSQL database, a Nginx loadbalancer, a SeaweedFS object storage and one or more PDS server.
+
+image::../shared/media/cluster_object_storage.svg[Components of cluster with object storage]
+
+===== Setup Script
+
+Starting several PDS + Scancode instances
+
+----
+./51-start-multiple-object-storage-docker-compose.sh <replicas>
+----
+
+Example of starting 3 PDS + Scancode instances
+
+----
+./51-start-multiple-object-storage-docker-compose.sh 3
+----
+
+=== Change the Configuration
+
+There are several configuration options available for the PDS + Scancode `docker-compose` files. Have a look at `env-example` for more details.
+
+=== Troubleshooting
+
+This section contains information about how to troubleshoot PDS + Scancode if something goes wrong.
+
+==== Access the PDS+Scancode container
+
+----
+docker exec -it pds-scancode bash
+----
+
+==== Java Application Remote Debugging of PDS
+
+. Set `JAVA_ENABLE_DEBUG=true` in the `.env` file
+
+. Connect via remote debugging to the `pds`
++
+connect via CLI
+(see: )
++
+----
+jdb -attach localhost:15024
+----
++
+TIP: https://www.baeldung.com/java-application-remote-debugging[Java Application Remote Debugging] and https://www.tutorialspoint.com/jdb/jdb_basic_commands.htm[JDB - Basic Commands]
++
+or connect via IDE (e. g. Eclipse IDE, VSCodium, Eclipse Theia, IntelliJ etc.).
++
+TIP: https://www.eclipse.org/community/eclipse_newsletter/2017/june/article1.php[Debugging the Eclipse IDE for Java Developers]
+
+== Build Image and Push to Registry
+
+Build container images and push them to registry to run PDS + Scancode on virtual machines, Kubernetes or any other distributed system.
+
+=== Build Image
+
+Build the container image.
+
+==== Debian
+
+. Using the default image: 
++
+----
+./10-create-image.sh my.registry.example.org/sechub/pds_scancode v0.1
+----
+
+. Using your own base image:
++
+----
+./10-create-image.sh my.registry.example.org/sechub/pds_scancode v0.1 "my.registry.example.org/debian:11-slim"
+----
+
+=== Push Image to Registry
+
+Push the container image to a registry.
+
+* Push the version tag only
++
+----
+./20-push-image.sh my.registry.example.org/sechub/pds_scancode v0.1
+----
+
+* Push the version and `latest` tags
++
+----
+./20-push-image.sh my.registry.example.org/sechub/pds_scancode v0.1 yes
+----
+
+== Kubernetes
+
+https://kubernetes.io/[Kubernetes] is an open-source container-orchestration system. This sections explains how to deploy and run PDS + Scancode in Kubernetes.
+
+=== Helm
+
+https://helm.sh/[Helm] is a package manager for Kubernetes.
+
+==== Requirements
+
+* https://helm.sh/docs/intro/install/[Helm] installed
+* `pds_scancode` image pushed to registry
+
+==== Installation
+
+. Create a `myvalues.yaml` configuration file
++
+A minimal example configuration file with one instance:
++
+[source,yaml]
+----
+replicaCount: 1
+
+image:
+   registry: registry.app.corpintra.net/sechub/pds_scancode
+   tag: latest
+
+pds:
+   startMode: localserver
+
+users:
+   admin:
+      id: "admin"
+      apiToken: "{noop}<my-admin-password>"
+   technical:
+      id: "techuser"
+      apiToken: "{noop}<my-technical-password>"
+
+storage:
+    local:
+        enabled: true
+
+networkPolicy:
+    enabled: true
+    ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+                name: sechub-server
+        - podSelector:
+            matchLabels:
+                name: sechub-adminserver
+----
++
+An example configuration file with 3 replicas, postgresql and object storage:
++
+[source,yaml]
+----
+replicaCount: 3
+
+image:
+   registry: my.registry.example.org/pds_scancode
+   tag: latest
+
+pds:
+   startMode: localserver
+   keepContainerAliveAfterPDSCrashed: true
+
+users:
+   admin:
+      id: "admin"
+      apiToken: "{noop}<my-admin-password>"
+   technical:
+      id: "techuser"
+      apiToken: "{noop}<my-technical-password>"
+      
+
+database:
+    postgres:
+        enabled: true
+        connection: "jdbc:postgresql://<my-database-host>:<port>/<my-database>"
+        username: "<username-for-my-database>"
+        password: "<password-for-my-database>"
+
+storage:
+    local:
+        enabled: false
+    s3:
+        enabled: true
+        endpoint: "https://<my-s3-object-storage>:443"
+        bucketname: "<my-bucket>"
+        accesskey: "<my-accesskey>"
+        secretkey: "<my-secretkey>"
+
+networkPolicy:
+    enabled: true
+    ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+                name: sechub-server
+        - podSelector:
+            matchLabels:
+                name: sechub-adminserver
+----
++
+[TIP]
+To generate passwords use `tr -dc A-Za-z0-9 </dev/urandom | head -c 18 ; echo ''`, `openssl rand -base64 15`, `apg -MSNCL -m 15 -x 20` or `shuf -zer -n20  {A..Z} {a..z} {0..9}`.
+
+. Install helm package from file system
++
+----
+helm install --values myvalues.yaml pds-scancode helm/pds-scancode/
+----
++
+[TIP]
+Use `helm --namespace <my-namespace> install…` to install the helm chart into another namespace in the Kubernetes cluster.
+
+. List pods
++
+----
+kubectl get pods
+NAME                             READY   STATUS    RESTARTS   AGE
+pds-scancode-545f5bc8-7s6rh         1/1     Running   0          1m43s
+pds-scancode-545f5bc8-px9cs         1/1     Running   0          1m43s
+pds-scancode-545f5bc8-t52p6         1/1     Running   0          3m
+
+----
+
+. Forward port of one of the pods to own machine
++
+----
+kubectl port-forward pds-scancode-545f5bc8-7s6rh  8444:8444
+----
+
+. Scan as explained in <<scan>>.
+
+==== Upgrade
+
+In case, `my-values.yaml` was changed. Simply, use `helm upgrade` to update the deployment. `helm` will handle scaling up and down as well as changing the configuration.
+
+----
+helm upgrade --values my-values.yaml pds-scancode helm/pds-scancode/
+----
+
+==== Uninstall 
+
+. Helm list
++
+----
+helm list
+NAME     	NAMESPACE 	REVISION	UPDATED                                 	STATUS  	CHART                          	APP VERSION
+pds-scancode	my-namespace	1       	2022-03-01 19:54:37.668489822 +0200 CEST	deployed	pds-scancode-0.1.0                	0.25.0 
+----
+
+. Helm uninstall
++
+----
+helm uninstall pds-scancode
+----
+
+=== Troubleshooting
+
+* Access deployment events.
++
+----
+kubectl describe pod pds-scancode-545f5bc8-7s6rh
+…
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  1m    default-scheduler  Successfully assigned sechub-dev/pds-scancode-749fcb8d7f-jjqwn to kube-node01
+  Normal  Pulling    54s   kubelet            Pulling image "my.registry.example.org/sechub/pds_scancode:v0.1"
+  Normal  Pulled     40s   kubelet            Successfully pulled image "my.registry.example.org/sechub/pds_scancode:v0.1" in 13.815348799s
+  Normal  Created    15s   kubelet            Created container pds-scancode
+  Normal  Started    10s   kubelet            Started container pds-scancode
+----
+
+* Access container logs.
++
+----
+kubectl logs pds-scancode-545f5bc8-7s6rh
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.5.8)
+
+2022-03-01 18:56:52.820  INFO 6 --- [           main] d.s.p.ProductDelegationServerApplication : Starting ProductDelegationServerApplication using Java 11.0.13 on pds-scancode-865495cb96-jmt69 with PID 6 (/pds/sechub-pds-0.25.0.jar started by pds in /workspace)
+2022-03-01 18:56:52.822  INFO 6 --- [           main] d.s.p.ProductDelegationServerApplication : The following profiles are active: pds_localserver,pds_postgres
+2022-03-01 18:56:54.252  WARN 6 --- [           main] o.apache.tomcat.util.net.SSLHostConfig   : The protocol [TLSv1.3] was added to the list of protocols on the SSLHostConfig named [_default_]. Check if a +/- prefix is missing.
+2022-03-01 18:56:54.292  INFO 6 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2022-03-01 18:56:54.292  INFO 6 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.56]
+2022-03-01 18:56:54.335  INFO 6 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2022-03-01 18:56:54.513  INFO 6 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2022-03-01 18:56:54.756  INFO 6 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2022-03-01 18:56:57.278  INFO 6 --- [           main] c.d.s.p.storage.PDSMultiStorageService   : Created storage factory: AwsS3JobStorageFactory
+2022-03-01 18:56:57.297  INFO 6 --- [           main] c.d.s.p.m.PDSHeartBeatTriggerService     : Heartbeat service created with 1000 millisecondss initial delay and 60000 millisecondss as fixed delay
+2022-03-01 18:56:57.491  INFO 6 --- [           main] c.d.s.pds.batch.PDSBatchTriggerService   : Scheduler service created with 100 millisecondss initial delay and 500 millisecondss as fixed delay
+2022-03-01 18:56:58.556  INFO 6 --- [           main] d.s.p.ProductDelegationServerApplication : Started ProductDelegationServerApplication in 6.737 seconds (JVM running for 7.231)
+2022-03-01 18:56:59.573  INFO 6 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : Heartbeat will be initialized
+2022-03-01 18:56:59.573  INFO 6 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : Create new server hearbeat
+2022-03-01 18:56:59.616  INFO 6 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : heartbeat update - serverid:SCANCODE_TOOL_CLUSTER, heartbeatuuid:29496a24-66dc-48e9-8356-59cd482b9e0f, cluster-member-data:{"hostname":"pds-scancode-865495cb96-jmt69","ip":"192.168.129.8","port":8444,"heartBeatTimestamp":"2022-03-01T18:56:59.575232","executionState":{"queueMax":50,"jobsInQueue":0,"entries":[]}}
+----

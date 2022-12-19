@@ -10,27 +10,64 @@ apply plugin: 'org.asciidoctor.jvm.convert'
 apply plugin: 'org.asciidoctor.jvm.pdf'
 
 dependencies {
-    compile project(':sechub-server') // we want to expect server and all dependencies for documentation
-    compile project(':sechub-pds') // we want to expect pds and all dependencies for documentation
-    compile library.apache_commons_io
-    testCompile library.epages_restdoc_api_spec_mockmvc
-    testCompile project(':sechub-commons-model-testframework')
+    def wanted = []
+    def unwanted = [
+        'sechub-cli', /* go only, no library dependency here*/
+        'sechub-doc',/* itself ... */
+        'sechub-developertools',/* only tests or tools */
+        'sechub-other',/* not java */
+        'sechub-pds-solutions', /* only pds scripts*/
+        
+        ]
+    /* fetch all sub projects, except unwanted and all only used for testing */
+    for (Project inspectedProject: rootProject.allprojects){
+        if (rootProject.equals(inspectedProject)){
+            // root project is always not wanted
+            continue
+        }
+        def projectName = inspectedProject.name
+        if (projectName.endsWith('test')){
+            // test projects are always not wanted 
+            continue
+        }
+        if (projectName.endsWith('testframework')){
+            // testframework projects are always not wanted 
+            continue
+        }
+        if (unwanted.contains(projectName)){
+            // special unwanted - so inore 
+            continue
+        }
+        wanted << projectName
+        //println ">>$projectName"
+    }
+    /* all projects are added as implementation, so can be inspected by Reflections */
+    for (String wantedProjectName: wanted){
+        implementation project(":${wantedProjectName}") 
+    }
+    implementation library.apache_commons_io
+    
+    testImplementation library.epages_restdoc_api_spec_mockmvc
+    testImplementation project(':sechub-commons-model-testframework')
 
     /* next parts are necessary for rest doc generation in conjunction
        with reflection annoation scanning done wiht @UsecaseRestDoc
        the tests with restdoc are settled inside sechub-doc to have
        abbility to get inside gradle access to tests (each gradle project
        has normally only access to its own test classes... )*/
-    testCompile project(':sechub-testframework')
-    testCompile(library.springframework_restdocs)
-    testCompile(library.springframework_security_test)
+    testImplementation  project(':sechub-testframework')
+    testImplementation (library.springframework_restdocs)
+    testImplementation (library.springframework_security_test)
 }
 
 def targetAsciiDocGenFolder="${project.projectDir}/src/docs/asciidoc/documents/gen"
 def asciidocBuildDir="$buildDir/docs/asciidoc";
 def imagesBuildDir="$buildDir/docs/asciidoc/images";
-def convertedHTMLFolder = "${rootProject.projectDir}/build/sechubpages"
-def docsLatestFolder = "${rootProject.projectDir}/docs/latest"
+def finalHTMLDir = "$buildDir/docs/final-html"
+
+def clientVersion = VersionData.getClientVersion()
+def pdsVersion = VersionData.getPdsVersion()
+def serverVersion = VersionData.getServerVersion()
 
 task dropOldGeneratedAsciidoc(dependsOn: 'test'){
     doFirst {
@@ -45,7 +82,7 @@ task dropOldGeneratedAsciidoc(dependsOn: 'test'){
 task generateAsciidoc(type: JavaExec, dependsOn: 'dropOldGeneratedAsciidoc') {
 
 
-    main = 'com.daimler.sechub.docgen.AsciidocGenerator'
+    mainClass = 'com.mercedesbenz.sechub.docgen.AsciidocGenerator'
     args = ["${targetAsciiDocGenFolder}"]
     group = 'sechub'
     description = 'Starts asciidoc generator. Will generate planuml files and more'
@@ -78,7 +115,7 @@ asciidoctor {
     outputOptions {
         backends "html5", "pdf"
     
-    separateOutputDirs = false
+        separateOutputDirs = false
     }
 
     baseDir 'src/docs/asciidoc'
@@ -137,44 +174,21 @@ asciidoctor {
 
 asciidoctorj {
 
-    version = '2.0.0'
+    version = "${libraryVersion.asciidoctor_j}"
     
     // Enable jdiagram support (new way)
     // see https://asciidoctor.github.io/asciidoctor-gradle-plugin/development-3.x/user-guide/#diagram
     modules {
        diagram.use() 
-       diagram.version '1.5.16' 
+       diagram.version "${libraryVersion.asciidoctor_j_diagram}" 
     }
 }
 
-/* collector task for all documentation parts - but does NOT build anything, so suitable for build chain - for a documentation build from scratch
-   there exists another task: buildDoc which does all in one call*/
-task documentation(){
-     group 'sechub'
-     description 'This will generate asciidoctor documentation - but preconditions must be fulfilled (e.g. build, integrationtest, certificates)'
+task convertSecHubHTMLPages(type: Copy){
+    dependsOn asciidoctor
 
-     dependsOn 'generateAsciidoc'
-     dependsOn 'asciidoctor'
-
-     // see https://stackoverflow.com/questions/32907275/gradle-custom-task-which-runs-multiple-tasks
-     tasks.findByName('asciidoctor').mustRunAfter 'generateAsciidoc'
-}
-
-task buildDoc(type: Exec){
-         group 'sechub'
-         description 'This will build full documentation from scratch - will build, test ensure all dependencies are fulfilled before'
-
-         workingDir = "${rootProject.projectDir}"
-
-         commandLine = "./buildDoc"
-         
-}
-
-
-
-task convertSecHubPages(type: Copy){
-
-     /* Albert: Why those replace pattern stuff ?
+     /* Why those replace pattern stuff ?
+      * ----------------------------------
       * Because of PDF problems with rendered images, we were forced to use absolute image pathes so
       * PDF documented has got content inside (see build.gradle in sechub-doc for info)
       *
@@ -197,39 +211,62 @@ task convertSecHubPages(type: Copy){
          // remove absolute path...
          filter { line -> line.replaceAll("${replacePattern}", '') }
      }
-     into "${convertedHTMLFolder}"
+     into "${finalHTMLDir}"
 
      includeEmptyDirs = false
 }
 
-task docToPages(type: Copy){
+task copyImagesToFinalDir(type: Copy) {
+    dependsOn asciidoctor
+
+    from "${imagesBuildDir}"
+    into "${finalHTMLDir}/images"
+}
+
+task prepareFinalHTML {
+    dependsOn 'convertSecHubHTMLPages'
+    dependsOn 'copyImagesToFinalDir'
+}
+
+/* collector task for all documentation parts - but does NOT build anything, so suitable for build chain - for a documentation build from scratch
+   there exists another task: buildDoc which does all in one call*/
+task documentation(){
      group 'sechub'
-     description 'This will copy current documentation into sechub pages under /docs '
+     description 'This will generate asciidoctor documentation - but preconditions must be fulfilled (e.g. build, integrationtest, certificates)'
 
-     dependsOn 'convertSecHubPages'
+     dependsOn 'generateAsciidoc'
+     dependsOn 'asciidoctor'
+     dependsOn 'prepareFinalHTML'
 
-     into docsLatestFolder
-     from ("${convertedHTMLFolder}"){
-        include '*.html'
-     }
+     // see https://stackoverflow.com/questions/32907275/gradle-custom-task-which-runs-multiple-tasks
+     tasks.findByName('asciidoctor').mustRunAfter 'generateAsciidoc'
+     tasks.findByName('prepareFinalHTML').mustRunAfter 'asciidoctor'
+}
 
-     into ("images") {
-         from ("${imagesBuildDir}") {
-            exclude '**/*.md', '**/*.xml'
-         }
-     }
+task buildDoc(type: Exec){
+    group 'sechub'
+    description 'This will build full documentation from scratch - will build, test ensure all dependencies are fulfilled before'
 
+    workingDir = "${rootProject.projectDir}"
+
+    commandLine = "./buildDoc"         
+}
+
+task createDownloadLinks(type: Exec) {
+    group 'sechub'
+    description 'This creates the HTML code for direct download'
+    dependsOn 'documentation'
+
+    workingDir = "."
+    commandLine 'sh', '-c', "helperscripts/create-download-html.sh client ${clientVersion} > ${finalHTMLDir}/client-download.html ; helperscripts/create-download-html.sh pds ${pdsVersion} > ${finalHTMLDir}/pds-download.html ; helperscripts/create-download-html.sh server ${serverVersion} > ${finalHTMLDir}/server-download.html"
 }
 
 task "documentation-with-pages" {
-     group 'sechub'
-     description 'This will create documentation and setup sechub pages under /docs '
+    group 'sechub'
+    description 'This will create documentation and setup sechub pages under /docs '
 
-     dependsOn 'documentation'
-     dependsOn 'docToPages'
-
-     // see https://stackoverflow.com/questions/32907275/gradle-custom-task-which-runs-multiple-tasks
-     tasks.findByName('docToPages').mustRunAfter 'documentation'
+    dependsOn 'documentation'
+    dependsOn 'createDownloadLinks'
 }
 
 openapi3 {
@@ -262,7 +299,16 @@ task generateOpenapi() {
     	// - https://github.com/spring-projects/spring-restdocs/issues/505
     	// - https://github.com/ePages-de/restdocs-api-spec/issues/147
     	// 
-    	// to solve this issue, this task takes the OpenAPI file and adjust it
+    	// To solve this issue, this task takes the OpenAPI file and adjusts it.
+    	//
+    	// The steps are:
+    	//
+    	// 1. read in the generated OpenAPI file in `/sechub-doc/build/api-spec/openapi3.json`
+    	// 2. get the values which contain a `oneOf` element
+    	// 3. overwrite the `oneOf` with `string`
+    	// 4. write the modified JSON structure back into the generated OpenAPI 3 file
+    	//
+    	// This is not a clean solution, but it solves the problem.
     	
     	// Load JSON
     	def jsonSlurper = new JsonSlurper() 
@@ -285,7 +331,10 @@ task generateOpenapi() {
     	scanJobSchema.properties.infraScan.properties.uris.items = stringType
     	scanJobSchema.properties.infraScan.properties.ips.items = stringType
     	scanJobSchema.properties.codeScan.properties.fileSystem.properties.folders.items = stringType
-		scanJobSchema.properties.webScan.properties.uris.items = stringType
+    	scanJobSchema.properties.codeScan.properties.fileSystem.properties.files.items = stringType
+    	scanJobSchema.properties.codeScan.properties.use.items = stringType
+    	scanJobSchema.properties.webScan.properties.includes.items = stringType
+    	scanJobSchema.properties.webScan.properties.excludes.items = stringType
 		
 		def userDetailsSchema = jsonObject.components.schemas.UserDetails
 		userDetailsSchema.properties.projects.items = stringType
@@ -297,6 +346,15 @@ task generateOpenapi() {
     	
     	def executionProfileFetchSchema = jsonObject.components.schemas.ExecutionProfileFetch
     	executionProfileFetchSchema.properties.projectIds.items = stringType
+    	
+    	def listOfProjectsSchema = jsonObject.components.schemas.ListOfProjects
+    	listOfProjectsSchema.items = stringType
+    	
+    	def listOfUsersSchema = jsonObject.components.schemas.ListOfUsers
+    	listOfUsersSchema.items = stringType
+
+    	def projectWhiteListSchema = jsonObject.components.schemas.ProjectWhitelist
+    	projectWhiteListSchema.properties.whiteList.properties.uris.items=stringType
     	
     	// Write JSON
     	def json = JsonOutput.toJson(jsonObject)

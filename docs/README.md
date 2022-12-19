@@ -2,15 +2,14 @@
 # About
 
 ## What is this folder for?
-This folder is used for SecHub [GitHub pages](https://daimler.github.io/sechub/).
+This folder is used for [SecHub's GitHub Pages](https://mercedes-benz.github.io/sechub/).
  
+## How are GitHub Pages updated?
+The update is done by gradle task `documentation-with-pages`. The generated HTML documentation is in subfolder `latest/`.
 
-## Why is this folder empty?
-Only branch `documentation` contains data - so for all other branches this ignored by git.
+That gradle task is executed in job [Releases](https://github.com/mercedes-benz/sechub/actions/workflows/create-releases.yml).
 
-## How is github pages updated?
-After a release build has been done, the HTML documentation artifact content will be copied to a
-dedicated subfolder (currently we support only `latest`) in branch `documentation`. 
+In step 'update_release_documentation', only the relevant HTML and image files for the released product(s) will be copied to subfolder: `latest/`.
+(See `helperscripts/git-add-releasedocs.sh` for details.)
 
-After a push it will be available after a short while when jekyll has rebuild pages.
-
+The updated docs will be available after a short while when jekyll has rebuilt pages.

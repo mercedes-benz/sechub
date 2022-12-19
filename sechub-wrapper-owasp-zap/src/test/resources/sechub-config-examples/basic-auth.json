@@ -1,0 +1,14 @@
+{
+  "apiVersion" : "1.0",
+  "webScan" : {
+    "url" : "https://127.0.0.1:8080",
+    "login" : {
+      "url" : "https://127.0.0.1:8080/login",
+      "basic" : {
+        "realm" : "realm",
+        "user" : "user",
+        "password" : "password"
+      }
+    }
+  }
+}

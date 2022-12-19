@@ -12,6 +12,6 @@ plugins {
 dependencies {
    implementation project(':sechub-commons-model')
    
-   testImplementation library.junit5_impl
-   testRuntimeOnly library.junit5_runtime
+   testImplementation spring_boot_dependency.junit_jupiter
+   
 }
