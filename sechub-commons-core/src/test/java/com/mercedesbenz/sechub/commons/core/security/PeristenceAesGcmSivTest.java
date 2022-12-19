@@ -1,8 +1,6 @@
-package com.daimler.sechub.commons.core.security;
+package com.mercedesbenz.sechub.commons.core.security;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-import org.junit.jupiter.api.Test;
 
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -13,6 +11,8 @@ import javax.crypto.AEADBadTagException;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+
+import org.junit.jupiter.api.Test;
 
 public class PeristenceAesGcmSivTest {
     @Test
@@ -25,7 +25,7 @@ public class PeristenceAesGcmSivTest {
 
     @Test
     public void init_secret_32_bytes() throws InvalidKeyException {
-        String secret = Base64.getEncoder().encodeToString(repeatString("a", 32).getBytes());
+        String secret = Base64.getEncoder().encodeToString("a".repeat(32).getBytes());
         PeristenceAesGcmSiv crypto = PeristenceAesGcmSiv.init(secret);
 
         assertNotNull(crypto);
@@ -33,7 +33,7 @@ public class PeristenceAesGcmSivTest {
 
     @Test
     public void init_secret_16_bytes() throws InvalidKeyException {
-        String secret = Base64.getEncoder().encodeToString(repeatString("a", 16).getBytes());
+        String secret = Base64.getEncoder().encodeToString("a".repeat(16).getBytes());
         PeristenceAesGcmSiv crypto = PeristenceAesGcmSiv.init(secret);
 
         assertNotNull(crypto);
@@ -50,7 +50,7 @@ public class PeristenceAesGcmSivTest {
 
     @Test
     public void init_secret_secret_31_bytes_invalid() {
-        String secret = Base64.getEncoder().encodeToString(repeatString("a", 31).getBytes());
+        String secret = Base64.getEncoder().encodeToString("a".repeat(31).getBytes());
 
         assertThrows(InvalidKeyException.class, () -> {
             PeristenceAesGcmSiv.init(secret);
@@ -60,7 +60,7 @@ public class PeristenceAesGcmSivTest {
     @Test
     public void encrypt__aes_256() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
             IllegalBlockSizeException, BadPaddingException {
-        String secret = Base64.getEncoder().encodeToString(repeatString("w", 32).getBytes());
+        String secret = Base64.getEncoder().encodeToString("w".repeat(32).getBytes());
         String plainText = "bca";
         String expectedCipherText = "1qKKtEpM2ppl4wWrJxJo0MiFdw==";
         String b64InitializationVector = repeatStringBase64Encoded("i", PeristenceAesGcmSiv.IV_LENGTH_IN_BYTES);
@@ -70,31 +70,31 @@ public class PeristenceAesGcmSivTest {
 
         assertEquals(expectedCipherText, cipherText);
     }
-    
+
     @Test
-    public void encrypt__aes_256_initialization_vector_too_short() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
-            IllegalBlockSizeException, BadPaddingException {
-        String secret = Base64.getEncoder().encodeToString(repeatString("w", 32).getBytes());
+    public void encrypt__aes_256_initialization_vector_too_short() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException,
+            InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
+        String secret = Base64.getEncoder().encodeToString("w".repeat(32).getBytes());
         String plainText = "bca";
         String b64InitializationVector = repeatStringBase64Encoded("abc", 2);
 
         PeristenceAesGcmSiv crypto = PeristenceAesGcmSiv.init(secret);
-        
+
         Exception exception = assertThrows(InvalidAlgorithmParameterException.class, () -> {
             crypto.encrypt(plainText, b64InitializationVector);
         });
 
         assertEquals("Invalid nonce", exception.getMessage());
     }
-    
+
     @Test
     public void encrypt__aes_256_initialization_vector_too_long() throws InvalidKeyException, InvalidAlgorithmParameterException {
-        String secret = Base64.getEncoder().encodeToString(repeatString("w", 32).getBytes());
+        String secret = Base64.getEncoder().encodeToString("w".repeat(32).getBytes());
         String plainText = "bca";
         String b64InitializationVector = repeatStringBase64Encoded("abc", 50);
 
         PeristenceAesGcmSiv crypto = PeristenceAesGcmSiv.init(secret);
-        
+
         Exception exception = assertThrows(InvalidAlgorithmParameterException.class, () -> {
             crypto.encrypt(plainText, b64InitializationVector);
         });
@@ -105,7 +105,7 @@ public class PeristenceAesGcmSivTest {
     @Test
     public void decrypt__aes_256() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
             IllegalBlockSizeException, BadPaddingException {
-        String secret = Base64.getEncoder().encodeToString(repeatString("w", 32).getBytes());
+        String secret = Base64.getEncoder().encodeToString("w".repeat(32).getBytes());
         String expectedPlainText = "bca";
         String cipherText = "1qKKtEpM2ppl4wWrJxJo0MiFdw==";
         String b64InitializationVector = repeatStringBase64Encoded("i", PeristenceAesGcmSiv.IV_LENGTH_IN_BYTES);
@@ -144,10 +144,10 @@ public class PeristenceAesGcmSivTest {
 
         assertEquals(expectedPlainText, plainText);
     }
-    
+
     @Test
-    public void decrypt__aes_128_wrong_cipher_text() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
-            IllegalBlockSizeException, BadPaddingException {
+    public void decrypt__aes_128_wrong_cipher_text() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException,
+            InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
         String secret = repeatStringBase64Encoded("a", 16);
         String b64CipherText = Base64.getEncoder().encodeToString("hello world, this is base 64 encoded".getBytes());
         String b64InitializationVector = repeatStringBase64Encoded("i", PeristenceAesGcmSiv.IV_LENGTH_IN_BYTES);
@@ -157,7 +157,7 @@ public class PeristenceAesGcmSivTest {
         Exception exception = assertThrows(AEADBadTagException.class, () -> {
             crypto.decrypt(b64CipherText, b64InitializationVector);
         });
-        
+
         assertEquals("mac check failed", exception.getMessage());
     }
 
@@ -175,7 +175,7 @@ public class PeristenceAesGcmSivTest {
 
         assertEquals(expectedCipherText, cipherText);
     }
-    
+
     @Test
     public void encrypt__aes_256_long_text_with_emojis() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
@@ -190,7 +190,7 @@ public class PeristenceAesGcmSivTest {
 
         assertEquals(expectedCipherText, cipherText);
     }
-    
+
     @Test
     public void decrypt__aes_128_long_text_with_emojis() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
@@ -205,7 +205,7 @@ public class PeristenceAesGcmSivTest {
 
         assertEquals(expectedPlainText, plainText);
     }
-    
+
     @Test
     public void decrypt__aes_256_long_text_with_emojis() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
@@ -222,16 +222,6 @@ public class PeristenceAesGcmSivTest {
     }
 
     private String repeatStringBase64Encoded(String sequence, int times) {
-        return Base64.getEncoder().encodeToString(repeatString(sequence, times).getBytes());
-    }
-
-    private String repeatString(String sequence, int times) {
-        StringBuilder sb = new StringBuilder();
-
-        for (int i = 0; i < times; i++) {
-            sb.append(sequence);
-        }
-
-        return sb.toString();
+        return Base64.getEncoder().encodeToString((sequence.repeat(times)).getBytes());
     }
 }
