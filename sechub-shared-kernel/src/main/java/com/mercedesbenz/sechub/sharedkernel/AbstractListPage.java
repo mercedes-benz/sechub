@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sharedkernel;
 
 public abstract class AbstractListPage<T> implements ListPage<T> {

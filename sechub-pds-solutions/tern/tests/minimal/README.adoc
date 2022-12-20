@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 # Minimal image
 
 Extremely small image with a statically compiled binary.
