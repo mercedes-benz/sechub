@@ -70,12 +70,16 @@ import com.mercedesbenz.sechub.domain.schedule.access.ScheduleAccess;
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleAccess.ProjectAccessCompositeKey;
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleAccessRepository;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
+import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobInfoForUser;
+import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobInfoForUserListPage;
+import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobInfoForUserService;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfigurationValidator;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
+import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseUserListsJobsForProject;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserApprovesJob;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserChecksJobStatus;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserCreatesNewJob;
@@ -127,6 +131,9 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
 
     @MockBean
     private ScheduleAccessRepository mockedProjectRepository;
+
+    @MockBean
+    private SecHubJobInfoForUserService mockedJobInfoForUserService;
 
     private ScheduleAccess project1;
 
@@ -299,7 +306,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                         requestFields(
                                                 fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
                                                 fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URI).description("Webscan URI to scan for").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URL).description("Webscan URI to scan for").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_MAX_SCAN_DURATION+"."+WebScanDurationConfiguration.PROPERTY_DURATION).description("Duration of the scan as integer").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_MAX_SCAN_DURATION+"."+WebScanDurationConfiguration.PROPERTY_UNIT).description("Unit of the duration. Possible values are: millisecond(s), second(s), minute(s), hour(s), day(s)").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_INCLUDES+"[]").description("Include URL sub-paths to scan. Example: /hidden").optional(),
@@ -358,7 +365,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                         requestFields(
                                                 fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
                                                 fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URI).description("Webscan URI to scan for").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URL).description("Webscan URI to scan for").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN).description("Webscan login definition").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+".url").description("Login URL").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_BASIC).description("basic login definition").optional(),
@@ -450,7 +457,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                         requestFields(
                                             fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
     										fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
-    										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URI).description("Webscan URI to scan for").optional(),
+    										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URL).description("Webscan URI to scan for").optional(),
     										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN).description("Webscan login definition").optional(),
     										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+".url").description("Login URL").optional(),
     										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM).description("form login definition").optional(),
@@ -693,6 +700,75 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                           )
                             )
         		);
+
+        /* @formatter:on */
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseUserListsJobsForProject.class)
+    public void restDoc_userListsJobsForProject() throws Exception {
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildUserFetchesListOfJobsForProject(PROJECT_ID.pathElement(), SIZE.pathElement(), PAGE.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserListsJobsForProject.class;
+
+        SecHubJobInfoForUser job1 = new SecHubJobInfoForUser();
+        job1.setExecutionResult(ExecutionResult.OK);
+        job1.setExecutionState(ExecutionState.ENDED);
+
+        job1.setJobUUID(randomUUID);
+        job1.setCreated(LocalDateTime.now().minusMinutes(17));
+        job1.setStarted(LocalDateTime.now().minusMinutes(15));
+        job1.setEnded(LocalDateTime.now());
+        job1.setExecutedBy("User1");
+        job1.setTrafficLight(TrafficLight.GREEN);
+
+        SecHubJobInfoForUserListPage listPage = new SecHubJobInfoForUserListPage();
+        listPage.setPage(0);
+        listPage.setTotalPages(1);
+        List<SecHubJobInfoForUser> list = listPage.getContent();
+        list.add(job1);
+
+        when(mockedJobInfoForUserService.listJobsForProject(PROJECT1_ID, 1, 0)).thenReturn(listPage);
+
+        /* execute + test @formatter:off */
+        this.mockMvc.perform(
+                get(apiEndpoint, PROJECT1_ID,1,0).
+                    contentType(MediaType.APPLICATION_JSON_VALUE).
+                    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                ).
+                    andExpect(status().isOk()).
+                    andExpect(content().json("{page:0, totalPages:1, content:[{jobUUID:"+randomUUID.toString()+", executionState:ENDED, executionResult:OK, trafficLight:GREEN, executedBy:User1, executionState:ENDED}]}")).
+                    andDo(defineRestService().
+                            with().
+                                useCaseData(useCase).
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                                responseSchema(OpenApiSchema.PROJECT_JOB_LIST.getSchema()).
+                            and().
+                            document(
+                                         requestHeaders(
+                                            headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+                                         ),
+                                          pathParameters(
+                                            parameterWithName(PROJECT_ID.paramName()).description("The id of the project where job information shall be fetched for")
+                                          ),
+                                          requestParameters(
+                                              parameterWithName(SIZE.paramName()).optional().description("The wanted (maximum) size for the result set. When not defined, the default will be "+SchedulerRestController.DEFAULT_JOB_INFORMATION_SIZE),
+                                              parameterWithName(PAGE.paramName()).optional().description("The wanted page number. When not defined, the default will be "+SchedulerRestController.DEFAULT_JOB_INFORMATION_PAGE)
+                                          ),
+                                          responseFields(
+                                            fieldWithPath(SecHubJobInfoForUserListPage.PROPERTY_PAGE).description("The page number"),
+                                            fieldWithPath(SecHubJobInfoForUserListPage.PROPERTY_TOTAL_PAGES).description("The total pages available"),
+                                            fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_JOBUUID).description("The job uuid"),
+                                            fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_CREATED).description("Creation timestamp of job"),
+                                            fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_STARTED).description("Start timestamp of job execution"),
+                                            fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_ENDED).description("End timestamp of job execution"),
+                                            fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_EXECUTED_BY).description("User who initiated the job"),
+                                            fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_EXECUTION_STATE).description("Execution state of job"),
+                                            fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_EXECUTION_RESULT).description("Execution result of job"),
+                                            fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_TRAFFIC_LIGHT).description("Trafficlight of job - but only available when job has been done. Possible states are "+StringUtils.arrayToDelimitedString(TrafficLight.values(),", "))
+                                          )
+                            )
+                );
 
         /* @formatter:on */
     }

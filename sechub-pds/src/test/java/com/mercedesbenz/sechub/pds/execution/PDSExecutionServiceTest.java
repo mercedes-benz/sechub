@@ -27,23 +27,32 @@ import com.mercedesbenz.sechub.pds.job.PDSWorkspaceService;
 
 public class PDSExecutionServiceTest {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PDSExecutionServiceTest.class);
+    static final Logger LOG = LoggerFactory.getLogger(PDSExecutionServiceTest.class);
 
     private PDSExecutionService serviceToTest;
     private PDSJobRepository repository;
     private PDSExecutionCallableFactory executionCallableFactory;
     private PDSExecutionResult result1;
 
-    private PDSJobTransactionService updateService;
+    private PDSJobTransactionService jobTransactionService;
 
     private PDSWorkspaceService workspaceService;
+
+    private PDSExecutionCallableServiceCollection serviceCollection;
 
     @Before
     public void before() throws Exception {
         repository = mock(PDSJobRepository.class);
         executionCallableFactory = mock(PDSExecutionCallableFactory.class);
-        updateService = mock(PDSJobTransactionService.class);
+        jobTransactionService = mock(PDSJobTransactionService.class);
         workspaceService = mock(PDSWorkspaceService.class);
+
+        PDSCheckJobStatusService jobStatusService = mock(PDSCheckJobStatusService.class);
+
+        serviceCollection = mock(PDSExecutionCallableServiceCollection.class);
+        when(serviceCollection.getJobTransactionService()).thenReturn(jobTransactionService);
+        when(serviceCollection.getWorkspaceService()).thenReturn(workspaceService);
+        when(serviceCollection.getJobStatusService()).thenReturn(jobStatusService);
 
         result1 = new PDSExecutionResult();
 
@@ -51,8 +60,9 @@ public class PDSExecutionServiceTest {
         serviceToTest.watcherDisabled = true;
         serviceToTest.repository = repository;
         serviceToTest.executionCallableFactory = executionCallableFactory;
-        serviceToTest.updateService = updateService;
+        serviceToTest.jobTransactionService = jobTransactionService;
         serviceToTest.workspaceService = workspaceService;
+
     }
 
     @After
@@ -63,34 +73,6 @@ public class PDSExecutionServiceTest {
          */
         serviceToTest.workers.shutdownNow();
         serviceToTest.scheduler.shutdownNow();
-    }
-
-    private class TestPDSExecutionCallable extends PDSExecutionCallable {
-
-        private long waitMillis;
-        private PDSExecutionResult result;
-
-        public TestPDSExecutionCallable(UUID jobUUID, long waitMillis, PDSExecutionResult result) {
-            super(jobUUID, mock(PDSJobTransactionService.class), mock(PDSWorkspaceService.class), mock(PDSExecutionEnvironmentService.class),
-                    mock(PDSCheckJobStatusService.class), mock(PDSProcessAdapterFactory.class));
-            this.waitMillis = waitMillis;
-            this.result = result;
-        }
-
-        @Override
-        public PDSExecutionResult call() throws Exception {
-            long millis = waitMillis;
-            LOG.info("waiting {} ms-START", millis);
-            Thread.sleep(millis);
-            LOG.info("waiting {} ms-DONE", millis);
-            return result;
-        }
-
-        @Override
-        boolean prepareForCancel(boolean mayInterruptIfRunning) {
-            return true;
-        }
-
     }
 
     @Test
@@ -120,7 +102,9 @@ public class PDSExecutionServiceTest {
         serviceToTest.watcherDisabled = false; // enable watcher
         serviceToTest.postConstruct(); // simulate spring boot container...
         UUID uuid1 = UUID.randomUUID();
-        when(executionCallableFactory.createCallable(uuid1)).thenReturn(new TestPDSExecutionCallable(uuid1, 100, result1));
+
+        TestPDSExecutionCallable callable = createTestCallable(uuid1, 100, result1);
+        when(executionCallableFactory.createCallable(uuid1)).thenReturn(callable);
 
         /* execute */
         serviceToTest.addToExecutionQueueAsynchron(uuid1);
@@ -139,15 +123,19 @@ public class PDSExecutionServiceTest {
         serviceToTest.postConstruct(); // simulate spring boot container...
         UUID uuid1 = UUID.randomUUID();
         PDSJob job1 = PDSJobTestHelper.createTestJobStartedNowCreated3SecondsBefore(uuid1);
-        when(executionCallableFactory.createCallable(uuid1)).thenReturn(new TestPDSExecutionCallable(uuid1, 0, result1));
+        TestPDSExecutionCallable callable1 = createTestCallable(uuid1, 0, result1);
 
         UUID uuid2 = UUID.randomUUID();
         PDSJob job2 = PDSJobTestHelper.createTestJobStartedNowCreated3SecondsBefore(uuid2);
-        when(executionCallableFactory.createCallable(uuid2)).thenReturn(new TestPDSExecutionCallable(uuid2, 500, result1));
+        TestPDSExecutionCallable callable2 = createTestCallable(uuid2, 500, result1);
 
         UUID uuid3 = UUID.randomUUID();
         PDSJob job3 = PDSJobTestHelper.createTestJobStartedNowCreated3SecondsBefore(uuid3);
-        when(executionCallableFactory.createCallable(uuid3)).thenReturn(new TestPDSExecutionCallable(uuid3, 500, result1));
+        TestPDSExecutionCallable callable3 = createTestCallable(uuid3, 500, result1);
+
+        when(executionCallableFactory.createCallable(uuid1)).thenReturn(callable1);
+        when(executionCallableFactory.createCallable(uuid2)).thenReturn(callable2);
+        when(executionCallableFactory.createCallable(uuid3)).thenReturn(callable3);
 
         when(repository.findById(uuid1)).thenReturn(Optional.of(job1));
         when(repository.findById(uuid2)).thenReturn(Optional.of(job2));
@@ -206,6 +194,10 @@ public class PDSExecutionServiceTest {
 
         // no cancel event sent
         verify(workspaceService, never()).sendEvent(eq(job3.getUUID()), any());
+    }
+
+    private TestPDSExecutionCallable createTestCallable(UUID uuid, int nr, PDSExecutionResult result) {
+        return new TestPDSExecutionCallable(uuid, nr, result, serviceCollection);
     }
 
     private void assertQueueNoLongerAndNotTimedOut(int maxLoops, long timeToWaitInMillisPerLoop) throws InterruptedException {

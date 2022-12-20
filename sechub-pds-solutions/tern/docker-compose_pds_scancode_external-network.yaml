@@ -1,0 +1,24 @@
+# SPDX-License-Identifier: MIT
+
+version: "3"
+services:
+    pds-tern:
+        build:
+            args:
+                - BASE_IMAGE=${BASE_IMAGE}
+            context: docker/
+            dockerfile: Tern-Debian.dockerfile
+        container_name: pds-tern
+        hostname: pds-tern
+        privileged: true
+        env_file:
+            - .env
+            - .env-single
+        networks:
+            - "sechub"
+        volumes:
+            - ./docker/scripts:/scripts
+networks:
+    sechub:
+        external: true
+        name: "sechub"

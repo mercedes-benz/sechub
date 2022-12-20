@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: MIT
+
+= Common files
+
+Here are files used by multiple PDS solutions.
+
+This helps eliminating redundancy and maintenance of scripts and files.
+
+== Subdirectories
+
+* `docker/`: Commonly used Docker containers like database or load balancer
+* `environment/`: Commonly needed environment variables
+* `scripts/`: Commonly used shell scripts

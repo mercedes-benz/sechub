@@ -17,7 +17,7 @@
     },
     "webScan": {
         "unknownWebScan" : true,
-        "uri": "https://productfailure.demo.example.org",
+        "url": "https://productfailure.demo.example.org",
         "login": {
             "unknownLogin" : true,
             "url": "https://productfailure.demo.example.org/login",

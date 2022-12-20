@@ -4,9 +4,6 @@
 DEFAULT_PDS_MAX_FILE_UPLOAD_BYTES=52428800  # 50 MB
 DEFAULT_PDS_HEARTBEAT_LOGGING="true"
 
-# the . dot command is like the bash buid-in command `source`
-. "/run_additional.sh"
-
 JAVA_DEBUG_OPTIONS=""
 
 wait_loop() {
@@ -17,23 +14,12 @@ wait_loop() {
     done
 }
 
-debug() {
-    wait_loop
-}
-
-# Start with localserver settings 
-localserver () {
-    start_server "pds_localserver"
-}
-
 start_server() {
     profiles="$1"
 
     check_setup
 
     database_options=""
-    storage_options="-Dsechub.pds.storage.sharedvolume.upload.dir=$SHARED_VOLUME_UPLOAD_DIR"
-
     if [ "$POSTGRES_ENABLED" = true ]
     then
         echo "Using database: Postgres"
@@ -58,11 +44,11 @@ start_server() {
         echo "Object storage:"
         echo " * Endpoint: $S3_ENDPOINT"
         echo " * Bucketname: $S3_BUCKETNAME"
+    else
+        storage_options="-Dsechub.pds.storage.sharedvolume.upload.dir=$SHARED_VOLUME_UPLOAD_DIR"
     fi
 
-    # call the additional function in the run_additional.sh script
-    run_additional
-
+    echo "Starting the SecHub PDS server"
     # Regarding entropy collection:
     #   with JDK 8+ the "obscure workaround using file:///dev/urandom 
     #   and file:/dev/./urandom is no longer required."
@@ -137,7 +123,8 @@ fi
 
 if [ "$PDS_START_MODE" = "localserver" ]
 then
-    localserver
+    # Start with localserver settings
+    start_server "pds_localserver"
 else
-    debug
+    wait_loop
 fi

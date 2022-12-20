@@ -67,7 +67,7 @@ public abstract class AbstractAllowSecHubAPISecurityConfiguration extends WebSec
 			httpBasic()./* no login screen, just basic auth */
 		and().
 			headers().
-				contentSecurityPolicy("default-src 'none'");
+				contentSecurityPolicy("default-src 'none'; style-src 'unsafe-inline'");
 
  		/* @formatter:on */
     }

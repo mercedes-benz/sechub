@@ -186,6 +186,8 @@ task integrationtest(type: Test, dependsOn: startIntegrationTestInstances) {
    
    useJUnitPlatform() // we must enable this to execute Junit5 as well - even when already defined for task "test"
    
+   // we must set the gradle properties as system properties, so available inside test framework
+   systemProperties groovyPropertiesMap(['sechub.integrationtest.serverport', 'sechub.integrationtest.pdsport'])
    
    /*
     *  We must set the system property here - gradle does fork
@@ -194,7 +196,7 @@ task integrationtest(type: Test, dependsOn: startIntegrationTestInstances) {
     */
    systemProperty "sechub.integrationtest.running", "true"
    systemProperty "sechub.integrationtest.longrunning", "true"
-
+   
    finalizedBy "stopIntegrationTestInstances"
    
 

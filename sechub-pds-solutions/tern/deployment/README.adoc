@@ -1,0 +1,21 @@
+= Tern on VM
+
+== Install
+
+Copy this folder and it's content to a VM.
+
+== Run
+
+. Configure the Tern+PDS by copying `env` to `.env` and modify the values of the `.env` file.
+
+. To start the container:
++
+----
+./01-start-single-docker-compose.sh
+----
+
+. To stop the container:
++
+----
+./01-stop-single-docker-compose.sh
+----

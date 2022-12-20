@@ -21,8 +21,6 @@ import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import junit.framework.AssertionFailedError;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -57,6 +55,8 @@ import com.mercedesbenz.sechub.test.ExampleConstants;
 import com.mercedesbenz.sechub.test.PDSTestURLBuilder;
 import com.mercedesbenz.sechub.test.SecHubTestURLBuilder;
 import com.mercedesbenz.sechub.test.executionprofile.TestExecutionProfile;
+
+import junit.framework.AssertionFailedError;
 
 public class TestAPI {
 
@@ -103,6 +103,10 @@ public class TestAPI {
 
     public static final AsPDSUser asPDSUser(TestUser user) {
         return new AsPDSUser(user);
+    }
+
+    public static AssertUserJobInfo assertUserJobInfo(TestSecHubJobInfoForUserListPage page) {
+        return AssertUserJobInfo.assertInfo(page);
     }
 
     /**
@@ -695,7 +699,7 @@ public class TestAPI {
         SecHubTestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildGetFileUpload(project.getProjectId(), jobUUID.toString(), fileName);
         try {
-            File file = as(ANONYMOUS).downloadAsTempFileFromURL(url, jobUUID);
+            File file = as(ANONYMOUS).downloadAsTempFileFromURL(url, jobUUID, fileName);
             return file;
         } catch (HttpStatusCodeException e) {
             if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {

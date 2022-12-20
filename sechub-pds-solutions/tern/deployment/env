@@ -1,0 +1,28 @@
+# The base image to use
+# uncomment to use local image
+# IMAGE="pds-tern"
+IMAGE="ghcr.io/mercedes-benz/sechub/pds-tern:latest"
+
+PDS_START_MODE=localserver
+ADMIN_USERID=admin
+ADMIN_APITOKEN={noop}pds-apitoken
+TECHUSER_USERID=techuser
+TECHUSER_APITOKEN={noop}pds-apitoken
+JAVA_ENABLE_DEBUG=false
+KEEP_CONTAINER_ALIVE_AFTER_PDS_CRASHED=false
+
+# Default 10 GB
+PDS_UPLOAD_MAXIMUM_BYTES=10737418240
+
+# Enable S3 as object storage
+#   true - enabled
+#   false - disabled
+S3_ENABLED=false
+
+# The S3 endpoint
+S3_ENDPOINT=http://10.42.43.7:9000
+
+# The S3 bucket name
+S3_BUCKETNAME=example-bucket
+S3_ACCESSKEY=user
+S3_SECRETKEY=Why$5forThat?

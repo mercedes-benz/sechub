@@ -8,9 +8,6 @@ import java.util.Set;
 
 import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-
 import com.mercedesbenz.sechub.docgen.messaging.DomainMessagingFilesGenerator;
 import com.mercedesbenz.sechub.docgen.messaging.DomainMessagingModel;
 import com.mercedesbenz.sechub.docgen.messaging.UseCaseEventMessageLinkAsciidocGenerator;
@@ -28,6 +25,9 @@ import com.mercedesbenz.sechub.docgen.usecase.UseCaseRestDocModelAsciiDocGenerat
 import com.mercedesbenz.sechub.docgen.util.ClasspathDataCollector;
 import com.mercedesbenz.sechub.docgen.util.TextFileWriter;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
+
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 
 public class AsciidocGenerator implements Generator {
 
@@ -225,18 +225,6 @@ public class AsciidocGenerator implements Generator {
         String usecaseRestDoc = useCaseRestDocModelAsciiDocGenerator.generateAsciidoc(writer, restDocModel, true, UseCaseIdentifier.values());
         File targetFile2 = new File(context.documentsGenFolder, "gen_uc_restdoc.adoc");
         writer.save(targetFile2, usecaseRestDoc);
-
-        /* @formatter:off */
-		String usecaseRestDocUserDocumentation = useCaseRestDocModelAsciiDocGenerator.generateAsciidoc(writer, restDocModel, true,
-				UseCaseIdentifier.UC_SIGNUP,
-				UseCaseIdentifier.UC_USER_CREATES_JOB,
-				UseCaseIdentifier.UC_USER_APPROVES_JOB,
-				UseCaseIdentifier.UC_USER_GET_JOB_REPORT,
-				UseCaseIdentifier.UC_USER_GET_JOB_STATUS);
-		/* @formatter:on */
-        File targetFile3 = new File(context.documentsGenFolder, "gen_uc_websiteumentation_restdoc.adoc");
-        writer.save(targetFile3, usecaseRestDocUserDocumentation);
-
     }
 
     private void generatePDSUseCaseFiles(GenContext context) throws IOException {

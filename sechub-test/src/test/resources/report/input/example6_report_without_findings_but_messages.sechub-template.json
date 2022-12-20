@@ -1,0 +1,17 @@
+{
+  "jobUUID" : "__SECHUB_JOB_UUID__",
+  "trafficLight" : "OFF",
+  "result" : {
+    "count" : 0,
+    "findings" : [ ]
+  },
+  "status" : "FAILED",
+  "reportVersion" : "1.0",
+  "messages" : [ {
+    "type" : "ERROR",
+    "text" : "Job execution failed because of an internal problem!"
+  }, {
+    "type" : "WARNING",
+    "text" : "No results from a security product available for this job!"
+  } ]
+}

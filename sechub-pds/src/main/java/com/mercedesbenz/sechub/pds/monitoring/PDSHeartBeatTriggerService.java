@@ -69,7 +69,7 @@ public class PDSHeartBeatTriggerService {
         // show info about delay values in log (once)
         LOG.info("Heartbeat service created with {} millisecondss initial delay and {} millisecondss as fixed delay", infoInitialDelay, infoFixedDelay);
         if (!verboseHeartBeatLogging) {
-            LOG.info("Verbose hearbeat logging has been disabled");
+            LOG.info("Verbose heartbeat logging has been disabled");
         }
     }
 
