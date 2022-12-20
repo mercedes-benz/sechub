@@ -6,15 +6,20 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.rules.TemporaryFolder;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 
@@ -33,6 +38,37 @@ class OwaspZapProductMessageHelperTest {
     @AfterEach
     void afterEach() {
         testFolder.delete();
+    }
+
+    @Test
+    void empty_list_results_in_no_messages_written() throws IOException {
+        /* prepare */
+        List<SecHubMessage> emptyList = new ArrayList<>();
+
+        /* execute */
+        helperToTest.writeProductMessages(emptyList);
+
+        /* test */
+        File[] files = testFolder.getRoot().listFiles();
+        assertEquals(0, files.length, "No message file should be written!");
+    }
+
+    @Test
+    void write_urls_as_user_messages_is_succesfull() throws IOException {
+        /* prepare */
+        List<SecHubMessage> list = new ArrayList<>();
+        list.add(new SecHubMessage(SecHubMessageType.INFO, "https://localhost:3000/index.html"));
+        list.add(new SecHubMessage(SecHubMessageType.INFO, "https://localhost:3000/login.html"));
+        list.add(new SecHubMessage(SecHubMessageType.INFO, "https://localhost:3000/style.css"));
+        list.add(new SecHubMessage(SecHubMessageType.INFO, "https://localhost:3000/main.js"));
+        list.add(new SecHubMessage(SecHubMessageType.INFO, "https://localhost:3000/debug"));
+
+        /* execute */
+        helperToTest.writeProductMessages(list);
+
+        /* test */
+        File[] files = testFolder.getRoot().listFiles();
+        assertEquals(list.size(), files.length, "Not every message has got its own file!");
     }
 
     @ParameterizedTest
@@ -65,11 +101,11 @@ class OwaspZapProductMessageHelperTest {
         assertEquals(1, files.length, "Only one file should be created for each exception!");
 
         for (File file : files) {
-            verifyMessageContent(file, exitCode);
+            verifyMessageFileContent(file, exitCode);
         }
     }
 
-    private void verifyMessageContent(File file, ZapWrapperExitCode exitCode) throws IOException {
+    private void verifyMessageFileContent(File file, ZapWrapperExitCode exitCode) throws IOException {
         String messageContent = Files.readString(file.toPath());
         String errorMessage = "Product message had unexpected content!";
         switch (exitCode) {
@@ -77,8 +113,7 @@ class OwaspZapProductMessageHelperTest {
             assertEquals("Target url specified inside sechub config json was not reachable.", messageContent, errorMessage);
             break;
         case API_DEFINITION_CONFIG_INVALID:
-            assertEquals("The sechub config json was invalid. Please use a single file for API definitions inside the filesystem->files part.", messageContent,
-                    errorMessage);
+            assertEquals("Please use a single file for API definitions inside the filesystem->files part.", messageContent, errorMessage);
             break;
         case TARGET_URL_INVALID:
             assertEquals("Target url specified inside sechub config json was not a valid URL.", messageContent, errorMessage);

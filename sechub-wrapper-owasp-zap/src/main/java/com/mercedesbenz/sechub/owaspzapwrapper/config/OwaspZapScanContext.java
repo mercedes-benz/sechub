@@ -3,7 +3,10 @@ package com.mercedesbenz.sechub.owaspzapwrapper.config;
 
 import java.net.URI;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.auth.AuthenticationType;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.data.DeactivatedRuleReferences;
@@ -35,6 +38,8 @@ public class OwaspZapScanContext {
     private DeactivatedRuleReferences deactivatedRuleReferences;
 
     private Path apiDefinitionFile;
+
+    private List<SecHubMessage> productMessages = new ArrayList<>();
 
     private OwaspZapScanContext() {
     }
@@ -107,6 +112,21 @@ public class OwaspZapScanContext {
      */
     public Path getApiDefinitionFile() {
         return apiDefinitionFile;
+    }
+
+    public List<SecHubMessage> getProductMessages() {
+        return productMessages;
+    }
+
+    /**
+     * Add secHubMessage to list if it is not <code>null</code>
+     *
+     * @param secHubMessage
+     */
+    public void addProductMessage(SecHubMessage secHubMessage) {
+        if (secHubMessage != null) {
+            productMessages.add(secHubMessage);
+        }
     }
 
     public static OwaspZapBasicScanContextBuilder builder() {

@@ -41,6 +41,7 @@ public class OwaspZapWrapperCLI {
             }
             LOG.info("Starting the scan.");
             startExecution(scanContext);
+            productMessagehelper.writeProductMessages(scanContext.getProductMessages());
 
         } catch (ZapWrapperRuntimeException e) {
             LOG.error("Must exit with exit code {} because: {}.", e.getExitCode().getExitCode(), e.getMessage(), e);

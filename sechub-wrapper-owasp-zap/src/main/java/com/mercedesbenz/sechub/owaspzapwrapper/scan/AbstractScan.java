@@ -14,9 +14,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zaproxy.clientapi.core.ApiResponse;
 import org.zaproxy.clientapi.core.ApiResponseElement;
+import org.zaproxy.clientapi.core.ApiResponseList;
 import org.zaproxy.clientapi.core.ClientApi;
 import org.zaproxy.clientapi.core.ClientApiException;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanApiConfiguration;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
@@ -114,6 +117,8 @@ public abstract class AbstractScan implements OwaspZapScan {
         clientApi.spider.stop(scanId);
 
         LOG.info("For scan {}: Spider completed.", scanContext.getContextName());
+        List<ApiResponse> spiderResults = ((ApiResponseList) clientApi.spider.allUrls()).getItems();
+        updateUserMessagesWithScannedURLs(spiderResults);
         remainingScanTime = remainingScanTime - (System.currentTimeMillis() - startTime);
     }
 
@@ -326,6 +331,16 @@ public abstract class AbstractScan implements OwaspZapScan {
             // Failure should happen before getting here
             throw new ZapWrapperRuntimeException("For scan :" + scanContext.getContextName() + " Unknown API type was definied!",
                     ZapWrapperExitCode.API_DEFINITION_CONFIG_INVALID);
+        }
+    }
+
+    private void updateUserMessagesWithScannedURLs(List<ApiResponse> spiderResults) {
+        for (ApiResponse result : spiderResults) {
+            String url = result.toString();
+            if (url.contains("robots.txt") || url.contains("sitemap.xml")) {
+                continue;
+            }
+            scanContext.addProductMessage(new SecHubMessage(SecHubMessageType.INFO, url));
         }
     }
 
