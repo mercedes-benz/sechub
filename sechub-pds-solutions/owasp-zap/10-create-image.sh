@@ -14,6 +14,7 @@ Required: <base image> ; for example ghcr.io/mercedes-benz/sechub/pds-base:v0.32
 
 Additionally these environment variables can be defined:
 - OWASPZAP_VERSION - OWASP ZAP version to use. E.g. 2.11.1
+- OWASPZAP_WRAPPER_VERSION - Version of the PDS-OWASPZAP wrapper jar
 EOF
 }
 
