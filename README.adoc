@@ -1,0 +1,184 @@
+// SPDX-License-Identifier: MIT
+
+:toc:
+:toc-placement!:
+
+[link=https://github.com/mercedes-benz/sechub/actions?workflow=Java+%26+Go+CI]
+image::https://github.com/mercedes-benz/sechub/workflows/Java%20&%20Go%20CI/badge.svg[Build status]
+
+== SecHub
+
+image::sechub-doc/src/docs/asciidoc/images/sechub-logo.png["Eugen" - the SecHub mascot]
+
+The free and open-source security platform SecHub, provides a central API to test software with different security tools. Many free and open-source as well proprietary security tools are supported by SecHub.
+
+toc::[]
+
+////
+=== Getting Started
+
+link to getting started guide/tutorial
+////
+
+=== Introduction
+
+SecHub orchestrates various security and vulnerability scanners which can find potential vulnerabilities in the software under test. This enables security, development and operation teams to review and fix security issues. As a result, SecHub improves application security.
+
+The objective of SecHub is to help secure the software development lifecyle (SDLC) phases: development, deployment and maintenance. From the first written line of code to the application being in production. SecHub can be used to scan the software continuously in those phases.
+
+To reduce the cognitive load for the user, the security tools are categorized into modules. Modules are named after the security testing method they perform: `codeScan`, `webScan`, `infraScan` etc.
+
+The terms static application security testing (SAST) and dynamic application security testing (DAST) are intentionally not used for the module names, because the designers feel those terms are vague and difficult to understand for non-security experts. On the other hand, security experts can easily map: `codeScan` to SAST and `webScan` to DAST.
+
+Because of the modules, the user only needs to understand what security testing a `codeScan` performs, rather than to know what specific security tools are used for the actual scan. The user describes in a configuration file what module(s) to use. Or in other words, what to security testing method should be used to test the software with.
+
+To start a scan, the user sends the configuration file to the SecHub server via API. Even better, SecHub provides a client which calls the REST API for the user. The SecHub client can be used manually or can be integrated into a continues-integration build pipeline.
+
+On receiving the user request, SecHub creates a job, delegates it to the security tool, collects the result and converts it into a report. Next, the user can download the <<report,report>> in a JSON or HTML format.
+
+== User Perspective
+
+SecHub is designed to provide an efficient user workflow. The basic idea of SecHub is, that the user has to do as little as possible to execute a security scan.
+The user has two options either to use the REST API directly or to use the SecHub client. Both are suited to be integrated into a CI/CD pipeline. 
+
+Using the REST API requires several steps, which is fine if SecHub needs to be integrated into another software. 
+However, it is recommended to use the SecHub client, if the objective of the user is to: just scan.
+
+The SecHub client reduces the workflow to three steps:
+
+. Create a SecHub configuration file.
+. Provide the SecHub credentials.
+. Scan
+
+The first step only needs to be done once.
+
+Once the scan is finished, the client returns a <<report,report>>. If the client is used to scan asynchronously it will return a `jobUUID` which can be used to get the report.
+
+In general, the `jobUUID` can be used to download the report again and again by different users and in different formats.
+
+[[report]]
+== Report
+
+SecHub collects the scan results from various security tools and converts them into a unified reporting format. The advantage the user needs to learn only one report format.
+
+The report can be downloaded in to flavors: JSON and HTML. Both are human readable. The HTML report is self-contained and can be read in any browser. The JSON format is machine readable and can be read by the <<sechub-plugins, SecHub plugins>>.
+
+[[sechub-plugins]]
+=== SecHub Plugins
+
+The SecHub Plugins improve the user experience by enabling the user to work directly with the SecHub report in the IDE or text editor.
+
+SecHub plugins exist for the following text editors and IDEs:
+
+* https://marketplace.eclipse.org/content/sechub[Eclipse]
+* https://github.com/mercedes-benz/sechub-plugin-intellij[IntelliJ platttform]
+* https://open-vsx.org/extension/mercedes-benz/sechub[VSCode, VSCodium, Eclipse Theia]
+
+All plugins are free and open-source software (FOSS) and can be installed directly from within the IDE or text editors.
+
+== Modules
+
+Security tools are categorized into modules.
+
+Each module performs a different security testing method:
+
+* `codeScan` - scans the code for potential vulnerabilities (weaknesses). Also known as SAST or static source code analysis.
+* `webScan` - scans a deployed web application for vulnerabilities. Also knows as DAST.
+* `infraScan` - scans a infrastructure for vulnerabilities.
+* `licenseScan` - scans code or artifacts for license information.
+
+=== codeScan
+
+__Alias: Static application security testing (SAST), static code analysis, infrastructure-as-code (IaC) scan__
+
+The `codeScan` module scans source code or binary artifacts for potential vulnerabilities (weaknesses). To scan the user uploads the code or binary to SecHub. Once the files are uploaded, SecHub delegates the scan to one of many security tools.
+
+More details: https://mercedes-benz.github.io/sechub/latest/sechub-client.html#sechub-config-code-scan
+
+PDS-Solutions:
+
+* GoSec
+* PMD
+* FindSecurityBugs
+* Bandit
+* Checkmarx (wrapper only)
+* …
+
+=== webScan
+
+__Alias: Dynamic application security testing (DAST)__
+
+//- short description
+//- alias
+//- link to configuration example
+
+PDS-Solutions:
+
+* OWASP ZAP
+
+=== infraScan
+
+The `infraScan` scans systems in a network.
+
+//- short description
+//- alias
+//- link to configuration example
+//- example tools
+
+=== licenseScan
+
+//- short description
+//- alias
+//- link to configuration example
+//- example tools
+
+== Architecture
+
+SecHub is designed to execute hundreds of scans. It can scale horizontally and vertically. It can run on bare-metal, virtual machines, kubernetes or in the cloud.
+
+The smallest useful setup is: a single SecHub server and a single product delegation server (PDS). Those two components are enough to start scanning.
+
+For a larger setup, the number of SecHub server instances can be increased. More PDS instances can be added. The only requirements to scale SecHub are: a PostgreSQL database and an object store or file share.
+
+However, the user does not see any of the backend complexity, whether one SecHub server or many are used the workflow for the user is the same.
+
+For more details about the architecture have a look at the architecture documentation: https://mercedes-benz.github.io/sechub/latest/sechub-architecture.html.
+
+== Administrator Perspective
+
+The administrator has to do most of the work. The administrator of SecHub needs to configure the scan tools as well as manage users and projects. This is an intentional design choice. The idea is, that security experts, operations engineers and developers can just scan and therefore focus on their work, rather than take care of SecHub and security scanners.
+
+== Intended Usage
+
+SecHub represents a mechanism to integrate diverse security products like
+- static code analysis tools
+- web scanners
+- infrastructure scanners
+- ... maybe more in future
+
+by just using one simple API/client
+
+== Installation
+
+Please visit https://github.com/mercedes-benz/sechub/wiki/ for detailed information.
+
+== Contributing
+
+We welcome any contributions.
+If you want to contribute to this project, please read the link:CONTRIBUTING.md[contributing guide].
+
+== Code of Conduct
+
+Please read our https://github.com/mercedes-benz/foss/blob/master/CODE_OF_CONDUCT.md[Code of Conduct] as it is our base for interaction.
+
+== License
+
+This project is licensed under the link:LICENSE[MIT LICENSE].
+
+== Provider Information
+
+Please visit https://www.mercedes-benz-techinnovation.com/en/imprint/ for information on the provider.
+
+Notice: Before you use the program in productive use, please take all necessary precautions,
+e.g. testing and verifying the program with regard to your specific use.
+The program was tested solely for our own use cases, which might differ from yours.
