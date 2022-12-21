@@ -8,7 +8,7 @@ function log_step() {
     printf '\n>> %s\n' "$message"
 }
 
-options = ""
+options=""
 
 if [[ "$PDS_JOB_HAS_EXTRACTED_BINARIES" == "true" ]]
 then
