@@ -37,18 +37,20 @@ public class OwaspZapProductMessageHelper {
 
         switch (exitCode) {
         case TARGET_URL_NOT_REACHABLE:
-            productMessageSupport.writeMessage(new SecHubMessage(SecHubMessageType.ERROR, "Target URL not reachable. Please check if the target URL, specified inside SecHub configuration, is reachable."));
+            productMessageSupport.writeMessage(new SecHubMessage(SecHubMessageType.ERROR,
+                    "Target URL not reachable. Please check if the target URL, specified inside SecHub configuration, is reachable."));
             break;
         case API_DEFINITION_CONFIG_INVALID:
-            productMessageSupport.writeMessage(
-                    new SecHubMessage(SecHubMessageType.ERROR, "Only a single API file can be provided. Please use a single file for the API definition inside the filesystem->files section of the SecHub configuration."));
+            productMessageSupport.writeMessage(new SecHubMessage(SecHubMessageType.ERROR,
+                    "Only a single API file can be provided. Please use a single file for the API definition inside the filesystem->files section of the SecHub configuration."));
             break;
         case TARGET_URL_INVALID:
-            productMessageSupport
-                    .writeMessage(new SecHubMessage(SecHubMessageType.ERROR, "Target URL invalid. The target URL, specified inside SecHub configuration, is not a valid URL."));
+            productMessageSupport.writeMessage(new SecHubMessage(SecHubMessageType.ERROR,
+                    "Target URL invalid. The target URL, specified inside SecHub configuration, is not a valid URL."));
             break;
         case PRODUCT_EXECUTION_ERROR:
-            productMessageSupport.writeMessage(new SecHubMessage(SecHubMessageType.ERROR, "Product error. The DAST scanner OWASP ZAP ended with a product error."));
+            productMessageSupport
+                    .writeMessage(new SecHubMessage(SecHubMessageType.ERROR, "Product error. The DAST scanner OWASP ZAP ended with a product error."));
             break;
         // Other possible errors are caused by internal misconfigurations, which means
         // issues users cannot change/influence

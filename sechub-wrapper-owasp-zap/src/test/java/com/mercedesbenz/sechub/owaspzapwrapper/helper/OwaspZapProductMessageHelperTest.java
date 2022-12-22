@@ -110,10 +110,13 @@ class OwaspZapProductMessageHelperTest {
         String errorMessage = "Product message had unexpected content!";
         switch (exitCode) {
         case TARGET_URL_NOT_REACHABLE:
-            assertEquals("Target URL not reachable. Please check if the target URL, specified inside SecHub configuration, is reachable.", messageContent, errorMessage);
+            assertEquals("Target URL not reachable. Please check if the target URL, specified inside SecHub configuration, is reachable.", messageContent,
+                    errorMessage);
             break;
         case API_DEFINITION_CONFIG_INVALID:
-            assertEquals("Only a single API file can be provided. Please use a single file for the API definition inside the filesystem->files section of the SecHub configuration.", messageContent, errorMessage);
+            assertEquals(
+                    "Only a single API file can be provided. Please use a single file for the API definition inside the filesystem->files section of the SecHub configuration.",
+                    messageContent, errorMessage);
             break;
         case TARGET_URL_INVALID:
             assertEquals("Target URL invalid. The target URL, specified inside SecHub configuration, is not a valid URL.", messageContent, errorMessage);
