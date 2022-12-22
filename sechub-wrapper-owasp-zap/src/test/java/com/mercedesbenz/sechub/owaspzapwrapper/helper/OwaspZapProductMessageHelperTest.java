@@ -110,16 +110,16 @@ class OwaspZapProductMessageHelperTest {
         String errorMessage = "Product message had unexpected content!";
         switch (exitCode) {
         case TARGET_URL_NOT_REACHABLE:
-            assertEquals("Target url specified inside sechub config json was not reachable.", messageContent, errorMessage);
+            assertEquals("Target URL not reachable. Please check if the target URL, specified inside SecHub configuration, is reachable.", messageContent, errorMessage);
             break;
         case API_DEFINITION_CONFIG_INVALID:
-            assertEquals("Please use a single file for API definitions inside the filesystem->files part.", messageContent, errorMessage);
+            assertEquals("Only a single API file can be provided. Please use a single file for the API definition inside the filesystem->files section of the SecHub configuration.", messageContent, errorMessage);
             break;
         case TARGET_URL_INVALID:
-            assertEquals("Target url specified inside sechub config json was not a valid URL.", messageContent, errorMessage);
+            assertEquals("Target URL invalid. The target URL, specified inside SecHub configuration, is not a valid URL.", messageContent, errorMessage);
             break;
         case PRODUCT_EXECUTION_ERROR:
-            assertEquals("The DAST scanner OWASP ZAP ended because of a product error.", messageContent, errorMessage);
+            assertEquals("Product error. The DAST scanner OWASP ZAP ended with a product error.", messageContent, errorMessage);
             break;
         default:
             fail("Unsupported ZapWrapperExitCode, this should never occur!");
