@@ -3,13 +3,16 @@ package com.mercedesbenz.sechub.owaspzapwrapper.config;
 
 import java.net.URI;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.auth.AuthenticationType;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.data.DeactivatedRuleReferences;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.data.OwaspZapFullRuleset;
 
-public class OwaspZapScanConfiguration {
+public class OwaspZapScanContext {
     private OwaspZapServerConfiguration serverConfig;
     private boolean verboseOutput = false;
 
@@ -36,7 +39,9 @@ public class OwaspZapScanConfiguration {
 
     private Path apiDefinitionFile;
 
-    private OwaspZapScanConfiguration() {
+    private List<SecHubMessage> productMessages = new ArrayList<>();
+
+    private OwaspZapScanContext() {
     }
 
     public OwaspZapServerConfiguration getServerConfig() {
@@ -109,11 +114,26 @@ public class OwaspZapScanConfiguration {
         return apiDefinitionFile;
     }
 
-    public static OwaspZapBasicScanConfigurationBuilder builder() {
-        return new OwaspZapBasicScanConfigurationBuilder();
+    public List<SecHubMessage> getProductMessages() {
+        return productMessages;
     }
 
-    public static class OwaspZapBasicScanConfigurationBuilder {
+    /**
+     * Add secHubMessage to list if it is not <code>null</code>
+     *
+     * @param secHubMessage
+     */
+    public void addProductMessage(SecHubMessage secHubMessage) {
+        if (secHubMessage != null) {
+            productMessages.add(secHubMessage);
+        }
+    }
+
+    public static OwaspZapBasicScanContextBuilder builder() {
+        return new OwaspZapBasicScanContextBuilder();
+    }
+
+    public static class OwaspZapBasicScanContextBuilder {
         private OwaspZapServerConfiguration serverConfig;
 
         private boolean verboseOutput = false;
@@ -141,78 +161,78 @@ public class OwaspZapScanConfiguration {
 
         private Path apiDefinitionFile;
 
-        public OwaspZapBasicScanConfigurationBuilder setServerConfig(OwaspZapServerConfiguration serverConfig) {
+        public OwaspZapBasicScanContextBuilder setServerConfig(OwaspZapServerConfiguration serverConfig) {
             this.serverConfig = serverConfig;
             return this;
         }
 
-        public OwaspZapBasicScanConfigurationBuilder setVerboseOutput(boolean verboseOutput) {
+        public OwaspZapBasicScanContextBuilder setVerboseOutput(boolean verboseOutput) {
             this.verboseOutput = verboseOutput;
             return this;
         }
 
-        public OwaspZapBasicScanConfigurationBuilder setAjaxSpiderEnabled(boolean ajaxSpiderEnabled) {
+        public OwaspZapBasicScanContextBuilder setAjaxSpiderEnabled(boolean ajaxSpiderEnabled) {
             this.ajaxSpiderEnabled = ajaxSpiderEnabled;
             return this;
         }
 
-        public OwaspZapBasicScanConfigurationBuilder setActiveScanEnabled(boolean activeScanEnabled) {
+        public OwaspZapBasicScanContextBuilder setActiveScanEnabled(boolean activeScanEnabled) {
             this.activeScanEnabled = activeScanEnabled;
             return this;
         }
 
-        public OwaspZapBasicScanConfigurationBuilder setReportFile(Path reportFile) {
+        public OwaspZapBasicScanContextBuilder setReportFile(Path reportFile) {
             this.reportFile = reportFile;
             return this;
         }
 
-        public OwaspZapBasicScanConfigurationBuilder setContextName(String contextName) {
+        public OwaspZapBasicScanContextBuilder setContextName(String contextName) {
             this.contextName = contextName;
             return this;
         }
 
-        public OwaspZapBasicScanConfigurationBuilder setTargetUri(URI targetUri) {
+        public OwaspZapBasicScanContextBuilder setTargetUri(URI targetUri) {
             this.targetUri = targetUri;
             return this;
         }
 
-        public OwaspZapBasicScanConfigurationBuilder setAuthenticationType(AuthenticationType authenticationType) {
+        public OwaspZapBasicScanContextBuilder setAuthenticationType(AuthenticationType authenticationType) {
             this.authenticationType = authenticationType;
             return this;
         }
 
-        public OwaspZapBasicScanConfigurationBuilder setMaxScanDurationInMillis(long maxScanDurationInMillis) {
+        public OwaspZapBasicScanContextBuilder setMaxScanDurationInMillis(long maxScanDurationInMillis) {
             this.maxScanDurationInMillis = maxScanDurationInMillis;
             return this;
         }
 
-        public OwaspZapBasicScanConfigurationBuilder setSecHubWebScanConfiguration(SecHubWebScanConfiguration secHubWebScanConfiguration) {
+        public OwaspZapBasicScanContextBuilder setSecHubWebScanConfiguration(SecHubWebScanConfiguration secHubWebScanConfiguration) {
             this.secHubWebScanConfiguration = secHubWebScanConfiguration;
             return this;
         }
 
-        public OwaspZapBasicScanConfigurationBuilder setProxyInformation(ProxyInformation proxyInformation) {
+        public OwaspZapBasicScanContextBuilder setProxyInformation(ProxyInformation proxyInformation) {
             this.proxyInformation = proxyInformation;
             return this;
         }
 
-        public OwaspZapBasicScanConfigurationBuilder setFullRuleset(OwaspZapFullRuleset fullRuleset) {
+        public OwaspZapBasicScanContextBuilder setFullRuleset(OwaspZapFullRuleset fullRuleset) {
             this.fullRuleset = fullRuleset;
             return this;
         }
 
-        public OwaspZapBasicScanConfigurationBuilder setDeactivatedRuleReferences(DeactivatedRuleReferences deactivatedRuleReferences) {
+        public OwaspZapBasicScanContextBuilder setDeactivatedRuleReferences(DeactivatedRuleReferences deactivatedRuleReferences) {
             this.deactivatedRuleReferences = deactivatedRuleReferences;
             return this;
         }
 
-        public OwaspZapBasicScanConfigurationBuilder setApiDefinitionFile(Path apiDefinitionFile) {
+        public OwaspZapBasicScanContextBuilder setApiDefinitionFile(Path apiDefinitionFile) {
             this.apiDefinitionFile = apiDefinitionFile;
             return this;
         }
 
-        public OwaspZapScanConfiguration build() {
-            OwaspZapScanConfiguration owaspZapBasicScanConfiguration = new OwaspZapScanConfiguration();
+        public OwaspZapScanContext build() {
+            OwaspZapScanContext owaspZapBasicScanConfiguration = new OwaspZapScanContext();
             owaspZapBasicScanConfiguration.serverConfig = this.serverConfig;
             owaspZapBasicScanConfiguration.verboseOutput = this.verboseOutput;
             owaspZapBasicScanConfiguration.ajaxSpiderEnabled = this.ajaxSpiderEnabled;

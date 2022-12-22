@@ -7,23 +7,23 @@ import org.zaproxy.clientapi.core.ApiResponse;
 import org.zaproxy.clientapi.core.ClientApi;
 import org.zaproxy.clientapi.core.ClientApiException;
 
-import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanConfiguration;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanContext;
 
 public class UnauthenticatedScan extends AbstractScan {
 
     private static final Logger LOG = LoggerFactory.getLogger(UnauthenticatedScan.class);
 
-    public UnauthenticatedScan(ClientApi clientApi, OwaspZapScanConfiguration scanConfig) {
-        super(clientApi, scanConfig);
+    public UnauthenticatedScan(ClientApi clientApi, OwaspZapScanContext scanContext) {
+        super(clientApi, scanContext);
     }
 
     @Override
     protected void runSpider() throws ClientApiException {
-        String contextName = scanConfig.getContextName();
+        String contextName = scanContext.getContextName();
         String subTreeOnly = "true";
         String recurse = "true";
         String maxChildren = null;
-        String targetUrlAsString = scanConfig.getTargetUriAsString();
+        String targetUrlAsString = scanContext.getTargetUriAsString();
         LOG.info("For scan {}: Starting Spider.", contextName);
         /* @formatter:off */
 		ApiResponse responseSpider = clientApi.spider.scan(
@@ -40,9 +40,9 @@ public class UnauthenticatedScan extends AbstractScan {
     protected void runAjaxSpider() throws ClientApiException {
         String inScope = "true";
         String subTreeOnly = "true";
-        String contextName = scanConfig.getContextName();
-        String targetUrlAsString = scanConfig.getTargetUriAsString();
-        LOG.info("For scan {}: Starting AjaxSpider.", scanConfig.getContextName());
+        String contextName = scanContext.getContextName();
+        String targetUrlAsString = scanContext.getTargetUriAsString();
+        LOG.info("For scan {}: Starting AjaxSpider.", scanContext.getContextName());
         /* @formatter:off */
 		ApiResponse responseAjaxSpider = clientApi.ajaxSpider.scan(
 				targetUrlAsString,
@@ -55,13 +55,13 @@ public class UnauthenticatedScan extends AbstractScan {
 
     @Override
     protected void runActiveScan() throws ClientApiException {
-        String targetUrlAsString = scanConfig.getTargetUriAsString();
+        String targetUrlAsString = scanContext.getTargetUriAsString();
         String inScopeOnly = "true";
         String recurse = "true";
         String scanPolicyName = null;
         String method = null;
         String postData = null;
-        LOG.info("For scan {}: Starting ActiveScan.", scanConfig.getContextName());
+        LOG.info("For scan {}: Starting ActiveScan.", scanContext.getContextName());
         /* @formatter:off */
 		ApiResponse responseActive = clientApi.ascan.scan(
 				targetUrlAsString,
