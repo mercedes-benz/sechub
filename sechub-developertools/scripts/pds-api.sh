@@ -49,7 +49,7 @@ EOF
 
 function curl_with_pds_auth {
   # Don't reveal secrets in the curl process
-  printf "user = $PDS_USERID:$PDS_APITOKEN\n" | curl -K - $CURL_PARAMS "$@"
+  printf "user = $PDS_USERID:$PDS_APITOKEN\n" | curl --config - $CURL_PARAMS "$@"
 }
 
 function check_parameter {

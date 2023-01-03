@@ -93,7 +93,7 @@ EOF
 
 function curl_with_sechub_auth {
   # Don't reveal secrets in the curl process
-  printf "user = $SECHUB_USERID:$SECHUB_APITOKEN\n" | curl -K - $CURL_PARAMS "$@"
+  printf "user = $SECHUB_USERID:$SECHUB_APITOKEN\n" | curl --config - $CURL_PARAMS "$@"
 }
 
 function are_you_sure {
