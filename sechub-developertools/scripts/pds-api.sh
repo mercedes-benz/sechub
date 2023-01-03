@@ -47,6 +47,11 @@ export PDS_APITOKEN="pds-apitoken"
 EOF
 }
 
+function curl_with_pds_auth {
+  # Don't reveal secrets in the curl process
+  printf "user = $PDS_USERID:$PDS_APITOKEN\n" | curl -K - $CURL_PARAMS "$@"
+}
+
 function check_parameter {
   param="$1"
   if [ -z "${!param}" ] ; then
@@ -62,52 +67,52 @@ function check_alive {
 function mark_job_ready_to_start {
   local jobUUID=$1
 
-  curl $CURL_AUTH $CURL_PARAMS -i -X PUT --header "Accept: application/json" --header "Content-Type: application/json" "$PDS_SERVER/api/job/$jobUUID/mark-ready-to-start" | $RESULT_FILTER | $JSON_FORMATTER
+  curl_with_pds_auth -i -X PUT --header "Accept: application/json" --header "Content-Type: application/json" "$PDS_SERVER/api/job/$jobUUID/mark-ready-to-start" | $RESULT_FILTER | $JSON_FORMATTER
 }
 
 function job_status {
   local jobUUID=$1
 
-  curl $CURL_AUTH $CURL_PARAMS -i -X GET --header "Accept: application/json" "$PDS_SERVER/api/job/$jobUUID/status" | $RESULT_FILTER | $JSON_FORMATTER
+  curl_with_pds_auth -i -X GET --header "Accept: application/json" "$PDS_SERVER/api/job/$jobUUID/status" | $RESULT_FILTER | $JSON_FORMATTER
 }
 
 function job_result {
   local jobUUID=$1
 
-  curl $CURL_AUTH $CURL_PARAMS -X GET --header "Accept: application/json" "$PDS_SERVER/api/job/$jobUUID/result"
+  curl_with_pds_auth -X GET --header "Accept: application/json" "$PDS_SERVER/api/job/$jobUUID/result"
   echo ""
 }
 
 function job_messages {
   local jobUUID=$1
 
-  curl $CURL_AUTH $CURL_PARAMS -X GET --header "Accept: application/json" "$PDS_SERVER/api/job/$jobUUID/messages"
+  curl_with_pds_auth -X GET --header "Accept: application/json" "$PDS_SERVER/api/job/$jobUUID/messages"
   echo ""
 }
 
 function job_stream_output {
   local jobUUID=$1
 
-  curl $CURL_AUTH $CURL_PARAMS -X GET --header "Accept: text/plain" "$PDS_SERVER/api/admin/job/$jobUUID/stream/output"
+  curl_with_pds_auth -X GET --header "Accept: text/plain" "$PDS_SERVER/api/admin/job/$jobUUID/stream/output"
   echo ""
 }
 
 function job_stream_error {
   local jobUUID=$1
 
-  curl $CURL_AUTH $CURL_PARAMS -X GET --header "Accept: text/plain" "$PDS_SERVER/api/admin/job/$jobUUID/stream/error"
+  curl_with_pds_auth -X GET --header "Accept: text/plain" "$PDS_SERVER/api/admin/job/$jobUUID/stream/error"
   echo ""
 }
 
 function monitoring_status {
-  curl $CURL_AUTH $CURL_PARAMS -X GET --header "Accept: application/json" "$PDS_SERVER/api/admin/monitoring/status" | $RESULT_FILTER | $JSON_FORMATTER
+  curl_with_pds_auth -X GET --header "Accept: application/json" "$PDS_SERVER/api/admin/monitoring/status" | $RESULT_FILTER | $JSON_FORMATTER
 }
 
 function create_job {
   local productId=$1
   local sechubJobUUID=$2
 
-  curl $CURL_AUTH $CURL_PARAMS -i -X POST --header "Content-Type: application/json" \
+  curl_with_pds_auth -i -X POST --header "Content-Type: application/json" \
     --data "$(generate_pds_job_data $sechubJobUUID $productId)" \
     "$PDS_SERVER/api/job/create" | $RESULT_FILTER | $JSON_FORMATTER
 }
@@ -115,7 +120,7 @@ function create_job {
 function create_job_from_json {
   local json_file=$1
 
-  curl $CURL_AUTH $CURL_PARAMS -i -X POST --header "Content-Type: application/json" \
+  curl_with_pds_auth -i -X POST --header "Content-Type: application/json" \
     --data "@$json_file" \
     "$PDS_SERVER/api/job/create" | $RESULT_FILTER | $JSON_FORMATTER
 }
@@ -153,7 +158,7 @@ function upload {
   local checkSum=$(sha256sum "$file_to_upload" | cut --delimiter=' ' --fields=1)
   local fileSize=$(ls -l "$file_to_upload" | cut --delimiter=' ' --fields 5)
 
-  curl $CURL_AUTH $CURL_PARAMS -i -X POST \
+  curl_with_pds_auth -i -X POST \
     --header "Content-Type: multipart/form-data" \
     --header "x-file-size: $fileSize" \
     --form "file=@$file_to_upload" \
@@ -235,8 +240,6 @@ for parameter in PDS_SERVER PDS_USERID PDS_APITOKEN ; do
   check_parameter "$parameter"
 done
 
-AUTH="$PDS_USERID:$PDS_APITOKEN"
-CURL_AUTH="-u $AUTH"
 CURL_PARAMS="--silent --insecure --show-error"
 
 action="$1" && shift
