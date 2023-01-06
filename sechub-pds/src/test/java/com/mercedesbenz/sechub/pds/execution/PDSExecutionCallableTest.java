@@ -110,6 +110,7 @@ class PDSExecutionCallableTest {
         PDSExecutionCallableServiceCollection serviceCollection = mock(PDSExecutionCallableServiceCollection.class);
         when(serviceCollection.getEnvironmentService()).thenReturn(environmentService);
         when(serviceCollection.getJobStatusService()).thenReturn(jobStatusService);
+        when(serviceCollection.getPdsGetJobStreamService()).thenReturn(pdsGetJobStreamService);
         when(serviceCollection.getJobTransactionService()).thenReturn(jobTransactionService);
         when(serviceCollection.getProcessAdapterFactory()).thenReturn(processAdapterFactory);
         when(serviceCollection.getWorkspaceService()).thenReturn(workspaceService);
