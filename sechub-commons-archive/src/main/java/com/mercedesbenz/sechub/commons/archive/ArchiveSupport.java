@@ -190,10 +190,14 @@ public class ArchiveSupport {
                 continue;
             }
             if (!data.isAccepted()) {
+                LOG.debug("Filtering: {}", name);
+
                 continue;
             }
             if (data.isPathChangeWanted()) {
                 name = data.getChangedPath();
+
+                LOG.debug("Path changed to: {}", name);
 
                 if (name == null) {
                     throw new IllegalStateException("Wanted path is null - cannot be handled!");

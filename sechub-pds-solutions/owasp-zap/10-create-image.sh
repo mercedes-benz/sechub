@@ -14,6 +14,7 @@ Required: <base image> ; for example ghcr.io/mercedes-benz/sechub/pds-base:v0.32
 
 Additionally these environment variables can be defined:
 - OWASPZAP_VERSION - OWASP ZAP version to use. E.g. 2.11.1
+- OWASPZAP_WRAPPER_VERSION - Version of the PDS-OWASPZAP wrapper jar
 EOF
 }
 
@@ -48,6 +49,11 @@ if [[ ! -z "$OWASPZAP_VERSION" ]] ; then
 
   echo ">> OWASP-ZAP sha256sum: $OWASPZAP_SHA256SUM"
   BUILD_ARGS+=" --build-arg OWASPZAP_SHA256SUM=$OWASPZAP_SHA256SUM"
+fi
+
+if [[ ! -z "$OWASPZAP_WRAPPER_VERSION" ]] ; then
+    echo ">> Owasp Zap Wrapper version: $OWASPZAP_WRAPPER_VERSION"
+    BUILD_ARGS+=" --build-arg OWASPZAP_WRAPPER_VERSION=$OWASPZAP_WRAPPER_VERSION"
 fi
 
 docker build --pull --no-cache $BUILD_ARGS \

@@ -31,7 +31,6 @@ class PDSResilientRetryExecutorTest {
             @Override
             public void throwException(String message, Exception cause) throws TestTargetException {
                 throw new TestTargetException(message, cause);
-
             }
 
         };
@@ -164,11 +163,60 @@ class PDSResilientRetryExecutorTest {
     }
 
     @Test
-    void when_runtime_exception_is_defined_as_handled_a_illegal_state_exception__happening_1_times_but_5_retry_execution_is_done() throws Exception {
+    void when_3_times_is_max_and_always_failing_final_failed_exception_is_thrown() throws Exception {
         /* prepare */
-        PDSResilientRetryExecutor<TestTargetException> executorToTest = new PDSResilientRetryExecutor<>(5, thrower, RuntimeException.class);
+        PDSResilientRetryExecutor<TestTargetException> executorToTest = new PDSResilientRetryExecutor<>(3, thrower, IllegalArgumentException.class);
         AtomicInteger executionCount = new AtomicInteger();
 
+        /* execute */
+        assertThrows(TestTargetException.class, () -> {
+            executorToTest.execute(() -> {
+                executionCount.incrementAndGet();
+                throw new IllegalArgumentException("Just for test", null);
+
+            }, "id1");
+        });
+
+        /* test */
+        assertEquals(4, executionCount.get()); // 1 normal , 3 retries ...
+
+    }
+
+    @Test
+    void when_runtime_exception_is_defined_as_handled_a_illegal_state_exception__happening_1_times_but_5_retry_execution_is_done_waittime_0() throws Exception {
+        /* prepare */
+        int allowedMinimumMillisecondsForExecution = 0;
+        int allowedMaximumMillisecondsForExecution = 30;
+
+        PDSResilientRetryExecutor<TestTargetException> executorToTest = new PDSResilientRetryExecutor<>(5, thrower, RuntimeException.class);
+
+        /* execute */
+        assertSecondAttemptDoneInExpectedTimeRange(executorToTest, allowedMinimumMillisecondsForExecution, allowedMaximumMillisecondsForExecution);
+
+    }
+
+    @Test
+    void when_runtime_exception_is_defined_as_handled_a_illegal_state_exception__happening_1_times_but_5_retry_execution_is_done_waittime_40ms()
+            throws Exception {
+        /* prepare */
+        int waitTime = 40;
+        int allowedMinimumMillisecondsForExecution = 40;
+        int allowedMaximumMillisecondsForExecution = 70;
+
+        PDSResilientRetryExecutor<TestTargetException> executorToTest = new PDSResilientRetryExecutor<>(5, thrower, RuntimeException.class);
+        executorToTest.setMilliSecondsToWaiBeforeRetry(waitTime);
+
+        /* execute */
+        assertSecondAttemptDoneInExpectedTimeRange(executorToTest, allowedMinimumMillisecondsForExecution, allowedMaximumMillisecondsForExecution);
+
+    }
+
+    private void assertSecondAttemptDoneInExpectedTimeRange(PDSResilientRetryExecutor<TestTargetException> executorToTest, int min, int max)
+            throws TestTargetException {
+        /* prepare */
+        AtomicInteger executionCount = new AtomicInteger();
+
+        long start = System.currentTimeMillis();
         /* execute */
         String result = executorToTest.execute(() -> {
             if (executionCount.incrementAndGet() < 2) { // fail on first only
@@ -177,10 +225,19 @@ class PDSResilientRetryExecutorTest {
             return "my-result";
 
         }, "id1");
+        long end = System.currentTimeMillis();
+
         /* test */
         assertEquals(2, executionCount.get());
         assertEquals("my-result", result);
 
+        long elapsed = end - start;
+        if (elapsed < min) {
+            fail("Elapsed time: " + elapsed + " is lower than min: " + min);
+        }
+        if (elapsed > max) {
+            fail("Elapsed time: " + elapsed + " is bigger than max: " + min);
+        }
     }
 
 }

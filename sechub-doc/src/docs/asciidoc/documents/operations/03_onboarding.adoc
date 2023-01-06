@@ -16,7 +16,7 @@ NOTE: Registration process of new users is done by rest API call, for details
 
 . Create a new project inside {sechub} by REST API (or tool)+
 .. At least the project owner must be set
-.. If you do not define any white list URIs there, no web scans or
+.. If you do not define any white list URLs there, no web scans or
    infrastructure scans can be executed! +
    Check if requested white list entries are really valid for the project and do not belong to another project or
    organization.

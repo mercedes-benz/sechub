@@ -76,13 +76,19 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
             PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED,
             "When 'true' the PDS adapter script used by the job will have the information and can use this information when it comes to remote operations.")
                     .markSendToPDS().markAsAvailableInsideScript().markDefaultRecommended().withDefault(false)),
-    /**
-     * Can describe supported data types.
-     */
+
     PDS_CONFIG_SUPPORTED_DATATYPES(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SUPPORTED_DATATYPES,
             "Can be " + SecHubDataConfigurationType.SOURCE + ", " + SecHubDataConfigurationType.BINARY + ", " + SecHubDataConfigurationType.NONE
                     + " or a combination as a comma separated list. This data should"
                     + "normally not be defined via a default value of an optional PDS configuration parameter.").markSendToPDS()),
+
+    PDS_CONFIG_JOBSTORAGE_READ_RESILIENCE_RETRIES_MAX(
+            new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_JOBSTORAGE_READ_RESILIENCE_RETRIES_MAX,
+                    "Defines the maximum amount of retries done when a job storage read access is failing").markSendToPDS()),
+
+    PDS_CONFIG_JOBSTORAGE_READ_RESILIENCE_RETRY_WAIT_SECONDS(
+            new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_JOBSTORAGE_READ_RESILIENCE_RETRY_WAIT_SECONDS,
+                    "Defines the time to wait in seconds before the next retry is done (when it comes to storage READ problems)").markSendToPDS()),
 
     /**
      * Contains product timeout information

@@ -15,4 +15,8 @@ public class PDSDefaultParameterValueConstants {
     public static final int MAXIMUM_CONFIGURABLE_TIME_TO_WAIT_FOR_PRODUCT_IN_MINUTES = 60 * 24 * 3; // 3 days...
     public static final int MINIMUM_CONFIGURABLE_TIME_TO_WAIT_FOR_PRODUCT_IN_MINUTES = 1; // 1 minute...
 
+    public static final int DEFAULT_JOBSTORAGE_READ_RESILIENCE_RETRY_WAIT_SECONDS = 10;
+
+    public static final int DEFAULT_JOBSTORAGE_READ_RESILIENCE_RETRIES_MAX = 3;
+
 }

@@ -45,8 +45,9 @@ spec:
                       value: "{{ .Values.zap.apiKey }}"
                     - name: PDS_CONFIG_EXECUTE_QUEUE_MAX
                       value: "{{ .Values.pds.config.execute.queueMax }}"
+                    # Only one scan in parallel possible per pds-owaspzap instance
                     - name: PDS_CONFIG_EXECUTE_WORKER_THREAD_COUNT
-                      value: "{{ .Values.pds.config.execute.workerThreadCount }}"
+                      value: "1"
                     - name: ZAP_PROXY_HOST
                       value: "{{ .Values.zap.proxy.host }}"
                     - name: ZAP_PROXY_PORT
@@ -81,6 +82,11 @@ spec:
                     - name: DATABASE_PASSWORD
                       value: "{{ .Values.database.postgres.password }}"
                     {{- end }}
+                    # limit database connection pool to one
+                    - name: SPRING_DATASOURCE_HIKARI_MINIMUMIDLE
+                      value: "1"
+                    - name: SPRING_DATASOURCE_HIKARI_MAXIMUMPOOLSIZE
+                      value: "1"
 
                     # Storage priority in order: local, s3, shared volume
                     # Meaning if local is enabled local will be used,

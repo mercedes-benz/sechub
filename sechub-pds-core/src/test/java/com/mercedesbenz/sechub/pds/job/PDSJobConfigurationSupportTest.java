@@ -43,6 +43,78 @@ class PDSJobConfigurationSupportTest {
     }
 
     @ParameterizedTest
+    @ValueSource(ints = { 1, 2, 100, 1200 })
+    void job_storage_read_resilience_retries_max_is_using_default_when_no_configured_job_parameter(int defaultValue) {
+        /* execute */
+        int result = supportToTest.getJobStorageReadResilienceRetriesMax(defaultValue);
+
+        /* test */
+        assertEquals(defaultValue, result);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 1, 2, 100, 1200 })
+    void job_storage_read_resilience_retry_wait_seconds_is_using_default_when_no_configured_job_parameter(int defaultValue) {
+        /* execute */
+        int result = supportToTest.getJobStorageReadResiliencRetryWaitSeconds(defaultValue);
+
+        /* test */
+        assertEquals(defaultValue, result);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 1, 2, 100 })
+    void job_storage_read_resilience_retries_max_is_using_configured_job_parameter(int expectedValue) {
+        /* prepare */
+        addParameter(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_JOBSTORAGE_READ_RESILIENCE_RETRIES_MAX, String.valueOf(expectedValue));
+
+        /* execute */
+        int result = supportToTest.getJobStorageReadResilienceRetriesMax(4711);
+
+        /* test */
+        assertEquals(expectedValue, result);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 1, 2, 100, 1200 })
+    void job_storage_read_resilience_retry_wait_seconds_is_using_configured_job_parameter(int expectedValue) {
+        /* prepare */
+        addParameter(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_JOBSTORAGE_READ_RESILIENCE_RETRY_WAIT_SECONDS, String.valueOf(expectedValue));
+
+        /* execute */
+        int result = supportToTest.getJobStorageReadResiliencRetryWaitSeconds(4711);
+
+        /* test */
+        assertEquals(expectedValue, result);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { -1, -20 })
+    void job_storage_read_resilience_retries_max_is_lower_than_0_and_default_is_also_negative_the_result_is_0(int wantedValue) {
+        /* prepare */
+        addParameter(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_JOBSTORAGE_READ_RESILIENCE_RETRIES_MAX, String.valueOf(wantedValue));
+
+        /* execute */
+        int result = supportToTest.getJobStorageReadResilienceRetriesMax(-1);
+
+        /* test */
+        assertEquals(0, result); //
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { -1, -2, 0 })
+    void job_storage_read_resilience_retry_wait_seconds_is_lower_than_1_and_default_is_gt_1_the_result_is_1(int expectedValue) {
+        /* prepare */
+        addParameter(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_JOBSTORAGE_READ_RESILIENCE_RETRY_WAIT_SECONDS, String.valueOf(expectedValue));
+
+        /* execute */
+        int result = supportToTest.getJobStorageReadResiliencRetryWaitSeconds(4711);
+
+        /* test */
+        assertEquals(1, result); // the default is not used, but the MIN value
+    }
+
+    @ParameterizedTest
     @ValueSource(strings = { "wrong", "-", "source,wrong" })
     @EmptySource
     @NullSource

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.execution;
 
 import org.springframework.beans.factory.annotation.Autowired;

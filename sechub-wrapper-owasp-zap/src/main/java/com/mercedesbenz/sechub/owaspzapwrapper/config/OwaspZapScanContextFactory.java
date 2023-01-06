@@ -22,8 +22,8 @@ import com.mercedesbenz.sechub.owaspzapwrapper.helper.SecHubWebScanConfiguration
 import com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableConstants;
 import com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableReader;
 
-public class OwaspZapScanConfigurationFactory {
-    private static final Logger LOG = LoggerFactory.getLogger(OwaspZapScanConfigurationFactory.class);
+public class OwaspZapScanContextFactory {
+    private static final Logger LOG = LoggerFactory.getLogger(OwaspZapScanContextFactory.class);
 
     SecHubWebScanConfigurationHelper sechubWebConfigHelper;
     EnvironmentVariableReader environmentVariableReader;
@@ -32,7 +32,7 @@ public class OwaspZapScanConfigurationFactory {
     ApiDefinitionFileProvider apiDefinitionFileProvider;
     SecHubScanConfigProvider secHubScanConfigProvider;
 
-    public OwaspZapScanConfigurationFactory() {
+    public OwaspZapScanContextFactory() {
         sechubWebConfigHelper = new SecHubWebScanConfigurationHelper();
         environmentVariableReader = new EnvironmentVariableReader();
         targetUriFactory = new BaseTargetUriFactory();
@@ -41,9 +41,9 @@ public class OwaspZapScanConfigurationFactory {
         secHubScanConfigProvider = new SecHubScanConfigProvider();
     }
 
-    public OwaspZapScanConfiguration create(CommandLineSettings settings) {
+    public OwaspZapScanContext create(CommandLineSettings settings) {
         if (settings == null) {
-            throw new ZapWrapperRuntimeException("Command line settings must not be null!", ZapWrapperExitCode.COMMANDLINE_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("Command line settings must not be null!", ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
         }
         /* Owasp Zap rule setup */
         OwaspZapFullRuleset fullRuleset = ruleProvider.fetchFullRuleset(settings.getFullRulesetFile());
@@ -77,7 +77,7 @@ public class OwaspZapScanConfigurationFactory {
         }
 
         /* @formatter:off */
-		OwaspZapScanConfiguration scanConfig = OwaspZapScanConfiguration.builder()
+		OwaspZapScanContext scanContext = OwaspZapScanContext.builder()
 												.setTargetUri(targetUri)
 												.setVerboseOutput(settings.isVerboseEnabled())
 												.setReportFile(settings.getReportFile())
@@ -94,7 +94,7 @@ public class OwaspZapScanConfigurationFactory {
 												.setApiDefinitionFile(apiDefinitionFile)
 											  .build();
 		/* @formatter:on */
-        return scanConfig;
+        return scanContext;
     }
 
     private DeactivatedRuleReferences createDeactivatedRuleReferencesFromSettingsOrEnv(CommandLineSettings settings) {
@@ -144,16 +144,16 @@ public class OwaspZapScanConfigurationFactory {
 
         if (zapHost == null) {
             throw new ZapWrapperRuntimeException("Owasp Zap host is null. Please set the Owasp Zap host to the host use by the Owasp Zap.",
-                    ZapWrapperExitCode.ZAP_CONFIGURATION_INVALID);
+                    ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
         }
 
         if (zapPort <= 0) {
             throw new ZapWrapperRuntimeException("Owasp Zap Port was set to " + zapPort + ". Please set the Owasp Zap port to the port used by the Owasp Zap.",
-                    ZapWrapperExitCode.ZAP_CONFIGURATION_INVALID);
+                    ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
         }
         if (zapApiKey == null) {
             throw new ZapWrapperRuntimeException("Owasp Zap API-Key is null. Please set the Owasp Zap API-key to the same value set inside your Owasp Zap.",
-                    ZapWrapperExitCode.ZAP_CONFIGURATION_INVALID);
+                    ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
         }
         return new OwaspZapServerConfiguration(zapHost, zapPort, zapApiKey);
     }

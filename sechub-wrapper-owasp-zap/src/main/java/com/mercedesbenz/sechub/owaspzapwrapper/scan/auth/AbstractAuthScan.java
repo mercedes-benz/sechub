@@ -13,7 +13,7 @@ import org.zaproxy.clientapi.core.ClientApiException;
 
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
-import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanConfiguration;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanContext;
 import com.mercedesbenz.sechub.owaspzapwrapper.scan.AbstractScan;
 
 public abstract class AbstractAuthScan extends AbstractScan implements AuthScan {
@@ -22,8 +22,8 @@ public abstract class AbstractAuthScan extends AbstractScan implements AuthScan 
     protected String userId;
     protected String username;
 
-    public AbstractAuthScan(ClientApi clientApi, OwaspZapScanConfiguration scanConfig) {
-        super(clientApi, scanConfig);
+    public AbstractAuthScan(ClientApi clientApi, OwaspZapScanContext scanContext) {
+        super(clientApi, scanContext);
     }
 
     @Override
@@ -31,18 +31,18 @@ public abstract class AbstractAuthScan extends AbstractScan implements AuthScan 
         try {
             scanUnsafe();
         } catch (ClientApiException e) {
-            LOG.error("For scan {}: An error occured while scanning! Reason: {}", scanConfig.getContextName(), e.getMessage(), e);
-            throw new ZapWrapperRuntimeException("An error occurred during the scan execution", e, ZapWrapperExitCode.EXECUTION_FAILED);
+            LOG.error("For scan {}: An error occured while scanning! Reason: {}", scanContext.getContextName(), e.getMessage(), e);
+            throw new ZapWrapperRuntimeException("An error occurred during the scan execution", e, ZapWrapperExitCode.PRODUCT_EXECUTION_ERROR);
         }
     }
 
     @Override
     protected void runSpider() throws ClientApiException {
-        String url = scanConfig.getTargetUriAsString();
+        String url = scanContext.getTargetUriAsString();
         String maxchildren = null;
         String recurse = "true";
         String subtreeonly = "true";
-        LOG.info("For scan {}: Starting authenticated Spider.", scanConfig.getContextName());
+        LOG.info("For scan {}: Starting authenticated Spider.", scanContext.getContextName());
         /* @formatter:off */
 		ApiResponse responseSpider = clientApi.spider.scanAsUser(
 		        contextId,
@@ -57,10 +57,10 @@ public abstract class AbstractAuthScan extends AbstractScan implements AuthScan 
 
     @Override
     protected void runAjaxSpider() throws ClientApiException {
-        String contextname = scanConfig.getContextName();
-        String url = scanConfig.getTargetUriAsString();
+        String contextname = scanContext.getContextName();
+        String url = scanContext.getTargetUriAsString();
         String subtreeonly = "true";
-        LOG.info("For scan {}: Starting authenticated Ajax Spider.", scanConfig.getContextName());
+        LOG.info("For scan {}: Starting authenticated Ajax Spider.", scanContext.getContextName());
         /* @formatter:off */
 		ApiResponse responseAjaxSpider = clientApi.ajaxSpider.scanAsUser(
 		        contextname,
@@ -74,12 +74,12 @@ public abstract class AbstractAuthScan extends AbstractScan implements AuthScan 
 
     @Override
     protected void runActiveScan() throws ClientApiException {
-        String url = scanConfig.getTargetUriAsString();
+        String url = scanContext.getTargetUriAsString();
         String recurse = "true";
         String scanpolicyname = null;
         String method = null;
         String postdata = null;
-        LOG.info("For scan {}: Starting authenticated ActiveScan.", scanConfig.getContextName());
+        LOG.info("For scan {}: Starting authenticated ActiveScan.", scanContext.getContextName());
         /* @formatter:off */
 		ApiResponse responseActive = clientApi.ascan.scanAsUser(
 		        url,
@@ -110,7 +110,7 @@ public abstract class AbstractAuthScan extends AbstractScan implements AuthScan 
         addIncludedAndExcludedUrlsToContext();
         init();
         loadApiDefinitions();
-        if (scanConfig.isAjaxSpiderEnabled()) {
+        if (scanContext.isAjaxSpiderEnabled()) {
             runAjaxSpider();
         }
 
@@ -118,7 +118,7 @@ public abstract class AbstractAuthScan extends AbstractScan implements AuthScan 
 
         passiveScan();
 
-        if (scanConfig.isActiveScanEnabled()) {
+        if (scanContext.isActiveScanEnabled()) {
             runActiveScan();
         }
         generateOwaspZapReport();

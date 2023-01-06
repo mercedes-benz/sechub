@@ -260,7 +260,7 @@ public class SecHubConfigurationTest {
         assertTrue("webscan config must be present", webScanOption.isPresent());
 
         SecHubWebScanConfiguration secHubWebScanConfiguration = webScanOption.get();
-        assertEquals(URI.create("https://productfailure.demo.example.org"), secHubWebScanConfiguration.getUri());
+        assertEquals(URI.create("https://productfailure.demo.example.org"), secHubWebScanConfiguration.getUrl());
 
         Optional<List<String>> includes = secHubWebScanConfiguration.getIncludes();
         assertTrue("includes must be present", includes.isPresent());
@@ -370,7 +370,7 @@ public class SecHubConfigurationTest {
 
         /* test */
         assertTrue("webscan config must be present", result.getWebScan().isPresent());
-        assertEquals(result.getWebScan().get().getUri(), new URI("https://fscan.intranet.example.org/"));
+        assertEquals(result.getWebScan().get().getUrl(), new URI("https://fscan.intranet.example.org/"));
     }
 
     @Test
@@ -510,7 +510,7 @@ public class SecHubConfigurationTest {
         assertTrue("webscan config must be present", webScanOption.isPresent());
 
         SecHubWebScanConfiguration secHubWebScanConfiguration = webScanOption.get();
-        assertEquals(URI.create("https://productfailure.demo.example.org"), secHubWebScanConfiguration.getUri());
+        assertEquals(URI.create("https://productfailure.demo.example.org"), secHubWebScanConfiguration.getUrl());
 
         Optional<List<String>> includes = secHubWebScanConfiguration.getIncludes();
         assertTrue("includes must be present", includes.isPresent());
