@@ -1,22 +1,12 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.domain.scan.report;
+package com.mercedesbenz.sechub.commons.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.stereotype.Component;
+public class TrafficLightSupport implements TrafficLightCalculator, SecHubResultTrafficLightFilter {
 
-import com.mercedesbenz.sechub.commons.model.SecHubFinding;
-import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
-import com.mercedesbenz.sechub.commons.model.SecHubResult;
-import com.mercedesbenz.sechub.commons.model.Severities;
-import com.mercedesbenz.sechub.commons.model.Severity;
-import com.mercedesbenz.sechub.commons.model.TrafficLight;
-
-@Component
-public class ScanReportTrafficLightCalculator {
-
-    public TrafficLight calculateTrafficLight(SecHubReportModel result) {
+    public TrafficLight calculateTrafficLight(SecHubResult result) {
         if (result == null) {
             throw new IllegalArgumentException("SecHub result may not be null!");
         }
@@ -31,7 +21,7 @@ public class ScanReportTrafficLightCalculator {
         return TrafficLight.GREEN;
     }
 
-    TrafficLight resolveTrafficLightWhenOneEntryWithSuchSeverity(SecHubReportModel result, TrafficLight found, Severity severity) {
+    TrafficLight resolveTrafficLightWhenOneEntryWithSuchSeverity(SecHubResult result, TrafficLight found, Severity severity) {
         if (found != null) {
             return found;
         }
@@ -68,11 +58,11 @@ public class ScanReportTrafficLightCalculator {
         return filteredResult;
     }
 
-    private boolean hasResultOneFindingWith(SecHubReportModel result, Severity severity) {
+    private boolean hasResultOneFindingWith(SecHubResult result, Severity severity) {
         if (severity == null) {
             return false;
         }
-        List<SecHubFinding> findings = result.getResult().getFindings();
+        List<SecHubFinding> findings = result.getFindings();
         if (findings == null || findings.isEmpty()) {
             return false;
         }

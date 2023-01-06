@@ -1,33 +1,33 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 public class TrafficLightTest {
 
-    @Test
-    public void null_supported() {
-        assertNull(TrafficLight.fromString(null));
+    @ParameterizedTest
+    @EnumSource(TrafficLight.class)
+    void fromString_values_are_supported(TrafficLight light) {
+        assertEquals(light, TrafficLight.fromString(light.name()));
     }
 
-    @Test
-    public void values_are_supported() {
-        for (TrafficLight light : TrafficLight.values()) {
-            assertEquals(light, TrafficLight.fromString(light.name()));
-        }
+    @ParameterizedTest
+    @EnumSource(TrafficLight.class)
+    void fromString_lowercased_values_are_supported(TrafficLight light) {
+        assertEquals(light, TrafficLight.fromString(light.name().toLowerCase()));
     }
 
-    @Test
-    public void even_lowercased_values_are_supported() {
-        for (TrafficLight light : TrafficLight.values()) {
-            assertEquals(light, TrafficLight.fromString(light.name().toLowerCase()));
-        }
-    }
-
-    @Test
-    public void unknown_values_returns_null() {
-        assertNull(TrafficLight.fromString("unknown-illegal"));
+    @ParameterizedTest
+    @ValueSource(strings = { "unknown-illegal", "a", "." })
+    @EmptySource
+    @NullSource
+    void fromString_unknown_values_returns_null(String string) {
+        assertNull(TrafficLight.fromString(string));
     }
 }

@@ -21,8 +21,6 @@ import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import junit.framework.AssertionFailedError;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -57,6 +55,8 @@ import com.mercedesbenz.sechub.test.ExampleConstants;
 import com.mercedesbenz.sechub.test.PDSTestURLBuilder;
 import com.mercedesbenz.sechub.test.SecHubTestURLBuilder;
 import com.mercedesbenz.sechub.test.executionprofile.TestExecutionProfile;
+
+import junit.framework.AssertionFailedError;
 
 public class TestAPI {
 

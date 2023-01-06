@@ -33,7 +33,7 @@ class SecHubScanConfigProviderTest {
         SecHubWebScanConfiguration sechubWebConfig = providerToTest.getSecHubWebConfiguration(testFile).getWebScan().get();
 
         /* test */
-        assertEquals(sechubWebConfig.getUri().toString(), "https://127.0.0.1:8080");
+        assertEquals(sechubWebConfig.getUrl().toString(), "https://127.0.0.1:8080");
         assertTrue(sechubWebConfig.getLogin().isPresent());
 
         WebLoginConfiguration webLoginConfiguration = sechubWebConfig.getLogin().get();

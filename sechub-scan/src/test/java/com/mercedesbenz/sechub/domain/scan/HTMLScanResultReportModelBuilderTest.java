@@ -19,8 +19,8 @@ import org.springframework.core.io.Resource;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeCallStack;
 import com.mercedesbenz.sechub.commons.model.SecHubFinding;
 import com.mercedesbenz.sechub.commons.model.SecHubResult;
+import com.mercedesbenz.sechub.commons.model.SecHubResultTrafficLightFilter;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
-import com.mercedesbenz.sechub.domain.scan.report.ScanReportTrafficLightCalculator;
 import com.mercedesbenz.sechub.domain.scan.report.ScanSecHubReport;
 
 public class HTMLScanResultReportModelBuilderTest {
@@ -34,7 +34,7 @@ public class HTMLScanResultReportModelBuilderTest {
 
     private HTMLScanResultReportModelBuilder builderToTest;
     private ScanSecHubReport scanSecHubReport;
-    private ScanReportTrafficLightCalculator trafficLightCalculator;
+    private SecHubResultTrafficLightFilter trafficLightFilter;
     private SecHubResult result;
     private List<SecHubFinding> greenList;
     private List<SecHubFinding> redList;
@@ -44,12 +44,12 @@ public class HTMLScanResultReportModelBuilderTest {
     public void before() throws Exception {
         builderToTest = new HTMLScanResultReportModelBuilder();
 
-        trafficLightCalculator = mock(ScanReportTrafficLightCalculator.class);
+        trafficLightFilter = mock(SecHubResultTrafficLightFilter.class);
         Resource cssResource = mock(Resource.class);
         when(cssResource.getInputStream()).thenReturn(new ByteArrayInputStream("csscontentfromstream".getBytes()));
 
         builderToTest.cssResource = cssResource;
-        builderToTest.trafficLightCalculator = trafficLightCalculator;
+        builderToTest.trafficLightFilter = trafficLightFilter;
 
         result = mock(SecHubResult.class);
 
@@ -60,9 +60,9 @@ public class HTMLScanResultReportModelBuilderTest {
         redList = new ArrayList<>();
         yellowList = new ArrayList<>();
 
-        when(trafficLightCalculator.filterFindingsFor(result, TrafficLight.RED)).thenReturn(redList);
-        when(trafficLightCalculator.filterFindingsFor(result, TrafficLight.YELLOW)).thenReturn(yellowList);
-        when(trafficLightCalculator.filterFindingsFor(result, TrafficLight.GREEN)).thenReturn(greenList);
+        when(trafficLightFilter.filterFindingsFor(result, TrafficLight.RED)).thenReturn(redList);
+        when(trafficLightFilter.filterFindingsFor(result, TrafficLight.YELLOW)).thenReturn(yellowList);
+        when(trafficLightFilter.filterFindingsFor(result, TrafficLight.GREEN)).thenReturn(greenList);
     }
 
     @Test

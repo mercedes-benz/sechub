@@ -64,7 +64,7 @@ class ApiDefinitionFileProviderTest {
                 () -> providerToTest.fetchApiDefinitionFile("/example/path/to/extracted/sources", sechubScanConfiguration));
 
         assertEquals("Sources must contain exactly 1 entry.", exception.getMessage());
-        assertEquals(ZapWrapperExitCode.SECHUB_CONFIGURATION_INVALID, exception.getExitCode());
+        assertEquals(ZapWrapperExitCode.API_DEFINITION_CONFIG_INVALID, exception.getExitCode());
     }
 
     @Test
@@ -79,7 +79,7 @@ class ApiDefinitionFileProviderTest {
                 () -> providerToTest.fetchApiDefinitionFile("/example/path/to/extracted/sources", sechubScanConfiguration));
 
         assertEquals("Sources filesystem part must be set at this stage.", exception.getMessage());
-        assertEquals(ZapWrapperExitCode.SECHUB_CONFIGURATION_INVALID, exception.getExitCode());
+        assertEquals(ZapWrapperExitCode.API_DEFINITION_CONFIG_INVALID, exception.getExitCode());
 
     }
 
@@ -94,7 +94,7 @@ class ApiDefinitionFileProviderTest {
                 () -> providerToTest.fetchApiDefinitionFile("/example/path/to/extracted/sources", sechubScanConfiguration));
 
         assertEquals("Sources filesystem files part must contain exactly 1 entry.", exception.getMessage());
-        assertEquals(ZapWrapperExitCode.SECHUB_CONFIGURATION_INVALID, exception.getExitCode());
+        assertEquals(ZapWrapperExitCode.API_DEFINITION_CONFIG_INVALID, exception.getExitCode());
     }
 
     @Test

@@ -16,8 +16,8 @@ import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.model.SecHubFinding;
 import com.mercedesbenz.sechub.commons.model.SecHubResult;
+import com.mercedesbenz.sechub.commons.model.SecHubResultTrafficLightFilter;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
-import com.mercedesbenz.sechub.domain.scan.report.ScanReportTrafficLightCalculator;
 import com.mercedesbenz.sechub.domain.scan.report.ScanSecHubReport;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 
@@ -39,7 +39,7 @@ public class HTMLScanResultReportModelBuilder {
     String embeddedCSS;
 
     @Autowired
-    ScanReportTrafficLightCalculator trafficLightCalculator;
+    SecHubResultTrafficLightFilter trafficLightFilter;
 
     public Map<String, Object> build(ScanSecHubReport report) {
         TrafficLight trafficLight = report.getTrafficLight();
@@ -74,9 +74,9 @@ public class HTMLScanResultReportModelBuilder {
 
         Map<String, Object> model = new HashMap<>();
         model.put("result", report.getResult());
-        model.put("redList", trafficLightCalculator.filterFindingsFor(result, TrafficLight.RED));
-        model.put("yellowList", trafficLightCalculator.filterFindingsFor(result, TrafficLight.YELLOW));
-        model.put("greenList", trafficLightCalculator.filterFindingsFor(result, TrafficLight.GREEN));
+        model.put("redList", trafficLightFilter.filterFindingsFor(result, TrafficLight.RED));
+        model.put("yellowList", trafficLightFilter.filterFindingsFor(result, TrafficLight.YELLOW));
+        model.put("greenList", trafficLightFilter.filterFindingsFor(result, TrafficLight.GREEN));
 
         model.put("trafficlight", trafficLight.name());
 
@@ -87,6 +87,7 @@ public class HTMLScanResultReportModelBuilder {
         model.put("codeScanEntries", codeScanEntries);
         model.put("codeScanSupport", codeScanSupport);
         model.put("reportHelper", HTMLReportHelper.DEFAULT);
+        model.put("messages", report.getMessages());
 
         if (webDesignMode) {
             File file;

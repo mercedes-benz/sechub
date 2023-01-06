@@ -56,7 +56,7 @@ public class RuleProvider {
         try {
             return reader.loadTextFile(file);
         } catch (IOException e) {
-            throw new ZapWrapperRuntimeException("Error reading file: " + file, e, ZapWrapperExitCode.RULE_FILE_ERROR);
+            throw new ZapWrapperRuntimeException("Error reading file: " + file, e, ZapWrapperExitCode.IO_ERROR);
         }
     }
 

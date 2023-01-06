@@ -13,6 +13,12 @@ LABEL maintainer="SecHub FOSS Team"
 ARG OWASPZAP_VERSION="2.12.0"
 ARG OWASPZAP_SHA256SUM="7eaf340d9fcc42576c7a5572249fe0bcad6e7acd68098a7ca110e64beab46207"
 
+ARG OWASPZAP_WRAPPER_VERSION="0.33.0"
+
+# OWASP ZAP host and port
+ENV ZAP_HOST="127.0.0.1"
+ENV ZAP_PORT="8080"
+
 # Create folders & change owner of folders
 RUN mkdir --parents "/home/$USER/.ZAP/plugin"
 
@@ -38,18 +44,18 @@ RUN cd "$TOOL_FOLDER" && \
 # Install SecHub OWASP ZAP wrapper
 RUN cd "$TOOL_FOLDER" && \
     # download checksum file
-    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-wrapperowaspzap-$PDS_VERSION.jar.sha256sum" && \
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$OWASPZAP_WRAPPER_VERSION-pds/sechub-pds-wrapperowaspzap-$OWASPZAP_WRAPPER_VERSION.jar.sha256sum" && \
     # download wrapper jar
-    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-wrapperowaspzap-$PDS_VERSION.jar" && \
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$OWASPZAP_WRAPPER_VERSION-pds/sechub-pds-wrapperowaspzap-$OWASPZAP_WRAPPER_VERSION.jar" && \
     # verify that the checksum and the checksum of the file are same
-    sha256sum --check sechub-pds-wrapperowaspzap-$PDS_VERSION.jar.sha256sum && \
-    ln -s sechub-pds-wrapperowaspzap-$PDS_VERSION.jar wrapperowaspzap.jar
+    sha256sum --check sechub-pds-wrapperowaspzap-$OWASPZAP_WRAPPER_VERSION.jar.sha256sum && \
+    ln -s sechub-pds-wrapperowaspzap-$OWASPZAP_WRAPPER_VERSION.jar wrapperowaspzap.jar
     
 # Copy default full ruleset file
 COPY owasp-zap-full-ruleset-all-release-status.json ${TOOL_FOLDER}/owasp-zap-full-ruleset-all-release-status.json
 
 # Copy mock folders
-COPY mocks/ "$MOCK_FOLDER"
+COPY mocks "$MOCK_FOLDER"
 
 # Copy scripts
 COPY scripts $SCRIPT_FOLDER
@@ -60,10 +66,6 @@ COPY pds-config.json "$PDS_FOLDER/pds-config.json"
 
 # Copy zap addon download urls into container
 COPY zap-addons.txt "$TOOL_FOLDER/zap-addons.txt"
-
-# Copy the additional "hook" script into the container
-COPY run_additional.sh /run_additional.sh
-RUN chmod +x /run_additional.sh
 
 # Create the PDS workspace
 WORKDIR "$WORKSPACE"

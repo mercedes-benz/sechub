@@ -117,7 +117,7 @@ public class SecHubConfigurationModelValidator {
         }
 
         SecHubWebScanConfiguration webScan = webScanOpt.get();
-        URI uri = webScan.getUri();
+        URI uri = webScan.getUrl();
 
         if (SimpleNetworkUtils.isURINullOrEmpty(uri)) {
 
