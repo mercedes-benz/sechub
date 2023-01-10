@@ -18,7 +18,7 @@ owasp-zap -daemon -silent -nostdout -host "$ZAP_HOST" -port "$ZAP_PORT" -config 
 echo "Waiting for OWASP-ZAP to start"
 TRIES=20
 WAITRETRY=6
-TOTAL_WAITTIME=$( echo "$TRIES*$WAITRETRY" | bc )
+TOTAL_WAITTIME=$(($TRIES*$WAITRETRY))
 
 # To check if OWASP-ZAP is up and running we try to call api for the OWASP-ZAP version
 # --quiet: suppress the default output of wget
@@ -28,11 +28,11 @@ TOTAL_WAITTIME=$( echo "$TRIES*$WAITRETRY" | bc )
 # --waitretry: maximum amount of seconds before retrying to connect
 # --header: headers needed for the request
 # --no-check-certificate: OWASP-ZAP uses a self-signed certificate, because of this we skip the certificate validation
-wget --quiet --output-document=- --retry-connrefused --tries="$TRIES" --waitretry="$WAITRETRY" --header="Accept: application/json" --header="X-ZAP-API-Key: $ZAP_API_KEY" --no-check-certificate "https://$ZAP_HOST:$ZAP_PORT/JSON/core/view/version"
+wget --quiet --output-document=- --retry-connrefused --tries="$TRIES" --waitretry="$WAITRETRY" --header="Accept: application/json" --header="X-ZAP-API-Key: $ZAP_API_KEY" "http://$ZAP_HOST:$ZAP_PORT/JSON/core/view/version"
 
 if [ $? -ne 0 ]
 then
-    echo "OWASP-ZAP did not start after waiting for $TOTAL_WAITTIME minutes"
+    echo "OWASP-ZAP did not start after waiting for $TOTAL_WAITTIME seconds"
     shutdownZAP
     exit 1
 fi
