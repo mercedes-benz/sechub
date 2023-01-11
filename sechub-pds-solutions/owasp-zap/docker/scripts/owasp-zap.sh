@@ -16,9 +16,9 @@ echo "Starting up OWASP-ZAP server"
 owasp-zap -daemon -silent -nostdout -host "$ZAP_HOST" -port "$ZAP_PORT" -config "api.key=$ZAP_API_KEY" &
 
 echo "Waiting for OWASP-ZAP to start"
-TRIES=20
-WAITRETRY=6
-TOTAL_WAITTIME=$(($TRIES*$WAITRETRY))
+RETRIES=20
+SECONDS_BEFORE_RETRY=6
+TOTAL_WAITTIME=$(($RETRIES*$SECONDS_BEFORE_RETRY))
 
 # To check if OWASP-ZAP is up and running we try to call api for the OWASP-ZAP version
 # --quiet: suppress the default output of wget
@@ -28,7 +28,7 @@ TOTAL_WAITTIME=$(($TRIES*$WAITRETRY))
 # --waitretry: maximum amount of seconds before retrying to connect
 # --header: headers needed for the request
 # --no-check-certificate: OWASP-ZAP uses a self-signed certificate, because of this we skip the certificate validation
-wget --quiet --output-document=- --retry-connrefused --tries="$TRIES" --waitretry="$WAITRETRY" --header="Accept: application/json" --header="X-ZAP-API-Key: $ZAP_API_KEY" "http://$ZAP_HOST:$ZAP_PORT/JSON/core/view/version"
+wget --quiet --output-document=- --retry-connrefused --tries="$RETRIES" --waitretry="$SECONDS_BEFORE_RETRY" --header="Accept: application/json" --header="X-ZAP-API-Key: $ZAP_API_KEY" "http://$ZAP_HOST:$ZAP_PORT/JSON/core/view/version"
 
 if [ $? -ne 0 ]
 then
