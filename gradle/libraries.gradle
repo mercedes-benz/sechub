@@ -50,7 +50,8 @@ ext {
       apache_commons_validator:                "1.7",
       apache_commons_fileupload:               "1.4",
       apache_commons_compress:                 "1.22",
-                 
+      apache_commons_lang3:                    "3.12.0",
+
       /* testing */                            
       junit4:                                  "4.13.2",
       wiremock:                                "2.27.2",
@@ -117,7 +118,8 @@ ext {
         apache_commons_cli:                    "commons-cli:commons-cli:${libraryVersion.apache_commons_cli}",
         apache_commons_fileupload:             "commons-fileupload:commons-fileupload:${libraryVersion.apache_commons_fileupload}",
         apache_commons_compress:               "org.apache.commons:commons-compress:${libraryVersion.apache_commons_compress}",
-        
+        apache_commons_lang3:                  "org.apache.commons:commons-lang3:${libraryVersion.apache_commons_lang3}",
+
         // JDK 10 build problems handling
         // https://stackoverflow.com/questions/43574426/how-to-resolve-java-langnoclassdeffounderror-javax-xml-bind-jaxbexception-in-j
         jdk_missing_jaxb_api:                  "javax.xml.bind:jaxb-api:${libraryVersion.jaxb_api}",

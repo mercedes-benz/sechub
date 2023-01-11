@@ -459,9 +459,9 @@ function sechub_project_assign_user {
 
 
 function generate_sechub_project_create_data {
-  local PROJECT_ID="${1,,}"  # ,, converts to lowercase
+  local PROJECT_ID="$(tr [A-Z] [a-z] <<< "$1")"  # ,, converts to lowercase
   shift
-  local OWNER="${1,,}"
+  local OWNER="$(tr [A-Z] [a-z] <<< "$1")"
   shift
   local SHORT_DESCRIPTION="$*"
   cat <<EOF
@@ -521,7 +521,7 @@ function sechub_project_list {
 function sechub_project_metadata_set {
   local key
   local value
-  local PROJECT_ID="${1,,}"  # ,, converts to lowercase
+  local PROJECT_ID="$(tr [A-Z] [a-z] <<< "$1")"  # ,, converts to lowercase
   shift
   local JSON_DATA="{\"apiVersion\": \"$SECHUB_API_VERSION\",\"metaData\":{"
   local arr=("$@")
