@@ -53,9 +53,9 @@ echo "| TEST: message methods                           |"
 echo "|                                                 |"
 echo "\\-------------------------------------------------/"
 PDS_JOB_USER_MESSAGES_FOLDER=$TEST_FOLDER/output/messages
-rm $PDS_JOB_USER_MESSAGES_FOLDER -rf
+rm -rf $PDS_JOB_USER_MESSAGES_FOLDER
 
-mkdir $PDS_JOB_USER_MESSAGES_FOLDER -p
+mkdir -p $PDS_JOB_USER_MESSAGES_FOLDER
 
 # next line uses messaging function (included by hared-functions.sh and being part of documentation)
 source ./shared/shared-messaging-referenced-in-documentation-as-example-usage.sh
