@@ -10,7 +10,7 @@ LABEL org.opencontainers.image.description="A container which combines Tern with
 LABEL maintainer="SecHub FOSS Team"
 
 ARG TERN_VERSION="2.11.0"
-ARG SCANCODE_VERSION="31.2.1"
+ARG SCANCODE_VERSION="31.2.4"
 
 # execute commands as root
 USER root
