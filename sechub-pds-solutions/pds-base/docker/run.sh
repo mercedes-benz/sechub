@@ -52,8 +52,10 @@ start_server() {
     echo "---"
     /run_additional.sh
     echo "---"
-
+    echo ""
     echo "Starting the SecHub PDS server"
+    echo "PDS Version: $PDS_VERSION"
+
     # Regarding entropy collection:
     #   with JDK 8+ the "obscure workaround using file:///dev/urandom 
     #   and file:/dev/./urandom is no longer required."

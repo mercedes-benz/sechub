@@ -9,9 +9,9 @@ LABEL org.opencontainers.image.description="A container which combines Scancode-
 LABEL maintainer="SecHub FOSS Team"
 
 # Build args
-ARG SCANCODE_VERSION="31.2.1"
-ARG SPDX_TOOL_VERISON="1.1.2"
-ARG SPDX_TOOL_CHECKSUM="4a2f1a2f3a12b96fc13675e78871a33dc12f6e44c7dbdcda2e5ea92f994615e8  tools-java-1.1.2-jar-with-dependencies.jar"
+ARG SCANCODE_VERSION
+ARG SPDX_TOOL_VERISON="1.1.3"
+ARG SPDX_TOOL_CHECKSUM="766a1ddc23e70644c115e0e68d487c5ab586a58a67a7889c7e181ace23a45abe  tools-java-1.1.3-jar-with-dependencies.jar"
 
 # Environment variables in container
 ENV SCANCODE_VERSION="${SCANCODE_VERSION}"
