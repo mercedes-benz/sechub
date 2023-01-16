@@ -6,13 +6,13 @@ services:
         build:
             args:
                 - BASE_IMAGE=${BASE_IMAGE}
-                - PDS_VERSION=${PDS_VERSION}
             context: docker/
             dockerfile: FindSecurityBugs-Debian.dockerfile
         container_name: pds-findsecuritybugs
         hostname: pds-findsecuritybugs
         env_file:
             - .env
+            - .emv-single
         networks:
             - "sechub"
         volumes:

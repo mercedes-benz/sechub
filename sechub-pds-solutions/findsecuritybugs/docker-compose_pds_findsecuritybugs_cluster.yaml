@@ -6,10 +6,10 @@ services:
         build:
             args:
                 - BASE_IMAGE=${BASE_IMAGE}
-                - PDS_VERSION=${PDS_VERSION}
             context: docker/
             dockerfile: FindSecurityBugs-Debian.dockerfile
         env_file:
+            - .env
             - .env-cluster
         networks:
             - "internal"
