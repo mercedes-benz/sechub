@@ -12,7 +12,7 @@ services:
         hostname: pds-findsecuritybugs
         env_file:
             - .env
-            - .emv-single
+            - .env-single
         networks:
             - "sechub"
         volumes:
