@@ -223,7 +223,7 @@ public class AbstractProductExecutionServiceTest {
         }
 
         @Override
-        protected ScanType getScanType() {
+        public ScanType getScanType() {
             if (scanType == null) {
                 scanType = ScanType.UNKNOWN;
             }

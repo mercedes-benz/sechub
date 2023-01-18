@@ -3,9 +3,9 @@ package com.mercedesbenz.sechub.domain.scan.product;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
 
-public interface InfrastructureScanProductExecutionService extends ProductExecutionStoreService {
+public interface AnalyticsProductExecutionService extends ProductExecutionStoreService {
 
     default public ScanType getScanType() {
-        return ScanType.INFRA_SCAN;
+        return ScanType.ANALYTICS;
     }
 }
