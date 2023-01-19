@@ -47,13 +47,39 @@ class SecHubExecutionContextTest {
     @Test
     void constructor_with_operation_type_NULL_is_operation_type_SCAN() {
         /* prepare */
-        SecHubExecutionOperationType type = null;
+        SecHubExecutionOperationType operationTypeAsNull = null;
 
         /* execute */
-        SecHubExecutionContext context = new SecHubExecutionContext(uuid, config, EXECUTED_BY_TEST, type);
+        SecHubExecutionContext context = new SecHubExecutionContext(uuid, config, EXECUTED_BY_TEST, operationTypeAsNull);
 
         /* test */
         assertEquals(SecHubExecutionOperationType.SCAN, context.getOperationType());
+    }
+
+    @Test
+    void after_construction_execution_uuid_is_not_null_and_not_same_as_jobuuid() {
+        /* prepare */
+        SecHubExecutionOperationType operationTypeAsNull = null;
+
+        /* execute */
+        SecHubExecutionContext context = new SecHubExecutionContext(uuid, config, EXECUTED_BY_TEST, operationTypeAsNull);
+
+        /* test */
+        assertNotEquals(uuid, context.getExecutionUUID());
+        assertNotNull(context.getExecutionUUID());
+    }
+
+    @Test
+    void after_construction_execution_uuid_is_different_between_two_contexts() {
+        /* prepare */
+        SecHubExecutionOperationType operationTypeAsNull = null;
+
+        /* execute */
+        SecHubExecutionContext context1 = new SecHubExecutionContext(uuid, config, EXECUTED_BY_TEST, operationTypeAsNull);
+        SecHubExecutionContext context2 = new SecHubExecutionContext(uuid, config, EXECUTED_BY_TEST, operationTypeAsNull);
+
+        /* test */
+        assertNotEquals(context1.getExecutionUUID(), context2.getExecutionUUID());
     }
 
 }

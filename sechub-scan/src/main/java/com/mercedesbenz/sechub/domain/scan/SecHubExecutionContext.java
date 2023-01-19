@@ -36,6 +36,8 @@ public class SecHubExecutionContext {
 
     private boolean cancelRequested;
 
+    private UUID executionUUID;
+
     private SecHubExecutionOperationType operationType;
 
     public SecHubExecutionContext(UUID sechubJobUUID, SecHubConfiguration configuration, String executedBy) {
@@ -44,6 +46,8 @@ public class SecHubExecutionContext {
 
     public SecHubExecutionContext(UUID sechubJobUUID, SecHubConfiguration configuration, String executedBy, SecHubExecutionOperationType operationType) {
         this.sechubJobUUID = sechubJobUUID;
+        this.executionUUID = UUID.randomUUID();
+
         this.configuration = configuration;
         this.executedBy = executedBy;
         this.traceLogId = UUIDTraceLogID.traceLogID(sechubJobUUID);
@@ -135,6 +139,18 @@ public class SecHubExecutionContext {
 
     public void forget(SecHubExecutionHistoryElement historyElement) {
         executionHistory.forget(historyElement);
+    }
+
+    /**
+     * An execution uuid is a uuid which is unique for this context. A job can be
+     * executed many times (because of restarts) and will still have the same job
+     * uuid. But the execution uuid will be different! It is unique and shared
+     * inside the scan while it is executed.
+     *
+     * @return the execution uuid
+     */
+    public UUID getExecutionUUID() {
+        return executionUUID;
     }
 
 }
