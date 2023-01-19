@@ -144,7 +144,7 @@ pipeline {
     post {
         failure {
             emailext (
-                subject:"[ BUILD FAILED ] Build:${env.BUILD_NUMBER}, branch: $sechubGitBranch",
+                subject:"[ BUILD FAILED ] Branch: $sechubGitBranch, build #${env.BUILD_NUMBER}",
                 body:"CI build for branch '$sechubGitBranch' failed.\n"+
                      "${env.BUILD_URL}",
                 to: '$DEFAULT_RECIPIENTS'
@@ -152,7 +152,7 @@ pipeline {
         }
         fixed {
             emailext (
-                subject:"[ BUILD FIXED ] Build:${env.BUILD_NUMBER}, branch: $sechubGitBranch",
+                subject:"[ BUILD FIXED ] Branch: $sechubGitBranch, build #${env.BUILD_NUMBER}",
                 body:"CI build for branch '$sechubGitBranch' has been fixed.\n"+
                      "${env.BUILD_URL}",
                 to: '$DEFAULT_RECIPIENTS'
