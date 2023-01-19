@@ -12,7 +12,7 @@ function setup_environment_file() {
         
         # take arguments from the 2nd to the nth element
         # combine all the files into the settings file
-        cat $@ > "$environment_file"
+        cat "$@" > "$environment_file"
     else
         echo "Using existing environment file: $environment_file."
     fi
