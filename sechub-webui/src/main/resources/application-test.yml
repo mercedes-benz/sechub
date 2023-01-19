@@ -1,0 +1,9 @@
+# Test profile
+spring:
+  config:
+    activate:
+      on-profile: "test"
+      
+server:
+  ssl:
+    enabled: false
