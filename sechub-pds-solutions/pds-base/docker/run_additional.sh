@@ -4,6 +4,6 @@
 # This script is called from the main run.sh script.
 # Overwrite this file in a container based on pds-base
 # if additional functionality is needed.
-# E.g. to start background processes etc.
+# E.g. to run downloads etc.
 
 echo "No additional actions."

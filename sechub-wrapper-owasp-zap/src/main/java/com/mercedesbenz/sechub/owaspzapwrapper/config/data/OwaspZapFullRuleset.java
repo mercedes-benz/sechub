@@ -56,18 +56,18 @@ public class OwaspZapFullRuleset implements JSONable<OwaspZapFullRuleset> {
      */
     public Rule findRuleByReference(String reference) {
         if (reference == null) {
-            throw new ZapWrapperRuntimeException("Rule reference to be search for must not be 'null'!", ZapWrapperExitCode.SCAN_RULE_ERROR);
+            throw new ZapWrapperRuntimeException("Rule reference to be search for must not be 'null'!", ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
         }
         if (rules == null) {
             throw new ZapWrapperRuntimeException("Full ruleset must not be 'null', otherwise this cannot be search for reference: " + reference,
-                    ZapWrapperExitCode.SCAN_RULE_ERROR);
+                    ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
         }
 
         Rule rule = rules.getOrDefault(reference, null);
         if (rule == null) {
             throw new ZapWrapperRuntimeException(
                     "Rule could not be found inside full ruleset. Check installed ruleset for missing rules and specified rules to deactivate for wrong specifications.",
-                    ZapWrapperExitCode.SCAN_RULE_ERROR);
+                    ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
         }
         return rule;
     }

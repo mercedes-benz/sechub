@@ -19,6 +19,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.sereco.importer.ProductFailureMetaDataBuilder;
 import com.mercedesbenz.sechub.sereco.importer.ProductImportAbility;
 import com.mercedesbenz.sechub.sereco.importer.ProductResultImporter;
+import com.mercedesbenz.sechub.sereco.importer.ProductSuccessMetaDataBuilder;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoAnnotation;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
@@ -61,16 +62,17 @@ public class Workspace {
             throw new IllegalArgumentException("param may not be null!");
         }
         if (param.getImportData() == null) {
-            LOG.error("Import data was null for docId:{}, so unable to import.", param.getImportId());
+            LOG.error("Import data was null for import id:{}, so unable to import.", param.getImportId());
             return;
         }
         if (param.getImportId() == null) {
-            LOG.error("Import data was not null, but importId was not set, so unable to import.");
+            LOG.error("Import data was not null, but import id was not set, so unable to import.");
             return;
         }
         boolean atLeastOneImporterWasAbleToImport = false;
         for (ProductResultImporter importer : registry.getImporters()) {
             ProductImportAbility ableToImportForProduct = importer.isAbleToImportForProduct(param);
+
             if (ProductImportAbility.PRODUCT_FAILED.equals(ableToImportForProduct)) {
                 LOG.debug("Importer {} knows product, but recognized as product failure, so no import possible for {}", importer.getName(),
                         param.getImportId());
@@ -79,8 +81,9 @@ public class Workspace {
                  * failed, so we add just a critical finding for the product itself
                  */
                 ProductFailureMetaDataBuilder builder = new ProductFailureMetaDataBuilder();
-                SerecoMetaData metaData = builder.forParam(param).build();
-                mergeWithWorkspaceData(metaData);
+                SerecoMetaData failureMetaData = builder.forParam(param).build();
+                mergeWithWorkspaceData(failureMetaData);
+
                 mergeWithWorkspaceData(param.getProductMessages());
 
                 atLeastOneImporterWasAbleToImport = true;
@@ -88,13 +91,19 @@ public class Workspace {
             }
             if (ProductImportAbility.ABLE_TO_IMPORT.equals(ableToImportForProduct)) {
                 LOG.debug("Importer {} is able to import {}", importer.getName(), param.getImportId());
-                SerecoMetaData metaData = importer.importResult(param.getImportData());
-                if (metaData == null) {
+                SerecoMetaData importedMetaData = importer.importResult(param.getImportData());
+                if (importedMetaData == null) {
                     LOG.error("Meta data was null for product={}, importer={}, importId={}", param.getProductId(), importer.getClass().getSimpleName(),
                             param.getImportId());
                     return;
                 }
-                mergeWithWorkspaceData(metaData);
+                mergeWithWorkspaceData(importedMetaData);
+
+                /* add now success meta data */
+                ProductSuccessMetaDataBuilder builder = new ProductSuccessMetaDataBuilder();
+                SerecoMetaData successMetaData = builder.forParam(param).build();
+                mergeWithWorkspaceData(successMetaData);
+
                 mergeWithWorkspaceData(param.getProductMessages());
 
                 atLeastOneImporterWasAbleToImport = true;

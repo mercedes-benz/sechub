@@ -8,6 +8,7 @@
 dependencies {
     implementation project(':sechub-commons-model')
     implementation project(':sechub-commons-core')
+        implementation project(':sechub-commons-pds')
     testImplementation project(':sechub-testframework')
     
     implementation library.owaspzap_client_api

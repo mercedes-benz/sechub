@@ -211,6 +211,12 @@
             "path": "./../sechub-integrationtest/pds/product-scripts/integrationtest-licensescan.sh",
             "scanType": "licenseScan",
             "description": "This is only a fake license scan - used by integration tests."
-        }
+        },
+      {
+        "id": "PDS_TEST_PMD",
+        "path": "./../sechub-integrationtest/pds/product-scripts/integrationtest-pmd.sh",
+        "scanType": "codeScan",
+        "description": "This is a fake PMD scan - used by integration tests."
+      }
     ]
 }

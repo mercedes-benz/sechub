@@ -306,7 +306,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                         requestFields(
                                                 fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
                                                 fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URI).description("Webscan URI to scan for").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URL).description("Webscan URI to scan for").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_MAX_SCAN_DURATION+"."+WebScanDurationConfiguration.PROPERTY_DURATION).description("Duration of the scan as integer").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_MAX_SCAN_DURATION+"."+WebScanDurationConfiguration.PROPERTY_UNIT).description("Unit of the duration. Possible values are: millisecond(s), second(s), minute(s), hour(s), day(s)").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_INCLUDES+"[]").description("Include URL sub-paths to scan. Example: /hidden").optional(),
@@ -365,7 +365,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                         requestFields(
                                                 fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
                                                 fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URI).description("Webscan URI to scan for").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URL).description("Webscan URI to scan for").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN).description("Webscan login definition").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+".url").description("Login URL").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_BASIC).description("basic login definition").optional(),
@@ -457,7 +457,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                         requestFields(
                                             fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
     										fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
-    										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URI).description("Webscan URI to scan for").optional(),
+    										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URL).description("Webscan URI to scan for").optional(),
     										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN).description("Webscan login definition").optional(),
     										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+".url").description("Login URL").optional(),
     										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM).description("form login definition").optional(),

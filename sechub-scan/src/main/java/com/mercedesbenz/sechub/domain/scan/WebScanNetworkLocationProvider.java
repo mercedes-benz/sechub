@@ -29,7 +29,7 @@ public class WebScanNetworkLocationProvider implements NetworkLocationProvider {
         /* Fetch URL */
         SecHubWebScanConfiguration secHubWebScanConfiguration = webscan.get();
 
-        URI uri = secHubWebScanConfiguration.getUri();
+        URI uri = secHubWebScanConfiguration.getUrl();
         if (uri == null) {
             throw new IllegalStateException("At this state the URI must be set - validation failed!");
         }

@@ -21,6 +21,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.pds.job.JobConfigurationData;
 import com.mercedesbenz.sechub.pds.job.PDSCheckJobStatusService;
+import com.mercedesbenz.sechub.pds.job.PDSGetJobStreamService;
 import com.mercedesbenz.sechub.pds.job.PDSJobTransactionService;
 import com.mercedesbenz.sechub.pds.job.PDSWorkspacePreparationResult;
 import com.mercedesbenz.sechub.pds.job.PDSWorkspaceService;
@@ -32,6 +33,7 @@ class PDSExecutionCallableTest {
     private PDSWorkspaceService workspaceService;
     private PDSExecutionEnvironmentService environmentService;
     private PDSCheckJobStatusService jobStatusService;
+    private PDSGetJobStreamService pdsGetJobStreamService;
     private UUID jobUUID;
     private PDSExecutionCallable callableToTest;
     private PDSProcessAdapterFactory processAdapterFactory;
@@ -68,6 +70,7 @@ class PDSExecutionCallableTest {
         workspaceService = mock(PDSWorkspaceService.class);
         environmentService = mock(PDSExecutionEnvironmentService.class);
         jobStatusService = mock(PDSCheckJobStatusService.class);
+        pdsGetJobStreamService = mock(PDSGetJobStreamService.class);
         processAdapterFactory = mock(PDSProcessAdapterFactory.class);
         processAdapter = mock(ProcessAdapter.class);
         processHandlingFactory = mock(ProcessHandlingDataFactory.class);
@@ -107,6 +110,7 @@ class PDSExecutionCallableTest {
         PDSExecutionCallableServiceCollection serviceCollection = mock(PDSExecutionCallableServiceCollection.class);
         when(serviceCollection.getEnvironmentService()).thenReturn(environmentService);
         when(serviceCollection.getJobStatusService()).thenReturn(jobStatusService);
+        when(serviceCollection.getPdsGetJobStreamService()).thenReturn(pdsGetJobStreamService);
         when(serviceCollection.getJobTransactionService()).thenReturn(jobTransactionService);
         when(serviceCollection.getProcessAdapterFactory()).thenReturn(processAdapterFactory);
         when(serviceCollection.getWorkspaceService()).thenReturn(workspaceService);

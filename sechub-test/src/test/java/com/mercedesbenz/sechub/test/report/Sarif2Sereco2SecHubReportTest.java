@@ -6,6 +6,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 
 /**
@@ -34,7 +37,7 @@ public class Sarif2Sereco2SecHubReportTest {
         String reportName = "example1_owasp_zap_report";
 
         String sarifJson = loadSarifReport(reportName);
-        String expectedSecHubJson = loadSecHubReport(reportName);
+        String expectedSecHubJson = loadExpectedSecHubReportOutputFile(reportName);
 
         String sechubJobUUID = "f5fdccc6-45d1-4b41-972c-08ff9ee0dddb";
 
@@ -42,7 +45,9 @@ public class Sarif2Sereco2SecHubReportTest {
         String sechubJson = transformSarifToSecHubReportJSON(sarifJson, ProductIdentifier.PDS_WEBSCAN, sechubJobUUID);
 
         /* test */
-        assertEquals(expectedSecHubJson, sechubJson);
+        assertNotEquals(expectedSecHubJson, sechubJson);
+        String prettyprinted = prettyPrintJson(sechubJson);
+        assertEquals(expectedSecHubJson, prettyprinted);
     }
 
     @Test
@@ -51,7 +56,7 @@ public class Sarif2Sereco2SecHubReportTest {
         String reportName = "example2_artificial_data";
 
         String sarifJson = loadSarifReport(reportName);
-        String expectedSecHubJson = loadSecHubReport(reportName);
+        String expectedSecHubJson = loadExpectedSecHubReportOutputFile(reportName);
 
         String sechubJobUUID = "f5fdccc6-45d1-4b42-972c-08ff9ee0dddb";
 
@@ -59,7 +64,20 @@ public class Sarif2Sereco2SecHubReportTest {
         String sechubJson = transformSarifToSecHubReportJSON(sarifJson, ProductIdentifier.PDS_WEBSCAN, sechubJobUUID);
 
         /* test */
-        assertEquals(expectedSecHubJson, sechubJson);
+        assertNotEquals(expectedSecHubJson, sechubJson);
+        String prettyprinted = prettyPrintJson(sechubJson);
+        assertEquals(expectedSecHubJson, prettyprinted);
+    }
+
+    private String prettyPrintJson(String json) {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode read;
+        try {
+            read = mapper.readTree(json);
+        } catch (JsonProcessingException e) {
+            throw new IllegalStateException("Cannot pretty print", e);
+        }
+        return read.toPrettyString();
     }
 
 }

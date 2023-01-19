@@ -3,6 +3,6 @@
 	"apiVersion": "1.0",
 
 	"webScan"   : {
-        "uri": "https://netsparker.productfailure.demo.example.org"
+        "url": "https://netsparker.productfailure.demo.example.org"
     }
 }

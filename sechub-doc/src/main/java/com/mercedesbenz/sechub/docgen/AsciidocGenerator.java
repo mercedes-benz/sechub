@@ -8,9 +8,6 @@ import java.util.Set;
 
 import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-
 import com.mercedesbenz.sechub.docgen.messaging.DomainMessagingFilesGenerator;
 import com.mercedesbenz.sechub.docgen.messaging.DomainMessagingModel;
 import com.mercedesbenz.sechub.docgen.messaging.UseCaseEventMessageLinkAsciidocGenerator;
@@ -28,6 +25,9 @@ import com.mercedesbenz.sechub.docgen.usecase.UseCaseRestDocModelAsciiDocGenerat
 import com.mercedesbenz.sechub.docgen.util.ClasspathDataCollector;
 import com.mercedesbenz.sechub.docgen.util.TextFileWriter;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
+
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 
 public class AsciidocGenerator implements Generator {
 
