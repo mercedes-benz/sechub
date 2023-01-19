@@ -16,6 +16,7 @@ import org.springframework.core.task.TaskExecutor;
 import com.mercedesbenz.sechub.commons.model.JSONConverterException;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.domain.scan.log.ProjectScanLogService;
+import com.mercedesbenz.sechub.domain.scan.product.AnalyticsProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.CodeScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.InfrastructureScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.LicenseScanProductExecutionService;
@@ -61,6 +62,7 @@ public class ScanServiceTest {
     private ScanProgressMonitorFactory monitorFactory;
     private LicenseScanProductExecutionService licenseScanProductExecutionService;
     private ProductExecutionServiceContainer productExecutionServiceContainer;
+    private AnalyticsProductExecutionService analyticsProductExecutionService;
     private static final SecHubConfiguration SECHUB_CONFIG = new SecHubConfiguration();
 
     @Before
@@ -80,6 +82,8 @@ public class ScanServiceTest {
         codeScanProductExecutionService = mock(CodeScanProductExecutionService.class);
         infrastructureScanProductExecutionService = mock(InfrastructureScanProductExecutionService.class);
         licenseScanProductExecutionService = mock(LicenseScanProductExecutionService.class);
+        analyticsProductExecutionService = mock(AnalyticsProductExecutionService.class);
+        
         scanLogService = mock(ProjectScanLogService.class);
 
         reportService = mock(CreateScanReportService.class);
@@ -95,6 +99,7 @@ public class ScanServiceTest {
         when(productExecutionServiceContainer.getInfraScanProductExecutionService()).thenReturn(infrastructureScanProductExecutionService);
         when(productExecutionServiceContainer.getCodeScanProductExecutionService()).thenReturn(codeScanProductExecutionService);
         when(productExecutionServiceContainer.getLicenseScanProductExecutionService()).thenReturn(licenseScanProductExecutionService);
+        when(productExecutionServiceContainer.getAnalyticsProductExecutionService()).thenReturn(analyticsProductExecutionService);
 
         serviceToTest.reportService = reportService;
         serviceToTest.storageService = storageService;
