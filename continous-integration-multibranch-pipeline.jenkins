@@ -27,7 +27,7 @@ pipeline {
         stage('Initialize') {
             steps {
                 script{
-                    sechubGitBranch = sh(returnStdout: true, script: "git branch | grep \\* | cut -d ' ' -f2").trim()
+                    sechubGitBranch = sh(returnStdout: true, script: "git rev-parse --abbrev-ref HEAD 2>/dev/null").trim()
                     echo "Branch is $sechubGitBranch"
                     if( sechubGitBranch == "master" ) {
                         echo "Cancel build, because master is built by release-pipeline.jenkins!"
