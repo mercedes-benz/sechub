@@ -20,7 +20,8 @@ name: sechub-server
 memory:
   # Memory for the SecHub server container (increase to e.g. 3Gi for larger installations)
   container: 1Gi
-  # Maximum memory usage percentage accepted by sechub system. Can be a value from 50 up to 100 for 100%
+  # Maximum memory usage in percent. The SecHub server will stop scheduling new jobs if the percent of memory is exceeded.
+  # Can be a value from 50 up to 100 for 100%
   maxPercentage: 95
 
 server:
@@ -32,6 +33,10 @@ server:
     # SecHub base url for users. Can also be an ip address like https://10.10.10.10
     userAccess: https://to.be.defined
   # db connection - can be omitted when using spring profile `h2` (in-memory db)
+  # ! But caution: You can only use `h2` with _one_ SecHub server (replicaCount=1)!
+  # !              As soon as you deploy a cluster, you must set up a shared database.
+  # Put the database user id  in k8s secret secret-database:spring_datasource_username
+  # Put the database password in k8s secret secret-database:spring_datasource_password
   databaseConnection: "jdbc:postgresql://postgres-db:5432/sechub"
   # Configure emails sent from SecHub server:
   email:
@@ -144,8 +149,14 @@ storage:
 
 volumes:
   tmpVolume:
+    enabled: false
     # Size of /tmp in container
     size: 10Gi
+    # Storage type to use
+    # Possible values:
+    # - emptyDir (See https://kubernetes.io/docs/concepts/storage/volumes/#emptydir)
+    # - genericEphemeral (See https://kubernetes.io/docs/concepts/storage/ephemeral-volumes/#generic-ephemeral-volumes)
+    type: genericEphemeral
 
 webScan:
   # Strategy to distinguish intranet/internet targets for DAST/ web scans
@@ -171,7 +182,7 @@ deploymentComment: "my deployment comment"
 # --------------------------------------------------------------------------------------------- #
 
 # ------------------------------------------------------------------------------------- #
-# Checkmarx adapter (Deprecation warning: this adapter is not being developed further)
+# Checkmarx adapter (Deprecation warning: Please use PDS-Checkmarx instead)
 # ------------------------------------------------------------------------------------- #
 adapterCheckmarx:
   enabled: false
@@ -184,8 +195,7 @@ adapterCheckmarx:
   checkIntervalInMinutes: 1
   # Time in minutes when adapter result check will be canceled/time out. When -1 timeout is 7200 minutes
   timeoutInMinutes: 600
-  # Team ID of a newly created Checkmarx project.
-  # For project creation, a team must be defined.
+  # Checkmarx Team ID of a newly created project.
   # This value is a fallback if scan config is not set (scan config does this in a dynamic way by inspecting project names)
   newProjectCheckmarxTeamID: 2
   # Turns off ssl certificate validation. Should only be used in test or development environments!
@@ -225,6 +235,8 @@ adapterNetsparker:
 # ------------------------------------------------------------------------------------- #
 # PDS-Checkmarx adapter
 # ------------------------------------------------------------------------------------- #
+# Using this adapter, you can integrate a Checkmarx server for code scans into SecHub.
+# Please refer to `sechub-pds-solutions/checkmarx/` on how to configure the PDS-Checkmarx adapter.
 pdsCheckmarx:
   enabled: false
   # Put the user id  of PDS-Checkmarx in k8s secret secret-pds-checkmarx:techuser_username

@@ -30,10 +30,14 @@ spec:
         runAsGroup: {{ .Values.runAs.gid }} # group id of the application group. (overrides setings in the Dockerfile)
         fsGroup: {{ .Values.runAs.gid }}    # group id of the application group. This group has write access to the volumes.
       volumes:
+{{- if ne .Values.server.ssl.keystoreAlias "undefined" }}
         - name: secret-ssl
           secret:
             secretName: secret-ssl
+{{- end }}
+{{- if .Values.volumes.tmpVolume.enabled }}
         - name: tmp-volume
+  {{- if eq .Values.volumes.tmpVolume.type "genericEphemeral" }}
           ephemeral:
             volumeClaimTemplate:
               metadata:
@@ -44,6 +48,12 @@ spec:
                 resources:
                   requests:
                     storage: "{{ .Values.volumes.tmpVolume.size }}"
+  {{- end }}
+  {{- if eq .Values.volumes.tmpVolume.type "emptyDir" }}
+          emptyDir:
+            sizeLimit: "{{ .Values.volumes.tmpVolume.size }}"
+  {{- end }}
+{{- end }}
       containers: # which containers shall be inside my pod...
       - name: sechub-server
         image: {{ .Values.image.registry }}:{{ .Values.image.tag }}
@@ -79,10 +89,14 @@ spec:
           successThreshold: 1
           timeoutSeconds: 3
         volumeMounts:
-          - mountPath: /home/javarun/secret-ssl
+{{- if ne .Values.server.ssl.keystoreAlias "undefined" }}
+          - mountPath: /sechub/secrets/secret-ssl
             name: secret-ssl
+{{- end }}
+{{- if .Values.volumes.tmpVolume.enabled }}
           - mountPath: "/tmp"
             name: tmp-volume
+{{- end }}
         env:
         # Server profile definition
         - name: SPRING_PROFILES_ACTIVE
@@ -178,12 +192,32 @@ spec:
         # Base url for administration server - e.g. https://sechub.example.com:8443
         - name: SECHUB_SERVER_ADMINISTRATION_BASEURL
           value: "{{ .Values.server.baseURL.adminAccess }}"
-        # NPM for adminstrator emails
+        # Email address of the SecHub administrators. Informations about scheduler stop/start, new users etc. will go there.
         - name: SECHUB_NOTIFICATION_EMAIL_ADMINISTRATORS
           value: "{{ .Values.server.adminEmail }}"
+# ----------------------------------------------------------------------------------------------#
+# - Scope: create
+# --------------------------------------------------------------------------------------------- #
+        # Time in milliseconds how long the download of an api token is possible
+        - name: SECHUB_USER_ONETIMETOKEN_OUTDATED_MILLIS
+          value: "{{ .Values.server.validityOnetimetokenInMilliseconds | int64 }}"
+# ----------------------------------------------------------------------------------------------#
+# - Scope: development
+# --------------------------------------------------------------------------------------------- #
+        # Developers can turn on this mode to have reports creating with external css. Normally the html model builder will create embedded css content
+        - name: SECHUB_DEVELOPMENT_WEBDESIGNMODE_ENABLED
+          value: "false"
+        - name: JAVA_ENABLE_DEBUG
+          value: "{{ .Values.server.javaEnableDebug | toString }}"
+# ----------------------------------------------------------------------------------------------#
+# - Scope: mock
+# --------------------------------------------------------------------------------------------- #
+        # When email mock shall cache the mails this must be configured to true, per default disabled!
+        - name: SECHUB_NOTIFICATION_EMAIL_MOCK_CACHE_ENABLED
+          value: "false"
 {{- if .Values.adapterCheckmarx.enabled }}
 # ----------------------------------------------------------------------------------------------#
-# - Scope: Checkmarx
+# - Scope: Checkmarx (Deprecation warning: Please use PDS-Checkmarx instead)
 # --------------------------------------------------------------------------------------------- #
         # Base url of your Checkmarx server
         - name: SECHUB_ADAPTER_CHECKMARX_BASEURL
@@ -223,26 +257,6 @@ spec:
         - name: SECHUB_ADAPTER_CHECKMARX_TRUSTALL
           value: "{{ .Values.adapterCheckmarx.trustAnyCertificate | toString }}"
 {{- end }}
-# ----------------------------------------------------------------------------------------------#
-# - Scope: create
-# --------------------------------------------------------------------------------------------- #
-        # Time in milliseconds how long the download of an api token is possible
-        - name: SECHUB_USER_ONETIMETOKEN_OUTDATED_MILLIS
-          value: "{{ .Values.server.validityOnetimetokenInMilliseconds | int64 }}"
-# ----------------------------------------------------------------------------------------------#
-# - Scope: development
-# --------------------------------------------------------------------------------------------- #
-        # Developers can turn on this mode to have reports creating with external css. Normally the html model builder will create embedded css content
-        - name: SECHUB_DEVELOPMENT_WEBDESIGNMODE_ENABLED
-          value: "false"
-        - name: JAVA_ENABLE_DEBUG
-          value: "{{ .Values.server.javaEnableDebug | toString }}"
-# ----------------------------------------------------------------------------------------------#
-# - Scope: mock
-# --------------------------------------------------------------------------------------------- #
-        # When email mock shall cache the mails this must be configured to true, per default disabled!
-        - name: SECHUB_NOTIFICATION_EMAIL_MOCK_CACHE_ENABLED
-          value: "false"
 {{- if .Values.adapterNessus.enabled }}
 # ----------------------------------------------------------------------------------------------#
 # - Scope: Nessus (Deprecation warning: this adapter is not being developed further)
@@ -449,8 +463,7 @@ spec:
 # - Scope: scheduler
 # --------------------------------------------------------------------------------------------- #
         # Job scheduling is activated in intervals
-        # To avoid schedulers running always on same time in a cluster, we also have
-        # SECHUB_CONFIG_TRIGGER_NEXTJOB_INITIALDELAY which is set to a random value by run.sh
+        # SECHUB_CONFIG_TRIGGER_NEXTJOB_DELAY is the delay after which the scheduler looks for the next job
         - name: SECHUB_CONFIG_TRIGGER_NEXTJOB_DELAY
           value: "{{ .Values.server.jobScheduling.activationIntervalInMilliseconds | int64 }}"
         # Scheduler strategy
@@ -533,20 +546,20 @@ spec:
         - name: SECHUB_MONITORING_ACCEPTED_MEMORY_USAGE_MAX
           value: "{{ .Values.memory.maxPercentage }}"
 # ----------------------------------------------------------------------------------------------#
-# - Scope: target
+# - Scope: Network scan target
 # --------------------------------------------------------------------------------------------- #
-        # *Strategy to decide intranet/internet targets by given URI.*
+        # *Strategy to decide intranet/internet targets for a given URI.*
         # Starts always with strategy-identifer, colon and value(s). Currently only 'intranet-hostname-ends-with' is supported as strategy.
         # For example: `intranet-hostname-ends-with::intranet.example.org,intx.example.com`.
         # All other hostnames are considered as INTERNET hosts.
-        # But no matter if strategy is defined or not: loopback addresses are always ignored.
+        # Regardless of the strategy: loopback addresses are always ignored.
         - name: SECHUB_TARGET_RESOLVE_STRATEGY_URI
           value: "{{ .Values.webScan.intranetDetection.uriPattern }}"
-        # *Strategy to decide intranet/internet targets by given IP.*
+        # *Strategy to decide intranet/internet targets for a given IP.*
         # Starts always with strategy-identifer, colon and value(s). Currently only 'intranet-ip-pattern' is supported as strategy.
         # For example: `intranet-ip-pattern:192.168.178.*,[2001:db8:85a3:0:0:8a2e:370:*]`.
         # All other hostnames are considered as INTERNET hosts.
-        # But no matter if strategy is defined or not: loopback addresses are always ignored.
+        # Regardless of the strategy: loopback addresses are always ignored.
         - name: SECHUB_TARGET_RESOLVE_STRATEGY_IP
           value: "{{ .Values.webScan.intranetDetection.ipPattern }}"
 {{- if .Values.image.imagePullSecrets }}
