@@ -27,7 +27,7 @@ pipeline {
         stage('Initialize') {
             steps {
                 script{
-                    sechubGitBranch = sh(returnStdout: true, script: "git branch | grep \\* | cut -d ' ' -f2").trim()
+                    sechubGitBranch = "${env.GIT_BRANCH}"
                     echo "Branch is $sechubGitBranch"
                     if( sechubGitBranch == "master" ) {
                         echo "Cancel build, because master is built by release-pipeline.jenkins!"
@@ -144,17 +144,17 @@ pipeline {
     post {
         failure {
             emailext (
-                subject:"[ BUILD FAILED ] Build:${env.BUILD_NUMBER}, branch: $sechubGitBranch",
+                subject:"[ BUILD FAILED ] Branch: $sechubGitBranch, build #${env.BUILD_NUMBER}",
                 body:"CI build for branch '$sechubGitBranch' failed.\n"+
-                     "${env.BUILD_URL}",
+                     "${env.BUILD_URL}/console",
                 to: '$DEFAULT_RECIPIENTS'
             )
         }
         fixed {
             emailext (
-                subject:"[ BUILD FIXED ] Build:${env.BUILD_NUMBER}, branch: $sechubGitBranch",
+                subject:"[ BUILD FIXED ] Branch: $sechubGitBranch, build #${env.BUILD_NUMBER}",
                 body:"CI build for branch '$sechubGitBranch' has been fixed.\n"+
-                     "${env.BUILD_URL}",
+                     "${env.BUILD_URL}/console",
                 to: '$DEFAULT_RECIPIENTS'
             )
         }
