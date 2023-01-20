@@ -8,14 +8,10 @@ server:
     enabled: true # always enabled
     protocol: TLS
     enabled-protocols: TLSv1.2,TLSv1.3
-
-sechub:
-  serverUrl: "https://localhost:8443"
-  trustAllCertificates: true
   
 spring:
   messages:
-    basename: "languages/messages"
+    basename: "i18n/messages"
   profiles:
      group: 
         dev: "localserver"

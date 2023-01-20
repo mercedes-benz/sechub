@@ -6,10 +6,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SecHubServerAccessService {
-    @Value("${sechub.serverUrl}")
+    @Value("${sechub.server-url}")
     private String secHubServerUrl;
 
-    @Value("${sechub.trustAllCertificates}")
+    @Value("${sechub.trust-all-certificates}")
     private boolean trustAllCertificates;
 
     public String getSecHubServerUrl() {

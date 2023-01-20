@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.webui.SecHub.WebUI.system;
+package com.mercedesbenz.sechub.webui.SecHub.WebUI;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -19,7 +19,7 @@ import com.mercedesbenz.sechub.webui.SecHubServerAccessService;
 /*
  * This test launches a real HTTP Server (Netty) during the test.
  *
- * The RANDOM_PORT setting will the start the test application on an available port on the system.
+ * The RANDOM_PORT setting starts the test application on an available port on the system.
  *
  * The operating system is responsible for allocating the port and it is guaranteed to be available (source: https://stackoverflow.com/a/48923117).
  * As a result, there should never be any conflict with the ports, even if tests are running in parallel.
@@ -30,7 +30,7 @@ import com.mercedesbenz.sechub.webui.SecHubServerAccessService;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
 @ActiveProfiles("test")
-class SecHubWebUiApplicationTests {
+class SecHubWebUiApplicationSpringBootTest {
 
     @Autowired
     private WebTestClient webTestClient;

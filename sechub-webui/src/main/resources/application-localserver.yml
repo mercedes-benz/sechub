@@ -1,9 +1,3 @@
-# Localserver profile
-spring:
-  config:
-    activate:
-      on-profile: "localserver"
-      
 server:
   ssl:
     key-store-type:
@@ -16,3 +10,7 @@ server:
       123456
     key-alias:
        tomcat
+       
+sechub:
+  server-url: "https://localhost:8443"
+  trust-all-certificates: true

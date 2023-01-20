@@ -358,3 +358,12 @@ We use `${restControllerClassName}RestDocTest.java` as name pattern to find `Res
 
 TIP: Having always the Controllers and also the necessary `@MockBean` annotations as spring test
      dependency this will reduce the boilerplate code to one location...
+     
+[[section-coding-convention-systemtest]]
+===== System tests
+
+System tests are tests which test the entire application.
+
+====== Naming
+
+The name pattern `${nameOfClassToTest}SystemTest.java` is used to find system tests.

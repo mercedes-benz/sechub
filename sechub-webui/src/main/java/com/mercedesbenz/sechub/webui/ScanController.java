@@ -7,7 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class ScansController {
+public class ScanController {
     @Autowired
     SecHubServerAccessService accessSerivce;
 
