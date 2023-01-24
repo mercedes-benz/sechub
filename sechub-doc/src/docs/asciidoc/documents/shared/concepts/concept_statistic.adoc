@@ -1,0 +1,13 @@
+[[section-statistic]]
+For statistic data handling exists an own domain `statistic`. The data is collected in
+dedicated statistic SQL tables.
+
+[IMPORTANT]
+====
+Statistic data is NOT auto cleaned.
+====
+
+ifdef::techdoc[]
+include::concept_statistic_techdoc.adoc[]
+endif::techdoc[]   
+

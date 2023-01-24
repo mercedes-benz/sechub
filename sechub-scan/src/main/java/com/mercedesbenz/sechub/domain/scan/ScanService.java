@@ -78,6 +78,7 @@ public class ScanService implements SynchronMessageHandler {
     @Autowired
     ScanProgressMonitorFactory monitorFactory;
 
+    
     @MustBeDocumented("Define delay in milliseconds, for before next job cancellation check will be executed.")
     @Value("${sechub.config.check.canceljob.delay:" + DEFAULT_CHECK_CANCELJOB_DELAY_MILLIS + "}")
     private int millisecondsToWaitBeforeCancelCheck = DEFAULT_CHECK_CANCELJOB_DELAY_MILLIS;
@@ -89,7 +90,7 @@ public class ScanService implements SynchronMessageHandler {
         SecHubExecutionContext context = null;
         try {
             context = createExecutionContext(request);
-
+            
             executeScan(context, request);
 
             ScanReport report = reportService.createReport(context);

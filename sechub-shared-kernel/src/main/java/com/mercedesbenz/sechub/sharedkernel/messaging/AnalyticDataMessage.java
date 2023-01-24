@@ -12,44 +12,30 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.mercedesbenz.sechub.commons.core.MustBeKeptStable;
 import com.mercedesbenz.sechub.commons.model.JSONable;
-import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.sharedkernel.analytic.AnalyticData;
 
 /**
- * This message data object contains all possible information about a project
+ * This message data object contains analytic message data
  *
  * @author Albert Tregnaghi
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true) // we do ignore to avoid problems from wrong configured values!
-@MustBeKeptStable("This configuration is used by communication between (api) schedule domain and administration - and maybe others")
-public class JobMessage implements JSONable<JobMessage> {
+@MustBeKeptStable("This configuration is used by communication between different domain layers and the statistic domain")
+public class AnalyticDataMessage implements JSONable<AnalyticDataMessage> {
 
     private UUID jobUUID;
 
     private String projectId;
 
-    private String owner;
-
     private String info;
 
-    private String configuration;
+    private AnalyticData analyticData;
 
     @JsonFormat(pattern = ("yyyy/MM/dd HH:mm:ss"))
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime since;
-
-    private String ownerEmailAddress;
-
-    private TrafficLight trafficLight;
-
-    public String getOwner() {
-        return owner;
-    }
-
-    public void setOwner(String owner) {
-        this.owner = owner;
-    }
 
     public String getInfo() {
         return info;
@@ -59,12 +45,12 @@ public class JobMessage implements JSONable<JobMessage> {
         this.info = info;
     }
 
-    public String getConfiguration() {
-        return configuration;
+    public AnalyticData getAnalyticData() {
+        return analyticData;
     }
 
-    public void setConfiguration(String configuration) {
-        this.configuration = configuration;
+    public void setAnalyticData(AnalyticData analyticData) {
+        this.analyticData = analyticData;
     }
 
     public void setSince(LocalDateTime date) {
@@ -76,8 +62,8 @@ public class JobMessage implements JSONable<JobMessage> {
     }
 
     @Override
-    public Class<JobMessage> getJSONTargetClass() {
-        return JobMessage.class;
+    public Class<AnalyticDataMessage> getJSONTargetClass() {
+        return AnalyticDataMessage.class;
     }
 
     public void setProjectId(String projectId) {
@@ -94,22 +80,6 @@ public class JobMessage implements JSONable<JobMessage> {
 
     public UUID getJobUUID() {
         return jobUUID;
-    }
-
-    public void setOwnerEmailAddress(String emailAdress) {
-        this.ownerEmailAddress = emailAdress;
-    }
-
-    public String getOwnerEmailAddress() {
-        return ownerEmailAddress;
-    }
-
-    public void setTrafficLight(TrafficLight trafficLight) {
-        this.trafficLight=trafficLight;
-    }
-    
-    public TrafficLight getTrafficLight() {
-        return trafficLight;
     }
 
 }

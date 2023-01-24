@@ -37,5 +37,10 @@ include::../shared/concepts/concept_auto_clean.adoc[]
 
 include::../shared/concepts/pds-solutions/concept_pds_solution.adoc[]
 
+=== Analytics
+include::../shared/concepts/concept_analytic.adoc[]
+
+=== Statistics
+include::../shared/concepts/concept_statistic.adoc[]
 
 

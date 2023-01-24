@@ -35,6 +35,8 @@ include 'sechub-cli',
 'sechub-scan-product-sereco',
 'sechub-scan-product-pds',
 
+'sechub-statistic',
+
 // adapters
 'sechub-adapter',
 'sechub-adapter-netsparker',

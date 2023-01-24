@@ -6,14 +6,22 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubLicenseScanConfiguration;
 import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
+import com.mercedesbenz.sechub.domain.scan.analytic.AnalyticDataImportService;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
+import com.mercedesbenz.sechub.sharedkernel.analytic.AnalyticData;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.messaging.AnalyticDataMessage;
+import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
+import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
+import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
+import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 
 /**
  * This service executes all registered product executors having scan type
@@ -27,9 +35,37 @@ public class AnalyticsProductExecutionServiceImpl extends AbstractProductExecuti
 
     private static final Logger LOG = LoggerFactory.getLogger(AnalyticsProductExecutionServiceImpl.class);
 
+    @Autowired
+    AnalyticDataImportService analyticDataImportService;
+    
+    @Autowired
+    DomainMessageService domainMessageService;
+    
     @Override
     protected void afterProductResultsStored(List<ProductResult> productResults, SecHubExecutionContext context) {
         LOG.debug("{} analytics product results stored.", productResults.size());
+        
+        /* import product results into analytic data model */
+        AnalyticData analyticData = context.getAnalyticData();
+        
+        for (ProductResult productResult: productResults) {
+            String analyticDataAsString = productResult.getResult();
+            
+            analyticDataImportService.importAnalyticDataIntoModel(analyticDataAsString, analyticData);
+        }
+        
+        sendAnalyticDataAvailableEvent(analyticData);
+        
+    }
+
+    private void sendAnalyticDataAvailableEvent(AnalyticData analyticDataModel) {
+        DomainMessage domainMessage= new DomainMessage(MessageID.ANALYZE_SCAN_RESULTS_AVAILABLE);
+        
+        AnalyticDataMessage analyticDataMessage = new AnalyticDataMessage();
+        analyticDataMessage.setAnalyticData(analyticDataModel);
+        
+        domainMessage.set(MessageDataKeys.ANALYTIC_SCAN_RESULT_DATA, analyticDataMessage);
+        domainMessageService.sendAsynchron(domainMessage);
     }
 
     public boolean isExecutionNecessary(SecHubExecutionContext context, UUIDTraceLogID traceLogID, SecHubConfiguration configuration) {

@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
+import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.domain.schedule.ExecutionResult;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.sharedkernel.LogConstants;
@@ -73,13 +74,13 @@ class SynchronSecHubJobExecutor {
 
                     updateSecHubJob(secHubJobUUID, response);
 
-                    sendJobDoneMessageWhenNotAbandonded(secHubJobUUID, response);
+                    sendJobDoneMessage(secHubJobUUID, response);
 
                 } catch (Exception e) {
                     LOG.error("Error happend at spring batch task execution:" + e.getMessage(), e);
 
                     markSechHubJobFailed(secHubJobUUID);
-                    sendJobFailed(secHubJobUUID);
+                    sendJobFailed(secHubJobUUID, TrafficLight.OFF);
 
                 } finally {
                     /* cleanup MDC */
@@ -91,9 +92,12 @@ class SynchronSecHubJobExecutor {
         scanThread.start();
     }
 
-    private void sendJobDoneMessageWhenNotAbandonded(UUID secHubJobUUID, DomainMessageSynchronousResult response) {
+    private void sendJobDoneMessage(UUID secHubJobUUID, DomainMessageSynchronousResult response) {
         LOG.debug("Will send job done message for: {}", secHubJobUUID);
-        sendJobDone(secHubJobUUID);
+        
+        String trafficLightAsString = response.get(MessageDataKeys.REPORT_TRAFFIC_LIGHT);
+        
+        sendJobDone(secHubJobUUID, TrafficLight.fromString(trafficLightAsString));
     }
 
     private void markSechHubJobFailed(UUID secHubJobUUID) {
@@ -127,18 +131,19 @@ class SynchronSecHubJobExecutor {
     }
 
     @IsSendingAsyncMessage(MessageID.JOB_DONE)
-    private void sendJobDone(UUID jobUUID) {
-        sendJobInfo(MessageDataKeys.JOB_DONE_DATA, jobUUID, MessageID.JOB_DONE);
+    private void sendJobDone(UUID jobUUID, TrafficLight trafficLight) {
+        sendJobInfoWithTrafficLight(MessageDataKeys.JOB_DONE_DATA, jobUUID, MessageID.JOB_DONE, trafficLight);
     }
 
     @IsSendingAsyncMessage(MessageID.JOB_FAILED)
-    private void sendJobFailed(UUID jobUUID) {
-        sendJobInfo(MessageDataKeys.JOB_FAILED_DATA, jobUUID, MessageID.JOB_FAILED);
+    private void sendJobFailed(UUID jobUUID, TrafficLight trafficLight) {
+        sendJobInfoWithTrafficLight(MessageDataKeys.JOB_FAILED_DATA, jobUUID, MessageID.JOB_FAILED, trafficLight);
     }
 
-    private void sendJobInfo(MessageDataKey<JobMessage> key, UUID jobUUID, MessageID id) {
+    private void sendJobInfoWithTrafficLight(MessageDataKey<JobMessage> key, UUID jobUUID, MessageID id, TrafficLight trafficLight) {
         DomainMessage request = new DomainMessage(id);
         JobMessage message = createMessage(jobUUID);
+        message.setTrafficLight(trafficLight);
 
         request.set(key, message);
 

@@ -3,6 +3,9 @@ package com.mercedesbenz.sechub.domain.schedule;
 
 import static com.mercedesbenz.sechub.domain.schedule.job.SecHubJobTraceLogID.*;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -17,6 +20,12 @@ import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobTraceLogID;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
+import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
+import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
+import com.mercedesbenz.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
+import com.mercedesbenz.sechub.sharedkernel.messaging.JobMessage;
+import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
+import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserCreatesNewJob;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 
@@ -36,6 +45,9 @@ public class SchedulerCreateJobService {
 
     @Autowired
     UserInputAssertion assertion;
+    
+    @Autowired
+    DomainMessageService domainMessageService;
 
     @Validated
     @UseCaseUserCreatesNewJob(@Step(number = 2, name = "Persistence and result", description = "Persist a new job entry and return Job UUID"))
@@ -54,7 +66,26 @@ public class SchedulerCreateJobService {
 
         SecHubJobTraceLogID traceLogId = traceLogID(secHubJob);
         LOG.info("New job added:{}", traceLogId);
-        return new SchedulerResult(secHubJob.getUUID());
+        
+        UUID sechubJobUUID = secHubJob.getUUID();
+
+        sendJobCreationEvent(sechubJobUUID, projectId, secHubJob.getCreated());
+        
+        return new SchedulerResult(sechubJobUUID);
+    }
+
+    @IsSendingAsyncMessage(MessageID.JOB_CREATED)
+    private void sendJobCreationEvent(UUID sechubJobUUID, String projectId, LocalDateTime localDateTime) {
+        DomainMessage domainMessage = new DomainMessage(MessageID.JOB_CREATED);
+        JobMessage jobData = new JobMessage();
+        
+        jobData.setJobUUID(sechubJobUUID);
+        jobData.setProjectId(projectId);
+        jobData.setSince(localDateTime);
+        
+        domainMessage.set(MessageDataKeys.JOB_CREATED_DATA, jobData);
+        
+        domainMessageService.sendAsynchron(domainMessage);
     }
 
 }

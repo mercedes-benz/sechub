@@ -1,0 +1,25 @@
+[[section-statistic-technical]]
+
+Every data which shall be stored as statistic data is send from other domains via domain 
+message bus.
+
+Here an short overview about the involved event locations:
+
+plantuml::./diagrams/diagram_statistic_events_overview.puml[]
+
+The database contains
+
+- `STATISTIC_JOB` +
+   Inside the table common job statistic data.
+   If a job is started multiple times, we have only ONE entry here. The PK is the job uuid. 
+   
+- `STATISTIC_JOB_EXECUTION` +
+   Here the job execution details can be found.
+   If a job is started multiple times (restarts) we have multiple table rows.
+   The execution uuid from `SecHubExecutionContext` is the primary key here 
+   
+- `STATISTIC_JOB_EXECUTION_DETAILS` +
+   The details contain specific information collected while the job has been executed. +
+   For example: Inside the <<section-analytic,analytic>> phase there could be LOC (lines of code) collected, send as event to this domain and
+   stored here. The format of the table is very generic: We have `type`, `key` and `value` beside
+   the execution uuid which is the FK. 

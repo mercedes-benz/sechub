@@ -50,6 +50,11 @@ public enum MessageID {
     PROJECT_DELETED(MessageDataKeys.PROJECT_DELETE_DATA),
 
     PROJECT_WHITELIST_UPDATED(MessageDataKeys.PROJECT_WHITELIST_UPDATE_DATA),
+    
+    /**
+     * Used when a new sechub job has been created
+     */
+    JOB_CREATED(MessageDataKeys.JOB_CREATED_DATA),
 
     /**
      * Used when a new batch job has been started
@@ -167,7 +172,12 @@ public enum MessageID {
      *
      * contains SecHub job UUID
      */
-    PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE(MessageDataKeys.JOB_CANCEL_DATA);
+    PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE(MessageDataKeys.JOB_CANCEL_DATA),
+    
+    
+    ANALYZE_SCAN_RESULTS_AVAILABLE(MessageDataKeys.ANALYTIC_SCAN_RESULT_DATA),
+    
+    ;
 
     private Set<MessageDataKey<?>> unmodifiableKeys;
 

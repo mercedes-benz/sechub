@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -12,6 +13,7 @@ import com.mercedesbenz.sechub.domain.scan.product.ProductExecutor;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 import com.mercedesbenz.sechub.sharedkernel.TypedKey;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
+import com.mercedesbenz.sechub.sharedkernel.analytic.AnalyticData;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 
 /**
@@ -40,11 +42,18 @@ public class SecHubExecutionContext {
 
     private SecHubExecutionOperationType operationType;
 
+    private LocalDateTime executionStarted;
+    
+    private AnalyticData analyticData;
+
     public SecHubExecutionContext(UUID sechubJobUUID, SecHubConfiguration configuration, String executedBy) {
         this(sechubJobUUID, configuration, executedBy, null);
     }
 
     public SecHubExecutionContext(UUID sechubJobUUID, SecHubConfiguration configuration, String executedBy, SecHubExecutionOperationType operationType) {
+        this.executionStarted=LocalDateTime.now();
+        this.analyticData=new AnalyticData();
+
         this.sechubJobUUID = sechubJobUUID;
         this.executionUUID = UUID.randomUUID();
 
@@ -151,6 +160,14 @@ public class SecHubExecutionContext {
      */
     public UUID getExecutionUUID() {
         return executionUUID;
+    }
+
+    public LocalDateTime getExecutionStarted() {
+        return executionStarted;
+    }
+    
+    public AnalyticData getAnalyticData() {
+        return analyticData;
     }
 
 }

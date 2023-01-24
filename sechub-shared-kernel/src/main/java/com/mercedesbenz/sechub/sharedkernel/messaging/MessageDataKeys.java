@@ -103,6 +103,12 @@ public class MessageDataKeys {
     public static final MessageDataKey<ProjectMessage> PROJECT_WHITELIST_UPDATE_DATA = createProjectMessageKey("project.whitelist.update.data");
 
     /**
+     * Must contain project id, job uuid, and since (as JobMessage)
+     */
+    public static final MessageDataKey<JobMessage> JOB_CREATED_DATA = createJobMessageKey("job.created.data");
+
+    
+    /**
      * Must contain project id, job uuid, json configuration, owner, since
      */
     public static final MessageDataKey<JobMessage> JOB_STARTED_DATA = createJobMessageKey("job.started.data");
@@ -144,6 +150,8 @@ public class MessageDataKeys {
     public static final MessageDataKey<AdministrationConfigMessage> AUTO_CLEANUP_CONFIG_CHANGE_DATA = createAdministrationConfigMessageKey(
             "autocleanup.config.change.data");
 
+    public static final MessageDataKey<AnalyticDataMessage> ANALYTIC_SCAN_RESULT_DATA = createAnalyticsData("analytic.scan.result.data");
+
     /* +-----------------------------------------------------------------------+ */
     /* +............................ Helpers ..................................+ */
     /* +-----------------------------------------------------------------------+ */
@@ -169,6 +177,10 @@ public class MessageDataKeys {
 
     private static MessageDataKey<MappingMessage> createMappingMessageKey(String id) {
         return createKey(id, new MappingMessageDataProvider());
+    }
+
+    private static MessageDataKey<AnalyticDataMessage> createAnalyticsData(String id) {
+        return createKey(id, new AnalyticDataMessageDataProvider());
     }
 
     private static <T> MessageDataKey<T> createKey(String id, MessageDataProvider<T> provider) {

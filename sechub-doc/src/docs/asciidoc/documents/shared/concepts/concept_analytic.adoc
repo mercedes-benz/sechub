@@ -1,0 +1,14 @@
+[[section-analytic]]
+{sechub} can be configured to analyze a scan situation at the beginning to improve runtime behavior or to create statistic data. 
+This is done before all other scans. 
+
+
+[NOTE]
+====
+As usual, different products can be used to provide the analytic data. The analytic scan products can be configured as any other product by defining a <<section-executor-configuration,executor configuration>> and add it to a 
+<<section-initial-profile-and-executors,execution profile>> which can be assigned to {sechub} projects. 
+====
+
+ifdef::techdoc[]
+include::concept_analytic_techdoc.adoc[]
+endif::techdoc[]   

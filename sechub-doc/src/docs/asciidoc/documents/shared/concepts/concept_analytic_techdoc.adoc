@@ -1,0 +1,10 @@
+[[section-analytic-techdoc]]
+The `AnalyticsProductExecutionService` inside the `scan` domain does not only execute and store the product results, but
+also creates an analytic data model after the analytic scan products have been executed.
+
+This data model can be used at runtime by other product executors inside the `scan` domain but also in other domains via domain messaging.
+
+[IMPORTANT]
+====
+Currently the information is not used at runtime by other product executors but only inside <<section-statistic,statistic domain>>. 
+====

@@ -79,6 +79,7 @@ projectType = [
                     project(':sechub-scan-product-checkmarx'),
                     project(':sechub-scan-product-sereco'),
                     project(':sechub-scan-product-pds'),
+                    project(':sechub-statistic'),
             ],
             
             bootableSpringApplicationProjects:[
