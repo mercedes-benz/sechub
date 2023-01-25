@@ -29,11 +29,11 @@ ext {
        * Every version of each additional library NOT being managed by spring boot dependency 
        * management is defined here:
        */                                     
-      dom4j:                                   "2.1.3",
+      dom4j:                                   "2.1.4",
       jsoup:                                   "1.15.3",
       re2j:                                    "1.7",
       logstash_logback_encoder:                "7.2",
-      aws_java_sdk_s3:                         "1.12.376",
+      aws_java_sdk_s3:                         "1.12.390",
       postgresql:                              "42.5.1",
                                               
       /* JDK > 9 needs these ones: */         
@@ -58,14 +58,14 @@ ext {
       s3mock:                                  "2.11.0",
 
       /* gradle plugins */      
-      dependency_check:                        "7.4.3",
+      dependency_check:                        "8.0.1",
       grgit:                                   "5.0.0",
       
       /* documentation */
       asciidoctor_j:                           "2.5.2",
       asciidoctor_j_diagram:                   "2.2.1",
       // openapi3-generator, releases see https://github.com/ePages-de/restdocs-api-spec/releases
-      restDocsApiSpec:                         "0.16.2",
+      restDocsApiSpec:                         "0.16.4",
       
       /* Owasp Zap wrapper */
       owaspzap_client_api:                     "1.11.0",
