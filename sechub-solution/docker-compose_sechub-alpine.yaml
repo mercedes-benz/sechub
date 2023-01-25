@@ -1,0 +1,29 @@
+# SPDX-License-Identifier: MIT
+
+version: "3"
+services:
+  sechub:
+    build:
+      args:
+        - BASE_IMAGE=alpine:3.17
+        - BUILD_TYPE=${BUILD_TYPE}
+        - JAVA_DISTRIBUTION=${JAVA_DISTRIBUTION}
+        - JAVA_VERSION=${JAVA_VERSION}
+        - SECHUB_VERSION=${SECHUB_VERSION}
+        - TAG=${TAG}
+        - BRANCH=${BRANCH}
+      context: docker/
+      dockerfile: SecHub-Alpine.dockerfile
+    container_name: sechub
+    hostname: sechub
+    env_file:
+      - .env
+      - .env-single
+    ports:
+      - "127.0.0.1:8443:8443"
+      - "127.0.0.1:15023:15023"
+    networks:
+      - sechub
+networks:
+  sechub:
+    name: sechub

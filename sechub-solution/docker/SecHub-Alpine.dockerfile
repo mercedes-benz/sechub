@@ -11,7 +11,6 @@ ARG BASE_IMAGE
 ARG BUILD_TYPE="download"
 
 ARG SECHUB_VERSION="0.35.2"
-ARG GO="go1.19.3.linux-amd64.tar.gz"
 ARG TAG=""
 ARG BRANCH=""
 
@@ -48,27 +47,11 @@ RUN echo "Builder: Build"
 
 RUN mkdir --parent "$SECHUB_ARTIFACT_FOLDER" "$DOWNLOAD_FOLDER"
 
-RUN export DEBIAN_FRONTEND=noninteractive && \
-    apt-get update && \
-    apt-get install --quiet --assume-yes wget w3m git && \
-    apt-get clean
+RUN apk update && \
+    apk add wget git && \
+    apk cache clean
 
-# Install Go
-RUN cd "$DOWNLOAD_FOLDER" && \
-    # Get checksum from Go download site
-    GO_CHECKSUM=`w3m https://go.dev/dl/ | grep "$GO" | tail -1 | awk '{print $6}'` && \
-    # create checksum file
-    echo "$GO_CHECKSUM $GO" > "$GO.sha256sum" && \
-    # download Go
-    wget --no-verbose https://go.dev/dl/"${GO}" && \
-    # verify that the checksum and the checksum of the file are same
-    sha256sum --check "$GO.sha256sum" && \
-    # extract Go
-    tar --extract --file "$GO" --directory /usr/local/ && \
-    # remove go tar.gz
-    rm "$GO"
-
-COPY --chmod=755 install-java/debian "$DOWNLOAD_FOLDER/install-java/"
+COPY --chmod=755 install-java/ "$DOWNLOAD_FOLDER/install-java/"
 
 # Install Java
 RUN cd "$DOWNLOAD_FOLDER/install-java/" && \
@@ -102,10 +85,8 @@ RUN echo "Builder: Download"
 
 RUN mkdir --parent "$SECHUB_ARTIFACT_FOLDER"
 
-RUN export DEBIAN_FRONTEND=noninteractive && \
-    apt-get update && \
-    apt-get install --assume-yes wget && \
-    apt-get clean
+RUN apk update && \
+    apk add wget
 
 # Download the SecHub server
 RUN cd "$SECHUB_ARTIFACT_FOLDER" && \
@@ -114,7 +95,7 @@ RUN cd "$SECHUB_ARTIFACT_FOLDER" && \
     # download pds
     wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$SECHUB_VERSION-server/sechub-server-$SECHUB_VERSION.jar" && \
     # verify that the checksum and the checksum of the file are same
-    sha256sum --check "sechub-server-$SECHUB_VERSION.jar.sha256sum"
+    sha256sum -c "sechub-server-$SECHUB_VERSION.jar.sha256sum"
 
 #-------------------
 # Builder Copy Jar
@@ -160,23 +141,20 @@ ARG SECHUB_FOLDER="/sechub"
 
 # non-root user
 # using fixed group and user ids
-RUN groupadd --gid "$GID" "$USER" && \
-    useradd --uid "$UID" --gid "$GID" --no-log-init --create-home "$USER"
+RUN addgroup --gid "$GID" "$USER"
+RUN adduser --uid "$UID" --ingroup "$USER" --disabled-password "$USER"
 
 RUN mkdir --parent "$SECHUB_FOLDER" "$SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR"
 COPY --from=builder "$SECHUB_ARTIFACT_FOLDER" "$SECHUB_FOLDER"
 
-# Upgrade system
-RUN export DEBIAN_FRONTEND=noninteractive && \
-    apt-get update && \
-    apt-get upgrade --assume-yes --quiet && \
-    apt-get clean
-
-COPY --chmod=755 install-java/debian/ "$SECHUB_FOLDER/install-java/"
+COPY --chmod=755 install-java/alpine "$SECHUB_FOLDER/install-java/"
 
 # Install Java
-RUN cd "$SECHUB_FOLDER/install-java/" && \
-    ./install-java.sh "$JAVA_DISTRIBUTION" "$JAVA_VERSION" jre
+#RUN cd "$SECHUB_FOLDER/install-java/" && \
+#    ./install-java.sh "$JAVA_DISTRIBUTION" "$JAVA_VERSION" jre
+
+COPY copy/temurin-17-jre-17.0.5_p8-r0.apk /temurin-17-jre-17.0.5_p8-r0.apk
+RUN apk add --allow-untrusted /temurin-17-jre-17.0.5_p8-r0.apk
 
 # Copy run script into container
 COPY run.sh /run.sh
