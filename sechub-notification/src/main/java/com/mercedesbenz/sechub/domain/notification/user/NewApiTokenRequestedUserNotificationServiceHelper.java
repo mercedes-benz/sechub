@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 
-//@Component
 public class NewApiTokenRequestedUserNotificationServiceHelper {
 
     static final long DEFAULT_OUTDATED_TIME_MILLIS = 86400000;// 1d * 24h * 60m * 60s * 1000ms = one day = 86400000
