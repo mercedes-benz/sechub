@@ -21,7 +21,7 @@ function check_sechub_server_setup() {
     script_name="$1"
     parameters="$2"
 
-    sechub_api="../sechub-developertools/scripts/sechub-api.sh"
+    sechub_api="../../sechub-developertools/scripts/sechub-api.sh"
 
     if [[ -z "$SECHUB_SERVER" ]]
     then
