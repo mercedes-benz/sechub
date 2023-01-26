@@ -32,7 +32,10 @@ public class MessageDataKeys {
     public static final MessageDataKey<String> EXECUTED_BY = createKey("common.executedby", new StringMessageDataProvider());
     public static final MessageDataKey<String> REPORT_TRAFFIC_LIGHT = createKey("report.trafficlight", new StringMessageDataProvider());
     public static final MessageDataKey<SecHubMessagesList> REPORT_MESSAGES = createKey("report.messages", new SecHubMessagesListDataProvider());
-    public static final MessageDataKey<UUID> SECHUB_UUID = createKey("sechub.uuid", new UUIDMessageDataProvider());
+
+    public static final MessageDataKey<UUID> SECHUB_JOB_UUID = createKey("sechub.job.uuid", new UUIDMessageDataProvider());
+    public static final MessageDataKey<UUID> SECHUB_EXECUTION_UUID = createKey("sechub.execution.uuid", new UUIDMessageDataProvider());
+
     public static final MessageDataKey<SecHubConfiguration> SECHUB_CONFIG = createKey("sechub.config", new SecHubConfigurationMessageDataProvider());
     public static final MessageDataKey<BatchJobMessage> BATCH_JOB_ID = createKey("sechub.batchjob.id", new BatchJobMessageDataProvider());
 
@@ -107,7 +110,6 @@ public class MessageDataKeys {
      */
     public static final MessageDataKey<JobMessage> JOB_CREATED_DATA = createJobMessageKey("job.created.data");
 
-    
     /**
      * Must contain project id, job uuid, json configuration, owner, since
      */

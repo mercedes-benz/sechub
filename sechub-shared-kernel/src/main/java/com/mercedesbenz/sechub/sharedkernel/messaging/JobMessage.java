@@ -24,6 +24,8 @@ import com.mercedesbenz.sechub.commons.model.TrafficLight;
 @MustBeKeptStable("This configuration is used by communication between (api) schedule domain and administration - and maybe others")
 public class JobMessage implements JSONable<JobMessage> {
 
+    private UUID executionUUID;
+
     private UUID jobUUID;
 
     private String projectId;
@@ -88,6 +90,14 @@ public class JobMessage implements JSONable<JobMessage> {
         return projectId;
     }
 
+    public void setExecutionUUID(UUID executionUUID) {
+        this.executionUUID = executionUUID;
+    }
+
+    public UUID getExecutionUUID() {
+        return executionUUID;
+    }
+
     public void setJobUUID(UUID jobUUID) {
         this.jobUUID = jobUUID;
     }
@@ -105,9 +115,9 @@ public class JobMessage implements JSONable<JobMessage> {
     }
 
     public void setTrafficLight(TrafficLight trafficLight) {
-        this.trafficLight=trafficLight;
+        this.trafficLight = trafficLight;
     }
-    
+
     public TrafficLight getTrafficLight() {
         return trafficLight;
     }

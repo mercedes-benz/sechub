@@ -16,19 +16,21 @@ import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 class SecHubExecutionContextTest {
 
     private static final String EXECUTED_BY_TEST = "executed-by-test...";
-    private UUID uuid;
+    private UUID sechubJobUUID;
     private SecHubConfiguration config;
+    private UUID executionUUID;
 
     @BeforeEach
     void beforeEach() {
-        uuid = UUID.randomUUID();
+        executionUUID = UUID.randomUUID();
+        sechubJobUUID = UUID.randomUUID();
         config = mock(SecHubConfiguration.class);
     }
 
     @Test
     void constructor_without_operation_type_is_operation_type_SCAN() {
         /* execute */
-        SecHubExecutionContext context = new SecHubExecutionContext(uuid, config, EXECUTED_BY_TEST);
+        SecHubExecutionContext context = new SecHubExecutionContext(sechubJobUUID, config, EXECUTED_BY_TEST, executionUUID);
 
         /* test */
         assertEquals(SecHubExecutionOperationType.SCAN, context.getOperationType());
@@ -38,7 +40,7 @@ class SecHubExecutionContextTest {
     @ParameterizedTest
     void constructor_with_operation_type_is_given_operation_type(SecHubExecutionOperationType type) {
         /* execute */
-        SecHubExecutionContext context = new SecHubExecutionContext(uuid, config, EXECUTED_BY_TEST, type);
+        SecHubExecutionContext context = new SecHubExecutionContext(sechubJobUUID, config, EXECUTED_BY_TEST, executionUUID, type);
 
         /* test */
         assertEquals(type, context.getOperationType());
@@ -50,7 +52,7 @@ class SecHubExecutionContextTest {
         SecHubExecutionOperationType operationTypeAsNull = null;
 
         /* execute */
-        SecHubExecutionContext context = new SecHubExecutionContext(uuid, config, EXECUTED_BY_TEST, operationTypeAsNull);
+        SecHubExecutionContext context = new SecHubExecutionContext(sechubJobUUID, config, EXECUTED_BY_TEST, executionUUID, operationTypeAsNull);
 
         /* test */
         assertEquals(SecHubExecutionOperationType.SCAN, context.getOperationType());
@@ -62,10 +64,10 @@ class SecHubExecutionContextTest {
         SecHubExecutionOperationType operationTypeAsNull = null;
 
         /* execute */
-        SecHubExecutionContext context = new SecHubExecutionContext(uuid, config, EXECUTED_BY_TEST, operationTypeAsNull);
+        SecHubExecutionContext context = new SecHubExecutionContext(sechubJobUUID, config, EXECUTED_BY_TEST, executionUUID, operationTypeAsNull);
 
         /* test */
-        assertNotEquals(uuid, context.getExecutionUUID());
+        assertNotEquals(sechubJobUUID, context.getExecutionUUID());
         assertNotNull(context.getExecutionUUID());
     }
 
@@ -75,8 +77,8 @@ class SecHubExecutionContextTest {
         SecHubExecutionOperationType operationTypeAsNull = null;
 
         /* execute */
-        SecHubExecutionContext context1 = new SecHubExecutionContext(uuid, config, EXECUTED_BY_TEST, operationTypeAsNull);
-        SecHubExecutionContext context2 = new SecHubExecutionContext(uuid, config, EXECUTED_BY_TEST, operationTypeAsNull);
+        SecHubExecutionContext context1 = new SecHubExecutionContext(sechubJobUUID, config, EXECUTED_BY_TEST, executionUUID, operationTypeAsNull);
+        SecHubExecutionContext context2 = new SecHubExecutionContext(sechubJobUUID, config, EXECUTED_BY_TEST, executionUUID, operationTypeAsNull);
 
         /* test */
         assertNotEquals(context1.getExecutionUUID(), context2.getExecutionUUID());

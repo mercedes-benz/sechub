@@ -1,0 +1,59 @@
+{"header" : {
+  "cloc_url"           : "github.com/AlDanial/cloc",
+  "cloc_version"       : "1.96",
+  "elapsed_seconds"    : 0.0841379165649414,
+  "n_files"            : 116,
+  "n_lines"            : 17408,
+  "files_per_second"   : 1378.68876168886,
+  "lines_per_second"   : 206898.396236894,
+  "report_file"        : "cloc-gosec.json"},
+"Go" :{
+  "nFiles": 98,
+  "blank": 2124,
+  "comment": 1545,
+  "code": 11842},
+"HTML" :{
+  "nFiles": 1,
+  "blank": 0,
+  "comment": 0,
+  "code": 440},
+"Markdown" :{
+  "nFiles": 3,
+  "blank": 141,
+  "comment": 0,
+  "code": 371},
+"Bourne Shell" :{
+  "nFiles": 2,
+  "blank": 23,
+  "comment": 15,
+  "code": 348},
+"YAML" :{
+  "nFiles": 7,
+  "blank": 10,
+  "comment": 5,
+  "code": 233},
+"Text" :{
+  "nFiles": 2,
+  "blank": 26,
+  "comment": 0,
+  "code": 151},
+"make" :{
+  "nFiles": 1,
+  "blank": 17,
+  "comment": 0,
+  "code": 77},
+"JSON" :{
+  "nFiles": 1,
+  "blank": 0,
+  "comment": 0,
+  "code": 25},
+"Dockerfile" :{
+  "nFiles": 1,
+  "blank": 1,
+  "comment": 0,
+  "code": 14},
+"SUM": {
+  "blank": 2342,
+  "comment": 1565,
+  "code": 13501,
+  "nFiles": 116} }

@@ -78,7 +78,6 @@ public class ScanService implements SynchronMessageHandler {
     @Autowired
     ScanProgressMonitorFactory monitorFactory;
 
-    
     @MustBeDocumented("Define delay in milliseconds, for before next job cancellation check will be executed.")
     @Value("${sechub.config.check.canceljob.delay:" + DEFAULT_CHECK_CANCELJOB_DELAY_MILLIS + "}")
     private int millisecondsToWaitBeforeCancelCheck = DEFAULT_CHECK_CANCELJOB_DELAY_MILLIS;
@@ -90,7 +89,7 @@ public class ScanService implements SynchronMessageHandler {
         SecHubExecutionContext context = null;
         try {
             context = createExecutionContext(request);
-            
+
             executeScan(context, request);
 
             ScanReport report = reportService.createReport(context);
@@ -181,14 +180,16 @@ public class ScanService implements SynchronMessageHandler {
     }
 
     private SecHubExecutionContext createExecutionContext(DomainMessage message) throws JSONConverterException {
-        UUID uuid = message.get(SECHUB_UUID);
+        UUID executionUUID = message.get(SECHUB_EXECUTION_UUID);
+
+        UUID sechubJobUUID = message.get(SECHUB_JOB_UUID);
         String executedBy = message.get(EXECUTED_BY);
 
         SecHubConfiguration configuration = message.get(SECHUB_CONFIG);
         if (configuration == null) {
             throw new IllegalStateException("SecHubConfiguration not found in message - so cannot execute!");
         }
-        SecHubExecutionContext executionContext = new SecHubExecutionContext(uuid, configuration, executedBy);
+        SecHubExecutionContext executionContext = new SecHubExecutionContext(sechubJobUUID, configuration, executedBy, executionUUID);
 
         buildOptions(executionContext);
 

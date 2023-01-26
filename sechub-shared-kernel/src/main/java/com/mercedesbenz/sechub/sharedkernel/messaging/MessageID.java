@@ -7,7 +7,7 @@ import java.util.Set;
 
 public enum MessageID {
     START_SCAN( /* @formatter:off */
-	            MessageDataKeys.SECHUB_UUID,
+	            MessageDataKeys.SECHUB_JOB_UUID,
 	            MessageDataKeys.BATCH_JOB_ID,
 	            MessageDataKeys.EXECUTED_BY,
 	            MessageDataKeys.SECHUB_CONFIG),
@@ -50,7 +50,7 @@ public enum MessageID {
     PROJECT_DELETED(MessageDataKeys.PROJECT_DELETE_DATA),
 
     PROJECT_WHITELIST_UPDATED(MessageDataKeys.PROJECT_WHITELIST_UPDATE_DATA),
-    
+
     /**
      * Used when a new sechub job has been created
      */
@@ -129,13 +129,13 @@ public enum MessageID {
 
     JOB_RESTART_CANCELED(MessageDataKeys.JOB_RESTART_DATA, MessageDataKeys.ENVIRONMENT_BASE_URL),
 
-    JOB_RESULTS_PURGED(MessageDataKeys.SECHUB_UUID, MessageDataKeys.ENVIRONMENT_BASE_URL),
+    JOB_RESULTS_PURGED(MessageDataKeys.SECHUB_JOB_UUID, MessageDataKeys.ENVIRONMENT_BASE_URL),
 
-    REQUEST_PURGE_JOB_RESULTS(MessageDataKeys.SECHUB_UUID, MessageDataKeys.ENVIRONMENT_BASE_URL),
+    REQUEST_PURGE_JOB_RESULTS(MessageDataKeys.SECHUB_JOB_UUID, MessageDataKeys.ENVIRONMENT_BASE_URL),
 
-    JOB_RESULT_PURGE_DONE(MessageDataKeys.SECHUB_UUID),
+    JOB_RESULT_PURGE_DONE(MessageDataKeys.SECHUB_JOB_UUID),
 
-    JOB_RESULT_PURGE_FAILED(MessageDataKeys.SECHUB_UUID),
+    JOB_RESULT_PURGE_FAILED(MessageDataKeys.SECHUB_JOB_UUID),
 
     REQUEST_SCHEDULER_JOB_STATUS(MessageDataKeys.SCHEDULER_JOB_STATUS),
 
@@ -173,10 +173,9 @@ public enum MessageID {
      * contains SecHub job UUID
      */
     PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE(MessageDataKeys.JOB_CANCEL_DATA),
-    
-    
+
     ANALYZE_SCAN_RESULTS_AVAILABLE(MessageDataKeys.ANALYTIC_SCAN_RESULT_DATA),
-    
+
     ;
 
     private Set<MessageDataKey<?>> unmodifiableKeys;

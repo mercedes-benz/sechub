@@ -45,7 +45,7 @@ public class SchedulerCreateJobService {
 
     @Autowired
     UserInputAssertion assertion;
-    
+
     @Autowired
     DomainMessageService domainMessageService;
 
@@ -66,11 +66,11 @@ public class SchedulerCreateJobService {
 
         SecHubJobTraceLogID traceLogId = traceLogID(secHubJob);
         LOG.info("New job added:{}", traceLogId);
-        
+
         UUID sechubJobUUID = secHubJob.getUUID();
 
         sendJobCreationEvent(sechubJobUUID, projectId, secHubJob.getCreated());
-        
+
         return new SchedulerResult(sechubJobUUID);
     }
 
@@ -78,13 +78,13 @@ public class SchedulerCreateJobService {
     private void sendJobCreationEvent(UUID sechubJobUUID, String projectId, LocalDateTime localDateTime) {
         DomainMessage domainMessage = new DomainMessage(MessageID.JOB_CREATED);
         JobMessage jobData = new JobMessage();
-        
+
         jobData.setJobUUID(sechubJobUUID);
         jobData.setProjectId(projectId);
         jobData.setSince(localDateTime);
-        
+
         domainMessage.set(MessageDataKeys.JOB_CREATED_DATA, jobData);
-        
+
         domainMessageService.sendAsynchron(domainMessage);
     }
 

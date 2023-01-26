@@ -37,33 +37,33 @@ public class AnalyticsProductExecutionServiceImpl extends AbstractProductExecuti
 
     @Autowired
     AnalyticDataImportService analyticDataImportService;
-    
+
     @Autowired
     DomainMessageService domainMessageService;
-    
+
     @Override
     protected void afterProductResultsStored(List<ProductResult> productResults, SecHubExecutionContext context) {
         LOG.debug("{} analytics product results stored.", productResults.size());
-        
+
         /* import product results into analytic data model */
         AnalyticData analyticData = context.getAnalyticData();
-        
-        for (ProductResult productResult: productResults) {
+
+        for (ProductResult productResult : productResults) {
             String analyticDataAsString = productResult.getResult();
-            
+
             analyticDataImportService.importAnalyticDataIntoModel(analyticDataAsString, analyticData);
         }
-        
+
         sendAnalyticDataAvailableEvent(analyticData);
-        
+
     }
 
     private void sendAnalyticDataAvailableEvent(AnalyticData analyticDataModel) {
-        DomainMessage domainMessage= new DomainMessage(MessageID.ANALYZE_SCAN_RESULTS_AVAILABLE);
-        
+        DomainMessage domainMessage = new DomainMessage(MessageID.ANALYZE_SCAN_RESULTS_AVAILABLE);
+
         AnalyticDataMessage analyticDataMessage = new AnalyticDataMessage();
         analyticDataMessage.setAnalyticData(analyticDataModel);
-        
+
         domainMessage.set(MessageDataKeys.ANALYTIC_SCAN_RESULT_DATA, analyticDataMessage);
         domainMessageService.sendAsynchron(domainMessage);
     }

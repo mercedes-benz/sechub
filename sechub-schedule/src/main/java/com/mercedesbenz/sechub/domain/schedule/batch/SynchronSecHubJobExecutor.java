@@ -45,7 +45,10 @@ class SynchronSecHubJobExecutor {
 
             @Override
             public void run() {
+                UUID executionUUID = UUID.randomUUID();
+
                 UUID secHubJobUUID = secHubJob.getUUID();
+
                 String secHubJobUUIDAsString = secHubJobUUID.toString();
 
                 try {
@@ -54,14 +57,17 @@ class SynchronSecHubJobExecutor {
                     /* own thread so MDC.put necessary */
                     MDC.clear();
                     MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, secHubJobUUIDAsString);
+                    MDC.put(LogConstants.MDC_SECHUB_EXECUTION_UUID, executionUUID);
                     MDC.put(LogConstants.MDC_SECHUB_PROJECT_ID, secHubJob.getProjectId());
 
                     LOG.info("Executing sechub job: {}", secHubJobUUIDAsString);
 
                     /* we send now a synchronous SCAN event */
                     DomainMessage request = new DomainMessage(MessageID.START_SCAN);
+                    request.set(MessageDataKeys.SECHUB_EXECUTION_UUID, executionUUID);
                     request.set(MessageDataKeys.EXECUTED_BY, secHubJob.getOwner());
-                    request.set(MessageDataKeys.SECHUB_UUID, secHubJobUUID);
+
+                    request.set(MessageDataKeys.SECHUB_JOB_UUID, secHubJobUUID);
                     request.set(MessageDataKeys.SECHUB_CONFIG, MessageDataKeys.SECHUB_CONFIG.getProvider().get(secHubConfiguration));
 
                     BatchJobMessage batchJobIdMessage = new BatchJobMessage();
@@ -94,9 +100,9 @@ class SynchronSecHubJobExecutor {
 
     private void sendJobDoneMessage(UUID secHubJobUUID, DomainMessageSynchronousResult response) {
         LOG.debug("Will send job done message for: {}", secHubJobUUID);
-        
+
         String trafficLightAsString = response.get(MessageDataKeys.REPORT_TRAFFIC_LIGHT);
-        
+
         sendJobDone(secHubJobUUID, TrafficLight.fromString(trafficLightAsString));
     }
 

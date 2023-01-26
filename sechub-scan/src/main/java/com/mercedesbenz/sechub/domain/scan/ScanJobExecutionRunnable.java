@@ -37,6 +37,8 @@ class ScanJobExecutionRunnable implements Runnable, CanceableScanJob {
         try {
             MDC.clear();
             MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, runnableData.getSechubJobUUID().toString());
+            MDC.put(LogConstants.MDC_SECHUB_EXECUTION_UUID, runnableData.getSechubExecutioUUID().toString());
+
             LOG.info("Beign start of execution services for SecHub job: {}", runnableData.getSechubJobUUID());
 
             SecHubExecutionContext executionContext = runnableData.getExecutionContext();

@@ -5,6 +5,6 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface JobCreationStatisticRepository extends JpaRepository<JobCreationStatistic, UUID> {
+public interface JobStatisticRepository extends JpaRepository<JobStatistic, UUID> {
 
 }

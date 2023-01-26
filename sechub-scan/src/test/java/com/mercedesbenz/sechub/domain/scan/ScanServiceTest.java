@@ -83,7 +83,7 @@ public class ScanServiceTest {
         infrastructureScanProductExecutionService = mock(InfrastructureScanProductExecutionService.class);
         licenseScanProductExecutionService = mock(LicenseScanProductExecutionService.class);
         analyticsProductExecutionService = mock(AnalyticsProductExecutionService.class);
-        
+
         scanLogService = mock(ProjectScanLogService.class);
 
         reportService = mock(CreateScanReportService.class);
@@ -310,7 +310,7 @@ public class ScanServiceTest {
 
     private DomainMessage prepareRequest(SecHubConfiguration configMin) {
         DomainMessage request = new DomainMessage(MessageID.START_SCAN);
-        request.set(MessageDataKeys.SECHUB_UUID, UUID);
+        request.set(MessageDataKeys.SECHUB_JOB_UUID, UUID);
         request.set(MessageDataKeys.SECHUB_CONFIG, configMin);
         BatchJobMessage batchJobMessage = new BatchJobMessage();
         batchJobMessage.setSecHubJobUUID(UUID);

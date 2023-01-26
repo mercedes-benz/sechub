@@ -43,19 +43,20 @@ public class SecHubExecutionContext {
     private SecHubExecutionOperationType operationType;
 
     private LocalDateTime executionStarted;
-    
+
     private AnalyticData analyticData;
 
-    public SecHubExecutionContext(UUID sechubJobUUID, SecHubConfiguration configuration, String executedBy) {
-        this(sechubJobUUID, configuration, executedBy, null);
+    public SecHubExecutionContext(UUID sechubJobUUID, SecHubConfiguration configuration, String executedBy, UUID executionUUID) {
+        this(sechubJobUUID, configuration, executedBy, executionUUID, null);
     }
 
-    public SecHubExecutionContext(UUID sechubJobUUID, SecHubConfiguration configuration, String executedBy, SecHubExecutionOperationType operationType) {
-        this.executionStarted=LocalDateTime.now();
-        this.analyticData=new AnalyticData();
+    public SecHubExecutionContext(UUID sechubJobUUID, SecHubConfiguration configuration, String executedBy, UUID executionUUID,
+            SecHubExecutionOperationType operationType) {
+        this.executionStarted = LocalDateTime.now();
+        this.analyticData = new AnalyticData();
 
         this.sechubJobUUID = sechubJobUUID;
-        this.executionUUID = UUID.randomUUID();
+        this.executionUUID = executionUUID;
 
         this.configuration = configuration;
         this.executedBy = executedBy;
@@ -165,7 +166,7 @@ public class SecHubExecutionContext {
     public LocalDateTime getExecutionStarted() {
         return executionStarted;
     }
-    
+
     public AnalyticData getAnalyticData() {
         return analyticData;
     }

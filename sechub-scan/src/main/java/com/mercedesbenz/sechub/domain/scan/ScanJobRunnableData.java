@@ -52,6 +52,10 @@ class ScanJobRunnableData {
         return sechubJobUUID;
     }
 
+    public UUID getSechubExecutioUUID() {
+        return executionContext.getExecutionUUID();
+    }
+
     public ProductExecutionServiceContainer getExecutionServiceContainer() {
         return executionServiceContainer;
     }
