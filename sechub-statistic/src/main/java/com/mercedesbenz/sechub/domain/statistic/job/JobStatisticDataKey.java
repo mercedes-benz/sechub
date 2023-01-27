@@ -1,6 +1,7 @@
 package com.mercedesbenz.sechub.domain.statistic.job;
 
-public enum JobStatisticDataKey {
+import com.mercedesbenz.sechub.domain.statistic.StatisticDataKey;
 
-    SIZE_MB
+public interface JobStatisticDataKey extends StatisticDataKey {
+
 }

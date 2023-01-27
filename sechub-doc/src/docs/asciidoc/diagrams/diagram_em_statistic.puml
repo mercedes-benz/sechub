@@ -1,9 +1,14 @@
 @startuml 
 
+hide empty fields
+hide empty methods
+
+'----------------------------Job statistic--------------------------------------
+
 entity JobStatistic {
-    * secHubJobUUID
+    * secHubJobUUID:uuid
     --
-    * created
+    * created:Timestamp
     * projectId
 }
 
@@ -11,16 +16,17 @@ note top of JobStatistic
 This entity is written when job has been created. 
 end note
 
-'-------------------------------------------------------------------------------
+'----------------------------Job run staistic----------------------------------
 entity JobRunStatistic {
-    * executionUUID
+    * executionUUID: uuid
     --
-    * secHubJobUUID
-    * projectId
-    * created
-    * started
-    * ended
-    * trafficLight
+    * secHubJobUUID: uuid
+    * projectId: Text
+    * created: Timestamp
+    * started: Timestamp
+    * ended: Timestamp
+    * failed: boolean
+    * trafficLight: TrafficLight
 }
 
 note top of JobRunStatistic 
@@ -31,7 +37,7 @@ for every run and is used as PK. Every job run
 has only ONE entry.
 
 end note
-'-------------------------------------------------------------------------------
+'----------------------------Job statistic data---------------------------------
 entity JobStatisticData {
     * uuid: uuid
     --
@@ -39,7 +45,7 @@ entity JobStatisticData {
     * type: JobStatisticDataType (3*30)
     * key: Text (3*30)
     * value: BigInt
-    * timestamp: timestamp
+    * timestamp: Timestamp
 }
 
 note top of JobStatisticData 
@@ -76,36 +82,25 @@ end note
 
 note left of JobStatisticData::timestamp
 Timestamp represents the UTC date 
-when the entry was first created
+when the data entry was first created
 end note
 
-'-------------------------------------------------------------------------------
-JobStatistic ||..o{ JobRunStatistic 
-JobStatistic ||..o{ JobStatisticData 
-'-------------------------------------------------------------------------------
+'----------------------------Job run statistic data----------------------------
 
 entity JobRunStatisticData {
-    * uuid
+    * uuid:uuid
     --
-    * executionUUID
+    * executionUUID:uuid
     * type: JobStatisticDataType (3*30)
     * key: Text (3*30)
     * value: BigInt
-    * timestamp: timestamp
+    * timestamp: Timestamp
 }
 
 note left of JobRunStatisticData::timestamp
 Timestamp represents the UTC date 
-when the entry was first created
+when the data entry was first created
 end note
-
-hide empty fields
-hide empty methods
-
-enum JobRunStatisticDataType{
-}
-enum JobStatisticDataType{
-}
 
 note top of JobRunStatisticData 
 Contains information gathered while execution
@@ -130,7 +125,17 @@ to update existing ones on demand.
 For an explanation look at the JobStatisticData::uuid
 end note
 
+'--------------------------Relations--------------------------------------------
+JobStatistic ||..o{ JobStatisticData 
+
+JobStatistic ||..o{ JobRunStatistic 
 JobRunStatistic ||..o{ JobRunStatisticData 
 '-------------------------------------------------------------------------------
+
+
+enum JobRunStatisticDataType{
+}
+enum JobStatisticDataType{
+}
 
 @enduml 

@@ -10,28 +10,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
-import com.mercedesbenz.sechub.domain.statistic.job.JobRunStatisticService;
-import com.mercedesbenz.sechub.domain.statistic.job.JobStatisticService;
 import com.mercedesbenz.sechub.sharedkernel.analytic.AnalyticData;
-import com.mercedesbenz.sechub.sharedkernel.messaging.AnalyticDataMessage;
+import com.mercedesbenz.sechub.sharedkernel.messaging.AnalyticMessageData;
 import com.mercedesbenz.sechub.sharedkernel.messaging.AsynchronMessageHandler;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.IsReceivingAsyncMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.JobMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
+import com.mercedesbenz.sechub.sharedkernel.messaging.StorageMessageData;
 
 @Component
 public class StatisticMessageHandler implements AsynchronMessageHandler {
 
     @Autowired
-    AnaylticDataExecutionStatsticService anyalyticScanResultToStatisticTransformationService;
-
-    @Autowired
-    JobStatisticService jobCreationStatsticService;
-
-    @Autowired
-    JobRunStatisticService jobFinalizationStatisticService;
+    StatisticService statisticService;
 
     private static final Logger LOG = LoggerFactory.getLogger(StatisticMessageHandler.class);
 
@@ -66,17 +59,30 @@ public class StatisticMessageHandler implements AsynchronMessageHandler {
         LocalDateTime created = jobMessage.getSince();
         String projectId = jobMessage.getProjectId();
 
-        jobCreationStatsticService.storeJobCreationStatistic(jobUUID, created, projectId);
+        statisticService.handleJobCreated(jobUUID, created, projectId);
+
+    }
+
+    @IsReceivingAsyncMessage(MessageID.START_SCAN)
+    private void handleScanStarted(DomainMessage request) {
+        JobMessage jobMessage = request.get(MessageDataKeys.JOB_STARTED_DATA);
+
+        UUID jobUUID = jobMessage.getJobUUID();
+        LocalDateTime started = jobMessage.getSince();
+        UUID executionUUID = jobMessage.getExecutionUUID();
+
+        statisticService.handleJobStarted(jobUUID, started, executionUUID);
 
     }
 
     @IsReceivingAsyncMessage(MessageID.ANALYZE_SCAN_RESULTS_AVAILABLE)
     private void handleAnalyzeScanResultsAvailable(DomainMessage request) {
-        AnalyticDataMessage scanResultDataMessage = request.get(MessageDataKeys.ANALYTIC_SCAN_RESULT_DATA);
+        AnalyticMessageData analyticMessageData = request.get(MessageDataKeys.ANALYTIC_SCAN_RESULT_DATA);
 
-        AnalyticData analyticData = scanResultDataMessage.getAnalyticData();
+        UUID executionUUID = request.get(MessageDataKeys.SECHUB_EXECUTION_UUID);
+        AnalyticData analyticData = analyticMessageData.getAnalyticData();
 
-        anyalyticScanResultToStatisticTransformationService.storeStatisticData(analyticData);
+        statisticService.handleAnalyticData(executionUUID, analyticData);
     }
 
     @IsReceivingAsyncMessage(MessageID.JOB_DONE)
@@ -84,10 +90,10 @@ public class StatisticMessageHandler implements AsynchronMessageHandler {
         JobMessage jobMessage = request.get(MessageDataKeys.JOB_DONE_DATA);
 
         UUID jobUUID = jobMessage.getJobUUID();
-        LocalDateTime done = jobMessage.getSince();
+        LocalDateTime since = jobMessage.getSince();
         TrafficLight trafficLight = jobMessage.getTrafficLight();
 
-        jobFinalizationStatisticService.storeJobDone(jobUUID, done, trafficLight);
+        statisticService.handleJobDone(jobUUID, since, trafficLight);
 
     }
 
@@ -96,10 +102,34 @@ public class StatisticMessageHandler implements AsynchronMessageHandler {
         JobMessage jobMessage = request.get(MessageDataKeys.JOB_FAILED_DATA);
 
         UUID jobUUID = jobMessage.getJobUUID();
-        LocalDateTime done = jobMessage.getSince();
+        LocalDateTime since = jobMessage.getSince();
         TrafficLight trafficLight = jobMessage.getTrafficLight();
 
-        jobFinalizationStatisticService.storeJobFailed(jobUUID, done, trafficLight);
+        statisticService.handleJobFailed(jobUUID, since, trafficLight);
+
+    }
+
+    @IsReceivingAsyncMessage(MessageID.SOURCE_UPLOAD_DONE)
+    private void handleSourceUploadDone(DomainMessage request) {
+        StorageMessageData storageMessageData = request.get(MessageDataKeys.UPLOAD_STORAGE_DATA);
+
+        UUID jobUUID = storageMessageData.getJobUUID();
+        LocalDateTime since = storageMessageData.getSince();
+        long sizeInBytes = storageMessageData.getSizeInBytes();
+
+        statisticService.handleSourceUploadDone(jobUUID, since, sizeInBytes);
+
+    }
+
+    @IsReceivingAsyncMessage(MessageID.BINARY_UPLOAD_DONE)
+    private void handleBinaryUploadDone(DomainMessage request) {
+        StorageMessageData storageMessageData = request.get(MessageDataKeys.UPLOAD_STORAGE_DATA);
+
+        UUID jobUUID = storageMessageData.getJobUUID();
+        LocalDateTime since = storageMessageData.getSince();
+        long sizeInBytes = storageMessageData.getSizeInBytes();
+
+        statisticService.handleBinaryUploadDone(jobUUID, since, sizeInBytes);
 
     }
 

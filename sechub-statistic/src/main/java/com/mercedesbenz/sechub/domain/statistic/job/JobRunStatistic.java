@@ -39,6 +39,7 @@ public class JobRunStatistic {
     public static final String COLUMN_CREATED = "CREATED";
     public static final String COLUMN_STARTED = "STARTED";
     public static final String COLUMN_ENDED = "ENDED";
+    public static final String COLUMN_FAILED = "FAILED";
     public static final String COLUMN_TRAFFIC_LIGHT = "TRAFFIC_LIGHT";
     /* +-----------------------------------------------------------------------+ */
     /* +............................ JPQL .....................................+ */
@@ -51,6 +52,7 @@ public class JobRunStatistic {
     public static final String PROPERTY_CREATED = "created";
     public static final String PROPERTY_STARTED = "started";
     public static final String PROPERTY_ENDED = "ended";
+    public static final String PROPERTY_FAILED = "failed";
     public static final String PROPERTY_TRAFFIC_LIGHT = "trafficLight";
 
     @Id
@@ -71,6 +73,9 @@ public class JobRunStatistic {
 
     @Column(name = COLUMN_ENDED) // remark: we setup hibernate to use UTC settings - see application.properties
     LocalDateTime ended;
+
+    @Column(name = COLUMN_FAILED)
+    boolean failed;
 
     @Enumerated(STRING)
     @Column(name = COLUMN_TRAFFIC_LIGHT, nullable = true)

@@ -36,4 +36,8 @@ public class CodeAnalyticData implements AnalyticProductResult {
 
     }
 
+    public long getLinesOfCode() {
+        return 1;
+    }
+
 }

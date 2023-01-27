@@ -17,7 +17,7 @@ import com.mercedesbenz.sechub.domain.scan.analytic.AnalyticDataImportService;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
 import com.mercedesbenz.sechub.sharedkernel.analytic.AnalyticData;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
-import com.mercedesbenz.sechub.sharedkernel.messaging.AnalyticDataMessage;
+import com.mercedesbenz.sechub.sharedkernel.messaging.AnalyticMessageData;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
@@ -54,17 +54,18 @@ public class AnalyticsProductExecutionServiceImpl extends AbstractProductExecuti
             analyticDataImportService.importAnalyticDataIntoModel(analyticDataAsString, analyticData);
         }
 
-        sendAnalyticDataAvailableEvent(analyticData);
+        sendAnalyticDataAvailableEvent(analyticData, context);
 
     }
 
-    private void sendAnalyticDataAvailableEvent(AnalyticData analyticDataModel) {
+    private void sendAnalyticDataAvailableEvent(AnalyticData analyticDataModel, SecHubExecutionContext context) {
         DomainMessage domainMessage = new DomainMessage(MessageID.ANALYZE_SCAN_RESULTS_AVAILABLE);
 
-        AnalyticDataMessage analyticDataMessage = new AnalyticDataMessage();
+        AnalyticMessageData analyticDataMessage = new AnalyticMessageData();
         analyticDataMessage.setAnalyticData(analyticDataModel);
 
         domainMessage.set(MessageDataKeys.ANALYTIC_SCAN_RESULT_DATA, analyticDataMessage);
+        domainMessage.set(MessageDataKeys.SECHUB_EXECUTION_UUID, context.getExecutionUUID());
         domainMessageService.sendAsynchron(domainMessage);
     }
 

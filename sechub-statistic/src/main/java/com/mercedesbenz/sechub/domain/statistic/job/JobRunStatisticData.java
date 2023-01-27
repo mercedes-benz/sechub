@@ -33,7 +33,7 @@ public class JobRunStatisticData {
     /* +-----------------------------------------------------------------------+ */
     /* +............................ SQL ......................................+ */
     /* +-----------------------------------------------------------------------+ */
-    public static final String TABLE_NAME = "STATISTIC_SCAN_EXECUTION_DATA";
+    public static final String TABLE_NAME = "STATISTIC_JOB_RUN_DATA";
 
     public static final String COLUMN_UUID = "UUID";
 

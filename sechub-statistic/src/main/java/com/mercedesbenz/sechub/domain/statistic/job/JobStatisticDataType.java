@@ -1,20 +1,36 @@
 package com.mercedesbenz.sechub.domain.statistic.job;
 
+import com.mercedesbenz.sechub.commons.core.MustBeKeptStable;
+import com.mercedesbenz.sechub.domain.statistic.AnyTextAsKey;
+import com.mercedesbenz.sechub.domain.statistic.StatisticDataKey;
+
+@MustBeKeptStable("The enum names are used in DB for types. So do not rename or remove them.")
 public enum JobStatisticDataType {
 
-    UPLOAD(false, JobStatisticDataKey.SIZE_MB),
+    UPLOAD_SOURCES(UploadJobStatisticDataKeys.SIZE_IN_BYTES), UPLOAD_BINARIES(UploadJobStatisticDataKeys.SIZE_IN_BYTES),;
 
-    ;
+    private StatisticDataKey[] acceptedKeys;
 
-    private JobStatisticDataKey[] allowedKeys;
-
-    JobStatisticDataType(boolean nullAccepted, JobStatisticDataKey... allowedKeys) {
-        this.allowedKeys = allowedKeys;
+    JobStatisticDataType() {
+        throw new IllegalArgumentException("At least one accepted key must be defined!");
     }
 
-    public boolean isKeyAllowed(JobStatisticDataKey key) {
-        for (JobStatisticDataKey allowedKey : allowedKeys) {
-            if (key == allowedKey) {
+    JobStatisticDataType(JobStatisticDataKey... acceptedKeys) {
+        this.acceptedKeys = acceptedKeys;
+    }
+
+    public boolean isKeyAccepted(StatisticDataKey key) {
+        if (key == null) {
+            return false;
+        }
+        for (StatisticDataKey acceptedKey : acceptedKeys) {
+            if (acceptedKey instanceof AnyTextAsKey) {
+                if (key instanceof AnyTextAsKey) {
+                    /* for this type any text is possible as key */
+                    return true;
+                }
+            }
+            if (key.equals(acceptedKey)) {
                 return true;
             }
         }

@@ -26,7 +26,7 @@ public class AnalyticData implements JSONable<AnalyticData> {
         return executionUUID;
     }
 
-    public CodeAnalyticData getLinesOfCode() {
+    public CodeAnalyticData getCodeAnalyticData() {
         return linesOfCode;
     }
 

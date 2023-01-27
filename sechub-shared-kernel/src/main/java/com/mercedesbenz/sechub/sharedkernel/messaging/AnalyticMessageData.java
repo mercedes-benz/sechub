@@ -22,7 +22,7 @@ import com.mercedesbenz.sechub.sharedkernel.analytic.AnalyticData;
  */
 @JsonIgnoreProperties(ignoreUnknown = true) // we do ignore to avoid problems from wrong configured values!
 @MustBeKeptStable("This configuration is used by communication between different domain layers and the statistic domain")
-public class AnalyticDataMessage implements JSONable<AnalyticDataMessage> {
+public class AnalyticMessageData implements JSONable<AnalyticMessageData> {
 
     private UUID jobUUID;
 
@@ -62,8 +62,8 @@ public class AnalyticDataMessage implements JSONable<AnalyticDataMessage> {
     }
 
     @Override
-    public Class<AnalyticDataMessage> getJSONTargetClass() {
-        return AnalyticDataMessage.class;
+    public Class<AnalyticMessageData> getJSONTargetClass() {
+        return AnalyticMessageData.class;
     }
 
     public void setProjectId(String projectId) {

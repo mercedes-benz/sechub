@@ -35,7 +35,7 @@ class ClocJsonAnalyticDataImporterTest {
         AnalyticData result = importerToTest.importData(sechubClocJSON);
 
         /* test */
-        CodeAnalyticData linesOfCode = result.getLinesOfCode();
+        CodeAnalyticData linesOfCode = result.getCodeAnalyticData();
         assertNotNull(linesOfCode);
 
         assertEquals(3474L, linesOfCode.getAmountOfFiles());

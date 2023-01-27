@@ -1,5 +1,7 @@
 package com.mercedesbenz.sechub.domain.statistic.job;
 
-public enum JobRunStatisticDataKey {
+import com.mercedesbenz.sechub.domain.statistic.StatisticDataKey;
+
+public interface JobRunStatisticDataKey extends StatisticDataKey {
 
 }

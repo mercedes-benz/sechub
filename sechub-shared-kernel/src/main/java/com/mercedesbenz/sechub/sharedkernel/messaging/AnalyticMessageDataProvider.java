@@ -4,12 +4,12 @@ package com.mercedesbenz.sechub.sharedkernel.messaging;
 import com.mercedesbenz.sechub.commons.model.JSONConverterException;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
 
-public class AnalyticDataMessageDataProvider implements MessageDataProvider<AnalyticDataMessage> {
+public class AnalyticMessageDataProvider implements MessageDataProvider<AnalyticMessageData> {
 
-    private static final AnalyticDataMessage OBJECT = new AnalyticDataMessage();
+    private static final AnalyticMessageData OBJECT = new AnalyticMessageData();
 
     @Override
-    public AnalyticDataMessage get(String data) {
+    public AnalyticMessageData get(String data) {
         if (data == null) {
             return null;
         }
@@ -22,7 +22,7 @@ public class AnalyticDataMessageDataProvider implements MessageDataProvider<Anal
     }
 
     @Override
-    public String getString(AnalyticDataMessage message) {
+    public String getString(AnalyticMessageData message) {
         if (message == null) {
             return null;
         }

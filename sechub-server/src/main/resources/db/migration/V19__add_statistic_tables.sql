@@ -11,6 +11,22 @@ CREATE TABLE statistic_job
    PRIMARY KEY (sechub_job_uuid)
 );
 
+CREATE TABLE statistic_job_data
+(
+   uuid uuid not null,
+   sechub_job_uuid uuid not null,
+   
+   type varchar(90) not null, -- we accept 90 (3x30)
+   key varchar(90) not null, -- we accept 90 (3x30)
+   value bigint not null,
+   
+   timestamp timestamp not null, -- timestamp when the data entry was initial created
+   
+   version integer,
+   PRIMARY KEY (uuid)
+);
+
+
 CREATE TABLE statistic_job_run
 (
    uuid uuid not null,
@@ -24,15 +40,17 @@ CREATE TABLE statistic_job_run
    PRIMARY KEY (uuid)
 );
 
-CREATE TABLE statistic_scan_execution
+CREATE TABLE statistic_job_run_data
 (
+   uuid uuid not null,
    execution_uuid uuid not null,
    
-   sechub_job_uuid uuid not null,
-   started timestamp not null,
-   ended timestamp not null,
-   failed boolean,
-      
+   type varchar(90) not null, -- we accept 90 (3x30)
+   key varchar(90) not null, -- we accept 90 (3x30)
+   value bigint not null,
+   
+   timestamp timestamp not null, -- timestamp when the data entry was initial created
+   
    version integer,
-   PRIMARY KEY (execution_uuid)
+   PRIMARY KEY (uuid)
 );

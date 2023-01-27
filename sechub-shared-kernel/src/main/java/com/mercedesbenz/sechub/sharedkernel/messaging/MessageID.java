@@ -169,12 +169,14 @@ public enum MessageID {
      * been called as well. Means: the post processing for job cancel request has
      * been done.<br>
      * <br>
-     *
-     * contains SecHub job UUID
      */
-    PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE(MessageDataKeys.JOB_CANCEL_DATA),
+    PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE(MessageDataKeys.JOB_CANCEL_DATA, MessageDataKeys.SECHUB_EXECUTION_UUID, MessageDataKeys.SECHUB_JOB_UUID),
 
-    ANALYZE_SCAN_RESULTS_AVAILABLE(MessageDataKeys.ANALYTIC_SCAN_RESULT_DATA),
+    ANALYZE_SCAN_RESULTS_AVAILABLE(MessageDataKeys.SECHUB_EXECUTION_UUID, MessageDataKeys.ANALYTIC_SCAN_RESULT_DATA),
+
+    SOURCE_UPLOAD_DONE(MessageDataKeys.SECHUB_JOB_UUID, MessageDataKeys.UPLOAD_STORAGE_DATA),
+
+    BINARY_UPLOAD_DONE(MessageDataKeys.SECHUB_JOB_UUID, MessageDataKeys.UPLOAD_STORAGE_DATA),
 
     ;
 

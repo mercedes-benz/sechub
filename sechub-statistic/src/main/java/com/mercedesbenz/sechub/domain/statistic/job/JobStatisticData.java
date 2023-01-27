@@ -37,7 +37,7 @@ public class JobStatisticData {
 
     public static final String COLUMN_UUID = "UUID";
 
-    public static final String COLUMN_EXECUTION_UUID = "EXECUTION_UUID";
+    public static final String COLUMN_SECHUB_JOB_UUID = "SECHUB_JOB_UUID";
     public static final String COLUMN_TYPE = "TYPE";
     public static final String COLUMN_KEY = "KEY";
     public static final String COLUMN_VALUE = "VALUE";
@@ -49,8 +49,8 @@ public class JobStatisticData {
     public static final String CLASS_NAME = JobStatisticData.class.getSimpleName();
 
     public static final String PROPERTY_UUID = "uuid";
+    public static final String PROPERTY_SECHUB_JOB_UUID = "sechubJobUUID";
 
-    public static final String PROPERTY_EXECUTION_UUID = "executionUUID";
     public static final String PROPERTY_TYPE = "type";
     public static final String PROPERTY_KEY = "key";
     public static final String PROPERTY_VALUE = "value";
@@ -62,7 +62,7 @@ public class JobStatisticData {
     @Column(name = COLUMN_UUID, updatable = false, nullable = false, columnDefinition = "UUID")
     UUID uUID;
 
-    @Column(name = COLUMN_EXECUTION_UUID, updatable = false, nullable = false, columnDefinition = "UUID")
+    @Column(name = COLUMN_SECHUB_JOB_UUID, updatable = false, nullable = false, columnDefinition = "UUID")
     UUID sechubJobUUID;
 
     @Enumerated(STRING)
@@ -99,8 +99,8 @@ public class JobStatisticData {
         this.value = value;
     }
 
-    public UUID getSechubJobUUID() {
-        return sechubJobUUID;
+    public void setSechubJobUUID(UUID sechubJobUUID) {
+        this.sechubJobUUID = sechubJobUUID;
     }
 
 }
