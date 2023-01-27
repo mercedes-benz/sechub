@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 === SecHub job cancellation
 
 An administrator is able to cancel a running SecHub job. This is done across different domains

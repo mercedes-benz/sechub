@@ -10,6 +10,7 @@ import com.mercedesbenz.sechub.integrationtest.scenario12.Scenario12;
 import com.mercedesbenz.sechub.integrationtest.scenario13.Scenario13;
 import com.mercedesbenz.sechub.integrationtest.scenario15.Scenario15;
 import com.mercedesbenz.sechub.integrationtest.scenario16.Scenario16;
+import com.mercedesbenz.sechub.integrationtest.scenario17.Scenario17;
 import com.mercedesbenz.sechub.integrationtest.scenario18.Scenario18;
 import com.mercedesbenz.sechub.integrationtest.scenario2.Scenario2;
 import com.mercedesbenz.sechub.integrationtest.scenario3.Scenario3;
@@ -300,7 +301,7 @@ public class IntegrationTestDefaultProfiles {
      *
      * <h5>Used inside scenarios:</h5>
      * <ul>
-     * <li>{@link Scenario16}</li>
+     * <li>{@link Scenario17}</li>
      * </ul>
      *
      */
@@ -329,6 +330,39 @@ public class IntegrationTestDefaultProfiles {
      * </ul>
      */
     public static final DefaultTestExecutionProfile PROFILE_13_PDS_CANCELLATION = defineProfile13();
+
+    /**
+     * The profile is exactly the same as
+     * {@link #PROFILE_12_PDS_CHECKMARX_INTEGRATIONTEST} with one exception:<br>
+     * The used executor configuration will set job parameter
+     * {@link PDSDefaultParameterKeyConstants#PARAM_KEY_PDS_CONFIG_SUPPORTED_DATATYPES}
+     * to "source,binary" which does override the PDS sever configuration which is
+     * "source" per default, because checkmarx cannot scan binaries. But for test
+     * purposes we have this "wrong configured" entries. So we can check the
+     * behavior.
+     *
+     * <h5>Used inside scenarios:</h5>
+     * <ul>
+     * <li>{@link Scenario17}</li>
+     * </ul>
+     *
+     */
+    public static final DefaultTestExecutionProfile PROFILE_14_PDS_CHECKMARX_INTEGRATIONTEST_WRONG_WITH_SOURCE_AND_BINARY = defineProfile14();
+
+    /**
+     * The profile is exactly the same as
+     * {@link #PROFILE_12_PDS_CHECKMARX_INTEGRATIONTEST} with one exception:<br>
+     * The used executor configuration will define job parameter
+     * {@link PDSDefaultParameterKeyConstants#PARAM_KEY_PDS_CONFIG_FILEFILTER_EXCLUDES}
+     * to "*.txt" so every text file will be ignored.
+     *
+     * <h5>Used inside scenarios:</h5>
+     * <ul>
+     * <li>{@link Scenario17}</li>
+     * </ul>
+     *
+     */
+    public static final DefaultTestExecutionProfile PROFILE_15_PDS_CHECKMARX_INTEGRATIONTEST_FILTERING_TEXTFILES = defineProfile15();
 
     /**
      * @return all default profiles
@@ -468,6 +502,28 @@ public class IntegrationTestDefaultProfiles {
         profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_CODE_SCAN_K_CANCELLATION);
         profile.id = "inttest-p13-pds-cancellation";
         profile.description = "Profile 13: PDS, reused storage, dynamic text results, pds script waits for cancel event.";
+        profile.enabled = true;
+        return profile;
+    }
+
+    private static DefaultTestExecutionProfile defineProfile14() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID
+                .add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_CHECKMARX_INTEGRATIONTEST_WRONG_WITH_SOURCE_AND_BINARY);
+        profile.id = "inttest-p14-pds-checkmarx";
+        profile.description = "Profile 14: PDS checkmarx, reused storage, dynamic text results, but with source,binary as supported data type";
+        profile.enabled = true;
+        return profile;
+    }
+
+    private static DefaultTestExecutionProfile defineProfile15() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID
+                .add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_CHECKMARX_INTEGRATIONTEST_WITH_FILEFILTER_EXCLUDE_TEXTFILES);
+        profile.id = "inttest-p15-pds-checkmarx";
+        profile.description = "Profile 15: PDS checkmarx, reused storage, dynamic text results, with file filter exclusion of *.txt";
         profile.enabled = true;
         return profile;
     }

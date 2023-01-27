@@ -95,20 +95,26 @@ public class ArchiveSupport {
 
                 String parentPath = child.getParentFile().getAbsolutePath();
                 String relativeFromBasePath = parentPath.substring(basePath.length());
-                relativeFromBasePath = relativeFromBasePath + "/" + child.getName();
+                String relativePath = "./" + relativeFromBasePath + "/" + child.getName();
 
                 ArchiveEntry entry = null;
                 switch (type) {
                 case TAR:
-                    entry = new TarArchiveEntry(child, relativeFromBasePath);
+                    entry = new TarArchiveEntry(child, relativePath);
                     break;
                 case ZIP:
-                    entry = new ZipArchiveEntry(child, relativeFromBasePath);
+                    entry = new ZipArchiveEntry(child, relativePath);
                     break;
                 default:
                     throw new IllegalStateException("Unsupported type:" + type);
                 }
+                /* write archive entry */
                 outputStream.putArchiveEntry(entry);
+
+                /* write entry data */
+                try (InputStream i = Files.newInputStream(child.toPath())) {
+                    IOUtils.copy(i, outputStream);
+                }
             }
         }
 
@@ -184,10 +190,14 @@ public class ArchiveSupport {
                 continue;
             }
             if (!data.isAccepted()) {
+                LOG.debug("Filtering: {}", name);
+
                 continue;
             }
             if (data.isPathChangeWanted()) {
                 name = data.getChangedPath();
+
+                LOG.debug("Path changed to: {}", name);
 
                 if (name == null) {
                     throw new IllegalStateException("Wanted path is null - cannot be handled!");

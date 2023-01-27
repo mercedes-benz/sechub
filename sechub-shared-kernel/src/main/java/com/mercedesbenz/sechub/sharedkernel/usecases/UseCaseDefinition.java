@@ -71,10 +71,10 @@ public @interface UseCaseDefinition {
     String title();
 
     /**
-     * API Name
+     * API Name (is used for open API file generation)
      *
-     *
-     * @return name whe API call is possible or <code>null</code>
+     * @return name when an API call is possible or <code>null</code> if not
+     *         possible.
      */
     String apiName();
 

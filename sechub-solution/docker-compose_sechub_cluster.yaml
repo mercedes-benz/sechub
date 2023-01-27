@@ -7,6 +7,7 @@ services:
       args:
         - BASE_IMAGE=debian:11-slim
         - BUILD_TYPE=${BUILD_TYPE}
+        - JAVA_DISTRIBUTION=${JAVA_DISTRIBUTION}
         - JAVA_VERSION=${JAVA_VERSION}
         - SECHUB_VERSION=${SECHUB_VERSION}
         - GO=${GO}

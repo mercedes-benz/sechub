@@ -31,13 +31,13 @@ version = VersionData.getPdsVersion()
 bootJar {
     
      doLast {
-            /* Here we copy the created wrapper jar as "sechub-pds-wrapper-checkmarx.jar" into the 
+            /* Here we copy the created wrapper jar as "sechub-wrapper-checkmarx.jar" into the 
              * pds-tools folder inside the sechub-integrationtest gradle subproject.
              * 
              *  This enables integration test script to use the solution checkmarx.sh script
              *  and just set as tool folder: ${project.buildDir}/pds-tools
              */
-            File integratonTestLaunchFile = new File("${rootProject.projectDir}/sechub-integrationtest/build/pds-tools/sechub-pds-wrapper-checkmarx.jar")
+            File integratonTestLaunchFile = new File("${rootProject.projectDir}/sechub-integrationtest/build/pds-tools/sechub-wrapper-checkmarx.jar")
             
             if (integratonTestLaunchFile.exists()){
                 java.nio.file.Files.delete(integratonTestLaunchFile.toPath())

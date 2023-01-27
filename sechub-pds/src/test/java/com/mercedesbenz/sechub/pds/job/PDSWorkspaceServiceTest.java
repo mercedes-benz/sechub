@@ -19,6 +19,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
+import com.mercedesbenz.sechub.pds.config.PDSProductSetup;
+import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
 import com.mercedesbenz.sechub.pds.execution.PDSExecutionParameterEntry;
 import com.mercedesbenz.sechub.pds.storage.PDSMultiStorageService;
 import com.mercedesbenz.sechub.pds.storage.PDSStorageInfoCollector;
@@ -34,6 +36,10 @@ class PDSWorkspaceServiceTest {
     private PDSStorageInfoCollector storageInfoCollector;
     private PDSJobConfiguration config;
     private static String workspaceRootFolderPath;
+    private PDSWorkspacePreparationContextFactory preparationContextFactory;
+    private PDSServerConfigurationService serverConfigService;
+    private PDSWorkspacePreparationResultCalculator preparationResultCalculator;
+    private PDSWorkspacePreparationContext context;
 
     @BeforeAll
     static void beforeAll() throws IOException {
@@ -46,6 +52,15 @@ class PDSWorkspaceServiceTest {
         storageService = mock(PDSMultiStorageService.class);
         storage = mock(JobStorage.class);
         storageInfoCollector = mock(PDSStorageInfoCollector.class);
+        preparationContextFactory = mock(PDSWorkspacePreparationContextFactory.class);
+        serverConfigService = mock(PDSServerConfigurationService.class);
+        preparationResultCalculator = mock(PDSWorkspacePreparationResultCalculator.class);
+
+        context = mock(PDSWorkspacePreparationContext.class);
+        when(preparationContextFactory.createPreparationContext(any())).thenReturn(context);
+
+        PDSProductSetup setup = new PDSProductSetup();
+        when(serverConfigService.getProductSetupOrNull(any())).thenReturn(setup);
 
         when(storageService.getJobStorage(any(), any())).thenReturn(storage);
 
@@ -53,6 +68,9 @@ class PDSWorkspaceServiceTest {
         serviceToTest.storageService = storageService;
         serviceToTest.storageInfoCollector = storageInfoCollector;
         serviceToTest.workspaceRootFolderPath = workspaceRootFolderPath;
+        serviceToTest.preparationContextFactory = preparationContextFactory;
+        serviceToTest.serverConfigService = serverConfigService;
+        serviceToTest.preparationResultCalculator = preparationResultCalculator;
 
         config = new PDSJobConfiguration();
 
@@ -62,13 +80,42 @@ class PDSWorkspaceServiceTest {
     }
 
     @Test
+    void prepare_uses_prepare_factory() throws Exception {
+
+        /* prepare */
+        UUID jobUUID = UUID.randomUUID();
+
+        /* execute */
+        serviceToTest.prepare(jobUUID, config, null);
+
+        /* test */
+        verify(preparationContextFactory).createPreparationContext(any());
+    }
+
+    @Test
+    void prepare_returns_result_from_calculator() throws Exception {
+
+        /* prepare */
+        UUID jobUUID = UUID.randomUUID();
+        PDSWorkspacePreparationResult expected = new PDSWorkspacePreparationResult(true);
+
+        when(preparationResultCalculator.calculateResult(context)).thenReturn(expected);
+
+        /* execute */
+        PDSWorkspacePreparationResult result = serviceToTest.prepare(jobUUID, config, null);
+
+        /* test */
+        assertSame(expected, result);
+    }
+
+    @Test
     @DisplayName("When job has no former meta data, there is no metadata file preparated")
     void when_job_has_no_metadata_no_metadata_file_is_created_in_workspace() throws Exception {
         /* prepare */
         UUID jobUUID = UUID.randomUUID();
 
         /* execute */
-        serviceToTest.prepareWorkspace(jobUUID, config, null);
+        serviceToTest.prepare(jobUUID, config, null);
 
         /* test */
         File metaDataFile = serviceToTest.getMetaDataFile(jobUUID);
@@ -83,7 +130,7 @@ class PDSWorkspaceServiceTest {
         UUID jobUUID = UUID.randomUUID();
 
         /* execute */
-        serviceToTest.prepareWorkspace(jobUUID, config, "this is my metadata");
+        serviceToTest.prepare(jobUUID, config, "this is my metadata");
 
         /* test */
         File metaDataFile = serviceToTest.getMetaDataFile(jobUUID);
@@ -128,7 +175,7 @@ class PDSWorkspaceServiceTest {
         when(storage.fetch("something.zip")).thenReturn(new ByteArrayInputStream("testme".getBytes()));
 
         /* execute */
-        serviceToTest.prepareWorkspace(jobUUID, config, null);
+        serviceToTest.prepare(jobUUID, config, null);
 
         /* test */
         verify(storageService).getJobStorage("xyz/abc/project1", config.getSechubJobUUID());

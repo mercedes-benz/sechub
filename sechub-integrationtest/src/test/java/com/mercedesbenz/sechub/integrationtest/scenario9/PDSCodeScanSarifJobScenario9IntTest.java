@@ -170,6 +170,7 @@ public class PDSCodeScanSarifJobScenario9IntTest {
         // check script trust all is defined here with "false". Because PROFILE_3_PDS_CODESCAN_SARIF
         // uses PDS_V1_CODE_SCAN_D which has defined the parameter as false
         assertPDSJob(assertAndFetchPDSJobUUIDForSecHubJob(jobUUID)).
+            containsVariableTestOutput("PDS_DEBUG_ENABLED", ""). // this executor config has not debugging enabled, so variable is empty
             containsVariableTestOutput("PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED", "false");
 
 

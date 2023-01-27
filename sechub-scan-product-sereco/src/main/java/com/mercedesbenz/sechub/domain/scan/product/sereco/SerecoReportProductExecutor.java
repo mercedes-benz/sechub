@@ -105,8 +105,14 @@ public class SerecoReportProductExecutor implements ProductExecutor {
 
     private void importProductResult(UUIDTraceLogID traceLogId, Workspace workspace, ProductResult productResult) {
         String importData = productResult.getResult();
+
         String productId = productResult.getProductIdentifier().name();
 
+        if (importData == null) {
+            LOG.info("For SecHub job: {} the product: {} did return not even an empty string - so we skip here gracefully.", traceLogId.getPlainId(),
+                    productId);
+            return;
+        }
         List<SecHubMessage> productMessages = new ArrayList<>();
         String messagesJson = productResult.getMessages();
         if (messagesJson != null) {

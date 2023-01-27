@@ -10,10 +10,13 @@ ARG BASE_IMAGE
 # Build args
 ARG BUILD_TYPE="download"
 
-ARG SECHUB_VERSION="0.34.0"
-ARG GO="go1.19.linux-amd64.tar.gz"
+ARG SECHUB_VERSION="0.35.2"
+ARG GO="go1.19.3.linux-amd64.tar.gz"
 ARG TAG=""
 ARG BRANCH=""
+
+# possible values: temurin, openj9, openjdk
+ARG JAVA_DISTRIBUTION="openjdk"
 
 # possible values are 11, 17
 ARG JAVA_VERSION="11"
@@ -31,6 +34,7 @@ FROM ${BASE_IMAGE} AS builder-build
 ARG GO
 ARG SECHUB_ARTIFACT_FOLDER
 ARG JAVA_VERSION
+ARG JAVA_DISTRIBUTION
 ARG TAG
 ARG BRANCH
 
@@ -46,7 +50,7 @@ RUN mkdir --parent "$SECHUB_ARTIFACT_FOLDER" "$DOWNLOAD_FOLDER"
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
-    apt-get install --quiet --assume-yes wget w3m git "openjdk-$JAVA_VERSION-jdk-headless" && \
+    apt-get install --quiet --assume-yes wget w3m git && \
     apt-get clean
 
 # Install Go
@@ -64,13 +68,24 @@ RUN cd "$DOWNLOAD_FOLDER" && \
     # remove go tar.gz
     rm "$GO"
 
+COPY --chmod=755 install-java/ "$DOWNLOAD_FOLDER/install-java/"
+
+# Install Java
+RUN cd "$DOWNLOAD_FOLDER/install-java/" && \
+    ./install-java.sh "$JAVA_DISTRIBUTION" "$JAVA_VERSION" jdk
+
+# Copy clone script
+COPY --chmod=755 clone.sh "$BUILD_FOLDER/clone.sh"
+
 # Build SecHub
 RUN mkdir --parent "$BUILD_FOLDER" && \
     cd "$BUILD_FOLDER" && \
-    git clone "$GIT_URL" && \
+    # execute the clone script
+    ./clone.sh "$GIT_URL" "$BRANCH" "$TAG" && \
     cd "sechub" && \
-    if [ ! -z "$BRANCH" ]; then git checkout "$BRANCH"; fi && \
-    if [ ! -z "$TAG" ]; then git checkout tags/"$TAG" -b "$TAG"; fi && \
+    # Java version
+    java --version && \
+    # Build SecHub
     "./buildExecutables" && \
     cp sechub-server/build/libs/sechub-server-*.jar --target-directory "$SECHUB_ARTIFACT_FOLDER"
 
@@ -132,6 +147,7 @@ FROM ${BASE_IMAGE} AS sechub
 LABEL maintainer="SecHub FOSS Team"
 
 ARG SECHUB_ARTIFACT_FOLDER
+ARG JAVA_DISTRIBUTION
 ARG JAVA_VERSION
 
 # env vars in container
@@ -150,11 +166,17 @@ RUN groupadd --gid "$GID" "$USER" && \
 RUN mkdir --parent "$SECHUB_FOLDER" "$SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR"
 COPY --from=builder "$SECHUB_ARTIFACT_FOLDER" "$SECHUB_FOLDER"
 
+# Upgrade system
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get upgrade --assume-yes --quiet && \
-    apt-get install --assume-yes --quiet "openjdk-$JAVA_VERSION-jre-headless" && \
     apt-get clean
+
+COPY --chmod=755 install-java/ "$SECHUB_FOLDER/install-java/"
+
+# Install Java
+RUN cd "$SECHUB_FOLDER/install-java/" && \
+    ./install-java.sh "$JAVA_DISTRIBUTION" "$JAVA_VERSION" jre
 
 # Copy run script into container
 COPY run.sh /run.sh

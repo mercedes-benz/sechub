@@ -49,7 +49,7 @@ public class PDSInfraScanProductExecutor extends AbstractPDSProductExecutor {
         ProductExecutorContext executorContext = data.getProductExecutorContext();
 
         /* we reuse config support created inside customize method */
-        PDSExecutorConfigSuppport configSupport = (PDSExecutorConfigSuppport) data.getNetworkTargetDataProvider();
+        PDSExecutorConfigSupport configSupport = (PDSExecutorConfigSupport) data.getNetworkTargetDataProvider();
 
         if (configSupport.isTargetTypeForbidden(targetType)) {
             LOG.info("pds adapter does not accept target type:{} so cancel execution");
@@ -109,7 +109,7 @@ public class PDSInfraScanProductExecutor extends AbstractPDSProductExecutor {
         data.setNetworkLocationProvider(new InfraScanNetworkLocationProvider(secHubConfiguration));
 
         ProductExecutorContext executorContext = data.getProductExecutorContext();
-        PDSExecutorConfigSuppport configSupport = PDSExecutorConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
+        PDSExecutorConfigSupport configSupport = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
                 serviceCollection);
         data.setNetworkTargetDataProvider(configSupport);
     }

@@ -53,6 +53,9 @@ localserver() {
     echo "Upload binaries maximum bytes: $SECHUB_UPLOAD_BINARIES_MAXIMUM_BYTES"
     echo "Activated profiles: $profiles"
 
+    echo "Java version:"
+    java --version
+
     java $JAVA_DEBUG_OPTIONS $database_options \
         $storage_options \
         -Dfile.encoding=UTF-8 \

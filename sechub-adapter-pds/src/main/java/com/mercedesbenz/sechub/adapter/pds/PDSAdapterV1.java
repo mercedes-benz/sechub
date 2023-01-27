@@ -290,7 +290,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         String secHubTraceId = context.getTraceID();
         AdapterMetaData metaData = context.getRuntimeContext().getMetaData();
 
-        boolean required = checkRequired(data, type);
+        boolean required = checkUploadRequired(data, type);
 
         if (!required) {
             LOG.debug("Skipped {} file upload for pds job:{}, because not required", type, pdsJobUUID);
@@ -307,15 +307,24 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         LOG.info("Start {} uploading for pds job: {} - sechub: {}", type, pdsJobUUID, secHubTraceId);
 
         String checksum = fetchChecksumOrNull(data, type);
-        uploadSupport.upload(type, context, data, checksum);
+
+        Long fileSize = fetchFileSizeOrNull(data, type);
+        String fileSizeAsString = null;
+        if (fileSize != null) {
+            fileSizeAsString = "" + fileSize;
+        }
+
+        uploadSupport.upload(type, context, data, checksum, fileSizeAsString);
 
         /* after this - mark file upload done - at least for debugging */
         metaData.setValue(sourceUploadMetaDataKey, true);
         context.getRuntimeContext().getCallback().persist(metaData);
     }
 
-    private boolean checkRequired(PDSAdapterConfigData data, SecHubDataConfigurationType type) {
+    private boolean checkUploadRequired(PDSAdapterConfigData data, SecHubDataConfigurationType type) {
         switch (type) {
+        case NONE:
+            return false;
         case BINARY:
             return data.isBinaryTarFileRequired();
         case SOURCE:
@@ -327,6 +336,8 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
 
     private String fetchChecksumOrNull(PDSAdapterConfigData data, SecHubDataConfigurationType type) {
         switch (type) {
+        case NONE:
+            return null;
         case BINARY:
             return data.getBinariesTarFileChecksumOrNull();
         case SOURCE:
@@ -336,8 +347,23 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         }
     }
 
+    private Long fetchFileSizeOrNull(PDSAdapterConfigData data, SecHubDataConfigurationType type) {
+        switch (type) {
+        case NONE:
+            return null;
+        case BINARY:
+            return data.getBinariesTarFileSizeInBytesOrNull();
+        case SOURCE:
+            return data.getSourceCodeZipFileSizeInBytesOrNull();
+        default:
+            throw new IllegalArgumentException("scan type: " + type + " is not supported!");
+        }
+    }
+
     private String createUploadMetaDataKey(UUID pdsJobUUID, SecHubDataConfigurationType type) {
         switch (type) {
+        case NONE:
+            return null;
         case BINARY:
             return PDSMetaDataID.createBinaryUploadDoneKey(pdsJobUUID);
         case SOURCE:

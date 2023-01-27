@@ -11,6 +11,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -19,8 +20,6 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-
-import junit.framework.AssertionFailedError;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +55,8 @@ import com.mercedesbenz.sechub.test.ExampleConstants;
 import com.mercedesbenz.sechub.test.PDSTestURLBuilder;
 import com.mercedesbenz.sechub.test.SecHubTestURLBuilder;
 import com.mercedesbenz.sechub.test.executionprofile.TestExecutionProfile;
+
+import junit.framework.AssertionFailedError;
 
 public class TestAPI {
 
@@ -102,6 +103,10 @@ public class TestAPI {
 
     public static final AsPDSUser asPDSUser(TestUser user) {
         return new AsPDSUser(user);
+    }
+
+    public static AssertUserJobInfo assertUserJobInfo(TestSecHubJobInfoForUserListPage page) {
+        return AssertUserJobInfo.assertInfo(page);
     }
 
     /**
@@ -694,7 +699,7 @@ public class TestAPI {
         SecHubTestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildGetFileUpload(project.getProjectId(), jobUUID.toString(), fileName);
         try {
-            File file = as(ANONYMOUS).downloadAsTempFileFromURL(url, jobUUID);
+            File file = as(ANONYMOUS).downloadAsTempFileFromURL(url, jobUUID, fileName);
             return file;
         } catch (HttpStatusCodeException e) {
             if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
@@ -1436,6 +1441,31 @@ public class TestAPI {
     public static String createPDSJob(TestRestHelper restHelper, PDSTestURLBuilder urlBuilder, String jobConfigurationJson) {
         String url = urlBuilder.buildCreateJob();
         String result = restHelper.postJson(url, jobConfigurationJson);
+        return result;
+    }
+
+    public static Map<String, String> fetchPDSVariableTestOutputMap(UUID pdsJobUUID) {
+        Map<String, String> result = new LinkedHashMap<>();
+
+        String outputStreamText = asPDSUser(PDS_ADMIN).getJobOutputStreamText(pdsJobUUID);
+        assertNotNull(outputStreamText);
+
+        String[] lines = outputStreamText.split("\n");
+        for (String line : lines) {
+            if (line.startsWith(">") && line.length() > 1) {
+                String shrinked = line.substring(1);
+                String[] splitted = shrinked.split("=");
+                String variableName = "";
+                String variableValue = "";
+                if (splitted.length > 0) {
+                    variableName = splitted[0];
+                }
+                if (splitted.length > 1) {
+                    variableValue = splitted[1];
+                }
+                result.put(variableName, variableValue);
+            }
+        }
         return result;
     }
 }

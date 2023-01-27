@@ -18,8 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.ResourceAccessException;
 
-import ch.qos.logback.classic.Level;
-
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 import com.mercedesbenz.sechub.integrationtest.internal.NoSecHubSuperAdminNecessaryScenario;
 import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
@@ -27,6 +25,8 @@ import com.mercedesbenz.sechub.integrationtest.internal.SecHubServerTestScenario
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestScenario;
 import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
+
+import ch.qos.logback.classic.Level;
 
 public class IntegrationTestSetup implements TestRule {
 

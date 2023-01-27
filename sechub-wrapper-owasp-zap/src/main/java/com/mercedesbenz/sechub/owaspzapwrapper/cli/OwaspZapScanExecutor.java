@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.zaproxy.clientapi.core.ClientApi;
 
 import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapClientApiFactory;
-import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanConfiguration;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanContext;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.ProxyInformation;
 import com.mercedesbenz.sechub.owaspzapwrapper.scan.OwaspZapScan;
 import com.mercedesbenz.sechub.owaspzapwrapper.util.TargetConnectionChecker;
@@ -25,26 +25,24 @@ public class OwaspZapScanExecutor {
         connectionChecker = new TargetConnectionChecker();
     }
 
-    public void execute(OwaspZapScanConfiguration scanConfig) throws ZapWrapperRuntimeException {
-        if (!connectionChecker.isTargetReachable(scanConfig.getTargetUri(), scanConfig.getProxyInformation())) {
+    public void execute(OwaspZapScanContext scanContext) throws ZapWrapperRuntimeException {
+        if (!connectionChecker.isTargetReachable(scanContext.getTargetUri(), scanContext.getProxyInformation())) {
             // Build error message containing proxy if it was set.
-            String errorMessage = createErrorMessage(scanConfig);
-            throw new ZapWrapperRuntimeException(errorMessage, ZapWrapperExitCode.EXECUTION_FAILED);
+            String errorMessage = createErrorMessage(scanContext);
+            throw new ZapWrapperRuntimeException(errorMessage, ZapWrapperExitCode.TARGET_URL_NOT_REACHABLE);
         }
-        ClientApi clientApi = null;
+        ClientApi clientApi = clientApiFactory.create(scanContext.getServerConfig());
 
-        clientApi = clientApiFactory.create(scanConfig.getServerConfig());
-
-        OwaspZapScan owaspZapScan = resolver.resolveScanImplementation(scanConfig, clientApi);
+        OwaspZapScan owaspZapScan = resolver.resolveScanImplementation(scanContext, clientApi);
         LOG.info("Starting Owasp Zap scan.");
         owaspZapScan.scan();
 
     }
 
-    private String createErrorMessage(OwaspZapScanConfiguration scanConfig) {
-        ProxyInformation proxyInformation = scanConfig.getProxyInformation();
+    private String createErrorMessage(OwaspZapScanContext scanContext) {
+        ProxyInformation proxyInformation = scanContext.getProxyInformation();
 
-        String errorMessage = "Target url: " + scanConfig.getTargetUri() + " is not reachable!";
+        String errorMessage = "Target url: " + scanContext.getTargetUri() + " is not reachable!";
         if (proxyInformation != null) {
             errorMessage += errorMessage + " via " + proxyInformation.getHost() + ":" + proxyInformation.getPort();
         }

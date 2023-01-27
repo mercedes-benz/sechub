@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 import com.mercedesbenz.sechub.commons.model.SecHubFinding;
+import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.web.SecHubReportWeb;
 import com.mercedesbenz.sechub.commons.model.web.SecHubReportWebAttack;
 import com.mercedesbenz.sechub.commons.model.web.SecHubReportWebBody;
@@ -144,6 +145,22 @@ public class HTMLReportHelper {
             return EMPTY_STRING;
         }
         return attack.getVector();
+    }
+
+    public String getMessageTypeAsHTMLIcon(SecHubMessageType type) {
+        if (type != null) {
+
+            switch (type) {
+            case ERROR:
+                return "&#128711;"; // probibit
+            case INFO:
+                return "&#128712;"; // circle
+            case WARNING:
+                return "&#9888;"; // attention
+            }
+        }
+        /* fallback always "no icon" */
+        return "";
     }
 
 }

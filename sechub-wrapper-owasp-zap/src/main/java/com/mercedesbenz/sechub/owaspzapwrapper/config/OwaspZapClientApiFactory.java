@@ -25,16 +25,16 @@ public class OwaspZapClientApiFactory {
 
     private void assertValidServerConfig(OwaspZapServerConfiguration serverConfig) {
         if (serverConfig == null) {
-            throw new ZapWrapperRuntimeException("Owasp Zap server configuration may not be null!", ZapWrapperExitCode.ZAP_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("Owasp Zap server configuration may not be null!", ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
         }
         if (serverConfig.getZaproxyHost() == null) {
-            throw new ZapWrapperRuntimeException("Owasp Zap host configuration may not be null!", ZapWrapperExitCode.ZAP_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("Owasp Zap host configuration may not be null!", ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
         }
         if (serverConfig.getZaproxyPort() <= 0) {
-            throw new ZapWrapperRuntimeException("Owasp Zap host configuration ahs to be a valid port number!", ZapWrapperExitCode.ZAP_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("Owasp Zap host configuration ahs to be a valid port number!", ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
         }
         if (serverConfig.getZaproxyApiKey() == null) {
-            throw new ZapWrapperRuntimeException("Owasp Zap api-key configuration may not be null!", ZapWrapperExitCode.ZAP_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("Owasp Zap api-key configuration may not be null!", ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
         }
     }
 }

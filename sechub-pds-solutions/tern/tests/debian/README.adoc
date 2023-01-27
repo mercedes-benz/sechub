@@ -1,0 +1,8 @@
+// SPDX-License-Identifier: MIT
+# Debian image
+
+Small Debian image.
+
+## Tern Expected Result
+
+Result expected.

@@ -16,6 +16,9 @@ LABEL maintainer="SecHub FOSS Team"
 ARG GO="go1.19.linux-amd64.tar.gz"
 ARG GOSEC_VERSION="2.13.1"
 
+# Environment variables in container
+ENV GOSEC_VERSION="${GOSEC_VERSION}"
+
 USER root
 
 # Copy mock folder
@@ -71,5 +74,3 @@ WORKDIR "$WORKSPACE"
 
 # Switch from root to non-root user
 USER "$USER"
-
-CMD ["/run.sh"]

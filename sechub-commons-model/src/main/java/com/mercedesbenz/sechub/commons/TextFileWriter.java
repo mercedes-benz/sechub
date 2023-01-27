@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,8 +50,10 @@ public class TextFileWriter {
 
         if (!targetFile.exists()) {
             File parentFile = targetFile.getParentFile();
-            if (!parentFile.exists() && !parentFile.mkdirs()) {
-                throw new IllegalStateException("Not able to create folder structure for:" + targetFile);
+            if (!parentFile.exists()) {
+                // we use new method - in case of a problem it throws an IO exception with
+                // details
+                Files.createDirectories(parentFile.toPath());
             }
             if (!targetFile.createNewFile()) {
                 throw new IllegalStateException("was not able to create new file:" + targetFile);

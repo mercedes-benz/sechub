@@ -92,7 +92,7 @@ class SecHubConfigurationModelValidatorTest {
         /* prepare */
         SecHubWebScanConfiguration webScan = mock(SecHubWebScanConfiguration.class);
         URI uri = createURIforSchema("https");
-        when(webScan.getUri()).thenReturn(uri);
+        when(webScan.getUrl()).thenReturn(uri);
 
         SecHubConfigurationModel model = new SecHubConfigurationModel();
         model.setApiVersion("1.0");
@@ -110,7 +110,7 @@ class SecHubConfigurationModelValidatorTest {
         /* prepare */
         SecHubWebScanConfiguration webScan = mock(SecHubWebScanConfiguration.class);
         URI uri = createURIforSchema("ftp");
-        when(webScan.getUri()).thenReturn(uri);
+        when(webScan.getUrl()).thenReturn(uri);
 
         SecHubConfigurationModel model = new SecHubConfigurationModel();
         model.setApiVersion("1.0");
@@ -313,7 +313,7 @@ class SecHubConfigurationModelValidatorTest {
 
         SecHubWebScanApiConfiguration openApi = new SecHubWebScanApiConfiguration();
         webScan.api = Optional.of(openApi);
-        webScan.uri = createURIforSchema("https");
+        webScan.url = createURIforSchema("https");
 
         openApi.getNamesOfUsedDataConfigurationObjects().add("unknown-configuration");
 
@@ -341,7 +341,7 @@ class SecHubConfigurationModelValidatorTest {
 
         SecHubWebScanApiConfiguration openApi = new SecHubWebScanApiConfiguration();
         webScan.api = Optional.of(openApi);
-        webScan.uri = createURIforSchema("https");
+        webScan.url = createURIforSchema("https");
 
         openApi.getNamesOfUsedDataConfigurationObjects().add("referenced-open-api-file");
 

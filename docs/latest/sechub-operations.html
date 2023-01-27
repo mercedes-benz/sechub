@@ -529,9 +529,9 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Operations</h1>
+<h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Operations</h1>
 <div class="details">
-<span id="revnumber"> Server 0.35.2</span>
+<span id="revnumber"> Server 0.37.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -606,7 +606,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#mapping">2.5. Mapping</a>
 <ul class="sectlevel3">
 <li><a href="#rest-api-for-global-mapping">2.5.1. REST API for global mapping</a></li>
-<li><a href="#json-structure">2.5.2. JSON structure</a></li>
+<li><a href="#mapping-json-structure">2.5.2. JSON structure</a></li>
 </ul>
 </li>
 <li><a href="#section-initial-profile-and-executors">2.6. Execution profiles</a></li>
@@ -811,7 +811,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.35.2-20220915150519</code></p>
+<p>Documentation version: <code>Server 0.37.0-20221220135016</code></p>
 </div>
 <div class="paragraph">
 <p>Target audience for this document are <strong>SecHub Operators/Administrators</strong>.</p>
@@ -1380,7 +1380,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.check.canceljob.delay</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">60000</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Define delay in milliseconds, for before next job cancelation check will be executed.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define delay in milliseconds, for before next job cancellation check will be executed.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.scan.scanconfig.refresh.delay</p></td>
@@ -1466,6 +1466,16 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.project.joblist.page.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">100</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.project.joblist.size.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">100</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum limit for job information list entries per page</p></td>
+</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.server.baseurl</p></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -1803,7 +1813,7 @@ PODs</strong> <em>(means this is a shared kernel / bottle neck but necessary)</e
 <div class="sect3">
 <h4 id="server-application">2.3.3. Server Application</h4>
 <div class="paragraph">
-<p>SecHub server is a written in <code>Java</code> and needs at least <code>JDK 8</code>.</p>
+<p>SecHub server is a written in <code>Java</code> and needs at least <code>JDK 11</code>.</p>
 </div>
 <div class="paragraph">
 <p>You can configure SecHub server by system properties or also by  environment
@@ -2182,7 +2192,7 @@ automation was possible!</p>
 <p>Script to prepare old jobs for Spring batch CVE-2020-5411 changes</p>
 </div>
 <div class="paragraph">
-<p>With Server v0.19.0 we upgraded our Spring Boot dependencies <sup class="footnote" id="_footnote_update_0_19_0">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup> but this led to cancelation problems on older jobs -
+<p>With Server v0.19.0 we upgraded our Spring Boot dependencies <sup class="footnote" id="_footnote_update_0_19_0">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup> but this led to cancellation problems on older jobs -
 this led to problems when deleting older jobs still running.<sup class="footnote" id="_footnote_problem_499">[<a id="_footnoteref_2" class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup></p>
 </div>
 <div class="paragraph">
@@ -2271,7 +2281,7 @@ behaviour like done in <a href="#scan-config-about">scan configuration</a>.</p>
 <div class="sect3">
 <h4 id="rest-api-for-global-mapping">2.5.1. REST API for global mapping</h4>
 <div class="paragraph">
-<p>A global configuration can be done by REST API.</p>
+<p>A global configuration can be done by REST API. The data is defined in <a href="#mapping-json-structure">JSON</a>.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -2285,9 +2295,9 @@ behaviour like done in <a href="#scan-config-about">scan configuration</a>.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="json-structure">2.5.2. JSON structure</h4>
+<h4 id="mapping-json-structure">2.5.2. JSON structure</h4>
 <div class="paragraph">
-<p>given JSON has following structure:</p>
+<p>Given JSON has following structure:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2803,6 +2813,58 @@ When 'true' the PDS adapter script used by the job will have the information and
 </div></div></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.supported.datatypes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+Can be SOURCE, BINARY, NONE or a combination as a comma separated list. This data shouldnormally not be defined via a default value of an optional PDS configuration parameter.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.jobstorage.read.resilience.retries.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+Defines the maximum amount of retries done when a job storage read access is failing
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.jobstorage.read.resilience.retry.wait.seconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+Defines the time to wait in seconds before the next retry is done (when it comes to storage READ problems)
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.product.timeout.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+Maximum allowed time in minutes, before a producct will be timeout - means launcher script is automatically canceled by PDS
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.filefilter.excludes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">
 This contains a comma separated list of path patterns for file excludes. These patterns can contain wildcards. Matching will be done case insensitive!For example: `*.go,*.html, test1.txt` would excluded every go file, every HTML file and files named `test1.txt`.</p>
@@ -2836,6 +2898,25 @@ This contains the Target URL for current scan i.e webscan. Will not be set in al
 </div></div></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.debug.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+When 'true', the PDS instance will show up some debug information on scan time. The output level of debugging information differs on PDS solutions/launcher scripts.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Available as ENV variable <code>PDS_DEBUG_ENABLED</code> inside launcher script.</p>
+</li>
+<li>
+<p>Optional</p>
+</li>
+<li>
+<p>Default is "false"</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.scan.configuration</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">
 This contains the SecHub configuration as JSON object (but reduced to current scan type, so e.g. a web scan will have no code scan configuration data available
@@ -2848,6 +2929,32 @@ This contains the SecHub configuration as JSON object (but reduced to current sc
 <li>
 <p><strong>Generated</strong></p>
 </li>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.cancel.event.checkinterval.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+This is the maximum time the launcher script process will be kept alive after a cancellation event is sent. This gives the launcher script process a chance to recognize the cancel event and do some final cancel parts and exit gracefully.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.cancel.maximum.waittime.seconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+The time in seconds PDS will check again if the launcher script process is alive or not when the process shall be canceled. When nothing defined, the default value is:0. If the value is 0 the process will be terminated without waiting.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
 <li>
 <p>Optional</p>
 </li>
@@ -3505,7 +3612,7 @@ reuse existing one</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Website identifier is created by uri root part and port number.<br>
+<p>Website identifier is created by url root part and port number.<br>
 When no port is defined instead of port number the protocol default will be used.</p>
 </div>
 <div class="paragraph">
@@ -3691,7 +3798,7 @@ SecHub will automatically check for uniqueness of user name and email address.</
 <p>At least the project owner must be set</p>
 </li>
 <li>
-<p>If you do not define any white list URIs there, no web scans or
+<p>If you do not define any white list URLs there, no web scans or
 infrastructure scans can be executed!<br>
 Check if requested white list entries are really valid for the project and do not belong to another project or
 organization.</p>
@@ -3732,7 +3839,7 @@ the assignment to a super administrator. Only with permission of project owner t
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.35.2<br>
+ Server 0.37.0<br>
 </div>
 </div>
 </body>

@@ -23,6 +23,7 @@ import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
+import com.mercedesbenz.sechub.sharedkernel.error.BadRequestException;
 import com.mercedesbenz.sechub.sharedkernel.error.NotAcceptableException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
@@ -37,6 +38,12 @@ import com.mercedesbenz.sechub.storage.core.StorageService;
 public class SchedulerSourcecodeUploadService {
 
     private static final Logger LOG = LoggerFactory.getLogger(SchedulerSourcecodeUploadService.class);
+
+    /**
+     * A constant for the size of an empty zip file - see
+     * https://en.wikipedia.org/wiki/ZIP_(file_format)#Limits
+     */
+    private static final long EMPTY_ZIP_FILE_SIZE = 22;
 
     @Autowired
     SchedulerSourcecodeUploadConfiguration configuration;
@@ -94,11 +101,23 @@ public class SchedulerSourcecodeUploadService {
 
         try (InputStream inputStream = file.getInputStream()) {
             long fileSize = file.getSize();
+
+            if (fileSize <= EMPTY_ZIP_FILE_SIZE) {
+                throw new BadRequestException("Uploaded sourcecode zip file may not be empty!");
+            }
+
             long checksumSizeInBytes = checkSum.getBytes().length;
 
+            String fileSizeAsString = "" + fileSize;
+            long fileSizeAsStringSizeInBytes = fileSizeAsString.getBytes().length;
+
             jobStorage.store(FILENAME_SOURCECODE_ZIP, inputStream, fileSize);
+            // we store the file size information inside storage - so we can use this for
+            // PDS uploads when no reuse of storage is wanted.
+            jobStorage.store(FILENAME_SOURCECODE_ZIP_FILESIZE, new StringInputStream(fileSizeAsString), fileSizeAsStringSizeInBytes);
             // we also store given checksum - so can be reused by security product
             jobStorage.store(FILENAME_SOURCECODE_ZIP_CHECKSUM, new StringInputStream(checkSum), checksumSizeInBytes);
+
         } catch (IOException e) {
             LOG.error("Was not able to store zipped sources! {}", traceLogID, e);
             throw new SecHubRuntimeException("Was not able to upload sources");

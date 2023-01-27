@@ -84,7 +84,7 @@ public class PDSExecutionService {
     PDSExecutionCallableFactory executionCallableFactory;
 
     @Autowired
-    PDSJobTransactionService updateService;
+    PDSJobTransactionService jobTransactionService;
 
     @Autowired
     PDSJobRepository repository;
@@ -147,7 +147,7 @@ public class PDSExecutionService {
 
                     if (canceled) {
                         LOG.info("Cancel SUCCESSFUL: canceled PDS job: {}", jobUUID);
-                        updateService.markJobAsCanceledInOwnTransaction(jobUUID);
+                        jobTransactionService.markJobAsCanceledInOwnTransaction(jobUUID);
                         return CancelResult.JOB_FOUND_CANCEL_WAS_DONE;
                     } else {
                         LOG.info(

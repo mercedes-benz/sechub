@@ -42,7 +42,7 @@ import com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableReader;
 
 class OwaspZapScanConfigurationFactoryTest {
 
-    private OwaspZapScanConfigurationFactory factoryToTest;
+    private OwaspZapScanContextFactory factoryToTest;
 
     private SecHubWebScanConfigurationHelper sechubWebConfigHelper;
     private EnvironmentVariableReader environmentVariableReader;
@@ -56,7 +56,7 @@ class OwaspZapScanConfigurationFactoryTest {
     @BeforeEach
     void beforeEach() {
         // create object to test
-        factoryToTest = new OwaspZapScanConfigurationFactory();
+        factoryToTest = new OwaspZapScanContextFactory();
 
         // create mocks
         sechubWebConfigHelper = mock(SecHubWebScanConfigurationHelper.class);
@@ -90,7 +90,7 @@ class OwaspZapScanConfigurationFactoryTest {
         when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         /* execute */
-        OwaspZapScanConfiguration result = factoryToTest.create(settings);
+        OwaspZapScanContext result = factoryToTest.create(settings);
 
         /* test */
         assertEquals(result.getMaxScanDurationInMillis(), maxScanDuration);
@@ -107,7 +107,7 @@ class OwaspZapScanConfigurationFactoryTest {
         when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         /* execute */
-        OwaspZapScanConfiguration result = factoryToTest.create(settings);
+        OwaspZapScanContext result = factoryToTest.create(settings);
 
         /* test */
         assertEquals(result.getContextName(), jobUUID);
@@ -122,7 +122,7 @@ class OwaspZapScanConfigurationFactoryTest {
         when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         /* execute */
-        OwaspZapScanConfiguration result = factoryToTest.create(settings);
+        OwaspZapScanContext result = factoryToTest.create(settings);
 
         /* test */
         String contextName = result.getContextName();
@@ -144,7 +144,7 @@ class OwaspZapScanConfigurationFactoryTest {
         when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         /* execute */
-        OwaspZapScanConfiguration result = factoryToTest.create(settings);
+        OwaspZapScanContext result = factoryToTest.create(settings);
 
         /* test */
         OwaspZapServerConfiguration serverConfig = result.getServerConfig();
@@ -179,7 +179,7 @@ class OwaspZapScanConfigurationFactoryTest {
         when(environmentVariableReader.readAsInt(PROXY_PORT_ENV_VARIABLE_NAME)).thenReturn(proxyPort);
 
         /* execute */
-        OwaspZapScanConfiguration result = factoryToTest.create(settings);
+        OwaspZapScanContext result = factoryToTest.create(settings);
 
         /* test */
         OwaspZapServerConfiguration serverConfig = result.getServerConfig();
@@ -203,7 +203,7 @@ class OwaspZapScanConfigurationFactoryTest {
         when(environmentVariableReader.readAsInt(PROXY_PORT_ENV_VARIABLE_NAME)).thenReturn(0);
 
         /* execute */
-        OwaspZapScanConfiguration result = factoryToTest.create(settings);
+        OwaspZapScanContext result = factoryToTest.create(settings);
 
         /* test */
         assertNotNull(result);
@@ -244,7 +244,7 @@ class OwaspZapScanConfigurationFactoryTest {
         when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         /* execute */
-        OwaspZapScanConfiguration result = factoryToTest.create(settings);
+        OwaspZapScanContext result = factoryToTest.create(settings);
 
         /* test */
         assertEquals(result.getAuthenticationType(), type);
@@ -263,7 +263,7 @@ class OwaspZapScanConfigurationFactoryTest {
         when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         /* execute */
-        OwaspZapScanConfiguration result = factoryToTest.create(settings);
+        OwaspZapScanContext result = factoryToTest.create(settings);
 
         /* test */
         assertEquals(result.getTargetUri(), createdUri);
@@ -279,7 +279,7 @@ class OwaspZapScanConfigurationFactoryTest {
         when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         /* execute */
-        OwaspZapScanConfiguration result = factoryToTest.create(settings);
+        OwaspZapScanContext result = factoryToTest.create(settings);
 
         /* test */
         assertEquals(result.isVerboseOutput(), verboseEnabled);
@@ -295,7 +295,7 @@ class OwaspZapScanConfigurationFactoryTest {
         when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         /* execute */
-        OwaspZapScanConfiguration result = factoryToTest.create(settings);
+        OwaspZapScanContext result = factoryToTest.create(settings);
 
         /* test */
         assertEquals(result.isAjaxSpiderEnabled(), enabled);
@@ -311,7 +311,7 @@ class OwaspZapScanConfigurationFactoryTest {
         when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         /* execute */
-        OwaspZapScanConfiguration result = factoryToTest.create(settings);
+        OwaspZapScanContext result = factoryToTest.create(settings);
 
         /* test */
         assertEquals(result.isActiveScanEnabled(), enabled);
@@ -327,7 +327,7 @@ class OwaspZapScanConfigurationFactoryTest {
         when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         /* execute */
-        OwaspZapScanConfiguration result = factoryToTest.create(settings);
+        OwaspZapScanContext result = factoryToTest.create(settings);
 
         /* test */
         assertEquals(result.getReportFile(), path);
@@ -348,7 +348,7 @@ class OwaspZapScanConfigurationFactoryTest {
         when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         /* execute */
-        OwaspZapScanConfiguration result = factoryToTest.create(settings);
+        OwaspZapScanContext result = factoryToTest.create(settings);
 
         OwaspZapFullRuleset fullRuleset = result.getFullRuleset();
 
@@ -368,7 +368,7 @@ class OwaspZapScanConfigurationFactoryTest {
         when(ruleProvider.fetchDeactivatedRuleReferences(deactivationFile)).thenReturn(createDeactivatedRuleReferences());
 
         /* execute */
-        OwaspZapScanConfiguration result = factoryToTest.create(settings);
+        OwaspZapScanContext result = factoryToTest.create(settings);
         DeactivatedRuleReferences deactivatedRuleReferences = result.getDeactivatedRuleReferences();
 
         /* test */
@@ -395,7 +395,7 @@ class OwaspZapScanConfigurationFactoryTest {
         }
 
         /* execute */
-        OwaspZapScanConfiguration result = factoryToTest.create(settings);
+        OwaspZapScanContext result = factoryToTest.create(settings);
         DeactivatedRuleReferences deactivatedRuleReferences = result.getDeactivatedRuleReferences();
 
         /* test */
@@ -419,7 +419,7 @@ class OwaspZapScanConfigurationFactoryTest {
         }
 
         /* execute */
-        OwaspZapScanConfiguration result = factoryToTest.create(settings);
+        OwaspZapScanContext result = factoryToTest.create(settings);
         DeactivatedRuleReferences deactivatedRuleReferences = result.getDeactivatedRuleReferences();
 
         /* test */
@@ -459,7 +459,7 @@ class OwaspZapScanConfigurationFactoryTest {
         Path expectedPathToApiDefinitionFile = new File(extractedSourcesPath, "openapi3.json").toPath();
 
         /* execute */
-        OwaspZapScanConfiguration result = factoryToTest.create(settings);
+        OwaspZapScanContext result = factoryToTest.create(settings);
 
         /* test */
         verify(environmentVariableReader, times(1)).readAsString(PDS_JOB_EXTRACTED_SOURCES_FOLDER);

@@ -21,9 +21,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationTypeListParser;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.pds.PDSProfiles;
 import com.mercedesbenz.sechub.pds.PDSShutdownService;
+import com.mercedesbenz.sechub.pds.config.PDSConfigurationAutoFix;
 import com.mercedesbenz.sechub.pds.config.PDSPathExecutableValidator;
 import com.mercedesbenz.sechub.pds.config.PDSProductIdentifierValidator;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
@@ -35,7 +37,7 @@ import com.mercedesbenz.sechub.pds.config.PDSServerIdentifierValidator;
 @DataJpaTest
 @ContextConfiguration(classes = { PDSPathExecutableValidator.class, PDSServerIdentifierValidator.class, PDSServerConfigurationValidator.class,
         PDSProductIdentifierValidator.class, PDSShutdownService.class, PDSJobRepository.class, PDSServerConfigurationService.class,
-        PDSJobRepositoryDBTest.SimpleTestConfiguration.class })
+        PDSJobRepositoryDBTest.SimpleTestConfiguration.class, PDSConfigurationAutoFix.class, SecHubDataConfigurationTypeListParser.class })
 public class PDSJobRepositoryDBTest {
 
     @Autowired

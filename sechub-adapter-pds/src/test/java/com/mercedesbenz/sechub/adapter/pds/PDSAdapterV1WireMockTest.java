@@ -52,6 +52,9 @@ public class PDSAdapterV1WireMockTest {
     private UUID sechubJobUUID;
     private Map<String, String> expectedJobParameters;
 
+    private static final long SIM_SOURCE_ZIP_SIZE = 1234567;
+    private static final long SIM_BINARIES_TAR_SIZE = 4711;
+
     @Before
     public void beforeEach() {
         adapterToTest = new PDSAdapterV1();
@@ -72,7 +75,7 @@ public class PDSAdapterV1WireMockTest {
         /* prepare */
         PDSWiremockTestSupport testSupport = PDSWiremockTestSupport.builder(wireMockRule).
                 simulateJobCanBeCreated(sechubJobUUID,productIdentifier,expectedJobParameters).
-                simulateUploadData(SOURCECODE_ZIP).
+                simulateUploadData(SOURCECODE_ZIP, SIM_SOURCE_ZIP_SIZE).
                 simulateMarkReadyToStart().
                 simulateFetchJobStatus(PDSJobStatusState.DONE).
                 simulateFetchJobResultOk("testresult").
@@ -82,17 +85,13 @@ public class PDSAdapterV1WireMockTest {
         testSupport.startPDSServerSimulation();
 
         /* @formatter:on */
-
         PDSAdapterConfig config = createCodeScanConfiguration(testSupport);
 
         /* execute */
         adapterToTest.start(config, callback);
 
-        /*
-         * test is done by wiremock - every unexpected call or wrong parameters will
-         * fail test
-         */
-
+        /* test */
+        testSupport.verfifyExpectedCalls();
     }
 
     @Test
@@ -105,7 +104,7 @@ public class PDSAdapterV1WireMockTest {
 
         PDSWiremockTestSupport testSupport = PDSWiremockTestSupport.builder(wireMockRule).
                 simulateJobCanBeCreated(sechubJobUUID,productIdentifier,expectedJobParameters).
-                simulateUploadData(SOURCECODE_ZIP).
+                simulateUploadData(SOURCECODE_ZIP,SIM_SOURCE_ZIP_SIZE).
                 simulateMarkReadyToStart().
                 simulateFetchJobStatus(PDSJobStatusState.DONE).
                 simulateFetchJobResultOk("testresult").
@@ -120,10 +119,37 @@ public class PDSAdapterV1WireMockTest {
         /* execute */
         adapterToTest.start(config, callback);
 
-        /*
-         * test is done by wiremock - every unexpected call or wrong parameters will
-         * fail test
-         */
+        /* test */
+        testSupport.verfifyExpectedCalls();
+    }
+
+    @Test
+    public void when_pds_config_use_sechub_store_set_to_false__upload_is_called__binary_variant() throws Exception {
+        /* @formatter:off */
+
+        /* prepare */
+        expectedJobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_TARGET_TYPE,"");
+        expectedJobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE,"false");
+
+        PDSWiremockTestSupport testSupport = PDSWiremockTestSupport.builder(wireMockRule).
+                simulateJobCanBeCreated(sechubJobUUID,productIdentifier,expectedJobParameters).
+                simulateUploadData(BINARIES_TAR,SIM_BINARIES_TAR_SIZE).
+                simulateMarkReadyToStart().
+                simulateFetchJobStatus(PDSJobStatusState.DONE).
+                simulateFetchJobResultOk("testresult").
+                simulateFetchJobMessages().
+                build();
+
+        testSupport.startPDSServerSimulation();
+
+        PDSAdapterConfig config = createCodeScanConfigurationWithBinary(testSupport);
+        /* @formatter:on */
+
+        /* execute */
+        adapterToTest.start(config, callback);
+
+        /* test */
+        testSupport.verfifyExpectedCalls();
     }
 
     @Test
@@ -137,7 +163,7 @@ public class PDSAdapterV1WireMockTest {
 
         PDSWiremockTestSupport testSupport = PDSWiremockTestSupport.builder(wireMockRule).
                 simulateJobCanBeCreated(sechubJobUUID,productIdentifier,expectedJobParameters).
-                //no simulate upload here!
+                //no simulate upload here! --> if an upload would be called, wiremock would fail, because no stubbing available
                 simulateMarkReadyToStart().
                 simulateFetchJobStatus(PDSJobStatusState.DONE).
                 simulateFetchJobResultOk("testresult").
@@ -152,10 +178,8 @@ public class PDSAdapterV1WireMockTest {
         /* execute */
         adapterToTest.start(config, callback);
 
-        /*
-         * test is done by wiremock - every unexpected call or wrong parameters will
-         * fail test
-         */
+        /* test */
+        testSupport.verfifyExpectedCalls();
 
     }
 
@@ -189,8 +213,8 @@ public class PDSAdapterV1WireMockTest {
         AdapterExecutionResult result = adapterToTest.start(config, callback);
 
         /* test */
+        testSupport.verfifyExpectedCalls();
         assertEquals(Arrays.asList(new SecHubMessage(SecHubMessageType.INFO, "i am the info sent back by wiremock")), result.getProductMessages());
-
     }
 
     /* @formatter:off */
@@ -207,8 +231,46 @@ public class PDSAdapterV1WireMockTest {
         configurator.setPdsProductIdentifier(productIdentifier);
         configurator.setJobParameters(expectedJobParameters);
         configurator.setSecHubJobUUID(sechubJobUUID);
-        configurator.setSourceCodeZipFileInputStreamOrNull(new ByteArrayInputStream("test".getBytes()));
-        configurator.setSourceCodeZipFileChecksumOrNull("fakeChecksumForfakeServer");
+
+            configurator.setSourceCodeZipFileInputStreamOrNull(new ByteArrayInputStream("test".getBytes()));
+            configurator.setSourceCodeZipFileChecksumOrNull("fakeChecksumForfakeServer");
+            configurator.setSourceCodeZipFileRequired(true);
+            configurator.setSourceCodeZipFileSizeInBytes(SIM_SOURCE_ZIP_SIZE);
+
+        configurator.setReusingSecHubStorage(testSupport.useSecHubStorage);
+        configurator.setScanType(ScanType.CODE_SCAN);
+        configurator.setBinaryTarFileRequired(false);
+
+        PDSAdapterConfig config = builder.build();
+
+        return config;
+    }
+    /* @formatter:on */
+
+    /* @formatter:off */
+    private PDSAdapterConfig createCodeScanConfigurationWithBinary(PDSWiremockTestSupport testSupport) {
+        String baseURL = testSupport.getTestBaseUrl();
+        PDSCodeScanConfigBuilder builder = PDSCodeScanConfigImpl.builder().
+                setUser("testuser").
+                setTrustAllCertificates(true).
+                setPasswordOrAPIToken("examplepwd").
+                setProjectId(TEST_PROJECT_ID).
+                setProductBaseUrl(baseURL);
+
+        PDSAdapterConfigurator configurator = builder.getPDSAdapterConfigurator();
+        configurator.setPdsProductIdentifier(productIdentifier);
+        configurator.setJobParameters(expectedJobParameters);
+        configurator.setSecHubJobUUID(sechubJobUUID);
+
+        if (! testSupport.useSecHubStorage) {
+            configurator.setBinaryTarFileInputStreamOrNull(new ByteArrayInputStream("test".getBytes()));
+            configurator.setBinariesTarFileChecksumOrNull("fakeChecksumForfakeServer");
+            configurator.setBinaryTarFileRequired(true);
+            configurator.setBinariesTarFileSizeInBytes(SIM_BINARIES_TAR_SIZE);
+        }
+        configurator.setSourceCodeZipFileRequired(false);
+
+        configurator.setReusingSecHubStorage(testSupport.useSecHubStorage);
         configurator.setScanType(ScanType.CODE_SCAN);
 
         PDSAdapterConfig config = builder.build();
