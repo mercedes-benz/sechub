@@ -15,7 +15,7 @@ public class NewApiTokenRequestedUserNotificationServiceHelper {
     static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm";
 
     @Value("${sechub.user.onetimetoken.outdated.millis:86400000}")
-    @MustBeDocumented(value = "One time token time when outdating")
+    @MustBeDocumented(value = "Time until the one time token expires")
     long oneTimeOutDatedMillis = DEFAULT_OUTDATED_TIME_MILLIS;
 
     private final Clock clock;
