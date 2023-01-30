@@ -29,7 +29,7 @@ public class NewApiTokenRequestedUserNotificationService {
         String link = userMessage.getLinkWithOneTimeToken();
 
         NewApiTokenRequestedUserNotificationServiceHelper serviceHelper = new NewApiTokenRequestedUserNotificationServiceHelper(Clock.systemDefaultZone());
-        String tokenExpireDateTime = serviceHelper.getApiTokenExpireDate();
+        String tokenExpirationDateTime = serviceHelper.getApiTokenExpireDate();
 
         StringBuilder emailContent = new StringBuilder();
         emailContent.append("You requested a new API token. The token was created for you and expires at ");
