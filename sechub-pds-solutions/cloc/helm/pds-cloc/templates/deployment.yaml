@@ -17,7 +17,7 @@ spec:
                 name: {{ .Chart.Name }}
         spec:
             securityContext:
-                runAsUser: 2323 
+                runAsUser: 2323
             containers:
                 - name: {{ .Chart.Name }}
                   image: "{{ .Values.image.registry }}:{{ .Values.image.tag }}"
@@ -32,6 +32,10 @@ spec:
                       value: "{{ .Values.users.technical.id }}"
                     - name: TECHUSER_APITOKEN
                       value: "{{ .Values.users.technical.apiToken }}"
+                    - name: PDS_HEARTBEAT_LOGGING
+                      value: "{{ .Values.pds.heartbeatLogging }}"
+                    - name: SECHUB_PDS_WORKSPACE_AUTOCLEAN_DISABLED
+                      value: "{{ .Values.sechub.pds.workspace.autoclean.disabled }}"
                     - name: PDS_CONFIG_EXECUTE_QUEUE_MAX
                       value: "{{ .Values.pds.config.execute.queueMax }}"
                     - name: PDS_CONFIG_EXECUTE_WORKER_THREAD_COUNT
