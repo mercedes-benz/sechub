@@ -15,7 +15,7 @@ pds:
             queueMax: 10
             workerThreadCount: 1
     heartbeatLogging: "true"
-    sechub.pds.workspace.autoclean.disabled: false
+    autoclean: true
     logging:
         type:
             enabled: false
