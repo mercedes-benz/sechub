@@ -4,7 +4,6 @@ import static com.mercedesbenz.sechub.sharedkernel.util.Assert.*;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -80,36 +79,6 @@ public class JobStatisticTransactionService {
     public void insertJobStatisticData(UUID jobUUID, JobStatisticDataType type, JobStatisticDataKey key, BigInteger value) {
         JobStatisticData data = new JobStatisticData();
         validateAndSafe(type, key, value, data);
-    }
-
-    /**
-     * Update existing job statistic data - or create a new one
-     *
-     * @param jobUUID may not be <code>null</code>
-     * @param type    may not be <code>null</code>
-     * @param key     may not be <code>null</code>
-     * @param value   may not be <code>null</code>
-     */
-    public void updateJobStatisticData(UUID jobUUID, JobStatisticDataType type, JobStatisticDataKey key, long value) {
-        updateJobStatisticData(jobUUID, type, key, BigInteger.valueOf(value));
-    }
-
-    /**
-     * Update existing job statistic data - or create a new one
-     *
-     * @param jobUUID may not be <code>null</code>
-     * @param type    may not be <code>null</code>
-     * @param key     may not be <code>null</code>
-     * @param value
-     */
-    public void updateJobStatisticData(UUID jobUUID, JobStatisticDataType type, JobStatisticDataKey key, BigInteger value) {
-        Optional<JobStatisticData> result = jobStatisticDataRepository.findBySechubJobUUID(jobUUID);
-        if (result.isEmpty()) {
-            insertJobStatisticData(jobUUID, type, key, value);
-        } else {
-            JobStatisticData data = result.get();
-            validateAndSafe(type, key, value, data);
-        }
     }
 
     private void validateAndSafe(JobStatisticDataType type, JobStatisticDataKey key, BigInteger value, JobStatisticData data) {

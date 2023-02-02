@@ -12,17 +12,11 @@ public class CodeAnalyticData implements AnalyticProductResult {
         productData = new AnalyticProductData();
     }
 
-    public long getAmountOfFiles() {
-        return 0L;
-    }
 
     public Set<String> getLanguages() {
         return languages;
     }
 
-    public long getLines(String language) {
-        return 0L;
-    }
 
     public AnalyticProductData getProductData() {
         return productData;
@@ -38,6 +32,18 @@ public class CodeAnalyticData implements AnalyticProductResult {
 
     public long getLinesOfCode() {
         return 1;
+    }
+    
+    public long getLinesOfCodeForLanguage(String language) {
+        return 0L;
+    }
+
+    public long getAmountOfFiles() {
+        return 0L;
+    }
+    
+    public long getAmountFilesForLanguage(String language) {
+        return 0;
     }
 
 }

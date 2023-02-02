@@ -4,7 +4,9 @@ import static com.mercedesbenz.sechub.sharedkernel.util.Assert.*;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -15,6 +17,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.domain.statistic.StatisticDataContainer;
+import com.mercedesbenz.sechub.domain.statistic.StatisticDataKey;
+import com.mercedesbenz.sechub.domain.statistic.StatisticDataKeyValue;
 
 /**
  * Service for job run statistics. Will span new transactions, so data is always
@@ -93,15 +98,22 @@ public class JobRunStatisticTransactionService {
     }
 
     /**
-     * Inserts job run statistic data - will create always a new data entry
+     * Inserts job run statistic data - will create always new data entries
      *
      * @param executionUUID may not be <code>null</code>
-     * @param type          may not be <code>null</code>
-     * @param key           may not be <code>null</code>
-     * @param value         may not be <code>null</code>
+     * @param dataContainer may not be <code>null</code>
      */
-    public void insertJobRunStatisticData(UUID executionUUID, JobRunStatisticDataType type, JobRunStatisticDataKey key, long value) {
-        insertJobRunStatisticData(executionUUID, type, key, BigInteger.valueOf(value));
+    public void insertJobRunStatsticData(UUID executionUuid, StatisticDataContainer<JobRunStatisticDataType> dataContainer) {
+        notNull(dataContainer, "data container may not be null");
+        
+        Set<JobRunStatisticDataType> types = dataContainer.getTypes();
+        for (JobRunStatisticDataType type : types) {
+            List<StatisticDataKeyValue> keyValues = dataContainer.getKeyValues(type);
+            for (StatisticDataKeyValue keyValue : keyValues) {
+                insertJobRunStatisticData(executionUuid, type, keyValue.getKey(), keyValue.getValue());
+            }
+        }
+
     }
 
     /**
@@ -112,43 +124,13 @@ public class JobRunStatisticTransactionService {
      * @param key           may not be <code>null</code>
      * @param value
      */
-    public void insertJobRunStatisticData(UUID executionUUID, JobRunStatisticDataType type, JobRunStatisticDataKey key, BigInteger value) {
+    public void insertJobRunStatisticData(UUID executionUUID, JobRunStatisticDataType type, StatisticDataKey key, BigInteger value) {
         JobRunStatisticData data = new JobRunStatisticData();
         data.setExecutionUUID(executionUUID);
         validateAndSave(type, key, value, data);
     }
 
-    /**
-     * Update existing job statistic data - or create a new one
-     *
-     * @param executionUUID may not be <code>null</code>
-     * @param type          may not be <code>null</code>
-     * @param key           may not be <code>null</code>
-     * @param value
-     */
-    public void updateJobRunStatisticData(UUID executionUUID, JobRunStatisticDataType type, JobRunStatisticDataKey key, long value) {
-        updateJobRunStatisticData(executionUUID, type, key, BigInteger.valueOf(value));
-    }
-
-    /**
-     * Update existing job statistic data - or create a new one
-     *
-     * @param executionUUID may not be <code>null</code>
-     * @param type          may not be <code>null</code>
-     * @param key           may not be <code>null</code>
-     * @param value         may not be <code>null</code>
-     */
-    public void updateJobRunStatisticData(UUID executionUUID, JobRunStatisticDataType type, JobRunStatisticDataKey key, BigInteger value) {
-        Optional<JobRunStatisticData> result = jobRunStatisticDataRepository.findByExecutionUUID(executionUUID);
-        if (result.isEmpty()) {
-            insertJobRunStatisticData(executionUUID, type, key, value);
-        } else {
-            JobRunStatisticData data = result.get();
-            validateAndSave(type, key, value, data);
-        }
-    }
-
-    private void validateAndSave(JobRunStatisticDataType type, JobRunStatisticDataKey key, BigInteger value, JobRunStatisticData data) {
+    private void validateAndSave(JobRunStatisticDataType type, StatisticDataKey key, BigInteger value, JobRunStatisticData data) {
         notNull(type, "Data type may not be null!");
         notNull(key, "Key may not be null!");
         notNull(value, "Value may not be null!");
