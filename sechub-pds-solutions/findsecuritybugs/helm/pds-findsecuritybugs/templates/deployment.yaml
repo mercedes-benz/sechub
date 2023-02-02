@@ -41,10 +41,10 @@ spec:
                       value: "{{ .Values.users.technical.apiToken }}"
                     - name: PDS_MAX_FILE_UPLOAD_SIZE
                       value: "{{ .Values.pds.maxFileUploadSize }}"
-                    - name: PDS_UPLOAD_MAXIMUM_BYTES
+                    - name: PDS_MAX_FILE_UPLOAD_BYTES
                       value: "{{ .Values.pds.uploadMaximumBytes }}"
                     - name: PDS_HEARTBEAT_LOGGING
-                      value: "{{ .Values.pds.heartbeatLogging }}"                      
+                      value: "{{ .Values.pds.heartbeatLogging }}"
                     {{- if .Values.pds.logging.type.enabled }}
                     - name: LOGGING_TYPE
                       value: {{ .Values.pds.logging.type.appenderName }}
