@@ -6,7 +6,6 @@ import (
 	"archive/tar"
 	"errors"
 	"fmt"
-	"github.com/bmatcuk/doublestar/v4"
 	"io"
 	"io/fs"
 	"os"
@@ -104,8 +103,7 @@ func tarOneFolderRecursively(folder string, config *TarConfig) error {
 
 		// Filter excludes
 		for _, excludePattern := range config.Excludes {
-			match, _ := doublestar.PathMatch(excludePattern, tarPath)
-			if match {
+			if FilePathMatch(tarPath, excludePattern) {
 				LogDebug(config.Debug, fmt.Sprintf("%q matches exclude pattern %q -> skip", file, excludePattern))
 				return nil
 			}

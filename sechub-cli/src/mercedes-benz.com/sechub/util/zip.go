@@ -9,7 +9,6 @@ import (
 	"archive/zip"
 	"errors"
 	"fmt"
-	"github.com/bmatcuk/doublestar/v4"
 	"io"
 	"io/fs"
 	"os"
@@ -120,8 +119,7 @@ func zipOneFolderRecursively(folder string, config *ZipConfig) error {
 
 		// Filter excludes
 		for _, excludePattern := range config.Excludes {
-			match, _ := doublestar.PathMatch(excludePattern, zipPath)
-			if match {
+			if FilePathMatch(zipPath, excludePattern) {
 				LogDebug(config.Debug, fmt.Sprintf("%q matches exclude pattern %q -> skip", file, excludePattern))
 				return nil
 			}
