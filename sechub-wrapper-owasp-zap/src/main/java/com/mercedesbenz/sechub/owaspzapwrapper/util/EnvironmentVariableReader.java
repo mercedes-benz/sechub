@@ -3,11 +3,6 @@ package com.mercedesbenz.sechub.owaspzapwrapper.util;
 
 public class EnvironmentVariableReader {
 
-    private static EnvironmentVariableReader environmentVariableReader;
-
-    private EnvironmentVariableReader() {
-    }
-
     /**
      * Reads the value of the environment variable {@link environmentVariable} and
      * returns the value as string.
@@ -42,12 +37,4 @@ public class EnvironmentVariableReader {
             throw new IllegalArgumentException("The value of " + environmentVariable + " is not a valid integer.");
         }
     }
-
-    public static EnvironmentVariableReader getInstance() {
-        if (environmentVariableReader == null) {
-            environmentVariableReader = new EnvironmentVariableReader();
-        }
-        return environmentVariableReader;
-    }
-
 }

@@ -22,7 +22,7 @@ public class OwaspZapWrapperCLI {
     }
 
     public OwaspZapWrapperCLI() {
-        EnvironmentVariableReader reader = EnvironmentVariableReader.getInstance();
+        EnvironmentVariableReader reader = new EnvironmentVariableReader();
         String userMessagesFolder = reader.readAsString(EnvironmentVariableConstants.PDS_JOB_USER_MESSAGES_FOLDER);
         if (userMessagesFolder == null) {
             throw new IllegalStateException(

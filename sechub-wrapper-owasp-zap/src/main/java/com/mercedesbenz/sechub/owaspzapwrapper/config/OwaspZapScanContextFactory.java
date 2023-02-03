@@ -34,7 +34,7 @@ public class OwaspZapScanContextFactory {
 
     public OwaspZapScanContextFactory() {
         sechubWebConfigHelper = new SecHubWebScanConfigurationHelper();
-        environmentVariableReader = EnvironmentVariableReader.getInstance();
+        environmentVariableReader = new EnvironmentVariableReader();
         targetUriFactory = new BaseTargetUriFactory();
         ruleProvider = new RuleProvider();
         apiDefinitionFileProvider = new ApiDefinitionFileProvider();
