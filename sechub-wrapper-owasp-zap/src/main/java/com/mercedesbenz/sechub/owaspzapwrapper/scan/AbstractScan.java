@@ -60,7 +60,7 @@ public abstract class AbstractScan implements OwaspZapScan {
         this.remainingScanTime = scanContext.getMaxScanDurationInMillis();
         this.includeExcludeConverter = new SecHubIncludeExcludeToOwaspZapURIHelper();
         this.apiResponseHelper = new OwaspZapApiResponseHelper();
-        this.cancelEventFile = new File(EnvironmentVariableReader.getInstance().readAsString(EnvironmentVariableConstants.PDS_JOB_EVENTS_FOLDER),
+        this.cancelEventFile = new File(new EnvironmentVariableReader().readAsString(EnvironmentVariableConstants.PDS_JOB_EVENTS_FOLDER),
                 "cancel_requested.json");
     }
 
