@@ -22,7 +22,7 @@ public class OwaspZapWrapperCLI {
     }
 
     public OwaspZapWrapperCLI() {
-        EnvironmentVariableReader reader = new EnvironmentVariableReader();
+        EnvironmentVariableReader reader = EnvironmentVariableReader.getInstance();
         String userMessagesFolder = reader.readAsString(EnvironmentVariableConstants.PDS_JOB_USER_MESSAGES_FOLDER);
         if (userMessagesFolder == null) {
             throw new IllegalStateException(
@@ -32,9 +32,10 @@ public class OwaspZapWrapperCLI {
     }
 
     private void start(String[] args) throws IOException {
+    	OwaspZapScanContext scanContext = null;
         try {
             LOG.info("Building the scan configuration.");
-            OwaspZapScanContext scanContext = resolveScanContext(args);
+            scanContext = resolveScanContext(args);
             if (scanContext == null) {
                 /* only happens when help command was executed - here we just exit with 0 */
                 System.exit(0);
@@ -44,8 +45,13 @@ public class OwaspZapWrapperCLI {
             productMessagehelper.writeProductMessages(scanContext.getProductMessages());
 
         } catch (ZapWrapperRuntimeException e) {
-            LOG.error("Must exit with exit code {} because: {}.", e.getExitCode().getExitCode(), e.getMessage(), e);
-            productMessagehelper.writeProductError(e);
+        	if (ZapWrapperExitCode.SCAN_JOB_CANCELLED.equals(e.getExitCode())) {
+        		LOG.info(e.getMessage());
+        		productMessagehelper.writeProductMessages(scanContext.getProductMessages());
+        	} else {
+        		LOG.error("Must exit with exit code {} because: {}.", e.getExitCode().getExitCode(), e.getMessage(), e);
+        		productMessagehelper.writeProductError(e);
+        	}
             System.exit(e.getExitCode().getExitCode());
 
         } catch (OwaspZapWrapperCommandLineParserException e) {
