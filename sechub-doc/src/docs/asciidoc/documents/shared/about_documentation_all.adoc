@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 **About documentation**
 
-This documentation is part of `{secHub}`.
+This documentation is part of `{sechub}`.
 
 [[documentation-license-info]]
 [options="header",cols="1,1,1"]
