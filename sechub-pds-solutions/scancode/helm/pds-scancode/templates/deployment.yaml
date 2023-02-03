@@ -39,12 +39,12 @@ spec:
                       value: "{{ .Values.users.technical.id }}"
                     - name: TECHUSER_APITOKEN
                       value: "{{ .Values.users.technical.apiToken }}"
-                    - name: PDS_UPLOAD_MAXIMUM_BYTES
+                    - name: PDS_MAX_FILE_UPLOAD_BYTES
                       value: "{{ .Values.pds.uploadMaximumBytes }}"
                     - name: PDS_MAX_FILE_UPLOAD_SIZE
                       value: "{{ .Values.pds.maxFileUploadSize }}"
                     - name: PDS_HEARTBEAT_LOGGING
-                      value: "{{ .Values.pds.heartbeatLogging }}"                      
+                      value: "{{ .Values.pds.heartbeatLogging }}"
                     - name: PDS_CONFIG_EXECUTE_QUEUE_MAX
                       value: "{{ .Values.pds.config.execute.queueMax }}"
                     - name: PDS_CONFIG_EXECUTE_WORKER_THREAD_COUNT

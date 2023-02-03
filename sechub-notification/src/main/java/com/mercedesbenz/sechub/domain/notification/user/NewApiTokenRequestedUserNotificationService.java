@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.notification.user;
 
+import java.time.Clock;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
@@ -26,8 +28,13 @@ public class NewApiTokenRequestedUserNotificationService {
     public void notify(UserMessage userMessage) {
         String link = userMessage.getLinkWithOneTimeToken();
 
+        NewApiTokenRequestedUserNotificationServiceHelper serviceHelper = new NewApiTokenRequestedUserNotificationServiceHelper(Clock.systemDefaultZone());
+        String tokenExpireDateTime = serviceHelper.getApiTokenExpireDate();
+
         StringBuilder emailContent = new StringBuilder();
-        emailContent.append("You requested a new API token. Please use following link to get the token:\n");
+        emailContent.append("You requested a new API token. The token was created for you and expires at ");
+        emailContent.append(tokenExpireDateTime + ".\n");
+        emailContent.append("Please use the following link to get the token:\n");
         /*
          * important link must be at last line for integration testing. if changes here
          * are done please change the parts in `sechub-integrationtest
