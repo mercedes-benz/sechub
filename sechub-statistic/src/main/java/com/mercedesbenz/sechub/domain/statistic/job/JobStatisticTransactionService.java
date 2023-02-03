@@ -4,6 +4,8 @@ import static com.mercedesbenz.sechub.sharedkernel.util.Assert.*;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -12,6 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.mercedesbenz.sechub.domain.statistic.StatisticDataContainer;
+import com.mercedesbenz.sechub.domain.statistic.StatisticDataKey;
+import com.mercedesbenz.sechub.domain.statistic.StatisticDataKeyValue;
 
 /**
  * Service for job statistics. Will span new transactions, so data is always
@@ -62,26 +68,36 @@ public class JobStatisticTransactionService {
      * @param jobUUID may not be <code>null</code>
      * @param type    may not be <code>null</code>
      * @param key     may not be <code>null</code>
-     * @param value   may not be <code>null</code>
-     */
-    public void insertJobStatisticData(UUID jobUUID, JobStatisticDataType type, JobStatisticDataKey key, long value) {
-        insertJobStatisticData(jobUUID, type, key, BigInteger.valueOf(value));
-    }
-
-    /**
-     * Inserts job statistic data - will create always a new data entry
-     *
-     * @param jobUUID may not be <code>null</code>
-     * @param type    may not be <code>null</code>
-     * @param key     may not be <code>null</code>
      * @param value
      */
-    public void insertJobStatisticData(UUID jobUUID, JobStatisticDataType type, JobStatisticDataKey key, BigInteger value) {
+    public void insertJobStatisticData(UUID jobUUID, JobStatisticDataType type, StatisticDataKey key, BigInteger value) {
         JobStatisticData data = new JobStatisticData();
+        data.sechubJobUUID = jobUUID;
+
         validateAndSafe(type, key, value, data);
     }
 
-    private void validateAndSafe(JobStatisticDataType type, JobStatisticDataKey key, BigInteger value, JobStatisticData data) {
+    /**
+     * Inserts job statistic data - will create always new data entries
+     *
+     * @param jobUUID       may not be <code>null</code>
+     * @param dataContainer may not be <code>null</code>
+     */
+    public void insertJobStatisticData(UUID jobUUID, StatisticDataContainer<JobStatisticDataType> dataContainer) {
+        notNull(jobUUID, "jobUUID may not be null");
+        notNull(dataContainer, "data container may not be null");
+
+        Set<JobStatisticDataType> types = dataContainer.getTypes();
+        for (JobStatisticDataType type : types) {
+            List<StatisticDataKeyValue> keyValues = dataContainer.getKeyValues(type);
+            for (StatisticDataKeyValue keyValue : keyValues) {
+                insertJobStatisticData(jobUUID, type, keyValue.getKey(), keyValue.getValue());
+            }
+        }
+
+    }
+
+    private void validateAndSafe(JobStatisticDataType type, StatisticDataKey key, BigInteger value, JobStatisticData data) {
         notNull(data, "Entity may not be null!");
         notNull(type, "Data type may not be null!");
         notNull(key, "Key may not be null!");
@@ -94,7 +110,6 @@ public class JobStatisticTransactionService {
             LOG.error("Cannot safe, type:{} does not allow key:{}", type, key);
             return;
         }
-
         data.setType(type);
         data.setKey(keyName);
         data.setValue(value);

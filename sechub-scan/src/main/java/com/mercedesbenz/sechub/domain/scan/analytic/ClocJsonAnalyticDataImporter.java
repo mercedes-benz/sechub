@@ -34,15 +34,13 @@ public class ClocJsonAnalyticDataImporter implements AnalyticDataImporter {
     @Override
     public AnalyticData importData(String clocJson) throws IOException {
 
-        CodeAnalyticData locData = new CodeAnalyticData();
+        AnalyticData data = new AnalyticData();
+        CodeAnalyticData locData = data.getCodeAnalyticData();
 
         AnalyticProductData productData = locData.getProductData();
-        productData.setProductName("CLOC");
+        productData.setName("CLOC");
 
         readJsonData(clocJson, locData);
-
-        AnalyticData data = new AnalyticData();
-        data.setLinesOfCode(locData);
 
         return data;
     }
@@ -92,8 +90,8 @@ public class ClocJsonAnalyticDataImporter implements AnalyticDataImporter {
             files = nFilesNode.longValue();
         }
 
-        linesOfCode.setLines(language, lines);
-        linesOfCode.setFiles(language, files);
+        linesOfCode.setLinesOfCodeForLanguage(language, lines);
+        linesOfCode.setFilesForLanguage(language, files);
 
     }
 

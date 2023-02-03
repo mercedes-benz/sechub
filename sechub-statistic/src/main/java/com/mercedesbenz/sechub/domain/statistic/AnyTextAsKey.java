@@ -13,7 +13,7 @@ package com.mercedesbenz.sechub.domain.statistic;
  * <br>
  * To provide types which accept any text as key, just define them with
  * referencing {@link #ANY_TEXT}.
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -37,6 +37,7 @@ public class AnyTextAsKey implements StatisticDataKey {
 
     /**
      * Creates a key which is represented by given text
+     *
      * @param text may not be <code>null</code>
      */
     public AnyTextAsKey(String text) {
@@ -49,6 +50,11 @@ public class AnyTextAsKey implements StatisticDataKey {
     @Override
     public String getKeyValue() {
         return text;
+    }
+
+    @Override
+    public String toString() {
+        return "AnyTextAsKey:" + text;
     }
 
 }

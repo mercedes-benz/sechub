@@ -47,15 +47,19 @@ class JobRunStatisticTransactionServiceTest {
         serviceToTest.jobStatisticRepository = jobStatisticRepository;
     }
 
+    /**
+     * Some JobStatistic entity data will be duplicated by the creation of a new job
+     * run statistic entity.
+     */
     @Test
-    void sechub_job_exists_createJobRunStatistic_call_saves_job_run_statistic() {
+    void job_statistic_data_exists_createJobRunStatistic_call_saves_job_run_statistic() {
         /* prepare */
         LocalDateTime started = LocalDateTime.now();
-        JobStatistic job = new JobStatistic();
-        job.setSechubJobUUID(jobUUID);
-        job.setProjectId("project-x");
+        JobStatistic jobStatistic = new JobStatistic();
+        jobStatistic.setSechubJobUUID(jobUUID);
+        jobStatistic.setProjectId("project-x");
 
-        when(jobStatisticRepository.findById(jobUUID)).thenReturn(Optional.of(job));
+        when(jobStatisticRepository.findById(jobUUID)).thenReturn(Optional.of(jobStatistic));
 
         /* execute */
         serviceToTest.createJobRunStatistic(executionUUID, jobUUID, started);
@@ -72,28 +76,27 @@ class JobRunStatisticTransactionServiceTest {
         assertEquals("project-x", value.projectId);
 
     }
-    
-    
+
     @EnumSource(TrafficLight.class)
     @ParameterizedTest
     void markJobRunEnded(TrafficLight trafficLight) {
         // we emulate failure here via traffic light
         boolean failed = TrafficLight.OFF.equals(trafficLight);
-        
+
         LocalDateTime creationTime = LocalDateTime.now().minusSeconds(30);
-        LocalDateTime ended= LocalDateTime.now(); 
+        LocalDateTime ended = LocalDateTime.now();
 
         JobRunStatistic formerCreated = new JobRunStatistic();
-        formerCreated.created=creationTime;
-        formerCreated.projectId="p1";
-        formerCreated.executionUUID=executionUUID;
-        formerCreated.sechubJobUUID=UUID.randomUUID();
-        
+        formerCreated.created = creationTime;
+        formerCreated.projectId = "p1";
+        formerCreated.executionUUID = executionUUID;
+        formerCreated.sechubJobUUID = UUID.randomUUID();
+
         when(jobRunStatisticRepository.findById(executionUUID)).thenReturn(Optional.of(formerCreated));
-        
+
         /* execute */
         serviceToTest.markJobRunEnded(executionUUID, trafficLight, ended, failed);
-        
+
         /* test */
         ArgumentCaptor<JobRunStatistic> captor = ArgumentCaptor.forClass(JobRunStatistic.class);
         verify(jobRunStatisticRepository).save(captor.capture());
@@ -107,8 +110,16 @@ class JobRunStatisticTransactionServiceTest {
 
     }
 
+    /**
+     * JobStatistic entity is written when the job is created and contains the
+     * creation timestamp of the job. To provide easier SQL joins in statistic
+     * reporting tools, we duplicate some project information into the run data, but
+     * we must fetch those data... from JobStatistic.
+     *
+     * If none exists, we cannot duplicate and so a write is not possible.
+     */
     @Test
-    void sechub_job_does_not_exist_createJobRunStatistic_call_saves_no_job_run_statistic() {
+    void job_statistic_data_does_not_exist_createJobRunStatistic_call_saves_no_job_run_statistic() {
         /* prepare */
         LocalDateTime started = LocalDateTime.now();
         when(jobStatisticRepository.findById(jobUUID)).thenReturn(Optional.empty());
@@ -145,7 +156,7 @@ class JobRunStatisticTransactionServiceTest {
         assertEquals(value, data.value);
         assertEquals("ALL", data.key);
     }
-    
+
     @Test
     void key_accepted_by_type_insertJobRunStatisticData_writes_job_run_statistic_data_input_as_map_one_entry() {
         /* prepare */
@@ -161,7 +172,7 @@ class JobRunStatisticTransactionServiceTest {
         dataContainer.add(type, key, value);
 
         /* execute */
-        serviceToTest.insertJobRunStatsticData(executionUUID, dataContainer);
+        serviceToTest.insertJobRunStatisticData(executionUUID, dataContainer);
 
         /* test */
         ArgumentCaptor<JobRunStatisticData> captor = ArgumentCaptor.forClass(JobRunStatisticData.class);
@@ -207,7 +218,7 @@ class JobRunStatisticTransactionServiceTest {
         dataContainer.add(type3, key3b, value3b);
 
         /* execute */
-        serviceToTest.insertJobRunStatsticData(executionUUID, dataContainer);
+        serviceToTest.insertJobRunStatisticData(executionUUID, dataContainer);
 
         /* test */
         ArgumentCaptor<JobRunStatisticData> captor = ArgumentCaptor.forClass(JobRunStatisticData.class);

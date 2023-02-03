@@ -1,49 +1,88 @@
 package com.mercedesbenz.sechub.sharedkernel.analytic;
 
-import java.util.LinkedHashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true) // we do ignore to avoid problems from wrong configured values!
+@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class CodeAnalyticData implements AnalyticProductResult {
 
-    private Set<String> languages = new LinkedHashSet<>();
+    private Map<String, LanguageData> languages = new HashMap<>();
+
     private AnalyticProductData productData;
 
     public CodeAnalyticData() {
         productData = new AnalyticProductData();
     }
 
-
     public Set<String> getLanguages() {
-        return languages;
+        return languages.keySet();
     }
-
 
     public AnalyticProductData getProductData() {
         return productData;
     }
 
-    public void setLines(String language, long files) {
-
+    public void setLinesOfCodeForLanguage(String language, long linesOfCode) {
+        ensureLanguageData(language).linesOfCode = linesOfCode;
     }
 
-    public void setFiles(String language, long files) {
-
+    public void setFilesForLanguage(String language, long files) {
+        ensureLanguageData(language).files = files;
     }
 
-    public long getLinesOfCode() {
-        return 1;
+    public long getFilesForLanguage(String language) {
+        return ensureLanguageData(language).files;
     }
-    
+
     public long getLinesOfCodeForLanguage(String language) {
-        return 0L;
+        return ensureLanguageData(language).linesOfCode;
     }
 
-    public long getAmountOfFiles() {
-        return 0L;
+    public long calculateFilesForAllLanguages() {
+        long files = 0;
+
+        for (LanguageData data : languages.values()) {
+            files += data.files;
+        }
+
+        return files;
     }
-    
-    public long getAmountFilesForLanguage(String language) {
-        return 0;
+
+    public long calculateLinesOfCodeForAllLanguages() {
+        long linesOfCode = 0;
+
+        for (LanguageData data : languages.values()) {
+            linesOfCode += data.linesOfCode;
+        }
+
+        return linesOfCode;
+    }
+
+    private LanguageData ensureLanguageData(String language) {
+        String normalizedLanguageName = normalizeLanguage(language);
+        LanguageData languageData = this.languages.computeIfAbsent(normalizedLanguageName, (n) -> new LanguageData());
+        return languageData;
+    }
+
+    private String normalizeLanguage(String language) {
+        if (language == null) {
+            return "";
+        }
+        // simple normalization
+        return language.trim().toLowerCase();
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true) // we do ignore to avoid problems from wrong configured values!
+    @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
+    private static class LanguageData {
+        long files;
+        long linesOfCode;
     }
 
 }

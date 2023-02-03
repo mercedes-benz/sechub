@@ -15,36 +15,35 @@ import com.mercedesbenz.sechub.sharedkernel.analytic.AnalyticData;
 import com.mercedesbenz.sechub.sharedkernel.analytic.CodeAnalyticData;
 
 @Service
-public class JobAnaylticDataStatisticService {
+public class JobAnalyticDataStatisticService {
 
     @Autowired
-    JobRunStatisticTransactionService transactionService;
+    JobRunStatisticTransactionService jobRunStatistictTansactionService;
 
     public void storeStatisticData(UUID executionUUID, AnalyticData analyticData) {
         StatisticDataContainer<JobRunStatisticDataType> dataContainer = collectCodeAnalyticData(analyticData);
-        
-        transactionService.insertJobRunStatsticData(executionUUID, dataContainer);
-  
+
+        jobRunStatistictTansactionService.insertJobRunStatisticData(executionUUID, dataContainer);
+
     }
 
-
     private StatisticDataContainer<JobRunStatisticDataType> collectCodeAnalyticData(AnalyticData analyticData) {
-        StatisticDataContainer<JobRunStatisticDataType> dataContainer =  new StatisticDataContainer<>();
-        
+        StatisticDataContainer<JobRunStatisticDataType> dataContainer = new StatisticDataContainer<>();
+
         CodeAnalyticData codeAnalyticData = analyticData.getCodeAnalyticData();
-        
-        dataContainer.add(FILES, ALL, codeAnalyticData.getAmountOfFiles());
-        dataContainer.add(LOC, ALL, codeAnalyticData.getLinesOfCode());
-        
+
+        dataContainer.add(FILES, ALL, codeAnalyticData.calculateFilesForAllLanguages());
+        dataContainer.add(LOC, ALL, codeAnalyticData.calculateLinesOfCodeForAllLanguages());
+
         Set<String> languages = codeAnalyticData.getLanguages();
-        for (String language: languages) {
-            
+        for (String language : languages) {
+
             long lines = codeAnalyticData.getLinesOfCodeForLanguage(language);
-            long files = codeAnalyticData.getAmountFilesForLanguage(language);
-            
+            long files = codeAnalyticData.getFilesForLanguage(language);
+
             dataContainer.add(LOC_LANG, new AnyTextAsKey(language), lines);
             dataContainer.add(FILES_LANG, new AnyTextAsKey(language), files);
-            
+
         }
         return dataContainer;
     }

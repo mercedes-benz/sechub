@@ -35,7 +35,7 @@ class StatisticDataContainerTest {
         assertNoDataFound(null);
         assertNoDataFound(mockedType1);
         assertNoDataFound(mockedType2);
-        
+
         Set<StatisticDataType> types = containerToTest.getTypes();
         assertTrue(types.isEmpty());
     }
@@ -56,15 +56,15 @@ class StatisticDataContainerTest {
         assertDataFound(mockedType1, mockedKey1, BigInteger.valueOf(5234));
         assertDataFound(mockedType1, mockedKey2, BigInteger.valueOf(2));
     }
-    
+
     @Test
     void added_types_found() {
-        
+
         /* execute */
         containerToTest.add(mockedType1, mockedKey1, BigInteger.valueOf(1234));
         containerToTest.add(mockedType1, mockedKey1, BigInteger.valueOf(5234));
         containerToTest.add(mockedType2, mockedKey2, BigInteger.valueOf(2));
-        
+
         /* test */
         Set<StatisticDataType> types = containerToTest.getTypes();
 

@@ -16,7 +16,7 @@ public class StatisticDataContainer<T extends StatisticDataType> {
 
     /**
      * Adds data for given type
-     * 
+     *
      * @param type  may not be <code>null</code>
      * @param key   may not be <code>null</code>
      * @param value
@@ -27,7 +27,7 @@ public class StatisticDataContainer<T extends StatisticDataType> {
 
     /**
      * Adds data for given type
-     * 
+     *
      * @param type  may not be <code>null</code>
      * @param key   may not be <code>null</code>
      * @param value may not be <code>null</code>
@@ -47,7 +47,7 @@ public class StatisticDataContainer<T extends StatisticDataType> {
 
     /**
      * Resolves a list of key values for given type
-     * 
+     *
      * @param type defines the statistic data type for which the key values shall be
      *             fetched
      * @return unmodifiable list, never <code>null</code>

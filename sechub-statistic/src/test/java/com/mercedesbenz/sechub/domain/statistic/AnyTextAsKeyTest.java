@@ -21,7 +21,7 @@ class AnyTextAsKeyTest {
 
     @EmptySource
     @ParameterizedTest
-    @ValueSource(strings = { "a", " ", "-", "abcdef", "key1.key2"," " })
+    @ValueSource(strings = { "a", " ", "-", "abcdef", "key1.key2", " " })
     void construction_allowed_with_text_and_has_it_as_keyvalue(String text) {
         /* execute */
         AnyTextAsKey key = new AnyTextAsKey(text);

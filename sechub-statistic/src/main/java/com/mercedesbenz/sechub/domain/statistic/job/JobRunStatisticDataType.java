@@ -6,7 +6,7 @@ import com.mercedesbenz.sechub.domain.statistic.StatisticDataKey;
 import com.mercedesbenz.sechub.domain.statistic.StatisticDataType;
 
 @MustBeKeptStable("The enum names are used in DB for types. So do not rename or remove them.")
-public enum JobRunStatisticDataType implements StatisticDataType{
+public enum JobRunStatisticDataType implements StatisticDataType {
 
     FILES(AnalyticStatisticDataKey.ALL),
 

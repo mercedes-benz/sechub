@@ -98,14 +98,16 @@ public class JobRunStatisticTransactionService {
     }
 
     /**
-     * Inserts job run statistic data - will create always new data entries
+     * Inserts job run statistic data - will create always new data entries. Data
+     * inside given data container is written inside one transaction.
      *
      * @param executionUUID may not be <code>null</code>
      * @param dataContainer may not be <code>null</code>
      */
-    public void insertJobRunStatsticData(UUID executionUuid, StatisticDataContainer<JobRunStatisticDataType> dataContainer) {
+    public void insertJobRunStatisticData(UUID executionUuid, StatisticDataContainer<JobRunStatisticDataType> dataContainer) {
+        notNull(executionUuid, "executionUuid may not be null");
         notNull(dataContainer, "data container may not be null");
-        
+
         Set<JobRunStatisticDataType> types = dataContainer.getTypes();
         for (JobRunStatisticDataType type : types) {
             List<StatisticDataKeyValue> keyValues = dataContainer.getKeyValues(type);
@@ -125,6 +127,7 @@ public class JobRunStatisticTransactionService {
      * @param value
      */
     public void insertJobRunStatisticData(UUID executionUUID, JobRunStatisticDataType type, StatisticDataKey key, BigInteger value) {
+
         JobRunStatisticData data = new JobRunStatisticData();
         data.setExecutionUUID(executionUUID);
         validateAndSave(type, key, value, data);
