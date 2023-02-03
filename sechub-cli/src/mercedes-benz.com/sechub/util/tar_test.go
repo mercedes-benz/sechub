@@ -130,7 +130,7 @@ func TestTarFileCanBeCreated_with_exclude_patterns_applied(t *testing.T) {
 		TarWriter:   tarWriter,
 		PrefixInTar: "",
 		Folders:     []string{dirname1, dirname2},
-		Excludes:    []string{"**/sub3/**", "*.txt"},
+		Excludes:    []string{"**/sub3/**", "**/*.txt"},
 	}
 
 	/* execute */
@@ -242,7 +242,7 @@ func TestTarFileContainsRelativeFoldersOutsideCurrent(t *testing.T) {
 		TarWriter:   tarWriter,
 		PrefixInTar: "",
 		Folders:     []string{RelativeTmpTestDir},
-		Excludes:    []string{"*.tar"}, // exclude our own tar
+		Excludes:    []string{"**/*.tar"}, // exclude our own tar
 	}
 
 	/* execute */

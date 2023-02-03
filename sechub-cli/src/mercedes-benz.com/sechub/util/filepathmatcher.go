@@ -3,9 +3,8 @@
 package util
 
 import (
-	"fmt"
+	"github.com/bmatcuk/doublestar/v4"
 	"path/filepath"
-	"regexp"
 	"strings"
 )
 
@@ -16,29 +15,8 @@ import (
 //               - "a1b.txt"
 //
 func FilePathMatch(path string, pattern string) (result bool) {
-
-	// Let's turn the ant style pattern into a regexp:
-	doublestarPatterns := strings.Split(pattern, "**/")
-
-	for i, subElement := range doublestarPatterns {
-		// esacpe . with backslash and convert * to .*
-		doublestarPatterns[i] = strings.Replace(subElement, ".", "\\.", -1)
-		doublestarPatterns[i] = strings.Replace(doublestarPatterns[i], "*", ".*", -1)
-	}
-	regexpPattern := "^" + strings.Join(doublestarPatterns, ".*/") + "$"
-
-	// add a './' in front of the path except it starts with a '/'
-	// so e.g. "**/.git/**" will also match the current working directory and not only subdirectories
-	if !strings.HasPrefix(path, "/") && strings.Contains(pattern, "/") {
-		path = "./" + path
-	}
-
-	matched, err := regexp.MatchString(regexpPattern, path)
-	if err != nil {
-		LogError(fmt.Sprintln("Error evaluating filepath matches:", err, matched))
-	}
-
-	return matched
+	match, _ := doublestar.PathMatch(pattern, path)
+	return match
 }
 
 // ConvertBackslashPath - converts a path containing windows separators to unix ones

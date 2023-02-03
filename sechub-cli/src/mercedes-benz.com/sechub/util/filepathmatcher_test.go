@@ -24,6 +24,8 @@ func Test_Simple_filename_and_pattern_with_asterisk_but_more_matches(t *testing.
 	AssertFalse(FilePathMatch("a2.txt", "a1.txt"), t)
 	AssertFalse(FilePathMatch("a2.txt", "a*1.txt"), t)
 	AssertFalse(FilePathMatch("a2.txt", "a1*.txt"), t)
+
+	AssertFalse(FilePathMatch("folder/0123/file1.txt", "f*0*.txt"), t)
 }
 
 func TestXYZ_When_NO_double_asterisk_and_path_is_same_it_matches(t *testing.T) {
@@ -81,6 +83,34 @@ func Test_When_multiple_double_asterisk_on_inside_path_is_accepted_when_filename
 	AssertFalse(FilePathMatch("/home/gargamel/schlumpfine/testfolder/a.txt", "/home/**/schlaubi/**/a.txt"), t)
 }
 
-//func Test_Path_and_simple_filename_and_pattern_with_asterisk_at_start_and_prefix_matches(t *testing.T) {
-//	AssertTrue(FilePathMatch("/home/albert/a.txt","/home/albert/*.txt"), t)
-//}
+func Test_Matches_all_files_in_CVS_directories_that_can_be_located_anywhere_in_the_directory_tree(t *testing.T) {
+	AssertTrue(FilePathMatch("CVS/Repository*", "**/CVS/*"), t)
+	AssertTrue(FilePathMatch("org/apache/CVS/Entries", "**/CVS/*"), t)
+	AssertTrue(FilePathMatch("org/apache/jakarta/tools/ant/CVS/Entries", "**/CVS/*"), t)
+
+	/* but not when the foo/bar/ part does not match */
+	AssertFalse(FilePathMatch("org/apache/CVS/foo/bar/Entries", "**/CVS/*"), t)
+}
+
+func Test_Matches_all_files_in_the_org_apache_jakarta_directory_tree(t *testing.T) {
+	AssertTrue(FilePathMatch("org/apache/jakarta/tools/ant/docs/index.html", "org/apache/jakarta/**"), t)
+	AssertTrue(FilePathMatch("org/apache/jakarta/test.xml", "org/apache/jakarta/**"), t)
+
+	/* but not when the jakarta/ part is missing */
+	AssertFalse(FilePathMatch("org/apache/xyz.java", "org/apache/jakarta/**"), t)
+}
+
+func Test_Matches_all_files_in_CVS_directories_that_are_located_anywhere_in_the_directory_tree_under_org_apache(t *testing.T) {
+	AssertTrue(FilePathMatch("org/apache/CVS/Entries", "org/apache/**/CVS/*"), t)
+	AssertTrue(FilePathMatch("org/apache/jakarta/tools/ant/CVS/Entries", "org/apache/**/CVS/*"), t)
+
+	/* but not when the foo/bar/ part does not match */
+	AssertFalse(FilePathMatch("org/apache/xyz.java", "org/apache/**/CVS/*"), t)
+}
+
+func Test_Matches_all_files_that_have_a_test_element_in_their_path_including_test_as_a_filename(t *testing.T) {
+	AssertTrue(FilePathMatch("org/test/Entries", "**/test/**"), t)
+	AssertTrue(FilePathMatch("org/test", "**/test/**"), t)
+	AssertTrue(FilePathMatch("test/Entries", "**/test/**"), t)
+	AssertTrue(FilePathMatch("test", "**/test/**"), t)
+}
