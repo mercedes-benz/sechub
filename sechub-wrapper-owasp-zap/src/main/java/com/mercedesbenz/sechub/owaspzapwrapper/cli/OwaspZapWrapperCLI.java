@@ -32,7 +32,7 @@ public class OwaspZapWrapperCLI {
     }
 
     private void start(String[] args) throws IOException {
-    	OwaspZapScanContext scanContext = null;
+        OwaspZapScanContext scanContext = null;
         try {
             LOG.info("Building the scan configuration.");
             scanContext = resolveScanContext(args);
@@ -45,13 +45,13 @@ public class OwaspZapWrapperCLI {
             productMessagehelper.writeProductMessages(scanContext.getProductMessages());
 
         } catch (ZapWrapperRuntimeException e) {
-        	if (ZapWrapperExitCode.SCAN_JOB_CANCELLED.equals(e.getExitCode())) {
-        		LOG.info(e.getMessage());
-        		productMessagehelper.writeProductMessages(scanContext.getProductMessages());
-        	} else {
-        		LOG.error("Must exit with exit code {} because: {}.", e.getExitCode().getExitCode(), e.getMessage(), e);
-        		productMessagehelper.writeProductError(e);
-        	}
+            if (ZapWrapperExitCode.SCAN_JOB_CANCELLED.equals(e.getExitCode())) {
+                LOG.info(e.getMessage());
+                productMessagehelper.writeProductMessages(scanContext.getProductMessages());
+            } else {
+                LOG.error("Must exit with exit code {} because: {}.", e.getExitCode().getExitCode(), e.getMessage(), e);
+                productMessagehelper.writeProductError(e);
+            }
             System.exit(e.getExitCode().getExitCode());
 
         } catch (OwaspZapWrapperCommandLineParserException e) {

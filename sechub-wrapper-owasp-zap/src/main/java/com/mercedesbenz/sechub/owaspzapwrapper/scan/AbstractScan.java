@@ -45,14 +45,14 @@ public abstract class AbstractScan implements OwaspZapScan {
 
     protected String contextId;
     protected OwaspZapApiResponseHelper apiResponseHelper;
-    
+
     private ScanDurationHelper scanDurationHelper;
     private long remainingScanTime;
-    
+
     private SecHubIncludeExcludeToOwaspZapURIHelper includeExcludeConverter;
-    
+
     private File cancelEventFile;
-	
+
     public AbstractScan(ClientApi clientApi, OwaspZapScanContext scanContext) {
         this.clientApi = clientApi;
         this.scanContext = scanContext;
@@ -60,7 +60,8 @@ public abstract class AbstractScan implements OwaspZapScan {
         this.remainingScanTime = scanContext.getMaxScanDurationInMillis();
         this.includeExcludeConverter = new SecHubIncludeExcludeToOwaspZapURIHelper();
         this.apiResponseHelper = new OwaspZapApiResponseHelper();
-    	this.cancelEventFile = new File(EnvironmentVariableReader.getInstance().readAsString(EnvironmentVariableConstants.PDS_JOB_EVENTS_FOLDER), "cancel_requested.json");
+        this.cancelEventFile = new File(EnvironmentVariableReader.getInstance().readAsString(EnvironmentVariableConstants.PDS_JOB_EVENTS_FOLDER),
+                "cancel_requested.json");
     }
 
     @Override
@@ -114,7 +115,7 @@ public abstract class AbstractScan implements OwaspZapScan {
 
         while (progressSpider < 100 && !timeOut) {
             if (cancelEventFile.exists()) {
-            	List<ApiResponse> spiderResults = ((ApiResponseList) clientApi.spider.allUrls()).getItems();
+                List<ApiResponse> spiderResults = ((ApiResponseList) clientApi.spider.allUrls()).getItems();
                 updateUserMessagesWithScannedURLs(spiderResults);
                 throw new ZapWrapperRuntimeException("Scan job: " + scanContext.getContextName() + " was cancelled!", ZapWrapperExitCode.SCAN_JOB_CANCELLED);
             }
@@ -148,7 +149,7 @@ public abstract class AbstractScan implements OwaspZapScan {
         boolean timeOut = false;
 
         while (!isAjaxSpiderStopped(ajaxSpiderStatus) && !timeOut) {
-        	if (cancelEventFile.exists()) {
+            if (cancelEventFile.exists()) {
                 throw new ZapWrapperRuntimeException("Scan job: " + scanContext.getContextName() + " was cancelled!", ZapWrapperExitCode.SCAN_JOB_CANCELLED);
             }
             waitForNextCheck();
@@ -177,7 +178,7 @@ public abstract class AbstractScan implements OwaspZapScan {
         int numberOfRecords = Integer.parseInt(((ApiResponseElement) clientApi.pscan.recordsToScan()).getValue());
 
         while (numberOfRecords > 0 || (System.currentTimeMillis() - startTime) > maxDuration) {
-        	if (cancelEventFile.exists()) {
+            if (cancelEventFile.exists()) {
                 throw new ZapWrapperRuntimeException("Scan job: " + scanContext.getContextName() + " was cancelled!", ZapWrapperExitCode.SCAN_JOB_CANCELLED);
             }
             waitForNextCheck();
@@ -204,7 +205,7 @@ public abstract class AbstractScan implements OwaspZapScan {
         long maxDuration = remainingScanTime;
         boolean timeOut = false;
         while (progressActive < 100 && !timeOut) {
-        	if (cancelEventFile.exists()) {
+            if (cancelEventFile.exists()) {
                 throw new ZapWrapperRuntimeException("Scan job: " + scanContext.getContextName() + " was cancelled!", ZapWrapperExitCode.SCAN_JOB_CANCELLED);
             }
             waitForNextCheck();

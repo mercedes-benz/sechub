@@ -2,11 +2,11 @@
 package com.mercedesbenz.sechub.owaspzapwrapper.util;
 
 public class EnvironmentVariableReader {
-	
-	private static EnvironmentVariableReader environmentVariableReader;
-	
-	private EnvironmentVariableReader() {
-	}
+
+    private static EnvironmentVariableReader environmentVariableReader;
+
+    private EnvironmentVariableReader() {
+    }
 
     /**
      * Reads the value of the environment variable {@link environmentVariable} and
@@ -43,11 +43,11 @@ public class EnvironmentVariableReader {
         }
     }
 
-	public static EnvironmentVariableReader getInstance() {
-		if (environmentVariableReader == null) {
-			environmentVariableReader = new EnvironmentVariableReader();
-		}
-		return environmentVariableReader;
-	}
+    public static EnvironmentVariableReader getInstance() {
+        if (environmentVariableReader == null) {
+            environmentVariableReader = new EnvironmentVariableReader();
+        }
+        return environmentVariableReader;
+    }
 
 }
