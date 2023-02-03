@@ -89,11 +89,11 @@ be rendered by Asciidoctor afterwards.
 === Prerequisites
 To have <<section-documentation-usecase-event-overview,Usecase event overview>> generated, the integrationtests must have called before!
 Otherwise this information will not be shown inside asciidoc output! This was optional to seperate documentation and integration tests.
-But even tracing can only be done at runtime - so it's necessary to execute integration tests and then documentation. 
+But even tracing can only be done at runtime - so it's necessary to execute integration tests and then documentation.
 
 Build server and GitHub action do this automatically.
 
-=== Generation of sechub pages
+=== Generation of {sechub} pages
 just call `gradlew documentation-with-pages` or if documentation is already generated just call
 `gradlew docToPages`, so documentation parts will copied into `docs` folder.
 

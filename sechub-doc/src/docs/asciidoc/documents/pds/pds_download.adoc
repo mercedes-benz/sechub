@@ -3,5 +3,5 @@
 A ready to use executable `.jar` binary of `PDS` (Product Delegation Server)
 is available at GitHub.
 
-Download link to the latest {secHub} PDS release: {webPage}/latest/pds-download.html
-For documentation, please look at {webPage}[{secHub} web page] .
+Download link to the latest {sechub} PDS release: {webPage}/latest/pds-download.html
+For documentation, please look at {webPage}[{sechub} web page] .

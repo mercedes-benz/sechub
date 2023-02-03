@@ -3,9 +3,10 @@
 package util
 
 import (
-	"github.com/bmatcuk/doublestar/v4"
 	"path/filepath"
 	"strings"
+
+	"github.com/bmatcuk/doublestar/v4"
 )
 
 // FilePathMatch - This method provides ANT like selectors.
@@ -15,6 +16,11 @@ import (
 //               - "a1b.txt"
 //
 func FilePathMatch(path string, pattern string) (result bool) {
+	// Make simple patterns like `*.java` also work
+	if !strings.Contains(pattern, "/") {
+		pattern = "**/" + pattern
+	}
+
 	match, _ := doublestar.PathMatch(pattern, path)
 	return match
 }

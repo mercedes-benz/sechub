@@ -92,7 +92,7 @@ func Test_prepareScan_binary_upload_respects_exclude_patterns(t *testing.T) {
 						"files": [ "sechub-cli-tmptest/test.bin" ],
 						"folders": [ "sechub-cli-tmptest/binaries/" ]
 					},
-					"excludes": [ "**/ignore/**", "**/*.bin" ]
+					"excludes": [ "**/ignore/**", "*.bin" ]
 				}
 			]
 		}

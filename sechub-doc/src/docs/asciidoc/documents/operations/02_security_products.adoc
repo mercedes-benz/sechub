@@ -6,26 +6,26 @@
 == Security Products
 
 TIP: You must only setup those products you have listed inside your
-     profiles. See <<section-initial-profile-and-executors,execution profiles and executor configurations>> 
+     profiles. See <<section-initial-profile-and-executors,execution profiles and executor configurations>>
 
 === {pds}
 ==== General
-The {pds} adapters can communicate with the {pds} instances which delegates to the underlying 
-security products. 
+The {pds} adapters can communicate with the {pds} instances which delegates to the underlying
+security products.
 
 Via {pds} every security product, even simple CLI tools, can be easily integrated
 into {sechub}.
 
 Please look into `Product delegation server` documentation for more information about the {pds} in common.
 
-  
-==== PDS solutions  
-There are already ready to use {pds} implementations available - we call them "{pds} solutions". 
+
+==== PDS solutions
+There are already ready to use {pds} implementations available - we call them "{pds} solutions".
 
 Every {pds} solution does work out of the box and provide the possibility to start in following three flavors:
 
-- docker (single instance) 
-- docker compose (cluster) 
+- docker (single instance)
+- docker compose (cluster)
 - helm charts (k8s cluster)
 
 The next sub chapters list the current implementations:
@@ -33,21 +33,21 @@ The next sub chapters list the current implementations:
 ===== GoSec
 The PDS integration of https://securego.io[GoSec] (SAST) can be found at
 https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/gosec
-  
+
 ===== Multi
 This solution does integrate multiple SAST tools:
 
 - https://github.com/PyCQA/bandit[Bandit]
-- https://dwheeler.com/flawfinder/[FlawFinder] 
-- https://github.com/MobSF/mobsfscan[mobsfscan] 
+- https://dwheeler.com/flawfinder/[FlawFinder]
+- https://github.com/MobSF/mobsfscan[mobsfscan]
 - https://github.com/ajinabraham/njsscan[njsscan]
 
 It can be found at https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/multi
 
 ===== Owasp-Zap
-This solution does integrate the https://www.zaproxy.org/ (web application scanner) - please look at 
+This solution does integrate the https://www.zaproxy.org/ (web application scanner) - please look at
 https://github.com/mercedes-benz/sechub/blob/develop/sechub-pds-solutions/owasp-zap/
-  
+
 ===== PMD
 https://pmd.github.io/ stand normally for quality checks, but it does also provide some security check mechanism. The integration can be found at
 https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/pmd
@@ -72,24 +72,24 @@ include::../shared/adapter/checkmarx_adapter_flow.adoc[]
 Please look at <<section-gen-config-scope-checkmarx,checkmarx config>>  section.
 
 ====== Runtime
-WARNING: Standard properties (like base URL, user id etc.) are currently NOT used from 
-         existing product executor configurations but only the environment configuration is used at the moment.  
+WARNING: Standard properties (like base URL, user id etc.) are currently NOT used from
+         existing product executor configurations but only the environment configuration is used at the moment.
 
 [options="header",cols="1,1,1"]
 |===
-|Parameter                   |Type     |Description   
+|Parameter                   |Type     |Description
 //--------------------------------------------------
-|checkmarx.fullscan.always   |boolean  |When 'true' every scan will be done as a full scan and delta scan is not used. 
+|checkmarx.fullscan.always   |boolean  |When 'true' every scan will be done as a full scan and delta scan is not used.
 
-                                        Use this only where a delta scan is not possible/ always rejected by checkmarx. 
-                                        When 'false' or any other value, delta scan feature is used. 
-                                        
-                                        _If a scan fails because checkmarx has detected too many changes there will be a 
-                                        retry with fullscan. If you have permanent problems with delta scanning for a 
-                                        project you should set this option to 'true' in your checkmarx executor 
-                                        configuration._ 
-                              
-   
+                                        Use this only where a delta scan is not possible/ always rejected by checkmarx.
+                                        When 'false' or any other value, delta scan feature is used.
+
+                                        _If a scan fails because checkmarx has detected too many changes there will be a
+                                        retry with fullscan. If you have permanent problems with delta scanning for a
+                                        project you should set this option to 'true' in your checkmarx executor
+                                        configuration._
+
+
 |===
 
 ==== Summary
@@ -137,5 +137,5 @@ include::../shared/adapter/nessus_adapter_flow.adoc[]
 
 ==== Summary
 . At the moment only one {nessus} policy UUID is used
-. Every scan has got its own name which starts with sechub job UUID
+. Every scan has got its own name which starts with {sechub} job UUID
 . Old scans are *NOT* automatically deleted
