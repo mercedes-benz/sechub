@@ -32,8 +32,8 @@ func TestXYZ_When_NO_double_asterisk_and_path_is_same_it_matches(t *testing.T) {
 	/* exact match*/
 	AssertTrue(FilePathMatch("/home/gargamel/schlumpfine/testfolder/a.txt", "/home/gargamel/schlumpfine/testfolder/a.txt"), t)
 
-	/* no match, no wildcards */
-	AssertFalse(FilePathMatch("/x/y/z/V/a.txt", "a.txt"), t)
+	/* simple pattern match (pattern without path separators) */
+	AssertTrue(FilePathMatch("/x/y/z/V/a.txt", "*.txt"), t)
 }
 
 func Test_When_double_asterisk_on_start_any_path_is_accepted_when_filename_without_asterisk_matches(t *testing.T) {

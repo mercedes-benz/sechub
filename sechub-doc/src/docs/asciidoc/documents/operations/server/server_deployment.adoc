@@ -16,7 +16,7 @@ define a network policy, services, endpoints etc. etc.
 
 [IMPORTANT]
 ====
-Be aware to mount *only ONE pod* - the database is *shared by all sechub server
+Be aware to mount *only ONE pod* - the database is *shared by all {secHub} server
 PODs* _(means this is a shared kernel / bottle neck but necessary)_
 ====
 
@@ -46,7 +46,7 @@ define a network policy, services, endpoints etc.
 
 [IMPORTANT]
 ====
-Be aware to mount *only ONE pod* - the database is *shared by all sechub server
+Be aware to mount *only ONE pod* - the database is *shared by all {secHub} server
 PODs* _(means this is a shared kernel / bottle neck but necessary)_
 ====
 
@@ -158,7 +158,7 @@ accidently add the credentials to your repository.
 
 *Logstash support*
 
-When you want to use `logstash` (e.g. when using `ElasticSearch` or `OpenSearch`) you just have to set the environment variable 
-`LOGGING_TYPE` to `LOGSTASH_JSON` before server starts. 
+When you want to use `logstash` (e.g. when using `ElasticSearch` or `OpenSearch`) you just have to set the environment variable
+`LOGGING_TYPE` to `LOGSTASH_JSON` before server starts.
 
 

@@ -2,7 +2,7 @@
 . All communication is done by REST API
 . Login
 . Ensure project exists (reuses existing project or creates new one)
-.. projectname is sechub project name
+.. projectname is {secHub} project name
 .. teamId Is shared and always CHECKMARX installsetup team id for new projects...
 . Upload source code from SecHub upload folder per REST to {checkmarx} server
 . Start scan

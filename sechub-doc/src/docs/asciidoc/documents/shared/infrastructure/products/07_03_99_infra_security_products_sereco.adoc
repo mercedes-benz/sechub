@@ -14,9 +14,9 @@ but we were stuck with many problems, e.g.
 - ... more...
 
 ===== Install
-The software comes currently up with sechub server installation. So nothing more is to do.
+The software comes currently up with {secHub} server installation. So nothing more is to do.
 
-Scaling etc. is done with sechub scaling.
+Scaling etc. is done with {secHub} scaling.
 
 ====== Future
 Currently `Sereco` is an embedded component of `{sechub}`. Maybe there comes a time where `Sereco` will become a seperate server component which will be deployed standalone.

@@ -10,15 +10,15 @@ Job reports do only contain information of exact one scan job done by {sechub}.
 TIP: If you want to have management summaries you could store downloaded JSON job reports
  , process data and provide those reports by your own - or you wait while this
  becomes part of {sechub}.
-  
+
 === Job reports
-With {sechub} users are able to download their scan results for finished project jobs. We provide following 
+With {sechub} users are able to download their scan results for finished project jobs. We provide following
 formats:
- 
+
 - HTML +
   human friendly report variant with less details
 - JSON +
-  as a machine readable format, usable for sechub client to determine to break build. Will also be
+  as a machine readable format, usable for {secHub} client to determine to break build. Will also be
   the base for planned development of IDE plugins (`Eclipse`, `IntelliJ`, `VSCode`)
 
 ifdef::techdoc[]
@@ -40,7 +40,7 @@ to your current situation.
 ===== Example code scan report with red traffic light
 The next picture shows a report which resulted in a red traffic light.
 
-At the top of the report you will find the most critical parts - in our example it is a red finding which is a `Command Injection`. If available for this type of finding, you can find the corresponding CWE-Id (Common Weakness Enumeration) as a link to the knowledge base of MITRE in the `Type` column. 
+At the top of the report you will find the most critical parts - in our example it is a red finding which is a `Command Injection`. If available for this type of finding, you can find the corresponding CWE-Id (Common Weakness Enumeration) as a link to the knowledge base of MITRE in the `Type` column.
 
 The data sink with Id 9 (where the command injection could lead to problems at the end) is at the top of the Description field.
 
@@ -73,7 +73,7 @@ include::sechub_codescan_report_json_example_1.json[]
 <1> SecHub job UUID
 <2> Finding ID inside report
 <3> The name of the vulnerability +
-     _in our case an `Absolute path traversal` where attackers could try to manipulate path input, so output could contain unwanted content/wrong file (e.g. a passwd file etc.)_ 
+     _in our case an `Absolute path traversal` where attackers could try to manipulate path input, so output could contain unwanted content/wrong file (e.g. a passwd file etc.)_
 <4> The severity of the report +
     _(will be used to calculate the traffic light color)_
 <5> Entry point location +

@@ -61,7 +61,7 @@ image::adapter-big-picture.svg[title="Adapter Big picture" opts="interactive,inl
 
 By the *mock variant* it is possible to
 - test the complete szenario in a very fast way...
-- test configuration values from sechub are passed through adapter
+- test configuration values from {secHub} are passed through adapter
 
 ===== Implementation of new adapters
 *Only green highlighted classes* in former image above *needs to be*
