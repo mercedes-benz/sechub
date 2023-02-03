@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 [[section-howto-quick-test-server-release-local]]
-=== Howto quickly test a {secHub} server release on local machine
+=== Howto quickly test a {sechub} server release on local machine
 
 For a "quick test" we start the release simply in integrationtest mode.
 
@@ -24,5 +24,5 @@ java -Dspring.profiles.active=mocked_products,h2,integrationtest -Dsechub.server
 
 ==== Further steps
 Use the DAUI (Developer Administration User Interface) to test the server. In integration test mode, you can test
-nearly all {secHub} server features - except the real product communication, because all adapters are
+nearly all {sechub} server features - except the real product communication, because all adapters are
 mocked.

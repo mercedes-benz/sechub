@@ -11,7 +11,7 @@ Before we introduced the possibility to define referenceable <<sechub-config-dat
  <<sechub-config-code-scan,code scan configuration>>.
 
 For source scans this a more convenient way and we wanted to keep this possiblity - also for
-backward compatibility with existing {secHub} configuration files.
+backward compatibility with existing {sechub} configuration files.
 
 So this is the reason, why <<sechub-config-data-section,data>> is contained inside `\__data__`
 folder and there is still content inside the root folder as well.

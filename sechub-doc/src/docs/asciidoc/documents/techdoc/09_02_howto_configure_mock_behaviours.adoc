@@ -2,7 +2,7 @@
 [[section-howto-configure-mock-behaviours]]
 === Howto configure mock behaviours
 
-==== Default mock adapter used in {secHub} integration tests
+==== Default mock adapter used in {sechub} integration tests
 The `MockedAdapterSetupService` reads a JSON configfile from file path.
 
 Default file is located at `/sechub-other/mockdata/mockdata_setup.json`

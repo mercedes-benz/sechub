@@ -108,7 +108,7 @@ only to a dedicated service which contains the logic and does the execution.
 === Code2Doc
 ==== Spring values
 All spring `@Value` annotations which are necessary for documentation (except adapters. They have
-no access to {secHub} internal parts and are pretty dumb) have to be tagged
+no access to {sechub} internal parts and are pretty dumb) have to be tagged
 with `@MustBeDocumented` annotation. See <<section-documentation-in-code,documentation in code>>
 
 ==== Messaging
@@ -120,7 +120,7 @@ See <<section-documentation-messaging-overview,documentation messaging overview>
 The usecases and their steps have to be
 documented inside code by using a dedicated
 annotation which itself is tagged with an `@UseCaseDefinition` annotation.
-See existing examples in {secHub} code.
+See existing examples in {sechub} code.
 
 TIP: Tag *relevant* entrypoints as dedicated usecase step so
      other developers can easily find them by their IDE (in eclipse
@@ -309,7 +309,7 @@ Some integration tests do need a build SecHub client and execute the client.
 These tests will be called `${name}Scenario${n}SecHubClientIntTest.java`
 
 TIP: If these tests are failing, please check you have called `gradlew buildGo` before,
-     otherwise no {secHub} client is available for testing...
+     otherwise no {sechub} client is available for testing...
 
 [[section-coding-convention-event-trace]]
 ====== Integration tests generating event trace information

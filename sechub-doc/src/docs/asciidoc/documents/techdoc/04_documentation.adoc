@@ -93,7 +93,7 @@ But even tracing can only be done at runtime - so it's necessary to execute inte
 
 Build server and GitHub action do this automatically.
 
-=== Generation of {secHub} pages
+=== Generation of {sechub} pages
 just call `gradlew documentation-with-pages` or if documentation is already generated just call
 `gradlew docToPages`, so documentation parts will copied into `docs` folder.
 

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 === Jenkins auto deployment
 
-When you want to build and automate deployment of {secHub} by https://jenkins.io/[Jenkins]  you can
+When you want to build and automate deployment of {sechub} by https://jenkins.io/[Jenkins]  you can
 use a preconfigured pipeline script.
 
 Your Jenkins server should be at minimum: `Jenkins ver. 2.176.1`.
@@ -18,7 +18,7 @@ repository. In the meantime you must deploy manually. Why still a jenkins file t
 
 - You get informed about new available releases.
 - Also the jenkins will check additionally for problems
-- You can do a checksum test for outputs - if you want to check that the {secHub} build is not corrupted and
+- You can do a checksum test for outputs - if you want to check that the {sechub} build is not corrupted and
   every version can be rebuild at any time
 
 ====
@@ -33,8 +33,8 @@ builds - means to get fast feedback.
 *Please setup CI by...*
 
 - Jenkins -> Manage -> Manage Credentials
-  ** add `sechub-server` containing the {secHub} server url
-  ** add `sechub-userid` containing the {secHub} user id
+  ** add `sechub-server` containing the {sechub} server url
+  ** add `sechub-userid` containing the {sechub} user id
   ** add `sechub-api-token` containing the api token for sechub-userid
 - Jenkins -> create new Item -> `Multibranch pipeline`, name: `sechub-open-source-ci` +
 - Branch sources: `Git`+

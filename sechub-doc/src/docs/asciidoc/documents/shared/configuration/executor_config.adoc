@@ -175,9 +175,9 @@ On lazy project creation time, depending on project name in sechub, after checkm
 
 *For example:*
 
-* project named in {secHub} with `my-java-project-marvelous1` will have preset id `100021` and teamId `1`.
-* project named in {secHub} with `a-go-project-super-cli` will have preset id `100031` and teamId `2`.
-* project named in {secHub} with `something-else`will have preset id `100001` and teamId `3`
+* project named in {sechub} with `my-java-project-marvelous1` will have preset id `100021` and teamId `1`.
+* project named in {sechub} with `a-go-project-super-cli` will have preset id `100031` and teamId `2`.
+* project named in {sechub} with `something-else`will have preset id `100001` and teamId `3`
 
 [IMPORTANT]
 ====

@@ -137,5 +137,5 @@ include::../shared/adapter/nessus_adapter_flow.adoc[]
 
 ==== Summary
 . At the moment only one {nessus} policy UUID is used
-. Every scan has got its own name which starts with {secHub} job UUID
+. Every scan has got its own name which starts with {sechub} job UUID
 . Old scans are *NOT* automatically deleted

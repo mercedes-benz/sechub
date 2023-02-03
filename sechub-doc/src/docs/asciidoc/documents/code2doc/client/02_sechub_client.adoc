@@ -15,7 +15,7 @@ Download the binary for your operating system where you want to trigger `{sechub
 You will have no dependencies, just place the single binary file to a location inside your path variable.
 
 Direct download link to the latest client release: {webPage}/latest/client-download.html
-For documentation, please look at {webPage}[{secHub} web page] .
+For documentation, please look at {webPage}[{sechub} web page] .
 
 === Supported Platforms
 
@@ -201,7 +201,7 @@ Your choices are:
 
 - `y` Yes - Mark as false positive. You are prompted for an optional comment line which can help to understand later why this has been marked.
 - `n` No - Do nothing and go to next item.
-- `s` Skip following findings - End the asking here and add the marked items to the false positives list on the {secHub} server.
+- `s` Skip following findings - End the asking here and add the marked items to the false positives list on the {sechub} server.
 - `c` Cancel - Quit and upload nothing
 
 You can download and view your current false positives list with <<section-client-getFalsePositives,getFalsePositives>>
@@ -217,7 +217,7 @@ Your choices are:
 
 - `y` Yes - Unmark this false positive.
 - `n` No - Do nothing and go to next item.
-- `s` Skip the rest - End the asking here and remove the marked items from the false positives list on the {secHub} server.
+- `s` Skip the rest - End the asking here and remove the marked items from the false positives list on the {sechub} server.
 - `c` Cancel - Quit and change nothing
 
 See also <<section-client-interactiveMarkFalsePositives-mark,example for interactiveMarkFalsePositives>>
@@ -361,7 +361,7 @@ Examples (Linux/Mac):
 [[section-client-configuration-file]]
 
 === Client configuration file
-If not defined by option `-configfile`, {secHub} client will attempt to load `sechub.json` file from current directory
+If not defined by option `-configfile`, {sechub} client will attempt to load `sechub.json` file from current directory
 and use it as  configuration.
 
 For scan actions, a valid configuration file is needed. Other actions like getReport or false-positives handling need no configuration file.

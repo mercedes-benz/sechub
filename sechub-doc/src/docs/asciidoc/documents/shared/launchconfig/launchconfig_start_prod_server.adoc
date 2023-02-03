@@ -26,7 +26,7 @@ include::launchconfig_common_server_header.adoc[]
     <<link-gen-systemproperties,system property definitions>> and look for adapter parts.
 <3> Define here the *absolute path* used for shared volume storage
     (_necessary for source upload)_
-<4> When there is no existing admin inside {secHub} database on startup,
+<4> When there is no existing admin inside {sechub} database on startup,
     the given user credentials will be automatically created. +
     Look at the log output to get the initial, generated API token for admin.
     Be aware that you must regenerate a new api token for this user,
@@ -41,7 +41,7 @@ include::launchconfig_common_server_header.adoc[]
 [WARNING]
 ====
 Your server will not start if you forget an adapter key !
-*(this will change in future when {secHub} becomes more modular)*
+*(this will change in future when {sechub} becomes more modular)*
 ====
 
 include::../../shared/hint_admin_access_profile.adoc[]

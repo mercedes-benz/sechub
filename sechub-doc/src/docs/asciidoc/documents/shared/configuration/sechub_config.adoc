@@ -319,7 +319,7 @@ include::sechub_config_data_section_general_example1.json[]
 <1> `data`: The main element for data configuration.
 <2> `sources`: Inside this array multiple source data definitions can be listed
 <3> `name`:  Is a unique name for the data configuration element. The name must
-    be unique inside the whole {secHub} configuration file! Allowed characters are
+    be unique inside the whole {sechub} configuration file! Allowed characters are
      - `a-z`
      - `0-9`
      - `-`

@@ -18,7 +18,7 @@ formats:
 - HTML +
   human friendly report variant with less details
 - JSON +
-  as a machine readable format, usable for {secHub} client to determine to break build. Will also be
+  as a machine readable format, usable for {sechub} client to determine to break build. Will also be
   the base for planned development of IDE plugins (`Eclipse`, `IntelliJ`, `VSCode`)
 
 ifdef::techdoc[]

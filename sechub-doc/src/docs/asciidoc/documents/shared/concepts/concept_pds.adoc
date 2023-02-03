@@ -16,7 +16,7 @@ need to provide a `ProductDelegationServer` (in short form `PDS`).
 `PDS` is
 
 - a spring boot application which uses a network DB for providing cluster possibility
-- a complete standalone application without runtime dependencies to {secHub} server (or its shared kernel)
+- a complete standalone application without runtime dependencies to {sechub} server (or its shared kernel)
 - provides REST access
 - a very simple priviledge model with just two users (`tech user` + `admin user`),
   basic auth via `TLS`, credentials are simply defined by environment entries on startup
@@ -73,10 +73,10 @@ We have two different scenarios here:
 
 * Product executor configuration `pds.config.use.sechub.storage` is `true` +
   In this case the way is exactly as shown in next picture: +
-  - The user uploads job data for a {secHub} job and it is stored at shared S3 bucket _(blue lines)_.
-  - When {secHub} job is starting it will create a {pds} job but does not upload any additional data.
-  - When PDS job is starting the PDS server will fetch workspace files from existing {secHub} job data _(red lines)_.
-  - The storage path location is for {pds} and {secHub}  `${sharedS3Bucket}/jobstorage/${secHubJobUUID}/`
+  - The user uploads job data for a {sechub} job and it is stored at shared S3 bucket _(blue lines)_.
+  - When {sechub} job is starting it will create a {pds} job but does not upload any additional data.
+  - When PDS job is starting the PDS server will fetch workspace files from existing {sechub} job data _(red lines)_.
+  - The storage path location is for {pds} and {sechub}  `${sharedS3Bucket}/jobstorage/${secHubJobUUID}/`
 
 
 [[section-pds-s3-storage-example-shared-s3-buckets]]
@@ -95,9 +95,9 @@ We have two different scenarios here:
 
 * Product executor configuration `pds.config.use.sechub.storage` is NOT `true` +
   In this case the way is exactly as shown in next picture: +
-  - The user uploads job data for a {secHub} job and it is stored at shared S3 bucket _(blue lines)_.
-  - The storage path location for {secHub} is `${sechubS3Bucket}/jobstorage/${secHubJobUUID}/`
-  - When {secHub} job is starting it will create and initialize a {pds} job by uploading all existing job data by {pds} rest API.
+  - The user uploads job data for a {sechub} job and it is stored at shared S3 bucket _(blue lines)_.
+  - The storage path location for {sechub} is `${sechubS3Bucket}/jobstorage/${secHubJobUUID}/`
+  - When {sechub} job is starting it will create and initialize a {pds} job by uploading all existing job data by {pds} rest API.
     This will store job data at {pds} storage. _(green lines)_.
   - When PDS job is starting, the  PDS server will fetch workspace files from its {pds} job data _(red lines)_.
   - The storage path location for {pds} is `${pdsS3Bucket}/pds/${pdsProductIdentifier}/${pdsJobUUID}/`
@@ -118,10 +118,10 @@ We have two different scenarios here:
 
 * Product executor configuration `pds.config.use.sechub.storage` is `true` +
   In this case the way is exactly as shown in next picture: +
-  - The user uploads job data for a {secHub} job and it is stored at shared volume _(blue lines)_.
-  - When {secHub} job is starting it will create a {pds} job but does not upload any additional data.
-  - When PDS job is starting the PDS server will fetch workspace files from existing {secHub} job data _(red lines)_.
-  - The storage path location is for {pds} and {secHub}  `${sharedVolumeBasePath}/jobstorage/${secHubJobUUID}/`
+  - The user uploads job data for a {sechub} job and it is stored at shared volume _(blue lines)_.
+  - When {sechub} job is starting it will create a {pds} job but does not upload any additional data.
+  - When PDS job is starting the PDS server will fetch workspace files from existing {sechub} job data _(red lines)_.
+  - The storage path location is for {pds} and {sechub}  `${sharedVolumeBasePath}/jobstorage/${secHubJobUUID}/`
 
 [[section-pds-s3-storage-example-shared-nfs]]
 plantuml::diagrams/diagram_concept_pds_storage_example_shared_nfs.puml[]
@@ -139,9 +139,9 @@ We have two different scenarios here:
 
 * Product executor configuration `pds.config.use.sechub.storage` is NOT `true` +
   In this case the way is exactly as shown in next picture: +
-  - The user uploads job data for a {secHub} job and it is stored at {secHub} shared volume _(blue lines)_.
-  - The storage path location for {secHub} is `${sechubSharedVolumeBasePath}/jobstorage/${secHubJobUUID}/`
-  - When {secHub} job is starting it will create and initialize a {pds} job by uploading all existing job data by {pds} rest API.
+  - The user uploads job data for a {sechub} job and it is stored at {sechub} shared volume _(blue lines)_.
+  - The storage path location for {sechub} is `${sechubSharedVolumeBasePath}/jobstorage/${secHubJobUUID}/`
+  - When {sechub} job is starting it will create and initialize a {pds} job by uploading all existing job data by {pds} rest API.
     This will store job data at {pds} storage. _(green lines)_.
   - When PDS job is starting, the  PDS server will fetch workspace files from its {pds} job data _(red lines)_.
   - The storage path location for {pds} is `${pdsSharedVolumeBasePath}/pds/${pdsProductIdentifier}/${pdsJobUUID}/`
@@ -159,7 +159,7 @@ WARNING: This will NOT WORK! The job storage will not be found and an error will
 This <<section-pds-s3-storage-example-s3-nfs-mixed,example>> is only mentioned for the sake of completeness: It is the same as before described for different S3 and different shared volumes:
 `pds.config.use.sechub.storage` cannot be used in this case.
 
-When not reusing {secHub} storage, this scenario does work also well. In the next picture, {secHub} itself would use a S3 storage and he
+When not reusing {sechub} storage, this scenario does work also well. In the next picture, {sechub} itself would use a S3 storage and he
 PDS instances for product `XYZ` would use a NFS to store job data. But of course it could be also the other way.
 
 [[section-pds-s3-storage-example-s3-nfs-mixed]]
@@ -240,12 +240,12 @@ Having new security product XYZ but being a command line tool, we
   * fetch result and inspect
 
 - when former test was successful
-  * Define executor on {secHub} server side - *will be implemented with #148*
+  * Define executor on {sechub} server side - *will be implemented with #148*
   * When your product uses sereco general report format your are done- *will be implemented with #283*
     otherwise SERECO must have a logic to import custom format for the PRODUCT - means needs an
     implementatiion
 
-- test via {secHub} client by starting a new {secHub} job which shall use the product and verify results
+- test via {sechub} client by starting a new {sechub} job which shall use the product and verify results
 
 
 

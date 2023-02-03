@@ -101,7 +101,7 @@ Here some first steps to get {sechub} running and being able to develop parts.
 
 ==== Integration test scenario
 
-With this setup we will start a {secHub} server instance ready for executing integration tests.
+With this setup we will start a {sechub} server instance ready for executing integration tests.
 It does use only security product mocks, so we got no long running sessions. We need
 no running security suite... but of course we have no real products and can not make real scans.
 
@@ -165,7 +165,7 @@ Just stop your running server...
 ----
 === Developer administration UI
 
-There exists a very simple user interface for developers to test out the behaviour of the {secHub} server. There will be
+There exists a very simple user interface for developers to test out the behaviour of the {sechub} server. There will be
 all functions of server available, but in a very reduced way.
 
 WARNING: The developer administration UI is only a tool for developers and should be handled with care. +
