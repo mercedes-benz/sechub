@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.owaspzapwrapper.helper;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
