@@ -39,8 +39,8 @@ public class JobStatisticData {
 
     public static final String COLUMN_SECHUB_JOB_UUID = "SECHUB_JOB_UUID";
     public static final String COLUMN_TYPE = "TYPE";
-    public static final String COLUMN_KEY = "KEY";
-    public static final String COLUMN_VALUE = "VALUE";
+    public static final String COLUMN_ID = "ID";
+    public static final String COLUMN_VALUE = "VAL"; // H2 does complain about "value"... so we use "val"
     public static final String COLUMN_TIMESTAMP = "TIMESTAMP";
 
     /* +-----------------------------------------------------------------------+ */
@@ -52,7 +52,7 @@ public class JobStatisticData {
     public static final String PROPERTY_SECHUB_JOB_UUID = "sechubJobUUID";
 
     public static final String PROPERTY_TYPE = "type";
-    public static final String PROPERTY_KEY = "key";
+    public static final String PROPERTY_ID = "id";
     public static final String PROPERTY_VALUE = "value";
     public static final String PROPERTY_TIMESTAMP = "timeStamp";
 
@@ -70,8 +70,8 @@ public class JobStatisticData {
     private JobStatisticDataType type;
 
     @Enumerated(STRING)
-    @Column(name = COLUMN_KEY)
-    String key;
+    @Column(name = COLUMN_ID)
+    String id;
 
     @Column(name = COLUMN_VALUE, nullable = false)
     BigInteger value;
@@ -91,8 +91,8 @@ public class JobStatisticData {
         this.type = type;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setValue(BigInteger value) {

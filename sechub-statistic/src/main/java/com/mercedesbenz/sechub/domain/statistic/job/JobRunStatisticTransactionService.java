@@ -150,7 +150,7 @@ public class JobRunStatisticTransactionService {
         }
 
         data.setType(type);
-        data.setKey(key.getKeyValue());
+        data.setId(key.getKeyValue());
         data.setValue(value);
 
         jobRunStatisticDataRepository.save(data);

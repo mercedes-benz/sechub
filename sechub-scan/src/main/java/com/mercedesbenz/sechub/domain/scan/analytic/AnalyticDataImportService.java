@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.sharedkernel.analytic.AnalyticData;
+import com.mercedesbenz.sechub.sharedkernel.analytic.AnalyticDataPart;
+import com.mercedesbenz.sechub.sharedkernel.analytic.CodeAnalyticData;
 
 @Service
 public class AnalyticDataImportService {
@@ -16,22 +18,52 @@ public class AnalyticDataImportService {
     private static final Logger LOG = LoggerFactory.getLogger(AnalyticDataImportService.class);
 
     @Autowired
-    List<AnalyticDataImporter> importers;
+    List<AnalyticDataPartImporter<?>> importers;
 
-    public void importAnalyticDataIntoModel(String analyticDataAsString, AnalyticData target) {
-        for (AnalyticDataImporter importer : importers) {
+    /**
+     * Imports given analytic data string into given target
+     * 
+     * @param analyticDataAsString
+     * @param target
+     */
+    public void importAnalyticDataParts(String analyticDataAsString, AnalyticData target) {
+        int amountOfImports = 0;
+
+        for (AnalyticDataPartImporter<?> importer : importers) {
             try {
-                AnalyticData imported = importer.importData(analyticDataAsString);
-                merge(imported, target);
+                if (!importer.isAbleToImport(analyticDataAsString)) {
+                    continue;
+                }
+
+                AnalyticDataPart importedDataPart = importer.importData(analyticDataAsString);
+                if (importedDataPart instanceof CodeAnalyticData) {
+                    CodeAnalyticData importedCodeAnalyticData = (CodeAnalyticData) importedDataPart;
+
+                    /* check if already existing code analytic data exists */
+                    if (target.getCodeAnalyticData().isPresent()) {
+
+                        CodeAnalyticData existingCodeAnalyticData = target.getCodeAnalyticData().get();
+                        LOG.warn("There was already code analytic data from: {}. This will now be overriden by results from: {} ",
+                                existingCodeAnalyticData.getProductInfo(), importedCodeAnalyticData.getProductInfo());
+                    }
+
+                    target.setCodeAnalyticData(importedCodeAnalyticData);
+                    LOG.debug("Imported code analytic data with: {}. Found languages: {}", importer.getClass().getSimpleName(),
+                            importedCodeAnalyticData.getLanguages());
+
+                    amountOfImports++;
+                }
+
             } catch (IOException e) {
-                LOG.error("Was not able timport analytic data with importer:{}", importer.getClass(), e);
+                LOG.error("Was not able to import with importer:{}", importer.getClass(), e);
             }
         }
+        if (amountOfImports == 0) {
+            LOG.warn("Given analytic data was not imported by any importer!");
+        } else if (amountOfImports > 1) {
+            LOG.warn("Same analytic data was imported by {} importers!", amountOfImports);
+        }
 
-    }
-
-    private void merge(AnalyticData imported, AnalyticData target) {
-        /* FIXME Albert Tregnaghi, 2023-01-26:implement... */
     }
 
 }

@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
@@ -38,9 +39,10 @@ public class AnalyticsProductExecutionServiceImpl extends AbstractProductExecuti
     @Autowired
     AnalyticDataImportService analyticDataImportService;
 
+    @Lazy
     @Autowired
     DomainMessageService domainMessageService;
-
+    
     @Override
     protected void afterProductResultsStored(List<ProductResult> productResults, SecHubExecutionContext context) {
         LOG.debug("{} analytics product results stored.", productResults.size());
@@ -51,7 +53,7 @@ public class AnalyticsProductExecutionServiceImpl extends AbstractProductExecuti
         for (ProductResult productResult : productResults) {
             String analyticDataAsString = productResult.getResult();
 
-            analyticDataImportService.importAnalyticDataIntoModel(analyticDataAsString, analyticData);
+            analyticDataImportService.importAnalyticDataParts(analyticDataAsString, analyticData);
         }
 
         sendAnalyticDataAvailableEvent(analyticData, context);

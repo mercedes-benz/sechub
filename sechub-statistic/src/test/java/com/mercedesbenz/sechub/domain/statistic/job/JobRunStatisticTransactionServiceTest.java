@@ -154,7 +154,7 @@ class JobRunStatisticTransactionServiceTest {
         assertNull(data.timeStamp); // time stamp is automatically set by Hibernate/DB
         assertEquals(executionUUID, data.executionUUID);
         assertEquals(value, data.value);
-        assertEquals("ALL", data.key);
+        assertEquals("ALL", data.id);
     }
 
     @Test
@@ -182,7 +182,7 @@ class JobRunStatisticTransactionServiceTest {
         assertNull(data.timeStamp); // time stamp is automatically set by Hibernate/DB
         assertEquals(executionUUID, data.executionUUID);
         assertEquals(value, data.value);
-        assertEquals(AnalyticStatisticDataKey.ALL.getKeyValue(), data.key);
+        assertEquals(AnalyticStatisticDataKey.ALL.getKeyValue(), data.id);
     }
 
     @Test
@@ -240,9 +240,9 @@ class JobRunStatisticTransactionServiceTest {
         assertEquals(executionUUID, data3a.executionUUID);
         assertEquals(executionUUID, data3b.executionUUID);
 
-        assertEquals(key1.getKeyValue(), data1.key);
-        assertEquals(key3a.getKeyValue(), data3a.key);
-        assertEquals(key3b.getKeyValue(), data3b.key);
+        assertEquals(key1.getKeyValue(), data1.id);
+        assertEquals(key3a.getKeyValue(), data3a.id);
+        assertEquals(key3b.getKeyValue(), data3b.id);
 
         assertEquals(value1, data1.value);
         assertEquals(value3a, data3a.value);

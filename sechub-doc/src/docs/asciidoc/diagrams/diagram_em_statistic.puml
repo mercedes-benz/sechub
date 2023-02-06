@@ -43,7 +43,7 @@ entity JobStatisticData {
     --
     * secHubJobUUID: uuid
     * type: JobStatisticDataType (3*30)
-    * key: Text (3*30)
+    * id: Text (3*30)
     * value: BigInt
     * timestamp: Timestamp
 }
@@ -53,9 +53,9 @@ Contains data for job which is NOT related
 to a job run but is representative for every run/complete job.
 
 **Some potential examples:**
-type: UPLOAD, key: size_mb, value: 123
-type: UPLOAD, key: variant, value:src
-type: UPLOAD, key: s3_problems, value:1
+type: UPLOAD, id: size_mb, value: 123
+type: UPLOAD, id: variant, value:src
+type: UPLOAD, id: s3_problems, value:1
 
 end note
 
@@ -64,14 +64,14 @@ We do not reuse the sechub job uuid as a PK, because
 we could have some data which needs multiple entries.
 
 For example: 
-type: UPLOAD, key: size_MB, value: 123
-type: UPLOAD, key: size_MB, value: 234
+type: UPLOAD, id: size_MB, value: 123
+type: UPLOAD, id: size_MB, value: 234
 
 If a user would upload different content two times, the statistic
 must have two different entries.
 
 On the other hand: If we want to update an existing enry like 
-type: UPLOAD, key: s3_problems, value:1
+type: UPLOAD, id: s3_problems, value:1
 
 we can just try to load by type + key an existing entry and do the 
 update.
@@ -92,7 +92,7 @@ entity JobRunStatisticData {
     --
     * executionUUID:uuid
     * type: JobStatisticDataType (3*30)
-    * key: Text (3*30)
+    * id: Text (3*30)
     * value: BigInt
     * timestamp: Timestamp
 }
@@ -107,13 +107,13 @@ Contains information gathered while execution
 phase is happening.
 
 **Some potential examples:**
-type: LOC, key: <null>, value: 3002345
-type: LOC, key: java, value: 1232345
-type: LANG, key: java, value: 1
-type: SCAN_TYPE, key: codeScan, value: 1
-type: USED_PRODUCT_CODESCAN, key: PDS_GOSEC, value: 1
-type: PRODUCT_RUN_TIME_SECONDS, key: PDS_GOSEC, value:2 
-type: PRODUCT_FAILURE, key: PDS_GOSEC, value:1 
+type: LOC, id: <null>, value: 3002345
+type: LOC, id: java, value: 1232345
+type: LANG, id: java, value: 1
+type: SCAN_TYPE, id: codeScan, value: 1
+type: USED_PRODUCT_CODESCAN, id: PDS_GOSEC, value: 1
+type: PRODUCT_RUN_TIME_SECONDS, id: PDS_GOSEC, value:2 
+type: PRODUCT_FAILURE, id: PDS_GOSEC, value:1 
 end note
 
 

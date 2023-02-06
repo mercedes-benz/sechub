@@ -10,22 +10,22 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true) // we do ignore to avoid problems from wrong configured values!
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
-public class CodeAnalyticData implements AnalyticProductResult {
+public class CodeAnalyticData implements AnalyticDataPart {
 
     private Map<String, LanguageData> languages = new HashMap<>();
 
-    private AnalyticProductData productData;
+    private AnalyticProductInfo productInfo;
 
     public CodeAnalyticData() {
-        productData = new AnalyticProductData();
+        productInfo = new AnalyticProductInfo();
     }
 
     public Set<String> getLanguages() {
         return languages.keySet();
     }
 
-    public AnalyticProductData getProductData() {
-        return productData;
+    public AnalyticProductInfo getProductInfo() {
+        return productInfo;
     }
 
     public void setLinesOfCodeForLanguage(String language, long linesOfCode) {

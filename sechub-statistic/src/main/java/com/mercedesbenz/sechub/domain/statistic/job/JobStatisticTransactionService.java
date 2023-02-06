@@ -111,7 +111,7 @@ public class JobStatisticTransactionService {
             return;
         }
         data.setType(type);
-        data.setKey(keyName);
+        data.setId(keyName);
         data.setValue(value);
 
         jobStatisticDataRepository.save(data);

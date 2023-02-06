@@ -212,11 +212,26 @@
             "scanType": "licenseScan",
             "description": "This is only a fake license scan - used by integration tests."
         },
-      {
-        "id": "PDS_TEST_PMD",
-        "path": "./../sechub-integrationtest/pds/product-scripts/integrationtest-pmd.sh",
-        "scanType": "codeScan",
-        "description": "This is a fake PMD scan - used by integration tests."
-      }
-    ]
+        {
+          "id": "PDS_TEST_PMD",
+          "path": "./../sechub-integrationtest/pds/product-scripts/integrationtest-pmd.sh",
+          "scanType": "codeScan",
+          "description": "This is a fake PMD scan - used by integration tests."
+        },
+        { 
+          "id": "PDS_INTTEST_PRODUCT_ANALYZE",
+          "path": "./../sechub-integrationtest/pds/product-scripts/integrationtest-analyze.sh",
+          "scanType": "analytics",
+          "description": "This is a fake PMD scan - used by integration tests.",
+          "parameters": {
+                "optional": [
+                    {
+                        "key": "pds.test.key.variantname",
+                        "description": "a parameter from configuration - will be different in each integration test config from sechub integration test server"
+                    }
+                    
+                ]
+            }
+        }
+      ]
 }

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true) // we do ignore to avoid problems from wrong configured values!
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
-public class AnalyticProductData {
+public class AnalyticProductInfo {
 
     private String name;
     private String version;
@@ -25,6 +25,11 @@ public class AnalyticProductData {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+    
+    @Override
+    public String toString() {
+        return "AnalyticProductInfo [" + (name != null ? "name=" + name + ", " : "") + (version != null ? "version=" + version : "") + "]";
     }
 
 }

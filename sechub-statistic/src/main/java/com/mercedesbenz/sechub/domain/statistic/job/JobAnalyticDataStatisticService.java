@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.domain.statistic.job;
 import static com.mercedesbenz.sechub.domain.statistic.job.AnalyticStatisticDataKey.*;
 import static com.mercedesbenz.sechub.domain.statistic.job.JobRunStatisticDataType.*;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -29,21 +30,25 @@ public class JobAnalyticDataStatisticService {
 
     private StatisticDataContainer<JobRunStatisticDataType> collectCodeAnalyticData(AnalyticData analyticData) {
         StatisticDataContainer<JobRunStatisticDataType> dataContainer = new StatisticDataContainer<>();
-
-        CodeAnalyticData codeAnalyticData = analyticData.getCodeAnalyticData();
-
-        dataContainer.add(FILES, ALL, codeAnalyticData.calculateFilesForAllLanguages());
-        dataContainer.add(LOC, ALL, codeAnalyticData.calculateLinesOfCodeForAllLanguages());
-
-        Set<String> languages = codeAnalyticData.getLanguages();
-        for (String language : languages) {
-
-            long lines = codeAnalyticData.getLinesOfCodeForLanguage(language);
-            long files = codeAnalyticData.getFilesForLanguage(language);
-
-            dataContainer.add(LOC_LANG, new AnyTextAsKey(language), lines);
-            dataContainer.add(FILES_LANG, new AnyTextAsKey(language), files);
-
+        
+        Optional<CodeAnalyticData> optionalCodeAnalyticData = analyticData.getCodeAnalyticData();
+        if (optionalCodeAnalyticData.isPresent()) {
+            
+            CodeAnalyticData codeAnalyticData = optionalCodeAnalyticData.get();
+            
+            dataContainer.add(FILES, ALL, codeAnalyticData.calculateFilesForAllLanguages());
+            dataContainer.add(LOC, ALL, codeAnalyticData.calculateLinesOfCodeForAllLanguages());
+            
+            Set<String> languages = codeAnalyticData.getLanguages();
+            for (String language : languages) {
+                
+                long lines = codeAnalyticData.getLinesOfCodeForLanguage(language);
+                long files = codeAnalyticData.getFilesForLanguage(language);
+                
+                dataContainer.add(LOC_LANG, new AnyTextAsKey(language), lines);
+                dataContainer.add(FILES_LANG, new AnyTextAsKey(language), files);
+                
+            }
         }
         return dataContainer;
     }

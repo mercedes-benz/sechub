@@ -38,14 +38,35 @@ class JobAnalyticDataStatisticServiceTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    void storeStatisticData_writes_loc_files_loc_lan_and_files_lang() {
+    void storeStatisticData_calls_transaction_services_even_when_no_code_data() {
         /* prepare */
         AnalyticData data = new AnalyticData();
-        CodeAnalyticData codeAnalyticData = data.getCodeAnalyticData();
+
+        /* execute */
+        serviceToTest.storeStatisticData(executionUUID, data);
+        
+        /* test */
+        ArgumentCaptor<StatisticDataContainer<JobRunStatisticDataType>> dataContainerCaptor = ArgumentCaptor.forClass(StatisticDataContainer.class);
+        verify(jobRunStatistictTansactionService).insertJobRunStatisticData(eq(executionUUID), dataContainerCaptor.capture());
+  
+        StatisticDataContainer<JobRunStatisticDataType> dataContainer = dataContainerCaptor.getValue();
+        Set<JobRunStatisticDataType> types = dataContainer.getTypes();
+        assertTrue(types.isEmpty());
+        
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void storeStatisticData_writes_loc_files_loc_lan_and_files_lang() {
+        /* prepare */
+        CodeAnalyticData codeAnalyticData = new CodeAnalyticData();
         codeAnalyticData.setFilesForLanguage("java", 1000L);
         codeAnalyticData.setFilesForLanguage("go", 500L);
         codeAnalyticData.setLinesOfCodeForLanguage("java", 2500L);
         codeAnalyticData.setLinesOfCodeForLanguage("go", 1500L);
+
+        AnalyticData data = new AnalyticData();
+        data.setCodeAnalyticData(codeAnalyticData);
 
         /* execute */
         serviceToTest.storeStatisticData(executionUUID, data);

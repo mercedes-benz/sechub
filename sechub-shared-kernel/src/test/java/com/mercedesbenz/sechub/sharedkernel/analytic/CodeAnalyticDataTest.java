@@ -20,7 +20,7 @@ class CodeAnalyticDataTest {
 
     @Test
     void initial_product_data_not_null() {
-        assertNotNull(dataToTest.getProductData());
+        assertNotNull(dataToTest.getProductInfo());
     }
 
     @CsvSource({ "java,10", "go,5" })

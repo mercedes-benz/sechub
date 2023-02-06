@@ -10,8 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mercedesbenz.sechub.sharedkernel.analytic.AnalyticData;
-import com.mercedesbenz.sechub.sharedkernel.analytic.AnalyticProductData;
+import com.mercedesbenz.sechub.sharedkernel.analytic.AnalyticProductInfo;
 import com.mercedesbenz.sechub.sharedkernel.analytic.CodeAnalyticData;
 
 /**
@@ -21,7 +20,7 @@ import com.mercedesbenz.sechub.sharedkernel.analytic.CodeAnalyticData;
  *
  */
 @Component
-public class ClocJsonAnalyticDataImporter implements AnalyticDataImporter {
+public class ClocJsonAnalyticDataImporter implements AnalyticDataPartImporter<CodeAnalyticData> {
 
     private ObjectMapper mapper;
 
@@ -32,15 +31,26 @@ public class ClocJsonAnalyticDataImporter implements AnalyticDataImporter {
     }
 
     @Override
-    public AnalyticData importData(String clocJson) throws IOException {
+    public boolean isAbleToImport(String analyticDataAsString) {
+        if (analyticDataAsString == null) {
+            return false;
+        }
 
-        AnalyticData data = new AnalyticData();
-        CodeAnalyticData locData = data.getCodeAnalyticData();
+        boolean couldBeJson = analyticDataAsString.contains("{");
+        boolean isCloc = analyticDataAsString.contains("\"cloc_version\"");
 
-        AnalyticProductData productData = locData.getProductData();
+        return couldBeJson && isCloc;
+    }
+
+    @Override
+    public CodeAnalyticData importData(String clocJson) throws IOException {
+
+        CodeAnalyticData data = new CodeAnalyticData();
+
+        AnalyticProductInfo productData = data.getProductInfo();
         productData.setName("CLOC");
 
-        readJsonData(clocJson, locData);
+        readJsonData(clocJson, data);
 
         return data;
     }
@@ -58,7 +68,7 @@ public class ClocJsonAnalyticDataImporter implements AnalyticDataImporter {
                 importHeader(locData, subNode);
                 break;
             case "sum":
-                importSum(locData, subNode);
+                /* we do nothing here - sum is calculated automatically by analytic data */
                 break;
             default:
                 importLanguage(fieldName, locData, subNode);
@@ -73,7 +83,7 @@ public class ClocJsonAnalyticDataImporter implements AnalyticDataImporter {
         if (versionNode != null) {
             version = versionNode.textValue();
         }
-        AnalyticProductData productData = data.getProductData();
+        AnalyticProductInfo productData = data.getProductInfo();
         productData.setVersion(version);
 
     }
@@ -92,10 +102,6 @@ public class ClocJsonAnalyticDataImporter implements AnalyticDataImporter {
 
         linesOfCode.setLinesOfCodeForLanguage(language, lines);
         linesOfCode.setFilesForLanguage(language, files);
-
-    }
-
-    private void importSum(CodeAnalyticData data, JsonNode subNode) {
 
     }
 

@@ -17,15 +17,14 @@ CREATE TABLE statistic_job_data
    sechub_job_uuid uuid not null,
    
    type varchar(90) not null, -- we accept 90 (3x30)
-   key varchar(90) not null, -- we accept 90 (3x30)
-   value bigint not null,
+   id varchar(90) not null, -- we accept 90 (3x30), we use "id" ("key" is not possible because H2 keyword, so forbidden)
+   val bigint not null, -- we must use "val" instead of "value" ("value" is not possible because H2 keyword, so forbidden)
    
    timestamp timestamp not null, -- timestamp when the data entry was initial created
    
    version integer,
    PRIMARY KEY (uuid)
 );
-
 
 CREATE TABLE statistic_job_run
 (
@@ -46,8 +45,8 @@ CREATE TABLE statistic_job_run_data
    execution_uuid uuid not null,
    
    type varchar(90) not null, -- we accept 90 (3x30)
-   key varchar(90) not null, -- we accept 90 (3x30)
-   value bigint not null,
+   id varchar(90) not null, -- we accept 90 (3x30), we use "id" ("key" is not possible because H2 keyword, so forbidden)
+   val bigint not null, -- we must use "val" instead of "value" ("value" is not possible because H2 keyword, so forbidden)
    
    timestamp timestamp not null, -- timestamp when the data entry was initial created
    

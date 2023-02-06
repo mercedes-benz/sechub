@@ -9,8 +9,10 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import com.mercedesbenz.sechub.sharedkernel.analytic.AnalyticData;
 import com.mercedesbenz.sechub.sharedkernel.analytic.CodeAnalyticData;
 import com.mercedesbenz.sechub.test.TestFileReader;
 
@@ -30,13 +32,29 @@ class ClocJsonAnalyticDataImporterTest {
     }
 
     @Test
+    void is_able_to_import_returns_true_for_clos_json_example() throws IOException {
+        assertTrue(importerToTest.isAbleToImport(sechubClocJSON));
+    }
+
+    @NullSource
+    @ValueSource(strings= {"","{}","{cloc}"})
+    @ParameterizedTest
+    void is_able_to_import_returns_false_for_unsupported_content(String unsupportedContent) throws IOException {
+        assertFalse(importerToTest.isAbleToImport(unsupportedContent));
+    }
+    
+    @Test
+    void sechub_cloc_json_is_able_to_import_returns_true() throws IOException {
+        assertTrue(importerToTest.isAbleToImport(sechubClocJSON));
+    }
+    
+    @Test
     void sechub_cloc_json_can_be_imported_and_contains_expected_data() throws IOException {
 
         /* execute */
-        AnalyticData result = importerToTest.importData(sechubClocJSON);
+        CodeAnalyticData codeAnalyticData = importerToTest.importData(sechubClocJSON);
 
         /* test */
-        CodeAnalyticData codeAnalyticData = result.getCodeAnalyticData();
         assertNotNull(codeAnalyticData);
 
         Set<String> languages = codeAnalyticData.getLanguages();
@@ -46,8 +64,8 @@ class ClocJsonAnalyticDataImporterTest {
         assertTrue(languages.contains("go"));
         assertTrue(languages.contains("html"));
 
-        assertEquals("CLOC", codeAnalyticData.getProductData().getName());
-        assertEquals("1.96", codeAnalyticData.getProductData().getVersion());
+        assertEquals("CLOC", codeAnalyticData.getProductInfo().getName());
+        assertEquals("1.96", codeAnalyticData.getProductInfo().getVersion());
 
         assertEquals(2337, codeAnalyticData.getFilesForLanguage("java"));
         assertEquals(126190, codeAnalyticData.getLinesOfCodeForLanguage("java"));

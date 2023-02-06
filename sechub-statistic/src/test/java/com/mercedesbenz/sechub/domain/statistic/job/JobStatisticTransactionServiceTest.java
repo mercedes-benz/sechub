@@ -78,7 +78,7 @@ class JobStatisticTransactionServiceTest {
         assertNull(data.timeStamp); // time stamp is automatically set by Hibernate/DB
         assertEquals(jobUUID, data.sechubJobUUID);
         assertEquals(value, data.value);
-        assertEquals("SIZE_IN_BYTES", data.key);
+        assertEquals("SIZE_IN_BYTES", data.id);
     }
 
     @Test
@@ -106,7 +106,7 @@ class JobStatisticTransactionServiceTest {
         assertNull(data.timeStamp); // time stamp is automatically set by Hibernate/DB
         assertEquals(jobUUID, data.sechubJobUUID);
         assertEquals(value, data.value);
-        assertEquals(UploadJobStatisticDataKeys.SIZE_IN_BYTES.getKeyValue(), data.key);
+        assertEquals(UploadJobStatisticDataKeys.SIZE_IN_BYTES.getKeyValue(), data.id);
     }
 
     @Test
@@ -156,8 +156,8 @@ class JobStatisticTransactionServiceTest {
         assertEquals(jobUUID, data1.sechubJobUUID);
         assertEquals(jobUUID, data3.sechubJobUUID);
 
-        assertEquals(key1.getKeyValue(), data1.key);
-        assertEquals(key3a.getKeyValue(), data3.key);
+        assertEquals(key1.getKeyValue(), data1.id);
+        assertEquals(key3a.getKeyValue(), data3.id);
 
         assertEquals(value1, data1.value);
         assertEquals(value3a, data3.value);
