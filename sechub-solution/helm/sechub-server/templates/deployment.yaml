@@ -1,0 +1,568 @@
+# SPDX-License-Identifier: MIT
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 49%
+  selector:
+    matchLabels:
+      name: {{ .Values.name }}
+      app: sechub
+  template:
+    metadata:
+      labels:
+        name: {{ .Values.name }}
+        app: sechub
+{{- if .Values.templateMetadataAnnotations }}
+      annotations:
+        {{ .Values.templateMetadataAnnotations | indent 8 | trim }}
+{{- end }}
+    spec:
+      securityContext:
+        runAsUser: {{ .Values.runAs.uid }}  # user id of the application user. (overrides setings in the Dockerfile)
+        runAsGroup: {{ .Values.runAs.gid }} # group id of the application group. (overrides setings in the Dockerfile)
+        fsGroup: {{ .Values.runAs.gid }}    # group id of the application group. This group has write access to the volumes.
+      volumes:
+{{- if ne .Values.server.ssl.keystoreAlias "undefined" }}
+        - name: secret-ssl
+          secret:
+            secretName: secret-ssl
+{{- end }}
+{{- if .Values.volumes.tmpVolume.enabled }}
+        - name: tmp-volume
+  {{- if eq .Values.volumes.tmpVolume.type "genericEphemeral" }}
+          ephemeral:
+            volumeClaimTemplate:
+              metadata:
+                labels:
+                  name: sechub-server
+              spec:
+                accessModes: ["ReadWriteOnce"]
+                resources:
+                  requests:
+                    storage: "{{ .Values.volumes.tmpVolume.size }}"
+  {{- end }}
+  {{- if eq .Values.volumes.tmpVolume.type "emptyDir" }}
+          emptyDir:
+            sizeLimit: "{{ .Values.volumes.tmpVolume.size }}"
+  {{- end }}
+{{- end }}
+      containers: # which containers shall be inside my pod...
+      - name: sechub-server
+        image: {{ .Values.image.registry }}:{{ .Values.image.tag }}
+        resources:
+          # min container memory
+          requests:
+            memory: "{{ .Values.memory.container }}"
+          # max container memory
+          limits:
+            memory: "{{ .Values.memory.container }}"
+        ports:
+        - name: sechub-https
+          containerPort: 8443
+        - name: debug
+          containerPort: 5005
+        startupProbe:
+          httpGet:
+            scheme: HTTPS
+            path: /api/anonymous/check/alive
+            port: sechub-https
+          failureThreshold: 24
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
+          initialDelaySeconds: 5
+        livenessProbe:
+          httpGet:
+            scheme: HTTPS
+            path: /api/anonymous/check/alive
+            port: sechub-https
+          failureThreshold: 3
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 3
+        volumeMounts:
+{{- if ne .Values.server.ssl.keystoreAlias "undefined" }}
+          - mountPath: /sechub/secrets/secret-ssl
+            name: secret-ssl
+{{- end }}
+{{- if .Values.volumes.tmpVolume.enabled }}
+          - mountPath: "/tmp"
+            name: tmp-volume
+{{- end }}
+        env:
+        # Server profile definition
+        - name: SPRING_PROFILES_ACTIVE
+          value: "{{ .Values.server.spring.profiles }}"
+        # Base url for sechub server - e.g. https://sechub.example.com
+        - name: SECHUB_SERVER_BASEURL
+          value: "{{ .Values.server.baseURL.userAccess }}"
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+# + File upload definitions
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        - name: SPRING_SERVLET_MULTIPART_MAX-FILE-SIZE
+          value: "{{ .Values.server.uploads.sources.maxUploadSize }}"
+        - name: SPRING_SERVLET_MULTIPART_MAX-REQUEST-SIZE
+          value: "{{ .Values.server.uploads.sources.maxUploadSize }}"
+        - name: SECHUB_SERVER_UPLOAD_VALIDATE_CHECKSUM
+          value: "{{ .Values.server.uploads.sources.validateChecksum | toString }}"
+        - name: SECHUB_SERVER_UPLOAD_VALIDATE_ZIP
+          value: "{{ .Values.server.uploads.sources.validateZIP | toString }}"
+        - name: SECHUB_UPLOAD_BINARIES_MAXIMUM_BYTES
+          value: "{{ .Values.server.uploads.binaries.maxUploadBytes | int64 }}"
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+# + Special: debugging for CrashLoopBack problems
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        - name: KUBE_ENABLE_DEBUG_WAIT
+          value: "{{ .Values.server.debugWait | toString }}"
+{{- if .Values.deploymentComment }}
+        # Setting DEPLOYMENT_COMMENT to a different value every time forces k8s to spin up a new container.
+        # This way, you can force deployments e.g. when secrets have changed.
+        - name: DEPLOYMENT_COMMENT
+          value: "{{ .Values.deploymentComment }}"
+{{- end }}
+{{- if .Values.server.loggingType }}
+        - name: LOGGING_TYPE
+          value: {{ .Values.server.loggingType }}
+{{- end }}
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+# + ClusterEnvironment service setup by downward api
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        - name: SECHUB_CLUSTER_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: SECHUB_CLUSTER_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+# + SSL certificate
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        - name: SECHUB_SERVER_SSL_KEYSTORE_TYPE
+          value: "PKCS12"
+        - name: SECHUB_SERVER_SSL_KEYSTORE_LOCATION
+          value: /home/javarun/{{ .Values.server.ssl.keystoreAlias }}.p12
+        - name: SECHUB_SERVER_SSL_KEYSTORE_ALIAS
+          value: {{ .Values.server.ssl.keystoreAlias }}
+        - name: SECHUB_SERVER_SSL_KEYSTORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+               name: secret-ssl
+               key: sechub_server_ssl_keystore_password
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+# + Initial user setup
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        - name: SECHUB_INITIALADMIN_USERID
+          value: {{ .Values.server.initialAdminUser.id }}
+        - name: SECHUB_INITIALADMIN_EMAIL
+          value: {{ .Values.server.initialAdminUser.email }}
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+# + Database setup
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+{{- if .Values.server.databaseConnection }}
+        - name: SPRING_DATASOURCE_URL
+          value: {{ .Values.server.databaseConnection }}
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            secretKeyRef:
+               name: secret-database
+               key: spring_datasource_username
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+               name: secret-database
+               key: spring_datasource_password
+{{- end }}
+        # Increase HikariPool (10 default)
+        - name: SPRING_DATASOURCE_HIKARI_MINIMUMIDLE
+          value: "{{ .Values.server.spring.hikariPool.size.minimumIdle }}"
+        - name: SPRING_DATASOURCE_HIKARI_MAXIMUMPOOLSIZE
+          value: "{{ .Values.server.spring.hikariPool.size.maximum | toString }}"
+# ----------------------------------------------------------------------------------------------#
+# - Scope: administration
+# --------------------------------------------------------------------------------------------- #
+        # Base url for administration server - e.g. https://sechub.example.com:8443
+        - name: SECHUB_SERVER_ADMINISTRATION_BASEURL
+          value: "{{ .Values.server.baseURL.adminAccess }}"
+        # Email address of the SecHub administrators. Informations about scheduler stop/start, new users etc. will go there.
+        - name: SECHUB_NOTIFICATION_EMAIL_ADMINISTRATORS
+          value: "{{ .Values.server.adminEmail }}"
+# ----------------------------------------------------------------------------------------------#
+# - Scope: create
+# --------------------------------------------------------------------------------------------- #
+        # Time in milliseconds how long the download of an api token is possible
+        - name: SECHUB_USER_ONETIMETOKEN_OUTDATED_MILLIS
+          value: "{{ .Values.server.validityOnetimetokenInMilliseconds | int64 }}"
+# ----------------------------------------------------------------------------------------------#
+# - Scope: development
+# --------------------------------------------------------------------------------------------- #
+        # Developers can turn on this mode to have reports creating with external css. Normally the html model builder will create embedded css content
+        - name: SECHUB_DEVELOPMENT_WEBDESIGNMODE_ENABLED
+          value: "false"
+        - name: JAVA_ENABLE_DEBUG
+          value: "{{ .Values.server.javaEnableDebug | toString }}"
+# ----------------------------------------------------------------------------------------------#
+# - Scope: mock
+# --------------------------------------------------------------------------------------------- #
+        # When email mock shall cache the mails this must be configured to true, per default disabled!
+        - name: SECHUB_NOTIFICATION_EMAIL_MOCK_CACHE_ENABLED
+          value: "false"
+{{- if .Values.adapterCheckmarx.enabled }}
+# ----------------------------------------------------------------------------------------------#
+# - Scope: Checkmarx (Deprecation warning: Please use PDS-Checkmarx instead)
+# --------------------------------------------------------------------------------------------- #
+        # Base url of your Checkmarx server
+        - name: SECHUB_ADAPTER_CHECKMARX_BASEURL
+          value: "{{ .Values.adapterCheckmarx.baseURL }}"
+        # User id of checkmarx user
+        - name: SECHUB_ADAPTER_CHECKMARX_USERID
+          valueFrom:
+            secretKeyRef:
+               name: secret-checkmarx
+               key: sechub_adapter_checkmarx_userid
+        # Password of checkmarx user
+        - name: SECHUB_ADAPTER_CHECKMARX_PASSWORD
+          valueFrom:
+            secretKeyRef:
+               name: secret-checkmarx
+               key: sechub_adapter_checkmarx_password
+        # Interval in minutes when SecHub checks if the scan has finished
+        - name: SECHUB_ADAPTER_CHECKMARX_SCANRESULTCHECK_PERIOD_MINUTES
+          value: "{{ .Values.adapterCheckmarx.checkIntervalInMinutes }}"
+        # Time in minutes when adapter result check will be canceled/time out. When -1 timeout is 7200 minutes
+        - name: SECHUB_ADAPTER_CHECKMARX_SCANRESULTCHECK_TIMEOUT_MINUTES
+          value: "{{ .Values.adapterCheckmarx.timeoutInMinutes }}"
+        # Initial team ID. When a scan is started a and checkmarx project is still missing, a new checkmarx project
+        # will be automatically created.
+        # For creation a team must be defined. This value is a fallback if scan config is not set (scan config
+        # does this in a dynamic way by inspecting project names)
+        - name: SECHUB_ADAPTER_CHECKMARX_NEWPROJECT_TEAMID
+          value: "{{ .Values.adapterCheckmarx.newProjectCheckmarxTeamID }}"
+        # Initial Checkmarx scan config mapping (deprecated; should be defined in SecHub product executor)
+        # See https://mercedes-benz.github.io/sechub/latest/sechub-operations.html#mapping-teams-and-presets-for-new-projects
+        - name: SECHUB_SCAN_CONFIG_INITIAL
+          valueFrom:
+            secretKeyRef:
+               name: secret-config
+               key: sechub_scan_config_initial
+        # Turns off certification checks for this product only. Should only be used in test or development environments!
+        - name: SECHUB_ADAPTER_CHECKMARX_TRUSTALL
+          value: "{{ .Values.adapterCheckmarx.trustAnyCertificate | toString }}"
+{{- end }}
+{{- if .Values.adapterNessus.enabled }}
+# ----------------------------------------------------------------------------------------------#
+# - Scope: Nessus (Deprecation warning: this adapter is not being developed further)
+# --------------------------------------------------------------------------------------------- #
+        # Base url of Nessus used for Internet scans
+        - name: SECHUB_ADAPTER_NESSUS_INTERNET_BASEURL
+          value: "{{ .Values.adapterNessus.baseURL.internet }}"
+        # User id of Nessus user (Internet)
+        - name: SECHUB_ADAPTER_NESSUS_INTERNET_USERID
+          valueFrom:
+            secretKeyRef:
+               name: secret-nessus
+               key: sechub_adapter_nessus_internet_userid
+        # Password for Nessus instance used for Internet scans
+        - name: SECHUB_ADAPTER_NESSUS_INTERNET_PASSWORD
+          valueFrom:
+            secretKeyRef:
+               name: secret-nessus
+               key: sechub_adapter_nessus_internet_password
+        # Base url of nessus used for intranet scans
+        - name: SECHUB_ADAPTER_NESSUS_INTRANET_BASEURL
+          value: "{{ .Values.adapterNessus.baseURL.intranet }}"
+        # User id of nessus user (intranet)
+        - name: SECHUB_ADAPTER_NESSUS_INTRANET_USERID
+          valueFrom:
+            secretKeyRef:
+               name: secret-nessus
+               key: sechub_adapter_nessus_intranet_userid
+        # Password for nessus instance used for intranet scans
+        - name: SECHUB_ADAPTER_NESSUS_INTRANET_PASSWORD
+          valueFrom:
+            secretKeyRef:
+               name: secret-nessus
+               key: sechub_adapter_nessus_intranet_password
+        # Time in minutes the adapter will be checked for results. When -1 check is done every 7200 minutes
+        - name: SECHUB_ADAPTER_NESSUS_SCANRESULTCHECK_PERIOD_MINUTES
+          value: "-1"
+        # Proxy port for faraday server connection, default is 0. If you are setting a proxy hostname you have to configure this value correctly
+        - name: SECHUB_ADAPTER_NESSUS_PROXY_PORT
+          value: "0"
+        # Time in minutes the adapter will be checked for results. When -1 check is done every 7200 minutes
+        - name: SECHUB_ADAPTER_NESSUS_SCANRESULTCHECK_TIMEOUT_MINUTES
+          value: "-1"
+        # Turns off certification checks for this product only. Should only be used in test or development environments!
+        - name: SECHUB_ADAPTER_NESSUS_TRUSTALL
+          value: "false"
+        # Default policy ID for nessus scans
+        - name: SECHUB_ADAPTER_NESSUS_DEFAULTPOLICYID
+          value: ""
+        # Proxy hostname for faraday server connection, when empty no proxy is used. When not empty proxy port must be set too!
+        - name: SECHUB_ADAPTER_NESSUS_PROXY_HOSTNAME
+          value: ""
+{{- end }}
+{{- if .Values.adapterNetsparker.enabled }}
+# ----------------------------------------------------------------------------------------------#
+# - Scope: Netsparker (Deprecation warning: this adapter is not being developed further)
+# --------------------------------------------------------------------------------------------- #
+        # Base url of your Netsparker server
+        - name: SECHUB_ADAPTER_NETSPARKER_BASEURL
+          value: "{{ .Values.adapterNetsparker.baseURL }}"
+        # user id of Netsparker user
+        - name: SECHUB_ADAPTER_NETSPARKER_USERID
+          valueFrom:
+            secretKeyRef:
+               name: secret-netsparker
+               key: sechub_adapter_netsparker_userid
+        # API token for Netsparker user
+        - name: SECHUB_ADAPTER_NETSPARKER_APITOKEN
+          valueFrom:
+            secretKeyRef:
+               name: secret-netsparker
+               key: sechub_adapter_netsparker_apitoken
+        # Default policy ID for Netsparker scans (test policy)
+        - name: SECHUB_ADAPTER_NETSPARKER_DEFAULTPOLICYID
+          value: "{{ .Values.adapterNetsparker.defaultPolicyID }}"
+        # The name of the agent to be used by Netsparker. If an agent group name is already defined the group will be superiour.
+        # If no group set and no agent name, Netsparker will use an agent but seems to be unpredictable which agent will be used.
+        - name: SECHUB_ADAPTER_NETSPARKER_AGENTNAME
+          value: ""
+        # The name of the agent group to be used by Netsparker for *intranet scans*. If not set no agent group will be used.
+        - name: SECHUB_ADAPTER_NETSPARKER_INTRANET_AGENTGROUPNAME
+          value: "{{ .Values.adapterNetsparker.intranetAgentGroupName }}"
+        # The name of the agent group to be used by Netsparker for *internet scans*. If not set no agent group will be used.
+        - name: SECHUB_ADAPTER_NETSPARKER_INTERNET_AGENTGROUPNAME
+          value: "{{ .Values.adapterNetsparker.internetAgentGroupName }}"
+        # Turns off certification checks for this product only. Should only be used in test or development environments!
+        - name: SECHUB_ADAPTER_NETSPARKER_TRUSTALL
+          value: "false"
+        - name: SECHUB_ADAPTER_NETSPARKER_LICENSEID
+          value: "{{ .Values.adapterNetsparker.licenseID }}"
+        # Time in minutes when adapter result check will be canceled/time out. When -1 timeout is 1 minutes
+        - name: SECHUB_ADAPTER_NETSPARKER_SCANRESULTCHECK_TIMEOUT_MINUTES
+          value: "-1"
+        # Time in minutes the adapter will be checked for results. When -1 check is done every 7200 minutes
+        - name: SECHUB_ADAPTER_NETSPARKER_SCANRESULTCHECK_PERIOD_MINUTES
+          value: "-1"
+{{- end }}
+{{- if .Values.pdsCheckmarx.enabled }}
+# ----------------------------------------------------------------------------------------------#
+# - Scope: PDS-Checkmarx
+# --------------------------------------------------------------------------------------------- #
+        - name: SECHUB_PDS_CHECKMARX_USERID
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-checkmarx
+               key: techuser_username
+        - name: SECHUB_PDS_CHECKMARX_PASSWORD
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-checkmarx
+               key: techuser_password
+{{- end }}
+{{- if .Values.pdsCoverity.enabled }}
+# ----------------------------------------------------------------------------------------------#
+# - Scope: PDS-Coverity
+# --------------------------------------------------------------------------------------------- #
+        - name: SECHUB_PDS_COVERITY_USERID
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-coverity
+               key: techuser_username
+        - name: SECHUB_PDS_COVERITY_PASSWORD
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-coverity
+               key: techuser_password
+{{- end }}
+{{- if .Values.pdsFindSecurityBugs.enabled }}
+# ----------------------------------------------------------------------------------------------#
+# - Scope: PDS-FindSecurityBugs
+# --------------------------------------------------------------------------------------------- #
+        - name: SECHUB_PDS_FINDSECURITYBUGS_USERID
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-findsecuritybugs
+               key: techuser_username
+        - name: SECHUB_PDS_FINDSECURITYBUGS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-findsecuritybugs
+               key: techuser_password
+{{- end }}
+{{- if .Values.pdsGoSec.enabled }}
+# ----------------------------------------------------------------------------------------------#
+# - Scope: PDS-GoSec
+# --------------------------------------------------------------------------------------------- #
+        - name: SECHUB_PDS_GOSEC_USERID
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-gosec
+               key: techuser_username
+        - name: SECHUB_PDS_GOSEC_PASSWORD
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-gosec
+               key: techuser_password
+{{- end }}
+{{- if .Values.pdsOWASPZAP.enabled }}
+# ----------------------------------------------------------------------------------------------#
+# - Scope: PDS-OWASP ZAP
+# ----------------------------------------------------------------------------------------------#
+        - name: SECHUB_PDS_OWASPZAP_USERID
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-owaspzap
+               key: techuser_username
+        - name: SECHUB_PDS_OWASPZAP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-owaspzap
+               key: techuser_password
+{{- end }}
+{{- if .Values.pdsScancode.enabled }}
+# ----------------------------------------------------------------------------------------------#
+# - Scope: PDS-Scancode
+# --------------------------------------------------------------------------------------------- #
+        - name: SECHUB_PDS_SCANCODE_USERID
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-scancode
+               key: techuser_username
+        - name: SECHUB_PDS_SCANCODE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-scancode
+               key: techuser_password
+{{- end }}
+# ----------------------------------------------------------------------------------------------#
+# - Scope: emails from SecHub server
+# --------------------------------------------------------------------------------------------- #
+        # email's FROM header:
+        - name: SECHUB_NOTIFICATION_EMAIL_FROM
+          value: "{{ .Values.server.email.from }}"
+        # email's REPLYTO header
+        - name: SECHUB_NOTIFICATION_EMAIL_REPLYTO
+          value: "{{ .Values.server.email.replyTo }}"
+        # Hostname of SMTP server
+        - name: SECHUB_NOTIFICATION_SMTP_HOSTNAME
+          value: "{{ .Values.server.email.smtp.host }}"
+        # Port of SMTP server
+        - name: SECHUB_NOTIFICATION_SMTP_PORT
+          value: "{{ .Values.server.email.smtp.port }}"
+# ----------------------------------------------------------------------------------------------#
+# - Scope: scheduler
+# --------------------------------------------------------------------------------------------- #
+        # Job scheduling is activated in intervals
+        # SECHUB_CONFIG_TRIGGER_NEXTJOB_DELAY is the delay after which the scheduler looks for the next job
+        - name: SECHUB_CONFIG_TRIGGER_NEXTJOB_DELAY
+          value: "{{ .Values.server.jobScheduling.activationIntervalInMilliseconds | int64 }}"
+        # Scheduler strategy
+        # Possible values:
+        # - first-come-first-serve (a project can have multiple parallel running scan jobs (default if empty))
+        # - only-one-scan-per-project-at-a-time (a project can only have one running scan job at a time)
+        - name: SECHUB_SCHEDULER_STRATEGY_ID
+          value: "{{ .Values.server.jobScheduling.strategy }}"
+# ----------------------------------------------------------------------------------------------#
+# - Scope: server
+# --------------------------------------------------------------------------------------------- #
+        # When debug flag is set, rest call reponse error messages do also contains stacktraces.
+        - name: SECHUB_SERVER_DEBUG
+          value: "false"
+        # Loglevel of Hikari database connection pooling
+        - name: LOGGING_LEVEL_COM_ZAXXER_HIKARI
+          value: "{{ .Values.server.spring.hikariPool.loglevel }}"
+        - name: LOGGING_LEVEL_COM_ZAXXER_HIKARI_HIKARICONFIG
+          value: "{{ .Values.server.spring.hikariPool.configLogLevel }}"
+{{- if .Values.server.spring.embeddedTomcat.logging.enabled }}
+# ----------------------------------------------------------------------------------------------#
+# - Scope: embedded Tomcat
+# --------------------------------------------------------------------------------------------- #
+        # Logging to stdout:
+        - name: SERVER_TOMCAT_ACCESSLOG_ENABLED
+          value: "{{ .Values.server.spring.embeddedTomcat.logging.enabled }}"
+        - name: SERVER_TOMCAT_ACCESSLOG_DIRECTORY
+          value: "/dev"
+        - name: SERVER_TOMCAT_ACCESSLOG_PREFIX
+          value: "stdout"
+        - name: SERVER_TOMCAT_ACCESSLOG_BUFFERED
+          value: "false"
+        - name: SERVER_TOMCAT_ACCESSLOG_SUFFIX
+          value: ""
+        - name: SERVER_TOMCAT_ACCESSLOG_FILE_DATE_FORMAT
+          value: ""
+        - name: SERVER_TOMCAT_ACCESSLOG_PATTERN
+          value: "{{ .Values.server.spring.embeddedTomcat.logging.accessLogFormat }}"
+{{- end }}
+# ----------------------------------------------------------------------------------------------#
+# - Scope: storage
+# --------------------------------------------------------------------------------------------- #
+# Storage priority in order: local, S3, shared volume
+# Meaning if local is enabled local will be used,
+# regardless of other storage configurations.
+{{- if .Values.storage.local.enabled }}
+        # Defines the root path for shared volume uploads - e.g. for sourcecode.zip etc. When using keyword *temp* as path, this will create a temporary directory (for testing).
+        - name: SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR
+          value: "/tmp"
+{{- else if .Values.storage.s3.enabled }}
+        - name: S3_ENABLED
+          value: "true"
+        # Defines the S3 endpoint
+        - name: SECHUB_STORAGE_S3_ENDPOINT
+          value: {{ .Values.storage.s3.endpoint }}
+        # Defines the S3 bucket name
+        - name: SECHUB_STORAGE_S3_BUCKETNAME
+          value: {{ .Values.storage.s3.bucketname }}
+        # Defines the access key for used S3 bucket
+        - name: SECHUB_STORAGE_S3_ACCESSKEY
+          valueFrom:
+            secretKeyRef:
+               name: secret-storage
+               key: sechub_storage_s3_accesskey
+        # Defines the secret key for used S3 bucket
+        - name: SECHUB_STORAGE_S3_SECRETKEY
+          valueFrom:
+            secretKeyRef:
+               name: secret-storage
+               key: sechub_storage_s3_secretkey
+{{- else if .Values.storage.sharedVolume.enabled }}
+        - name: SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR
+          value: "{{ .Values.storage.sharedVolume.dir }}"
+{{- end}}
+
+# ----------------------------------------------------------------------------------------------#
+# - Scope: system
+# --------------------------------------------------------------------------------------------- #
+        # Maximum memory usage percentage accepted by sechub system. Can be a value from 50 up to 100 for 100%
+        - name: SECHUB_MONITORING_ACCEPTED_MEMORY_USAGE_MAX
+          value: "{{ .Values.memory.maxPercentage }}"
+# ----------------------------------------------------------------------------------------------#
+# - Scope: Network scan target
+# --------------------------------------------------------------------------------------------- #
+        # *Strategy to decide intranet/internet targets for a given URI.*
+        # Starts always with strategy-identifer, colon and value(s). Currently only 'intranet-hostname-ends-with' is supported as strategy.
+        # For example: `intranet-hostname-ends-with::intranet.example.org,intx.example.com`.
+        # All other hostnames are considered as INTERNET hosts.
+        # Regardless of the strategy: loopback addresses are always ignored.
+        - name: SECHUB_TARGET_RESOLVE_STRATEGY_URI
+          value: "{{ .Values.webScan.intranetDetection.uriPattern }}"
+        # *Strategy to decide intranet/internet targets for a given IP.*
+        # Starts always with strategy-identifer, colon and value(s). Currently only 'intranet-ip-pattern' is supported as strategy.
+        # For example: `intranet-ip-pattern:192.168.178.*,[2001:db8:85a3:0:0:8a2e:370:*]`.
+        # All other hostnames are considered as INTERNET hosts.
+        # Regardless of the strategy: loopback addresses are always ignored.
+        - name: SECHUB_TARGET_RESOLVE_STRATEGY_IP
+          value: "{{ .Values.webScan.intranetDetection.ipPattern }}"
+{{- if .Values.image.imagePullSecrets }}
+      imagePullSecrets:
+        {{ .Values.image.imagePullSecrets | indent 8 | trim }}
+{{- end }}

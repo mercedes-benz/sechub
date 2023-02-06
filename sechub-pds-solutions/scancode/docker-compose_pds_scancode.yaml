@@ -6,8 +6,9 @@ services:
         build:
             args:
                 - BASE_IMAGE=${BASE_IMAGE}
+                - SCANCODE_VERSION=${SCANCODE_VERSION}
             context: docker/
-            dockerfile: ScanCode-Debian.dockerfile
+            dockerfile: Scancode-Debian.dockerfile
         container_name: pds-scancode
         env_file:
             - .env

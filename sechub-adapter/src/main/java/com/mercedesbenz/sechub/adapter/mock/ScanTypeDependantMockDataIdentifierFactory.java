@@ -62,7 +62,7 @@ public class ScanTypeDependantMockDataIdentifierFactory implements MockDataIdent
             return null;
         }
         SecHubWebScanConfiguration webScan = webScanOpt.get();
-        URI uri = webScan.getUri();
+        URI uri = webScan.getUrl();
         return Objects.toString(uri);
     }
 

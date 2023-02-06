@@ -73,8 +73,7 @@ public class FullScanDataScenario3SecHubClientIntTest {
 		assertEquals("", netsparker.content);
 		FullScanDataElement sereco = assertFullScanData.resolveFile("SERECO.json");
 
-		assertTrue(sereco.content.contains("\"type\":\"SecHub failure\""));
-		assertTrue(sereco.content.contains("Security product 'NETSPARKER' failed"));
+		assertTrue(sereco.content.contains("\"type\":\"INTERNAL_ERROR_PRODUCT_FAILED\""));
 		/* @formatter:on*/
     }
 

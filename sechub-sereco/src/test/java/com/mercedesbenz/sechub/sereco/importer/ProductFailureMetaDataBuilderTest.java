@@ -1,29 +1,31 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sereco.importer;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
+import java.util.Set;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.sereco.ImportParameter;
+import com.mercedesbenz.sechub.sereco.metadata.SerecoAnnotation;
+import com.mercedesbenz.sechub.sereco.metadata.SerecoAnnotationType;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
-import com.mercedesbenz.sechub.sereco.metadata.SerecoSeverity;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
 
 public class ProductFailureMetaDataBuilderTest {
 
     private ProductFailureMetaDataBuilder builderToTest;
 
-    @Before
-    public void before() throws Exception {
+    @BeforeEach
+    void beforeEach() throws Exception {
         builderToTest = new ProductFailureMetaDataBuilder();
     }
 
     @Test
-    public void creates_a_meta_model_with_product_information() {
+    void creates_a_meta_model_with_product_information() {
         /* prepare */
         ImportParameter param = ImportParameter.builder().importId("id1").productId("productId").build();
 
@@ -31,19 +33,11 @@ public class ProductFailureMetaDataBuilderTest {
         SerecoMetaData result = builderToTest.forParam(param).build();
 
         /* test */
-        assertNotNull(result);
-        List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
-        assertNotNull(vulnerabilities);
-        assertEquals(1, vulnerabilities.size());
-        SerecoVulnerability v = vulnerabilities.iterator().next();
-
-        assertEquals(SerecoSeverity.CRITICAL, v.getSeverity());
-        assertEquals("SecHub failure", v.getType());
-        assertEquals("Security product 'productId' failed, so cannot give a correct answer.", v.getDescription());
+        assertResultHasProductFailureAnnotationButNoVulnerabilities(result);
     }
 
     @Test
-    public void creates_a_meta_model_with_product_information_nothing_set_will_at_least_work() {
+    void creates_a_meta_model_without_product_information_at_least_works() {
         /* prepare */
         ImportParameter param = ImportParameter.builder().build();
 
@@ -51,15 +45,22 @@ public class ProductFailureMetaDataBuilderTest {
         SerecoMetaData result = builderToTest.forParam(param).build();
 
         /* test */
-        assertNotNull(result);
-        List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
-        assertNotNull(vulnerabilities);
-        assertEquals(1, vulnerabilities.size());
-        SerecoVulnerability v = vulnerabilities.iterator().next();
-
-        assertEquals(SerecoSeverity.CRITICAL, v.getSeverity());
-        assertEquals("SecHub failure", v.getType());
-        assertEquals("Security product 'null' failed, so cannot give a correct answer.", v.getDescription());
+        assertResultHasProductFailureAnnotationButNoVulnerabilities(result);
     }
 
+    private void assertResultHasProductFailureAnnotationButNoVulnerabilities(SerecoMetaData result) {
+        assertNotNull(result);
+
+        // no vulnerabilities inside
+        List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
+        assertNotNull(vulnerabilities);
+        assertEquals(0, vulnerabilities.size());
+
+        // annotation added about product failure
+        Set<SerecoAnnotation> annotations = result.getAnnotations();
+        assertEquals(1, annotations.size());
+        SerecoAnnotation anno = annotations.iterator().next();
+
+        assertEquals(SerecoAnnotationType.INTERNAL_ERROR_PRODUCT_FAILED, anno.getType());
+    }
 }

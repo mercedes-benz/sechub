@@ -45,17 +45,17 @@ public class ApiDefinitionFileProvider {
 
         List<SecHubSourceDataConfiguration> sourceData = sechubConfig.getData().get().getSources();
         if (sourceData.size() != 1) {
-            throw new ZapWrapperRuntimeException("Sources must contain exactly 1 entry.", ZapWrapperExitCode.SECHUB_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("Sources must contain exactly 1 entry.", ZapWrapperExitCode.API_DEFINITION_CONFIG_INVALID);
         }
 
         if (!sourceData.get(0).getFileSystem().isPresent()) {
-            throw new ZapWrapperRuntimeException("Sources filesystem part must be set at this stage.", ZapWrapperExitCode.SECHUB_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("Sources filesystem part must be set at this stage.", ZapWrapperExitCode.API_DEFINITION_CONFIG_INVALID);
         }
 
         List<String> files = sourceData.get(0).getFileSystem().get().getFiles();
         if (files.size() != 1) {
             throw new ZapWrapperRuntimeException("Sources filesystem files part must contain exactly 1 entry.",
-                    ZapWrapperExitCode.SECHUB_CONFIGURATION_INVALID);
+                    ZapWrapperExitCode.API_DEFINITION_CONFIG_INVALID);
         }
 
         File result = new File(extractedSourcesFolderPath, files.get(0));

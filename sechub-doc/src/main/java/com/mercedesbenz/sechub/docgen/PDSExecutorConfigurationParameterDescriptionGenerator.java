@@ -7,7 +7,7 @@ import java.util.List;
 import com.mercedesbenz.sechub.commons.pds.ExecutionPDSKey;
 import com.mercedesbenz.sechub.commons.pds.PDSKey;
 import com.mercedesbenz.sechub.commons.pds.PDSKeyProvider;
-import com.mercedesbenz.sechub.domain.scan.product.pds.PDSExecutorConfigSuppport;
+import com.mercedesbenz.sechub.domain.scan.product.pds.PDSExecutorConfigSupport;
 import com.mercedesbenz.sechub.pds.execution.PDSKeyToEnvConverter;
 
 public class PDSExecutorConfigurationParameterDescriptionGenerator {
@@ -25,7 +25,7 @@ public class PDSExecutorConfigurationParameterDescriptionGenerator {
 
         addLine("", sb);
 
-        List<PDSKeyProvider<? extends PDSKey>> list = PDSExecutorConfigSuppport.getUnmodifiableListOfParameterKeyProvidersSentToPDS();
+        List<PDSKeyProvider<? extends PDSKey>> list = PDSExecutorConfigSupport.getUnmodifiableListOfParameterKeyProvidersSentToPDS();
         for (PDSKeyProvider<? extends PDSKey> provider : list) {
             PDSKey key = provider.getKey();
             addLine("| " + key.getId(), sb);

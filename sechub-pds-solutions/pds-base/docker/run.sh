@@ -1,8 +1,8 @@
 #!/usr/bin/env sh
 # SPDX-License-Identifier: MIT
 
-# the . dot command is like the bash buid-in command `source`
-. "/run_additional.sh"
+DEFAULT_PDS_MAX_FILE_UPLOAD_BYTES=52428800  # 50 MB
+DEFAULT_PDS_HEARTBEAT_LOGGING="true"
 
 JAVA_DEBUG_OPTIONS=""
 
@@ -14,23 +14,12 @@ wait_loop() {
     done
 }
 
-debug() {
-    wait_loop
-}
-
-# Start with localserver settings 
-localserver () {
-    start_server "pds_localserver"
-}
-
 start_server() {
     profiles="$1"
 
     check_setup
 
     database_options=""
-    storage_options="-Dsechub.pds.storage.sharedvolume.upload.dir=$SHARED_VOLUME_UPLOAD_DIR"
-
     if [ "$POSTGRES_ENABLED" = true ]
     then
         echo "Using database: Postgres"
@@ -55,10 +44,17 @@ start_server() {
         echo "Object storage:"
         echo " * Endpoint: $S3_ENDPOINT"
         echo " * Bucketname: $S3_BUCKETNAME"
+    else
+        storage_options="-Dsechub.pds.storage.sharedvolume.upload.dir=$SHARED_VOLUME_UPLOAD_DIR"
     fi
 
-    # call the additional function in the run_additional.sh script
-    run_additional
+    echo "Calling the run_additional.sh script"
+    echo "---"
+    /run_additional.sh
+    echo "---"
+    echo ""
+    echo "Starting the SecHub PDS server"
+    echo "PDS Version: $PDS_VERSION"
 
     # Regarding entropy collection:
     #   with JDK 8+ the "obscure workaround using file:///dev/urandom 
@@ -74,9 +70,8 @@ start_server() {
         -Dsechub.pds.techuser.apitoken="$TECHUSER_APITOKEN" \
         -Dsechub.pds.workspace.rootfolder=/workspace \
         -Dsechub.pds.config.file=/pds/pds-config.json \
-        -Dspring.servlet.multipart.max-file-size="$PDS_MAX_FILE_UPLOAD_SIZE" \
-        -Dspring.servlet.multipart.max-request-size="$PDS_MAX_FILE_UPLOAD_SIZE" \
-        -Dpds.upload.binaries.maximum.bytes="$PDS_UPLOAD_BINARIES_MAXIMUM_BYTES" \
+        -Dpds.upload.maximum.bytes="$PDS_MAX_FILE_UPLOAD_BYTES" \
+        -Dsechub.pds.config.heartbeat.verbose.logging.enabled="$PDS_HEARTBEAT_LOGGING" \
         -Dserver.port=8444 \
         -Dserver.address=0.0.0.0 \
         -jar /pds/sechub-pds-*.jar
@@ -98,8 +93,7 @@ check_setup () {
     check_variable "$TECHUSER_USERID" "TECHUSER_USERID"
     check_variable "$TECHUSER_APITOKEN" "TECHUSER_APITOKEN"
     check_variable "$SHARED_VOLUME_UPLOAD_DIR" "SHARED_VOLUME_UPLOAD_DIR"
-    check_variable "$PDS_MAX_FILE_UPLOAD_SIZE" "PDS_MAX_FILE_UPLOAD_SIZE"
-    check_variable "$PDS_UPLOAD_BINARIES_MAXIMUM_BYTES" "PDS_UPLOAD_BINARIES_MAXIMUM_BYTES"
+    check_variable "$PDS_MAX_FILE_UPLOAD_BYTES" "PDS_MAX_FILE_UPLOAD_BYTES"
 }
 
 check_variable () {
@@ -113,6 +107,19 @@ check_variable () {
     fi
 }
 
+##################
+# main
+
+if [ -z "$PDS_MAX_FILE_UPLOAD_BYTES" ]
+then
+  export PDS_MAX_FILE_UPLOAD_BYTES="$DEFAULT_PDS_MAX_FILE_UPLOAD_BYTES"
+fi
+
+if [ -z "$PDS_HEARTBEAT_LOGGING" ]
+then
+  export PDS_HEARTBEAT_LOGGING="$DEFAULT_PDS_HEARTBEAT_LOGGING"
+fi
+
 if [ "$JAVA_ENABLE_DEBUG" = "true" ]
 then
     # By using `address=*:15024` the server will bind 
@@ -123,7 +130,8 @@ fi
 
 if [ "$PDS_START_MODE" = "localserver" ]
 then
-    localserver
+    # Start with localserver settings
+    start_server "pds_localserver"
 else
-    debug
+    wait_loop
 fi

@@ -71,7 +71,7 @@ public class WebConfigBuilderStrategy implements AdapterConfigurationStrategy/* 
         }
         SecHubWebScanConfiguration webscanConfig = webScan.get();
 
-        configBuilder.setTargetURI(webscanConfig.getUri());
+        configBuilder.setTargetURI(webscanConfig.getUrl());
 
         handleMaxScanDuration(configBuilder, webscanConfig);
         handleIncludes(configBuilder, webscanConfig);

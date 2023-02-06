@@ -16,7 +16,7 @@ public class FileUtilities {
         try {
             return new File(file).toPath().toRealPath().toAbsolutePath().toFile();
         } catch (IOException e) {
-            throw new ZapWrapperRuntimeException("Not able to resolve absolute path of: " + file, e, ZapWrapperExitCode.COMMANDLINE_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("Not able to resolve absolute path of: " + file, e, ZapWrapperExitCode.IO_ERROR);
         }
     }
 

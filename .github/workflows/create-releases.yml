@@ -81,7 +81,7 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: 1.19.1
-      - uses: actions/cache@v3.0.8
+      - uses: actions/cache@v3.2.4
         id: go-cache
         with:
           path: |
@@ -110,7 +110,7 @@ jobs:
       - name: Create pull request for SPDX license headers
         id: pr_spdx_headers
         if: steps.apply-headers.outputs.commits != ''
-        uses: peter-evans/create-pull-request@v4.1.1
+        uses: peter-evans/create-pull-request@v4.2.3
         with:
           branch: release-spdx-headers
           branch-suffix: short-commit-hash
@@ -140,7 +140,7 @@ jobs:
       # SecHub Server + PDS
       # ----------------------
       - name: Build Server and PDS artifacts
-        run: ./gradlew ensureLocalhostCertificate build buildWrapperOwaspZap generateOpenapi buildDeveloperAdminUI -x :sechub-integrationtest:test -x :sechub-cli:build --parallel
+        run: ./gradlew ensureLocalhostCertificate build buildWrapperOwaspZap generateOpenapi buildDeveloperAdminUI -x :sechub-integrationtest:test -x :sechub-cli:build
 
       # ----------------------
       # API Java publish
@@ -262,7 +262,7 @@ jobs:
       # -----------------------------------------
       - name: Create pull request for release documentation
         id: pr_release_documentation
-        uses: peter-evans/create-pull-request@v4.1.1
+        uses: peter-evans/create-pull-request@v4.2.3
         with:
           branch: release-documentation
           branch-suffix: short-commit-hash
@@ -579,13 +579,13 @@ jobs:
           asset_name: sechub-pds-wrapperowaspzap-${{ github.event.inputs.pds-version }}.jar.sha256sum
           asset_content_type: text/plain
       
-      # sechub-pds-wrapper-checkmarx
+      # sechub-wrapper-checkmarx
       - name: Create files and sha256 checksum for PDS Checkmarx wrapper
         if: github.event.inputs.pds-version != ''
         run: |
           cd sechub-wrapper-checkmarx/build/libs/
           sha256sum sechub-wrapper-checkmarx-${{ github.event.inputs.pds-version }}.jar > sechub-wrapper-checkmarx-${{ github.event.inputs.pds-version }}.jar.sha256sum
-      - name: Upload PDS release asset sechub-pds-wrapper-checkmarx-${{ github.event.inputs.pds-version }}.jar
+      - name: Upload PDS release asset sechub-wrapper-checkmarx-${{ github.event.inputs.pds-version }}.jar
         if: github.event.inputs.pds-version != ''
         uses: actions/upload-release-asset@v1
         env:
@@ -593,9 +593,9 @@ jobs:
         with:
           upload_url: ${{ steps.create_pds_release.outputs.upload_url }}
           asset_path: sechub-wrapper-checkmarx/build/libs/sechub-wrapper-checkmarx-${{ github.event.inputs.pds-version }}.jar
-          asset_name: sechub-pds-wrapper-checkmarx-${{ github.event.inputs.pds-version }}.jar
+          asset_name: sechub-wrapper-checkmarx-${{ github.event.inputs.pds-version }}.jar
           asset_content_type: application/zip
-      - name: Upload PDS release asset sechub-pds-wrapper-checkmarx-${{ github.event.inputs.pds-version }}.jar.sha256sum
+      - name: Upload PDS release asset sechub-wrapper-checkmarx-${{ github.event.inputs.pds-version }}.jar.sha256sum
         if: github.event.inputs.pds-version != ''
         uses: actions/upload-release-asset@v1
         env:
@@ -603,7 +603,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_pds_release.outputs.upload_url }}
           asset_path: sechub-wrapper-checkmarx/build/libs/sechub-wrapper-checkmarx-${{ github.event.inputs.pds-version }}.jar.sha256sum
-          asset_name: sechub-pds-wrapper-checkmarx-${{ github.event.inputs.pds-version }}.jar.sha256sum
+          asset_name: sechub-wrapper-checkmarx-${{ github.event.inputs.pds-version }}.jar.sha256sum
           asset_content_type: text/plain
       
       # sechub-product-delegation-server.pdf

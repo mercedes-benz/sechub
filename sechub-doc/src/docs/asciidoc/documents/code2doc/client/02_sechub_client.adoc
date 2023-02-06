@@ -15,7 +15,7 @@ Download the binary for your operating system where you want to trigger `{sechub
 You will have no dependencies, just place the single binary file to a location inside your path variable.
 
 Direct download link to the latest client release: {webPage}/latest/client-download.html
-For documentation, please look at {webPage}[{secHub} web page] .
+For documentation, please look at {webPage}[{sechub} web page] .
 
 === Supported Platforms
 
@@ -154,7 +154,7 @@ sechub -jobUUID ${jobUUID} getReport
 [[section-client-false-positives-mark]]
 ===== markFalsePositives
 Read your report carefully and check which of the findings are really "false positives" (FP).
-After this, create a json file containing jobUUID and ID of finding you decided to be a FP. If 
+After this, create a json file containing jobUUID and ID of finding you decided to be a FP. If
 you like you can add an optional comment, describing your decision to mark this as FP.
 Select this file by the `-file` argument and start action `markFalsePositives`.
 
@@ -201,12 +201,12 @@ Your choices are:
 
 - `y` Yes - Mark as false positive. You are prompted for an optional comment line which can help to understand later why this has been marked.
 - `n` No - Do nothing and go to next item.
-- `s` Skip following findings - End the asking here and add the marked items to the false positives list on the sechub server.
+- `s` Skip following findings - End the asking here and add the marked items to the false positives list on the {sechub} server.
 - `c` Cancel - Quit and upload nothing
 
 You can download and view your current false positives list with <<section-client-getFalsePositives,getFalsePositives>>
 
-See also <<section-client-interactiveMarkFalsePositives-mark,example for interactiveMarkFalsePositives>> 
+See also <<section-client-interactiveMarkFalsePositives-mark,example for interactiveMarkFalsePositives>>
 
 ===== interactiveUnmarkFalsePositives
 Instead of creating a json file to unmark false positives, you can also do this interactively:
@@ -217,10 +217,10 @@ Your choices are:
 
 - `y` Yes - Unmark this false positive.
 - `n` No - Do nothing and go to next item.
-- `s` Skip the rest - End the asking here and remove the marked items from the false positives list on the sechub server.
+- `s` Skip the rest - End the asking here and remove the marked items from the false positives list on the {sechub} server.
 - `c` Cancel - Quit and change nothing
 
-See also <<section-client-interactiveMarkFalsePositives-mark,example for interactiveMarkFalsePositives>> 
+See also <<section-client-interactiveMarkFalsePositives-mark,example for interactiveMarkFalsePositives>>
 
 
 ==== Configuration overview
@@ -256,15 +256,15 @@ In below table, there is an overview of what can be defined where.
 Here is an overview of mandatory parameter for each `action`:
 |===
 | *action* | *mandatory parameters*
-| scan |server + user + api token + projectID + configFile 
-| scanAsync |server + user + api token + projectID + configFile 
-| getStatus |server + user + api token + projectID + secHubJobUUID 
-| getReport |server + user + api token + projectID + secHubJobUUID 
+| scan |server + user + api token + projectID + configFile
+| scanAsync |server + user + api token + projectID + configFile
+| getStatus |server + user + api token + projectID + secHubJobUUID
+| getReport |server + user + api token + projectID + secHubJobUUID
 | getFalsePositives |server + user + api token + projectID
-| markFalsePositives |server + user + api token + projectID + file 
-| unmarkFalsePositives |server + user + api token + projectID + file 
+| markFalsePositives |server + user + api token + projectID + file
+| unmarkFalsePositives |server + user + api token + projectID + file
 | interactiveMarkFalsePositives |server + user + api token + projectID + (file only if no report file is in current dir)
-| interactiveUnmarkFalsePositives |server + user + apiToken + projectID 
+| interactiveUnmarkFalsePositives |server + user + apiToken + projectID
 | help |
 | version |
 |===
@@ -304,8 +304,8 @@ Here is an overview of mandatory parameter for each `action`:
   Username - mandatory, but can also be defined in config file or via environment variable.
 - `-version` +
   Shows version info and terminates
-- `-wait <seconds>` + 
-       Maximum wait time in seconds (default 60). 
+- `-wait <seconds>` +
+       Maximum wait time in seconds (default 60).
        Will be used for periodic status checks when action=`scan` and for retries of HTTP calls.
 
 ==== Environment variables
@@ -335,7 +335,7 @@ Settings for debugging/client development:
 - `SECHUB_DEBUG_HTTP` +
   When set to `true` then log HTTP request contents.
 - `SECHUB_IGNORE_DEFAULT_EXCLUDES` +
-  When set to `true` then default exclude folders `+{"**/test/**", "**/.git/**"}+` will be included for code scan. In this case, you should declare your own exclude list in the config json.
+  When set to `true` then default exclude folders `+{"**/test/**", "**/.git/**", "**/node_modules/**"}+` will be included for code scan. In this case, you should declare your own <<sechub-config-example-sourcescan,exclude list>> in the config json.
 - `SECHUB_INITIAL_WAIT_INTERVAL` +
   Initial wait time (floating point number) until SecHub client polls the first time if the report is ready (`sechub scan`). Meant for local integration tests.
 - `SECHUB_KEEP_TEMPFILES` +
@@ -361,8 +361,8 @@ Examples (Linux/Mac):
 [[section-client-configuration-file]]
 
 === Client configuration file
-If not defined by option `-configfile`, secHub client will attempt to load `sechub.json` file from current directory
-and use it as sechub configuration.
+If not defined by option `-configfile`, {sechub} client will attempt to load `sechub.json` file from current directory
+and use it as  configuration.
 
 For scan actions, a valid configuration file is needed. Other actions like getReport or false-positives handling need no configuration file.
 
@@ -393,7 +393,7 @@ The client will per default only include wellknown source files.
 This is done by inspecting the filename ending. The accepted defaults are shown in next table.
 
 *All files having file endings not listed here, will be ignored* and not contained in source upload to
-{sechub} server! 
+{sechub} server!
 
 NOTE: But of course you can also define additional source file endings - see <<sechub-config-example-sourcescan,config file example>> .
 
@@ -443,7 +443,7 @@ with corresponding `sechub.json` config file: <<sechub-config-example-infrascan-
 SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
 sechub -file mark-fp.json markFalsePositives
 ----
-with a corresponding `mark-fp.json` - see <<section-client-false-positives-mark,Mark false positives JSON format>> 
+with a corresponding `mark-fp.json` - see <<section-client-false-positives-mark,Mark false positives JSON format>>
 
 ==== Unmark false positives
 [source, bash]
@@ -451,7 +451,7 @@ with a corresponding `mark-fp.json` - see <<section-client-false-positives-mark,
 SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
 sechub -file mark-fp.json unmarkFalsePositives
 ----
-with a corresponding `mark-fp.json` - see <<section-client-false-positives-unmark,Unmark false positives JSON format>> 
+with a corresponding `mark-fp.json` - see <<section-client-false-positives-unmark,Unmark false positives JSON format>>
 
 [[section-client-interactiveMarkFalsePositives-mark]]
 ===== interactiveMarkFalsePositives
@@ -460,9 +460,9 @@ with a corresponding `mark-fp.json` - see <<section-client-false-positives-unmar
 SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
 sechub interactiveMarkFalsePositives
 
-/  ___|         | | | |     | |    
-\ `--.  ___  ___| |_| |_   _| |__  
- `--. \/ _ \/ __|  _  | | | | '_ \ 
+/  ___|         | | | |     | |
+\ `--.  ___  ___| |_| |_   _| |__
+ `--. \/ _ \/ __|  _  | | | | '_ \
 /\__/ /  __/ (__| | | | |_| | |_) |
 \____/ \___|\___\_| |_/\__,_|_.__/ Client Version 0.29.0-20220401111823
 

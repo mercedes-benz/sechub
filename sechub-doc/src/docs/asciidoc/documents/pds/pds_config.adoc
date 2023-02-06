@@ -91,18 +91,18 @@ include::product_delegation_server_config_example1.json[]
     as environment variable `PRODUCT1_QUALITYCHECK_ENABLED`.
     the `value`, will be set by {sechub} job call and available in former described ENV entry at execution time.
     {sechub} will 
-<9> a 'description' of the 'key'. Should contain information 
+<9> a description of the `key` or the used `default` setup. This is optional and only for information/better understanding.
 
 <10> optional parameters
-
-<11> defines if `PDS` will automatically extract archive files - default is `true`. When `true` the content
-   of `zip` source files will be available inside `$PDS_JOB_EXTRACTED_SOURCES_FOLDER`, `tar` files containing binaries can be found at `$PDS_JOB_EXTRACTED_BINARIES_FOLDER`.
-   The extraction will automatically filter and transform archive content as described at <<data-structure-tar-and-zip-files,data structure definition>>.
-   Also the environment variables `$PDS_JOB_HAS_EXTRACTED_SOURCES` and `$PDS_JOB_HAS_EXTRACTED_BINARIES` are automatically defined. 
-   
-NOTE: When no {sechub} configuration model is defined for the `PDS` job, the transformation and filtering described at <11> will accept all binaries and all sources which are uploaded.
-      But this can happen only when PDS is used without SecHub - normally only for testing PDS solutions.  
-   
+<11> By defining supported data type `source` we ensure sources are downloaded from storage and automatically extracted.
+     If the extraction target folder is empty (e.g. filtering or no source available) the launcher script will NOT be called. +
+     Valid entries are `source`, `binary`, `none` or a combination of them as a comma separated list. When not defined as a parameter, the 
+     {pds} configuration default will be used. If available, the content of `zip` source files will be extracted into `$PDS_JOB_EXTRACTED_SOURCES_FOLDER`, 
+     `tar` archive content containing binaries can be found at `$PDS_JOB_EXTRACTED_BINARIES_FOLDER`. +
+     The extraction will automatically filter and transform archive content as described at <<data-structure-tar-and-zip-files,data structure definition>>.
+     Also the environment variables `$PDS_JOB_HAS_EXTRACTED_SOURCES` and `$PDS_JOB_HAS_EXTRACTED_BINARIES` are automatically defined. 
+     
+<12> Using `none` will not try to download any ZIP or TAR from storage but does call the caller script even when no data is available. 
    
 === Launcher scripts
 

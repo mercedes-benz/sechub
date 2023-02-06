@@ -85,7 +85,7 @@ public class NessusAdapterV1WireMockTest {
     }
 
     @Test
-    public void start_scan_returns_returns_result_when_using_agent() throws Exception {
+    public void start_scan_returns_result_when_using_agent() throws Exception {
         /* prepare */
         String sessionToken = "token-returned-by-nessus";
 

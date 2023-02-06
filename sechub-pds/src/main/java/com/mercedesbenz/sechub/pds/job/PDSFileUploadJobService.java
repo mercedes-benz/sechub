@@ -128,7 +128,7 @@ public class PDSFileUploadJobService {
         /* prepare */
         LOG.debug("Start upload file: {} for PDS job: {}", fileName, jobUUID);
 
-        Long binaryFileSizeFromUser = getBinaryFileSize(request);
+        Long fileSizeFromUser = getFileSize(request);
 
         String checksumFromUser = null;
         String checksumCalculated = null;
@@ -145,7 +145,7 @@ public class PDSFileUploadJobService {
         long maxUploadSize = configuration.getMaxUploadSizeInBytes();
         long maxUploadSizeWithHeaders = maxUploadSize + 600; // we accept 600 bytes more for header, checksum etc.
 
-        if (binaryFileSizeFromUser != null && binaryFileSizeFromUser > maxUploadSizeWithHeaders) {
+        if (fileSizeFromUser != null && fileSizeFromUser > maxUploadSizeWithHeaders) {
             throw new PDSBadRequestException("The file size in header field " + FILE_SIZE_HEADER_FIELD_NAME + " exceeds the allowed upload size.");
         }
 
@@ -202,10 +202,10 @@ public class PDSFileUploadJobService {
                     MessageDigestCalculatingInputStream messageDigestInputStream = new MessageDigestCalculatingInputStream(fileInputstream, digest);
                     CountingInputStream byteCountingInputStream = new CountingInputStream(messageDigestInputStream);
 
-                    if (binaryFileSizeFromUser == null) {
+                    if (fileSizeFromUser == null) {
                         jobStorage.store(fileName, byteCountingInputStream);
                     } else {
-                        jobStorage.store(fileName, byteCountingInputStream, binaryFileSizeFromUser);
+                        jobStorage.store(fileName, byteCountingInputStream, fileSizeFromUser);
                     }
 
                     LOG.info("uploaded file:{} for job:{}", fileName, jobUUID);
@@ -223,7 +223,7 @@ public class PDSFileUploadJobService {
         if (!fileDefinedByUser) {
             throw new PDSBadRequestException("No file defined by user for job data upload!");
         }
-        if (binaryFileSizeFromUser != null && realContentLengthInBytes != binaryFileSizeFromUser) {
+        if (fileSizeFromUser != null && realContentLengthInBytes != fileSizeFromUser) {
             throw new PDSBadRequestException("The real file size was not equal to the user provided file size length.");
         }
         if (!checkSumDefinedByUser) {
@@ -233,40 +233,42 @@ public class PDSFileUploadJobService {
             throw new PDSBadRequestException("No user checksum available for job data upload!");
         }
         if (checksumCalculated == null) {
-            throw new PDSBadRequestException("Upload of binaries was not possible!");
+            throw new PDSBadRequestException("Upload was not possible!");
         }
         assertCheckSumCorrect(checksumFromUser, checksumCalculated);
     }
 
-    private Long getBinaryFileSize(HttpServletRequest request) {
-        Long binaryFileSizeFromUser = null;
+    private Long getFileSize(HttpServletRequest request) {
+        Long fileSizeFromUser = null;
 
-        String binaryFileSizeFromUserField = request.getHeader(FILE_SIZE_HEADER_FIELD_NAME);
+        String fileSizeFromUserField = request.getHeader(FILE_SIZE_HEADER_FIELD_NAME);
 
-        if (binaryFileSizeFromUserField != null) {
+        LOG.debug("File size from user field: {}", fileSizeFromUserField);
+
+        if (fileSizeFromUserField != null) {
             try {
-                binaryFileSizeFromUser = Long.valueOf(binaryFileSizeFromUserField);
+                fileSizeFromUser = Long.valueOf(fileSizeFromUserField);
             } catch (NumberFormatException ex) {
                 throw new PDSBadRequestException("The file size in header field " + FILE_SIZE_HEADER_FIELD_NAME + " is not formatted as a number.");
             }
 
-            if (binaryFileSizeFromUser < 0) {
+            if (fileSizeFromUser < 0) {
                 throw new PDSBadRequestException("The file size in header field " + FILE_SIZE_HEADER_FIELD_NAME + " cannot be negative.");
             }
         }
 
-        return binaryFileSizeFromUser;
+        return fileSizeFromUser;
     }
 
     private void assertMultipart(HttpServletRequest request) {
         if (!ServletFileUpload.isMultipartContent(request)) {
-            throw new PDSBadRequestException("The binary upload request did not contain multipart content");
+            throw new PDSBadRequestException("The upload request did not contain multipart content");
         }
     }
 
     private void assertCheckSumCorrect(String checkSumFromUser, String checksumCalculated) {
         if (!Objects.equals(checkSumFromUser, checksumCalculated)) {
-            LOG.error("Uploaded binary file has incorrect sha256 checksum! Something must have happened during the upload.");
+            LOG.error("Uploaded file has incorrect sha256 checksum! Something must have happened during the upload.");
             throw new PDSBadRequestException("Binaries checksum check failed");
         }
     }

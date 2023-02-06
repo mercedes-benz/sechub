@@ -12,7 +12,7 @@ import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 public class BasicLoginConfiguration {
     private CryptoAccess<char[]> cryptoAccess = CryptoAccess.CRYPTO_CHAR_ARRAY;
 
-    private Optional<String> realm;
+    private Optional<String> realm = Optional.empty();
     private char[] user;
     SealedObject password;
 

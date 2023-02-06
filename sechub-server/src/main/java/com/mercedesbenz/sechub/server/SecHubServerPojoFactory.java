@@ -9,6 +9,7 @@ import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironment;
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
 import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
 import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
+import com.mercedesbenz.sechub.commons.model.TrafficLightSupport;
 
 /**
  * This factory creates some "plain old java" objects and inject them into
@@ -20,6 +21,11 @@ import com.mercedesbenz.sechub.commons.model.CodeScanPathCollector;
  */
 @Component
 public class SecHubServerPojoFactory {
+
+    @Bean
+    TrafficLightSupport createTrafficLightSupport() {
+        return new TrafficLightSupport();
+    }
 
     @Bean
     CheckSumSupport createSha256CheckSumSupport() {

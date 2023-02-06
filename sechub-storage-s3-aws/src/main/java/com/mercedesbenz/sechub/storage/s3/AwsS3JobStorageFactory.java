@@ -28,8 +28,20 @@ public class AwsS3JobStorageFactory implements JobStorageFactory {
         }
 
         BasicAWSCredentials awsCreds = new BasicAWSCredentials(s3Setup.getAccessKey(), s3Setup.getSecretkey());
+
         ClientConfiguration clientConfiguration = new ClientConfiguration();
-        clientConfiguration.setSignerOverride("AWSS3V4SignerType");
+
+        clientConfiguration.setConnectionTimeout(s3Setup.getConnectionTimeoutInMilliseconds());
+        clientConfiguration.setSocketTimeout(s3Setup.getSocketTimeoutInMilliseconds());
+        clientConfiguration.setRequestTimeout(s3Setup.getRequestTimeOutInMilliseconds());
+        clientConfiguration.setClientExecutionTimeout(s3Setup.getClientExecutionTimeoutInMilliseconds());
+
+        clientConfiguration.setMaxConnections(s3Setup.getMaximumAllowedConnections());
+        clientConfiguration.setConnectionTTL(s3Setup.getConnectionTTLinMilliseconds());
+        clientConfiguration.setConnectionMaxIdleMillis(s3Setup.getConnectionMaxIdleInMilliseconds());
+        clientConfiguration.setValidateAfterInactivityMillis(s3Setup.getValidateAfterInactivityInMilliseconds());
+
+        clientConfiguration.setSignerOverride(s3Setup.getSignerOverride());
 
         s3Client = AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(awsCreds))
                 .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(s3Setup.getEndPoint(), Regions.DEFAULT_REGION.name()))

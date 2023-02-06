@@ -14,6 +14,7 @@ import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +24,6 @@ public class TestUtil {
     private static final Logger LOG = LoggerFactory.getLogger(TestUtil.class);
 
     private static final String SECHUB_KEEP_TEMPFILES = "SECHUB_KEEP_TEMPFILES";
-    private static final OperationSystem operationSystem = new OperationSystem();
 
     public static String createRAndomString(int wantedLength) {
         if (wantedLength < 0) {
@@ -200,7 +200,7 @@ public class TestUtil {
     }
 
     public static boolean isWindows() {
-        return operationSystem.isWindows();
+        return SystemUtils.IS_OS_WINDOWS;
     }
 
     public static void unzip(final File zipFile, final Path unzipTo) throws IOException {
@@ -216,21 +216,6 @@ public class TestUtil {
                     Files.copy(zipInputStream, toPath);
                 }
             }
-        }
-    }
-
-    private static class OperationSystem {
-
-        private boolean windows;
-
-        OperationSystem() {
-            String os = System.getProperty("os.name").toLowerCase();
-            ;
-            windows = (os.indexOf("win") >= 0);
-        }
-
-        public boolean isWindows() {
-            return windows;
         }
     }
 

@@ -15,8 +15,8 @@ import com.mercedesbenz.sechub.commons.pds.ExecutionPDSKey;
 import com.mercedesbenz.sechub.commons.pds.PDSConfigDataKeyProvider;
 import com.mercedesbenz.sechub.commons.pds.PDSLauncherScriptEnvironmentConstants;
 import com.mercedesbenz.sechub.pds.config.PDSProductParameterDefinition;
+import com.mercedesbenz.sechub.pds.config.PDSProductParameterSetup;
 import com.mercedesbenz.sechub.pds.config.PDSProductSetup;
-import com.mercedesbenz.sechub.pds.config.PDSProdutParameterSetup;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
 import com.mercedesbenz.sechub.pds.job.PDSJobConfiguration;
 
@@ -52,24 +52,24 @@ public class PDSExecutionEnvironmentService {
     }
 
     private void addDefaultsForMissingParameters(PDSProductSetup productSetup, Map<String, String> map) {
-        PDSProdutParameterSetup parameters = productSetup.getParameters();
+        PDSProductParameterSetup parameters = productSetup.getParameters();
 
         addDefaultsForMissingParametersInList(parameters.getMandatory(), map);
         addDefaultsForMissingParametersInList(parameters.getOptional(), map);
     }
 
-    private void addDefaultsForMissingParametersInList(List<PDSProductParameterDefinition> mandatoryParameters, Map<String, String> map) {
+    private void addDefaultsForMissingParametersInList(List<PDSProductParameterDefinition> parameterDefinitions, Map<String, String> map) {
 
-        for (PDSProductParameterDefinition mandatoryParameterDefinition : mandatoryParameters) {
-            if (!mandatoryParameterDefinition.hasDefault()) {
+        for (PDSProductParameterDefinition parameterDefinition : parameterDefinitions) {
+            if (!parameterDefinition.hasDefault()) {
                 continue;
             }
-            String envVariableName = converter.convertKeyToEnv(mandatoryParameterDefinition.getKey());
+            String envVariableName = converter.convertKeyToEnv(parameterDefinition.getKey());
 
             String value = map.get(envVariableName);
 
             if (value == null) {
-                map.put(envVariableName, mandatoryParameterDefinition.getDefault());
+                map.put(envVariableName, parameterDefinition.getDefault());
             }
         }
 
@@ -89,7 +89,7 @@ public class PDSExecutionEnvironmentService {
     }
 
     private void addJobParamDataWhenAccepted(PDSProductSetup productSetup, PDSExecutionParameterEntry jobParam, Map<String, String> map) {
-        PDSProdutParameterSetup params = productSetup.getParameters();
+        PDSProductParameterSetup params = productSetup.getParameters();
 
         boolean acceptedParameter = false;
         boolean wellknown = false;

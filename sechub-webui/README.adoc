@@ -1,0 +1,20 @@
+// SPDX-License-Identifier: MIT
+= WebUI
+
+WARNING: Don't use this early WebUI in production.
+
+== Development
+
+Activate the Spring Boot Dev Profile by 
+starting the application using the JVM argument:
+
+----
+-Dspring.profiles.active=dev
+----
+
+The WebUI is accessible at: https://localhost:4443/
+
+User access:
+
+* User: user
+* Password: password

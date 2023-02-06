@@ -8,7 +8,6 @@ echo "###############################################"
 
 source ./../sechub-integrationtest/pds/product-scripts/shared-functions.sh
 
-export PDS_DEBUG_ENABLED=true
 export PDS_CHECKMARX_MOCKING_ENABLED=true
 export TOOL_FOLDER=./../sechub-integrationtest/build/pds-tools # gradle bootJar task does inject the
                                                                # wrapper jar here for testing
@@ -23,7 +22,7 @@ echo "- start sourcing the pds-solution script"
 echo ""
 
 # next line uses same checkmarx start script as the original - will start the wrapper!
-source ./../sechub-pds-solutions/checkmarx/docker/checkmarx.sh
+source ./../sechub-pds-solutions/checkmarx/docker/scripts/checkmarx.sh
 
 # -----------------------
 # Postcheck of zip upload

@@ -46,4 +46,8 @@ public enum InputCacheIdentifier {
 
     PROJECT_DESCRIPTION,
 
+    PAGE,
+
+    PAGE_SIZE,
+
 }
