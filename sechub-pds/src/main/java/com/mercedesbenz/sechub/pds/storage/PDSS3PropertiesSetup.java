@@ -29,19 +29,19 @@ public class PDSS3PropertiesSetup implements S3Setup {
 
     /* timeout */
 
-    @PDSMustBeDocumented(value = "S3 client timeout for creating new connections.", scope = "storage")
+    @PDSMustBeDocumented(value = "S3 client timeout (in milliseconds) for creating new connections.", scope = "storage")
     @Value("${sechub.pds.storage.s3.timeout.connection.milliseconds:" + S3Setup.DEFAULT_CONNECTION_TIMEOUT + "}")
     private int connectionTimeoutInMilliseconds;
 
-    @PDSMustBeDocumented(value = "S3 client timeout in milliseconds for reading from a connected socket.", scope = "storage")
+    @PDSMustBeDocumented(value = "S3 client timeout (in milliseconds) for reading from a connected socket.", scope = "storage")
     @Value("${sechub.pds.storage.s3.timeout.socket.milliseconds:" + S3Setup.DEFAULT_SOCKET_TIMEOUT + "}")
     private int socketTimeoutInMilliseconds;
 
-    @PDSMustBeDocumented(value = "S3 client timeout for a request. 0 means it is disabled.", scope = "storage")
+    @PDSMustBeDocumented(value = "S3 client timeout (in milliseconds) for a request. 0 means it is disabled.", scope = "storage")
     @Value("${sechub.pds.storage.s3.timeout.request.milliseconds:" + S3Setup.DEFAULT_REQUEST_TIMEOUT + "}")
     private int requestTimeoutInMilliseconds;
 
-    @PDSMustBeDocumented(value = "S3 client timeout for execution. 0 means it is disabled.", scope = "storage")
+    @PDSMustBeDocumented(value = "S3 client timeout (in milliseconds) for execution. 0 means it is disabled.", scope = "storage")
     @Value("${sechub.pds.storage.s3.timeout.execution.milliseconds:" + S3Setup.DEFAULT_CLIENT_EXECUTION_TIMEOUT + "}")
     private int clientExecutionTimeoutInMilliseconds;
 
@@ -59,13 +59,13 @@ public class PDSS3PropertiesSetup implements S3Setup {
     @Value("${sechub.pds.storage.s3.connection.idle.max.milliseconds:" + S3Setup.DEFAULT_CONNECTION_MAX_IDLE_MILLIS + "}")
     private long connectionMaxIdleInMilliseconds;
 
-    @PDSMustBeDocumented(value = "S3 client time a connection can be idle in the connection pool before it must be validated that it's still open.", scope = "storage")
+    @PDSMustBeDocumented(value = "S3 client time (in milliseconds) a connection can be idle in the connection pool before it must be validated that it's still open.", scope = "storage")
     @Value("${sechub.pds.storage.s3.connection.idle.validate.milliseconds:" + S3Setup.DEFAULT_VALIDATE_AFTER_INACTIVITY_MILLIS + "}")
     private int validateAfterInactivityInMilliseconds;
 
     /* signer */
 
-    @PDSMustBeDocumented(value = "S3 client time a connection can be idle in the connection pool before it must be validated that it's still open.", scope = "storage")
+    @PDSMustBeDocumented(value = "Can be used to override the default name of the signature algorithm used to sign requests.", scope = "storage")
     @Value("${sechub.pds.storage.s3.signer.override:" + S3Setup.DEFAULT_SIGNER_OVERRIDE + "}")
     private String signerOverride;
 
