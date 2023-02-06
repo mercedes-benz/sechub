@@ -115,6 +115,7 @@ public abstract class AbstractScan implements OwaspZapScan {
             if (owaspZapEventHandler.isScanCancelled()) {
                 List<ApiResponse> spiderResults = ((ApiResponseList) clientApi.spider.allUrls()).getItems();
                 updateUserMessagesWithScannedURLs(spiderResults);
+                clientApi.spider.stop(scanId);
                 owaspZapEventHandler.cancelScan(scanContext.getContextName());
             }
             waitForNextCheck();
@@ -148,6 +149,7 @@ public abstract class AbstractScan implements OwaspZapScan {
 
         while (!isAjaxSpiderStopped(ajaxSpiderStatus) && !timeOut) {
             if (owaspZapEventHandler.isScanCancelled()) {
+                clientApi.ajaxSpider.stop();
                 owaspZapEventHandler.cancelScan(scanContext.getContextName());
             }
             waitForNextCheck();
@@ -204,6 +206,7 @@ public abstract class AbstractScan implements OwaspZapScan {
         boolean timeOut = false;
         while (progressActive < 100 && !timeOut) {
             if (owaspZapEventHandler.isScanCancelled()) {
+                clientApi.ascan.stop(scanId);
                 owaspZapEventHandler.cancelScan(scanContext.getContextName());
             }
             waitForNextCheck();
