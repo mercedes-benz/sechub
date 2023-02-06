@@ -100,7 +100,7 @@ server:
   # Time in milliseconds how long the download of an api token is possible. (86400000 = 24h)
   validityOnetimetokenInMilliseconds: 86400000
   # Development settings:
-  # debugWait: When set to true, then the container's run.sh script will keep running on SecHub server exit.
+  # debugWait: When set to true, then the container's run.sh script will keep running for 2h on SecHub server exit.
   #            Useful for analyzing server crashes. In all other cases: set to `false`.
   debugWait: false
   # Enable Java debugging?

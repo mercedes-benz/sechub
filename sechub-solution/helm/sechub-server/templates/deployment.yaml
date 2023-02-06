@@ -120,7 +120,7 @@ spec:
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 # + Special: debugging for CrashLoopBack problems
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        - name: KUBE_ENABLE_DEBUG_WAIT
+        - name: KEEP_CONTAINER_ALIVE_AFTER_CRASH
           value: "{{ .Values.server.debugWait | toString }}"
 {{- if .Values.deploymentComment }}
         # Setting DEPLOYMENT_COMMENT to a different value every time forces k8s to spin up a new container.

@@ -1,13 +1,14 @@
 #!/usr/bin/env sh
 # SPDX-License-Identifier: MIT
 
+SLEEP_TIME_IN_WAIT_LOOP="2h"
 JAVA_DEBUG_OPTIONS=""
 
 wait_loop() {
     while true
     do
-	    echo "Press [CTRL+C] to stop.."
-	    sleep 120
+	    echo "wait_loop(): Sleeping for $SLEEP_TIME_IN_WAIT_LOOP."
+	    sleep $SLEEP_TIME_IN_WAIT_LOOP
     done
 }
 
@@ -80,6 +81,16 @@ localserver() {
         -Dserver.port=8443 \
         -Dserver.address=0.0.0.0 \
         -jar /sechub/sechub-server*.jar
+
+    keep_container_alive_or_exit
+}
+
+keep_container_alive_or_exit() {
+    if [ "$KEEP_CONTAINER_ALIVE_AFTER_CRASH" = "true" ]
+    then
+        echo "[ERROR] SecHub crashed, but keeping the container alive."
+        wait_loop
+    fi
 }
 
 check_setup () {
@@ -99,13 +110,9 @@ check_variable () {
     fi
 }
 
-debug () {
-    wait_loop
-}
-
 if [ "$JAVA_ENABLE_DEBUG" = "true" ]
 then
-    # By using `address=*:15023` the server will bind 
+    # By using `address=*:15023` the server will bind
     # all available IP addresses to port 15023
     # otherwise the container cannot be accessed from outside
     JAVA_DEBUG_OPTIONS="-agentlib:jdwp=transport=dt_socket,server=y,address=*:15023"
@@ -115,5 +122,5 @@ if [ "$SECHUB_START_MODE" = "localserver" ]
 then
     localserver
 else
-    debug
+    wait_loop
 fi
