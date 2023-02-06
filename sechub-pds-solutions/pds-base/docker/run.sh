@@ -3,14 +3,15 @@
 
 DEFAULT_PDS_MAX_FILE_UPLOAD_BYTES=52428800  # 50 MB
 DEFAULT_PDS_HEARTBEAT_LOGGING="true"
+SLEEP_TIME_IN_WAIT_LOOP="2h"
 
 JAVA_DEBUG_OPTIONS=""
 
 wait_loop() {
     while true
     do
-	    echo "Press [CTRL+C] to stop.."
-	    sleep 120
+	    echo "wait_loop(): Sleeping for $SLEEP_TIME_IN_WAIT_LOOP."
+	    sleep $SLEEP_TIME_IN_WAIT_LOOP
     done
 }
 
@@ -57,7 +58,7 @@ start_server() {
     echo "PDS Version: $PDS_VERSION"
 
     # Regarding entropy collection:
-    #   with JDK 8+ the "obscure workaround using file:///dev/urandom 
+    #   with JDK 8+ the "obscure workaround using file:///dev/urandom
     #   and file:/dev/./urandom is no longer required."
     #   (source: https://docs.oracle.com/javase/8/docs/technotes/guides/security/enhancements-8.html)
     java $JAVA_DEBUG_OPTIONS $database_options \
@@ -75,7 +76,7 @@ start_server() {
         -Dserver.port=8444 \
         -Dserver.address=0.0.0.0 \
         -jar /pds/sechub-pds-*.jar
-    
+
     keep_container_alive_or_exit
 }
 
@@ -122,7 +123,7 @@ fi
 
 if [ "$JAVA_ENABLE_DEBUG" = "true" ]
 then
-    # By using `address=*:15024` the server will bind 
+    # By using `address=*:15024` the server will bind
     # all available IP addresses to port 15024
     # otherwise the container cannot be accessed from outside
     JAVA_DEBUG_OPTIONS="-agentlib:jdwp=transport=dt_socket,server=y,address=*:15024"
