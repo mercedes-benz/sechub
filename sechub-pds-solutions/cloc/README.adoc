@@ -5,7 +5,7 @@
 
 = cloc + PDS
 
-https://github.com/AlDanial/[cloc] is a free and open source application that counts blank lines, comment lines, and physical lines of source code in many programming languages. It is used on the command line. By combining cloc with the SecHub https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)] in a container, cloc can be used with SecHub. Another scenario is to use cloc+PDS standalone.
+https://github.com/AlDanial/cloc[cloc] is a free and open source application that counts blank lines, comment lines, and physical lines of source code in many programming languages. It is used on the command line. By combining cloc with the SecHub https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)] in a container, cloc can be used with SecHub. Another scenario is to use cloc+PDS standalone.
 
 Furthermore, the combination of cloc and PDS makes it possible to run both inside a Kubernetes cluser or virtual machines.
 
@@ -53,9 +53,9 @@ WARNING: Make sure the SecHub container is running.
 
 The steps required to scan with the PDS. Scan manually if you are new to the PDS. Use the script, if you are tired of typing the same commands over and over again.
 
-==== Scan Script 
+==== Scan Script
 
-It is recommended to start with a manual <<_scan>> the first time using the PDS. However, after some time typing in the commands becomes very tedious. To improve on the experience you can scan using this script.
+It is recommended to start with a manual scan the first time using the PDS. However, after some time typing in the commands becomes very tedious. To improve on the experience you can scan using this script.
 
 . Set the environment variables
 +
@@ -78,7 +78,7 @@ export PDS_PRODUCT_IDENTFIER=PDS_CLOC
 [NOTE]
 Those values are the default values from `env-initial` and `env-cluster-initial` files. In case you run PDS+cloc in Kubernetes or other environments those values will be different.
 
-. Scan by providing a `ZIP` folder with Go source code.
+. Scan by providing a `ZIP` folder with source code.
 +
 ----
 cd ../shared/
@@ -183,7 +183,7 @@ Build the container image.
 
 ==== Build
 
-. Using the default image: 
+. Using the default image:
 +
 ----
 ./10-create-image.sh my.registry.example.org/sechub/pds_cloc v0.1
@@ -286,7 +286,7 @@ users:
    technical:
       id: "techuser"
       apiToken: "{noop}<my-technical-password>"
-      
+
 
 database:
     postgres:
@@ -356,14 +356,14 @@ In case, `my-values.yaml` was changed. Simply, use `helm upgrade` to update the 
 helm upgrade --values my-values.yaml pds-cloc helm/pds-cloc/
 ----
 
-==== Uninstall 
+==== Uninstall
 
 . Helm list
 +
 ----
 helm list
 NAME     	NAMESPACE 	REVISION	UPDATED                                 	STATUS  	CHART                          	APP VERSION
-pds-cloc	my-namespace	1       	2021-06-24 21:54:37.668489822 +0200 CEST	deployed	pds-cloc-0.1.0                	0.21.0 
+pds-cloc	my-namespace	1       	2021-06-24 21:54:37.668489822 +0200 CEST	deployed	pds-cloc-0.1.0                	0.21.0
 ----
 
 . Helm uninstall

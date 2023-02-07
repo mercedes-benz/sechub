@@ -12,21 +12,30 @@ Builds a docker image of SecHub PDS with cloc
 for <docker registry> with tag <version tag>.
 Required: <base image> ; for example ghcr.io/mercedes-benz/sechub/pds-base:v0.32.1
 
+Additionally these environment variables can be defined:
+- CLOC_VERSION - Cloc version to use. E.g. 1.94
+
 EOF
 }
 
+FAILED=false
 if [[ -z "$REGISTRY" ]] ; then
   echo "Please provide a docker registry server as 1st parameter."
-  exit 1
+  FAILED=true
 fi
 
 if [[ -z "$VERSION" ]] ; then
   echo "Please provide a version for the container as 2nd parameter."
-  exit 1
+  FAILED=true
 fi
 
 if [[ -z "$BASE_IMAGE" ]]; then
   echo "Please provide a base image as 3rd parameter."
+  FAILED=true
+fi
+
+if $FAILED ; then
+  usage
   exit 1
 fi
 
