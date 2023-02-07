@@ -33,4 +33,4 @@ export BUILDKIT_PROGRESS=plain
 export DOCKER_BUILDKIT=1
 
 echo "Compose file: $compose_file"
-docker-compose --file "$compose_file.yaml" up --scale sechub=$REPLICAS --build --remove-orphans
+docker compose --file "$compose_file.yaml" up --scale sechub=$REPLICAS --build --remove-orphans
