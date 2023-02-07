@@ -37,17 +37,17 @@ class ClocJsonAnalyticDataImporterTest {
     }
 
     @NullSource
-    @ValueSource(strings= {"","{}","{cloc}"})
+    @ValueSource(strings = { "", "{}", "{cloc}" })
     @ParameterizedTest
     void is_able_to_import_returns_false_for_unsupported_content(String unsupportedContent) throws IOException {
         assertFalse(importerToTest.isAbleToImport(unsupportedContent));
     }
-    
+
     @Test
     void sechub_cloc_json_is_able_to_import_returns_true() throws IOException {
         assertTrue(importerToTest.isAbleToImport(sechubClocJSON));
     }
-    
+
     @Test
     void sechub_cloc_json_can_be_imported_and_contains_expected_data() throws IOException {
 

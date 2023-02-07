@@ -24,7 +24,7 @@ class AnalyticDataTest {
     @Test
     void analytic_data_with_code_parts_can_be_transformed_to_json_and_back() {
         /* prepare */
-        CodeAnalyticData codeAnalyticData = new CodeAnalyticData(); 
+        CodeAnalyticData codeAnalyticData = new CodeAnalyticData();
 
         codeAnalyticData.setFilesForLanguage("something1", 12L);
         codeAnalyticData.setFilesForLanguage("something2", 34L);
@@ -33,10 +33,10 @@ class AnalyticDataTest {
 
         codeAnalyticData.getProductInfo().setName("test-product");
         codeAnalyticData.getProductInfo().setVersion("0.2.3");
-        
+
         AnalyticData analyticData = new AnalyticData();
         analyticData.setCodeAnalyticData(codeAnalyticData);
-        
+
         /* execute */
         String json = analyticData.toFormattedJSON();
         AnalyticData result = JSONConverter.get().fromJSON(AnalyticData.class, json);
@@ -44,7 +44,7 @@ class AnalyticDataTest {
         /* test */
         Optional<CodeAnalyticData> opt = result.getCodeAnalyticData();
         assertTrue(opt.isPresent());
-        
+
         CodeAnalyticData codeAnalyticData2 = opt.get();
         assertEquals(12L, codeAnalyticData2.getFilesForLanguage("something1"));
         assertEquals(34L, codeAnalyticData2.getFilesForLanguage("something2"));

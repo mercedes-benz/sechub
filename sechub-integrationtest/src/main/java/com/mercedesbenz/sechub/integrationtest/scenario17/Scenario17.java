@@ -44,9 +44,9 @@ import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
  *
  * PROJECT_2
  *  - has execution {@link IntegrationTestDefaultProfiles#PROFILE_14_PDS_CHECKMARX_INTEGRATIONTEST_WRONG_WITH_SOURCE_AND_BINARY profile 14}, {@link IntegrationTestDefaultProfiles#PROFILE_16_PDS_ANALYZE_CLOC_OUTPUT profile 16} assigned
- *  
+ *
  * PROJECT_3
- *  - has execution {@link IntegrationTestDefaultProfiles#PROFILE_15_PDS_CHECKMARX_INTEGRATIONTEST_FILTERING_TEXTFILES profile 15}, {@link IntegrationTestDefaultProfiles#PROFILE_16_PDS_ANALYZE_CLOC_OUTPUT profile 16} assigned
+ *  - has execution {@link IntegrationTestDefaultProfiles#PROFILE_15_PDS_CHECKMARX_INTEGRATIONTEST_FILTERING_TEXTFILES profile 15} assigned (we do NOT use {@link IntegrationTestDefaultProfiles#PROFILE_16_PDS_ANALYZE_CLOC_OUTPUT profile 16} here, because the scripts inside DOES NEED sources uploaded!)
  *
  * USER_1, is automatically registered, created and assigned to PROJECT_1, PROJECT_2, PROJECT_3
  * </pre>
@@ -62,14 +62,21 @@ public class Scenario17 extends AbstractGrowingSecHubServerTestScenario implemen
     public static final TestUser USER_1 = createTestUser(Scenario17.class, "user1");
 
     /**
-     * Project 1 is created on startup, and has {@link #USER_1} + Profile 12 (PDS
-     * script, no SARIF) assigned
+     * Project 1 is created on startup, and has {@link #USER_1} +
+     * {@link IntegrationTestDefaultProfiles#PROFILE_12_PDS_CHECKMARX_INTEGRATIONTEST
+     * profile 12} (PDS script, no SARIF) and
+     * {@link IntegrationTestDefaultProfiles#PROFILE_16_PDS_ANALYZE_CLOC_OUTPUT
+     * profile 16} (analytics cloc) assigned
      */
     public static final TestProject PROJECT_1 = createTestProject(Scenario17.class, "project1");
 
     /**
-     * Project 2 is created on startup, and has {@link #USER_1} + Profile 14 (PDS
-     * script, no SARIF, wrong custom data type setup = "sourcce,binary") assigned
+     * Project 2 is created on startup, and has {@link #USER_1} +
+     * {@link IntegrationTestDefaultProfiles#PROFILE_14_PDS_CHECKMARX_INTEGRATIONTEST_WRONG_WITH_SOURCE_AND_BINARY
+     * profile 14} (PDS script, no SARIF, wrong custom data type setup =
+     * "source,binary") and
+     * {@link IntegrationTestDefaultProfiles#PROFILE_16_PDS_ANALYZE_CLOC_OUTPUT
+     * profile 16} (analytics cloc) assigned
      */
     public static final TestProject PROJECT_2 = createTestProject(Scenario17.class, "project2");
 
@@ -98,7 +105,6 @@ public class Scenario17 extends AbstractGrowingSecHubServerTestScenario implemen
 
             createProject(PROJECT_3, USER_1).
             addProjectIdsToDefaultExecutionProfile(PROFILE_15_PDS_CHECKMARX_INTEGRATIONTEST_FILTERING_TEXTFILES, PROJECT_3).
-            addProjectIdsToDefaultExecutionProfile(PROFILE_16_PDS_ANALYZE_CLOC_OUTPUT, PROJECT_3).
             assignUserToProject(PROJECT_3,USER_1)
             ;
         /* @formatter:on */

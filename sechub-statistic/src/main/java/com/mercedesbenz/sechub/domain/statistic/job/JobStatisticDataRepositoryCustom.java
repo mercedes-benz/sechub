@@ -1,9 +1,9 @@
 package com.mercedesbenz.sechub.domain.statistic.job;
 
-import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 
 public interface JobStatisticDataRepositoryCustom {
 
-    public Optional<JobStatisticData> findBySechubJobUUID(UUID sechubJobUUID);
+    public List<JobStatisticData> findAllBySechubJobUUID(UUID sechubJobUUID);
 }

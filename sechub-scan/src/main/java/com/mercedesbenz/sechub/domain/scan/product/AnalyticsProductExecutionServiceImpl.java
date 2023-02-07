@@ -42,7 +42,7 @@ public class AnalyticsProductExecutionServiceImpl extends AbstractProductExecuti
     @Lazy
     @Autowired
     DomainMessageService domainMessageService;
-    
+
     @Override
     protected void afterProductResultsStored(List<ProductResult> productResults, SecHubExecutionContext context) {
         LOG.debug("{} analytics product results stored.", productResults.size());

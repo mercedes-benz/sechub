@@ -23,10 +23,9 @@ public class AnalyticData implements JSONable<AnalyticData> {
     public void setCodeAnalyticData(CodeAnalyticData codeAnalyticData) {
         this.codeAnalyticData = codeAnalyticData;
     }
-    
+
     public Optional<CodeAnalyticData> getCodeAnalyticData() {
         return Optional.ofNullable(codeAnalyticData);
     }
-    
 
 }

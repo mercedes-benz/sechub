@@ -22,7 +22,7 @@ public class AnalyticDataImportService {
 
     /**
      * Imports given analytic data string into given target
-     * 
+     *
      * @param analyticDataAsString
      * @param target
      */

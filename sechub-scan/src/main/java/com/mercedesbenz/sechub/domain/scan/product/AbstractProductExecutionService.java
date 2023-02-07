@@ -65,7 +65,7 @@ public abstract class AbstractProductExecutionService implements ProductExecutio
     protected void registerProductExecutorsForScanTypes() {
         this.registeredProductExecutors.addAll(scanTypeFilter.filter(allAvailableProductExecutors));
 
-        LOG.info("{} has registered {} product executors:{}", getClass().getSimpleName(), registeredProductExecutors.size(), registeredProductExecutors);
+        LOG.debug("{} has registered {} product executors:{}", getClass().getSimpleName(), registeredProductExecutors.size(), registeredProductExecutors);
     }
 
     /**

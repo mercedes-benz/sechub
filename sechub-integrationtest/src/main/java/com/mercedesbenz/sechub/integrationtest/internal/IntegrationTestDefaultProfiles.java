@@ -375,7 +375,6 @@ public class IntegrationTestDefaultProfiles {
      */
     public static final DefaultTestExecutionProfile PROFILE_16_PDS_ANALYZE_CLOC_OUTPUT = defineProfile16();
 
-    
     /**
      * @return all default profiles
      */
@@ -539,12 +538,11 @@ public class IntegrationTestDefaultProfiles {
         profile.enabled = true;
         return profile;
     }
-    
+
     private static DefaultTestExecutionProfile defineProfile16() {
 
         DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
-        profile.initialConfigurationsWithoutUUID
-                .add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_ANALYZE_INTEGRATIONTEST_CLOC_JSON_1);
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_ANALYZE_INTEGRATIONTEST_CLOC_JSON_1);
         profile.id = "inttest-p16-pds-analyze-cloc";
         profile.description = "Profile 16: PDS anaylze, reused storage, dynamic text results";
         profile.enabled = true;

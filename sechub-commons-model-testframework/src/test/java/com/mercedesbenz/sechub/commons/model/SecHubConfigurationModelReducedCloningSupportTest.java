@@ -27,6 +27,39 @@ class SecHubConfigurationModelReducedCloningSupportTest {
     }
 
     @Test
+    void configuration_having_infra_code_and_webs_config_parts__target_is_analytics_all_contained() throws Exception {
+
+        /* prepare */
+
+        /* @formatter:off */
+        SecHubScanConfiguration config = TestSecHubConfigurationBuilder.
+                configureSecHub().
+                    webConfig().login("https://login.example.com/login").
+                                    basic("testuser","pseudopwd").
+                                and().
+                    codeScanConfig().setFileSystemFolders("folder1","folder2").
+                                and().
+                    infraConfig().addURI("https://testinfra.example.com").
+
+                build();
+        /* @formatter:on */
+
+        // check preconditions
+        assertTrue(config.getWebScan().isPresent());
+        assertTrue(config.getInfraScan().isPresent());
+        assertTrue(config.getCodeScan().isPresent());
+
+        /* execute */
+        String json = toTest.createReducedScanConfigurationCloneJSON(config, ScanType.ANALYTICS);
+
+        /* test */
+        SecHubScanConfiguration resultClone = SecHubScanConfiguration.createFromJSON(json);
+        assertTrue(resultClone.getCodeScan().isPresent());
+        assertTrue(resultClone.getWebScan().isPresent());
+        assertTrue(resultClone.getInfraScan().isPresent());
+    }
+
+    @Test
     void configuration_having_infra_code_and_webs_config_parts__target_is_codescan() throws Exception {
 
         /* prepare */

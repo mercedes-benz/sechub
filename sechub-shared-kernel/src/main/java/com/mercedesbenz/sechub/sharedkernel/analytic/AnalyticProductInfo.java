@@ -26,7 +26,7 @@ public class AnalyticProductInfo {
     public void setVersion(String version) {
         this.version = version;
     }
-    
+
     @Override
     public String toString() {
         return "AnalyticProductInfo [" + (name != null ? "name=" + name + ", " : "") + (version != null ? "version=" + version : "") + "]";

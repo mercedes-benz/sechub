@@ -402,7 +402,7 @@ public class PDSWorkspaceService {
         }
         File[] extractedFiles = extractionTargetFolder.listFiles();
         if (extractedFiles == null || extractedFiles.length == 0) {
-            LOG.info("No files found to extract into {} for {} - after filters has been applied.", extractionSubfolder, jobUUID);
+            LOG.info("No files found to extract into {} for {} - after filters have been applied.", extractionSubfolder, jobUUID);
             return false;
         }
         return true;

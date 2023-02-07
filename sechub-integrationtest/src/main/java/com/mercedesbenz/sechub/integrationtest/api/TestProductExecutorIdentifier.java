@@ -18,7 +18,7 @@ public enum TestProductExecutorIdentifier {
     PDS_INFRASCAN,
 
     PDS_LICENSESCAN,
-    
+
     PDS_ANALYTICS,
 
     /* Direct product executors */

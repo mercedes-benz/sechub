@@ -44,15 +44,15 @@ class JobAnalyticDataStatisticServiceTest {
 
         /* execute */
         serviceToTest.storeStatisticData(executionUUID, data);
-        
+
         /* test */
         ArgumentCaptor<StatisticDataContainer<JobRunStatisticDataType>> dataContainerCaptor = ArgumentCaptor.forClass(StatisticDataContainer.class);
         verify(jobRunStatistictTansactionService).insertJobRunStatisticData(eq(executionUUID), dataContainerCaptor.capture());
-  
+
         StatisticDataContainer<JobRunStatisticDataType> dataContainer = dataContainerCaptor.getValue();
         Set<JobRunStatisticDataType> types = dataContainer.getTypes();
         assertTrue(types.isEmpty());
-        
+
     }
 
     @SuppressWarnings("unchecked")

@@ -220,14 +220,19 @@
         },
         { 
           "id": "PDS_INTTEST_PRODUCT_ANALYZE",
-          "path": "./../sechub-integrationtest/pds/product-scripts/integrationtest-analyze.sh",
+          "path": "./../sechub-integrationtest/pds/product-scripts/integrationtest-analytics.sh",
           "scanType": "analytics",
-          "description": "This is a fake PMD scan - used by integration tests.",
+          "description": "This is a fake analytics scan - used by integration tests.",
           "parameters": {
                 "optional": [
                     {
                         "key": "pds.test.key.variantname",
-                        "description": "a parameter from configuration - will be different in each integration test config from sechub integration test server"
+                        "description": "a parameter from configuration, can be used to handle differerent variants in same script"
+                    },
+                    {
+                        "key":  "pds.config.supported.datatypes",
+                        "description": "Supported data types. In our test we only accept 'source'. And we check this also inside the script. When the script is executed, it MUST have sources!",
+                        "default": "source"
                     }
                     
                 ]

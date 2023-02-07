@@ -30,24 +30,24 @@ public class JobAnalyticDataStatisticService {
 
     private StatisticDataContainer<JobRunStatisticDataType> collectCodeAnalyticData(AnalyticData analyticData) {
         StatisticDataContainer<JobRunStatisticDataType> dataContainer = new StatisticDataContainer<>();
-        
+
         Optional<CodeAnalyticData> optionalCodeAnalyticData = analyticData.getCodeAnalyticData();
         if (optionalCodeAnalyticData.isPresent()) {
-            
+
             CodeAnalyticData codeAnalyticData = optionalCodeAnalyticData.get();
-            
+
             dataContainer.add(FILES, ALL, codeAnalyticData.calculateFilesForAllLanguages());
             dataContainer.add(LOC, ALL, codeAnalyticData.calculateLinesOfCodeForAllLanguages());
-            
+
             Set<String> languages = codeAnalyticData.getLanguages();
             for (String language : languages) {
-                
+
                 long lines = codeAnalyticData.getLinesOfCodeForLanguage(language);
                 long files = codeAnalyticData.getFilesForLanguage(language);
-                
+
                 dataContainer.add(LOC_LANG, new AnyTextAsKey(language), lines);
                 dataContainer.add(FILES_LANG, new AnyTextAsKey(language), files);
-                
+
             }
         }
         return dataContainer;
