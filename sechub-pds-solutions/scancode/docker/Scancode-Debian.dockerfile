@@ -29,11 +29,13 @@ COPY pds-config.json "$PDS_FOLDER"/pds-config.json
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get --assume-yes upgrade  && \
-    apt-get --assume-yes install bzip2 libgomp1 libpopt0 libxml2-dev libxslt1-dev procps python-dev python3 python3-distutils python3-pip tar tree wget xz-utils zlib1g &&\
+    apt-get --assume-yes install bzip2 libgomp1 libpopt0 libxml2-dev libxslt1-dev procps python3-dev python3 python3-distutils python3-pip tar tree wget xz-utils zlib1g libbz2-1.0 &&\
     apt-get --assume-yes clean
 
 # Install Scancode
-RUN pip install "scancode-toolkit[full]==${SCANCODE_VERSION}"
+# the constraint makes sure exactly the requiered packages are installed
+RUN pip install --constraint "https://raw.githubusercontent.com/nexB/scancode-toolkit/v${SCANCODE_VERSION}/requirements.txt" "scancode-toolkit[full]==${SCANCODE_VERSION}"
+    
 
 # Install SPDX Tools Java converter
 RUN cd "$TOOL_FOLDER" && \
@@ -56,3 +58,6 @@ WORKDIR "$WORKSPACE"
 
 # Switch from root to non-root user
 USER "$USER"
+
+# Start scancode to ensure it is installed correctly
+RUN scancode --version
