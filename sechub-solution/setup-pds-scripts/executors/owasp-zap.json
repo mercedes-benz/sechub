@@ -53,6 +53,14 @@
             {
                 "key": "zap.proxy.for.pds.target.type",
                 "value": "INTRANET"
+            },
+            {
+                "key": "pds.config.cancel.event.checkinterval.milliseconds",
+                "value": 2000
+            },
+            {
+                "key": "pds.config.cancel.maximum.waittime.seconds",
+                "value": 120
             }
         ]
     }
