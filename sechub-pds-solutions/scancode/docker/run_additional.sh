@@ -2,11 +2,11 @@
 # SPDX-License-Identifier: MIT
 
 # Start scancode to ensure it is installed correctly
+echo "Installed product versions:"
 scancode --version
 
-if [ "$?" -eq 0 ]
-then
-  echo "Scancode installed properly."
-else
-  exit 1
+if [ "$?" -ne 0 ] ; then
+  echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  echo "! Problems occured when calling scancode. Please fix !"
+  echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 fi
