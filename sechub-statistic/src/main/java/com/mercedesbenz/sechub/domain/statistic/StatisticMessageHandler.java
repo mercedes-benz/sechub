@@ -34,6 +34,9 @@ public class StatisticMessageHandler implements AsynchronMessageHandler {
         LOG.debug("received domain request: {}", request);
 
         switch (messageId) {
+        case JOB_STARTED:
+            handleJobStarted(request);
+            break;
         case JOB_CREATED:
             handleJobCreated(request);
             break;
@@ -63,8 +66,8 @@ public class StatisticMessageHandler implements AsynchronMessageHandler {
 
     }
 
-    @IsReceivingAsyncMessage(MessageID.START_SCAN)
-    private void handleScanStarted(DomainMessage request) {
+    @IsReceivingAsyncMessage(MessageID.JOB_STARTED)
+    private void handleJobStarted(DomainMessage request) {
         JobMessage jobMessage = request.get(MessageDataKeys.JOB_STARTED_DATA);
 
         UUID jobUUID = jobMessage.getJobUUID();

@@ -59,7 +59,7 @@ class SecHubExecutionContextTest {
     }
 
     @Test
-    void after_construction_execution_uuid_is_not_null_and_not_same_as_jobuuid() {
+    void after_construction_execution_uuid_is_as_defined_and_not_same_as_jobuuid() {
         /* prepare */
         SecHubExecutionOperationType operationTypeAsNull = null;
 
@@ -68,20 +68,8 @@ class SecHubExecutionContextTest {
 
         /* test */
         assertNotEquals(sechubJobUUID, context.getExecutionUUID());
+        assertEquals(executionUUID, context.getExecutionUUID());
         assertNotNull(context.getExecutionUUID());
-    }
-
-    @Test
-    void after_construction_execution_uuid_is_different_between_two_contexts() {
-        /* prepare */
-        SecHubExecutionOperationType operationTypeAsNull = null;
-
-        /* execute */
-        SecHubExecutionContext context1 = new SecHubExecutionContext(sechubJobUUID, config, EXECUTED_BY_TEST, executionUUID, operationTypeAsNull);
-        SecHubExecutionContext context2 = new SecHubExecutionContext(sechubJobUUID, config, EXECUTED_BY_TEST, executionUUID, operationTypeAsNull);
-
-        /* test */
-        assertNotEquals(context1.getExecutionUUID(), context2.getExecutionUUID());
     }
 
 }

@@ -21,6 +21,7 @@ import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.messaging.AnalyticMessageData;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
+import com.mercedesbenz.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 
@@ -60,6 +61,7 @@ public class AnalyticsProductExecutionServiceImpl extends AbstractProductExecuti
 
     }
 
+    @IsSendingAsyncMessage(MessageID.ANALYZE_SCAN_RESULTS_AVAILABLE)
     private void sendAnalyticDataAvailableEvent(AnalyticData analyticDataModel, SecHubExecutionContext context) {
         DomainMessage domainMessage = new DomainMessage(MessageID.ANALYZE_SCAN_RESULTS_AVAILABLE);
 

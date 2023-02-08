@@ -6,6 +6,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 public enum MessageID {
+
+    /**
+     * Is send/received synchron
+     */
     START_SCAN( /* @formatter:off */
 	            MessageDataKeys.SECHUB_JOB_UUID,
 	            MessageDataKeys.BATCH_JOB_ID,
@@ -13,8 +17,14 @@ public enum MessageID {
 	            MessageDataKeys.SECHUB_CONFIG),
 	/* @formatter:on */
 
+    /**
+     * Is send/received synchron
+     */
     SCAN_DONE,
 
+    /**
+     * Is send/received synchron
+     */
     SCAN_FAILED,
 
     /**

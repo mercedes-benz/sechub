@@ -130,6 +130,7 @@ public class ScanService implements SynchronMessageHandler {
         LOG.info("Start scan for SecHub job: {}", sechubJobUUID);
 
         UUID logUUID = scanLogService.logScanStarted(context);
+
         try {
             ProgressMonitor progressMonitor = monitorFactory.createProgressMonitor(sechubJobUUID);
 

@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +47,9 @@ public class ScanServiceTest {
 
     private static final String TEST_PROJECT_ID1 = "test-project-id1";
     private static final String TRAFFIC_LIGHT = "someColor";
-    private static final java.util.UUID UUID = java.util.UUID.randomUUID();
+    private static final UUID SECHUB_JOB_UUID = UUID.randomUUID();
+    private static final UUID EXECUTION_UUID = UUID.randomUUID();
+
     private static final String SECHUB_CONFIG_VALID_MINIMUM = "{ \"projectId\" : \"" + TEST_PROJECT_ID1 + "\" }";
     private ScanService serviceToTest;
     private WebScanProductExecutionService webScanProductExecutionService;
@@ -309,12 +312,14 @@ public class ScanServiceTest {
     }
 
     private DomainMessage prepareRequest(SecHubConfiguration configMin) {
-        DomainMessage request = new DomainMessage(MessageID.START_SCAN);
-        request.set(MessageDataKeys.SECHUB_JOB_UUID, UUID);
-        request.set(MessageDataKeys.SECHUB_CONFIG, configMin);
         BatchJobMessage batchJobMessage = new BatchJobMessage();
-        batchJobMessage.setSecHubJobUUID(UUID);
+        batchJobMessage.setSecHubJobUUID(SECHUB_JOB_UUID);
         batchJobMessage.setBatchJobId(42);
+
+        DomainMessage request = new DomainMessage(MessageID.START_SCAN);
+        request.set(MessageDataKeys.SECHUB_JOB_UUID, SECHUB_JOB_UUID);
+        request.set(MessageDataKeys.SECHUB_EXECUTION_UUID, EXECUTION_UUID);
+        request.set(MessageDataKeys.SECHUB_CONFIG, configMin);
         request.set(MessageDataKeys.BATCH_JOB_ID, batchJobMessage);
 
         return request;

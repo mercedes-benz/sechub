@@ -30,6 +30,7 @@ import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
+import com.mercedesbenz.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.messaging.StorageMessageData;
@@ -135,6 +136,7 @@ public class SchedulerSourcecodeUploadService {
         }
     }
 
+    @IsSendingAsyncMessage(MessageID.SOURCE_UPLOAD_DONE)
     private void sendSourceSourceUploadDoneEvent(String projectId, UUID jobUUID, long fileSizeAsStringSizeInBytes) {
         DomainMessage message = new DomainMessage(MessageID.SOURCE_UPLOAD_DONE);
 

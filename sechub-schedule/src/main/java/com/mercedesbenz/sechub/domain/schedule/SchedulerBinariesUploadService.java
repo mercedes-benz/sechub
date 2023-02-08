@@ -39,6 +39,7 @@ import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
+import com.mercedesbenz.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 import com.mercedesbenz.sechub.sharedkernel.messaging.StorageMessageData;
@@ -207,6 +208,10 @@ public class SchedulerBinariesUploadService {
 
                     realContentLengthInBytes = byteCountingInputStream.getByteCount();
 
+                    // We send here the event that the upload has been done, even
+                    // when the following checksum validation would fail. Reason: we want to measure
+                    // the traffic
+                    // even when somebody does always define the wrong checksum again and again...
                     sendBinaryUploadDoneEvent(projectId, jobUUID, realContentLengthInBytes);
 
                     /* upload file size information to storage */
@@ -242,6 +247,7 @@ public class SchedulerBinariesUploadService {
         assertCheckSumCorrect(checksumFromUser, checksumCalculated);
     }
 
+    @IsSendingAsyncMessage(MessageID.BINARY_UPLOAD_DONE)
     private void sendBinaryUploadDoneEvent(String projectId, UUID jobUUID, long fileSizeAsStringSizeInBytes) {
         DomainMessage message = new DomainMessage(MessageID.BINARY_UPLOAD_DONE);
 

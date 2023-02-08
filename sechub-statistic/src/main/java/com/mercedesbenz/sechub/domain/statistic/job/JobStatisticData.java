@@ -5,6 +5,7 @@ import static javax.persistence.EnumType.*;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -101,6 +102,33 @@ public class JobStatisticData {
 
     public void setSechubJobUUID(UUID sechubJobUUID) {
         this.sechubJobUUID = sechubJobUUID;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uUID);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        JobStatisticData other = (JobStatisticData) obj;
+        return Objects.equals(uUID, other.uUID);
+    }
+
+    @Override
+    public String toString() {
+        return "JobStatisticData [" + (uUID != null ? "uUID=" + uUID + ", " : "") + (sechubJobUUID != null ? "sechubJobUUID=" + sechubJobUUID + ", " : "")
+                + (type != null ? "type=" + type + ", " : "") + (id != null ? "id=" + id + ", " : "") + (value != null ? "value=" + value + ", " : "")
+                + (timeStamp != null ? "timeStamp=" + timeStamp + ", " : "") + (version != null ? "version=" + version : "") + "]";
     }
 
 }
