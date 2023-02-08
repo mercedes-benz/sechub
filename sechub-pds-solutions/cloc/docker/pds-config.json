@@ -1,13 +1,13 @@
 {
     "apiVersion" : "1.0",
-    "serverId" : "CLOC_CLUSTER", 
+    "serverId" : "CLOC_CLUSTER",
 
     "products" : [
         {
             "id" : "PDS_CLOC",
             "path" : "/scripts/cloc.sh",
             "scanType" : "codeScan",
-            "description" : "Runs the sechurity checker cloc."
+            "description" : "Runs the source code analyzer cloc."
         },
         {
             "id" : "PDS_CLOC_MOCK",

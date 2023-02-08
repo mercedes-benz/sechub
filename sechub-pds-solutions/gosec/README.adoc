@@ -53,7 +53,7 @@ WARNING: Make sure the SecHub container is running.
 
 The steps required to scan with the PDS. Scan manually if you are new to the PDS. Use the script, if you are tired of typing the same commands over and over again.
 
-==== Scan Script 
+==== Scan Script
 
 It is recommended to start with a manual <<_scan>> the first time using the PDS. However, after some time typing in the commands becomes very tedious. To improve on the experience you can scan using this script.
 
@@ -161,7 +161,6 @@ docker exec -it pds-gosec bash
 . Connect via remote debugging to the `pds`
 +
 connect via CLI
-(see: )
 +
 ----
 jdb -attach localhost:15024
@@ -183,7 +182,7 @@ Build the container image.
 
 ==== Build
 
-. Using the default image: 
+. Using the default image:
 +
 ----
 ./10-create-image.sh my.registry.example.org/sechub/pds_gosec v0.1
@@ -286,7 +285,7 @@ users:
    technical:
       id: "techuser"
       apiToken: "{noop}<my-technical-password>"
-      
+
 
 database:
     postgres:
@@ -356,14 +355,14 @@ In case, `my-values.yaml` was changed. Simply, use `helm upgrade` to update the 
 helm upgrade --values my-values.yaml pds-gosec helm/pds-gosec/
 ----
 
-==== Uninstall 
+==== Uninstall
 
 . Helm list
 +
 ----
 helm list
 NAME     	NAMESPACE 	REVISION	UPDATED                                 	STATUS  	CHART                          	APP VERSION
-pds-gosec	my-namespace	1       	2021-06-24 21:54:37.668489822 +0200 CEST	deployed	pds-gosec-0.1.0                	0.21.0 
+pds-gosec	my-namespace	1       	2021-06-24 21:54:37.668489822 +0200 CEST	deployed	pds-gosec-0.1.0                	0.21.0
 ----
 
 . Helm uninstall

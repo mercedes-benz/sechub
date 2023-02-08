@@ -42,6 +42,11 @@ fi
 BUILD_ARGS="--build-arg BASE_IMAGE=$BASE_IMAGE"
 echo ">> Base image: $BASE_IMAGE"
 
+if [[ ! -z "$CLOC_VERSION" ]] ; then
+    echo ">> Cloc version: $CLOC_VERSION"
+    BUILD_ARGS="$BUILD_ARGS --build-arg CLOC_VERSION=$CLOC_VERSION"
+fi
+
 # Use Docker BuildKit
 export BUILDKIT_PROGRESS=plain
 export DOCKER_BUILDKIT=1

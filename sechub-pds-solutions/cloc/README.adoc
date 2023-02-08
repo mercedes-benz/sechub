@@ -151,7 +151,8 @@ This section contains information about how to troubleshoot cloc+PDS if somethin
 ==== Access the container
 
 ----
-docker exec -it pds-cloc bash
+docker ps  # look up the container id
+docker exec -it <container id> bash
 ----
 
 ==== Java Application Remote Debugging of PDS
@@ -161,7 +162,6 @@ docker exec -it pds-cloc bash
 . Connect via remote debugging to the `pds`
 +
 connect via CLI
-(see: )
 +
 ----
 jdb -attach localhost:15024
@@ -183,16 +183,10 @@ Build the container image.
 
 ==== Build
 
-. Using the default image:
+. Using debian-slim as base image (recommended):
 +
 ----
-./10-create-image.sh my.registry.example.org/sechub/pds_cloc v0.1
-----
-
-. Using your own base image:
-+
-----
-./10-create-image.sh my.registry.example.org/sechub/pds_cloc v0.1 "my.registry.example.org/debian:11-slim"
+./10-create-image.sh my.registry.example.org/sechub/pds_cloc v0.1 debian:11-slim
 ----
 
 === Push Image to Registry
@@ -318,7 +312,7 @@ networkPolicy:
 ----
 +
 [TIP]
-To generate passwords use `tr -dc A-Za-z0-9 </dev/urandom | head -c 18 ; echo ''`, `openssl rand -base64 15`, `apg -MSNCL -m 15 -x 20` or `shuf -zer -n20  {A..Z} {a..z} {0..9}`.
+To generate passwords you could use `tr -dc A-Za-z0-9 </dev/urandom | head -c 18 ; echo ''`, `openssl rand -base64 15`, `apg -MSNCL -m 15 -x 20` or `shuf -zer -n20  {A..Z} {a..z} {0..9}`.
 
 . Install helm package from file system
 +
@@ -346,7 +340,7 @@ pds-cloc-545f5bc8-t52p6         1/1     Running   0          3m
 kubectl port-forward pds-cloc-545f5bc8-7s6rh  8444:8444
 ----
 
-. Scan as explained in <<_scan>>.
+Now the PDS is ready to scan.
 
 ==== Upgrade
 
