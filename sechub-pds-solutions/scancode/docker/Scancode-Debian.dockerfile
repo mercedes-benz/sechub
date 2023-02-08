@@ -53,11 +53,12 @@ RUN chmod --recursive +x "$SCRIPT_FOLDER"
 # Patch
 COPY pool.py /usr/local/lib/python3.9/dist-packages/scancode/pool.py
 
+# Copy run_additional script
+COPY --chown="$USER:$USER" run_additional.sh /run_additional.sh
+RUN chmod +x /run_additional.sh
+
 # Set workspace
 WORKDIR "$WORKSPACE"
 
 # Switch from root to non-root user
 USER "$USER"
-
-# Start scancode to ensure it is installed correctly
-RUN scancode --version
