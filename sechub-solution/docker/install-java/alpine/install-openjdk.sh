@@ -4,8 +4,6 @@
 JAVA_VERSION="$1"
 JAVA_RUNTIME="$2"
 
-apk update
-
 if [ "$JAVA_RUNTIME" == "jdk" ]
 then
     echo "Installing JDK"

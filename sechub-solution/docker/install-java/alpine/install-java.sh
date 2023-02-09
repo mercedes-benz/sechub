@@ -37,7 +37,8 @@ case "$JAVA_DISTRIBUTION" in
     ./install-openjdk.sh "$JAVA_VERSION" "$JAVA_RUNTIME"
   ;;
   openj9)
-    ./install-openj9.sh "$JAVA_VERSION" "$JAVA_RUNTIME" "$JAVA_DIR"
+    print_error "OpenJ9 is not supported for Alpine"
+    exit 1
   ;;
   temurin)
     ./install-temurin.sh "$JAVA_VERSION" "$JAVA_RUNTIME"

@@ -10,7 +10,7 @@ ARG BASE_IMAGE
 # Build args
 ARG BUILD_TYPE="download"
 
-ARG SECHUB_VERSION="0.35.2"
+ARG SECHUB_VERSION
 ARG TAG=""
 ARG BRANCH=""
 
@@ -149,12 +149,12 @@ COPY --from=builder "$SECHUB_ARTIFACT_FOLDER" "$SECHUB_FOLDER"
 
 COPY --chmod=755 install-java/alpine "$SECHUB_FOLDER/install-java/"
 
-# Install Java
-#RUN cd "$SECHUB_FOLDER/install-java/" && \
-#    ./install-java.sh "$JAVA_DISTRIBUTION" "$JAVA_VERSION" jre
+# Update container
+RUN apk update
 
-COPY copy/temurin-17-jre-17.0.5_p8-r0.apk /temurin-17-jre-17.0.5_p8-r0.apk
-RUN apk add --allow-untrusted /temurin-17-jre-17.0.5_p8-r0.apk
+# Install Java
+RUN cd "$SECHUB_FOLDER/install-java/" && \
+    ./install-java.sh "$JAVA_DISTRIBUTION" "$JAVA_VERSION" jre
 
 # Copy run script into container
 COPY run.sh /run.sh
