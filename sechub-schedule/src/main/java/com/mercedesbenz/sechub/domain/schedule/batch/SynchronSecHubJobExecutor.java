@@ -15,6 +15,7 @@ import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.domain.schedule.ExecutionResult;
+import com.mercedesbenz.sechub.domain.schedule.UUIDContainer;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.mercedesbenz.sechub.sharedkernel.LogConstants;
 import com.mercedesbenz.sechub.sharedkernel.messaging.BatchJobMessage;
@@ -45,48 +46,48 @@ class SynchronSecHubJobExecutor {
 
             @Override
             public void run() {
-                UUID executionUUID = UUID.randomUUID();
-
-                UUID secHubJobUUID = secHubJob.getUUID();
-
-                String secHubJobUUIDAsString = secHubJobUUID.toString();
+                UUIDContainer uuids = new UUIDContainer();
+                uuids.setExecutionUUID(UUID.randomUUID());
+                uuids.setSecHubJobUUID(secHubJob.getUUID());
 
                 try {
                     String secHubConfiguration = secHubJob.getJsonConfiguration();
 
                     /* own thread so MDC.put necessary */
                     MDC.clear();
-                    MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, secHubJobUUIDAsString);
-                    MDC.put(LogConstants.MDC_SECHUB_EXECUTION_UUID, executionUUID);
+                    MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, uuids.getSecHubJobUUIDasString());
+                    MDC.put(LogConstants.MDC_SECHUB_EXECUTION_UUID, uuids.getExecutionUUIDAsString());
                     MDC.put(LogConstants.MDC_SECHUB_PROJECT_ID, secHubJob.getProjectId());
 
-                    LOG.info("Executing sechub job: {}", secHubJobUUIDAsString);
+                    LOG.info("Executing sechub job: {}, execution uuid: {}", uuids.getSecHubJobUUIDasString(), uuids.getExecutionUUIDAsString());
+
+                    sendJobExecutionStartingEvent(secHubJob, uuids, secHubConfiguration);
 
                     /* we send now a synchronous SCAN event */
                     DomainMessage request = new DomainMessage(MessageID.START_SCAN);
-                    request.set(MessageDataKeys.SECHUB_EXECUTION_UUID, executionUUID);
+                    request.set(MessageDataKeys.SECHUB_EXECUTION_UUID, uuids.getExecutionUUID());
                     request.set(MessageDataKeys.EXECUTED_BY, secHubJob.getOwner());
 
-                    request.set(MessageDataKeys.SECHUB_JOB_UUID, secHubJobUUID);
+                    request.set(MessageDataKeys.SECHUB_JOB_UUID, uuids.getSecHubJobUUID());
                     request.set(MessageDataKeys.SECHUB_CONFIG, MessageDataKeys.SECHUB_CONFIG.getProvider().get(secHubConfiguration));
 
                     BatchJobMessage batchJobIdMessage = new BatchJobMessage();
                     batchJobIdMessage.setBatchJobId(batchJobId);
-                    batchJobIdMessage.setSecHubJobUUID(secHubJobUUID);
+                    batchJobIdMessage.setSecHubJobUUID(uuids.getSecHubJobUUID());
                     request.set(MessageDataKeys.BATCH_JOB_ID, batchJobIdMessage);
 
                     /* wait for scan event result - synchron */
                     DomainMessageSynchronousResult response = messageService.sendSynchron(request);
 
-                    updateSecHubJob(secHubJobUUID, response);
+                    updateSecHubJob(uuids, response);
 
-                    sendJobDoneMessage(secHubJobUUID, response);
+                    sendJobDoneMessage(uuids, response);
 
                 } catch (Exception e) {
                     LOG.error("Error happend at spring batch task execution:" + e.getMessage(), e);
 
-                    markSechHubJobFailed(secHubJobUUID);
-                    sendJobFailed(secHubJobUUID, TrafficLight.OFF);
+                    markSechHubJobFailed(uuids);
+                    sendJobFailed(uuids, TrafficLight.OFF);
 
                 } finally {
                     /* cleanup MDC */
@@ -94,26 +95,38 @@ class SynchronSecHubJobExecutor {
                 }
 
             }
+
         }, "scan_" + secHubJob.getUUID());
         scanThread.start();
     }
 
-    private void sendJobDoneMessage(UUID secHubJobUUID, DomainMessageSynchronousResult response) {
-        LOG.debug("Will send job done message for: {}", secHubJobUUID);
+    private void sendJobExecutionStartingEvent(final ScheduleSecHubJob secHubJob, UUIDContainer uuids, String secHubConfiguration) {
+        /* we send asynchronous an information event */
+        DomainMessage jobExecRequest = new DomainMessage(MessageID.JOB_EXECUTION_STARTING);
+
+        jobExecRequest.set(MessageDataKeys.SECHUB_EXECUTION_UUID, uuids.getExecutionUUID());
+        jobExecRequest.set(MessageDataKeys.SECHUB_JOB_UUID, uuids.getSecHubJobUUID());
+        jobExecRequest.set(MessageDataKeys.LOCAL_DATE_TIME_SINCE, secHubJob.getStarted());
+
+        messageService.sendAsynchron(jobExecRequest);
+    }
+
+    private void sendJobDoneMessage(UUIDContainer uuids, DomainMessageSynchronousResult response) {
+        LOG.debug("Will send job done message for: {}", uuids.getSecHubJobUUIDasString());
 
         String trafficLightAsString = response.get(MessageDataKeys.REPORT_TRAFFIC_LIGHT);
 
-        sendJobDone(secHubJobUUID, TrafficLight.fromString(trafficLightAsString));
+        sendJobDone(uuids, TrafficLight.fromString(trafficLightAsString));
     }
 
-    private void markSechHubJobFailed(UUID secHubJobUUID) {
+    private void markSechHubJobFailed(UUIDContainer uuids) {
         SecHubMessage jobFailedMessage = new SecHubMessage(SecHubMessageType.ERROR, "The job execution failed.");
-        updateSecHubJob(secHubJobUUID, ExecutionResult.FAILED, null, Arrays.asList(jobFailedMessage));
+        updateSecHubJob(uuids, ExecutionResult.FAILED, null, Arrays.asList(jobFailedMessage));
 
-        LOG.info("marked job as failed:{}", secHubJobUUID);
+        LOG.info("marked job as failed - sechub job: {}, execution-uuid: {}", uuids.getSecHubJobUUIDasString(), uuids.getExecutionUUIDAsString());
     }
 
-    private void updateSecHubJob(UUID secHubUUID, DomainMessageSynchronousResult response) {
+    private void updateSecHubJob(UUIDContainer uuids, DomainMessageSynchronousResult response) {
         ExecutionResult result;
 
         if (response.hasFailed()) {
@@ -129,36 +142,36 @@ class SynchronSecHubJobExecutor {
             messages = messagesList.getSecHubMessages();
         }
 
-        updateSecHubJob(secHubUUID, result, trafficLightString, messages);
+        updateSecHubJob(uuids, result, trafficLightString, messages);
     }
 
-    private void updateSecHubJob(UUID secHubUUID, ExecutionResult result, String trafficLightString, List<SecHubMessage> messages) {
-        secHubJobSafeUpdater.safeUpdateOfSecHubJob(secHubUUID, result, trafficLightString, messages);
+    private void updateSecHubJob(UUIDContainer uuids, ExecutionResult result, String trafficLightString, List<SecHubMessage> messages) {
+        secHubJobSafeUpdater.safeUpdateOfSecHubJob(uuids.getSecHubJobUUID(), result, trafficLightString, messages);
     }
 
     @IsSendingAsyncMessage(MessageID.JOB_DONE)
-    private void sendJobDone(UUID jobUUID, TrafficLight trafficLight) {
-        sendJobInfoWithTrafficLight(MessageDataKeys.JOB_DONE_DATA, jobUUID, MessageID.JOB_DONE, trafficLight);
+    private void sendJobDone(UUIDContainer uuids, TrafficLight trafficLight) {
+        sendJobInfoWithTrafficLight(MessageDataKeys.JOB_DONE_DATA, uuids, MessageID.JOB_DONE, trafficLight);
     }
 
     @IsSendingAsyncMessage(MessageID.JOB_FAILED)
-    private void sendJobFailed(UUID jobUUID, TrafficLight trafficLight) {
-        sendJobInfoWithTrafficLight(MessageDataKeys.JOB_FAILED_DATA, jobUUID, MessageID.JOB_FAILED, trafficLight);
+    private void sendJobFailed(UUIDContainer uuids, TrafficLight trafficLight) {
+        sendJobInfoWithTrafficLight(MessageDataKeys.JOB_FAILED_DATA, uuids, MessageID.JOB_FAILED, trafficLight);
     }
 
-    private void sendJobInfoWithTrafficLight(MessageDataKey<JobMessage> key, UUID jobUUID, MessageID id, TrafficLight trafficLight) {
+    private void sendJobInfoWithTrafficLight(MessageDataKey<JobMessage> key, UUIDContainer uuids, MessageID id, TrafficLight trafficLight) {
         DomainMessage request = new DomainMessage(id);
-        JobMessage message = createMessage(jobUUID);
+        JobMessage message = createMessage(uuids);
         message.setTrafficLight(trafficLight);
-
         request.set(key, message);
+        request.set(MessageDataKeys.SECHUB_EXECUTION_UUID, uuids.getExecutionUUID());
 
         messageService.sendAsynchron(request);
     }
 
-    private JobMessage createMessage(UUID jobUUID) {
+    private JobMessage createMessage(UUIDContainer uuids) {
         JobMessage message = new JobMessage();
-        message.setJobUUID(jobUUID);
+        message.setJobUUID(uuids.getSecHubJobUUID());
         message.setSince(LocalDateTime.now());
         return message;
     }

@@ -41,12 +41,12 @@ public class StatisticService {
         jobRunStatisticTransactionService.createJobRunStatistic(executionUUID, jobUUID, started);
     }
 
-    public void handleJobDone(UUID jobUUID, LocalDateTime since, TrafficLight trafficLight) {
-        jobRunStatisticTransactionService.markJobRunEnded(jobUUID, trafficLight, since, false);
+    public void handleJobExecutionDone(UUID executionUUID, LocalDateTime since, TrafficLight trafficLight) {
+        jobRunStatisticTransactionService.markJobRunEnded(executionUUID, trafficLight, since, false);
     }
 
-    public void handleJobFailed(UUID jobUUID, LocalDateTime since, TrafficLight trafficLight) {
-        jobRunStatisticTransactionService.markJobRunEnded(jobUUID, trafficLight, since, true);
+    public void handleJobExecutionFailed(UUID executionUUID, LocalDateTime since, TrafficLight trafficLight) {
+        jobRunStatisticTransactionService.markJobRunEnded(executionUUID, trafficLight, since, true);
     }
 
     public void handleAnalyticData(UUID executionUUID, AnalyticData analyticData) {

@@ -19,6 +19,10 @@ import javax.persistence.Version;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * /** Represents statistic data for a job - available outside execution phase.
  * See /sechub-doc/src/docs/asciidoc/diagrams/diagram_em_statistic.puml for
@@ -29,6 +33,8 @@ import org.hibernate.annotations.GenericGenerator;
  */
 @Entity
 @Table(name = JobStatisticData.TABLE_NAME)
+@JsonIgnoreProperties(value = { "version", "uuid" }, ignoreUnknown = true)
+@JsonAutoDetect(fieldVisibility = Visibility.ANY)
 public class JobStatisticData {
 
     /* +-----------------------------------------------------------------------+ */
@@ -68,9 +74,8 @@ public class JobStatisticData {
 
     @Enumerated(STRING)
     @Column(name = COLUMN_TYPE, nullable = false)
-    private JobStatisticDataType type;
+    JobStatisticDataType type;
 
-    @Enumerated(STRING)
     @Column(name = COLUMN_ID)
     String id;
 

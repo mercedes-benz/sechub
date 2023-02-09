@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
@@ -33,7 +35,9 @@ import com.mercedesbenz.sechub.sharedkernel.Profiles;
  */
 @RestController
 @Profile(Profiles.INTEGRATIONTEST)
-public class IntegrationTestScanRestController {
+public class IntegrationTestStatisticRestController {
+
+    private static final Logger LOG = LoggerFactory.getLogger(IntegrationTestStatisticRestController.class);
 
     @Autowired
     private JobStatisticRepository jobStatisticRepository;
@@ -50,25 +54,33 @@ public class IntegrationTestScanRestController {
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/statistic/job/{sechubJobUUID}", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })
     public Optional<JobStatistic> findJobStatistic(@PathVariable("sechubJobUUID") UUID sechubJobUUID) {
-        return jobStatisticRepository.findById(sechubJobUUID);
+        Optional<JobStatistic> result = jobStatisticRepository.findById(sechubJobUUID);
+        LOG.debug("Fetched all job statistic entities for sechub job: {}, found: {}", sechubJobUUID, result.isPresent());
+        return result;
     }
 
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/statistic/job-data/{sechubJobUUID}", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })
     public List<JobStatisticData> findJobStatisticData(@PathVariable("sechubJobUUID") UUID sechubJobUUID) {
-        return jobStatisticDataRepository.findAllBySechubJobUUID(sechubJobUUID);
+        List<JobStatisticData> result = jobStatisticDataRepository.findAllBySechubJobUUID(sechubJobUUID);
+        LOG.debug("Fetched all job statistic data entities for sechub job: {}, found: {}", sechubJobUUID, result.size());
+        return result;
     }
 
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/statistic/job-run/{sechubJobUUID}", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })
-    public Optional<JobRunStatistic> findJobRunStatistic(@PathVariable("sechubJobUUID") UUID sechubJobUUID) {
-        return jobRunStatisticRepository.findById(sechubJobUUID);
+    public List<JobRunStatistic> findAllJobRunStatisticsForSecHubJob(@PathVariable("sechubJobUUID") UUID sechubJobUUID) {
+        List<JobRunStatistic> result = jobRunStatisticRepository.findAllBySechubJobUUID(sechubJobUUID);
+        LOG.debug("Fetched all job run statistic entities for sechub job: {}, found: {}", sechubJobUUID, result.size());
+        return result;
     }
 
-    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/statistic/job-run-data/{sechubJobUUID}", method = RequestMethod.GET, produces = {
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/statistic/job-run-data/{executionUUID}", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })
-    public List<JobRunStatisticData> findJobRunStatisticData(@PathVariable("sechubJobUUID") UUID sechubJobUUID) {
-        return jobRunStatisticDataRepository.findAllByExecutionUUIDUUID(sechubJobUUID);
+    public List<JobRunStatisticData> findAllJobRunStatisticDataForExecutionUUID(@PathVariable("executionUUID") UUID executionUUID) {
+        List<JobRunStatisticData> result = jobRunStatisticDataRepository.findAllByExecutionUUID(executionUUID);
+        LOG.debug("Fetched all job run statistic data entities for execution uuid: {}, found: {}", executionUUID, result.size());
+        return result;
     }
 
 }

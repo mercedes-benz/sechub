@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sharedkernel.messaging;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
@@ -31,6 +32,7 @@ public class MessageDataKeys {
     private static final SchedulerMessageDataProvider SCHEDULER_MESSAGE_DATA_PROVIDER = new SchedulerMessageDataProvider();
     private static final AdministrationConfigMessageDataProvider ADMIN_CONFIG_MESSAGE_DATA_PROVIDER = new AdministrationConfigMessageDataProvider();
     private static final UserMessageDataProvider USER_MESSAGE_DATA_PROVIDER = new UserMessageDataProvider();
+    private static final LocalDateTimeMessageDataProvider LOCAL_DATE_TIME_MESSAGE_DATA_PROVIDER = new LocalDateTimeMessageDataProvider();
 
     /*
      * Only reason why this is not an emum is that we want to have generic type
@@ -50,6 +52,11 @@ public class MessageDataKeys {
 
     public static final MessageDataKey<UUID> SECHUB_JOB_UUID = createKey("sechub.job.uuid", UID_MESSAGE_DATA_PROVIDER);
     public static final MessageDataKey<UUID> SECHUB_EXECUTION_UUID = createKey("sechub.execution.uuid", UID_MESSAGE_DATA_PROVIDER);
+    /**
+     * Use this generic key when you just want to define timestamp without using a
+     * dedicated model where it is already contained.
+     */
+    public static final MessageDataKey<LocalDateTime> LOCAL_DATE_TIME_SINCE = createKey("localdatetime.since", LOCAL_DATE_TIME_MESSAGE_DATA_PROVIDER);
 
     public static final MessageDataKey<SecHubConfiguration> SECHUB_CONFIG = createKey("sechub.config", SECHUB_CONFIGURATION_MESSAGE_DATA_PROVIDER);
     public static final MessageDataKey<BatchJobMessage> BATCH_JOB_ID = createKey("sechub.batchjob.id", BATCH_JOB_MESSAGE_DATA_PROVIDER);

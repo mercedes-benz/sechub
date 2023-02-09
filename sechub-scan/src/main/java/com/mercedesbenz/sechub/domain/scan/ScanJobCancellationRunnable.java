@@ -91,9 +91,8 @@ class ScanJobCancellationRunnable implements Runnable {
 
         JobMessage jobCancelData = new JobMessage();
         jobCancelData.setJobUUID(runnableData.getSechubJobUUID());
-        jobCancelData.setExecutionUUID(runnableData.getSechubExecutioUUID());
         request.set(MessageDataKeys.JOB_CANCEL_DATA, jobCancelData);
-
+        request.set(MessageDataKeys.SECHUB_EXECUTION_UUID, runnableData.getSechubExecutioUUID());
         domainMessageService.sendAsynchron(request);
     }
 

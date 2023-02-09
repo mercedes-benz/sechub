@@ -87,6 +87,22 @@ public class PDSCheckmarxIntegrationScenario17IntTest {
         waitForJobDone(project, jobUUID, 30, true);
         String report = as(USER_1).getJobReport(project, jobUUID);
 
+        // check statistics
+        assertStatistic(jobUUID).
+            isForProject(project).
+            hasData("UPLOAD_SOURCES", "SIZE_IN_BYTES", 198L);
+
+        if (withAnalytics) {
+            assertStatistic(jobUUID).
+                firstExecution().
+                    hasRunData("FILES", "ALL", 3474).
+                    hasRunData("FILES_LANG", "java", 2337).
+
+                    hasRunData("LOC", "ALL", 584644).
+                    hasRunData("LOC_LANG", "java", 126190).
+                    hasRunData("LOC_LANG", "go", 4151);
+        }
+
         if (project.equals(PROJECT_3)) {
             assertReport(report).
                 enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
@@ -180,6 +196,17 @@ public class PDSCheckmarxIntegrationScenario17IntTest {
                 hasFindings(0); // no finding, because failed
         }
 
+        // check statistics
+        assertStatistic(jobUUID).
+            isForProject(project).
+            hasData("UPLOAD_BINARIES", "SIZE_IN_BYTES", 9728);
+
+        if (withAnalytics) {
+            assertStatistic(jobUUID).
+                firstExecution().
+                    hasNoRunData(); // our test setup does not scan binaries. So there is no statistic data!
+        }
+
         int amountOfPdsJobs = 1;
         if (withAnalytics) {
             amountOfPdsJobs++;
@@ -200,8 +227,6 @@ public class PDSCheckmarxIntegrationScenario17IntTest {
 
             assertNull(jobReport);  // report can be fetched, but is null because no launcher script executed
         }
-        /* FIXME Albert Tregnaghi, 2023-02-07: implement the integration testing for the statistic data */
-        /* FIXME Albert Tregnaghi, 2023-02-07: at least one asynchron message handler was not found - so this shall produce currently a failing integration test */
         /* @formatter:on */
     }
 

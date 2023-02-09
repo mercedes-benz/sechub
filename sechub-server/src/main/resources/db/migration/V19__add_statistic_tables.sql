@@ -28,15 +28,20 @@ CREATE TABLE statistic_job_data
 
 CREATE TABLE statistic_job_run
 (
-   uuid uuid not null,
+   execution_uuid uuid not null,
    
    sechub_job_uuid uuid not null,
-   started timestamp not null,
-   ended timestamp not null,
+   project_id varchar(60) not null, -- we accept 60 (3x20), see ProjectIdValidation
+   
+   created timestamp not null,
+   started timestamp,
+   ended timestamp,
+   
+   failed boolean,
    traffic_light varchar(30),  -- enum value, max:30
    
    version integer,
-   PRIMARY KEY (uuid)
+   PRIMARY KEY (execution_uuid)
 );
 
 CREATE TABLE statistic_job_run_data

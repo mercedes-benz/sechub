@@ -14,6 +14,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 
 /**
@@ -25,6 +28,8 @@ import com.mercedesbenz.sechub.commons.model.TrafficLight;
  */
 @Entity
 @Table(name = JobRunStatistic.TABLE_NAME)
+@JsonIgnoreProperties(value = { "version" }, ignoreUnknown = true)
+@JsonAutoDetect(fieldVisibility = Visibility.ANY)
 public class JobRunStatistic {
 
     /* +-----------------------------------------------------------------------+ */
@@ -114,6 +119,10 @@ public class JobRunStatistic {
 
     public void setTrafficLight(TrafficLight trafficLight) {
         this.trafficLight = trafficLight;
+    }
+
+    public void setFailed(boolean failed) {
+        this.failed = failed;
     }
 
     @Override

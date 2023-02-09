@@ -203,6 +203,10 @@ public class TestAPI {
         return AssertPDSJob.assertPDSJob(pdsJobUUID);
     }
 
+    public static AssertStatistic assertStatistic(UUID sechubJobUUID) {
+        return AssertStatistic.assertStatistic(sechubJobUUID);
+    }
+
     /**
      * Creates an assert object to inspect PDS auto cleanup data
      *
@@ -1471,5 +1475,33 @@ public class TestAPI {
             }
         }
         return result;
+    }
+
+    public static TestJobStatistic fetchJobStatistic(UUID sechubJobUUID) {
+        String url = getURLBuilder().buildintegrationTestFetchJobStatistic(sechubJobUUID);
+        String json = getSuperAdminRestHelper().getJSON(url);
+
+        return JSONConverter.get().fromJSON(TestJobStatistic.class, json);
+    }
+
+    public static List<TestJobStatisticData> fetchJobStatisticData(UUID sechubJobUUID) {
+        String url = getURLBuilder().buildintegrationTestFetchJobStatisticData(sechubJobUUID);
+        String json = getSuperAdminRestHelper().getJSON(url);
+
+        return JSONConverter.get().fromJSONtoListOf(TestJobStatisticData.class, json);
+    }
+
+    public static List<TestJobRunStatistic> fetchJobRunStatisticListForSecHubJob(UUID sechubJobUUID) {
+        String url = getURLBuilder().buildintegrationTestFetchJobRunStatistic(sechubJobUUID);
+        String json = getSuperAdminRestHelper().getJSON(url);
+
+        return JSONConverter.get().fromJSONtoListOf(TestJobRunStatistic.class, json);
+    }
+
+    public static List<TestJobRunStatisticData> fetchJobRunStatisticData(UUID executionUUID) {
+        String url = getURLBuilder().buildintegrationTestFetchJobRunStatisticData(executionUUID);
+        String json = getSuperAdminRestHelper().getJSON(url);
+
+        return JSONConverter.get().fromJSONtoListOf(TestJobRunStatisticData.class, json);
     }
 }

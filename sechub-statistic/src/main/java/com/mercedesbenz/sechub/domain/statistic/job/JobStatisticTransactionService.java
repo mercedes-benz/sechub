@@ -72,7 +72,7 @@ public class JobStatisticTransactionService {
      */
     public void insertJobStatisticData(UUID jobUUID, JobStatisticDataType type, StatisticDataKey key, BigInteger value) {
         JobStatisticData data = new JobStatisticData();
-        data.sechubJobUUID = jobUUID;
+        data.setSechubJobUUID(jobUUID);
 
         validateAndSafe(type, key, value, data);
     }

@@ -19,6 +19,10 @@ import javax.persistence.Version;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * /** Represents statistic data for a job - contains only parts which will not
  * change on job runs. See
@@ -29,6 +33,8 @@ import org.hibernate.annotations.GenericGenerator;
  */
 @Entity
 @Table(name = JobRunStatisticData.TABLE_NAME)
+@JsonIgnoreProperties(value = { "version", "uuid" }, ignoreUnknown = true)
+@JsonAutoDetect(fieldVisibility = Visibility.ANY)
 public class JobRunStatisticData {
 
     /* +-----------------------------------------------------------------------+ */
@@ -67,9 +73,8 @@ public class JobRunStatisticData {
 
     @Enumerated(STRING)
     @Column(name = COLUMN_TYPE, nullable = false)
-    private JobRunStatisticDataType type;
+    JobRunStatisticDataType type;
 
-    @Enumerated(STRING)
     @Column(name = COLUMN_ID)
     String id;
 

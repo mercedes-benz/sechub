@@ -34,8 +34,8 @@ public class StatisticMessageHandler implements AsynchronMessageHandler {
         LOG.debug("received domain request: {}", request);
 
         switch (messageId) {
-        case JOB_STARTED:
-            handleJobStarted(request);
+        case JOB_EXECUTION_STARTING:
+            handleJobExecutionStarting(request);
             break;
         case JOB_CREATED:
             handleJobCreated(request);
@@ -48,6 +48,12 @@ public class StatisticMessageHandler implements AsynchronMessageHandler {
             break;
         case ANALYZE_SCAN_RESULTS_AVAILABLE:
             handleAnalyzeScanResultsAvailable(request);
+            break;
+        case SOURCE_UPLOAD_DONE:
+            handleSourceUploadDone(request);
+            break;
+        case BINARY_UPLOAD_DONE:
+            handleBinaryUploadDone(request);
             break;
         default:
             throw new IllegalStateException("unhandled message id:" + messageId);
@@ -66,13 +72,12 @@ public class StatisticMessageHandler implements AsynchronMessageHandler {
 
     }
 
-    @IsReceivingAsyncMessage(MessageID.JOB_STARTED)
-    private void handleJobStarted(DomainMessage request) {
-        JobMessage jobMessage = request.get(MessageDataKeys.JOB_STARTED_DATA);
+    @IsReceivingAsyncMessage(MessageID.JOB_EXECUTION_STARTING)
+    private void handleJobExecutionStarting(DomainMessage request) {
+        UUID jobUUID = request.get(MessageDataKeys.SECHUB_JOB_UUID);
+        LocalDateTime started = request.get(MessageDataKeys.LOCAL_DATE_TIME_SINCE);
 
-        UUID jobUUID = jobMessage.getJobUUID();
-        LocalDateTime started = jobMessage.getSince();
-        UUID executionUUID = jobMessage.getExecutionUUID();
+        UUID executionUUID = request.get(MessageDataKeys.SECHUB_EXECUTION_UUID);
 
         statisticService.handleJobStarted(jobUUID, started, executionUUID);
 
@@ -92,11 +97,11 @@ public class StatisticMessageHandler implements AsynchronMessageHandler {
     private void handleJobDone(DomainMessage request) {
         JobMessage jobMessage = request.get(MessageDataKeys.JOB_DONE_DATA);
 
-        UUID jobUUID = jobMessage.getJobUUID();
+        UUID executionUUID = request.get(MessageDataKeys.SECHUB_EXECUTION_UUID);
         LocalDateTime since = jobMessage.getSince();
         TrafficLight trafficLight = jobMessage.getTrafficLight();
 
-        statisticService.handleJobDone(jobUUID, since, trafficLight);
+        statisticService.handleJobExecutionDone(executionUUID, since, trafficLight);
 
     }
 
@@ -104,11 +109,11 @@ public class StatisticMessageHandler implements AsynchronMessageHandler {
     private void handleJobFailed(DomainMessage request) {
         JobMessage jobMessage = request.get(MessageDataKeys.JOB_FAILED_DATA);
 
-        UUID jobUUID = jobMessage.getJobUUID();
+        UUID executionUUID = request.get(MessageDataKeys.SECHUB_EXECUTION_UUID);
         LocalDateTime since = jobMessage.getSince();
         TrafficLight trafficLight = jobMessage.getTrafficLight();
 
-        statisticService.handleJobFailed(jobUUID, since, trafficLight);
+        statisticService.handleJobExecutionFailed(executionUUID, since, trafficLight);
 
     }
 

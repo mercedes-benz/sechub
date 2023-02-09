@@ -5,5 +5,5 @@ import java.util.UUID;
 
 public interface JobRunStatisticDataRepositoryCustom {
 
-    public List<JobRunStatisticData> findAllByExecutionUUIDUUID(UUID executionUUID);
+    public List<JobRunStatisticData> findAllByExecutionUUID(UUID sechubJobUUID);
 }

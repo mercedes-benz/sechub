@@ -11,6 +11,10 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * Represents statistic data for a job - contains only parts which will not
  * change on job runs. See
@@ -21,6 +25,8 @@ import javax.persistence.Version;
  */
 @Entity
 @Table(name = JobStatistic.TABLE_NAME)
+@JsonIgnoreProperties(value = { "version" }, ignoreUnknown = true)
+@JsonAutoDetect(fieldVisibility = Visibility.ANY)
 public class JobStatistic {
 
     /* +-----------------------------------------------------------------------+ */

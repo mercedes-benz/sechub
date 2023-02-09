@@ -90,9 +90,9 @@ public class JobRunStatisticTransactionService {
         }
         JobRunStatistic jobRunStatistic = result.get();
 
-        jobRunStatistic.trafficLight = trafficLight;
-        jobRunStatistic.ended = ended;
-        jobRunStatistic.failed = failed;
+        jobRunStatistic.setTrafficLight(trafficLight);
+        jobRunStatistic.setEnded(ended);
+        jobRunStatistic.setFailed(failed);
 
         jobRunStatisticRepository.save(jobRunStatistic);
     }

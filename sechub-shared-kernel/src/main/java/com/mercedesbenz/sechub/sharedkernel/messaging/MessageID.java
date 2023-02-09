@@ -72,10 +72,15 @@ public enum MessageID {
     JOB_STARTED(MessageDataKeys.JOB_STARTED_DATA),
 
     /**
+     * Used when the job execution is starting
+     */
+    JOB_EXECUTION_STARTING(MessageDataKeys.SECHUB_JOB_UUID, MessageDataKeys.LOCAL_DATE_TIME_SINCE, MessageDataKeys.SECHUB_EXECUTION_UUID),
+
+    /**
      * Used when job was executed correctly. Independent if the sechub job fails or
      * not. The (batch) execution was successful, means no internal error occurred.
      */
-    JOB_DONE(MessageDataKeys.JOB_DONE_DATA),
+    JOB_DONE(MessageDataKeys.JOB_DONE_DATA, MessageDataKeys.SECHUB_EXECUTION_UUID),
 
     USER_SIGNUP_REQUESTED(MessageDataKeys.USER_SIGNUP_DATA),
 
@@ -83,7 +88,7 @@ public enum MessageID {
      * Used when a batch job execution itself fails (job batch itself) means an
      * internal error occurred.
      */
-    JOB_FAILED(MessageDataKeys.JOB_FAILED_DATA),
+    JOB_FAILED(MessageDataKeys.JOB_FAILED_DATA, MessageDataKeys.SECHUB_EXECUTION_UUID),
 
     /**
      * Used when an action can change user role situation. The administration layer

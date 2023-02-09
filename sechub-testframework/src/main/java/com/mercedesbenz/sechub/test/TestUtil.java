@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileAttribute;
+import java.util.List;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -260,6 +261,16 @@ public class TestUtil {
 
         }
         return false;
+    }
+
+    public static String createInfoForList(List<?> data) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("List:\n");
+        for (Object obj : data) {
+            sb.append(obj);
+            sb.append("\n");
+        }
+        return sb.toString();
     }
 
 }
