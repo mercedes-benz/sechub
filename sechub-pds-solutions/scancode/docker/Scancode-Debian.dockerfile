@@ -10,20 +10,28 @@ LABEL maintainer="SecHub FOSS Team"
 
 # Build args
 ARG SCANCODE_VERSION
-ARG SPDX_TOOL_VERISON="1.1.3"
+ARG SPDX_TOOL_VERSION="1.1.3"
 ARG SPDX_TOOL_CHECKSUM="766a1ddc23e70644c115e0e68d487c5ab586a58a67a7889c7e181ace23a45abe  tools-java-1.1.3-jar-with-dependencies.jar"
 
 # Environment variables in container
 ENV SCANCODE_VERSION="${SCANCODE_VERSION}"
-ENV SPDX_TOOL_VERISON="${SPDX_TOOL_VERISON}"
+ENV SPDX_TOOL_VERSION="${SPDX_TOOL_VERSION}"
 
 USER root
+
+# Copy run_additional script
+COPY --chown="$USER:$USER" run_additional.sh /run_additional.sh
+RUN chmod +x /run_additional.sh
 
 # Copy mock folder
 COPY mocks "$MOCK_FOLDER"
 
 # Copy PDS configfile
 COPY pds-config.json "$PDS_FOLDER"/pds-config.json
+
+# Copy scripts
+COPY scripts "$SCRIPT_FOLDER"
+RUN chmod --recursive +x "$SCRIPT_FOLDER"
 
 # Update image and install dependencies
 RUN export DEBIAN_FRONTEND=noninteractive && \
@@ -35,27 +43,18 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 # Install Scancode
 # the constraint makes sure exactly the requiered packages are installed
 RUN pip install --constraint "https://raw.githubusercontent.com/nexB/scancode-toolkit/v${SCANCODE_VERSION}/requirements.txt" "scancode-toolkit[full]==${SCANCODE_VERSION}"
-    
 
 # Install SPDX Tools Java converter
 RUN cd "$TOOL_FOLDER" && \
-    # download SPDX Tools Java 
-    wget --no-verbose "https://repo1.maven.org/maven2/org/spdx/tools-java/${SPDX_TOOL_VERISON}/tools-java-${SPDX_TOOL_VERISON}-jar-with-dependencies.jar" && \
+    # download SPDX Tools Java
+    wget --no-verbose "https://repo1.maven.org/maven2/org/spdx/tools-java/${SPDX_TOOL_VERSION}/tools-java-${SPDX_TOOL_VERSION}-jar-with-dependencies.jar" && \
     # create checksum file
     echo "$SPDX_TOOL_CHECKSUM" > checksum-spdx-tool.sha256sum && \
     # check against checksum file
     sha256sum -c checksum-spdx-tool.sha256sum
 
-# Copy scripts
-COPY scripts "$SCRIPT_FOLDER"
-RUN chmod --recursive +x "$SCRIPT_FOLDER"
-
 # Patch
 COPY pool.py /usr/local/lib/python3.9/dist-packages/scancode/pool.py
-
-# Copy run_additional script
-COPY --chown="$USER:$USER" run_additional.sh /run_additional.sh
-RUN chmod +x /run_additional.sh
 
 # Set workspace
 WORKDIR "$WORKSPACE"
