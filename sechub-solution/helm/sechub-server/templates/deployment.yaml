@@ -376,12 +376,12 @@ spec:
         - name: SECHUB_PDS_CLOC_USERID
           valueFrom:
             secretKeyRef:
-               name: secret-pds-checkmarx
+               name: secret-pds-cloc
                key: techuser_username
         - name: SECHUB_PDS_CLOC_PASSWORD
           valueFrom:
             secretKeyRef:
-               name: secret-pds-checkmarx
+               name: secret-pds-cloc
                key: techuser_password
 {{- end }}
 {{- if .Values.pdsCoverity.enabled }}

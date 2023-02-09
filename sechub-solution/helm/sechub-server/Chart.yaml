@@ -9,6 +9,7 @@ type: application
 maintainers:
   - name: Sven Dolderer
   - name: Jeremias Eppler
+  - name: Rouven Haertel
 
 # This is the chart version.
 # This version number should be incremented each time you make changes to the chart and its templates.
