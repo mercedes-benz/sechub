@@ -9,7 +9,6 @@ package com.mercedesbenz.sechub.owaspzapwrapper.cli;
  */
 public enum ZapWrapperExitCode {
 
-    SCAN_JOB_CANCELLED(0),
 
     PRODUCT_EXECUTION_ERROR(1),
 
@@ -25,6 +24,7 @@ public enum ZapWrapperExitCode {
 
     IO_ERROR(7),
 
+    SCAN_JOB_CANCELLED(8),
     ;
 
     private int exitCode;

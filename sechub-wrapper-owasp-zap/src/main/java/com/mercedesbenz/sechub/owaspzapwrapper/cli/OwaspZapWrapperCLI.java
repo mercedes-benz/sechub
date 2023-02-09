@@ -49,7 +49,7 @@ public class OwaspZapWrapperCLI {
                 LOG.info(e.getMessage());
                 productMessagehelper.writeProductMessages(scanContext.getProductMessages());
             } else {
-                LOG.error("Must exit with exit code {} because: {}.", e.getExitCode().getExitCode(), e.getMessage(), e);
+                LOG.error("An error occurred during the scan: {}.", e.getMessage(), e);
                 productMessagehelper.writeProductError(e);
             }
             System.exit(e.getExitCode().getExitCode());
