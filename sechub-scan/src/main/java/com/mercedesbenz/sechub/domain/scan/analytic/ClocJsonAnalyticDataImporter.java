@@ -88,21 +88,29 @@ public class ClocJsonAnalyticDataImporter implements AnalyticDataPartImporter<Co
 
     }
 
-    private void importLanguage(String language, CodeAnalyticData linesOfCode, JsonNode languageNode) {
-        long lines = -1L;
-        long files = -1L;
-        JsonNode codeNode = languageNode.get("code");
-        if (codeNode != null) {
-            lines = codeNode.longValue();
-        }
+    private void importLanguage(String language, CodeAnalyticData codeAnalyticData, JsonNode languageNode) {
+        importLanguageLines(language, codeAnalyticData, languageNode);
+        importLanguageFiles(language, codeAnalyticData, languageNode);
+    }
+
+    private void importLanguageFiles(String language, CodeAnalyticData codeAnalyticData, JsonNode languageNode) {
+        long files = 0;
         JsonNode nFilesNode = languageNode.get("nFiles");
         if (nFilesNode != null) {
             files = nFilesNode.longValue();
         }
 
-        linesOfCode.setLinesOfCodeForLanguage(language, lines);
-        linesOfCode.setFilesForLanguage(language, files);
+        codeAnalyticData.setFilesForLanguage(language, files);
+    }
 
+    private void importLanguageLines(String language, CodeAnalyticData codeAnalyticData, JsonNode languageNode) {
+        long lines = 0;
+
+        JsonNode codeNode = languageNode.get("code");
+        if (codeNode != null) {
+            lines = codeNode.longValue();
+        }
+        codeAnalyticData.setLinesOfCodeForLanguage(language, lines);
     }
 
 }

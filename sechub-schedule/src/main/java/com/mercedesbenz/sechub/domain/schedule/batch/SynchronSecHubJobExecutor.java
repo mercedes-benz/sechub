@@ -100,6 +100,7 @@ class SynchronSecHubJobExecutor {
         scanThread.start();
     }
 
+    @IsSendingAsyncMessage(MessageID.JOB_EXECUTION_STARTING)
     private void sendJobExecutionStartingEvent(final ScheduleSecHubJob secHubJob, UUIDContainer uuids, String secHubConfiguration) {
         /* we send asynchronous an information event */
         DomainMessage jobExecRequest = new DomainMessage(MessageID.JOB_EXECUTION_STARTING);
