@@ -107,9 +107,9 @@ spec:
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 # + File upload definitions
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        - name: SPRING_SERVLET_MULTIPART_MAX-FILE-SIZE
+        - name: SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE
           value: "{{ .Values.server.uploads.sources.maxUploadSize }}"
-        - name: SPRING_SERVLET_MULTIPART_MAX-REQUEST-SIZE
+        - name: SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE
           value: "{{ .Values.server.uploads.sources.maxUploadSize }}"
         - name: SECHUB_SERVER_UPLOAD_VALIDATE_CHECKSUM
           value: "{{ .Values.server.uploads.sources.validateChecksum | toString }}"
@@ -121,7 +121,7 @@ spec:
 # + Special: debugging for CrashLoopBack problems
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         - name: KEEP_CONTAINER_ALIVE_AFTER_CRASH
-          value: "{{ .Values.server.debugWait | toString }}"
+          value: "{{ .Values.server.development.keepContainerAliveAfterCrash | toString }}"
 {{- if .Values.deploymentComment }}
         # Setting DEPLOYMENT_COMMENT to a different value every time forces k8s to spin up a new container.
         # This way, you can force deployments e.g. when secrets have changed.
@@ -208,7 +208,7 @@ spec:
         - name: SECHUB_DEVELOPMENT_WEBDESIGNMODE_ENABLED
           value: "false"
         - name: JAVA_ENABLE_DEBUG
-          value: "{{ .Values.server.javaEnableDebug | toString }}"
+          value: "{{ .Values.server.development.enableJavaDebugging | toString }}"
 # ----------------------------------------------------------------------------------------------#
 # - Scope: mock
 # --------------------------------------------------------------------------------------------- #
@@ -369,6 +369,21 @@ spec:
                name: secret-pds-checkmarx
                key: techuser_password
 {{- end }}
+{{- if .Values.pdsCloc.enabled }}
+# ----------------------------------------------------------------------------------------------#
+# - Scope: PDS-Cloc
+# --------------------------------------------------------------------------------------------- #
+        - name: SECHUB_PDS_CLOC_USERID
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-checkmarx
+               key: techuser_username
+        - name: SECHUB_PDS_CLOC_PASSWORD
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-checkmarx
+               key: techuser_password
+{{- end }}
 {{- if .Values.pdsCoverity.enabled }}
 # ----------------------------------------------------------------------------------------------#
 # - Scope: PDS-Coverity
@@ -475,6 +490,8 @@ spec:
 # ----------------------------------------------------------------------------------------------#
 # - Scope: server
 # --------------------------------------------------------------------------------------------- #
+        - name: SECHUB_START_MODE
+          value: "server"
         # When debug flag is set, rest call reponse error messages do also contains stacktraces.
         - name: SECHUB_SERVER_DEBUG
           value: "false"
