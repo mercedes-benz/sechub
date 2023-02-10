@@ -122,8 +122,9 @@ java --version
 
 if [ "$JAVA_ENABLE_DEBUG" = "true" ]
 then
-  # Open port 5005 for Java debugging
-  java_debug_options="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${JAVA_DEBUG_PORT:-5005}"
+  JAVA_DEBUG_PORT=15023
+  echo "# Opening port $JAVA_DEBUG_PORT for Java debugging"
+  java_debug_options="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:$JAVA_DEBUG_PORT"
 fi
 
 if [ "$POSTGRES_ENABLED" = "true" ]

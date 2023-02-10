@@ -168,6 +168,8 @@ spec:
 # + Database setup
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 {{- if .Values.server.databaseConnection }}
+        - name: POSTGRES_ENABLED
+          value: true
         - name: SPRING_DATASOURCE_URL
           value: {{ .Values.server.databaseConnection }}
         - name: SPRING_DATASOURCE_USERNAME
