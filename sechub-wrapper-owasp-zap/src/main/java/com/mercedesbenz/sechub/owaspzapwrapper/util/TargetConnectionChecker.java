@@ -45,7 +45,6 @@ public class TargetConnectionChecker {
      * @return <code>true</code> when reachable otherwise <code>false</code>
      */
     public boolean isTargetReachable(URI targetUri, ProxyInformation proxyInformation) {
-
         URL urlToCheckConnection;
         try {
             urlToCheckConnection = targetUri.toURL();
@@ -57,7 +56,7 @@ public class TargetConnectionChecker {
         SSLContext sslContext = createSSLContextForTrustManager(pseudoTrustManager);
 
         try {
-            LOG.info("Trying to reach target URL: {}", urlToCheckConnection.toExternalForm());
+            LOG.info("Trying to reach URL: {}", urlToCheckConnection.toExternalForm());
             HttpURLConnection connection;
             if (proxyInformation == null) {
                 connection = (HttpURLConnection) urlToCheckConnection.openConnection();
@@ -73,10 +72,10 @@ public class TargetConnectionChecker {
 
             int responseCode = connection.getResponseCode();
             if (isReponseCodeValid(responseCode)) {
-                LOG.info("Target is reachable.");
+                LOG.info("URL " + targetUri + " is reachable.");
                 return true;
             } else {
-                LOG.error("Target is NOT reachable. Aborting Scan...");
+                LOG.warn("URL " + targetUri + " is NOT reachable.");
             }
         } catch (IOException e) {
             LOG.error("An exception occurred while checking if target URL is reachable: {} because: {}", urlToCheckConnection.toExternalForm(), e.getMessage());

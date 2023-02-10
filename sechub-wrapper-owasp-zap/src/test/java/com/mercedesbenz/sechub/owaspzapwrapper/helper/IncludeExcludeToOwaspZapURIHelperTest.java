@@ -9,13 +9,13 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class SecHubIncludeExcludeToOwaspZapURIHelperTest {
+class IncludeExcludeToOwaspZapURIHelperTest {
 
-    private SecHubIncludeExcludeToOwaspZapURIHelper helperToTest;
+    private IncludeExcludeToOwaspZapURLHelper helperToTest;
 
     @BeforeEach
     void beforeEach() {
-        helperToTest = new SecHubIncludeExcludeToOwaspZapURIHelper();
+        helperToTest = new IncludeExcludeToOwaspZapURLHelper();
     }
 
     @Test
@@ -25,7 +25,7 @@ class SecHubIncludeExcludeToOwaspZapURIHelperTest {
         List<String> sites = null;
 
         /* execute */
-        List<String> urls = helperToTest.createListOfUrls(targetUrl, sites);
+        List<String> urls = helperToTest.createListOfOwaspZapCompatibleUrls(targetUrl, sites);
 
         /* test */
         assertTrue(urls.isEmpty());
@@ -38,7 +38,7 @@ class SecHubIncludeExcludeToOwaspZapURIHelperTest {
         List<String> sites = new ArrayList<>();
 
         /* execute */
-        List<String> urls = helperToTest.createListOfUrls(targetUrl, sites);
+        List<String> urls = helperToTest.createListOfOwaspZapCompatibleUrls(targetUrl, sites);
 
         /* test */
         assertTrue(urls.isEmpty());
@@ -51,14 +51,14 @@ class SecHubIncludeExcludeToOwaspZapURIHelperTest {
         List<String> sites = createExampleListOfSites();
 
         /* execute */
-        List<String> urls = helperToTest.createListOfUrls(targetUrl, sites);
+        List<String> urls = helperToTest.createListOfOwaspZapCompatibleUrls(targetUrl, sites);
 
         /* test */
-        assertTrue(urls.contains("https://127.0.0.1:8080/sub.*"));
-        assertTrue(urls.contains("https://127.0.0.1:8080/sub1/directory.*"));
-        assertTrue(urls.contains("https://127.0.0.1:8080/sub2/directory.*"));
-        assertTrue(urls.contains("https://127.0.0.1:8080/sub3/directory.*"));
-        assertTrue(urls.contains("https://127.0.0.1:8080/sub4/directory.*"));
+        assertTrue(urls.contains("https://127.0.0.1:8080/sub"));
+        assertTrue(urls.contains("https://127.0.0.1:8080/sub1/directory"));
+        assertTrue(urls.contains("https://127.0.0.1:8080/sub2/directory"));
+        assertTrue(urls.contains("https://127.0.0.1:8080/sub3/directory"));
+        assertTrue(urls.contains("https://127.0.0.1:8080/sub4/directory"));
     }
 
     private List<String> createExampleListOfSites() {

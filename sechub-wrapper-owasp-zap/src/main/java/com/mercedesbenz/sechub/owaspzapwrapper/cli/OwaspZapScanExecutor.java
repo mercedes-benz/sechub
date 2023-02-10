@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.owaspzapwrapper.cli;
 
+import java.net.URI;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zaproxy.clientapi.core.ClientApi;
@@ -26,17 +28,30 @@ public class OwaspZapScanExecutor {
     }
 
     public void execute(OwaspZapScanContext scanContext) throws ZapWrapperRuntimeException {
-        if (!connectionChecker.isTargetReachable(scanContext.getTargetUri(), scanContext.getProxyInformation())) {
-            // Build error message containing proxy if it was set.
-            String errorMessage = createErrorMessage(scanContext);
-            throw new ZapWrapperRuntimeException(errorMessage, ZapWrapperExitCode.TARGET_URL_NOT_REACHABLE);
-        }
+        assertTargetReachable(scanContext);
+
         ClientApi clientApi = clientApiFactory.create(scanContext.getServerConfig());
 
         OwaspZapScan owaspZapScan = resolver.resolveScanImplementation(scanContext, clientApi);
         LOG.info("Starting Owasp Zap scan.");
         owaspZapScan.scan();
 
+    }
+
+    private void assertTargetReachable(OwaspZapScanContext scanContext) {
+        boolean isReachable = false;
+        for (String url : scanContext.getOwaspZapURLsIncludeList()) {
+            URI uriToCheck = URI.create(url);
+            if (connectionChecker.isTargetReachable(uriToCheck, scanContext.getProxyInformation())) {
+                isReachable = true;
+                break;
+            }
+        }
+        if (!isReachable) {
+            // Build error message containing proxy if it was set.
+            String errorMessage = createErrorMessage(scanContext);
+            throw new ZapWrapperRuntimeException(errorMessage, ZapWrapperExitCode.TARGET_URL_NOT_REACHABLE);
+        }
     }
 
     private String createErrorMessage(OwaspZapScanContext scanContext) {
@@ -46,8 +61,6 @@ public class OwaspZapScanExecutor {
         if (proxyInformation != null) {
             errorMessage += errorMessage + " via " + proxyInformation.getHost() + ":" + proxyInformation.getPort();
         }
-
         return errorMessage;
     }
-
 }

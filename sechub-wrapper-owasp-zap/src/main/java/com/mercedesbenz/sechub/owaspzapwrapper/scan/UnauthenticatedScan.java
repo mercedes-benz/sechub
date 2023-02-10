@@ -7,6 +7,8 @@ import org.zaproxy.clientapi.core.ApiResponse;
 import org.zaproxy.clientapi.core.ClientApi;
 import org.zaproxy.clientapi.core.ClientApiException;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanContext;
 
 public class UnauthenticatedScan extends AbstractScan {
@@ -55,6 +57,14 @@ public class UnauthenticatedScan extends AbstractScan {
 
     @Override
     protected void runActiveScan() throws ClientApiException {
+        // Necessary otherwise the active scanner exits with an exception
+        // Reason is, no URLs to actively scan where detected by the spider/ajaxSpider
+        if (!atLeastOneURLDetected()) {
+            LOG.warn("For {} skipping active scan, since no URLs where detected by spider or ajaxSpider!", scanContext.getContextName());
+            scanContext.addProductMessage(new SecHubMessage(SecHubMessageType.WARNING,
+                    "Active scan part of the webscan was skipped, because no URLs where detected by crawling mechanisms!"));
+            return;
+        }
         String targetUrlAsString = scanContext.getTargetUriAsString();
         String inScopeOnly = "true";
         String recurse = "true";

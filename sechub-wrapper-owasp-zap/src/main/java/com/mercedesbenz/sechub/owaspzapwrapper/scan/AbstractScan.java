@@ -32,7 +32,6 @@ import com.mercedesbenz.sechub.owaspzapwrapper.config.data.RuleReference;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.OwaspZapApiResponseHelper;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.OwaspZapEventHandler;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.ScanDurationHelper;
-import com.mercedesbenz.sechub.owaspzapwrapper.helper.SecHubIncludeExcludeToOwaspZapURIHelper;
 
 public abstract class AbstractScan implements OwaspZapScan {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractScan.class);
@@ -48,8 +47,6 @@ public abstract class AbstractScan implements OwaspZapScan {
     private ScanDurationHelper scanDurationHelper;
     private long remainingScanTime;
 
-    private SecHubIncludeExcludeToOwaspZapURIHelper includeExcludeConverter;
-
     private OwaspZapEventHandler owaspZapEventHandler;
 
     public AbstractScan(ClientApi clientApi, OwaspZapScanContext scanContext) {
@@ -57,7 +54,6 @@ public abstract class AbstractScan implements OwaspZapScan {
         this.scanContext = scanContext;
         this.scanDurationHelper = new ScanDurationHelper();
         this.remainingScanTime = scanContext.getMaxScanDurationInMillis();
-        this.includeExcludeConverter = new SecHubIncludeExcludeToOwaspZapURIHelper();
         this.apiResponseHelper = new OwaspZapApiResponseHelper();
         this.owaspZapEventHandler = new OwaspZapEventHandler();
     }
@@ -354,6 +350,11 @@ public abstract class AbstractScan implements OwaspZapScan {
         }
     }
 
+    protected boolean atLeastOneURLDetected() throws ClientApiException {
+        ApiResponseList sitesList = (ApiResponseList) clientApi.core.sites();
+        return sitesList.getItems().size() > 0;
+    }
+
     private void updateUserMessagesWithScannedURLs(List<ApiResponse> spiderResults) {
         for (ApiResponse result : spiderResults) {
             String url = result.toString();
@@ -450,26 +451,14 @@ public abstract class AbstractScan implements OwaspZapScan {
     }
 
     private void registerUrlsIncludedInContext() throws ClientApiException {
-        clientApi.context.includeInContext(scanContext.getContextName(), scanContext.getTargetUriAsString() + ".*");
-
-        if (scanContext.getSecHubWebScanConfiguration().getIncludes().isPresent()) {
-            List<String> includedUrls = includeExcludeConverter.createListOfUrls(scanContext.getTargetUriAsString(),
-                    scanContext.getSecHubWebScanConfiguration().getIncludes().get());
-
-            for (String url : includedUrls) {
-                clientApi.context.includeInContext(scanContext.getContextName(), url);
-            }
+        for (String url : scanContext.getOwaspZapURLsIncludeList()) {
+            clientApi.context.includeInContext(scanContext.getContextName(), url + ".*");
         }
     }
 
     private void registerUrlsExcludedFromContext() throws ClientApiException {
-        if (scanContext.getSecHubWebScanConfiguration().getExcludes().isPresent()) {
-            List<String> excludedUrls = includeExcludeConverter.createListOfUrls(scanContext.getTargetUriAsString(),
-                    scanContext.getSecHubWebScanConfiguration().getExcludes().get());
-
-            for (String url : excludedUrls) {
-                clientApi.context.excludeFromContext(scanContext.getContextName(), url);
-            }
+        for (String url : scanContext.getOwaspZapURLsExcludeList()) {
+            clientApi.context.excludeFromContext(scanContext.getContextName(), url + ".*");
         }
     }
 

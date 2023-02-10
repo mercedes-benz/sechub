@@ -4,9 +4,9 @@ package com.mercedesbenz.sechub.owaspzapwrapper.helper;
 import java.util.LinkedList;
 import java.util.List;
 
-public class SecHubIncludeExcludeToOwaspZapURIHelper {
+public class IncludeExcludeToOwaspZapURLHelper {
 
-    public List<String> createListOfUrls(String targetUrl, List<String> subSites) {
+    public List<String> createListOfOwaspZapCompatibleUrls(String targetUrl, List<String> subSites) {
         if (subSites == null) {
             return new LinkedList<String>();
         }
@@ -25,8 +25,6 @@ public class SecHubIncludeExcludeToOwaspZapURIHelper {
             } else {
                 urlBuilder.append(url);
             }
-            urlBuilder.append(".*");
-
             listOfUrls.add(urlBuilder.toString());
         }
         return listOfUrls;

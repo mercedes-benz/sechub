@@ -36,7 +36,6 @@ import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.auth.AuthenticationType;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.data.DeactivatedRuleReferences;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.data.OwaspZapFullRuleset;
-import com.mercedesbenz.sechub.owaspzapwrapper.helper.BaseTargetUriFactory;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.SecHubWebScanConfigurationHelper;
 import com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableReader;
 
@@ -46,7 +45,6 @@ class OwaspZapScanConfigurationFactoryTest {
 
     private SecHubWebScanConfigurationHelper sechubWebConfigHelper;
     private EnvironmentVariableReader environmentVariableReader;
-    private BaseTargetUriFactory targetUriFactory;
 
     private RuleProvider ruleProvider;
 
@@ -61,13 +59,11 @@ class OwaspZapScanConfigurationFactoryTest {
         // create mocks
         sechubWebConfigHelper = mock(SecHubWebScanConfigurationHelper.class);
         environmentVariableReader = mock(EnvironmentVariableReader.class);
-        targetUriFactory = mock(BaseTargetUriFactory.class);
         ruleProvider = mock(RuleProvider.class);
 
         // connect mocks with test object
         factoryToTest.sechubWebConfigHelper = sechubWebConfigHelper;
         factoryToTest.environmentVariableReader = environmentVariableReader;
-        factoryToTest.targetUriFactory = targetUriFactory;
         factoryToTest.ruleProvider = ruleProvider;
 
         // create test data
@@ -170,6 +166,7 @@ class OwaspZapScanConfigurationFactoryTest {
             int proxyPort) {
         /* prepare */
         CommandLineSettings settings = mock(CommandLineSettings.class);
+        when(settings.getTargetURL()).thenReturn("https://www.targeturl.com");
         when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
         when(environmentVariableReader.readAsString(ZAP_HOST_ENV_VARIABLE_NAME)).thenReturn(host);
         when(environmentVariableReader.readAsString(ZAP_API_KEY_ENV_VARIABLE_NAME)).thenReturn(apiKey);
@@ -254,12 +251,15 @@ class OwaspZapScanConfigurationFactoryTest {
     @Test
     void targetURI_calculated_by_factory_is_in_result() {
         /* prepare */
-        CommandLineSettings settings = createSettingsMockWithNecessaryParts();
-        String targetUri = "https://www.example.com";
+        CommandLineSettings settings = mock(CommandLineSettings.class);
+        when(settings.getZapHost()).thenReturn("https://zaphot.example.com");
+        when(settings.getZapPort()).thenReturn(815);
+        when(settings.getZapApiKey()).thenReturn("secret-key");
+
+        String targetUri = "https://fromfactory.example.com";
         when(settings.getTargetURL()).thenReturn(targetUri);
 
         URI createdUri = URI.create("https://fromfactory.example.com");
-        when(targetUriFactory.create(targetUri)).thenReturn(createdUri);
         when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
 
         /* execute */
@@ -466,8 +466,26 @@ class OwaspZapScanConfigurationFactoryTest {
         assertEquals(expectedPathToApiDefinitionFile, result.getApiDefinitionFile());
     }
 
+    @Test
+    void includes_and_excludes_from_sechub_json_are_inside_result() {
+        /* prepare */
+        when(ruleProvider.fetchDeactivatedRuleReferences(any())).thenReturn(new DeactivatedRuleReferences());
+        CommandLineSettings settings = createSettingsMockWithNecessaryPartsWithoutRuleFiles();
+
+        File sechubScanConfigFile = new File("src/test/resources/sechub-config-examples/no-auth-include-exclude.json");
+        when(settings.getSecHubConfigFile()).thenReturn(sechubScanConfigFile);
+
+        /* execute */
+        OwaspZapScanContext result = factoryToTest.create(settings);
+
+        /* test */
+        assertEquals(3, result.getOwaspZapURLsIncludeList().size());
+        assertEquals(2, result.getOwaspZapURLsExcludeList().size());
+    }
+
     private CommandLineSettings createSettingsMockWithNecessaryParts() {
         CommandLineSettings settings = mock(CommandLineSettings.class);
+        when(settings.getTargetURL()).thenReturn("https://www.targeturl.com");
         when(settings.getZapHost()).thenReturn("https://zaphot.example.com");
         when(settings.getZapPort()).thenReturn(815);
         when(settings.getZapApiKey()).thenReturn("secret-key");
@@ -480,6 +498,7 @@ class OwaspZapScanConfigurationFactoryTest {
 
     private CommandLineSettings createSettingsMockWithNecessaryPartsWithoutRuleFiles() {
         CommandLineSettings settings = mock(CommandLineSettings.class);
+        when(settings.getTargetURL()).thenReturn("https://www.targeturl.com");
         when(settings.getZapHost()).thenReturn("https://zaphot.example.com");
         when(settings.getZapPort()).thenReturn(815);
         when(settings.getZapApiKey()).thenReturn("secret-key");

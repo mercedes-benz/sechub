@@ -3,6 +3,8 @@ package com.mercedesbenz.sechub.owaspzapwrapper.config;
 
 import java.net.URI;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -18,6 +20,7 @@ import com.mercedesbenz.sechub.owaspzapwrapper.config.data.DeactivatedRuleRefere
 import com.mercedesbenz.sechub.owaspzapwrapper.config.data.OwaspZapFullRuleset;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.data.RuleReference;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.BaseTargetUriFactory;
+import com.mercedesbenz.sechub.owaspzapwrapper.helper.IncludeExcludeToOwaspZapURLHelper;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.SecHubWebScanConfigurationHelper;
 import com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableConstants;
 import com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableReader;
@@ -31,6 +34,7 @@ public class OwaspZapScanContextFactory {
     RuleProvider ruleProvider;
     ApiDefinitionFileProvider apiDefinitionFileProvider;
     SecHubScanConfigProvider secHubScanConfigProvider;
+    IncludeExcludeToOwaspZapURLHelper includeExcludeToOwaspZapURLHelper;
 
     public OwaspZapScanContextFactory() {
         sechubWebConfigHelper = new SecHubWebScanConfigurationHelper();
@@ -39,6 +43,7 @@ public class OwaspZapScanContextFactory {
         ruleProvider = new RuleProvider();
         apiDefinitionFileProvider = new ApiDefinitionFileProvider();
         secHubScanConfigProvider = new SecHubScanConfigProvider();
+        includeExcludeToOwaspZapURLHelper = new IncludeExcludeToOwaspZapURLHelper();
     }
 
     public OwaspZapScanContext create(CommandLineSettings settings) {
@@ -92,6 +97,8 @@ public class OwaspZapScanContextFactory {
 												.setFullRuleset(fullRuleset)
 												.setDeactivatedRuleReferences(deactivatedRuleReferences)
 												.setApiDefinitionFile(apiDefinitionFile)
+												.setOwaspZapURLsIncludeList(createUrlsIncludedInContext(targetUri.toString(), sechubWebConfig))
+												.setOwaspZapURLsExcludeList(createUrlsExcludedFromContext(targetUri.toString(), sechubWebConfig))
 											  .build();
 		/* @formatter:on */
         return scanContext;
@@ -188,5 +195,22 @@ public class OwaspZapScanContextFactory {
         // extracted
         String extractedSourcesFolderPath = environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_JOB_EXTRACTED_SOURCES_FOLDER);
         return apiDefinitionFileProvider.fetchApiDefinitionFile(extractedSourcesFolderPath, sechubScanConfig);
+    }
+
+    private List<String> createUrlsIncludedInContext(String targetUriAsString, SecHubWebScanConfiguration sechubWebConfig) {
+        List<String> includeList = new ArrayList<>();
+        includeList.add(targetUriAsString);
+        if (sechubWebConfig.getIncludes().isPresent()) {
+            includeList.addAll(includeExcludeToOwaspZapURLHelper.createListOfOwaspZapCompatibleUrls(targetUriAsString, sechubWebConfig.getIncludes().get()));
+        }
+        return includeList;
+    }
+
+    private List<String> createUrlsExcludedFromContext(String targetUriAsString, SecHubWebScanConfiguration sechubWebConfig) {
+        List<String> excludeList = new ArrayList<>();
+        if (sechubWebConfig.getExcludes().isPresent()) {
+            excludeList.addAll(includeExcludeToOwaspZapURLHelper.createListOfOwaspZapCompatibleUrls(targetUriAsString, sechubWebConfig.getExcludes().get()));
+        }
+        return excludeList;
     }
 }

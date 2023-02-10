@@ -40,6 +40,8 @@ public class OwaspZapScanContext {
     private Path apiDefinitionFile;
 
     private List<SecHubMessage> productMessages = new ArrayList<>();
+    public List<String> owaspZapURLsIncludeList = new ArrayList<>();
+    public List<String> owaspZapURLsExcludeList = new ArrayList<>();
 
     private OwaspZapScanContext() {
     }
@@ -129,6 +131,14 @@ public class OwaspZapScanContext {
         }
     }
 
+    public List<String> getOwaspZapURLsIncludeList() {
+        return owaspZapURLsIncludeList;
+    }
+
+    public List<String> getOwaspZapURLsExcludeList() {
+        return owaspZapURLsExcludeList;
+    }
+
     public static OwaspZapBasicScanContextBuilder builder() {
         return new OwaspZapBasicScanContextBuilder();
     }
@@ -160,6 +170,10 @@ public class OwaspZapScanContext {
         private DeactivatedRuleReferences deactivatedRuleReferences;
 
         private Path apiDefinitionFile;
+
+        private List<String> owaspZapURLsIncludeList = new ArrayList<>();
+
+        private List<String> owaspZapURLsExcludeList = new ArrayList<>();
 
         public OwaspZapBasicScanContextBuilder setServerConfig(OwaspZapServerConfiguration serverConfig) {
             this.serverConfig = serverConfig;
@@ -231,6 +245,16 @@ public class OwaspZapScanContext {
             return this;
         }
 
+        public OwaspZapBasicScanContextBuilder setOwaspZapURLsIncludeList(List<String> owaspZapURLsIncludeList) {
+            this.owaspZapURLsIncludeList.addAll(owaspZapURLsIncludeList);
+            return this;
+        }
+
+        public OwaspZapBasicScanContextBuilder setOwaspZapURLsExcludeList(List<String> owaspZapURLsExcludeList) {
+            this.owaspZapURLsExcludeList.addAll(owaspZapURLsExcludeList);
+            return this;
+        }
+
         public OwaspZapScanContext build() {
             OwaspZapScanContext owaspZapBasicScanConfiguration = new OwaspZapScanContext();
             owaspZapBasicScanConfiguration.serverConfig = this.serverConfig;
@@ -252,6 +276,9 @@ public class OwaspZapScanContext {
             owaspZapBasicScanConfiguration.deactivatedRuleReferences = this.deactivatedRuleReferences;
 
             owaspZapBasicScanConfiguration.apiDefinitionFile = this.apiDefinitionFile;
+
+            owaspZapBasicScanConfiguration.owaspZapURLsIncludeList.addAll(this.owaspZapURLsIncludeList);
+            owaspZapBasicScanConfiguration.owaspZapURLsExcludeList.addAll(this.owaspZapURLsExcludeList);
 
             return owaspZapBasicScanConfiguration;
         }
