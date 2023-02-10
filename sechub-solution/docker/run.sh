@@ -51,6 +51,13 @@ localserver() {
   if [ "$POSTGRES_ENABLED" = true ]
   then
     profiles="$profiles,postgres"
+    check_variable "$DATABASE_CONNECTION" "DATABASE_CONNECTION"
+    check_variable "$DATABASE_USERNAME" "DATABASE_USERNAME"
+    check_variable "$DATABASE_PASSWORD" "DATABASE_PASSWORD"
+    database_options="-Dspring.datasource.url=$DATABASE_CONNECTION -Dspring.datasource.username=$DATABASE_USERNAME  -Dspring.datasource.password=$DATABASE_PASSWORD"
+    echo "Using database: Postgres"
+    echo " * connection string: $DATABASE_CONNECTION"
+    echo " * database username: $DATABASE_USERNAME"
   else
     echo "Using database: H2"
     profiles="$profiles,h2"
@@ -92,6 +99,16 @@ startup_server() {
   # Initial job scheduling settings
   init_scheduler_settings
 
+  if [ -n "$SPRING_DATASOURCE_URL" ] ; then
+    check_variable "$SPRING_DATASOURCE_USERNAME" "SPRING_DATASOURCE_USERNAME"
+    check_variable "$SPRING_DATASOURCE_PASSWORD" "SPRING_DATASOURCE_PASSWORD"
+    cat - <<EOF
+Database:
+- connection string: $SPRING_DATASOURCE_URL"
+- database user: $SPRING_DATASOURCE_USERNAME"
+EOF
+  fi
+
   if [ -n "${SECHUB_SERVER_SSL_KEYSTORE_ALIAS}" -a "${SECHUB_SERVER_SSL_KEYSTORE_ALIAS}" != "undefined" ] ; then
     echo "Using SSL certificate from secret SSL content and alias '${SECHUB_SERVER_SSL_KEYSTORE_ALIAS}'"
     # Create symlink to keystore file
@@ -110,7 +127,7 @@ SecHub server settings:
 
 Starting up SecHub server
 EOF
-  java $java_debug_options $database_options $storage_options \
+  java $java_debug_options $storage_options \
     -Dfile.encoding=UTF-8 -Djava.security.egd=file:/dev/urandom -XX:InitialRAMPercentage=50 -XX:MaxRAMPercentage=80 -XshowSettings:vm \
     -jar /sechub/sechub-server*.jar
 }
@@ -127,17 +144,6 @@ then
   java_debug_options="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:$JAVA_DEBUG_PORT"
 fi
 
-if [ "$POSTGRES_ENABLED" = "true" ]
-then
-  check_variable "$DATABASE_CONNECTION" "DATABASE_CONNECTION"
-  check_variable "$DATABASE_USERNAME" "DATABASE_USERNAME"
-  check_variable "$DATABASE_PASSWORD" "DATABASE_PASSWORD"
-  database_options="-Dspring.datasource.url=$DATABASE_CONNECTION -Dspring.datasource.username=$DATABASE_USERNAME  -Dspring.datasource.password=$DATABASE_PASSWORD"
-  echo "Using database: Postgres"
-  echo " * connection string: $DATABASE_CONNECTION"
-  echo " * database username: $DATABASE_USERNAME"
-fi
-
 if [ "$S3_ENABLED" = "true" ]
 then
   storage_options="-Dsechub.storage.s3.endpoint=$S3_ENDPOINT"
@@ -145,8 +151,11 @@ then
   storage_options="$storage_options -Dsechub.storage.s3.accesskey=$S3_ACCESSKEY"
   storage_options="$storage_options -Dsechub.storage.s3.secretkey=$S3_SECRETKEY"
 
-  echo "Using S3 object storage"
-  echo " * Endpoint: $S3_ENDPOINT"
+  cat - <<EOF
+Using S3 object storage:
+- Endpoint: $S3_ENDPOINT
+- Bucket: $S3_BUCKETNAME
+EOF
 fi
 
 # Startup SecHub server

@@ -168,8 +168,6 @@ spec:
 # + Database setup
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 {{- if .Values.server.databaseConnection }}
-        - name: POSTGRES_ENABLED
-          value: "true"
         - name: SPRING_DATASOURCE_URL
           value: {{ .Values.server.databaseConnection }}
         - name: SPRING_DATASOURCE_USERNAME
@@ -535,20 +533,16 @@ spec:
 {{- else if .Values.storage.s3.enabled }}
         - name: S3_ENABLED
           value: "true"
-        # Defines the S3 endpoint
-        - name: SECHUB_STORAGE_S3_ENDPOINT
+        - name: S3_ENDPOINT
           value: {{ .Values.storage.s3.endpoint }}
-        # Defines the S3 bucket name
-        - name: SECHUB_STORAGE_S3_BUCKETNAME
+        - name: S3_BUCKETNAME
           value: {{ .Values.storage.s3.bucketname }}
-        # Defines the access key for used S3 bucket
-        - name: SECHUB_STORAGE_S3_ACCESSKEY
+        - name: S3_ACCESSKEY
           valueFrom:
             secretKeyRef:
                name: secret-storage
                key: sechub_storage_s3_accesskey
-        # Defines the secret key for used S3 bucket
-        - name: SECHUB_STORAGE_S3_SECRETKEY
+        - name: S3_SECRETKEY
           valueFrom:
             secretKeyRef:
                name: secret-storage
