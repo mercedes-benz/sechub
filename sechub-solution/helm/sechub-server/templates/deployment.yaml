@@ -149,7 +149,7 @@ spec:
         - name: SECHUB_SERVER_SSL_KEYSTORE_TYPE
           value: "PKCS12"
         - name: SECHUB_SERVER_SSL_KEYSTORE_LOCATION
-          value: /home/javarun/{{ .Values.server.ssl.keystoreAlias }}.p12
+          value: /sechub/{{ .Values.server.ssl.keystoreAlias }}.p12
         - name: SECHUB_SERVER_SSL_KEYSTORE_ALIAS
           value: {{ .Values.server.ssl.keystoreAlias }}
         - name: SECHUB_SERVER_SSL_KEYSTORE_PASSWORD

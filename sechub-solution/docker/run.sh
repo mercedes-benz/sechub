@@ -110,9 +110,13 @@ EOF
   fi
 
   if [ -n "${SECHUB_SERVER_SSL_KEYSTORE_ALIAS}" -a "${SECHUB_SERVER_SSL_KEYSTORE_ALIAS}" != "undefined" ] ; then
-    echo "Using SSL certificate from secret SSL content and alias '${SECHUB_SERVER_SSL_KEYSTORE_ALIAS}'"
-    # Create symlink to keystore file
+    # Create symlink to .p12 keystore file
     ln -s /sechub/secrets/secret-ssl/sechub_server_ssl_keystore_file ${SECHUB_SERVER_SSL_KEYSTORE_LOCATION}
+    cat - <<EOF
+SSL server certificate:
+- alias: $SECHUB_SERVER_SSL_KEYSTORE_ALIAS
+- location: $SECHUB_SERVER_SSL_KEYSTORE_LOCATION
+EOF
   fi
 
   cat - <<EOF
