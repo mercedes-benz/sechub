@@ -95,7 +95,7 @@ localserver() {
   keep_container_alive_or_exit
 }
 
-server() {
+startup_server() {
   check_setup
   check_variable "$SPRING_PROFILES_ACTIVE" "SPRING_PROFILES_ACTIVE"
 
