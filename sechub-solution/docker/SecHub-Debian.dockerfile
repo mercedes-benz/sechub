@@ -181,13 +181,14 @@ COPY --chmod=755 install-java/ "$SECHUB_FOLDER/install-java/"
 RUN cd "$SECHUB_FOLDER/install-java/" && \
     ./install-java.sh "$JAVA_DISTRIBUTION" "$JAVA_VERSION" jre
 
-# Set permissions
-RUN chown --recursive "$USER:$USER" "$SECHUB_FOLDER" "$SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR"
+# Set permissions and clean up install folder
+RUN chown --recursive "$USER:$USER" "$SECHUB_FOLDER" "$SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR" && \
+    rm --recursive --force "$SECHUB_FOLDER/install-java/"
 
 # Set workspace
 WORKDIR "$SECHUB_FOLDER"
 
-# Switch from root to non-root user
+# Switch to non-root user
 USER "$USER"
 
 CMD ["/run.sh"]
