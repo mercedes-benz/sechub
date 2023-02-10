@@ -28,13 +28,6 @@ wait_loop() {
   done
 }
 
-keep_container_alive_or_exit() {
-  if [ "$KEEP_CONTAINER_ALIVE_AFTER_CRASH" = "true" ]
-  then
-    wait_loop
-  fi
-}
-
 init_scheduler_settings() {
   if [ -z "$SECHUB_CONFIG_TRIGGER_NEXTJOB_DELAY" ] ; then
     export SECHUB_CONFIG_TRIGGER_NEXTJOB_DELAY="10000"
@@ -91,12 +84,9 @@ localserver() {
     -Dserver.port=8443 \
     -Dserver.address=0.0.0.0 \
     -jar /sechub/sechub-server*.jar
-
-  keep_container_alive_or_exit
 }
 
 startup_server() {
-  check_setup
   check_variable "$SPRING_PROFILES_ACTIVE" "SPRING_PROFILES_ACTIVE"
 
   # Initial job scheduling settings
@@ -123,8 +113,6 @@ EOF
   java $java_debug_options $database_options $storage_options \
     -Dfile.encoding=UTF-8 -Djava.security.egd=file:/dev/urandom -XX:InitialRAMPercentage=50 -XX:MaxRAMPercentage=80 -XshowSettings:vm \
     -jar /sechub/sechub-server*.jar
-
-  keep_container_alive_or_exit
 }
 
 #####################################
@@ -160,8 +148,14 @@ then
   echo " * Endpoint: $S3_ENDPOINT"
 fi
 
+# Startup SecHub server
 case "$SECHUB_START_MODE" in
   localserver) localserver ;;
   server) startup_server ;;
   *) wait_loop ;;
 esac
+
+if [ "$KEEP_CONTAINER_ALIVE_AFTER_CRASH" = "true" ]
+then
+  wait_loop
+fi
