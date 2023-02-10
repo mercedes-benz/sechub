@@ -26,9 +26,9 @@ spec:
 {{- end }}
     spec:
       securityContext:
-        runAsUser: {{ .Values.runAs.uid }}  # user id of the application user. (overrides setings in the Dockerfile)
-        runAsGroup: {{ .Values.runAs.gid }} # group id of the application group. (overrides setings in the Dockerfile)
-        fsGroup: {{ .Values.runAs.gid }}    # group id of the application group. This group has write access to the volumes.
+        runAsUser: 7474  # uid of the application user. (should be same as in the Dockerfile)
+        runAsGroup: 7474 # gid of the application group. (should be same as in the Dockerfile)
+        fsGroup: 7474    # This gid has write access to the mounted volumes.
       volumes:
 {{- if ne .Values.server.ssl.keystoreAlias "undefined" }}
         - name: secret-ssl

@@ -104,8 +104,8 @@ startup_server() {
     check_variable "$SPRING_DATASOURCE_PASSWORD" "SPRING_DATASOURCE_PASSWORD"
     cat - <<EOF
 Database:
-- connection string: $SPRING_DATASOURCE_URL"
-- database user: $SPRING_DATASOURCE_USERNAME"
+- connection string: $SPRING_DATASOURCE_URL
+- database user: $SPRING_DATASOURCE_USERNAME
 EOF
   fi
 

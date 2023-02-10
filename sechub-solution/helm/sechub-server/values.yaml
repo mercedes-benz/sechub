@@ -170,11 +170,6 @@ webScan:
     # Example: Intranet host's ipv4 range is 192.168.0.0/16 or ipv6 range 2001:db8:85a3:0:0:8a2e:370:*
     ipPattern: "intranet-ip-pattern:192.168.*.*,[2001:db8:85a3:0:0:8a2e:370:*]"
 
-# Set user id and group id of the application user
-runAs:
-  uid: 9002
-  gid: 9002
-
 # deploymentComment (optional):
 #  When setting to a different value than before, it forces k8s to spin up a new container.
 #  This way, you can force deployments e.g. when only secrets have changed.
