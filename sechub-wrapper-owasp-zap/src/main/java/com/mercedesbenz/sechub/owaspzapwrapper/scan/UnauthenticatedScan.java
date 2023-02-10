@@ -57,8 +57,8 @@ public class UnauthenticatedScan extends AbstractScan {
 
     @Override
     protected void runActiveScan() throws ClientApiException {
-        // Necessary otherwise the active scanner exits with an exception
-        // Reason is, no URLs to actively scan where detected by the spider/ajaxSpider
+        // Necessary otherwise the active scanner exits with an exception,
+        // if no URLs to scan where detected by the spider/ajaxSpider before
         if (!atLeastOneURLDetected()) {
             LOG.warn("For {} skipping active scan, since no URLs where detected by spider or ajaxSpider!", scanContext.getContextName());
             scanContext.addProductMessage(new SecHubMessage(SecHubMessageType.WARNING,
