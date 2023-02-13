@@ -8,6 +8,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -29,6 +34,7 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 
+import com.mercedesbenz.sechub.developertools.admin.ui.ColouredComboBoxRenderer;
 import com.mercedesbenz.sechub.developertools.admin.ui.UIContext;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.ActionSupport;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.adapter.ProductExecutorTemplatesDialogUI.TemplatesDialogConfig;
@@ -136,6 +142,7 @@ public class ExecutorConfigDialogUI {
         buttonPanel.add(buttonOk, createLabelConstraint(0));
     }
 
+    @SuppressWarnings("deprecation")
     private void createMainPanel() {
 
         ActionSupport actionSupport = ActionSupport.getInstance();
@@ -162,8 +169,33 @@ public class ExecutorConfigDialogUI {
         mainPanel.add(uuidTextField, createComponentConstraint(row++));
 
         /* product */
-        ComboBoxModel<ProductIdentifier> comboBoxModel = new DefaultComboBoxModel<>(ProductIdentifier.values());
+        List<ProductIdentifier> productIfentifiers = new ArrayList<>(Arrays.asList(ProductIdentifier.values()));
+        productIfentifiers.remove(ProductIdentifier.SERECO);// SERECO is not really configurable, so remove it
+
+        ComboBoxModel<ProductIdentifier> comboBoxModel = new DefaultComboBoxModel<>(
+                productIfentifiers.toArray(new ProductIdentifier[productIfentifiers.size()]));
+
         productIdentifierCombobox = new JComboBox<>(comboBoxModel);
+        Map<ProductIdentifier, Color> map = new LinkedHashMap<>();
+        Color comboxDefaultForeground = productIdentifierCombobox.getForeground();
+        ColouredComboBoxRenderer<ProductIdentifier> renderer = new ColouredComboBoxRenderer<ProductIdentifier>(productIdentifierCombobox.getFont(),
+                comboxDefaultForeground, map);
+        Color color = new Color(255, 155, 155);
+        map.put(ProductIdentifier.NESSUS, color);
+        map.put(ProductIdentifier.NETSPARKER, color);
+        map.put(ProductIdentifier.CHECKMARX, Color.GRAY);
+
+        productIdentifierCombobox.setRenderer(renderer);
+        productIdentifierCombobox.addItemListener((e) -> {
+            /* render color when combobox is "closed" */
+            Color data = map.get(e.getItem());
+            if (data == null) {
+                productIdentifierCombobox.setForeground(comboxDefaultForeground);
+            } else {
+                productIdentifierCombobox.setForeground(data);
+            }
+        });
+
         productIdentifierCombobox.setSelectedItem(ProductIdentifier.valueOf(config.productIdentifier));
         mainPanel.add(new JLabel("Product identifier"), createLabelConstraint(row));
         mainPanel.add(productIdentifierCombobox, createComponentConstraint(row++));

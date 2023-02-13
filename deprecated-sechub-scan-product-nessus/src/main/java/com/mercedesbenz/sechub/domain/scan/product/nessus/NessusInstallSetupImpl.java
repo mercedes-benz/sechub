@@ -8,37 +8,38 @@ import com.mercedesbenz.sechub.adapter.AbstractAdapterConfigBuilder;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 
 @Component
+@Deprecated // will be removed in future
 public class NessusInstallSetupImpl implements NessusInstallSetup {
 
-    @Value("${sechub.adapter.nessus.intranet.baseurl:}")
+    @Value("${sechub.adapter.nessus.intranet.baseurl:deprecated}")
     @MustBeDocumented("Base url of nessus used for intranet scans")
     private String intranetNessusBaseURL;
 
-    @Value("${sechub.adapter.nessus.internet.baseurl:}")
+    @Value("${sechub.adapter.nessus.internet.baseurl:deprecated}")
     @MustBeDocumented("Base url of nessus used for internet scans")
     private String internetNessusBaseURL;
 
-    @Value("${sechub.adapter.nessus.intranet.userid:}")
+    @Value("${sechub.adapter.nessus.intranet.userid:deprecated}")
     @MustBeDocumented(value = "User id of nessus user (intranet)", secret = true)
     private String intranetNessusUserId;
 
-    @Value("${sechub.adapter.nessus.internet.userid:}")
+    @Value("${sechub.adapter.nessus.internet.userid:deprecated}")
     @MustBeDocumented(value = "User id of nessus user (internet)", secret = true)
     private String internetNessusUserId;
 
-    @Value("${sechub.adapter.nessus.intranet.password:}")
+    @Value("${sechub.adapter.nessus.intranet.password:deprecated}")
     @MustBeDocumented(value = "Password for nessus instance used for intranet scans", secret = true)
     private String intranetNessusPassword;
 
-    @Value("${sechub.adapter.nessus.internet.password:}")
+    @Value("${sechub.adapter.nessus.internet.password:deprecated}")
     @MustBeDocumented(value = "Password for nessus instance used for internet scans", secret = true)
     private String internetNessusPassword;
 
-    @Value("${sechub.adapter.nessus.defaultpolicyid}")
+    @Value("${sechub.adapter.nessus.defaultpolicyid:deprecated}")
     @MustBeDocumented("Default policy ID for nessus scans")
     private String defaultPolicyId;
 
-    @Value("${sechub.adapter.nessus.trustall:false}")
+    @Value("${sechub.adapter.nessus.trustall:true}")
     @MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_TRUSTALL)
     private boolean trustAllCertificatesNecessary;
 

@@ -29,6 +29,7 @@ import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 
+@Deprecated // will be removed in future
 @Service
 public class NessusProductExecutor extends AbstractProductExecutor {
 

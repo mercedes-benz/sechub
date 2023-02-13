@@ -3,7 +3,7 @@
 ==== Nessus
 [WARNING]
 ====
-Nessus support inside {sechub} is deprecated and will vanish when there is another infra structure scan
+Nessus support inside {sechub} is deprecated and will vanish when there is another infrastructure scan
 product integration available as an replacement.
 ====
 see https://www.tenable.com
