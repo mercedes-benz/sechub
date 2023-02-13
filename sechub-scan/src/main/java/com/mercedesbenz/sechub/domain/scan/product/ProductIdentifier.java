@@ -26,6 +26,7 @@ public enum ProductIdentifier {
     /**
      * Infrastructure scanner
      */
+    @Deprecated
     NESSUS(ProductType.INFRASCAN),
 
     /**

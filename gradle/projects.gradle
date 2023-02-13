@@ -51,10 +51,10 @@ projectType = [
             /* adapter projects - have simple spring dependencies, but know only sechub-adapter as base */
             springBootAdapterProjects: [
                     project(':sechub-adapter'),
-                    project(':deprecated-sechub-adapter-netsparker'),
-                    project(':sechub-adapter-nessus'),
-                    project(':sechub-adapter-checkmarx'),
                     project(':sechub-adapter-pds'),
+                    project(':sechub-adapter-checkmarx'),
+                    project(':deprecated-sechub-adapter-netsparker'),
+                    project(':deprecated-sechub-adapter-nessus'),
             ],
             
              /* PDS projects, all contained inside product delegation server */
@@ -74,11 +74,11 @@ projectType = [
                     project(':sechub-shared-kernel'),
 
                     project(':sechub-scan'),
-                    project(':deprecated-sechub-scan-product-netsparker'),
-                    project(':sechub-scan-product-nessus'),
-                    project(':sechub-scan-product-checkmarx'),
-                    project(':sechub-scan-product-sereco'),
                     project(':sechub-scan-product-pds'),
+                    project(':sechub-scan-product-sereco'),
+                    project(':sechub-scan-product-checkmarx'),
+                    project(':deprecated-sechub-scan-product-netsparker'),
+                    project(':deprecated-sechub-scan-product-nessus'),
             ],
             
             /* SecHub frontend projects */

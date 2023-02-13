@@ -10,7 +10,7 @@
         "fileSystem": {
             "folders": ["sechub-adapter/src/main/java",
                         "sechub-adapter-checkmarx/src/main/java",
-                        "sechub-adapter-nessus/src/main/java",
+                        "deprecated-sechub-adapter-nessus/src/main/java",
                         "deprecated-sechub-adapter-netsparker/src/main/java",
                         "sechub-administration/src/main/java",
                         "sechub-authorization/src/main/java",
@@ -18,7 +18,7 @@
                         "sechub-notification/src/main/java",
                         "sechub-scan/src/main/java",
                         "sechub-scan-product-checkmarx/src/main/java",
-                        "sechub-scan-product-nessus/src/main/java",
+                        "deprecated-sechub-scan-product-nessus/src/main/java",
                         "deprecated-sechub-scan-product-netsparker/src/main/java",
                         "sechub-scan-product-sereco/src/main/java",
                         "sechub-schedule/src/main/java",

@@ -1,5 +1,9 @@
 // SPDX-License-Identifier: MIT
 [[section-infrastructure-setup-security-products-nessus]]
 ==== Nessus
-
+[WARNING]
+====
+Nessus support inside {sechub} is deprecated and will vanish when there is another infra structure scan
+product integration available as an replacement.
+====
 see https://www.tenable.com

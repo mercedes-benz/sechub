@@ -8,7 +8,7 @@
 dependencies {
 
     implementation project(':sechub-scan')
-    implementation project(':sechub-adapter-nessus')
+    implementation project(':deprecated-sechub-adapter-nessus')
 
     testImplementation project(':sechub-testframework')
 }

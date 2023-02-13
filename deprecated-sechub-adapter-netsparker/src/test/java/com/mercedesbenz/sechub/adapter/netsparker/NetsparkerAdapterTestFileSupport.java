@@ -13,7 +13,7 @@ public class NetsparkerAdapterTestFileSupport extends TestFileSupport {
     }
 
     NetsparkerAdapterTestFileSupport() {
-        super("sechub-adapter-netsparker/src/test/resources");
+        super("deprecated-sechub-adapter-netsparker/src/test/resources");
     }
 
 }

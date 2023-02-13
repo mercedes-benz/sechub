@@ -12,12 +12,13 @@ dependencies {
     api project(':sechub-administration')
     api project(':sechub-notification')
     api project(':sechub-scan')
-    api project(':deprecated-sechub-scan-product-netsparker')
-    api project(':sechub-scan-product-nessus')
     api project(':sechub-scan-product-sereco')
     api project(':sechub-scan-product-checkmarx')
     api project(':sechub-scan-product-pds')
     api project(':sechub-sereco')
+    
+    api project(':deprecated-sechub-scan-product-netsparker')
+    api project(':deprecated-sechub-scan-product-nessus')
 
     testImplementation project(':sechub-testframework')
 }

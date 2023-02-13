@@ -13,7 +13,7 @@ public class NessusAdapterTestFileSupport extends TestFileSupport {
     }
 
     NessusAdapterTestFileSupport() {
-        super("sechub-adapter-nessus/src/test/resources");
+        super("deprecated-sechub-adapter-nessus/src/test/resources");
     }
 
 }
