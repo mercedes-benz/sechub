@@ -11,11 +11,11 @@ SECHUB_SERVER_VERSION="$4"
 usage() {
   cat - <<EOF
 
-usage: $0 <docker registry> <version tag> <base image> <SecHub server release version>
+usage: $0 <docker registry> <version tag> <Debian base image> <SecHub server release version>
 Builds a docker image of SecHub server
 for <docker registry> with tag <version tag>.
 Required:
-- <base image> ; for example debian:11-slim
+- <base image> ; A Debian based image Example: debian:11-slim
 - <SecHub server release version> ; see https://github.com/mercedes-benz/sechub/releases
   Example: 0.37.0 (The server .jar will be downloaded from the release)
 EOF

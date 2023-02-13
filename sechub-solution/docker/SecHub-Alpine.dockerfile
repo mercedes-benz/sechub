@@ -91,11 +91,11 @@ RUN apk update && \
 # Download the SecHub server
 RUN cd "$SECHUB_ARTIFACT_FOLDER" && \
     # download checksum file
-    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$SECHUB_VERSION-server/sechub-server-$SECHUB_VERSION.jar.sha256sum" && \
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v${SECHUB_VERSION}-server/sechub-server-${SECHUB_VERSION}.jar.sha256sum" && \
     # download pds
-    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$SECHUB_VERSION-server/sechub-server-$SECHUB_VERSION.jar" && \
+    wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v${SECHUB_VERSION}-server/sechub-server-${SECHUB_VERSION}.jar" && \
     # verify that the checksum and the checksum of the file are same
-    sha256sum -c "sechub-server-$SECHUB_VERSION.jar.sha256sum"
+    sha256sum -c "sechub-server-${SECHUB_VERSION}.jar.sha256sum"
 
 #-------------------
 # Builder Copy Jar
@@ -144,7 +144,8 @@ ARG SECHUB_FOLDER="/sechub"
 RUN addgroup --gid "$GID" "$USER"
 RUN adduser --uid "$UID" --ingroup "$USER" --disabled-password "$USER"
 
-RUN mkdir --parent "$SECHUB_FOLDER" "$SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR"
+RUN mkdir --parent "$SECHUB_FOLDER/secrets" "$SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR"
+# Mounted secret files (like e.g. SSL certificates) go to $SECHUB_FOLDER/secrets. See deployment.yaml file.
 COPY --from=builder "$SECHUB_ARTIFACT_FOLDER" "$SECHUB_FOLDER"
 
 COPY --chmod=755 install-java/alpine "$SECHUB_FOLDER/install-java/"
@@ -156,10 +157,8 @@ RUN apk update
 RUN cd "$SECHUB_FOLDER/install-java/" && \
     ./install-java.sh "$JAVA_DISTRIBUTION" "$JAVA_VERSION" jre
 
-# Copy run script into container
+# Copy run script into container and make it executable
 COPY run.sh /run.sh
-
-# Set execute permissions for scripts
 RUN chmod +x /run.sh
 
 # Set permissions and remove install scripts

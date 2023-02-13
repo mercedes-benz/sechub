@@ -15,7 +15,7 @@ usage: $0 <docker registry> <version tag> <base image> <SecHub server release ve
 Builds a docker image of SecHub server
 for <docker registry> with tag <version tag>.
 Required:
-- <base image> ; for example debian:11-slim
+- <base image> ; An Alpine based image. Example: alpine:3.17
 - <SecHub server release version> ; see https://github.com/mercedes-benz/sechub/releases
   Example: 0.37.0 (The server .jar will be downloaded from the release)
 EOF
@@ -59,7 +59,7 @@ EOF
 export BUILDKIT_PROGRESS=plain
 export DOCKER_BUILDKIT=1
 
-SERVER_DOCKERFILE="docker/SecHub-Debian.dockerfile"
+SERVER_DOCKERFILE="docker/SecHub-Alpine.dockerfile"
 echo "docker build --pull --no-cache $BUILD_ARGS --tag \"$REGISTRY:$VERSION\" --file \"$SERVER_DOCKERFILE\" docker/"
 docker build --pull --no-cache $BUILD_ARGS \
        --tag "$REGISTRY:$VERSION" \
