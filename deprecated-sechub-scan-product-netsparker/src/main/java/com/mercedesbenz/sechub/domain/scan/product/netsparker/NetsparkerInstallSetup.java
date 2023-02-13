@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.domain.scan.product.netsparker;
 
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataProvider;
 
+@Deprecated // will be removed in future
 public interface NetsparkerInstallSetup extends NetworkTargetProductServerDataProvider {
 
     public int getScanResultCheckPeriodInMinutes();

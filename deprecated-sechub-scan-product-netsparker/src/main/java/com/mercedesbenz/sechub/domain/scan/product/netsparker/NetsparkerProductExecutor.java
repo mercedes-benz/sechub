@@ -31,6 +31,7 @@ import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 
+@Deprecated // will be removed in future
 @Service
 public class NetsparkerProductExecutor extends AbstractProductExecutor {
 
