@@ -38,5 +38,8 @@ rm ibm-semeru-open-*.tar.gz*
 # link to java installation
 ln --symbolic $JAVA_DIR/j*/bin/java /usr/bin/java
 
+# link to keytool installation
+ln --symbolic $JAVA_DIR/j*/bin/keytool /usr/bin/keytool
+
 apt-get remove --assume-yes --quiet wget
 apt-get clean

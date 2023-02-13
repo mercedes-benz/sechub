@@ -10,14 +10,13 @@ ARG BASE_IMAGE
 # Build args
 ARG BUILD_TYPE="download"
 
-ARG SECHUB_VERSION="0.35.2"
+ARG SECHUB_VERSION
 ARG TAG=""
 ARG BRANCH=""
 
-ARG GO="go1.19.3.linux-amd64.tar.gz"
-
 # possible values: temurin, openj9, openjdk
 ARG JAVA_DISTRIBUTION="openjdk"
+
 # possible values are 11, 17
 ARG JAVA_VERSION="11"
 
@@ -48,27 +47,11 @@ RUN echo "Builder: Build"
 
 RUN mkdir --parent "$SECHUB_ARTIFACT_FOLDER" "$DOWNLOAD_FOLDER"
 
-RUN export DEBIAN_FRONTEND=noninteractive && \
-    apt-get update && \
-    apt-get install --quiet --assume-yes wget w3m git && \
-    apt-get clean
+RUN apk update && \
+    apk add wget git && \
+    apk cache clean
 
-# Install Go
-RUN cd "$DOWNLOAD_FOLDER" && \
-    # Get checksum from Go download site
-    GO_CHECKSUM=`w3m https://go.dev/dl/ | grep "$GO" | tail -1 | awk '{print $6}'` && \
-    # create checksum file
-    echo "$GO_CHECKSUM $GO" > "$GO.sha256sum" && \
-    # download Go
-    wget --no-verbose https://go.dev/dl/"${GO}" && \
-    # verify that the checksum and the checksum of the file are same
-    sha256sum --check "$GO.sha256sum" && \
-    # extract Go
-    tar --extract --file "$GO" --directory /usr/local/ && \
-    # remove go tar.gz
-    rm "$GO"
-
-COPY --chmod=755 install-java/debian "$DOWNLOAD_FOLDER/install-java/"
+COPY --chmod=755 install-java/ "$DOWNLOAD_FOLDER/install-java/"
 
 # Install Java
 RUN cd "$DOWNLOAD_FOLDER/install-java/" && \
@@ -102,10 +85,8 @@ RUN echo "Builder: Download"
 
 RUN mkdir --parent "$SECHUB_ARTIFACT_FOLDER"
 
-RUN export DEBIAN_FRONTEND=noninteractive && \
-    apt-get update && \
-    apt-get install --assume-yes wget && \
-    apt-get clean
+RUN apk update && \
+    apk add wget
 
 # Download the SecHub server
 RUN cd "$SECHUB_ARTIFACT_FOLDER" && \
@@ -114,7 +95,7 @@ RUN cd "$SECHUB_ARTIFACT_FOLDER" && \
     # download pds
     wget --no-verbose "https://github.com/mercedes-benz/sechub/releases/download/v$SECHUB_VERSION-server/sechub-server-$SECHUB_VERSION.jar" && \
     # verify that the checksum and the checksum of the file are same
-    sha256sum --check "sechub-server-$SECHUB_VERSION.jar.sha256sum"
+    sha256sum -c "sechub-server-$SECHUB_VERSION.jar.sha256sum"
 
 #-------------------
 # Builder Copy Jar
@@ -158,38 +139,37 @@ ENV SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR="/shared_volumes/uploads"
 
 ARG SECHUB_FOLDER="/sechub"
 
+# non-root user
 # using fixed group and user ids
-RUN groupadd --gid "$GID" "$USER" && \
-    useradd --uid "$UID" --gid "$GID" --no-log-init --create-home "$USER"
+RUN addgroup --gid "$GID" "$USER"
+RUN adduser --uid "$UID" --ingroup "$USER" --disabled-password "$USER"
 
-RUN mkdir --parent "$SECHUB_FOLDER/secrets" "$SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR"
-# Mounted secret files (like e.g. SSL certificates) go to $SECHUB_FOLDER/secrets. See deployment.yaml file.
+RUN mkdir --parent "$SECHUB_FOLDER" "$SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR"
 COPY --from=builder "$SECHUB_ARTIFACT_FOLDER" "$SECHUB_FOLDER"
 
-# Copy run script into container and make it executable
-COPY run.sh /run.sh
-RUN chmod +x /run.sh
+COPY --chmod=755 install-java/alpine "$SECHUB_FOLDER/install-java/"
 
-# Upgrade system
-RUN export DEBIAN_FRONTEND=noninteractive && \
-    apt-get update && \
-    apt-get upgrade --assume-yes --quiet && \
-    apt-get clean
-
-COPY --chmod=755 install-java/debian/ "$SECHUB_FOLDER/install-java/"
+# Update container
+RUN apk update
 
 # Install Java
 RUN cd "$SECHUB_FOLDER/install-java/" && \
     ./install-java.sh "$JAVA_DISTRIBUTION" "$JAVA_VERSION" jre
 
-# Set permissions and clean up install folder
+# Copy run script into container
+COPY run.sh /run.sh
+
+# Set execute permissions for scripts
+RUN chmod +x /run.sh
+
+# Set permissions and remove install scripts
 RUN chown --recursive "$USER:$USER" "$SECHUB_FOLDER" "$SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR" && \
-    rm --recursive --force "$SECHUB_FOLDER/install-java/"
+    rm -rf "$SECHUB_FOLDER/install-java/"
 
 # Set workspace
 WORKDIR "$SECHUB_FOLDER"
 
-# Switch to non-root user
+# Switch from root to non-root user
 USER "$USER"
 
 CMD ["/run.sh"]
