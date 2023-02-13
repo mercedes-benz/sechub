@@ -151,8 +151,7 @@ COPY --from=builder "$SECHUB_ARTIFACT_FOLDER" "$SECHUB_FOLDER"
 COPY --chmod=755 install-java/alpine "$SECHUB_FOLDER/install-java/"
 
 # Update packages
-RUN apk update && \
-    apk cache clean
+RUN apk update
 
 # Install Java
 RUN cd "$SECHUB_FOLDER/install-java/" && \
