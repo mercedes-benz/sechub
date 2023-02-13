@@ -29,7 +29,7 @@ include 'sechub-cli',
 /* server parts */
 'sechub-schedule',
 'sechub-scan',
-'sechub-scan-product-netsparker',
+'deprecated-sechub-scan-product-netsparker',
 'sechub-scan-product-nessus',
 'sechub-scan-product-checkmarx',
 'sechub-scan-product-sereco',
@@ -37,7 +37,7 @@ include 'sechub-cli',
 
 // adapters
 'sechub-adapter',
-'sechub-adapter-netsparker',
+'deprecated-sechub-adapter-netsparker',
 'sechub-adapter-nessus',
 'sechub-adapter-checkmarx',
 'sechub-adapter-pds',

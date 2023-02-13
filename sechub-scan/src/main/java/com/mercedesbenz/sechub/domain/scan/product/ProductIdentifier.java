@@ -20,6 +20,7 @@ public enum ProductIdentifier {
     /**
      * Webscanner
      */
+    @Deprecated
     NETSPARKER(ProductType.WEBSCAN),
 
     /**

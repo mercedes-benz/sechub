@@ -8,7 +8,7 @@
 dependencies {
 
     implementation project(':sechub-scan')
-    implementation project(':sechub-adapter-netsparker')
+    implementation project(':deprecated-sechub-adapter-netsparker')
 
     testImplementation project(':sechub-testframework')
 }

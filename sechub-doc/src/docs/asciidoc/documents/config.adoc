@@ -16,6 +16,7 @@
 :webPage: https://mercedes-benz.github.io/sechub
 :sechub: SecHub
 :pds: PDS
+:pds-solutions-projectsite: {projectSite}/tree/develop/sechub-pds-solutions
 
 :launchServerPackageName: com.mercedesbenz.sechub
 :launchServerClassName: SecHubServerApplication

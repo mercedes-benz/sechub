@@ -12,7 +12,7 @@ dependencies {
     api project(':sechub-administration')
     api project(':sechub-notification')
     api project(':sechub-scan')
-    api project(':sechub-scan-product-netsparker')
+    api project(':deprecated-sechub-scan-product-netsparker')
     api project(':sechub-scan-product-nessus')
     api project(':sechub-scan-product-sereco')
     api project(':sechub-scan-product-checkmarx')
