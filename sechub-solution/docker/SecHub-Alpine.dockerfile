@@ -162,8 +162,9 @@ COPY run.sh /run.sh
 # Set execute permissions for scripts
 RUN chmod +x /run.sh
 
-# Set permissions
-RUN chown --recursive "$USER:$USER" "$SECHUB_FOLDER" "$SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR"
+# Set permissions and remove install scripts
+RUN chown --recursive "$USER:$USER" "$SECHUB_FOLDER" "$SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR" && \
+    rm -rf "$SECHUB_FOLDER/install-java/"
 
 # Set workspace
 WORKDIR "$SECHUB_FOLDER"
