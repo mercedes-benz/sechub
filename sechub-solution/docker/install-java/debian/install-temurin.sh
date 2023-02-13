@@ -16,6 +16,6 @@ echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.n
 apt-get update
 
 # Temurin does not have JRE build in the Linux packages: https://github.com/adoptium/installer/issues/430
-apt-get install --assume-yes --quiet temurin-"${JAVA_VERSION}-jdk"
+apt-get install --assume-yes --quiet temurin-"${JAVA_VERSION}-${JAVA_RUNTIME}"
 apt-get remove --assume-yes --quiet wget
 apt-get clean

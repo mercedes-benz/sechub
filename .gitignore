@@ -55,3 +55,7 @@ java-gen/
 
 # macOS
 .DS_Store
+
+# Containerized solutions
+copy/
+!copy/README.adoc
