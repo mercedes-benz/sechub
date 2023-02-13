@@ -48,7 +48,7 @@ RUN echo "Builder: Build"
 RUN mkdir --parent "$SECHUB_ARTIFACT_FOLDER" "$DOWNLOAD_FOLDER"
 
 RUN apk update && \
-    apk add wget git && \
+    apk add --no-cache wget git && \
     apk cache clean
 
 COPY --chmod=755 install-java/ "$DOWNLOAD_FOLDER/install-java/"
@@ -86,7 +86,7 @@ RUN echo "Builder: Download"
 RUN mkdir --parent "$SECHUB_ARTIFACT_FOLDER"
 
 RUN apk update && \
-    apk add wget
+    apk add --no-cache wget
 
 # Download the SecHub server
 RUN cd "$SECHUB_ARTIFACT_FOLDER" && \
@@ -150,8 +150,9 @@ COPY --from=builder "$SECHUB_ARTIFACT_FOLDER" "$SECHUB_FOLDER"
 
 COPY --chmod=755 install-java/alpine "$SECHUB_FOLDER/install-java/"
 
-# Update container
-RUN apk update
+# Update packages
+RUN apk update && \
+    apk cache clean
 
 # Install Java
 RUN cd "$SECHUB_FOLDER/install-java/" && \
