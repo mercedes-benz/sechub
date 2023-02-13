@@ -48,7 +48,12 @@ if $FAILED ; then
 fi
 
 BUILD_ARGS="--build-arg BASE_IMAGE=$BASE_IMAGE --build-arg SECHUB_VERSION=$SECHUB_SERVER_VERSION"
-echo ">> Base image: $BASE_IMAGE"
+cat - <<EOF
+Building SecHub server image
+  $REGISTRY:$VERSION
+  from release version v${SECHUB_SERVER_VERSION}-server
+  based on image: $BASE_IMAGE
+EOF
 
 # Docker BuildKit settings
 export BUILDKIT_PROGRESS=plain

@@ -4,7 +4,7 @@
 REPLICAS="$1"
 
 cd $(dirname "$0")
-source "../shared/scripts/9999-helper.sh"
+source "../../sechub-solutions-shared/scripts/9999-env-file-helper.sh"
 
 ENVIRONMENT_FILES_FOLDER="../shared/environment"
 ENVIRONMENT_FILE=".env-cluster"

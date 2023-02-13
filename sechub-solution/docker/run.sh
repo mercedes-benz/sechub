@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 # SPDX-License-Identifier: MIT
 
 SLEEP_TIME_IN_WAIT_LOOP="2h"
@@ -132,7 +132,7 @@ SecHub server settings:
 Starting up SecHub server
 EOF
   java $java_debug_options $storage_options \
-    -Dfile.encoding=UTF-8 -Djava.security.egd=file:/dev/urandom -XX:InitialRAMPercentage=50 -XX:MaxRAMPercentage=80 -XshowSettings:vm \
+    -Dfile.encoding=UTF-8 -XX:InitialRAMPercentage=50 -XX:MaxRAMPercentage=80 -XshowSettings:vm \
     -jar /sechub/sechub-server*.jar
 }
 
