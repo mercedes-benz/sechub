@@ -7,7 +7,7 @@ resource_limits_enabled="$1"
 compose_file="docker-compose_sechub-alpine"
 
 cd $(dirname "$0")
-source "0000-helper.sh"
+source ../sechub-solutions-shared/scripts/9999-env-file-helper.sh
 
 # Only variables from .env can be used in the Docker-Compose file
 # all other variables are only available in the container
