@@ -6,7 +6,9 @@ import static org.mockito.Mockito.*;
 
 import java.net.InetAddress;
 import java.net.URI;
+import java.util.LinkedHashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,10 +23,106 @@ class SecHubConfigurationModelValidatorTest {
     private static final String VALID_NAME_WITH_MAX_LENGTH = "---------1---------2---------3---------4---------5---------6---------7---------8";
     private static final String VALID_NAME_BUT_ONE_CHAR_TOO_LONG = VALID_NAME_WITH_MAX_LENGTH + "-";
     private SecHubConfigurationModelValidator validatorToTest;
+    private SecHubConfigurationModelSupport modelSupport;
+    private Set<ScanType> modelSupportCollectedScanTypes;
 
     @BeforeEach
     private void beforeEach() {
+
+        modelSupportCollectedScanTypes = new LinkedHashSet<>();
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // just one
+
+        modelSupport = mock(SecHubConfigurationModelSupport.class);
+
         validatorToTest = new SecHubConfigurationModelValidator();
+        validatorToTest.modelSupport = modelSupport;
+
+        when(modelSupport.collectPublicScanTypes(any(SecHubConfigurationModel.class))).thenReturn(modelSupportCollectedScanTypes);
+    }
+
+    @Test
+    void when_modelcollector_collects_no_scan_types_the_validation_fails_with_scangroup_unclear_and_no_scantypes_found() {
+        /* prepare */
+        SecHubConfigurationModel model = createDefaultValidModel();
+        modelSupportCollectedScanTypes.clear();
+
+        /* check precondition */
+        assertNull(ScanGroup.resolveScanGroupOrNull(modelSupportCollectedScanTypes));
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertHasError(result, SecHubConfigurationModelValidationError.NO_PUBLIC_SCANTYPES_DETECTED);
+        assertHasError(result, SecHubConfigurationModelValidationError.SCANGROUP_UNCLEAR);
+        assertEquals(2, result.getErrors().size());
+    }
+
+    @Test
+    void when_modelcollector_collects_two_scan_types_which_are_not_in_same_group_the_validation_fails_with_scangroup_unclear() {
+        /* prepare */
+        SecHubConfigurationModel model = createDefaultValidModel();
+        modelSupportCollectedScanTypes.clear();
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN);
+        modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
+
+        /* check precondition */
+        assertNull(ScanGroup.resolveScanGroupOrNull(modelSupportCollectedScanTypes));
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertHasError(result, SecHubConfigurationModelValidationError.SCANGROUP_UNCLEAR);
+        assertEquals(1, result.getErrors().size());
+    }
+
+    @Test
+    void when_modelcollector_collects_two_scan_types_which_are_in_same_group_the_validation_has_no_errors() {
+        /* prepare */
+        SecHubConfigurationModel model = createDefaultValidModel();
+        modelSupportCollectedScanTypes.clear();
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN);
+        modelSupportCollectedScanTypes.add(ScanType.LICENSE_SCAN);
+
+        /* check precondition */
+        assertNotNull(ScanGroup.resolveScanGroupOrNull(modelSupportCollectedScanTypes));
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertHasNoErrors(result);
+    }
+
+    @Test
+    void a_configuration_which_has_code_scan_and_license_scan_will_NOT_fail_because_only_one_group() {
+        /* prepare */
+        SecHubCodeScanConfiguration codeScan = new SecHubCodeScanConfiguration();
+        SecHubLicenseScanConfiguration licenseScan = new SecHubLicenseScanConfiguration();
+
+        SecHubConfigurationModel model = new SecHubConfigurationModel();
+
+        model.setApiVersion("1.0");
+        model.setCodeScan(codeScan);
+        model.setLicenseScan(licenseScan);
+
+        /* setup data */
+        SecHubSourceDataConfiguration dataConfiguration = new SecHubSourceDataConfiguration();
+        dataConfiguration.setUniqueName("config-object-name");
+        SecHubDataConfiguration data = new SecHubDataConfiguration();
+        data.getSources().add(dataConfiguration);
+
+        model.setData(data);
+
+        model.getCodeScan().get().getNamesOfUsedDataConfigurationObjects().add("config-object-name");
+        model.getLicenseScan().get().getNamesOfUsedDataConfigurationObjects().add("config-object-name");
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertHasNoErrors(result);
     }
 
     @Test
@@ -84,7 +182,7 @@ class SecHubConfigurationModelValidatorTest {
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
 
         /* test */
-        assertFalse(result.hasErrors());
+        assertHasNoErrors(result);
     }
 
     @Test
@@ -156,7 +254,7 @@ class SecHubConfigurationModelValidatorTest {
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
 
         /* test */
-        assertFalse(result.hasErrors());
+        assertHasNoErrors(result);
 
     }
 
@@ -248,7 +346,7 @@ class SecHubConfigurationModelValidatorTest {
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
 
         /* test */
-        assertFalse(result.hasErrors());
+        assertHasNoErrors(result);
     }
 
     @ParameterizedTest
@@ -287,7 +385,7 @@ class SecHubConfigurationModelValidatorTest {
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
 
         /* test */
-        assertFalse(result.hasErrors());
+        assertHasNoErrors(result);
     }
 
     @Test
@@ -344,7 +442,6 @@ class SecHubConfigurationModelValidatorTest {
         webScan.url = createURIforSchema("https");
 
         openApi.getNamesOfUsedDataConfigurationObjects().add("referenced-open-api-file");
-
         /* execute + test */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
 
@@ -537,8 +634,7 @@ class SecHubConfigurationModelValidatorTest {
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
 
         /* test */
-        assertFalse(result.hasErrors());
-        assertEquals(0, result.getErrors().size());
+        assertHasNoErrors(result);
     }
 
     private URI createURIforSchema(String schema) {
@@ -555,6 +651,11 @@ class SecHubConfigurationModelValidatorTest {
         SecHubCodeScanConfiguration codeScan = new SecHubCodeScanConfiguration();
         model.setCodeScan(codeScan);
         return model;
+    }
+
+    private void assertHasNoErrors(SecHubConfigurationModelValidationResult result) {
+        assertFalse(result.hasErrors());
+        assertEquals(0, result.getErrors().size());
     }
 
     private void assertHasError(SecHubConfigurationModelValidationResult result, SecHubConfigurationModelValidationError error) {

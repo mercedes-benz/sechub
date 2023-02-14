@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -136,6 +137,29 @@ public class SecHubConfigurationModelSupport {
         }
         LOG.debug("List of data elements for datatype {} did contain none of the referenced ones, so not contained", dataType);
         return false;
+    }
+
+    /**
+     * Collects scan types
+     *
+     * @param model
+     * @return set with scan types, never <code>null</code>
+     */
+    public Set<ScanType> collectPublicScanTypes(SecHubConfigurationModel model) {
+        Set<ScanType> result = new LinkedHashSet<>();
+        if (model.getCodeScan().isPresent()) {
+            result.add(ScanType.CODE_SCAN);
+        }
+        if (model.getWebScan().isPresent()) {
+            result.add(ScanType.WEB_SCAN);
+        }
+        if (model.getInfraScan().isPresent()) {
+            result.add(ScanType.INFRA_SCAN);
+        }
+        if (model.getLicenseScan().isPresent()) {
+            result.add(ScanType.LICENSE_SCAN);
+        }
+        return result;
     }
 
 }

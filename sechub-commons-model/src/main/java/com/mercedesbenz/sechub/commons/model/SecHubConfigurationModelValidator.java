@@ -20,6 +20,8 @@ public class SecHubConfigurationModelValidator {
     private static int MIN_NAME_LENGTH = 1;
     private static final int MAX_NAME_LENGTH = 80;
 
+    SecHubConfigurationModelSupport modelSupport = new SecHubConfigurationModelSupport();
+
     private List<String> supportedVersions;
 
     public SecHubConfigurationModelValidator() {
@@ -60,8 +62,29 @@ public class SecHubConfigurationModelValidator {
             context.result.addError(API_VERSION_NOT_SUPPORTED, "Supported versions are:" + describeSupportedVersions());
             return;
         }
+        handleScanTypesAndScanGroup(context);
         handleDataConfiguration(context);
         handleScanConfigurations(context);
+    }
+
+    private void handleScanTypesAndScanGroup(InternalValidationContext context) {
+        Set<ScanType> scanTypes = modelSupport.collectPublicScanTypes(context.model);
+        handleScanTypes(context, scanTypes);
+
+        ScanGroup group = ScanGroup.resolveScanGroupOrNull(scanTypes);
+        handleScanGroup(context, group);
+    }
+
+    private void handleScanGroup(InternalValidationContext context, ScanGroup group) {
+        if (group == null) {
+            context.result.addError(SCANGROUP_UNCLEAR);
+        }
+    }
+
+    private void handleScanTypes(InternalValidationContext context, Set<ScanType> scanTypes) {
+        if (scanTypes.isEmpty()) {
+            context.result.addError(NO_PUBLIC_SCANTYPES_DETECTED);
+        }
     }
 
     private void handleScanConfigurations(InternalValidationContext context) {

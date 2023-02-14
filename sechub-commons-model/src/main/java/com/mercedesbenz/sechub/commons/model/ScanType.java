@@ -14,23 +14,33 @@ public enum ScanType {
     LICENSE_SCAN("licenseScan"),
 
     /** not really a scan type but a report collector, only internally used */
-    REPORT("report"),
+    REPORT("report", true),
 
     /*
      * This is just a fallback for unknown scan type.
      */
-    UNKNOWN("unknown"),
+    UNKNOWN("unknown", true),
 
     ;
 
     private String id;
+    private boolean internalScanType;
 
     private ScanType(String id) {
+        this(id, false);
+    }
+
+    private ScanType(String id, boolean internalScanType) {
         this.id = id;
+        this.internalScanType = internalScanType;
     }
 
     @JsonValue
     public String getId() {
         return id;
+    }
+
+    public boolean isInternalScanType() {
+        return internalScanType;
     }
 }

@@ -17,6 +17,7 @@ import javax.persistence.Version;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.mercedesbenz.sechub.commons.model.ScanGroup;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.domain.schedule.ExecutionResult;
 import com.mercedesbenz.sechub.domain.schedule.ExecutionState;
@@ -45,6 +46,7 @@ public class ScheduleSecHubJob {
     public static final String COLUMN_STATE = "STATE";
     public static final String COLUMN_CONFIGURATION = "CONFIGURATION";
     public static final String COLUMN_TRAFFIC_LIGHT = "TRAFFIC_LIGHT";
+    public static final String COLUMN_SCANGROUP = "SCAN_GROUP";
 
     public static final String COLUMN_PROJECT_ID = "PROJECT_ID";
 
@@ -103,6 +105,10 @@ public class ScheduleSecHubJob {
     @Enumerated(STRING)
     @Column(name = COLUMN_TRAFFIC_LIGHT, nullable = true)
     TrafficLight trafficLight;
+
+    @Enumerated(STRING)
+    @Column(name = COLUMN_SCANGROUP, nullable = true) // nullable only for backward compatibility with old jobs
+    ScanGroup scanGroup;
 
     @Column(name = COLUMN_MESSAGES)
     private String jsonMessages;
@@ -185,6 +191,14 @@ public class ScheduleSecHubJob {
 
     public void setJsonMessages(String jsonMessages) {
         this.jsonMessages = jsonMessages;
+    }
+
+    public void setScanGroup(ScanGroup scanGroup) {
+        this.scanGroup = scanGroup;
+    }
+
+    public ScanGroup getScanGroup() {
+        return scanGroup;
     }
 
     @Override
