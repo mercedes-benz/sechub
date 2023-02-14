@@ -161,9 +161,9 @@ RUN cd "$SECHUB_FOLDER/install-java/" && \
 COPY run.sh /run.sh
 RUN chmod +x /run.sh
 
-# Set permissions and remove install scripts
+# Set permissions and remove unnecessary files
 RUN chown --recursive "$USER:$USER" "$SECHUB_FOLDER" "$SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR" && \
-    rm -rf "$SECHUB_FOLDER/install-java/"
+    rm -rf /var/cache/apk/* "$SECHUB_FOLDER/install-java/"
 
 # Set workspace
 WORKDIR "$SECHUB_FOLDER"
