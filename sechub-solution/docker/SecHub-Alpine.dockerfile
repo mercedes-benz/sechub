@@ -144,8 +144,8 @@ ARG SECHUB_FOLDER="/sechub"
 RUN addgroup --gid "$GID" "$USER"
 RUN adduser --uid "$UID" --ingroup "$USER" --disabled-password "$USER"
 
-RUN mkdir --parent "$SECHUB_FOLDER/secrets" "$SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR"
 # Mounted secret files (like e.g. SSL certificates) go to $SECHUB_FOLDER/secrets. See deployment.yaml file.
+RUN mkdir --parent "$SECHUB_FOLDER/secrets" "$SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR"
 COPY --from=builder "$SECHUB_ARTIFACT_FOLDER" "$SECHUB_FOLDER"
 
 COPY --chmod=755 install-java/alpine "$SECHUB_FOLDER/install-java/"
