@@ -62,22 +62,22 @@ public class SecHubConfigurationModelValidator {
             context.result.addError(API_VERSION_NOT_SUPPORTED, "Supported versions are:" + describeSupportedVersions());
             return;
         }
-        handleScanTypesAndScanGroup(context);
+        handleScanTypesAndModuleGroups(context);
         handleDataConfiguration(context);
         handleScanConfigurations(context);
     }
 
-    private void handleScanTypesAndScanGroup(InternalValidationContext context) {
+    private void handleScanTypesAndModuleGroups(InternalValidationContext context) {
         Set<ScanType> scanTypes = modelSupport.collectPublicScanTypes(context.model);
         handleScanTypes(context, scanTypes);
 
-        ScanGroup group = ScanGroup.resolveScanGroupOrNull(scanTypes);
-        handleScanGroup(context, group);
+        ModuleGroup group = ModuleGroup.resolveModuleGroupOrNull(scanTypes);
+        handleModuleGroup(context, group);
     }
 
-    private void handleScanGroup(InternalValidationContext context, ScanGroup group) {
+    private void handleModuleGroup(InternalValidationContext context, ModuleGroup group) {
         if (group == null) {
-            context.result.addError(SCANGROUP_UNCLEAR);
+            context.result.addError(MODULE_GROUP_UNCLEAR);
         }
     }
 

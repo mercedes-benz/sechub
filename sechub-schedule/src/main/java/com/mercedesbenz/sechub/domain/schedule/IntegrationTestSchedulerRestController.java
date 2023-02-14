@@ -76,7 +76,7 @@ public class IntegrationTestSchedulerRestController {
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/scheduler/strategy/{strategyId}", method = RequestMethod.PUT, produces = {
             MediaType.APPLICATION_JSON_VALUE })
     public void setSchedulerStrategy(@PathVariable("strategyId") String strategyId) {
-        schedulerStrategyFactory.setStrategyId(strategyId);
+        schedulerStrategyFactory.setStrategyIdentifier(strategyId);
     }
 
 }

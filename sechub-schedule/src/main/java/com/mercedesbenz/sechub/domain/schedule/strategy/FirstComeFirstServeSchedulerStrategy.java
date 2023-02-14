@@ -17,7 +17,7 @@ public class FirstComeFirstServeSchedulerStrategy implements SchedulerStrategy {
 
     @Override
     public SchedulerStrategyId getSchedulerId() {
-        return SchedulerStrategyId.FirstComeFirstServe;
+        return SchedulerStrategyId.FIRST_COME_FIRST_SERVE;
     }
 
     @Override

@@ -41,25 +41,25 @@ class SecHubConfigurationModelValidatorTest {
     }
 
     @Test
-    void when_modelcollector_collects_no_scan_types_the_validation_fails_with_scangroup_unclear_and_no_scantypes_found() {
+    void when_modelcollector_collects_no_scan_types_the_validation_fails_with_modulegroup_unclear_and_no_public_scantypes_found() {
         /* prepare */
         SecHubConfigurationModel model = createDefaultValidModel();
         modelSupportCollectedScanTypes.clear();
 
         /* check precondition */
-        assertNull(ScanGroup.resolveScanGroupOrNull(modelSupportCollectedScanTypes));
+        assertNull(ModuleGroup.resolveModuleGroupOrNull(modelSupportCollectedScanTypes));
 
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
 
         /* test */
+        assertHasError(result, SecHubConfigurationModelValidationError.MODULE_GROUP_UNCLEAR);
         assertHasError(result, SecHubConfigurationModelValidationError.NO_PUBLIC_SCANTYPES_DETECTED);
-        assertHasError(result, SecHubConfigurationModelValidationError.SCANGROUP_UNCLEAR);
         assertEquals(2, result.getErrors().size());
     }
 
     @Test
-    void when_modelcollector_collects_two_scan_types_which_are_not_in_same_group_the_validation_fails_with_scangroup_unclear() {
+    void when_modelcollector_collects_two_scan_types_which_are_not_in_same_group_the_validation_fails_with_modulegroup_unclear() {
         /* prepare */
         SecHubConfigurationModel model = createDefaultValidModel();
         modelSupportCollectedScanTypes.clear();
@@ -67,13 +67,13 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
 
         /* check precondition */
-        assertNull(ScanGroup.resolveScanGroupOrNull(modelSupportCollectedScanTypes));
+        assertNull(ModuleGroup.resolveModuleGroupOrNull(modelSupportCollectedScanTypes));
 
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
 
         /* test */
-        assertHasError(result, SecHubConfigurationModelValidationError.SCANGROUP_UNCLEAR);
+        assertHasError(result, SecHubConfigurationModelValidationError.MODULE_GROUP_UNCLEAR);
         assertEquals(1, result.getErrors().size());
     }
 
@@ -86,7 +86,7 @@ class SecHubConfigurationModelValidatorTest {
         modelSupportCollectedScanTypes.add(ScanType.LICENSE_SCAN);
 
         /* check precondition */
-        assertNotNull(ScanGroup.resolveScanGroupOrNull(modelSupportCollectedScanTypes));
+        assertNotNull(ModuleGroup.resolveModuleGroupOrNull(modelSupportCollectedScanTypes));
 
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);

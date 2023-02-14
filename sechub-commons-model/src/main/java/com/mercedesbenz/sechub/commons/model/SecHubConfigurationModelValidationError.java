@@ -33,8 +33,8 @@ public enum SecHubConfigurationModelValidationError {
 
     NO_PUBLIC_SCANTYPES_DETECTED("No public scan types can be detected."),
 
-    SCANGROUP_UNCLEAR(
-            "Scan group of the configuration is unclear (e.g. a web scan and a code scan at same time means also different scan groups at same time which is not allowed)."),;
+    MODULE_GROUP_UNCLEAR(
+            "Module group of the configuration is unclear (e.g. a web scan and a code scan at same time means also different module groups (STATIC + DYNAMIC) at same time which is not allowed)."),;
 
     private String defaultMessage;
 

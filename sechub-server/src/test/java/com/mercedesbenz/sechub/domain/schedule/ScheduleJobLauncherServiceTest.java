@@ -75,11 +75,7 @@ public class ScheduleJobLauncherServiceTest {
     public void executeJob__calls_job_launcher_with_job_uuid_as_parameter() throws Exception {
         /* prepare */
         UUID jobUUID = UUID.randomUUID();
-
-        ScheduleSecHubJob secHubJob = mock(ScheduleSecHubJob.class);
-        when(secHubJob.getJsonConfiguration()).thenReturn("jsonConfig");
-        when(secHubJob.getUUID()).thenReturn(jobUUID);
-        when(jobRepository.findNextJobToExecute()).thenReturn(Optional.of(secHubJob));
+        when(jobRepository.nextJobIdToExecuteFirstInFirstOut()).thenReturn(Optional.of(jobUUID));
 
         /* execute */
         serviceToTest.executeJob(secHubJob);
@@ -97,10 +93,7 @@ public class ScheduleJobLauncherServiceTest {
         /* prepare */
         UUID jobUUID = UUID.randomUUID();
 
-        ScheduleSecHubJob secHubJob = mock(ScheduleSecHubJob.class);
-        when(secHubJob.getJsonConfiguration()).thenReturn("jsonConfig");
-        when(secHubJob.getUUID()).thenReturn(jobUUID);
-        when(jobRepository.findNextJobToExecute()).thenReturn(Optional.of(secHubJob));
+        when(jobRepository.nextJobIdToExecuteFirstInFirstOut()).thenReturn(Optional.of(jobUUID));
 
         /* execute */
         serviceToTest.executeJob(secHubJob);

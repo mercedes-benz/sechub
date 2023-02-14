@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverterException;
-import com.mercedesbenz.sechub.commons.model.ScanGroup;
+import com.mercedesbenz.sechub.commons.model.ModuleGroup;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelSupport;
 import com.mercedesbenz.sechub.sharedkernel.UserContextService;
@@ -53,7 +53,7 @@ public class SecHubJobFactory {
             job.created = LocalDateTime.now();
 
             Set<ScanType> scanTypes = modelSupport.collectPublicScanTypes(configuration);
-            job.scanGroup = ScanGroup.resolveScanGroupOrNull(scanTypes);
+            job.moduleGroup = ModuleGroup.resolveModuleGroupOrNull(scanTypes);
 
         } catch (JSONConverterException e) {
             // should never happen, but...

@@ -10,19 +10,19 @@ import org.springframework.stereotype.Component;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 
 @Component
-public class OnlyOneScanPerProjectAtSameTimeStrategy implements SchedulerStrategy {
+public class OnlyOneScanPerProjectAndModuleGroupAtSameTimeStrategy implements SchedulerStrategy {
 
     @Autowired
     SecHubJobRepository jobRepository;
 
     @Override
     public SchedulerStrategyId getSchedulerId() {
-        return SchedulerStrategyId.ONE_SCAN_PER_PROJECT;
+        return SchedulerStrategyId.ONE_SCAN_PER_PROJECT_AND_MODULE_GROUP;
     }
 
     @Override
     public UUID nextJobId() {
-        Optional<UUID> nextJob = jobRepository.nextJobIdToExecuteForProjectNotYetExecuted();
+        Optional<UUID> nextJob = jobRepository.nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted();
         if (!nextJob.isPresent()) {
             return null;
         }

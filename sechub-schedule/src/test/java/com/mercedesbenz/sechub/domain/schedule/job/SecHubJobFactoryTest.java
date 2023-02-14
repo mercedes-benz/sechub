@@ -12,7 +12,7 @@ import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import com.mercedesbenz.sechub.commons.model.ScanGroup;
+import com.mercedesbenz.sechub.commons.model.ModuleGroup;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelSupport;
 import com.mercedesbenz.sechub.sharedkernel.UserContextService;
@@ -120,25 +120,25 @@ class SecHubJobFactoryTest {
         /* test */
         assertNotNull(result);
 
-        ScanGroup expected = null;
+        ModuleGroup expected = null;
         if (!type.isInternalScanType()) {
             /* for public types the expected group is not null */
             switch (type) {
             case INFRA_SCAN:
-                expected = ScanGroup.NETWORK;
+                expected = ModuleGroup.NETWORK;
                 break;
             case WEB_SCAN:
-                expected = ScanGroup.DEPLOYMENT;
+                expected = ModuleGroup.DYNAMIC;
                 break;
             default:
                 // we assume currently all others are "content" (e.g. license scan, code scan
                 // etc.)
-                expected = ScanGroup.CONTENT;
+                expected = ModuleGroup.STATIC;
                 break;
 
             }
         }
-        assertEquals(expected, result.getScanGroup());
+        assertEquals(expected, result.getModuleGroup());
     }
 
 }
