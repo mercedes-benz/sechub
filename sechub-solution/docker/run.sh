@@ -33,13 +33,8 @@ init_scheduler_settings() {
     export SECHUB_CONFIG_TRIGGER_NEXTJOB_DELAY="10000"
     echo "---> SECHUB_CONFIG_TRIGGER_NEXTJOB_DELAY is undefined. Falling back to $SECHUB_CONFIG_TRIGGER_NEXTJOB_DELAY"
   fi
-
-  # Randomize initial delay used for trigger next job
-  #
-  # So when having SECHUB_CONFIG_TRIGGER_NEXTJOB_DELAY with 10.000 (default) we got amountOf303 with 33
-  # which means min 303 millis, max 33*303=9999 milis
-  amountOn303=$(( $SECHUB_CONFIG_TRIGGER_NEXTJOB_DELAY / 303))
-  export SECHUB_CONFIG_TRIGGER_NEXTJOB_INITIALDELAY=$(( $(shuf -i 1-$amountOn303 -n 1) * 303 ))
+  # Randomize initial delay used for trigger next job (a random tenth of the scheduler delay)
+  export SECHUB_CONFIG_TRIGGER_NEXTJOB_INITIALDELAY=$(( $SECHUB_CONFIG_TRIGGER_NEXTJOB_DELAY / 10 * $(shuf -i 0-10 -n 1) ))
 }
 
 localserver() {
