@@ -72,6 +72,7 @@ public class SecHubConfigurationModelValidator {
         handleWebScanConfiguration(context);
         handleInfraScanConfiguration(context);
         handleLicenseScanConfiguration(context);
+        handleSecretScanConfiguration(context);
 
     }
 
@@ -88,6 +89,21 @@ public class SecHubConfigurationModelValidator {
         }
 
         handleUsages(context, licenseScan);
+    }
+
+    private void handleSecretScanConfiguration(InternalValidationContext context) {
+        Optional<SecHubSecretScanConfiguration> secretScanOpt = context.model.getSecretScan();
+
+        if (!secretScanOpt.isPresent()) {
+            return;
+        }
+        SecHubDataConfigurationUsageByName secretScan = secretScanOpt.get();
+
+        if (secretScan.getNamesOfUsedDataConfigurationObjects().isEmpty()) {
+            context.result.addError(NO_DATA_CONFIG_SPECIFIED_FOR_SCAN);
+        }
+
+        handleUsages(context, secretScan);
     }
 
     private void handleCodeScanConfiguration(InternalValidationContext context) {
@@ -212,6 +228,7 @@ public class SecHubConfigurationModelValidator {
         atLeastOne = atLeastOne || model.getInfraScan().isPresent();
         atLeastOne = atLeastOne || model.getWebScan().isPresent();
         atLeastOne = atLeastOne || model.getLicenseScan().isPresent();
+        atLeastOne = atLeastOne || model.getSecretScan().isPresent();
 
         return atLeastOne;
     }

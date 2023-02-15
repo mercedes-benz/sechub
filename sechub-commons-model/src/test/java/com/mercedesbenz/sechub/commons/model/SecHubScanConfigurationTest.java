@@ -118,4 +118,34 @@ class SecHubScanConfigurationTest {
         assertEquals(1, usedDataConfigurations.size());
         assertEquals("build-artifacts", usedDataConfigurations.iterator().next());
     }
+
+    @Test
+    void sechub_job_config_secret_scan_JSON_can_be_deserialized_and_contains_expected_source_data_reference() {
+
+        /* prepare */
+        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_secret_scan_config_source_example.json"));
+
+        /* execute */
+        SecHubScanConfiguration scanConfig = SecHubScanConfiguration.createFromJSON(json);
+
+        /* test */
+        Set<String> usedDataConfigurations = scanConfig.getSecretScan().get().getNamesOfUsedDataConfigurationObjects();
+        assertEquals(1, usedDataConfigurations.size());
+        assertEquals("code", usedDataConfigurations.iterator().next());
+    }
+
+    @Test
+    void sechub_job_config_secret_scan_JSON_can_be_deserialized_and_contains_expected_binary_data_reference() {
+
+        /* prepare */
+        String json = TestFileReader.loadTextFile(new File("./src/test/resources/sechub_secret_scan_config_binary_example.json"));
+
+        /* execute */
+        SecHubScanConfiguration scanConfig = SecHubScanConfiguration.createFromJSON(json);
+
+        /* test */
+        Set<String> usedDataConfigurations = scanConfig.getSecretScan().get().getNamesOfUsedDataConfigurationObjects();
+        assertEquals(1, usedDataConfigurations.size());
+        assertEquals("build-artifacts", usedDataConfigurations.iterator().next());
+    }
 }

@@ -49,7 +49,8 @@ public enum ProductIdentifier {
     /** Product delegation server - license scan */
     PDS_LICENSESCAN(ProductType.LICENSESCAN),
 
-    ;
+    /** Product delegation server - secret scan */
+    PDS_SECRETSCAN(ProductType.SECRETSCAN),;
 
     private ProductType type;
 

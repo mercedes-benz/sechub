@@ -74,6 +74,9 @@ public class SecHubFileStructureDataProviderBuilder {
         case LICENSE_SCAN:
             addAllUsages(data, model.getLicenseScan(), true);
             break;
+        case SECRET_SCAN:
+            addAllUsages(data, model.getSecretScan(), true);
+            break;
         case REPORT:
             break;
         case UNKNOWN:
@@ -89,7 +92,6 @@ public class SecHubFileStructureDataProviderBuilder {
             break;
         default:
             break;
-
         }
 
         return data;

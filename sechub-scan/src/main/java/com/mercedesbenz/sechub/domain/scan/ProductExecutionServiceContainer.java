@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import com.mercedesbenz.sechub.domain.scan.product.CodeScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.InfrastructureScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.LicenseScanProductExecutionService;
+import com.mercedesbenz.sechub.domain.scan.product.SecretScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.WebScanProductExecutionService;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
 
@@ -25,6 +26,9 @@ public class ProductExecutionServiceContainer {
 
     @Autowired
     private LicenseScanProductExecutionService licenseScanProductExecutionService;
+
+    @Autowired
+    private SecretScanProductExecutionService secretScanProductExecutionService;
 
     @Lazy
     @Autowired
@@ -48,5 +52,9 @@ public class ProductExecutionServiceContainer {
 
     public DomainMessageService getDomainMessageService() {
         return domainMessageService;
+    }
+
+    public SecretScanProductExecutionService getSecretScanProductExecutionService() {
+        return secretScanProductExecutionService;
     }
 }

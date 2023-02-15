@@ -247,6 +247,8 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
             return config.getWebScan().isPresent();
         case LICENSE_SCAN:
             return config.getLicenseScan().isPresent();
+        case SECRET_SCAN:
+            return config.getSecretScan().isPresent();
         case UNKNOWN:
             return false;
         default:

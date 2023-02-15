@@ -67,6 +67,8 @@ public class IntegrationTestDefaultExecutorConfigurations {
 
     public static final String PDS_LICENSESCAN_VARIANT_A = "a";
 
+    public static final String PDS_SECRETSCAN_VARIANT_A = "a";
+
     /* @formatter:off */
     public static final TestExecutorConfig PDS_V1_CODE_SCAN_A = definePDSScan(
                                                 PDS_CODESCAN_VARIANT_A,false,
@@ -174,6 +176,12 @@ public class IntegrationTestDefaultExecutorConfigurations {
     											PDSIntTestProductIdentifier.PDS_TEST_PRODUCT_LICENSESCAN,
     											StorageType.REUSE_SECHUB_DATA,
     											PDS_LICENSESCAN);
+
+    public static final TestExecutorConfig PDS_V1_SECRET_SCAN_A = definePDSScan(
+			PDS_SECRETSCAN_VARIANT_A, false,
+			PDSIntTestProductIdentifier.PDS_TEST_PRODUCT_SECRETSCAN,
+			StorageType.REUSE_SECHUB_DATA,
+			PDS_SECRETSCAN);
 
     /**
      * The executor configuration does result in usage of {@link PDSIntTestProductIdentifier#PDS_INTTEST_PRODUCT_WS_SARIF}.

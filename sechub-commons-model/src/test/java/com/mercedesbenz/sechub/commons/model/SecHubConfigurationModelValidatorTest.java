@@ -541,6 +541,49 @@ class SecHubConfigurationModelValidatorTest {
         assertEquals(0, result.getErrors().size());
     }
 
+    @Test
+    void secret_scan__empty_config_results_in_error() throws Exception {
+        /* prepare */
+        SecHubSecretScanConfiguration secretScan = new SecHubSecretScanConfiguration();
+
+        SecHubConfigurationModel model = new SecHubConfigurationModel();
+        model.setApiVersion("1.0");
+        model.setSecretScan(secretScan);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertHasError(result, SecHubConfigurationModelValidationError.NO_DATA_CONFIG_SPECIFIED_FOR_SCAN);
+        assertEquals(1, result.getErrors().size());
+    }
+
+    @Test
+    void secret_scan__config_with_data() throws Exception {
+        /* prepare */
+        String dataName = "data-reference-1";
+
+        SecHubSecretScanConfiguration secretScan = new SecHubSecretScanConfiguration();
+        secretScan.getNamesOfUsedDataConfigurationObjects().add(dataName);
+
+        SecHubSourceDataConfiguration dataSource = new SecHubSourceDataConfiguration();
+        dataSource.setUniqueName(dataName);
+
+        SecHubDataConfiguration dataConfiguration = new SecHubDataConfiguration();
+        dataConfiguration.getSources().add(dataSource);
+
+        SecHubConfigurationModel model = new SecHubConfigurationModel();
+        model.setApiVersion("1.0");
+        model.setSecretScan(secretScan);
+        model.setData(dataConfiguration);
+
+        /* execute */
+        SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
+
+        /* test */
+        assertFalse(result.hasErrors());
+    }
+
     private URI createURIforSchema(String schema) {
         // why mocking a URI? Because of name look ups and more
         // this slows tests - using a mock increases performance here

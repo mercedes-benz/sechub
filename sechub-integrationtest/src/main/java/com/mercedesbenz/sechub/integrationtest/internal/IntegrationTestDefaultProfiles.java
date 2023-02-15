@@ -365,6 +365,22 @@ public class IntegrationTestDefaultProfiles {
     public static final DefaultTestExecutionProfile PROFILE_15_PDS_CHECKMARX_INTEGRATIONTEST_FILTERING_TEXTFILES = defineProfile15();
 
     /**
+     * <h3>Profile 16</h3>
+     * <h4>Short description</h4>PDS scan profile for secret scans
+     *
+     * <h4>Overview</h4> For a glance over all scenarios, look at
+     * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
+     * Overview}
+     *
+     * <h4>Details</h4><br>
+     * <h5>Used inside scenarios:</h5>
+     * <ul>
+     * <li>{@link Scenario16}</li>
+     * </ul>
+     */
+    public static final DefaultTestExecutionProfile PROFILE_17_PDS_SECRETSCAN = defineProfile17();
+
+    /**
      * @return all default profiles
      */
     public static List<DefaultTestExecutionProfile> getAllDefaultProfiles() {
@@ -524,6 +540,16 @@ public class IntegrationTestDefaultProfiles {
                 .add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_CHECKMARX_INTEGRATIONTEST_WITH_FILEFILTER_EXCLUDE_TEXTFILES);
         profile.id = "inttest-p15-pds-checkmarx";
         profile.description = "Profile 15: PDS checkmarx, reused storage, dynamic text results, with file filter exclusion of *.txt";
+        profile.enabled = true;
+        return profile;
+    }
+
+    private static DefaultTestExecutionProfile defineProfile17() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_SECRET_SCAN_A);
+        profile.id = "inttest-p16-pds-secretscan";
+        profile.description = "Profile 16: PDS secret scan, reused storage, SARIF JSON file returned";
         profile.enabled = true;
         return profile;
     }

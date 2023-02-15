@@ -59,6 +59,15 @@ public class SecHubConfigurationModelReducedCloningSupport {
                 newModel.setLicenseScan(new SecHubLicenseScanConfiguration());
             }
             break;
+        case SECRET_SCAN:
+            Optional<SecHubSecretScanConfiguration> secretScan = model.getSecretScan();
+            if (secretScan.isPresent()) {
+                newModel.setSecretScan(secretScan.get());
+            } else {
+                LOG.warn("The model did not contain a secret scan configuration - so add new one as fallback");
+                newModel.setSecretScan(new SecHubSecretScanConfiguration());
+            }
+            break;
         case WEB_SCAN:
 
             Optional<SecHubWebScanConfiguration> webScan = model.getWebScan();

@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.sereco;
 
 import java.util.List;
 
+import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 
 public class ImportParameter {
@@ -29,6 +30,24 @@ public class ImportParameter {
 
     public List<SecHubMessage> getProductMessages() {
         return productMessages;
+    }
+
+    public ScanType getScanType() {
+        ScanType scanType = ScanType.UNKNOWN;
+
+        if (productId == "NESSUS" || productId == "PDS_INFRASCAN") {
+            scanType = ScanType.INFRA_SCAN;
+        } else if (productId == "CHECKMARX" || productId == "PDS_CODESCAN") {
+            scanType = ScanType.CODE_SCAN;
+        } else if (productId == "NETSPARKER" || productId == "PDS_WEBSCAN") {
+            scanType = ScanType.WEB_SCAN;
+        } else if (productId == "PDS_LICENSESCAN") {
+            scanType = ScanType.LICENSE_SCAN;
+        } else if (productId == "PDS_SECRETSCAN") {
+            scanType = ScanType.SECRET_SCAN;
+        }
+
+        return scanType;
     }
 
     /**

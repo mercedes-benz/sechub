@@ -14,4 +14,6 @@ public enum ProductType {
     ANALYSE,
 
     REPORT_COLLECTOR,
+
+    SECRETSCAN,
 }

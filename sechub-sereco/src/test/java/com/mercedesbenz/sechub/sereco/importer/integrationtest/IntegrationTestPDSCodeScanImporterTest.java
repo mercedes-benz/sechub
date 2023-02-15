@@ -9,6 +9,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoSeverity;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
@@ -38,7 +39,7 @@ public class IntegrationTestPDSCodeScanImporterTest {
        /* @formatter:on */
 
         /* execute */
-        SerecoMetaData result = importerToTest.importResult(data);
+        SerecoMetaData result = importerToTest.importResult(data, ScanType.CODE_SCAN);
 
         /* test */
         List<SerecoVulnerability> v = result.getVulnerabilities();
