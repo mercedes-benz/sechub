@@ -87,8 +87,8 @@ public class OwaspZapScanContextFactory {
         }
 
         List<SecHubMessage> userMessages = new LinkedList<>();
-        Set<URL> includeList = createUrlsIncludedInContext(targetUrl, sechubWebConfig, userMessages);
-        Set<URL> excludeList = createUrlsExcludedFromContext(targetUrl, sechubWebConfig, userMessages);
+        Set<URL> includeSet = createUrlsIncludedInContext(targetUrl, sechubWebConfig, userMessages);
+        Set<URL> excludeSet = createUrlsExcludedFromContext(targetUrl, sechubWebConfig, userMessages);
 
         String userMessagesFolder = environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_JOB_USER_MESSAGES_FOLDER);
         if (userMessagesFolder == null) {
@@ -114,8 +114,8 @@ public class OwaspZapScanContextFactory {
 												.setFullRuleset(fullRuleset)
 												.setDeactivatedRuleReferences(deactivatedRuleReferences)
 												.setApiDefinitionFile(apiDefinitionFile)
-												.setOwaspZapURLsIncludeSet(includeList)
-												.setOwaspZapURLsExcludeSet(excludeList)
+												.setOwaspZapURLsIncludeSet(includeSet)
+												.setOwaspZapURLsExcludeSet(excludeSet)
 												.setMaxNumberOfConnectionRetries(settings.getMaxNumberOfConnectionRetries())
 												.setRetryWaittimeInMilliseconds(settings.getRetryWaittimeInMilliseconds())
 												.setOwaspZapProductMessageHelper(productMessagehelper)

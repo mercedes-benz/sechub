@@ -358,7 +358,7 @@ public abstract class AbstractScan implements OwaspZapScan {
      * starting an active scan.
      *
      * This can only happen in very few cases, but then we want to be able to inform
-     * the user an write a report which is empty or contains at least the passively
+     * the user and write a report which is empty or contains at least the passively
      * detected results.
      *
      * @return
