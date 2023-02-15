@@ -141,7 +141,7 @@ public class CommandLineSettings {
 
     @Parameter(names = {
             "--retryWaittimeInMilliseconds" }, description = "Specify the time to wait between connection retries in milliseconds. The value cannot be less than 1000 milliseconds.", required = false)
-    private int retryWaittimeInMilliseconds = 2000;
+    private int retryWaittimeInMilliseconds = 1000;
 
     public int getRetryWaittimeInMilliseconds() {
         if (retryWaittimeInMilliseconds < 1000) {

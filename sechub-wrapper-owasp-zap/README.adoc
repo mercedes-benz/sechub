@@ -59,7 +59,7 @@ Usage: OwaspZapWrapper [options]
     --retryWaittimeInMilliseconds
       Specify the time to wait between connection retries in milliseconds. The 
       value cannot be less than 1000 milliseconds.
-      Default: 2000
+      Default: 1000
     --rulesDeactivationfile
       Specify a file with rules to deactivate during the scan inside the Owasp 
       Zap. 
