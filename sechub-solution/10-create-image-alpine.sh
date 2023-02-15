@@ -44,6 +44,10 @@ if [[ -z "$BASE_IMAGE" ]]; then
   FAILED=true
 fi
 
+if [[ -z "$DOCKER_BUILD_TYPE" ]]; then
+  export DOCKER_BUILD_TYPE="$DEFAULT_DOCKER_BUILD_TYPE"
+fi
+
 # Make sure that only allowed build types are used. (Fallback: $DEFAULT_DOCKER_BUILD_TYPE)
 case "$DOCKER_BUILD_TYPE" in
   build) ;;
@@ -61,7 +65,10 @@ case "$DOCKER_BUILD_TYPE" in
     fi
     BUILD_ARGS="--build-arg SECHUB_VERSION=$SECHUB_SERVER_VERSION"
     ;;
-  *) export DOCKER_BUILD_TYPE="$DEFAULT_DOCKER_BUILD_TYPE" ;;
+  *)
+    echo "Unknown build type \"$DOCKER_BUILD_TYPE\". Falling back to \"$DEFAULT_DOCKER_BUILD_TYPE\"."
+    export DOCKER_BUILD_TYPE="$DEFAULT_DOCKER_BUILD_TYPE"
+    ;;
 esac
 
 if $FAILED ; then
