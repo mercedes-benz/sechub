@@ -6,8 +6,10 @@ Here are files used by multiple PDS solutions.
 
 This helps eliminating redundancy and maintenance of scripts and files.
 
+TIP: Helper scripts can be found in `../../sechub-solutions-shared/scripts`
+
 == Subdirectories
 
 * `docker/`: Commonly used Docker containers like database or load balancer
 * `environment/`: Commonly needed environment variables
-* `scripts/`: Commonly used shell scripts
+* `media/`: Shared media like images etc.

@@ -75,7 +75,7 @@ class SecHubConfigurationModelSupportTest {
         boolean result = supportToTest.isBinaryRequired(scanType, model);
 
         /* test */
-        boolean needed = ScanType.LICENSE_SCAN.equals(scanType);
+        boolean needed = ScanType.LICENSE_SCAN.equals(scanType) || ScanType.ANALYTICS.equals(scanType);
         assertEquals(needed, result, "Needed must be:" + needed);
     }
 
@@ -90,7 +90,8 @@ class SecHubConfigurationModelSupportTest {
         boolean result = supportToTest.isSourceRequired(scanType, model);
 
         /* test */
-        boolean needed = ScanType.CODE_SCAN.equals(scanType) || ScanType.LICENSE_SCAN.equals(scanType);
+        boolean needed = ScanType.CODE_SCAN.equals(scanType) || ScanType.LICENSE_SCAN.equals(scanType) || ScanType.ANALYTICS.equals(scanType);
+        ;
         assertEquals(needed, result, "Needed must be:" + needed);
     }
 
@@ -111,7 +112,7 @@ class SecHubConfigurationModelSupportTest {
 
     @ParameterizedTest
     @EnumSource(ScanType.class)
-    void sechub_license_and_code_scan_example3__source_required_by_codescan_and_licensescan(ScanType scanType) {
+    void sechub_license_and_code_scan_example3__source_required_by_codescan(ScanType scanType) {
 
         /* prepare */
         SecHubConfigurationModel model = sechub_license_and_code_scan_example3;
@@ -120,7 +121,8 @@ class SecHubConfigurationModelSupportTest {
         boolean result = supportToTest.isSourceRequired(scanType, model);
 
         /* test */
-        boolean needed = ScanType.CODE_SCAN.equals(scanType);
+        boolean needed = ScanType.CODE_SCAN.equals(scanType) || ScanType.ANALYTICS.equals(scanType);
+        ;
         assertEquals(needed, result, "Needed must be:" + needed);
     }
 
@@ -135,7 +137,8 @@ class SecHubConfigurationModelSupportTest {
         boolean result = supportToTest.isBinaryRequired(scanType, model);
 
         /* test */
-        boolean needed = ScanType.LICENSE_SCAN.equals(scanType);
+        boolean needed = ScanType.LICENSE_SCAN.equals(scanType) || ScanType.ANALYTICS.equals(scanType);
+        ;
         assertEquals(needed, result, "Needed must be:" + needed);
     }
 
@@ -150,7 +153,8 @@ class SecHubConfigurationModelSupportTest {
         boolean result = supportToTest.isSourceRequired(scanType, model);
 
         /* test */
-        boolean needed = ScanType.CODE_SCAN.equals(scanType);
+        boolean needed = ScanType.CODE_SCAN.equals(scanType) || ScanType.ANALYTICS.equals(scanType);
+        ;
         assertEquals(needed, result, "Needed must be:" + needed);
     }
 
@@ -165,7 +169,8 @@ class SecHubConfigurationModelSupportTest {
         boolean result = supportToTest.isBinaryRequired(scanType, model);
 
         /* test */
-        boolean needed = ScanType.LICENSE_SCAN.equals(scanType);
+        boolean needed = ScanType.LICENSE_SCAN.equals(scanType) || ScanType.ANALYTICS.equals(scanType);
+        ;
         assertEquals(needed, result, "Needed must be:" + needed);
     }
 
@@ -180,7 +185,8 @@ class SecHubConfigurationModelSupportTest {
         boolean result = supportToTest.isSourceRequired(scanType, model);
 
         /* test */
-        boolean needed = ScanType.LICENSE_SCAN.equals(scanType) || ScanType.CODE_SCAN.equals(scanType);
+        boolean needed = ScanType.CODE_SCAN.equals(scanType) || ScanType.LICENSE_SCAN.equals(scanType) || ScanType.ANALYTICS.equals(scanType);
+        ;
         assertEquals(needed, result, "Needed must be:" + needed);
     }
 
@@ -195,7 +201,8 @@ class SecHubConfigurationModelSupportTest {
         boolean result = supportToTest.isBinaryRequired(scanType, model);
 
         /* test */
-        boolean needed = ScanType.LICENSE_SCAN.equals(scanType);
+        boolean needed = ScanType.LICENSE_SCAN.equals(scanType) || ScanType.ANALYTICS.equals(scanType);
+        ;
         assertEquals(needed, result, "Needed must be:" + needed);
     }
 
@@ -214,7 +221,8 @@ class SecHubConfigurationModelSupportTest {
         boolean result = supportToTest.isBinaryRequired(scanType, model);
 
         /* test */
-        boolean needed = ScanType.LICENSE_SCAN.equals(scanType);
+        boolean needed = ScanType.LICENSE_SCAN.equals(scanType) || ScanType.ANALYTICS.equals(scanType);
+        ;
         assertEquals(needed, result, "Needed must be:" + needed);
     }
 
@@ -259,7 +267,8 @@ class SecHubConfigurationModelSupportTest {
         boolean result = supportToTest.isSourceRequired(scanType, model);
 
         /* test */
-        boolean needed = ScanType.LICENSE_SCAN.equals(scanType);
+        boolean needed = ScanType.LICENSE_SCAN.equals(scanType) || ScanType.ANALYTICS.equals(scanType);
+        ;
         assertEquals(needed, result, "Needed must be:" + needed);
     }
 
@@ -277,7 +286,8 @@ class SecHubConfigurationModelSupportTest {
         boolean result = supportToTest.isBinaryRequired(scanType, model);
 
         /* test */
-        boolean needed = ScanType.LICENSE_SCAN.equals(scanType);
+        boolean needed = ScanType.LICENSE_SCAN.equals(scanType) || ScanType.ANALYTICS.equals(scanType);
+        ;
         assertEquals(needed, result, "Needed must be:" + needed);
     }
 
@@ -322,7 +332,8 @@ class SecHubConfigurationModelSupportTest {
         boolean result = supportToTest.isSourceRequired(scanType, model);
 
         /* test */
-        boolean needed = ScanType.LICENSE_SCAN.equals(scanType);
+        boolean needed = ScanType.LICENSE_SCAN.equals(scanType) || ScanType.ANALYTICS.equals(scanType);
+        ;
         assertEquals(needed, result, "Needed must be:" + needed);
     }
 
@@ -340,7 +351,8 @@ class SecHubConfigurationModelSupportTest {
         boolean result = supportToTest.isSourceRequired(scanType, model);
 
         /* test */
-        boolean needed = ScanType.LICENSE_SCAN.equals(scanType);
+        boolean needed = ScanType.LICENSE_SCAN.equals(scanType) || ScanType.ANALYTICS.equals(scanType);
+        ;
         assertEquals(needed, result, "Needed must be:" + needed);
     }
 
@@ -355,8 +367,9 @@ class SecHubConfigurationModelSupportTest {
         boolean result = supportToTest.isBinaryRequired(scanType, model);
 
         /* test */
-        boolean sourceZipNeeded = ScanType.LICENSE_SCAN.equals(scanType);
-        assertEquals(sourceZipNeeded, result, "Source zip needed must be:" + sourceZipNeeded);
+        boolean needed = ScanType.LICENSE_SCAN.equals(scanType) || ScanType.ANALYTICS.equals(scanType);
+        ;
+        assertEquals(needed, result, "Source zip needed must be:" + needed);
     }
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
@@ -388,7 +401,8 @@ class SecHubConfigurationModelSupportTest {
         boolean result = supportToTest.isSourceRequired(scanType, model);
 
         /* test */
-        boolean needed = ScanType.CODE_SCAN.equals(scanType);
+        boolean needed = ScanType.CODE_SCAN.equals(scanType) || ScanType.ANALYTICS.equals(scanType);
+        ;
         assertEquals(needed, result, "Needed must be:" + needed);
     }
 
@@ -406,7 +420,8 @@ class SecHubConfigurationModelSupportTest {
         boolean result = supportToTest.isBinaryRequired(scanType, model);
 
         /* test */
-        boolean needed = ScanType.CODE_SCAN.equals(scanType);
+        boolean needed = ScanType.CODE_SCAN.equals(scanType) || ScanType.ANALYTICS.equals(scanType);
+        ;
         assertEquals(needed, result, "Needed must be:" + needed);
     }
 
@@ -451,7 +466,8 @@ class SecHubConfigurationModelSupportTest {
         boolean result = supportToTest.isSourceRequired(scanType, model);
 
         /* test */
-        boolean needed = ScanType.CODE_SCAN.equals(scanType);
+        boolean needed = ScanType.CODE_SCAN.equals(scanType) || ScanType.ANALYTICS.equals(scanType);
+        ;
         assertEquals(needed, result, "Needed must be:" + needed);
     }
 

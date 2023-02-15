@@ -59,7 +59,9 @@ public class MappingScenario3IntTest {
                 startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN_ZERO_WAIT);
         UUID sechubJobUUID = result.getSechubJobUUID();
 
-        assertNotNull("No sechub jobUUId found-maybe client call failed?", sechubJobUUID);
+        if (sechubJobUUID==null) {
+            fail("No sechub jobUUId found-maybe client call failed?\nLast line:"+result.getLastOutputLine()+"\nExit code:"+result.getExitCode());
+        }
         assertMetaDataInspections().
             hasAmountOfInspections(1).
             inspectionNr(0).

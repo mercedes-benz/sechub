@@ -80,6 +80,8 @@ public enum PDSIntTestProductIdentifier {
 
     PDS_CHECKMARX_INTEGRATIONTEST("PDS_CHECKMARX_INTEGRATIONTEST"),
 
+    PDS_INTTEST_PRODUCT_ANALYZE("PDS_INTTEST_PRODUCT_ANALYZE"),
+
     ;
 
     private String id;

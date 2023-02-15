@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import com.mercedesbenz.sechub.domain.scan.product.AnalyticsProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.CodeScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.InfrastructureScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.LicenseScanProductExecutionService;
@@ -13,6 +14,9 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
 
 @Component
 public class ProductExecutionServiceContainer {
+
+    @Autowired
+    private AnalyticsProductExecutionService analyticsProductExecutionService;
 
     @Autowired
     private CodeScanProductExecutionService codeScanProductExecutionService;
@@ -29,6 +33,10 @@ public class ProductExecutionServiceContainer {
     @Lazy
     @Autowired
     private DomainMessageService domainMessageService;
+
+    public AnalyticsProductExecutionService getAnalyticsProductExecutionService() {
+        return analyticsProductExecutionService;
+    }
 
     public CodeScanProductExecutionService getCodeScanProductExecutionService() {
         return codeScanProductExecutionService;

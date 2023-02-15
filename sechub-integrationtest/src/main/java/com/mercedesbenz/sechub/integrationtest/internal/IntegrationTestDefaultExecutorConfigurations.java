@@ -202,6 +202,12 @@ public class IntegrationTestDefaultExecutorConfigurations {
             StorageType.REUSE_SECHUB_DATA,
             PDS_CODESCAN, definePDSCheckmarxParameters(null,"*.txt"));
 
+    public static final TestExecutorConfig PDS_V1_ANALYZE_INTEGRATIONTEST_CLOC_JSON_1 = definePDSScan(
+            "default", false,
+            PDSIntTestProductIdentifier.PDS_INTTEST_PRODUCT_ANALYZE,
+            StorageType.REUSE_SECHUB_DATA,
+            PDS_ANALYTICS);
+
 
     /* @formatter:on */
 

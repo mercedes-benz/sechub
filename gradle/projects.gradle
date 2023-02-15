@@ -75,10 +75,14 @@ projectType = [
 
                     project(':sechub-scan'),
                     project(':sechub-scan-product-pds'),
+
                     project(':sechub-scan-product-sereco'),
                     project(':sechub-scan-product-checkmarx'),
                     project(':deprecated-sechub-scan-product-netsparker'),
                     project(':deprecated-sechub-scan-product-nessus'),
+
+                    project(':sechub-statistic'),
+
             ],
             
             /* SecHub frontend projects */

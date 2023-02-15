@@ -17,7 +17,7 @@ import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 
-class PDSAdapterConfigurationStrategyBulderTest {
+class PDSAdapterConfigurationStrategyBuilderTest {
 
     private InputStream binariesInputStream;
     private InputStream sourceInputStream;
