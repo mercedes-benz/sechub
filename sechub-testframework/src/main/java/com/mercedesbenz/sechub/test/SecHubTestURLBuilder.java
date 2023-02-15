@@ -626,4 +626,22 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
         return buildUrl(API_ANONYMOUS, "integrationtest/job/" + sechubJobUIUD + "/fullscandata");
     }
 
+    // statistic parts
+
+    public String buildintegrationTestFetchJobStatistic(UUID sechubJobUUID) {
+        return buildUrl(API_ANONYMOUS, "integrationtest/statistic/job/" + sechubJobUUID);
+    }
+
+    public String buildintegrationTestFetchJobStatisticData(UUID sechubJobUUID) {
+        return buildUrl(API_ANONYMOUS, "integrationtest/statistic/job-data/" + sechubJobUUID);
+    }
+
+    public String buildintegrationTestFetchJobRunStatistic(UUID sechubJobUUID) {
+        return buildUrl(API_ANONYMOUS, "integrationtest/statistic/job-run/" + sechubJobUUID);
+    }
+
+    public String buildintegrationTestFetchJobRunStatisticData(UUID sechubJobUUID) {
+        return buildUrl(API_ANONYMOUS, "integrationtest/statistic/job-run-data/" + sechubJobUUID);
+    }
+
 }

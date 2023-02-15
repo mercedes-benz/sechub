@@ -25,11 +25,6 @@ public class InfrastructureScanProductExecutionServiceImpl extends AbstractProdu
 
     private static final Logger LOG = LoggerFactory.getLogger(InfrastructureScanProductExecutionServiceImpl.class);
 
-    @Override
-    protected ScanType getScanType() {
-        return ScanType.INFRA_SCAN;
-    }
-
     public boolean isExecutionNecessary(SecHubExecutionContext context, UUIDTraceLogID traceLogID, SecHubConfiguration configuration) {
         Optional<SecHubInfrastructureScanConfiguration> infraScanConfiguration = configuration.getInfraScan();
         if (!infraScanConfiguration.isPresent()) {

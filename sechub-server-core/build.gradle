@@ -18,6 +18,7 @@ dependencies {
     api project(':sechub-scan-product-checkmarx')
     api project(':sechub-scan-product-pds')
     api project(':sechub-sereco')
+    api project(':sechub-statistic')
 
     testImplementation project(':sechub-testframework')
 }

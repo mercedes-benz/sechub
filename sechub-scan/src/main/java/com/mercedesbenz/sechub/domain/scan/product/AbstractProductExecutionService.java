@@ -61,13 +61,11 @@ public abstract class AbstractProductExecutionService implements ProductExecutio
         return registeredProductExecutors;
     }
 
-    protected abstract ScanType getScanType();
-
     @PostConstruct
     protected void registerProductExecutorsForScanTypes() {
         this.registeredProductExecutors.addAll(scanTypeFilter.filter(allAvailableProductExecutors));
 
-        LOG.info("{} has registered {} product executors:{}", getClass().getSimpleName(), registeredProductExecutors.size(), registeredProductExecutors);
+        LOG.debug("{} has registered {} product executors:{}", getClass().getSimpleName(), registeredProductExecutors.size(), registeredProductExecutors);
     }
 
     /**
@@ -242,6 +240,9 @@ public abstract class AbstractProductExecutionService implements ProductExecutio
             executorContext.persist(productResult);
         }
 
+        // hook possibility
+        afterProductResultsStored(productResults, context);
+
         /* we drop former results which are duplicates */
         for (ProductResult oldResult : formerResults) {
             if (productResults.contains(oldResult)) {
@@ -250,6 +251,17 @@ public abstract class AbstractProductExecutionService implements ProductExecutio
             }
             productResultRepository.delete(oldResult);
         }
+    }
+
+    /**
+     * Hook possibility for child classes. At this point the given product results
+     * are already stored in database.
+     *
+     * @param productResults the stored product results
+     * @param context        the execution context
+     */
+    protected void afterProductResultsStored(List<ProductResult> productResults, SecHubExecutionContext context) {
+        // do nothing per default
     }
 
     /**

@@ -151,7 +151,7 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
             handleRestartJobTriggered(request.get(MessageDataKeys.JOB_RESTART_DATA), request.get(MessageDataKeys.ENVIRONMENT_BASE_URL));
             break;
         case JOB_RESULTS_PURGED:
-            handleJobResultsPurged(request.get(MessageDataKeys.SECHUB_UUID), request.get(MessageDataKeys.ENVIRONMENT_BASE_URL));
+            handleJobResultsPurged(request.get(MessageDataKeys.SECHUB_JOB_UUID), request.get(MessageDataKeys.ENVIRONMENT_BASE_URL));
             break;
         case SCHEDULER_STARTED:
             handleSchedulerStarted(request.get(MessageDataKeys.ENVIRONMENT_CLUSTER_MEMBER_STATUS), request.get(MessageDataKeys.ENVIRONMENT_BASE_URL));

@@ -365,6 +365,17 @@ public class IntegrationTestDefaultProfiles {
     public static final DefaultTestExecutionProfile PROFILE_15_PDS_CHECKMARX_INTEGRATIONTEST_FILTERING_TEXTFILES = defineProfile15();
 
     /**
+     * The profile enables a PDS analyzer, which will return CLOC data (JSON).
+     *
+     * <h5>Used inside scenarios:</h5>
+     * <ul>
+     * <li>{@link Scenario17}</li>
+     * </ul>
+     *
+     */
+    public static final DefaultTestExecutionProfile PROFILE_16_PDS_ANALYZE_CLOC_OUTPUT = defineProfile16();
+
+    /**
      * @return all default profiles
      */
     public static List<DefaultTestExecutionProfile> getAllDefaultProfiles() {
@@ -524,6 +535,16 @@ public class IntegrationTestDefaultProfiles {
                 .add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_CHECKMARX_INTEGRATIONTEST_WITH_FILEFILTER_EXCLUDE_TEXTFILES);
         profile.id = "inttest-p15-pds-checkmarx";
         profile.description = "Profile 15: PDS checkmarx, reused storage, dynamic text results, with file filter exclusion of *.txt";
+        profile.enabled = true;
+        return profile;
+    }
+
+    private static DefaultTestExecutionProfile defineProfile16() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_ANALYZE_INTEGRATIONTEST_CLOC_JSON_1);
+        profile.id = "inttest-p16-pds-analyze-cloc";
+        profile.description = "Profile 16: PDS anaylze, reused storage, dynamic text results";
         profile.enabled = true;
         return profile;
     }

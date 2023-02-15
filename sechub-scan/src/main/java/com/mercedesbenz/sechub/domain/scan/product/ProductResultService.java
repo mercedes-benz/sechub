@@ -73,7 +73,7 @@ public class ProductResultService {
     @IsSendingAsyncMessage(MessageID.JOB_RESULTS_PURGED)
     private void sendJobResultsPurged(UUID jobUUID) {
         DomainMessage request = DomainMessageFactory.createEmptyRequest(MessageID.JOB_RESULTS_PURGED);
-        request.set(MessageDataKeys.SECHUB_UUID, jobUUID);
+        request.set(MessageDataKeys.SECHUB_JOB_UUID, jobUUID);
         request.set(MessageDataKeys.ENVIRONMENT_BASE_URL, sechubEnvironment.getServerBaseUrl());
         eventBus.sendAsynchron(request);
     }

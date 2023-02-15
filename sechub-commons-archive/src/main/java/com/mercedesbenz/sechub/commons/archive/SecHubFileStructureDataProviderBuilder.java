@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationUsageByName;
@@ -14,6 +17,8 @@ import com.mercedesbenz.sechub.commons.model.SecHubWebScanApiConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 
 public class SecHubFileStructureDataProviderBuilder {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SecHubFileStructureDataProviderBuilder.class);
 
     private ScanType scanType;
 
@@ -40,6 +45,7 @@ public class SecHubFileStructureDataProviderBuilder {
         if (excludePatterns != null) {
             this.excludePatterns.addAll(excludePatterns);
         }
+        LOG.debug("Exclude patterns set to {}", this.excludePatterns);
         return this;
     }
 
@@ -48,6 +54,7 @@ public class SecHubFileStructureDataProviderBuilder {
         if (includePatterns != null) {
             this.includePatterns.addAll(includePatterns);
         }
+        LOG.debug("Include patterns set to {}", this.includePatterns);
         return this;
     }
 
@@ -87,6 +94,13 @@ public class SecHubFileStructureDataProviderBuilder {
             Optional<SecHubWebScanApiConfiguration> apiOpt = webScan.getApi();
             addAllUsages(data, apiOpt, false);
             break;
+        case ANALYTICS:
+
+            data.setRootFolderAccepted(true);
+            addAllUsages(data, model.getCodeScan(), false);
+            addAllUsages(data, model.getLicenseScan(), false);
+            break;
+
         default:
             break;
 
