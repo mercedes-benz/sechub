@@ -6,13 +6,13 @@
         {
             "id" : "PDS_CLOC",
             "path" : "/scripts/cloc.sh",
-            "scanType" : "codeScan",
+            "scanType" : "analytics",
             "description" : "Runs the source code analyzer cloc."
         },
         {
             "id" : "PDS_CLOC_MOCK",
             "path" : "/scripts/cloc_mock.sh",
-            "scanType" : "codeScan",
+            "scanType" : "analytics",
             "description" : "Runs cloc mock. It returns a fixed result file."
         }
     ]
