@@ -1,64 +1,76 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.owaspzapwrapper.helper;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+
 class IncludeExcludeToOwaspZapURIHelperTest {
 
     private IncludeExcludeToOwaspZapURLHelper helperToTest;
 
+    private List<SecHubMessage> userMessages;
+
     @BeforeEach
     void beforeEach() {
         helperToTest = new IncludeExcludeToOwaspZapURLHelper();
+        userMessages = new LinkedList<>();
     }
 
     @Test
-    void returns_empty_list_if_list_of_subSites_is_null() {
+    void returns_empty_list_if_list_of_subSites_is_null() throws MalformedURLException {
         /* prepare */
-        String targetUrl = "https://127.0.0.1:8080";
+        URL targetUrl = new URL("https://127.0.0.1:8080");
         List<String> sites = null;
 
         /* execute */
-        List<String> urls = helperToTest.createListOfOwaspZapCompatibleUrls(targetUrl, sites);
+        List<URL> urls = helperToTest.createListOfUrls(OwaspZapURLType.INCLUDE, targetUrl, sites, userMessages);
 
         /* test */
         assertTrue(urls.isEmpty());
+        assertTrue(userMessages.isEmpty());
     }
 
     @Test
-    void returns_empty_list_if_list_of_subSites_is_empty() {
+    void returns_empty_list_if_list_of_subSites_is_empty() throws MalformedURLException {
         /* prepare */
-        String targetUrl = "https://127.0.0.1:8080";
+        URL targetUrl = new URL("https://127.0.0.1:8080");
         List<String> sites = new ArrayList<>();
 
         /* execute */
-        List<String> urls = helperToTest.createListOfOwaspZapCompatibleUrls(targetUrl, sites);
+        List<URL> urls = helperToTest.createListOfUrls(OwaspZapURLType.INCLUDE, targetUrl, sites, userMessages);
 
         /* test */
         assertTrue(urls.isEmpty());
+        assertTrue(userMessages.isEmpty());
     }
 
     @Test
-    void returns_list_of_url_conform_for_owasp_zap_includes_or_excludes() {
+    void returns_list_of_url_conform_for_owasp_zap_includes_or_excludes() throws MalformedURLException {
         /* prepare */
-        String targetUrl = "https://127.0.0.1:8080";
+        URL targetUrl = new URL("https://127.0.0.1:8080");
         List<String> sites = createExampleListOfSites();
 
         /* execute */
-        List<String> urls = helperToTest.createListOfOwaspZapCompatibleUrls(targetUrl, sites);
+        List<URL> urls = helperToTest.createListOfUrls(OwaspZapURLType.EXCLUDE, targetUrl, sites, userMessages);
 
         /* test */
-        assertTrue(urls.contains("https://127.0.0.1:8080/sub"));
-        assertTrue(urls.contains("https://127.0.0.1:8080/sub1/directory"));
-        assertTrue(urls.contains("https://127.0.0.1:8080/sub2/directory"));
-        assertTrue(urls.contains("https://127.0.0.1:8080/sub3/directory"));
-        assertTrue(urls.contains("https://127.0.0.1:8080/sub4/directory"));
+        assertTrue(urls.contains(new URL("https://127.0.0.1:8080/sub")));
+        assertTrue(urls.contains(new URL("https://127.0.0.1:8080/sub1/directory")));
+        assertTrue(urls.contains(new URL("https://127.0.0.1:8080/sub2/directory")));
+        assertTrue(urls.contains(new URL("https://127.0.0.1:8080/sub3/directory")));
+        assertTrue(urls.contains(new URL("https://127.0.0.1:8080/sub4/directory")));
+
+        assertTrue(userMessages.isEmpty());
     }
 
     private List<String> createExampleListOfSites() {

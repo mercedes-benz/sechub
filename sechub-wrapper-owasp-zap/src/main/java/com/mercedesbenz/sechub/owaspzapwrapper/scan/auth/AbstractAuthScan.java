@@ -40,7 +40,7 @@ public abstract class AbstractAuthScan extends AbstractScan implements AuthScan 
 
     @Override
     protected void runSpider() throws ClientApiException {
-        String url = scanContext.getTargetUriAsString();
+        String url = scanContext.getTargetUrlAsString();
         String maxchildren = null;
         String recurse = "true";
         String subtreeonly = "true";
@@ -60,7 +60,7 @@ public abstract class AbstractAuthScan extends AbstractScan implements AuthScan 
     @Override
     protected void runAjaxSpider() throws ClientApiException {
         String contextname = scanContext.getContextName();
-        String url = scanContext.getTargetUriAsString();
+        String url = scanContext.getTargetUrlAsString();
         String subtreeonly = "true";
         LOG.info("For scan {}: Starting authenticated Ajax Spider.", scanContext.getContextName());
         /* @formatter:off */
@@ -80,11 +80,11 @@ public abstract class AbstractAuthScan extends AbstractScan implements AuthScan 
         // if no URLs to scan where detected by the spider/ajaxSpider before
         if (!atLeastOneURLDetected()) {
             LOG.warn("For {} skipping active scan, since no URLs where detected by spider or ajaxSpider!", scanContext.getContextName());
-            scanContext.addProductMessage(new SecHubMessage(SecHubMessageType.WARNING,
+            scanContext.getOwaspZapProductMessagehelper().writeSingleProductMessage(new SecHubMessage(SecHubMessageType.WARNING,
                     "Active scan part of the webscan was skipped, because no URLs where detected by crawling mechanisms!"));
             return;
         }
-        String url = scanContext.getTargetUriAsString();
+        String url = scanContext.getTargetUrlAsString();
         String recurse = "true";
         String scanpolicyname = null;
         String method = null;

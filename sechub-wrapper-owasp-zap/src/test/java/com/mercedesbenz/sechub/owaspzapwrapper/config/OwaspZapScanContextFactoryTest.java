@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.owaspzapwrapper.config;
 
 import static com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableConstants.PDS_JOB_EXTRACTED_SOURCES_FOLDER;
+import static com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableConstants.PDS_JOB_USER_MESSAGES_FOLDER;
 import static com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableConstants.PROXY_HOST_ENV_VARIABLE_NAME;
 import static com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableConstants.PROXY_PORT_ENV_VARIABLE_NAME;
 import static com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableConstants.ZAP_API_KEY_ENV_VARIABLE_NAME;
@@ -26,6 +27,7 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullSource;
@@ -39,7 +41,7 @@ import com.mercedesbenz.sechub.owaspzapwrapper.config.data.OwaspZapFullRuleset;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.SecHubWebScanConfigurationHelper;
 import com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableReader;
 
-class OwaspZapScanConfigurationFactoryTest {
+class OwaspZapScanContextFactoryTest {
 
     private OwaspZapScanContextFactory factoryToTest;
 
@@ -51,8 +53,12 @@ class OwaspZapScanConfigurationFactoryTest {
     private File fullRulesetFile;
     private File deactivationFile;
 
+    @TempDir
+    private File tempDir;
+
     @BeforeEach
     void beforeEach() {
+
         // create object to test
         factoryToTest = new OwaspZapScanContextFactory();
 
@@ -69,6 +75,8 @@ class OwaspZapScanConfigurationFactoryTest {
         // create test data
         fullRulesetFile = new File("src/test/resources/zap-available-rules/owaspzap-full-ruleset.json");
         deactivationFile = new File("src/test/resources/wrapper-deactivated-rule-examples/owaspzap-rules-to-deactivate.json");
+
+        when(environmentVariableReader.readAsString(PDS_JOB_USER_MESSAGES_FOLDER)).thenReturn(tempDir.getAbsolutePath());
     }
 
     @Test
@@ -266,7 +274,7 @@ class OwaspZapScanConfigurationFactoryTest {
         OwaspZapScanContext result = factoryToTest.create(settings);
 
         /* test */
-        assertEquals(result.getTargetUri(), createdUri);
+        assertEquals(result.getTargetUrl().toString(), createdUri.toString());
 
     }
 

@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.owaspzapwrapper.cli;
 
-import java.net.URI;
+import java.net.URL;
+import java.util.Iterator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,17 +36,16 @@ public class OwaspZapScanExecutor {
         OwaspZapScan owaspZapScan = resolver.resolveScanImplementation(scanContext, clientApi);
         LOG.info("Starting Owasp Zap scan.");
         owaspZapScan.scan();
-
     }
 
     private void assertTargetReachable(OwaspZapScanContext scanContext) {
         boolean isReachable = false;
-        for (String url : scanContext.getOwaspZapURLsIncludeList()) {
-            URI uriToCheck = URI.create(url);
-            if (connectionChecker.isTargetReachable(uriToCheck, scanContext.getProxyInformation())) {
-                isReachable = true;
-                break;
-            }
+        Iterator<URL> iterator = scanContext.getOwaspZapURLsIncludeList().iterator();
+        while (iterator.hasNext() && isReachable == false) {
+            // trying to reach the target URL and all includes until the first reachable
+            // URL is found.
+            isReachable = isSiteCurrentlyReachable(scanContext, iterator.next(), scanContext.getMaxNumberOfConnectionRetries(),
+                    scanContext.getRetryWaittimeInMilliseconds());
         }
         if (!isReachable) {
             // Build error message containing proxy if it was set.
@@ -54,10 +54,31 @@ public class OwaspZapScanExecutor {
         }
     }
 
+    private boolean isSiteCurrentlyReachable(OwaspZapScanContext scanContext, URL url, int maxNumberOfConnectionRetries, int retryWaittimeInMilliseconds) {
+        for (int i = 0; i < maxNumberOfConnectionRetries; i++) {
+            // do not wait on first try
+            if (i > 0) {
+                wait(retryWaittimeInMilliseconds);
+            }
+            if (connectionChecker.isTargetReachable(url, scanContext.getProxyInformation())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void wait(int waittimeInMilliseconds) {
+        try {
+            Thread.sleep(waittimeInMilliseconds);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
     private String createErrorMessage(OwaspZapScanContext scanContext) {
         ProxyInformation proxyInformation = scanContext.getProxyInformation();
 
-        String errorMessage = "Target url: " + scanContext.getTargetUri() + " is not reachable!";
+        String errorMessage = "Target url: " + scanContext.getTargetUrl() + " is not reachable";
         if (proxyInformation != null) {
             errorMessage += errorMessage + " via " + proxyInformation.getHost() + ":" + proxyInformation.getPort();
         }

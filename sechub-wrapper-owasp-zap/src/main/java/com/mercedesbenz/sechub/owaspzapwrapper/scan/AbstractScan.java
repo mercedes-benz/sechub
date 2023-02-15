@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.owaspzapwrapper.scan;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -110,7 +111,7 @@ public abstract class AbstractScan implements OwaspZapScan {
         while (progressSpider < 100 && !timeOut) {
             if (owaspZapEventHandler.isScanCancelled()) {
                 List<ApiResponse> spiderResults = ((ApiResponseList) clientApi.spider.allUrls()).getItems();
-                updateUserMessagesWithScannedURLs(spiderResults);
+                writeUserMessagesWithScannedURLs(spiderResults);
                 clientApi.spider.stop(scanId);
                 owaspZapEventHandler.cancelScan(scanContext.getContextName());
             }
@@ -123,7 +124,7 @@ public abstract class AbstractScan implements OwaspZapScan {
         clientApi.spider.stop(scanId);
 
         List<ApiResponse> spiderResults = ((ApiResponseList) clientApi.spider.allUrls()).getItems();
-        updateUserMessagesWithScannedURLs(spiderResults);
+        writeUserMessagesWithScannedURLs(spiderResults);
         LOG.info("For scan {}: Spider completed.", scanContext.getContextName());
         remainingScanTime = remainingScanTime - (System.currentTimeMillis() - startTime);
     }
@@ -340,7 +341,7 @@ public abstract class AbstractScan implements OwaspZapScan {
 
         switch (apiConfig.get().getType()) {
         case OPEN_API:
-            clientApi.openapi.importFile(scanContext.getApiDefinitionFile().toString(), scanContext.getTargetUriAsString(), contextId);
+            clientApi.openapi.importFile(scanContext.getApiDefinitionFile().toString(), scanContext.getTargetUrlAsString(), contextId);
             break;
         default:
             // should never happen since API type is an Enum
@@ -350,18 +351,31 @@ public abstract class AbstractScan implements OwaspZapScan {
         }
     }
 
+    /**
+     * This method checks if the sites tree is empty. The OWASP ZAP creates this
+     * sites tree while crawling and detecting pages. The method is necessary since
+     * the active scanner exits with an exception if the sites tree is empty, when
+     * starting an active scan.
+     *
+     * This can only happen in very few cases, but then we want to be able to inform
+     * the user an write a report which is empty or contains at least the passively
+     * detected results.
+     *
+     * @return
+     * @throws ClientApiException
+     */
     protected boolean atLeastOneURLDetected() throws ClientApiException {
         ApiResponseList sitesList = (ApiResponseList) clientApi.core.sites();
         return sitesList.getItems().size() > 0;
     }
 
-    private void updateUserMessagesWithScannedURLs(List<ApiResponse> spiderResults) {
+    private void writeUserMessagesWithScannedURLs(List<ApiResponse> spiderResults) {
         for (ApiResponse result : spiderResults) {
             String url = result.toString();
             if (url.contains("robots.txt") || url.contains("sitemap.xml")) {
                 continue;
             }
-            scanContext.addProductMessage(new SecHubMessage(SecHubMessageType.INFO, url));
+            scanContext.getOwaspZapProductMessagehelper().writeSingleProductMessage(new SecHubMessage(SecHubMessageType.INFO, "Detect url to scan: " + url));
         }
     }
 
@@ -451,13 +465,13 @@ public abstract class AbstractScan implements OwaspZapScan {
     }
 
     private void registerUrlsIncludedInContext() throws ClientApiException {
-        for (String url : scanContext.getOwaspZapURLsIncludeList()) {
+        for (URL url : scanContext.getOwaspZapURLsIncludeList()) {
             clientApi.context.includeInContext(scanContext.getContextName(), url + ".*");
         }
     }
 
     private void registerUrlsExcludedFromContext() throws ClientApiException {
-        for (String url : scanContext.getOwaspZapURLsExcludeList()) {
+        for (URL url : scanContext.getOwaspZapURLsExcludeList()) {
             clientApi.context.excludeFromContext(scanContext.getContextName(), url + ".*");
         }
     }

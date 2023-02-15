@@ -25,7 +25,7 @@ public class UnauthenticatedScan extends AbstractScan {
         String subTreeOnly = "true";
         String recurse = "true";
         String maxChildren = null;
-        String targetUrlAsString = scanContext.getTargetUriAsString();
+        String targetUrlAsString = scanContext.getTargetUrlAsString();
         LOG.info("For scan {}: Starting Spider.", contextName);
         /* @formatter:off */
 		ApiResponse responseSpider = clientApi.spider.scan(
@@ -43,7 +43,7 @@ public class UnauthenticatedScan extends AbstractScan {
         String inScope = "true";
         String subTreeOnly = "true";
         String contextName = scanContext.getContextName();
-        String targetUrlAsString = scanContext.getTargetUriAsString();
+        String targetUrlAsString = scanContext.getTargetUrlAsString();
         LOG.info("For scan {}: Starting AjaxSpider.", scanContext.getContextName());
         /* @formatter:off */
 		ApiResponse responseAjaxSpider = clientApi.ajaxSpider.scan(
@@ -61,11 +61,11 @@ public class UnauthenticatedScan extends AbstractScan {
         // if no URLs to scan where detected by the spider/ajaxSpider before
         if (!atLeastOneURLDetected()) {
             LOG.warn("For {} skipping active scan, since no URLs where detected by spider or ajaxSpider!", scanContext.getContextName());
-            scanContext.addProductMessage(new SecHubMessage(SecHubMessageType.WARNING,
+            scanContext.getOwaspZapProductMessagehelper().writeSingleProductMessage(new SecHubMessage(SecHubMessageType.WARNING,
                     "Active scan part of the webscan was skipped, because no URLs where detected by crawling mechanisms!"));
             return;
         }
-        String targetUrlAsString = scanContext.getTargetUriAsString();
+        String targetUrlAsString = scanContext.getTargetUrlAsString();
         String inScopeOnly = "true";
         String recurse = "true";
         String scanPolicyName = null;

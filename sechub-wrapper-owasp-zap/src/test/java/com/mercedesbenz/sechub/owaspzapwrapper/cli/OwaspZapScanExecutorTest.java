@@ -9,9 +9,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,23 +49,25 @@ class OwaspZapScanExecutorTest {
         OwaspZapScanContext scanContext = mock(OwaspZapScanContext.class);
         ClientApi clientApi = mock(ClientApi.class);
 
-        URI targetUri = new URI("http://www.example.com");
-        List<String> includeList = new ArrayList<>();
-        includeList.add(targetUri.toString());
+        URL targetUrl = new URL("http://www.example.com");
+        Set<URL> includeList = new HashSet<>();
+        includeList.add(targetUrl);
 
-        when(scanContext.getTargetUri()).thenReturn(targetUri);
+        when(scanContext.getTargetUrl()).thenReturn(targetUrl);
         when(scanContext.getOwaspZapURLsIncludeList()).thenReturn(includeList);
+        when(scanContext.getMaxNumberOfConnectionRetries()).thenReturn(1);
+        when(scanContext.getRetryWaittimeInMilliseconds()).thenReturn(0);
 
         OwaspZapScan scan = mock(OwaspZapScan.class);
         when(resolver.resolveScanImplementation(eq(scanContext), any())).thenReturn(scan);
         when(clientApiFactory.create(scanContext.getServerConfig())).thenReturn(clientApi);
-        when(connectionChecker.isTargetReachable(targetUri, null)).thenReturn(true);
+        when(connectionChecker.isTargetReachable(targetUrl, null)).thenReturn(true);
 
         /* execute */
         executorToTest.execute(scanContext);
 
         /* test */
-        verify(connectionChecker).isTargetReachable(targetUri, null);
+        verify(connectionChecker).isTargetReachable(targetUrl, null);
         verify(clientApiFactory).create(scanContext.getServerConfig());
         verify(resolver).resolveScanImplementation(scanContext, clientApi);
         verify(scan).scan();
@@ -78,21 +80,23 @@ class OwaspZapScanExecutorTest {
         OwaspZapScanContext scanContext = mock(OwaspZapScanContext.class);
         ClientApi clientApi = mock(ClientApi.class);
 
-        URI targetUri = new URI("http://www.my-url.com");
+        URL targetUrl = new URL("http://www.my-url.com");
 
-        List<String> includeList = new ArrayList<>();
-        includeList.add(targetUri.toString());
+        Set<URL> includeList = new HashSet<>();
+        includeList.add(targetUrl);
         when(scanContext.getOwaspZapURLsIncludeList()).thenReturn(includeList);
+        when(scanContext.getMaxNumberOfConnectionRetries()).thenReturn(1);
+        when(scanContext.getRetryWaittimeInMilliseconds()).thenReturn(0);
 
         OwaspZapScan scan = mock(OwaspZapScan.class);
         when(resolver.resolveScanImplementation(eq(scanContext), any())).thenReturn(scan);
         when(clientApiFactory.create(scanContext.getServerConfig())).thenReturn(clientApi);
-        when(connectionChecker.isTargetReachable(targetUri, null)).thenReturn(false);
+        when(connectionChecker.isTargetReachable(targetUrl, null)).thenReturn(false);
 
         /* execute + test */
         assertThrows(ZapWrapperRuntimeException.class, () -> executorToTest.execute(scanContext));
 
-        verify(connectionChecker).isTargetReachable(targetUri, null);
+        verify(connectionChecker).isTargetReachable(targetUrl, null);
         verify(scan, never()).scan();
         verify(clientApiFactory, never()).create(scanContext.getServerConfig());
         verify(resolver, never()).resolveScanImplementation(scanContext, clientApi);

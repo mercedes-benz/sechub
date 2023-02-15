@@ -4,9 +4,7 @@ package com.mercedesbenz.sechub.owaspzapwrapper.util;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
-import java.net.MalformedURLException;
 import java.net.Proxy;
-import java.net.URI;
 import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -23,8 +21,6 @@ import javax.net.ssl.X509TrustManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperExitCode;
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.ProxyInformation;
 
 /**
@@ -44,14 +40,7 @@ public class TargetConnectionChecker {
      * @param proxyInformation
      * @return <code>true</code> when reachable otherwise <code>false</code>
      */
-    public boolean isTargetReachable(URI targetUri, ProxyInformation proxyInformation) {
-        URL urlToCheckConnection;
-        try {
-            urlToCheckConnection = targetUri.toURL();
-        } catch (MalformedURLException e) {
-            throw new ZapWrapperRuntimeException("Target URI " + targetUri + " could not be converted to URL!", ZapWrapperExitCode.TARGET_URL_INVALID);
-        }
-
+    public boolean isTargetReachable(URL urlToCheckConnection, ProxyInformation proxyInformation) {
         TrustManager pseudoTrustManager = createTrustManagerWhichTrustsEveryBody();
         SSLContext sslContext = createSSLContextForTrustManager(pseudoTrustManager);
 
@@ -72,10 +61,10 @@ public class TargetConnectionChecker {
 
             int responseCode = connection.getResponseCode();
             if (isReponseCodeValid(responseCode)) {
-                LOG.info("URL " + targetUri + " is reachable.");
+                LOG.info("URL " + urlToCheckConnection + " is reachable.");
                 return true;
             } else {
-                LOG.warn("URL " + targetUri + " is NOT reachable.");
+                LOG.warn("URL " + urlToCheckConnection + " is NOT reachable.");
             }
         } catch (IOException e) {
             LOG.error("An exception occurred while checking if target URL is reachable: {} because: {}", urlToCheckConnection.toExternalForm(), e.getMessage());
