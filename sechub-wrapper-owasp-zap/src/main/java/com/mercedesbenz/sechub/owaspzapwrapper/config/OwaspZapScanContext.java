@@ -46,7 +46,7 @@ public class OwaspZapScanContext {
     private int maxNumberOfConnectionRetries;
     private int retryWaittimeInMilliseconds;
 
-    private OwaspZapProductMessageHelper owaspZapProductMessagehelper;
+    private OwaspZapProductMessageHelper owaspZapProductMessageHelper;
 
     private OwaspZapScanContext() {
     }
@@ -137,8 +137,8 @@ public class OwaspZapScanContext {
         return retryWaittimeInMilliseconds;
     }
 
-    public OwaspZapProductMessageHelper getOwaspZapProductMessagehelper() {
-        return owaspZapProductMessagehelper;
+    public OwaspZapProductMessageHelper getOwaspZapProductMessageHelper() {
+        return owaspZapProductMessageHelper;
     }
 
     public static OwaspZapBasicScanContextBuilder builder() {
@@ -180,7 +180,7 @@ public class OwaspZapScanContext {
         private int maxNumberOfConnectionRetries;
         private int setRetryWaittimeInMilliseconds;
 
-        private OwaspZapProductMessageHelper owaspZapProductMessagehelper;
+        private OwaspZapProductMessageHelper owaspZapProductMessageHelper;
 
         public OwaspZapBasicScanContextBuilder setServerConfig(OwaspZapServerConfiguration serverConfig) {
             this.serverConfig = serverConfig;
@@ -272,8 +272,8 @@ public class OwaspZapScanContext {
             return this;
         }
 
-        public OwaspZapBasicScanContextBuilder setOwaspZapProductMessageHelper(OwaspZapProductMessageHelper owaspZapProductMessagehelper) {
-            this.owaspZapProductMessagehelper = owaspZapProductMessagehelper;
+        public OwaspZapBasicScanContextBuilder setOwaspZapProductMessageHelper(OwaspZapProductMessageHelper owaspZapProductMessageHelper) {
+            this.owaspZapProductMessageHelper = owaspZapProductMessageHelper;
             return this;
         }
 
@@ -305,7 +305,7 @@ public class OwaspZapScanContext {
             owaspZapBasicScanConfiguration.maxNumberOfConnectionRetries = this.maxNumberOfConnectionRetries;
             owaspZapBasicScanConfiguration.retryWaittimeInMilliseconds = this.setRetryWaittimeInMilliseconds;
 
-            owaspZapBasicScanConfiguration.owaspZapProductMessagehelper = this.owaspZapProductMessagehelper;
+            owaspZapBasicScanConfiguration.owaspZapProductMessageHelper = this.owaspZapProductMessageHelper;
 
             return owaspZapBasicScanConfiguration;
         }

@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zaproxy.clientapi.core.ClientApi;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapClientApiFactory;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanContext;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.ProxyInformation;
@@ -64,6 +66,8 @@ public class OwaspZapScanExecutor {
                 return true;
             }
         }
+        scanContext.getOwaspZapProductMessageHelper().writeSingleProductMessage(new SecHubMessage(SecHubMessageType.WARNING,
+                "URL " + url + " was not reachable after trying " + maxNumberOfConnectionRetries + " times. Might not be scanned."));
         return false;
     }
 

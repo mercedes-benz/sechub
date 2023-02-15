@@ -375,7 +375,7 @@ public abstract class AbstractScan implements OwaspZapScan {
             if (url.contains("robots.txt") || url.contains("sitemap.xml")) {
                 continue;
             }
-            scanContext.getOwaspZapProductMessagehelper().writeSingleProductMessage(new SecHubMessage(SecHubMessageType.INFO, "Detect url to scan: " + url));
+            scanContext.getOwaspZapProductMessageHelper().writeSingleProductMessage(new SecHubMessage(SecHubMessageType.INFO, "Detect url to scan: " + url));
         }
     }
 

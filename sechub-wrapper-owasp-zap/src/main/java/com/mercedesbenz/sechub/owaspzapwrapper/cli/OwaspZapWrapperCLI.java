@@ -30,7 +30,7 @@ public class OwaspZapWrapperCLI {
 
         } catch (ZapWrapperRuntimeException e) {
             LOG.error("An error occurred during the scan: {}.", e.getMessage(), e);
-            scanContext.getOwaspZapProductMessagehelper().writeProductError(e);
+            scanContext.getOwaspZapProductMessageHelper().writeProductError(e);
             System.exit(e.getExitCode().getExitCode());
 
         } catch (OwaspZapWrapperCommandLineParserException e) {

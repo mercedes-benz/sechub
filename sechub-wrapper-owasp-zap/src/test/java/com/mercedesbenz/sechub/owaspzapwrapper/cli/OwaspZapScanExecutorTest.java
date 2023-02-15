@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.owaspzapwrapper.cli;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -19,6 +20,7 @@ import org.zaproxy.clientapi.core.ClientApi;
 
 import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapClientApiFactory;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanContext;
+import com.mercedesbenz.sechub.owaspzapwrapper.helper.OwaspZapProductMessageHelper;
 import com.mercedesbenz.sechub.owaspzapwrapper.scan.OwaspZapScan;
 import com.mercedesbenz.sechub.owaspzapwrapper.util.TargetConnectionChecker;
 
@@ -78,6 +80,8 @@ class OwaspZapScanExecutorTest {
     void target_is_not_reachable_throws_mustexitruntimeexception() throws Exception {
         /* prepare */
         OwaspZapScanContext scanContext = mock(OwaspZapScanContext.class);
+        OwaspZapProductMessageHelper productMessageHelper = mock(OwaspZapProductMessageHelper.class);
+
         ClientApi clientApi = mock(ClientApi.class);
 
         URL targetUrl = new URL("http://www.my-url.com");
@@ -87,6 +91,8 @@ class OwaspZapScanExecutorTest {
         when(scanContext.getOwaspZapURLsIncludeList()).thenReturn(includeList);
         when(scanContext.getMaxNumberOfConnectionRetries()).thenReturn(1);
         when(scanContext.getRetryWaittimeInMilliseconds()).thenReturn(0);
+        when(scanContext.getOwaspZapProductMessageHelper()).thenReturn(productMessageHelper);
+        doNothing().when(productMessageHelper).writeSingleProductMessage(any());
 
         OwaspZapScan scan = mock(OwaspZapScan.class);
         when(resolver.resolveScanImplementation(eq(scanContext), any())).thenReturn(scan);
