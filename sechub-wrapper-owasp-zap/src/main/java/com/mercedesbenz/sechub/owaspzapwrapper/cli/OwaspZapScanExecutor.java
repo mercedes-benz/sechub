@@ -70,7 +70,7 @@ public class OwaspZapScanExecutor {
         }
         // write message to the user for each URL that was not reachable
         scanContext.getOwaspZapProductMessageHelper().writeSingleProductMessage(new SecHubMessage(SecHubMessageType.WARNING,
-                "URL " + url + " was not reachable after trying " + maxNumberOfConnectionRetries + " times. Might not be scanned."));
+                "The URL " + url + " was not reachable after trying " + maxNumberOfConnectionRetries + 1 + " times. It might cannot be scanned."));
         return false;
     }
 
