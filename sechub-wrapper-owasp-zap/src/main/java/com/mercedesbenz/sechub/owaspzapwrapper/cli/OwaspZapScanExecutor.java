@@ -57,15 +57,18 @@ public class OwaspZapScanExecutor {
     }
 
     private boolean isSiteCurrentlyReachable(OwaspZapScanContext scanContext, URL url, int maxNumberOfConnectionRetries, int retryWaittimeInMilliseconds) {
+        if (connectionChecker.isTargetReachable(url, scanContext.getProxyInformation())) {
+            return true;
+        }
+        // retry if the first connection attempt failed
         for (int i = 0; i < maxNumberOfConnectionRetries; i++) {
-            // do not wait on first try
-            if (i > 0) {
-                wait(retryWaittimeInMilliseconds);
-            }
+            wait(retryWaittimeInMilliseconds);
             if (connectionChecker.isTargetReachable(url, scanContext.getProxyInformation())) {
                 return true;
             }
+
         }
+        // write message to the user for each URL that was not reachable
         scanContext.getOwaspZapProductMessageHelper().writeSingleProductMessage(new SecHubMessage(SecHubMessageType.WARNING,
                 "URL " + url + " was not reachable after trying " + maxNumberOfConnectionRetries + " times. Might not be scanned."));
         return false;
