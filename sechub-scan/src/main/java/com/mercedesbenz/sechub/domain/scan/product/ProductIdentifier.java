@@ -21,11 +21,13 @@ public enum ProductIdentifier {
     /**
      * Webscanner
      */
+    @Deprecated
     NETSPARKER(ProductType.WEBSCAN),
 
     /**
      * Infrastructure scanner
      */
+    @Deprecated
     NESSUS(ProductType.INFRASCAN),
 
     /**

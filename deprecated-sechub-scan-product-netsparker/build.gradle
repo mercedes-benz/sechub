@@ -1,17 +1,15 @@
 // SPDX-License-Identifier: MIT
  /*============================================================================
- * Build file for subproject
+ * Build file for subproject 
  *
  * Root build file: "${rootProject.projectDir}/build.gradle"
  * ============================================================================
  */
 dependencies {
 
-    api project(':sechub-shared-kernel')
-    implementation project(':sechub-adapter') // we use this dependency to provide common adapter support for dedicated scan projects
-    implementation library.springboot_starter_thymeleaf
+    implementation project(':sechub-scan')
+    implementation project(':deprecated-sechub-adapter-netsparker')
 
     testImplementation project(':sechub-testframework')
-
 }
 
