@@ -21,10 +21,12 @@ class ClocJsonAnalyticDataImporterTest {
 
     private ClocJsonAnalyticDataImporter importerToTest;
     private static String sechubClocJSON;
+    private static String gosecClocJSON;
 
     @BeforeAll
     static void beforeAll() {
         sechubClocJSON = TestFileReader.loadTextFile(new File("./src/test/resources/cloc/cloc-sechub.json"));
+        gosecClocJSON = TestFileReader.loadTextFile(new File("./src/test/resources/cloc/cloc-gosec.json"));
     }
 
     @BeforeEach
@@ -33,8 +35,13 @@ class ClocJsonAnalyticDataImporterTest {
     }
 
     @Test
-    void is_able_to_import_returns_true_for_clos_json_example() throws IOException {
+    void is_able_to_import_returns_true_for_sechub_cloc_json_example() throws IOException {
         assertTrue(importerToTest.isAbleToImport(sechubClocJSON));
+    }
+
+    @Test
+    void is_able_to_import_returns_true_for_gosec_cloc_json_example() throws IOException {
+        assertTrue(importerToTest.isAbleToImport(gosecClocJSON));
     }
 
     @NullSource
@@ -42,11 +49,6 @@ class ClocJsonAnalyticDataImporterTest {
     @ParameterizedTest
     void is_able_to_import_returns_false_for_unsupported_content(String unsupportedContent) throws IOException {
         assertFalse(importerToTest.isAbleToImport(unsupportedContent));
-    }
-
-    @Test
-    void sechub_cloc_json_is_able_to_import_returns_true() throws IOException {
-        assertTrue(importerToTest.isAbleToImport(sechubClocJSON));
     }
 
     @Test
