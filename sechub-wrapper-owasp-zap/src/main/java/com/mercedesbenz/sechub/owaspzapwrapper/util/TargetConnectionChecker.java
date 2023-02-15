@@ -10,6 +10,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Iterator;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -21,6 +22,11 @@ import javax.net.ssl.X509TrustManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperExitCode;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanContext;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.ProxyInformation;
 
 /**
@@ -32,6 +38,43 @@ public class TargetConnectionChecker {
     private static final Logger LOG = LoggerFactory.getLogger(TargetConnectionChecker.class);
     private static final String TLS = "TLS";
 
+    public void assertApplicationIsReachable(OwaspZapScanContext scanContext) {
+        boolean isReachable = false;
+        Iterator<URL> iterator = scanContext.getOwaspZapURLsIncludeList().iterator();
+        while (iterator.hasNext() && isReachable == false) {
+            // trying to reach the target URL and all includes until the first reachable
+            // URL is found.
+            isReachable = isSiteCurrentlyReachable(scanContext, iterator.next(), scanContext.getMaxNumberOfConnectionRetries(),
+                    scanContext.getRetryWaittimeInMilliseconds());
+        }
+        if (!isReachable) {
+            // Build error message containing proxy if it was set.
+            String errorMessage = createErrorMessage(scanContext);
+            throw new ZapWrapperRuntimeException(errorMessage, ZapWrapperExitCode.TARGET_URL_NOT_REACHABLE);
+        }
+    }
+
+    boolean isReponseCodeValid(int responseCode) {
+        return responseCode < 400 || responseCode == 401 || responseCode == 403;
+    }
+
+    private boolean isSiteCurrentlyReachable(OwaspZapScanContext scanContext, URL url, int maxNumberOfConnectionRetries, int retryWaittimeInMilliseconds) {
+        if (isTargetReachable(url, scanContext.getProxyInformation())) {
+            return true;
+        }
+        // retry if the first connection attempt failed
+        for (int i = 0; i < maxNumberOfConnectionRetries; i++) {
+            wait(retryWaittimeInMilliseconds);
+            if (isTargetReachable(url, scanContext.getProxyInformation())) {
+                return true;
+            }
+        }
+        // write message to the user for each URL that was not reachable
+        scanContext.getOwaspZapProductMessageHelper().writeSingleProductMessage(new SecHubMessage(SecHubMessageType.WARNING,
+                "The URL " + url + " was not reachable after trying " + maxNumberOfConnectionRetries + 1 + " times. It might cannot be scanned."));
+        return false;
+    }
+
     /**
      * Tests if site is reachable - no matter if certificate is self signed or not
      * trusted!
@@ -40,7 +83,7 @@ public class TargetConnectionChecker {
      * @param proxyInformation
      * @return <code>true</code> when reachable otherwise <code>false</code>
      */
-    public boolean isTargetReachable(URL urlToCheckConnection, ProxyInformation proxyInformation) {
+    private boolean isTargetReachable(URL urlToCheckConnection, ProxyInformation proxyInformation) {
         TrustManager pseudoTrustManager = createTrustManagerWhichTrustsEveryBody();
         SSLContext sslContext = createSSLContextForTrustManager(pseudoTrustManager);
 
@@ -70,11 +113,24 @@ public class TargetConnectionChecker {
             LOG.error("An exception occurred while checking if target URL is reachable: {} because: {}", urlToCheckConnection.toExternalForm(), e.getMessage());
         }
         return false;
-
     }
 
-    boolean isReponseCodeValid(int responseCode) {
-        return responseCode < 400 || responseCode == 401 || responseCode == 403;
+    private void wait(int waittimeInMilliseconds) {
+        try {
+            Thread.sleep(waittimeInMilliseconds);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    private String createErrorMessage(OwaspZapScanContext scanContext) {
+        ProxyInformation proxyInformation = scanContext.getProxyInformation();
+
+        String errorMessage = "Target url: " + scanContext.getTargetUrl() + " is not reachable";
+        if (proxyInformation != null) {
+            errorMessage += errorMessage + " via " + proxyInformation.getHost() + ":" + proxyInformation.getPort();
+        }
+        return errorMessage;
     }
 
     private X509TrustManager createTrustManagerWhichTrustsEveryBody() {

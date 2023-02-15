@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -63,13 +64,13 @@ class OwaspZapScanExecutorTest {
         OwaspZapScan scan = mock(OwaspZapScan.class);
         when(resolver.resolveScanImplementation(eq(scanContext), any())).thenReturn(scan);
         when(clientApiFactory.create(scanContext.getServerConfig())).thenReturn(clientApi);
-        when(connectionChecker.isTargetReachable(targetUrl, null)).thenReturn(true);
+        doNothing().when(connectionChecker).assertApplicationIsReachable(scanContext);
 
         /* execute */
         executorToTest.execute(scanContext);
 
         /* test */
-        verify(connectionChecker).isTargetReachable(targetUrl, null);
+        verify(connectionChecker).assertApplicationIsReachable(scanContext);
         verify(clientApiFactory).create(scanContext.getServerConfig());
         verify(resolver).resolveScanImplementation(scanContext, clientApi);
         verify(scan).scan();
@@ -97,12 +98,12 @@ class OwaspZapScanExecutorTest {
         OwaspZapScan scan = mock(OwaspZapScan.class);
         when(resolver.resolveScanImplementation(eq(scanContext), any())).thenReturn(scan);
         when(clientApiFactory.create(scanContext.getServerConfig())).thenReturn(clientApi);
-        when(connectionChecker.isTargetReachable(targetUrl, null)).thenReturn(false);
+        doThrow(new ZapWrapperRuntimeException(null, null)).when(connectionChecker).assertApplicationIsReachable(eq(scanContext));
 
         /* execute + test */
         assertThrows(ZapWrapperRuntimeException.class, () -> executorToTest.execute(scanContext));
 
-        verify(connectionChecker).isTargetReachable(targetUrl, null);
+        verify(connectionChecker).assertApplicationIsReachable(scanContext);
         verify(scan, never()).scan();
         verify(clientApiFactory, never()).create(scanContext.getServerConfig());
         verify(resolver, never()).resolveScanImplementation(scanContext, clientApi);
