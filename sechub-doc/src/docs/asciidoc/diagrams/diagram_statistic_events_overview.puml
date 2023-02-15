@@ -1,3 +1,4 @@
+' SPDX-License-Identifier: MIT
 @startuml
 
 boundary "scheduler" as _scheduler

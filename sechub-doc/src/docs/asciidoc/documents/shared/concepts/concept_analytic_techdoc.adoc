@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 [[section-analytic-techdoc]]
 The `AnalyticsProductExecutionService` inside the `scan` domain does not only execute and store the product results, but
 also creates an analytic data model after the analytic scan products have been executed.

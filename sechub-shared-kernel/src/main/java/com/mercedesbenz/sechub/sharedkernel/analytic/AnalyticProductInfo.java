@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sharedkernel.analytic;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 [[section-analytic]]
 {sechub} can be configured to analyze a scan situation at the beginning to improve runtime behavior or to create statistic data. 
 This is done before all other scans. 

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 [[section-statistic-technical]]
 
 Every data which shall be stored as statistic data is send from other domains via domain 
