@@ -8,7 +8,9 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -71,19 +73,36 @@ public class SecHubConfigurationModelValidator {
         Set<ScanType> scanTypes = modelSupport.collectPublicScanTypes(context.model);
         handleScanTypes(context, scanTypes);
 
-        ModuleGroup group = ModuleGroup.resolveModuleGroupOrNull(scanTypes);
-        handleModuleGroup(context, group);
+        handleModuleGroup(context, scanTypes);
     }
 
-    private void handleModuleGroup(InternalValidationContext context, ModuleGroup group) {
-        if (group == null) {
-            context.result.addError(MODULE_GROUP_UNCLEAR);
+    private void handleModuleGroup(InternalValidationContext context, Set<ScanType> scanTypes) {
+        ModuleGroup group = ModuleGroup.resolveModuleGroupOrNull(scanTypes);
+        if (group != null) {
+            /* no problems, the matching module group can be found */
+            return;
+        }
+        Map<ScanType, ModuleGroup> modulleGroupDetectionMap = new LinkedHashMap<>();
+        /* we can have two reasons here: no group at all or multiple groups */
+        for (ModuleGroup groupToInspect : ModuleGroup.values()) {
+            for (ScanType scanType : scanTypes) {
+                if (groupToInspect.isGivenModuleInGroup(scanType)) {
+                    modulleGroupDetectionMap.put(scanType, groupToInspect);
+                }
+
+            }
+        }
+        Collection<ModuleGroup> detectedModuleGroups = modulleGroupDetectionMap.values();
+        if (detectedModuleGroups.isEmpty()) {
+            context.result.addError(NO_MODULE_GROUP_DETECTED);
+        } else {
+            context.result.addError(MULTIPLE_MODULE_GROUPS_DETECTED, "Module groups detected: " + detectedModuleGroups);
         }
     }
 
     private void handleScanTypes(InternalValidationContext context, Set<ScanType> scanTypes) {
         if (scanTypes.isEmpty()) {
-            context.result.addError(NO_PUBLIC_SCANTYPES_DETECTED);
+            context.result.addError(NO_PUBLIC_SCAN_TYPES_DETECTED);
         }
     }
 

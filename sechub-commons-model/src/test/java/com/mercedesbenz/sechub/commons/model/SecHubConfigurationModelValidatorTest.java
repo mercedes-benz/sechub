@@ -30,7 +30,6 @@ class SecHubConfigurationModelValidatorTest {
     private void beforeEach() {
 
         modelSupportCollectedScanTypes = new LinkedHashSet<>();
-        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // just one
 
         modelSupport = mock(SecHubConfigurationModelSupport.class);
 
@@ -41,10 +40,9 @@ class SecHubConfigurationModelValidatorTest {
     }
 
     @Test
-    void when_modelcollector_collects_no_scan_types_the_validation_fails_with_modulegroup_unclear_and_no_public_scantypes_found() {
+    void when_modelcollector_collects_no_scan_types_the_validation_fails_with_nonunique_modulegroup_and_no_public_scantypes_found() {
         /* prepare */
         SecHubConfigurationModel model = createDefaultValidModel();
-        modelSupportCollectedScanTypes.clear();
 
         /* check precondition */
         assertNull(ModuleGroup.resolveModuleGroupOrNull(modelSupportCollectedScanTypes));
@@ -53,8 +51,8 @@ class SecHubConfigurationModelValidatorTest {
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
 
         /* test */
-        assertHasError(result, SecHubConfigurationModelValidationError.MODULE_GROUP_UNCLEAR);
-        assertHasError(result, SecHubConfigurationModelValidationError.NO_PUBLIC_SCANTYPES_DETECTED);
+        assertHasError(result, SecHubConfigurationModelValidationError.NO_MODULE_GROUP_DETECTED);
+        assertHasError(result, SecHubConfigurationModelValidationError.NO_PUBLIC_SCAN_TYPES_DETECTED);
         assertEquals(2, result.getErrors().size());
     }
 
@@ -62,7 +60,6 @@ class SecHubConfigurationModelValidatorTest {
     void when_modelcollector_collects_two_scan_types_which_are_not_in_same_group_the_validation_fails_with_modulegroup_unclear() {
         /* prepare */
         SecHubConfigurationModel model = createDefaultValidModel();
-        modelSupportCollectedScanTypes.clear();
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN);
         modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN);
 
@@ -73,7 +70,7 @@ class SecHubConfigurationModelValidatorTest {
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
 
         /* test */
-        assertHasError(result, SecHubConfigurationModelValidationError.MODULE_GROUP_UNCLEAR);
+        assertHasError(result, SecHubConfigurationModelValidationError.MULTIPLE_MODULE_GROUPS_DETECTED);
         assertEquals(1, result.getErrors().size());
     }
 
@@ -81,7 +78,6 @@ class SecHubConfigurationModelValidatorTest {
     void when_modelcollector_collects_two_scan_types_which_are_in_same_group_the_validation_has_no_errors() {
         /* prepare */
         SecHubConfigurationModel model = createDefaultValidModel();
-        modelSupportCollectedScanTypes.clear();
         modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN);
         modelSupportCollectedScanTypes.add(ScanType.LICENSE_SCAN);
 
@@ -106,6 +102,8 @@ class SecHubConfigurationModelValidatorTest {
         model.setApiVersion("1.0");
         model.setCodeScan(codeScan);
         model.setLicenseScan(licenseScan);
+
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* setup data */
         SecHubSourceDataConfiguration dataConfiguration = new SecHubSourceDataConfiguration();
@@ -134,6 +132,8 @@ class SecHubConfigurationModelValidatorTest {
         model.setApiVersion("1.0");
         model.setWebScan(webScan);
 
+        modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN); // simulate correct module group found
+
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
 
@@ -150,6 +150,8 @@ class SecHubConfigurationModelValidatorTest {
         SecHubConfigurationModel model = new SecHubConfigurationModel();
         model.setApiVersion("1.0");
         model.setLicenseScan(licenseScan);
+
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
@@ -178,6 +180,8 @@ class SecHubConfigurationModelValidatorTest {
         model.setLicenseScan(licenseScan);
         model.setData(dataConfiguration);
 
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
+
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
 
@@ -195,6 +199,8 @@ class SecHubConfigurationModelValidatorTest {
         SecHubConfigurationModel model = new SecHubConfigurationModel();
         model.setApiVersion("1.0");
         model.setWebScan(webScan);
+
+        modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN); // simulate correct module group found
 
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
@@ -214,6 +220,8 @@ class SecHubConfigurationModelValidatorTest {
         model.setApiVersion("1.0");
         model.setWebScan(webScan);
 
+        modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN); // simulate correct module group found
+
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
 
@@ -230,6 +238,8 @@ class SecHubConfigurationModelValidatorTest {
         SecHubConfigurationModel model = new SecHubConfigurationModel();
         model.setApiVersion("1.0");
         model.setInfraScan(infraScan);
+
+        modelSupportCollectedScanTypes.add(ScanType.INFRA_SCAN); // simulate correct module group found
 
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
@@ -250,6 +260,8 @@ class SecHubConfigurationModelValidatorTest {
         model.setApiVersion("1.0");
         model.setInfraScan(infraScan);
 
+        modelSupportCollectedScanTypes.add(ScanType.INFRA_SCAN); // simulate correct module group found
+
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
 
@@ -268,6 +280,8 @@ class SecHubConfigurationModelValidatorTest {
         model.setApiVersion("1.0");
         model.setInfraScan(infraScan);
 
+        modelSupportCollectedScanTypes.add(ScanType.INFRA_SCAN); // simulate correct module group found
+
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
 
@@ -281,6 +295,8 @@ class SecHubConfigurationModelValidatorTest {
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(null);
 
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
+
         /* test */
         assertHasError(result, SecHubConfigurationModelValidationError.MODEL_NULL);
         assertEquals(1, result.getErrors().size());
@@ -291,6 +307,8 @@ class SecHubConfigurationModelValidatorTest {
     void api_version_set_but_no_scan_configuration_results_in_error() {
         SecHubConfigurationModel model = new SecHubConfigurationModel();
         model.setApiVersion("1.0");
+
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
@@ -306,6 +324,8 @@ class SecHubConfigurationModelValidatorTest {
         SecHubConfigurationModel model = new SecHubConfigurationModel();
         model.setCodeScan(new SecHubCodeScanConfiguration());
 
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
+
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
 
@@ -319,6 +339,8 @@ class SecHubConfigurationModelValidatorTest {
     void api_version_unsupported_results_in_one_error() {
         SecHubConfigurationModel model = new SecHubConfigurationModel();
         model.setApiVersion("0.1");
+
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
@@ -342,6 +364,8 @@ class SecHubConfigurationModelValidatorTest {
         data.getSources().add(config1);
         model.setData(data);
 
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
+
         /* execute + test */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
 
@@ -360,6 +384,8 @@ class SecHubConfigurationModelValidatorTest {
         config1.setUniqueName(name);
         data.getSources().add(config1);
         model.setData(data);
+
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute + test */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
@@ -381,6 +407,8 @@ class SecHubConfigurationModelValidatorTest {
 
         model.getCodeScan().get().getNamesOfUsedDataConfigurationObjects().add("config-object-name");
 
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
+
         /* execute + test */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
 
@@ -393,6 +421,8 @@ class SecHubConfigurationModelValidatorTest {
         /* prepare */
         SecHubConfigurationModel model = createDefaultValidModel();
         model.getCodeScan().get().getNamesOfUsedDataConfigurationObjects().add("config-object-not-existing1");
+
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute + test */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
@@ -414,6 +444,8 @@ class SecHubConfigurationModelValidatorTest {
         webScan.url = createURIforSchema("https");
 
         openApi.getNamesOfUsedDataConfigurationObjects().add("unknown-configuration");
+
+        modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN); // simulate correct module group found
 
         /* execute + test */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
@@ -442,6 +474,9 @@ class SecHubConfigurationModelValidatorTest {
         webScan.url = createURIforSchema("https");
 
         openApi.getNamesOfUsedDataConfigurationObjects().add("referenced-open-api-file");
+
+        modelSupportCollectedScanTypes.add(ScanType.WEB_SCAN); // simulate correct module group found
+
         /* execute + test */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
 
@@ -465,6 +500,8 @@ class SecHubConfigurationModelValidatorTest {
         data.getSources().add(config2);
 
         model.setData(data);
+
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute + test */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
@@ -490,6 +527,8 @@ class SecHubConfigurationModelValidatorTest {
 
         model.setData(data);
 
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
+
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
 
@@ -509,6 +548,8 @@ class SecHubConfigurationModelValidatorTest {
         data.getSources().add(config1);
 
         model.setData(data);
+
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
@@ -530,6 +571,8 @@ class SecHubConfigurationModelValidatorTest {
 
         model.setData(data);
 
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
+
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
 
@@ -548,6 +591,8 @@ class SecHubConfigurationModelValidatorTest {
         data.getSources().add(config1);
 
         model.setData(data);
+
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
@@ -575,6 +620,8 @@ class SecHubConfigurationModelValidatorTest {
 
         model.setData(data);
 
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
+
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
 
@@ -600,6 +647,8 @@ class SecHubConfigurationModelValidatorTest {
         data.getBinaries().add(config2);
 
         model.setData(data);
+
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
@@ -629,6 +678,8 @@ class SecHubConfigurationModelValidatorTest {
         data.getBinaries().add(config2);
 
         model.setData(data);
+
+        modelSupportCollectedScanTypes.add(ScanType.CODE_SCAN); // simulate correct module group found
 
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);

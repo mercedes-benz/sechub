@@ -72,7 +72,7 @@ public enum ModuleGroup {
                     ModuleGroup allreadyAssignedGroup = scanTypeToModuleGroupMap.get(scanType);
                     if (allreadyAssignedGroup != null) {
                         throw new IllegalStateException("The scan type: " + scanType + " is already assigned to module group: " + allreadyAssignedGroup
-                                + ", so it cannot be added also for group:" + groupToAssign);
+                                + ", so it cannot be added also to group:" + groupToAssign);
                     } else {
                         scanTypeToModuleGroupMap.put(scanType, groupToAssign);
                     }
@@ -85,9 +85,17 @@ public enum ModuleGroup {
     private String id;
     final ScanType[] moduleScanTypes;
 
+    private ModuleGroup(String id) {
+        throw new IllegalStateException("At least one scan type must be defined for a module group!");
+    }
+
     private ModuleGroup(String id, ScanType... moduleScanTypes) {
         this.id = id;
         this.moduleScanTypes = moduleScanTypes;
+    }
+
+    public ScanType[] getModuleScanTypes() {
+        return moduleScanTypes;
     }
 
     @JsonValue
@@ -130,8 +138,8 @@ public enum ModuleGroup {
         return groupFound;
     }
 
-    public boolean isForModulesHavingScanType(ScanType scanType) {
-        ModuleGroup group = scanTypeToModuleGroupMap.get(scanType);
+    public boolean isGivenModuleInGroup(ScanType moduleScanType) {
+        ModuleGroup group = scanTypeToModuleGroupMap.get(moduleScanType);
         return this.equals(group);
     }
 

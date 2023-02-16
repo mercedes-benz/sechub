@@ -9,6 +9,8 @@ include::../shared/configuration/executor_config.adoc[]
 
 include::../shared/configuration/scan_config.adoc[]
 
+include::../shared/concepts/concept_modules_and_module_groups.adoc[]
+
 include::../shared/configuration/project_scan_config_technical-details.adoc[]
 
 include::../shared/concepts/concept_falsepositive_handling.adoc[]

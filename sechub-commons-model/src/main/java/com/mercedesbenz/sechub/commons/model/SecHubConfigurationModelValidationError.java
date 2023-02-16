@@ -31,10 +31,11 @@ public enum SecHubConfigurationModelValidationError {
 
     DATA_CONFIG_OBJECT_NAME_CONTAINS_ILLEGAL_CHARACTERS("Data configuration object name contains illegal characters!"),
 
-    NO_PUBLIC_SCANTYPES_DETECTED("No public scan types can be detected."),
+    NO_PUBLIC_SCAN_TYPES_DETECTED("No public scan types can be detected."),
 
-    MODULE_GROUP_UNCLEAR(
-            "Module group of the configuration is unclear (e.g. a web scan and a code scan at same time means also different module groups (STATIC + DYNAMIC) at same time which is not allowed)."),;
+    NO_MODULE_GROUP_DETECTED("No modulle group can be detected."),
+
+    MULTIPLE_MODULE_GROUPS_DETECTED("Multiple module groups were detected."),;
 
     private String defaultMessage;
 

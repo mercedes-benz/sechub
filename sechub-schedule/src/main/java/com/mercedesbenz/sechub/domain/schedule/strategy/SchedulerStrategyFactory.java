@@ -15,13 +15,13 @@ public class SchedulerStrategyFactory {
     private static final Logger LOG = LoggerFactory.getLogger(SchedulerStrategyFactory.class);
 
     @Autowired
-    FirstComeFirstServeSchedulerStrategy fifoStrategy;
+    FirstComeFirstServeSchedulerStrategy firstComeFirstServeStrategy;
 
     @Autowired
-    OnlyOneScanPerProjectAtSameTimeStrategy oosppStrategy;
+    OnlyOneScanPerProjectAtSameTimeStrategy onlyOneScanPerProjectStrategy;
 
     @Autowired
-    OnlyOneScanPerProjectAndModuleGroupAtSameTimeStrategy oosppagStrategy;
+    OnlyOneScanPerProjectAndModuleGroupAtSameTimeStrategy onlyOneScanPerProjectAndModuleGroupStrategy;
 
     @MustBeDocumented("Define the scheduler strategy by given identifier. This strategy determines the next job which shall be executed by job scheduler. Possible values are:"
             + SchedulerStrategyConstants.FIRST_COME_FIRST_SERVE + "," + SchedulerStrategyConstants.ONLY_ONE_SCAN_PER_PROJECT_AT_A_TIME + " and "
@@ -60,14 +60,14 @@ public class SchedulerStrategyFactory {
         switch (id) {
 
         case ONE_SCAN_PER_PROJECT:
-            return oosppStrategy;
+            return onlyOneScanPerProjectStrategy;
 
         case ONE_SCAN_PER_PROJECT_AND_MODULE_GROUP:
-            return oosppagStrategy;
+            return onlyOneScanPerProjectAndModuleGroupStrategy;
 
         case FIRST_COME_FIRST_SERVE:
         default:
-            return fifoStrategy;
+            return firstComeFirstServeStrategy;
         }
     }
 }

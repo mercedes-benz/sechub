@@ -69,10 +69,10 @@ class ModuleGroupTest {
         for (ScanType scanType : ScanType.values()) {
 
             for (ModuleGroup group : ModuleGroup.values()) {
-                if (group.isForModulesHavingScanType(scanType)) {
+                if (group.isGivenModuleInGroup(scanType)) {
                     ModuleGroup groupBefore = map.get(scanType);
                     if (groupBefore != null) {
-                        fail("ScanType:" + scanType + " is already assigned to group:" + groupBefore + " so cannot be added also for group:" + group);
+                        fail("ScanType:" + scanType + " is already assigned to group:" + groupBefore + " so cannot be added also to group:" + group);
                     } else {
                         map.put(scanType, group);
                     }
@@ -95,7 +95,7 @@ class ModuleGroupTest {
                 continue;
             }
             for (ModuleGroup group : ModuleGroup.values()) {
-                if (group.isForModulesHavingScanType(scanType)) {
+                if (group.isGivenModuleInGroup(scanType)) {
                     unassigned.remove(scanType);
                 }
             }
@@ -107,7 +107,6 @@ class ModuleGroupTest {
 
     @Test
     void internal_scan_types_are_NOT_assigned_to_any_group() {
-        /* prepare */
         /* test */
         for (ScanType scanType : ScanType.values()) {
             if (!scanType.isInternalScanType()) {
@@ -115,7 +114,7 @@ class ModuleGroupTest {
                 continue;
             }
             for (ModuleGroup group : ModuleGroup.values()) {
-                if (group.isForModulesHavingScanType(scanType)) {
+                if (group.isGivenModuleInGroup(scanType)) {
                     fail("Scan type: " + scanType + " is internal and may not be inside a group!");
                 }
 
@@ -171,7 +170,7 @@ class ModuleGroupTest {
     }
 
     private void assertGroupAssignment(ModuleGroup group, ScanType scanType, boolean expectedAcceptance) {
-        assertEquals(expectedAcceptance, group.isForModulesHavingScanType(scanType));
+        assertEquals(expectedAcceptance, group.isGivenModuleInGroup(scanType));
     }
 
 }
