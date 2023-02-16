@@ -20,7 +20,7 @@ To start a single container run the script:
 
 . Most of the PDS Solutions have a script which starts with `05-*`. Execute this script next.
 
-. Run one of the PDS setup scripts. For example: `setup-pds-scripts/8000-setup-gosec.sh` to setup a GoSec project.
+. Run one of the PDS setup scripts. For example: `setup-pds/8000-setup-gosec.sh` to setup a GoSec project.
 
 . Use the SecHub Client to scan.
 
