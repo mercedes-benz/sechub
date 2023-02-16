@@ -66,7 +66,14 @@ public class ReportTestHelper {
 
     public static ScanReport transformSarifToScanReport(String sarifJson, ProductIdentifier productIdentifier, String sechubJobUUID)
             throws IOException, SecHubExecutionException {
-        return simulateCreateScanReportService(sarifJson, productIdentifier, sechubJobUUID, sarifImporter, ScanType.CODE_SCAN, true);
+
+        ScanType scanType = ScanType.WEB_SCAN;
+
+        if (productIdentifier.equals(ProductIdentifier.PDS_CODESCAN)) {
+            scanType = ScanType.CODE_SCAN;
+        }
+
+        return simulateCreateScanReportService(sarifJson, productIdentifier, sechubJobUUID, sarifImporter, scanType, true);
     }
 
     private static ScanReport simulateCreateScanReportService(String report, ProductIdentifier productIdentifier, String sechubJobUUID,
