@@ -12,6 +12,7 @@ package com.mercedesbenz.sechub.sharedkernel;
 public class LogConstants {
 
     public static final String MDC_SECHUB_JOB_UUID = "sechub_job_uuid";
+    public static final String MDC_SECHUB_EXECUTION_UUID = "sechub_execution_uuid";
 
     public static final String MDC_SECHUB_PROJECT_ID = "sechub_project_id";
 
@@ -19,4 +20,5 @@ public class LogConstants {
      * Log constant for MDC audit logs, reserved for audit log service only
      */
     public static final String MDC_SECHUB_AUDIT_USERID = "sechub_audit_userid";
+
 }

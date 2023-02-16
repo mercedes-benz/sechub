@@ -27,6 +27,7 @@ import com.mercedesbenz.sechub.pds.PDSJSONConverterException;
 import com.mercedesbenz.sechub.pds.PDSLogConstants;
 import com.mercedesbenz.sechub.pds.job.JobConfigurationData;
 import com.mercedesbenz.sechub.pds.job.PDSCheckJobStatusService;
+import com.mercedesbenz.sechub.pds.job.PDSGetJobStreamService;
 import com.mercedesbenz.sechub.pds.job.PDSJobConfiguration;
 import com.mercedesbenz.sechub.pds.job.PDSJobTransactionService;
 import com.mercedesbenz.sechub.pds.job.PDSWorkspacePreparationResult;
@@ -137,6 +138,12 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
         LOG.info("Finished execution of job {} with exitCode={}, failed={}, cancelOperationsHasBeenStarted={}", pdsJobUUID, result.exitCode, result.failed,
                 cancelOperationsHasBeenStarted);
+
+        if (result.failed) {
+            PDSGetJobStreamService pdsGetJobStreamService = serviceCollection.getPdsGetJobStreamService();
+            LOG.info("Job error stream = {}", pdsGetJobStreamService.getJobErrorStreamTruncated(pdsJobUUID));
+            LOG.info("Job output stream = {}", pdsGetJobStreamService.getJobOutputStreamTruncated(pdsJobUUID));
+        }
 
         return result;
     }

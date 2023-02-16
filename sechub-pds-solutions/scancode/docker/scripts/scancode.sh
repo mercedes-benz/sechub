@@ -29,10 +29,13 @@ extractcode_version=$( extractcode --version 2>&1 )
 # redirect from stderr to stdout. Python writes its version number to stderr.
 python_version=$( python3 --version 2>&1 )
 
+
+scancode_version=$( scancode --version )
+
 printf "%-26s %s\n" "Python:" "$python_version"
 printf "%-26s %s\n" "PDS version:" "$PDS_VERSION"
 printf "Scancode-Toolkit version:\n\n" 
-scancode --version
+echo "$scancode_version"
 printf "\n\n%-26s %s\n" "Extractcode version:" "$extractcode_version"
 
 echo ""

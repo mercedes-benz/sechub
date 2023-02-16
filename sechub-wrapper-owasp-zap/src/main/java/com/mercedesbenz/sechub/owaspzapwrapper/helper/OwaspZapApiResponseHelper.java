@@ -13,7 +13,8 @@ public class OwaspZapApiResponseHelper {
         if (response instanceof ApiResponseElement) {
             return ((ApiResponseElement) response).getValue();
         } else {
-            throw new ZapWrapperRuntimeException("Parameter \"response\" is not an instance of ApiResponseElement.", ZapWrapperExitCode.EXECUTION_FAILED);
+            throw new ZapWrapperRuntimeException("Parameter \"response\" is not an instance of ApiResponseElement.",
+                    ZapWrapperExitCode.PRODUCT_EXECUTION_ERROR);
         }
     }
 }

@@ -57,7 +57,7 @@ touch "$test_file"
 zip "$test_zip" "$test_file"
 
 # Start scan
-"../../shared/01-test.sh" "$test_zip"
+../../sechub-solutions-shared/scripts/01-test-pds.sh "$test_zip"
 
 # Compare result
 diff --ignore-all-space "$reference_file" "$RESULT_FILE"

@@ -23,6 +23,7 @@ import javax.net.ssl.X509TrustManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.ProxyInformation;
 
@@ -49,7 +50,7 @@ public class TargetConnectionChecker {
         try {
             urlToCheckConnection = targetUri.toURL();
         } catch (MalformedURLException e) {
-            throw new ZapWrapperRuntimeException("Target URI " + targetUri + " could not be converted to URL!", null);
+            throw new ZapWrapperRuntimeException("Target URI " + targetUri + " could not be converted to URL!", ZapWrapperExitCode.TARGET_URL_INVALID);
         }
 
         TrustManager pseudoTrustManager = createTrustManagerWhichTrustsEveryBody();

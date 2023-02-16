@@ -35,6 +35,7 @@ build/
 *.log
 *.bak
 *.zip
+go.sum
 sechub_report*.json
 sechub_report*.html
 sechub-false-positives*.json
@@ -54,3 +55,7 @@ java-gen/
 
 # macOS
 .DS_Store
+
+# Containerized solutions
+copy/
+!copy/README.adoc

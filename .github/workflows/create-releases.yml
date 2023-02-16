@@ -81,7 +81,7 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: 1.19.1
-      - uses: actions/cache@v3.0.11
+      - uses: actions/cache@v3.2.5
         id: go-cache
         with:
           path: |
@@ -110,7 +110,7 @@ jobs:
       - name: Create pull request for SPDX license headers
         id: pr_spdx_headers
         if: steps.apply-headers.outputs.commits != ''
-        uses: peter-evans/create-pull-request@v4.2.0
+        uses: peter-evans/create-pull-request@v4.2.3
         with:
           branch: release-spdx-headers
           branch-suffix: short-commit-hash
@@ -262,7 +262,7 @@ jobs:
       # -----------------------------------------
       - name: Create pull request for release documentation
         id: pr_release_documentation
-        uses: peter-evans/create-pull-request@v4.2.0
+        uses: peter-evans/create-pull-request@v4.2.3
         with:
           branch: release-documentation
           branch-suffix: short-commit-hash

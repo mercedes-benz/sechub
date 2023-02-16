@@ -53,7 +53,7 @@ function init_go_modules() {
 }
 
 package_split=(${package//\// })
-package_name=${package_split[-1]}
+package_name=${package_split[*]: -1}
 
 echo "Build Go: Building package '$package':"
 

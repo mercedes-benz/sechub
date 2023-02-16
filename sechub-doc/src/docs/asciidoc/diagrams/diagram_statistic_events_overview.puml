@@ -1,0 +1,20 @@
+' SPDX-License-Identifier: MIT
+@startuml
+
+boundary "scheduler" as _scheduler
+boundary "scan" as _scan
+boundary "statistic" as _statistic 
+database "db" as _db
+
+'For more examples look at https://plantuml.com/sequence-diagram
+
+_scheduler -> _statistic: job created
+_statistic -> _db
+
+_scan -> _statistic  : analytic data
+_statistic -> _db
+
+_scheduler -> _statistic: job done/failed
+_statistic -> _db
+
+@enduml

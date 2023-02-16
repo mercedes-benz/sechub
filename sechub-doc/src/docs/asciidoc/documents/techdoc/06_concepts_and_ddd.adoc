@@ -15,6 +15,12 @@ include::../shared/concepts/concept_falsepositive_handling.adoc[]
 
 include::../shared/concepts/concept_auto_clean.adoc[]
 
+=== Analytics
+include::../shared/concepts/concept_analytic.adoc[]
+
+=== Statistics
+include::../shared/concepts/concept_statistic.adoc[]
+
 === Domain driven design
 include::./../shared/domain_message_bus.adoc[]
 
