@@ -25,11 +25,6 @@ public class WebScanProductExecutionServiceImpl extends AbstractProductExecution
 
     private static final Logger LOG = LoggerFactory.getLogger(WebScanProductExecutionServiceImpl.class);
 
-    @Override
-    protected ScanType getScanType() {
-        return ScanType.WEB_SCAN;
-    }
-
     public boolean isExecutionNecessary(SecHubExecutionContext context, UUIDTraceLogID traceLogID, SecHubConfiguration configuration) {
         Optional<SecHubWebScanConfiguration> webScanOption = configuration.getWebScan();
         if (!webScanOption.isPresent()) {

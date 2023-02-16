@@ -23,9 +23,4 @@ public class ReportProductExecutionServiceImpl extends AbstractProductExecutionS
         return true;
     }
 
-    @Override
-    protected ScanType getScanType() {
-        return ScanType.REPORT;
-    }
-
 }

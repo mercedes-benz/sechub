@@ -8,7 +8,7 @@
 dependencies {
 
     api project(':sechub-shared-kernel')
-    implementation project(':sechub-adapter') // we use this dependency to provide common adapter support for dedicated scan projects (e.g. sechub-scan-product-netsparker)
+    implementation project(':sechub-adapter') // we use this dependency to provide common adapter support for dedicated scan projects
     implementation library.springboot_starter_thymeleaf
 
     testImplementation project(':sechub-testframework')

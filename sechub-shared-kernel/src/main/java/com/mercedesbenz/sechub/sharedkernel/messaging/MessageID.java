@@ -6,15 +6,25 @@ import java.util.HashSet;
 import java.util.Set;
 
 public enum MessageID {
+
+    /**
+     * Is send/received synchron
+     */
     START_SCAN( /* @formatter:off */
-	            MessageDataKeys.SECHUB_UUID,
+	            MessageDataKeys.SECHUB_JOB_UUID,
 	            MessageDataKeys.BATCH_JOB_ID,
 	            MessageDataKeys.EXECUTED_BY,
 	            MessageDataKeys.SECHUB_CONFIG),
 	/* @formatter:on */
 
+    /**
+     * Is send/received synchron
+     */
     SCAN_DONE,
 
+    /**
+     * Is send/received synchron
+     */
     SCAN_FAILED,
 
     /**
@@ -52,15 +62,25 @@ public enum MessageID {
     PROJECT_WHITELIST_UPDATED(MessageDataKeys.PROJECT_WHITELIST_UPDATE_DATA),
 
     /**
+     * Used when a new sechub job has been created
+     */
+    JOB_CREATED(MessageDataKeys.JOB_CREATED_DATA),
+
+    /**
      * Used when a new batch job has been started
      */
     JOB_STARTED(MessageDataKeys.JOB_STARTED_DATA),
 
     /**
+     * Used when the job execution is starting
+     */
+    JOB_EXECUTION_STARTING(MessageDataKeys.SECHUB_JOB_UUID, MessageDataKeys.LOCAL_DATE_TIME_SINCE, MessageDataKeys.SECHUB_EXECUTION_UUID),
+
+    /**
      * Used when job was executed correctly. Independent if the sechub job fails or
      * not. The (batch) execution was successful, means no internal error occurred.
      */
-    JOB_DONE(MessageDataKeys.JOB_DONE_DATA),
+    JOB_DONE(MessageDataKeys.JOB_DONE_DATA, MessageDataKeys.SECHUB_EXECUTION_UUID),
 
     USER_SIGNUP_REQUESTED(MessageDataKeys.USER_SIGNUP_DATA),
 
@@ -68,7 +88,7 @@ public enum MessageID {
      * Used when a batch job execution itself fails (job batch itself) means an
      * internal error occurred.
      */
-    JOB_FAILED(MessageDataKeys.JOB_FAILED_DATA),
+    JOB_FAILED(MessageDataKeys.JOB_FAILED_DATA, MessageDataKeys.SECHUB_EXECUTION_UUID),
 
     /**
      * Used when an action can change user role situation. The administration layer
@@ -124,13 +144,13 @@ public enum MessageID {
 
     JOB_RESTART_CANCELED(MessageDataKeys.JOB_RESTART_DATA, MessageDataKeys.ENVIRONMENT_BASE_URL),
 
-    JOB_RESULTS_PURGED(MessageDataKeys.SECHUB_UUID, MessageDataKeys.ENVIRONMENT_BASE_URL),
+    JOB_RESULTS_PURGED(MessageDataKeys.SECHUB_JOB_UUID, MessageDataKeys.ENVIRONMENT_BASE_URL),
 
-    REQUEST_PURGE_JOB_RESULTS(MessageDataKeys.SECHUB_UUID, MessageDataKeys.ENVIRONMENT_BASE_URL),
+    REQUEST_PURGE_JOB_RESULTS(MessageDataKeys.SECHUB_JOB_UUID, MessageDataKeys.ENVIRONMENT_BASE_URL),
 
-    JOB_RESULT_PURGE_DONE(MessageDataKeys.SECHUB_UUID),
+    JOB_RESULT_PURGE_DONE(MessageDataKeys.SECHUB_JOB_UUID),
 
-    JOB_RESULT_PURGE_FAILED(MessageDataKeys.SECHUB_UUID),
+    JOB_RESULT_PURGE_FAILED(MessageDataKeys.SECHUB_JOB_UUID),
 
     REQUEST_SCHEDULER_JOB_STATUS(MessageDataKeys.SCHEDULER_JOB_STATUS),
 
@@ -164,10 +184,16 @@ public enum MessageID {
      * been called as well. Means: the post processing for job cancel request has
      * been done.<br>
      * <br>
-     *
-     * contains SecHub job UUID
      */
-    PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE(MessageDataKeys.JOB_CANCEL_DATA);
+    PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE(MessageDataKeys.JOB_CANCEL_DATA, MessageDataKeys.SECHUB_EXECUTION_UUID, MessageDataKeys.SECHUB_JOB_UUID),
+
+    ANALYZE_SCAN_RESULTS_AVAILABLE(MessageDataKeys.SECHUB_EXECUTION_UUID, MessageDataKeys.ANALYTIC_SCAN_RESULT_DATA),
+
+    SOURCE_UPLOAD_DONE(MessageDataKeys.SECHUB_JOB_UUID, MessageDataKeys.UPLOAD_STORAGE_DATA),
+
+    BINARY_UPLOAD_DONE(MessageDataKeys.SECHUB_JOB_UUID, MessageDataKeys.UPLOAD_STORAGE_DATA),
+
+    ;
 
     private Set<MessageDataKey<?>> unmodifiableKeys;
 

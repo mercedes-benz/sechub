@@ -13,12 +13,10 @@ public enum ScanType {
 
     LICENSE_SCAN("licenseScan", "Scans code or artifacts for license information"),
 
-    /** not really a scan type but a report collector, only internally used */
     REPORT("report", "Internal scan type for reporting", true),
 
-    /*
-     * This is just a fallback for unknown scan type.
-     */
+    ANALYTICS("analytics", "Internal scan type for analytic phase", true),
+
     UNKNOWN("unknown", "Internal scan type for unknown types", true),
 
     ;

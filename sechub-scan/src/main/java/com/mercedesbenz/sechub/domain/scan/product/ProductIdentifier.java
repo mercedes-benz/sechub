@@ -4,9 +4,10 @@ package com.mercedesbenz.sechub.domain.scan.product;
 import com.mercedesbenz.sechub.commons.core.MustBeKeptStable;
 
 /**
- * An enumeration with all currently known products identifiers. If one of the
- * products is no longer supported the identifiers should be marked deprecated
- * but not removed! Do also NOT rename those enums!<br>
+ * An enumeration with all currently known product identifiers. If one of the
+ * products is no longer supported, the corresponding identifier should be
+ * marked as deprecated (with a short description for the deprecation) but not
+ * removed! Do also NOT rename enumeration entries!<br>
  * <br>
  * REASON: We use the names inside database for results and as identifiers! So
  * keep as is!
@@ -20,11 +21,13 @@ public enum ProductIdentifier {
     /**
      * Webscanner
      */
+    @Deprecated
     NETSPARKER(ProductType.WEBSCAN),
 
     /**
      * Infrastructure scanner
      */
+    @Deprecated
     NESSUS(ProductType.INFRASCAN),
 
     /**
@@ -48,6 +51,9 @@ public enum ProductIdentifier {
 
     /** Product delegation server - license scan */
     PDS_LICENSESCAN(ProductType.LICENSESCAN),
+
+    /** Product delegation server - analytics */
+    PDS_ANALYTICS(ProductType.ANALYTICS)
 
     ;
 

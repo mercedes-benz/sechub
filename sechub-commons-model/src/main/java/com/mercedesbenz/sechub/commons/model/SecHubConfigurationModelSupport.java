@@ -52,13 +52,20 @@ public class SecHubConfigurationModelSupport {
 
         switch (scanType) {
         case CODE_SCAN:
-            return isDataTypeContainedOrReferenced(dataType, model, model.getCodeScan());
+            return isDataTypeContainedOrReferenced(dataType, model, model.getCodeScan(), SecHubCodeScanConfiguration.class);
         case INFRA_SCAN:
             return false;
         case LICENSE_SCAN:
-            return isDataTypeContainedOrReferenced(dataType, model, model.getLicenseScan());
+            return isDataTypeContainedOrReferenced(dataType, model, model.getLicenseScan(), SecHubLicenseScanConfiguration.class);
         case REPORT:
             return false;
+        case ANALYTICS:
+            boolean analyticsPossible =
+
+                    isDataTypeContainedOrReferenced(dataType, model, model.getCodeScan(), SecHubCodeScanConfiguration.class)
+                            || isDataTypeContainedOrReferenced(dataType, model, model.getLicenseScan(), SecHubLicenseScanConfiguration.class);
+
+            return analyticsPossible;
         case UNKNOWN:
             return false;
         case WEB_SCAN:
@@ -68,7 +75,7 @@ public class SecHubConfigurationModelSupport {
             }
             SecHubWebScanConfiguration webScan = webScanOpt.get();
             Optional<SecHubWebScanApiConfiguration> apiOpt = webScan.getApi();
-            return isDataTypeContainedOrReferenced(dataType, model, apiOpt);
+            return isDataTypeContainedOrReferenced(dataType, model, apiOpt, SecHubWebScanApiConfiguration.class);
         default:
             LOG.error("Unsupported scan type: {}", scanType);
             return false;
@@ -76,10 +83,10 @@ public class SecHubConfigurationModelSupport {
         }
     }
 
-    private boolean isDataTypeContainedOrReferenced(SecHubDataConfigurationType dataType, SecHubConfigurationModel model,
-            Optional<? extends SecHubDataConfigurationUsageByName> usageByNameOpt) {
+    private <T extends SecHubDataConfigurationUsageByName> boolean isDataTypeContainedOrReferenced(SecHubDataConfigurationType dataType,
+            SecHubConfigurationModel model, Optional<T> usageByNameOpt, Class<T> usageClazz) {
         if (!usageByNameOpt.isPresent()) {
-            LOG.debug("No usages found, so datatype {} not contained", dataType);
+            LOG.debug("No usages found, so datatype {} not contained. Usage clazz: {}", dataType, usageClazz);
             return false;
         }
         SecHubDataConfigurationUsageByName usageByName = usageByNameOpt.get();
