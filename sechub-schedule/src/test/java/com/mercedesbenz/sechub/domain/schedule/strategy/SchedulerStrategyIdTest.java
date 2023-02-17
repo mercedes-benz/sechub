@@ -10,18 +10,18 @@ class SchedulerStrategyIdTest {
     @Test
     void test_value_to_enum_mapping_succesful() {
         /* execute */
-        SchedulerStrategyId fifoServe = SchedulerStrategyId.getId("first-come-first-serve");
-        SchedulerStrategyId onlyOneScanAtATime = SchedulerStrategyId.getId("only-one-scan-per-project-at-a-time");
+        SchedulerStrategyId fifoServe = SchedulerStrategyId.getByIdentifier("first-come-first-serve");
+        SchedulerStrategyId onlyOneScanAtATime = SchedulerStrategyId.getByIdentifier("only-one-scan-per-project-at-a-time");
 
         /* test */
-        assertEquals(SchedulerStrategyId.FirstComeFirstServe, fifoServe);
-        assertEquals(SchedulerStrategyId.OnlyOneScanPerProjectAtATime, onlyOneScanAtATime);
+        assertEquals(SchedulerStrategyId.FIRST_COME_FIRST_SERVE, fifoServe);
+        assertEquals(SchedulerStrategyId.ONE_SCAN_PER_PROJECT, onlyOneScanAtATime);
     }
 
     @Test
     void test_unknown_value_to_enum_failure() {
         /* prepare */
-        SchedulerStrategyId strategyId = SchedulerStrategyId.getId("gibberish");
+        SchedulerStrategyId strategyId = SchedulerStrategyId.getByIdentifier("gibberish");
 
         /* test */
         assertNull(strategyId);

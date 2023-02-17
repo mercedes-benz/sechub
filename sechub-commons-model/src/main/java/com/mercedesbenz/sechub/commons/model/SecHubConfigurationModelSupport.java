@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -51,15 +52,22 @@ public class SecHubConfigurationModelSupport {
 
         switch (scanType) {
         case CODE_SCAN:
-            return isDataTypeContainedOrReferenced(dataType, model, model.getCodeScan());
+            return isDataTypeContainedOrReferenced(dataType, model, model.getCodeScan(), SecHubCodeScanConfiguration.class);
         case INFRA_SCAN:
             return false;
         case LICENSE_SCAN:
-            return isDataTypeContainedOrReferenced(dataType, model, model.getLicenseScan());
+            return isDataTypeContainedOrReferenced(dataType, model, model.getLicenseScan(), SecHubLicenseScanConfiguration.class);
         case SECRET_SCAN:
-            return isDataTypeContainedOrReferenced(dataType, model, model.getSecretScan());
+            return isDataTypeContainedOrReferenced(dataType, model, model.getSecretScan(), SecHubLicenseScanConfiguration.class);
         case REPORT:
             return false;
+        case ANALYTICS:
+            boolean analyticsPossible =
+
+                    isDataTypeContainedOrReferenced(dataType, model, model.getCodeScan(), SecHubCodeScanConfiguration.class)
+                            || isDataTypeContainedOrReferenced(dataType, model, model.getLicenseScan(), SecHubLicenseScanConfiguration.class);
+
+            return analyticsPossible;
         case UNKNOWN:
             return false;
         case WEB_SCAN:
@@ -69,7 +77,7 @@ public class SecHubConfigurationModelSupport {
             }
             SecHubWebScanConfiguration webScan = webScanOpt.get();
             Optional<SecHubWebScanApiConfiguration> apiOpt = webScan.getApi();
-            return isDataTypeContainedOrReferenced(dataType, model, apiOpt);
+            return isDataTypeContainedOrReferenced(dataType, model, apiOpt, SecHubWebScanApiConfiguration.class);
         default:
             LOG.error("Unsupported scan type: {}", scanType);
             return false;
@@ -77,10 +85,10 @@ public class SecHubConfigurationModelSupport {
         }
     }
 
-    private boolean isDataTypeContainedOrReferenced(SecHubDataConfigurationType dataType, SecHubConfigurationModel model,
-            Optional<? extends SecHubDataConfigurationUsageByName> usageByNameOpt) {
+    private <T extends SecHubDataConfigurationUsageByName> boolean isDataTypeContainedOrReferenced(SecHubDataConfigurationType dataType,
+            SecHubConfigurationModel model, Optional<T> usageByNameOpt, Class<T> usageClazz) {
         if (!usageByNameOpt.isPresent()) {
-            LOG.debug("No usages found, so datatype {} not contained", dataType);
+            LOG.debug("No usages found, so datatype {} not contained. Usage clazz: {}", dataType, usageClazz);
             return false;
         }
         SecHubDataConfigurationUsageByName usageByName = usageByNameOpt.get();
@@ -138,6 +146,29 @@ public class SecHubConfigurationModelSupport {
         }
         LOG.debug("List of data elements for datatype {} did contain none of the referenced ones, so not contained", dataType);
         return false;
+    }
+
+    /**
+     * Collects scan types
+     *
+     * @param model
+     * @return set with scan types, never <code>null</code>
+     */
+    public Set<ScanType> collectPublicScanTypes(SecHubConfigurationModel model) {
+        Set<ScanType> result = new LinkedHashSet<>();
+        if (model.getCodeScan().isPresent()) {
+            result.add(ScanType.CODE_SCAN);
+        }
+        if (model.getWebScan().isPresent()) {
+            result.add(ScanType.WEB_SCAN);
+        }
+        if (model.getInfraScan().isPresent()) {
+            result.add(ScanType.INFRA_SCAN);
+        }
+        if (model.getLicenseScan().isPresent()) {
+            result.add(ScanType.LICENSE_SCAN);
+        }
+        return result;
     }
 
 }

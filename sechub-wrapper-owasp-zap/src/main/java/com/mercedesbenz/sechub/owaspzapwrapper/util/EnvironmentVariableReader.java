@@ -37,5 +37,4 @@ public class EnvironmentVariableReader {
             throw new IllegalArgumentException("The value of " + environmentVariable + " is not a valid integer.");
         }
     }
-
 }

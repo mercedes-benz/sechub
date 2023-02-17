@@ -21,6 +21,8 @@ public enum TestProductExecutorIdentifier {
 
     PDS_SECRETSCAN,
 
+    PDS_ANALYTICS,
+
     /* Direct product executors */
     CHECKMARX,
 

@@ -42,6 +42,9 @@ public class PDSGetJobStreamService {
     }
 
     protected String truncateStream(String stream) {
+        if (stream == null) {
+            return null;
+        }
         if (stream.length() > TRUNCATED_STREAM_SIZE) {
             return stream.substring(stream.length() - TRUNCATED_STREAM_SIZE, stream.length());
         }

@@ -18,7 +18,7 @@ public class DomainDataTraceLogID extends TraceLogID<DomainMessagePart> {
         if (source == null) {
             return null;
         }
-        return source.getRaw(MessageDataKeys.SECHUB_UUID.getId());
+        return source.getRaw(MessageDataKeys.SECHUB_JOB_UUID.getId());
     }
 
 }

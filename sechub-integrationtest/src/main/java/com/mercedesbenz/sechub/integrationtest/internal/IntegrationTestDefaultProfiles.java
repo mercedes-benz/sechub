@@ -365,6 +365,17 @@ public class IntegrationTestDefaultProfiles {
     public static final DefaultTestExecutionProfile PROFILE_15_PDS_CHECKMARX_INTEGRATIONTEST_FILTERING_TEXTFILES = defineProfile15();
 
     /**
+     * The profile enables a PDS analyzer, which will return CLOC data (JSON).
+     *
+     * <h5>Used inside scenarios:</h5>
+     * <ul>
+     * <li>{@link Scenario17}</li>
+     * </ul>
+     *
+     */
+    public static final DefaultTestExecutionProfile PROFILE_16_PDS_ANALYZE_CLOC_OUTPUT = defineProfile16();
+
+    /**
      * <h3>Profile 16</h3>
      * <h4>Short description</h4>PDS scan profile for secret scans
      *
@@ -543,14 +554,6 @@ public class IntegrationTestDefaultProfiles {
         profile.enabled = true;
         return profile;
     }
-
-    private static DefaultTestExecutionProfile defineProfile17() {
-
-        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
-        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_SECRET_SCAN_A);
-        profile.id = "inttest-p16-pds-secretscan";
-        profile.description = "Profile 16: PDS secret scan, reused storage, SARIF JSON file returned";
-        profile.enabled = true;
-        return profile;
-    }
+==== BASE ====
+==== BASE ====
 }

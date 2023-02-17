@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product;
 
-/**
- * Marker interface, necessary for avoiding mockito problem (mockito inherits
- * abstract parts when directly using classes)
- */
+import com.mercedesbenz.sechub.commons.model.ScanType;
+
 public interface LicenseScanProductExecutionService extends ProductExecutionStoreService {
 
+    default public ScanType getScanType() {
+        return ScanType.LICENSE_SCAN;
+    }
 }

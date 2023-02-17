@@ -155,6 +155,25 @@ class SecHubFileStructureDataProviderBuilderTest {
     }
 
     @Test
+    void for_scanType_analytics_and_model_with_codescan_embedded_filesystem_builder_creates_a_dataProvider() {
+        /* prepare */
+        SecHubConfigurationModel model = new SecHubConfigurationModel();
+        SecHubCodeScanConfiguration codeScan = new SecHubCodeScanConfiguration();
+        SecHubFileSystemConfiguration fileSystemConfiguration = new SecHubFileSystemConfiguration();
+        codeScan.setFileSystem(fileSystemConfiguration);
+        fileSystemConfiguration.getFolders().add("myfolder");
+        model.setCodeScan(codeScan);
+
+        /* execute */
+        SecHubFileStructureDataProvider dataProvider = builderToTest.setModel(model).setScanType(ScanType.ANALYTICS).build();
+
+        /* test */
+        assertNotNull(dataProvider);
+        assertTrue(dataProvider.getUnmodifiableSetOfAcceptedReferenceNames().isEmpty());
+        assertTrue(dataProvider.isRootFolderAccepted());
+    }
+
+    @Test
     void for_scanType_codescan_and_model_with_codescan_by_data_section_filesystem_builder_creates_a_dataProvider() {
         /* prepare */
         SecHubConfigurationModel model = new SecHubConfigurationModel();

@@ -29,11 +29,11 @@ ext {
        * Every version of each additional library NOT being managed by spring boot dependency 
        * management is defined here:
        */                                     
-      dom4j:                                   "2.1.3",
+      dom4j:                                   "2.1.4",
       jsoup:                                   "1.15.3",
       re2j:                                    "1.7",
       logstash_logback_encoder:                "7.2",
-      aws_java_sdk_s3:                         "1.12.376",
+      aws_java_sdk_s3:                         "1.12.390",
       postgresql:                              "42.5.1",
                                               
       /* JDK > 9 needs these ones: */         
@@ -50,25 +50,28 @@ ext {
       apache_commons_validator:                "1.7",
       apache_commons_fileupload:               "1.4",
       apache_commons_compress:                 "1.22",
-                 
+      apache_commons_lang3:                    "3.12.0",
+
       /* testing */                            
       junit4:                                  "4.13.2",
       wiremock:                                "2.27.2",
       s3mock:                                  "2.11.0",
 
       /* gradle plugins */      
-      dependency_check:                        "7.4.3",
+      dependency_check:                        "8.0.1",
       grgit:                                   "5.0.0",
       
       /* documentation */
       asciidoctor_j:                           "2.5.2",
       asciidoctor_j_diagram:                   "2.2.1",
       // openapi3-generator, releases see https://github.com/ePages-de/restdocs-api-spec/releases
-      restDocsApiSpec:                         "0.16.2",
+      restDocsApiSpec:                         "0.16.4",
       
       /* Owasp Zap wrapper */
       owaspzap_client_api:                     "1.11.0",
       jcommander:                              "1.82",
+      thymeleaf_extras_springsecurity5:        "3.1.0.RELEASE"
+      
     
    ]    
    
@@ -88,6 +91,7 @@ ext {
         springboot_starter_actuator:           "org.springframework.boot:spring-boot-starter-actuator",
         springboot_starter_mail:               "org.springframework.boot:spring-boot-starter-mail",
         springboot_starter_validation:         "org.springframework.boot:spring-boot-starter-validation",
+        springboot_starter_webflux:            "org.springframework.boot:spring-boot-starter-webflux",
 
         springframework_restdocs:              "org.springframework.restdocs:spring-restdocs-mockmvc",
         springframework_security_test:         "org.springframework.security:spring-security-test", 
@@ -117,7 +121,8 @@ ext {
         apache_commons_cli:                    "commons-cli:commons-cli:${libraryVersion.apache_commons_cli}",
         apache_commons_fileupload:             "commons-fileupload:commons-fileupload:${libraryVersion.apache_commons_fileupload}",
         apache_commons_compress:               "org.apache.commons:commons-compress:${libraryVersion.apache_commons_compress}",
-        
+        apache_commons_lang3:                  "org.apache.commons:commons-lang3:${libraryVersion.apache_commons_lang3}",
+
         // JDK 10 build problems handling
         // https://stackoverflow.com/questions/43574426/how-to-resolve-java-langnoclassdeffounderror-javax-xml-bind-jaxbexception-in-j
         jdk_missing_jaxb_api:                  "javax.xml.bind:jaxb-api:${libraryVersion.jaxb_api}",
@@ -148,6 +153,12 @@ ext {
         owaspzap_client_api:                   "org.zaproxy:zap-clientapi:${libraryVersion.owaspzap_client_api}",
          
         jcommander:                            "com.beust:jcommander:${libraryVersion.jcommander}",
+        
+        /*
+         * Needed for Spring Boot WebFlux CSRF protection - see: https://stackoverflow.com/a/53305169
+         */
+        thymeleaf_extras_springsecurity5:      "org.thymeleaf.extras:thymeleaf-extras-springsecurity5:${libraryVersion.thymeleaf_extras_springsecurity5}"
+        
    ]
    
 

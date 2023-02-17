@@ -11,7 +11,7 @@ public enum ProductType {
 
     LICENSESCAN,
 
-    ANALYSE,
+    ANALYTICS,
 
     REPORT_COLLECTOR,
 

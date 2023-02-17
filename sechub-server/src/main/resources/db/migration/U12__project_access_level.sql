@@ -7,4 +7,4 @@ ALTER TABLE adm_project
 ;
 
 -- scheduler 
-DROP TABLE schedule_project_config
+DROP TABLE schedule_project_config;

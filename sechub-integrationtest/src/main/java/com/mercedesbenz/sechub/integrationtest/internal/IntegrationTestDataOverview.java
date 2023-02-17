@@ -65,6 +65,9 @@ import com.mercedesbenz.sechub.integrationtest.scenario9.Scenario9;
  * <li>{@link IntegrationTestDefaultProfiles#PROFILE_11_PDS_CODESCAN_MAPPING Profile 11} - PDS code scan for testing sechub mapping reuse</li>
  * <li>{@link IntegrationTestDefaultProfiles#PROFILE_12_PDS_CHECKMARX_INTEGRATIONTEST Profile 12} - PDS code scan for checkmarx integration testing</li>
  * <li>{@link IntegrationTestDefaultProfiles#PROFILE_13_PDS_CANCELLATION Profile 13} - PDS code scan for cancellation roundtrip testing (sechub-pds-launcherscript-pds-sechub)</li>
+ * <li>{@link IntegrationTestDefaultProfiles#PROFILE_14_PDS_CHECKMARX_INTEGRATIONTEST_WRONG_WITH_SOURCE_AND_BINARY Profile 14} - PDS code scan with checkmarx but wrong configured</li>
+ * <li>{@link IntegrationTestDefaultProfiles#PROFILE_15_PDS_CHECKMARX_INTEGRATIONTEST_FILTERING_TEXTFILES Profile 15} - PDS code scan for filtering text files
+ * <li>{@link IntegrationTestDefaultProfiles#PROFILE_16_PDS_ANALYZE_CLOC_OUTPUT Profile 16} - PDS analyzer profile, with CLOC JSON output as default
  * <li>{@link IntegrationTestDefaultProfiles#PROFILE_17_PDS_SECRETSCAN Profile 16} - PDS secret scan</li>
  * </ul>
  * @author Albert Tregnaghi

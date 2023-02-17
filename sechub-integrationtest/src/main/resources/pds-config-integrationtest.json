@@ -1,170 +1,244 @@
 {
-  "apiVersion" : "1.0",
-  "serverId" : "integration_test_singlenode1",
-  "products" : [ {
-    "id" : "PDS_INTTEST_PRODUCT_CODESCAN",
-    "path" : "./../sechub-integrationtest/pds/product-scripts/integrationtest-codescan.sh",
-    "scanType" : "codeScan",
-    "description" : "This is only a fake code scan - used by integration tests. The code scan will just return data from uploaded zip file",
-    "parameters" : {
-      "mandatory" : [ {
-        "key" : "product1.qualititycheck.enabled",
-        "description" : "when 'true' quality scan results are added as well"
-      }, {
-        "key" : "product1.level",
-        "description" : "numeric, 1-gets all, 2-only critical,fatal and medium, 3- only critical and fatal"
-      } ],
-      "optional" : [ {
-        "key" : "product1.add.tipoftheday",
-        "description" : "add tip of the day as info"
-      }, {
-        "key" : "pds.test.key.variantname",
-        "description" : "a parameter from configuration - will be different in each integration test config from sechub integration test server"
-      }, {
-        "key" : "test.mapping1.replace.project1",
-        "description" : "mapping1 for testing - only in variant j, will have mapping from sechub"
-      }, {
-        "key" : "test.mapping2.not.existing.in.sechub",
-        "description" : "mapping 2 for testing - only in variant j, will have fallback data (empty)"
-      } ]
-    }
-  }, {
-    "id" : "PDS_INTTEST_PRODUCT_CS_SARIF",
-    "path" : "./../sechub-integrationtest/pds/product-scripts/integrationtest-codescan-sarif.sh",
-    "scanType" : "codeScan",
-    "description" : "This is only a fake code scan - used by integration tests. The code scan will just return data from uploaded zip file",
-    "parameters" : {
-      "mandatory" : [ {
-        "key" : "product1.qualititycheck.enabled",
-        "description" : "when 'true' quality scan results are added as well"
-      }, {
-        "key" : "product1.level",
-        "description" : "numeric, 1-gets all, 2-only critical,fatal and medium, 3- only critical and fatal"
-      } ],
-      "optional" : [ {
-        "key" : "product1.add.tipoftheday",
-        "description" : "add tip of the day as info"
-      }, {
-        "key" : "pds.test.key.variantname",
-        "description" : "a parameter from configuration - will be different in each integration test config from sechub integration test server"
-      }, {
-        "key" : "pds.config.supported.datatypes",
-        "description" : "Supported data types. Should not be changed at runtime",
-        "default" : "source"
-      } ]
-    }
-  }, {
-    "id" : "PDS_INTTEST_PRODUCT_WEBSCAN",
-    "path" : "./../sechub-integrationtest/pds/product-scripts/integrationtest-webscan.sh",
-    "scanType" : "webScan",
-    "description" : "This is only a fake web scan - used by integration tests.",
-    "parameters" : {
-      "mandatory" : [ {
-        "key" : "product2.level",
-        "description" : "numeric, 1-gets all, 2-only critical,fatal and medium, 3- only critical and fatal"
-      }, {
-        "key" : "pds.config.supported.datatypes",
-        "description" : "We accept only sources (open api files) or none (simple webscan) here!",
-        "default" : "none, source"
-      } ],
-      "optional" : [ {
-        "key" : "pds.test.key.variantname",
-        "description" : "a parameter from configuration - will be different in each integration test config from sechub integration test server"
-      } ]
-    }
-  }, {
-    "id" : "PDS_INTTEST_PRODUCT_INFRASCAN",
-    "path" : "./../sechub-integrationtest/pds/product-scripts/integrationtest-infrascan.sh",
-    "scanType" : "infraScan",
-    "description" : "This is only a fake infra scan - used by integration tests.",
-    "parameters" : {
-      "mandatory" : [ {
-        "key" : "pds.config.supported.datatypes",
-        "description" : "We do not need any sources or binaries here",
-        "default" : "none"
-      } ]
-    }
-  }, {
-    "id" : "PDS_INTTEST_PRODUCT_WS_SARIF",
-    "path" : "./../sechub-integrationtest/pds/product-scripts/integrationtest-webscan-sarif.sh",
-    "scanType" : "webScan",
-    "description" : "This webscan will return SARIF json test file data based on the parameter 'pds.test.key.variantname'",
-    "parameters" : {
-      "optional" : [ {
-        "key" : "product1.qualititycheck.enabled",
-        "description" : "when 'true' quality scan results are added as well"
-      }, {
-        "key" : "product1.level",
-        "description" : "numeric, 1-gets all, 2-only critical,fatal and medium, 3- only critical and fatal"
-      }, {
-        "key" : "product1.add.tipoftheday",
-        "description" : "add tip of the day as info"
-      }, {
-        "key" : "pds.test.key.variantname",
-        "description" : "a parameter from configuration - currently we provide :'owasp-file-1'"
-      }, {
-        "key" : "pds.config.supported.datatypes",
-        "description" : "We accept only sources (open api files) or none (simple webscan) here!",
-        "default" : "none, source"
-      } ]
-    }
-  }, {
-    "id" : "PDS_CHECKMARX_INTEGRATIONTEST",
-    "path" : "./../sechub-integrationtest/pds/product-scripts/integrationtest-checkmarx.sh",
-    "scanType" : "codeScan",
-    "description" : "Runs Checkmarx. This config should be (except the script path and the id) always same as pds-solution variant!",
-    "parameters" : {
-      "mandatory" : [ {
-        "key" : "pds.checkmarx.baseurl",
-        "description" : "The base URL of the checkmarx server."
-      }, {
-        "key" : "checkmarx.newproject.teamid.mapping",
-        "description" : "The team id mapping"
-      }, {
-        "key" : "pds.checkmarx.user",
-        "description" : "The user (or an environment entry) of the checkmarx user."
-      }, {
-        "key" : "pds.checkmarx.password",
-        "description" : "The password (or an environment entry) of the checkmarx user."
-      }, {
-        "key" : "pds.config.supported.datatypes",
-        "description" : "We accept only sources here!",
-        "default" : "source"
-      } ],
-      "optional" : [ {
-        "key" : "pds.checkmarx.engine.configuration.name",
-        "description" : "The name of the engine to use. If not set, a default engine will be used."
-      }, {
-        "key" : "checkmarx.newproject.presetid.mapping",
-        "description" : "When not set, the default preset will be used"
-      }, {
-        "key" : "pds.checkmarx.mocking.enabled",
-        "description" : "When true, a mocked adapter will be used."
-      }, {
-        "key" : "pds.checkmarx.result.check.period.minutes",
-        "description" : "The period time in minutes when checkmarx adapter tries to fetch the result from checkmarx server again."
-      }, {
-        "key" : "pds.checkmarx.result.check.timeout.minutes",
-        "description" : "The timout in minutes when checkmarx adapter will stop communictaion with checkmarx server and return an error instead."
-      }, {
-        "key" : "pds.checkmarx.client.secret",
-        "description" : "This is a standard value and has not to be set. It is NOT a really secret value. But we made this value optional to be safe in future, if the static default value must be changed."
-      }, {
-        "key" : "pds.checkmarx.always.fullscan.enabled",
-        "description" : "When true, full scan is always active."
-      } ]
-    }
-  }, {
-    "id" : "PDS_TEST_PRODUCT_LICENSESCAN",
-    "path" : "./../sechub-integrationtest/pds/product-scripts/integrationtest-licensescan.sh",
-    "scanType" : "licenseScan",
-    "description" : "This is only a fake license scan - used by integration tests."
-  }, {
-    "id" : "PDS_TEST_PMD",
-    "path" : "./../sechub-integrationtest/pds/product-scripts/integrationtest-pmd.sh",
-    "scanType" : "codeScan",
-    "description" : "This is a fake PMD scan - used by integration tests."
-  }, {
+==== BASE ====
+    "apiVersion": "1.0",
+    
+    "serverId" : "integration_test_singlenode1",
+    
+    "products": [
+        {
+            "id": "PDS_INTTEST_PRODUCT_CODESCAN",
+            "path": "./../sechub-integrationtest/pds/product-scripts/integrationtest-codescan.sh",
+            "scanType": "codeScan",
+            "description": "This is only a fake code scan - used by integration tests. The code scan will just return data from uploaded zip file",
+            "parameters": {
+                "mandatory": [
+                    {
+                        "key": "product1.qualititycheck.enabled",
+                        "description": "when 'true' quality scan results are added as well"
+                    },
+                    {
+                        "key": "product1.level",
+                        "description": "numeric, 1-gets all, 2-only critical,fatal and medium, 3- only critical and fatal"
+                    }
+                ],
+                "optional": [
+                    {
+                        "key": "product1.add.tipoftheday",
+                        "description": "add tip of the day as info"
+                    },
+                    {
+                        "key": "pds.test.key.variantname",
+                        "description": "a parameter from configuration - will be different in each integration test config from sechub integration test server"
+                    },
+                    {
+                        "key": "test.mapping1.replace.project1",
+                        "description": "mapping1 for testing - only in variant j, will have mapping from sechub"
+                    },
+                    {
+                        "key": "test.mapping2.not.existing.in.sechub",
+                        "description": "mapping 2 for testing - only in variant j, will have fallback data (empty)"
+                    }
+                    
+                ]
+            }
+        },
+         {
+            "id": "PDS_INTTEST_PRODUCT_CS_SARIF",
+            "path": "./../sechub-integrationtest/pds/product-scripts/integrationtest-codescan-sarif.sh",
+            "scanType": "codeScan",
+            "description": "This is only a fake code scan - used by integration tests. The code scan will just return data from uploaded zip file",
+            "parameters": {
+                "mandatory": [
+                    {
+                        "key": "product1.qualititycheck.enabled",
+                        "description": "when 'true' quality scan results are added as well"
+                    },
+                    {
+                        "key": "product1.level",
+                        "description": "numeric, 1-gets all, 2-only critical,fatal and medium, 3- only critical and fatal"
+                    }
+                ],
+                "optional": [
+                    {
+                        "key": "product1.add.tipoftheday",
+                        "description": "add tip of the day as info"
+                    },
+                    {
+                        "key": "pds.test.key.variantname",
+                        "description": "a parameter from configuration - will be different in each integration test config from sechub integration test server"
+                    },
+                    {
+                        "key":  "pds.config.supported.datatypes",
+                        "description": "Supported data types. Should not be changed at runtime",
+                        "default": "source"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "PDS_INTTEST_PRODUCT_WEBSCAN",
+            "path": "./../sechub-integrationtest/pds/product-scripts/integrationtest-webscan.sh",
+            "scanType": "webScan",
+            "description": "This is only a fake web scan - used by integration tests.",
+            "parameters": {
+                "mandatory": [
+                    {
+                        "key": "product2.level",
+                        "description": "numeric, 1-gets all, 2-only critical,fatal and medium, 3- only critical and fatal"
+                    },
+                    {
+                        "key":  "pds.config.supported.datatypes",
+                        "description": "We accept only sources (open api files) or none (simple webscan) here!",
+                        "default": "none, source"
+                    }
+                ], 
+                "optional": [
+                    {
+                        "key": "pds.test.key.variantname",
+                        "description": "a parameter from configuration - will be different in each integration test config from sechub integration test server"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "PDS_INTTEST_PRODUCT_INFRASCAN",
+            "path": "./../sechub-integrationtest/pds/product-scripts/integrationtest-infrascan.sh",
+            "scanType": "infraScan",
+            "description": "This is only a fake infra scan - used by integration tests.",
+             "parameters": {
+                "mandatory": [
+                    {
+                        "key":  "pds.config.supported.datatypes",
+                        "description": "We do not need any sources or binaries here",
+                        "default": "none"
+                    }
+                ]
+             }
+        },
+         {
+            "id": "PDS_INTTEST_PRODUCT_WS_SARIF",
+            "path": "./../sechub-integrationtest/pds/product-scripts/integrationtest-webscan-sarif.sh",
+            "scanType": "webScan",
+            "description": "This webscan will return SARIF json test file data based on the parameter 'pds.test.key.variantname'",
+            "parameters": {
+                "optional": [
+                    {
+                        "key": "product1.qualititycheck.enabled",
+                        "description": "when 'true' quality scan results are added as well"
+                    },
+                    {
+                        "key": "product1.level",
+                        "description": "numeric, 1-gets all, 2-only critical,fatal and medium, 3- only critical and fatal"
+                    },
+                    {
+                        "key": "product1.add.tipoftheday",
+                        "description": "add tip of the day as info"
+                    },
+                    {
+                        "key": "pds.test.key.variantname",
+                        "description": "a parameter from configuration - currently we provide :'owasp-file-1'"
+                    } ,
+                    {
+                        "key":  "pds.config.supported.datatypes",
+                        "description": "We accept only sources (open api files) or none (simple webscan) here!",
+                        "default": "none, source"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "PDS_CHECKMARX_INTEGRATIONTEST",
+             "path": "./../sechub-integrationtest/pds/product-scripts/integrationtest-checkmarx.sh",
+            "scanType": "codeScan",
+            "description": "Runs Checkmarx. This config should be (except the script path and the id) always same as pds-solution variant!",
+            "parameters": {
+              "mandatory": [
+                {
+                  "key": "pds.checkmarx.baseurl",
+                  "description": "The base URL of the checkmarx server."
+                },
+                {
+                  "key": "checkmarx.newproject.teamid.mapping",
+                  "description": "The team id mapping"
+                },
+                {
+                  "key": "pds.checkmarx.user",
+                  "description": "The user (or an environment entry) of the checkmarx user."
+                },
+                {
+                  "key": "pds.checkmarx.password",
+                  "description": "The password (or an environment entry) of the checkmarx user."
+                },
+                {
+                   "key":  "pds.config.supported.datatypes",
+                   "description": "We accept only sources here!",
+                   "default": "source"
+                }
+              ],
+              "optional": [
+                {
+                  "key": "pds.checkmarx.engine.configuration.name",
+                  "description": "The name of the engine to use. If not set, a default engine will be used."
+                },
+                {
+                  "key": "checkmarx.newproject.presetid.mapping",
+                  "description": "When not set, the default preset will be used"
+                },
+                {
+                  "key": "pds.checkmarx.mocking.enabled",
+                  "description": "When true, a mocked adapter will be used."
+                },
+                {
+                  "key": "pds.checkmarx.result.check.period.minutes",
+                  "description": "The period time in minutes when checkmarx adapter tries to fetch the result from checkmarx server again."
+                },
+                {
+                  "key": "pds.checkmarx.result.check.timeout.minutes",
+                  "description": "The timout in minutes when checkmarx adapter will stop communictaion with checkmarx server and return an error instead."
+                },
+                {
+                  "key": "pds.checkmarx.client.secret",
+                  "description": "This is a standard value and has not to be set. It is NOT a really secret value. But we made this value optional to be safe in future, if the static default value must be changed."
+                },
+                {
+                  "key": "pds.checkmarx.always.fullscan.enabled",
+                  "description": "When true, full scan is always active."
+                }
+              ]
+            }
+        },
+        {
+            "id": "PDS_TEST_PRODUCT_LICENSESCAN",
+            "path": "./../sechub-integrationtest/pds/product-scripts/integrationtest-licensescan.sh",
+            "scanType": "licenseScan",
+            "description": "This is only a fake license scan - used by integration tests."
+        },
+      {
+        "id": "PDS_TEST_PMD",
+        "path": "./../sechub-integrationtest/pds/product-scripts/integrationtest-pmd.sh",
+        "scanType": "codeScan",
+        "description": "This is a fake PMD scan - used by integration tests."
+        },
+        { 
+          "id": "PDS_INTTEST_PRODUCT_ANALYZE",
+          "path": "./../sechub-integrationtest/pds/product-scripts/integrationtest-analytics.sh",
+          "scanType": "analytics",
+          "description": "This is a fake analytics scan - used by integration tests.",
+          "parameters": {
+                "optional": [
+                    {
+                        "key": "pds.test.key.variantname",
+                        "description": "a parameter from configuration, can be used to handle differerent variants in same script"
+                    },
+                    {
+                        "key":  "pds.config.supported.datatypes",
+                        "description": "Supported data types. In our test we only accept 'source'. And we check this also inside the script. When the script is executed, it MUST have sources!",
+                        "default": "source"
+                    }
+                ]
+            }
+        },
+{
     "id" : "PDS_TEST_PRODUCT_SECRETSCAN",
     "path" : "./../sechub-integrationtest/pds/product-scripts/integrationtest-secretscan.sh",
     "scanType" : "secretScan",

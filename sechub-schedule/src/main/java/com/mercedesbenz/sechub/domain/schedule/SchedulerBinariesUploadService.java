@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -36,6 +37,12 @@ import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.error.BadRequestException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
+import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
+import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
+import com.mercedesbenz.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
+import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
+import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
+import com.mercedesbenz.sechub.sharedkernel.messaging.StorageMessageData;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserUploadsBinaries;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 import com.mercedesbenz.sechub.storage.core.JobStorage;
@@ -71,6 +78,9 @@ public class SchedulerBinariesUploadService {
 
     @Autowired
     ServletFileUploadFactory servletFileUploadFactory;
+
+    @Autowired
+    DomainMessageService domainMessageService;
 
     @UseCaseUserUploadsBinaries(@Step(number = 2, name = "Try to find project and upload binaries as tar", description = "When project is found and user has access and job is initializing the binaries file will be uploaded"))
     public void uploadBinaries(String projectId, UUID jobUUID, HttpServletRequest request) {
@@ -198,6 +208,12 @@ public class SchedulerBinariesUploadService {
 
                     realContentLengthInBytes = byteCountingInputStream.getByteCount();
 
+                    // We send here the event that the upload has been done, even
+                    // when the following checksum validation would fail. Reason: we want to measure
+                    // the traffic
+                    // even when somebody does always define the wrong checksum again and again...
+                    sendBinaryUploadDoneEvent(projectId, jobUUID, realContentLengthInBytes);
+
                     /* upload file size information to storage */
                     String fileSizeAsString = "" + realContentLengthInBytes;
                     long fileSizeAsStringSizeInBytes = fileSizeAsString.getBytes().length;
@@ -229,6 +245,22 @@ public class SchedulerBinariesUploadService {
             throw new BadRequestException("Upload of binaries was not possible!");
         }
         assertCheckSumCorrect(checksumFromUser, checksumCalculated);
+    }
+
+    @IsSendingAsyncMessage(MessageID.BINARY_UPLOAD_DONE)
+    private void sendBinaryUploadDoneEvent(String projectId, UUID jobUUID, long fileSizeAsStringSizeInBytes) {
+        DomainMessage message = new DomainMessage(MessageID.BINARY_UPLOAD_DONE);
+
+        StorageMessageData storageDataMessage = new StorageMessageData();
+        storageDataMessage.setJobUUID(jobUUID);
+        storageDataMessage.setProjectId(projectId);
+        storageDataMessage.setSince(LocalDateTime.now());
+        storageDataMessage.setSizeInBytes(fileSizeAsStringSizeInBytes);
+
+        message.set(MessageDataKeys.SECHUB_JOB_UUID, jobUUID);
+        message.set(MessageDataKeys.UPLOAD_STORAGE_DATA, storageDataMessage);
+
+        domainMessageService.sendAsynchron(message);
     }
 
     private long getBinaryFileSize(HttpServletRequest request) {
