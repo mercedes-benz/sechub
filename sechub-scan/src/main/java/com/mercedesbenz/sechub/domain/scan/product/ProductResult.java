@@ -18,6 +18,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigInfo;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 
 /**
  * Represents a product result for a SecHub job UUID

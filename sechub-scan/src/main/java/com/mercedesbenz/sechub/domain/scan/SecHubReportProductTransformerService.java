@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan;
 
-import static com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier.*;
+import static com.mercedesbenz.sechub.sharedkernel.ProductIdentifier.*;
 import static com.mercedesbenz.sechub.sharedkernel.util.Assert.*;
 
 import java.util.List;
