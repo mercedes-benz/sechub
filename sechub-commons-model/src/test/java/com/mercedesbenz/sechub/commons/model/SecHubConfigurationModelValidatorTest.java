@@ -697,6 +697,8 @@ class SecHubConfigurationModelValidatorTest {
         model.setApiVersion("1.0");
         model.setSecretScan(secretScan);
 
+        modelSupportCollectedScanTypes.add(ScanType.SECRET_SCAN); // simulate correct module group found
+        
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
 
@@ -723,6 +725,8 @@ class SecHubConfigurationModelValidatorTest {
         model.setApiVersion("1.0");
         model.setSecretScan(secretScan);
         model.setData(dataConfiguration);
+        
+        modelSupportCollectedScanTypes.add(ScanType.SECRET_SCAN); // simulate correct module group found
 
         /* execute */
         SecHubConfigurationModelValidationResult result = validatorToTest.validate(model);
