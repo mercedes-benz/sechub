@@ -7,7 +7,7 @@ public enum ScanType {
 
     CODE_SCAN("codeScan", "Scans the code for potential vulnerabilities (weaknesses). Also known as SAST or static source code analysis"),
 
-    WEB_SCAN("webScan", "Scans a deployed web application for vulnerabilities. Also knows as DAST."),
+    WEB_SCAN("webScan", "Scans a deployed web application for vulnerabilities. Also known as DAST."),
 
     INFRA_SCAN("infraScan", "Scans infrastructure for vulnerabilities."),
 

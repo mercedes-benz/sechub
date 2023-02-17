@@ -82,17 +82,17 @@ public class SecHubConfigurationModelValidator {
             /* no problems, the matching module group can be found */
             return;
         }
-        Map<ScanType, ModuleGroup> modulleGroupDetectionMap = new LinkedHashMap<>();
+        Map<ScanType, ModuleGroup> moduleGroupDetectionMap = new LinkedHashMap<>();
         /* we can have two reasons here: no group at all or multiple groups */
         for (ModuleGroup groupToInspect : ModuleGroup.values()) {
             for (ScanType scanType : scanTypes) {
                 if (groupToInspect.isGivenModuleInGroup(scanType)) {
-                    modulleGroupDetectionMap.put(scanType, groupToInspect);
+                    moduleGroupDetectionMap.put(scanType, groupToInspect);
                 }
 
             }
         }
-        Collection<ModuleGroup> detectedModuleGroups = modulleGroupDetectionMap.values();
+        Collection<ModuleGroup> detectedModuleGroups = moduleGroupDetectionMap.values();
         if (detectedModuleGroups.isEmpty()) {
             context.result.addError(NO_MODULE_GROUP_DETECTED);
         } else {

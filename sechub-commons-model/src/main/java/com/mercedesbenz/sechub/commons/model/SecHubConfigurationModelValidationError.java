@@ -33,9 +33,9 @@ public enum SecHubConfigurationModelValidationError {
 
     NO_PUBLIC_SCAN_TYPES_DETECTED("No public scan types can be detected."),
 
-    NO_MODULE_GROUP_DETECTED("No modulle group can be detected."),
+    NO_MODULE_GROUP_DETECTED("No module group detected."),
 
-    MULTIPLE_MODULE_GROUPS_DETECTED("Multiple module groups were detected."),;
+    MULTIPLE_MODULE_GROUPS_DETECTED("Multiple module groups detected."),;
 
     private String defaultMessage;
 

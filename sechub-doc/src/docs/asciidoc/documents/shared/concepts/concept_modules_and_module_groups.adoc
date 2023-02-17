@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 [[section-shared-concepts-module-groups]]
 ==== Modules and module groups
 
@@ -22,8 +23,7 @@ include::../../gen/gen_modulegroup_to_module_table.adoc[]
 
 
 Inside a {sechub} configuration file the user defines which modules shall be executed by the
-{sechub} job. But only combinations of modules which are in same module group
-can be executed in same job! 
+{sechub} job. But only modules which are in same module group can be run as part of the same job. 
 
 [NOTE]
 ====
