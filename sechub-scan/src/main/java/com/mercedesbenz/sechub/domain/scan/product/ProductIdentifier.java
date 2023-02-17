@@ -53,10 +53,10 @@ public enum ProductIdentifier {
     PDS_LICENSESCAN(ProductType.LICENSESCAN),
 
     /** Product delegation server - secret scan */
-    PDS_SECRETSCAN(ProductType.SECRETSCAN),;
+    PDS_SECRETSCAN(ProductType.SECRETSCAN),
 
     /** Product delegation server - analytics */
-    PDS_ANALYTICS(ProductType.ANALYTICS)
+    PDS_ANALYTICS(ProductType.ANALYTICS);
 
     ;
 

@@ -45,6 +45,8 @@ public class ImportParameter {
             scanType = ScanType.LICENSE_SCAN;
         } else if (productId == "PDS_SECRETSCAN") {
             scanType = ScanType.SECRET_SCAN;
+        } else if (productId == "PDS_ANALYTICS") {
+            scanType = ScanType.ANALYTICS;
         }
 
         return scanType;

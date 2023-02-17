@@ -554,6 +554,24 @@ public class IntegrationTestDefaultProfiles {
         profile.enabled = true;
         return profile;
     }
-==== BASE ====
-==== BASE ====
+
+    private static DefaultTestExecutionProfile defineProfile16() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_ANALYZE_INTEGRATIONTEST_CLOC_JSON_1);
+        profile.id = "inttest-p16-pds-analyze-cloc";
+        profile.description = "Profile 16: PDS anaylze, reused storage, dynamic text results";
+        profile.enabled = true;
+        return profile;
+    }
+
+    private static DefaultTestExecutionProfile defineProfile17() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_SECRET_SCAN_A);
+        profile.id = "inttest-p17-pds-secretscan";
+        profile.description = "Profile 16: PDS secret scan, reused storage, SARIF JSON file returned";
+        profile.enabled = true;
+        return profile;
+    }
 }

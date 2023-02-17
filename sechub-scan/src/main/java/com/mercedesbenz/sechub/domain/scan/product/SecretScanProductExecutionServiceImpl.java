@@ -19,7 +19,7 @@ public class SecretScanProductExecutionServiceImpl extends AbstractProductExecut
     private static final Logger LOG = LoggerFactory.getLogger(SecretScanProductExecutionServiceImpl.class);
 
     @Override
-    protected ScanType getScanType() {
+    public ScanType getScanType() {
         return ScanType.SECRET_SCAN;
     }
 

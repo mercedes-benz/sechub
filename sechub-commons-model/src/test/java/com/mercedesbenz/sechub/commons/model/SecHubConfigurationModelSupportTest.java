@@ -108,11 +108,13 @@ class SecHubConfigurationModelSupportTest {
         SecHubWebScanConfiguration webScan = mock(SecHubWebScanConfiguration.class);
         SecHubInfrastructureScanConfiguration infraScan = mock(SecHubInfrastructureScanConfiguration.class);
         SecHubLicenseScanConfiguration licenseScan = mock(SecHubLicenseScanConfiguration.class);
+        SecHubSecretScanConfiguration secretScan = mock(SecHubSecretScanConfiguration.class);
 
         when(model.getCodeScan()).thenReturn(Optional.of(codeScan));
         when(model.getInfraScan()).thenReturn(Optional.of(infraScan));
         when(model.getWebScan()).thenReturn(Optional.of(webScan));
         when(model.getLicenseScan()).thenReturn(Optional.of(licenseScan));
+        when(model.getSecretScan()).thenReturn(Optional.of(secretScan));
 
         /* execute */
         Set<ScanType> result = supportToTest.collectPublicScanTypes(model);
