@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
+import com.mercedesbenz.sechub.commons.model.ModuleGroup;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelSupport;
 import com.mercedesbenz.sechub.domain.schedule.ExecutionResult;
 import com.mercedesbenz.sechub.domain.schedule.ExecutionState;
 import com.mercedesbenz.sechub.sharedkernel.UserContextService;
@@ -22,13 +24,18 @@ public class JobCreator {
     private SecHubJobFactory jobFactory;
     private String projectId;
     private UserContextService userContextService;
+    private SecHubConfigurationModelSupport modelSupport;
 
     private JobCreator(String projectId, TestEntityManager entityManager) {
+        this.modelSupport = new SecHubConfigurationModelSupport();
         this.entityManager = entityManager;
         this.projectId = projectId;
         this.jobFactory = new SecHubJobFactory();
+
         userContextService = mock(UserContextService.class);
+
         this.jobFactory.userContextService = userContextService;
+        this.jobFactory.modelSupport = modelSupport;
         when(userContextService.getUserId()).thenReturn("loggedInUser");
 
         newJob();
@@ -36,6 +43,11 @@ public class JobCreator {
 
     public static JobCreator jobCreator(String projectId, TestEntityManager entityManager) {
         return new JobCreator(projectId, entityManager);
+    }
+
+    public JobCreator module(ModuleGroup moduleGroup) {
+        job.moduleGroup = moduleGroup;
+        return this;
     }
 
     public JobCreator being(ExecutionState state) {
@@ -58,6 +70,11 @@ public class JobCreator {
         return this;
     }
 
+    public JobCreator project(String projectId) {
+        job.projectId = projectId;
+        return this;
+    }
+
     /**
      * Creates the job and returns builder agani
      *
@@ -75,6 +92,9 @@ public class JobCreator {
      * @return created job
      */
     public ScheduleSecHubJob create() {
+        if (job.created == null) {
+            job.created = LocalDateTime.now();
+        }
         entityManager.persist(job);
         entityManager.flush();
 

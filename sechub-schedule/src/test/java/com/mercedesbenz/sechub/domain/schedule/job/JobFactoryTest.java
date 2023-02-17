@@ -9,6 +9,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelSupport;
 import com.mercedesbenz.sechub.sharedkernel.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.test.junit4.ExpectedExceptionFactory;
@@ -26,6 +27,7 @@ public class JobFactoryTest {
         factoryToTest = new SecHubJobFactory();
         configuration = mock(SecHubConfiguration.class);
         factoryToTest.userContextService = mock(UserContextService.class);
+        factoryToTest.modelSupport = mock(SecHubConfigurationModelSupport.class);
     }
 
     @Test
