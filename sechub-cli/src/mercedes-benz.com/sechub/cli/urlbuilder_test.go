@@ -166,3 +166,21 @@ func Example_buildGetSecHubJobReportAPICall_SPDX_JSON() {
 	// Output:
 	// https://localhost:8443/api/project/testproject/report/spdx/e21b13fc-591e-4abd-b119-755d473c5625
 }
+
+func Example_buildGetSecHubJobListAPICall() {
+	/* prepare */
+	context := new(Context)
+	config := new(Config)
+
+	context.config = config
+	config.projectID = "testproject"
+	config.server = "https://localhost:8443"
+
+	/* execute */
+	result := buildGetSecHubJobListAPICall(context, 10)
+
+	/* test*/
+	fmt.Println(result)
+	// Output:
+	// https://localhost:8443/api/project/testproject/jobs?size=10&page=0
+}

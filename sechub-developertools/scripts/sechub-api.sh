@@ -57,6 +57,7 @@ project_delete <project-id> - Delete project <project-id>
 project_details <project-id> - Show owner, users, whitelist etc. of project <project-id>
 project_details_all <project-id> - project_details plus assigned execution profiles of project <project-id>
 project_falsepositives_list <project-id> - Get defined false-positives for project <project-id> (json format)
+project_joblist <project-id> <size> <page> - List scan jobs of <project-id> (json format). Page# <page> of size <size>
 project_list - List all projects (json format)
 project_metadata_set <project-id> <key1>:<value1> [<key2>:<value2> ...] - define metadata for <project-id>
 project_mockdata_list <project-id> - display defined mocked results (if server runs 'mocked-products')
@@ -291,7 +292,7 @@ function sechub_job_cancel {
   curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/jobs/cancel/$1" | $CURL_FILTER
 }
 
-function sechub_job_create {  
+function sechub_job_create {
   local PROJECT_ID="$1"
   local JSON_FILE="$2"
 
@@ -301,7 +302,7 @@ function sechub_job_create {
 function sechub_job_approve {
   local PROJECT_ID="$1"
   local JOB_UUID="$2"
-  
+
   curl_with_sechub_auth -i -X PUT -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/$PROJECT_ID/job/$JOB_UUID/approve" | $CURL_FILTER
 }
 
@@ -318,7 +319,7 @@ function sechub_job_get_report_spdx_json {
   local PROJECT_ID="$1"
   local JOB_UUID="$2"
 
-  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/$PROJECT_ID/report/spdx/$JOB_UUID" 
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/$PROJECT_ID/report/spdx/$JOB_UUID"
 }
 
 function sechub_job_list_running {
@@ -512,9 +513,12 @@ function sechub_project_falsepositives_list {
   curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/$1/false-positives" | $RESULT_FILTER | $JSON_FORMATTER
 }
 
+function sechub_project_joblist {
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/$PROJECT_ID/jobs?size=$JOBLIST_SIZE&page=$JOBLIST_PAGE" | $RESULT_FILTER | $JSON_FORMATTER
+}
 
 function sechub_project_list {
-  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/projects" | $RESULT_FILTER | $JSON_FORMAT_SORT
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/testproject/jobs?size=10&page=0" | $RESULT_FILTER | $JSON_FORMAT_SORT
 }
 
 
@@ -930,6 +934,12 @@ case "$action" in
   project_falsepositives_list)
     PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
     $failed || sechub_project_falsepositives_list "$PROJECT_ID"
+    ;;
+  project_joblist)
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    JOBLIST_SIZE="$2"   ; check_parameter JOBLIST_SIZE '<size>'
+    JOBLIST_PAGE="$3"   ; check_parameter JOBLIST_PAGE '<page>'
+    $failed || sechub_project_joblist
     ;;
   project_list)
     $failed || sechub_project_list

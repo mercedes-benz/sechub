@@ -21,6 +21,21 @@ type JobStatusMessage struct {
 	Text string `json:"text"`
 }
 
+type jobListResult struct {
+	List []JobListEntry `json:"content"`
+}
+
+type JobListEntry struct {
+	JobUUID         string `json:"jobUUID"`
+	ExecutedBy      string `json:"executedBy"`
+	Created         string `json:"created"`
+	Started         string `json:"started"`
+	Ended           string `json:"ended"`
+	ExecutionState  string `json:"executionState"`
+	ExecutionResult string `json:"executionResult"`
+	TrafficLight    string `json:"trafficLight"`
+}
+
 type jobScheduleResult struct {
 	JobID string `json:"jobId"`
 }
@@ -29,8 +44,6 @@ type jobScheduleResult struct {
 func Execute() {
 
 	context := InitializeContext()
-
-	printLogoWithVersion(context)
 
 	switch context.config.action {
 	case scanAction:

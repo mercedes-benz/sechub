@@ -92,14 +92,17 @@ func Example_isConfigFieldFilledVerification() {
 
 func Example_willTrailingSlashBeRemovedFromUrl() {
 	// PREPARE
+	context := new(Context)
 	config := NewConfigByFlags()
+	context.config = config
+
 	config.server = "https://test.example.org/"
 	config.action = "version"
 	config.apiToken = "not empty"
 	config.projectID = "testproject"
 	config.user = "testuser"
 	// EXECUTE
-	assertValidConfig(config)
+	assertValidConfig(context)
 	// TEST
 	fmt.Println(config.server)
 	// Output: https://test.example.org
@@ -398,7 +401,10 @@ func Test_validateInitialWaitIntervalOrWarning(t *testing.T) {
 
 func Example_will_reportfile_be_found_in_current_dir() {
 	// PREPARE
-	var config Config
+	context := new(Context)
+	config := new(Config)
+	context.config = config
+
 	config.action = interactiveMarkFalsePositivesAction
 	config.projectID = "testproject"
 
@@ -416,7 +422,7 @@ func Example_will_reportfile_be_found_in_current_dir() {
 	defer os.Remove(reportFileName)
 
 	// EXECUTE
-	assertValidConfig(&config)
+	assertValidConfig(context)
 
 	// TEST
 
