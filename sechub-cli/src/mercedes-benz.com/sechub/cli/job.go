@@ -201,3 +201,30 @@ func getLatestSecHubJobUUID(context *Context, expectedState ...string) string {
 
 	return latestUUIDFromJobList(context, stateFilter)
 }
+
+func printLatestJobsOfProject(context *Context) {
+	// get latest jobs into context.jobList
+	getSecHubJobList(context, SizeOfJobList)
+
+	printFormat := "%-36s | %-6s | %-8s | %-6s | %-19s | %-19s\n"
+	fmt.Printf(printFormat, "SecHub JobUUID", "Short", "Status", "Result", "Created", "Ended")
+	fmt.Println("-------------------------------------+--------+---------+--------+---------------------+--------------------")
+	for _, item := range context.jobList.List {
+		// Create reasonable job status strings
+		jobStatus := item.ExecutionState
+		if strings.HasPrefix(item.ExecutionState, "READY") {
+			jobStatus = "WAITING"
+		} else if strings.HasPrefix(item.ExecutionState, "CANCEL") {
+			jobStatus = "CANCELED"
+		}
+
+		// Cut some of the results to keep the table's format (needs some padding with blanks in case the strings are smaller)
+		fmt.Printf(printFormat,
+			item.JobUUID,
+			item.TrafficLight,
+			(jobStatus + "        ")[0:8],
+			item.ExecutionResult,
+			(item.Created + "                   ")[0:19],
+			(item.Ended + "                   ")[0:19])
+	}
+}
