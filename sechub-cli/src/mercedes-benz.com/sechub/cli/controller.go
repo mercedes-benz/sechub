@@ -60,6 +60,8 @@ func Execute() {
 	case getReportAction:
 		getSecHubJobStatus(context)
 		downloadSechubReport(context)
+	case listJobsAction:
+		printLatestJobsOfProject(context)
 	case getFalsePositivesAction:
 		downloadFalsePositivesList(context)
 	case markFalsePositivesAction:

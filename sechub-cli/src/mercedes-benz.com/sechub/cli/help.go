@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strconv"
 )
 
 // PrintUsage - Print usage help informations
@@ -23,6 +24,7 @@ action
    ` + scanAsynchronAction + ` - just trigger scan and return job id as last output line
    ` + getStatusAction + ` - fetch current job status and return result as json
    ` + getReportAction + ` - fetch report as json (a report will only exist when job has finished)
+   ` + listJobsAction + ` - lists the ` + strconv.Itoa(SizeOfJobList) + ` latest scan jobs
    ` + getFalsePositivesAction + ` - fetch the project's false-positives list as json
    ` + markFalsePositivesAction + ` - add from a json file to project's false-positives list
    ` + unmarkFalsePositivesAction + ` - remove items from project's false-positives list as defined in json file

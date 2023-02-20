@@ -210,6 +210,7 @@ func assertValidConfig(context *Context) {
 		getStatusAction:                       {"server", "user", "apiToken", "projectID", "secHubJobUUID"},
 		getReportAction:                       {"server", "user", "apiToken", "projectID", "secHubJobUUID"},
 		getFalsePositivesAction:               {"server", "user", "apiToken", "projectID"},
+		listJobsAction:                        {"server", "user", "apiToken", "projectID"},
 		markFalsePositivesAction:              {"server", "user", "apiToken", "projectID", "file"},
 		unmarkFalsePositivesAction:            {"server", "user", "apiToken", "projectID", "file"},
 		interactiveMarkFalsePositivesAction:   {"server", "user", "apiToken", "projectID"},

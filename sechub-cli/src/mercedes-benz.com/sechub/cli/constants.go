@@ -41,6 +41,9 @@ const DefaultTimeoutInSeconds = 120
 // MinimalTimeoutInSeconds - Minimal allowed timeout setting
 const MinimalTimeoutInSeconds = 10
 
+// SizeOfJobList - Number of latest jobs to print
+const SizeOfJobList = 20
+
 // DefaultSourceCodeExcludeDirPatterns - Define directory patterns to exclude from zip file:
 // - code in directories named "test" is not considered to end up in the binary
 // - also ignore ".git" directory
@@ -103,6 +106,9 @@ const getReportAction = "getReport"
 
 // getFalsePositivesAction name of action to download false-positives list (json) of project
 const getFalsePositivesAction = "getFalsePositives"
+
+// listJobsAction name of action to list latest Jobs
+const listJobsAction = "listJobs"
 
 // markFalsePositivesAction name of action to define false-positives of a project and upload it to SecHub server
 const markFalsePositivesAction = "markFalsePositives"
