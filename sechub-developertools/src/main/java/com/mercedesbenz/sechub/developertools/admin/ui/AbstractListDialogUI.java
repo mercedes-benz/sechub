@@ -135,7 +135,6 @@ public abstract class AbstractListDialogUI<T> {
 
         table = new JTable(model);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        table.setPreferredSize(new Dimension(-1, 300));
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
