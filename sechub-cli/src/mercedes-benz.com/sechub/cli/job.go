@@ -155,3 +155,49 @@ func printSecHubJobSummaryAndFailOnTrafficLight(context *Context) {
 		os.Exit(ExitCodeFailed)
 	}
 }
+
+func getSecHubJobList(context *Context, size int) {
+	// request SecHub job state from server
+	response := sendWithDefaultHeader("GET", buildGetSecHubJobListAPICall(context, size), context)
+
+	data, err := ioutil.ReadAll(response.Body)
+	sechubUtil.HandleHTTPError(err, ExitCodeHTTPError)
+	if context.config.debug {
+		sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Get job list: %s", string(data)))
+	}
+
+	/* transform json result into context.jobList */
+	err = json.Unmarshal(data, context.jobList)
+	sechubUtil.HandleError(err, ExitCodeFailed)
+}
+
+func latestUUIDFromJobList(context *Context, filter string) (uuid string) {
+	if filter == "" {
+		uuid = context.jobList.List[0].JobUUID
+	} else {
+		for _, item := range context.jobList.List {
+			if item.ExecutionState == filter {
+				uuid = item.JobUUID
+				break
+			}
+		}
+	}
+	return uuid
+}
+
+func getLatestSecHubJobUUID(context *Context, expectedState ...string) string {
+	// get latest 5 entries into context.jobList
+	getSecHubJobList(context, 5)
+
+	if len(context.jobList.List) == 0 {
+		sechubUtil.LogError("No SecHub jobs found. Have you started a scan?")
+	}
+
+	// If not provided: accept any job state
+	stateFilter := ""
+	if len(expectedState) > 0 {
+		stateFilter = expectedState[0]
+	}
+
+	return latestUUIDFromJobList(context, stateFilter)
+}
