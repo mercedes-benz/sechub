@@ -10,16 +10,16 @@ services:
             context: docker/
             dockerfile: Gitleaks.dockerfile
         container_name: pds-gitleaks
+        hostname: pds-gitleaks
+        volumes:
+            - ./docker/scripts:/scripts
         env_file:
             - .env
             - .env-single
-        ports:
-            - "127.0.0.1:${PORT}:8444"
-            - "127.0.0.1:${DEBUG_PORT}:15024"
         networks:
-            - "internal"
-        volumes:
-          - ./docker/scripts:/scripts
-          - ./docker/mocks:/mocks
+            - "sechub"
+
 networks:
-    internal:
+    sechub:
+        external: true
+        name: "sechub"

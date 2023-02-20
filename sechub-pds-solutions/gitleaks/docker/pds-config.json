@@ -6,14 +6,30 @@
         {
             "id" : "PDS_GITLEAKS",
             "path" : "/scripts/gitleaks.sh",
-            "scanType" : "codeScan",
-            "description" : "Gitleaks"
+            "scanType" : "secretScan",
+            "description" : "Run the secret scanner Gitleaks.",
+            "parameters" : {
+                "mandatory" : [
+                    {
+                        "key" : "pds.config.supported.datatypes", 
+                        "default" : "source" 
+                    }  
+                ]
+            }
         },
         {
             "id" : "PDS_GITLEAKS_MOCK",
             "path" : "/scripts/gitleaks_mock.sh",
-            "scanType" : "codeScan",
-            "description" : "Gitleaks"
+            "scanType" : "secretScan",
+            "description" : "Run the secret scanner Gitleaks.",
+            "parameters" : {
+                "mandatory" : [
+                    {
+                        "key" : "pds.config.supported.datatypes", 
+                        "default" : "source" 
+                    }  
+                ]
+            }
         }
     ]
 }
