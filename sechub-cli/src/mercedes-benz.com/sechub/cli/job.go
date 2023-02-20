@@ -18,7 +18,6 @@ import (
  * --------------------------------------------------
  */
 func createNewSecHubJob(context *Context) {
-	sechubUtil.Log("Creating new SecHub job", context.config.quiet)
 	response := sendWithDefaultHeader("POST", buildCreateNewSecHubJobAPICall(context), context)
 
 	data, err := ioutil.ReadAll(response.Body)
@@ -29,6 +28,7 @@ func createNewSecHubJob(context *Context) {
 	sechubUtil.HandleError(jsonErr, ExitCodeFailed)
 
 	context.config.secHubJobUUID = result.JobID
+	sechubUtil.Log("Creating new SecHub job: "+context.config.secHubJobUUID, context.config.quiet)
 }
 
 // approveSecHubJob - Approve Job
