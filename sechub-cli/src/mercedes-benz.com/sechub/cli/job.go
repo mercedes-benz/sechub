@@ -207,7 +207,7 @@ func printLatestJobsOfProject(context *Context) {
 	getSecHubJobList(context, SizeOfJobList)
 
 	printFormat := "%-36s | %-6s | %-8s | %-6s | %-19s | %-19s\n"
-	fmt.Printf(printFormat, "SecHub JobUUID", "Short", "Status", "Result", "Created", "Ended")
+	fmt.Printf(printFormat, "SecHub JobUUID", "Status", "Stage", "Result", "Created", "Ended")
 	fmt.Println("-------------------------------------+--------+---------+--------+---------------------+--------------------")
 	for _, item := range context.jobList.List {
 		// Create reasonable job status strings
