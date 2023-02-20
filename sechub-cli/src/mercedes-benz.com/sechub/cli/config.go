@@ -84,7 +84,7 @@ func prepareOptionsFromCommandline(config *Config) {
 	flag.BoolVar(&flagHelp,
 		helpOption, false, "Shows help and terminates")
 	flag.StringVar(&config.secHubJobUUID,
-		jobUUIDOption, "", "SecHub job uuid - Mandatory for actions '"+getStatusAction+"' or '"+getReportAction+"'")
+		jobUUIDOption, "", "SecHub job uuid - Optional for actions '"+getStatusAction+"' or '"+getReportAction+"'")
 	flag.StringVar(&config.outputLocation,
 		outputOption, "", "Where to place reports, false-positive files etc. Can be a directory, a file name or a file path. (Defaults to current directory)")
 	flag.StringVar(&config.projectID,
@@ -194,9 +194,9 @@ func NewConfigByFlags() *Config {
 	return &configFromInit
 }
 
-func assertValidConfig(config *Config) {
-	if config.trustAll {
-		if !config.quiet {
+func assertValidConfig(context *Context) {
+	if context.config.trustAll {
+		if !context.config.quiet {
 			sechubUtil.LogWarning("Configured to trust all - means unknown service certificate is accepted. Don't use this in production!")
 		}
 	}
@@ -222,42 +222,55 @@ func assertValidConfig(config *Config) {
 	 * 					Validation
 	 * --------------------------------------------------
 	 */
-	if config.action == "" {
+	if context.config.action == "" {
 		sechubUtil.LogError("sechub action not set")
 		showHelpHint()
 		os.Exit(ExitCodeMissingParameter)
 	}
 
 	errorsFound := false
-	if mandatoryFields, ok := checklist[config.action]; ok {
+	if mandatoryFields, ok := checklist[context.config.action]; ok {
 		for _, fieldname := range mandatoryFields {
-			if !isConfigFieldFilled(config, fieldname) {
+			// Try to get latest secHubJobUUID from server if not provided
+			if fieldname == "secHubJobUUID" && context.config.secHubJobUUID == "" {
+				switch context.config.action {
+				case getReportAction:
+					// Get job UUID from latest ended job
+					context.config.secHubJobUUID = getLatestSecHubJobUUID(context, ExecutionStateEnded)
+					sechubUtil.Log("Using latest finished job: "+context.config.secHubJobUUID, context.config.quiet)
+				default:
+					// Get job UUID from latest job (any state)
+					context.config.secHubJobUUID = getLatestSecHubJobUUID(context)
+				}
+			}
+
+			if !isConfigFieldFilled(context.config, fieldname) {
 				errorsFound = true
 			}
 		}
 	} else {
-		sechubUtil.LogError("Unknown action: '" + config.action + "'")
+		sechubUtil.LogError("Unknown action: '" + context.config.action + "'")
 		errorsFound = true
 	}
 
-	if !validateRequestedReportFormat(config) {
+	if !validateRequestedReportFormat(context.config) {
 		errorsFound = true
 	}
-	if !validateTempDir(config) {
+	if !validateTempDir(context.config) {
 		errorsFound = true
 	}
-	if !validateOutputLocation(config) {
+	if !validateOutputLocation(context.config) {
 		errorsFound = true
 	}
 
-	if config.action == interactiveMarkFalsePositivesAction && config.file == "" {
+	if context.config.action == interactiveMarkFalsePositivesAction && context.config.file == "" {
 		// Let's try to find the latest report (default naming scheme) and take this as file
-		config.file = sechubUtil.FindNewestMatchingFileInDir("sechub_report_"+config.projectID+"_.+\\.json$", ".", config.debug)
-		if config.file == "" {
+		context.config.file = sechubUtil.FindNewestMatchingFileInDir("sechub_report_"+context.config.projectID+"_.+\\.json$", ".", context.config.debug)
+		if context.config.file == "" {
 			sechubUtil.LogError("An input file is needed for action '" + interactiveMarkFalsePositivesAction + "'. Please define input file with -file option.")
 			errorsFound = true
 		} else {
-			fmt.Printf("Using latest report file %q.\n", config.file)
+			fmt.Printf("Using latest report file %q.\n", context.config.file)
 		}
 	}
 
@@ -267,19 +280,19 @@ func assertValidConfig(config *Config) {
 	}
 
 	// For convenience: lowercase user id and project id if needed
-	config.user = lowercaseOrNotice(config.user, "user id")
-	config.projectID = lowercaseOrNotice(config.projectID, "project id")
+	context.config.user = lowercaseOrNotice(context.config.user, "user id")
+	context.config.projectID = lowercaseOrNotice(context.config.projectID, "project id")
 
 	// Remove trailing slash from url if present
-	config.server = strings.TrimSuffix(config.server, "/")
+	context.config.server = strings.TrimSuffix(context.config.server, "/")
 
-	config.initialWaitIntervalNanoseconds = validateInitialWaitIntervalOrWarning(config.initialWaitIntervalNanoseconds)
+	context.config.initialWaitIntervalNanoseconds = validateInitialWaitIntervalOrWarning(context.config.initialWaitIntervalNanoseconds)
 
-	config.waitSeconds = validateWaitTimeOrWarning(config.waitSeconds)
-	config.waitNanoseconds = int64(config.waitSeconds) * int64(time.Second)
+	context.config.waitSeconds = validateWaitTimeOrWarning(context.config.waitSeconds)
+	context.config.waitNanoseconds = int64(context.config.waitSeconds) * int64(time.Second)
 
-	config.timeOutSeconds = validateTimeoutOrWarning(config.timeOutSeconds)
-	config.timeOutNanoseconds = int64(config.timeOutSeconds) * int64(time.Second)
+	context.config.timeOutSeconds = validateTimeoutOrWarning(context.config.timeOutSeconds)
+	context.config.timeOutNanoseconds = int64(context.config.timeOutSeconds) * int64(time.Second)
 }
 
 // isConfigFieldFilled checks if field is not empty or is 'true' in case of boolean type
