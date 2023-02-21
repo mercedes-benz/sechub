@@ -1,16 +1,16 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.owaspzapwrapper.config;
 
-import java.net.URI;
+import java.net.URL;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.auth.AuthenticationType;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.data.DeactivatedRuleReferences;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.data.OwaspZapFullRuleset;
+import com.mercedesbenz.sechub.owaspzapwrapper.helper.OwaspZapProductMessageHelper;
 
 public class OwaspZapScanContext {
     private OwaspZapServerConfiguration serverConfig;
@@ -23,7 +23,7 @@ public class OwaspZapScanContext {
 
     private String contextName;
 
-    private URI targetUri;
+    private URL targetUrl;
 
     private AuthenticationType authenticationType;
 
@@ -39,7 +39,14 @@ public class OwaspZapScanContext {
 
     private Path apiDefinitionFile;
 
-    private List<SecHubMessage> productMessages = new ArrayList<>();
+    // Using Set here to avoid duplicates
+    private Set<URL> owaspZapURLsIncludeList = new HashSet<>();
+    private Set<URL> owaspZapURLsExcludeList = new HashSet<>();
+
+    private int maxNumberOfConnectionRetries;
+    private int retryWaittimeInMilliseconds;
+
+    private OwaspZapProductMessageHelper owaspZapProductMessageHelper;
 
     private OwaspZapScanContext() {
     }
@@ -68,12 +75,12 @@ public class OwaspZapScanContext {
         return contextName;
     }
 
-    public String getTargetUriAsString() {
-        return getTargetUri().toString();
+    public String getTargetUrlAsString() {
+        return getTargetUrl().toString();
     }
 
-    public URI getTargetUri() {
-        return targetUri;
+    public URL getTargetUrl() {
+        return targetUrl;
     }
 
     public AuthenticationType getAuthenticationType() {
@@ -114,19 +121,24 @@ public class OwaspZapScanContext {
         return apiDefinitionFile;
     }
 
-    public List<SecHubMessage> getProductMessages() {
-        return productMessages;
+    public Set<URL> getOwaspZapURLsIncludeList() {
+        return owaspZapURLsIncludeList;
     }
 
-    /**
-     * Add secHubMessage to list if it is not <code>null</code>
-     *
-     * @param secHubMessage
-     */
-    public void addProductMessage(SecHubMessage secHubMessage) {
-        if (secHubMessage != null) {
-            productMessages.add(secHubMessage);
-        }
+    public Set<URL> getOwaspZapURLsExcludeList() {
+        return owaspZapURLsExcludeList;
+    }
+
+    public int getMaxNumberOfConnectionRetries() {
+        return maxNumberOfConnectionRetries;
+    }
+
+    public int getRetryWaittimeInMilliseconds() {
+        return retryWaittimeInMilliseconds;
+    }
+
+    public OwaspZapProductMessageHelper getOwaspZapProductMessageHelper() {
+        return owaspZapProductMessageHelper;
     }
 
     public static OwaspZapBasicScanContextBuilder builder() {
@@ -145,7 +157,7 @@ public class OwaspZapScanContext {
 
         private String contextName;
 
-        private URI targetUri;
+        private URL targetUrl;
 
         private AuthenticationType authenticationType;
 
@@ -160,6 +172,15 @@ public class OwaspZapScanContext {
         private DeactivatedRuleReferences deactivatedRuleReferences;
 
         private Path apiDefinitionFile;
+
+        // Using Set here to avoid duplicates
+        private Set<URL> owaspZapURLsIncludeList = new HashSet<>();
+        private Set<URL> owaspZapURLsExcludeList = new HashSet<>();
+
+        private int maxNumberOfConnectionRetries;
+        private int setRetryWaittimeInMilliseconds;
+
+        private OwaspZapProductMessageHelper owaspZapProductMessageHelper;
 
         public OwaspZapBasicScanContextBuilder setServerConfig(OwaspZapServerConfiguration serverConfig) {
             this.serverConfig = serverConfig;
@@ -191,8 +212,8 @@ public class OwaspZapScanContext {
             return this;
         }
 
-        public OwaspZapBasicScanContextBuilder setTargetUri(URI targetUri) {
-            this.targetUri = targetUri;
+        public OwaspZapBasicScanContextBuilder setTargetUrl(URL targetUrl) {
+            this.targetUrl = targetUrl;
             return this;
         }
 
@@ -231,6 +252,31 @@ public class OwaspZapScanContext {
             return this;
         }
 
+        public OwaspZapBasicScanContextBuilder setOwaspZapURLsIncludeSet(Set<URL> owaspZapURLsIncludeList) {
+            this.owaspZapURLsIncludeList.addAll(owaspZapURLsIncludeList);
+            return this;
+        }
+
+        public OwaspZapBasicScanContextBuilder setOwaspZapURLsExcludeSet(Set<URL> owaspZapURLsExcludeList) {
+            this.owaspZapURLsExcludeList.addAll(owaspZapURLsExcludeList);
+            return this;
+        }
+
+        public OwaspZapBasicScanContextBuilder setMaxNumberOfConnectionRetries(int maxNumberOfConnectionRetries) {
+            this.maxNumberOfConnectionRetries = maxNumberOfConnectionRetries;
+            return this;
+        }
+
+        public OwaspZapBasicScanContextBuilder setRetryWaittimeInMilliseconds(int retryWaittimeInMilliseconds) {
+            this.setRetryWaittimeInMilliseconds = retryWaittimeInMilliseconds;
+            return this;
+        }
+
+        public OwaspZapBasicScanContextBuilder setOwaspZapProductMessageHelper(OwaspZapProductMessageHelper owaspZapProductMessageHelper) {
+            this.owaspZapProductMessageHelper = owaspZapProductMessageHelper;
+            return this;
+        }
+
         public OwaspZapScanContext build() {
             OwaspZapScanContext owaspZapBasicScanConfiguration = new OwaspZapScanContext();
             owaspZapBasicScanConfiguration.serverConfig = this.serverConfig;
@@ -239,7 +285,7 @@ public class OwaspZapScanContext {
             owaspZapBasicScanConfiguration.activeScanEnabled = this.activeScanEnabled;
             owaspZapBasicScanConfiguration.reportFile = this.reportFile;
             owaspZapBasicScanConfiguration.contextName = this.contextName;
-            owaspZapBasicScanConfiguration.targetUri = this.targetUri;
+            owaspZapBasicScanConfiguration.targetUrl = this.targetUrl;
             owaspZapBasicScanConfiguration.authenticationType = this.authenticationType;
 
             owaspZapBasicScanConfiguration.maxScanDurationInMillis = this.maxScanDurationInMillis;
@@ -253,7 +299,16 @@ public class OwaspZapScanContext {
 
             owaspZapBasicScanConfiguration.apiDefinitionFile = this.apiDefinitionFile;
 
+            owaspZapBasicScanConfiguration.owaspZapURLsIncludeList.addAll(this.owaspZapURLsIncludeList);
+            owaspZapBasicScanConfiguration.owaspZapURLsExcludeList.addAll(this.owaspZapURLsExcludeList);
+
+            owaspZapBasicScanConfiguration.maxNumberOfConnectionRetries = this.maxNumberOfConnectionRetries;
+            owaspZapBasicScanConfiguration.retryWaittimeInMilliseconds = this.setRetryWaittimeInMilliseconds;
+
+            owaspZapBasicScanConfiguration.owaspZapProductMessageHelper = this.owaspZapProductMessageHelper;
+
             return owaspZapBasicScanConfiguration;
         }
+
     }
 }

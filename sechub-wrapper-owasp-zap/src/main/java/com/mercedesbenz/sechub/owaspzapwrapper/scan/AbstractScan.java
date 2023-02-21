@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.owaspzapwrapper.scan;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -32,7 +33,6 @@ import com.mercedesbenz.sechub.owaspzapwrapper.config.data.RuleReference;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.OwaspZapApiResponseHelper;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.OwaspZapEventHandler;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.ScanDurationHelper;
-import com.mercedesbenz.sechub.owaspzapwrapper.helper.SecHubIncludeExcludeToOwaspZapURIHelper;
 
 public abstract class AbstractScan implements OwaspZapScan {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractScan.class);
@@ -48,8 +48,6 @@ public abstract class AbstractScan implements OwaspZapScan {
     private ScanDurationHelper scanDurationHelper;
     private long remainingScanTime;
 
-    private SecHubIncludeExcludeToOwaspZapURIHelper includeExcludeConverter;
-
     private OwaspZapEventHandler owaspZapEventHandler;
 
     public AbstractScan(ClientApi clientApi, OwaspZapScanContext scanContext) {
@@ -57,7 +55,6 @@ public abstract class AbstractScan implements OwaspZapScan {
         this.scanContext = scanContext;
         this.scanDurationHelper = new ScanDurationHelper();
         this.remainingScanTime = scanContext.getMaxScanDurationInMillis();
-        this.includeExcludeConverter = new SecHubIncludeExcludeToOwaspZapURIHelper();
         this.apiResponseHelper = new OwaspZapApiResponseHelper();
         this.owaspZapEventHandler = new OwaspZapEventHandler();
     }
@@ -114,7 +111,7 @@ public abstract class AbstractScan implements OwaspZapScan {
         while (progressSpider < 100 && !timeOut) {
             if (owaspZapEventHandler.isScanCancelled()) {
                 List<ApiResponse> spiderResults = ((ApiResponseList) clientApi.spider.allUrls()).getItems();
-                updateUserMessagesWithScannedURLs(spiderResults);
+                writeUserMessagesWithScannedURLs(spiderResults);
                 clientApi.spider.stop(scanId);
                 owaspZapEventHandler.cancelScan(scanContext.getContextName());
             }
@@ -127,7 +124,7 @@ public abstract class AbstractScan implements OwaspZapScan {
         clientApi.spider.stop(scanId);
 
         List<ApiResponse> spiderResults = ((ApiResponseList) clientApi.spider.allUrls()).getItems();
-        updateUserMessagesWithScannedURLs(spiderResults);
+        writeUserMessagesWithScannedURLs(spiderResults);
         LOG.info("For scan {}: Spider completed.", scanContext.getContextName());
         remainingScanTime = remainingScanTime - (System.currentTimeMillis() - startTime);
     }
@@ -344,7 +341,7 @@ public abstract class AbstractScan implements OwaspZapScan {
 
         switch (apiConfig.get().getType()) {
         case OPEN_API:
-            clientApi.openapi.importFile(scanContext.getApiDefinitionFile().toString(), scanContext.getTargetUriAsString(), contextId);
+            clientApi.openapi.importFile(scanContext.getApiDefinitionFile().toString(), scanContext.getTargetUrlAsString(), contextId);
             break;
         default:
             // should never happen since API type is an Enum
@@ -354,13 +351,31 @@ public abstract class AbstractScan implements OwaspZapScan {
         }
     }
 
-    private void updateUserMessagesWithScannedURLs(List<ApiResponse> spiderResults) {
+    /**
+     * This method checks if the sites tree is empty. The OWASP ZAP creates this
+     * sites tree while crawling and detecting pages. The method is necessary since
+     * the active scanner exits with an exception if the sites tree is empty, when
+     * starting an active scan.
+     *
+     * This can only happen in very few cases, but then we want to be able to inform
+     * the user and write a report which is empty or contains at least the passively
+     * detected results.
+     *
+     * @return
+     * @throws ClientApiException
+     */
+    protected boolean atLeastOneURLDetected() throws ClientApiException {
+        ApiResponseList sitesList = (ApiResponseList) clientApi.core.sites();
+        return sitesList.getItems().size() > 0;
+    }
+
+    private void writeUserMessagesWithScannedURLs(List<ApiResponse> spiderResults) {
         for (ApiResponse result : spiderResults) {
             String url = result.toString();
             if (url.contains("robots.txt") || url.contains("sitemap.xml")) {
                 continue;
             }
-            scanContext.addProductMessage(new SecHubMessage(SecHubMessageType.INFO, url));
+            scanContext.getOwaspZapProductMessageHelper().writeSingleProductMessage(new SecHubMessage(SecHubMessageType.INFO, "Detect url to scan: " + url));
         }
     }
 
@@ -450,26 +465,14 @@ public abstract class AbstractScan implements OwaspZapScan {
     }
 
     private void registerUrlsIncludedInContext() throws ClientApiException {
-        clientApi.context.includeInContext(scanContext.getContextName(), scanContext.getTargetUriAsString() + ".*");
-
-        if (scanContext.getSecHubWebScanConfiguration().getIncludes().isPresent()) {
-            List<String> includedUrls = includeExcludeConverter.createListOfUrls(scanContext.getTargetUriAsString(),
-                    scanContext.getSecHubWebScanConfiguration().getIncludes().get());
-
-            for (String url : includedUrls) {
-                clientApi.context.includeInContext(scanContext.getContextName(), url);
-            }
+        for (URL url : scanContext.getOwaspZapURLsIncludeList()) {
+            clientApi.context.includeInContext(scanContext.getContextName(), url + ".*");
         }
     }
 
     private void registerUrlsExcludedFromContext() throws ClientApiException {
-        if (scanContext.getSecHubWebScanConfiguration().getExcludes().isPresent()) {
-            List<String> excludedUrls = includeExcludeConverter.createListOfUrls(scanContext.getTargetUriAsString(),
-                    scanContext.getSecHubWebScanConfiguration().getExcludes().get());
-
-            for (String url : excludedUrls) {
-                clientApi.context.excludeFromContext(scanContext.getContextName(), url);
-            }
+        for (URL url : scanContext.getOwaspZapURLsExcludeList()) {
+            clientApi.context.excludeFromContext(scanContext.getContextName(), url + ".*");
         }
     }
 

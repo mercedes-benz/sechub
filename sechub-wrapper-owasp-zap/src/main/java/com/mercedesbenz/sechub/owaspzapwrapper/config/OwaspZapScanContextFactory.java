@@ -1,13 +1,18 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.owaspzapwrapper.config;
 
-import java.net.URI;
+import java.net.URL;
 import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.CommandLineSettings;
@@ -18,6 +23,9 @@ import com.mercedesbenz.sechub.owaspzapwrapper.config.data.DeactivatedRuleRefere
 import com.mercedesbenz.sechub.owaspzapwrapper.config.data.OwaspZapFullRuleset;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.data.RuleReference;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.BaseTargetUriFactory;
+import com.mercedesbenz.sechub.owaspzapwrapper.helper.IncludeExcludeToOwaspZapURLHelper;
+import com.mercedesbenz.sechub.owaspzapwrapper.helper.OwaspZapProductMessageHelper;
+import com.mercedesbenz.sechub.owaspzapwrapper.helper.OwaspZapURLType;
 import com.mercedesbenz.sechub.owaspzapwrapper.helper.SecHubWebScanConfigurationHelper;
 import com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableConstants;
 import com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableReader;
@@ -31,6 +39,7 @@ public class OwaspZapScanContextFactory {
     RuleProvider ruleProvider;
     ApiDefinitionFileProvider apiDefinitionFileProvider;
     SecHubScanConfigProvider secHubScanConfigProvider;
+    IncludeExcludeToOwaspZapURLHelper includeExcludeToOwaspZapURLHelper;
 
     public OwaspZapScanContextFactory() {
         sechubWebConfigHelper = new SecHubWebScanConfigurationHelper();
@@ -39,6 +48,7 @@ public class OwaspZapScanContextFactory {
         ruleProvider = new RuleProvider();
         apiDefinitionFileProvider = new ApiDefinitionFileProvider();
         secHubScanConfigProvider = new SecHubScanConfigProvider();
+        includeExcludeToOwaspZapURLHelper = new IncludeExcludeToOwaspZapURLHelper();
     }
 
     public OwaspZapScanContext create(CommandLineSettings settings) {
@@ -59,7 +69,7 @@ public class OwaspZapScanContextFactory {
         ProxyInformation proxyInformation = createProxyInformation(settings);
 
         /* SecHub settings */
-        URI targetUri = targetUriFactory.create(settings.getTargetURL());
+        URL targetUrl = targetUriFactory.create(settings.getTargetURL());
 
         SecHubScanConfiguration sechubScanConfig = secHubScanConfigProvider.getSecHubWebConfiguration(settings.getSecHubConfigFile());
         SecHubWebScanConfiguration sechubWebConfig = getSecHubWebConfiguration(sechubScanConfig);
@@ -76,9 +86,21 @@ public class OwaspZapScanContextFactory {
             LOG.warn("The job UUID was not set. Using randomly generated UUID: {} as fallback.", contextName);
         }
 
+        List<SecHubMessage> userMessages = new LinkedList<>();
+        Set<URL> includeSet = createUrlsIncludedInContext(targetUrl, sechubWebConfig, userMessages);
+        Set<URL> excludeSet = createUrlsExcludedFromContext(targetUrl, sechubWebConfig, userMessages);
+
+        String userMessagesFolder = environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_JOB_USER_MESSAGES_FOLDER);
+        if (userMessagesFolder == null) {
+            throw new IllegalStateException(
+                    "PDS configuration invalid. Cannot send user messages, because environment variable PDS_JOB_USER_MESSAGES_FOLDER is not set.");
+        }
+        OwaspZapProductMessageHelper productMessagehelper = new OwaspZapProductMessageHelper(userMessagesFolder);
+        checkForIncludeExcludeErrors(userMessages, productMessagehelper);
+
         /* @formatter:off */
 		OwaspZapScanContext scanContext = OwaspZapScanContext.builder()
-												.setTargetUri(targetUri)
+												.setTargetUrl(targetUrl)
 												.setVerboseOutput(settings.isVerboseEnabled())
 												.setReportFile(settings.getReportFile())
 												.setContextName(contextName)
@@ -92,6 +114,11 @@ public class OwaspZapScanContextFactory {
 												.setFullRuleset(fullRuleset)
 												.setDeactivatedRuleReferences(deactivatedRuleReferences)
 												.setApiDefinitionFile(apiDefinitionFile)
+												.setOwaspZapURLsIncludeSet(includeSet)
+												.setOwaspZapURLsExcludeSet(excludeSet)
+												.setMaxNumberOfConnectionRetries(settings.getMaxNumberOfConnectionRetries())
+												.setRetryWaittimeInMilliseconds(settings.getRetryWaittimeInMilliseconds())
+												.setOwaspZapProductMessageHelper(productMessagehelper)
 											  .build();
 		/* @formatter:on */
         return scanContext;
@@ -188,5 +215,34 @@ public class OwaspZapScanContextFactory {
         // extracted
         String extractedSourcesFolderPath = environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_JOB_EXTRACTED_SOURCES_FOLDER);
         return apiDefinitionFileProvider.fetchApiDefinitionFile(extractedSourcesFolderPath, sechubScanConfig);
+    }
+
+    private Set<URL> createUrlsIncludedInContext(URL targetUrl, SecHubWebScanConfiguration sechubWebConfig, List<SecHubMessage> userMessages) {
+        Set<URL> includeSet = new HashSet<>();
+        includeSet.add(targetUrl);
+        if (sechubWebConfig.getIncludes().isPresent()) {
+            includeSet.addAll(
+                    includeExcludeToOwaspZapURLHelper.createListOfUrls(OwaspZapURLType.INCLUDE, targetUrl, sechubWebConfig.getIncludes().get(), userMessages));
+        }
+        return includeSet;
+    }
+
+    private Set<URL> createUrlsExcludedFromContext(URL targetUrl, SecHubWebScanConfiguration sechubWebConfig, List<SecHubMessage> userMessages) {
+        Set<URL> excludeSet = new HashSet<>();
+        if (sechubWebConfig.getExcludes().isPresent()) {
+            excludeSet.addAll(
+                    includeExcludeToOwaspZapURLHelper.createListOfUrls(OwaspZapURLType.EXCLUDE, targetUrl, sechubWebConfig.getExcludes().get(), userMessages));
+        }
+        return excludeSet;
+    }
+
+    private void checkForIncludeExcludeErrors(List<SecHubMessage> userMessages, OwaspZapProductMessageHelper productMessageHelper) {
+        if (userMessages == null) {
+            return;
+        }
+        if (userMessages.isEmpty()) {
+            return;
+        }
+        productMessageHelper.writeProductMessages(userMessages);
     }
 }
