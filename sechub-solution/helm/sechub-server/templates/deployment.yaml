@@ -459,6 +459,21 @@ spec:
                name: secret-pds-scancode
                key: techuser_password
 {{- end }}
+{{- if .Values.pdsSecretScanner.enabled }}
+# ----------------------------------------------------------------------------------------------#
+# - Scope: PDS-SecretScanner
+# --------------------------------------------------------------------------------------------- #
+        - name: SECHUB_PDS_SECRETSCANNER_USERID
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-secretscanner
+               key: techuser_username
+        - name: SECHUB_PDS_SECRETSCANNER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-secretscanner
+               key: techuser_password
+{{- end }}
 # ----------------------------------------------------------------------------------------------#
 # - Scope: emails from SecHub server
 # --------------------------------------------------------------------------------------------- #

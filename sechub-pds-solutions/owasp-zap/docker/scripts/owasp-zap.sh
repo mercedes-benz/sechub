@@ -81,6 +81,22 @@ else
     echo "Use proxy: disabled"
 fi
 
+if [ ! -z "$WRAPPER_MAXIMUM_CONNECTION_RETRIES" ]
+then
+    echo "Use WRAPPER_MAXIMUM_CONNECTION_RETRIES: $WRAPPER_MAXIMUM_CONNECTION_RETRIES"
+    options="$options --maxNumberOfConnectionRetries $WRAPPER_MAXIMUM_CONNECTION_RETRIES"
+else
+    echo "Use default value of wrapper for WRAPPER_MAXIMUM_CONNECTION_RETRIES"
+fi
+
+if [ ! -z "$WRAPPER_RETRY_WAITTIME_MILLISECONDS" ]
+then
+    echo "Use WRAPPER_RETRY_WAITTIME_MILLISECONDS: $WRAPPER_RETRY_WAITTIME_MILLISECONDS"
+    options="$options --retryWaittimeInMilliseconds $WRAPPER_RETRY_WAITTIME_MILLISECONDS"
+else
+    echo "Use default value of wrapper for WRAPPER_RETRY_WAITTIME_MILLISECONDS"
+fi
+
 echo ""
 echo "Start scanning"
 echo ""

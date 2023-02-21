@@ -288,3 +288,11 @@ pdsScancode:
   enabled: false
   # Put the user id  of PDS-Scancode in k8s secret secret-pds-scancode:techuser_username
   # Put the password of PDS-Scancode in k8s secret secret-pds-scancode:techuser_password
+
+# ------------------------------------------------------------------------------------- #
+# PDS-SecretScanner adapter
+# ------------------------------------------------------------------------------------- #
+pdsSecretScanner:
+  enabled: false
+  # Put the user id  of PDS-SecretScanner in k8s secret secret-pds-secretscanner:techuser_username
+  # Put the password of PDS-SecretScanner in k8s secret secret-pds-secretscanner:techuser_password
