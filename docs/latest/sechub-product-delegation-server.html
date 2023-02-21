@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub PDS Documentation</h1>
 <div class="details">
-<span id="revnumber"> PDS 0.34.1</span>
+<span id="revnumber"> PDS 0.35.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -786,7 +786,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>PDS 0.34.1-pds-20221221090146</code></p>
+<p>Documentation version: <code>PDS 0.35.0-pds-20230216133812</code></p>
 </div>
 <div class="paragraph">
 <p><strong>About PDS (Product Delegation Server)</strong></p>
@@ -863,7 +863,7 @@ need to provide a <code>ProductDelegationServer</code> (in short form <code>PDS<
 <p>a spring boot application which uses a network DB for providing cluster possibility</p>
 </li>
 <li>
-<p>a complete standalone application without runtime dependencies to sechub server (or its shared kernel)</p>
+<p>a complete standalone application without runtime dependencies to SecHub server (or its shared kernel)</p>
 </li>
 <li>
 <p>provides REST access</p>
@@ -1137,7 +1137,7 @@ In this case the way is exactly as shown in next picture:<br></p>
 <div class="ulist">
 <ul>
 <li>
-<p>The user uploads job data for a SecHub job and it is stored at sechub shared volume <em>(blue lines)</em>.</p>
+<p>The user uploads job data for a SecHub job and it is stored at SecHub shared volume <em>(blue lines)</em>.</p>
 </li>
 <li>
 <p>The storage path location for SecHub is <code>${sechubSharedVolumeBasePath}/jobstorage/${secHubJobUUID}/</code></p>
@@ -1382,7 +1382,7 @@ SecHub configuration, we already provided a <code>fileSystem</code> element insi
 </div>
 <div class="paragraph">
 <p>For source scans this a more convenient way and we wanted to keep this possiblity - also for
-backward compatibility with existing sechub configuration files.</p>
+backward compatibility with existing SecHub configuration files.</p>
 </div>
 <div class="paragraph">
 <p>So this is the reason, why <a href="#sechub-config-data-section">data</a> is contained inside <code><em>_data_</em></code>
@@ -1908,7 +1908,7 @@ For example: When using Kubernetes you normally would do this by just defining a
 <div class="ulist">
 <ul>
 <li>
-<p>Define executor at sechub server side - <strong>will be implemented with #148</strong></p>
+<p>Define executor on SecHub server side - <strong>will be implemented with #148</strong></p>
 </li>
 <li>
 <p>When your product uses sereco general report format your are done- <strong>will be implemented with #283</strong>
@@ -1919,7 +1919,7 @@ implementatiion</p>
 </div>
 </li>
 <li>
-<p>test via sechub client by start a new sechub job which shall use the product and verify results</p>
+<p>test via SecHub client by starting a new SecHub job which shall use the product and verify results</p>
 </li>
 </ul>
 </div>
@@ -2396,6 +2396,26 @@ PDS by SecHub will use</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Defines the s3 bucket name</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.connection.idle.max.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">60000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 client maximum idle time (in milliseconds) for a connection in the connection pool.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.connection.idle.validate.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 client time (in milliseconds) a connection can be idle in the connection pool before it must be validated that it&#8217;s still open.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.connection.max.poolsize</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">50</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 client max connection pool size.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.connection.ttl.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 client expiration time (in milliseconds) for a connection in the connection pool. -1 means deactivated</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.endpoint</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Defines the s3 endpoint - e.g. <a href="https://play.min.io" class="bare">https://play.min.io</a></p></td>
@@ -2404,6 +2424,31 @@ PDS by SecHub will use</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.secretkey</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Defines the secret key for used s3 bucket</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.signer.override</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AWSS3V4SignerType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Can be used to override the default name of the signature algorithm used to sign requests.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.timeout.connection.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 client timeout (in milliseconds) for creating new connections.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.timeout.execution.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 client timeout (in milliseconds) for execution. 0 means it is disabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.timeout.request.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 client timeout (in milliseconds) for a request. 0 means it is disabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.s3.timeout.socket.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">50000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 client timeout (in milliseconds) for reading from a connected socket.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.pds.storage.sharedvolume.upload.dir</p></td>
@@ -3709,14 +3754,14 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">marks job status as cancel requested</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">trigger change to execution service and marks job status as cancel requested</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">trigger change to execution service and marks job status as cancel requested</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">marks job status as cancel requested</p></td>
 </tr>
 </tbody>
 </table>
@@ -4580,7 +4625,7 @@ This will the process hard!
 </div>
 <div id="footer">
 <div id="footer-text">
- PDS 0.34.1<br>
+ PDS 0.35.0<br>
 </div>
 </div>
 </body>

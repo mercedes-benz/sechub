@@ -45,7 +45,7 @@ public class DomainMessageService {
             Set<MessageID> messageIds = getSupportedMessageIdsFor(handler);
             for (MessageID messageId : messageIds) {
                 synchronHandlers.put(messageId, handler);
-                LOG.info("Registered synchron message handler:{} for message ID:{}", handler.getClass(), messageId);
+                LOG.debug("Registered synchron message handler:{} for message ID:{}", handler.getClass(), messageId);
             }
         }
 
@@ -61,7 +61,7 @@ public class DomainMessageService {
                     this.asynchronHandlers.put(messageId, foundAsynchronousHandlersForID);
                 }
                 foundAsynchronousHandlersForID.add(handler);
-                LOG.info("Registered asynchronus message handler:{} for message ID:{}", handler.getClass(), messageId);
+                LOG.debug("Registered asynchronus message handler:{} for message ID:{}", handler.getClass(), messageId);
             }
         }
     }

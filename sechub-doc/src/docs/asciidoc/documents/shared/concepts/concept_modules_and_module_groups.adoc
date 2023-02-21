@@ -1,0 +1,40 @@
+// SPDX-License-Identifier: MIT
+[[section-shared-concepts-module-groups]]
+==== Modules and module groups
+
+===== Modules
+Security tools are categorized into modules. Each module performs a different security testing method:
+
+include::../../gen/gen_modules_table.adoc[]
+
+ifdef::techdoc[]
+TIP: Internally a module is represented by a dedicated `ScanType`.
+endif::techdoc[]
+
+===== Module groups
+
+Every module belongs to exact one module group:
+
+include::../../gen/gen_module_to_modulegroup_table.adoc[]
+
+Every module group contains at least one module:
+
+include::../../gen/gen_modulegroup_to_module_table.adoc[]
+
+
+Inside a {sechub} configuration file the user defines which modules shall be executed by the
+{sechub} job. But only modules which are in same module group can be run as part of the same job. 
+
+[NOTE]
+====
+*As an example:*
+
+Inside one {sechub} job configuration file, it is
+
+- not possible to define *codeScan* and a *webScan* +
+  (because modules are in different module groups)
+
+- but it is possible to define a *codeScan* and a *licenseScan* +
+  (because both belong to same module group)
+====
+

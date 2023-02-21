@@ -26,9 +26,9 @@ spec:
 {{- end }}
     spec:
       securityContext:
-        runAsUser: {{ .Values.runAs.uid }}  # user id of the application user. (overrides setings in the Dockerfile)
-        runAsGroup: {{ .Values.runAs.gid }} # group id of the application group. (overrides setings in the Dockerfile)
-        fsGroup: {{ .Values.runAs.gid }}    # group id of the application group. This group has write access to the volumes.
+        runAsUser: 7474  # uid of the application user. (should be same as in the Dockerfile)
+        runAsGroup: 7474 # gid of the application group. (should be same as in the Dockerfile)
+        fsGroup: 7474    # This gid has write access to the mounted volumes.
       volumes:
 {{- if ne .Values.server.ssl.keystoreAlias "undefined" }}
         - name: secret-ssl
@@ -107,9 +107,9 @@ spec:
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 # + File upload definitions
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        - name: SPRING_SERVLET_MULTIPART_MAX-FILE-SIZE
+        - name: SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE
           value: "{{ .Values.server.uploads.sources.maxUploadSize }}"
-        - name: SPRING_SERVLET_MULTIPART_MAX-REQUEST-SIZE
+        - name: SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE
           value: "{{ .Values.server.uploads.sources.maxUploadSize }}"
         - name: SECHUB_SERVER_UPLOAD_VALIDATE_CHECKSUM
           value: "{{ .Values.server.uploads.sources.validateChecksum | toString }}"
@@ -120,8 +120,8 @@ spec:
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 # + Special: debugging for CrashLoopBack problems
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        - name: KUBE_ENABLE_DEBUG_WAIT
-          value: "{{ .Values.server.debugWait | toString }}"
+        - name: KEEP_CONTAINER_ALIVE_AFTER_CRASH
+          value: "{{ .Values.server.development.keepContainerAliveAfterCrash | toString }}"
 {{- if .Values.deploymentComment }}
         # Setting DEPLOYMENT_COMMENT to a different value every time forces k8s to spin up a new container.
         # This way, you can force deployments e.g. when secrets have changed.
@@ -149,7 +149,7 @@ spec:
         - name: SECHUB_SERVER_SSL_KEYSTORE_TYPE
           value: "PKCS12"
         - name: SECHUB_SERVER_SSL_KEYSTORE_LOCATION
-          value: /home/javarun/{{ .Values.server.ssl.keystoreAlias }}.p12
+          value: /sechub/{{ .Values.server.ssl.keystoreAlias }}.p12
         - name: SECHUB_SERVER_SSL_KEYSTORE_ALIAS
           value: {{ .Values.server.ssl.keystoreAlias }}
         - name: SECHUB_SERVER_SSL_KEYSTORE_PASSWORD
@@ -208,7 +208,7 @@ spec:
         - name: SECHUB_DEVELOPMENT_WEBDESIGNMODE_ENABLED
           value: "false"
         - name: JAVA_ENABLE_DEBUG
-          value: "{{ .Values.server.javaEnableDebug | toString }}"
+          value: "{{ .Values.server.development.enableJavaDebugging | toString }}"
 # ----------------------------------------------------------------------------------------------#
 # - Scope: mock
 # --------------------------------------------------------------------------------------------- #
@@ -369,6 +369,21 @@ spec:
                name: secret-pds-checkmarx
                key: techuser_password
 {{- end }}
+{{- if .Values.pdsCloc.enabled }}
+# ----------------------------------------------------------------------------------------------#
+# - Scope: PDS-Cloc
+# --------------------------------------------------------------------------------------------- #
+        - name: SECHUB_PDS_CLOC_USERID
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-cloc
+               key: techuser_username
+        - name: SECHUB_PDS_CLOC_PASSWORD
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-cloc
+               key: techuser_password
+{{- end }}
 {{- if .Values.pdsCoverity.enabled }}
 # ----------------------------------------------------------------------------------------------#
 # - Scope: PDS-Coverity
@@ -444,6 +459,21 @@ spec:
                name: secret-pds-scancode
                key: techuser_password
 {{- end }}
+{{- if .Values.pdsSecretScanner.enabled }}
+# ----------------------------------------------------------------------------------------------#
+# - Scope: PDS-SecretScanner
+# --------------------------------------------------------------------------------------------- #
+        - name: SECHUB_PDS_SECRETSCANNER_USERID
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-secretscanner
+               key: techuser_username
+        - name: SECHUB_PDS_SECRETSCANNER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+               name: secret-pds-secretscanner
+               key: techuser_password
+{{- end }}
 # ----------------------------------------------------------------------------------------------#
 # - Scope: emails from SecHub server
 # --------------------------------------------------------------------------------------------- #
@@ -475,6 +505,8 @@ spec:
 # ----------------------------------------------------------------------------------------------#
 # - Scope: server
 # --------------------------------------------------------------------------------------------- #
+        - name: SECHUB_START_MODE
+          value: "server"
         # When debug flag is set, rest call reponse error messages do also contains stacktraces.
         - name: SECHUB_SERVER_DEBUG
           value: "false"
@@ -516,20 +548,16 @@ spec:
 {{- else if .Values.storage.s3.enabled }}
         - name: S3_ENABLED
           value: "true"
-        # Defines the S3 endpoint
-        - name: SECHUB_STORAGE_S3_ENDPOINT
+        - name: S3_ENDPOINT
           value: {{ .Values.storage.s3.endpoint }}
-        # Defines the S3 bucket name
-        - name: SECHUB_STORAGE_S3_BUCKETNAME
+        - name: S3_BUCKETNAME
           value: {{ .Values.storage.s3.bucketname }}
-        # Defines the access key for used S3 bucket
-        - name: SECHUB_STORAGE_S3_ACCESSKEY
+        - name: S3_ACCESSKEY
           valueFrom:
             secretKeyRef:
                name: secret-storage
                key: sechub_storage_s3_accesskey
-        # Defines the secret key for used S3 bucket
-        - name: SECHUB_STORAGE_S3_SECRETKEY
+        - name: S3_SECRETKEY
           valueFrom:
             secretKeyRef:
                name: secret-storage

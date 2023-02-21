@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -12,6 +13,7 @@ import com.mercedesbenz.sechub.domain.scan.product.ProductExecutor;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 import com.mercedesbenz.sechub.sharedkernel.TypedKey;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
+import com.mercedesbenz.sechub.sharedkernel.analytic.AnalyticData;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 
 /**
@@ -36,14 +38,26 @@ public class SecHubExecutionContext {
 
     private boolean cancelRequested;
 
+    private UUID executionUUID;
+
     private SecHubExecutionOperationType operationType;
 
-    public SecHubExecutionContext(UUID sechubJobUUID, SecHubConfiguration configuration, String executedBy) {
-        this(sechubJobUUID, configuration, executedBy, null);
+    private LocalDateTime executionStarted;
+
+    private AnalyticData analyticData;
+
+    public SecHubExecutionContext(UUID sechubJobUUID, SecHubConfiguration configuration, String executedBy, UUID executionUUID) {
+        this(sechubJobUUID, configuration, executedBy, executionUUID, null);
     }
 
-    public SecHubExecutionContext(UUID sechubJobUUID, SecHubConfiguration configuration, String executedBy, SecHubExecutionOperationType operationType) {
+    public SecHubExecutionContext(UUID sechubJobUUID, SecHubConfiguration configuration, String executedBy, UUID executionUUID,
+            SecHubExecutionOperationType operationType) {
+        this.executionStarted = LocalDateTime.now();
+        this.analyticData = new AnalyticData();
+
         this.sechubJobUUID = sechubJobUUID;
+        this.executionUUID = executionUUID;
+
         this.configuration = configuration;
         this.executedBy = executedBy;
         this.traceLogId = UUIDTraceLogID.traceLogID(sechubJobUUID);
@@ -135,6 +149,26 @@ public class SecHubExecutionContext {
 
     public void forget(SecHubExecutionHistoryElement historyElement) {
         executionHistory.forget(historyElement);
+    }
+
+    /**
+     * An execution uuid is a uuid which is unique for this context. A job can be
+     * executed many times (because of restarts) and will still have the same job
+     * uuid. But the execution uuid will be different! It is unique and shared
+     * inside the scan while it is executed.
+     *
+     * @return the execution uuid
+     */
+    public UUID getExecutionUUID() {
+        return executionUUID;
+    }
+
+    public LocalDateTime getExecutionStarted() {
+        return executionStarted;
+    }
+
+    public AnalyticData getAnalyticData() {
+        return analyticData;
     }
 
 }

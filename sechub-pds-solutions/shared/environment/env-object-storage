@@ -14,5 +14,5 @@ S3_ENDPOINT=http://10.42.43.7:9000
 # The S3 bucket name
 S3_BUCKETNAME=pds
 S3_ACCESSKEY=user
-S3_SECRETKEY=Why$5forThat?
+S3_SECRETKEY='Why$5forThat?'
 

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.notification.user;
 
 import static org.junit.Assert.assertEquals;

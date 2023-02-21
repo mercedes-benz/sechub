@@ -1,16 +1,22 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.owaspzapwrapper.helper;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 
 public class BaseTargetUriFactory {
 
-    public URI create(String targetUri) {
-        return createBaseURIForTarget(targetUri);
+    public URL create(String targetUri) {
+        try {
+            return createBaseURIForTarget(targetUri).toURL();
+        } catch (MalformedURLException e) {
+            throw new ZapWrapperRuntimeException("Target URL is not a valid URL.", ZapWrapperExitCode.TARGET_URL_INVALID);
+        }
     }
 
     private URI createBaseURIForTarget(String targetUri) {

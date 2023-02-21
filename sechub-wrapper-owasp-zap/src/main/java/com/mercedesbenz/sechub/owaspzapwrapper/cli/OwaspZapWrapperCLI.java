@@ -8,44 +8,29 @@ import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.owaspzapwrapper.cli.OwaspZapWrapperCommandLineParser.OwaspZapWrapperCommandLineParserException;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanContext;
-import com.mercedesbenz.sechub.owaspzapwrapper.helper.OwaspZapProductMessageHelper;
-import com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableConstants;
-import com.mercedesbenz.sechub.owaspzapwrapper.util.EnvironmentVariableReader;
 
 public class OwaspZapWrapperCLI {
     private static final Logger LOG = LoggerFactory.getLogger(OwaspZapWrapperCLI.class);
-
-    private OwaspZapProductMessageHelper productMessagehelper;
 
     public static void main(String[] args) throws IOException {
         new OwaspZapWrapperCLI().start(args);
     }
 
-    public OwaspZapWrapperCLI() {
-        EnvironmentVariableReader reader = new EnvironmentVariableReader();
-        String userMessagesFolder = reader.readAsString(EnvironmentVariableConstants.PDS_JOB_USER_MESSAGES_FOLDER);
-        if (userMessagesFolder == null) {
-            throw new IllegalStateException(
-                    "PDS configuration invalid. Cannot send user messages, because environment variable PDS_JOB_USER_MESSAGES_FOLDER is not set.");
-        }
-        productMessagehelper = new OwaspZapProductMessageHelper(userMessagesFolder);
-    }
-
     private void start(String[] args) throws IOException {
+        OwaspZapScanContext scanContext = null;
         try {
             LOG.info("Building the scan configuration.");
-            OwaspZapScanContext scanContext = resolveScanContext(args);
+            scanContext = resolveScanContext(args);
             if (scanContext == null) {
                 /* only happens when help command was executed - here we just exit with 0 */
                 System.exit(0);
             }
             LOG.info("Starting the scan.");
             startExecution(scanContext);
-            productMessagehelper.writeProductMessages(scanContext.getProductMessages());
 
         } catch (ZapWrapperRuntimeException e) {
-            LOG.error("Must exit with exit code {} because: {}.", e.getExitCode().getExitCode(), e.getMessage(), e);
-            productMessagehelper.writeProductError(e);
+            LOG.error("An error occurred during the scan: {}.", e.getMessage(), e);
+            scanContext.getOwaspZapProductMessageHelper().writeProductError(e);
             System.exit(e.getExitCode().getExitCode());
 
         } catch (OwaspZapWrapperCommandLineParserException e) {

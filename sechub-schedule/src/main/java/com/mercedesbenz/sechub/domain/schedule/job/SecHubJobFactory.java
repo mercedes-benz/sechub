@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.domain.schedule.job;
 import static com.mercedesbenz.sechub.domain.schedule.ScheduleErrorIDConstants.*;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverterException;
+import com.mercedesbenz.sechub.commons.model.ModuleGroup;
+import com.mercedesbenz.sechub.commons.model.ScanType;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelSupport;
 import com.mercedesbenz.sechub.sharedkernel.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 
@@ -22,6 +26,9 @@ public class SecHubJobFactory {
 
     @Autowired
     UserContextService userContextService;
+
+    @Autowired
+    SecHubConfigurationModelSupport modelSupport;
 
     private static final Logger LOG = LoggerFactory.getLogger(SecHubJobFactory.class);
 
@@ -44,6 +51,10 @@ public class SecHubJobFactory {
             job.jsonConfiguration = configuration.toJSON();
             job.owner = userId;
             job.created = LocalDateTime.now();
+
+            Set<ScanType> scanTypes = modelSupport.collectPublicScanTypes(configuration);
+            job.moduleGroup = ModuleGroup.resolveModuleGroupOrNull(scanTypes);
+
         } catch (JSONConverterException e) {
             // should never happen, but...
             LOG.error(CRITICAL + "Was not able to create a new job because of toJSON problem?", e);

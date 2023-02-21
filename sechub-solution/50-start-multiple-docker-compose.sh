@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 cd $(dirname "$0")
-source "0000-helper.sh"
+source ../sechub-solutions-shared/scripts/9999-env-file-helper.sh
 
 REPLICAS="$1"
 ENVIRONMENT_FILE=".env-cluster"

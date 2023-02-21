@@ -2,25 +2,36 @@
 package com.mercedesbenz.sechub.domain.schedule.strategy;
 
 public enum SchedulerStrategyId {
-    FirstComeFirstServe("first-come-first-serve"), OnlyOneScanPerProjectAtATime("only-one-scan-per-project-at-a-time");
 
-    private String strategy;
+    FIRST_COME_FIRST_SERVE(SchedulerStrategyConstants.FIRST_COME_FIRST_SERVE),
 
-    SchedulerStrategyId(String strategyString) {
+    ONE_SCAN_PER_PROJECT(SchedulerStrategyConstants.ONLY_ONE_SCAN_PER_PROJECT_AT_A_TIME),
 
-        if (strategyString == null) {
-            throw new IllegalArgumentException("strategyString may not be null!");
+    ONE_SCAN_PER_PROJECT_AND_MODULE_GROUP(SchedulerStrategyConstants.ONLY_ONE_SCAN_PER_PROJECT_AND_MODULE_GROUP)
+
+    ;
+
+    private String identifier;
+
+    SchedulerStrategyId(String identifier) {
+
+        if (identifier == null) {
+            throw new IllegalArgumentException("identifier may not be null!");
         }
-        if (strategyString.isEmpty()) {
-            throw new IllegalArgumentException("strategyString may not be empty!");
+        if (identifier.isEmpty()) {
+            throw new IllegalArgumentException("identifier may not be empty!");
         }
 
-        this.strategy = strategyString;
+        this.identifier = identifier;
     }
 
-    public static SchedulerStrategyId getId(String strategyString) {
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public static SchedulerStrategyId getByIdentifier(String strategyIdAsText) {
         for (SchedulerStrategyId value : values()) {
-            if (value.strategy.equals(strategyString)) {
+            if (value.identifier.equals(strategyIdAsText)) {
                 return value;
             }
         }

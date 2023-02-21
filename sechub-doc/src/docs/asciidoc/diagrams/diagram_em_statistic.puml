@@ -1,0 +1,142 @@
+' SPDX-License-Identifier: MIT
+@startuml 
+
+hide empty fields
+hide empty methods
+
+'----------------------------Job statistic--------------------------------------
+
+entity JobStatistic {
+    * secHubJobUUID:uuid
+    --
+    * created:Timestamp
+    * projectId
+}
+
+note top of JobStatistic
+This entity is written when job has been created. 
+end note
+
+'----------------------------Job run staistic----------------------------------
+entity JobRunStatistic {
+    * executionUUID: uuid
+    --
+    * secHubJobUUID: uuid
+    * projectId: Text
+    * created: Timestamp
+    * started: Timestamp
+    * ended: Timestamp
+    * failed: boolean
+    * trafficLight: TrafficLight
+}
+
+note top of JobRunStatistic 
+Contains statistic information for a 
+SecHub job run which can occure multiple 
+times (job restart). The execution uuid is unique
+for every run and is used as PK. Every job run 
+has only ONE entry.
+
+end note
+'----------------------------Job statistic data---------------------------------
+entity JobStatisticData {
+    * uuid: uuid
+    --
+    * secHubJobUUID: uuid
+    * type: JobStatisticDataType (3*30)
+    * id: Text (3*30)
+    * value: BigInt
+    * timestamp: Timestamp
+}
+
+note top of JobStatisticData 
+Contains data for job which is NOT related
+to a job run but is representative for every run/complete job.
+
+**Some potential examples:**
+type: UPLOAD, id: size_mb, value: 123
+type: UPLOAD, id: variant, value:src
+type: UPLOAD, id: s3_problems, value:1
+
+end note
+
+note right of JobStatisticData::uuid
+We do not reuse the sechub job uuid as a PK, because
+we could have some data which needs multiple entries.
+
+For example: 
+type: UPLOAD, id: size_MB, value: 123
+type: UPLOAD, id: size_MB, value: 234
+
+If a user would upload different content two times, the statistic
+must have two different entries.
+
+On the other hand: If we want to update an existing enry like 
+type: UPLOAD, id: s3_problems, value:1
+
+we can just try to load by type + key an existing entry and do the 
+update.
+
+This means, using here a new generated UUID, we can use both variants without
+any problems.  
+end note
+
+note left of JobStatisticData::timestamp
+Timestamp represents the UTC date 
+when the data entry was first created
+end note
+
+'----------------------------Job run statistic data----------------------------
+
+entity JobRunStatisticData {
+    * uuid:uuid
+    --
+    * executionUUID:uuid
+    * type: JobStatisticDataType (3*30)
+    * id: Text (3*30)
+    * value: BigInt
+    * timestamp: Timestamp
+}
+
+note left of JobRunStatisticData::timestamp
+Timestamp represents the UTC date 
+when the data entry was first created
+end note
+
+note top of JobRunStatisticData 
+Contains information gathered while execution
+phase is happening.
+
+**Some potential examples:**
+type: LOC, id: <null>, value: 3002345
+type: LOC, id: java, value: 1232345
+type: LANG, id: java, value: 1
+type: SCAN_TYPE, id: codeScan, value: 1
+type: USED_PRODUCT_CODESCAN, id: PDS_GOSEC, value: 1
+type: PRODUCT_RUN_TIME_SECONDS, id: PDS_GOSEC, value:2 
+type: PRODUCT_FAILURE, id: PDS_GOSEC, value:1 
+end note
+
+
+note right of JobRunStatisticData::uuid
+We do not reuse the execution uuid as PK, because we want to
+have the possibility to create multiple entries and the possibility
+to update existing ones on demand.
+
+For an explanation look at the JobStatisticData::uuid
+end note
+
+'--------------------------Relations--------------------------------------------
+JobStatistic ||..o{ JobStatisticData 
+
+JobStatistic ||..o{ JobRunStatistic 
+JobRunStatistic ||..o{ JobRunStatisticData 
+'-------------------------------------------------------------------------------
+
+
+enum JobRunStatisticDataType{
+}
+enum JobStatisticDataType{
+}
+
+@enduml 

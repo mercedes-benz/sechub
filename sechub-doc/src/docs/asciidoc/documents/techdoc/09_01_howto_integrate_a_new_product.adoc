@@ -2,81 +2,32 @@
 [[section-howto-integrate-a-new-product]]
 === Howto integrate a new product
 
-[[section-howtos-write-a-new-adapter]]
-==== Write a new adapter
-When you want to write a new adapter you should should base on an existing one.
+At the beginning of {sechub} it was always necessary to implement a new product adapter (in Java), create 
+a new product executor (in Java) and create new product result importer (also in Java).
 
-Here is an easy to go list:
+*Those days are gone*. Nowadays we are shifting every new product into a {pds} (product delegation server)
+ solution. For {pds} we have an already existing {pds} adapter (the logic to communicate with {pds})
+ which is used always.
+ 
+ 
+[IMPORTANT]
+====
+At the moment we have still some direct product adapters. Some are marked as deprecated and will
+vanish. Others will be replaced by PDS solutions.
 
+In the future there shall be only two products which have dedicated adapter implementations: SERECO and {pds}.
+====
+ 
+For every existing type of scan there is a dedicated {pds} product executor available. When the security 
+product is able to produce SARIF output, we are able to import this already.
+You can find multiple existing solutions and more details at {pds-solutions-projectsite}.
 
-===== Copy an existing adapter subproject
-
-NOTE: As an example you could use existing subproject `sechub-adapter-netsparker` as copy base
-
-* Copy the existing adapter subproject and rename it adequate in
-  filesystem
-
-* After this add the new subproject id to
- - `settings.gradle`
- - `projects.gradle` here you should add the project to the section where other adapters are already set
- - `sechub-server/build.gradle` add the new project as dependency there!
-
-===== Reimport into IDE
-- Reimpoirt the new subproject into your IDE - in eclipse you can
-use `EGradle -> Reimport`.
-
-===== Rename packages
-- Use your IDE to rename package of the adapter so you have your own namespace - e.g.
-when using `com.mercedesbenz.sechub.adapter.netsparker` and you want to create an adapter
-for `hubabuba` you should rename the package to `com.mercedesbenz.sechub.adapter.hubabuba`.
-
-===== Rename Classes
-- Use your IDE to rename classes, interfaces and enums. When you have copied project `Netsparker adapter`
-and wanting to support `Hubabuba` you have to replace all name parts containing `Netsparker` with `Hubabuba`.
-This will help you to have `Config`, `ConfigBuilder` and many more classes out of the box.
-
-===== Rewrite Mockadapter
-- Normally mock adapter implementation do just return an example file (e.g. XML or JSON) as a result. So this has to be done
-  for the new adapter as well - means another file must be returned.
-
-===== Rewrite Adapter logic
-Cleanup the old adapter implementation parts and start recreating
-
-===== Adapt TestApplication
-- Every adapter should contain an own simple test application having a simple main application where the adapter can be tested
-without spring container startup etc. So very fast and simple to use, without dependencies to other `{sechub}` parts
-
-==== Write a new product executor
-
-It's the same as described at <<section-howtos-write-a-new-adapter>>: Just copy an existing product executor subproject.
-
-NOTE: As an example you could use existing subproject `sechub-scan-product-netsparker` as copy base
-
-But some additional parts have to be done:
-
-- Always think about the kind of <<sechub-concept-installsetup,InstallSetup>> implementation you want to use!
-  Depending of the target type (intranet, internet) some products must
-  are installed twice or need an special identifier to identify another logic or profile
-  to handle the target correctly. The easiest way is to copy an existing product executor
-  having the same beaviour/installation setup as the new one. +
-  For details see architecture documentation and search for
-  `Automatic Target resolving and calling of adapters` and/or
-  check class hierarchy and javadoc of `InstallSetup`.
-- change all `@value` annotation keys to adequate names, use only fields necessary and remove uninteresting parts
-
-==== Extend SERECO to support the new product
-<<section-infrastructure-setup-security-products-sereco,Sereco>> (`SecHub Report Collector`) must
-be able to extract all necessary data from product results got from
-product executors and merge it into its own meta model. After this `Sereco` will provide a
-report which will be transmitted back to user request.
-
-So we have to write an product importer by implementing `com.mercedesbenz.sechub.sereco.importer.ProductResultImporter`.
-Of course can use an existing importer as a template.
-
-==== Adopt and write tests
-Copied tests from adapter and product executors must be (of course) adapted as well.
-Either remove them or use the existing tests as a template to write your own tests.
-
-You should also write at least one integration test inside `sechub-integrationtest` to check that the sever is using the mocked adapter
-and `SERECO` is returning an expected traffic light and also the correct details.
+[NOTE]
+====
+In the best case scenario there is no need to write anything in Java - we copy an existing
+pds-solution to a new folder name, make some necessary adjustments, change the caller script and we are done...
+ 
+Only when a product result is not already supported by SERECO ({sechub} report collector), 
+we must write a special `ProductResultImporter`.
+====
 

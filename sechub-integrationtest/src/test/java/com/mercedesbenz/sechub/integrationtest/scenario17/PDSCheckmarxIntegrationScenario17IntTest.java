@@ -30,6 +30,9 @@ public class PDSCheckmarxIntegrationScenario17IntTest {
 
     private static final String TEST_RECOMPRESSED_ZIP_DATA_TXT_SHA256 = "TEST_RECOMPRESSED_ZIP_DATA_TXT_SHA256";
 
+    private static final boolean WITH_ANALYTICS = true;
+    private static final boolean WITHOUT_ANALYTICS = false;
+
     @Rule
     public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario17.class);
 
@@ -38,30 +41,30 @@ public class PDSCheckmarxIntegrationScenario17IntTest {
 
     @Test
     public void pds_calls_checkmarx_wrapper_and_uploads_sources_only_which_is_supported_by_checkmarx_PDS_setup_results_yellow() {
-        testCheckmarxPDSJobWithSourceContentUploaded(PROJECT_1);
+        testCheckmarxPDSJobWithSourceContentUploaded(PROJECT_1, WITH_ANALYTICS);
     }
 
     @Test
     public void pds_calls_checkmarx_wrapper_and_uploads_sources_only_accepted_is_binary_and_source_via_job_parameter_results_yellow() {
-        testCheckmarxPDSJobWithSourceContentUploaded(PROJECT_2);
+        testCheckmarxPDSJobWithSourceContentUploaded(PROJECT_2, WITH_ANALYTICS);
     }
 
     @Test
     public void pds_calls_checkmarx_wrapper_and_uploads_sources_which_would_be_accepted_but_everything_is_filtered_results_in_job_done_without_result() {
-        testCheckmarxPDSJobWithSourceContentUploaded(PROJECT_3);
+        testCheckmarxPDSJobWithSourceContentUploaded(PROJECT_3, WITHOUT_ANALYTICS);
     }
 
     @Test
     public void pds_calls_checkmarx_wrapper_but_uploads_binary_only__which_is_not_supported_by_checkmarx_PDS_setup_results_in_job_done_without_result() {
-        testCheckmarxPDSjobWithBinaryContentUploaded(PROJECT_1);
+        testCheckmarxPDSjobWithBinaryContentUploaded(PROJECT_1, WITH_ANALYTICS);
     }
 
     @Test
     public void pds_calls_checkmarx_wrapper_but_uploads_binary_only__overriden_with_binary_accepted_results_in_failing_job() {
-        testCheckmarxPDSjobWithBinaryContentUploaded(PROJECT_2);
+        testCheckmarxPDSjobWithBinaryContentUploaded(PROJECT_2, WITH_ANALYTICS);
     }
 
-    private void testCheckmarxPDSJobWithSourceContentUploaded(TestProject project) {
+    private void testCheckmarxPDSJobWithSourceContentUploaded(TestProject project, boolean withAnalytics) {
         /* @formatter:off */
         /* prepare */
         UUID jobUUID = as(USER_1).
@@ -83,6 +86,22 @@ public class PDSCheckmarxIntegrationScenario17IntTest {
         /* test */
         waitForJobDone(project, jobUUID, 30, true);
         String report = as(USER_1).getJobReport(project, jobUUID);
+
+        // check statistics
+        assertStatistic(jobUUID).
+            isForProject(project).
+            hasData("UPLOAD_SOURCES", "SIZE_IN_BYTES", 198L);
+
+        if (withAnalytics) {
+            assertStatistic(jobUUID).
+                firstExecution().
+                    hasRunData("FILES", "ALL", 3474).
+                    hasRunData("FILES_LANG", "java", 2337).
+
+                    hasRunData("LOC", "ALL", 584644).
+                    hasRunData("LOC_LANG", "java", 126190).
+                    hasRunData("LOC_LANG", "go", 4151);
+        }
 
         if (project.equals(PROJECT_3)) {
             assertReport(report).
@@ -108,7 +127,11 @@ public class PDSCheckmarxIntegrationScenario17IntTest {
 
 
         // check RECOMPRESSED ZIP file content
-        UUID pdsJobUUID = waitForFirstPDSJobOfSecHubJobAndReturnPDSJobUUID(jobUUID);
+        int recompressPDSJobIndex = 0;
+        if (withAnalytics) {
+            recompressPDSJobIndex=1; // when analytics enabled, we use the second PDS job (which does recompress the file)
+        }
+        UUID pdsJobUUID = waitForPDSJobWithIndexOfSecHubJobAndReturnPDSJobUUID(jobUUID,recompressPDSJobIndex);
         Map<String, String> variables = fetchPDSVariableTestOutputMap(pdsJobUUID);
 
         String sha256 = variables.get(TEST_RECOMPRESSED_ZIP_DATA_TXT_SHA256);
@@ -132,7 +155,7 @@ public class PDSCheckmarxIntegrationScenario17IntTest {
         /* @formatter:on */
     }
 
-    private void testCheckmarxPDSjobWithBinaryContentUploaded(TestProject project) {
+    private void testCheckmarxPDSjobWithBinaryContentUploaded(TestProject project, boolean withAnalytics) {
         /* @formatter:off */
         boolean profileHasBinariesEnabledInExecutor = project.equals(PROJECT_2);
 
@@ -173,10 +196,25 @@ public class PDSCheckmarxIntegrationScenario17IntTest {
                 hasFindings(0); // no finding, because failed
         }
 
+        // check statistics
+        assertStatistic(jobUUID).
+            isForProject(project).
+            hasData("UPLOAD_BINARIES", "SIZE_IN_BYTES", 9728);
+
+        if (withAnalytics) {
+            assertStatistic(jobUUID).
+                firstExecution().
+                    hasNoRunData(); // our test setup does not scan binaries. So there is no statistic data!
+        }
+
+        int amountOfPdsJobs = 1;
+        if (withAnalytics) {
+            amountOfPdsJobs++;
+        }
         // Inspect PDS result
         List<UUID> pdsJobUUIDs = TestAPI.fetchAllPDSJobUUIDsForSecHubJob(jobUUID);
-        assertEquals(1,pdsJobUUIDs.size());
-        UUID pdsJobUUID = pdsJobUUIDs.iterator().next();
+        assertEquals(amountOfPdsJobs,pdsJobUUIDs.size());
+        UUID pdsJobUUID = pdsJobUUIDs.get(amountOfPdsJobs-1);
 
         PDSJobStatusState pdsJobStatusState = asPDSUser(PDS_ADMIN).getJobStatusState(pdsJobUUID);
         if (profileHasBinariesEnabledInExecutor) {
@@ -189,7 +227,6 @@ public class PDSCheckmarxIntegrationScenario17IntTest {
 
             assertNull(jobReport);  // report can be fetched, but is null because no launcher script executed
         }
-
         /* @formatter:on */
     }
 

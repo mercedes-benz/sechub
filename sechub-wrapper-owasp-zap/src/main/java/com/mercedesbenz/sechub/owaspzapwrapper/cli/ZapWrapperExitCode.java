@@ -23,6 +23,10 @@ public enum ZapWrapperExitCode {
 
     IO_ERROR(7),
 
+    SCAN_JOB_CANCELLED(8),
+
+    INVALID_INCLUDE_OR_EXCLUDE_URLS(9),
+
     ;
 
     private int exitCode;

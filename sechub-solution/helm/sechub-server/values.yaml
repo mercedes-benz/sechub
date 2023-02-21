@@ -59,6 +59,8 @@ server:
   # loggingType (optional): See https://mercedes-benz.github.io/sechub/latest/sechub-operations.html#logging-2
   #                         https://github.com/mercedes-benz/sechub/blob/develop/sechub-server/src/main/resources/logback-spring.xml
   loggingType: LOGSTASH_JSON
+  # Time in milliseconds how long the download of an api token is possible. (86400000 = 24h)
+  validityOnetimetokenInMilliseconds: 86400000
 
   spring:
     # Set server profiles (See https://mercedes-benz.github.io/sechub/latest/sechub-techdoc.html#section-sechub-spring-profiles)
@@ -85,6 +87,7 @@ server:
     #   - inside the .p12 keystore, an alias with this name is expected
     #     pointing to the ssl certificate to use
     keystoreAlias: undefined
+
   # Define limits and features of SecHub's handling of uploads
   uploads:
     sources:
@@ -97,14 +100,15 @@ server:
     binaries:
       # Maximum size in bytes of binary uploads (100MB=100x1024x1024=104857600)
       maxUploadBytes: 104857600
-  # Time in milliseconds how long the download of an api token is possible. (86400000 = 24h)
-  validityOnetimetokenInMilliseconds: 86400000
+
   # Development settings:
-  # debugWait: When set to true, then the container's run.sh script will keep running on SecHub server exit.
-  #            Useful for analyzing server crashes. In all other cases: set to `false`.
-  debugWait: false
-  # Enable Java debugging?
-  javaEnableDebug: false
+  development:
+    # keepContainerAliveAfterCrash:
+    # When set to true, then the container's run.sh script will keep running for 2h after java call exited.
+    # This is useful for analyzing server crashes. In all other cases: set to `false`.
+    keepContainerAliveAfterCrash: false
+    # When `true` then Port 5005 will be opened for Java debugging.
+    enableJavaDebugging: false
 
 service:
   loadbalancer:
@@ -165,11 +169,6 @@ webScan:
     uriPattern: "intranet-hostname-ends-with:.local,.intranet.example.org"
     # Example: Intranet host's ipv4 range is 192.168.0.0/16 or ipv6 range 2001:db8:85a3:0:0:8a2e:370:*
     ipPattern: "intranet-ip-pattern:192.168.*.*,[2001:db8:85a3:0:0:8a2e:370:*]"
-
-# Set user id and group id of the application user
-runAs:
-  uid: 9002
-  gid: 9002
 
 # deploymentComment (optional):
 #  When setting to a different value than before, it forces k8s to spin up a new container.
@@ -243,6 +242,14 @@ pdsCheckmarx:
   # Put the password of PDS-Checkmarx in k8s secret secret-pds-checkmarx:techuser_password
 
 # ------------------------------------------------------------------------------------- #
+# PDS-Cloc adapter
+# ------------------------------------------------------------------------------------- #
+pdsCloc:
+  enabled: false
+  # Put the user id  of PDS-Cloc in k8s secret secret-pds-cloc:techuser_username
+  # Put the password of PDS-Cloc in k8s secret secret-pds-cloc:techuser_password
+
+# ------------------------------------------------------------------------------------- #
 # PDS-Coverity adapter
 # ------------------------------------------------------------------------------------- #
 pdsCoverity:
@@ -281,3 +288,11 @@ pdsScancode:
   enabled: false
   # Put the user id  of PDS-Scancode in k8s secret secret-pds-scancode:techuser_username
   # Put the password of PDS-Scancode in k8s secret secret-pds-scancode:techuser_password
+
+# ------------------------------------------------------------------------------------- #
+# PDS-SecretScanner adapter
+# ------------------------------------------------------------------------------------- #
+pdsSecretScanner:
+  enabled: false
+  # Put the user id  of PDS-SecretScanner in k8s secret secret-pds-secretscanner:techuser_username
+  # Put the password of PDS-SecretScanner in k8s secret secret-pds-secretscanner:techuser_password

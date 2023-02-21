@@ -203,7 +203,7 @@ public class WebConfigBuilderStrategyTest {
 
         String json = createExcludesJson(excludes);
         SecHubConfiguration configuration = SECHUB_CONFIG.fromJSON(json);
-        SecHubExecutionContext context = new SecHubExecutionContext(UUID.randomUUID(), configuration, "test");
+        SecHubExecutionContext context = new SecHubExecutionContext(UUID.randomUUID(), configuration, "test", UUID.randomUUID());
         WebConfigBuilderStrategy strategyToTest = new WebConfigBuilderStrategy(context);
         TestAbstractWebScanAdapterConfigBuilder configBuilder = new TestAbstractWebScanAdapterConfigBuilder();
 
@@ -228,7 +228,7 @@ public class WebConfigBuilderStrategyTest {
 
         String json = createExcludesJson(excludes);
         SecHubConfiguration configuration = SECHUB_CONFIG.fromJSON(json);
-        SecHubExecutionContext context = new SecHubExecutionContext(UUID.randomUUID(), configuration, "test");
+        SecHubExecutionContext context = new SecHubExecutionContext(UUID.randomUUID(), configuration, "test", UUID.randomUUID());
         WebConfigBuilderStrategy strategyToTest = new WebConfigBuilderStrategy(context);
         TestAbstractWebScanAdapterConfigBuilder configBuilder = new TestAbstractWebScanAdapterConfigBuilder();
 
@@ -249,7 +249,7 @@ public class WebConfigBuilderStrategyTest {
 
         String json = createIncludesJson(includes);
         SecHubConfiguration configuration = SECHUB_CONFIG.fromJSON(json);
-        SecHubExecutionContext context = new SecHubExecutionContext(UUID.randomUUID(), configuration, "test");
+        SecHubExecutionContext context = new SecHubExecutionContext(UUID.randomUUID(), configuration, "test", UUID.randomUUID());
         WebConfigBuilderStrategy strategyToTest = new WebConfigBuilderStrategy(context);
         TestAbstractWebScanAdapterConfigBuilder configBuilder = new TestAbstractWebScanAdapterConfigBuilder();
 
@@ -273,7 +273,7 @@ public class WebConfigBuilderStrategyTest {
 
         String json = createIncludesJson(includes);
         SecHubConfiguration configuration = SECHUB_CONFIG.fromJSON(json);
-        SecHubExecutionContext context = new SecHubExecutionContext(UUID.randomUUID(), configuration, "test");
+        SecHubExecutionContext context = new SecHubExecutionContext(UUID.randomUUID(), configuration, "test", UUID.randomUUID());
         WebConfigBuilderStrategy strategyToTest = new WebConfigBuilderStrategy(context);
         TestAbstractWebScanAdapterConfigBuilder configBuilder = new TestAbstractWebScanAdapterConfigBuilder();
 
@@ -296,7 +296,7 @@ public class WebConfigBuilderStrategyTest {
 
         String json = createExcludesJson(excludes);
         SecHubConfiguration configuration = SECHUB_CONFIG.fromJSON(json);
-        SecHubExecutionContext context = new SecHubExecutionContext(UUID.randomUUID(), configuration, "test");
+        SecHubExecutionContext context = new SecHubExecutionContext(UUID.randomUUID(), configuration, "test", UUID.randomUUID());
         WebConfigBuilderStrategy strategyToTest = new WebConfigBuilderStrategy(context);
         TestAbstractWebScanAdapterConfigBuilder configBuilder = new TestAbstractWebScanAdapterConfigBuilder();
 
@@ -319,7 +319,7 @@ public class WebConfigBuilderStrategyTest {
 
         String json = createIncludesJson(includes);
         SecHubConfiguration configuration = SECHUB_CONFIG.fromJSON(json);
-        SecHubExecutionContext context = new SecHubExecutionContext(UUID.randomUUID(), configuration, "test");
+        SecHubExecutionContext context = new SecHubExecutionContext(UUID.randomUUID(), configuration, "test", UUID.randomUUID());
         WebConfigBuilderStrategy strategyToTest = new WebConfigBuilderStrategy(context);
         TestAbstractWebScanAdapterConfigBuilder configBuilder = new TestAbstractWebScanAdapterConfigBuilder();
 
@@ -348,7 +348,7 @@ public class WebConfigBuilderStrategyTest {
 
         String json = createExcludesJson(excludes);
         SecHubConfiguration configuration = SECHUB_CONFIG.fromJSON(json);
-        SecHubExecutionContext context = new SecHubExecutionContext(UUID.randomUUID(), configuration, "test");
+        SecHubExecutionContext context = new SecHubExecutionContext(UUID.randomUUID(), configuration, "test", UUID.randomUUID());
         WebConfigBuilderStrategy strategyToTest = new WebConfigBuilderStrategy(context);
         TestAbstractWebScanAdapterConfigBuilder configBuilder = new TestAbstractWebScanAdapterConfigBuilder();
 
@@ -378,7 +378,7 @@ public class WebConfigBuilderStrategyTest {
 
         String json = createIncludesJson(includes);
         SecHubConfiguration configuration = SECHUB_CONFIG.fromJSON(json);
-        SecHubExecutionContext context = new SecHubExecutionContext(UUID.randomUUID(), configuration, "test");
+        SecHubExecutionContext context = new SecHubExecutionContext(UUID.randomUUID(), configuration, "test", UUID.randomUUID());
         WebConfigBuilderStrategy strategyToTest = new WebConfigBuilderStrategy(context);
         TestAbstractWebScanAdapterConfigBuilder configBuilder = new TestAbstractWebScanAdapterConfigBuilder();
 
@@ -438,7 +438,7 @@ public class WebConfigBuilderStrategyTest {
         String json = ScanDomainTestFileSupport.getTestfileSupport().loadTestFile(pathToTestConfig);
         SecHubConfiguration configuration = SECHUB_CONFIG.fromJSON(json);
 
-        return new SecHubExecutionContext(UUID.randomUUID(), configuration, "test");
+        return new SecHubExecutionContext(UUID.randomUUID(), configuration, "test", UUID.randomUUID());
 
     }
 

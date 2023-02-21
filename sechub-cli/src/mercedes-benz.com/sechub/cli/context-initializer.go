@@ -17,13 +17,15 @@ func InitializeContext() *Context {
 	configPtr := NewConfigByFlags()
 	context := NewContext(configPtr)
 
+	printLogoWithVersion(context)
+
 	/* load configuration file - maybe there are some settings normally done by cli arguments too */
 	if context.config.action != showHelpAction {
 		loadConfigFile(context)
 	}
 
 	/* assert after load the configuration is valid */
-	assertValidConfig(configPtr)
+	assertValidConfig(context)
 
 	return context
 }

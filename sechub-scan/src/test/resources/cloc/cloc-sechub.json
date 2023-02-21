@@ -1,0 +1,189 @@
+{"header" : {
+  "cloc_url"           : "github.com/AlDanial/cloc",
+  "cloc_version"       : "1.96",
+  "elapsed_seconds"    : 5.09293389320374,
+  "n_files"            : 3474,
+  "n_lines"            : 664043,
+  "files_per_second"   : 682.121557602756,
+  "lines_per_second"   : 130385.159894993,
+  "report_file"        : "cloc-sechub.json"},
+"XML" :{
+  "nFiles": 33,
+  "blank": 2815,
+  "comment": 599,
+  "code": 261352},
+"Java" :{
+  "nFiles": 2337,
+  "blank": 38879,
+  "comment": 23775,
+  "code": 126190},
+"JSON" :{
+  "nFiles": 209,
+  "blank": 190,
+  "comment": 0,
+  "code": 94596},
+"HTML" :{
+  "nFiles": 16,
+  "blank": 201,
+  "comment": 13,
+  "code": 67980},
+"AsciiDoc" :{
+  "nFiles": 183,
+  "blank": 2686,
+  "comment": 293,
+  "code": 7760},
+"Bourne Shell" :{
+  "nFiles": 168,
+  "blank": 1682,
+  "comment": 842,
+  "code": 6108},
+"YAML" :{
+  "nFiles": 89,
+  "blank": 353,
+  "comment": 382,
+  "code": 4374},
+"Go" :{
+  "nFiles": 51,
+  "blank": 1097,
+  "comment": 944,
+  "code": 4151},
+"Text" :{
+  "nFiles": 38,
+  "blank": 998,
+  "comment": 0,
+  "code": 3521},
+"SVG" :{
+  "nFiles": 91,
+  "blank": 29,
+  "comment": 51,
+  "code": 2623},
+"Gradle" :{
+  "nFiles": 57,
+  "blank": 659,
+  "comment": 695,
+  "code": 2034},
+"PlantUML" :{
+  "nFiles": 28,
+  "blank": 470,
+  "comment": 67,
+  "code": 1313},
+"Dockerfile" :{
+  "nFiles": 23,
+  "blank": 336,
+  "comment": 363,
+  "code": 646},
+"Markdown" :{
+  "nFiles": 49,
+  "blank": 222,
+  "comment": 53,
+  "code": 569},
+"SQL" :{
+  "nFiles": 47,
+  "blank": 49,
+  "comment": 113,
+  "code": 386},
+"CSS" :{
+  "nFiles": 2,
+  "blank": 77,
+  "comment": 3,
+  "code": 371},
+"Groovy" :{
+  "nFiles": 5,
+  "blank": 39,
+  "comment": 46,
+  "code": 184},
+"Python" :{
+  "nFiles": 7,
+  "blank": 64,
+  "comment": 50,
+  "code": 122},
+"CSV" :{
+  "nFiles": 6,
+  "blank": 0,
+  "comment": 0,
+  "code": 86},
+"DOS Batch" :{
+  "nFiles": 5,
+  "blank": 23,
+  "comment": 10,
+  "code": 78},
+"Properties" :{
+  "nFiles": 10,
+  "blank": 25,
+  "comment": 90,
+  "code": 78},
+"Bourne Again Shell" :{
+  "nFiles": 3,
+  "blank": 17,
+  "comment": 19,
+  "code": 49},
+"C" :{
+  "nFiles": 5,
+  "blank": 10,
+  "comment": 22,
+  "code": 25},
+"Assembly" :{
+  "nFiles": 1,
+  "blank": 4,
+  "comment": 3,
+  "code": 13},
+"ABAP" :{
+  "nFiles": 1,
+  "blank": 2,
+  "comment": 1,
+  "code": 5},
+"Ada" :{
+  "nFiles": 1,
+  "blank": 1,
+  "comment": 3,
+  "code": 5},
+"Visual Basic .NET" :{
+  "nFiles": 1,
+  "blank": 1,
+  "comment": 3,
+  "code": 5},
+"Erlang" :{
+  "nFiles": 1,
+  "blank": 2,
+  "comment": 3,
+  "code": 4},
+"Fortran 90" :{
+  "nFiles": 1,
+  "blank": 1,
+  "comment": 3,
+  "code": 4},
+"Pascal" :{
+  "nFiles": 1,
+  "blank": 1,
+  "comment": 3,
+  "code": 4},
+"Ruby" :{
+  "nFiles": 1,
+  "blank": 2,
+  "comment": 3,
+  "code": 4},
+"JavaScript" :{
+  "nFiles": 1,
+  "blank": 0,
+  "comment": 0,
+  "code": 1},
+"OCaml" :{
+  "nFiles": 1,
+  "blank": 1,
+  "comment": 3,
+  "code": 1},
+"Scheme" :{
+  "nFiles": 1,
+  "blank": 1,
+  "comment": 3,
+  "code": 1},
+"Tcl/Tk" :{
+  "nFiles": 1,
+  "blank": 1,
+  "comment": 3,
+  "code": 1},
+"SUM": {
+  "blank": 50938,
+  "comment": 28461,
+  "code": 584644,
+  "nFiles": 3474} }

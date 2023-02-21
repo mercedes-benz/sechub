@@ -25,11 +25,6 @@ public class CodeScanProductExecutionServiceImpl extends AbstractProductExecutio
 
     private static final Logger LOG = LoggerFactory.getLogger(CodeScanProductExecutionServiceImpl.class);
 
-    @Override
-    protected ScanType getScanType() {
-        return ScanType.CODE_SCAN;
-    }
-
     public boolean isExecutionNecessary(SecHubExecutionContext context, UUIDTraceLogID traceLogID, SecHubConfiguration configuration) {
         Optional<SecHubCodeScanConfiguration> codeScanOption = configuration.getCodeScan();
         if (!codeScanOption.isPresent()) {

@@ -39,6 +39,7 @@ class ScanJobCancellationRunnable implements Runnable {
         try {
             MDC.clear();
             MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, runnableData.getSechubJobUUID().toString());
+            MDC.put(LogConstants.MDC_SECHUB_EXECUTION_UUID, runnableData.getSechubExecutioUUID().toString());
 
             LOG.info("Begin cancellation of hard interrupted product executors for SecHub job: {}", runnableData.getSechubJobUUID());
 
@@ -91,7 +92,7 @@ class ScanJobCancellationRunnable implements Runnable {
         JobMessage jobCancelData = new JobMessage();
         jobCancelData.setJobUUID(runnableData.getSechubJobUUID());
         request.set(MessageDataKeys.JOB_CANCEL_DATA, jobCancelData);
-
+        request.set(MessageDataKeys.SECHUB_EXECUTION_UUID, runnableData.getSechubExecutioUUID());
         domainMessageService.sendAsynchron(request);
     }
 

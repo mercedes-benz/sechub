@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
+import com.mercedesbenz.sechub.domain.scan.product.AnalyticsProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.CodeScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.InfrastructureScanProductExecutionService;
 import com.mercedesbenz.sechub.domain.scan.product.LicenseScanProductExecutionService;
@@ -36,11 +37,18 @@ class ScanJobExecutionRunnable implements Runnable, CanceableScanJob {
         try {
             MDC.clear();
             MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, runnableData.getSechubJobUUID().toString());
+            MDC.put(LogConstants.MDC_SECHUB_EXECUTION_UUID, runnableData.getSechubExecutioUUID().toString());
+
             LOG.info("Beign start of execution services for SecHub job: {}", runnableData.getSechubJobUUID());
 
             SecHubExecutionContext executionContext = runnableData.getExecutionContext();
             ProductExecutionServiceContainer executionServiceContainer = runnableData.getExecutionServiceContainer();
 
+            /* analytics scan phase */
+            AnalyticsProductExecutionService analyticsProductExecutionService = executionServiceContainer.getAnalyticsProductExecutionService();
+            analyticsProductExecutionService.executeProductsAndStoreResults(executionContext);
+
+            /* normal scan phase */
             CodeScanProductExecutionService codeScanProductExecutionService = executionServiceContainer.getCodeScanProductExecutionService();
             WebScanProductExecutionService webScanProductExecutionService = executionServiceContainer.getWebScanProductExecutionService();
             InfrastructureScanProductExecutionService infraScanProductExecutionService = executionServiceContainer.getInfraScanProductExecutionService();

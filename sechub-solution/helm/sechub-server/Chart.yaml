@@ -9,8 +9,9 @@ type: application
 maintainers:
   - name: Sven Dolderer
   - name: Jeremias Eppler
+  - name: Rouven Haertel
 
 # This is the chart version.
 # This version number should be incremented each time you make changes to the chart and its templates.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.2.0
+version: 0.6.0

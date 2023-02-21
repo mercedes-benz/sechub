@@ -1,0 +1,15 @@
+// SPDX-License-Identifier: MIT
+ /*============================================================================
+ * Build file for subproject 
+ *
+ * Root build file: "${rootProject.projectDir}/build.gradle"
+ * ============================================================================
+ */
+dependencies {
+
+    implementation project(':sechub-scan')
+    implementation project(':deprecated-sechub-adapter-netsparker')
+
+    testImplementation project(':sechub-testframework')
+}
+
