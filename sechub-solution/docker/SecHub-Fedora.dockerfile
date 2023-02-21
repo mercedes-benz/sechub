@@ -47,37 +47,19 @@ ARG BUILD_FOLDER="/build"
 ARG GIT_URL="https://github.com/mercedes-benz/sechub.git"
 
 ENV DOWNLOAD_FOLDER="/downloads"
-ENV PATH="/usr/local/go/bin:$PATH"
 
 RUN echo "Builder: Build"
 
 RUN mkdir --parent "$SECHUB_ARTIFACT_FOLDER" "$DOWNLOAD_FOLDER"
 
-RUN export DEBIAN_FRONTEND=noninteractive && \
-    apt-get update && \
-    apt-get install --quiet --assume-yes wget w3m git && \
-    apt-get clean
+RUN dnf update --assumeyes && \
+    dnf install --assumeyes wget w3m git tar findutils which golang
 
-# Install Go
-RUN cd "$DOWNLOAD_FOLDER" && \
-    # Get checksum from Go download site
-    GO_CHECKSUM=`w3m https://go.dev/dl/ | grep "$GO" | tail -1 | awk '{print $6}'` && \
-    # create checksum file
-    echo "$GO_CHECKSUM $GO" > "$GO.sha256sum" && \
-    # download Go
-    wget --no-verbose https://go.dev/dl/"${GO}" && \
-    # verify that the checksum and the checksum of the file are same
-    sha256sum --check "$GO.sha256sum" && \
-    # extract Go
-    tar --extract --file "$GO" --directory /usr/local/ && \
-    # remove go tar.gz
-    rm "$GO"
-
-COPY --chmod=755 install-java/debian "$DOWNLOAD_FOLDER/install-java/"
+COPY --chmod=755 install-java/fedora "$DOWNLOAD_FOLDER/install-java/"
 
 # Install Java
 RUN cd "$DOWNLOAD_FOLDER/install-java/" && \
-    ./install-java.sh "$JAVA_DISTRIBUTION" "$JAVA_VERSION" jdk
+    ./install-java.sh "$JAVA_DISTRIBUTION" "$JAVA_VERSION" "jdk"
 
 # Copy clone script
 COPY --chmod=755 clone.sh "$BUILD_FOLDER/clone.sh"
@@ -90,6 +72,8 @@ RUN mkdir --parent "$BUILD_FOLDER" && \
     cd "sechub" && \
     # Java version
     java --version && \
+    java_location=$( which java ) && \
+    export JAVA_HOME=$( readlink -f "$java_location" | sed "s:/bin/java::" ) && \
     # Build SecHub
     "./buildExecutables" && \
     cp sechub-server/build/libs/sechub-server-*.jar --target-directory "$SECHUB_ARTIFACT_FOLDER"
@@ -107,10 +91,9 @@ RUN echo "Builder: Download"
 
 RUN mkdir --parent "$SECHUB_ARTIFACT_FOLDER"
 
-RUN export DEBIAN_FRONTEND=noninteractive && \
-    apt-get update && \
-    apt-get install --assume-yes wget && \
-    apt-get clean
+RUN dnf update --assumeyes && \
+    dnf install --assumeyes wget && \
+    dnf clean all
 
 # Download the SecHub server
 RUN cd "$SECHUB_ARTIFACT_FOLDER" && \
@@ -176,12 +159,10 @@ COPY run.sh /run.sh
 RUN chmod +x /run.sh
 
 # Upgrade system
-RUN export DEBIAN_FRONTEND=noninteractive && \
-    apt-get update && \
-    apt-get upgrade --assume-yes --quiet && \
-    apt-get clean
+RUN dnf update --assumeyes && \
+    dnf clean all
 
-COPY --chmod=755 install-java/debian/ "$SECHUB_FOLDER/install-java/"
+COPY --chmod=755 install-java/fedora/ "$SECHUB_FOLDER/install-java/"
 
 # Install Java
 RUN cd "$SECHUB_FOLDER/install-java/" && \
