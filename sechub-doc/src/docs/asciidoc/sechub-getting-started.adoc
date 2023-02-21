@@ -13,28 +13,211 @@ include::documents/shared/about_documentation_all.adoc[]
 //--
 
 == Introduction
-In this tutorial, you are going to learn how to run locally the SecHub server and the PDS (Product Delegation Server) server for GoSec! +
-After that, you are going to learn how to scan apps written in 'go' for vulnerabilities. +,
-plantuml::diagram_behind_the_scenes_sechub.plantuml[format=svg, title=Setup Overview]
+This tutorial is going to teach you how to locally run the SecHub server and the PDS (Product Delegation Server) server for GoSec. + 
+After that, you are going to learn how to scan apps written in 'go' for vulnerabilities. +
 And optionally, install and work with the SecHub extension for VSCodium.
 
-[TIP]
+plantuml::diagrams/diagram_behind_the_scenes_sechub.plantuml[format=svg, title=Setup Overview] +
+This Diagram roughly explains how Sechub functions, behind the scenes.
+[WARNING]
 --
-This tutorial is tested and intended for Debian and Ubuntu! +
+This tutorial is tested and intended for Debian/Ubuntu! +
 Although it should also work on different Linux distributions.
 --
-
-
 
 === Prerequisites
 
 You are going to need: 
 
-* docker for https://docs.docker.com/engine/install/debian/[Debian] | https://docs.docker.com/engine/install/ubuntu/[Ubuntu]
-* docker-compose
+* docker for https://docs.docker.com/engine/install/debian/[Debian] / https://docs.docker.com/engine/install/ubuntu/[Ubuntu]
+* docker compose
+* git
 * And possibly jq
 
 Optional:
 
 * VSCodium
 * https://open-vsx.org/extension/mercedes-benz/sechub[SecHub Extension] for VSCodium
+
+=== Instructions
+
+==== Clone the repository
+
+In your terminal type:
+
+[source, shell]
+--
+
+git clone https://github.com/mercedes-benz/sechub.git
+cd sechub
+
+--
+This makes a local copy of the SecHub project on your computer and goes to the project's folder
+
+
+==== Start SecHub Server
+
+The Sechub Server is responsible for taking jobs and passing them to the PDS server for processing, also it returns and processes the results from the PDS server. +
+
+[source, shell]
+--
+./sechub-solution/01-start-single-docker-compose.sh
+--
+
+This starts the server.
+
+==== Start GoSec+PDS Server
+The PDS server, which contains a GoSec instance, will check the actual code for vulnerabilities and output a result of them.
+
+[source, shell]
+--
+./sechub-pds-solutions/gosec/05-start-single-sechub-network-docker-compose.sh
+--
+
+
+==== Setup Project
+
+After starting all servers, some environment variables have to be set. Specifically `SECHUB_SERVER`, `SECHUB_USERID`, `SECHUB_APITOKEN`, `SECHUB_TRUSTALL` and alsoSecHub's CLI tools have to be added to the `PATH` variable to be able to do scans.
+Here we set them to local credentials because everything is hosted locally:
+
+[source, shell]
+--
+export SECHUB_SERVER=https://localhost:8443
+export SECHUB_USERID=admin
+export SECHUB_APITOKEN='myTop$ecret!'
+export SECHUB_TRUSTALL=true
+export PATH="$PATH:`pwd`/sechub-cli/build/go/platform/linux-amd64:`pwd`/sechub-developertools/scripts"
+--
+
+After setting the variables, you can run this script, which will first check if you have set the variable correctly. Then it will create a project, and create a user who will be assigned to the project. (Created user/project can be changed in the 8000-setup-gosec.sh file)
+
+[source, shell]
+--
+./sechub-solution/setup-pds-scripts/8000-setup-gosec.sh
+--
+
+After running it, you should get similar output if everything is working corretly:
+[source]
+--
+user: gosec
+project: test-gosec
+Adding user: gosec
+HTTP/1.1 200 
+HTTP/1.1 201 
+Creating project test-gosec.
+{
+  "apiVersion": "1.0",
+  "name": "test-gosec",
+  "owner": "gosec",
+  "description": "Created by sechub-api.sh at 2023-01-01 12:00 CET"
+}
+HTTP/1.1 201 
+{
+  "configurations": [
+    {
+      "uuid": "d23dc9ab-4a3d-4924-8d77-8026069cbd91"
+    }
+  ],
+  "description": "Created by sechub-api.sh at 2023-01-01 12:00 CET",
+  "enabled": true
+}
+HTTP/1.1 201 
+{
+  "id": "pds-gosec",
+  "description": "Created by sechub-api.sh at 2023-01-01 12:00 CET",
+  "enabled": true,
+  "configurations": [
+    {
+      "name": "pds-gosec",
+      "productIdentifier": "PDS_CODESCAN",
+      "setup": {
+        "baseURL": "https://pds-gosec:8444",
+        "credentials": {
+          "user": "techuser",
+          "password": "pds-apitoken"
+        },
+        "jobParameters": [
+          {
+            "key": "pds.config.productidentifier",
+            "value": "PDS_GOSEC"
+          },
+          {
+            "key": "pds.config.use.sechub.storage",
+            "value": "false"
+          },
+          {
+            "key": "pds.mocking.disabled",
+            "value": "true"
+          },
+          {
+            "key": "pds.productexecutor.timeout.minutes",
+            "value": "60"
+          },
+          {
+            "key": "pds.productexecutor.timetowait.nextcheck.milliseconds",
+            "value": "500"
+          },
+          {
+            "key": "pds.productexecutor.trustall.certificates",
+            "value": "true"
+          }
+        ]
+      },
+      "executorVersion": 1,
+      "enabled": true,
+      "uuid": "d23dc9ab-4a3d-4924-8d77-8026069cbd91"
+    }
+  ],
+  "projectIds": []
+}
+Created executor and profile
+project: test-gosec
+profile: pds-gosec
+Assigned profile pds-gosec to project test-gosec
+
+Setup of GoSec complete:
+
+- user: gosec
+- project: test-gosec
+--
+
+Now you are ready to do scans!
+
+==== Scanning
+
+Now you can go to another project's directory and do a scan for vulnerabilities.
+In this example, we will use sechub's folder, but you are free to use any other project!
+
+
+Before starting the scan, you need a `sechub.json`, which tells which files to be scanned, and which to be skipped.
+
+Here's a bare-bones example:
+
+[source, shell]
+--
+echo "
+{
+  "apiVersion": "1.0",
+  "codeScan": {
+    "fileSystem": {
+      "folders": [
+        "."
+      ]
+    },
+    "excludes": []
+  }
+}
+" > sechub.json
+--
+
+But you can skip this step, because the sechub's folder, already contains it.
+
+And to scan it, just type `sechub -project test-gosec scan`, this will create a JSON file, which contains the output of the scan. If you want HTML output just add `-reportformat html` as an option: `sechub -project test-gosec -reportformat html scan`
+
+==== Install Sechub's VsCode Plugin (OPTIONAL)
+Sechub's VsCode Plugin helps you better visualize where the vulnerabilities in your code are located!
+You can go to the exact code line and fix the problem.
+
+You can get the plugin from https://open-vsx.org/extension/mercedes-benz/sechub[here].
+
+And to install it, open VsCode and in the `Command Pallete` (Usually can be oppened with `Ctrl+Shift+P`) type `install vsix`, and in the pop-up menu, choose the plugin.
