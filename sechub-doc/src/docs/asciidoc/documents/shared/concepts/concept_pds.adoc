@@ -59,7 +59,7 @@ For non clustered environment "shared volumes" can also be local file system pat
 ====
 When talking about a NFS or a shared volume here, this is always meant to be a file system path.
 It's important to mount a NFS at a local file path for the PDS server when using a shared volume.
-URLs are NOT supported - only filepathes. So you must mount your network file storage to a local file location!
+URLs are NOT supported - only file paths. So you must mount your network file storage to a local file location!
 
 For example: a base path for a shared volume could look like: `/media/mounted-storage/`
 ====

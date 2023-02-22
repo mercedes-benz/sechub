@@ -87,11 +87,11 @@ Following actions are supported:
 Does a synchronous scan which means
 
  - create a `{sechub}` job
- - upload necessary stuff to `{sechub}` (e.g. zipped sourcefiles for source scans)
+ - upload necessary data to `{sechub}` (e.g. zipped sourcefiles for source scans)
  - approve job as ready to start
  - wait until the job is done,
  - download the report file
- - exits non-zero on `red` (critical or high findings) so your build will break (depends on your build tool)
+ - exits with a non-zero status on `red` (critical or high findings) so your build will break (depends on your build tool)
 
 This is the recommended scan action: You only have to make one single client call to trigger a scan and get the report.
 
@@ -100,7 +100,7 @@ IMPORTANT: For security reasons always pass your API-token via the environment v
 **Minimum call syntax**
 
 Prerequisite is a configuration file `sechub.json` in current directory. +
-See here for details: <<section-client-configuration-file,Configuration file>> changeme!!!
+See here for details: <<section-client-configuration-file,Configuration file>>
 ----
 SECHUB_APITOKEN=${apitoken}
 sechub scan
@@ -117,7 +117,8 @@ TIP: With `-output ${file-or-directory}` you can define where to place the repor
 
 Does scan asynchronous:
 
-Identical to action `scan` but does not wait until the job has finished on the {sechub} server.
+- Identical to action `scan` but does not wait until the job has finished on the {sechub} server
+- Returns the `{sechub}` job UUID of the newly created scan job.
 
 TIP: This can be interesting if you have long running scans and you want have a fast
      continous integration build - but then you have to manually check the
@@ -140,7 +141,7 @@ sechub getStatus
 ----
 
 TIP: Defaults to latest job. +
-     You can select the job by providing the wanted job UUID by providing `-jobUUID ${jobUUID}`
+     You can select the job by providing the wanted job UUID by adding `-jobUUID ${jobUUID}`
 
 ===== getReport
 Will fetch the report as json. (result will only exist when job is done)
@@ -152,7 +153,7 @@ sechub getReport
 ----
 
 TIP: Defaults to latest finished job. +
-     You can select the job by providing the wanted job UUID by providing `-jobUUID ${jobUUID}`
+     You can select the job by providing the wanted job UUID by adding `-jobUUID ${jobUUID}`
 
 TIP: With `-output ${file-or-directory}` you can define where to place the report. +
      Can be a directory, a file name or a file path. +
@@ -167,9 +168,9 @@ SECHUB_APITOKEN=${apitoken}
 sechub listJobs
 ----
 
-TIP: This might be valuable for an overview +
-     or when you want to see your project's scan job queue +
-     or find out the job UUID of a certain job.
+TIP: This might be useful for an overview or +
+     when you want to see your project's scan job queue or +
+     to find out the job UUID of a certain job.
 
 
 ===== getFalsePositives
@@ -244,7 +245,7 @@ Your choices are:
 
 - `y` Yes - Mark as false positive. You are prompted for an optional comment line which can help to understand later why this has been marked.
 - `n` No - Do nothing and go to next item.
-- `s` Skip following findings - End the asking here and add the marked items to the false positives list on the {sechub} server.
+- `s` Skip following findings - Finish the marking and add the marked items to the false positives list on the {sechub} server.
 - `c` Cancel - Quit and upload nothing
 
 TIP: You can download and view your current false positives list with <<getFalsePositives,getFalsePositives>>
@@ -403,7 +404,7 @@ Examples (Linux/Mac):
 `export http_proxy=http://localhost:3128` (e.g. when using a local CNTLM proxy)
 
 ==== Debugging
-For error hunting, you can
+For troubleshooting, you can
 
 - set environment variable `SECHUB_DEBUG` to `true` +
   Now you will see in detail what the client does and also the html calls sent to and received from {sechub} server.

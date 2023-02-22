@@ -10,16 +10,16 @@
       {
         "name": "gamechanger-sources",
         "fileSystem": { //<3>
-          "folders": [
+          "folders": [ //<4>
             "gamechanger-android/src/main/java",
             "gamechanger-server/src/main/java"
           ]
         },
-        "excludes": [ //<4>
+        "excludes": [ //<5>
           "**/mytestcode/**",
           "*.config"
         ],
-        "additionalFilenameExtensions": [ //<5>
+        "additionalFilenameExtensions": [ //<6>
           ".cplusplus",
           ".py9"
         ]
