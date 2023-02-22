@@ -4,7 +4,7 @@ include::documents/gen/server-version.adoc[]
 
 include::documents/config.adoc[]
 
-= image:sechub-logo.png[sechub] SecHub Quickstart Guide
+= image:sechub-logo.png[sechub] SecHub Getting Started Guide
 
 include::documents/shared/about_sechub.adoc[]
 
