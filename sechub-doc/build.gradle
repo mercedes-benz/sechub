@@ -353,7 +353,7 @@ task generateOpenapi() {
     	def listOfUsersSchema = jsonObject.components.schemas.ListOfUsers
     	listOfUsersSchema.items = stringType
 
-    	def projectWhiteListSchema = jsonObject.components.schemas.ProjectWhitelist
+    	def projectWhiteListSchema = jsonObject.components.schemas.ProjectWhitelistUpdate
     	projectWhiteListSchema.properties.whiteList.properties.uris.items=stringType
     	
     	// Write JSON
