@@ -518,7 +518,7 @@ function sechub_project_joblist {
 }
 
 function sechub_project_list {
-  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/testproject/jobs?size=10&page=0" | $RESULT_FILTER | $JSON_FORMAT_SORT
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/projects" | $RESULT_FILTER | $JSON_FORMAT_SORT
 }
 
 
