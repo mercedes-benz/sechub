@@ -96,7 +96,7 @@ After setting the variables, you can run this script, which will first check if 
 ./sechub-solution/setup-pds-scripts/8000-setup-gosec.sh
 --
 
-After running it, you should get similar output if everything is working corretly:
+After running it, you should get similar output if everything is working correctly:
 [source]
 --
 user: gosec
@@ -220,4 +220,4 @@ You can go to the exact code line and fix the problem.
 
 You can get the plugin from https://open-vsx.org/extension/mercedes-benz/sechub[here].
 
-And to install it, open VsCode and in the `Command Pallete` (Usually can be oppened with `Ctrl+Shift+P`) type `install vsix`, and in the pop-up menu, choose the plugin.
+And to install it, open VsCode and in the `Command Pallete` (Usually can be opened with `Ctrl+Shift+P`) type `install vsix`, and in the pop-up menu, choose the plugin.
