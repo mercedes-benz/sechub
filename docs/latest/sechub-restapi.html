@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Server Rest API Documentation</h1>
 <div class="details">
-<span id="revnumber"> Server 0.37.0</span>
+<span id="revnumber"> Server 0.38.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -539,15 +539,19 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#about">1. About</a></li>
 <li><a href="#section-sechub-rest-api">2. SecHub REST API</a>
 <ul class="sectlevel2">
-<li><a href="#sechub-configuration">2.1. SecHub configuration</a>
+<li><a href="#sechub-configuration-json">2.1. SecHub configuration JSON</a>
 <ul class="sectlevel3">
 <li><a href="#api-version">2.1.1. API version</a></li>
 <li><a href="#server">2.1.2. Server</a></li>
 <li><a href="#project">2.1.3. Project</a></li>
 <li><a href="#sechub-config-code-scan">2.1.4. Code scan</a>
 <ul class="sectlevel4">
-<li><a href="#upload-sources-from-file-system">2.1.4.1. Upload sources from file system</a></li>
-<li><a href="#example-sechub-json">2.1.4.2. Example sechub.json</a></li>
+<li><a href="#upload-source-files-from-file-system">2.1.4.1. Upload source files from file system</a>
+<ul class="sectlevel5">
+<li><a href="#using-data-section">2.1.4.1.1. Using <code>data</code> section</a></li>
+<li><a href="#filesystem-inside-the-codescan-section">2.1.4.1.2. <code>fileSystem</code> inside the <code>codeScan</code> section</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#license-scan">2.1.5. License scan</a>
@@ -826,52 +830,57 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#section-gen-messaging-overview-linklist">4.1.72.1.2. List of all messages</a></li>
 </ul>
 </li>
-<li><a href="#section-gen-messaging-auto_cleanup_configuration_changed">4.1.72.2. Message AUTO_CLEANUP_CONFIGURATION_CHANGED</a></li>
-<li><a href="#section-gen-messaging-job_cancellation_running">4.1.72.3. Message JOB_CANCELLATION_RUNNING</a></li>
-<li><a href="#section-gen-messaging-job_done">4.1.72.4. Message JOB_DONE</a></li>
-<li><a href="#section-gen-messaging-job_failed">4.1.72.5. Message JOB_FAILED</a></li>
-<li><a href="#section-gen-messaging-job_restart_canceled">4.1.72.6. Message JOB_RESTART_CANCELED</a></li>
-<li><a href="#section-gen-messaging-job_restart_triggered">4.1.72.7. Message JOB_RESTART_TRIGGERED</a></li>
-<li><a href="#section-gen-messaging-job_results_purged">4.1.72.8. Message JOB_RESULTS_PURGED</a></li>
-<li><a href="#section-gen-messaging-job_result_purge_done">4.1.72.9. Message JOB_RESULT_PURGE_DONE</a></li>
-<li><a href="#section-gen-messaging-job_result_purge_failed">4.1.72.10. Message JOB_RESULT_PURGE_FAILED</a></li>
-<li><a href="#section-gen-messaging-job_started">4.1.72.11. Message JOB_STARTED</a></li>
-<li><a href="#section-gen-messaging-mapping_configuration_changed">4.1.72.12. Message MAPPING_CONFIGURATION_CHANGED</a></li>
-<li><a href="#section-gen-messaging-product_executor_cancel_operations_done">4.1.72.13. Message PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE</a></li>
-<li><a href="#section-gen-messaging-project_access_level_changed">4.1.72.14. Message PROJECT_ACCESS_LEVEL_CHANGED</a></li>
-<li><a href="#section-gen-messaging-project_created">4.1.72.15. Message PROJECT_CREATED</a></li>
-<li><a href="#section-gen-messaging-project_deleted">4.1.72.16. Message PROJECT_DELETED</a></li>
-<li><a href="#section-gen-messaging-project_owner_changed">4.1.72.17. Message PROJECT_OWNER_CHANGED</a></li>
-<li><a href="#section-gen-messaging-project_whitelist_updated">4.1.72.18. Message PROJECT_WHITELIST_UPDATED</a></li>
-<li><a href="#section-gen-messaging-request_job_cancellation">4.1.72.19. Message REQUEST_JOB_CANCELLATION</a></li>
-<li><a href="#section-gen-messaging-request_job_restart">4.1.72.20. Message REQUEST_JOB_RESTART</a></li>
-<li><a href="#section-gen-messaging-request_job_restart_hard">4.1.72.21. Message REQUEST_JOB_RESTART_HARD</a></li>
-<li><a href="#section-gen-messaging-request_purge_job_results">4.1.72.22. Message REQUEST_PURGE_JOB_RESULTS</a></li>
-<li><a href="#section-gen-messaging-request_scheduler_disable_job_processing">4.1.72.23. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</a></li>
-<li><a href="#section-gen-messaging-request_scheduler_enable_job_processing">4.1.72.24. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</a></li>
-<li><a href="#section-gen-messaging-request_scheduler_job_status">4.1.72.25. Message REQUEST_SCHEDULER_JOB_STATUS</a></li>
-<li><a href="#section-gen-messaging-request_scheduler_status_update">4.1.72.26. Message REQUEST_SCHEDULER_STATUS_UPDATE</a></li>
-<li><a href="#section-gen-messaging-request_user_role_recalculation">4.1.72.27. Message REQUEST_USER_ROLE_RECALCULATION</a></li>
-<li><a href="#section-gen-messaging-scan_done">4.1.72.28. Message SCAN_DONE</a></li>
-<li><a href="#section-gen-messaging-scan_failed">4.1.72.29. Message SCAN_FAILED</a></li>
-<li><a href="#section-gen-messaging-scheduler_job_processing_disabled">4.1.72.30. Message SCHEDULER_JOB_PROCESSING_DISABLED</a></li>
-<li><a href="#section-gen-messaging-scheduler_job_processing_enabled">4.1.72.31. Message SCHEDULER_JOB_PROCESSING_ENABLED</a></li>
-<li><a href="#section-gen-messaging-scheduler_job_status">4.1.72.32. Message SCHEDULER_JOB_STATUS</a></li>
-<li><a href="#section-gen-messaging-scheduler_started">4.1.72.33. Message SCHEDULER_STARTED</a></li>
-<li><a href="#section-gen-messaging-scheduler_status_update">4.1.72.34. Message SCHEDULER_STATUS_UPDATE</a></li>
-<li><a href="#section-gen-messaging-start_scan">4.1.72.35. Message START_SCAN</a></li>
-<li><a href="#section-gen-messaging-unsupported_operation">4.1.72.36. Message UNSUPPORTED_OPERATION</a></li>
-<li><a href="#section-gen-messaging-user_added_to_project">4.1.72.37. Message USER_ADDED_TO_PROJECT</a></li>
-<li><a href="#section-gen-messaging-user_api_token_changed">4.1.72.38. Message USER_API_TOKEN_CHANGED</a></li>
-<li><a href="#section-gen-messaging-user_becomes_superadmin">4.1.72.39. Message USER_BECOMES_SUPERADMIN</a></li>
-<li><a href="#section-gen-messaging-user_created">4.1.72.40. Message USER_CREATED</a></li>
-<li><a href="#section-gen-messaging-user_deleted">4.1.72.41. Message USER_DELETED</a></li>
-<li><a href="#section-gen-messaging-user_email_address_changed">4.1.72.42. Message USER_EMAIL_ADDRESS_CHANGED</a></li>
-<li><a href="#section-gen-messaging-user_new_api_token_requested">4.1.72.43. Message USER_NEW_API_TOKEN_REQUESTED</a></li>
-<li><a href="#section-gen-messaging-user_no_longer_superadmin">4.1.72.44. Message USER_NO_LONGER_SUPERADMIN</a></li>
-<li><a href="#section-gen-messaging-user_removed_from_project">4.1.72.45. Message USER_REMOVED_FROM_PROJECT</a></li>
-<li><a href="#section-gen-messaging-user_roles_changed">4.1.72.46. Message USER_ROLES_CHANGED</a></li>
-<li><a href="#section-gen-messaging-user_signup_requested">4.1.72.47. Message USER_SIGNUP_REQUESTED</a></li>
+<li><a href="#section-gen-messaging-analyze_scan_results_available">4.1.72.2. Message ANALYZE_SCAN_RESULTS_AVAILABLE</a></li>
+<li><a href="#section-gen-messaging-auto_cleanup_configuration_changed">4.1.72.3. Message AUTO_CLEANUP_CONFIGURATION_CHANGED</a></li>
+<li><a href="#section-gen-messaging-binary_upload_done">4.1.72.4. Message BINARY_UPLOAD_DONE</a></li>
+<li><a href="#section-gen-messaging-job_cancellation_running">4.1.72.5. Message JOB_CANCELLATION_RUNNING</a></li>
+<li><a href="#section-gen-messaging-job_created">4.1.72.6. Message JOB_CREATED</a></li>
+<li><a href="#section-gen-messaging-job_done">4.1.72.7. Message JOB_DONE</a></li>
+<li><a href="#section-gen-messaging-job_execution_starting">4.1.72.8. Message JOB_EXECUTION_STARTING</a></li>
+<li><a href="#section-gen-messaging-job_failed">4.1.72.9. Message JOB_FAILED</a></li>
+<li><a href="#section-gen-messaging-job_restart_canceled">4.1.72.10. Message JOB_RESTART_CANCELED</a></li>
+<li><a href="#section-gen-messaging-job_restart_triggered">4.1.72.11. Message JOB_RESTART_TRIGGERED</a></li>
+<li><a href="#section-gen-messaging-job_results_purged">4.1.72.12. Message JOB_RESULTS_PURGED</a></li>
+<li><a href="#section-gen-messaging-job_result_purge_done">4.1.72.13. Message JOB_RESULT_PURGE_DONE</a></li>
+<li><a href="#section-gen-messaging-job_result_purge_failed">4.1.72.14. Message JOB_RESULT_PURGE_FAILED</a></li>
+<li><a href="#section-gen-messaging-job_started">4.1.72.15. Message JOB_STARTED</a></li>
+<li><a href="#section-gen-messaging-mapping_configuration_changed">4.1.72.16. Message MAPPING_CONFIGURATION_CHANGED</a></li>
+<li><a href="#section-gen-messaging-product_executor_cancel_operations_done">4.1.72.17. Message PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE</a></li>
+<li><a href="#section-gen-messaging-project_access_level_changed">4.1.72.18. Message PROJECT_ACCESS_LEVEL_CHANGED</a></li>
+<li><a href="#section-gen-messaging-project_created">4.1.72.19. Message PROJECT_CREATED</a></li>
+<li><a href="#section-gen-messaging-project_deleted">4.1.72.20. Message PROJECT_DELETED</a></li>
+<li><a href="#section-gen-messaging-project_owner_changed">4.1.72.21. Message PROJECT_OWNER_CHANGED</a></li>
+<li><a href="#section-gen-messaging-project_whitelist_updated">4.1.72.22. Message PROJECT_WHITELIST_UPDATED</a></li>
+<li><a href="#section-gen-messaging-request_job_cancellation">4.1.72.23. Message REQUEST_JOB_CANCELLATION</a></li>
+<li><a href="#section-gen-messaging-request_job_restart">4.1.72.24. Message REQUEST_JOB_RESTART</a></li>
+<li><a href="#section-gen-messaging-request_job_restart_hard">4.1.72.25. Message REQUEST_JOB_RESTART_HARD</a></li>
+<li><a href="#section-gen-messaging-request_purge_job_results">4.1.72.26. Message REQUEST_PURGE_JOB_RESULTS</a></li>
+<li><a href="#section-gen-messaging-request_scheduler_disable_job_processing">4.1.72.27. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</a></li>
+<li><a href="#section-gen-messaging-request_scheduler_enable_job_processing">4.1.72.28. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</a></li>
+<li><a href="#section-gen-messaging-request_scheduler_job_status">4.1.72.29. Message REQUEST_SCHEDULER_JOB_STATUS</a></li>
+<li><a href="#section-gen-messaging-request_scheduler_status_update">4.1.72.30. Message REQUEST_SCHEDULER_STATUS_UPDATE</a></li>
+<li><a href="#section-gen-messaging-request_user_role_recalculation">4.1.72.31. Message REQUEST_USER_ROLE_RECALCULATION</a></li>
+<li><a href="#section-gen-messaging-scan_done">4.1.72.32. Message SCAN_DONE</a></li>
+<li><a href="#section-gen-messaging-scan_failed">4.1.72.33. Message SCAN_FAILED</a></li>
+<li><a href="#section-gen-messaging-scheduler_job_processing_disabled">4.1.72.34. Message SCHEDULER_JOB_PROCESSING_DISABLED</a></li>
+<li><a href="#section-gen-messaging-scheduler_job_processing_enabled">4.1.72.35. Message SCHEDULER_JOB_PROCESSING_ENABLED</a></li>
+<li><a href="#section-gen-messaging-scheduler_job_status">4.1.72.36. Message SCHEDULER_JOB_STATUS</a></li>
+<li><a href="#section-gen-messaging-scheduler_started">4.1.72.37. Message SCHEDULER_STARTED</a></li>
+<li><a href="#section-gen-messaging-scheduler_status_update">4.1.72.38. Message SCHEDULER_STATUS_UPDATE</a></li>
+<li><a href="#section-gen-messaging-source_upload_done">4.1.72.39. Message SOURCE_UPLOAD_DONE</a></li>
+<li><a href="#section-gen-messaging-start_scan">4.1.72.40. Message START_SCAN</a></li>
+<li><a href="#section-gen-messaging-unsupported_operation">4.1.72.41. Message UNSUPPORTED_OPERATION</a></li>
+<li><a href="#section-gen-messaging-user_added_to_project">4.1.72.42. Message USER_ADDED_TO_PROJECT</a></li>
+<li><a href="#section-gen-messaging-user_api_token_changed">4.1.72.43. Message USER_API_TOKEN_CHANGED</a></li>
+<li><a href="#section-gen-messaging-user_becomes_superadmin">4.1.72.44. Message USER_BECOMES_SUPERADMIN</a></li>
+<li><a href="#section-gen-messaging-user_created">4.1.72.45. Message USER_CREATED</a></li>
+<li><a href="#section-gen-messaging-user_deleted">4.1.72.46. Message USER_DELETED</a></li>
+<li><a href="#section-gen-messaging-user_email_address_changed">4.1.72.47. Message USER_EMAIL_ADDRESS_CHANGED</a></li>
+<li><a href="#section-gen-messaging-user_new_api_token_requested">4.1.72.48. Message USER_NEW_API_TOKEN_REQUESTED</a></li>
+<li><a href="#section-gen-messaging-user_no_longer_superadmin">4.1.72.49. Message USER_NO_LONGER_SUPERADMIN</a></li>
+<li><a href="#section-gen-messaging-user_removed_from_project">4.1.72.50. Message USER_REMOVED_FROM_PROJECT</a></li>
+<li><a href="#section-gen-messaging-user_roles_changed">4.1.72.51. Message USER_ROLES_CHANGED</a></li>
+<li><a href="#section-gen-messaging-user_signup_requested">4.1.72.52. Message USER_SIGNUP_REQUESTED</a></li>
 </ul>
 </li>
 </ul>
@@ -962,7 +971,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.37.0-20221220135016</code></p>
+<p>Documentation version: <code>Server 0.38.0-20230223091243</code></p>
 </div>
 <hr>
 </div>
@@ -992,19 +1001,31 @@ It makes usage of SecHub much more comfortable!</p>
 </table>
 </div>
 <div class="sect2">
-<h3 id="sechub-configuration">2.1. SecHub configuration</h3>
+<h3 id="sechub-configuration-json">2.1. SecHub configuration JSON</h3>
 <div class="paragraph">
 <p>A <code>SecHub</code> configuration  must be valid <code>JSON</code> and is defined
 at caller side.</p>
 </div>
 <div class="paragraph">
-<p>It is used by client and also by rest calls to start SecHub
+<p>It is used by the client and also by rest calls to define SecHub
 scan jobs and add meta data.</p>
 </div>
-<div class="paragraph">
-<p>Some minor parts are client specific and must
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Some minor parts are client specific and must
 be handled by direct REST calls in a special way or do just not exist.
-But this is mentioned inside this documentation</p>
+But this is mentioned inside this documentation
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The individual components in the JSON are documented below:</p>
 </div>
 <div class="sect3">
 <h4 id="api-version">2.1.1. API version</h4>
@@ -1043,8 +1064,8 @@ Information can be used by client implementations.</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-When using REST calls directly you do not need the information inside
-      configuration because you use server URL in every call&#8230;&#8203;
+This is optional parameter only interesting for the client to pass the URL.
+      Every REST call contains the server URL already.
 </td>
 </tr>
 </table>
@@ -1063,8 +1084,7 @@ client implementations.</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-When using REST calls directly you do not need the information inside
-      configuration because you use project id inside URL.
+When using project id related REST calls, you do not need the project id inside the configuration.
 </td>
 </tr>
 </table>
@@ -1073,36 +1093,20 @@ When using REST calls directly you do not need the information inside
 <div class="sect3">
 <h4 id="sechub-config-code-scan">2.1.4. Code scan</h4>
 <div class="paragraph">
-<p><code>codeScan</code> (optional) defines the code scan settings.</p>
+<p><code>codeScan</code> (optional) defines the settings for code scans.</p>
 </div>
 <div class="sect4">
-<h5 id="upload-sources-from-file-system">2.1.4.1. Upload sources from file system</h5>
+<h5 id="upload-source-files-from-file-system">2.1.4.1. Upload source files from file system</h5>
 <div class="paragraph">
-<p>Define <code>fileSystem</code> child entry and setup folders to use for code scanning by
-<code>folders</code> sub entry.</p>
+<p>This section applies only to the SecHub client.</p>
 </div>
 <div class="paragraph">
-<p>All source code files inside these folders will be automatically zipped and uploaded by <code>SecHub</code> client
-to server side for ongoing source analysis.</p>
+<p>All source code files inside the defined folders will be automatically zipped and uploaded by the <code>SecHub</code> client
+to the SecHub server for analysis.</p>
 </div>
 <div class="paragraph">
-<p>Pathes must be defined relative from caller location - for example
-on a Jenkins Build Server this is normally the root folder of repository.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The configuration parts inside <code>fileSystem</code> entry are interpreted by
-      <code>SecHub</code> client! When you directly use the REST API you do not need
-      to define this data but you have to upload sources as a `zip`file by
-      your own over REST!
-</td>
-</tr>
-</table>
+<p>Paths must be defined relative to caller location - for example
+on a Jenkins Build Server this is usually the root folder of your repository.</p>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -1112,10 +1116,10 @@ The configuration parts inside <code>fileSystem</code> entry are interpreted by
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Please do <strong>NOT</strong> use <code>\</code> inside pathes <strong>but</strong> always <code>/</code>.</p>
+<p>Please do <strong>NOT</strong> use <code>\</code> inside paths <strong>but</strong> always <code>/</code>.</p>
 </div>
 <div class="paragraph">
-<p>Also do <strong>NOT</strong> use absolute pathes <strong>but</strong> always relative pathes! Normally you should
+<p>Also do <strong>NOT</strong> use absolute paths <strong>but</strong> always relative paths! Normally you should
 call SecHub inside root folder of your source repository - this is the standard situation
 on build servers.</p>
 </div>
@@ -1123,25 +1127,60 @@ on build servers.</p>
 </tr>
 </table>
 </div>
+<div class="paragraph">
+<p>There a two ways to define source code uploads for the SecHub client:</p>
 </div>
-<div class="sect4">
-<h5 id="example-sechub-json">2.1.4.2. Example sechub.json</h5>
-<div id="sechub-config-example-sourcescan" class="listingblock">
+<div class="sect5">
+<h6 id="using-data-section">2.1.4.1.1. Using <code>data</code> section</h6>
+<div class="paragraph">
+<p>Define the files and folders in a <code>data</code> section and reference it inside the <code>codeScan</code>.<br>
+This becomes useful e.g. if the same sources are used by different scan types.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+We <em>recommend</em> using the <code>data</code> section.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Example <code>sechub.json</code> using <code>data</code> section</p>
+</div>
+<div id="sechub-config-example-sourcescan-with-data-section" class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>    : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
-
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>   : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
-
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="1"></i><b>(1)</b>
-         <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="2"></i><b>(2)</b>
-              <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-android/src/main/java</span><span class="delimiter">&quot;</span></span>,
-                          <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-server/src/main/java</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="3"></i><b>(3)</b>
-         },
-         <span class="key"><span class="delimiter">&quot;</span><span class="content">excludes</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">**/mytestcode/**</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">**/documentation/**</span><span class="delimiter">&quot;</span></span>],  <i class="conum" data-value="4"></i><b>(4)</b>
-         <span class="key"><span class="delimiter">&quot;</span><span class="content">additionalFilenameExtensions</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">.cplusplus</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">.py9</span><span class="delimiter">&quot;</span></span>]  <i class="conum" data-value="5"></i><b>(5)</b>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span>: [
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-sources</span><span class="delimiter">&quot;</span></span>
+    ]
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span>: {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span>: [ <i class="conum" data-value="2"></i><b>(2)</b>
+      {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-sources</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="3"></i><b>(3)</b>
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span>: [ <i class="conum" data-value="4"></i><b>(4)</b>
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-android/src/main/java</span><span class="delimiter">&quot;</span></span>,
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-server/src/main/java</span><span class="delimiter">&quot;</span></span>
+          ]
+        },
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">excludes</span><span class="delimiter">&quot;</span></span>: [ <i class="conum" data-value="5"></i><b>(5)</b>
+          <span class="string"><span class="delimiter">&quot;</span><span class="content">**/mytestcode/**</span><span class="delimiter">&quot;</span></span>,
+          <span class="string"><span class="delimiter">&quot;</span><span class="content">*.config</span><span class="delimiter">&quot;</span></span>
+        ],
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">additionalFilenameExtensions</span><span class="delimiter">&quot;</span></span>: [ <i class="conum" data-value="6"></i><b>(6)</b>
+          <span class="string"><span class="delimiter">&quot;</span><span class="content">.cplusplus</span><span class="delimiter">&quot;</span></span>,
+          <span class="string"><span class="delimiter">&quot;</span><span class="content">.py9</span><span class="delimiter">&quot;</span></span>
+        ]
       }
+    ]
+  }
 }</code></pre>
 </div>
 </div>
@@ -1153,45 +1192,77 @@ on build servers.</p>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Use filesystem - so means upload sources to server</td>
+<td>Upload source code (in contrast to binary uploads)</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Upload will contain sources from <code>gamechanger-android/src/main/java</code> and <code>gamechanger-server/src/main/java</code> and their sub folders</td>
+<td><code>fileSystem</code> - means uploading sources from local filesystem to SecHub server</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Exclude directories (optional), syntax is similar to <a href="https://ant.apache.org/manual/Types/fileset.html">ANT fileset</a>.<br>
-In the example above all files in following directories are excluded from upload:<br>
+<td>Upload will contain sources from <code>gamechanger-android/src/main/java</code> and <code>gamechanger-server/src/main/java</code> and their sub folders</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Exclude directories (optional), the <a href="https://ant.apache.org/manual/Types/fileset.html">ANT fileset pattern notation</a> is supported.<br>
 <div class="ulist">
 <ul>
 <li>
-<p><code>**/mytestcode/**</code><br>
-excludes all files under a directory named <code>build</code> including sub directories</p>
+<p>In the example above all files in directories named <code>mytestcode</code> and their subdirectories are excluded from upload.</p>
 </li>
 <li>
-<p><code>**/documentation/**</code><br>
-same for folder <code>documentation</code></p>
+<p>Also all files matching <code>*.config</code> are excluded in any directory</p>
 </li>
 <li>
-<p>default excludes<br>
-     Per default, the directories <code>**/test/**</code> <code>**/.git/**</code>
-are already excluded.</p>
+<p>Default excludes:<br>
+Per default, the directories <code>**/test/**</code> <code>**/.git/**</code> <code>**/node_modules/**</code> are already excluded.</p>
 </li>
 </ul>
 </div></td>
 </tr>
 <tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>SecHub client does only add wellknown sources into created upload zip file. This removes
-unnecessary stuff and reduces upload size automatically.<br>
-<em>E.g. a codescan for a <code>JPEG</code> image would not make sense&#8230;&#8203;</em><br>
-Instead of defining a negative list, we use a positive list and accept only wellknown sources,
-which is simply done by file ending.<br>
-In the example we allow also ".cplusplus" and ".py9" as additional accepted source files.
-Inside client documentation you will find a list of the default file endings.</td>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>The SecHub client only adds "well known" sources into the upload zip file.
+This reduces the upload size and the scan duration. (E.g. a codescan for a JPEG image would not make sense&#8230;&#8203;)<br>
+In the SecHub client documentation you will find a list of the default file endings.<br>
+Here we also add ".cplusplus" and ".py9" as additional accepted source file extensions.</td>
 </tr>
 </table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="filesystem-inside-the-codescan-section">2.1.4.1.2. <code>fileSystem</code> inside the <code>codeScan</code> section</h6>
+<div class="paragraph">
+<p>Define a <code>fileSystem</code> child entry inside the <code>codeScan</code> section for code scanning.</p>
+</div>
+<div class="paragraph">
+<p>Example <code>sechub.json</code> using <code>fileSystem</code> inside the <code>codeScan</code> section (results in same upload as in above example):</p>
+</div>
+<div id="sechub-config-example-sourcescan" class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span>: {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span>: {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span>: [
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-android/src/main/java</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-server/src/main/java</span><span class="delimiter">&quot;</span></span>
+      ]
+    },
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">excludes</span><span class="delimiter">&quot;</span></span>: [
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">**/mytestcode/**</span><span class="delimiter">&quot;</span></span>,
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">*.config</span><span class="delimiter">&quot;</span></span>
+    ],
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">additionalFilenameExtensions</span><span class="delimiter">&quot;</span></span>: [
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">.cplusplus</span><span class="delimiter">&quot;</span></span>,
+      <span class="string"><span class="delimiter">&quot;</span><span class="content">.py9</span><span class="delimiter">&quot;</span></span>
+    ]
+  }
+}</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -1931,7 +2002,7 @@ binary configuration arrays do contain only just one entry)</em>.</p>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
 <td><code>name</code>:  Is a unique name for the data configuration element. The name must
-be unique inside complete sechub configuration file! Allowed characters are
+be unique inside the whole SecHub configuration file! Allowed characters are
 <div class="ulist">
 <ul>
 <li>
@@ -1955,11 +2026,11 @@ be unique inside complete sechub configuration file! Allowed characters are
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
-<td><code>files</code>: An array containing file pathes to use for uploading dedicated files</td>
+<td><code>files</code>: An array containing file paths to use for uploading dedicated files</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="6"></i><b>6</b></td>
-<td><code>folders</code>: An array containing folder pathes to use for uploading dedicated folders</td>
+<td><code>folders</code>: An array containing folder paths to use for uploading dedicated folders</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="7"></i><b>7</b></td>
@@ -3016,7 +3087,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/16b7e587-7bef-4307-94a8-6527c4345ff9' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/ad393272-722e-4267-be26-1371f684fa95' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -3889,7 +3960,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>[{&quot;sechubJobUUID&quot;:&quot;6ac91801-0d01-4b33-b63c-0c9b9642e1d6&quot;,&quot;executedBy&quot;:&quot;spartakus&quot;,&quot;started&quot;:&quot;2022-12-19T13:50:31.102085&quot;,&quot;ended&quot;:&quot;2022-12-20T13:50:31.102112&quot;,&quot;status&quot;:&quot;OK&quot;}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code>[{&quot;sechubJobUUID&quot;:&quot;2e8b53b9-eb8b-40e8-bb67-067778906bd1&quot;,&quot;executedBy&quot;:&quot;spartakus&quot;,&quot;started&quot;:&quot;2023-02-22T09:12:58.881485&quot;,&quot;ended&quot;:&quot;2023-02-23T09:12:58.881513&quot;,&quot;status&quot;:&quot;OK&quot;}]</code></pre>
 </div>
 </div>
 </div>
@@ -4439,7 +4510,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;a182af6d-4ddc-40e6-9f29-585345652233&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;bbe96976-8aa3-447c-b83c-a53254934224&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -4578,7 +4649,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;9970f093-71bf-4126-a084-0c3b8876d0b1&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;c62d4991-dc1b-4078-b430-f371a994924b&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -4732,7 +4803,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;b58d8163-1505-41da-9f7a-be55623a964f&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;30a78a33-8139-4fff-9e93-2b2ffa74ccb8&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -4891,7 +4962,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;e7e36c62-00e9-4a9e-af30-7bc44ae047bf&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;5c8dd9ad-3a1a-481b-8058-a5cb09591727&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -5070,7 +5141,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;4155f8a7-8dde-41aa-a837-ae00e123a4b0&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;48e9c738-1d53-441d-ad67-0f8a4e5011e8&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -5144,7 +5215,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/b816a285-c5d1-47f8-a884-399feb296812/sourcecode' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/1477041d-219a-42aa-afd8-1f5dce595776/sourcecode' -i -u 'user:secret' -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -5227,7 +5298,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/a4444be1-72f8-4a80-aba1-08efa9f873b6/approve' -i -u 'user:secret' -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/e662aefe-5c51-424d-94fe-680baa59311c/approve' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -5364,7 +5435,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/acf02f59-403e-4d78-8502-7ee007365fe1' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/77bbe566-1a14-413d-834f-0be7558f67eb' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -5373,7 +5444,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobUUID&quot;:&quot;acf02f59-403e-4d78-8502-7ee007365fe1&quot;,&quot;owner&quot;:&quot;CREATOR1&quot;,&quot;created&quot;:&quot;&quot;,&quot;started&quot;:&quot;2022-12-20T13:35:52.152777&quot;,&quot;ended&quot;:&quot;2022-12-20T13:50:52.152803&quot;,&quot;state&quot;:&quot;ENDED&quot;,&quot;result&quot;:&quot;OK&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobUUID&quot;:&quot;77bbe566-1a14-413d-834f-0be7558f67eb&quot;,&quot;owner&quot;:&quot;CREATOR1&quot;,&quot;created&quot;:&quot;&quot;,&quot;started&quot;:&quot;2023-02-23T08:58:22.010793&quot;,&quot;ended&quot;:&quot;2023-02-23T09:13:22.010814&quot;,&quot;state&quot;:&quot;ENDED&quot;,&quot;result&quot;:&quot;OK&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -5448,7 +5519,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/11777b6b-f317-4ab7-bcba-74bdb386670f' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/4f4aac2f-0fb6-4ffe-a619-ee7556d4b5e0' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -5520,7 +5591,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/e9352dee-9354-4c4e-8625-8fdf08a2d338' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/c7c7eb20-b2ca-41be-80f4-64596b10dfa3' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -6012,7 +6083,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/90504a33-d792-4d42-bc58-7f4cce1c1961/binaries' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/a53613db-8a61-48c3-b022-34e28455c644/binaries' -i -u 'user:secret' -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -H 'x-file-size: 10240' \
     -F 'file=test1.txt                                                                                           0000664 0001750 0001750 00000000000 13353454574 012170  0                                                                                                    ustar   albert                          albert                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ' \
@@ -6093,7 +6164,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/953e3b00-b99c-4a51-9adb-fe5a7f139efc' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/7b78d4ce-f49b-42d4-8b83-1e635cf98cd4' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -6596,7 +6667,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>[{&quot;jobUUID&quot;:&quot;1d821378-d953-4b46-b57f-999e3ca1d3c8&quot;,&quot;projectId&quot;:&quot;project-name&quot;,&quot;owner&quot;:&quot;owner-userid&quot;,&quot;status&quot;:&quot;RUNNING&quot;,&quot;since&quot;:&quot;2022-12-20T13:50:40.008048&quot;,&quot;configuration&quot;:&quot;{ config data }&quot;}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code>[{&quot;jobUUID&quot;:&quot;8ef5488d-21ba-4e80-9fd4-2236c5b25964&quot;,&quot;projectId&quot;:&quot;project-name&quot;,&quot;owner&quot;:&quot;owner-userid&quot;,&quot;status&quot;:&quot;RUNNING&quot;,&quot;since&quot;:&quot;2023-02-23T09:13:08.072552&quot;,&quot;configuration&quot;:&quot;{ config data }&quot;}]</code></pre>
 </div>
 </div>
 </div>
@@ -6665,7 +6736,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/1141b46c-96bc-48f8-8ec2-1b77ad0af6c8' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/4626907c-bb4a-4ad4-bdfc-eaceb2646cbb' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -6739,7 +6810,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/b6ff251e-b0fd-4aec-a637-eba63ce9cf95' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/b94fb11b-65b2-4800-acc8-2df56db96651' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -6813,7 +6884,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/b7540561-dba4-4cf4-99b0-b79b85cf2315' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/ad39c8fb-9480-4b8b-acd7-f509c6c8c568' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -7271,7 +7342,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>2798e94f-1a3a-4eea-bf03-adb1ac076f0f</code></pre>
+<pre class="CodeRay highlight nowrap"><code>f588a060-f6e1-4d5c-b437-05320a6fc919</code></pre>
 </div>
 </div>
 </div>
@@ -7340,7 +7411,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/a3c4498e-ce12-4bf4-9c7b-ea50b83fbf2d' -i -u 'user:secret' -X DELETE \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/b040c43b-36a4-4db7-98fc-f2025b3fae90' -i -u 'user:secret' -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -7440,7 +7511,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;executorConfigurations&quot;:[{&quot;uuid&quot;:&quot;ab89fc60-dcf3-49b0-ab02-d278b3889d16&quot;,&quot;name&quot;:&quot;example configuration&quot;,&quot;enabled&quot;:true}],&quot;type&quot;:&quot;executorConfigurationList&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;executorConfigurations&quot;:[{&quot;uuid&quot;:&quot;a9026f52-f49b-4f9b-9f15-eb7811154c40&quot;,&quot;name&quot;:&quot;example configuration&quot;,&quot;enabled&quot;:true}],&quot;type&quot;:&quot;executorConfigurationList&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -7578,7 +7649,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/855cb5f7-4bab-4a77-96d9-8a2610803476' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/7d84be74-1790-47d9-80f3-28a33cd4e6b9' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -7587,7 +7658,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;855cb5f7-4bab-4a77-96d9-8a2610803476&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;7d84be74-1790-47d9-80f3-28a33cd4e6b9&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -7720,7 +7791,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/d5462dd7-33d3-4012-b30b-9ee5434992e0' -i -u 'user:secret' -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/250bc4d8-663f-4e62-aaaa-f6d56dc0133f' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://productNew.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_NEW_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_NEW_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]}}'</code></pre>
 </div>
@@ -8019,7 +8090,7 @@ for details about default behaviour for sources.</td>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/existing-profile-1' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;722b1034-e24f-4c8e-aefb-859905d90d34&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
+    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;8b774844-1add-4b1f-b870-c3ebb8491bc0&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8160,7 +8231,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;description&quot;:&quot;a description&quot;,&quot;enabled&quot;:true,&quot;configurations&quot;:[{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;33e54e1e-a43d-4bdc-9812-212221cd7bde&quot;}],&quot;projectIds&quot;:[&quot;project-1&quot;,&quot;project-2&quot;]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;description&quot;:&quot;a description&quot;,&quot;enabled&quot;:true,&quot;configurations&quot;:[{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;7917a72e-f141-4b6f-8f11-9773f6a85863&quot;}],&quot;projectIds&quot;:[&quot;project-1&quot;,&quot;project-2&quot;]}</code></pre>
 </div>
 </div>
 </div>
@@ -8964,7 +9035,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;page&quot;:0,&quot;totalPages&quot;:1,&quot;content&quot;:[{&quot;jobUUID&quot;:&quot;c640d714-eb5b-441c-8046-1a40bc5de4c1&quot;,&quot;executedBy&quot;:&quot;User1&quot;,&quot;created&quot;:&quot;2022-12-20T13:33:52.179687&quot;,&quot;started&quot;:&quot;2022-12-20T13:35:52.179709&quot;,&quot;ended&quot;:&quot;2022-12-20T13:50:52.179718&quot;,&quot;executionState&quot;:&quot;ENDED&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;,&quot;executionResult&quot;:&quot;OK&quot;}]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;page&quot;:0,&quot;totalPages&quot;:1,&quot;content&quot;:[{&quot;jobUUID&quot;:&quot;09531545-454e-4f06-8537-6fb8398b5273&quot;,&quot;executedBy&quot;:&quot;User1&quot;,&quot;created&quot;:&quot;2023-02-23T08:56:22.040655&quot;,&quot;started&quot;:&quot;2023-02-23T08:58:22.040677&quot;,&quot;ended&quot;:&quot;2023-02-23T09:13:22.040686&quot;,&quot;executionState&quot;:&quot;ENDED&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;,&quot;executionResult&quot;:&quot;OK&quot;}]}</code></pre>
 </div>
 </div>
 <div style="page-break-after: always;"></div>
@@ -9010,7 +9081,7 @@ human friendly report variant with less details</p>
 </li>
 <li>
 <p>JSON<br>
-as a machine readable format, usable for sechub client to determine to break build. Will also be
+as a machine readable format, usable for SecHub client to determine to break build. Will also be
 the base for planned development of IDE plugins (<code>Eclipse</code>, <code>IntelliJ</code>, <code>VSCode</code>)</p>
 </li>
 </ul>
@@ -10246,14 +10317,14 @@ build will break.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">upload binaries</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">upload sourcecode</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">upload sourcecode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">upload binaries</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -10267,14 +10338,14 @@ build will break.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">download job report and traffic light</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">get job status</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">get job status</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">download job report and traffic light</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -10596,17 +10667,17 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Unassign user</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The service will remove the user to the project. If users has no longer access to projects ROLE_USER will be removed</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
@@ -12099,7 +12170,7 @@ by the ID, etc. etc. But exact resilience behaviour depends on adapter implement
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/event_overview_uc_admin_restarts_job-variant_crashed_jvm_with_product_result.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_RESTARTS_JOB - variant: crashed jvm with product result" width="768" height="574">
+<img src="images/event_overview_uc_admin_restarts_job-variant_crashed_jvm_with_product_result.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_RESTARTS_JOB - variant: crashed jvm with product result" width="959" height="675">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -12116,6 +12187,9 @@ by the ID, etc. etc. But exact resilience behaviour depends on adapter implement
 <ul>
 <li>
 <p><a href="#section-gen-messaging-job_done">UC_041-ADMIN_RESTARTS_JOB</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-job_execution_starting">UC_041-ADMIN_RESTARTS_JOB</a></p>
 </li>
 <li>
 <p><a href="#section-gen-messaging-job_restart_canceled">UC_041-ADMIN_RESTARTS_JOB</a></p>
@@ -12282,7 +12356,7 @@ results because such information was formerly deleted</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/event_overview_uc_admin_restarts_job_hard-variant_crashed_jvm_with_product_result.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_RESTARTS_JOB_HARD - variant: crashed jvm with product result" width="815" height="646">
+<img src="images/event_overview_uc_admin_restarts_job_hard-variant_crashed_jvm_with_product_result.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_RESTARTS_JOB_HARD - variant: crashed jvm with product result" width="1006" height="747">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -12299,6 +12373,9 @@ results because such information was formerly deleted</p>
 <ul>
 <li>
 <p><a href="#section-gen-messaging-job_done">UC_042-ADMIN_RESTARTS_JOB_HARD</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-job_execution_starting">UC_042-ADMIN_RESTARTS_JOB_HARD</a></p>
 </li>
 <li>
 <p><a href="#section-gen-messaging-job_restart_canceled">UC_042-ADMIN_RESTARTS_JOB_HARD</a></p>
@@ -13908,7 +13985,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <h6 id="diagram">4.1.72.1.1. Diagram</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="878" height="3546">
+<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="940" height="3895">
 </div>
 </div>
 </div>
@@ -13917,13 +13994,25 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <div class="ulist">
 <ul>
 <li>
+<p><a href="#section-gen-messaging-analyze_scan_results_available">ANALYZE_SCAN_RESULTS_AVAILABLE</a></p>
+</li>
+<li>
 <p><a href="#section-gen-messaging-auto_cleanup_configuration_changed">AUTO_CLEANUP_CONFIGURATION_CHANGED</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-binary_upload_done">BINARY_UPLOAD_DONE</a></p>
 </li>
 <li>
 <p><a href="#section-gen-messaging-job_cancellation_running">JOB_CANCELLATION_RUNNING</a></p>
 </li>
 <li>
+<p><a href="#section-gen-messaging-job_created">JOB_CREATED</a></p>
+</li>
+<li>
 <p><a href="#section-gen-messaging-job_done">JOB_DONE</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-job_execution_starting">JOB_EXECUTION_STARTING</a></p>
 </li>
 <li>
 <p><a href="#section-gen-messaging-job_failed">JOB_FAILED</a></p>
@@ -14016,6 +14105,9 @@ than one. In this case the returned entries are ordered by creation date.</p>
 <p><a href="#section-gen-messaging-scheduler_status_update">SCHEDULER_STATUS_UPDATE</a></p>
 </li>
 <li>
+<p><a href="#section-gen-messaging-source_upload_done">SOURCE_UPLOAD_DONE</a></p>
+</li>
+<li>
 <p><a href="#section-gen-messaging-start_scan">START_SCAN</a></p>
 </li>
 <li>
@@ -14059,10 +14151,18 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-auto_cleanup_configuration_changed">4.1.72.2. Message AUTO_CLEANUP_CONFIGURATION_CHANGED</h5>
+<h5 id="section-gen-messaging-analyze_scan_results_available">4.1.72.2. Message ANALYZE_SCAN_RESULTS_AVAILABLE</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_auto_cleanup_configuration_changed.svg" alt="Sequence diagram of messaging AUTO_CLEANUP_CONFIGURATION_CHANGED" width="1140" height="234">
+<img src="images/gen_domain_messaging_analyze_scan_results_available.svg" alt="Sequence diagram of messaging ANALYZE_SCAN_RESULTS_AVAILABLE" width="732" height="176">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-auto_cleanup_configuration_changed">4.1.72.3. Message AUTO_CLEANUP_CONFIGURATION_CHANGED</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_auto_cleanup_configuration_changed.svg" alt="Sequence diagram of messaging AUTO_CLEANUP_CONFIGURATION_CHANGED" width="1124" height="234">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -14088,18 +14188,34 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_cancellation_running">4.1.72.3. Message JOB_CANCELLATION_RUNNING</h5>
+<h5 id="section-gen-messaging-binary_upload_done">4.1.72.4. Message BINARY_UPLOAD_DONE</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_job_cancellation_running.svg" alt="Sequence diagram of messaging JOB_CANCELLATION_RUNNING" width="835" height="205">
+<img src="images/gen_domain_messaging_binary_upload_done.svg" alt="Sequence diagram of messaging BINARY_UPLOAD_DONE" width="592" height="176">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_done">4.1.72.4. Message JOB_DONE</h5>
+<h5 id="section-gen-messaging-job_cancellation_running">4.1.72.5. Message JOB_CANCELLATION_RUNNING</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_job_done.svg" alt="Sequence diagram of messaging JOB_DONE" width="571" height="176">
+<img src="images/gen_domain_messaging_job_cancellation_running.svg" alt="Sequence diagram of messaging JOB_CANCELLATION_RUNNING" width="859" height="205">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-job_created">4.1.72.6. Message JOB_CREATED</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_job_created.svg" alt="Sequence diagram of messaging JOB_CREATED" width="493" height="176">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-job_done">4.1.72.7. Message JOB_DONE</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_job_done.svg" alt="Sequence diagram of messaging JOB_DONE" width="765" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -14128,15 +14244,47 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_failed">4.1.72.5. Message JOB_FAILED</h5>
+<h5 id="section-gen-messaging-job_execution_starting">4.1.72.8. Message JOB_EXECUTION_STARTING</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_job_failed.svg" alt="Sequence diagram of messaging JOB_FAILED" width="747" height="205">
+<img src="images/gen_domain_messaging_job_execution_starting.svg" alt="Sequence diagram of messaging JOB_EXECUTION_STARTING" width="628" height="176">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Use cases related to this message</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-usecase-UC_041">UC_041-ADMIN_RESTARTS_JOB </a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_042">UC_042-ADMIN_RESTARTS_JOB_HARD </a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-job_failed">4.1.72.9. Message JOB_FAILED</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_job_failed.svg" alt="Sequence diagram of messaging JOB_FAILED" width="941" height="234">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_restart_canceled">4.1.72.6. Message JOB_RESTART_CANCELED</h5>
+<h5 id="section-gen-messaging-job_restart_canceled">4.1.72.10. Message JOB_RESTART_CANCELED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_restart_canceled.svg" alt="Sequence diagram of messaging JOB_RESTART_CANCELED" width="606" height="176">
@@ -14168,7 +14316,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_restart_triggered">4.1.72.7. Message JOB_RESTART_TRIGGERED</h5>
+<h5 id="section-gen-messaging-job_restart_triggered">4.1.72.11. Message JOB_RESTART_TRIGGERED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_restart_triggered.svg" alt="Sequence diagram of messaging JOB_RESTART_TRIGGERED" width="617" height="176">
@@ -14200,7 +14348,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_results_purged">4.1.72.8. Message JOB_RESULTS_PURGED</h5>
+<h5 id="section-gen-messaging-job_results_purged">4.1.72.12. Message JOB_RESULTS_PURGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_results_purged.svg" alt="Sequence diagram of messaging JOB_RESULTS_PURGED" width="586" height="176">
@@ -14208,7 +14356,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_result_purge_done">4.1.72.9. Message JOB_RESULT_PURGE_DONE</h5>
+<h5 id="section-gen-messaging-job_result_purge_done">4.1.72.13. Message JOB_RESULT_PURGE_DONE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_result_purge_done.svg" alt="Sequence diagram of messaging JOB_RESULT_PURGE_DONE" width="624" height="118">
@@ -14216,7 +14364,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_result_purge_failed">4.1.72.10. Message JOB_RESULT_PURGE_FAILED</h5>
+<h5 id="section-gen-messaging-job_result_purge_failed">4.1.72.14. Message JOB_RESULT_PURGE_FAILED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_result_purge_failed.svg" alt="Sequence diagram of messaging JOB_RESULT_PURGE_FAILED" width="638" height="118">
@@ -14224,7 +14372,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_started">4.1.72.11. Message JOB_STARTED</h5>
+<h5 id="section-gen-messaging-job_started">4.1.72.15. Message JOB_STARTED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_job_started.svg" alt="Sequence diagram of messaging JOB_STARTED" width="570" height="176">
@@ -14256,7 +14404,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-mapping_configuration_changed">4.1.72.12. Message MAPPING_CONFIGURATION_CHANGED</h5>
+<h5 id="section-gen-messaging-mapping_configuration_changed">4.1.72.16. Message MAPPING_CONFIGURATION_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_mapping_configuration_changed.svg" alt="Sequence diagram of messaging MAPPING_CONFIGURATION_CHANGED" width="739" height="176">
@@ -14264,7 +14412,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-product_executor_cancel_operations_done">4.1.72.13. Message PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE</h5>
+<h5 id="section-gen-messaging-product_executor_cancel_operations_done">4.1.72.17. Message PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_product_executor_cancel_operations_done.svg" alt="Sequence diagram of messaging PRODUCT_EXECUTOR_CANCEL_OPERATIONS_DONE" width="863" height="176">
@@ -14272,15 +14420,15 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-project_access_level_changed">4.1.72.14. Message PROJECT_ACCESS_LEVEL_CHANGED</h5>
+<h5 id="section-gen-messaging-project_access_level_changed">4.1.72.18. Message PROJECT_ACCESS_LEVEL_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_project_access_level_changed.svg" alt="Sequence diagram of messaging PROJECT_ACCESS_LEVEL_CHANGED" width="868" height="205">
+<img src="images/gen_domain_messaging_project_access_level_changed.svg" alt="Sequence diagram of messaging PROJECT_ACCESS_LEVEL_CHANGED" width="852" height="205">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-project_created">4.1.72.15. Message PROJECT_CREATED</h5>
+<h5 id="section-gen-messaging-project_created">4.1.72.19. Message PROJECT_CREATED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_project_created.svg" alt="Sequence diagram of messaging PROJECT_CREATED" width="543" height="176">
@@ -14288,15 +14436,15 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-project_deleted">4.1.72.16. Message PROJECT_DELETED</h5>
+<h5 id="section-gen-messaging-project_deleted">4.1.72.20. Message PROJECT_DELETED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_project_deleted.svg" alt="Sequence diagram of messaging PROJECT_DELETED" width="877" height="234">
+<img src="images/gen_domain_messaging_project_deleted.svg" alt="Sequence diagram of messaging PROJECT_DELETED" width="861" height="234">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-project_owner_changed">4.1.72.17. Message PROJECT_OWNER_CHANGED</h5>
+<h5 id="section-gen-messaging-project_owner_changed">4.1.72.21. Message PROJECT_OWNER_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_project_owner_changed.svg" alt="Sequence diagram of messaging PROJECT_OWNER_CHANGED" width="636" height="176">
@@ -14304,7 +14452,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-project_whitelist_updated">4.1.72.18. Message PROJECT_WHITELIST_UPDATED</h5>
+<h5 id="section-gen-messaging-project_whitelist_updated">4.1.72.22. Message PROJECT_WHITELIST_UPDATED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_project_whitelist_updated.svg" alt="Sequence diagram of messaging PROJECT_WHITELIST_UPDATED" width="667" height="176">
@@ -14312,7 +14460,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_job_cancellation">4.1.72.19. Message REQUEST_JOB_CANCELLATION</h5>
+<h5 id="section-gen-messaging-request_job_cancellation">4.1.72.23. Message REQUEST_JOB_CANCELLATION</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_job_cancellation.svg" alt="Sequence diagram of messaging REQUEST_JOB_CANCELLATION" width="656" height="176">
@@ -14320,7 +14468,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_job_restart">4.1.72.20. Message REQUEST_JOB_RESTART</h5>
+<h5 id="section-gen-messaging-request_job_restart">4.1.72.24. Message REQUEST_JOB_RESTART</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_job_restart.svg" alt="Sequence diagram of messaging REQUEST_JOB_RESTART" width="595" height="176">
@@ -14349,7 +14497,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_job_restart_hard">4.1.72.21. Message REQUEST_JOB_RESTART_HARD</h5>
+<h5 id="section-gen-messaging-request_job_restart_hard">4.1.72.25. Message REQUEST_JOB_RESTART_HARD</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_job_restart_hard.svg" alt="Sequence diagram of messaging REQUEST_JOB_RESTART_HARD" width="663" height="176">
@@ -14378,7 +14526,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_purge_job_results">4.1.72.22. Message REQUEST_PURGE_JOB_RESULTS</h5>
+<h5 id="section-gen-messaging-request_purge_job_results">4.1.72.26. Message REQUEST_PURGE_JOB_RESULTS</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_purge_job_results.svg" alt="Sequence diagram of messaging REQUEST_PURGE_JOB_RESULTS" width="674" height="309">
@@ -14407,7 +14555,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_scheduler_disable_job_processing">4.1.72.23. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</h5>
+<h5 id="section-gen-messaging-request_scheduler_disable_job_processing">4.1.72.27. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_scheduler_disable_job_processing.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING" width="860" height="176">
@@ -14436,7 +14584,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_scheduler_enable_job_processing">4.1.72.24. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</h5>
+<h5 id="section-gen-messaging-request_scheduler_enable_job_processing">4.1.72.28. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_scheduler_enable_job_processing.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING" width="852" height="176">
@@ -14465,7 +14613,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_scheduler_job_status">4.1.72.25. Message REQUEST_SCHEDULER_JOB_STATUS</h5>
+<h5 id="section-gen-messaging-request_scheduler_job_status">4.1.72.29. Message REQUEST_SCHEDULER_JOB_STATUS</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_scheduler_job_status.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_JOB_STATUS" width="715" height="234">
@@ -14497,7 +14645,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_scheduler_status_update">4.1.72.26. Message REQUEST_SCHEDULER_STATUS_UPDATE</h5>
+<h5 id="section-gen-messaging-request_scheduler_status_update">4.1.72.30. Message REQUEST_SCHEDULER_STATUS_UPDATE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_scheduler_status_update.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_STATUS_UPDATE" width="761" height="176">
@@ -14505,10 +14653,10 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_user_role_recalculation">4.1.72.27. Message REQUEST_USER_ROLE_RECALCULATION</h5>
+<h5 id="section-gen-messaging-request_user_role_recalculation">4.1.72.31. Message REQUEST_USER_ROLE_RECALCULATION</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="2282" height="380">
+<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="2229" height="380">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -14540,7 +14688,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scan_done">4.1.72.28. Message SCAN_DONE</h5>
+<h5 id="section-gen-messaging-scan_done">4.1.72.32. Message SCAN_DONE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scan_done.svg" alt="Sequence diagram of messaging SCAN_DONE" width="477" height="118">
@@ -14548,7 +14696,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scan_failed">4.1.72.29. Message SCAN_FAILED</h5>
+<h5 id="section-gen-messaging-scan_failed">4.1.72.33. Message SCAN_FAILED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scan_failed.svg" alt="Sequence diagram of messaging SCAN_FAILED" width="491" height="118">
@@ -14556,10 +14704,10 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scheduler_job_processing_disabled">4.1.72.30. Message SCHEDULER_JOB_PROCESSING_DISABLED</h5>
+<h5 id="section-gen-messaging-scheduler_job_processing_disabled">4.1.72.34. Message SCHEDULER_JOB_PROCESSING_DISABLED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_scheduler_job_processing_disabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_DISABLED" width="912" height="205">
+<img src="images/gen_domain_messaging_scheduler_job_processing_disabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_DISABLED" width="972" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -14585,10 +14733,10 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scheduler_job_processing_enabled">4.1.72.31. Message SCHEDULER_JOB_PROCESSING_ENABLED</h5>
+<h5 id="section-gen-messaging-scheduler_job_processing_enabled">4.1.72.35. Message SCHEDULER_JOB_PROCESSING_ENABLED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_scheduler_job_processing_enabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_ENABLED" width="908" height="205">
+<img src="images/gen_domain_messaging_scheduler_job_processing_enabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_ENABLED" width="968" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -14614,7 +14762,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scheduler_job_status">4.1.72.32. Message SCHEDULER_JOB_STATUS</h5>
+<h5 id="section-gen-messaging-scheduler_job_status">4.1.72.36. Message SCHEDULER_JOB_STATUS</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scheduler_job_status.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_STATUS" width="612" height="118">
@@ -14622,7 +14770,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scheduler_started">4.1.72.33. Message SCHEDULER_STARTED</h5>
+<h5 id="section-gen-messaging-scheduler_started">4.1.72.37. Message SCHEDULER_STARTED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scheduler_started.svg" alt="Sequence diagram of messaging SCHEDULER_STARTED" width="579" height="176">
@@ -14630,18 +14778,26 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scheduler_status_update">4.1.72.34. Message SCHEDULER_STATUS_UPDATE</h5>
+<h5 id="section-gen-messaging-scheduler_status_update">4.1.72.38. Message SCHEDULER_STATUS_UPDATE</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_scheduler_status_update.svg" alt="Sequence diagram of messaging SCHEDULER_STATUS_UPDATE" width="658" height="176">
+<img src="images/gen_domain_messaging_scheduler_status_update.svg" alt="Sequence diagram of messaging SCHEDULER_STATUS_UPDATE" width="681" height="176">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-start_scan">4.1.72.35. Message START_SCAN</h5>
+<h5 id="section-gen-messaging-source_upload_done">4.1.72.39. Message SOURCE_UPLOAD_DONE</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_start_scan.svg" alt="Sequence diagram of messaging START_SCAN" width="555" height="353">
+<img src="images/gen_domain_messaging_source_upload_done.svg" alt="Sequence diagram of messaging SOURCE_UPLOAD_DONE" width="598" height="176">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-start_scan">4.1.72.40. Message START_SCAN</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_start_scan.svg" alt="Sequence diagram of messaging START_SCAN" width="485" height="353">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -14670,7 +14826,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-unsupported_operation">4.1.72.36. Message UNSUPPORTED_OPERATION</h5>
+<h5 id="section-gen-messaging-unsupported_operation">4.1.72.41. Message UNSUPPORTED_OPERATION</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_unsupported_operation.svg" alt="Sequence diagram of messaging UNSUPPORTED_OPERATION" width="636" height="118">
@@ -14678,10 +14834,10 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_added_to_project">4.1.72.37. Message USER_ADDED_TO_PROJECT</h5>
+<h5 id="section-gen-messaging-user_added_to_project">4.1.72.42. Message USER_ADDED_TO_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_added_to_project.svg" alt="Sequence diagram of messaging USER_ADDED_TO_PROJECT" width="748" height="205">
+<img src="images/gen_domain_messaging_user_added_to_project.svg" alt="Sequence diagram of messaging USER_ADDED_TO_PROJECT" width="732" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -14707,15 +14863,15 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_api_token_changed">4.1.72.38. Message USER_API_TOKEN_CHANGED</h5>
+<h5 id="section-gen-messaging-user_api_token_changed">4.1.72.43. Message USER_API_TOKEN_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_api_token_changed.svg" alt="Sequence diagram of messaging USER_API_TOKEN_CHANGED" width="1163" height="234">
+<img src="images/gen_domain_messaging_user_api_token_changed.svg" alt="Sequence diagram of messaging USER_API_TOKEN_CHANGED" width="1141" height="234">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_becomes_superadmin">4.1.72.39. Message USER_BECOMES_SUPERADMIN</h5>
+<h5 id="section-gen-messaging-user_becomes_superadmin">4.1.72.44. Message USER_BECOMES_SUPERADMIN</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_becomes_superadmin.svg" alt="Sequence diagram of messaging USER_BECOMES_SUPERADMIN" width="663" height="176">
@@ -14723,10 +14879,10 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_created">4.1.72.40. Message USER_CREATED</h5>
+<h5 id="section-gen-messaging-user_created">4.1.72.45. Message USER_CREATED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_created.svg" alt="Sequence diagram of messaging USER_CREATED" width="625" height="205">
+<img src="images/gen_domain_messaging_user_created.svg" alt="Sequence diagram of messaging USER_CREATED" width="615" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -14752,15 +14908,15 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_deleted">4.1.72.41. Message USER_DELETED</h5>
+<h5 id="section-gen-messaging-user_deleted">4.1.72.46. Message USER_DELETED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_deleted.svg" alt="Sequence diagram of messaging USER_DELETED" width="1015" height="264">
+<img src="images/gen_domain_messaging_user_deleted.svg" alt="Sequence diagram of messaging USER_DELETED" width="1006" height="264">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_email_address_changed">4.1.72.42. Message USER_EMAIL_ADDRESS_CHANGED</h5>
+<h5 id="section-gen-messaging-user_email_address_changed">4.1.72.47. Message USER_EMAIL_ADDRESS_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_email_address_changed.svg" alt="Sequence diagram of messaging USER_EMAIL_ADDRESS_CHANGED" width="696" height="176">
@@ -14768,10 +14924,10 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_new_api_token_requested">4.1.72.43. Message USER_NEW_API_TOKEN_REQUESTED</h5>
+<h5 id="section-gen-messaging-user_new_api_token_requested">4.1.72.48. Message USER_NEW_API_TOKEN_REQUESTED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_new_api_token_requested.svg" alt="Sequence diagram of messaging USER_NEW_API_TOKEN_REQUESTED" width="964" height="205">
+<img src="images/gen_domain_messaging_user_new_api_token_requested.svg" alt="Sequence diagram of messaging USER_NEW_API_TOKEN_REQUESTED" width="938" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -14797,18 +14953,18 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_no_longer_superadmin">4.1.72.44. Message USER_NO_LONGER_SUPERADMIN</h5>
+<h5 id="section-gen-messaging-user_no_longer_superadmin">4.1.72.49. Message USER_NO_LONGER_SUPERADMIN</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_no_longer_superadmin.svg" alt="Sequence diagram of messaging USER_NO_LONGER_SUPERADMIN" width="687" height="176">
+<img src="images/gen_domain_messaging_user_no_longer_superadmin.svg" alt="Sequence diagram of messaging USER_NO_LONGER_SUPERADMIN" width="692" height="176">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_removed_from_project">4.1.72.45. Message USER_REMOVED_FROM_PROJECT</h5>
+<h5 id="section-gen-messaging-user_removed_from_project">4.1.72.50. Message USER_REMOVED_FROM_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_removed_from_project.svg" alt="Sequence diagram of messaging USER_REMOVED_FROM_PROJECT" width="802" height="205">
+<img src="images/gen_domain_messaging_user_removed_from_project.svg" alt="Sequence diagram of messaging USER_REMOVED_FROM_PROJECT" width="786" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -14834,7 +14990,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_roles_changed">4.1.72.46. Message USER_ROLES_CHANGED</h5>
+<h5 id="section-gen-messaging-user_roles_changed">4.1.72.51. Message USER_ROLES_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_roles_changed.svg" alt="Sequence diagram of messaging USER_ROLES_CHANGED" width="594" height="176">
@@ -14869,7 +15025,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_signup_requested">4.1.72.47. Message USER_SIGNUP_REQUESTED</h5>
+<h5 id="section-gen-messaging-user_signup_requested">4.1.72.52. Message USER_SIGNUP_REQUESTED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_signup_requested.svg" alt="Sequence diagram of messaging USER_SIGNUP_REQUESTED" width="629" height="176">
@@ -14904,7 +15060,7 @@ than one. In this case the returned entries are ordered by creation date.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.37.0<br>
+ Server 0.38.0<br>
 </div>
 </div>
 </body>
