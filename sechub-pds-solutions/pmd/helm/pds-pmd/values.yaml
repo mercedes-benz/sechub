@@ -10,6 +10,8 @@ image:
 
 pds:
     startMode: localserver
+    # Maximum upload size: 20 MiB by default (20 * 1024 * 1024 = 20971520)
+    uploadMaximumBytes: "20971520"
     config:
         execute:
             queueMax: 10
@@ -27,8 +29,10 @@ pds:
 users:
     technical:
         id: "techuser"
+        apiToken: "<api token of techuser>"
     admin:
         id: "admin"
+        apiToken: "<api token of admin user>"
 
 storage:
     local:
