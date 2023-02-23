@@ -13,30 +13,33 @@ include::documents/shared/about_documentation_all.adoc[]
 //--
 
 == Introduction
-This tutorial is going to teach you how to locally run the SecHub server and the PDS (Product Delegation Server) server for GoSec. + 
-After that, you are going to learn how to scan apps written in 'go' for vulnerabilities. +
-And optionally, install and work with the SecHub extension for VSCodium.
+This tutorial teaches you how to scan a project using SecHub.
+
+You will learn:
+
+* How to run SecHub and GoSec+PDS locally
+* Scan a vulnerable application written in Go
+* Install and use SecHub's extension for VsCodium (Optional)
 
 plantuml::diagrams/diagram_behind_the_scenes_sechub.plantuml[format=svg, title=Setup Overview] +
 This Diagram roughly explains how Sechub functions, behind the scenes.
-[WARNING]
+[NOTE]
 --
-This tutorial is tested and intended for Debian/Ubuntu! +
-Although it should also work on different Linux distributions.
+This tutorial is tested on Debian/Ubuntu! +
+It should also work on different Linux distributions.
 --
 
 === Prerequisites
 
 You are going to need: 
 
-* docker for https://docs.docker.com/engine/install/debian/[Debian] / https://docs.docker.com/engine/install/ubuntu/[Ubuntu]
-* docker compose
+* docker (Version 23.0.0 used in the tutorial, newer versions will also work) (e. g. https://docs.docker.com/engine/install/debian/[Debian],  / https://docs.docker.com/engine/install/ubuntu/[Ubuntu])
+* docker compose (v2.15.1)
 * git
-* And possibly jq
 
 Optional:
 
-* VSCodium
+* https://vscodium.com/[VSCodium]
 * https://open-vsx.org/extension/mercedes-benz/sechub[SecHub Extension] for VSCodium
 
 === Instructions
@@ -47,56 +50,51 @@ In your terminal type:
 
 [source, shell]
 --
-
-git clone https://github.com/mercedes-benz/sechub.git
-cd sechub
-
+include::sechub-getting-started/clone-repo.sh[]
 --
 This makes a local copy of the SecHub project on your computer and goes to the project's folder
 
 
 ==== Start SecHub Server
 
-The Sechub Server is responsible for taking jobs and passing them to the PDS server for processing, also it returns and processes the results from the PDS server. +
+The Sechub server is responsible for taking jobs and passing them to the PDS server for processing. Once the job finishes on the PDS side, they are fetched and processed by SecHub +
 
 [source, shell]
 --
-./sechub-solution/01-start-single-docker-compose.sh
+include::sechub-getting-started/start-sechub.sh[]
 --
 
 This starts the server.
 
 ==== Start GoSec+PDS Server
-The PDS server, which contains a GoSec instance, will check the actual code for vulnerabilities and output a result of them.
+The PDS server, which contains the security tool https://securego.io/[GoSec], will check the actual code for vulnerabilities and output a result of them.
 
 [source, shell]
 --
-./sechub-pds-solutions/gosec/05-start-single-sechub-network-docker-compose.sh
+include::sechub-getting-started/start-pds-gosec.sh[]
 --
+
+This will prepare some environment files and will start a container based on SecHub's custom PDS+GoSec image. In the container, GoLang and GoSec will be installed and the server will be started.
 
 
 ==== Setup Project
 
-After starting all servers, some environment variables have to be set. Specifically `SECHUB_SERVER`, `SECHUB_USERID`, `SECHUB_APITOKEN`, `SECHUB_TRUSTALL` and alsoSecHub's CLI tools have to be added to the `PATH` variable to be able to do scans.
-Here we set them to local credentials because everything is hosted locally:
+After starting all servers, some environment variables have to be set. Specifically `SECHUB_SERVER`, `SECHUB_USERID`, `SECHUB_APITOKEN`, `SECHUB_TRUSTALL` and SecHub's CLI tools have to be added to the `PATH` variable to be able to do scans.
+Here we set the local credentials because everything is hosted locally:
 
 [source, shell]
 --
-export SECHUB_SERVER=https://localhost:8443
-export SECHUB_USERID=admin
-export SECHUB_APITOKEN='myTop$ecret!'
-export SECHUB_TRUSTALL=true
-export PATH="$PATH:`pwd`/sechub-cli/build/go/platform/linux-amd64:`pwd`/sechub-developertools/scripts"
+include::sechub-getting-started/setup-project.sh[lines=1..5]
 --
 
 After setting the variables, you can run this script, which will first check if you have set the variable correctly. Then it will create a project, and create a user who will be assigned to the project. (Created user/project can be changed in the 8000-setup-gosec.sh file)
 
 [source, shell]
 --
-./sechub-solution/setup-pds-scripts/8000-setup-gosec.sh
+include::sechub-getting-started/setup-project.sh[lines=7]
 --
 
-After running it, you should get similar output if everything is working correctly:
+After running it, you should get a similar output if everything is working correctly:
 [source]
 --
 user: gosec
@@ -212,12 +210,12 @@ echo "
 
 But you can skip this step, because the sechub's folder, already contains it.
 
-And to scan it, just type `sechub -project test-gosec scan`, this will create a JSON file, which contains the output of the scan. If you want HTML output just add `-reportformat html` as an option: `sechub -project test-gosec -reportformat html scan`
+And to scan it, just type `sechub -project test-gosec scan`, this will create a JSON file, which contains a report of the findings from the scan. If you want HTML output just add `-reportformat html` as an option: `sechub -project test-gosec -reportformat html scan`
 
-==== Install Sechub's VsCode Plugin (OPTIONAL)
-Sechub's VsCode Plugin helps you better visualize where the vulnerabilities in your code are located!
+==== Install Sechub's VsCodium Plugin (OPTIONAL)
+Sechub's VsCodium Plugin helps you better visualize where the vulnerabilities in your code are located.
 You can go to the exact code line and fix the problem.
 
 You can get the plugin from https://open-vsx.org/extension/mercedes-benz/sechub[here].
 
-And to install it, open VsCode and in the `Command Pallete` (Usually can be opened with `Ctrl+Shift+P`) type `install vsix`, and in the pop-up menu, choose the plugin.
+And to install it, open VsCodium and in the `Command Pallete` (Usually can be opened with `Ctrl+Shift+P`) type `install vsix`, and in the pop-up menu, choose the plugin.
