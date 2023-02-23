@@ -15,8 +15,7 @@ resources:
         memory: 1Gi
 
 pds:
-    # 100 MiB by default
-    # 1024**2 * 100 = 104857600
+    # Maximum upload size: 100 MiB by default (100 * 1024 * 1024 = 104857600)
     uploadMaximumBytes: "104857600"
     volumes:
         workspace:
@@ -25,7 +24,6 @@ pds:
     javaDebug:
         enabled: false
     keepContainerAliveAfterPDSCrashed: false
-    maxFileUploadSize: 20MB
     heartbeatLogging: "true"
     logging:
         type:
