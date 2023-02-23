@@ -1,15 +1,17 @@
 // SPDX-License-Identifier: MIT
-=== SecHub configuration
+=== SecHub configuration JSON
 
 A `{sechub}` configuration  must be valid `JSON` and is defined
 at caller side.
 
-It is used by client and also by rest calls to start {sechub}
+It is used by the client and also by rest calls to define {sechub}
 scan jobs and add meta data.
 
-Some minor parts are client specific and must
+NOTE: Some minor parts are client specific and must
 be handled by direct REST calls in a special way or do just not exist.
 But this is mentioned inside this documentation
+
+The individual components in the JSON are documented below:
 
 ==== API version
 `apiVersion` must be defined (so mandatory). Currently only `1.0` is valid.
@@ -26,66 +28,79 @@ During this time, however, the API always remains backwards compatible!
 `server` (optional) defines the location to `{sechub}` server.
 Information can be used by client implementations.
 
-NOTE: When using REST calls directly you do not need the information inside
-      configuration because you use server URL in every call...
+NOTE: This is optional parameter only interesting for the client to pass the URL.
+      Every REST call contains the server URL already.
 
 ==== Project
 `project` (optional) defines the project to use. Information can be used by
 client implementations.
 
-NOTE: When using REST calls directly you do not need the information inside
-      configuration because you use project id inside URL.
+NOTE: When using project id related REST calls, you do not need the project id inside the configuration.
 
 [[sechub-config-code-scan]]
 ==== Code scan
-`codeScan` (optional) defines the code scan settings.
+`codeScan` (optional) defines the settings for code scans.
 
-===== Upload sources from file system
-Define `fileSystem` child entry and setup folders to use for code scanning by
-`folders` sub entry.
+===== Upload source files from file system
+This section applies only to the {sechub} client.
 
-All source code files inside these folders will be automatically zipped and uploaded by `{sechub}` client
-to server side for ongoing source analysis.
+All source code files inside the defined folders will be automatically zipped and uploaded by the `{sechub}` client
+to the {sechub} server for analysis.
 
-Pathes must be defined relative from caller location - for example
-on a Jenkins Build Server this is normally the root folder of repository.
-
-NOTE: The configuration parts inside `fileSystem` entry are interpreted by
-      `{sechub}` client! When you directly use the REST API you do not need
-      to define this data but you have to upload sources as a `zip`file by
-      your own over REST!
+Paths must be defined relative to caller location - for example
+on a Jenkins Build Server this is usually the root folder of your repository.
 
 [WARNING]
 ====
-Please do *NOT* use `\` inside pathes *but* always `/`.
+Please do *NOT* use `\` inside paths *but* always `/`.
 
-Also do *NOT* use absolute pathes *but* always relative pathes! Normally you should
+Also do *NOT* use absolute paths *but* always relative paths! Normally you should
 call {sechub} inside root folder of your source repository - this is the standard situation
 on build servers.
 ====
 
-===== Example sechub.json
+There a two ways to define source code uploads for the {sechub} client:
+
+###### Using `data` section
+
+Define the files and folders in a `data` section and reference it inside the `codeScan`. +
+This becomes useful e.g. if the same sources are used by different scan types.
+
+TIP: We _recommend_ using the `data` section.
+
+Example `sechub.json` using `data` section
+
+[[sechub-config-example-sourcescan-with-data-section]]
+[source, json]
+----
+include::sechub_config_example1_sourcescan_data_section.json[]
+----
+<1> Define code scan
+<2> Upload source code (in contrast to binary uploads)
+<3> `fileSystem` - means uploading sources from local filesystem to {sechub} server
+<4> Upload will contain sources from `gamechanger-android/src/main/java` and `gamechanger-server/src/main/java` and their sub folders
+<5> Exclude directories (optional), the https://ant.apache.org/manual/Types/fileset.html[ANT fileset pattern notation] is supported. +
+    * In the example above all files in directories named `mytestcode` and their subdirectories are excluded from upload.
+    * Also all files matching `*.config` are excluded in any directory
+    * Default excludes: +
+     Per default, the directories `+**/test/**+` `+**/.git/**+` `+**/node_modules/**+` are already excluded.
+<6> The {sechub} client only adds "well known" sources into the upload zip file.
+    This reduces the upload size and the scan duration. (E.g. a codescan for a JPEG image would not make sense...) +
+    In the {sechub} client documentation you will find a list of the default file endings. +
+    Here we also add ".cplusplus" and ".py9" as additional accepted source file extensions.
+
+###### `fileSystem` inside the `codeScan` section
+
+Define a `fileSystem` child entry inside the `codeScan` section for code scanning.
+
+Example `sechub.json` using `fileSystem` inside the `codeScan` section (results in same upload as in above example):
 
 [[sechub-config-example-sourcescan]]
 [source, json]
 ----
 include::sechub_config_example1_sourcescan_filesystem.json[]
 ----
-<1> Define code scan
-<2> Use filesystem - so means upload sources to server
-<3> Upload will contain sources from `gamechanger-android/src/main/java` and `gamechanger-server/src/main/java` and their sub folders
-<4> Exclude directories (optional), the https://ant.apache.org/manual/Types/fileset.html[ANT fileset pattern notation] is supported. +
-    * In the example above all files in directories named `mytestcode` and their subdirectories are excluded from upload.
-    * Also all files matching `*.config` are excluded in any directory
-    * Default excludes: +
-     Per default, the directories `+**/test/**+` `+**/.git/**+` `+**/node_modules/**+` are already excluded.
-<5> {sechub} client does only add wellknown sources into created upload zip file. This removes
-    unnecessary stuff and reduces upload size automatically. +
-    _E.g. a codescan for a `JPEG` image would not make sense..._ +
-    Instead of defining a negative list, we use a positive list and accept only wellknown sources,
-    which is simply done by file ending. +
-    In the example we allow also ".cplusplus" and ".py9" as additional accepted source files.
-    Inside client documentation you will find a list of the default file endings.
+
 
 ==== License scan
 `licenseScan`(optional) defines the license scan settings.
@@ -325,8 +340,8 @@ include::sechub_config_data_section_general_example1.json[]
      - `-`
      - `_`
 <4> `fileSystem`: Describes fileystem parts which are available inside this data configuration element
-<5> `files`: An array containing file pathes to use for uploading dedicated files
-<6> `folders`: An array containing folder pathes to use for uploading dedicated folders
+<5> `files`: An array containing file paths to use for uploading dedicated files
+<6> `folders`: An array containing folder paths to use for uploading dedicated folders
 <7> `excludes`: Exclude directories (optional) - see <<sechub-config-example-sourcescan,code scan >>
 for details. The excludes work for sources and binaries the same way.
 <8> `additionalFilenameExtensions` Introduce additional file name extensions. See <<sechub-config-example-sourcescan,code scan >>
