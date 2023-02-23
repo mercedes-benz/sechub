@@ -34,10 +34,10 @@ public class HTTPBasicAuthScan extends AbstractAuthScan {
         if (basicLoginConfiguration.getRealm().isPresent()) {
             realm = basicLoginConfiguration.getRealm().get();
         }
-        String port = Integer.toString(scanContext.getTargetUri().getPort());
+        String port = Integer.toString(scanContext.getTargetUrl().getPort());
         /* @formatter:off */
 		StringBuilder authMethodConfigParams = new StringBuilder();
-		authMethodConfigParams.append("hostname=").append(urlEncodeUTF8(scanContext.getTargetUri().getHost()))
+		authMethodConfigParams.append("hostname=").append(urlEncodeUTF8(scanContext.getTargetUrl().getHost()))
 							  .append("&realm=").append(urlEncodeUTF8(realm))
 							  .append("&port=").append(urlEncodeUTF8(port));
 		/* @formatter:on */

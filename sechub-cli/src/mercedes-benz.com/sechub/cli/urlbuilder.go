@@ -55,6 +55,14 @@ func buildGetSecHubJobReportAPICall(context *Context) string {
 	return buildAPIUrl(&context.config.server, &apiPart)
 }
 
+// https://sechub.example.com/api/project/project1/jobs?size=10&page=0
+func buildGetSecHubJobListAPICall(context *Context, size int) string {
+	context.contentToSend = nil // Do not send content
+	context.inputForContentProcessing = nil
+	apiPart := fmt.Sprintf("project/%s/jobs?size=%d&page=0", context.config.projectID, size)
+	return buildAPIUrl(&context.config.server, &apiPart)
+}
+
 // https://localhost:8081/api/project/testproject/false-positives
 func buildFalsePositivesAPICall(context *Context) string {
 	apiPart := fmt.Sprintf("project/%s/false-positives", context.config.projectID)

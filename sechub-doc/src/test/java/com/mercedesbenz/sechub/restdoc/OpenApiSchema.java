@@ -20,7 +20,7 @@ enum OpenApiSchema {
 
     MOCK_DATA_CONFIGURATION("MockDataConfiguration"),
 
-    PROJECT_WHITELIST("ProjectWhitelist"),
+    PROJECT_WHITELIST("ProjectWhitelistUpdate"),
 
     PROJECT("Project"), PROJECT_LIST("ListOfProjects"),
 

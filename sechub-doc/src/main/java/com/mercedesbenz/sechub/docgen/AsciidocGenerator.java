@@ -55,6 +55,10 @@ public class AsciidocGenerator implements Generator {
     UseCaseEventOverviewPlantUmlGenerator usecaseEventOverviewGenerator;
     UseCaseEventMessageLinkAsciidocGenerator useCaseEventMessageLinkAsciidocGenerator;
 
+    ModuleDescriptionTableGenerator moduleDescriptionTableGenerator = new ModuleDescriptionTableGenerator();
+    ModuleToModuleGroupTableGenerator moduleToModuleGroupTableGenerator = new ModuleToModuleGroupTableGenerator();
+    ModuleGroupToModuleTableGenerator moduleGroupToModuleTableGenerator = new ModuleGroupToModuleTableGenerator();
+
     /* PDS */
     PDSExecutorConfigurationParameterDescriptionGenerator pdsExecutorConfigParameterGenerator = new PDSExecutorConfigurationParameterDescriptionGenerator();
     CheckmarxWrapperDocumentationGenerator checkmarxWrapperEnvGenerator = new CheckmarxWrapperDocumentationGenerator();
@@ -111,9 +115,10 @@ public class AsciidocGenerator implements Generator {
         generateJavaLaunchExample(context);
         generateScheduleDescription(context);
         generateMockPropertiesDescription(context);
-        generateMessagingFiles(context);
-        generateUseCaseFiles(context);
+
         generateProfilesOverview(context);
+
+        generateModuleAndModuleGroupFiles(context);
 
         /* PDS */
         generatePDSUseCaseFiles(context);
@@ -122,6 +127,28 @@ public class AsciidocGenerator implements Generator {
 
         /* PDS-solution */
         generateCheckmarxPDSSolutionParts(context);
+
+        /* Parts necessary to have special integration tests run */
+        generateMessagingFiles(context);
+        generateUseCaseFiles(context);
+    }
+
+    private void generateModuleAndModuleGroupFiles(GenContext context) throws IOException {
+        // module description
+        String modulesTableGenData = moduleDescriptionTableGenerator.generate();
+        File modulesTableGenFile = new File(context.documentsGenFolder, "gen_modules_table.adoc");
+        writer.save(modulesTableGenFile, modulesTableGenData);
+
+        // module group -> module
+        String moduleGroupsTableGenData = moduleGroupToModuleTableGenerator.generate();
+        File moduleGroupToModuleTableGenFile = new File(context.documentsGenFolder, "gen_modulegroup_to_module_table.adoc");
+        writer.save(moduleGroupToModuleTableGenFile, moduleGroupsTableGenData);
+
+        // module -> modules group
+        String moduleToModuleGroupTableGenData = moduleToModuleGroupTableGenerator.generate();
+        File moduleToModuleGroupTableGenFile = new File(context.documentsGenFolder, "gen_module_to_modulegroup_table.adoc");
+        writer.save(moduleToModuleGroupTableGenFile, moduleToModuleGroupTableGenData);
+
     }
 
     private void generateUseCaseEventData(GenContext context) throws IOException {

@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +22,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.mercedesbenz.sechub.commons.model.ModuleGroup;
 import com.mercedesbenz.sechub.domain.schedule.ExecutionState;
 import com.mercedesbenz.sechub.test.TestUtil;
 
@@ -40,7 +42,191 @@ public class SecHubJobRepositoryDBTest {
     @Before
     public void before() {
 
-        jobCreator = jobCreator("project-db-test", entityManager);
+        jobCreator = jobCreator("p0", entityManager);
+    }
+
+    @Test
+    public void custom_query_nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted() {
+        /* prepare */
+        ScheduleSecHubJob newJob = jobCreator.being(ExecutionState.READY_TO_START).create();
+
+        /* execute */
+        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted();
+
+        /* test */
+        assertTrue(uuid.isPresent());
+        assertEquals(newJob.getUUID(), uuid.get());
+    }
+
+    @Test
+    public void custom_query_nextJobIdToExecuteForProjectNotYetExecuted_one_available() {
+        /* prepare */
+        ScheduleSecHubJob newJob = jobCreator.being(ExecutionState.READY_TO_START).create();
+
+        /* execute */
+        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteForProjectNotYetExecuted();
+
+        /* test */
+        assertTrue(uuid.isPresent());
+        assertEquals(newJob.getUUID(), uuid.get());
+    }
+
+    @Test
+    public void custom_query_nextJobIdToExecuteForProjectNotYetExecuted_2_projects_1_project_running() {
+        /* prepare */
+        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
+        ScheduleSecHubJob newJob2 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob3 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+
+        /* check preconditions */
+        assertTrue(newJob2.created.isAfter(newJob1.created));
+        assertTrue(newJob3.created.isAfter(newJob2.created));
+
+        /* execute */
+        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteForProjectNotYetExecuted();
+
+        /* test */
+        assertTrue(uuid.isPresent());
+        assertEquals(newJob3.getUUID(), uuid.get());
+    }
+
+    @Test
+    public void custom_query_nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted_2_projects_1_project_running_all_same_groups() {
+        /* prepare */
+        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
+        ScheduleSecHubJob newJob2 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob3 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+
+        /* check preconditions */
+        assertTrue(newJob2.created.isAfter(newJob1.created));
+        assertTrue(newJob3.created.isAfter(newJob2.created));
+
+        /* execute */
+        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted();
+
+        /* test */
+        assertTrue(uuid.isPresent());
+        assertEquals(newJob3.getUUID(), uuid.get());
+    }
+
+    @Test
+    public void custom_query_nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted_2_projects_1_project_running_different_groups() {
+        /* prepare */
+        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
+        ScheduleSecHubJob newJob2 = jobCreator.project("p1").module(ModuleGroup.DYNAMIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob3 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+
+        /* check preconditions */
+        assertTrue(newJob2.created.isAfter(newJob1.created));
+        assertTrue(newJob3.created.isAfter(newJob2.created));
+
+        /* execute */
+        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted();
+
+        /* test */
+        assertTrue(uuid.isPresent());
+        assertEquals(newJob2.getUUID(), uuid.get());
+    }
+
+    @Test
+    public void custom_query_nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted_3_projects_2_project_running_different_groups() {
+        /* prepare */
+        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
+        ScheduleSecHubJob newJob2 = jobCreator.project("p1").module(ModuleGroup.DYNAMIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob3 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob4 = jobCreator.project("p3").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+
+        /* check preconditions */
+        assertTrue(newJob2.created.isAfter(newJob1.created));
+        assertTrue(newJob3.created.isAfter(newJob2.created));
+        assertTrue(newJob4.created.isAfter(newJob3.created));
+
+        /* execute */
+        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted();
+
+        /* test */
+        assertTrue(uuid.isPresent());
+        assertEquals(newJob2.getUUID(), uuid.get());
+    }
+
+    @Test
+    public void custom_query_nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted_3_projects_2_project_running_same_groups() {
+        /* prepare */
+        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.STARTED).create();
+        ScheduleSecHubJob newJob2 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob3 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob4 = jobCreator.project("p3").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+
+        /* check preconditions */
+        assertTrue(newJob2.created.isAfter(newJob1.created));
+        assertTrue(newJob3.created.isAfter(newJob2.created));
+        assertTrue(newJob4.created.isAfter(newJob3.created));
+
+        /* execute */
+        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted();
+
+        /* test */
+        assertTrue(uuid.isPresent());
+        assertEquals(newJob3.getUUID(), uuid.get());
+    }
+
+    @Test
+    public void custom_query_nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted_4_projects_no_project_started_all_ready() {
+        /* prepare */
+        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob2 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob3 = jobCreator.project("p3").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+        ScheduleSecHubJob newJob4 = jobCreator.project("p4").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+
+        /* check preconditions */
+        assertTrue(newJob2.created.isAfter(newJob1.created));
+        assertTrue(newJob3.created.isAfter(newJob2.created));
+        assertTrue(newJob4.created.isAfter(newJob3.created));
+
+        /* execute */
+        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted();
+
+        /* test */
+        assertTrue(uuid.isPresent());
+        assertEquals(newJob1.getUUID(), uuid.get());
+    }
+
+    @Test
+    public void custom_query_nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted_3_projects_different_states() {
+        /* prepare */
+        ScheduleSecHubJob newJob1 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).create();
+        ScheduleSecHubJob newJob2 = jobCreator.project("p1").module(ModuleGroup.STATIC).being(ExecutionState.INITIALIZING).create();
+        ScheduleSecHubJob newJob3 = jobCreator.project("p2").module(ModuleGroup.STATIC).being(ExecutionState.CANCELED).create();
+        ScheduleSecHubJob newJob4 = jobCreator.project("p3").module(ModuleGroup.STATIC).being(ExecutionState.ENDED).create();
+        ScheduleSecHubJob newJob5 = jobCreator.project("p3").module(ModuleGroup.STATIC).being(ExecutionState.CANCEL_REQUESTED).create();
+        ScheduleSecHubJob newJob6 = jobCreator.project("p3").module(ModuleGroup.STATIC).being(ExecutionState.READY_TO_START).create();
+
+        /* check preconditions */
+        assertTrue(newJob2.created.isAfter(newJob1.created));
+        assertTrue(newJob3.created.isAfter(newJob2.created));
+        assertTrue(newJob4.created.isAfter(newJob3.created));
+        assertTrue(newJob5.created.isAfter(newJob4.created));
+        assertTrue(newJob6.created.isAfter(newJob5.created));
+
+        /* execute */
+        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteForProjectAndModuleGroupNotYetExecuted();
+
+        /* test */
+        assertTrue(uuid.isPresent());
+        assertEquals(newJob6.getUUID(), uuid.get());
+    }
+
+    @Test
+    public void custom_query_nextJobIdToExecuteFirstInFirstOut() {
+        /* prepare */
+        ScheduleSecHubJob newJob = jobCreator.being(ExecutionState.READY_TO_START).create();
+
+        /* execute */
+        Optional<UUID> uuid = jobRepository.nextJobIdToExecuteFirstInFirstOut();
+
+        /* test */
+        assertTrue(uuid.isPresent());
+        assertEquals(newJob.getUUID(), uuid.get());
     }
 
     @Test
@@ -175,7 +361,7 @@ public class SecHubJobRepositoryDBTest {
     @Test
     public void findNextJobToExecute__and_no_jobs_available_at_all_null_is_returned_when_existing() {
 
-        assertFalse(jobRepository.findNextJobToExecute().isPresent());
+        assertFalse(jobRepository.nextJobIdToExecuteFirstInFirstOut().isPresent());
     }
 
     @Test
@@ -184,7 +370,7 @@ public class SecHubJobRepositoryDBTest {
         jobCreator.newJob().being(STARTED).create();
 
         /* execute + test */
-        assertFalse(jobRepository.findNextJobToExecute().isPresent());
+        assertFalse(jobRepository.nextJobIdToExecuteFirstInFirstOut().isPresent());
 
     }
 
@@ -207,14 +393,14 @@ public class SecHubJobRepositoryDBTest {
 				   newJob().being(READY_TO_START).create();
 
 		/* execute */
-		Optional<ScheduleSecHubJob> optional = jobRepository.findNextJobToExecute();
+		Optional<UUID> optional = jobRepository.nextJobIdToExecuteFirstInFirstOut();
 		assertTrue(optional.isPresent());
 
-		ScheduleSecHubJob job = optional.get();
+		UUID jobUUID = optional.get();
 
 		/* test @formatter:on*/
-        assertNotNull(job.getUUID());
-        assertEquals(expectedNextJob.getUUID(), job.getUUID());
+        assertNotNull(jobUUID);
+        assertEquals(expectedNextJob.getUUID(), jobUUID);
     }
 
     private class DeleteJobTestData {

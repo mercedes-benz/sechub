@@ -20,6 +20,7 @@ type Context struct {
 	sourceZipFileChecksum     string
 	sourceZipFileName         string
 	jobStatus                 *jobStatusResult
+	jobList                   *jobListResult
 }
 
 func (context *Context) sourceZipFileExists() bool {
@@ -35,6 +36,7 @@ func NewContext(config *Config) *Context {
 	context := new(Context)
 	context.config = config
 	context.jobStatus = new(jobStatusResult)
+	context.jobList = new(jobListResult)
 
 	/* setup HTTP client */
 	tr := &http.Transport{
