@@ -376,7 +376,7 @@ public class IntegrationTestDefaultProfiles {
     public static final DefaultTestExecutionProfile PROFILE_16_PDS_ANALYZE_CLOC_OUTPUT = defineProfile16();
 
     /**
-     * <h3>Profile 16</h3>
+     * <h3>Profile 17</h3>
      * <h4>Short description</h4>PDS scan profile for secret scans
      *
      * <h4>Overview</h4> For a glance over all scenarios, look at
@@ -386,7 +386,7 @@ public class IntegrationTestDefaultProfiles {
      * <h4>Details</h4><br>
      * <h5>Used inside scenarios:</h5>
      * <ul>
-     * <li>{@link Scenario16}</li>
+     * <li>{@link Scenario20}</li>
      * </ul>
      */
     public static final DefaultTestExecutionProfile PROFILE_17_PDS_SECRETSCAN = defineProfile17();
@@ -570,7 +570,7 @@ public class IntegrationTestDefaultProfiles {
         DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
         profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_SECRET_SCAN_A);
         profile.id = "inttest-p17-pds-secretscan";
-        profile.description = "Profile 16: PDS secret scan, reused storage, SARIF JSON file returned";
+        profile.description = "Profile 17: PDS secret scan, reused storage, SARIF JSON file returned";
         profile.enabled = true;
         return profile;
     }

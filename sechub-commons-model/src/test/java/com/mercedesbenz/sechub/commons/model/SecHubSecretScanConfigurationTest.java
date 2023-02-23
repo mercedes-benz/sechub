@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 public class SecHubSecretScanConfigurationTest {
     @Test
-    void license_scan_no_data_reference() {
+    void secret_scan_no_data_reference() {
         /* execute */
         SecHubSecretScanConfiguration secretScan = new SecHubSecretScanConfiguration();
 
@@ -18,7 +18,7 @@ public class SecHubSecretScanConfigurationTest {
     }
 
     @Test
-    void license_scan_with_data_reference() {
+    void secret_scan_with_data_reference() {
         /* prepare */
         String name = "build-artifacts";
         SecHubSecretScanConfiguration secretScan = new SecHubSecretScanConfiguration();

@@ -68,7 +68,7 @@ import com.mercedesbenz.sechub.integrationtest.scenario9.Scenario9;
  * <li>{@link IntegrationTestDefaultProfiles#PROFILE_14_PDS_CHECKMARX_INTEGRATIONTEST_WRONG_WITH_SOURCE_AND_BINARY Profile 14} - PDS code scan with checkmarx but wrong configured</li>
  * <li>{@link IntegrationTestDefaultProfiles#PROFILE_15_PDS_CHECKMARX_INTEGRATIONTEST_FILTERING_TEXTFILES Profile 15} - PDS code scan for filtering text files
  * <li>{@link IntegrationTestDefaultProfiles#PROFILE_16_PDS_ANALYZE_CLOC_OUTPUT Profile 16} - PDS analyzer profile, with CLOC JSON output as default
- * <li>{@link IntegrationTestDefaultProfiles#PROFILE_17_PDS_SECRETSCAN Profile 16} - PDS secret scan</li>
+ * <li>{@link IntegrationTestDefaultProfiles#PROFILE_17_PDS_SECRETSCAN Profile 17} - PDS secret scan</li>
  * </ul>
  * @author Albert Tregnaghi
  *
