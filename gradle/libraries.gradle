@@ -30,11 +30,11 @@ ext {
        * management is defined here:
        */                                     
       dom4j:                                   "2.1.4",
-      jsoup:                                   "1.15.3",
+      jsoup:                                   "1.15.4",
       re2j:                                    "1.7",
-      logstash_logback_encoder:                "7.2",
-      aws_java_sdk_s3:                         "1.12.390",
-      postgresql:                              "42.5.1",
+      logstash_logback_encoder:                "7.3",
+      aws_java_sdk_s3:                         "1.12.413",
+      postgresql:                              "42.5.4",
                                               
       /* JDK > 9 needs these ones: */         
       jaxb_api:                                "2.3.1",
@@ -48,7 +48,7 @@ ext {
       apache_commons_cli:                      "1.5.0",
       apache_commons_io:                       "2.11.0",
       apache_commons_validator:                "1.7",
-      apache_commons_fileupload:               "1.4",
+      apache_commons_fileupload:               "1.5",
       apache_commons_compress:                 "1.22",
       apache_commons_lang3:                    "3.12.0",
 
@@ -58,19 +58,19 @@ ext {
       s3mock:                                  "2.11.0",
 
       /* gradle plugins */      
-      dependency_check:                        "8.0.1",
+      dependency_check:                        "8.1.0",
       grgit:                                   "5.0.0",
       
       /* documentation */
       asciidoctor_j:                           "2.5.2",
       asciidoctor_j_diagram:                   "2.2.1",
       // openapi3-generator, releases see https://github.com/ePages-de/restdocs-api-spec/releases
-      restDocsApiSpec:                         "0.16.4",
+      restDocsApiSpec:                         "0.16.4",  // newest version compatible with Spring Boot 2.x
       
       /* Owasp Zap wrapper */
       owaspzap_client_api:                     "1.11.0",
       jcommander:                              "1.82",
-      thymeleaf_extras_springsecurity5:        "3.1.0.RELEASE"
+      thymeleaf_extras_springsecurity5:        "3.1.1.RELEASE"
       
     
    ]    
