@@ -282,6 +282,7 @@ Each module performs a different security testing method:
 * <<webscan, `webScan`>> - scans a deployed web application for vulnerabilities. Also knows as DAST.
 * <<infrascan, `infraScan`>> - scans infrastructure for vulnerabilities.
 * <<licensescan, `licenseScan`>> - scans code or artifacts for license information.
+* <<secretscan, `secretScan`>> - scans code or artifacts for secrets (API tokens, certificates, passwords).
 
 [[codescan]]
 ==== codeScan
@@ -338,6 +339,17 @@ PDS-Solutions:
 
 * Scancode
 * Tern
+
+[[secretscan]]
+==== secretScan
+
+**Status: Experimental**
+
+Scans code or artifacts for secrets (API tokens, certificates, passwords).
+
+PDS-Solutions:
+
+* Gitleaks
 
 === Architecture
 

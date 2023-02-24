@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product;
 
-import static com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier.*;
+import static com.mercedesbenz.sechub.sharedkernel.ProductIdentifier.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -24,6 +24,7 @@ import com.mercedesbenz.sechub.domain.scan.ScanDomainTestFileSupport;
 import com.mercedesbenz.sechub.domain.scan.product.config.DefaultProductExecutorConfigInfo;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigInfo;
 import com.mercedesbenz.sechub.domain.scan.product.config.WithoutProductExecutorConfigInfo;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest

@@ -3,7 +3,9 @@ package com.mercedesbenz.sechub.sereco;
 
 import java.util.List;
 
+import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 
 public class ImportParameter {
     private String productId;
@@ -29,6 +31,12 @@ public class ImportParameter {
 
     public List<SecHubMessage> getProductMessages() {
         return productMessages;
+    }
+
+    public ScanType getScanType() {
+        ProductIdentifier productIdentifier = ProductIdentifier.fromString(productId);
+
+        return productIdentifier.getType();
     }
 
     /**

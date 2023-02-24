@@ -8,9 +8,9 @@ import java.io.IOException;
 import java.util.UUID;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.ReportTransformationResult;
 import com.mercedesbenz.sechub.domain.scan.SecHubExecutionException;
-import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigInfo;
 import com.mercedesbenz.sechub.domain.scan.product.sereco.SerecoProductResultTransformer;
@@ -20,6 +20,7 @@ import com.mercedesbenz.sechub.sereco.importer.CheckmarxV1XMLImporter;
 import com.mercedesbenz.sechub.sereco.importer.ProductResultImporter;
 import com.mercedesbenz.sechub.sereco.importer.SarifV1JSONImporter;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.test.TestFileReader;
 
 public class ReportTestHelper {
@@ -60,22 +61,29 @@ public class ReportTestHelper {
     }
 
     public static ScanReport transformCheckmarxToSecHubReportResult(String xml, String sechubJobUUID) throws IOException, SecHubExecutionException {
-        return simulateCreateScanReportService(xml, ProductIdentifier.CHECKMARX, sechubJobUUID, checkmarxImporter, true);
+        return simulateCreateScanReportService(xml, ProductIdentifier.CHECKMARX, sechubJobUUID, checkmarxImporter, ScanType.CODE_SCAN, true);
     }
 
     public static ScanReport transformSarifToScanReport(String sarifJson, ProductIdentifier productIdentifier, String sechubJobUUID)
             throws IOException, SecHubExecutionException {
-        return simulateCreateScanReportService(sarifJson, productIdentifier, sechubJobUUID, sarifImporter, true);
+
+        ScanType scanType = ScanType.WEB_SCAN;
+
+        if (productIdentifier.equals(ProductIdentifier.PDS_CODESCAN)) {
+            scanType = ScanType.CODE_SCAN;
+        }
+
+        return simulateCreateScanReportService(sarifJson, productIdentifier, sechubJobUUID, sarifImporter, scanType, true);
     }
 
-    private static ScanReport simulateCreateScanReportService(String xml, ProductIdentifier productIdentifier, String sechubJobUUID,
-            ProductResultImporter productResultImporter, boolean hasProductResults) throws IOException, SecHubExecutionException {
+    private static ScanReport simulateCreateScanReportService(String report, ProductIdentifier productIdentifier, String sechubJobUUID,
+            ProductResultImporter productResultImporter, ScanType scanType, boolean hasProductResults) throws IOException, SecHubExecutionException {
 
         ProductExecutorConfigInfo info = mock(ProductExecutorConfigInfo.class);
         when(info.getProductIdentifier()).thenReturn(productIdentifier);
 
         // import from SARIF to SERECO format
-        SerecoMetaData serecoMetaData = productResultImporter.importResult(xml);
+        SerecoMetaData serecoMetaData = productResultImporter.importResult(report, scanType);
         String serecoJSon = JSONConverter.get().toJSON(serecoMetaData);
 
         // transform SERECO JSON to SecHub report transformation result

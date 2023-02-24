@@ -33,7 +33,7 @@ public class Workspace {
     private SerecoMetaData workspaceMetaData = new SerecoMetaData();
 
     @Autowired
-    private ImporterRegistry registry;
+    ImporterRegistry registry;
 
     private String id;
 
@@ -91,10 +91,10 @@ public class Workspace {
             }
             if (ProductImportAbility.ABLE_TO_IMPORT.equals(ableToImportForProduct)) {
                 LOG.debug("Importer {} is able to import {}", importer.getName(), param.getImportId());
-                SerecoMetaData importedMetaData = importer.importResult(param.getImportData());
+                SerecoMetaData importedMetaData = importer.importResult(param.getImportData(), param.getScanType());
                 if (importedMetaData == null) {
-                    LOG.error("Meta data was null for product={}, importer={}, importId={}", param.getProductId(), importer.getClass().getSimpleName(),
-                            param.getImportId());
+                    LOG.error("Meta data was null for product={}, importer={}, importId={}, scanType={}", param.getProductId(),
+                            importer.getClass().getSimpleName(), param.getImportId(), param.getScanType());
                     return;
                 }
                 mergeWithWorkspaceData(importedMetaData);

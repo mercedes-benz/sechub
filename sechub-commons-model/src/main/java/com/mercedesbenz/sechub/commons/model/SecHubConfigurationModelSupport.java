@@ -57,6 +57,8 @@ public class SecHubConfigurationModelSupport {
             return false;
         case LICENSE_SCAN:
             return isDataTypeContainedOrReferenced(dataType, model, model.getLicenseScan(), SecHubLicenseScanConfiguration.class);
+        case SECRET_SCAN:
+            return isDataTypeContainedOrReferenced(dataType, model, model.getSecretScan(), SecHubSecretScanConfiguration.class);
         case REPORT:
             return false;
         case ANALYTICS:
@@ -165,6 +167,9 @@ public class SecHubConfigurationModelSupport {
         }
         if (model.getLicenseScan().isPresent()) {
             result.add(ScanType.LICENSE_SCAN);
+        }
+        if (model.getSecretScan().isPresent()) {
+            result.add(ScanType.SECRET_SCAN);
         }
         return result;
     }

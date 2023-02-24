@@ -80,7 +80,7 @@ public class CheckmarxV1XMLImporterTest {
         String xml = SerecoTestFileSupport.INSTANCE.loadTestFile("checkmarx/sechub-continous-integration-with-false-positive.xml");
 
         /* execute */
-        SerecoMetaData result = importerToTest.importResult(xml);
+        SerecoMetaData result = importerToTest.importResult(xml, ScanType.CODE_SCAN);
 
         /* test */
         List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
@@ -121,7 +121,7 @@ public class CheckmarxV1XMLImporterTest {
         String xml = SerecoTestFileSupport.INSTANCE.loadTestFile("checkmarx/sechub-continous-integration-with-false-positive.xml");
 
         /* execute */
-        SerecoMetaData result = importerToTest.importResult(xml);
+        SerecoMetaData result = importerToTest.importResult(xml, ScanType.CODE_SCAN);
 
         /* test */
         List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
@@ -139,7 +139,7 @@ public class CheckmarxV1XMLImporterTest {
         String xml = SerecoTestFileSupport.INSTANCE.loadTestFile("checkmarx/sechub-continous-integration-with-false-positive.xml");
 
         /* execute */
-        SerecoMetaData data = importerToTest.importResult(xml);
+        SerecoMetaData data = importerToTest.importResult(xml, ScanType.CODE_SCAN);
 
         /* test @formatter:off */
 		assertVulnerabilities(data.getVulnerabilities()).
@@ -155,7 +155,7 @@ public class CheckmarxV1XMLImporterTest {
         String xml = SerecoTestFileSupport.INSTANCE.loadTestFileFromRoot("sechub-other/testoutput/checkmarx-example1.xml");
 
         /* execute */
-        SerecoMetaData data = importerToTest.importResult(xml);
+        SerecoMetaData data = importerToTest.importResult(xml, ScanType.CODE_SCAN);
 
         /* test */
         List<SerecoVulnerability> vulnerabilities = data.getVulnerabilities();

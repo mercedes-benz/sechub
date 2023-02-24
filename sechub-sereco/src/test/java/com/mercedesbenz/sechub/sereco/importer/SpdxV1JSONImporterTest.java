@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
 import com.mercedesbenz.sechub.sereco.test.SerecoTestFileSupport;
 
@@ -36,7 +37,7 @@ public class SpdxV1JSONImporterTest {
 
         /* execute + test */
         assertThrows(NullPointerException.class, () -> {
-            importerToTest.importResult(spdx);
+            importerToTest.importResult(spdx, ScanType.LICENSE_SCAN);
         });
     }
 
@@ -46,7 +47,7 @@ public class SpdxV1JSONImporterTest {
         String spdx = "";
 
         /* execute */
-        SerecoMetaData metaData = importerToTest.importResult(spdx);
+        SerecoMetaData metaData = importerToTest.importResult(spdx, ScanType.LICENSE_SCAN);
 
         /* test */
         assertTrue(metaData.getLicenseDocuments().isEmpty());
@@ -58,7 +59,7 @@ public class SpdxV1JSONImporterTest {
         String spdx = "{}";
 
         /* execute */
-        SerecoMetaData metaData = importerToTest.importResult(spdx);
+        SerecoMetaData metaData = importerToTest.importResult(spdx, ScanType.LICENSE_SCAN);
 
         /* test */
         assertTrue(metaData.getLicenseDocuments().isEmpty());
@@ -70,7 +71,7 @@ public class SpdxV1JSONImporterTest {
         String spdx = "I am a long text …";
 
         /* execute */
-        SerecoMetaData metaData = importerToTest.importResult(spdx);
+        SerecoMetaData metaData = importerToTest.importResult(spdx, ScanType.LICENSE_SCAN);
 
         /* test */
         assertTrue(metaData.getLicenseDocuments().isEmpty());
@@ -82,7 +83,7 @@ public class SpdxV1JSONImporterTest {
         String spdx = spdx_invalid_json;
 
         /* execute */
-        SerecoMetaData metaData = importerToTest.importResult(spdx);
+        SerecoMetaData metaData = importerToTest.importResult(spdx, ScanType.LICENSE_SCAN);
 
         /* test */
         assertTrue(metaData.getLicenseDocuments().isEmpty());
@@ -94,7 +95,7 @@ public class SpdxV1JSONImporterTest {
         String spdx = spdx_2_2_scancode;
 
         /* execute */
-        SerecoMetaData metaData = importerToTest.importResult(spdx);
+        SerecoMetaData metaData = importerToTest.importResult(spdx, ScanType.LICENSE_SCAN);
 
         /* test */
         assertNotNull(metaData.getLicenseDocuments().get(0).getSpdx());
