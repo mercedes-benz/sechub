@@ -30,7 +30,6 @@ ARG SECHUB_ARTIFACT_FOLDER="/artifacts"
 FROM ${BASE_IMAGE} AS builder-build
 
 # Build args
-ARG GO
 ARG SECHUB_ARTIFACT_FOLDER
 ARG JAVA_VERSION
 ARG JAVA_DISTRIBUTION
@@ -48,10 +47,9 @@ RUN echo "Builder: Build"
 RUN mkdir --parent "$SECHUB_ARTIFACT_FOLDER" "$DOWNLOAD_FOLDER"
 
 RUN apk update && \
-    apk add --no-cache wget git && \
-    apk cache clean
+    apk add --no-cache wget git bash go
 
-COPY --chmod=755 install-java/ "$DOWNLOAD_FOLDER/install-java/"
+COPY --chmod=755 install-java/alpine "$DOWNLOAD_FOLDER/install-java/"
 
 # Install Java
 RUN cd "$DOWNLOAD_FOLDER/install-java/" && \
@@ -66,8 +64,6 @@ RUN mkdir --parent "$BUILD_FOLDER" && \
     # execute the clone script
     ./clone.sh "$GIT_URL" "$BRANCH" "$TAG" && \
     cd "sechub" && \
-    # Java version
-    java --version && \
     # Build SecHub
     "./buildExecutables" && \
     cp sechub-server/build/libs/sechub-server-*.jar --target-directory "$SECHUB_ARTIFACT_FOLDER"

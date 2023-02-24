@@ -24,4 +24,4 @@ then
 fi
 
 echo "Compose file: $compose_file"
-docker-compose --file "$compose_file.yaml" up --build --remove-orphans
+docker-compose --file "$compose_file-debian.yaml" up --build --remove-orphans
