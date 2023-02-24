@@ -13,6 +13,8 @@ public enum ScanType {
 
     LICENSE_SCAN("licenseScan", "Scans code or artifacts for license information"),
 
+    SECRET_SCAN("secretScan", "Scans code or artifacts for secrets"),
+
     REPORT("report", "Internal scan type for reporting", true),
 
     ANALYTICS("analytics", "Internal scan type for analytic phase", true),

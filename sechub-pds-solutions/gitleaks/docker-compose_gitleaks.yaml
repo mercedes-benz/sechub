@@ -2,19 +2,20 @@
 
 version: "3"
 services:
-    gitleaks:
+    pds-gitleaks:
         build:
             args:
                 - BASE_IMAGE=${BASE_IMAGE}
+                - GITLEAKS_VERSION=${GITLEAKS_VERSION}
             context: docker/
             dockerfile: Gitleaks.dockerfile
-        container_name: gitleaks
+        container_name: pds-gitleaks
         env_file:
             - .env
             - .env-single
         ports:
-            - "127.0.0.1:8444:8444"
-            - "127.0.0.1:15024:15024"
+            - "127.0.0.1:${PORT}:8444"
+            - "127.0.0.1:${DEBUG_PORT}:15024"
         networks:
             - "internal"
         volumes:

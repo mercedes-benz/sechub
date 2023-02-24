@@ -1,0 +1,7 @@
+# PDS-Solution port
+PORT=8444
+
+# Java Remote debug port
+DEBUG_PORT=15024
+
+

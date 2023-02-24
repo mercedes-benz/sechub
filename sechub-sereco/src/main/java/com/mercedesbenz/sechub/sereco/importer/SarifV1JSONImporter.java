@@ -64,7 +64,7 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         sarifSupport = new SarifReportSupport();
     }
 
-    public SerecoMetaData importResult(String data) throws IOException {
+    public SerecoMetaData importResult(String data, ScanType scanType) throws IOException {
 
         if (data == null) {
             data = "";
@@ -85,24 +85,24 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         SerecoMetaData metaData = new SerecoMetaData();
 
         for (Run run : report.getRuns()) {
-            handleEachRun(run, metaData);
+            handleEachRun(run, metaData, scanType);
         }
         return metaData;
     }
 
-    private void handleEachRun(Run run, SerecoMetaData metaData) {
+    private void handleEachRun(Run run, SerecoMetaData metaData, ScanType scanType) {
         List<Result> results = run.getResults();
 
         for (Result result : results) {
 
-            SerecoVulnerability vulnerability = createSerecoVulnerability(run, result);
+            SerecoVulnerability vulnerability = createSerecoVulnerability(run, result, scanType);
             if (vulnerability != null) {
                 metaData.getVulnerabilities().add(vulnerability);
             }
         }
     }
 
-    private SerecoVulnerability createSerecoVulnerability(Run run, Result result) {
+    private SerecoVulnerability createSerecoVulnerability(Run run, Result result, ScanType scanType) {
         if (result == null) {
             return null;
         }
@@ -117,22 +117,21 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
 
         vulnerability.setSeverity(resolveSeverity(result, run));
         vulnerability.getClassification().setCwe(resultData.cweId);
+        vulnerability.setScanType(scanType);
 
-        detectScanTypeAndInspectOnDemand(result, vulnerability);
+        setWebInformationOrCodeFlow(result, vulnerability);
 
         return vulnerability;
     }
 
-    private void detectScanTypeAndInspectOnDemand(Result result, SerecoVulnerability vulnerability) {
+    private void setWebInformationOrCodeFlow(Result result, SerecoVulnerability vulnerability) {
+
         WebRequest sarifWebRequest = result.getWebRequest();
-        if (sarifWebRequest != null) {
-            vulnerability.setScanType(ScanType.WEB_SCAN);
+        if (sarifWebRequest != null && vulnerability.getScanType() == ScanType.WEB_SCAN) {
             vulnerability.setWeb(resolveWebInfoFromResult(result));
         } else {
-            vulnerability.setScanType(ScanType.CODE_SCAN);
             vulnerability.setCode(resolveCodeInfoFromResult(result));
         }
-
     }
 
     private SerecoWeb resolveWebInfoFromResult(Result result) {

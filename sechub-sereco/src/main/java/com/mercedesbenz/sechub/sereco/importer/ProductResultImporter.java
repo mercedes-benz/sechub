@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.sereco.importer;
 
 import java.io.IOException;
 
+import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.sereco.ImportParameter;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
 
@@ -21,10 +22,11 @@ public interface ProductResultImporter {
      * {@link ProductImportAbility#ABLE_TO_IMPORT}
      *
      * @param data
+     * @param ScanType scanType
      * @return SERECO meta data, never <code>null</code>
      * @throws IOException if this import fails.
      */
-    public SerecoMetaData importResult(String data) throws IOException;
+    public SerecoMetaData importResult(String data, ScanType scanType) throws IOException;
 
     /**
      * Checks if the importer is able to import data by given parameters. If

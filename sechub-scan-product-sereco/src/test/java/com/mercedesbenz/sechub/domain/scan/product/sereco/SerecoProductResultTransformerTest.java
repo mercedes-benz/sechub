@@ -19,7 +19,6 @@ import com.mercedesbenz.sechub.commons.model.SecHubResult;
 import com.mercedesbenz.sechub.commons.model.Severity;
 import com.mercedesbenz.sechub.domain.scan.AssertSecHubResult;
 import com.mercedesbenz.sechub.domain.scan.ReportTransformationResult;
-import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.domain.scan.product.config.WithoutProductExecutorConfigInfo;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoClassification;
@@ -27,6 +26,7 @@ import com.mercedesbenz.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoSeverity;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 
 public class SerecoProductResultTransformerTest {
 

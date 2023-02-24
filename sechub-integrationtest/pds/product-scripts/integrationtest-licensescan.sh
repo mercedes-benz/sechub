@@ -3,7 +3,7 @@
 
 source ./../sechub-integrationtest/pds/product-scripts/shared-functions.sh
 
-echo "PDS License integrationt test script starting..."
+echo "PDS License Scan integration test script starting..."
 
 dumpPDSVariables
 

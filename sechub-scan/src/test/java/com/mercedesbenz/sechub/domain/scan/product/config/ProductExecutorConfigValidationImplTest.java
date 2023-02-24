@@ -10,7 +10,7 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.validation.ValidationResult;
 
 public class ProductExecutorConfigValidationImplTest {

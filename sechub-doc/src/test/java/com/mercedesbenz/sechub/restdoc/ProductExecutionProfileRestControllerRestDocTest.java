@@ -34,7 +34,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
-import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.config.CreateProductExecutionProfileService;
 import com.mercedesbenz.sechub.domain.scan.product.config.DeleteProductExecutionProfileService;
 import com.mercedesbenz.sechub.domain.scan.product.config.FetchProductExecutionProfileListService;
@@ -49,6 +48,7 @@ import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigS
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetupJobParameter;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigValidation;
 import com.mercedesbenz.sechub.domain.scan.product.config.UpdateProductExecutionProfileService;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
 import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
