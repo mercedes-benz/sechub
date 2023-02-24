@@ -25,7 +25,7 @@ then
     exit 1
 fi
 
-if [ -z "$JAVA_RUNTIME" ]
+if [ "$JAVA_RUNTIME" != "jdk" ] &&  [ "$JAVA_RUNTIME" != "jre" ]
 then
     print_error "ERROR: No Java runtime provided!"
     print_error "Possible values: jre and jdk"

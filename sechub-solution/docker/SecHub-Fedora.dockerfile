@@ -19,8 +19,6 @@ ARG SECHUB_VERSION="0.35.2"
 ARG TAG=""
 ARG BRANCH=""
 
-ARG GO="go1.20.1.linux-${TARGETARCH}.tar.gz"
-
 # possible values: temurin, openj9, openjdk
 ARG JAVA_DISTRIBUTION="openjdk"
 # possible values are 11, 17
@@ -36,7 +34,6 @@ ARG SECHUB_ARTIFACT_FOLDER="/artifacts"
 FROM ${BASE_IMAGE} AS builder-build
 
 # Build args
-ARG GO
 ARG SECHUB_ARTIFACT_FOLDER
 ARG JAVA_VERSION
 ARG JAVA_DISTRIBUTION

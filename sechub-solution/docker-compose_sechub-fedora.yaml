@@ -10,7 +10,6 @@ services:
         - JAVA_DISTRIBUTION=${JAVA_DISTRIBUTION}
         - JAVA_VERSION=${JAVA_VERSION}
         - SECHUB_VERSION=${SECHUB_VERSION}
-        - GO=${GO}
         - TAG=${TAG}
         - BRANCH=${BRANCH}
       context: docker/
