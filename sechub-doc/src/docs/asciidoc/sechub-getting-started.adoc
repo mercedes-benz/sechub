@@ -50,7 +50,7 @@ In your terminal type:
 
 [source, shell]
 --
-include::sechub-getting-started/clone-repo.sh[]
+include::sechub-getting-started/clone-repo.sh[lines=2;3]
 --
 This makes a local copy of the SecHub project on your computer and goes to the project's folder
 
@@ -61,7 +61,7 @@ The Sechub server is responsible for taking jobs and passing them to the PDS ser
 
 [source, shell]
 --
-include::sechub-getting-started/start-sechub.sh[]
+include::sechub-getting-started/start-sechub.sh[lines=2]
 --
 
 This starts the server.
@@ -71,7 +71,7 @@ The PDS server, which contains the security tool https://securego.io/[GoSec], wi
 
 [source, shell]
 --
-include::sechub-getting-started/start-pds-gosec.sh[]
+include::sechub-getting-started/start-pds-gosec.sh[lines=2]
 --
 
 This will prepare some environment files and will start a container based on SecHub's custom PDS+GoSec image. In the container, GoLang and GoSec will be installed and the server will be started.
@@ -84,14 +84,14 @@ Here we set the local credentials because everything is hosted locally:
 
 [source, shell]
 --
-include::sechub-getting-started/setup-project.sh[lines=1..5]
+include::sechub-getting-started/setup-project.sh[lines=2..6]
 --
 
 After setting the variables, you can run this script, which will first check if you have set the variable correctly. Then it will create a project, and create a user who will be assigned to the project. (Created user/project can be changed in the 8000-setup-gosec.sh file)
 
 [source, shell]
 --
-include::sechub-getting-started/setup-project.sh[lines=7]
+include::sechub-getting-started/setup-project.sh[lines=8]
 --
 
 After running it, you should get a similar output if everything is working correctly:
@@ -184,7 +184,7 @@ Now you are ready to do scans!
 ==== Scanning
 
 Now you can go to another project's directory and do a scan for vulnerabilities.
-In this example, we will use sechub's folder, but you are free to use any other project!
+In this example, we will use SecHub's folder, but you are free to use any other project!
 
 
 Before starting the scan, you need a `sechub.json`, which tells which files to be scanned, and which to be skipped.
@@ -208,14 +208,14 @@ echo "
 " > sechub.json
 --
 
-But you can skip this step, because the sechub's folder, already contains it.
+But you can skip this step, because the SecHub's folder, already contains it.
 
 And to scan it, just type `sechub -project test-gosec scan`, this will create a JSON file, which contains a report of the findings from the scan. If you want HTML output just add `-reportformat html` as an option: `sechub -project test-gosec -reportformat html scan`
 
-==== Install Sechub's VsCodium Plugin (OPTIONAL)
-Sechub's VsCodium Plugin helps you better visualize where the vulnerabilities in your code are located.
+==== Install Sechub's VSCodium Plugin (OPTIONAL)
+Sechub's VSCodium Plugin helps you better visualize where the vulnerabilities in your code are located.
 You can go to the exact code line and fix the problem.
 
 You can get the plugin from https://open-vsx.org/extension/mercedes-benz/sechub[here].
 
-And to install it, open VsCodium and in the `Command Pallete` (Usually can be opened with `Ctrl+Shift+P`) type `install vsix`, and in the pop-up menu, choose the plugin.
+And to install it, open VSCodium and in the `Command Pallete` (Usually can be opened with `Ctrl+Shift+P`) type `install vsix`, and in the pop-up menu, choose the plugin.

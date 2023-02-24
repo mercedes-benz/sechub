@@ -1,44 +1,43 @@
 #!/bin/bash
+# SPDX-License-Identifier: MIT
+
+SECHUB_SERVER="https://localhost:8443"
 
 # Get sechub's root folder
 currentDir=$(pwd)
 baseDir="$currentDir"
 regex=sechub$
 
-while ! [[ "$baseDir" =~ ${regex} ]]
-do
-baseDir="$(dirname $baseDir)"
+while ! [[ "$baseDir" =~ ${regex} ]]; do
+    baseDir="$(dirname "$baseDir")"
 done
-
 
 # Copy all scripts from the current folder
 cp ./* "$baseDir"
 rm "$baseDir/run-all-steps.sh"
-cd $baseDir
+cd "$baseDir" || exit
 
-sechub_pid=0
-pds_pid=0
-
-stopServers(){
-    kill "$sechub_pid"
-    kill "$pds_pid"
+stopServers() {
+    sh ./stop-sechub.sh "no" "./sechub-solution/docker-compose_sechub"
+    sh ./stop-pds-gosec.sh "./sechub-pds-solutions/gosec/docker-compose_pds_gosec_external-network.yaml"
     exit 0
 }
 
 # Start SecHub
-$(sh ./start-sechub.sh) &
-sechub_pid=$!
+nohup "$(sh ./start-sechub.sh)" &
 
-sleep 15
+while true; do
+    echo "Waiting for SecHub server to start.."
+    isStarted="$(curl -sw '%{http_code}' -k $SECHUB_SERVER/api/anonymous/check/alive)"
+    if [ "$isStarted" == "200" ]; then
+        break
+    fi
+    sleep 5
+done
+echo "SecHub Server started successfully!"
 
 # Start PDS+GoSec
-$(sh ./start-pds-gosec.sh) &
-pds_pid=$!
-
-sleep 15
-
-# Configure project and variables
-# sh ./setup-project.sh
+nohup "$(sh ./start-pds-gosec.sh)" &
 
 trap 'stopServers' INT
 
