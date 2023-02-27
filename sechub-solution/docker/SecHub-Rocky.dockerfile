@@ -53,10 +53,10 @@ RUN echo "Builder: Build"
 
 RUN mkdir --parent "$SECHUB_ARTIFACT_FOLDER" "$DOWNLOAD_FOLDER"
 
-RUN export DEBIAN_FRONTEND=noninteractive && \
-    apt-get update && \
-    apt-get install --quiet --assume-yes wget w3m git && \
-    apt-get clean
+RUN microdnf update --assumeyes && \
+    microdnf install --assumeyes epel-release && \
+    microdnf install --assumeyes wget w3m git tar findutils which && \
+    microdnf clean all
 
 # Install Go
 RUN cd "$DOWNLOAD_FOLDER" && \
@@ -73,11 +73,11 @@ RUN cd "$DOWNLOAD_FOLDER" && \
     # remove go tar.gz
     rm "$GO"
 
-COPY --chmod=755 install-java/debian "$DOWNLOAD_FOLDER/install-java/"
+COPY --chmod=755 install-java/rocky "$DOWNLOAD_FOLDER/install-java/"
 
 # Install Java
 RUN cd "$DOWNLOAD_FOLDER/install-java/" && \
-    ./install-java.sh "$JAVA_DISTRIBUTION" "$JAVA_VERSION" jdk
+    ./install-java.sh "$JAVA_DISTRIBUTION" "$JAVA_VERSION" "jdk"
 
 # Copy clone script
 COPY --chmod=755 clone.sh "$BUILD_FOLDER/clone.sh"
@@ -90,6 +90,8 @@ RUN mkdir --parent "$BUILD_FOLDER" && \
     cd "sechub" && \
     # Java version
     java --version && \
+    java_location=$( which java ) && \
+    export JAVA_HOME=$( readlink -f "$java_location" | sed "s:/bin/java::" ) && \
     # Build SecHub
     "./buildExecutables" && \
     cp sechub-server/build/libs/sechub-server-*.jar --target-directory "$SECHUB_ARTIFACT_FOLDER"
@@ -107,10 +109,9 @@ RUN echo "Builder: Download"
 
 RUN mkdir --parent "$SECHUB_ARTIFACT_FOLDER"
 
-RUN export DEBIAN_FRONTEND=noninteractive && \
-    apt-get update && \
-    apt-get install --assume-yes wget && \
-    apt-get clean
+RUN microdnf update --assumeyes && \
+    microdnf install --assumeyes wget && \
+    microdnf clean all
 
 # Download the SecHub server
 RUN cd "$SECHUB_ARTIFACT_FOLDER" && \
@@ -176,12 +177,10 @@ COPY run.sh /run.sh
 RUN chmod +x /run.sh
 
 # Upgrade system
-RUN export DEBIAN_FRONTEND=noninteractive && \
-    apt-get update && \
-    apt-get upgrade --assume-yes --quiet && \
-    apt-get clean
+RUN microdnf update --assumeyes && \
+    microdnf clean all
 
-COPY --chmod=755 install-java/debian/ "$SECHUB_FOLDER/install-java/"
+COPY --chmod=755 install-java/rocky/ "$SECHUB_FOLDER/install-java/"
 
 # Install Java
 RUN cd "$SECHUB_FOLDER/install-java/" && \
