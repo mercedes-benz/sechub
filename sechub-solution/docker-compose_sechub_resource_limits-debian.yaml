@@ -15,14 +15,19 @@ services:
         - BRANCH=${BRANCH}
       context: docker/
       dockerfile: SecHub-Debian.dockerfile
+    deploy:
+      resources:
+        limits:
+          memory: ${MEMORY_LIMIT}
+          cpus: ${CPU_LIMIT}
     container_name: sechub
     hostname: sechub
     env_file:
       - .env
       - .env-single
     ports:
-      - "127.0.0.1:8443:8443"
-      - "127.0.0.1:15023:15023"
+      - "127.0.0.1:${PORT}:8443"
+      - "127.0.0.1:${JAVA_DEBUG_PORT}:15023"
     networks:
       - sechub
 networks:
