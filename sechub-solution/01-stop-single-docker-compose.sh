@@ -4,14 +4,14 @@
 resource_limits_enabled="$1"
 shift
 if [ -z "$1" ]; then
-    compose_file="docker-compose_sechub"
+    compose_file="docker-compose_sechub-debian"
 else
     compose_file="$1"
 fi
 
 if [[ "$resource_limits_enabled" == "yes" ]]
 then
-    compose_file="docker-compose_sechub_resource_limits"
+    compose_file="docker-compose_sechub_resource_limits-debian"
 fi
 
 docker compose --file "$compose_file.yaml" down --remove-orphans
