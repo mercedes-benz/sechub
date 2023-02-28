@@ -561,41 +561,47 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#sechub-config-example-licensescan-combined-with-codescan">2.1.5.3. Example source licence scan with sources code scan combined</a></li>
 </ul>
 </li>
-<li><a href="#web-scan">2.1.6. Web scan</a>
+<li><a href="#secret-scan">2.1.6. Secret scan</a>
 <ul class="sectlevel4">
-<li><a href="#url">2.1.6.1. URL</a>
-<ul class="sectlevel5">
-<li><a href="#example-anonymous">2.1.6.1.1. Example anonymous</a></li>
+<li><a href="#sechub-config-example-secretscan-sources">2.1.6.1. Example source secret scan</a></li>
+<li><a href="#sechub-config-example-secretscan-binary">2.1.6.2. Example binary secret scan</a></li>
 </ul>
 </li>
-<li><a href="#login">2.1.6.2. Login</a>
-<ul class="sectlevel5">
-<li><a href="#options">2.1.6.2.1. Options</a></li>
-<li><a href="#example-no-authentication">2.1.6.2.2. Example no authentication</a></li>
-<li><a href="#example-basic-authentication">2.1.6.2.3. Example basic authentication</a></li>
-<li><a href="#example-form-based-login-by-script">2.1.6.2.4. Example form based login by script</a></li>
-<li><a href="#sechub-config-example-webscan-openapi">2.1.6.2.5. Example OpenAPI scan</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#infrastructure-scan">2.1.7. Infrastructure scan</a>
+<li><a href="#web-scan">2.1.7. Web scan</a>
 <ul class="sectlevel4">
-<li><a href="#uris">2.1.7.1. URIs</a>
+<li><a href="#url">2.1.7.1. URL</a>
 <ul class="sectlevel5">
-<li><a href="#example-infrascan-one-uri">2.1.7.1.1. Example infrascan one URI</a></li>
+<li><a href="#example-anonymous">2.1.7.1.1. Example anonymous</a></li>
 </ul>
 </li>
-<li><a href="#ips">2.1.7.2. IPs</a>
+<li><a href="#login">2.1.7.2. Login</a>
 <ul class="sectlevel5">
-<li><a href="#example-infrascan-one-ip">2.1.7.2.1. Example infrascan one IP</a></li>
+<li><a href="#options">2.1.7.2.1. Options</a></li>
+<li><a href="#example-no-authentication">2.1.7.2.2. Example no authentication</a></li>
+<li><a href="#example-basic-authentication">2.1.7.2.3. Example basic authentication</a></li>
+<li><a href="#example-form-based-login-by-script">2.1.7.2.4. Example form based login by script</a></li>
+<li><a href="#sechub-config-example-webscan-openapi">2.1.7.2.5. Example OpenAPI scan</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#sechub-config-data-section">2.1.8. Data</a>
+<li><a href="#infrastructure-scan">2.1.8. Infrastructure scan</a>
 <ul class="sectlevel4">
-<li><a href="#general-json-syntax">2.1.8.1. General JSON syntax</a></li>
+<li><a href="#uris">2.1.8.1. URIs</a>
+<ul class="sectlevel5">
+<li><a href="#example-infrascan-one-uri">2.1.8.1.1. Example infrascan one URI</a></li>
+</ul>
+</li>
+<li><a href="#ips">2.1.8.2. IPs</a>
+<ul class="sectlevel5">
+<li><a href="#example-infrascan-one-ip">2.1.8.2.1. Example infrascan one IP</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#sechub-config-data-section">2.1.9. Data</a>
+<ul class="sectlevel4">
+<li><a href="#general-json-syntax">2.1.9.1. General JSON syntax</a></li>
 </ul>
 </li>
 </ul>
@@ -971,7 +977,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.38.0-20230223091243</code></p>
+<p>Documentation version: <code>Server 0.38.0-20230228154841</code></p>
 </div>
 <hr>
 </div>
@@ -1383,12 +1389,90 @@ Here we also add ".cplusplus" and ".py9" as additional accepted source file exte
 </div>
 </div>
 <div class="sect3">
-<h4 id="web-scan">2.1.6. Web scan</h4>
+<h4 id="secret-scan">2.1.6. Secret scan</h4>
+<div class="paragraph">
+<p><code>secretScan</code>(optional) defines the secret scan settings.</p>
+</div>
+<div class="sect4">
+<h5 id="sechub-config-example-secretscan-sources">2.1.6.1. Example source secret scan</h5>
+<div class="listingblock">
+<div class="title">Secret scan configuration for sources</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">sources</span><span class="delimiter">&quot;</span></span> : [ {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-source</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileystem</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-configuration/src</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-app/src</span><span class="delimiter">&quot;</span></span>  ] <i class="conum" data-value="2"></i><b>(2)</b>
+      }
+    } ]
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">secretScan</span><span class="delimiter">&quot;</span></span> : { 
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-source</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="3"></i><b>(3)</b>
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>name of the source <a href="#sechub-config-data-section">data</a> configuration: "gamechanger-source"</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>source code folders to scan.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>secret scan uses the referenced <a href="#sechub-config-data-section">data</a> configuration "gamechanger-source"</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="sechub-config-example-secretscan-binary">2.1.6.2. Example binary secret scan</h5>
+<div class="listingblock">
+<div class="title">Secret scan scan configuration for binaries</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">binaries</span><span class="delimiter">&quot;</span></span> : [ { 
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">firmware-images</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">fileystem</span><span class="delimiter">&quot;</span></span> : {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-firmware/images</span><span class="delimiter">&quot;</span></span> ]
+      }
+    } ]
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">secretScan</span><span class="delimiter">&quot;</span></span> : { 
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">use</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">firmware-images</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="2"></i><b>(2)</b>
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>name of the source <a href="#sechub-config-data-section">data</a> configuration: "firmware-images"</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>secret scan uses the referenced <a href="#sechub-config-data-section">data</a> configuration "firmware-images"</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="web-scan">2.1.7. Web scan</h4>
 <div class="paragraph">
 <p><code>webScan</code> (optional) defines the web scan settings.</p>
 </div>
 <div class="sect4">
-<h5 id="url">2.1.6.1. URL</h5>
+<h5 id="url">2.1.7.1. URL</h5>
 <div class="paragraph">
 <p>Use the <code>url</code> element to define a URL you want to scan.</p>
 </div>
@@ -1406,7 +1490,7 @@ The URL must be whitelisted in your project. Otherwise it will be rejected.
 </table>
 </div>
 <div class="sect5">
-<h6 id="example-anonymous">2.1.6.1.1. Example anonymous</h6>
+<h6 id="example-anonymous">2.1.7.1.1. Example anonymous</h6>
 <div id="sechub-config-example-webscan-anonymous" class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -1467,7 +1551,7 @@ The unit can be: <code>millisecond</code>, <code>second</code>, <code>minute</co
 </div>
 </div>
 <div class="sect4">
-<h5 id="login">2.1.6.2. Login</h5>
+<h5 id="login">2.1.7.2. Login</h5>
 <div class="paragraph">
 <p>A web scan does work much better if it has got access to all content
  - so a login is necessary most time. If you do not define a login configuration
@@ -1498,7 +1582,7 @@ SMS provider - <strong>so be careful!</strong></p>
 </table>
 </div>
 <div class="sect5">
-<h6 id="options">2.1.6.2.1. Options</h6>
+<h6 id="options">2.1.7.2.1. Options</h6>
 <div class="paragraph">
 <p>SecHub provides you with 2 options for login:</p>
 </div>
@@ -1536,7 +1620,7 @@ will have a failure at execution time!</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="example-no-authentication">2.1.6.2.2. Example no authentication</h6>
+<h6 id="example-no-authentication">2.1.7.2.2. Example no authentication</h6>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -1574,7 +1658,7 @@ this is not necessary.</td>
 </div>
 </div>
 <div class="sect5">
-<h6 id="example-basic-authentication">2.1.6.2.3. Example basic authentication</h6>
+<h6 id="example-basic-authentication">2.1.7.2.3. Example basic authentication</h6>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -1612,7 +1696,7 @@ this is not necessary and you can use an empty string.</td>
 </div>
 </div>
 <div class="sect5">
-<h6 id="example-form-based-login-by-script">2.1.6.2.4. Example form based login by script</h6>
+<h6 id="example-form-based-login-by-script">2.1.7.2.4. Example form based login by script</h6>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -1761,7 +1845,7 @@ The unit can be: <code>millisecond</code>, <code>second</code>, <code>minute</co
 </div>
 </div>
 <div class="sect5">
-<h6 id="sechub-config-example-webscan-openapi">2.1.6.2.5. Example OpenAPI scan</h6>
+<h6 id="sechub-config-example-webscan-openapi">2.1.7.2.5. Example OpenAPI scan</h6>
 <div class="listingblock">
 <div class="title">Open API scan</div>
 <div class="content">
@@ -1806,17 +1890,17 @@ to obtain the open api configuration file</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="infrastructure-scan">2.1.7. Infrastructure scan</h4>
+<h4 id="infrastructure-scan">2.1.8. Infrastructure scan</h4>
 <div class="paragraph">
 <p><code>infraScan</code> (optional) defines the infrastructure scan settings.</p>
 </div>
 <div class="sect4">
-<h5 id="uris">2.1.7.1. URIs</h5>
+<h5 id="uris">2.1.8.1. URIs</h5>
 <div class="paragraph">
 <p>Use <code>uris</code> element to define a string array containing <code>URIs</code> you want to scan.</p>
 </div>
 <div class="sect5">
-<h6 id="example-infrascan-one-uri">2.1.7.1.1. Example infrascan one URI</h6>
+<h6 id="example-infrascan-one-uri">2.1.8.1.1. Example infrascan one URI</h6>
 <div id="sechub-config-example-infrascan-with-uri" class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -1848,12 +1932,12 @@ to obtain the open api configuration file</td>
 </div>
 </div>
 <div class="sect4">
-<h5 id="ips">2.1.7.2. IPs</h5>
+<h5 id="ips">2.1.8.2. IPs</h5>
 <div class="paragraph">
 <p>Use <code>ips</code> element to define a string array containing <code>IPs</code> you want to scan.</p>
 </div>
 <div class="sect5">
-<h6 id="example-infrascan-one-ip">2.1.7.2.1. Example infrascan one IP</h6>
+<h6 id="example-infrascan-one-ip">2.1.8.2.1. Example infrascan one IP</h6>
 <div id="sechub-config-example-infrascan-with-ip" class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -1888,7 +1972,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="sechub-config-data-section">2.1.8. Data</h4>
+<h4 id="sechub-config-data-section">2.1.9. Data</h4>
 <div class="paragraph">
 <p>The <a href="#sechub-config-code-scan">codeScan</a> element provides a way to define
 source code uploads for code scans only.</p>
@@ -1958,7 +2042,7 @@ If you want to upload binaries, you MUST use the data section, there is no other
 </table>
 </div>
 <div class="sect4">
-<h5 id="general-json-syntax">2.1.8.1. General JSON syntax</h5>
+<h5 id="general-json-syntax">2.1.9.1. General JSON syntax</h5>
 <div class="paragraph">
 <p>The next figure shows an example which presents all possibilities <em>(for simplicity the source and
 binary configuration arrays do contain only just one entry)</em>.</p>
@@ -3087,7 +3171,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/ad393272-722e-4267-be26-1371f684fa95' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/ad36be4c-e090-4d88-aecb-bbebc4a77948' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -3960,7 +4044,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>[{&quot;sechubJobUUID&quot;:&quot;2e8b53b9-eb8b-40e8-bb67-067778906bd1&quot;,&quot;executedBy&quot;:&quot;spartakus&quot;,&quot;started&quot;:&quot;2023-02-22T09:12:58.881485&quot;,&quot;ended&quot;:&quot;2023-02-23T09:12:58.881513&quot;,&quot;status&quot;:&quot;OK&quot;}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code>[{&quot;sechubJobUUID&quot;:&quot;e782d4df-bcca-4a6f-977a-52cffbe5f566&quot;,&quot;executedBy&quot;:&quot;spartakus&quot;,&quot;started&quot;:&quot;2023-02-27T15:49:03.152161&quot;,&quot;ended&quot;:&quot;2023-02-28T15:49:03.152194&quot;,&quot;status&quot;:&quot;OK&quot;}]</code></pre>
 </div>
 </div>
 </div>
@@ -4510,7 +4594,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;bbe96976-8aa3-447c-b83c-a53254934224&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;f44be68b-d1d6-417e-9eab-84ba794e369b&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -4649,7 +4733,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;c62d4991-dc1b-4078-b430-f371a994924b&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;6c12d50c-1cbd-45e7-acec-e73b630fb5c6&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -4803,7 +4887,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;30a78a33-8139-4fff-9e93-2b2ffa74ccb8&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;e910b533-4216-4517-b5e5-c0c1378d2a3f&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -4962,7 +5046,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;5c8dd9ad-3a1a-481b-8058-a5cb09591727&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;e36e8296-360a-48fd-8963-8e67771d2f42&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -5141,7 +5225,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;48e9c738-1d53-441d-ad67-0f8a4e5011e8&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobId&quot;:&quot;4e3d5cad-4be0-4dce-98f3-0baa436cfa0f&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -5215,7 +5299,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/1477041d-219a-42aa-afd8-1f5dce595776/sourcecode' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/7f8a26fe-ad55-4766-9745-d865e9cc44d8/sourcecode' -i -u 'user:secret' -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -5298,7 +5382,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/e662aefe-5c51-424d-94fe-680baa59311c/approve' -i -u 'user:secret' -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/5a71f37b-5c5d-431b-bc3f-d473edf2b2bd/approve' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -5435,7 +5519,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/77bbe566-1a14-413d-834f-0be7558f67eb' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/c8bbff86-77bb-4407-97d8-96d11aeb5b30' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -5444,7 +5528,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;jobUUID&quot;:&quot;77bbe566-1a14-413d-834f-0be7558f67eb&quot;,&quot;owner&quot;:&quot;CREATOR1&quot;,&quot;created&quot;:&quot;&quot;,&quot;started&quot;:&quot;2023-02-23T08:58:22.010793&quot;,&quot;ended&quot;:&quot;2023-02-23T09:13:22.010814&quot;,&quot;state&quot;:&quot;ENDED&quot;,&quot;result&quot;:&quot;OK&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;jobUUID&quot;:&quot;c8bbff86-77bb-4407-97d8-96d11aeb5b30&quot;,&quot;owner&quot;:&quot;CREATOR1&quot;,&quot;created&quot;:&quot;&quot;,&quot;started&quot;:&quot;2023-02-28T15:34:32.795481&quot;,&quot;ended&quot;:&quot;2023-02-28T15:49:32.795504&quot;,&quot;state&quot;:&quot;ENDED&quot;,&quot;result&quot;:&quot;OK&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -5519,7 +5603,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/4f4aac2f-0fb6-4ffe-a619-ee7556d4b5e0' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/e7631daf-a38e-4443-b0eb-302fda596126' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -5591,7 +5675,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/c7c7eb20-b2ca-41be-80f4-64596b10dfa3' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/8e3a44ea-4121-43dc-8897-ebb5d7cc5b67' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -6083,7 +6167,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/a53613db-8a61-48c3-b022-34e28455c644/binaries' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/3b112fd9-f027-4408-a836-bfd5b3f8583a/binaries' -i -u 'user:secret' -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -H 'x-file-size: 10240' \
     -F 'file=test1.txt                                                                                           0000664 0001750 0001750 00000000000 13353454574 012170  0                                                                                                    ustar   albert                          albert                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ' \
@@ -6164,7 +6248,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/7b78d4ce-f49b-42d4-8b83-1e635cf98cd4' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/spdx/c0ee9caa-8941-42d4-870d-6115701ec87b' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -6667,7 +6751,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>[{&quot;jobUUID&quot;:&quot;8ef5488d-21ba-4e80-9fd4-2236c5b25964&quot;,&quot;projectId&quot;:&quot;project-name&quot;,&quot;owner&quot;:&quot;owner-userid&quot;,&quot;status&quot;:&quot;RUNNING&quot;,&quot;since&quot;:&quot;2023-02-23T09:13:08.072552&quot;,&quot;configuration&quot;:&quot;{ config data }&quot;}]</code></pre>
+<pre class="CodeRay highlight nowrap"><code>[{&quot;jobUUID&quot;:&quot;46f89a7d-e8a0-4f54-bf84-f347ccb3bcca&quot;,&quot;projectId&quot;:&quot;project-name&quot;,&quot;owner&quot;:&quot;owner-userid&quot;,&quot;status&quot;:&quot;RUNNING&quot;,&quot;since&quot;:&quot;2023-02-28T15:49:14.966392&quot;,&quot;configuration&quot;:&quot;{ config data }&quot;}]</code></pre>
 </div>
 </div>
 </div>
@@ -6736,7 +6820,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/4626907c-bb4a-4ad4-bdfc-eaceb2646cbb' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/852e8d20-19b1-4957-9fb2-a9a600d261b2' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -6810,7 +6894,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/b94fb11b-65b2-4800-acc8-2df56db96651' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/3218f4f6-dac3-468b-a052-a9e0b1d45ccc' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -6884,7 +6968,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/ad39c8fb-9480-4b8b-acd7-f509c6c8c568' -i -u 'user:secret' -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/aa87ed51-64ce-46aa-9551-860639f75b16' -i -u 'user:secret' -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -7342,7 +7426,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>f588a060-f6e1-4d5c-b437-05320a6fc919</code></pre>
+<pre class="CodeRay highlight nowrap"><code>b465971f-a33b-4cfb-97ee-5dd52dc87e74</code></pre>
 </div>
 </div>
 </div>
@@ -7411,7 +7495,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/b040c43b-36a4-4db7-98fc-f2025b3fae90' -i -u 'user:secret' -X DELETE \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/478b3207-c6ad-459e-ad85-fa7c63362aad' -i -u 'user:secret' -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -7511,7 +7595,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;executorConfigurations&quot;:[{&quot;uuid&quot;:&quot;a9026f52-f49b-4f9b-9f15-eb7811154c40&quot;,&quot;name&quot;:&quot;example configuration&quot;,&quot;enabled&quot;:true}],&quot;type&quot;:&quot;executorConfigurationList&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;executorConfigurations&quot;:[{&quot;uuid&quot;:&quot;b15f5433-2472-4cdf-941e-a347a9eb240d&quot;,&quot;name&quot;:&quot;example configuration&quot;,&quot;enabled&quot;:true}],&quot;type&quot;:&quot;executorConfigurationList&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -7649,7 +7733,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/7d84be74-1790-47d9-80f3-28a33cd4e6b9' -i -u 'user:secret' -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/1956ef0b-b5fc-4846-b2cc-c656ae522bd9' -i -u 'user:secret' -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -7658,7 +7742,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;7d84be74-1790-47d9-80f3-28a33cd4e6b9&quot;}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;1956ef0b-b5fc-4846-b2cc-c656ae522bd9&quot;}</code></pre>
 </div>
 </div>
 </div>
@@ -7791,7 +7875,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/250bc4d8-663f-4e62-aaaa-f6d56dc0133f' -i -u 'user:secret' -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/3070a02c-c493-45a8-a2d3-a3b3f0eae2f3' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://productNew.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_NEW_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_NEW_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]}}'</code></pre>
 </div>
@@ -8090,7 +8174,7 @@ for details about default behaviour for sources.</td>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/existing-profile-1' -i -u 'user:secret' -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;8b774844-1add-4b1f-b870-c3ebb8491bc0&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
+    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;7bf135d9-fb6b-4c5c-a69b-68d91c64b353&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8231,7 +8315,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;description&quot;:&quot;a description&quot;,&quot;enabled&quot;:true,&quot;configurations&quot;:[{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;7917a72e-f141-4b6f-8f11-9773f6a85863&quot;}],&quot;projectIds&quot;:[&quot;project-1&quot;,&quot;project-2&quot;]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;description&quot;:&quot;a description&quot;,&quot;enabled&quot;:true,&quot;configurations&quot;:[{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://product.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]},&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;uuid&quot;:&quot;36ae3a7b-d868-44f1-985d-cee8aa8be21f&quot;}],&quot;projectIds&quot;:[&quot;project-1&quot;,&quot;project-2&quot;]}</code></pre>
 </div>
 </div>
 </div>
@@ -9035,7 +9119,7 @@ for details about default behaviour for sources.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>{&quot;page&quot;:0,&quot;totalPages&quot;:1,&quot;content&quot;:[{&quot;jobUUID&quot;:&quot;09531545-454e-4f06-8537-6fb8398b5273&quot;,&quot;executedBy&quot;:&quot;User1&quot;,&quot;created&quot;:&quot;2023-02-23T08:56:22.040655&quot;,&quot;started&quot;:&quot;2023-02-23T08:58:22.040677&quot;,&quot;ended&quot;:&quot;2023-02-23T09:13:22.040686&quot;,&quot;executionState&quot;:&quot;ENDED&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;,&quot;executionResult&quot;:&quot;OK&quot;}]}</code></pre>
+<pre class="CodeRay highlight nowrap"><code>{&quot;page&quot;:0,&quot;totalPages&quot;:1,&quot;content&quot;:[{&quot;jobUUID&quot;:&quot;f7b5cf86-1e0d-4a18-ad0d-80e0058bfda7&quot;,&quot;executedBy&quot;:&quot;User1&quot;,&quot;created&quot;:&quot;2023-02-28T15:32:32.83182&quot;,&quot;started&quot;:&quot;2023-02-28T15:34:32.831847&quot;,&quot;ended&quot;:&quot;2023-02-28T15:49:32.831859&quot;,&quot;executionState&quot;:&quot;ENDED&quot;,&quot;trafficLight&quot;:&quot;GREEN&quot;,&quot;executionResult&quot;:&quot;OK&quot;}]}</code></pre>
 </div>
 </div>
 <div style="page-break-after: always;"></div>
