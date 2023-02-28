@@ -20,6 +20,7 @@ buildscript{
 		classpath "org.ajoberstar.grgit:grgit-gradle:${libraryVersion.grgit}" // necessary for version calculation
 		classpath "com.epages:restdocs-api-spec-gradle-plugin:${libraryVersion.restDocsApiSpec}"
         classpath "org.owasp:dependency-check-gradle:${libraryVersion.dependency_check}"
+        classpath "org.cyclonedx:cyclonedx-gradle-plugin:1.7.4"
 	}
 }
 
@@ -49,6 +50,17 @@ plugins {
 
 // old style apply necessary here - to have same version as in classpath dependency
 apply plugin: 'org.owasp.dependencycheck'
+
+// applying cyclonDX plugin
+apply plugin: 'org.cyclonedx.bom'
+// generate sbom only with runtime dependencies
+cyclonedxBom {
+  includeConfigs = ["runtimeClasspath"]
+}
+// cyclonDx works only with group and version
+group = 'com.mercedesbenz.sechub'
+version = '0.0.0'
+
 
 /* check buildsystem */
 def githubActor = System.getenv('GITHUB_ACTOR')
