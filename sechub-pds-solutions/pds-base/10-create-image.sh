@@ -32,7 +32,7 @@ if [[ -z "$VERSION" ]] ; then
 fi
 
 if [[ -z "$PDS_VERSION" ]] ; then
-  echo "Please provide a PDS release version as 2rd parameter."
+  echo "Please provide a PDS release version as 3rd parameter."
   FAILED=true
 fi
 
