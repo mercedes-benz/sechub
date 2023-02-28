@@ -42,7 +42,7 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.adapter.ProductExe
 import com.mercedesbenz.sechub.developertools.admin.ui.action.adapter.ShowProductExecutorTemplatesDialogAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.util.SortedMapToTextConverter;
 import com.mercedesbenz.sechub.developertools.admin.ui.util.TextToSortedMapConverter;
-import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.test.executorconfig.TestExecutorConfig;
 import com.mercedesbenz.sechub.test.executorconfig.TestExecutorSetupJobParam;
 

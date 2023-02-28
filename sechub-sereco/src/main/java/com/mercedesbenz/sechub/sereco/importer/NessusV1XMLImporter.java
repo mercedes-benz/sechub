@@ -21,7 +21,7 @@ public class NessusV1XMLImporter extends AbstractProductResultImporter {
 
     private static final Pattern NAME_PATTERN = Pattern.compile("_");
 
-    public SerecoMetaData importResult(String xml) throws IOException {
+    public SerecoMetaData importResult(String xml, ScanType scanType) throws IOException {
         if (xml == null) {
             xml = "";
         }

@@ -10,6 +10,7 @@ image:
 
 pds:
     startMode: localserver
+    # Maximum upload size: 50 MiB by default (50 * 1024 * 1024 = 52428800)
     maxFileUploadBytes: 52428800
     config:
         execute:
@@ -29,8 +30,10 @@ pds:
 users:
     technical:
         id: "techuser"
+        apiToken: "<api token of techuser>"
     admin:
         id: "admin"
+        apiToken: "<api token of admin user>"
 
 storage:
     local:

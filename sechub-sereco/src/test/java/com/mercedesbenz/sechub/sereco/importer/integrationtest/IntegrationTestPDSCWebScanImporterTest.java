@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
+import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
 
@@ -18,7 +19,7 @@ class IntegrationTestPDSCWebScanImporterTest {
         IntegrationTestPDSCWebScanImporter importerToTest = new IntegrationTestPDSCWebScanImporter();
 
         /* execute */
-        SerecoMetaData result = importerToTest.importResult(pdsResultText);
+        SerecoMetaData result = importerToTest.importResult(pdsResultText, ScanType.WEB_SCAN);
 
         /* test */
         SerecoVulnerability vulnerability = result.getVulnerabilities().iterator().next();

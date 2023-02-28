@@ -20,8 +20,8 @@ services:
       - .env
       - .env-single
     ports:
-      - "127.0.0.1:8443:8443"
-      - "127.0.0.1:15023:15023"
+      - "127.0.0.1:${PORT}:8443"
+      - "127.0.0.1:${JAVA_DEBUG_PORT}:15023"
     networks:
       - sechub
 networks:

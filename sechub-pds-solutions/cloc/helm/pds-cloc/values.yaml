@@ -16,6 +16,8 @@ image:
     #   - name: sps2
 
 pds:
+    # Maximum upload size: 100 MiB by default (100 * 1024 * 1024 = 104857600)
+    uploadMaximumBytes: "104857600"
     config:
         execute:
             # Maximum queue size of pds
