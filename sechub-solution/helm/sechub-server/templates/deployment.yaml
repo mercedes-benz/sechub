@@ -130,7 +130,7 @@ spec:
 {{- end }}
 {{- if .Values.server.loggingType }}
         - name: LOGGING_TYPE
-          value: {{ .Values.server.loggingType }}
+          value: "{{ .Values.server.loggingType }}"
 {{- end }}
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 # + ClusterEnvironment service setup by downward api
@@ -149,9 +149,9 @@ spec:
         - name: SECHUB_SERVER_SSL_KEYSTORE_TYPE
           value: "PKCS12"
         - name: SECHUB_SERVER_SSL_KEYSTORE_LOCATION
-          value: /sechub/{{ .Values.server.ssl.keystoreAlias }}.p12
+          value: "/sechub/{{ .Values.server.ssl.keystoreAlias }}.p12"
         - name: SECHUB_SERVER_SSL_KEYSTORE_ALIAS
-          value: {{ .Values.server.ssl.keystoreAlias }}
+          value: "{{ .Values.server.ssl.keystoreAlias }}"
         - name: SECHUB_SERVER_SSL_KEYSTORE_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -161,15 +161,15 @@ spec:
 # + Initial user setup
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         - name: SECHUB_INITIALADMIN_USERID
-          value: {{ .Values.server.initialAdminUser.id }}
+          value: "{{ .Values.server.initialAdminUser.id }}"
         - name: SECHUB_INITIALADMIN_EMAIL
-          value: {{ .Values.server.initialAdminUser.email }}
+          value: "{{ .Values.server.initialAdminUser.email }}"
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 # + Database setup
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 {{- if .Values.server.databaseConnection }}
         - name: SPRING_DATASOURCE_URL
-          value: {{ .Values.server.databaseConnection }}
+          value: "{{ .Values.server.databaseConnection }}"
         - name: SPRING_DATASOURCE_USERNAME
           valueFrom:
             secretKeyRef:
@@ -546,9 +546,9 @@ spec:
         - name: S3_ENABLED
           value: "true"
         - name: S3_ENDPOINT
-          value: {{ .Values.storage.s3.endpoint }}
+          value: "{{ .Values.storage.s3.endpoint }}"
         - name: S3_BUCKETNAME
-          value: {{ .Values.storage.s3.bucketname }}
+          value: "{{ .Values.storage.s3.bucketname }}"
         - name: S3_ACCESSKEY
           valueFrom:
             secretKeyRef:
