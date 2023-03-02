@@ -149,22 +149,22 @@ storage:
     # Put the S3 secret key in k8s secret secret-storage:sechub_storage_s3_secretkey
     connectionPool:
       # Maximum idle time (in milliseconds) for a connection in the connection pool.
-      maxIdleTimeInMilliseconds: "60000"
+      maxIdleTimeInMilliseconds: 60000
       # maximum size of connection pool
-      maxPoolSize: "50"
+      maxPoolSize: 50
       # Time (in milliseconds) a connection can be idle in the connection pool before it must be validated that it’s still open.
-      revalidationIntervalInMilliseconds: "5000"
+      revalidationIntervalInMilliseconds: 5000
       # Time to live for a pool connection (in milliseconds). -1 means deactivated
-      ttlInMilliseconds: "-1"
+      ttlInMilliseconds: -1
     timeouts:
       # Timeout for creating new connections (in milliseconds)
-      newConnectionTimeoutInMilliseconds: "10000"
+      newConnectionTimeoutInMilliseconds: 10000
       # Timeout for execution (in milliseconds). 0 means it is disabled.
-      executionTimeoutInMilliseconds: "0"
+      executionTimeoutInMilliseconds: 0
       # Timeout for a request (in milliseconds). 0 means it is disabled.
-      requestTimeoutInMilliseconds: "0"
+      requestTimeoutInMilliseconds: 0
       # Timeout for reading from a connected socket (in milliseconds).
-      socketTimeoutInMilliseconds: "50000"
+      socketTimeoutInMilliseconds: 50000
   sharedVolume:
     # Use a shared filesystem as storage backend
     enabled: false
