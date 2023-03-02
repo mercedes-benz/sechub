@@ -497,9 +497,6 @@ spec:
         - name: SECHUB_CONFIG_TRIGGER_NEXTJOB_DELAY
           value: "{{ .Values.server.jobScheduling.activationIntervalInMilliseconds | int64 }}"
         # Scheduler strategy
-        # Possible values:
-        # - first-come-first-serve (a project can have multiple parallel running scan jobs (default if empty))
-        # - only-one-scan-per-project-at-a-time (a project can only have one running scan job at a time)
         - name: SECHUB_SCHEDULER_STRATEGY_ID
           value: "{{ .Values.server.jobScheduling.strategy }}"
 # ----------------------------------------------------------------------------------------------#
@@ -562,6 +559,22 @@ spec:
             secretKeyRef:
                name: secret-storage
                key: sechub_storage_s3_secretkey
+        - name: SECHUB_STORAGE_S3_CONNECTION_IDLE_MAX_MILLISECONDS
+          value: {{ .Values.storage.s3.connectionPool.maxIdleTimeInMilliseconds }}
+        - name: SECHUB_STORAGE_S3_CONNECTION_IDLE_VALIDATE_MILLISECONDS
+          value: {{ .Values.storage.s3.connectionPool.revalidationIntervalInMilliseconds }}
+        - name: SECHUB_STORAGE_S3_CONNECTION_MAX_POOLSIZE
+          value: {{ .Values.storage.s3.connectionPool.maxPoolSize }}
+        - name: SECHUB_STORAGE_S3_CONNECTION_TTL_MILLISECONDS
+          value: {{ .Values.storage.s3.connectionPool.ttlInMilliseconds }}
+        - name: SECHUB_STORAGE_S3_TIMEOUT_CONNECTION_MILLISECONDS
+          value: {{ .Values.storage.s3.timeouts.newConnectionTimeoutInMilliseconds }}
+        - name: SECHUB_STORAGE_S3_TIMEOUT_EXECUTION_MILLISECONDS
+          value: {{ .Values.storage.s3.timeouts.executionTimeoutInMilliseconds }}
+        - name: SECHUB_STORAGE_S3_TIMEOUT_REQUEST_MILLISECONDS
+          value: {{ .Values.storage.s3.timeouts.requestTimeoutInMilliseconds }}
+        - name: SECHUB_STORAGE_S3_TIMEOUT_SOCKET_MILLISECONDS
+          value: {{ .Values.storage.s3.timeouts.socketTimeoutInMilliseconds }}
 {{- else if .Values.storage.sharedVolume.enabled }}
         - name: SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR
           value: "{{ .Values.storage.sharedVolume.dir }}"
