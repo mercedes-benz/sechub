@@ -1,13 +1,10 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: MIT
 
+cd "$(dirname "$0")" || exit
+
 resource_limits_enabled="$1"
-shift
-if [ -z "$1" ]; then
-    compose_file="docker-compose_sechub-debian"
-else
-    compose_file="$1"
-fi
+compose_file="docker-compose_sechub-debian"
 
 if [[ "$resource_limits_enabled" == "yes" ]]
 then

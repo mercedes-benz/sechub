@@ -4,13 +4,7 @@
 SECHUB_SERVER="https://localhost:8443"
 
 # Get sechub's root folder
-currentDir=$(pwd)
-baseDir="$currentDir"
-regex=sechub$
-
-while ! [[ "$baseDir" =~ ${regex} ]]; do
-    baseDir="$(dirname "$baseDir")"
-done
+baseDir="$(git rev-parse --show-toplevel)" 
 
 # Copy all scripts from the current folder
 cp ./* "$baseDir"
@@ -18,28 +12,44 @@ rm "$baseDir/run-all-steps.sh"
 cd "$baseDir" || exit
 
 stopServers() {
-    sh ./stop-sechub.sh "no" "./sechub-solution/docker-compose_sechub"
-    sh ./stop-pds-gosec.sh "./sechub-pds-solutions/gosec/docker-compose_pds_gosec_external-network.yaml"
-    exit 0
+    sh ./stop-sechub.sh
+    sh ./stop-pds-gosec.sh
+    exit $1
 }
 
-# Start SecHub
-nohup "$(sh ./start-sechub.sh)" &
+trap 'stopServers 0' INT
 
+# Start SecHub
+nohup sh ./start-sechub.sh &
+
+# Wait until sechub is started
+TRIES=0
 while true; do
+    
     echo "Waiting for SecHub server to start.."
     isStarted="$(curl -sw '%{http_code}' -k $SECHUB_SERVER/api/anonymous/check/alive)"
     if [ "$isStarted" == "200" ]; then
         break
     fi
+
+    if [ "$TRIES" -gt 10 ]; then
+        echo "Couldn't start SecHub Server!"
+        stopServers 1
+    fi
+
+    TRIES=$((TRIES + 1))
     sleep 5
 done
 echo "SecHub Server started successfully!"
 
 # Start PDS+GoSec
-nohup "$(sh ./start-pds-gosec.sh)" &
+echo "Starting the PDS server..."
+nohup sh ./start-pds-gosec.sh &
 
-trap 'stopServers' INT
+sleep 15
+# Configure project
+echo "Configuring Project..."
+sh ./setup-project.sh
 
 echo "Press Ctrl+C to stop all servers"
 

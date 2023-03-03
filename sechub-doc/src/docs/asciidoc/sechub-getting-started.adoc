@@ -34,7 +34,7 @@ It should also work on different Linux distributions.
 You are going to need: 
 
 * docker (Version 23.0.0 used in the tutorial, newer versions will also work) (e. g. https://docs.docker.com/engine/install/debian/[Debian],  / https://docs.docker.com/engine/install/ubuntu/[Ubuntu])
-* docker compose (v2.15.1)
+* docker compose (v2.15.1 or newer)
 * git
 
 Optional:
@@ -80,7 +80,7 @@ This will prepare some environment files and will start a container based on Sec
 ==== Setup Project
 
 After starting all servers, some environment variables have to be set. Specifically `SECHUB_SERVER`, `SECHUB_USERID`, `SECHUB_APITOKEN`, `SECHUB_TRUSTALL` and SecHub's CLI tools have to be added to the `PATH` variable to be able to do scans.
-Here we set the local credentials because everything is hosted locally:
+Here we set to local credentials because everything is hosted locally:
 
 [source, shell]
 --
@@ -184,16 +184,16 @@ Now you are ready to do scans!
 ==== Scanning
 
 Now you can go to another project's directory and do a scan for vulnerabilities.
-In this example, we will use SecHub's folder, but you are free to use any other project!
+In this example, we will use https://github.com/Jeeppler/vulnerable-go[vulnerable-go], but you are free to use any other project!
 
 
-Before starting the scan, you need a `sechub.json`, which tells which files to be scanned, and which to be skipped.
+Before starting the scan, you need a `sechub.json` in the root directory of the project you are scanning, which tells which files to be scanned, and which to be skipped. You can either copy the one in SecHub's folder or create your own. +
 
 Here's a bare-bones example:
 
 [source, shell]
 --
-echo "
+echo '
 {
   "apiVersion": "1.0",
   "codeScan": {
@@ -205,12 +205,84 @@ echo "
     "excludes": []
   }
 }
-" > sechub.json
+' > sechub.json
 --
 
-But you can skip this step, because the SecHub's folder, already contains it.
+And to do a scan, type `sechub -project test-gosec scan`, this will create a JSON file, which contains a report of the findings from the scan. If you want HTML output, add `-reportformat html` as an option: `sechub -project test-gosec -reportformat html scan`
 
-And to scan it, just type `sechub -project test-gosec scan`, this will create a JSON file, which contains a report of the findings from the scan. If you want HTML output just add `-reportformat html` as an option: `sechub -project test-gosec -reportformat html scan`
+The output you get, should be simillar to this(if you choose JSON output):
+
+[source]
+--
+{
+   "result": {
+      "count": 4,
+      "findings": [
+         {
+            "id": 3,
+            "description": "The used method does not auto-escape HTML. This can potentially lead to 'Cross-site Scripting' vulnerabilities, in case the attacker controls the input.",
+            "name": "The used method does not auto-escape HTML. This can potentially lead to 'Cross-site Scripting' vulnerabilities, in case the attacker controls the input.",
+            "severity": "HIGH",
+            "code": {
+               "location": "source/app/app.go",
+               "line": 17,
+               "column": 13,
+               "source": "return template.HTML(s)"
+            },
+            "type": "codeScan",
+            "cweId": 79
+         },
+         {
+            "id": 2,
+            "description": "Use of weak cryptographic primitive",
+            "name": "Use of weak cryptographic primitive",
+            "severity": "HIGH",
+            "code": {
+               "location": "source/app/app.go",
+               "line": 90,
+               "column": 13,
+               "source": "hash := md5.Sum([]byte(password)) // CWE-327"
+            },
+            "type": "codeScan",
+            "cweId": 326
+         },
+         {
+            "id": 4,
+            "description": "Blocklisted import crypto/md5: weak cryptographic primitive",
+            "name": "Blocklisted import crypto/md5: weak cryptographic primitive",
+            "severity": "HIGH",
+            "code": {
+               "location": "source/app/app.go",
+               "line": 7,
+               "column": 5,
+               "source": "\"crypto/md5\""
+            },
+            "type": "codeScan",
+            "cweId": 327
+         },
+         {
+            "id": 1,
+            "description": "Potential hardcoded credentials",
+            "name": "Potential hardcoded credentials",
+            "severity": "HIGH",
+            "code": {
+               "location": "source/app/app.go",
+               "line": 76,
+               "column": 5,
+               "source": "loginPassword := \"21232f297a57a5a743894a0e4a801fc3\" // CWE-257"
+            },
+            "type": "codeScan",
+            "cweId": 798
+         }
+      ]
+   },
+   "jobUUID": "3368defe-7a45-448f-bee1-b069e754ca52",
+   "reportVersion": "1.0",
+   "messages": [],
+   "trafficLight": "RED",
+   "status": "SUCCESS"
+}
+--
 
 ==== Install Sechub's VSCodium Plugin (OPTIONAL)
 Sechub's VSCodium Plugin helps you better visualize where the vulnerabilities in your code are located.

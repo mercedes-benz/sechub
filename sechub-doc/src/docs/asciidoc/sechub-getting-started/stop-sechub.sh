@@ -1,2 +1,2 @@
 # SPDX-License-Identifier: MIT
-./sechub-solution/01-stop-single-docker-compose.sh "$1" "$2"
+./sechub-solution/01-stop-single-docker-compose.sh
