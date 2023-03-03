@@ -55,7 +55,8 @@ server:
     # Job scheduling strategy - Possible values:
     # - first-come-first-serve (one project can have multiple scan jobs running in parallel
     # - only-one-scan-per-project-at-a-time (one project can only have one running scan job at a time)
-    strategy: only-one-scan-per-project-at-a-time
+    # - only-one-scan-per-project-and-module-group (enable parralel scans, but not in same module group)
+    strategy: only-one-scan-per-project-and-module-group
   # loggingType (optional): See https://mercedes-benz.github.io/sechub/latest/sechub-operations.html#logging-2
   #                         https://github.com/mercedes-benz/sechub/blob/develop/sechub-server/src/main/resources/logback-spring.xml
   loggingType: LOGSTASH_JSON
@@ -146,6 +147,24 @@ storage:
     # Defines the access key for used S3 bucket
     # Put the S3 access key in k8s secret secret-storage:sechub_storage_s3_accesskey
     # Put the S3 secret key in k8s secret secret-storage:sechub_storage_s3_secretkey
+    connectionPool:
+      # Maximum idle time (in milliseconds) for a connection in the connection pool.
+      maxIdleTimeInMilliseconds: 60000
+      # maximum size of connection pool
+      maxPoolSize: 50
+      # Time (in milliseconds) a connection can be idle in the connection pool before it must be validated that it’s still open.
+      revalidationIntervalInMilliseconds: 5000
+      # Time to live for a pool connection (in milliseconds). -1 means deactivated
+      ttlInMilliseconds: -1
+    timeouts:
+      # Timeout for creating new connections (in milliseconds)
+      newConnectionTimeoutInMilliseconds: 10000
+      # Timeout for execution (in milliseconds). 0 means it is disabled.
+      executionTimeoutInMilliseconds: 0
+      # Timeout for a request (in milliseconds). 0 means it is disabled.
+      requestTimeoutInMilliseconds: 0
+      # Timeout for reading from a connected socket (in milliseconds).
+      socketTimeoutInMilliseconds: 50000
   sharedVolume:
     # Use a shared filesystem as storage backend
     enabled: false
