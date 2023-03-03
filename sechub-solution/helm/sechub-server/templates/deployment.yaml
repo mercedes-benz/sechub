@@ -130,7 +130,7 @@ spec:
 {{- end }}
 {{- if .Values.server.loggingType }}
         - name: LOGGING_TYPE
-          value: {{ .Values.server.loggingType }}
+          value: "{{ .Values.server.loggingType }}"
 {{- end }}
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 # + ClusterEnvironment service setup by downward api
@@ -149,9 +149,9 @@ spec:
         - name: SECHUB_SERVER_SSL_KEYSTORE_TYPE
           value: "PKCS12"
         - name: SECHUB_SERVER_SSL_KEYSTORE_LOCATION
-          value: /sechub/{{ .Values.server.ssl.keystoreAlias }}.p12
+          value: "/sechub/{{ .Values.server.ssl.keystoreAlias }}.p12"
         - name: SECHUB_SERVER_SSL_KEYSTORE_ALIAS
-          value: {{ .Values.server.ssl.keystoreAlias }}
+          value: "{{ .Values.server.ssl.keystoreAlias }}"
         - name: SECHUB_SERVER_SSL_KEYSTORE_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -161,15 +161,15 @@ spec:
 # + Initial user setup
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         - name: SECHUB_INITIALADMIN_USERID
-          value: {{ .Values.server.initialAdminUser.id }}
+          value: "{{ .Values.server.initialAdminUser.id }}"
         - name: SECHUB_INITIALADMIN_EMAIL
-          value: {{ .Values.server.initialAdminUser.email }}
+          value: "{{ .Values.server.initialAdminUser.email }}"
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 # + Database setup
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 {{- if .Values.server.databaseConnection }}
         - name: SPRING_DATASOURCE_URL
-          value: {{ .Values.server.databaseConnection }}
+          value: "{{ .Values.server.databaseConnection }}"
         - name: SPRING_DATASOURCE_USERNAME
           valueFrom:
             secretKeyRef:
@@ -497,9 +497,6 @@ spec:
         - name: SECHUB_CONFIG_TRIGGER_NEXTJOB_DELAY
           value: "{{ .Values.server.jobScheduling.activationIntervalInMilliseconds | int64 }}"
         # Scheduler strategy
-        # Possible values:
-        # - first-come-first-serve (a project can have multiple parallel running scan jobs (default if empty))
-        # - only-one-scan-per-project-at-a-time (a project can only have one running scan job at a time)
         - name: SECHUB_SCHEDULER_STRATEGY_ID
           value: "{{ .Values.server.jobScheduling.strategy }}"
 # ----------------------------------------------------------------------------------------------#
@@ -549,9 +546,9 @@ spec:
         - name: S3_ENABLED
           value: "true"
         - name: S3_ENDPOINT
-          value: {{ .Values.storage.s3.endpoint }}
+          value: "{{ .Values.storage.s3.endpoint }}"
         - name: S3_BUCKETNAME
-          value: {{ .Values.storage.s3.bucketname }}
+          value: "{{ .Values.storage.s3.bucketname }}"
         - name: S3_ACCESSKEY
           valueFrom:
             secretKeyRef:
@@ -562,6 +559,22 @@ spec:
             secretKeyRef:
                name: secret-storage
                key: sechub_storage_s3_secretkey
+        - name: SECHUB_STORAGE_S3_CONNECTION_IDLE_MAX_MILLISECONDS
+          value: "{{ .Values.storage.s3.connectionPool.maxIdleTimeInMilliseconds }}"
+        - name: SECHUB_STORAGE_S3_CONNECTION_IDLE_VALIDATE_MILLISECONDS
+          value: "{{ .Values.storage.s3.connectionPool.revalidationIntervalInMilliseconds }}"
+        - name: SECHUB_STORAGE_S3_CONNECTION_MAX_POOLSIZE
+          value: "{{ .Values.storage.s3.connectionPool.maxPoolSize }}"
+        - name: SECHUB_STORAGE_S3_CONNECTION_TTL_MILLISECONDS
+          value: "{{ .Values.storage.s3.connectionPool.ttlInMilliseconds }}"
+        - name: SECHUB_STORAGE_S3_TIMEOUT_CONNECTION_MILLISECONDS
+          value: "{{ .Values.storage.s3.timeouts.newConnectionTimeoutInMilliseconds }}"
+        - name: SECHUB_STORAGE_S3_TIMEOUT_EXECUTION_MILLISECONDS
+          value: "{{ .Values.storage.s3.timeouts.executionTimeoutInMilliseconds }}"
+        - name: SECHUB_STORAGE_S3_TIMEOUT_REQUEST_MILLISECONDS
+          value: "{{ .Values.storage.s3.timeouts.requestTimeoutInMilliseconds }}"
+        - name: SECHUB_STORAGE_S3_TIMEOUT_SOCKET_MILLISECONDS
+          value: "{{ .Values.storage.s3.timeouts.socketTimeoutInMilliseconds }}"
 {{- else if .Values.storage.sharedVolume.enabled }}
         - name: SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR
           value: "{{ .Values.storage.sharedVolume.dir }}"
