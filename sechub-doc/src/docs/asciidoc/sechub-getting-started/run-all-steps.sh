@@ -24,7 +24,8 @@ nohup sh ./start-sechub.sh &
 
 # Wait until sechub is started
 TRIES=0
-while true; do
+MAX_TRIES=10
+while [ $TRIES -le $MAX_TRIES ]; do
     
     echo "Waiting for SecHub server to start.."
     isStarted="$(curl -sw '%{http_code}' -k $SECHUB_SERVER/api/anonymous/check/alive)"
@@ -32,14 +33,15 @@ while true; do
         break
     fi
 
-    if [ "$TRIES" -gt 10 ]; then
-        echo "Couldn't start SecHub Server!"
-        stopServers 1
-    fi
-
     TRIES=$((TRIES + 1))
     sleep 5
 done
+
+if [ "$TRIES" -gt 10 ]; then
+    echo "Couldn't start SecHub Server!"
+    stopServers 1
+fi
+
 echo "SecHub Server started successfully!"
 
 # Start PDS+GoSec

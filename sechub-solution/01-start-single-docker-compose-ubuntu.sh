@@ -16,4 +16,4 @@ export BUILDKIT_PROGRESS=plain
 export DOCKER_BUILDKIT=1
 
 echo "Compose file: $compose_file"
-docker-compose --file "docker-compose_sechub-ubuntu.yaml" up --build --remove-orphans
+docker compose --file "docker-compose_sechub-ubuntu.yaml" up --build --remove-orphans
