@@ -38,7 +38,7 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
     PDS_CONFIG_USE_SECHUB_STORAGE(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE,
             "When 'true' the SecHub storage will be reused by PDS server. In this case SecHub will not upload job data to PDS.\n"
                     + "But it's crucial to have same root storage setup on PDS server side (e.g. same s3 bucket for S3 storage, or same NFS base for shared volumes).\n"
-                    + "When not `true` or not defined, pds will use its own storage locations").markSendToPDS().markDefaultRecommended().withDefault(true))
+                    + "When not 'true' or not defined, PDS will use its own storage locations").markSendToPDS().markDefaultRecommended().withDefault(true))
 
     ,
     /**
@@ -64,10 +64,10 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
      * Contains file filter include information
      */
     PDS_CONFIG_FILEFILTER_INCLUDES(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_FILEFILTER_INCLUDES,
-            "This contains a comma separated list of path patterns for file includes. These patterns can contain wildcards. Matching will be done case insensitive!"
-                    + "For example: `*.go,*.html, test1.txt` would include every go file, every HTML file and files named `test1.txt`.\n\n"
-                    + "When nothing defined, every content is accepted as include.\n"
-                    + "Every file which is matched by one of the patterns will be included - except those which are explicitly excluded.\n\n").markSendToPDS()),
+            "This contains a comma separated list of path patterns for file includes. These patterns can contain wildcards. Matching will be done case insensitive!\n"
+                    + "Every file which is matched by one of the patterns will be included - except those which are explicitly excluded.\n"
+                    + "When nothing is defined, then every content is accepted for include.\n\n"
+                    + "For example: '*.go,*.html, test1.txt' would include every Go file, every HTML file and files named 'test1.txt'.").markSendToPDS()),
 
     /**
      * Contains trust all certificates information
@@ -80,7 +80,7 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
     PDS_CONFIG_SUPPORTED_DATATYPES(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SUPPORTED_DATATYPES,
             "Can be " + SecHubDataConfigurationType.SOURCE + ", " + SecHubDataConfigurationType.BINARY + ", " + SecHubDataConfigurationType.NONE
                     + " or a combination as a comma separated list. This data should"
-                    + "normally not be defined via a default value of an optional PDS configuration parameter.").markSendToPDS()),
+                    + " normally not be defined via a default value of an optional PDS configuration parameter.").markSendToPDS()),
 
     PDS_CONFIG_JOBSTORAGE_READ_RESILIENCE_RETRIES_MAX(
             new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_JOBSTORAGE_READ_RESILIENCE_RETRIES_MAX,
@@ -94,16 +94,15 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
      * Contains product timeout information
      */
     PDS_CONFIG_TIMEOUT_PRODUCT_MINUTES(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_PRODUCT_TIMEOUT_MINUTES,
-            "Maximum allowed time in minutes, before a producct will be timeout - means launcher script is automatically canceled by PDS").markSendToPDS()),
+            "Maximum allowed time in minutes, before a product will time out - means launcher script is automatically canceled by PDS").markSendToPDS()),
 
     /**
      * Contains file filter exclude information
      */
     PDS_CONFIG_FILEFILTER_EXCLUDES(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_FILEFILTER_EXCLUDES,
-            "This contains a comma separated list of path patterns for file excludes. These patterns can contain wildcards. Matching will be done case insensitive!"
-                    + "For example: `*.go,*.html, test1.txt` would excluded every go file, every HTML file and files named `test1.txt`.\n\n"
-                    + "When empty none of the files will be excluded. The exclude operation will be done AFTER the include file filtering has happend.")
-                            .markSendToPDS()),
+            "This contains a comma separated list of path patterns for file excludes. These patterns can contain wildcards. Matching will be done case insensitive!\n"
+                  + "When empty, then nothing will be excluded. The exclude operation will be done AFTER the include file filtering.\n\n"
+                  + "For example: '*.go,*.html, test1.txt' would exclude every Go file, every HTML file and files named 'test1.txt'.").markSendToPDS()),
 
     /**
      * This is automatically given to PDS by SecHub - depending on scan type. E.g.
@@ -111,7 +110,7 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
      * start scanning.
      */
     PDS_SCAN_TARGET_URL(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_TARGET_URL,
-            "This contains the Target URL for current scan i.e webscan. Will not be set in all scan types. E.g. for a code scan this environment variable will not be available")
+            "This contains the target URL for current scan i.e webscan. Will not be set in all scan types. E.g. for a code scan this environment variable will not be available")
                     .markGenerated().markAsAvailableInsideScript()),
 
     /**
