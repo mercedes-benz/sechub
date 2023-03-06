@@ -101,8 +101,8 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
      */
     PDS_CONFIG_FILEFILTER_EXCLUDES(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_FILEFILTER_EXCLUDES,
             "This contains a comma separated list of path patterns for file excludes. These patterns can contain wildcards. Matching will be done case insensitive!\n"
-                  + "When empty, then nothing will be excluded. The exclude operation will be done AFTER the include file filtering.\n\n"
-                  + "For example: '*.go,*.html, test1.txt' would exclude every Go file, every HTML file and files named 'test1.txt'.").markSendToPDS()),
+                    + "When empty, then nothing will be excluded. The exclude operation will be done AFTER the include file filtering.\n\n"
+                    + "For example: '*.go,*.html, test1.txt' would exclude every Go file, every HTML file and files named 'test1.txt'.").markSendToPDS()),
 
     /**
      * This is automatically given to PDS by SecHub - depending on scan type. E.g.
