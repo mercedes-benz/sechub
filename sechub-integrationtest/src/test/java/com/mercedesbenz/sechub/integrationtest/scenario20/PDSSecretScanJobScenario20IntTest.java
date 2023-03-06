@@ -21,6 +21,7 @@ import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSupport;
 
 public class PDSSecretScanJobScenario20IntTest {
+
     public static final String PATH = "pds/secretscan/upload/zipfile_contains_inttest_secretscan_with_gitleaks_sample_sarif.json.zip";
 
     @Rule
@@ -53,8 +54,15 @@ public class PDSSecretScanJobScenario20IntTest {
         hasTrafficLight(GREEN).
         hasFindings(6).
 	        finding(0).
-	        hasScanType(ScanType.SECRET_SCAN).
-	        hasDescription("generic-api-key has detected secret for file UnSAFE_Bank/Backend/docker-compose.yml.");
+	          hasScanType(ScanType.SECRET_SCAN).
+	          hasDescription("generic-api-key has detected secret for file UnSAFE_Bank/Backend/docker-compose.yml.").
+	          codeCall(0).
+	              hasColumn(14).
+	              hasLine(12).
+	              hasSource("531486b2bf646636a6a1bba61e78ec4a4a54efbd").
+	              hasLocation("UnSAFE_Bank/Backend/docker-compose.yml").
+	          andFinding().
+	          hasNoCweId();// the results are from gitleaks product, which does not include CWE information
         /* @formatter:on */
     }
 }
