@@ -51,7 +51,7 @@ public class TargetResolverService implements NetworkTargetResolver {
     @Autowired
     List<URITargetResolveStrategy> uriTargetResolveStrategies = new ArrayList<>();
 
-    private URITargetResolveStrategy usedUriTargetResolveStrategy;
+    private List<URITargetResolveStrategy> usedUriTargetResolveStrategies = new ArrayList<>();
     private InetAdressTargetResolveStrategy usedInetAddressTargetResolveStrategy;
     private boolean initialized;
 
@@ -71,8 +71,13 @@ public class TargetResolverService implements NetworkTargetResolver {
             }
         }
         NetworkTarget resolved = null;
-        if (usedUriTargetResolveStrategy != null) {
-            resolved = usedUriTargetResolveStrategy.resolveTargetFor(uri);
+        for (URITargetResolveStrategy usedUriTargetResolveStrategy : usedUriTargetResolveStrategies) {
+            if (usedUriTargetResolveStrategy != null) {
+                resolved = usedUriTargetResolveStrategy.resolveTargetFor(uri);
+            }
+            if (resolved != null) {
+                break;
+            }
         }
         if (resolved == null) {
             resolved = new NetworkTarget(uri, NetworkTargetType.INTERNET);
@@ -108,13 +113,23 @@ public class TargetResolverService implements NetworkTargetResolver {
         }
         initInetAddressStrategy();
         initURIStrategy();
+
+        initialized = true;
     }
 
     private void initURIStrategy() {
-        for (URITargetResolveStrategy strategy : uriTargetResolveStrategies) {
-            if (strategy.initialize(definedUriStrategy)) {
-                usedUriTargetResolveStrategy = strategy;
-                break;
+        if (definedUriStrategy == null) {
+            return;
+        }
+        String[] splittedUriTargetResolveStrategies = definedUriStrategy.split("\\|");
+
+        for (String splittedPart : splittedUriTargetResolveStrategies) {
+
+            for (URITargetResolveStrategy strategy : uriTargetResolveStrategies) {
+                if (strategy.initialize(splittedPart)) {
+                    usedUriTargetResolveStrategies.add(strategy);
+                    break;
+                }
             }
         }
     }
