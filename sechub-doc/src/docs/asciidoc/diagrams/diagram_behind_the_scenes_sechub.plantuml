@@ -1,0 +1,12 @@
+' SPDX-License-Identifier: MIT
+@startuml
+skinparam actorStyle awesome
+actor User
+participant SecHub
+participant "GoSec + PDS" as gosec
+
+User -> SecHub : Uploads files
+SecHub -> gosec : Uploads files
+gosec -> SecHub : Gets result
+SecHub -> User : Download report
+@enduml

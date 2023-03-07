@@ -207,6 +207,14 @@ public class AssertReport {
             return this;
         }
 
+        public AssertFinding hasNoCweId() {
+            if (finding.getCweId() != null) {
+                dump();
+                autoDumper.execute(() -> fail("CWE id found inside finding:" + finding.getCweId()));
+            }
+            return this;
+        }
+
         public AssertCodeCall codeCall(int level) {
             int currentLevel = 0;
             SecHubCodeCallStack code = finding.getCode();

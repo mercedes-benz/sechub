@@ -150,6 +150,7 @@ asciidoctor {
         'sechub-restapi.adoc',
         'sechub-quickstart-guide.adoc',
         'sechub-product-delegation-server.adoc'
+        'sechub-getting-started.adoc'
     }
 
     // workaround to enable missing includes checking. See https://github.com/asciidoctor/asciidoctor-gradle-plugin/issues/154
