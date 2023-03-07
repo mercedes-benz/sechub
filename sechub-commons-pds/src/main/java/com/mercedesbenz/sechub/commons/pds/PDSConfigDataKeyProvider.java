@@ -94,7 +94,8 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
      * Contains product timeout information
      */
     PDS_CONFIG_TIMEOUT_PRODUCT_MINUTES(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_PRODUCT_TIMEOUT_MINUTES,
-            "Maximum allowed time in minutes, before a product will time out - this means that the launcher script is automatically canceled by PDS").markSendToPDS()),
+            "Maximum allowed time in minutes, before a product will time out - this means that the launcher script is automatically canceled by PDS")
+                    .markSendToPDS()),
 
     /**
      * Contains file filter exclude information
@@ -105,9 +106,9 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
                     + "For example: '*.go,*.html, test1.txt' would exclude every Go file, every HTML file and files named 'test1.txt'.").markSendToPDS()),
 
     /**
-     * This is automatically given to PDS by SecHub - depending on the scan type. E.g.
-     * for a webscan this will be used to identify the current webscan target URL to
-     * start scanning.
+     * This is automatically given to PDS by SecHub - depending on the scan type.
+     * E.g. for a webscan this will be used to identify the current webscan target
+     * URL to start scanning.
      */
     PDS_SCAN_TARGET_URL(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_TARGET_URL,
             "This contains the target URL for the current scan (i.e. webscan). Will not be set in all scan types. E.g. for a code scan this environment variable will not be available")
