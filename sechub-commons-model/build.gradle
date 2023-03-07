@@ -8,6 +8,7 @@ dependencies{
     api spring_boot_dependency.jackson_core
     api spring_boot_dependency.jackson_databind
     api spring_boot_dependency.jackson_datatype_jdk8
+    api spring_boot_dependency.jackson_datatype_jsr310
     
     api project(':sechub-commons-core')
     

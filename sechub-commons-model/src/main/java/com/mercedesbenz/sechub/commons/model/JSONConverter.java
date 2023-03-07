@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 
 public class JSONConverter {
@@ -34,6 +35,7 @@ public class JSONConverter {
     private ObjectMapper mapper;
 
     public JSONConverter() {
+        
         // https://github.com/FasterXML/jackson-core/wiki/JsonParser-Features
         JsonFactory jsonFactory = new JsonFactory();
         jsonFactory.enable(JsonParser.Feature.ALLOW_COMMENTS);
@@ -58,12 +60,13 @@ public class JSONConverter {
 
         // but we do NOT use SerializationFeature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED !
         // reason: otherwise jackson does all single ones write as not being an array
-        // which comes up to problems agani
+        // which comes up to problems again
         mapper.disable(SerializationFeature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED);
 
         mapper.setSerializationInclusion(Include.NON_ABSENT);
         // http://www.baeldung.com/jackson-optional
         mapper.registerModule(new Jdk8Module());
+        mapper.registerModule(new JavaTimeModule());
 
     }
 

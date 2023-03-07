@@ -4,7 +4,9 @@ package com.mercedesbenz.sechub.commons.model;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -21,38 +23,87 @@ public class JSONConverterTest {
     }
     
     @Test
-    void toJson_for_a_object_containing_a_local_date_must_work() {
+    void toJson_string_array() {
         /* prepare */
-        LocalDateTestClass testObject = new LocalDateTestClass();
-        testObject.date1 = LocalDate.now();
-        
-        /* execute */
-        String json = converterToTest.toJSON(testObject);
-        
-        /* test */
-        assertNotNull(json);
-        
-    }
-    
-    @Test
-    void toJson_and_from_json_local_date_must_be_equal() {
-        /* prepare */
-        LocalDateTestClass origin = new LocalDateTestClass();
-        origin.date1 = LocalDate.now();
+        ArrayTestClass origin = new ArrayTestClass();
+        origin.stringArray= new String[] {"alpha"};
         
         /* execute */
         String json = converterToTest.toJSON(origin);
         
         /* test */
+        assertTrue(json.contains("["));
+    }
+    
+    @Test
+    void toJson_enum_is_uppercased() {
+        /* prepare */
+        TrafficLightEnumTestClass origin = new TrafficLightEnumTestClass();
+        origin.trafficLight = TrafficLight.GREEN;
+
+        /* execute */
+        String json = converterToTest.toJSON(origin);
+
+        /* test */
         assertNotNull(json);
+        assertTrue(json.contains("GREEN"));
+        assertFalse(json.contains("green"));
+
+    }
+    
+    @Test
+    void fromJson_enum_as_lowercased_can_be_read() {
+        /* prepare */
+        TrafficLightEnumTestClass origin = new TrafficLightEnumTestClass();
+        origin.trafficLight = TrafficLight.GREEN;
         
+        String json = converterToTest.toJSON(origin);
+        String jsonWithLoweredGreen =json.replaceAll("GREEN", "green");
+        
+        assertNotNull(json);
+        assertTrue(jsonWithLoweredGreen.contains("green"));
+        assertFalse(jsonWithLoweredGreen.contains("GREEN"));
+        
+        /* execute */
+        TrafficLightEnumTestClass result = converterToTest.fromJSON(TrafficLightEnumTestClass.class, jsonWithLoweredGreen);
+        
+        /* test */
+        assertEquals(TrafficLight.GREEN, result.trafficLight);
+        
+    }
+
+    @Test
+    void toJson_for_a_object_containing_a_local_date_must_work() {
+        /* prepare */
+        LocalDateTestClass testObject = new LocalDateTestClass();
+        testObject.date1 = LocalDate.now();
+
+        /* execute */
+        String json = converterToTest.toJSON(testObject);
+
+        /* test */
+        assertNotNull(json);
+
+    }
+
+    @Test
+    void toJson_and_from_json_local_date_must_be_equal() {
+        /* prepare */
+        LocalDateTestClass origin = new LocalDateTestClass();
+        origin.date1 = LocalDate.now();
+
+        /* execute */
+        String json = converterToTest.toJSON(origin);
+
+        /* test */
+        assertNotNull(json);
+
         /* execute */
         LocalDateTestClass result = converterToTest.fromJSON(LocalDateTestClass.class, json);
         assertEquals(origin.date1, result.date1);
-        
-        
+
     }
-    
+
     @Test
     void toJSON_list_with_two_test_object_returns_expected_json_string() throws Exception {
         assertEquals("[{\"info\":\"test1\"},{\"info\":\"test2\"}]",
@@ -122,9 +173,52 @@ public class JSONConverterTest {
         assertNotNull(result);
         assertEquals("info1", result.getInfo());
     }
-    
-    private class LocalDateTestClass{
+
+    static class LocalDateTestClass {
         private LocalDate date1;
+
+        public void setDate1(LocalDate date1) {
+            this.date1 = date1;
+        }
+
+        public LocalDate getDate1() {
+            return date1;
+        }
+    }
+
+    static class TrafficLightEnumTestClass {
+        private TrafficLight trafficLight;
+
+        public void setTrafficLight(TrafficLight trafficLight) {
+            this.trafficLight = trafficLight;
+        }
+
+        public TrafficLight getTrafficLight() {
+            return trafficLight;
+        }
+    }
+    
+    static class ArrayTestClass{
+        private String[] stringArray;
+        
+        public void setStringArray(String[] stringArray) {
+            this.stringArray = stringArray;
+        }
+        
+        public String[] getStringArray() {
+            return stringArray;
+        }
+    }
+    
+    static class CollectionTestClass{
+        private Collection<String> collection= new ArrayList<>();
+        public Collection<String> getCollection() {
+            return collection;
+        }
+        
+        public void setCollection(Collection<String> collection) {
+            this.collection = collection;
+        }
     }
 
 }
