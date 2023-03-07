@@ -4,6 +4,8 @@ package com.mercedesbenz.sechub.commons.model;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -21,71 +23,72 @@ public class JSONConverterTest {
     void before() {
         converterToTest = new JSONConverter();
     }
-    
+
     @Test
     void fromJson_single_quotes_accepted() {
-        /* prepare*/
+        /* prepare */
         String json = "{'collection':['alpha']}";
-        
-        /* execute*/
+
+        /* execute */
         CollectionTestClass result = converterToTest.fromJSON(CollectionTestClass.class, json);
-        
+
         /* test */
         assertTrue(result.collection.contains("alpha"));
 
     }
+
     @Test
     void fromJson_array_with_single_element_accepted_for_collection() {
-        /* prepare*/
+        /* prepare */
         String json = "{\"collection\":[\"alpha\"]}";
-        
-        /* execute*/
+
+        /* execute */
         CollectionTestClass result = converterToTest.fromJSON(CollectionTestClass.class, json);
-        
+
         /* test */
         assertTrue(result.collection.contains("alpha"));
-        
+
     }
-    
+
     @Test // this jackson feature is necessary for some classes - e.g. SimpleMailMessage
     void fromJson_single_value_accepted_for_collection() {
-        /* prepare*/
+        /* prepare */
         String json = "{\"collection\":\"alpha\"}";
-        
-        /* execute*/
+
+        /* execute */
         CollectionTestClass result = converterToTest.fromJSON(CollectionTestClass.class, json);
-        
+
         /* test */
         assertTrue(result.collection.contains("alpha"));
-        
+
     }
-    
+
     @Test
     void toJson_string_array_with_one_element_is_an_array() {
         /* prepare */
         ArrayTestClass origin = new ArrayTestClass();
-        origin.stringArray= new String[] {"alpha"};
-        
+        origin.stringArray = new String[] { "alpha" };
+
         /* execute */
         String json = converterToTest.toJSON(origin);
-        
+
         /* test */
         assertTrue(json.contains("["));
     }
-    
+
     @Test
     void toJson_string_collection_with_one_element_is_an_array() {
         /* prepare */
         CollectionTestClass origin = new CollectionTestClass();
         origin.collection.add("alpha");
-        
+
         /* execute */
         String json = converterToTest.toJSON(origin);
-        
+
         /* test */
         assertTrue(json.contains("["));
     }
-    
+
     @Test
     void toJson_enum_is_uppercased() {
         /* prepare */
@@ -101,33 +104,33 @@ public class JSONConverterTest {
         assertFalse(json.contains("green"));
 
     }
-    
+
     @Test
     void fromJson_enum_as_lowercased_can_be_read() {
         /* prepare */
         TrafficLightEnumTestClass origin = new TrafficLightEnumTestClass();
         origin.trafficLight = TrafficLight.GREEN;
-        
+
         String json = converterToTest.toJSON(origin);
-        String jsonWithLoweredGreen =json.replaceAll("GREEN", "green");
-        
+        String jsonWithLoweredGreen = json.replaceAll("GREEN", "green");
+
         assertNotNull(json);
         assertTrue(jsonWithLoweredGreen.contains("green"));
         assertFalse(jsonWithLoweredGreen.contains("GREEN"));
-        
+
         /* execute */
         TrafficLightEnumTestClass result = converterToTest.fromJSON(TrafficLightEnumTestClass.class, jsonWithLoweredGreen);
-        
+
         /* test */
         assertEquals(TrafficLight.GREEN, result.trafficLight);
-        
+
     }
 
     @Test
     void toJson_for_a_object_containing_a_local_date_must_work() {
         /* prepare */
         LocalDateTestClass testObject = new LocalDateTestClass();
-        testObject.date1 = LocalDate.now();
+        testObject.date = LocalDate.now();
 
         /* execute */
         String json = converterToTest.toJSON(testObject);
@@ -141,7 +144,48 @@ public class JSONConverterTest {
     void toJson_and_from_json_local_date_must_be_equal() {
         /* prepare */
         LocalDateTestClass origin = new LocalDateTestClass();
-        origin.date1 = LocalDate.now();
+        origin.date = LocalDate.now();
+
+        /* execute */
+        String json = converterToTest.toJSON(origin);
+        System.out.println(json);
+
+        /* test */
+        assertNotNull(json);
+
+        /* execute */
+        LocalDateTestClass result = converterToTest.fromJSON(LocalDateTestClass.class, json);
+        assertEquals(origin.date, result.date);
+
+    }
+
+    @Test
+    void fromJson_with_array_localdatetime_works() {
+        /* prepare */
+        String json = "{\"dateTime\":[2023,3,7,10,38,49,470191000]}";
+
+        /* execute */
+        LocalDateTimeTestClass result = converterToTest.fromJSON(LocalDateTimeTestClass.class, json);
+        assertNotNull(result.dateTime);
+        assertEquals(2023, result.dateTime.getYear());
+    }
+
+    @Test
+    void fromJson_with_iso8601_localdatetime_works() {
+        /* prepare */
+        String json = "{\"dateTime\":\"2023-03-07T10:44:13Z\"}";
+
+        /* execute */
+        LocalDateTimeTestClass result = converterToTest.fromJSON(LocalDateTimeTestClass.class, json);
+        assertNotNull(result.dateTime);
+        assertEquals(2023, result.dateTime.getYear());
+    }
+
+    @Test
+    void toJson_and_from_json_local_datetime_must_be_equal() {
+        /* prepare */
+        LocalDateTimeTestClass origin = new LocalDateTimeTestClass();
+        origin.dateTime = LocalDateTime.now();
 
         /* execute */
         String json = converterToTest.toJSON(origin);
@@ -150,8 +194,36 @@ public class JSONConverterTest {
         assertNotNull(json);
 
         /* execute */
-        LocalDateTestClass result = converterToTest.fromJSON(LocalDateTestClass.class, json);
-        assertEquals(origin.date1, result.date1);
+        LocalDateTimeTestClass result = converterToTest.fromJSON(LocalDateTimeTestClass.class, json);
+        assertEquals(origin.dateTime, result.dateTime);
+
+    }
+
+    @Test
+    void toJson_local_datetime_in_expected_format() {
+        /* prepare */
+        LocalDateTimeTestClass origin = new LocalDateTimeTestClass();
+        origin.dateTime = LocalDateTime.parse("2023_03_07X17_08_17_36804000Z", DateTimeFormatter.ofPattern("yyyy_MM_dd'X'HH_mm_ss_n'Z'"));
+
+        /* execute */
+        String json = converterToTest.toJSON(origin);
+
+        /* test */
+        assertTrue(json.contains("2023-03-07T17:08:17.36804000Z"));
+
+    }
+
+    @Test
+    void toJson_local_date_in_expected_format() {
+        /* prepare */
+        LocalDateTestClass origin = new LocalDateTestClass();
+        origin.date = LocalDate.of(2023, 03, 07);
+
+        /* execute */
+        String json = converterToTest.toJSON(origin);
+
+        /* test */
+        assertTrue(json.contains("\"2023-03-07\""));
 
     }
 
@@ -226,14 +298,26 @@ public class JSONConverterTest {
     }
 
     static class LocalDateTestClass {
-        private LocalDate date1;
+        private LocalDate date;
 
-        public void setDate1(LocalDate date1) {
-            this.date1 = date1;
+        public void setDate(LocalDate date) {
+            this.date = date;
         }
 
-        public LocalDate getDate1() {
-            return date1;
+        public LocalDate getDate() {
+            return date;
+        }
+    }
+
+    static class LocalDateTimeTestClass {
+        private LocalDateTime dateTime;
+
+        public void setDateTime(LocalDateTime dateTime) {
+            this.dateTime = dateTime;
+        }
+
+        public LocalDateTime getDateTime() {
+            return dateTime;
         }
     }
 
@@ -248,25 +332,26 @@ public class JSONConverterTest {
             return trafficLight;
         }
     }
-    
-    static class ArrayTestClass{
+
+    static class ArrayTestClass {
         private String[] stringArray;
-        
+
         public void setStringArray(String[] stringArray) {
             this.stringArray = stringArray;
         }
-        
+
         public String[] getStringArray() {
             return stringArray;
         }
     }
-    
-    static class CollectionTestClass{
-        private Collection<String> collection= new ArrayList<>();
+
+    static class CollectionTestClass {
+        private Collection<String> collection = new ArrayList<>();
+
         public Collection<String> getCollection() {
             return collection;
         }
-        
+
         public void setCollection(Collection<String> collection) {
             this.collection = collection;
         }
