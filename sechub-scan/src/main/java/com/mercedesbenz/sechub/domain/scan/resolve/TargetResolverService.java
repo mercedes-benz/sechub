@@ -34,7 +34,7 @@ public class TargetResolverService implements NetworkTargetResolver {
     @MustBeDocumented(value = "*One ore more strategies to decide target types by given URI.* +\n"
             + "Starts always with strategy-identifer, colon and value(s). Values are comma separated. Currently only 'intranet-hostname-ends-with' and 'intranet-hostname-starts-with' are supported as strategies. For example: "
             + "`intranet-hostname-ends-with:intranet.example.org,intx.example.com`. Other hostnames are interpreted as being inside INTERNET. "
-            + "But no matter if strategy is defined or not: loopback addresses are always illegal and so ignored. You can define multiple strategies at same time by using a pipe symbol to separate them. As an example:"
+            + "But no matter if strategy is defined or not: loopback addresses are always illegal and so ignored. You can define multiple strategies at same time by using a pipe symbol to separate them. As an example: "
             + "`intranet-hostname-ends-with:intranet.example.org,intx.example.com|intranet-hostname-starts-with:10.5`")
     String definedUriStrategy;
 
