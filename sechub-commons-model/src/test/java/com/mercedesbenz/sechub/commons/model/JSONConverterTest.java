@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.commons.model;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -18,7 +19,40 @@ public class JSONConverterTest {
     void before() {
         converterToTest = new JSONConverter();
     }
-
+    
+    @Test
+    void toJson_for_a_object_containing_a_local_date_must_work() {
+        /* prepare */
+        LocalDateTestClass testObject = new LocalDateTestClass();
+        testObject.date1 = LocalDate.now();
+        
+        /* execute */
+        String json = converterToTest.toJSON(testObject);
+        
+        /* test */
+        assertNotNull(json);
+        
+    }
+    
+    @Test
+    void toJson_and_from_json_local_date_must_be_equal() {
+        /* prepare */
+        LocalDateTestClass origin = new LocalDateTestClass();
+        origin.date1 = LocalDate.now();
+        
+        /* execute */
+        String json = converterToTest.toJSON(origin);
+        
+        /* test */
+        assertNotNull(json);
+        
+        /* execute */
+        LocalDateTestClass result = converterToTest.fromJSON(LocalDateTestClass.class, json);
+        assertEquals(origin.date1, result.date1);
+        
+        
+    }
+    
     @Test
     void toJSON_list_with_two_test_object_returns_expected_json_string() throws Exception {
         assertEquals("[{\"info\":\"test1\"},{\"info\":\"test2\"}]",
@@ -87,6 +121,10 @@ public class JSONConverterTest {
         /* test */
         assertNotNull(result);
         assertEquals("info1", result.getInfo());
+    }
+    
+    private class LocalDateTestClass{
+        private LocalDate date1;
     }
 
 }
