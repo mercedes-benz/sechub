@@ -23,10 +23,61 @@ public class JSONConverterTest {
     }
     
     @Test
-    void toJson_string_array() {
+    void fromJson_single_quotes_accepted() {
+        /* prepare*/
+        String json = "{'collection':['alpha']}";
+        
+        /* execute*/
+        CollectionTestClass result = converterToTest.fromJSON(CollectionTestClass.class, json);
+        
+        /* test */
+        assertTrue(result.collection.contains("alpha"));
+
+    }
+    @Test
+    void fromJson_array_with_single_element_accepted_for_collection() {
+        /* prepare*/
+        String json = "{\"collection\":[\"alpha\"]}";
+        
+        /* execute*/
+        CollectionTestClass result = converterToTest.fromJSON(CollectionTestClass.class, json);
+        
+        /* test */
+        assertTrue(result.collection.contains("alpha"));
+        
+    }
+    
+    @Test // this jackson feature is necessary for some classes - e.g. SimpleMailMessage
+    void fromJson_single_value_accepted_for_collection() {
+        /* prepare*/
+        String json = "{\"collection\":\"alpha\"}";
+        
+        /* execute*/
+        CollectionTestClass result = converterToTest.fromJSON(CollectionTestClass.class, json);
+        
+        /* test */
+        assertTrue(result.collection.contains("alpha"));
+        
+    }
+    
+    @Test
+    void toJson_string_array_with_one_element_is_an_array() {
         /* prepare */
         ArrayTestClass origin = new ArrayTestClass();
         origin.stringArray= new String[] {"alpha"};
+        
+        /* execute */
+        String json = converterToTest.toJSON(origin);
+        
+        /* test */
+        assertTrue(json.contains("["));
+    }
+    
+    @Test
+    void toJson_string_collection_with_one_element_is_an_array() {
+        /* prepare */
+        CollectionTestClass origin = new CollectionTestClass();
+        origin.collection.add("alpha");
         
         /* execute */
         String json = converterToTest.toJSON(origin);
