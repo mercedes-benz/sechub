@@ -36,8 +36,8 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
      * SecHub storage directly.
      */
     PDS_CONFIG_USE_SECHUB_STORAGE(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE,
-            "When 'true' the SecHub storage will be reused by PDS server. In this case SecHub will not upload job data to PDS.\n"
-                    + "But it's crucial to have same root storage setup on PDS server side (e.g. same s3 bucket for S3 storage, or same NFS base for shared volumes).\n"
+            "When 'true' the SecHub storage will be reused by the PDS server. In this case SecHub will not upload job data to PDS.\n"
+                    + "But it's crucial to have the same root storage setup on the PDS server side (e.g. same s3 bucket for S3 storage, or same NFS base for shared volumes).\n"
                     + "When not 'true' or not defined, PDS will use its own storage locations").markSendToPDS().markDefaultRecommended().withDefault(true))
 
     ,
@@ -94,7 +94,7 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
      * Contains product timeout information
      */
     PDS_CONFIG_TIMEOUT_PRODUCT_MINUTES(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_PRODUCT_TIMEOUT_MINUTES,
-            "Maximum allowed time in minutes, before a product will time out - means launcher script is automatically canceled by PDS").markSendToPDS()),
+            "Maximum allowed time in minutes, before a product will time out - this means that the launcher script is automatically canceled by PDS").markSendToPDS()),
 
     /**
      * Contains file filter exclude information
@@ -105,12 +105,12 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<ExecutionPDSKey> 
                     + "For example: '*.go,*.html, test1.txt' would exclude every Go file, every HTML file and files named 'test1.txt'.").markSendToPDS()),
 
     /**
-     * This is automatically given to PDS by SecHub - depending on scan type. E.g.
+     * This is automatically given to PDS by SecHub - depending on the scan type. E.g.
      * for a webscan this will be used to identify the current webscan target URL to
      * start scanning.
      */
     PDS_SCAN_TARGET_URL(new ExecutionPDSKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_TARGET_URL,
-            "This contains the target URL for current scan i.e webscan. Will not be set in all scan types. E.g. for a code scan this environment variable will not be available")
+            "This contains the target URL for the current scan (i.e. webscan). Will not be set in all scan types. E.g. for a code scan this environment variable will not be available")
                     .markGenerated().markAsAvailableInsideScript()),
 
     /**
