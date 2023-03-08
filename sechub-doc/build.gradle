@@ -148,7 +148,7 @@ asciidoctor {
         'sechub-client.adoc',
         'sechub-operations.adoc',
         'sechub-restapi.adoc',
-        'sechub-quickstart-guide.adoc',
+        'sechub-developer-quickstart-guide.adoc',
         'sechub-product-delegation-server.adoc'
         'sechub-getting-started.adoc'
     }
