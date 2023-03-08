@@ -57,9 +57,8 @@ apply plugin: 'org.cyclonedx.bom'
 cyclonedxBom {
   includeConfigs = ["runtimeClasspath"]
 }
-// cyclonDx works only with group and version
-group = 'com.mercedesbenz.sechub'
-version = '0.0.0'
+
+version = VersionData.getServerVersion()
 
 
 /* check buildsystem */
@@ -100,6 +99,7 @@ tasks.clean.dependsOn.internalCleanRootBuildFolder
 apply from: rootProject.file('gradle/gradle_version_plugin.gradle')
 
 allprojects {
+    group = "com.mercedesbenz.sechub"
     apply from: rootProject.file('gradle/spotless.gradle')
 
     def customMavenRepoURL = System.getenv('CUST_MVN_URL')
