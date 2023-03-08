@@ -47,7 +47,7 @@ public class IntranetStartsWithURITargetResolveStrategy implements URITargetReso
                 return new NetworkTarget(uri, NetworkTargetType.INTRANET);
             }
         }
-        return new NetworkTarget(uri, NetworkTargetType.INTERNET);
+        return null;
     }
 
 }

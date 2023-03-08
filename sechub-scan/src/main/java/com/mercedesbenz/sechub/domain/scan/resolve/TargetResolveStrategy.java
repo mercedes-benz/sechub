@@ -9,8 +9,8 @@ public interface TargetResolveStrategy<T> {
      * Initialize strategy (if possible) and return initialization result
      *
      * @param definedUriStrategy
-     * @return @return <code>true</code> when this strategy can be initialized by
-     *         given string
+     * @return <code>true</code> when this strategy can be initialized by given
+     *         string
      */
     boolean initialize(String uriPattern);
 
@@ -18,7 +18,8 @@ public interface TargetResolveStrategy<T> {
      * Resolves target for given type
      *
      * @param type
-     * @return target, or <code>null</code>
+     * @return target, or <code>null</code> if this strategy is not able to resolve
+     *         the target
      */
     NetworkTarget resolveTargetFor(T type);
 
