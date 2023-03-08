@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -70,10 +72,23 @@ public class TestRestHelper {
 
     public String getJSON(String url) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 
+        return getStringWithHeaders(url, headers);
+    }
+
+    public String getHTML(String url) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.TEXT_HTML));
+
+        return getStringWithHeaders(url, headers);
+    }
+
+    private String getStringWithHeaders(String url, HttpHeaders headers) {
         markLastURL(url);
-        return template.getForEntity(url, String.class).getBody();
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> result = template.exchange(url, HttpMethod.GET, entity, String.class);
+        return result.getBody();
     }
 
     public void put(String url) {
