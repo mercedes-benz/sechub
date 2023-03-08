@@ -21,7 +21,8 @@ You will learn:
 * Scan a vulnerable application written in Go
 * Install and use SecHub's extension for VsCodium (Optional)
 
-plantuml::diagrams/diagram_behind_the_scenes_sechub.plantuml[format=svg, title=Setup Overview] +
+plantuml::diagrams/diagram_behind_the_scenes_sechub.plantuml[format=svg, title="Setup Overview"]
+
 This Diagram roughly explains how Sechub functions, behind the scenes.
 [NOTE]
 --
