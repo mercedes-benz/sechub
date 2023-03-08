@@ -54,7 +54,7 @@ func waitForSecHubJobDone(context *Context) (status jobStatusResult) {
 			break
 		}
 		// Exit if job has been canceled on SecHub server
-		if context.jobStatus.State == ExecutionStateCanceled {
+		if context.jobStatus.State == ExecutionStateCanceled || context.jobStatus.State == ExecutionStateCancelRequested {
 			sechubUtil.PrintIfNotSilent("\n", context.config.quiet)
 			sechubUtil.LogError("Job " + context.config.secHubJobUUID + " has been canceled on SecHub server.")
 			os.Exit(ExitCodeCanceled)

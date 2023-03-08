@@ -31,10 +31,11 @@ public class TargetResolverService implements NetworkTargetResolver {
     IllegalInetAddressTargetDetector illegalInetAddressTargetDetector;
 
     @Value("${sechub.target.resolve.strategy.uri:}")
-    @MustBeDocumented(value = "*Strategy to decide target types by given URI.* +\n"
-            + "Starts always with strategy-identifer, colon and value(s). Values are comma separated. Currently only 'intranet-hostname-ends-with' is supported as strategy. For example: "
+    @MustBeDocumented(value = "*One ore more strategies to decide target types by given URI.* +\n"
+            + "Starts always with strategy-identifer, colon and value(s). Values are comma separated. Currently only 'intranet-hostname-ends-with' and 'intranet-hostname-starts-with' are supported as strategies. For example: "
             + "`intranet-hostname-ends-with:intranet.example.org,intx.example.com`. Other hostnames are interpreted as being inside INTERNET. "
-            + "But no matter if strategy is defined or not: loopback addresses are always illegal and so ignored.")
+            + "But no matter if strategy is defined or not: loopback addresses are always illegal and so ignored. You can define multiple strategies at same time by using a pipe symbol to separate them. As an example: "
+            + "`intranet-hostname-ends-with:intranet.example.org,intx.example.com|intranet-hostname-starts-with:10.5`")
     String definedUriStrategy;
 
     @Value("${sechub.target.resolve.strategy.ip:}")
@@ -51,7 +52,7 @@ public class TargetResolverService implements NetworkTargetResolver {
     @Autowired
     List<URITargetResolveStrategy> uriTargetResolveStrategies = new ArrayList<>();
 
-    private URITargetResolveStrategy usedUriTargetResolveStrategy;
+    private List<URITargetResolveStrategy> usedUriTargetResolveStrategies = new ArrayList<>();
     private InetAdressTargetResolveStrategy usedInetAddressTargetResolveStrategy;
     private boolean initialized;
 
@@ -71,8 +72,13 @@ public class TargetResolverService implements NetworkTargetResolver {
             }
         }
         NetworkTarget resolved = null;
-        if (usedUriTargetResolveStrategy != null) {
-            resolved = usedUriTargetResolveStrategy.resolveTargetFor(uri);
+        for (URITargetResolveStrategy usedUriTargetResolveStrategy : usedUriTargetResolveStrategies) {
+            if (usedUriTargetResolveStrategy != null) {
+                resolved = usedUriTargetResolveStrategy.resolveTargetFor(uri);
+            }
+            if (resolved != null) {
+                break;
+            }
         }
         if (resolved == null) {
             resolved = new NetworkTarget(uri, NetworkTargetType.INTERNET);
@@ -108,13 +114,23 @@ public class TargetResolverService implements NetworkTargetResolver {
         }
         initInetAddressStrategy();
         initURIStrategy();
+
+        initialized = true;
     }
 
     private void initURIStrategy() {
-        for (URITargetResolveStrategy strategy : uriTargetResolveStrategies) {
-            if (strategy.initialize(definedUriStrategy)) {
-                usedUriTargetResolveStrategy = strategy;
-                break;
+        if (definedUriStrategy == null) {
+            return;
+        }
+        String[] splittedUriTargetResolveStrategies = definedUriStrategy.split("\\|");
+
+        for (String splittedPart : splittedUriTargetResolveStrategies) {
+
+            for (URITargetResolveStrategy strategy : uriTargetResolveStrategies) {
+                if (strategy.initialize(splittedPart)) {
+                    usedUriTargetResolveStrategies.add(strategy);
+                    break;
+                }
             }
         }
     }
