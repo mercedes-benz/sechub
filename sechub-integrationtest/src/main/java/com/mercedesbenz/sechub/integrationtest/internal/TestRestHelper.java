@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -70,25 +69,34 @@ public class TestRestHelper {
         return template;
     }
 
+    /**
+     * This is a shortcut for {@link #getStringFromURL(String),
+     * MediaType.APPLICATION_JSON)}.
+     *
+     * @param url the url to fetch JSON by HTTP GET request
+     * @return result as JSON
+     */
     public String getJSON(String url) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-
-        return getStringWithHeaders(url, headers);
+        return getStringFromURL(url, MediaType.APPLICATION_JSON);
     }
 
-    public String getHTML(String url) {
+    /**
+     * Returns a string representation from URL for given accepted media types.
+     *
+     * @param url      the url to fetch string by HTTP GET request
+     * @param accepted the list of accepted media types. If empty the header will
+     *                 not contain an accepted media type, means accepting
+     *                 everything
+     * @return result as string
+     */
+    public String getStringFromURL(String url, MediaType... accepted) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(MediaType.TEXT_HTML));
-
+        List<MediaType> types = new ArrayList<>();
+        for (MediaType type : accepted) {
+            types.add(type);
+        }
+        headers.setAccept(types);
         return getStringWithHeaders(url, headers);
-    }
-
-    private String getStringWithHeaders(String url, HttpHeaders headers) {
-        markLastURL(url);
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-        ResponseEntity<String> result = template.exchange(url, HttpMethod.GET, entity, String.class);
-        return result.getBody();
     }
 
     public void put(String url) {
@@ -293,6 +301,13 @@ public class TestRestHelper {
         markLastURL(uploadUrl);
         ResponseEntity<String> response = template.postForEntity(uploadUrl, requestEntity, String.class);
         return response.getBody();
+    }
+
+    private String getStringWithHeaders(String url, HttpHeaders headers) {
+        markLastURL(url);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> result = template.exchange(url, HttpMethod.GET, entity, String.class);
+        return result.getBody();
     }
 
     private class ErrorHandler extends DefaultResponseErrorHandler {

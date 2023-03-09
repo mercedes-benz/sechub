@@ -614,7 +614,7 @@ public class AsUser {
         waitForJobToFinish(project.getProjectId(), jobUUID);
 
         /* okay report is available - so do download */
-        String html = getRestHelper().getHTML(getUrlBuilder().buildGetJobReportUrl(project.getProjectId(), jobUUID));
+        String html = getRestHelper().getStringFromURL(getUrlBuilder().buildGetJobReportUrl(project.getProjectId(), jobUUID), MediaType.TEXT_HTML);
         if (enableHTMLautoDumps) {
             try {
                 getWriter().save(new File("./build/test-results/html-reports/" + jobUUID + ".html"), html, false);
@@ -794,7 +794,7 @@ public class AsUser {
     }
 
     public String getServerVersion() {
-        return getRestHelper().getJSON(getUrlBuilder().buildGetServerVersionUrl());
+        return getRestHelper().getStringFromURL(getUrlBuilder().buildGetServerVersionUrl());
     }
 
     public boolean getIsAlive() {
