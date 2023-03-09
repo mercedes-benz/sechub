@@ -86,4 +86,17 @@ public class TargetResolverServiceSpringBootTest {
 
     }
 
+    @Test
+    public void uri_hostname_startswith_192_IS_INTRANET() {
+        /* prepare */
+        URI uri = URI.create("https://192.168.22.99:7777");
+
+        /* execute */
+        NetworkTarget found = serviceToTest.resolveTarget(uri);
+
+        /* test */
+        assertEquals(new NetworkTarget(uri, NetworkTargetType.INTRANET), found);
+
+    }
+
 }

@@ -12,7 +12,7 @@ import org.junit.Test;
 import com.mercedesbenz.sechub.domain.scan.NetworkTarget;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
 
-public class IntraneIPpatternResolveStrategyTest {
+public class IntranetIPpatternResolveStrategyTest {
 
     private static InetAddress INET_6_ADR1;
     private static InetAddress INET_6_ADR2;
@@ -61,9 +61,10 @@ public class IntraneIPpatternResolveStrategyTest {
         /* test */
         assertEquals(new NetworkTarget(INET_6_ADR1, NetworkTargetType.INTRANET), strategyToTest.resolveTargetFor(INET_6_ADR1));
 
-        assertEquals(new NetworkTarget(INET_6_ADR2, NetworkTargetType.INTERNET), strategyToTest.resolveTargetFor(INET_6_ADR2));
-        assertEquals(new NetworkTarget(INET_4_ADR1, NetworkTargetType.INTERNET), strategyToTest.resolveTargetFor(INET_4_ADR1));
-        assertEquals(new NetworkTarget(INET_4_ADR2, NetworkTargetType.INTERNET), strategyToTest.resolveTargetFor(INET_4_ADR2));
+        // returns null if the strategy cannot resolve the target
+        assertNull(strategyToTest.resolveTargetFor(INET_6_ADR2));
+        assertNull(strategyToTest.resolveTargetFor(INET_4_ADR1));
+        assertNull(strategyToTest.resolveTargetFor(INET_4_ADR2));
     }
 
     @Test
@@ -76,8 +77,9 @@ public class IntraneIPpatternResolveStrategyTest {
         assertEquals(new NetworkTarget(INET_6_ADR1, NetworkTargetType.INTRANET), strategyToTest.resolveTargetFor(INET_6_ADR1));
         assertEquals(new NetworkTarget(INET_6_ADR2, NetworkTargetType.INTRANET), strategyToTest.resolveTargetFor(INET_6_ADR2));
 
-        assertEquals(new NetworkTarget(INET_4_ADR1, NetworkTargetType.INTERNET), strategyToTest.resolveTargetFor(INET_4_ADR1));
-        assertEquals(new NetworkTarget(INET_4_ADR2, NetworkTargetType.INTERNET), strategyToTest.resolveTargetFor(INET_4_ADR2));
+        // returns null if the strategy cannot resolve the target
+        assertNull(strategyToTest.resolveTargetFor(INET_4_ADR1));
+        assertNull(strategyToTest.resolveTargetFor(INET_4_ADR2));
     }
 
     @Test
@@ -90,8 +92,9 @@ public class IntraneIPpatternResolveStrategyTest {
         assertEquals(new NetworkTarget(INET_4_ADR1, NetworkTargetType.INTRANET), strategyToTest.resolveTargetFor(INET_4_ADR1));
         assertEquals(new NetworkTarget(INET_6_ADR2, NetworkTargetType.INTRANET), strategyToTest.resolveTargetFor(INET_6_ADR2));
 
-        assertEquals(new NetworkTarget(INET_6_ADR1, NetworkTargetType.INTERNET), strategyToTest.resolveTargetFor(INET_6_ADR1));
-        assertEquals(new NetworkTarget(INET_4_ADR2, NetworkTargetType.INTERNET), strategyToTest.resolveTargetFor(INET_4_ADR2));
+        // returns null if the strategy cannot resolve the target
+        assertNull(strategyToTest.resolveTargetFor(INET_6_ADR1));
+        assertNull(strategyToTest.resolveTargetFor(INET_4_ADR2));
     }
 
 }

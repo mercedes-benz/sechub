@@ -125,10 +125,20 @@ public class TestAPI {
      * flaky tests!
      *
      * @param json
-     * @return
+     * @return assert object
      */
     public static AssertReport assertReport(String json) {
         return AssertReport.assertReport(json);
+    }
+
+    /**
+     * Asserts given report HTML
+     *
+     * @param html
+     * @return assert object
+     */
+    public static AssertHTMLReport assertHTMLReport(String html) {
+        return AssertHTMLReport.assertHTMLReport(html);
     }
 
     public static AssertFullScanData assertFullScanDataZipFile(File file) {

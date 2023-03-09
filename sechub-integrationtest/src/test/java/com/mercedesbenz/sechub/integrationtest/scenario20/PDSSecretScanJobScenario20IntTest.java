@@ -1,12 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.integrationtest.scenario20;
 
-import static com.mercedesbenz.sechub.commons.model.TrafficLight.GREEN;
-import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.as;
-import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.assertReport;
-import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.waitForJobDone;
-import static com.mercedesbenz.sechub.integrationtest.scenario20.Scenario20.PROJECT_1;
-import static com.mercedesbenz.sechub.integrationtest.scenario20.Scenario20.USER_1;
+import static com.mercedesbenz.sechub.commons.model.TrafficLight.*;
+import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
+import static com.mercedesbenz.sechub.integrationtest.scenario20.Scenario20.*;
 
 import java.util.UUID;
 
@@ -48,21 +45,30 @@ public class PDSSecretScanJobScenario20IntTest {
 
         /* @formatter:off */
         assertReport(secretScanReport).
-        hasStatus(SecHubStatus.SUCCESS).
-        hasMessages(0).
-        hasJobUUID(jobUUID).
-        hasTrafficLight(GREEN).
-        hasFindings(6).
-	        finding(0).
-	          hasScanType(ScanType.SECRET_SCAN).
-	          hasDescription("generic-api-key has detected secret for file UnSAFE_Bank/Backend/docker-compose.yml.").
-	          codeCall(0).
-	              hasColumn(14).
-	              hasLine(12).
-	              hasSource("531486b2bf646636a6a1bba61e78ec4a4a54efbd").
-	              hasLocation("UnSAFE_Bank/Backend/docker-compose.yml").
-	          andFinding().
-	          hasNoCweId();// the results are from gitleaks product, which does not include CWE information
+            hasStatus(SecHubStatus.SUCCESS).
+            hasMessages(0).
+            hasJobUUID(jobUUID).
+            hasTrafficLight(GREEN).
+            hasFindings(6).
+    	        finding(0).
+    	          hasScanType(ScanType.SECRET_SCAN).
+    	          hasDescription("generic-api-key has detected secret for file UnSAFE_Bank/Backend/docker-compose.yml.").
+    	          codeCall(0).
+    	              hasColumn(14).
+    	              hasLine(12).
+    	              hasSource("531486b2bf646636a6a1bba61e78ec4a4a54efbd").
+    	              hasLocation("UnSAFE_Bank/Backend/docker-compose.yml").
+    	          andFinding().
+    	          hasNoCweId();// the results are from gitleaks product, which does not include CWE information
+
+        String htmlReport = as(USER_1).
+                    enableAutoDumpForHTMLReports().
+                    getHTMLJobReport(project, jobUUID);
+
+        assertHTMLReport(htmlReport).
+            containsAtLeastOneOpenDetailsBlock();
+
         /* @formatter:on */
+
     }
 }

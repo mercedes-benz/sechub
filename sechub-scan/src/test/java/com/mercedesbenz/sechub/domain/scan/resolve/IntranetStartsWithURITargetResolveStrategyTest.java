@@ -94,7 +94,8 @@ public class IntranetStartsWithURITargetResolveStrategyTest {
 
         /* test */
         assertEquals(new NetworkTarget(URI_HTTPS_10_5_1_200, NetworkTargetType.INTRANET), strategyToTest.resolveTargetFor(URI_HTTPS_10_5_1_200));
-        assertEquals(new NetworkTarget(URI_HTTPS_43_1_2_100, NetworkTargetType.INTERNET), strategyToTest.resolveTargetFor(URI_HTTPS_43_1_2_100));
+        // returns null if the strategy cannot resolve the target
+        assertNull(strategyToTest.resolveTargetFor(URI_HTTPS_43_1_2_100));
 
     }
 
@@ -110,8 +111,9 @@ public class IntranetStartsWithURITargetResolveStrategyTest {
         }
 
         /* test */
-        assertEquals(new NetworkTarget(URI_HTTPS_10_5_1_200, NetworkTargetType.INTERNET), strategyToTest.resolveTargetFor(URI_HTTPS_10_5_1_200));
-        assertEquals(new NetworkTarget(URI_HTTPS_43_1_2_100, NetworkTargetType.INTERNET), strategyToTest.resolveTargetFor(URI_HTTPS_43_1_2_100));
+        // returns null if the strategy cannot resolve the target
+        assertNull(strategyToTest.resolveTargetFor(URI_HTTPS_10_5_1_200));
+        assertNull(strategyToTest.resolveTargetFor(URI_HTTPS_43_1_2_100));
 
     }
 
