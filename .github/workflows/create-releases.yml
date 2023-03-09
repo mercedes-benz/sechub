@@ -394,8 +394,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_server_release.outputs.upload_url }}
-          asset_path: ./sechub-doc/build/docs/asciidoc/sechub-quickstart-guide.pdf
-          asset_name: sechub-quickstart-guide-${{ github.event.inputs.server-version }}.pdf
+          asset_path: ./sechub-doc/build/docs/asciidoc/sechub-developer-quickstart-guide.pdf
+          asset_name: sechub-developer-quickstart-guide-${{ github.event.inputs.server-version }}.pdf
           asset_content_type: application/pdf
 
       # sechub-restapi.pdf
