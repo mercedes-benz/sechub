@@ -86,10 +86,16 @@ public class PDSCodeScanSarifJobScenario10IntTest {
                    hasSeverity(Severity.MEDIUM).
                    hasDescription("Rails 5.0.0 has a vulnerability that may allow CSRF token forgery. Upgrade to Rails 5.2.4.3 or patch.");
 
+        String htmlReport = as(USER_1).
+                enableAutoDumpForHTMLReports().
+                getHTMLJobReport(project, jobUUID);
 
+        assertHTMLReport(htmlReport).
+            containsAtLeastOneOpenDetailsBlock();
 
-        // try to restart sechub (will reuse existing PDS job because already done )
+        // try to restart SecHub (will reuse existing PDS job because already done )
         assertSecHubRestartWillNotStartNewJobButReusesExistingBecausePDSJobWasAlreadyDone(project,jobUUID);
+
 
         /* @formatter:on */
     }
