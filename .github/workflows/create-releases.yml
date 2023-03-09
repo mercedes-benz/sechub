@@ -386,16 +386,16 @@ jobs:
           asset_path: ./sechub-doc/build/docs/asciidoc/sechub-operations.pdf
           asset_name: sechub-operations-${{ github.event.inputs.server-version }}.pdf
           asset_content_type: application/pdf
-      # sechub-quickstart-guide.pdf
-      - name: Upload sechub-quickstart-guide.pdf release asset
+      # sechub-developer-quickstart-guide.pdf
+      - name: Upload sechub-developer-quickstart-guide.pdf release asset
         if: github.event.inputs.server-version != ''
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_server_release.outputs.upload_url }}
-          asset_path: ./sechub-doc/build/docs/asciidoc/sechub-quickstart-guide.pdf
-          asset_name: sechub-quickstart-guide-${{ github.event.inputs.server-version }}.pdf
+          asset_path: ./sechub-doc/build/docs/asciidoc/sechub-developer-quickstart-guide.pdf
+          asset_name: sechub-developer-quickstart-guide-${{ github.event.inputs.server-version }}.pdf
           asset_content_type: application/pdf
 
       # sechub-restapi.pdf
