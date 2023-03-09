@@ -19,12 +19,13 @@ public class SchedulerMessage implements JSONable<SchedulerMessage> {
     private boolean jobProcessingEnabled;
 
     private long amountOfAllJobs;
-    private long amountOfWaitingJobs;
-    private long amountOfRunningJobs;
 
-    public void setAmountOfJobsAll(long amountOfJobsAll) {
-        this.amountOfAllJobs = amountOfJobsAll;
-    }
+    private long amountOfInitializingJobs;
+    private long amountOfJobsReadyToStart;
+    private long amountOfJobsStarted;
+    private long amountOfJobsCanceled;
+    private long amountOfJobsCancelRequested;
+    private long amountOfJobsEnded;
 
     public boolean isJobProcessingEnabled() {
         return jobProcessingEnabled;
@@ -34,29 +35,65 @@ public class SchedulerMessage implements JSONable<SchedulerMessage> {
         this.jobProcessingEnabled = enabled;
     }
 
+    @Override
+    public Class<SchedulerMessage> getJSONTargetClass() {
+        return SchedulerMessage.class;
+    }
+
     public long getAmountOfAllJobs() {
         return amountOfAllJobs;
     }
 
-    public long getAmountOfWaitingJobs() {
-        return amountOfWaitingJobs;
+    public void setAmountOfAllJobs(long amountOfAllJobs) {
+        this.amountOfAllJobs = amountOfAllJobs;
     }
 
-    public long getAmountOfRunningJobs() {
-        return amountOfRunningJobs;
+    public long getAmountOfJobsReadyToStart() {
+        return amountOfJobsReadyToStart;
     }
 
-    public void setAmountOfRunningJobs(long amountOfRunningJobs) {
-        this.amountOfRunningJobs = amountOfRunningJobs;
+    public void setAmountOfJobsReadyToStart(long amountOfJobsReadyToStart) {
+        this.amountOfJobsReadyToStart = amountOfJobsReadyToStart;
     }
 
-    public void setAmountOfWaitingJobs(long amountOfWaitingJobs) {
-        this.amountOfWaitingJobs = amountOfWaitingJobs;
+    public long getAmountOfJobsStarted() {
+        return amountOfJobsStarted;
     }
 
-    @Override
-    public Class<SchedulerMessage> getJSONTargetClass() {
-        return SchedulerMessage.class;
+    public void setAmountOfJobsStarted(long amountOfJobsStarted) {
+        this.amountOfJobsStarted = amountOfJobsStarted;
+    }
+
+    public long getAmountOfInitializingJobs() {
+        return amountOfInitializingJobs;
+    }
+
+    public void setAmountOfInitializingJobs(long amountOfInitializingJobs) {
+        this.amountOfInitializingJobs = amountOfInitializingJobs;
+    }
+
+    public long getAmountOfJobsCanceled() {
+        return amountOfJobsCanceled;
+    }
+
+    public void setAmountOfJobsCanceled(long amountOfJobsCanceled) {
+        this.amountOfJobsCanceled = amountOfJobsCanceled;
+    }
+
+    public long getAmountOfJobsCancelRequested() {
+        return amountOfJobsCancelRequested;
+    }
+
+    public void setAmountOfJobsCancelRequested(long amountOfJobsCancelRequested) {
+        this.amountOfJobsCancelRequested = amountOfJobsCancelRequested;
+    }
+
+    public long getAmountOfJobsEnded() {
+        return amountOfJobsEnded;
+    }
+
+    public void setAmountOfJobsEnded(long amountOfJobsEnded) {
+        this.amountOfJobsEnded = amountOfJobsEnded;
     }
 
 }

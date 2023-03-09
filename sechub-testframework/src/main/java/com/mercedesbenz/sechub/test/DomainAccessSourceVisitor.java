@@ -42,6 +42,11 @@ public class DomainAccessSourceVisitor implements PackageSourceVisitor {
 
     @Override
     public void visit(File sourceFile, String packageOfFile, List<String> importedPackages) {
+        if (sourceFile.getName().endsWith("Test.java") && sourceFile.getAbsolutePath().contains("sechub-test")) {
+            // inside sechub-test project we allow this inside tests - e.g. when we test
+            // that constants are same between two different domains (means defined twice).
+            return;
+        }
         String packageDomainName = fetchDomainName(packageOfFile);
         if (packageDomainName == null || packageDomainName.isEmpty()) {
             return;
