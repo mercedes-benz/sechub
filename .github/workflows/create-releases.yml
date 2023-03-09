@@ -386,8 +386,8 @@ jobs:
           asset_path: ./sechub-doc/build/docs/asciidoc/sechub-operations.pdf
           asset_name: sechub-operations-${{ github.event.inputs.server-version }}.pdf
           asset_content_type: application/pdf
-      # sechub-quickstart-guide.pdf
-      - name: Upload sechub-quickstart-guide.pdf release asset
+      # sechub-developer-quickstart-guide.pdf
+      - name: Upload sechub-developer-quickstart-guide.pdf release asset
         if: github.event.inputs.server-version != ''
         uses: actions/upload-release-asset@v1
         env:
