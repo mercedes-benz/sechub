@@ -15,6 +15,10 @@
                 "value": "PDS_CHECKMARX"
             },
             {
+                "key": "pds.config.filefilter.excludes",
+                "value": "*.go"
+            },
+            {
                 "key": "pds.config.use.sechub.storage",
                 "value": false
             },
