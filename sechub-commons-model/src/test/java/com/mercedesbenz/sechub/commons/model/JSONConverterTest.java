@@ -148,7 +148,6 @@ public class JSONConverterTest {
 
         /* execute */
         String json = converterToTest.toJSON(origin);
-        System.out.println(json);
 
         /* test */
         assertNotNull(json);
@@ -166,19 +165,44 @@ public class JSONConverterTest {
 
         /* execute */
         LocalDateTimeTestClass result = converterToTest.fromJSON(LocalDateTimeTestClass.class, json);
-        assertNotNull(result.dateTime);
-        assertEquals(2023, result.dateTime.getYear());
+
+        assertNotNull(result);
+
+        LocalDateTime dateTime = result.getDateTime();
+        assertNotNull(dateTime);
+
+        assertEquals(2023, dateTime.getYear());
+        assertEquals(3, dateTime.getMonthValue());
+        assertEquals(7, dateTime.getDayOfMonth());
+
+        assertEquals(10, dateTime.getHour());
+        assertEquals(38, dateTime.getMinute());
+        assertEquals(49, dateTime.getSecond());
+        assertEquals(470191000, dateTime.getNano());
+
     }
 
     @Test
     void fromJson_with_iso8601_localdatetime_works() {
         /* prepare */
-        String json = "{\"dateTime\":\"2023-03-07T10:44:13Z\"}";
+        String json = "{\"dateTime\":\"2023-03-13T10:44:13Z\"}";
 
         /* execute */
         LocalDateTimeTestClass result = converterToTest.fromJSON(LocalDateTimeTestClass.class, json);
-        assertNotNull(result.dateTime);
-        assertEquals(2023, result.dateTime.getYear());
+
+        assertNotNull(result);
+
+        LocalDateTime dateTime = result.getDateTime();
+        assertNotNull(dateTime);
+
+        assertEquals(2023, dateTime.getYear());
+        assertEquals(3, dateTime.getMonthValue());
+        assertEquals(13, dateTime.getDayOfMonth());
+
+        assertEquals(10, dateTime.getHour());
+        assertEquals(44, dateTime.getMinute());
+        assertEquals(13, dateTime.getSecond());
+        assertEquals(0, dateTime.getNano());
     }
 
     @Test

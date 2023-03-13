@@ -52,10 +52,6 @@ public class JSONConverter {
              * value-as-array-in-jacksons-deserialization-process
              */
             enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY).
-
-            /* but we do NOT use SerializationFeature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED !
-             reason: otherwise jackson does all single ones write as not being an array
-             which comes up to problems again*/
             disable(SerializationFeature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED).
 
             disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS).
