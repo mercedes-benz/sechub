@@ -16,20 +16,17 @@
       "*_test.go",
       "*.gradle",
       "*.json",
+      "*-testframework/**",
       ".gradle/**",
       "buildSrc/**",
       "docs/**",
       "gradle/**",
       "sechub-cli/pkg/mod/**",
-      "sechub-commons-model-testframework/**",
       "sechub-developertools/**",
       "sechub-doc/**",
       "sechub-integrationtest/**",
       "sechub-other/**",
-      "sechub-scan-testframework/**",
-      "sechub-shared-kernel-testframework/**",
-      "sechub-test/**",
-      "sechub-testframework/**"
+      "sechub-test/**"
     ]
   }
 }
