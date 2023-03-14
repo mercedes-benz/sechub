@@ -18,6 +18,7 @@ pds:
     startMode: localserver
     config:
         execute:
+            # Maximal accepted queue size (new job requests will be denied and thus cached on SecHub server)
             queueMax: 10
             # workerThreadCount is pinned to 1
     heartbeatLogging: "true"

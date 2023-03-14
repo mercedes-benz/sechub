@@ -15,16 +15,22 @@ resources:
         memory: 1Gi
 
 pds:
+    startMode: localserver
     # Maximum upload size: 100 MiB by default (100 * 1024 * 1024 = 104857600)
     uploadMaximumBytes: "104857600"
+    config:
+        execute:
+            # Maximal accepted queue size (new job requests will be denied and thus cached on SecHub server)
+            queueMax: 10
+            # Maximum number of jobs that are processed in parallel by PDS
+            workerThreadCount: 5
     volumes:
         workspace:
             size: "1Gi"
-    startMode: localserver
+    heartbeatLogging: "true"
     javaDebug:
         enabled: false
     keepContainerAliveAfterPDSCrashed: false
-    heartbeatLogging: "true"
     logging:
         type:
             enabled: false

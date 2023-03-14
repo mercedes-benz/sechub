@@ -14,8 +14,10 @@ pds:
     maxFileUploadBytes: 52428800
     config:
         execute:
+            # Maximal accepted queue size (new job requests will be denied and thus cached on SecHub server)
             queueMax: 10
-            workerThreadCount: 1
+            # Maximum number of jobs that are processed in parallel by PDS
+            workerThreadCount: 10
     heartbeatLogging: "true"
     logging:
         type:
