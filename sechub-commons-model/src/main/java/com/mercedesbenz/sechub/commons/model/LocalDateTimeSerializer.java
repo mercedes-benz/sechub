@@ -3,7 +3,6 @@ package com.mercedesbenz.sechub.commons.model;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -20,6 +19,6 @@ public class LocalDateTimeSerializer extends StdSerializer<LocalDateTime> {
 
     @Override
     public void serialize(LocalDateTime value, JsonGenerator gen, SerializerProvider sp) throws IOException, JsonProcessingException {
-        gen.writeString(value.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        gen.writeString(value.format(SecHubDateTimeFormat.FORMATTER));
     }
 }

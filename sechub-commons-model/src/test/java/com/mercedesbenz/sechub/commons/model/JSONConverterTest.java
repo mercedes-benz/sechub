@@ -14,6 +14,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 public class JSONConverterTest {
 
@@ -105,24 +107,25 @@ public class JSONConverterTest {
 
     }
 
-    @Test
-    void fromJson_enum_as_lowercased_can_be_read() {
+    @ParameterizedTest
+    @EnumSource(TrafficLight.class)
+    void fromJson_enum_as_lowercased_can_be_read(TrafficLight trafficLight) {
         /* prepare */
         TrafficLightEnumTestClass origin = new TrafficLightEnumTestClass();
-        origin.trafficLight = TrafficLight.GREEN;
+        origin.trafficLight = trafficLight;
 
         String json = converterToTest.toJSON(origin);
-        String jsonWithLoweredGreen = json.replaceAll("GREEN", "green");
+        String jsonWithLoweredGreen = json.replaceAll(trafficLight.name(), trafficLight.name().toLowerCase());
 
         assertNotNull(json);
-        assertTrue(jsonWithLoweredGreen.contains("green"));
-        assertFalse(jsonWithLoweredGreen.contains("GREEN"));
+        assertTrue(jsonWithLoweredGreen.contains(trafficLight.name().toLowerCase()));
+        assertFalse(jsonWithLoweredGreen.contains(trafficLight.name()));
 
         /* execute */
         TrafficLightEnumTestClass result = converterToTest.fromJSON(TrafficLightEnumTestClass.class, jsonWithLoweredGreen);
 
         /* test */
-        assertEquals(TrafficLight.GREEN, result.trafficLight);
+        assertEquals(trafficLight, result.trafficLight);
 
     }
 
@@ -185,7 +188,7 @@ public class JSONConverterTest {
     @Test
     void fromJson_with_iso8601_localdatetime_works() {
         /* prepare */
-        String json = "{\"dateTime\":\"2023-03-13T10:44:13Z\"}";
+        String json = "{\"dateTime\":\"2023-03-13T10:44:13\"}";
 
         /* execute */
         LocalDateTimeTestClass result = converterToTest.fromJSON(LocalDateTimeTestClass.class, json);
@@ -206,14 +209,14 @@ public class JSONConverterTest {
     }
 
     @Test
-    void toJson_and_from_json_local_datetime_must_be_equal() {
+    void toJson_and_from_json_local_datetime_must_be_equal() throws InterruptedException {
         /* prepare */
         LocalDateTimeTestClass origin = new LocalDateTimeTestClass();
-        origin.dateTime = LocalDateTime.now();
+        origin.dateTime = LocalDateTime.of(2023, 3, 14, 20, 27, 10, 123);
 
         /* execute */
         String json = converterToTest.toJSON(origin);
-
+        System.out.println(json);
         /* test */
         assertNotNull(json);
 
@@ -233,7 +236,10 @@ public class JSONConverterTest {
         String json = converterToTest.toJSON(origin);
 
         /* test */
-        assertTrue(json.contains("2023-03-07T17:08:17.36804000Z"));
+        String expectedTimeDate = "2023-03-07T17:08:17.36804000Z";
+        if (!json.contains(expectedTimeDate)) {
+            fail("Expected time date:" + expectedTimeDate + "\n not found in:\n" + json);
+        }
 
     }
 

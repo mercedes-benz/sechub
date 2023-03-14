@@ -2,9 +2,7 @@
 package com.mercedesbenz.sechub.commons.model;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -20,8 +18,6 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 
 public class JSONConverter {
@@ -71,8 +67,8 @@ public class JSONConverter {
         mapper.registerModule(new Jdk8Module()); // to provide optional etc.
 
         JavaTimeModule javaTimeModule = new JavaTimeModule();
-        javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.n'Z'")));
+        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer());
+        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer());
 
         mapper.registerModule(javaTimeModule); // to provide local date etc.
 
