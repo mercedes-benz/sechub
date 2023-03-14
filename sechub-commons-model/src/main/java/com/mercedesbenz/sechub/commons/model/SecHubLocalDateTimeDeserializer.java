@@ -14,14 +14,14 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 /**
  *
- * This deserializer class tries to be able to handle as much time date formats
- * as possible (to be backward compatible for older sechub data and also to read
- * foreign data).
+ * This class tries to handle as much wellknown date time formats as possible
+ * (to be backward compatible for older sechub data and also to read foreign
+ * data) and to deserialize them into a {@link LocalDateTime} object.
  *
- * If the json element is a string the class tries to deserialize for the sechub
+ * If the JSON element is a string the class tries to deserialize for the sechub
  * default time date pattern: {@value SecHubDateTimeFormat#PATTERN} otherwise
- * the default local date parsing mechansim is used.if possible. If time format
- * is array based, the default jackson implementation will be used.
+ * the default local date parsing is used. If the JSON data is array based, the
+ * default jackson implementation will be used.
  *
  * @author Albert Tregnaghi
  *

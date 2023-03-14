@@ -9,6 +9,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
+/**
+ * Serializes {@link LocalDateTime} objects with the sechub time date pattern:
+ * {@value SecHubDateTimeFormat#PATTERN} - ISO 8601 with nanoseconds and UTC.
+ *
+ * @author Albert Tregnaghi
+ *
+ */
 public class SecHubLocalDateTimeSerializer extends StdSerializer<LocalDateTime> {
 
     private static final long serialVersionUID = 1L;
