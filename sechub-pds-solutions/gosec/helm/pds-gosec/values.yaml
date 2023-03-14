@@ -8,6 +8,14 @@ image:
     registry: "ghcr.io/mercedes-benz/sechub/pds-gosec:latest"
     tag: "latest"
 
+resources:
+    requests:
+        # Initial container memory size
+        memory: 256Mi
+    limits:
+        # Maximum container memory size
+        memory: 1Gi
+
 pds:
     startMode: localserver
     # Maximum upload size: 50 MiB by default (50 * 1024 * 1024 = 52428800)

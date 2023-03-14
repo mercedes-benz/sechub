@@ -10,8 +10,10 @@ image:
 
 resources:
     requests:
+        # Initial container memory size
         memory: 512Mi
     limits:
+        # Maximum container memory size
         memory: 6Gi
 
 pds:

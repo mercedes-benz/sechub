@@ -8,6 +8,14 @@ image:
     registry: "my.registry.example.org/pds_pmd"
     tag: "latest"
 
+resources:
+    requests:
+        # Initial container memory size
+        memory: 256Mi
+    limits:
+        # Maximum container memory size
+        memory: 1Gi
+
 pds:
     startMode: localserver
     # Maximum upload size: 20 MiB by default (20 * 1024 * 1024 = 20971520)
