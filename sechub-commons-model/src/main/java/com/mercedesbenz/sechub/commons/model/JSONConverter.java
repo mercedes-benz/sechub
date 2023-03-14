@@ -67,8 +67,8 @@ public class JSONConverter {
         mapper.registerModule(new Jdk8Module()); // to provide optional etc.
 
         JavaTimeModule javaTimeModule = new JavaTimeModule();
-        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer());
-        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer());
+        javaTimeModule.addSerializer(LocalDateTime.class, new SecHubLocalDateTimeSerializer());
+        javaTimeModule.addDeserializer(LocalDateTime.class, new SecHubLocalDateTimeDeserializer());
 
         mapper.registerModule(javaTimeModule); // to provide local date etc.
 

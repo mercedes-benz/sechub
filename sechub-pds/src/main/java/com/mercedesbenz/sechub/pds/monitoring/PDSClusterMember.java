@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.mercedesbenz.sechub.commons.model.LocalDateTimeDeserializer;
-import com.mercedesbenz.sechub.commons.model.LocalDateTimeSerializer;
+import com.mercedesbenz.sechub.commons.model.SecHubLocalDateTimeDeserializer;
+import com.mercedesbenz.sechub.commons.model.SecHubLocalDateTimeSerializer;
 import com.mercedesbenz.sechub.pds.PDSJSONConverter;
 import com.mercedesbenz.sechub.pds.PDSJSONConverterException;
 import com.mercedesbenz.sechub.pds.execution.PDSExecutionStatus;
@@ -22,8 +22,8 @@ public class PDSClusterMember {
     private String ip;
     private int port;
 
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = SecHubLocalDateTimeDeserializer.class)
+    @JsonSerialize(using = SecHubLocalDateTimeSerializer.class)
     private LocalDateTime heartBeatTimestamp = LocalDateTime.now(); // we use initial now
 
     private PDSExecutionStatus executionState;

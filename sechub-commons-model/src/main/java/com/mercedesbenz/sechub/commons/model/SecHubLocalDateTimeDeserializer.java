@@ -26,13 +26,13 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
  * @author Albert Tregnaghi
  *
  */
-public class LocalDateTimeDeserializer extends StdDeserializer<LocalDateTime> {
+public class SecHubLocalDateTimeDeserializer extends StdDeserializer<LocalDateTime> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(LocalDateTimeDeserializer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SecHubLocalDateTimeDeserializer.class);
     private StdDeserializer<LocalDateTime> jacksonDefault = com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer.INSTANCE;
     private static final long serialVersionUID = 1L;
 
-    protected LocalDateTimeDeserializer() {
+    protected SecHubLocalDateTimeDeserializer() {
         super(LocalDateTime.class);
     }
 

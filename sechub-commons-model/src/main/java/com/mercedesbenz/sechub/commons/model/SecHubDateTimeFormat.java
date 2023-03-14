@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter;
  * zone and use a ISO 8601 pattern to keep it human readable.
  *
  * The serialization ({@link LocalDateTimeSserializer}) and the deserialization
- * ({@link LocalDateTimeDeserializer}) are able to handle this pattern.
+ * ({@link SecHubLocalDateTimeDeserializer}) are able to handle this pattern.
  *
  * @author Albert Tregnaghi
  *
