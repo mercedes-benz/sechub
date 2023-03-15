@@ -18,8 +18,8 @@ resources:
 
 pds:
     startMode: localserver
-    # Maximum upload size: 50 MiB by default (50 * 1024 * 1024 = 52428800)
-    maxFileUploadBytes: 52428800
+    # Maximum upload size for source code: 50 MiB by default (50 * 1024 * 1024 = 52428800)
+    maxFileUploadBytes: "52428800"
     config:
         execute:
             # Maximal accepted queue size (new job requests will be denied and thus cached on SecHub server)
@@ -70,9 +70,9 @@ networkPolicy:
     enabled: false
     ingress:
         - from:
-              - podSelector:
-                    matchLabels:
-                        name: sechub-server
-              - podSelector:
-                    matchLabels:
-                        name: sechub-adminserver
+            - podSelector:
+                matchLabels:
+                    name: sechub-server
+            - podSelector:
+                matchLabels:
+                    name: sechub-adminserver

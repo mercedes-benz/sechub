@@ -85,7 +85,7 @@ database:
         password: "<password-of-db-user>"
 
 networkPolicy:
-    # Enables networkaccess from the sechub-server
+    # Enables network access from the SecHub server
     enabled: false
     ingress:
     - from:

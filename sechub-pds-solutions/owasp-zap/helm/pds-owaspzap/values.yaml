@@ -81,9 +81,9 @@ networkPolicy:
     enabled: false
     ingress:
         - from:
-              - podSelector:
-                    matchLabels:
-                        name: sechub-server
-              - podSelector:
-                    matchLabels:
-                        name: sechub-adminserver
+            - podSelector:
+                matchLabels:
+                    name: sechub-server
+            - podSelector:
+                matchLabels:
+                    name: sechub-adminserver

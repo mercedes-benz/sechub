@@ -39,10 +39,14 @@ pds:
             appenderName: "LOGSTASH_JSON"
 
 users:
+    # PDS user for scanning
     technical:
         id: "techuser"
+        apiToken: "<api token of techuser>"
+    # PDS user with admin permissions
     admin:
         id: "admin"
+        apiToken: "<api token of admin user>"
 
 storage:
     local:
@@ -69,9 +73,9 @@ networkPolicy:
     enabled: false
     ingress:
         - from:
-              - podSelector:
-                    matchLabels:
-                        name: sechub-server
-              - podSelector:
-                    matchLabels:
-                        name: sechub-adminserver
+            - podSelector:
+                matchLabels:
+                    name: sechub-server
+            - podSelector:
+                matchLabels:
+                    name: sechub-adminserver
