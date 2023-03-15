@@ -1,7 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class WebScanDurationConfiguration {
+
     public static final String PROPERTY_DURATION = "duration";
     public static final String PROPERTY_UNIT = "unit";
 

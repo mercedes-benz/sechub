@@ -14,7 +14,6 @@ import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 import com.mercedesbenz.sechub.domain.scan.project.ScanMockData;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectMockDataConfiguration;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 
 /**
  * A common strategy to provide SecHub options to adapters <br>
@@ -49,8 +48,7 @@ public class SecHubAdapterOptionsBuilderStrategy implements AdapterConfiguration
 		String mockDataResultLowerCased = fetchMockConfigurationResultLowerCased();
 		if (mockDataResultLowerCased!=null) {
 		configBuilder.
-		 	setOption(AdapterOptionKey.MOCK_CONFIGURATION_RESULT, mockDataResultLowerCased)
-		 	;
+		 	setOption(AdapterOptionKey.MOCK_CONFIGURATION_RESULT, mockDataResultLowerCased);
 		}
 		/* @formatter:on */
 

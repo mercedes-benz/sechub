@@ -5,12 +5,12 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.List;
 
+import com.mercedesbenz.sechub.commons.mapping.MappingData;
 import com.mercedesbenz.sechub.developertools.JSONDeveloperHelper;
 import com.mercedesbenz.sechub.developertools.admin.importer.CSVRow;
 import com.mercedesbenz.sechub.developertools.admin.importer.MappingDataCSVSupport;
 import com.mercedesbenz.sechub.developertools.admin.importer.SimpleCSVImporter;
 import com.mercedesbenz.sechub.developertools.admin.ui.ConfigurationSetup;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
 
 public class ImportCSVToJSONAdapterDialogAction extends AbstractAdapterDialogMappingAction {
 

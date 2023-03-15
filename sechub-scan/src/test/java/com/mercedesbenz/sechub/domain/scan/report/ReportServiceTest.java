@@ -1,40 +1,44 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.report;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.mercedesbenz.sechub.commons.model.SecHubResult;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.commons.model.TrafficLightCalculator;
 import com.mercedesbenz.sechub.domain.scan.ReportTransformationResult;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
 import com.mercedesbenz.sechub.domain.scan.SecHubReportProductTransformerService;
 import com.mercedesbenz.sechub.domain.scan.product.ReportProductExecutionService;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 
 public class ReportServiceTest {
 
     private CreateScanReportService serviceToTest;
     private ReportProductExecutionService reportProductExecutionService;
     private SecHubReportProductTransformerService secHubResultService;
-    private ScanReportTrafficLightCalculator trafficLightCalculator;
+    private TrafficLightCalculator trafficLightCalculator;
     private SecHubExecutionContext context;
     private ReportTransformationResult reportTransformationResult;
     private ScanReportRepository reportRepository;
     private UUID secHubJobUUID;
     private SecHubConfiguration configuration;
     private ScanReportTransactionService scanReportTransactionService;
+    private SecHubResult sechubResult;
 
-    @Before
-    public void before() throws Exception {
+    @BeforeEach
+    void before() throws Exception {
         serviceToTest = new CreateScanReportService();
 
         secHubJobUUID = UUID.randomUUID();
@@ -57,12 +61,12 @@ public class ReportServiceTest {
         reportProductExecutionService = mock(ReportProductExecutionService.class);
 
         reportTransformationResult = mock(ReportTransformationResult.class);
-        SecHubResult sechubResult = mock(SecHubResult.class);
+        sechubResult = mock(SecHubResult.class);
         when(reportTransformationResult.getResult()).thenReturn(sechubResult);
         secHubResultService = mock(SecHubReportProductTransformerService.class);
         when(secHubResultService.createResult(context)).thenReturn(reportTransformationResult);
 
-        trafficLightCalculator = mock(ScanReportTrafficLightCalculator.class);
+        trafficLightCalculator = mock(TrafficLightCalculator.class);
 
         serviceToTest.reportProductExecutionService = reportProductExecutionService;
         serviceToTest.reportTransformerService = secHubResultService;
@@ -73,7 +77,7 @@ public class ReportServiceTest {
     }
 
     @Test
-    public void createReport_returns_not_null() throws Exception {
+    void createReport_returns_not_null() throws Exception {
 
         /* execute */
         ScanReport report = serviceToTest.createReport(context);
@@ -83,50 +87,24 @@ public class ReportServiceTest {
 
     }
 
-    @Test
-    public void createReport_set_report_traffic_light_red_name_when_defined_by_trafficlight_calculator() throws Exception {
+    @ParameterizedTest
+    @EnumSource(TrafficLight.class)
+    void createReport_set_report_traffic_light_defined_by_trafficlight_calculator_when_at_least_one_productresult(TrafficLight trafficLight) throws Exception {
         /* prepare */
-        when(trafficLightCalculator.calculateTrafficLight(reportTransformationResult)).thenReturn(TrafficLight.RED);
+        when(trafficLightCalculator.calculateTrafficLight(sechubResult)).thenReturn(trafficLight);
+        when(reportTransformationResult.isAtLeastOneRealProductResultContained()).thenReturn(true);
 
         /* execute */
         ScanReport report = serviceToTest.createReport(context);
 
         /* test */
         assertNotNull(report);
-        assertEquals(TrafficLight.RED.name(), report.getTrafficLightAsString());
+        assertEquals(trafficLight.name(), report.getTrafficLightAsString());
 
     }
 
     @Test
-    public void createReport_set_report_traffic_light_yellow_name_when_defined_by_trafficlight_calculator() throws Exception {
-        /* prepare */
-        when(trafficLightCalculator.calculateTrafficLight(reportTransformationResult)).thenReturn(TrafficLight.YELLOW);
-
-        /* execute */
-        ScanReport report = serviceToTest.createReport(context);
-
-        /* test */
-        assertNotNull(report);
-        assertEquals(TrafficLight.YELLOW.name(), report.getTrafficLightAsString());
-
-    }
-
-    @Test
-    public void createReport_set_report_traffic_green_yellow_name_when_defined_by_trafficlight_calculator() throws Exception {
-        /* prepare */
-        when(trafficLightCalculator.calculateTrafficLight(reportTransformationResult)).thenReturn(TrafficLight.GREEN);
-
-        /* execute */
-        ScanReport report = serviceToTest.createReport(context);
-
-        /* test */
-        assertNotNull(report);
-        assertEquals(TrafficLight.GREEN.name(), report.getTrafficLightAsString());
-
-    }
-
-    @Test
-    public void createReport_set_sechub_jobuuid_to_returneed_report() throws Exception {
+    void createReport_set_sechub_jobuuid_to_returned_report() throws Exception {
         /* execute */
         ScanReport report = serviceToTest.createReport(context);
 
@@ -137,7 +115,7 @@ public class ReportServiceTest {
     }
 
     @Test
-    public void createReport_calls_sechub_result_service() throws Exception {
+    void createReport_calls_sechub_result_service() throws Exception {
 
         /* execute */
         serviceToTest.createReport(context);
@@ -147,7 +125,7 @@ public class ReportServiceTest {
     }
 
     @Test
-    public void createReport_calls_execution_service() throws Exception {
+    void createReport_calls_execution_service() throws Exception {
 
         /* execute */
         serviceToTest.createReport(context);
@@ -157,7 +135,7 @@ public class ReportServiceTest {
     }
 
     @Test
-    public void createReport_saves_created_report_by_repository() throws Exception {
+    void createReport_saves_created_report_by_repository() throws Exception {
 
         /* execute */
         serviceToTest.createReport(context);
@@ -167,7 +145,7 @@ public class ReportServiceTest {
     }
 
     @Test
-    public void createReport_returns_saved_report_by_repository() throws Exception {
+    void createReport_returns_saved_report_by_repository() throws Exception {
 
         /* execute */
         serviceToTest.createReport(context);
@@ -177,13 +155,28 @@ public class ReportServiceTest {
     }
 
     @Test
-    public void createReport_calls_trafficlight_calculator_with_result() throws Exception {
+    void createReport_calls_NOT_trafficlight_calculator_when_result_has_no_real_product_results() throws Exception {
+        /* prepare */
+        when(reportTransformationResult.isAtLeastOneRealProductResultContained()).thenReturn(false);
+
+        /* execute */
+        ScanReport result = serviceToTest.createReport(context);
+
+        /* test */
+        verify(trafficLightCalculator, never()).calculateTrafficLight(sechubResult);
+        assertEquals(TrafficLight.OFF.name(), result.getTrafficLightAsString());
+    }
+
+    @Test
+    void createReport_calls_trafficlight_calculator_with_result_at_least_one_real_product_result_contained() throws Exception {
+        /* prepare */
+        when(reportTransformationResult.isAtLeastOneRealProductResultContained()).thenReturn(true);
 
         /* execute */
         serviceToTest.createReport(context);
 
         /* test */
-        verify(trafficLightCalculator).calculateTrafficLight(reportTransformationResult);
+        verify(trafficLightCalculator).calculateTrafficLight(sechubResult);
     }
 
 }

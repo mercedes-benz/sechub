@@ -35,13 +35,15 @@ public class DelegatingMockablePDSAdapterV1 extends AbstractAdapter<PDSAdapterCo
     PDSAdapterV1 realPdsAdapterV1;
 
     @Autowired
-    public DelegatingMockablePDSAdapterV1(MockedAdapterSetupService setupService) {
+    public DelegatingMockablePDSAdapterV1(MockedAdapterSetupService setupService, PDSContextFactory contextFactory) {
         /*
          * to have both worlds (mocked_products + real_products), we instantiate this
          * here directly
          */
         mockedPdsAdapterV1 = new MockedPDSAdapterV1(setupService);
+
         realPdsAdapterV1 = new PDSAdapterV1();
+        realPdsAdapterV1.contextFactory = contextFactory;
     }
 
     @Override

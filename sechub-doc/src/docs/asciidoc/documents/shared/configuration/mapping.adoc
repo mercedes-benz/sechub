@@ -8,13 +8,14 @@ The mapping concept can be either used in a global persisted way, or in a dynmai
  like done for parameter mappings in <<section-executor-configuration,product executor configuration>> .
 
 ==== REST API for global mapping
-A global configuration can be done by REST API.
+A global configuration can be done by REST API. The data is defined in <<mapping-json-structure,JSON>>. 
 
 - <<section-ucrestdoc-uc-UC_037,REST API for UC_037-Admin updates mapping configuration >>
 - <<section-ucrestdoc-uc-UC_038,REST API for UC_038-Admin fetches mapping configuration >>
 
+[[mapping-json-structure]]
 ==== JSON structure
-given JSON has following structure:
+Given JSON has following structure:
 [source,json]
 ----
 include::mapping_json_syntax.json[] 

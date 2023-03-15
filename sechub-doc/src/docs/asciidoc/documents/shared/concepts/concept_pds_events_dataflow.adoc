@@ -1,0 +1,34 @@
+// SPDX-License-Identifier: MIT
+[[section-shared-concepts-pds-events-dataflow]]
+==== PDS events
+Sometimes it is necessary that the {pds} inform the script about changes.
+This can be done by execution events.
+
+===== Overview
+The product adapter is able to read and write events into a dedicated folder inside the workspace.
+This is utilized by the `PDSWorkspaceService` class.
+
+NOTE: As an example for an event the PDS cancel service calls are additionally shown (grey)
+
+plantuml::diagrams/diagram_pds_events_storage.puml[format=svg, title="Storing PDS events"] 
+
+===== Handling events in launcher script
+
+The launcher scripts (or in started wrapper applications by these scripts) have the 
+environment variable `PDS_JOB_EVENTS_FOLDER` injected.
+
+The launcher part must inspect the folder periodically for new
+
+[NOTE]
+====
+Most {pds} solutions do not need to inspect for events. It depends on the situation if there is
+any special event treatment necessary.
+
+*An example:* +
+Inside a OWASP ZAP {pds} solution, the launcher script/the wrapper could inspect if
+a `cancel_requested.json` has been created. If so, the current running owasp zap session could 
+be stopped automatically (otherwise the ZAP scan will still proceed...)
+====
+
+
+   

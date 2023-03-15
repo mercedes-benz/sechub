@@ -5,7 +5,7 @@ services:
   pds-owasp-zap:
     build:
       args:
-        - BASE_IMAGE=debian:11-slim
+        - BASE_IMAGE=${BASE_IMAGE}
       context: docker/
       dockerfile: Owasp-Zap-Debian.dockerfile
     container_name: pds-owasp-zap
@@ -16,6 +16,9 @@ services:
       - "127.0.0.1:15024:15024"
     networks:
       - "sechub"
+    volumes:
+      - ./docker/scripts:/scripts
+
 networks:
   sechub:
     name: "sechub"

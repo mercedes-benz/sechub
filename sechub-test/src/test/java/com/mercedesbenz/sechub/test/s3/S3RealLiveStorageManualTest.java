@@ -55,7 +55,7 @@ class S3RealLiveStorageManualTest {
         String testDataAsString = "This is some test data as a simple string\nJust another line...";
 
         /* store */
-        jobStorage.store(S3_OBJECT_NAME, new StringInputStream(testDataAsString));
+        jobStorage.store(S3_OBJECT_NAME, new StringInputStream(testDataAsString), testDataAsString.getBytes().length);
         boolean existsAfterStore = jobStorage.isExisting(S3_OBJECT_NAME);
 
         /* fetch */
@@ -137,6 +137,51 @@ class S3RealLiveStorageManualTest {
             @Override
             public boolean isAvailable() {
                 return true;
+            }
+
+            @Override
+            public int getConnectionTimeoutInMilliseconds() {
+                return S3Setup.DEFAULT_CONNECTION_TIMEOUT;
+            }
+
+            @Override
+            public int getSocketTimeoutInMilliseconds() {
+                return S3Setup.DEFAULT_SOCKET_TIMEOUT;
+            }
+
+            @Override
+            public int getRequestTimeOutInMilliseconds() {
+                return S3Setup.DEFAULT_REQUEST_TIMEOUT;
+            }
+
+            @Override
+            public int getClientExecutionTimeoutInMilliseconds() {
+                return S3Setup.DEFAULT_CLIENT_EXECUTION_TIMEOUT;
+            }
+
+            @Override
+            public int getMaximumAllowedConnections() {
+                return S3Setup.DEFAULT_MAX_CONNECTIONS;
+            }
+
+            @Override
+            public long getConnectionTTLinMilliseconds() {
+                return S3Setup.DEFAULT_CONNECTION_TTL;
+            }
+
+            @Override
+            public long getConnectionMaxIdleInMilliseconds() {
+                return S3Setup.DEFAULT_CONNECTION_MAX_IDLE_MILLIS;
+            }
+
+            @Override
+            public int getValidateAfterInactivityInMilliseconds() {
+                return S3Setup.DEFAULT_VALIDATE_AFTER_INACTIVITY_MILLIS;
+            }
+
+            @Override
+            public String getSignerOverride() {
+                return S3Setup.DEFAULT_SIGNER_OVERRIDE;
             }
 
         };

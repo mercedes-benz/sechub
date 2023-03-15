@@ -1,22 +1,30 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
-public enum Severity {
+public enum Severity implements Comparable<Severity> {
 
-    // farrady:
-    // critical, high, medium, low, info, unclassified
-    INFO, // faraday: info
+    INFO(10),
 
-    UNCLASSIFIED, // faraday: unclassfiied
+    UNCLASSIFIED(0),
 
-    LOW, // faraday: low
+    LOW(20),
 
-    MEDIUM, // faraday: low
+    MEDIUM(30),
 
-    HIGH, // faraday: high
+    HIGH(40),
 
-    CRITICAL,// faraday: critical
+    CRITICAL(50),
 
     ;
+
+    private int level;
+
+    private Severity(int level) {
+        this.level = level;
+    }
+
+    public int getLevel() {
+        return level;
+    }
 
 }

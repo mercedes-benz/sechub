@@ -18,9 +18,12 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
+import com.mercedesbenz.sechub.pds.execution.PDSExecutionData;
 import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
 import com.mercedesbenz.sechub.pds.usecase.PDSStep;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobErrorStream;
+import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobMetaData;
 import com.mercedesbenz.sechub.pds.usecase.UseCaseAdminFetchesJobOutputStream;
 
 @Service
@@ -63,7 +66,8 @@ public class PDSJobTransactionService {
      */
     @UseCaseAdminFetchesJobOutputStream(@PDSStep(name = "Request stream data refresh", description = "Updates the refresh request timestamp in database. This timestamp will be introspected while PDS job process execution - which will fetch and update stream content", number = 3))
     @UseCaseAdminFetchesJobErrorStream(@PDSStep(name = "Request stream data refresh", description = "Updates the refresh request timestamp in database. This timestamp will be introspected while PDS job process execution - which will fetch and update stream content", number = 3))
-    public LocalDateTime markJobStreamDataRefreshRequestedInOwnTransaction(UUID jobUUID) {
+    @UseCaseAdminFetchesJobMetaData(@PDSStep(name = "Request meta data refresh", description = "Updates the refresh request timestamp in database. This timestamp will be introspected while PDS job process execution - which will fetch meta data content (if available)", number = 3))
+    public LocalDateTime markJobExecutionDataRefreshRequestedInOwnTransaction(UUID jobUUID) {
         PDSJob job = assertJobFound(jobUUID, repository);
 
         updateJobRefreshRequestInOwnTransaction(job);
@@ -87,6 +91,7 @@ public class PDSJobTransactionService {
         if (started != null) {
             job.setStarted(started);
         }
+        PDSJobStatusState oldState = job.getState();
         assertJobIsInState(job, acceptedStatesBefore);
 
         job.setState(newState);
@@ -95,17 +100,25 @@ public class PDSJobTransactionService {
         }
 
         repository.save(job);
-        LOG.debug("Updated job in own transaction - PDS job uuid={}, state={}", job.getUUID(), job.getState());
+
+        LOG.debug("Updated job in own transaction - PDS job uuid: {}, newState: {}, oldState: {}", job.getUUID(), job.getState(), oldState);
     }
 
     /**
-     * Read job configuration in own transaction
+     * Read job configuration data in own transaction
      *
      * @param jobUUID
      * @return job configuration, will fail when job is not found
      */
-    public String getJobConfiguration(UUID jobUUID) {
-        return assertJobFound(jobUUID, repository).getJsonConfiguration();
+    public JobConfigurationData getJobConfigurationData(UUID jobUUID) {
+
+        PDSJob job = assertJobFound(jobUUID, repository);
+
+        JobConfigurationData data = new JobConfigurationData();
+        data.jobConfigurationJson = job.getJsonConfiguration();
+        data.metaData = job.getMetaDataText();
+
+        return data;
     }
 
     /**
@@ -124,12 +137,13 @@ public class PDSJobTransactionService {
         return pdsJob.getUUID();
     }
 
-    public void updateJobStreamDataInOwnTransaction(UUID jobUUID, String outputStreamData, String errorStreamData) {
+    public void updateJobExecutionDataInOwnTransaction(UUID jobUUID, PDSExecutionData data) {
         PDSJob job = assertJobFound(jobUUID, repository);
 
-        job.outputStreamText = outputStreamData;
-        job.errorStreamText = errorStreamData;
+        job.outputStreamText = data.getOutputStreamData();
+        job.errorStreamText = data.getErrorStreamData();
         job.lastStreamTextUpdate = LocalDateTime.now();
+        job.metaDataText = data.getMetaData();
 
         repository.save(job);
     }
@@ -144,4 +158,26 @@ public class PDSJobTransactionService {
 
         repository.save(job);
     }
+
+    public void markJobAsCancelRequestedInOwnTransaction(UUID jobUUID) {
+        updatJobStatusState(jobUUID, PDSJobStatusState.CANCEL_REQUESTED);
+    }
+
+    public void markJobAsCanceledInOwnTransaction(UUID jobUUID) {
+        updatJobStatusState(jobUUID, PDSJobStatusState.CANCELED);
+    }
+
+    private void updatJobStatusState(UUID jobUUID, PDSJobStatusState state) {
+        PDSJob job = assertJobFound(jobUUID, repository);
+        PDSJobStatusState oldState = job.getState();
+        if (state == oldState) {
+            LOG.info("Did not change PDS job: {} status state:{} already set.", jobUUID, state);
+            return;
+        }
+        job.setState(state);
+        repository.save(job);
+
+        LOG.info("Changed PDS job: {} from status state: {} to: {}", jobUUID, oldState, state);
+    }
+
 }

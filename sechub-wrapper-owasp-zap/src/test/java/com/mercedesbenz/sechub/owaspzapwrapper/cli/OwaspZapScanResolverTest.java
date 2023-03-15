@@ -10,7 +10,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.zaproxy.clientapi.core.ClientApi;
 
-import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanConfiguration;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanContext;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.auth.AuthenticationType;
 import com.mercedesbenz.sechub.owaspzapwrapper.scan.OwaspZapScan;
 import com.mercedesbenz.sechub.owaspzapwrapper.scan.UnauthenticatedScan;
@@ -28,12 +28,12 @@ class OwaspZapScanResolverTest {
     @Test
     void unauthenticated_scan_is_resolved_correctly() {
         /* prepare */
-        OwaspZapScanConfiguration scanConfig = mock(OwaspZapScanConfiguration.class);
-        when(scanConfig.getAuthenticationType()).thenReturn(AuthenticationType.UNAUTHENTICATED);
+        OwaspZapScanContext scanContext = mock(OwaspZapScanContext.class);
+        when(scanContext.getAuthenticationType()).thenReturn(AuthenticationType.UNAUTHENTICATED);
         ClientApi clientApi = mock(ClientApi.class);
 
         /* execute */
-        OwaspZapScan scan = resolverToTest.resolveScanImplementation(scanConfig, clientApi);
+        OwaspZapScan scan = resolverToTest.resolveScanImplementation(scanContext, clientApi);
 
         /* test */
         assertTrue(scan instanceof UnauthenticatedScan);
@@ -42,12 +42,12 @@ class OwaspZapScanResolverTest {
     @Test
     void http_basic_authentication_scan_is_resolved_correctly() {
         /* prepare */
-        OwaspZapScanConfiguration scanConfig = mock(OwaspZapScanConfiguration.class);
-        when(scanConfig.getAuthenticationType()).thenReturn(AuthenticationType.HTTP_BASIC_AUTHENTICATION);
+        OwaspZapScanContext scanContext = mock(OwaspZapScanContext.class);
+        when(scanContext.getAuthenticationType()).thenReturn(AuthenticationType.HTTP_BASIC_AUTHENTICATION);
         ClientApi clientApi = mock(ClientApi.class);
 
         /* execute */
-        OwaspZapScan scan = resolverToTest.resolveScanImplementation(scanConfig, clientApi);
+        OwaspZapScan scan = resolverToTest.resolveScanImplementation(scanContext, clientApi);
 
         /* test */
         assertTrue(scan instanceof HTTPBasicAuthScan);
@@ -56,24 +56,24 @@ class OwaspZapScanResolverTest {
     @Test
     void authenticationtype_null_is_throwing_mustexitruntimeexception() {
         /* prepare */
-        OwaspZapScanConfiguration scanConfig = mock(OwaspZapScanConfiguration.class);
-        when(scanConfig.getAuthenticationType()).thenReturn(null);
+        OwaspZapScanContext scanContext = mock(OwaspZapScanContext.class);
+        when(scanContext.getAuthenticationType()).thenReturn(null);
         ClientApi clientApi = mock(ClientApi.class);
 
         /* execute + test */
-        assertThrows(MustExitRuntimeException.class, () -> resolverToTest.resolveScanImplementation(scanConfig, clientApi));
+        assertThrows(ZapWrapperRuntimeException.class, () -> resolverToTest.resolveScanImplementation(scanContext, clientApi));
     }
 
     @ParameterizedTest
     @EnumSource(value = AuthenticationType.class, names = { "FORM_BASED_AUTHENTICATION", "SCRIPT_BASED_AUTHENTICATION", "JSON_BASED_AUTHENTICATION" })
     void not_yet_supported_authenticationtype_is_throwing_mustexitruntimeexception(AuthenticationType authType) {
         /* prepare */
-        OwaspZapScanConfiguration scanConfig = mock(OwaspZapScanConfiguration.class);
-        when(scanConfig.getAuthenticationType()).thenReturn(authType);
+        OwaspZapScanContext scanContext = mock(OwaspZapScanContext.class);
+        when(scanContext.getAuthenticationType()).thenReturn(authType);
         ClientApi clientApi = mock(ClientApi.class);
 
         /* execute + test */
-        assertThrows(MustExitRuntimeException.class, () -> resolverToTest.resolveScanImplementation(scanConfig, clientApi));
+        assertThrows(ZapWrapperRuntimeException.class, () -> resolverToTest.resolveScanImplementation(scanContext, clientApi));
     }
 
 }

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.sharedkernel.messaging;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
@@ -16,11 +17,27 @@ import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
  */
 public class MessageDataKeys {
 
+    private static final SchedulerJobMessageDataProvider SCHEDULER_JOB_MESSAGE_DATA_PROVIDER = new SchedulerJobMessageDataProvider();
+    private static final ClusterMemberMessageDataProvider CLUSTER_MEMBER_MESSAGE_DATA_PROVIDER = new ClusterMemberMessageDataProvider();
+    private static final BatchJobMessageDataProvider BATCH_JOB_MESSAGE_DATA_PROVIDER = new BatchJobMessageDataProvider();
+    private static final SecHubConfigurationMessageDataProvider SECHUB_CONFIGURATION_MESSAGE_DATA_PROVIDER = new SecHubConfigurationMessageDataProvider();
+    private static final UUIDMessageDataProvider UID_MESSAGE_DATA_PROVIDER = new UUIDMessageDataProvider();
+    private static final SecHubMessagesListDataProvider SECHUB_MESSAGES_LIST_MESSAGE_DATA_PROVIDER = new SecHubMessagesListDataProvider();
+    private static final StringMessageDataProvider STRING_MESSAGE_DATA_PROVIDER = new StringMessageDataProvider();
+    private static final StorageMessageDataProvider STORAGE_MESSAGE_DATA_PROVIDER = new StorageMessageDataProvider();
+    private static final AnalyticMessageDataProvider ANALYTIC_MESSAGE_DATA_PROVIDER = new AnalyticMessageDataProvider();
+    private static final MappingMessageDataProvider MAPPING_MESSAGE_DATA_PROVIDER = new MappingMessageDataProvider();
+    private static final JobMessageDataProvider JOB_MESSAGE_DATA_PROVIDER = new JobMessageDataProvider();
+    private static final ProjectMessageDataProvider PROJECT_MESSAGE_DATA_PROVIDER = new ProjectMessageDataProvider();
+    private static final SchedulerMessageDataProvider SCHEDULER_MESSAGE_DATA_PROVIDER = new SchedulerMessageDataProvider();
+    private static final AdministrationConfigMessageDataProvider ADMIN_CONFIG_MESSAGE_DATA_PROVIDER = new AdministrationConfigMessageDataProvider();
+    private static final UserMessageDataProvider USER_MESSAGE_DATA_PROVIDER = new UserMessageDataProvider();
+    private static final LocalDateTimeMessageDataProvider LOCAL_DATE_TIME_MESSAGE_DATA_PROVIDER = new LocalDateTimeMessageDataProvider();
+
     /*
      * Only reason why this is not an emum is that we want to have generic type
      * information about what is contained in key...
      */
-
     private MessageDataKeys() {
 
     }
@@ -28,16 +45,29 @@ public class MessageDataKeys {
     /**
      * Contains a string with base url of sechub system
      */
-    public static final MessageDataKey<String> ENVIRONMENT_BASE_URL = createKey("environment.base.url", new StringMessageDataProvider());
-    public static final MessageDataKey<String> EXECUTED_BY = createKey("common.executedby", new StringMessageDataProvider());
-    public static final MessageDataKey<String> REPORT_TRAFFIC_LIGHT = createKey("report.trafficlight", new StringMessageDataProvider());
-    public static final MessageDataKey<SecHubMessagesList> REPORT_MESSAGES = createKey("report.messages", new SecHubMessagesListDataProvider());
-    public static final MessageDataKey<UUID> SECHUB_UUID = createKey("sechub.uuid", new UUIDMessageDataProvider());
-    public static final MessageDataKey<SecHubConfiguration> SECHUB_CONFIG = createKey("sechub.config", new SecHubConfigurationMessageDataProvider());
-    public static final MessageDataKey<BatchJobMessage> BATCH_JOB_ID = createKey("sechub.batchjob.id", new BatchJobMessageDataProvider());
-    public static final MessageDataKey<BatchJobMessage> BATCH_JOB_STATUS = createKey("sechub.batchjob.status", new BatchJobMessageDataProvider());
+    public static final MessageDataKey<String> ENVIRONMENT_BASE_URL = createKey("environment.base.url", STRING_MESSAGE_DATA_PROVIDER);
+    public static final MessageDataKey<String> EXECUTED_BY = createKey("common.executedby", STRING_MESSAGE_DATA_PROVIDER);
+    public static final MessageDataKey<String> REPORT_TRAFFIC_LIGHT = createKey("report.trafficlight", STRING_MESSAGE_DATA_PROVIDER);
+    public static final MessageDataKey<SecHubMessagesList> REPORT_MESSAGES = createKey("report.messages", SECHUB_MESSAGES_LIST_MESSAGE_DATA_PROVIDER);
+
+    public static final MessageDataKey<UUID> SECHUB_JOB_UUID = createKey("sechub.job.uuid", UID_MESSAGE_DATA_PROVIDER);
+    public static final MessageDataKey<UUID> SECHUB_EXECUTION_UUID = createKey("sechub.execution.uuid", UID_MESSAGE_DATA_PROVIDER);
+    /**
+     * Use this generic key when you just want to define timestamp without using a
+     * dedicated model where it is already contained.
+     */
+    public static final MessageDataKey<LocalDateTime> LOCAL_DATE_TIME_SINCE = createKey("localdatetime.since", LOCAL_DATE_TIME_MESSAGE_DATA_PROVIDER);
+
+    public static final MessageDataKey<SecHubConfiguration> SECHUB_CONFIG = createKey("sechub.config", SECHUB_CONFIGURATION_MESSAGE_DATA_PROVIDER);
+    public static final MessageDataKey<BatchJobMessage> BATCH_JOB_ID = createKey("sechub.batchjob.id", BATCH_JOB_MESSAGE_DATA_PROVIDER);
+
+    @Deprecated
+    public static final MessageDataKey<BatchJobMessage> BATCH_JOB_STATUS = createKey("sechub.batchjob.status", BATCH_JOB_MESSAGE_DATA_PROVIDER);
     public static final MessageDataKey<ClusterMemberMessage> ENVIRONMENT_CLUSTER_MEMBER_STATUS = createKey("environment.cluster.member.status",
-            new ClusterMemberMessageDataProvider());
+            CLUSTER_MEMBER_MESSAGE_DATA_PROVIDER);
+
+    public static final MessageDataKey<SchedulerJobMessage> SCHEDULER_JOB_STATUS = createKey("sechub.scheduler.job.status",
+            SCHEDULER_JOB_MESSAGE_DATA_PROVIDER);
     /**
      * Must contain userid, mail adress
      */
@@ -98,6 +128,11 @@ public class MessageDataKeys {
     public static final MessageDataKey<ProjectMessage> PROJECT_WHITELIST_UPDATE_DATA = createProjectMessageKey("project.whitelist.update.data");
 
     /**
+     * Must contain project id, job uuid, and since (as JobMessage)
+     */
+    public static final MessageDataKey<JobMessage> JOB_CREATED_DATA = createJobMessageKey("job.created.data");
+
+    /**
      * Must contain project id, job uuid, json configuration, owner, since
      */
     public static final MessageDataKey<JobMessage> JOB_STARTED_DATA = createJobMessageKey("job.started.data");
@@ -139,31 +174,43 @@ public class MessageDataKeys {
     public static final MessageDataKey<AdministrationConfigMessage> AUTO_CLEANUP_CONFIG_CHANGE_DATA = createAdministrationConfigMessageKey(
             "autocleanup.config.change.data");
 
+    public static final MessageDataKey<AnalyticMessageData> ANALYTIC_SCAN_RESULT_DATA = createAnalyticsData("analytic.scan.result.data");
+
+    public static final MessageDataKey<StorageMessageData> UPLOAD_STORAGE_DATA = createStorageData("upload.storage.data");
+
     /* +-----------------------------------------------------------------------+ */
     /* +............................ Helpers ..................................+ */
     /* +-----------------------------------------------------------------------+ */
     private static MessageDataKey<UserMessage> createUserMessageKey(String id) {
-        return createKey(id, new UserMessageDataProvider());
+        return createKey(id, USER_MESSAGE_DATA_PROVIDER);
     }
 
     private static MessageDataKey<AdministrationConfigMessage> createAdministrationConfigMessageKey(String id) {
-        return createKey(id, new AdministrationConfigMessageDataProvider());
+        return createKey(id, ADMIN_CONFIG_MESSAGE_DATA_PROVIDER);
     }
 
     private static MessageDataKey<SchedulerMessage> createSchedulerStatusMessageKey(String id) {
-        return createKey(id, new SchedulerMessageDataProvider());
+        return createKey(id, SCHEDULER_MESSAGE_DATA_PROVIDER);
     }
 
     private static MessageDataKey<ProjectMessage> createProjectMessageKey(String id) {
-        return createKey(id, new ProjectMessageDataProvider());
+        return createKey(id, PROJECT_MESSAGE_DATA_PROVIDER);
     }
 
     private static MessageDataKey<JobMessage> createJobMessageKey(String id) {
-        return createKey(id, new JobMessageDataProvider());
+        return createKey(id, JOB_MESSAGE_DATA_PROVIDER);
     }
 
     private static MessageDataKey<MappingMessage> createMappingMessageKey(String id) {
-        return createKey(id, new MappingMessageDataProvider());
+        return createKey(id, MAPPING_MESSAGE_DATA_PROVIDER);
+    }
+
+    private static MessageDataKey<AnalyticMessageData> createAnalyticsData(String id) {
+        return createKey(id, ANALYTIC_MESSAGE_DATA_PROVIDER);
+    }
+
+    private static MessageDataKey<StorageMessageData> createStorageData(String id) {
+        return createKey(id, STORAGE_MESSAGE_DATA_PROVIDER);
     }
 
     private static <T> MessageDataKey<T> createKey(String id, MessageDataProvider<T> provider) {

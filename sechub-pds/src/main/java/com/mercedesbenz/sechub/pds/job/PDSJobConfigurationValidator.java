@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.pds.PDSNotAcceptableException;
 import com.mercedesbenz.sechub.pds.config.PDSProductIdentifierValidator;
+import com.mercedesbenz.sechub.pds.config.PDSProductParameterDefinition;
 import com.mercedesbenz.sechub.pds.config.PDSProductSetup;
-import com.mercedesbenz.sechub.pds.config.PDSProdutParameterDefinition;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
 import com.mercedesbenz.sechub.pds.execution.PDSExecutionParameterEntry;
 
@@ -31,7 +31,7 @@ public class PDSJobConfigurationValidator {
         if (message == null) {
             return;
         }
-        LOG.warn("pds job configuration not valid - message:{}", message);
+        LOG.error("pds job configuration not valid - message:{}", message);
 
         throw new PDSNotAcceptableException("Configuration invalid:" + message);
 
@@ -56,8 +56,8 @@ public class PDSJobConfigurationValidator {
         if (productSetup == null) {
             return "configured PDS instance does not support product identifier:" + productId;
         }
-        List<PDSProdutParameterDefinition> mandatories = productSetup.getParameters().getMandatory();
-        for (PDSProdutParameterDefinition mandatory : mandatories) {
+        List<PDSProductParameterDefinition> mandatories = productSetup.getParameters().getMandatory();
+        for (PDSProductParameterDefinition mandatory : mandatories) {
             String mandatoryKey = mandatory.getKey();
             if (mandatoryKey == null || mandatoryKey.isEmpty()) {
                 continue;
@@ -70,9 +70,12 @@ public class PDSJobConfigurationValidator {
                 }
             }
             if (!found) {
-                return "mandatory parameter not found:'" + mandatoryKey + "'";
+                if (!mandatory.hasDefault()) {
+                    return "mandatory parameter not found:'" + mandatoryKey + "'";
+                }
             }
         }
         return null;
     }
+
 }

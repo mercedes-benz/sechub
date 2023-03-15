@@ -37,4 +37,10 @@ public interface PDSAdapterConfigData {
 
     ScanType getScanType();
 
+    boolean isPDSScriptTrustingAllCertificates();
+
+    Long getBinariesTarFileSizeInBytesOrNull();
+
+    Long getSourceCodeZipFileSizeInBytesOrNull();
+
 }

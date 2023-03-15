@@ -7,6 +7,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -18,7 +19,6 @@ import java.util.stream.Stream;
 import javax.annotation.security.RolesAllowed;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -45,9 +45,11 @@ import com.mercedesbenz.sechub.domain.administration.user.UserAdministrationRest
 import com.mercedesbenz.sechub.domain.schedule.SchedulerRestController;
 import com.mercedesbenz.sechub.pds.PDSProfiles;
 import com.mercedesbenz.sechub.pds.security.PDSRoleConstants;
+import com.mercedesbenz.sechub.pds.usecase.PDSUseCaseDefinition;
 import com.mercedesbenz.sechub.pds.usecase.PDSUseCaseIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.RoleConstants;
+import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseDefinition;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 
 @SuppressWarnings("rawtypes")
@@ -81,45 +83,83 @@ public class RoutesTest {
     }
 
     @Test
-    @DisplayName("Sanity check - test logic is not corrupted")
-    void sanityCheck() {
+    void sanitycheck_all_classes_for_rest_controllers_used_by_testparameters() {
 
-        /* test 1 */
-        Set<Class<?>> clazzSet = new HashSet<>();
-        for (TestParameter testParameter : inspector.getTestparameters()) {
+        /* test */
+        Collection<Class<?>> clazzSet = new HashSet<>();
+        List<TestParameter> allTestparameters = inspector.getTestparameters();
+
+        for (TestParameter testParameter : allTestparameters) {
             clazzSet.add(testParameter.clazz);
         }
-
         List<String> all1 = inspector.allClassesWithRestControllerAnnotation.stream().map((clazz) -> clazz.getName()).sorted().collect(Collectors.toList());
         List<String> all2 = clazzSet.stream().map((clazz) -> clazz.getName()).sorted().collect(Collectors.toList());
 
-        assertEquals(asString(all1), asString(all2));
+        assertEquals(asString(all1), asString(all2), "Testparameters must contain all classes with rest controller annotations!");
 
-        /* test 2 */
-        int minimumRestAPIMethodAmount = 0;
-        for (UseCaseIdentifier sechubUsecase : UseCaseIdentifier.values()) {
-            if (sechubUsecase.hasRestApi()) {
-                minimumRestAPIMethodAmount++;
-            }
-        }
-        for (PDSUseCaseIdentifier pds : PDSUseCaseIdentifier.values()) {
-            if (pds.hasRestApi()) {
-                minimumRestAPIMethodAmount++;
-            }
-        }
+    }
 
-        int amountOfRequestMethodsToCheck = inspector.getTestparameters().size();
-        if (amountOfRequestMethodsToCheck <= minimumRestAPIMethodAmount) {
-            assertEquals(minimumRestAPIMethodAmount, amountOfRequestMethodsToCheck,
-                    "The amount of use cases in total is higher than the amount of REST api possiblities!\nThis is odd!");
-        }
+    @Test
+    void sanitycheck_usecases_for_pds_and_sechub_have_rest_controller_methods_annotations_where_necessary() {
 
+        /* test */
+        List<TestParameter> allTestparameters = inspector.getTestparameters();
+
+        assertEverySecHubUsecaseWithRestAPIHasAtLestOneRestMethod(allTestparameters);
+        assertEveryPDSUsecaseWithRestAPIHasAtLestOneRestMethod(allTestparameters);
     }
 
     @Test
     void spotCheck() {
         assertRestControllerChecked(SchedulerRestController.class);
         assertRestControllerChecked(UserAdministrationRestController.class);
+    }
+
+    private void assertEverySecHubUsecaseWithRestAPIHasAtLestOneRestMethod(List<TestParameter> allTestparameters) {
+        for (UseCaseIdentifier sechubUsecase : UseCaseIdentifier.values()) {
+            boolean foundAtLeastOneMethodForThisUseCase = false;
+            for (TestParameter param : allTestparameters) {
+                /* UC must be found at least one time */
+                for (String foundId : param.methodData.usecaseUniqueids) {
+                    foundAtLeastOneMethodForThisUseCase = sechubUsecase.uniqueId().equals(foundId);
+                    if (foundAtLeastOneMethodForThisUseCase) {
+                        break;
+                    }
+                }
+                if (foundAtLeastOneMethodForThisUseCase) {
+                    break;
+                }
+            }
+            if (sechubUsecase.hasRestApi() && !foundAtLeastOneMethodForThisUseCase) {
+                fail("Did not found a method for usecase: " + sechubUsecase.name() + " - " + sechubUsecase.uniqueId());
+            } else if (!sechubUsecase.hasRestApi() && foundAtLeastOneMethodForThisUseCase) {
+                fail("Did found a method for usecase: " + sechubUsecase.name() + " - " + sechubUsecase.uniqueId() + " (but is not marked to have REST api...)");
+            }
+        }
+    }
+
+    private void assertEveryPDSUsecaseWithRestAPIHasAtLestOneRestMethod(List<TestParameter> allTestparameters) {
+        for (PDSUseCaseIdentifier pdsUsecase : PDSUseCaseIdentifier.values()) {
+
+            boolean foundAtLeastOneMethodForThisUseCase = false;
+            for (TestParameter param : allTestparameters) {
+                /* UC must be found at least one time */
+                for (String foundId : param.methodData.usecaseUniqueids) {
+                    foundAtLeastOneMethodForThisUseCase = pdsUsecase.uniqueId().equals(foundId);
+                    if (foundAtLeastOneMethodForThisUseCase) {
+                        break;
+                    }
+                }
+                if (foundAtLeastOneMethodForThisUseCase) {
+                    break;
+                }
+            }
+            if (pdsUsecase.hasRestApi() && !foundAtLeastOneMethodForThisUseCase) {
+                fail("Did not found a method for usecase: " + pdsUsecase.name() + " - " + pdsUsecase.uniqueId());
+            } else if (!pdsUsecase.hasRestApi() && foundAtLeastOneMethodForThisUseCase) {
+                fail("Did found a method for usecase: " + pdsUsecase.name() + " - " + pdsUsecase.uniqueId() + " (but is not marked to have REST api...)");
+            }
+        }
     }
 
     private void assertRestControllerChecked(Class<?> clazz) {
@@ -276,6 +316,11 @@ public class RoutesTest {
             }
             return r1.compareTo(r2);
         }
+
+        @Override
+        public String toString() {
+            return "TestParameter:" + clazz.getSimpleName() + " " + methodData.toString() + "\n";
+        }
     }
 
     static class RouteData {
@@ -317,11 +362,16 @@ public class RoutesTest {
         String httpMethods;
         List<String> roles = new ArrayList<>();
         List<String> effectiveRoles = new ArrayList<>();
+        List<String> usecaseUniqueids;
 
         public MethodData(ControllerData controller) {
             this.controller = controller;
         }
 
+        @Override
+        public String toString() {
+            return "#" + methodName + "(" + httpMethods + " " + path + ")";
+        }
     }
 
     private static class Inspector {
@@ -343,7 +393,6 @@ public class RoutesTest {
             for (Class clazz : allClassesWithRestControllerAnnotation) {
                 inspect(clazz);
             }
-
         }
 
         public List<TestParameter> getTestparameters() {
@@ -397,6 +446,7 @@ public class RoutesTest {
             MethodData methodData = new MethodData(route.controller);
 
             methodData.httpMethods = resolveHttpMethodName(requestMappingData);
+            methodData.usecaseUniqueids = resolveUseCaseIds(method);
             methodData.methodName = method.getName();
             methodData.roles.addAll(asSafeList(collectRoles(method)));
             methodData.path = collectPathOrNull(method);
@@ -548,6 +598,25 @@ public class RoutesTest {
 
         }
 
+        public List<String> resolveUseCaseIds(Method method) {
+            List<String> list = new ArrayList<>();
+            Annotation[] annotations = method.getDeclaredAnnotations();
+            for (Annotation annotation : annotations) {
+                Class<? extends Annotation> type = annotation.annotationType();
+                UseCaseDefinition[] usecaseDef = type.getAnnotationsByType(UseCaseDefinition.class);
+                if (usecaseDef != null && usecaseDef.length == 1) {
+                    UseCaseIdentifier identifier = usecaseDef[0].id();
+                    list.add(identifier.uniqueId());
+                }
+                PDSUseCaseDefinition[] pdsUsecaseDef = type.getAnnotationsByType(PDSUseCaseDefinition.class);
+                if (pdsUsecaseDef != null && pdsUsecaseDef.length == 1) {
+                    PDSUseCaseIdentifier identifier = pdsUsecaseDef[0].id();
+                    list.add(identifier.uniqueId());
+                }
+            }
+            return list;
+        }
+
         private String resolveHttpMethodName(RequestMappingData mapping) {
             StringBuilder sb = new StringBuilder();
             if (mapping != null) {
@@ -622,6 +691,7 @@ public class RoutesTest {
         environment.addActiveProfile(Profiles.ADMIN_ACCESS);
         environment.addActiveProfile(Profiles.POSTGRES);
         environment.addActiveProfile(Profiles.PROD);
+        environment.addActiveProfile(Profiles.MOCKED_PRODUCTS);
 
         environment.addActiveProfile(PDSProfiles.POSTGRES);
         environment.addActiveProfile(PDSProfiles.PROD);
@@ -641,4 +711,5 @@ public class RoutesTest {
             return null;
         }).collect(Collectors.toList());
     }
+
 }

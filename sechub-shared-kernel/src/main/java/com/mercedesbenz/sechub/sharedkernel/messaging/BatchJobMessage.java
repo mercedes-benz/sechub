@@ -4,8 +4,8 @@ package com.mercedesbenz.sechub.sharedkernel.messaging;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.mercedesbenz.sechub.commons.core.MustBeKeptStable;
 import com.mercedesbenz.sechub.commons.model.JSONable;
-import com.mercedesbenz.sechub.sharedkernel.MustBeKeptStable;
 
 /**
  * This message data object contains all possible information about a spring
@@ -22,7 +22,6 @@ public class BatchJobMessage implements JSONable<BatchJobMessage> {
     private long batchJobId;
     private boolean canceled;
     private boolean existing;
-    private boolean abandoned;
 
     @Override
     public Class<BatchJobMessage> getJSONTargetClass() {
@@ -59,14 +58,6 @@ public class BatchJobMessage implements JSONable<BatchJobMessage> {
 
     public boolean isExisting() {
         return existing;
-    }
-
-    public void setAbandoned(boolean abandoned) {
-        this.abandoned = abandoned;
-    }
-
-    public boolean isAbandoned() {
-        return abandoned;
     }
 
 }

@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,6 +16,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.mercedesbenz.sechub.commons.TextFileReader;
+import com.mercedesbenz.sechub.commons.TextFileWriter;
+import com.mercedesbenz.sechub.commons.archive.ArchiveSupport.ArchiveType;
 import com.mercedesbenz.sechub.test.TestFileSupport;
 import com.mercedesbenz.sechub.test.TestUtil;
 
@@ -54,6 +58,100 @@ class ArchiveSupportTest {
     @BeforeEach
     void beforeEach() {
         supportToTest = new ArchiveSupport();
+    }
+
+    @Test
+    void compress_zip_contains_all_files_from_folder() throws Exception {
+        /* prepare */
+
+        File targetFile = TestUtil.createTempFileInBuildFolder("output", "zip").toFile();
+        File folder = new File("./src/test/resources/tar/test-tar1/expected-extracted");
+
+        /* execute */
+        supportToTest.compressFolder(ArchiveType.ZIP, folder, targetFile);
+
+        /* test */
+        assertTrue(targetFile.exists());
+
+        // extract the created ZIP file again to reverse folder
+        Path reverseFolder = TestUtil.createTempDirectoryInBuildFolder("compressed-reverse");
+        supportToTest.extract(ZIP, new FileInputStream(targetFile), targetFile.getAbsolutePath(), reverseFolder.toFile(), null);
+
+        // check extracted same as before
+        expectedExtractedFilesAreAllFoundInOutputDirectory(reverseFolder.toFile(), TestFileSupport.loadFilesAsFileList(expectedTar1Folder), expectedTar1Folder);
+
+    }
+
+    @Test
+    void compress_zip_single_data_txt_file_compressed_output_contains_same_content() throws Exception {
+        /* prepare */
+
+        File parentFolder = TestUtil.createTempDirectoryInBuildFolder("archive-compress-zip-test").toFile();
+
+        File dataFolder = new File(parentFolder, "data-folder1");
+        File textFile = new File(dataFolder, "data.txt");
+
+        File targetFile = new File(parentFolder, "sourcecode.zip");
+
+        TextFileWriter writer = new TextFileWriter();
+        writer.save(textFile, "This is just a test content", true);
+
+        /* execute */
+        supportToTest.compressFolder(ArchiveType.ZIP, dataFolder, targetFile);
+
+        /* test */
+        assertTrue(targetFile.exists());
+
+        // extract the created ZIP file again to reverse folder
+        Path reverseFolder = TestUtil.createTempDirectoryInBuildFolder("compressed-reverse");
+        File outputFolder = reverseFolder.toFile();
+        supportToTest.extract(ZIP, new FileInputStream(targetFile), targetFile.getAbsolutePath(), outputFolder, null);
+
+        // check extracted same as before
+        assertFileContains(new File(outputFolder, "data.txt"), "This is just a test content");
+
+    }
+
+    private void assertFileContains(File file, String expectedContent) throws IOException {
+        if (!file.exists()) {
+            fail("File:" + file + " does not exist!");
+        }
+        TextFileReader reader = new TextFileReader();
+        String content = reader.loadTextFile(file);
+        assertEquals(expectedContent, content);
+    }
+
+    @Test
+    void compress_zip_two_txt_files_compressed_output_contains_same_content() throws Exception {
+        /* prepare */
+
+        File parentFolder = TestUtil.createTempDirectoryInBuildFolder("archive-compress-zip-test").toFile();
+
+        File dataFolder = new File(parentFolder, "data-folder2");
+        File textFile1 = new File(dataFolder, "test1.txt");
+        File textFile2 = new File(dataFolder, "test2.txt");
+
+        File targetFile = new File(parentFolder, "sourcecode.zip");
+
+        TextFileWriter writer = new TextFileWriter();
+        writer.save(textFile1, "text1", true);
+        writer.save(textFile2, "text2", true);
+
+        /* execute */
+        supportToTest.compressFolder(ArchiveType.ZIP, dataFolder, targetFile);
+
+        /* test */
+        assertTrue(targetFile.exists());
+
+        // extract the created ZIP file again to reverse folder
+        Path reverseFolder = TestUtil.createTempDirectoryInBuildFolder("compressed-reverse");
+        File outputFolder = reverseFolder.toFile();
+        supportToTest.extract(ZIP, new FileInputStream(targetFile), targetFile.getAbsolutePath(), outputFolder, null);
+
+        // check extracted same as before
+        assertFileContains(new File(outputFolder, "test1.txt"), "text1");
+        assertFileContains(new File(outputFolder, "test2.txt"), "text2");
+
     }
 
     @Test

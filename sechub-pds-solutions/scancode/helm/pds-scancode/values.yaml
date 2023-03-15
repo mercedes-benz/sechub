@@ -8,19 +8,21 @@ image:
     registry: "my.registry.example.org/pds_scancode"
     tag: "latest"
 
+resources:
+    requests:
+        memory: 256Mi
+    limits:
+        memory: 2Gi
+
 pds:
     startMode: localserver
-    maxFileUploadSize: 20MB
-    
-    # 100 MiB by default
-    # 1024**2 * 100 = 104857600
-    # declare as string to avoid scientific number
-    # formatting by Kubernetes
-    uploadBinariesMaximumBytes: "104857600"
+    # Maximum upload size: 100 MiB by default (100 * 1024 * 1024 = 104857600)
+    uploadMaximumBytes: "104857600"
     config:
         execute:
             queueMax: 10
             workerThreadCount: 1
+    heartbeatLogging: "true"
     logging:
         type:
             enabled: false
@@ -31,15 +33,15 @@ pds:
         enabled: false
     keepContainerAliveAfterPDSCrashed: false
     volumes:
-        # this value should be greater than,
-        # the `uploadBinariesMaximumBytes` value
         workspace:
             size: "1Gi"
 users:
     technical:
         id: "techuser"
+        apiToken: "<api token of techuser>"
     admin:
         id: "admin"
+        apiToken: "<api token of admin user>"
 
 storage:
     local:
@@ -65,10 +67,10 @@ database:
 networkPolicy:
     enabled: false
     ingress:
-    - from:
-        - podSelector:
-            matchLabels:
-                name: sechub-server
-        - podSelector:
-            matchLabels:
-                name: sechub-adminserver
+        - from:
+              - podSelector:
+                    matchLabels:
+                        name: sechub-server
+              - podSelector:
+                    matchLabels:
+                        name: sechub-adminserver

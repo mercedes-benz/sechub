@@ -3,6 +3,9 @@ package com.mercedesbenz.sechub.commons.model;
 
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SecHubConfigurationModel {
 
     public static final String PROPERTY_PROJECT_ID = "projectId";
@@ -11,12 +14,14 @@ public class SecHubConfigurationModel {
     public static final String PROPERTY_INFRA_SCAN = "infraScan";
     public static final String PROPERTY_CODE_SCAN = "codeScan";
     public static final String PROPERTY_LICENSE_SCAN = "licenseScan";
+    public static final String PROPERTY_SCERET_SCAN = "secretScan";
 
     private Optional<SecHubWebScanConfiguration> webScan = Optional.empty();
     private Optional<SecHubInfrastructureScanConfiguration> infraScan = Optional.empty();
     private Optional<SecHubCodeScanConfiguration> codeScan = Optional.empty();
     private Optional<SecHubDataConfiguration> data = Optional.empty();
     private Optional<SecHubLicenseScanConfiguration> licenseScan = Optional.empty();
+    private Optional<SecHubSecretScanConfiguration> secretScan = Optional.empty();
 
     private String apiVersion;
 
@@ -78,4 +83,11 @@ public class SecHubConfigurationModel {
         this.licenseScan = Optional.ofNullable(licenseScan);
     }
 
+    public Optional<SecHubSecretScanConfiguration> getSecretScan() {
+        return secretScan;
+    }
+
+    public void setSecretScan(SecHubSecretScanConfiguration secretScan) {
+        this.secretScan = Optional.ofNullable(secretScan);
+    }
 }

@@ -18,16 +18,16 @@ import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionException;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutor;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
-import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResultRepository;
 import com.mercedesbenz.sechub.sereco.Sereco;
 import com.mercedesbenz.sechub.sereco.Workspace;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
 
 @Component
 public class SerecoReportProductExecutor implements ProductExecutor {
@@ -55,7 +55,9 @@ public class SerecoReportProductExecutor implements ProductExecutor {
             ProductIdentifier.PDS_CODESCAN,
             ProductIdentifier.PDS_WEBSCAN,
             ProductIdentifier.PDS_INFRASCAN,
-            ProductIdentifier.PDS_LICENSESCAN};
+            ProductIdentifier.PDS_LICENSESCAN,
+    		ProductIdentifier.PDS_SECRETSCAN
+    };
     /* @formatter:on */
 
     @Override
@@ -105,8 +107,14 @@ public class SerecoReportProductExecutor implements ProductExecutor {
 
     private void importProductResult(UUIDTraceLogID traceLogId, Workspace workspace, ProductResult productResult) {
         String importData = productResult.getResult();
+
         String productId = productResult.getProductIdentifier().name();
 
+        if (importData == null) {
+            LOG.info("For SecHub job: {} the product: {} did return not even an empty string - so we skip here gracefully.", traceLogId.getPlainId(),
+                    productId);
+            return;
+        }
         List<SecHubMessage> productMessages = new ArrayList<>();
         String messagesJson = productResult.getMessages();
         if (messagesJson != null) {

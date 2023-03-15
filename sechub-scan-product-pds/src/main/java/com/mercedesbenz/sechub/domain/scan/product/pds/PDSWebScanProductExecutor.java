@@ -7,15 +7,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
-import com.mercedesbenz.sechub.adapter.pds.PDSAdapter;
 import com.mercedesbenz.sechub.adapter.pds.PDSMetaDataID;
 import com.mercedesbenz.sechub.adapter.pds.PDSWebScanConfig;
 import com.mercedesbenz.sechub.adapter.pds.PDSWebScanConfigImpl;
@@ -23,44 +19,22 @@ import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataAdapterConfigurationStrategy;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetRegistry.NetworkTargetInfo;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
 import com.mercedesbenz.sechub.domain.scan.WebConfigBuilderStrategy;
 import com.mercedesbenz.sechub.domain.scan.WebScanNetworkLocationProvider;
-import com.mercedesbenz.sechub.domain.scan.product.AbstractProductExecutor;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
-import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
-import com.mercedesbenz.sechub.sharedkernel.SystemEnvironment;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 
 @Service
-public class PDSWebScanProductExecutor extends AbstractProductExecutor {
+public class PDSWebScanProductExecutor extends AbstractPDSProductExecutor {
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSWebScanProductExecutor.class);
 
-    @Autowired
-    PDSAdapter pdsAdapter;
-
-    @Autowired
-    PDSInstallSetup installSetup;
-
-    @Autowired
-    SystemEnvironment systemEnvironment;
-
-    @Autowired
-    PDSResilienceConsultant pdsResilienceConsultant;
-
-    @Autowired
-    PDSStorageContentProviderFactory contentProviderFactory;
-
     public PDSWebScanProductExecutor() {
         super(ProductIdentifier.PDS_WEBSCAN, 1, ScanType.WEB_SCAN);
-    }
-
-    @PostConstruct
-    protected void postConstruct() {
-        this.resilientActionExecutor.add(pdsResilienceConsultant);
     }
 
     @Override
@@ -71,7 +45,7 @@ public class PDSWebScanProductExecutor extends AbstractProductExecutor {
         NetworkTargetInfo info = data.getCurrentNetworkTargetInfo();
 
         /* we reuse config support created inside customize method */
-        PDSExecutorConfigSuppport configSupport = (PDSExecutorConfigSuppport) data.getNetworkTargetDataProvider();
+        PDSExecutorConfigSupport configSupport = (PDSExecutorConfigSupport) data.getNetworkTargetDataProvider();
 
         URI targetURI = info.getURI();
         if (targetURI == null) {
@@ -112,8 +86,14 @@ public class PDSWebScanProductExecutor extends AbstractProductExecutor {
                             build();
                 /* @formatter:on */
 
+                /* we temporary store the adapter configuration - necessary for cancellation */
+                data.rememberAdapterConfig(pdsWebScanConfig);
+
                 /* execute PDS by adapter and return product result */
                 AdapterExecutionResult adapterResult = pdsAdapter.start(pdsWebScanConfig, executorContext.getCallback());
+
+                /* cancel not necessary - so forget it */
+                data.forgetRememberedAdapterConfig();
 
                 return updateCurrentProductResult(adapterResult, executorContext);
             }
@@ -130,8 +110,8 @@ public class PDSWebScanProductExecutor extends AbstractProductExecutor {
         data.setNetworkLocationProvider(new WebScanNetworkLocationProvider(secHubConfiguration));
 
         ProductExecutorContext executorContext = data.getProductExecutorContext();
-        PDSExecutorConfigSuppport configSupport = PDSExecutorConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
-                systemEnvironment);
+        PDSExecutorConfigSupport configSupport = PDSExecutorConfigSupport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
+                serviceCollection);
 
         data.setNetworkTargetDataProvider(configSupport);
 

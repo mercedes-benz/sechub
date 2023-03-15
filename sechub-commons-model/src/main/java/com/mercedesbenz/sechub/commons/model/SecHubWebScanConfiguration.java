@@ -5,11 +5,13 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SecHubWebScanConfiguration {
 
-    public static final String PROPERTY_URI = "uri";
+    public static final String PROPERTY_URL = "url";
     public static final String PROPERTY_LOGIN = "login";
     public static final String PROPERTY_MAX_SCAN_DURATION = "maxScanDuration";
     public static final String PROPERTY_INCLUDES = "includes";
@@ -20,13 +22,13 @@ public class SecHubWebScanConfiguration {
 
     Optional<SecHubWebScanApiConfiguration> api = Optional.empty();
 
-    URI uri;
+    URI url;
 
     Optional<List<String>> includes = Optional.empty();
     Optional<List<String>> excludes = Optional.empty();
 
-    public URI getUri() {
-        return uri;
+    public URI getUrl() {
+        return url;
     }
 
     public Optional<SecHubWebScanApiConfiguration> getApi() {

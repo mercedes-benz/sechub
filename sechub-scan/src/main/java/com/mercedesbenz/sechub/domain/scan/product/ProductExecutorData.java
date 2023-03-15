@@ -2,14 +2,14 @@
 package com.mercedesbenz.sechub.domain.scan.product;
 
 import java.util.List;
-import java.util.Set;
 
+import com.mercedesbenz.sechub.adapter.AdapterConfig;
 import com.mercedesbenz.sechub.domain.scan.NetworkLocationProvider;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataProvider;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataSuppport;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetRegistry.NetworkTargetInfo;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 
 public class ProductExecutorData {
 
@@ -24,7 +24,8 @@ public class ProductExecutorData {
     NetworkLocationProvider networkLocationProvider;
     NetworkTargetInfo currentNetworkTargetInfo;
     String traceLogIdAsString;
-    Set<String> codeUploadFileSystemFolderPaths;
+    String mockDataIdentifier;
+    private AdapterConfig rememberedAdapterConfig;
 
     ProductExecutorData() {
     }
@@ -62,19 +63,28 @@ public class ProductExecutorData {
     }
 
     /**
-     * This method returns a set with information about the uploaded folders. We use
-     * this information only to handle mock behavior when we simulate code scans. So
-     * use this only where absolutely necessary for mocking.
+     * Returns mock data identifier (if necessary)
      *
-     * @deprecated
-     * @return set containing upload folders as a string
+     * @return identifier or <code>null</code>
      */
-    public Set<String> getCodeUploadFileSystemFolders() {
-        return codeUploadFileSystemFolderPaths;
+    public String getMockDataIdentifier() {
+        return mockDataIdentifier;
     }
 
     public String getTraceLogIdAsString() {
         return traceLogIdAsString;
+    }
+
+    public void rememberAdapterConfig(AdapterConfig config) {
+        this.rememberedAdapterConfig = config;
+    }
+
+    public AdapterConfig getRememberedAdapterConfig() {
+        return rememberedAdapterConfig;
+    }
+
+    public void forgetRememberedAdapterConfig() {
+        this.rememberedAdapterConfig = null;
     }
 
 }

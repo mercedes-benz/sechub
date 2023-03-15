@@ -12,6 +12,10 @@ def sechubGitBranch ="unknown"
 pipeline {
     agent any
 
+    parameters {
+        booleanParam(name: 'DEBUG_OUTPUT_ENABLED', defaultValue: false, description: 'When enabled more informations will be printed.')
+    }
+
     environment {
         SECHUB_TRUSTALL= "true" // necessary for integration tests
         SECHUB_SCAN_ENABLED = getStringCredentialsOrUndefined('sechub-scan-enabled')
@@ -20,15 +24,15 @@ pipeline {
 
     stages {
 
-         stage('Initialize') {
-             steps {
-               script{
-                    sechubGitBranch = sh(returnStdout: true, script: "git branch | grep \\* | cut -d ' ' -f2").trim()
+        stage('Initialize') {
+            steps {
+                script{
+                    sechubGitBranch = "${env.GIT_BRANCH}"
                     echo "Branch is $sechubGitBranch"
                     if( sechubGitBranch == "master" ) {
-                       echo "Cancel build, because master is built by release-pipeline.jenkins!"
-                       currentBuild.result = 'SUCCESS'
-                       return
+                        echo "Cancel build, because master is built by release-pipeline.jenkins!"
+                        currentBuild.result = 'SUCCESS'
+                        return
                     }
                 }
             }
@@ -55,7 +59,7 @@ pipeline {
                             // on integration phase again (because nothing has changed, so gradle will cache the results which are ignored ...
                             callGradleWrapper("ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-integrationtest:test -x :sechub-cli:build -Psechub.test.wiremock.https_port=${env.SECHUB_TEST_WIREMOCK_HTTPS_PORT} -Psechub.test.wiremock.http_port=${env.SECHUB_TEST_WIREMOCK_HTTP_PORT}")
                             callGradleWrapper(":sechub-api-java:buildAPIJava")
-                    }
+                        }
                     }
                 }
 
@@ -76,8 +80,8 @@ pipeline {
                 stage('Integration tests') {
                     environment {
                         /* against build race conditions - See TestPortProvider.java */
-                        SERVER_PORT= getJenkinsExecutorPort(8243)
-                        PDS_PORT= getJenkinsExecutorPort(8543)
+                        SERVER_PORT = getJenkinsExecutorPort(8243)
+                        PDS_PORT = getJenkinsExecutorPort(8543)
 
                         /* setup s3 storage when defined as secrets - otherwise sharedvolume will be used with temp */
                         SECHUB_STORAGE_S3_ACCESSKEY = getStringCredentialsOrUndefined('sechub-storage-s3-accesskey')
@@ -94,7 +98,7 @@ pipeline {
                         SECHUB_INTEGRATIONTEST_PREPARE_WAIT_MS=100
                         
                         /* avoid race conditions with management port */
-                        MANAGEMENT_SERVER_PORT= getJenkinsExecutorPort(10250)
+                        MANAGEMENT_SERVER_PORT = getJenkinsExecutorPort(10250)
                     }
                     steps {
                         script{
@@ -112,6 +116,7 @@ pipeline {
                     }
 
                     environment {
+                        SECHUB_PROJECT = 'sechub'
                         SECHUB_USERID = credentials('sechub-userid')
                         SECHUB_APITOKEN = credentials('sechub-api-token')
                         SECHUB_SERVER= credentials('sechub-server')
@@ -139,24 +144,24 @@ pipeline {
     post {
         failure {
             emailext (
-                subject:"[ BUILD FAILED ] Build:${env.BUILD_NUMBER}, branch: $sechubGitBranch",
+                subject:"[ BUILD FAILED ] Branch: $sechubGitBranch, build #${env.BUILD_NUMBER}",
                 body:"CI build for branch '$sechubGitBranch' failed.\n"+
-                     "${env.BUILD_URL}",
+                     "${env.BUILD_URL}/console",
                 to: '$DEFAULT_RECIPIENTS'
             )
         }
         fixed {
-             emailext (
-               subject:"[ BUILD FIXED ] Build:${env.BUILD_NUMBER}, branch: $sechubGitBranch",
+            emailext (
+                subject:"[ BUILD FIXED ] Branch: $sechubGitBranch, build #${env.BUILD_NUMBER}",
                 body:"CI build for branch '$sechubGitBranch' has been fixed.\n"+
-                     "${env.BUILD_URL}",
+                     "${env.BUILD_URL}/console",
                 to: '$DEFAULT_RECIPIENTS'
             )
         }
         always {
             junit '**/build/test-results/*/TEST-*.xml'
             script{
-                  callGradleWrapper('createCombinedTestReportZipfile')
+                callGradleWrapper('createCombinedTestReportZipfile')
             }
             archive 'build/archive/combined-sechub-testreport.zip'
         }
@@ -175,46 +180,45 @@ int getJenkinsExecutorPort(int originPort){
 }
 
 void callGradleWrapper(String gradleCommand) {
-     jdk = tool name: 'JDK_8'
-     env.JAVA_HOME = "${jdk}"
+    jdk = tool name: 'JDK_11'
+    env.JAVA_HOME = "${jdk}"
 
-     if (isUnix()) {
-           sh "./gradlew ${gradleCommand}"
-     } else {
-           bat "gradlew.bat ${gradleCommand}"
-     }
+    if (isUnix()) {
+        sh "./gradlew ${gradleCommand}"
+    } else {
+        bat "gradlew.bat ${gradleCommand}"
+    }
 }
 
 void executeSecHubScan() {
-
-     if (isUnix()) {
-         sh "sechub -project sechub scan"
-     } else {
-         bat "sechub.exe -project sechub scan"
-     }
+    if (isUnix()) {
+        sh "sechub scan"
+    } else {
+        bat "sechub.exe scan"
+    }
 }
 
 Object getStringCredentialsOrUndefined(String id){
     result = 'undefined'
     if (stringCredentialsExist(id)){
         try {
-        withCredentials([string(credentialsId: id, variable: 'text')]) {
-          result = ''+text
+            withCredentials([string(credentialsId: id, variable: 'text')]) {
+                result = ''+text
+            }
+        } catch (_) {
         }
-      } catch (_) {
-      }
     }
     return result
 }
 
 boolean stringCredentialsExist(String id) {
-  try {
-    withCredentials([string(credentialsId: id, variable: 'irrelevant')]) {
-      true
+    try {
+        withCredentials([string(credentialsId: id, variable: 'irrelevant')]) {
+            true
+        }
+    } catch (_) {
+        false
     }
-  } catch (_) {
-    false
-  }
 }
 
 /**
@@ -335,6 +339,5 @@ class SecHubBuildContext{
     public String getReleaseInfo(){
         return releaseInfoString
     }
-
 
 }

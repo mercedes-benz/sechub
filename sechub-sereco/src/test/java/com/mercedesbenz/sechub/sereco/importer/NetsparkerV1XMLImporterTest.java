@@ -46,7 +46,7 @@ public class NetsparkerV1XMLImporterTest {
         String xml = support.loadTestFile(SerecoTestFileSupport.NETSPARKER_RESULT_XML_TESTFILE1);
 
         /* execute */
-        SerecoMetaData result = importerToTest.importResult(xml);
+        SerecoMetaData result = importerToTest.importResult(xml, ScanType.WEB_SCAN);
         List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
 
         /* test */
@@ -60,7 +60,7 @@ public class NetsparkerV1XMLImporterTest {
         String xml = support.loadTestFile(SerecoTestFileSupport.NETSPARKER_RESULT_XML_TESTFILE1);
 
         /* execute */
-        SerecoMetaData result = importerToTest.importResult(xml);
+        SerecoMetaData result = importerToTest.importResult(xml, ScanType.WEB_SCAN);
         List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
 
         /* test */
@@ -122,7 +122,7 @@ public class NetsparkerV1XMLImporterTest {
         String xml = support.loadTestFile(SerecoTestFileSupport.NETSPARKER_V1_9_1_977_XML_TESTFILE);
 
         /* execute */
-        SerecoMetaData result = importerToTest.importResult(xml);
+        SerecoMetaData result = importerToTest.importResult(xml, ScanType.WEB_SCAN);
         List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
 
         /* test */
@@ -135,7 +135,7 @@ public class NetsparkerV1XMLImporterTest {
         String xml = support.loadTestFile(SerecoTestFileSupport.NETSPARKER_V1_9_1_977_XML_TESTFILE);
 
         /* execute */
-        SerecoMetaData result = importerToTest.importResult(xml);
+        SerecoMetaData result = importerToTest.importResult(xml, ScanType.WEB_SCAN);
         List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
 
         /* test */
@@ -187,7 +187,7 @@ public class NetsparkerV1XMLImporterTest {
         String xml = support.loadTestFile(SerecoTestFileSupport.NETSPARKER_V1_9_1_977_XML_TESTFILE);
 
         /* execute */
-        SerecoMetaData result = importerToTest.importResult(xml);
+        SerecoMetaData result = importerToTest.importResult(xml, ScanType.WEB_SCAN);
         List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
 
         /* test */

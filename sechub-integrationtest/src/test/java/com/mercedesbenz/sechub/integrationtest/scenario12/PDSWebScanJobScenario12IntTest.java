@@ -46,7 +46,7 @@ public class PDSWebScanJobScenario12IntTest {
         configuration.setProjectId("myTestProject");
 
         TestProject project = PROJECT_1;
-        String targetURL = configuration.getWebScan().get().getUri().toString();
+        String targetURL = configuration.getWebScan().get().getUrl().toString();
         as(SUPER_ADMIN).updateWhiteListForProject(project, Arrays.asList(targetURL));
         UUID jobUUID = as(USER_1).createJobAndReturnJobUUID(project, configuration);
 
@@ -92,13 +92,13 @@ public class PDSWebScanJobScenario12IntTest {
         assertTrue(targetURL, returnedConfiguration.getWebScan().isPresent());
 
         SecHubWebScanConfiguration webConfiguration = returnedConfiguration.getWebScan().get();
-        assertNotNull(webConfiguration.getUri());
+        assertNotNull(webConfiguration.getUrl());
         assertEquals(JSONConverter.get().toJSON(configuration, true), JSONConverter.get().toJSON(returnedConfiguration, true));
 
         /* additional testing : messages*/
 
         assertJobStatus(project, jobUUID).
-            enablePDSAutoDumpOnErrorsForSecHubJob(jobUUID).
+            enablePDSAutoDumpOnErrorsForSecHubJob().
             hasMessage(SecHubMessageType.INFO,"info from webscan by PDS for sechub job uuid: "+jobUUID).
             hasMessage(SecHubMessageType.WARNING,"warning from webscan by PDS for sechub job uuid: "+jobUUID).
             hasMessage(SecHubMessageType.ERROR,"error from webscan by PDS for sechub job uuid: "+jobUUID);

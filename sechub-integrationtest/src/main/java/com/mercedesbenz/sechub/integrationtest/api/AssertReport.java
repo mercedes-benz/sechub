@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeCallStack;
 import com.mercedesbenz.sechub.commons.model.SecHubFinding;
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubReportData;
 import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
 import com.mercedesbenz.sechub.commons.model.SecHubReportVersion;
@@ -57,6 +59,26 @@ public class AssertReport {
 
     public AssertReport hasMessages(int expectedAmountOfMessages) {
         autoDumper.execute(() -> assertEquals(expectedAmountOfMessages, report.getMessages().size()));
+        return this;
+    }
+
+    public AssertReport hasMessage(SecHubMessageType type, String message) {
+        autoDumper.execute(() -> {
+            SecHubMessage expectedMessage = new SecHubMessage(type, message);
+
+            if (!report.getMessages().contains(expectedMessage)) {
+
+                StringBuilder sb = new StringBuilder();
+                sb.append("Did not found message:\n-").append(expectedMessage);
+                sb.append("\nFollowing messages found:\n");
+                for (SecHubMessage sechubMessage : report.getMessages()) {
+                    sb.append("-");
+                    sb.append(sechubMessage.toString());
+                    sb.append("\n");
+                }
+                fail(sb.toString());
+            }
+        });
         return this;
     }
 
@@ -182,6 +204,14 @@ public class AssertReport {
                 autoDumper.execute(() -> fail("No cwe id found inside finding at all!"));
             }
             autoDumper.execute(() -> assertEquals("CWE id not as expected", cweId, finding.getCweId().intValue()));
+            return this;
+        }
+
+        public AssertFinding hasNoCweId() {
+            if (finding.getCweId() != null) {
+                dump();
+                autoDumper.execute(() -> fail("CWE id found inside finding:" + finding.getCweId()));
+            }
             return this;
         }
 

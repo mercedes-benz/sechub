@@ -3,11 +3,15 @@ package com.mercedesbenz.sechub.integrationtest.internal;
 
 import java.util.List;
 
+import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.integrationtest.scenario10.Scenario10;
 import com.mercedesbenz.sechub.integrationtest.scenario11.Scenario11;
 import com.mercedesbenz.sechub.integrationtest.scenario12.Scenario12;
 import com.mercedesbenz.sechub.integrationtest.scenario13.Scenario13;
 import com.mercedesbenz.sechub.integrationtest.scenario15.Scenario15;
+import com.mercedesbenz.sechub.integrationtest.scenario16.Scenario16;
+import com.mercedesbenz.sechub.integrationtest.scenario17.Scenario17;
+import com.mercedesbenz.sechub.integrationtest.scenario18.Scenario18;
 import com.mercedesbenz.sechub.integrationtest.scenario2.Scenario2;
 import com.mercedesbenz.sechub.integrationtest.scenario3.Scenario3;
 import com.mercedesbenz.sechub.integrationtest.scenario4.Scenario4;
@@ -258,6 +262,136 @@ public class IntegrationTestDefaultProfiles {
     public static final DefaultTestExecutionProfile PROFILE_10_PDS_CODESCAN_INCLUDES_EXCLUDES = defineProfile10();
 
     /**
+     * The profile does use executor configuration
+     * {@link IntegrationTestDefaultExecutorConfigurations#PDS_V1_CODE_SCAN_J_MAPPING
+     * PDS_V1_CODE_SCAN_J_MAPPING}
+     *
+     * PDS job parameter
+     * {@value PDSDefaultParameterKeyConstants#PARAM_KEY_PDS_CONFIG_USE_SECHUB_MAPPINGS}
+     * does include:
+     * <ul>
+     * <li>{@link IntegrationTestExampleConstants#MAPPING_ID_1_REPLACE_ANY_PROJECT1}
+     * ({@value IntegrationTestExampleConstants#MAPPING_ID_1_REPLACE_ANY_PROJECT1})</li>
+     * <li>{@link IntegrationTestExampleConstants#MAPPING_ID_2_NOT_EXISTING_IN_SECHUB}
+     * ({@value IntegrationTestExampleConstants#MAPPING_ID_2_NOT_EXISTING_IN_SECHUB})</li>
+     * </ul>
+     *
+     * <h5>Used inside scenarios:</h5>
+     * <ul>
+     * <li>{@link Scenario16}</li>
+     * </ul>
+     *
+     */
+    public static final DefaultTestExecutionProfile PROFILE_11_PDS_CODESCAN_MAPPING = defineProfile11();
+
+    /**
+     * The profile does use executor configuration
+     * {@link IntegrationTestDefaultExecutorConfigurations#PDS_V1_CHECKMARX_INTEGRATIONTEST
+     * PDS_V1_CHECKMARX_INTEGRATIONTEST}
+     *
+     * PDS job parameter
+     * {@value PDSDefaultParameterKeyConstants#PARAM_KEY_PDS_CONFIG_USE_SECHUB_MAPPINGS}
+     * does include:
+     * <ul>
+     * <li>{@link IntegrationTestExampleConstants#MAPPING_ID_1_REPLACE_ANY_PROJECT1}
+     * ({@value IntegrationTestExampleConstants#MAPPING_ID_1_REPLACE_ANY_PROJECT1})</li>
+     * <li>{@link IntegrationTestExampleConstants#MAPPING_ID_2_NOT_EXISTING_IN_SECHUB}
+     * ({@value IntegrationTestExampleConstants#MAPPING_ID_2_NOT_EXISTING_IN_SECHUB})</li>
+     * </ul>
+     *
+     * <h5>Used inside scenarios:</h5>
+     * <ul>
+     * <li>{@link Scenario17}</li>
+     * </ul>
+     *
+     */
+    public static final DefaultTestExecutionProfile PROFILE_12_PDS_CHECKMARX_INTEGRATIONTEST = defineProfile12();
+
+    /**
+     * <h3>Profile 13</h3>
+     * <h4>Short description</h4>PDS scan profile code scan for PDS cancellation by
+     * SecHub
+     *
+     * <h4>Overview</h4> For a glance over all scenarios, look at
+     * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
+     * Overview}
+     *
+     * <h4>Details</h4> PDS scan profile, which provides special script behavior for
+     * PDS cancellation and cancel events: The used script variant does listen to
+     * the cancel event insdie PDS job workspace. If such an event happens a user
+     * message will be set and inform that the cancellation post processing has been
+     * done by the script. <br>
+     * <br>
+     * This can be tested by an integration test and we can ensure the complete
+     * process (sechub->pds->pdsscript->pds>sechub) has been done correctly. <br>
+     * <h5>Used inside scenarios:</h5>
+     * <ul>
+     * <li>{@link Scenario18}</li>
+     * </ul>
+     */
+    public static final DefaultTestExecutionProfile PROFILE_13_PDS_CANCELLATION = defineProfile13();
+
+    /**
+     * The profile is exactly the same as
+     * {@link #PROFILE_12_PDS_CHECKMARX_INTEGRATIONTEST} with one exception:<br>
+     * The used executor configuration will set job parameter
+     * {@link PDSDefaultParameterKeyConstants#PARAM_KEY_PDS_CONFIG_SUPPORTED_DATATYPES}
+     * to "source,binary" which does override the PDS sever configuration which is
+     * "source" per default, because checkmarx cannot scan binaries. But for test
+     * purposes we have this "wrong configured" entries. So we can check the
+     * behavior.
+     *
+     * <h5>Used inside scenarios:</h5>
+     * <ul>
+     * <li>{@link Scenario17}</li>
+     * </ul>
+     *
+     */
+    public static final DefaultTestExecutionProfile PROFILE_14_PDS_CHECKMARX_INTEGRATIONTEST_WRONG_WITH_SOURCE_AND_BINARY = defineProfile14();
+
+    /**
+     * The profile is exactly the same as
+     * {@link #PROFILE_12_PDS_CHECKMARX_INTEGRATIONTEST} with one exception:<br>
+     * The used executor configuration will define job parameter
+     * {@link PDSDefaultParameterKeyConstants#PARAM_KEY_PDS_CONFIG_FILEFILTER_EXCLUDES}
+     * to "*.txt" so every text file will be ignored.
+     *
+     * <h5>Used inside scenarios:</h5>
+     * <ul>
+     * <li>{@link Scenario17}</li>
+     * </ul>
+     *
+     */
+    public static final DefaultTestExecutionProfile PROFILE_15_PDS_CHECKMARX_INTEGRATIONTEST_FILTERING_TEXTFILES = defineProfile15();
+
+    /**
+     * The profile enables a PDS analyzer, which will return CLOC data (JSON).
+     *
+     * <h5>Used inside scenarios:</h5>
+     * <ul>
+     * <li>{@link Scenario17}</li>
+     * </ul>
+     *
+     */
+    public static final DefaultTestExecutionProfile PROFILE_16_PDS_ANALYZE_CLOC_OUTPUT = defineProfile16();
+
+    /**
+     * <h3>Profile 17</h3>
+     * <h4>Short description</h4>PDS scan profile for secret scans
+     *
+     * <h4>Overview</h4> For a glance over all scenarios, look at
+     * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
+     * Overview}
+     *
+     * <h4>Details</h4><br>
+     * <h5>Used inside scenarios:</h5>
+     * <ul>
+     * <li>{@link Scenario20}</li>
+     * </ul>
+     */
+    public static final DefaultTestExecutionProfile PROFILE_17_PDS_SECRETSCAN = defineProfile17();
+
+    /**
      * @return all default profiles
      */
     public static List<DefaultTestExecutionProfile> getAllDefaultProfiles() {
@@ -364,6 +498,79 @@ public class IntegrationTestDefaultProfiles {
         profile.id = "inttest-p10-pds-incl-exclude"; // not more than 30 chars per profile id, so we use this
         profile.description = "Profile 10: PDS, reused storage, dynamic text results, has include exclude filters:\nIncludes:"
                 + IntegrationTestDefaultExecutorConfigurations.INCLUDES_1 + "\nExcludes:" + IntegrationTestDefaultExecutorConfigurations.EXCLUDES_1;
+        profile.enabled = true;
+        return profile;
+    }
+
+    private static DefaultTestExecutionProfile defineProfile11() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_CODE_SCAN_J_MAPPING);
+        profile.id = "inttest-p11-pds-mapping"; // not more than 30 chars per profile id, so we use this
+        profile.description = "Profile 11: PDS, reused storage, dynamic text results, uses predefined mapping: '"
+                + IntegrationTestExampleConstants.MAPPING_ID_1_REPLACE_ANY_PROJECT1 + "'";
+        profile.enabled = true;
+        return profile;
+    }
+
+    private static DefaultTestExecutionProfile defineProfile12() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_CHECKMARX_INTEGRATIONTEST);
+        profile.id = "inttest-p12-pds-checkmarx";
+        profile.description = "Profile 12: PDS checkmarx, reused storage, dynamic text results";
+        profile.enabled = true;
+        return profile;
+    }
+
+    private static DefaultTestExecutionProfile defineProfile13() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_CODE_SCAN_K_CANCELLATION);
+        profile.id = "inttest-p13-pds-cancellation";
+        profile.description = "Profile 13: PDS, reused storage, dynamic text results, pds script waits for cancel event.";
+        profile.enabled = true;
+        return profile;
+    }
+
+    private static DefaultTestExecutionProfile defineProfile14() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID
+                .add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_CHECKMARX_INTEGRATIONTEST_WRONG_WITH_SOURCE_AND_BINARY);
+        profile.id = "inttest-p14-pds-checkmarx";
+        profile.description = "Profile 14: PDS checkmarx, reused storage, dynamic text results, but with source,binary as supported data type";
+        profile.enabled = true;
+        return profile;
+    }
+
+    private static DefaultTestExecutionProfile defineProfile15() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID
+                .add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_CHECKMARX_INTEGRATIONTEST_WITH_FILEFILTER_EXCLUDE_TEXTFILES);
+        profile.id = "inttest-p15-pds-checkmarx";
+        profile.description = "Profile 15: PDS checkmarx, reused storage, dynamic text results, with file filter exclusion of *.txt";
+        profile.enabled = true;
+        return profile;
+    }
+
+    private static DefaultTestExecutionProfile defineProfile16() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_ANALYZE_INTEGRATIONTEST_CLOC_JSON_1);
+        profile.id = "inttest-p16-pds-analyze-cloc";
+        profile.description = "Profile 16: PDS anaylze, reused storage, dynamic text results";
+        profile.enabled = true;
+        return profile;
+    }
+
+    private static DefaultTestExecutionProfile defineProfile17() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_SECRET_SCAN_A);
+        profile.id = "inttest-p17-pds-secretscan";
+        profile.description = "Profile 17: PDS secret scan, reused storage, SARIF JSON file returned";
         profile.enabled = true;
         return profile;
     }

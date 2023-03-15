@@ -12,12 +12,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
+import com.mercedesbenz.sechub.commons.model.SecHubResult;
+import com.mercedesbenz.sechub.commons.model.SecHubStatus;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.commons.model.TrafficLightCalculator;
 import com.mercedesbenz.sechub.domain.scan.ReportTransformationResult;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionException;
 import com.mercedesbenz.sechub.domain.scan.SecHubReportProductTransformerService;
 import com.mercedesbenz.sechub.domain.scan.product.ReportProductExecutionService;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
 
 @Service
 public class CreateScanReportService {
@@ -31,7 +36,7 @@ public class CreateScanReportService {
     ReportProductExecutionService reportProductExecutionService;
 
     @Autowired
-    ScanReportTrafficLightCalculator trafficLightCalculator;
+    TrafficLightCalculator trafficLightCalculator;
 
     @Autowired
     ScanReportRepository reportRepository;
@@ -77,7 +82,11 @@ public class CreateScanReportService {
         ReportTransformationResult reportTransformerResult;
         try {
             reportTransformerResult = reportTransformerService.createResult(context);
-
+            if (!reportTransformerResult.isAtLeastOneRealProductResultContained()) {
+                /* in this case we add a warning message for the user inside the report */
+                reportTransformerResult.getMessages()
+                        .add(new SecHubMessage(SecHubMessageType.WARNING, "No results from a security product available for this job!"));
+            }
             scanReport.setResultType(ScanReportResultType.MODEL);
             scanReport.setResult(reportTransformerResult.toJSON());
 
@@ -86,7 +95,28 @@ public class CreateScanReportService {
         }
 
         /* create and set the traffic light */
-        TrafficLight trafficLight = trafficLightCalculator.calculateTrafficLight(reportTransformerResult);
+        SecHubResult sechubResult = reportTransformerResult.getResult();
+        TrafficLight trafficLight = null;
+
+        if (SecHubStatus.FAILED.equals(reportTransformerResult.getStatus())) {
+            /* at least one product failed - so turn off traffic light */
+            trafficLight = TrafficLight.OFF;
+
+            LOG.debug("At least one product failed, setting trafficlight to: {}", trafficLight);
+
+        } else if (!reportTransformerResult.isAtLeastOneRealProductResultContained()) {
+            /*
+             * products did not fail, but there was not one real product result available.
+             * Can happen when all PDS instances do gracefully ignore results and return
+             * product result with null instead of an text.
+             */
+            trafficLight = TrafficLight.OFF;
+
+            LOG.debug("No real product results found, setting trafficlight to: {}", trafficLight);
+        } else {
+            trafficLight = trafficLightCalculator.calculateTrafficLight(sechubResult);
+            LOG.debug("Product results found, no failures, so setting calculated trafficlight to: {}", trafficLight);
+        }
         scanReport.setTrafficLight(trafficLight);
 
         /* update time stamp */

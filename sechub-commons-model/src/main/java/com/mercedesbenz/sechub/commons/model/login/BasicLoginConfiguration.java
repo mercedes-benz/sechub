@@ -5,12 +5,14 @@ import java.util.Optional;
 
 import javax.crypto.SealedObject;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BasicLoginConfiguration {
     private CryptoAccess<char[]> cryptoAccess = CryptoAccess.CRYPTO_CHAR_ARRAY;
 
-    private Optional<String> realm;
+    private Optional<String> realm = Optional.empty();
     private char[] user;
     SealedObject password;
 

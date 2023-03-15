@@ -17,10 +17,17 @@ spec:
                 name: {{ .Chart.Name }}
         spec:
             securityContext:
-                runAsUser: 2323 # user id of the pds user. Set in the Dockerfile.
+                runAsUser: 2323 # user id of the application user. (overrides settings in the Dockerfile)
+                runAsGroup: 2323 # group id of the application group. (overrides setings in the Dockerfile)
+                fsGroup: 2323 # group id of the application group. Set in the Dockerfile. This group has write access to the volumes.
             containers:
                 - name: {{ .Chart.Name }}
                   image: "{{ .Values.image.registry }}:{{ .Values.image.tag }}"
+                  resources:
+                      requests:
+                          memory: "{{ .Values.resources.requests.memory }}"
+                      limits:
+                          memory: "{{ .Values.resources.limits.memory }}"
                   env:
                     - name: PDS_START_MODE
                       value: "{{ .Values.pds.startMode }}"
@@ -32,10 +39,10 @@ spec:
                       value: "{{ .Values.users.technical.id }}"
                     - name: TECHUSER_APITOKEN
                       value: "{{ .Values.users.technical.apiToken }}"
-                    - name: PDS_UPLOAD_BINARIES_MAXIMUM_BYTES
-                      value: "{{ .Values.pds.uploadBinariesMaximumBytes }}"
-                    - name: PDS_MAX_FILE_UPLOAD_SIZE
-                      value: "{{ .Values.pds.maxFileUploadSize }}"
+                    - name: PDS_MAX_FILE_UPLOAD_BYTES
+                      value: "{{ .Values.pds.uploadMaximumBytes }}"
+                    - name: PDS_HEARTBEAT_LOGGING
+                      value: "{{ .Values.pds.heartbeatLogging }}"
                     - name: PDS_CONFIG_EXECUTE_QUEUE_MAX
                       value: "{{ .Values.pds.config.execute.queueMax }}"
                     - name: PDS_CONFIG_EXECUTE_WORKER_THREAD_COUNT
@@ -66,6 +73,11 @@ spec:
                     - name: DATABASE_PASSWORD
                       value: "{{ .Values.database.postgres.password }}"
                     {{- end }}
+                    # limit database connection pool
+                    - name: SPRING_DATASOURCE_HIKARI_MINIMUMIDLE
+                      value: "1"
+                    - name: SPRING_DATASOURCE_HIKARI_MAXIMUMPOOLSIZE
+                      value: "2"
 
                     # Storage priority in order: local, s3, shared volume
                     # Meaning if local is enabled local will be used,

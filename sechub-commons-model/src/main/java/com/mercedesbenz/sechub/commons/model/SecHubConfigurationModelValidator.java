@@ -8,7 +8,9 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -19,6 +21,8 @@ public class SecHubConfigurationModelValidator {
 
     private static int MIN_NAME_LENGTH = 1;
     private static final int MAX_NAME_LENGTH = 80;
+
+    SecHubConfigurationModelSupport modelSupport = new SecHubConfigurationModelSupport();
 
     private List<String> supportedVersions;
 
@@ -60,8 +64,46 @@ public class SecHubConfigurationModelValidator {
             context.result.addError(API_VERSION_NOT_SUPPORTED, "Supported versions are:" + describeSupportedVersions());
             return;
         }
+        handleScanTypesAndModuleGroups(context);
         handleDataConfiguration(context);
         handleScanConfigurations(context);
+    }
+
+    private void handleScanTypesAndModuleGroups(InternalValidationContext context) {
+        Set<ScanType> scanTypes = modelSupport.collectPublicScanTypes(context.model);
+        handleScanTypes(context, scanTypes);
+
+        handleModuleGroup(context, scanTypes);
+    }
+
+    private void handleModuleGroup(InternalValidationContext context, Set<ScanType> scanTypes) {
+        ModuleGroup group = ModuleGroup.resolveModuleGroupOrNull(scanTypes);
+        if (group != null) {
+            /* no problems, the matching module group can be found */
+            return;
+        }
+        Map<ScanType, ModuleGroup> moduleGroupDetectionMap = new LinkedHashMap<>();
+        /* we can have two reasons here: no group at all or multiple groups */
+        for (ModuleGroup groupToInspect : ModuleGroup.values()) {
+            for (ScanType scanType : scanTypes) {
+                if (groupToInspect.isGivenModuleInGroup(scanType)) {
+                    moduleGroupDetectionMap.put(scanType, groupToInspect);
+                }
+
+            }
+        }
+        Collection<ModuleGroup> detectedModuleGroups = moduleGroupDetectionMap.values();
+        if (detectedModuleGroups.isEmpty()) {
+            context.result.addError(NO_MODULE_GROUP_DETECTED);
+        } else {
+            context.result.addError(MULTIPLE_MODULE_GROUPS_DETECTED, "Module groups detected: " + detectedModuleGroups);
+        }
+    }
+
+    private void handleScanTypes(InternalValidationContext context, Set<ScanType> scanTypes) {
+        if (scanTypes.isEmpty()) {
+            context.result.addError(NO_PUBLIC_SCAN_TYPES_DETECTED);
+        }
     }
 
     private void handleScanConfigurations(InternalValidationContext context) {
@@ -72,6 +114,7 @@ public class SecHubConfigurationModelValidator {
         handleWebScanConfiguration(context);
         handleInfraScanConfiguration(context);
         handleLicenseScanConfiguration(context);
+        handleSecretScanConfiguration(context);
 
     }
 
@@ -88,6 +131,21 @@ public class SecHubConfigurationModelValidator {
         }
 
         handleUsages(context, licenseScan);
+    }
+
+    private void handleSecretScanConfiguration(InternalValidationContext context) {
+        Optional<SecHubSecretScanConfiguration> secretScanOpt = context.model.getSecretScan();
+
+        if (!secretScanOpt.isPresent()) {
+            return;
+        }
+        SecHubDataConfigurationUsageByName secretScan = secretScanOpt.get();
+
+        if (secretScan.getNamesOfUsedDataConfigurationObjects().isEmpty()) {
+            context.result.addError(NO_DATA_CONFIG_SPECIFIED_FOR_SCAN);
+        }
+
+        handleUsages(context, secretScan);
     }
 
     private void handleCodeScanConfiguration(InternalValidationContext context) {
@@ -117,7 +175,7 @@ public class SecHubConfigurationModelValidator {
         }
 
         SecHubWebScanConfiguration webScan = webScanOpt.get();
-        URI uri = webScan.getUri();
+        URI uri = webScan.getUrl();
 
         if (SimpleNetworkUtils.isURINullOrEmpty(uri)) {
 
@@ -212,6 +270,7 @@ public class SecHubConfigurationModelValidator {
         atLeastOne = atLeastOne || model.getInfraScan().isPresent();
         atLeastOne = atLeastOne || model.getWebScan().isPresent();
         atLeastOne = atLeastOne || model.getLicenseScan().isPresent();
+        atLeastOne = atLeastOne || model.getSecretScan().isPresent();
 
         return atLeastOne;
     }

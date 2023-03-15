@@ -3,6 +3,15 @@ package com.mercedesbenz.sechub.pds.execution;
 
 public class PDSExecutionParameterEntry {
 
+    public PDSExecutionParameterEntry() {
+        /* used by Jackson */
+    }
+
+    public PDSExecutionParameterEntry(String key, String value) {
+        this.key = key;
+        this.value = value;
+    }
+
     private String key;
 
     private String value;
@@ -21,5 +30,10 @@ public class PDSExecutionParameterEntry {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return "PDSExecutionParameterEntry [" + (key != null ? "key=" + key + ", " : "") + "]";
     }
 }

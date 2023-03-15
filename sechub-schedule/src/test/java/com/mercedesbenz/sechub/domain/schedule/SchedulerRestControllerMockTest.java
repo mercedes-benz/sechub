@@ -39,6 +39,7 @@ import com.mercedesbenz.sechub.domain.schedule.access.ScheduleAccess;
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleAccess.ProjectAccessCompositeKey;
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleAccessRepository;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
+import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobInfoForUserService;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
@@ -83,6 +84,9 @@ public class SchedulerRestControllerMockTest {
                                                      // indirectly used by scheduler service auto wiraing ?!?
     @MockBean
     private ScheduleAccessRepository mockedProjectRepository;
+
+    @MockBean
+    private SecHubJobInfoForUserService jobInfoForUserService;
 
     private ScheduleAccess project1;
 

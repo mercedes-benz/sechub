@@ -1,19 +1,15 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan;
 
+import static java.util.Objects.*;
+
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
-import com.mercedesbenz.sechub.sharedkernel.Abandonable;
-import com.mercedesbenz.sechub.sharedkernel.LogConstants;
 import com.mercedesbenz.sechub.sharedkernel.NullProgressMonitor;
 import com.mercedesbenz.sechub.sharedkernel.ProgressMonitor;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionAbandonedException;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
 
 /**
  * Finally executes the scan job
@@ -24,15 +20,19 @@ class ScanJobExecutor {
 
     private static final Logger LOG = LoggerFactory.getLogger(ScanJobExecutor.class);
 
-    private final ScanService scanService;
+    private final ProductExecutionServiceContainer executionServiceContainer;
     private SecHubExecutionContext context;
 
     private ProgressMonitor progress;
 
     private int millisecondsToWaitBeforeCancelCheck;
 
-    ScanJobExecutor(ScanService scanService, SecHubExecutionContext context, ProgressMonitor progress, int millisecondsToWaitBeforeCancelCheck) {
-        this.scanService = scanService;
+    private ScanJobListener scanJobListener;
+
+    ScanJobExecutor(ProductExecutionServiceContainer serviceContainer, ScanJobListener scanJobListener, SecHubExecutionContext context,
+            ProgressMonitor progress, int millisecondsToWaitBeforeCancelCheck) {
+        this.executionServiceContainer = serviceContainer;
+        this.scanJobListener = scanJobListener;
         this.context = context;
         if (progress == null) {
             progress = new NullProgressMonitor();
@@ -44,41 +44,56 @@ class ScanJobExecutor {
         this.millisecondsToWaitBeforeCancelCheck = millisecondsToWaitBeforeCancelCheck;
     }
 
-    public void execute() throws SecHubExecutionException {
-        String jobUUID = context.getTraceLogId().getPlainId();
-        CanceableScanJobRunnable canceableJobRunner = new CanceableScanJobRunnable(jobUUID);
-        Thread canceableJobThread = new Thread(canceableJobRunner, "SecHub-exec-" + jobUUID + "-" + progress.getId());
-        canceableJobRunner.executorThread = canceableJobThread;
+    /**
+     * Starts the scan operations for the job inside this context. If a cancel
+     * request is recognized, the scan will be interrupted as fast as possible
+     *
+     * @throws SecHubExecutionException
+     */
+    void startScanAndInspectCancelRequests() throws SecHubExecutionException {
+        SecHubExecutionOperationType operationType = context.getOperationType();
+        if (!SecHubExecutionOperationType.SCAN.equals(operationType)) {
+            throw new IllegalStateException("The operationt type must be " + SecHubExecutionOperationType.SCAN + " but was:" + operationType);
+        }
 
         UUID sechubJobUUID = context.getSechubJobUUID();
-        try {
-            canceableJobThread.start();
+        requireNonNull(sechubJobUUID, "sechubJobUUID must be defined!");
 
-            this.scanService.scanJobListener.started(sechubJobUUID, canceableJobRunner);
+        ScanJobRunnableData runnableData = new ScanJobRunnableData(sechubJobUUID, executionServiceContainer, context);
+
+        ScanJobExecutionRunnable scanJobExecutionRunnable = new ScanJobExecutionRunnable(runnableData);
+        Thread executorThread = new Thread(scanJobExecutionRunnable, "SecHubJob:" + sechubJobUUID + "-exec");
+        runnableData.setRunnableThread(executorThread);
+
+        try {
+            executorThread.start();
+
+            scanJobListener.started(sechubJobUUID, scanJobExecutionRunnable);
 
             /* wait for job runnable - except when canceled */
-            while (canceableJobThread.isAlive()) {
+            while (executorThread.isAlive()) {
                 try {
                     LOG.debug("will wait max {} milliseconds before cancel checks - job thread is:{}", millisecondsToWaitBeforeCancelCheck,
-                            canceableJobThread.getName());
+                            executorThread.getName());
+
                     /* we simply join scan thread until we do next cancel check */
-                    canceableJobThread.join(millisecondsToWaitBeforeCancelCheck);
+                    executorThread.join(millisecondsToWaitBeforeCancelCheck);
 
                     if (progress.isCanceled()) {
-                        handleCanceled(canceableJobRunner, sechubJobUUID);
+                        handleCancelRequested(scanJobExecutionRunnable, sechubJobUUID);
                     }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
             }
-            SecHubExecutionException exception = canceableJobRunner.exception;
+            SecHubExecutionException exception = runnableData.getException();
             handleErrors(exception);
 
         } catch (Exception e) {
             /* should never happen, because all handled by runnable, but... */
-            handleErrors(new SecHubExecutionException("Scan failed - but not handled by runnable.", e));
+            handleErrors(new SecHubExecutionException("Scan execution failed - but not handled by runnable.", e));
         } finally {
-            this.scanService.scanJobListener.ended(sechubJobUUID);
+            scanJobListener.ended(sechubJobUUID);
 
         }
     }
@@ -88,86 +103,43 @@ class ScanJobExecutor {
             /* no failure - so just return */
             return;
         }
-        /*
-         * abdoned exception are treated special: executor will NOT persist result in
-         * this case!
-         */
-        if (exception instanceof SecHubExecutionAbandonedException) {
-            LOG.debug("Rethrow SecHubExecutionAbandonedException");
-            throw exception; // just rethrow abandoned
-        }
-        LOG.debug("No SecHubExecutionAbandonedException");
-        if (progress instanceof Abandonable) {
-            LOG.debug("Start abandoble check");
-            Abandonable abandonable = (Abandonable) progress;
-            if (abandonable.isAbandoned()) {
-                LOG.debug("Done abandoble check- IS abandonded");
-                throw new SecHubExecutionAbandonedException(context, "A failure happend, but already abandoned job", exception);
-            }
-            LOG.debug("Done abandoble check- not abandonded");
-
-        }
-        LOG.debug("Rethrow normal sechub execution exception");
         throw exception;
     }
 
-    private void handleCanceled(CanceableScanJobRunnable canceableJobRunner, UUID sechubJobUUID) throws SecHubExecutionAbandonedException {
+    private void handleCancelRequested(ScanJobExecutionRunnable executionRunable, UUID sechubJobUUID) {
         LOG.info("Received cancel signal, so start canceling job: {}", sechubJobUUID);
-        canceableJobRunner.cancelScanJob();
-        if (!(progress instanceof Abandonable)) {
+
+        ScanJobRunnableData data = executionRunable.getRunnableData();
+        if (data.getException() != null) {
+            /*
+             * there was a failure at execution time - so do not cancel but instad return
+             * only, so error handling can be done
+             */
             return;
         }
-        Abandonable abandoble = (Abandonable) progress;
-        LOG.info("Check if job {} shall be abandoned", sechubJobUUID);
-        if (abandoble.isAbandoned()) {
-            LOG.info("Must abandon {}", sechubJobUUID);
-            throw new SecHubExecutionAbandonedException(context, "Abandonded job " + sechubJobUUID + " because canceled", null);
-        }
+        startCancelThreadIfNecessary(data);
+
     }
 
-    /**
-     * This class is the primary part for triggering product exection
-     *
-     * @author Albert Tregnaghi
-     *
-     */
-    private class CanceableScanJobRunnable implements Runnable, CanceableScanJob {
+    private void startCancelThreadIfNecessary(ScanJobRunnableData data) {
+        SecHubExecutionContext executionContext = data.getExecutionContext();
 
-        private SecHubExecutionException exception;
-        public Thread executorThread;
-        private String sechubJobUUID;
-
-        private CanceableScanJobRunnable(String sechubJobUUID) {
-            this.sechubJobUUID = sechubJobUUID;
+        SecHubExecutionHistory history = executionContext.getExecutionHistory();
+        if (history.isEmpty()) {
+            LOG.info("No history elements found, so will not trigger any cancel operation by product executors");
+            return;
+        } else if (history.getAllElementsWithCanceableProductExecutors().isEmpty()) {
+            LOG.info("History elements found, but none was canceable so will not trigger any cancel operation by product executors");
+            return;
         }
-
-        @Override
-        public void run() {
-            /* runs in own thread so we set job uuid to MDC here ! */
-            try {
-                MDC.clear();
-                MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, sechubJobUUID);
-
-                scanService.codeScanProductExecutionService.executeProductsAndStoreResults(context);
-                scanService.webScanProductExecutionService.executeProductsAndStoreResults(context);
-                scanService.infraScanProductExecutionService.executeProductsAndStoreResults(context);
-                scanService.licenseScanProductExecutionService.executeProductsAndStoreResults(context);
-
-            } catch (SecHubExecutionException e) {
-                this.exception = e;
-            } catch (Exception e) {
-                LOG.error("Unhandled exception appeared!", e);
-            } finally {
-                MDC.clear();
-            }
-        }
-
-        public void cancelScanJob() {
-            context.markCanceled(); // we mark the context as canceled, so can be checked in multiple threads
-            executorThread.interrupt();
-            LOG.info("Marked scan job thread canceled :{}", executorThread.getName());
-        }
-
+        /*
+         * history elements found - means at least one product executor was still doing
+         * its job while being interrupted. So cancel thread necessary.
+         */
+        ScanJobCancellationRunnable cancelRunnable = new ScanJobCancellationRunnable(data);
+        Thread cancelThread = new Thread(cancelRunnable, "SecHubJob:" + data.getSechubJobUUID() + "-cancel");
+        data.setRunnableThread(cancelThread);
+        cancelThread.start();
     }
 
 }

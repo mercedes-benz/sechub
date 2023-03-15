@@ -5,8 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zaproxy.clientapi.core.ClientApi;
 
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitCode;
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitRuntimeException;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperExitCode;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 
 public class OwaspZapClientApiFactory {
     private static final Logger LOG = LoggerFactory.getLogger(OwaspZapClientApiFactory.class);
@@ -25,16 +25,16 @@ public class OwaspZapClientApiFactory {
 
     private void assertValidServerConfig(OwaspZapServerConfiguration serverConfig) {
         if (serverConfig == null) {
-            throw new MustExitRuntimeException("Owasp Zap server configuration may not be null!", MustExitCode.ZAP_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("Owasp Zap server configuration may not be null!", ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
         }
         if (serverConfig.getZaproxyHost() == null) {
-            throw new MustExitRuntimeException("Owasp Zap host configuration may not be null!", MustExitCode.ZAP_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("Owasp Zap host configuration may not be null!", ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
         }
         if (serverConfig.getZaproxyPort() <= 0) {
-            throw new MustExitRuntimeException("Owasp Zap host configuration ahs to be a valid port number!", MustExitCode.ZAP_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("Owasp Zap host configuration ahs to be a valid port number!", ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
         }
         if (serverConfig.getZaproxyApiKey() == null) {
-            throw new MustExitRuntimeException("Owasp Zap api-key configuration may not be null!", MustExitCode.ZAP_CONFIGURATION_INVALID);
+            throw new ZapWrapperRuntimeException("Owasp Zap api-key configuration may not be null!", ZapWrapperExitCode.PDS_CONFIGURATION_ERROR);
         }
     }
 }

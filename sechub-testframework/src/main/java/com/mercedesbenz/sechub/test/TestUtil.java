@@ -1,15 +1,21 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.test;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileAttribute;
+import java.util.List;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +25,6 @@ public class TestUtil {
     private static final Logger LOG = LoggerFactory.getLogger(TestUtil.class);
 
     private static final String SECHUB_KEEP_TEMPFILES = "SECHUB_KEEP_TEMPFILES";
-    private static final OperationSystem operationSystem = new OperationSystem();
 
     public static String createRAndomString(int wantedLength) {
         if (wantedLength < 0) {
@@ -120,7 +125,7 @@ public class TestUtil {
      *
      * @param prefix     filename prefix
      * @param fileEnding filename ending
-     * @return file
+     * @return filePath
      * @throws IOException
      */
     public static Path createTempFileInBuildFolder(String prefix, String fileEnding, FileAttribute<?>... attributes) throws IOException {
@@ -196,7 +201,7 @@ public class TestUtil {
     }
 
     public static boolean isWindows() {
-        return operationSystem.isWindows();
+        return SystemUtils.IS_OS_WINDOWS;
     }
 
     public static void unzip(final File zipFile, final Path unzipTo) throws IOException {
@@ -215,19 +220,42 @@ public class TestUtil {
         }
     }
 
-    private static class OperationSystem {
-
-        private boolean windows;
-
-        OperationSystem() {
-            String os = System.getProperty("os.name").toLowerCase();
-            ;
-            windows = (os.indexOf("win") >= 0);
+    public static void assertExceptionMessageContains(IllegalStateException exception, String expectedMessageToBeContained) {
+        String message = exception.getMessage();
+        if (!message.contains(expectedMessageToBeContained)) {
+            assertEquals("Is not containing: " + expectedMessageToBeContained, message);
         }
+    }
 
-        public boolean isWindows() {
-            return windows;
+    public static void assertExceptionMessageStartsWith(IllegalStateException exception, String expectedMessageStart) {
+        String message = exception.getMessage();
+        if (!message.startsWith(expectedMessageStart)) {
+            assertEquals("Is not starting with: " + expectedMessageStart, message);
         }
+    }
+
+    public static boolean hasAtLeastOneMethodWithAnnotation(Class<?> clazz, Class<? extends Annotation> annotation) {
+        Method[] methods = clazz.getDeclaredMethods();
+        for (Method method : methods) {
+            Annotation[] annotated = method.getAnnotationsByType(annotation);
+            if (annotated == null || annotated.length == 0) {
+                continue;
+            } else {
+                return true;
+            }
+
+        }
+        return false;
+    }
+
+    public static String createInfoForList(List<?> data) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("List:\n");
+        for (Object obj : data) {
+            sb.append(obj);
+            sb.append("\n");
+        }
+        return sb.toString();
     }
 
 }

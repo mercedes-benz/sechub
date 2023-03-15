@@ -10,6 +10,8 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -17,8 +19,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
-
-import junit.framework.AssertionFailedError;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,11 +35,12 @@ import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.mercedesbenz.sechub.adapter.AdapterMetaData;
+import com.mercedesbenz.sechub.commons.mapping.MappingData;
+import com.mercedesbenz.sechub.commons.mapping.MappingEntry;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.domain.scan.admin.FullScanData;
-import com.mercedesbenz.sechub.domain.scan.admin.ScanData;
 import com.mercedesbenz.sechub.integrationtest.internal.DefaultTestExecutionProfile;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestContext;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultProfiles;
@@ -48,13 +50,13 @@ import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.autoclean.TestAutoCleanJsonDeleteCount;
 import com.mercedesbenz.sechub.sharedkernel.logging.SecurityLogData;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingEntry;
 import com.mercedesbenz.sechub.sharedkernel.messaging.IntegrationTestEventHistory;
 import com.mercedesbenz.sechub.test.ExampleConstants;
 import com.mercedesbenz.sechub.test.PDSTestURLBuilder;
 import com.mercedesbenz.sechub.test.SecHubTestURLBuilder;
 import com.mercedesbenz.sechub.test.executionprofile.TestExecutionProfile;
+
+import junit.framework.AssertionFailedError;
 
 public class TestAPI {
 
@@ -103,6 +105,10 @@ public class TestAPI {
         return new AsPDSUser(user);
     }
 
+    public static AssertUserJobInfo assertUserJobInfo(TestSecHubJobInfoForUserListPage page) {
+        return AssertUserJobInfo.assertInfo(page);
+    }
+
     /**
      * Asserts given report json - it will try to find report elements
      *
@@ -119,14 +125,29 @@ public class TestAPI {
      * flaky tests!
      *
      * @param json
-     * @return
+     * @return assert object
      */
     public static AssertReport assertReport(String json) {
         return AssertReport.assertReport(json);
     }
 
+    /**
+     * Asserts given report HTML
+     *
+     * @param html
+     * @return assert object
+     */
+    public static AssertHTMLReport assertHTMLReport(String html) {
+        return AssertHTMLReport.assertHTMLReport(html);
+    }
+
     public static AssertFullScanData assertFullScanDataZipFile(File file) {
         return AssertFullScanData.assertFullScanDataZipFile(file);
+    }
+
+    public static AssertPDSStatus assertPDSJobStatus(UUID pdsJobUUID) {
+        String json = asPDSUser(PDS_ADMIN).getJobStatus(pdsJobUUID);
+        return new AssertPDSStatus(json);
     }
 
     public static AssertPDSStatus assertPDSJobStatus(String json) {
@@ -181,6 +202,19 @@ public class TestAPI {
      */
     public static AssertAutoCleanupInspections assertAutoCleanupInspections() {
         return new AssertAutoCleanupInspections();
+    }
+
+    /**
+     * Creates an assert object to inspect PDS jobs
+     *
+     * @return assert object
+     */
+    public static AssertPDSJob assertPDSJob(UUID pdsJobUUID) {
+        return AssertPDSJob.assertPDSJob(pdsJobUUID);
+    }
+
+    public static AssertStatistic assertStatistic(UUID sechubJobUUID) {
+        return AssertStatistic.assertStatistic(sechubJobUUID);
     }
 
     /**
@@ -304,6 +338,46 @@ public class TestAPI {
         waitForJobRunning(project, 5, 300, jobUUID);
     }
 
+    public static UUID waitForPDSJobWithIndexOfSecHubJobAndReturnPDSJobUUID(UUID sechubJobUUID, int index) {
+        String indexNotFoundErrorMessage = "Did not found PDS job [" + index + "] uuid was found for sechub job:" + sechubJobUUID;
+        return executeCallableAndAcceptAssertionsMaximumTimes(15, () -> {
+
+            List<UUID> allPDSJobUUIDs = TestAPI.fetchAllPDSJobUUIDsForSecHubJob(sechubJobUUID);
+            assertTrue(indexNotFoundErrorMessage, allPDSJobUUIDs.size() > index);
+            return allPDSJobUUIDs.get(index);
+        }, 1000);
+    }
+
+    public static UUID waitForFirstPDSJobOfSecHubJobAndReturnPDSJobUUID(UUID sechubJobUUID) {
+        return waitForPDSJobWithIndexOfSecHubJobAndReturnPDSJobUUID(sechubJobUUID, 0);
+    }
+
+    public static void waitForPDSJobInState(PDSJobStatusState wantedState, int timeOutInSeconds, int timeToWaitInMillis, UUID pdsJobUUID,
+            boolean dumpPDSOutputOnTimeOut) {
+        Runnable runnable = null;
+        if (dumpPDSOutputOnTimeOut) {
+            runnable = new AutoDumpPDSOutputForPDSJobUUIDRunnable(pdsJobUUID);
+        }
+        executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, timeOutInSeconds, timeToWaitInMillis, runnable, HttpClientErrorException.class) {
+            @Override
+            public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
+                String status = asPDSUser(PDS_ADMIN).getJobStatus(pdsJobUUID);
+                LOG.debug(">>>>>>>>>PDS JOB:STATUS:" + status);
+                boolean wantedStateFound = status.contains(wantedState.toString());
+
+                if (wantedState != PDSJobStatusState.FAILED) {
+                    boolean statusIsFailed = status.contains(PDSJobStatusState.FAILED.toString());
+                    if (statusIsFailed) {
+                        /* it has failed and failed is not expected - so this is a problem! */
+                        fail("The status of PDS job:" + pdsJobUUID + " is " + status + " - wanted was " + wantedState);
+                    }
+                }
+                return wantedStateFound;
+            }
+        });
+
+    }
+
     /**
      * Wait until SecHub job is running
      *
@@ -333,15 +407,39 @@ public class TestAPI {
      * @param project
      * @param jobUUID
      */
-    public static void waitForJobStatusCancelRequested(TestProject project, UUID jobUUID) {
-        LOG.debug("wait for job cancel requested project:{}, job:{}", project.getProjectId(), jobUUID);
+    public static void waitForJobStatusCancelRequestedOrCanceled(TestProject project, UUID jobUUID) {
+        LOG.debug("wait for job stats is 'cancel requested' or 'canceled'. project:{}, job:{}", project.getProjectId(), jobUUID);
 
         executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, 5, HttpClientErrorException.class) {
             @Override
             public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
                 String status = as(getUser()).getJobStatus(project.getProjectId(), jobUUID);
                 LOG.debug(">>>>>>>>>JOB:STATUS:" + status);
-                return status.contains("CANCEL_REQUESTED");
+                return status.contains("CANCEL_REQUESTED") || status.contains("CANCELED");
+            }
+        });
+    }
+
+    /**
+     * Waits for sechub job being finally canceled - after 5 seconds time out is
+     * reached
+     *
+     * @param project
+     * @param jobUUID
+     */
+    public static void waitForJobStatusCanceled(TestProject project, UUID jobUUID, boolean dumpPDSOutputOnTimeOut) {
+        LOG.debug("wait for job stats is 'canceled'. project:{}, job:{}", project.getProjectId(), jobUUID);
+        Runnable runnable = null;
+        if (dumpPDSOutputOnTimeOut) {
+            runnable = new AutoDumpPDSOutputForSecHubJobUUIDRunnable(jobUUID);
+        }
+
+        executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, 5, runnable, HttpClientErrorException.class) {
+            @Override
+            public boolean runAndReturnTrueWhenSuccesfulImpl() throws Exception {
+                String status = as(getUser()).getJobStatus(project.getProjectId(), jobUUID);
+                LOG.debug(">>>>>>>>>JOB:STATUS:" + status);
+                return status.contains("CANCELED");
             }
         });
     }
@@ -403,6 +501,15 @@ public class TestAPI {
             }
         } while (notExceeded(maxMilliseconds, start));
 
+        Runnable timeOutRunnable = testExecutable.getTimeOutRunnable();
+        if (timeOutRunnable != null) {
+            try {
+                timeOutRunnable.run();
+            } catch (RuntimeException e) {
+                System.err.println("Problem in test framework happend:");
+                e.printStackTrace();
+            }
+        }
         /* was not possible to execute succesful in given time range */
         fail("Timeout of waiting for successful execution - waited " + testExecutable.getTimeoutInSeconds() + " seconds");
         return;
@@ -419,6 +526,8 @@ public class TestAPI {
         T result = null;
         AssertionError assertionError = null;
         for (int i = 0; i < tries; i++) {
+            /* reset error */
+            assertionError = null;
             try {
                 if (i > 0) {
                     /* we wait before next check */
@@ -608,7 +717,7 @@ public class TestAPI {
         SecHubTestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildGetFileUpload(project.getProjectId(), jobUUID.toString(), fileName);
         try {
-            File file = as(ANONYMOUS).downloadAsTempFileFromURL(url, jobUUID);
+            File file = as(ANONYMOUS).downloadAsTempFileFromURL(url, jobUUID, fileName);
             return file;
         } catch (HttpStatusCodeException e) {
             if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
@@ -1203,42 +1312,47 @@ public class TestAPI {
         }
     }
 
+    public static UUID assertAndFetchPDSJobUUIDForSecHubJob(UUID sechubJobUUID) {
+        List<UUID> pdsJobUUIDs = fetchAllPDSJobUUIDsForSecHubJob(sechubJobUUID);
+        assertEquals("Must find one jobUUID", 1, pdsJobUUIDs.size());
+
+        UUID pdsJobUUID = pdsJobUUIDs.iterator().next();
+        return pdsJobUUID;
+    }
+
     public static List<UUID> fetchAllPDSJobUUIDsForSecHubJob(UUID sechubJobUUID) {
-        FullScanData fullScanData = fetchFullScanData(sechubJobUUID);
-        List<ScanData> all = fullScanData.allScanData;
 
-        // here we have only ONE integration test server, so we know how to access the
-        // PDS server
-        // It is enough to know the pds job uuids
-        List<UUID> pdsJobUUIDs = new ArrayList<>();
-
-        for (ScanData data : all) {
-            if (data.metaData == null || data.metaData.isEmpty()) {
-                continue;
-            }
-            AdapterMetaData metaData = JSONConverter.get().fromJSON(AdapterMetaData.class, data.metaData);
-            String pdsJobUUIDString = metaData.getValue("PDS_JOB_UUID");
-            if (pdsJobUUIDString == null || pdsJobUUIDString.isEmpty()) {
-                continue;
-            }
-            pdsJobUUIDs.add(UUID.fromString(pdsJobUUIDString));
-        }
-
-        return pdsJobUUIDs;
+        String url = getURLBuilder().buildIntegrationtTestFetchAllPDSJobUUIDSForSecHubJob(sechubJobUUID);
+        String json = getSuperAdminRestHelper().getJSON(url);
+        List<String> found = TestJSONHelper.get().createFromJSONAsList(json, String.class);
+        List<UUID> jobUUIDS = found.stream().map((string) -> UUID.fromString(string)).collect(Collectors.toList());
+        LOG.info("Found PDS job uuids:{} for sechub job:{}", jobUUIDS, sechubJobUUID);
+        return jobUUIDS;
     }
 
     public static void dumpAllPDSJobOutputsForSecHubJob(UUID sechubJobUUID) {
+        dumpAllPDSJobOutputsForSecHubJob(sechubJobUUID, null);
+    }
+
+    public static void dumpAllPDSJobOutputsForSecHubJob(UUID sechubJobUUID, TestOutputOptions options) {
         System.out.println("##########################################################################################################");
         System.out.println("# DUMP all PDS Jobs for SecHub job: " + sechubJobUUID);
         System.out.println("##########################################################################################################");
 
         List<UUID> pdsJobUUIDs = internalExecuteOrUseFallback(() -> fetchAllPDSJobUUIDsForSecHubJob(sechubJobUUID), new ArrayList<>());
         for (UUID pdsJobUUID : pdsJobUUIDs) {
-            dumpPDSJobOutput(pdsJobUUID);
+            dumpPDSJobOutput(pdsJobUUID, options);
         }
     }
 
     public static void dumpPDSJobOutput(UUID jobUUID) {
+        dumpPDSJobOutput(jobUUID, null);
+    }
+
+    public static void dumpPDSJobOutput(UUID jobUUID, TestOutputOptions options) {
+        if (options == null) {
+            options = TestOutputOptions.create();
+        }
 
         AsPDSUser asPDSUser = asPDSUser(PDS_ADMIN);
 
@@ -1256,26 +1370,54 @@ public class TestAPI {
             messagesAsString = "MessagesList was null";
         }
 
-        String report = internalExecuteOrUseFallback(() -> asPDSUser.internalFetchReportWithoutAutoDump(jobUUID, 1), "Report not available");
+        String report = internalExecuteOrUseFallback(() -> asPDSUser.internalFetchReportWithoutAutoDump(jobUUID, 1), ">>>>>>No report avialable<<<<<<");
+
+        Object status = internalExecuteOrUseFallback(() -> asPDSUser.internalFetchStatusWithoutAutoDump(jobUUID), ">>>>>>No status avialable<<<<<<");
 
         System.out.println("----------------------------------------------------------------------------------------------------------");
         System.out.println("DUMP - PDS Job: " + jobUUID);
         System.out.println("----------------------------------------------------------------------------------------------------------");
-        System.out.println("Output stream:");
-        System.out.println("--------------");
-        System.out.println(outputStreamText);
-
-        System.out.println("Error stream:");
-        System.out.println("-------------");
-        System.out.println(errorStreamText);
-
-        System.out.println("Messages:");
-        System.out.println("---------");
-        System.out.println(messagesAsString);
-
-        System.out.println("Report:");
-        System.out.println("-------");
-        System.out.println(report);
+        if (options.isWithStatus()) {
+            System.out.println("Status:");
+            System.out.println(status);
+            System.out.println();
+        }
+        if (options.isWithOutput()) {
+            System.out.println("Output stream:");
+            System.out.println("--------------");
+            if (outputStreamText == null || outputStreamText.isEmpty()) {
+                System.out.println(">>>>>>No output avialable<<<<<<");
+            } else {
+                System.out.println(outputStreamText);
+            }
+            System.out.println();
+        }
+        if (options.isWithError()) {
+            System.out.println("Error stream:");
+            System.out.println("-------------");
+            if (errorStreamText == null || errorStreamText.isEmpty()) {
+                System.out.println(">>>>>>No error output avialable<<<<<<");
+            } else {
+                System.out.println(errorStreamText);
+            }
+            System.out.println();
+        }
+        if (options.isWithMessages()) {
+            System.out.println("Messages:");
+            System.out.println("---------");
+            if (messagesAsString == null || messagesAsString.isEmpty()) {
+                System.out.println(">>>>>>No messages avialable<<<<<<");
+            } else {
+                System.out.println(messagesAsString);
+            }
+            System.out.println();
+        }
+        if (options.isWithReport()) {
+            System.out.println("Report:");
+            System.out.println("-------");
+            System.out.println(report);
+            System.out.println();
+        }
         System.out.println("----------------------------------------------------------------------------------------------------------");
         System.out.println("END OF DUMP - PDS Job: " + jobUUID);
         System.out.println("----------------------------------------------------------------------------------------------------------");
@@ -1289,5 +1431,87 @@ public class TestAPI {
             System.out.println(">> Internal execute failed. Fallback (" + fallback + ") necessary, because of :" + e.getMessage());
             return fallback;
         }
+    }
+
+    public static String createPDSJobFor(UUID sechubJobUUID, Map<String, String> params, String productId, TestRestHelper restHelper,
+            PDSTestURLBuilder urlBuilder) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"apiVersion\":\"1.0\",\"sechubJobUUID\":\"").append(sechubJobUUID.toString()).append("\",\"productId\":\"").append(productId)
+                .append("\",");
+        sb.append("\"parameters\":[");
+
+        Iterator<String> it = params.keySet().iterator();
+        while (it.hasNext()) {
+            String key = it.next();
+            sb.append("{\"key\":\"").append(key).append("\",");
+            sb.append("\"value\":\"").append(params.get(key)).append("\"}");
+            if (it.hasNext()) {
+                sb.append(',');
+            }
+        }
+        sb.append("]}}");
+
+        String jobConfigurationJson = sb.toString();
+
+        return createPDSJob(restHelper, urlBuilder, jobConfigurationJson);
+    }
+
+    public static String createPDSJob(TestRestHelper restHelper, PDSTestURLBuilder urlBuilder, String jobConfigurationJson) {
+        String url = urlBuilder.buildCreateJob();
+        String result = restHelper.postJson(url, jobConfigurationJson);
+        return result;
+    }
+
+    public static Map<String, String> fetchPDSVariableTestOutputMap(UUID pdsJobUUID) {
+        Map<String, String> result = new LinkedHashMap<>();
+
+        String outputStreamText = asPDSUser(PDS_ADMIN).getJobOutputStreamText(pdsJobUUID);
+        assertNotNull(outputStreamText);
+
+        String[] lines = outputStreamText.split("\n");
+        for (String line : lines) {
+            if (line.startsWith(">") && line.length() > 1) {
+                String shrinked = line.substring(1);
+                String[] splitted = shrinked.split("=");
+                String variableName = "";
+                String variableValue = "";
+                if (splitted.length > 0) {
+                    variableName = splitted[0];
+                }
+                if (splitted.length > 1) {
+                    variableValue = splitted[1];
+                }
+                result.put(variableName, variableValue);
+            }
+        }
+        return result;
+    }
+
+    public static TestJobStatistic fetchJobStatistic(UUID sechubJobUUID) {
+        String url = getURLBuilder().buildintegrationTestFetchJobStatistic(sechubJobUUID);
+        String json = getSuperAdminRestHelper().getJSON(url);
+
+        return JSONConverter.get().fromJSON(TestJobStatistic.class, json);
+    }
+
+    public static List<TestJobStatisticData> fetchJobStatisticData(UUID sechubJobUUID) {
+        String url = getURLBuilder().buildintegrationTestFetchJobStatisticData(sechubJobUUID);
+        String json = getSuperAdminRestHelper().getJSON(url);
+
+        return JSONConverter.get().fromJSONtoListOf(TestJobStatisticData.class, json);
+    }
+
+    public static List<TestJobRunStatistic> fetchJobRunStatisticListForSecHubJob(UUID sechubJobUUID) {
+        String url = getURLBuilder().buildintegrationTestFetchJobRunStatistic(sechubJobUUID);
+        String json = getSuperAdminRestHelper().getJSON(url);
+
+        return JSONConverter.get().fromJSONtoListOf(TestJobRunStatistic.class, json);
+    }
+
+    public static List<TestJobRunStatisticData> fetchJobRunStatisticData(UUID executionUUID) {
+        String url = getURLBuilder().buildintegrationTestFetchJobRunStatisticData(executionUUID);
+        String json = getSuperAdminRestHelper().getJSON(url);
+
+        return JSONConverter.get().fromJSONtoListOf(TestJobRunStatisticData.class, json);
     }
 }

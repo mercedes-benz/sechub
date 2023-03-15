@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.owaspzapwrapper.helper;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.net.URI;
+import java.net.URL;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,7 +12,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullSource;
 
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitRuntimeException;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 
 class BaseTargetUriFactoryTest {
 
@@ -28,7 +29,7 @@ class BaseTargetUriFactoryTest {
     void throws_mustexitruntimeexception_for_invalid_urls(String url) {
 
         /* test */
-        assertThrows(MustExitRuntimeException.class, () -> factoryToTest.create(url));
+        assertThrows(ZapWrapperRuntimeException.class, () -> factoryToTest.create(url));
     }
 
     @Test
@@ -37,10 +38,10 @@ class BaseTargetUriFactoryTest {
         String url = "http://127.0.0.1/";
 
         /* execute */
-        URI targetUri = factoryToTest.create(url);
+        URL targetUrl = factoryToTest.create(url);
 
         /* test */
-        assertTrue("http://127.0.0.1".equals(targetUri.toString()));
+        assertTrue("http://127.0.0.1".equals(targetUrl.toString()));
 
     }
 
@@ -50,10 +51,10 @@ class BaseTargetUriFactoryTest {
     void ending_slash_and_hash(String url, String expectedTargetURI) {
 
         /* execute */
-        URI targetUri = factoryToTest.create(url);
+        URL targetUrl = factoryToTest.create(url);
 
         /* test */
-        assertTrue(expectedTargetURI.equals(targetUri.toString()));
+        assertTrue(expectedTargetURI.equals(targetUrl.toString()));
     }
 
     @Test
@@ -62,10 +63,10 @@ class BaseTargetUriFactoryTest {
         String url = "https://127.0.0.1:7777/profile/search?name=";
 
         /* execute */
-        URI targetUri = factoryToTest.create(url);
+        URL targetUrl = factoryToTest.create(url);
 
         /* test */
-        assertTrue("https://127.0.0.1:7777/profile/search".equals(targetUri.toString()));
+        assertTrue("https://127.0.0.1:7777/profile/search".equals(targetUrl.toString()));
     }
 
     @Test
@@ -74,10 +75,10 @@ class BaseTargetUriFactoryTest {
         String url = "https://127.0.0.1:7777/#/user/profile";
 
         /* execute */
-        URI targetUri = factoryToTest.create(url);
+        URL targetUrl = factoryToTest.create(url);
 
         /* test */
-        assertTrue("https://127.0.0.1:7777/user/profile".equals(targetUri.toString()));
+        assertTrue("https://127.0.0.1:7777/user/profile".equals(targetUrl.toString()));
     }
 
     @Test
@@ -86,9 +87,9 @@ class BaseTargetUriFactoryTest {
         String url = "https://my.personal.uri/profile/#!771252/peter";
 
         /* execute */
-        URI targetUri = factoryToTest.create(url);
+        URL targetUrl = factoryToTest.create(url);
 
         /* test */
-        assertTrue("https://my.personal.uri/profile".equals(targetUri.toString()));
+        assertTrue("https://my.personal.uri/profile".equals(targetUrl.toString()));
     }
 }

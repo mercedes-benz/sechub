@@ -8,6 +8,10 @@ import java.io.InputStreamReader;
 
 public class TestFileReader {
 
+    public static String loadTextFile(String pathToFile) {
+        return loadTextFile(new File(pathToFile));
+    }
+
     public static String loadTextFile(File file) {
         return loadTextFile(file, "\n");
     }

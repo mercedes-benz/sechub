@@ -24,14 +24,14 @@ import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxConfig;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxMetaDataID;
+import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.SecHubAdapterOptionsBuilderStrategy;
 import com.mercedesbenz.sechub.domain.scan.product.AbstractProductExecutor;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
-import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
-import com.mercedesbenz.sechub.sharedkernel.SystemEnvironment;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspection;
 import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspector;
 import com.mercedesbenz.sechub.sharedkernel.resilience.ResilientActionExecutor;
@@ -64,7 +64,7 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
     MetaDataInspector scanMetaDataCollector;
 
     @Autowired
-    SystemEnvironment systemEnvironment;
+    SystemEnvironmentVariableSupport systemEnvironmentVariableSupport;
 
     @Autowired
     CheckmarxResilienceConsultant checkmarxResilienceConsultant;
@@ -93,7 +93,7 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
         JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
 
         CheckmarxExecutorConfigSuppport configSupport = CheckmarxExecutorConfigSuppport
-                .createSupportAndAssertConfigValid(data.getProductExecutorContext().getExecutorConfig(), systemEnvironment);
+                .createSupportAndAssertConfigValid(data.getProductExecutorContext().getExecutorConfig(), systemEnvironmentVariableSupport);
 
         CheckmarxResilienceCallback callback = new CheckmarxResilienceCallback(configSupport, data.getProductExecutorContext());
 
@@ -106,7 +106,6 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
 
                 /* @formatter:off */
 
-                @SuppressWarnings("deprecation")
                 CheckmarxAdapterConfig checkMarxConfig = CheckmarxConfig.builder().
     					configure(new SecHubAdapterOptionsBuilderStrategy(data, getScanType())).
     					setTrustAllCertificates(installSetup.isHavingUntrustedCertificate()).
@@ -117,7 +116,6 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
     					setAlwaysFullScan(callback.isAlwaysFullScanEnabled()).
     					setTimeToWaitForNextCheckOperationInMinutes(scanResultCheckPeriodInMinutes).
     					setTimeOutInMinutes(scanResultCheckTimeOutInMinutes).
-    					setFileSystemSourceFolders(data.getCodeUploadFileSystemFolders()). // to support mocked Checkmarx adapters we MUST use still the deprecated method!
     					setSourceCodeZipFileInputStream(sourceCodeZipFileInputStream).
     					setTeamIdForNewProjects(configSupport.getTeamIdForNewProjects(projectId)).
     					setClientSecret(configSupport.getClientSecret()).
@@ -125,6 +123,7 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
     					setPresetIdForNewProjects(configSupport.getPresetIdForNewProjects(projectId)).
     					setProjectId(projectId).
     					setTraceID(data.getSechubExecutionContext().getTraceLogIdAsString()).
+    					setMockDataIdentifier(data.getMockDataIdentifier()).
     					build();
 					/* @formatter:on */
 
@@ -147,7 +146,7 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
     }
 
     private InputStream fetchInputStreamIfNecessary(JobStorage storage, AdapterMetaData metaData) throws IOException {
-        if (metaData != null && metaData.hasValue(CheckmarxMetaDataID.KEY_FILEUPLOAD_DONE, true)) {
+        if (metaData != null && metaData.getValueAsBoolean(CheckmarxMetaDataID.KEY_FILEUPLOAD_DONE)) {
             return null;
         }
         return storage.fetch(FILENAME_SOURCECODE_ZIP);

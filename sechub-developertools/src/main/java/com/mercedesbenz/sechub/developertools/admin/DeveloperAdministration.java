@@ -25,7 +25,6 @@ import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.developertools.admin.ui.ConfigurationSetup;
 import com.mercedesbenz.sechub.developertools.admin.ui.UIContext;
-import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.pds.PDSProductExecutorKeyConstants;
 import com.mercedesbenz.sechub.domain.scan.product.pds.SecHubProductExecutionPDSKeyProvider;
 import com.mercedesbenz.sechub.integrationtest.api.AsPDSUser;
@@ -33,6 +32,8 @@ import com.mercedesbenz.sechub.integrationtest.api.AsUser;
 import com.mercedesbenz.sechub.integrationtest.api.FixedTestProject;
 import com.mercedesbenz.sechub.integrationtest.api.FixedTestUser;
 import com.mercedesbenz.sechub.integrationtest.api.InternalAccess;
+import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
+import com.mercedesbenz.sechub.integrationtest.api.TestSecHubJobInfoForUserListPage;
 import com.mercedesbenz.sechub.integrationtest.api.TestUser;
 import com.mercedesbenz.sechub.integrationtest.api.UserContext;
 import com.mercedesbenz.sechub.integrationtest.api.WithSecHubClient;
@@ -42,6 +43,7 @@ import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData;
 import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper.RestHelperTarget;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.project.ProjectAccessLevel;
 import com.mercedesbenz.sechub.test.PDSTestURLBuilder;
 import com.mercedesbenz.sechub.test.SecHubTestURLBuilder;
@@ -197,7 +199,7 @@ public class DeveloperAdministration {
         }
 
         public String createPDSJob(UUID sechubJobUUID, String productId, Map<String, String> params) {
-            return AsPDSUser.createJobFor(sechubJobUUID, params, productId, restHelper, pdsUrlBuilder);
+            return TestAPI.createPDSJobFor(sechubJobUUID, params, productId, restHelper, pdsUrlBuilder);
         }
 
         public String getExecutionStatus() {
@@ -788,6 +790,11 @@ public class DeveloperAdministration {
     public String updateAutoCleanupConfiguration(String json) {
         asTestUser().updateAutoCleanupConfiguration(json);
         return "SecHub auto cleanup data has been changed";
+    }
+
+    public String fetchProjectJobInfoForUser(String projectId, int pageSize, int page) {
+        TestSecHubJobInfoForUserListPage listPage = asTestUser().fetchUserJobInfoList(new FixedTestProject(projectId), pageSize, page);
+        return TestJSONHelper.get().createJSON(listPage, true);
     }
 
 }

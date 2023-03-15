@@ -5,14 +5,18 @@ services:
   pds-owasp-zap:
     build:
       args:
-        - BASE_IMAGE=debian:11-slim
+        - BASE_IMAGE=${BASE_IMAGE}
       context: docker/
       dockerfile: Owasp-Zap-Debian.dockerfile
     container_name: pds-owasp-zap
+    hostname: pds-owasp-zap
     env_file:
       - .env
     networks:
       - "sechub"
+    volumes:
+      - ./docker/scripts:/scripts
+
 networks:
   sechub:
     external: true

@@ -77,11 +77,11 @@ service with annotation `@Service` should have only one public method
 So pretty simple and easy to maintain.
 
 The name should provide information what the service does and has to
-end with `Service`. 
+end with `Service`.
 
-Some examples: 
+Some examples:
 
-- `MailService` 
+- `MailService`
 - `CreateUserService`
 - `InformAdminsThatSchedulerJobProcessingHasBeenDisabledService`
 
@@ -96,8 +96,8 @@ For an example look into `ProjectTransactionService`.
 
 [IMPORTANT]
 ====
-Only add the special transactional parts to the "transactional" service but  
-do all other stuff inside "normal" services!
+Only add the special transactional parts to the "transactional" service and
+put all other parts inside "normal" services!
 ====
 
 === RestController
@@ -107,8 +107,8 @@ only to a dedicated service which contains the logic and does the execution.
 
 === Code2Doc
 ==== Spring values
-All spring `@Value` annotations which are necessary for documentation (except adapters, they got
-no access to sechub internal parts and are pretty dump) have to be taged
+All spring `@Value` annotations which are necessary for documentation (except adapters. They have
+no access to {sechub} internal parts and are pretty dumb) have to be tagged
 with `@MustBeDocumented` annotation. See <<section-documentation-in-code,documentation in code>>
 
 ==== Messaging
@@ -120,7 +120,7 @@ See <<section-documentation-messaging-overview,documentation messaging overview>
 The usecases and their steps have to be
 documented inside code by using a dedicated
 annotation which itself is tagged with an `@UseCaseDefinition` annotation.
-See existing examples in sechub code.
+See existing examples in {sechub} code.
 
 TIP: Tag *relevant* entrypoints as dedicated usecase step so
      other developers can easily find them by their IDE (in eclipse
@@ -145,19 +145,19 @@ So it's easier to find and also possible to use package private fields for mocki
 We prefer fields to local variables, fields have to be rebuild by an `@Before` method.
 
 ====== Junit versions
-Our integration tests and most of the "normal" existing unit tests do currently use Junit4 
-as testframework and not Junit5. Because having some special Junit4 Rules for integration 
-testing, those tests will be still written in Junit 4, but for new "normal" unit tests you 
+Our integration tests and most of the "normal" existing unit tests do currently use Junit4
+as testframework and not Junit5. Because having some special Junit4 Rules for integration
+testing, those tests will be still written in Junit 4, but for new "normal" unit tests you
 should prefer to use Junit5.
 
 NOTE: It is planned to migrate existing tests to Junit5 in future, because of some benefits.
-      But unfortunately some method signatures have changed (e.g. "Assert.assertEquals(...) 
-      - especially for the message string) so this will take some time. 
+      But unfortunately some method signatures have changed (e.g. "Assert.assertEquals(...)
+      - especially for the message string) so this will take some time.
 
 
 ====== Maintainable tests
 *Structure*
-For a better maintenance and reading of tests, we insist on comments dividing a 
+For a better maintenance and reading of tests, we insist on comments dividing a
 
 - *prepare* +
   setup of mocks, creation of objects etc.
@@ -166,9 +166,9 @@ For a better maintenance and reading of tests, we insist on comments dividing a
 - *execute* +
   Execute the part / method which shall be tested
 - *test*
-  
 
-Except when test code is just a one liner this would be ridiculous.. 
+
+Except when test code is just a one liner this would be ridiculous..
 
 *Naming and creation of fields*
 
@@ -180,9 +180,9 @@ We do
 - create mocks inside before method - so no side effects
 - provide mocks to services by package private methods (easy to inject + test)
 - use simple names for normal mockito mocks, use `mocked${name}` inside MockMVC tests
-  where we have injected spring mockito objects. 
+  where we have injected spring mockito objects.
 - test methods do normally not start with `test` because with Junit4 this become absolete and we
-  try to avoid duplication (it's clear this is a test method when `@Test` annotation is at 
+  try to avoid duplication (it's clear this is a test method when `@Test` annotation is at
   method...)
 
 
@@ -199,12 +199,12 @@ public void before(){
     /* mocks */
     validator = mock(SimpleUIserIdValidator.class);
     mailService  = mock(SimpleMailService.class);
-    
-    /* setup */ 
+
+    /* setup */
     serviceToTest = new MyServiceToTest();
     serviceToTest.valdiator = validator;
     serviceToTest.mailService = mailService;
-    
+
 }
 
 @Test
@@ -309,11 +309,11 @@ Some integration tests do need a build SecHub client and execute the client.
 These tests will be called `${name}Scenario${n}SecHubClientIntTest.java`
 
 TIP: If these tests are failing, please check you have called `gradlew buildGo` before,
-     otherwise no sechub client is available for test...
+     otherwise no {sechub} client is available for testing...
 
 [[section-coding-convention-event-trace]]
 ====== Integration tests generating event trace information
-We wanted to have an overview about events happening when a usecase is executed and do 
+We wanted to have an overview about events happening when a usecase is executed and do
 this by special integration tests where event tracing is enabled. At the end of the test
 we write JSON files containing event trace information .
 
@@ -338,7 +338,7 @@ RestDoc tests are designed to check fields, params and results described in docu
 There is no logic testing inside those tests. They are more or less just for documentation. On the other hand
 the MockTest pendants are only for logic testing, so also destructive variants and more technical parts are tested here.
 
-====== How can I ensure that I do not forget to describe necesary REST API parts?
+====== How can I ensure that I do not forget to describe necessary REST API parts?
 Every call to REST API must be described as a part for <<section-coding-convention-usecases, use cases >>. So there is
 a usecase annotation used at the restcontroller method which should have a method with an `@Step` result. At the `@Step`
 annotation there is a field `needsRestDoc` which is per default set to `false`. For steps doing rest operations and
@@ -358,3 +358,12 @@ We use `${restControllerClassName}RestDocTest.java` as name pattern to find `Res
 
 TIP: Having always the Controllers and also the necessary `@MockBean` annotations as spring test
      dependency this will reduce the boilerplate code to one location...
+
+[[section-coding-convention-systemtest]]
+===== System tests
+
+System tests are tests which test the entire application.
+
+====== Naming
+
+The name pattern `${nameOfClassToTest}SystemTest.java` is used to find system tests.

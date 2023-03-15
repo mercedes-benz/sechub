@@ -8,8 +8,8 @@ import com.mercedesbenz.sechub.developertools.admin.ui.action.adapter.ShowProduc
 import com.mercedesbenz.sechub.developertools.admin.ui.action.adapter.TemplatesDialogData;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.adapter.TemplatesDialogData.Necessarity;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.adapter.TemplatesDialogData.Type;
-import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
 import com.mercedesbenz.sechub.domain.scan.product.pds.SecHubProductExecutionPDSKeyProvider;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.mapping.MappingIdentifier;
 
 public class ShowProductExecutorTemplatesDialogActionFactory {
@@ -34,6 +34,10 @@ public class ShowProductExecutorTemplatesDialogActionFactory {
 
     public static ShowProductExecutorTemplatesDialogAction createPDS_CODESCAN_V1Action(UIContext context) {
         return createPDSV1Action(context, ProductIdentifier.PDS_CODESCAN, 1);
+    }
+
+    public static ShowProductExecutorTemplatesDialogAction createPDS_ANALYTICS_V1Action(UIContext context) {
+        return createPDSV1Action(context, ProductIdentifier.PDS_ANALYTICS, 1);
     }
 
     public static ShowProductExecutorTemplatesDialogAction createPDS_WEBSCAN_V1Action(UIContext context) {

@@ -242,7 +242,7 @@ func TestTarFileContainsRelativeFoldersOutsideCurrent(t *testing.T) {
 		TarWriter:   tarWriter,
 		PrefixInTar: "",
 		Folders:     []string{RelativeTmpTestDir},
-		Excludes:    []string{"*.tar"}, // exclude our own tar
+		Excludes:    []string{"**/*.tar"}, // exclude our own tar
 	}
 
 	/* execute */
@@ -274,6 +274,7 @@ func Example_tarDetectsNonExistingFiles() {
 		TarWriter:   tarWriter,
 		PrefixInTar: "",
 		Files:       []string{RelativeTmpTestDir + "/non-existing-file.bin"},
+		Quiet:       true,
 	}
 
 	/* execute */

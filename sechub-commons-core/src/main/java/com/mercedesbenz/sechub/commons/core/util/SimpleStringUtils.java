@@ -6,7 +6,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.StringTokenizer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class SimpleStringUtils {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SimpleStringUtils.class);
 
     private SimpleStringUtils() {
     }
@@ -144,12 +149,30 @@ public class SimpleStringUtils {
         return true;
     }
 
-    public static List<String> createListForCommaSeparatedValues(String data) {
+    /**
+     * Creates a list for comma separated string.<br>
+     * <br>
+     * Example:
+     *
+     * <pre>
+     * The string "a,b,c,de,f" will be transformed to a list containing strings:
+     *
+     *  -"a"
+     *  -"b"
+     *  -"c"
+     *  -"de"
+     *  -"f".
+     * </pre>
+     *
+     * @param string
+     * @return list with values, never <code>null</code>
+     */
+    public static List<String> createListForCommaSeparatedValues(String string) {
         List<String> patterns = new ArrayList<>();
-        if (data == null) {
+        if (string == null) {
             return patterns;
         }
-        StringTokenizer tokenizer = new StringTokenizer(data, ",");
+        StringTokenizer tokenizer = new StringTokenizer(string, ",");
         while (tokenizer.hasMoreTokens()) {
             String token = tokenizer.nextToken().trim();
             if (!token.isEmpty()) {
@@ -157,5 +180,27 @@ public class SimpleStringUtils {
             }
         }
         return patterns;
+    }
+
+    /**
+     * Tries to convert given value to an integer. If this is not possible the
+     * defined default value will be returned instead. If the value is not empty,
+     * but conversion is not possible a conversion problem is logged.
+     *
+     * @param value        the string value to convert
+     * @param defaultValue the fallback value if the conversion is not possible.
+     * @return integer value
+     */
+    public static int toIntOrDefault(String value, int defaultValue) {
+        int result = defaultValue;
+        if (value != null) {
+            try {
+                result = Integer.valueOf(value);
+            } catch (NumberFormatException e) {
+                LOG.warn("Was not able to convert value {} to an integer, so returning default value:{}", value, result);
+            }
+        }
+        return result;
+
     }
 }

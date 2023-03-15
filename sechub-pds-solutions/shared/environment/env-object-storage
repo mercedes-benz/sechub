@@ -1,0 +1,18 @@
+# The object storage start mode
+#   debug - starts only the container
+#   server - initializes and starts the object storage
+OBJECT_STORAGE_START_MODE=server
+
+# Enable S3 as object storage
+#   true - enabled
+#   false - disabled
+S3_ENABLED=true
+
+# The S3 endpoint
+S3_ENDPOINT=http://10.42.43.7:9000
+
+# The S3 bucket name
+S3_BUCKETNAME=pds
+S3_ACCESSKEY=user
+S3_SECRETKEY='Why$5forThat?'
+

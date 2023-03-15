@@ -19,8 +19,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationTypeListParser;
 import com.mercedesbenz.sechub.pds.PDSProfiles;
 import com.mercedesbenz.sechub.pds.PDSShutdownService;
+import com.mercedesbenz.sechub.pds.config.PDSConfigurationAutoFix;
 import com.mercedesbenz.sechub.pds.config.PDSPathExecutableValidator;
 import com.mercedesbenz.sechub.pds.config.PDSProductIdentifierValidator;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
@@ -33,7 +35,7 @@ import com.mercedesbenz.sechub.pds.job.PDSJobRepository;
 @DataJpaTest
 @ContextConfiguration(classes = { PDSPathExecutableValidator.class, PDSServerIdentifierValidator.class, PDSServerConfigurationValidator.class,
         PDSProductIdentifierValidator.class, PDSShutdownService.class, PDSJobRepository.class, PDSServerConfigurationService.class,
-        PDSPDSHeartBeatRepositoryDBTest.SimpleTestConfiguration.class })
+        PDSPDSHeartBeatRepositoryDBTest.SimpleTestConfiguration.class, PDSConfigurationAutoFix.class, SecHubDataConfigurationTypeListParser.class })
 public class PDSPDSHeartBeatRepositoryDBTest {
     @Autowired
     private TestEntityManager entityManager;

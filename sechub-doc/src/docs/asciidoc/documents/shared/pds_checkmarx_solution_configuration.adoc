@@ -1,0 +1,29 @@
+// SPDX-License-Identifier: MIT
+[[section-pds-checkmarx-configuration]]
+===== PDS Checkmarx solution
+
+The PDS checkmarx solution does internally use a `sechub-wrapper-checkmarx` Spring Boot application.
+The application is able to use all  <<link-gen-pds-systemproperties,PDS job parameters>>  and some
+additional keys which are listed in the next table.
+
+[TIP]
+====
+The used Checkmarx wrapper can handle it's job parameter values as a template by using environment
+variables from your {pds} installation.
+
+An example:
+
+```
+pds.checkmarx.password=env:PDS_CHECKMARX_PWD
+```
+
+If your PDS process runs in an environment with variable `PDS_CHECKMARX_PWD` set
+to 'very-secret-pwd1234' _(e.g. by using secrets inside K8s)_, the authentication sent from
+{pds} to Checmarx will use
+```
+pds.checkmarx.password=very-secret-pwd123
+```
+
+====
+
+include::../gen/pds-solutions/gen_checkmarx_wrapper_env_and_job_parameter_table.adoc[]

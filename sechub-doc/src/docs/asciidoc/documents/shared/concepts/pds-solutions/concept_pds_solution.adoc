@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: MIT
+=== PDS solutions
+
+It is easy to integrate security products, even command line tools without a network API, into 
+`SecHub` via `PDS` (Product delegation server).
+
+A PDS solution is a ready-made package for SecHub in which a PDS and the necessary security
+products are already pre-installed and can be used directly without additional adjustments.
+
+TIP: The PDS solutions can be found at {projectSite}/tree/develop/sechub-pds-solutions.
+
+
+include::concept_pds_solution_checkmarx.adoc[]

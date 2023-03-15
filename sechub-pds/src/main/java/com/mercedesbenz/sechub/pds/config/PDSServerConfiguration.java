@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.pds.config;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mercedesbenz.sechub.pds.PDSJSONConverter;
 import com.mercedesbenz.sechub.pds.PDSJSONConverterException;
 
@@ -14,6 +15,7 @@ import com.mercedesbenz.sechub.pds.PDSJSONConverterException;
  * @author Albert Tregnaghi
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PDSServerConfiguration {
 
     private String apiVersion;

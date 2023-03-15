@@ -17,7 +17,9 @@ spec:
                 name: {{ .Chart.Name }}
         spec:
             securityContext:
-                runAsUser: 2323 # user id of the user. Set in the Dockerfile.
+                runAsUser: 2323 # user id of the application user. (overrides settings in the Dockerfile)
+                runAsGroup: 2323 # group id of the application group. (overrides setings in the Dockerfile)
+                fsGroup: 2323 # group id of the application group. Set in the Dockerfile. This group has write access to the volumes.
             containers:
                 - name: {{ .Chart.Name }}
                   image: "{{ .Values.image.registry }}:{{ .Values.image.tag }}"
@@ -37,12 +39,15 @@ spec:
                       value: "{{ .Values.users.technical.id }}"
                     - name: TECHUSER_APITOKEN
                       value: "{{ .Values.users.technical.apiToken }}"
+                    - name: PDS_HEARTBEAT_LOGGING
+                      value: "{{ .Values.pds.heartbeatLogging }}"
                     - name: ZAP_API_KEY
                       value: "{{ .Values.zap.apiKey }}"
                     - name: PDS_CONFIG_EXECUTE_QUEUE_MAX
                       value: "{{ .Values.pds.config.execute.queueMax }}"
+                    # Only one scan in parallel possible per pds-owaspzap instance
                     - name: PDS_CONFIG_EXECUTE_WORKER_THREAD_COUNT
-                      value: "{{ .Values.pds.config.execute.workerThreadCount }}"
+                      value: "1"
                     - name: ZAP_PROXY_HOST
                       value: "{{ .Values.zap.proxy.host }}"
                     - name: ZAP_PROXY_PORT
@@ -77,6 +82,11 @@ spec:
                     - name: DATABASE_PASSWORD
                       value: "{{ .Values.database.postgres.password }}"
                     {{- end }}
+                    # limit database connection pool to one
+                    - name: SPRING_DATASOURCE_HIKARI_MINIMUMIDLE
+                      value: "1"
+                    - name: SPRING_DATASOURCE_HIKARI_MAXIMUMPOOLSIZE
+                      value: "1"
 
                     # Storage priority in order: local, s3, shared volume
                     # Meaning if local is enabled local will be used,
@@ -121,3 +131,39 @@ spec:
                     failureThreshold: 3
                     successThreshold: 1
                     timeoutSeconds: 3
+                  volumeMounts:
+                     {{- if .Values.pds.volumes.pdsWorkspace.enabled }}
+                     - mountPath: "/workspace"
+                       name: pds-owaspzap-pds-workspace
+                     {{- end}}
+                     {{- if .Values.pds.volumes.zapWorkspace.enabled }}
+                     - mountPath: "/home/zap/.ZAP/session"
+                       name: pds-owaspzap-zap-workspace
+                     {{- end}}
+            volumes:
+                {{- if .Values.pds.volumes.pdsWorkspace.enabled }}
+                - name: pds-owaspzap-pds-workspace
+                  ephemeral:
+                    volumeClaimTemplate:
+                      metadata:
+                        labels:
+                          name: {{ .Chart.Name }}
+                      spec:
+                        accessModes: [ "ReadWriteOnce" ]
+                        resources:
+                          requests:
+                            storage: "{{ .Values.pds.volumes.pdsWorkspace.size }}"
+                {{- end}}
+                {{- if .Values.pds.volumes.zapWorkspace.enabled }}
+                - name: pds-owaspzap-zap-workspace
+                  ephemeral:
+                    volumeClaimTemplate:
+                      metadata:
+                        labels:
+                          name: {{ .Chart.Name }}
+                      spec:
+                        accessModes: [ "ReadWriteOnce" ]
+                        resources:
+                          requests:
+                            storage: "{{ .Values.pds.volumes.zapWorkspace.size }}"
+                {{- end}}

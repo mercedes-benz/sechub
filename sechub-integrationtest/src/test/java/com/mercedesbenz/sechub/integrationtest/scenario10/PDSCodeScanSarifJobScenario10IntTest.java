@@ -2,11 +2,13 @@
 package com.mercedesbenz.sechub.integrationtest.scenario10;
 
 import static com.mercedesbenz.sechub.commons.model.TrafficLight.*;
+import static com.mercedesbenz.sechub.integrationtest.api.AssertJob.*;
 import static com.mercedesbenz.sechub.integrationtest.api.IntegrationTestMockMode.*;
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 import static com.mercedesbenz.sechub.integrationtest.scenario10.Scenario10.*;
 import static org.junit.Assert.*;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.Rule;
@@ -16,7 +18,9 @@ import org.junit.rules.Timeout;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubStatus;
 import com.mercedesbenz.sechub.commons.model.Severity;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.integrationtest.api.IntegrationTestSetup;
+import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 import com.mercedesbenz.sechub.integrationtest.api.TestProject;
 
 /**
@@ -76,14 +80,46 @@ public class PDSCodeScanSarifJobScenario10IntTest {
                    codeCall(0).
                       hasLocation("Gemfile.lock").
                       hasLine(115).
-               andFinding(1).
+               andFinding(28). // 28 because the findings are sorted
                    hasName("BRAKE0116").
                    hasScanType(ScanType.CODE_SCAN).
                    hasSeverity(Severity.MEDIUM).
                    hasDescription("Rails 5.0.0 has a vulnerability that may allow CSRF token forgery. Upgrade to Rails 5.2.4.3 or patch.");
 
+        String htmlReport = as(USER_1).
+                enableAutoDumpForHTMLReports().
+                getHTMLJobReport(project, jobUUID);
+
+        assertHTMLReport(htmlReport).
+            containsAtLeastOneOpenDetailsBlock();
+
+        // try to restart SecHub (will reuse existing PDS job because already done )
+        assertSecHubRestartWillNotStartNewJobButReusesExistingBecausePDSJobWasAlreadyDone(project,jobUUID);
+
 
         /* @formatter:on */
+    }
+
+    private void assertSecHubRestartWillNotStartNewJobButReusesExistingBecausePDSJobWasAlreadyDone(TestProject project, UUID jobUUID) {
+        List<UUID> pdsJobUUIDs = TestAPI.fetchAllPDSJobUUIDsForSecHubJob(jobUUID);
+        assertEquals(1, pdsJobUUIDs.size());
+        UUID pdsJobUUID = pdsJobUUIDs.iterator().next();
+        assertPDSJobStatus(pdsJobUUID).isInState(PDSJobStatusState.DONE);
+        /* @formatter:on */
+
+        assertNotNull(pdsJobUUID);
+
+        revertJobToStillRunning(jobUUID); // fake it's running (so we can restart)
+        assertJobIsRunning(project, jobUUID);
+        as(SUPER_ADMIN).restartJobAndFetchJobStatus(project, jobUUID);
+
+        List<UUID> pdsJobUUIDs2 = TestAPI.fetchAllPDSJobUUIDsForSecHubJob(jobUUID);
+
+        UUID pdsJobUUID2 = pdsJobUUIDs2.iterator().next();
+
+        assertNotNull(pdsJobUUID2);
+        assertEquals("The PDS job was not reused, but new one was created! Execution in PDS was done before, so a new pds job maye not be started!", pdsJobUUID,
+                pdsJobUUID2);
     }
 
 }

@@ -46,7 +46,7 @@ public class CredentialUI {
         JSpinner.NumberEditor editor = new JSpinner.NumberEditor(serverPortSpinner);
         editor.getFormat().setGroupingUsed(false);
         serverPortSpinner.setEditor(editor);
-        int portNumber = new Integer(port).intValue();
+        int portNumber = Integer.valueOf(port).intValue();
         serverPortSpinner.setValue(portNumber);
 
         /*

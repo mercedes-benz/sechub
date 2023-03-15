@@ -1,0 +1,34 @@
+// SPDX-License-Identifier: MIT
+
+= SecHub Solution
+
+This folder contains the scripts to run SecHub in a container.
+
+== Local Container
+
+=== Single Container
+
+To start a single container run the script:
+
+----
+./01-start-single-docker-compose.sh
+----
+
+=== SecHub with PDS Solution
+
+. First start a SecHub container.
+
+. Most of the PDS Solutions have a script which starts with `05-*`. Execute this script next.
+
+. Run one of the PDS setup scripts. For example: `setup-pds/setup-gosec.sh` to setup a GoSec project.
+
+. Use the SecHub Client to scan.
+
+== Build Container
+
+Coming soon.
+
+== Kubernetes
+
+Coming soon.
+

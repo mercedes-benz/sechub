@@ -1,27 +1,22 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.job;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.pds.PDSNotAcceptableException;
 import com.mercedesbenz.sechub.pds.config.PDSProductIdentifierValidator;
+import com.mercedesbenz.sechub.pds.config.PDSProductParameterDefinition;
 import com.mercedesbenz.sechub.pds.config.PDSProductSetup;
-import com.mercedesbenz.sechub.pds.config.PDSProdutParameterDefinition;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
-import com.mercedesbenz.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class PDSJobConfigurationValidatorTest {
     private static final String CONFIGURED_SERVER_PRODUCT_ID = "productid1";
-
-    @Rule
-    public ExpectedException expected = ExpectedExceptionFactory.none();
 
     private PDSJobConfigurationValidator validatorToTest;
 
@@ -31,8 +26,8 @@ public class PDSJobConfigurationValidatorTest {
 
     private PDSProductSetup setup1;
 
-    @Before
-    public void before() throws Exception {
+    @BeforeEach
+    void before() throws Exception {
 
         productIdentifierValidator = mock(PDSProductIdentifierValidator.class);
         serverConfigurationService = mock(PDSServerConfigurationService.class);
@@ -46,11 +41,11 @@ public class PDSJobConfigurationValidatorTest {
     }
 
     @Test
-    public void when_a_server_configuration_does_contain_optional_parameters_and_jobconfig_not_than_no_exception_is_thrown() {
+    void when_a_server_configuration_does_contain_optional_parameters_and_jobconfig_not_than_no_exception_is_thrown() {
         /* prepare */
         PDSJobConfiguration config = prepareValidConfig();
 
-        PDSProdutParameterDefinition optional = new PDSProdutParameterDefinition();
+        PDSProductParameterDefinition optional = new PDSProductParameterDefinition();
         optional.setKey("the.optional.key");
         setup1.getParameters().getOptional().add(optional);
 
@@ -62,17 +57,30 @@ public class PDSJobConfigurationValidatorTest {
     }
 
     @Test
-    public void when_a_server_configuration_does_contain_mandatory_parameters_and_jobconfig_not_than_an_exception_is_thrown() {
-        /* test */
-        expected.expect(PDSNotAcceptableException.class);
-        expected.expectMessage("mandatory parameter not found");
-        expected.expectMessage("the.necessary.key");
-
+    void when_a_server_configuration_does_contain_mandatory_parameters_and_jobconfig_not_than_an_exception_is_thrown() {
         /* prepare */
         PDSJobConfiguration config = prepareValidConfig();
 
-        PDSProdutParameterDefinition mandatoryParameter = new PDSProdutParameterDefinition();
+        PDSProductParameterDefinition mandatoryParameter = new PDSProductParameterDefinition();
         mandatoryParameter.setKey("the.necessary.key");
+        setup1.getParameters().getMandatory().add(mandatoryParameter);
+
+        /* execute + test */
+        PDSNotAcceptableException exception = assertThrows(PDSNotAcceptableException.class, () -> validatorToTest.assertPDSConfigurationValid(config));
+        String message = exception.getMessage();
+        assertTrue(message.contains("mandatory parameter not found"));
+        assertTrue(message.contains("the.necessary.key"));
+
+    }
+
+    @Test
+    void when_a_server_configuration_does_contain_mandatory_param_with_default__and_jobconfig_not_than_still_valid() {
+        /* prepare */
+        PDSJobConfiguration config = prepareValidConfig();
+
+        PDSProductParameterDefinition mandatoryParameter = new PDSProductParameterDefinition();
+        mandatoryParameter.setKey("the.necessary.key");
+        mandatoryParameter.setDefault("default-value");
         setup1.getParameters().getMandatory().add(mandatoryParameter);
 
         /* execute */
@@ -80,45 +88,42 @@ public class PDSJobConfigurationValidatorTest {
     }
 
     @Test
-    public void when_a_server_configuration_does_not_contain_product_id_an_exception_is_thrown() {
-        /* test */
-        expected.expect(PDSNotAcceptableException.class);
-        expected.expectMessage("does not support product identifier");
-
+    void when_a_server_configuration_does_not_contain_product_id_an_exception_is_thrown() {
         /* prepare */
         PDSJobConfiguration config = prepareValidConfig();
         config.setProductId("productid-notknown-by-server");
 
-        /* execute */
-        validatorToTest.assertPDSConfigurationValid(config);
+        /* execute + test */
+        PDSNotAcceptableException exception = assertThrows(PDSNotAcceptableException.class, () -> validatorToTest.assertPDSConfigurationValid(config));
+        String message = exception.getMessage();
+        assertTrue(message.contains("does not support product identifier"));
     }
 
     @Test
-    public void null_configuration_throws_not_acceptable_with_message() {
-        /* test */
-        expected.expect(PDSNotAcceptableException.class);
-        expected.expectMessage("may not be null");
+    void null_configuration_throws_not_acceptable_with_message() {
+        /* prepare */
+        PDSJobConfiguration config = null;
 
-        /* execute */
-        validatorToTest.assertPDSConfigurationValid(null);
+        /* execute + test */
+        PDSNotAcceptableException exception = assertThrows(PDSNotAcceptableException.class, () -> validatorToTest.assertPDSConfigurationValid(config));
+        String message = exception.getMessage();
+        assertTrue(message.contains("may not be nul"));
     }
 
     @Test
-    public void configuration_without_sechub_job_UUID_throws_not_acceptable_with_message() {
+    void configuration_without_sechub_job_UUID_throws_not_acceptable_with_message() {
         /* prepare */
         PDSJobConfiguration config = prepareValidConfig();
         config.setSechubJobUUID(null);
 
-        /* test */
-        expected.expect(PDSNotAcceptableException.class);
-        expected.expectMessage("sechub job UUID not set");
-
-        /* execute */
-        validatorToTest.assertPDSConfigurationValid(config);
+        /* execute + test */
+        PDSNotAcceptableException exception = assertThrows(PDSNotAcceptableException.class, () -> validatorToTest.assertPDSConfigurationValid(config));
+        String message = exception.getMessage();
+        assertTrue(message.contains("sechub job UUID not set"));
     }
 
     @Test
-    public void configuration_with_necessary_parts_set_throws_no_exception() {
+    void configuration_with_necessary_parts_set_throws_no_exception() {
         /* prepare */
         PDSJobConfiguration config = prepareValidConfig();
 
@@ -130,7 +135,7 @@ public class PDSJobConfigurationValidatorTest {
     }
 
     @Test
-    public void configuration_with_necessary_parts_set_throws_no_exception_but_calls_productid_identifier() {
+    void configuration_with_necessary_parts_set_throws_no_exception_but_calls_productid_identifier() {
         /* prepare */
         PDSJobConfiguration config = prepareValidConfig();
 
@@ -142,17 +147,15 @@ public class PDSJobConfigurationValidatorTest {
     }
 
     @Test
-    public void configuration_with_necessary_parts_but_productIdValidator_validates_as_invalid_productId_throws_exception() {
-        /* test */
-        expected.expect(PDSNotAcceptableException.class);
-        expected.expectMessage("problem");
-
+    void configuration_with_necessary_parts_but_productIdValidator_validates_as_invalid_productId_throws_exception() {
         /* prepare */
         PDSJobConfiguration config = prepareValidConfig();
         when(productIdentifierValidator.createValidationErrorMessage(CONFIGURED_SERVER_PRODUCT_ID)).thenReturn("problem");
 
-        /* execute */
-        validatorToTest.assertPDSConfigurationValid(config);
+        /* execute + test */
+        PDSNotAcceptableException exception = assertThrows(PDSNotAcceptableException.class, () -> validatorToTest.assertPDSConfigurationValid(config));
+        String message = exception.getMessage();
+        assertTrue(message.contains("problem"));
     }
 
     private PDSJobConfiguration prepareValidConfig() {

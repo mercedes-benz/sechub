@@ -43,7 +43,7 @@ public enum SecHubProductExecutionPDSKeyProvider implements PDSKeyProvider<SecHu
 
     private static ForbiddenTargetTypePDSKey createSupportTargetType(NetworkTargetType type) {
         return new ForbiddenTargetTypePDSKey("pds.productexecutor.forbidden.targettype." + type.name().toLowerCase(),
-                "When this key is set to true, than this pds instance does not scan " + type.name() + "!", type);
+                "When this key is set to true, then this PDS instance does not scan " + type.name() + "!", type);
     }
 
 }

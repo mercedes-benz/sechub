@@ -1,18 +1,25 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.archive;
 
+import static java.util.Objects.*;
+
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.zip.ZipInputStream;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
+import org.apache.commons.compress.archivers.ArchiveOutputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +49,75 @@ public class ArchiveSupport {
             throw new IllegalArgumentException("archive type " + type + " is not supported");
 
         }
+    }
+
+    public void compressFolder(ArchiveType type, File folder, File targetArchiveFile) throws IOException {
+        requireNonNull(type, "type may not be null!");
+        requireNonNull(folder, "folder may not be null!");
+        requireNonNull(targetArchiveFile, "targetArchiveFile may not be null!");
+
+        if (!folder.exists()) {
+            throw new FileNotFoundException("Folder does not exist:" + folder);
+        }
+
+        if (targetArchiveFile.exists()) {
+            Files.delete(targetArchiveFile.toPath());
+        }
+
+        // ensure parent file exists
+        File parentFile = targetArchiveFile.getParentFile();
+        if (parentFile != null && !parentFile.exists()) {
+            parentFile.mkdirs();
+        }
+
+        try (ArchiveOutputStream outputStream = new ArchiveStreamFactory().createArchiveOutputStream(type.getType(), new FileOutputStream(targetArchiveFile))) {
+            String basePath = folder.getAbsolutePath();
+
+            compressRecursively(basePath, outputStream, folder, type);
+
+            outputStream.closeArchiveEntry();
+
+            LOG.debug("Compressed folder: {} into {} archive: {}", folder, type, targetArchiveFile);
+
+        } catch (ArchiveException e) {
+            throw new IOException("Was not able to compress: " + folder, e);
+        }
+
+    }
+
+    private void compressRecursively(String basePath, ArchiveOutputStream outputStream, File folder, ArchiveType type) throws IOException {
+        for (File child : folder.listFiles()) {
+            if (child.isDirectory()) {
+
+                compressRecursively(basePath, outputStream, child, type);
+
+            } else {
+
+                String parentPath = child.getParentFile().getAbsolutePath();
+                String relativeFromBasePath = parentPath.substring(basePath.length());
+                String relativePath = "./" + relativeFromBasePath + "/" + child.getName();
+
+                ArchiveEntry entry = null;
+                switch (type) {
+                case TAR:
+                    entry = new TarArchiveEntry(child, relativePath);
+                    break;
+                case ZIP:
+                    entry = new ZipArchiveEntry(child, relativePath);
+                    break;
+                default:
+                    throw new IllegalStateException("Unsupported type:" + type);
+                }
+                /* write archive entry */
+                outputStream.putArchiveEntry(entry);
+
+                /* write entry data */
+                try (InputStream i = Files.newInputStream(child.toPath())) {
+                    IOUtils.copy(i, outputStream);
+                }
+            }
+        }
+
     }
 
     private ArchiveExtractionResult extractTar(InputStream sourceInputStream, String sourceLocation, File outputDir,
@@ -114,10 +190,14 @@ public class ArchiveSupport {
                 continue;
             }
             if (!data.isAccepted()) {
+                LOG.debug("Filtering: {}", name);
+
                 continue;
             }
             if (data.isPathChangeWanted()) {
                 name = data.getChangedPath();
+
+                LOG.debug("Path changed to: {}", name);
 
                 if (name == null) {
                     throw new IllegalStateException("Wanted path is null - cannot be handled!");
@@ -184,7 +264,19 @@ public class ArchiveSupport {
     }
 
     public enum ArchiveType {
-        ZIP, TAR
+        ZIP("zip"),
+
+        TAR("tar");
+
+        private String type;
+
+        private ArchiveType(String type) {
+            this.type = type;
+        }
+
+        public String getType() {
+            return type;
+        }
     }
 
     private static class KeepAsIsTransformationData implements ArchiveTransformationData {

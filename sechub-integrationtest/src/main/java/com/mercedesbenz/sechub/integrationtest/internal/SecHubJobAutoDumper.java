@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.integrationtest.internal;
 
 import java.util.UUID;
+import java.util.concurrent.Callable;
 
 import com.mercedesbenz.sechub.integrationtest.api.TestAPI;
 
@@ -20,6 +21,22 @@ public class SecHubJobAutoDumper {
         } catch (AssertionError e) {
             handleDumpingBeforeExceptionThrow();
             throw e;
+        }
+
+    }
+
+    public <T> T execute(Callable<T> callable) {
+        try {
+            return callable.call();
+        } catch (Exception e) {
+            handleDumpingBeforeExceptionThrow();
+            RuntimeException re = null;
+            if (e instanceof RuntimeException) {
+                re = (RuntimeException) e;
+            } else {
+                re = new RuntimeException("Wrapped origin exception:", e);
+            }
+            throw re;
         }
 
     }

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,8 +25,8 @@ import com.mercedesbenz.sechub.integrationtest.api.TestUser;
 import com.mercedesbenz.sechub.integrationtest.api.WithSecHubClient.ApiTokenStrategy;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestExampleConstants.IntegrationTestExampleFolder;
 import com.mercedesbenz.sechub.test.TestFileSupport;
+import com.mercedesbenz.sechub.test.TestFileWriter;
 import com.mercedesbenz.sechub.test.TestUtil;
-import com.mercedesbenz.sechub.test.TextFileWriter;
 
 public class SecHubClientExecutor {
 
@@ -342,13 +343,28 @@ public class SecHubClientExecutor {
 
         if (sechubClientBinaryPath == null) {
             String parentFolder = "sechub-cli/build/go/platform/"; // when not set we use build location
-            String sechubExeName = null;
-            if (TestUtil.isWindows()) {
-                sechubExeName = "sechub.exe";
-                parentFolder += "windows-386";
+            String sechubExeName = "sechub";
+
+            String osArch = SystemUtils.OS_ARCH;
+            boolean is64 = osArch.contains("64");
+            boolean isArm = osArch.contains("arm") || osArch.contains("aarch");
+
+            if (SystemUtils.IS_OS_WINDOWS && !isArm) {
+                sechubExeName += ".exe";
+                parentFolder += "windows";
+                parentFolder += (is64) ? "-amd64" : "-386";
+            } else if (SystemUtils.IS_OS_LINUX) {
+                parentFolder += "linux";
+                if (isArm) {
+                    parentFolder += (is64) ? "-arm64" : "-arm";
+                } else {
+                    parentFolder += (is64) ? "-amd64" : "-386";
+                }
+            } else if (SystemUtils.IS_OS_MAC_OSX && is64) {
+                parentFolder += "darwin";
+                parentFolder += (isArm) ? "-arm64" : "-amd64";
             } else {
-                sechubExeName = "sechub";
-                parentFolder += "linux-386";
+                throw new RuntimeException("Unknown OS (" + SystemUtils.OS_NAME + ") or processor architecture (" + osArch + ")");
             }
             File executableParentFolder = new File(IntegrationTestFileSupport.getTestfileSupport().getRootFolder(), parentFolder);
             executableFile = new File(executableParentFolder, sechubExeName);
@@ -379,7 +395,7 @@ public class SecHubClientExecutor {
         File exampleScanRootFolder = new File(IntegrationTestFileSupport.getTestfileSupport().getRootFolder(), pathToExamples);
         exampleScanRootFolder.mkdirs();
 
-        List<IntegrationTestExampleFolder> exampleFolders = IntegrationTestExampleConstants.TESTDATA_FOLDERS.getExampleContentFolders();
+        List<IntegrationTestExampleFolder> exampleFolders = IntegrationTestExampleConstants.MOCKDATA_EXAMPLE_CONTENT_PROVIDER.getExampleContentFolders();
         for (IntegrationTestExampleFolder folder : exampleFolders) {
             File projectResourceFolder = new File(exampleScanRootFolder, folder.getPath());
             if (folder.isExistingContent()) {
@@ -390,7 +406,7 @@ public class SecHubClientExecutor {
                 File testFile1 = new File(projectResourceFolder, "TestMeIfYouCan.java");
                 if (!testFile1.exists()) {
                     try {
-                        TextFileWriter writer = new TextFileWriter();
+                        TestFileWriter writer = new TestFileWriter();
                         writer.save("class TestMeifYouCan {}", testFile1, Charset.forName("UTF-8"));
                     } catch (IOException e) {
                         throw new IllegalStateException("Cannot create test output!", e);

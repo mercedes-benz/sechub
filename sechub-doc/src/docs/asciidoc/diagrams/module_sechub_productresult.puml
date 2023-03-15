@@ -1,0 +1,21 @@
+@startuml
+' SPDX-License-Identifier: MIT
+package com.mercedesbenz.sechub.domain.scan {
+
+    class ProductResult<<Entity>>{
+        UUID uuid
+        UUID secHubJobUUID
+        UUID productExecutorConfigUUID
+        
+        String result
+        String messages
+        String metaData
+        
+        LocalDateTime started
+        LocalDateTime ended
+        
+    }
+    
+}
+  
+@enduml

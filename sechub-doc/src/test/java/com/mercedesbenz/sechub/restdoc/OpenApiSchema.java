@@ -20,7 +20,7 @@ enum OpenApiSchema {
 
     MOCK_DATA_CONFIGURATION("MockDataConfiguration"),
 
-    PROJECT_WHITELIST("ProjectWhitelist"),
+    PROJECT_WHITELIST("ProjectWhitelistUpdate"),
 
     PROJECT("Project"), PROJECT_LIST("ListOfProjects"),
 
@@ -60,7 +60,11 @@ enum OpenApiSchema {
 
     PROJECT_META_DATA("ProjectMetaData"),
 
-    SERVER_VERSION("ServerVersion");
+    SERVER_VERSION("ServerVersion"),
+
+    PROJECT_JOB_LIST("ProjectJobList"),
+
+    ;
 
     private final Schema schema;
 

@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 
 /**
  * This service executes all registered product executors having scan type
@@ -24,11 +24,6 @@ import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 public class WebScanProductExecutionServiceImpl extends AbstractProductExecutionService implements WebScanProductExecutionService {
 
     private static final Logger LOG = LoggerFactory.getLogger(WebScanProductExecutionServiceImpl.class);
-
-    @Override
-    protected ScanType getScanType() {
-        return ScanType.WEB_SCAN;
-    }
 
     public boolean isExecutionNecessary(SecHubExecutionContext context, UUIDTraceLogID traceLogID, SecHubConfiguration configuration) {
         Optional<SecHubWebScanConfiguration> webScanOption = configuration.getWebScan();

@@ -116,8 +116,7 @@ public class SchedulerRestartJobService {
         }
 
         /*
-         * when we have still running batch jobs we must terminate them as well +
-         * abandon
+         * when we have still running batch jobs we must terminate them as well
          */
         schedulerCancelJobService.stopAndAbandonAllRunningBatchJobsForSechubJobUUID(jobUUID);
 
@@ -164,7 +163,7 @@ public class SchedulerRestartJobService {
     private void sendPurgeJobResultsSynchronousRequest(ScheduleSecHubJob secHubJob) {
         DomainMessage request = DomainMessageFactory.createEmptyRequest(MessageID.REQUEST_PURGE_JOB_RESULTS);
 
-        request.set(MessageDataKeys.SECHUB_UUID, secHubJob.getUUID());
+        request.set(MessageDataKeys.SECHUB_JOB_UUID, secHubJob.getUUID());
         request.set(MessageDataKeys.ENVIRONMENT_BASE_URL, sechubEnvironment.getServerBaseUrl());
         DomainMessageSynchronousResult result = eventBus.sendSynchron(request);
         if (result.hasFailed()) {

@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.mercedesbenz.sechub.commons.model.LocalDateTimeDeserializer;
 import com.mercedesbenz.sechub.commons.model.LocalDateTimeSerializer;
+import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 
 /**
  * Represents a PDS Job which contains information about ownership, related
@@ -60,6 +61,8 @@ public class PDSJob {
 
     public static final String COLUMN_MESSAGES = "MESSAGES";
 
+    public static final String COLUMN_META_DATA = "META_DATA";
+
     public static final String COLUMN_LAST_STREAM_TEXT_REFRESH_REQUEST = "LAST_STREAM_TEXT_REFRESH_REQUEST";
     public static final String COLUMN_LAST_STREAM_TEXT_UPDATE = "LAST_STREAM_TEXT_UPDATE";
 
@@ -82,6 +85,8 @@ public class PDSJob {
     public static final String PROPERTY_RESULT = "result";
 
     public static final String QUERY_DELETE_JOB_OLDER_THAN = "DELETE FROM PDSJob j WHERE j." + PROPERTY_CREATED + " < :cleanTimeStamp";
+
+    public static final String QUERY_FIND_JOBS_IN_STATE = "SELECT j from PDSJob j WHERE j." + PROPERTY_STATE + "= :statusState";
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -152,6 +157,10 @@ public class PDSJob {
     @Column(name = COLUMN_MESSAGES)
     @Type(type = "text") // see remarks on COLUMN_RESULT
     String messages;
+
+    @Column(name = COLUMN_META_DATA)
+    @Type(type = "text") // see remarks on COLUMN_RESULT
+    String metaDataText;
 
     public void setServerId(String serverId) {
         this.serverId = serverId;
@@ -231,6 +240,10 @@ public class PDSJob {
 
     public String getMessages() {
         return messages;
+    }
+
+    public String getMetaDataText() {
+        return metaDataText;
     }
 
     @Override

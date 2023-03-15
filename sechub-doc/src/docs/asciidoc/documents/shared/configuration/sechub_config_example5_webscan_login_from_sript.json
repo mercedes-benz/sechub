@@ -1,7 +1,7 @@
 {
   "apiVersion" : "1.0",
   "webScan" : {
-    "uris" : [ "https://productfailure.demo.example.org" ],
+    "url" : "https://productfailure.demo.example.org",
     "login" : {
       "url" : "https://productfailure.demo.example.org/login", //<1>
       "form" : { //<2>
@@ -12,12 +12,12 @@
 		            {
 		              "type" : "username", //<6>
 		              "selector" : "#example_login_userid", //<7>
-		              "value" : "${{ .LOGIN_USER }}" //<8>
+		              "value" : "{{ .LOGIN_USER }}" //<8>
 		            }, 
 		            {
 		              "type" : "password",
 		              "selector" : "#example_login_pwd",
-		              "value" : "${{ .LOGIN_PWD }}"
+		              "value" : "{{ .LOGIN_PWD }}"
 		            },
 		            {
 		              "type" : "click",
@@ -31,7 +31,7 @@
 		            {
 		              "type" : "input",
 		              "selector" : "#example_other_inputfield",
-		              "value" : "${{ .OTHER_VALUE }}"
+		              "value" : "{{ .OTHER_VALUE }}"
 		            }, 
 		            {
 		              "type" : "wait", //<10>

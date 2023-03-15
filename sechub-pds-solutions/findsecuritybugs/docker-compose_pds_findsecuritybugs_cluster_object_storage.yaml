@@ -1,0 +1,67 @@
+# SPDX-License-Identifier: MIT
+
+version: "3"
+services:
+    pds-findsecuritybugs:
+        build:
+            args:
+                - BASE_IMAGE=${BASE_IMAGE}
+            context: docker/
+            dockerfile: FindSecurityBugs-Debian.dockerfile
+        env_file:
+            - .env
+            - .env-cluster-object-storage
+        networks:
+            - internal-cluster
+        volumes:
+          - ./docker/scripts:/scripts
+        depends_on: 
+            - database
+            - object-storage
+
+    loadbalancer:
+        build:
+            context: ../shared/docker/loadbalancer
+            args:
+                - PDS_SOLUTION=pds-findsecuritybugs
+        env_file:
+            - .env-cluster-object-storage
+        networks:
+            - internal-cluster
+        depends_on:
+            - pds-findsecuritybugs
+        ports:
+            - "127.0.0.1:8444:8444"
+    
+    database:
+        build:
+            context: ../shared/docker/database
+        env_file:
+            - .env-cluster-object-storage
+        networks:
+            - internal-cluster
+        ports:
+            - "127.0.0.1:5432:5432"
+        
+    object-storage:
+        build:
+            context: ../shared/docker/object-storage
+        env_file:
+            - .env-cluster-object-storage
+        networks:
+            internal-cluster:
+                # A fixed IP address is necessary
+                # otherwise the AWS S3 client used by
+                # the PDS cannot resolve the address
+                ipv4_address: 10.1.2.7
+        ports:
+            - "127.0.0.1:9000:9000"
+
+networks:
+  internal-cluster:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.1.2.0/24
+          gateway: 10.1.2.1

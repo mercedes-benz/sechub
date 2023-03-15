@@ -6,6 +6,7 @@
       "id": "PDS_OWASP_ZAP",
       "path": "/scripts/owasp-zap.sh",
       "scanType": "webScan",
+      "minutesToWaitForProductResult": 510,
       "description": "Runs OWASP ZAP",
       "parameters": {
         "mandatory": [
@@ -46,6 +47,14 @@
           {
           	"key": "zap.deactivated.rule.references",
           	"description": "Comma separated list of rule references that will be deactivated during the scan."
+          },
+          {
+          	"key": "wrapper.maximum.connection.retries",
+          	"description": "Maximum amount of retries the wrapper does for each URL to check if it is reachable."
+          },
+          {
+          	"key": "wrapper.retry.waittime.milliseconds",
+          	"description": "The time to wait between connection checks to the same URL. The value cannot be less than 1000 milliseconds."
           }
         ]
       }

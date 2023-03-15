@@ -1,0 +1,68 @@
+# SPDX-License-Identifier: MIT
+
+version: "3"
+services:
+    pds-scancode:
+        build:
+            args:
+                - BASE_IMAGE=${BASE_IMAGE}
+                - SCANCODE_VERSION=${SCANCODE_VERSION}
+            context: docker/
+            dockerfile: Scancode-Debian.dockerfile
+        env_file:
+            - .env
+            - .env-cluster-object-storage
+        networks:
+            - internal
+        volumes:
+            - ./docker/scripts:/scripts
+        depends_on: 
+            - database
+            - object-storage
+
+    loadbalancer:
+        build:
+            context: ../shared/docker/loadbalancer
+            args:
+                - PDS_SOLUTION=pds-scancode
+        env_file:
+            - .env-cluster-object-storage
+        networks:
+            - internal
+        depends_on:
+            - pds-scancode
+        ports:
+            - "127.0.0.1:8444:8444"
+    
+    database:
+        build:
+            context: ../shared/docker/database
+        env_file:
+            - .env-cluster-object-storage
+        networks:
+            - internal
+        ports:
+            - "127.0.0.1:5432:5432"
+        
+    object-storage:
+        build:
+            context: ../shared/docker/object-storage
+        env_file:
+            - .env-cluster-object-storage
+        networks:
+            internal:
+                # A fixed IP address is necessary
+                # otherwise the AWS S3 client used by
+                # the PDS cannot resolve the address
+                ipv4_address: 10.2.43.7
+        ports:
+            - "127.0.0.1:9000:9000"
+
+networks:
+  internal:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.2.43.0/24
+          gateway: 10.2.43.1

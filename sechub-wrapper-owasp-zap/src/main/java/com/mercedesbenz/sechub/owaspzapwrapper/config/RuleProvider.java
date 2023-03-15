@@ -5,8 +5,8 @@ import java.io.File;
 import java.io.IOException;
 
 import com.mercedesbenz.sechub.commons.TextFileReader;
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitCode;
-import com.mercedesbenz.sechub.owaspzapwrapper.cli.MustExitRuntimeException;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperExitCode;
+import com.mercedesbenz.sechub.owaspzapwrapper.cli.ZapWrapperRuntimeException;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.data.DeactivatedRuleReferences;
 import com.mercedesbenz.sechub.owaspzapwrapper.config.data.OwaspZapFullRuleset;
 
@@ -56,7 +56,7 @@ public class RuleProvider {
         try {
             return reader.loadTextFile(file);
         } catch (IOException e) {
-            throw new MustExitRuntimeException("Error reading file: " + file, e, MustExitCode.RULE_FILE_ERROR);
+            throw new ZapWrapperRuntimeException("Error reading file: " + file, e, ZapWrapperExitCode.IO_ERROR);
         }
     }
 

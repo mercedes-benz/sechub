@@ -4,38 +4,30 @@ package com.mercedesbenz.sechub.domain.scan.product;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
+import com.mercedesbenz.sechub.adapter.mock.MockDataIdentifierFactory;
 import com.mercedesbenz.sechub.commons.model.ScanType;
-import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
-import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationObject;
-import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationObjectInfo;
-import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationObjectInfoFinder;
-import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationType;
-import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
-import com.mercedesbenz.sechub.commons.model.SecHubFileSystemContainer;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
-import com.mercedesbenz.sechub.commons.model.SecHubSourceDataConfiguration;
 import com.mercedesbenz.sechub.domain.scan.NetworkLocationProvider;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetInfoFactory;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataProvider;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataSuppport;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetRegistry.NetworkTargetInfo;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetType;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionException;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionHistoryElement;
 import com.mercedesbenz.sechub.domain.scan.resolve.NetworkTargetResolver;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
 import com.mercedesbenz.sechub.sharedkernel.resilience.ResilientActionExecutor;
 
 /**
@@ -53,11 +45,12 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
     @Autowired
     protected NetworkTargetResolver targetResolver;
 
+    @Autowired
+    MockDataIdentifierFactory mockDataIdentifierFactory;
+
     private ScanType scanType;
 
     private ProductIdentifier productIdentifier;
-
-    private SecHubDataConfigurationObjectInfoFinder configObjectFinder;
 
     private int version;
 
@@ -77,7 +70,6 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
          * executor instance - without spring injection
          */
         this.resilientActionExecutor = new ResilientActionExecutor<>();
-        this.configObjectFinder = new SecHubDataConfigurationObjectInfoFinder();
     }
 
     public final int getVersion() {
@@ -115,57 +107,15 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
 
         ProductExecutorData data = createExecutorData(context, executorContext, traceLogId);
 
-        configureSourceCodeHandlingIfNecessary(data);
+        configureMockDataIdentifier(data);
         configureNetworkTargetHandlingIfNecessary(data);
 
         return startExecution(data);
     }
 
-    private void configureSourceCodeHandlingIfNecessary(ProductExecutorData data) {
-        if (scanType != ScanType.CODE_SCAN) {
-            return;
-        }
-        // the information about paths is interesting for debugging but also necessary
-        // for our integration tests - see mocked_setup.json
-        Set<String> paths = new LinkedHashSet<>();
-        data.codeUploadFileSystemFolderPaths = paths;
-
+    private void configureMockDataIdentifier(ProductExecutorData data) {
         SecHubConfiguration configuration = data.getSechubExecutionContext().getConfiguration();
-        Optional<SecHubCodeScanConfiguration> codeScanOpt = configuration.getCodeScan();
-        if (!codeScanOpt.isPresent()) {
-            return;
-        }
-        SecHubCodeScanConfiguration codeScan = codeScanOpt.get();
-        addFileSystemParts(paths, codeScan);
-        Set<String> usedNames = codeScan.getNamesOfUsedDataConfigurationObjects();
-        if (usedNames.isEmpty()) {
-            return;
-        }
-        List<SecHubDataConfigurationObjectInfo> found = configObjectFinder.findDataObjectsByName(configuration, usedNames);
-        for (SecHubDataConfigurationObjectInfo info : found) {
-            if (info.getType() != SecHubDataConfigurationType.SOURCE) {
-                continue;
-            }
-            SecHubDataConfigurationObject config = info.getDataConfigurationObject();
-            if (!(config instanceof SecHubSourceDataConfiguration)) {
-                LOG.warn("source object data was not expected {} but {}", SecHubSourceDataConfiguration.class, config.getClass());
-                continue;
-            }
-            SecHubSourceDataConfiguration sourceDataConfig = (SecHubSourceDataConfiguration) config;
-            addFileSystemParts(paths, sourceDataConfig);
-        }
-    }
-
-    private void addFileSystemParts(Set<String> paths, SecHubFileSystemContainer container) {
-        Optional<SecHubFileSystemConfiguration> fileSystemOpt = container.getFileSystem();
-
-        if (!fileSystemOpt.isPresent()) {
-            return;
-        }
-        SecHubFileSystemConfiguration fileSystem = fileSystemOpt.get();
-
-        paths.addAll(fileSystem.getFiles());
-        paths.addAll(fileSystem.getFolders());
+        data.mockDataIdentifier = mockDataIdentifierFactory.createMockDataIdentifier(scanType, configuration);
     }
 
     protected abstract void customize(ProductExecutorData data);
@@ -263,7 +213,18 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
     private void executeByAdapterAndSetTime(ProductExecutorData data, List<ProductResult> targetResults) throws Exception {
         LocalDateTime started = LocalDateTime.now();
 
+        SecHubExecutionContext context = data.getSechubExecutionContext();
+
+        /*
+         * the history is used by cancel operation when the thread of this execution is
+         * terminated but we need the data for cancellation
+         */
+        SecHubExecutionHistoryElement historyElement = context.remember(this, data);
+
         List<ProductResult> productResults = executeByAdapter(data);
+
+        /* product execution has been done, so remove from history */
+        context.forget(historyElement);
 
         if (productResults != null) {
             LocalDateTime ended = LocalDateTime.now();
@@ -287,6 +248,11 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
             return config.getWebScan().isPresent();
         case LICENSE_SCAN:
             return config.getLicenseScan().isPresent();
+        case SECRET_SCAN:
+            return config.getSecretScan().isPresent();
+        case ANALYTICS:
+            // will be handled inisde isExecutionNecessary() of executor implementation
+            return true;
         case UNKNOWN:
             return false;
         default:

@@ -30,6 +30,12 @@ public class PDSAdapterDataConfigurator implements PDSAdapterConfigData, PDSAdap
 
     private String binariesTarFileChecksumOrNull;
 
+    private boolean pdsScriptTrustsAllCertificates;
+
+    private Long binariesTarFileSizeInBytes;
+
+    private Long sourceCodeZipFileSizeInBytes;
+
     public void setTargetType(String targetType) {
         if (targetType == null) {
             this.targetType = EMPTY_TARGET_TYPE;
@@ -160,6 +166,16 @@ public class PDSAdapterDataConfigurator implements PDSAdapterConfigData, PDSAdap
     }
 
     @Override
+    public void setPDSScriptTrustsAllCertificates(boolean trustAllCertificates) {
+        this.pdsScriptTrustsAllCertificates = trustAllCertificates;
+    }
+
+    @Override
+    public boolean isPDSScriptTrustingAllCertificates() {
+        return pdsScriptTrustsAllCertificates;
+    }
+
+    @Override
     public void validateNonCalculatedParts() {
         if (pdsProductIdentifier == null) {
             throw new IllegalStateException("pds product identifier not set!");
@@ -190,6 +206,24 @@ public class PDSAdapterDataConfigurator implements PDSAdapterConfigData, PDSAdap
             jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_CONFIGURATION, reducedConfigJSON);
         }
         jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_TARGET_TYPE, targetType);
+    }
+
+    public void setSourceCodeZipFileSizeInBytes(long sourceCodeZipFileSizeInBytes) {
+        this.sourceCodeZipFileSizeInBytes = sourceCodeZipFileSizeInBytes;
+    }
+
+    public void setBinariesTarFileSizeInBytes(long binariesTarFileSizeInBytes) {
+        this.binariesTarFileSizeInBytes = binariesTarFileSizeInBytes;
+    }
+
+    @Override
+    public Long getBinariesTarFileSizeInBytesOrNull() {
+        return binariesTarFileSizeInBytes;
+    }
+
+    @Override
+    public Long getSourceCodeZipFileSizeInBytesOrNull() {
+        return sourceCodeZipFileSizeInBytes;
     }
 
 }

@@ -10,8 +10,9 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.mercedesbenz.sechub.commons.core.MustBeKeptStable;
 import com.mercedesbenz.sechub.commons.model.JSONable;
-import com.mercedesbenz.sechub.sharedkernel.MustBeKeptStable;
+import com.mercedesbenz.sechub.commons.model.TrafficLight;
 
 /**
  * This message data object contains all possible information about a project
@@ -39,6 +40,8 @@ public class JobMessage implements JSONable<JobMessage> {
     private LocalDateTime since;
 
     private String ownerEmailAddress;
+
+    private TrafficLight trafficLight;
 
     public String getOwner() {
         return owner;
@@ -99,6 +102,14 @@ public class JobMessage implements JSONable<JobMessage> {
 
     public String getOwnerEmailAddress() {
         return ownerEmailAddress;
+    }
+
+    public void setTrafficLight(TrafficLight trafficLight) {
+        this.trafficLight = trafficLight;
+    }
+
+    public TrafficLight getTrafficLight() {
+        return trafficLight;
     }
 
 }

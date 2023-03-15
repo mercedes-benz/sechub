@@ -4,7 +4,7 @@ package com.mercedesbenz.sechub.sharedkernel;
 public interface ProgressMonitor {
 
     /**
-     * @return <code>true</code>when progress has been canceled
+     * @return <code>true</code> when progress has been canceled
      */
     public boolean isCanceled();
 

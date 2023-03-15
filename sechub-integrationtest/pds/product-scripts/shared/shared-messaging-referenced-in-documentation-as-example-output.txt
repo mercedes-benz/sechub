@@ -1,0 +1,5 @@
+$job_folder_workspace/output/messages
+├── ERROR_message_2022-06-24_17.56.52_822554054.txt
+├── INFO_message_2022-06-24_17.56.52_818872869.txt
+└── WARNING_message_2022-06-24_17.56.52_820825342.txt
+ 

@@ -16,6 +16,15 @@ public interface JobStorage {
     public void store(String name, InputStream stream) throws IOException;
 
     /**
+     * Stores given stream for this job
+     *
+     * @param name                 name for storage object
+     * @param stream               origin data stream
+     * @param contentLengthInBytes content length of the stream in bytes
+     */
+    public void store(String name, InputStream stream, long contentLengthInBytes) throws IOException;
+
+    /**
      * Fetch object with given name
      *
      * @param name

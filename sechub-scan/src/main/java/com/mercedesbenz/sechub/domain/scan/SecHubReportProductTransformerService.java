@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan;
 
-import static com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier.*;
+import static com.mercedesbenz.sechub.sharedkernel.ProductIdentifier.*;
 import static com.mercedesbenz.sechub.sharedkernel.util.Assert.*;
 
 import java.util.List;
@@ -15,8 +15,6 @@ import org.springframework.stereotype.Service;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResultRepository;
 import com.mercedesbenz.sechub.domain.scan.report.ReportProductResultTransformer;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
 
 @Service
 /**

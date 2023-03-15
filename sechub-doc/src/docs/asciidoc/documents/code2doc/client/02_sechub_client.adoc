@@ -15,7 +15,7 @@ Download the binary for your operating system where you want to trigger `{sechub
 You will have no dependencies, just place the single binary file to a location inside your path variable.
 
 Direct download link to the latest client release: {webPage}/latest/client-download.html
-For documentation, please look at {webPage}[{secHub} web page] .
+For documentation, please look at {webPage}[{sechub} web page] .
 
 === Supported Platforms
 
@@ -84,19 +84,18 @@ Following actions are supported:
 
 ===== scan
 
-Does scan synchronous which means
+Does a synchronous scan which means
 
- - will create a `{sechub}` job
- - upload necessary stuff to `{sechub}` (e.g. zipped sourcefiles for source scans)
- - approve job as being ready to start
- - wait for job done,
- - fetch automatically result report to output folder (html or json)
- - returns non-zero on `red` so your build will break on critical or high findings (depends on your build tool)
+ - create a `{sechub}` job
+ - upload necessary data to `{sechub}` (e.g. zipped sourcefiles for source scans)
+ - approve job as ready to start
+ - wait until the job is done,
+ - download the report file
+ - exits with a non-zero status on `red` (critical or high findings) so your build will break (depends on your build tool)
+
+This is the recommended scan action: You only have to make one single client call to trigger a scan and get the report.
 
 IMPORTANT: For security reasons always pass your API-token via the environment variable `SECHUB_APITOKEN`.
-
-TIP: The is the most preferred scan action for builds - you only have to make one
-     single client call and your are done.
 
 **Minimum call syntax**
 
@@ -107,21 +106,23 @@ SECHUB_APITOKEN=${apitoken}
 sechub scan
 ----
 
+TIP: If you prefer the report in HTML format: +
+     `sechub -reportformat html scan`
+
+TIP: With `-output ${file-or-directory}` you can define where to place the report. +
+     Can be a directory, a file name or a file path. +
+     Default: `sechub_report_${your-project}_${jobUUID}.{json|html|spdx}` in current directory
+
 ===== scanAsync
 
-Does scan asynchronous which means
+Does scan asynchronous:
 
-  - will create a `{sechub}` job
-  - upload necessary stuff to `{sechub}` (e.g. zipped sourcefiles for source scans)
-  - approve job as being ready to start
-  - returns `{sechub}` job UUID +
-    which can be used to get status and also reports etc.
-  - will **never** break your build!
+- Identical to action `scan` but does not wait until the job has finished on the {sechub} server
+- Returns the `{sechub}` job UUID of the newly created scan job.
 
 TIP: This can be interesting if you have long running scans and you want have a fast
-     continous integration build - but **be aware** that you have to manually check
-     job state, fetch reports and you got no automated build break!
-
+     continous integration build - but then you have to manually check the
+     job state, fetch reports and you get no automated build break!
 
 **Minimum call syntax**
 ----
@@ -131,30 +132,73 @@ sechub scanAsync
 
 
 ===== getStatus
-Will fetch current job status and return result as json or html
+Will fetch the job status and return result as json
 
 **Minimum call syntax**
 ----
 SECHUB_APITOKEN=${apitoken}
-sechub -jobUUID ${jobUUID} getStatus
+sechub getStatus
 ----
+
+TIP: Defaults to latest job. +
+     You can select the job by providing the wanted job UUID by adding `-jobUUID ${jobUUID}`
 
 ===== getReport
-Will fetch report as json (result will only exist when job is done)
+Will fetch the report as json. (result will only exist when job is done)
 
 **Minimum call syntax**
 ----
 SECHUB_APITOKEN=${apitoken}
-sechub -jobUUID ${jobUUID} getReport
+sechub getReport
 ----
+
+TIP: Defaults to latest finished job. +
+     You can select the job by providing the wanted job UUID by adding `-jobUUID ${jobUUID}`
+
+TIP: With `-output ${file-or-directory}` you can define where to place the report. +
+     Can be a directory, a file name or a file path. +
+     Default: `sechub_report_${your-project}_${jobUUID}.{json|html|spdx}` in current directory
+
+===== listJobs
+Lists the last jobs and their state.
+
+**Call syntax**
+----
+SECHUB_APITOKEN=${apitoken}
+sechub listJobs
+----
+
+TIP: This might be useful for an overview or +
+     when you want to see your project's scan job queue or +
+     to find out the job UUID of a certain job.
+
+
+===== getFalsePositives
+This will fetch the false positives list of your project as JSON - format is same as for `markFalsePositives`.
+
+**Minimum call syntax**
+----
+SECHUB_APITOKEN=${apitoken}
+sechub getFalsePositives
+----
+
+TIP: With `-output ${file-or-directory}` you can define where to place the result. +
+     Can be a directory, a file name or a file path. +
+     Default: `sechub-false-positives-${your-project}.json` in current directory
 
 
 [[section-client-false-positives-mark]]
 ===== markFalsePositives
-Read your report carefully and check which of the findings are really "false positives" (FP).
-After this, create a json file containing jobUUID and ID of finding you decided to be a FP. If 
-you like you can add an optional comment, describing your decision to mark this as FP.
+Read your report carefully and figure out which of the findings are "false positives" (FP).
+After this, create a json file containing jobUUID and ID of the findings you decided to be a FP.
+You should add an optional comment, describing your decision to mark this as FP.
 Select this file by the `-file` argument and start action `markFalsePositives`.
+
+**Minimum call syntax**
+----
+SECHUB_APITOKEN=${apitoken}
+sechub -file ${json-file} markFalsePositives
+----
 
 *Example JSON:*
 
@@ -164,19 +208,21 @@ include::../../shared/false-positives/false-positives-REST-API-content-example1.
 ----
 <1> api version
 <2> type - must be `falsePositiveJobDataList`
-<3> job where finding was in report
-<4> ID of finding, which shall be marked as false positive
-<5> Comment (optional) describing the reason why this is handled as false positive
+<3> job-UUID of the report where the finding was
+<4> finding ID of finding in the report, which shall be marked as false positive
+<5> Comment (optional) describing the reason why this is a false positive
 
+IMPORTANT: Providing an empty list here does *NOT delete* the already declared false positives! +
+           `markFalsePositives` only adds new false positives. +
+           An empty `jobData` list has no effect at all. (-> don't do this)
 
-===== getFalsePositives
-This will fetch the false positives list of your project as JSON - format is same as for `markFalsePositives`
+TIP: See also <<interactiveMarkFalsePositives,interactiveMarkFalsePositives>> for an easy way to declare false positives.
 
 
 [[section-client-false-positives-unmark]]
 ===== unmarkFalsePositives
-When you want to remvoe a former defined false positive entry you can do this the same way
-as for mark operation: Just define a JSON file, select the file by the `-file` argument and start
+Removes formerly defined false positives entries. +
+It works similar to `markFalsePositives`: Just define a JSON file, select the file by the `-file` argument and start
 action `unmarkFalsePositives`
 
 *Example JSON:*
@@ -185,6 +231,8 @@ action `unmarkFalsePositives`
 ----
 include::sechub_client_falsepositive_list_example_unmark.json[]
 ----
+
+TIP: <<interactiveUnmarkFalsePositives,interactiveMarkFalsePositives>> might be much easier to use
 
 ===== interactiveMarkFalsePositives
 Instead of creating a json file to mark false positives, you can also do this interactively:
@@ -197,12 +245,12 @@ Your choices are:
 
 - `y` Yes - Mark as false positive. You are prompted for an optional comment line which can help to understand later why this has been marked.
 - `n` No - Do nothing and go to next item.
-- `s` Skip following findings - End the asking here and add the marked items to the false positives list on the sechub server.
+- `s` Skip following findings - Finish the marking and add the marked items to the false positives list on the {sechub} server.
 - `c` Cancel - Quit and upload nothing
 
-You can download and view your current false positives list with <<section-client-getFalsePositives,getFalsePositives>>
+TIP: You can download and view your current false positives list with <<getFalsePositives,getFalsePositives>>
 
-See also <<section-client-interactiveMarkFalsePositives-mark,example for interactiveMarkFalsePositives>> 
+See also <<section-client-interactiveMarkFalsePositives-mark,example for interactiveMarkFalsePositives>>
 
 ===== interactiveUnmarkFalsePositives
 Instead of creating a json file to unmark false positives, you can also do this interactively:
@@ -213,10 +261,10 @@ Your choices are:
 
 - `y` Yes - Unmark this false positive.
 - `n` No - Do nothing and go to next item.
-- `s` Skip the rest - End the asking here and remove the marked items from the false positives list on the sechub server.
+- `s` Skip the rest - End the asking here and remove the marked items from the false positives list on the {sechub} server.
 - `c` Cancel - Quit and change nothing
 
-See also <<section-client-interactiveMarkFalsePositives-mark,example for interactiveMarkFalsePositives>> 
+See also <<section-client-interactiveMarkFalsePositives-mark,example for interactiveMarkFalsePositives>>
 
 
 ==== Configuration overview
@@ -252,15 +300,16 @@ In below table, there is an overview of what can be defined where.
 Here is an overview of mandatory parameter for each `action`:
 |===
 | *action* | *mandatory parameters*
-| scan |server + user + api token + projectID + configFile 
-| scanAsync |server + user + api token + projectID + configFile 
-| getStatus |server + user + api token + projectID + secHubJobUUID 
-| getReport |server + user + api token + projectID + secHubJobUUID 
+| scan |server + user + api token + projectID + configFile
+| scanAsync |server + user + api token + projectID + configFile
+| getStatus |server + user + api token + projectID
+| getReport |server + user + api token + projectID
+| listJobs |server + user + api token + projectID
 | getFalsePositives |server + user + api token + projectID
-| markFalsePositives |server + user + api token + projectID + file 
-| unmarkFalsePositives |server + user + api token + projectID + file 
+| markFalsePositives |server + user + api token + projectID + file
+| unmarkFalsePositives |server + user + api token + projectID + file
 | interactiveMarkFalsePositives |server + user + api token + projectID + (file only if no report file is in current dir)
-| interactiveUnmarkFalsePositives |server + user + apiToken + projectID 
+| interactiveUnmarkFalsePositives |server + user + apiToken + projectID
 | help |
 | version |
 |===
@@ -287,7 +336,7 @@ Here is an overview of mandatory parameter for each `action`:
   Quiet mode - Suppress all informative output. Can also be defined via environment variable `SECHUB_QUIET=true`. +
   Only print filenames written to, errors and explicitely requested informations (job-UUID, version, status).
 - `-reportformat <format>` +
-  Output format for reports. Currently supported: [html,json]. If not a supported format, "json" will always be the fallback.
+  Output format for reports. Currently supported: [`json`, `html`, `spdx-json`]. If an unsupported format string is provided, "json" will always be the fallback.
 - `-server <url>` +
   Server url of `{sechub}` server to use - e.g. https//example.com:8081. Mandatory, but can also be defined in config file or via environment variable.
 - `-stop-on-yellow` +
@@ -300,8 +349,8 @@ Here is an overview of mandatory parameter for each `action`:
   Username - mandatory, but can also be defined in config file or via environment variable.
 - `-version` +
   Shows version info and terminates
-- `-wait <seconds>` + 
-       Maximum wait time in seconds (default 60). 
+- `-wait <seconds>` +
+       Maximum wait time in seconds (default 60).
        Will be used for periodic status checks when action=`scan` and for retries of HTTP calls.
 
 ==== Environment variables
@@ -331,7 +380,7 @@ Settings for debugging/client development:
 - `SECHUB_DEBUG_HTTP` +
   When set to `true` then log HTTP request contents.
 - `SECHUB_IGNORE_DEFAULT_EXCLUDES` +
-  When set to `true` then default exclude folders `+{"**/test/**", "**/.git/**"}+` will be included for code scan. In this case, you should declare your own exclude list in the config json.
+  When set to `true` then default exclude folders `+{"**/test/**", "**/.git/**", "**/node_modules/**"}+` will be included for code scan. In this case, you should declare your own <<sechub-config-example-sourcescan,exclude list>> in the config json.
 - `SECHUB_INITIAL_WAIT_INTERVAL` +
   Initial wait time (floating point number) until SecHub client polls the first time if the report is ready (`sechub scan`). Meant for local integration tests.
 - `SECHUB_KEEP_TEMPFILES` +
@@ -354,48 +403,45 @@ Examples (Linux/Mac):
 
 `export http_proxy=http://localhost:3128` (e.g. when using a local CNTLM proxy)
 
+==== Debugging
+For troubleshooting, you can
+
+- set environment variable `SECHUB_DEBUG` to `true` +
+  Now you will see in detail what the client does and also the html calls sent to and received from {sechub} server.
+- set environment variable `SECHUB_DEBUG_HTTP` to `true` +
+  Now you will see the complete HTTP communication including headers. +
+  (basic-auth headers (security) and contents of uploads (binary data) are filtered out)
+
+
 [[section-client-configuration-file]]
 
-=== Client configuration file
-If not defined by option `-configfile`, secHub client will attempt to load `sechub.json` file from current directory
-and use it as sechub configuration.
+include::../../shared/configuration/sechub_config.adoc[]
 
-For scan actions, a valid configuration file is needed. Other actions like getReport or false-positives handling need no configuration file.
 
-==== Variables inside configuration files
-For advanced users: All environment variables are available inside your configuration file in go
+==== Code scan: accepted source code files
+The client will per default only include "wellknown" source files.
+This is done by inspecting the filename ending. The accepted defaults are shown in next table.
+
+NOTE: *All files having file endings not listed here, will be ignored* and not uploaded to {sechub} server.
+
+TIP: But of course you can also define additional source file endings - see <<sechub-config-example-sourcescan,config file example>> .
+
+include::../../gen/client/gen_table_default_zip_allowed_file_patterns.adoc[]
+
+
+==== Inject variables into configuration files (For advanced users)
+All environment variables are available inside your configuration file in Go
 template syntax:
 
 `{{ .ENV_VARIABLE_NAME }}`
 
-For example: When you have defined `USED_API_VERSION` with value `1.0`, you can use
-it in json config like
+For example: When you have defined `USED_API_VERSION` with value `1.0`, you can inject it into a json config file like this:
 
 [source,json]
 ----
 include::sechub_config_apiversion_example.json[]
 ----
 
-`{sechub} client` will automatically fill the variable with content from environment
-variable.
-
-TIP: When you have enabled debug log by setting environment entry `SECHUB_DEBUG` to `true`
-you will see network traffic and also JSON sent to server. This JSON will only
-contain the origin template but not the replaced parts. This was done to prevent
-accidently logging of variables - e.g. credentials.
-
-==== Accepted source code files
-The client will per default only include wellknown source files.
-This is done by inspecting the filename ending. The accepted defaults are shown in next table.
-
-*All files having file endings not listed here, will be ignored* and not contained in source upload to
-{sechub} server! 
-
-NOTE: But of course you can also define additional source file endings - see <<sechub-config-example-sourcescan,config file example>> .
-
-include::../../gen/client/gen_table_default_zip_allowed_file_patterns.adoc[]
-
-include::../../shared/configuration/sechub_config.adoc[]
 
 === Examples
 
@@ -404,7 +450,7 @@ NOTE: Next following sub chapters contain some `{sechub}` configuration examples
       At least replace example credentials `7536a8c4aa82407da7e06bdbEXAMPLE` and `alice` with your real ones to
       get them working.
 
-==== Start a source scan
+==== Start a source code scan
 
 [source, bash]
 ----
@@ -439,7 +485,7 @@ with corresponding `sechub.json` config file: <<sechub-config-example-infrascan-
 SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
 sechub -file mark-fp.json markFalsePositives
 ----
-with a corresponding `mark-fp.json` - see <<section-client-false-positives-mark,Mark false positives JSON format>> 
+with a corresponding `mark-fp.json` - see <<section-client-false-positives-mark,Mark false positives JSON format>>
 
 ==== Unmark false positives
 [source, bash]
@@ -447,7 +493,7 @@ with a corresponding `mark-fp.json` - see <<section-client-false-positives-mark,
 SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
 sechub -file mark-fp.json unmarkFalsePositives
 ----
-with a corresponding `mark-fp.json` - see <<section-client-false-positives-unmark,Unmark false positives JSON format>> 
+with a corresponding `mark-fp.json` - see <<section-client-false-positives-unmark,Unmark false positives JSON format>>
 
 [[section-client-interactiveMarkFalsePositives-mark]]
 ===== interactiveMarkFalsePositives
@@ -456,9 +502,9 @@ with a corresponding `mark-fp.json` - see <<section-client-false-positives-unmar
 SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
 sechub interactiveMarkFalsePositives
 
-/  ___|         | | | |     | |    
-\ `--.  ___  ___| |_| |_   _| |__  
- `--. \/ _ \/ __|  _  | | | | '_ \ 
+/  ___|         | | | |     | |
+\ `--.  ___  ___| |_| |_   _| |__
+ `--. \/ _ \/ __|  _  | | | | '_ \
 /\__/ /  __/ (__| | | | |_| | |_) |
 \____/ \___|\___\_| |_/\__,_|_.__/ Client Version 0.29.0-20220401111823
 

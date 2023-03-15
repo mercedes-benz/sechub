@@ -30,6 +30,8 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.mercedesbenz.sechub.commons.TextFileWriter;
+import com.mercedesbenz.sechub.commons.mapping.MappingData;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.integrationtest.JSONTestSupport;
@@ -38,11 +40,11 @@ import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDefaultEx
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestFileSupport;
 import com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestTemplateFile;
 import com.mercedesbenz.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
+import com.mercedesbenz.sechub.integrationtest.internal.SecHubJobAutoDumper;
 import com.mercedesbenz.sechub.integrationtest.internal.SimpleTestStringList;
 import com.mercedesbenz.sechub.integrationtest.internal.TestAutoCleanupData;
 import com.mercedesbenz.sechub.integrationtest.internal.TestJSONHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper;
-import com.mercedesbenz.sechub.sharedkernel.mapping.MappingData;
 import com.mercedesbenz.sechub.sharedkernel.project.ProjectAccessLevel;
 import com.mercedesbenz.sechub.test.SecHubTestURLBuilder;
 import com.mercedesbenz.sechub.test.TestUtil;
@@ -57,7 +59,10 @@ public class AsUser {
 
     private static final Logger LOG = LoggerFactory.getLogger(AsUser.class);
     private JSONTestSupport jsonTestSupport = JSONTestSupport.DEFAULT;
+    private SecHubJobAutoDumper autoDumper = new SecHubJobAutoDumper();
     TestUser user;
+    private TextFileWriter writer;
+    private boolean enableHTMLautoDumps;
 
     AsUser(TestUser user) {
         this.user = user;
@@ -67,26 +72,37 @@ public class AsUser {
         return new WithSecHubClient(this);
     }
 
+    public AsUser enablePDSAutoDumpOnErrorsForSecHubJob(UUID sechubJobUUID) {
+        this.autoDumper.enablePDSAutoDumpOnErrorsForSecHubJob();
+        this.autoDumper.setSecHubJobUUID(sechubJobUUID);
+        return this;
+    }
+
     public AsUser uploadSourcecode(TestProject project, UUID jobUUID, File file, String checkSum) {
         /* @formatter:off */
-		getRestHelper().upload(getUrlBuilder().
-		        buildUploadSourceCodeUrl(project.getProjectId(),jobUUID),file,checkSum);
-		/* @formatter:on */
+        autoDumper.execute(() -> getRestHelper().upload(getUrlBuilder().
+		        buildUploadSourceCodeUrl(project.getProjectId(),jobUUID),file,checkSum)
+		);
+        /* @formatter:on */
         return this;
     }
 
     public AsUser uploadBinaries(TestProject project, UUID jobUUID, File file, String checkSum) {
         /* @formatter:off */
+        autoDumper.execute(() ->
         getRestHelper().upload(getUrlBuilder().
-                buildUploadBinariesUrl(project.getProjectId(),jobUUID),file,checkSum);
+                buildUploadBinariesUrl(project.getProjectId(),jobUUID),file,checkSum))
+        ;
         /* @formatter:on */
         return this;
     }
 
     public List<String> listAllUserIds() {
-        String json = getRestHelper().getJSON(getUrlBuilder().buildAdminListsUsersUrl());
-        SimpleTestStringList list = JSONConverter.get().fromJSON(SimpleTestStringList.class, json);
-        return list;
+        return autoDumper.execute(() -> {
+            String json = getRestHelper().getJSON(getUrlBuilder().buildAdminListsUsersUrl());
+            SimpleTestStringList list = JSONConverter.get().fromJSON(SimpleTestStringList.class, json);
+            return list;
+        });
     }
 
     /**
@@ -97,9 +113,11 @@ public class AsUser {
      * @return
      */
     public AsUser uploadSourcecode(TestProject project, UUID jobUUID, String pathInsideResources) {
-        File uploadFile = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(pathInsideResources);
-        String checkSum = TestAPI.createSHA256Of(uploadFile);
-        uploadSourcecode(project, jobUUID, uploadFile, checkSum);
+        autoDumper.execute(() -> {
+            File uploadFile = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(pathInsideResources);
+            String checkSum = TestAPI.createSHA256Of(uploadFile);
+            uploadSourcecode(project, jobUUID, uploadFile, checkSum);
+        });
         return this;
     }
 
@@ -110,9 +128,11 @@ public class AsUser {
      * @return
      */
     public AsUser uploadBinaries(TestProject project, UUID jobUUID, String pathInsideResources) {
-        File uploadFile = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(pathInsideResources);
-        String checkSum = TestAPI.createSHA256Of(uploadFile);
-        uploadBinaries(project, jobUUID, uploadFile, checkSum);
+        autoDumper.execute(() -> {
+            File uploadFile = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(pathInsideResources);
+            String checkSum = TestAPI.createSHA256Of(uploadFile);
+            uploadBinaries(project, jobUUID, uploadFile, checkSum);
+        });
         return this;
     }
 
@@ -403,8 +423,7 @@ public class AsUser {
 
     }
 
-    public UUID createScanJobWhichUsesDataReferencedIds(IntegrationTestTemplateFile template, TestProject project, IntegrationTestMockMode runMode,
-            TemplateData data) {
+    public UUID createCodeScanWithTemplate(IntegrationTestTemplateFile template, TestProject project, IntegrationTestMockMode runMode, TemplateData data) {
         Map<String, String> variableMap = new HashMap<>();
         variableMap.putAll(data.getVariables());
         int index = 0;
@@ -440,13 +459,6 @@ public class AsUser {
     private String createCodeScanJob(IntegrationTestTemplateFile template, TestProject project, IntegrationTestMockMode runMode,
             Map<String, String> customVariableMap) {
 
-        String folder = null;
-        if (runMode != null) {
-            folder = runMode.getTarget();
-        }
-        if (folder == null) {
-            folder = "notexisting";
-        }
         String templateJson = getConfigTemplate(template);
         String projectId = project.getProjectId();
 
@@ -454,7 +466,16 @@ public class AsUser {
         map.putAll(customVariableMap);
         // add default variables
         map.put("__projectname__", projectId);
-        map.put("__folder__", folder);
+        if (!customVariableMap.containsKey("__folder__")) {
+            String folder = null;
+            if (runMode != null) {
+                folder = runMode.getMockDataIdentifier();
+            }
+            if (folder == null) {
+                folder = "notexisting";
+            }
+            map.put("__folder__", folder);
+        }
 
         for (String variableName : map.keySet()) {
             String replacement = map.get(variableName);
@@ -495,7 +516,7 @@ public class AsUser {
     private String createTargetURIForSechubConfiguration(IntegrationTestMockMode runMode, List<String> whites) {
         String acceptedURI1 = null;
         if (runMode != null) {
-            acceptedURI1 = runMode.getTarget();
+            acceptedURI1 = runMode.getMockDataIdentifier();
         }
         if (acceptedURI1 != null) {
             return acceptedURI1;
@@ -506,7 +527,7 @@ public class AsUser {
         /* okay, no runmode used having whitelist entry */
         List<String> copy = new ArrayList<>(whites);
         for (IntegrationTestMockMode mode : IntegrationTestMockMode.values()) {
-            String target = mode.getTarget();
+            String target = mode.getMockDataIdentifier();
             if (target != null) {
                 /* we drop all existing run mode parts here - to avoid side effects */
                 copy.remove(target);
@@ -577,6 +598,33 @@ public class AsUser {
         return getRestHelper().getJSON(getUrlBuilder().buildGetJobReportUrl(projectId, jobUUID));
     }
 
+    private TextFileWriter getWriter() {
+        if (writer == null) {
+            writer = new TextFileWriter();
+        }
+        return writer;
+    }
+
+    public AsUser enableAutoDumpForHTMLReports() {
+        this.enableHTMLautoDumps = true;
+        return this;
+    }
+
+    public String getHTMLJobReport(TestProject project, UUID jobUUID) {
+        waitForJobToFinish(project.getProjectId(), jobUUID);
+
+        /* okay report is available - so do download */
+        String html = getRestHelper().getStringFromURL(getUrlBuilder().buildGetJobReportUrl(project.getProjectId(), jobUUID), MediaType.TEXT_HTML);
+        if (enableHTMLautoDumps) {
+            try {
+                getWriter().save(new File("./build/test-results/html-reports/" + jobUUID + ".html"), html, false);
+            } catch (IOException e) {
+                throw new IllegalStateException("Was not able to dump HTML data", e);
+            }
+        }
+        return html;
+    }
+
     public String getSpdxReport(TestProject project, UUID jobUUID) {
         return getSpdxReport(project.getProjectId(), jobUUID);
     }
@@ -621,13 +669,13 @@ public class AsUser {
         return result;
     }
 
-    public String restartCodeScanAndFetchJobStatus(TestProject project, UUID sechubJobUUID) {
+    public String restartJobAndFetchJobStatus(TestProject project, UUID sechubJobUUID) {
         restartJob(sechubJobUUID);
         waitForJobDoneAndEvenWaitWhileJobIsFailing(project, sechubJobUUID);
         return getJobStatus(project.getProjectId(), sechubJobUUID);
     }
 
-    public String restartCodeScanHardAndFetchJobStatus(TestProject project, UUID sechubJobUUID) {
+    public String restartJobHardAndFetchJobStatus(TestProject project, UUID sechubJobUUID) {
         restartJobHard(sechubJobUUID);
         waitForJobDoneAndEvenWaitWhileJobIsFailing(project, sechubJobUUID);
         return getJobStatus(project.getProjectId(), sechubJobUUID);
@@ -722,19 +770,18 @@ public class AsUser {
         }
     }
 
-    public File downloadAsTempFileFromURL(String url, UUID jobUUID) {
-        String fileName = "sechub-file-redownload-" + jobUUID.toString();
-        String fileEnding = ".zip";
-        return downloadAsTempFileFromURL(url, jobUUID, fileName, fileEnding);
+    public File downloadAsTempFileFromURL(String url, UUID jobUUID, String fileName) {
+        String prefix = "sechub-file-redownload-" + jobUUID.toString();
+        return downloadAsTempFileFromURL(url, jobUUID, prefix, fileName);
     }
 
-    public File downloadAsTempFileFromURL(String url, UUID jobUUID, String fileName, String fileEnding) {
+    public File downloadAsTempFileFromURL(String url, UUID jobUUID, String prefix, String fileEnding) {
 
         // Optional Accept header
         RequestCallback requestCallback = request -> request.getHeaders().setAccept(Arrays.asList(MediaType.APPLICATION_OCTET_STREAM, MediaType.ALL));
 
         ResponseExtractor<File> responseExtractor = response -> {
-            Path path = TestUtil.createTempFileInBuildFolder(fileName, fileEnding);
+            Path path = TestUtil.createTempFileInBuildFolder(prefix, fileEnding);
             Files.copy(response.getBody(), path, StandardCopyOption.REPLACE_EXISTING);
             if (TestUtil.isDeletingTempFiles()) {
                 path.toFile().deleteOnExit();
@@ -747,7 +794,7 @@ public class AsUser {
     }
 
     public String getServerVersion() {
-        return getRestHelper().getJSON(getUrlBuilder().buildGetServerVersionUrl());
+        return getRestHelper().getStringFromURL(getUrlBuilder().buildGetServerVersionUrl());
     }
 
     public boolean getIsAlive() {
@@ -808,8 +855,10 @@ public class AsUser {
     }
 
     public AsUser cancelJob(UUID jobUUID) {
-        String url = getUrlBuilder().buildAdminCancelsJob(jobUUID);
-        getRestHelper().post(url);
+        autoDumper.execute(() -> {
+            String url = getUrlBuilder().buildAdminCancelsJob(jobUUID);
+            getRestHelper().post(url);
+        });
         return this;
     }
 
@@ -1169,6 +1218,42 @@ public class AsUser {
             }
         }
         throw new IllegalStateException("Cannot fetch boolean result from url:" + url + " - was not a boolean but " + result);
+    }
+
+    /**
+     * Fetches user job info list without using a limit parameter. The default
+     * without limit is one, so we get only ONE entry or none (if no job has been
+     * started). If the REST call would return more than one entry, this method will
+     * fail, because it would be not the expected and documented behavior!
+     *
+     * @param project
+     * @return info or <code>null</code>, if no job available at all
+     */
+    public TestSecHubJobInfoForUserListPage fetchUserJobInfoListOneEntryOrNull(TestProject project) {
+        TestSecHubJobInfoForUserListPage listPage = fetchUserJobInfoList(project, null, null);
+        if (listPage.getContent().isEmpty()) {
+            return null;
+        }
+        assertEquals("Without parameter job list may container either 0 or 1 entries", 1, listPage.getContent().size());
+        return listPage;
+    }
+
+    public TestSecHubJobInfoForUserListPage fetchUserJobInfoList(TestProject project, int size) {
+        return fetchUserJobInfoList(project, String.valueOf(size), null);
+    }
+
+    public TestSecHubJobInfoForUserListPage fetchUserJobInfoList(TestProject project, int size, int page) {
+        return fetchUserJobInfoList(project, String.valueOf(size), String.valueOf(page));
+    }
+
+    public TestSecHubJobInfoForUserListPage fetchUserJobInfoList(TestProject project, String size, String page) {
+
+        String url = getUrlBuilder().buildUserFetchesListOfJobsForProject(project.getProjectId(), size, page);
+        String json = getRestHelper().getJSON(url);
+
+        TestSecHubJobInfoForUserListPage listPage = TestJSONHelper.get().createFromJSON(json, TestSecHubJobInfoForUserListPage.class);
+        return listPage;
+
     }
 
 }

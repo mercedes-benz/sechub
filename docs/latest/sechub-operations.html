@@ -529,9 +529,9 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Operations</h1>
+<h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Operations</h1>
 <div class="details">
-<span id="revnumber"> Server 0.34.0</span>
+<span id="revnumber"> Server 0.39.1</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -606,7 +606,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#mapping">2.5. Mapping</a>
 <ul class="sectlevel3">
 <li><a href="#rest-api-for-global-mapping">2.5.1. REST API for global mapping</a></li>
-<li><a href="#json-structure">2.5.2. JSON structure</a></li>
+<li><a href="#mapping-json-structure">2.5.2. JSON structure</a></li>
 </ul>
 </li>
 <li><a href="#section-initial-profile-and-executors">2.6. Execution profiles</a></li>
@@ -637,11 +637,12 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 </li>
 <li><a href="#product-specific-details">2.7.2. Product specific details</a>
 <ul class="sectlevel4">
-<li><a href="#checkmarx">2.7.2.1. Checkmarx</a>
+<li><a href="#pds">2.7.2.1. PDS</a></li>
+<li><a href="#checkmarx">2.7.2.2. Checkmarx</a>
 <ul class="sectlevel5">
-<li><a href="#mapping-teams-and-presets-for-new-projects">2.7.2.1.1. Mapping teams and presets for new projects</a></li>
-<li><a href="#how-to-obtain-preset-id">2.7.2.1.2. How to obtain preset id</a></li>
-<li><a href="#how-to-obtain-team-id">2.7.2.1.3. How to obtain team id</a></li>
+<li><a href="#mapping-teams-and-presets-for-new-projects">2.7.2.2.1. Mapping teams and presets for new projects</a></li>
+<li><a href="#how-to-obtain-preset-id">2.7.2.2.2. How to obtain preset id</a></li>
+<li><a href="#how-to-obtain-team-id">2.7.2.2.3. How to obtain team id</a></li>
 </ul>
 </li>
 </ul>
@@ -669,38 +670,52 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 </li>
 <li><a href="#security-products">3. Security Products</a>
 <ul class="sectlevel2">
-<li><a href="#checkmarx-2">3.1. Checkmarx</a>
+<li><a href="#pds-2">3.1. PDS</a>
 <ul class="sectlevel3">
-<li><a href="#what-does-the-adapter-do">3.1.1. What does the adapter do?</a>
+<li><a href="#general-2">3.1.1. General</a></li>
+<li><a href="#pds-solutions">3.1.2. PDS solutions</a>
 <ul class="sectlevel4">
-<li><a href="#what-must-be-done-on-checkmarx-ui">3.1.1.1. What must be done on Checkmarx UI</a></li>
-<li><a href="#what-can-be-configured-for-sechub">3.1.1.2. What can be configured for SecHub ?</a>
+<li><a href="#gosec">3.1.2.1. GoSec</a></li>
+<li><a href="#multi">3.1.2.2. Multi</a></li>
+<li><a href="#owasp-zap">3.1.2.3. Owasp-Zap</a></li>
+<li><a href="#pmd">3.1.2.4. PMD</a></li>
+<li><a href="#scancode">3.1.2.5. ScanCode</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#checkmarx-2">3.2. Checkmarx</a>
+<ul class="sectlevel3">
+<li><a href="#what-does-the-adapter-do">3.2.1. What does the adapter do?</a>
+<ul class="sectlevel4">
+<li><a href="#what-must-be-done-on-checkmarx-ui">3.2.1.1. What must be done on Checkmarx UI</a></li>
+<li><a href="#what-can-be-configured-for-sechub">3.2.1.2. What can be configured for SecHub ?</a>
 <ul class="sectlevel5">
-<li><a href="#environment">3.1.1.2.1. Environment</a></li>
-<li><a href="#runtime">3.1.1.2.2. Runtime</a></li>
+<li><a href="#environment">3.2.1.2.1. Environment</a></li>
+<li><a href="#runtime">3.2.1.2.2. Runtime</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#summary">3.1.2. Summary</a></li>
+<li><a href="#summary">3.2.2. Summary</a></li>
 </ul>
 </li>
-<li><a href="#netsparker">3.2. Netsparker</a>
+<li><a href="#netsparker">3.3. Netsparker</a>
 <ul class="sectlevel3">
-<li><a href="#what-does-the-adapter-do-2">3.2.1. What does the adapter do?</a></li>
-<li><a href="#what-must-be-done-on-netsparker-ui">3.2.2. What must be done on Netsparker UI</a>
+<li><a href="#what-does-the-adapter-do-2">3.3.1. What does the adapter do?</a></li>
+<li><a href="#what-must-be-done-on-netsparker-ui">3.3.2. What must be done on Netsparker UI</a>
 <ul class="sectlevel4">
-<li><a href="#users">3.2.2.1. Users</a></li>
+<li><a href="#users">3.3.2.1. Users</a></li>
 </ul>
 </li>
-<li><a href="#summary-2">3.2.3. Summary</a></li>
+<li><a href="#summary-2">3.3.3. Summary</a></li>
 </ul>
 </li>
-<li><a href="#nessus">3.3. Nessus</a>
+<li><a href="#nessus">3.4. Nessus</a>
 <ul class="sectlevel3">
-<li><a href="#what-does-the-adapter-do-3">3.3.1. What does the adapter do?</a></li>
-<li><a href="#what-must-be-done-on-nessus-ui">3.3.2. What must be done on Nessus UI</a></li>
-<li><a href="#summary-3">3.3.3. Summary</a></li>
+<li><a href="#what-does-the-adapter-do-3">3.4.1. What does the adapter do?</a></li>
+<li><a href="#what-must-be-done-on-nessus-ui">3.4.2. What must be done on Nessus UI</a></li>
+<li><a href="#summary-3">3.4.3. Summary</a></li>
 </ul>
 </li>
 </ul>
@@ -796,7 +811,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.34.0-20220620124023</code></p>
+<p>Documentation version: <code>Server 0.39.1-20230309143013</code></p>
 </div>
 <div class="paragraph">
 <p>Target audience for this document are <strong>SecHub Operators/Administrators</strong>.</p>
@@ -1094,37 +1109,37 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.nessus.defaultpolicyid</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">deprecated</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Default policy ID for nessus scans</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.nessus.internet.baseurl</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">deprecated</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Base url of nessus used for internet scans</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.nessus.internet.password</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">deprecated</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Password for nessus instance used for internet scans</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.nessus.internet.userid</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">deprecated</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User id of nessus user (internet)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.nessus.intranet.baseurl</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">deprecated</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Base url of nessus used for intranet scans</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.nessus.intranet.password</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">deprecated</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Password for nessus instance used for intranet scans</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.nessus.intranet.userid</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">deprecated</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User id of nessus user (intranet)</p></td>
 </tr>
 <tr>
@@ -1149,7 +1164,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.nessus.trustall</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Turns off certification checks for this product only. Should only be used in test or development environments!</p></td>
 </tr>
 </tbody>
@@ -1171,37 +1186,37 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.netsparker.agentname</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">deprecated</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The name of the agent to be used by netsparker. If a agent group name is already defined the group will be superiour. If no group set and no agent name netsparker will use a agent but seems to be unpredictable which agent will be used.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.netsparker.apitoken</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">deprecated</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">API token for netsparker user</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.netsparker.baseurl</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">deprecated</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Base url for netsparker installation</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.netsparker.defaultpolicyid</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">deprecated</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Default policy ID for netsparker scans</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.netsparker.internet.agentgroupname</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">deprecated</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The name of the agent group to be used by netsparker for <strong>intranet scans</strong>. If not set no agent group will be used.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.netsparker.intranet.agentgroupname</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">deprecated</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The name of the agent group to be used by netsparker for <strong>intranet scans</strong>. If not set no agent group will be used.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.netsparker.licenseid</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">deprecated</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
@@ -1216,18 +1231,40 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.netsparker.trustall</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Turns off certification checks for this product only. Should only be used in test or development environments!</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.netsparker.userid</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">deprecated</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">user id of netsparker user</p></td>
 </tr>
 </tbody>
 </table>
+<table id="section-gen-config-scope-new" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 10. Scope 'new'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.user.onetimetoken.outdated.millis</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">86400000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time until the one time token expires</p></td>
+</tr>
+</tbody>
+</table>
 <table id="section-gen-config-scope-notification" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. Scope 'notification'</caption>
+<caption class="title">Table 11. Scope 'notification'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1259,7 +1296,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-p" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. Scope 'p'</caption>
+<caption class="title">Table 12. Scope 'p'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1306,7 +1343,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-s" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. Scope 's'</caption>
+<caption class="title">Table 13. Scope 's'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1348,7 +1385,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-scan" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. Scope 'scan'</caption>
+<caption class="title">Table 14. Scope 'scan'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1365,7 +1402,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.check.canceljob.delay</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">60000</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Define delay in milliseconds, for before next job cancelation check will be executed.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define delay in milliseconds, for before next job cancellation check will be executed.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.scan.scanconfig.refresh.delay</p></td>
@@ -1380,7 +1417,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-scheduler" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. Scope 'scheduler'</caption>
+<caption class="title">Table 15. Scope 'scheduler'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1420,6 +1457,11 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Inside a cluster the next job fetching can lead to concurrent access. When this happens a retry can be done for the 'looser'. This value defines the amount of *tries*If you do not want any retries set the value to a value lower than 2. 2 Means after one execution failed there is one retry. Values lower than 2 will lead to one try of execution only.</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.scheduler.strategy.id</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define the scheduler strategy by given identifier. This strategy determines the next job which shall be executed by job scheduler. Possible values are:first-come-first-serve,only-one-scan-per-project-at-a-time and only-one-scan-per-project-and-module-group</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.server.upload.validate.checksum</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">With <code>false</code> source code checksum validation (sha256) on sechub server side is disabled. Sha256 validation must be done by the delegated security products! You should disable the validation only for testing security product behaviours!</p></td>
@@ -1437,7 +1479,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-sec" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. Scope 'sec'</caption>
+<caption class="title">Table 16. Scope 'sec'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1452,6 +1494,16 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </thead>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.project.joblist.page.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">100</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.project.joblist.size.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">100</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum limit for job information list entries per page</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.server.baseurl</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Base url of SecHub server - e.g. <a href="https://sechub.example.org" class="bare">https://sechub.example.org</a></p></td>
@@ -1459,7 +1511,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-security" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. Scope 'security'</caption>
+<caption class="title">Table 17. Scope 'security'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1481,7 +1533,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-server" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 17. Scope 'server'</caption>
+<caption class="title">Table 18. Scope 'server'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1503,7 +1555,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-storage" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 18. Scope 'storage'</caption>
+<caption class="title">Table 19. Scope 'storage'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1520,22 +1572,67 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.storage.s3.accesskey</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the access key for used s3 bucket</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the access key for used S3 bucket</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.storage.s3.bucketname</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the s3 bucket name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the S3 bucket name</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.storage.s3.connection.idle.max.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">60000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 client maximum idle time (in milliseconds) for a connection in the connection pool.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.storage.s3.connection.idle.validate.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 client time (in milliseconds) a connection can be idle in the connection pool before it must be validated that it&#8217;s still open.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.storage.s3.connection.max.poolsize</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">50</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 client max connection pool size.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.storage.s3.connection.ttl.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 client expiration time (in milliseconds) for a connection in the connection pool. -1 means deactivated</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.storage.s3.endpoint</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the s3 endpoint - e.g. <a href="https://play.min.io" class="bare">https://play.min.io</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the S3 endpoint - e.g. <a href="https://play.min.io" class="bare">https://play.min.io</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.storage.s3.secretkey</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the secret key for used s3 bucket</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the secret key for used S3 bucket</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.storage.s3.signer.override</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AWSS3V4SignerType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Can be used to override the default name of the signature algorithm used to sign requests.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.storage.s3.timeout.connection.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 client timeout (in milliseconds) for creating new connections.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.storage.s3.timeout.execution.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 client timeout (in milliseconds) for execution. 0 means it is disabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.storage.s3.timeout.request.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 client timeout (in milliseconds) for a request. 0 means it is disabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.storage.s3.timeout.socket.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">50000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 client timeout (in milliseconds) for reading from a connected socket.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.storage.sharedvolume.upload.dir</p></td>
@@ -1545,7 +1642,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-system" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 19. Scope 'system'</caption>
+<caption class="title">Table 20. Scope 'system'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1577,7 +1674,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-target" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. Scope 'target'</caption>
+<caption class="title">Table 21. Scope 'target'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1600,8 +1697,8 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.target.resolve.strategy.uri</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Strategy to decide target types by given URI.</strong><br>
-Starts always with strategy-identifer, colon and value(s). Values are comma separated. Currently only 'intranet-hostname-ends-with' is supported as strategy. For example: <code>intranet-hostname-ends-with:intranet.example.org,intx.example.com</code>. Other hostnames are interpreted as being inside INTERNET. But no matter if strategy is defined or not: loopback addresses are always illegal and so ignored.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>One ore more strategies to decide target types by given URI.</strong><br>
+Starts always with strategy-identifer, colon and value(s). Values are comma separated. Currently only 'intranet-hostname-ends-with' and 'intranet-hostname-starts-with' are supported as strategies. For example: <code>intranet-hostname-ends-with:intranet.example.org,intx.example.com</code>. Other hostnames are interpreted as being inside INTERNET. But no matter if strategy is defined or not: loopback addresses are always illegal and so ignored. You can define multiple strategies at same time by using a pipe symbol to separate them. As an example: `intranet-hostname-ends-with:intranet.example.org,intx.example.com</p></td>
 </tr>
 </tbody>
 </table>
@@ -1609,7 +1706,7 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 <div class="sect3">
 <h4 id="scheduling-definitions">2.2.3. Scheduling definitions</h4>
 <table id="link-gen-scheduling" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. Scope 'administration'</caption>
+<caption class="title">Table 22. Scope 'administration'</caption>
 <colgroup>
 <col style="width: 7.6923%;">
 <col style="width: 46.1538%;">
@@ -1631,7 +1728,7 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 22. Scope 'scan'</caption>
+<caption class="title">Table 23. Scope 'scan'</caption>
 <colgroup>
 <col style="width: 7.6923%;">
 <col style="width: 46.1538%;">
@@ -1653,7 +1750,7 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 23. Scope 'schedule'</caption>
+<caption class="title">Table 24. Scope 'schedule'</caption>
 <colgroup>
 <col style="width: 7.6923%;">
 <col style="width: 46.1538%;">
@@ -1711,7 +1808,7 @@ define a network policy, services, endpoints etc. etc.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Be aware to mount <strong>only ONE pod</strong> - the database is <strong>shared by all sechub server
+<p>Be aware to mount <strong>only ONE pod</strong> - the database is <strong>shared by all SecHub server
 PODs</strong> <em>(means this is a shared kernel / bottle neck but necessary)</em></p>
 </div>
 </td>
@@ -1776,7 +1873,7 @@ define a network policy, services, endpoints etc.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Be aware to mount <strong>only ONE pod</strong> - the database is <strong>shared by all sechub server
+<p>Be aware to mount <strong>only ONE pod</strong> - the database is <strong>shared by all SecHub server
 PODs</strong> <em>(means this is a shared kernel / bottle neck but necessary)</em></p>
 </div>
 </td>
@@ -1788,7 +1885,7 @@ PODs</strong> <em>(means this is a shared kernel / bottle neck but necessary)</e
 <div class="sect3">
 <h4 id="server-application">2.3.3. Server Application</h4>
 <div class="paragraph">
-<p>SecHub server is a written in <code>Java</code> and needs at least <code>JDK 8</code>.</p>
+<p>SecHub server is a written in <code>Java</code> and needs at least <code>JDK 11</code>.</p>
 </div>
 <div class="paragraph">
 <p>You can configure SecHub server by system properties or also by  environment
@@ -1819,12 +1916,6 @@ Next lines will show java launcher properties which MUST be set because
 <pre>-Dspring.profiles.active=dev,postgres,real_products
 -Dsechub.initialadmin.email=value
 -Dsechub.initialadmin.userid=value
--Dsechub.adapter.nessus.defaultpolicyid=value
--Dsechub.adapter.netsparker.apitoken=value
--Dsechub.adapter.netsparker.baseurl=value
--Dsechub.adapter.netsparker.defaultpolicyid=value
--Dsechub.adapter.netsparker.licenseid=value
--Dsechub.adapter.netsparker.userid=value
 -Dsechub.notification.email.administrators=value
 -Dsechub.notification.email.from=value
 -Dsechub.notification.smtp.hostname=value
@@ -1850,12 +1941,6 @@ Instead of java system properties you can also define environment entries
 <pre>export SPRING_PROFILES_ACTIVE=dev,postgres,real_products
 export SECHUB_INITIALADMIN_EMAIL=value
 export SECHUB_INITIALADMIN_USERID=value
-export SECHUB_ADAPTER_NESSUS_DEFAULTPOLICYID=value
-export SECHUB_ADAPTER_NETSPARKER_APITOKEN=value
-export SECHUB_ADAPTER_NETSPARKER_BASEURL=value
-export SECHUB_ADAPTER_NETSPARKER_DEFAULTPOLICYID=value
-export SECHUB_ADAPTER_NETSPARKER_LICENSEID=value
-export SECHUB_ADAPTER_NETSPARKER_USERID=value
 export SECHUB_NOTIFICATION_EMAIL_ADMINISTRATORS=value
 export SECHUB_NOTIFICATION_EMAIL_FROM=value
 export SECHUB_NOTIFICATION_SMTP_HOSTNAME=value
@@ -2167,7 +2252,7 @@ automation was possible!</p>
 <p>Script to prepare old jobs for Spring batch CVE-2020-5411 changes</p>
 </div>
 <div class="paragraph">
-<p>With Server v0.19.0 we upgraded our Spring Boot dependencies <sup class="footnote" id="_footnote_update_0_19_0">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup> but this led to cancelation problems on older jobs -
+<p>With Server v0.19.0 we upgraded our Spring Boot dependencies <sup class="footnote" id="_footnote_update_0_19_0">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup> but this led to cancellation problems on older jobs -
 this led to problems when deleting older jobs still running.<sup class="footnote" id="_footnote_problem_499">[<a id="_footnoteref_2" class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup></p>
 </div>
 <div class="paragraph">
@@ -2256,7 +2341,7 @@ behaviour like done in <a href="#scan-config-about">scan configuration</a>.</p>
 <div class="sect3">
 <h4 id="rest-api-for-global-mapping">2.5.1. REST API for global mapping</h4>
 <div class="paragraph">
-<p>A global configuration can be done by REST API.</p>
+<p>A global configuration can be done by REST API. The data is defined in <a href="#mapping-json-structure">JSON</a>.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -2270,9 +2355,9 @@ behaviour like done in <a href="#scan-config-about">scan configuration</a>.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="json-structure">2.5.2. JSON structure</h4>
+<h4 id="mapping-json-structure">2.5.2. JSON structure</h4>
 <div class="paragraph">
-<p>given JSON has following structure:</p>
+<p>Given JSON has following structure:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2579,9 +2664,392 @@ concept and the format.</p>
 <div class="sect3">
 <h4 id="product-specific-details">2.7.2. Product specific details</h4>
 <div class="sect4">
-<h5 id="checkmarx">2.7.2.1. Checkmarx</h5>
+<h5 id="pds">2.7.2.1. PDS</h5>
+<div class="paragraph">
+<p>For PDS we have a set of predefined configuration parameters <em>(see next table)</em> and the possibility
+to define custom parameters.</p>
+</div>
+<div class="paragraph">
+<p>Some of the predefined parameters are generated.
+In this case the user cannot define them in the executor configuration, but they
+are listed here for the sake of completeness.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 25. PDS executor configuration parameters</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Additional info</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.productexecutor.forbidden.targettype.internet</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+When this key is set to true, then this PDS instance does not scan INTERNET!
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.productexecutor.forbidden.targettype.intranet</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+When this key is set to true, then this PDS instance does not scan INTRANET!
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.productexecutor.timetowait.nextcheck.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+When this is set, the value will be used to wait for next check on PDS server. If not, the default from PDS install set up is used instead.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.productexecutor.timeout.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+When this is set, the value will be used to wait before timeout happens happens when no communication with PDS server is possible. If not, the default from PDS install set up is used instead.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.productexecutor.trustall.certificates</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+When 'true' then all certificates are accepted. Do not use this in production!
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.productidentifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+Contains the product identifier, so PDS knows which part is to call on it's side.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Available as ENV variable <code>PDS_CONFIG_PRODUCTIDENTIFIER</code> inside launcher script.</p>
+</li>
+<li>
+<p><strong>Mandatory</strong></p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.scan.target.type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+Contains the target type (depending on scan type) and will be just an additional information for PDS from SecHub.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Available as ENV variable <code>PDS_SCAN_TARGET_TYPE</code> inside launcher script.</p>
+</li>
+<li>
+<p><strong>Generated</strong></p>
+</li>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.use.sechub.storage</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+When 'true' the SecHub storage will be reused by the PDS server. In this case SecHub will not upload job data to PDS.
+But it's crucial to have the same root storage setup on the PDS server side (e.g. same s3 bucket for S3 storage, or same NFS base for shared volumes).
+When not 'true' or not defined, PDS will use its own storage locations
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+<li>
+<p>Default is "true"</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.use.sechub.mappings</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+Contains a comma separated list of mappping ids. Each defined mapping will be fetched from SecHub DB as JSON and sent as job parameter with the mapping id as name to the PDS.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+<li>
+<p>Default is "true"</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.sechub.storage.path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+This contains the sechub storage location when sechub storage shall be used. So PDS knows location - in combination with sechub job UUID reuse is possible
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p><strong>Generated</strong></p>
+</li>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.filefilter.includes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+This contains a comma separated list of path patterns for file includes. These patterns can contain wildcards. Matching will be done case insensitive!
+Every file which is matched by one of the patterns will be included - except those which are explicitly excluded.
+When nothing is defined, then every content is accepted for include.</p>
+<p class="tableblock">For example: '*.go,*.html, test1.txt' would include every Go file, every HTML file and files named 'test1.txt'.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.script.trustall.certificates.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+When 'true' the PDS adapter script used by the job will have the information and can use this information when it comes to remote operations.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Available as ENV variable <code>PDS_CONFIG_SCRIPT_TRUSTALL_CERTIFICATES_ENABLED</code> inside launcher script.</p>
+</li>
+<li>
+<p>Optional</p>
+</li>
+<li>
+<p>Default is "false"</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.supported.datatypes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+Can be SOURCE, BINARY, NONE or a combination as a comma separated list. This data should normally not be defined via a default value of an optional PDS configuration parameter.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.jobstorage.read.resilience.retries.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+Defines the maximum amount of retries done when a job storage read access is failing
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.jobstorage.read.resilience.retry.wait.seconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+Defines the time to wait in seconds before the next retry is done (when it comes to storage READ problems)
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.product.timeout.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+Maximum allowed time in minutes, before a product will time out - this means that the launcher script is automatically canceled by PDS
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.filefilter.excludes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+This contains a comma separated list of path patterns for file excludes. These patterns can contain wildcards. Matching will be done case insensitive!
+When empty, then nothing will be excluded. The exclude operation will be done AFTER the include file filtering.</p>
+<p class="tableblock">For example: '*.go,*.html, test1.txt' would exclude every Go file, every HTML file and files named 'test1.txt'.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.scan.target.url</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+This contains the target URL for the current scan (i.e. webscan). Will not be set in all scan types. E.g. for a code scan this environment variable will not be available
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Available as ENV variable <code>PDS_SCAN_TARGET_URL</code> inside launcher script.</p>
+</li>
+<li>
+<p><strong>Generated</strong></p>
+</li>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.debug.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+When 'true', the PDS instance will show up some debug information on scan time. The output level of debugging information differs on PDS solutions/launcher scripts.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Available as ENV variable <code>PDS_DEBUG_ENABLED</code> inside launcher script.</p>
+</li>
+<li>
+<p>Optional</p>
+</li>
+<li>
+<p>Default is "false"</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.scan.configuration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+This contains the SecHub configuration as JSON object (but reduced to current scan type, so e.g. a web scan will have no code scan configuration data available
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Available as ENV variable <code>PDS_SCAN_CONFIGURATION</code> inside launcher script.</p>
+</li>
+<li>
+<p><strong>Generated</strong></p>
+</li>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.cancel.event.checkinterval.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+This is the maximum time the launcher script process will be kept alive after a cancellation event is sent. This gives the launcher script process a chance to recognize the cancel event and do some final cancel parts and exit gracefully.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.cancel.maximum.waittime.seconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+The time in seconds PDS will check again if the launcher script process is alive or not when the process shall be canceled. When nothing defined, the default value is:0. If the value is 0 the process will be terminated without waiting.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.mocking.disabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">
+When 'true' any PDS adapter call will use real PDS adapter and not a mocked variant.
+</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Optional</p>
+</li>
+<li>
+<p>Default is "true"</p>
+</li>
+<li>
+<p><strong>Only for testing</strong></p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="checkmarx">2.7.2.2. Checkmarx</h5>
 <div class="sect5">
-<h6 id="mapping-teams-and-presets-for-new-projects">2.7.2.1.1. Mapping teams and presets for new projects</h6>
+<h6 id="mapping-teams-and-presets-for-new-projects">2.7.2.2.1. Mapping teams and presets for new projects</h6>
 <div class="paragraph">
 <p>When a user starts a scan and a <code>checkmarx</code> project does not already exist, it will be created.</p>
 </div>
@@ -2662,13 +3130,13 @@ as shown in following example:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>project named in sechub with <code>my-java-project-marvelous1</code> will have preset id <code>100021</code> and teamId <code>1</code>.</p>
+<p>project named in SecHub with <code>my-java-project-marvelous1</code> will have preset id <code>100021</code> and teamId <code>1</code>.</p>
 </li>
 <li>
-<p>project named in sechub with <code>a-go-project-super-cli</code> will have preset id <code>100031</code> and teamId <code>2</code>.</p>
+<p>project named in SecHub with <code>a-go-project-super-cli</code> will have preset id <code>100031</code> and teamId <code>2</code>.</p>
 </li>
 <li>
-<p>project named in sechub with <code>something-else`will have preset id `100001</code> and teamId <code>3</code></p>
+<p>project named in SecHub with <code>something-else`will have preset id `100001</code> and teamId <code>3</code></p>
 </li>
 </ul>
 </div>
@@ -2688,7 +3156,7 @@ as shown in following example:</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="how-to-obtain-preset-id">2.7.2.1.2. How to obtain preset id</h6>
+<h6 id="how-to-obtain-preset-id">2.7.2.2.2. How to obtain preset id</h6>
 <div class="paragraph">
 <p>Unfortunately the preset ID is necessary for REST calls, but not
 visible at Checkmarx UI.</p>
@@ -2699,7 +3167,7 @@ web tools in you browser (e.g. enable network monitoring and change preset id at
 </div>
 </div>
 <div class="sect5">
-<h6 id="how-to-obtain-team-id">2.7.2.1.3. How to obtain team id</h6>
+<h6 id="how-to-obtain-team-id">2.7.2.2.3. How to obtain team id</h6>
 <div class="paragraph">
 <p>Unfortunately the team ID is necessary for REST calls, but not
 visible at Checkmarx UI.</p>
@@ -2913,9 +3381,104 @@ You must only setup those products you have listed inside your
 </table>
 </div>
 <div class="sect2">
-<h3 id="checkmarx-2">3.1. Checkmarx</h3>
+<h3 id="pds-2">3.1. PDS</h3>
 <div class="sect3">
-<h4 id="what-does-the-adapter-do">3.1.1. What does the adapter do?</h4>
+<h4 id="general-2">3.1.1. General</h4>
+<div class="paragraph">
+<p>The PDS adapters can communicate with the PDS instances which delegates to the underlying
+security products.</p>
+</div>
+<div class="paragraph">
+<p>Via PDS every security product, even simple CLI tools, can be easily integrated
+into SecHub.</p>
+</div>
+<div class="paragraph">
+<p>Please look into <code>Product delegation server</code> documentation for more information about the PDS in common.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="pds-solutions">3.1.2. PDS solutions</h4>
+<div class="paragraph">
+<p>There are already ready to use PDS implementations available - we call them "PDS solutions".</p>
+</div>
+<div class="paragraph">
+<p>Every PDS solution does work out of the box and provide the possibility to start in following three flavors:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>docker (single instance)</p>
+</li>
+<li>
+<p>docker compose (cluster)</p>
+</li>
+<li>
+<p>helm charts (k8s cluster)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The next sub chapters list the current implementations:</p>
+</div>
+<div class="sect4">
+<h5 id="gosec">3.1.2.1. GoSec</h5>
+<div class="paragraph">
+<p>The PDS integration of <a href="https://securego.io">GoSec</a> (SAST) can be found at
+<a href="https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/gosec" class="bare">https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/gosec</a></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="multi">3.1.2.2. Multi</h5>
+<div class="paragraph">
+<p>This solution does integrate multiple SAST tools:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/PyCQA/bandit">Bandit</a></p>
+</li>
+<li>
+<p><a href="https://dwheeler.com/flawfinder/">FlawFinder</a></p>
+</li>
+<li>
+<p><a href="https://github.com/MobSF/mobsfscan">mobsfscan</a></p>
+</li>
+<li>
+<p><a href="https://github.com/ajinabraham/njsscan">njsscan</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>It can be found at <a href="https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/multi" class="bare">https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/multi</a></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="owasp-zap">3.1.2.3. Owasp-Zap</h5>
+<div class="paragraph">
+<p>This solution does integrate the <a href="https://www.zaproxy.org/" class="bare">https://www.zaproxy.org/</a> (web application scanner) - please look at
+<a href="https://github.com/mercedes-benz/sechub/blob/develop/sechub-pds-solutions/owasp-zap/" class="bare">https://github.com/mercedes-benz/sechub/blob/develop/sechub-pds-solutions/owasp-zap/</a></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="pmd">3.1.2.4. PMD</h5>
+<div class="paragraph">
+<p><a href="https://pmd.github.io/" class="bare">https://pmd.github.io/</a> stand normally for quality checks, but it does also provide some security check mechanism. The integration can be found at
+<a href="https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/pmd" class="bare">https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/pmd</a></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="scancode">3.1.2.5. ScanCode</h5>
+<div class="paragraph">
+<p>Implements <a href="https://github.com/nexB/scancode-toolkit" class="bare">https://github.com/nexB/scancode-toolkit</a> as a license scan tool:
+<a href="https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/scancode" class="bare">https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions/scancode</a></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="checkmarx-2">3.2. Checkmarx</h3>
+<div class="sect3">
+<h4 id="what-does-the-adapter-do">3.2.1. What does the adapter do?</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -2929,7 +3492,7 @@ You must only setup those products you have listed inside your
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>projectname is sechub project name</p>
+<p>projectname is SecHub project name</p>
 </li>
 <li>
 <p>teamId Is shared and always CHECKMARX installsetup team id for new projects&#8230;&#8203;</p>
@@ -2956,7 +3519,7 @@ You must only setup those products you have listed inside your
 </ol>
 </div>
 <div class="sect4">
-<h5 id="what-must-be-done-on-checkmarx-ui">3.1.1.1. What must be done on Checkmarx UI</h5>
+<h5 id="what-must-be-done-on-checkmarx-ui">3.2.1.1. What must be done on Checkmarx UI</h5>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -2969,15 +3532,15 @@ You must only setup those products you have listed inside your
 </div>
 </div>
 <div class="sect4">
-<h5 id="what-can-be-configured-for-sechub">3.1.1.2. What can be configured for SecHub ?</h5>
+<h5 id="what-can-be-configured-for-sechub">3.2.1.2. What can be configured for SecHub ?</h5>
 <div class="sect5">
-<h6 id="environment">3.1.1.2.1. Environment</h6>
+<h6 id="environment">3.2.1.2.1. Environment</h6>
 <div class="paragraph">
 <p>Please look at <a href="#section-gen-config-scope-checkmarx">checkmarx config</a>  section.</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="runtime">3.1.1.2.2. Runtime</h6>
+<h6 id="runtime">3.2.1.2.2. Runtime</h6>
 <div class="admonitionblock warning">
 <table>
 <tr>
@@ -3022,7 +3585,7 @@ Standard properties (like base URL, user id etc.) are currently NOT used from
 </div>
 </div>
 <div class="sect3">
-<h4 id="summary">3.1.2. Summary</h4>
+<h4 id="summary">3.2.2. Summary</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -3053,9 +3616,9 @@ Fix team ID will change in future to provide grouping of results in
 </div>
 </div>
 <div class="sect2">
-<h3 id="netsparker">3.2. Netsparker</h3>
+<h3 id="netsparker">3.3. Netsparker</h3>
 <div class="sect3">
-<h4 id="what-does-the-adapter-do-2">3.2.1. What does the adapter do?</h4>
+<h4 id="what-does-the-adapter-do-2">3.3.1. What does the adapter do?</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -3112,7 +3675,7 @@ reuse existing one</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Website identifier is created by uri root part and port number.<br>
+<p>Website identifier is created by url root part and port number.<br>
 When no port is defined instead of port number the protocol default will be used.</p>
 </div>
 <div class="paragraph">
@@ -3131,9 +3694,9 @@ not default.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="what-must-be-done-on-netsparker-ui">3.2.2. What must be done on Netsparker UI</h4>
+<h4 id="what-must-be-done-on-netsparker-ui">3.3.2. What must be done on Netsparker UI</h4>
 <div class="sect4">
-<h5 id="users">3.2.2.1. Users</h5>
+<h5 id="users">3.3.2.1. Users</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -3151,7 +3714,7 @@ not default.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="summary-2">3.2.3. Summary</h4>
+<h4 id="summary-2">3.3.3. Summary</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -3179,9 +3742,9 @@ Currently Netsparker adapter will always use ONE team user (admin) to
 </div>
 </div>
 <div class="sect2">
-<h3 id="nessus">3.3. Nessus</h3>
+<h3 id="nessus">3.4. Nessus</h3>
 <div class="sect3">
-<h4 id="what-does-the-adapter-do-3">3.3.1. What does the adapter do?</h4>
+<h4 id="what-does-the-adapter-do-3">3.4.1. What does the adapter do?</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -3221,7 +3784,7 @@ will be used</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="what-must-be-done-on-nessus-ui">3.3.2. What must be done on Nessus UI</h4>
+<h4 id="what-must-be-done-on-nessus-ui">3.4.2. What must be done on Nessus UI</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -3231,14 +3794,14 @@ will be used</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="summary-3">3.3.3. Summary</h4>
+<h4 id="summary-3">3.4.3. Summary</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
 <p>At the moment only one Nessus policy UUID is used</p>
 </li>
 <li>
-<p>Every scan has got its own name which starts with sechub job UUID</p>
+<p>Every scan has got its own name which starts with SecHub job UUID</p>
 </li>
 <li>
 <p>Old scans are <strong>NOT</strong> automatically deleted</p>
@@ -3298,7 +3861,7 @@ SecHub will automatically check for uniqueness of user name and email address.</
 <p>At least the project owner must be set</p>
 </li>
 <li>
-<p>If you do not define any white list URIs there, no web scans or
+<p>If you do not define any white list URLs there, no web scans or
 infrastructure scans can be executed!<br>
 Check if requested white list entries are really valid for the project and do not belong to another project or
 organization.</p>
@@ -3339,7 +3902,7 @@ the assignment to a super administrator. Only with permission of project owner t
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.34.0<br>
+ Server 0.39.1<br>
 </div>
 </div>
 </body>

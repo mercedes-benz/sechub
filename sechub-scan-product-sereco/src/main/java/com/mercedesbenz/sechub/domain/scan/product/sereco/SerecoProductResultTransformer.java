@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.sereco;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -27,7 +28,7 @@ import com.mercedesbenz.sechub.commons.model.web.SecHubReportWebEvidence;
 import com.mercedesbenz.sechub.commons.model.web.SecHubReportWebRequest;
 import com.mercedesbenz.sechub.commons.model.web.SecHubReportWebResponse;
 import com.mercedesbenz.sechub.domain.scan.ReportTransformationResult;
-import com.mercedesbenz.sechub.domain.scan.product.ProductIdentifier;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionException;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.domain.scan.report.ReportProductResultTransformer;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoAnnotation;
@@ -43,7 +44,7 @@ import com.mercedesbenz.sechub.sereco.metadata.SerecoWebEvidence;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWebRequest;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoWebResponse;
 import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 
 @Component
 public class SerecoProductResultTransformer implements ReportProductResultTransformer {
@@ -108,6 +109,7 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
             }
             switch (scanType) {
             case CODE_SCAN:
+            case SECRET_SCAN:
                 finding.setCode(convert(vulnerability.getCode()));
                 break;
             case INFRA_SCAN:
@@ -122,6 +124,9 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
 
             findings.add(finding);
         }
+
+        // we sort the findings
+        Collections.sort(findings);
 
         handleAnnotations(sechubJobUUID, data, transformerResult);
 
@@ -209,19 +214,26 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
         switch (annotationType) {
         case USER_INFO:
             appendSecHubMessage(transformerResult, new SecHubMessage(SecHubMessageType.INFO, annotationValue));
-            return;
+            break;
         case USER_WARNING:
             appendSecHubMessage(transformerResult, new SecHubMessage(SecHubMessageType.WARNING, annotationValue));
-            return;
+            break;
         case USER_ERROR:
             appendSecHubMessage(transformerResult, new SecHubMessage(SecHubMessageType.ERROR, annotationValue));
-            return;
+            break;
         case INTERNAL_ERROR_PRODUCT_FAILED:
             /* internal errors are marked with status failed */
             transformerResult.setStatus(SecHubStatus.FAILED);
             /* we add an information to user as well */
-            appendSecHubMessage(transformerResult, new SecHubMessage(SecHubMessageType.ERROR, "Job execution failed because of an internal problem"));
-            return;
+            appendSecHubMessage(transformerResult, new SecHubMessage(SecHubMessageType.ERROR, "Job execution failed because of an internal problem!"));
+            break;
+        case INTERNAL_INFO_PRODUCT_SUCCESSFUL_IMPORTED:
+            /*
+             * at least one product result was successful imported - means no graceful fall
+             * through, but real product data available in at least one product.
+             */
+            transformerResult.setAtLeastOneRealProductResultContained(true);
+            break;
         default:
             // nothing
             LOG.error("Unhandled sereco annotation type:{}, value:{}, sechub job uuid: {}", annotationType, annotationValue, sechubJobUUID);

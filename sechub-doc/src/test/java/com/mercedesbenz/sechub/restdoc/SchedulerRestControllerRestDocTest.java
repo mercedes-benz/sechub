@@ -8,6 +8,7 @@ import static com.mercedesbenz.sechub.test.RestDocPathParameter.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
@@ -41,6 +42,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.StringUtils;
 
+import com.mercedesbenz.sechub.commons.core.CommonConstants;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationUsageByName;
 import com.mercedesbenz.sechub.commons.model.SecHubFileSystemConfiguration;
@@ -68,12 +70,16 @@ import com.mercedesbenz.sechub.domain.schedule.access.ScheduleAccess;
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleAccess.ProjectAccessCompositeKey;
 import com.mercedesbenz.sechub.domain.schedule.access.ScheduleAccessRepository;
 import com.mercedesbenz.sechub.domain.schedule.job.ScheduleSecHubJob;
+import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobInfoForUser;
+import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobInfoForUserListPage;
+import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobInfoForUserService;
 import com.mercedesbenz.sechub.domain.schedule.job.SecHubJobRepository;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfigurationValidator;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
+import com.mercedesbenz.sechub.sharedkernel.usecases.job.UseCaseUserListsJobsForProject;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserApprovesJob;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserChecksJobStatus;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserCreatesNewJob;
@@ -126,6 +132,9 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
     @MockBean
     private ScheduleAccessRepository mockedProjectRepository;
 
+    @MockBean
+    private SecHubJobInfoForUserService mockedJobInfoForUserService;
+
     private ScheduleAccess project1;
 
     private UUID randomUUID;
@@ -145,6 +154,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         /* execute + test @formatter:off */
 	    this.mockMvc.perform(
 	    		post(apiEndpoint,PROJECT1_ID).
+                	header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue()).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(configureSecHub().
 	    					api("1.0").
@@ -164,6 +174,9 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
 	    	                    responseSchema(OpenApiSchema.JOB_ID.getSchema()).
 	    	                and().
 	    	                document(
+				    	                		requestHeaders(
+				    	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+				    	                		),
 	    			                            pathParameters(
 	    			                                    parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
 	    			                            ),
@@ -198,6 +211,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         /* execute + test @formatter:off */
 	    this.mockMvc.perform(
 	    		post(apiEndpoint,PROJECT1_ID).
+                	header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue()).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(configureSecHub().
 	    					api("1.0").
@@ -217,6 +231,9 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
 	    	                    responseSchema(OpenApiSchema.JOB_ID.getSchema()).
 	    	                and().
 	    	                document(
+		    	                		requestHeaders(
+		    	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+		    	                		),
                                         pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
                                         ),
@@ -258,6 +275,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         /* execute + test @formatter:off */
 	    this.mockMvc.perform(
 	    		post(apiEndpoint,PROJECT1_ID).
+                	header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue()).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(configureSecHub().
 	    					api("1.0").
@@ -279,13 +297,16 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                 responseSchema(OpenApiSchema.JOB_ID.getSchema()).
                             and().
                             document(
+	                            		requestHeaders(
+	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                            		),
                                         pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
                                         ),
                                         requestFields(
                                                 fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
                                                 fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URI).description("Webscan URI to scan for").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URL).description("Webscan URI to scan for").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_MAX_SCAN_DURATION+"."+WebScanDurationConfiguration.PROPERTY_DURATION).description("Duration of the scan as integer").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_MAX_SCAN_DURATION+"."+WebScanDurationConfiguration.PROPERTY_UNIT).description("Unit of the duration. Possible values are: millisecond(s), second(s), minute(s), hour(s), day(s)").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_INCLUDES+"[]").description("Include URL sub-paths to scan. Example: /hidden").optional(),
@@ -315,6 +336,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         /* execute + test @formatter:off */
 	    this.mockMvc.perform(
 	    		post(apiEndpoint, PROJECT1_ID).
+                	header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue()).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(configureSecHub().
 	    					api("1.0").
@@ -334,13 +356,16 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                 responseSchema(OpenApiSchema.JOB_ID.getSchema()).
                             and().
                             document(
+	                            		requestHeaders(
+	                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                            		),
                                         pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
                                         ),
                                         requestFields(
                                                 fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
                                                 fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
-                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URI).description("Webscan URI to scan for").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URL).description("Webscan URI to scan for").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN).description("Webscan login definition").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+".url").description("Login URL").optional(),
                                                 fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_BASIC).description("basic login definition").optional(),
@@ -371,6 +396,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         /* execute + test @formatter:off */
 	    this.mockMvc.perform(
 	    		post(apiEndpoint,PROJECT1_ID).
+	    			header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue()).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(configureSecHub().
 	    					api("1.0").
@@ -422,13 +448,16 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                             responseSchema(OpenApiSchema.JOB_ID.getSchema()).
                         and().
                         document(
+		                        		requestHeaders(
+		                        				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+		                        		),
                                         pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
                                         ),
                                         requestFields(
                                             fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
     										fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
-    										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URI).description("Webscan URI to scan for").optional(),
+    										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URL).description("Webscan URI to scan for").optional(),
     										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN).description("Webscan login definition").optional(),
     										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+".url").description("Login URL").optional(),
     										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM).description("form login definition").optional(),
@@ -474,7 +503,8 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         /* execute + test @formatter:off */
         this.mockMvc.perform(
         		multipart(apiEndpoint, PROJECT1_ID, randomUUID).
-        			file(file1).param("checkSum", "mychecksum")
+        			file(file1).param("checkSum", "mychecksum").
+                    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
         		).
         			andExpect(status().isOk()).
         					// https://docs.spring.io/spring-restdocs/docs/2.0.2.RELEASE/reference/html5/
@@ -484,6 +514,9 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
                             and().
                             document(
+                            		requestHeaders(
+                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+                            		),
                                     pathParameters(
                                             parameterWithName("projectId").description("The id of the project where sourcecode shall be uploaded for"),
                                             parameterWithName("jobUUID").description(DESCRIPTION_JOB_UUID)
@@ -526,8 +559,12 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         MockMultipartFile file1 = new MockMultipartFile("file", inputStreamTo);
         /* execute + test @formatter:off */
         this.mockMvc.perform(
+
                 multipart(apiEndpoint, PROJECT1_ID, randomUUID).
-                    file(file1).param("checkSum", "mychecksum")
+                    file(file1).
+                    param("checkSum", "mychecksum").
+                    header(CommonConstants.FILE_SIZE_HEADER_FIELD_NAME, file1.getBytes().length).
+                    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
                 ).
                     andExpect(status().isOk()).
                             // https://docs.spring.io/spring-restdocs/docs/2.0.2.RELEASE/reference/html5/
@@ -537,12 +574,18 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
                             and().
                             document(
+                            		requestHeaders(
+                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+                            		),
                                     pathParameters(
                                             parameterWithName("projectId").description("The id of the project for which the binaries are uploaded for"),
                                             parameterWithName("jobUUID").description(DESCRIPTION_JOB_UUID)
                                     ),
                                     requestParameters(
                                             parameterWithName("checkSum").description("A sha256 checksum for file upload validation")
+                                    ),
+                                    requestHeaders(
+                                    		headerWithName(CommonConstants.FILE_SIZE_HEADER_FIELD_NAME).description("The file size of the tar-archive to upload in bytes. Needs to be a positive integer value.")
                                     ),
                                     // TODO de-jcup, 2022-04-14: It is not possible to document this part properly in OpenAPI.
                                     // See: https://github.com/ePages-de/restdocs-api-spec/issues/105
@@ -578,7 +621,8 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         /* execute + test @formatter:off */
 	    this.mockMvc.perform(
 	    		put(apiEndpoint, PROJECT1_ID,randomUUID).
-	    			contentType(MediaType.APPLICATION_JSON_VALUE)
+	    			contentType(MediaType.APPLICATION_JSON_VALUE).
+	    			header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
 	    		).
 	    			andExpect(status().isOk()).
 	    			andDo(defineRestService().
@@ -587,10 +631,13 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                 tag(RestDocFactory.extractTag(apiEndpoint)).
                             and().
                             document(
-	                                        pathParameters(
-	                                                    parameterWithName("projectId").description("The id of the project where sechub job shall be approved"),
-	                                                    parameterWithName("jobUUID").description(DESCRIPTION_JOB_UUID)
-	                                        )
+                            		requestHeaders(
+                            				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+                            		),
+	                                pathParameters(
+	                                         parameterWithName("projectId").description("The id of the project where sechub job shall be approved"),
+	                                         parameterWithName("jobUUID").description(DESCRIPTION_JOB_UUID)
+	                                )
 	    				));
 
 	    /* @formatter:on */
@@ -622,7 +669,8 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
         /* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(apiEndpoint, PROJECT1_ID,randomUUID).
-        			contentType(MediaType.APPLICATION_JSON_VALUE)
+        			contentType(MediaType.APPLICATION_JSON_VALUE).
+        			header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
         		).
         			andExpect(status().isOk()).
         			andExpect(content().json("{jobUUID:"+randomUUID.toString()+", result:OK, state:ENDED, trafficLight:GREEN}")).
@@ -633,6 +681,9 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                 responseSchema(OpenApiSchema.JOB_STATUS.getSchema()).
                             and().
                             document(
+	                            		 requestHeaders(
+	                            			headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+	                            		 ),
                                           pathParameters(
                                             parameterWithName("projectId").description("The id of the project where sechub job was started for"),
                                             parameterWithName("jobUUID").description(DESCRIPTION_JOB_UUID)
@@ -649,6 +700,75 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
                                           )
                             )
         		);
+
+        /* @formatter:on */
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseUserListsJobsForProject.class)
+    public void restDoc_userListsJobsForProject() throws Exception {
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildUserFetchesListOfJobsForProject(PROJECT_ID.pathElement(), SIZE.pathElement(), PAGE.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserListsJobsForProject.class;
+
+        SecHubJobInfoForUser job1 = new SecHubJobInfoForUser();
+        job1.setExecutionResult(ExecutionResult.OK);
+        job1.setExecutionState(ExecutionState.ENDED);
+
+        job1.setJobUUID(randomUUID);
+        job1.setCreated(LocalDateTime.now().minusMinutes(17));
+        job1.setStarted(LocalDateTime.now().minusMinutes(15));
+        job1.setEnded(LocalDateTime.now());
+        job1.setExecutedBy("User1");
+        job1.setTrafficLight(TrafficLight.GREEN);
+
+        SecHubJobInfoForUserListPage listPage = new SecHubJobInfoForUserListPage();
+        listPage.setPage(0);
+        listPage.setTotalPages(1);
+        List<SecHubJobInfoForUser> list = listPage.getContent();
+        list.add(job1);
+
+        when(mockedJobInfoForUserService.listJobsForProject(PROJECT1_ID, 1, 0)).thenReturn(listPage);
+
+        /* execute + test @formatter:off */
+        this.mockMvc.perform(
+                get(apiEndpoint, PROJECT1_ID,1,0).
+                    contentType(MediaType.APPLICATION_JSON_VALUE).
+                    header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
+                ).
+                    andExpect(status().isOk()).
+                    andExpect(content().json("{page:0, totalPages:1, content:[{jobUUID:"+randomUUID.toString()+", executionState:ENDED, executionResult:OK, trafficLight:GREEN, executedBy:User1, executionState:ENDED}]}")).
+                    andDo(defineRestService().
+                            with().
+                                useCaseData(useCase).
+                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                                responseSchema(OpenApiSchema.PROJECT_JOB_LIST.getSchema()).
+                            and().
+                            document(
+                                         requestHeaders(
+                                            headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+                                         ),
+                                          pathParameters(
+                                            parameterWithName(PROJECT_ID.paramName()).description("The id of the project where job information shall be fetched for")
+                                          ),
+                                          requestParameters(
+                                              parameterWithName(SIZE.paramName()).optional().description("The wanted (maximum) size for the result set. When not defined, the default will be "+SchedulerRestController.DEFAULT_JOB_INFORMATION_SIZE),
+                                              parameterWithName(PAGE.paramName()).optional().description("The wanted page number. When not defined, the default will be "+SchedulerRestController.DEFAULT_JOB_INFORMATION_PAGE)
+                                          ),
+                                          responseFields(
+                                            fieldWithPath(SecHubJobInfoForUserListPage.PROPERTY_PAGE).description("The page number"),
+                                            fieldWithPath(SecHubJobInfoForUserListPage.PROPERTY_TOTAL_PAGES).description("The total pages available"),
+                                            fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_JOBUUID).description("The job uuid"),
+                                            fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_CREATED).description("Creation timestamp of job"),
+                                            fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_STARTED).description("Start timestamp of job execution"),
+                                            fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_ENDED).description("End timestamp of job execution"),
+                                            fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_EXECUTED_BY).description("User who initiated the job"),
+                                            fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_EXECUTION_STATE).description("Execution state of job"),
+                                            fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_EXECUTION_RESULT).description("Execution result of job"),
+                                            fieldWithPath("content[]."+SecHubJobInfoForUser.PROPERTY_TRAFFIC_LIGHT).description("Trafficlight of job - but only available when job has been done. Possible states are "+StringUtils.arrayToDelimitedString(TrafficLight.values(),", "))
+                                          )
+                            )
+                );
 
         /* @formatter:on */
     }

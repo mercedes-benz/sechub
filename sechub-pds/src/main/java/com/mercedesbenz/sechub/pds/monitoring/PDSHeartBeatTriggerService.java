@@ -32,6 +32,7 @@ public class PDSHeartBeatTriggerService {
     private static final int DEFAULT_FIXED_DELAY_MILLIS = 1000 * 60; // every minute trigger hearbeat per default
 
     private static final boolean DEFAULT_SCHEDULING_ENABLED = true;
+    private static final boolean DEFAULT_VERBOSE_LOGGING_ENABLED = true;
 
     private UUID uuidForThisServerHeartBeat;
 
@@ -56,13 +57,20 @@ public class PDSHeartBeatTriggerService {
     private String infoFixedDelay; // here only for logging - used in scheduler annotation as well!
 
     @PDSMustBeDocumented(value = "Configure if heartbeat checks are enabled", scope = "monitoring")
-    @Value("${sechub.pds.config.heartbeat.enable:" + DEFAULT_SCHEDULING_ENABLED + "}")
+    @Value("${sechub.pds.config.heartbeat.enabled:" + DEFAULT_SCHEDULING_ENABLED + "}")
     boolean heartbeatEnabled = DEFAULT_SCHEDULING_ENABLED;
+
+    @PDSMustBeDocumented(value = "Configure if heartbeat verbose logging is enabled", scope = "monitoring")
+    @Value("${sechub.pds.config.heartbeat.verbose.logging.enabled:" + DEFAULT_VERBOSE_LOGGING_ENABLED + "}")
+    boolean verboseHeartBeatLogging = DEFAULT_VERBOSE_LOGGING_ENABLED;
 
     @PostConstruct
     protected void postConstruct() {
         // show info about delay values in log (once)
         LOG.info("Heartbeat service created with {} millisecondss initial delay and {} millisecondss as fixed delay", infoInitialDelay, infoFixedDelay);
+        if (!verboseHeartBeatLogging) {
+            LOG.info("Verbose heartbeat logging has been disabled");
+        }
     }
 
     // default 10 seconds delay and 5 seconds initial
@@ -116,8 +124,10 @@ public class PDSHeartBeatTriggerService {
         /* update/create heartbeat */
         heartBeat = repository.saveAndFlush(heartBeat);
 
-        LOG.info("heartbeat update - serverid:{}, heartbeatuuid:{}, cluster-member-data:{}", heartBeat.getServerId(), heartBeat.getUUID(),
-                heartBeat.getClusterMemberData());
+        if (verboseHeartBeatLogging) {
+            LOG.info("heartbeat update - serverid:{}, heartbeatuuid:{}, cluster-member-data:{}", heartBeat.getServerId(), heartBeat.getUUID(),
+                    heartBeat.getClusterMemberData());
+        }
 
         /* update uuid - either for new, or recreated */
         uuidForThisServerHeartBeat = heartBeat.getUUID();

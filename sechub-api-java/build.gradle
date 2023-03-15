@@ -6,26 +6,35 @@
  * ============================================================================
  */
 
-dependencies {
-    // The production code uses the SLF4J logging API at compile time
-    implementation spring_boot_dependency.slf4j_api
-    implementation spring_boot_dependency.jackson_core
-    implementation spring_boot_dependency.jackson_databind
-    
-    implementation project(':sechub-commons-model')
-    
-    implementation library.apache_httpcomponents_client
-
-    testImplementation spring_boot_dependency.junit_jupiter
-    
-    
-    testImplementation spring_boot_dependency.mockito_core
-    testImplementation library.mockito_inline
-    testImplementation spring_boot_dependency.hamcrest
+// see https://github.com/OpenAPITools/openapi-generator/blob/master/modules/openapi-generator-gradle-plugin/README.adoc
+plugins {
+	id 'org.openapi.generator'          
 }
 
-// see https://github.com/OpenAPITools/openapi-generator/blob/master/modules/openapi-generator-gradle-plugin/README.adoc
-apply plugin: 'org.openapi.generator'
+dependencies {
+    implementation project(':sechub-commons-model')
+    
+    implementation files('gen/build/libs/sechub-api-java-0.0.0.jar')
+    
+    testImplementation project(':sechub-testframework')
+    testImplementation spring_boot_dependency.junit_jupiter
+}
+
+// TODO: Preparation for unified SecHub Client
+sourceSets {
+    main {
+    	java {
+//    	    srcDir 'gen/src'
+    	}
+    }
+    test {
+        java {
+//            exclude 'gen/src/**'
+        }
+
+    }
+
+}
 
 def specFilePath = "$rootDir/sechub-doc/build/api-spec/openapi3.json"
 
@@ -57,7 +66,6 @@ task callOpenAPIJavaGenerator(type: org.openapitools.generator.gradle.plugin.tas
     		version                     : "${project.version}",
             performBeanValidation		: "false",
             useBeanValidation    		: "false",
-            java8                		: "true",
             dateLibrary          		: "java8",
             serializableModel    		: "true",
             serializationLibrary 		: "jackson",
@@ -65,13 +73,13 @@ task callOpenAPIJavaGenerator(type: org.openapitools.generator.gradle.plugin.tas
             artifactDescription			: "The SecHub API library for Java",
             artifactUrl					: "https://github.com/mercedes-benz/sechub",
             legacyDiscriminatorBehavior : "false",
-            library 					: "jersey2",
+            library 					: "native", // Uses the Java HTTP Client (available in Java 11+)
             licenseName 				: "MIT",
             licenseUrl					: "https://github.com/mercedes-benz/sechub/blob/develop/LICENSE",
             developerEmail				: "",
             developerName				: "",
-            developerOrganization 		: "Daimler TSS",
-            developerOrganizationUrl	: "https://www.daimler-tss.com/",
+            developerOrganization       : "Mercedes-Benz Tech Innovation",
+            developerOrganizationUrl    : "https://www.mercedes-benz-techinnovation.com/",
             scmConnection				: "",
             scmDeveloperConnection		: "",
             scmUrl						: "https://github.com/mercedes-benz/sechub"
@@ -114,4 +122,3 @@ task generateAPIJava(dependsOn: callOpenAPIJavaGenerator){
         generatedGradleFile.append("\n"+sb.toString());
     }
 }
-

@@ -57,7 +57,6 @@ public class IntranetEndsWithURITargetResolveStrategyTest {
 
         /* test */
         assertEquals(new NetworkTarget(URI_EMPTY, NetworkTargetType.UNKNOWN), strategyToTest.resolveTargetFor(URI_EMPTY));
-        assertEquals(new NetworkTarget(URI_HTTPS_EXAMPLE_ORG, NetworkTargetType.INTERNET), strategyToTest.resolveTargetFor(URI_HTTPS_EXAMPLE_ORG));
         assertEquals(new NetworkTarget(URI_HTTPS_SOMEWHERE_INTRANET_EXAMPLE_ORG, NetworkTargetType.INTRANET),
                 strategyToTest.resolveTargetFor(URI_HTTPS_SOMEWHERE_INTRANET_EXAMPLE_ORG));
         assertEquals(new NetworkTarget(URI_HTTPS_SOMEWHERE_INTRANET_EXAMPLE_ORG_PORT_1234, NetworkTargetType.INTRANET),
@@ -65,10 +64,10 @@ public class IntranetEndsWithURITargetResolveStrategyTest {
         assertEquals(new NetworkTarget(URI_HTTPS_SOMEWHERE_INTRANET_EXAMPLE_ORG_PORT_1234_WITH_PATH, NetworkTargetType.INTRANET),
                 strategyToTest.resolveTargetFor(URI_HTTPS_SOMEWHERE_INTRANET_EXAMPLE_ORG_PORT_1234_WITH_PATH));
 
-        assertEquals(new NetworkTarget(URI_HTTP_SOMEWHERE_INTX_EXAMPLE_COM, NetworkTargetType.INTERNET),
-                strategyToTest.resolveTargetFor(URI_HTTP_SOMEWHERE_INTX_EXAMPLE_COM));
-        assertEquals(new NetworkTarget(URI_FTP_SOMEWHERE_INTX_EXAMPLE_COM, NetworkTargetType.INTERNET),
-                strategyToTest.resolveTargetFor(URI_FTP_SOMEWHERE_INTX_EXAMPLE_COM));
+        // returns null if the strategy cannot resolve the target
+        assertNull(strategyToTest.resolveTargetFor(URI_HTTPS_EXAMPLE_ORG));
+        assertNull(strategyToTest.resolveTargetFor(URI_HTTP_SOMEWHERE_INTX_EXAMPLE_COM));
+        assertNull(strategyToTest.resolveTargetFor(URI_FTP_SOMEWHERE_INTX_EXAMPLE_COM));
     }
 
     @Test
@@ -79,17 +78,17 @@ public class IntranetEndsWithURITargetResolveStrategyTest {
 
         /* test */
         assertEquals(new NetworkTarget(URI_EMPTY, NetworkTargetType.UNKNOWN), strategyToTest.resolveTargetFor(URI_EMPTY));
-        assertEquals(new NetworkTarget(URI_HTTPS_EXAMPLE_ORG, NetworkTargetType.INTERNET), strategyToTest.resolveTargetFor(URI_HTTPS_EXAMPLE_ORG));
         assertEquals(new NetworkTarget(URI_HTTPS_SOMEWHERE_INTRANET_EXAMPLE_ORG, NetworkTargetType.INTRANET),
                 strategyToTest.resolveTargetFor(URI_HTTPS_SOMEWHERE_INTRANET_EXAMPLE_ORG));
         assertEquals(new NetworkTarget(URI_HTTPS_SOMEWHERE_INTRANET_EXAMPLE_ORG_PORT_1234, NetworkTargetType.INTRANET),
                 strategyToTest.resolveTargetFor(URI_HTTPS_SOMEWHERE_INTRANET_EXAMPLE_ORG_PORT_1234));
-
         assertEquals(new NetworkTarget(URI_HTTP_SOMEWHERE_INTX_EXAMPLE_COM, NetworkTargetType.INTRANET),
                 strategyToTest.resolveTargetFor(URI_HTTP_SOMEWHERE_INTX_EXAMPLE_COM));
         assertEquals(new NetworkTarget(URI_FTP_SOMEWHERE_INTX_EXAMPLE_COM, NetworkTargetType.INTRANET),
                 strategyToTest.resolveTargetFor(URI_FTP_SOMEWHERE_INTX_EXAMPLE_COM));
 
+        // returns null if the strategy cannot resolve the target
+        assertNull(strategyToTest.resolveTargetFor(URI_HTTPS_EXAMPLE_ORG));
     }
 
 }

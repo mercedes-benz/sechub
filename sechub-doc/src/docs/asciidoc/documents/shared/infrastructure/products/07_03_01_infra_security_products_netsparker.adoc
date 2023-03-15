@@ -2,6 +2,11 @@
 [[section-infrastructure-setup-security-products-netsparker]]
 
 ==== Netsparker
+[WARNING]
+====
+Netsparker support inside {sechub} is deprecated and will vanish. As a replacement we have:
+{pds-solutions-projectsite}/owasp-zap
+====
 Netsparker is a web scanner.
 
 see https://www.netsparker.com

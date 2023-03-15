@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.mercedesbenz.sechub.adapter.AdapterConfig;
 import com.mercedesbenz.sechub.adapter.AdapterConfigBuilder;
 import com.mercedesbenz.sechub.adapter.AdapterConfigurationStrategy;
@@ -13,8 +16,8 @@ import com.mercedesbenz.sechub.adapter.pds.PDSAdapterConfiguratorProvider;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
 import com.mercedesbenz.sechub.domain.scan.DefaultAdapterConfigurationStrategy;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
 
 /**
  * This strategy will configure
@@ -37,6 +40,8 @@ import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
  */
 public class PDSAdapterConfigurationStrategy implements AdapterConfigurationStrategy {
 
+    private static final Logger LOG = LoggerFactory.getLogger(PDSAdapterConfigurationStrategy.class);
+
     private PDSAdapterConfigurationStrategyConfig strategyConfig;
 
     public static class PDSAdapterConfigurationStrategyBuilder {
@@ -51,7 +56,7 @@ public class PDSAdapterConfigurationStrategy implements AdapterConfigurationStra
             return this;
         }
 
-        public PDSAdapterConfigurationStrategyBuilder setConfigSupport(PDSExecutorConfigSuppport configSupport) {
+        public PDSAdapterConfigurationStrategyBuilder setConfigSupport(PDSExecutorConfigSupport configSupport) {
             strategyConfig.configSupport = configSupport;
             return this;
         }
@@ -114,7 +119,7 @@ public class PDSAdapterConfigurationStrategy implements AdapterConfigurationStra
     private static class PDSAdapterConfigurationStrategyConfig {
         private ProductExecutorData productExecutorData;
         private PDSStorageContentProvider contentProvider;
-        private PDSExecutorConfigSuppport configSupport;
+        private PDSExecutorConfigSupport configSupport;
         private PDSInstallSetup installSetup;
         private ScanType scanType;
         private InputStream sourceCodeZipFileInputStreamOrNull;
@@ -149,22 +154,31 @@ public class PDSAdapterConfigurationStrategy implements AdapterConfigurationStra
     }
 
     private void handlePdsParts(PDSAdapterConfigurator pdsConfigurable) {
-        SecHubExecutionContext context = strategyConfig.productExecutorData.getSechubExecutionContext();
-        Map<String, String> jobParameters = strategyConfig.configSupport.createJobParametersToSendToPDS(context.getConfiguration());
+        PDSExecutorConfigSupport configSupport = strategyConfig.configSupport;
 
-        pdsConfigurable.setJobParameters(jobParameters);
-        pdsConfigurable.setReusingSecHubStorage(PDSExecutorConfigSuppport.isReusingSecHubStorage(jobParameters));
+        SecHubExecutionContext context = strategyConfig.productExecutorData.getSechubExecutionContext();
+        Map<String, String> jobParametersToSend = configSupport.createJobParametersToSendToPDS(context.getConfiguration());
+
+        pdsConfigurable.setJobParameters(jobParametersToSend);
+        pdsConfigurable.setReusingSecHubStorage(configSupport.isReusingSecHubStorage());
         pdsConfigurable.setScanType(strategyConfig.scanType);
-        pdsConfigurable.setPdsProductIdentifier(strategyConfig.configSupport.getPDSProductIdentifier());
+        pdsConfigurable.setPdsProductIdentifier(configSupport.getPDSProductIdentifier());
         pdsConfigurable.setSecHubJobUUID(context.getSechubJobUUID());
         pdsConfigurable.setSecHubConfigurationModel(context.getConfiguration());
-
+        pdsConfigurable.setPDSScriptTrustsAllCertificates(configSupport.isPDSScriptTrustingAllCertificates());
         pdsConfigurable.setSourceCodeZipFileInputStreamOrNull(strategyConfig.sourceCodeZipFileInputStreamOrNull);
-
         pdsConfigurable.setBinaryTarFileInputStreamOrNull(strategyConfig.binariesTarFileInputStreamOrNull);
         pdsConfigurable.setSourceCodeZipFileRequired(strategyConfig.contentProvider.isSourceRequired());
         pdsConfigurable.setBinaryTarFileRequired(strategyConfig.contentProvider.isBinaryRequired());
 
+        handleSourceCodeChecksum(pdsConfigurable);
+        handleSourceCodeFileSize(pdsConfigurable);
+
+        handleBinariesChecksum(pdsConfigurable);
+        handleBinariesFileSize(pdsConfigurable);
+    }
+
+    private void handleSourceCodeChecksum(PDSAdapterConfigurator pdsConfigurable) {
         try {
             String sourceZipFileChecksum = strategyConfig.contentProvider.getSourceZipFileUploadChecksumOrNull();
             pdsConfigurable.setSourceCodeZipFileChecksumOrNull(sourceZipFileChecksum);
@@ -172,12 +186,51 @@ public class PDSAdapterConfigurationStrategy implements AdapterConfigurationStra
         } catch (IOException e) {
             throw new SecHubRuntimeException("Was not able to retrieve source zip upload checksum", e);
         }
+    }
+
+    private void handleBinariesChecksum(PDSAdapterConfigurator pdsConfigurable) {
         try {
             String binaryTarFileChecksum = strategyConfig.contentProvider.getBinariesTarFileUploadChecksumOrNull();
             pdsConfigurable.setBinariesTarFileChecksumOrNull(binaryTarFileChecksum);
 
         } catch (IOException e) {
             throw new SecHubRuntimeException("Was not able to retrieve tar file upload checksum", e);
+        }
+    }
+
+    private void handleSourceCodeFileSize(PDSAdapterConfigurator pdsConfigurable) {
+        try {
+            String sourceZipFileSizeAsString = strategyConfig.contentProvider.getSourceZipFileSizeOrNull();
+            if (sourceZipFileSizeAsString == null) {
+                LOG.warn("No source zip file size available");
+                return;
+            }
+            long sizeAsLong = Long.parseLong(sourceZipFileSizeAsString);
+
+            pdsConfigurable.setSourceCodeZipFileSizeInBytes(sizeAsLong);
+
+        } catch (IOException e) {
+            throw new SecHubRuntimeException("Was not able to retrieve source zip file size", e);
+        } catch (NumberFormatException e) {
+            throw new SecHubRuntimeException("Was not able to retrieve source zip file size because not a number", e);
+        }
+    }
+
+    private void handleBinariesFileSize(PDSAdapterConfigurator pdsConfigurable) {
+        try {
+            String binaryTarFileSizeAsString = strategyConfig.contentProvider.getBinariesTarFileSizeOrNull();
+            if (binaryTarFileSizeAsString == null) {
+                LOG.warn("No binary tar file size available");
+                return;
+            }
+            long sizeAsLong = Long.parseLong(binaryTarFileSizeAsString);
+
+            pdsConfigurable.setBinariesTarFileSizeInBytes(sizeAsLong);
+
+        } catch (IOException e) {
+            throw new SecHubRuntimeException("Was not able to retrieve binary tar file size", e);
+        } catch (NumberFormatException e) {
+            throw new SecHubRuntimeException("Was not able to retrieve binary tar file size because not a number", e);
         }
     }
 

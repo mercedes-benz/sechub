@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionException;
 import com.mercedesbenz.sechub.sharedkernel.resilience.ResilienceContext;
 import com.mercedesbenz.sechub.sharedkernel.resilience.ResilienceProposal;
 import com.mercedesbenz.sechub.sharedkernel.resilience.RetryResilienceProposal;

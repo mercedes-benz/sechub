@@ -33,17 +33,20 @@ Usage: OwaspZapWrapper [options]
       Set this option to enable Owasp Zap ajaxSpider.
       Default: false
     --deactivateRules
-      Specify a rule references of rules you want to deactivate during the 
-      scan inside the Owasp Zap. If you specifiy multiple rules use comma 
-      separated values like: rule1,rule,rule3
-    --fullRulesetfile
+      Specify references of rules you want to deactivate during the scan 
+      inside the Owasp Zap. If you specifiy multiple rules use comma separated 
+      values like: rule1,rule,rule3
+  * --fullRulesetfile
       Specify a file with all rules installed for the Owasp Zap.
-      Default: src/main/resources/full-rulesets/owasp-zap-full-ruleset-all-release-status.json
     --help
       Shows help and provides information on how to use the wrapper.
     --jobUUID
       The Job-UUID, which will be used as internal identifier for the Owasp 
       Zap scan context.
+    --maxNumberOfConnectionRetries
+      Maximum number of times the wrapper tries to reach each URL. Including 
+      each URL constructed from the sechub includes.
+      Default: 3
     --proxyHost
       Specify a proxy host. You can also set the environment variable 
       PROXY_HOST, instead of using this parameter.
@@ -53,6 +56,10 @@ Usage: OwaspZapWrapper [options]
       Default: 0
   * --report
       The output file, where the report will be written to.
+    --retryWaittimeInMilliseconds
+      Specify the time to wait between connection retries in milliseconds. The 
+      value cannot be less than 1000 milliseconds.
+      Default: 1000
     --rulesDeactivationfile
       Specify a file with rules to deactivate during the scan inside the Owasp 
       Zap. 

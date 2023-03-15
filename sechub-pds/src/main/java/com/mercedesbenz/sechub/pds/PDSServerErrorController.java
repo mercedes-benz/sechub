@@ -28,6 +28,10 @@ public class PDSServerErrorController implements ErrorController {
     @Value("${sechub.pds.server.debug:false}")
     private boolean debug;
 
+    @PDSMustBeDocumented(value = "When enabled, additional debug information are returned in case of failures. Do NOT use this in production.", scope = "development")
+    @Value("${sechub.pds.server.errorcontroller.log.errors:true}")
+    private boolean logErrors;
+
     @Autowired
     ErrorAttributes errorAttributes;
 
@@ -37,19 +41,29 @@ public class PDSServerErrorController implements ErrorController {
 
         int status = response.getStatus();
 
-        Map<String, Object> errorAttributes = getErrorAttributes(status, request, debug);
+        ServletWebRequest webRequest = new ServletWebRequest(request);
 
-        return ResponseEntity.status(status).body(new PDSServerError(status, errorAttributes));
+        Map<String, Object> errorAttributesMap = getErrorAttributes(status, webRequest, debug);
+        PDSServerError serverError = new PDSServerError(status, errorAttributesMap);
+
+        if (logErrors) {
+            Throwable error = errorAttributes.getError(webRequest);
+
+            LOG.info("Returning status: {}, message: {}, details: {}, timeStamp: {}, withTrace: {}", serverError.status, serverError.message,
+                    serverError.details, serverError.timeStamp, serverError.trace != null, error);
+
+        }
+
+        return ResponseEntity.status(status).body(serverError);
 
     }
 
-    Map<String, Object> getErrorAttributes(int httpStatus, HttpServletRequest request, boolean debugMode) {
+    Map<String, Object> getErrorAttributes(int httpStatus, ServletWebRequest webRequest, boolean debugMode) {
 
         ErrorAttributeOptions options = ErrorAttributeOptions.defaults();
         options = includeErrorMessageForClientErrors(httpStatus, options);
         options = includeErrorStacktraceWhenDebugMode(debugMode, options);
 
-        ServletWebRequest webRequest = new ServletWebRequest(request);
         return errorAttributes.getErrorAttributes(webRequest, options);
     }
 

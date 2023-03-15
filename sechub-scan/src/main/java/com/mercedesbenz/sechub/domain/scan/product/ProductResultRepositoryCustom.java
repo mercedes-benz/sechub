@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigInfo;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 
 public interface ProductResultRepositoryCustom {
 

@@ -200,6 +200,12 @@
     padding-right: 1%;
 }
 
+.messagesTable{
+    padding: 8px; 
+    vertical-align: top;
+    text-align: left;
+}
+
 .redFindingsTable {
 
 }
@@ -375,7 +381,7 @@ rTableSourceHead,
 </td>
 <td>
 	<div th:if="${finding.hasScanType('infraScan')}" th:text="${finding.description}">Description1</div>
-	<div class="rTable" th:if="${finding.hasScanType('codeScan')}">
+	<div class="rTable" th:if="${finding.hasScanType('codeScan') || finding.hasScanType('secretScan')}">
 		<div class="rTableRowHead">
 			<div class="rTableHead" style="width:5%">Call</div>
 			<div class="rTableHead" style="width:25%">Location</div>
@@ -407,7 +413,7 @@ rTableSourceHead,
             </div>
         </div>
     </div>
-	<details th:if="${finding.hasScanType('codeScan')}">
+	<details th:if="${finding.hasScanType('codeScan') || finding.hasScanType('secretScan')}">
 		<summary data-open="Open details" data-close="Close details"></summary>
 		<div class="rTable">
 			<div class="rTableRowHead">

@@ -4,6 +4,8 @@ package com.mercedesbenz.sechub.restdoc;
 import static com.mercedesbenz.sechub.restdoc.RestDocumentation.*;
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -67,7 +69,8 @@ public class ServerInfoAdministrationRestControllerRestDocTest implements TestIs
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				get(apiEndpoint).
-					contentType(MediaType.TEXT_PLAIN_VALUE)
+					contentType(MediaType.TEXT_PLAIN_VALUE).
+					header(AuthenticationHelper.HEADER_NAME, AuthenticationHelper.getHeaderValue())
 				).
 					andExpect(status().isOk()).
 					andExpect(content().string(SERVER_VERSION)).
@@ -77,7 +80,11 @@ public class ServerInfoAdministrationRestControllerRestDocTest implements TestIs
 		                            tag(RestDocFactory.extractTag(apiEndpoint)).
 		                            responseSchema(OpenApiSchema.SERVER_VERSION.getSchema()).
 		                        and().
-		                        document()
+		                        document(
+			    	                		requestHeaders(
+			    	                				headerWithName(AuthenticationHelper.HEADER_NAME).description(AuthenticationHelper.HEADER_DESCRIPTION)
+			    	                		)
+		                        )
 					);
 		/* @formatter:on */
     }

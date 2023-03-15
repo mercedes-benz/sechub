@@ -1,15 +1,17 @@
 // SPDX-License-Identifier: MIT
-=== SecHub configuration
+=== SecHub configuration JSON
 
 A `{sechub}` configuration  must be valid `JSON` and is defined
 at caller side.
 
-It is used by client and also by rest calls to start {sechub}
-scan jobs and add meta data. 
+It is used by the client and also by rest calls to define {sechub}
+scan jobs and add meta data.
 
-Some minor parts are client specific and must
-be handled by direct REST calls in a special way or do just not exist. 
+NOTE: Some minor parts are client specific and must
+be handled by direct REST calls in a special way or do just not exist.
 But this is mentioned inside this documentation
+
+The individual components in the JSON are documented below:
 
 ==== API version
 `apiVersion` must be defined (so mandatory). Currently only `1.0` is valid.
@@ -26,70 +28,79 @@ During this time, however, the API always remains backwards compatible!
 `server` (optional) defines the location to `{sechub}` server.
 Information can be used by client implementations.
 
-NOTE: When using REST calls directly you do not need the information inside
-      configuration because you use server URL in every call...
+NOTE: This is optional parameter only interesting for the client to pass the URL.
+      Every REST call contains the server URL already.
 
 ==== Project
 `project` (optional) defines the project to use. Information can be used by
 client implementations.
 
-NOTE: When using REST calls directly you do not need the information inside
-      configuration because you use project id inside URL.
+NOTE: When using project id related REST calls, you do not need the project id inside the configuration.
 
 [[sechub-config-code-scan]]
 ==== Code scan
-`codeScan` (optional) defines the code scan settings.
+`codeScan` (optional) defines the settings for code scans.
 
-===== Upload sources from file system
-Define `fileSystem` child entry and setup folders to use for code scanning by
-`folders` sub entry.
+===== Upload source files from file system
+This section applies only to the {sechub} client.
 
-All source code files inside these folders will be automatically zipped and uploaded by `{sechub}` client
-to server side for ongoing source analysis.
+All source code files inside the defined folders will be automatically zipped and uploaded by the `{sechub}` client
+to the {sechub} server for analysis.
 
-Pathes must be defined relative from caller location - for example
-on a Jenkins Build Server this is normally the root folder of repository.
-
-NOTE: The configuration parts inside `fileSystem` entry are interpreted by
-      `{sechub}` client! When you directly use the REST API you do not need
-      to define this data but you have to upload sources as a `zip`file by
-      your own over REST!
+Paths must be defined relative to caller location - for example
+on a Jenkins Build Server this is usually the root folder of your repository.
 
 [WARNING]
 ====
-Please do *NOT* use `\` inside pathes *but* always `/`.
+Please do *NOT* use `\` inside paths *but* always `/`.
 
-Also do *NOT* use absolute pathes *but* always relative pathes! Normally you should
+Also do *NOT* use absolute paths *but* always relative paths! Normally you should
 call {sechub} inside root folder of your source repository - this is the standard situation
 on build servers.
 ====
 
-===== Example sechub.json
+There a two ways to define source code uploads for the {sechub} client:
+
+###### Using `data` section
+
+Define the files and folders in a `data` section and reference it inside the `codeScan`. +
+This becomes useful e.g. if the same sources are used by different scan types.
+
+TIP: We _recommend_ using the `data` section.
+
+Example `sechub.json` using `data` section
+
+[[sechub-config-example-sourcescan-with-data-section]]
+[source, json]
+----
+include::sechub_config_example1_sourcescan_data_section.json[]
+----
+<1> Define code scan
+<2> Upload source code (in contrast to binary uploads)
+<3> `fileSystem` - means uploading sources from local filesystem to {sechub} server
+<4> Upload will contain sources from `gamechanger-android/src/main/java` and `gamechanger-server/src/main/java` and their sub folders
+<5> Exclude directories (optional), the https://ant.apache.org/manual/Types/fileset.html[ANT fileset pattern notation] is supported. +
+    * In the example above all files in directories named `mytestcode` and their subdirectories are excluded from upload.
+    * Also all files matching `*.config` are excluded in any directory
+    * Default excludes: +
+     Per default, the directories `+**/test/**+` `+**/.git/**+` `+**/node_modules/**+` are already excluded.
+<6> The {sechub} client only adds "well known" sources into the upload zip file.
+    This reduces the upload size and the scan duration. (E.g. a codescan for a JPEG image would not make sense...) +
+    In the {sechub} client documentation you will find a list of the default file endings. +
+    Here we also add ".cplusplus" and ".py9" as additional accepted source file extensions.
+
+###### `fileSystem` inside the `codeScan` section
+
+Define a `fileSystem` child entry inside the `codeScan` section for code scanning.
+
+Example `sechub.json` using `fileSystem` inside the `codeScan` section (results in same upload as in above example):
 
 [[sechub-config-example-sourcescan]]
 [source, json]
 ----
 include::sechub_config_example1_sourcescan_filesystem.json[]
 ----
-<1> Define code scan
-<2> Use filesystem - so means upload sources to server
-<3> Upload will contain sources from `gamechanger-android/src/main/java` and `gamechanger-server/src/main/java` and their sub folders
-<4> Exclude directories (optional), syntax is similar to https://ant.apache.org/manual/Types/fileset.html[ANT fileset]. +
-    In the example above all files in following directories are excluded from upload: +
-    * `+**/mytestcode/**+` +
-    excludes all files under a directory named `build` including sub directories
-    * `+**/documentation/**+` +
-    same for folder `documentation`
-    * default excludes +
-     Per default, the directories `+**/test/**+` `+**/.git/**+`
-are already excluded.
-<5> {sechub} client does only add wellknown sources into created upload zip file. This removes
-    unnecessary stuff and reduces upload size automatically. +
-    _E.g. a codescan for a `JPEG` image would not make sense..._ +
-    Instead of defining a negative list, we use a positive list and accept only wellknown sources,
-    which is simply done by file ending. + 
-    In the example we allow also ".cplusplus" and ".py9" as additional accepted source files.
-    Inside client documentation you will find a list of the default file endings.  
+
 
 ==== License scan
 `licenseScan`(optional) defines the license scan settings.
@@ -122,14 +133,36 @@ include::sechub_config_example11_license_scan_and_code_scan_with_sources_data_re
 <2> license scan uses the referenced <<sechub-config-data-section,data>> configuration "firmware-sources"
 <3> code scan uses the referenced <<sechub-config-data-section,data>> configuration "firmware-sources"
 
+==== Secret scan
+`secretScan`(optional) defines the secret scan settings.
+
+[[sechub-config-example-secretscan-sources]]
+===== Example source secret scan
+[source, json, title="Secret scan configuration for sources"]
+----
+include::sechub_config_example12_secret_scan_with_sources_data_reference.json[]
+----
+<1> name of the source <<sechub-config-data-section,data>> configuration: "gamechanger-source"
+<2> source code folders to scan.
+<3> secret scan uses the referenced <<sechub-config-data-section,data>> configuration "gamechanger-source"
+
+[[sechub-config-example-secretscan-binary]]
+===== Example binary secret scan
+[source, json, title="Secret scan scan configuration for binaries"]
+----
+include::sechub_config_example13_secret_scan_with_binaries_data_reference.json[]
+----
+<1> name of the source <<sechub-config-data-section,data>> configuration: "firmware-images"
+<2> secret scan uses the referenced <<sechub-config-data-section,data>> configuration "firmware-images"
+
 ==== Web scan
 `webScan` (optional) defines the web scan settings.
 
-===== URIs
-Use `uri` element to define a string array containing uris you want to scan.
+===== URL
+Use the `url` element to define a URL you want to scan.
 
-WARNING: URI must be one of the whitelisted URLs of your project. Otherwise it will be rejected.
-         So you are not able to start scanning foreign domains and do _accidently_ an DoS attack...
+WARNING: The URL must be whitelisted in your project. Otherwise it will be rejected.
+         So you are not able to start scanning foreign domains and do _accidently_ attack them...
 
 ====== Example anonymous
 [[sechub-config-example-webscan-anonymous]]
@@ -138,15 +171,20 @@ WARNING: URI must be one of the whitelisted URLs of your project. Otherwise it w
 include::sechub_config_example2_webscan_anonyous.json[]
 ----
 <1> Define web scan
-<2> The `URI` s to scan. Every `URI` listed here must be white listed in `{sechub}` project.
-<3> *Optional*: Define the maximum duration the scan can take. 
-    Scanning a "large" web page/application can take several hours or even days. 
+<2> The `URL` to scan. This `URL` must be whitelisted in `{sechub}` project. Normally without a slash `/` at the end.
+<3> *Optional*: Define includes, if you have a special path that is linked nowhere,
+	so the scanner can not detect it automatically while crawling the application.
+	Always use them starting with a slash (`/`) because they are interpreted relative to the `URL` provided before.
+<4> *Optional*: Define excludes, if you have a special path you want to exclude, from the scan.
+	Always use them starting with a slash (`/`) because they are interpreted relative to the `URL` provided before.
+<5> *Optional*: Define the maximum duration the scan can take.
+    Scanning a "large" web page/application can take several hours or even days.
     This option ensures the scan will only run for a limited time.
-<4> Define the unit of time. 
+<6> Define the unit of time.
     The unit can be: `millisecond`, `second`, `minute`, `hour`, `day`.
 
 ===== Login
-A web scan does work very much better if it has got access to all content
+A web scan does work much better if it has got access to all content
  - so a login is necessary most time. If you do not define a login configuration
  your web scan will be done only as anonymous user.
 
@@ -165,11 +203,10 @@ SMS provider - *so be careful!*
 
 ====== Options
 
-SecHub provides you with 3 options for login:
+SecHub provides you with 2 options for login:
 
 * basic authentication
 * form based login
-** auto detect
 ** script based
 
 [NOTE]
@@ -178,7 +215,15 @@ When a web scan product (or its adapter) does not support your wanted options yo
 will have a failure at execution time!
 ====
 
-
+====== Example no authentication
+[source,json]
+----
+include::sechub_config_example3_webscan_login_basicauth.json[]
+----
+<1> URL for web login
+<2> Basic authentication start, needs user id/name and password.
+<3> *Optional*: You can set the realm used for basic authentication. But normally
+    this is not necessary.
 
 ====== Example basic authentication
 [source,json]
@@ -187,18 +232,10 @@ include::sechub_config_example3_webscan_login_basicauth.json[]
 ----
 <1> URL for web login
 <2> Basic authentication start, needs user id/name and password.
-<3> *Optional*: You can set the realm used for basic authentication. But normally
-    this is not necessary
+<3> You can set the realm used for basic authentication. But normally
+    this is not necessary and you can use an empty string.
 
-====== Example form based login with auto detect
-[source,json]
-----
-include::sechub_config_example4_webscan_login_form_autodetect.json[]
-----
-<1> URL for web login
-<2> Start of form based login with auto detection. +
-    In this example you see variables in `go template` format. This is {sechub} client specific.
-    If you use REST API directly, you must you must use real values!
+
 
 ====== Example form based login by script
 [source,json]
@@ -209,7 +246,7 @@ include::sechub_config_example5_webscan_login_from_sript.json[]
 <2> Start of form based login.
 <3> Script definition.
 <4> Pages section. A page is a visible page. Some logins need more than one page.
-<5> The actions which should be executed on each page. 
+<5> The actions which should be executed on each page.
 <6> Type of action. Valid types are : +
     - `username` +
       name of user used for login
@@ -219,7 +256,7 @@ include::sechub_config_example5_webscan_login_from_sript.json[]
       setup value for a field on UI
     - `click` +
       will simulate a mouse click on UI
-    - `wait` + 
+    - `wait` +
       time to wait before executing the next action
 <7> Selector (CSS) to identify web element.
 <8> Value, used by most actions (`username|password|input|wait`). +
@@ -228,7 +265,7 @@ include::sechub_config_example5_webscan_login_from_sript.json[]
     If you use the REST API directly, you must use real values!
 <9> A description can be added to explain an action.
 <10> The time the next action will be delayed.
-<11> Define the unit of time. 
+<11> Define the unit of time.
      The unit can be: `millisecond`, `second`, `minute`, `hour`, `day`.
 
 WARNING: `username` and `password` are like input but {sechub} tries
@@ -281,12 +318,12 @@ include::sechub_config_example6_infrascan_ip.json[]
 The <<sechub-config-code-scan,codeScan>> element provides a way to define
 source code uploads for code scans only.
 
-With the (optional) `data` section users are able to 
+With the (optional) `data` section users are able to
 
 - define binary and source upload information
 - reference same uploads by muliple scan types in same job without another upload
 
-The scan configurations can reference the name data configuration elements by defining the an 
+The scan configurations can reference the name data configuration elements by defining the an
 array attribute `uses` with a list of unique references names.
 
 [source,json]
@@ -300,15 +337,15 @@ array attribute `uses` with a list of unique references names.
 
 Here are some links to examples which are using <<sechub-config-data-section,data>> inside their configurations:
 
-- <<sechub-config-example-licensescan-binary,License scan for binaries>> 
-- <<sechub-config-example-licensescan-sources,License scan for sources>> 
-- <<sechub-config-example-licensescan-combined-with-codescan,License scan for sources combined with code scan>> 
-- <<sechub-config-example-webscan-openapi,OpenAPI web scan>> 
+- <<sechub-config-example-licensescan-binary,License scan for binaries>>
+- <<sechub-config-example-licensescan-sources,License scan for sources>>
+- <<sechub-config-example-licensescan-combined-with-codescan,License scan for sources combined with code scan>>
+- <<sechub-config-example-webscan-openapi,OpenAPI web scan>>
 
 TIP: If you want to upload binaries, you MUST use the data section, there is no other way to do this.
 
-===== General JSON syntax 
-The next figure shows an example which presents all possibilities _(for simplicity the source and 
+===== General JSON syntax
+The next figure shows an example which presents all possibilities _(for simplicity the source and
 binary configuration arrays do contain only just one entry)_.
 
 [source, json, title="General JSON syntax"]
@@ -319,17 +356,17 @@ include::sechub_config_data_section_general_example1.json[]
 <1> `data`: The main element for data configuration.
 <2> `sources`: Inside this array multiple source data definitions can be listed
 <3> `name`:  Is a unique name for the data configuration element. The name must
-    be unique inside complete sechub configuration file! Allowed characters are
+    be unique inside the whole {sechub} configuration file! Allowed characters are
      - `a-z`
      - `0-9`
      - `-`
      - `_`
 <4> `fileSystem`: Describes fileystem parts which are available inside this data configuration element
-<5> `files`: An array containing file pathes to use for uploading dedicated files
-<6> `folders`: An array containing folder pathes to use for uploading dedicated folders
-<7> `excludes`: Exclude directories (optional) - see <<sechub-config-example-sourcescan,code scan >> 
+<5> `files`: An array containing file paths to use for uploading dedicated files
+<6> `folders`: An array containing folder paths to use for uploading dedicated folders
+<7> `excludes`: Exclude directories (optional) - see <<sechub-config-example-sourcescan,code scan >>
 for details. The excludes work for sources and binaries the same way.
 <8> `additionalFilenameExtensions` Introduce additional file name extensions. See <<sechub-config-example-sourcescan,code scan >>
-for details about default behaviour for sources. 
+for details about default behaviour for sources.
 <9> `sources`: Inside this array multiple binary data definitions can be listed.
 

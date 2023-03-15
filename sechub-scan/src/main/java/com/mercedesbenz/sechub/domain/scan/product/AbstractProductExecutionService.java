@@ -16,13 +16,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
+import com.mercedesbenz.sechub.domain.scan.SecHubExecutionException;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigRepository;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetup;
+import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.UUIDTraceLogID;
 import com.mercedesbenz.sechub.sharedkernel.configuration.SecHubConfiguration;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionContext;
-import com.mercedesbenz.sechub.sharedkernel.execution.SecHubExecutionException;
 
 /**
  * Abstract base implementation for all product execution services. Service will
@@ -61,13 +62,11 @@ public abstract class AbstractProductExecutionService implements ProductExecutio
         return registeredProductExecutors;
     }
 
-    protected abstract ScanType getScanType();
-
     @PostConstruct
     protected void registerProductExecutorsForScanTypes() {
         this.registeredProductExecutors.addAll(scanTypeFilter.filter(allAvailableProductExecutors));
 
-        LOG.info("{} has registered {} product executors:{}", getClass().getSimpleName(), registeredProductExecutors.size(), registeredProductExecutors);
+        LOG.debug("{} has registered {} product executors:{}", getClass().getSimpleName(), registeredProductExecutors.size(), registeredProductExecutors);
     }
 
     /**
@@ -83,8 +82,8 @@ public abstract class AbstractProductExecutionService implements ProductExecutio
             UUIDTraceLogID traceLogID = traceLogID(context.getSechubJobUUID());
 
             SecHubConfiguration configuration = context.getConfiguration();
-            if (context.isCanceledOrAbandonded()) {
-                LOG.debug("{} canceled or abandoned, so ignored by {}", traceLogID, getClass().getSimpleName());
+            if (context.isCancelRequested()) {
+                LOG.debug("{} canceled, so ignored by {}", traceLogID, getClass().getSimpleName());
                 return;
             }
             if (!isExecutionNecessary(context, traceLogID, configuration)) {
@@ -115,7 +114,7 @@ public abstract class AbstractProductExecutionService implements ProductExecutio
         LOG.info("Start executor:{} config:{} and wait for result. {}", executor.getIdentifier(), executorConfigUUID, traceLogID);
 
         List<ProductResult> productResults = executor.execute(context, executorContext);
-        if (context.isCanceledOrAbandonded()) {
+        if (context.isCancelRequested()) {
             return Collections.emptyList();
         }
         int amount = 0;
@@ -152,7 +151,7 @@ public abstract class AbstractProductExecutionService implements ProductExecutio
         ProductExecutor serecoProductExecutor = null;
 
         for (ProductExecutor productExecutor : executors) {
-            if (context.isCanceledOrAbandonded()) {
+            if (context.isCancelRequested()) {
                 return;
             }
             ProductIdentifier productIdentifier = productExecutor.getIdentifier();
@@ -211,7 +210,7 @@ public abstract class AbstractProductExecutionService implements ProductExecutio
         List<ProductResult> productResults = null;
         try {
             productResults = execute(productExecutor, executorContext, context, traceLogID);
-            if (context.isCanceledOrAbandonded()) {
+            if (context.isCancelRequested()) {
                 return;
             }
             if (productResults == null) {
@@ -234,13 +233,16 @@ public abstract class AbstractProductExecutionService implements ProductExecutio
             }
             productResults.add(currentResult);
         }
-        if (context.isCanceledOrAbandonded()) {
+        if (context.isCancelRequested()) {
             return;
         }
         /* execution was successful - so persist new results */
         for (ProductResult productResult : productResults) {
             executorContext.persist(productResult);
         }
+
+        // hook possibility
+        afterProductResultsStored(productResults, context);
 
         /* we drop former results which are duplicates */
         for (ProductResult oldResult : formerResults) {
@@ -250,6 +252,17 @@ public abstract class AbstractProductExecutionService implements ProductExecutio
             }
             productResultRepository.delete(oldResult);
         }
+    }
+
+    /**
+     * Hook possibility for child classes. At this point the given product results
+     * are already stored in database.
+     *
+     * @param productResults the stored product results
+     * @param context        the execution context
+     */
+    protected void afterProductResultsStored(List<ProductResult> productResults, SecHubExecutionContext context) {
+        // do nothing per default
     }
 
     /**

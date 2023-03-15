@@ -34,7 +34,7 @@ public class LocalDeveloperFileSetupSupport {
         File sechubHidden = new File(userHome, ".sechub");
         File sechubDevConfig = new File(sechubHidden, "sechub-developer.properties");
 
-        String buildGradleEnv = System.getenv("SECHUB_BUILD_GRADLE");
+        String buildGradleEnv = System.getProperty("sechub.build.gradle");
         if (Boolean.parseBoolean(buildGradleEnv)) {
             logInfo("Recognized gradle build, skip check for :" + sechubDevConfig.getAbsolutePath());
             return;

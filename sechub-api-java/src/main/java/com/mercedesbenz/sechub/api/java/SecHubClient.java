@@ -4,11 +4,8 @@ package com.mercedesbenz.sechub.api.java;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import javax.crypto.SealedObject;
-
-import org.apache.http.client.utils.URIBuilder;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -28,31 +25,22 @@ public class SecHubClient {
     private String username;
     private SealedObject sealedApiToken;
     private URI hostUri;
-    private int hostPort;
     private boolean trustAll;
 
     private CryptoAccess<String> apiTokenAccess = new CryptoAccess<>();
 
-    public static SecHubClient create(String username, String apiToken, String hostUri, int hostPort) {
-        return create(username, apiToken, hostUri, hostPort, false);
+    public static SecHubClient create(String username, String apiToken, URI hostUri) {
+        return create(username, apiToken, hostUri, false);
     }
 
-    public static SecHubClient create(String username, String apiToken, String hostUri, int hostPort, boolean trustAll) {
-        URI baseUri = null;
-
-        try {
-            baseUri = new URIBuilder(hostUri).build();
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException("Not an acceptable uri:" + hostUri, e);
-        }
-        return new SecHubClient(username, apiToken, baseUri, hostPort, trustAll);
+    public static SecHubClient create(String username, String apiToken, URI hostUri, boolean trustAll) {
+        return new SecHubClient(username, apiToken, hostUri, trustAll);
     }
 
-    private SecHubClient(String username, String apiToken, URI hostUri, int hostPort, boolean trustAll) {
+    private SecHubClient(String username, String apiToken, URI hostUri, boolean trustAll) {
         this.username = username;
         this.sealedApiToken = apiTokenAccess.seal(apiToken);
         this.hostUri = hostUri;
-        this.hostPort = hostPort;
         this.trustAll = trustAll;
     }
 
@@ -66,10 +54,6 @@ public class SecHubClient {
 
     public URI getHostUri() {
         return hostUri;
-    }
-
-    public int getHostPort() {
-        return hostPort;
     }
 
     public boolean isTrustAll() {

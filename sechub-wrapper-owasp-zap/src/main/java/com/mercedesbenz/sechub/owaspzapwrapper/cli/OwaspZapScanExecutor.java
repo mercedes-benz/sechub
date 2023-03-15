@@ -6,8 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.zaproxy.clientapi.core.ClientApi;
 
 import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapClientApiFactory;
-import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanConfiguration;
-import com.mercedesbenz.sechub.owaspzapwrapper.config.ProxyInformation;
+import com.mercedesbenz.sechub.owaspzapwrapper.config.OwaspZapScanContext;
 import com.mercedesbenz.sechub.owaspzapwrapper.scan.OwaspZapScan;
 import com.mercedesbenz.sechub.owaspzapwrapper.util.TargetConnectionChecker;
 
@@ -25,31 +24,13 @@ public class OwaspZapScanExecutor {
         connectionChecker = new TargetConnectionChecker();
     }
 
-    public void execute(OwaspZapScanConfiguration scanConfig) throws MustExitRuntimeException {
-        if (!connectionChecker.isTargetReachable(scanConfig.getTargetUri(), scanConfig.getProxyInformation())) {
-            // Build error message containing proxy if it was set.
-            String errorMessage = createErrorMessage(scanConfig);
-            throw new MustExitRuntimeException(errorMessage, MustExitCode.EXECUTION_FAILED);
-        }
-        ClientApi clientApi = null;
+    public void execute(OwaspZapScanContext scanContext) throws ZapWrapperRuntimeException {
+        connectionChecker.assertApplicationIsReachable(scanContext);
 
-        clientApi = clientApiFactory.create(scanConfig.getServerConfig());
+        ClientApi clientApi = clientApiFactory.create(scanContext.getServerConfig());
 
-        OwaspZapScan owaspZapScan = resolver.resolveScanImplementation(scanConfig, clientApi);
+        OwaspZapScan owaspZapScan = resolver.resolveScanImplementation(scanContext, clientApi);
         LOG.info("Starting Owasp Zap scan.");
         owaspZapScan.scan();
-
     }
-
-    private String createErrorMessage(OwaspZapScanConfiguration scanConfig) {
-        ProxyInformation proxyInformation = scanConfig.getProxyInformation();
-
-        String errorMessage = "Target url: " + scanConfig.getTargetUri() + " is not reachable!";
-        if (proxyInformation != null) {
-            errorMessage += errorMessage + " via " + proxyInformation.getHost() + ":" + proxyInformation.getPort();
-        }
-
-        return errorMessage;
-    }
-
 }

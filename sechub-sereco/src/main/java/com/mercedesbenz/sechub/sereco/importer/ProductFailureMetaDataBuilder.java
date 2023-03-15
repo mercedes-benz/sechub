@@ -5,8 +5,6 @@ import com.mercedesbenz.sechub.sereco.ImportParameter;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoAnnotation;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoAnnotationType;
 import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
-import com.mercedesbenz.sechub.sereco.metadata.SerecoSeverity;
-import com.mercedesbenz.sechub.sereco.metadata.SerecoVulnerability;
 
 public class ProductFailureMetaDataBuilder {
 
@@ -26,27 +24,14 @@ public class ProductFailureMetaDataBuilder {
         String descriptionAsString = description.toString();
         SerecoMetaData data = new SerecoMetaData();
 
-        addArtificialVulnerability(descriptionAsString, data);
-
         /* new way */
         SerecoAnnotation failedMessage = new SerecoAnnotation();
         failedMessage.setValue(descriptionAsString);
-        failedMessage.setType(SerecoAnnotationType.INTERNAL_ERROR_PRODUCT_FAILED);
+        failedMessage.setType(SerecoAnnotationType.INTERNAL_ERROR_PRODUCT_FAILED); // important. Will be used to handle traffic light (OFF)!
 
         data.getAnnotations().add(failedMessage);
 
         return data;
-    }
-
-    @Deprecated
-    /* deprecated way: we add an artificial vulnerability */
-    private void addArtificialVulnerability(String descriptionAsString, SerecoMetaData data) {
-        SerecoVulnerability vulnerability = new SerecoVulnerability();
-        vulnerability.setSeverity(SerecoSeverity.CRITICAL);
-        vulnerability.setType("SecHub failure");
-        vulnerability.setDescription(descriptionAsString);
-
-        data.getVulnerabilities().add(vulnerability);
     }
 
     public ProductFailureMetaDataBuilder forParam(ImportParameter param) {

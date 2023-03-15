@@ -10,13 +10,13 @@ import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
+import com.mercedesbenz.sechub.commons.mapping.NamePatternIdProvider;
+import com.mercedesbenz.sechub.commons.mapping.NamePatternIdProviderFactory;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
-import com.mercedesbenz.sechub.domain.scan.NamePatternIdProviderFactory;
-import com.mercedesbenz.sechub.domain.scan.config.NamePatternIdProvider;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetupCredentials;
 import com.mercedesbenz.sechub.domain.scan.product.config.ProductExecutorConfigSetupJobParameter;
-import com.mercedesbenz.sechub.sharedkernel.SystemEnvironment;
 import com.mercedesbenz.sechub.sharedkernel.validation.AssertValidation;
 import com.mercedesbenz.sechub.sharedkernel.validation.Validation;
 
@@ -29,25 +29,25 @@ import com.mercedesbenz.sechub.sharedkernel.validation.Validation;
  */
 public class DefaultExecutorConfigSupport {
 
-    private static final String ENV_PREFIX_ID = "env:";
-
     private static final Logger LOG = LoggerFactory.getLogger(DefaultExecutorConfigSupport.class);
 
     private static final NamePatternIdProvider FALLBACK_NOT_FOUND_PROVIDER = new NamePatternIdProvider("fallback");
 
     protected Map<String, String> configuredExecutorParameters = new TreeMap<>();
     private Map<String, NamePatternIdProvider> namePatternIdProviders = new TreeMap<>();
+    private SystemEnvironmentVariableSupport variableSupport;
 
     protected ProductExecutorConfig config;
-    private SystemEnvironment systemEnvironment;
+
     NamePatternIdProviderFactory providerFactory;
 
-    public DefaultExecutorConfigSupport(ProductExecutorConfig config, SystemEnvironment systemEnvironment, Validation<ProductExecutorConfig> validation) {
+    public DefaultExecutorConfigSupport(ProductExecutorConfig config, SystemEnvironmentVariableSupport variableSupport,
+            Validation<ProductExecutorConfig> validation) {
         notNull(config, "config may not be null!");
-        notNull(systemEnvironment, "systemEnvironment may not be null!");
+        notNull(variableSupport, "variableSupport may not be null!");
 
         this.config = config;
-        this.systemEnvironment = systemEnvironment;
+        this.variableSupport = variableSupport;
 
         providerFactory = new NamePatternIdProviderFactory();
 
@@ -66,7 +66,7 @@ public class DefaultExecutorConfigSupport {
     public String getPasswordOrAPIToken() {
         ProductExecutorConfigSetupCredentials credentials = config.getSetup().getCredentials();
         String pwd = credentials.getPassword();
-        return evaluateEnvironmentEntry(pwd);
+        return variableSupport.getValueOrVariableContent(pwd);
     }
 
     public String getProductBaseURL() {
@@ -76,22 +76,7 @@ public class DefaultExecutorConfigSupport {
     public String getUser() {
         ProductExecutorConfigSetupCredentials credentials = config.getSetup().getCredentials();
         String user = credentials.getUser();
-        return evaluateEnvironmentEntry(user);
-    }
-
-    private String evaluateEnvironmentEntry(String data) {
-        if (data == null) {
-            return null;
-        }
-        if (!data.startsWith(ENV_PREFIX_ID)) {
-            return data;
-        }
-        String key = data.substring(ENV_PREFIX_ID.length());
-        String value = systemEnvironment.getEnv(key);
-        if (value == null) {
-            LOG.warn("No environment entry defined for variable:{}", key);
-        }
-        return value;
+        return variableSupport.getValueOrVariableContent(user);
     }
 
     /**

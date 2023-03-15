@@ -12,13 +12,13 @@ public class IntegrationTestEventHistoryInspectionTest {
         /* prepare */
         IntegrationTestEventHistoryInspection i1 = new IntegrationTestEventHistoryInspection();
 
-        i1.setAsynchronousSender("class1", MessageID.JOB_CANCELED);
+        i1.setAsynchronousSender("class1", MessageID.JOB_CANCELLATION_RUNNING);
         i1.getReceiverClassNames().add("rclass1");
         i1.getReceiverClassNames().add("rclass2");
 
         IntegrationTestEventHistoryInspection i2 = new IntegrationTestEventHistoryInspection();
 
-        i2.setSynchronousSender("class1", MessageID.JOB_CANCELED);
+        i2.setSynchronousSender("class1", MessageID.JOB_CANCELLATION_RUNNING);
         i2.getReceiverClassNames().add("rclass1");
         i2.getReceiverClassNames().add("rclass2");
 
@@ -34,13 +34,13 @@ public class IntegrationTestEventHistoryInspectionTest {
         /* prepare */
         IntegrationTestEventHistoryInspection i1 = new IntegrationTestEventHistoryInspection();
 
-        i1.setAsynchronousSender("class1", MessageID.JOB_CANCELED);
+        i1.setAsynchronousSender("class1", MessageID.JOB_CANCELLATION_RUNNING);
         i1.getReceiverClassNames().add("rclass1");
         i1.getReceiverClassNames().add("rclass2");
 
         IntegrationTestEventHistoryInspection i2 = new IntegrationTestEventHistoryInspection();
 
-        i2.setAsynchronousSender("class1-other", MessageID.JOB_CANCELED);
+        i2.setAsynchronousSender("class1-other", MessageID.JOB_CANCELLATION_RUNNING);
         i2.getReceiverClassNames().add("rclass1");
         i2.getReceiverClassNames().add("rclass2");
 
@@ -56,7 +56,7 @@ public class IntegrationTestEventHistoryInspectionTest {
         /* prepare */
         IntegrationTestEventHistoryInspection i1 = new IntegrationTestEventHistoryInspection();
 
-        i1.setAsynchronousSender("class1", MessageID.JOB_CANCELED);
+        i1.setAsynchronousSender("class1", MessageID.JOB_CANCELLATION_RUNNING);
         i1.getReceiverClassNames().add("rclass1");
         i1.getReceiverClassNames().add("rclass2");
 
@@ -78,14 +78,14 @@ public class IntegrationTestEventHistoryInspectionTest {
         /* prepare */
         IntegrationTestEventHistoryInspection i1 = new IntegrationTestEventHistoryInspection();
 
-        i1.setAsynchronousSender("class1", MessageID.JOB_CANCELED);
+        i1.setAsynchronousSender("class1", MessageID.JOB_CANCELLATION_RUNNING);
         i1.getReceiverClassNames().add("rclass1");
         i1.getReceiverClassNames().add("rclass2");
         i1.getReceiverClassNames().add("rclass1");// same content, but another element
 
         IntegrationTestEventHistoryInspection i2 = new IntegrationTestEventHistoryInspection();
 
-        i2.setAsynchronousSender("class1", MessageID.JOB_CANCELED);
+        i2.setAsynchronousSender("class1", MessageID.JOB_CANCELLATION_RUNNING);
         i2.getReceiverClassNames().add("rclass1");
         i2.getReceiverClassNames().add("rclass2");
 
@@ -101,14 +101,14 @@ public class IntegrationTestEventHistoryInspectionTest {
         /* prepare */
         IntegrationTestEventHistoryInspection i1 = new IntegrationTestEventHistoryInspection();
 
-        i1.setAsynchronousSender("class1", MessageID.JOB_CANCELED);
+        i1.setAsynchronousSender("class1", MessageID.JOB_CANCELLATION_RUNNING);
         i1.getReceiverClassNames().add("rclass1");
         i1.getReceiverClassNames().add("rclass2");
         i1.getReceiverClassNames().add("rclass3");
 
         IntegrationTestEventHistoryInspection i2 = new IntegrationTestEventHistoryInspection();
 
-        i2.setAsynchronousSender("class1", MessageID.JOB_CANCELED);
+        i2.setAsynchronousSender("class1", MessageID.JOB_CANCELLATION_RUNNING);
         i2.getReceiverClassNames().add("rclass1");
         i2.getReceiverClassNames().add("rclass2");
         i2.getReceiverClassNames().add("rclass4");
@@ -139,13 +139,13 @@ public class IntegrationTestEventHistoryInspectionTest {
         /* prepare */
         IntegrationTestEventHistoryInspection i1 = new IntegrationTestEventHistoryInspection();
 
-        i1.setAsynchronousSender("class1", MessageID.JOB_CANCELED);
+        i1.setAsynchronousSender("class1", MessageID.JOB_CANCELLATION_RUNNING);
         i1.getReceiverClassNames().add("rclass1");
         i1.getReceiverClassNames().add("rclass2");
 
         IntegrationTestEventHistoryInspection i2 = new IntegrationTestEventHistoryInspection();
 
-        i2.setAsynchronousSender("class1", MessageID.JOB_CANCELED);
+        i2.setAsynchronousSender("class1", MessageID.JOB_CANCELLATION_RUNNING);
         i2.getReceiverClassNames().add("rclass1");
         i2.getReceiverClassNames().add("rclass2");
 
@@ -161,13 +161,13 @@ public class IntegrationTestEventHistoryInspectionTest {
         /* prepare */
         IntegrationTestEventHistoryInspection i1 = new IntegrationTestEventHistoryInspection();
 
-        i1.setSynchronousSender("class1", MessageID.JOB_CANCELED);
+        i1.setSynchronousSender("class1", MessageID.JOB_CANCELLATION_RUNNING);
         i1.getReceiverClassNames().add("rclass1");
         i1.getReceiverClassNames().add("rclass2");
 
         IntegrationTestEventHistoryInspection i2 = new IntegrationTestEventHistoryInspection();
 
-        i2.setSynchronousSender("class1", MessageID.JOB_CANCELED);
+        i2.setSynchronousSender("class1", MessageID.JOB_CANCELLATION_RUNNING);
         i2.getReceiverClassNames().add("rclass1");
         i2.getReceiverClassNames().add("rclass2");
 
@@ -183,13 +183,13 @@ public class IntegrationTestEventHistoryInspectionTest {
         /* prepare */
         IntegrationTestEventHistoryInspection i1 = new IntegrationTestEventHistoryInspection();
 
-        i1.setAsynchronousSender("class1", MessageID.JOB_CANCELED);
+        i1.setAsynchronousSender("class1", MessageID.JOB_CANCELLATION_RUNNING);
         i1.getReceiverClassNames().add("rclass1");
         i1.getReceiverClassNames().add("rclass2");
 
         IntegrationTestEventHistoryInspection i2 = new IntegrationTestEventHistoryInspection();
 
-        i2.setAsynchronousSender("class1", MessageID.JOB_CANCELED);
+        i2.setAsynchronousSender("class1", MessageID.JOB_CANCELLATION_RUNNING);
         i2.getReceiverClassNames().add("rclass2");
         i2.getReceiverClassNames().add("rclass1");
 
@@ -205,14 +205,14 @@ public class IntegrationTestEventHistoryInspectionTest {
         /* prepare */
         IntegrationTestEventHistoryInspection i1 = new IntegrationTestEventHistoryInspection();
 
-        i1.setAsynchronousSender("class1", MessageID.JOB_CANCELED);
+        i1.setAsynchronousSender("class1", MessageID.JOB_CANCELLATION_RUNNING);
         i1.getReceiverClassNames().add("rclass1");
         i1.getReceiverClassNames().add("rclass2");
         i1.getReceiverClassNames().add("rclass1");
 
         IntegrationTestEventHistoryInspection i2 = new IntegrationTestEventHistoryInspection();
 
-        i2.setAsynchronousSender("class1", MessageID.JOB_CANCELED);
+        i2.setAsynchronousSender("class1", MessageID.JOB_CANCELLATION_RUNNING);
         i2.getReceiverClassNames().add("rclass2");
         i2.getReceiverClassNames().add("rclass1");
         i2.getReceiverClassNames().add("rclass1");

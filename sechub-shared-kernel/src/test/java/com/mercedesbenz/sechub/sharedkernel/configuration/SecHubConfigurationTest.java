@@ -20,6 +20,7 @@ import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.JSONConverterException;
 import com.mercedesbenz.sechub.commons.model.SecHubInfrastructureScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubLicenseScanConfiguration;
+import com.mercedesbenz.sechub.commons.model.SecHubSecretScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubTimeUnit;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.WebScanDurationConfiguration;
@@ -260,7 +261,7 @@ public class SecHubConfigurationTest {
         assertTrue("webscan config must be present", webScanOption.isPresent());
 
         SecHubWebScanConfiguration secHubWebScanConfiguration = webScanOption.get();
-        assertEquals(URI.create("https://productfailure.demo.example.org"), secHubWebScanConfiguration.getUri());
+        assertEquals(URI.create("https://productfailure.demo.example.org"), secHubWebScanConfiguration.getUrl());
 
         Optional<List<String>> includes = secHubWebScanConfiguration.getIncludes();
         assertTrue("includes must be present", includes.isPresent());
@@ -370,7 +371,7 @@ public class SecHubConfigurationTest {
 
         /* test */
         assertTrue("webscan config must be present", result.getWebScan().isPresent());
-        assertEquals(result.getWebScan().get().getUri(), new URI("https://fscan.intranet.example.org/"));
+        assertEquals(result.getWebScan().get().getUrl(), new URI("https://fscan.intranet.example.org/"));
     }
 
     @Test
@@ -510,7 +511,7 @@ public class SecHubConfigurationTest {
         assertTrue("webscan config must be present", webScanOption.isPresent());
 
         SecHubWebScanConfiguration secHubWebScanConfiguration = webScanOption.get();
-        assertEquals(URI.create("https://productfailure.demo.example.org"), secHubWebScanConfiguration.getUri());
+        assertEquals(URI.create("https://productfailure.demo.example.org"), secHubWebScanConfiguration.getUrl());
 
         Optional<List<String>> includes = secHubWebScanConfiguration.getIncludes();
         assertTrue("includes must be present", includes.isPresent());
@@ -541,5 +542,49 @@ public class SecHubConfigurationTest {
         Set<String> usedDataConfigs = licenseScan.get().getNamesOfUsedDataConfigurationObjects();
         assertEquals(1, usedDataConfigs.size());
         assertEquals(expectedDataConfigName, usedDataConfigs.iterator().next());
+    }
+
+    @Test
+    public void a_sechub_configuration_JSON_with_secret_scan_can_be_read_and_secret_scan_has_correct_data_configuration_reference() {
+        /* prepare */
+        String expectedDataConfigName = "files";
+        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("secretscan/secret_scan.json");
+
+        /* execute */
+        SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
+
+        /* test */
+        Optional<SecHubSecretScanConfiguration> secretScan = result.getSecretScan();
+        assertTrue("secret scan must be present", secretScan.isPresent());
+
+        Set<String> usedDataConfigs = secretScan.get().getNamesOfUsedDataConfigurationObjects();
+        assertEquals(1, usedDataConfigs.size());
+        assertEquals(expectedDataConfigName, usedDataConfigs.iterator().next());
+    }
+
+    @Test
+    public void a_sechub_configuration_JSON_with_data_section_containing_unknown_excludes_can_be_read() {
+        /* prepare */
+        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("codescan/code_scan-with-datasections-and-unknown-excludes.json");
+
+        /* execute */
+        SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
+
+        /* test */
+        assertNotNull(result);
+        assertEquals("1.2.3", result.getApiVersion());
+    }
+
+    @Test
+    public void a_sechub_configuration_JSON_with_combined_unknown_properties_can_be_read() {
+        /* prepare */
+        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("combined_config_with_unknown_parts_everywhere.json");
+
+        /* execute */
+        SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
+
+        /* test */
+        assertNotNull(result);
+        assertEquals("2.1.0", result.getApiVersion());
     }
 }

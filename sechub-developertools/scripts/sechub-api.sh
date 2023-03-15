@@ -42,6 +42,7 @@ job_restart <job-uuid> - Restart/activate job <job-uuid>
 job_restart_hard <job-uuid> - Run new backend scan of job <job-uuid>
 job_status <project-id> <job-uuid> - Get status of job <job-uuid> in project <project-id> (json format)
 job_upload_sourcecode <project-id> <job-uuid> <zip-file> - Upload source code <zip-file> for project <project-id> and job <job-uuid>
+job_upload_binaries <project-id> <job-uuid> <tar-file> - Upload source code <tar-file> for project <project-id> and job <job-uuid>
 profile_create <profile-id> <executor-uuid1>[,<executor-uuid2>...] [<description>]
                Create execution profile <profile-id> with named executors assigned; description optional
 profile_delete <profile-id> - Delete execution profile <profile-id>
@@ -54,8 +55,9 @@ project_assign_user <project-id> <user-id> - Assign user to project (allow scann
 project_create <project-id> <owner> ["<project short description>"] - Create a new project. The short description is optional.
 project_delete <project-id> - Delete project <project-id>
 project_details <project-id> - Show owner, users, whitelist etc. of project <project-id>
-project_details_all <project-id> - project_details plus assigned execution profiles
+project_details_all <project-id> - project_details plus assigned execution profiles of project <project-id>
 project_falsepositives_list <project-id> - Get defined false-positives for project <project-id> (json format)
+project_joblist <project-id> <size> <page> - List scan jobs of <project-id> (json format). Page# <page> of size <size>
 project_list - List all projects (json format)
 project_metadata_set <project-id> <key1>:<value1> [<key2>:<value2> ...] - define metadata for <project-id>
 project_mockdata_list <project-id> - display defined mocked results (if server runs 'mocked-products')
@@ -63,6 +65,7 @@ project_mockdata_set <project-id> <code> <web> <infra> - define mocked results (
 project_scan_list <project-id> - List scan jobs for project <project-id> (json format)
 project_set_accesslevel <project-id> <accesslevel> - Set access level of project <project-id> to one of: full read_only none
 project_set_owner <project-id> <owner> - Change owner of project <project-id> to <owner>
+project_set_whitelist_uris <project-id> <uri1>[,<uri2>...] - Set whitelist uris for project <project-id>
 project_unassign_profile <project-id> <profile-id> - Unassign execution profile <profile-id> from project <project-id>
 project_unassign_user <project-id> <user-id> - Unassign user from project (revoke scanning)
 scheduler_disable - Stop SecHub job scheduler
@@ -72,12 +75,13 @@ server_status - Get status entries of SecHub server like scheduler, jobs etc. (j
 server_version - Print version of SecHub server
 superadmin_grant <user-id> - Grant superadmin role to user <user-id>
 superadmin_list - List all superadmin users (json format)
-superadmin_revoke - Revoke superadmin role from user <user-id>
+superadmin_revoke <user-id> - Revoke superadmin role from user <user-id>
+user_change_email <user-id> <new email address> - Update the email of user <user-id>
 user_delete <user-id> - Delete user <user-id>
 user_details <user-id> - List details of user <user-id> (json format)
 user_list - List all users (json format)
 user_list_open_signups - List all users waiting to get their signup accepted (json format)
-user_reset_apitoken <email address> - Request new api token for <email address> (invalidates current api token immediately)
+user_reset_apitoken <email address> - Request new api token for <email address>
 user_signup <new user-id> <email address> - Add <new user-id> with <email address> (needs to be accepted then)
 user_signup_accept <new user-id> - Accept registration of <new user-id>
 user_signup_decline <new user-id> - Decline registration of <new user-id>
@@ -87,6 +91,11 @@ EOF
 
 #################################
 # Generic helper functions
+
+function curl_with_sechub_auth {
+  # Don't reveal secrets in the curl process
+  printf "user = $SECHUB_USERID:$SECHUB_APITOKEN\n" | curl --config - $CURL_PARAMS "$@"
+}
 
 function are_you_sure {
   local INPUT
@@ -227,7 +236,7 @@ function sechub_alive_check {
 
 
 function sechub_autocleanup_get {
-  curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/autoclean" | $RESULT_FILTER | $JSON_FORMATTER
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/autoclean" | $RESULT_FILTER | $JSON_FORMATTER
 }
 
 
@@ -248,78 +257,78 @@ function sechub_autocleanup_set {
   local JSON_DATA="$(generate_autocleanup_data $1 $2)"
   echo "Going to change autocleanup values. This may delete product results and scan reports."
   are_you_sure
-  curl $CURL_PARAMS -i -X PUT -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/config/autoclean" | $CURL_FILTER
+  curl_with_sechub_auth -i -X PUT -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/config/autoclean" | $CURL_FILTER
 }
 
 function sechub_executor_create {
-  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' -d "@$1" "$SECHUB_SERVER/api/admin/config/executor" | $RESULT_FILTER
+  curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' -d "@$1" "$SECHUB_SERVER/api/admin/config/executor" | $RESULT_FILTER
   echo
 }
 
 
 function sechub_executor_details {
-  curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executor/$1" | $RESULT_FILTER | $JSON_FORMATTER
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executor/$1" | $RESULT_FILTER | $JSON_FORMATTER
 }
 
 
 function sechub_executor_delete {
   echo "Executor \"$1\" will be deleted. This cannot be undone."
   are_you_sure
-  curl $CURL_PARAMS -i -X DELETE -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executor/$1" | $CURL_FILTER
+  curl_with_sechub_auth -i -X DELETE -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executor/$1" | $CURL_FILTER
 }
 
 
 function sechub_executor_update {
-  curl $CURL_PARAMS -i -X PUT -H 'Content-Type: application/json' -d "@$2" "$SECHUB_SERVER/api/admin/config/executor/$1" | $CURL_FILTER
+  curl_with_sechub_auth -i -X PUT -H 'Content-Type: application/json' -d "@$2" "$SECHUB_SERVER/api/admin/config/executor/$1" | $CURL_FILTER
 }
 
 
 function sechub_executor_list {
-  curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executors" | $RESULT_FILTER | jq '.executorConfigurations'
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executors" | $RESULT_FILTER | jq '.executorConfigurations'
 }
 
 
 function sechub_job_cancel {
-  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/jobs/cancel/$1"
+  curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/jobs/cancel/$1" | $CURL_FILTER
 }
 
-function sechub_job_create {  
+function sechub_job_create {
   local PROJECT_ID="$1"
   local JSON_FILE="$2"
 
-  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' --data "@$JSON_FILE" "$SECHUB_SERVER/api/project/$PROJECT_ID/job" | $RESULT_FILTER | $JSON_FORMATTER
+  curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' --data "@$JSON_FILE" "$SECHUB_SERVER/api/project/$PROJECT_ID/job" | $RESULT_FILTER | $JSON_FORMATTER
 }
 
 function sechub_job_approve {
   local PROJECT_ID="$1"
   local JOB_UUID="$2"
-  
-  curl $CURL_PARAMS -i -X PUT -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/$PROJECT_ID/job/$JOB_UUID/approve" | $CURL_FILTER
+
+  curl_with_sechub_auth -i -X PUT -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/$PROJECT_ID/job/$JOB_UUID/approve" | $CURL_FILTER
 }
 
 function sechub_job_restart {
-  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/jobs/restart/$1"
+  curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/jobs/restart/$1" | $CURL_FILTER
 }
 
 
 function sechub_job_restart_hard {
-  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/jobs/restart-hard/$1"
+  curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/jobs/restart-hard/$1" | $CURL_FILTER
 }
 
 function sechub_job_get_report_spdx_json {
   local PROJECT_ID="$1"
   local JOB_UUID="$2"
 
-  curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/$PROJECT_ID/report/spdx/$JOB_UUID" 
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/$PROJECT_ID/report/spdx/$JOB_UUID"
 }
 
 function sechub_job_list_running {
-  curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/jobs/running" | $RESULT_FILTER | $JSON_FORMATTER
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/jobs/running" | $RESULT_FILTER | $JSON_FORMATTER
 }
 
 
 function sechub_job_status {
-  curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/$1/job/$2" | $RESULT_FILTER | $JSON_FORMATTER
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/$1/job/$2" | $RESULT_FILTER | $JSON_FORMATTER
 }
 
 function sechub_job_upload_sourcecode {
@@ -334,13 +343,40 @@ function sechub_job_upload_sourcecode {
 
   local checkSum=$(sha256sum $ZIP_FILE | cut --delimiter=' ' --fields=1)
 
-  curl $CURL_AUTH $CURL_PARAMS -i -X POST --header "Content-Type: multipart/form-data" \
+  curl_with_sechub_auth -i -X POST --header "Content-Type: multipart/form-data" \
     --form "file=@$ZIP_FILE" \
     --form "checkSum=$checkSum" \
     "$SECHUB_SERVER/api/project/$PROJECT_ID/job/$JOB_UUID/sourcecode" | $RESULT_FILTER
 
   if [[ "$?" == "0" ]] ; then
     echo "File \"$ZIP_FILE\" uploaded."
+  else
+    echo "Upload failed."
+  fi
+}
+
+function sechub_job_upload_binaries {
+  local PROJECT_ID="$1"
+  local JOB_UUID="$2"
+  local TAR_FILE="$3"
+
+  if [[ ! -f "$TAR_FILE" ]] ; then
+    echo "File \"$TAR_FILE\" does not exist."
+    exit 1
+  fi
+
+  local checkSum=$(sha256sum $TAR_FILE | cut --delimiter=' ' --fields=1)
+  local fileSize=$(ls -l "$TAR_FILE" | cut --delimiter=' ' --fields 5)
+
+  curl_with_sechub_auth -i -X POST \
+    --header "Content-Type: multipart/form-data" \
+    --header "x-file-size: $fileSize" \
+    --form "file=@$TAR_FILE" \
+    --form "checkSum=$checkSum" \
+    "$SECHUB_SERVER/api/project/$PROJECT_ID/job/$JOB_UUID/binaries" | $RESULT_FILTER
+
+  if [[ "$?" == "0" ]] ; then
+    echo "File \"$TAR_FILE\" uploaded."
   else
     echo "Upload failed."
   fi
@@ -362,31 +398,31 @@ EOF
 function sechub_profile_create {
   local JSON_DATA="$(generate_sechub_profile_data $2 $3)"
   echo $JSON_DATA | $JSON_FORMATTER
-  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/config/execution/profile/$1" | $CURL_FILTER
+  curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/config/execution/profile/$1" | $CURL_FILTER
 }
 
 
 function sechub_profile_delete {
   echo "Execution profile \"$1\" will be deleted. This cannot be undone."
   are_you_sure
-  curl $CURL_PARAMS -i -X DELETE -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/execution/profile/$1" | $CURL_FILTER
+  curl_with_sechub_auth -i -X DELETE -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/execution/profile/$1" | $CURL_FILTER
 }
 
 
 function sechub_profile_details {
-  curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/execution/profile/$1" | $RESULT_FILTER | $JSON_FORMATTER
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/execution/profile/$1" | $RESULT_FILTER | $JSON_FORMATTER
 }
 
 
 function sechub_profile_list {
-  curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/execution/profiles" | $RESULT_FILTER | jq '.executionProfiles'
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/execution/profiles" | $RESULT_FILTER | jq '.executionProfiles'
 }
 
 
 function sechub_profile_update {
   local JSON_DATA="$(generate_sechub_profile_data $2 $3)"
   echo $JSON_DATA | $JSON_FORMATTER
-  curl $CURL_PARAMS -i -X PUT -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/config/execution/profile/$1" | $CURL_FILTER
+  curl_with_sechub_auth -i -X PUT -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/config/execution/profile/$1" | $CURL_FILTER
 }
 
 
@@ -414,19 +450,19 @@ function profile_short_description {
 
 
 function sechub_project_assign_profile {
-  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/execution/profile/$2/project/$1" | $RESULT_FILTER | $JSON_FORMATTER
+  curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/execution/profile/$2/project/$1" | $RESULT_FILTER | $JSON_FORMATTER
 }
 
 
 function sechub_project_assign_user {
-  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1/membership/$2" | $RESULT_FILTER | $JSON_FORMATTER
+  curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1/membership/$2" | $RESULT_FILTER | $JSON_FORMATTER
 }
 
 
 function generate_sechub_project_create_data {
-  local PROJECT_ID="${1,,}"  # ,, converts to lowercase
+  local PROJECT_ID="$(tr [A-Z] [a-z] <<< "$1")"  # Convert to lowercase
   shift
-  local OWNER="${1,,}"
+  local OWNER="$(tr [A-Z] [a-z] <<< "$1")"
   shift
   local SHORT_DESCRIPTION="$*"
   cat <<EOF
@@ -442,19 +478,19 @@ EOF
 function sechub_project_create {
   local JSON_DATA="$(generate_sechub_project_create_data $1 $2 $3)"
   echo $JSON_DATA | $JSON_FORMATTER  # Show what is sent
-  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/project" | $CURL_FILTER
+  curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/project" | $CURL_FILTER
 }
 
 
 function sechub_project_delete {
   echo "Project \"$1\" will be deleted. This cannot be undone."
   are_you_sure
-  curl $CURL_PARAMS -i -X DELETE -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1" | $CURL_FILTER
+  curl_with_sechub_auth -i -X DELETE -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1" | $CURL_FILTER
 }
 
 
 function sechub_project_details {
-  curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1" | $RESULT_FILTER | $JSON_FORMATTER
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1" | $RESULT_FILTER | $JSON_FORMATTER
 }
 
 
@@ -464,7 +500,7 @@ function sechub_project_details_all {
 
   echo "Assigned profiles:"
   sechub_profile_list | jq '.[].id' | sed 's/"//g' | while read profile_id ; do
-    sechub_profile_details $profile_id | jq '.projectIds' | grep $project_id >/dev/null 2>&1
+    sechub_profile_details $profile_id | jq '.projectIds' | tr --delete ' ",' | grep --line-regexp $project_id >/dev/null 2>&1
     if [ "$?" = "0" ] ; then
       # Print details about profile
       profile_short_description $profile_id
@@ -474,19 +510,22 @@ function sechub_project_details_all {
 
 
 function sechub_project_falsepositives_list {
-  curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/$1/false-positives" | $RESULT_FILTER | $JSON_FORMATTER
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/$1/false-positives" | $RESULT_FILTER | $JSON_FORMATTER
 }
 
+function sechub_project_joblist {
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/$PROJECT_ID/jobs?size=$JOBLIST_SIZE&page=$JOBLIST_PAGE" | $RESULT_FILTER | $JSON_FORMATTER
+}
 
 function sechub_project_list {
-  curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/projects" | $RESULT_FILTER | $JSON_FORMAT_SORT
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/projects" | $RESULT_FILTER | $JSON_FORMAT_SORT
 }
 
 
 function sechub_project_metadata_set {
   local key
   local value
-  local PROJECT_ID="${1,,}"  # ,, converts to lowercase
+  local PROJECT_ID="$(tr [A-Z] [a-z] <<< "$1")"  # Convert to lowercase
   shift
   local JSON_DATA="{\"apiVersion\": \"$SECHUB_API_VERSION\",\"metaData\":{"
   local arr=("$@")
@@ -497,9 +536,7 @@ function sechub_project_metadata_set {
     else
       JSON_DATA+=", "
     fi
-    echo "sechub_project_metadata_set \"$i\""
     key=`echo $i | awk -F':' '{print $1}'`
-    echo $i | awk -F':' '{$1=""; print $0}'
     # The awk script enables that the separator ':' can also be part of the value and is passed through
     # e.g.:  "mykey:myvalue is:2" ; value will be "myvalue is:2"
     value=$(echo $i | awk -F':' '{ for (i = 2; i < NF; i++) { printf("%s:", $i) } print $NF }')
@@ -507,12 +544,12 @@ function sechub_project_metadata_set {
   done
   JSON_DATA+="}}"
   echo $JSON_DATA | $JSON_FORMATTER  # Show what is sent
-  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/project/$PROJECT_ID/metadata" | $CURL_FILTER
+  curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/project/$PROJECT_ID/metadata" | $CURL_FILTER
 }
 
 
 function sechub_project_mockdata_list {
-  curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/$1/mockdata" | $RESULT_FILTER | $JSON_FORMATTER
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/$1/mockdata" | $RESULT_FILTER | $JSON_FORMATTER
 }
 
 
@@ -530,104 +567,132 @@ EOF
 function sechub_project_mockdata_set {
   local JSON_DATA="$(generate_sechub_project_mockdata $2 $3 $4)"
   echo $JSON_DATA | $JSON_FORMATTER  # Show what is sent
-  curl $CURL_PARAMS -i -X PUT -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/project/$1/mockdata" | $CURL_FILTER
+  curl_with_sechub_auth -i -X PUT -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/project/$1/mockdata" | $CURL_FILTER
 }
 
 
 function sechub_project_scan_list {
-  curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1/scan/logs" | $RESULT_FILTER | $JSON_FORMATTER
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1/scan/logs" | $RESULT_FILTER | $JSON_FORMATTER
 }
 
 
 function sechub_project_set_accesslevel {
-  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1/accesslevel/$2" | $CURL_FILTER
+  curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1/accesslevel/$2" | $CURL_FILTER
 }
 
 
 function sechub_project_set_owner {
-  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1/owner/$2" | $CURL_FILTER
+  curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1/owner/$2" | $CURL_FILTER
+}
+
+
+function generate_sechub_whitelist_data {
+  local uri_list=""
+  if [ -n "$1" ] ; then
+    uri_list=$(echo $1 | awk -F',' '{ for (i = 1; i < NF; i++) { printf("\"%s\",", $i) } printf ("\"%s\"", $NF) }')
+  fi
+  cat <<EOF
+{
+  "apiVersion": "$SECHUB_API_VERSION",
+  "whiteList": {
+    "uris":[$uri_list]
+  }
+}
+EOF
+}
+
+
+function sechub_project_set_whitelist_uris {
+  local JSON_DATA="$(generate_sechub_whitelist_data $2)"
+  echo $JSON_DATA | $JSON_FORMATTER
+  curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/project/$1/whitelist" | $CURL_FILTER
 }
 
 
 function sechub_project_unassign_profile {
-  curl $CURL_PARAMS -i -X DELETE -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/execution/profile/$2/project/$1" | $RESULT_FILTER | $JSON_FORMATTER
+  curl_with_sechub_auth -i -X DELETE -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/execution/profile/$2/project/$1" | $RESULT_FILTER | $JSON_FORMATTER
 }
 
 
 function sechub_project_unassign_user {
-  curl $CURL_PARAMS -i -X DELETE -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1/membership/$2" | $RESULT_FILTER | $JSON_FORMATTER
+  curl_with_sechub_auth -i -X DELETE -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1/membership/$2" | $RESULT_FILTER | $JSON_FORMATTER
 }
 
 
 function sechub_scheduler_disable {
-  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/scheduler/disable/job-processing" > /dev/null 2>&1
+  curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/scheduler/disable/job-processing" > /dev/null 2>&1
   sechub_scheduler_status
 }
 
 
 function sechub_scheduler_enable {
-  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/scheduler/enable/job-processing" > /dev/null 2>&1
+  curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/scheduler/enable/job-processing" > /dev/null 2>&1
   sechub_scheduler_status
 }
 
 
 function sechub_scheduler_status {
-  curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/status" | $RESULT_FILTER | $JSON_FORMAT_SORT | jq '.[0]'
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/status" | $RESULT_FILTER | $JSON_FORMAT_SORT | jq '.[0]'
 }
 
 
 function sechub_server_status {
   # 1. Update status in admin domain
-  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/scheduler/status/refresh" > /dev/null 2>&1
+  curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/scheduler/status/refresh" > /dev/null 2>&1
   # 2. Display status
-  curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/status" | $RESULT_FILTER | $JSON_FORMAT_SORT
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/status" | $RESULT_FILTER | $JSON_FORMAT_SORT
 }
 
 
 function sechub_server_version {
-  curl $CURL_PARAMS -i -X GET -H 'Content-Type: text/plain' "$SECHUB_SERVER/api/admin/info/version" | $RESULT_FILTER
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: text/plain' "$SECHUB_SERVER/api/admin/info/version" | $RESULT_FILTER
 }
 
 
 function sechub_superadmin_grant {
-  curl $CURL_PARAMS -i -X POST "$SECHUB_SERVER/api/admin/user/$1/grant/superadmin" | $CURL_FILTER
+  curl_with_sechub_auth -i -X POST "$SECHUB_SERVER/api/admin/user/$1/grant/superadmin" | $CURL_FILTER
 }
 
 
 function sechub_superadmin_list {
-  curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/admins" | $RESULT_FILTER | $JSON_FORMAT_SORT
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/admins" | $RESULT_FILTER | $JSON_FORMAT_SORT
 }
 
 
 function sechub_superadmin_revoke {
-  curl $CURL_PARAMS -i -X POST "$SECHUB_SERVER/api/admin/user/$1/revoke/superadmin" | $CURL_FILTER
+  curl_with_sechub_auth -i -X POST "$SECHUB_SERVER/api/admin/user/$1/revoke/superadmin" | $CURL_FILTER
+}
+
+
+function sechub_user_change_email {
+  curl_with_sechub_auth -i -X PUT "$SECHUB_SERVER/api/admin/user/$1/email/$2" | $CURL_FILTER
 }
 
 
 function sechub_user_delete {
   echo "User \"$1\" will be deleted. This cannot be undone."
   are_you_sure
-  curl $CURL_PARAMS -i -X DELETE "$SECHUB_SERVER/api/admin/user/$1" | $CURL_FILTER
+  curl_with_sechub_auth -i -X DELETE "$SECHUB_SERVER/api/admin/user/$1" | $CURL_FILTER
 }
 
 
 function sechub_user_details {
-  curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/user/$1" | $RESULT_FILTER | $JSON_FORMATTER
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/user/$1" | $RESULT_FILTER | $JSON_FORMATTER
 }
 
 
 function sechub_user_list {
-  curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/users" | $RESULT_FILTER | $JSON_FORMAT_SORT
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/users" | $RESULT_FILTER | $JSON_FORMAT_SORT
 }
 
 
 function sechub_user_list_open_signups {
-  curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/signups" | $RESULT_FILTER | $JSON_FORMAT_SORT
+  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/signups" | $RESULT_FILTER | $JSON_FORMAT_SORT
 }
 
 
 function sechub_user_reset_apitoken {
-  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/anonymous/refresh/apitoken/$1" | $CURL_FILTER
+  curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/anonymous/refresh/apitoken/$1" | $CURL_FILTER
 }
 
 
@@ -642,19 +707,19 @@ EOF
 }
 
 function sechub_user_signup {
-  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' \
+  curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' \
     -d "$(generate_sechub_user_signup_data $1 $2)" \
     "$SECHUB_SERVER/api/anonymous/signup" | $CURL_FILTER
 }
 
 
 function sechub_user_signup_accept {
-  curl $CURL_PARAMS -i -X POST "$SECHUB_SERVER/api/admin/signup/accept/$1" | $CURL_FILTER
+  curl_with_sechub_auth -i -X POST "$SECHUB_SERVER/api/admin/signup/accept/$1" | $CURL_FILTER
 }
 
 
 function sechub_user_signup_decline {
-  curl $CURL_PARAMS -i -X DELETE "$SECHUB_SERVER/api/admin/signup/$1" | $CURL_FILTER
+  curl_with_sechub_auth -i -X DELETE "$SECHUB_SERVER/api/admin/signup/$1" | $CURL_FILTER
 }
 
 # -----------------------------
@@ -727,13 +792,14 @@ done
 for i in SECHUB_SERVER SECHUB_USERID SECHUB_APITOKEN ; do
   check_parameter "$i" "\$$i"
 done
-AUTH="$SECHUB_USERID:$SECHUB_APITOKEN"
-CURL_PARAMS="-u $AUTH --silent --insecure --show-error"
+CURL_PARAMS="--silent --insecure --show-error"
 CURL_FILTER="grep -i http/\|error"
 
 action="$1" && shift
 case "$action" in
   alive_check)
+    failed=false
+    check_parameter "SECHUB_SERVER" "\$SECHUB_SERVER"
     $failed || sechub_alive_check
     ;;
   autocleanup_get)
@@ -805,6 +871,12 @@ case "$action" in
     ZIP_FILE="$3"   ; check_parameter ZIP_FILE '<zip-file>'
     $failed || sechub_job_upload_sourcecode "$PROJECT_ID" "$JOB_UUID" "$ZIP_FILE"
     ;;
+  job_upload_binaries)
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    JOB_UUID="$2"   ; check_parameter JOB_UUID '<job-uuid>'
+    TAR_FILE="$3"   ; check_parameter TAR_FILE '<tar-file>'
+    $failed || sechub_job_upload_binaries "$PROJECT_ID" "$JOB_UUID" "$TAR_FILE"
+    ;;
   profile_create)
     PROFILE_ID="$1" ; check_parameter PROFILE_ID '<profile-id>'
     EXECUTORS="$2" ; check_parameter EXECUTORS '<executor-uuid1>[,<executor-uuid2>...]'
@@ -863,6 +935,12 @@ case "$action" in
     PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
     $failed || sechub_project_falsepositives_list "$PROJECT_ID"
     ;;
+  project_joblist)
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    JOBLIST_SIZE="$2"   ; check_parameter JOBLIST_SIZE '<size>'
+    JOBLIST_PAGE="$3"   ; check_parameter JOBLIST_PAGE '<page>'
+    $failed || sechub_project_joblist
+    ;;
   project_list)
     $failed || sechub_project_list
     ;;
@@ -871,12 +949,8 @@ case "$action" in
     METADATA="$2" ; check_parameter METADATA '<key1>:<value1>' # We expect at least one pair
     shift
     for item in "$@"; do
-      echo "\"${item}\""
       METADATA_LIST+=("${item}")
     done
-    # for i in "${METADATA_LIST[@]}"; do
-    #     echo "main: \"${i}\""
-    # done
     $failed || sechub_project_metadata_set "$PROJECT_ID" "${METADATA_LIST[@]}"
     ;;
   project_mockdata_list)
@@ -903,6 +977,11 @@ case "$action" in
     PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
     PROJECT_OWNER="$2" ; check_parameter PROJECT_OWNER '<owner>'
     $failed || sechub_project_set_owner "$PROJECT_ID" "$PROJECT_OWNER"
+    ;;
+  project_set_whitelist_uris)
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    WHITELIST_URIS="$2" # No check - we also accept an empty parameter -> clear whitelist
+    $failed || sechub_project_set_whitelist_uris "$PROJECT_ID" "$WHITELIST_URIS"
     ;;
   project_unassign_profile)
     PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
@@ -939,6 +1018,11 @@ case "$action" in
   superadmin_revoke)
     SECHUB_USER="$1" ; check_parameter SECHUB_USER '<user-id>'
     $failed || sechub_superadmin_revoke "$SECHUB_USER"
+    ;;
+  user_change_email)
+    SECHUB_USER="$1" ; check_parameter SECHUB_USER '<user-id>'
+    SECHUB_NEW_EMAIL="$2" ; check_parameter SECHUB_NEW_EMAIL '<new email address>'
+    $failed || sechub_user_change_email "$SECHUB_USER" "$SECHUB_NEW_EMAIL"
     ;;
   user_delete)
     SECHUB_USER="$1" ; check_parameter SECHUB_USER '<user-id>'

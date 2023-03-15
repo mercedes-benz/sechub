@@ -3,6 +3,13 @@
 
 ==== Checkmarx
 
+[NOTE]
+====
+Currently we provide Checkmarx as direct product inside {sechub} and also as a {pds} solution. The aim is to
+provide Checkmarx only as pds} solution in future. So the direct product integration will vanish.
+====
+
+
 Static code analyzer
 see http://www.checkmarx.com/
 

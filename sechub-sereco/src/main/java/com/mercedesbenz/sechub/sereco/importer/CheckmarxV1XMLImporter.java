@@ -22,7 +22,7 @@ public class CheckmarxV1XMLImporter extends AbstractProductResultImporter {
 
     private static final Pattern NAME_PATTERN = Pattern.compile("_");
 
-    public SerecoMetaData importResult(String xml) throws IOException {
+    public SerecoMetaData importResult(String xml, ScanType scanType) throws IOException {
         if (xml == null) {
             xml = "";
         }
@@ -173,7 +173,7 @@ public class CheckmarxV1XMLImporter extends AbstractProductResultImporter {
         /* @formatter:off */
 		return ImportSupport.
 							builder().
-								productId("Checkmarx").
+								productIds("Checkmarx","PDS_CODESCAN").
 								contentIdentifiedBy("CxXMLResults").
 								mustBeXML().
 								build();

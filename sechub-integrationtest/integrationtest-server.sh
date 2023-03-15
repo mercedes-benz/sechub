@@ -164,6 +164,7 @@ function startServer(){
     fi
 
     log "Starting a sechub-server (version $SERVER_VERSION) in integration test mode"
+    export SERVER_PORT
     export SPRING_PROFILES_ACTIVE=integrationtest,mocked_products,h2
     export SECHUB_SERVER_DEBUG=true
     export SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR="$SHARED_VOLUME_BASEDIR"
@@ -180,6 +181,9 @@ function startServer(){
         log ">> INFO: removing old logfile: $pathToLog"
         rm $pathToLog
     fi
+    # Unset proxy so e.g. S3 access will be done without proxy
+    export http_proxy=""
+    export https_proxy=""
     java -jar $pathToJar > $pathToLog 2>&1 &
     log ">> INFO: Integration test server has been started"
     log "         logfiles can be found at: $pathToLog"
@@ -250,6 +254,13 @@ function handleArguments() {
 ##############################################
 log ">> `basename $0` 1:$1, 2:$2, 3:$3, 4:$4"
 log ">> *************************"
+
+if [ "$DEBUG_OUTPUT_ENABLED" = "true" ] ; then
+    echo ">> environment variables set:"
+    echo "###"
+    env | sort
+    echo "###"
+fi
 
 handleArguments "$1" "$2" "$3" "$4"
 
