@@ -20,6 +20,7 @@ buildscript{
 		classpath "org.ajoberstar.grgit:grgit-gradle:${libraryVersion.grgit}" // necessary for version calculation
 		classpath "com.epages:restdocs-api-spec-gradle-plugin:${libraryVersion.restDocsApiSpec}"
         classpath "org.owasp:dependency-check-gradle:${libraryVersion.dependency_check}"
+        classpath "org.cyclonedx:cyclonedx-gradle-plugin:1.7.4"
 	}
 }
 
@@ -30,18 +31,18 @@ plugins {
     id 'org.asciidoctor.jvm.pdf' version '3.3.2'
     
     // open api
-    id 'org.openapi.generator' version '6.2.1'
+    id 'org.openapi.generator' version '6.4.0'
     
     // spring
     id 'org.springframework.boot' version '2.7.8' apply false
     
     // spotless code formatter
     // (see https://github.com/diffplug/spotless)
-    id 'com.diffplug.spotless' version '6.13.0'
+    id 'com.diffplug.spotless' version '6.16.0'
     
     // versions plugin for checking new available library versions etc. 
     // (see https://github.com/ben-manes/gradle-versions-plugin)
-    id 'com.github.ben-manes.versions' version '0.44.0'
+    id 'com.github.ben-manes.versions' version '0.46.0'
     
     // Details about every gradle plugin can be found at 
     // https://plugins.gradle.org/plugin/${pluginId}
@@ -49,6 +50,16 @@ plugins {
 
 // old style apply necessary here - to have same version as in classpath dependency
 apply plugin: 'org.owasp.dependencycheck'
+
+// applying cyclonDX plugin
+apply plugin: 'org.cyclonedx.bom'
+// generate sbom only with runtime dependencies
+cyclonedxBom {
+  includeConfigs = ["runtimeClasspath"]
+}
+
+version = VersionData.getServerVersion()
+
 
 /* check buildsystem */
 def githubActor = System.getenv('GITHUB_ACTOR')
@@ -88,6 +99,7 @@ tasks.clean.dependsOn.internalCleanRootBuildFolder
 apply from: rootProject.file('gradle/gradle_version_plugin.gradle')
 
 allprojects {
+    group = "com.mercedesbenz.sechub"
     apply from: rootProject.file('gradle/spotless.gradle')
 
     def customMavenRepoURL = System.getenv('CUST_MVN_URL')

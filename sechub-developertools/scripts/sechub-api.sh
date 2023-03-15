@@ -639,8 +639,19 @@ function sechub_scheduler_status {
 function sechub_server_status {
   # 1. Update status in admin domain
   curl_with_sechub_auth -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/scheduler/status/refresh" > /dev/null 2>&1
-  # 2. Display status
-  curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/status" | $RESULT_FILTER | $JSON_FORMAT_SORT
+  # 2. Get status
+  local result_json
+  result_json=$(curl_with_sechub_auth -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/status" | $RESULT_FILTER)
+  # 3. Display result
+  if [ -n "$TABLE_FORMATTER" -a "$TABLE_FORMATTER" != "$NOFORMAT_PIPE" -a "$JQ_INSTALLED" == "true" ] ; then
+    # Print as table to save space
+    local result_data
+    result_data=( $(printf "key|value\n---|-----\n" && echo $result_json | jq -r '.[] | .key + "|" + .value' | sort) )
+    printf "%s\n" ${result_data[@]} | $TABLE_FORMATTER
+  else
+    # Fallback: Print raw JSON
+    echo $result_json | $JSON_FORMATTER
+  fi
 }
 
 
@@ -731,12 +742,19 @@ NOFORMAT_PIPE="cat -"
 RESULT_FILTER="tail -1"
 TIMESTAMP=`date +"%Y-%m-%d %H:%M %Z"`
 if which jq >/dev/null 2>&1 ; then
+  JQ_INSTALLED="true"
   JSON_FORMATTER="jq ."   # . is needed or pipeing the result is not possible
   JSON_FORMAT_SORT="jq sort"
 else
   echo "### Hint: Install jq (https://github.com/stedolan/jq) to improve output." >&2  # appears only on stderr
+  JQ_INSTALLED="false"
   JSON_FORMATTER="$NOFORMAT_PIPE"
   JSON_FORMAT_SORT="$NOFORMAT_PIPE"
+fi
+if which column >/dev/null 2>&1 ; then
+  TABLE_FORMATTER="column -t -s '|'"
+else
+  echo "### Hint: Install column to improve table output." >&2  # appears only on stderr
 fi
 
 # Parse command line options (everything starting with '-')
@@ -761,6 +779,7 @@ while [[ "${opt:0:1}" == "-" ]] ; do
   -p|-plain)
     JSON_FORMATTER="$NOFORMAT_PIPE"
     JSON_FORMAT_SORT="$NOFORMAT_PIPE"
+    TABLE_FORMATTER="$NOFORMAT_PIPE"
     shift
     ;;
   -s|-server)

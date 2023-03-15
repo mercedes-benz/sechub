@@ -33,7 +33,7 @@ Supported security tools:
 
 === Getting Started
 
-* https://mercedes-benz.github.io/sechub/latest/sechub-quickstart-guide.html[SecHub Quickstart Guide]
+* https://mercedes-benz.github.io/sechub/latest/sechub-developer-quickstart-guide.html[SecHub Developer Quickstart Guide]
 
 === Installation
 
@@ -94,10 +94,10 @@ On receiving the user request, SecHub creates a job, delegates it to the securit
 === User Perspective
 
 SecHub is designed to provide an efficient user workflow. The basic idea of SecHub is, that the user has to do as little as possible to execute a security scan.
-The user has two options: a) to use the https://mercedes-benz.github.io/sechub/latest/sechub-restapi.html[REST API] directly or b) to use the https://mercedes-benz.github.io/sechub/latest/sechub-client.html[SecHub client]. Both can be integrated into a CI/CD pipeline. 
+The user has two options: a) to use the https://mercedes-benz.github.io/sechub/latest/sechub-restapi.html[REST API] directly or b) to use the https://mercedes-benz.github.io/sechub/latest/sechub-client.html[SecHub client]. Both can be integrated into a CI/CD pipeline.
 
 Using the REST API requires several steps, which is fine if SecHub needs to be integrated into another software or platform.
- 
+
 However, it is recommended to use the SecHub client, if the objective of the user is to: just scan.
 
 The SecHub client reduces the workflow to <<figure-three-steps-to-scan,three steps>>:
@@ -274,7 +274,7 @@ All plugins are free and open-source software (FOSS) and can be installed direct
 [[modules]]
 === Modules
 
-Security tools are categorized into modules. 
+Security tools are categorized into modules.
 
 Each module performs a different security testing method:
 

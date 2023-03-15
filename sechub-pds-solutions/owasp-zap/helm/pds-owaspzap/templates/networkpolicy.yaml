@@ -10,9 +10,9 @@ spec:
         matchLabels:
             name: {{ .Chart.Name }}
 
-{{- if .Values.networkPolicy.ingress }}
+  {{- if .Values.networkPolicy.ingress }}
     ingress:
 {{ .Values.networkPolicy.ingress | toYaml | indent 4 }}
-{{- end }}
+  {{- end }}
 
 {{- end }}

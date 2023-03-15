@@ -19,8 +19,8 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.mercedesbenz.sechub.commons.model.LocalDateTimeDeserializer;
-import com.mercedesbenz.sechub.commons.model.LocalDateTimeSerializer;
+import com.mercedesbenz.sechub.commons.model.SecHubLocalDateTimeDeserializer;
+import com.mercedesbenz.sechub.commons.model.SecHubLocalDateTimeSerializer;
 
 /**
  * Represents a mapping between a scan, job and and job configuration. So its an
@@ -93,13 +93,13 @@ public class ProjectScanLog {
     @Column(name = "VERSION")
     Integer version;
 
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = SecHubLocalDateTimeDeserializer.class)
+    @JsonSerialize(using = SecHubLocalDateTimeSerializer.class)
     @Column(name = COLUMN_STARTED) // remark: we setup hibernate to use UTC settings - see application.properties
     LocalDateTime started;
 
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = SecHubLocalDateTimeDeserializer.class)
+    @JsonSerialize(using = SecHubLocalDateTimeSerializer.class)
     @Column(name = COLUMN_ENDED) // remark: we setup hibernate to use UTC settings - see application.properties
     LocalDateTime ended;
 
